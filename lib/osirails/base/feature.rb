@@ -15,8 +15,12 @@ module Osirails
       @@actived = false
       
       def initialize
-        config_file = File.open("config/Features/"+self.name+"/config.yml")
+        url = "config/Features/"+self.name+"/config.yml"
+        puts url
+        config_file = File.open(url)
+        puts config_file
         config = YAML.load(config_file)
+        y config
         @@name = config["name"]
         @@version = config["version"]
         @@installed = config["installed"]
