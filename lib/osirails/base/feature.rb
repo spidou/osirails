@@ -3,7 +3,6 @@
 # and open the template in the editor.
 require 'yaml'
  
-
 module Osirails
   module Base
     class Feature
@@ -18,12 +17,19 @@ module Osirails
       def initialize
         puts @@class_name
         url = "config/features.yml"
-        File.open(url, 'w') do |out|
-          out.write(class_name_to_yaml(@@class_name))
-          out.close
-        end
+        config_file = File.open(url)
+        config_yaml = YAML.load(config_file)
+        path = @@class_name.split("::")
+        @@installed = config_yaml[path[0]][path[1]][path[2]]["installed"]
+        @@actived = config_yaml[path[0]][path[1]][path[2]]["actived"]
+        puts "Installe : " + @@installed.to_s
+        puts "Activé : " + @@actived.to_s
+#        File.open(url, 'w') do |out|
+#          out.write(class_name_to_yaml(@@class_name))
+#          out.close
+#        end
       end
-      
+
       def class_name_to_yaml(class_name)
         path = class_name.split("::")
         temp1 = {}
