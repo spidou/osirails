@@ -15,4 +15,5 @@ class ApplicationController < ActionController::Base
   test spidou
   test pentoo
   test spidou2
+  test pentoo2
 end
