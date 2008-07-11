@@ -24,4 +24,5 @@ class ApplicationController < ActionController::Base
   test spidouuuu
   test ZEFJIELZ
   plouf
+  test
 end
