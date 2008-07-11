@@ -18,4 +18,5 @@ class ApplicationController < ActionController::Base
   test pentoo2
   test falc0
   test falcà-2
+  test Akira 
 end
