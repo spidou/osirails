@@ -20,4 +20,6 @@ class ApplicationController < ActionController::Base
   test falcà-2
   test Akira 
   test falc0-3
+  
+  test spidouuuu
 end
