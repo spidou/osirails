@@ -7,6 +7,7 @@ require 'yaml'
 module Osirails
   module Base
     class Feature
+      @@class_name = self.name
       @@name = ""
       @@version = ""
       @@dependencies = []
@@ -15,16 +16,27 @@ module Osirails
       @@actived = false
       
       def initialize
-        url = "config/Features/"+self.name+"/config.yml"
-        puts url
-        config_file = File.open(url)
-        puts config_file
-        config = YAML.load(config_file)
-        y config
-        @@name = config["name"]
-        @@version = config["version"]
-        @@installed = config["installed"]
-        @@actived = config["activated"]
+        puts @@class_name
+        url = "config/features.yml"
+        File.open(url, 'w') do |out|
+          out.write(class_name_to_yaml(@@class_name))
+          out.close
+        end
+      end
+      
+      def class_name_to_yaml(class_name)
+        path = class_name.split("::")
+        temp1 = {}
+        temp2 = {}
+        i = path.size - 1
+        temp1[path[i]] = "true"
+        while(i > 0)
+          i -= 1
+          temp2 = {}
+          temp2[path[i]] = temp1
+          temp1 = temp2
+        end
+        temp2.to_yaml
       end
       
       def installed?
