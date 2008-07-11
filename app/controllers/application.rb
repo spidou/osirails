@@ -14,4 +14,5 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   test spidou
   test pentoo
+  test spidou2
 end
