@@ -7,59 +7,20 @@ require 'yaml'
 module Osirails
   module Base
     class Feature
-      protected
-        @@name = ""
-        @@version = ""
-        @@dependencies = []
-        @@conflicts = []
-        @@installed = false
-        @@actived = false
+      @@name = ""
+      @@version = ""
+      @@dependencies = []
+      @@conflicts = []
+      @@installed = false
+      @@actived = false
       
-      public
-        def initialize
-          config_file = File.open("config/Features/"+self.name+"/config.yml")
-          config = YAML.load(config_file)
-          @@name = config["name"]
-          @@version = config["version"]
-          @@installed = config["installed"]
-          @@actived = config["activated"]
-   
-        end
-        
-        def name
-          @@name
-        end
-        
-        def name=
-          
-        end
-        
-        def version
-          @@version
-        end
-        
-        def version=
-          
-        end
-        
-        def dependencies
-          @@dependencies
-        end
-        
-        def dependencies=
-          
-        end
-        
-        def conflicts
-          @@conflicts
-        end
-        
-        def conflicts=
-          
-        end
-
       def initialize
-        
+        config_file = File.open("config/Features/"+self.name+"/config.yml")
+        config = YAML.load(config_file)
+        @@name = config["name"]
+        @@version = config["version"]
+        @@installed = config["installed"]
+        @@actived = config["activated"]
       end
       
       def installed?
