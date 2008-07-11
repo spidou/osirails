@@ -7,7 +7,8 @@ module Osirails
   module Base
     class Test < Feature
       def initialize
-        
+        puts @@name
+        puts "toto"
       end
     end
   end
