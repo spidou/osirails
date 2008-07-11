@@ -18,6 +18,7 @@ module Osirails
         def initialize
           config_file = File.open("config/config.yml")
           config = YAML.load(config_file)
+          @@name = config["name"]
         end
         
         def name
