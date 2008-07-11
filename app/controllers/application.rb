@@ -12,17 +12,4 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
-  test spidou
-  test pentoo
-  test spidou2
-  test pentoo2
-  test falc0
-  test falcà-2
-  test Akira 
-  test falc0-3
-  test
-  test spidouuuu
-  test ZEFJIELZ
-  plouf
-  test
 end
