@@ -1,0 +1,6 @@
+Osirails:
+    Base:
+        Test:
+            actived: false
+            installed: false
+
