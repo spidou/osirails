@@ -1,6 +1,12 @@
 Osirails:
     Base:
         Test:
-            actived: false
+            activated: false
+            installed: false
+        Test1:
+            activated: false
+            installed: false
+        Test2:
+            activated: false
             installed: false
 
