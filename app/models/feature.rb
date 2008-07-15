@@ -45,6 +45,20 @@ class Feature < ActiveRecord::Base
   end
   
   def installable?
+    return true if !has_dependencies? and !has_conflicts?
+    
+    if has_dependencies?
+      dependencies.each do |dep|
+        if Feature.find(:all, :conditions =>["name=? and version = ?",dep["name"],dep["version"]]).size == 0 
+          flash[:error] << dep
+        end     
+      end
+    end
+    if flash[:error].nil?
+      true
+    else
+      false
+    end
   end
   
   def able_to_activate?
