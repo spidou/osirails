@@ -16,12 +16,22 @@ module Osirails
       
       def initialize
         puts @@class_name
+        
         url = "config/features.yml"
+        
         config_file = File.open(url)
         config_yaml = YAML.load(config_file)
         path = @@class_name.split("::")
-        @@installed = config_yaml[path[0]][path[1]][path[2]]["installed"]
-        @@actived = config_yaml[path[0]][path[1]][path[2]]["actived"]
+        
+         tmp = config_yaml[path[0]]
+         
+        (1...path.size).each do |i|
+           tmp = tmp[path[i]]
+        end 
+        @@actived=tmp["actived"]
+        @@installed=tmp["installed"]
+       
+       
         puts "Installe : " + @@installed.to_s
         puts "Activé : " + @@actived.to_s
 #        File.open(url, 'w') do |out|
@@ -44,6 +54,8 @@ module Osirails
         end
         temp2.to_yaml
       end
+      
+   
       
       def installed?
         @@installed
