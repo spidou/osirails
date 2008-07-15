@@ -1,5 +1,6 @@
 class Feature < ActiveRecord::Base
   serialize :dependencies
+  serialize :conflicts
 
   def installed?
     self.installed
@@ -36,7 +37,11 @@ class Feature < ActiveRecord::Base
   end
   
   def has_conflicts?
-    self.conflicts > 0
+    if self.confllicts != nil
+        self.conflicts > 0
+    else
+        false
+    end
   end
   
   def installable?
