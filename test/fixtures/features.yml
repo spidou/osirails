@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  version: MyString
+  dependencies: MyText
+  conflicts: MyText
+  installed: 
+  activated: 
+
+two:
+  name: MyString
+  version: MyString
+  dependencies: MyText
+  conflicts: MyText
+  installed: 
+  activated: 
