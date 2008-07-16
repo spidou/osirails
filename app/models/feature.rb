@@ -53,7 +53,7 @@ class Feature < ActiveRecord::Base
     if has_dependencies?
       @missing_dependencies = []
       dependencies.each do |dep|
-        if Feature.find(:all, :conditions =>["name=? and version in (?) ",dep[:name], dep[:version].join("','")]).size == 0
+        if Feature.find(:all, :conditions =>["name=? and version in (?) ",dep[:name], dep[:version]]).size == 0
            @missing_dependencies << dep
         end     
       end
