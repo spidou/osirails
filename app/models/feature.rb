@@ -49,9 +49,8 @@ class Feature < ActiveRecord::Base
   
   def installable?
     return true if !has_dependencies? and !has_conflicts?
-    
+    @missing_dependencies ||= []
     if has_dependencies?
-      @missing_dependencies = []
       dependencies.each do |dep|
         if Feature.find(:all, :conditions =>["name=? and version in (?) ",dep[:name], dep[:version]]).size == 0
            @missing_dependencies << dep
