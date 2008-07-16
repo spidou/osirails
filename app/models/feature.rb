@@ -1,9 +1,8 @@
 class Feature < ActiveRecord::Base
   serialize :dependencies
-  serialize :conflicts
 
   # Accessors  
-  attr_reader :feature_conflicts, :missing_dependencies
+  attr_reader :feature_conflicts, :missing_dependencies, :features_not_activated, :children_activated
   
   def installed?
     self.installed
@@ -79,9 +78,26 @@ class Feature < ActiveRecord::Base
   end
   
   def able_to_activate?
-  end
+    return false if !self.installed?
+    @features_not_activated = []
+    self.dependencies.each do |dependence|
+      if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).size > 0
+        @features_not_activated << dependence
+      end
+    end
+    @features_not_activated = @features_not_activated.uniq
+    @features_not_activated.size > 0 ? false : true
+  end 
   
   def able_to_deactivate?
+    @children_activated = []
+    self.child_dependencies.each do |child|
+      if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
+        @children_activated << child
+      end
+    end
+    @children_activated = @children_activated.uniq
+    @children_activated.size > 0 and self.activated? ? false : true
   end
   
   def enable
