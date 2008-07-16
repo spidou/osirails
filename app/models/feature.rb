@@ -2,7 +2,7 @@ class Feature < ActiveRecord::Base
   serialize :dependencies
 
   # Accessors  
-  attr_reader :feature_conflicts, :missing_dependencies, :features_not_activated, :children_activated
+  attr_reader :feature_conflicts, :missing_dependencies, :features_not_activated, :children_activated, :installation_messages, :features_uninstallable
   
   def installed?
     self.installed
@@ -77,8 +77,23 @@ class Feature < ActiveRecord::Base
     @missing_dependencies.size > 0 || @feature_conflicts.size > 0 ? false : true
   end
   
+  def uninstallable?
+    @features_uninstallable = []
+    if !self.activated? and self.installed?
+      self.child_dependencies.each do |child|
+        if Feature.find(:all, :conditions =>["name = ? and version in (?) and activated = 1 or installed = 1", child[:name], child[:version]]).size > 0
+          @features_uninstallable << child
+        end
+      end
+    else
+      return false
+    end
+    @features_uninstallable = @features_uninstallable.uniq
+    @features_uninstallable.size > 0 ? false : true
+  end
+  
   def able_to_activate?
-    return false if !self.installed?
+    return false if !self.installed? or self.activated?
     @features_not_activated = []
     self.dependencies.each do |dependence|
       if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).size > 0
@@ -97,19 +112,59 @@ class Feature < ActiveRecord::Base
       end
     end
     @children_activated = @children_activated.uniq
-    @children_activated.size > 0 and self.activated? ? false : true
+    @children_activated.size > 0 or !self.activated? ? false : true
   end
   
   def enable
+    if able_to_activate?
+      self.activated = true
+      if self.save 
+        return true
+      end
+    end
+    false
   end
   
   def disable
+    if able_to_deactivate?
+      self.activated = false
+      if self.save
+        return true
+      end
+    end
+    false
   end
   
   def install
+    if self.installable?
+      @installation_messages = []
+      require 'lib/features/'+self.name+'/install.rb'
+      if feature_install
+        self.installed = true
+        if self.save
+          return true
+        end
+      else 
+        puts @installation_messages
+        return false
+      end
+    end
   end
   
   def uninstall
+    if self.uninstallable?
+      @uninstallation_messages = []
+      require 'lib/features/'+self.name+'/uninstall.rb'
+      if feature_uninstall
+        self.installed =false
+        if self.save
+          return true
+        end
+      else 
+        puts @uninstallation_messages
+        return false
+      end
+    end
   end
   
   def remove

@@ -5,8 +5,8 @@ class CreateFeatures < ActiveRecord::Migration
       t.string :version
       t.text :dependencies
       t.text :conflicts
-      t.boolean :installed
-      t.boolean :activated
+      t.boolean :installed, :default => false, :null => false
+      t.boolean :activated, :default => false, :null => false
 
       t.timestamps
     end
