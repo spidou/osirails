@@ -1,7 +1,10 @@
 class Feature < ActiveRecord::Base
   serialize :dependencies
   serialize :conflicts
-
+  
+  @missing_dependencies = []
+  @feature_conflicts = []
+  
   def installed?
     self.installed
   end
@@ -48,16 +51,17 @@ class Feature < ActiveRecord::Base
     return true if !has_dependencies? and !has_conflicts?
     
     if has_dependencies?
+      @missing_dependencies = []
       dependencies.each do |dep|
-        if Feature.find(:all, :conditions =>["name=? and version = ?",dep[:name],"'" + dep[:version].join("','") + "'"]).size == 0 
-          flash[:error] << dep
+        if Feature.find(:all, :conditions =>["name=? and version in (?) ",dep[:name], dep[:version].join("','")]).size == 0
+           @missing_dependencies << dep
         end     
       end
     end
-    if flash[:error].nil?
-      true
-    else
+    if @missing_dependencies.size > 0
       false
+    else
+      true
     end
   end
   
