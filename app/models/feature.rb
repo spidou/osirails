@@ -37,8 +37,8 @@ class Feature < ActiveRecord::Base
   end
   
   def has_conflicts?
-    if self.confllicts != nil
-        self.conflicts > 0
+    if self.conflicts != nil
+        self.conflicts.size > 0
     else
         false
     end
@@ -49,7 +49,7 @@ class Feature < ActiveRecord::Base
     
     if has_dependencies?
       dependencies.each do |dep|
-        if Feature.find(:all, :conditions =>["name=? and version = ?",dep["name"],"'" + dep["version"].join("','") + "'"]).size == 0 
+        if Feature.find(:all, :conditions =>["name=? and version = ?",dep[:name],"'" + dep[:version].join("','") + "'"]).size == 0 
           flash[:error] << dep
         end     
       end
