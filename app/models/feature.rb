@@ -49,7 +49,7 @@ class Feature < ActiveRecord::Base
     
     if has_dependencies?
       dependencies.each do |dep|
-        if Feature.find(:all, :conditions =>["name=? and version = ?",dep["name"],dep["version"]]).size == 0 
+        if Feature.find(:all, :conditions =>["name=? and version = ?",dep["name"],"'" + dep["version"].join("','") + "'"]).size == 0 
           flash[:error] << dep
         end     
       end
