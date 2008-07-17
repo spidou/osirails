@@ -81,7 +81,7 @@ class Feature < ActiveRecord::Base
     @features_uninstallable = []
     if !self.activated? and self.installed?
       self.child_dependencies.each do |child|
-        if Feature.find(:all, :conditions =>["name = ? and version in (?) and activated = 1 or installed = 1", child[:name], child[:version]]).size > 0
+        if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
           @features_uninstallable << child
         end
       end
@@ -136,40 +136,41 @@ class Feature < ActiveRecord::Base
   end
   
   def install
-    if self.installable?
-      @installation_messages = []
-      require 'lib/features/'+self.name+'/install.rb'
-      if feature_install
-        self.installed = true
-        if self.save
-          return true
-        end
-      else 
-        puts @installation_messages
-        return false
+    return false unless self.installable?
+    @installation_messages = []
+    require 'lib/features/'+self.name+'/install.rb'
+    if feature_install
+      self.installed = true
+      if self.save
+        return true
       end
+    else 
+      puts @installation_messages
+      return false
     end
   end
   
   def uninstall
-    if self.uninstallable?
-      @uninstallation_messages = []
-      require 'lib/features/'+self.name+'/uninstall.rb'
-      if feature_uninstall
-        self.installed =false
-        if self.save
-          return true
-        end
-      else 
-        puts @uninstallation_messages
-        return false
+    return false unless self.uninstallable?
+    @uninstallation_messages = []
+    require 'lib/features/'+self.name+'/uninstall.rb'
+    if feature_uninstall
+      self.installed = false
+      if self.save
+        return true
       end
+    else 
+      puts @uninstallation_messages
+      return false
     end
   end
   
   def remove
+    return false if self.installed
+    # TODO Code the remove function
   end
   
   def check
+    # TODO Code the check function: permissions and other
   end
 end
