@@ -1,8 +1,6 @@
 module Osirails
   class BusinessObject < ActiveRecord::Base
-    require Osirails::Permisible
-    
-    def BusinessObject.can_list?(roles = {})
+    def BusinessObject.can_list?(roles = [])
       Permission.can_list?(self.class, roles)
     end
   end
@@ -13,4 +11,3 @@ module Osirails
     end
   end
 end
-puts "Pffffff"
