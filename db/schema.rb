@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080715111151) do
+ActiveRecord::Schema.define(:version => 20080718125001) do
 
   create_table "features", :force => true do |t|
     t.string   "name"
@@ -18,6 +18,26 @@ ActiveRecord::Schema.define(:version => 20080715111151) do
     t.text     "conflicts"
     t.boolean  "installed"
     t.boolean  "activated"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "permissions", :force => true do |t|
+    t.boolean  "list"
+    t.boolean  "view"
+    t.boolean  "add"
+    t.boolean  "edit"
+    t.boolean  "delete"
+    t.integer  "role_id",             :limit => 11
+    t.string   "has_permission_type"
+    t.integer  "has_permission_id",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

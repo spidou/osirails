@@ -6,5 +6,7 @@
 class TestController < ActionController::Base
   def index
     render :text => "COUCOU"
-  end
+    Document.can_list?(role)
+    Document.can
+end
 end
