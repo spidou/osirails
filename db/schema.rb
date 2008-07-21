@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 20080721101446) do
     t.boolean  "edit"
     t.boolean  "delete"
     t.integer  "role_id",    :limit => 11
+    t.integer  "page_id",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
