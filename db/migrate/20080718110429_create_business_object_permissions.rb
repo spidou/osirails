@@ -1,6 +1,6 @@
-class CreatePermissions < ActiveRecord::Migration
+class CreateBusinessObjectPermissions < ActiveRecord::Migration
   def self.up
-    create_table :permissions do |t|
+    create_table :business_object_permissions do |t|
       t.boolean :list, :view, :add, :edit, :delete
       t.references :role
       t.string :has_permission_type
@@ -10,6 +10,6 @@ class CreatePermissions < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :permissions
+    drop_table :business_object_permissions
   end
 end
