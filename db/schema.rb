@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080721101446) do
+ActiveRecord::Schema.define(:version => 20080722111048) do
 
   create_table "business_object_permissions", :force => true do |t|
     t.boolean  "list"
@@ -29,10 +29,11 @@ ActiveRecord::Schema.define(:version => 20080721101446) do
     t.string   "version"
     t.text     "dependencies"
     t.text     "conflicts"
-    t.boolean  "installed",    :default => false, :null => false
-    t.boolean  "activated",    :default => false, :null => false
+    t.boolean  "installed",        :default => false, :null => false
+    t.boolean  "activated",        :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "business_objects"
   end
 
   create_table "page_permissions", :force => true do |t|
