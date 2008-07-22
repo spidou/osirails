@@ -1,4 +1,4 @@
 def feature_install
-  #@installation_messages << "bidon"
-  true
+  @installation_messages << "Script pourri"
+  false
 end

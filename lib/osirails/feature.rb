@@ -3,7 +3,7 @@ module Osirails
     serialize :dependencies
 
     # Accessors  
-    attr_reader :feature_conflicts, :missing_dependencies, :features_not_activated, :children_activated, :installation_messages, :features_uninstallable
+    attr_reader :feature_conflicts, :missing_dependencies, :features_not_activated, :children_activated, :installation_messages, :uninstallation_messages, :features_uninstallable
 
     def installed?
       self.installed
@@ -137,8 +137,8 @@ module Osirails
     end
 
     def install
-      return false unless self.installable?
       @installation_messages = []
+      return false unless self.installable?
       require 'lib/features/'+self.name+'/install.rb'
       if feature_install
         self.installed = true
