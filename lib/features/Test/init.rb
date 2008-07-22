@@ -1,7 +1,8 @@
 dependencies = []
 conflicts = []
 business_objects = ["Document","DocumentGraphique"]
-pages = [{:name => "admin", :child => [{:name => "users"},{:name => "roles"}, {:name => "features"}, {:name => "CMS"}]}]
+pages = [{:name => "admin", :child => [{:name => "users", :child => [:name =>"gestion"]},{:name => "roles"}, {:name => "features"}, {:name => "CMS"}]}]
+$page_table = []
 
 #Test of dependencies for this feature
 f = Osirails::Feature.find_or_create_by_name_and_version("Test","0.1")
@@ -22,7 +23,6 @@ end
 #Test if all permission for all pages are present
 def page_verification(pages)
   roles_count = Osirails::Role.count
-  puts "test"
   pages.each do |page|
     p = Osirails::Page.find_by_name(page[:name])
     unless p.nil?
@@ -35,9 +35,32 @@ def page_verification(pages)
       end
     end
     unless page[:child].nil?
-      page_verification(page)
+      page_verification(page[:child])
     end
   end
 end
 
 page_verification(pages)
+
+#Test of verification of page
+def page_creation(pages,parent_name)
+  pages.each do |page| 
+   $page_table << {:name =>page[:name], :parent =>parent_name}
+    unless page[:child].nil?
+      page_creation(page[:child],page[:name])
+    end
+  end
+end
+
+page_creation(pages,"")
+
+$page_table.each do |page|
+  parent_page = Osirails::Page.find_by_name(page[:parent])
+  unless Osirails::Page.find_by_name(page[:name])
+    if parent_page.nil?
+      Osirails::Page.create(:name => page[:name])
+    else
+      Osirails::Page.create(:name => page[:name],  :parent_id => parent_page.id)
+    end
+  end
+end
