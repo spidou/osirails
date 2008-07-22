@@ -99,7 +99,7 @@ class FeaturesController < ApplicationController
         end
       end      
     end
-      redirect_to  :action => "show"
+      redirect_to  features_path
   end
   
     def show

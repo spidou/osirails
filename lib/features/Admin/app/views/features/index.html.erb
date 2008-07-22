@@ -1,4 +1,4 @@
-<h1>Liste des features</h1>
+<h1>Liste des modules</h1>
 
 
 <table>
@@ -12,7 +12,7 @@
   <% for feature in @features %>
     <tr>
       <td><%= feature.name %></td>
-      <td><%= feature.business_objects %></td>
+      <td><%= feature.version %></td>
       <td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
       <td>
       <%= feature.installed ? "<div class=\"FeatureActivated-Installed\" style=\"color:green\">ø installé </div> ": "<div class=\"FeatureNonActivated-Installed\" style=\"color:red\">ø non installé</div> "%>
