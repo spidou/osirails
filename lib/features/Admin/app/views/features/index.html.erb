@@ -1,32 +1,25 @@
 <h1>Liste des features</h1>
 
 
-
-<table border="1">
+<table>
+  <tr>
+    <th>Nom</th>
+    <th>Version</th>
+    <th>Date d'ajout</th>
+    <th colspan="3"></th>
+    
+  </tr>
+  <% for feature in @features %>
     <tr>
-        <th>Nom</th>
-				<th>Version</th>
-				<th>Installé</th>
-				<th>Activé</th>
-				<th>Date d'ajout</th>
+      <td><%= feature.name %></td>
+      <td><%= feature.business_objects %></td>
+      <td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
+      <td>
+      <%= feature.installed ? "<div class=\"FeatureActivated-Installed\" style=\"color:green\">ø installé </div> ": "<div class=\"FeatureNonActivated-Installed\" style=\"color:red\">ø non installé</div> "%>
+      <%= feature.activated ? "<div class=\"FeatureActivated-Installed\" style=\"color:green\">ø activé</div> ":"<div class=\"FeatureNonActivated-Installed\" style=\"color:red\">ø non activé</div>" %>
+      </td>
+      <td><%= dispay_install_button(feature) %></td>
+      <td><%= diplay_activate_button(feature) %></td>
     </tr>
-<% for feature in @features %>
-    <tr>
-			<td><%= feature.name %></td>
-			<td><%= feature.version %></td>
-			<td><%= feature.installed? %>
-<% if feature.installed? %>
-							<%= button_to "Désinstaller", {:action => "uninstall", :id => feature.id}, :confirm => 'Voulez-vous désinstaller ?', :method => :put %>
-				<% else %>
-							<%= button_to "Installer", {:action => "install", :id => feature.id}, :confirm => 'Voulez-vous installer ?', :method => :put %>
-				<% end %></td>
-			<td><%= feature.activated? %>
-<% if feature.activated? %>
-			<%= button_to "Desactiver", {:action => "disable", :id => feature.id}, :confirm => 'Voulez-vous desactiver ?', :method => :put %>
-<% else %>
-			<%= button_to "Activer", {:action => "enable", :id => feature.id}, :confirm => 'Voulez-vous activer ?', :method => :put %>
-<% end %></td>
-			<td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
-		</tr>
-<% end %>
+  <% end %>
 </table>
