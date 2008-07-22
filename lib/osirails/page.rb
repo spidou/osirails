@@ -2,6 +2,9 @@ module Osirails
   class Page < ActiveRecord::Base
     include Permissible
     
+    include ActiveRecord::Acts::List
+    include ActiveRecord::Acts::Tree
+    
     acts_as_tree :order =>:position
     acts_as_list :scope => :parent_id
     
@@ -15,14 +18,6 @@ module Osirails
     end  
     
     def rename(page = {})
-      
-    end
-    
-    def move_up(id)
-      
-    end
-    
-    def move_down(id)
       
     end
     
