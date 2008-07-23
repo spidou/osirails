@@ -1,0 +1,21 @@
+dependencies:
+conflicts:
+business_objects:
+pages:
+  admin:
+    title_link: Administration
+    description_link: Administration de l'intranet
+    url: /admin
+    children:
+      users:
+        title_link: Utilisateurs
+        description_link: Gestion des utilisateurs
+        url: /users
+      roles:
+        title_link: Roles
+        description_link: Gestion des roles
+        url: /roles
+  cms:
+      title_link: CMS
+      description_link: Gestion des contenus
+      url: /cms

@@ -19,4 +19,18 @@ module PagesHelper
     insert_page(pages,parent_array)
     parent_array
   end
+  
+  def show_button(page)
+    buttons = []
+    if page.move_up?
+      buttons << button_to("Up", {:action => "move_up", :id => page.id})
+      
+    end
+    if page.move_down?
+      buttons << button_to("Down", {:action => "move_down", :id => page.id})
+    end
+    buttons << button_to("Delete", {:action => "delete", :id => page.id})
+    
+    buttons
+  end
 end

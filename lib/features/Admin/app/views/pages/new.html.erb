@@ -1,0 +1,9 @@
+<h4>Nouvelle Page</h4>
+
+
+<% form_tag :action => 'create' do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Créer" %>
+<% end %>
+
+<%= link_to 'Menu', :action => 'list' %>

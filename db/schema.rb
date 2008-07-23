@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20080722111048) do
     t.string   "title_link"
     t.string   "description_link"
     t.string   "url"
+    t.string   "type"
     t.string   "name"
     t.integer  "position",         :limit => 11
     t.integer  "parent_id",        :limit => 11

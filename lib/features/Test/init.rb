@@ -1,7 +1,10 @@
-dependencies = []
-conflicts = []
-business_objects = ["Document","DocumentGraphique"]
-pages = [{:name => "admin", :child => [{:name => "users", :child => [:name =>"gestion"]},{:name => "roles"}, {:name => "features"}, {:name => "CMS"}]}]
+require 'yaml'
+yaml = YAML.load(File.open('config.yml'))
+dependencies = yaml['dependencies']
+conflicts = yaml['conflicts']
+business_objects = yaml['business_objects']
+pages = yaml['pages']
+  
 $page_table = []
 
 #Test of dependencies for this feature
@@ -10,6 +13,7 @@ f.dependencies = dependencies
 f.conflicts = conflicts
 f.business_objects = business_objects
 f.save
+
 
 roles_count = Osirails::Role.count
 #Test if all permission for all business objects are present
@@ -24,8 +28,8 @@ end
 #Test if all permission for all pages are present
 def page_verification(pages)
   roles_count = Osirails::Role.count
-  pages.each do |page|
-    p = Osirails::Page.find_by_name(page[:name])
+  pages.each_pair do |key,value|
+    p = Osirails::Page.find_by_name(key)
     unless p.nil?
       unless Osirails::PagePermission.find_all_by_page_id(p.id).size == roles_count
         Osirails::Role.find(:all).each do |role|
@@ -35,33 +39,33 @@ def page_verification(pages)
         end
       end
     end
-    unless page[:child].nil?
-      page_verification(page[:child])
+    unless value["children"].nil?
+      page_verification(value["children"])
     end
   end
 end
 
 page_verification(pages)
 
+
 #Test of verification of page
 def page_creation(pages,parent_name)
-  pages.each do |page| 
-   $page_table << {:name =>page[:name], :parent =>parent_name}
-    unless page[:child].nil?
-      page_creation(page[:child],page[:name])
+  pages.each_pair do |key,value|
+    $page_table << {  :name => key, :title_link => value["title_link"], :description_link => value["description_link"], :url => value["url"], :parent => parent_name}
+    unless value["children"].nil?
+      page_creation(value["children"], key)
     end
   end
 end
 
 page_creation(pages,"")
-
 $page_table.each do |page|
   parent_page = Osirails::Page.find_by_name(page[:parent])
   unless Osirails::Page.find_by_name(page[:name])
     if parent_page.nil?
-      Osirails::Page.create(:name => page[:name])
+      Osirails::Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name])
     else
-      Osirails::Page.create(:name => page[:name],  :parent_id => parent_page.id)
+      Osirails::Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name], :parent_id =>parent_page.id )
     end
   end
 end

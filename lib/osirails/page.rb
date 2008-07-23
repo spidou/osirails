@@ -32,11 +32,11 @@ module Osirails
      end       
     
     def delete_item
-      if base_item?(self)
+      if base_item?
         puts "This Page is a Basic page"
         return false
       end
-      if has_children?(self)
+      if has_children?
         puts "This page have children. Please move them in a different page or remove them before delete the page "
         return false
       end
@@ -45,24 +45,33 @@ module Osirails
     end
     
     # This method test if the page is a Basic item
-    def base_item?(page)
-      return false if page.base
+    def base_item?
+      self.name != nil ? true : false
     end
     
     # This method test if the page has got children
-    def has_children?(page)
-      page.children.empty? ? true : false
+    def has_children?
+      self.children.size > 0 ? true : false
     end
     
     # This method test if it possible to move the page to top
-    def move_to_top?
-      return false unless self.position != 1 
+    def move_up?
+      return false if self.position == 1
+      return true
     end
     
     # This method test if it possible to move the page to bottom
-    def move_to_bottom?
+    def move_down?
+      first_parent = Page.find_all_by_parent_id(nil)
       parent = Page.find_by_id(self.parent_id)
-      return false unless parent.children.size != self.position
+        if parent != nil
+          return false if parent.children.size == self.position
+          return true
+        end
+        if self.ancestors.size > 0
+          return false if first_parent == self.position
+        end
+      return false
     end
     
   end

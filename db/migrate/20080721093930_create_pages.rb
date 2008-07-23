@@ -1,9 +1,9 @@
 class CreatePages < ActiveRecord::Migration
   def self.up
     create_table :pages do |t|
-      t.string :title_link, :description_link, :url, :name
+      t.string :title_link, :description_link, :url, :type
+      t.string :name, :default => nil
       t.integer :position, :parent_id 
-      t.boolean :base, :default => false
       
       t.timestamps
     end
