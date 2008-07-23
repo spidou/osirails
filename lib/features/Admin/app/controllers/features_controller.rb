@@ -27,8 +27,7 @@ class FeaturesController < ApplicationController
   # Method for untar an uploaded feature to the default feature path
   def add_feature
     file_to_upload = {:file => params[:upload], :directory => "vendor/features/", :extensions => ["tar.gz"]}
-    Osirails::FileManager.upload_file(file_to_upload) ? flash[:notice] = "Fichier envoyé avec succès." : flash[:error] = "Erreur lors de l'envoi du fichier"
-    Feature.add(file_to_upload[:directory], file_to_upload[:file]['datafile'].original_filename)
+    Osirails::Feature.add(file_to_upload) ? flash[:notice] = "Fichier envoyé et ajouté avec succès." : flash[:error] = "Erreur lors de l'envoi du fichier"
     redirect_to features_path
   end
   

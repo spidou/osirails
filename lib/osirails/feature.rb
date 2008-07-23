@@ -289,8 +289,8 @@ module Osirails
     end
 
     def self.add(options)
-      Osirails::FileManager.upload_file(options)
-      system("cd " + options[:directory] + " && tar -xzvf " + options[:file]['datafile'].original_filename + " && rm -f " + options[:file]['datafile'].original_filename)
+      return false unless Osirails::FileManager.upload_file(options)
+      return false unless system("cd " + options[:directory] + " && tar -xzvf " + options[:file]['datafile'].original_filename + " && rm -f " + options[:file]['datafile'].original_filename)
       true
       # TODO Load the feature dynamicaly
     end

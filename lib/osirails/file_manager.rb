@@ -9,7 +9,7 @@ module Osirails
     def self.upload_file(options)
       return false if options[:file].nil?
       if options[:directory].nil?
-        directory = "public"
+        directory = "tmp/"
       end
       if options[:name].nil?
         name =  options[:file]['datafile'].original_filename
@@ -20,7 +20,6 @@ module Osirails
           valid_extension ||= name.end_with?("." + extension)
         end
         if valid_extension == false
-          raise "File uploaded is not a valid extension: " + name
           return false
         end
       end
