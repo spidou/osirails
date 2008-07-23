@@ -8,8 +8,6 @@ module Osirails
     belongs_to :parent_page, :class_name =>"Page", :foreign_key => "parent_id"
     attr_accessor :parent_array
     
-    @@parent_array = []
-    
     # This method add a new page
     # parent : represent the future parent_page
     # new_page : is a hash that content the new page properties
@@ -45,17 +43,6 @@ module Osirails
       self.destroy
       return true
     end
-
-    def Page.get_structure(pages)
-        
-    end
-    
-    def Page.affiche
-      $parent_array.each do |parent|
-        esp = "  " * parent.ancestors.size
-        puts esp + parent.name
-      end
-    end
     
     # This method test if the page is a Basic item
     def base_item?(page)
@@ -67,10 +54,12 @@ module Osirails
       page.children.empty? ? true : false
     end
     
+    # This method test if it possible to move the page to top
     def move_to_top?
       return false unless self.position != 1 
     end
     
+    # This method test if it possible to move the page to bottom
     def move_to_bottom?
       parent = Page.find_by_id(self.parent_id)
       return false unless parent.children.size != self.position

@@ -1,0 +1,15 @@
+<table>
+    <tr>
+        <th>Pages</th>
+        <th>Actions</th>
+    </tr>    
+    <% @pages = get_pages_array%>
+    <% for page in @pages%>
+      <tr>
+      <td><%= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * page.ancestors.size + page.name %></td>
+      <td>
+      <% %>  
+      </td>
+      </tr>
+    <% end %>
+</table>
