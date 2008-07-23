@@ -19,6 +19,7 @@ module PagesHelper
     insert_page(pages,parent_array)
     parent_array
   end
+  puts "nim"
   
   def show_button(page)
     buttons = []

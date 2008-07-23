@@ -1,10 +1,12 @@
+feature:
+  name: Test
+  version: 0.1
 dependencies:
-  Test:
-    :version
-      - 0.1
   Test1:
-    :version
-      - 0.1
+    - 0.1
+    - 0.2
+  Test2:
+    - 0.2
 conflicts:
 business_objects:
   - Document

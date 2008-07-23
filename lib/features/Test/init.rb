@@ -1,5 +1,6 @@
 require 'yaml'
 yaml = YAML.load(File.open('config.yml'))
+$feature = yaml['feature']
 dependencies = yaml['dependencies']
 conflicts = yaml['conflicts']
 business_objects = yaml['business_objects']
@@ -8,11 +9,23 @@ pages = yaml['pages']
 $page_table = []
 
 #Test of dependencies for this feature
-f = Osirails::Feature.find_or_create_by_name_and_version("Test","0.1")
-f.dependencies = dependencies
-f.conflicts = conflicts
-f.business_objects = business_objects
-f.save
+def dependencies_verification(dependencies)
+  dependences_hash = []
+  f = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
+  dependencies.each_pair do |key,value|
+    dependences_hash << {:name => key, :version => value} 
+  end
+  f.dependencies = dependences_hash
+  f.save
+#  conflicts.each_pair do |key,value|
+#    
+#    f.conflicts = conflicts
+#    f.business_objects = business_objects
+#  end
+end
+
+#dependencies_verification(dependencies)
+
 
 
 roles_count = Osirails::Role.count
@@ -59,6 +72,8 @@ def page_creation(pages,parent_name)
 end
 
 page_creation(pages,"")
+
+
 $page_table.each do |page|
   parent_page = Osirails::Page.find_by_name(page[:parent])
   unless Osirails::Page.find_by_name(page[:name])

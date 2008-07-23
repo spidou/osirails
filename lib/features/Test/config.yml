@@ -1,6 +1,16 @@
+feature:
+  name: Test
+  version: 0.1
 dependencies:
+  Test1:
+    - 0.1
+    - 0.2
+  Test2:
+    - 0.2
 conflicts:
 business_objects:
+  - Document
+  - DocumentGraphique
 pages:
   admin:
     title_link: Administration
@@ -19,3 +29,4 @@ pages:
       title_link: CMS
       description_link: Gestion des contenus
       url: /cms
+    
