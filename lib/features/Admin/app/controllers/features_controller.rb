@@ -1,116 +1,65 @@
+
 class FeaturesController < ApplicationController
-  #Method to collect features and to show them into the index view
+  # Method to collect features and to show them into the index view
   def index
     @features = Osirails::Feature.find(:all)
-
+  end
+  
+  # method to show warning message about uninstallation and to confirm the uninstallation
+  def show
+    @feature = Osirails::Feature.find(params[:id])
+  end
+  
+  
+  # flash[:notice] shows method's succes message
+  # flash[:error] shows method's failure message with some details concerning dependances  
+  def change_state(method) 
+    @feature = Osirails::Feature.find(params[:id])   
+    
+    if @feature.send(method)
+      flash[:notice] = @feature.display_flash_notice(method) 
+    else 
+      flash[:error] = @feature.display_flash_error(method)  
+    end
+    redirect_to features_path
   end
   
   # Method for untar an uploaded feature to the default feature path
   def add_feature
-    file_to_upload = {:file => params[:upload], :directory => "lib/features/", :extensions => ["tar.gz"]}
+    file_to_upload = {:file => params[:upload], :directory => "vendor/features/", :extensions => ["tar.gz"]}
     Osirails::FileManager.upload_file(file_to_upload) ? flash[:notice] = "Fichier envoyé avec succès." : flash[:error] = "Erreur lors de l'envoi du fichier"
-    Feature.add_feature(file_to_upload[:directory], file_to_upload[:file]['datafile'].original_filename)
+    Feature.add(file_to_upload[:directory], file_to_upload[:file]['datafile'].original_filename)
     redirect_to features_path
+  end
+  
+  # Method to show up messages concerning features removing
+  # it call the generic method change state below and pass into arguments his name
+  def remove_feature
+   self.change_state("remove")
   end
 
   # Method to show up messages concerning features enabling
-  #flash[:notice] shows method's succes message
-  #flash[:error] shows method's failure message with some details concerning dependances  
+  # it call the generic method change state below and pass into arguments his name
   def enable
-    @feature = Osirails::Feature.find(params[:id])
-   if  @feature.enable
-     flash[:notice] = @feature.name + " est activé."
-   else  
-     flash[:error] = "Erreur(s) lors de l'activation de " + @feature.name
-     unless @feature.features_not_activated.empty?
-       flash[:error] << "<br /><br />Dépendance(s) non activés requise(s): "
-       @feature.features_not_activated.each do |error|
-          flash[:error] << "<br />" + error[:name] + " [ v:" + error[:version] +  "]"
-       end
-     end
-   end
-    redirect_to features_path
+    self.change_state("enable")
   end
 
  # Method to show up messages concerning features disabling
- #flash[:notice] shows method's succes message
- #flash[:error] shows method's failure message with some details concerning modules depending current module
+# it call the generic method change state below and pass into arguments his name
   def disable
-    @feature = Osirails::Feature.find(params[:id])
-     if @feature.disable
-      flash[:notice] = @feature.name + " est désactivé."
-     else
-      flash[:error] = "Erreur(s) lors de la désactivation de " + @feature.name
-        unless @feature.children_activated.empty?
-          flash[:error] << "<br /><br />D'autres modules dépendent de ce module: "
-           @feature.children_activated.each do |error|
-              flash[:error] << "<br />" + error[:name] + " [ v:" + error[:version] + "]"
-           end
-        end
-     end
-    redirect_to features_path
+    self.change_state("disable")
   end
 
   # Method to show up messages concerning features installing
-  #flash[:notice] shows method's succes message
-  #flash[:error] shows method's failure message with some details concerning dependance and conflicting modules
+# it call the generic method change state below and pass into arguments his name
   def install
-    @feature = Osirails::Feature.find(params[:id])
-    if @feature.install
-      flash[:notice] = @feature.name + " est installé."
-    else
-      flash[:error] = "Erreur(s) lors de l'installation de " + @feature.name
-      unless @feature.missing_dependencies.empty?
-        flash[:error] << "<br /><br />Dépendance(s) non installés requise(s): "
-        @feature.missing_dependencies.each do |error|
-          flash[:error] << "<br />" + error[:name] + " [ v:" + error[:version].join(" | v: ") + "]"
-        end
-      end
-      unless @feature.feature_conflicts.empty?
-        flash[:error] << "<br />Conflit(s) détecté(s): "
-        @feature.feature_conflicts.each do |error|
-          flash[:error] << "<br />" + error[:name] + " [ v:" + error[:version].join(" | v: ") + "]"
-        end
-      end
-      unless @feature.installation_messages.empty?
-        @feature.installation_messages.each do |error|
-          flash[:error] << "<br />" + error
-        end
-      end
-    end
-    redirect_to features_path
+   self.change_state("install")
   end
   
   # Method to show up messages concerning features uninstalling
-  #flash[:notice] shows method's succes message
-  #flash[:error] shows method's failure message with some details concerning modules depending current module
+# it call the generic method change state below and pass into arguments his name 
   def uninstall
-    @feature = Osirails::Feature.find(params[:id])
-    if @feature.uninstall
-      flash[:notice] = @feature.name + " est désinstallé"
-    else
-      flash[:error] = "Erreur(s) lors de la désinstallation de " + @feature.name
-      unless @feature.features_uninstallable.empty?
-        flash[:error] << "<br /><br />D'autres modules dépendent de ce module: "
-        @feature.features_uninstallable.each do |error|
-          flash[:error] << "<br />" + error[:name] + " [v: " + error[:version]+"]"
-        end
-      end
-      unless @feature.uninstallation_messages.empty?
-        @feature.uninstallation_messages.each do |error|
-          flash[:error] << "<br />" + error
-        end
-      end      
-    end
-      redirect_to  features_path
+   self.change_state("uninstall")
   end
   
-    def show
-    @feature = Osirails::Feature.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @feature }
-    end
-  end
 end

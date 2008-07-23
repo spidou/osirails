@@ -1,8 +1,3 @@
-<%#
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
-%>
-
 <h1>Désinstallation d'un module</h1>
 <p>ATTENTION vous essayez de désinstaller un module, ce qui aura pour consequence de suprimer les tables et donc les fonctionnalités liés aux objects suivants:
 <%= @feature.business_objects.join(", ") unless @feature.business_objects.nil? %></p>

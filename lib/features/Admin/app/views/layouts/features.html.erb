@@ -5,11 +5,11 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>Features: <%= controller.action_name %></title>
+ <%= stylesheet_link_tag 'admin' %>
 </head>
 <body>
 
-<p style="color: green"><%= flash[:notice] %></p>
-<p style="color: red"><%= flash[:error] %></p>
+
 
 <%= yield  %>
 
