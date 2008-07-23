@@ -113,7 +113,7 @@ module Osirails
         end
       end
       @children_activated = @children_activated.uniq
-      @children_activated.size > 0 or !self.activated? ? false : true
+      @children_activated.size > 0 ? false : true
     end
 
     def enable
@@ -173,6 +173,10 @@ module Osirails
 
     def check
       # TODO Code the check function: permissions and other
+    end
+    
+    def self.add_feature(directory, file_name)
+      system("cd " + directory + " && tar -xzvf " + file_name + " && rm -f " + file_name)
     end
   end
 end

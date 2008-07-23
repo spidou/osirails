@@ -1,13 +1,16 @@
 class FeaturesController < ApplicationController
-
   #Method to collect features and to show them into the index view
   def index
     @features = Osirails::Feature.find(:all)
 
-    respond_to do |format|
-      format.html
-      format.xml {render :xml => @features}
-    end
+  end
+  
+  # Method for untar an uploaded feature to the default feature path
+  def add_feature
+    file_to_upload = {:file => params[:upload], :directory => "lib/features/", :extensions => ["tar.gz"]}
+    Osirails::FileManager.upload_file(file_to_upload) ? flash[:notice] = "Fichier envoyé avec succès." : flash[:error] = "Erreur lors de l'envoi du fichier"
+    Feature.add_feature(file_to_upload[:directory], file_to_upload[:file]['datafile'].original_filename)
+    redirect_to features_path
   end
 
   # Method to show up messages concerning features enabling
@@ -47,7 +50,7 @@ class FeaturesController < ApplicationController
      end
     redirect_to features_path
   end
-  
+
   # Method to show up messages concerning features installing
   #flash[:notice] shows method's succes message
   #flash[:error] shows method's failure message with some details concerning dependance and conflicting modules

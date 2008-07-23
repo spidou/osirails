@@ -1,6 +1,5 @@
 <h1>Liste des modules</h1>
 
-
 <table>
   <tr>
     <th>Nom</th>
@@ -23,3 +22,8 @@
     </tr>
   <% end %>
 </table>
+
+<%= form_tag ({:action => 'add_feature'}, :multipart => true) %>
+<%= file_upload %>
+<%= submit_tag "Upload" %>
+</form>
