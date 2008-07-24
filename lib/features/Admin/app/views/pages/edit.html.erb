@@ -1,8 +1,14 @@
 <h4>Edit a page</h4>
 
-<% form_tag :action => 'confirm_edit', :id => @pages do %>
+<% form_tag :action => 'confirm_edit', :id => @page do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
 <% end %>
 
-<%= link_to 'Retour au menu', :action => 'index' %>
+<% link_to 'Retour au menu', :action => 'index' %>
+
+
+  <% form_for :page, @page, :url => { :action => "confirm_edit" } do |f| %>
+  <% render :partial => 'form' %>
+  <% submit_tag 'Edit' %>
+  <% end %>
