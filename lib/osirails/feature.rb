@@ -4,6 +4,10 @@ module Osirails
     serialize :conflicts
     serialize :business_objects
     
+    # Constants
+    DIR_BASE_FEATURES = "lib/features/"
+    DIR_VENDOR_FEATURES = "vendor/features/"
+
     validates_uniqueness_of :name
     
     # we use ' #{method_name}_#{content} ex=> able_to_install_conflicts  '  to name ower tabs
@@ -181,7 +185,11 @@ module Osirails
     def install
       @install_log = []
       return false unless self.able_to_install?
-      require 'lib/features/'+self.name+'/install.rb'
+      if File.exist?(File.join(DIR_BASE_FEATURES, self.name, 'install.rb'))
+        require File.join(DIR_BASE_FEATURES, self.name, 'install.rb')
+      else
+        require File.join(DIR_VENDOR_FEATURES, self.name, 'install.rb')
+      end
       if feature_install
         self.installed = true
         if self.save
@@ -196,7 +204,11 @@ module Osirails
     def uninstall
       @uninstall_log = []
       return false unless self.able_to_uninstall?
-      require 'lib/features/'+self.name+'/uninstall.rb'
+      if File.exist?(File.join(DIR_BASE_FEATURES, self.name, 'uninstall.rb'))
+        require File.join(DIR_BASE_FEATURES, self.name, 'uninstall.rb')
+      else
+        require File.join(DIR_VENDOR_FEATURES, self.name, 'uninstall.rb')
+      end
       if feature_uninstall
         self.installed = false
         if self.save
@@ -349,12 +361,12 @@ module Osirails
         # Open the yaml file config.yml
         yaml = YAML.load(File.open(File.join(options[:directory], feature_dir_name ,'config.yml')))
         # Check if the directory name doesnt already exist in lib/features/
-        dir_base_features = Dir.open("vendor/features").sort
+        dir_base_features = Dir.open(DIR_VENDOR_FEATURES).sort
         dir_base_features.each do |dir|
           raise "Directory " + yaml['name'] + " already exist" if dir == yaml['name']
         end
         # Rename the feature with his real name and move it to lib/features/
-        raise "Can't move " + yaml['name'] + " to vendor/features/" unless system("mv " + File.join(options[:directory], feature_dir_name) + " vendor/features/" + yaml['name'])
+        raise "Can't move " + yaml['name'] + " to " + DIR_VENDOR_FEATURES unless system("mv " + File.join(options[:directory], feature_dir_name) + " " + DIR_VENDOR_FEATURES + yaml['name'])
         # Delete the archive list_archive.txt
         File.unlink(File.join(options[:directory], file_name))
         File.unlink(File.join(options[:directory], 'list_archive.txt'))
