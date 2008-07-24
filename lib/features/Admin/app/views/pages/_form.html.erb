@@ -5,4 +5,4 @@
 <%= text_field 'page', 'description_link'  %></p>
 
 <p><label for="page_parent_id">Parent</label><br/>
-<%= collection_select(@pages, :parent_id, @pages, :title_link, :id)%>
+<%= collection_select(:page, :parent_id, @pages, :id, :title_link,options = {:prompt => '– Select a Property –'})%>

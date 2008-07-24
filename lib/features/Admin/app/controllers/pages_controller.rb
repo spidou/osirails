@@ -24,6 +24,12 @@ class PagesController < ApplicationController
     @pages = Osirails::Page.get_pages_array("---")
   end
 
+  def before_update
+    unless @page.can_has_this_parent?(params[:page].parent_id)
+      redirect_to :back
+    end
+  end
+  
   def confirm_edit #FIXME Can't use update.... 
     @page = Osirails::Page.find(params[:id])
       if @page.update_attributes(params[:page])

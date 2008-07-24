@@ -15,5 +15,4 @@ module PagesHelper
     buttons = []
     buttons << link_to("Delete", { :action => "delete", :id => page.id })
   end
-
 end
