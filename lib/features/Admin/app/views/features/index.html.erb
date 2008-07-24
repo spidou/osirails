@@ -3,14 +3,14 @@
 <%= display_success_flash %>
 <%= display_failure_flash %>
 
-<table>
+<table id="feature_managment">
 	<tr>
 		<th>Nom</th>
 		<th>Version</th>
 		<th>Date d'ajout</th>
 		<th>Installé</th>
 		<th>Activé</th>
-		<th>Administration</th>
+		<th>Suppression</th>
 
 	</tr>
 	<% for feature in @features %>
@@ -20,7 +20,7 @@
 		<td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
 		<td><%= display_install_link(feature) %></td>
 		<td><%= display_activate_link(feature) %></td>
-		<td><%= display_remove_button(feature) %></td>
+		<td><%= display_remove_link(feature) %></td>
 	</tr>
 	<% end %>
 </table>

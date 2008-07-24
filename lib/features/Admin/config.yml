@@ -3,6 +3,8 @@ version: 0.1
 dependencies:
   Test:
     - 0.1
+  Test3:
+    - 0.1
 conflicts:
 business_objects:
   - Features

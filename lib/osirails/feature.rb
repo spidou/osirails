@@ -3,51 +3,51 @@ module Osirails
     serialize :dependencies
     serialize :conflicts
     serialize :business_objects
-
+    
     validates_uniqueness_of :name
-
-    # we use ' Method_content '  to name ower tabs
-
+    
+    # we use ' #{method_name}_#{content} ex=> able_to_install_conflicts  '  to name ower tabs
+    
     # contains all others features that conflic with current feature  
-    attr_reader :installable_conflicts
-
+    attr_reader :able_to_install_conflicts
+    
     # FIXME Maybe we can use the same tab to list  the dependencies of the current feature ? cf.installable activable
-
+    
     # contains all dependencies of other current feature
-    attr_reader :installable_dependencies
-
+    attr_reader :able_to_install_dependencies
+    
     # contains all dependencies of the current feature
     attr_reader :activate_dependencies
-
+    
     # FIXME Maybe we can use the same tab to list the feature that depend on the current feature? cf.uninstallable & deactivable
-
+    
     # contains all features that depend on current feature 
-    attr_reader :uninstallable_children
-
+    attr_reader :able_to_uninstall_children
+    
     # contains all features that depend on current feature
     attr_reader :deactivate_children
-
-
+    
+    
     # contains log concerning installation_script error
     attr_reader :install_log
-
+    
     # contains log concerning uninstallation_script error
     attr_reader :uninstall_log
-
-
-
+    
+    
+    
     def installed?
       self.installed
     end
-
+    
     def activated?
       self.activated
     end
-
+    
     def has_dependencies?
       self.dependencies != nil and self.dependencies.size > 0 ? true : false
     end
-
+    
     def child_dependencies
       dependencies = []
       Feature.find(:all).each do |feature|
@@ -61,93 +61,103 @@ module Osirails
       end
       dependencies
     end
-
+    
     def has_child_dependencies?
       child_dependencies.size > 0
     end
-
+    
     def has_conflicts?
       self.conflicts != nil and self.conflicts.size > 0 ? true : false
     end
-
+    
     def able_to_install?
       # Test if the current feature has conflicts or dependencies with other feature
       return true if !has_dependencies? and !has_conflicts?
-
+      
       # Test if the current feature has a conflict with an installed feature
-      @installable_conflicts = []
+      @able_to_install_conflicts = []
       if has_conflicts?
-        conflicts.each do |conflict|
-          if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflict[:name], conflict[:version]]).size > 0
-            @installable_conflicts << conflict
+        conflicts.each_pair do |key,value|
+          if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", key, value]).size > 0
+            @able_to_install_conflicts << [key,value]
           end     
         end
       end
-
+      
       # Test if the current feature is not present in the conflicts list of all other features
       Feature.find(:all, :conditions => ["installed = 1"]).each do |feature|
         if feature.has_conflicts?
-          feature.conflicts.each do |conflict|
-            if conflict[:name] == self.name and conflict[:version].include?(self.version)
-              @installable_conflicts << conflict
+          feature.conflicts.each_pair do |key,value|
+            if key == self.name and value.include?(self.version)
+              @able_to_install_conflicts <<  [key,value]
             end
           end
         end
       end
-
+      
       # Test if the current feature's dependencies are installed
-      @installable_dependencies = []
+      @able_to_install_dependencies = []
       if has_dependencies?
         dependencies.each do |dependence|
-          if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", dependence[:name], dependence[:version]]).size == 0
-            @installable_dependencies << dependence
-          end     
+            if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", dependence[:name], dependence[:version]]).size == 0
+              @able_to_install_dependencies << dependence
+            end     
         end
       end
-      @installable_conflicts = @installable_conflicts.uniq
-      @installable_dependencies = @installable_dependencies.uniq
-      @installable_dependencies.size > 0 || @installable_conflicts.size > 0 ? false : true
+      @able_to_install_conflicts = @able_to_install_conflicts.uniq
+      @able_to_install_dependencies = @able_to_install_dependencies.uniq
+      @able_to_install_dependencies.size > 0 || @able_to_install_conflicts.size > 0 ? false : true
     end
-
+    
     def able_to_uninstall?
-      @uninstallable_children = []
-      if !self.activated? and self.installed?
-        self.child_dependencies.each do |child|
-          if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
-            @uninstallable_children << child
+      @able_to_uninstall_children = []
+      if !self.activated? and self.installed? and !self.child_dependencies.nil?
+        self.child_dependencies.each do |hash| 
+            hash.each_pair do |key,value|
+            if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", key, value]).size > 0
+              @able_to_uninstall_children << [key,value]
+            end
           end
         end
       else
         return false
       end
-      @uninstallable_children = @uninstallable_children.uniq
-      @uninstallable_children.size > 0 ? false : true
+      @able_to_uninstall_children = @able_to_uninstall_children.uniq
+      @able_to_uninstall_children.size > 0 ? false : true
     end
-
+    
     def able_to_activate?
       @activate_dependencies = []
       return false if !self.installed? or self.activated? 
-      self.dependencies.each do |dependence|
-        if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).size > 0
-          @activate_dependencies << dependence
+      unless self.dependencies.nil?
+        self.dependencies.each do |hash|
+          hash.each_pair do |key,value|
+            if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", key,value]).size > 0
+              @activate_dependencies << [key,value]
+            end
+          end
         end
       end
       @activate_dependencies = @activate_dependencies.uniq
       @activate_dependencies.size > 0 ? false : true
     end 
-
+    
     def able_to_deactivate?
       @deactivate_children = []
       return false if !self.activated?
-      self.child_dependencies.each do |child|
-        if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
-          @deactivate_children << child
+      unless self.child_dependencies.nil?
+        self.child_dependencies.each do |hash|
+          hash.each_pair do |key,value|
+            if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", key,value]).size > 0
+              @deactivate_children << [key,value]
+            end
+          end
         end
       end
       @deactivate_children = @deactivate_children.uniq
       @deactivate_children.size > 0 ? false : true
     end
-
+    
     def enable
       if able_to_activate?
         self.activated = true
@@ -157,7 +167,7 @@ module Osirails
       end
       false
     end
-
+    
     def disable
       if able_to_deactivate?
         self.activated = false
@@ -167,7 +177,7 @@ module Osirails
       end
       false
     end
-
+    
     def install
       @install_log = []
       return false unless self.able_to_install?
@@ -182,7 +192,7 @@ module Osirails
         return false
       end
     end
-
+    
     def uninstall
       @uninstall_log = []
       return false unless self.able_to_uninstall?
@@ -197,11 +207,12 @@ module Osirails
         return false
       end
     end
-
+    
     def check
       # TODO Code the check function: permissions and other
     end
-
+    
+    # Method that return the success message in function of  the  method passed in argument
     def display_flash_notice(method) 
       case method
       when "enable"
@@ -217,73 +228,81 @@ module Osirails
       end 
       return message
     end
-
+    
+    # Method that return the failure message in function of  the  method passed in argument 
+    # and the differents hashes that contain information about the problem
     def display_flash_error(method)
-
+      
       message = ""
       case method
-
+        
       when "enable"
-        message = "Erreur(s) lors de l'activation de " + self.name
+        message = "Une erreur est survenue lors de l'activation du module \" " + self.name + "\"."
         unless self.activate_dependencies.empty?
-          message << "<br /><br />Dépendance(s) non activés requise(s): "
+          self.activate_dependencies.size>1 ? message << "Les  modules suivantes sont requises:<ul> " : message << "Le  module suivant est requis:<ul> " 
           self.activate_dependencies.each do |error|
-            message << "<br />" + error[:name] + " [ v:" + error[:version].join(" | v:") +  "]"
+            message << "<li>" + error[0] + " [ v:" + error[1].split(" - ").join(", v:") +  "]</li>"
           end
-        end  
-
+          message << "</ul>"
+        end         
+        
       when "disable" 
-        message = "Erreur(s) lors de la désactivation de " + self.name
+        message = "Une erreur est survenue lors de la désactivation du module \" " + self.name + "\"."
         unless self.deactivate_children.empty?
-          message  << "<br /><br />D'autres modules dépendent de ce module: "
+          self.deactivate_children.size>1 ? message  << "D'autres modules dépendent de ce module:<ul> ": message  << "Un module dépend de ce module:<ul> " 
           self.deactivate_children.each do |error|
-            message  << "<br />" + error[:name] + " [ v:" + error[:version] + "]"
+            message  << "<li>" + error[0].to_s + " [ v:" + error[1].split(" - ").join(", v:") + "]</li>"
           end
+          message << "</ul>"
         end
-
+        
       when "install" 
-        message = "Erreur(s) lors de l'installation de " + self.name
-        unless self.installable_dependencies.empty?
-          message << "<br /><br />Dépendance(s) non installés requise(s): "
-          self.installable_dependencies.each do |error|
-            message << "<br />" + error[:name] + " [ v:" + error[:version].join(" | v: ") + "]"
+        message = "Une erreur est survenue lors de l'installaton de " + self.name + "."
+        unless self.able_to_install_dependencies.empty?
+          self.able_to_install_dependencies.size>1 ? message <<  " Les modules suivants sont requis :<ul> ":  message <<  " Le module suivants est requis :<ul> "
+          self.able_to_install_dependencies.each do |error|
+            message << "<li> " + error[:name] + " [v:" + error[:version].join(" ,  v:") + "]</li>" 
           end
+          message << "</ul>"
         end
-
-        unless self.installable_conflicts.empty?
-          message << "<br />Conflit(s) détecté(s): "
-          self.installable_conflicts.each do |error|
-            message << "<br />" + error[:name] + " [ v:" + error[:version].join(" | v: ") + "]"
+        
+        unless self.able_to_install_conflicts.empty?
+          self.able_to_install_conflicts.size>1 ? message << "<br/>les conflits suivants ont été détectés:<ul> " : message << "<br />le conflit suivant a été détecté:<ul> "
+          self.able_to_install_conflicts.each do |error|
+            message << "<li>" + error['name'].to_s + " [ v:" + error[:version].join(" | v: ") + "]</li>"
           end
+          message << "</ul>"
         end
-
+        
         unless self.install_log.empty?
           self.install_log.each do |error|
             message << "<br />" + error
           end
         end
-
+        
       when "uninstall"   
-        message = "Erreur(s) lors de la désinstallation de " + self.name
-        unless self.uninstallable_children.empty?
-          message << "<br /><br />D'autres modules dépendent de ce module: "
-          self.uninstallable_children.each do |error|
-            message << "<br />" + error[:name] + " [v: " + error[:version]+"]"
+        message = "Une erreur est survenue lors de la désinstallation du module \" " + self.name + "\"."
+        unless self.able_to_uninstall_children.empty?
+          message << "D'autres modules dépendent de ce module:<ul> "
+          self.able_to_uninstall_children.each do |error|
+            message << "<li>" + error[:name].to_s + " [v: " + error[:version]+"]</li>"
           end
+          message << "</ul>"
         end
 
+        
         unless self.uninstall_log.empty?
           self.uninstall_log.each do |error|
             message << "<br />" + error
           end
         end  
-
+        
       when "remove"
-        message = "Erreur(s) lors de la suppression de "+ self.name
+        message = "Une erreur est survenue lorsde la suppression du module \""+ self.name + "\"."
       end
       return message
     end
-
+    
     # Return true if the feature is a base feature stored in lib/features/
     def base_feature?
       dir_base_features = Dir.open("lib/features").sort
@@ -300,7 +319,7 @@ module Osirails
       end
       false
     end
-
+    
     # Return true if a new feature is able to be added
     def self.able_to_add?
       # TODO Code able_to_add? method
@@ -348,7 +367,7 @@ module Osirails
       end
       true
     end
-
+    
 
     # Method to remove a feature
     def remove
@@ -356,6 +375,6 @@ module Osirails
       system("rm -rf " + File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
       self.destroy
     end
-
+    
   end
 end

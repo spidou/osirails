@@ -5,7 +5,7 @@ dependencies:
     - 0.1
     - 0.2
   Test1:
-    - 0.2
+    - 0.1
 conflicts:
   Test:
     - 0.1

@@ -9,7 +9,9 @@ border: thin solid #6495ed;
 }
 .admin_features_activated-installed{
   color: green;
+  text-decoration: none;
 }
 .admin_features_non_activated-installed{
   color: red;
+  text-decoration: none;
 }
