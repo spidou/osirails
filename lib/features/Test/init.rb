@@ -13,22 +13,24 @@ $page_table = []
 #Test of dependencies for this feature
 dependences_hash = []
 feature = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
-dependencies.each_pair do |key,value|
-  dependences_hash << {:name => key, :version => value} 
+unless dependencies.nil?
+  dependencies.each_pair do |key,value|
+    dependences_hash << {:name => key, :version => value} 
+  end
+  feature.dependencies = dependences_hash
+  feature.save
 end
-feature.dependencies = dependences_hash
-feature.save
-
 
 #Test of dependencies for this feature
 conflicts_hash = []
 feature = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
-conflicts.each_pair do |key,value|
-  conflicts_hash << {:name => key, :version => value}
+unless conflicts.nil?
+  conflicts.each_pair do |key,value|
+    conflicts_hash << {:name => key, :version => value}
+  end
+  feature.conflicts = conflicts_hash
+  feature.save
 end
-feature.conflicts = conflicts_hash
-feature.save
-
 
 roles_count = Osirails::Role.count
 #Test if all permission for all business objects are present
@@ -41,7 +43,7 @@ business_objects.each do |bo|
 end
 
 #Test if all permission for all pages are present
-def page_verification(pages)
+def pages_permisisons_verification(pages)
   roles_count = Osirails::Role.count
   pages.each_pair do |key,value|
     p = Osirails::Page.find_by_name(key)
@@ -55,27 +57,28 @@ def page_verification(pages)
       end
     end
     unless value["children"].nil?
-      page_verification(value["children"])
+      pages_permisisons_verification(value["children"])
     end
   end
 end
 
-page_verification(pages)
+pages_permisisons_verification(pages)
 
 
-#Test of verification of page
-def page_creation(pages,parent_name)
+# This method insert in $page_table all feature's pages
+def page_insertion(pages,parent_name)
   pages.each_pair do |key,value|
     $page_table << {  :name => key, :title_link => value["title_link"], :description_link => value["description_link"], :url => value["url"], :parent => parent_name}
     unless value["children"].nil?
-      page_creation(value["children"], key)
+      page_insertion(value["children"], key)
     end
   end
 end
 
-page_creation(pages,"")
+page_insertion(pages,"")
 
 
+# This block insert into Database the pages that wasn't present 
 $page_table.each do |page|
   parent_page = Osirails::Page.find_by_name(page[:parent])
   unless Osirails::Page.find_by_name(page[:name])
