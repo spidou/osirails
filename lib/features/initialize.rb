@@ -25,11 +25,11 @@ def init(yaml, config, path)
   feature = Osirails::Feature.find_or_create_by_name_and_version(name, version)
   unless dependencies.nil?
     dependencies.each_pair do |key,value|
-      dependencies_hash << {:name => key, :version => value} 
-    feature.dependencies = dependencies_hash
-    feature.save
+      dependencies_hash << {:name => key, :version => value}
     end
   end
+  feature.dependencies = dependencies_hash
+  feature.save
 
   #Test of conflicts for this feature
   conflicts_hash = []
@@ -37,10 +37,10 @@ def init(yaml, config, path)
   unless conflicts.nil?
     conflicts.each_pair do |key,value|
       conflicts_hash << {:name => key, :version => value}
-    feature.conflicts = conflicts_hash
-    feature.save
     end
   end
+  feature.conflicts = conflicts_hash
+  feature.save
 
   roles_count = Osirails::Role.count
   #Test if all permission for all business objects are present
