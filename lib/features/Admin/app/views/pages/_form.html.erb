@@ -1,8 +1,8 @@
-<p><label for="pages_title_link">Titre</label><br/>
-<%= text_field 'pages', 'title_link'  %></p>
+<p><label for="page_title_link">Titre</label><br/>
+<%= text_field 'page', 'title_link'  %></p>
 
-<p><label for="pages_description_link">Description</label><br/>
-<%= text_field 'pages', 'description_link'  %></p>
+<p><label for="page_description_link">Description</label><br/>
+<%= text_field 'page', 'description_link'  %></p>
 
-<p><label for="pages_parent_id">Parent</label><br/>
-<%= select('pages', 'parent_id', Osirails::Page.find(:all).collect {|page| [page.title_link, page.id] }, {:include_blank => true}) %><br/><br/>
+<p><label for="page_parent_id">Parent</label><br/>
+<%= collection_select(@pages, :parent_id, @pages, :title_link, :id)%>

@@ -2,11 +2,19 @@ module Osirails
   class Page < ActiveRecord::Base
     include Permissible
     
+
+    
     acts_as_tree :order =>:position
     acts_as_list :scope => :parent_id
     
     belongs_to :parent_page, :class_name =>"Page", :foreign_key => "parent_id"
     attr_accessor :parent_array
+ 
+    def before_update
+      unless @page.can_has_this_parent?(params[:page].parent_id)
+        redirect_to :back
+      end
+    end
     
     # This method add a new page
     # parent : represent the future parent_page
@@ -21,20 +29,22 @@ module Osirails
 
     # This method permit to change the parent of a item
     # new_parent : represent the new parent            
-    def move(new_parent)       
-       if self.move?
+    def change_parent(new_parent)       
+       if self.can_has_this_parent?(new_parent)
          self.parent_id = new_parent.id
          self.position = new_parent.children.size + 1
          self.save        
        end       
      end       
      
-    def can_move?(new_parent)
+    def can_has_this_parent?(new_parent)
       return false if new_parent.id == self.id
       return false if new_parent.id == self.parent_id
       return false if new_parent.ancestors.include?(self)
       return true
     end
+    
+    def 
     
     def delete_item
       if base_item?

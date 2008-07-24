@@ -5,12 +5,13 @@ class PagesController < ApplicationController
   end
 
   def new
-   @pages = Osirails::Page.new
+   @page = Osirails::Page.new
+   @pages = Osirails::Page.get_pages_array("---")
   end
   
   def create
-    @pages = Osirails::Page.new(params[:pages])
-      if @pages.save
+    @page = Osirails::Page.new(params[:page])
+      if @page.save
       flash[:notice] = 'Your page is create.'
         redirect_to :action => 'index'
       else
@@ -19,13 +20,13 @@ class PagesController < ApplicationController
   end
   
   def edit
-    @pages = Osirails::Page.find(params[:id])
+    @page = Osirails::Page.find(params[:id])
+    @pages = Osirails::Page.get_pages_array("---")
   end
 
-  def confirm_edit
-    @pages = Osirails::Page.find(params[:id])
-    render :action => '' if @pages.id == @pages.update_attributes(params[:parent_id])
-      if @pages.update_attributes(params[:pages])
+  def confirm_edit #FIXME Can't use update.... 
+    @page = Osirails::Page.find(params[:id])
+      if @page.update_attributes(params[:page])
       flash[:notice] = 'Your page is edit'
       redirect_to :action => 'index'
     else
@@ -45,7 +46,7 @@ class PagesController < ApplicationController
     redirect_to pages_path
   end
   
-  def delete
+  def delete_item
     page = Osirails::Page.find_by_id(params[:id])
     page.delete_item
     redirect_to pages_path
