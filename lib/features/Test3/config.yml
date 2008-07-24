@@ -1,6 +1,10 @@
-name: Test
+name: Test3
 version: 0.1
 dependencies:
+  Test:
+    - 0.1
+  Tes1:
+    - 0.2
 conflicts:
 business_objects:
   - Document

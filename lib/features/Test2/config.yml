@@ -1,0 +1,29 @@
+name: Test2
+version: 0.2
+dependencies:
+  Test:
+    - 0.1
+    - 0.2
+  Test1:
+    - 0.2
+conflicts:
+business_objects:
+pages:
+  Test2_p1:
+    title_link: Test2_p1
+    description_link: Test2_p1
+    url: /test2_p1
+    children:
+      Test2_p2:
+        title_link: Test2_p2
+        description_link: Test2_p2
+        url: /test2_p2
+      Test2_p3:
+        title_link: Test2_p3
+        description_link: Test2_p3
+        url: /test2_p3
+  Test2_p4:
+      title_link: Test2_p4
+      description_link: Test2_p4
+      url: /test2_p4
+    
