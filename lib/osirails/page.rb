@@ -39,9 +39,7 @@ module Osirails
       return true
     end
     
-    def 
-    
-    def delete_item
+    def delete
       if base_item?
         puts "This Page is a Basic page"
         return false
@@ -89,11 +87,20 @@ module Osirails
     def Page.get_pages_array(indent)
       pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
       parent_array = []
-      
-      
+      root = Page.new
+      root.title_link = "   "
       parent_array = insert_page(pages,parent_array,indent)
+      #parent_array << root
       parent_array
     end
+    
+    def before_update
+      unless @page.can_has_this_parent?(params[:page].parent_id)
+        
+        redirect_to :back
+      end
+    end
+    
     
     private
     # This method insert in the $parent_array the page   
