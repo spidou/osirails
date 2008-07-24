@@ -9,7 +9,7 @@ def init(yaml, config, path)
   $LOAD_PATH << File.join(path, 'app', 'helpers')
   $LOAD_PATH << File.join(path, 'app', 'models')
 
-  # This variable store the configuration of features from config.yml file 
+  # These variables store the feature's configuration from his config.yml file 
   name = yaml['name']
   version = yaml['version']
   dependencies = yaml['dependencies']
