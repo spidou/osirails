@@ -1,16 +1,16 @@
-<table>
+  <table>
     <tr>
-        <th>Pages</th>
+        <th colspan ="2">Pages</th>
         <th>Actions</th>
     </tr> 
-    <div id="table">
+    
     <% @pages = get_pages_array%>
     <% for page in @pages%>
       <tr>
-      <td><%= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * page.ancestors.size + page.title_link if page.title_link != nil%></td>
-      <td><%= show_button(page)%></td>
+        <td style="text-align:left;border-right:none;"><%= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * page.ancestors.size + page.title_link if page.title_link != nil %></td>
+        <td style="text-align:right; width:30px;border-left:none;"><%= show_move_buttons(page)%></td>
+        <td><%= show_actions_buttons(page)%></td>
       </tr>
-    <% end %>
-    </div>
+    <% end %>  
 </table>
 <%= link_to 'Ajouter une page', :action => 'new' %>

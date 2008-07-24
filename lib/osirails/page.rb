@@ -54,25 +54,25 @@ module Osirails
       self.children.size > 0 ? true : false
     end
     
-    # This method test if it possible to move the page to top
+    # This method test if it possible to move up the page
     def move_up?
       return false if self.position == 1
       return true
     end
     
-    # This method test if it possible to move the page to bottom
+    # This method test if it possible to move down  the page
     def move_down?
       first_parent = Page.find_all_by_parent_id(nil)
       parent = Page.find_by_id(self.parent_id)
-        if parent != nil
+        if self.ancestors.size > 0
           return false if parent.children.size == self.position
           return true
         end
-        if self.ancestors.size > 0
-          return false if first_parent == self.position
+        if self.ancestors.size <= 0
+          return false if first_parent.size == self.position
+          return true
         end
-      return false
+        return false
     end
-    
   end
 end

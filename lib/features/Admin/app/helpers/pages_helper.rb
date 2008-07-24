@@ -2,7 +2,7 @@ module PagesHelper
   
   #This method return an array with all pages
   def get_pages_array
-    pages = Osirails::Page.find_all_by_parent_id(nil)
+    pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
     parent_array = []
     
     # This method insert in the $parent_array the page
@@ -21,17 +21,19 @@ module PagesHelper
   end
   puts "nim"
   
-  def show_button(page)
+  def show_move_buttons(page)
     buttons = []
     if page.move_up?
-      buttons << button_to("Up", {:action => "move_up", :id => page.id})
-      
+      buttons << link_to("up", { :action => "move_up", :id => page.id })      
     end
     if page.move_down?
-      buttons << button_to("Down", {:action => "move_down", :id => page.id})
+      buttons << link_to("down", { :action => "move_down", :id => page.id })
     end
-    buttons << button_to("Delete", {:action => "delete", :id => page.id})
-    
     buttons
+  end
+  
+  def show_actions_buttons(page)
+    buttons = []
+    buttons << link_to("Delete", { :action => "delete", :id => page.id })
   end
 end

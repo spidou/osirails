@@ -5,27 +5,29 @@ dependencies = yaml['dependencies']
 conflicts = yaml['conflicts']
 business_objects = yaml['business_objects']
 pages = yaml['pages']
-  
+
+# This array store all pages in order than they will be displayed
 $page_table = []
 
+
 #Test of dependencies for this feature
-def dependencies_verification(dependencies)
-  dependences_hash = []
-  f = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
-  dependencies.each_pair do |key,value|
-    dependences_hash << {:name => key, :version => value} 
-  end
-  f.dependencies = dependences_hash
-  f.save
-#  conflicts.each_pair do |key,value|
-#    
-#    f.conflicts = conflicts
-#    f.business_objects = business_objects
-#  end
+dependences_hash = []
+feature = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
+dependencies.each_pair do |key,value|
+  dependences_hash << {:name => key, :version => value} 
 end
+feature.dependencies = dependences_hash
+feature.save
 
-#dependencies_verification(dependencies)
 
+#Test of dependencies for this feature
+conflicts_hash = []
+feature = Osirails::Feature.find_or_create_by_name_and_version($feature["name"], $feature["version"])
+conflicts.each_pair do |key,value|
+  conflicts_hash << {:name => key, :version => value}
+end
+feature.conflicts = conflicts_hash
+feature.save
 
 
 roles_count = Osirails::Role.count
