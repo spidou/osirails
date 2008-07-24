@@ -21,6 +21,27 @@ module FeaturesHelper
     button    
   end
   
+  #helper method to display the good control button for the gestion of installation/uninstallation of a feature
+  def display_install_link(feature)
+    if feature.installed?
+      button = link_to("<div class=\"admin_features_activated-installed\">Oui</div>", {:action => "uninstall", :id => feature.id}, :method => :put)
+    else 
+      button = link_to("<div class=\"admin_features_non_activated-installed\">Non</div>", {:action => "install", :id => feature.id}, :confirm => 'Voulez-vous installer ?', :method => :put) 
+    end 
+    button
+  end    
+ 
+  
+  #helper method to display the good control button for the gestion of activation/deactivation of a feature
+  def display_activate_link(feature)
+    if feature.activated?
+      button = link_to("<div class=\"admin_features_activated-installed\">Oui</div>", {:action => "disable", :id => feature.id}, :confirm => 'Voulez-vous desactiver ?', :method => :put) 
+    else
+      button = link_to("<div class=\"admin_features_non_activated-installed\">Non</div>", {:action => "enable", :id => feature.id}, :confirm => 'Voulez-vous activer ?', :method => :put)
+    end
+    button    
+  end
+  
   #helper method to display the remove button
   def display_remove_button(feature)
     unless feature.installed
