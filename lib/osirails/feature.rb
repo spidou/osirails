@@ -288,11 +288,11 @@ module Osirails
     def base_feature?
       dir_base_features = Dir.open("lib/features").sort
       dir_base_features.each do |dir|
-        unless dir.start_with?(".")
+        unless dir.start_with?(".") or File.file?(File.join("lib/features", dir))
           begin
             yaml_file = File.open(File.join('lib', 'features', dir, 'config.yml'))
             feature_yaml = YAML.load(yaml_file)
-            return true if feature_yaml['feature']['name'] == self.name
+            return true if feature_yaml['name'] == self.name
           rescue Exception => exc
             puts exc
           end
@@ -305,24 +305,55 @@ module Osirails
     def self.able_to_add?
       # TODO Code able_to_add? method
     end
-    
+
     # Return true if a feature is able to be removed
     def able_to_remove?
-      self.installed or !self.base_feature?
+      !self.installed and !self.base_feature?
     end
-    
+
     # Class method to upload a tar.gz to the the server and untar it
     def self.add(options)
-      return false unless Osirails::FileManager.upload_file(options)
-      return false unless system("cd " + options[:directory] + " && tar -xzvf " + options[:file]['datafile'].original_filename + " && rm -f " + options[:file]['datafile'].original_filename)
+      begin
+        # Choose the directory and the valid extension
+        options[:directory] = "tmp/features/"
+        options[:extensions] = ["tar.gz"]
+        # Up the archive to the server
+        raise "Error file upload" unless Osirails::FileManager.upload_file(options)
+        # Get the name file
+        file_name = options[:file]['datafile'].original_filename
+        # List the archive
+        raise "Can't open the archive" unless system("cd " + options[:directory] + " && tar -tf " + file_name + " > list_archive.txt")
+        # Get the directory name of the new feature
+        feature_dir_name = File.open(File.join('tmp', 'features', 'list_archive.txt')).read.split("/").first
+        # Untar the archive
+        raise "Can't untar" unless system("cd " + options[:directory] + " && tar -xzvf " + file_name )
+        # Open the yaml file config.yml
+        yaml = YAML.load(File.open(File.join(options[:directory], feature_dir_name ,'config.yml')))
+        # Check if the directory name doesnt already exist in lib/features/
+        dir_base_features = Dir.open("vendor/features").sort
+        dir_base_features.each do |dir|
+          raise "Directory " + yaml['name'] + " already exist" if dir == yaml['name']
+        end
+        # Rename the feature with his real name and move it to lib/features/
+        raise "Can't move " + yaml['name'] + " to vendor/features/" unless system("mv " + File.join(options[:directory], feature_dir_name) + " vendor/features/" + yaml['name'])
+        # Delete the archive list_archive.txt
+        File.unlink(File.join(options[:directory], file_name))
+        File.unlink(File.join(options[:directory], 'list_archive.txt'))
+        # Reload all the environnement configuration (don't modify !)
+        # $config is set in environment.rb
+        Rails::Initializer.run(:process, $config)
+      rescue Exception => exc
+        puts "ERROR: " + exc
+        return false
+      end
       true
-      # TODO Load the feature dynamicaly after a module has been uploaded to the server
     end
+
 
     # Method to remove a feature
     def remove
-      return false if self.able_to_remove?
-      system("cd vendor/features/ && rm -rf " + self.name) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
+      return false unless self.able_to_remove?
+      system("rm -rf " + File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
       self.destroy
     end
 
