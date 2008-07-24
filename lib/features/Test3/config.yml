@@ -3,9 +3,13 @@ version: 0.1
 dependencies:
   Test:
     - 0.1
-  Tes1:
-    - 0.2
 conflicts:
+  Test2:
+    - 0.1
+    - 0.2
+  Test1:
+    - 0.1
+    - 0.2
 business_objects:
   - Document
   - DocumentGraphique

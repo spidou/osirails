@@ -21,15 +21,20 @@ module Osirails
 
     # This method permit to change the parent of a item
     # new_parent : represent the new parent            
-    def move(new_parent)
-       return false if new_parent.id == self.id
-       return false if new_parent.parent_id == self.id
-       return false if new_parent.ancestors.include?(self)
-       
-       self.parent_id = new_parent.id
-       self.position = new_parent.children.size + 1
-       self.save         
+    def move(new_parent)       
+       if self.move?
+         self.parent_id = new_parent.id
+         self.position = new_parent.children.size + 1
+         self.save        
+       end       
      end       
+     
+    def can_move?(new_parent)
+      return false if new_parent.id == self.id
+      return false if new_parent.id == self.parent_id
+      return false if new_parent.ancestors.include?(self)
+      return true
+    end
     
     def delete_item
       if base_item?
@@ -74,5 +79,31 @@ module Osirails
         end
         return false
     end
+    
+    #This method return an array with all pages
+    def Page.get_pages_array(indent)
+      pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
+      parent_array = []
+      
+      
+      parent_array = insert_page(pages,parent_array,indent)
+      parent_array
+    end
+    
+    private
+    # This method insert in the $parent_array the page   
+      def Page.insert_page(pages,parent_array,indent)
+        pages.each do |page|
+          page.title_link = indent * page.ancestors.size + page.title_link if page.title_link != nil
+          parent_array << page
+          
+          #If the page has children, the insert_page method is call.
+          if page.children.size > 0
+            insert_page(page.children,parent_array,indent)
+          end
+        end
+        parent_array
+      end
+    
   end
 end

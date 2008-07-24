@@ -7,6 +7,9 @@ dependencies:
   Test1:
     - 0.2
 conflicts:
+  Test:
+    - 0.1
+    - 0.2
 business_objects:
 pages:
   Test2_p1:

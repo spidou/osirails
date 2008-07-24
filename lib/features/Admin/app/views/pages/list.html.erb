@@ -1,16 +1,15 @@
+<h1>Liste des pages</h1>
   <table>
     <tr>
         <th colspan ="2">Pages</th>
         <th>Actions</th>
     </tr> 
     
-    <% @pages = get_pages_array%>
     <% for page in @pages%>
       <tr>
-        <td style="text-align:left;border-right:none;"><%= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * page.ancestors.size + page.title_link if page.title_link != nil %></td>
+        <td style="text-align:left;border-right:none;"><%= page.title_link %></td>
         <td style="text-align:right; width:30px;border-left:none;"><%= show_move_buttons(page)%></td>
-        <td><%= show_actions_buttons(page)%></td>
-          <td><%= link_to "Edit", edit_page_path(page) %></td>
+        <td><%= show_actions_buttons(page)%><%= link_to "Edit", edit_page_path(page) %></td>
       </tr>
     <% end %>  
 </table>

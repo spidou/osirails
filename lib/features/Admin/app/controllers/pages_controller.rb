@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   def index
-  
+   @pages = Osirails::Page.get_pages_array("_____")
    render :action => 'list'
   end
 
