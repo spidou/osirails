@@ -10,7 +10,7 @@ RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
-Rails::Initializer.run do |config|
+$config = Rails::Configuration.new
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -29,12 +29,12 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [ :acts_as_tree, :acts_as_list, :all ]
+  $config.plugins = [ :acts_as_tree, :acts_as_list, :all ]
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
-  config.load_paths += %W( #{RAILS_ROOT}/lib/osirails/ )
-  config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features"]
+  $config.load_paths += %W( #{RAILS_ROOT}/lib/osirails/ )
+  $config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features"]
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -43,13 +43,13 @@ Rails::Initializer.run do |config|
   # Make Time.zone default to the specified zone, and make Active Record store time values
   # in the database in UTC, and return them converted to the specified local zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
-  config.time_zone = 'UTC'
+  $config.time_zone = 'UTC'
 
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
+  $config.action_controller.session = {
     :session_key => '_Osirails_session',
     :secret      => '75a9a52b2fb9337d3dbbb3939d1b054c73aef5adf24b0d8e197b2de8dc169f0ff8147d3ac3b725ba82b545146d49618bfffefb6657897fdf52a325db77bc4f9e'
   }
@@ -66,6 +66,5 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
-end
-
-include Osirails
+#end
+Rails::Initializer.run(:process, $config)
