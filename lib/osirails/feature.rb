@@ -284,20 +284,45 @@ module Osirails
       return message
     end
 
-    def self.able_to_add?
-      
+    # Return true if the feature is a base feature stored in lib/features/
+    def base_feature?
+      dir_base_features = Dir.open("lib/features").sort
+      dir_base_features.each do |dir|
+        unless dir.start_with?(".")
+          begin
+            yaml_file = File.open(File.join('lib', 'features', dir, 'config.yml'))
+            feature_yaml = YAML.load(yaml_file)
+            return true if feature_yaml['feature']['name'] == self.name
+          rescue Exception => exc
+            puts exc
+          end
+        end
+      end
+      false
     end
 
+    # Return true if a new feature is able to be added
+    def self.able_to_add?
+      # TODO Code able_to_add? method
+    end
+    
+    # Return true if a feature is able to be removed
+    def able_to_remove?
+      self.installed or !self.base_feature?
+    end
+    
+    # Class method to upload a tar.gz to the the server and untar it
     def self.add(options)
       return false unless Osirails::FileManager.upload_file(options)
       return false unless system("cd " + options[:directory] + " && tar -xzvf " + options[:file]['datafile'].original_filename + " && rm -f " + options[:file]['datafile'].original_filename)
       true
-      # TODO Load the feature dynamicaly
+      # TODO Load the feature dynamicaly after a module has been uploaded to the server
     end
 
+    # Method to remove a feature
     def remove
-      return false if self.installed
-      system("cd lib/features/ && rm -rf " + self.name) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
+      return false if self.able_to_remove?
+      system("cd vendor/features/ && rm -rf " + self.name) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
       self.destroy
     end
 

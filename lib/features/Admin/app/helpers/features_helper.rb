@@ -44,7 +44,7 @@ module FeaturesHelper
   
   # Helper method to display the remove button
   def display_remove_button(feature)
-    unless feature.installed
+    if feature.able_to_remove?
     return  button_to("Supprimer", {:action => "remove_feature", :id => feature.id}, :confirm => 'Voulez-vous vraiment Supprimer ?', :method => :put)
     end
   end
