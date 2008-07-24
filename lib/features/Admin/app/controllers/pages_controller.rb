@@ -16,6 +16,20 @@ class PagesController < ApplicationController
         render :action => 'add'
       end
   end
+  
+  def edit
+    @pages = Osirails::Page.find(params[:id])
+  end
+
+  def update
+    @pages = Osirails::Page.find(params[:id])
+    if @pages.update_attributes(params[:page])
+      redirect_to :action => 'index'
+    else
+      render :action => 'edit'
+    end
+  end
+  
   def move_up
     page = Osirails::Page.find_by_id(params[:id])
     page.move_higher

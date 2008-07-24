@@ -1,0 +1,8 @@
+<h4>Edit a page</h4>
+
+<% form_tag :action => 'update', :id => @pages do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Retour au menu', :action => 'index' %>

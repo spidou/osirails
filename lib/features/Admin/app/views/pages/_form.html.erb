@@ -5,4 +5,4 @@
 <%= text_field 'pages', 'description_link'  %></p>
 
 <p><label for="pages_parent_id">Parent</label><br/>
-<%= select('pages', 'parent_id', Osirails::Page.find(:all).collect {|page| [page.name, page.id] }, {:include_blank => true}) %><br/><br/>
+<%= select('pages', 'parent_id', Osirails::Page.find(:all).collect {|page| [page.title_link, page.id] }, {:include_blank => true}) %><br/><br/>
