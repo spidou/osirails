@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   def index
-   @pages = Osirails::Page.get_pages_array("_____")
+   @pages = Osirails::Page.get_pages_array("----")
    render :action => 'list'
   end
 
@@ -23,6 +23,12 @@ class PagesController < ApplicationController
     @page = Osirails::Page.find(params[:id])
     @pages = Osirails::Page.get_pages_array("---")
   end
+  
+    def before_update
+      unless @page.can_has_this_parent?(params[:page].parent_id)
+        redirect_to :back
+      end
+    end
 
   def before_update
     unless @page.can_has_this_parent?(params[:page].parent_id)
@@ -52,7 +58,7 @@ class PagesController < ApplicationController
     redirect_to pages_path
   end
   
-  def delete_item
+  def delete
     page = Osirails::Page.find_by_id(params[:id])
     page.delete_item
     redirect_to pages_path

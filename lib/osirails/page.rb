@@ -10,11 +10,6 @@ module Osirails
     belongs_to :parent_page, :class_name =>"Page", :foreign_key => "parent_id"
     attr_accessor :parent_array
  
-    def before_update
-      unless @page.can_has_this_parent?(params[:page].parent_id)
-        redirect_to :back
-      end
-    end
     
     # This method add a new page
     # parent : represent the future parent_page
