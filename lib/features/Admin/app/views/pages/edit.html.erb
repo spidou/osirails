@@ -1,6 +1,6 @@
 <h4>Edit a page</h4>
 
-<% form_tag :action => 'update', :id => @pages do %>
+<% form_tag :action => 'confirm_edit', :id => @pages do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
 <% end %>

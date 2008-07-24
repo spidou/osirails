@@ -11,6 +11,7 @@ class PagesController < ApplicationController
   def create
     @pages = Osirails::Page.new(params[:pages])
       if @pages.save
+      flash[:notice] = 'Your page is create.'
         redirect_to :action => 'index'
       else
         render :action => 'add'
@@ -21,9 +22,11 @@ class PagesController < ApplicationController
     @pages = Osirails::Page.find(params[:id])
   end
 
-  def update
+  def confirm_edit
     @pages = Osirails::Page.find(params[:id])
-    if @pages.update_attributes(params[:page])
+    render :action => '' if @pages.id == @pages.update_attributes(params[:parent_id])
+      if @pages.update_attributes(params[:pages])
+      flash[:notice] = 'Your page is edit'
       redirect_to :action => 'index'
     else
       render :action => 'edit'
