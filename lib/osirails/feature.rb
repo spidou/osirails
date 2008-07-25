@@ -82,9 +82,9 @@ module Osirails
       # Test if the current feature has a conflict with an installed feature
       @able_to_install_conflicts = []
       if has_conflicts?
-        conflicts.each_pair do |key,value|
-          if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", key, value]).size > 0
-            @able_to_install_conflicts << [key,value]
+        conflicts.each do |conflicts|
+          if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).size > 0
+            @able_to_install_conflicts << conflicts
           end     
         end
       end
@@ -92,9 +92,9 @@ module Osirails
       # Test if the current feature is not present in the conflicts list of all other features
       Feature.find(:all, :conditions => ["installed = 1"]).each do |feature|
         if feature.has_conflicts?
-          feature.conflicts.each_pair do |key,value|
-            if key == self.name and value.include?(self.version)
-              @able_to_install_conflicts <<  [key,value]
+          feature.conflicts.each do |conflicts|
+            if conflicts[:name] == self.name and conflicts[:version].include?(self.version)
+              @able_to_install_conflicts <<  conflicts
             end
           end
         end
@@ -117,11 +117,9 @@ module Osirails
     def able_to_uninstall?
       @able_to_uninstall_children = []
       if !self.activated? and self.installed? and !self.child_dependencies.nil?
-        self.child_dependencies.each do |hash| 
-            hash.each_pair do |key,value|
-            if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", key, value]).size > 0
-              @able_to_uninstall_children << [key,value]
-            end
+        self.child_dependencies.each  do |child|
+          if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
+            @able_to_uninstall_children << child
           end
         end
       else
@@ -135,30 +133,31 @@ module Osirails
       @activate_dependencies = []
       return false if !self.installed? or self.activated? 
       unless self.dependencies.nil?
-        self.dependencies.each do |hash|
-          hash.each_pair do |key,value|
-            if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", key,value]).size > 0
-              @activate_dependencies << [key,value]
-            end
+        self.dependencies.each do |dependence|
+          if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 0", dependence[:name], dependence[:version]]).size > 0
+            @activate_dependencies << dependence
           end
         end
       end
       @activate_dependencies = @activate_dependencies.uniq
       @activate_dependencies.size > 0 ? false : true
-    end 
+    end
     
-    def able_to_deactivate?
+    # Method to verify if the feature belongs to the features that cannot be deactivated 
+    def is_kernel_feature?
       FEATURES_NOT_ABLE_TO_DEACTIVATE.each do |name|
-        return false if name == self.name
-      end
+        return true if name == self.name
+      end 
+      false
+    end
+
+    def able_to_deactivate?
       @deactivate_children = []
       return false if !self.activated?
       unless self.child_dependencies.nil?
-        self.child_dependencies.each do |hash|
-          hash.each_pair do |key,value|
-            if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", key,value]).size > 0
-              @deactivate_children << [key,value]
-            end
+        self.child_dependencies.each do |child|
+          if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
+            @deactivate_children << child
           end
         end
       end
@@ -257,7 +256,7 @@ module Osirails
         unless self.activate_dependencies.empty?
           self.activate_dependencies.size>1 ? message << "Les  modules suivantes sont requises:<ul> " : message << "Le  module suivant est requis:<ul> " 
           self.activate_dependencies.each do |error|
-            message << "<li>" + error[0] + " [ v:" + error[1].split(" - ").join(", v:") +  "]</li>"
+            message << "<li>" + error[:name] + " [v:" + error[:version].join(",  v:") + "]</li>"
           end
           message << "</ul>"
         end         
@@ -267,7 +266,7 @@ module Osirails
         unless self.deactivate_children.empty?
           self.deactivate_children.size>1 ? message  << "D'autres modules dépendent de ce module:<ul> ": message  << "Un module dépend de ce module:<ul> " 
           self.deactivate_children.each do |error|
-            message  << "<li>" + error[0].to_s + " [ v:" + error[1].split(" - ").join(", v:") + "]</li>"
+            message  << "<li>" + error[:name] + " [v:" + error[:version].join(",  v:") + "]</li>"
           end
           message << "</ul>"
         end
@@ -275,9 +274,9 @@ module Osirails
       when "install" 
         message = "Une erreur est survenue lors de l'installaton de " + self.name + "."
         unless self.able_to_install_dependencies.empty?
-          self.able_to_install_dependencies.size>1 ? message <<  " Les modules suivants sont requis :<ul> ":  message <<  " Le module suivants est requis :<ul> "
+          self.able_to_install_dependencies.size>1 ? message <<  " Les modules suivants sont requis :<ul> ":  message <<  " Le module suivants est requis:<ul> "
           self.able_to_install_dependencies.each do |error|
-            message << "<li> " + error[:name] + " [v:" + error[:version].join(" ,  v:") + "]</li>" 
+            message << "<li> " + error[:name] + " [v:" + error[:version].join(",  v:") + "]</li>" 
           end
           message << "</ul>"
         end
@@ -285,7 +284,7 @@ module Osirails
         unless self.able_to_install_conflicts.empty?
           self.able_to_install_conflicts.size>1 ? message << "<br/>les conflits suivants ont été détectés:<ul> " : message << "<br />le conflit suivant a été détecté:<ul> "
           self.able_to_install_conflicts.each do |error|
-            message << "<li>" + error['name'].to_s + " [ v:" + error[:version].join(" | v: ") + "]</li>"
+            message << "<li>" + error[:name] + " [ v:" + error[:version].join( ", v:") + "]</li>"
           end
           message << "</ul>"
         end
@@ -301,7 +300,7 @@ module Osirails
         unless self.able_to_uninstall_children.empty?
           message << "D'autres modules dépendent de ce module:<ul> "
           self.able_to_uninstall_children.each do |error|
-            message << "<li>" + error[:name].to_s + " [v: " + error[:version]+"]</li>"
+            message << "<li>" + error[:name].to_s + " [v:" + error[:version].join(", v:")+"]</li>"
           end
           message << "</ul>"
         end
