@@ -15,7 +15,7 @@ class PagesController < ApplicationController
       flash[:notice] = 'Your page is create.'
         redirect_to :action => 'index'
       else
-        render :action => 'add'
+        render :action => 'new'
       end
   end
   
@@ -25,16 +25,24 @@ class PagesController < ApplicationController
   end
   
   def confirm_edit #FIXME Can't use update....
-    @page = Osirails::Page.find(params[:page])
-    unless @page.can_has_this_parent?(Osirails::Page.find(params[:page]))
-    redirect_to :back
-    end
-      if @page.update_attributes(params)
-      flash[:notice] = 'Your page is edit'
-      redirect_to :action => 'index'
+    
+    @page = Osirails::Page.find(params[:id])
+    
+    unless params[:page][:parent_id] == ""
+      @parent = Osirails::Page.find(params[:page][:parent_id])   
+      if @page.can_has_this_parent?(Osirails::Page.find(params[:page][:parent_id]))
+        if @page.change_parent(@parent)
+          flash[:notice] = 'Your page is edit'
+        end
+      else
+        flash[:error] = "Deplacement impossible"
+      end
     else
-      render :action => 'edit'
+      @page.change_parent(nil)
     end
+    
+    redirect_to :action => 'index'
+
   end
   
   def move_up
@@ -51,7 +59,7 @@ class PagesController < ApplicationController
   
   def delete
     page = Osirails::Page.find_by_id(params[:id])
-    page.delete_item
+    page.delete
     redirect_to pages_path
   end 
 end

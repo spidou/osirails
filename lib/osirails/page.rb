@@ -15,7 +15,7 @@ module Osirails
     # parent : represent the future parent_page
     # new_page : is a hash that content the new page properties
     def Page.add_list_item(parent = nil, new_page = {})
-      child = Page.new(:title_link => new_page[:title_link], :description_link => new_page[:description_link], :name => new_page[:name])
+      child = Page.new(:title_link => new_page[:title_link], :description_link => new_page[:description_link])
       unless parent.nil?
         parent.children << child
       end
@@ -24,13 +24,22 @@ module Osirails
 
     # This method permit to change the parent of a item
     # new_parent : represent the new parent            
-    def change_parent(new_parent)       
-       if self.can_has_this_parent?(new_parent)
-         self.parent_id = new_parent.id
-         self.position = new_parent.children.size + 1
-         self.save        
-       end       
-     end       
+    def change_parent(new_parent)
+      unless new_parent.nil?
+        if self.can_has_this_parent?(new_parent)
+          self.parent_id = new_parent.id
+          self.position = new_parent.children.size + 1
+          self.save        
+        end
+      else
+        unless self.parent_id.nil?
+          first_parent = Page.find_all_by_parent_id(nil)
+          self.parent_id = nil
+          self.position = first_parent.size + 1
+          self.save
+        end
+      end
+    end       
      
     def can_has_this_parent?(new_parent)
       return false if new_parent.id == self.id
@@ -88,19 +97,12 @@ module Osirails
       pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
       parent_array = []
       root = Page.new
-      root.title_link = "   "
+      root.title_link = "  "
+      root.id =nil
       parent_array = insert_page(pages,parent_array,indent)
       #parent_array << root
       parent_array
     end
-    
-    def before_update
-      unless @page.can_has_this_parent?(params[:page].parent_id)
-        
-        redirect_to :back
-      end
-    end
-    
     
     private
     # This method insert in the $parent_array the page   

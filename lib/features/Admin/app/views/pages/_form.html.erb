@@ -5,5 +5,5 @@
 <%= text_field 'page', 'description_link'  %></p>
 
 <p><label for="page_parent_id">Parent</label><br/>
-<%= collection_select('page', 'parent_id', @pages, 'id', 'title_link',options = {:prompt => '– Racine –'})%>
+<%= collection_select('page', 'parent_id', @pages, 'id', 'title_link',options = {:include_blank => true})%>
 
