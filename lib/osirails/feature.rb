@@ -7,6 +7,7 @@ module Osirails
     # Constants
     DIR_BASE_FEATURES = "lib/features/"
     DIR_VENDOR_FEATURES = "vendor/features/"
+    FEATURES_NOT_ABLE_TO_DEACTIVATE = ["Admin"]
 
     validates_uniqueness_of :name
     
@@ -147,6 +148,9 @@ module Osirails
     end 
     
     def able_to_deactivate?
+      FEATURES_NOT_ABLE_TO_DEACTIVATE.each do |name|
+        return false if name == self.name
+      end
       @deactivate_children = []
       return false if !self.activated?
       unless self.child_dependencies.nil?
