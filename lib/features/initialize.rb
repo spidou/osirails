@@ -19,10 +19,11 @@ def init(yaml, config, path)
 
   # This array store all pages in order than they will be displayed
   $page_table = []
+   
+  feature = Osirails::Feature.find_or_create_by_name_and_version(name, version)
 
   #Test of dependencies for this feature
   dependencies_hash = []
-  feature = Osirails::Feature.find_or_create_by_name_and_version(name, version)
   unless dependencies.nil?
     dependencies.each_pair do |key,value|
       dependencies_hash << {:name => key, :version => value}
@@ -33,7 +34,6 @@ def init(yaml, config, path)
 
   #Test of conflicts for this feature
   conflicts_hash = []
-  feature = Osirails::Feature.find_or_create_by_name_and_version(name, version)
   unless conflicts.nil?
     conflicts.each_pair do |key,value|
       conflicts_hash << {:name => key, :version => value}
@@ -41,6 +41,16 @@ def init(yaml, config, path)
   end
   feature.conflicts = conflicts_hash
   feature.save
+  
+  #Test of business Objects
+  business_objects_array =  []
+  unless business_objects.nil?
+    business_objects.each do |business_object|
+      business_objects_array << [business_object]
+    end
+    feature.business_objects = business_objects_array
+    feature.save
+  end
 
   roles_count = Osirails::Role.count
   #Test if all permission for all business objects are present
@@ -88,7 +98,7 @@ def init(yaml, config, path)
   end
 
   page_insertion(pages,"")
-
+  
 
   # This block insert into Database the pages that wasn't present 
   $page_table.each do |page|
