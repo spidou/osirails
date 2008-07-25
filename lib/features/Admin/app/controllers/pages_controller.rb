@@ -31,6 +31,9 @@ class PagesController < ApplicationController
     unless params[:page][:parent_id] == ""
       @parent = Osirails::Page.find(params[:page][:parent_id])   
       if @page.can_has_this_parent?(Osirails::Page.find(params[:page][:parent_id]))
+         @page.title_link = params[:page][:title_link]
+         @page.description_link = params[:page][:description_link]
+         @page.save
         if @page.change_parent(@parent)
           flash[:notice] = 'Your page is edit'
         end
@@ -38,7 +41,10 @@ class PagesController < ApplicationController
         flash[:error] = "Deplacement impossible"
       end
     else
+      @page.title_link = params[:page][:title_link]
+      @page.description_link = params[:page][:description_link]
       @page.change_parent(nil)
+      @page.save
     end
     
     redirect_to :action => 'index'
