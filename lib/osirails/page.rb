@@ -2,8 +2,6 @@ module Osirails
   class Page < ActiveRecord::Base
     include Permissible
     
-
-    
     acts_as_tree :order =>:position
     acts_as_list :scope => :parent_id
     
@@ -47,16 +45,11 @@ module Osirails
       return false if new_parent.ancestors.include?(self)
       return true
     end
-    
+
+    # This method permit to delete a page. She check if this page have a child or is a base_item
     def delete
-      if base_item?
-        puts "This Page is a Basic page"
-        return false
-      end
-      if has_children?
-        puts "This page have children. Please move them in a different page or remove them before delete the page "
-        return false
-      end
+      return false if base_item?
+      return false if has_children?
       self.destroy
       return true
     end
@@ -92,6 +85,30 @@ module Osirails
         return false
     end
     
+#    def display_flash_notice(method)
+#      case method
+#      when "delete"
+#        message = self.title_link + " est supprimé."
+#      when "confirm_edit"
+#        message = self.title_link + " est bien modifié."
+#      when "create"
+#        message = self.title_link + " est bien créée."
+#      end
+#      return message
+#    end
+#    
+#    def display_flash_error(method)
+#      case method
+#      when "delete"
+#        message = "Erreur" # child
+#      when "confirm_edit"
+#        message = "Erreur" # Can be him self in : Child, himself
+#      when "create"
+#        message = "Erreur" # .....
+#      end
+#      return message
+#    end
+    
     #This method return an array with all pages
     def Page.get_pages_array(indent)
       pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
@@ -100,7 +117,6 @@ module Osirails
       root.title_link = "  "
       root.id =nil
       parent_array = insert_page(pages,parent_array,indent)
-      #parent_array << root
       parent_array
     end
     

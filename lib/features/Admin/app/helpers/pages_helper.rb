@@ -1,5 +1,6 @@
 module PagesHelper
   
+  # This method permit to show or not show a button for move a page
   def show_move_buttons(page)
     buttons = []
     if page.move_up?
@@ -11,8 +12,13 @@ module PagesHelper
     buttons
   end
   
+  # This method permit to show or not show a button for delete a page
   def show_actions_buttons(page)
     buttons = []
+    unless page.base_item? or page.has_children?
     buttons << link_to("Delete", { :action => "delete", :id => page.id })
+    end
+    buttons
   end
+  
 end
