@@ -1,0 +1,12 @@
+name: Cms
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+pages:
+  admin:
+    children:
+      cms:
+        title_link: CMS
+        description_link: Gestion des contenus
+        url: /cms

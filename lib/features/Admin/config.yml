@@ -26,9 +26,5 @@ pages:
         title_link: Users
         description_link: Gestion des users
         url: /users
-  cms:
-      title_link: CMS
-      description_link: Gestion des contenus
-      url: /cms
     
 

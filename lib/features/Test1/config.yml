@@ -21,8 +21,4 @@ pages:
         title_link: Roles
         description_link: Gestion des roles
         url: /roles
-  cms:
-      title_link: CMS
-      description_link: Gestion des contenus
-      url: /cms
     
