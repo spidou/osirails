@@ -13,12 +13,7 @@ module PagesHelper
   end
   
   # This method permit to show or not show a button for delete a page
-  def show_actions_buttons(page)
-    buttons = []
-    unless page.base_item? or page.has_children?
-    buttons << link_to("Delete", { :action => "delete", :id => page.id })
-    end
-    buttons
+  def show_delete_button(page)
+    link_to("Delete", { :action => "destroy", :id => page.id }) unless page.base_item?
   end
-  
 end

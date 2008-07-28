@@ -1,22 +1,27 @@
 class PagesController < ApplicationController
+  
   def index
-   @pages = Page.get_pages_array("----")
-   render :action => 'list'
+    @pages = Page.get_pages_array("----")
+    render :action => 'list'
+  end
+  
+  def show
+    render :action => 'list'
   end
 
   def new
-   @page = Page.new
-   @pages = Page.get_pages_array("---")
+    @page = Page.new
+    @pages = Page.get_pages_array("---")
   end
   
   def create
     @page = Page.new(params[:page])
-      if @page.save
+    if @page.save
       flash[:notice] = 'Your page is create.'
-        redirect_to :action => 'index'
-      else
-        render :action => 'new'
-      end
+      redirect_to :action => 'index'
+    else
+      render :action => 'new'
+    end
   end
   
   def edit
@@ -30,27 +35,15 @@ class PagesController < ApplicationController
   # change_parent => method to change parent  
   def confirm_edit #FIXME Can't use update....  
     @page = Page.find(params[:id])
-    unless params[:page][:parent_id] == ""
-      @parent = Page.find(params[:page][:parent_id])   
-      if @page.can_has_this_parent?(Page.find(params[:page][:parent_id]))
-         @page.title_link = params[:page][:title_link]
-         @page.description_link = params[:page][:description_link]
-         @page.save
-        if @page.change_parent(@parent)
-          flash[:notice] = 'Your page is edit'
-        end
+    parent_id =params[:page].delete(:parent_id)
+    if @page.can_has_this_parent?(parent_id)          
+      if @page.update_attributes(params[:page])
+        @page.change_parent(parent_id)
       else
-        flash[:error] = "Deplacement impossible"
+        flash[:error] = "Erreur lors de la mise a jour de la page" 
       end
-    else
-      @page.title_link = params[:page][:title_link]
-      @page.description_link = params[:page][:description_link]
-      @page.change_parent(nil)
-      @page.save
     end
-    
-    redirect_to :action => 'index'
-
+    redirect_to pages_path
   end
   
   def move_up
@@ -65,9 +58,17 @@ class PagesController < ApplicationController
     redirect_to pages_path
   end
   
-  def delete
+  def destroy
     page = Page.find_by_id(params[:id])
-    page.delete
+    if page.can_delete?
+      if page.destroy
+        flash[:notice] = "Page supprimer avec succes"
+      else 
+        flash[:error] = "La suppression de la page a échouée"
+      end
+    else 
+      flash[:error] = "Cette page n'est pas supprimable"
+    end
     redirect_to pages_path
   end 
 end
