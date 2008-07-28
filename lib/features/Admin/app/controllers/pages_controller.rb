@@ -43,7 +43,7 @@ class PagesController < ApplicationController
         @page.change_parent(parent_id)
         redirect_to pages_path
       else
-#        flash[:error] = "Erreur lors de la mise a jour de la page" 
+        flash[:error] = "Erreur lors de la mise a jour de la page" 
         render :action => 'edit'
       end
     else
