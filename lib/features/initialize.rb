@@ -5,9 +5,13 @@ def init(yaml, config, path)
   $LOAD_PATH << controller_path
   Dependencies.load_paths << controller_path
   config.controller_paths << controller_path
+  model_path = File.join(path, 'app', 'models')
+  $LOAD_PATH << model_path
+  Dependencies.load_paths << model_path
+  config.controller_paths << model_path
   ActionController::Base.append_view_path(path + '/app/views/')
   $LOAD_PATH << File.join(path, 'app', 'helpers')
-  $LOAD_PATH << File.join(path, 'app', 'models')
+  
 
   # These variables store the feature's configuration from his config.yml file 
   name = yaml['name']
