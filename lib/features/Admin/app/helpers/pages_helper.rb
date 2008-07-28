@@ -14,7 +14,7 @@ module PagesHelper
   # This method permit to show or not show a button for delete a page
   def show_actions_buttons(page)
     buttons = ""
-    buttons << link_to(image_tag("edit.png", :alt => "dedit"), { :action => "edit", :id => page.id })
+    buttons << link_to(image_tag("edit.png", :alt => "edit"), { :action => "edit", :id => page.id })
     buttons << link_to(image_tag("delete.png", :alt => "delete"), { :action => "delete", :id => page.id })
     end
     
