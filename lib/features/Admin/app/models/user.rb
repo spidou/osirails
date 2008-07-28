@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   # Validates
   validates_uniqueness_of :username, :message => "existe déjà"
   validates_presence_of :username, :password, :message => "ne peut être vide"
-  validates_confirmation_of :password, :message => "ne correspondent pas≈"
+  validates_confirmation_of :password, :message => "ne correspondent pas"
   before_save :password_encryption
   # Requires
   require "digest/sha1"

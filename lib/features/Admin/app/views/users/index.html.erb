@@ -4,12 +4,16 @@
   <tr>
     <th>Nom utilisateur</th>
     <th>Mot de passe</th>
+		<th>Activé</th>
+		<th>Dernière connexion</th>
   </tr>
   
   <% for user in @users %>
     <tr>
       <td><%= link_to user.username, user %></td>
       <td><%=h user.password %></td>
+			<td><%= user.enabled ? "Oui" : "Non" %></td>
+			<td><%= user.last_connection %></td>
       <td><%= link_to 'Edit', edit_user_path(user) %></td>
       <td><%= link_to 'Details', user %></td>
     </tr>

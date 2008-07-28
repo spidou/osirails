@@ -2,14 +2,14 @@
   <b>Nom utilisateur:</b>
   <%=h @user.username %>
 </p>
-
-
-
 <p>
- <b>Mot de passe:</b>
-  <%=h @user.password %>
+	<b>Activé:</b>
+	<%= @user.enabled ? "Oui" : "Non" %>
 </p>
-
+<p>
+	<b>Dernière connexion</b>
+	<%= @user.last_connection %>
+</p>
 <p>
   <b>R&ocirc;les:</b>
   <% for role in @user.roles %>

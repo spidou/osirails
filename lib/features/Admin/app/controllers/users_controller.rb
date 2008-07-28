@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.xml
   def index
+    # TODO In the view index, add the sessions management
     @users = User.find(:all)
 
     respond_to do |format|

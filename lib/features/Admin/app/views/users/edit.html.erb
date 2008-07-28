@@ -15,12 +15,14 @@
       <%= f.label "confirmez" %><br />
       <%= f.password_field :password_confirmation %>
     </p>
+		<p>
+			<%= f.label "Activé" %>
+			<%= f.check_box :enabled %>
+		</p>
   </div>
   
   <p>Choisissez les r&ocirc;le(s) que peut choisir l'utilisateur</p>
-  
-  
-  
+
   <div>
     <table>
       <% for associated_role in Role.find(:all, :order => :name) %>
