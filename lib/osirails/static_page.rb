@@ -1,5 +1,3 @@
-module Osirails
-  class StaticPage < Page
-    
-  end
+class StaticPage < Page
+
 end

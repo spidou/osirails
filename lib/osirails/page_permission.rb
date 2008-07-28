@@ -1,4 +1,2 @@
-module Osirails
-  class PagePermission < ActiveRecord::Base
-  end
+class PagePermission < ActiveRecord::Base
 end

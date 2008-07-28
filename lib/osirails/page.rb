@@ -1,4 +1,3 @@
-module Osirails
   class Page < ActiveRecord::Base
     include Permissible
     
@@ -94,7 +93,7 @@ module Osirails
     
     #This method return an array with all pages
     def Page.get_pages_array(indent)
-      pages = Osirails::Page.find_all_by_parent_id(nil, :order => :position)
+      pages = Page.find_all_by_parent_id(nil, :order => :position)
       parent_array = []
       root = Page.new
       root.title_link = "  "
@@ -120,4 +119,3 @@ module Osirails
       end
     
   end
-end

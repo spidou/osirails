@@ -1,16 +1,16 @@
 class PagesController < ApplicationController
   def index
-   @pages = Osirails::Page.get_pages_array("----")
+   @pages = Page.get_pages_array("----")
    render :action => 'list'
   end
 
   def new
-   @page = Osirails::Page.new
-   @pages = Osirails::Page.get_pages_array("---")
+   @page = Page.new
+   @pages = Page.get_pages_array("---")
   end
   
   def create
-    @page = Osirails::Page.new(params[:page])
+    @page = Page.new(params[:page])
       if @page.save
       flash[:notice] = 'Your page is create.'
         redirect_to :action => 'index'
@@ -20,8 +20,8 @@ class PagesController < ApplicationController
   end
   
   def edit
-    @page = Osirails::Page.find(params[:id])
-    @pages = Osirails::Page.get_pages_array("---")
+    @page = Page.find(params[:id])
+    @pages = Page.get_pages_array("---")
   end
 
   # This method permit to edit page
@@ -29,10 +29,10 @@ class PagesController < ApplicationController
   # can_has_this_parent? => Permit to check if the new parent can has this parent
   # change_parent => method to change parent  
   def confirm_edit #FIXME Can't use update....  
-    @page = Osirails::Page.find(params[:id])
+    @page = Page.find(params[:id])
     unless params[:page][:parent_id] == ""
-      @parent = Osirails::Page.find(params[:page][:parent_id])   
-      if @page.can_has_this_parent?(Osirails::Page.find(params[:page][:parent_id]))
+      @parent = Page.find(params[:page][:parent_id])   
+      if @page.can_has_this_parent?(Page.find(params[:page][:parent_id]))
          @page.title_link = params[:page][:title_link]
          @page.description_link = params[:page][:description_link]
          @page.save
@@ -54,19 +54,19 @@ class PagesController < ApplicationController
   end
   
   def move_up
-    page = Osirails::Page.find_by_id(params[:id])
+    page = Page.find_by_id(params[:id])
     page.move_higher
     redirect_to pages_path
   end
   
   def move_down
-    page = Osirails::Page.find_by_id(params[:id])
+    page = Page.find_by_id(params[:id])
     page.move_lower
     redirect_to pages_path
   end
   
   def delete
-    page = Osirails::Page.find_by_id(params[:id])
+    page = Page.find_by_id(params[:id])
     page.delete
     redirect_to pages_path
   end 

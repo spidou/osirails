@@ -20,7 +20,7 @@ def init(yaml, config, path)
   # This array store all pages in order than they will be displayed
   $page_table = []
    
-  feature = Osirails::Feature.find_or_create_by_name_and_version(name, version)
+  feature = Feature.find_or_create_by_name_and_version(name, version)
 
   #Test of dependencies for this feature
   dependencies_hash = []
@@ -52,13 +52,13 @@ def init(yaml, config, path)
     feature.save
   end
 
-  roles_count = Osirails::Role.count
+  roles_count = Role.count
   #Test if all permission for all business objects are present
   unless business_objects.nil?
     business_objects.each do |bo|
-      unless Osirails::BusinessObjectPermission.find_all_by_has_permission_type(bo).size == roles_count
-        Osirails::Role.find(:all).each do |role|
-          Osirails::BusinessObjectPermission.find_or_create_by_has_permission_type_and_role_id(bo, role.id)
+      unless BusinessObjectPermission.find_all_by_has_permission_type(bo).size == roles_count
+        Role.find(:all).each do |role|
+          BusinessObjectPermission.find_or_create_by_has_permission_type_and_role_id(bo, role.id)
         end
       end  
     end
@@ -66,14 +66,14 @@ def init(yaml, config, path)
 
   #Test if all permission for all pages are present
   def pages_permisisons_verification(pages)
-    roles_count = Osirails::Role.count
+    roles_count = Role.count
     pages.each_pair do |key,value|
-      p = Osirails::Page.find_by_name(key)
+      p = Page.find_by_name(key)
       unless p.nil?
-        unless Osirails::PagePermission.find_all_by_page_id(p.id).size == roles_count
-          Osirails::Role.find(:all).each do |role|
-            if Osirails::PagePermission.find_by_page_id_and_role_id(p.id, role.id).nil?
-              Osirails::PagePermission.create(:page_id => p.id,:role_id =>role.id)
+        unless PagePermission.find_all_by_page_id(p.id).size == roles_count
+          Role.find(:all).each do |role|
+            if PagePermission.find_by_page_id_and_role_id(p.id, role.id).nil?
+              PagePermission.create(:page_id => p.id,:role_id =>role.id)
             end
           end
         end
@@ -102,12 +102,12 @@ def init(yaml, config, path)
 
   # This block insert into Database the pages that wasn't present 
   $page_table.each do |page|
-    parent_page = Osirails::Page.find_by_name(page[:parent])
-    unless Osirails::Page.find_by_name(page[:name])
+    parent_page = Page.find_by_name(page[:parent])
+    unless Page.find_by_name(page[:name])
       if parent_page.nil?
-        Osirails::Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name])
+        Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name])
       else
-        Osirails::Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name], :parent_id =>parent_page.id )
+        Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name], :parent_id =>parent_page.id )
       end
     end
   end
