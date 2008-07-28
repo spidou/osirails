@@ -15,8 +15,11 @@ module PagesHelper
   def show_actions_buttons(page)
     buttons = ""
     buttons << link_to(image_tag("edit.png", :alt => "edit"), { :action => "edit", :id => page.id })
-    buttons << link_to(image_tag("delete.png", :alt => "delete"), { :action => "delete", :id => page.id })
+    unless page.base_item? or page.has_children?
+      buttons << link_to(image_tag("delete.png", :alt => "delete"), { :action => "delete", :id => page.id })
     end
+    buttons
+  end
     
 #  end
   

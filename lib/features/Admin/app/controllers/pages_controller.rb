@@ -32,11 +32,16 @@ class PagesController < ApplicationController
     @page = Osirails::Page.find(params[:id])
     @pages = Osirails::Page.get_pages_array("---")
   end
-  
+
+  # This method permit to edit page
+  # unless params => Permit to utilize a nil field
+  # can_has_this_parent? => Permit to check if the new parent can has this parent
+  # change_parent => method to change parent  
   def confirm_edit #FIXME Can't use update....    
     @page = Osirails::Page.find(params[:id])    
     unless params[:page][:parent_id] == ""
       if @page.can_has_this_parent?(Osirails::Page.find(params[:page][:parent_id]))
+        @parent = Osirails::Page.find(params[:page][:parent_id])
         @page.title_link = params[:page][:title_link]
         @page.description_link = params[:page][:description_link]
         @page.save
@@ -51,7 +56,7 @@ class PagesController < ApplicationController
       @page.description_link = params[:page][:description_link]
       @page.change_parent(nil)
       @page.save
-      flash[:notice] = 'Your page is edit'
+      flash[:notice] = 'Votre page est éditée.'
     end    
     redirect_to :action => 'index'
   end
