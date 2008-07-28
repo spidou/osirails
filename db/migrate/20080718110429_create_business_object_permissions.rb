@@ -5,6 +5,7 @@ class CreateBusinessObjectPermissions < ActiveRecord::Migration
       t.references :role
       t.string :has_permission_type
       t.integer :has_permission_id
+      
       t.timestamps
     end
   end

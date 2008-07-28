@@ -1,0 +1,31 @@
+<% form_for(@role) do |f| %>
+  <%= f.error_messages %>
+  
+  <p>
+    <%= f.label "nom" %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label "description"%><br/>
+    <%= f.text_area :description%>
+  </p>
+  <p>Choisissez les utilisateurs qui possédent le role <%= @role.name %> </p>
+  
+  <div style="margin-left: 50px">
+    <table>
+      <% for associated_user in User.find(:all, :order => :username) %>
+        <tr>
+          <td>
+            <%= check_box_tag "role[user_ids][]", associated_user.id, @role.users.include?(associated_user) %>
+          </td>
+          <td>
+            <%= associated_user.username %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <p>
+    <%= f.submit submit_button_name %>
+  </p>
+<% end %>

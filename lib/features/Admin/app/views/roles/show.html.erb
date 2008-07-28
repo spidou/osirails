@@ -1,0 +1,21 @@
+<p>
+  <b>Nom:</b>
+  <%=h @role.name %>
+</p>
+<p>
+  <b>Description:</b><br/>
+  <%= @role.description%>
+</p>
+<p>
+  <b>Utilisateurs:</b>
+  <ul>
+    <% for user in @role.users %>
+      <li><%= link_to user.username, user %></li>
+    <% end %>
+  </ul>
+  
+</p>
+
+
+<%= link_to 'Mettre à jour', edit_role_path(@role) %> |
+<%= link_to 'Retour', roles_path %>

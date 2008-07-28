@@ -7,7 +7,7 @@ module FeaturesHelper
     elsif !feature.installed? 
       button = button_to("Installer", {:action => "install", :id => feature.id}, :confirm => 'Voulez-vous installer ?', :method => :put) 
     end 
-    button
+    button 
   end    
  
   

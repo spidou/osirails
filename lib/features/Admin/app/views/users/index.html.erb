@@ -1,0 +1,21 @@
+<h1>Liste de utilisateurs</h1>
+
+<table>
+  <tr>
+    <th>Nom utilisateur</th>
+    <th>Mot de passe</th>
+  </tr>
+  
+  <% for user in @users %>
+    <tr>
+      <td><%= link_to user.username, user %></td>
+      <td><%=h user.password %></td>
+      <td><%= link_to 'Edit', edit_user_path(user) %></td>
+      <td><%= link_to 'Details', user %></td>
+    </tr>
+  <% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nouveau', new_user_path %>

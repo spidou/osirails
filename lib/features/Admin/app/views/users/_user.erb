@@ -1,0 +1,31 @@
+
+  <div>
+    <p>
+      <%= f.label "Mot_de_passe" %><br />
+      <%= f.password_field :password %>
+    </p>
+    <p>
+    <%= f.label "confirmez" %><br />
+    <%= f.password_field :password_confirmation %>
+    </p>
+  </div>
+  
+  <p>Choisissez les r&ocirc;le(s) que peut choisir l'utilisateur</p>
+  
+  
+  
+  <div>
+    <table>
+      <% for associated_role in Role.find(:all, :order => :name) %>
+        <tr>
+          <td>
+            <%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %>
+          </td>
+          <td>
+            <%= associated_role.name %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  
