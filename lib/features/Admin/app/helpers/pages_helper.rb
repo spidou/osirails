@@ -15,6 +15,5 @@ module PagesHelper
   # This method permit to show or not show a button for delete a page
   def show_delete_button(page)
     link_to("Delete", page, {:method => :delete}) unless page.base_item?
-#       link_to("Delete", destroy_page_path(page))
   end
 end
