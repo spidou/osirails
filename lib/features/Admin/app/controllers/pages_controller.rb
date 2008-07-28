@@ -34,7 +34,7 @@ class PagesController < ApplicationController
   # unless params => Permit to utilize a nil field
   # can_has_this_parent? => Permit to check if the new parent can has this parent
   # change_parent => method to change parent  
-  def update #FIXME Can't use update....  
+  def update
     @pages = Page.get_pages_array("----")
     @page = Page.find(params[:id])
     parent_id =params[:page].delete(:parent_id)
