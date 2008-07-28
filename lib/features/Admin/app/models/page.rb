@@ -7,6 +7,8 @@ class Page < ActiveRecord::Base
   belongs_to :parent_page, :class_name =>"Page", :foreign_key => "parent_id"
   attr_accessor :parent_array
  
+  validates_presence_of :title_link
+  validates_uniqueness_of :name
     
   # This method add a new page
   # parent : represent the future parent_page
@@ -21,8 +23,8 @@ class Page < ActiveRecord::Base
 
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
-  def change_parent(new_parent_id,position = nil)   
-    if self.can_has_this_parent?(new_parent_id)
+  def change_parent(new_parent_id,position = nil)
+    if self.can_has_this_parent?(new_parent_id) and new_parent_id != self.parent_id.to_s
       self.remove_from_list
       self.parent_id = new_parent_id
       position.nil? ? self.insert_at : self.insert_at(position_in_bounds(position))

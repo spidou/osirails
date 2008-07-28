@@ -1,8 +1,10 @@
 <h4>Edit a page</h4>
 
- <% form_tag :action => 'confirm_edit', :id => @page do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
-<%end%> 
+ <% form_for(@page) do |f| %>
+   <%= f.error_messages %>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+  
+  <%= f.submit 'Edit' %>
+<% end %> 
 
 <%= link_to 'Retour au menu', :action => 'index' %>

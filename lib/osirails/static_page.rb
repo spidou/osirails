@@ -1,3 +1,0 @@
-class StaticPage < Page
-
-end

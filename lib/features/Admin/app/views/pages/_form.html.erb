@@ -1,9 +1,9 @@
-<p><label for="page_title_link">Titre</label><br/>
-<%= text_field 'page', 'title_link'  %></p>
+<p><%=f.label :title_link%><br/>
+<%= f.text_field :title_link  %></p>
 
-<p><label for="page_description_link">Description</label><br/>
-<%= text_field 'page', 'description_link'  %></p>
+<p><%=f.label :description_link%><br/>
+<%= f.text_field :description_link  %></p>
 
-<p><label for="page_parent_id">Parent</label><br/>
-<%= collection_select('page', 'parent_id', @pages, 'id', 'title_link',options = {:include_blank => true})%>
+<p><%=f.label :parent_id%><br/>
+<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:include_blank => true})%>
 

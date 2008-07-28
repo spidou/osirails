@@ -1,12 +1,12 @@
 class PagesController < ApplicationController
   
   def index
-    @pages = Page.get_pages_array("----")
+    list
     render :action => 'list'
   end
   
-  def show
-    render :action => 'list'
+  def list
+    @pages = Page.get_pages_array("----")
   end
 
   def new
@@ -15,6 +15,7 @@ class PagesController < ApplicationController
   end
   
   def create
+    @pages = Page.get_pages_array("----")
     @page = Page.new(params[:page])
     if @page.save
       flash[:notice] = 'Your page is create.'
@@ -33,17 +34,23 @@ class PagesController < ApplicationController
   # unless params => Permit to utilize a nil field
   # can_has_this_parent? => Permit to check if the new parent can has this parent
   # change_parent => method to change parent  
-  def confirm_edit #FIXME Can't use update....  
+  def update #FIXME Can't use update....  
+    @pages = Page.get_pages_array("----")
     @page = Page.find(params[:id])
     parent_id =params[:page].delete(:parent_id)
     if @page.can_has_this_parent?(parent_id)          
       if @page.update_attributes(params[:page])
         @page.change_parent(parent_id)
+        redirect_to pages_path
       else
-        flash[:error] = "Erreur lors de la mise a jour de la page" 
+#        flash[:error] = "Erreur lors de la mise a jour de la page" 
+        render :action => 'edit'
       end
+    else
+      flash[:error] = "Déplacement impossible"
+      redirect_to :back
     end
-    redirect_to pages_path
+    
   end
   
   def move_up
