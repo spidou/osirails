@@ -1,18 +1,19 @@
 <h1>Liste des pages</h1>
-  <table>
-    <tr>
-        <th colspan ="2">Pages</th>
-        <th>Actions</th>
-    </tr> 
+<div >
+  <ul id="list1">
+    <% tab = return_list(@pages,["",1]) %>
+    <%= tab[0] %>
+  </ul>
+  
+</div>
+<%= link_to 'Add a page', :action => 'new' %>
+
+<%cpt = tab[1]%>
+<% tab[1].times do %>
+    <%= sortable_element 'list'+cpt.to_s,   
+      :complete => visual_effect(:highlight, 'list'+cpt.to_s), 
+      :url => { :action => "change_position", :list_name => 'list'+cpt.to_s} %>
+  <%cpt -= 1%>
+ <%end%>
+
     
-    <% for page in @pages%>
-     <%unless page.nil?%>
-      <tr>
-        <td style="text-align:left;border-right:none;"><%= page.title_link %></td>
-        <td style="text-align:right; width:30px;border-left:none;"><%= show_move_buttons(page)%></td>
-        <td><%= show_actions_buttons(page)%><%= link_to "Edit", edit_page_path(page) %></td>
-      </tr>
-      <%end%>
-    <% end %>  
-</table>
-<%= link_to 'Ajouter une page', :action => 'new' %>
