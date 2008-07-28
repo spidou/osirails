@@ -2,6 +2,8 @@ module Osirails
   class Page < ActiveRecord::Base
     include Permissible
     
+
+    
     acts_as_tree :order =>:position
     acts_as_list :scope => :parent_id
     
@@ -41,14 +43,20 @@ module Osirails
      
     def can_has_this_parent?(new_parent)
       return false if new_parent.id == self.id
+#      return false if new_parent.id == self.parent_id
       return false if new_parent.ancestors.include?(self)
       return true
     end
-
-    # This method permit to delete a page. She check if this page have a child or is a base_item
+    
     def delete
-      return false if base_item?
-      return false if has_children?
+      if base_item?
+        puts "This Page is a Basic page"
+        return false
+      end
+      if has_children?
+        puts "This page have children. Please move them in a different page or remove them before delete the page "
+        return false
+      end
       self.destroy
       return true
     end
@@ -63,36 +71,26 @@ module Osirails
       self.children.size > 0 ? true : false
     end
     
-    def Page.move(page)
-      unless page.nil?
-        page.each_with_index do |page_id,index|
-          page = Osirails::Page.find(page_id)
-          page.position = index+1
-          page.save
-        end
-      end
+    # This method test if it possible to move up the page
+    def move_up?
+      return false if self.position == 1
+      return true
     end
     
-    #    # This method test if it possible to move up the page
-    #    def move_up?
-    #      return false if self.position == 1
-    #      return true
-    #    end
-    
-    #    # This method test if it possible to move down  the page
-    #    def move_down?
-    #      first_parent = Page.find_all_by_parent_id(nil)
-    #      parent = Page.find_by_id(self.parent_id)
-    #        if self.ancestors.size > 0
-    #          return false if parent.children.size == self.position
-    #          return true
-    #        end
-    #        if self.ancestors.size <= 0
-    #          return false if first_parent.size == self.position
-    #          return true
-    #        end
-    #        return false
-    #    end
+    # This method test if it possible to move down  the page
+    def move_down?
+      first_parent = Page.find_all_by_parent_id(nil)
+      parent = Page.find_by_id(self.parent_id)
+        if self.ancestors.size > 0
+          return false if parent.children.size == self.position
+          return true
+        end
+        if self.ancestors.size <= 0
+          return false if first_parent.size == self.position
+          return true
+        end
+        return false
+    end
     
     #This method return an array with all pages
     def Page.get_pages_array(indent)
@@ -100,25 +98,26 @@ module Osirails
       parent_array = []
       root = Page.new
       root.title_link = "  "
-      root.id = nil
+      root.id =nil
       parent_array = insert_page(pages,parent_array,indent)
+      #parent_array << root
       parent_array
     end
     
     private
     # This method insert in the $parent_array the page   
-    def Page.insert_page(pages,parent_array,indent)
-      pages.each do |page|
-        page.title_link = indent * page.ancestors.size + page.title_link if page.title_link != nil
-        parent_array << page
+      def Page.insert_page(pages,parent_array,indent)
+        pages.each do |page|
+          page.title_link = indent * page.ancestors.size + page.title_link if page.title_link != nil
+          parent_array << page
           
-        #If the page has children, the insert_page method is call.
-        if page.children.size > 0
-          insert_page(page.children,parent_array,indent)
+          #If the page has children, the insert_page method is call.
+          if page.children.size > 0
+            insert_page(page.children,parent_array,indent)
+          end
         end
+        parent_array
       end
-      parent_array
-    end
     
   end
 end
