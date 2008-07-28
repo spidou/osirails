@@ -4,12 +4,12 @@
   <%= f.error_messages %>
    <div>
     <p>
-      <%= f.label "Nom Utilisateur"%><br/>
-      <%=f.text_field :username %>
+      <%= f.label "Nom Utilisateur" %><br/>
+      <%= f.text_field :username %>
     </p>
     <p>
-      <%= f.label "Mot_de_passe" %><br />
-      <%= f.password_field :password %>
+      <%= f.label "Mot de passe" %><br />
+      <%= f.password_field :password, :value => "" %>
     </p>
     <p>
       <%= f.label "confirmez" %><br />
