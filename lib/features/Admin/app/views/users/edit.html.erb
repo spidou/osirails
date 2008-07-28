@@ -2,16 +2,18 @@
 
 <% form_for (@user) do |f| %>
   <%= f.error_messages %>
-  <p>Profile <%= @user.username %></p>
-  
-  <div>
+   <div>
+    <p>
+      <%= f.label "Nom Utilisateur"%><br/>
+      <%=f.text_field :username %>
+    </p>
     <p>
       <%= f.label "Mot_de_passe" %><br />
       <%= f.password_field :password %>
     </p>
     <p>
-    <%= f.label "confirmez" %><br />
-    <%= f.password_field :password_confirmation %>
+      <%= f.label "confirmez" %><br />
+      <%= f.password_field :password_confirmation %>
     </p>
   </div>
   
@@ -34,7 +36,7 @@
     </table>
   </div>
   
-  <%= f.submit "Créer" %>
+  <%= f.submit "Mettre à jour" %>
 <% end %>
 
 

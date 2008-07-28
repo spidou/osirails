@@ -3,18 +3,20 @@
   <%=h @user.username %>
 </p>
 
+
+
 <p>
-  <b>Mot de passe:</b>
+ <b>Mot de passe:</b>
   <%=h @user.password %>
 </p>
 
 <p>
-	<b>R&ocirc;les:</b>
-	<% for role in @user.roles %>
-	<ul>
-	<li><%=link_to role.name,role %></li>
-	</ul>
-	<% end %>
+  <b>R&ocirc;les:</b>
+  <% for role in @user.roles %>
+    <ul>
+      <li><%=link_to role.name,role %></li>
+    </ul>
+  <% end %>
 </p>
 
 <%= link_to 'Editer', edit_user_path(@user) %> |
