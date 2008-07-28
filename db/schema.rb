@@ -65,6 +65,12 @@ ActiveRecord::Schema.define(:version => 20080728083145) do
     t.integer  "parent_id",        :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
+    t.string   "description"
+    t.text     "text"
+    t.text     "tags"
+    t.string   "author"
+    t.text     "contributors"
   end
 
   create_table "roles", :force => true do |t|
@@ -83,7 +89,7 @@ ActiveRecord::Schema.define(:version => 20080728083145) do
   add_index "roles_users", ["user_id"], :name => "index_roles_users_on_user_id"
 
   create_table "users", :force => true do |t|
-    t.string   "user_name"
+    t.string   "username"
     t.string   "password"
     t.boolean  "enabled"
     t.datetime "expire_date"
