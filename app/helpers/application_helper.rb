@@ -3,4 +3,13 @@ module ApplicationHelper
   def file_upload
     file_field 'upload', 'datafile'
   end
+  
+  def display_flash
+    unless flash[:error].nil?
+      return "<p class='flash_error'>" + flash[:error] + "</p>"
+    end
+    unless flash[:notice].nil?
+      return "<p class='flash_notice'>" + flash[:notice] + "</p>"
+    end
+  end
 end

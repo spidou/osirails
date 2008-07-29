@@ -6,8 +6,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features
   map.resources :pages
   map.resources :static_pages
-  
-  
+  map.resources :permissions
+  map.connect 'business_object_permissions/:name/:action', :controller => 'business_object_permissions'
+  map.resources :business_object_permissions
+
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action
