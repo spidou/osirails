@@ -9,6 +9,8 @@ class Page < ActiveRecord::Base
  
   validates_presence_of :title_link
   validates_uniqueness_of :name
+  
+  named_scope :nav_item, :conditions => {:type => nil }
     
   # This method add a new page
   # parent : represent the future parent_page
@@ -77,7 +79,7 @@ class Page < ActiveRecord::Base
     
   #This method return an array with all pages
   def Page.get_pages_array(indent)
-    pages = Page.find_all_by_parent_id(nil, :order => :position)
+    pages = Page.nav_item.find_all_by_parent_id(nil, :order => :position)
     parent_array = []
     root = Page.new
     root.title_link = "  "
