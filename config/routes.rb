@@ -4,6 +4,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :roles
   map.resources :features
   map.resources :pages
+  map.resources :static_pages
   
   
   # Sample of regular route:
