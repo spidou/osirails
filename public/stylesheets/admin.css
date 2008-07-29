@@ -15,3 +15,6 @@ border: thin solid #6495ed;
   color: red;
   text-decoration: none;
 }
+.admin_pages_indent{
+  width: 10px;
+}

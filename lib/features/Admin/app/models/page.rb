@@ -1,27 +1,18 @@
 class Page < ActiveRecord::Base
   include Permissible
   
+  # Plugin
   acts_as_tree :order =>:position
   acts_as_list :scope => :parent_id
-    
+  
+  # Relationship
   belongs_to :parent_page, :class_name =>"Page", :foreign_key => "parent_id"
+  
+  # Accessor
   attr_accessor :parent_array
  
-  validates_presence_of :title_link
-  validates_uniqueness_of :name
-  
-  named_scope :nav_item, :conditions => {:type => nil }
-    
-  # This method add a new page
-  # parent : represent the future parent_page
-  # new_page : is a hash that content the new page properties
-  def Page.add_list_item(parent = nil, new_page = {})
-    child = Page.new(:title_link => new_page[:title_link], :description_link => new_page[:description_link])
-    unless parent.nil?
-      parent.children << child
-    end
-    child.save
-  end
+  # Validation Macros
+  validates_presence_of :title_link, :message => "ne peut être vide"
 
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
@@ -34,7 +25,8 @@ class Page < ActiveRecord::Base
       self.save
     end
   end       
-    
+  
+  # This method permit to view if a child can have a new_parent
   def can_has_this_parent?(new_parent_id)
     return true if new_parent_id == ""
     new_parent = Page.find(new_parent_id)
@@ -42,6 +34,7 @@ class Page < ActiveRecord::Base
     true
   end
   
+  # This method permit to verify if a page can be delete or not
   def can_delete?
     !base_item? and !has_children?
   end
@@ -57,13 +50,13 @@ class Page < ActiveRecord::Base
   end
     
   # This method test if it possible to move up the page
-  def move_up?
+  def can_move_up?
     return false if self.position == 1
     return true
   end
     
   # This method test if it possible to move down  the page
-  def move_down?
+  def can_move_down?
     first_parent = Page.find_all_by_parent_id(nil)
     parent = Page.find_by_id(self.parent_id)
     if self.ancestors.size > 0
@@ -78,32 +71,33 @@ class Page < ActiveRecord::Base
   end
     
   #This method return an array with all pages
-  def Page.get_pages_array(indent)
+  def Page.get_structured_pages(indent)
     pages = Page.nav_item.find_all_by_parent_id(nil, :order => :position)
-    parent_array = []
+    parents = []
     root = Page.new
     root.title_link = "  "
     root.id =nil
-    parent_array = insert_page(pages,parent_array,indent)
-    #parent_array << root
-    parent_array
+    parents = get_children(pages,parents,indent)
+    parents
   end
     
   private
-  # This method insert in the $parent_array the page   
-  def Page.insert_page(pages,parent_array,indent)
+  # This method insert in the parents the page   
+  def Page.get_children(pages,parents,indent)
     pages.each do |page|
       page.title_link = indent * page.ancestors.size + page.title_link if page.title_link != nil
-      parent_array << page
+      parents << page
           
-      #If the page has children, the insert_page method is call.
+      # If the page has children, the get_children method is call.
       if page.children.size > 0
-        insert_page(page.children,parent_array,indent)
+        get_children(page.children,parents,indent)
       end
     end
-    parent_array
+    parents
   end
-      
+
+
+  # This position permit to return a valide position for a page.
   def position_in_bounds(position)
     if position < 1 
       1

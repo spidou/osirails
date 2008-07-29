@@ -3,8 +3,8 @@
 
 <% form_for(@page) do |f| %>
   <%= f.error_messages %>
-  <%= render :partial => "form", :locals => {:f => f} %>
-  <%= f.submit "Add" %>
+  <%= render :partial => "form", :locals => {:f => f} %><br/><br/>
+  <%= f.submit "Ajouter" %>
 <% end %>
 
-<%= link_to 'Home', :action => 'index' %>
+<%= link_to 'Retour', :action => 'index' %>

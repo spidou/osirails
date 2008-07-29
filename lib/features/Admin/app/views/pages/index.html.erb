@@ -1,0 +1,19 @@
+<h1>Liste des pages</h1>
+  <table>
+    <tr>
+        <th>Pages</th>
+        <th>Position</th>
+        <th>Actions</th>
+    </tr> 
+    
+    <% for page in @pages %>
+     <% unless page.nil? %>
+      <tr>
+        <td><%= page.title_link %></td>
+        <td><%= show_up_button(page) %><%= show_down_button(page) %></td>
+        <td><%= show_delete_button(page)%><%= link_to "Modifier", edit_page_path(page) %></td>
+      </tr>
+      <% end %>
+    <% end %>  
+</table>
+<%= link_to 'Ajouter une nouvelle page', :action => 'new' %>

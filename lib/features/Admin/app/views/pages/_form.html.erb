@@ -1,9 +1,9 @@
-<p><%=f.label :title_link%><br/>
+<p><%=f.label :title_link, "Titre"%><br/>
 <%= f.text_field :title_link  %></p>
 
-<p><%=f.label :description_link%><br/>
+<p><%=f.label :description_link, "Description"%><br/>
 <%= f.text_field :description_link  %></p>
 
 <p><%=f.label :parent_id%><br/>
-<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:include_blank => true})%>
+<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:prompt => "-- Racine --"})%>
 
