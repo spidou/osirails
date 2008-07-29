@@ -1,19 +1,16 @@
 class UsersController < ApplicationController
   # GET /users
-  # GET /users.xml
   def index
     # TODO In the view index, add the sessions management
     @users = User.find(:all, :include =>[:employee])
   end
 
   # GET /users/1
-  # GET /users/1.xml
   def show
     @user = User.find(params[:id])
   end
 
   # GET /users/new
-  # GET /users/new.xml
   def new
     @user = User.new
   end
@@ -24,7 +21,6 @@ class UsersController < ApplicationController
   end
 
   # POST /users
-  # POST /users.xml
   def create
     @user = User.new(params[:user])
     if @user.save
@@ -36,7 +32,6 @@ class UsersController < ApplicationController
   end
 
   #PUT /users/1
-  #PUT /users/1.xml
   def update
     params[:user][:role_ids] ||= []
     @user = User.find(params[:id])
@@ -53,7 +48,6 @@ class UsersController < ApplicationController
   end
 
   # DELETE /users/1
-  # DELETE /users/1.xml
   def destroy
     @user = User.find(params[:id])
     @user.destroy
