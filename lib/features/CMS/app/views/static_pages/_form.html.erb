@@ -1,10 +1,16 @@
 <fieldset>
+  <caption>Infomation du menu </caption>
 <p><%=f.label :title_link%><br/>
 <%= f.text_field :title_link  %></p>
 
 <p><%=f.label :description_link%><br/>
 <%= f.text_field :description_link  %></p>
+
+<p><%=f.label :parent_id%><br/>
+<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:prompt => "-- Racine --"})%>
 </fieldset>
+<fieldset>
+  <caption>Information du contenu</caption>
 <p><%=f.label :title%><br/>
 <%= f.text_field :title  %></p>
 
@@ -16,8 +22,6 @@
 
 <p><%= f.label :text%><br/>
 <%= f.text_area(:text, :cols => 110, :rows => 30)%></p>
-
-<p><%=f.label :parent_id%><br/>
-<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:prompt => "-- Racine --"})%>
+</fieldset>
 
 

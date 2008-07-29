@@ -9,9 +9,9 @@
 
     <% for static_page in @static_pages %>
       <tr>
-        <td><%= static_page.title_link%></td>
+        <td title='<%= static_page.description_link %>'><%= static_page.title_link%></td>
         <td><%= static_page.url %></td>
-        <td><%= static_page.title %></td>
+        <td title='<%= static_page.description %>'><%= static_page.title %></td>
         <td><%= static_page.description%></td>
         <td><%= link_to("Edit", edit_static_page_path(static_page)) %> <%= link_to("Delete", static_page, {:method => :delete}) %></td>
       </tr>
