@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
+  belongs_to :employee
   before_save :password_encryption
   # Validates
   validates_uniqueness_of :username, :message => "existe déjà"
@@ -27,5 +28,5 @@ class User < ActiveRecord::Base
   def should_update_password?
     updating_password || new_record?
   end
-
+# TODO delete the Add link that been used for dev purposes
 end

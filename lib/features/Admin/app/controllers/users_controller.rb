@@ -3,34 +3,19 @@ class UsersController < ApplicationController
   # GET /users.xml
   def index
     # TODO In the view index, add the sessions management
-    @users = User.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @users }
-    end
+    @users = User.find(:all, :include =>[:employee])
   end
 
   # GET /users/1
   # GET /users/1.xml
   def show
     @user = User.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @user }
-    end
   end
 
   # GET /users/new
   # GET /users/new.xml
   def new
     @user = User.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @user }
-    end
   end
 
   # GET /users/1/edit
@@ -42,16 +27,11 @@ class UsersController < ApplicationController
   # POST /users.xml
   def create
     @user = User.new(params[:user])
-
-    respond_to do |format|
-      if @user.save
-        flash[:notice] = 'User was successfully created.'
-        format.html { redirect_to(@user) }
-        format.xml  { render :xml => @user, :status => :created, :location => @user }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
-      end
+    if @user.save
+      flash[:notice] = 'Le compte utilisateur a été ajouté avec succés.'
+      redirect_to(@user) 
+    else
+      render :action => "new"
     end
   end
 
@@ -64,15 +44,11 @@ class UsersController < ApplicationController
       @user.updating_password = true
       @user.save
     end
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
-        flash[:notice] = 'User was successfully updated.'
-        format.html { redirect_to(@user) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
-      end
+    if @user.update_attributes(params[:user])
+      flash[:notice] = 'Le compte utilisateur a été mis-à-jour avec succés.'
+      redirect_to(@user) 
+    else
+      render :action => "edit" 
     end
   end
 
@@ -81,10 +57,6 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(users_url) }
-      format.xml  { head :ok }
-    end
+    redirect_to(users_url) 
   end
 end

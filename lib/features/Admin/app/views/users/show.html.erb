@@ -8,7 +8,7 @@
 </p>
 <p>
 	<b>Dernière connexion</b>
-	<%= @user.last_connection %>
+	<%= @user.last_connection.strftime("%d /%m/%Y  [%H:%M]")  %>
 </p>
 <p>
   <b>R&ocirc;les:</b>
@@ -19,5 +19,5 @@
   <% end %>
 </p>
 
-<%= link_to 'Editer', edit_user_path(@user) %> |
+<%= link_to 'Modifier', edit_user_path(@user) %> |
 <%= link_to 'Retour', users_path %>
