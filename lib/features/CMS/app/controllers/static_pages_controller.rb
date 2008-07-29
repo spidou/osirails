@@ -21,16 +21,36 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def edit
     @static_page = StaticPage.find(params[:id])
+    @pages = Page.get_structured_pages("---")
   end
   
   def update
+    @pages = Page.get_structured_pages("----")
     @static_page = StaticPage.find(params[:id])
     @static_page.update_attributes(params[:static_page])
     redirect_to static_pages_path
   end
   
   def destroy
-    
+    static_page = StaticPage.find_by_id(params[:id])
+    static_page.destroy
+    redirect_to static_pages_path
+  end
+  
+  def new
+    @static_page = StaticPage.new
+    @pages = Page.get_structured_pages("---")
+  end
+  
+  def create
+    @pages = Page.get_structured_pages("----")
+    @static_page = StaticPage.new(params[:static_page])
+    if @static_page.save
+      flash[:notice] = 'Votre static_page est créée avec succes'
+      redirect_to :action => 'index'
+    else
+      render :action => 'new'
+    end
   end
   
 end

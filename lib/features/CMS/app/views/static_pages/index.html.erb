@@ -16,5 +16,6 @@
         <td><%= link_to("Edit", edit_static_page_path(static_page)) %> <%= link_to("Delete", static_page, {:method => :delete}) %></td>
       </tr>
     <% end%>
-
 </table>
+
+<%= link_to 'Ajouter une nouvelle statique page', :action => 'new' %>
