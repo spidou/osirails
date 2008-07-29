@@ -32,7 +32,7 @@ module Permissible
         end
       else
         roles.each do |role|         
-          perm = PagePermission.find_by_page_id_and_role_id(id, role, :conditions => {action => true})          
+          perm = MenuPermission.find_by_menu_id_and_role_id(id, role, :conditions => {action => true})          
           return_value ||= perm.list unless perm.nil?
         end           
       end

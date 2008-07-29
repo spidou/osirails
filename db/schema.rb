@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080728083145) do
+ActiveRecord::Schema.define(:version => 20080729134155) do
 
   create_table "business_object_permissions", :force => true do |t|
     t.boolean  "list"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(:version => 20080728083145) do
     t.text     "business_objects"
   end
 
-  create_table "page_permissions", :force => true do |t|
+  create_table "menu_permissions", :force => true do |t|
     t.boolean  "list"
     t.boolean  "view"
     t.boolean  "add"
@@ -55,22 +55,15 @@ ActiveRecord::Schema.define(:version => 20080728083145) do
     t.datetime "updated_at"
   end
 
-  create_table "pages", :force => true do |t|
-    t.string   "title_link"
-    t.string   "description_link"
-    t.string   "url"
-    t.string   "type"
-    t.string   "name"
-    t.integer  "position",         :limit => 11
-    t.integer  "parent_id",        :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "menus", :force => true do |t|
     t.string   "title"
     t.string   "description"
-    t.text     "text"
-    t.text     "tags"
-    t.string   "author"
-    t.text     "contributors"
+    t.string   "url"
+    t.string   "name"
+    t.integer  "position",    :limit => 11
+    t.integer  "parent_id",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "roles", :force => true do |t|

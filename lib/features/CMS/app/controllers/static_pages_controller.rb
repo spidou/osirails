@@ -26,7 +26,9 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def update
     @pages = Page.get_structured_pages("----")
-    @static_page = StaticPage.find(params[:id])
+    @static_page = Page.find(params[:id])
+    position = params[:static_page].delete(:position)
+    @static_page.change_position(position)
     @static_page.update_attributes(params[:static_page])
     redirect_to static_pages_path
   end

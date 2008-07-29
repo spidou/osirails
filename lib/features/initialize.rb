@@ -19,10 +19,10 @@ def init(yaml, config, path)
   dependencies = yaml['dependencies']
   conflicts = yaml['conflicts']
   business_objects = yaml['business_objects']
-  pages = yaml['pages']
+  menus = yaml['menus']
 
-  # This array store all pages in order than they will be displayed
-  $page_table = []
+  # This array store all menus in order than they will be displayed
+  $menu_table = []
    
   feature = Feature.find_or_create_by_name_and_version(name, version)
 
@@ -68,50 +68,50 @@ def init(yaml, config, path)
     end
   end
 
-  #Test if all permission for all pages are present
-  def pages_permisisons_verification(pages)
+  #Test if all permission for all menus are present
+  def menus_permisisons_verification(menus)
     roles_count = Role.count
-    pages.each_pair do |key,value|
-      p = Page.find_by_name(key)
+    menus.each_pair do |key,value|
+      p = Menu.find_by_name(key)
       unless p.nil?
-        unless PagePermission.find_all_by_page_id(p.id).size == roles_count
+        unless MenuPermission.find_all_by_menu_id(p.id).size == roles_count
           Role.find(:all).each do |role|
-            if PagePermission.find_by_page_id_and_role_id(p.id, role.id).nil?
-              PagePermission.create(:page_id => p.id,:role_id =>role.id)
+            if MenuPermission.find_by_menu_id_and_role_id(p.id, role.id).nil?
+              MenuPermission.create(:menu_id => p.id,:role_id =>role.id)
             end
           end
         end
       end
       unless value['children'].nil?
-        pages_permisisons_verification(value['children'])
+        menus_permisisons_verification(value['children'])
       end
     end
   end
 
-  pages_permisisons_verification(pages)
+  menus_permisisons_verification(menus)
 
 
-  # This method insert in $page_table all feature's pages
-  def page_insertion(pages,parent_name)
-    pages.each_pair do |key,value|
-      $page_table << {  :name => key, :title_link => value["title_link"], :description_link => value["description_link"], :url => value["url"], :parent => parent_name}
+  # This method insert in $menu_table all feature's menus
+  def menu_insertion(menus,parent_name)
+    menus.each_pair do |key,value|
+      $menu_table << {  :name => key, :title_link => value["title_link"], :description_link => value["description_link"], :url => value["url"], :parent => parent_name}
       unless value["children"].nil?
-        page_insertion(value["children"], key)
+        menu_insertion(value["children"], key)
       end
     end
   end
 
-  page_insertion(pages,"")
+  menu_insertion(menus,"")
   
 
-  # This block insert into Database the pages that wasn't present 
-  $page_table.each do |page|
-    parent_page = Page.find_by_name(page[:parent])
-    unless Page.find_by_name(page[:name])
-      if parent_page.nil?
-        Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name])
+  # This block insert into Database the menus that wasn't present 
+  $menu_table.each do |menu|
+    parent_menu = Menu.find_by_name(menu[:parent])
+    unless Menu.find_by_name(menu[:name])
+      if parent_menu.nil?
+        Menu.create(:title_link =>menu[:title_link], :description_link => menu[:description_link], :url => menu[:url], :name => menu[:name])
       else
-        Page.create(:title_link =>page[:title_link], :description_link => page[:description_link], :url => page[:url], :name => page[:name], :parent_id =>parent_page.id )
+        Menu.create(:title_link =>menu[:title_link], :description_link => menu[:description_link], :url => menu[:url], :name => menu[:name], :parent_id =>parent_menu.id )
       end
     end
   end

@@ -7,7 +7,7 @@ conflicts:
 business_objects:
   - Document
   - DocumentGraphique
-pages:
+menus:
   admin:
     title_link: Administration
     description_link: Administration de l'intranet

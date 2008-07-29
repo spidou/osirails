@@ -11,7 +11,7 @@ conflicts:
     - 0.1
     - 0.2
 business_objects:
-pages:
+menus:
   Test2_p1:
     title_link: Test2_p1
     description_link: Test2_p1

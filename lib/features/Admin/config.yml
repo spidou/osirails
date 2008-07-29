@@ -8,7 +8,7 @@ dependencies:
 conflicts:
 business_objects:
   - Features
-pages:
+menus:
   admin:
     title_link: Administration
     description_link: Administration de l'intranet
