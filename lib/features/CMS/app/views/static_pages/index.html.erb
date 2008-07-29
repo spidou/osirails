@@ -3,7 +3,7 @@
     <th>Titre du lien</th>
     <th>url de la page</th>    
     <th>Titre de la page</th>
-    <th>Contenu de la page</th>
+    <th>Description de la page</th>
     <th>Actions</th>
   </tr>
 
@@ -12,8 +12,8 @@
         <td><%= static_page.title_link %></td>
         <td><%= static_page.url %></td>
         <td><%= static_page.title %></td>
-        <td><%= static_page.text %></td>
-        <td><%= link_to(image_tag("edit", :alt => "Edition"), edit_static_page_path(static_page)) %>
+        <td><%= static_page.description%></td>
+        <td><%= link_to("Edit", edit_static_page_path(static_page)) %> <%= link_to("Delete", static_page, {:method => :delete}) %></td>
       </tr>
     <% end%>
 
