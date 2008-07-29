@@ -53,4 +53,12 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     end
   end
   
+  def show
+    @static_page = StaticPage.find(params[:id])
+    @author = User.find(@static_page.author, :include => [:employee])
+    @contributors = User.find_all_by_id(@static_page.contributors, :include => [:employee])
+    @contributors_full_names = []
+    @contributors.each {|contributor| @contributors_full_names << contributor.employee.fullname}
+  end
+  
 end
