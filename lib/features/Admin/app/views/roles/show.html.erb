@@ -1,13 +1,13 @@
 <p>
-  <b>Nom:</b>
+  <b>Nom du r&ocirc;le:</b>
   <%=h @role.name %>
 </p>
 <p>
-  <b>Description:</b><br/>
+  <b>Description du r&ocirc;le:</b><br/>
   <%= @role.description%>
 </p>
 <p>
-  <b>Utilisateurs:</b>
+  <b>Utilisateurs poss&eacute;dants ce r&ocirc;le:</b>
   <ul>
     <% for user in @role.users %>
       <li><%= link_to user.username, user %></li>

@@ -1,13 +1,13 @@
 <p>
-  <b>Nom utilisateur:</b>
+  <b>Nom du compte utilisateur:</b>
   <%=h @user.username %>
 </p>
 <p>
-	<b>Activé:</b>
+	<b>Activ&eacute;:</b>
 	<%= @user.enabled ? "Oui" : "Non" %>
 </p>
 <p>
-	<b>Dernière connexion</b>
+	<b>Derni&egrave;re connexion</b>
 	<%= @user.last_connection.strftime("%d/%m/%Y  [%H:%M]")  %>
 </p>
 <p>

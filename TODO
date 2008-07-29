@@ -1,26 +1,16 @@
 Benjamin et Julien :
 
-role.rb et user.rb
-respond_to xml utiles ?
+GET users/1
+ NoMethodError in Users#show 
+You have a nil object when you didn't expect it!
+The error occurred while evaluating nil.strftime
+>> L'erreur survient lorsqu'on veut voir les détails sur un utilisateur qui ne s'est jamais connecté (dernière connexion = nil)
 
-GET users/
-Liste des comptes utilisateurs
-Employé | Nom du compte utilisateur | Compté activé | Dernière connexion | Actions (Détails, Modifier)
+Admin/app/views/users/edit.html.erb :
+Role.find(:all, :order => :name) > utiliser une variable de classe @roles que l'on instancie dans le controlleur
 
-GET roles/
-Liste des rôles
-Nom du rôle | Description du role | Actions (Détails, Modifier, Supprimer)
-
-pour les roles :
-_roles.html.erb
-> enlever le bouton submit
-edit.html.erb + new.html.erb
-> mettre le bouton submit en dehors du render partial
-
-pour les users :
-edit.html.erb + new.html.erb :
-> utiliser un render partial pour affiche le formulaire (comme pour les roles)
-
+Admin/app/views/roles/_role.html.erb :
+User.find(:all, :order => :name > meme chose que pour les roles
 
 
 

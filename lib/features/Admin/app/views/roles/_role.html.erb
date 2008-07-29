@@ -2,16 +2,16 @@
   <%= f.error_messages %>
   
   <p>
-    <%= f.label "nom" %><br />
+    <%= f.label :name, "Nom du r&ocirc;le" %><br />
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label "description"%><br/>
+    <%= f.label :description, "Description du r&ocirc;le"%><br/>
     <%= f.text_area :description%>
   </p>
-  <p>Choisissez les utilisateurs qui possédent le role <%= @role.name %> </p>
+  <p>Choisir les utilisateurs qui poss&egrave;dent ce r&ocirc;le</p>
   
-  <div style="margin-left: 50px">
+  <div>
     <table>
       <% for associated_user in User.find(:all, :order => :username) %>
         <tr>

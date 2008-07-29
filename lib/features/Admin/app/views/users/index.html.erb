@@ -2,10 +2,10 @@
 
 <table>
   <tr>
-    <th>Employée</th>
+    <th>Employ&eacute;</th>
     <th>Nom du compte utilisateur</th>
-		<th>Activé</th>
-		<th>Dernière connexion</th>
+		<th>Activ&eacute;</th>
+		<th>Derni&egrave;re connexion</th>
     <th>Action</th>
   </tr>
   
@@ -14,8 +14,8 @@
       <td><%=  user.employee.nil? ? "" : user.employee.fullname  %></td>
       <td><%= link_to user.username, user %></td>
 			<td><%= user.enabled ? "Oui" : "Non" %></td>
-			<td><%= user.last_connection.nil? ? "Jamais connecté" :user.last_connection.strftime("%d/%m/%Y  [%H:%M]") %></td>
-      <td><%= link_to 'Details', user %> &#124;
+			<td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.strftime("%d/%m/%Y  [%H:%M]") %></td>
+      <td><%= link_to 'D&eacute;tails', user %> &#124;
               <%= link_to 'Modifier', edit_user_path(user) %>
       </td>
     </tr>
@@ -24,4 +24,4 @@
 
 <br />
 
-<%= link_to 'Ajouter(pour dev)', new_user_path%>
+<%= link_to 'Ajouter (pour dev)', new_user_path%>

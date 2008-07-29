@@ -1,27 +1,27 @@
-<h1>Editer un utilisateur</h1>
+<h1>Modifier un utilisateur</h1>
 
 <% form_for(@user) do |f| %>
   <%= f.error_messages %>
    <div>
     <p>
-      <%= f.label "Nom Utilisateur" %><br/>
+      <%= f.label :username, "Nom du compte utilisateur" %><br/>
       <%= f.text_field :username %>
     </p>
     <p>
-      <%= f.label "Mot de passe" %><br />
+      <%= f.label :password, "Mot de passe" %><br />
       <%= f.password_field :password, :value => "" %>
     </p>
     <p>
-      <%= f.label "confirmez" %><br />
+      <%= f.label :password_confirmation, "Confirmation du mot de passe" %><br />
       <%= f.password_field :password_confirmation %>
     </p>
 		<p>
-			<%= f.label "Activé" %>
+			<%= f.label :enabled, "Compte activ&eacute;" %>
 			<%= f.check_box :enabled %>
 		</p>
   </div>
   
-  <p>Choisissez les r&ocirc;le(s) que peut choisir l'utilisateur</p>
+  <p>Choisir le(s) r&ocirc;le(s) de l'utilisateur</p>
 
   <div>
     <table>
@@ -38,7 +38,7 @@
     </table>
   </div>
   
-  <%= f.submit "Mettre à jour" %>
+  <%= f.submit "Mettre &agrave; jour" %>
 <% end %>
 
 
