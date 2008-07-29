@@ -72,7 +72,7 @@ class Page < ActiveRecord::Base
     
   #This method return an array with all pages
   def Page.get_structured_pages(indent)
-    pages = Page.nav_item.find_all_by_parent_id(nil, :order => :position)
+    pages = Page.find_all_by_parent_id(nil, :order => :position)
     parents = []
     root = Page.new
     root.title_link = "  "
