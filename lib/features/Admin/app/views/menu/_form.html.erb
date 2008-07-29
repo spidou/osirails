@@ -5,5 +5,5 @@
 <%= f.text_field :description_link  %></p>
 
 <p><%=f.label :parent_id%><br/>
-<%= f.collection_select(:parent_id, @pages, :id, :title_link,options = {:prompt => "-- Racine --"})%>
+<%= f.collection_select(:parent_id, @menus, :id, :title_link,options = {:prompt => "-- Racine --"})%>
 

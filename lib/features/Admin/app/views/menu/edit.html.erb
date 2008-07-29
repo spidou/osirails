@@ -1,6 +1,6 @@
-<h4>Edit a page</h4>
+<h4>Modifier un menu</h4>
 
- <% form_for(@page) do |f| %>
+ <% form_for(@menu) do |f| %>
    <%= f.error_messages %>
   <%= render :partial => 'form', :locals => {:f => f} %><br/><br/>
   <%= f.submit 'Mettre à jour' %>
