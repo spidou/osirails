@@ -1,3 +1,29 @@
 <h1>Modifier les permissions</h1>
 
-<%= @role.name%>
+<h2><%= @role.name%></h2>
+
+<h3>Pages</h3>
+<table>
+<% for page in @pages %>
+  <tr>
+    <th>Nom Page</th>
+    <th>Lister</th>
+    <th>Voir</th>
+    <th>Ajouter</th>
+    <th>Modifier</th>
+    <th>Supprimer</th>
+  </tr>
+  <tr>
+      <td>page.name</td>
+      <td><%= check_box_tag "list[]", page, page.list %></td>
+      <td><%= check_box_tag "view", page, page.view %></td>
+      <td><%= check_box_tag "add", page, page.add %></td>
+      <td><%= check_box_tag "edit", page, page.edit %></td>
+      <td><%= check_box_tag "delete", page, page.delete %></td>
+    </tr>
+<% end %>
+</table>
+
+<h3>Business Objects</h3>
+
+
