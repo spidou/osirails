@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>Titre du lien</th>
+    <th>url de la page</th>    
+    <th>Titre de la page</th>
+    <th>Contenu de la page</th>
+    <th>Actions</th>
+  </tr>
+
+    <% for static_page in @static_pages %>
+      <tr>
+        <td><%= static_page.title_link %></td>
+        <td><%= static_page.url %></td>
+        <td><%= static_page.title %></td>
+        <td><%= static_page.text %></td>
+        <td><%= link_to(image_tag("edit", :alt => "Edition"), edit_static_page_path(static_page)) %>
+      </tr>
+    <% end%>
+
+</table>

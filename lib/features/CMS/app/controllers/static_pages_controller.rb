@@ -1,6 +1,10 @@
 class StaticPagesController < ApplicationController
-  def list
-    @static_pages = StaticPage.find(:all, :conditions => ["type = ?", "StaticPage"])
-  end
 
+  def index
+    @static_pages = StaticPage.find(:all)
+  end
+  
+  def edit
+    @static_page = StaticPage.find(params[:id])
+  end
 end
