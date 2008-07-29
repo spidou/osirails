@@ -1,23 +1,26 @@
 class PagesController < ApplicationController
- 
- # This method permit to list all pages
- # get_structured_pages permit to make a indent for page's list
+  
+  # GET /roles
+  # GET /roles.xml
   def index
+    # get_structured_pages permit to make a indent for page's list
     @pages = Page.get_structured_pages("<span class='admin_pages_indent'/>") #FIXME Manage CSS for indent
   end
-
-  # This method permit to make a new page
-  # get_structured_pages permit to make a indent for page's list
+  
+  # GET /roles/new
+  # GET /roles/new.xml
   def new
     @page = Page.new
+    # get_structured_pages permit to make a indent for page's list
     @pages = Page.get_structured_pages("---")
   end
   
-    # This method permit to validate new page
-    # get_structured_pages permit to make a indent for page's list
+  # POST /roles
+  # POST /roles.xml
   def create
-    @pages = Page.get_structured_pages("----")
     @page = Page.new(params[:page])
+    # get_structured_pages permit to make a indent for page's list
+    @pages = Page.get_structured_pages("----")
     if @page.save
       flash[:notice] = 'Votre page est créée avec succes'
       redirect_to :action => 'index'
@@ -26,18 +29,20 @@ class PagesController < ApplicationController
     end
   end
   
-  # This method permit to edit a page
-  # get_structured_pages permit to make a indent for page's list
+  # GET /roles/1/edit
   def edit
     @page = Page.find(params[:id])
+    # get_structured_pages permit to make a indent for page's list
     @pages = Page.get_structured_pages("---")
   end
-
-  # This method permit to validate a page edition
+  
   # can_has_this_parent? => Permit to check if the new parent can has this parent
   # change_parent => method to change parent
-  # get_structured_pages permit to make a indent for page's list  
+  # 
+  # PUT /roles/1
+  # PUT /roles/1.xml
   def update
+    # get_structured_pages permit to make a indent for page's list  
     @pages = Page.get_structured_pages("----")
     @page = Page.find(params[:id])
     parent_id =params[:page].delete(:parent_id)
@@ -69,7 +74,8 @@ class PagesController < ApplicationController
     redirect_to pages_path
   end
   
-  # This method permit to destroy a page
+  # DELETE /roles/1
+  # DELETE /roles/1.xml
   def destroy
     page = Page.find_by_id(params[:id])
     if page.can_delete?
