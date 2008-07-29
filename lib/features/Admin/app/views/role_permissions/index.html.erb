@@ -1,0 +1,15 @@
+<h1>Liste des r&ocirc;les</h1>
+
+<table>
+  <tr>
+    <th>Nom du r&ocirc;le</th>
+    <th>Dernière modification</th>
+  </tr>
+  <% for role in @roles%>
+  <tr>
+    <td><%=link_to role.name, :controller =>"role_permissions_controller", :id=>role, :action =>"edit" , :method => :put%></td>
+    <td><%=role.updated_at.strftime("%d/%m/%Y  [%H:%M]")%></td>
+  </tr>
+  <%end%>
+    
+</table>

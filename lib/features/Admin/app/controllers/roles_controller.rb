@@ -12,11 +12,13 @@ class RolesController < ApplicationController
   # GET /roles/new
   def new
     @role = Role.new
+    @users = User.find(:all, :order => :username)
   end
 
   # GET /roles/1/edit
   def edit
     @role = Role.find(params[:id])
+    @users = User.find(:all, :order => :username)
   end
 
   # POST /roles
@@ -32,6 +34,7 @@ class RolesController < ApplicationController
 
   # PUT /roles/1
   def update
+     params[:role][:user_ids] ||= []
     @role = Role.find(params[:id])
     if @role.update_attributes(params[:role])
       flash[:notice] = 'Le Rôle a été mis-à-jour avec succés.'
@@ -48,6 +51,7 @@ class RolesController < ApplicationController
     redirect_to(roles_url) 
   end
   
+ 
 
 end
 

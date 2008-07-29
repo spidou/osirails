@@ -13,7 +13,7 @@
   
   <div>
     <table>
-      <% for associated_user in User.find(:all, :order => :username) %>
+      <% for associated_user in @users %>
         <tr>
           <td>
             <%= check_box_tag "role[user_ids][]", associated_user.id, @role.users.include?(associated_user) %>

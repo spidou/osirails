@@ -10,7 +10,7 @@
   <% for role in @roles %>
     <tr>
       <td><%=h role.name %></td>
-      <td><%=h role.description %></td>
+      <td title="<%=h role.description %>"><%=get_substring(role.description,30) %></td>
       <td><%= link_to 'D&eacute;tails', role %> &#124;
           <%= link_to 'Modifier', edit_role_path(role) %> &#124;
           <%= link_to 'Supprimer', role, :confirm => 'Etes vous sûr?', :method => :delete %>
