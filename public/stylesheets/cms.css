@@ -1,0 +1,9 @@
+table {
+border: medium solid #000000;
+width: 50%;
+text-align:center;
+}
+td, th {
+border: thin solid #6495ed;
+width: 50%;
+}

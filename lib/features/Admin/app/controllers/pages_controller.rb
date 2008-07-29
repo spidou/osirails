@@ -50,7 +50,6 @@ class PagesController < ApplicationController
       flash[:error] = "Déplacement impossible"
       redirect_to :back
     end
-    
   end
   
   def move_up
