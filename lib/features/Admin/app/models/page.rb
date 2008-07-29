@@ -13,6 +13,9 @@ class Page < ActiveRecord::Base
  
   # Validation Macros
   validates_presence_of :title_link, :message => "ne peut être vide"
+  
+  # Get only pages (and non static_page )
+  named_scope :nav_item, :conditions => {:type => nil}
 
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
