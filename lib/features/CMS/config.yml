@@ -7,6 +7,6 @@ menus:
   admin:
     children:
       cms:
-        title_link: CMS
-        description_link: Gestion des contenus
+        title: CMS
+        description: Gestion des contenus
         url: /cms

@@ -13,18 +13,23 @@ conflicts:
 business_objects:
   - Document
   - DocumentGraphique
+business_objects:
 menus:
-  admin:
-    title_link: Administration
-    description_link: Administration de l'intranet
-    url: /admin
+  Test2_p1:
+    title: Test2_p1
+    description: Test2_p1
+    url: /test2_p1
     children:
-      users:
-        title_link: Utilisateurs
-        description_link: Gestion des utilisateurs
-        url: /users
-      roles:
-        title_link: Roles
-        description_link: Gestion des roles
-        url: /roles
+      Test2_p2:
+        title: Test2_p2
+        description: Test2_p2
+        url: /test2_p2
+      Test2_p3:
+        title: Test2_p3
+        description: Test2_p3
+        url: /test2_p3
+  Test2_p4:
+      title: Test2_p4
+      description: Test2_p4
+      url: /test2_p4
     

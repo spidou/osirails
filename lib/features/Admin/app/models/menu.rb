@@ -12,7 +12,7 @@ class Menu < ActiveRecord::Base
   attr_accessor :parent_array
  
   # Validation Macros
-  validates_presence_of :title_link, :message => "ne peut être vide"
+  validates_presence_of :title, :message => "ne peut être vide"
 
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
@@ -75,7 +75,7 @@ class Menu < ActiveRecord::Base
     menus = Menu.find_all_by_parent_id(nil, :order => :position)
     parents = []
     root = Menu.new
-    root.title_link = "  "
+    root.title = "  "
     root.id =nil
     parents = get_children(menus,parents,indent)
     parents
@@ -85,7 +85,7 @@ class Menu < ActiveRecord::Base
   # This method insert in the parents the menus   
   def Menu.get_children(menus,parents,indent)
     menus.each do |menu|
-      menu.title_link = indent * menu.ancestors.size + menu.title_link if menu.title_link != nil
+      menu.title = indent * menu.ancestors.size + menu.title if menu.title != nil
       parents << menu
           
       # If the menu has children, the get_children method is call.

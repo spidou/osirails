@@ -10,21 +10,21 @@ business_objects:
   - Features
 menus:
   admin:
-    title_link: Administration
-    description_link: Administration de l'intranet
+    title: Administration
+    description: Administration de l'intranet
     url: /admin
     children:
       modules:
-        title_link: Modules
-        description_link: Gestion des modules
+        title: Modules
+        description: Gestion des modules
         url: /features
       roles:
-        title_link: Roles
-        description_link: Gestion des roles
+        title: Roles
+        description: Gestion des roles
         url: /roles
       users:
-        title_link: Users
-        description_link: Gestion des users
+        title: Users
+        description: Gestion des users
         url: /users
     
 

@@ -1,0 +1,19 @@
+<h1>Liste les menus</h1>
+  <table>
+    <tr>
+        <th>Menus</th>
+        <th>Position</th>
+        <th>Actions</th>
+    </tr> 
+    
+    <% for menu in @menus %>
+     <% unless menu.nil? %>
+      <tr>
+        <td title="<%= menu.description %>"><%= menu.title %></td>
+        <td><%= show_up_button(menu) %><%= show_down_button(menu) %></td>
+        <td><%= show_delete_button(menu)%><%= link_to "Modifier", edit_menu_path(menu) %></td>
+      </tr>
+      <% end %>
+    <% end %>  
+</table>
+<%= link_to 'Ajouter un nouveau menu', :action => 'new' %>

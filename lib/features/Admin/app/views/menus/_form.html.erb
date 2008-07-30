@@ -1,0 +1,9 @@
+<p><%=f.label :title, "Titre"%><br/>
+<%= f.text_field :title  %></p>
+
+<p><%=f.label :description, "Description"%><br/>
+<%= f.text_field :description  %></p>
+
+<p><%=f.label :parent_id%><br/>
+<%= f.collection_select(:parent_id, @menus, :id, :title,options = {:prompt => "-- Racine --"})%>
+

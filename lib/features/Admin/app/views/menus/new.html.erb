@@ -1,0 +1,10 @@
+<h4>Nouveau Menu</h4>
+
+
+<% form_for(@menu) do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :locals => {:f => f} %><br/><br/>
+  <%= f.submit "Ajouter" %>
+<% end %>
+
+<%= link_to 'Retour', :action => 'index' %>
