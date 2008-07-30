@@ -18,10 +18,9 @@ class MenuPermissionsController < ApplicationController
     end
     if transaction_error
       flash[:notice] = "Les permissions ont été modifié avec succés"
-      redirect_to (:id => params[:id], :action => 'edit')
     else
       flash[:error] = "Erreur lors de la mise à jour des permissions"
-      redirect_to (:id => params[:id], :action => 'edit')
     end
+    redirect_to (edit_menu_permission_path)
   end
 end

@@ -18,10 +18,9 @@ class BusinessObjectPermissionsController < ApplicationController
     end
     if transaction_error
       flash[:notice] = "Les permissions ont été modifié avec succés"
-      redirect_to(:action => 'edit', :name => params[:name])
     else
-      flash[:error] = "Erreur lors de la mise à jour des permissions"
-      redirect_to(:action => "edit", :name => params[:name])
+      flash[:error] = "Erreur lors de la mise à jour des permissions"      
     end
+    redirect_to(edit_business_object_permission_path)
   end
 end
