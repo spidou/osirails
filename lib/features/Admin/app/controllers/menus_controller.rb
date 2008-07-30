@@ -19,7 +19,7 @@ class MenusController < ApplicationController
     # get_structured_menus permit to make a indent for menu's list
     @menus = Menu.get_structured_menus("----")
     if @menu.save
-      flash[:notice] = 'Votre menu est créée avec succes'
+      flash[:notice] = 'Le menu a &eacute;t&eacute; cr&eacute;&eacute; avec succ&egrave;s'
       redirect_to :action => 'index'
     else
       render :action => 'new'
