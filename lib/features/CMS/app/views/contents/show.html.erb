@@ -10,7 +10,7 @@
    </p>
  <%end%>
  <%= link_to_function("Cette page contient " + pluralize(@content.versions.size,"version", "versions")) do |page|
-       page.visual_effect(:toggle_appear, "list_static_page_versions")
+       page.visual_effect(:toggle, "list_static_page_versions")
     end
 %>
 
