@@ -6,10 +6,10 @@ module ApplicationHelper
   
   def display_flash
     unless flash[:error].nil?
-      return "<p class='flash_error'>" + flash[:error] + "</p>"
+      return "<p class='flashError'>" + flash[:error] + "</p>"
     end
     unless flash[:notice].nil?
-      return "<p class='flash_notice'>" + flash[:notice] + "</p>"
+      return "<p class='flashNotice'>" + flash[:notice] + "</p>"
     end
   end
 end
