@@ -4,7 +4,7 @@ class BusinessObjectPermissionsController < ApplicationController
   end
 
   def edit
-    @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => ["has_permission_type = ?", params[:name]], :include => [:role] )
+    @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => ["has_permission_type = ?", params[:id]], :include => [:role] )
   end
 
   def update

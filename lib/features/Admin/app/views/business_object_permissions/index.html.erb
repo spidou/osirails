@@ -3,7 +3,7 @@
 <h3>Business Object</h3>
 <ul>
 	<% for business_object in @business_object_permissions %>
-	<li><%= link_to business_object.has_permission_type, :action => 'edit', :name => business_object.has_permission_type %></li>	
+	<li><%= link_to business_object.has_permission_type, edit_business_object_permission_path(business_object.has_permission_type) %></li>	
 	<% end %>
 </ul>
 

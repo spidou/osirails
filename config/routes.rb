@@ -7,7 +7,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :menus
   map.resources :contents
   map.resources :permissions
-  map.connect 'business_object_permissions/:name/:action', :controller => 'business_object_permissions'
   map.resources :business_object_permissions
   map.resources :menu_permissions
 
