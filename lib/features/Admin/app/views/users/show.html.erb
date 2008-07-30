@@ -7,11 +7,11 @@
 	<%= @user.enabled ? "Oui" : "Non" %>
 </p>
 <p>
-	<b>Derni&egrave;re connexion</b>
+	<b>Derni&egrave;re connexion:</b>
 	<%= @user.last_connection.nil? ? "Jamais connecté" :@user.last_connection.strftime("%d/%m/%Y  [%H:%M]")  %>
 </p>
 <p>
-  <b>R&ocirc;les:</b>
+  <b>R&ocirc;les: </b> <%= "Aucun" if @user.roles.empty? %>
   <% for role in @user.roles %>
     <ul>
       <li><%=link_to role.name,role %></li>

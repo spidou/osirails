@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      flash[:notice] = 'Le compte utilisateur a été ajouté avec succés.'
+      flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; ajout&eacute; avec succ&egrave;s.'
       redirect_to(@user) 
     else
       render :action => "new"
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       @user.save
     end
     if @user.update_attributes(params[:user])
-      flash[:notice] = 'Le compte utilisateur a été mis-à-jour avec succés.'
+      flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
       redirect_to(@user) 
     else
       render :action => "edit" 
