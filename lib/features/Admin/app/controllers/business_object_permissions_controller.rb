@@ -5,7 +5,6 @@ class BusinessObjectPermissionsController < ApplicationController
 
   def edit
     @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => ["has_permission_type = ?", params[:name]], :include => [:role] )
-    @roles = Role.find(:all)
   end
 
   def update
@@ -19,10 +18,10 @@ class BusinessObjectPermissionsController < ApplicationController
     end
     if transaction_error
       flash[:notice] = "Les permissions ont été modifié avec succés"
-      redirect_to(:action => 'edit', :name => params[:name]) 
+      redirect_to(:action => 'edit', :name => params[:name])
     else
       flash[:error] = "Erreur lors de la mise à jour des permissions"
-      redirect_to :action => "edit"
+      redirect_to(:action => "edit", :name => params[:name])
     end
   end
 end

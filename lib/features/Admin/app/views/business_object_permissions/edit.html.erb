@@ -16,7 +16,7 @@
     <th>Modifier</th>
     <th>Supprimer</th>
   </tr>
-<% form_tag :action => 'update', :name => params[:name] do %>
+<% form_tag(:action => 'update', :name => params[:name]) do %>
 <% for business_object in @business_object_permissions %>
   <tr>
       <td><%= business_object.role.name %></td>

@@ -9,6 +9,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :permissions
   map.connect 'business_object_permissions/:name/:action', :controller => 'business_object_permissions'
   map.resources :business_object_permissions
+  map.resources :menu_permissions
 
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
@@ -47,4 +48,5 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+  
 end
