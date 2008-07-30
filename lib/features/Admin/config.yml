@@ -26,5 +26,7 @@ menus:
         title: Users
         description: Gestion des users
         url: /users
-    
-
+      permissions:
+        title: Permissions
+        description: Gestion des permissions
+        url: /permissions
