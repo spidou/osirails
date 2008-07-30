@@ -1,0 +1,15 @@
+<h4>Nouvelle Static_Page</h4>
+
+
+<% form_for(@content) do |content| %>
+
+         <%= content.error_messages %>
+         
+        <%= render :partial => 'form', :locals => {:content => content} %>
+
+        <%= content.submit  'Edit' %>
+
+  <% end %> 
+
+
+  <%= link_to 'Retour', :action => 'index' %>

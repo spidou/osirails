@@ -8,17 +8,35 @@ class Menu < ActiveRecord::Base
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   has_and_belongs_to_many :roles
+  has_one :content
   
   # Accessor
   attr_accessor :parent_array
+  
+  # Store the ancient parent_id before update parent
+  attr_accessor :old_parent_id, :update_parent
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
-
+  
+  def before_update
+    if self.update_parent
+      @new_parent_id, self.parent_id = self.parent_id, self.old_parent_id
+      self.can_has_this_parent?(@new_parent_id)
+    end
+  end
+  
+  def after_update
+    if self.update_parent
+      self.update_parent = false
+      self.change_parent(@new_parent_id)
+    end
+  end
+  
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
   def change_parent(new_parent_id,position = nil)
-    if self.can_has_this_parent?(new_parent_id) and new_parent_id != self.parent_id.to_s
+    if self.can_has_this_parent?(new_parent_id) and new_parent_id.to_s != self.parent_id.to_s
       self.remove_from_list
       self.parent_id = new_parent_id
       position.nil? ? self.insert_at : self.insert_at(position_in_bounds(position))
@@ -29,12 +47,12 @@ class Menu < ActiveRecord::Base
   
   # This method permit to view if a child can have a new_parent
   def can_has_this_parent?(new_parent_id)
-    return true if new_parent_id == ""
+    return true if new_parent_id == "" or new_parent_id.nil?
     new_parent = Menu.find(new_parent_id)
     return false if new_parent.id == self.id or new_parent.ancestors.include?(self)
     true
   end
-  
+ 
   # This method permit to verify if a menu can be delete or not
   def can_delete?
     !base_item? and !has_children?

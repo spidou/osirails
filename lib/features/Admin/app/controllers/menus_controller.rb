@@ -38,22 +38,23 @@ class MenusController < ApplicationController
   # 
   # PUT /menus/1
   def update
-    # get_structured_menus permit to make a indent for menu's list  
-    @menus = Menu.get_structured_menus("----")
     @menu = Menu.find(params[:id])
-    parent_id =params[:menu].delete(:parent_id)
-    if @menu.can_has_this_parent?(parent_id)          
+#    parent_id =params[:menu].delete(:parent_id)
+#    if @menu.can_has_this_parent?(parent_id)
+
+      @menu.old_parent_id = @menu.parent_id
+      @menu.update_parent = true
+      
       if @menu.update_attributes(params[:menu])
-        @menu.change_parent(parent_id)
         redirect_to menus_path
       else
         flash[:error] = "Erreur lors de la mise à jour de la menu" 
-        render :action => 'edit'
+        redirect_to :action => 'edit'
       end
-    else
-      flash[:error] = "Déplacement impossible"
-      redirect_to :back
-    end
+#    else
+#      flash[:error] = "Déplacement impossible"
+#      redirect_to :back
+#    end
   end
   
   # This method permit to move up a menu.

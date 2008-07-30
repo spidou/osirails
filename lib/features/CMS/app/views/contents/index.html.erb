@@ -1,0 +1,19 @@
+<table>
+  <tr>
+    <th>Titre du lien</th> 
+    <th>Titre de la page</th>
+    <th>Description de la page</th>
+    <th>Actions</th>
+  </tr>
+
+    <% for content in @contents %>
+      <tr>
+        <td title='<%= content.description %>'><%= content.title%></td>
+        <td><%= content.title %><%= content.id %></td>
+        <td><%= content.description%></td> 
+        <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Edit", edit_content_path(content)) %> <%= link_to("Delete", content, {:method => :delete}) %></td>
+      </tr>
+    <% end%>
+</table>
+
+<%= link_to 'Ajouter une nouvelle statique page', :action => 'new' %>

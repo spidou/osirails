@@ -1,0 +1,5 @@
+<% for content in @contents%>
+  <% content.versions.each do |content_version|%>
+    <%= content_version.title%>
+  <%end%>
+<%end%>

@@ -1,9 +1,9 @@
 <h4>Modifier un menu</h4>
 
- <% form_for(@menu) do |f| %>
-   <%= f.error_messages %>
-  <%= render :partial => 'form', :locals => {:f => f} %><br/><br/>
-  <%= f.submit 'Mettre à jour' %>
+ <% form_for(@menu) do |menu| %>
+   <%= menu.error_messages %>
+  <%= render :partial => 'menu', :locals => {:menu => menu} %><br/><br/>
+  <%= menu.submit 'Mettre à jour' %>
 <% end %> 
 
 <%= link_to 'Retour', :action => 'index' %>

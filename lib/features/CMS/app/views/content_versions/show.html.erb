@@ -1,0 +1,12 @@
+
+<p>Document référent : <%= link_to(@content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
+<h1><%= @content_version.title %></h1>
+<h2> <%= @content_version.description %></h2>
+            <p><%= @content_version.text%></p>
+<p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
+<% if @contributors_full_names.length > 0%>
+  <p> Contributeurs : <%= @contributors_full_names.join(', ')%>
+   </p>
+ <%end%>
+ <% %>
+ 

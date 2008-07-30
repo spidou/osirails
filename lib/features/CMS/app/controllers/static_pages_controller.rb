@@ -26,10 +26,11 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def update
     @pages = Page.get_structured_pages("----")
-    @static_page = Page.find(params[:id])
-    position = params[:static_page].delete(:position)
-    @static_page.change_position(position)
+    @static_page = StaticPage.find(params[:id])
     @static_page.update_attributes(params[:static_page])
+    StaticPageVersion.new(:static_page_id => @static_page.id, :title_link => @static_page.title_link, :description_link => @static_page.description_link,
+:url => @static_page.url, :title => @static_page.title, :description => @static_page.description, :author => @static_page.author, :contributors => @static_page.contributors,
+:text => @static_page.text, :tags => @static_page.tags, :position => @static_page.position, :parent_id => @static_page.parent_id, :versioned_at => @static_page.updated_at).save
     redirect_to static_pages_path
   end
   
@@ -61,6 +62,8 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     @contributors = User.find_all_by_id(@static_page.contributors, :include => [:employee])
     @contributors_full_names = []
     @contributors.each {|contributor| @contributors_full_names << contributor.employee.fullname}
+    @static_page_version = []
+    @static_page_versions = @static_page.versions
   end
   
 end

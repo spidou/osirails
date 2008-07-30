@@ -1,0 +1,25 @@
+<fieldset>
+<p><%= label :menu_title, "Titre" %><br/>
+<%= text_field(:menu, :title)  %></p>
+
+<p><%= label :menu_description, "Description" %><br/>
+<%= text_field(:menu, :description)  %></p>
+
+<p><%= label :parent_id, "Parent"%><br/>
+<%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:prompt => "-- Racine --"}) %>
+
+</fieldset>
+
+<fieldset>
+  <caption>Information du contenu</caption>
+  <p><%= content.label :title %><br/>
+  <%= content.text_field :title %></p>
+  
+  <p><%=content.label :description %><br/>
+  <%= content.text_field :description %></p>
+  
+  <p><%= content.label :text %><br/>
+  <%= content.text_area( :text, :cols => 110, :rows => 30) %></p>
+</fieldset>
+
+

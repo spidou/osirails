@@ -24,6 +24,27 @@ ActiveRecord::Schema.define(:version => 20080730044721) do
     t.datetime "updated_at"
   end
 
+  create_table "content_versions", :force => true do |t|
+    t.string   "title"
+    t.string   "description"
+    t.text     "text"
+    t.integer  "menu_id",      :limit => 11
+    t.integer  "content_id",   :limit => 11
+    t.string   "contributors"
+    t.datetime "versioned_at"
+  end
+
+  create_table "contents", :force => true do |t|
+    t.string   "title"
+    t.string   "description"
+    t.text     "text"
+    t.integer  "menu_id",      :limit => 11
+    t.string   "author"
+    t.string   "contributors"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "employees", :force => true do |t|
     t.string   "first_name"
     t.string   "last_name"
