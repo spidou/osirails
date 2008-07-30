@@ -1,15 +1,13 @@
-<h1>Liste des r&ocirc;les</h1>
-
-<table>
-  <tr>
-    <th>Nom du r&ocirc;le</th>
-    <th>Dernière modification</th>
-  </tr>
+<h1>Gestion des permissions des r&ocirc;les</h1>
+<%= display_flash %>
+<h3>R&ocirc;les</h3>
+<ul>
   <% for role in @roles%>
-  <tr>
-    <td><%=link_to role.name, :controller =>"role_permissions_controller", :id=>role, :action =>"edit" , :method => :put%></td>
-    <td><%=role.updated_at.strftime("%d/%m/%Y  [%H:%M]")%></td>
-  </tr>
+    <li>
+      <%=link_to role.name,{:controller =>"role_permissions", :action =>"edit", :id=>role} , :method => :get%>
+    </li>
   <%end%>
-    
-</table>
+</ul>
+<p>
+  <%=link_to "Retour",permissions_path%>
+</p>

@@ -1,5 +1,6 @@
 class Menu < ActiveRecord::Base
   include Permissible
+
   
   # Plugin
   acts_as_tree :order =>:position

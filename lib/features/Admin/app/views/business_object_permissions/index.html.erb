@@ -1,6 +1,6 @@
 <h1>Gestion des permissions des Business Objects</h1>
-
-<h3>Business Object</h3>
+<%= display_flash %>
+<h3>Business Objects</h3>
 <ul>
 	<% for business_object in @business_object_permissions %>
 	<li><%= link_to business_object.has_permission_type, edit_business_object_permission_path(business_object.has_permission_type) %></li>	

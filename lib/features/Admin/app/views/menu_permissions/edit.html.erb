@@ -19,7 +19,7 @@
 <% form_tag(menu_permission_path, :method => 'put') do %>
 <% for menu in @menu_permissions %>
   <tr>
-      <td><%= menu.role.name %></td>
+      <td><%= link_to menu.role.name, edit_role_permission_path(menu.role.id) %></td>
       <td><%= check_box_tag "list[]", menu.role_id, menu.list %></td>
       <td><%= check_box_tag "view[]", menu.role_id, menu.view %></td>
       <td><%= check_box_tag "add[]", menu.role_id, menu.add %></td>
@@ -27,7 +27,7 @@
       <td><%= check_box_tag "delete[]", menu.role_id, menu.delete %></td>
     </tr>
 <% end %>
-</table>
+</table><br/>
 <%= submit_tag "Mettre à jour" %>
-<% end %>
+<% end %><br/><br/>
 <%= link_to "Retour", menu_permissions_path %>
