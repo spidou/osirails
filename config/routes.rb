@@ -1,17 +1,19 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
 
-  map.resources :role_permissions
-  map.resources :business_object_permissions
+  # begin | To create the url architecture "/permissions/*"
+  map.resources :business_object_permissions, :path_prefix => 'permissions'
+  map.resources :menu_permissions, :path_prefix => 'permissions'
+  map.resources :role_permissions, :path_prefix => 'permissions'
+  map.resources :permissions
+  # end
+  
   map.resources :users
   map.resources :roles
   map.resources :features
   map.resources :menus
   map.resources :contents
-  map.resources :permissions
-  map.resources :business_object_permissions
-  map.resources :menu_permissions
-
+  
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action
@@ -28,7 +30,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # Sample resource route with sub-resources:
   #   map.resources :products, :has_many => [ :comments, :sales ], :has_one => :seller
-  
+
   # Sample resource route with more complex sub-resources
   #   map.resources :products do |products|
   #     products.resources :comments
@@ -49,5 +51,5 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
-  
+
 end

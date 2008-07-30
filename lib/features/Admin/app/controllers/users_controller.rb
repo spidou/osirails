@@ -44,7 +44,8 @@ class UsersController < ApplicationController
       flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
       redirect_to(@user) 
     else
-      render :action => "edit" 
+      @roles = Role.find(:all, :order => :name)
+      render :action => "edit"
     end
   end
 
