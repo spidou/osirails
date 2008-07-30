@@ -39,8 +39,7 @@ class MenusController < ApplicationController
   # PUT /menus/1
   def update
     @menu = Menu.find(params[:id])
-    @menu.old_parent_id = @menu.parent_id
-    @menu.update_parent = true
+    @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
     if @menu.update_attributes(params[:menu])
       redirect_to menus_path
     else
