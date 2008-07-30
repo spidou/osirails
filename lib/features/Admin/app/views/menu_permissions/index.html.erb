@@ -1,0 +1,10 @@
+<h1>Gestion des permissions des Menus</h1>
+<%= display_flash %>
+<h3>Menus</h3>
+<ul>
+	<% for menu_permission in @menu_permissions %>
+	<li><%= link_to menu_permission.title, edit_menu_permission_path(menu_permission) %></li>	
+	<% end %>
+</ul>
+
+<%= link_to "Retour", :controller => 'permissions' %>
