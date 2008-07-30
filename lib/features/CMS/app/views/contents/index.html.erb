@@ -9,7 +9,7 @@
     <% for content in @contents %>
       <tr>
         <td title='<%= content.description %>'><%= content.title%></td>
-        <td><%= content.title %><%= content.id %></td>
+        <td><%= content.title %></td>
         <td><%= content.description%></td> 
         <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Edit", edit_content_path(content)) %> <%= link_to("Delete", content, {:method => :delete}) %></td>
       </tr>
