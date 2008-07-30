@@ -20,13 +20,15 @@ class Menu < ActiveRecord::Base
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
   
+
   def before_update
     if self.update_parent
       @new_parent_id, self.parent_id = self.parent_id, self.old_parent_id
       self.can_has_this_parent?(@new_parent_id)
     end
   end
-  
+
+ 
   def after_update
     if self.update_parent
       self.update_parent = false
@@ -50,7 +52,7 @@ class Menu < ActiveRecord::Base
   def can_has_this_parent?(new_parent_id)
     return true if new_parent_id == "" or new_parent_id.nil?
     new_parent = Menu.find(new_parent_id)
-    return false if new_parent.id == self.id or new_parent.ancestors.include?(self)
+    return false if new_parent.id == self.id or new_parent.ancestors.include?(self) or !new_parent.content.nil?
     true
   end
  

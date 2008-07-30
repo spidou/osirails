@@ -39,22 +39,14 @@ class MenusController < ApplicationController
   # PUT /menus/1
   def update
     @menu = Menu.find(params[:id])
-#    parent_id =params[:menu].delete(:parent_id)
-#    if @menu.can_has_this_parent?(parent_id)
-
-      @menu.old_parent_id = @menu.parent_id
-      @menu.update_parent = true
-      
-      if @menu.update_attributes(params[:menu])
-        redirect_to menus_path
-      else
-        flash[:error] = "Erreur lors de la mise à jour de la menu" 
-        redirect_to :action => 'edit'
-      end
-#    else
-#      flash[:error] = "Déplacement impossible"
-#      redirect_to :back
-#    end
+    @menu.old_parent_id = @menu.parent_id
+    @menu.update_parent = true
+    if @menu.update_attributes(params[:menu])
+      redirect_to menus_path
+    else
+      flash[:error] = "Erreur lors de la mise à jour de la menu" 
+      redirect_to :action => 'edit'
+    end
   end
   
   # This method permit to move up a menu.
