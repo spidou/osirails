@@ -51,18 +51,25 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def update
     @content = Content.find(params[:id])
-
+    @menus = Menu.get_structured_menus("---")
+    
+    # This variable permit to make a save of content
     content_attributes  = @content.attributes
-    content_attributes.delete("created_at")
-    content_attributes.delete("updated_at")
-    content_attributes.delete("author")
     content_attributes[:content_id] = params[:id]
-    content_attributes[:versioned_at] = @content.updated_at
     ContentVersion.create(content_attributes)
     
+    # Update content's menu
+    @menu = Menu.find(@content.menu_id)
+    @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
+    
     # TODO Add contributor's name into the contributor_array
-    @content.update_attributes(params[:content])
-    redirect_to contents_path
+    if @content.update_attributes(params[:content]) and @menu.update_attributes(params[:menu])
+      flash[:notive] = 'Votre page est mise à jour.'
+      redirect_to contents_path
+    else
+      flash[:error] = 'Impossible de sauvegarder....'
+      redirect_to edit_content_path(@content)      
+    end
   end
   
   def destroy
