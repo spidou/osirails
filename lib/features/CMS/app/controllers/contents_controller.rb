@@ -77,7 +77,8 @@ class ContentsController < ApplicationController
     @content = Content.find(params[:id])
     @lock_version = @content.lock_version
     
-    # get_structured_menus permit to make a indent for menu's list    
+    # get_structured_menus permit to make a indent for menu's list
+    # TODO Remove the menu item in the structure
     @menus = Menu.get_structured_menus("---")
     
     # This variable permit to make a save of content
@@ -105,12 +106,13 @@ class ContentsController < ApplicationController
     end
     flash[:notice] = 'Votre page est mise à jour.'
     
-    
+   # If @content.update_attributes() failed
   rescue ActiveRecord::StaleObjectError     
     @affiche = true
     flash.now[:error] = "Impossible de modifiez le contenu car vous travaillez sur une version antérieur"
     @content.attributes  = params[:content]
     render :action => :edit 
+    
   end
 
   # DELETE /contents/1  
