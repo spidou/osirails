@@ -1,4 +1,4 @@
-<% for content in @content_versions %>
+<% for content in @content_versions.reverse %>
 <p>Document référent : <%= link_to(content.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
 <h1><%= content.title %></h1>
 <h2> <%= content.description %></h2>
