@@ -17,6 +17,11 @@ class ContentVersion < ActiveRecord::Base
     false
   end
   
+  # This method permit to delete lock_version
+  def lock_version=(value)
+    false
+  end
+  
   # This method return the next and previous StaticPageVersion
   def get_next
     
