@@ -71,3 +71,4 @@ Rails::Initializer.run(:process, $config)
 
 gem 'mislav-will_paginate', '~> 2.2'
 require 'will_paginate'
+# gem install mislav-will_paginate --source http://gems.github.com/
