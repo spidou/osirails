@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080731051438) do
+ActiveRecord::Schema.define(:version => 20080731112556) do
 
   create_table "business_object_permissions", :force => true do |t|
     t.boolean  "list"
@@ -22,6 +22,12 @@ ActiveRecord::Schema.define(:version => 20080731051438) do
     t.integer  "has_permission_id",   :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "configurations", :force => true do |t|
+    t.string   "name"
+    t.text     "value"
+    t.datetime "created_at"
   end
 
   create_table "content_versions", :force => true do |t|
@@ -43,7 +49,7 @@ ActiveRecord::Schema.define(:version => 20080731051438) do
     t.string   "contributors"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "lock_version", :limit => 11, :default => 0
+    t.integer  "lock_version", :limit => 11, :default => 0, :null => false
   end
 
   create_table "employees", :force => true do |t|
