@@ -55,8 +55,10 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     
     # This variable permit to make a save of content
     content_attributes  = @content.attributes
+    content_attributes.delete("contributors")
     content_attributes[:content_id] = params[:id]
     ContentVersion.create(content_attributes)
+    # TODO Add contributor name into conten_versions contributor column
     
     # Update content's menu
     @menu = Menu.find(@content.menu_id)
