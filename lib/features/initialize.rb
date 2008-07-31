@@ -9,7 +9,7 @@ def init(yaml, config, path)
   $LOAD_PATH << model_path
   Dependencies.load_paths << model_path
   config.controller_paths << model_path
-  ActionController::Base.append_view_path(path + '/app/views/')
+  ActionController::Base.append_view_path(File.join(path, 'app', 'views'))
   $LOAD_PATH << File.join(path, 'app', 'helpers')
   
 
