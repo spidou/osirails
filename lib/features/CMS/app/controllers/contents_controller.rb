@@ -25,6 +25,10 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     @menus = Menu.get_structured_menus("---")
   end
   
+  def preview
+     #TODO Make preview method.
+  end
+  
   def create
     @menu = Menu.new(params[:menu])
     @content = Content.new(params[:content]) # TODO Add author name with his session_id
@@ -51,6 +55,7 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def update
     @content = Content.find(params[:id])
+    
     @menus = Menu.get_structured_menus("---")
     
     # This variable permit to make a save of content
@@ -65,13 +70,18 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
     
     # TODO Add contributor's name into the contributor_array
-    if @content.update_attributes(params[:content]) and @menu.update_attributes(params[:menu])
-      flash[:notive] = 'Votre page est mise à jour.'
-      redirect_to contents_path
-    else
+#      @menu.update_attributes(params[:menu])
+      @content.update_attributes(params[:content])
+      rescue ActiveRecord::StaleObjectError
+      flash[:error] = "Quelqu'un est actuellement entrain de modifier cette page. Essayer dans un instant."
+      redirect_to edit_content_path
+
+#      flash[:notive] = 'Votre page est mise à jour.'
+#      redirect_to contents_path
+
+    rescue Exception
       flash[:error] = 'Impossible de sauvegarder....'
-      redirect_to edit_content_path(@content)      
-    end
+      redirect_to edit_content_path(@content)
   end
   
   def destroy
