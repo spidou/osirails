@@ -12,8 +12,4 @@ class Content < ActiveRecord::Base
     self.move_to_bottom if position.nil?
   end
   
-  def before_update
-    
-  end
-  
 end
