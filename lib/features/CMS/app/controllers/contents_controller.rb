@@ -65,13 +65,10 @@ class ContentsController < ApplicationController
   # GET /contents/1/edit
   def edit
     if @content.nil?
-      @content = Content.find(params[:id])
-    
+      @content = Content.find(params[:id])    
       @menu = Menu.find(@content.menu_id)
       @menus = Menu.get_structured_menus("---")
       $session_lock = @content.lock_version
-    else
-      puts @content.id
     end
   end
   
@@ -79,7 +76,7 @@ class ContentsController < ApplicationController
   def update
     @content = Content.find(params[:id])
     @lock_version = @content.lock_version
-
+    
     # get_structured_menus permit to make a indent for menu's list    
     @menus = Menu.get_structured_menus("---")
     
@@ -93,29 +90,27 @@ class ContentsController < ApplicationController
     # Update content's menu
     @menu = Menu.find(@content.menu_id)
     @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
+    
+    # If content isn't in his last version
     if @content.lock_version != $session_lock
       raise ActiveRecord::StaleObjectError
     end
     # TODO Add contributor's name into the contributor_array
-    #      @menu.update_attributes(params[:menu])
-    if @content.update_attributes(params[:content])
-      redirect_to contents_path
+    @content.update_attributes(params[:content])
+    unless @menu.update_attributes(params[:menu])
+      flash[:error] = "Impossible de déplacer le menu"
+      redirect_to edit_content_path
     else
-      #        render :action => :show 
+      redirect_to contents_path
     end
-      
+    flash[:notice] = 'Votre page est mise à jour.'
+    
+    
   rescue ActiveRecord::StaleObjectError     
-    #      flash[:error] = "Quelqu'un est actuellement entrain de modifier cette page. Essayer dans un instant."
-    flash[:error] = "Impossible de modifiez le contenu car vous travaillez sur une version antérieur" 
     @affiche = true
+    flash.now[:error] = "Impossible de modifiez le contenu car vous travaillez sur une version antérieur"
     @content.attributes  = params[:content]
     render :action => :edit 
-    #      flash[:notive] = 'Votre page est mise à jour.'
-    #      redirect_to contents_path
-    #
-    #    rescue Exception
-    #      flash[:error] = 'Impossible de sauvegarder....'
-    #      redirect_to edit_content_path(@content)
   end
 
   # DELETE /contents/1  
