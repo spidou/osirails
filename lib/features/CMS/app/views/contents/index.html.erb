@@ -1,19 +1,22 @@
+<h2>Content</h2>
+
 <table>
   <tr>
-    <th>Titre du lien</th> 
+    <th>Titre du menu</th> 
     <th>Titre de la page</th>
     <th>Description de la page</th>
     <th>Actions</th>
   </tr>
 
     <% for content in @contents %>
+      <% menu = Menu.find_by_id(content.menu_id) %>
       <tr>
-        <td title='<%= content.description %>'><%= content.title%></td>
+        <td title='<%= menu.description %>'><%= menu.title %></td>
         <td><%= content.title %></td>
         <td><%= content.description%></td> 
-        <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Edit", edit_content_path(content)) %> <%= link_to("Delete", content, {:method => :delete}) %></td>
+        <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Modifier", edit_content_path(content)) %> <%= link_to("Supprimer", content, {:method => :delete}) %></td>
       </tr>
     <% end%>
-</table>
+</table><br/>
 
-<%= link_to 'Ajouter une nouvelle statique page', :action => 'new' %>
+<%= link_to 'Ajouter', :action => 'new' %>

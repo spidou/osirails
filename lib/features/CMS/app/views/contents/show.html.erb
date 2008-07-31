@@ -1,7 +1,5 @@
-<h2> Visualisation de la page </h2>
-
-<p><h1> <%= @content.title %></h1></p>
-<p><h2> <%= @content.description %></h2></p>
+<p><h2> <%= @content.title %></h2></p>
+<p><h3> <%= @content.description %></h3></p>
 <p><%= @content.text%></p>
 <%unless @author.nil?%>
 <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
@@ -10,7 +8,7 @@
   <p> Contributeurs : <%= @contributors_full_names.join(', ')%>
   </p>
 <%end%>
-<%= link_to_function("Cette page contient " + pluralize(@content.versions.size,"version", "versions")) do |page|
+<%= link_to_function("Cette page est disponible en " + pluralize(@content.versions.size,"version", "versions")) do |page|
           page.visual_effect(:toggle_appear, "list_content_versions")
    end
 %>

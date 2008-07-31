@@ -1,12 +1,7 @@
-<h4>Edition de la page statique</h4>
+<h4>Edition</h4>
 
 <% form_for(@content) do |content| %>
-
-    <%= content.error_messages %>
-      <%= render :partial => 'form', :locals => {:content => content} %>
-
-      <%= content.submit  'Edit' %>
- 
-  <% end %> 
-
-  <%= link_to 'Retour', :action => 'index' %>
+  <%= content.error_messages %>
+  <%= render :partial => 'form', :locals => {:content => content} %>
+  <%= content.submit  'Modifier' %>  <%= link_to 'Retour', :action => 'index' %>
+<% end %> 

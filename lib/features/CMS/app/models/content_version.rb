@@ -1,10 +1,16 @@
 class ContentVersion < ActiveRecord::Base
   
+  # Relationship
   belongs_to :content
   
   # This method permit to attribute a value to versioned_at
   def updated_at=(value)
     self.versioned_at = value
+  end
+  
+    # This method permit to attribute a value to contributor
+   def contributors=(value)
+    self.contributor=(value)
   end
   
   # This method permit to delete create_at
@@ -22,12 +28,4 @@ class ContentVersion < ActiveRecord::Base
     false
   end
   
-  # This method return the next and previous StaticPageVersion
-  def get_next
-    
-  end
-
-  def get_previous
-    
-  end
 end
