@@ -48,13 +48,19 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   end
   
   def edit
-    @content = Content.find(params[:id])    
+    if params[:content].nil?
+    @content = Content.find(params[:id])
+    
     @menu = Menu.find(@content.menu_id)
     @menus = Menu.get_structured_menus("---")
+    $session_lock = @content.lock_version
+    end
   end
   
   def update
     @content = Content.find(params[:id])
+    content = @content
+    @lock_version = @content.lock_version
     
     @menus = Menu.get_structured_menus("---")
     
@@ -68,20 +74,29 @@ uses_tiny_mce "options" => { :theme => 'advanced',
     # Update content's menu
     @menu = Menu.find(@content.menu_id)
     @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
-    
+    if @content.lock_version != $session_lock
+      raise ActiveRecord::StaleObjectError
+    end
     # TODO Add contributor's name into the contributor_array
 #      @menu.update_attributes(params[:menu])
-      @content.update_attributes(params[:content])
-      rescue ActiveRecord::StaleObjectError
-      flash[:error] = "Quelqu'un est actuellement entrain de modifier cette page. Essayer dans un instant."
-      redirect_to edit_content_path
-
+      if @content.update_attributes(params[:content])
+        $actual_content = nil
+        redirect_to contents_path
+      else
+#        render :action => :show 
+      end
+      
+      @old_content_id = 1
+      rescue ActiveRecord::StaleObjectError     
+#      flash[:error] = "Quelqu'un est actuellement entrain de modifier cette page. Essayer dans un instant."
+      flash[:notice] = "Impossible de modifier"
+      redirect_to :edit, :content => @content
 #      flash[:notive] = 'Votre page est mise à jour.'
 #      redirect_to contents_path
-
-    rescue Exception
-      flash[:error] = 'Impossible de sauvegarder....'
-      redirect_to edit_content_path(@content)
+#
+#    rescue Exception
+#      flash[:error] = 'Impossible de sauvegarder....'
+#      redirect_to edit_content_path(@content)
   end
   
   def destroy
