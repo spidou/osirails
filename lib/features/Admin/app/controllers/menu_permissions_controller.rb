@@ -21,6 +21,6 @@ class MenuPermissionsController < ApplicationController
     else
       flash[:error] = "Erreur lors de la mise à jour des permissions"
     end
-    redirect_to (edit_menu_permission_path)
+    redirect_to(edit_menu_permission_path)
   end
 end
