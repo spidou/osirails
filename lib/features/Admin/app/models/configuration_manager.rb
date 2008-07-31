@@ -11,6 +11,6 @@ class ConfigurationManager
   end
   
   def ConfigurationManager.initialize 
-    Configuration.find(:all,:order=>"DESC", :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
+    Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
   end
 end
