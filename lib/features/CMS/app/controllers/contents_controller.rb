@@ -80,10 +80,11 @@ uses_tiny_mce "options" => { :theme => 'advanced',
   
   def show
     @content = Content.find(params[:id])
-    @author = User.find(@content.author, :include => [:employee])
+    @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
     @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
     @contributors_full_names = []
     @contributors.each {|contributor| @contributors_full_names << contributor.employee.fullname}
+    @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
   end
   
 end

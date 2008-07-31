@@ -1,25 +1,26 @@
 <h2> Visualisation de la page </h2>
 
-<p>Titre de la page : <%= @content.title %></p>
-<p>Description de la page : <%= @content.description %></p>
-<p> Texte de la page : <br/><br/>
-<%= @content.text%></p>
+<p><h1> <%= @content.title %></h1></p>
+<p><h2> <%= @content.description %></h2></p>
+<p><%= @content.text%></p>
+<%unless @author.nil?%>
 <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
+<%end%>
 <% if @contributors_full_names.length > 0%>
   <p> Contributeurs : <%= @contributors_full_names.join(', ')%>
-   </p>
- <%end%>
- <%= link_to_function("Cette page contient " + pluralize(@content.versions.size,"version", "versions")) do |page|
-       page.visual_effect(:toggle, "list_static_page_versions")
-    end
+  </p>
+<%end%>
+<%= link_to_function("Cette page contient " + pluralize(@content.versions.size,"version", "versions")) do |page|
+          page.visual_effect(:toggle_appear, "list_content_versions")
+   end
 %>
 
-<div id="list_static_page_versions" style="display:none;">
-    <p>
+<div id="list_content_versions">
+  <p>
     <ul>
-    <% @content.versions.each do |content_version| %>
-        <li><%=link_to(content_version.versioned_at.strftime("0%w/%m/%Y %H:%M:%S"), :controller => :content_versions, :action => :show, :id => content_version)%></li>
-    <%end%>   
-    </ul>
+      <% @content_versions.each_with_index do |content_version, index| %>
+        <li><%=link_to(content_version.versioned_at.strftime("0%w/%m/%Y %H:%M:%S"), :controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1)%></li>
+        <%end%>   
+      </ul>
     </p>
-</div>
+  </div>

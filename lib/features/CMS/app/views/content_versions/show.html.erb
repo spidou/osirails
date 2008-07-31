@@ -1,10 +1,16 @@
-<p>Document référent : <%= link_to(@content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
-<h1><%= @content_version.title %></h1>
-<h2> <%= @content_version.description %></h2>
-            <p><%= @content_version.text%></p>
+<% for content in @content_versions %>
+<p>Document référent : <%= link_to(content.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
+<h1><%= content.title %></h1>
+<h2> <%= content.description %></h2>
+            <p><%= content.text%></p>
+<%unless @author.nil?%>
 <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
-<% unless @contributor.nil?%>
-  <p> Contributeurs : <%= @contributor.fullname%>
-   </p>
+<%end%>
+<% unless content.contributor.nil? or content.contributor == ""%>
+  <p> Contributeur : <%= content.contributor%>
+  </p>
+<%end%>
+
+ 
  <%end%>
- <% %> 
+  <%= will_paginate @content_versions, :param_name => :version%>

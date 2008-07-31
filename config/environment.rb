@@ -68,3 +68,6 @@ $config = Rails::Configuration.new
   # config.active_record.observers = :cacher, :garbage_collector
 #end
 Rails::Initializer.run(:process, $config)
+
+gem 'mislav-will_paginate', '~> 2.2'
+require 'will_paginate'

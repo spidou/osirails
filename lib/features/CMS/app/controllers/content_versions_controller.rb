@@ -4,11 +4,9 @@ class ContentVersionsController < ApplicationController
   end
   
   def show
-    @content_version = ContentVersion.find(params[:id])
-    # Static_page content the original static_page
-    @content = Content.find(@content_version.content.id)
-    @author = User.find(@content.author, :include => [:employee])
-    # TODO : mettre ce code dans le model
-    @contributor = User.find(@content_version.contributors, :include => [:employee]) unless @content_version.contributors.nil?
+    @content = Content.find(params[:content_id])
+    @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:version],:per_page => 1
+    @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
+
   end
 end
