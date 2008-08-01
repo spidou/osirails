@@ -9,4 +9,3 @@ menus:
       cms:
         title: CMS
         description: Gestion des contenus
-        url: /cms

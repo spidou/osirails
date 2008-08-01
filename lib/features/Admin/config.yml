@@ -37,7 +37,6 @@ menus:
       menus:
         title: Menus
         description: Gestion des menus
-        url: /permissions
 configurations:
   password_policy:
     value: 
