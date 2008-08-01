@@ -111,9 +111,11 @@ def init(yaml, config, path)
     parent_menu = Menu.find_by_name(menu[:parent])
     unless Menu.find_by_name(menu[:name])
       if parent_menu.nil?
-        Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name])
+        #Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name])
+        Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name])
       else
-        Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name], :parent_id =>parent_menu.id )
+        #Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name], :parent_id =>parent_menu.id )
+        Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name], :parent_id =>parent_menu.id )
       end
     end
   end
