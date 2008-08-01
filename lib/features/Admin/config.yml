@@ -12,23 +12,31 @@ menus:
   admin:
     title: Administration
     description: Administration de l'intranet
-    url: /admin
     children:
-      modules:
+      features:
         title: Modules
         description: Gestion des modules
-        url: /features
       roles:
         title: Roles
         description: Gestion des roles
-        url: /roles
       users:
         title: Users
         description: Gestion des users
-        url: /users
       permissions:
         title: Permissions
         description: Gestion des permissions
+      business_object_permissions:
+        title: Business Objects permissions
+        description: Gestion des permissions des business objects
+      menu_permissions:
+        title: Menu permissions
+        description: Gestion des permissions des menus
+      role_permissions:
+          title: Role permissions
+          description: Gestion des permissions des roles
+      menus:
+        title: Menus
+        description: Gestion des menus
         url: /permissions
 configurations:
   password_policy:

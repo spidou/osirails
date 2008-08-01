@@ -1,4 +1,5 @@
 class FeaturesController < ApplicationController
+
   # Method to collect features and to show them into the index view
   def index
     @features = Feature.find(:all)

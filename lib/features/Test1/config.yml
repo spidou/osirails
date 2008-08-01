@@ -8,21 +8,6 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-  admin:
-    title: Administration
-    description: Administration de l'intranet
-    url: /admin
-    children:
-      modules:
-        title: Modules
-        description: Gestion des modules
-        url: /features
-      roles:
-        title: Roles
-        description: Gestion des roles
-        url: /roles
-      users:
-        title: Users
-        description: Gestion des users
-        url: /users
-    
+  test1:
+    title: Test1
+    description: Test1 de l'intranet

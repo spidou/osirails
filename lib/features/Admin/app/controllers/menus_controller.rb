@@ -1,4 +1,6 @@
 class MenusController < ApplicationController
+  # Add permissions for methods
+  method_permission(:edit => ['move_up', 'move_down'])
   
   # GET /menus
   def index

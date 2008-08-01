@@ -1,6 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
 
+  map.login 'login', :controller => 'account'
+  map.logout 'logout', :controller => 'account',  :action => 'logout'
+
   # begin | To create the url architecture "/permissions/*"
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'
@@ -16,6 +19,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :password_policies
   map.resources :employees
   
+
+    
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action

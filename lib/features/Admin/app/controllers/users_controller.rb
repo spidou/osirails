@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+
   # GET /users
   def index
     # TODO In the view index, add the sessions management
@@ -39,6 +40,9 @@ class UsersController < ApplicationController
     unless params[:user][:password].empty?
       @user.updating_password = true
       @user.save
+    else
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
     end
     if @user.update_attributes(params[:user])
       flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'

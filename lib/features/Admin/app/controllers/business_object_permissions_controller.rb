@@ -1,4 +1,5 @@
 class BusinessObjectPermissionsController < ApplicationController
+  
   def index
     @business_object_permissions = BusinessObjectPermission.find(:all, :group => 'has_permission_type')
   end

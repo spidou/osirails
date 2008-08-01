@@ -1,4 +1,5 @@
 class RolesController < ApplicationController
+
   # GET /roles
   def index
     @roles = Role.find(:all)

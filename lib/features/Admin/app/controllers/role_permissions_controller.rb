@@ -1,5 +1,5 @@
 class RolePermissionsController < ApplicationController
-  
+
   def index
     @roles = Role.find(:all)
   end

@@ -1,16 +1,13 @@
 class Menu < ActiveRecord::Base
-  include Permissible
-
-  
-  # Plugin
-  acts_as_tree :order =>:position
-  acts_as_list :scope => :parent_id
-  
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   has_and_belongs_to_many :roles
   has_one :content
-  
+
+  # Plugin
+  acts_as_tree :order =>:position
+  acts_as_list :scope => :parent_id
+
   # Accessor
   attr_accessor :parent_array
   
