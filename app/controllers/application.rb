@@ -6,24 +6,24 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   before_filter :authenticate
   include Permissible::ClassMethode
-  
+
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery :secret => 'd8f4c2392e017e10ad303575cb57d1cd', :except => [:login]
-  
+
   # See ActionController::Base for details 
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
   ActionController::Base.session_options[:session_expires] = 1.day.from_now
-  
+
   # Global variables
   $permission ||= {}
-  
-  ConfigurationManager.initialize
+
+#  ConfigurationManager.initialize
 
   protected
-  
+
   # Method to permit to add permission to an action in a controller
   # options = {:list => ['myaction']}
   def self.method_permission(options)
@@ -31,12 +31,12 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  
+
   # Called when an user try to acces to an unauthorized page
   def unauthorized_action
     render :text => "Vous n'avez pas le droit d'effectuer cette action"
   end
-  
+
   # Do every verification before shows the page
   def authenticate
     if session[:user_id].nil? # If you're not logged
@@ -72,4 +72,3 @@ class ApplicationController < ActionController::Base
     end # if
   end # authenticate
 end # class
-end
