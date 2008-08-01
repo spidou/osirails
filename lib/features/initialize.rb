@@ -96,7 +96,7 @@ def init(yaml, config, path)
   # This method insert in $menu_table all feature's menus
   def menu_insertion(menus,parent_name)
     menus.each_pair do |key,value|
-      $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :url => value["url"], :parent => parent_name}
+      $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name}
       unless value["children"].nil?
         menu_insertion(value["children"], key)
       end
