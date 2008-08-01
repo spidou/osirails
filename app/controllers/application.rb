@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   # Global variables
   $permission ||= {}
 
-#  ConfigurationManager.initialize
+  ConfigurationManager.initialize
 
   protected
 
