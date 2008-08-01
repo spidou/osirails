@@ -1,6 +1,6 @@
 class AccountController < ApplicationController
   skip_before_filter :authenticate
-  
+
   def index
   end
 
@@ -27,5 +27,16 @@ class AccountController < ApplicationController
     reset_session
     redirect_to login_path
     flash[:notice] = "Vous êtes maintenant déconnecté"
+  end
+
+  def lost_password
+    if !params[:username].nil?
+      if User.find_by_username(params[:username])
+        AdminMailer.deliver_notice_admin_lost_password(params[:username])
+        AdminMailer.deliver_notice_user_lost_password(params[:username])
+        flash[:notice] = "L'administrateur a été prévenu"
+        redirect_to login_path
+      end
+    end
   end
 end
