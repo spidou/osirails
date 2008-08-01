@@ -1,0 +1,6 @@
+<h1>Politique de s&eacute;curit&eacute;</h1>
+<% form_tag({:controller =>"password_policies", :action => "index"}, :method => 'put' ) do%>
+<%= label_tag "Pattern"%>
+<%= text_field_tag "pattern"%>
+<%= submit_tag "Valider"%>
+<% end%>

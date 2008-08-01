@@ -34,7 +34,7 @@ class UsersController < ApplicationController
 
   #PUT /users/1
   def update
-    params[:user][:role_ids] ||= []
+    params[:user] ||= []
     @user = User.find(params[:id])
     unless params[:user][:password].empty?
       @user.updating_password = true

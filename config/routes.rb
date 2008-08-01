@@ -13,6 +13,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features
   map.resources :menus
   map.resources :contents
+  map.resources :password_policies
+  map.resources :employees
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
