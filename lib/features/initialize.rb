@@ -20,9 +20,11 @@ def init(yaml, config, path)
   conflicts = yaml['conflicts']
   business_objects = yaml['business_objects']
   menus = yaml['menus']
+  configurations = yaml['configurations']
 
   # This array store all menus in order than they will be displayed
   $menu_table = []
+  $option_configuration = []
    
   feature = Feature.find_or_create_by_name_and_version(name, version)
 
@@ -115,4 +117,11 @@ def init(yaml, config, path)
       end
     end
   end
+  
+  # This method insert into Database  all features options that wasn't present
+  unless configurations.nil?
+    configurations.each_pair  do |key,value|
+      Configuration.create(:name => name+"_"+key, :value => value["value"], :description => value["description"]) unless Configuration.find_by_name(name+"_"+key)
+    end
+  end 
 end

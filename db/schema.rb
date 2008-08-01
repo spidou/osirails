@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080731112556) do
+ActiveRecord::Schema.define(:version => 20080801055352) do
 
   create_table "business_object_permissions", :force => true do |t|
     t.boolean  "list"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20080731112556) do
     t.string   "name"
     t.text     "value"
     t.datetime "created_at"
+    t.string   "description"
   end
 
   create_table "content_versions", :force => true do |t|
