@@ -49,6 +49,6 @@ class Employee < ActiveRecord::Base
   end
   
   def user_create_methode
-    User.create(:username => pattern($pattern,self), :password =>"password",:employee_id => self.id)
+    User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"password",:employee_id => self.id)
   end 
 end

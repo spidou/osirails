@@ -14,9 +14,9 @@ class User < ActiveRecord::Base
     actual = ConfigurationManager.admin_password_policy["actual"]
     reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
     # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
-    mess = ConfigurationManager.admin_password_policy[actual.gsub(/l/,"d")]
+    message = ConfigurationManager.admin_password_policy[actual.gsub(/l/,"d")]
 
-    user.validates_format_of :password, :with => reg ,:message =>  mess
+    user.validates_format_of :password, :with => reg ,:message =>  message
   end
   
   # Accessors
