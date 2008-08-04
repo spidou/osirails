@@ -8,7 +8,7 @@
   <br/>-opt: représente le nombre de caract&egrave;res à garder dans l&apos;attribut(aucune valeur correspond &agrave; l&apos;attribut en entier)
   <br/>-ex: soit l&apos;employ&eacute;e Jean DUPPON et le squellette {FIRST_NAME,1}_{last_name} => J_duppon
   <br/>&nbsp;&nbsp;Comme vous avez pu le constatez, il suffit de mettre l&apos;attribut en majuscule ou minuscule pour choisir la casse du contenu de l'attribut
-  <br/>&nbsp;&nbsp;De plus il vous est possible d&apos:ins&acute;rer autant de caract&egrave;res que vous voulez entre les modules exemple avec un modéle type mail: {first_name}.{last_name}@emr-oi.fr 
+  <br/>&nbsp;&nbsp;De plus il vous est possible d&apos;ins&eacute;rer autant de caract&egrave;res que vous voulez entre les modules exemple avec un modéle type mail: {first_name}.{last_name}@emr-oi.fr 
 </p>
 <br/><br/>
 
@@ -16,23 +16,28 @@
 <%= display_validity_date%> Jour(s)<br/><br/>
 
 <%= label_tag "Niveau sécurité Mot de Passe" %> 
-<ul>  
+<ul> 
+   <li>
+     <%= display_radio("l0")%>
+     <%= label_tag "Sans Sécurité"%>
+     <p>Les Utlisateurs pourront choisir un mot de passe sans aucune resctriction mais cela aura pour effet de nuir gravement à la s&eacute;curit&eacute;. </p>
+   </li> 
    <li>
      <%= display_radio("l1")%>
      <%= label_tag "Premier niveau"%>
-     <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 6 et 40 caract&egrave;res et devant comporter des chiffres ou des lettres </p>
+     <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 6 et 40 caract&egrave;res et devant comporter des chiffres ou des lettres. </p>
    </li>
 
   <li>
     <%= display_radio("l2")%>
     <%= label_tag "Second niveau"%> 
-    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres&#44; et possédant au moins un caractére spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;  </p>
+    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres&#44; et possédant au moins un caractére spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
   </li>
   
   <li>
     <%= display_radio("l3")%>
     <%= label_tag "Troisiéme niveau"%>
-    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres &#40;en majuscule et minuscule&#41;&#44; et poss&eacute;dant au moins un caract&egrave;re spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;  </p>
+    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres &#40;en majuscule et minuscule&#41;&#44; et poss&eacute;dant au moins un caract&egrave;re spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
   </li>
 </ul>
 <%= submit_tag "Valider" %>

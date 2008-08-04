@@ -43,6 +43,8 @@ menus:
 configurations:
   password_policy:
     value:
+      l0: ''
+      d0: Le niveau actuel ne requiere aucun modéle particulier mais n'offre aucune sécurité!
       l1: '^([0-9]|[A-Z]|[a-z]){6,40}$'
       d1: Vous devez utiliser un mot de passe comportant entre 6 et 40 caractères et devant comporter des chiffres ou des lettres
       l2: '^([0-9a-z\x20-\x7E]|[0-9A-Z\x20-\x7E]){8,40}$'
