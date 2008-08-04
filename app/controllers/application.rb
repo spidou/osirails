@@ -29,6 +29,18 @@ ConfigurationManager.initialise_options
   def self.method_permission(options)
     $permission[controller_path] = options
   end
+  
+   # This method return the feature name
+  def feature_name(file)
+    file = file.split("/").slice(0...-3).join('/')
+    yaml = YAML.load(File.open(file+'/config.yml'))
+    name = yaml['name']
+  end
+  
+  # This methods return an array with options configuration for a controller
+  def search_methods(file)
+    ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
+  end
 
   private
 
@@ -71,17 +83,4 @@ ConfigurationManager.initialise_options
       end # case
     end # if
   end # authenticate
-  
-  # This method return the feature name
-  def feature_name(file)
-    file = file.split("/").slice(0...-3).join('/')
-    yaml = YAML.load(File.open(file+'/config.yml'))
-    name = yaml['name']
-  end
-  
-  # This methods return an array with options configuration for a controller
-  def search_methods(file)
-    ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
-  end
-  
 end # class
