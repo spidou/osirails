@@ -46,7 +46,7 @@ class MenusController < ApplicationController
     if @menu.update_attributes(params[:menu])
       redirect_to menus_path
     else
-      flash[:error] = "Erreur lors de la mise à jour de la menu" 
+      flash[:error] = "Une erreur est survenue lors de la modification du menu"
       redirect_to :action => 'edit'
     end
   end
@@ -70,12 +70,12 @@ class MenusController < ApplicationController
     menu = Menu.find_by_id(params[:id])
     if menu.can_delete?
       if menu.destroy
-        flash[:notice] = "Menu supprimer avec succes"
+        flash[:notice] = "Le menu a &eacute;t&eacute; supprim&eacute; avec succ&egrave;s"
       else 
-        flash[:error] = "La suppression de la menu a échouée"
+        flash[:error] = "La suppression du menu a &eacute;chou&eacute;"
       end
     else 
-      flash[:error] = "Cette menu n'est pas supprimable"
+      flash[:error] = "Impossible de supprimer ce menu"
     end
     redirect_to menus_path
   end 
