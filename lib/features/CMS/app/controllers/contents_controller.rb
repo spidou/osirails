@@ -66,9 +66,10 @@ class ContentsController < ApplicationController
     # This variable permit to make a save of content
     content_attributes  = @content.attributes
     content_attributes.delete("contributors")
+    content_attributes.delete("author_id")
     content_attributes[:content_id] = params[:id]
+    content_attributes[:contributor_id] = current_user.id
     ContentVersion.create(content_attributes)
-    # TODO Add contributor name into conten_versions contributor column
     
     # Update content's menu
     @menu = Menu.find(@content.menu_id)
@@ -79,7 +80,9 @@ class ContentsController < ApplicationController
       raise ActiveRecord::StaleObjectError
     end
     # TODO Add contributor's name into the contributor_array
-    @content.update_attributes(params[:content])
+    @content.contributors ||= []
+    @content.contributors << current_user.id unless @content.contributors.include?(current_user.id)
+    @content.update_attributes(params[:content]) 
     unless @menu.update_attributes(params[:menu])
       flash[:error] = "Impossible de déplacer le menu"
       redirect_to edit_content_path
