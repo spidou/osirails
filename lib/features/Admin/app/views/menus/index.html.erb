@@ -1,4 +1,4 @@
-<h1>Liste les menus</h1>
+<h1>Liste des menus</h1>
   <table>
     <tr>
         <th>Menus</th>
@@ -11,7 +11,9 @@
       <tr>
         <td title="<%= menu.description %>"><%= menu.title %></td>
         <td><%= show_up_button(menu) %><%= show_down_button(menu) %></td>
-        <td><%= show_delete_button(menu)%><%= link_to "Modifier", edit_menu_path(menu) %></td>
+        <td><%= link_to "Modifier", edit_menu_path(menu) %>
+            <%= show_delete_button(menu)%>
+        </td>
       </tr>
       <% end %>
     <% end %>  

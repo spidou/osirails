@@ -6,6 +6,6 @@
 <%= menu.text_field :description  %></p>
 
 <p><%=menu.label :parent_id%><br/>
-<%= menu.collection_select(:parent_id, @menus, :id, :title,options = {:include_blank => '---Racine---'})%>
+<%= menu.collection_select(:parent_id, @menus, :id, :title,options = {:include_blank => '-- Racine --'})%>
 </fieldset>
 
