@@ -39,10 +39,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id]) 
     unless params[:user][:password].empty?
       @user.updating_password = true
-      if params[:temporary_password]==false
-        @user.expire_date = Time.now + ConfigurationManager.admin_password_validity.day
+      if params[:temporary_password] == false
+        @user.password_updated_at = Time.now 
       else
-        @user.expire_date = nil
+        @user.password_updated_at = nil
       end
       @user.save
     else

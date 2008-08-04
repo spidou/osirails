@@ -5,10 +5,10 @@ class PasswordPoliciesController < ApplicationController
   
   def update
     tmp = ConfigurationManager.admin_password_policy
-    tmp["actual"]=params[:level]
-    ConfigurationManager.admin_password_policy=tmp 
+    tmp["actual"] = params[:level]
+    ConfigurationManager.admin_password_policy= tmp 
     ConfigurationManager.admin_user_pattern= params[:pattern]
-    ConfigurationManager.admin_password_validity=params[:validity]
+    ConfigurationManager.admin_password_validity= params[:validity]
     flash[:notice] = "Modification appliquées avec succés"
     render :action => "index"
   end
