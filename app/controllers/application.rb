@@ -4,7 +4,7 @@
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-  before_filter :authenticate
+#  before_filter :authenticate
   include Permissible::ClassMethode
   
   # See ActionController::RequestForgeryProtection for details
