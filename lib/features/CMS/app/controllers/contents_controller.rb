@@ -29,6 +29,7 @@ class ContentsController < ApplicationController
   # POST /contents
   def create
     @menu = Menu.new(params[:menu])
+    @menus = Menu.get_structured_menus("---")
     @content = Content.new(params[:content]) # TODO Add author name with his session_id
     if @menu.save
       @content.menu_id = @menu.id
@@ -39,7 +40,7 @@ class ContentsController < ApplicationController
         @menu.destroy
         render :action => 'new'
       end
-    else 
+    else
       render :action => 'new'
     end
   end
