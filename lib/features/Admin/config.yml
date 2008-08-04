@@ -47,10 +47,23 @@ configurations:
   user_pattern:  
     description: modéle que doit respecter le générateur de compte d'utilisateur
     value: '{first_name,1}.{LAST_NAME}'
-  menus_test:
+  societies_configurations_name:
+    description: Nom de l'entreprise
+    value: EMR
+  societies_configurations_address:
+    description: Adresse de l'entreprise
     value:
-      cle1: plop
-      cle2: plaf
-  menus_plouf:
-    description: description de plouf
-    value: value de plouf
+      first_line: 32, Rue des pommes
+      second_line: Pomier
+      twon: Sainte-Marie
+      code_zip: 97400
+      country: "France - Réunion"
+  societies_configurations_phone:
+      description: Numéro de téléphone de l'entreprise
+      value: 0692001122
+  societies_configurations_fax:
+      description: Numéro de fax de l'entreprise
+      value: 0692001123
+  societies_configurations_siret:
+      description: Numéro SIRET
+      value: 01234567891234
