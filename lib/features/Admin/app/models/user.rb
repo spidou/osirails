@@ -10,7 +10,13 @@ class User < ActiveRecord::Base
     user.before_save :password_encryption
     user.validates_presence_of :password, :message => "ne peut être vide"
     user.validates_confirmation_of :password, :message => "ne correspondent pas"
-#    user.validates_format_of :password, :with => /^(?=.*([a-z]|[A-Z]))([\x20-\x7E]){8,40}$/ ,:message => "doit contenir au minimum 8 caractéres et au maximum 40 caractéres"
+    # find the index of the actual selected regex to choose the good one into the db
+    actual = ConfigurationManager.admin_password_policy["actual"]
+    reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
+    # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
+    mess = ConfigurationManager.admin_password_policy[actual.gsub(/l/,"d")]
+
+    user.validates_format_of :password, :with => reg ,:message =>  mess
   end
   
   # Accessors

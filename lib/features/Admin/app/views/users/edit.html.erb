@@ -15,8 +15,12 @@
       <%= f.label :password_confirmation, "Confirmation du mot de passe" %><br />
       <%= f.password_field :password_confirmation %>
     </p>
+    <p>
+			<%= label_tag :temporary_password, "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :" %>
+			<%= check_box_tag :temporary_password, true, false %>
+		</p>
 		<p>
-			<%= f.label :enabled, "Compte activ&eacute;" %>
+			<%= f.label :enabled, "Compte activ&eacute; :" %>
 			<%= f.check_box :enabled %>
 		</p>
   </div>

@@ -1,9 +1,16 @@
 class PasswordPoliciesController < ApplicationController
   
   def index
-     $pattern = "{first_name,1}-{LAST_NAME}"
-    # $pattern = params[:pattern]
-    flash[:notice] = $pattern
+  end
+  
+  def update
+    tmp = ConfigurationManager.admin_password_policy
+    tmp["actual"]=params[:level]
+    ConfigurationManager.admin_password_policy=tmp 
+    ConfigurationManager.admin_user_pattern= params[:pattern]
+    ConfigurationManager.admin_password_validity=params[:validity]
+    flash[:notice] = "Modification appliquées avec succés"
+    render :action => "index"
   end
   
 end

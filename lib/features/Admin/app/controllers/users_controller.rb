@@ -36,9 +36,14 @@ class UsersController < ApplicationController
   #PUT /users/1
   def update
     params[:user] ||= []
-    @user = User.find(params[:id])
+    @user = User.find(params[:id]) 
     unless params[:user][:password].empty?
       @user.updating_password = true
+      if params[:temporary_password]==false
+        @user.expire_date = Time.now + ConfigurationManager.admin_password_validity.day
+      else
+        @user.expire_date = nil
+      end
       @user.save
     else
       params[:user].delete(:password)

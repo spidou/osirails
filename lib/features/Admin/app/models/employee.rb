@@ -1,6 +1,6 @@
 class Employee < ActiveRecord::Base
   has_one :user
-  after_create :methode
+  after_create :user_create_methode
   
   def pattern(pat,obj)
     retour = ""
@@ -44,7 +44,11 @@ class Employee < ActiveRecord::Base
       return retour.to_s
   end
   
-  def methode
-    User.create(:username => pattern($pattern,self), :password =>"password")
+  def fullname
+    "#{self.first_name} #{self.last_name}"
+  end
+  
+  def user_create_methode
+    User.create(:username => pattern($pattern,self), :password =>"password",:employee_id => self.id)
   end 
 end
