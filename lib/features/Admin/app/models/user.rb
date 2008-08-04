@@ -52,6 +52,7 @@ class User < ActiveRecord::Base
   # Update the column last_connection when a user loggin
   def update_connection
     update_attribute('last_connection', Time.now)
+    update_activity
   end
   
   # Update the column last_activity whenever a user request for a page

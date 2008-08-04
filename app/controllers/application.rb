@@ -42,6 +42,10 @@ ConfigurationManager.initialise_options
     ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
   end
 
+  def current_user
+    session[:user]
+  end
+  
   private
 
   # Called when an user try to acces to an unauthorized page
@@ -56,13 +60,11 @@ ConfigurationManager.initialise_options
 
   # Do every verification before shows the page
   def authenticate
-    if session[:user_id].nil? # If you're not logged
+    if session[:user].nil? # If you're not logged
       session[:initial_uri] = request.request_uri
       redirect_to login_path
       flash[:error] = "Vous n'êtes pas logger !"
     else # If you're logged
-      current_user = User.find(session[:user_id])
-      current_user.update_activity
       $permission[controller_path] ||= {}
       case params[:action]
       when *['index'] + ($permission[controller_path][:list] || [])

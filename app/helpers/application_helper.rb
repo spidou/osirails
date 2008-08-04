@@ -14,6 +14,6 @@ module ApplicationHelper
   end
   
   def current_user
-    return User.find(session[:user_id]) if session[:user_id] # TODO Add the :include option for the employee table
+    session[:user]
   end
 end

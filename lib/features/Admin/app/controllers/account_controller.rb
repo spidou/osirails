@@ -5,11 +5,11 @@ class AccountController < ApplicationController
   end
 
   def login
-    if @user = User.find_by_username(params[:username])
+    if @user = User.find_by_username(params[:username], :include => :employee)
       if @user.compare_password(params[:password])
         if @user.enabled == true
           @user.update_connection
-          session[:user_id] = @user.id
+          session[:user] = @user
           session[:initial_uri] ||= permissions_path
           redirect_to session[:initial_uri]
           flash[:notice] = "Authentification réussie"
