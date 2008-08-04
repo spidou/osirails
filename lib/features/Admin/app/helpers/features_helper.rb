@@ -30,9 +30,9 @@ module FeaturesHelper
        button = "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous devez d&#146abord désactiver le module "+feature.name+"!' OnClick=\"alert ('Vous devez d&#146abord désactiver le module "+feature.name+"'); return false\">Oui</a>"
     else
       if feature.installed?
-        button = link_to("<div class=\"admin_features_activated-installed\" >Oui</div>", {:action => "show", :id => feature.id}, :title=>'Cliquez ici pour désinstaller ['+feature.name+']', :method => :get)
+        button = link_to("Oui", {:action => "show", :id => feature.id}, :title=>'Cliquez ici pour désinstaller ['+feature.name+']',:class => 'admin_features_activated-installed', :method => :get)
       else 
-        button = link_to("<div class=\"admin_features_non_activated-installed\"  >Non</div>", {:action => "install", :id => feature.id}, :title=>'Cliquez ici pour installer ['+feature.name+']', :confirm => 'Voulez-vous installer le module ['+feature.name+'] ?', :method => :put) 
+        button = link_to("<div class=\"admin_features_non_activated-installed\"  >Non</div>", {:action => "install", :id => feature.id},:class => 'admin_features_non_activated-installed', :title=>'Cliquez ici pour installer ['+feature.name+']', :confirm => 'Voulez-vous installer le module ['+feature.name+'] ?', :method => :put) 
       end 
       button
     end 
@@ -50,9 +50,9 @@ module FeaturesHelper
       button = "<a class=\"admin_features_non_activated-installed\" href=\" \" title='Vous devez d&#146abord installer le module "+feature.name+"!' OnClick=\"alert ('Vous devez d&#146abord installer le module "+feature.name+"'); return false\">Non</a>"
     else
      if feature.activated? 
-        button = link_to("<div class=\"admin_features_activated-installed\">Oui</div>", {:action => "disable", :id => feature.id},  :title=>'Cliquez ici pour désactiverle module ['+feature.name+']', :confirm => 'Voulez-vous desactiver le module ['+feature.name+'] ?', :method => :put) 
+        button = link_to("Oui", {:action => "disable", :id => feature.id},  :title=>'Cliquez ici pour désactiverle module ['+feature.name+']',:class=>'admin_features_activated-installed', :confirm => 'Voulez-vous desactiver le module ['+feature.name+'] ?', :method => :put) 
       else
-        button = link_to("<div class=\"admin_features_non_activated-installed\">Non</div>", {:action => "enable", :id => feature.id},  :title=>'Cliquez ici pour activer le module ['+feature.name+']', :confirm => 'Voulez-vous activer le module ['+feature.name+'] ?', :method => :put)
+        button = link_to("Non", {:action => "enable", :id => feature.id},  :title=>'Cliquez ici pour activer le module ['+feature.name+']',:class=> 'admin_features_non_activated-installed', :confirm => 'Voulez-vous activer le module ['+feature.name+'] ?', :method => :put)
       end
     end
      button 
