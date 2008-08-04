@@ -23,7 +23,7 @@ module FeaturesHelper
   
   # Helper method to display the good link for the gestion of installation/uninstallation of a feature
   def display_install_link(feature)
-    if feature.name == "Admin" 
+    if feature.base_feature? 
         button= "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous ne pouvez pas désinstaller le module "+feature.name+" car il appartient au noyau  !' Onclick=\"alert ('Vous ne devez pas désinstaller le module "+feature.name+" car il appartient au noyau  ! ');return false\" >Oui</a>" if feature.installed?
     elsif feature.activated?
       # button = link_to("<div class=\"admin_features_activated-installed\">Oui</div>", {:action => "index", :id => feature.id}, :title=>'Vous devez désactiver le module avant de le désactiver!', :confirm => 'Vous devez désactiver le module'+feature.name, :method => :get)
@@ -43,7 +43,7 @@ module FeaturesHelper
   def display_activate_link(feature)
     if feature.base_feature? and feature.is_kernel_feature? 
       if feature.activated?
-        button= "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous ne pouvez pas désactiver le module "+feature.name+" car c'est un module critique du noyau!' Onclick=\"alert ('Vous ne devez pas désactiver le module "+feature.name+" car il appartient au noyau!');return false\" >Oui</a>"
+        button= "<a class=\"admin_features_activated-installed\" href=\" \" title=\"Vous ne pouvez pas désactiver le module "+feature.name+" car c&#146est un module critique du noyau!\" Onclick=\"alert ('Vous ne devez pas désactiver le module "+feature.name+" car il appartient au noyau!');return false\" >Oui</a>"
       end
     elsif !feature.installed?
       # button = link_to("<div class=\"admin_features_non_activated-installed\" >Non</div>", {:action => "index", :id => feature.id}, :title=>'Vous devez installer le module avant de l\'activer!' , :onclick => 'alert( "Vous devez installer le module") '+feature.name , :method => :get)

@@ -1,11 +1,15 @@
 table {
 border: medium solid #000000;
 width: 50%;
-/*text-align:center;*/
 }
 td, th {
 border: thin solid #6495ed;
 /*width: 50%;*/
+}
+#feature_managment{
+border: medium solid #000000;
+width: 50%;
+text-align:center;
 }
 .admin_features_activated-installed{
   color: green;
@@ -17,4 +21,10 @@ border: thin solid #6495ed;
 }
 .admin_pages_indent{
   width: 10px;
+}
+
+body, p, ol, ul, td {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   13px;
+  line-height: 18px;
 }
