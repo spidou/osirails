@@ -79,9 +79,12 @@ class ContentsController < ApplicationController
     if @content.lock_version != $session_lock
       raise ActiveRecord::StaleObjectError
     end
-    # TODO Add contributor's name into the contributor_array
+    # TODO Add contributor's id into the contributor_array  
+    
     @content.contributors ||= []
-    @content.contributors << current_user.id unless @content.contributors.include?(current_user.id)
+    params[:content][:contributors] = @content.contributors
+    params[:content][:contributors] << current_user.id unless @content.contributors.include?(current_user.id)
+    puts @content.contributors.size
     @content.update_attributes(params[:content]) 
     unless @menu.update_attributes(params[:menu])
       flash[:error] = "Impossible de déplacer le menu"
