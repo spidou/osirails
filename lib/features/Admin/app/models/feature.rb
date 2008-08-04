@@ -57,7 +57,9 @@ class Feature < ActiveRecord::Base
     Feature.find(:all).each do |feature|
       if feature.has_dependencies?
         feature.dependencies.each do |dependence|
-          if dependence[:name] == self.name && dependence[:version].include?(self.version)
+          # raise dependence.version.include?(self.version).to_s if dependence[:name]!="Test3"
+          if dependence[:name] == self.name and dependence[:version].to_s.include?(self.version)
+            # raise feature.name+" "+feature.version
             dependencies << {:name => feature.name, :version => feature.version}
           end
         end
@@ -265,7 +267,7 @@ class Feature < ActiveRecord::Base
       unless self.deactivate_children.empty?
         self.deactivate_children.size>1 ? message  << "D'autres modules dépendent de ce module:<ul> ": message  << "Un module dépend de ce module:<ul> " 
         self.deactivate_children.each do |error|
-          message  << "<li>" + error[:name] + " [v:" + error[:version].join(",  v:") + "]</li>"
+          message  << "<li>" + error[:name] + " [v:" + error[:version] + "]</li>"
         end
         message << "</ul>"
       end
@@ -283,7 +285,7 @@ class Feature < ActiveRecord::Base
       unless self.able_to_install_conflicts.empty?
         self.able_to_install_conflicts.size>1 ? message << "<br/>les conflits suivants ont été détectés:<ul> " : message << "<br />le conflit suivant a été détecté:<ul> "
         self.able_to_install_conflicts.each do |error|
-          message << "<li>" + error[:name] + " [ v:" + error[:version].join( ", v:") + "]</li>"
+          message << "<li>" + error[:name] + " [ v:" + error[:version].join(",  v:") + "]</li>"
         end
         message << "</ul>"
       end
@@ -299,7 +301,7 @@ class Feature < ActiveRecord::Base
       unless self.able_to_uninstall_children.empty?
         message << "D'autres modules dépendent de ce module:<ul> "
         self.able_to_uninstall_children.each do |error|
-          message << "<li>" + error[:name].to_s + " [v:" + error[:version].join(", v:")+"]</li>"
+          message << "<li>" + error[:name].to_s + " [v:" + error[:version] +"]</li>"
         end
         message << "</ul>"
       end

@@ -13,7 +13,6 @@ conflicts:
 business_objects:
   - Document
   - DocumentGraphique
-business_objects:
 menus:
   Test2_p1:
     title: Test2_p1

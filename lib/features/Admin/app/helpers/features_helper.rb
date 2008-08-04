@@ -23,7 +23,7 @@ module FeaturesHelper
   
   # Helper method to display the good link for the gestion of installation/uninstallation of a feature
   def display_install_link(feature)
-    if feature.base_feature? 
+    if feature.name == "Admin" 
         button= "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous ne pouvez pas désinstaller le module "+feature.name+" car il appartient au noyau  !' Onclick=\"alert ('Vous ne devez pas désinstaller le module "+feature.name+" car il appartient au noyau  ! ');return false\" >Oui</a>" if feature.installed?
     elsif feature.activated?
       # button = link_to("<div class=\"admin_features_activated-installed\">Oui</div>", {:action => "index", :id => feature.id}, :title=>'Vous devez désactiver le module avant de le désactiver!', :confirm => 'Vous devez désactiver le module'+feature.name, :method => :get)

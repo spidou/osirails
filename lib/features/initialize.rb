@@ -27,7 +27,18 @@ def init(yaml, config, path)
   $option_configuration = []
    
   feature = Feature.find_or_create_by_name_and_version(name, version)
-
+  
+  # Test if feature belongs to base of the application
+  if path == directory 
+     feature.installed = 1 
+     feature.save
+  end
+  
+  if Feature::FEATURES_NOT_ABLE_TO_DEACTIVATE.include?(feature.name)
+    feature.activated = 1
+    feature.save  
+  end
+  
   #Test of dependencies for this feature
   dependencies_hash = []
   unless dependencies.nil?
@@ -69,7 +80,8 @@ def init(yaml, config, path)
       end  
     end
   end
-
+  
+  
   #Test if all permission for all menus are present
   def menus_permisisons_verification(menus)
     roles_count = Role.count
