@@ -7,19 +7,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate
   include Permissible::ClassMethode
   
-  # This method return the feature name
-  def feature_name(file)
-    file = file.split("/").slice(0...-3).join('/')
-    yaml = YAML.load(File.open(file+'/config.yml'))
-    name = yaml['name']
-  end
-  
-  # This methods return an array with options configuration for a controller
-  def search_methods(file)
-    ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
-  end
-  
-  
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery :secret => 'd8f4c2392e017e10ad303575cb57d1cd', :except => [:login]
@@ -84,4 +71,17 @@ ConfigurationManager.initialise_options
       end # case
     end # if
   end # authenticate
+  
+  # This method return the feature name
+  def feature_name(file)
+    file = file.split("/").slice(0...-3).join('/')
+    yaml = YAML.load(File.open(file+'/config.yml'))
+    name = yaml['name']
+  end
+  
+  # This methods return an array with options configuration for a controller
+  def search_methods(file)
+    ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
+  end
+  
 end # class
