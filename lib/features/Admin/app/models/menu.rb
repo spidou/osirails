@@ -1,7 +1,7 @@
 class Menu < ActiveRecord::Base
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
-  has_and_belongs_to_many :roles
+  has_many :menu_permissions
   has_one :content
 
   # Plugin
