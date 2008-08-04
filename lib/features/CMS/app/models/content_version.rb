@@ -2,6 +2,7 @@ class ContentVersion < ActiveRecord::Base
   
   # Relationship
   belongs_to :content
+  belongs_to :contributor, :class_name => "User"
   
   # This method permit to attribute a value to versioned_at
   def updated_at=(value)
