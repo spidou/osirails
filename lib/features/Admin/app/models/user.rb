@@ -59,6 +59,11 @@ class User < ActiveRecord::Base
   def update_activity
     update_attribute('last_activity', Time.now)
   end
+  
+  def expired?
+    return true if password_updated_at.nil?
+    password_updated_at + ConfigurationManager.admin_password_validity.day < Time.now ? true : false
+  end
 
 # TODO delete the Add link that been used for dev purposes
 end

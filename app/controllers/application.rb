@@ -4,9 +4,9 @@
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
- # before_filter :authenticate
+  before_filter :authenticate
   include Permissible::ClassMethode
-  
+
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery :secret => 'd8f4c2392e017e10ad303575cb57d1cd', :except => [:login]
@@ -15,12 +15,12 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
-   ActionController::Base.session_options[:session_expires] = 1.day.from_now
+  ActionController::Base.session_options[:session_expires] = 1.day.from_now
 
   # Global variables
   $permission ||= {}
-  
-ConfigurationManager.initialise_options
+
+  ConfigurationManager.initialise_options
 
   protected
 
@@ -29,14 +29,14 @@ ConfigurationManager.initialise_options
   def self.method_permission(options)
     $permission[controller_path] = options
   end
-  
-   # This method return the feature name
+
+  # This method return the feature name
   def feature_name(file)
     file = file.split("/").slice(0...-3).join('/')
     yaml = YAML.load(File.open(file+'/config.yml'))
     name = yaml['name']
   end
-  
+
   # This methods return an array with options configuration for a controller
   def search_methods(file)
     ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
@@ -45,7 +45,7 @@ ConfigurationManager.initialise_options
   def current_user
     session[:user]
   end
-  
+
   private
 
   # Called when an user try to acces to an unauthorized page
@@ -65,29 +65,34 @@ ConfigurationManager.initialise_options
       redirect_to login_path
       flash[:error] = "Vous n'êtes pas logger !"
     else # If you're logged
-      $permission[controller_path] ||= {}
-      case params[:action]
-      when *['index'] + ($permission[controller_path][:list] || [])
-        unless can_list?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action
-        end
-      when *['show'] + ($permission[controller_path][:view] || [])
-        unless can_view?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action
-        end
-      when *['add', 'create'] + ($permission[controller_path][:add] || [])
-        unless can_add?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action(422)
-        end
-      when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-        unless can_edit?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action(422)
-        end
-      when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
-        unless can_delete?(:user => current_user, :controller_name => params[:controller])
-          unauthorized_action(422)
-        end
-      end # case
+      if current_user.expired?
+        redirect_to :controller => 'account', :action => 'expired_password'
+      else
+        # Manage permissions for actions
+        $permission[controller_path] ||= {}
+        case params[:action]
+        when *['index'] + ($permission[controller_path][:list] || [])
+          unless can_list?(:user => current_user, :controller_name => controller_path)
+            unauthorized_action
+          end
+        when *['show'] + ($permission[controller_path][:view] || [])
+          unless can_view?(:user => current_user, :controller_name => controller_path)
+            unauthorized_action
+          end
+        when *['add', 'create'] + ($permission[controller_path][:add] || [])
+          unless can_add?(:user => current_user, :controller_name => controller_path)
+            unauthorized_action(422)
+          end
+        when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
+          unless can_edit?(:user => current_user, :controller_name => controller_path)
+            unauthorized_action(422)
+          end
+        when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
+          unless can_delete?(:user => current_user, :controller_name => params[:controller])
+            unauthorized_action(422)
+          end
+        end # case
+      end # if
     end # if
   end # authenticate
 end # class

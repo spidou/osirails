@@ -56,6 +56,7 @@ class UsersController < ApplicationController
       @roles = Role.find(:all, :order => :name)
       render :action => "edit"
     end
+    @user.updating_password = false
   end
 
   # DELETE /users/1
