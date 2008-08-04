@@ -13,17 +13,17 @@ class ContentVersion < ActiveRecord::Base
     self.contributor=(value)
   end
   
-  # This method permit to delete create_at
+  # This method permit to unset create_at
   def created_at=(value)
     false
   end
   
-    # This method permit to delete author
+    # This method permit to unset author
   def author=(value)
     false
   end
   
-  # This method permit to delete lock_version
+  # This method permit to unset lock_version
   def lock_version=(value)
     false
   end
