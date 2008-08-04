@@ -6,7 +6,7 @@ class MenusController < ApplicationController
   def index
     # get_structured_menus permit to make a indent for menu's list
     #FIXME Manage CSS for indent
-    @menus = Menu.get_structured_menus("__")#("<span class='admin_menus_indent'/>") 
+    @menus = Menu.get_structured_menus("__")#("<span class='admin_menus_indent'/>")
   end
   
   # GET /menus/new

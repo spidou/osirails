@@ -1,6 +1,6 @@
 class ConfigurationManager
-  def ConfigurationManager.add_method(method)
-    class_eval %Q{
+    def ConfigurationManager.add_method(method)
+      class_eval %Q{
     def ConfigurationManager.#{method}
       Configuration.find_by_name('#{method}', :order => "created_at DESC").value
     end
@@ -11,11 +11,15 @@ class ConfigurationManager
       option = Configuration.find_by_name('#{method}', :order => "created_at DESC")
       Configuration.create(:name => '#{method}', :value => value, :description => option.description)
     end
-    }
-  end
+      }
+    end
   
-  def ConfigurationManager.initialize 
-    Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
-  end
+    def ConfigurationManager.initialise_options
+      Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
+    end
+  
+    def ConfigurationManager.find_configurations_for(feature_name, controller_name)
+      ConfigurationManager.methods.sort.grep(/^#{feature_name.downcase}_#{controller_name}.*[^=|desc]$/)
+    end
   
 end
