@@ -50,8 +50,7 @@ class AccountController < ApplicationController
     return unless request.post?
     current_user.updating_password = true
     if current_user.update_attributes(params[:user])
-      current_user.password_updated_at = Time.now
-      current_user.save
+      current_user.update_attributes(:password_updated_at => Time.now)
       redirect_to session[:initial_uri]
       flash[:notice] = "Mot de passe mis à jour avec succès"
     end
