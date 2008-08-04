@@ -19,24 +19,24 @@
 <ul> 
    <li>
      <%= display_radio("l0")%>
-     <%= label_tag "Aucune Sécurité"%>
+     <%= label_tag "l0", "Aucune Sécurité"%>
      <p>Les Utlisateurs pourront choisir un mot de passe sans aucune resctriction. </p>
    </li> 
    <li>
      <%= display_radio("l1")%>
-     <%= label_tag "Premier niveau"%>
+     <%= label_tag "l1", "Premier niveau"%>
      <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 6 et 40 caract&egrave;res et devant comporter des chiffres ou des lettres. </p>
    </li>
 
   <li>
     <%= display_radio("l2")%>
-    <%= label_tag "Second niveau"%> 
+    <%= label_tag "l2", "Second niveau"%> 
     <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres&#44; et possédant au moins un caractére spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
   </li>
   
   <li>
     <%= display_radio("l3")%>
-    <%= label_tag "Troisiéme niveau"%>
+    <%= label_tag "l3", "Troisiéme niveau"%>
     <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres &#40;en majuscule et minuscule&#41;&#44; et poss&eacute;dant au moins un caract&egrave;re spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
   </li>
 </ul>
