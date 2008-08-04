@@ -45,8 +45,13 @@ ConfigurationManager.initialise_options
   private
 
   # Called when an user try to acces to an unauthorized page
-  def unauthorized_action
-    render :text => "Vous n'avez pas le droit d'effectuer cette action"
+  def unauthorized_action(status = nil)
+    case status
+    when 422
+      render :file => "#{RAILS_ROOT}/public/422.html", :status => "422"
+    else
+      render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
+    end
   end
 
   # Do every verification before shows the page
@@ -70,15 +75,15 @@ ConfigurationManager.initialise_options
         end
       when *['add', 'create'] + ($permission[controller_path][:add] || [])
         unless can_add?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action
+          unauthorized_action(422)
         end
       when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
         unless can_edit?(:user => current_user, :controller_name => controller_path)
-          unauthorized_action
+          unauthorized_action(422)
         end
       when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
         unless can_delete?(:user => current_user, :controller_name => params[:controller])
-          unauthorized_action
+          unauthorized_action(422)
         end
       end # case
     end # if
