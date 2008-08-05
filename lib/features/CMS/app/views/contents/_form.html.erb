@@ -8,7 +8,6 @@
 
 <p><%= label :parent_id, "Parent"%><br/>
 <%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:include_blank => "-- Racine --"}) %>
-
 </fieldset>
 
 <fieldset>
@@ -22,5 +21,3 @@
   <p><%= content.label :text, "Votre texte" %><br/>
   <%= content.text_area( :text, :cols => 110, :rows => 30) %></p>
 </fieldset>
-
-
