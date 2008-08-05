@@ -12,6 +12,6 @@ module MenusHelper
   
   # This method permit to show or not show a button for delete a menu
   def show_delete_button(menu)
-    " &#124; " + link_to("Supprimer", menu, {:method => :delete, :confirm => 'Etes vous sûr de vouloir supprimer cette page ?' }) unless menu.base_item?
+    " &#124; " + link_to("Supprimer", menu, {:method => :delete, :confirm => 'Etes vous sûr  ?' }) unless menu.base_item?
   end
 end
