@@ -3,4 +3,5 @@ class Role < ActiveRecord::Base
   has_many :menu_permissions
   has_many :business_object_permissions
   validates_uniqueness_of :name
+  validates_presence_of :name
 end
