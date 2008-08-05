@@ -1,25 +1,27 @@
 <fieldset>
-<p><%= third.label :third_name, "Nom" %><br/>
-<%= third.text_field :name  %></p>
+  <legend><%= "Informations concernant le " +type unless type.nil? %> </legend>
 
-<p><%= third.label :third_legal_form, "Forme juridique" %><br/>
-<%= third.text_field :legal_form %></p>
-
-<p><%= third.label :third_siret_number, "Numéro Siret"%><br/>
-<%= third.text_field :siret_number %></p>
-
-<p><%= third.label :third_activity_sector, "Secteur d'activité"%> 
-<%= third.select("activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.name, a.id ] })%>
-
-<p><%= third.label :third_activities, "Activités" %><br/>
-<%= third.text_field :activities  %></p>
-
-<p><%= third.label :third_banking_informations, "Informations bancaires" %><br/>
-<%= third.text_field :banking_informations %></p>
-
-<p><%= third.label :third_type_id, "Type de client" %>
-<%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
-
-<p><%= third.label :third_note, "Note du client" %>
-<%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
+  <p><%= third.label :third_name, "Nom" %><br/>
+  <%= third.text_field :name  %></p>
+  
+  <p><%= third.label :third_legal_form, "Forme juridique" %><br/>
+  <%= third.text_field :legal_form %></p>
+  
+  <p><%= third.label :third_siret_number, "Numéro Siret"%><br/>
+  <%= third.text_field :siret_number %></p>
+  
+  <p><%= third.label :third_activity_sector, "Secteur d'activité"%> 
+  <%= third.select("activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.name, a.id ] })%>
+  
+  <p><%= third.label :third_activities, "Activités" %><br/>
+  <%= third.text_field :activities  %></p>
+  
+  <p><%= third.label :third_banking_informations, "Informations bancaires" %><br/>
+  <%= third.text_field :banking_informations %></p>
+  
+  <p><%= third.label :third_type_id, "Type de client" %>
+  <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+  
+  <p><%= third.label :third_note, "Note du client" %>
+  <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
 </fieldset>

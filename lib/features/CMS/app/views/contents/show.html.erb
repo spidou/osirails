@@ -10,7 +10,7 @@
 <p><%= link_to "Modifier", edit_content_path(@content) %></p>
 <% if @content.versions.length >0 %>
   <div>
-    <%= link_to_function("Il existe "+pluralize(@content.versions.size,"version", "versions")+" versions précédentes de cette page") do |page|
+    <%= link_to_function("Il existe "+pluralize(@content.versions.size,"autre  version", "autres versions")+" pour cette page") do |page|
                 page.visual_effect(:toggle_slide, "list_content_versions")
        end
     %>

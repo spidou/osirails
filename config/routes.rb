@@ -27,6 +27,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :employees
   map.resources :customers
   map.resources :suppliers
+  map.resources :establishments
 
   
 

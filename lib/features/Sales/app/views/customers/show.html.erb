@@ -1,32 +1,51 @@
-<p>
-  <b>Nom du client:</b>
-  <%= @customer.name %>
-</p>
-<p>
-  <b>Forme l&eacute;gale:</b>
-  <%= @customer.legal_form %>
-</p>
-<p>
-  <b>Numéro Siret:</b>
-  <%= @customer.siret_number %>
-</p>
-<p>
-  <b>Secteur d'activité:</b>
-  <%= @customer.activity_sector.name %>
-</p>
-<p>
-  <b>Activités:</b>
-  <%= @customer.activities %>
-</p>
-<p>
-  <b>Note:</b>
-<%= @customer.note %>
-</p>
-<p>
-  <b>Type de client:</b>
-  <%= @customer.third_type.wording %>
-</p>
-
+<fieldset>
+  <legend> Information concernant le client </legend>
+  <p>
+    <b>Nom du client:</b>
+    <%= @customer.name %>
+  </p>
+  <p>
+    <b>Forme l&eacute;gale:</b>
+    <%= @customer.legal_form %>
+  </p>
+  <p>
+    <b>Numéro Siret:</b>
+    <%= @customer.siret_number %>
+  </p>
+  <p>
+    <b>Secteur d'activité:</b>
+    <%= @customer.activity_sector.name %>
+  </p>
+  <p>
+    <b>Activités:</b>
+    <%= @customer.activities %>
+  </p>
+  <p>
+    <b>Note:</b>
+    <%= @customer.note %>
+  </p>
+  <p>
+    <b>Type de client:</b>
+    <%= @customer.third_type.wording %>
+  </p>
+</fieldset>
+<fieldset>
+  <legend><%= "Infomation concernant les etablissements du client"%></legend>
+  <%if @establishments.length > 0%>
+          <%for establishment in @establishments%>
+      <fieldset>
+        <p>
+          <b>Nom de l'établissement:</b>
+          <%= establishment.name%>
+        </p>
+        <p>
+          <b>Type de l'établissement:</b>
+          <%= establishment.establishment_type.wording%>
+        </p>
+      </fieldset>
+    <%end%>
+<%end%>
+</fieldset>
 <%= link_to 'Retour', :action => 'index' %>
 
 

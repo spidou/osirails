@@ -19,14 +19,20 @@ class CustomersController < ApplicationController
     
   def show
     @customer = Customer.find(params[:id])
+    @establishments = @customer.establishments
   end
   
   def edit
     @customer = Customer.find(params[:id])
+    @new_establishment = Establishment.new
+    @establishments = @customer.establishments
   end
   
   def update
     @customer = Customer.find(params[:id])
+    @new_establishment =Establishment.new
+    
+    
     if @customer.update_attributes(params[:customer])
       redirect_to(customers_path)
     else
