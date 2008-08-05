@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   def feature_name(file)
     file = file.split("/").slice(0...-3).join('/')
     yaml = YAML.load(File.open(file+'/config.yml'))
-    name = yaml['name']
+    yaml['name']
   end
 
   # This methods return an array with options configuration for a controller
