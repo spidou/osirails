@@ -1,0 +1,19 @@
+<h1>Liste des secteurs d'activit&eacute;</h1>
+
+<table>
+  <tr>
+    <th>Nom</th>
+  </tr>
+
+<% for activity_sector in @activity_sector %>
+  <tr>
+    <td><%=h activity_sector.name %></td>
+    <td><%= link_to 'Modifier', edit_activity_sector_path(activity_sector) %></td>
+    <td><%= link_to 'Supprimer', activity_sector, :action => 'destroy', :confirm => 'Etes vous sûr ?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to "Nouveau secteur d'activit&eacute;", new_activity_sector_path %>
