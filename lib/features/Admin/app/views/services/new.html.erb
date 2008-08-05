@@ -1,11 +1,20 @@
 <h1>Nouveau service</h1>
 
 <% form_for(@service) do |service| %>
-  <%= service.error_messages %>
+    <%= service.error_messages %>
 
   <p>
     <%= service.label :name, "Nom" %><br />
     <%= service.text_field :name %>
+  </p>
+
+  <p>
+    <%= service.label :service_parent_id, "Parent" %>
+    <% if @services.size == 0%>
+      <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
+    <% else %>
+      <%= service.collection_select(:service_parent_id, @services, :id, :name, {}) %>
+    <% end %>
   </p>
 
   <p>

@@ -1,15 +1,18 @@
 <h1>Liste des services</h1>
-
+    
 <table>
   <tr>
     <th>Nom</th>
   </tr>
 
 <% for service in @services %>
-  <tr>
+<tr>  
+  <td><%= display_menu(service.name) %></td>
+</tr>
+  <tr id="<%= service.name%>">
     <td><%=h service.name %></td>
     <td><%= link_to 'Modifier', edit_service_path(service) %></td>
-    <td><%= link_to 'Supprimer', service, :action => 'destroy', :confirm => 'Etes vous sûr ?', :method => :delete %></td>
+    <td><%= show_delete_button(service) %></td>
   </tr>
 <% end %>
 </table>

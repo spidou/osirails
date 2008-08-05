@@ -2,11 +2,16 @@
 <% form_tag @service %>
 
 <% form_for(@service) do |service| %>
-  <%= service.error_messages %>
+      <%= service.error_messages %>
 
   <p>
     <%= service.label :name, "Nom"  %><br />
     <%= service.text_field :name %>
+  </p>
+
+  <p>
+    <%= service.label :service_parent_id, "Parent" %>
+    <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
   </p>
 
   <p>
