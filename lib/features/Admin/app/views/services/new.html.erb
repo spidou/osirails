@@ -1,0 +1,16 @@
+<h1>Nouveau service</h1>
+
+<% form_for(@service) do |service| %>
+  <%= service.error_messages %>
+
+  <p>
+    <%= service.label :name, "Nom" %><br />
+    <%= service.text_field :name %>
+  </p>
+
+  <p>
+    <%= service.submit "Créer" %>
+  </p>
+<% end %>
+
+<%= link_to 'Retour', services_path %>

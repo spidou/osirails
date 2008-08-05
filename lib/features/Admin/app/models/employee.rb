@@ -1,6 +1,8 @@
 class Employee < ActiveRecord::Base
   has_one :user
   after_create :user_create_methode
+  has_and_belongs_to_many :services
+  has_and_belongs_to_many :jobs
   
   def pattern(pat,obj)
     retour = ""

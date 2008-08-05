@@ -1,7 +1,7 @@
 class ActivitySectorsController < ApplicationController
 
   def index
-    @activity_sector = ActivitySector.find(:all, :order => "name", :conditions => {:activated => true})
+    @activity_sectors = ActivitySector.find(:all, :order => "name", :conditions => {:activated => true})
     respond_to do |format|
       format.html # index.html.erb
     end

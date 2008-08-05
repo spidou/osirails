@@ -11,6 +11,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :permissions
   # end
   
+  # begin | To create the url architecture "/society_configurations/*"
+  map.resources :society_identity_configuration, :path_prefix => 'society_configurations'
+  map.resources :activity_sectors, :path_prefix => 'society_configurations'
+  map.resources :services, :path_prefix => 'society_configurations'
+  map.resources :society_configurations
+  # end
+  
   map.resources :users
   map.resources :roles
   map.resources :features

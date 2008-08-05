@@ -1,0 +1,2 @@
+module ActivitySectorsHelper
+end
