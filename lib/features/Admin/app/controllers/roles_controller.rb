@@ -29,7 +29,8 @@ class RolesController < ApplicationController
       flash[:notice] = 'Le r&ocirc;le a &eacute;t&eacute; ajout&eacute; avec succ&egrave;s.'
       redirect_to(@role) 
     else
-      render :action => "new" 
+      @users = User.find(:all, :order => :username)
+      render :action => "new"
     end
   end
 
@@ -41,6 +42,7 @@ class RolesController < ApplicationController
       flash[:notice] = 'Le r&ocirc;le a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
       redirect_to(@role)
     else
+      @users = User.find(:all, :order => :username)
       render :action => "edit" 
     end
   end
@@ -51,8 +53,6 @@ class RolesController < ApplicationController
     @role.destroy
     redirect_to(roles_url) 
   end
-  
- 
 
 end
 
