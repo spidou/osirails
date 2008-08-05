@@ -17,7 +17,9 @@ class Menu < ActiveRecord::Base
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
   
-
+  # Includes
+  include Permissible::InstanceMethods
+  
   def before_update
     if self.update_parent
       @new_parent_id, self.parent_id = self.parent_id, self.old_parent_id
@@ -54,7 +56,7 @@ class Menu < ActiveRecord::Base
   end
  
   # This method permit to verify if a menu can be delete or not
-  def can_delete?
+  def can_delete? # FIXME Change the name of this method because it's conflicts with Permissible
     !base_item? and !has_children?
   end
     

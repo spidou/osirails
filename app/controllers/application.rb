@@ -5,7 +5,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   #before_filter :authenticate
-  include Permissible::ClassMethode
+  include Permissible::InstanceMethods
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -65,6 +65,7 @@ class ApplicationController < ActionController::Base
       redirect_to login_path
       flash[:error] = "Vous n'êtes pas logger !"
     else # If you're logged
+      current_user.update_activity
       if current_user.expired?
         redirect_to :controller => 'account', :action => 'expired_password'
       else
@@ -72,23 +73,23 @@ class ApplicationController < ActionController::Base
         $permission[controller_path] ||= {}
         case params[:action]
         when *['index'] + ($permission[controller_path][:list] || [])
-          unless can_list?(:user => current_user, :controller_name => controller_path)
+          unless can_list?(current_user)
             unauthorized_action
           end
         when *['show'] + ($permission[controller_path][:view] || [])
-          unless can_view?(:user => current_user, :controller_name => controller_path)
+          unless can_view?(current_user)
             unauthorized_action
           end
         when *['add', 'create'] + ($permission[controller_path][:add] || [])
-          unless can_add?(:user => current_user, :controller_name => controller_path)
+          unless can_add?(current_user)
             unauthorized_action(422)
           end
         when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-          unless can_edit?(:user => current_user, :controller_name => controller_path)
+          unless can_edit?(current_user)
             unauthorized_action(422)
           end
         when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
-          unless can_delete?(:user => current_user, :controller_name => params[:controller])
+          unless can_delete?(current_user)
             unauthorized_action(422)
           end
         end # case

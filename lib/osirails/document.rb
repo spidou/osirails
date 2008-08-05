@@ -1,11 +1,7 @@
 class Document
   include Permissible
   
-  def self.bonbon(param)
-    tableau = ["test"]
-    case param
-    when *["lol", "non"] + tableau
-      puts "ok"
-    end
+  def self.bonbon
+    self.can_list?(User.find(2))
   end
 end
