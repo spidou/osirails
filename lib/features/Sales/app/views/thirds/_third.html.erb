@@ -18,7 +18,7 @@
 <%= third.text_field :banking_informations %></p>
 
 <p><%= third.label :third_type_id, "Type de client" %>
-<%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.name, a.id ] })%>
+<%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
 
 <p><%= third.label :third_note, "Note du client" %>
 <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>

@@ -12,7 +12,7 @@
 </p>
 <p>
   <b>Secteur d'activité:</b>
-  <%= @customer.activity_sector.wording %>
+  <%= @customer.activity_sector.name %>
 </p>
 <p>
   <b>Activités:</b>
@@ -27,5 +27,6 @@
   <%= @customer.third_type.wording %>
 </p>
 
+<%= link_to 'Retour', :action => 'index' %>
 
 

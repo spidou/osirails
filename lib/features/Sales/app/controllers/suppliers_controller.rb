@@ -10,7 +10,7 @@ class SuppliersController < ApplicationController
   def create
     @supplier = Supplier.new(params[:supplier])
     if @supplier.save
-      flash[:notice] = 'Tiers ajouté avec succes'
+      flash[:notice] = 'Clients ajouté avec succes'
       redirect_to :action => 'index'
     else
       render :action => 'new'
@@ -26,9 +26,12 @@ class SuppliersController < ApplicationController
   end
   
   def update
-    @customer = Customer.find(params[:id])
-    @customer.update_attributes(params[:customer])
-    redirect_to(customers_path)
+    @supplier = Supplier.find(params[:id])
+    if @supplier.update_attributes(params[:supplier])
+      redirect_to(suppliers_path)
+    else
+      render :action => 'edit'
+    end    
   end
   
     # DELETE /supplier/1
