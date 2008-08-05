@@ -8,6 +8,6 @@ class CreateOrganizationTypes < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :organization_types
+    drop_table :establishment_types
   end
 end
