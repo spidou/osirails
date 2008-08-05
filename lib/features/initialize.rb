@@ -85,19 +85,21 @@ def init(yaml, config, path)
   #Test if all permission for all menus are present
   def menus_permisisons_verification(menus)
     roles_count = Role.count
-    menus.each_pair do |key,value|
-      p = Menu.find_by_name(key)
-      unless p.nil?
-        unless MenuPermission.find_all_by_menu_id(p.id).size == roles_count
-          Role.find(:all).each do |role|
-            if MenuPermission.find_by_menu_id_and_role_id(p.id, role.id).nil?
-              MenuPermission.create(:menu_id => p.id,:role_id =>role.id)
+    unless menus.nil?
+      menus.each_pair do |key,value|
+        p = Menu.find_by_name(key)
+        unless p.nil?
+          unless MenuPermission.find_all_by_menu_id(p.id).size == roles_count
+            Role.find(:all).each do |role|
+              if MenuPermission.find_by_menu_id_and_role_id(p.id, role.id).nil?
+                MenuPermission.create(:menu_id => p.id,:role_id =>role.id)
+              end
             end
           end
         end
-      end
-      unless value['children'].nil?
-        menus_permisisons_verification(value['children'])
+        unless value['children'].nil?
+          menus_permisisons_verification(value['children'])
+        end
       end
     end
   end
@@ -107,10 +109,12 @@ def init(yaml, config, path)
 
   # This method insert in $menu_table all feature's menus
   def menu_insertion(menus,parent_name)
-    menus.each_pair do |key,value|
-      $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name}
-      unless value["children"].nil?
-        menu_insertion(value["children"], key)
+    unless menus.nil?
+      menus.each_pair do |key,value|
+        $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name}
+        unless value["children"].nil?
+          menu_insertion(value["children"], key)
+        end
       end
     end
   end
