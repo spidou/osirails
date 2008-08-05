@@ -87,7 +87,7 @@ class ContentsController < ApplicationController
     params[:content][:contributors] = @content.contributors
     params[:content][:contributors] << current_user.id unless @content.contributors.include?(current_user.id)
     puts @content.contributors.size
-    @content.update_attributes(params[:content]) 
+    @content.update_attributes(params[:content])
     unless @menu.update_attributes(params[:menu])
       flash[:error] = "Impossible de déplacer le menu"
       redirect_to edit_content_path

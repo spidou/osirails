@@ -1,0 +1,25 @@
+<h2> Liste des fournisseurs </h2>
+
+<table>
+<tr>
+  <th>Nom</th> 
+  <th>Secteurs d'activités</th>
+  <th>Note</th>
+  <th>Type de tiers</th>
+  <th>Actions</th>
+</tr>
+<% unless @suppliers.nil?%>
+<%for supplier in @suppliers%>
+  <tr>
+    <td><%= supplier.name %></td>
+    <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
+    <td><%= supplier.note %></td>
+    <td><%= supplier.type %></td>
+    <td><%= link_to("Voir", :action => :show, :id => supplier.id) %> <%= link_to("Modifier", edit_supplier_path(supplier)) %> <%= link_to("Supprimer", supplier, {:method => :delete}) %></td>
+  </tr>
+  <%end%>
+<%end%>
+</table><br/>
+
+
+<%= link_to 'Ajouter', :action => 'new' %>

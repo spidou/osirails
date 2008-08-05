@@ -1,26 +1,25 @@
 <fieldset>
-  <caption>Information du Tiers</caption>
-<p><%= label :third_name, "Nom" %><br/>
-<%= text_field(:third, :name)  %></p>
+<p><%= third.label :third_name, "Nom" %><br/>
+<%= third.text_field :name  %></p>
 
-<p><%= label :third_legal_form, "Forme juridique" %><br/>
-<%= text_field(:third, :legal_form)  %></p>
+<p><%= third.label :third_legal_form, "Forme juridique" %><br/>
+<%= third.text_field :legal_form %></p>
 
-<p><%= label :third, "Numéro Siret"%><br/>
-<%= text_field(:third, :siret_number)  %></p>
+<p><%= third.label :third_siret_number, "Numéro Siret"%><br/>
+<%= third.text_field :siret_number %></p>
 
-<p><%= label :third, "Secteur d'activité"%> 
-<%= select("third", "activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.wording, a.id ] })%>
+<p><%= third.label :third_activity_sector, "Secteur d'activité"%> 
+<%= third.select("activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.name, a.id ] })%>
 
-<p><%= label :third_activities, "Activités" %><br/>
-<%= text_field(:third, :activities)  %></p>
+<p><%= third.label :third_activities, "Activités" %><br/>
+<%= third.text_field :activities  %></p>
 
-<p><%= label :third_banking_informations, "Informations bancaires" %><br/>
-<%= text_field(:third, :banking_informations)  %></p>
+<p><%= third.label :third_banking_informations, "Informations bancaires" %><br/>
+<%= third.text_field :banking_informations %></p>
 
-<p><%= label :third_type_id, "Type de client" %>
-<%= select("third", "third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+<p><%= third.label :third_type_id, "Type de client" %>
+<%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.name, a.id ] })%>
 
-<p><%= label :third_note, "Note du client" %>
-<%= select("third", "third_note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
+<p><%= third.label :third_note, "Note du client" %>
+<%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
 </fieldset>

@@ -1,0 +1,7 @@
+<h4>Nouveau fournisseurs</h4>
+
+<% form_for(@supplier) do |supplier| %>
+  <%= supplier.error_messages %>
+  <%= render :partial => 'thirds/third', :locals => {:third => supplier} %>
+  <%= supplier.submit  'Ajouter' %>  <%= link_to 'Retour', :action => 'index' %>
+<% end %>

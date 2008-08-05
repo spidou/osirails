@@ -1,0 +1,31 @@
+<p>
+  <b>Nom du fournisseur:</b>
+  <%= @supplier.name %>
+</p>
+<p>
+  <b>Forme l&eacute;gale:</b>
+  <%= @supplier.legal_form %>
+</p>
+<p>
+  <b>Numéro Siret:</b>
+  <%= @supplier.siret_number %>
+</p>
+<p>
+  <b>Secteur d'activité:</b>
+  <%= @supplier.activity_sector.wording %>
+</p>
+<p>
+  <b>Activités:</b>
+  <%= @supplier.activities %>
+</p>
+<p>
+  <b>Note:</b>
+<%= @supplier.note %>
+</p>
+<p>
+  <b>Type de client:</b>
+  <%= @supplier.third_type.wording %>
+</p>
+
+
+

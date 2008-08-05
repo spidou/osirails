@@ -1,7 +1,7 @@
 <h4>Modifier un menu</h4>
-
- <% form_for(@menu) do |menu| %>
-   <%= menu.error_messages %>
+<%=@menu.title%>
+<% form_for(@menu) do |menu| %>
+  <%= menu.error_messages %>
   <%= render :partial => 'menu', :locals => {:menu => menu} %><br/><br/>
   <%= menu.submit 'Mettre à jour' %>
 <% end %> 
