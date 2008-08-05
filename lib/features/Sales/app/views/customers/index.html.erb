@@ -1,0 +1,25 @@
+<h2> Liste des clients </h2>
+
+<table>
+<tr>
+  <th>Nom</th> 
+  <th>Secteurs d'activités</th>
+  <th>Note</th>
+  <th>Type de tiers</th>
+  <th>Actions</th>
+</tr>
+<% unless @customers.nil?%>
+<%for customer in @customers%>
+  <tr>
+    <td><%= customer.name %></td>
+    <td><%= customer.activity_sector.wording %></td>
+    <td><%= customer.note %></td>
+    <td><%= customer.type %></td>
+    <td><%= link_to("Voir", :action => :show, :id => customer.id) %> <%= link_to("Modifier", edit_customer_path(customer)) %> <%= link_to("Supprimer", customer, {:method => :delete}) %></td>
+  </tr>
+  <%end%>
+<%end%>
+</table><br/>
+
+
+<%= link_to 'Ajouter', :action => 'new' %>

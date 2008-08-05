@@ -1,2 +1,20 @@
-
+name: Sales
+version: 0.1
+dependencies:
+  Admin:
+    - 0.1
+conflicts:
+business_objects:
+menus:
+  third:
+    title: Tiers
+    description: Gestion des fournisseurs et des clients
+    children:
+      customer:
+        title: Clients
+        description: Gestion des clients
+      supplier:
+        title: Fournisseurs
+        description: Gestion des fournisseurs
+configurations:
 

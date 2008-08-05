@@ -1,0 +1,3 @@
+module ThirdsHelper
+
+end

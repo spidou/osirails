@@ -56,7 +56,7 @@ class Menu < ActiveRecord::Base
   end
  
   # This method permit to verify if a menu can be delete or not
-  def can_delete? # FIXME Change the name of this method because it's conflicts with Permissible
+  def can_delete_menu?
     !base_item? and !has_children?
   end
     

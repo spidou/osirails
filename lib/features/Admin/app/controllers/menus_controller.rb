@@ -68,7 +68,7 @@ class MenusController < ApplicationController
   # DELETE /menus/1
   def destroy
     menu = Menu.find_by_id(params[:id])
-    if menu.can_delete?
+    if menu.can_delete_menu?
       if menu.destroy
         flash[:notice] = "Le menu a &eacute;t&eacute; supprim&eacute; avec succ&egrave;s"
       else 

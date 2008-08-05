@@ -4,5 +4,6 @@
 <% form_for(@content) do |content| %>
   <%= content.error_messages %>
   <%= render :partial => 'form', :locals => {:content => content} %>
-  <%= content.submit  'Modifier' %>  <%= link_to 'Retour', :action => 'index' %>
-<% end %> 
+  <%= content.submit  'Modifier' %>
+<% end %><br/>
+<%= link_to 'Retour', :action => 'index' %>

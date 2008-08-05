@@ -1,0 +1,26 @@
+<fieldset>
+  <caption>Information du Tiers</caption>
+<p><%= label :third_name, "Nom" %><br/>
+<%= text_field(:third, :name)  %></p>
+
+<p><%= label :third_legal_form, "Forme juridique" %><br/>
+<%= text_field(:third, :legal_form)  %></p>
+
+<p><%= label :third, "Numéro Siret"%><br/>
+<%= text_field(:third, :siret_number)  %></p>
+
+<p><%= label :third, "Secteur d'activité"%> 
+<%= select("third", "activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.wording, a.id ] })%>
+
+<p><%= label :third_activities, "Activités" %><br/>
+<%= text_field(:third, :activities)  %></p>
+
+<p><%= label :third_banking_informations, "Informations bancaires" %><br/>
+<%= text_field(:third, :banking_informations)  %></p>
+
+<p><%= label :third_type_id, "Type de client" %>
+<%= select("third", "third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+
+<p><%= label :third_note, "Note du client" %>
+<%= select("third", "third_note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
+</fieldset>

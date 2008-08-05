@@ -5,7 +5,7 @@ class ChangeTypeContributorInContentVersions < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :contents_versions, :contributor_id
-    add_column :contents_versions, :contributor, :string    
+    remove_column :content_versions, :contributor_id
+    add_column :content_versions, :contributor, :string    
   end
 end
