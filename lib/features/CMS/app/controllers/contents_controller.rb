@@ -73,8 +73,9 @@ class ContentsController < ApplicationController
     ContentVersion.create(content_attributes)
     
     # Update content's menu
-    @menu = Menu.find(@content.menu_id)
-    @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
+    @menu = @content.menu
+    @menu.old_parent_id = @menu.parent_menu.id
+    @menu.update_parent = true
     
     # If content isn't in his last version
     if @content.lock_version != $session_lock
