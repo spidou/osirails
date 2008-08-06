@@ -1,6 +1,7 @@
-<p><%= establishment.label :establishment_name, "Nom" %><br/>
-<%= establishment.text_field :name  %></p>
+<p><%= establishment.label(:establishment_name, "Nom") %><br/>
+<%= establishment.text_field(:name) %></p>
 
-<p><%= establishment.label :establishment_type, "Type d'établissement" %><br/>
-<%= establishment.select("establishment_type_id", EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+<p><%= establishment.label(:establishment_type, "Type d'établissement") %><br/>
+<%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] })%>
 
+<%= establishment.hidden_field(:customer_id, :value => customer_id)%>

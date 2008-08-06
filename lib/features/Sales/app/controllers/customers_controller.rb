@@ -26,19 +26,36 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @new_establishment = Establishment.new
     @establishments = @customer.establishments
+    @new_address = Address.new
   end
   
   def update
     @customer = Customer.find(params[:id])
+    @establishments = @customer.establishments
     @new_establishment =Establishment.new
-    
-    
-    if @customer.update_attributes(params[:customer])
-      redirect_to(customers_path)
-    else
-      render :action => 'edit'
+    ok = true
+    unless @customer.update_attributes(params[:customer])
+      ok = false
     end
     
+    params[:establishment].each_pair do |k,v| (
+        puts params[:establishment][k][:id]
+        @establishment = Establishment.find(params[:establishment][k][:id])
+        unless @establishment.update_attributes(params[:establishment][k])
+          ok = false
+        end
+      
+        @address = @establishment.address
+        unless @address.update_attributes(params[:establishment_address][k])
+          ok = false
+        end   
+      )
+      if ok
+        redirect_to(customers_path)
+      else
+        render :action => 'edit'
+      end
+    end
   end
   
   def destroy
