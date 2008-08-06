@@ -6,10 +6,7 @@
   </tr>
 
 <% for service in @services %>
-<tr>  
-  <td><%= display_menu(service.name) %></td>
-</tr>
-  <tr id="<%= service.name%>">
+  <tr>
     <td><%=h service.name %></td>
     <td><%= link_to 'Modifier', edit_service_path(service) %></td>
     <td><%= show_delete_button(service) %></td>

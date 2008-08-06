@@ -36,5 +36,26 @@ class Service < ActiveRecord::Base
       end
     end
   end
-
+  
+  # This method permit to have structur for services
+  def Service.get_structured_services(indent)
+    services = Service.find_all_by_service_parent_id
+    service_parents = []
+    root = Service.new
+    root.name = "  "
+    root.id = nil
+    service_parents = get_children_services(services,service_parents,indent)
+    service_parents
+  end
+  
+  def Service.get_children_services(services,service_parents, indent)
+    services.each do |service|
+      service.name = indent * service.ancestors.size + service.name if service.name != nil
+      service_parents << service
+      if service.children.size > 0
+        get_children_services(service.children, service_parents, indent)
+      end
+    end
+    service_parents
+  end
 end

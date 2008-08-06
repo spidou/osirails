@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   # GET /services
   def index
-    @services = Service.find( :all, :order => 'service_parent_id' )
+    @services = Service.get_structured_services(".... ")
     respond_to do |format|
       format.html # index.html.erb
     end
@@ -10,7 +10,7 @@ class ServicesController < ApplicationController
   # GET /services/new
   def new
     @service = Service.new
-    @services = Service.find(:all)
+    @services = Service.get_structured_services(".... ")
     respond_to do |format|
       format.html # new.html.erb
     end
@@ -19,7 +19,7 @@ class ServicesController < ApplicationController
   # GET /services/1/edit
   def edit
     @service = Service.find(params[:id])
-    @services = Service.find(:all)
+    @services = Service.get_structured_services(".... ")
   end
 
   # POST /services
@@ -43,8 +43,9 @@ class ServicesController < ApplicationController
       flash[:notice] = 'Le service est bien mise à jour.'
       redirect_to services_path
     else
-      redirect_to :action => 'edit'
       flash[:error] = 'Le service ne peut être d&eacute;plac&eacute;'
+      redirect_to :action => 'edit'
+
     end
   end
 
