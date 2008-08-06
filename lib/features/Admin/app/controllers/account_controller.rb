@@ -5,6 +5,7 @@ class AccountController < ApplicationController
   # All the following action are accessible without login
   
   def index
+    render :action => "login"
   end
 
   def login
@@ -16,15 +17,15 @@ class AccountController < ApplicationController
           session[:user] = @user
           session[:initial_uri] ||= permissions_path # TODO Put here the default home page after logging
           redirect_to session[:initial_uri]
-          flash[:notice] = "Authentification réussie"
+          flash[:notice] = "Authentification r&eacute;ussie"
         else
-          flash[:error] = "Votre compte est désactivé"
+          flash[:error] = "Votre compte est d&eacute;sactiv&eacute;"
         end
         return
       end
     end
     redirect_to login_path
-    flash[:error] = "Erreur: username ou mot de passe incorrecte"
+    flash[:error] = "Les identifiants que vous avez rentrer"
   end
 
   def lost_password
