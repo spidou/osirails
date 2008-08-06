@@ -69,6 +69,6 @@ $config = Rails::Configuration.new
 #end
 Rails::Initializer.run(:process, $config)
 
-gem 'mislav-will_paginate', '~> 2.2'
+gem 'mislav-will_paginate', '~> 2.2' # gem install mislav-will_paginate --version '~> 2.2' --source http://gems.github.com/
+gem 'will_paginate', '~> 2.2'
 require 'will_paginate'
-# gem install mislav-will_paginate --source http://gems.github.com/
