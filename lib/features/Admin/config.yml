@@ -12,36 +12,43 @@ menus:
   admin:
     title: Administration
     description: Administration de l'intranet
-    url: /admin
     children:
-      modules:
+      password_policies:
+        title: politiques de sécurité
+        description: Gestion de la politique de sécurité notament des mots de passes
+      features:
         title: Modules
         description: Gestion des modules
-        url: /features
       roles:
         title: Roles
         description: Gestion des roles
-        url: /roles
       users:
         title: Users
         description: Gestion des users
-        url: /users
       permissions:
         title: Permissions
         description: Gestion des permissions
-        url: /permissions
+      business_object_permissions:
+        title: Business Objects permissions
+        description: Gestion des permissions des business objects
+      menu_permissions:
+        title: Menu permissions
+        description: Gestion des permissions des menus
+      role_permissions:
+          title: Role permissions
+          description: Gestion des permissions des roles
+      menus:
+        title: Menus
+        description: Gestion des menus
       contents:
         title: Contenu
         description: Gestion des contenus
-        url: /contenus
       employees:
         title: Employé
         description: Gestion des employés
-        url: /employee
       permissions:
         title: permissions
         description: Gestion de permissions
-        url: /permissions
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
@@ -67,8 +74,17 @@ configurations:
   societies_configurations_address:
     description: Adresse de l'entreprise
     value:
-      cle1: plop
-      cle2: plaf
-  menus_plouf:
-    description: description de plouf
-    value: 
+      first_line: 32, Rue des pommes
+      second_line: Pomier
+      twon: Sainte-Marie
+      code_zip: 97400
+      country: "France - Réunion"
+  societies_configurations_phone:
+      description: Numéro de téléphone de l'entreprise
+      value: 0692001122
+  societies_configurations_fax:
+      description: Numéro de fax de l'entreprise
+      value: 0692001123
+  societies_configurations_siret:
+      description: Numéro SIRET
+      value: 01234567891234
