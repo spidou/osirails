@@ -1,0 +1,15 @@
+<h3>Liste des références</h3>
+
+<%for category in @categories %>
+  <ul>
+    <li><%= category.name %> &nbsp; <%= "(#{category.product_references_count})" %> &brvbar; <span class="action"><%= link_to( 'Modifier', edit_product_reference_path(category, :type => 'categorie') ) %></span></li>
+  </ul>
+<% end %>
+
+<%for reference in @references %>
+  <ul>
+    <li><%= reference.name %> &nbsp; <%= "(#{reference.products_count})" %> &brvbar; <span class="action"><%= link_to( 'Modifier', edit_product_reference_path(reference, :type => 'reference') ) %></span></li>
+  </ul>
+<% end %>
+
+<%= link_to( 'Ajouter une cat&eacute;gorie ou une r&eacute;f&eacute;rence', :action => 'new' ) %>

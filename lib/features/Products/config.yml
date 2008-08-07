@@ -1,0 +1,9 @@
+name: Products
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+menus:
+  product:
+    title: Product
+    description: Gestion des produits

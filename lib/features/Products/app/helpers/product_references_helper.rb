@@ -1,0 +1,2 @@
+module ProductReferencesHelper
+end
