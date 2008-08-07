@@ -6,8 +6,8 @@
 		<meta name="category" content="ERP"/>
 		<meta name="publisher" content="Oxydium - SUPINFO PS1"/>
 		<meta name="copyright" content="Oxydium - SUPINFO PS1"/>
-		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="fichier_css/accueil.css"/>
-		<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="stylesheets/default.css"/>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
@@ -105,9 +105,10 @@
 					</a>
 					<a class="bouton_menu_x" href="">
 						<span id="bouton_menu_x_debut">Etude commercial</span>
-					</a>					
-
+          </a>
 				</div>
+
+        <%= yield %>
 				
 			</div> <!-- PAGE_CONTENU : FIN -->
 		</div> <!-- PAGE : FIN -->

@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-
+  layout 'default'
+  
   # GET /users
   def index
     # TODO In the view index, add the sessions management
