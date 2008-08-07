@@ -13,7 +13,7 @@
     </p>
     <p>
       <%= f.label :password_confirmation, "Confirmation du mot de passe" %><br />
-      <%= f.password_field :password_confirmation %>
+      <%= f.password_field :password_confirmation, :value => "" %>
     </p>
     <p>
 			<%= label_tag :temporary_password, "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :" %>

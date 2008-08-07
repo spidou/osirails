@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   end
   
   # Accessors
-  attr_accessor :updating_password, :minChar, :maxChar
+  attr_accessor :updating_password
   # Requires
   require "digest/sha1"
   
@@ -35,8 +35,8 @@ class User < ActiveRecord::Base
   end
   
   # Method to verify if the password pass by argument is the same as the password in the database
-  def compare_password(new_password)
-    self.password == encrypt(new_password)
+  def compare_password(password)
+    self.password == encrypt(password)
   end
   
   # Method to verify if the password is empty or not

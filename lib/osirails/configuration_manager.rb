@@ -14,7 +14,7 @@ class ConfigurationManager
       }
     end
   
-    def ConfigurationManager.initialise_options
+    def ConfigurationManager.initialize_options
       Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
     end
   

@@ -4,7 +4,7 @@
 
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
-#  before_filter :authenticate
+  before_filter :authenticate
   include Permissible::InstanceMethods
 
   # See ActionController::RequestForgeryProtection for details
@@ -20,7 +20,8 @@ class ApplicationController < ActionController::Base
   # Global variables
   $permission ||= {}
 
-  ConfigurationManager.initialise_options
+  #initialize dynmamic methods from the configurations' table of the database
+  ConfigurationManager.initialize_options
 
   protected
 
