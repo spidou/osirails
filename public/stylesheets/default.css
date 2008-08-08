@@ -246,7 +246,7 @@ width: 100%;
 	padding-right:5px;
 	margin-left:211px;
 	margin-right: 5px;/*5px à la base - changement : margin = - taille menu secondaire*/
-	height:auto;
+/*	height:auto;	*/
 	-moz-border-radius: 10px 0 10px 10px;
 }
 
@@ -869,18 +869,17 @@ select {
 
 #menu_principal_bottom {
 	position:relative;
-	bottom:35px;
+	bottom:36px;
 	right:1px;
 	background: url("../images/background_menu_principal-bottom.jpg") no-repeat;
 }
 
 #pied_de_page {
 	clear:both;
-	margin-top:5px;
+	border-top: solid 5px white;
 }
 
 #footer {
-
 	text-align:center;
 	background: url("../images/menu_selection_repeat.jpg") repeat;
 	border: solid 1px #444444;
