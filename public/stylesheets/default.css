@@ -186,7 +186,7 @@ width: 100%;
 	display:block;
 	width: 201px;
 /*	height: auto;	*/
-	padding: 0 0 5px 0;	
+	padding: 0 0 0px 0;	
 	float: left;
 	background: #d9e4ff;
 	border: solid 1px #cecece;
@@ -892,7 +892,7 @@ tr:hover > td > a {
 
 #menu_principal_bottom {
 	position:relative;
-	bottom:36px;
+	bottom:35px;
 	right:1px;
 	background: url("../images/background_menu_principal-bottom.jpg") no-repeat;
 }
@@ -900,6 +900,7 @@ tr:hover > td > a {
 #pied_de_page {
 	clear:both;
 	border-top: solid 5px white;
+	padding-top:19px;
 }
 
 #footer {
