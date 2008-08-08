@@ -13,42 +13,36 @@ menus:
     title: Administration
     description: Administration de l'intranet
     children:
+      users:
+        title: Utilisateurs
+        description: Gestion des users
+      roles:
+        title: Rôles
+        description: Gestion des roles
+      menus:
+        title: Navigation
+        description: Gestion de la navigation
+      contents:
+        title: Contenu
+        description: Gestion des contenus
       password_policies:
-        title: politiques de sécurité
+        title: Politique de sécurité
         description: Gestion de la politique de sécurité notament des mots de passes
       features:
         title: Modules
         description: Gestion des modules
-      roles:
-        title: Roles
-        description: Gestion des roles
-      users:
-        title: Users
-        description: Gestion des users
       permissions:
         title: Permissions
         description: Gestion des permissions
-      business_object_permissions:
-        title: Business Objects permissions
-        description: Gestion des permissions des business objects
-      menu_permissions:
-        title: Menu permissions
-        description: Gestion des permissions des menus
-      role_permissions:
-          title: Role permissions
-          description: Gestion des permissions des roles
-      menus:
-        title: Menus
-        description: Gestion des menus
-      contents:
-        title: Contenu
-        description: Gestion des contenus
-      employees:
-        title: Employé
-        description: Gestion des employés
-      permissions:
-        title: permissions
-        description: Gestion de permissions
+      # business_object_permissions:
+      #   title: Business Objects permissions
+      #   description: Gestion des permissions des business objects
+      # menu_permissions:
+      #   title: Menu permissions
+      #   description: Gestion des permissions des menus
+      # role_permissions:
+      #   title: Role permissions
+      #   description: Gestion des permissions des roles
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
