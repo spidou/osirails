@@ -13,6 +13,9 @@ class Menu < ActiveRecord::Base
   
   # Store the ancient parent_id before update parent
   attr_accessor :old_parent_id, :update_parent
+  
+  # Named scopes
+  named_scope :mains, :conditions => {:parent_id => nil}
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

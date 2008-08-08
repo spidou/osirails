@@ -16,4 +16,16 @@ module ApplicationHelper
   def current_user
     session[:user]
   end
+  
+  def display_main_menu
+    html = ""
+    Menu.mains.each do |menu|
+      html << "<li><a href=\"\">#{menu.title}</a></li>"
+    end
+    html
+  end
+  
+  def display_second_menu
+    
+  end
 end
