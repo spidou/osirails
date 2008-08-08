@@ -460,7 +460,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 #menu_horizontal {
 	overflow: hidden;
 	float:left;
-	margin-left:-4px;
 }
 
 a.bouton_menu_x {
@@ -468,7 +467,7 @@ a.bouton_menu_x {
 	font-family: arial, verdana, sans-serif;
 	font-size:85%;
 	line-height: 19px;
-	height: 28px;
+/*	height: 28px;	*/
 	text-decoration: none; 
 	text-indent:0;
 	margin-left:-15px;
@@ -490,14 +489,12 @@ a.bouton_menu_x span {
 }
 
 a.bouton_menu_x:hover span {
-	background:url("../images/menu_horizontal_hover.png") no-repeat top right;
-	color: #444
+	background: transparent url("../images/menu_horizontal_hover.png") no-repeat top right;
 }
 
 a.bouton_menu_x span.selected {
-	background: transparent url("../images/menu_horizontal_fond_selected.png") no-repeat top right;
-	font-weight:bold;
-	text-decoration:blink;
+	background:url("../images/menu_horizontal_selected.png") no-repeat top right;
+	color: #444
 }
 
 /*/////////////////////////////
