@@ -279,7 +279,8 @@ width: 100%;
 	position:relative;
 	left:8px;
 	background: url("../images/ombre.png") no-repeat bottom right;
-	height:inherit;
+//	height:inherit;
+//	padding-top:20px;
 	-moz-border-radius: 0 10px 0 10px;
 }
 
@@ -316,7 +317,7 @@ width: 100%;
 	text-indent: 0;
 	text-align: center;
 	margin-top:0;
-	margin-bottom:0;
+	margin-bottom:10px;
 	font-family: verdana, sans-serif;
 	font-weight:lighter;
 	font-size:1.1em;
@@ -393,6 +394,11 @@ width: 100%;
 	margin: 5px;
 	padding-right:5px;
 	line-height:22px;
+}
+
+#menu_secondaire_contenu_fin {
+//	height:1px;
+//	padding-bottom:50px;
 }
 
 .help {
