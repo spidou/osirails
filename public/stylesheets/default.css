@@ -186,7 +186,7 @@ width: 100%;
 	display:block;
 	width: 201px;
 /*	height: auto;	*/
-	padding: 0;	
+	padding: 0 0 5px 0;	
 	float: left;
 	background: #d9e4ff;
 	border: solid 1px #cecece;
@@ -462,7 +462,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	float:left;
 }
 
-a.bouton_menu_x {
+#menu_horizontal a {
 	float: right;
 	font-family: arial, verdana, sans-serif;
 	font-size:85%;
@@ -470,29 +470,29 @@ a.bouton_menu_x {
 /*	height: 28px;	*/
 	text-decoration: none; 
 	text-indent:0;
-	margin-left:-15px;
+	margin-left:-20px;
 	margin-top:10px;
 	margin-bottom:10px;
 }
 
-a.bouton_menu_x span {
+#menu_horizontal a span {
 	background: transparent url("../images/menu_horizontal_fond.png") no-repeat top right;
 	display: block;
-	padding: 4px 20px 4px 20px;
+	padding: 4px 20px 4px 27px;
 	height:20px;
 	color:white;
 }
 
-#bouton_menu_x_debut {
+#menu_horizontal_first {
 	padding-left: 5px !important;
 	border-left:1px solid #444;
 }
 
-a.bouton_menu_x:hover span {
+#menu_horizontal a:hover span {
 	background: transparent url("../images/menu_horizontal_hover.png") no-repeat top right;
 }
 
-a.bouton_menu_x span.selected {
+#menu_horizontal a span.selected {
 	background:url("../images/menu_horizontal_selected.png") no-repeat top right;
 	color: #444
 }
