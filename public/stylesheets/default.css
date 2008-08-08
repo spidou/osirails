@@ -18,6 +18,14 @@ html, body {
 	background:url("../images/background_menu_principal.jpg") repeat-y bottom left;
 }
 
+a {
+	color:rgb(234,136,28); /*#698bcd : BLEU*/
+}
+
+a:hover {
+	color:#698bcd;
+}
+
 /*/////////////////////////////////////////////////////
 					BANNIERE
 ////////////////////////////////////////////////////*/
@@ -107,7 +115,7 @@ width: 100%;
 #sous_banniere {
 	clear:both;
 	background: url("../images/sous_banniere_repeat-x.jpg") repeat;
-	border-bottom:11px solid white;
+	border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
 	color:#444444;
@@ -167,7 +175,7 @@ width: 100%;
 #corps {
 	width:auto;
 	height:auto;
-	margin: -6px 0 5px 0;
+	margin: -16px 0 5px 0;
 	padding:0;
 }
 
@@ -178,7 +186,6 @@ width: 100%;
 	display:block;
 	width: 201px;
 /*	height: auto;	*/
-	margin: 0 0 0 4px;
 	padding: 0;	
 	float: left;
 	background: #d9e4ff;
@@ -208,10 +215,15 @@ width: 100%;
 
 #menu ul li:hover {
 	background: url("../images/menu_hover.jpg") repeat;
+	cursor:pointer;
 }
 
-#menu ul li:active {
+#menu ul li.selected {
 	background: url("../images/menu_selection_repeat.jpg") repeat;
+}
+
+#menu ul li.selected a {
+	color:#bdd2fa;
 }
 
 #menu ul li a {
@@ -224,9 +236,6 @@ width: 100%;
 	color:#afc2ea;
 }
 
-#menu ul li a:hover {
-
-}
 /*
 #menu_champ_vide {
 //	position:absolute;	
@@ -244,9 +253,8 @@ width: 100%;
 	border: solid 1px #cecece;
 	padding-left: 5px;
 	padding-right:5px;
-	margin-left:211px;
-	margin-right: 5px;/*5px à la base - changement : margin = - taille menu secondaire*/
-/*	height:auto;	*/
+	margin-left:208px;
+/*	height:100%;*/
 	-moz-border-radius: 10px 0 10px 10px;
 }
 
@@ -262,7 +270,7 @@ width: 100%;
 	border: 1px solid #A8A8A8;
 	-moz-border-radius: 10px 0 0 10px;
 	background: url("../images/background_menu-secondaire.gif") repeat;
-	width: 190px;
+	width: 200px;
 	text-indent:0px;
 	font-size:0.8em;
 }
@@ -276,7 +284,6 @@ width: 100%;
 }
 
 #menu_secondaire_contenu {
-	width:190px;
 	position:relative;
 	right:8px;
 }
@@ -460,7 +467,7 @@ a.bouton_menu_x {
 	float: right;
 	font-family: arial, verdana, sans-serif;
 	font-size:85%;
-	line-height: 22px;
+	line-height: 19px;
 	height: 28px;
 	text-decoration: none; 
 	text-indent:0;
@@ -473,13 +480,13 @@ a.bouton_menu_x span {
 	background: transparent url("../images/menu_horizontal_fond.png") no-repeat top right;
 	display: block;
 	padding: 4px 20px 4px 20px;
-	border-left:1px solid #444;
 	height:20px;
 	color:white;
 }
 
 #bouton_menu_x_debut {
 	padding-left: 5px !important;
+	border-left:1px solid #444;
 }
 
 a.bouton_menu_x:hover span {
@@ -832,33 +839,34 @@ select {
 }
 */
 /*:::::::::TAB EMR:::::::::*/
-#tab01 caption {
+caption {
 	background: #afc2ea;
 	color: rgb(64,68,93);
-	width:100%;
+//	width:100%;
+	padding-right:1000px;
 	font-weight:bold;
 	border-bottom: solid 1px rgb(64,68,93);
 }
 
-#tab01 table {
+table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
-	background: #eaeff8;
+	background: pink;
 	text-align:center;
 	width:100%;
 	margin-bottom:20px;
 }
 
-#tab01 table th{
+table th{
 	border:solid 1px rgb(64,68,93);
 	background: #dedede;
 }
 
-#tab01 table td{
+table td{
 	border:solid 1px rgb(64,68,93);
 }
 
-#tab01 tr:hover > td{
+tr:hover > td{
 	background: #f5c384; /* rgb(234,136,28); */
 /*	color:white;	*/
 }
