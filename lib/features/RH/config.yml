@@ -1,0 +1,12 @@
+name: RH
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+menus:
+  employee:
+    title: Ressources Humaines
+    description: Administration des ressources humaines
+    children:
+configurations:
+

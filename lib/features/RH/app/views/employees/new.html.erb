@@ -1,0 +1,92 @@
+<h1>Ajouter un employ&eacute;e</h1>
+
+<% form_for(@employee) do |f| %>
+  <%= f.error_messages %> 
+
+  <p>
+    <%= f.label :civility, "Civilité :"%>
+    <%= collection_select(:employee, :civility_id, Civility.find(:all), :id, :name)%>  
+  </p>
+  <p>
+    <%= f.label :last_name, "Nom :"%>
+    <%= f.text_field :last_name %>
+  </p>
+  <p>
+    <%= f.label :first_name, "Prénom :"%>
+    <%= f.text_field :first_name %>
+  </p>
+  <p>
+    <%= f.label :birth_date, "Date de naissance :"%>
+    <%= f.date_select :birth_date, :start_year => 1900, :order => [:day,:month,:year], :use_month_numbers => true%>
+  </p>
+  <p>
+    <%= f.label :family_situation, "Situation familiale :"%>
+    <%= collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name)%>
+  </p>
+  <fieldset>
+  <legend>Emails</legend>
+  <p>
+    <%= f.label :email, "Email privée:"%>
+    <%= f.text_field :email%>
+  </p>
+  <p>
+    <%= f.label :society_email, "Email professionnel :"%>
+    <%= f.text_field :society_email%>
+  </p>
+  </fieldset>
+  <fieldset>
+  <legend>Coordonn&eacute;es</legend>
+    <p>
+      <%= label_tag 'address[address1]', "Adresse :"%> 
+      <%= display_address1%>
+    </p>
+    <p>
+      <%= label_tag 'address[address2]', "Adresse :"%> 
+      <%= display_address2%>    
+    </p>
+  </fieldset>
+   <fieldset id='add_lines'>
+  <legend>Num&eacute;ros</legend>
+    <p>
+      <%= collection_select('numbers[0]', :indicative_id, Indicative.find(:all), :id, :indicative)%>
+      <%= display_number0 %>
+      <%= collection_select('numbers[0]', :number_type_id, NumberType.find(:all), :id, :name)%>
+      <%= save_lines%>
+    </p>
+    <p>
+      <span id='add'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? 1 : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
+    </p>
+  </fieldset>
+   <fieldset>
+  <legend>Informations Bancaires</legend>
+  <p>
+    <%= label_tag 'iban[bank_code]' ,"Code bancaire :"%> 
+    <%= display_bank_code %>
+  </p>
+  <p>
+    <%= label_tag 'iban[teller_code]' ,"Code guichet :"%> 
+    <%= display_teller_code %>
+  </p>
+   <p>
+    <%= label_tag 'iban[account_number]' ,"N° de compte :"%> 
+    <%= display_account_number %>
+  </p>
+   <p>
+    <%= label_tag 'iban[key]' ,"Clée :"%> 
+    <%= display_key %>
+  </p>
+   <p>
+    <%= label_tag 'iban[holder_name]' ,"Nom du titulaire :"%> 
+    <%= display_holder_name %>
+  </p>
+  </fieldset>
+  <p>
+    <%= f.label :social_security ,"N° sécurité sociale"%><br />
+    <%= f.text_field :social_security ,{ :size => 14, :maxlength => 16} %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Retour', employees_path %>

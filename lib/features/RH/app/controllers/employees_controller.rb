@@ -1,9 +1,9 @@
 class EmployeesController < ApplicationController
+
+  
   # GET /employees
   # GET /employees.xml
   def index
-  # TODO Delete the line below
-  $pattern = "{first_name,1}-{LAST_NAME}"
     @employees = Employee.find(:all)
 
     respond_to do |format|
@@ -27,6 +27,11 @@ class EmployeesController < ApplicationController
   # GET /employees/new.xml
   def new
     @employee = Employee.new
+#    @adress = @employee.adresse
+#    @number_type = @employee.numbers
+    
+    
+    # @civilties = Civility
 
     respond_to do |format|
       format.html # new.html.erb
@@ -44,9 +49,14 @@ class EmployeesController < ApplicationController
   def create
 #    @name = Employee.find(params[:id])
     @employee = Employee.new(params[:employee])
-
+    @employee.address = Address.new(params[:address])
+    params[:numbers].each do |number|
+      @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
+    end
+    @employee.iban = Iban.new(params[:iban])
+    
     respond_to do |format|
-      if @employee.save 
+      if @employee.save
         flash[:notice] = 'Employee was successfully created.'
         format.html { redirect_to(@employee) }
         format.xml  { render :xml => @employee, :status => :created, :location => @employee }
@@ -85,4 +95,6 @@ class EmployeesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+
 end
