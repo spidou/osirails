@@ -11,7 +11,7 @@ html, body {
 	/*font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;*/
 	font-family: verdana , Geneva, sans-serif;
 	cursor: default;
-	min-width:1200px;
+	min-width:1250px;
 }
 
 #all_page { /*Pour étendre le menu principal*/
@@ -492,6 +492,12 @@ a.bouton_menu_x span {
 a.bouton_menu_x:hover span {
 	background:url("../images/menu_horizontal_hover.png") no-repeat top right;
 	color: #444
+}
+
+a.bouton_menu_x span.selected {
+	background: transparent url("../images/menu_horizontal_fond_selected.png") no-repeat top right;
+	font-weight:bold;
+	text-decoration:blink;
 }
 
 /*/////////////////////////////
