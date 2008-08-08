@@ -842,8 +842,6 @@ select {
 caption {
 	background: #afc2ea;
 	color: rgb(64,68,93);
-//	width:100%;
-	padding-right:1000px;
 	font-weight:bold;
 	border-bottom: solid 1px rgb(64,68,93);
 }
@@ -851,10 +849,20 @@ caption {
 table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
-	background: pink;
+	background: #eaeff8;
 	text-align:center;
-	width:100%;
+	min-width:70%;
 	margin-bottom:20px;
+}
+
+table a {
+	text-decoration: none;
+	color:gray;
+}
+
+table a:hover {
+	text-decoration: underline;
+	color:#94a2bf !important;
 }
 
 table th{
@@ -869,6 +877,10 @@ table td{
 tr:hover > td{
 	background: #f5c384; /* rgb(234,136,28); */
 /*	color:white;	*/
+}
+
+tr:hover > td > a {
+	text-decoration:underline;
 }
 
 /*/////////////////////////////////////////////////////
