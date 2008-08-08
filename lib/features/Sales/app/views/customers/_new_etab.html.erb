@@ -1,0 +1,16 @@
+<div id =<%= "new_form#{params[:cpt]}"%>>
+<p><%= label :new_establishment, "Nom du nouvel établissement" %><br/>
+<%= text_field("new_establishment#{params[:cpt]}","name")%></p>
+ <p><%= label :new_establishment, "Type de client" %><br/>
+<%= select("new_establishment#{params[:cpt]}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] },{"include_blank" => 'None'})%></p>
+<p><%= label :new_address, "Address1" %><br/>
+<%= text_field("new_establishment_address#{params[:cpt]}","address1")%></p>
+<p><%= label :new_address, "Address2" %><br/>
+<%= text_field("new_establishment_address#{params[:cpt]}","address2")%></p>
+<p><%= label :new_address, "city_id" %><br/>
+<%= select("new_establishment_address#{params[:cpt]}", "city_id",City.find(:all).collect {|a| [ a.name, a.id ] })%></p>
+</div>
+<div id="link_to_remove">
+<%=link_to_remote("Valider", :url => {:action => "add_form", :cpt => params[:cpt].to_i + 1})%>
+<%= params[:cpt]%>
+</div>
