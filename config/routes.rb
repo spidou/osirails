@@ -29,6 +29,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :suppliers
   map.resources :establishments
   map.resources :product_references
+  map.resources :product_reference_categories
+  map.resources :product_reference_manager
   
 
     
