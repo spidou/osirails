@@ -50,7 +50,7 @@
 		<div id="menu">				<!-- MENU PRINCIPAL-->	
 				<ul>
           <%= display_main_menu %>
-					<li class="selected"><a href="menu_liens/gestion_entreprise.html">Gestion de l'entreprise</a></li>
+					<li><a href="menu_liens/gestion_entreprise.html">Gestion de l'entreprise</a></li>
 					<li><a href="menu_liens/entreprise.html">L'entreprise</a></li>
 					<li><a href="menu_liens/ressource_humaine.html">Ressources Humaines</a></li>
 					<li><a href="menu_liens/ventes.html">Ventes</a></li>
@@ -99,24 +99,7 @@
 			un ordre hiérarchique de gauche à droite    |
 			____________________________________________|-->
 				<div id="menu_horizontal">
-					<a href="">
-						<span>Clôturé récemment</span>
-					</a>
-					<a href="">
-						<span>Facturation</span>
-					</a>
-					<a href="">
-						<span>SAS de facturation</span>
-					</a>
-					<a href="">
-						<span class="selected">Production</span>
-					</a>
-					<a href="">
-						<span>SAS de production</span>
-					</a>
-					<a href="">
-						<span id="menu_horizontal_first">Etude commercial</span>
-          			</a>
+          <%= display_second_menu %>
 				</div>
 
         <%= yield %>
