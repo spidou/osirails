@@ -11,7 +11,7 @@ business_objects:
 menus:
   admin:
     title: Administration
-    description: Administration de l'intranet
+    description: Administration de l'Intranet
     children:
       users:
         title: Utilisateurs
