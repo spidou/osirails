@@ -6,7 +6,7 @@ business_objects:
 menus:
   employee:
     title: Ressources Humaines
-    description: Administration des ressources humaines
+    description: Administration des Ressources Humaines
     children:
 configurations:
 

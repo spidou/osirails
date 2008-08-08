@@ -5,5 +5,5 @@ conflicts:
 business_objects:
 menus:
   product:
-    title: Product
+    title: Produits
     description: Gestion des produits

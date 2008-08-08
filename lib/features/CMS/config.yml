@@ -7,5 +7,5 @@ menus:
   admin:
     children:
       cms:
-        title: CMS
+        title: Contenus
         description: Gestion des contenus

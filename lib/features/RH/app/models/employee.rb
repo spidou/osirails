@@ -15,8 +15,6 @@ class Employee < ActiveRecord::Base
   validates_format_of :social_security, :with => /^[0-9]{13}\x20[0-9]{2}$/,:message => "format numéro de sécurité social incorrect"
   after_create :user_create_methode
   
-  FAMILY_SITUATION = ["Celibataire","Divorcé(e)","Marié(e)","veuf"]
-  
   def pattern(pat,obj)
     retour = ""
     val = pat

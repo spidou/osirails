@@ -15,10 +15,10 @@ menus:
     children:
       users:
         title: Utilisateurs
-        description: Gestion des users
+        description: Gestion des utilisateurs
       roles:
         title: Rôles
-        description: Gestion des roles
+        description: Gestion des rôles
       menus:
         title: Navigation
         description: Gestion de la navigation
@@ -26,8 +26,8 @@ menus:
         title: Contenu
         description: Gestion des contenus
       password_policies:
-        title: Politique de sécurité
-        description: Gestion de la politique de sécurité notament des mots de passes
+        title: Sécurité
+        description: Gestion des politiques de sécurité
       features:
         title: Modules
         description: Gestion des modules

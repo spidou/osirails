@@ -18,7 +18,7 @@ module ApplicationHelper
   end
   
   def current_menu
-    Menu.find_by_name(controller.controller_name) or raise "This controller #{controller.controller_name} should have a menu with the same name"
+    Menu.find_by_name(controller.controller_name) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
   end
   
   def display_main_menu
@@ -26,7 +26,7 @@ module ApplicationHelper
     menu = current_menu
     Menu.mains.each do |m|
       selected = (m == menu or m.children.include?(menu) ? "class=\"selected\"" : "")
-      html << "<li #{selected}><a href=\"\">#{m.title}</a></li>\n"
+      html << "<li #{selected} title=\"#{m.description}\"><a href=\"\">#{m.title}</a></li>\n"
     end
     html
   end
@@ -37,7 +37,7 @@ module ApplicationHelper
     main_menu.children.each do |m|
       first =  main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = (m == current_menu ? "class=\"selected\"" : "") #detect if the element is selected
-      html << "<a href=\"\"><span #{selected} #{first}>#{m.title}</span></a>"
+      html << "<a href=\"\" title=\"#{m.description}\"><span #{selected} #{first}>#{m.title}</span></a>"
     end
     html.reverse.to_s
   end
