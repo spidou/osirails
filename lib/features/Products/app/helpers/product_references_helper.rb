@@ -1,2 +1,2 @@
-module ProductReferencesHelper
+module ProductReferencesHelper  
 end

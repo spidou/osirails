@@ -1,7 +1,17 @@
 <h4>Nouvelle page</h4>
 
-<% form_for(@content) do |content| %>
-  <%= content.error_messages %>
-  <%= render :partial => 'form', :locals => {:content => content} %>
-  <%= content.submit  'Ajouter' %>  <%= link_to 'Retour', :action => 'index' %>
+<% form_for(@category) do |category| %>
+  <%= category.error_messages %>
+
+  <p>
+    <%= category.label :title %><br />
+    <%= category.text_field :title %>
+  </p>
+  <p>
+    <%= category.label :text %><br />
+    <%= category.text_field :text %>
+  </p>
+  <p>
+    <%= category.submit "Create" %>
+  </p>
 <% end %>

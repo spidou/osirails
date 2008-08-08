@@ -1,0 +1,7 @@
+<h3>Création d'une nouvelle catégorie</h3>
+
+<% form_for@category do |category|%>
+  <%= category.error_messages %>
+  <%= render :partial => "form", :locals => {:category => category} %>
+  <%= category.submit "Ajouter"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
+<% end %>

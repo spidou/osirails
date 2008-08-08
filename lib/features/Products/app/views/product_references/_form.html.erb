@@ -1,0 +1,48 @@
+<fieldset>
+  <h3>Référence</h3>
+  <p>
+    <%= reference.label :name, "Nom" %><br />
+    <%= reference.text_field :name %>
+  </p>
+  
+  <p>
+    <%= reference.label :description, "Description" %><br />
+    <%= reference.text_field :description %>
+  </p>
+  
+  <p>
+    <%= reference.label :information, "Information complémentaire" %><br />
+    <%= reference.text_field :information %>
+  </p>
+  
+  <p>
+    <%= reference.label :product_reference_category_id, "Famille" %>
+    <%= reference.collection_select(:product_reference_category_id, @categories, :id, :name, {}) %>
+  </p>
+  
+  <fieldset>
+    <h3>Production</h3>
+    <p>
+      <%= reference.label :production_cost_manpower, "Coût de main-d'oeuvre" %><br />
+      <%= reference.text_field :production_cost_manpower %>
+    </p>
+    
+    <p>
+      <%= reference.label :production_time, "Durée" %><br />
+      <%= reference.text_field :production_time %>
+    </p>
+  </fieldset>
+  
+  <fieldset>
+    <h3>Livraison</h3>
+    <p>
+      <%= reference.label :delivery_cost_manpower, "Coût de main-d'oeuvre" %><br />
+      <%= reference.text_field :delivery_cost_manpower %>
+    </p>
+    
+    <p>
+      <%= reference.label :delivery_time, "Durée" %><br />
+      <%= reference.text_field :delivery_time %>
+    </p>
+  </fieldset>
+</fieldset>

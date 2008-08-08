@@ -1,0 +1,15 @@
+<h3>Liste des cat&eacute;gories et des r&eacute;f&eacute;rences</h3>
+
+<%for category in @categories %>
+  <ul>
+    <li><%= category.name %> &nbsp; <%= "(#{category.product_references_count})" %> &brvbar; <span class="action"><%= link_to( 'Modifier', edit_product_reference_category_path(category) ) %><%= show_delete_button(category) %></span></li>
+  </ul>
+<% end %>
+
+<%for reference in @references %>
+  <ul>
+    <li><%= reference.name %> &nbsp; <%= "(#{reference.products_count})" %> &brvbar; <span class="action"><%= link_to( 'Modifier', edit_product_reference_path(reference) ) %> &brvbar; <%= link_to("Supprimer", reference, { :method => :delete } ) %></span></li>
+  </ul>
+<% end %>
+
+<%= link_to( 'Ajouter une cat&eacute;gorie' , :controller => 'product_reference_categories', :action => 'new' ) %> &brvbar; <%= link_to( 'Ajouter une r&eacute;f&eacute;rence', :controller => 'product_references', :action => 'new' ) %>

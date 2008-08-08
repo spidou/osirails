@@ -73,23 +73,30 @@ configurations:
   password_validity:
     description: durée pendant laquelle le mot de passe est valide
     value: 30
-  societies_configurations_name:
+  society_identity_configuration_name:
     description: Nom de l'entreprise
     value: EMR
-  societies_configurations_address:
-    description: Adresse de l'entreprise
-    value:
-      first_line: 32, Rue des pommes
-      second_line: Pomier
-      twon: Sainte-Marie
-      code_zip: 97400
-      country: "France - Réunion"
-  societies_configurations_phone:
+  society_identity_configuration_address_first_line:
+    description: Premiere ligne pour l'adresse
+    value: 32, Rue des pommes
+  society_identity_configuration_address_second_line:
+    description: Seconde ligne pour l'adresse
+    value: Batiment Rouge
+  society_identity_configuration_address_town:
+    description: Nom de la ville
+    value: Sainte-Clotilde
+  society_identity_configuration_address_zip:
+    description: Code Postal
+    value: 97400
+  society_identity_configuration_address_country:
+    description: Pays/Departement
+    value: "France - Réunion"
+  society_identity_configuration_phone:
       description: Numéro de téléphone de l'entreprise
       value: 0692001122
-  societies_configurations_fax:
+  society_identity_configuration_fax:
       description: Numéro de fax de l'entreprise
       value: 0692001123
-  societies_configurations_siret:
+  society_identity_configuration_siret:
       description: Numéro SIRET
       value: 01234567891234

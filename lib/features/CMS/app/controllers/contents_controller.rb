@@ -99,10 +99,10 @@ class ContentsController < ApplicationController
    # If @content.update_attributes() failed
   rescue ActiveRecord::StaleObjectError     
     @affiche = true
-    flash.now[:error] = "Impossible de modifiez le contenu car vous travaillez sur une version antérieur"
+    flash.now[:error] = "Impossible de modifier le contenu car vous travaillez sur une version antérieur"
     @content.attributes  = params[:content]
-    render :action => :edit 
-    
+    render :action => :edit
+
   end
 
   # DELETE /contents/1  

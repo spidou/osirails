@@ -5,7 +5,7 @@
     <th>Nom</th>
   </tr>
 
-<% for activity_sector in @activity_sector %>
+<% for activity_sector in @activity_sectors %>
   <tr>
     <td><%=h activity_sector.name %></td>
     <td><%= link_to 'Modifier', edit_activity_sector_path(activity_sector) %></td>
