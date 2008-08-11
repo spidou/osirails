@@ -953,7 +953,7 @@ ul.parent>li {
 	text-indent:5px;
 	background-position:0 0;
 	margin-left:-20px;
-	list-style-image:url("puce_hierarchique.gif");	
+	list-style-image:url("../images/puce_hierarchique.gif");	
 }
 
 .hierarchic ul li span{
