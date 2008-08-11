@@ -1,10 +1,11 @@
 class User < ActiveRecord::Base
+  before_save :username_unicity
+
   # Relationships
   has_and_belongs_to_many :roles
   belongs_to :employee
   
   # Validates
-  validates_uniqueness_of :username, :message => "existe déjà"
   validates_presence_of :username, :message => "ne peut être vide"
   with_options :if => :should_update_password? do |user|
     user.before_save :password_encryption
@@ -15,7 +16,6 @@ class User < ActiveRecord::Base
     reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
     # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
     message = ConfigurationManager.admin_password_policy[actual.gsub(/l/,"d")]
-
     user.validates_format_of :password, :with => reg ,:message =>  message
   end
   
@@ -43,11 +43,6 @@ class User < ActiveRecord::Base
   def should_update_password?
     updating_password || new_record?
   end
-
-#  def after_save
-#    Employee.create(:first_name =>self.username )
-#
-#  end
   
   # Update the column last_connection when a user loggin
   def update_connection
@@ -63,6 +58,27 @@ class User < ActiveRecord::Base
   def expired?
     return true if password_updated_at.nil?
     password_updated_at + ConfigurationManager.admin_password_validity.day < Time.now ? true : false
+  end
+  
+  def username_unicity
+    @users = User.find(:all)
+    inc = 2
+    unique = 0
+    for user in @users
+      if user.username == self.username
+        while unique < @users.size
+          unique = 0
+          for user2 in @users
+            if user2.username == self.username + inc.to_s
+              inc+=1    
+            else  
+              unique+=1
+            end
+          end
+        end
+        self.username += inc.to_s  
+      end
+    end
   end
 
 # TODO delete the Add link that been used for dev purposes
