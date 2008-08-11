@@ -9,6 +9,9 @@ conflicts:
 business_objects:
   - Features
 menus:
+  account:
+    title: Compte utilisateur
+    description: Gestion des connexions
   admin:
     title: Administration
     description: Administration de l'Intranet

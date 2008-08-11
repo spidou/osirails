@@ -34,6 +34,7 @@ module ApplicationHelper
   def display_second_menu
     html = []
     main_menu = current_menu.parent_menu
+    return if main_menu.nil?
     main_menu.children.each do |m|
       first =  main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = (m == current_menu ? "class=\"selected\"" : "") #detect if the element is selected
