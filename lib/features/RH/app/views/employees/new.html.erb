@@ -2,7 +2,6 @@
 
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
-
   <p>
     <%= f.label :civility, "Civilité :"%>
     <%= collection_select(:employee, :civility_id, Civility.find(:all), :id, :name)%>  
@@ -48,9 +47,10 @@
    <fieldset id='add_lines'>
   <legend>Num&eacute;ros</legend>
     <p>
-      <%= collection_select('numbers[0]', :indicative_id, Indicative.find(:all), :id, :indicative)%>
+      <%= val = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']%>
+      <%= select('numbers[' + 0.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => val)%>
       <%= display_number0 %>
-      <%= collection_select('numbers[0]', :number_type_id, NumberType.find(:all), :id, :name)%>
+      <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => @number_type)%>
       <%= save_lines%>
     </p>
     <p>

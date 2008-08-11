@@ -25,7 +25,7 @@ module EmployeesHelper
     if params[:numbers].nil?
       number0 = text_field_tag( 'numbers[0][number]', '', :size => 8, :maxlength => 10)
     else
-      number0 = text_field_tag( 'numbers[0][number]', params[:numbers]['0']['number'], :size => 8, :maxlength => 10)
+      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 8, :maxlength => 10)
     end  
     number0
   end
@@ -34,7 +34,7 @@ module EmployeesHelper
     if params[:iban].nil?
       text_field_tag 'iban[bank_code]', '', :size => 3, :maxlength => 5 
     else
-      text_field_tag 'iban[bank_code]', params[:iban]['bank_code'], :size => 3, :maxlength => 5 
+      text_field_tag 'iban[bank_code]',params[:iban]['bank_code'] , :size => 3, :maxlength => 5 
     end
   end
   
@@ -47,10 +47,11 @@ module EmployeesHelper
   end
   
   def display_account_number
+   
     if params[:iban].nil?
       text_field_tag 'iban[account_number]', '', :size => 8, :maxlength => 10
     else
-      text_field_tag 'iban[account_number]', params[:iban]['account_number'], :size => 8, :maxlength => 10 
+      text_field_tag 'iban[account_number]',params[:iban]['account_number'] , :size => 8, :maxlength => 10 
     end
   end
    
@@ -58,7 +59,7 @@ module EmployeesHelper
     if params[:iban].nil?
       text_field_tag 'iban[key]', '', :size => 1, :maxlength => 2
     else
-      text_field_tag 'iban[key]', params[:iban]['key'], :size => 1, :maxlength => 2
+      text_field_tag 'iban[key]', params[:iban]['key'] , :size => 1, :maxlength => 2
     end
   end
   
@@ -69,9 +70,13 @@ module EmployeesHelper
       text_field_tag 'iban[holder_name]',params[:iban]['holder_name']
     end
   end
+  
+  def display_p_balise(i)
+    "<p id=" + i.to_s + ">"
+  end
   ############################################################################################
   
-  # Method to generate textf_ield for each number add
+  # Method to generate text_field for each number add
   def add_number_line
     name = "numbers[" + params[:opt] + "]"
     html =  "<p id='" + params[:opt] + "'>" 

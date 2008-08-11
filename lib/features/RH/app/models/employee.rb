@@ -13,6 +13,9 @@ class Employee < ActiveRecord::Base
   
   validates_presence_of :last_name,:first_name , :message => "ne peut être vide"
   validates_format_of :social_security, :with => /^[0-9]{13}\x20[0-9]{2}$/,:message => "format numéro de sécurité social incorrect"
+  validates_format_of :email, :with => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/,:message => "format adresse email incorrect"
+  validates_format_of :society_email, :with => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$/,:message => "format adresse email incorrect"
+  
   after_create :user_create_methode
   
   def pattern(pat,obj)
@@ -62,6 +65,6 @@ class Employee < ActiveRecord::Base
   end
   
   def user_create_methode
-    User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"password",:employee_id => self.id)
+    User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd",:employee_id => self.id)
   end 
 end

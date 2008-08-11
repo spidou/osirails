@@ -42,14 +42,19 @@ class EmployeesController < ApplicationController
   # GET /employees/1/edit
   def edit
     @employee = Employee.find(params[:id])
+    @iban = @employee.iban
+    @numbers = @employee.numbers
+    @address = @employee.address
   end
 
   # POST /employees
   # POST /employees.xml
   def create
-#    @name = Employee.find(params[:id])
+    # instance_variable_set("@numbers",[]) 
     @employee = Employee.new(params[:employee])
     @employee.address = Address.new(params[:address])
+    @indicative = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']
+    @number_type = params[:numbers].nil? ? "1" : params[:numbers]['0']['number_type']
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
     end
@@ -71,15 +76,33 @@ class EmployeesController < ApplicationController
   # PUT /employees/1.xml
   def update
     @employee = Employee.find(params[:id])
-
+    @iban = @employee.iban
+    @numbers = @employee.numbers
+    @address = @employee.address
+    
+    
+    for i in params[:numbers]
+      if @employee.numbers[i[0].to_i].nil?
+        @employee.numbers[i[0].to_i] =  Number.new(i[1]) unless i[1].nil? or i[1]=="" 
+        @employee.save
+      else  
+        @employee.numbers[i[0].to_i].update_attributes(i[1]) unless i[1].nil? or i[1]==""
+      end
+    end 
+    
+    @employee.numbers.each_with_index do |id|
+      if params[:numbers][id[1].to_s].nil?
+        @employee.numbers[id[1]].destroy
+      end
+    end
+    @employee.iban.update_attributes(params[:iban]) 
+    @employee.address.update_attributes(params[:address])
     respond_to do |format|
       if @employee.update_attributes(params[:employee])
         flash[:notice] = 'Employee was successfully updated.'
         format.html { redirect_to(@employee) }
-        format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @employee.errors, :status => :unprocessable_entity }
       end
     end
   end
