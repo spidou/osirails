@@ -7,3 +7,7 @@ menus:
   product:
     title: Produits
     description: Gestion des produits
+    children:
+      product_reference_manager:
+        title: Gestion des références produits
+        description: Permet la gestion des familles et des références produits
