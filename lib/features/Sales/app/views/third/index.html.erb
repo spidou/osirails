@@ -1,0 +1,28 @@
+<h2> Liste des tiers </h2>
+
+<table>
+<tr>
+  <th>Nom</th> 
+  <th>Forme juridique</th>
+  <th>Numéro Siret</th>
+  <th>Secteurs d'activités</th>
+  <th>Activités</th>
+  <th>Note</th>
+  <th>Coordonnées bancaires</th>
+  <th>Type de tiers</th>
+</tr>
+
+<%for third in @thirds%>
+  <tr>
+    <td><%= third.name %></td>
+    <td><%= third.legal_form %></td>
+    <td><%= third.siret_number %></td>
+    <td><%=  thir.activity_sector_id%></td>
+    <td><%= third.activities %></td>
+    <td><%= third.note %></td>
+    <td><%= third.banking_informations %></td>
+    <td><%= third.type %></td>
+    <td><%= third.third_type_id %></td>
+  </tr>
+  <%end%>
+</table>

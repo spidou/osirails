@@ -31,7 +31,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :product_references
   map.resources :product_reference_categories
   map.resources :product_reference_manager
-  
 
     
   # Sample of regular route:

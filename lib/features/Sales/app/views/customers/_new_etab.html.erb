@@ -9,9 +9,9 @@
 <%= text_field("new_establishment_address#{params[:cpt]}","address2")%></p>
 <p><%= label :new_address, "city_id" %><br/>
 <%= select("new_establishment_address#{params[:cpt]}", "city_id",City.find(:all).collect {|a| [ a.name, a.id ] })%></p>
-<%= hidden_field("valid#{params[:cpt]}", 1, "value" => 'true')%>
+<%= hidden_field("valid#{params[:cpt]}", "value", "value" => 'true')%>
+
 </div>
 <div id=<%= "link_add_remove#{params[:cpt].to_i + 1}"%>>
 <%=link_to_remote("Valider", :url => {:action => "add_form", :cpt => params[:cpt].to_i + 1})%>
-<%= params[:cpt]%>
 </div>

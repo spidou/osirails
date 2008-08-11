@@ -1,0 +1,17 @@
+<p><%= label :establishment, "Nom de l'etablissement" %><br/>
+<%= text_field("establishment#{establishment.id}","name","value" => establishment.name) %>
+<p><%= label :establishment, "Type de client" %><br/>
+<%= select("establishment#{establishment.id}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] },:selected => establishment.establishment_type_id)%></p>
+<p><%= label :address, "Address1" %><br/>
+<%= text_field("establishment#{establishment.id}_address","address1", "value" => establishment.address.address1)%></p>
+<p><%= label :address, "Address2" %><br/>
+<%= text_field("establishment#{establishment.id}_address","address2", "value" => establishment.address.address2)%></p>
+<div id="address">
+<p><%= label :address, "Country_name" %><br/>
+    <%= text_field_with_auto_complete(:country, :name, {:size => 15}) -%>
+<p><%= label :address, "City_name" %><br/>
+    <%= text_field_with_auto_complete(:city, :name, {:size => 15}) -%>
+ <br/>
+</div>
+<%= link_to_remote("supp_form", :url => {:action => "supp_form", :id => establishment.id}) %>
+
