@@ -270,7 +270,7 @@ width: 100%;
 	border: 1px solid #A8A8A8;
 	-moz-border-radius: 10px 0 0 10px;
 	background: url("../images/background_menu-secondaire.gif") repeat;
-	width: 200px;
+	width: auto;
 	text-indent:0px;
 	font-size:0.8em;
 }
@@ -404,6 +404,7 @@ width: 100%;
 .help {
 	font-size:0.8em;
 	color:#444;
+	margin-right:5px;
 }
 
 .gris {
@@ -414,30 +415,43 @@ width: 100%;
 .bleu {
 	color: #8ea4cf;
 }
-/*////////////////////////////////////////////////////////*/
-/*::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::*/
-input[type=button],                                     /**/
-input[type=submit],                                     /**/
-input[type=reset] {                                     /**/
-	margin-left: 5px;                                   /**/
-	padding-bottom:6px;                                 /**/
-	padding-left:2px;                                   /**/
-}                                                       /**/
-                                                        /**/
-input[type=button]:hover,                               /**/
-input[type=submit]:hover,                               /**/
-input[type=reset]:hover {                               /**/
-	cursor:pointer;                                     /**/
-	background: url("../images/bouton_hover3.png");     /**/
-}                                                       /**/
-                                                        /**/
-.bouton_defaut {                                        /**/
-	background: url("../images/bouton.png") no-repeat;  /**/
-	width: 74px;                                        /**/
-	height: 26px;                                       /**/
-	border: none;                                       /**/
-}                                                       /**/
-/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+
+#menu_secondaire a.default-button {
+	margin:0 5px 0px 10px;
+}
+
+/*////////////////////////////////////////////////////////////////////////////////////*/
+/*::::::::::::::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::::::::::::::::::*/
+a.default-button { 																	/**/
+background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
+display: block;                                                                    	/**/
+float: left;                                                                       	/**/
+font-family: arial, verdana, sans-serif;                                           	/**/
+font-size:85%;                                                                     	/**/
+line-height: 18px;                                                                 	/**/
+height: 26px;                                                                      	/**/
+padding-left: 8px;                                                                 	/**/
+text-decoration: none;                                                             	/**/
+text-indent:0;                                                                     	/**/
+margin:5px 5px 5px 5px;                                                		 		/**/
+color:black;                                                                       	/**/
+}																				   	/**/
+																					/**/
+a.default-button span { 															/**/
+background: transparent url("../images/default-button.png") no-repeat top right;	/**/
+display: block;																		/**/
+padding: 2px 12px 6px 0;															/**/
+}																					/**/
+																					/**/
+a.default-button:hover { 															/**/
+background-position: bottom left;													/**/
+}																					/**/
+																					/**/
+a.default-button:hover span {														/**/
+background-position: bottom right;													/**/
+color:black;
+}	 																				/**/
+/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
 /*//////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
@@ -861,7 +875,7 @@ table {
 	background: #eaeff8;
 	text-align:center;
 	min-width:70%;
-	margin-bottom:20px;
+	margin: 10px 0 10px 10px;
 }
 
 table a {
