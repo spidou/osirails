@@ -5,9 +5,21 @@ class ProductReferenceCategory < ActiveRecord::Base
   # Relationship
   has_many :product_references
   has_many :product_reference_categories
-  
-  def after_update
-    
+
+  # This method permit to update counter of parents categories
+  def change(index,value)
+    category = ProductReferenceCategory.find(self.id)
+    if index == "before_update"
+      ProductReferenceCategory.update_counters category.id, :product_references_count => -value
+      category.ancestors.each do |parent_category|
+        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => -value 
+      end
+    elsif index == "after_update"
+      ProductReferenceCategory.update_counters category.id, :product_references_count => value
+      category.ancestors.each do |parent_category|
+        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => value
+      end
+    end
   end
   
   # This method permit to check if a category can have a new parent category

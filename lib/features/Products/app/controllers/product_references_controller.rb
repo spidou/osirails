@@ -2,7 +2,7 @@ class ProductReferencesController < ApplicationController
 
   # GET /product_references/new
   def new
-    @reference = ProductReference.new
+    @reference = ProductReference.new(:product_reference_category_id => params[:id])
     @categories = ProductReferenceCategory.find(:all)
   end
 
@@ -28,10 +28,9 @@ class ProductReferencesController < ApplicationController
   def update
     @categories = ProductReferenceCategory.find(:all)
     @reference = ProductReference.find(params[:id])
-    old_category_id = @reference.product_reference_category_id
+    @reference.change("disable_or_before_update")
     if @reference.update_attributes(params[:product_reference])
-      #      ProductReferenceCategory.update_counters old_category_id, :product_references_count => - 1
-      #      ProductReferenceCategory.update_counters @reference.product_reference_category_id, :product_references_count => 1
+      @reference.change("after_update")
       flash[:notice] = 'La r&eacute;f&eacute;rence est bien mis &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
@@ -48,7 +47,7 @@ class ProductReferencesController < ApplicationController
       flash[:notice] = 'Votre r&eacute;f&eacute;rence est bien supprim&eacute;'
     else
       @reference.enable = 0
-      @reference.change_count
+      @reference.change("disable_or_before_update")
       @reference.save
       flash[:notice] = 'Votre r&eacute;f&eacute;rence est bien supprim&eacute;' 
     end

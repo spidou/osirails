@@ -2,7 +2,7 @@ class ProductReferenceCategoriesController < ApplicationController
   
   # GET /product_reference_categories/new
   def new
-    @category = ProductReferenceCategory.new
+    @category = ProductReferenceCategory.new(:product_reference_category_id => params[:id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
@@ -29,11 +29,13 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.find(params[:id])
     new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
     if @category.can_has_this_parent?(new_parent_category_id)
+      @category.change("before_update", @category.product_references_count)
       @category.update_attributes(params[:product_reference_category])
+      @category.change("after_update", @category.product_references_count)
       flash[:notice] = 'Votre cat&eacute;gorie est bien &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
-      flash[:error] = 'Cette cat&eacute;gorie ne peux &egrave;tre d&eacute;placer'
+      flash[:error] = 'D&eacute;placement impossible'
       render :action => 'edit'
     end
   end  
@@ -47,7 +49,7 @@ class ProductReferenceCategoriesController < ApplicationController
     else
       flash[:error] = "Votre cat&eacute;gorie ne peut &egrave;tre supprim&eacute;. V&eacute;rifier que rien ne dépend d'elle."
     end
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
+    redirect_to :controller => 'product_reference_manager', :action => 'index'
   end
   
 end
