@@ -907,19 +907,6 @@ tr:hover > td > a {
 }
 
 /*LISTE*/
-body {
-    margin: 0px;
-    padding: 0px;
-	width:100%;
-	height:100%;
-}
-
-h1 {
-	text-align:center;
-	background:black;
-	color:white;
-	font-variant:small-caps;
-}
 
 .hierarchic {
 	margin-left:10px;
