@@ -912,6 +912,14 @@ tr:hover > td > a {
 	margin-left:10px;
 }
 
+li.category {
+	color:#40445D !important;
+}
+
+li.reference {
+	color:#7E98CB !important;
+}
+
 .hierarchic ul {
 border-left:1px solid gray;
 line-height:28px;
@@ -935,7 +943,7 @@ ul.parent>li {
 	border-left:solid 1px black;
 	border-bottom:solid 1px black;
 	margin-bottom:-1px;
-	margin-right:300px;
+	margin-right:278px;
 	height:25px;
 	text-indent:5px;
 	background-position:0 0;
@@ -948,7 +956,15 @@ ul.parent>li {
 	right:300px;
 }
 
+.hierarchic ul li a {
+	color:#444;
+	text-decoration:none;
+}
 
+.hierarchic ul li a:hover {
+	text-decoration: underline;
+	color:#EA972D;
+}
 
 /*/////////////////////////////////////////////////////
 					FOOTER
