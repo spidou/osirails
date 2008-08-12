@@ -10,6 +10,17 @@ class AccountController < ApplicationController
 
   def login
     return unless request.post?
+    
+    # Anti-flood system
+    session[:tentative] ||= 0
+    if session[:tentative] >= 3
+      flash[:error] = "Trois tentatives de connexion detect&eacute;es, vueillez patienter quelques instants ..."
+      if (session[:tentative_time] + 10.seconds) < Time.now
+        session[:tentative] = 0 
+      end
+      return
+    end
+    
     if @user = User.find_by_username(params[:username], :include => :employee)
       if @user.compare_password(params[:password])
         if @user.enabled == true
@@ -21,11 +32,18 @@ class AccountController < ApplicationController
         else
           flash[:error] = "Votre compte est d&eacute;sactiv&eacute;"
         end
+        session[:tentative] = 0
         return
       end
     end
     redirect_to login_path
     flash[:error] = "Le nom d'utilisateur et le mot de passe ne correspondent pas. Veuillez r&eacute;essayer."
+    
+    # Manage error tentative for the anti-flood
+    if session[:tentative] < 3
+      session[:tentative] += 1
+      session[:tentative_time] = Time.now
+    end
   end
 
   def lost_password
