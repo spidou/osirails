@@ -1,3 +1,4 @@
+# FIXME yamled
 name: Admin
 version: 0.1
 dependencies:
@@ -15,28 +16,36 @@ menus:
   admin:
     title: Administration
     description: Administration de l'Intranet
+    position: 1
     children:
       users:
         title: Utilisateurs
         description: Gestion des utilisateurs
+        position: 1
       roles:
         title: Rôles
         description: Gestion des rôles
+        position: 2
       menus:
         title: Navigation
         description: Gestion de la navigation
+        position: 3
       contents:
         title: Contenu
         description: Gestion des contenus
+        position: 4
       password_policies:
         title: Sécurité
         description: Gestion des politiques de sécurité
+        position: 5
       features:
         title: Modules
         description: Gestion des modules
+        position: 6
       permissions:
         title: Permissions
         description: Gestion des permissions
+        position: 7
         children:
           business_object_permissions:
             title: Business Objects permissions
@@ -47,6 +56,20 @@ menus:
           role_permissions:
             title: Role permissions
             description: Gestion des permissions des roles
+      society_configurations:
+        title: Configuration de l'entreprise
+        description: Gestion de la configuration de l'entreprise
+        position: 8
+        children:
+          society_identity_configuration:
+            title: Paramètres globaux
+            description: Configuration des paramètres globaux de l'entreprise
+          activity_sectors:
+            title: Secteurs d'activités
+            description: Gestion des secteurs d'activités
+          services:
+            title: Services
+            description: Gestion des services
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
