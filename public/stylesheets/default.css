@@ -337,7 +337,7 @@ width: 100%;
 	margin-left:10px;
 }
 
-#view {
+#view_icon {
 	background: url("../images/view.png") no-repeat;
 	background-position: center left;
 	margin-left: 10px;
@@ -346,11 +346,11 @@ width: 100%;
 	line-height:22px;
 }
 
-#view a {
+#view_icon a {
 	margin-left: 30px;
 }
 
-#add {
+#add_icon {
 	background: url("../images/add.png") no-repeat;
 	background-position: center left;
 	margin-left: 10px;
@@ -359,11 +359,11 @@ width: 100%;
 	line-height:22px;
 }
 
-#add a {
+#add_icon a {
 	margin-left: 30px;
 }
 
-#modif {
+#modif_icon {
 	background: url("../images/modif.png") no-repeat;
 	background-position: center left;
 	margin-left: 10px;
@@ -372,11 +372,11 @@ width: 100%;
 	line-height:22px;
 }
 
-#modif a {
+#modif_icon a {
 	margin-left: 30px;
 }
 
-#del {
+#del_icon {
 	background: url("../images/del.png") no-repeat;
 	background-position: center left;
 	margin-left: 10px;
@@ -386,7 +386,7 @@ width: 100%;
 	margin-bottom:-21px;
 }
 
-#del a {
+#del_icon a {
 	margin-left: 30px;
 }
 
