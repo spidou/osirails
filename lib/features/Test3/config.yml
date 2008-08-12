@@ -14,17 +14,17 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-  Test2_p1:
-    title: Test2_p1
-    description: Test2_p1
-    children:
-      Test2_p2:
-        title: Test2_p2
-        description: Test2_p2
-      Test2_p3:
-        title: Test2_p3
-        description: Test2_p3
-  Test2_p4:
-      title: Test2_p4
-      description: Test2_p4
+#  Test2_p1:
+#    title: Test2_p1
+#    description: Test2_p1
+#    children:
+#      Test2_p2:
+#        title: Test2_p2
+#        description: Test2_p2
+#      Test2_p3:
+#        title: Test2_p3
+#        description: Test2_p3
+#  Test2_p4:
+#      title: Test2_p4
+#      description: Test2_p4
     

@@ -8,6 +8,6 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-  test1:
-    title: Test1
-    description: Test1 de l'intranet
+#  test1:
+#    title: Test1
+#    description: Test1 de l'intranet

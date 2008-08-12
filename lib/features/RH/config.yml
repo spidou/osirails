@@ -4,9 +4,7 @@ dependencies:
 conflicts:
 business_objects:
 menus:
-  employee:
+  employees:
     title: Ressources Humaines
     description: Administration des Ressources Humaines
-    children:
 configurations:
-

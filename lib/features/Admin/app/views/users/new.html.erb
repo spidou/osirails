@@ -1,18 +1,19 @@
 <h1>Créer un utilisateur</h1>
 
-<% form_for(@user) do |f| %>
-  <%= f.error_messages %>
+<div class="cadre">
+  <% form_for(@user) do |f| %>
+    <%= f.error_messages %>
   <div>
     <p>
-      <%= f.label "Nom Utilisateur"%><br/>
+      <%= f.label "Nom Utilisateur"%>
       <%=f.text_field :username %>
     </p>
     <p>
-      <%= f.label "Mot_de_passe" %><br />
+      <%= f.label "Mot_de_passe" %>
       <%= f.password_field :password %>
     </p>
     <p>
-      <%= f.label "confirmez" %><br />
+      <%= f.label "confirmez" %>
       <%= f.password_field :password_confirmation %>
     </p>
   </div>
@@ -40,3 +41,4 @@
 <% end %>
 
 <%= link_to 'Retour', users_path %>
+</div>

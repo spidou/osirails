@@ -6,6 +6,6 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-  test:
-    title: Test
-    description: Test de l'intranet
+#  test:
+#    title: Test
+#    description: Test de l'intranet

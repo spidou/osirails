@@ -6,15 +6,14 @@ dependencies:
 conflicts:
 business_objects:
 menus:
-  third:
+  thirds:
     title: Tiers
     description: Gestion des fournisseurs et des clients
     children:
-      customer:
+      customers:
         title: Clients
         description: Gestion des clients
-      supplier:
+      suppliers:
         title: Fournisseurs
         description: Gestion des fournisseurs
 configurations:
-
