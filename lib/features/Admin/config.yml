@@ -37,15 +37,16 @@ menus:
       permissions:
         title: Permissions
         description: Gestion des permissions
-      # business_object_permissions:
-      #   title: Business Objects permissions
-      #   description: Gestion des permissions des business objects
-      # menu_permissions:
-      #   title: Menu permissions
-      #   description: Gestion des permissions des menus
-      # role_permissions:
-      #   title: Role permissions
-      #   description: Gestion des permissions des roles
+        children:
+          business_object_permissions:
+            title: Business Objects permissions
+            description: Gestion des permissions des business objects
+          menu_permissions:
+            title: Menu permissions
+            description: Gestion des permissions des menus
+          role_permissions:
+            title: Role permissions
+            description: Gestion des permissions des roles
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
