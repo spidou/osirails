@@ -667,15 +667,31 @@ background: url("../images/cross.png") no-repeat;
 /////////////////////////////*/
 
 
-.matable {
-	border-collapse: collapse !important;
-	text-align:left !important;
-	margin-bottom:20px !important;
-	margin-left:15px !important;
+table.presentation {
+	border-collapse: collapse;
+	text-align:left;
+	margin-bottom:20px;
+	margin-left:15px;
+	border:none;
+	background:white;
+	min-width:none;
 }
 
-.matable a {
-	color: #698bcd !important;
+table.presentation a {
+	color: #698bcd;
+	text-decoration:underline;
+}
+
+table.presentation a:hover {
+	color:#698bcd;
+}
+
+table td{
+	border:none;
+}
+
+tr:hover > td{
+	background: none;
 }
 
 .cadre {
