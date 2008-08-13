@@ -20,7 +20,7 @@ module ProductReferenceManagerHelper
         link_to( 'Modifier', edit_product_reference_category_path(category) )+"&nbsp; #{delete_button}</span></li>"
 
       if category.children.size > 0 or category.product_references.size > 0
-        list << "<li><ul>"
+        list << "<ul>"
         if category.children.size > 0
           get_children(category.children,list)
         end
@@ -30,7 +30,7 @@ module ProductReferenceManagerHelper
               link_to( 'Modifier', edit_product_reference_path(reference) )+" &brvbar; "+link_to("Supprimer", reference, { :method => :delete})+"</span></li>"          
           end
         end
-        list << "</ul></li>"
+        list << "</ul>"
       end
     end
     list

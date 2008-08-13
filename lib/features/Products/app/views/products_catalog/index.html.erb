@@ -1,0 +1,11 @@
+<h1>Visualiser le catalogue des produits</h1>
+
+<%= show_category_column(@categories) %>
+<%= show_reference_column(@references) %>
+
+ <%=observe_field("select_reference", :update => "products_list", :url => {:action => :show_product_tab}, :on => "click", :with => 'parameter') %>
+ <%= observe_field("select_reference", :update => "product_reference", :url => {:action => :show_reference_information}, :on => "click", :with => 'parameter') %>
+ 
+<div  id="products_list"></div>
+<div id="product_reference"></div>
+<div id="product_information"></div>

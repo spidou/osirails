@@ -17,3 +17,6 @@ menus:
       product_references:
         title: Gestion des références
         description: Permet la gestion des références
+      products_catalog:
+          title: Catalogue des produits et références
+          description: Permet l'affichage du catalogue de produit 

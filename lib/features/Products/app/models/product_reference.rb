@@ -49,6 +49,8 @@ class ProductReference < ActiveRecord::Base
     
   # This method permit to check if a reference can be delete or no
   def can_delete?
-    self.products.empty?
+    #self.products.empty? 
+    #FIXME Décommenté quand product sera opérationnel
+    false
   end
 end
