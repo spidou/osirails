@@ -29,11 +29,12 @@
         <% # Mettre toutes ces variable dans un hash et envoyer ce has au render -%>
 
         <%= render :partial => 'customer_establishment', :locals => {:establishment => establishment} %>
-
+        
         </div>
         <% end %>
         <% end %>  
-        <% end %> 
+        <% end %>
+      </fieldset>
         
         <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>
         <% # new_establishment_number store establishment number present in establishment_form -%>
@@ -55,7 +56,7 @@
             <% new_establishment_number.times do |i| %>
             <div id="link_add_remove_establishment_<%= i+1 %>">
             </div>
-            <div <%= "new_establishment#{i+1}" %>>
+            <div id='<%= "new_establishment#{i+1}"%>'>
             <%= render :partial => 'customer_new_establishment', :locals => {:i=> i} %>
             </div>
             <% cpt += 1 %>
@@ -83,18 +84,19 @@
               <% unless params[:new_contact_number].nil? %>
               <% new_contacts_number.times do |i| %>
               <div id="link_add_remove_contact_<%= i+1 %>">
-              </div>
-              <div id =<%= "new_contact#{i+1}" %>>
-              <%= render :partial => 'customer_new_contact', :locals => {:i => i} %>
-              </div>
-              <% cpt += 1 %>
-              <% end %>
-              <% end %>
-              <div id="link_add_remove_contact_<%= cpt%>">
-              <%= link_to_remote("Ajouter", :url => {:action => "add_contact", :cpt => cpt}) %>
+                </div>
+                <div id =<%= "new_contact#{i+1}" %>>
+                <%= render :partial => 'customer_new_contact', :locals => {:i => i} %>
+                </div>
+                <% cpt += 1 %>
+                <% end %>
+                <% end %>
+                <div id="link_add_remove_contact_<%= cpt%>">
+                <%= link_to_remote("Ajouter", :url => {:action => "add_contact", :cpt => cpt}) %>
               </div>
             </div>
         </fieldset>
+    <%= link_to 'Voir un article', customer_establishment_path(@customer, @establishment_test) %>
     <%= customer.submit  'Modifier' %>
     <% end %>
     <%= link_to 'Retour', :action => 'index' %>

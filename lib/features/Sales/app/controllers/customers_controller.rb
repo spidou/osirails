@@ -25,6 +25,7 @@ class CustomersController < ApplicationController
   end
 
   def edit
+    @establishment_test = Establishment.find(12)
     @customer = Customer.find(params[:id])
     @country_id = 0
     @establishments = @customer.establishments
@@ -145,13 +146,13 @@ class CustomersController < ApplicationController
     end
     
     # If contact_form is not null
-
+    
     unless params[:new_contact_number]["value"].nil?
       new_contact_number = params[:new_contact_number]["value"].to_i
-      new_contact_number.times do |i|                
+      new_contact_number.times do |i|
+#      puts params["new_contact#{i+1}"][:has_contact_id]        
         # For all new_contact  an instance variable is create.
         # If his parameter is not valid, @error variable is set to true
-        puts params["valid_contact_1"]['value']
         eval "unless params['valid_contact_#{i+1}']['value'] == 'false'
                         instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
                         unless @new_contact#{i+1}.valid?
