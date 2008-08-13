@@ -1,0 +1,21 @@
+
+<%form_for(@job) do |j|%>
+  <p>
+    <%= j.label :name, "Nom :"%>
+    <%= j.text_field :name%>
+  </p>
+  <p>
+    <%= j.label :mission, "Mission :"%>
+    <%= j.text_area :mission %>
+  </p>
+  <p>
+    <%= j.label :activity, "Activités :"%>
+    <%= j.text_area :activity%>
+  </p>
+  <p>
+    <%= j.label :goal, "Objectifs :"%>
+    <%= j.text_area :goal%>
+  </p>
+  <%=j.submit 'Ajouter'%>
+<%end%>
+

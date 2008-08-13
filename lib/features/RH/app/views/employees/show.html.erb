@@ -1,13 +1,118 @@
-<p>
-  <b>Pr&eacute;nom:</b>
-  <%=h @employee.first_name %>
-</p>
+<h1>Fiche de <%=h @employee.civility.name%> <%=h @employee.last_name%> <%=h @employee.first_name%> </h1>
 
-<p>
-  <b>Nom:</b>
-  <%=h @employee.last_name %>
-</p>
+<div class="cadre">
+<%if @list==true%>
+  <p>
+    <b>Date de naissance :</b>
+    <%=h @employee.birth_date.strftime("%d/%m/%y") %>
+  </p>
 
+  <p>
+    <b>Situation familiale :</b>
+    <%=h @employee.family_situation.name %>
+  </p>
+  
+  <p>
+    <b>Fiche de poste :</b>
+    <div>
+    <table>
+      <tr>
+        <th>service</th>
+        <th>responsable hierachique</th>
+      </tr>
+      <%for service in @employee.services%>
+        <tr>
+          <td>
+            <%=service.name%>
+          </td>
+          <td>
+          
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+    
+  </p>
+<%end%>
 
-<%= link_to 'Edit', edit_employee_path(@employee) %> |
-<%= link_to 'Back', employees_path %>
+<%if @view==true%>
+
+  <fieldset>
+    <legend>Emails</legend>
+    <p>
+      <b>Personnel :</b>
+      <%=h @employee.email %>
+    </p>
+    <p>
+      <b>Professionnel :</b>
+      <%=h @employee.society_email %>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>Coordonn&eacute;es</legend>
+    <p>
+      <b>Adresse :</b>
+      <%=h @address.address1 + " " + @address.address2 %>
+    </p>
+    <p>
+      <b>Pays :</b>
+      <%=h @address.country_name %>
+    </p>
+    <p>
+      <b>Ville :</b>
+      <%=h @address.city_name %>
+    </p>
+    <p>
+      <b>Code postal :</b>
+      <%=h @address.zip_code %>
+    </p>
+  </fieldset> 
+    
+  
+
+<fieldset>
+  <legend>Contract de travail :</legend>
+  <p>
+    <b>P&egrave;riode du contract :</b>
+    <%=h @job_contract.start_date.nil? ? "[Valeur Non définie]" : @job_contract.start_date.strftime("%d/%m/%Y") %> jusqu&apos; au 
+    <%=h @job_contract.end_date.nil? ? "[Valeur Non définie]" : @job_contract.end_date.strftime("%d/%m/%Y") %>
+  </p>
+  <p>
+    <b>Salaire :</b>
+    <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
+    <ul>
+      <li>Brut :
+        <%=h  @job_contract.salaries.last['salary'].to_s + " €/m" unless @job_contract.salaries==[] %>
+      </li>
+      <li>Net :
+        <%=h  net(@job_contract.salaries.last['salary']).to_s + " €/m" unless @job_contract.salaries==[] %>
+      </li>
+    </ul>
+    
+  </p>
+  <p>
+     <b>Prime :</b>
+     <% i=0%>
+     <%for premium in @employee.premia%>
+      <%i+=1%>
+      <ul>
+      <li>
+      <%if i=@employee.premia.size-4%>
+        <%= premium['value'].to_s + " €  le " + premium['date'].strftime("%d/%m/%Y") + " desc : " + premium['remark'] %>
+      </li>
+      </ul>  
+      <%end%>  
+     <%end%>
+  </p>
+<%end%>
+  
+  <%if @edit==true %>
+    <p>
+    <%= link_to 'Modifier le contract de travail', edit_job_contract_path(@job_contract) %> 
+    </p>
+</fieldset>
+
+<%= link_to 'Modifier', edit_employee_path(@employee) %> |
+  <%end%>
+<%= link_to 'Retour', employees_path %></div>

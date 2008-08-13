@@ -1,0 +1,25 @@
+<h1>Voir la fonction "<%=h@job.name%>"</h1>
+
+<div class="cadre">
+<p>
+  <b>Nom :</b>
+  <%=h @job.name%>
+</p>
+
+<p>
+  <b>Mission :</b>
+  <%=h @job.mission%>
+</p>
+
+<p>
+  <b>Activités :</b>
+  <%=h @job.activity%>
+</p>
+
+<p>
+  <b>Objectifs :</b>
+  <%=h @job.goal%>
+</p>
+
+ <%= link_to 'Retour', jobs_path %>
+</div>

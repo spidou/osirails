@@ -1,0 +1,28 @@
+<h1>Modifier le contrat de travail </h1>
+
+<% form_for(@job_contract) do |f| %>
+  <%=f.error_messages%>  
+  <p>
+    <%= f.label :start_date, "Date de début du contrat :"%>
+    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
+  </p>
+  
+  <p>
+    <%= f.label :end_date, "Date de fin du contrat :"%>
+    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
+  </p>
+  
+  <p>
+    <%= f.label :employee_state_id, "Status employée :"%>
+    <%= f.collection_select :employee_state_id, EmployeeState.find(:all), :id, :name, :inlude_blank => true %>
+  </p>
+  
+  <p>
+    <%= f.label :job_contract_type_id, "Type de contrat de l'employée :"%>
+    <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
+  </p>
+  
+  <p>
+    <%= f.submit "Modifier" %>
+  </p>  
+<%end%>

@@ -1,11 +1,12 @@
 class EmployeesController < ApplicationController
-
+  helper :salaries
+  method_permission(:list => ["show"])
   
   # GET /employees
   # GET /employees.xml
   def index
     @employees = Employee.find(:all)
-
+    
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @employees }
@@ -16,7 +17,15 @@ class EmployeesController < ApplicationController
   # GET /employees/1.xml
   def show
     @employee = Employee.find(params[:id])
-
+    @iban = @employee.iban
+    @numbers = @employee.numbers
+    @address = @employee.address
+    # permissions
+    @edit = self.can_edit?(current_user)
+    @view = self.can_view?(current_user)
+    @list = self.can_list?(current_user)
+    
+    @job_contract = @employee.job_contract
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @employee }
@@ -27,6 +36,8 @@ class EmployeesController < ApplicationController
   # GET /employees/new.xml
   def new
     @employee = Employee.new
+    @job = Job.new
+    @services = Service.find(:all)
 #    @adress = @employee.adresse
 #    @number_type = @employee.numbers
     
@@ -35,13 +46,13 @@ class EmployeesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @employee }
     end
   end
 
   # GET /employees/1/edit
   def edit
     @employee = Employee.find(params[:id])
+    @services = Service.find(:all)
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
@@ -50,11 +61,14 @@ class EmployeesController < ApplicationController
   # POST /employees
   # POST /employees.xml
   def create
+    # FIXME do not forget to resolve the  default selected value (numbers) of the create view (new.html.erb) 
     # instance_variable_set("@numbers",[]) 
+    @services = Service.find(:all)
+    
     @employee = Employee.new(params[:employee])
+    @job = Job.new(params[:job])
+    @job.save
     @employee.address = Address.new(params[:address])
-    @indicative = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']
-    @number_type = params[:numbers].nil? ? "1" : params[:numbers]['0']['number_type']
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
     end
@@ -62,12 +76,10 @@ class EmployeesController < ApplicationController
     
     respond_to do |format|
       if @employee.save
-        flash[:notice] = 'Employee was successfully created.'
+        flash[:notice] = 'L&apos;employée a été crée avec succés.'
         format.html { redirect_to(@employee) }
-        format.xml  { render :xml => @employee, :status => :created, :location => @employee }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @employee.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -76,6 +88,7 @@ class EmployeesController < ApplicationController
   # PUT /employees/1.xml
   def update
     @employee = Employee.find(params[:id])
+    @services = Service.find(:all)
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
@@ -99,7 +112,7 @@ class EmployeesController < ApplicationController
     @employee.address.update_attributes(params[:address])
     respond_to do |format|
       if @employee.update_attributes(params[:employee])
-        flash[:notice] = 'Employee was successfully updated.'
+        flash[:notice] = ' L&apos;employée a été modifié avec succés.'
         format.html { redirect_to(@employee) }
       else
         format.html { render :action => "edit" }

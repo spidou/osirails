@@ -10,6 +10,12 @@ conflicts:
 business_objects:
   - Features
 menus:
+  society_configurations:
+    title: Configuration
+    description: Configuration générale de la societé
+  services:
+    title: Services
+    description: Configuration des services 
   account:
     title: Compte utilisateur
     description: Gestion des connexions

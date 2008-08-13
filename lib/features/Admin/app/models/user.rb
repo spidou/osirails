@@ -65,11 +65,11 @@ class User < ActiveRecord::Base
     inc = 2
     unique = 0
     for user in @users
-      if user.username.downcase == self.username.downcase
+      if user.username.downcase == self.username.downcase and user.id != self.id
         while unique < @users.size
           unique = 0
           for user2 in @users
-            if user2.username.downcase == self.username.downcase + inc.to_s
+            if user2.username.downcase == self.username.downcase + inc.to_s and user.id != self.id
               inc+=1    
             else  
               unique+=1

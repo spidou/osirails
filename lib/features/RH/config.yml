@@ -7,3 +7,14 @@ menus:
   rh:
     title: Ressources Humaines
     description: Administration des Ressources Humaines
+    children:  
+      employees:
+        title: Personnel
+        description: Gestion du personnel
+        children:
+          jobs:
+            title: Fonctions
+            description: Gestions des fonctions
+          salaries:
+            title: Salaires
+            description: Historique des salaires

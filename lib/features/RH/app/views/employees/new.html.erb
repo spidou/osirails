@@ -1,7 +1,9 @@
 <h1>Ajouter un employ&eacute;e</h1>
 
+<div class="cadre">
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
+  <%= error_messages_for(@emloyee)%>
   <p>
     <%= f.label :civility, "Civilité :"%>
     <%= collection_select(:employee, :civility_id, Civility.find(:all), :id, :name)%>  
@@ -22,10 +24,14 @@
     <%= f.label :family_situation, "Situation familiale :"%>
     <%= collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name)%>
   </p>
+   <p>
+    <%= f.label :social_security ,"N° sécurité sociale :"%>
+    <%= f.text_field :social_security ,{ :size => 14, :maxlength => 16} %>
+  </p>
   <fieldset>
   <legend>Emails</legend>
   <p>
-    <%= f.label :email, "Email privée:"%>
+    <%= f.label :email, "Email Personnel :"%>
     <%= f.text_field :email%>
   </p>
   <p>
@@ -43,18 +49,31 @@
       <%= label_tag 'address[address2]', "Adresse :"%> 
       <%= display_address2%>    
     </p>
+    <p>
+      <%= label_tag 'address[country_name]', "Pays :"%> 
+      <%= display_country%>    
+    </p>
+    <p>
+      <%= label_tag 'address[city_name]', "Ville :"%> 
+      <%= display_city%>    
+    </p>
+    <p>
+      <%= label_tag 'address[zip_code]', "Code postal :"%> 
+      <%= display_zip_code%>    
+    </p>
   </fieldset>
    <fieldset id='add_lines'>
   <legend>Num&eacute;ros</legend>
     <p>
-      <%= val = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']%>
-      <%= select('numbers[' + 0.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => val)%>
+      <% val = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']%>
+      <% val2 = params[:numbers].nil? ? "1" : params[:numbers]['0']['number_type_id']%>
+      <%= select('numbers[0]',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => val)%>
       <%= display_number0 %>
-      <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => @number_type)%>
+      <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => @number_val2)%>
       <%= save_lines%>
     </p>
     <p>
-      <span id='add'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? 1 : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
+      <span id='add_link'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? 1 : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
     </p>
   </fieldset>
    <fieldset>
@@ -80,13 +99,51 @@
     <%= display_holder_name %>
   </p>
   </fieldset>
-  <p>
-    <%= f.label :social_security ,"N° sécurité sociale"%><br />
-    <%= f.text_field :social_security ,{ :size => 14, :maxlength => 16} %>
-  </p>
-  <p>
-    <%= f.submit "Create" %>
+  <fieldset>
+    <legend>Fonction(s)</legend>
+    <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form")%>
+    <div style="display: none;" id='job_add'>
+      <%form_remote_for(@job) do |j|%>
+      <p>
+        <%= j.label :name, "Nom :"%>
+        <%= j.text_field :name%>
+      </p>
+      <p>
+        <%= j.label :mission, "Mission :"%>
+        <%= j.text_area :mission %>
+      </p>
+      <p>
+        <%= j.label :activity, "Activités :"%>
+        <%= j.text_area :activity%>
+      </p>
+      <p>
+        <%= j.label :goal, "Objectifs :"%>
+        <%= j.text_area :goal%>
+      </p>
+      <%= j.submit 'Ajouter une fonction'%>
+<%end%>
+    </div>
+    <p>
+      <%= label_tag 'employee[services]', "Services :"%><br/>
+      <div>
+      <table>
+        <% for associated_service in @services %>
+          <tr>
+            <td>
+              <%= check_box_tag "employee[service_ids][]", associated_service.id, @employee.services.include?(associated_service) %>
+            </td>
+            <td>
+              <%= associated_service.name %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    </p>
+    <p>
+  </fieldset>
+    <%= f.submit "Ajouter" %>
   </p>
 <% end %>
-
 <%= link_to 'Retour', employees_path %>
+</div>

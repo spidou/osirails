@@ -1,3 +1,3 @@
 class JobContractType < ActiveRecord::Base
-  Has_one :job_contract 
+  has_one :job_contract 
 end

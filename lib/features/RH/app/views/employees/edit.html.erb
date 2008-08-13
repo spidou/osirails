@@ -1,4 +1,5 @@
-<h1>Modifier un employ&eacute;e</h1>
+
+<div class="cadre"><h1>Modifier un employ&eacute;e</h1>
 
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
@@ -26,7 +27,7 @@
   <fieldset>
   <legend>Emails</legend>
   <p>
-    <%= f.label :email, "Email privée:"%>
+    <%= f.label :email, "Email personnel :"%>
     <%= f.text_field :email%>
   </p>
   <p>
@@ -44,6 +45,18 @@
       <%= label_tag 'address[address2]', "Adresse :"%> 
       <%= text_field_tag( 'address[address2]',@address[:address2])%>    
     </p>
+    <p>
+      <%= label_tag 'address[country_name]', "Pays :"%> 
+      <%= text_field_tag( 'address[country_name]',@address[:country_name])%>    
+    </p>
+    <p>
+      <%= label_tag 'address[city_name]', "Ville :"%> 
+      <%= text_field_tag( 'address[city_name]',@address[:city_name])%>    
+    </p>
+    <p>
+      <%= label_tag 'address[zip_code]', "Code postal :"%> 
+      <%= text_field_tag( 'address[zip_code]',@address[:zip_code])%>    
+    </p>
   </fieldset>
    <fieldset id='add_lines'>
   <legend>Num&eacute;ros</legend>
@@ -52,7 +65,6 @@
      <%= display_p_balise(number_id) %>
      
      <%= select('numbers[' + number_id.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
-      
       <%= text_field_tag 'numbers[' + number_id.to_s + '][number]', number[:number],:size => 8, :maxlength => 10 %>
       <%= select('numbers[' + number_id.to_s + ']',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
       <%= link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => number_id  },:href=>(url_for :action=>'remove_line'))%>
@@ -61,7 +73,7 @@
     <%number_id+=1%>
   <%end%>  
     <p>
-      <span id='add'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? @numbers.size : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
+      <span id='add_link'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? @numbers.size : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
     </p>
   </fieldset>
    <fieldset>
@@ -92,9 +104,27 @@
     <%= f.text_field :social_security , { :size => 14, :maxlength => 16} %>
   </p>
   <p>
+    <%= label_tag 'employee[services]', "Services :"%><br/>
+    <div>
+    <table>
+      <% for associated_service in @services %>
+        <tr>
+          <td>
+            <%= check_box_tag "employee[service_ids][]", associated_service.id, @employee.services.include?(associated_service) %>
+          </td>
+          <td>
+            <%= associated_service.name %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  </p>
+  <p>
     <%= f.submit "Modifier" %>
   </p>
 <% end %>
 
 <%= link_to 'Voir', @employee %> |
 <%= link_to 'Retour', employees_path %>
+</div>
