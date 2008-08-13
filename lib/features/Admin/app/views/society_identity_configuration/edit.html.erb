@@ -1,6 +1,7 @@
-<h3>Gestion de l'entreprise</h3>
+<h1>Gestion de l'entreprise</h1>
+<div class="cadre">
 <% form_tag :action => 'update' do %>
     <%= render :partial => 'form' %>
     <%= submit_tag 'Mettre à jour' %> - <%= link_to "Retour", :action => 'index' %>
 <% end %>
-
+</div>
