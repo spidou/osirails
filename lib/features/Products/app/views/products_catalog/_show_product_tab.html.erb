@@ -12,7 +12,7 @@
             <% reference = ProductReference.find(product.product_reference_id) %>
             <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
           <tr>
-            <td><%= link_to_remote("#{product.name}", :update => "product_information", :url => { :action => :show_product_information}, :with => 'parameter' ) %></td>
+            <td><%= link_to_remote("#{product.name}", :update => "product_information", :url => { :action => :show_product_information, :id => product.id}) %></td>
             <td><%= category.name %></td>
             <td><%= reference.name %></td>
           </tr>
