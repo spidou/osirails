@@ -24,7 +24,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :menus
   map.resources :contents
   map.resources :password_policies
-  map.resources :employees
+  map.resources :employees do |employee|
+    employee.resources :salaries
+  end
   map.resources :customers
   map.resources :suppliers
   map.resources :establishments
@@ -32,7 +34,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :product_reference_categories
   map.resources :product_reference_manager
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
-
+  map.resources :job_contracts
+  map.resources :jobs
   
 
     
