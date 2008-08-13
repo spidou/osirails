@@ -1,13 +1,7 @@
-<ul class="contacts">
-<% for contact in @cities do -%>
-  <li class="contact">
-    <div class="image">
-    <img src="/demos/images/contacts/<%= contact.id.to_s %>.jpg"/>
-    </div>
-    <div class="name"><%=h contact.name %></div>
-    <div class="email">
-
-    </div>
-  </li>
+<ul class="cities">
+<% for city in @cities do -%>
+<li>
+<%= city.name -%>
+</li>
 <% end -%>
 </ul>

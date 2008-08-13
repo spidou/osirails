@@ -31,6 +31,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :product_references
   map.resources :product_reference_categories
   map.resources :product_reference_manager
+  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
+
+  
 
     
   # Sample of regular route:
