@@ -26,6 +26,109 @@ a:hover {
 	color:#698bcd;
 }
 
+/*:::::::::TAB EMR:::::::::*/
+caption {
+	background: #afc2ea;
+	color: rgb(64,68,93);
+	font-weight:bold;
+	border-bottom: solid 1px rgb(64,68,93);
+}
+
+table {
+	border-collapse: collapse;
+	border:solid 1px rgb(64,68,93);
+	background: #eaeff8;
+	text-align:center;
+	min-width:70%;
+	margin: 10px 0 10px 10px;
+}
+
+table a {
+	text-decoration: none;
+	color:gray;
+}
+
+table a:hover {
+	text-decoration: underline;
+	color:white !important;
+}
+
+table th{
+	border:solid 1px rgb(64,68,93);
+	background: #dedede;
+}
+
+table td{
+	border:solid 1px rgb(64,68,93);
+}
+
+tr:hover > td{
+	background: #f5c384; /* rgb(234,136,28); */
+/*	color:white;	*/
+}
+
+tr:hover > td > a {
+	text-decoration:underline;
+}
+
+/*/////////////////////////////
+			TITRE
+/////////////////////////////*/
+
+h1 {
+	margin-top:50px; /*à cause du float left du menu horizontal*/
+	text-indent:0px;		/*	sert à correctement	*/
+	text-align:center;		/*	centrer le titre	*/
+	background: #7e98cb repeat;
+	border:solid 1px #e5e5e5;
+	height:26px;
+/*	color: #afc2ea;	*/
+	color:white;
+	font-size:1.6em;
+	line-height:23px;
+	font-weight:lighter;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
+	font-variant: small-caps;
+}
+
+h2 {
+	text-indent: 10px;
+	background: #afc2ea;
+	border:solid 1px #e5e5e5;
+	font-size:1.4em;
+	color: rgb(117,141,189);
+	margin-top:0px;
+	margin-bottom:0px;
+	height:30px;
+	line-height:30px;
+/*	font-weight:lighter;	*/
+}
+
+h3 {
+	text-indent:20px;
+	background: url("../images/h3_background.jpg") repeat-x;
+	border:solid 1px #e5e5e5;
+	height:30px;
+	line-height:30px;
+	color:white;
+	font-weight:lighter;
+	padding-top:0px;
+	margin-top:-1px;
+}
+
+h3:before {
+	content:" - ";
+}
+
+h6 {
+	text-decoration: underline;
+}
+
+strong {
+	color: #698bcd;
+	font-weight:lighter;
+}
+/*/////////////FIN BALISE GENERAL////////////////////*/
 /*/////////////////////////////////////////////////////
 					BANNIERE
 ////////////////////////////////////////////////////*/
@@ -487,58 +590,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	color: #444
 }
 
-/*/////////////////////////////
-			TITRE
-/////////////////////////////*/
-
-h1 {
-	margin-top:50px; /*à cause du float left du menu horizontal*/
-	text-indent:0px;		/*	sert à correctement	*/
-	text-align:center;		/*	centrer le titre	*/
-	background: #7e98cb repeat;
-	border:solid 1px #e5e5e5;
-	height:26px;
-/*	color: #afc2ea;	*/
-	color:white;
-	font-size:1.6em;
-	line-height:23px;
-	font-weight:lighter;
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
-	font-variant: small-caps;
-}
-
-h2 {
-	text-indent: 10px;
-	background: #afc2ea;
-	border:solid 1px #e5e5e5;
-	font-size:1.4em;
-	color: rgb(117,141,189);
-	margin-top:0px;
-	margin-bottom:0px;
-	height:30px;
-	line-height:30px;
-/*	font-weight:lighter;	*/
-}
-
-h3 {
-	text-indent:20px;
-	background: url("../images/h3_background.jpg") repeat-x;
-	border:solid 1px #e5e5e5;
-	height:30px;
-	line-height:30px;
-	color:white;
-	font-weight:lighter;
-	padding-top:0px;
-	margin-top:-1px;
-}
-
-h3:before {
-	content:" - ";
-}
-
-h6 {
-	text-decoration: underline;
-}
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\		::::::MESSAGE INFORMATIF:::::::			  /!\
@@ -644,11 +695,6 @@ background: url("../images/cross.png") no-repeat;
 .cadre p {
 	padding-left:10px;
 	padding-right: 10px;
-}
-
-strong {
-	color: #698bcd;
-	font-weight:lighter;
 }
 
 /*/////////////////////////////
@@ -830,50 +876,6 @@ select {
 	color:white;
 }
 */
-/*:::::::::TAB EMR:::::::::*/
-caption {
-	background: #afc2ea;
-	color: rgb(64,68,93);
-	font-weight:bold;
-	border-bottom: solid 1px rgb(64,68,93);
-}
-
-table {
-	border-collapse: collapse;
-	border:solid 1px rgb(64,68,93);
-	background: #eaeff8;
-	text-align:center;
-	min-width:70%;
-	margin: 10px 0 10px 10px;
-}
-
-table a {
-	text-decoration: none;
-	color:gray;
-}
-
-table a:hover {
-	text-decoration: underline;
-	color:white !important;
-}
-
-table th{
-	border:solid 1px rgb(64,68,93);
-	background: #dedede;
-}
-
-table td{
-	border:solid 1px rgb(64,68,93);
-}
-
-tr:hover > td{
-	background: #f5c384; /* rgb(234,136,28); */
-/*	color:white;	*/
-}
-
-tr:hover > td > a {
-	text-decoration:underline;
-}
 
 /*LISTE*/
 
