@@ -1,9 +1,0 @@
-<fieldset>
-  <legend> Création d'un établissement </legend>
-  
- <p><%= establishment.label :establishment_name, "Nom" %><br/>
-  <%= establishment.text_field :name  %></p>
-  
- <p><%= establishment.label :establishment_type, "Type d'établissement" %><br/>
-  <%= establishment.select("establishment_type_id", EstablishementType.find(:all).collect {|a| [ a.wording, a.id ] })%>
-</fieldset>
