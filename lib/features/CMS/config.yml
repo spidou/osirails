@@ -6,6 +6,7 @@ business_objects:
 menus:
   admin:
     children:
-      cms:
+      contents:
         title: Contenus
         description: Gestion des contenus
+        position: 4

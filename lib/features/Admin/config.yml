@@ -30,10 +30,6 @@ menus:
         title: Navigation
         description: Gestion de la navigation
         position: 3
-      contents:
-        title: Contenu
-        description: Gestion des contenus
-        position: 4
       password_policies:
         title: Sécurité
         description: Gestion des politiques de sécurité

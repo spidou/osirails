@@ -4,6 +4,6 @@ dependencies:
 conflicts:
 business_objects:
 menus:
-  employees:
+  rh:
     title: Ressources Humaines
     description: Administration des Ressources Humaines
