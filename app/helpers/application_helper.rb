@@ -25,7 +25,7 @@ module ApplicationHelper
     html = ""
     menu = current_menu
     Menu.mains.each do |m|
-      selected = (m == menu or m.children.include?(menu) ? "class=\"selected\"" : "")
+      selected = (menu == m or menu.ancestors.include?(m) ? "class=\"selected\"" : "")
       html << "<li #{selected} title=\"#{m.description}\"><a href=\"\">#{m.title}</a></li>\n"
     end
     html
@@ -33,11 +33,12 @@ module ApplicationHelper
   
   def display_second_menu
     html = []
-    main_menu = current_menu.parent_menu
-    return if main_menu.nil?
+    menu = current_menu
+    main_menu = menu.last_ancestor
+    #return if main_menu.nil?
     main_menu.children.each do |m|
-      first =  main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
-      selected = (m == current_menu ? "class=\"selected\"" : "") #detect if the element is selected
+      first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
+      selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
       html << "<a href=\"\" title=\"#{m.description}\"><span #{selected} #{first}>#{m.title}</span></a>"
     end
     html.reverse.to_s

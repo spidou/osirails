@@ -38,6 +38,10 @@ class Menu < ActiveRecord::Base
     end
   end
   
+  def last_ancestor(menu = self)
+    menu.ancestors.size > 0 ? ( menu.ancestors.size == 1 ? menu.parent_menu : last_ancestor(menu.parent_menu) ) : menu
+  end
+  
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
   def change_parent(new_parent_id,position = nil)
