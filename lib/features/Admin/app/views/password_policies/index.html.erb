@@ -1,44 +1,55 @@
 <h1>Politique de s&eacute;curit&eacute;</h1>
-<% form_tag({:controller =>"password_policies", :action => "update"}, :method => 'put' ) do%>
+<div class="cadre">
+  <% form_tag( {:controller =>"password_policies", :action => "update"}, :method => 'put' ) do %>
+    <p>
+      <h4>Politique de mot de passe</h4>
+      <strong>Choisir la politique de mot de passe pour les comptes utilisateurs de l'Intranet :</strong>
+      <ul> 
+         <li>
+           <%= display_radio("l0") %>
+           <%= label_tag "l0", "Aucune s&eacute;curit&eacute;." %>
+           <span>Les utlisateurs pourront choisir un mot de passe sans aucune resctriction.</span>
+         </li>
+         <li>
+           <%= display_radio("l1") %>
+           <%= label_tag "l1", "Premier niveau." %>
+           <span>Les utlisateurs devront utiliser un mot de passe comportant entre 6 et 40 caract&egrave;res et devant comporter des chiffres ou des lettres. </span>
+         </li>
 
-<%= label_tag 'pattern', "Modèle de création d'un compte utilisateur"%>
-<%= display_text_field%>
-<p>Vous devez utiliser le module suivant ' {attr,opt} ' pour composer votre squellette: 
-  <br/>-attr: représente les attributs que possédent un utilisateur(first_name,last_name)
-  <br/>-opt: représente le nombre de caract&egrave;res à garder dans l&apos;attribut(aucune valeur correspond &agrave; l&apos;attribut en entier)
-  <br/>-ex: soit l&apos;employ&eacute;e Jean DUPPON et le squellette {FIRST_NAME,1}_{last_name} => J_duppon
-  <br/>&nbsp;&nbsp;Comme vous avez pu le constatez, il suffit de mettre l&apos;attribut en majuscule ou minuscule pour choisir la casse du contenu de l'attribut
-  <br/>&nbsp;&nbsp;De plus il vous est possible d&apos;ins&eacute;rer autant de caract&egrave;res que vous voulez entre les modules exemple avec un modéle type mail: {first_name}.{last_name}@emr-oi.fr 
-</p>
-<br/><br/>
+        <li>
+          <%= display_radio("l2")%>
+          <%= label_tag "l2", "Second niveau." %> 
+          <span>Les utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres&#44; et poss&eacute;dant au moins un caract&eacute;re sp&eacute;cial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.</span>
+        </li>
 
-<%= label_tag 'validity', "Durée de validitée d'un mot de passe"%><br/>
-<%= display_validity_date%> Jour(s)<br/><br/>
+        <li>
+          <%= display_radio("l3") %>
+          <%= label_tag "l3", "Troisi&eacute;me niveau." %>
+          <span>Les utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres &#40;en majuscule et minuscule&#41;&#44; et poss&eacute;dant au moins un caract&egrave;re sp&eacute;cial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.</span>
+        </li>
+      </ul>
+    </p>
+    
+    <p>
+      <h4>Politique de mot de passe</h4>
+      <strong><%= label_tag 'validity', "Choisir la p&eacute;riode de validit&eacute; pour les mots de passe :" %><br/></strong>
+      Les utilisateurs devront renouveler leur mot de passe tous les <%= display_validity_date %> jour(s)
+    </p>
+    
+  <%= label_tag 'pattern', "Modèle de création d'un compte utilisateur" %>
+    <%= display_text_field %>
+    <p>Vous devez utiliser le module suivant ' {attr,opt} ' pour composer votre squellette: 
+      <br/>-attr: représente les attributs que possédent un utilisateur(first_name,last_name)
+      <br/>-opt: représente le nombre de caract&egrave;res à garder dans l&apos;attribut(aucune valeur correspond &agrave; l&apos;attribut en entier)
+      <br/>-ex: soit l&apos;employ&eacute;e Jean DUPPON et le squellette {FIRST_NAME,1}_{last_name} => J_duppon
+      <br/>&nbsp;&nbsp;Comme vous avez pu le constatez, il suffit de mettre l&apos;attribut en majuscule ou minuscule pour choisir la casse du contenu de l'attribut
+      <br/>&nbsp;&nbsp;De plus il vous est possible d&apos;ins&eacute;rer autant de caract&egrave;res que vous voulez entre les modules exemple avec un modéle type mail: {first_name}.{last_name}@emr-oi.fr 
+    </p>
+    <br/><br/>
 
-<%= label_tag "Niveau sécurité Mot de Passe" %> 
-<ul> 
-   <li>
-     <%= display_radio("l0")%>
-     <%= label_tag "l0", "Aucune Sécurité"%>
-     <p>Les Utlisateurs pourront choisir un mot de passe sans aucune resctriction. </p>
-   </li> 
-   <li>
-     <%= display_radio("l1")%>
-     <%= label_tag "l1", "Premier niveau"%>
-     <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 6 et 40 caract&egrave;res et devant comporter des chiffres ou des lettres. </p>
-   </li>
 
-  <li>
-    <%= display_radio("l2")%>
-    <%= label_tag "l2", "Second niveau"%> 
-    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres&#44; et possédant au moins un caractére spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
-  </li>
-  
-  <li>
-    <%= display_radio("l3")%>
-    <%= label_tag "l3", "Troisiéme niveau"%>
-    <p>Les Utlisateurs devront utiliser un mot de passe comportant entre 8 et 40 caract&egrave;res et devant comporter des chiffres et des lettres &#40;en majuscule et minuscule&#41;&#44; et poss&eacute;dant au moins un caract&egrave;re spécial comme: &#40;ex&#58; &#64;&#126;&#34;&#40;&#58;&#46;&#47;&#63; etc&hellip;&#41;.  </p>
-  </li>
-</ul>
-<%= submit_tag "Valider" %>
-<% end%>
+
+
+    <%= submit_tag "Valider" %>
+  <% end %>
+</div>

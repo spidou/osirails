@@ -8,14 +8,14 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'
   map.resources :role_permissions, :path_prefix => 'permissions'
-  map.resources :permissions
+  map.permissions "permissions", :controller => "permissions"
   # end
   
   # begin | To create the url architecture "/society_configurations/*"
   map.resources :society_identity_configuration, :path_prefix => 'society_configurations'
   map.resources :activity_sectors, :path_prefix => 'society_configurations'
   map.resources :services, :path_prefix => 'society_configurations'
-  map.resources :society_configurations
+  map.society_configurations "society_configurations", :controller => "society_configurations"
   # end
   
   map.resources :users
@@ -32,7 +32,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :establishments
   map.resources :product_references
   map.resources :product_reference_categories
-  map.resources :product_reference_manager
+  map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
   map.resources :job_contracts
   map.resources :jobs
