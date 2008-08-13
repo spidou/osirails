@@ -686,11 +686,11 @@ table.presentation a:hover {
 	color:#698bcd;
 }
 
-table td{
+table.presentation td{
 	border:none;
 }
 
-tr:hover > td{
+table.presentation tr:hover > td{
 	background: none;
 }
 
