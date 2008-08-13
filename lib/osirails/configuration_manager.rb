@@ -21,5 +21,4 @@ class ConfigurationManager
     def ConfigurationManager.find_configurations_for(feature_name, controller_name)
       ConfigurationManager.methods.sort.grep(/^#{feature_name.downcase}_#{controller_name}.*[^=c]$/) #FIXME Faire en sorte que ça gère _desc
     end
-  
 end
