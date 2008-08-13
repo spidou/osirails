@@ -526,6 +526,37 @@ color:black;
 }	 																				/**/
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 
+button.input-button {
+	background: transparent url("../images/default-button_end.png") no-repeat top left;
+	font-family: arial, verdana, sans-serif;
+	font-size:85%;
+	height: 26px;
+	padding-left: 5px;
+	margin:5px 0px 5px 0px;
+	color:black;
+	border:none;
+	min-width:70px;
+}
+
+button.input-button span { 															
+	background: transparent url("../images/default-button.png") no-repeat top right;	
+	display: block;																		
+	padding: 2px 12px 6px 0;
+	margin-top:-1px;
+	border:none;
+	line-height:18px;
+}																					
+																					
+button.input-button:hover { 															
+	background: transparent url("../images/default-button_end.png") no-repeat bottom left;	
+}																					
+																					
+button.input-button:hover span {														
+	background: transparent url("../images/default-button.png") no-repeat 100% -26px;	
+	color:black;
+}
+
+
 /*//////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
 //////////////////////////////////////////////////////////*/

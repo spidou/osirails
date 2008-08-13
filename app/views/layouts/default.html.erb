@@ -109,18 +109,99 @@
         <%= yield %>
 				<div class="cadre">
 					<h2>Test</h2>
-					<h3>Test de bouton</h3>
-					<p>
-						à quel page voulez vous retourner ? <br /><br />
-						&nbsp;&nbsp;&nbsp;&nbsp;<img src="../images/prec.png" alt=""/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="../images/suiv.png" alt="" />
-					</p>
-					<hr />
-					<p>
-						modifier un élément : <br />
-						modifier une catégorie <img src="../images/folder_add_24x24.png"  alt=""/><br />
-						modifier une catégorie <img src="../images/folder_add_16x16.png"  alt=""/><br />
-						modifier une référence <img src="../images/feed_source_24x24.png"  alt="" />	
-					</p>
+					<h3>Test de formulaire</h3>
+					<form id="monForm" action="#" method="post">
+											    <fieldset>
+											        <legend>Informations personnelles</legend>
+											        <p>
+											            <label for="form_firstname">Prénom : </label>
+											            <input type="text" id="form_firstname" name="firstname" tabindex="10" />
+											        </p>
+											        <p>
+											            <label for="form_lastname">Nom : </label>
+											            <input type="text" id="form_lastname" name="lastname" tabindex="20" />
+											        </p>
+											        <p>
+											            <label for="form_gender">Sexe : </label>
+											            <input type="text" id="form_gender" name="gender" tabindex="30" />
+											        </p>
+												<div id="birth">
+													<p>
+											            <label for="form_birthday">Date de naissance : </label>
+															<input type="text" id="form_birthday" name="day" tabindex="40" />/
+															<input type="text" name="month" tabindex="50" />/
+															<input type="text" name="year" tabindex="60" />
+															<span class="under_form">(DD/MM/YYYY)</span>
+											        </p>
+												</div>
+											        <p>
+											            <label for="form_address">Adresse : </label>
+											            <input type="text" id="form_address" name="address" tabindex="70" />
+											        </p>
+											        <p>
+											            <label for="form_postal_code">Code postal : </label>
+											            <input type="text" id="form_postal_code" name="postal_code" tabindex="80" />
+											        </p>
+											        <p>
+											            <label for="form_city">Ville : </label>
+											            <input type="text" id="form_city" name="city" tabindex="90" />
+											        </p>
+											        <p><span class="fieldWithErrors">
+											            <label for="form_country">Pays : </label>
+											            <select id="form_country" name="country">
+											                <optgroup label="Amérique">
+											                    <option value="ca">Canada</option>
+											                    <option value="us">États-Unis</option>
+											                </optgroup>
+											                <optgroup label="Europe">
+																<option value="al">Allemagne</option>
+																<option value="en">Angleterre</option>
+											                    <option value="be">Belgique</option>
+											                    <option value="es">Espagne</option>
+																<option value="fr">France</option>
+																<option value="it">Italie</option>
+															</optgroup>
+															<optgroup label="Autre">
+																<option value="re">Réunion (île de la)</option>
+											                </optgroup>
+											            </select>
+														</span>
+											        </p>
+											    </fieldset>
+
+											    <fieldset>
+											    <legend>Compte</legend>
+											        <p>	<span class="fieldWithErrors">
+											            <label for="form_login">Identifiant : </label>
+											            <input type="text" id="form_login" name="login" tabindex="100" />
+											        	</span>
+													</p>
+											        <p>
+											            <label for="form_password">Mot de passe : </label>
+											            <input type="password" id="form_password" name="password" tabindex="110" />
+											        </p>
+											        <p>
+											            <label for="form_password2">Confirmer le mot de passe : </label>
+											            <input type="password" id="form_password2" name="password2" tabindex="120" />
+											        </p>
+											        <p>
+											            <label for="form_question">Question secrète : </label>
+											            <input type="text" id="form_question" name="question" tabindex="130" />
+											        </p>
+											        <p>
+											            <label for="form_response">Réponse : </label>
+											            <input type="text" id="form_response" name="response" tabindex="140" />
+											        </p>
+											        <p>
+											            <label for="form_mail">Adresse email : </label>
+											            <input type="text" id="form_mail" name="mail" tabindex="150" />
+											        </p>
+											    </fieldset>
+											    	<p>
+											       		<button type="submit" class="input-button"><span>Valider</span></button>
+														<button type="reset" class="input-button"><span>reset</span></button>
+											    	</p>
+											</form>
 				</div>
 			</div> <!-- PAGE_CONTENU : FIN -->
 		</div> <!-- PAGE : FIN -->
