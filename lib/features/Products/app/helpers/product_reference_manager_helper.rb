@@ -4,11 +4,9 @@ module ProductReferenceManagerHelper
   def get_structured_category
     categories = ProductReferenceCategory.find_all_by_product_reference_category_id
     list = []
-    list << "<div class='hierarchic'>"
-    list << "<ul class=\"parent\">"
+    list << "<div class='cadre'><div class='hierarchic'><ul class=\"parent\">"
     list = get_children(categories,list)
-    list << "</ul>"
-    list << "</div>"
+    list << "</ul></div></div>"
     list 
   end
   
