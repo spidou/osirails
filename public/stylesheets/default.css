@@ -76,7 +76,7 @@ tr:hover > td > a {
 /////////////////////////////*/
 
 h1 {
-	margin-top:50px; /*à cause du float left du menu horizontal*/
+	margin-top:10px; /*à cause du float left du menu horizontal*/
 	text-indent:0px;		/*	sert à correctement	*/
 	text-align:center;		/*	centrer le titre	*/
 	background: #7e98cb repeat;
@@ -633,26 +633,20 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
-background: url("../images/cross.png") no-repeat;
-}
-
-.flash_container {
+	background: url("../images/cross.png") no-repeat;
 	color: red;
 }
 
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
+	background: url("../images/tick.png") no-repeat;
 	color: green;
 }
 
-#exclamation_error {
-	background: url("../images/tick.png") no-repeat;
-}
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\		Config en commun : ERROR & SIGNAL		  /!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
-#error_container,
-#exclamation_container {
+.flash_container {
 	background:#C7C7C7;
 	border: solid 1px #E4E4E4;
 	text-align:center;
@@ -664,14 +658,13 @@ background: url("../images/cross.png") no-repeat;
 	font-family: "courier new", sans-serif;
 }
 
-#error_container span span,
-#exclamation_container span span {
+.flash_container span span {
 	margin-left:20px;
 	line-height:20px;
 }
 
-#message_error,
-#exclamation_error {
+.flash_error,
+.flash_notice {
 	background-position:center left;
 	width:9px;
 	height:9px;
