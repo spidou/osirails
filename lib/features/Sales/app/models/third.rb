@@ -2,7 +2,7 @@ class Third < ActiveRecord::Base
   has_one :address, :as => :has_address
   belongs_to :activity_sector
   belongs_to :third_type
-  has_many :contacts
+  has_many :contacts, :as => :has_contact
   
   validates_presence_of :name
   validates_numericality_of :siret_number, :only_integer => true
