@@ -1,41 +1,49 @@
 <h4>Modifier un client </h4>
 
-    <% form_for(@customer) do |customer| %>
-    <%= customer.error_messages %>
+<% form_for(@customer) do |customer| %>
+<%= customer.error_messages %>
 
-    <%= render :partial => 'thirds/third', :locals => {:third => customer, :type => "client"} %>
+<% #Display customer infos%>
+<%= render :partial => 'thirds/third', :locals => {:third => customer, :type => "client"} %>
 
-    <% if @establishments.length > 0 %>
+<% if @establishments.length > 0 %>
+  <% for establishment in @establishments %>
+  <%= error_messages_for("establishment#{establishment.id}") %>
+  <%= error_messages_for("establishment#{establishment.id}_address") %>
+  <% end #for%>
+
+  <% #Fieldset that content all establishment%>
+  <fieldset>
+    <% #Faire un plurialize "etablissement de la legend"%>
+    <legend> Etablissements du client </legend>
     <% for establishment in @establishments %>
-    <%= error_messages_for("establishment#{establishment.id}") %>
-    <%= error_messages_for("establishment#{establishment.id}_address") %>
-    <% end %>
-      
-    <fieldset>
-      <legend> Informations concernant les établissement du client </legend>
-      <% for establishment in @establishments %>
       <% unless establishment.activated == false %>
-      <div <%= "id='establishment#{establishment.id}'" %>>
-        <% cpt ||= 0 %>
-        <% cpt += 1 %>
+        <div <%= "id='customer_establishment#{establishment.id}'" %>>
 
-        <% # Display errors message for l%>
-        <% unless @error%>
-        <% establishment_name =establishment.name %>
-        <% establishment_type = establishment.establishment_type_id %>
-        <% establishment_address1 = establishment.address.address1 %>
-        <% establishment_address2 = establishment.address.address2 %>
-        <% end %>      
-        <% # Mettre toutes ces variable dans un hash et envoyer ce has au render -%>
+        <%= establishment.name + "(" + establishment.address.city_name + ")"%>
+        <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment) %>
 
-        <%= render :partial => 'customer_establishment', :locals => {:establishment => establishment} %>
-        
+      </div>
+      <% end #unless %>        
+    <% end #for %>
+</fieldset>
+<% end #if%>
+
+
+<fieldset>
+  <% #Faire un plurialize "Contacts" de la legend"%>
+  <legend> Contacts du client</legend>
+  <% if @contacts.size > 0 -%>
+    <% for contact in @contacts%>
+        <div <%= "id='customer_contact#{establishment.id}'" %>>
+          <%= contact.first_name + " " + contact.last_name%>
+          <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact) %>
         </div>
-        <% end %>
-        <% end %>  
-        <% end %>
-      </fieldset>
-        
+    <%end #for%>
+  <%end #if%>
+</fieldset>
+
+        <% # Petit soucis avec les boutons supprimer des new contacts%>
         <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>
         <% # new_establishment_number store establishment number present in establishment_form -%>
         <%= hidden_field("new_establishment_number", "value", "value" => new_number_form) %>
@@ -86,7 +94,7 @@
               <div id="link_add_remove_contact_<%= i+1 %>">
                 </div>
                 <div id =<%= "new_contact#{i+1}" %>>
-                <%= render :partial => 'customer_new_contact', :locals => {:i => i} %>
+                  <%= render :partial => 'customer_new_contact', :locals => {:i => i} %>
                 </div>
                 <% cpt += 1 %>
                 <% end %>
@@ -96,7 +104,6 @@
               </div>
             </div>
         </fieldset>
-    <%= link_to 'Voir un article', customer_establishment_path(@customer, @establishment_test) %>
     <%= customer.submit  'Modifier' %>
     <% end %>
     <%= link_to 'Retour', :action => 'index' %>

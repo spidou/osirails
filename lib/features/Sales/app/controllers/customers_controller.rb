@@ -1,5 +1,4 @@
 class CustomersController < ApplicationController
-#  auto_complete_for :country, :name
 
   def index
     @customers = Customer.find(:all)
@@ -25,10 +24,10 @@ class CustomersController < ApplicationController
   end
 
   def edit
-    @establishment_test = Establishment.find(12)
     @customer = Customer.find(params[:id])
-    @country_id = 0
     @establishments = @customer.establishments
+    @contacts = @customer.contacts
+    puts @contacts
   end
   
   def auto_complete_for_country_name
@@ -83,25 +82,6 @@ class CustomersController < ApplicationController
     
     unless @customer.update_attributes(params[:customer])
       @error = true
-    end
-    
-    # For all customers's etablishment, an instance variable is create
-    @customer.establishments.each do |establishment|
-      unless establishment.activated == false
-        choix_countries  = params["establishment#{establishment.id}"]["establishment_type_id"]
-        @liste_cities = City.find_all_by_country_id(choix_countries, :order => "name asc")
-        instance_variable_set("@establishment#{establishment.id}",Establishment.find(establishment.id))
-        
-        # If hidden_field to_delete is present for an establishment, his value activated is set to false  
-        if params["establishment#{establishment.id}"]["to_delete"].nil?
-          eval "unless @establishment#{establishment.id}.update_attributes(params['establishment#{establishment.id}']); @error = true; end;"
-        else
-          eval "@establishment#{establishment.id}.activated = false; @establishment#{establishment.id}.save"
-        end
-        
-        eval "instance_variable_set('@establishment#{establishment.id}_address', @establishment#{establishment.id}.address)"
-        eval "unless @establishment#{establishment.id}_address.update_attributes(params['establishment#{establishment.id}_address']); @error = true; end;"
-      end
     end
     
     # If establishment_form is not null
@@ -179,6 +159,7 @@ class CustomersController < ApplicationController
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
+      @contacts = @customer.contacts
       render :action => 'edit'
     end
   end
