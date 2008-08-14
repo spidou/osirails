@@ -734,27 +734,21 @@ table.presentation tr:hover > td{
 	padding-right: 10px;
 }
 
-.cadre form p{
-	padding-left:0px;
-	padding-right: 0px;
-	text-indent:0;
-}
 /*/////////////////////////////
 		FORMULAIRE
 /////////////////////////////*/
-
-
-#monForm
-{
-	width: auto;
-	margin-left:2px;
-	margin-right:5px;
+.cadre p.disable-stylesheet-width {
+	max-width:100% ;
+	width:auto;
+	float:none;
+	margin:0;
+	clear:both;
 }
 
-#monForm p
-{
-	margin: 10px 50px 10px 0px;
+.cadre form {
+	text-indent:0;
 }
+
 
 /*///////////////////////*/
 /*// fieldset & legend //*/
@@ -783,39 +777,51 @@ table.presentation tr:hover > td{
 /*///////////////////////*/
 /*//////// Label ////////*/
 
-#monForm label
-{
-	display: block; /*block*/
-	min-width: 150px; /* 40% */
-	max-width:160px;
-//	float: left;
-	text-align: left;
-	margin:0px 10px;
+.cadre label {
+//padding-bottom:-75px;
+//	display: inline; /*block*/
+//	min-width: 150px; /* 40% */
+//	max-width:140px;
+	float: left;
+//	max-width:10px;
+	font-size:0.8em;
+//	height:5px !important;
+//	text-align:right;
 }
 
-#monForm label:hover
-{
+.cadre form p {
+//	min-width: 150px; /* 40% */
+//	max-width:130px;
+	text-indent:0px;
+	margin-left:10px;
+	
+}
+
+.cadre label:hover {
 /*	font-weight: bold;	*/
 /*	font-style:italic;	*/
 	text-decoration:underline;
 	color: rgb(234,136,28);
 }
 
-#monForm .form_label_nostyle {
-	background: none;
-}
-
-.under_form {
-	font-size:0.85em;
-	color: gray;
-	font-style:italic;
-	text-decoration: underline;
-}
-
 /*///////////////////////*/
 /*//////// Input ////////*/
 
-#monForm input[type="text"],
+.cadre input[type="text"],
+.cadre input[type="password"],
+.cadre textarea {
+//	position: relative;
+//	bottom:20px;
+//	left:144px;
+	width: 200px;
+	border: #CCC 1px solid;
+//	margin-left:250px;
+	vertical-align:10px;
+	float:left;
+	margin-left:200px;
+}
+
+#monForm input[type="text"]
 #monForm input[type="password"],
 #monForm select {
 	margin-left:10px;
@@ -826,16 +832,16 @@ table.presentation tr:hover > td{
 	left:180px;
 }
 
-#monForm input[type="text"]:hover,
-#monForm input[type="password"]:hover,
-#monForm select:hover {
+.cadre input[type="text"]:hover,
+.cadre input[type="password"]:hover,
+.cadre select:hover {
 	border: #aeaeae 1px solid;
 	background: #f5f5f5;
 }
 
-#monForm input[type="text"]:focus,
-#monForm input[type="password"]:focus,
-#monForm select:focus {
+.cadre input[type="text"]:focus,
+.cadre input[type="password"]:focus,
+.cadre select:focus {
 	background: #f5c384;
 }
 
