@@ -10,7 +10,7 @@ class SuppliersController < ApplicationController
   def create
     @supplier = Supplier.new(params[:supplier])
     if @supplier.save
-      flash[:notice] = 'Clients ajouté avec succes'
+      flash[:notice] = 'Fournisseur ajouté avec succes'
       redirect_to :action => 'index'
     else
       render :action => 'new'

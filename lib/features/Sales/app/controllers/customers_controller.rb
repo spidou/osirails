@@ -11,7 +11,7 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.new(params[:customer])
     if @customer.save
-      flash[:notice] = "Fournisseur ajouté avec succes"
+      flash[:notice] = "Client ajouté avec succes"
       redirect_to :action => 'index'
     else
       render :action => 'new'

@@ -1,5 +1,6 @@
 <div <%= "id=link_add_remove_establishment_#{cpt}"%>>
-    <%= link_to_remote("supprimer", :url => {:action => "delete_new_establishment", :id => cpt})%>
+    <%= link_to_remote("supprimer", :url => {:action => "delete_new_establishment", :id => cpt}, 
+      :with => "'number=' + $('new_establishment_number_value').value")%>
 </div>
 <div id='<%= "new_establishment#{cpt}"%>'>
 <p><%= label :new_establishment, "Nom du nouvel établissement" %><br/>
@@ -20,6 +21,7 @@
 </div>
 <% unless error%>
 <div <%= "id=link_add_remove_establishment_#{cpt.to_i + 1}"%>>
-    <%=link_to_remote("Ajouter", :url => {:action => "add_establishment", :cpt => cpt.to_i + 1})%>
+    <%=link_to_remote("Ajouter", :url => {:action => "add_establishment", :cpt => cpt.to_i + 1},
+     :with => "'number=' + $('new_establishment_number_value').value")%>
 </div>
 <%end%>
