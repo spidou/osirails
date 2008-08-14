@@ -27,7 +27,7 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @establishments = @customer.establishments
     @contacts = @customer.contacts
-    puts @contacts
+    puts @contacts.size
   end
   
   def auto_complete_for_country_name
