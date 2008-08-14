@@ -621,6 +621,10 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	color: #444
 }
 
+#empty {
+	width:100%;
+	height:50px;
+}
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\		::::::MESSAGE INFORMATIF:::::::			  /!\
@@ -628,16 +632,16 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
-#message_error {
+.flash_error {
 background: url("../images/cross.png") no-repeat;
 }
 
-#error_container {
+.flash_container {
 	color: red;
 }
 
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
-#exclamation_container {
+.flash_notice {
 	color: green;
 }
 
@@ -732,18 +736,16 @@ table.presentation tr:hover > td{
 	border: solid 1px #989898;
 }
 
-.cadre form p{
-	padding-left:0px;
-	padding-right: 0px;
-	text-indent:0;
-	text-align:left;
-}
-
 .cadre p {
 	padding-left:10px;
 	padding-right: 10px;
 }
 
+.cadre form p{
+	padding-left:0px;
+	padding-right: 0px;
+	text-indent:0;
+}
 /*/////////////////////////////
 		FORMULAIRE
 /////////////////////////////*/
@@ -758,7 +760,7 @@ table.presentation tr:hover > td{
 
 #monForm p
 {
-	margin: 7px 0;
+	margin: 10px 50px 10px 0px;
 }
 
 /*///////////////////////*/
@@ -770,6 +772,7 @@ table.presentation tr:hover > td{
 	background: #eaeff8;
 	border: 1px solid #444444;
 	margin-left:5px;
+	width:600px;
 }
 
 #monForm fieldset legend
@@ -789,11 +792,12 @@ table.presentation tr:hover > td{
 
 #monForm label
 {
-	display: block;
-	width: 40%;
-	float: left;
-	padding-right: 1%;
-	text-align: right;
+	display: block; /*block*/
+	min-width: 150px; /* 40% */
+	max-width:160px;
+//	float: left;
+	text-align: left;
+	margin:0px 10px;
 }
 
 #monForm label:hover
@@ -821,9 +825,12 @@ table.presentation tr:hover > td{
 #monForm input[type="text"],
 #monForm input[type="password"],
 #monForm select {
-	margin-left: 1%;
-	width: 40%;
+	margin-left:10px;
+	width: 200px;
 	border: #CCC 1px solid;
+	position:relative;
+	bottom:15px;
+	left:180px;
 }
 
 #monForm input[type="text"]:hover,
@@ -842,7 +849,7 @@ table.presentation tr:hover > td{
 
 #birth input[type="text"] {
 	white-space:nowrap; /*Pas de retour chariot*/
-	width:7%;
+	width:30px;
 }
 
 select {
