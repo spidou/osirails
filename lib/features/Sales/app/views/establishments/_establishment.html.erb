@@ -1,8 +1,26 @@
-<p><%= establishment.label(:establishment_name, "Nom") %><br/>
-<%= establishment.text_field(:name) %></p>
+  <%= label :establishment, "Nom de l'etablissement" %><br/>
+  <%= establishment.text_field :name %><br/><br/>
+   
+  <%= label :establishment, "Type d'etablissement"%><br/>
+  <%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.wording, a.id]})%><br/><br/>
+   
+   <% fields_for :address, establishment_.address do |address|%>
+      <%= label :address, "Address1" %><br/>
+      <%= address.text_field :address1%><br/><br/>
 
-<p><%= establishment.label(:establishment_type, "Type d'établissement") %><br/>
-<%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] })%>
-
-<%= establishment.hidden_field(:customer_id, :value => customer_id)%>
-  <%= params[:id].class%>
+      <%= label :address, "Address2" %><br/>
+      <%= address.text_field :address2%><br/><br/>
+      
+      <%= label :address, "Pays"%><br/>
+      <%= my_text_field_with_auto_complete(:country, :name, 
+        {:size => 15, :value => "#{establishment_.address.country_name}"}) -%><br/><br/>
+      
+      <%= label :address, "Ville"%><br/>
+      <%= my_text_field_with_auto_complete(:city, :name, 
+        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}) -%><br/><br/>
+      
+    <%= label :address, "Zip_code"%><br/>
+      <%= my_text_field_with_auto_complete(:city, :zip_code, 
+        {:country_id => 1, :size => 15, :value => "#{2}"}) -%><br/><br/>
+      
+   <%end%>
