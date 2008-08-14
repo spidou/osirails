@@ -44,8 +44,7 @@ class Service < ActiveRecord::Base
     root = Service.new
     root.name = "  "
     root.id = nil
-    service_parents = get_children_services(services,service_parents,indent)
-    service_parents
+    get_children_services(services,service_parents,indent)
   end
   
   def Service.get_children_services(services,service_parents, indent)

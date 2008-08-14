@@ -2,21 +2,26 @@ class SocietyIdentityConfigurationController < ApplicationController
   
   # GET /society_identity_configuration
   def index
-    @parameters = search_methods(__FILE__)
+    @parameters = {}
+    for parameter in search_methods(__FILE__) do
+      @parameters[parameter] = ConfigurationManager.send(parameter)
+    end
   end
   
   # GET /society_identity_configuration/edit
   def edit
-    @parameters = search_methods(__FILE__)
+    @parameters = {}
+    for parameter in search_methods(__FILE__) do
+      @parameters[parameter] = ConfigurationManager.send(parameter)
+    end
   end
   
   # POST /society_identity_configuration
   def update
-    @parameters = search_methods(__FILE__)
-    for parameter in @parameters
+    for parameter in search_methods(__FILE__)
       ConfigurationManager.send(parameter+"=", params[parameter])
     end
-    flash[:notice] = "Configurations prises en comptes"
+    flash[:notice] = "Les modifications ont &eacute;t&eacute; prises en comptes"
     redirect_to :action => 'index'
   end
   

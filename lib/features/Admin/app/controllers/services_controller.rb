@@ -2,9 +2,6 @@ class ServicesController < ApplicationController
   # GET /services
   def index
     @services = Service.get_structured_services(".... ")
-    respond_to do |format|
-      format.html # index.html.erb
-    end
   end
   
   # GET /services/new
