@@ -1,6 +1,3 @@
-<fieldset>
-  <legend><%= "Informations concernant le " +type unless type.nil? %> </legend>
-
   <p><%= third.label :third_name, "Nom" %><br/>
   <%= third.text_field :name  %></p>
   
@@ -19,15 +16,10 @@
   <p><%= third.label :third_banking_informations, "Informations bancaires" %><br/>
   <%= third.text_field :banking_informations %></p>
   
-  <p><%= third.label :third_type_id, "Type de client" %>
-  <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+  <p><%= third.label :third_type_id, "Type de tiers" %>
+  <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%><br/>
   
-  <p><%= third.label :third_note, "Note du client" %>
-  <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
+  <p><%= third.label :third_note, "Note du tiers" %>
+  <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%><br/><br/>
   
-  <fieldset>
-            <legend> Informations concernant les contacts du client</legend>
-            
-  </fieldset>
-
-</fieldset>
+  <%= third.submit  'Créer' %> 

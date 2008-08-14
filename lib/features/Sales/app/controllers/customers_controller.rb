@@ -91,6 +91,7 @@ class CustomersController < ApplicationController
         # For all new_establishment and addresses,  an instance variable is create.
         # If his parameter is not valid, @error variable is set to true
         eval "unless params['valid_establishment_#{i+1}']['value'] == 'false'
+                puts params['valid_establishment_#{i+1}']['value']
                 instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
                 params[:new_establishment_address#{i+1}].delete('zip_code')
                 instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))

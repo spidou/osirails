@@ -1,5 +1,5 @@
 <div id='<%= "new_establishment#{params[:cpt]}"%>'>
-<p><%= label :new_establishment, "Nom du nouvel établissement" %><br/>
+<p><%= label :new_establishment, "Nom du dfnouvel établissement" %><br/>
 <%= text_field("new_establishment#{params[:cpt]}","name")%></p>
  <p><%= label :new_establishment, "Type de client" %><br/>
 <%= select("new_establishment#{params[:cpt]}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] },{"include_blank" => 'None'})%></p>

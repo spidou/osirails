@@ -1,7 +1,9 @@
-<h4>Nouveau fournisseurs</h4>
-
+<h1>Nouveau fournisseur</h1>
+<fieldset>
+  <legend>Création d'un nouveau Fournisseur</legend>
 <% form_for(@supplier) do |supplier| %>
   <%= supplier.error_messages %>
   <%= render :partial => 'thirds/third', :locals => {:third => supplier} %>
-  <%= supplier.submit  'Ajouter' %>  <%= link_to 'Retour', :action => 'index' %>
 <% end %>
+</fieldset>
+<%= link_to "Retour a l'accueil", :action => 'index' %>

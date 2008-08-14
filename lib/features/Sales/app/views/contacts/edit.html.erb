@@ -1,0 +1,10 @@
+<fieldset>
+  <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
+  <% form_for([@customer, @contact])  do |contact| %>
+    <%= render :partial => 'contact', :locals => {:contact => contact, :owner => @owner, :contact_type => @contact_type} %>
+   
+    <%= submit_tag 'Modifier' %>
+  <%end%>
+  
+</fieldset>
+<%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
