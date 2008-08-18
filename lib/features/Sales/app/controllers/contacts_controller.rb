@@ -33,6 +33,9 @@ class ContactsController < ApplicationController
   end
   
   def contact_owner_change
-
+  end
+  
+  def delete
+    
   end
 end

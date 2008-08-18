@@ -7,16 +7,6 @@
 <%= contact.text_field :last_name %><br/><br/>
 
 <%=label :contact, "Type de contact"%><br/>
-<%= contact.select("has_contact_type",
-  [{:name =>"Client", :class_name => "Customer"},
-   {:name =>"Fournisseur", :class_name => "Supplier"},
-   {:name =>"Etablissement", :class_name => "Establishment"}
-   ].collect {|a| [ a[:name], a[:class_name]]}, {:selected => contact_type})%><br/><br/>
-
-<%=label :contact, "Owner"%><br/>
-<%= contact.select("has_contact_id", owner.collect {|a| [ a.name, a.id]})%><br/><br/>
-
-<%=label :contact, "Type de client"%><br/>
 <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%><br/><br/>
 
   <%= observe_field "contact_has_contact_type",

@@ -29,7 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.resources :customers
   map.resources :suppliers
-  map.resources :establishments
+#  map.resources :establishments
   map.resources :product_references
   map.resources :product_reference_categories
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
@@ -37,8 +37,14 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :job_contracts
   map.resources :jobs
   
-
-    
+  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
+  
+  map.resources :customers do |customer|
+    customer.resources :contacts
+    customer.resources :establishments do |establishment|
+      establishment.resources :contacts
+    end
+  end   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action

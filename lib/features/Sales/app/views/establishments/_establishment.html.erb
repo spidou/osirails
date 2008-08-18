@@ -1,3 +1,4 @@
+
   <%= label :establishment, "Nom de l'etablissement" %><br/>
   <%= establishment.text_field :name %><br/><br/>
    
@@ -14,13 +15,27 @@
       <%= label :address, "Pays"%><br/>
       <%= my_text_field_with_auto_complete(:country, :name, 
         {:size => 15, :value => "#{establishment_.address.country_name}"}) -%><br/><br/>
-      
+     
       <%= label :address, "Ville"%><br/>
       <%= my_text_field_with_auto_complete(:city, :name, 
-        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}) -%><br/><br/>
+        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}) -%><br/><br/>   
       
-    <%= label :address, "Zip_code"%><br/>
+      <%= label :address, "Zip_code"%><br/>
       <%= my_text_field_with_auto_complete(:city, :zip_code, 
-        {:country_id => 1, :size => 15, :value => "#{2}"}) -%><br/><br/>
-      
-   <%end%>
+        {:country_id => 1, :size => 15, :value =>  "#{establishment_.address.zip_code}"}) -%><br/><br/>
+   <%end #fields_for%>
+
+  
+  <%= observe_field "country_name",
+        :update => "city_name",
+        :frequency => 2,
+        :url=>{:action=>'country_change'},
+        :with => "'country_name='+ document.forms['edit_establishment_#{establishment_.id}']['city_name']['value']"
+%>
+
+  <%= observe_field "city_names",
+        :update => "city_name",
+        :frequency => 2,
+        :url=>{:action=>'city_change'},
+        :with => "'city_name='+ document.forms['edit_establishment_#{establishment_.id}']['city_name']['value']"
+%>

@@ -13,12 +13,12 @@ class EstablishmentsController < ApplicationController
       
     params[:address][:country_name] = params[:country][:name]
     params[:address][:city_name] = params[:city][:name]
+    params[:address][:zip_code] = params[:city][:zip_code]
     
+    # A revoir si la ville ,n'esxiste pas ainsi que le pays
     if Country.find_by_name(params[:country][:name]).nil?
       Country.create(:name => params[:country][:name])
     end
-    
-    puts params[:country][:name]
     
     if City.find_by_name(params[:city][:name]).nil?
         City.create(:name => params[:city][:name], 
@@ -26,13 +26,12 @@ class EstablishmentsController < ApplicationController
           :country_id => Country.find_by_name(params[:country][:name]).id)
     end
     
-    unless City.find_by_name(params[:city][:name]).nil? and 
-        City.find_by_name(params[:city][:name]).country_id != Country.find_by_name(params[:country][:name]).id
-      
-      City.create(:name => params[:city][:name], 
-          :zip_code => params[:city][:zip_code], 
-          :country_id => Country.find_by_name(params[:country][:name]).id)
-    end
+#    if City.find_by_name(params[:city][:name]).nil? or
+#      City.find_by_name(params[:city][:name]).country_id != Country.find_by_name(params[:country][:name]).id      
+#        City.create(:name => params[:city][:name], 
+#          :zip_code => params[:city][:zip_code], 
+#          :country_id => Country.find_by_name(params[:country][:name]).id)
+#    end
     
     @establishment.update_attributes(params[:establishment])
     @address.update_attributes(params[:address])
@@ -42,6 +41,7 @@ class EstablishmentsController < ApplicationController
   end
   
   def auto_complete_for_country_name
+    puts params.keys
     auto_complete_responder_for_country_name(params[:country][:name])
   end
   
@@ -56,7 +56,8 @@ class EstablishmentsController < ApplicationController
   
   #FIXME Change the code to take in consideration the fact that it can have many city with the same name
   def auto_complete_for_city_name
-    auto_complete_responder_for_name(params[:city][:name])
+    puts params.keys
+    auto_complete_responder_for_name(params[:city][:name], params[:country_id])
   end
   
   def auto_complete_responder_for_name(value,country_id = 1)
@@ -79,5 +80,12 @@ class EstablishmentsController < ApplicationController
       :order => 'name ASC',
       :limit => 8)
     render :partial => 'addresses/zip_codes'
+  end
+  
+  def destroy
+    @establishment = Establishment.find(params[:id])
+    @customer = @establishment.customer
+    @establishment.destroy
+    redirect_to(edit_customer_establishment_path(@customer,@establishment)) 
   end
 end

@@ -1,11 +1,12 @@
 <div <%= "id=link_add_remove_establishment_#{cpt}"%>>
+    <%= error_messages_for("new_establishment#{cpt}") %>
     <%= link_to_remote("supprimer", :url => {:action => "delete_new_establishment", :id => cpt}, 
       :with => "'number=' + $('new_establishment_number_value').value")%>
 </div>
 <div id='<%= "new_establishment#{cpt}"%>'>
 <p><%= label :new_establishment, "Nom du nouvel établissement" %><br/>
 <%= text_field("new_establishment#{cpt}","name")%></p>
- <p><%= label :new_establishment, "Type de client" %><br/>
+ <p><%= label :new_establishment, "Type d'etablissement" %><br/>
 <%= select("new_establishment#{cpt}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] },{"include_blank" => 'None'})%></p>
 <p><%= label :new_address, "Address1" %><br/>
 <%= text_field("new_establishment_address#{cpt}","address1")%></p>
@@ -16,9 +17,11 @@
 <p><%= label :new_address, "city_name" %><br/>
 <%= select("new_establishment_address#{cpt}", "city_name",City.find(:all).collect {|a| [ a.name, a.name ] })%></p>
 <p><%= label :new_address, "zip_code" %><br/>
+<%= select("new_establishment_address#{cpt}", "city_name",City.find(:all).collect {|a| [ a.zip_code, a.zip_code ] })%></p>
 
 <%= hidden_field("valid_establishment_#{cpt}", "value", "value" => 'true')%>
 </div>
+
 <% unless error%>
 <div <%= "id=link_add_remove_establishment_#{cpt.to_i + 1}"%>>
     <%=link_to_remote("Ajouter", :url => {:action => "add_establishment", :cpt => cpt.to_i + 1},

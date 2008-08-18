@@ -1,0 +1,21 @@
+<div <%= "id=link_add_remove_contact_#{cpt}"%>>
+    <%= error_messages_for("new_contact#{cpt}") %>
+    <%= link_to_remote("supprimer", :url => {:action => "delete_new_contact", :id => cpt})%>
+</div>
+
+<div id='<%= "new_contact#{cpt}"%>'>
+<p><%= label :new_contact, "Nom" %><br/>
+<%= text_field("new_contact#{cpt}","first_name") %></p>
+ <p><%= label :new_contact, "Prénom" %><br/>
+ <%= text_field("new_contact#{cpt}","last_name")%></p>
+<p><%=label :new_contact, "Type de client"%><br/>
+<%= select("new_contact#{cpt}", "contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", owner_type]).collect {|a| [ a.name, a.name]})%></p>
+
+<%= hidden_field("valid_contact_#{cpt}", "value", "value" => 'true')%>
+</div>
+
+<%unless error%>
+<div <%= "id=link_add_remove_contact_#{cpt.to_i + 1}"%>>
+    <%=link_to_remote("Ajouter", :url => {:controller => "contacts", :action => "add_contact", :cpt => cpt.to_i + 1,:owner_type => owner_type})%>
+</div>
+<%end%>
