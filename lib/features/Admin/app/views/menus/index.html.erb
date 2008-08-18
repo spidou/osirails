@@ -1,21 +1,3 @@
 <h1>Liste des menus</h1>
-  <table>
-    <tr>
-        <th>Menus</th>
-        <th>Position</th>
-        <th>Actions</th>
-    </tr> 
-    
-    <% for menu in @menus %>
-     <% unless menu.nil? %>
-      <tr>
-        <td title="<%= menu.description %>"><%= menu.title %></td>
-        <td><%= show_up_button(menu) %><%= show_down_button(menu) %></td>
-        <td><%= link_to "Modifier", edit_menu_path(menu) %>
-            <%= show_delete_button(menu)%>
-        </td>
-      </tr>
-      <% end %>
-    <% end %>  
-</table>
+    <%= show_structured_menu %>
 <%= link_to 'Ajouter', :action => 'new' %>

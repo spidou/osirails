@@ -1,0 +1,11 @@
+<% unless @reference_id == -1 %>
+  <% references = ProductReference.find(:all, :conditions => {:enable => 1, :product_reference_category_id => @reference_id} )%>
+  <%= show_reference_column(references) %>
+<% else %>
+  <% references = ProductReference.find(:all, :conditions => {:enable => 1})%>
+  <%= show_reference_column(references) %>
+<% end %>
+
+ <%= observe_field("select_reference", :update => "products_list", :url => {:action => :show_product_tab}, :on => "click", :with => 'parameter' ) %>
+ <%= observe_field("select_reference", :update => "product_reference", :url => {:action => :show_reference_information}, :on => "click", :with => 'parameter' ) %>
+ <%= observe_field("select_reference", :uppate => "product_information", :url => {:action => :refresh_product_information}, :on => "click" ) %>

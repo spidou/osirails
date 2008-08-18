@@ -1,12 +1,22 @@
 <h1>Visualiser le catalogue des produits</h1>
+<div id ='all_selects'>
+  <span id='show_categories'>
+    <% (find_max_level + 1).times do |value|%>
+      <%= show_category_column(@categories,value) %>
+    <% end %>
+  </span>     
+  <span id='show_references'>
+    <%= render :partial => "show_references" %>
+  </span>
+</div>
 
-<%= show_category_column(@categories) %>
-<%= show_reference_column(@references) %>
-
- <%= observe_field("select_reference", :update => "products_list", :url => {:action => :show_product_tab}, :on => "click", :with => 'parameter' ) %>
- <%= observe_field("select_reference", :update => "product_reference", :url => {:action => :show_reference_information}, :on => "click", :with => 'parameter' ) %>
- <%# observe_field("select_reference", :uppate => "product_information", :url => {:action => :refresh_product_information}, :on => "click" ) %>
- 
 <div  id="products_list"></div>
 <div id="product_reference"></div>
 <div id="product_information"></div>
+
+<% find_max_level.times do |value|%>
+  <%= observe_field("select_#{value}", :update => "show_references", :url => {:action => :show_references}, :with => 'parameter' ) %>
+  <%= observe_field("select_#{value}", :update => "select_#{value+1}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>
+<% end %>
+
+<%= observe_field("select_#{find_max_level}", :update => "show_references", :url => {:action => :show_references}, :on => "click", :with => 'parameter' ) %>

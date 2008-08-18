@@ -1,0 +1,4 @@
+<%= "<option value=-1 selected=selected>Il y a "+pluralize(@categories.size, "categorie", "categories")+"</option>" %>
+<% @categories.each do |category| %>
+  <%= "<option value=#{category.id}>#{category.name} (#{category.product_references_count})</option>" %>
+<% end %>

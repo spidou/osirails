@@ -1,4 +1,4 @@
-<% unless @reference_id == 0 %>
+<% unless @reference_id == -1 %>
   <% reference = ProductReference.find(@reference_id)%>
 <h4>Information consernant la référence <%= reference.name %></h4>
 
