@@ -8,7 +8,6 @@ html, body {
 	padding: 0;
 	width:100%;
 	height:100%;
-	/*font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;*/
 	font-family: verdana , Geneva, sans-serif;
 	cursor: default;
 	min-width:1250px;
@@ -339,19 +338,9 @@ width: 100%;
 	color:#afc2ea;
 }
 
-/*
-#menu_champ_vide {
-//	position:absolute;	
-	background: url("../images/sous_banniere_repeat-x.jpg") repeat;
-	height:100%;
-	margin-left:5px;
-	margin-right: 5px;	
-}
-*/
 /*/////////////////////////////////////////////////////
 			CORPS DU SITE > PAGE DU SITE
 ////////////////////////////////////////////////////*/
-
 #page {
 	border: solid 1px #cecece;
 	padding-left: 5px;
@@ -364,7 +353,6 @@ width: 100%;
 /*/////////////////////////////////////////////////////
 	CORPS DU SITE > PAGE DU SITE > MENU SECONDAIRE
 ////////////////////////////////////////////////////*/
-
 #menu_secondaire {
 	float:right;
 	margin-left:10px;
@@ -459,9 +447,6 @@ img.del_icon {
 	right:3px;
 }
 
-a .view_icon:hover {}
-
-
 #bottom_menu_secondaire { 
 	margin-bottom:-9px;
 	padding:0;
@@ -493,69 +478,68 @@ a .view_icon:hover {}
 	margin:0 5px 0px 5px;
 }
 
-/*////////////////////////////////////////////////////////////////////////////////////*/
-/*::::::::::::::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::::::::::::::::::*/
-a.default-button { 																	/**/
-background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
-display: block;                                                                    	/**/
-float: left;                                                                       	/**/
-font-family: arial, verdana, sans-serif;                                           	/**/
-font-size:85%;                                                                     	/**/
-line-height: 18px;                                                                 	/**/
-height: 26px;                                                                      	/**/
-padding-left: 8px;                                                                 	/**/
-text-decoration: none;                                                             	/**/
-text-indent:0;                                                                     	/**/
-margin:5px 5px 5px 0;                                                		 		/**/
-color:black;                                                                       	/**/
-}																				   	/**/
-																					/**/
-a.default-button span { 															/**/
-background: transparent url("../images/default-button.png") no-repeat top right;	/**/
-display: block;																		/**/
-padding: 2px 12px 6px 0;															/**/
-}																					/**/
-																					/**/
-a.default-button:hover { 															/**/
-background-position: bottom left;													/**/
-}																					/**/
-																					/**/
-a.default-button:hover span {														/**/
-background-position: bottom right;													/**/
-color:black;
-}	 																				/**/
-/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-
-button.input-button {
-	background: transparent url("../images/default-button_end.png") no-repeat top left;
-	font-family: arial, verdana, sans-serif;
-	font-size:85%;
-	height: 26px;
-	padding-left: 5px;
-	margin:5px 0px 5px 0px;
-	color:black;
-	border:none;
-	min-width:70px;
-}
-
-button.input-button span { 															
-	background: transparent url("../images/default-button.png") no-repeat top right;	
-	display: block;																		
-	padding: 2px 12px 6px 0;
-	margin-top:-1px;
-	border:none;
-	line-height:18px;
-}																					
-																					
-button.input-button:hover { 															
-	background: transparent url("../images/default-button_end.png") no-repeat bottom left;	
-}																					
-																					
-button.input-button:hover span {														
-	background: transparent url("../images/default-button.png") no-repeat 100% -26px;	
-	color:black;
-}
-
+/*////////////////////////////////////////////////////////////////////////////////////////*/
+/*::::::::::::::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::::::::::::::::::::::*/
+a.default-button { 																		/**/
+background: transparent url("../images/default-button_end.png") no-repeat top left;		/**/
+display: block;                                                                    		/**/
+float: left;                                                                       		/**/
+font-family: arial, verdana, sans-serif;                                           		/**/
+font-size:85%;                                                                     		/**/
+line-height: 18px;                                                                 		/**/
+height: 26px;                                                                      		/**/
+padding-left: 8px;                                                                 		/**/
+text-decoration: none;                                                             		/**/
+text-indent:0;                                                                     		/**/
+margin:5px 5px 5px 0;                                                		 			/**/
+color:black;                                                                       		/**/
+}																				   		/**/
+																						/**/
+a.default-button span { 																/**/
+background: transparent url("../images/default-button.png") no-repeat top right;		/**/
+display: block;																			/**/
+padding: 2px 12px 6px 0;																/**/
+}																						/**/
+																						/**/
+a.default-button:hover { 																/**/
+background-position: bottom left;														/**/
+}																						/**/
+																						/**/
+a.default-button:hover span {															/**/
+background-position: bottom right;														/**/
+color:black;																			/**/
+}	 																					/**/
+/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+button.input-button { 																	/**/
+	background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
+	font-family: arial, verdana, sans-serif;											/**/
+	font-size:85%;																		/**/
+	height: 26px;																		/**/
+	padding-left: 5px;																	/**/
+	margin:5px 0px 5px 0px;																/**/
+	color:black;																		/**/
+	border:none;																		/**/
+	min-width:70px;																		/**/
+}																						/**/
+																						/**/
+button.input-button span { 																/**/
+	background: transparent url("../images/default-button.png") no-repeat top right;	/**/
+	display: block;																		/**/
+	padding: 2px 12px 6px 0;                                                            /**/
+	margin-top:-2px;                                                                    /**/
+	border:none;                                                                        /**/
+	line-height:18px;                                                                   /**/
+}																					    /**/
+																					    /**/
+button.input-button:hover { 															 /**/
+	background: transparent url("../images/default-button_end.png") no-repeat bottom left;/**/
+}																					   	 /**/
+																					   	/**/
+button.input-button:hover span {													   	/**/
+	background: transparent url("../images/default-button.png") no-repeat 100% -26px;  	/**/
+	color:black;                                                                       	/**/
+}																						/**/
+/*///////////////////////////////////////////////////////////////////////////////////////*/
 
 /*//////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
@@ -644,7 +628,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\		Config en commun : ERROR & SIGNAL		  /!\
+/!\:::::::Config en commun : ERROR & SIGNAL:::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
 	background:#C7C7C7;
@@ -671,7 +655,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\				erreurs générales				  /!\
+/!\:::::::::::::erreurs générales:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors {
 	color:red;
@@ -682,8 +666,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 .fieldWithErrors select {
 	border:solid 2px red !important;
 	color:red;
-	margin-left: 1%;
-	width: 40%;
+	margin-left: 12px;
 }
 
 .fieldWithErrors:after {
@@ -693,7 +676,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /*/////////////////////////////
 	CADRE et CONTENU
 /////////////////////////////*/
-
 
 table.presentation {
 	border-collapse: collapse;
@@ -737,32 +719,18 @@ table.presentation tr:hover > td{
 /*/////////////////////////////
 		FORMULAIRE
 /////////////////////////////*/
-.cadre p.disable-stylesheet-width {
-	max-width:100% ;
-	width:auto;
-	float:none;
-	margin:0;
-	clear:both;
-}
-
-.cadre form {
-	text-indent:0;
-}
-
-
 /*///////////////////////*/
 /*// fieldset & legend //*/
 
-#monForm fieldset
+.cadre fieldset
 {
-	margin-bottom: 10px;
 	background: #eaeff8;
 	border: 1px solid #444444;
 	margin-left:5px;
-	width:600px;
+	margin-bottom: 10px;
 }
 
-#monForm fieldset legend
+.cadre fieldset legend
 {
 	margin-left:0px;
 	padding: 0 10px;
@@ -771,88 +739,90 @@ table.presentation tr:hover > td{
 	font-size: 1.2em;
 	color: #454545;
 	background:white;
-	color:rgb(234,136,28);
 }
 
-/*///////////////////////*/
-/*//////// Label ////////*/
+.cadre input[type=text] {
+	width: 50%;
+}
 
-.cadre label {
-//padding-bottom:-75px;
-//	display: inline; /*block*/
-//	min-width: 150px; /* 40% */
-//	max-width:140px;
-	float: left;
-//	max-width:10px;
-	font-size:0.8em;
-//	height:5px !important;
-//	text-align:right;
+.cadre form {
+	width: 950px;
+	text-indent:0;
 }
 
 .cadre form p {
-//	min-width: 150px; /* 40% */
-//	max-width:130px;
-	text-indent:0px;
-	margin-left:10px;
-	
+	margin: 0.8em 0;
 }
 
-.cadre label:hover {
-/*	font-weight: bold;	*/
-/*	font-style:italic;	*/
+.cadre form p.text_form_left {
+	overflow: hidden; /* Empêcher le dépassement des flottants */
+	width: 100%;
+}
+
+.cadre form p.text_form_left label {
+	float: left;
+	width: 150px;
+	text-align: right;
+	cursor: pointer;
+}
+
+.cadre form p.text_form_left label:hover {
 	text-decoration:underline;
 	color: rgb(234,136,28);
 }
 
-/*///////////////////////*/
-/*//////// Input ////////*/
-
-.cadre input[type="text"],
-.cadre input[type="password"],
-.cadre textarea {
-//	position: relative;
-//	bottom:20px;
-//	left:144px;
-	width: 200px;
-	border: #CCC 1px solid;
-//	margin-left:250px;
-	vertical-align:10px;
-	float:left;
-	margin-left:200px;
+.cadre form p.text_form_left label span.info {
+	display: block;
+	margin-top: .2em;
+	font-size: .8em;
+	font-weight: normal;
+	cursor: default;
 }
 
-#monForm input[type="text"]
-#monForm input[type="password"],
-#monForm select {
-	margin-left:10px;
-	width: 200px;
+.cadre form p.text_form_left input,
+.cadre form p.text_form_left textarea {
+	width: 250px;
+	margin-left: 12px;
 	border: #CCC 1px solid;
-	position:relative;
-	bottom:15px;
-	left:180px;
+	padding: 2px 4px;
 }
 
-.cadre input[type="text"]:hover,
-.cadre input[type="password"]:hover,
-.cadre select:hover {
+.cadre form p.text_form_left select {
+
+}
+
+.cadre form p.text_form_left select {
+		border: #CCC 1px solid;
+}
+
+.cadre form p.text_form_left input:hover,
+.cadre form p.text_form_left textarea:hover {
 	border: #aeaeae 1px solid;
 	background: #f5f5f5;
 }
 
-.cadre input[type="text"]:focus,
-.cadre input[type="password"]:focus,
-.cadre select:focus {
+.cadre form p.text_form_left input:focus,
+.cadre form p.text_form_left textarea:focus,
+.cadre form p.text_form_left select:focus {
 	background: #f5c384;
 }
 
-
-#birth input[type="text"] {
-	white-space:nowrap; /*Pas de retour chariot*/
-	width:30px;
+.cadre form p.text_form_left textarea {
+	padding: 2px 0 0 4px;
+	width: 320px;
+	height: 6em;
+	max-width:320px;
 }
 
-select {
-	font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+.cadre form p.simple {
+	margin-left: 160px;
+}
+
+.cadre p.disable-stylesheet-width {
+	max-width:100% ;
+	width:auto;
+	float:none;
+	margin:0;
 }
 
 /*///////////////////////*/
