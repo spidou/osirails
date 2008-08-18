@@ -28,6 +28,7 @@ ActionController::Routing::Routes.draw do |map|
     employee.resources :salaries
   end
   map.resources :customers
+  map.resources :produts_catalog
   map.resources :suppliers
 #  map.resources :establishments
   map.resources :product_references
