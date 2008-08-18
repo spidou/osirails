@@ -21,7 +21,7 @@ class SocietyIdentityConfigurationController < ApplicationController
     for parameter in search_methods(__FILE__)
       ConfigurationManager.send(parameter+"=", params[parameter])
     end
-    flash[:notice] = "Les modifications ont &eacute;t&eacute; prises en comptes"
+    flash[:notice] = "Les modifications ont &eacute;t&eacute; prises en compte"
     redirect_to :action => 'index'
   end
   
