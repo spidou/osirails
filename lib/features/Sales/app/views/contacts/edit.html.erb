@@ -1,10 +1,17 @@
 <fieldset>
   <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
-  <% form_for([@customer, @contact])  do |contact| %>
-    <%= render :partial => 'contact', :locals => {:contact => contact, :owner => @owner, :contact_type => @contact_type} %>
+  <% form_for([@owner, @contact],:url => {:action => "update", :owner => @owner, :owner_type => @owner_type})  do |contact| %>
+    <%= @owner_type%>
+    <%= render :partial => 'contact', :locals => {:contact => contact, :possible_owners => @possible_owers, :contact_type => @contact_type} %>
    
     <%= submit_tag 'Modifier' %>
+    <%= link_to("Supprimer", [@owner, @contact],
+      :type => "test",
+      :method => :delete
+        )%>
+
   <%end%>
   
 </fieldset>
-<%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
+
+<%= get_return_link(params[:owner_type])%>

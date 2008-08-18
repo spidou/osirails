@@ -7,4 +7,5 @@
    <%= submit_tag 'Modifier' %>
   <%end%>
 </fieldset>
+<%= link_to "Supprimer", [@customer, @establishment], :method => :delete%>
 <%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>

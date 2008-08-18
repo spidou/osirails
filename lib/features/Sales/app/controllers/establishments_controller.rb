@@ -86,6 +86,6 @@ class EstablishmentsController < ApplicationController
     @establishment = Establishment.find(params[:id])
     @customer = @establishment.customer
     @establishment.destroy
-    redirect_to(edit_customer_establishment_path(@customer,@establishment)) 
+    redirect_to(edit_customer_path(@customer)) 
   end
 end
