@@ -1,3 +1,8 @@
+<% content_for :javascript do %>
+  <%= javascript_include_tiny_mce_if_used %>
+  <%= tiny_mce if using_tiny_mce? %>
+<% end %>
+
 <h4>Nouvelle page</h4>
 
 <% form_for(@category) do |category| %>
