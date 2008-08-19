@@ -97,16 +97,21 @@
           <% cpt = 1 %>
           <% unless params[:new_contact_number].nil? %>
           <% new_contacts_number.times do |i| %>
-          <%unless params["valid_contact_#{i+1}"].nil?%>
-            <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
-            <div id =<%= "new_contact#{i+1}" %>>
-              <%= render :partial => 'contacts/new_contact', :locals => {:cpt=> i+1, :error => true, :owner_type => "Customer",
-              :owner_id => @customer.id} %>
-            </div>
+            <%unless params["valid_contact_#{i+1}"].nil?%>
+              <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
+              <div id =<%= "new_contact#{i+1}" %>>
+                <%@old_contact = {:first_name => params["new_contact#{i+1}"]["first_name"],
+                                          :last_name => params["new_contact#{i+1}"]["last_name"],
+                                          :email_name => params["new_contact#{i+1}"]["email"]}%>
+                <%= render :partial => 'contacts/new_contact', :locals => {:cpt=> i+1, :error => true, :owner_type => "Customer",
+                :owner_id => @customer.id, :old_contact => @old_contact} %>
+              
+              </div>
+              <%end #unless%>
             <%end #unless%>
-          <%end #unless%>
-          <% cpt += 1 %>
-          <% end %>
+            <% cpt += 1 %>
+          <% end #unless%>
+    
           <div id="link_add_remove_contact_<%=cpt%>">
             <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
                 :owner_id => @customer.id, :owner_type => "Customer"}) %>

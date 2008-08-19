@@ -62,9 +62,7 @@ class ContactsController < ApplicationController
      
   end
   
-  def auto_complete_for_contact_first_name
-    puts params[:owner_id]
-    
+  def auto_complete_for_contact_first_name    
     auto_complete_responder_for_first_name(params[:owner_id], params[:value])  
   end
   
@@ -73,7 +71,7 @@ class ContactsController < ApplicationController
     @owner = Customer.find(owner_id)
     if @owner.contacts.length > 0
       @owner.contacts.each do |owner_contact|
-        if owner_contact.first_name.grep(/#{value}/).length > 0
+        if owner_contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
           @contacts << owner_contact
         end
       end
@@ -82,17 +80,67 @@ class ContactsController < ApplicationController
     if @owner.establishments.length > 0
       @owner.establishments.each do |establishment|
         establishment.contacts.each do |establishment_contact|
-          if establishment_contact.first_name.grep(/#{value}/).length > 0
+          if establishment_contact.downcase.first_name.grep(/#{value.downcase}/).length > 0
             @contacts << establishment_contact
           end
         end
       end
     end
-    #    @contacts = Contact.find(:all, 
-    #      :conditions => [ 'first_name LIKE ?',
-    #        '%' + value.to_s + '%'], 
-    #      :order => 'first_name ASC',
-    #      :limit => 8)
     render :partial => 'contacts/first_name'
   end
+  
+  def auto_complete_for_contact_last_name
+    auto_complete_responder_for_last_name(params[:owner_id], params[:value])  
+  end
+  
+  def auto_complete_responder_for_last_name(owner_id,value)
+    @contacts = []
+    @owner = Customer.find(owner_id)
+    if @owner.contacts.length > 0
+      @owner.contacts.each do |owner_contact|
+        if owner_contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
+          @contacts << owner_contact
+        end
+      end
+    end
+    
+    if @owner.establishments.length > 0
+      @owner.establishments.each do |establishment|
+        establishment.contacts.each do |establishment_contact|
+          if establishment_contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
+            @contacts << establishment_contact
+          end
+        end
+      end
+    end
+    render :partial => 'contacts/first_name'
+  end
+  
+  def auto_complete_for_contact_email
+    auto_complete_responder_for_email(params[:owner_id], params[:value])  
+  end
+  
+  def auto_complete_responder_for_email(owner_id,value)
+    @contacts = []
+    @owner = Customer.find(owner_id)
+    if @owner.contacts.length > 0
+      @owner.contacts.each do |owner_contact|
+        if owner_contact.email.downcase.grep(/#{value.downcase}/).length > 0
+          @contacts << owner_contact
+        end
+      end
+    end
+    
+    if @owner.establishments.length > 0
+      @owner.establishments.each do |establishment|
+        establishment.contacts.each do |establishment_contact|
+          if establishment_contact.email.downcase.grep(/#{value.downcase}/).length > 0
+            @contacts << establishment_contact
+          end
+        end
+      end
+    end
+    render :partial => 'contacts/first_name'
+  end
+  
 end

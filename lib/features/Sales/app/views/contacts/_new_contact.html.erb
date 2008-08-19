@@ -7,20 +7,30 @@
 
 <div id="contact_<%=cpt%>_input_info" style='display: block;'>
 <p><%= label :new_contact, "Nom" %><br/>
-<%= my_text_field_with_auto_complete(:contact, :first_name, {:index => cpt},{:select => 'ul_contact_name',
+<%= my_text_field_with_auto_complete(:contact, :first_name, {:index => cpt,:url => {:controller => 'contacts'}},{
+    :select => 'ul_contact_name',
     :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
-    :with => "'value='+document.getElementById('new_contact1_first_name').value+
+    :with => "'value='+document.getElementById('new_contact#{cpt}_first_name').value+
     '&owner_id=#{owner_id}'"})%>
-  <%if @error%>
-  <%=  javascript_tag "document.getElementById('new_contact1_first_name').value = '#{params['new_contact1']['first_name']}'"%>
-  <%  javascript_tag "document.getElementById('new_contact1_first_name').value = '#{params['new_contact1']['first_name']}'"%>
-  <%end%>
 
-  <p><%= label :new_contact, "Prénom" %><br/>
-  <%= text_field("new_contact#{cpt}","last_name")%></p> 
-  
-  <p> <%= label :contact, "E-mail" %><br/>
-  <%= text_field("new_contact#{cpt}","email") %></p>
+<p><%= label :new_contact, "Prénom" %><br/>
+<%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt},{:select => 'ul_contact_name',
+    :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
+    :with => "'value='+document.getElementById('new_contact#{cpt}_last_name').value+
+    '&owner_id=#{owner_id}'"})%>
+
+<p><%= label :new_contact, "Email" %><br/>
+<%= my_text_field_with_auto_complete(:contact, :email, {:index => cpt},{:select => 'ul_contact_name',
+    :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
+    :with => "'value='+document.getElementById('new_contact#{cpt}_email').value+
+    '&owner_id=#{owner_id}'"})%>
+
+
+<% # Affectation of variables when an error occure%>
+<%if error%>
+<%=  javascript_tag "document.getElementById('new_contact#{cpt}_first_name').value = '#{old_contact[:first_name]}'"%>
+<%=  javascript_tag "document.getElementById('new_contact#{cpt}_last_name').value = '#{old_contact[:last_name]}'"%>
+<%end%>
 
   <p><%= label :contact, "Job" %><br/>
   <%= text_field("new_contact#{cpt}","jobs") %></p>
