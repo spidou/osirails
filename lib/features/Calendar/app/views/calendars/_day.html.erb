@@ -1,0 +1,19 @@
+<h1><%= @calendar.title %> - <%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h1>
+<p>
+	<input type="button" value="Télécharger les événements" onClick="<%= get_events_function %>" /> | 
+	<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
+</p>
+<div id="calendar">
+	<div id="scroll">
+		<div id="hour_column">
+		<% 24.times do |i| %>
+		<%= "<div class=\"hour\">#{i}h00</div>" %>
+		<% end %>
+		</div>
+		<div id="grid_day">
+			<div id="<%= @date.strftime('%a') %>" class="day_grid">
+					<div class="grid_border"><ul></ul></div>
+			</div>
+		</div>
+	</div>
+</div>

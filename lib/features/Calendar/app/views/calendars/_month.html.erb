@@ -1,8 +1,3 @@
-<h1><%= @calendar.title %> - <%= $month_fr[@date.month - 1] %> <%= @date.year %> (semaine <%= @date.week %>)</h1>
-<p>
-	<input type="button" value="Télécharger les événements" onClick="<%= get_events_function %>" /> | 
-	<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
-</p>
 <div id="group_day">
 	<% date = @date.beginning_of_week %>
 	<% 7.times do %>
@@ -17,7 +12,7 @@
 		<%= "<div class=\"hour\">#{i}h00</div>" %>
 		<% end %>
 		</div>
-		<div id="grid_week">
+		<div id="grid">
 			<% date = @date.beginning_of_week %>
 			<% 7.times do %>
 			<div id="<%= date.strftime('%a') %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == @date %>>

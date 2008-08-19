@@ -7,18 +7,14 @@
 div {
 //	border: 1px solid;
 }
-#top {
-	height: 150px;
-	width: 99%;
-}
-#top h1 {
+h1 {
 	text-align: center;
 }
-#top #group_day {
+#group_day {
 	margin-left: 40px;
 	margin-right: -10px;
 }
-#top #group_day .day {
+#group_day .day {
 	float:left;
 	width: 14.285714285714286%;
 	text-align: center;
@@ -44,23 +40,44 @@ div {
 #calendar #scroll .hour {
 	height: 60px;
 }
-#calendar #scroll #grid {
+#calendar #scroll #grid_week {
 	position: relative;
 	margin-left: 50px;
 	right: 0px;
 	height: 1440px;
 	border: 1px solid gray;
 }
-#calendar #scroll #grid .day_grid_border {
+#calendar #scroll #grid_week .day_grid_border {
 	border: 1px solid gray;
 	border-top: none;
 	border-bottom: none;
 	width: 100%;
 	height: 100%;
 }
-#calendar #scroll #grid .day_grid {
+#calendar #scroll #grid_week .day_grid {
 	float:left;
-	width: 14.28%;
+	width: 14.285714285714286%;
+	height: 100%;
+	z-index: -100;
+	background: url('/images/grid_repeat-x.gif') repeat;
+}
+#calendar #scroll #grid_day {
+	position: relative;
+	margin-left: 50px;
+	right: 0px;
+	height: 1440px;
+	border: 1px solid gray;
+}
+#calendar #scroll #grid_day .day_grid_border {
+	border: 1px solid gray;
+	border-top: none;
+	border-bottom: none;
+	width: 100%;
+	height: 100%;
+}
+#calendar #scroll #grid_day .day_grid {
+	float:left;
+	width: 100%;
 	height: 100%;
 	z-index: -100;
 	background: url('/images/grid_repeat-x.gif') repeat;
@@ -80,8 +97,8 @@ li {
 	position: relative;
 	width: 100%;
 	border: 1px solid black;
-	min-height: 22px;
 	padding: 4px 0px;
+	min-height: 20px;
 	text-align: center;
 	font-size: 10px;
 	color: white;
@@ -103,29 +120,7 @@ draggables_events = new Array();
 
 function grid_area(draggable) {
 	var cal_event = draggable.element;
-	switch (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id) {
-		case "Mon":
-			var coeff = 0;
-		break;
-		case "Tue":
-			var coeff = 1;
-		break;
-		case "Wed":
-			var coeff = 2;
-		break;
-		case "Thu":
-			var coeff = 3;
-		break;
-		case "Fri":
-			var coeff = 4;
-		break;
-		case "Sat":
-			var coeff = 5;
-		break;
-		case "Sun":
-			var coeff = 6;
-		break;
-	};
+	var coeff = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
 	var grid = document.getElementById('grid');
 
 	var left_size = cal_event.style.left.replace("px", "");
@@ -162,10 +157,8 @@ function update_time (id) {
 	document.getElementById(id + '_content').childNodes[2].innerHTML = end_at;
 }
 
-function add_event (id, title, top, left, height, color, week_day) {
+function add_event (id, title, top, height, color, week_day) {
 	var grid_day = document.getElementById(week_day).childNodes[1];
-	var left = left * document.getElementById('Mon').offsetWidth;
-	left= 0;
 	for (var i=0; i < events.length; i++) {
 		if (events[i] == 'event' + id) {
 			grid_day.removeChild(document.getElementById(events[i]));
@@ -179,7 +172,7 @@ function add_event (id, title, top, left, height, color, week_day) {
 	
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
-	event_div.setAttribute('style', 'top: ' + top + 'px; left: ' + left + 'px; height: ' + height + 'px; background-color: ' + color);
+	event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
 	
 	event_content.setAttribute('id', elm_id + '_content');
 	event_content.setAttribute('class', 'event_content');
@@ -189,22 +182,23 @@ function add_event (id, title, top, left, height, color, week_day) {
 	event_div.appendChild(event_content);
 	li.appendChild(event_div);
 	grid_day.childNodes[0].appendChild(li);
-//	grid_day.appendChild(event_div);
 	
-  Effect.Pulsate(elm_id, { pulses: 3, duration: 1.5 });
+  //Effect.Pulsate(elm_id, { pulses: 2, duration: 1 });
+
 	add_draggable(elm_id);
   new Resizeable(elm_id, {
   	left:0,
   	right:0,
   	top: 0,
   	bottom: 4,
+		minHeight: 19,
   	resize: function() {
   		update_time(elm_id);
+			save_event(elm_id);
   	}
   });
   update_time(elm_id);
 	events.push(elm_id);
-//	alert(events.length);
 	windows_width = document.getElementById('Mon').offsetWidth;
 	windows_height = document.getElementById('Mon').offsetHeight;
 }
@@ -230,6 +224,7 @@ function add_draggable (elm_id) {
   	},
 		onEnd: function(draggable) {
 			change_day_events(draggable);
+			save_event(draggable.element.id);
 		}
   }));
 }
@@ -237,93 +232,85 @@ function add_draggable (elm_id) {
 function change_day_events (draggable) {
 	var	cal_event = draggable.element;
 	var left_size = cal_event.style.left.replace("px","");
-	switch (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id) {
-		case "Mon":
-			var day_num = 0;
-		break;
-		case "Tue":
-			var day_num = 1;
-		break;
-		case "Wed":
-			var day_num = 2;
-		break;
-		case "Thu":
-			var day_num = 3;
-		break;
-		case "Fri":
-			var day_num = 4;
-		break;
-		case "Sat":
-			var day_num = 5;
-		break;
-		case "Sun":
-			var day_num = 6;
-		break;
-	};
+	var day_num = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
 	var target_day = day_num + (left_size / cal_event.ancestors()[1].offsetWidth);
-	switch (target_day) {
-		case 0:
-			var day = "Mon";
-		break;
-		case 1:
-			var day = "Tue";
-		break;
-		case 2:
-			var day = "Wed";
-		break;
-		case 3:
-			var day = "Thu";
-		break;
-		case 4:
-			var day = "Fri";
-		break;
-		case 5:
-			var day = "Sat";
-		break;
-		case 6:
-			var day = "Sun";
-		break;
-		default:
-			var day = day_num;
-	};
+	var day = daynum_to_dayname(target_day);
 	cal_event.style.left = 0;
 	document.getElementById(day).childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
+}
+
+function show_edit_box (argument) {
+	// body...
+}
+
+function daynum_to_dayname (daynum) {
+	switch (daynum) {
+		case 0:
+			var dayname = "Mon";
+		break;             
+		case 1:            
+			var dayname = "Tue";
+		break;             
+		case 2:            
+			var dayname = "Wed";
+		break;             
+		case 3:            
+			var dayname = "Thu";
+		break;             
+		case 4:            
+			var dayname = "Fri";
+		break;             
+		case 5:            
+			var dayname = "Sat";
+		break;             
+		case 6:            
+			var dayname = "Sun";
+		break;
+	};
+	return dayname;
+}
+
+function dayname_to_daynum (dayname) {
+	switch (dayname) {
+		case "Mon":
+			var daynum = 0;
+		break;
+		case "Tue":
+			var daynum = 1;
+		break;
+		case "Wed":
+			var daynum = 2;
+		break;
+		case "Thu":
+			var daynum = 3;
+		break;
+		case "Fri":
+			var daynum = 4;
+		break;
+		case "Sat":
+			var daynum = 5;
+		break;
+		case "Sun":
+			var daynum = 6;
+		break;
+	};
+	return daynum;
+}
+
+function save_event (elm_id) {
+	cal_event = document.getElementById(elm_id);
+	event_id = elm_id.substr(13, elm_id.length - 13);
+	wday = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
+	if (new Ajax.Request('/calendars/update/' + event_id +'?period=week&top=' + cal_event.style.top.replace("px", "") +'&height=' + (parseInt(cal_event.style.height) + 10) + '&wday=' + wday, {asynchronous:true, evalScripts:true})) {
+		// TODO 
+	};
 }
 </script>
 </head>
 <body onLoad="<%= get_events_function %>" onResize="resize_events();">
-	<div id="top">
-		<h1><%= @calendar.title %> - <%= $month_fr[@date.month - 1] %> <%= @date.year %> (semaine <%= @date.week %>)</h1>
-		<p>
-			<input type="button" value="Télécharger les événements" onClick="<%= get_events_function %>" /> | 
-			<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
-		</p>
-		<div id="group_day">
-			<% date = @date.beginning_of_week %>
-			<% 7.times do %>
-			<div class="day"><%= $day_fr[date.wday] + " " + date.day.to_s %></div>
-			<% date += 1.days %>
-			<% end %>
-		</div>
-	</div>
-
-	<div id="calendar">
-		<div id="scroll">
-			<div id="hour_column">
-			<% 24.times do |i| %>
-			<%= "<div class=\"hour\">#{i}h00</div>" %>
-			<% end %>
-			</div>
-			<div id="grid">
-				<% date = @date.beginning_of_week %>
-				<% 7.times do %>
-				<div id="<%= date.strftime('%a') %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == @date %>>
-						<div class="day_grid_border"><ul></ul></div>
-				</div>
-				<% date += 1.days %>
-				<% end %>
-			</div>
-		</div>
+	<%= render_calendar(params[:period]) %>
+	<div id="edit_box">
+		<%= render :action => :edit %>
 	</div>
 </body>
 </html>
