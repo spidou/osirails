@@ -6,8 +6,8 @@
 		<meta name="category" content="ERP"/>
 		<meta name="publisher" content="Oxydium - SUPINFO PS1"/>
 		<meta name="copyright" content="Oxydium - SUPINFO PS1"/>
-		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="fichier_css/style_login.css"/>
-		<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="/stylesheets/login.css"/>
+		<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 		<title>Espace Login - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
@@ -28,12 +28,15 @@
 			<div id="cadre_middle">
 				<div id="gauche-milieu"></div>
 				<div id="milieu-milieu">
-					<div id="cadre_contenu">
-						<br/> <span class="champs">Nom d'utilisateur&nbsp;&nbsp;:</span>
+          <%= display_flash %>
+					
+          <div id="cadre_contenu">
+						<!-- <br/> <span class="champs">Nom d'utilisateur&nbsp;&nbsp;:</span>
 						<input type="text" name="username" value="Login"/>
 						<br/> <input class="submit" type="submit" alt="submit button" title="s'enregistrer" value="login"/>
 						<br/> <span class="champs">Mot de passe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>
-						<input type="password" name="password" value="password"/>
+						<input type="password" name="password" value="password"/> -->
+            <%= yield %>
 					</div>
 				</div>
 				<div id="droit-milieu"></div>

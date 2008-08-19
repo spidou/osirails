@@ -17,14 +17,14 @@ body {
 }
 
 #logo {
-	background-image: url("../images/banniere.jpg");
+	background-image: url("/images/login/banniere.jpg");
 	float: left;
 	width: 330px;
 	height: 75px;
 }
 
 #sous-banniere {
-	background-image: url("../images/banniere_repeat-x.jpg");
+	background-image: url("/images/login/banniere_repeat-x.jpg");
 	width: auto;
 	height: 75px;
 	margin-left: 330px;
@@ -47,14 +47,14 @@ body {
 }
 
 #gauche-haut {
-	background-image: url("../images/cadre_user/gauche-haut.png");
+	background-image: url("/images/login/cadre_user/gauche-haut.png");
 	float: left;
 	width: 27px;
 	height: 36px;
 }
 
 #milieu-haut {
-	background-image: url("../images/cadre_user/milieu-haut.jpg");
+	background-image: url("/images/login/cadre_user/milieu-haut.jpg");
 	background-repeat: repeat-x;
 	width: auto;
 	height: 36px;
@@ -62,7 +62,7 @@ body {
 }
 
 #droit-haut {
-	background-image: url("../images/cadre_user/droit-haut.png");
+	background-image: url("/images/login/cadre_user/droit-haut.png");
 	float: left;
 	width: 27px;
 	height: 36px;
@@ -75,14 +75,14 @@ body {
 }
 
 #gauche-milieu {
-	background-image: url("../images/cadre_user/gauche-milieu.jpg");
+	background-image: url("/images/login/cadre_user/gauche-milieu.jpg");
 	float: left;
 	width: 2px;
 	height: 124px;
 }
 
 #milieu-milieu {
-	background-image: url("../images/cadre_user/milieu-milieu.jpg");
+	background-image: url("/images/login/cadre_user/milieu-milieu.jpg");
 	background-repeat: repeat-x;
 	width: auto;
 	height: 124px;
@@ -90,7 +90,7 @@ body {
 }
 
 #droit-milieu {
-	background-image: url("../images/cadre_user/droit-milieu.jpg");
+	background-image: url("/images/login/cadre_user/droit-milieu.jpg");
 	float: left;
 	width: 2px;
 	height: 124px;
@@ -104,14 +104,14 @@ body {
 }
 
 #gauche-bas {
-	background-image: url("../images/cadre_user/gauche-bas.png");
+	background-image: url("/images/login/cadre_user/gauche-bas.png");
 	float: left;
 	width: 27px;
 	height: 36px;
 }
 
 #milieu-bas {
-	background-image: url("../images/cadre_user/milieu-bas.jpg");
+	background-image: url("/images/login/cadre_user/milieu-bas.jpg");
 	background-repeat: repeat-x;
 	float: left;
 	width: auto;
@@ -120,7 +120,7 @@ body {
 }
 
 #droit-bas {
-	background-image: url("../images/cadre_user/droit-bas.png");
+	background-image: url("/images/login/cadre_user/droit-bas.png");
 	float: left;
 	width: 27px;
 	height: 36px;
@@ -147,7 +147,7 @@ h4 {
 
 .submit {
 	margin-left:344px;
-	background: url("../images/bouton.png");
+	background: url("/images/login/bouton.png");
 	width: 53px;
 	height: 21px;
 	border: none;
@@ -159,7 +159,7 @@ h4 {
 
 }
 .submit:hover {
-	background: url("../images/bouton-hover.png");
+	background: url("/images/login/bouton-hover.png");
 }
 
 a {
@@ -175,7 +175,7 @@ a:hover {
 
 input {
 	color: #f69826;
-	background: url("../images/input_text.png") no-repeat;
+	background: url("/images/login/input_text.png") no-repeat;
 	border: none;
 	width: 171px;
 	height: 22px;

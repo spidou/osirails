@@ -25,11 +25,15 @@ module ApplicationHelper
   
   def link_to_menu(menu, content = nil)
     # OPTIMIZE optimize this IF block code
-    path = menu.name + "_path"
-    if self.respond_to?(path)
-      link_to(content || menu.title, self.send(path))
+    if menu.name
+      path = menu.name + "_path"
+      if self.respond_to?(path)
+        link_to(content || menu.title, self.send(path))
+      else
+        link_to(content || menu.title, :controller => menu.name)
+      end
     else
-      link_to(content || menu.title, :controller => menu.name)
+      link_to(content || menu.title)
     end
   end
   
