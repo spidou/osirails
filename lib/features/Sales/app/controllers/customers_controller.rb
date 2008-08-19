@@ -87,10 +87,9 @@ class CustomersController < ApplicationController
     end
     
     # If contact_form is not null
-    puts params[:new_contact1].keys
     unless params[:new_contact_number]["value"].nil?
-#      puts params["contact"]["1"]["first_name"]
-#      puts params["contact"]["1"]["last_name"]
+      #      puts params["contact"]["1"]["first_name"]
+      #      puts params["contact"]["1"]["last_name"]
       new_contact_number = params[:new_contact_number]["value"].to_i
       new_contact_number.times do |i|
         # For all new_contact  an instance variable is create.
@@ -107,11 +106,11 @@ class CustomersController < ApplicationController
                   end"
       end
     end
-    
+    puts params[:new_contact1][:id]
     # If all new_contact are valids, they are save 
-      unless @error
-        new_contact_number.times do |i|
-          eval"unless params['valid_contact_#{i+1}'].nil?
+    unless @error
+      new_contact_number.times do |i|
+        eval"unless params['valid_contact_#{i+1}'].nil?
                      unless params['valid_contact_#{i+1}']['value'] == 'false'
                        if @new_contact#{i+1}
                          unless @new_contact#{i+1}.save
@@ -122,12 +121,12 @@ class CustomersController < ApplicationController
                       end
                     end
                   end"
-        end
       end
+    end
     unless @error
       redirect_to(customers_path)
     else
-#       delete(@contact)
+      #       delete(@contact)
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
@@ -141,5 +140,5 @@ class CustomersController < ApplicationController
     @customer.destroy
     redirect_to(customers_path) 
   end
-
+  
 end

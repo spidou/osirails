@@ -1,0 +1,17 @@
+<p>
+  <b>Nom</b>
+  <%= contact.first_name %>
+</p>
+<p>
+  <b>Prénom</b>
+  <%= contact.last_name %>
+</p>
+<p>
+  <b>Email</b>
+  <%= contact.email %>
+</p>
+<p>
+  <b>Job</b>
+  <%= contact.jobs %>
+</p>
+<%= link_to_remote "Rechercher un contact", :url => {:controller => "contacts", :action => "show_contact_input", :cpt => cpt}%>

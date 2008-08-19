@@ -90,7 +90,8 @@
       <div id="new_contact">
           <%unless @error%>
             <div id="link_add_remove_contact_1">
-              <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, :owner_type => "Customer"}) %>
+              <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, 
+                  :owner_id => @customer.id, :owner_type => "Customer"}) %>
             </div> 
           <%end%>
           <% cpt = 1 %>
@@ -99,14 +100,16 @@
           <%unless params["valid_contact_#{i+1}"].nil?%>
             <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
             <div id =<%= "new_contact#{i+1}" %>>
-              <%= render :partial => 'contacts/new_contact', :locals => {:cpt=> i+1, :error => true, :owner_type => "Customer"} %>
+              <%= render :partial => 'contacts/new_contact', :locals => {:cpt=> i+1, :error => true, :owner_type => "Customer",
+              :owner_id => @customer.id} %>
             </div>
             <%end #unless%>
           <%end #unless%>
           <% cpt += 1 %>
           <% end %>
           <div id="link_add_remove_contact_<%=cpt%>">
-            <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, :owner_type => "Customer"}) %>
+            <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
+                :owner_id => @customer.id, :owner_type => "Customer"}) %>
           </div>
           <% end %>
       </div>
