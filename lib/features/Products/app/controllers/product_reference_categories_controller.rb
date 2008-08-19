@@ -8,15 +8,16 @@ class ProductReferenceCategoriesController < ApplicationController
   
   # GET /product_reference_categories/1/edit
   def edit
-    @categories = ProductReferenceCategory.find(:all)
     @category = ProductReferenceCategory.find(params[:id])
+    @categories = ProductReferenceCategory.find(:all)
   end
   
   # POST /product_reference_categories
   def create
+    @categories = ProductReferenceCategory.find(:all)
     @category = ProductReferenceCategory.new(params[:product_reference_category])
     if @category.save
-      flash[:notice] = @category.name + " cr&eacute;e avec succ&egrave;s"
+      flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       render :action => 'new'
@@ -32,7 +33,7 @@ class ProductReferenceCategoriesController < ApplicationController
       @category.change("before_update", @category.product_references_count)
       @category.update_attributes(params[:product_reference_category])
       @category.change("after_update", @category.product_references_count)
-      flash[:notice] = 'Votre cat&eacute;gorie est bien &agrave; jour'
+      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       flash[:error] = 'D&eacute;placement impossible'
@@ -45,7 +46,7 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.find(params[:id])
     if @category.can_delete?
       @category.destroy
-      flash[:notice] = 'Votre cat&eacute;gorie est bien supprim&eacute;'
+      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;'
     else
       flash[:error] = "Votre cat&eacute;gorie ne peut &egrave;tre supprim&eacute;. V&eacute;rifier que rien ne dépend d'elle."
     end

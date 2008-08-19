@@ -1,7 +1,8 @@
 <h1>Création d'une nouvelle référence</h1>
-
+<div class="cadre">
 <% form_for(@reference) do |reference| %>
   <%= reference.error_messages %>
   <%= render :partial => "form", :locals => {:reference => reference} %>
   <%= reference.submit "Ajouter"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
 <% end %>
+</div>

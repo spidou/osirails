@@ -5,6 +5,9 @@ class ProductReferenceCategory < ActiveRecord::Base
   # Relationship
   has_many :product_references
   has_many :product_reference_categories
+  
+  # Validation Macros
+  validates_presence_of :name, :message => "ne peut être vide"
 
   # This method permit to update counter of parents categories
   def change(index,value)

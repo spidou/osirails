@@ -6,18 +6,12 @@ class ProductReference < ActiveRecord::Base
   has_many :products
   belongs_to :product_reference_category, :counter_cache => true
   
+  # Validation Macros
+  validates_presence_of :name, :message => "ne peut être vide"
+  
   def after_create
     self.change("create")
   end
-  
-  #  def before_update
-  #    self.product_reference_category_id = self.old_parent_id
-  #    self.change("disable_or_before_update")
-  #  end
-  #  
-  #  def after_update
-  #    self.change("after_update")
-  #  end
   
   def after_destroy
     self.change("destroy")

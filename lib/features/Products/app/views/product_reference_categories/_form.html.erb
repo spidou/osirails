@@ -7,6 +7,6 @@
 
   <p>
     <%= category.label :product_reference_category_id, "Parent" %>
-    <%= category.collection_select(:product_reference_category_id, @categories, :id, :name , :include_blank => '-- Racine --') %>
+    <%= category.collection_select(:product_reference_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}) %>
   </p>
 </fieldset>

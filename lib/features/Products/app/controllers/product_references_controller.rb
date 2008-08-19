@@ -15,9 +15,10 @@ class ProductReferencesController < ApplicationController
   
   # POST /product_references
   def create
+    @categories = ProductReferenceCategory.find(:all)
     @reference = ProductReference.new(params[:product_reference])
     if @reference.save
-      flash[:notice] = @reference.name + " cr&eacute;e avec succ&egrave;s"
+      flash[:notice] = "La r&eacute;f&eacute;rence a &eacute;t&eacute; cr&eacute;&eacute;e avec succ&egrave;s"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       render :action => 'new'
@@ -31,7 +32,7 @@ class ProductReferencesController < ApplicationController
     @reference.change("disable_or_before_update")
     if @reference.update_attributes(params[:product_reference])
       @reference.change("after_update")
-      flash[:notice] = 'La r&eacute;f&eacute;rence est bien mis &agrave; jour'
+      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       flash[:error] = 'Une erreur est survenue dans la mise &agrave; jour'
@@ -44,14 +45,15 @@ class ProductReferencesController < ApplicationController
     @reference = ProductReference.find(params[:id])
     if @reference.can_delete?
       @reference.destroy
-      flash[:notice] = 'Votre r&eacute;f&eacute;rence est bien supprim&eacute;'
+      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;' 
+      redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       @reference.enable = 0
       @reference.change("disable_or_before_update")
       @reference.save
-      flash[:notice] = 'Votre r&eacute;f&eacute;rence est bien supprim&eacute;' 
+      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;' 
+      redirect_to :controller => 'product_reference_manager', :action => 'index'
     end
-    redirect_to :controller => 'product_reference_manager', :action => 'index'
   end
   
 end

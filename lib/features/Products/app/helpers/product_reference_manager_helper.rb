@@ -26,8 +26,10 @@ module ProductReferenceManagerHelper
         end
         if category.product_references.size > 0
           category.product_references.each do |reference|
+            unless reference.enable == 0
             list << "<li class=\"reference\">#{reference.name} &nbsp; (#{reference.products_count})&nbsp; <span class=\"action\">"+
-              link_to( 'Modifier', edit_product_reference_path(reference) )+" &brvbar; "+link_to("Supprimer", reference, { :method => :delete})+"</span></li>"          
+              link_to( 'Modifier', edit_product_reference_path(reference) )+" &brvbar; "+link_to("Supprimer", reference, { :method => :delete})+"</span></li>"
+            end
           end
         end
         list << "</ul>"
