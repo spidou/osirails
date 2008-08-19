@@ -38,6 +38,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :job_contracts
   map.resources :jobs
   
+  map.connect ':controller/:action/:id/:period/:year/:month/:day', :controller => 'calendars'
+  
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
   
   map.resources :customers do |customer|

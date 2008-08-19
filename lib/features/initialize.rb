@@ -1,5 +1,5 @@
 def init(yaml, config, path)
-  
+
   # Load every file in the app directory
   controller_path = File.join(path, 'app', 'controllers')
   $LOAD_PATH << controller_path
