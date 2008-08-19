@@ -1,6 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
-
+  
+  ### ADMIN
   map.login 'login', :controller => 'account'
   map.logout 'logout', :controller => 'account',  :action => 'logout'
 
@@ -24,30 +25,40 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :menus
   map.resources :contents
   map.resources :password_policies
+  ### END ADMIN
+  
+  ### HUMAN RESOURCES
   map.resources :employees do |employee|
     employee.resources :salaries
   end
-  map.resources :customers
-  map.resources :produts_catalog
-  map.resources :suppliers
-#  map.resources :establishments
-  map.resources :product_references
-  map.resources :product_reference_categories
-  map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
-  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
-  map.resources :job_contracts
   map.resources :jobs
+  map.resources :job_contracts
+  ### END HUMAN RESOURCES
   
-  map.connect ':controller/:action/:id/:period/:year/:month/:day', :controller => 'calendars'
-  
-  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
-  
+  ### SALES
   map.resources :customers do |customer|
     customer.resources :contacts
     customer.resources :establishments do |establishment|
       establishment.resources :contacts
     end
-  end   
+  end
+  map.resources :suppliers
+  ### END SALES
+  
+  ### PRODUCTS
+  map.resources :produts_catalog
+  map.resources :product_references
+  map.resources :product_reference_categories
+  map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
+  
+  ### CALENDAR
+  map.connect ':controller/:action/:id/:period/:year/:month/:day', :controller => 'calendars'
+  ### END CALENDAR
+
+  ### COMMONS
+  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
+  ### END COMMONS
+  
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action

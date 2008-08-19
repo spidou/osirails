@@ -46,9 +46,9 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.find(params[:id])
     if @category.can_delete?
       @category.destroy
-      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;'
+      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
     else
-      flash[:error] = "Votre cat&eacute;gorie ne peut &egrave;tre supprim&eacute;. V&eacute;rifier que rien ne dépend d'elle."
+      flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e. V&eacute;rifiez qu'elle ne poss&egrave;de aucune autre cat&eacute;gorie ou r&eacute;f&eacute;rence."
     end
     redirect_to :controller => 'product_reference_manager', :action => 'index'
   end

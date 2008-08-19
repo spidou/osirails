@@ -35,7 +35,7 @@ class ProductReferencesController < ApplicationController
       flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
-      flash[:error] = 'Une erreur est survenue dans la mise &agrave; jour'
+      flash[:error] = 'Une erreur est survenue lors de la mise &agrave; jour'
       render :action => 'edit'
     end
   end
@@ -45,15 +45,14 @@ class ProductReferencesController < ApplicationController
     @reference = ProductReference.find(params[:id])
     if @reference.can_delete?
       @reference.destroy
-      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;' 
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       @reference.enable = 0
       @reference.change("disable_or_before_update")
       @reference.save
-      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;' 
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
     end
+    
+    flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;e' 
+    redirect_to :controller => 'product_reference_manager', :action => 'index'
   end
   
 end
