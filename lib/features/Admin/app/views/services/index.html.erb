@@ -1,19 +1,5 @@
 <h1>Les services de l'entreprise</h1>
-    
-<table>
-  <tr>
-    <th>Nom</th>
-  </tr>
-
-<% for service in @services %>
-  <tr>
-    <td><%=h service.name %></td>
-    <td><%= link_to 'Modifier', edit_service_path(service) %></td>
-    <td><%= show_delete_button(service) %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to "Nouveau service", new_service_path %>
+<div class="cadre">
+<%= show_structured_services %>
+<%= link_to "Nouveau service", new_service_path %> &#124; <%= link_to "Retour", :controller => 'society_configurations', :action => 'index' %>
+</div>

@@ -1,5 +1,5 @@
 <h1>Nouveau service</h1>
-
+<div class="cadre">
 <% form_for(@service) do |service| %>
     <%= service.error_messages %>
 
@@ -18,8 +18,7 @@
   </p>
 
   <p>
-    <%= service.submit "Créer" %>
+    <%= service.submit "Créer" %> &#124; <%= link_to 'Retour', services_path %>
   </p>
 <% end %>
-
-<%= link_to 'Retour', services_path %>
+</div>
