@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Nouvelle fonction: <%= controller.action_name %></title>
+  <%= javascript_include_tag :defaults %>
+  <%= stylesheet_link_tag 'scaffold' %>
+  <style>
+    .cadre_redbox { width:400px;
+                    height:1090px;
+                    text-align:left;
+    }
+    #cancel { color:#ffffff;
+
+    }
+  </style>
+</head>
+<body>
+
+<p style="color: green"><%= flash[:notice] %></p>
+<div class="cadre_redbox">
+<div style="background: #ffffff;" id='job_add'>
+      <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
+      <p>
+        <%= j.label :name, "Nom :"%>
+        <%= j.text_field :name%>
+      </p>
+      <p>
+        <%= j.label :mission, "Mission :"%>
+        <%= j.text_area :mission %>
+      </p>
+      <p>
+        <%= j.label :activity, "Activités :"%>
+        <%= j.text_area :activity%>
+      </p>
+      <p>
+        <%= j.label :goal, "Objectifs :"%>
+        <%= j.text_area :goal%>
+      </p>
+      <%= j.submit 'Ajouter une fonction',:onclick => 'RedBox.close()'%>
+      <%end%>
+    </div>
+<p id="cancel"><%=link_to_close_redbox('Annuler')%></p>
+</div>
+
+</body>
+</html>

@@ -21,6 +21,33 @@ module EmployeesHelper
     address2
   end
   
+  def display_country
+    if params[:address].nil?
+      country = text_field_tag( 'address[country_name]')
+    else
+      country = text_field_tag( 'address[country_name]', params[:address]['country_name'])
+    end
+    country
+  end
+  
+  def display_city
+    if params[:address].nil?
+      country = text_field_tag( 'address[city_name]')
+    else
+      country = text_field_tag( 'address[city_name]', params[:address]['city_name'])
+    end
+    country
+  end
+  
+  def display_zip_code
+    if params[:address].nil?
+      zip_code = text_field_tag( 'address[zip_code]')
+    else
+      zip_code = text_field_tag( 'address[zip_code]', params[:address]['zip_code'])
+    end
+    zip_code
+  end
+  
   def display_number0
     if params[:numbers].nil?
       number0 = text_field_tag( 'numbers[0][number]', '', :size => 8, :maxlength => 10)
@@ -76,6 +103,19 @@ module EmployeesHelper
   end
   ############################################################################################
   
+  # Method to verify if the params[:employee] and his attributes are null
+  def verify_param_employee(attribute,object)
+    if params[:employee].nil?
+      false
+    else
+      if params[:employee][attribute].nil?
+        false
+      else
+        params[:employee][attribute].include?(object.id.to_s)
+      end  
+    end 
+  end
+  
   # Method to generate text_field for each number add
   def add_number_line
     name = "numbers[" + params[:opt] + "]"
@@ -120,4 +160,5 @@ module EmployeesHelper
     end  
     html
   end
+  
 end

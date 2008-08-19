@@ -1,13 +1,12 @@
 <h1> Liste des fonctions</h1>
 
 <div class="cadre">
-<% for job in @jobs%>
-
-  <table>
+ <table>
     <tr>
       <th>Nom</th>
       <th colspan="3">Actions</th>
     </tr>
+    <% for job in @jobs%>
     <tr>
       <td><%= link_to job.name, job%></td>
       <td><%=link_to 'Détails', job%></td>
@@ -15,7 +14,7 @@
       <td><%=link_to 'Supprimer', job, :confirm => 'Etes vous sûr ?', :method => :delete%></td>
       </td>
     </tr>
-  </table>
 <%end%>
+</table>
 <%= link_to 'Ajouter', new_job_path%>
 </div>

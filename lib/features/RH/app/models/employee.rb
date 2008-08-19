@@ -1,6 +1,8 @@
 class Employee < ActiveRecord::Base
   
   # Relationships
+# TODO Add a role to the user when create an employee => for permissions 
+
   belongs_to :family_situation
   belongs_to :civility
   has_one :address, :as => :has_address
@@ -9,7 +11,8 @@ class Employee < ActiveRecord::Base
   has_one :user
   has_many :numbers, :as => :has_number
   has_many :premia
-  has_and_belongs_to_many :services
+  has_many :employees_services
+  has_many :services, :through => :employees_services
   has_and_belongs_to_many :jobs
   
   # Validates
@@ -22,7 +25,7 @@ class Employee < ActiveRecord::Base
   after_create :user_create_methode
   before_save :case_managment
   
-  # Method to chnage the case of the fisrt_name and the last_name at the employee's creation
+  # Method to change the case of the fisrt_name and the last_name at the employee's creation
   def case_managment
     self.first_name.capitalize!
     self.last_name.upcase!
@@ -31,6 +34,8 @@ class Employee < ActiveRecord::Base
   def pattern(pat,obj)
     retour = ""
     val = pat
+    return "Vous devez fermer les {}!!" unless val.count("{") == val.count("}")
+    
     val.gsub!(/\{/,"|")
     val.gsub!(/\}/,"|")
     val = val.split("|")
@@ -63,11 +68,19 @@ class Employee < ActiveRecord::Base
             end
           end
         else
-           return retour = "error in attribute name ["+ tmp[0] +"]"
+           return retour = "Nom d'attribut ["+ tmp[0] +"] invalide"
         end
       end
     end
       return retour.to_s
+  end
+  
+   
+  
+  def manager(service_id)
+    EmployeesService.find(:all,:conditions => ["service_id=? ,responsable=?", service_id, true])
+    manager = Employee.find(tmp.employee_id)
+    return manager
   end
   
   def fullname

@@ -20,6 +20,7 @@ class EmployeesController < ApplicationController
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
+    @jobs = @employee.jobs
     # permissions
     @edit = self.can_edit?(current_user)
     @view = self.can_view?(current_user)
@@ -38,6 +39,7 @@ class EmployeesController < ApplicationController
     @employee = Employee.new
     @job = Job.new
     @services = Service.find(:all)
+    @jobs = Job.find(:all)
 #    @adress = @employee.adresse
 #    @number_type = @employee.numbers
     
@@ -53,9 +55,11 @@ class EmployeesController < ApplicationController
   def edit
     @employee = Employee.find(params[:id])
     @services = Service.find(:all)
+    @jobs = Job.find(:all)    
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
+
   end
 
   # POST /employees
@@ -64,10 +68,12 @@ class EmployeesController < ApplicationController
     # FIXME do not forget to resolve the  default selected value (numbers) of the create view (new.html.erb) 
     # instance_variable_set("@numbers",[]) 
     @services = Service.find(:all)
-    
+    @jobs = Job.find(:all) 
     @employee = Employee.new(params[:employee])
-    @job = Job.new(params[:job])
-    @job.save
+    @job = Job.new(params[:job]) 
+    unless params[:job].nil?
+      @job.save
+    end
     @employee.address = Address.new(params[:address])
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
@@ -89,11 +95,12 @@ class EmployeesController < ApplicationController
   def update
     @employee = Employee.find(params[:id])
     @services = Service.find(:all)
+    @jobs = Job.find(:all) 
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
     
-    
+    # add or update numbers who have been send to the controller
     for i in params[:numbers]
       if @employee.numbers[i[0].to_i].nil?
         @employee.numbers[i[0].to_i] =  Number.new(i[1]) unless i[1].nil? or i[1]=="" 
@@ -103,13 +110,20 @@ class EmployeesController < ApplicationController
       end
     end 
     
+    # destroy the numbers that have been deleted in the update view
     @employee.numbers.each_with_index do |id|
       if params[:numbers][id[1].to_s].nil?
         @employee.numbers[id[1]].destroy
       end
     end
+    
     @employee.iban.update_attributes(params[:iban]) 
     @employee.address.update_attributes(params[:address])
+    
+    # destroy all services and jobs if there's no checked checkbox
+    params[:employee]['service_ids']||= [] 
+    params[:employee]['job_ids']||= []
+    
     respond_to do |format|
       if @employee.update_attributes(params[:employee])
         flash[:notice] = ' L&apos;employée a été modifié avec succés.'

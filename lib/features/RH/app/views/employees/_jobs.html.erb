@@ -1,0 +1,14 @@
+<div id="jobs_list">
+  <table>
+    <% for associated_job in @jobs %>
+      <tr>
+        <td>
+          <%= check_box_tag "employee[job_ids][]", associated_job.id, @employee.jobs.include?(associated_job) %>
+        </td>
+        <td>
+          <%= associated_job.name %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

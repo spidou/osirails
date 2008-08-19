@@ -88,8 +88,10 @@ configurations:
       # level 3
       l3: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)([\x20-\x7E]){8,40}$'
       d3: Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres et des lettres(en majuscule et minuscule), et au moins un caractére spécial(ex:@~"'(!:/.? etc...)
-      # current selected level
-      actual: l1  
+  # current selected level
+  actual_password_policy: 
+    description: Configuration de sécuritée actuelle
+    value: l1  
   user_pattern:  
     description: modéle que doit respecter le générateur de compte d'utilisateur
     value: '{first_name,1}.{LAST_NAME}'

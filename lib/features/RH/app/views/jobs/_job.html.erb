@@ -1,5 +1,5 @@
 
-<%form_for(@job) do |j|%>
+<%form_remote_for(@job) do |j|%>
   <p>
     <%= j.label :name, "Nom :"%>
     <%= j.text_field :name%>
@@ -16,6 +16,6 @@
     <%= j.label :goal, "Objectifs :"%>
     <%= j.text_area :goal%>
   </p>
-  <%=j.submit 'Ajouter'%>
+  <%=j.submit 'Ajouter',:onclick => 'RedBox.close()' %>
 <%end%>
 

@@ -1,5 +1,5 @@
-
-<div class="cadre"><h1>Modifier un employ&eacute;e</h1>
+<h1>Modifier un employ&eacute;e</h1>
+<div class="cadre">
 
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
@@ -120,6 +120,23 @@
     </table>
   </div>
   </p>
+  <p id="jobs_choice">
+      <%= label_tag 'employee[jobs]', "Fonctions :"%><br/>
+      <div id="jobs_array">
+      <table>
+        <% for associated_job in @jobs %>
+          <tr>
+            <td>
+              <%= check_box_tag "employee[job_ids][]", associated_job.id, @employee.jobs.include?(associated_job) %>
+            </td>
+            <td>
+              <%= associated_job.name %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    </p>
   <p>
     <%= f.submit "Modifier" %>
   </p>

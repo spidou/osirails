@@ -1,4 +1,11 @@
-<h1>Ajouter un employ&eacute;e</h1>
+<% content_for :javascript do %>
+     <%= stylesheet_link_tag 'lightbox' %> 
+     <%= stylesheet_link_tag 'redbox' %>
+     <%= javascript_include_tag 'redbox' %>
+<% end %>
+
+<h1 id="test">Ajouter un employ&eacute;e</h1>
+
 
 <div class="cadre">
 <% form_for(@employee) do |f| %>
@@ -100,10 +107,60 @@
   </p>
   </fieldset>
   <fieldset>
-    <legend>Fonction(s)</legend>
-    <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form")%>
+    <legend>Fiche de poste :</legend>
+   
+    <div>
+      <%= label_tag 'employee[services]', "Services :"%><br/>
+      <div id="services">
+      <table>
+        <% for associated_service in @services %>
+          <tr>
+            <td>
+              <%= check_box_tag "employee[service_ids][]",  associated_service.id, verify_param_employee('service_ids',associated_service) %>
+            </td>
+            <td>
+              <%= associated_service.name %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    </div>
+    
+    <div id="jobs_choice">
+      <%= label_tag 'employee[jobs]', "Fonctions :"%><br/>
+      <div id="jobs_list">
+        <table>
+          <% for associated_job in @jobs %>
+            <tr>
+              <td>
+                <%= check_box_tag "employee[job_ids][]", associated_job.id, verify_param_employee('job_ids',associated_job) %>
+              </td>
+              <td>
+                <%= associated_job.name %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </div>
+    
+    <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form"), :html => {:id=>'job_add_link'}%>
+  </fieldset>
+    <span id="main_submit">
+      <%= f.submit "Ajouter" %>
+      (<%= lightbox_link_to "Lightbox", "/images/star.png" %>|
+      <%= link_to 'Ajouter', new_job_path%>|
+      <%= link_to_remote_redbox("redbox",:url => {:controller=>'Jobs', :action=>'new'}) %>)
+    </span>
+<% end %>
+ 
+
+ 
     <div style="display: none;" id='job_add'>
-      <%form_remote_for(@job) do |j|%>
+    <fieldset>
+      <legend>Ajout de fonction</legend>
+      <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
       <p>
         <%= j.label :name, "Nom :"%>
         <%= j.text_field :name%>
@@ -121,29 +178,13 @@
         <%= j.text_area :goal%>
       </p>
       <%= j.submit 'Ajouter une fonction'%>
-<%end%>
+      <%=link_to_remote "Annuler",:url=>{:action=>"job_form_cancel"},:href=>(url_for :action=>"job_form_cancel")%>
+      <%end%>
+      </fieldset>
     </div>
-    <p>
-      <%= label_tag 'employee[services]', "Services :"%><br/>
-      <div>
-      <table>
-        <% for associated_service in @services %>
-          <tr>
-            <td>
-              <%= check_box_tag "employee[service_ids][]", associated_service.id, @employee.services.include?(associated_service) %>
-            </td>
-            <td>
-              <%= associated_service.name %>
-            </td>
-          </tr>
-        <% end %>
-      </table>
-    </div>
-    </p>
-    <p>
-  </fieldset>
-    <%= f.submit "Ajouter" %>
-  </p>
-<% end %>
+
+
+
 <%= link_to 'Retour', employees_path %>
 </div>
+
