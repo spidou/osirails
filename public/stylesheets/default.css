@@ -6,11 +6,11 @@ div {
 html, body {
 	margin: 0;
 	padding: 0;
-	width:100%;
-	height:100%;
+	width: 100%;
+	height: 100%;
 	font-family: verdana , Geneva, sans-serif;
 	cursor: default;
-	min-width:1250px;
+	min-width: 1250px;
 }
 
 #all_page { /*Pour étendre le menu principal*/
@@ -684,7 +684,7 @@ table.presentation {
 	margin-left:15px;
 	border:none;
 	background:white;
-	min-width:none;
+	min-width:100%;
 }
 
 table.presentation a {
@@ -741,37 +741,41 @@ table.presentation tr:hover > td{
 	background:white;
 }
 
-.cadre input[type=text] {
-	width: 50%;
+.cadre form.text_form input[type=text] {
+	width: 30%;
 }
 
-.cadre form {
-	width: 950px;
+.cadre form.text_form form {
+	width: 850px;
 	text-indent:0;
 }
 
-.cadre form p {
+.cadre form.text_form form p {
 	margin: 0.8em 0;
 }
 
-.cadre form p.text_form_left {
+.cadre form.text_form {
 	overflow: hidden; /* Empêcher le dépassement des flottants */
-	width: 100%;
+	width: 850px;
+	margin:0;
+	padding:0;
+	text-indent:0;
 }
 
-.cadre form p.text_form_left label {
+.cadre form.text_form p label {
 	float: left;
-	width: 150px;
+	width: 200px;
 	text-align: right;
 	cursor: pointer;
+/*	margin-bottom:15px;	*/
 }
 
-.cadre form p.text_form_left label:hover {
+.cadre form.text_form label:hover {
 	text-decoration:underline;
 	color: rgb(234,136,28);
 }
 
-.cadre form p.text_form_left label span.info {
+.cadre form.text_form label span.info {
 	display: block;
 	margin-top: .2em;
 	font-size: .8em;
@@ -779,35 +783,31 @@ table.presentation tr:hover > td{
 	cursor: default;
 }
 
-.cadre form p.text_form_left input,
-.cadre form p.text_form_left textarea {
+.cadre form.text_form input,
+.cadre form.text_form textarea {
 	width: 250px;
-	margin-left: 12px;
+	margin:10px 0px 10px 12px;
 	border: #CCC 1px solid;
 	padding: 2px 4px;
 }
 
-.cadre form p.text_form_left select {
-
-}
-
-.cadre form p.text_form_left select {
+.cadre form.text_form select {
 		border: #CCC 1px solid;
 }
 
-.cadre form p.text_form_left input:hover,
-.cadre form p.text_form_left textarea:hover {
+.cadre form.text_form input:hover,
+.cadre form.text_form textarea:hover {
 	border: #aeaeae 1px solid;
 	background: #f5f5f5;
 }
 
-.cadre form p.text_form_left input:focus,
-.cadre form p.text_form_left textarea:focus,
-.cadre form p.text_form_left select:focus {
+.cadre form.text_form input:focus,
+.cadre form.text_form textarea:focus,
+.cadre form.text_form select:focus {
 	background: #f5c384;
 }
 
-.cadre form p.text_form_left textarea {
+.cadre form.text_form textarea {
 	padding: 2px 0 0 4px;
 	width: 320px;
 	height: 6em;
@@ -958,6 +958,60 @@ ul.parent>li {
 .hierarchic ul li a:hover {
 	text-decoration: underline;
 	color:#EA972D;
+}
+
+/*Onglets*/
+
+div.tabs+.cadre {
+	clear:left;
+}
+
+div.tabs {
+	position:relative;
+	top:1px;
+	right:1px;
+}
+
+div.tabs ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+div.tabs ul li {
+	float: left;
+	margin-left: 1px;
+	background: url("../images/background_tabs.png") repeat-x top;
+//	border-bottom: solid 1px #747474;
+	height:30px;
+//	border-right:solid 1px #989898;
+//	border-left:solid 1px #989898;
+	cursor:pointer;
+}
+
+div.tabs ul li.selected {
+	background-position: bottom;
+	border-bottom:none;
+	border-right:solid 1px #989898;
+	border-left:solid 1px #989898;
+}
+
+div.tabs ul li a {
+	float: left;
+	display: block;
+//	height: 20px;
+	text-align: center;
+	color: #000;
+	font-size: 11px;
+	padding: 12px 0px 0 0px;
+	font-weight: bold;
+	text-decoration:none;
+//	line-height:35px;
+	font-weight: lighter;
+}
+
+div.tabs ul li a:hover {
+	text-decoration:underline;
 }
 
 /*/////////////////////////////////////////////////////

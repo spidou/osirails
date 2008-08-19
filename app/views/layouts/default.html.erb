@@ -119,215 +119,74 @@
 
         		<%= yield %>
 
+				<div class="tabs">
+					<ul>
+						<li><a href="#">Onglet 1</a></li>
+						<li><a href="#">Onglet 2 un peu long</a></li>
+						<li><a href="#">Onglet 3 encore plus long</a></li>
+						<li class="selected"><a href="#">Onglet4</a></li>
+						<li><a href="#">Onglet 1</a></li>
+						<li><a href="#">Onglet 2 un peu long</a></li>
+						<li><a href="#">Onglet 3 encore plus long</a></li>
+					</ul>
+				</div>
+				<div class="cadre">
+					<p>contenu variant en fonctions des onglets ...</p>
+				</div>
 				<div class="cadre">
 					<h2>Test</h2>
 					<h3>Test de formulaire</h3>
-					<form method="post" action="#">
-						<p class="text_form_left">
-							<label for="f1-nom">Nom:</label>
-							<input type="text" id="f1-nom" />
-						</p>
-						<p class="text_form_left">
-							<label for="f1-prenom">Prénom:</label>
-							<input type="text" id="f1-prenom" />
-						</p>
-						<p class="text_form_left">
-							<label for="f1-adresse">Adresse:
-								<span class="info">(Numéro et rue)</span>
-							</label>
-							<input type="text" id="f1-adresse" />
-						</p>
-						<p class="text_form_left">
-							<label for="f1-ville">Ville:
-								<span class="info">(Ville et code postal)</span>
-							</label>
-							<input type="text" id="f1-ville" />
-						</p>
-						<p class="text_form_left">
-							<label for="f1-telephone">Téléphone mobile ou fixe:</label>
-							<input type="text" id="f1-telephone" />
-						</p>
-						<p class="text_form_left">
-							<label for="f1-infos">Informations supplémentaires:
-								<span class="info">(Saisissez ici toutes les informations que vous jugerez utiles)</span>
-							</label>
-							<textarea id="f1-infos" rows="5" cols="30"></textarea>
-						</p>
-						<p class="simple">
-							<button class="input-button" type="submit"><span>Envoyer ces informations</span></button>
-						</p>
-						<p class="text_form_left">
-							<label for="f2-telephone">Téléphone:
-							<span class="info">Ex : +262 (0)692 01 97 40</span>
-							</label>
-							<span class="droite"><input type="text" id="f2-telephone" /></span>
-						</p>
-						<p class="text_form_left"> Aimez-vous la salade?</p>
-						<p class="simple">
-							<input type="radio" name="salade" id="f2-salade1" /> <label for="f2-salade1">Oui.</label><br />
-							<input type="radio" name="salade" id="f2-salade2" /> <label for="f2-salade2">Non.</label><br />
-							<input type="radio" name="salade" id="f2-salade3" /> <label for="f2-salade3">Ça dépend.</label><br />
-						</p>
-						<p class="text_form_left">Votre date de Naissance :
-							<select name="dnjours" id="dnjours">
-								<optgroup label="Jours">
-									<option value="2008">01</option>
-									<option value="2007">02</option>
-									<option value="2006">03</option>
-									<option value="2005">04</option>
-									<option value="2004">05</option>
-									<option value="2003">06</option>
-									<option value="2002">07</option>
-									<option value="2001">08</option>
-									<option value="2000">09</option>
-									<option value="1999">10</option>
-									<option value="1998">11</option>
-									<option value="1997">12</option>
-									<option value="1996">13</option>
-									<option value="1995">14</option>
-									<option value="1994">15</option>
-									<option value="1993">16</option>
-									<option value="1992">17</option>
-									<option value="1991">18</option>
-									<option value="1990">19</option>
-									<option value="1989">20</option>
-									<option value="1988">21</option>
-									<option value="1987">22</option>
-									<option value="1986">23</option>
-									<option value="1985">24</option>
-									<option value="1984">25</option>
-									<option value="1983">26</option>
-									<option value="1982">27</option>
-									<option value="1981">28</option>
-									<option value="1980">29</option>
-									<option value="1979">30</option>
-									<option value="1978">31</option>
-								</optgroup>
-							</select>
-							<select name="dnmois" id="dnmois">
-								<optgroup label="Mois">
-									<option value="2008">Janvier</option>
-									<option value="2007">Février</option>
-									<option value="2006">Mars</option>
-									<option value="2005">Avril</option>
-									<option value="2004">Mai</option>
-									<option value="2003">Juin</option>
-									<option value="2002">Juillet</option>
-									<option value="2001">Août</option>
-									<option value="2000">Septembre</option>
-									<option value="1999">Octobre</option>
-									<option value="1998">Novembre</option>
-									<option value="1997">Décembre</option>
-								</optgroup>
-							</select>
-							<select name="dnannee" id="dnannee">
-								<optgroup label="Année">
-									<option value="2008">2008</option>
-									<option value="2007">2007</option>
-									<option value="2006">2006</option>
-									<option value="2005">2005</option>
-									<option value="2004">2004</option>
-									<option value="2003">2003</option>
-									<option value="2002">2002</option>
-									<option value="2001">2001</option>
-									<option value="2000">2000</option>
-									<option value="1999">1999</option>
-									<option value="1998">1998</option>
-									<option value="1997">1997</option>
-									<option value="1996">1996</option>
-									<option value="1995">1995</option>
-									<option value="1994">1994</option>
-									<option value="1993">1993</option>
-									<option value="1992">1992</option>
-									<option value="1991">1991</option>
-									<option value="1990">1990</option>
-									<option value="1989">1989</option>
-									<option value="1988">1988</option>
-									<option value="1987">1987</option>
-									<option value="1986">1986</option>
-									<option value="1985">1985</option>
-									<option value="1984">1984</option>
-									<option value="1983">1983</option>
-									<option value="1982">1982</option>
-									<option value="1981">1981</option>
-									<option value="1980">1980</option>
-									<option value="1979">1979</option>
-									<option value="1978">1978</option>
-									<option value="1977">1977</option>
-									<option value="1976">1976</option>
-									<option value="1975">1975</option>
-									<option value="1974">1974</option>
-									<option value="1973">1973</option>
-									<option value="1972">1972</option>
-									<option value="1971">1971</option>
-									<option value="1970">1970</option>
-									<option value="1969">1969</option>
-									<option value="1968">1968</option>
-									<option value="1967">1967</option>
-									<option value="1966">1966</option>
-									<option value="1965">1965</option>
-									<option value="1964">1964</option>
-									<option value="1963">1963</option>
-									<option value="1962">1962</option>
-									<option value="1961">1961</option>
-									<option value="1960">1960</option>
-									<option value="1959">1959</option>
-									<option value="1958">1958</option>
-									<option value="1957">1957</option>
-									<option value="1956">1956</option>				
-									<option value="1955">1955</option>
-									<option value="1954">1954</option>
-									<option value="1953">1953</option>
-									<option value="1952">1952</option>
-									<option value="1951">1951</option>
-									<option value="1950">1950</option>
-								</optgroup>
-							</select>
-						</p>
-						<p class="text_form_left">Faites un souhait que vous voudriez voir exaucé :</p>
-						<p class="simple">
-							<input type="radio" name="souhait" value="riche" id="riche" tabindex="40" /><label for="riche">Etre riche</label><br />
-							<input type="radio" name="souhait" value="celebre" id="celebre" tabindex="50" /><label for="celebre">Etre célèbre</label><br />
-							<input type="radio" name="souhait" value="intelligent" id="intelligent" tabindex="60" /><label for="intelligent">Etre <strong>encore</strong> plus intelligent</label><br />
-							<input type="radio" name="souhait" value="autre" id="autre" tabindex="70" /><label for="autre">Autre...</label><br />
-				  		</p>
-						<p class="text_form_left">
-							<label for="precisions">Si "Autre", veuillez préciser :</label>
-							<textarea id="precisions" rows="5" cols="30"></textarea>
-						</p>
-						<p class="text_form_left">
-							<label for="f1-infosup">Informations supplémentaires:</label>
-							<textarea id="f1-infosup" rows="5" cols="30"></textarea>
-						</p>
-						<p class="text_form_left">Choisissez vos sauces préférées :</p>
-						<p class="simple">
-							<input type="checkbox" name="ketchup" id="ketchup" />					<label for="ketchup">ketchup</label><br />
-							<input type="checkbox" name="Mayonnaise" id="Mayonnaise" />				<label for="ketchup">Mayonnaise</label><br />
-							<input type="checkbox" name="Moutarde" id="Moutarde" />					<label for="ketchup">Moutarde</label><br />
-							<input type="checkbox" name="dakatine_piment" id="dakatine_piment" />	<label for="ketchup">dakatine piment</label><br />
-						</p>
-						<p>
-							<button class="input-button" type="submit"><span>Envoyer</span></button>
-							<button class="input-button" type="reset"><span>Reset</span></button>
-						</p>
-					</form>
-					<form action="#" method="post">
-					    <fieldset>
-					        <legend>Informations personnelles</legend>
-					        <p class="text_form_left">
-					            <label for="form_firstname">Prénom : </label>
-					            <input type="text" id="form_firstname" name="firstname" tabindex="10" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_lastname">Nom : </label>
-					            <input type="text" id="form_lastname" name="lastname" tabindex="20" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_gender">Sexe : </label>
-					            <input type="text" id="form_gender" name="gender" tabindex="30" />
-					        </p>
-						<div id="birth">
-							<p class="text_form_left">Votre date de Naissance :
+						<form method="post" action="#" class="text_form">
+							<p>
+								<label for="f1-nom">Nom:</label>
+								<input type="text" id="f1-nom" />
+							</p>
+							<p>
+								<label for="f1-prenom">Prénom:</label>
+								<input type="text" id="f1-prenom" />
+							</p>
+							<p>
+								<label for="f1-adresse">Adresse:
+									<span class="info">(Numéro et rue)</span>
+								</label>
+								<input type="text" id="f1-adresse" />
+							</p>
+							<p>
+								<label for="f1-ville">Ville:
+									<span class="info">(Ville et code postal)</span>
+								</label>
+								<input type="text" id="f1-ville" />
+							</p>
+							<p>
+								<label for="f1-telephone">Téléphone mobile ou fixe:</label>
+								<input type="text" id="f1-telephone" />
+							</p>
+							<p>
+								<label for="f1-infos">Informations supplémentaires:
+									<span class="info">(Saisissez ici toutes les informations que vous jugerez utiles)</span>
+								</label>
+								<textarea id="f1-infos" rows="5" cols="30"></textarea>
+							</p>
+							<p>
+								<label for="f1-telephone2">Téléphone mobile ou fixe:</label>
+								<input type="text" id="f1-telephone2" />
+							</p>
+							<p class="simple">
+								<button class="input-button" type="submit"><span>Envoyer ces informations</span></button>
+							</p>
+							<p>
+								<label for="f2-telephone">Téléphone:
+								<span class="info">Ex : +262 (0)692 01 97 40</span>
+								</label>
+								<span class="droite"><input type="text" id="f2-telephone" /></span>
+							</p>
+							<p> Aimez-vous la salade?</p>
+							<p class="simple">
+								<input type="radio" name="salade" id="f2-salade1" /> <label for="f2-salade1">Oui.</label><br />
+								<input type="radio" name="salade" id="f2-salade2" /> <label for="f2-salade2">Non.</label><br />
+								<input type="radio" name="salade" id="f2-salade3" /> <label for="f2-salade3">Ça dépend.</label><br />
+							</p>
+							<p>Votre date de Naissance :
 								<select name="dnjours" id="dnjours">
 									<optgroup label="Jours">
 										<option value="2008">01</option>
@@ -443,76 +302,231 @@
 									</optgroup>
 								</select>
 							</p>
-						</div>
-					        <p class="text_form_left">
-					            <label for="form_address">Adresse : </label>
-					            <input type="text" id="form_address" name="address" tabindex="70" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_postal_code">Code postal : </label>
-					            <input type="text" id="form_postal_code" name="postal_code" tabindex="80" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_city">Ville : </label>
-					            <input type="text" id="form_city" name="city" tabindex="90" />
-					        </p>
-					        <p class="text_form_left"><span class="fieldWithErrors">
-					            <label for="form_country">Pays : </label>
-					            <select id="form_country" name="country">
-					                <optgroup label="Amérique">
-					                    <option value="ca">Canada</option>
-					                    <option value="us">États-Unis</option>
-					                </optgroup>
-					                <optgroup label="Europe">
-										<option value="al">Allemagne</option>
-										<option value="en">Angleterre</option>
-					                    <option value="be">Belgique</option>
-					                    <option value="es">Espagne</option>
-										<option value="fr">France</option>
-										<option value="it">Italie</option>
-									</optgroup>
-									<optgroup label="Autre">
-										<option value="re">Réunion (île de la)</option>
-					                </optgroup>
-					            </select>
-								</span>
-					        </p>
-					    </fieldset>
-                    
-					    <fieldset>
-					    <legend>Compte</legend>
-					        <p class="text_form_left">	<span class="fieldWithErrors">
-					            <label for="form_login">Identifiant : </label>
-					            <input type="text" id="form_login" name="login" tabindex="100" />
-					        	</span>
+							<p>Faites un souhait que vous voudriez voir exaucé :</p>
+							<p class="simple">
+								<input type="radio" name="souhait" value="riche" id="riche" tabindex="40" /><label for="riche">Etre riche</label><br />
+								<input type="radio" name="souhait" value="celebre" id="celebre" tabindex="50" /><label for="celebre">Etre célèbre</label><br />
+								<input type="radio" name="souhait" value="intelligent" id="intelligent" tabindex="60" /><label for="intelligent">Etre <strong>encore</strong> plus intelligent</label><br />
+								<input type="radio" name="souhait" value="autre" id="autre" tabindex="70" /><label for="autre">Autre...</label><br />
+					  		</p>
+							<p>
+								<label for="precisions">Si "Autre", veuillez préciser :</label>
+								<textarea id="precisions" rows="5" cols="30"></textarea>
 							</p>
-					        <p class="text_form_left">
-					            <label for="form_password">Mot de passe : </label>
-					            <input type="password" id="form_password" name="password" tabindex="110" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_password2">Confirmer le mot de passe : </label>
-					            <input type="password" id="form_password2" name="password2" tabindex="120" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_question">Question secrète : </label>
-					            <input type="text" id="form_question" name="question" tabindex="130" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_response">Réponse : </label>
-					            <input type="text" id="form_response" name="response" tabindex="140" />
-					        </p>
-					        <p class="text_form_left">
-					            <label for="form_mail">Adresse email : </label>
-					            <input type="text" id="form_mail" name="mail" tabindex="150" />
-					        </p>
-					    </fieldset>
-					    	<p>
-					        	<button class="input-button" type="submit"><span>Envoyer</span></button>
-								<button class="input-button" type="reset"><span>Remettre le Formulaire à 0</span></button>
-					    	</p>
-					</form>
-
+							<p>
+								<label for="f1-infosup">Informations supplémentaires:</label>
+								<textarea id="f1-infosup" rows="5" cols="30"></textarea>
+							</p>
+							<p>Choisissez vos sauces préférées :</p>
+							<p class="simple">
+								<input type="checkbox" name="ketchup" id="ketchup" />					<label for="ketchup">ketchup</label><br />
+								<input type="checkbox" name="Mayonnaise" id="Mayonnaise" />				<label for="ketchup">Mayonnaise</label><br />
+								<input type="checkbox" name="Moutarde" id="Moutarde" />					<label for="ketchup">Moutarde</label><br />
+								<input type="checkbox" name="dakatine_piment" id="dakatine_piment" />	<label for="ketchup">dakatine piment</label><br />
+							</p>
+							<p>
+								<button class="input-button" type="submit"><span>Envoyer</span></button>
+								<button class="input-button" type="reset"><span>Reset</span></button>
+							</p>
+						</form>
+						<form action="#" method="post" class="text_form">
+						    <fieldset>
+						        <legend>Informations personnelles</legend>
+						        <p>
+						            <label for="form_firstname">Prénom : </label>
+						            <input type="text" id="form_firstname" name="firstname" tabindex="10" />
+						        </p>
+						        <p>
+						            <label for="form_lastname">Nom : </label>
+						            <input type="text" id="form_lastname" name="lastname" tabindex="20" />
+						        </p>
+						        <p>
+						            <label for="form_gender">Sexe : </label>
+						            <input type="text" id="form_gender" name="gender" tabindex="30" />
+						        </p>
+								<p>Votre date de Naissance :
+									<select name="dnjours2" id="dnjours2">
+										<optgroup label="Jours">
+											<option value="2008">01</option>
+											<option value="2007">02</option>
+											<option value="2006">03</option>
+											<option value="2005">04</option>
+											<option value="2004">05</option>
+											<option value="2003">06</option>
+											<option value="2002">07</option>
+											<option value="2001">08</option>
+											<option value="2000">09</option>
+											<option value="1999">10</option>
+											<option value="1998">11</option>
+											<option value="1997">12</option>
+											<option value="1996">13</option>
+											<option value="1995">14</option>
+											<option value="1994">15</option>
+											<option value="1993">16</option>
+											<option value="1992">17</option>
+											<option value="1991">18</option>
+											<option value="1990">19</option>
+											<option value="1989">20</option>
+											<option value="1988">21</option>
+											<option value="1987">22</option>
+											<option value="1986">23</option>
+											<option value="1985">24</option>
+											<option value="1984">25</option>
+											<option value="1983">26</option>
+											<option value="1982">27</option>
+											<option value="1981">28</option>
+											<option value="1980">29</option>
+											<option value="1979">30</option>
+											<option value="1978">31</option>
+										</optgroup>
+									</select>
+									<select name="dnmois2" id="dnmois2">
+										<optgroup label="Mois">
+											<option value="2008">Janvier</option>
+											<option value="2007">Février</option>
+											<option value="2006">Mars</option>
+											<option value="2005">Avril</option>
+											<option value="2004">Mai</option>
+											<option value="2003">Juin</option>
+											<option value="2002">Juillet</option>
+											<option value="2001">Août</option>
+											<option value="2000">Septembre</option>
+											<option value="1999">Octobre</option>
+											<option value="1998">Novembre</option>
+											<option value="1997">Décembre</option>
+										</optgroup>
+									</select>
+									<select name="dnannee2" id="dnannee2">
+										<optgroup label="Année">
+											<option value="2008">2008</option>
+											<option value="2007">2007</option>
+											<option value="2006">2006</option>
+											<option value="2005">2005</option>
+											<option value="2004">2004</option>
+											<option value="2003">2003</option>
+											<option value="2002">2002</option>
+											<option value="2001">2001</option>
+											<option value="2000">2000</option>
+											<option value="1999">1999</option>
+											<option value="1998">1998</option>
+											<option value="1997">1997</option>
+											<option value="1996">1996</option>
+											<option value="1995">1995</option>
+											<option value="1994">1994</option>
+											<option value="1993">1993</option>
+											<option value="1992">1992</option>
+											<option value="1991">1991</option>
+											<option value="1990">1990</option>
+											<option value="1989">1989</option>
+											<option value="1988">1988</option>
+											<option value="1987">1987</option>
+											<option value="1986">1986</option>
+											<option value="1985">1985</option>
+											<option value="1984">1984</option>
+											<option value="1983">1983</option>
+											<option value="1982">1982</option>
+											<option value="1981">1981</option>
+											<option value="1980">1980</option>
+											<option value="1979">1979</option>
+											<option value="1978">1978</option>
+											<option value="1977">1977</option>
+											<option value="1976">1976</option>
+											<option value="1975">1975</option>
+											<option value="1974">1974</option>
+											<option value="1973">1973</option>
+											<option value="1972">1972</option>
+											<option value="1971">1971</option>
+											<option value="1970">1970</option>
+											<option value="1969">1969</option>
+											<option value="1968">1968</option>
+											<option value="1967">1967</option>
+											<option value="1966">1966</option>
+											<option value="1965">1965</option>
+											<option value="1964">1964</option>
+											<option value="1963">1963</option>
+											<option value="1962">1962</option>
+											<option value="1961">1961</option>
+											<option value="1960">1960</option>
+											<option value="1959">1959</option>
+											<option value="1958">1958</option>
+											<option value="1957">1957</option>
+											<option value="1956">1956</option>				
+											<option value="1955">1955</option>
+											<option value="1954">1954</option>
+											<option value="1953">1953</option>
+											<option value="1952">1952</option>
+											<option value="1951">1951</option>
+											<option value="1950">1950</option>
+										</optgroup>
+									</select>
+								</p>
+						        <p>
+						            <label for="form_address">Adresse : </label>
+						            <input type="text" id="form_address" name="address" tabindex="70" />
+						        </p>
+						        <p>
+						            <label for="form_postal_code">Code postal : </label>
+						            <input type="text" id="form_postal_code" name="postal_code" tabindex="80" />
+						        </p>
+						        <p>
+						            <label for="form_city">Ville : </label>
+						            <input type="text" id="form_city" name="city" tabindex="90" />
+						        </p>
+						        <p><span class="fieldWithErrors">
+						            <label for="form_country">Pays : </label>
+						            <select id="form_country" name="country">
+						                <optgroup label="Amérique">
+						                    <option value="ca">Canada</option>
+						                    <option value="us">États-Unis</option>
+						                </optgroup>
+						                <optgroup label="Europe">
+											<option value="al">Allemagne</option>
+											<option value="en">Angleterre</option>
+						                    <option value="be">Belgique</option>
+						                    <option value="es">Espagne</option>
+											<option value="fr">France</option>
+											<option value="it">Italie</option>
+										</optgroup>
+										<optgroup label="Autre">
+											<option value="re">Réunion (île de la)</option>
+						                </optgroup>
+						            </select>
+									</span>
+						        </p>
+						    </fieldset>
+						    <fieldset>
+						    <legend>Compte</legend>
+						        <p>	<span class="fieldWithErrors">
+						            <label for="form_login">Identifiant : </label>
+						            <input type="text" id="form_login" name="login" tabindex="100" />
+						        	</span>
+								</p>
+						        <p>
+						            <label for="form_password">Mot de passe : </label>
+						            <input type="password" id="form_password" name="password" tabindex="110" />
+						        </p>
+						        <p>
+						            <label for="form_password2">Confirmer le mot de passe : </label>
+						            <input type="password" id="form_password2" name="password2" tabindex="120" />
+						        </p>
+						        <p>
+						            <label for="form_question">Question secrète : </label>
+						            <input type="text" id="form_question" name="question" tabindex="130" />
+						        </p>
+						        <p>
+						            <label for="form_response">Réponse : </label>
+						            <input type="text" id="form_response" name="response" tabindex="140" />
+						        </p>
+						        <p>
+						            <label for="form_mail">Adresse email : </label>
+						            <input type="text" id="form_mail" name="mail" tabindex="150" />
+						        </p>
+						    </fieldset>
+						    	<p>
+						        	<button class="input-button" type="submit"><span>Envoyer</span></button>
+									<button class="input-button" type="reset"><span>Remettre le Formulaire à 0</span></button>
+						    	</p>
+						</form>
 				</div>
 			</div> <!-- PAGE_CONTENU : FIN -->
 		</div> <!-- PAGE : FIN -->
