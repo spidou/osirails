@@ -60,6 +60,10 @@ module ApplicationHelper
     html.reverse.to_s
   end
   
+  def display_welcome_message
+    current_user.employee.fullname ? "Bienvenue #{current_user.employee.fullname}," : "Bonjour,"
+  end
+  
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
     if(tag_options[:index])
       tag_name = "#{object}_#{tag_options[:index]}_#{method}"

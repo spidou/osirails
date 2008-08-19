@@ -18,7 +18,7 @@
 									<!-- BANNIERE -->
 		<div id="banniere">
 			<div id="logo"> 
-				<span id="msg_accueil"><%= current_user ? "Bienvenue #{current_user.employee.fullname}," : "Bonjour," %></span>
+				<span id="msg_accueil"><%= display_welcome_message %></span>
 			</div>	
 			<div id="banniere_fond">
 				<div id="boutons">
