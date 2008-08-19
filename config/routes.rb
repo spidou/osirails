@@ -57,6 +57,7 @@ ActionController::Routing::Routes.draw do |map|
 
   ### COMMONS
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
+  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get }
   ### END COMMONS
   
   # Sample of regular route:
