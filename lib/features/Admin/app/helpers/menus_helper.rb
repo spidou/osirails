@@ -17,11 +17,11 @@ module MenusHelper
   
   # This method permit to have a menu on <ul> type.
   def show_structured_menu
-    menus = Menu.find_all_by_parent_id
+    menus = Menu.find_all_by_parent_id(:order => "position")
     list = []
-    list << "<div class='cadre'><div class='hierarchic'><ul class=\"parent\">"
+    list << "<div class='hierarchic'><ul class=\"parent\">"
     list = get_children(menus,list)
-    list << "</ul></div></div>"
+    list << "</ul></div>"
     list 
   end
   
@@ -31,7 +31,7 @@ module MenusHelper
       delete_button = show_delete_button(menu)
       up_button = show_up_button(menu)
       down_button = show_down_button(menu)
-      list << "<li class=\"category\">#{menu.name} &nbsp; <span class=\"action\">#{up_button} #{down_button} #{delete_button}</span></li>"
+      list << "<li class=\"category\">#{menu.title} &nbsp; <span class=\"action\">#{up_button} #{down_button} "+link_to("Modifier", edit_menu_path(menu))+" #{delete_button}</span></li>"
 
       if menu.children.size > 0
         list << "<ul>"

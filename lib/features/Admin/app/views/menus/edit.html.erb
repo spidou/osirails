@@ -1,9 +1,9 @@
-<h4>Modifier un menu</h4>
+<h1>Modifier un menu</h1>
+<div class="cadre">
 <%=@menu.title%>
 <% form_for(@menu) do |menu| %>
   <%= menu.error_messages %>
-  <%= render :partial => 'menu', :locals => {:menu => menu} %><br/><br/>
-  <%= menu.submit 'Mettre à jour' %>
+  <%= render :partial => 'menu', :locals => {:menu => menu} %>
+  <%= menu.submit 'Mettre à jour' %> <%= link_to 'Retour', menus_path %>
 <% end %> 
-
-<%= link_to 'Retour', menus_path %>
+</div>

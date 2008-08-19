@@ -98,27 +98,30 @@ class Menu < ActiveRecord::Base
     return false
   end
     
-  #This method return an array with all menus
-  def Menu.get_structured_menus(indent)
-    menus = Menu.find_all_by_parent_id(nil, :order => :position)
-    parents = []
-    root = Menu.new
-    root.title = "  "
-    root.id =nil
-    parents = get_children(menus,parents,indent)
+  # This method return an array with all menus
+  # Current_menu_id permit to hide menu in select menu parent
+  def Menu.get_structured_menus(indent, current_menu_id = nil)
+      menus = Menu.find_all_by_parent_id(nil, :order => 'position' )
+      parents = []
+      root = Menu.new
+      root.title = "  "
+      root.id =nil
+      parents = get_children(menus, current_menu_id, parents, indent)
     parents
   end
     
   private
   # This method insert in the parents the menus   
-  def Menu.get_children(menus,parents,indent)
+  def Menu.get_children(menus,current_menu_id, parents,indent)
     menus.each do |menu|
+      unless menu.id == current_menu_id
       menu.title = indent * menu.ancestors.size + menu.title if menu.title != nil
       parents << menu
           
       # If the menu has children, the get_children method is call.
       if menu.children.size > 0
-        get_children(menu.children,parents,indent)
+        get_children(menu.children,current_menu_id, parents, indent)
+      end
       end
     end
     parents

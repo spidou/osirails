@@ -1,10 +1,9 @@
-<h4>Nouveau Menu</h4>
+<h1>Nouveau Menu</h1>
 
-
+<div class="cadre">
 <% form_for(@menu) do |menu| %>
   <%= menu.error_messages %>
   <%= render :partial => "menu", :locals => {:menu => menu} %><br/><br/>
-  <%= menu.submit "Ajouter" %>
+  <%= menu.submit "Ajouter" %> <%= link_to 'Retour', :action => 'index' %>
 <% end %>
-
-<%= link_to 'Retour', :action => 'index' %>
+</div>

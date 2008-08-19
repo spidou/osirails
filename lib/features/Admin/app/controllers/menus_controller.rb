@@ -6,14 +6,14 @@ class MenusController < ApplicationController
   def index
     # get_structured_menus permit to make a indent for menu's list
     #FIXME Manage CSS for indent
-    @menus = Menu.get_structured_menus("__")#("<span class='admin_menus_indent'/>")
+   #  @menus = Menu.get_structured_menus("__")#("<span class='admin_menus_indent'/>")
   end
   
   # GET /menus/new
   def new
     @menu = Menu.new
     # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("---")
+    @menus = Menu.get_structured_menus("----")
   end
   
   # POST /menus
@@ -33,7 +33,7 @@ class MenusController < ApplicationController
   def edit
     @menu = Menu.find(params[:id])
     # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("---")
+    @menus = Menu.get_structured_menus("---",@menu.id)
   end
   
   # can_has_this_parent? => Permit to check if the new parent can has this parent
