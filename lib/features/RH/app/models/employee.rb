@@ -1,21 +1,24 @@
 class Employee < ActiveRecord::Base
-
+  
+  # Relationships
   belongs_to :family_situation
   belongs_to :civility
   has_one :address, :as => :has_address
-  has_many :numbers, :as => :has_number
   has_one :iban, :as => :has_iban
-  has_many :premia
   has_one :job_contract
-  has_one :user 
+  has_one :user
+  has_many :numbers, :as => :has_number
+  has_many :premia
   has_and_belongs_to_many :services
   has_and_belongs_to_many :jobs
   
+  # Validates
   validates_presence_of :last_name,:first_name , :message => "ne peut être vide"
   validates_format_of :social_security, :with => /^([0-9]{13}\x20[0-9]{2})*$/,:message => "format numéro de sécurité social incorrect"
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   
+  # Callbacks
   after_create :user_create_methode
   before_save :case_managment
   

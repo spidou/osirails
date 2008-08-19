@@ -61,7 +61,7 @@ module ApplicationHelper
   end
   
   def display_welcome_message
-    current_user.employee.fullname ? "Bienvenue #{current_user.employee.fullname}," : "Bonjour,"
+    ( current_user and current_user.employee ) ? "Bienvenue #{current_user.employee.fullname}," : "Bonjour,"
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
