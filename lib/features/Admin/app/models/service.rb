@@ -1,7 +1,8 @@
 class Service < ActiveRecord::Base
   
   # Relationship
-  has_and_belongs_to_many :employees
+  has_many :employees_services
+  has_many :employees, :through => :employees_services
   belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
   
   # Plugin
