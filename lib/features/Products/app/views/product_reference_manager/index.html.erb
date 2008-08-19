@@ -2,6 +2,5 @@
 
 <div class="cadre">
 <%= get_structured_category %>
-
- <%= link_to( 'Ajouter une cat&eacute;gorie' , new_product_reference_category_path )%> &brvbar; <%= link_to( 'Ajouter une r&eacute;f&eacute;rence', :controller => 'product_references', :action => 'new' ) %>
+ <%= link_to( 'Ajouter une cat&eacute;gorie' , new_product_reference_category_path )%> <%= show_add_reference_button(@categories) %>
 </div>

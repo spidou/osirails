@@ -1,4 +1,4 @@
-<h2>Content</h2>
+<h1>Content</h1>
 
 <table>
   <tr>
@@ -14,7 +14,7 @@
         <td title='<%= menu.description %>'><%= menu.title %></td>
         <td><%= content.title %></td>
         <td><%= content.description%></td> 
-        <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Modifier", edit_content_path(content)) %> <%= link_to("Supprimer", content, {:method => :delete}) %></td>
+        <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Modifier", edit_content_path(content)) %> <%= link_to("Supprimer", content, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
       </tr>
     <% end%>
 </table><br/>

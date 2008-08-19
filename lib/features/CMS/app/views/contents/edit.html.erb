@@ -5,10 +5,10 @@
 
 <%= display_button %>
 <h4>Modification de la page</h4>
-
+<div class="cadre">
 <% form_for(@content) do |content| %>
   <%= content.error_messages %>
   <%= render :partial => 'form', :locals => {:content => content} %>
-  <%= content.submit  'Modifier' %>
-<% end %><br/>
-<%= link_to 'Retour', :action => 'index' %>
+  <%= content.submit  'Modifier' %> <%= link_to 'Retour', :action => 'index' %>
+<% end %>
+</div>

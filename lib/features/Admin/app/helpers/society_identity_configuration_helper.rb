@@ -5,7 +5,7 @@ module SocietyIdentityConfigurationHelper
       if params[:action] == 'edit'
         text_field_tag name, value
       else
-        "<span>#{value}</span>"
+        "#{value}"
       end
   end
   

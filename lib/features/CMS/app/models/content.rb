@@ -7,6 +7,8 @@ class Content < ActiveRecord::Base
   belongs_to :menu
   belongs_to :author, :class_name => "User"
   has_many :versions, :class_name => "ContentVersion"
-  validates_presence_of :title
+
+    # Validation Macros
+  validates_presence_of :title, :menu_title, :message => "ne peut être vide"
   
 end

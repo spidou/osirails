@@ -43,4 +43,9 @@ module ProductReferenceManagerHelper
   def show_delete_button(category)
     " &brvbar; " + link_to("Supprimer", category, { :method => :delete } ) if category.can_delete?
   end
+  # This method permit to show or hide add reference button
+  def show_add_reference_button(categories)
+    "&brvbar; " +link_to( 'Ajouter une r&eacute;f&eacute;rence', :controller => 'product_references', :action => 'new' ) unless categories.size == 0
+  end
+  
 end
