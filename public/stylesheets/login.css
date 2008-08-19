@@ -1,0 +1,184 @@
+/*
+div {
+	border: solid 1px black;
+}
+*/
+body {
+	margin: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	cursor: default;
+}
+/*/////////////////////////////////////////////////////
+					BANNIERE
+////////////////////////////////////////////////////*/
+#banniere {
+	width: auto;
+	height: 75px;
+}
+
+#logo {
+	background-image: url("../images/banniere.jpg");
+	float: left;
+	width: 330px;
+	height: 75px;
+}
+
+#sous-banniere {
+	background-image: url("../images/banniere_repeat-x.jpg");
+	width: auto;
+	height: 75px;
+	margin-left: 330px;
+}
+/*/////////////////////////////////////////////////////
+					LOGIN CADRE
+////////////////////////////////////////////////////*/
+#login_cadre {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 460px;
+	height: 196px;
+}
+/*/////////////////////////////////////////////////////
+				LOGIN CADRE > CADRE SUPERIEUR
+////////////////////////////////////////////////////*/
+#cadre_up {
+	margin-top:113px;
+}
+
+#gauche-haut {
+	background-image: url("../images/cadre_user/gauche-haut.png");
+	float: left;
+	width: 27px;
+	height: 36px;
+}
+
+#milieu-haut {
+	background-image: url("../images/cadre_user/milieu-haut.jpg");
+	background-repeat: repeat-x;
+	width: auto;
+	height: 36px;
+	float: left;
+}
+
+#droit-haut {
+	background-image: url("../images/cadre_user/droit-haut.png");
+	float: left;
+	width: 27px;
+	height: 36px;
+}
+/*/////////////////////////////////////////////////////
+				LOGIN CADRE > CADRE MILIEU
+////////////////////////////////////////////////////*/
+#cadre_middle {
+	clear: left;
+}
+
+#gauche-milieu {
+	background-image: url("../images/cadre_user/gauche-milieu.jpg");
+	float: left;
+	width: 2px;
+	height: 124px;
+}
+
+#milieu-milieu {
+	background-image: url("../images/cadre_user/milieu-milieu.jpg");
+	background-repeat: repeat-x;
+	width: auto;
+	height: 124px;
+	float: left;
+}
+
+#droit-milieu {
+	background-image: url("../images/cadre_user/droit-milieu.jpg");
+	float: left;
+	width: 2px;
+	height: 124px;
+}
+
+/*/////////////////////////////////////////////////////
+				LOGIN CADRE > CADRE INFERIEUR
+////////////////////////////////////////////////////*/
+#cadre_down {
+	clear: left;
+}
+
+#gauche-bas {
+	background-image: url("../images/cadre_user/gauche-bas.png");
+	float: left;
+	width: 27px;
+	height: 36px;
+}
+
+#milieu-bas {
+	background-image: url("../images/cadre_user/milieu-bas.jpg");
+	background-repeat: repeat-x;
+	float: left;
+	width: auto;
+	height: 36px;
+
+}
+
+#droit-bas {
+	background-image: url("../images/cadre_user/droit-bas.png");
+	float: left;
+	width: 27px;
+	height: 36px;
+}
+/*/////////////////////////////////////////////////////
+				LOGIN CADRE > CONTENU
+////////////////////////////////////////////////////*/
+
+#cadre_contenu {
+	padding-right:10px;
+}
+	
+h4 {
+	color: #f69826;
+	line-height: 1px;
+	font-weight: lighter;
+}
+
+.champs {
+	color: #a3a3a3;
+	font-size: 85%;
+	line-height: 35px;
+}
+
+.submit {
+	margin-left:344px;
+	background: url("../images/bouton.png");
+	width: 53px;
+	height: 21px;
+	border: none;
+	color:#000;
+	font-variant: small-caps;
+	font-weight: bold;
+	padding-top: 0;
+	text-indent: 0;
+
+}
+.submit:hover {
+	background: url("../images/bouton-hover.png");
+}
+
+a {
+	color: #f69825;
+	font-size: 70%;
+	float: left;
+	margin-left:247px;
+}
+
+a:hover {
+	color: #f2c40f;
+}
+
+input {
+	color: #f69826;
+	background: url("../images/input_text.png") no-repeat;
+	border: none;
+	width: 171px;
+	height: 22px;
+	padding-top:5px;
+	text-indent: 8px;
+}
