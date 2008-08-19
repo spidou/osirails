@@ -9,6 +9,6 @@ class Content < ActiveRecord::Base
   has_many :versions, :class_name => "ContentVersion"
 
     # Validation Macros
-  validates_presence_of :title, :menu_title, :message => "ne peut être vide"
+  validates_presence_of :title, :message => "ne peut être vide"
   
 end
