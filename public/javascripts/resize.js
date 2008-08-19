@@ -155,7 +155,7 @@ Resizeable.prototype = {
     if (this.currentDirection.indexOf('s') != -1) {
     	var newHeight = this.startHeight + pointer[1] - this.startY;
     	if (newHeight > this.options.minHeight) {
-    		style.height = newHeight + "px";
+    		  style.height = newHeight + "px";
     	}
     }
     if (this.currentDirection.indexOf('e') != -1) {

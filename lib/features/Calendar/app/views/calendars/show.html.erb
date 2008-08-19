@@ -51,14 +51,6 @@ div {
 	height: 1440px;
 	border: 1px solid gray;
 }
-//#calendar #grid #mon {
-	position: absolute;
-	left: <%= (600 if @date.wday == 0) || (@date.wday * 100 - 100) %>px;
-	height: 1440px;
-	width: 100px;
-	background-color: #DFDBDE;
-	z-index: -100;
-}
 #calendar #scroll #grid .day_grid_border {
 	border: 1px solid gray;
 	border-top: none;
@@ -73,7 +65,20 @@ div {
 	z-index: -100;
 	background: url('/images/grid_repeat-x.gif') repeat;
 }
+ul {
+	padding: 0px;
+	margin: 0px;
+}
+li {
+	position: absolute;
+	width: 0px;
+	display:inline;
+//	background-color : blue;
+	width: 14.2%;
+}
 .event {
+	position: relative;
+	width: 100%;
 	border: 1px solid black;
 	min-height: 22px;
 	padding: 4px 0px;
@@ -98,7 +103,7 @@ draggables_events = new Array();
 
 function grid_area(draggable) {
 	var cal_event = draggable.element;
-	switch (cal_event.ancestors()[1].id) {
+	switch (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id) {
 		case "Mon":
 			var coeff = 0;
 		break;
@@ -170,6 +175,7 @@ function add_event (id, title, top, left, height, color, week_day) {
 	var elm_id = 'event' + id
 	var event_div = document.createElement("div");
 	var event_content = document.createElement("div");
+	var li = document.createElement("li");
 	
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
@@ -181,14 +187,16 @@ function add_event (id, title, top, left, height, color, week_day) {
 	event_content.innerHTML = "<span name='start_at' class='start_at'></span>-<span name='end_at' class='end_at'></span><br /><span name='title' class='title'>" + title + "</span>";
 	
 	event_div.appendChild(event_content);
-	grid_day.appendChild(event_div);
+	li.appendChild(event_div);
+	grid_day.childNodes[0].appendChild(li);
+//	grid_day.appendChild(event_div);
 	
   Effect.Pulsate(elm_id, { pulses: 3, duration: 1.5 });
-	add_resizeable(elm_id);
+	add_draggable(elm_id);
   new Resizeable(elm_id, {
   	left:0,
   	right:0,
-  	top: 4,
+  	top: 0,
   	bottom: 4,
   	resize: function() {
   		update_time(elm_id);
@@ -206,11 +214,11 @@ function resize_events () {
 		draggables_events[i].destroy();
 	};
 	for (var i=0; i < events.length; i++) {
-		add_resizeable(events[i]);
+		add_draggable(events[i]);
 	};
 }
 
-function add_resizeable (elm_id) {
+function add_draggable (elm_id) {
   draggables_events.push(new Draggable(elm_id, {
   	handle: elm_id + '_content',
   	snap: [document.getElementById('Mon').offsetWidth, 15],
@@ -229,7 +237,7 @@ function add_resizeable (elm_id) {
 function change_day_events (draggable) {
 	var	cal_event = draggable.element;
 	var left_size = cal_event.style.left.replace("px","");
-	switch (cal_event.ancestors()[1].id) {
+	switch (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id) {
 		case "Mon":
 			var day_num = 0;
 		break;
@@ -273,11 +281,13 @@ function change_day_events (draggable) {
 			var day = "Sat";
 		break;
 		case 6:
-			var day = 6;
+			var day = "Sun";
 		break;
+		default:
+			var day = day_num;
 	};
 	cal_event.style.left = 0;
-	document.getElementById(day).childNodes[1].appendChild(cal_event);
+	document.getElementById(day).childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
 }
 </script>
 </head>
@@ -307,8 +317,8 @@ function change_day_events (draggable) {
 			<div id="grid">
 				<% date = @date.beginning_of_week %>
 				<% 7.times do %>
-				<div id="<%= date.strftime('%a') %>" class="day_grid">
-						<div class="day_grid_border"></div>
+				<div id="<%= date.strftime('%a') %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == @date %>>
+						<div class="day_grid_border"><ul></ul></div>
 				</div>
 				<% date += 1.days %>
 				<% end %>
