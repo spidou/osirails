@@ -1,4 +1,7 @@
 class EstablishmentsController < ApplicationController
+  
+  protect_from_forgery :except => [:auto_complete_for_city_name]
+  
   def edit
     @establishment = Establishment.find(params[:id])
     @customer = Customer.find(params[:customer_id])

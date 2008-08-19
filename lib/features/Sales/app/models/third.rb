@@ -4,9 +4,7 @@ class Third < ActiveRecord::Base
   belongs_to :third_type
   
   # has_many_polymorphic
-  has_many :contacts_owners, 
-#    :dependent => :destroy, 
-    :as => :has_contact, :class_name => "ContactsOwners"
+  has_many :contacts_owners, :as => :has_contact, :class_name => "ContactsOwners"
   has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
   
   validates_presence_of :name

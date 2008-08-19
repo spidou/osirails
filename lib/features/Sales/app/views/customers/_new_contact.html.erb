@@ -1,6 +1,6 @@
 <div <%= "id =new_contact#{params[:cpt]}" %>>
   <p><%= label :new_contact, "Nom" %><br/>
-  <%= text_field("new_contact#{params[:cpt]}","first_name")%></p>
+  <%= text_field("contact","first_name",:index => params[:cpt])%></p>
    <p><%= label :new_contact, "Prénom" %><br/>
    <%= text_field("new_contact#{params[:cpt]}","last_name")%></p>
   <p><%=label :new_contact, "Type de contact"%><br/>
@@ -15,7 +15,7 @@
   
 <%= observe_field "new_contact#{params[:cpt]}_has_contact_type",
         :frequency => 1,
-        :url=>{:action=>'new_contact_owner_change', :cpt => params[:cpt]},
+        :url=>{:action=>'first_name_change', :cpt => params[:cpt]},
         :with => "'values='+escape(value)"
 %>
 </div>

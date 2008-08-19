@@ -4,12 +4,16 @@
 </div>
 
 <div id='<%= "new_contact#{cpt}"%>'>
-<p><%= label :new_contact, "Nom" %><br/>
-<%= text_field("new_contact#{cpt}","first_name") %></p>
+<p><%= label :new_contact, "Nddom" %><br/>
+<%= my_text_field_with_auto_complete(:contact, :first_name, {:index => cpt},{:select => 'ul_contact_name',
+    :after_update_element => "function(){document.getElementById('auto_complete_select').innerHTML = 'true';}",
+    :with => "'contact='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name').value)+
+    '&contact1='+encodeURIComponent(document.getElementById('contact_info'))"})%>
 
+  <div id="contact_info">
   <p><%= label :new_contact, "Prénom" %><br/>
-  <%= text_field("new_contact#{cpt}","last_name")%></p>
- 
+  <%= text_field("new_contact#{cpt}","last_name")%></p> 
+  
   <p> <%= label :contact, "E-mail" %><br/>
   <%= text_field("new_contact#{cpt}","email") %></p>
 
@@ -18,9 +22,20 @@
  
   <p><%=label :new_contact, "Type de client"%><br/>
   <%= select("new_contact#{cpt}", "contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", owner_type]).collect {|a| [ a.name, a.name]})%></p>
+  </div>
 
+<div id='auto_complete_select' style="display:none;">false</div>
 <%= hidden_field("valid_contact_#{cpt}", "value", "value" => 'true')%>
 </div>
+
+<%= observe_field("contact_#{cpt}_first_name",
+        :url =>{:action=>'first_name_change', :owner_id => 5},
+        :frequency => 0.1,
+        :with => "'contact_info_visibility='+encodeURIComponent(document.getElementById('contact_info').style.display)+ 
+        '&value='+encodeURIComponent(value)+
+        '&contact_id='+encodeURIComponent(document.getElementsByClassName('selected').item(0).childNodes.item(1).innerHTML)+
+        '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_select').innerHTML)")
+%>
 
 <%unless error%>
 <div <%= "id=link_add_remove_contact_#{cpt.to_i + 1}"%>>

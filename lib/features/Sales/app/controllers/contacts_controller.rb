@@ -1,4 +1,7 @@
 class ContactsController < ApplicationController
+  
+    protect_from_forgery :except => [:auto_complete_for_contact_first_name]
+  
   def edit
 
     @contact = Contact.find(params[:id])
@@ -57,5 +60,18 @@ class ContactsController < ApplicationController
 
     eval("redirect_to(edit_#{@owner_type}_path(params[:customer_id]))")
      
+  end
+  
+  def auto_complete_for_contact_first_name
+    auto_complete_responder_for_first_name(params[:contact])
+  end
+  
+  def auto_complete_responder_for_first_name(value)
+    @contacts = Contact.find(:all, 
+      :conditions => [ 'first_name LIKE ?',
+        '%' + value.to_s + '%'], 
+      :order => 'first_name ASC',
+      :limit => 8)
+    render :partial => 'first_name'
   end
 end
