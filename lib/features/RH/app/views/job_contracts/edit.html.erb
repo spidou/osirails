@@ -1,5 +1,6 @@
-<h1>Modifier le contrat de travail </h1>
+<h1>Modifier le contrat de travail de <%=@employee.fullname%> </h1>
 
+<div class="cadre">
 <% form_for(@job_contract) do |f| %>
   <%=f.error_messages%>  
   <p>
@@ -9,7 +10,7 @@
   
   <p>
     <%= f.label :end_date, "Date de fin du contrat :"%>
-    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
+    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
   </p>
   
   <p>
@@ -21,8 +22,17 @@
     <%= f.label :job_contract_type_id, "Type de contrat de l'employée :"%>
     <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
   </p>
+
+  <p>
+    <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>
+    <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:html=>{:class=>"disable-stylesheet-width"}%>
+    <%= select('salaries[type]','value', ["Brut","Net"], :selected => "Brut")%>
+  </p>
+
   
   <p>
-    <%= f.submit "Modifier" %>
+    <%= submit_tag "Modifier" %>
   </p>  
 <%end%>
+<%=link_to 'Retour', employee_path(@employee)%>
+</div>
