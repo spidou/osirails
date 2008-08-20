@@ -1032,11 +1032,6 @@ select.select_catalog {
 	background: #f1f1f1;
 	border:1px solid #888;
 	margin:-1px 0 -1px 0;
-}
-
-div.select_scroll {
-	overflow-x: scroll;
-	overflow : -moz-scrollbars-horizontal;
 	width:160px;
 }
 
