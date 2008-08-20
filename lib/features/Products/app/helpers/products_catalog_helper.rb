@@ -30,10 +30,10 @@ module ProductsCatalogHelper
   def show_category_column(categories,value)
     get_categories_columns = []
     collection = column(categories,value)
-    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\" class=\"select_catalog\" \"><option value=\"-1\" selected=\"selected\">Il y a "+
+    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\" class=\"select_catalog\"><option value=\"-1\" selected=\"selected\">Il y a "+
       pluralize(collection.size, "categorie", "categories")+"</option>"
     collection.each do |category|
-      get_categories_columns << "<option value=#{category.id}>#{category.name} (#{category.product_references_count})</option>"
+      get_categories_columns << "<option value=\"#{category.id}\">#{category.name} (#{category.product_references_count})</option>"
     end
     get_categories_columns << "</select>"
     get_categories_columns 
@@ -46,7 +46,7 @@ module ProductsCatalogHelper
     end
     get_reference_column = []
     selected = references.collect { |t| t.id.to_s }
-    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" style=\"width:160px;\" ><option value=\"-1\" selected=\"selected\">Il y a "+
+    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog\" ><option value=\"-1\" selected=\"selected\">Il y a "+
       pluralize(references.size, "reference", "references")+"</option>"+
       options_from_collection_for_select(references, :id, :name, selected)+"</select>"
     get_reference_column
