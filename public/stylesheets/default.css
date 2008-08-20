@@ -945,6 +945,10 @@ ul.parent>li {
 	list-style-image:url("../images/puce_hierarchique.gif");	
 }
 
+.hierarchic ul li:hover {
+	background: #f5c384;
+}
+
 .hierarchic ul li span{
 	position:absolute;
 	right:300px;
