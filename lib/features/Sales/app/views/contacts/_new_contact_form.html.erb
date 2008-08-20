@@ -16,16 +16,20 @@
     '&owner_type=#{owner_type}'"})%>
 
 <p><%= label :new_contact, "Prénom" %><br/>
-<%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt},{:select => 'ul_contact_name',
+<%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt,:url => {:controller => 'contacts'}},{
+    :select => 'ul_contact_name',
     :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
     :with => "'value='+document.getElementById('new_contact#{cpt}_last_name').value+
-    '&owner_id=#{owner_id}'"})%>
+    '&owner_id=#{owner_id}'+
+    '&owner_type=#{owner_type}'"})%>
 
 <p><%= label :new_contact, "Email" %><br/>
-<%= my_text_field_with_auto_complete(:contact, :email, {:index => cpt},{:select => 'ul_contact_name',
+<%= my_text_field_with_auto_complete(:contact, :email, {:index => cpt,:url => {:controller => 'contacts'}},{
+    :select => 'ul_contact_name',
     :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
     :with => "'value='+document.getElementById('new_contact#{cpt}_email').value+
-    '&owner_id=#{owner_id}'"})%>
+    '&owner_id=#{owner_id}'+
+    '&owner_type=#{owner_type}'"})%>
 
 
 <% # Affectation of variables when an error occure%>
@@ -53,8 +57,8 @@
 </div>
 
 <%= observe_field("new_contact#{cpt}_first_name",
-        :url =>{:controller => "contacts", :action=>'first_name_change', :owner_id => owner_id, :owner_type => owner_type},
-        :frequency => 0.1, 
+        :url =>{:controller => "contacts", :action=>'text_field_change', :owner_id => owner_id, :owner_type => owner_type},
+        :frequency => 0.5, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
         '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
@@ -63,11 +67,11 @@
 %>
 
 <%= observe_field("new_contact#{cpt}_last_name",
-        :url =>{:controller => "contacts", :action=>'first_name_change', :owner_id => owner_id, :owner_type => owner_type},
-        :frequency => 0.1, 
+        :url =>{:controller => "contacts", :action=>'text_field_change', :owner_id => owner_id, :owner_type => owner_type},
+        :frequency => 0.5, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
-        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
+        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_last_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
         '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_#{cpt}_select').value)+
         '&cpt='+encodeURIComponent(#{cpt})")
 %>

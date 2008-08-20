@@ -1,52 +1,6 @@
 class ContactsController < ApplicationController
   
-  protect_from_forgery :except => [:auto_complete_for_contact_first_name]  
-  
-  def create(owner)
-    
-    # If contact_form is not null
-    unless params[:new_contact_number]["value"].nil?
-      #      puts params["contact"]["1"]["first_name"]
-      #      puts params["contact"]["1"]["last_name"]
-      new_contact_number = params[:new_contact_number]["value"].to_i
-      new_contact_number.times do |i|
-        # For all new_contact  an instance variable is create.
-        # If his parameter is not valid, @error variable is set to true
-        eval "unless params['valid_contact_#{i+1}'].nil?
-                    unless params['valid_contact_#{i+1}']['value'] == 'false'
-                      unless instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
-                          @error = true
-                      end
-                      unless @new_contact#{i+1}.valid?
-                          @error = true
-                      end
-                    end
-                  end"
-      end
-    end
-    
-    # If all new_contact are valids, they are save 
-    unless @error
-      new_contact_number.times do |i|
-        eval"unless params['valid_contact_#{i+1}'].nil?
-                     unless params['valid_contact_#{i+1}']['value'] == 'false'
-                       if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-                         unless @new_contact#{i+1}.save and @owner.contacts << @new_contact#{i+1}
-                          @error = true
-                         end
-                       elsif params['new_contact#{i+1}_id'] != ''                        
-                         if @owner.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false
-                            @owner.contacts << Contact.find(params['new_contact#{i+1}']['id'])
-                         end
-                        else
-                          @error = true
-                      end
-                    end
-                  end"
-      end
-    end
-   
-  end
+  protect_from_forgery :except => [:auto_complete_for_contact_first_name]
   
   def edit
 
@@ -105,10 +59,10 @@ class ContactsController < ApplicationController
   end
   
   def auto_complete_for_contact_first_name    
-    auto_complete_responder_for_first_name(params[:owner_id], params[:value], params[:owner_type])  
+    auto_complete_responder_for_first_name(params[:owner_id], params[:owner_type], params[:value])  
   end
   
-  def auto_complete_responder_for_first_name(owner_id,value, owner_type)
+  def auto_complete_responder_for_first_name(owner_id, owner_type, value)
     @contacts = []
     eval "@owner = #{owner_type}.find(owner_id)"
     if @owner.contacts.length > 0
@@ -147,12 +101,12 @@ class ContactsController < ApplicationController
   end
   
   def auto_complete_for_contact_last_name
-    auto_complete_responder_for_last_name(params[:owner_id], params[:value])  
+    auto_complete_responder_for_last_name(params[:owner_id], params[:owner_type], params[:value])  
   end
   
-  def auto_complete_responder_for_last_name(owner_id,value)
+  def auto_complete_responder_for_last_name(owner_id, owner_type, value)
     @contacts = []
-    @owner = Customer.find(owner_id)
+    eval "@owner = #{owner_type}.find(owner_id)"
     if @owner.contacts.length > 0
       @owner.contacts.each do |owner_contact|
         if owner_contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
@@ -177,12 +131,12 @@ class ContactsController < ApplicationController
   end
   
   def auto_complete_for_contact_email
-    auto_complete_responder_for_email(params[:owner_id], params[:value])  
+    auto_complete_responder_for_email(params[:owner_id], params[:owner_type], params[:value])  
   end
   
-  def auto_complete_responder_for_email(owner_id,value)
+  def auto_complete_responder_for_email(owner_id, owner_type, value)
     @contacts = []
-    @owner = Customer.find(owner_id)
+    eval "@owner = #{owner_type}.find(owner_id)"
     if @owner.contacts.length > 0
       @owner.contacts.each do |owner_contact|
         if owner_contact.email.downcase.grep(/#{value.downcase}/).length > 0
