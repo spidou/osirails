@@ -92,7 +92,7 @@ class AddRows < ActiveRecord::Migration
 
   def self.down
     [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,JobContractType,
-      Service,EmployeeState,ThirdType,Employee].each do |model|
+      Service,EmployeeState,ThirdType,Employee,ContactType].each do |model|
       model.destroy_all
     end
   end
