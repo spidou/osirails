@@ -2,16 +2,13 @@ module ProductsCatalogHelper
   
   # This method permit to return a collection for all categories.
   def column(categories,value)
-    if value == 0
-      return  categories
-    else value >= 1
+          return  categories if value == 0
       child = []
       categories.each do |category|
-        child << category.child_ids
+        child << category.child_ids if category.child_ids.size > 0
       end
       value -= 1
       column(ProductReferenceCategory.find(child),value)
-    end
   end
   
   # This method permit to know how much categories's column.
@@ -30,33 +27,34 @@ module ProductsCatalogHelper
   def show_category_column(categories,value)
     get_categories_columns = []
     collection = column(categories,value)
-    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\" class=\"select_catalog\"><div class=\"select_scroll\"><option value=\"-1\" selected=\"selected\">Il y a "+
+    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\"  class=\"select_catalog\"><option value=\"#{-(value+1)}\" selected=\"selected\">Il y a "+
       pluralize(collection.size, "categorie", "categories")+"</option>"
     collection.each do |category|
-      get_categories_columns << "<option value=\"#{category.id}\">#{category.name} (#{category.product_references_count})</option>"
+      get_categories_columns << "<option value=\"#{category.id}\" title=\"#{category.name}\">"+truncate("#{category.name}", 18)+" (#{category.product_references_count})</option>"
     end
-    get_categories_columns << "</div></select>"
+    get_categories_columns << "</select>"
     get_categories_columns 
   end
   
   # This method permit to have a reference column
   def show_reference_column(references)
-    references.each do |reference|
-      reference.name += " (#{reference.products_count})"
-    end
     get_reference_column = []
-    selected = references.collect { |t| t.id.to_s }
-    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog\" ><div class=\"select_scroll\"><option value=\"-1\" selected=\"selected\">Il y a "+
-      pluralize(references.size, "reference", "references")+"</option>"+
-      options_from_collection_for_select(references, :id, :name, selected)+"</div></select>"
+    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog\" ><option value=\"-1\" selected=\"selected\">Il y a "+
+      pluralize(references.size, "reference", "references")+"</option>"
+    references.each do |reference|
+      get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">"+truncate("#{reference.name}", 18)+" (#{reference.products_count})</option>"
+    end
+    get_reference_column << "</select>"
     get_reference_column
   end
   
+  # This method permit to refresh select categories column
   def refresh_select_categories(categories)
     select_update = []
-    select_update << "<option value=-1 selected=selected>Il y a "+pluralize(@categories.size, "categorie", "categories")+"</option>"
+    select_update << "<option value=#{categories.last} selected=selected>Il y a "+pluralize((@categories.size - 1), "categorie", "categories")+"</option>"
+    categories.pop
     categories.each do |category|
-    select_update << "<option value=#{category.id}>#{category.name} (#{category.product_references_count})</option>"
+    select_update << "<option value=\"#{category.id}\" title=\"#{category.name}\">"+truncate("#{category.name}", 18)+" (#{category.product_references_count})</option>"
     end
     select_update
   end
