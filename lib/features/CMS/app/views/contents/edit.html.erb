@@ -3,12 +3,9 @@
   <%= tiny_mce if using_tiny_mce? %>
 <% end %>
 
-<%= display_button %>
-<h4>Modification de la page</h4>
-<div class="cadre">
+<h1>Modifier un contenu</h1>
+<%= display_reload_button %>
 <% form_for(@content) do |content| %>
   <%= content.error_messages %>
-  <%= render :partial => 'form', :locals => {:content => content} %>
-  <%= content.submit  'Modifier' %> <%= link_to 'Retour', :action => 'index' %>
+  <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Modifier"} %>
 <% end %>
-</div>

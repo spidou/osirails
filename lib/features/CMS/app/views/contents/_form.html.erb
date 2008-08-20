@@ -1,22 +1,37 @@
-  <h1>Information du menu</h1>
-<fieldset>
-  <p><%= label :menu_title, "Titre" %>
-<%= text_field(:menu, :title)  %></p>
+<div class="cadre">
+  <h2>Information du menu</h2>
+  <p>
+    <%= label :menu_title, "Titre" %>
+    <%= text_field(:menu, :title)  %>
+  </p>
 
-<p><%= label :menu_description, "Description" %>
-<%= text_field(:menu, :description)  %></p>
+  <p>
+    <%= label :menu_description, "Description" %>
+    <%= text_field(:menu, :description)  %>
+  </p>
 
-<p><%= label :parent_id, "Parent"%>
-<%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:include_blank => "-- Racine --"}) %><p>
-</fieldset>
-  <h1>Information du contenu</h1>
-<fieldset>
-  <p><%= content.label :title, "Titre" %>
-  <%= content.text_field :title %></p>
+  <p>
+    <%= label :parent_id, "Parent"%>
+    <%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:include_blank => "-- Racine --"}) %>
+  <p>
+</div>
+
+<div class="cadre">
+  <h2>Information du contenu</h2>
+  <p>
+    <%= content.label :title, "Titre" %>
+    <%= content.text_field :title %>
+  </p>
   
-  <p><%=content.label :description, "Description" %>
-  <%= content.text_field :description %></p>
+  <p>
+    <%=content.label :description, "Description" %>
+    <%= content.text_field :description %>
+  </p>
   
-  <p><%= content.label :text, "Votre texte" %>
-  <%= content.text_area( :text, :cols => 100, :rows => 30) %></p>
-</fieldset>
+  <p>
+    <%= content.label :text, "Votre texte" %>
+    <%= content.text_area( :text, :cols => 100, :rows => 30) %>
+  </p>
+  
+  <%= content.submit submit_button_name %> <%= link_to 'Retour', :action => 'index' %>
+</div>

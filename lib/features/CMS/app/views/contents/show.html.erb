@@ -1,32 +1,36 @@
-<p><h2> <%= @content.title %></h2></p>
-<p><h3> <%= @content.description %></h3></p>
-<p><%= @content.text %></p>
-<% unless @author.nil? %>
-  <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
-<% end %>
-<% if @contributors_full_names.length > 0%>
-  <p>Contributeurs : <%= @contributors_full_names.join(', ') %></p>
-<% end %>
-<p><%= link_to "Modifier", edit_content_path(@content) %></p>
-<% if @content.versions.length >0 %>
-  <div>
-    <%= link_to_function("Il existe "+pluralize(@content.versions.size,"autre  version", "autres versions")+" pour cette page") do |page|
-                page.visual_effect(:toggle_slide, "list_content_versions")
-       end
-    %>
-    <div id="list_content_versions" style="display:none">
-      <p>
-        <ul>
-          <% @content_versions.each_with_index do |content_version, index| %>
-            <li><%=link_to(content_version.versioned_at.strftime("0%w/%m/%Y %H:%M:%S"), :controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1)%></li>        
-          <% end %>
-          <%= will_paginate @content_versions %>
-        </ul>
-      </p>
+<h1> <%= @content.title %></h1>
+<div class="cadre">
+  <h2> <%= @content.description %></h2>
+  <p><%= @content.text %></p>
+  <% unless @author.nil? %>
+    <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
+  <% end %>
+
+  <% if @contributors_full_names.length > 0 %>
+    <p>Contributeurs : <%= @contributors_full_names.join(', ') %></p>
+  <% end %>
+
+  <p><%= link_to "Modifier", edit_content_path(@content) %></p>
+  <% if @content.versions.length >0 %>
+    <div>
+      <%= link_to_function("Il existe "+pluralize(@content.versions.size,"autre  version", "autres versions")+" pour cette page") do |page|
+                  page.visual_effect(:toggle_slide, "list_content_versions")
+         end
+      %>
+      <div id="list_content_versions" style="display:none">
+        <p>
+          <ul>
+            <% @content_versions.each_with_index do |content_version, index| %>
+              <li><%=link_to(content_version.versioned_at.strftime("0%w/%m/%Y %H:%M:%S"), :controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1)%></li>        
+            <% end %>
+            <%= will_paginate @content_versions %>
+          </ul>
+        </p>
+      </div>
     </div>
+  <% end %>
+  <br/>
+  <div>
+    <%= link_to 'Retour', :action => 'index' %>
   </div>
-<% end %>
-<br/>
-<div>
-  <%= link_to 'Retour', :action => 'index' %>
 </div>

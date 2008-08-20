@@ -3,11 +3,8 @@
   <%= tiny_mce if using_tiny_mce? %>
 <% end %>
 
-<h4>Nouvelle page</h4>
-<div class="cadre">
+<h1>Nouveau contenu</h1>
 <% form_for(@content) do |content| %>
   <%= content.error_messages %>
-  <%= render :partial => 'form', :locals => {:content => content} %>
-  <%= content.submit  'Ajouter' %>  <%= link_to 'Retour', :action => 'index' %>
+  <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Ajouter"} %>
 <% end %>
-</div>
