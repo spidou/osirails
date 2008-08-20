@@ -12,7 +12,7 @@
           <div <%= "id='customer_contact#{contact.id}'" %>>
             <%= contact.first_name + " " + contact.last_name%>
             <%= link_to "Plus d'infos", edit_customer_contact_path(@supplier, contact,:owner_type => "Supplier") %>
-            <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :url => {:owner_type => @owner_type}) %>
+            <%= link_to("Supprimer", [@supplier,  contact], :method => :delete) %>
           </div>
       <%end #for%>   
   </fieldset>

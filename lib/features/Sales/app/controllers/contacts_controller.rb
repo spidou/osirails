@@ -92,16 +92,11 @@ class ContactsController < ApplicationController
 
     @contact = Contact.find(params[:id])
     
-    
     @owner_type = params.keys.last.slice(0..-4)
-    
-    if params[:owner_type]  == "Customer"
-      @owner =Customer.find(params[:owner])
-    elsif params[:owner_type]  == "Establishment"
-      @owner =Establishment.find(params[:owner])
-    elsif params[:owner_type]  == "Supplier"
-      @owner =Supplier.find(params[:owner])
-    end
+    @owner_id = params["#{@owner_type}_id"]
+
+    eval "@owner =#{@owner_type.capitalize}.find(@owner_id)"
+
     
     @owner.contacts.delete(@contact)
     redirect_to :back
