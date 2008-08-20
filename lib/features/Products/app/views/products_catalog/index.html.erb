@@ -1,4 +1,5 @@
 <h1>Visualiser le catalogue des produits</h1>
+<div class='cadre'>
 <div id ='all_selects'>
   <span id='show_categories'>
     <% (find_max_level + 1).times do |value|%>
@@ -16,7 +17,8 @@
 
 <% find_max_level.times do |value|%>
   <%= observe_field("select_#{value}", :update => "show_references", :url => {:action => :show_references}, :with => 'parameter' ) %>
-  <%= observe_field("select_#{value}", :update => "select_#{value+1}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>
+  <%= observe_field("select_#{value}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>
 <% end %>
 
 <%= observe_field("select_#{find_max_level}", :update => "show_references", :url => {:action => :show_references}, :on => "click", :with => 'parameter' ) %>
+</div>

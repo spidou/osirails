@@ -3,11 +3,8 @@ module ProductsCatalogHelper
   # This method permit to return a collection for all categories.
   def column(categories,value)
     if value == 0
-      categories.each do |category|
-        category.name += " (#{category.product_references_count})"
-      end
       return  categories
-    else value > 0
+    else value >= 1
       child = []
       categories.each do |category|
         child << category.child_ids
@@ -32,12 +29,14 @@ module ProductsCatalogHelper
   # This method permit to get a structure of catalog
   def show_category_column(categories,value)
     get_categories_columns = []
-      collection = column(categories,value)
-      selected = collection.collect { |t| t.id.to_s }
-      get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\" style=\"width:160px;\"><option value=\"-1\" selected=\"selected\">Il y a "+
-        pluralize(collection.size, "categorie", "categories")+"</option>"+
-        options_from_collection_for_select(collection, :id, :name, selected)+"</select>"
-    get_categories_columns
+    collection = column(categories,value)
+    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\" style=\"width:160px;overflow:scroll;\"><option value=\"-1\" selected=\"selected\">Il y a "+
+      pluralize(collection.size, "categorie", "categories")+"</option>"
+    collection.each do |category|
+      get_categories_columns << "<option value=#{category.id}>#{category.name} (#{category.product_references_count})</option>"
+    end
+    get_categories_columns << "</select>"
+    get_categories_columns 
   end
   
   # This method permit to have a reference column
