@@ -741,41 +741,37 @@ table.presentation tr:hover > td{
 	background:white;
 }
 
-.cadre form.text_form input[type=text] {
-	width: 30%;
+.cadre input[type=text] {
+	width: 50%;
 }
 
-.cadre form.text_form form {
-	width: 850px;
+.cadre form {
+	width: 950px;
 	text-indent:0;
 }
 
-.cadre form.text_form form p {
+.cadre form p {
 	margin: 0.8em 0;
 }
 
-.cadre form.text_form {
+.cadre form p.text_form {
 	overflow: hidden; /* Empêcher le dépassement des flottants */
-	width: 850px;
-	margin:0;
-	padding:0;
-	text-indent:0;
+	width: 100%;
 }
 
-.cadre form.text_form p label {
+.cadre form p.text_form label {
 	float: left;
-	width: 200px;
+	width: 150px;
 	text-align: right;
 	cursor: pointer;
-/*	margin-bottom:15px;	*/
 }
 
-.cadre form.text_form label:hover {
+.cadre form p.text_form label:hover {
 	text-decoration:underline;
 	color: rgb(234,136,28);
 }
 
-.cadre form.text_form label span.info {
+.cadre form p.text_form label span.info {
 	display: block;
 	margin-top: .2em;
 	font-size: .8em;
@@ -783,31 +779,35 @@ table.presentation tr:hover > td{
 	cursor: default;
 }
 
-.cadre form.text_form input,
-.cadre form.text_form textarea {
+.cadre form p.text_form input,
+.cadre form p.text_form textarea {
 	width: 250px;
-	margin:10px 0px 10px 12px;
+	margin-left: 12px;
 	border: #CCC 1px solid;
 	padding: 2px 4px;
 }
 
-.cadre form.text_form select {
+.cadre form p.text_form select {
+
+}
+
+.cadre form p.text_form select {
 		border: #CCC 1px solid;
 }
 
-.cadre form.text_form input:hover,
-.cadre form.text_form textarea:hover {
+.cadre form p.text_form input:hover,
+.cadre form p.text_form textarea:hover {
 	border: #aeaeae 1px solid;
 	background: #f5f5f5;
 }
 
-.cadre form.text_form input:focus,
-.cadre form.text_form textarea:focus,
-.cadre form.text_form select:focus {
+.cadre form p.text_form input:focus,
+.cadre form p.text_form textarea:focus,
+.cadre form p.text_form select:focus {
 	background: #f5c384;
 }
 
-.cadre form.text_form textarea {
+.cadre form p.text_form textarea {
 	padding: 2px 0 0 4px;
 	width: 320px;
 	height: 6em;
