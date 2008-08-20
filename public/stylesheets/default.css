@@ -25,6 +25,10 @@ a:hover {
 	color:#698bcd;
 }
 
+a>img {
+	border:none;
+}
+
 /*:::::::::TAB EMR:::::::::*/
 caption {
 	background: #afc2ea;
