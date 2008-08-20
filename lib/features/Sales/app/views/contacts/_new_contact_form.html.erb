@@ -79,7 +79,7 @@
 
 <%unless error%>
 <div <%= "id=link_add_remove_contact_#{cpt.to_i + 1}"%>>
-    <%=link_to_remote("Ajouter", :url => {:controller => "contacts", :action => "add_contact", :cpt => cpt.to_i + 1,
+    <%=link_to_remote("(+)", :url => {:controller => "contacts", :action => "add_contact", :cpt => cpt.to_i + 1,
         :owner_id => owner_id, :owner_type => owner_type})%>
 </div>
 
