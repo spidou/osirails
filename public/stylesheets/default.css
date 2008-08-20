@@ -825,7 +825,7 @@ table.presentation tr:hover > td{
 .cadre input.disable-stylesheet-width {
 	float:none;
 	margin:0;
-	width:auto;
+	width:inherit;
 }
 
 /*///////////////////////*/
