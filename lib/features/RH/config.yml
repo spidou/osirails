@@ -21,3 +21,6 @@ menus:
           job_contracts:
             title: Contrat de travail
             description: Gestion du contrat de travail avec avenant au contrat 
+          premia:
+            title: Primes
+            description: Gestion des primes 

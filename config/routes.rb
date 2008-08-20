@@ -30,6 +30,7 @@ ActionController::Routing::Routes.draw do |map|
   ### HUMAN RESOURCES
   map.resources :employees do |employee|
     employee.resources :salaries
+    employee.resources :premia
   end
   map.resources :jobs
   map.resources :job_contracts

@@ -1,16 +1,19 @@
 <h1>Modifier le contrat de travail de <%=@employee.fullname%> </h1>
 
-<div class="cadre">
+
 <% form_for(@job_contract) do |f| %>
-  <%=f.error_messages%>  
+  <%=f.error_messages%> 
+  
+  <div class="cadre">
+  <h2>Informations :</h2> 
   <p>
     <%= f.label :start_date, "Date de début du contrat :"%>
-    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
+    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year]%>
   </p>
   
   <p>
     <%= f.label :end_date, "Date de fin du contrat :"%>
-    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :use_month_numbers => true%>
+    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year]%>
   </p>
   
   <p>
@@ -22,11 +25,24 @@
     <%= f.label :job_contract_type_id, "Type de contrat de l'employée :"%>
     <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
   </p>
-
+  </div>
+  <div class="cadre">
+  <h2>Salaire :</h2>
   <p>
     <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>
     <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"%>
     <%= select('salaries[type]','value', ["Brut","Net"], :selected => "Brut")%>
+  </p>
+  </div>
+  <div class="cadre">
+  <h2>Prime :</h2>
+  <p>
+    <%= label_tag 'premia[premium]',"Prime :"%>
+    <%= text_field_tag 'premia[premium]',@employee.premia==[]? "": @employee.premia.last['premium'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"%>
+    &nbsp;le&nbsp;
+    <%= date_select 'premia[date]',@employee.premia==[]? "": @employee.premia.last['date'], :start_year => 2000, :order => [:day,:month,:year] %>
+    <br/>motif &#58;
+    <%= text_area_tag 'premia[remark]',@employee.premia==[]? "": @employee.premia.last['remark'].to_s%>
   </p>
 
   

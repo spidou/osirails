@@ -50,51 +50,51 @@ module EmployeesHelper
   
   def display_number0
     if params[:numbers].nil?
-      number0 = text_field_tag( 'numbers[0][number]', '', :size => 8, :maxlength => 10)
+      number0 = text_field_tag( 'numbers[0][number]', '', :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     else
-      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 8, :maxlength => 10)
+      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     end  
     number0
   end
   
   def display_bank_code
     if params[:iban].nil?
-      text_field_tag 'iban[bank_code]', '', :size => 3, :maxlength => 5 
+      text_field_tag( 'iban[bank_code]', '', :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      text_field_tag 'iban[bank_code]',params[:iban]['bank_code'] , :size => 3, :maxlength => 5 
+      text_field_tag( 'iban[bank_code]',params[:iban]['bank_code'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     end
   end
   
   def display_teller_code
     if params[:iban].nil?
-      text_field_tag 'iban[teller_code]', '', :size => 3, :maxlength => 5 
+      text_field_tag( 'iban[teller_code]', '', :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      text_field_tag 'iban[teller_code]', params[:iban]['teller_code'], :size => 3, :maxlength => 5 
+      text_field_tag( 'iban[teller_code]', params[:iban]['teller_code'], :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     end
   end
   
   def display_account_number
    
     if params[:iban].nil?
-      text_field_tag 'iban[account_number]', '', :size => 8, :maxlength => 10
+      text_field_tag( 'iban[account_number]', '', :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     else
-      text_field_tag 'iban[account_number]',params[:iban]['account_number'] , :size => 8, :maxlength => 10 
+      text_field_tag( 'iban[account_number]',params[:iban]['account_number'] , :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     end
   end
    
   def display_key
     if params[:iban].nil?
-      text_field_tag 'iban[key]', '', :size => 1, :maxlength => 2
+      text_field_tag( 'iban[key]', '', :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
     else
-      text_field_tag 'iban[key]', params[:iban]['key'] , :size => 1, :maxlength => 2
+      text_field_tag( 'iban[key]', params[:iban]['key'] , :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
     end
   end
   
   def display_holder_name
     if params[:iban].nil?
-      text_field_tag 'iban[holder_name]'
+      text_field_tag( 'iban[holder_name]')
     else
-      text_field_tag 'iban[holder_name]',params[:iban]['holder_name']
+      text_field_tag( 'iban[holder_name]',params[:iban]['holder_name'])
     end
   end
   
@@ -121,7 +121,7 @@ module EmployeesHelper
     name = "numbers[" + params[:opt] + "]"
     html =  "<p id='" + params[:opt] + "'>" 
     html += collection_select( name, :indicative_id, Indicative.find(:all), :id, :indicative) + "\n"
-    html += text_field_tag( name + "[number]", '', :size => 8, :maxlength => 10 ) + "\n"
+    html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
     html += collection_select( name, :number_type_id, NumberType.find(:all), :id, :name)
     html
   end
@@ -152,7 +152,7 @@ module EmployeesHelper
         name =  "numbers[" + f.to_s + "]"
         html += "<p id=" + f.to_s + ">"
         html += collection_select( name, :indicative_id, Indicative.find(:all), :id, :indicative) + "\n"
-        html += text_field_tag( name+"[number]", params[:numbers][f.to_s]['number'], :size => 8, :maxlength => 10 ) +"\n"
+        html += text_field_tag( name+"[number]", params[:numbers][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
         html += collection_select(name, :number_type_id, NumberType.find(:all), :id, :name) +"\n"
         html += link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => f.to_s },:href=>(url_for :action=>'remove_line'))
         html += "</p>"

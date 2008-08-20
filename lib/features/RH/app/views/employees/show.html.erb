@@ -1,59 +1,67 @@
-<h1>Fiche de <%=h @employee.civility.name%> <%=h @employee.last_name%> <%=h @employee.first_name%> </h1>
+<h1>Fiche de <%=h @employee.civility.name unless @employee.civility.nil?%> <%=h @employee.last_name%> <%=h @employee.first_name%> </h1>
 
-<div class="cadre">
+
 <%if @list==true%>
-  <p>
-    <b>Date de naissance :</b>
-    <%=h @employee.birth_date.strftime("%d/%m/%y") %>
-  </p>
+  <div class="cadre">
+  <h2>Informations personnelles :</h2>
+    <p>
+      <b>Date de naissance :</b>
+      <%=h @employee.birth_date.strftime("%d/%m/%y") %>
+    </p>
 
-  <p>
-    <b>Situation familiale :</b>
-    <%=h @employee.family_situation.name %>
-  </p>
-  
-  <p>
-    <b>Fiche de poste :</b>
-    <div>
-      <table>
-        <tr>
-          <th>service</th>
-          <th>responsable hierachique</th>
-        </tr>
-        <%for service in @employee.services%>
+    <p>
+      <b>Situation familiale :</b>
+      <%=h @employee.family_situation.name unless @employee.family_situation.nil?%>
+    </p>
+  </div>
+
+  <div class="cadre">
+  <h2>Fiche de poste</h2>  
+    <p>
+      <b>Fiche de poste :</b>
+      <div>
+        <table>
           <tr>
-            <td>
-              <%=service.name%>
-            </td>
-            <td>
-              <%=%>
-            </td>
+            <th>Service</th>
+            <th>Responsable hierachique</th>
           </tr>
-        <% end %>
-      </table>
-    </div>
-    
-    <div>
-      <table>
-        <tr>
-          <th>fonction</th>
-        </tr>
-        <%for job in @employee.jobs%>
+          <%for service in @employee.services%>
+            <tr>
+              <td>
+                <%=service.name%>
+              </td>
+              <td>
+                <%=%>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+      
+      <div>
+        <table>
           <tr>
-            <td>
-              <%=job.name%>
-            </td>
+            <th>Fonction</th>
           </tr>
-        <% end %>
-      </table>
-    </div>
-  </p>
+          <%for job in @employee.jobs%>
+            <tr>
+              <td>
+                <%=job.name%>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      </div>
+    </p>
+  </div>  
 <%end%>
+
+
 
 <%if @view==true%>
 
-  <fieldset>
-    <legend>Emails</legend>
+  <div class="cadre">
+  <h2>Emails :</h2>
     <p>
       <b>Personnel :</b>
       <%=h @employee.email %>
@@ -62,9 +70,10 @@
       <b>Professionnel :</b>
       <%=h @employee.society_email %>
     </p>
-  </fieldset>
-  <fieldset>
-    <legend>Coordonn&eacute;es</legend>
+  </div>
+  
+  <div class="cadre">
+  <h2>Coordonn&eacute;es</h2>
     <p>
       <b>Adresse :</b>
       <%=h @address.address1 + " " + @address.address2 %>
@@ -81,12 +90,27 @@
       <b>Code postal :</b>
       <%=h @address.zip_code %>
     </p>
-  </fieldset> 
+    <p>
+      <b>Numéro(s) :</b>
+      <table>
+        <tr>
+          <th>Type </th>
+          <th>Num&eacute;ro </th>
+        </tr>
+      <%for number in @numbers%>
+        <tr>
+          <td><%=h number.number_type.name %></td>
+          <td><%=link_to number.indicative.indicative + " " + number.number, employee_path(@employee) ,:title => "nationalité numéro : " + number.indicative.country %></td>
+        </tr>
+      <%end%>
+      </table>
+    </p>
+  </div> 
     
   
 
-<fieldset>
-  <legend>Contract de travail :</legend>
+<div class="cadre">
+<h2>Contract de travail :</h2>
   <p>
     <b>P&egrave;riode du contract :</b>
     <%=h @job_contract.start_date.nil? ? "[Valeur Non définie]" : @job_contract.start_date.strftime("%d/%m/%Y") %> jusqu&apos; au 
@@ -97,36 +121,48 @@
     <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
     <ul>
       <li>Brut :
-        <%=h  @job_contract.salaries.last['salary'].to_s + " €/m" unless @job_contract.salaries==[] %>
+        <%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €/m"  %>
       </li>
       <li>Net :
-        <%=h  net(@job_contract.salaries.last['salary']).to_s + " €/m" unless @job_contract.salaries==[] %>
+        <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €/m"  %>
       </li>
     </ul>
     
   </p>
   <p>
      <b>Prime :</b>
-     <% i=0%>
-     <%for premium in @employee.premia%>
-      <%i+=1%>
-      <ul>
-      <li>
-      <%if i=@employee.premia.size-4%>
-        <%= premium['value'].to_s + " €  le " + premium['date'].strftime("%d/%m/%Y") + " desc : " + premium['remark'] %>
-      </li>
-      </ul>  
-      <%end%>  
+     <%= link_to 'Voir historique des primes',employee_premia_path(@employee)%>
+       <table>
+        <tr>
+          <th>Montant</th>
+          <th>Commentaire</th>
+          <th>Date</th>          
+        </tr> 
+        <% @employee.premia.size > 5 ? min = -5 : min = @employee.premia.size*-1%> 
+     <%@employee.premia[min..@employee.premia.size].each do |premium|%>
+        <tr>
+          <td><%=h premium['premium'].to_s + " €"%></td>
+          <td><%=h premium['remark']  %></td>  
+          <td><%=h premium['date'].strftime("%d/%m/%Y") unless premium['date'].nil? %></td>
+        </tr>    
      <%end%>
+     </table>
+  </p>
+  <p>
+    <b>Status employ&eacute;e :</b>
+    <%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %>
+  </p>
+  
+  <p>
+    <b>Type de contrat de l&apos;employ&eacute;e :</b>
+    <%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %>
   </p>
 <%end%>
   
-  <%if @edit==true %>
-    <p>
+<%if @edit==true %>
+  <p>
     <%= link_to 'Modifier le contract de travail', edit_job_contract_path(@job_contract) %> 
-    </p>
-</fieldset>
-
-<%= link_to 'Modifier', edit_employee_path(@employee) %> |
-  <%end%>
+  </p>
+  <%= link_to 'Modifier', edit_employee_path(@employee) %> |
+<%end%>
 <%= link_to 'Retour', employees_path %></div>
