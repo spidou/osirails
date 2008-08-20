@@ -2,7 +2,7 @@ class ContactsController < ApplicationController
   
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]  
   
-  def create
+  def create(owner)
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
@@ -31,12 +31,12 @@ class ContactsController < ApplicationController
         eval"unless params['valid_contact_#{i+1}'].nil?
                      unless params['valid_contact_#{i+1}']['value'] == 'false'
                        if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-                         unless @new_contact#{i+1}.save and @customer.contacts << @new_contact#{i+1}
+                         unless @new_contact#{i+1}.save and @owner.contacts << @new_contact#{i+1}
                           @error = true
                          end
                        elsif params['new_contact#{i+1}_id'] != ''                        
-                         if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
-                            @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
+                         if @owner.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false
+                            @owner.contacts << Contact.find(params['new_contact#{i+1}']['id'])
                          end
                         else
                           @error = true
@@ -45,7 +45,7 @@ class ContactsController < ApplicationController
                   end"
       end
     end
-    
+   
   end
   
   def edit
@@ -103,8 +103,8 @@ class ContactsController < ApplicationController
     end
 
     @contact.destroy
-
-    eval("redirect_to(edit_#{@owner_type}_path(params[:customer_id]))")
+    redirect_to :back
+#    eval("redirect_to(edit_#{@owner_type}_path(params[:customer_id]))")
      
   end
   

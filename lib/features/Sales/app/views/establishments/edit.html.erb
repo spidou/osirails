@@ -3,14 +3,31 @@
   <% form_for([@customer, @establishment])  do |establishment| %>
     
    <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment, :zip_code => @zip_code} %>
-   
+  
+  <% if @contacts.length > 0 -%>
+  <fieldset>
+    <% #Faire un plurialize "Contacts" de la legend"%>
+    <legend> Contacts du client</legend> 
+      <% for contact in @contacts%>
+          <div <%= "id='customer_contact#{contact.id}'" %>>
+            <%= contact.first_name + " " + contact.last_name%>
+            <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact,:owner_type => "Customer") %>
+            <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :url => {:owner_type => @owner_type}) %>
+          </div>
+      <%end #for%>   
+  </fieldset>
+  <%end #if%> 
+  
   <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
                 :owner_id => @establishment.id, :params => params, :new_contact_number => @new_contact_number,
                 :error => @error} %>
-
+              
    <%= submit_tag 'Modifier' %>
   <%end%>
   
 </fieldset>
+  
+
+  
 <%= link_to "Supprimer", [@customer, @establishment], :method => :delete%>
 <%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
