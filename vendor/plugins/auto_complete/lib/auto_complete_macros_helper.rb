@@ -56,11 +56,11 @@ module AutoCompleteMacrosHelper
   # <tt>:method</tt>::               Specifies the HTTP verb to use when the autocompletion
   #                                  request is made. Defaults to POST.
   def auto_complete_field(field_id, options = {})
+    
     function =  "var #{field_id}_auto_completer = new Ajax.Autocompleter("
     function << "'#{field_id}', "
     function << "'" + (options[:update] || "#{field_id}_auto_complete") + "', "
     function << "'#{url_for(options[:url])}'"
-    
     js_options = {}
     js_options[:tokens] = array_or_string_for_javascript(options[:tokens]) if options[:tokens]
     js_options[:callback]   = "function(element, value) { return #{options[:with]} }" if options[:with]

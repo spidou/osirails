@@ -47,6 +47,20 @@ class AddRows < ActiveRecord::Migration
     role_admin = Role.create  :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
     role_guest = Role.create  :name => "guest" ,:description => "Ce rôle permet un accés à toutes les ressources publiques en lecture seule" 
     
+    # Default ThirdType
+    ThirdType.create :wording => "Privé"
+    ThirdType.create :wording => "Etat"   
+    ThirdType.create :wording => "Collectivité"
+    
+    # Default ContactType
+    ContactType.create :name => "Normal", :owner => "Customer"
+    ContactType.create :name => "Contact de facturation", :owner => "Customer"
+    ContactType.create :name => "Contact de livraison", :owner => "Customer"
+    ContactType.create :name => "Normal", :owner => "Supplier"
+    ContactType.create :name => "Normal", :owner => "Establishment"
+    ContactType.create :name => "Contact de livraison", :owner => "Establishment"
+    
+    
     ConfigurationManager.admin_actual_password_policy = 'l0'
     
     user_admin = User.create :username => "admin" ,:password => "admin", :enabled => 1
@@ -77,7 +91,8 @@ class AddRows < ActiveRecord::Migration
   end
 
   def self.down
-    [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,JobContractType,Service,EmployeeState].each do |model|
+    [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,JobContractType,
+      Service,EmployeeState,ThirdType,Employee].each do |model|
       model.destroy_all
     end
   end
