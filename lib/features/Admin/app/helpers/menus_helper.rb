@@ -2,12 +2,12 @@ module MenusHelper
   
   # This method permit to show or not show a button for up a menu
   def show_up_button(menu)
-    link_to(image_tag("/images/up_arrow3.png", :alt =>"Monter"), { :action => "move_up", :id => menu.id }) if menu.can_move_up?
+    link_to(image_tag("/images/up_arrow4.png", :alt =>"Monter"), { :action => "move_up", :id => menu.id }) if menu.can_move_up?
   end
   
   # This method permit to show or not show a button for down a menu
   def show_down_button(menu)
-    link_to(image_tag("/images/down_arrow3.png", :alt => "Descendre"), { :action => "move_down", :id => menu.id }) if menu.can_move_down?
+    link_to(image_tag("/images/down_arrow4.png", :alt => "Descendre"), { :action => "move_down", :id => menu.id }) if menu.can_move_down?
   end
   
   # This method permit to show or not show a button for delete a menu
