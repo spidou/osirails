@@ -25,7 +25,7 @@
 
   <p>
     <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>
-    <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:html=>{:class=>"disable-stylesheet-width"}%>
+    <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"}%>
     <%= select('salaries[type]','value', ["Brut","Net"], :selected => "Brut")%>
   </p>
 
