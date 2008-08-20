@@ -968,6 +968,12 @@ ul.parent>li {
 	color:#EA972D;
 }
 
+.hierarchic ul li a>img {
+	position:relative;
+	top:2px;
+}
+
+
 /*Onglets*/
 
 div.tabs+.cadre {
