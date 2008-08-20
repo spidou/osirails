@@ -14,4 +14,9 @@ module CustomersHelper
   def new_link
     link_to_remote("Valider", :url => {:action => "add_form", :cpt => params[:cpt].to_i+1})
   end
+  
+  def get_new_contact_form(cpt, params, error)
+    render :partial => 'contacts/new_contact_form', 
+      :locals => {:cpt=> cpt, :error => error, :owner_type => params[:owner_type], :owner_id => params[:owner_id]}
+  end
 end

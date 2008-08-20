@@ -106,18 +106,22 @@ class CustomersController < ApplicationController
                   end"
       end
     end
-    puts params[:new_contact1][:id]
+    puts params[:new_establishment_number]
     # If all new_contact are valids, they are save 
     unless @error
       new_contact_number.times do |i|
         eval"unless params['valid_contact_#{i+1}'].nil?
                      unless params['valid_contact_#{i+1}']['value'] == 'false'
-                       if @new_contact#{i+1}
-                         unless @new_contact#{i+1}.save
+                       if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
+                         unless @new_contact#{i+1}.save and @customer.contacts << @new_contact#{i+1}
                           @error = true
+                         end
+                       elsif params['new_contact#{i+1}_id'] != ''                        
+                         if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
+                            @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
+                         end
                         else
-                          @customer.contacts << Contact.last
-                        end
+                          @error = true
                       end
                     end
                   end"

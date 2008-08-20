@@ -78,47 +78,12 @@
       <% end %>          
     </div>
   </fieldset>
+  <% @error ||= false %>
+                                        
+                <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Customer",
+                :owner_id => @customer.id, :params => params, :new_contact_number => @new_contact_number,
+                :error => @error} %>
 
-  <% params[:new_contact_number].nil? ? new_contact_number = 0 : new_contact_number = @new_contact_number -%>
-  <%= hidden_field("new_contact_number", "value", "value" => new_contact_number) %>
-  <% unless params[:new_contact_number].nil? -%>        
-    <% new_contacts_number = params[:new_contact_number]["value"].to_i -%>
-  <% end -%>
-  <fieldset>
-    <legend> Ajouter un nouveau contact pour le client </legend>
-
-      <div id="new_contact">
-          <%unless @error%>
-            <div id="link_add_remove_contact_1">
-              <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, 
-                  :owner_id => @customer.id, :owner_type => "Customer"}) %>
-            </div> 
-          <%end%>
-          <% cpt = 1 %>
-          <% unless params[:new_contact_number].nil? %>
-          <% new_contacts_number.times do |i| %>
-            <%unless params["valid_contact_#{i+1}"].nil?%>
-              <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
-              <div id =<%= "new_contact#{i+1}" %>>
-                <%@old_contact = {:first_name => params["new_contact#{i+1}"]["first_name"],
-                                          :last_name => params["new_contact#{i+1}"]["last_name"],
-                                          :email_name => params["new_contact#{i+1}"]["email"]}%>
-                <%= render :partial => 'contacts/new_contact', :locals => {:cpt=> i+1, :error => true, :owner_type => "Customer",
-                :owner_id => @customer.id, :old_contact => @old_contact} %>
-              
-              </div>
-              <%end #unless%>
-            <%end #unless%>
-            <% cpt += 1 %>
-          <% end #unless%>
-    
-          <div id="link_add_remove_contact_<%=cpt%>">
-            <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
-                :owner_id => @customer.id, :owner_type => "Customer"}) %>
-          </div>
-          <% end %>
-      </div>
-  </fieldset>
 
   <%= customer.submit  'Modifier' %>
 <% end %>
