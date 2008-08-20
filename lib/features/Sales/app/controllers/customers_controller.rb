@@ -106,7 +106,7 @@ class CustomersController < ApplicationController
                   end"
       end
     end
-    puts params[:new_establishment_number]
+#    puts params[:new_establishment_number]
     # If all new_contact are valids, they are save 
     unless @error
       new_contact_number.times do |i|

@@ -2,7 +2,7 @@
     <%= error_messages_for("new_contact#{cpt}") %>
     <%= link_to_remote("supprimer", :url => {:action => "delete_new_contact", :id => cpt})%>
 </div>
-
+<%= owner_id%>
 <% owner_id ||= params[:owner_id] %>
 <div id='<%= "new_contact#{cpt}"%>'>
 

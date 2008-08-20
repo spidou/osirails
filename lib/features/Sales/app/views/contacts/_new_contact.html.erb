@@ -20,8 +20,8 @@
             <%unless params["valid_contact_#{i+1}"].nil?%>
               <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
               <div <%= "id ='new_contact#{i+1}'" %>>
-              <= params["onwner_id"]%>
-              <% owner_id%>
+              <%= params["onwner_id"]= owner_id%>
+              
               <%= get_new_contact_form(cpt, params, error)%>
 
             </div> <% #new_contact_cpt%>
