@@ -16,7 +16,7 @@
         <td><%=  user.employee.nil? ? "" : user.employee.fullname  %></td>
         <td><%= link_to user.username, user %></td>
         <td><%= user.enabled ? "Oui" : "Non" %></td>
-        <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.strftime("%d/%m/%Y  [%H:%M]") %></td>
+        <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.strftime("%d/%m/%Y  [%Hh%M]") %></td>
         <td><%= link_to 'D&eacute;tails', user %> &#124;
                 <%= link_to 'Modifier', edit_user_path(user) %>
         </td>
