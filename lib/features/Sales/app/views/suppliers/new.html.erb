@@ -4,6 +4,7 @@
 <% form_for(@supplier) do |supplier| %>
   <%= supplier.error_messages %>
   <%= render :partial => 'thirds/third', :locals => {:third => supplier} %>
+  <%= supplier.submit  'Créer' %> 
 <% end %>
 </fieldset>
 <%= link_to "Retour a l'accueil", :action => 'index' %>

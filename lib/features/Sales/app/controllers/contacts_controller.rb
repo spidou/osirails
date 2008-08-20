@@ -92,6 +92,7 @@ class ContactsController < ApplicationController
 
     @contact = Contact.find(params[:id])
     
+    
     @owner_type = params.keys.last.slice(0..-4)
     
     if params[:owner_type]  == "Customer"
@@ -101,8 +102,8 @@ class ContactsController < ApplicationController
     elsif params[:owner_type]  == "Supplier"
       @owner =Supplier.find(params[:owner])
     end
-
-    @contact.destroy
+    
+    @owner.contacts.delete(@contact)
     redirect_to :back
 #    eval("redirect_to(edit_#{@owner_type}_path(params[:customer_id]))")
      
@@ -115,7 +116,6 @@ class ContactsController < ApplicationController
   def auto_complete_responder_for_first_name(owner_id,value, owner_type)
     @contacts = []
     eval "@owner = #{owner_type}.find(owner_id)"
-    #    @owner = Customer.find(owner_id)
     if @owner.contacts.length > 0
       @owner.contacts.each do |owner_contact|
         if owner_contact.first_name.downcase.grep(/#{value.downcase}/).length > 0

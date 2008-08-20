@@ -13,6 +13,17 @@ menus:
       customers:
         title: Clients
         description: Gestion des clients
+        children:
+          contacts:
+            title: Contacts de Client
+            description: Gestion des contacts des clients
+          establishments:
+            title: Etablissement du Client
+            description: Gestion des establissement du client
       suppliers:
         title: Fournisseurs
         description: Gestion des fournisseurs
+        children:
+          contacts:
+            title: Contacts du Fournisseur
+            description: Gestion des contacts du Client

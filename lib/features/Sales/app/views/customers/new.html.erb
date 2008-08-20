@@ -5,6 +5,7 @@
     <legend>Création d'un nouveau Client</legend>
   <%= customer.error_messages %>
   <%= render :partial => 'thirds/third', :locals => {:third => customer} %> 
+  <%= customer.submit  'Créer' %> 
   </fieldset>
 <% end %>
 <%= link_to "Retour a l'accueil", :action => 'index' %>
