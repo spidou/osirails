@@ -4,6 +4,10 @@
     
    <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment, :zip_code => @zip_code} %>
    
+  <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
+                :owner_id => @establishment.id, :params => params, :new_contact_number => @new_contact_number,
+                :error => @error} %>
+
    <%= submit_tag 'Modifier' %>
   <%end%>
   

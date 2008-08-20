@@ -2,7 +2,7 @@
     <%= error_messages_for("new_contact#{cpt}") %>
     <%= link_to_remote("supprimer", :url => {:action => "delete_new_contact", :id => cpt})%>
 </div>
-<%= owner_id%>
+
 <% owner_id ||= params[:owner_id] %>
 <div id='<%= "new_contact#{cpt}"%>'>
 
@@ -12,7 +12,8 @@
     :select => 'ul_contact_name',
     :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
     :with => "'value='+document.getElementById('new_contact#{cpt}_first_name').value+
-    '&owner_id=#{owner_id}'"})%>
+    '&owner_id=#{owner_id}'+
+    '&owner_type=#{owner_type}'"})%>
 
 <p><%= label :new_contact, "Prénom" %><br/>
 <%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt},{:select => 'ul_contact_name',
@@ -42,13 +43,13 @@
   <p><%=label :new_contact, "Type de client"%><br/>
   <%= select("new_contact#{cpt}", "contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", owner_type]).collect {|a| [ a.name, a.name]})%></p>
   </div>
-
-  <div id="contact_<%=cpt%>_show_info" style='display: none;'></div>
-
+  
   <%= hidden_field("auto_complete_#{cpt}", "select", "value" => 'false')%>
   <%= hidden_field("new_contact#{cpt}","id", "value" => '')%>
   <%= hidden_field("valid_contact_#{cpt}", "value", "value" => 'true')%>
   <%= hidden_field("create_contac", "#{cpt}", "value" => "true")%>
+  
+  <div id="contact_<%=cpt%>_show_info" style='display: none;'></div>
 </div>
 
 <%= observe_field("new_contact#{cpt}_first_name",
@@ -66,7 +67,7 @@
         :frequency => 0.1, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
-        '&contact_id='+encodeURIComponent(document.getElementsByClassName('selected').item(0).childNodes.item(1).innerHTML)+
+        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
         '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_#{cpt}_select').value)+
         '&cpt='+encodeURIComponent(#{cpt})")
 %>

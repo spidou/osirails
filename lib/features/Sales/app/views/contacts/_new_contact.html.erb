@@ -10,7 +10,7 @@
           <%unless error%>
             <div id="link_add_remove_contact_1">
               <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, 
-                  :owner_id => owner_id, :owner_type => "Customer"}) %>
+                  :owner_id => owner_id, :owner_type => owner_type}) %>
             </div> 
           <%end%>
           <% cpt = 1 %>
@@ -20,10 +20,18 @@
             <%unless params["valid_contact_#{i+1}"].nil?%>
               <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
               <div <%= "id ='new_contact#{i+1}'" %>>
-              <%= params["onwner_id"]= owner_id%>
+              <% params["owner_id"]= owner_id%>
+              <%params["owner_type"] = owner_type%>       
               
-              <%= get_new_contact_form(cpt, params, error)%>
-
+                <%= get_new_contact_form(cpt, params, error)%>
+                <%unless params["new_contact#{i+1}"]["id"].to_i == 0%>
+                <div id="contact_<%=i+1%>_show_info" style='display: block;'>
+                <%= get_new_contact_info(params["new_contact#{i+1}"]["id"].to_i, cpt)%>
+                </div>
+                <%=javascript_tag "document.getElementById('contact_#{cpt}_input_info').style.display = 'none'"%>
+                <%end%>
+              
+ 
             </div> <% #new_contact_cpt%>
 
             <%end #unless%>
@@ -33,7 +41,7 @@
     
         <div id="link_add_remove_contact_<%=cpt%>">
           <%= link_to_remote("Ajouter", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
-              :owner_id => owner_id, :owner_type => "Customer"}) %>
+              :owner_id => owner_id, :owner_type => owner_type}) %>
         </div>
           <% end %>
       </div> <% #new_contact%>
