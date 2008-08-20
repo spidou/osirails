@@ -822,9 +822,10 @@ table.presentation tr:hover > td{
 	margin-left: 160px;
 }
 
-.cadre p.disable-stylesheet-width {
+.cadre input.disable-stylesheet-width {
 	float:none;
 	margin:0;
+	width:auto;
 }
 
 /*///////////////////////*/

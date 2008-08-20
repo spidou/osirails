@@ -97,7 +97,7 @@
     <%= label_tag 'iban[account_number]' ,"N° de compte :"%> 
     <%= display_account_number %>
   </p>
-   <p>
+   <p class="disable-stylesheet-width">
     <%= label_tag 'iban[key]' ,"Clée :"%> 
     <%= display_key %>
   </p>
@@ -149,9 +149,7 @@
   </fieldset>
     <span id="main_submit">
       <%= f.submit "Ajouter" %>
-      (<%= lightbox_link_to "Lightbox", "/images/star.png" %>|
-      <%= link_to 'Ajouter', new_job_path%>|
-      <%= link_to_remote_redbox("redbox",:url => {:controller=>'Jobs', :action=>'new'}) %>)
+
     </span>
 <% end %>
  
