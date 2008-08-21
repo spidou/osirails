@@ -2,7 +2,7 @@ class RemoveColumnSalary < ActiveRecord::Migration
   def self.up 
     remove_column :salaries, :salary
     add_column :salaries, :salary, :float
-    remove_column :premia, :value
+    remove_column :premia, :prime
     add_column :premia, :premium, :float
   end
 
@@ -10,6 +10,6 @@ class RemoveColumnSalary < ActiveRecord::Migration
     remove_column :salaries, :salary
     add_column :salaries, :salary, :integer
     remove_column :premia, :premium
-    add_column :premia, :value, :integer
+    add_column :premia, :prime, :integer
   end
 end
