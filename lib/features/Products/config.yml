@@ -11,12 +11,13 @@ menus:
       product_reference_manager:
         title: Gestion des références produits
         description: Permet la gestion des familles et des références produits
-      product_reference_categories:
-        title: Gestion des catégories
-        description: Permet la gestion des categories
-      product_references:
-        title: Gestion des références
-        description: Permet la gestion des références
+        children:
+          product_reference_categories:
+            title: Gestion des catégories
+            description: Permet la gestion des categories
+          product_references:
+            title: Gestion des références
+            description: Permet la gestion des références
       products_catalog:
           title: Catalogue des produits et références
           description: Permet l'affichage du catalogue de produit 

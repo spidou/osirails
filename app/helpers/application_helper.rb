@@ -7,11 +7,9 @@ module ApplicationHelper
   def display_flash
     unless flash[:error].nil?
       "<div class=\"flash_container\"><span class=\"flash_error\"><span>" + flash[:error] + "</span></span></div>"
-      # return "<p class='flashError'>" + flash[:error] + "</p>"
     end
     unless flash[:notice].nil?
       "<div class=\"flash_container\"><span class=\"flash_notice\"><span>" + flash[:notice] + "</span></span></div>"
-      # return "<p class='flashNotice'>" + flash[:notice] + "</p>"
     end
   end
   
@@ -61,7 +59,7 @@ module ApplicationHelper
   end
   
   def display_welcome_message
-    ( current_user and current_user.employee ) ? "Bienvenue #{current_user.employee.fullname}," : "Bonjour,"
+    "Bienvenue, " + ( current_user ? ( current_user.employee ? "#{current_user.employee.fullname}" : "\"#{current_user.username}\"" ) : "" )
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})

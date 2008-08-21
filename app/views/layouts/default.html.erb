@@ -85,7 +85,7 @@
 								<li><a href="#">Lien N°3</a></li>
 							</ul>
 						</div>
-						<h4><span class="gris">Action</span> <span class="bleu">possibles</span></h4>
+						<h4><span class="gris">Action</span> <span class="bleu">contextuelles</span></h4>
 						<ul>
 							<li class="icons_link">
 								<a href="#"><img src="/images/view.png" alt="voir" title="voir" class="view_icon" />Voir</a>
@@ -112,12 +112,13 @@
 			un ordre hiérarchique de gauche à droite    |
 			____________________________________________|-->
 				<div id="menu_horizontal">
-          			<%= display_second_menu %>
+          <%= display_second_menu %>
 				</div>
-        		<div id="empty"></div><!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
-        		<%= display_flash %>
-
-        		<%= yield %>
+        <div id="empty">
+          <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
+        </div>
+        <%= display_flash %>
+        <%= yield %>
 				<div class="tabs">
 					<ul>
 						<li><a href="#">Onglet 1</a></li>
