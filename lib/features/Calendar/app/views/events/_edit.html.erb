@@ -1,0 +1,13 @@
+<% remote_form_for :event, @event, :url => {:controller => 'events', :action => 'update', :id => params[:id]} do |e| %>
+	<%= e.label :title %>
+	<%= e.text_field :title, :class => 'disable-stylesheet-width' %><br />
+	<%= e.label :location %>
+	<%= e.text_field :location, :class => 'disable-stylesheet-width' %><br />
+	<%= e.label :start_at %>
+	<%= e.text_field :start_at, :class => 'disable-stylesheet-width' %><br />
+	<%= e.label :end_at %>
+	<%= e.text_field :end_at, :class => 'disable-stylesheet-width' %><br />
+	<%= e.label :description %>
+	<%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />	
+	<%= e.submit "Terminer", :onclick => "hide_event_box(); reload_events();" %>
+<% end %>

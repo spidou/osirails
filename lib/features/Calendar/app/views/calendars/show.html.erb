@@ -1,6 +1,3 @@
-<html>
-<head>
-<%= javascript_include_tag :defaults %>
 <script src="/javascripts/resize.js" type="text/javascript"></script>
 
 <style>
@@ -11,48 +8,37 @@ h1 {
 	text-align: center;
 }
 #group_day {
-	margin-left: 40px;
-	margin-right: -10px;
+	padding-left: 60px;
+	height: 20px;
+	width: 75%;
 }
 #group_day .day {
-	float:left;
+	float: left;
 	width: 14.285714285714286%;
 	text-align: center;
 }
 #calendar {
-	position: absolute;
-	left: 0px;
-	right: 0px;
-	top: 150px;
-	bottom: 0px;
+
 }
 #calendar #scroll {
+	padding-right: 1px;
 	overflow: auto;
-	width: 100%;
-	height: 100%;
+	height: 600px;
 }
 #calendar #scroll #hour_column {
-	width: 50px;
+	width: 70px;
 	float: left;
 	text-align: center;
-	color: #BCBAB5;
 }
 #calendar #scroll .hour {
 	height: 60px;
 }
 #calendar #scroll #grid_week {
 	position: relative;
-	margin-left: 50px;
+	margin-left: 70px;
 	right: 0px;
 	height: 1440px;
 	border: 1px solid gray;
-}
-#calendar #scroll #grid_week .day_grid_border {
-	border: 1px solid gray;
-	border-top: none;
-	border-bottom: none;
-	width: 100%;
-	height: 100%;
 }
 #calendar #scroll #grid_week .day_grid {
 	float:left;
@@ -61,19 +47,19 @@ h1 {
 	z-index: -100;
 	background: url('/images/grid_repeat-x.gif') repeat;
 }
-#calendar #scroll #grid_day {
-	position: relative;
-	margin-left: 50px;
-	right: 0px;
-	height: 1440px;
-	border: 1px solid gray;
-}
-#calendar #scroll #grid_day .day_grid_border {
+#calendar #scroll #grid_week .day_grid .day_grid_border {
 	border: 1px solid gray;
 	border-top: none;
 	border-bottom: none;
 	width: 100%;
 	height: 100%;
+}
+#calendar #scroll #grid_day {
+	position: relative;
+	margin-left: 70px;
+	right: 0px;
+	height: 1440px;
+	border: 1px solid gray;
 }
 #calendar #scroll #grid_day .day_grid {
 	float:left;
@@ -82,19 +68,28 @@ h1 {
 	z-index: -100;
 	background: url('/images/grid_repeat-x.gif') repeat;
 }
-ul {
+#calendar #scroll #grid_day .day_grid .day_grid_border {
+	border-left: 1px solid gray;
+	width: 100%;
+	height: 100%;
+}
+#calendar #scroll ul {
 	padding: 0px;
 	margin: 0px;
 }
-li {
+#calendar #scroll li {
 	position: absolute;
 	width: 0px;
-	display:inline;
-//	background-color : blue;
-	width: 14.2%;
+	display: block;
 }
-.event {
-	position: relative;
+#calendar #scroll #grid_week li {
+	width: 14.02%;
+}
+#calendar #scroll #grid_day li {
+	width: 99.8%;
+}
+#calendar #scroll .event {
+	position: absolute;
 	width: 100%;
 	border: 1px solid black;
 	padding: 4px 0px;
@@ -108,60 +103,39 @@ li {
 	-moz-opacity: 0.8;
 	filter:alpha(opacity=80);
 }
-.event_content {
+#calendar #scroll .event_content {
 	height: 100%;
+}
+#event_box {
+	visibility: hidden;
+	position: absolute;
+	top: 400px;
+	border: 3px solid;
+	padding: 8px;
+	-moz-border-radius: 8px;
+	background-color: #C8C8C8;
+	z-index: 1000;
+	width: 350px;
 }
 </style>
 <script type="text/javascript">
+/* Globals */
+
 events = new Array();
 draggables_events = new Array();
 
 /* Functions */
 
-function grid_area(draggable) {
-	var cal_event = draggable.element;
-	var coeff = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
-	var grid = document.getElementById('grid');
-
-	var left_size = cal_event.style.left.replace("px", "");
-	var left_max_size = (6 - coeff) * (cal_event.offsetWidth);
-	if (left_size > left_max_size) {
-		cal_event.style.left = left_max_size + "px";
-	};
-	var left_min_size = - coeff * (cal_event.offsetWidth);
-	if (left_size < left_min_size) {
-		cal_event.style.left = left_min_size + "px";
-	};
-	var top_size = cal_event.style.top.replace("px","");
-	var top_max_size = grid.offsetHeight - cal_event.offsetHeight - 2;
-	if (top_size > top_max_size) {
-		cal_event.style.top = top_max_size + "px";
-	};
-	if (top_size < 0) {
-		cal_event.style.top = "0px";
-	};
-}
-
-function update_time (id) {
-	element = document.getElementById(id);
-	var left_size = element.style.left.replace("px", "");
-	var top_size = element.style.top.replace("px", "");
-	var height = element.offsetHeight;
-	var start_at_hour = ((top_size - top_size % 60) / 60);
-	var end_at_hour = ((height - height % 60) / 60) + start_at_hour;
-	var start_at_min = (top_size % 60);
-	var end_at_min = (height % 60) + start_at_min;
-	var start_at = start_at_hour + "h" + start_at_min;
-	var end_at = end_at_hour + "h" + end_at_min;
-	document.getElementById(id + '_content').childNodes[0].innerHTML = start_at;
-	document.getElementById(id + '_content').childNodes[2].innerHTML = end_at;
+/* period must be: 'day' or 'week' or 'year' */
+function calendar_init (p) {
+	period = p;
 }
 
 function add_event (id, title, top, height, color, week_day) {
-	var grid_day = document.getElementById(week_day).childNodes[1];
+	var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
 	for (var i=0; i < events.length; i++) {
 		if (events[i] == 'event' + id) {
-			grid_day.removeChild(document.getElementById(events[i]));
+			grid_day.removeChild(document.getElementById(events[i]).parentNode);
 			events.splice(i, 1);
 		};
 	};
@@ -173,15 +147,15 @@ function add_event (id, title, top, height, color, week_day) {
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
 	event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
+	event_div.setAttribute('onDblclick', 'show_event_box(\''+ elm_id +'\', event);');
 	
-	event_content.setAttribute('id', elm_id + '_content');
 	event_content.setAttribute('class', 'event_content');
 	
 	event_content.innerHTML = "<span name='start_at' class='start_at'></span>-<span name='end_at' class='end_at'></span><br /><span name='title' class='title'>" + title + "</span>";
 	
 	event_div.appendChild(event_content);
 	li.appendChild(event_div);
-	grid_day.childNodes[0].appendChild(li);
+	grid_day.appendChild(li);
 	
   //Effect.Pulsate(elm_id, { pulses: 2, duration: 1 });
 
@@ -199,8 +173,74 @@ function add_event (id, title, top, height, color, week_day) {
   });
   update_time(elm_id);
 	events.push(elm_id);
-	windows_width = document.getElementById('Mon').offsetWidth;
-	windows_height = document.getElementById('Mon').offsetHeight;
+}
+
+function add_draggable (elm_id) {
+  draggables_events.push(new Draggable(elm_id, {
+		handle: document.getElementById(elm_id).firstChild,
+  	snap: [document.getElementById('grid_' + period).childNodes[1].offsetWidth, 15],
+  	change: function(draggable) {
+  		grid_area(draggable);
+			drag_and_scroll(draggable.element.id);
+  	},
+  	onDrag: function(draggable) {
+			update_time(draggable.element.id);
+
+  	},
+		onEnd: function(draggable) {
+			change_day_events(draggable);
+			save_event(draggable.element.id);
+		}
+  }));
+}
+
+function grid_area(draggable) {
+	var cal_event = draggable.element;
+	var coeff = get_position(cal_event.ancestors()[3].id);
+	var grid_elm = document.getElementById('grid_' + period);
+
+	var left_size = parseInt(cal_event.style.left);
+	var left_max_size = (6 - coeff) * (cal_event.offsetWidth);
+	if (left_size > left_max_size) {
+		cal_event.style.left = left_max_size + "px";
+	};
+	var left_min_size = - coeff * (cal_event.offsetWidth);
+	if (left_size < left_min_size) {
+		cal_event.style.left = left_min_size + "px";
+	};
+	var top_size = parseInt(cal_event.style.top);
+	var top_max_size = grid_elm.offsetHeight - cal_event.offsetHeight - 2;
+	if (top_size > top_max_size) {
+		cal_event.style.top = top_max_size + "px";
+	};
+	if (top_size < 0) {
+		cal_event.style.top = "0px";
+	};
+}
+
+function update_time (id) {
+	var eventss = document.getElementsByClassName('event');
+ 	for (var i=0; i < eventss.length; i++) {
+ 		id = eventss[i].id;
+
+	element = document.getElementById(id);
+	var left_size = parseInt(element.style.left);
+	var top_size = parseInt(element.style.top);
+	var height = element.offsetHeight;
+	
+	var start_at_hour = ((top_size - top_size % 60) / 60);
+	var start_at_min = (top_size % 60);
+	
+	var temp_diff = top_size + height;
+	var end_at_hour = ((temp_diff - temp_diff % 60) / 60);
+	var end_at_min = (temp_diff % 60);
+	
+	var start_at = start_at_hour + "h" + start_at_min;
+	var end_at = end_at_hour + "h" + end_at_min;
+	
+	element.firstChild.childNodes[0].innerHTML = start_at;
+	element.firstChild.childNodes[2].innerHTML = end_at;
+	};
 }
 
 function resize_events () {
@@ -212,105 +252,90 @@ function resize_events () {
 	};
 }
 
-function add_draggable (elm_id) {
-  draggables_events.push(new Draggable(elm_id, {
-  	handle: elm_id + '_content',
-  	snap: [document.getElementById('Mon').offsetWidth, 15],
-  	change: function(draggable) {
-  		grid_area(draggable);
-  	},
-  	onDrag: function(draggable) {
-  		update_time(draggable.element.id);
-  	},
-		onEnd: function(draggable) {
-			change_day_events(draggable);
-			save_event(draggable.element.id);
-		}
-  }));
-}
-
 function change_day_events (draggable) {
 	var	cal_event = draggable.element;
-	var left_size = cal_event.style.left.replace("px","");
-	var day_num = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
+	var left_size = parseInt(cal_event.style.left);
+	var day_num = get_position (cal_event.ancestors()[3].id);
 	var target_day = day_num + (left_size / cal_event.ancestors()[1].offsetWidth);
-	var day = daynum_to_dayname(target_day);
+	var day = cal_event.ancestors()[4].childNodes[target_day * 2 + 1];
 	cal_event.style.left = 0;
-	document.getElementById(day).childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
-}
-
-function show_edit_box (argument) {
-	// body...
-}
-
-function daynum_to_dayname (daynum) {
-	switch (daynum) {
-		case 0:
-			var dayname = "Mon";
-		break;             
-		case 1:            
-			var dayname = "Tue";
-		break;             
-		case 2:            
-			var dayname = "Wed";
-		break;             
-		case 3:            
-			var dayname = "Thu";
-		break;             
-		case 4:            
-			var dayname = "Fri";
-		break;             
-		case 5:            
-			var dayname = "Sat";
-		break;             
-		case 6:            
-			var dayname = "Sun";
-		break;
+	for (var i=0; i < events.length; i++) {
+		if (events[i] == cal_event.id) {
+			events[i] = "event" + day.id + cal_event.id.substr(13, cal_event.id.length - 13);
+			cal_event.id = events[i];
+		};
 	};
-	return dayname;
+	day.childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
 }
 
-function dayname_to_daynum (dayname) {
-	switch (dayname) {
-		case "Mon":
-			var daynum = 0;
-		break;
-		case "Tue":
-			var daynum = 1;
-		break;
-		case "Wed":
-			var daynum = 2;
-		break;
-		case "Thu":
-			var daynum = 3;
-		break;
-		case "Fri":
-			var daynum = 4;
-		break;
-		case "Sat":
-			var daynum = 5;
-		break;
-		case "Sun":
-			var daynum = 6;
-		break;
-	};
-	return daynum;
+edit_box_id = "event_box";
+
+function show_event_box (event_id, event) {
+	var db_event_id = event_id.substr(13, event_id.length - 13);
+	var edit_box_elm = document.getElementById(edit_box_id);
+	new Ajax.Request('/events/show/'+ db_event_id, {asynchronous:true, evalScripts:true});
+	edit_box_elm.style.top = event.clientY;
+	edit_box_elm.style.left = event.clientX;
+	document.getElementById(event_id).parentNode.appendChild(edit_box_elm);
+	edit_box_elm.style.visibility = 'visible';
+	Effect.Grow(edit_box_id, {direction: 'center'});
+	new Draggable(edit_box_id);
 }
 
+function hide_event_box () {
+	var edit_box_elm = document.getElementById(edit_box_id);
+	Effect.Puff(edit_box_id, {duration: 3});
+
+	edit_box_elm.innerHTML = "Chargement";		
+	document.getElementById('calendar').appendChild(edit_box_elm);
+	// TODO Continuer les box
+}
 function save_event (elm_id) {
 	cal_event = document.getElementById(elm_id);
 	event_id = elm_id.substr(13, elm_id.length - 13);
-	wday = dayname_to_daynum (cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id);
-	if (new Ajax.Request('/calendars/update/' + event_id +'?period=week&top=' + cal_event.style.top.replace("px", "") +'&height=' + (parseInt(cal_event.style.height) + 10) + '&wday=' + wday, {asynchronous:true, evalScripts:true})) {
+	date = cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id;
+	if (new Ajax.Request('/calendars/update/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, {asynchronous:true, evalScripts:true})) {
 		// TODO 
 	};
 }
+
+/* period must be: 'day' or 'week' or 'year' */
+function get_position (elm_id) {
+	var grid_elm = document.getElementById('grid_' + period)
+	var days_num = grid_elm.childNodes.length
+	for (var i=0; i < days_num; i++) {
+		if (grid_elm.childNodes[i].id == elm_id) {
+			return ((i - 1) / 2);
+		};
+	};
+	return 0;
+}
+
+function drag_and_scroll (elm_id) {
+	var event_elm = document.getElementById(elm_id);
+	var scroll_elm = document.getElementById('calendar').childNodes[9];
+	var event_top = parseInt(event_elm.style.top);
+	var event_height = parseInt(event_elm.style.height);
+	var scroll_height = 600;
+	if (event_top <= scroll_elm.scrollTop) {
+		scroll_elm.scrollTop = event_top;
+	} else if ((event_top + event_height) >= (scroll_elm.scrollTop + scroll_height)) {
+		scroll_elm.scrollTop = event_top + event_height - scroll_height;
+	};
+}
+function reload_events () {
+	<%= get_events_function %>;
+}
+document.body.setAttribute('onResize', "resize_events();");
+document.body.setAttribute('onLoad', "<%= get_events_function %>");
 </script>
-</head>
-<body onLoad="<%= get_events_function %>" onResize="resize_events();">
+<h1><%= @calendar.title %></h1>
+<div id="calendar" class="cadre">
+	<%= display_flash %>
 	<%= render_calendar(params[:period]) %>
-	<div id="edit_box">
-		<%= render :action => :edit %>
-	</div>
-</body>
-</html>
+	<div id="event_box"></div>
+	<script>
+	new Draggable('menu_secondaire');
+	document.getElementById('scroll').scrollTop = 480;
+	</script>
+</div>

@@ -1,4 +1,6 @@
 class CalendarsController < ActionController::Base
+  layout 'default'
+  helper :all
   $month_fr ||= []
   $month_fr << "Janvier"
   $month_fr << "Février"
@@ -23,28 +25,31 @@ class CalendarsController < ActionController::Base
   
   def show
     @calendar = Calendar.find(params[:id])
-    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    if params[:year] && params[:month] && params[:day]
+      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    else
+      @date = Date::today
+    end
   end
-  
-  def edit
-    @event = Event.find(params[:event_id] || :first)
-  end
-  
+    
   def get_events
     @calendar = Calendar.find(params[:id])
-    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    if params[:year] && params[:month] && params[:day]
+      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    else
+      @date = Date::today
+    end
+    
     case params[:period]
     when "day"
       @start_date = @date
-      @events = @calendar.events_at_period(:start_date => @start_date)
+      @events = [@calendar.events_at_date(@start_date)]
     when "week"
       @start_date = @date.beginning_of_week
       @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_week)
     when "month"
       @start_date = @date.beginning_of_month
       @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_month)
-    else
-      @events = @calendar.events_at_date(Date::today)
     end
     
     @period = params[:period]
@@ -52,20 +57,10 @@ class CalendarsController < ActionController::Base
       format.js
     end
   end
-  
+
   def update
     @event = Event.find(params[:id])
-    case params[:period]
-    when "day"
-      start_period = @event.start_at.beginning_of_day
-    when "week"
-      start_period = @event.start_at.beginning_of_week
-    when "month"
-      start_period = @event.start_at.beginning_of_month
-    else
-      raise "Invalid period"
-    end
-    @event.start_at = start_period + params[:wday].to_i.days + params[:top].to_i.minutes
+    @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
     @event.end_at = @event.start_at + (params[:height].to_i).minutes 
     if @event.save
       render :text => "true"

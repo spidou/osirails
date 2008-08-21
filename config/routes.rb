@@ -56,6 +56,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### CALENDAR
   map.connect ':controller/:action/:id/:period/:year/:month/:day', :controller => 'calendars'
+  map.resources :event
   ### END CALENDAR
 
   ### COMMONS
