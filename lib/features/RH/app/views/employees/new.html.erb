@@ -37,7 +37,7 @@
   </p>
    <p>
     <%= f.label :social_security ,"N° sécurité sociale :"%>
-    <%= f.text_field :social_security ,{ :size => 14, :maxlength => 16} %>
+    <%= f.text_field :social_security ,{ :size => 14, :maxlength => 16, :class => 'disable-stylesheet-width'} %>
   </p>
   </div>
   
@@ -116,9 +116,12 @@
     <h2>Fiche de poste :</h2>
    
     <div>
-      <%= label_tag 'employee[services]', "Services :"%><br/>
       <div id="services">
       <table>
+        <tr>
+          <th colspan="2">Services</th>
+          <th>Responsable?</th>
+        </tr>
         <% for associated_service in @services %>
           <tr>
             <td>
@@ -127,6 +130,9 @@
             <td>
               <%= associated_service.name %>
             </td>
+            <td>
+              <%= check_box_tag "responsable[" +  associated_service.id.to_s + "][]",  associated_service.id, verify_param_responsable(associated_service.id)%>
+            </td>
           </tr>
         <% end %>
       </table>
@@ -134,9 +140,11 @@
     </div>
     
     <div id="jobs_choice">
-      <%= label_tag 'employee[jobs]', "Fonctions :"%><br/>
       <div id="jobs_list">
         <table>
+          <tr>
+            <th colspan="2">Fonctions</th>
+          </tr>
           <% for associated_job in @jobs %>
             <tr>
               <td>

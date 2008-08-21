@@ -50,9 +50,9 @@ module EmployeesHelper
   
   def display_number0
     if params[:numbers].nil?
-      number0 = text_field_tag( 'numbers[0][number]', '', :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
+      number0 = text_field_tag( 'numbers[0][number]', '', :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
     else
-      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
+      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
     end  
     number0
   end
@@ -116,6 +116,19 @@ module EmployeesHelper
     end 
   end
   
+  # Method to verify if the params[:responsable] and his attributes are null
+  def verify_param_responsable(service_id)
+    if params[:responsable].nil?
+      false
+    else
+      if params[:responsable][service_id.to_s].nil?
+        false
+      else
+        true
+      end  
+    end
+  end
+  
   # Method to generate text_field for each number add
   def add_number_line
     name = "numbers[" + params[:opt] + "]"
@@ -159,6 +172,18 @@ module EmployeesHelper
       end
     end  
     html
+  end
+  
+  def responsable(service_id)
+    tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
+    manager = "( "
+    tmp.each do |t|
+      e = Employee.find(t.employee_id)
+      manager +=  ", " unless manager=="( "
+      manager += e.fullname
+      
+    end
+    return manager + " )" 
   end
   
 end

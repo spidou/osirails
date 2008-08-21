@@ -91,4 +91,14 @@ class Employee < ActiveRecord::Base
     User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd",:employee_id => self.id)
     JobContract.create(:start_date => "", :end_date => "", :employee_id => self.id, :employee_state_id => "",:job_contract_type_id => "" )  
   end 
+  
+  def responsable?(service_id)
+    tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
+    manager = []
+    tmp.each do |t|
+      e = Employee.find(t.employee_id)
+      manager << e.id
+    end
+    return manager
+  end
 end

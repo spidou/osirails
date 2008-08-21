@@ -114,9 +114,12 @@
   <div class="cadre">
     <h2>Fiche de poste</h2>
     <p>
-      <%= label_tag 'employee[services]', "Services :"%><br/>
       <div>
       <table>
+        <tr>
+          <th colspan="2">Services</th>
+          <th>Responsable?</th>
+        </tr>      
         <% for associated_service in @services %>
           <tr>
             <td>
@@ -125,15 +128,20 @@
             <td>
               <%= associated_service.name %>
             </td>
+            <td>
+              <%= check_box_tag "responsable[" + associated_service.id.to_s + "]", associated_service.id, @employee.responsable?(associated_service.id).include?(@employee.id) %>
+            </td>
           </tr>
         <% end %>
       </table>
     </div>
     </p>
     <p id="jobs_choice">
-        <%= label_tag 'employee[jobs]', "Fonctions :"%><br/>
         <div id="jobs_array">
         <table>
+          <tr>
+            <th colspan="2">Fonctions</th>
+          </tr>
           <% for associated_job in @jobs %>
             <tr>
               <td>

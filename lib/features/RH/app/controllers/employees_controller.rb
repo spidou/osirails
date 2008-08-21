@@ -69,19 +69,29 @@ class EmployeesController < ApplicationController
     # instance_variable_set("@numbers",[]) 
     @services = Service.find(:all)
     @jobs = Job.find(:all) 
+    
+    # update employees ressources
     @employee = Employee.new(params[:employee])
     @job = Job.new(params[:job]) 
-    unless params[:job].nil?
-      @job.save
-    end
     @employee.address = Address.new(params[:address])
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
     end
     @employee.iban = Iban.new(params[:iban])
     
+    # save job and employees
+    unless params[:job].nil?
+      @job.save ? job = true : job = false  
+    end   
     respond_to do |format|
-      if @employee.save
+      if @employee.save and job == true
+      
+        # configure the employee as a responsable of his services if responsable is checked
+        params[:responsable].each_key do |rep|
+          @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
+          @responsable[0].update_attributes({:responsable => 1}) 
+        end
+        
         flash[:notice] = 'L&apos;employée a été crée avec succés.'
         format.html { redirect_to(@employee) }
       else
@@ -100,6 +110,8 @@ class EmployeesController < ApplicationController
     @numbers = @employee.numbers
     @address = @employee.address
     
+   
+    
     # add or update numbers who have been send to the controller
     for i in params[:numbers]
       if @employee.numbers[i[0].to_i].nil?
@@ -117,6 +129,7 @@ class EmployeesController < ApplicationController
       end
     end
     
+    # update attributes of employees ressources
     @employee.iban.update_attributes(params[:iban]) 
     @employee.address.update_attributes(params[:address])
     
@@ -124,8 +137,23 @@ class EmployeesController < ApplicationController
     params[:employee]['service_ids']||= [] 
     params[:employee]['job_ids']||= []
     
+    # destroy all responsables
+    @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
+    @responsable.each do |r|
+      r.update_attributes({:responsable => 0})
+    end
+    
     respond_to do |format|
       if @employee.update_attributes(params[:employee])
+      
+        # update responsable attribute of the employee's service 
+        unless params[:responsable].nil?
+          params[:responsable].each_key do |rep|
+            @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
+            @responsable[0].update_attributes({:responsable => 1}) unless @responsable[0].nil?
+          end
+        end 
+         
         flash[:notice] = ' L&apos;employée a été modifié avec succés.'
         format.html { redirect_to(@employee) }
       else
