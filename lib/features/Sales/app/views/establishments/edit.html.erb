@@ -1,5 +1,5 @@
-<fieldset>
-  <legend> Informations concernant <%= @establishment.name%></legend>
+<h1>Modifier un Etablissement</h1>
+<div class="cadre">
   <% form_for([@customer, @establishment])  do |establishment| %>
     
    <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment, :zip_code => @zip_code} %>
@@ -25,9 +25,9 @@
    <%= submit_tag 'Modifier' %>
   <%end%>
   
-</fieldset>
   
 
   
 <%= link_to "Supprimer", [@customer, @establishment], :method => :delete%>
 <%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
+</div>

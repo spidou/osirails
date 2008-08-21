@@ -1,0 +1,12 @@
+
+<ul class="first_name">
+<% for contact in @contacts do -%>
+<li>
+  <div class="contact_id" style="display:none;"><%=contact.id%></div>
+  <div class="contact_first_name" style="display:none;"><%=contact.first_name%></div>
+  <div class="contact_last_name" style="display:none;"><%=contact.last_name%></div>
+  <div class="contact_email" style="display:none;"><%=contact.email%></div>
+  <div class ="contact_full_name"><%=contact.first_name + " " + contact.last_name%></div>
+</li>
+<% end -%>
+</ul>

@@ -22,25 +22,13 @@
         <% new_contacts_number.times do |i| %>
           <%unless params["valid_contact_#{i+1}"].nil?%>
             <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
-              <div <%= "id ='new_contact#{i+1}'" %>>
+              
               
                 <% params["owner_id"]= owner_id%>
                 <%params["owner_type"] = owner_type%>       
 
                 <% # get_new_contact_form return a new contact_form with the same value that older%>
-                <%= get_new_contact_form(cpt, params, error)%>
-
-
-                <% # unless a form content was in show position %>
-                <%unless params["new_contact#{i+1}"]["id"].to_i == 0%>
-                <div id="contact_<%=i+1%>_show_info" style='display: block;'>
-                <%= get_new_contact_info(params["new_contact#{i+1}"]["id"].to_i, cpt)%>
-                </div>
-                <% # The contact_form input is hide%>
-                <%=javascript_tag "document.getElementById('contact_#{cpt}_input_info').style.display = 'none'"%>
-                <%end%>              
- 
-              </div> <% #new_contact_cpt%>
+                <%= get_new_contact_form(cpt, params, error)%>            
 
             <%end #unless%>
           <%end #unless%>

@@ -97,7 +97,7 @@ class ContactsController < ApplicationController
       end
     end
     @contacts = @contacts.uniq
-    render :partial => 'contacts/first_name'
+    render :partial => 'contacts/contact_info'
   end
   
   def auto_complete_for_contact_last_name
@@ -127,7 +127,7 @@ class ContactsController < ApplicationController
       end
     end
     @contacts = @contacts.uniq
-    render :partial => 'contacts/first_name'
+    render :partial => 'contacts/contact_info'
   end
   
   def auto_complete_for_contact_email
@@ -157,7 +157,7 @@ class ContactsController < ApplicationController
       end
     end
     @contacts = @contacts.uniq
-    render :partial => 'contacts/first_name'
+    render :partial => 'contacts/contact_info'
   end
   
 end

@@ -69,7 +69,6 @@ class EstablishmentsController < ApplicationController
     unless @error
       
       params[:new_contact_number]["value"].to_i.times do |i|
-        flash[:notice] = "#{params.keys}" 
         eval"unless params['valid_contact_#{i+1}'].nil?
                      unless params['valid_contact_#{i+1}']['value'] == 'false'
 
