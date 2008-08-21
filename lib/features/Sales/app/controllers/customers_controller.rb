@@ -33,6 +33,8 @@ class CustomersController < ApplicationController
 
   def update
     @customer = Customer.find(params[:id])
+    @address = @customer.address
+    
     # @error is use to know if all form is valids
     @error = false
     
@@ -125,6 +127,28 @@ class CustomersController < ApplicationController
                   end"
       end
     end
+    
+    # Save of Address
+    params[:address][:country_name] = params[:country][:name]
+    params[:address][:city_name] = params[:city][:name]
+    params[:address][:zip_code] = params[:city][:zip_code]
+    
+    country = Country.find_by_name(params[:country][:name])
+    if country.nil?
+      new_country = Country.create(:name => params[:country][:name])
+      City.create(
+          :name => params[:city][:name], 
+          :zip_code => params[:city][:zip_code], 
+          :country_id => new_country.id)
+    elsif City.find_by_name_and_country_id(params[:country][:name], country.id).nil?
+      City.create(
+          :name => params[:city][:name], 
+          :zip_code => params[:city][:zip_code], 
+          :country_id => country.id)
+    end
+    
+    @address.update_attributes(params[:address])
+        
     unless @error
       redirect_to(customers_path)
     else

@@ -28,20 +28,8 @@
   <%= text_field("new_establishment_address#{cpt}","address2")%>
 </p>
 
-<p>
-  <%= label :new_address, "Pays" %>
-  <%= select("new_establishment_address#{cpt}", "country_name",Country.find(:all).collect {|a| [ a.name, a.name ] })%>
-</p>
-
-<p>
-  <%= label :new_address, "Ville" %>
-  <%= select("new_establishment_address#{cpt}", "city_name",City.find(:all).collect {|a| [ a.name, a.name ] })%>
-</p>
-
-<p>
-  <%= label :new_address, "Code postal" %>
-  <%= select("new_establishment_address#{cpt}", "city_name",City.find(:all).collect {|a| [ a.zip_code, a.zip_code ] })%>
-</p>
+<%= render :partial => 'addresses/address', 
+      :locals => {:cpt=> 1, :owner_address => Address.new()}%>
 
 <%= hidden_field("valid_establishment_#{cpt}", "value", "value" => 'true')%>
 

@@ -1,0 +1,52 @@
+<p>
+    <%= label :address, "Pays"%>
+    <%= text_field_with_auto_complete(:country, :name, 
+        {:value => "#{owner_address.country_name}"}, 
+        {:select => 'country_name',
+          :after_update_element => "function(){document.getElementById('country_#{cpt}_selected').value = 'true';}"}) -%>
+    </p>
+
+    <p>
+    <%= label :address, "Ville"%>
+    <%= text_field_with_auto_complete(:city, :name, 
+        {:size => 15, :value => "#{owner_address.city_name}"}, {:select => 'city_name',
+        :with => "'city_name='+document.getElementById('city_name').value   +
+        '&country_name='+document.getElementById('country_name').value"
+        }) -%>
+    </p>
+      
+    <p>
+    <%= label :address, "Code Postal"%>
+    <%= text_field_with_auto_complete(:city, :zip_code,
+        {:size => 15, :value =>  "#{owner_address.zip_code}"}, {:select => 'city_zip_code',
+        :with => "'city_zip_code='+document.getElementById('city_zip_code').value   +
+        '&country_name='+document.getElementById('country_name').value"
+        }) -%>
+    </p>
+
+    <%= hidden_field("country_1", "selected", "value" => 'false')%>
+
+    <%= observe_field "country_name",
+            :frequency => 0.1,
+            :url=>{:controller => "addresses", :action=>'country_change'},
+            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
+           '&city_name='+encodeURIComponent(document.getElementById('city_name').value)+
+           '&selected='+encodeURIComponent(document.getElementById('country_#{cpt}_selected').value)+
+           '&cpt=#{cpt}' "
+    %>
+
+      <%= observe_field "city_name",
+            :frequency => 0.1,
+            :url=>{:controller => "addresses", :action=>'city_name_change'},
+            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
+           '&city_name='+encodeURIComponent(document.getElementById('city_name').value)+
+           '&cpt = #{cpt}'"
+    %>
+    
+  <%= observe_field "city_zip_code",
+            :frequency => 0.1,
+            :url=>{:controller => "addresses", :action=>'city_zip_code_change'},
+            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
+           '&city_zip_code='+encodeURIComponent(document.getElementById('city_zip_code').value)+
+           '&cpt = #{cpt}'"
+    %>

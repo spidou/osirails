@@ -6,15 +6,13 @@ class EstablishmentsController < ApplicationController
     @establishment = Establishment.find(params[:id])
     @customer = Customer.find(params[:customer_id])
     @contacts = @establishment.contacts
-#    City.find_by_name(@establishment.address.city_name).nil? ? @zip_code = "" : 
-#    @zip_code = City.find_by_name(@establishment.address.city_name, :conditions => ["country_id = ?", Country.find_by_name(@establishment.address.country_name)]).zip_code 
+
   end
   
   def update
     @error = false
     
     @establishment = Establishment.find(params[:id])
-    @owner = @establishment
     @address = @establishment.address
     @customer = Customer.find(params[:customer_id])
       
@@ -22,23 +20,19 @@ class EstablishmentsController < ApplicationController
     params[:address][:city_name] = params[:city][:name]
     params[:address][:zip_code] = params[:city][:zip_code]
     
-    # A revoir si la ville ,n'esxiste pas ainsi que le pays
-    if Country.find_by_name(params[:country][:name]).nil?
-      Country.create(:name => params[:country][:name])
-    end
-    
-    if City.find_by_name(params[:city][:name]).nil?
-        City.create(:name => params[:city][:name], 
+    country = Country.find_by_name(params[:country][:name])
+    if country.nil?
+      new_country = Country.create(:name => params[:country][:name])
+      City.create(
+          :name => params[:city][:name], 
           :zip_code => params[:city][:zip_code], 
-          :country_id => Country.find_by_name(params[:country][:name]).id)
+          :country_id => new_country.id)
+    elsif City.find_by_name_and_country_id(params[:country][:name], country.id).nil?
+      City.create(
+          :name => params[:city][:name], 
+          :zip_code => params[:city][:zip_code], 
+          :country_id => country.id)
     end
-    
-#    if City.find_by_name(params[:city][:name]).nil? or
-#      City.find_by_name(params[:city][:name]).country_id != Country.find_by_name(params[:country][:name]).id      
-#        City.create(:name => params[:city][:name], 
-#          :zip_code => params[:city][:zip_code], 
-#          :country_id => Country.find_by_name(params[:country][:name]).id)
-#    end
     
     @establishment.update_attributes(params[:establishment])
     @address.update_attributes(params[:address])
@@ -84,7 +78,8 @@ class EstablishmentsController < ApplicationController
     end
     
     #FIXME Change this redirect_to by render
-    redirect_to(edit_customer_establishment_path(@customer,@establishment))
+    render :action => "edit"
+#    redirect_to(edit_customer_establishment_path(@customer,@establishment))
   end
   
   def auto_complete_for_country_name

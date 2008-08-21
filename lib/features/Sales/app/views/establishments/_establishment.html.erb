@@ -19,58 +19,8 @@
     <%= address.text_field :address2%>  
     </p>
     
-  <p>
-    <%= label :address, "Pays"%>
-    <%= text_field_with_auto_complete(:country, :name, 
-        {:size => 15, :value => "#{establishment_.address.country_name}"}, 
-        {:select => 'country_name',
-          :after_update_element => "function(){document.getElementById('country_1_selected').value = 'true';}"}) -%>
-    </p>
-
-    <p>
-    <%= label :address, "Ville"%>
-    <%= text_field_with_auto_complete(:city, :name, 
-        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}, {:select => 'city_name',
-        :with => "'city_name='+document.getElementById('city_name').value   +
-        '&country_name='+document.getElementById('country_name').value"
-        }) -%>
-    </p>
-      
-    <p>
-    <%= label :address, "Code Postal"%>
-    <%= text_field_with_auto_complete(:city, :zip_code,
-        {:country_id => 1, :size => 15, :value =>  "#{establishment_.address.zip_code}"}, {:select => 'city_zip_code',
-        :with => "'city_zip_code='+document.getElementById('city_zip_code').value   +
-        '&country_name='+document.getElementById('country_name').value"
-        }) -%>
-    </p>
-
-    <%= hidden_field("country_1", "selected", "value" => 'false')%>
-
-    <%= observe_field "country_name",
-            :frequency => 0.1,
-            :url=>{:controller => "addresses", :action=>'country_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
-           '&city_name='+encodeURIComponent(document.getElementById('city_name').value)+
-           '&selected='+encodeURIComponent(document.getElementById('country_1_selected').value)+
-           '&cpt=1' "
-    %>
-
-      <%= observe_field "city_name",
-            :frequency => 0.1,
-            :url=>{:controller => "addresses", :action=>'city_name_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
-           '&city_name='+encodeURIComponent(document.getElementById('city_name').value)+
-           '&cpt = 1'"
-    %>
-    
-  <%= observe_field "city_zip_code",
-            :frequency => 0.1,
-            :url=>{:controller => "addresses", :action=>'city_zip_code_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
-           '&city_zip_code='+encodeURIComponent(document.getElementById('city_zip_code').value)+
-           '&cpt = 1'"
-    %>
+  <%= render :partial => 'addresses/address', 
+      :locals => {:cpt=> 1, :owner_address => establishment_.address}%>
     
     <%= hidden_field("country", "id", "value" => '')%>
     <%= hidden_field("city", "id", "value" => '')%>
