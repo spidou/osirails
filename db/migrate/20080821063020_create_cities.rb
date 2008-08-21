@@ -3,7 +3,7 @@ class CreateCities < ActiveRecord::Migration
     create_table :cities do |t|
       t.string :name
       t.string :zip_code
-      t.references :country_id
+      t.references :country
     end
   end
 
