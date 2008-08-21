@@ -1,17 +1,20 @@
-<fieldset>
-  <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
+<h1>Modifier un Contact</h1>
+<div class="cadre">
   <% form_for([@owner, @contact],:url => {:action => "update", :owner => @owner, :owner_type => @owner_type})  do |contact| %>
-    <%= @owner_type%>
-    <%= render :partial => 'contact', :locals => {:contact => contact, :possible_owners => @possible_owers, :contact_type => @contact_type} %>
-   
-    <%= submit_tag 'Modifier' %>
-    <%= link_to("Supprimer", [@owner, @contact],
-      :type => "test",
-      :method => :delete
-        )%>
+    <fieldset>
+      <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
+        <%= contact.error_messages%>
 
+        <%= render :partial => 'contact', :locals => {:contact => contact, :possible_owners => @possible_owers, :contact_type => @contact_type} %>
+
+        <%= submit_tag 'Modifier' %>
+        
+        <%= link_to("Supprimer", [@owner, @contact],
+          :type => "test",
+          :method => :delete
+            )%>
+    </fieldset>
   <%end%>
-  
-</fieldset>
 
-<%= get_return_link(params[:owner_type])%>
+  <%= get_return_link(params[:owner_type])%>
+</div>

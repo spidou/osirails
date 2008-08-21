@@ -1,16 +1,24 @@
-<%= contact.error_messages%>
+<p>
+  <%= label :contact, "Nom du contact" %>
+  <%= contact.text_field :first_name %>
+</p>
 
-<%= label :contact, "Nom du contact" %><br/>
-<%= contact.text_field :first_name %><br/><br/>
+<p>
+  <%= label :contact, "Pr&eacute;nom du contact" %>
+  <%= contact.text_field :last_name %>
+</p>
 
-<%= label :contact, "Pr&eacute;nom du contact" %><br/>
-<%= contact.text_field :last_name %><br/><br/>
+<p>
+  <%= label :contact, "E-mail" %>
+  <%= contact.text_field :email %>
+</p>
 
-<%= label :contact, "E-mail" %><br/>
-<%= contact.text_field :email %><br/><br/>
+<p>
+  <%= label :contact, "Job" %>
+  <%= contact.text_field :jobs %>
+</p>
 
-<%= label :contact, "Job" %><br/>
-<%= contact.text_field :jobs %><br/><br/>
-
-<%=label :contact, "Type de contact"%><br/>
-<%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%><br/><br/>
+<p>
+  <%=label :contact, "Type de contact"%>
+  <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%>
+</p>

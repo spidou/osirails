@@ -22,13 +22,14 @@
     <p>
     <%= label :address, "Pays"%>
     <%= text_field_with_auto_complete(:country, :name, 
-        {:size => 15, :value => "#{establishment_.address.country_name}"}) -%>
+        {:size => 15, :value => "#{establishment_.address.country_name}"}, {:select => 'country_name'}) -%>
     </p>
 
     <p>
     <%= label :address, "Ville"%>
     <%= text_field_with_auto_complete(:city, :name, 
-        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}) -%>
+        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}, {:select => 'city_name'
+        }) -%>
     </p>
       
     <p>
@@ -36,20 +37,23 @@
     <%= text_field_with_auto_complete(:city, :zip_code,
         {:country_id => 1, :size => 15, :value =>  "#{establishment_.address.zip_code}"}) -%>
     </p>
-    
+    <%= hidden_field("country", "id", "value" => '')%>
+    <%= hidden_field("city", "id", "value" => '')%>
 <%end #fields_for%>
 
-  
+<% #[0].getElementsByClassName('selected')[0].getElementsByClassName('city_id')[0].innerHTML)%>
   <%= observe_field "country_name",
-        :update => "city_name",
         :frequency => 2,
-        :url=>{:action=>'country_change'},
-        :with => "'country_name='+ document.forms['edit_establishment_#{establishment_.id}']['city_name']['value']"
+        :url=>{:controller => "", :action=>'country_change'},
+        :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
+       '&city_name='+encodeURIComponent(document.getElementById('city_name').value)"
 %>
+
 
   <%= observe_field "city_names",
         :update => "city_name",
         :frequency => 2,
         :url=>{:action=>'city_change'},
-        :with => "'city_name='+ document.forms['edit_establishment_#{establishment_.id}']['city_name']['value']"
+        :with => "'country_name='+encodeURIComponent(document.getElementById('country_name').value)+
+       '&city_name='+encodeURIComponent(document.getElementById('city_name').value)"
 %>

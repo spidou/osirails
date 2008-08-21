@@ -6,63 +6,72 @@
 <div id='<%= "new_contact#{cpt}"%>'>
 
   <div id="contact_<%=cpt%>_input_info" style='display: block;'>
-    <p><%= label :new_contact, "Nom" %><br/>
-    <%= my_text_field_with_auto_complete(:contact, :first_name, {:index => cpt,:url => {:controller => 'contacts'}},{
-        :select => 'contact_first_name',
-        :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
-        :with => "'value='+document.getElementById('new_contact#{cpt}_first_name').value+
-        '&owner_id=#{owner_id}'+
-        '&owner_type=#{owner_type}'"})%>
+    <p>
+      <%= label :new_contact, "Nom" %>
+      <%= my_text_field_with_auto_complete(:contact, :first_name, {:index => cpt, :url => {:controller => 'contacts'}},{
+          :select => 'contact_first_name',
+          :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
+          :with => "'value='+document.getElementById('new_contact#{cpt}_first_name').value+
+          '&owner_id=#{owner_id}'+
+          '&owner_type=#{owner_type}'"})%>
+    </p>
 
-    <p><%= label :new_contact, "Prénom" %><br/>
-    <%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt,:url => {:controller => 'contacts'}},{
-        :select => 'contact_last_name',
-        :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
-        :with => "'value='+document.getElementById('new_contact#{cpt}_last_name').value+
-        '&owner_id=#{owner_id}'+
-        '&owner_type=#{owner_type}'"})%>
+    <p>
+      <%= label :new_contact, "Prénom" %>
+      <%= my_text_field_with_auto_complete(:contact, :last_name, {:index => cpt,:url => {:controller => 'contacts'}},{
+          :select => 'contact_last_name',
+          :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
+          :with => "'value='+document.getElementById('new_contact#{cpt}_last_name').value+
+          '&owner_id=#{owner_id}'+
+          '&owner_type=#{owner_type}'"})%>
+    </p>
 
-    <p><%= label :new_contact, "Email" %><br/>
-    <%= my_text_field_with_auto_complete(:contact, :email, {:index => cpt,:url => {:controller => 'contacts'}},{
-        :select => 'contact_email ',
-        :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
-        :with => "'value='+document.getElementById('new_contact#{cpt}_email').value+
-        '&owner_id=#{owner_id}'+
-        '&owner_type=#{owner_type}'"})%>
+    <p>
+      <%= label :new_contact, "Email" %>
+      <%= my_text_field_with_auto_complete(:contact, :email, {:index => cpt,:url => {:controller => 'contacts'}},{
+          :select => 'contact_email ',
+          :after_update_element => "function(){document.getElementById('auto_complete_#{cpt}_select').value = 'true';}",
+          :with => "'value='+document.getElementById('new_contact#{cpt}_email').value+
+          '&owner_id=#{owner_id}'+
+          '&owner_type=#{owner_type}'"})%>
+    </p>
 
-    <p><%= label :contact, "Job" %><br/>
-    <%= text_field("new_contact#{cpt}","jobs") %></p>
+    <p>
+      <%= label :contact, "Job" %>
+      <%= text_field("new_contact#{cpt}","jobs") %>
+    </p>
 
     <% # Affectation of variables when an error occur%>
     <%if error%>
-    <%=  javascript_tag "document.getElementById('new_contact#{cpt}_first_name').value = '#{params["new_contact#{cpt}"]["first_name"]}'"%>
-    <%=  javascript_tag "document.getElementById('new_contact#{cpt}_last_name').value = '#{params["new_contact#{cpt}"]["last_name"]}'"%>
-    <%=  javascript_tag "document.getElementById('new_contact#{cpt}_email').value = '#{params["new_contact#{cpt}"]["email"]}'"%>
-    <%=  javascript_tag "document.getElementById('new_contact#{cpt}_jobs').value = '#{params["new_contact#{cpt}"]["jobs"]}'"%>
+      <%=  javascript_tag "document.getElementById('new_contact#{cpt}_first_name').value = '#{params["new_contact#{cpt}"]["first_name"]}'"%>
+      <%=  javascript_tag "document.getElementById('new_contact#{cpt}_last_name').value = '#{params["new_contact#{cpt}"]["last_name"]}'"%>
+      <%=  javascript_tag "document.getElementById('new_contact#{cpt}_email').value = '#{params["new_contact#{cpt}"]["email"]}'"%>
+      <%=  javascript_tag "document.getElementById('new_contact#{cpt}_jobs').value = '#{params["new_contact#{cpt}"]["jobs"]}'"%>
     <%end%>
 
-    <p><%=label :new_contact, "Type de client"%><br/>
-    <%= select("new_contact#{cpt}", "contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", owner_type]).collect {|a| [ a.name, a.name]})%></p>
-    </div>
+    <p>
+      <%=label :new_contact, "Type de client"%>
+      <%= select("new_contact#{cpt}", "contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", owner_type]).collect {|a| [ a.name, a.name]})%>
+    </p>
+  </div>
   
   <%= hidden_field("auto_complete_#{cpt}", "select", "value" => 'false')%>
   <%= hidden_field("new_contact#{cpt}","id", "value" => '')%>
   <%= hidden_field("valid_contact_#{cpt}", "value", "value" => 'true')%>
   <%= hidden_field("create_contact", "#{cpt}", "value" => "true")%>
-  
-    <div id="contact_<%=cpt%>_show_info" style='display: block;'>
-      <%if error%>
-        <% # unless a form content was in show position %>
-        <%unless params["new_contact#{cpt}"]["id"].to_i == 0%>
 
-          <%= get_new_contact_info(params["new_contact#{cpt}"]["id"].to_i, cpt)%>
+  <div id="contact_<%=cpt%>_show_info" style='display: block;'>
+    <%if error%>
+      <% # unless a form content was in show position %>
+      <%unless params["new_contact#{cpt}"]["id"].to_i == 0%>
 
-          <% # The contact_form input is hide%>
-          <%=javascript_tag "document.getElementById('contact_#{cpt}_input_info').style.display = 'none'"%>
-        <%end%>  
-      <%end%>
-    </div>
-    
+        <%= get_new_contact_info(params["new_contact#{cpt}"]["id"].to_i, cpt)%>
+
+        <% # The contact_form input is hide%>
+        <%=javascript_tag "document.getElementById('contact_#{cpt}_input_info').style.display = 'none'"%>
+      <%end%>  
+    <%end%>
+  </div> 
 </div>
 
 <%= observe_field("new_contact#{cpt}_first_name",
@@ -70,7 +79,7 @@
         :frequency => 1, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
-        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
+        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_first_name_auto_complete').getElementsByClassName('contacts')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
         '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_#{cpt}_select').value)+
         '&cpt='+encodeURIComponent(#{cpt})")
 %>
@@ -80,7 +89,7 @@
         :frequency => 0.5, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
-        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_last_name_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
+        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_last_name_auto_complete').getElementsByClassName('contacts')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
         '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_#{cpt}_select').value)+
         '&cpt='+encodeURIComponent(#{cpt})")
 %>
@@ -90,7 +99,7 @@
         :frequency => 0.5, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_input_info').style.display)+ 
         '&value='+encodeURIComponent(value)+
-        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_email_auto_complete').getElementsByClassName('first_name')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
+        '&contact_id='+encodeURIComponent(document.getElementById('new_contact#{cpt}_email_auto_complete').getElementsByClassName('contacts')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
         '&contact_selected='+encodeURIComponent(document.getElementById('auto_complete_#{cpt}_select').value)+
         '&cpt='+encodeURIComponent(#{cpt})")
 %>

@@ -88,8 +88,6 @@ class CustomersController < ApplicationController
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
-      #      puts params["contact"]["1"]["first_name"]
-      #      puts params["contact"]["1"]["last_name"]
       new_contact_number = params[:new_contact_number]["value"].to_i
       new_contact_number.times do |i|
         # For all new_contact  an instance variable is create.
@@ -106,7 +104,7 @@ class CustomersController < ApplicationController
                   end"
       end
     end
-#    puts params[:new_establishment_number]
+    
     # If all new_contact are valids, they are save 
     unless @error
       new_contact_number.times do |i|

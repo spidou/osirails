@@ -45,9 +45,6 @@ class EstablishmentsController < ApplicationController
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
-      
-      #      puts params["contact"]["1"]["first_name"]
-      #      puts params["contact"]["1"]["last_name"]
       new_contact_number = params[:new_contact_number]["value"].to_i
       new_contact_number.times do |i|
         # For all new_contact  an instance variable is create.
@@ -67,19 +64,16 @@ class EstablishmentsController < ApplicationController
     
     # If all new_contact are valids, they are save 
     unless @error
-      
-      params[:new_contact_number]["value"].to_i.times do |i|
+      new_contact_number.times do |i|
         eval"unless params['valid_contact_#{i+1}'].nil?
                      unless params['valid_contact_#{i+1}']['value'] == 'false'
-
                        if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-                         unless @new_contact#{i+1}.save and @owner.contacts << @new_contact#{i+1}
+                         unless @new_contact#{i+1}.save and @customer.contacts << @new_contact#{i+1}
                           @error = true
                          end
-                       elsif params['new_contact#{i+1}_id'] != ''
-                       
-                         if @owner.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false
-                            @owner.contacts << Contact.find(params['new_contact#{i+1}']['id'])
+                       elsif params['new_contact#{i+1}_id'] != ''                        
+                         if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
+                            @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
                          end
                         else
                           @error = true
@@ -88,7 +82,7 @@ class EstablishmentsController < ApplicationController
                   end"
       end
     end
-
+    
     #FIXME Change this redirect_to by render
     redirect_to(edit_customer_establishment_path(@customer,@establishment))
   end
@@ -115,8 +109,8 @@ class EstablishmentsController < ApplicationController
   
   def auto_complete_responder_for_name(value,country_id = 1)
     @cities = City.find(:all, 
-      :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
-        '%' + value.downcase + '%', country_id], 
+      :conditions => [ 'LOWER(name) LIKE ?',
+        '%' + value.downcase + '%'], 
       :order => 'name ASC',
       :limit => 8)
     render :partial => 'addresses/cities'

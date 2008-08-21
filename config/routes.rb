@@ -43,7 +43,9 @@ ActionController::Routing::Routes.draw do |map|
       establishment.resources :contacts
     end
   end
-  map.resources :suppliers
+  map.resources :suppliers do |supplier|
+    supplier.resources :contacts
+  end
   ### END SALES
   
   ### PRODUCTS

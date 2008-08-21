@@ -1,7 +1,9 @@
 <% #celui pour bosser%>
 <ul class="cities">
-<% for city in @cities do -%>
-<li><%= city.name -%>
-</li>
-<% end -%>
+  <% for city in @cities do -%>
+    <li>
+      <div class="city_id" style="display:none;"><%=city.id -%></div>
+      <div class="city_name"><%=city.name -%></div>
+    </li>
+  <% end -%>
 </ul>
