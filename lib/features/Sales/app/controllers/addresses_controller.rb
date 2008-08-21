@@ -1,4 +1,4 @@
-class EstablishmentsController < ApplicationController
+class AddressesController < ApplicationController
   
   def auto_complete_for_country_name
     puts params.keys
