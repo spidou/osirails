@@ -29,7 +29,7 @@ a>img {
 	border:none;
 }
 
-/*:::::::::TAB EMR:::::::::*/
+/*:::::::::TABLEAU:::::::::*/
 caption {
 	background: #afc2ea;
 	color: rgb(64,68,93);
@@ -185,7 +185,7 @@ padding-left: 8px;
 text-decoration: none; 
 text-indent:0;
 margin-right:10px;
-margin-top:20px;
+margin-top:11px;
 }
 
 a:link.button_banner,
@@ -750,7 +750,7 @@ table.presentation tr:hover > td{
 }
 
 .cadre form {
-	width: 950px;
+	width: 70%;
 	text-indent:0;
 }
 
@@ -902,9 +902,7 @@ table.presentation tr:hover > td{
 	color:white;
 }
 */
-
-/*LISTE*/
-
+/*/////////////////LISTE:HIERARCHIQUE/////////////////*/
 .hierarchic {
 	margin-left:10px;
 }
@@ -973,8 +971,7 @@ ul.parent>li {
 }
 
 
-/*Onglets*/
-
+/*/////////////////Onglets/////////////////*/
 div.tabs+.cadre {
 	clear:left;
 }
@@ -983,6 +980,7 @@ div.tabs {
 	position:relative;
 	top:1px;
 	right:1px;
+	clear:left;
 }
 
 div.tabs ul {
@@ -1033,6 +1031,163 @@ select.select_catalog {
 	margin-top:-1px;
 	margin-bottom:-1px;
 	width:160px;
+}
+
+/*/////////////////ETAPES/////////////////*/
+.ring_finish,
+.ring_in_progress,
+.ring_disable,
+.feet_finish,
+.feet_in_progress,
+.feet_disable,
+#technical_visit,
+#survey,
+#model,
+#figuring,
+#sending_estimate,
+#validation {
+	background:url("/images/image-step.png");
+}
+
+.ring_finish,
+.ring_in_progress,
+.ring_disable {
+	width:67px;
+	height:67px;
+	cursor:pointer;
+}
+
+.feet_finish,
+.feet_in_progress,
+.feet_disable,
+#technical_visit,
+#survey,
+#model,
+#figuring,
+#sending_estimate,
+#validation {
+	width:48px;
+	height:48px;
+/*	position:relative;	*//*	A appliquer si	*/
+/*	left:10px;			*//*	aucune marge	*/
+/*	top:10px;			*//*	dans #steps div	*/
+}
+
+.feet_finish,
+.feet_in_progress,
+.feet_disable {
+	position:relative;
+	top:10px;	
+}
+
+.ring_finish {
+	background-position:-134px -96px;
+}
+
+.ring_in_progress {
+	background-position:-67px -96px;
+}
+
+.ring_disable {
+	background-position:0 -96px;
+}
+
+.feet_finish {
+	background-position:-201px -96px;
+}
+
+.feet_in_progress {
+	background-position:-288px -48px;
+}
+
+.feet_disable {
+	background-position:-288px 0;
+}
+
+#technical_visit {
+	background-position:0 -48px;
+}
+
+#survey {
+	background-position:-48px -48px;
+}
+
+#model {
+	background-position:-96px -48px;
+}
+
+#figuring {
+	background-position:-144px -48px;
+}
+
+#sending_estimate {
+	background-position:-192px -48px;
+}
+	
+#validation {
+	background-position:-240px -48px;
+}
+
+#technical_visit:hover {
+	background-position:0 0;
+}
+
+#survey:hover {
+	background-position:-48px 0;
+}
+
+#model:hover {
+	background-position:-96px 0;
+}
+
+#figuring:hover {
+	background-position:-144px 0;
+}
+
+#sending_estimate:hover {
+	background-position:-192px 0;
+}
+	
+#validation:hover {
+	background-position:-240px 0;
+}
+
+#steps span {
+	display:none;
+}
+
+#steps div {
+	display:inline;
+	float:left;
+	margin:10px 10px 50px 10px;
+}
+
+#steps p {
+	width:100px;
+	text-indent:0;
+	font-size:0.8em;
+	text-align:center;
+	position:relative;
+	top:50px;
+	margin-left:-30px;
+}
+
+#steps p.selected {
+	font-weight:bold;
+	font-size:0.85em;
+}
+
+#steps {
+	margin-left:10px;
+}
+
+#steps a {
+	text-decoration:none;
+	color:#444;
+}
+
+div.cadre>div#steps {
+	height:240px;
 }
 
 /*/////////////////////////////////////////////////////
