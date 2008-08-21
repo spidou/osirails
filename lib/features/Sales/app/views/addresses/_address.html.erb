@@ -1,15 +1,15 @@
 <p>
     <%= label :address, "Pays"%>
-    <%= text_field_with_auto_complete(:country, :name, 
-        {:value => "#{owner_address.country_name}"}, 
+    <%= my_text_field_with_auto_complete(:country, :name, 
+        {:index => cpt, :value => "#{owner_address.country_name}"}, 
         {:select => 'country_name',
           :after_update_element => "function(){document.getElementById('country_#{cpt}_selected').value = 'true';}"}) -%>
     </p>
 
     <p>
     <%= label :address, "Ville"%>
-    <%= text_field_with_auto_complete(:city, :name, 
-        {:size => 15, :value => "#{owner_address.city_name}"}, {:select => 'city_name',
+    <%= my_text_field_with_auto_complete(:city, :name, 
+        {:index => cpt, :size => 15, :value => "#{owner_address.city_name}"}, {:select => 'city_name',
         :with => "'city_name='+document.getElementById('city_name').value   +
         '&country_name='+document.getElementById('country_name').value"
         }) -%>
@@ -17,8 +17,8 @@
       
     <p>
     <%= label :address, "Code Postal"%>
-    <%= text_field_with_auto_complete(:city, :zip_code,
-        {:size => 15, :value =>  "#{owner_address.zip_code}"}, {:select => 'city_zip_code',
+    <%= my_text_field_with_auto_complete(:city, :zip_code,
+        {:index => cpt, :size => 15, :value =>  "#{owner_address.zip_code}"}, {:select => 'city_zip_code',
         :with => "'city_zip_code='+document.getElementById('city_zip_code').value   +
         '&country_name='+document.getElementById('country_name').value"
         }) -%>

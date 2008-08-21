@@ -4,8 +4,8 @@
     <%= customer.error_messages %>
     <% #Display customer infos%>
     <h2>Informations concernant le client</h2>
-
-    <%= render :partial => 'thirds/third', :locals => {:third => customer} %>
+    
+    <%= render :partial => 'thirds/third', :locals => {:third => customer, :activity_sector => @activity_sector} %>
 
     <% if @establishments.length > 0 %>
       <% for establishment in @establishments %>
@@ -64,7 +64,7 @@
           <% new_establishment_number.times do |i| %>
           <%unless params["valid_establishment_#{i+1}"].nil?%>
               <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
-                <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true} %>
+                <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
               <%end #unless%>
           <%end #unless%>
           <% cpt += 1 %>

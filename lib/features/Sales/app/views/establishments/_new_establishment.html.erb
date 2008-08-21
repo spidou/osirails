@@ -28,8 +28,17 @@
   <%= text_field("new_establishment_address#{cpt}","address2")%>
 </p>
 
+<% unless error%>
+  <% owner_address = Address.new() %>
+<%else%>
+  <%owner_address = Address.new(
+    :country_name => params["new_country#{cpt}"][:name],
+    :city_name => params["new_city#{cpt}"][:name],
+    :zip_code => params["new_city#{cpt}"][:zip_code])%>  
+<%end%>
+
 <%= render :partial => 'addresses/address', 
-      :locals => {:cpt=> 1, :owner_address => Address.new()}%>
+      :locals => {:cpt=> cpt, :owner_address => owner_address}%>
 
 <%= hidden_field("valid_establishment_#{cpt}", "value", "value" => 'true')%>
 

@@ -1,7 +1,6 @@
 class AddressesController < ApplicationController
   
   def auto_complete_for_country_name
-    puts params.keys
     auto_complete_responder_for_country_name(params[:country][:name])
   end
   
@@ -16,7 +15,6 @@ class AddressesController < ApplicationController
   
   #FIXME Change the code to take in consideration the fact that it can have many city with the same name
   def auto_complete_for_city_name
-    puts params.keys
     auto_complete_responder_for_name(params[:city][:name], params[:country_id])
   end
   

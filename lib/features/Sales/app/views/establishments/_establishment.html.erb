@@ -9,6 +9,7 @@
 </p>
 
 <% fields_for :address, establishment_.address do |address|%>
+  <%= address.error_messages %>
   <p>
     <%= label :address, "Address1" %>
     <%= address.text_field :address1%>

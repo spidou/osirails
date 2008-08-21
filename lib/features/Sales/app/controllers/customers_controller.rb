@@ -1,6 +1,4 @@
 class CustomersController < ApplicationController
-  
-  # Put here the code for auto_complete :contact :name
 
   def index
     @customers = Customer.find(:all)
@@ -29,15 +27,24 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @establishments = @customer.establishments
     @contacts = @customer.contacts
+    @activity_sector = @customer.activity_sector.name
   end
 
   def update
     @customer = Customer.find(params[:id])
     @address = @customer.address
     
-    # @error is use to know if all form is valids
+    # @error is use to know if all form are valids
     @error = false
     
+    unless ActivitySector.find_by_name(params[:activity_sectors][:name].capitalize)
+      activity_sector = ActivitySector.new(:name => params[:activity_sectors][:name])
+      if activity_sector.valid?
+        activity_sector.save
+      end
+    end
+    activity_sector = ActivitySector.new(:name => params[:activity_sectors][:name])
+    params[:customer][:activity_sector_id] = activity_sector.id
     unless @customer.update_attributes(params[:customer])
       @error = true
     end
@@ -46,6 +53,31 @@ class CustomersController < ApplicationController
     unless params[:new_establishment_number]["value"].nil?
       new_estbalishment_number = params[:new_establishment_number]["value"].to_i
       new_estbalishment_number.times do |i|
+      params["new_establishment_address#{i+1}"][:country_name] = params["new_country#{i+1}"][:name]
+      params["new_establishment_address#{i+1}"][:city_name] = params["new_city#{i+1}"][:name]
+      params["new_establishment_address#{i+1}"][:zip_code] = params["new_city#{i+1}"][:zip_code]
+      
+      country = Country.find_by_name(params["new_country#{i+1}"][:name])
+      if country.nil?
+        new_country = Country.create(:name => params["new_country#{i+1}"][:name])
+        city = City.new(
+            :name => params["new_city#{i+1}"][:name], 
+            :zip_code => params["new_city#{i+1}"][:zip_code], 
+            :country_id => new_country.id)
+          if country.valid? and city.valid?
+            country.save
+            city.save
+          end
+      elsif City.find_by_name_and_country_id(params["new_country#{i+1}"][:name], country.id).nil?
+        city = City.new(
+            :name => params["new_city#{i+1}"][:name], 
+            :zip_code => params["new_city#{i+1}"][:zip_code], 
+            :country_id => country.id)
+          if city.valid?
+            city.save
+          end
+      end
+    
         # For all new_establishment and addresses,  an instance variable is create.
         # If his parameter is not valid, @error variable is set to true
         eval "unless params['valid_establishment_#{i+1}'].nil? 
@@ -127,32 +159,11 @@ class CustomersController < ApplicationController
                   end"
       end
     end
-    
-    # Save of Address
-    params[:address][:country_name] = params[:country][:name]
-    params[:address][:city_name] = params[:city][:name]
-    params[:address][:zip_code] = params[:city][:zip_code]
-    
-    country = Country.find_by_name(params[:country][:name])
-    if country.nil?
-      new_country = Country.create(:name => params[:country][:name])
-      City.create(
-          :name => params[:city][:name], 
-          :zip_code => params[:city][:zip_code], 
-          :country_id => new_country.id)
-    elsif City.find_by_name_and_country_id(params[:country][:name], country.id).nil?
-      City.create(
-          :name => params[:city][:name], 
-          :zip_code => params[:city][:zip_code], 
-          :country_id => country.id)
-    end
-    
-    @address.update_attributes(params[:address])
         
     unless @error
       redirect_to(customers_path)
     else
-      #       delete(@contact)
+      @activity_sector = params[:activity_sectors][:name]
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
@@ -165,6 +176,19 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @customer.destroy
     redirect_to(customers_path) 
+  end
+  
+  def auto_complete_for_activity_sectors_name
+    auto_complete_responder_for_name(params[:activity_sectors][:name])
+  end
+  
+  def auto_complete_responder_for_name(value)
+    @activity_sectors = ActivitySector.find(:all, 
+      :conditions => [ 'LOWER(name) LIKE ?',
+        '%' + value.downcase + '%'], 
+      :order => 'name ASC',
+      :limit => 8)
+    render :partial => 'thirds/activity_sectors'
   end
   
 end
