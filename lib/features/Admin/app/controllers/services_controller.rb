@@ -50,7 +50,7 @@ class ServicesController < ApplicationController
     else
       flash[:error] = "Le service ne peut être supprim&eacute"
     end
-    redirect_to_services_url
+    redirect_to services_path
   end
   
 end
