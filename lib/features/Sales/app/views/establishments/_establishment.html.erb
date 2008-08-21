@@ -19,24 +19,8 @@
     <%= address.text_field :address2%>  
     </p>
     
-    <p>
-    <%= label :address, "Pays"%>
-    <%= text_field_with_auto_complete(:country, :name, 
-        {:size => 15, :value => "#{establishment_.address.country_name}"}, {:select => 'country_name'}) -%>
-    </p>
+    <%= render :partial => 'addresses/address',  :locals => {:owner_address => establishment_.address}%>
 
-    <p>
-    <%= label :address, "Ville"%>
-    <%= text_field_with_auto_complete(:city, :name, 
-        {:country_id => 1, :size => 15, :value => "#{establishment_.address.city_name}"}, {:select => 'city_name'
-        }) -%>
-    </p>
-      
-    <p>
-    <%= label :address, "Zip_code"%>
-    <%= text_field_with_auto_complete(:city, :zip_code,
-        {:country_id => 1, :size => 15, :value =>  "#{establishment_.address.zip_code}"}) -%>
-    </p>
     <%= hidden_field("country", "id", "value" => '')%>
     <%= hidden_field("city", "id", "value" => '')%>
 <%end #fields_for%>
