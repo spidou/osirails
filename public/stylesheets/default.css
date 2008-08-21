@@ -1076,8 +1076,8 @@ select.select_catalog {
 .feet_finish,
 .feet_in_progress,
 .feet_disable {
-	position:relative;
-	top:10px;	
+//	position:relative;
+//	top:11px;	
 }
 
 .ring_finish {
@@ -1157,19 +1157,43 @@ select.select_catalog {
 }
 
 #steps div {
-	display:inline;
-	float:left;
-	margin:10px 10px 50px 10px;
+//	display:inline;
+	display:inline-block;
+//	display:-moz-inline-box;
+//	display:run-in; 
+//	float:left;
+//	display:block;
+//	display: inline-table;
 }
 
-#steps p {
+#steps div.ring_finish,
+#steps div.ring_in_progress,
+#steps div.ring_disable {
+	margin:10px 10px 0px 20px;
+}
+
+#technical_visit,
+#survey,
+#model,
+#figuring,
+#sending_estimate,
+#validation,
+.feet_finish,
+.feet_in_progress,
+.feet_disable {
+	margin:9px 0px 9px 9px;
+}
+
+
+div.steps_text p {
+	text-align: center;
 	width:100px;
-	text-indent:0;
+	margin:0 0 0 -16px;
+	padding:0;
+	width:100px;
+	text-indent:0px;
 	font-size:0.8em;
 	text-align:center;
-	position:relative;
-	top:50px;
-	margin-left:-30px;
 }
 
 #steps p.selected {
@@ -1186,8 +1210,8 @@ select.select_catalog {
 	color:#444;
 }
 
-div.cadre>div#steps {
-	height:240px;
+div.cadre>#steps {
+//	height:200px;
 }
 
 /*/////////////////////////////////////////////////////
