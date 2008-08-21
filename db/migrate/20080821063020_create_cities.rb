@@ -5,6 +5,9 @@ class CreateCities < ActiveRecord::Migration
       t.string :zip_code
       t.references :country
     end
+    
+    ### Add cities from the sql file
+    # mysql -p -u {username} osirails_development < {/path/to/project}/db/cities.sql
   end
 
   def self.down
