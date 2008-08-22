@@ -15,7 +15,7 @@
           <td><%= customer.name %></td>
           <td><%= customer.activity_sector.name unless  customer.activity_sector.nil?%></td>
           <td><%= customer.note %></td>
-          <td><%= link_to("Voir", :action => :show, :id => customer.id) %> <%= link_to("Modifier", edit_customer_path(customer)) %> <%= link_to("Supprimer", customer, {:method => :delete}) %></td>
+          <td><%= link_to("Voir", :action => :show, :id => customer.id) %> <%= link_to("Modifier", edit_customer_path(customer)) %> <%= link_to("Supprimer", customer, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
         </tr>
     <%end%>
   <%end%>

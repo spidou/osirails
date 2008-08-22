@@ -1,51 +1,59 @@
-<fieldset>
-  <legend> Information concernant le client </legend>
+<h1>Informations concernant le client </h1>
+<div class="cadre">
+
   <p>
-    <b>Nom du client:</b>
+    <%= label :customer_last_name, "Nom" %>
     <%= @customer.name %>
   </p>
+
   <p>
-    <b>Forme l&eacute;gale:</b>
+    <%= label :customer_first_name, "Forme juridique" %>
     <%= @customer.legal_form %>
   </p>
+
   <p>
-    <b>Numéro Siret:</b>
+    <%= label :customer_siret_number, "Num&eacute;ro Siret" %>
     <%= @customer.siret_number %>
   </p>
+
   <p>
-    <b>Secteur d'activité:</b>
+    <%= label :customer_activity_sector, "Secteur d'activit&eacute;" %>
     <%= @customer.activity_sector.name %>
   </p>
+
   <p>
-    <b>Activités:</b>
+    <%= label :customer_activities, "Activit&eacute;s" %>
     <%= @customer.activities %>
   </p>
+
   <p>
-    <b>Note:</b>
+    <%= label :customer_note, "Note" %>
     <%= @customer.note %>
   </p>
+
   <p>
-    <b>Type de client:</b>
+    <%= label :customer_banking_informations, "Informations bancaires" %>
+    <%= @customer.banking_informations %>
+  </p>
+
+  <p>
+    <%= label :customer_note, "Type de Tiers" %>
     <%= @customer.third_type.wording %>
   </p>
-</fieldset>
-<fieldset>
-  <legend><%= "Infomation concernant les etablissements du client"%></legend>
-  <%if @establishments.length > 0%>
-          <%for establishment in @establishments%>
-      <fieldset>
-        <p>
-          <b>Nom de l'établissement:</b>
-          <%= establishment.name%>
-        </p>
-        <p>
-          <b>Type de l'établissement:</b>
-          <%= establishment.establishment_type.wording%>
-        </p>
-      </fieldset>
-    <%end%>
-<%end%>
-</fieldset>
-<%= link_to 'Retour', :action => 'index' %>
 
+<%if @establishments.length > 0%>
+<fieldset>
+  <legend><%= "Liste des &eacute;tablissements du client"%></legend>
+  
+          <%for establishment in @establishments%>
+        <p>
+          <%= establishment.name + '(' +establishment.address.city_name + ')'%>
+          <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
+        </p>
+    <%end%>
+
+</fieldset>
+<%end%>
+<%= link_to 'Retour', :action => 'index' %>
+</div>
 

@@ -11,7 +11,7 @@
         
         <%= link_to("Supprimer", [@owner, @contact],
           :type => "test",
-          :method => :delete
+          :method => :delete, :confirm => 'Etes vous sûr ?'
             )%>
     </fieldset>
   <%end%>

@@ -15,8 +15,9 @@
   
 <p>
   <%= third.label :third_activity_sector, "Secteur d'activit&eacute;"%>
-  <%= my_text_field_with_auto_complete(:activity_sector, :name, {:index => 1, :value => activity_sector, :url => {:controller => 'customers'}}, {:select => 'activity_sector_name',
+  <%= my_text_field_with_auto_complete(:activity_sector, :name, {:index => 1, :value => activity_sector, :url => {:controller => 'customers'},:skip_style => false }, {:skip_style => false,:select => 'activity_sector_name',
      :with => "'value='+document.getElementById('new_activity_sector1_name').value"})%>
+ <%=  javascript_tag "document.getElementById('new_activity_sector1_name').value = '#{activity_sector}'"%>
 </p>
   
 <p>

@@ -13,7 +13,7 @@
     <td><%= supplier.name %></td>
     <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
     <td><%= supplier.note %></td>
-    <td><%= link_to("Voir", :action => :show, :id => supplier.id) %> <%= link_to("Modifier", edit_supplier_path(supplier)) %> <%= link_to("Supprimer", supplier, {:method => :delete}) %></td>
+    <td><%= link_to("Voir", :action => :show, :id => supplier.id) %> <%= link_to("Modifier", edit_supplier_path(supplier)) %> <%= link_to("Supprimer", supplier, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
   </tr>
   <%end%>
 <%end%>

@@ -9,7 +9,13 @@
   end
 
   def create
+    if ActivitySector.find_by_name(params[:new_activity_sector1][:name]).nil?
+      @new_activity_sector1 = ActivitySector.new(:name => params[:new_activity_sector1][:name])
+      @new_activity_sector1.save
+    end
+    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])    
     @customer = Customer.new(params[:customer])
+    @customer.activity_sector = activity_sector
     if @customer.save
       flash[:notice] = "Client ajouté avec succes"
       redirect_to :action => 'index'
@@ -37,13 +43,13 @@
     # @error is use to know if all form are valids
     @error = false
     
-    if ActivitySector.find_by_name(params[:activity_sector][:name].capitalize).nil?
-      activity_sector = ActivitySector.new(:name => params[:activity_sector][:name])
+    if ActivitySector.find_by_name(params[:new_activity_sector1][:name].capitalize).nil?
+      activity_sector = ActivitySector.new(:name => params[:new_activity_sector1][:name])
       if activity_sector.valid?
         activity_sector.save
       end
     end
-    activity_sector = ActivitySector.find_by_name(params[:activity_sector][:name])
+    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])
     params[:customer][:activity_sector_id] = activity_sector.id
     unless @customer.update_attributes(params[:customer])
       @error = true
