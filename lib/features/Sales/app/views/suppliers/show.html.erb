@@ -1,34 +1,40 @@
 <h1>Informations concernant le client </h1>
 <div class="cadre">
 
-<p>
-  <%= label :supplier_name, "Nom" %>
-  <%= @supplier.name %>
-</p>
-<p>
-  <b>Forme l&eacute;gale:</b>
-  <%= @supplier.legal_form %>
-</p>
-<p>
-  <b>Numéro Siret:</b>
-  <%= @supplier.siret_number %>
-</p>
-<p>
-  <b>Secteur d'activité:</b>
-  <%= @supplier.activity_sector.name %>
-</p>
-<p>
-  <b>Activités:</b>
-  <%= @supplier.activities %>
-</p>
-<p>
-  <b>Note:</b>
-<%= @supplier.note %>
-</p>
-<p>
-  <b>Type de client:</b>
-  <%= @supplier.third_type.wording %>
-</p>
+  <p>
+    <%= label :supplier_name, "Nom" %>
+    <%= @supplier.name %>
+  </p>
+
+  <p>
+    <%= label :supplier_legal_form, "Forme juridique" %>
+    <%= @supplier.legal_form %>
+  </p>
+
+  <p>
+    <%= label :supplier_siret_number, "Num&eacute;ro Siret" %>
+    <%= @supplier.siret_number %>
+  </p>
+
+  <p>
+    <%= label :supplier_activity_sector, "Secteur d'activit&eacute;" %>
+    <%= @supplier.activity_sector.name %>
+  </p>
+
+  <p>
+    <%= label :supplier_activities, "Activit&eacute;s" %>
+    <%= @supplier.activities %>
+  </p>
+
+  <p>
+    <%= label :supplier_note, "Note" %>
+    <%= @supplier.note %>
+  </p>
+
+  <p>
+    <%= label :customer_banking_informations, "Informations bancaires" %>
+    <%= @supplier.third_type.wording %>
+  </p>
 
 <%= link_to 'Retour', :action => 'index' %>
 </div>
