@@ -76,13 +76,16 @@
     </p>
  </div>
    <div class="cadre" id='add_lines'>
-  <h2>Num&eacute;ros</h2>
+    <h2>Num&eacute;ros</h2>
+    
+    <%  index_ind||=7%>
+    
     <p>
       <% val = params[:numbers].nil? ? "1" : params[:numbers]['0']['indicative_id']%>
       <% val2 = params[:numbers].nil? ? "1" : params[:numbers]['0']['number_type_id']%>
-      <%= select('numbers[0]',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => val)%>
+      <%= select('numbers[0]',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => "2")%>
       <%= display_number0 %>
-      <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => @number_val2)%>
+      <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected =>"2")%>
       <%= save_lines%>
     </p>
     <p>
@@ -172,6 +175,7 @@
     <div class="cadre" style="display: none;" id='job_add'>
       <h2>Ajout de fonction</h2>
       <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
+        <%=j.error_messages%>
       <p>
         <%= j.label :name, "Nom :"%>
         <%= j.text_field :name%>
