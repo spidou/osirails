@@ -1,7 +1,7 @@
 class AddressesController < ApplicationController
   
   def auto_complete_for_country_name
-    auto_complete_responder_for_country_name(params[:country][:name])
+    auto_complete_responder_for_country_name(params[:value])
   end
   
   def auto_complete_responder_for_country_name(value)
@@ -15,29 +15,40 @@ class AddressesController < ApplicationController
   
   #FIXME Change the code to take in consideration the fact that it can have many city with the same name
   def auto_complete_for_city_name
-    auto_complete_responder_for_name(params[:city][:name], params[:country_id])
+    country = Country.find_by_name("#{params[:country_name]}")
+    if country.nil?
+      country_id = 0
+    else
+      country_id = country.id
+    end
+    auto_complete_responder_for_name(params[:value], country_id)
   end
   
-  def auto_complete_responder_for_name(value,country_id = 1)
-    @cities = City.find(:all, 
-      :conditions => [ 'LOWER(name) LIKE ?',
-        '%' + value.downcase + '%'], 
-      :order => 'name ASC',
-      :limit => 8)
-    render :partial => 'addresses/cities'
+  def auto_complete_responder_for_name(value,country_id)
+    if country_id != 0
+      @cities = City.find(:all, 
+        :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
+          '%' + value.downcase + '%', country_id], 
+        :order => 'name ASC',
+        :limit => 8)
+    end
+    render :partial => 'addresses/cities_name'
   end
   
   def auto_complete_for_city_zip_code
-    auto_complete_responder_for_zip_code(params[:city][:zip_code],params[:country_id])
+    country = Country.find_by_name("#{params[:country_name]}")
+    unless country.nil?   
+      auto_complete_responder_for_zip_code(params[:value],params[:country_id])
+    end   
   end
   
-  def auto_complete_responder_for_zip_code(value,country_id = 1)
+  def auto_complete_responder_for_zip_code(value,country_id)
     @cities = City.find(:all, 
       :conditions => [ 'zip_code LIKE ? AND country_id = ?',
         '%' + value.to_s + '%', country_id], 
       :order => 'name ASC',
       :limit => 8)
-    render :partial => 'addresses/zip_codes'
+    render :partial => 'addresses/cities_zip_code'
   end
   
 end

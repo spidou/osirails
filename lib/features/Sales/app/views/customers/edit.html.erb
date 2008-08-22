@@ -11,6 +11,7 @@
       <% for establishment in @establishments %>
         <%= error_messages_for("establishment#{establishment.id}") %>
         <%= error_messages_for("establishment#{establishment.id}_address") %>
+        <%error_messages_for()%>
       <% end #for%>
 
       <% #Fieldset that content all establishment%>

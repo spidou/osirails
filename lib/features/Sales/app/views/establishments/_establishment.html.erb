@@ -19,7 +19,7 @@
     <%= label :address, "Address2" %>
     <%= address.text_field :address2%>  
     </p>
-    
+   
   <%= render :partial => 'addresses/address', 
       :locals => {:cpt=> 1, :owner_address => establishment_.address}%>
     
