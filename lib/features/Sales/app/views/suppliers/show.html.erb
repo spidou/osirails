@@ -1,5 +1,8 @@
+<h1>Informations concernant le client </h1>
+<div class="cadre">
+
 <p>
-  <b>Nom du fournisseur:</b>
+  <%= label :supplier_name, "Nom" %>
   <%= @supplier.name %>
 </p>
 <p>
@@ -28,6 +31,6 @@
 </p>
 
 <%= link_to 'Retour', :action => 'index' %>
-
+</div>
 
 

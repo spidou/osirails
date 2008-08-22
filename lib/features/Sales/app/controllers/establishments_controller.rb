@@ -94,7 +94,6 @@ class EstablishmentsController < ApplicationController
   end
   
   def auto_complete_for_country_name
-    puts params.keys
     auto_complete_responder_for_country_name(params[:country][:name])
   end
   

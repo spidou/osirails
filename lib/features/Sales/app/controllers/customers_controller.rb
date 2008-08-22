@@ -78,7 +78,6 @@
                   unless params['valid_establishment_#{i+1}']['value'] == 'false'
                     instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
                     instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))
-                    puts @new_establishment_address1.zip_code
                     unless @new_establishment#{i+1}.address = @new_establishment_address#{i+1}             
                       @error = true
                     end
@@ -91,8 +90,6 @@
                   end
                 end"
       end
-      puts params['new_establishment_address1'][:zip_code]
-#      puts params['new_establishment_address1'][:zip_code]
 
       # If all new_establishment and addresses are valids, they are save 
       unless @error

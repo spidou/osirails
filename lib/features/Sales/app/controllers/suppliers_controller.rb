@@ -56,8 +56,6 @@ class SuppliersController < ApplicationController
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
-      #      puts params["contact"]["1"]["first_name"]
-      #      puts params["contact"]["1"]["last_name"]
       new_contact_number = params[:new_contact_number]["value"].to_i
       new_contact_number.times do |i|
         # For all new_contact  an instance variable is create.
