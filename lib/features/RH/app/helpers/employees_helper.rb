@@ -13,12 +13,13 @@ module EmployeesHelper
   end
   
    def display_address2
-    if params[:address].nil?
-      address2 = text_field_tag( 'address[address2]')
-    else
-      address2 = text_field_tag( 'address[address2]', params[:address]['address2'])
-    end
-    address2
+#    if params[:address].nil?
+#      address2 = text_field_tag( 'address[address2]')
+#    else
+#      address2 = text_field_tag( 'address[address2]', params[:address]['address2'])
+#    end
+#    address2
+    text_field_tag( 'address[address2]', params[:address].nil? ? nil : params[:address]['address2'] )
   end
   
   def display_country
