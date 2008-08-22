@@ -22,16 +22,19 @@
 			</div>	
 			<div id="banniere_fond">
 				<div id="boutons">
-          <div id="button_on_banner">
-            <a class="button_banner" href="rechercher/rechercher.html">
-              <span>Ma page d'accueil</span>
+          			<div id="button_on_banner">
+            			<a class="button_banner" href="rechercher/rechercher.html">
+              				<span>Ma page d'accueil</span>
 						</a>
-            <a class="button_banner" href="rechercher/rechercher.html">
+            			<a class="button_banner" href="rechercher/rechercher.html">
 							<span>Rechercher</span>
 						</a>
 						<a class="button_banner" href="<%= logout_url %>">
 							<span>Se déconnecter</span>
 						</a>
+					</div>
+					<div id="banner_datetime">
+						<p>Nous sommes le Vendredi 22 Août et il est 14:19</p>
 					</div>
 				</div>
 			</div>
@@ -122,15 +125,15 @@
 				<div class="cadre">
 				<h2>&Eacute;tapes de la phase "&Eacute;tude commerciale"</h2>
 					<div id="steps">
-						<div class="ring_finish">
+						<div class="ring_finish selected">
 							<div id="technical_visit">
 								<p>
 									<span><strong>[Visite technique]</strong></span>
 								</p>
 							</div>
 							<div class="steps_text">
-								<p class="selected">
-									<a href="">Visite technique qui me saoul pk'il ne marche pas correctement</a>
+								<p>
+									<a href="">Visite technique</a>
 								</p>
 							</div>
 						</div>
@@ -200,11 +203,11 @@
 							</div>
 						</div>
 					</div>
-			<!--		<p>
+					<p>
 						Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse semper, arcu non rhoncus fermentum,
 						nisl odio semper pede, a pellentesque erat dui sit amet elit. Sed pede est, tempus a, fringilla eu, suscipit eget,
 						lorem. In feugiat suscipit dolor. Lorem ipsum dolor sit amet, consectetuer.
-					</p> -->
+					</p> 
 				</div>
 				<div class="tabs">
 					<ul>
@@ -218,7 +221,13 @@
 					</ul>
 				</div>
 				<div class="cadre">
-					<p>contenu variant en fonctions des onglets ...</p>
+					<p>contenu variant en fonctions des onglets ... <br />
+						<a class="previous-button" href="#">
+							<span>Précédent</span>
+						</a>
+						<a class="next-button" href="#">
+							<span>Suivant</span>
+						</a></p>
 				</div>
 			</div> <!-- PAGE_CONTENU : FIN -->
 		</div> <!-- PAGE : FIN -->

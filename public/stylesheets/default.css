@@ -169,10 +169,17 @@ strong {
 
 #boutons {
 	float:right;
-	margin-top:7px;
+	margin-top:-4px;
 	height:20px;
 }
 
+#banner_datetime {
+	float:right;
+	margin:-7px 11px 0 0;
+	font-family: "Trebuchet MS" , Helvetica, Arial, sans-serif;
+	font-size:0.9em;
+	color:#EA972D;
+}
 a.button_banner {
 background: transparent url("../images/bouton-banniere_gauche.png") no-repeat top left;
 display: block;
@@ -485,18 +492,18 @@ img.del_icon {
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 /*::::::::::::::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::::::::::::::::::::::*/
 a.default-button { 																		/**/
-background: transparent url("../images/default-button_end.png") no-repeat top left;		/**/
-display: block;                                                                    		/**/
-float: left;                                                                       		/**/
-font-family: arial, verdana, sans-serif;                                           		/**/
-font-size:85%;                                                                     		/**/
-line-height: 18px;                                                                 		/**/
-height: 26px;                                                                      		/**/
-padding-left: 8px;                                                                 		/**/
-text-decoration: none;                                                             		/**/
-text-indent:0;                                                                     		/**/
-margin:5px 5px 5px 0;                                                		 			/**/
-color:black;                                                                       		/**/
+	background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
+	display: block;                                                                    	/**/
+	float: left;                                                                        /**/
+	font-family: arial, verdana, sans-serif;                                       		/**/
+	font-size:85%;                                                                		/**/
+	line-height: 18px;                                                            		/**/
+	height: 26px;                                                                  		/**/
+	padding-left: 8px;                                                            		/**/
+	text-decoration: none;                                                         		/**/
+	text-indent:0;                                                                 		/**/
+	margin:5px 5px 5px 0;                                             		 			/**/
+	color:black;                                                                   		/**/
 }																				   		/**/
 																						/**/
 a.default-button span { 																/**/
@@ -543,8 +550,50 @@ button.input-button:hover span {													   	/**/
 	background: transparent url("../images/default-button.png") no-repeat 100% -26px;  	/**/
 	color:black;                                                                       	/**/
 }																						/**/
-/*///////////////////////////////////////////////////////////////////////////////////////*/
+/*:::::::::::::::::::::::::::Bouton Suivant-Précédent:::::::::::::::::::::::::::::::::::::*/
+a.next-button,
+a.previous-button {
+	background: transparent url("../images/default-button_end.png") no-repeat top left;
+	font-family: arial, verdana, sans-serif;
+	font-size:85%;
+	height: 26px;
+	padding-left: 8px;
+	padding-bottom:12px;
+	color:black;
+	border:none;
+	text-decoration:none;
+	margin:5px;
+}
 
+a.next-button span,
+a.previous-button span {
+	background: transparent url("../images/default-button.png") no-repeat top right;
+	padding: 3px 12px 8px 0; 
+	border:none;
+	line-height:18px;
+	position:relative;
+	top:3px;
+}
+
+a.next-button span:after {
+	content:" >";
+}
+
+a.previous-button span:before {
+	content:"< ";
+}
+
+a.next-button:hover,
+a.previous-button:hover { 															 
+	background: transparent url("../images/default-button_end.png") no-repeat bottom left;
+}
+
+a.next-button:hover span,
+a.previous-button:hover span {						
+	background: transparent url("../images/default-button.png") no-repeat 100% -26px;
+	color:black;
+}	 		
+																			
 /*//////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
 //////////////////////////////////////////////////////////*/
@@ -828,80 +877,6 @@ table.presentation tr:hover > td{
 	width:inherit;
 }
 
-/*///////////////////////*/
-/*/////// TABLEAU ///////*/
-/*:::::::::TAB 1:::::::::*/
-/*#tab1 caption {
-	background: url("../images/fond_raye_noir-blanc.jpg");
-	color:white;
-	width:100%;
-}
-
-#tab1 table {
-	background:url("../images/tab_border-top.jpg") repeat-x;
-	text-align:center;
-	width:100%;
-}
-
-#tab1 table th{
-	border-right: #a5a09d 1px solid;
-}
-
-#tab1 table td{
-	border-right: #a5a09d 1px solid;
-}
-
-#tab1 .pair {
-	background: #f9f9f9;
-}
-
-#tab1 .impair {
-	background: url("../images/fond_h4_menu_secondaire.jpg") repeat;
-	color:#444444;
-}
-
-#tab1 tr:hover>td {
-	background: url("../images/fond_menu_secondaire.jpg");
-	color:white;
-}
-*/
-/*:::::::::TAB 2:::::::::*/
-/*#tab2 caption {
-	background:rgb(117,141,189);
-	color: rgb(64,68,93);
-	width:100%;
-	font-weight:bold;
-	border-bottom: solid 1px rgb(64,68,93);
-	margin-top:20px;
-}
-
-#tab2 table {
-	border-collapse: collapse;
-	border:solid 1px rgb(64,68,93);
-	background: #afc2ea;
-	text-align:center;
-	width:100%;
-	margin-bottom:20px;
-}
-
-#tab2 table th{
-	border:solid 1px rgb(64,68,93);
-}
-
-#tab2 table td{
-	border:solid 1px rgb(64,68,93);
-}
-
-#tab2 tr:hover > td.impair{
-	background:rgb(117,141,189);
-	color:white;
-}
-
-#tab2 tr:hover > td.pair{
-	background: rgb(234,136,28);
-	color:white;
-}
-*/
 /*/////////////////LISTE:HIERARCHIQUE/////////////////*/
 .hierarchic {
 	margin-left:10px;
@@ -1076,8 +1051,8 @@ select.select_catalog {
 .feet_finish,
 .feet_in_progress,
 .feet_disable {
-//	position:relative;
-//	top:11px;	
+	position:relative;
+	bottom:15px;	
 }
 
 .ring_finish {
@@ -1191,15 +1166,19 @@ div.steps_text p {
 	width:100px;
 	margin:0 0 0 -16px;
 	padding:0;
-	width:100px;
 	text-indent:0px;
 	font-size:0.8em;
 	text-align:center;
 }
 
-#steps p.selected {
+#steps .selected {
+	background-color:#eaeaea;
+}
+
+#steps .selected p {
 	font-weight:bold;
 	font-size:0.85em;
+	background-color:#eaeaea;
 }
 
 #steps {
