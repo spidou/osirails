@@ -4,7 +4,7 @@
   <fieldset>
     <legend>Création d'un nouveau Client</legend>
   <%= customer.error_messages %>
-  <%= render :partial => 'thirds/third', :locals => {:third => customer} %> 
+  <%= render :partial => 'thirds/third', :locals => {:third => customer, :activity_sector => @customer.activity_sector} %> 
   <%= customer.submit  'Créer' %> 
   </fieldset>
 <% end %>
