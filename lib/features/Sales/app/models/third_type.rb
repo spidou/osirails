@@ -1,3 +1,3 @@
 class ThirdType < ActiveRecord::Base
-  has_many :thirds
+  has_many :legal_forms
 end
