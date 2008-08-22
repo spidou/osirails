@@ -14,7 +14,6 @@
 </p>
   
 <p>
-<%=activity_sector%>
   <%= third.label :third_activity_sector, "Secteur d'activit&eacute;"%>
   <%= text_field_with_auto_complete(:activity_sector, :name,{:value => activity_sector, :url => {:controller => 'activity_sectors'}}, {:select => 'activity_sector_name'})%>
 </p>

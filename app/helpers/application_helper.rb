@@ -68,14 +68,13 @@ module ApplicationHelper
     else
       tag_name = "new_#{object}#{method}"
     end
-
     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
       
 #        text_field(object, method, tag_options) +
         content_tag("input", "", :id => "new_#{object}#{tag_options[:index]}_#{method}", :type => "text", :size => 30, 
         :name => "new_#{object}#{tag_options[:index]}[#{method}]", :autocomplete => "off") +
         content_tag("div", "", :id => tag_name + "_auto_complete", :class => "auto_complete") +
-        auto_complete_field(tag_name, { :url => { :controller => "contacts", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
+        auto_complete_field(tag_name, { :url => {:controller => "#{tag_options[:url][:controller]}", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
                                                                 
   end
 end
