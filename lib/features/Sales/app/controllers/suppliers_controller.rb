@@ -24,12 +24,32 @@ class SuppliersController < ApplicationController
   def edit
     @supplier = Supplier.find(params[:id])
     @contacts = @supplier.contacts
+    @activity_sector = @supplier.activity_sector.name
   end
   
   def update
     @error = false
     @supplier = Supplier.find(params[:id])
     @owner = @supplier
+    @activity_sector = @supplier.activity_sector.name
+    
+    # @error is use to know if all form are valids
+    @error = false
+    activity_sector_id= nil
+    if ActivitySector.find_by_name(params[:new_activity_sector1][:name].capitalize).nil?
+      activity_sector = ActivitySector.new(:name => params[:new_activity_sector1][:name])
+      if activity_sector.valid?
+        activity_sector.save
+      end
+    end
+    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])
+    if activity_sector != nil
+      params[:supplier][:activity_sector_id] = activity_sector.id
+      activity_sector_id = activity_sector.id
+    else
+      @error = true
+    end
+    @supplier.activity_sector_id= activity_sector_id
     unless @supplier.update_attributes(params[:supplier])
       @error = true
     end
@@ -79,6 +99,9 @@ class SuppliersController < ApplicationController
     unless @error
       redirect_to(suppliers_path)
     else
+      @activity_sector = params[:new_activity_sector1][:name]
+      @new_contact_number = params[:new_contact_number]["value"]
+      @contacts = @customer.contacts
       render :action => 'edit'
     end    
   end

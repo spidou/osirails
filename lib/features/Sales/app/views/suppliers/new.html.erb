@@ -1,10 +1,12 @@
 <h1>Nouveau fournisseur</h1>
-<fieldset>
-  <legend>Création d'un nouveau Fournisseur</legend>
-<% form_for(@supplier) do |supplier| %>
-  <%= supplier.error_messages %>
-  <%= render :partial => 'thirds/third', :locals => {:third => supplier} %>
-  <%= supplier.submit  'Créer' %> 
-<% end %>
-</fieldset>
-<%= link_to "Retour a l'accueil", :action => 'index' %>
+<div class="cadre">
+  <% form_for(@supplier) do |supplier| %>
+    <fieldset>
+      <legend>Création d'un nouveau Fournisseur</legend>
+      <%= supplier.error_messages %>
+      <%= render :partial => 'thirds/third', :locals => {:third => supplier, :activity_sector => ""} %>
+      <%= supplier.submit  'Créer' %> 
+      <% end %>
+    </fieldset>
+  <%= link_to "Retour a l'accueil", :action => 'index' %>
+</div>
