@@ -9,11 +9,12 @@ class AddAndRemoveColumnsInJobs < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :jobs, :mission, :text
-    add_column :jobs, :activity, :text
-    add_column :jobs, :goal, :text 
     remove_column :jobs, :mission
     remove_column :jobs, :activity
     remove_column :jobs, :goal
+    add_column :jobs, :mission, :text
+    add_column :jobs, :activity, :text
+    add_column :jobs, :goal, :text 
+    
   end
 end
