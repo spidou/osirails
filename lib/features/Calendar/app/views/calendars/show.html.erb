@@ -38,7 +38,6 @@ h1 {
 	margin-left: 70px;
 	right: 0px;
 	height: 1440px;
-	border: 1px solid gray;
 }
 #calendar #scroll #grid_week .day_grid {
 	float:left;
@@ -48,7 +47,7 @@ h1 {
 	background: url('/images/grid_repeat-x.gif') repeat;
 }
 #calendar #scroll #grid_week .day_grid .day_grid_border {
-	border: 1px solid gray;
+	border: 1px solid #C8C8C8;
 	border-top: none;
 	border-bottom: none;
 	width: 100%;
@@ -59,7 +58,6 @@ h1 {
 	margin-left: 70px;
 	right: 0px;
 	height: 1440px;
-	border: 1px solid gray;
 }
 #calendar #scroll #grid_day .day_grid {
 	float:left;
@@ -83,7 +81,7 @@ h1 {
 	display: block;
 }
 #calendar #scroll #grid_week li {
-	width: 14.02%;
+	width: 14.10%;
 }
 #calendar #scroll #grid_day li {
 	width: 99.8%;
@@ -107,15 +105,16 @@ h1 {
 	height: 100%;
 }
 #event_box {
+	font-size: 12px;
 	visibility: hidden;
 	position: absolute;
-	top: 400px;
-	border: 3px solid;
+	top: 0px;
+	border: 3px solid black;
 	padding: 8px;
 	-moz-border-radius: 8px;
 	background-color: #C8C8C8;
 	z-index: 1000;
-	width: 350px;
+	width: 380px;
 }
 </style>
 <script type="text/javascript">
@@ -268,28 +267,29 @@ function change_day_events (draggable) {
 	day.childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
 }
 
-edit_box_id = "event_box";
+event_box_id = "event_box";
+event_box_content_id = "event_box_content";
 
 function show_event_box (event_id, event) {
+	event_box_loading();
 	var db_event_id = event_id.substr(13, event_id.length - 13);
-	var edit_box_elm = document.getElementById(edit_box_id);
+	var event_box_elm = document.getElementById(event_box_id);
 	new Ajax.Request('/events/show/'+ db_event_id, {asynchronous:true, evalScripts:true});
-	edit_box_elm.style.top = event.clientY;
-	edit_box_elm.style.left = event.clientX;
-	document.getElementById(event_id).parentNode.appendChild(edit_box_elm);
-	edit_box_elm.style.visibility = 'visible';
-	Effect.Grow(edit_box_id, {direction: 'center'});
-	new Draggable(edit_box_id);
+	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
+	event_box_elm.style.top = document.getElementById(event_id).style.top;
+	event_box_elm.style.visibility = 'visible';
+	Effect.Grow(event_box_id, {direction: 'center'});
 }
 
 function hide_event_box () {
-	var edit_box_elm = document.getElementById(edit_box_id);
-	Effect.Puff(edit_box_id, {duration: 3});
-
-	edit_box_elm.innerHTML = "Chargement";		
-	document.getElementById('calendar').appendChild(edit_box_elm);
-	// TODO Continuer les box
+	var event_box_elm = document.getElementById(event_box_id);
+	Effect.Fade(event_box_id, {duration: 1});
+	setTimeout(function() {
+		document.getElementById('calendar').appendChild(event_box_elm);
+		event_box_loading();
+	}, 900);
 }
+
 function save_event (elm_id) {
 	cal_event = document.getElementById(elm_id);
 	event_id = elm_id.substr(13, elm_id.length - 13);
@@ -324,8 +324,75 @@ function drag_and_scroll (elm_id) {
 	};
 }
 function reload_events () {
+	for (var i=0; i < events.length; i++) {
+		var grid = document.getElementById(events[i]).ancestors()[1];
+		grid.removeChild(document.getElementById(events[i]).parentNode);
+		events.splice(i, 1);
+	};
 	<%= get_events_function %>;
 }
+
+function event_box_loading () {
+	var event_box_elm = document.getElementById(event_box_id);
+ 	document.getElementById(event_box_content_id).innerHTML = "Chargement";
+}
+
+function event_frequence_change (argument) {
+	switch(argument) {
+		case "event_frequence_type":
+			var type_elm = document.getElementById('event_frequence_type');
+			var more_elm = document.getElementById('event_frequence_more');
+			var form = "<span>Fin</span>" +
+				"<select onChange=\"event_frequence_change('event_frequence_more');\">" +
+				"<option>Jamais</option>" +
+				"<option>Apr&egrave;s</option>" +
+				"<option>le</option>" +
+				"</select>" +
+				"<div id=\"event_frequence_more_input\"></div>" +
+				"<input id=\"event_interval\" name=\"event[interval]\" type=\"hidden\" value=\"1\"/>";
+				
+			switch(type_elm.options[type_elm.selectedIndex].text) {
+				case "Personaliser":
+					more_elm.innerHTML = "En cours de développement";
+				break;
+				case "Chaque jour":
+					more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"DAILY\"/>"
+				break;
+				case "Chaque semaine":
+					more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"WEEKLY\"/>"
+				break;
+				case "Tous les mois":
+					more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"MONTHLY\"/>"
+				break;
+				case "Tous les ans":
+					more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"YEARLY\"/>"
+				break;
+				default:
+					more_elm.innerHTML = "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"\"/><input id=\"event_count\" name=\"event[count]\" type=\"hidden\" value=\"\"/><input id=\"event_until_date\" name=\"event[until_date]\" type=\"hidden\" value=\"\"/>";
+				break;
+			}
+		break;
+		
+		case "event_frequence_more":
+			var more_elm = document.getElementById('event_frequence_more');
+			var more_select_elm = more_elm.childNodes[1];
+			var more_input_elm = more_elm.childNodes[2];
+			switch(more_select_elm.options[more_select_elm.selectedIndex].text) {
+				case "Jamais":
+					more_input_elm.innerHTML = "<input id=\"event_count\" name=\"event[count]\" type=\"hidden\" value=\"\"/><input id=\"event_until_date\" name=\"event[until_date]\" type=\"hidden\" value=\"\"/>";
+				break;
+				case "Après":
+					more_input_elm.innerHTML = "<input class=\"disable-stylesheet-width\" id=\"event_count\" name=\"event[count]\" size=\"3\" value=\"1\" type=\"text\"> fois";
+				break;
+				case "le":
+					more_input_elm.innerHTML = "<input class=\"disable-stylesheet-width\" id=\"event_until_date\" name=\"event[until_date]\" size=\"12\" value=\"\" type=\"text\">";
+				break;
+			};
+		break;
+	};
+}
+
+
 document.body.setAttribute('onResize', "resize_events();");
 document.body.setAttribute('onLoad', "<%= get_events_function %>");
 </script>
@@ -333,7 +400,10 @@ document.body.setAttribute('onLoad', "<%= get_events_function %>");
 <div id="calendar" class="cadre">
 	<%= display_flash %>
 	<%= render_calendar(params[:period]) %>
-	<div id="event_box"></div>
+	<div id="event_box">
+		<a style="float: right;" onClick="hide_event_box();">Fermer</a>
+		<div id="event_box_content"></div>
+	</div>
 	<script>
 	new Draggable('menu_secondaire');
 	document.getElementById('scroll').scrollTop = 480;

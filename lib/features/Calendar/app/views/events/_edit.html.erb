@@ -1,13 +1,35 @@
 <% remote_form_for :event, @event, :url => {:controller => 'events', :action => 'update', :id => params[:id]} do |e| %>
-	<%= e.label :title %>
+	<span>Titre</span>
 	<%= e.text_field :title, :class => 'disable-stylesheet-width' %><br />
-	<%= e.label :location %>
+	<span>Emplacement</span>
 	<%= e.text_field :location, :class => 'disable-stylesheet-width' %><br />
-	<%= e.label :start_at %>
+	<span>Du</span>
 	<%= e.text_field :start_at, :class => 'disable-stylesheet-width' %><br />
-	<%= e.label :end_at %>
+	<span>Au</span>
 	<%= e.text_field :end_at, :class => 'disable-stylesheet-width' %><br />
-	<%= e.label :description %>
-	<%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />	
-	<%= e.submit "Terminer", :onclick => "hide_event_box(); reload_events();" %>
+	<span>Description</span>
+	<%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />
+	<span>R&eacute;p&eacute;ter</span>
+	<select onChange="event_frequence_change('event_frequence_type');" id="event_frequence_type">
+		<option>Jamais</option>
+		<option<%= ' selected' if @event.frequence == "DAILY" %>>Chaque jour</option>
+		<option<%= ' selected' if @event.frequence == "WEEKLY" %>>Chaque semaine</option>
+		<option<%= ' selected' if @event.frequence == "MONTHLY" %>>Tous les mois</option>
+		<option<%= ' selected' if @event.frequence == "YEARLY" %>>Tous les ans</option>
+		<option>Personnaliser</option>
+	</select>
+	<div id="event_frequence_more"></div>
+	<% unless @event.frequence.empty? %>
+	<script>
+		event_frequence_change('event_frequence_type');
+		var type_elm = document.getElementById('event_frequence_more').childNodes[1];
+		<%= "type_elm.options[1].selected = true;" unless @event.count.nil? %>
+		<%= "type_elm.options[2].selected = true;" unless @event.until_date.nil? %>
+		event_frequence_change('event_frequence_more');
+		<%= "document.getElementById('event_count').value =" + @event.count.to_s unless @event.count.nil? %>
+		<%= "document.getElementById('event_until_date').value =" + @event.until_date unless @event.until_date.nil? %>
+	</script>
+	<% end %>
+	<br />
+	<div style="text-align: right;"><%= e.submit "Terminer" %></div>
 <% end %>

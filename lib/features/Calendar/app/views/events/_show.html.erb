@@ -1,6 +1,6 @@
 <%= @event.title %>
 <br />du: <%= @event.start_at %>
 <br />au: <%= @event.end_at %>
-<% if event_freq(@event) %><br />répéter:<% end %> <%= event_freq(@event) %>
-<% if event_freq_end(@event) %><br />fin:<% end %> <%= event_freq_end(@event) %>
-<br /><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %>
+<% if event_freq(@event) %><br />répéter: <%= event_freq(@event) %><% end %>
+<% if event_freq_end(@event) %><br />fin: <%= event_freq_end(@event) %><% end %>
+<br /><div onClick="event_box_loading();"><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %></div>
