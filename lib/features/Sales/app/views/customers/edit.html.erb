@@ -4,7 +4,7 @@
     <%= customer.error_messages %>
     <% #Display customer infos%>
     <h2>Informations concernant le client</h2>
-    <%= render :partial => 'thirds/third', :locals => {:third => customer, :activity_sector => @customer.activity_sector.name} %>
+    <%= render :partial => 'thirds/third', :locals => {:third => customer, :activity_sector => @activity_sector} %>
 
     <% if @establishments.length > 0 %>
       <% for establishment in @establishments %>

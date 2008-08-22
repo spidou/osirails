@@ -39,10 +39,11 @@
   def update
     @customer = Customer.find(params[:id])
     @address = @customer.address
+    @activity_sector = @customer.activity_sector.name
     
     # @error is use to know if all form are valids
     @error = false
-    
+    activity_sector_id= nil
     if ActivitySector.find_by_name(params[:new_activity_sector1][:name].capitalize).nil?
       activity_sector = ActivitySector.new(:name => params[:new_activity_sector1][:name])
       if activity_sector.valid?
@@ -50,17 +51,21 @@
       end
     end
     activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])
-    params[:customer][:activity_sector_id] = activity_sector.id
+    if activity_sector != nil
+      params[:customer][:activity_sector_id] = activity_sector.id
+      activity_sector_id = activity_sector.id
+    else
+      @error = true
+    end
+    @customer.activity_sector_id= activity_sector_id
     unless @customer.update_attributes(params[:customer])
       @error = true
     end
     
     # If establishment_form is not null
-    unless params[:new_establishment_number]["value"] == 0
-      puts params[:new_establishment_number]["value"]
+    unless params[:new_establishment_number]["value"] == 0  
       new_estbalishment_number = params[:new_establishment_number]["value"].to_i
       new_estbalishment_number.times do |i|
-   
         # For all new_establishment and addresses,  an instance variable is create.
         # If his parameter is not valid, @error variable is set to true
         eval "
@@ -72,8 +77,8 @@
 
                   unless params['valid_establishment_#{i+1}']['value'] == 'false'
                     instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
-                    params[:new_establishment_address#{i+1}].delete('zip_code')
                     instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))
+                    puts @new_establishment_address1.zip_code
                     unless @new_establishment#{i+1}.address = @new_establishment_address#{i+1}             
                       @error = true
                     end
@@ -86,6 +91,8 @@
                   end
                 end"
       end
+      puts params['new_establishment_address1'][:zip_code]
+#      puts params['new_establishment_address1'][:zip_code]
 
       # If all new_establishment and addresses are valids, they are save 
       unless @error
@@ -181,7 +188,7 @@
     unless @error
       redirect_to(customers_path)
     else
-      @activity_sector = params[:activity_sector][:name]
+      @activity_sector = params[:new_activity_sector1][:name]
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
@@ -197,7 +204,6 @@
   end
   
   def auto_complete_for_activity_sector_name
-    puts params.keys
     auto_complete_responder_for_name(params[:value])
   end
   

@@ -17,9 +17,9 @@ class EstablishmentsController < ApplicationController
     @customer = Customer.find(params[:customer_id])
     @contacts = @establishment.contacts
       
-    params[:address][:country_name] = params[:country][:name]
-    params[:address][:city_name] = params[:city][:name]
-    params[:address][:zip_code] = params[:city][:zip_code]
+    params[:address][:country_name] = params[:new_country1][:name]
+    params[:address][:city_name] = params[:new_city1][:name]
+    params[:address][:zip_code] = params[:new_city1][:zip_code]
     
     country = Country.find_by_name(params[:country][:name])
     if country.nil?

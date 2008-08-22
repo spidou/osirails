@@ -27,6 +27,8 @@
     </p>
 
     <%=  javascript_tag "document.getElementById('new_country#{cpt}_name').value = '#{owner_address.country_name}'"%>
+    <%=  javascript_tag "document.getElementById('new_city#{cpt}_name').value = '#{owner_address.city_name}'"%>
+    <%=  javascript_tag "document.getElementById('new_city#{cpt}_zip_code').value = '#{owner_address.zip_code}'"%>
 
     <%= hidden_field("country_#{cpt}", "selected", "value" => 'false')%>
 
