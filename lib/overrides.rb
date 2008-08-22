@@ -46,4 +46,17 @@ Date::DAYNAMES = %w(Lundi Mardi Mercredi Jeudi Vendredi Samedi Dimanche )
 Date::ABBR_MONTHNAMES = [nil] + %w(jan fev mar avr mai juin juil aou sep oct nov dec)
 Date::ABBR_DAYNAMES = %w(lun mar mer jeu ven sam dim)
 
+class Time
+ alias :strftime_nolocale :strftime
+ 
+ def strftime(format)
+  format = format.dup
+  format.gsub!(/%a/, Date::ABBR_DAYNAMES[self.wday])
+  format.gsub!(/%A/, Date::DAYNAMES[self.wday])
+  format.gsub!(/%b/, Date::ABBR_MONTHNAMES[self.mon])
+  format.gsub!(/%B/, Date::MONTHNAMES[self.mon])
+  self.strftime_nolocale(format)
+ end
+end
+
 
