@@ -1,9 +1,10 @@
 class ActivitySectorsController < ApplicationController
-#  
-#  auto_complete_for :activity_sectors, :name
-#     # Autocomplete
+
+  protect_from_forgery :except => [:auto_complete_for_activity_sector_name]
+  
 def auto_complete_for_activity_sector_name
-    auto_complete_responder_for_name(params[:activity_sector][:name])
+    puts params.keys
+#    auto_complete_responder_for_name(params[:value])
   end
   
   def auto_complete_responder_for_name(value)
