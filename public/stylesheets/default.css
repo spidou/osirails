@@ -1164,6 +1164,7 @@ select.select_catalog {
 //	float:left;
 //	display:block;
 //	display: inline-table;
+
 }
 
 #steps div.ring_finish,
@@ -1203,6 +1204,7 @@ div.steps_text p {
 
 #steps {
 	margin-left:10px;
+//	vertical-align:top;
 }
 
 #steps a {
