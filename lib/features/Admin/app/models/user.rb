@@ -11,17 +11,20 @@ class User < ActiveRecord::Base
     user.before_save :password_encryption
     user.validates_presence_of :password, :message => "ne peut être vide"
     user.validates_confirmation_of :password, :message => "ne correspondent pas"
-    # find the index of the actual selected regex to choose the good one into the db
-    actual = ConfigurationManager.admin_actual_password_policy
-    # raise ConfigurationManager.admin_password_policy[actual]
-    reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
-    # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
-    message = ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")
-    user.validates_format_of :password, :with => reg ,:message =>  message
+    begin
+      # find the index of the actual selected regex to choose the good one into the db
+      actual = ConfigurationManager.admin_actual_password_policy
+      reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
+      # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
+      message = ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")
+      user.validates_format_of :password, :with => reg ,:message =>  message
+    rescue Exception => e
+      puts "Une erreur est survenue à l'initialisation des features. Veuillez relancer le serveur. (erreur : #{e.message})"
+    end
   end
   
   # Accessors
-  attr_accessor :updating_password, :with_validates
+  attr_accessor :updating_password
   # Requires
   require "digest/sha1"
 
