@@ -167,7 +167,7 @@
     <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form"), :html => {:id=>'job_add_link'}%>
   </div> 
   <span id="main_submit">
-    <%= f.submit "Modifier" %>
+    <%= f.submit button_name %>
     <%= link_to 'Retour', employees_path %>
   </span>
 <% end %>
