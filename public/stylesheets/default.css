@@ -1021,7 +1021,7 @@ select.select_catalog {
 #figuring,
 #sending_estimate,
 #validation {
-	background:url("/images/image-step.png");
+	background:url("/images/image-step.png") no-repeat;
 }
 
 .ring_finish,
@@ -1052,7 +1052,8 @@ select.select_catalog {
 .feet_in_progress,
 .feet_disable {
 	position:relative;
-	bottom:15px;	
+	bottom:15px;
+	padding:0 0px 0 20px;
 }
 
 .ring_finish {
@@ -1132,20 +1133,14 @@ select.select_catalog {
 }
 
 #steps div {
-//	display:inline;
 	display:inline-block;
-//	display:-moz-inline-box;
-//	display:run-in; 
-//	float:left;
-//	display:block;
-//	display: inline-table;
 
 }
 
 #steps div.ring_finish,
 #steps div.ring_in_progress,
 #steps div.ring_disable {
-	margin:10px 10px 0px 20px;
+	margin:10px 19px 0px -4px;
 }
 
 #technical_visit,
@@ -1170,21 +1165,32 @@ div.steps_text p {
 	font-size:0.8em;
 	text-align:center;
 }
-
+/*
 #steps .selected {
-	background-color:#eaeaea;
+//	background-color:#eaeaea;
 }
 
 #steps .selected p {
 	font-weight:bold;
 	font-size:0.85em;
-	background-color:#eaeaea;
+//	background-color:#eaeaea;
+}
+*/
+
+#steps div.selected {
+	background:#DBE2F0;
+	-moz-border-radius:8px;
+	padding-bottom:10px;
+}
+
+#steps div.selected p {
+	font-weight:bold;
 }
 
 #steps {
 	margin-left:10px;
-//	vertical-align:top;
 }
+
 
 #steps a {
 	text-decoration:none;
@@ -1194,6 +1200,45 @@ div.steps_text p {
 div.cadre>#steps {
 //	height:200px;
 }
+
+/*////////////DEPLACEMENT PAGES par PAGES////////////*/
+.shift {
+//	background:#CCC;
+	text-align:center;
+}
+
+.shift a.disable,
+.shift a.disable:hover {
+	color:#888;
+	cursor:default;
+}
+
+.shift a.selected {
+	color:#000;
+}
+
+.shift a {
+	text-decoration:none;
+}
+
+.shift span a {
+	text-decoration:none;
+	color:#343434;
+}
+
+.shift span a:hover {
+	color:#747474;
+}
+
+.shift p {
+	display:inline;
+	text-indent:0;
+	margin-left:-20px;
+	margin-right:30px;
+	text-align:center;
+
+}
+
 
 /*/////////////////////////////////////////////////////
 					FOOTER
