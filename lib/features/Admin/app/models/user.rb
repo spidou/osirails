@@ -21,10 +21,10 @@ class User < ActiveRecord::Base
   end
   
   # Accessors
-  attr_accessor :updating_password
+  attr_accessor :updating_password, :with_validates
   # Requires
   require "digest/sha1"
-  
+
   # Method to encrypt a string
   def encrypt(string)
     Digest::SHA1.hexdigest(string)
@@ -42,7 +42,8 @@ class User < ActiveRecord::Base
   
   # Method to verify if the password is empty or not
   def should_update_password?
-    updating_password || new_record?
+    with_validates ||= true 
+    with_validates && (updating_password || new_record?)
   end
   
   # Update the column last_connection when a user loggin
