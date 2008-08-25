@@ -5,12 +5,12 @@ module ApplicationHelper
   end
   
   def display_flash
-    unless flash[:error].nil? and flash[:notice].nil?
-      html = "<div class=\"flash_container\">"
-      html << "<span class=\"flash_notice\"><span>" + flash[:notice] + "</span></span>" unless flash[:notice].nil?
-      html << "<span class=\"flash_error\"><span>" + flash[:error] + "</span></span>" unless flash[:error].nil?
-      html << "</div>"
+    html = ""
+    flash.each_pair do |key, value|
+      html << '<br/>' unless html == ""
+      html << "<span class=\"flash_#{key}\"><span>#{value}</span></span>"
     end
+    html == "" ? "" : "<div class=\"flash_container\">" << html << "</div>"
   end
   
   def current_user
