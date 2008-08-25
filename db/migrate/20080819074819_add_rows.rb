@@ -61,10 +61,12 @@ class AddRows < ActiveRecord::Migration
     ContactType.create :name => "Contact de livraison", :owner => "Establishment"
     
       # Default users and roles
-    user_admin = User.create  :username => "admin" ,:password => "admin", :enabled => 1, :updating_password => false
+    user_admin = User.new :username => "admin" ,:password => "admin", :enabled => 1, :updating_password => false
+    user_admin.save
     user_admin.roles << role_admin
     
-    user_guest = User.create :username => "guest",:password => "guest", :enabled => 1, :updating_password => false
+    user_guest = User.new :username => "guest",:password => "guest", :enabled => 1, :updating_password => false
+    user_guest.save
     user_guest.roles << role_guest
     
     # Default menu permissions for default roles
