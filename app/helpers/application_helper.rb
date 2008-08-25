@@ -77,4 +77,8 @@ module ApplicationHelper
         auto_complete_field(tag_name, { :url => {:controller => "#{tag_options[:url][:controller]}", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
                                                                 
   end
+  
+  def display_date_time
+    "Nous sommes le " + Date::today.strftime("%A %d %B") + " et il est " + DateTime.now.hour.to_s + ":" + DateTime.now.min.to_s
+  end
 end
