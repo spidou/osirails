@@ -1,9 +1,11 @@
 <h1>Modifier un service</h1>
-<div class="cadre">
+
 
 <% form_for(@service) do |service| %>
-      <%= service.error_messages %>
-
+  <%= service.error_messages %>
+  
+  <div class="cadre">
+  <h2>Service :</h2>
   <p>
     <%= service.label :name, "Nom"  %><br />
     <%= service.text_field :name %>
@@ -13,9 +15,34 @@
     <%= service.label :service_parent_id, "Parent" %>
     <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
   </p>
+  </div> 
+   
+  <div class="cadre">
+  <h2>Horaires du service :</h2>
+    <p>
+      <%=  javascript_tag "document.getElementById('periode1')"%>
+      Du <%= day_select(0) %> au <%= day_select(0) %>
+      <fieldset>
+      <legend>Matinée</legend>
+        <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+        <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
+        <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+        <%=text_field_tag 'morning_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
+      </fieldset>
+      <fieldset>
+      <legend>Apr&egrave;s midi</legend>
+        <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+        <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
+        <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+        <%=text_field_tag 'afternoon_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
+      </fieldset>
+    </p>  
+  </div>
+  
 
   <p>
     <%= service.submit "Mettre à jour" %> &#124; <%= link_to 'Retour', services_path %>
   </p>
+
 <% end %>
 </div>

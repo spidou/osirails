@@ -3,50 +3,44 @@ module EmployeesHelper
   # Methods to display form parts with or without  content when raise an error 
   ###########################################################################
   
-  def display_address1
-    if params[:address].nil?
-      address1 = text_field_tag( 'address[address1]')
+  def display_address1(default=nil)
+    if default.nil?
+      text_field_tag( 'address[address1]',params[:address].nil? ? nil : params[:address]['address1'] )
     else
-      address1 = text_field_tag( 'address[address1]', params[:address]['address1'])
+      text_field_tag( 'address[address1]', default)
     end
-    address1
   end
   
-   def display_address2
-#    if params[:address].nil?
-#      address2 = text_field_tag( 'address[address2]')
-#    else
-#      address2 = text_field_tag( 'address[address2]', params[:address]['address2'])
-#    end
-#    address2
-    text_field_tag( 'address[address2]', params[:address].nil? ? nil : params[:address]['address2'] )
+   def display_address2(default=nil)
+    if default.nil?
+      text_field_tag( 'address[address2]', params[:address].nil? ? nil : params[:address]['address2'] )
+    else
+      text_field_tag( 'address[address2]',default)
+    end  
   end
   
-  def display_country
-    if params[:address].nil?
-      country = text_field_tag( 'address[country_name]')
+  def display_country(default=nil)
+    if default.nil?
+      text_field_tag( 'address[country_name]',params[:address].nil? ? nil : params[:address]['country_name'])
     else
-      country = text_field_tag( 'address[country_name]', params[:address]['country_name'])
+      text_field_tag( 'address[country_name]',default)
     end
-    country
   end
   
-  def display_city
-    if params[:address].nil?
-      country = text_field_tag( 'address[city_name]')
+  def display_city(default=nil)
+    if default.nil?
+      text_field_tag( 'address[city_name]',params[:address].nil? ? nil : params[:address]['city_name'])
     else
-      country = text_field_tag( 'address[city_name]', params[:address]['city_name'])
+      text_field_tag( 'address[city_name]', default)    
     end
-    country
   end
   
-  def display_zip_code
-    if params[:address].nil?
-      zip_code = text_field_tag( 'address[zip_code]')
+  def display_zip_code(default=nil)
+    if default.nil?
+      text_field_tag( 'address[zip_code]',params[:address].nil? ? nil : params[:address]['zip_code'])
     else
-      zip_code = text_field_tag( 'address[zip_code]', params[:address]['zip_code'])
+      text_field_tag( 'address[zip_code]',default)  
     end
-    zip_code
   end
   
   def display_number0
@@ -58,44 +52,44 @@ module EmployeesHelper
     number0
   end
   
-  def display_bank_code
-    if params[:iban].nil?
-      text_field_tag( 'iban[bank_code]', '', :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+  def display_bank_code(default=nil)
+    if default.nil?
+      text_field_tag( 'iban[bank_code]',params[:iban].nil? ? "" : params[:iban]['bank_code'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[bank_code]',params[:iban]['bank_code'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[bank_code]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     end
   end
   
-  def display_teller_code
-    if params[:iban].nil?
-      text_field_tag( 'iban[teller_code]', '', :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+  def display_teller_code(default=nil)
+    if default.nil?
+      text_field_tag( 'iban[teller_code]',params[:iban].nil? ? "" : params[:iban]['teller_code'], :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[teller_code]', params[:iban]['teller_code'], :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[teller_code]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     end
   end
   
-  def display_account_number
+  def display_account_number(default=nil)
    
-    if params[:iban].nil?
-      text_field_tag( 'iban[account_number]', '', :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
+    if default.nil?
+      text_field_tag( 'iban[account_number]',params[:iban].nil? ? "" : params[:iban]['account_number'] , :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[account_number]',params[:iban]['account_number'] , :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[account_number]',default, :size => 8, :maxlength => 10, :class => 'disable-stylesheet-width')
     end
   end
    
-  def display_key
-    if params[:iban].nil?
-      text_field_tag( 'iban[key]', '', :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
+  def display_key(default=nil)
+    if default.nil?
+      text_field_tag( 'iban[key]',params[:iban].nil? ? "" : params[:iban]['key'] , :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[key]', params[:iban]['key'] , :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[key]',default, :size => 1, :maxlength => 2, :class => 'disable-stylesheet-width')
     end
   end
   
-  def display_holder_name
-    if params[:iban].nil?
-      text_field_tag( 'iban[holder_name]')
+  def display_holder_name(default=nil)
+    if default.nil?
+      text_field_tag( 'iban[holder_name]',params[:iban].nil? ? nil : params[:iban]['holder_name'])
     else
-      text_field_tag( 'iban[holder_name]',params[:iban]['holder_name'])
+      text_field_tag( 'iban[holder_name]',default)
     end
   end
   
@@ -105,28 +99,22 @@ module EmployeesHelper
   ############################################################################################
   
   # Method to verify if the params[:employee] and his attributes are null
-  def verify_param_employee(attribute,object)
-    if params[:employee].nil?
-      false
+  def is_in?(object, collection, attribute = nil, employee = nil)
+    if employee.nil? and !attribute.nil? 
+      return false if params[:employee].nil?
+      params[:employee][attribute].nil? ? false : params[:employee][attribute].include?(object.id.to_s)  
     else
-      if params[:employee][attribute].nil?
-        false
-      else
-        params[:employee][attribute].include?(object.id.to_s)
-      end  
-    end 
+      collection=='services'? employee.services.include?(object) : employee.jobs.include?(object)
+    end
   end
   
   # Method to verify if the params[:responsable] and his attributes are null
-  def verify_param_responsable(service_id)
-    if params[:responsable].nil?
-      false
+  def is_resonsable_of_this_service?(service_id,employee = nil)
+    if employee.nil?
+      return false if params[:responsable].nil?
+      params[:responsable][service_id.to_s].nil? ? false : true
     else
-      if params[:responsable][service_id.to_s].nil?
-        false
-      else
-        true
-      end  
+      employee.responsable?(service_id).include?(employee.id)
     end
   end
   
@@ -177,10 +165,10 @@ module EmployeesHelper
   
   def responsable(service_id)
     tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
-    manager = "( "
+    manager = ""
     tmp.each do |t|
       e = Employee.find(t.employee_id)
-      manager +=  ", " unless manager=="( "
+      manager +=  ", " unless manager==""
       manager += e.fullname
       
     end

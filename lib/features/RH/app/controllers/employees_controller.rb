@@ -21,6 +21,7 @@ class EmployeesController < ApplicationController
     @numbers = @employee.numbers
     @address = @employee.address
     @jobs = @employee.jobs
+    
     # permissions
     @edit = self.can_edit?(current_user)
     @view = self.can_view?(current_user)
@@ -55,6 +56,7 @@ class EmployeesController < ApplicationController
   def edit
     @employee = Employee.find(params[:id])
     @services = Service.find(:all)
+    @job = Job.new
     @jobs = Job.find(:all)    
     @iban = @employee.iban
     @numbers = @employee.numbers
@@ -69,11 +71,12 @@ class EmployeesController < ApplicationController
     # instance_variable_set("@numbers",[]) 
     @services = Service.find(:all)
     @jobs = Job.find(:all) 
-    
+
     # update employees ressources
     @employee = Employee.new(params[:employee])
     @job = Job.new(params[:job]) 
     @employee.address = Address.new(params[:address])
+
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
     end
@@ -81,23 +84,28 @@ class EmployeesController < ApplicationController
     
     # save job and employees
     unless params[:job].nil?
-      @job.save ? job = true : job = false  
-    end   
-    respond_to do |format|
-      if @employee.save and job == true
-      
-        # configure the employee as a responsable of his services if responsable is checked
+      @job.save ? job = true : job = false 
+    else
+      job = true   
+    end  
+     
+    # raise @employee.numbers.inspect
+    if @employee.save and job == true
+    
+      # configure the employee as a responsable of his services if responsable is checked
+      unless params[:responsable].nil?
         params[:responsable].each_key do |rep|
           @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
           @responsable[0].update_attributes({:responsable => 1}) 
         end
-        
-        flash[:notice] = 'L&apos;employée a été crée avec succés.'
-        format.html { redirect_to(@employee) }
-      else
-        format.html { render :action => "new" }
-      end
+      end  
+      
+      flash[:notice] = 'L&apos;employée a été crée avec succés.'
+      redirect_to(@employee)
+    else
+      render :action => "new" 
     end
+
   end
 
   # PUT /employees/1
@@ -105,7 +113,8 @@ class EmployeesController < ApplicationController
   def update
     @employee = Employee.find(params[:id])
     @services = Service.find(:all)
-    @jobs = Job.find(:all) 
+    @jobs = Job.find(:all)
+    @job = Job.new(params[:job]) 
     @iban = @employee.iban
     @numbers = @employee.numbers
     @address = @employee.address
@@ -143,23 +152,23 @@ class EmployeesController < ApplicationController
       r.update_attributes({:responsable => 0})
     end
     
-    respond_to do |format|
-      if @employee.update_attributes(params[:employee])
-      
-        # update responsable attribute of the employee's service 
-        unless params[:responsable].nil?
-          params[:responsable].each_key do |rep|
-            @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
-            @responsable[0].update_attributes({:responsable => 1}) unless @responsable[0].nil?
-          end
-        end 
-         
-        flash[:notice] = ' L&apos;employée a été modifié avec succés.'
-        format.html { redirect_to(@employee) }
-      else
-        format.html { render :action => "edit" }
-      end
+
+    if @employee.update_attributes(params[:employee])
+    
+      # update responsable attribute of the employee's service 
+      unless params[:responsable].nil?
+        params[:responsable].each_key do |rep|
+          @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
+          @responsable[0].update_attributes({:responsable => 1}) unless @responsable[0].nil?
+        end
+      end 
+        
+      flash[:notice] = ' L&apos;employée a été modifié avec succés.'
+      redirect_to(@employee)
+    else
+      render :action => "edit"
     end
+
   end
 
   # DELETE /employees/1

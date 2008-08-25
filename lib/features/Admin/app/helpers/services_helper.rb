@@ -29,4 +29,8 @@ module ServicesHelper
     list
   end
   
+  # method to make a day select
+  def day_select(id)
+    html =  select('shedules[' + id.to_s + ']','day', {"Lundi"=>1  ,"Mardi"=>2  ,"Mercredi"=>3 ,"Jeudi"=>4  , "Vendredi"=>5 ,"Samedi"=> 6 ,"Dimanche"=>7  }, :selected => 1)
+  end
 end

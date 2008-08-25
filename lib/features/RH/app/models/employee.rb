@@ -16,7 +16,7 @@ class Employee < ActiveRecord::Base
   has_and_belongs_to_many :jobs
   
   # Validates
-  validates_presence_of :last_name,:first_name , :message => "ne peut être vide"
+  validates_presence_of :last_name, :first_name, :message => "ne peut être vide"
   validates_format_of :social_security, :with => /^([0-9]{13}\x20[0-9]{2})*$/,:message => "format numéro de sécurité social incorrect"
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
@@ -101,4 +101,17 @@ class Employee < ActiveRecord::Base
     end
     return manager
   end
+  
+  def format_text(line_length,text)
+    t_end = text.size
+    line_end = 0
+    formated_text=""
+      while line_end < t_end
+        formated_text+=text[line_end..line_end + line_length]+ "\n"
+        
+        line_end += line_length
+      end
+    formated_text  
+  end
+  
 end

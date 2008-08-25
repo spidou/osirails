@@ -8,10 +8,6 @@ class JobsController < ApplicationController
   
   def new
     @job= Job.new 
-    respond_to do |format|
-      format.html
-      format.js { render :layout => 'redbox_form'}
-    end
   end
   
   def edit
@@ -29,7 +25,7 @@ class JobsController < ApplicationController
         @jobs = Job.find(:all)
         flash[:notice] = 'La fonction a été crée avec succés.'
         format.html { redirect_to(jobs_path) }  
-        format.js 
+        format.js
       else
         format.html { render :action => "new" }
       end
@@ -41,7 +37,7 @@ class JobsController < ApplicationController
     @job = Job.find(params[:id])
     
     respond_to do |format|
-      if @job.update_attributes(params[:employee])
+      if @job.update_attributes(params[:job])
         flash[:notice] = 'La fonction  a été modifié avec succés.'
         format.html { redirect_to(@job) }
       else

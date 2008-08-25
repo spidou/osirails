@@ -23,10 +23,10 @@ class JobContractsController < ApplicationController
       params[:salaries]['salary'] = tmp
     end
    # small hack to bring out the date in the date select without referent object 
-   m= params[:premia]['date']['(2i)'] 
-   d= params[:premia]['date']['(3i)'] 
-   y= params[:premia]['date']['(1i)'] 
-   params[:premia]['date'] = "#{m}/#{d}/#{y}".to_date
+   # m= params[:premia]['date']['(2i)'] 
+   # d= params[:premia]['date']['(3i)'] 
+   # y= params[:premia]['date']['(1i)'] 
+   # params[:premia]['date'] = "#{m}/#{d}/#{y}".to_date
 
     respond_to do |format|
       if @job_contract.update_attributes(params[:job_contract]) and @salaries << Salary.create(params[:salaries]) and @premia << Premium.create(params[:premia]) 

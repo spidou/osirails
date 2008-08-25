@@ -6,9 +6,7 @@ class CreateRoles < ActiveRecord::Migration
       
       t.timestamps
     end
-    # TODO add rows while migrate
-    # Role.create( :name => 'Admin' , :description =>'Compte Administrateur présent par défault')
-    # Role.create( :name => 'Tout le monde', :description =>'Compte regroupant tous les utilisateurs')
+
   end
 
   def self.down

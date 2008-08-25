@@ -34,21 +34,7 @@
     <%= select('salaries[type]','value', ["Brut","Net"], :selected => "Brut")%>
   </p>
   </div>
-  <div class="cadre">
-  <h2>Prime :</h2>
-  <p>
-    <%= label_tag 'premia[premium]',"Prime :"%>
-    <%= text_field_tag 'premia[premium]',@employee.premia==[]? "": @employee.premia.last['premium'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"%>
-    &nbsp;le&nbsp;
-    <%= date_select 'premia[date]',@employee.premia==[]? "": @employee.premia.last['date'], :start_year => 2000, :order => [:day,:month,:year] %>
-    <br/>motif &#58;
-    <%= text_area_tag 'premia[remark]',@employee.premia==[]? "": @employee.premia.last['remark'].to_s%>
-  </p>
-
-  
-  <p>
-    <%= submit_tag "Modifier" %>
-  </p>  
+  <%= submit_tag "Modifier" %>
 <%end%>
 <%=link_to 'Retour', employee_path(@employee)%>
-</div>
+
