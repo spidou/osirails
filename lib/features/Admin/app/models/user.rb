@@ -42,9 +42,7 @@ class User < ActiveRecord::Base
   
   # Method to verify if the password is empty or not
   def should_update_password?
-    with_validates = true if  with_validates == nil
-    puts with_validates
-    with_validates && (updating_password || new_record?)
+    updating_password || new_record?
   end
   
   # Update the column last_connection when a user loggin
