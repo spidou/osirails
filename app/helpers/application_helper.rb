@@ -5,11 +5,11 @@ module ApplicationHelper
   end
   
   def display_flash
-    unless flash[:error].nil?
-      "<div class=\"flash_container\"><span class=\"flash_error\"><span>" + flash[:error] + "</span></span></div>"
-    end
-    unless flash[:notice].nil?
-      "<div class=\"flash_container\"><span class=\"flash_notice\"><span>" + flash[:notice] + "</span></span></div>"
+    unless flash[:error].nil? and flash[:notice].nil?
+      html = "<div class=\"flash_container\">"
+      html << "<span class=\"flash_notice\"><p>" + flash[:notice] + "</p></span>" unless flash[:notice].nil?
+      html << "<span class=\"flash_error\"><p>" + flash[:error] + "</p></span>" unless flash[:error].nil?
+      html << "</div>"
     end
   end
   
@@ -62,6 +62,10 @@ module ApplicationHelper
     "Bienvenue, " + ( current_user ? ( current_user.employee ? "#{current_user.employee.fullname}" : "\"#{current_user.username}\"" ) : "" )
   end
   
+  def display_date_time
+    "Nous sommes le " + Date::today.strftime("%A %d %B") + " et il est " + DateTime.now.hour.to_s + ":" + DateTime.now.min.to_s
+  end
+  
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
     if(tag_options[:index])
       tag_name = "new_#{object}#{tag_options[:index]}_#{method}"
@@ -76,9 +80,5 @@ module ApplicationHelper
         content_tag("div", "", :id => tag_name + "_auto_complete", :class => "auto_complete") +
         auto_complete_field(tag_name, { :url => {:controller => "#{tag_options[:url][:controller]}", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
                                                                 
-  end
-  
-  def display_date_time
-    "Nous sommes le " + Date::today.strftime("%A %d %B") + " et il est " + DateTime.now.hour.to_s + ":" + DateTime.now.min.to_s
   end
 end

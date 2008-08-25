@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   def index
     # TODO In the view index, add the sessions management
     @users = User.find(:all, :include =>[:employee])
+    #flash[:error] = "TEST"
+    flash[:notice] = "TEST"
   end
 
   # GET /users/1
