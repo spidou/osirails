@@ -6,6 +6,8 @@ class SocietyIdentityConfigurationController < ApplicationController
     for parameter in search_methods(__FILE__) do
       @parameters[parameter] = ConfigurationManager.send(parameter)
     end
+    # Permissions
+    @edit = self.can_edit?(current_user)
   end
   
   # GET /society_identity_configuration/edit

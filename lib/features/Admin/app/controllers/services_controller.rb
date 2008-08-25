@@ -1,6 +1,9 @@
 class ServicesController < ApplicationController
   # GET /services
   def index
+    @add = self.can_add?(current_user)
+    @edit = self.can_edit?(current_user)
+    @delete = self.can_delete?(current_user)
   end
   
   # GET /services/new
