@@ -93,46 +93,46 @@ class EstablishmentsController < ApplicationController
     end
   end
   
-  def auto_complete_for_country_name
-    auto_complete_responder_for_country_name(params[:country][:name])
-  end
-  
-  def auto_complete_responder_for_country_name(value)
-    @countries = Country.find(:all, 
-      :conditions => [ 'LOWER(name) LIKE ?',
-        '%' + value.downcase + '%'], 
-      :order => 'name ASC',
-      :limit => 8)
-    render :partial => 'addresses/countries'
-  end
-  
-  def auto_complete_for_city_name
-    country_id = Country.find_by_name("#{params[:country_name]}")
-    auto_complete_responder_for_name(params[:city_name], country_id)
-  end
-  
-  def auto_complete_responder_for_name(value,country_id = 1)
-    @cities = City.find(:all, 
-      :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
-        '%' + value.downcase + '%', country_id], 
-      :order => 'name ASC',
-      :limit => 8)
-    render :partial => 'addresses/cities_name'
-  end
-  
-  def auto_complete_for_city_zip_code
-    country_id = Country.find_by_name("#{params[:country_name]}")
-    auto_complete_responder_for_zip_code(params[:city_zip_code], country_id)
-  end
-  
-  def auto_complete_responder_for_zip_code(value,country_id = 1)
-    @cities = City.find(:all, 
-      :conditions => [ 'zip_code LIKE ? AND country_id = ?',
-        '%' + value.to_s + '%', country_id], 
-      :order => 'name ASC',
-      :limit => 8)
-    render :partial => 'addresses/cities_zip_code'
-  end
+#  def auto_complete_for_country_name
+#    auto_complete_responder_for_country_name(params[:country][:name])
+#  end
+#  
+#  def auto_complete_responder_for_country_name(value)
+#    @countries = Country.find(:all, 
+#      :conditions => [ 'LOWER(name) LIKE ?',
+#        '%' + value.downcase + '%'], 
+#      :order => 'name ASC',
+#      :limit => 8)
+#    render :partial => 'addresses/countries'
+#  end
+#  
+#  def auto_complete_for_city_name
+#    country_id = Country.find_by_name("#{params[:country_name]}")
+#    auto_complete_responder_for_name(params[:city_name], country_id)
+#  end
+#  
+#  def auto_complete_responder_for_name(value,country_id = 1)
+#    @cities = City.find(:all, 
+#      :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
+#        '%' + value.downcase + '%', country_id], 
+#      :order => 'name ASC',
+#      :limit => 8)
+#    render :partial => 'addresses/cities_name'
+#  end
+#  
+#  def auto_complete_for_city_zip_code
+#    country_id = Country.find_by_name("#{params[:country_name]}")
+#    auto_complete_responder_for_zip_code(params[:city_zip_code], country_id)
+#  end
+#  
+#  def auto_complete_responder_for_zip_code(value,country_id = 1)
+#    @cities = City.find(:all, 
+#      :conditions => [ 'zip_code LIKE ? AND country_id = ?',
+#        '%' + value.to_s + '%', country_id], 
+#      :order => 'name ASC',
+#      :limit => 8)
+#    render :partial => 'addresses/cities_zip_code'
+#  end
   
   def destroy
     @establishment = Establishment.find(params[:id])
@@ -140,4 +140,5 @@ class EstablishmentsController < ApplicationController
     @establishment.destroy
     redirect_to(edit_customer_path(@customer)) 
   end
+  
 end

@@ -3,7 +3,7 @@
   <% form_for([@customer, @establishment])  do |establishment| %>
     <%= establishment.error_messages %>
     
-    <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment, :zip_code => @zip_code} %>
+    <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment} %>
   
     <% if @contacts.length > 0 -%>
       <fieldset>

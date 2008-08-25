@@ -17,7 +17,7 @@
     @customer = Customer.new(params[:customer])
     @customer.activity_sector = activity_sector
     if @customer.save
-      flash[:notice] = "Client ajouté avec succes"
+      flash[:notice] = "Client ajout&eacute; avec succes"
       redirect_to :action => 'index'
     else
       render :action => 'new'
@@ -37,6 +37,7 @@
   end
 
   def update
+    puts params[:customer][:legal_form_id]
     @customer = Customer.find(params[:id])
     @address = @customer.address
     @activity_sector = @customer.activity_sector.name
@@ -57,11 +58,12 @@
     else
       @error = true
     end
+    params[:customer][:third_type_id] = LegalForm.find(params[:customer][:legal_form_id]).third_type_id
     @customer.activity_sector_id= activity_sector_id
     unless @customer.update_attributes(params[:customer])
       @error = true
     end
-    
+    @customer.legal_form_id
     # If establishment_form is not null
     unless params[:new_establishment_number]["value"] == 0  
       new_estbalishment_number = params[:new_establishment_number]["value"].to_i
@@ -183,6 +185,7 @@
     end
         
     unless @error
+      flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
       redirect_to(customers_path)
     else
       @activity_sector = params[:new_activity_sector1][:name]
@@ -196,8 +199,12 @@
 
   def destroy
     @customer = Customer.find(params[:id])
-    @customer.destroy
-    redirect_to(customers_path) 
+    if @customer.destroy
+    redirect_to(customers_path)
+    else
+      flash[:error] = "Une erreur est survenu lors de la suppression du contact"
+      redirect_to :back 
+    end
   end
   
   def auto_complete_for_activity_sector_name
@@ -212,4 +219,5 @@
       :limit => 8)
     render :partial => 'thirds/activity_sectors'
   end
+  
 end

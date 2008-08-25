@@ -11,8 +11,8 @@ class Third < ActiveRecord::Base
   has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
   
   validates_presence_of :name
-  validates_presence_of :activity_sector
-  validates_numericality_of :siret_number, :only_integer => true
-  validates_numericality_of :banking_informations, :only_integer => true
+  validates_presence_of :legal_form_id
+  validates_presence_of :activity_sector_id
+  validates_format_of :siret_number, :with => /^[0-9]{14}/
   
 end
