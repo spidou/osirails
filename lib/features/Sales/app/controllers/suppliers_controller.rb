@@ -8,11 +8,18 @@ class SuppliersController < ApplicationController
   end
   
   def create
+    if ActivitySector.find_by_name(params[:new_activity_sector1][:name]).nil?
+      @new_activity_sector1 = ActivitySector.new(:name => params[:new_activity_sector1][:name])
+      @new_activity_sector1.save
+    end
+    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])   
     @supplier = Supplier.new(params[:supplier])
+    @supplier.activity_sector = activity_sector   
     if @supplier.save
       flash[:notice] = 'Fournisseur ajouté avec succes'
       redirect_to :action => 'index'
     else
+      flash[:error] = 'Une erreur est survenu lors de la création du fournisseur'
       render :action => 'new'
     end
   end
@@ -95,11 +102,13 @@ class SuppliersController < ApplicationController
     end
     
     unless @error
+      flash[:notice] = 'Fournisseur ajouté avec succes'
       redirect_to(suppliers_path)
     else
+      flash[:error] = 'Une erreur est survenu lors de sauvegarde du fournisseur'
       @activity_sector = params[:new_activity_sector1][:name]
       @new_contact_number = params[:new_contact_number]["value"]
-      @contacts = @customer.contacts
+      @contacts = @supplier.contacts
       render :action => 'edit'
     end    
   end

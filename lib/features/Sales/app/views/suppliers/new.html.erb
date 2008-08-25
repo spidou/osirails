@@ -4,9 +4,9 @@
     <fieldset>
       <legend>Création d'un nouveau Fournisseur</legend>
       <%= supplier.error_messages %>
-      <%= render :partial => 'thirds/third', :locals => {:third => supplier, :activity_sector => ""} %>
+      <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
       <%= supplier.submit  'Créer' %> 
-      <% end %>
     </fieldset>
+  <% end %>  
   <%= link_to "Retour a l'accueil", :action => 'index' %>
 </div>

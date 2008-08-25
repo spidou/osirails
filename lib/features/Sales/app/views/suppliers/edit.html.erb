@@ -3,7 +3,7 @@
   <% form_for(@supplier) do |supplier| %>
     <%= supplier.error_messages %>
     <h2>Informations concernant le fournisseur</h2>
-    <%= render :partial => 'thirds/third', :locals => {:third => supplier, :activity_sector => @activity_sector} %>
+    <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
 
     <% if @contacts.length > 0 -%>
       <fieldset>

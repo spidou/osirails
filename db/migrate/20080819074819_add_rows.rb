@@ -56,9 +56,10 @@ class AddRows < ActiveRecord::Migration
     ContactType.create :name => "Normal", :owner => "Customer"
     ContactType.create :name => "Contact de facturation", :owner => "Customer"
     ContactType.create :name => "Contact de livraison", :owner => "Customer"
-    ContactType.create :name => "Normal", :owner => "Supplier"
     ContactType.create :name => "Normal", :owner => "Establishment"
-    ContactType.create :name => "Contact de livraison", :owner => "Establishment"
+    ContactType.create :name => "Contact de livraison", :owner => "Establishment"    
+    ContactType.create :name => "Acceuill", :owner => "Establishment"
+    ContactType.create :name => "Normal", :owner => "Supplier"
     
       # Default users and roles
     user_admin = User.create :username => "admin" ,:password => "admin", :enabled => 1

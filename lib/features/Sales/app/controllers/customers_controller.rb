@@ -37,7 +37,6 @@
   end
 
   def update
-    puts params[:customer][:legal_form_id]
     @customer = Customer.find(params[:id])
     @address = @customer.address
     @activity_sector = @customer.activity_sector.name
@@ -186,13 +185,16 @@
         
     unless @error
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
-      redirect_to(customers_path)
+      @new_establishment_number = 0
+      @new_contact_number = 0
+      redirect_to :action => 'edit'
     else
       @activity_sector = params[:new_activity_sector1][:name]
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
       @contacts = @customer.contacts
+      flash[:error] = "Une erreur est survenu lors de la sauvegarde du client"
       render :action => 'edit'
     end
   end

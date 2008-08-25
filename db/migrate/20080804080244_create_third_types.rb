@@ -6,9 +6,6 @@ class CreateThirdTypes < ActiveRecord::Migration
       t.timestamps
     end
     
-    ThirdType.create :wording => "Privé"
-    ThirdType.create :wording => "Public"
-    
   end
 
   def self.down

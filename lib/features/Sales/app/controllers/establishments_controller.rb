@@ -23,11 +23,11 @@ class EstablishmentsController < ApplicationController
     
     country = Country.find_by_name(params[:country][:name])
     if country.nil?
-      new_country = Country.new(:name => params[:country][:name])
+      country = Country.new(:name => params[:country][:name])
       city = City.new(
           :name => params[:city][:name], 
           :zip_code => params[:city][:zip_code], 
-          :country_id => new_country.id)
+          :country_id => country.id)
         if country.valid? and city.valid?
           country.save
           city.save
@@ -42,8 +42,12 @@ class EstablishmentsController < ApplicationController
         end   
     end
     
-    @establishment.update_attributes(params[:establishment])
-    @address.update_attributes(params[:address])
+    unless @establishment.update_attributes(params[:establishment])
+      @error = true
+    end
+    unless @address.update_attributes(params[:address])
+      @error = true
+    end
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
@@ -85,54 +89,15 @@ class EstablishmentsController < ApplicationController
       end
     end
     
-    if @error
+    if @error   
+      flash[:error] = "Une erreur est survenue lors de la sauvegarde de l'&eacute;tablissement"
       @new_contact_number = params[:new_contact_number]["value"]
       render :action => "edit"
     else
-      redirect_to(edit_customer_establishment_path(@customer,@establishment))
+      flash[:notice] = "&Eacute;tablissement sauvegard&eacute;e avec succes"
+      redirect_to :action => "edit"
     end
   end
-  
-#  def auto_complete_for_country_name
-#    auto_complete_responder_for_country_name(params[:country][:name])
-#  end
-#  
-#  def auto_complete_responder_for_country_name(value)
-#    @countries = Country.find(:all, 
-#      :conditions => [ 'LOWER(name) LIKE ?',
-#        '%' + value.downcase + '%'], 
-#      :order => 'name ASC',
-#      :limit => 8)
-#    render :partial => 'addresses/countries'
-#  end
-#  
-#  def auto_complete_for_city_name
-#    country_id = Country.find_by_name("#{params[:country_name]}")
-#    auto_complete_responder_for_name(params[:city_name], country_id)
-#  end
-#  
-#  def auto_complete_responder_for_name(value,country_id = 1)
-#    @cities = City.find(:all, 
-#      :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
-#        '%' + value.downcase + '%', country_id], 
-#      :order => 'name ASC',
-#      :limit => 8)
-#    render :partial => 'addresses/cities_name'
-#  end
-#  
-#  def auto_complete_for_city_zip_code
-#    country_id = Country.find_by_name("#{params[:country_name]}")
-#    auto_complete_responder_for_zip_code(params[:city_zip_code], country_id)
-#  end
-#  
-#  def auto_complete_responder_for_zip_code(value,country_id = 1)
-#    @cities = City.find(:all, 
-#      :conditions => [ 'zip_code LIKE ? AND country_id = ?',
-#        '%' + value.to_s + '%', country_id], 
-#      :order => 'name ASC',
-#      :limit => 8)
-#    render :partial => 'addresses/cities_zip_code'
-#  end
   
   def destroy
     @establishment = Establishment.find(params[:id])
