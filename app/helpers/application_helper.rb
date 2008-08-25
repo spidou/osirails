@@ -7,8 +7,8 @@ module ApplicationHelper
   def display_flash
     unless flash[:error].nil? and flash[:notice].nil?
       html = "<div class=\"flash_container\">"
-      html << "<span class=\"flash_notice\"><p>" + flash[:notice] + "</p></span>" unless flash[:notice].nil?
-      html << "<span class=\"flash_error\"><p>" + flash[:error] + "</p></span>" unless flash[:error].nil?
+      html << "<span class=\"flash_notice\"><span>" + flash[:notice] + "</span></span>" unless flash[:notice].nil?
+      html << "<span class=\"flash_error\"><span>" + flash[:error] + "</span></span>" unless flash[:error].nil?
       html << "</div>"
     end
   end
