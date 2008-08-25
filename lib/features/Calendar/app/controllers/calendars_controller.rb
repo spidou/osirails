@@ -1,4 +1,5 @@
 class CalendarsController < ActionController::Base
+  before_filter :check_date
   layout 'default'
   helper :all
   $month_fr ||= []
@@ -25,11 +26,7 @@ class CalendarsController < ActionController::Base
   
   def show
     @calendar = Calendar.find(params[:id])
-    if params[:year] && params[:month] && params[:day]
-      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
-    else
-      @date = Date::today
-    end
+    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
   end
     
   def get_events
@@ -57,15 +54,19 @@ class CalendarsController < ActionController::Base
       format.js
     end
   end
+  
+  protected
 
-  def update
-    @event = Event.find(params[:id])
-    @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
-    @event.end_at = @event.start_at + (params[:height].to_i).minutes 
-    if @event.save
-      render :text => "true"
-    else
-      render :text => "false"
+  def check_date
+    unless ["day", "week", "year"].include?(params[:period].downcase)
+      params[:period] = "week"  
+      flash[:error] = "La période demander est invalide"
+    end
+    begin
+    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    rescue ArgumentError
+      redirect_to :action => 'show', :id => params[:id], :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day
+      flash[:error] = "Date incorrecte"
     end
   end
 end

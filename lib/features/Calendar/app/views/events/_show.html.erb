@@ -3,4 +3,4 @@
 <br />au: <%= @event.end_at %>
 <% if event_freq(@event) %><br />répéter: <%= event_freq(@event) %><% end %>
 <% if event_freq_end(@event) %><br />fin: <%= event_freq_end(@event) %><% end %>
-<br /><div onClick="event_box_loading();"><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %></div>
+<br /><div onClick="event_box_loading();"><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %> <%= link_to_remote "Supprimer", :url => {:action => 'destroy', :id => params[:id]} %></div>

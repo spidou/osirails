@@ -1,5 +1,8 @@
 <script src="/javascripts/resize.js" type="text/javascript"></script>
-
+<style type="text/css">@import url(/javascripts/calendar/skins/aqua/theme.css);</style> 
+<script type="text/javascript" src="/javascripts/calendar/calendar.js"></script> 
+<script type="text/javascript" src="/javascripts/calendar/lang/calendar-en.js"></script> 
+<script type="text/javascript" src="/javascripts/calendar/calendar-setup.js"></script>
 <style>
 div {
 //	border: 1px solid;
@@ -113,15 +116,18 @@ h1 {
 	padding: 8px;
 	-moz-border-radius: 8px;
 	background-color: #C8C8C8;
-	z-index: 1000;
+	z-index: 100;
 	width: 380px;
+}
+.calendar {
+	z-index: 101;
 }
 </style>
 <script type="text/javascript">
 /* Globals */
-
-events = new Array();
 draggables_events = new Array();
+event_box_id = "event_box";
+event_box_content_id = "event_box_content";
 
 /* Functions */
 
@@ -132,10 +138,10 @@ function calendar_init (p) {
 
 function add_event (id, title, top, height, color, week_day) {
 	var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
+	var events = document.getElementsByClassName('event');
 	for (var i=0; i < events.length; i++) {
-		if (events[i] == 'event' + id) {
-			grid_day.removeChild(document.getElementById(events[i]).parentNode);
-			events.splice(i, 1);
+		if (events[i].id == 'event' + id) {
+			document.getElementById(events[i]).parentNode.remove();
 		};
 	};
 	var elm_id = 'event' + id
@@ -146,7 +152,7 @@ function add_event (id, title, top, height, color, week_day) {
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
 	event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
-	event_div.setAttribute('onDblclick', 'show_event_box(\''+ elm_id +'\', event);');
+	event_div.setAttribute('onDblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
 	
 	event_content.setAttribute('class', 'event_content');
 	
@@ -171,7 +177,6 @@ function add_event (id, title, top, height, color, week_day) {
   	}
   });
   update_time(elm_id);
-	events.push(elm_id);
 }
 
 function add_draggable (elm_id) {
@@ -246,8 +251,9 @@ function resize_events () {
 	for (var i=0; i < draggables_events.length; i++) {
 		draggables_events[i].destroy();
 	};
+	var events = document.getElementsByClassName('event');
 	for (var i=0; i < events.length; i++) {
-		add_draggable(events[i]);
+		add_draggable(events[i].id);
 	};
 }
 
@@ -258,23 +264,35 @@ function change_day_events (draggable) {
 	var target_day = day_num + (left_size / cal_event.ancestors()[1].offsetWidth);
 	var day = cal_event.ancestors()[4].childNodes[target_day * 2 + 1];
 	cal_event.style.left = 0;
+	var events = document.getElementsByClassName('event');
 	for (var i=0; i < events.length; i++) {
-		if (events[i] == cal_event.id) {
-			events[i] = "event" + day.id + cal_event.id.substr(13, cal_event.id.length - 13);
-			cal_event.id = events[i];
+		if (events[i].id == cal_event.id) {
+			events[i].id = "event" + day.id + cal_event.id.substr(13, cal_event.id.length - 13);
+			cal_event.id = events[i].id;
 		};
 	};
 	day.childNodes[1].childNodes[0].appendChild(cal_event.ancestors()[0]);
 }
 
-event_box_id = "event_box";
-event_box_content_id = "event_box_content";
-
-function show_event_box (event_id, event) {
+function display_event_box (action, event_id, event) {
 	event_box_loading();
-	var db_event_id = event_id.substr(13, event_id.length - 13);
 	var event_box_elm = document.getElementById(event_box_id);
-	new Ajax.Request('/events/show/'+ db_event_id, {asynchronous:true, evalScripts:true});
+	switch (action) {
+		case "show":
+			var db_event_id = event_id.substr(13, event_id.length - 13);
+			new Ajax.Request('/events/'+ action +'/'+ db_event_id, {asynchronous:true, evalScripts:true});
+		break;
+		case "new":
+		var height = event.pageY + document.getElementById('scroll').scrollTop - document.getElementById('grid_' + period).offsetTop;
+		if (height >= 23 * 60) { height = 23 * 60; };
+		if (event.target.className == "day_grid_border") {
+			temp_event_id = event.target.parentNode.id + "new";
+			event_id = 'event' + temp_event_id;
+			new Ajax.Request('/events/'+ action, {asynchronous:true, evalScripts:true});
+			add_event(temp_event_id, 'Nouvel événement', height, 50, 'blue', event.target.parentNode.id);
+		};
+		break;
+	};
 	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
 	event_box_elm.style.top = document.getElementById(event_id).style.top;
 	event_box_elm.style.visibility = 'visible';
@@ -288,14 +306,15 @@ function hide_event_box () {
 		document.getElementById('calendar').appendChild(event_box_elm);
 		event_box_loading();
 	}, 900);
+	reload_events();
 }
 
 function save_event (elm_id) {
 	cal_event = document.getElementById(elm_id);
 	event_id = elm_id.substr(13, elm_id.length - 13);
 	date = cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id;
-	if (new Ajax.Request('/calendars/update/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, {asynchronous:true, evalScripts:true})) {
-		// TODO 
+	if (new Ajax.Request('/events/update/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, {asynchronous:true, evalScripts:true})) {
+		// TODO Manage error
 	};
 }
 
@@ -323,11 +342,13 @@ function drag_and_scroll (elm_id) {
 		scroll_elm.scrollTop = event_top + event_height - scroll_height;
 	};
 }
+
 function reload_events () {
+	var events = document.getElementsByClassName('event');
 	for (var i=0; i < events.length; i++) {
-		var grid = document.getElementById(events[i]).ancestors()[1];
-		grid.removeChild(document.getElementById(events[i]).parentNode);
-		events.splice(i, 1);
+		if (events[i].id.substr(13, 3) == 'new') {
+					events[i].parentNode.remove();
+		};
 	};
 	<%= get_events_function %>;
 }
@@ -352,7 +373,7 @@ function event_frequence_change (argument) {
 				"<input id=\"event_interval\" name=\"event[interval]\" type=\"hidden\" value=\"1\"/>";
 				
 			switch(type_elm.options[type_elm.selectedIndex].text) {
-				case "Personaliser":
+				case "Personnaliser":
 					more_elm.innerHTML = "En cours de développement";
 				break;
 				case "Chaque jour":
@@ -392,20 +413,32 @@ function event_frequence_change (argument) {
 	};
 }
 
-
 document.body.setAttribute('onResize', "resize_events();");
 document.body.setAttribute('onLoad', "<%= get_events_function %>");
 </script>
 <h1><%= @calendar.title %></h1>
 <div id="calendar" class="cadre">
-	<%= display_flash %>
+	<div id="mini_calendar" style="width: 300px;"></div>
+	<script type="text/javascript">
+	Calendar.setup({ 
+		flat : "mini_calendar",
+		onSelect: function (cal) {
+			var year = cal.date.print("%Y");
+			var month = cal.date.print("%m");
+			var day = cal.date.print("%d");
+			window.location = "/calendars/show/<%= params[:id] %>/" + period + "/" + year + "/" + month + "/" + day;
+		}
+	});
+	</script>
 	<%= render_calendar(params[:period]) %>
 	<div id="event_box">
 		<a style="float: right;" onClick="hide_event_box();">Fermer</a>
 		<div id="event_box_content"></div>
 	</div>
-	<script>
+	<script type="text/javascript">
 	new Draggable('menu_secondaire');
+	new Draggable('event_box');
 	document.getElementById('scroll').scrollTop = 480;
+	document.getElementById('grid_week').setAttribute('onDblClick', "display_event_box('new', null, event)");
 	</script>
 </div>

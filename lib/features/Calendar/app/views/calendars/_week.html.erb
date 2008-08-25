@@ -2,10 +2,7 @@
 calendar_init('week');
 </script>
 <h2><%= $month_fr[@date.month - 1] %> <%= @date.year %> (semaine <%= @date.week %>)</h2>
-<p>
-<button class="input-button" type="submit" onClick="<%= get_events_function %>"><span>Télécharger les événements</span></button> | 
-<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
-</p>
+<%= render :partial => 'calendar_top' %>
 <div id="group_day">
 	<% date = @date.beginning_of_week %>
 	<% 7.times do %>
@@ -20,7 +17,7 @@ calendar_init('week');
 	<div id="grid_week">
 		<% date = @date.beginning_of_week %>
 		<% 7.times do %>
-		<div id="<%= date.to_s.gsub("-","") %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if false && date == Date::today %>>
+		<div id="<%= date.to_s.gsub("-","") %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == Date::today %>>
 			<div class="day_grid_border"><ul></ul></div>
 		</div>
 		<% date += 1.days %>

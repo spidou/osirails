@@ -49,6 +49,10 @@ class Event < ActiveRecord::Base
   # applied to arrive at "every Sunday in January at 8:30 AM and 9:30 AM,
   # every other year".
   
+  # Validates
+  before_validation :clear_empty_attrs
+  validates_presence_of :title, :start_at, :end_at
+    
   # Relationships
   belongs_to :calendar
   has_many :alarms
@@ -97,5 +101,12 @@ class Event < ActiveRecord::Base
     
     event
   end
+  
+  protected
 
+  def clear_empty_attrs
+    @attributes.each do |key,value|
+      self[key] = nil if value.blank?
+    end
+  end
 end
