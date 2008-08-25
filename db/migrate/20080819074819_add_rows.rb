@@ -60,15 +60,14 @@ class AddRows < ActiveRecord::Migration
     ContactType.create :name => "Normal", :owner => "Establishment"
     ContactType.create :name => "Contact de livraison", :owner => "Establishment"
     
-    
-    ConfigurationManager.admin_actual_password_policy = 'l0'
-    
+    # Default users and roles
     user_admin = User.create :username => "admin" ,:password => "admin", :enabled => 1
     user_admin.roles << role_admin
     
     user_guest = User.create :username => "guest" ,:password => "guest", :enabled => 1
     user_guest.roles << role_guest
     
+    # Default menu permissions for default roles
     Menu.find(:all).each do |m|
       MenuPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :menu_id => m.id # admin
       MenuPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :menu_id => m.id # guest
@@ -84,6 +83,7 @@ class AddRows < ActiveRecord::Migration
       end      
     end
     
+    # Default business object permissions for default roles
     bo.each do |m|
       BusinessObjectPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :has_permission_type => m[0] # admin
       BusinessObjectPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :has_permission_type => m[0] # aall

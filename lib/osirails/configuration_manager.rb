@@ -15,7 +15,11 @@ class ConfigurationManager
     end
   
     def ConfigurationManager.initialize_options
-      Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
+      begin
+        Configuration.find(:all, :group => "name").each {|option| ConfigurationManager.add_method(option.name)}
+      rescue Exception => e
+        puts "Une erreur est survenue à l'initialisation des features. Veuillez relancer le serveur. (erreur : #{e.message})"
+      end
     end
   
     def ConfigurationManager.find_configurations_for(feature_name, controller_name)
