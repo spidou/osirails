@@ -60,13 +60,11 @@ class AddRows < ActiveRecord::Migration
     ContactType.create :name => "Normal", :owner => "Establishment"
     ContactType.create :name => "Contact de livraison", :owner => "Establishment"
     
-    # Default users and roles
-    user_admin = User.new  :username => "admin" , :enabled => 1
-    user_admin.update_attribute_with_validation_skipping :password , "admin"
+      # Default users and roles
+    user_admin = User.create  :username => "admin" ,:password => "admin", :enabled => 1, :updating_password => false
     user_admin.roles << role_admin
     
-    user_guest = User.new :username => "guest", :enabled => 1
-    user_guest.update_attribute_with_validation_skipping :password , "guest"
+    user_guest = User.create :username => "guest",:password => "guest", :enabled => 1, :updating_password => false
     user_guest.roles << role_guest
     
     # Default menu permissions for default roles
