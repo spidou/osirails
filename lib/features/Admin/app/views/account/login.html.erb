@@ -1,6 +1,5 @@
 <% if current_user %>
-  <p>Vous êtes déjà logger</p>
-  <%= link_to 'Se déconecter', logout_path %>
+  <p class="message">Vous &ecirc;tes d&eacute;j&agrave; connect&eacute;</p>
 <% else %>
 
   <% form_tag :action => 'login' do %>
