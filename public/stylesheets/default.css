@@ -758,8 +758,8 @@ td.left_cell {
 	width:100px;
 }
 
-td.right_cell {
-	width:75%;
+table.presentation tr td>td{
+	width:75% !important;
 }
 
 tr.left_cell {
