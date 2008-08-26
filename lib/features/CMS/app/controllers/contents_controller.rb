@@ -67,10 +67,10 @@ class ContentsController < ApplicationController
     # TODO Remove the menu item in the structure
     @menus = Menu.get_structured_menus("---")
     
-#    # Update content's menu
-    @menu = @content.menu
-#    @menu.old_parent_id = @menu.parent_menu.id
-#    @menu.update_parent = true
+    #    # Update content's menu
+    @menu = Menu.find(@content.menu.id)
+    #    @menu.old_parent_id = @menu.parent_menu.id
+    #    @menu.update_parent = true
     
     # If content isn't in his last version
     if @content.lock_version != $session_lock
@@ -82,23 +82,26 @@ class ContentsController < ApplicationController
     params[:content][:contributors] = @content.contributors
     params[:content][:contributors] << current_user.id unless @content.contributors.include?(current_user.id)
     
+    puts params[:menu].keys
     unless @menu.update_attributes(params[:menu])
       @error = true
       flash[:error] = "Un probl&egrave;me est survenu lors de la modification du menu du content"
-    end
-    
-    puts params[:content]
-    unless @content.update_attributes(params[:content])
-      @error = true
-      flash[:error] = "Un probl&egrave;me est survenu lors de la modification du content"
+      @content.title = params[:content][:title]
+      @content.description = params[:content][:description]
+      @content.text = params[:content][:text]
     else
-      # This variable permit to make a save of content
-      content_attributes  = @content.attributes
-      content_attributes.delete("contributors")
-      content_attributes.delete("author_id")
-      content_attributes[:content_id] = params[:id]
-      content_attributes[:contributor_id] = current_user.id
-      ContentVersion.create(content_attributes)
+      unless @content.update_attributes(params[:content])
+        @error = true
+        flash[:error] = "Un probl&egrave;me est survenu lors de la modification du content"
+      else
+        # This variable permit to make a save of content
+        content_attributes  = @content.attributes
+        content_attributes.delete("contributors")
+        content_attributes.delete("author_id")
+        content_attributes[:content_id] = params[:id]
+        content_attributes[:contributor_id] = current_user.id
+        ContentVersion.create(content_attributes)
+      end
     end
     
     unless @error
@@ -108,7 +111,7 @@ class ContentsController < ApplicationController
       render :action => "edit"
     end    
     
-   # If @content.update_attributes() failed
+    # If @content.update_attributes() failed
   rescue ActiveRecord::StaleObjectError     
     @affiche = true
     flash.now[:error] = "Impossible de modifier le contenu car vous travaillez sur une version antérieur"
@@ -126,7 +129,7 @@ class ContentsController < ApplicationController
   
   # uses_tiny_mce permit to configure text_area's options
   uses_tiny_mce "options" =>
-  {
+    {
     :theme => 'advanced',
     :browsers => %w{msie gecko},
     :theme_advanced_toolbar_location => "top",

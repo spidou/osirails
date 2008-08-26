@@ -1,13 +1,13 @@
-<% for content in @content_versions.reverse %>
-<p>Document référent : <%= link_to(content.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
-<h1><%= content.title %></h1>
-<h2> <%= content.description %></h2>
-            <p><%= content.text%></p>
+<% for content_version in @content_versions.reverse %>
+<p>Document référent : <%= link_to(content_version.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
+<h1><%= content_version.title %></h1>
+<h2> <%= content_version.description %></h2>
+            <p><%= content_version.text%></p>
 <%unless @author.nil?%>
 <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
 <%end%>
-<% unless content.contributor.nil? or content.contributor == ""%>
-  <p> Contributeur : <%= content.contributor%>
+<% unless content_version.contributor.nil? or content_version.contributor == ""%>
+  <p> Contributeur : <%= contributor_full_name(content_version)%>
   </p>
 <%end%>
 
