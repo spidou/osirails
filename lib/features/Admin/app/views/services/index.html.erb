@@ -1,5 +1,5 @@
 <h1>Les services de l'entreprise</h1>
 <div class="cadre">
-<%= show_structured_services %>
-<%= link_to "Nouveau service", new_service_path %> &#124; <%= link_to "Retour", :controller => 'society_configurations', :action => 'index' %>
+<%= show_structured_services(@edit,@delete) %>
+<%= link_to("Nouveau service", new_service_path)+" &#124; " if @add == true %><%= link_to "Retour", :controller => 'society_configurations', :action => 'index' %>
 </div>

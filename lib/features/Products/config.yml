@@ -3,6 +3,8 @@ version: 0.1
 dependencies:
 conflicts:
 business_objects:
+  - ProductReference
+  - ProductReferenceCategory
 menus:
   products:
     title: Produits
