@@ -11,11 +11,11 @@ class ProductReference < ActiveRecord::Base
   validates_presence_of :name, :message => "ne peut être vide"
   
   def after_create
-    self.change("create")
+    self.counter_update("create")
   end
   
   def after_destroy
-    self.change("destroy")
+    self.counter_update("destroy")
   end
   
   # This method permit to update counter of parents categories
