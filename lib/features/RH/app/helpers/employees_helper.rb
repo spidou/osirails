@@ -163,6 +163,7 @@ module EmployeesHelper
     html
   end
   
+  # Method to find the service's responsables
   def responsable(service_id)
     tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
     manager = ""
@@ -173,6 +174,23 @@ module EmployeesHelper
       
     end
     return manager + " )" 
+  end
+  
+  # Method to pluralize or not the email's <h3></h3>
+  def emails_h3(employee)
+    return "" if employee.email=="" and employee.society_email==""
+    return "<h3>Adresse électronique </h3>" if (employee.email=="") ^ (employee.society_email=="")
+    return "<h3>Adresses électroniques </h3>" if employee.email!="" and employee.society_email!=""
+  end
+  
+  def numbers_h3(employee)
+    return "" if employee.numbers.size==0
+    return "<h3>Numéro de telephone</h3>" if employee.numbers.size==1
+    return "<h3>Numéros de telephone</h3>"if employee.numbers.size>1
+  end
+  
+  def flag_path(country_id)
+    
   end
   
 end
