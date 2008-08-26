@@ -30,8 +30,8 @@ def init(yaml, config, path)
 
     # Test if feature belongs to base of the application
     if path == directory 
-       feature.installed = 1 
-       feature.save
+      feature.installed = 1 
+      feature.save
     end
 
     if Feature::FEATURES_NOT_ABLE_TO_DEACTIVATE.include?(feature.name)
@@ -80,7 +80,7 @@ def init(yaml, config, path)
         end  
       end
     end
-
+    
 
     #Test if all permission for all menus are present
     def menus_permisisons_verification(menus)
@@ -111,7 +111,7 @@ def init(yaml, config, path)
     def menu_insertion(menus,parent_name)
       unless menus.nil?
         menus.each_pair do |key,value|
-          $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name}
+          $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name, :position => value["position"]}
           unless value["children"].nil?
             menu_insertion(value["children"], key)
           end
@@ -124,17 +124,35 @@ def init(yaml, config, path)
 
     # This block insert into Database the menus that wasn't present 
     $menu_table.each do |menu|
-      parent_menu = Menu.find_by_name(menu[:parent])
-      unless Menu.find_by_name(menu[:name])
-        if parent_menu.nil?
-          #Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name])
-          Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name])
-        else
-          #Menu.create(:title =>menu[:title], :description => menu[:description], :url => menu[:url], :name => menu[:name], :parent_id =>parent_menu.id )
-          Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name], :parent_id =>parent_menu.id )
-        end
+      puts menu[:position] unless menu[:position].nil?
+      unless parent_menu = Menu.find_by_name(menu[:parent])
+        parent_menu = Menu.create(:name => menu[:parent])
       end
+      
+      unless menu_ = Menu.find_by_name(menu[:name])
+#        $menu_table.each do |menu_test|
+#          if menu_test[:parent] == menu[:parent]
+#            if menu_test[:position] != nil and menu[:position] != nil and menu_test[:position] != menu[:position] and menu_test[:name] != menu[:name] 
+#              puts "Warning : A position conflict occured betwen features #{menu_test[:name]} and #{menu[:name]}"
+#            end        
+#          end
+#        end
+#        
+        m = Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name], :parent_id =>parent_menu.id)
+        unless menu[:position].nil?
+          m.insert_at(menu[:position])
+          m.save
+        end
+      else
+        
+        menu_.title = menu[:title]unless menu[:title].nil? and menu_.title.nil?
+        menu_.description = menu[:description] unless menu[:description].nil? and menu_.description.nil?
+        menu_.insert_at(menu[:position]) unless menu[:position].nil?
+        
+        menu_.save
+      end    
     end
+
 
     # This method insert into Database  all features options that wasn't present
     unless configurations.nil?
