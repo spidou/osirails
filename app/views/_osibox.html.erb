@@ -68,9 +68,9 @@ function osibox_open () {
 		left = 10;
 	};
 	
-	osibox_popup_elm.style.top = top + document.scrollTop + 'px';
+	osibox_popup_elm.style.top = top + document.documentElement.scrollTop + 'px';
 	osibox_popup_elm.style.left = left + 'px';
-	osibox_wall_elm.style.top = document.scrollTop + 'px';
+	osibox_wall_elm.style.top = document.documentElement.scrollTop + 'px';
 	
 	osibox_wall_elm.style.visibility = 'visible';
 	osibox_popup_elm.style.visibility = 'visible';
