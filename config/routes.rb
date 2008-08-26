@@ -15,7 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   
   # begin | To create the url architecture "/society_configurations/*"
   map.resources :society_identity_configuration, :path_prefix => 'society_configurations'
-  map.resources :activity_sectors, :path_prefix => 'society_configurations'
+  map.resources :society_activity_sectors, :path_prefix => 'society_configurations'
   map.resources :services, :path_prefix => 'society_configurations'
   map.society_configurations "society_configurations", :controller => "society_configurations"
   # end
@@ -68,6 +68,12 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get }
   map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
+  
+  ### LOGISTICS
+  map.resources :commodities
+  map.resources :commodity_categories
+  map.commodities_manager "commodities_manager", :controller => "commodities_manager"
+  ### END LOGISTICS
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
