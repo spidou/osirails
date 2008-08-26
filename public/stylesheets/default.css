@@ -738,7 +738,7 @@ table.presentation {
 	margin-left:15px;
 	border:none;
 	background:white;
-	width:60%;
+
 }
 
 table.presentation a {
@@ -750,12 +750,14 @@ table.presentation a:hover {
 	color:#698bcd;
 }
 
-table.presentation td{
+table.presentation tr td{
 	border:none;
+	background:fuchsia;
+	width:100px;
 }
 
-td.left_cell {
-	width:100px;
+table.presentation tr td>td {
+	width:80%;
 }
 
 tr.left_cell {
@@ -956,6 +958,7 @@ ul.parent>li {
 
 
 /*/////////////////Onglets/////////////////*/
+/*
 div.tabs+.cadre {
 	clear:left;
 }
@@ -965,6 +968,16 @@ div.tabs {
 	top:1px;
 	right:1px;
 	clear:left;
+}
+*/
+
+.cadre.tabulation {
+//	padding-top:40px;
+	margin-top:44px;
+}
+
+.cadre + div.tabs {
+	margin-bottom:0;
 }
 
 div.tabs ul {
