@@ -12,8 +12,7 @@
   <%= option_groups_from_collection_for_select(ThirdType.find(:all), :legal_forms, :wording, :id, :name, value) %>
   </select>
 </p>
-  <!--Stocker les ID-->
-  <!--Dans les types de contact rajouter l'acceuill-->
+
 <p class="text_form">
   <%= third.label :third_siret_number, "Num&eacute;ro Siret"%>
   <%= third.text_field(:siret_number, "maxlength" => 14) %>
