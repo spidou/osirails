@@ -1,0 +1,176 @@
+body {
+	margin: 0;
+	padding:0;
+	font-family: Arial, Helvetica, sans-serif;
+	cursor: default;
+	font-size:1em;
+}
+
+a {
+	color: #f69825;
+	font-size: 70%;
+	float: left;
+	margin-left:247px;
+}
+
+a:hover {
+	color: #f2c40f;
+}
+
+input[type=text],
+input[type=password] {
+	color: #f69826;
+	background: url("/images/login/input_text.png") no-repeat;
+	border: none;
+	width: 171px;
+	height: 22px;
+	padding-top:5px;
+	text-indent: 8px;
+	margin:10px;
+	position:relative;
+	right:40px;
+	top:22px;
+}
+
+h1 {
+	color: #f69826;
+	font-weight: lighter;
+	font-size:1.2em;
+	position:relative;
+	top:8px;
+}
+/*/////////////////////////////////////////////////////
+					BANNIERE
+////////////////////////////////////////////////////*/
+#banniere {
+	width: auto;
+	height: 75px;
+}
+
+#logo {
+	background-image: url("/images/login/banniere.jpg");
+	float: left;
+	width: 330px;
+	height: 75px;
+}
+
+#sous-banniere {
+	background-image: url("/images/login/banniere_repeat-x.jpg");
+	width: auto;
+	height: 75px;
+	margin-left: 330px;
+}
+/*/////////////////////////////////////////////////////
+					LOGIN CADRE
+////////////////////////////////////////////////////*/
+#left-side {
+	background: white url("/images/login/bord-gauche.png");
+	width:27px;
+	height:100%;
+	float:left;
+}
+
+#login_contains {
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+	width:500px;
+	background:url("/images/login/remplissage-bord.jpg") repeat-x;
+	height:196px;
+	margin-top:156px;
+}
+
+
+#right-side {
+	background: white url("/images/login/bord-droit.png");
+	width:27px;
+	height:100%;
+	float:right;
+}
+
+label {
+	float:left;
+	text-align:right;
+	width:200px;
+	position:relative;
+	top:36px;
+	right:20px;
+	font-family: helvetica, sans-serif;
+}
+
+.champs {
+	color: #a3a3a3;
+	font-size: 85%;
+	line-height: 35px;
+}
+
+input[type=submit] {
+	margin-left:344px;
+	background: url("/images/login/bouton.png");
+	width: 53px;
+	height: 21px;
+	border: none;
+	color:#000;
+	font-variant: small-caps;
+	font-weight: bold;
+	padding-top: 0;
+	text-indent: 0;
+	font-size:0.58em;
+	position:relative;
+	bottom:62px;
+	left:25px;
+}
+
+span > a {
+	position:relative;
+	bottom:12px;
+	left:100px;
+}
+
+input[type=submit]:hover {
+	background: url("/images/login/bouton-hover.png");
+}
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\		::::::MESSAGE INFORMATIF:::::::			  /!\
+/!\		::::::::[ERREUR/SIGNAL]::::::::			  /!\
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+
+/*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
+.flash_error {
+	background: url("../images/cross.png") no-repeat;
+	color: red;
+}
+
+/*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
+.flash_notice {
+	background: url("../images/tick.png") no-repeat;
+	color: green;
+}
+
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\:::::::Config en commun : ERROR & SIGNAL:::::::/!\
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+.flash_container {
+/*	background:#C7C7C7;			*/
+/*	border: solid 1px #E4E4E4;	*/
+	text-align:center;
+	line-height:10px;
+	height:auto;
+	padding:10px 20px 10px 20px;
+	width:auto;
+	text-indent:0px;
+	font-family: "courier new", sans-serif;
+}
+
+.flash_container span span,
+.flash_container span span {
+	margin-left:20px;
+	line-height:20px;
+}
+
+.flash_error,
+.flash_notice {
+	background-position:center left;
+	width:9px;
+	height:9px;
+}
