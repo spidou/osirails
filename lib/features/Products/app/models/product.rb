@@ -1,4 +1,4 @@
 class Product < ActiveRecord::Base
   # Relationship
-  belongs_to :reference, :counter_cache => true
+  belongs_to :product_reference, :counter_cache => true
 end

@@ -21,23 +21,25 @@ class ProductReference < ActiveRecord::Base
   # This method permit to update counter of parents categories
   def counter_update(index)
     category = ProductReferenceCategory.find(self.product_reference_category_id)
-    if index == "create"
+    #if index == "create"
+    case index
+    when "create"
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => 1
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => 1)
       end
-    elsif index == "destroy"
+    when "destroy"
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => -1
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => -1)
       end
-    elsif index == "disable_or_before_update"
+    when "disable_or_before_update"
       ProductReferenceCategory.update_counters category.id, :product_references_count => -1 
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => -1 
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => -1)
       end
-    elsif index == "after_update"
+    when "after_update"
       ProductReferenceCategory.update_counters category.id, :product_references_count => 1 
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => 1
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => 1)
       end
     end
   end

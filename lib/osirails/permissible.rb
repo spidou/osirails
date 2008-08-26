@@ -1,6 +1,6 @@
 module Permissible  
   module InstanceMethods
-    protected # If you want to use the methods in console mode, you must comment this line.
+    #protected # If you want to use the methods in console mode, you must comment this line.
 
     def can_list?(option)
       can?("list", option)

@@ -14,15 +14,16 @@ class ProductReferenceCategory < ActiveRecord::Base
   # This method permit to update counter of parents categories
   def counter_update(index,value)
     category = ProductReferenceCategory.find(self.id)
-    if index == "before_update"
-      ProductReferenceCategory.update_counters category.id, :product_references_count => -value
+    case index
+    when "before_update"
+      ProductReferenceCategory.update_counters(category.id, :product_references_count => -value)
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => -value 
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => -value)
       end
-    elsif index == "after_update"
-      ProductReferenceCategory.update_counters category.id, :product_references_count => value
+    when "after_update"
+      ProductReferenceCategory.update_counters(category.id, :product_references_count => value)
       category.ancestors.each do |parent_category|
-        ProductReferenceCategory.update_counters parent_category.id, :product_references_count => value
+        ProductReferenceCategory.update_counters(parent_category.id, :product_references_count => value)
       end
     end
   end
@@ -43,7 +44,7 @@ class ProductReferenceCategory < ActiveRecord::Base
     end
   end
   
-  # This method permit to check if category can be deleted or no
+  # This method permit to check if category can be deleted or not
   def can_delete?
     self.product_references.empty? and self.product_reference_categories.empty?
   end

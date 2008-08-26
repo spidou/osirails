@@ -2,6 +2,7 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ADMIN
+  map.connect 'admin', :controller => 'users' #default page for admin
   map.login 'login', :controller => 'account'
   map.logout 'logout', :controller => 'account',  :action => 'logout'
 
@@ -28,6 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   ### END ADMIN
   
   ### HUMAN RESOURCES
+  map.connect 'rh', :controller => 'employees' #default page for human resources
   map.resources :employees do |employee|
     employee.resources :salaries
     employee.resources :premia
@@ -37,6 +39,7 @@ ActionController::Routing::Routes.draw do |map|
   ### END HUMAN RESOURCES
   
   ### SALES
+  map.connect 'thirds', :controller => 'customers' #default page for thirds
   map.resources :customers do |customer|
     customer.resources :contacts
     customer.resources :establishments do |establishment|
@@ -49,6 +52,7 @@ ActionController::Routing::Routes.draw do |map|
   ### END SALES
   
   ### PRODUCTS
+  map.connect 'products', :controller => 'products_catalog' #default page for products
   map.resources :produts_catalog
   map.resources :product_references
   map.resources :product_reference_categories
