@@ -63,7 +63,7 @@ module ApplicationHelper
   end
   
   def display_date_time
-    Date::today.strftime("Nous sommes le %A %d %B et il est %C:%M")
+    DateTime.now.strftime("Nous sommes le %A %d %B et il est %Hh%M")
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
