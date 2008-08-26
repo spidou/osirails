@@ -12,9 +12,10 @@
         <%error_messages_for()%>
       <% end #for%>
 
-      <h2> &Eacute;tablissements du client </h2>
+      
 
       <div class="cadre">
+        <h2> &Eacute;tablissements du client </h2>
         <% #Faire un plurialize "etablissement de la legend"%>
         <% for establishment in @establishments %>
           <% unless establishment.activated == false %>
@@ -28,8 +29,9 @@
     <% end #if%>
 
     <% if @contacts.length > 0 -%>
-      <h2> Contacts du client</h2> 
+      
       <div class="cadre">
+      <h2> Contacts du client</h2> 
         
         <% for contact in @contacts%>
           <div <%= "id='customer_contact#{contact.id}'" %>>
@@ -50,8 +52,9 @@
     <% end -%>
 
 
-      <h2> Ajouter un &eacute;tablissement pour le client </h2>
+      
       <div class="cadre">
+        <h2> Ajouter un &eacute;tablissement pour le client </h2>
         <div id="new_establishment">
           <%unless @error%>
             <div id="link_add_remove_establishment_1">

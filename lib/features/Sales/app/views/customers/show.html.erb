@@ -1,49 +1,56 @@
 <h1>Informations concernant le client </h1>
-<div class="cadre">
 
+<div class="cadre">
+  <h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
-    <%= label :customer_name, "Nom" %>
+    <%= label :customer, :name, "Nom :" %>
     <%= @customer.name %>
   </p>
 
   <p>
-    <%= label :customer_legal_form, "Forme juridique" %>
-    <%= @customer.legal_form %>
+    <%= label :customer, :legal_form, "Forme juridique :" %>
+    <%= LegalForm.find(@customer.legal_form_id).name %>
   </p>
 
   <p>
-    <%= label :customer_siret_number, "Num&eacute;ro Siret" %>
+    <%= label :customer, :siret_number, "Num&eacute;ro Siret :" %>
     <%= @customer.siret_number %>
   </p>
 
   <p>
-    <%= label :customer_activity_sector, "Secteur d'activit&eacute;" %>
+    <%= label :customer, :activity_sector, "Secteur d'activit&eacute; :" %>
     <%= @customer.activity_sector.name %>
   </p>
 
   <p>
-    <%= label :customer_activities, "Activit&eacute;s" %>
+    <%= label :customer, :activities, "Activit&eacute;s :" %>
     <%= @customer.activities %>
   </p>
 
   <p>
-    <%= label :customer_note, "Note" %>
+    <%= label :customer, :note, "Type de Clients :" %>
+    <%= @customer.third_type.wording %>
+  </p>
+
+  <p>
+    <%= label :customer, :note, "Note :" %>
     <%= @customer.note %>
   </p>
 
   <p>
-    <%= label :customer_banking_informations, "Informations bancaires" %>
-    <%= @customer.banking_informations %>
+    <%= label :customer, :payment_method, "Mode de payment :" %>
+    <%= @customer.payment_method.name%>
   </p>
 
   <p>
-    <%= label :customer_note, "Type de Tiers" %>
-    <%= @customer.third_type.wording %>
+    <%= label :customer, :payment_timi_limit, "Date limite de payment :" %>
+    <%= @customer.payment_time_limit.name%>
   </p>
+ </div>
 
 <%if @establishments.length > 0%>
-<fieldset>
-  <legend><%= "Liste des &eacute;tablissements du client"%></legend>
+<div class="cadre">
+  <h2><%= "Liste des &eacute;tablissements du client"%></h2>
   
           <%for establishment in @establishments%>
         <p>
@@ -52,8 +59,8 @@
         </p>
     <%end%>
 
-</fieldset>
+  </div>
 <%end%>
 <%= link_to 'Retour', :action => 'index' %>
-</div>
+
 

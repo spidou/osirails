@@ -1,7 +1,6 @@
 class Third < ActiveRecord::Base
   has_one :address, :as => :has_address
-  has_one :legal_form
-  has_one :payment_time_limit
+  
   belongs_to :activity_sector
   belongs_to :third_type
   

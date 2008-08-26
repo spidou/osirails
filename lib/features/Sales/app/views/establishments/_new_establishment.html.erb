@@ -9,17 +9,17 @@
 <div id='<%= "new_establishment#{cpt}"%>'>
 
 <p>
-  <%= label :new_establishment, "Nom du nouvel &eacute;tablissement" %>
+  <%= label "new_establishment#{cpt}", :name , "Nom du nouvel &eacute;tablissement" %>
   <%= text_field("new_establishment#{cpt}","name")%>
 </p>
 
  <p>
-  <%= label :new_establishment, "Type d'&eacute;tablissement" %>
+  <%= label "new_establishment#{cpt}", :establishment_type_id, "Type d'&eacute;tablissement" %>
   <%= select("new_establishment#{cpt}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] })%>
 </p>
 
 <p>
-  <%= label :new_address, "Address1" %>
+  <%= label "new_establishment_address#{cpt}", "address1", "Address1" %>
   <%= text_field("new_establishment_address#{cpt}","address1")%>
 </p>
 

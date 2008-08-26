@@ -1,6 +1,6 @@
-<h2> Informations G&eacute;n&eacute;rales </h2>
-<div class="cadre">
 
+<div class="cadre">
+<h2> Informations G&eacute;n&eacute;rales </h2>
   <p class="text_form">
     <%= third.label :name, "Nom" %>
     <%= third.text_field :name  %>
@@ -50,48 +50,49 @@
 
 </div>
 
-<h2> Informations bancaires </h2>
+
 
 <div class="cadre">
-<!-- Third's Banking Information -->
-<% if third_type == "supplier" %>
-  <%fields_for :iban, third_.iban do |iban| %>
-    
+  <h2> Informations bancaires </h2>
+  <!-- Third's Banking Information -->
+  <% if third_type == "supplier" %>
+    <%fields_for :iban, third_.iban do |iban| %>
+
+      <p class="text_form">
+        <%= iban.label :bank_code, "Code bancaire :" %>
+        <%= iban.text_field :bank_code%>
+      </p>
+
+      <p class="text_form">
+        <%= iban.label :teller_code, "Code guichet :" %>
+        <%= iban.text_field :teller_code %>
+      </p>
+
+      <p class="text_form">
+        <%= iban.label :account_number, "N° de compte bancaire" %>
+        <%= iban.text_field :account_number %>
+      </p>
+
+      <p class="text_form">
+        <%= iban.label :key, "Cl&eacute;e :" %>
+        <%= iban.text_field :key %>
+      </p>
+
+  <%end%>    
+
+
+
+    <% elsif third_type == "customer"%>
+
     <p class="text_form">
-      <%= iban.label :bank_code, "Code bancaire :" %>
-      <%= iban.text_field :bank_code%>
+      <%= third.label :third_payment_method_id, "M&eacute;thode de payment" %>
+      <%= third.select("payment_method_id", PaymentMethod.find(:all).collect {|a| [ a.name, a.id ] })%>
     </p>
 
     <p class="text_form">
-      <%= iban.label :teller_code, "Code guichet :" %>
-      <%= iban.text_field :teller_code %>
+      <%= third.label :third_payment_time_limit_id, "Date limite de payment" %>
+      <%= third.select("payment_time_limit_id", PaymentTimeLimit.find(:all).collect {|a| [ a.name, a.id ] })%>
     </p>
 
-    <p class="text_form">
-      <%= iban.label :account_number, "N° de compte bancaire" %>
-      <%= iban.text_field :account_number %>
-    </p>
-
-    <p class="text_form">
-      <%= iban.label :key, "Cl&eacute;e :" %>
-      <%= iban.text_field :key %>
-    </p>
-
-<%end%>    
-
-    
-  
-  <% elsif third_type == "customer"%>
-    
-  <p class="text_form">
-    <%= third.label :third_payment_method_id, "M&eacute;thode de payment" %>
-    <%= third.select("payment_method_id", PaymentMethod.find(:all).collect {|a| [ a.name, a.id ] })%>
-  </p>
-  
-  <p class="text_form">
-    <%= third.label :third_payment_time_limit_id, "Date limite de payment" %>
-    <%= third.select("payment_time_limit_id", PaymentTimeLimit.find(:all).collect {|a| [ a.name, a.id ] })%>
-  </p>
-  
-<%end%>
+  <%end%>
 </div>
