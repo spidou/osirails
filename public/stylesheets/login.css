@@ -29,16 +29,15 @@ input[type=password] {
 	margin:10px;
 	position:relative;
 	right:40px;
-	top:42px;
+	top:22px;
 }
 
 h1 {
 	color: #f69826;
-	line-height: 1px;
 	font-weight: lighter;
 	font-size:1.2em;
 	position:relative;
-	top:18px;
+	top:8px;
 }
 /*/////////////////////////////////////////////////////
 					BANNIERE
@@ -94,7 +93,7 @@ label {
 	text-align:right;
 	width:200px;
 	position:relative;
-	top:56px;
+	top:36px;
 	right:20px;
 	font-family: helvetica, sans-serif;
 }
@@ -118,13 +117,13 @@ input[type=submit] {
 	text-indent: 0;
 	font-size:0.58em;
 	position:relative;
-	bottom:42px;
+	bottom:62px;
 	left:25px;
 }
 
 span > a {
 	position:relative;
-	top:12px;
+	bottom:12px;
 	left:100px;
 }
 
