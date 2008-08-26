@@ -1,9 +1,8 @@
 <h1>Modifier un client </h1>
-<div class="cadre">
+
   <% form_for(@customer) do |customer| %>
     <%= customer.error_messages %>
     <% #Display customer infos%>
-    <h2>Informations concernant le client</h2>
     <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer} %>
 
     <% if @establishments.length > 0 %>
@@ -13,10 +12,10 @@
         <%error_messages_for()%>
       <% end #for%>
 
-      <% #Fieldset that content all establishment%>
-      <fieldset>
+      <h2> &Eacute;tablissements du client </h2>
+
+      <div class="cadre">
         <% #Faire un plurialize "etablissement de la legend"%>
-        <legend> &Eacute;tablissements du client </legend>
         <% for establishment in @establishments %>
           <% unless establishment.activated == false %>
             <div <%= "id='customer_establishment#{establishment.id}'" %>>
@@ -25,7 +24,7 @@
             </div>
           <% end #unless %>        
         <% end #for %>
-    </fieldset>
+      </div>
     <% end #if%>
 
     <% if @contacts.length > 0 -%>
@@ -50,31 +49,32 @@
       <% new_establishment_number = params[:new_establishment_number]["value"].to_i -%>
     <% end -%>
 
-    <fieldset>
-      <legend> Ajouter un &eacute;tablissement pour le client </legend>
 
-      <div id="new_establishment">
-        <%unless @error%>
-          <div id="link_add_remove_establishment_1">
-            <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
-          </div>
-        <%end%>
-          <% cpt = 1 %>
-          <% unless params[:new_establishment_number].nil? %>
-          <% new_establishment_number.times do |i| %>
-          <%unless params["valid_establishment_#{i+1}"].nil?%>
-              <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
-                <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
-              <%end #unless%>
-          <%end #unless%>
-          <% cpt += 1 %>
-          <% end %>
-          <div id="link_add_remove_establishment_<%=cpt%>">
-            <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
-          </div>
-        <% end %>          
+      <h2> Ajouter un &eacute;tablissement pour le client </h2>
+      <div class="cadre">
+        <div id="new_establishment">
+          <%unless @error%>
+            <div id="link_add_remove_establishment_1">
+              <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
+            </div>
+          <%end%>
+            <% cpt = 1 %>
+            <% unless params[:new_establishment_number].nil? %>
+            <% new_establishment_number.times do |i| %>
+            <%unless params["valid_establishment_#{i+1}"].nil?%>
+                <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
+                  <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
+                <%end #unless%>
+            <%end #unless%>
+            <% cpt += 1 %>
+            <% end %>
+            <div id="link_add_remove_establishment_<%=cpt%>">
+              <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
+            </div>
+          <% end %>          
+        </div>
       </div>
-    </fieldset>
+
     <% @error ||= false %>
 
     <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Customer",
@@ -86,4 +86,3 @@
   <% end %>
 
   <%= link_to 'Retour', :action => 'index' %>
-</div> 

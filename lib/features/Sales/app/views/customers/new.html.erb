@@ -1,12 +1,9 @@
 <h1>Nouveau Client</h1>
-<div class="cadre">
+
   <% form_for(@customer) do |customer| %>
-    <fieldset>
-      <legend>Création d'un nouveau Client</legend>
+
       <%= customer.error_messages %>
       <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer} %> 
       <%= customer.submit  'Créer' %> 
-    </fieldset>
   <% end %>
   <%= link_to "Retour a l'accueil", :action => 'index' %>
-</div>

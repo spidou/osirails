@@ -1,28 +1,30 @@
-<p>
-  <%= label :establishment, "Nom de l'etablissement" %>
-  <%= establishment.text_field :name %>
-</p>
- 
-<p>
-  <%= label :establishment, "Type d'etablissement"%>
-  <%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.wording, a.id]})%>
-</p>
-
-<% fields_for :address, establishment_.address do |address|%>
-  <%= address.error_messages %>
+<div class="cadre">
   <p>
-    <%= label :address, "Address1" %>
-    <%= address.text_field :address1%>
+    <%= label :establishment, "Nom de l'etablissement" %>
+    <%= establishment.text_field :name %>
   </p>
-  
+
+  <p>
+    <%= label :establishment, "Type d'etablissement"%>
+    <%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.wording, a.id]})%>
+  </p>
+
+  <% fields_for :address, establishment_.address do |address|%>
+    <%= address.error_messages %>
     <p>
-    <%= label :address, "Address2" %>
-    <%= address.text_field :address2%>  
+      <%= label :address, "Address1" %>
+      <%= address.text_field :address1%>
     </p>
-   
-  <%= render :partial => 'addresses/address', 
-      :locals => {:cpt=> 1, :owner_address => establishment_.address}%>
-    
-    <%= hidden_field("country", "id", "value" => '')%>
-    <%= hidden_field("city", "id", "value" => '')%>
-<%end #fields_for%>
+
+      <p>
+      <%= label :address, "Address2" %>
+      <%= address.text_field :address2%>  
+      </p>
+
+    <%= render :partial => 'addresses/address', 
+        :locals => {:cpt=> 1, :owner_address => establishment_.address}%>
+
+      <%= hidden_field("country", "id", "value" => '')%>
+      <%= hidden_field("city", "id", "value" => '')%>
+  <%end #fields_for%>
+ </div>

@@ -4,41 +4,41 @@
 <% unless params[:new_contact_number].nil? -%>        
   <% new_contacts_number = params[:new_contact_number]["value"].to_i -%>
 <% end -%>
-<fieldset>
-  <legend> Ajouter un nouveau contact pour le client </legend>
 
-    <div id="new_contact">
-      <% # If an error occure, old form are recreate with same values%>
-      <%unless error%>
-        <div id="link_add_remove_contact_1">
-          <%= link_to_remote("(+)", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, 
-                  :owner_id => owner_id, :owner_type => owner_type}) %>
-        </div> 
-      <%end%>
-      <% # cpt store the number of form %>
-      <% cpt = 1 %>
-          
-      <% unless params[:new_contact_number].nil? %>
-        <% new_contacts_number.times do |i| %>
-          <%unless params["valid_contact_#{i+1}"].nil?%>
-            <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
-              
-              
-                <% params["owner_id"]= owner_id%>
-                <%params["owner_type"] = owner_type%>       
+  <h2> Ajouter un nouveau contact pour le client </h2>
+    <div class="cadre">
+      <div id="new_contact">
+        <% # If an error occure, old form are recreate with same values%>
+        <%unless error%>
+          <div id="link_add_remove_contact_1">
+            <%= link_to_remote("(+)", :url => {:controller => "contacts",:action => "add_contact", :cpt => 1, 
+                    :owner_id => owner_id, :owner_type => owner_type}) %>
+          </div> 
+        <%end%>
+        <% # cpt store the number of form %>
+        <% cpt = 1 %>
 
-                <% # get_new_contact_form return a new contact_form with the same value that older%>
-                <%= get_new_contact_form(cpt, params, error)%>            
+        <% unless params[:new_contact_number].nil? %>
+          <% new_contacts_number.times do |i| %>
+            <%unless params["valid_contact_#{i+1}"].nil?%>
+              <%unless params["valid_contact_#{i+1}"]["value"] == "false"%>
 
+
+                  <% params["owner_id"]= owner_id%>
+                  <%params["owner_type"] = owner_type%>       
+
+                  <% # get_new_contact_form return a new contact_form with the same value that older%>
+                  <%= get_new_contact_form(cpt, params, error)%>            
+
+              <%end #unless%>
             <%end #unless%>
-          <%end #unless%>
-        <% cpt += 1 %>
-      <% end #unless%>
-    
-      <div id='link_add_remove_contact_<%=cpt%>'>
-        <%= link_to_remote("(+)", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
-              :owner_id => owner_id, :owner_type => owner_type}) %>
-      </div>
-    <% end %>
-  </div> <% #new_contact%>
-</fieldset>
+          <% cpt += 1 %>
+        <% end #unless%>
+
+        <div id='link_add_remove_contact_<%=cpt%>'>
+          <%= link_to_remote("(+)", :url => {:controller => "contacts",:action => "add_contact", :cpt => cpt, 
+                :owner_id => owner_id, :owner_type => owner_type}) %>
+        </div>
+      <% end %>
+    </div> <% #new_contact%>
+  </div>

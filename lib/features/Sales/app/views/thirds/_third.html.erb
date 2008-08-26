@@ -1,67 +1,80 @@
-<p class="text_form">
-  <%= third.label :third_name, "Nom" %>
-  <%= third.text_field :name  %>
-</p>
-  
-<p class="text_form">
-  <% third_type = third_.type.downcase%>
-  <%= third.label :third_legal_form, "Forme juridique" %>
-  <%= third_.third_type_id %>
-  <% params["#{third_type}"].nil? ? value = third_.legal_form_id.to_i : value = params["#{third_type}"][:legal_form_id].to_i%>
-  <select name='<%="#{third_.type.downcase}[legal_form_id]"%>'>
-  <%= option_groups_from_collection_for_select(ThirdType.find(:all), :legal_forms, :wording, :id, :name, value) %>
-  </select>
-</p>
+<h2> Informations G&eacute;n&eacute;rales </h2>
+<div class="cadre">
 
-<p class="text_form">
-  <%= third.label :third_siret_number, "Num&eacute;ro Siret"%>
-  <%= third.text_field(:siret_number, "maxlength" => 14) %>
-</p>
-<% if !params[:new_activity_sector1].nil? %>
-   <% activity_sector = params[:new_activity_sector1]%>
-<% elsif !third_.activity_sector_id.nil? %>
-  <% activity_sector = ActivitySector.find_by_id(third_.activity_sector_id).name %>
-<%end%>
-<% activity_sector = params[:new_activity_sector1][:name]  unless params[:new_activity_sector1].nil? %>
-<p class="text_form">
+  <p class="text_form">
+    <%= third.label :third_name, "Nom" %>
+    <%= third.text_field :name  %>
+  </p>
 
-  <%= third.label :third_activity_sector, "Secteur d'activit&eacute;"%>
-  <%= my_text_field_with_auto_complete(:activity_sector, :name, {:index => 1, :value => activity_sector, :url => {:controller => 'customers'},:skip_style => false }, {:skip_style => false,:select => 'activity_sector_name',
-     :with => "'value='+document.getElementById('new_activity_sector1_name').value"})%>
- <%=  javascript_tag "document.getElementById('new_activity_sector1_name').value = '#{activity_sector}'"%>
-</p>
-  
-<p class="text_form">
-  <%= third.label :third_activities, "Activit&eacute;s" %>
-  <%= third.text_field :activities  %>
-</p>
+  <p class="text_form">
+    <% third_type = third_.type.downcase%>
+    <%= third.label :third_legal_form, "Forme juridique" %>
+    <% params["#{third_type}"].nil? ? value = third_.legal_form_id.to_i : value = params["#{third_type}"][:legal_form_id].to_i%>
+    <select name='<%="#{third_.type.downcase}[legal_form_id]"%>'>
+    <%= option_groups_from_collection_for_select(ThirdType.find(:all), :legal_forms, :wording, :id, :name, value) %>
+    </select>
+  </p>
 
-<p class="text_form">
-  <%= third.label :third_type_id, "Type de tiers" %>
-  <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
-</p>
+  <p class="text_form">
+    <%= third.label :third_siret_number, "Num&eacute;ro Siret"%>
+    <%= third.text_field(:siret_number, "maxlength" => 14) %>
+  </p>
+  <% if !params[:new_activity_sector1].nil? %>
+     <% activity_sector = params[:new_activity_sector1]%>
+  <% elsif !third_.activity_sector_id.nil? %>
+    <% activity_sector = ActivitySector.find_by_id(third_.activity_sector_id).name %>
+  <%end%>
+  <% activity_sector = params[:new_activity_sector1][:name]  unless params[:new_activity_sector1].nil? %>
 
+  <p class="text_form">
+    <%= third.label :third_activity_sector, "Secteur d'activit&eacute;"%>
+    <%= my_text_field_with_auto_complete(:activity_sector, :name, {:index => 1, :value => activity_sector, :url => {:controller => 'customers'},:skip_style => false }, {:skip_style => false,:select => 'activity_sector_name',
+       :with => "'value='+document.getElementById('new_activity_sector1_name').value"})%>
+   <%=  javascript_tag "document.getElementById('new_activity_sector1_name').value = '#{activity_sector}'"%>
+  </p>
+
+  <p class="text_form">
+    <%= third.label :third_activities, "Activit&eacute;s" %>
+    <%= third.text_field :activities  %>
+  </p>
+
+  <p class="text_form">
+    <%= third.label :third_type_id, "Type de tiers" %>
+    <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+  </p>
+
+  <p class="text_form">
+    <%= third.label :third_note, "Note du tiers" %>
+    <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
+  </p>
+
+</div>
+
+<h2> Informations bancaires </h2>
+
+<div class="cadre">
 <!-- Third's Banking Information -->
-<% fields_for :iban, third_.iban do |iban|%>
+<% if third_type == "supplier" %>
+  <% fields_for :iban, third_.iban do |iban|%>
+      
+    <p class="text_form">
+      <%= label :iban_account_number, "N° de compte bancaire" %>
+      <%= iban.text_field :account_number %>
+    </p>
+    
+  <% end %>
   
-<p class="text_form">
-  <%= label :iban_account_number, "N° de compte bancaire" %>
-  <%= iban.text_field :account_number %>
-</p>
-
-<% end %>
-
-<p class="text_form">
-  <%= third.label :third_payment_method_id, "M&eacute;thode de payment" %>
-  <%= third.select("payment_method_id", PaymentMethod.find(:all).collect {|a| [ a.name, a.id ] })%>
-</p>
-
-<p class="text_form">
-  <%= third.label :third_payment_time_limit_id, "Date limite de payment" %>
-  <%= third.select("payment_time_limit_id", PaymentTimeLimit.find(:all).collect {|a| [ a.name, a.id ] })%>
-</p>
   
-<p class="text_form">
-  <%= third.label :third_note, "Note du tiers" %>
-  <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
-</p>
+  <% elsif third_type == "customer"%>
+  <p class="text_form">
+    <%= third.label :third_payment_method_id, "M&eacute;thode de payment" %>
+    <%= third.select("payment_method_id", PaymentMethod.find(:all).collect {|a| [ a.name, a.id ] })%>
+  </p>
+  
+  <p class="text_form">
+    <%= third.label :third_payment_time_limit_id, "Date limite de payment" %>
+    <%= third.select("payment_time_limit_id", PaymentTimeLimit.find(:all).collect {|a| [ a.name, a.id ] })%>
+  </p>
+  
+<%end%>
+</div>

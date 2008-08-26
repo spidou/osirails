@@ -1,21 +1,20 @@
 <h1>Modifier un Etablissement</h1>
-<div class="cadre">
   <% form_for([@customer, @establishment])  do |establishment| %>
     <%= establishment.error_messages %>
     
     <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment} %>
   
     <% if @contacts.length > 0 -%>
-      <fieldset>
-        <legend> Contacts du client</legend> 
-          <% for contact in @contacts%>
-              <div <%= "id='customer_contact#{contact.id}'" %>>
-                <%= contact.first_name + " " + contact.last_name%>
-                <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact,:owner_type => "Customer") %>
-                <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-              </div>
-          <%end #for%>   
-      </fieldset>
+      <h2> Contacts du client</h2>
+        <div class="cadre"> 
+            <% for contact in @contacts%>
+                <div <%= "id='customer_contact#{contact.id}'" %>>
+                  <%= contact.first_name + " " + contact.last_name%>
+                  <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact,:owner_type => "Customer") %>
+                  <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+                </div>
+            <%end #for%>   
+        </div>
     <%end #if%> 
   
     <% @error ||= false %>
@@ -30,4 +29,3 @@
   
 
 <%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
-</div>

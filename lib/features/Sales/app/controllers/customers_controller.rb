@@ -187,7 +187,7 @@
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
       @new_establishment_number = 0
       @new_contact_number = 0
-      redirect_to :action => 'edit'
+      redirect_to customers_path
     else
       @activity_sector = params[:new_activity_sector1][:name]
       @new_establishment_number = params[:new_establishment_number]["value"]
