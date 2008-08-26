@@ -39,21 +39,23 @@
       
     <h3>Fonction(s) dans l'entreprise</h3>
       <%for job in @employee.jobs%>
-      <%=job.name + " :"%>
+      <p>
+        <b><%=job.name + " :"%></b>
         <table class="presentation">
-          <tr style="vertical-align:top;">
-            <td style="width:100px;">- les missions :</td>
-            <td> <%=job.mission%></td>
+          <tr class="left_cell">
+            <td class="left_cell">- les missions :</td>
+            <td class="right_cell"> <%=job.mission%></td>
           </tr>
           <tr>
-            <td style="width:100px;">- les activitées :</td>
-            <td><%=job.activity %></td>
+            <td class="left_cell">- les activitées :</td>
+            <td class="right_cell"><%=job.activity %></td>
           </tr>
           <tr>
-            <td style="width:100px;">- les objectifs :</td> 
-            <td> <%=job.goal %></td>
+            <td class="left_cell">- les objectifs :</td> 
+            <td class="right_cell"> <%=job.goal %></td>
           </tr>
         </table>
+      </p>  
       <% end %>
 
   </div> 
@@ -73,7 +75,26 @@
 <%if @view==true%>
 
   <div class="cadre">
-  <h2>Emails</h2>
+  <h2>Coordonn&eacute;es</h2>
+  <h3>Adresse postale</h3>
+    <p>
+      <b>Adresse :</b>
+      <%=h @address.address1 + " - " + @address.address2 %>
+    </p>
+    <p>
+      <b>Code postal :</b>
+      <%=h @address.zip_code %>
+    </p>
+    <p>
+      <b>Ville :</b>
+      <%=h @address.city_name %>
+    </p>
+    <p>
+      <b>Pays :</b>
+      <%=h @address.country_name %>
+    </p>
+    
+    <%=emails_h3(@employee) %>
     <p>
       <b>Personnel :</b>
       <%=h @employee.email %>
@@ -82,40 +103,14 @@
       <b>Professionnel :</b>
       <%=h @employee.society_email %>
     </p>
-  </div>
-  
-  <div class="cadre">
-  <h2>Coordonn&eacute;es</h2>
     <p>
-      <b>Adresse :</b>
-      <%=h @address.address1 + " " + @address.address2 %>
-    </p>
-    <p>
-      <b>Pays :</b>
-      <%=h @address.country_name %>
-    </p>
-    <p>
-      <b>Ville :</b>
-      <%=h @address.city_name %>
-    </p>
-    <p>
-      <b>Code postal :</b>
-      <%=h @address.zip_code %>
-    </p>
-    <p>
-      <b>Numéro(s) :</b>
-      <table>
-        <tr>
-          <th>Type </th>
-          <th>Num&eacute;ro </th>
-        </tr>
+    <%=numbers_h3(@employee)%>
       <%for number in @numbers%>
-        <tr>
-          <td><%=h number.number_type.name %></td>
-          <td><%=link_to number.indicative.indicative + " " + number.number, employee_path(@employee) ,:title => "nationalité numéro : " + number.indicative.country %></td>
-        </tr>
+        <p>
+          <%=h number.number_type.name %>
+          <%=link_to number.indicative.indicative + " " + number.number, employee_path(@employee) ,:title => "nationalité numéro : " + number.indicative.country %>
+        </p>
       <%end%>
-      </table>
     </p>
   </div> 
     
