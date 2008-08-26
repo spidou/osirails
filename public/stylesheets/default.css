@@ -752,16 +752,16 @@ table.presentation a:hover {
 
 table.presentation tr td{
 	border:none;
-	background:fuchsia;
-	width:100px;
-}
-
-table.presentation tr td>td {
-	width:80%;
-}
-
-tr.left_cell {
 	vertical-align:top;
+}
+
+td.left_cell {
+	width:110px;
+}
+
+td.right_cell {
+	width:800px;
+	padding-bottom:10px;
 }
 
 table.presentation tr:hover > td{
@@ -970,9 +970,7 @@ div.tabs {
 	clear:left;
 }
 */
-
 .cadre.tabulation {
-//	padding-top:40px;
 	margin-top:44px;
 }
 
