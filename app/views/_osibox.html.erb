@@ -59,7 +59,7 @@ function osibox_open () {
 	osibox_wall_elm = document.getElementById('osibox_wall');
 	osibox_popup_elm = document.getElementById('osibox_popup');
 	document.body.style.overflow = 'hidden';
-	var top = (document.body.offsetHeight document.body.scrollTop - osibox_popup_elm.offsetHeight) / 2;
+	var top = (document.body.offsetHeight + document.body.scrollTop - osibox_popup_elm.offsetHeight) / 2;
 	if (top < 10) {
 		top = 10;
 		document.body.style.overflow = '';
