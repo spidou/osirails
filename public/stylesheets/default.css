@@ -738,7 +738,7 @@ table.presentation {
 	margin-left:15px;
 	border:none;
 	background:white;
-	min-width:100%;
+	width:75%;
 }
 
 table.presentation a {
@@ -755,11 +755,7 @@ table.presentation td{
 }
 
 td.left_cell {
-	width:100px;
-}
-
-table.presentation tr td>td{
-	width:75% !important;
+//	width:100px;
 }
 
 tr.left_cell {
