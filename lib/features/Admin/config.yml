@@ -60,7 +60,7 @@ menus:
           society_identity_configuration:
             title: Paramètres globaux
             description: Configuration des paramètres globaux de l'entreprise
-          activity_sectors:
+          society_activity_sectors:
             title: Secteurs d'activités
             description: Gestion des secteurs d'activités
           services:
