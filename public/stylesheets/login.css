@@ -124,8 +124,14 @@ input[type=submit] {
 	position:relative;
 	bottom:42px;
 	left:25px;
-
 }
+
+span > a {
+	position:relative;
+	top:12px;
+	left:100px;
+}
+
 input[type=submit]:hover {
 	background: url("/images/login/bouton-hover.png");
 }
