@@ -1,24 +1,26 @@
-<p>
-  <%= label :contact, "Nom du contact" %>
-  <%= contact.text_field :first_name %>
-</p>
+<div class="cadre">
+  <p>
+    <%= label :contact, "Nom du contact" %>
+    <%= contact.text_field :first_name %>
+  </p>
 
-<p>
-  <%= label :contact, "Pr&eacute;nom du contact" %>
-  <%= contact.text_field :last_name %>
-</p>
+  <p>
+    <%= label :contact, "Pr&eacute;nom du contact" %>
+    <%= contact.text_field :last_name %>
+  </p>
 
-<p>
-  <%= label :contact, "E-mail" %>
-  <%= contact.text_field :email %>
-</p>
+  <p>
+    <%= label :contact, "E-mail" %>
+    <%= contact.text_field :email %>
+  </p>
 
-<p>
-  <%= label :contact, "Job" %>
-  <%= contact.text_field :job %>
-</p>
+  <p>
+    <%= label :contact, "Job" %>
+    <%= contact.text_field :job %>
+  </p>
 
-<p>
-  <%=label :contact, "Type de contact"%>
-  <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%>
-</p>
+  <p>
+    <%=label :contact, "Type de contact"%>
+    <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%>
+  </p>
+</div>

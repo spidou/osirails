@@ -1,8 +1,7 @@
 <h1>Modifier un Contact</h1>
-<div class="cadre">
+
   <% form_for([@owner, @contact],:url => {:action => "update", :owner => @owner, :owner_type => @owner_type})  do |contact| %>
-    <fieldset>
-      <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
+      <h2> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></h2>
         <%= contact.error_messages%>
 
         <%= render :partial => 'contact', :locals => {:contact => contact, :contact_type => @contact_type} %>
@@ -13,8 +12,6 @@
           :type => "test",
           :method => :delete, :confirm => 'Etes vous sûr ?'
             )%>
-    </fieldset>
   <%end%>
 
   <%= get_return_link(params[:owner_type])%>
-</div>

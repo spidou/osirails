@@ -1,8 +1,7 @@
-<h4>Modifier un fournisseur </h4>
-<div class="cadre">
+<h1>Modifier un fournisseur </h1>
+
   <% form_for(@supplier) do |supplier| %>
     <%= supplier.error_messages %>
-    <h2>Informations concernant le fournisseur</h2>
     <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
 
     <% if @contacts.length > 0 -%>
@@ -25,4 +24,3 @@
   <br/><%= supplier.submit  'Modifier' %>
   <% end %><br/>
   <%= link_to 'Retour', suppliers_path %>
-</div>

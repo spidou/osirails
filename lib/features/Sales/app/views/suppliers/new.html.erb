@@ -1,12 +1,9 @@
 <h1>Nouveau fournisseur</h1>
-<div class="cadre">
   <% form_for(@supplier) do |supplier| %>
-    <fieldset>
-      <legend>Création d'un nouveau Fournisseur</legend>
+    <% @iban = @supplier.iban %>
       <%= supplier.error_messages %>
       <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
       <%= supplier.submit  'Créer' %> 
-    </fieldset>
+
   <% end %>  
   <%= link_to "Retour a l'accueil", :action => 'index' %>
-</div>

@@ -28,9 +28,9 @@
     <% end #if%>
 
     <% if @contacts.length > 0 -%>
-      <fieldset>
-        <% #Faire un plurialize "Contacts" de la legend"%>
-        <legend> Contacts du client</legend> 
+      <h2> Contacts du client</h2> 
+      <div class="cadre">
+        
         <% for contact in @contacts%>
           <div <%= "id='customer_contact#{contact.id}'" %>>
             <%= contact.first_name + " " + contact.last_name%>
@@ -38,7 +38,7 @@
             <%= link_to("Supprimer", [@customer, contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
           </div>
         <%end #for%>   
-      </fieldset>
+      </div>
     <%end #if%>
 
     <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>

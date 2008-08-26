@@ -8,14 +8,20 @@ class SuppliersController < ApplicationController
   end
   
   def create
+    @supplier = Supplier.new(params[:supplier])
+    
     if ActivitySector.find_by_name(params[:new_activity_sector1][:name]).nil?
       @new_activity_sector1 = ActivitySector.new(:name => params[:new_activity_sector1][:name])
       @new_activity_sector1.save
     end
-    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])   
-    @supplier = Supplier.new(params[:supplier])
+    
+    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])    
+    
+    @iban = Iban.new(params[:iban])
+    @supplier.iban = @iban
     @supplier.activity_sector = activity_sector   
     if @supplier.save
+      @iban.save
       flash[:notice] = 'Fournisseur ajouté avec succes'
       redirect_to :action => 'index'
     else
@@ -35,6 +41,7 @@ class SuppliersController < ApplicationController
   end
   
   def update
+    
     @error = false
     @supplier = Supplier.find(params[:id])
     @owner = @supplier
@@ -56,6 +63,8 @@ class SuppliersController < ApplicationController
     else
       @error = true
     end
+    
+    @supplier.iban = Iban.new(params[:iban])
     @supplier.activity_sector_id= activity_sector_id
     unless @supplier.update_attributes(params[:supplier])
       @error = true
