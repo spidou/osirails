@@ -15,41 +15,12 @@
 			<div id="logo"></div>	
 			<div id="sous-banniere"></div>
 		</div>
-
-		<div id="login_cadre">
-			<div id="cadre_up">
-				<div id="gauche-haut"></div>
-				<div id="milieu-haut">
-					<h4>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr>.</h4>
-				</div>
-				<div id="droit-haut"></div>
-				
-			</div>
-			<div id="cadre_middle">
-				<div id="gauche-milieu"></div>
-				<div id="milieu-milieu">
-          <%= display_flash %>
-					
-          <div id="cadre_contenu">
-						<!-- <br/> <span class="champs">Nom d'utilisateur&nbsp;&nbsp;:</span>
-						<input type="text" name="username" value="Login"/>
-						<br/> <input class="submit" type="submit" alt="submit button" title="s'enregistrer" value="login"/>
-						<br/> <span class="champs">Mot de passe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>
-						<input type="password" name="password" value="password"/> -->
+		<%= display_flash %>
+		<div id="login_block">
+			<span><span><span>
+			<!--<h1>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr></h1> -->
             <%= yield %>
-					</div>
-				</div>
-				<div id="droit-milieu"></div>
-			</div>
-			<div id="cadre_down">
-				<div id="gauche-bas"></div>
-				<div id="milieu-bas">
-					<br/> <a href="adresse_renvoyant_mdp" title="Cliquez ici en cas de perte de mot de passe.">mot de passe oublié ?</a>
-				</div>
-				<div id="droit-bas"></div>
-			</div>
-		</div>
-		<div id="pied_de_page">
+			</span></span></span>
 		</div>
 	</body>
 </html>

@@ -849,6 +849,7 @@ table.presentation tr:hover > td{
 	margin-left: 12px;
 	border: #CCC 1px solid;
 	padding: 2px 4px;
+	min-height:50px;
 }
 
 .cadre form p.text_form select {
