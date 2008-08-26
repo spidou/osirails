@@ -1,0 +1,20 @@
+name: Logistics
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+menus:
+  logistics:
+    title: Logistique
+    description: Gestion de la logistique
+    children:
+      commodities_manager:
+        title: Gestion matières premières
+        description: Permet la gestion des familles et des matières premières
+        children:
+          commodity_categories:
+            title: Gestion des catégories de matières premières
+            description: Permet la gestion des categories de matières premières
+          commodities:
+            title: Gestion des matières premières
+            description: Permet la gestion des matières premières

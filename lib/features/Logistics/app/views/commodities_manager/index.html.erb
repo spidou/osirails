@@ -1,0 +1,23 @@
+<h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
+<div class="cadre">
+  <table>
+    <tr>
+      <th rowspan='2'>Cat&eacute;gorie</th>
+      <th rowspan='2'>Sous cat&eacute;gorie</th>
+      <th rowspan='2'>Fournisseur</th>
+      <th rowspan='2'>D&eacute;signation</th>
+      <th rowspan='2'>Unit&eacute;e de mesure/U</th>
+      <th rowspan='2'>Masse/U (kg)</th>
+      <th colspan='3'>Prix/U (&euro;)</th>
+      <th rowspan='2'>Actions</th>
+      <tr>
+        <th>FOB</th>
+        <th>Coef Taxe</th>
+        <th>Prix</th>
+      </tr>
+    </tr>
+       <%= get_structured %>
+  </table>
+  
+  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
+</div>
