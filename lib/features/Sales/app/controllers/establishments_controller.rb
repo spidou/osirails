@@ -51,6 +51,7 @@ class EstablishmentsController < ApplicationController
     
     # If contact_form is not null
     unless params[:new_contact_number]["value"].nil?
+      puts "passe"
       new_contact_number = params[:new_contact_number]["value"].to_i
       new_contact_number.times do |i|
         # For all new_contact  an instance variable is create.

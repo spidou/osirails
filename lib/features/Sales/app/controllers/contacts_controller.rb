@@ -3,30 +3,25 @@ class ContactsController < ApplicationController
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]
   
   def edit
-
     @contact = Contact.find(params[:id])
-    @owner_type  =params[:owner_type]
+    @owner_type  ||= params[:owner_type]
     unless params[:owner].nil?
       @owner = params[:owner]
     end
     if @owner_type  == "Customer"
       @owner = Customer.find(params[:customer_id])
-      @possible_owners = Customer.find(:all)
       @contact_type = "Customer"
     elsif @owner_type == "Supplier"
       @owner = Supplier.find(params[:customer_id])
-      @possible_owners = Supplier.find(:all)
       @contact_type = "Supplier"
     elsif @owner_type == "Establishment"
       @owner = Establishment.find(params[:customer_id])
-      @possible_owners = Establishment.find(:all)
       @contact_type = "Establishment"
     end
     
   end
   
   def update
-
     @contact = Contact.find(params[:id])
     if params[:owner_type]  == "Customer"
       @owner =Customer.find(params[:owner])
@@ -36,10 +31,14 @@ class ContactsController < ApplicationController
       @owner =Supplier.find(params[:owner])
     end
 
-    @contact.update_attributes(params[:contact])
-    
-    #FIXME Change this redirect_to by render
-    redirect_to(edit_customer_contact_path(@owner,@contact,:owner_type => params[:owner_type]))
+    unless @contact.update_attributes(params[:contact])
+      flash[:error] = "Une erreur est survenu lors de la modification du contact"
+      @error = true
+    else
+      flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
+    end
+    @owner
+    render :action => "edit"
   end
   
   def destroy
@@ -53,9 +52,9 @@ class ContactsController < ApplicationController
 
     
     @owner.contacts.delete(@contact)
-    redirect_to :back
-#    eval("redirect_to(edit_#{@owner_type}_path(params[:customer_id]))")
-     
+      flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
+      redirect_to :back
+  
   end
   
   def auto_complete_for_contact_first_name    

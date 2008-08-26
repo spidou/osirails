@@ -5,7 +5,7 @@
       <legend> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></legend>
         <%= contact.error_messages%>
 
-        <%= render :partial => 'contact', :locals => {:contact => contact, :possible_owners => @possible_owers, :contact_type => @contact_type} %>
+        <%= render :partial => 'contact', :locals => {:contact => contact, :contact_type => @contact_type} %>
 
         <%= submit_tag 'Modifier' %>
         
