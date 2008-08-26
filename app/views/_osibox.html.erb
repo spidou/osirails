@@ -42,7 +42,7 @@ osibox_popup_elm.remove();
 						overflow: scroll;
 						<% end %>"
 	id="osibox_popup">
-	<a style="float: right; font-size: 12px;" onclick="osibox_hide();">Fermer</a><br>
+	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br>
 	<% if !options[:partial].nil? %>
 		<%= render :partial => options[:partial] %>
 	<% elsif !options[:url].empty? %>
@@ -56,6 +56,8 @@ document.body.appendChild(osibox_wall_elm);
 document.body.appendChild(osibox_popup_elm);
 
 function osibox_open () {
+	osibox_wall_elm = document.getElementById('osibox_wall');
+	osibox_popup_elm = document.getElementById('osibox_popup');
 	document.body.style.overflow = 'hidden';
 	var top = (document.body.offsetHeight - osibox_popup_elm.offsetHeight) / 2;
 	if (top < 10) {
@@ -76,6 +78,9 @@ function osibox_open () {
 }
 
 function osibox_close () {
+	osibox_wall_elm = document.getElementById('osibox_wall');
+	osibox_popup_elm = document.getElementById('osibox_popup');
+	
 	Effect.Fade(osibox_wall_elm);
 	Effect.Fade(osibox_popup_elm);
 
