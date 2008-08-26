@@ -58,7 +58,7 @@ document.body.appendChild(osibox_popup_elm);
 function osibox_open () {
 	osibox_wall_elm = document.getElementById('osibox_wall');
 	osibox_popup_elm = document.getElementById('osibox_popup');
-
+	document.body.style.overflow = 'hidden';
 	var top = (document.body.offsetHeight - osibox_popup_elm.offsetHeight) / 2;
 	if (top < 10) {
 		top = 10;
@@ -75,8 +75,7 @@ function osibox_open () {
 	
 	osibox_wall_elm.style.visibility = 'visible';
 	osibox_popup_elm.style.visibility = 'visible';
-	document.body.style.overflow = 'hidden';
-	
+
 	Effect.Grow(osibox_wall_elm);
 	Effect.Grow(osibox_popup_elm);
 }
