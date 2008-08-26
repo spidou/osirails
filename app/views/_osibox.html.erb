@@ -70,7 +70,7 @@ function osibox_open () {
 		document.body.style.overflow = '';
 	};
 	
-	osibox_popup_elm.style.top = top + document.body.offsetHeight + 'px';
+	osibox_popup_elm.style.top = top + document.scrollTop + 'px';
 	osibox_popup_elm.style.left = left + 'px';
 	
 	osibox_wall_elm.style.visibility = 'visible';
