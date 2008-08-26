@@ -4,9 +4,11 @@ div {
 }
 */
 body {
-	margin: auto;
+	margin: 0;
+	padding:0;
 	font-family: Arial, Helvetica, sans-serif;
 	cursor: default;
+	font-size:1em;
 }
 
 a {
@@ -20,7 +22,8 @@ a:hover {
 	color: #f2c40f;
 }
 
-input {
+input[type=text],
+input[type=password] {
 	color: #f69826;
 	background: url("/images/login/input_text.png") no-repeat;
 	border: none;
@@ -28,12 +31,19 @@ input {
 	height: 22px;
 	padding-top:5px;
 	text-indent: 8px;
+	margin:10px;
+	position:relative;
+	right:40px;
+	top:42px;
 }
 
 h1 {
 	color: #f69826;
 	line-height: 1px;
 	font-weight: lighter;
+	font-size:1.2em;
+	position:relative;
+	top:18px;
 }
 /*/////////////////////////////////////////////////////
 					BANNIERE
@@ -59,19 +69,39 @@ h1 {
 /*/////////////////////////////////////////////////////
 					LOGIN CADRE
 ////////////////////////////////////////////////////*/
-#login_block {
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-//	width: 460px;
-//	height: 196px;
+#left-side {
+	background: white url("/images/login/bord-gauche.png");
+	width:27px;
+	height:100%;
+	float:left;
 }
 
-#login_block span {
-	background:url("/Users/Oxydium/Documents/SUPINFO/STAGE/Site\ EMR/Osirails/public/images/login/bord-gauche.png");
+#login_contains {
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
 	width:500px;
+	background:url("/images/login/remplissage-bord.jpg") repeat-x;
+	height:196px;
+	margin-top:156px;
 }
 
+
+#right-side {
+	background: white url("/images/login/bord-droit.png");
+	width:27px;
+	height:100%;
+	float:right;
+}
+
+label {
+	float:left;
+	text-align:right;
+	width:200px;
+	position:relative;
+	top:53px;
+	right:20px;
+}
 
 .champs {
 	color: #a3a3a3;
@@ -79,7 +109,7 @@ h1 {
 	line-height: 35px;
 }
 
-.submit {
+input[type=submit] {
 	margin-left:344px;
 	background: url("/images/login/bouton.png");
 	width: 53px;
@@ -90,8 +120,12 @@ h1 {
 	font-weight: bold;
 	padding-top: 0;
 	text-indent: 0;
+	font-size:0.58em;
+	position:relative;
+	bottom:42px;
+	left:25px;
 
 }
-.submit:hover {
+input[type=submit]:hover {
 	background: url("/images/login/bouton-hover.png");
 }

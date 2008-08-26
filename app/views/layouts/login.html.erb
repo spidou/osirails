@@ -14,14 +14,16 @@
 		<div id="banniere">
 			<div id="logo"></div>	
 			<div id="sous-banniere"></div>
-		</div>
+		</div>		
 		<%= display_flash %>
-		<div id="login_block">
-			<span>dezdezd<span><span>
-			<!--<h1>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr></h1> -->
-            <%= yield %>
-			</span></span></span>
-		</div>
+		<div id="login_contains">
+			<div id="left-side">
+			</div>
+			<div id="right-side">
+			</div>
+			<h1>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr></h1>
+			<%= yield %>
+		</div><!-- PAGE : FIN -->
 	</body>
 </html>
 
