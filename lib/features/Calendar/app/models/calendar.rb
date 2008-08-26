@@ -85,7 +85,7 @@ class Calendar < ActiveRecord::Base
           end
         when "WEEKLY"
           is_by_day = false
-          is_by_day = event.by_day.gsub(" ", "").split(",").include?(daynum_to_dayname(date.wday)) unless event.by_day.nil?
+          is_by_day = event.by_day.include?(daynum_to_dayname(date.wday)) unless event.by_day.nil?
 
           if (date - event.start_at.to_date).to_i % (7 * event.interval) == 0 || is_by_day
             if !event.until_date.nil?
@@ -113,8 +113,8 @@ class Calendar < ActiveRecord::Base
           elsif event.by_month_day.nil? && !event.by_day.nil?
             is_by_day = true
             if !event.by_day.nil?
-              week_number = event.by_day[0...-2].to_i
-              week_day = dayname_to_daynum(event.by_day[-2...event.by_day.size])
+              week_number = event.by_day.first[0...-2].to_i
+              week_day = dayname_to_daynum(event.by_day.first[-2...event.by_day.first.size])
               if week_day == date.wday && week_number == -1
                 month_condition = false unless date.day > (date.end_of_month.day - 7)
               elsif week_day == date.wday && !week_number.zero?
@@ -142,8 +142,8 @@ class Calendar < ActiveRecord::Base
             year_condition = event.by_month.gsub(" ", "").split(",").include?(date.month.to_s)
 
             if !event.by_day.nil? && year_condition
-              week_number = event.by_day[0...-2].to_i
-              week_day = dayname_to_daynum(event.by_day[-2...event.by_day.size])
+              week_number = event.by_day.first[0...-2].to_i
+              week_day = dayname_to_daynum(event.by_day.first[-2...event.by_day.first.size])
               if week_day == date.wday && week_number == -1
                 year_condition = false unless date.day > (date.end_of_month.day - 7)
               elsif week_day == date.wday && !week_number.zero?

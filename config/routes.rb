@@ -59,8 +59,10 @@ ActionController::Routing::Routes.draw do |map|
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
   
   ### CALENDAR
-  map.connect ':controller/:action/:id/:period/:year/:month/:day', :controller => 'calendars'
-  map.resources :event
+  map.resources :calendars do |calendar|
+    calendar.resources :events
+  end
+  map.connect ':controller/:id/:action/:period/:year/:month/:day', :controller => 'calendars'
   ### END CALENDAR
 
   ### COMMONS

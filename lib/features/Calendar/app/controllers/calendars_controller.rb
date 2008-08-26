@@ -58,6 +58,7 @@ class CalendarsController < ActionController::Base
   protected
 
   def check_date
+    params[:period] = "week" if params[:period].nil?
     unless ["day", "week", "year"].include?(params[:period].downcase)
       params[:period] = "week"  
       flash[:error] = "La période demander est invalide"

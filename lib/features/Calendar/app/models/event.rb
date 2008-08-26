@@ -20,7 +20,7 @@ class Event < ActiveRecord::Base
   # by_day        (:integer) && "SU" || "MO" || "TU" || "WE" || "TH" || "FR"
   #               || "SA"
   #               separated by a ","
-  # by_month_day  (:integer) &&"SU" || "MO" || "TU" || "WE" || "TH" || "FR"
+  # by_month_day  (:integer) && "SU" || "MO" || "TU" || "WE" || "TH" || "FR"
   #               || "SA"
   #               separated by a ","
   # by_month      :integer || :string
@@ -52,7 +52,7 @@ class Event < ActiveRecord::Base
   # Validates
   before_validation :clear_empty_attrs
   validates_presence_of :title, :start_at, :end_at
-    
+  
   # Relationships
   belongs_to :calendar
   has_many :alarms

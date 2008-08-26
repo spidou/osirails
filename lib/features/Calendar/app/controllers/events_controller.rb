@@ -10,6 +10,8 @@ class EventsController < ActionController::Base
   def new
     @event = Event.new
     @event.title = "Nouvel événement"
+    @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
+    @event.end_at = @event.start_at + (params[:height].to_i).minutes
     respond_to do |format|
       #format.html
       format.js
