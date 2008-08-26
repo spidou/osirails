@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   layout "default"
   #layout "default_original"
   
-  #before_filter :authenticate
+  before_filter :authenticate
   include Permissible::InstanceMethods
 
   # See ActionController::RequestForgeryProtection for details

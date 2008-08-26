@@ -23,11 +23,17 @@ class JobsController < ApplicationController
     respond_to do |format|
       if @job.save
         @jobs = Job.find(:all)
+        puts params.inspect
+        unless params['employee_id']==""
+          @employee = Employee.find(params['employee_id'])
+          @numbers = @employee.numbers
+        end
         flash[:notice] = 'La fonction a été crée avec succés.'
         format.html { redirect_to(jobs_path) }  
-        format.js
+        format.js  
       else
         format.html { render :action => "new" }
+        format.js {render :action => "job_form", :layout => false}
       end
     end
     

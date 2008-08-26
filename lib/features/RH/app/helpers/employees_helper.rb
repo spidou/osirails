@@ -190,7 +190,13 @@ module EmployeesHelper
   end
   
   def flag_path(country_id)
-    
+    "/images/flag/"+country_id+".gif"
   end
   
+  def number_type_path(type)
+  type="cellphone" if type == "Mobile" or type == "Mobile Professionnel"
+  type="phone" if type == "Fixe" or type == "Fixe Professionnel"
+  type="fax" if type == "Fax" or type== "Fax Professionnel"
+    "/images/"+type+".png"
+  end
 end

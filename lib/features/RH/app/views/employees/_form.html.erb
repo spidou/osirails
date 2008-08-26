@@ -51,18 +51,9 @@
       <%= label_tag 'address[address2]', "Adresse :"%> 
       <%= display_address2(@address.nil? ? nil :@address[:address2] )%>    
     </p>
-    <p>
-      <%= label_tag 'address[country_name]', "Pays :"%> 
-      <%= display_country(@address.nil? ? nil :@address[:country_name] )%>    
-    </p>
-    <p>
-      <%= label_tag 'address[city_name]', "Ville :"%> 
-      <%= display_city(@address.nil? ? nil :@address[:city_name] )%>    
-    </p>
-    <p>
-      <%= label_tag 'address[zip_code]', "Code postal :"%> 
-      <%= display_zip_code(@address.nil? ? nil :@address[:zip_code] )%>    
-    </p>
+    <%= render :partial => 'addresses/address', 
+      :locals => {:cpt=> 1, :owner_address => @employee.address}%>
+
   </div> 
   <!--#####################################-->
   
@@ -146,7 +137,8 @@
     </div>
     </p>
     <div id="jobs_choice">
-      <div id="jobs_array">
+    <a id="job_list_anchor"></a>
+      <div id='jobs_list'>
         <table>
           <tr>
             <th colspan="2">Fonctions</th>
@@ -164,7 +156,9 @@
         </table>
       </div>
     </div>
-    <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form"), :html => {:id=>'job_add_link'}%>
+    <%=link_to_remote "Ajouter une fonction",:url=>{:action=>"job_form"},:href=>(url_for :action=>"job_form"), :html => {:id=>'job_add_link', :onclick=>"document.getElementById('job_add_anchor').scrollTo();"}%>
+    <a href="#anchor">t</a>
+    <a onclick="osibox_open();">Ajouter une fonction avec osibox</a>
   </div> 
   <span id="main_submit">
     <%= f.submit button_name %>
@@ -172,29 +166,37 @@
   </span>
 <% end %>
 
-<div class="cadre" style="display: none;" id='job_add'>
-      <h2>Ajout de fonction</h2>
+
+<!-- enlever pour demo avec osibox-->
+  <a id="job_add_anchor"></a>
+ <div id="job_add" style="display:none;" class="cadre">
+ <h2>Ajout de fonction</h2>
       <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
         <%=j.error_messages%>
-      <p>
+      <p style="display:none">
+        <%= hidden_field_tag 'employee_id',params[:id].nil? ? nil : params[:id]%>
+      </p>  
+      <p class="text_form">
         <%= j.label :name, "Nom :"%>
         <%= j.text_field :name%>
       </p>
-      <p>
+      <p class="text_form">
         <%= j.label :mission, "Mission :"%>
         <%= j.text_area :mission %>
       </p>
-      <p>
+      <p class="text_form">
         <%= j.label :activity, "Activités :"%>
         <%= j.text_area :activity%>
       </p>
-      <p>
+      <p class="text_form">
         <%= j.label :goal, "Objectifs :"%>
         <%= j.text_area :goal%>
       </p>
-      <%= j.submit 'Ajouter une fonction'%>
-      <%=link_to_remote "Annuler",:url=>{:action=>"job_form_cancel"},:href=>(url_for :action=>"job_form_cancel")%>
+      <%= j.submit 'Ajouter une fonction',{ :onclick=>"document.getElementById('job_list_anchor').scrollTo();"}%>
+      <%=link_to_remote "Annuler",:url=>{:action=>"job_form_cancel"},:href=>(url_for :action=>"job_form_cancel"),:html=>{ :onclick=>"document.getElementById('job_list_anchor').scrollTo();"}%>
       <%end%>
     </div>
+    
+<%= osibox_init :partial => 'job_form'%>
 
 

@@ -41,7 +41,8 @@ class EmployeesController < ApplicationController
     @job = Job.new
     @services = Service.find(:all)
     @jobs = Job.find(:all)
-#    @adress = @employee.adresse
+    @employee.address = Address.new
+    @address = @employee.address
 #    @number_type = @employee.numbers
     
     
