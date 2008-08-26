@@ -29,8 +29,8 @@ osibox_popup_elm.remove();
 						z-index: 1000;
 						padding: 8px;
 						overflow: auto;
-						-moz-border-radius: 10px;
-						border: 6px solid <%= options[:border_color] %>;
+						-moz-border-radius: <%= options[:border_radius] %>;
+						border: <%= options[:border_size] %> <%= options[:border_type] %> <%= options[:border_color] %>;
 						background-color: <%= options[:background_color] %>;
 						<% unless options[:height].nil? %>
 						height: <%= options[:height] %>;
