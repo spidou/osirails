@@ -30,7 +30,9 @@ class ContentsController < ApplicationController
   def create
     @menu = Menu.new(params[:menu])
     @menus = Menu.get_structured_menus("---")
+    params[:content][:author_id] = current_user.id
     @content = Content.new(params[:content]) # TODO Add author name with his session_id
+    
     if @menu.save
       @content.menu_id = @menu.id
       if @content.save
@@ -57,6 +59,7 @@ class ContentsController < ApplicationController
   
   # PUT /contents/1
   def update
+    @error = false
     @content = Content.find(params[:id])
     @lock_version = @content.lock_version
     
@@ -64,18 +67,10 @@ class ContentsController < ApplicationController
     # TODO Remove the menu item in the structure
     @menus = Menu.get_structured_menus("---")
     
-    # This variable permit to make a save of content
-    content_attributes  = @content.attributes
-    content_attributes.delete("contributors")
-    content_attributes.delete("author_id")
-    content_attributes[:content_id] = params[:id]
-    content_attributes[:contributor_id] = current_user.id
-    ContentVersion.create(content_attributes)
-    
-    # Update content's menu
+#    # Update content's menu
     @menu = @content.menu
-    @menu.old_parent_id = @menu.parent_menu.id
-    @menu.update_parent = true
+#    @menu.old_parent_id = @menu.parent_menu.id
+#    @menu.update_parent = true
     
     # If content isn't in his last version
     if @content.lock_version != $session_lock
@@ -86,15 +81,32 @@ class ContentsController < ApplicationController
     @content.contributors ||= []
     params[:content][:contributors] = @content.contributors
     params[:content][:contributors] << current_user.id unless @content.contributors.include?(current_user.id)
-    puts @content.contributors.size
-    @content.update_attributes(params[:content])
+    
     unless @menu.update_attributes(params[:menu])
-      flash[:error] = "Impossible de déplacer le menu"
-      redirect_to edit_content_path
-    else
-      redirect_to content_path(@content)
+      @error = true
+      flash[:error] = "Un probl&egrave;me est survenu lors de la modification du menu du content"
     end
-    flash[:notice] = 'Votre page est mise à jour.'
+    
+    puts params[:content]
+    unless @content.update_attributes(params[:content])
+      @error = true
+      flash[:error] = "Un probl&egrave;me est survenu lors de la modification du content"
+    else
+      # This variable permit to make a save of content
+      content_attributes  = @content.attributes
+      content_attributes.delete("contributors")
+      content_attributes.delete("author_id")
+      content_attributes[:content_id] = params[:id]
+      content_attributes[:contributor_id] = current_user.id
+      ContentVersion.create(content_attributes)
+    end
+    
+    unless @error
+      flash[:notice] = "Contenu modifi&eacute; avec succ&egrave;s"
+      redirect_to contents_path
+    else 
+      render :action => "edit"
+    end    
     
    # If @content.update_attributes() failed
   rescue ActiveRecord::StaleObjectError     

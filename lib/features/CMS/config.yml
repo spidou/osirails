@@ -10,3 +10,7 @@ menus:
         title: Contenus
         description: Gestion des contenus
         position: 4
+      content_versions:
+        title: Versions de contenus
+        description: Gestion des versions de contenus
+        position: 5

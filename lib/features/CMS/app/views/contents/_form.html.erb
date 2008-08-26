@@ -1,12 +1,13 @@
 <div class="cadre">
+ <%= error_messages_for("menu")%>
   <h2>Information du menu</h2>
   <p>
-    <%= label :menu_title, "Titre" %>
+    <%= label :menu, :title, "Titre" %>
     <%= text_field(:menu, :title)  %>
   </p>
 
   <p>
-    <%= label :menu_description, "Description" %>
+    <%= label :menu, :description, "Description" %>
     <%= text_field(:menu, :description)  %>
   </p>
 
@@ -32,6 +33,4 @@
     <%= content.label :text, "Votre texte" %>
     <%= content.text_area( :text, :cols => 100, :rows => 30) %>
   </p>
-  
-  <%= content.submit submit_button_name %> <%= link_to 'Retour', :action => 'index' %>
 </div>
