@@ -1,12 +1,10 @@
 <% unless @products == "0" or @products.size == 0%>
   <table>
-    <tr>
       <thead>
-        <td>Produits</td>
-        <td>Categories</td>
-        <td>References</td>
+        <th>Produits</th>
+        <th>Categories</th>
+        <th>References</th>
       </thead>
-    </tr>
     <tbody>
       <% for product in @products %>
             <% reference = ProductReference.find(product.product_reference_id) %>
