@@ -754,6 +754,14 @@ table.presentation td{
 	border:none;
 }
 
+td.left_cell {
+	width:100px;
+}
+
+tr.left_cell {
+	vertical-align:top;
+}
+
 table.presentation tr:hover > td{
 	background: none;
 }
