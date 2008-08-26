@@ -28,6 +28,7 @@ module Permissible
     # action is a string like: list, view, add, edit, or delete.
     # option can be an User, a Role, a Role id, a Role name, or an array of Role / Role id / Role name.
     def can?(action, option)
+      return false if option.nil?
       raise "Unexepected action" unless ["list", "view", "add", "edit", "delete"].include?(action) # TODO Use constance for this array.
       
       roles = []
