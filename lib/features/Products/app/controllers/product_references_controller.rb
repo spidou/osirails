@@ -29,9 +29,9 @@ class ProductReferencesController < ApplicationController
   def update
     @categories = ProductReferenceCategory.find(:all)
     @reference = ProductReference.find(params[:id])
-    @reference.change("disable_or_before_update")
+    @reference.counter_update("disable_or_before_update")
     if @reference.update_attributes(params[:product_reference])
-      @reference.change("after_update")
+      @reference.counter_update("after_update")
       flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
@@ -47,7 +47,7 @@ class ProductReferencesController < ApplicationController
       @reference.destroy
     else
       @reference.enable = 0
-      @reference.change("disable_or_before_update")
+      @reference.counter_update("disable_or_before_update")
       @reference.save
     end
     

@@ -30,9 +30,9 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.find(params[:id])
     new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
     if @category.can_has_this_parent?(new_parent_category_id)
-      @category.change("before_update", @category.product_references_count)
+      @category.counter_update("before_update", @category.product_references_count)
       @category.update_attributes(params[:product_reference_category])
-      @category.change("after_update", @category.product_references_count)
+      @category.counter_update("after_update", @category.product_references_count)
       flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else

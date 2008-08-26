@@ -1,4 +1,5 @@
 class ProductReference < ActiveRecord::Base
+  include Permissible
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "product_reference_category_id"
   
@@ -18,7 +19,7 @@ class ProductReference < ActiveRecord::Base
   end
   
   # This method permit to update counter of parents categories
-  def change(index)
+  def counter_update(index)
     category = ProductReferenceCategory.find(self.product_reference_category_id)
     if index == "create"
       category.ancestors.each do |parent_category|

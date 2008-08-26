@@ -1,4 +1,6 @@
 class ProductReferenceCategory < ActiveRecord::Base
+  include Permissible
+ 
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "product_reference_category_id"
   
@@ -10,7 +12,7 @@ class ProductReferenceCategory < ActiveRecord::Base
   validates_presence_of :name, :message => "ne peut être vide"
 
   # This method permit to update counter of parents categories
-  def change(index,value)
+  def counter_update(index,value)
     category = ProductReferenceCategory.find(self.id)
     if index == "before_update"
       ProductReferenceCategory.update_counters category.id, :product_references_count => -value

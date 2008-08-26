@@ -14,10 +14,11 @@ module ProductReferenceManagerHelper
   def get_children(categories,list)
     categories.each do |category|
       delete_button = show_delete_button(category)
-      list << "<li class=\"category\">#{category.name} (#{category.product_references_count}) <span class=\"action\">" +
-        link_to( 'Ajouter une cat&eacute;gorie' , new_product_reference_category_path(:id => category.id) )+" &brvbar; " +
-        link_to( 'Ajouter une r&eacute;f&eacute;rence' , new_product_reference_path(:id => category.id) )+" &brvbar; " +
-        link_to( 'Modifier', edit_product_reference_category_path(category) )+" #{delete_button}</span></li>"
+      list << "<li class=\"category\">#{category.name} (#{category.product_references_count}) <span class=\"action\">"
+      list << link_to( image_tag("/images/category16x16.png", :alt => 'Ajouter une cat&eacute;gorie') , new_product_reference_category_path(:id => category.id) ) if ProductReferenceCategory.can_add?(current_user)
+      list <<  link_to( image_tag("/images/reference16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)
+      list <<   link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier"), edit_product_reference_category_path(category) )+" #{delete_button}</span>" if ProductReferenceCategory.can_delete?(current_user)
+      list << "</li>"
 
       if category.children.size > 0 or category.product_references.size > 0
         list << "<ul>"
@@ -27,8 +28,10 @@ module ProductReferenceManagerHelper
         if category.product_references.size > 0
           category.product_references.each do |reference|
             unless reference.enable == 0
-            list << "<li class=\"reference\">#{reference.name} (#{reference.products_count}) <span class=\"action\">"+
-              link_to( 'Modifier', edit_product_reference_path(reference) )+" &brvbar; "+link_to("Supprimer", reference, { :method => :delete})+"</span></li>"
+              list << "<li class=\"reference\">#{reference.name} (#{reference.products_count}) <span class=\"action\">"
+              list << link_to( image_tag("/images/edit_16x16.png", :alt =>"Modifier"), edit_product_reference_path(reference) ) if ProductReference.can_edit?(current_user)
+              list << link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer"), reference, { :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</span>" if ProductReference.can_delete?(current_user)
+              list << "</li>"
             end
           end
         end
@@ -41,11 +44,11 @@ module ProductReferenceManagerHelper
   
   # This method permit to show or hide delete button
   def show_delete_button(category)
-    " &brvbar; " + link_to("Supprimer", category, { :method => :delete } ) if category.can_delete?
+    link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } ) if category.can_delete?
   end
   # This method permit to show or hide add reference button
   def show_add_reference_button(categories)
-    "&brvbar; " +link_to( 'Ajouter une r&eacute;f&eacute;rence', :controller => 'product_references', :action => 'new' ) unless categories.size == 0
+    link_to( 'Ajouter une r&eacute;f&eacute;rence', :controller => 'product_references', :action => 'new' ) unless categories.size == 0
   end
   
 end
