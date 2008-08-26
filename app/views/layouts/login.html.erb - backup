@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="author" content="Oxydium - SUPINFO PS1"/>
+		<meta name="category" content="ERP"/>
+		<meta name="publisher" content="Oxydium - SUPINFO PS1"/>
+		<meta name="copyright" content="Oxydium - SUPINFO PS1"/>
+		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="/stylesheets/login.css"/>
+		<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
+		<title>Espace Login - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
+	</head>
+	<body>
+		<div id="banniere">
+			<div id="logo"></div>	
+			<div id="sous-banniere"></div>
+		</div>		
+		<%= display_flash %>
+		<div id="login_contains">
+			<div id="left-side">
+			</div>
+			<div id="right-side">
+			</div>
+			<h1>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr>.</h1>
+			<%= yield %>
+		</div>
+	</body>
+</html>
+
