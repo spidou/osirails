@@ -13,6 +13,7 @@ osibox_popup_elm.remove();
 						left: 0px;
 						top: 0px;
 						right: 0px;
+						height: 9999px;
 						z-index: 999;
 						background-color: <%= options[:wall_color] %>;
 						opacity: <%= options[:wall_opacity] %>;
@@ -70,7 +71,6 @@ function osibox_open () {
 	osibox_popup_elm.style.top = top + document.scrollTop + 'px';
 	osibox_popup_elm.style.left = left + 'px';
 	osibox_wall_elm.style.top = document.scrollTop + 'px';
-	osibox_wall_elm.style.height = document.offsetHeight + 'px';
 	
 	osibox_wall_elm.style.visibility = 'visible';
 	osibox_popup_elm.style.visibility = 'visible';
