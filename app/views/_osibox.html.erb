@@ -8,7 +8,7 @@ osibox_popup_elm = document.getElementById('osibox_popup');
 osibox_wall_elm.remove();
 osibox_popup_elm.remove();
 </script>
-<div style="
+<div style="visibility: hidden;
 						position: absolute;
 						left: 0px;
 						top: 0px;
@@ -22,7 +22,7 @@ osibox_popup_elm.remove();
 	id="osibox_wall">
 </div>
 
-<div style="
+<div style="visibility: hidden;
 						position: absolute;
 						top: 0px;
 						left: 0px;
@@ -72,6 +72,9 @@ function osibox_open () {
 	
 	osibox_popup_elm.style.top = top + 'px';
 	osibox_popup_elm.style.left = left + 'px';
+	
+	osibox_wall_elm.style.visibility = 'visible';
+	osibox_popup_elm.style.visibility = 'visible';
 
 	Effect.Grow(osibox_wall_elm);
 	Effect.Grow(osibox_popup_elm);
