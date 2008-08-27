@@ -2,7 +2,7 @@
 
 
 <%if @list==true%>
-  <div class="cadre">
+  <div class="frame">
   <h2>Fiche d'identité</h2>
     <p>
       <b>Civilité :</b>
@@ -27,7 +27,7 @@
     </p>
   </div>
 
-  <div class="cadre">
+  <div class="frame">
   <h2>Fiche de poste</h2>  
     <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
       <%for service in @employee.services%>
@@ -60,7 +60,7 @@
 
   </div> 
   
-  <div class="cadre">
+  <div class="frame">
   <h2>Horaires</h2>
   <table>
     <th>Jours</th>
@@ -74,7 +74,7 @@
 
 <%if @view==true%>
 
-  <div class="cadre">
+  <div class="frame">
   <h2>Coordonn&eacute;es</h2>
   <h3>Adresse postale</h3>
     <p>
@@ -115,7 +115,7 @@
     </p>
   </div> 
     
-  <div class="cadre">
+  <div class="frame">
   <h2>Identité Bancaire</h2>
     <p>
       <b>Code bancaire :</b>
@@ -138,7 +138,7 @@
       <%=h @iban.holder_name %>
     </p>
   </div>
-<div class="cadre">
+<div class="frame">
 <h2>Contrat de travail</h2>
   <p>
     <b>Type de contrat :</b>
@@ -170,7 +170,7 @@
   <%end%>    
 
 </div>
-<div class="cadre">
+<div class="frame">
 <h2>Primes</h2>    
     <%@employee.premia.size > 5 ? min = -5 : min = @employee.premia.size*-1%> 
     <%@employee.premia[min..@employee.premia.size].each do |premium|%>

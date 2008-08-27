@@ -1,7 +1,7 @@
 <br/>
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
-  <div class="cadre">
+  <div class="frame">
   <h2>Informations personnelles</h2>
     <p>
       <%= f.label :civility, "Civilité :"%>
@@ -29,7 +29,7 @@
     </p>
   </div>
   <!--#####################################-->
-  <div class="cadre">
+  <div class="frame">
   <h2>Emails</h2>
   <p>
     <%= f.label :email, "Email personnel :"%>
@@ -41,7 +41,7 @@
   </p>
   </div>
   <!--#####################################-->
-  <div class="cadre">
+  <div class="frame">
   <h2>Coordonn&eacute;es</h2>
     <p>
       <%= label_tag 'address[address1]', "Adresse :"%> 
@@ -57,7 +57,7 @@
   </div> 
   <!--#####################################-->
   
-  <div class="cadre" id='add_lines'>
+  <div class="frame" id='add_lines'>
   <h2>Num&eacute;ros</h2>
     <% unless @numbers.nil?%>
       <%number_id=0%>
@@ -87,7 +87,7 @@
      <%end%> 
   </div>
   <!--#####################################-->
-  <div class="cadre">
+  <div class="frame">
   <h2>Informations Bancaires</h2>
   <p>
     <%= label_tag 'iban[bank_code]' ,"Code bancaire :"%> 
@@ -111,7 +111,7 @@
   </p>
   </div>
 
-  <div class="cadre">
+  <div class="frame">
     <h2>Fiche de poste</h2>
     <p>
       <div>

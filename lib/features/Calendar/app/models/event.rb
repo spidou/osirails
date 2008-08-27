@@ -17,12 +17,10 @@ class Event < ActiveRecord::Base
   # frequence     "DAILY" || "WEEKLY" || "MONTHLY" || "YEARLY"
   # count         :integer || :string
   # interval      :integer
-  # by_day        (:integer) && "SU" || "MO" || "TU" || "WE" || "TH" || "FR"
-  #               || "SA"
-  #               separated by a ","
-  # by_month_day  (:integer) && "SU" || "MO" || "TU" || "WE" || "TH" || "FR"
-  #               || "SA"
-  #               separated by a ","
+  # by_day        (:integer) && ["SU" || "MO" || "TU" || "WE" || "TH" || "FR"
+  #               || "SA"]
+  # by_month_day  (:integer) && ["SU" || "MO" || "TU" || "WE" || "TH" || "FR"
+  #               || "SA"]
   # by_month      :integer || :string
   #
   # Use:
@@ -33,12 +31,12 @@ class Event < ActiveRecord::Base
   # {:frequence => "DAILY", :count => 10, :interval => 2}
   # This recurrence specifies 10 meetings every 2 days.
   #
-  # {:frequence => "MONTHLY", :count => 3, :by_day => "TU,WE,TH",
+  # {:frequence => "MONTHLY", :count => 3, :by_day => [TU,WE,TH],
   # :by_set_pos => 3}
   # The 3rd instance into the month of one of Tuesday, Wednesday or Thursday,
   # for the next 3 months.
   #
-  # {:frequence => "YEARLY", :interval => 2, :by_month => 1 :by_day => "SU",
+  # {:frequence => "YEARLY", :interval => 2, :by_month => 1 :by_day => ["SU"],
   # :by_hour => "8,9", :by_minute => 30}
   # First, the ":interval => 2" would be applied to ":frequence => "YEARLY"" 
   # to arrive at "every other year". Then, ":by_month => 1" would be applied
@@ -64,6 +62,22 @@ class Event < ActiveRecord::Base
   require 'icalendar'
   require 'date'
   
+  def is_custom_daily_frequence?
+    self.frequence == "DAILY" && self.interval > 1
+  end
+  
+  def is_custom_weekly_frequence?
+    self.frequence == "WEEKLY" && (!self.by_day.nil? || self.interval > 1)
+  end
+  
+  def is_custom_monthly_frequence?
+    self.frequence == "MONTHLY" && (!self.by_month_day.nil? || !self.by_day.nil? || self.interval > 1)
+  end
+  
+  def is_custom_yearly_frequence?
+    self.frequence == "YEARLY" && (!self.by_month.nil? || !self.by_day.nil? || self.interval > 1)
+  end
+  
   # Convert the event to the an Icalendar event object
   def to_ical_event
     organizer = Employee.find(organizer_id) if organizer_id
@@ -77,7 +91,7 @@ class Event < ActiveRecord::Base
     event.properties["rrule"]   += ";UNTIL=" + Calendar.to_ical_date(until_date) if until_date
     event.properties["rrule"]   += ";COUNT=" + count.to_s if count
     event.properties["rrule"]   += ";INTERVAL=" + interval.to_s if interval
-    event.properties["rrule"]   += ";BYDAY=" + by_day.to_s if by_day
+    event.properties["rrule"]   += ";BYDAY=" + by_day.join(',') if by_day
     event.properties["rrule"]   += ";BYMONTHDAY=" + by_month_day.to_s if by_month_day
     event.properties["rrule"]   += ";BYMONTH=" + by_month.to_s if by_month_day
     event.properties["rrule"]   += ";WKST=MO" if by_day.grep(/\d/).empty?

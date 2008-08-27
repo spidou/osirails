@@ -4,7 +4,7 @@
 <% form_for(@job_contract) do |f| %>
   <%=f.error_messages%> 
   
-  <div class="cadre">
+  <div class="frame">
   <h2>Informations :</h2> 
   <p>
     <%= f.label :start_date, "Date de début du contrat :"%>
@@ -26,7 +26,7 @@
     <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
   </p>
   </div>
-  <div class="cadre">
+  <div class="frame">
   <h2>Salaire :</h2>
   <p>
     <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>

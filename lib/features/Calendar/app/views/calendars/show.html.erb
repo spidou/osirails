@@ -297,7 +297,7 @@ function display_event_box (action, event_id, event) {
 	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
 	event_box_elm.style.top = document.getElementById(event_id).style.top;
 	event_box_elm.style.visibility = 'visible';
-//	Effect.Grow(event_box_id, {direction: 'center'});
+	Effect.Appear(event_box_id, {direction: 'center'});
 }
 
 function hide_event_box () {
@@ -364,167 +364,96 @@ function event_box_loading () {
  	document.getElementById(event_box_content_id).innerHTML = "Chargement";
 }
 
-function event_frequence_change (argument) {
+function event_change (argument, select_elm) {
+	var frequence_elm = document.getElementById('event_frequence');
+	var limit_elm = document.getElementById('event_frequence_limit')
+	var custom_elm = document.getElementById('event_frequence_custom');
+	
 	switch(argument) {
-		case "event_frequence_type":
-		var type_elm = document.getElementById('event_frequence_type');
-		var more_elm = document.getElementById('event_frequence_more');
-		var form = "<span>Fin</span>" +
-		"<select onChange=\"event_frequence_change('event_frequence_more');\">" +
-		"<option>Jamais</option>" +
-		"<option>Apr&egrave;s</option>" +
-		"<option>le</option>" +
-		"</select>" +
-		"<div></div>" +
-		"<input id=\"event_interval\" name=\"event[interval]\" type=\"hidden\" value=\"1\"/>";
-
-		switch(type_elm.options[type_elm.selectedIndex].text) {
-			case "Personnaliser":
-			more_elm.innerHTML = form + "<fieldset>" +
-			"<select onChange=\"event_frequence_change('event_frequence_custom');\">" +
-			"<option>quotidienne</option>" +
-			"<option>hebdomadaire</option>" +
-			"<option>mensuelle</option>" +
-			"<option>annuelle</option>" +
-			"</select>" +
-			"<div></div>" +
-			"</fieldset>";
-			break;
+		case "frequence":
+		switch (select_elm.options[select_elm.selectedIndex].text) {
 			case "Chaque jour":
-			more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"DAILY\"/>";
+				frequence_elm.value = "DAILY"
 			break;
 			case "Chaque semaine":
-			more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"WEEKLY\"/>";
+				frequence_elm.value = "WEEKLY"
 			break;
 			case "Tous les mois":
-			more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"MONTHLY\"/>";
+				frequence_elm.value = "MONTHLY"
 			break;
 			case "Tous les ans":
-			more_elm.innerHTML = form + "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"YEARLY\"/>";
-			break;
-			default:
-			more_elm.innerHTML = "<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"\"/><input id=\"event_count\" name=\"event[count]\" type=\"hidden\" value=\"\"/><input id=\"event_until_date\" name=\"event[until_date]\" type=\"hidden\" value=\"\"/>";
+				frequence_elm.value = "YEARLY"
 			break;
 		}
+		if (select_elm.options[select_elm.selectedIndex].text == "Jamais") {
+			limit_elm.style.display = "none";
+		} else {
+			limit_elm.style.display = 'block';
+		};
+		
+		if (select_elm.options[select_elm.selectedIndex].text == "Personnaliser") {
+			custom_elm.style.display = 'block';
+		} else {
+			custom_elm.style.display = 'none';
+		};
 		break;
-
-		case "event_frequence_more":
-		var more_elm = document.getElementById('event_frequence_more');
-		var more_select_elm = more_elm.childNodes[1];
-		var more_input_elm = more_elm.childNodes[2];
-		switch(more_select_elm.options[more_select_elm.selectedIndex].text) {
+		
+		case "limit":
+		var limit_select_elm = limit_elm.childNodes[3];
+		var until_date_elm = document.getElementById('event_until_date').parentNode;
+		var count_elm = document.getElementById('event_count').parentNode;
+		switch(select_elm.options[select_elm.selectedIndex].text) {
 			case "Jamais":
-			more_input_elm.innerHTML = "<input id=\"event_count\" name=\"event[count]\" type=\"hidden\" value=\"\"/><input id=\"event_until_date\" name=\"event[until_date]\" type=\"hidden\" value=\"\"/>";
+			until_date_elm.style.display = 'none';
+			count_elm.style.display = 'none';
 			break;
 			case "Après":
-			more_input_elm.innerHTML = "<input class=\"disable-stylesheet-width\" id=\"event_count\" name=\"event[count]\" size=\"3\" value=\"1\" type=\"text\"> fois";
+			until_date_elm.style.display = 'none';
+			count_elm.style.display = 'block';
 			break;
 			case "le":
-			more_input_elm.innerHTML = "<input class=\"disable-stylesheet-width\" id=\"event_until_date\" name=\"event[until_date]\" size=\"12\" value=\"\" type=\"text\">";
+			until_date_elm.style.display = 'block';
+			count_elm.style.display = 'none';
 			break;
 		};
 		break;
 
-		case "event_frequence_custom":
-		var more_elm = document.getElementById('event_frequence_more');
-		var custom_select_elm = more_elm.firstChild.childNodes[0];
-		var custom_input_elm = more_elm.firstChild.childNodes[1];
-		switch(custom_select_elm.options[custom_select_elm.selectedIndex].text) {
+		case "custom":
+		
+		var custom_select_elm = custom_elm.childNodes[1].childNodes[1];
+		//var custom_input_elm = custom_elm.firstChild.childNodes[2];
+		var daily_elm = document.getElementById('event_daily');
+		var weekly_elm = document.getElementById('event_weekly');
+		var monthly_elm = document.getElementById('event_monthly');
+		var yearly_elm = document.getElementById('event_yearly');
+		switch(select_elm.options[select_elm.selectedIndex].text) {
 			case "quotidienne":
-			custom_input_elm.innerHTML = "Toutes les <input " +
-			"class=\"disable-stylesheet-width\" id=\"event_interval\" " +
-			"name=\"event[interval]\" size=\"3\" value=\"1\" type=\"text\"> " +
-			" jour(s)<br>" +
-			"<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"DAILY\"/>";
+			frequence_elm.value = "DAILY";
+			daily_elm.style.display = 'block';
+			weekly_elm.style.display = 'none';
+			monthly_elm.style.display = 'none';
+			yearly_elm.style.display = 'none';
 			break;
 			case "hebdomadaire":
-			custom_input_elm.innerHTML = "Tous les <input class=\"disable-stylesheet-width\" id=\"event_interval\" name=\"event[interval]\" size=\"3\" value=\"1\" type=\"text\"> semaine(s) le :<br>" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"MO\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"TU\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"WE\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"TH\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"FR\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"SA\" />" +
-			"<input id=\"event_by_day\" name=\"event[by_day][]\" type=\"checkbox\" value=\"SU\" />" +
-			"<input id=\"event_frequence\" name=\"event[frequence]\" type=\"hidden\" value=\"WEEKLY\"/>";
+			frequence_elm.value = "WEEKLY";
+			daily_elm.style.display = 'none';
+			weekly_elm.style.display = 'block';
+			monthly_elm.style.display = 'none';
+			yearly_elm.style.display = 'none';
 			break;
 			case "mensuelle":
-			custom_input_elm.innerHTML = "Tous les <input " +
-			"class=\"disable-stylesheet-width\"id=\"event_interval\" " +
-			"name=\"event[interval]\" size=\"3\" value=\"1\" type=\"text\">" +
-			" mois<br>" +
-			"<input name=\"monthly_choice\" type=\"radio\" checked " +
-			"onclick=\"document.getElementById('event_by_month_day').disabled=false; " +
-			"document.getElementById('event_by_month_day_num').disabled=true; " +
-			"document.getElementById('event_by_month_day_wday').disabled=true; " +
-			"\" />" +
-			"Tous les <input id=\"event_by_month_day\" name=\"event[by_month_day]\" " +
-			"type=\"text\"/><br>" +
-			"<input name=\"monthly_choice\" type=\"radio\" " +
-			"onclick=\" document.getElementById('event_by_month_day').disabled=true; " +
-			"document.getElementById('event_by_month_day_num').disabled=false; " +
-			"document.getElementById('event_by_month_day_wday').disabled=false; \"" +
-			" />" +
-			"Le <select id=\"event_by_month_day_num\"" +
-			"name=\"event[by_month_day_num]\" disabled>" +
-			"<option value='1'>premier</option>" +
-			"<option value='2'>deuxieme</option>" +
-			"<option value='3'>troixieme</option>" +
-			"<option value='4'>quatrieme</option>" +
-			"<option value='-1'>dernier</option>" +
-			"</select><select id=\"event_by_month_day_wday\"" +
-			"name=\"event[by_month_day_wday]\" disabled>" +
-			"<option>lundi</option>" +
-			"<option>mardi</option>" +
-			"<option>mercredi</option>" +
-			"<option>jeudi</option>" +
-			"<option>vendredi</option>" +
-			"<option>samedi</option>" +
-			"<option>dimanche</option>" +
-			"</select>";
+			frequence_elm.value = "MONTHLY";
+			daily_elm.style.display = 'none';
+			weekly_elm.style.display = 'none';
+			monthly_elm.style.display = 'block';
+			yearly_elm.style.display = 'none';
 			break;
 			case "annuelle":
-			custom_input_elm.innerHTML = "Tous les <input " +
-			"class=\"disable-stylesheet-width\"id=\"event_interval\" " +
-			"name=\"event[interval]\" size=\"3\" value=\"1\" type=\"text\">" +
-			" ans en:<br>" +
-			"Janvier<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"1\" />" +
-			"F&eacute;vrier<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"2\" />" +
-			"Mars<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"3\" />" +
-			"Avril<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"4\" />" +
-			"Mai<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"5\" />" +
-			"Juin<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"6\" />" +
-			"Juillet<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"7\" />" +
-			"Aout<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"8\" />" +
-			"Septembre<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"9\" />" +
-			"Octobre<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"10\" />" +
-			"Novembre<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"11\" />" +
-			"D&eacute;cembre<input id=\"event_by_month\" name=\"event[by_month][]\" type=\"checkbox\" value=\"12\" /><br>" +
-			"<br><input id=\"event_monthly_choice\" type=\"checkbox\" onclick=\" " +
-			"if (this.checked == true) {" +
-			"document.getElementById('event_by_month_day_num').disabled=false; " +
-			"document.getElementById('event_by_month_day_wday').disabled=false; " +
-			"} else {" +
-			"document.getElementById('event_by_month_day_num').disabled=true; " +
-			"document.getElementById('event_by_month_day_wday').disabled=true; " +				
-			"};\" />" +
-			"Le <select id=\"event_by_month_day_num\"" +
-			"name=\"event[by_month_day_num]\" disabled>" +
-			"<option value='1'>premier</option>" +
-			"<option value='2'>deuxieme</option>" +
-			"<option value='3'>troixieme</option>" +
-			"<option value='4'>quatrieme</option>" +
-			"<option value='-1'>dernier</option>" +
-			"</select><select id=\"event_by_month_day_wday\"" +
-			"name=\"event[by_month_day_wday]\" disabled>" +
-			"<option>lundi</option>" +
-			"<option>mardi</option>" +
-			"<option>mercredi</option>" +
-			"<option>jeudi</option>" +
-			"<option>vendredi</option>" +
-			"<option>samedi</option>" +
-			"<option>dimanche</option>" +
-			"</select>";
+			frequence_elm.value = "YEARLY";
+			daily_elm.style.display = 'none';
+			weekly_elm.style.display = 'none';
+			monthly_elm.style.display = 'none';
+			yearly_elm.style.display = 'block';
 			break;
 		};
 		break;

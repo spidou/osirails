@@ -1,7 +1,5 @@
 <h1>Param&egrave;tres de base de l'entreprise</h1>
-<%= display_tabulated_menu %>
-
-<div class="cadre tabulation">
+<div class="frame">
   <%= render :partial => 'form' %>
-  <%= link_to("Modifier", :action => 'edit') if @edit  %>
+  <%= link_to("Modifier", :action => 'edit')+" &#124;" if @edit == true  %> <%= link_to "Retour", :controller => 'society_configurations', :action => 'index' %>
 </div>

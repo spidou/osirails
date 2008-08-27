@@ -14,7 +14,7 @@
 
       
 
-      <div class="cadre">
+      <div class="frame">
         <h2> &Eacute;tablissements du client </h2>
         <% #Faire un plurialize "etablissement de la legend"%>
         <% for establishment in @establishments %>
@@ -30,7 +30,7 @@
 
     <% if @contacts.length > 0 -%>
       
-      <div class="cadre">
+      <div class="frame">
       <h2> Contacts du client</h2> 
         
         <% for contact in @contacts%>
@@ -53,7 +53,7 @@
 
 
       
-      <div class="cadre">
+      <div class="frame">
         <h2> Ajouter un &eacute;tablissement pour le client </h2>
         <div id="new_establishment">
           <%unless @error%>

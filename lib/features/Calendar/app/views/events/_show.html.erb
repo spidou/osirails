@@ -1,6 +1,9 @@
 <%= h(@event.title) %>
 <br />du: <%= h(@event.start_at) %>
 <br />au: <%= h(@event.end_at) %>
-<% if event_freq(@event) %><br />répéter: <%= h(event_freq(@event)) %><% end %>
-<% if event_freq_end(@event) %><br />fin: <%= h(event_freq_end(@event)) %><% end %>
+<% if event_freq(@event) %><br />répéter: <%= event_freq(@event) %><% end %>
+<% if @event.is_custom_daily_frequence %>
+tous les <%= h(@event.frequence) %> jours
+<% end %>
+<% if event_freq_end(@event) %><br />fin: <%= event_freq_end(@event) %><% end %>
 <br /><div onClick="event_box_loading();"><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %> <%= link_to_remote "Supprimer", :url => {:action => 'destroy', :id => params[:id]} %></div>

@@ -1,6 +1,6 @@
 <h1>Informations concernant le client </h1>
 
-<div class="cadre">
+<div class="frame">
   <h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
     <%= label :customer, :name, "Nom :" %>
@@ -49,7 +49,7 @@
  </div>
 
 <%if @establishments.length > 0%>
-<div class="cadre">
+<div class="frame">
   <h2><%= "Liste des &eacute;tablissements du client"%></h2>
   
           <%for establishment in @establishments%>

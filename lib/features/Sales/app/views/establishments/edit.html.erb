@@ -6,7 +6,7 @@
   
     <% if @contacts.length > 0 -%>
       <h2> Contacts du client</h2>
-        <div class="cadre"> 
+        <div class="frame"> 
             <% for contact in @contacts%>
                 <div <%= "id='customer_contact#{contact.id}'" %>>
                   <%= contact.first_name + " " + contact.last_name%>
