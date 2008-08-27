@@ -32,6 +32,7 @@ class SuppliersController < ApplicationController
     
   def show
     @supplier = Supplier.find(params[:id])
+    @contacts = @supplier.contacts
   end
   
   def edit

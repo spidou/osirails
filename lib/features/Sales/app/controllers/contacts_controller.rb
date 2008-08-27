@@ -12,10 +12,10 @@ class ContactsController < ApplicationController
       @owner = Customer.find(params[:customer_id])
       @contact_type = "Customer"
     elsif @owner_type == "Supplier"
-      @owner = Supplier.find(params[:customer_id])
+      @owner = Supplier.find(params[:supplier_id])
       @contact_type = "Supplier"
     elsif @owner_type == "Establishment"
-      @owner = Establishment.find(params[:customer_id])
+      @owner = Establishment.find(params[:establishment_id])
       @contact_type = "Establishment"
     end
     

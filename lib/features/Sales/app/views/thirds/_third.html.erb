@@ -11,7 +11,7 @@
     <%= third.label :legal_form, "Forme juridique" %>
     <% params["#{third_type}"].nil? ? value = third_.legal_form_id.to_i : value = params["#{third_type}"][:legal_form_id].to_i%>
     <select name='<%="#{third_.type.downcase}[legal_form_id]"%>'>
-    <%= option_groups_from_collection_for_select(ThirdType.find(:all), :legal_forms, :wording, :id, :name, value) %>
+    <%= option_groups_from_collection_for_select(ThirdType.find(:all), :legal_forms, :name, :id, :name, value) %>
     </select>
   </p>
 

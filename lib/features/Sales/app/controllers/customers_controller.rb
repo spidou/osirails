@@ -27,6 +27,7 @@
   def show
     @customer = Customer.find(params[:id])
     @establishments = @customer.establishments
+    @contacts = @customer.contacts
   end
 
   def edit
@@ -57,7 +58,6 @@
     else
       @error = true
     end
-    params[:customer][:third_type_id] = LegalForm.find(params[:customer][:legal_form_id]).third_type_id
     @customer.activity_sector_id= activity_sector_id
     unless @customer.update_attributes(params[:customer])
       @error = true

@@ -1,42 +1,68 @@
 <h1>Informations concernant le client </h1>
-<div class="frame">
 
+<div class="frame">
+  <h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
-    <%= label :supplier_name, "Nom" %>
+    <%= label :supplier_name, "Nom :" %>
     <%= @supplier.name %>
   </p>
-
+  
   <p>
-    <%= label :supplier_legal_form, "Forme juridique" %>
-    <%= @supplier.legal_form %>
+    <%= label :supplier_legal_form, "Forme juridique :" %>
+    <%= LegalForm.find(@supplier.legal_form_id).name %>
   </p>
-
+  
   <p>
-    <%= label :supplier_siret_number, "Num&eacute;ro Siret" %>
+    <%= label :supplier_siret_number, "Num&eacute;ro Siret :" %>
     <%= @supplier.siret_number %>
   </p>
-
+  
   <p>
-    <%= label :supplier_activity_sector, "Secteur d'activit&eacute;" %>
+    <%= label :supplier_activity_sector, "Secteur d'activit&eacute; :" %>
     <%= @supplier.activity_sector.name %>
   </p>
-
+  
   <p>
-    <%= label :supplier_activities, "Activit&eacute;s" %>
+    <%= label :supplier_activities, "Activit&eacute;s :" %>
     <%= @supplier.activities %>
   </p>
-
+  
   <p>
-    <%= label :supplier_note, "Note" %>
+    <%= label :supplier_note, "Note :" %>
     <%= @supplier.note %>
   </p>
 
   <p>
-    <%= label :customer_banking_informations, "Informations bancaires" %>
-    <%= @supplier.third_type.wording %>
+    <%= label :supplier, :iban, "Code bancaire :" %>
+    <%= @supplier.iban.bank_code%>
   </p>
 
-<%= link_to 'Retour', :action => 'index' %>
+  <p>
+    <%= label :supplier, :iban, "Code guichet :" %>
+    <%= @supplier.iban.teller_code %>
+  </p>
+
+  <p>
+    <%= label :supplier, :iban, "N° de compte bancaire :" %>
+    <%= @supplier.iban.account_number %>
+  </p>
+
+  <p>
+    <%= label :supplier, :iban, "Cl&eacute;e :" %>
+    <%= @supplier.iban.key %>
+  </p>
 </div>
-
-
+  <%unless @contacts.empty?%>
+    <div class="frame">
+        <h2><%= "Liste des contacts du client"%></h2>
+        <%for contact in @contacts%>
+            <p>
+              <%= contact.first_name + " " + contact.last_name%>
+              <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
+              <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+            </p>
+        <%end%>
+    </div>
+  <%end%>
+  
+  <%= link_to 'Retour', :action => 'index' %>
