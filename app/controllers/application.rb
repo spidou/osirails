@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   begin
     ConfigurationManager.initialize_options
   rescue Exception => e
-    puts "An error occured at feature initialization. Please reload the server. (erreur : #{e.message})"
+    puts "An error occured at feature initialization. Please reload the server. (error : #{e.message})"
   end
   
   

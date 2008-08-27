@@ -10,9 +10,6 @@ class CreateUsers < ActiveRecord::Migration
 
       t.timestamps
     end
-    
-    # TODO add rows while migrate
-   # User.create :username => 'Admin', :enabled => true
   end
   
   

@@ -5,17 +5,7 @@ class CreateLegalForms < ActiveRecord::Migration
       t.references :third_type
 
       t.timestamps
-    end
-    
-    LegalForm.create :name => "SARL", :third_type_id => "1"
-    LegalForm.create :name => "SA", :third_type_id => "1"
-    LegalForm.create :name => "SAS", :third_type_id => "1"
-    LegalForm.create :name => "EURL", :third_type_id => "1"
-    LegalForm.create :name => "Association", :third_type_id => "1"
-
-    LegalForm.create :name => "Etat", :third_type_id => "2"
-    LegalForm.create :name => "Collectivité territoriale", :third_type_id => "2"
-        
+    end        
   end
 
   def self.down

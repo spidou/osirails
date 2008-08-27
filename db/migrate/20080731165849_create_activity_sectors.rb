@@ -5,10 +5,6 @@ class CreateActivitySectors < ActiveRecord::Migration
 
       t.timestamps
     end
-    
-    ActivitySector.create :name => "Privé"
-    ActivitySector.create :name => "Public"
-    
   end
 
   def self.down

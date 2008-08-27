@@ -2,7 +2,8 @@ class CreateCommodities < ActiveRecord::Migration
   def self.up
     create_table :commodities do |t|
       t.string :name
-      t.integer :FOB_unit_price, :taxe_coefficient, :supplier_id,  :commodity_category_id,  :unit_mass, :measure
+      t.float :fob_unit_price, :taxe_coefficient, :price, :measure, :unit_mass
+      t.integer :supplier_id,  :commodity_category_id
       t.integer :enable, :default => 1
       t.timestamps
     end

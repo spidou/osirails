@@ -15,7 +15,6 @@ class ModifyThirds < ActiveRecord::Migration
     remove_column :thirds, :payment_time_limit_id
     add_column :thirds, :banking_informations, :string
     add_column :thirds, :legal_form, :string
-    
   end
 end
 

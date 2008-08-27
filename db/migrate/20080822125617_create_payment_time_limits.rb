@@ -5,11 +5,6 @@ class CreatePaymentTimeLimits < ActiveRecord::Migration
 
       t.timestamps
     end
-    
-    PaymentTimeLimit.create :name => "Comptant"
-    PaymentTimeLimit.create :name => "30 jours nets"
-    PaymentTimeLimit.create :name => "60 jours nets"
-    
   end
 
   def self.down

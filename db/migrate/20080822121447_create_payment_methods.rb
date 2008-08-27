@@ -4,14 +4,7 @@ class CreatePaymentMethods < ActiveRecord::Migration
       t.string :name
 
       t.timestamps
-    end
-    
-    PaymentMethod.create :name => "Virement"
-    PaymentMethod.create :name => "Chèque"
-    PaymentMethod.create :name => "Espèce"
-    PaymentMethod.create :name => "Lettre de change"
-    PaymentMethod.create :name => "Billet à ordre"
-        
+    end 
   end
 
   def self.down

@@ -68,7 +68,7 @@ class AccountController < ApplicationController
   end
   
   def expired_password
-    flash.now[:notice] = "Votre mot de passe est expir&eacute;. Merci d'en choisir un autre."
+    flash.now[:error] = "Votre mot de passe est expir&eacute;. Merci d'en choisir un autre."
     return unless request.post?
     current_user.updating_password = true
     if current_user.update_attributes(params[:user])
