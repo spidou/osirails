@@ -12,8 +12,8 @@ conflicts:
     - 0.2
 business_objects:
 menus:
-    test9:
-      title: Test2azeaze
-      description: Description du menu 92
-      position: 20
+#    test9:
+#      title: Test2azeaze
+#      description: Description du menu 92
+#      position: 20
 
