@@ -46,7 +46,7 @@ module Inplace
                             ajaxOptions:  {#{options_for_ajax}},
                             callback: function(form, value) 
                               { return '#{object_name}[#{property}]=' + escape(value)+ '#{put_params}' },
-                            onComplete: function(transport, element) 
+                            onComplete: function(transport, element)
                               {
                                 if(!transport) {return;} // thanks to Mina!
                                 if(transport.status == 200) {
@@ -55,7 +55,7 @@ module Inplace
                                   new Effect.Highlight(element.id, {startcolor: '#ff0000'});
                                 }
 				element.innerHTML=transport.responseText.evalJSON().#{object.class.name.demodulize.tableize.singularize}.#{property};
-
+                              price_calculator(element.ancestors()[1]);
                               }"
         tg += ",#{options_for_edit}" unless options_for_edit.empty?
         tg += "});\n"
