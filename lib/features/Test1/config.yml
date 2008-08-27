@@ -8,7 +8,7 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-  test9:
-    description: Description du menu 1121
-    position: 1
+#  test9:
+#    description: Description du menu 1121
+#    position: 1
 
