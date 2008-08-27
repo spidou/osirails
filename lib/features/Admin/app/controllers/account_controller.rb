@@ -1,6 +1,7 @@
 class AccountController < ApplicationController
   skip_before_filter :authenticate
-  before_filter :logged?, :only => [:logout, :expired_password]
+  before_filter :logged?, :except => [:logout, :expired_password]
+  before_filter :not_logged?, :except => [:login, :lost_password]
   layout "login"
 
   # All the following action are accessible without login
@@ -27,7 +28,7 @@ class AccountController < ApplicationController
         if @user.enabled == true
           @user.update_connection
           session[:user] = @user
-          session[:initial_uri] ||= permissions_path # TODO Put here the default home page after logging
+          session[:initial_uri] ||= user_home
           redirect_to session[:initial_uri]
           flash[:notice] = "Connexion r&eacute;ussie"
         else
@@ -81,6 +82,12 @@ class AccountController < ApplicationController
   private
   
   def logged?
+    if !current_user.nil?
+      redirect_to user_home
+    end
+  end
+  
+  def not_logged?
     if current_user.nil?
       redirect_to login_path
     end

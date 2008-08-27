@@ -50,6 +50,10 @@ class ApplicationController < ActionController::Base
     session[:user]
   end
 
+  def user_home
+    permissions_path
+  end
+
   private
     # Called when an user try to acces to an unauthorized page
     def unauthorized_action(status = nil)

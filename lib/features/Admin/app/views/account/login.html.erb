@@ -1,17 +1,12 @@
-<% if current_user %>
-  <p class="message">Vous &ecirc;tes d&eacute;j&agrave; connect&eacute;</p>
-<% else %>
-
-  <% form_tag :action => 'login' do %>
-  <p>
-  <%= label_tag 'username', "Nom d'utilisateur :" %>
-  <%= text_field_tag 'username' %>
-  </p>
-  <p>
-  <%= label_tag 'password', "Mot de passe :" %>
-  <%= password_field_tag 'password' %>
-  </p>
-	<button type="submit" class="input-button"><span>Connexion</span></button>
-  <span><%= link_to "Mot de passe oubli&eacute; ?", :controller => 'account', :action => 'lost_password' %></span>
-  <% end %>
+<% form_tag :action => 'login' do %>
+<p>
+	<%= label_tag 'username', "Nom d'utilisateur :" %>
+	<%= text_field_tag 'username' %>
+</p>
+<p>
+	<%= label_tag 'password', "Mot de passe :" %>
+	<%= password_field_tag 'password' %>
+</p>
+<button type="submit" class="input-button"><span>Connexion</span></button>
+<span><%= link_to "Mot de passe oubli&eacute; ?", :controller => 'account', :action => 'lost_password' %></span>
 <% end %>
