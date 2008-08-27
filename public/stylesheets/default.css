@@ -309,7 +309,7 @@ width: 100%;
 
 #menu ul {
 	display:block;
-	width: 180px;
+	width: 191px;
 	list-style-type: none;
 	margin: 5px 0px 0px 5px;
 	padding:0;
@@ -318,9 +318,6 @@ width: 100%;
 
 #menu ul li {
 	background: url("../images/sous_banniere_repeat-x2.jpg") repeat;
-	padding: 10px 7px 10px 7px;
-	width: 177px;
-/*	height: 100%;	*/
 	text-decoration: none;
 	border-bottom:1px solid #444444;
 	border-top:1px solid #bfd1f5;
@@ -340,9 +337,11 @@ width: 100%;
 }
 
 #menu ul li a {
+    display: block;
 		text-decoration: none;
 		color: #454545;
 		font-size:85%;
+    padding: 10px 7px 10px 7px;
 }
 
 #menu ul li a:active {
