@@ -18,6 +18,19 @@ class CommodityCategoriesController < ApplicationController
       render :action => 'new'
     end
   end
+    
+  def update
+    @commodity_category = CommodityCategory.find(params[:id])
+    respond_to do |format|
+      if @commodity_category.update_attributes(params[:commodity_category])
+        format.html { redirect_to(:action => "index") }
+        format.json { render :json => @commodity_category }
+      else
+        format.html { render :action => "edit" }
+        format.json { render :json => @commodity_category, :status => SOMETHINGELSE_THAN_200}
+      end
+    end
+  end
   
   # DELETE /commodity_categories/1
   def destroy
@@ -34,5 +47,5 @@ class CommodityCategoriesController < ApplicationController
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
-  
+    
 end

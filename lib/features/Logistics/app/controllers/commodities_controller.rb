@@ -19,6 +19,19 @@ class CommoditiesController < ApplicationController
     end
   end
   
+  def update
+    @commodity = Commodity.find(params[:id])
+    respond_to do |format|
+      if @commodity.update_attributes(params[:commodity])
+        format.html { redirect_to(:action => "index") }
+        format.json { render :json => @commodity }
+      else
+        format.html { render :action => "edit" }
+        format.json { render :json => @commodity, :status => SOMETHINGELSE_THAN_200}
+      end
+    end
+  end
+  
   # DELETE /commodities/1
   def destroy
     @commodity = Commodity.find(params[:id])
