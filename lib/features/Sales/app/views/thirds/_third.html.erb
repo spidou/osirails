@@ -39,11 +39,6 @@
   </p>
 
   <p class="text_form">
-    <%= third.label :ype_id, "Type de tiers" %>
-    <%= third.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
-  </p>
-
-  <p class="text_form">
     <%= third.label :note, "Note du tiers" %>
     <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>
   </p>
