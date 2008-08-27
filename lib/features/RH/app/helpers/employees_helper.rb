@@ -42,16 +42,15 @@ module EmployeesHelper
       text_field_tag( 'address[zip_code]',default)  
     end
   end
-  
-  def display_number0
-    if params[:numbers].nil?
-      number0 = text_field_tag( 'numbers[0][number]', '', :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
+   
+  def display_bank_name(default=nil)
+    if default.nil?
+      text_field_tag( 'iban[bank_name]',params[:iban].nil? ? "" : params[:iban]['bank_name'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      number0 = text_field_tag( 'numbers[0][number]',params[:numbers]['0']['number'], :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
-    end  
-    number0
+      text_field_tag( 'iban[bank_name]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+    end
   end
-  
+   
   def display_bank_code(default=nil)
     if default.nil?
       text_field_tag( 'iban[bank_code]',params[:iban].nil? ? "" : params[:iban]['bank_code'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
@@ -60,11 +59,11 @@ module EmployeesHelper
     end
   end
   
-  def display_teller_code(default=nil)
+  def display_branch_code(default=nil)
     if default.nil?
-      text_field_tag( 'iban[teller_code]',params[:iban].nil? ? "" : params[:iban]['teller_code'], :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[branch_code]',params[:iban].nil? ? "" : params[:iban]['branch_code'], :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[teller_code]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[branch_code]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
     end
   end
   
@@ -85,18 +84,79 @@ module EmployeesHelper
     end
   end
   
-  def display_holder_name(default=nil)
+  def display_account_name(default=nil)
     if default.nil?
-      text_field_tag( 'iban[holder_name]',params[:iban].nil? ? nil : params[:iban]['holder_name'])
+      text_field_tag( 'iban[account_name]',params[:iban].nil? ? nil : params[:iban]['account_name'])
     else
-      text_field_tag( 'iban[holder_name]',default)
+      text_field_tag( 'iban[account_name]',default)
     end
   end
   
   def display_p_balise(i)
     "<p id=" + i.to_s + ">"
   end
-  ############################################################################################
+  ##################################################################
+  ########## NUMBERS METHODS #######################################
+  
+  def display_number0(owner)
+    if params[owner].nil?
+      number0 = text_field_tag( owner + '[numbers][0][number]', '', :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
+    else
+      number0 = text_field_tag( owner + '[numbers][0][number]',params[owner]['numbers']['0']['number'], :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
+    end  
+    number0
+  end
+  
+   # Method to generate text_field for each number add
+  def add_number_line(owner)
+    name = owner + "[numbers][" + params[:opt] + "]"
+    html =  "<p id='" + params[:opt] + "'>" 
+    html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected =>  8 ) + "\n"
+    html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
+    html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
+    html
+  end
+  
+  
+          
+  
+  
+  # Method to generate collection_select for each number add
+  def add_collection_select(owner)
+    name = owner + "[numbers][" + params[:opt] + "]"
+    return  collection_select( name, :number_type_id, NumberType.find(:all), :id, :name) 
+  end
+  
+  # Method to generate add_link for each number adding a number  
+  def add_link_to(owner)
+    return link_to_remote( 'Ajouter un numéro ',:url=>{:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
+  end
+  
+  # Method to generate remove_link for each adding or deleting
+  def remove_link_to(owner)
+    params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
+    return link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
+  end
+  
+  # Method to regenerate textfield select and collection_for each number when there is a validation error
+  def save_lines(owner)
+    return "" if params[owner].nil?
+    html = ""
+    (1..params[owner]['numbers'].size + 1).each do |f|
+      unless params[owner]['numbers'][f.to_s].nil?
+        name =  owner + "[numbers][" + f.to_s + "]"
+        html += "<p id=" + f.to_s + ">"
+        html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
+        html += text_field_tag( name+"[number]", params[owner]['numbers'][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
+        html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
+        html += link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?')
+        html += "</p>"
+      end
+    end  
+    html
+  end
+  
+  #############################################################################
   
   # Method to verify if the params[:employee] and his attributes are null
   def is_in?(object, collection, attribute = nil, employee = nil)
@@ -118,50 +178,7 @@ module EmployeesHelper
     end
   end
   
-  # Method to generate text_field for each number add
-  def add_number_line
-    name = "numbers[" + params[:opt] + "]"
-    html =  "<p id='" + params[:opt] + "'>" 
-    html += collection_select( name, :indicative_id, Indicative.find(:all), :id, :indicative) + "\n"
-    html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
-    html += collection_select( name, :number_type_id, NumberType.find(:all), :id, :name)
-    html
-  end
-  
-  # Method to generate collection_select for each number add
-  def add_collection_select
-    name = "numbers[" + params[:opt] + "]"
-    return  collection_select( name, :number_type_id, NumberType.find(:all), :id, :name) 
-  end
-  
-  # Method to generate add_link for each number adding a number  
-  def add_link_to
-    return link_to_remote( 'Ajouter un numéro ',:url=>{:action=>'add_line', :opt => params[:opt].to_i + 1 },:href=>(url_for :action=>'add_line')) 
-  end
-  
-  # Method to generate remove_link for each adding or deleting
-  def remove_link_to
-    params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
-    return link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => rem.to_i  },:href=>(url_for :action=>'remove_line')) + "</p>"
-  end
-  
-  # Method to regenerate textfield select and collection_for each number when there is a validation error
-  def save_lines
-    return "" if params[:numbers].nil?
-    html = ""
-    (1..params[:numbers].size + 1).each do |f|
-      unless params[:numbers][f.to_s].nil?
-        name =  "numbers[" + f.to_s + "]"
-        html += "<p id=" + f.to_s + ">"
-        html += collection_select( name, :indicative_id, Indicative.find(:all), :id, :indicative) + "\n"
-        html += text_field_tag( name+"[number]", params[:numbers][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
-        html += collection_select(name, :number_type_id, NumberType.find(:all), :id, :name) +"\n"
-        html += link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => f.to_s },:href=>(url_for :action=>'remove_line'))
-        html += "</p>"
-      end
-    end  
-    html
-  end
+
   
   # Method to find the service's responsables
   def responsable(service_id)
@@ -183,6 +200,7 @@ module EmployeesHelper
     return "<h3>Adresses électroniques </h3>" if employee.email!="" and employee.society_email!=""
   end
   
+  # Method to pluralize or not the number's <h3></h3>
   def numbers_h3(employee)
     return "" if employee.numbers.size==0
     return "<h3>Numéro de telephone</h3>" if employee.numbers.size==1
@@ -194,9 +212,9 @@ module EmployeesHelper
   end
   
   def number_type_path(type)
-  type="cellphone" if type == "Mobile" or type == "Mobile Professionnel"
-  type="phone" if type == "Fixe" or type == "Fixe Professionnel"
-  type="fax" if type == "Fax" or type== "Fax Professionnel"
+    type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
+    type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
+    type = "fax" if type == "Fax" or type== "Fax Professionnel"
     "/images/"+type+".png"
   end
 end

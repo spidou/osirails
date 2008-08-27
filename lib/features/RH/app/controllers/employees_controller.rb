@@ -6,11 +6,6 @@ class EmployeesController < ApplicationController
   # GET /employees.xml
   def index
     @employees = Employee.find(:all)
-    
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @employees }
-    end
   end
 
   # GET /employees/1
@@ -28,10 +23,7 @@ class EmployeesController < ApplicationController
     @list = self.can_list?(current_user)
     
     @job_contract = @employee.job_contract
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @employee }
-    end
+    
   end
 
   # GET /employees/new
@@ -43,14 +35,7 @@ class EmployeesController < ApplicationController
     @jobs = Job.find(:all)
     @employee.address = Address.new
     @address = @employee.address
-#    @number_type = @employee.numbers
-    
-    
-    # @civilties = Civility
 
-    respond_to do |format|
-      format.html # new.html.erb
-    end
   end
 
   # GET /employees/1/edit
@@ -68,31 +53,35 @@ class EmployeesController < ApplicationController
   # POST /employees
   # POST /employees.xml
   def create
-    # FIXME do not forget to resolve the  default selected value (numbers) of the create view (new.html.erb) 
-    # instance_variable_set("@numbers",[]) 
+   
     @services = Service.find(:all)
     @jobs = Job.find(:all) 
-
-    # update employees ressources
+    
+    # put numbers another place for a separate création
+    params[:numbers] = params[:employee]['numbers']
+    params[:employee].delete('numbers')
+    
+    # create employees ressources
     @employee = Employee.new(params[:employee])
     @job = Job.new(params[:job]) 
     @employee.address = Address.new(params[:address])
-
+    @employee.iban = Iban.new(params[:iban])
     params[:numbers].each do |number|
       @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
     end
-    @employee.iban = Iban.new(params[:iban])
     
-    # save job and employees
-    unless params[:job].nil?
-      @job.save ? job = true : job = false 
-    else
-      job = true   
-    end  
-     
-    # raise @employee.numbers.inspect
+    
+    
+    # save or show errors 
     if @employee.save and job == true
-    
+      
+      # save job and employees
+      unless params[:job].nil?
+        @job.save ? job = true : job = false 
+      else
+        job = true   
+      end  
+      
       # configure the employee as a responsable of his services if responsable is checked
       unless params[:responsable].nil?
         params[:responsable].each_key do |rep|
@@ -104,6 +93,7 @@ class EmployeesController < ApplicationController
       flash[:notice] = 'L&apos;employée a été crée avec succés.'
       redirect_to(@employee)
     else
+      params[:employee]['numbers'] = params[:numbers]
       render :action => "new" 
     end
 
@@ -112,50 +102,65 @@ class EmployeesController < ApplicationController
   # PUT /employees/1
   # PUT /employees/1.xml
   def update
+  
     @employee = Employee.find(params[:id])
     @services = Service.find(:all)
     @jobs = Job.find(:all)
     @job = Job.new(params[:job]) 
     @iban = @employee.iban
-    @numbers = @employee.numbers
+    @numbers_reloaded||= nil
+    @numbers_reloaded.nil? ? @numbers = @employee.numbers : @numbers = @numbers_reloaded
     @address = @employee.address
     
-   
+    # put numbers another place for a separate création
+    params[:numbers] = params[:employee]['numbers']
+    params[:employee].delete('numbers')
     
     # add or update numbers who have been send to the controller
-    for i in params[:numbers]
-      if @employee.numbers[i[0].to_i].nil?
-        @employee.numbers[i[0].to_i] =  Number.new(i[1]) unless i[1].nil? or i[1]=="" 
-        @employee.save
+    params[:numbers].each_key do |i|
+      if @employee.numbers[i.to_i].nil?
+        @employee.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i]=="" 
       else  
-        @employee.numbers[i[0].to_i].update_attributes(i[1]) unless i[1].nil? or i[1]==""
+        @employee.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i]==""
       end
     end 
     
-    # destroy the numbers that have been deleted in the update view
-    @employee.numbers.each_with_index do |id|
-      if params[:numbers][id[1].to_s].nil?
-        @employee.numbers[id[1]].destroy
-      end
-    end
+    # TODO do not forget to delete this if do not use to remove numbers using visual effects
+    # numbers_ids = []
+    # @employee.numbers.each do |number|
+    #   numbers_ids << number[:id]
+    # end
+    # param[:numbers].each do |i|
+    #   params[:numbers][i].destroy unless numbers_ids.include?(f['id'].to_i)
+    # end
+    
     
     # update attributes of employees ressources
     @employee.iban.update_attributes(params[:iban]) 
     @employee.address.update_attributes(params[:address])
     
-    # destroy all services and jobs if there's no checked checkbox
-    params[:employee]['service_ids']||= [] 
-    params[:employee]['job_ids']||= []
-    
-    # destroy all responsables
-    @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
-    @responsable.each do |r|
-      r.update_attributes({:responsable => 0})
-    end
-    
-
+    # save or show errors
     if @employee.update_attributes(params[:employee])
-    
+      
+      # destroy all responsables
+      @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
+      @responsable.each do |r|
+        r.update_attributes({:responsable => 0})
+      end
+      
+      # destroy all services and jobs if there's no checked checkbox
+      params[:employee]['service_ids']||= [] 
+      params[:employee]['job_ids']||= []
+      
+      # destroy the numbers that have been deleted in the update view
+      unless  params[:deleted_numbers].nil?
+        params[:deleted_numbers].each_value do |i|
+          @employee.numbers.each_index do |j|
+            @employee.numbers[j].destroy if  @employee.numbers[j]['id'].to_s == i.to_s
+          end
+        end
+      end 
+      
       # update responsable attribute of the employee's service 
       unless params[:responsable].nil?
         params[:responsable].each_key do |rep|
@@ -165,8 +170,18 @@ class EmployeesController < ApplicationController
       end 
         
       flash[:notice] = ' L&apos;employée a été modifié avec succés.'
+      
       redirect_to(@employee)
     else
+      @numbers.each_with_index do |number,index|
+        params[:deleted_numbers].each_value do |j|
+           @numbers[index]['number']= nil if @numbers[index]['id'].to_s == j.to_s  
+        end
+      end
+      
+      @numbers_reloaded = @numbers
+      params[:employee]['numbers'] = params[:numbers]
+
       render :action => "edit"
     end
 
@@ -177,11 +192,8 @@ class EmployeesController < ApplicationController
   def destroy
     @employee = Employee.find(params[:id])
     @employee.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(employees_url) }
-      format.xml  { head :ok }
-    end
+    
+    redirect_to(employees_url)
   end
   
 

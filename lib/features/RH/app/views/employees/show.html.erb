@@ -118,12 +118,16 @@
   <div class="frame">
   <h2>Identité Bancaire</h2>
     <p>
+      <b>banque :</b>
+      <%=h @iban.bank_name %>
+    </p>
+    <p>
       <b>Code bancaire :</b>
       <%=h @iban.bank_code %>
     </p>
     <p>
       <b>Code guichet :</b>
-      <%=h @iban.teller_code %>
+      <%=h @iban.branch_code %>
     </p>
     <p>
       <b>N° de compte :</b>
@@ -134,8 +138,8 @@
       <%=h @iban.key %>
     </p>
     <p>
-      <b>Nom du titulaire :</b>
-      <%=h @iban.holder_name %>
+      <b>Nom du compte :</b>
+      <%=h @iban.account_name %>
     </p>
   </div>
 <div class="frame">

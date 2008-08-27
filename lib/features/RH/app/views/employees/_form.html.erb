@@ -57,45 +57,22 @@
   </div> 
   <!--#####################################-->
   
-  <div class="frame" id='add_lines'>
-  <h2>Num&eacute;ros</h2>
-    <% unless @numbers.nil?%>
-      <%number_id=0%>
-      <% for number in @numbers %>
-         <%= display_p_balise(number_id) %>
-         
-         <%= select('numbers[' + number_id.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
-         <%= text_field_tag 'numbers[' + number_id.to_s + '][number]', number[:number],:size => 7, :maxlength => 9, :class=>"disable-stylesheet-width" %>
-         <%= select('numbers[' + number_id.to_s + ']',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
-         <%= link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => number_id  },:href=>(url_for :action=>'remove_line'))%>
-        </p>
-        <%number_id+=1%>
-      <%end%>  
-      <p>
-        <span id='add_link'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? @numbers.size : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
-      </p>
-    <%else%>
-      <p>
-        <%= select('numbers[0]',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => "2")%>
-        <%= display_number0 %>
-        <%= select('numbers[0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected =>"2")%>
-        <%= save_lines%>
-      </p>
-      <p>
-        <span id='add_link'><%= link_to_remote "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[:numbers].nil? ? 1 : params[:numbers].size  },:href=>(url_for :action=>"add_line")%></span>
-      </p>  
-     <%end%> 
-  </div>
+  <%= render :partial => 'numbers', :locals => {:attribute=> 'employee'}%>
+  
   <!--#####################################-->
   <div class="frame">
   <h2>Informations Bancaires</h2>
+  <p>
+    <%= label_tag 'iban[bank_name]' ,"banque :"%> 
+    <%= display_bank_name(@iban.nil? ? nil :@iban[:bank_name])%>
+  </p>
   <p>
     <%= label_tag 'iban[bank_code]' ,"Code bancaire :"%> 
     <%= display_bank_code(@iban.nil? ? nil :@iban[:bank_code])%>
   </p>
   <p>
-    <%= label_tag 'iban[teller_code]' ,"Code guichet :"%> 
-    <%= display_teller_code(@iban.nil? ? nil :@iban[:teller_code])%>
+    <%= label_tag 'iban[branch_code]' ,"Code guichet :"%> 
+    <%= display_branch_code(@iban.nil? ? nil :@iban[:branch_code])%>
   </p>
    <p>
     <%= label_tag 'iban[account_number]' ,"N° de compte :"%> 
@@ -106,8 +83,8 @@
     <%= display_key(@iban.nil? ? nil :@iban[:key])%>
   </p>
    <p>
-    <%= label_tag 'iban[holder_name]' ,"Nom du titulaire :"%> 
-    <%= display_holder_name(@iban.nil? ? nil :@iban[:holder_name] ) %>
+    <%= label_tag 'iban[account_name]' ,"Nom du titulaire :"%> 
+    <%= display_account_name(@iban.nil? ? nil :@iban[:account_name] ) %>
   </p>
   </div>
 
