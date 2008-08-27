@@ -12,7 +12,6 @@ def init(yaml, config, path)
     ActionController::Base.append_view_path(File.join(path, 'app', 'views'))
     $LOAD_PATH << File.join(path, 'app', 'helpers')
 
-
     # These variables store the feature's configuration from his config.yml file 
     name = yaml['name']
     version = yaml['version']
@@ -23,7 +22,7 @@ def init(yaml, config, path)
     configurations = yaml['configurations']
 
     # This array store all menus in order than they will be displayed
-    $menu_table = []
+    $menu_table ||= []
     $option_configuration = []
 
     feature = Feature.find_or_create_by_name_and_version(name, version)
@@ -121,33 +120,39 @@ def init(yaml, config, path)
 
     menu_insertion(menus,"")
 
-
     # This block insert into Database the menus that wasn't present 
-    $menu_table.each do |menu|
-      puts menu[:position] unless menu[:position].nil?
-      unless parent_menu = Menu.find_by_name(menu[:parent])
-        parent_menu = Menu.create(:name => menu[:parent])
+    $menu_table.each do |menu_array|
+      # Parent menu is create if it isn't in database 
+      unless parent_menu = Menu.find_by_name(menu_array[:parent])
+        parent_menu = Menu.create(:name => menu_array[:parent])
       end
       
-      unless menu_ = Menu.find_by_name(menu[:name])
-#        $menu_table.each do |menu_test|
-#          if menu_test[:parent] == menu[:parent]
-#            if menu_test[:position] != nil and menu[:position] != nil and menu_test[:position] != menu[:position] and menu_test[:name] != menu[:name] 
-#              puts "Warning : A position conflict occured betwen features #{menu_test[:name]} and #{menu[:name]}"
-#            end        
-#          end
-#        end
-#        
-        m = Menu.create(:title =>menu[:title], :description => menu[:description], :name => menu[:name], :parent_id =>parent_menu.id)
-        unless menu[:position].nil?
-          m.insert_at(menu[:position])
+      # Unless menu already exist
+      unless menu_ = Menu.find_by_name(menu_array[:name])             
+        m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id)
+        unless menu_array[:position].nil?
+          m.insert_at(menu_array[:position])
           m.save
         end
       else
+        # This block test if a menu isn't define with two different parent in many config file
+        $menu_table.each do |menu_test|
+          if menu_test[:name] == menu_array[:name]
+            if (!menu_test[:position].nil? and !menu_array[:position].nil?) and (menu_test[:position] != menu_array[:position])
+              puts " A Position conflict occured with menu '#{menu_array[:name]}'"
+            end
+            if menu_test[:parent] != menu_array[:parent]
+              raise("Double Declaration menu : a parent conflict occured with menu '#{menu_array[:name]}' in file '#{path}/config.yml'")
+            end
+          end
+        end
         
-        menu_.title = menu[:title]unless menu[:title].nil? and menu_.title.nil?
-        menu_.description = menu[:description] unless menu[:description].nil? and menu_.description.nil?
-        menu_.insert_at(menu[:position]) unless menu[:position].nil?
+        # If menu option is not present in database
+        if !menu_array[:title].nil? and menu_.title.nil?
+          menu_.title = menu_array[:title]
+          menu_.insert_at(menu_array[:position]) unless menu_array[:position].nil?
+        end
+        menu_.description = menu_array[:description] if !menu_array[:description].nil? and menu_.description.nil?
         
         menu_.save
       end    
@@ -160,7 +165,7 @@ def init(yaml, config, path)
         Configuration.create(:name => name.downcase+"_"+key, :value => value["value"], :description => value["description"]) unless Configuration.find_by_name(name+"_"+key)
       end
     end
-  rescue Exception => e
-    puts "Une erreur est survenue à l'initialisation des features. Veuillez relancer le serveur. (erreur : #{e.message})"
+  rescue ActiveRecord::StatementInvalid => e
+    puts "An error occured at feature initialization. Please reload the server (erreur : #{e.message})"
   end
 end

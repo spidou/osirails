@@ -8,6 +8,7 @@ business_objects:
   - Document
   - DocumentGraphique
 menus:
-#  test1:
-#    title: Test1
-#    description: Test1 de l'intranet
+  test9:
+    description: Description du menu 1121
+    position: 1
+
