@@ -102,8 +102,8 @@ namespace :osirails do
 #      ActivitySector.create :name => "Public"
 
       # default third types
-      private = ThirdType.create :wording => "Privé"
-      public = ThirdType.create :wording => "Public"
+      private = ThirdType.create :name => "Privé"
+      public = ThirdType.create :name => "Public"
       
       # default legal forms
       LegalForm.create :name => "SARL", :third_type_id => private.id
