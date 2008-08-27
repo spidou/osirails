@@ -4,7 +4,7 @@ class CreateCommodityCategories < ActiveRecord::Migration
       t.string :name
       t.integer :commodity_category_id, :unit_measure_id
       t.integer :commodities_count, :default => 0
-      t.integer :enable, :default => 1
+      t.boolean :enable, :default => true
       t.timestamps
     end
   end
