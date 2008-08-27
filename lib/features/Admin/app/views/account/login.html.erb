@@ -11,7 +11,7 @@
   <%= label_tag 'password', "Mot de passe :" %>
   <%= password_field_tag 'password' %>
   </p>
-  <%= submit_tag 'Connexion' %>
+	<button type="submit" class="input-button"><span>Connexion</span></button>
   <span><%= link_to "Mot de passe oubli&eacute; ?", :controller => 'account', :action => 'lost_password' %></span>
   <% end %>
 <% end %>
