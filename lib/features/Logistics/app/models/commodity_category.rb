@@ -13,6 +13,6 @@ class CommodityCategory < ActiveRecord::Base
   named_scope :root_child, :conditions => 'commodity_category_id is not null and enable is true'
 
   def can_destroy?
-    self.commodity_categories.empty? and self.commodities.empty?
+    self.commodity_categories.size == 0 and self.commodities.size == 0 ?  true : false
   end
 end

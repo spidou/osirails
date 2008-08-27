@@ -12,13 +12,7 @@ module CommoditiesManagerHelper
   
   # This method permit to make in table editor
   def in_place_editor(object,attribute)
-    editable_content_tag(:span, object, "#{attribute}", true, nil, {:style => 'border: 1px solid grey;'}, {:okText => 'Modifier'})
-  end
-  
-  def in_place_editor_select
-    suppliers = Supplier.find(:all)
-    select = collection_select(:supplier_id, suppliers, :id, :name , {})
-    editable_content_tag(:select, suppliers, select, true, nil, {:style => 'border: 1px solid grey;'}, {:okText => 'Modifier'})
+    editable_content_tag(:span, object, "#{attribute}", true, nil, {}, {:okText => 'Modifier'})
   end
   
   # This method permit to have a table's structur
@@ -31,7 +25,7 @@ module CommoditiesManagerHelper
       add_button = add_category_or_commodity(commodity_category)
       delete_button = show_delete_button(commodity_category)
       
-      table << "<tr id='#{commodity_category.name}'>"
+      table << "<tr id='commodity_category_#{commodity_category.id}' class='#{commodity_category.name}'>"
       table << "<td>"+in_place_editor(commodity_category,'name')+"</td>"
       table << "<td colspan='8'></td>"
       table << "<td>#{add_button} #{delete_button}</td>"
@@ -39,11 +33,11 @@ module CommoditiesManagerHelper
       # Get Structur for children commodities categories
       unless commodity_category.children.size == 0
         commodity_category.children.each do |category_child|
-          unless category_child.enable == 0
+          unless category_child.enable == false
             add_button = add_category_or_commodity(category_child)
             delete_button = show_delete_button(category_child)
           
-            table << "<tr id='#{category_child.name} #{commodity_category.name}'>"
+            table << "<tr id='commodity_category_#{category_child.id}' class='#{category_child.name} #{commodity_category.name}'>"
             table << "<td></td>"
             table << "<td>"+in_place_editor(category_child,'name')+"(#{category_child.commodities_count})</td>"
             table << "<td colspan='7'></td>"
@@ -53,19 +47,20 @@ module CommoditiesManagerHelper
             # Get structur for commodities
             unless category_child.commodities.empty?
               category_child.commodities.each do |commodity|
-                if commodity.enable
+                unless commodity.enable == false
                   supplier = Supplier.find(commodity.supplier_id)
                   unit_measure = UnitMeasure.find(category_child.unit_measure_id)
-                  table << "<tr id='#{commodity.name} #{category_child.name} #{commodity_category.name}'>"
+                  delete_button = show_delete_button(commodity)
+                  table << "<tr id='commodity_#{commodity.id}' class='#{commodity.name} #{category_child.name} #{commodity_category.name}'>"
                   table << "<td colspan='2'></td>"
                   table << "<td>#{supplier.name}</td>" #FIXME Add Cities
                   table << "<td>"+in_place_editor(commodity,'name')+"</td>"
                   table << "<td>"+in_place_editor(commodity,'measure')+" (#{unit_measure.symbol})</td>"
                   table << "<td>"+in_place_editor(commodity,'unit_mass')+"kg</td>"
-                  table << "<td>"+in_place_editor(commodity,'FOB_unit_price')+" € / #{unit_measure.symbol}</td>"
-                  table << "<td>"+in_place_editor(commodity,'taxe_coefficient')+" % </td>"
-                  table << "<td></td>"                  
-                  table << "<td></td>"
+                  table << "<td  >"+in_place_editor(commodity,'fob_unit_price')+" € / #{unit_measure.symbol}</td>"
+                  table << "<td  >"+in_place_editor(commodity,'taxe_coefficient')+" % </td>"
+                  table << "<td><span id='commodity_#{commodity.id}_price'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> € / #{unit_measure.symbol}</td>"
+                  table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity, { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>"
                   table << "</tr>"
                 end
               end

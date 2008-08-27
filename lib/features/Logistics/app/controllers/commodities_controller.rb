@@ -36,15 +36,15 @@ class CommoditiesController < ApplicationController
   def destroy
     @commodity = Commodity.find(params[:id])
     if @commodity.can_destroy?
-      if @commodity.destroy
-        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
-      else
-        flash[:error] = "La mati&egrave;re premi&egrave;re ne peut &egrave;tre supprim&eacute;e."
-      end
+      @commodity.destroy
+      flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
     else
       @commodity.enable = false
+      @commodity.counter_update
+      @commodity.save
       flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
+  
 end
