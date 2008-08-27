@@ -1,12 +1,13 @@
-<h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
 
-<%= display_flash %>
-
-<% form_tag( role_permission_path(params[:id]), :method => 'put' ) do%>
-  <h3>Pages</h3>
+<div class="cadre tabulation">
+  <h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
+  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do%>
+  <h2>pour chaque page</h2>
   <table>
     <tr>
-      <th rowspan="2">Roles</th>
+      <th rowspan="2">Pages</th>
       <th colspan="5">Permissions</th>
     </tr>
     <tr>
@@ -29,10 +30,10 @@
       <% end %>
     </table>
     
-    <h3>Business Objects</h3>
+    <h2>pour chaque objets m&eacute;tiers</h2>
     <table>
       <tr>
-        <th rowspan="2">Roles</th>
+        <th rowspan="2">Objets m&eacute;tiers</th>
         <th colspan="5">Permissions</th>
       </tr>
       <tr>
@@ -62,3 +63,4 @@
   <p>
     <%=link_to"Retour",role_permissions_path%> 
   </p>
+</div>

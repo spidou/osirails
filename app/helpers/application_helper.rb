@@ -21,17 +21,18 @@ module ApplicationHelper
     Menu.find_by_name(controller.controller_name) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
   end
   
-  def link_to_menu(menu, content = nil)
+  def url_for_menu(menu)
     # OPTIMIZE optimize this IF block code
     if menu.name
       path = menu.name + "_path"
       if self.respond_to?(path)
-        link_to(content || menu.title, self.send(path))
+        self.send(path)
       else
-        link_to(content || menu.title, :controller => menu.name)
+        url_for(:controller => menu.name)
       end
     else
-      link_to(content || menu.title)
+      # FIXME when the menu is linked with a Content, link to the Content
+      ""
     end
   end
   
@@ -40,7 +41,7 @@ module ApplicationHelper
     menu = current_menu
     Menu.mains.each do |m|
       selected = (menu == m or menu.ancestors.include?(m) ? "class=\"selected\"" : "")
-      html << "<li #{selected} title=\"#{m.description}\">" + link_to_menu(m) + "</li>\n"
+      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n"
     end
     html
   end
@@ -53,9 +54,19 @@ module ApplicationHelper
     main_menu.children.each do |m|
       first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
-      html << link_to_menu(m, "<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span></a>")
+      html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m))
     end
     html.reverse.to_s
+  end
+  
+  def display_tabulated_menu
+    html = "<div class=\"tabs\"><ul>"
+    menu = current_menu
+    menu.self_and_siblings.each do |m|
+      selected = ( m == menu ? "class=\"selected\"" : "" )
+      html << "<li #{selected}>" + link_to(m.title, url_for_menu(m)) + "</li>"
+    end
+    html << "</ul></div>"
   end
   
   def display_welcome_message
@@ -63,7 +74,7 @@ module ApplicationHelper
   end
   
   def display_date_time
-    DateTime.now.strftime("Nous sommes le %A %d %B et il est %Hh%M")
+    DateTime.now.strftime("Nous sommes le %A %d %B et il est %H:%M")
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})

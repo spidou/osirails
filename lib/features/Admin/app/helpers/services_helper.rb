@@ -2,7 +2,7 @@ module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
   def show_delete_button(service,can_delete)
-    " &#124; "+link_to("Supprimer", service, {:method => :delete, :confirm => 'Etes vous sûr  ?' }) if service.can_delete? and can_delete == true
+    " &#124; " + link_to("Supprimer", { :id => service } , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) if service.can_delete? and can_delete
   end
   
   # This method permit to have a services on <ul> type.
@@ -19,7 +19,7 @@ module ServicesHelper
   def get_children(services,list,can_edit, can_delete)
     services.each do |service|
       delete_button = show_delete_button(service, can_delete)
-      edit_button = link_to("Modifier", edit_service_path(service)) if can_edit == true
+      edit_button = link_to("Modifier", { :action => "edit", :id => service } ) if can_edit
       list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{edit_button}#{delete_button}</span></li>"
       if service.children.size > 0
         list << "<ul>"

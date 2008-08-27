@@ -1,5 +1,8 @@
-<h1>Nouveau secteur d'activit&eacute;</h1>
+<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+<%= display_tabulated_menu %>
 
+<div class="cadre tabulation">
+<h1>Nouveau secteur d'activit&eacute;</h1>
 <% form_for(@society_activity_sector) do |society_activity_sector| %>
   <%= society_activity_sector.error_messages %>
 
@@ -14,3 +17,4 @@
 <% end %>
 
 <%= link_to 'Retour', society_activity_sectors_path %>
+</div>

@@ -1,6 +1,8 @@
 <h1>Modifier un r&ocirc;le</h1>
 
-<%= render :partial => @role, 
-  :locals => { :submit_button_name => "Mettre &agrave; jour"} %>
+<div class="cadre">
+  <%= render :partial => @role, 
+    :locals => { :submit_button_name => "Mettre &agrave; jour"} %>
 
-<%= link_to 'Retour', role_path %>
+  <%= link_to 'Retour', role_path %>
+</div>

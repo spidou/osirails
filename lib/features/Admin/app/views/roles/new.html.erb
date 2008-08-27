@@ -1,6 +1,8 @@
 <h1>Cr&eacute;er un r&ocirc;le</h1>
 
-<%= render :partial => @role, 
-  :locals => { :submit_button_name => "Ajouter"} %>
+<div class="cadre">
+  <%= render :partial => @role, 
+    :locals => { :submit_button_name => "Ajouter"} %>
 
-<%= link_to 'Retour', roles_path %>
+  <%= link_to 'Retour', roles_path %>
+</div>

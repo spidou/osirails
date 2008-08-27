@@ -1,10 +1,13 @@
-<h1>G&eacute;rer les permissions selon les objets métiers</h1>
-<%= display_flash %>
-<h3>Objets m&eacute;tiers :</h3>
-<ul>
-	<% for business_object in @business_object_permissions %>
-	<li><%= link_to business_object.has_permission_type, edit_business_object_permission_path(business_object.has_permission_type) %></li>	
-	<% end %>
-</ul>
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
 
-<%= link_to "Retour", permissions_path %>
+<div class="cadre tabulation">
+  <h2>Les objets m&eacute;tiers</h2>
+  <ul>
+    <% for business_object in @business_object_permissions %>
+    <li><%= link_to business_object.has_permission_type, edit_business_object_permission_path(business_object.has_permission_type) %></li>	
+    <% end %>
+  </ul>
+
+  <%= link_to "Retour", permissions_path %>
+</div>

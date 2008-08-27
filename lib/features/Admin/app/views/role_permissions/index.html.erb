@@ -1,13 +1,13 @@
-<h1>G&eacute;rer les permissions selon les r&ocirc;les</h1>
-<%= display_flash %>
-<h3>R&ocirc;les :</h3>
-<ul>
-  <% for role in @roles%>
-    <li>
-      <%=link_to role.name,{:controller =>"role_permissions", :action =>"edit", :id=>role} , :method => :get%>
-    </li>
-  <%end%>
-</ul>
-<p>
-  <%=link_to "Retour",permissions_path%>
-</p>
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
+
+<div class="cadre tabulation">
+  <h2>Les r&ocirc;les</h2>
+  <ul>
+    <% for role in @roles%>
+      <li>
+        <%=link_to(role.name, { :controller =>"role_permissions", :action =>"edit", :id => role } , :method => :get) %>
+      </li>
+    <%end%>
+  </ul>
+</div>

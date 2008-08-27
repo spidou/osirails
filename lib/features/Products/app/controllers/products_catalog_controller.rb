@@ -31,8 +31,4 @@ class ProductsCatalogController < ApplicationController
     render :partial => 'show_product_information'
   end
   
-  # This method permit to refresh a category's column
-  def refresh_categories
-  end
-  
 end
