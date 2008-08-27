@@ -3,6 +3,7 @@ class Third < ActiveRecord::Base
   
   belongs_to :activity_sector
   belongs_to :third_type
+  belongs_to :legal_form
   
   # has_many_polymorphic
   has_many :contacts_owners, :as => :has_contact, :class_name => "ContactsOwners"

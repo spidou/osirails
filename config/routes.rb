@@ -2,7 +2,6 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ADMIN
-  map.connect 'admin', :controller => 'users' #default page for admin
   map.login 'login', :controller => 'account'
   map.logout 'logout', :controller => 'account',  :action => 'logout'
 
@@ -26,20 +25,21 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :menus
   map.resources :contents
   map.resources :password_policies
+  
+  map.connect 'admin', :controller => 'users' #default page for admin
   ### END ADMIN
   
   ### HUMAN RESOURCES
-  map.connect 'rh', :controller => 'employees' #default page for human resources
   map.resources :employees do |employee|
     employee.resources :salaries
     employee.resources :premia
   end
   map.resources :jobs
   map.resources :job_contracts
+  map.connect 'rh', :controller => 'employees' #default page for human resources
   ### END HUMAN RESOURCES
   
   ### SALES
-  map.connect 'thirds', :controller => 'customers' #default page for thirds
   map.resources :customers do |customer|
     customer.resources :contacts
     customer.resources :establishments do |establishment|
@@ -49,14 +49,16 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :suppliers do |supplier|
     supplier.resources :contacts
   end
+  map.connect 'thirds', :controller => 'customers' #default page for thirds
   ### END SALES
   
   ### PRODUCTS
-  map.connect 'products', :controller => 'products_catalog' #default page for products
   map.resources :produts_catalog
   map.resources :product_references
   map.resources :product_reference_categories
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
+  map.connect 'products', :controller => 'products_catalog' #default page for products
+  ### END PRODUCTS
   
   ### CALENDAR
   map.resources :calendars do |calendar|
@@ -75,6 +77,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :commodities
   map.resources :commodity_categories
   map.commodities_manager "commodities_manager", :controller => "commodities_manager"
+  map.connect 'logistics', :controller => 'commodities_manager' #default page for products
   ### END LOGISTICS
   
   # Sample of regular route:

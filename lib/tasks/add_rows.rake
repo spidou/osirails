@@ -98,8 +98,10 @@ namespace :osirails do
       end
       
       # default activity sectors
-#      ActivitySector.create :name => "Privé"
-#      ActivitySector.create :name => "Public"
+      ActivitySector.create :name => "Grande distribution"
+      ActivitySector.create :name => "Hôtellerie"
+      ActivitySector.create :name => "Téléphonie"
+      
 
       # default third types
       private = ThirdType.create :name => "Privé"
@@ -143,6 +145,9 @@ namespace :osirails do
       UnitMeasure.create :name => "Centilitre", :symbol => "cl"
       UnitMeasure.create :name => "Décilitre", :symbol => "dl"
       UnitMeasure.create :name => "Litre", :symbol => "l"
+      
+      EstablishmentType.create :name => "Magasin"
+      EstablishmentType.create :name => "Station service"
     end
 
     desc "Depopulate the database"

@@ -10,7 +10,7 @@
 <%= supplier.text_field :siret_number %></p>
 
 <p><%= supplier.label :supplier_activity_sector, "Secteur d'activité"%> 
-<%= supplier.select("activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.wording, a.id ] })%>
+<%= supplier.select("activity_sector_id", ActivitySector.find(:all).collect {|a| [ a.name, a.id ] })%>
 
 <p><%= supplier.label :supplier_activities, "Activités" %><br/>
 <%= supplier.text_field :activities  %></p>
@@ -19,7 +19,7 @@
 <%= supplier.text_field :banking_informations %></p>
 
 <p><%= supplier.label :supplier_type_id, "Type de client" %>
-<%= supplier.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+<%= supplier.select("third_type_id", ThirdType.find(:all).collect {|a| [ a.name, a.id ] })%>
 
 <p><%= supplier.label :supplier_note, "Note du client" %>
 <%= supplier.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5})%>

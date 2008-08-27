@@ -4,7 +4,7 @@ module CustomersHelper
 #  end
 #  
 #  def establishment_type
-#    select("establishment#{establishment.id}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] },:selected => establishment.establishment_type_id)
+#    select("establishment#{establishment.id}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] },:selected => establishment.establishment_type_id)
 #  end
 #  
 #  def address1

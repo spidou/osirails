@@ -15,7 +15,7 @@
 
  <p>
   <%= label "new_establishment#{cpt}", :establishment_type_id, "Type d'&eacute;tablissement" %>
-  <%= select("new_establishment#{cpt}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.wording, a.id ] })%>
+  <%= select("new_establishment#{cpt}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] })%>
 </p>
 
 <p>
