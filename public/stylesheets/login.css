@@ -17,7 +17,30 @@ a:hover {
 	color: #f2c40f;
 }
 
-label {
+.fieldWithErrors label {
+	margin-left:auto;
+	margin-right:auto;
+	margin-bottom:25px;
+	color:#B0383D;
+	text-align:left;
+	width:171px;
+	position:relative;
+	right:40px;
+}
+
+.fieldWithErrors input[type=text],
+.fieldWithErrors input[type=password] {
+	background: url("/images/login/input_text.png") no-repeat bottom;
+}
+
+#errorExplanation p {
+	width:350px ;
+	text-align:center;
+	margin-top:10px;
+}
+
+h2 {
+	color:#B0383D;
 }
 
 strong {
@@ -63,7 +86,7 @@ h1 {
 	margin-top:146px;
 	color: #f69826;
 	font-weight: lighter;
-	font-size:1.2em;
+	font-size:1.4em;
 	text-align:center;
 	width:700px;
 	margin-left:auto;
@@ -72,7 +95,7 @@ h1 {
 /*/////////////////////////////////////////////////////
 					BANNIERE
 ////////////////////////////////////////////////////*/
-#banniere {
+#banner {
 	width: auto;
 	height: 75px;
 }
@@ -84,7 +107,7 @@ h1 {
 	height: 75px;
 }
 
-#sous-banniere {
+#under_banner {
 	background-image: url("/images/login/banniere_repeat-x.jpg");
 	width: auto;
 	height: 75px;
@@ -94,7 +117,7 @@ h1 {
 					LOGIN CADRE
 ////////////////////////////////////////////////////*/
 
-#login_contains {
+#login_content {
 	margin-left:auto;
 	margin-right:auto;
 	text-align:center;
@@ -163,6 +186,7 @@ a { /*Pour le msg d'erreur*/
 	width:auto;
 	text-indent:0px;
 	font-family: "courier new", sans-serif;
+	font-size:14px;
 	position:relative;
 	top:80px;
 }
@@ -180,6 +204,26 @@ a { /*Pour le msg d'erreur*/
 	height:9px;
 }
 
+/**/
+#login_content.error_login_content #errorExplanation,
+#login_content.error_login_content .errorExplanation {
+	margin-top:-40px;
+	margin-bottom:10px;
+	color:white;
+	padding:0;
+	background:#F1BD73;
+	-moz-border-radius:3px 3px 0 0;
+}
+#errorExplanation ul,
+.errorExplanation ul {
+	position:relative;
+	bottom:15px;
+	background: url("../images/warning.png") no-repeat 60px 0;
+	list-style-type:none;
+}
+
+
+/**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 button.input-button { 																	/**/
 	background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/

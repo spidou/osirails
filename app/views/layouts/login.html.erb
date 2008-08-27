@@ -11,14 +11,14 @@
 		<title>Espace Login - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
-		<div id="banniere">
+		<div id="banner">
 			<div id="logo"></div>	
-			<div id="sous-banniere"></div>
+			<div id="under_banner"></div>
 		</div>		
 		<%= display_flash %>
 		
 		<h1>Bienvenue dans l'administration de l'intranet <abbr title="Enseigne, Maintenance Réunion">EMR</abbr></h1>
-		<div id="login_contains">
+		<div id="login_content" class="error_login_content">
 		<%= yield %>
 		</div>
 	</body>
