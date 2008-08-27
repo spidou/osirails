@@ -1270,14 +1270,14 @@ div.frame>#steps {
 					FOOTER
 ////////////////////////////////////////////////////*/
 
-#menu_principal_bottom {
+#bottom_core_menu {
 	position:relative;
 	bottom:35px;
 	right:1px;
 	background: url("../images/background_menu_principal-bottom.jpg") no-repeat;
 }
 
-#pied_de_page {
+#footer_page {
 	clear:both;
 	border-top: solid 5px white;
 	padding-top:19px;
@@ -1291,12 +1291,12 @@ div.frame>#steps {
 	color:#FFFFFF;
 	font-size:0.6em;
 }
-#footer_containt {
+#footer_content {
 	position:relative;
 	top:35px;
 	left:1px;
 }
-#pied_de_page span {
+#footer_page span {
 	font-variant: small-caps;
 }
 
