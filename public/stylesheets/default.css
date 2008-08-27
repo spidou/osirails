@@ -808,7 +808,7 @@ table.presentation tr:hover > td{
 .cadre input[type=text],
 .cadre input[type=password],
 .cadre select {
-	width: 120px;
+	width: 250px;
 }
 
 .cadre form {
