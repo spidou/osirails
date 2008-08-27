@@ -1,7 +1,7 @@
 class AccountController < ApplicationController
   skip_before_filter :authenticate
-  before_filter :logged?, :except => [:logout, :expired_password]
-  before_filter :not_logged?, :except => [:login, :lost_password]
+  before_filter :logged?, :only => [:login, :lost_password]
+  before_filter :not_logged?, :only => [:logout, :expired_password]
   layout "login"
 
   # All the following action are accessible without login
