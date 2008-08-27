@@ -805,8 +805,10 @@ table.presentation tr:hover > td{
 	background:white;
 }
 
-.cadre input[type=text] {
-	width: 50%;
+.cadre input[type=text],
+.cadre input[type=password],
+.cadre select {
+	width: 120px;
 }
 
 .cadre form {
