@@ -26,15 +26,6 @@ class AddRows < ActiveRecord::Migration
     
     JobContractType.create :name => "CDI"
     JobContractType.create :name => "CDD"
-        
-    Indicative.create :indicative => "+1", :country => "Etats Unis"
-    Indicative.create :indicative => "+33", :country => "France"  
-    Indicative.create :indicative => "+34", :country => "Espagne"
-    Indicative.create :indicative => "+44", :country => "Royaume Unis"
-    Indicative.create :indicative => "+49", :country => "Allemagne"
-    Indicative.create :indicative => "+81", :country => "Japon"
-    Indicative.create :indicative => "+86", :country => "Chine"
-    Indicative.create :indicative => "+262", :country => "Reunion"
     
     dg = Service.create :name => "Direction Générale"
     Service.create :name => "Service Administratif", :service_parent_id => dg.id
