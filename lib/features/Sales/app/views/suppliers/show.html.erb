@@ -31,38 +31,42 @@
     <%= label :supplier_note, "Note :" %>
     <%= @supplier.note %>
   </p>
+</div>
 
+<div class="frame">
+  <h2> Informations bancaires</h2>
   <p>
     <%= label :supplier, :iban, "Code bancaire :" %>
     <%= @supplier.iban.bank_code%>
   </p>
-
+  
   <p>
     <%= label :supplier, :iban, "Code guichet :" %>
     <%= @supplier.iban.teller_code %>
   </p>
-
+  
   <p>
     <%= label :supplier, :iban, "N° de compte bancaire :" %>
     <%= @supplier.iban.account_number %>
   </p>
-
+  
   <p>
     <%= label :supplier, :iban, "Cl&eacute;e :" %>
     <%= @supplier.iban.key %>
   </p>
 </div>
-  <%unless @contacts.empty?%>
-    <div class="frame">
-        <h2><%= "Liste des contacts du client"%></h2>
-        <%for contact in @contacts%>
-            <p>
-              <%= contact.first_name + " " + contact.last_name%>
-              <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
-              <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-            </p>
-        <%end%>
-    </div>
-  <%end%>
-  
-  <%= link_to 'Retour', :action => 'index' %>
+
+<%unless @contacts.empty?%>
+  <div class="frame">
+    <h2><%= "Contacts du fournisseur"%></h2>
+    <%for contact in @contacts%>
+      <p>
+        <%= contact.first_name + " " + contact.last_name%>
+        <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
+        <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+      </p>
+    <%end%>
+  </div>
+<%end%>
+
+<%= link_to 'Modifier', :action => 'edit' %> <%= link_to 'Retour', :action => 'index' %>

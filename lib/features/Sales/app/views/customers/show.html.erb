@@ -31,6 +31,10 @@
     <%= label :customer, :note, "Note :" %>
     <%= @customer.note %>
   </p>
+</div>
+
+<div class="frame">
+  <h2> Informations bancaires</h2>
 
   <p>
     <%= label :customer, :payment_method, "Mode de payment :" %>
@@ -41,11 +45,11 @@
     <%= label :customer, :payment_timi_limit, "Date limite de payment :" %>
     <%= @customer.payment_time_limit.name%>
   </p>
- </div>
+</div>
 
 <%if @establishments.length > 0%>
 <div class="frame">
-  <h2><%= "Liste des &eacute;tablissements du client"%></h2>
+  <h2><%= "&Eacute;tablissements du client"%></h2>
   
           <%for establishment in @establishments%>
         <p>
@@ -59,7 +63,7 @@
 
 <%unless @contacts.empty?%>
   <div class="frame">
-      <h2><%= "Liste des contacts du client"%></h2>
+      <h2><%= "Contacts du client"%></h2>
       <%for contact in @contacts%>
           <p>
             <%= contact.first_name + " " + contact.last_name%>
@@ -70,6 +74,6 @@
   </div>
 <%end%>
   
-<%= link_to 'Retour', :action => 'index' %>
+<%= link_to 'Modifier', :action => 'edit' %> <%= link_to 'Retour', :action => 'index' %>
 
 

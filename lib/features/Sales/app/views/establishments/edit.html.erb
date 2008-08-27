@@ -5,7 +5,7 @@
     <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment} %>
   
     <% if @contacts.length > 0 -%>
-      <h2> Contacts du client</h2>
+      <h2> Contacts de l'&eacute;tablissement</h2>
         <div class="frame"> 
             <% for contact in @contacts%>
                 <div <%= "id='customer_contact#{contact.id}'" %>>
