@@ -136,10 +136,10 @@ a { /*Pour le msg d'erreur*/
 
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
-	border: solid 1px #E4E4E4;
-	background:#C7C7C7 url("../images/cross.png") no-repeat;
+	border: solid 1px #cacaca;
+	background:#ddd url("../images/cross.png") no-repeat;
 	color: red;
-	padding:10px;
+	padding: 10px 10px 10px 5px;
 }
 
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
@@ -183,7 +183,7 @@ button.input-button { 																	/**/
 	background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
 	font-family: arial, verdana, sans-serif;											/**/
 	font-size:85%;																		/**/
-	height: 26px;																		/**/
+	height: 25px;																		/**/
 	padding-left: 5px;																	/**/															/**/
 	color:black;																		/**/
 	border:none;																		/**/
@@ -205,9 +205,9 @@ button.input-button span { 																/**/
 	line-height:18px;                                                                   /**/
 }																					    /**/
 																					    /**/
-button.input-button:hover { 															 /**/
-	background: transparent url("../images/default-button_end.png") no-repeat bottom left;/**/
-}																					   	 /**/
+button.input-button:hover { 												           	 /**/
+	background: transparent url("../images/default-button_end.png") no-repeat 0 -26px; 	/**/
+}																					    /**/
 																					   	/**/
 button.input-button:hover span {													   	/**/
 	background: transparent url("../images/default-button.png") no-repeat 100% -26px;  	/**/
