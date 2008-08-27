@@ -144,8 +144,10 @@ a { /*Pour le msg d'erreur*/
 
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
-	background: url("../images/tick.png") no-repeat;
+	border: solid 1px #cacaca;
+	background:#ddd url("../images/tick.png") no-repeat;
 	color: green;
+	padding: 10px 10px 10px 5px;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\

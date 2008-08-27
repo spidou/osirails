@@ -16,12 +16,12 @@
 
 <div id="all_page">
 									<!-- BANNIERE -->
-		<div id="banniere">
+		<div id="banner">
 			<div id="logo"> 
-				<span id="msg_accueil"><%= display_welcome_message %></span>
+				<span id="welcome_message"><%= display_welcome_message %></span>
 			</div>	
-			<div id="banniere_fond">
-				<div id="boutons">
+			<div id="background_banner">
+				<div id="block_button_banner">
           			<div id="button_on_banner">
             			<a class="button_banner" href="rechercher/rechercher.html">
               				<span>Ma page d'accueil</span>
@@ -39,20 +39,20 @@
 				</div>
 			</div>
 		</div>						<!-- SOUS-BANNIERE -->
-		<div id="sous_banniere">
-			<div id="txt_sous_banniere">	<!-- Limiter le texte à 297 caractères !! [Sous risque de bug] -->
+		<div id="under_banner">
+			<div id="text_under_banner">	<!-- Limiter le texte à 297 caractères !! [Sous risque de bug] -->
 				Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse semper, arcu non rhoncus fermentum,
 				nisl odio semper pede, a pellentesque erat dui sit amet elit. Sed pede est, tempus a, fringilla eu, suscipit eget,
 				lorem. In feugiat suscipit dolor. Lorem ipsum dolor sit amet, consectetuer. AA
 			</div>
-			<div id="bouton-ban">
-				<input type="button" id="precedent" alt="bouton précédent" title="Information précédente"/>
+			<div id="block_button_under_banner">
+				<input type="button" id="previous" alt="bouton précédent" title="Information précédente"/>
 				<span class="number">02</span>|<span class="number">10</span>
-				<input type="button" id="suivant" alt="bouton suivant" title="Information suivante"/>
+				<input type="button" id="next" alt="bouton suivant" title="Information suivante"/>
 			</div>
 		</div>
 		
-	<div id="corps"><!-- Regroupe la TOTALITE de la page web à l'exception des bannières-->	
+	<div id="block_body"><!-- Regroupe la TOTALITE de la page web à l'exception des bannières-->	
 		<div id="menu">				<!-- MENU PRINCIPAL-->	
 				<ul>
           			<%= display_main_menu %>
@@ -70,25 +70,25 @@
 		</div>
 		<div id="page">			<!-- CONTENU DE LA PAGE -->
 								<!-- MENU SECONDAIRE 	-->
-			<div id="menu_secondaire">
-				<div id="ombre">
-					<div id="menu_secondaire_contenu">
-						<h4 id="menu_secondaire_header"><span class="gris">Second</span> <span class="bleu">Menu</span></h4>
-						<p>	<span id="recherche">Recherche :</span><br />
+			<div id="secondary_menu">
+				<div id="shadow_secondary_menu">
+					<div id="content_secondary_menu">
+						<h4 id="header_secondary_menu"><span class="gray_color">Second</span> <span class="blue_color">Menu</span></h4>
+						<p>	<span id="search">Recherche :</span><br />
 							<input type="text" /><br />
 							<a class="default-button" href="#">
 								<span>Rechercher</span>
 							</a>&nbsp;<a href="#" class="help">Rechercher avancée</a>
 						</p>
-						<h4><span class="gris">Liens</span> <span class="bleu">utile</span></h4>
-						<div id="lien">
+						<h4><span class="gray_color">Liens</span> <span class="blue_color">utile</span></h4>
+						<div id="link">
 							<ul>
 								<li><a href="#">Lien N°1</a></li>
 								<li><a href="#">Lien N°2</a></li>
 								<li><a href="#">Lien N°3</a></li>
 							</ul>
 						</div>
-						<h4><span class="gris">Action</span> <span class="bleu">contextuelles</span></h4>
+						<h4><span class="gray_color">Action</span> <span class="blue_color">contextuelles</span></h4>
 						<ul>
 							<li class="icons_link">
 								<a href="#"><img src="/images/view.png" alt="voir" title="voir" class="view_icon" />Voir</a>
@@ -103,18 +103,18 @@
 								<a href="#"><img src="/images/del.png" alt="supprimer" title="supprimer" class="del_icon" />Supprimer</a>
 							</li>
 						</ul>
-						<div id="bottom_menu_secondaire">&nbsp;</div>
+						<div id="footer_secondary_menu">&nbsp;</div>
 					</div>
 				</div>
 			</div>
-			<div id="page_contenu">
+			<div id="content_page">
 
 						<!-- MENU HORIZONTAL -->
 <!--Conseil :____________________________________________
 			écrire le menu de bas en haut pour avoir	|
 			un ordre hiérarchique de gauche à droite    |
 			____________________________________________|-->
-				<div id="menu_horizontal">
+				<div id="horizontal_menu">
           <%= display_second_menu %>
 				</div>
         <div id="empty">
@@ -274,7 +274,7 @@
 						
 					</p>
 				</div>
-			</div> <!-- PAGE_CONTENU : FIN -->
+			</div> <!-- content_page : FIN -->
 		</div> <!-- PAGE : FIN -->
 		<div id="pied_de_page">
 			<div id="footer">
