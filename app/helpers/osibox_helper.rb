@@ -15,7 +15,7 @@ module OsiboxHelper
       :height => nil,
     }
     configuration.update(options)
-    render :partial => "/osibox", :locals => {:options => configuration}
+    render :partial => "share/_osibox", :locals => {:options => configuration}
   end
   
   def osibox_open
