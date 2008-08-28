@@ -613,7 +613,7 @@ a.previous-button:hover span {
 }
 
 .cal-prev:active,
-.cal-prev .selected {
+.cal-prev.selected {
 	background-position:0 -38px;
 }
 
