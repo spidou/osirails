@@ -19,14 +19,14 @@ class CommodityCategory < ActiveRecord::Base
   def can_destroy?
     commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
     categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
-    (commodities.empty? and categories.empty?) ? true : false
+    commodities.empty? and categories.empty?
   end
   
   # Check if a category have got children disable
   def has_children_disable?
     commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => false})
     categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => false})
-    (commodities.size > 0 or categories.size > 0) ? true : false
+    commodities.size > 0 or categories.size > 0
   end
   
 end

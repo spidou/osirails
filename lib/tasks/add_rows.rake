@@ -102,7 +102,6 @@ namespace :osirails do
       ActivitySector.create :name => "Hôtellerie"
       ActivitySector.create :name => "Téléphonie"
       
-
       # default third types
       private = ThirdType.create :name => "Privé"
       public = ThirdType.create :name => "Public"
@@ -220,7 +219,6 @@ namespace :osirails do
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
-        puts "=> '#{model.name}' destroyed"
       end
     end
 
