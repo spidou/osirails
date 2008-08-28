@@ -98,7 +98,7 @@ namespace :osirails do
       end
       
       # default activity sectors
-      ActivitySector.create :name => "Grande distribution"
+      distribution = ActivitySector.create :name => "Grande distribution"
       ActivitySector.create :name => "Hôtellerie"
       ActivitySector.create :name => "Téléphonie"
       
@@ -108,7 +108,7 @@ namespace :osirails do
       public = ThirdType.create :name => "Public"
       
       # default legal forms
-      LegalForm.create :name => "SARL", :third_type_id => private.id
+      sarl = LegalForm.create :name => "SARL", :third_type_id => private.id
       LegalForm.create :name => "SA", :third_type_id => private.id
       LegalForm.create :name => "SAS", :third_type_id => private.id
       LegalForm.create :name => "EURL", :third_type_id => private.id
@@ -117,14 +117,14 @@ namespace :osirails do
       LegalForm.create :name => "Collectivité territoriale", :third_type_id => public.id
       
       # default payment methods
-      PaymentMethod.create :name => "Virement"
+      virement = PaymentMethod.create :name => "Virement"
       PaymentMethod.create :name => "Chèque"
       PaymentMethod.create :name => "Espèce"
       PaymentMethod.create :name => "Lettre de change"
       PaymentMethod.create :name => "Billet à ordre"
       
       # default payment time limits
-      PaymentTimeLimit.create :name => "Comptant"
+      comptant = PaymentTimeLimit.create :name => "Comptant"
       PaymentTimeLimit.create :name => "30 jours nets"
       PaymentTimeLimit.create :name => "60 jours nets"
       
@@ -136,7 +136,7 @@ namespace :osirails do
       UnitMeasure.create :name => "Millimètre carré", :symbol => "mm²"
       UnitMeasure.create :name => "Centimètretre carré", :symbol => "cm²"
       UnitMeasure.create :name => "Décimètre carré", :symbol => "dm²"
-      UnitMeasure.create :name => "Mètre carré", :symbol => "m²"
+      metre_carre = UnitMeasure.create :name => "Mètre carré", :symbol => "m²"
       UnitMeasure.create :name => "Millimètre cube", :symbol => "mm³"
       UnitMeasure.create :name => "Centimètretre cube", :symbol => "cm³"
       UnitMeasure.create :name => "Décimètre cube", :symbol => "dm³"
@@ -146,15 +146,34 @@ namespace :osirails do
       UnitMeasure.create :name => "Décilitre", :symbol => "dl"
       UnitMeasure.create :name => "Litre", :symbol => "l"
       
+      # default establishment types
       EstablishmentType.create :name => "Magasin"
       EstablishmentType.create :name => "Station service"
+      
+      # default suppliers
+      supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", 
+        :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :payment_method_id => virement.id, 
+        :payment_time_limit_id => comptant.id
+      
+      # default commodity categories
+      metal = CommodityCategory.create :name => "Metal"
+      toles = CommodityCategory.create :name => "Tôles", :commodity_category_id => metal.id, :unit_measure_id => metre_carre.id
+      tubes = CommodityCategory.create :name => "Tubes", :commodity_category_id => metal.id, :unit_measure_id => metre_carre.id
+      
+      # default commodities
+      Commodity.create :name => "Galva 1500x3000x2", :fob_unit_price => "26.88", :taxe_coefficient => "0", :measure => "4.50", :unit_mass => "70.65",
+        :commodity_category_id => toles.id, :supplier_id => supplier.id
+      Commodity.create :name => "Galva 1500x3000x3", :fob_unit_price => "45.12", :taxe_coefficient => "0", :measure => "4.50", :unit_mass => "105.98",
+        :commodity_category_id => toles.id, :supplier_id => supplier.id
+      Commodity.create :name => "Galva rond Ø20x2 Lg 6m", :fob_unit_price => "1.63", :taxe_coefficient => "0", :measure => "6", :unit_mass => "5.32",
+        :commodity_category_id => tubes.id, :supplier_id => supplier.id
     end
 
     desc "Depopulate the database"
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure].each do |model|
+        UnitMeasure,EstablishmentType,Supplier,CommodityCategory,Commodity].each do |model|
          
         model.destroy_all
       end

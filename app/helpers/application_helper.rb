@@ -74,7 +74,8 @@ module ApplicationHelper
   end
   
   def display_date_time
-    DateTime.now.strftime("Nous sommes le %A %d %B et il est %H:%M")
+    day = DateTime.now.strftime("%A").downcase
+    DateTime.now.strftime("Nous sommes le #{day} %d %B %Y, il est %H:%M")
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})

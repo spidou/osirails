@@ -1,7 +1,7 @@
 <h1>Liste des cat&eacute;gories et des r&eacute;f&eacute;rences</h1>
 
 <div class="frame">
-<%= get_structured_category %>
- <%= link_to( 'Ajouter une cat&eacute;gorie' , new_product_reference_category_path ) if ProductReferenceCategory.can_add?(current_user) %>
- <%= show_add_reference_button(@categories) if ProductReference.can_add?(current_user)%>
+  <%= get_structured_category %>
+  <%= link_to( 'Ajouter une cat&eacute;gorie' , new_product_reference_category_path ) if ProductReferenceCategory.can_add?(current_user) %>
+  <%= show_add_reference_button(@categories) if ProductReference.can_add?(current_user)%>
 </div>
