@@ -5,16 +5,17 @@ class CalendarsController < ActionController::Base
   
   def show
     @calendar = Calendar.find(params[:id])
-    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+  end
+  
+  def get_period
+    @calendar = Calendar.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
   end
     
   def get_events
     @calendar = Calendar.find(params[:id])
-    if params[:year] && params[:month] && params[:day]
-      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
-    else
-      @date = Date::today
-    end
     
     case params[:period]
     when "day"
@@ -45,7 +46,7 @@ class CalendarsController < ActionController::Base
     begin
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
     rescue ArgumentError
-      redirect_to :action => 'show', :id => params[:id], :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day
+      @date = Date::today
       flash[:error] = "Date incorrecte"
     end
   end

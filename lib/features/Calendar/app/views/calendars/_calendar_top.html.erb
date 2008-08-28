@@ -1,4 +1,4 @@
 <p>
-<button class="input-button" type="submit" onClick="<%= get_events_function %>"><span>Télécharger les événements</span></button> | 
+<button class="input-button" onClick="ajax_link(link_get_events);"><span>Télécharger les événements</span></button> | 
 <%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
 </p>

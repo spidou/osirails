@@ -35,4 +35,36 @@ module CalendarsHelper
       render :partial => 'month'
     end
   end
+  
+  def navigation_before(date)
+    case params[:period]
+    when 'day'
+      date_before = date - 1.day
+    when 'week'
+      date_before = date - 1.week
+    when 'month'
+      date_before = date - 1.month      
+    end
+    "/calendars/1/get_period/" + params[:period] + "/" + date_before.year.to_s + "/" + date_before.month.to_s + "/" + date_before.day.to_s
+  end
+  
+  def navigation_after(date)
+    case params[:period]
+    when 'day'
+      date_after = date + 1.day
+    when 'week'
+      date_after = date + 1.week
+    when 'month'
+      date_after = date + 1.month     
+    end
+    "/calendars/1/get_period/" + params[:period] + "/" + date_after.year.to_s + "/" + date_after.month.to_s + "/" + date_after.day.to_s
+  end
+  
+  def navigation(period)
+    "/calendars/1/get_period/" + period + "/" + params[:year] + "/" + params[:month] + "/" + params[:day]
+  end
+  
+  def get_events_link
+    "/calendars/1/get_events/" + params[:period] + "/" + params[:year] + "/" + params[:month] + "/" + params[:day]
+  end
 end

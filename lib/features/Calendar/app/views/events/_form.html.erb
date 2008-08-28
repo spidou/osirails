@@ -7,20 +7,6 @@
 <%= e.text_field :start_at, :class => 'disable-stylesheet-width' %><br />
 <span>Au</span>
 <%= e.text_field :end_at, :class => 'disable-stylesheet-width' %><br />
-<script type="text/javascript">
-Calendar.setup({ 
-	inputField : "event_start_at",
-	ifFormat : "%Y-%m-%d %H:%M:%S",
-	showsTime : true,
-	timeFormat : "24"
-});
-Calendar.setup({ 
-	inputField : "event_end_at",
-	ifFormat : "%Y-%m-%d %H:%M:%S",
-	showsTime : true,
-	timeFormat : "24"
-});
-</script>
 <span>Description</span>
 <%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />
 <span>R&eacute;p&eacute;ter</span>
@@ -147,7 +133,32 @@ Calendar.setup({
 	<div style="display: none;"><%= e.text_field :count %> fois</div>
 	<div style="display: none;"><%= e.text_field :until_date %></div>
 </div>
+<br />
+<span>URL</span>
+<%= e.text_field :link %><br />
+<span>Status</span>
+<%= e.select :status, {"tentative" => "TENTATIVE", "confirmé" => "CONFIRMED", "annulé" =>"CANCELLED"}, :include_blank => true %>
+<div style="text-align: right;"><%= e.submit "Terminer" %></div>
+<% end %>
 <script type="text/javascript">
+Calendar.setup({ 
+	inputField : "event_start_at",
+	ifFormat : "%Y-%m-%d %H:%M:%S",
+	showsTime : true,
+	timeFormat : "24"
+});
+Calendar.setup({ 
+	inputField : "event_end_at",
+	ifFormat : "%Y-%m-%d %H:%M:%S",
+	showsTime : true,
+	timeFormat : "24"
+});
+Calendar.setup({ 
+	inputField : "event_until_date",
+	ifFormat : "%Y-%m-%d %H:%M:%S",
+	showsTime : true,
+	timeFormat : "24"
+});
 <% unless @event.frequence.nil? %>
 event_change('frequence', document.getElementById('event_frequence_choice'));
 var type_elm = document.getElementById('event_frequence_limit').childNodes[3];
@@ -163,10 +174,3 @@ var custom_select_elm = custom_elm.childNodes[1].childNodes[1];
 event_change('custom', custom_select_elm);
 <% end %>
 </script>
-<br />
-<span>URL</span>
-<%= e.text_field :link %><br />
-<span>Status</span>
-<%= e.select :status, {"tentative" => "TENTATIVE", "confirmé" => "CONFIRMED", "annulé" =>"CANCELLED"}, :include_blank => true %>
-<div style="text-align: right;"><%= e.submit "Terminer" %></div>
-<% end %>

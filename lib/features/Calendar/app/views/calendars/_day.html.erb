@@ -1,6 +1,3 @@
-<script type="text/javascript">
-calendar_init('day');
-</script>
 <h1><%= @calendar.title %> - <%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h1>
 <%= render :partial => 'calendar_top' %>
 <div id="scroll">
@@ -15,3 +12,12 @@ calendar_init('day');
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+link_period_before = "<%= navigation_before(@date) %>";
+link_period_day = "<%= navigation('day') %>";
+link_period_week = "<%= navigation('month') %>";
+link_period_month = "<%= navigation('year') %>";
+link_period_after = "<%= navigation_after(@date) %>";
+link_get_events = "<%= get_events_link %>";
+calendar_init('day');
+</script>
