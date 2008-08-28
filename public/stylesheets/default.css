@@ -904,6 +904,13 @@ table.presentation tr:hover > td{
 /*///////////////////////*/
 /*// fieldset & legend //*/
 
+.block_fieldset fieldset {
+	display:inline-block;
+	width:40%;
+}
+
+
+
 .frame fieldset {
 	background: #eaeff8;
 	border: 1px solid #444444;
