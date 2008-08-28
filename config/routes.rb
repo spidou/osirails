@@ -1,6 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
+  ### ROOT
+  map.root :controller => "account"
+  
   ### ADMIN
   map.login 'login', :controller => 'account'
   map.logout 'logout', :controller => 'account',  :action => 'logout'
