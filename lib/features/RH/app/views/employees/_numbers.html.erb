@@ -1,4 +1,5 @@
-<h3>Num&eacute;ros</h3>
+<div id="add_lines">
+  <h3>Num&eacute;ros</h3>
   <% unless @numbers.nil?%>
     <%number_id=0%>
     <% for number in @numbers %>
@@ -31,4 +32,4 @@
       <span id='add_link'><%= link_to_remote( "Ajouter un numéro...",:url=>{:action=>"add_line", :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute },:href=>(url_for :action=>"add_line") )%></span>
     </p>  
   <%end%> 
-
+</div>
