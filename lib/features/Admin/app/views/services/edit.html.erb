@@ -21,26 +21,27 @@
   <div class="frame">
     <h2>Horaires du service :</h2>
       
-      <div >
+      <fieldset >
+      <legend>Configurer les horaires</legend>
       <span>
       <%=  javascript_tag "document.getElementById('periode1')"%>
       Du <%= day_select(0) %> au <%= day_select(1) %>
     </span>  
       <span style=" border:1px solid #444; padding:5px;">
-      <legend>Matinée</legend>
+      <b>Matinée</b>
         <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
         <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'morning_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
       </span>&nbsp;
       <span style=" border:1px solid #444; padding:5px;">
-      <legend>Apr&egrave;s midi</legend>
+      <b>Apr&egrave;s midi</b>
         <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
         <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'afternoon_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
       </span>
-      </div>
+      </fieldset>
       
 
     
