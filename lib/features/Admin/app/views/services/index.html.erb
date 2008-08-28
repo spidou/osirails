@@ -1,5 +1,8 @@
+<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
 <h1>Les services de l'entreprise</h1>
-<div class="frame">
 <%= show_structured_services(@edit,@delete) %>
-<%= link_to("Nouveau service", new_service_path)+" &#124; " if @add == true %><%= link_to "Retour", :controller => 'society_configurations', :action => 'index' %>
+<%= link_to("Nouveau service", :action => "new") if @add %>
 </div>

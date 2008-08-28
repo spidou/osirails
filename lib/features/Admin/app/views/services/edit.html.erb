@@ -1,24 +1,25 @@
-<h1>Modifier un service</h1>
-
+<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+<%= display_tabulated_menu %>
 
 <% form_for(@service) do |service| %>
   <%= service.error_messages %>
   
-  <div class="frame">
-  <h2>Service :</h2>
-  <p>
-    <%= service.label :name, "Nom"  %><br />
-    <%= service.text_field :name %>
-  </p>
+  <div class="frame tabulation">
+    <h1>Modifier un service</h1>
+    <h2>Service :</h2>
+    <p>
+      <%= service.label :name, "Nom :"  %><br />
+      <%= service.text_field :name %>
+    </p>
 
-  <p>
-    <%= service.label :service_parent_id, "Parent" %>
-    <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
-  </p>
+    <p>
+      <%= service.label :service_parent_id, "Service parent :" %>
+      <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
+    </p>
   </div> 
    
   <div class="frame">
-  <h2>Horaires du service :</h2>
+    <h2>Horaires du service :</h2>
     <p>
       <%=  javascript_tag "document.getElementById('periode1')"%>
       Du <%= day_select(0) %> au <%= day_select(0) %>
@@ -45,4 +46,3 @@
   </p>
 
 <% end %>
-</div>

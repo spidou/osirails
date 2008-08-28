@@ -167,13 +167,41 @@ namespace :osirails do
         :commodity_category_id => toles.id, :supplier_id => supplier.id
       Commodity.create :name => "Galva rond Ø20x2 Lg 6m", :fob_unit_price => "1.63", :taxe_coefficient => "0", :measure => "6", :unit_mass => "5.32",
         :commodity_category_id => tubes.id, :supplier_id => supplier.id
+      
+      # default product reference categories
+      familles = sous_familles = {}
+      familles["1"] = ProductReferenceCategory.create :name => "Famille 1"
+      familles["2"] = ProductReferenceCategory.create :name => "Famille 2"
+      familles["3"] = ProductReferenceCategory.create :name => "Famille 3"
+      familles.each_pair do |index, famille|
+        sous_familles["1"] = ProductReferenceCategory.create :name => "Sous famille #{index}.1", :product_reference_category_id => famille.id
+        sous_familles["2"] = ProductReferenceCategory.create :name => "Sous famille #{index}.2", :product_reference_category_id => famille.id
+        sous_familles["3"] = ProductReferenceCategory.create :name => "Sous famille #{index}.3", :product_reference_category_id => famille.id
+      end
+      
+      # default product references
+      sous_familles.each_pair do |index, sous_famille|
+        ProductReference.create :name => "Reference #{index}.1", :description => "Description de la référence #{index}.1", :product_reference_category_id => sous_famille.id
+        ProductReference.create :name => "Reference #{index}.2", :description => "Description de la référence #{index}.2", :product_reference_category_id => sous_famille.id
+        ProductReference.create :name => "Reference #{index}.3", :description => "Description de la référence #{index}.3", :product_reference_category_id => sous_famille.id
+      end
+      
+      # default product references
+      
+      # default products
+      
+      # default society activity sectors
+      SocietyActivitySector.create :name => "Enseigne"
+      SocietyActivitySector.create :name => "Signalétique"
+      SocietyActivitySector.create :name => "Routes"
+      SocietyActivitySector.create :name => "Usinage"
     end
 
     desc "Depopulate the database"
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Supplier,CommodityCategory,Commodity].each do |model|
+        UnitMeasure,EstablishmentType,Supplier,CommodityCategory,Commodity,ProductReferenceCategory].each do |model|
          
         model.destroy_all
       end
