@@ -187,7 +187,7 @@ module EmployeesHelper
     tmp.each do |t|
       e = Employee.find(t.employee_id)
       manager +=  ", " unless manager==""
-      manager += e.fullname
+      manager += @employee.id==t.employee_id ? e.fullname : link_to( e.fullname,employee_path(t.employee_id))
       
     end
     return manager + " )" 
