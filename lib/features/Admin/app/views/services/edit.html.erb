@@ -23,22 +23,22 @@
       
       <fieldset >
       <legend>Configurer les horaires</legend>
-      <span>
+      <span class="date_days">
       <%=  javascript_tag "document.getElementById('periode1')"%>
       Du <%= day_select(0) %> au <%= day_select(1) %>
     </span>  
-      <span style=" border:1px solid #444; padding:5px;">
-      <b>Matinée</b>
-        <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
-        <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
-        <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+      <span class="alignment">
+      <b>Matinée :</b>
+        <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
+        <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>&nbsp;-&nbsp; 
+        <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
         <%=text_field_tag 'morning_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
       </span>&nbsp;
-      <span style=" border:1px solid #444; padding:5px;">
-      <b>Apr&egrave;s midi</b>
-        <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
-        <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
-        <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
+      <span class="alignment">
+      <b>Apr&egrave;s midi :</b>
+        <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
+        <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>&nbsp;-&nbsp; 
+        <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
         <%=text_field_tag 'afternoon_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
       </span>
       </fieldset>

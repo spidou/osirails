@@ -920,6 +920,14 @@ table.presentation tr:hover > td{
 	background:white;
 }
 
+.alignment {
+	padding:5px 10px 5px 10px;
+}
+
+.date_days {
+	margin:0px 20px 0px -15px ;
+}
+
 .frame input[type=text],
 .frame input[type=password] {
 	width: 250px;
