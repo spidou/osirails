@@ -168,27 +168,41 @@ namespace :osirails do
       Commodity.create :name => "Galva rond Ø20x2 Lg 6m", :fob_unit_price => "1.63", :taxe_coefficient => "0", :measure => "6", :unit_mass => "5.32",
         :commodity_category_id => tubes.id, :supplier_id => supplier.id
       
-      # default product reference categories
-      familles = sous_familles = {}
-      familles["1"] = ProductReferenceCategory.create :name => "Famille 1"
-      familles["2"] = ProductReferenceCategory.create :name => "Famille 2"
-      familles["3"] = ProductReferenceCategory.create :name => "Famille 3"
-      familles.each_pair do |index, famille|
-        sous_familles["1"] = ProductReferenceCategory.create :name => "Sous famille #{index}.1", :product_reference_category_id => famille.id
-        sous_familles["2"] = ProductReferenceCategory.create :name => "Sous famille #{index}.2", :product_reference_category_id => famille.id
-        sous_familles["3"] = ProductReferenceCategory.create :name => "Sous famille #{index}.3", :product_reference_category_id => famille.id
-      end
-      
-      # default product references
-      sous_familles.each_pair do |index, sous_famille|
-        ProductReference.create :name => "Reference #{index}.1", :description => "Description de la référence #{index}.1", :product_reference_category_id => sous_famille.id
-        ProductReference.create :name => "Reference #{index}.2", :description => "Description de la référence #{index}.2", :product_reference_category_id => sous_famille.id
-        ProductReference.create :name => "Reference #{index}.3", :description => "Description de la référence #{index}.3", :product_reference_category_id => sous_famille.id
-      end
-      
-      # default product references
-      
-      # default products
+#      # default product reference categories
+#      famille1 = ProductReferenceCategory.create :name => "Famille 1"
+#      famille2 = ProductReferenceCategory.create :name => "Famille 2"
+#      famille3 = ProductReferenceCategory.create :name => "Famille 3"
+#      sous_famille11 = ProductReferenceCategory.create :name => "Sous famille 1.1", :product_reference_category_id => famille1.id
+#      sous_famille12 = ProductReferenceCategory.create :name => "Sous famille 1.2", :product_reference_category_id => famille1.id
+#      sous_famille13 = ProductReferenceCategory.create :name => "Sous famille 1.3", :product_reference_category_id => famille1.id
+#      ProductReferenceCategory.create :name => "Sous famille 2.1", :product_reference_category_id => famille2.id
+#      ProductReferenceCategory.create :name => "Sous famille 2.2", :product_reference_category_id => famille2.id
+#      ProductReferenceCategory.create :name => "Sous famille 2.3", :product_reference_category_id => famille2.id
+#      ProductReferenceCategory.create :name => "Sous famille 3.1", :product_reference_category_id => famille3.id
+#      ProductReferenceCategory.create :name => "Sous famille 3.2", :product_reference_category_id => famille3.id
+#      ProductReferenceCategory.create :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
+#      
+#      # default product references
+#      reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id
+#      reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id
+#      reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id
+#      ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille12.id
+#      ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille12.id
+#      ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille12.id
+#      ProductReference.create :name => "Reference 1.3.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille13.id
+#      ProductReference.create :name => "Reference 1.3.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille13.id
+#      ProductReference.create :name => "Reference 1.3.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille13.id
+#      
+#      # default products
+#      Product.create :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id
+#      Product.create :name => "Produit 1.1.1.2", :description => "Description du produit 1.1.1.2", :product_reference_id => reference111.id
+#      Product.create :name => "Produit 1.1.1.3", :description => "Description du produit 1.1.1.3", :product_reference_id => reference111.id
+#      Product.create :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id
+#      Product.create :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference112.id
+#      Product.create :name => "Produit 1.1.2.3", :description => "Description du produit 1.1.2.3", :product_reference_id => reference112.id
+#      Product.create :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id
+#      Product.create :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference113.id
+#      Product.create :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id
       
       # default society activity sectors
       SocietyActivitySector.create :name => "Enseigne"
@@ -201,9 +215,11 @@ namespace :osirails do
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Supplier,CommodityCategory,Commodity,ProductReferenceCategory].each do |model|
-         
+        UnitMeasure,EstablishmentType,Supplier,CommodityCategory,Commodity,SocietyActivitySector].each do |model|
+        
+        puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
+        puts "=> '#{model.name}' destroyed"
       end
     end
 
