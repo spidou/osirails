@@ -16,8 +16,8 @@ module CommoditiesManagerHelper
   end
   
   # This method permit to have a table's structur
-  def get_structured
-    commodity_categories = CommodityCategory.root
+  def get_structured(show)
+    show == false ? (commodity_categories = CommodityCategory.root) : 
     table = []
     # Get structur for parents commodities categories
     commodity_categories.each do |commodity_category|
@@ -33,7 +33,9 @@ module CommoditiesManagerHelper
       # Get Structur for children commodities categories
       unless commodity_category.children.size == 0
         commodity_category.children.each do |category_child|
-          unless category_child.enable == false
+          unless category_child.enable == show
+                              puts "___________________________________________________"
+                  puts show
             add_button = add_category_or_commodity(category_child)
             delete_button = show_delete_button(category_child)
           
@@ -47,7 +49,9 @@ module CommoditiesManagerHelper
             # Get structur for commodities
             unless category_child.commodities.empty?
               category_child.commodities.each do |commodity|
-                unless commodity.enable == false
+                unless commodity.enable == show
+                  puts "___________________________________________________"
+                  puts show
                   supplier = Supplier.find(commodity.supplier_id)
                   unit_measure = UnitMeasure.find(category_child.unit_measure_id)
                   delete_button = show_delete_button(commodity)

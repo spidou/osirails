@@ -1,7 +1,11 @@
 <h1>Ajouter une nouvelle mati&egrave;re premi&egrave;re</h1>
 <div class="frame">
+
   <% form_for(@commodity) do |commodity| %>
-    <p>
+ 
+  <%= commodity.error_messages %>
+
+      <p>
       <%= commodity.label :name, "D&eacute;signation :"%>
       <%= commodity.text_field :name %>
     </p>
@@ -9,6 +13,7 @@
     <p>
       <%= commodity.label :commodity_category_id, "Appartient &agrave; :" %>
       <%= commodity.collection_select(:commodity_category_id, @categories, :id, :name , {}) %>
+      <%= observe_field("commodity_commodity_category_id",:url => {:action => 'refresh_measure'}, :with => 'parameter')%>
     </p>
   
     <p>
@@ -17,12 +22,12 @@
     </p>
 
       <p>
-      <%= commodity.label :measure, "Unit&eacute;e de mesure/U :"%>
+        <span id='commodity_unit_measure'><%= @unit_measure.symbol+" / U" %></span>
       <%= commodity.text_field :measure %>
     </p> 
   
     <p>
-      <%= commodity.label :unit_mass, "Masse/U (kg) :"%>
+      <%= commodity.label :unit_mass, "kg / U :"%>
       <%= commodity.text_field :unit_mass %>
     </p> 
 

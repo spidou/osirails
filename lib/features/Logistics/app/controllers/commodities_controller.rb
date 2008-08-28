@@ -5,11 +5,14 @@ class CommoditiesController < ApplicationController
     @commodity = Commodity.new(:commodity_category_id => params[:id])
     @categories = CommodityCategory.root_child
     @suppliers = Supplier.find(:all)
+    commodity_category = CommodityCategory.find(params[:id])
+    @unit_measure = UnitMeasure.find(commodity_category.unit_measure_id)
   end
   
   # POST /commodities
   def create
     @categories = CommodityCategory.root_child
+    @suppliers = Supplier.find(:all)
     @commodity = Commodity.new(params[:commodity])
     if @commodity.save
       flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"

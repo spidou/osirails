@@ -19,7 +19,7 @@ class CommodityCategoriesController < ApplicationController
     end
   end
     
-  def update
+  def update #TODO Régler le probleme du validates prensence avec le in line
     @commodity_category = CommodityCategory.find(params[:id])
     respond_to do |format|
       if @commodity_category.update_attributes(params[:commodity_category])
@@ -27,7 +27,7 @@ class CommodityCategoriesController < ApplicationController
         format.json { render :json => @commodity_category }
       else
         format.html { render :action => "edit" }
-        format.json { render :json => @commodity_category, :status => SOMETHINGELSE_THAN_200}
+        format.json { render :json => @commodity_category}
       end
     end
   end
@@ -36,16 +36,18 @@ class CommodityCategoriesController < ApplicationController
   def destroy
     @category = CommodityCategory.find(params[:id])
     if @category.can_destroy?
-      if @category.destroy
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+      if @category.has_children_disable?
+        @category.enable = false
+        @category.save
+        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
       else
-        flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e."
+        @category.destroy
+        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
       end
     else
-      @category.enable = false
-      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+      flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e."
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
-    
+   
 end

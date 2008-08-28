@@ -1,5 +1,5 @@
 <% content_for :javascript do %>
-<script type="text/javascript" src="/javascripts/logisctic/price_calculator.js"></script> 
+  <script type="text/javascript" src="/javascripts/logisctic/price_calculator.js"></script> 
 <% end %>
 
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
@@ -20,7 +20,10 @@
         <th>Prix</th>
       </tr>
     </tr>
-       <%= get_structured %>
+<%= @type != "show_all" ? get_structured(false) : get_structured(nil) %>
+
   </table>
   <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
+  <%= @type != "show_all" ? link_to("Afficher toutes les categories et matières premières (deactivé inclus)", :action => "index", :type => "show_all") : link_to("Afficher toutes les categories et matières premières (actives uniquement)", :action => "index") %>
 </div>
+<%= @type %>

@@ -11,8 +11,22 @@ class CommodityCategory < ActiveRecord::Base
   named_scope :activates, :conditions => {:enable => true}
   named_scope :root,  :order => 'name', :conditions => {:enable => true, :commodity_category_id => nil}
   named_scope :root_child, :conditions => 'commodity_category_id is not null and enable is true'
+  
+  # Validates
+  validates_presence_of :name, :message => "ne peut être vide."
 
+  # Check if a resource can be destroy or disable
   def can_destroy?
-    self.commodity_categories.size == 0 and self.commodities.size == 0 ?  true : false
+    commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
+    categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
+    (commodities.empty? and categories.empty?) ? true : false
   end
+  
+  # Check if a category have got children disable
+  def has_children_disable?
+    commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => false})
+    categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => false})
+    (commodities.size > 0 or categories.size > 0) ? true : false
+  end
+  
 end
