@@ -1,9 +1,16 @@
 <%= h(@event.title) %>
 <br />du: <%= h(@event.start_at) %>
 <br />au: <%= h(@event.end_at) %>
-<% if event_freq(@event) %><br />répéter: <%= event_freq(@event) %><% end %>
-<% if @event.is_custom_daily_frequence %>
-tous les <%= h(@event.frequence) %> jours
+<% if event_freq(@event) %><br />répéter: <%= event_freq(@event) %><br /><% end %>
+<% if @event.is_custom_daily_frequence? %>
+tous les <%= h(@event.interval) %> jours<br />
+<% elsif @event.is_custom_weekly_frequence? %>
+toutes les <%= h(@event.interval) %> semaines
+<%= days_sentence(@event) %><br />
+<% elsif @event.is_custom_monthly_frequence? %>
+tous les <%= h(@event.interval) %> mois<%= month_days_sentence(@event) %><%= day_sentence(@event) %><br />
+<% elsif @event.is_custom_yearly_frequence? %>
+tous les <%= h(@event.interval) + ' ' if @event.interval > 1 %>ans<%= day_sentence(@event) %><%= month_sentence(@event) %><br />
 <% end %>
-<% if event_freq_end(@event) %><br />fin: <%= event_freq_end(@event) %><% end %>
+fin: <%= event_freq_end(@event) %>
 <br /><div onClick="event_box_loading();"><%= link_to_remote "Edition", :url => {:action => 'edit', :id => params[:id]} %> <%= link_to_remote "Supprimer", :url => {:action => 'destroy', :id => params[:id]} %></div>

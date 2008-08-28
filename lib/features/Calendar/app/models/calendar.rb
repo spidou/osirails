@@ -109,7 +109,7 @@ class Calendar < ActiveRecord::Base
           if event.by_month_day.nil? && event.by_day.nil?
             month_condition = true if event.start_at.day == date.day
           elsif !event.by_month_day.nil? && event.by_day.nil?
-            month_condition = event.by_month_day.gsub(" ", "").split(",").include?(date.day.to_s)
+            month_condition = event.by_month_day.include?(date.day.to_s)
           elsif event.by_month_day.nil? && !event.by_day.nil?
             is_by_day = true
             if !event.by_day.nil?
@@ -139,7 +139,7 @@ class Calendar < ActiveRecord::Base
           if event.by_month.nil? && event.by_day.nil?
             year_condition = true if (event.start_at.day == date.day && event.start_at.month == date.month)
           elsif !event.by_month.nil?
-            year_condition = event.by_month.gsub(" ", "").split(",").include?(date.month.to_s)
+            year_condition = event.by_month.include?(date.month.to_s)
 
             if !event.by_day.nil? && year_condition
               week_number = event.by_day.first[0...-2].to_i

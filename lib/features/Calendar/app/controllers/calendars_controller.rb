@@ -2,27 +2,6 @@ class CalendarsController < ActionController::Base
   before_filter :check_date
   layout 'default'
   helper :all
-  $month_fr ||= []
-  $month_fr << "Janvier"
-  $month_fr << "Février"
-  $month_fr << "Mars"
-  $month_fr << "Avril"
-  $month_fr << "Mai"
-  $month_fr << "Juin"
-  $month_fr << "Juillet"
-  $month_fr << "Août"
-  $month_fr << "Septembre"
-  $month_fr << "Octobre"
-  $month_fr << "Novembre"
-  $month_fr << "Décembre"
-  $day_fr ||= []
-  $day_fr << "Dimanche"
-  $day_fr << "Lundi"
-  $day_fr << "Mardi"
-  $day_fr << "Mercredi"
-  $day_fr << "Jeudi"
-  $day_fr << "Vendredi"
-  $day_fr << "Samedi"
   
   def show
     @calendar = Calendar.find(params[:id])

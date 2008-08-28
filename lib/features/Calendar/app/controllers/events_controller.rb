@@ -1,4 +1,6 @@
 class EventsController < ActionController::Base
+  helper :all
+  
   def show
     @event = Event.find(params[:id])
     respond_to do |format|
@@ -28,6 +30,7 @@ class EventsController < ActionController::Base
   
   def create
     @event = Event.create(params[:event])
+    params[:event][:by_day] = [params[:event].delete(:by_month_day_num) + params[:event].delete(:by_month_day_wday)] if params[:event][:by_month_day_num] && params[:event][:by_month_day_wday]
     respond_to do |format|
       format.js
     end   
@@ -36,6 +39,10 @@ class EventsController < ActionController::Base
   def update
     @event = Event.find(params[:id])
     if params[:event]
+      params[:event][:by_day] = [params[:event].delete(:by_day_num) + params[:event].delete(:by_day_wday)] if params[:event][:by_day_num] && params[:event][:by_day_wday]
+      [:until_date, :count, :by_day, :by_month_day, :by_month].each do |key|
+        params[:event][key] ||= nil
+      end
       if @event.update_attributes(params[:event])
         @message = "Modification effectué avec succès"
       else

@@ -19,9 +19,8 @@ class Event < ActiveRecord::Base
   # interval      :integer
   # by_day        (:integer) && ["SU" || "MO" || "TU" || "WE" || "TH" || "FR"
   #               || "SA"]
-  # by_month_day  (:integer) && ["SU" || "MO" || "TU" || "WE" || "TH" || "FR"
-  #               || "SA"]
-  # by_month      :integer || :string
+  # by_month_day  [:integer]
+  # by_month      [:integer || :string]
   #
   # Use:
   # You must specified an interval (default 1) with a frequence.
@@ -57,6 +56,11 @@ class Event < ActiveRecord::Base
   has_many :participants
   has_many :exception_dates
 
+  # Serializations
+  serialize :by_day
+  serialize :by_month_day
+  serialize :by_month
+  
   # Requires
   require 'rubygems'
   require 'icalendar'
@@ -76,6 +80,10 @@ class Event < ActiveRecord::Base
   
   def is_custom_yearly_frequence?
     self.frequence == "YEARLY" && (!self.by_month.nil? || !self.by_day.nil? || self.interval > 1)
+  end
+  
+  def is_custom_frequence?
+    is_custom_daily_frequence? || is_custom_weekly_frequence? || is_custom_monthly_frequence? || is_custom_yearly_frequence?
   end
   
   # Convert the event to the an Icalendar event object
