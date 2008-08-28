@@ -150,9 +150,13 @@ namespace :osirails do
       EstablishmentType.create :name => "Station service"
       
       # default suppliers
-      supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", 
-        :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :payment_method_id => virement.id, 
-        :payment_time_limit_id => comptant.id
+      iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
+      supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id
+      supplier.iban = iban
+      
+      # default customers
+      Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
+        :payment_method_id => virement.id, :payment_time_limit_id => comptant.id
       
       # default commodity categories
       metal = CommodityCategory.create :name => "Metal"
@@ -214,8 +218,8 @@ namespace :osirails do
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Supplier,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector].each do |model|
+        UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
+        SocietyActivitySector,ActivitySector].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
