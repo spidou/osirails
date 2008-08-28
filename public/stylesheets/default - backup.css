@@ -586,74 +586,7 @@ a.previous-button:hover span {
 	background: transparent url("../images/default-button.png") no-repeat 100% -26px;
 	color:black;
 }	 		
-
-/*Bouton calendrier*/
-.calendar-buttons {
-	margin:5px;
-}
-
-.calendar-buttons div {
-	display:inline-block;
-}
-
-.cal-prev,
-.cal-next {
-	background:url("../images/bouton-suiv-prec-cal1.png");
-	width:30px;
-	height:19px;
-	margin-left:-5px;
-}
-
-.cal-prev {
-	background-position:0 0;
-}
-
-.cal-prev:hover {
-	background-position:0 -19px;
-}
-
-.cal-prev:active,
-.cal-prev .selected {
-	background-position:0 -38px;
-}
-
-.cal-next {
-	background-position:-31px 0;
-}
-
-.cal-next:hover {
-	background-position:-31px -19px;
-}
-
-.cal-next:active,
-.cal-next .selected {
-	background-position:-31px -38px;
-}
-
-.cal-buttons {
-	background:url("../images/cal-buttons.png") repeat-x;
-	width:1px;
-	height:19px;
-	position:relative;
-	bottom:5px;
-	border-left:solid 1px #A5A5A5;
-	border-right:solid 1px #A5A5A5;
-	padding-left:5px;
-	padding-right:5px;
-	background-position:0 0;
-	margin-left:-5px;
-}
-
-.cal-buttons:hover {
-	background-position:0 -19px;
-}
-
-.cal-buttons:active,
-.cal-buttons .selected {
-	background-position:0 -38px;
-	color:black;
-}
-
+																			
 /*//////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
 //////////////////////////////////////////////////////////*/
@@ -791,16 +724,11 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /**/
-.frame > form > #errorExplanation {
-//	border:10px solid red;
-//	width:100%;
-}
-
-#errorExplanation {
+#errorExplanation{
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
 	margin:10px;
-	width:450px;
+	width:inherit;
 }
 
 .errorExplanation p,
@@ -820,8 +748,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 
 #errorExplanation ul,
 .errorExplanation ul {
-	width:380px;
-	text-align:justify;
 }
 
 
@@ -834,7 +760,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	background:#F1BD73;
 	padding-left:5px;
 	padding-right:5px;
-	overflow:hidden;
 }
 
 .fieldWithErrors label {

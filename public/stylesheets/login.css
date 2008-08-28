@@ -214,8 +214,8 @@ a { /*Pour le msg d'erreur*/
 	background:#F1BD73;
 	-moz-border-radius:3px 3px 0 0;
 }
-#errorExplanation ul,
-.errorExplanation ul {
+#errorExplanation ul li,
+.errorExplanation ul li {
 	position:relative;
 	bottom:15px;
 	background: url("../images/warning.png") no-repeat 60px 0;
