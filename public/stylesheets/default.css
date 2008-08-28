@@ -903,14 +903,6 @@ table.presentation tr:hover > td{
 /////////////////////////////*/
 /*///////////////////////*/
 /*// fieldset & legend //*/
-
-.block_fieldset fieldset {
-	display:inline-block;
-	width:40%;
-}
-
-
-
 .frame fieldset {
 	background: #eaeff8;
 	border: 1px solid #444444;
@@ -929,8 +921,7 @@ table.presentation tr:hover > td{
 }
 
 .frame input[type=text],
-.frame input[type=password],
-.frame select {
+.frame input[type=password] {
 	width: 250px;
 }
 
