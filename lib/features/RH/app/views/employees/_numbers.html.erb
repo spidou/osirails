@@ -3,7 +3,7 @@
     <%number_id=0%>
     <% for number in @numbers %>
         <%unless number[:number]==""%>
-        <!-- le <p> est ouvers à la ligne ci-dessous avec un id >
+        <!-- le <p> est ouvers à la ligne ci-dessous avec un id -->
         <%= display_p_balise(number_id) %>
         
         <%= select(attribute + '[numbers][' + number_id.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
