@@ -17,7 +17,7 @@ module CommoditiesManagerHelper
   
   # This method permit to have a table's structur
   def get_structured(show)
-    show == false ? (commodity_categories = CommodityCategory.root) : 
+    commodity_categories = CommodityCategory.root
     table = []
     # Get structur for parents commodities categories
     commodity_categories.each do |commodity_category|
