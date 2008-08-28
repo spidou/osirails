@@ -1,6 +1,7 @@
 module OsiboxHelper
   def osibox_init (options = {})
     configuration = {
+      :id => nil,
       :url => {},
       :partial => nil,
       :wall_color => 'black',
@@ -10,7 +11,7 @@ module OsiboxHelper
       :border_type => 'solid',
       :border_color => 'black',
       :background_color => 'white',
-      :scroll => false,
+      :scroll => 'auto',
       :width => nil,
       :height => nil,
     }

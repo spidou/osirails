@@ -1,13 +1,3 @@
-<script type="text/javascript">
-osibox_wall = 'osibox_wall';
-osibox_popup = 'osibox_popup';
-
-osibox_wall_elm = document.getElementById('osibox_wall');
-osibox_popup_elm = document.getElementById('osibox_popup');
-
-osibox_wall_elm.remove();
-osibox_popup_elm.remove();
-</script>
 <div style="visibility: hidden;
 						position: absolute;
 						left: 0px;
@@ -21,7 +11,6 @@ osibox_popup_elm.remove();
 						filter:alpha(opacity=<%= options[:wall_opacity] * 100 %>);"
 	id="osibox_wall">
 </div>
-
 <div style="visibility: hidden;
 						position: absolute;
 						top: 0px;
@@ -38,9 +27,7 @@ osibox_popup_elm.remove();
 						<% unless options[:width].nil? %>
 						width: <%= options[:width] %>;
 						<% end %>
-						<% if options[:scroll] %>
-						overflow: scroll;
-						<% end %>"
+						overflow: <%= options[:scroll] %>;"
 	id="osibox_popup">
 	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br>
 	<% if !options[:partial].nil? %>
@@ -48,17 +35,20 @@ osibox_popup_elm.remove();
 	<% elsif !options[:url].empty? %>
 		<%= render_component options[:url] %>
 	<% else %>
-	 <% raise ArgumentError, "Partial or url missing" %>
+	 <% raise ArgumentError, "missing partial or url" %>
 	<% end %>
 </div>
 <script type="text/javascript">
+osibox_wall = 'osibox_wall';
+osibox_popup = 'osibox_popup';
+
+osibox_wall_elm = document.getElementById('osibox_wall');
+osibox_popup_elm = document.getElementById('osibox_popup');
+
 document.body.appendChild(osibox_wall_elm);
 document.body.appendChild(osibox_popup_elm);
 
 function osibox_open () {
-	osibox_wall_elm = document.getElementById('osibox_wall');
-	osibox_popup_elm = document.getElementById('osibox_popup');
-
 	var top = (document.body.offsetHeight - osibox_popup_elm.offsetHeight) / 2;
 	if (top < 10) {
 		top = 10;
@@ -67,25 +57,33 @@ function osibox_open () {
 	if (left < 10) {
 		left = 10;
 	};
-	
+
 	osibox_popup_elm.style.top = top + document.documentElement.scrollTop + 'px';
 	osibox_popup_elm.style.left = left + 'px';
-	osibox_wall_elm.style.top = document.documentElement.scrollTop + 'px';
-	
-	osibox_wall_elm.style.visibility = 'visible';
-	osibox_popup_elm.style.visibility = 'visible';
+
 	document.body.style.overflow = 'hidden';
 	
-	Effect.Grow(osibox_wall_elm);
-	Effect.Grow(osibox_popup_elm);
+	osibox_wall_elm.style.visibility = 'visible';	
+	osibox_popup_elm.style.visibility = 'visible';
+	
+	osibox_popup_elm.style.display = 'none';
+	Effect.Appear(osibox_popup_elm);
 }
 
 function osibox_close () {
 	osibox_wall_elm = document.getElementById('osibox_wall');
 	osibox_popup_elm = document.getElementById('osibox_popup');
 	
-	Effect.Fade(osibox_wall_elm);
-	Effect.Fade(osibox_popup_elm);
+	Effect.Fade(osibox_wall_elm, {duration: 0.6});
+	Effect.Fade(osibox_popup_elm, {duration: 0.6});
+
+	setTimeout(function() {
+		osibox_wall_elm.style.display = 'block';
+		osibox_popup_elm.style.display = 'block';
+
+		osibox_wall_elm.style.visibility = 'hidden';
+		osibox_popup_elm.style.visibility = 'hidden';
+	}, 600);
 
 	document.body.style.overflow = '';
 }
