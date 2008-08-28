@@ -1,7 +1,7 @@
 class AccountController < ApplicationController
   skip_before_filter :authenticate
-  before_filter :logged?, :only => [:login, :lost_password]
-  before_filter :not_logged?, :only => [:logout, :expired_password]
+  before_filter :logged, :only => [:index, :login, :lost_password]
+  before_filter :not_logged, :only => [:logout, :expired_password]
   layout "login"
 
   # All the following action are accessible without login
@@ -81,14 +81,14 @@ class AccountController < ApplicationController
   
   private
   
-  def logged?
-    if !current_user.nil?
+  def logged
+    if current_user
       redirect_to user_home
     end
   end
   
-  def not_logged?
-    if current_user.nil?
+  def not_logged
+    unless current_user
       redirect_to login_path
     end
   end
