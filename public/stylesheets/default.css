@@ -1103,6 +1103,21 @@ div.tabs {
 	margin-bottom:0;
 }
 
+.frame.tabulation>h1 {
+	background:#E5E5E5;
+	color:#888;
+//	-moz-border-radius:20px 0 0 0;
+	margin-left:12px;
+	text-align:left;
+	text-indent:10px;
+	margin-bottom:-1px;
+}
+
+.frame.tabulation>h2 {
+	border-top:1px solid white;
+//	-moz-border-radius:20px 0 0 0;
+}
+
 div.tabs ul {
 	padding: 0;
 	margin: 0;
