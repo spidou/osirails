@@ -20,27 +20,49 @@
    
   <div class="frame">
     <h2>Horaires du service :</h2>
-    <p>
+      
+      <div >
+      <span>
       <%=  javascript_tag "document.getElementById('periode1')"%>
-      Du <%= day_select(0) %> au <%= day_select(0) %>
-      <fieldset>
+      Du <%= day_select(0) %> au <%= day_select(1) %>
+    </span>  
+      <span style=" border:1px solid #444; padding:5px;">
       <legend>Matinée</legend>
         <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
         <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'morning_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
-      </fieldset>
-      <fieldset>
+      </span>&nbsp;
+      <span style=" border:1px solid #444; padding:5px;">
       <legend>Apr&egrave;s midi</legend>
         <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> - 
         <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>h
         <%=text_field_tag 'afternoon_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
-      </fieldset>
-    </p>  
-  </div>
-  
+      </span>
+      </div>
+      
 
+    
+  <table>
+  <tr>
+    <th></th>
+    <th colspan="2">Matin</th>
+    <th colspan="2">Apr&egrave;s-midi</th>
+  </tr>
+  <% days =[["Lundi",1],["Mardi",2],["Mercredi",3],["Jeudi",4],["Vendredi",5],["Samedie",6],["Dimanche",7]]%>
+  <% days.each do |day|%>
+    <tr>
+      <td><%= day[0] + " " + day[1].to_s %></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  <% end %>
+  
+  </table>
+</div>
   <p>
     <%= service.submit "Mettre à jour" %> &#124; <%= link_to 'Retour', services_path %>
   </p>
