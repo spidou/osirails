@@ -1,5 +1,7 @@
 class ContactsController < ApplicationController
   
+  helper :employees
+  
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]
   
   def edit
@@ -25,20 +27,36 @@ class ContactsController < ApplicationController
     @contact = Contact.find(params[:id])
     if params[:owner_type]  == "Customer"
       @owner =Customer.find(params[:owner])
+      owner_path = "customer_path(@owner)"
     elsif params[:owner_type]  == "Establishment"
       @owner =Establishment.find(params[:owner])
+      owner_path = "establishent_path(@owner)"
     elsif params[:owner_type]  == "Supplier"
       @owner =Supplier.find(params[:owner])
+      owner_path = "supplier_path(@owner)"
     end
-
+    
+    # put numbers another place for a separate creation
+    #    puts params[:contact].keys
+    params[:numbers] = params[:contact]['numbers']
+    params[:contact].delete('numbers')
+    puts params[:numbers]
+    
+    # update contact ressources
     unless @contact.update_attributes(params[:contact])
+      params[:contact]['numbers'] = params[:numbers]
       flash[:error] = "Une erreur est survenu lors de la modification du contact"
       @error = true
+      @owner
+      render :action => "edit"
     else
+      params[:numbers].each do |number|
+        @contact.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
+      end
+      #      params[:contact]['numbers'] = params[:numbers]
       flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
+      eval "redirect_to #{owner_path}"
     end
-    @owner
-    render :action => "edit"
   end
   
   def destroy
@@ -52,8 +70,8 @@ class ContactsController < ApplicationController
 
     
     @owner.contacts.delete(@contact)
-      flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
-      redirect_to :back
+    flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
+    redirect_to :back
   
   end
   

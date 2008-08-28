@@ -5,6 +5,8 @@
         <%= contact.error_messages%>
 
         <%= render :partial => 'contact', :locals => {:contact => contact, :contact_type => @contact_type} %>
+        
+        <%= render :partial => '/employees/numbers', :locals => {:attribute=> 'contact'}%>
 
         <%= submit_tag 'Modifier' %>
         
