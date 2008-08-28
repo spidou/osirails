@@ -67,7 +67,7 @@ class EmployeesController < ApplicationController
     @employee.address = Address.new(params[:address])
     @employee.iban = Iban.new(params[:iban])
     params[:numbers].each do |number|
-      @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1]==""
+      @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
     end
     
     
@@ -119,9 +119,9 @@ class EmployeesController < ApplicationController
     # add or update numbers who have been send to the controller
     params[:numbers].each_key do |i|
       if @employee.numbers[i.to_i].nil?
-        @employee.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i]=="" 
+        @employee.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
       else  
-        @employee.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i]==""
+        @employee.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
       end
     end 
     
