@@ -44,7 +44,7 @@ module ProductReferenceManagerHelper
   
   # This method permit to show or hide delete button
   def show_delete_button(category)
-    link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } ) if category.can_delete?
+    link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } ) if category.can_destroy?
   end
   # This method permit to show or hide add reference button
   def show_add_reference_button(categories)

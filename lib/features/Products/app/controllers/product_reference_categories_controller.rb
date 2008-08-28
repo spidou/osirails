@@ -44,7 +44,7 @@ class ProductReferenceCategoriesController < ApplicationController
   # DELETE /product_reference_categories/1
   def destroy
     @category = ProductReferenceCategory.find(params[:id])
-    if @category.can_delete?
+    if @category.can_destroy?
       @category.destroy
       flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
     else

@@ -45,7 +45,7 @@ class ProductReferenceCategory < ActiveRecord::Base
   end
   
   # This method permit to check if category can be deleted or not
-  def can_delete?
+  def can_destroy?
     self.product_references.empty? and self.product_reference_categories.empty?
   end
   
