@@ -878,6 +878,10 @@ td.right_cell {
 	padding-bottom:10px;
 }
 
+tr.disable > td {
+	color:#767676;
+}
+
 tr.disable:hover > td {
 	color:#767676;
 	background:none;
