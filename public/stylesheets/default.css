@@ -878,7 +878,7 @@ td.right_cell {
 	padding-bottom:10px;
 }
 
-tr.disable:hover {
+tr.disable:hover > td {
 	background:#CCCCCC;
 }
 
