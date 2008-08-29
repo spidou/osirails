@@ -879,13 +879,12 @@ td.right_cell {
 }
 
 tr.disable > td {
-	color:#767676;
-	font-style:italic;
+	color:#B0383D;
+//	font-style:italic;
 }
 
-tr.disable:hover > td {
-	color:#767676;
-	background:none;
+tr.enable > td {
+	color:#4C8B38;
 }
 
 table.presentation tr:hover > td{
