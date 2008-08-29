@@ -61,10 +61,20 @@ module CalendarsHelper
   end
   
   def navigation(period)
-    calendar_path(@calendar, :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day])
+    calendar_path(@calendar, :period => period, :year => params[:year], :month => params[:month], :day => params[:day])
   end
   
   def get_events_link
     calendar_events_path(@calendar, :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day])
+  end
+  
+  def everyday_of_a_week(date)
+    return_html = ""
+    tmp_date = date.beginning_of_week
+  	7.times do
+      return_html += "<div class=\"day\">" + $day_fr[tmp_date.wday] + " " + tmp_date.day.to_s + "<div></div></div>"
+  	tmp_date += 1.days
+  	end
+  	return_html
   end
 end

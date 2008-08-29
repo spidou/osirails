@@ -1,5 +1,4 @@
 <h1><%= @calendar.title %> - <%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h1>
-<%= render :partial => 'calendar_top' %>
 <div id="scroll">
 	<div id="hour_column">
 		<% 24.times do |i| %>

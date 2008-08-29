@@ -1,24 +1,19 @@
 <h2><%= $month_fr[@date.month - 1] %> <%= @date.year %> (semaine <%= @date.week %>)</h2>
-<%= render :partial => 'calendar_top' %>
-<div id="group_day">
-	<% date = @date.beginning_of_week %>
-	<% 7.times do %>
-	<div class="day"><%= $day_fr[date.wday] + " " + date.day.to_s %></div>
-	<% date += 1.days %>
-	<% end %>
-</div>
-<div id="scroll">
-	<div id="hour_column">
-		<% 24.times do |i| %><%= "<div class=\"hour\">#{i}h00</div>" %><% end %>
-	</div>
-	<div id="grid_week">
-		<% date = @date.beginning_of_week %>
-		<% 7.times do %>
-		<div id="<%= date.to_s.gsub("-","") %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == Date::today %>>
-			<div class="day_grid_border"><ul></ul></div>
+<div id="calendar_content">
+	<div id="group_day"><%= everyday_of_a_week(@date) %></div>
+	<div id="scroll">
+		<div id="hour_column">
+			<% 24.times do |i| %><%= "<div class=\"hour\">#{i}h00</div>" %><% end %>
 		</div>
-		<% date += 1.days %>
-		<% end %>
+		<div id="grid_week">
+			<% date = @date.beginning_of_week %>
+			<% 7.times do %>
+			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == Date::today %>>
+				<div class="day_grid_border"><ul></ul></div>
+			</div>
+			<% date += 1.days %>
+			<% end %>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">

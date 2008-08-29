@@ -1,8 +1,10 @@
-<% remote_form_for :event, @event, :url => {:controller => 'events', :action => action, :id => params[:id]} do |e| %>
+<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event) do |e| %>
 <span>Titre</span>
 <%= e.text_field :title, :class => 'disable-stylesheet-width' %><br />
 <span>Emplacement</span>
 <%= e.text_field :location, :class => 'disable-stylesheet-width' %><br />
+<span>Jour entier</span>
+<%= e.check_box :full_day %><br />
 <span>Du</span>
 <%= e.text_field :start_at, :class => 'disable-stylesheet-width' %><br />
 <span>Au</span>

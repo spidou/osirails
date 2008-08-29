@@ -7,22 +7,25 @@ h1 {
 	text-align: center;
 }
 #group_day {
-	padding-left: 60px;
-	height: 20px;
-	width: 75%;
+	position: relative;
+	margin-left: 70px;
+	right: 0px;
 }
 #group_day .day {
-	float: left;
-	width: 14.285714285714286%;
+	float :left;
+	width: 13.85%;
 	text-align: center;
 }
 #calendar {
-
+}
+#calendar_content {
+	overflow: hidden;
 }
 #calendar #scroll {
 	padding-right: 1px;
 	overflow: auto;
 	height: 600px;
+	clear: left;
 }
 #calendar #scroll #hour_column {
 	width: 70px;
@@ -141,13 +144,14 @@ h1 {
 	});
 	</script>
 	<div class="calendar-buttons">
+		<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
 		<div class="cal-prev" onclick="ajax_link(link_period_before);"></div>
-		<span class="cal-buttons" onclick="navig_selected(link_period_day, this);">jour</span>
-		<span class="cal-buttons" onclick="navig_selected(link_period_week, this);">semaine</span>
-		<span class="cal-buttons" onclick="navig_selected(link_period_month, this);">mois</span>
+		<span class="cal-buttons<%= ' selected' if params[:period] == 'day' %>" onclick="navig_selected(link_period_day, this);">jour</span>
+		<span class="cal-buttons<%= ' selected' if params[:period] == 'week' %>" onclick="navig_selected(link_period_week, this);">semaine</span>
+		<span class="cal-buttons<%= ' selected' if params[:period] == 'month' %>" onclick="navig_selected(link_period_month, this);">mois</span>
 		<div class="cal-next" onclick="ajax_link(link_period_after);"></div>
 	</div>
-	
+
 	<div id="calendar_yield"></div>
 	<div id="event_box">
 		<a style="float: right;" onClick="hide_event_box();">Fermer</a>
@@ -155,6 +159,7 @@ h1 {
 	</div>
 	<script type="text/javascript">
 	ajax_link("<%= navigation(params[:period]) %>");
+	//document.getElementById('secondary_menu').style.display = 'none';
 	new Draggable('event_box');
 	</script>
 </div>

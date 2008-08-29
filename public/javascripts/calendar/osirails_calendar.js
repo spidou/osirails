@@ -21,7 +21,7 @@ function calendar_init (db_id, p, p_b, p_d, p_w, p_m, p_a, g_e) {
   ajax_link(link_get_events);
 }
 
-function add_event (id, title, top, height, color, week_day) {
+function add_event (id, title, top, height, color, week_day, full_day) {
 	var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
 	var events = document.getElementsByClassName('event');
 	for (var i=0; i < events.length; i++) {
@@ -37,7 +37,7 @@ function add_event (id, title, top, height, color, week_day) {
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
 	event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
-	event_div.setAttribute('onclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
+	event_div.setAttribute('ondblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
 	
 	event_content.setAttribute('class', 'event_content');
 	
@@ -165,36 +165,35 @@ function reload_events () {
 }
 
 function display_event_box (action, event_id, event) {
-  for (var i=0; i < event.target.ancestors().length; i++) {
-    if (event.target.ancestors()[i].className == 'event')
-    {
-    	var event_box_elm = document.getElementById(event_box_id);
-    	switch (action) {
-    		case "show":
-    			var db_event_id = event_id.substr(13, event_id.length - 13);
-          ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id, null, 'event_box');
-    		break;
-    		case "new":
-    		var top = event.pageY + document.getElementById('scroll').scrollTop - document.getElementById('grid_' + period).offsetTop;
-    		if (top >= 23 * 60) { top = 23 * 60; };
-    		if (event.target.className == "day_grid_border") {
-    			var date = event.target.parentNode.id;
-    			var temp_event_id = date + "new";
-    			var event_id = 'event' + temp_event_id;
-    			ajax_link('/calendars/' + db_calendar_id + '/events/new?top=' + top +'&height=' + 60 + '&date=' + date, 'event_box')
-    			add_event(temp_event_id, 'Nouvel événement', top, 50, 'blue', event.target.parentNode.id);
-    		};
-    		break;
-    	};
-    	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
-    	event_box_elm.style.top = document.getElementById(event_id).style.top;
-    	event_box_elm.style.visibility = 'visible';
-    	event_box_elm.style.display = 'none';
-    	Effect.Appear(event_box_id, {direction: 'center'});
-    	
-    	break;
+  var event_box_elm = document.getElementById(event_box_id);
+  switch (action) {
+    case "show":
+    for (var i=0; i < event.target.ancestors().length; i++) {
+      if (event.target.ancestors()[i].className == 'event')
+      {
+        var db_event_id = event_id.substr(13, event_id.length - 13);
+        ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id, null, 'event_box');
+        break;
+      };
     };
+    break;
+    case "new":
+    var top = event.pageY + document.getElementById('scroll').scrollTop - document.getElementById('grid_' + period).offsetTop;
+    if (top >= 23 * 60) { top = 23 * 60; };
+    if (event.target.className == "day_grid_border") {
+      var date = event.target.parentNode.id;
+      var temp_event_id = date + "new";
+      var event_id = 'event' + temp_event_id;
+      ajax_link('/calendars/' + db_calendar_id + '/events/new?top=' + top +'&height=' + 60 + '&date=' + date, null, 'event_box')
+      add_event(temp_event_id, 'Nouvel événement', top, 50, 'blue', event.target.parentNode.id, false);
+    };
+    break;
   };
+  document.getElementById(event_id).parentNode.appendChild(event_box_elm);
+  event_box_elm.style.top = document.getElementById(event_id).style.top;
+  event_box_elm.style.visibility = 'visible';
+  event_box_elm.style.display = 'none';
+  Effect.Appear(event_box_id, {direction: 'center'});
 }
 
 function hide_event_box () {

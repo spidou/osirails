@@ -1,6 +1,8 @@
 class EventsController < ActionController::Base
   helper :all
   
+  before_filter :check
+  
   def index
     @calendar = Calendar.find(params[:calendar_id])
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
@@ -31,6 +33,7 @@ class EventsController < ActionController::Base
   end
   
   def new
+    @calendar = Calendar.find(params[:calendar_id])
     @event = Event.new
     @event.title = "Nouvel événement"
     @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
@@ -48,8 +51,10 @@ class EventsController < ActionController::Base
   end
   
   def create
-    @event = Event.create(params[:event])
+    @calendar = Calendar.find(params[:calendar_id])
     params[:event][:by_day] = [params[:event].delete(:by_month_day_num) + params[:event].delete(:by_month_day_wday)] if params[:event][:by_month_day_num] && params[:event][:by_month_day_wday]
+    @event = Event.create(params[:event])
+    @calendar.events << @event
     respond_to do |format|
       format.js
     end   
@@ -88,5 +93,11 @@ class EventsController < ActionController::Base
     respond_to do |format|
       format.js
     end
+  end
+  
+  protected
+  
+  def check
+    # TODO Verify if the current user have the authorization on the calendar and event
   end
 end
