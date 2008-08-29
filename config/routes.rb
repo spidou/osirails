@@ -81,6 +81,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :commodity_categories
   map.commodities_manager "commodities_manager", :controller => "commodities_manager"
   map.connect 'logistics', :controller => 'commodities_manager' #default page for products
+  map.resources :inventories
   ### END LOGISTICS
   
   # Sample of regular route:
