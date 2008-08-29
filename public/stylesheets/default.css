@@ -879,7 +879,7 @@ td.right_cell {
 }
 
 tr.disable:hover > td {
-	background:#CCCCCC;
+	color:#ccc;
 }
 
 table.presentation tr:hover > td{
