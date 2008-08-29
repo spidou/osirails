@@ -1,7 +1,13 @@
-class Document
-  include Permissible
-  
-  def self.bonbon
-    self.can_list?(User.find(2))
-  end
-end
+#class Document < ActiveRecord::Base
+#  
+#  @models = []
+#  
+#  def self.add_model(class_name)
+#    @models << class_name
+#  end
+#  
+#  def self.models
+#    @models
+#  end
+#  
+#end
