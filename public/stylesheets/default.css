@@ -41,7 +41,7 @@ table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
 //	background: #eaeff8;/*Bleu très claire*/
-	background:#F0F0F0;
+	background:#F8F8F8;
 	text-align:center;
 	min-width:70%;
 	margin: 10px 0 10px 10px;
@@ -76,7 +76,7 @@ tr:hover > td > a {
 }
 
 tr.disable > td {
-	color:#999;
+	color:#6D6D6D;
 //	color:#B0383D;/*Rouge*/
 //	font-style:italic;
 }
