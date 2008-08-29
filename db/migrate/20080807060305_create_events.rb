@@ -3,6 +3,7 @@ class CreateEvents < ActiveRecord::Migration
     create_table :events do |t|
       t.references :calendar
       t.string :title, :color, :frequence, :status
+      t.boolean :full_day
       t.text :location, :description, :link
       t.datetime :start_at, :end_at
       t.integer :organizer_id

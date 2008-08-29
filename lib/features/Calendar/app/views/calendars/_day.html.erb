@@ -13,11 +13,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-link_period_before = "<%= navigation_before(@date) %>";
-link_period_day = "<%= navigation('day') %>";
-link_period_week = "<%= navigation('month') %>";
-link_period_month = "<%= navigation('year') %>";
-link_period_after = "<%= navigation_after(@date) %>";
-link_get_events = "<%= get_events_link %>";
-calendar_init('day');
+calendar_init(<%= params[:id] %>, 'day', "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('month') %>", "<%= navigation('year') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>");
 </script>

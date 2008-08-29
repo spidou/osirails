@@ -1,10 +1,31 @@
 class EventsController < ActionController::Base
   helper :all
   
+  def index
+    @calendar = Calendar.find(params[:calendar_id])
+    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+    case params[:period]
+    when "day"
+      @start_date = @date
+      @events = [@calendar.events_at_date(@start_date)]
+    when "week"
+      @start_date = @date.beginning_of_week
+      @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_week)
+    when "month"
+      @start_date = @date.beginning_of_month
+      @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_month)
+    end
+    
+    @period = params[:period]
+    respond_to do |format|
+      format.js
+    end
+  end
+  
   def show
+    @calendar = Calendar.find(params[:calendar_id])
     @event = Event.find(params[:id])
     respond_to do |format|
-      #format.html
       format.js
     end
   end
@@ -15,7 +36,6 @@ class EventsController < ActionController::Base
     @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
     @event.end_at = @event.start_at + (params[:height].to_i).minutes
     respond_to do |format|
-      #format.html
       format.js
     end
   end
@@ -23,7 +43,6 @@ class EventsController < ActionController::Base
   def edit
     @event = Event.find(params[:id])
     respond_to do |format|
-      #format.html
       format.js
     end
   end
@@ -67,7 +86,6 @@ class EventsController < ActionController::Base
     @event.destroy
     
     respond_to do |format|
-      #format.html { redirect_to :back }
       format.js
     end
   end

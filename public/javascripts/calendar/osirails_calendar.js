@@ -6,8 +6,15 @@ event_box_content_id = "event_box_content";
 /* Functions */
 
 /* period must be: 'day' or 'week' or 'year' */
-function calendar_init (p) {
+function calendar_init (db_id, p, p_b, p_d, p_w, p_m, p_a, g_e) {
+  db_calendar_id = db_id;
 	period = p;
+	link_period_before = p_b;
+  link_period_day = p_d;
+  link_period_week = p_w;
+  link_period_month = p_m;
+  link_period_after = p_a;
+  link_get_events = g_e;
 	document.getElementById('grid_' + period).setAttribute('onDblClick', "display_event_box('new', null, event)");
 	document.getElementById('scroll').scrollTop = 480;
   document.body.setAttribute('onResize', "resize_events();");
@@ -30,7 +37,7 @@ function add_event (id, title, top, height, color, week_day) {
 	event_div.setAttribute('id', elm_id);
 	event_div.setAttribute('class', 'event');
 	event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
-	event_div.setAttribute('onDblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
+	event_div.setAttribute('onclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
 	
 	event_content.setAttribute('class', 'event_content');
 	
@@ -158,29 +165,36 @@ function reload_events () {
 }
 
 function display_event_box (action, event_id, event) {
-	event_box_loading();
-	var event_box_elm = document.getElementById(event_box_id);
-	switch (action) {
-		case "show":
-			var db_event_id = event_id.substr(13, event_id.length - 13);
-			new Ajax.Request('/events/'+ action +'/'+ db_event_id, {asynchronous:true, evalScripts:true});
-		break;
-		case "new":
-		var top = event.pageY + document.getElementById('scroll').scrollTop - document.getElementById('grid_' + period).offsetTop;
-		if (top >= 23 * 60) { top = 23 * 60; };
-		if (event.target.className == "day_grid_border") {
-			var date = event.target.parentNode.id;
-			var temp_event_id = date + "new";
-			var event_id = 'event' + temp_event_id;
-			new Ajax.Request('/events/'+ action +'?top=' + top +'&height=' + 60 + '&date=' + date, {asynchronous:true, evalScripts:true});
-			add_event(temp_event_id, 'Nouvel événement', top, 50, 'blue', event.target.parentNode.id);
-		};
-		break;
-	};
-	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
-	event_box_elm.style.top = document.getElementById(event_id).style.top;
-	event_box_elm.style.visibility = 'visible';
-	Effect.Appear(event_box_id, {direction: 'center'});
+  for (var i=0; i < event.target.ancestors().length; i++) {
+    if (event.target.ancestors()[i].className == 'event')
+    {
+    	var event_box_elm = document.getElementById(event_box_id);
+    	switch (action) {
+    		case "show":
+    			var db_event_id = event_id.substr(13, event_id.length - 13);
+          ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id, null, 'event_box');
+    		break;
+    		case "new":
+    		var top = event.pageY + document.getElementById('scroll').scrollTop - document.getElementById('grid_' + period).offsetTop;
+    		if (top >= 23 * 60) { top = 23 * 60; };
+    		if (event.target.className == "day_grid_border") {
+    			var date = event.target.parentNode.id;
+    			var temp_event_id = date + "new";
+    			var event_id = 'event' + temp_event_id;
+    			ajax_link('/calendars/' + db_calendar_id + '/events/new?top=' + top +'&height=' + 60 + '&date=' + date, 'event_box')
+    			add_event(temp_event_id, 'Nouvel événement', top, 50, 'blue', event.target.parentNode.id);
+    		};
+    		break;
+    	};
+    	document.getElementById(event_id).parentNode.appendChild(event_box_elm);
+    	event_box_elm.style.top = document.getElementById(event_id).style.top;
+    	event_box_elm.style.visibility = 'visible';
+    	event_box_elm.style.display = 'none';
+    	Effect.Appear(event_box_id, {direction: 'center'});
+    	
+    	break;
+    };
+  };
 }
 
 function hide_event_box () {
@@ -202,7 +216,7 @@ function save_event (elm_id) {
 	cal_event = document.getElementById(elm_id);
 	event_id = elm_id.substr(13, elm_id.length - 13);
 	date = cal_event.ancestors()[0].ancestors()[0].ancestors()[1].id;
-	if (new Ajax.Request('/events/update/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, {asynchronous:true, evalScripts:true})) {
+	if (ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, 'put')) {
 		// TODO Manage error
 	};
 }
@@ -240,6 +254,10 @@ function clear_events () {
 
 function event_box_loading () {
  	document.getElementById(event_box_content_id).innerHTML = "Chargement";
+}
+
+function event_box_failure () {
+ 	document.getElementById(event_box_content_id).innerHTML = "Erreur lors du chargement, veueillez réessayer";
 }
 
 function event_change (argument, select_elm) {
@@ -338,8 +356,15 @@ function event_change (argument, select_elm) {
 	};
 }
 
-function ajax_link (l) {
-  new Ajax.Request(l, {asynchronous:true, evalScripts:true});
+function ajax_link (l, m, type) {
+  switch (type) {
+  case 'event_box':
+    new Ajax.Request(l, {asynchronous:true, evalScripts:true, method: (m || 'get'), onLoading: "event_box_loading();", onFailure: "event_box_failure();"});
+  break;
+  default:
+    new Ajax.Request(l, {asynchronous:true, evalScripts:true, method: (m || 'get'), onFailure: "alert('Erreur Ajax');"});
+  break;
+  }
 }
 
 function navig_selected (l, elm) {

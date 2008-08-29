@@ -45,7 +45,7 @@ module CalendarsHelper
     when 'month'
       date_before = date - 1.month      
     end
-    "/calendars/1/get_period/" + params[:period] + "/" + date_before.year.to_s + "/" + date_before.month.to_s + "/" + date_before.day.to_s
+    calendar_path(@calendar, :period => params[:period], :year => date_before.year, :month => date_before.month, :day => date_before.day)
   end
   
   def navigation_after(date)
@@ -57,14 +57,14 @@ module CalendarsHelper
     when 'month'
       date_after = date + 1.month     
     end
-    "/calendars/1/get_period/" + params[:period] + "/" + date_after.year.to_s + "/" + date_after.month.to_s + "/" + date_after.day.to_s
+    calendar_path(@calendar, :period => params[:period], :year => date_after.year, :month => date_after.month, :day => date_after.day)
   end
   
   def navigation(period)
-    "/calendars/1/get_period/" + period + "/" + params[:year] + "/" + params[:month] + "/" + params[:day]
+    calendar_path(@calendar, :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day])
   end
   
   def get_events_link
-    "/calendars/1/get_events/" + params[:period] + "/" + params[:year] + "/" + params[:month] + "/" + params[:day]
+    calendar_events_path(@calendar, :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day])
   end
 end
