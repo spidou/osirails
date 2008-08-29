@@ -15,9 +15,7 @@
     <%= label :parent_id, "Parent"%>
     <%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:include_blank => "-- Racine --"}) %>
   <p>
-</div>
 
-<div class="frame">
   <h2>Information du contenu</h2>
   <p>
     <%= content.label :title, "Titre" %>
@@ -33,4 +31,6 @@
     <%= content.label :text, "Votre texte" %>
     <%= content.text_area( :text, :cols => 100, :rows => 30) %>
   </p>
+
+  <%= submit_tag submit_button_name %> <%= link_to 'Retour', :action => 'index' %>
 </div>

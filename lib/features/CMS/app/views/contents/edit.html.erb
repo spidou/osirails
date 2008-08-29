@@ -7,7 +7,5 @@
 <%= display_reload_button %>
 <% form_for(@content) do |content| %>
   <%= content.error_messages %>
-  <%= render :partial => 'form', :locals => {:content => content} %>
-  
-  <%= submit_tag "Modifier" %> <%= link_to 'Retour', :action => 'index' %>
+  <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Modifier"} %>
 <% end %>
