@@ -25,12 +25,12 @@ module CommoditiesManagerHelper
       
       add_button = add_category_or_commodity(commodity_category) 
       delete_button = show_delete_button(commodity_category)
-      disable = commodity_category.enable ? "" : "disable"
+      status = commodity_category.enable ? "enable" : "disable" if show == nil
       
-      table << "<tr id='commodity_category_#{commodity_category.id}' class=' commodity_category_#{commodity_category.id} #{disable}'>"
+      table << "<tr id='commodity_category_#{commodity_category.id}' class=' commodity_category_#{commodity_category.id} #{status}'>"
       table << "<td>"+in_place_editor(commodity_category,'name')+"</td>"
       table << "<td colspan='8'></td>"
-      table << "<td>#{add_button} #{delete_button}</td>" if show == false
+      table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and commodity_category.enable == false
       table << "</tr>"
       # Get Structur for children commodities categories
       unless commodity_category.children.size == 0
@@ -38,13 +38,13 @@ module CommoditiesManagerHelper
           unless category_child.enable == show
             add_button = add_category_or_commodity(category_child)
             delete_button = show_delete_button(category_child)
-            disable = category_child.enable ? "" : "disable"
+            status = category_child.enable ? "enable" : "disable" if show == nil
           
-            table << "<tr id='commodity_category_#{category_child.id}' class=' commodity_category_#{category_child.id} #{commodity_category.name} #{disable}'>"
+            table << "<tr id='commodity_category_#{category_child.id}' class=' commodity_category_#{category_child.id} #{commodity_category.name} #{status}'>"
             table << "<td></td>"
             table << "<td>"+in_place_editor(category_child,'name')+"(#{category_child.commodities_count})</td>"
             table << "<td colspan='7'></td>"
-            table << "<td>#{add_button} #{delete_button}</td>" if show == false
+            table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and category_child.enable == false
             table << "</tr>"
 
             # Get structur for commodities
@@ -55,8 +55,8 @@ module CommoditiesManagerHelper
                   unit_measure = UnitMeasure.find(category_child.unit_measure_id)
                   
                   delete_button = show_delete_button(commodity)
-                  disable = commodity.enable ? "" : "disable"
-                  table << "<tr id='commodity_#{commodity.id}' class='#{commodity.name} #{category_child.name} #{commodity_category.name} #{disable}'>"
+                  status = commodity.enable ? "enable" : "disable" if show == nil
+                  table << "<tr id='commodity_#{commodity.id}' class='#{commodity.name} #{category_child.name} #{commodity_category.name} #{status}'>"
                   table << "<td colspan='2'></td>"
                   table << "<td>#{supplier.name}</td>" #FIXME Add Cities
                   table << "<td>"+in_place_editor(commodity,'name')+"</td>"
@@ -65,7 +65,7 @@ module CommoditiesManagerHelper
                   table << "<td  >"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
                   table << "<td  >"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
                   table << "<td><span id='commodity_#{commodity.id}_price'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
-                  table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity, { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>" if show == false
+                  table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>" unless show == nil and commodity.enable == false
                   table << "</tr>"
                 end
               end

@@ -12,7 +12,7 @@
       <th rowspan='2'>Unit&eacute;e de mesure/U</th>
       <th rowspan='2'>Masse/U (kg)</th>
       <th colspan='3'>Prix/U (&euro;)</th>
-      <%= "<th rowspan='2'>Actions</th>" unless @type == "show_all" %>
+      <th rowspan='2'>Actions</th>
       <tr>
         <th>FOB</th>
         <th>Coef Taxe</th>
@@ -21,6 +21,6 @@
     </tr>
 <%= @type != "show_all" ? get_structured : get_structured(nil) %>
   </table>
-  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) unless @type == "show_all" %>
+  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
   <%= @type != "show_all" ? link_to("Afficher toutes les categories et matières premières (deactivé inclus)", :action => "index", :type => "show_all") : link_to("Afficher toutes les categories et matières premières (actives uniquement)", :action => "index") %>
 </div>
