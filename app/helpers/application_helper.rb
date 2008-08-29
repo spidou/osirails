@@ -79,18 +79,26 @@ module ApplicationHelper
   end
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+    
+    tag_options[:name] = tag_options[:name].split('_')
+    new_name = tag_options[:name].shift
+    tag_options[:name].each{|a| new_name += '['+a+']'}
+    
+    
     if(tag_options[:index])
-      tag_name = "new_#{object}#{tag_options[:index]}_#{method}"
+      tag_id = "#{tag_options[:name]}_#{object}s_#{tag_options[:index]}_#{method}"
+      tag_name = "#{new_name}[#{object}s][#{tag_options[:index]}][#{method}]"
     else
-      tag_name = "new_#{object}#{method}"
+      tag_id = "#{tag_options[:name]}_#{object}_#{method}"
+      tag_name = "#{new_name}[#{object}][#{method}]"
     end
     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
       
 #        text_field(object, method, tag_options) +
-        content_tag("input", "", :id => "new_#{object}#{tag_options[:index]}_#{method}", :type => "text", :size => 30, 
-        :name => "new_#{object}#{tag_options[:index]}[#{method}]", :autocomplete => "off") +
-        content_tag("div", "", :id => tag_name + "_auto_complete", :class => "auto_complete") +
-        auto_complete_field(tag_name, { :url => {:controller => "#{tag_options[:url][:controller]}", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
+        content_tag("input", "", :id => tag_id, :type => "text", :size => 30, 
+        :name => tag_name, :autocomplete => "off") +
+        content_tag("div", "", :id => tag_id + "_auto_complete", :class => "auto_complete") +
+        auto_complete_field(tag_id, { :url => {:controller => "#{tag_options[:url][:controller]}", :action => "auto_complete_for_#{object}_#{method}", :country_id => tag_options[:country_id]} }.update(completion_options))
                                                                 
   end
 end
