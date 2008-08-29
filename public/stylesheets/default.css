@@ -40,7 +40,8 @@ caption {
 table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
-	background: #eaeff8;
+//	background: #eaeff8;/*Bleu très claire*/
+	background:#E8E8E8;
 	text-align:center;
 	min-width:70%;
 	margin: 10px 0 10px 10px;
@@ -73,6 +74,17 @@ tr:hover > td{
 tr:hover > td > a {
 	text-decoration:underline;
 }
+
+tr.disable > td {
+	color:#bbb;
+//	color:#B0383D;/*Rouge*/
+//	font-style:italic;
+}
+
+tr.enable > td {
+//	color:#4C8B38;
+}
+
 
 /*/////////////////////////////
 			TITRE
@@ -876,15 +888,6 @@ td.left_cell {
 td.right_cell {
 	width:800px;
 	padding-bottom:10px;
-}
-
-tr.disable > td {
-	color:#B0383D;
-//	font-style:italic;
-}
-
-tr.enable > td {
-	color:#4C8B38;
 }
 
 table.presentation tr:hover > td{
