@@ -18,6 +18,7 @@ class CommoditiesController < ApplicationController
       flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
+      @commodity_category_id = params[:commodity][:commodity_category_id]
       render :action => 'new'
     end
   end

@@ -15,6 +15,21 @@ module CommoditiesManagerHelper
     editable_content_tag(:span, object, "#{attribute}", true, nil, {}, {:okText => 'Modifier'})
   end
   
+  # This method permit to generate a counter for  categories
+  def show_counter_category(commodity_category,show)
+    counter = 0
+    
+    return commodity_category.commodities.count if show == nil and !commodity_category.commodity_category_id.nil?
+    return commodity_category.commodities_count if show == false and !commodity_category.commodity_category_id.nil?
+    
+    commodities_categories = CommodityCategory.find_all_by_commodity_category_id(commodity_category.id)
+    commodities_categories.each do |category_child|
+      counter += category_child.commodities.count if show == nil
+      counter += category_child.commodities_count if show == false
+    end
+    counter
+  end
+  
   # This method permit to have a table's structur
   def get_structured(show = false)
     commodity_categories = CommodityCategory.find_all_by_commodity_category_id(nil)
@@ -28,7 +43,7 @@ module CommoditiesManagerHelper
       status = commodity_category.enable ? "enable" : "disable" if show == nil
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class=' commodity_category_#{commodity_category.id} #{status}'>"
-      table << "<td>"+in_place_editor(commodity_category,'name')+"</td>"
+      table << "<td>"+in_place_editor(commodity_category,'name')+" (#{show_counter_category(commodity_category,show)})</td>"
       table << "<td colspan='8'></td>"
       table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and commodity_category.enable == false
       table << "</tr>"
@@ -40,9 +55,9 @@ module CommoditiesManagerHelper
             delete_button = show_delete_button(category_child)
             status = category_child.enable ? "enable" : "disable" if show == nil
           
-            table << "<tr id='commodity_category_#{category_child.id}' class=' commodity_category_#{category_child.id} #{commodity_category.name} #{status}'>"
+            table << "<tr id='commodity_category_#{category_child.id}' class=' commodity_category_#{category_child.id} commodity_category_#{commodity_category.name} #{status}'>"
             table << "<td></td>"
-            table << "<td>"+in_place_editor(category_child,'name')+"(#{category_child.commodities_count})</td>"
+            table << "<td>"+in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
             table << "<td colspan='7'></td>"
             table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and category_child.enable == false
             table << "</tr>"
@@ -56,7 +71,7 @@ module CommoditiesManagerHelper
                   
                   delete_button = show_delete_button(commodity)
                   status = commodity.enable ? "enable" : "disable" if show == nil
-                  table << "<tr id='commodity_#{commodity.id}' class='#{commodity.name} #{category_child.name} #{commodity_category.name} #{status}'>"
+                  table << "<tr id='commodity_#{commodity.id}' class='commodity_#{commodity.id} commodity_category_#{category_child.id} commodity_category_#{commodity_category.id} #{status}'>"
                   table << "<td colspan='2'></td>"
                   table << "<td>#{supplier.name}</td>" #FIXME Add Cities
                   table << "<td>"+in_place_editor(commodity,'name')+"</td>"

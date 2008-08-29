@@ -2,9 +2,9 @@
 <div class="frame">
 
   <% form_for(@commodity) do |commodity| %>
- 
+ <p>
   <%= commodity.error_messages %>
-
+</p>
       <p>
       <%= commodity.label :name, "D&eacute;signation :"%>
       <%= commodity.text_field :name %>
@@ -22,7 +22,8 @@
     </p>
 
       <p>
-        <span id='commodity_unit_measure'><%= @unit_measure.symbol+" / U" %></span>
+<% puts params[:id] %>
+        <span id='commodity_unit_measure'><%= params[:id] != nil ? show_parent_measure(params[:id]) : show_parent_measure(@commodity_category_id) %></span>
       <%= commodity.text_field :measure %>
     </p> 
   
@@ -41,6 +42,6 @@
       <%= commodity.text_field :taxe_coefficient %>
     </p> 
   
-        <%= commodity.submit "Ajouter"%> &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
+        <%= commodity.submit("Ajouter") %>         &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
   <% end %>
 </div>
