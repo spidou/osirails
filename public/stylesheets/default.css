@@ -76,9 +76,9 @@ tr:hover > td > a {
 }
 
 tr.disable > td {
-	color:#6D6D6D;
+	color:#888;
 //	color:#B0383D;/*Rouge*/
-//	font-style:italic;
+	font-style:italic;
 }
 
 tr.enable > td {
