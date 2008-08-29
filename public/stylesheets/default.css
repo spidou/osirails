@@ -880,6 +880,7 @@ td.right_cell {
 
 tr.disable > td {
 	color:#767676;
+	font-style:italic;
 }
 
 tr.disable:hover > td {
