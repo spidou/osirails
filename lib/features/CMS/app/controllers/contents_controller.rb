@@ -10,7 +10,7 @@ class ContentsController < ApplicationController
     @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
     @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
     @contributors_full_names = []
-    @contributors.each {|contributor| @contributors_full_names << contributor.employee.fullname}
+    @contributors.each {|contributor| @contributors_full_names << (contributor.employee.nil? ? contributor.username : contributor.employee.fullname)}
     @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
   end
   
@@ -79,8 +79,9 @@ class ContentsController < ApplicationController
     # TODO Add contributor's id into the contributor_array  
     
     @content.contributors ||= []
+    @content.contributors.delete(current_user.id)
     params[:content][:contributors] = @content.contributors
-    params[:content][:contributors] << current_user.id unless @content.contributors.include?(current_user.id)
+    params[:content][:contributors] << current_user.id
     
     puts params[:menu].keys
     unless @menu.update_attributes(params[:menu])
@@ -99,7 +100,8 @@ class ContentsController < ApplicationController
         content_attributes.delete("contributors")
         content_attributes.delete("author_id")
         content_attributes[:content_id] = params[:id]
-        content_attributes[:contributor_id] = current_user.id
+        # size - 2 is use to get before next to last
+        content_attributes[:contributor_id] = (@content.contributors.empty? ? @content.author : @content.contributors[@content.contributors.size - 2])
         ContentVersion.create(content_attributes)
       end
     end

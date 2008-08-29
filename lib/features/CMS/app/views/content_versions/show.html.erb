@@ -4,7 +4,7 @@
 <h2> <%= content_version.description %></h2>
             <p><%= content_version.text%></p>
 <%unless @author.nil?%>
-<p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
+<p>Auteur : <%=@author.employee.nil? ? @author.username : @author.employee.fullname %></p>
 <%end%>
 <% unless content_version.contributor.nil? or content_version.contributor == ""%>
   <p> Contributeur : <%= contributor_full_name(content_version)%>

@@ -3,7 +3,9 @@
   <h2> <%= @content.description %></h2>
   <p><%= @content.text %></p>
   <% unless @author.nil? %>
-    <p>Auteur : <%=@author.employee.fullname unless @author.nil? %></p>
+
+        <p>Auteur : <%=@author.employee.nil? ? @author.username : @author.employee.fullname %></p>
+
   <% end %>
 
   <% if @contributors_full_names.length > 0 %>
