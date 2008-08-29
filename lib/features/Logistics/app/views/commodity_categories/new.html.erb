@@ -12,9 +12,7 @@
     </p>
   
     <p>
-<% puts '----------------------------------------------------------'%>
-<% puts @root_commodity_category %>
-      <% if (@type == "child" or @root_commodity_category != nil) %>
+      <% if @type == "child" or @root_commodity_category != nil %>
         <%= category.label :unit_measure_id, "Unit&eacute;e de mesure :" %>
         <%= category.collection_select(:unit_measure_id, format_unit_measure, :id, :name, {}) %>
       <% end %>

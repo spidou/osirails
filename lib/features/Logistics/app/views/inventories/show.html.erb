@@ -1,0 +1,14 @@
+<h1><%= "D&eacute;tail de l'inventaire #{@inventory.id}" %></h1>
+<div class='frame'>
+  <table>
+    <tr>
+      <th>Nom</th>
+    </tr>
+    <% for commodity in @commodities %>
+      <tr>
+        <td><%= commodity.name%></td>
+      </tr>
+    <%end %>
+  </table>
+  <%= link_to("Retour", :action => 'index') %>
+</div>

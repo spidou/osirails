@@ -15,9 +15,8 @@ class CommodityCategoriesController < ApplicationController
       flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
-      unless params[:commodity_category][:commodity_category_id].nil?
-        commodity_category = CommodityCategory.find_by_id(params[:commodity_category][:commodity_category_id])
-        @root_commodity_category = commodity_category.commodity_category_id
+      unless params[:commodity_category][:commodity_category_id].to_i == 0
+        @root_commodity_category = params[:commodity_category][:commodity_category_id].to_i
       end
       render :action => 'new'
     end
