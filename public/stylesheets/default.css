@@ -879,7 +879,8 @@ td.right_cell {
 }
 
 tr.disable:hover > td {
-	color:#ccc;
+	color:#767676;
+	background:none;
 }
 
 table.presentation tr:hover > td{
