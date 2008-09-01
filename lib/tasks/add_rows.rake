@@ -212,14 +212,23 @@ namespace :osirails do
       SocietyActivitySector.create :name => "Signalétique"
       SocietyActivitySector.create :name => "Routes"
       SocietyActivitySector.create :name => "Usinage"
+      
+      # default file types
+    FileType.create :name => "Employee", :model_owner => "Employee"
+    FileType.create :name => "Dossier Commercial", :model_owner => "Dossier"
+    FileType.create :name => "Dossier Production", :model_owner => "Dossier"
+    FileType.create :name => "Dossier Facturation", :model_owner => "Dossier"
+    FileType.create :name => "Évènement de calendrier", :model_owner => "Event"
+    
     end
+    
 
     desc "Depopulate the database"
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector].each do |model|
+        SocietyActivitySector,ActivitySector,FileType].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
