@@ -18,7 +18,8 @@ class FileManager
       options[:extensions].each do |extension|
         valid_extension ||= name.end_with?("." + extension)
       end
-      if valid_extension == false
+      if !valid_extension
+        raise "Not valid extension"
         return false
       end
     end
