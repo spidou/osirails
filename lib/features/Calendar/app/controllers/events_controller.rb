@@ -44,6 +44,7 @@ class EventsController < ActionController::Base
   end
   
   def edit
+    @calendar = Calendar.find(params[:calendar_id])
     @event = Event.find(params[:id])
     respond_to do |format|
       format.js

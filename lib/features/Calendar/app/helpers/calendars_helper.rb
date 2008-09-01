@@ -72,7 +72,7 @@ module CalendarsHelper
     return_html = ""
     tmp_date = date.beginning_of_week
   	7.times do
-      return_html += "<div class=\"day\">" + $day_fr[tmp_date.wday] + " " + tmp_date.day.to_s + "<div></div></div>"
+      return_html += "<div class=\"day\">" + $day_fr[tmp_date.wday] + " " + tmp_date.day.to_s + "</div>"
   	tmp_date += 1.days
   	end
   	return_html

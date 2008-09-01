@@ -15,7 +15,7 @@ class CalendarsController < ActionController::Base
   def check_date
     @calendar = Calendar.find(params[:id])
     params[:period] = "week" if params[:period].nil?
-    unless ["day", "week", "year"].include?(params[:period].downcase)
+    unless ["day", "week", "month"].include?(params[:period].downcase)
       params[:period] = "week"
       flash[:error] = "La période demander est invalide"
     end

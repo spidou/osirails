@@ -10,7 +10,6 @@ class Alarm < ActiveRecord::Base
   # :do_alarm_before    :integer
   # :repeat             :integer
   # :duration           :integer
-  # :repeat             :integer
   # :email_to           :string
   #
   # If you choose the "DISPLAY" action, you must specifies: action,

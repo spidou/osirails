@@ -9,12 +9,17 @@ h1 {
 #group_day {
 	position: relative;
 	margin-left: 70px;
+	margin-right: 15px;
 	right: 0px;
 }
 #group_day .day {
 	float :left;
 	width: 13.85%;
 	text-align: center;
+}
+#group_day #full_day_bar {
+	display: inline;
+	padding-top: 18px;
 }
 #calendar {
 }
@@ -42,7 +47,7 @@ h1 {
 	height: 1440px;
 }
 #calendar #scroll #grid_week .day_grid {
-	float:left;
+	float: left;
 	width: 14.285714285714286%;
 	height: 100%;
 	z-index: -100;
@@ -62,7 +67,7 @@ h1 {
 	height: 1440px;
 }
 #calendar #scroll #grid_day .day_grid {
-	float:left;
+	float: left;
 	width: 100%;
 	height: 100%;
 	z-index: -100;
@@ -87,6 +92,10 @@ h1 {
 }
 #calendar #scroll #grid_day li {
 	width: 99.8%;
+}
+#calendar #scroll #grid_month {
+	overflow: hidden;
+	height: 100%;
 }
 #calendar #scroll .event {
 	position: absolute;

@@ -30,8 +30,8 @@ function add_event (id, title, top, height, color, week_day, full_day) {
 		};
 	};
 	var elm_id = 'event' + id
-	var event_div = document.createElement("div");
-	var event_content = document.createElement("div");
+	var event_div = document.createElement('div');
+	var event_content = document.createElement('div');
 	var li = document.createElement("li");
 	
 	event_div.setAttribute('id', elm_id);
@@ -373,4 +373,61 @@ function navig_selected (l, elm) {
   };
   elm.className = "cal-buttons selected";
   ajax_link(l);
+}
+
+function full_day_checked (object) {
+  var start_at_elm = document.getElementById('event_start_at');
+  var end_at_elm = document.getElementById('event_end_at');
+  
+  if (object.checked) {
+    start_at_elm.value = start_at_elm.value.substr(0, 10);
+    end_at_elm.value = end_at_elm.value.substr(0, 10);
+    Calendar.setup({ 
+    	inputField : "event_start_at",
+    	ifFormat : "%Y-%m-%d",
+    	timeFormat : "24"
+    });
+    Calendar.setup({ 
+    	inputField : "event_end_at",
+    	ifFormat : "%Y-%m-%d",
+    	timeFormat : "24"
+    });
+  } else {
+    Calendar.setup({ 
+    	inputField : "event_start_at",
+    	ifFormat : "%Y-%m-%d %H:%M:%S",
+    	showsTime : true,
+    	timeFormat : "24"
+    });
+    Calendar.setup({ 
+    	inputField : "event_end_at",
+    	ifFormat : "%Y-%m-%d %H:%M:%S",
+    	showsTime : true,
+    	timeFormat : "24"
+    });
+  };
+}
+
+function full_day_event (event_elm, boolean) {
+  var day_elm = event_elm.ancestors()[3];
+  if (boolean) {
+    
+  } else {
+    
+  };
+}
+
+function alarm_selected (object) {
+ 	var alarm_div = document.getElementById('alarm');
+  switch (object.selectedIndex) {
+    case 0:
+      alarm_div.style.display = 'none';
+    break;
+    case 1:
+      alarm_div.style.display = 'inline';
+    break;
+    case 2:
+      alarm_div.style.display = 'inline';
+    break;
+  };
 }
