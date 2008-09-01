@@ -85,6 +85,49 @@ tr.enable > td {
 //	color:#4C8B38;
 }
 
+/*:::::::::TABLEAU SANS STYLE:::::::::*/
+caption.no-style {
+	background: none;
+	color: inherit;
+	font-weight:none;
+	border-bottom: none;
+}
+
+table.no-style {
+	border-collapse: collapse;
+	border:solid 1px 333;
+	background: none;
+	text-align:center;
+	width:inherit;
+	margin: 10px 0 10px 10px;
+}
+
+table.no-style a {
+	text-decoration: none;
+	color:gray;
+}
+
+table.no-style a:hover {
+	text-decoration: none;
+	color:white !important;
+}
+
+table.no-style th{
+	border:solid 1px #333;
+	background: none;
+}
+
+table.no-style td{
+	border:solid 1px #333;
+}
+
+table.no-style tr:hover > td{
+	background: none;
+}
+
+table.no-style tr:hover > td > a {
+	text-decoration:underline;
+}
 
 /*/////////////////////////////
 			TITRE
