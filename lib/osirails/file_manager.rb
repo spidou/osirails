@@ -8,10 +8,12 @@ class FileManager
   def self.upload_file(options)
     return false if options[:file].nil?
     if options[:directory].nil?
-      directory = "tmp/"
+      options[:directory] = "tmp/"
     end
     if options[:name].nil?
       name =  options[:file]['datafile'].original_filename
+    else
+      name = options[:name]
     end
     if !options[:extensions].nil?
       valid_extension = false
@@ -26,6 +28,10 @@ class FileManager
     path = File.join(options[:directory], name)
     File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
     true
+  end
+  
+  def self.delete_file(file)
+    FileUtils.rm_rf(file)
   end
 
 end
