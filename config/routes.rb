@@ -67,7 +67,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :calendars do |calendar|
     calendar.resources :events
   end
-  map.connect ':controller/:id/:period/:year/:month/:day', :controller => 'calendars', :action => 'show', :period => nil, :year => nil, :month => nil, :day => nil
+  map.connect 'calendars/:id/:period/:year/:month/:day', :controller => 'calendars', :action => 'show', :period => nil, :year => nil, :month => nil, :day => nil
   ### END CALENDAR
 
   ### COMMONS
