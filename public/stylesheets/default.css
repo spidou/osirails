@@ -1068,6 +1068,23 @@ table.presentation tr:hover > td{
 	width:inherit;
 }
 
+fieldset.no-style {
+	background: none;
+	border: none;
+	margin-left:none;
+	margin-bottom: none;
+}
+
+fieldset.no-style legend {
+	margin-left:none;
+	padding: none;
+	text-indent:0;
+	border: none;
+	font-size: inherit;
+	color: inherit;
+	background:none;
+}
+
 /*/////////////////LISTE:HIERARCHIQUE/////////////////*/
 .hierarchic {
 	margin-left:10px;
