@@ -831,14 +831,27 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	border:solid 2px #B0383D;
 	color:#B0383D;
 	margin-left: 10px;
-	position:relative;
-	bottom:15px;
+	vertical-align:top;
+//	position:relative;
+//	bottom:15px;
 }
 
-.fieldWithErrors input:after,
 .fieldWithErrors label:after {
 	content: " *";
 	color:#B0383D;
+}
+div.fieldWithErrors {
+	display:inline;
+//	margin-left:10px;
+}
+.fieldWithErrors label {
+	color:#B0383D;
+	margin-left:20px;
+	text-align:right;
+	display:inline-block;
+//	width:inherit;
+	position:relative;
+	left:10px;
 }
 
 /**/
@@ -854,9 +867,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	width:450px;
 }
 
-.errorExplanation p,
-#errorExplanation p {
-}
 
 #errorExplanation ul li,
 .errorExplanation ul li {
@@ -886,13 +896,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	padding-left:5px;
 	padding-right:5px;
 	overflow:hidden;
-}
-
-.fieldWithErrors label {
-	color:#B0383D;
-	margin-left:10px;
-	position:relative;
-	top:5px;
 }
 
 /**/
@@ -978,11 +981,6 @@ table.presentation tr:hover > td{
 .date_days {
 	margin:0px 20px 0px -15px ;
 }
-
-.frame input[type=text],
-.frame input[type=password] {
-//	width: 250px;
-}
 /*
 .frame form {
 //	width: 70%;
@@ -1060,11 +1058,13 @@ table.presentation tr:hover > td{
 .frame label {
 	text-align:right;
 	margin-right:10px;
-	width:200px;
+	width:210px;
 	display:inline-block;
 }
 
-.frame input,textarea {
+.frame input[type=text],
+.frame input[type=password],
+.frame textarea {
 	margin-bottom:10px;
 	vertical-align:top;
 	border: #CCC 1px solid;
