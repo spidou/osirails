@@ -214,12 +214,30 @@ namespace :osirails do
       SocietyActivitySector.create :name => "Usinage"
       
       # default file types
-    FileType.create :name => "Employee", :model_owner => "Employee"
-    FileType.create :name => "Dossier Commercial", :model_owner => "Dossier"
-    FileType.create :name => "Dossier Production", :model_owner => "Dossier"
-    FileType.create :name => "Dossier Facturation", :model_owner => "Dossier"
-    FileType.create :name => "Évènement de calendrier", :model_owner => "Event"
-    
+      f = FileType.create :name => "CV", :model_owner => "Employee"
+      f.file_type_extensions << FileTypeExtension.create(:name =>"doc")
+      f.file_type_extensions << FileTypeExtension.create(:name =>"docx")
+      f.file_type_extensions << FileTypeExtension.create(:name =>"odt")
+      f.file_type_extensions << FileTypeExtension.create(:name =>"pdf")
+      
+      f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
+      f.file_type_extensions << FileTypeExtension.find_by_name("doc")
+      f.file_type_extensions << FileTypeExtension.find_by_name("docx")
+      f.file_type_extensions << FileTypeExtension.find_by_name("odt")
+      
+      f = FileType.create :name => "Contrat de travail", :model_owner => "Employee"
+      f.file_type_extensions << FileTypeExtension.find_by_name("doc")
+      f.file_type_extensions << FileTypeExtension.find_by_name("docx")
+      f.file_type_extensions << FileTypeExtension.find_by_name("odt")
+      
+      FileType.create :name => "Photo Survey", :model_owner => "Dossier"
+      
+      FileType.create :name => "Plan conception", :model_owner => "Dossier"
+      FileType.create :name => "Maquette", :model_owner => "Dossier"
+      FileType.create :name => "Devis", :model_owner => "Dossier"
+      FileType.create :name => "Facture", :model_owner => "Dossier"
+
+
     end
     
 
@@ -228,7 +246,7 @@ namespace :osirails do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType].each do |model|
+        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all

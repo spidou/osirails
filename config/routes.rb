@@ -84,6 +84,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :inventories
   ### END LOGISTICS
   
+  #### Test of Document Controller
+  map.resources :downloads
+  
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action

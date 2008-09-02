@@ -1,4 +1,7 @@
 class Third < ActiveRecord::Base
+  # To get Document
+  acts_as_file
+
   has_one :address, :as => :has_address
   
   belongs_to :activity_sector

@@ -1,0 +1,34 @@
+<div class="frame">
+  <h2>Uploader un document</h2>
+  <% form_for(:document, document, :url => { :controller => "Documents", :action => "create" , :owner => {:owner_id => owner.id, :owner_model => owner.class.name}}, :html => { :multipart => true}) do |d| %>
+    
+    <p>
+      <%= d.label :title%>
+      <%= d.text_field :title%>
+    </p>
+  
+    <p>
+      <%= d.label :description%>
+      <%= d.text_field :description%>
+    </p>
+  
+    <p>
+      <%= d.label :file_type_id, "Type de fichier"%>
+      <%= get_%>
+    </p>
+    
+      <p>
+        <%= label :file, "Fichier"%>
+        <%= file_upload%>
+      </p>
+    
+        <%= d.submit "Uploader"%>
+  
+<%end%>
+
+<%= observe_field :document_file_type_id,
+                                    :url => { :controller => 'documents', :action => 'file_type_change' },
+                                    :with => "'file_type_id=' +value"%>
+
+
+</div>

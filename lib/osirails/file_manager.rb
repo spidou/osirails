@@ -15,15 +15,25 @@ class FileManager
     else
       name = options[:name]
     end
-    if !options[:extensions].nil?
+    valid_extension = false
+    
+    unless options[:extensions].nil?
       valid_extension = false
       options[:extensions].each do |extension|
-        valid_extension ||= name.end_with?("." + extension)
+        if name.end_with?("." + extension)
+          valid_extension = true
+        end
       end
-      if !valid_extension
+      unless valid_extension
         raise "Not valid extension"
         return false
       end
+    end
+    ## Creation of path on server
+    directory = ""
+    options[:directory].split("/").each do |d|
+      directory += d +"/"
+      Dir.mkdir(directory) unless File.exist?(directory)
     end
     path = File.join(options[:directory], name)
     File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }

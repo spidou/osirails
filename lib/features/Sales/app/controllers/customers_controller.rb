@@ -1,4 +1,4 @@
-  class CustomersController < ApplicationController
+class CustomersController < ApplicationController
 
   def index
     @customers = Customer.find(:all)
@@ -6,20 +6,32 @@
 
   def new
     @customer = Customer.new
+    @customer.activity_sector  = ActivitySector.new()
   end
 
   def create
-    if ActivitySector.find_by_name(params[:new_activity_sector1][:name]).nil?
-      @new_activity_sector1 = ActivitySector.new(:name => params[:new_activity_sector1][:name])
-      @new_activity_sector1.save
+    activity_sector_name = params[:customer].delete("activity_sector")
+    
+    activity_sector_name[:name].capitalize!
+    unless @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+      @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
     end
-    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])    
     @customer = Customer.new(params[:customer])
-    @customer.activity_sector = activity_sector
-    if @customer.save
+    @customer.activity_sector = @activity_sector
+    if @customer.save      
+      @activity_sector.save
       flash[:notice] = "Client ajout&eacute; avec succes"
       redirect_to :action => 'index'
+      
+      ######## Test of FileManager##########
+      unless params[:upload][:datafile].blank?
+        document = params[:upload]
+        FileManager.upload_file(:file => document)
+        @customer.documents << Document.create(:titre => document[:datafile].original_filename)      
+      end
+      ###############################
     else
+      params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
       render :action => 'new'
     end
   end
@@ -38,31 +50,25 @@
   end
 
   def update
+
     @customer = Customer.find(params[:id])
     @address = @customer.address
-    @activity_sector = @customer.activity_sector.name
+    
+    activity_sector_name = params[:customer].delete("activity_sector")
+    activity_sector_name[:name].capitalize!
+    unless @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+      @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
+    end
     
     # @error is use to know if all form are valids
     @error = false
-    activity_sector_id= nil
-    if ActivitySector.find_by_name(params[:new_activity_sector1][:name].capitalize).nil?
-      activity_sector = ActivitySector.new(:name => params[:new_activity_sector1][:name])
-      if activity_sector.valid?
-        activity_sector.save
-      end
-    end
-    activity_sector = ActivitySector.find_by_name(params[:new_activity_sector1][:name])
-    if activity_sector != nil
-      params[:customer][:activity_sector_id] = activity_sector.id
-      activity_sector_id = activity_sector.id
-    else
-      @error = true
-    end
-    @customer.activity_sector_id= activity_sector_id
+    
+    @customer.activity_sector = @activity_sector
     unless @customer.update_attributes(params[:customer])
       @error = true
+    else 
+      @activity_sector.save
     end
-    @customer.legal_form_id
     # If establishment_form is not null
     unless params[:new_establishment_number]["value"] == 0  
       new_estbalishment_number = params[:new_establishment_number]["value"].to_i
@@ -184,12 +190,20 @@
     end
         
     unless @error
+      ######## Test of FileManager##########
+      unless params[:upload][:datafile].blank?
+        if document =Document.create(:titre => params[:upload][:datafile].original_filename)
+          FileManager.upload_file(:file => params[:upload], :name =>document.id.to_s)
+          @customer.documents << document
+          @customer.save
+        end
+      end
+      ##############################
+    
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
-      @new_establishment_number = 0
-      @new_contact_number = 0
       redirect_to customers_path
     else
-      @activity_sector = params[:new_activity_sector1][:name]
+      params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
       @new_establishment_number = params[:new_establishment_number]["value"]
       @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
@@ -202,7 +216,7 @@
   def destroy
     @customer = Customer.find(params[:id])
     if @customer.destroy
-    redirect_to(customers_path)
+      redirect_to(customers_path)
     else
       flash[:error] = "Une erreur est survenu lors de la suppression du contact"
       redirect_to :back 

@@ -1,6 +1,7 @@
 <h1>Modifier un client </h1>
 
-  <% form_for(@customer) do |customer| %>
+  <% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
+    
     <%= customer.error_messages %>
     <% #Display customer infos%>
     <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer} %>
@@ -31,7 +32,7 @@
     <% if @contacts.length > 0 -%>
       
       <div class="frame">
-      <h2> Contacts du client</h2> 
+      <h2> Contarects du client</h2> 
         
         <% for contact in @contacts%>
           <div <%= "id='customer_contact#{contact.id}'" %>>
@@ -87,5 +88,21 @@
 
     <%= customer.submit  'Modifier' %>
   <% end %>
+  
+  <%# Test of download#############################%>   
 
+
+  <%# Telechargement #############################%>
+  <% for document in @customer.documents%>
+    <br/>
+    <%= link_to "download", :controller => "documents", :action => "show", :id => document.id%>
+  <%end%>
+  <%#########################################%>
+  
+  <%# Upload#####################################%>
+  <%= get_document_form(@customer) %>
+  <%##############################################%>
+
+  <%##############################################%>
+  
   <%= link_to 'Retour', :action => 'index' %>

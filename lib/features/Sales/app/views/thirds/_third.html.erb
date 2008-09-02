@@ -18,18 +18,13 @@
     <%= third.label :siret_number, "Num&eacute;ro SIRET :"%>
     <%= third.text_field(:siret_number, "maxlength" => 14) %>
   </p>
-  <% if !params[:new_activity_sector1].nil? %>
-     <% activity_sector = params[:new_activity_sector1]%>
-  <% elsif !third_.activity_sector_id.nil? %>
-    <% activity_sector = ActivitySector.find_by_id(third_.activity_sector_id).name %>
-  <%end%>
-  <% activity_sector = params[:new_activity_sector1][:name]  unless params[:new_activity_sector1].nil? %>
 
+  <% params["#{third_.type.downcase}"].nil? ? activity_sector = third_.activity_sector.name : activity_sector = params["#{third_.type.downcase}"][:activity_sector][:name]%>
   <p class="text_form">
     <%= third.label :activity_sector_id, "Secteur d'activit&eacute; :"%>
-    <%= my_text_field_with_auto_complete(:activity_sector, :name, {:index => 1, :value => activity_sector, :url => {:controller => 'customers'},:skip_style => false }, {:skip_style => false,:select => 'activity_sector_name',
-       :with => "'value='+document.getElementById('new_activity_sector1_name').value"})%>
-   <%=  javascript_tag "document.getElementById('new_activity_sector1_name').value = '#{activity_sector}'"%>
+    <%= my_text_field_with_auto_complete(:activity_sector, :name, {:name => "#{third_.type.downcase}", :url => {:controller => 'customers'}, :method => "GET",:skip_style => false }, {:methods => "GET", :skip_style => false,:select => 'activity_sector_name',
+       :with => "'value='+document.getElementById('#{third_.type.downcase}_activity_sector_name').value"})%>
+   <%=  javascript_tag "document.getElementById('#{third_.type.downcase}_activity_sector_name').value = '#{activity_sector}'"%>
   </p>
 
   <p class="text_form">
@@ -43,8 +38,6 @@
   </p>
 
 </div>
-
-
 
 <div class="frame">
   <h2> Informations bancaires </h2>
@@ -78,8 +71,7 @@
       </p>
 
   <%end%>    
-
-
+  
 
     <% elsif third_type == "customer"%>
 
