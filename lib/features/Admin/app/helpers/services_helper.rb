@@ -2,7 +2,7 @@ module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
   def show_delete_button(service,can_delete)
-    " &#124; " + link_to("Supprimer", { :id => service } , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) if service.can_delete? and can_delete
+    " &#124; " + link_to("Supprimer", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) if service.can_delete? and can_delete
   end
   
   # This method permit to have a services on <ul> type.
