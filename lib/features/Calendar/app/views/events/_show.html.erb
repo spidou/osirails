@@ -14,4 +14,4 @@ tous les <%= h(@event.interval) %> mois<%= month_days_sentence(@event) %><%= day
 tous les <%= h(@event.interval) + ' ' if @event.interval > 1 %>ans<%= day_sentence(@event) %><%= month_sentence(@event) %><br />
 <% end %>
 fin: <%= event_freq_end(@event) %>
-<br /><%= link_to_remote "Edition", :url => {:controller => 'events', :action => 'edit', :id => params[:id]}, :method => 'get', :loading => "event_box_loading();", :failure => "event_box_failure();" %> <%= link_to_remote "Supprimer", :url => {:action => 'destroy', :id => params[:id]} %>
+<br /><%= link_to_remote "Edition", :url => {:controller => 'events', :action => 'edit', :id => params[:id]}, :method => 'get', :loading => "event_box_loading();", :failure => "event_box_failure();" %> <a onclick="event_box_delete(this, <%= @event.id %>); return false;" href="#">Supprimer</a> 

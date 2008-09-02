@@ -15,7 +15,7 @@ module EventsHelper
 
   def event_freq_end (event)
     if !event.until_date.nil?
-      return "Le " + event.until
+      return "Le " + event.until_date.to_date.to_s
     elsif !event.count.nil?
       return "Après " + event.count.to_s + " fois"
     elsif !event.frequence.nil?

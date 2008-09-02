@@ -7,3 +7,7 @@ menus:
   calendars:
     title: Calendrier
     description: Gestion des calendriers
+    children:
+      events:
+        title: Evenements
+        description: Gestion des événements

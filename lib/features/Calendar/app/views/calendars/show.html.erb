@@ -27,10 +27,10 @@ h1 {
 	overflow: hidden;
 }
 #calendar #scroll {
+	margin-left: 16px;
 	padding-right: 1px;
 	overflow: auto;
 	height: 600px;
-	clear: left;
 }
 #calendar #scroll #hour_column {
 	width: 70px;
@@ -78,24 +78,34 @@ h1 {
 	width: 100%;
 	height: 100%;
 }
-#calendar #scroll ul {
+#calendar #scroll .day_grid_border ul {
 	padding: 0px;
 	margin: 0px;
 }
-#calendar #scroll li {
+#calendar #scroll .day_grid_border li {
 	position: absolute;
-	width: 0px;
-	display: block;
 }
-#calendar #scroll #grid_week li {
+#calendar #scroll #grid_week .day_grid_border li {
 	width: 14.10%;
 }
-#calendar #scroll #grid_day li {
+#calendar #scroll #grid_day .day_grid_border li {
 	width: 99.8%;
 }
 #calendar #scroll #grid_month {
-	overflow: hidden;
-	height: 100%;
+	width: 99%;
+	height: 600px;
+}
+#calendar #scroll #grid_month .day_grid {
+	float: left;
+	width: 14%;
+	height: 20%;
+	border: 1px solid;
+}
+#calendar #scroll #grid_month .day_grid ul {
+	display: block;
+}
+#calendar #scroll #grid_month .event_month {
+	font-size: 12px;
 }
 #calendar #scroll .event {
 	position: absolute;
@@ -124,11 +134,11 @@ h1 {
 	padding: 8px;
 	-moz-border-radius: 8px;
 	background-color: #C8C8C8;
-	z-index: 100;
+	z-index: 1;
 	width: 380px;
 }
 .calendar {
-	z-index: 101;
+	z-index: 2;
 }
 </style>
 <% content_for :javascript do %>
@@ -140,6 +150,10 @@ h1 {
 <% end %>
 <h1><%= h(@calendar.title) %></h1>
 <div id="calendar" class="frame">
+	<!-- LERT -->
+	<link href="/javascripts/lert-1.0/lert.css" rel="stylesheet" type="text/css"/>
+	<script src="/javascripts/lert-1.0/lert.js" type="text/javascript"></script>
+
 	<div id="mini_calendar" style="width: 300px;"></div>
 	<script type="text/javascript">
 	Calendar.setup({ 

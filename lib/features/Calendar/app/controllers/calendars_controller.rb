@@ -1,7 +1,5 @@
-class CalendarsController < ActionController::Base
+class CalendarsController < ApplicationController
   before_filter :check_date
-  layout 'default'
-  helper :all
   
   def show
     respond_to do |format|
@@ -22,11 +20,13 @@ class CalendarsController < ActionController::Base
     begin
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
     rescue Exception => e
+      if params[:year] && params[:month] && params[:day]
+        flash[:error] = "Date incorrecte"        
+      end
       @date = Date::today
       params[:year] = @date.year
       params[:month] = @date.month
       params[:day] = @date.day
-      flash[:error] = "Date incorrecte"
     end
   end
 end

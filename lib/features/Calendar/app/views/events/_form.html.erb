@@ -1,4 +1,10 @@
-<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event) do |e| %>
+<% if action == 'update'
+		method = 'put'
+	else
+		method = 'post'
+	end
+%>
+	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
 <span>Titre</span>
 <%= e.text_field :title, :class => 'disable-stylesheet-width' %><br />
 <span>Emplacement</span>
@@ -6,15 +12,15 @@
 <span>Jour entier</span>
 <%= e.check_box :full_day, :onclick => "full_day_checked(this);" %><br />
 <span>Du</span>
-<%= e.text_field :start_at, :class => 'disable-stylesheet-width' %><br />
+<%= e.text_field :start_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %><br />
 <span>Au</span>
-<%= e.text_field :end_at, :class => 'disable-stylesheet-width' %><br />
+<%= e.text_field :end_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %><br />
 <span>Description</span>
 <%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />
 <span>R&eacute;p&eacute;ter</span>
 <%= e.hidden_field :frequence %>
 <select id="event_frequence_choice" onChange="event_change('frequence', this);">
-	<option>Jamais</option>
+	<option value="">Jamais</option>
 	<option value="DAILY"<%= ' selected' if @event.frequence == "DAILY" && @event.interval == 1 %>>Chaque jour</option>
 	<option value="WEEKLY"<%= ' selected' if @event.frequence == "WEEKLY" && @event.by_day.nil? %>>Chaque semaine</option>
 	<option value="MONTHLY"<%= ' selected' if @event.frequence == "MONTHLY" && @event.by_month_day.nil? && @event.by_day.nil? %>>Tous les mois</option>
@@ -143,24 +149,29 @@
 	<option>Courrier &eacute;lectronique</option>
 </select><br />
 <div id="alarm" style="display: none;">
-	<%= text_field 'alarm', 'do_alarm_before' %> minutes avant<br />
-	répéter <%= text_field 'alarm', 'repeat' %> fois<br />
-	pendant <%= text_field 'alarm', 'duration' %> minutes<br />
-	A <%= text_field 'alarm', 'email_to' %><br />
-	Description <%= text_field 'alarm', 'description' %><br />
+	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before %> minutes avant<br />
+	<div id="alarm_display">
+		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration %> minutes<br />
+	</div>
+	<div id="alarm_email">
+		A <%= text_field_tag 'alarm[email_to]', alarm.email_to %><br />		
+	</div>
+	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
+	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
 </div><br />
 <span>URL</span>
 <%= e.text_field :link %><br />
 <span>Status</span>
 <%= e.select :status, {"tentative" => "TENTATIVE", "confirmé" => "CONFIRMED", "annulé" =>"CANCELLED"}, :include_blank => true %>
-<div style="text-align: right;"><%= e.submit "Terminer" %></div>
+<%= hidden_field_tag 'recur', '' %>
+<input id="recur_date" type="hidden" name="date" value="" />
+<div style="text-align: right;"><%= e.submit "Terminer", :onclick => "submit_event_box_form(this);" %></div>
 <% end %>
 <script type="text/javascript">
 full_day_checked(document.getElementById('event_full_day'));
 Calendar.setup({ 
 	inputField : "event_until_date",
-	ifFormat : "%Y-%m-%d %H:%M:%S",
-	showsTime : true,
+	ifFormat : "%Y-%m-%d",
 	timeFormat : "24"
 });
 <% unless @event.frequence.nil? %>
