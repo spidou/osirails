@@ -1064,7 +1064,9 @@ table.presentation tr:hover > td{
 
 .frame input[type=text],
 .frame input[type=password],
-.frame textarea {
+.frame input[type=checkbox],
+.frame textarea,
+.frame select {
 	margin-bottom:10px;
 	vertical-align:top;
 	border: #CCC 1px solid;
