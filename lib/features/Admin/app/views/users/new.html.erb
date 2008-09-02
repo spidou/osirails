@@ -3,7 +3,7 @@
 <div class="frame">
   <% form_for(@user) do |f| %>
     <%= f.error_messages %>
-  <div>
+
     <p>
       <%= f.label "Nom Utilisateur"%>
       <%=f.text_field :username %>
@@ -16,13 +16,13 @@
       <%= f.label "confirmez" %>
       <%= f.password_field :password_confirmation %>
     </p>
-  </div>
+
   
   <p>Choisissez les r&ocirc;le(s) que peut choisir l'utilisateur</p>
   
   
   
-  <div>
+
     <table>
       <% for associated_role in Role.find(:all, :order => :name) %>
         <tr>
@@ -35,7 +35,7 @@
         </tr>
       <% end %>
     </table>
-  </div>
+
   
   <%= f.submit "Ajouter" %>
 <% end %>
