@@ -1,12 +1,18 @@
 <h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
 <%= display_tabulated_menu %>
 
+<% content_for :javascript do %>
+     <%= javascript_include_tag 'shedules' %>
+<% end %>
+
 <% form_for(@service) do |service| %>
-  <%= service.error_messages %>
+  
   
   <div class="frame tabulation">
+  
     <h1>Modifier un service</h1>
-    <h2>Service :</h2>
+    <h3>Service :</h3>
+    <%= service.error_messages %>
     <p>
       <%= service.label :name, "Nom :"  %><br />
       <%= service.text_field :name %>
@@ -16,53 +22,60 @@
       <%= service.label :service_parent_id, "Service parent :" %>
       <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
     </p>
-  </div> 
-   
-  <div class="frame">
-    <h2>Horaires du service :</h2>
+  
+    <h3>Horaires du service :</h3>
       
-      <fieldset >
+      <fieldset id="fieldset_config">
       <legend>Configurer les horaires</legend>
+      <br/>
       <span class="date_days">
-      <%=  javascript_tag "document.getElementById('periode1')"%>
-      Du <%= day_select(0) %> au <%= day_select(1) %>
-    </span>  
-      <span class="alignment">
-      <b>Matinée :</b>
-        <%=text_field_tag 'morning_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
-        <%=text_field_tag 'morning_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>&nbsp;-&nbsp; 
-        <%=text_field_tag 'morning_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
-        <%=text_field_tag 'morning_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
-      </span>&nbsp;
-      <span class="alignment">
-      <b>Apr&egrave;s midi :</b>
-        <%=text_field_tag 'afternoon_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
-        <%=text_field_tag 'afternoon_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>&nbsp;-&nbsp; 
-        <%=text_field_tag 'afternoon_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%> h
-        <%=text_field_tag 'afternoon_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width"%>
+        <%=  javascript_tag "document.getElementById('periode1')"%>
+        <%= day_select(0) %> au <%= day_select(1) %>
+      </span>&nbsp; 
+      <span id="shedule_text_field"class="alignment">
+        <b>Matinée :</b>
+        <%=display_shedule_text_field('morning',1)%>
+        &nbsp;
+        <b>Apr&egrave;s midi :</b>
+        <%=display_shedule_text_field('afternoon',5)%>
       </span>
+      <span>
+        &nbsp;<a onclick="modify_schedule();">(↓)</a>
+      </span>
+      
       </fieldset>
       
 
     
-  <table>
-  <tr>
-    <th></th>
-    <th colspan="2">Matin</th>
-    <th colspan="2">Apr&egrave;s-midi</th>
-  </tr>
-  <% days =[["Lundi",1],["Mardi",2],["Mercredi",3],["Jeudi",4],["Vendredi",5],["Samedie",6],["Dimanche",7]]%>
-  <% days.each do |day|%>
+  <table id="shedules_array">
     <tr>
-      <td><%= day[0] + " " + day[1].to_s %></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <th></th>
+      <th colspan="2">Matin</th>
+      <th colspan="2">Apr&egrave;s-midi</th>
     </tr>
-  <% end %>
-  
+    <% default_day = Time::DEFAULT_DAYS_ARRAY %>
+    <%( params[:schedules].nil? )? ( (@schedules == [] )? days = default_day : days = days_sort(@schedules) ) : ( days = format_param(params[:schedules]) )%>
+    <% days.each_with_index do |elmnt,index|%>
+      <% unless index==0%>
+
+        <%="<tr id='t_" + elmnt['day'] + "'>" %>
+          <%="<td name=" + elmnt['day'] + ">" %><%= elmnt['day']%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['morning_start'].to_f) unless elmnt['morning_start'].nil? %></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['morning_end'].to_f) unless elmnt['morning_end'].nil?%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['afternoon_start'].to_f) unless elmnt['afternoon_start'].nil?%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['afternoon_end'].to_f) unless elmnt['afternoon_end'].nil?%></td>
+        </tr>
+      <% end %>
+    <% end %>
   </table>
+  <%= hidden_field_tag "schedules[0]", ""%>
+  <%= hidden_field_tag "schedules[1]",  schedule_to_s(days[1]) %>
+  <%= hidden_field_tag "schedules[2]",  schedule_to_s(days[2]) %>
+  <%= hidden_field_tag "schedules[3]",  schedule_to_s(days[3]) %>
+  <%= hidden_field_tag "schedules[4]",  schedule_to_s(days[4]) %>
+  <%= hidden_field_tag "schedules[5]",  schedule_to_s(days[5]) %>
+  <%= hidden_field_tag "schedules[6]",  schedule_to_s(days[6]) %>
+  <%= hidden_field_tag "schedules[7]",  schedule_to_s(days[7]) %>
 </div>
   <p>
     <%= service.submit "Mettre à jour" %> &#124; <%= link_to 'Retour', services_path %>

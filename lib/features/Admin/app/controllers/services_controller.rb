@@ -10,18 +10,43 @@ class ServicesController < ApplicationController
   def new
     @service = Service.new
     @services = Service.get_structured_services("....")
+    
+  end
+  
+  # GET /services/show
+  def show
+    @service = Service.find(params[:id])
+    @schedules = @service.schedule_find.schedules
+    @schedules_service = @service.schedule_find.name
+    @responsables = []
+    @days = {:day => "", :morning_start => "" , :morning_end => "" , :afternoon_start => "", :afternoon_start => ""}
+    @members = []
+    @service.employees_services.each do |f|
+      @responsables << f.employee_id if f.responsable==true
+      @members << Employee.find(f.employee_id)
+    end
   end
 
-  # GET /services/1/edit
+  # GET /servicess.employees_services.each do |f|
   def edit
     @service = Service.find(params[:id])
     @services = Service.get_structured_services("....", @service.id)
+    @service.schedule_find.schedules == [] ? @schedules = @service.schedules : @schedules = @service.schedule_find.schedules
+  #  raise @schedules.inspect
   end
 
   # POST /services
   def create
+  
     @service = Service.new(params[:service])
     @services = Service.get_structured_services("....", @service.id)
+    @schedules = @service.schedules
+
+    params[:schedules].sort.each do |f|
+      @schedules << Schedule.new(@service.get_time(f[0].to_i,f[1]))
+      params[:schedules][f[0]] = @service.get_time(f[0].to_i,f[1])
+    end
+
     if @service.save
       flash[:notice] = 'Le service est bien cr&eacute;&eacute;.'
       redirect_to( :action => "index" )
@@ -35,6 +60,22 @@ class ServicesController < ApplicationController
     @service = Service.find(params[:id])
     @services = Service.get_structured_services("....", @service.id)
     @service.old_service_parent_id, @service.update_service_parent = @service.service_parent_id, true
+    @schedules = @service.schedules
+          
+    if @schedules==[]
+      params[:schedules].sort.each do |f|
+      @schedules << Schedule.new(@service.get_time(f[0].to_i,f[1]))
+      params[:schedules][f[0]] = @service.get_time(f[0].to_i,f[1])
+    end
+    else
+      @schedules.each_with_index do |f,i|
+        i+=1
+        f.update_attributes(@service.get_time(i,params[:schedules][i.to_s]))
+        params[:schedules][i.to_s] = @service.get_time(i,params[:schedules][i.to_s])
+      end
+    end  
+      
+    
     if @service.update_attributes(params[:service])
       flash[:notice] = 'Le service est bien mise à jour.'
       redirect_to services_path

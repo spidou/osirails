@@ -39,8 +39,9 @@
     <p>
       <h4>Mod&egrave;le de cr&eacute;ation des comptes utilisateurs</h4>
       <strong>Les comptes utilisateurs sont cr&eacute;&eacute;s automatiquement à l'enregistrement d'un employ&eacute;. Choisir le mod&egrave;le de cr&eacute;ation des comptes utilisateurs pour tous les employ&eacute;s :</strong>
-      <%= display_text_field_for_pattern %>
-      <p>Vous devez utiliser le modèle suivant ' {attr,opt} ' pour composer votre squellette: 
+      <p id="pattern_field"><%= display_text_field_for_pattern %><span id="pattern_help_link"><%=link_to_remote "Aide",:url=>{:action=>"help_down"},:href=>(url_for :action=>"help_down")%></span></p>
+      
+      <p style="display: none;" id="pattern_help">Vous devez utiliser le modèle suivant ' {attr,opt} ' pour composer votre squellette: 
         <br/>-attr: représente les attributs que possédent un utilisateur(first_name,last_name)
         <br/>-opt: représente le nombre de caract&egrave;res à garder dans l&apos;attribut(aucune valeur correspond &agrave; l&apos;attribut en entier)
         <br/>-ex: soit l&apos;employ&eacute;e Jean DUPPON et le squellette {FIRST_NAME,1}_{last_name} => J_duppon
@@ -48,7 +49,8 @@
         <br/>&nbsp;&nbsp;De plus il vous est possible d&apos;ins&eacute;rer autant de caract&egrave;res que vous voulez entre les modules exemple avec un modéle type mail: {first_name}.{last_name}@emr-oi.fr 
       </p>
     </p>
-
+    <p>
     <%= submit_tag "Valider" %>
+    </p>
   <% end %>
 </div>

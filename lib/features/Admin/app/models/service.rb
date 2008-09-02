@@ -4,6 +4,7 @@ class Service < ActiveRecord::Base
   has_many :employees_services
   has_many :employees, :through => :employees_services
   belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
+  has_many :schedules
   
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"
@@ -69,5 +70,41 @@ class Service < ActiveRecord::Base
     return false if self.employees.size > 0 or self.children.size > 0
     true
   end
+  
+  # method to return the params[:schedules] hash completed with the form values 
+  def get_time(day,chaine)
+  
+    schedules = chaine.split("|")
+    formated_schedules = []
+    schedules_hash = {}
+    
+    schedules.each_with_index do |f,index|
+      value = f.split(' H ')
 
+      value==[] ? tmp = nil : tmp = value[0].to_i  
+      tmp.nil? ? tmp = nil : tmp += value[1].to_i.minutes.to_f / 3600
+
+      formated_schedules << tmp
+    end
+    
+    schedules_hash[:day] = Time::R_DAYS[day]
+    schedules_hash[:morning_start] = formated_schedules[0]
+    schedules_hash[:morning_end] = formated_schedules[1]
+    schedules_hash[:afternoon_start] = formated_schedules[2]
+    schedules_hash[:afternoon_end] = formated_schedules[3]
+    
+    return schedules_hash
+  end
+  
+  def schedule_find (service=self)
+    while !service.parent.nil?
+      if service.schedules == []
+        service = service.parent
+      else
+        return service
+      end
+    end
+    return service 
+  end
+  
 end

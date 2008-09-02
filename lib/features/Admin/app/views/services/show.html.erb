@@ -1,0 +1,53 @@
+<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+<%= display_tabulated_menu %>
+
+
+<div  class="frame tabulation">
+  <h3>Fiche du service</h3>
+  <p>
+    <b>Nom &#58;</b>
+    <%= @service.name %>
+  </p>
+  <p>
+    <%unless @service.parent.nil?%>
+    <b>Service responsable &#58;</b>
+    <%= @service.parent.name%>
+    <%end%>
+  </p>
+  <p>
+    <%= responsable_find(@responsables)%>
+  </p>
+  
+  <p>
+    <%= members(@members) %>
+    <% for member in @members%>
+      <%=link_to( member.fullname,employee_path(member.id)) + ","%>
+    <% end%>
+  <p>
+  
+  <h3>Horaires du service : <%= @schedules_service%></h3>
+  <%if schedules_empty?(@schedules) %>
+    <p><b>Aucun Horaires définis!</b></p>
+  <% else %>
+      <% days = days_group(days_sort(@schedules)) %>
+      <% days.each_with_index do |schedule,index|%>
+        <%unless index==0%>
+          <p>
+            <b><%= period(schedule.day)%></b>
+            Matin :
+            <b><%= to_hour(schedule.morning_start) unless schedule.morning_start.nil? %></b>
+             à 
+            <b><%= to_hour(schedule.morning_end) unless schedule.morning_end.nil?%></b>
+            Apr&egrave;s-midi :
+            <b><%= to_hour(schedule.afternoon_start) unless schedule.afternoon_start.nil?%></b>
+             à 
+            <b><%= to_hour(schedule.afternoon_end) unless schedule.afternoon_end.nil?%></b>
+          </p>  
+        <% end %>
+      <% end %>
+    </table>  
+  <% end %>   
+  
+  
+</div>
+<%= link_to( "Modifier",edit_service_path)%> &#124; <%= link_to 'Retour', services_path %>
