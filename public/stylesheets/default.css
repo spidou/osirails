@@ -1041,8 +1041,8 @@ table.presentation tr:hover > td{
 }
 */
 .frame form p textarea {
-	min-height:50px;
-	height:100px !important;
+//	min-height:50px;
+	height:10px !important;
 }
 
 .frame form p select {
