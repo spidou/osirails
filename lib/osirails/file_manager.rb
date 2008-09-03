@@ -36,7 +36,7 @@ class FileManager
       Dir.mkdir(directory) unless File.exist?(directory)
     end
     path = File.join(options[:directory], name)
-    File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
+    puts File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
     true
   end
   

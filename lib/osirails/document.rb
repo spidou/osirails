@@ -1,6 +1,9 @@
 class Document < ActiveRecord::Base
   
   belongs_to :file_type
+  has_many :document_versions
+  belongs_to :has_document, :polymorphic => true
+
   
   attr_accessor :models
   
