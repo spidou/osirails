@@ -1,5 +1,7 @@
 class CustomersController < ApplicationController
 
+  helper :documents
+  
   def index
     @customers = Customer.find(:all)
   end

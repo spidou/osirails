@@ -11,11 +11,4 @@ module CustomersHelper
       :locals => {:contact => contact, :cpt => cpt}
   end
   
-  def get_document_form(owner)
-    if Document.can_have_document(owner.class.name)
-      document = Document.new
-      render :partial => "documents/document_form", :locals => {:owner => owner, :document => document} 
-    end
-  end
-  
 end

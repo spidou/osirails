@@ -2,107 +2,109 @@
 
   <% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
     
-    <%= customer.error_messages %>
-    <% #Display customer infos%>
-    <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer} %>
+            <%= customer.error_messages %>
+            <% #Display customer infos%>
+            <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer} %>
 
-    <% if @establishments.length > 0 %>
-      <% for establishment in @establishments %>
-        <%= error_messages_for("establishment#{establishment.id}") %>
-        <%= error_messages_for("establishment#{establishment.id}_address") %>
-        <%error_messages_for()%>
-      <% end #for%>
+            <% if @establishments.length > 0 %>
+              <% for establishment in @establishments %>
+                <%= error_messages_for("establishment#{establishment.id}") %>
+                <%= error_messages_for("establishment#{establishment.id}_address") %>
+                <%error_messages_for()%>
+              <% end #for%>
 
       
 
-      <div class="frame">
-        <h2> &Eacute;tablissements du client </h2>
-        <% #Faire un plurialize "etablissement de la legend"%>
-        <% for establishment in @establishments %>
-          <% unless establishment.activated == false %>
-            <div <%= "id='customer_establishment#{establishment.id}'" %>>
-            <%= establishment.name + "(" + establishment.address.city_name + ")"%>
-            <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
-            </div>
-          <% end #unless %>        
-        <% end #for %>
-      </div>
-    <% end #if%>
-
-    <% if @contacts.length > 0 -%>
-      
-      <div class="frame">
-      <h2> Contarects du client</h2> 
-        
-        <% for contact in @contacts%>
-          <div <%= "id='customer_contact#{contact.id}'" %>>
-            <%= contact.first_name + " " + contact.last_name%>
-            <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact, :owner_type => "Customer") %>
-            <%= link_to("Supprimer", [@customer, contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+    <div class="frame">
+    <h2> &Eacute;tablissements du client </h2>
+    <% #Faire un plurialize "etablissement de la legend"%>
+    <% for establishment in @establishments %>
+              <% unless establishment.activated == false %>
+        <div <%= "id='customer_establishment#{establishment.id}'" %>>
+          <%= establishment.name + "(" + establishment.address.city_name + ")"%>
+          <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
           </div>
-        <%end #for%>   
-      </div>
-    <%end #if%>
+        <% end #unless %>        
+    <% end #for %>
+    </div>
+  <% end #if%>
 
-    <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>
-    <% # new_establishment_number store establishment number present in establishment_form -%>
-    <%= hidden_field("new_establishment_number", "value", "value" => new_number_form) %>
+  <% if @contacts.length > 0 -%>
 
-    <% unless params[:new_establishment_number].nil? -%>        
-      <% new_establishment_number = params[:new_establishment_number]["value"].to_i -%>
-    <% end -%>
+    <div class="frame">
+    <h2> Contarects du client</h2> 
 
-
-      
-      <div class="frame">
-        <h2> Ajouter un &eacute;tablissement pour le client </h2>
-        <div id="new_establishment">
-          <%unless @error%>
-            <div id="link_add_remove_establishment_1">
-              <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
-            </div>
-          <%end%>
-            <% cpt = 1 %>
-            <% unless params[:new_establishment_number].nil? %>
-            <% new_establishment_number.times do |i| %>
-            <%unless params["valid_establishment_#{i+1}"].nil?%>
-                <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
-                  <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
-                <%end #unless%>
-            <%end #unless%>
-            <% cpt += 1 %>
-            <% end %>
-            <div id="link_add_remove_establishment_<%=cpt%>">
-              <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
-            </div>
-          <% end %>          
+                <% for contact in @contacts%>
+      <div <%= "id='customer_contact#{contact.id}'" %>>
+        <%= contact.first_name + " " + contact.last_name%>
+        <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact, :owner_type => "Customer") %>
+        <%= link_to("Supprimer", [@customer, contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
         </div>
-      </div>
+      <%end #for%>   
+    </div>
+  <%end #if%>
 
-    <% @error ||= false %>
+  <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>
+  <% # new_establishment_number store establishment number present in establishment_form -%>
+  <%= hidden_field("new_establishment_number", "value", "value" => new_number_form) %>
 
-    <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Customer",
-    :owner_id => @customer.id, :params => params, :new_contact_number => @new_contact_number,
-    :error => @error} %>
+  <% unless params[:new_establishment_number].nil? -%>        
+            <% new_establishment_number = params[:new_establishment_number]["value"].to_i -%>
+  <% end -%>
 
 
-    <%= customer.submit  'Modifier' %>
+
+  <div class="frame">
+    <h2> Ajouter un &eacute;tablissement pour le client </h2>
+    <div id="new_establishment">
+      <%unless @error%>
+        <div id="link_add_remove_establishment_1">
+          <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
+        </div>
+      <%end%>
+        <% cpt = 1 %>
+        <% unless params[:new_establishment_number].nil? %>
+                <% new_establishment_number.times do |i| %>
+                        <%unless params["valid_establishment_#{i+1}"].nil?%>
+                                    <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
+                                              <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
+                                    <%end #unless%>
+                        <%end #unless%>
+                        <% cpt += 1 %>
+                <% end %>
+        <div id="link_add_remove_establishment_<%=cpt%>">
+          <%= link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
+        </div>
+      <% end %>          
+    </div>
+  </div>
+
+            <% @error ||= false %>
+
+            <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Customer",
+                    :owner_id => @customer.id, :params => params, :new_contact_number => @new_contact_number,
+                    :error => @error} %>
+
+
+            <%= customer.submit  'Modifier' %>
   <% end %>
   
-  <%# Test of download#############################%>   
-
-
-  <%# Telechargement #############################%>
-  <% for document in @customer.documents%>
-    <br/>
-    <%= link_to "download", :controller => "documents", :action => "show", :id => document.id%>
+<%# Test of document#############################%>
+<%unless @customer.documents.empty?%>
+  <div class="frame">
+    <h2>Liste des documents</h2>
+    <% for document in @customer.documents%>
+      <br/>
+      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png")%><%= link_to document.title, :controller => "documents", :action => "show", :id => document.id%>
+      <%= link_to("Download", :controller => "Downloads", :action => "show", :id => document.id)%>
   <%end%>
-  <%#########################################%>
-  
-  <%# Upload#####################################%>
-  <%= get_document_form(@customer) %>
-  <%##############################################%>
+  </div>
+<%end%>
 
-  <%##############################################%>
-  
-  <%= link_to 'Retour', :action => 'index' %>
+<%# Upload#####################################%>
+<%= get_document_form(@customer) %>
+<%##############################################%>
+
+<%##############################################%>
+
+<%= link_to 'Retour', :action => 'index' %>
