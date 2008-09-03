@@ -74,15 +74,25 @@ tr:hover > td{
 tr:hover > td > a {
 	text-decoration:underline;
 }
+/*::::::::::::TABLEAU COMMODITY::::::::::::*/
 
-tr.disable > td {
+.commodity tr.disable > td {
 	color:#888;
 //	color:#B0383D;/*Rouge*/
 	font-style:italic;
 }
 
-tr.enable > td {
+.commodity tr.enable > td {
 //	color:#4C8B38;
+}
+
+.commodity td.sub_commodity_category {
+	font-weight:bold;
+	font-style:italic;
+}
+
+.commodity td.commodity_category {
+	font-style:italic;
 }
 
 /*:::::::::TABLEAU SANS STYLE:::::::::*/
@@ -719,6 +729,10 @@ a.previous-button:hover span {
 .cal-buttons.selected {
 	background-position:0 -38px;
 	color:black;
+}
+
+.calendar_checkbox {
+	background:;
 }
 
 /*//////////////////////////////////////////////////////////
