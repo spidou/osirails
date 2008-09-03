@@ -1,0 +1,14 @@
+module DocumentsHelper
+  def get_document_form(owner)
+    if Document.can_have_document(owner.class.name)
+      document = Document.new
+      render :partial => "documents/document_form", :locals => {:owner => owner, :document => document} 
+    end
+  end
+  
+  def get_file_type_select(document, owner)
+    document.select(:file_type_id, FileType.find(:all, :conditions => ["model_owner = ?",owner.class.name]).collect {|a| [a.name + "(" + (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",")
+            ; t.split(",").size < 3 ? t : t.split(",")[0..2].join(",").concat("...") )+ ")", a.id]}, {:selected => 10, :title => "tst"})
+  end
+  
+end

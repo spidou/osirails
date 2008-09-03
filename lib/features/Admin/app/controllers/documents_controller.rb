@@ -2,10 +2,8 @@ class DocumentsController < ApplicationController
   
   def show
     @document = Document.find(params[:id])
-    eval <<-EOV
-    @owner = #{@document.has_document_type}.find(#{@document.has_document_id})
-    EOV
-    send_file("documents/#{@owner.class.name.downcase}/#{@document.file_type_id}/#{@document.id}.#{@document.extension}")
+    @document_versions = @document.document_versions
+    @document_version = DocumentVersion.new()
   end
   
   def create
@@ -25,6 +23,7 @@ class DocumentsController < ApplicationController
         path = params[:owner][:owner_model].downcase + "/" + params[:document][:file_type_id].downcase + "/"
         FileManager.upload_file(:file => params[:upload], :name =>@document.id.to_s+"."+document_extension, 
           :directory => "documents/#{path}", :extensions => possible_extensions)
+        
         ## Add Document to owner
         eval <<-EOV
         @owner = #{params[:owner][:owner_model]}.find(#{params[:owner][:owner_id]})
@@ -34,10 +33,28 @@ class DocumentsController < ApplicationController
     end
   end
   
+  def edit
+    
+  end
+  
   def update
-    unless params[:upload][:datafile].blank?
+    @document = Document.find(params[:id])
+    @owner  = @document.has_document
+    @possible_extensions = @document.file_type.file_type_extensions
+    
+    ## Creation of document_version
+    unless @document_version = DocumentVersion.create()      
+      path = "documents/" + @owner.class.name.downcase + "/" + @document.file_type_id + "/" + @document.id
       
+      FileManager.upload_file(:file => params[:upload], :name =>@document_version.id.to_s+"."+@document.extension, 
+        :directory => path, :extensions => @possible_extensions)
     end
+    
+  end
+  
+  def preview_image
+    img=File.read("documents/customer/9/4.jpg")
+    @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
   end
   
 end

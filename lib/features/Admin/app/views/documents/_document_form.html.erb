@@ -14,21 +14,21 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier"%>
-      <%= get_%>
+      <%= get_file_type_select(d, owner)%>
     </p>
-    
-      <p>
-        <%= label :file, "Fichier"%>
-        <%= file_upload%>
-      </p>
-    
-        <%= d.submit "Uploader"%>
+
+    <p>
+      <%= label :file, "Fichier"%>
+      <%= file_upload%>
+    </p>
   
-<%end%>
+        <%= d.submit "Uploader"%>
 
-<%= observe_field :document_file_type_id,
-                                    :url => { :controller => 'documents', :action => 'file_type_change' },
-                                    :with => "'file_type_id=' +value"%>
+  <%end%>
 
+  <%= observe_field :document_file_type_id,
+      :url => { :controller => 'documents', :action => 'file_type_change' },
+       :on => 'focus', 
+      :with => "'file_type_id=' +value"%>
 
 </div>

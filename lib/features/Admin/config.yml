@@ -18,6 +18,9 @@ menus:
     description: Administration de l'Intranet
     position: 1
     children:
+      documents:
+        title: Documents
+        description: Gestion des documents
       users:
         title: Utilisateurs
         description: Gestion des utilisateurs

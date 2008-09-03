@@ -1,0 +1,44 @@
+<% content_for :header do %>
+       <%= stylesheet_link_tag 'lightbox' %>
+<% end %>
+
+<div class="frame">
+<h2>Informations concernant le document</h2>
+  <p>
+    <%= label :document, :title, "Nom :" %>
+    <%= @document.title %>
+  </p>
+  
+  <p>
+    <%= label :document, :description, "Description :" %>
+    <%= @document.description %>
+  </p>
+
+  <%if @document.extension == "jpg"%>
+    <p>
+      <%= lightbox_link_to "preview", url_for(:action => "preview_image")%>
+    </p>
+  <%end%>
+</div>
+
+<div class="frame">
+<h2>Upload&eacute; une nouvelle version</h2>
+  <% form_for(:document_version, @document_version, :url => { :controller => "Documents", :action => "update" , :document_id => @document.id}, :html => { :multipart => true}) do |d| %>
+    <p>
+      <%= label :file, "Fichier"%>
+      <%= file_upload%>
+    </p>
+  <%end%>
+</div>
+  
+<!-- Show document_version-->
+<%unless @document_versions.empty?%>    
+  <div class="frame">
+    <% for document_version in @document_versions%>
+      <p>
+        <%= label :document_version, :description, "Description :" %>
+        <%= @document_version.description %>
+      </p>
+    <%end%>
+  </div>
+<%end%>
