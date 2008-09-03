@@ -21,7 +21,7 @@ module Inplace
     #
     # ajax_options
     #   * __method__ is always set to **put**
-    def editable_content_tag(element_type, object, property, editable = false, url = nil, element_options = {}, edit_options = {}, ajax_options = {})
+    def editable_content_tag(element_type , object, property, editable = false, url = nil, element_options = {}, edit_options = {}, ajax_options = {})
       object_name = object.class.to_s.tableize.singularize
       element_options ||= {}
       element_options[:id] = dom_id(object)+"_#{property}" if element_options[:id].blank?()
@@ -44,8 +44,8 @@ module Inplace
                           '#{url}', 
                           { 
                             ajaxOptions:  {#{options_for_ajax}},
-                            callback: function(form, value) 
-                              { return '#{object_name}[#{property}]=' + escape(value)+ '#{put_params}' },
+                            callback: function(form, value)
+                              { return '#{object_name}[#{property}]=' + value+ '#{put_params}' }, // hacked by Pentoo
                             onComplete: function(transport, element)
                               {
                                 if(!transport) {return;} // thanks to Mina!
@@ -55,7 +55,15 @@ module Inplace
                                   new Effect.Highlight(element.id, {startcolor: '#ff0000'});
                                 }
 				element.innerHTML=transport.responseText.evalJSON().#{object.class.name.demodulize.tableize.singularize}.#{property};
-                              price_calculator(element.ancestors()[1]);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// hacked by Pentoo
+                              if( element.id.substring(12,15) == 'inv' ) {
+                                  totals_calculator(element.ancestors()[1]);
+                               }
+                               else {
+                                 price_calculator(element.ancestors()[1]);
+sub_total(element.ancestors()[1]);
+                                }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                               }"
         tg += ",#{options_for_edit}" unless options_for_edit.empty?
         tg += "});\n"
