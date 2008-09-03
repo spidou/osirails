@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   # Relationships
   has_and_belongs_to_many :roles
   belongs_to :employee
+  has_one :calendar
   
   # Validates
   validates_presence_of :username, :message => "ne peut être vide"

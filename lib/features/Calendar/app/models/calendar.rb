@@ -20,6 +20,7 @@ class Calendar < ActiveRecord::Base
   # title       :string
 
   # Relationships
+  belongs_to :user
   has_many :events
   has_many :event_categories
 

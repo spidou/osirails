@@ -1,6 +1,4 @@
 class EventsController < ApplicationController
-  helper :all
-
   before_filter :check
 
   def index
