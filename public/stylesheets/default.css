@@ -128,7 +128,23 @@ table.no-style tr:hover > td{
 table.no-style tr:hover > td > a {
 	text-decoration:underline;
 }
+/*/////////////////////////////////////////////////////
+					in_place_editor
+////////////////////////////////////////////////////*/
 
+.inplaceeditor-form input {
+width: 50px ! important;
+}
+
+/* button submit */
+.editor_ok_button {
+  display: none;
+}
+
+/* a */
+.editor_cancel {
+  display: none;
+}
 /*/////////////////////////////
 			TITRE
 /////////////////////////////*/
@@ -1502,23 +1518,4 @@ div.frame>#steps {
 	margin-top:5px;
 	margin-bottom:-5px;
 	border:none;
-}
-
-
-/*/////////////////////////////////////////////////////
-					in_place_editor
-////////////////////////////////////////////////////*/
-
-.inplaceeditor-form input {
-width: 50px ! important;
-}
-
-/* button submit */
-.editor_ok_button {
-  display: none;
-}
-
-/* a */
-.editor_cancel {
-  display: none;
 }
