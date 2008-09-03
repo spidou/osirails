@@ -844,12 +844,10 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 
 .fieldWithErrors input,
 .fieldWithErrors select {
-	border:solid 2px #B0383D;
+	border:solid 2px #B0383D !important;
 	color:#B0383D;
 	margin-left: 10px;
 	vertical-align:top;
-//	position:relative;
-//	bottom:15px;
 }
 
 .fieldWithErrors label:after {
@@ -1042,7 +1040,7 @@ table.presentation tr:hover > td{
 */
 .frame form p textarea {
 //	min-height:50px;
-	height:10px !important;
+	height:10px !important; /*test julien*/
 }
 
 .frame form p select {
