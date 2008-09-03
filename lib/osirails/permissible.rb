@@ -30,12 +30,6 @@ module Permissible
     def can?(action, option)
       raise "Unexepected action" unless ["list", "view", "add", "edit", "delete"].include?(action) # TODO Use constance for this array.
       
-      # If no option passed in argument, the current user's permissions will
-      # be test
-      if !self.class.name.grep(/Controller$/).empty?
-        option = current_user if option.nil?
-      end
-      
       roles = []
       case option.class
       when User.class
