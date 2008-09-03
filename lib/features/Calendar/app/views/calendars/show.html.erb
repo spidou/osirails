@@ -10,8 +10,6 @@
 <link href="/javascripts/calendar/skins/calendar-blue.css" rel="stylesheet" type="text/css"/>
 <link href="/stylesheets/calendar.css" rel="stylesheet" type="text/css"/>
 <% end %>
-<h1><%= h(@calendar.title) %></h1>
-<div id="calendar" class="frame">	
 <% content_for :secondary_menu do %>
 <div id="mini_calendar"></div>
 <script type="text/javascript">
@@ -26,9 +24,10 @@ Calendar.setup({
 });
 </script>
 <% end %>
-
+<h1><%= h(@calendar.title) %></h1>
+<div id="calendar" class="frame">
+	<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
 	<div class="calendar-buttons">
-		<%= link_to "Aujourd'hui", :id => params[:id],  :period => params[:period], :year => Date::today.year, :month => Date::today.month, :day => Date::today.day %>
 		<div class="cal-prev" onclick="ajax_link(link_period_before);"></div>
 		<span class="cal-buttons<%= ' selected' if params[:period] == 'day' %>" onclick="navig_selected(link_period_day, this);">jour</span>
 		<span class="cal-buttons<%= ' selected' if params[:period] == 'week' %>" onclick="navig_selected(link_period_week, this);">semaine</span>

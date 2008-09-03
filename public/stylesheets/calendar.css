@@ -83,6 +83,14 @@
 #calendar #scroll #grid_day .day_grid_border li {
 	width: 99.8%;
 }
+#calendar #scroll #group_day_month {
+  width: 99%;
+}
+#calendar #scroll #group_day_month .day_month {
+  float: left;
+  width: 14%;
+  text-align: center;
+}
 #calendar #scroll #grid_month {
 	width: 99%;
 	height: 600px;
@@ -119,6 +127,7 @@
 }
 #event_box {
 	font-size: 12px;
+	color: black;
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
