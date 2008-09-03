@@ -2,23 +2,23 @@ module Permissible
   module InstanceMethods
     #protected # If you want to use the methods in console mode, you must comment this line.
 
-    def can_list?(option)
+    def can_list?(option = nil)
       can?("list", option)
     end
 
-    def can_view?(option)
+    def can_view?(option = nil)
       can?("view", option)
     end
 
-    def can_add?(option)
+    def can_add?(option = nil)
       can?("add", option)
     end
 
-    def can_edit?(option)
+    def can_edit?(option = nil)
       can?("edit", option)
     end
 
-    def can_delete?(option)
+    def can_delete?(option = nil)
       can?("delete", option)
     end
 
@@ -28,8 +28,13 @@ module Permissible
     # action is a string like: list, view, add, edit, or delete.
     # option can be an User, a Role, a Role id, a Role name, or an array of Role / Role id / Role name.
     def can?(action, option)
-      return false if option.nil?
       raise "Unexepected action" unless ["list", "view", "add", "edit", "delete"].include?(action) # TODO Use constance for this array.
+      
+      # If no option passed in argument, the current user's permissions will
+      # be test
+      if !self.class.name.grep(/Controller$/).empty?
+        option = current_user if option.nil?
+      end
       
       roles = []
       case option.class
