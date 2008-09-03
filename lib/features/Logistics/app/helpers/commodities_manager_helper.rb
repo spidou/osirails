@@ -30,6 +30,25 @@ module CommoditiesManagerHelper
     counter
   end
   
+  # This method permit to show categories totals
+  def show_categories_totals(category,show, value = 0)
+    totals = 0
+    if value > 0
+      commodities_categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => category.id})
+      commodities_categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => category.id, :enable => true}) if show == false
+      commodities_categories.each do |commodity_category|
+        totals += show_categories_totals(commodity_category, show)
+      end
+      return totals
+    end
+    commodities = Commodity.find(:all, :conditions => {:commodity_category_id => category.id})
+    commodities = Commodity.find(:all, :conditions => {:commodity_category_id => category.id, :enable => true}) if show == false
+    commodities.each do |commodity|
+      totals += (commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100)
+    end
+    totals
+  end
+  
   # This method permit to have a table's structur
   def get_structured(show = false)
     commodity_categories = CommodityCategory.find_all_by_commodity_category_id(nil)
@@ -42,9 +61,12 @@ module CommoditiesManagerHelper
       delete_button = show_delete_button(commodity_category)
       status = commodity_category.enable ? "enable" : "disable" if show == nil
       
-      table << "<tr id='commodity_category_#{commodity_category.id}' class=' commodity_category_#{commodity_category.id} #{status}'>"
-      table << "<td>"+in_place_editor(commodity_category,'name')+" (#{show_counter_category(commodity_category,show)})</td>"
-      table << "<td colspan='8'></td>"
+      table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
+      table << "<td><img id='commodity_category_#{commodity_category.id}_develop' src='/images/develop_button.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' style='display: none;'/>"
+      table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/>"
+      table << in_place_editor(commodity_category,'name')+" (#{show_counter_category(commodity_category,show)})</td>"
+      table << "<td colspan='5'></td>"
+      table << "<td colspan='3' class='commodity_category_#{commodity_category.id}_total commodity_category'>#{show_categories_totals(commodity_category, show, 1)} €</td>"
       table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and commodity_category.enable == false
       table << "</tr>"
       # Get Structur for children commodities categories
@@ -55,10 +77,14 @@ module CommoditiesManagerHelper
             delete_button = show_delete_button(category_child)
             status = category_child.enable ? "enable" : "disable" if show == nil
           
-            table << "<tr id='commodity_category_#{category_child.id}' class=' commodity_category_#{category_child.id} commodity_category_#{commodity_category.name} #{status}'>"
+            table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
-            table << "<td>"+in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
-            table << "<td colspan='7'></td>"
+            table << "<td>"
+            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/develop_button.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' />" if show_counter_category(commodity_category,show) != 0
+            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' />"
+            table << in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
+            table << "<td colspan='4'></td>"
+            table << "<td colspan='3' class='sub_commodity_category_#{category_child.id}_total sub_commodity_category'>#{show_categories_totals(category_child, show)} &euro;</td>"
             table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and category_child.enable == false
             table << "</tr>"
 
@@ -71,15 +97,15 @@ module CommoditiesManagerHelper
                   
                   delete_button = show_delete_button(commodity)
                   status = commodity.enable ? "enable" : "disable" if show == nil
-                  table << "<tr id='commodity_#{commodity.id}' class='commodity_#{commodity.id} commodity_category_#{category_child.id} commodity_category_#{commodity_category.id} #{status}'>"
+                  table << "<tr id='commodity_#{commodity.id}' class='commodity_#{commodity.id} commodity_category_#{category_child.id} commodity_category_#{commodity_category.id} #{status}' style='display: none;'>"
                   table << "<td colspan='2'></td>"
                   table << "<td>#{supplier.name}</td>" #FIXME Add Cities
                   table << "<td>"+in_place_editor(commodity,'name')+"</td>"
                   table << "<td>"+in_place_editor(commodity,'measure')+" (#{unit_measure.symbol})</td>"
                   table << "<td>"+in_place_editor(commodity,'unit_mass')+"kg</td>"
-                  table << "<td  >"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
-                  table << "<td  >"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
-                  table << "<td><span id='commodity_#{commodity.id}_price'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
+                  table << "<td>"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
+                  table << "<td>"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
+                  table << "<td><span id='commodity_#{commodity.id}_price' class='sub_commodity_category_#{category_child.id}_total' onchange='alert(\"tutu\");'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
                   table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>" unless show == nil and commodity.enable == false
                   table << "</tr>"
                 end

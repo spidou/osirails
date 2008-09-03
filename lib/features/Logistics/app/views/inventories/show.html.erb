@@ -1,14 +1,30 @@
-<h1><%= "D&eacute;tail de l'inventaire #{@inventory.id}" %></h1>
+<% content_for :javascript do %>
+  <script type="text/javascript" src="/javascripts/logisctic/totals_calculator.js"></script> 
+  <script type="text/javascript" src="/javascripts/logisctic/refresh.js"></script> 
+<% end %>
+
+<h1><%= "Inventaire du #{@inventory.created_at}" %></h1>
 <div class='frame'>
   <table>
     <tr>
-      <th>Nom</th>
-    </tr>
-    <% for commodity in @commodities %>
+      <th rowspan='2'>Cat&eacute;gorie</th>
+      <th rowspan='2'>Sous Cat&eacute;gorie</th>
+      <th rowspan='2'>Fournisseur</th>
+      <th rowspan='2'>Désignation</th>
+      <th rowspan='2'>Unit&eacute;e de mesure / U</th>
+      <th rowspan='2'>Masse / U</th>
+      <th colspan='3'>Prix / U (&euro;)</th>
+      <th rowspan='2'>Quantit&eacute;</th>
+      <th rowspan='2'>Unit&eacute;e de mesure total</th>
+      <th rowspan='2'>Masse total</th>
+      <th rowspan='2'>Prix total</th>
       <tr>
-        <td><%= commodity.name%></td>
+        <th>FOB</th>
+        <th>Coef Taxe</th>
+        <th>Prix</th>
       </tr>
-    <%end %>
+    </tr>
+    <%= show_structured_commodities(@inventory) %>
   </table>
-  <%= link_to("Retour", :action => 'index') %>
+  <%= link_to("Retour", :action => 'index') %> <%= show_closed_button(@inventory)%>
 </div>

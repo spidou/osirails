@@ -29,5 +29,11 @@ class Commodity < ActiveRecord::Base
     #FIXME Inventory + files (dossier)
     false
   end
-
+  
+  # Check if params have element nil
+    def params_empty(tutu)
+      puts "coucou"
+    end
+  
+  
 end

@@ -12,12 +12,12 @@
   <tr>
     <td><%= inventory.id %></td>
     <td><%= inventory.created_at %></td>
-    <td><%= inventory.updated_at unless inventory.updated_at == inventory.created_at %></td>
-    <td><%= inventory.close ? "Terminé" : "En cour" %>
-    <td><%= link_to("D&eacute;tails", inventory_path(inventory)) %> <%= link_to("Modifier", edit_inventory_path(inventory)) %></td>
+    <td><%= show_last_update(inventory) %></td>
+    <td><%= inventory.closed ? "Terminé" : "En cour" %>
+    <td><%= link_to("D&eacute;tails", inventory_path(inventory)) %></td>
   </tr>
 <% end %>
 </table>
 
-<%= link_to("Ajouter un inventaire", new_inventory_path) %>
+<%= link_to("Ajouter un nouvelle inventaire", new_inventory_path) %>
 </div>
