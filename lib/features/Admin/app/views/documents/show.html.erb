@@ -3,7 +3,7 @@
 <% end %>
 
 <div class="frame">
-<h2>Informations concernant le document</h2>
+<h2>Informations du document</h2>
   <p>
     <%= label :document, :title, "Nom :" %>
     <%= @document.title %>
@@ -16,7 +16,7 @@
 
   <%if @document.extension == "jpg"%>
     <p>
-      <%= lightbox_link_to "preview", url_for(:action => "preview_image")%>
+      <%= lightbox_link_to "preview", url_for(:action => "preview_image", :id => @document.id)%>
     </p>
   <%end%>
 </div>
@@ -24,21 +24,32 @@
 <div class="frame">
 <h2>Upload&eacute; une nouvelle version</h2>
   <% form_for(:document_version, @document_version, :url => { :controller => "Documents", :action => "update" , :document_id => @document.id}, :html => { :multipart => true}) do |d| %>
+    
     <p>
-      <%= label :file, "Fichier"%>
+      <%= d.label :description%>
+      <%= d.text_field :description%>
+    </p>
+
+    <p>
+      <%= label :file, :data, "Fichier :"%>
       <%= file_upload%>
     </p>
+    
+    <%= d.submit "Uploader"%>
+      
   <%end%>
 </div>
-  
+<div class="frame">
+  <h2>Liste des versions</h2>
 <!-- Show document_version-->
 <%unless @document_versions.empty?%>    
-  <div class="frame">
+
     <% for document_version in @document_versions%>
-      <p>
-        <%= label :document_version, :description, "Description :" %>
-        <%= @document_version.description %>
-      </p>
+      
+<div>
+  Version  : <%= document_version.id %> | <%= document_version.description%>
+</div>
+        
     <%end%>
-  </div>
 <%end%>
+</div>

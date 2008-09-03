@@ -15,6 +15,7 @@ class FileManager
     else
       name = options[:name]
     end
+    
     valid_extension = false
     
     unless options[:extensions].nil?

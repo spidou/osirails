@@ -33,27 +33,32 @@ class DocumentsController < ApplicationController
     end
   end
   
-  def edit
-    
-  end
-  
   def update
-    @document = Document.find(params[:id])
-    @owner  = @document.has_document
-    @possible_extensions = @document.file_type.file_type_extensions
-    
-    ## Creation of document_version
-    unless @document_version = DocumentVersion.create()      
-      path = "documents/" + @owner.class.name.downcase + "/" + @document.file_type_id + "/" + @document.id
+    unless params[:upload][:datafile].blank?
+      @document = Document.find(params[:document_id])
+      @owner  = @document.has_document
       
-      FileManager.upload_file(:file => params[:upload], :name =>@document_version.id.to_s+"."+@document.extension, 
-        :directory => path, :extensions => @possible_extensions)
-    end
+      ## Store possible extensions
+      @possible_extensions = []
+      @document.file_type.file_type_extensions.each {|f| @possible_extensions << f.name}
     
+      puts "test"
+      puts @possible_extensions
+      ## Creation of document_version
+      if @document_version = DocumentVersion.create(:description => params[:document_version][:description])      
+        path = "documents/" + @owner.class.name.downcase + "/" + @document.file_type_id.to_s + "/" + @document.id.to_s
+      
+        FileManager.upload_file(:file => params[:upload], :name =>@document_version.id.to_s+"."+@document.extension, 
+          :directory => path, :extensions => @possible_extensions)
+        @document.document_versions << @document_version
+      end
+    end   
   end
   
   def preview_image
-    img=File.read("documents/customer/9/4.jpg")
+    @document = Document.find(params[:id])
+    path = "documents/#{@document.has_document.class.name.downcase}/#{@document.file_type_id}/#{@document.id}.jpg"
+    img=File.read(path)
     @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
   end
   
