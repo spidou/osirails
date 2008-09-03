@@ -1045,7 +1045,7 @@ table.presentation tr:hover > td{
 }
 
 .frame form p select {
-		border: #CCC 1px solid;
+	//	border: #CCC 1px solid;
 }
 
 .frame form p input:hover,
