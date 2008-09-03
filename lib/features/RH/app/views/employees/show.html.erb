@@ -59,15 +59,6 @@
       <% end %>
 
   </div> 
-  
-  <div class="frame">
-  <h2>Horaires</h2>
-  <table>
-    <th>Jours</th>
-    <th>Matin</th>
-    <th>Apr&egrave;s midi</th>
-  </table>
-  </div> 
 <%end%>
 
 
@@ -184,9 +175,11 @@
         <%=h( "(Remarque: '" + premium['remark'] + "')" )%> 
         </p>
     <%end%>
+    <% if @employee.premia.size>0 %>
     <p>
       <%= link_to 'Afficher toutes les primes',employee_premia_path(@employee)%>
     </p>
+    <% end %>
     <p>  
       <%= link_to 'Ajouter une prime',new_employee_premium_path(@employee)%>   
     </p>

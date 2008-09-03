@@ -15,9 +15,10 @@ class PremiaController < ApplicationController
   def create
     @employee = Employee.find(params[:employee_id])
     @premia = @employee.premia
-    
-    if @premia << Premium.new(params[:premium])
-      flash[:notice] = ' La prime a été ajoutée avec succés.'
+    @premium = Premium.new(params[:premium])
+    if @premium.save 
+      @premia << @premium
+      flash[:notice] = ' La prime a &eacute;t&eacute; ajout&eacute;e avec succ&eacute;s.'
       redirect_to(@employee)
     else
       render :action => "new"
