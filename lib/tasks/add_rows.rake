@@ -231,13 +231,17 @@ namespace :osirails do
       f.file_type_extensions << FileTypeExtension.find_by_name("odt")
       
       FileType.create :name => "Photo Survey", :model_owner => "Dossier"
-      
       FileType.create :name => "Plan conception", :model_owner => "Dossier"
       FileType.create :name => "Maquette", :model_owner => "Dossier"
       FileType.create :name => "Devis", :model_owner => "Dossier"
       FileType.create :name => "Facture", :model_owner => "Dossier"
 
-
+      # default calendars and events
+      calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
+      Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 1", :description => "Description de l'evenement 1", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
+      Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 2", :description => "Description de l'evenement 2", :start_at => DateTime.now + 1.days, :end_at => DateTime.now + 1.days + 2.hours
+      calendar2 = Calendar.create :user_id => user_guest.id, :name => "Calendrier par défaut de Guest", :color => "blue", :title => "Titre du calendrier"
+      Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
     end
     
 
