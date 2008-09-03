@@ -1503,3 +1503,22 @@ div.frame>#steps {
 	margin-bottom:-5px;
 	border:none;
 }
+
+
+/*/////////////////////////////////////////////////////
+					in_place_editor
+////////////////////////////////////////////////////*/
+
+.inplaceeditor-form input {
+width: 50px ! important;
+}
+
+/* button submit */
+.editor_ok_button {
+  display: none;
+}
+
+/* a */
+.editor_cancel {
+  display: none;
+}
