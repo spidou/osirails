@@ -14,7 +14,7 @@
     <h3>Service :</h3>
     <%= service.error_messages %>
     <p>
-      <%= service.label :name, "Nom :"  %><br />
+      <%= service.label :name, "Nom :"  %>
       <%= service.text_field :name %>
     </p>
 
@@ -27,7 +27,6 @@
       
       <fieldset id="fieldset_config">
       <legend>Configurer les horaires</legend>
-      <br/>
       <span class="date_days">
         <%=  javascript_tag "document.getElementById('periode1')"%>
         <%= day_select(0) %> au <%= day_select(1) %>

@@ -34,11 +34,11 @@
         <%unless index==0%>
           <p>
             <b><%= period(schedule.day)%></b>
-            Matin :
+            : Le Matin de
             <b><%= to_hour(schedule.morning_start) unless schedule.morning_start.nil? %></b>
              à 
             <b><%= to_hour(schedule.morning_end) unless schedule.morning_end.nil?%></b>
-            Apr&egrave;s-midi :
+            et l&apos;Apr&egrave;s&#45;midi de
             <b><%= to_hour(schedule.afternoon_start) unless schedule.afternoon_start.nil?%></b>
              à 
             <b><%= to_hour(schedule.afternoon_end) unless schedule.afternoon_end.nil?%></b>
