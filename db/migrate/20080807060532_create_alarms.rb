@@ -2,11 +2,11 @@ class CreateAlarms < ActiveRecord::Migration
   def self.up
     create_table :alarms do |t|
       t.references :event
-      t.string :action, :default => "DISPLAY"
+      t.string :action
       t.text :description
-      t.integer :do_alarm_before, :default => "5"
+      t.integer :do_alarm_before
       t.integer :duration
-      t.string :title, :default => "Alarme"
+      t.string :title
       t.string :email_to
 
       t.timestamps

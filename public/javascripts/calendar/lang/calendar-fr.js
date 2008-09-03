@@ -60,6 +60,9 @@ Calendar._MN = new Array
  "Novembre",
  "Décembre");
 
+// HACK by Benjamin LAN-SUN-LUK (2008) else the translation not work
+Calendar._FD = 1;
+
 // short month names
 Calendar._SMN = new Array
 ("Jan",

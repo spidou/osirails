@@ -159,6 +159,8 @@
 	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
 	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
 </div><br />
+<span>Categorie</span>
+<%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %><br />
 <span>URL</span>
 <%= e.text_field :link %><br />
 <span>Status</span>

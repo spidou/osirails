@@ -1,0 +1,134 @@
+#group_day {
+	position: relative;
+	margin-left: 70px;
+	margin-right: 15px;
+	right: 0px;
+}
+#group_day .day {
+	float :left;
+	width: 13.85%;
+	text-align: center;
+}
+#group_day #full_day_bar {
+	display: inline;
+	padding-top: 18px;
+}
+#calendar {
+}
+#calendar_content {
+	overflow: hidden;
+}
+#calendar #scroll {
+	margin-left: 16px;
+	padding-right: 1px;
+	overflow: auto;
+	height: 600px;
+}
+#calendar #scroll #hour_column {
+	width: 70px;
+	float: left;
+	text-align: center;
+}
+#calendar #scroll .hour {
+	height: 60px;
+}
+#calendar #scroll #grid_week {
+	position: relative;
+	margin-left: 70px;
+	right: 0px;
+	height: 1440px;
+}
+#calendar #scroll #grid_week .day_grid {
+	float: left;
+	width: 14.285714285714286%;
+	height: 100%;
+	z-index: -100;
+	background: url('/images/grid_repeat-x.gif') repeat;
+}
+#calendar #scroll #grid_week .day_grid .day_grid_border {
+	border: 1px solid #c8c8c8;
+	border-top: none;
+	border-bottom: none;
+	width: 100%;
+	height: 100%;
+}
+#calendar #scroll #grid_day {
+	position: relative;
+	margin-left: 70px;
+	right: 0px;
+	height: 1440px;
+}
+#calendar #scroll #grid_day .day_grid {
+	float: left;
+	width: 100%;
+	height: 100%;
+	z-index: -100;
+	background: url('/images/grid_repeat-x.gif') repeat;
+}
+#calendar #scroll #grid_day .day_grid .day_grid_border {
+	border-left: 1px solid gray;
+	width: 100%;
+	height: 100%;
+}
+#calendar #scroll .day_grid_border ul {
+	padding: 0px;
+	margin: 0px;
+}
+#calendar #scroll .day_grid_border li {
+	position: absolute;
+}
+#calendar #scroll #grid_week .day_grid_border li {
+	width: 14.10%;
+}
+#calendar #scroll #grid_day .day_grid_border li {
+	width: 99.8%;
+}
+#calendar #scroll #grid_month {
+	width: 99%;
+	height: 600px;
+}
+#calendar #scroll #grid_month .day_grid {
+	float: left;
+	width: 14%;
+	height: 20%;
+	border: 1px solid;
+}
+#calendar #scroll #grid_month .day_grid ul {
+	display: block;
+}
+#calendar #scroll #grid_month .event_month {
+	font-size: 12px;
+}
+#calendar #scroll .event {
+	position: absolute;
+	width: 100%;
+	border: 1px solid black;
+	padding: 4px 0px;
+	min-height: 20px;
+	text-align: center;
+	font-size: 10px;
+	color: white;
+	cursor: move;
+	-moz-border-radius: 8px;
+	opacity: 0.8;
+	-moz-opacity: 0.8;
+	filter:alpha(opacity=80);
+}
+#calendar #scroll .event_content {
+	height: 100%;
+}
+#event_box {
+	font-size: 12px;
+	visibility: hidden;
+	position: absolute;
+	top: 0px;
+	border: 3px solid black;
+	padding: 8px;
+	-moz-border-radius: 8px;
+	background-color: #C8C8C8;
+	z-index: 1;
+	width: 380px;
+}
+.calendar {
+	z-index: 2;
+}

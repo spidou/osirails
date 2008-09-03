@@ -9,7 +9,7 @@
 		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="/stylesheets/default.css"/>
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
     <%= javascript_include_tag :defaults %>
-    <%= yield :javascript %>
+    <%= yield :header %>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
@@ -80,6 +80,7 @@
 								<span>Rechercher</span>
 							</a>&nbsp;<a href="#" class="help">Recherche avancée</a>
 						</p>
+						<%= yield :secondary_menu %>
 						<h4><span class="gray_color">Liens</span> <span class="blue_color">utiles</span></h4>
 						<div id="link">
 							<ul>

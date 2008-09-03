@@ -95,4 +95,15 @@ module EventsHelper
     month_concat[last_comma_position] = ", et" unless last_comma_position.nil?
     month_concat
   end
+  
+  def alarm_sentence(event)
+    alarm = event.alarms.first
+    case alarm.action.upcase
+    when "DISPLAY"
+      action = "afficher un message"
+    when "EMAIL"
+      action = "envoyer un courrier &eacutelectronique à #{alarm.email_to}"      
+    end
+    action + " #{alarm.do_alarm_before} minutes avant"
+  end
 end

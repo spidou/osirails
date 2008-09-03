@@ -21,6 +21,7 @@ class Calendar < ActiveRecord::Base
 
   # Relationships
   has_many :events
+  has_many :event_categories
 
   # Requires
   require 'rubygems'

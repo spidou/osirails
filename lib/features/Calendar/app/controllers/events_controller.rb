@@ -36,6 +36,7 @@ class EventsController < ApplicationController
     @calendar = Calendar.find(params[:calendar_id])
     @event = Event.new
     @alarm = Alarm.new
+    @categories = EventCategory.find_all_accessible(@calendar)
     @event.title = "Nouvel événement"
     @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
     @event.end_at = @event.start_at + (params[:height].to_i).minutes
@@ -59,6 +60,7 @@ class EventsController < ApplicationController
     @calendar = Calendar.find(params[:calendar_id])
     @event = Event.find(params[:id])
     @alarm = @event.alarms.first
+    @categories = EventCategory.find_all_accessible(@calendar)
     respond_to do |format|
       format.js
     end

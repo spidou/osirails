@@ -1,7 +1,7 @@
 class CreateEvents < ActiveRecord::Migration
   def self.up
     create_table :events do |t|
-      t.references :calendar
+      t.references :calendar, :event_category
       t.string :title, :color, :frequence, :status
       t.boolean :full_day, :default => false, :null => false
       t.text :location, :description, :link

@@ -49,6 +49,10 @@ class Event < ActiveRecord::Base
   # Callbacks
   after_create :create_alarm
   before_save :clear_empty_attrs
+  before_save :create_event_category_from_name
+  
+  # Accessor
+  attr_accessor :new_event_category_name
   
   # Validates
   validates_presence_of :title, :start_at, :end_at
@@ -135,7 +139,19 @@ class Event < ActiveRecord::Base
     end
   end
   
+  def create_event_category_from_name
+    unless new_event_category_name.blank?
+      if EventCategory.find_all_accessible(self.calendar).collect { |ec| ec.name}.include?(new_event_category_name)
+        self.event_category_id = EventCategory.find_by_name(new_event_category_name).id
+      else
+        category = EventCategory.create(:name => new_event_category_name)
+        self.calendar.event_categories << category
+        self.event_category_id = category.id
+      end
+    end
+  end
+  
   def create_alarm
-    self.alarms << Alarm.create
+    self.alarms << Alarm.create(:title => "Alarme")
   end
 end
