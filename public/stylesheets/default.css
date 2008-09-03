@@ -1103,18 +1103,19 @@ table.presentation tr:hover > td{
 	margin-left: 160px;
 }
 */
-.frame label {
+/*mise en page*/
+.frame form label {
 	text-align:right;
 	margin-right:10px;
 	width:210px;
 	display:inline-block;
 }
 
-.frame input[type=text],
-.frame input[type=password],
-.frame input[type=checkbox],
-.frame textarea,
-.frame select {
+.frame form p input[type=text],
+.frame form p input[type=password],
+.frame form p input[type=checkbox],
+.frame form p textarea,
+.frame form p select {
 	margin-bottom:10px;
 	vertical-align:top;
 	border: #CCC 1px solid;
@@ -1207,6 +1208,10 @@ ul.parent>li {
 	top:2px;
 }
 
+.hierarchic ul li span>img {
+	position:relative;
+	top:2px;
+}
 
 /*/////////////////Onglets/////////////////*/
 /*
