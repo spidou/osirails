@@ -87,12 +87,12 @@ tr:hover > td > a {
 }
 
 .commodity td.sub_commodity_category {
-	font-weight:bold;
 	font-style:italic;
 }
 
 .commodity td.commodity_category {
 	font-style:italic;
+	font-weight:bold;
 }
 
 /*:::::::::TABLEAU SANS STYLE:::::::::*/
@@ -732,7 +732,11 @@ a.previous-button:hover span {
 }
 
 .calendar_checkbox {
-	background:;
+	background:url("../images/calendar/month.jpg");
+}
+
+.calendar_checkbox {
+	background:url("../images/calendar/month.jpg");
 }
 
 /*//////////////////////////////////////////////////////////
