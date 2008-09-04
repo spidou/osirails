@@ -39,13 +39,16 @@ class UsersController < ApplicationController
     @user = User.find(params[:id]) 
     unless params[:user][:password].empty?
       @user.updating_password = true
-      if params[:temporary_password] == false
+      
+      if params[:temporary_password].nil?
         @user.password_updated_at = Time.now 
       else
         @user.password_updated_at = nil
       end
       @user.save
     else
+    @user.password_updated_at = nil if !params[:temporary_password].nil?
+    
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
     end

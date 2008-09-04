@@ -5,7 +5,8 @@ module PasswordPoliciesHelper
   end 
   
   def display_text_field_for_pattern
-    text_field_tag( "pattern", ConfigurationManager.admin_user_pattern, :size => 30 )
+    params[:pattern].nil? ? pattern = ConfigurationManager.admin_user_pattern : pattern = params[:pattern]
+    text_field_tag( "pattern", pattern, :size => 30 )
   end
   
   def display_text_field_for_validity_date

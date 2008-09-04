@@ -1,33 +1,44 @@
 class User < ActiveRecord::Base
   before_save :username_unicity
-
+  
+  # Requires
+  require "digest/sha1"
+  
   # Relationships
   has_and_belongs_to_many :roles
   belongs_to :employee
   has_one :calendar
   
   # Validates
+  validates_each :password do |record, attr, value|
+    record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
+  end
   validates_presence_of :username, :message => "ne peut être vide"
   with_options :if => :should_update_password? do |user|
-    user.before_save :password_encryption
-    user.validates_presence_of :password, :message => "ne peut être vide"
-    user.validates_confirmation_of :password, :message => "ne correspondent pas"
+    user.before_save :password_encryption 
+    user.validates_presence_of :password, :message => "ne peut être vide "
+    user.validates_confirmation_of :password, :message => "ne correspondent pas "
+    # manage the error that occure when reset database with admin_actual_password_policy that is empty
     begin
       # find the index of the actual selected regex to choose the good one into the db
       actual = ConfigurationManager.admin_actual_password_policy
       reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
-      # replace the "l" by "d" to find the message concerning the regexp name ex: "d1" message for "l1" regex 
-      message = ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")
-      user.validates_format_of :password, :with => reg ,:message =>  message
-    rescue Exception => e
+      # replace the "l" by "d" into 'admin_actual_password_policy' to find the message into admin password_policy (cf. config.yml) concerning the regexp name ex: "d1" message for "l1" regex 
+      message = ConfigurationManager.admin_password_policy[ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")]
+      user.validates_format_of :password, :with => reg ,:message => message 
+      
+
+      # user.validate :must_be_different
+                                                         
+      # user.validates_format_of :password, :with => /^(a.A){32}$/ ,:message =>  " ne doit pas être votre ancien mot de passe" , :if => :same_password?
+    rescue Exception =>  e
       puts "Une erreur est survenue à l'initialisation des features. Veuillez relancer le serveur. (erreur : #{e.message})"
     end
   end
   
   # Accessors
   attr_accessor :updating_password
-  # Requires
-  require "digest/sha1"
+ 
 
   # Method to encrypt a string
   def encrypt(string)
@@ -61,9 +72,9 @@ class User < ActiveRecord::Base
   end
   
   def expired?
-    return true if password_updated_at.nil?
+    return true if self.password_updated_at.nil?
     return false if ConfigurationManager.admin_password_validity == 0
-    (password_updated_at + ConfigurationManager.admin_password_validity.day) < Time.now
+    return true if (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
   end
   
   def username_unicity
@@ -86,6 +97,7 @@ class User < ActiveRecord::Base
       end
     end
   end
-
+  
+  
 # TODO delete the Add link that been used for dev purposes
 end
