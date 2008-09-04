@@ -1085,12 +1085,12 @@ width: 50px ! important;
 }
 */
 .frame form p textarea {
-//	min-height:50px;
+/*	min-height:50px;*/
 	height:10px !important; /*test julien*/
 }
 
 .frame form p select {
-	//	border: #CCC 1px solid;
+/*	border: #CCC 1px solid;*/
 }
 
 .frame form p input[type=text]:hover,
@@ -1487,12 +1487,12 @@ div.steps_text p {
 }
 
 div.frame>#steps {
-//	height:200px;
+/*	height:200px;*/
 }
 
 /*////////////BROWSING PAGE////////////*/
 .browsing_page {
-//	background:#CCC;
+/*	background:#CCC;*/
 	text-align:center;
 }
 
@@ -1531,15 +1531,15 @@ div.frame>#steps {
 /*/////////////////OTHER/////////////////*/
 
 .link_to_closed {
-	background:url("../images/lock_off_16x16.png") no-repeat;
-	width:16px;
-	height:16px;
+	background:url("../images/lock_off_24x24.png") no-repeat;
+	width:24px;
+	height:24px;
 }
 
 .link_to_closed:hover {
-	background:url("../images/lock_16x16.png") no-repeat;
-	width:16px;
-	height:16px;
+	background:url("../images/lock_24x24.png") no-repeat;
+	width:24px;
+	height:24px;
 }
 
 /*/////////////////////////////////////////////////////
