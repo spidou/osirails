@@ -1542,15 +1542,18 @@ div.frame>#steps {
 /*/////////////////OTHER/////////////////*/
 
 .link_to_closed {
-	background:url("../images/lock_off_24x24.png") no-repeat;
-	width:24px;
-	height:24px;
+	background:url("../images/lock_off_24x24.png") no-repeat 0px -1px;
+	margin-left:10px;
+	padding:5px 0 0px 28px;
+	text-decoration:none !important;
 }
 
 .link_to_closed:hover {
-	background:url("../images/lock_24x24.png") no-repeat;
-	width:24px;
-	height:24px;
+	background:url("../images/lock_24x24.png") no-repeat 0px -1px;
+}
+
+a.link_to_closed {
+
 }
 
 /*/////////////////////////////////////////////////////
