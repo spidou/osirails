@@ -1,27 +1,27 @@
 <% content_for :secondary_menu do %>
   <h1><span class="gray_color">Action</span></h1>
   <ul><li>
-    <%= link_to("<img alt='Ajouter un nouvelle inventaire' src='/images/add_24x24.png?1220437164' title='Ajouter un nouvelle inventaire' />Ajouter un nouvelle inventaire", new_inventory_path)%>
-   </li></ul>
-<% end %>
-<h1>Liste des inventaires</h1>
-<div class='frame'>
-<table>
-<tr>
-  <th>Inventaire</th>
-  <th>Date de cr&eacute;ation</th>
-  <th>Derni&egrave;re modification</th>
-  <th>Status</th>
-  <th>Action</th>
-</tr>
-<% for inventory in @inventories %>
-  <tr>
-    <td><%= inventory.id %></td>
-    <td><%= inventory.created_at %></td>
-    <td><%= show_last_update(inventory) %></td>
-    <td><%= inventory.closed ? "Terminé" : "En cour" %>
-    <td><%= link_to("D&eacute;tails", inventory_path(inventory)) %></td>
-  </tr>
-<% end %>
-</table>
-</div>
+      <%= link_to("<img alt='Ajouter un nouvelle inventaire' src='/images/add_24x24.png?1220437164' title='Ajouter un nouvelle inventaire' />Ajouter un nouvelle inventaire", new_inventory_path)%>
+    </li></ul>
+  <% end %>
+  <h1>Liste des inventaires</h1>
+  <div class='frame'>
+    <table>
+      <tr>
+        <th>Inventaire</th>
+        <th>Date de cr&eacute;ation</th>
+        <th>Derni&egrave;re modification</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      <% for inventory in @inventories %>
+        <tr>
+          <td><%= inventory.id %></td>
+          <td><%= get_structured_date(inventory) %></td>
+          <td><%= show_last_update(inventory) %></td>
+          <td><%= inventory.closed ? "Terminé" : "En cours" %>
+          <td><%= link_to("D&eacute;tails", inventory_path(inventory)) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>

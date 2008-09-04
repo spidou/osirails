@@ -14,10 +14,12 @@ var category_id = parent.className.substr(position + 1);
 // Select All ElementByClassName
 var sub_categories = document.getElementsByClassName('sub_commodity_category_'+sub_category_id+'_total');
 var categories = document.getElementsByClassName('commodity_category_'+category_id+'_total');
+var globals = document.getElementsByClassName('total');
 
 // Initialize totals
 var sub_category_total = 0;
 var category_total = 0;
+var global_total = 0;
 
 // Calcul sub_category_total
 for (i = 1; i < sub_categories.length ; i++)
@@ -31,7 +33,15 @@ for (i = 1; i < categories.length ; i ++)
   category_total += parseFloat(categories[i].innerHTML);
   }
   
+  // Calcul inventory_total
+  for (i = 1; i < globals.length; i++)
+    {
+    global_total += parseFloat(globals[i].innerHTML);
+    }
+  
 // Change total  
   sub_categories[0].innerHTML = sub_category_total;
   categories[0].innerHTML = category_total;
+  globals[0].innerHTML = global_total;
+  document.getElementById('total_ttc').innerHTML = global_total * 2;
 }

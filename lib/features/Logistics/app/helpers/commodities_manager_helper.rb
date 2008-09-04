@@ -80,7 +80,7 @@ module CommoditiesManagerHelper
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
             table << "<td>"
-            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/develop_button_16x16.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' />" unless show_categories_totals(category_child, show) == 0
+            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/develop_button_16x16.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' />" unless show_counter_category(category_child, show) == 0
             table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_16x16.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' />"
             table << in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
             table << "<td colspan='4'></td>"
@@ -105,7 +105,7 @@ module CommoditiesManagerHelper
                   table << "<td>"+in_place_editor(commodity,'unit_mass')+"kg</td>"
                   table << "<td>"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
                   table << "<td>"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
-                  table << "<td><span id='commodity_#{commodity.id}_price' class='commodity_category_#{commodity_category.id}_total sub_commodity_category_#{category_child.id}_total'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
+                  table << "<td><span id='commodity_#{commodity.id}_price' class='total commodity_category_#{commodity_category.id}_total sub_commodity_category_#{category_child.id}_total'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
                   table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>" unless show == nil and commodity.enable == false
                   table << "</tr>"
                 end

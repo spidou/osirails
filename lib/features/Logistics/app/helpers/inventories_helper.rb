@@ -1,5 +1,12 @@
 module InventoriesHelper
   
+  # This method permit to structured date
+  def get_structured_date(inventory)
+    form = inventory.created_at
+    return inventory.created_at.strftime('%d %B %Y')
+  end
+  
+  
   # This method permit to check last_update for inventory
   def show_last_update(inventory)
     update = inventory.updated_at
@@ -7,13 +14,13 @@ module InventoriesHelper
     commodities.each do |commodity|
       update = commodity.updated_at if update < commodity.updated_at
     end
-    update
+    update.strftime('%d %B %Y')
   end
   
   # This method permit to show closed button
   # , :confirm => 'Attention cette action est irr&eacute;versible'
   def show_closed_button(inventory)
-    inventory.inventory_closed? ? "" : link_to("Cl&ocirc;turer l'inventaire", {:action => 'update', :method => 'put',  :confirm => "Attention, une fois clôtur&eacute, vous ne pourrez plus modifier l'inventaire", :id => inventory.id}, {:class => 'link_to_closed'})
+    inventory.inventory_closed? ? image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;")+" Cl&ocirc;tur&eacute;" : link_to("Cl&ocirc;turer l'inventaire", {:id => inventory.id}, {:method => :put, :class => 'link_to_closed', :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"})
   end
   
   #  This method permit to add value of quantity
@@ -76,7 +83,7 @@ module InventoriesHelper
           structured_commodities << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(inventory,commodity)+"</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_measure_total'>#{commodity.quantity * commodity.measure}</span> #{unit_measure.symbol}</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_unit_mass_total'>#{commodity.quantity * commodity.unit_mass}</span> kg</td>"
-          structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_total' class='commodity_category_#{commodity_category.parent_commodity_category_id}_total sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total'>#{(commodity.quantity * commodity.measure) * (commodity.fob_unit_price + ((commodity.fob_unit_price * commodity.taxe_coefficient)/100))}</span> &euro;</td>"
+          structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_total' class='total commodity_category_#{commodity_category.parent_commodity_category_id}_total sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total'>#{(commodity.quantity * commodity.measure) * (commodity.fob_unit_price + ((commodity.fob_unit_price * commodity.taxe_coefficient)/100))}</span> &euro;</td>"
           structured_commodities << "</tr>"
         end
       end

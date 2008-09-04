@@ -6,34 +6,41 @@
   <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
 <% end %>
 <% content_for :secondary_menu do %>
+
+  <h1><span class='gray_color'>Statistiques</span></h1>
+<ul><li>
+    <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span><br/>
+    <span class='inventory_total_ttc' style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%></span>
+</li></ul>
+
   <h1><span class="gray_color">Action</span></h1>
 <ul><li>
-<%= show_closed_button(@inventory)%>
-  </li></ul>
-<% end %>
+      <%= show_closed_button(@inventory)%>
+</li></ul>
+  <% end %>
 
-<h1><%= "Inventaire du #{@inventory.created_at}" %></h1>
-<div class='frame'>
-  <table class='commodity'>
-    <tr>
-      <th rowspan='2'>Cat&eacute;gorie</th>
-      <th rowspan='2'>Sous Cat&eacute;gorie</th>
-      <th rowspan='2'>Fournisseur</th>
-      <th rowspan='2'>Désignation</th>
-      <th rowspan='2'>Unit&eacute;e de mesure / U</th>
-      <th rowspan='2'>Masse / U</th>
-      <th colspan='3'>Prix / U (&euro;)</th>
-      <th rowspan='2'>Quantit&eacute;</th>
-      <th rowspan='2'>Unit&eacute;e de mesure total</th>
-      <th rowspan='2'>Masse total</th>
-      <th rowspan='2'>Prix total</th>
+  <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>
+  <div class='frame'>
+    <table class='commodity'>
       <tr>
-        <th>FOB</th>
-        <th>Coef Taxe</th>
-        <th>Prix</th>
+        <th rowspan='2'>Cat&eacute;gorie</th>
+        <th rowspan='2'>Sous Cat&eacute;gorie</th>
+        <th rowspan='2'>Fournisseur</th>
+        <th rowspan='2'>Désignation</th>
+        <th rowspan='2'>Unit&eacute;e de mesure / U</th>
+        <th rowspan='2'>Masse / U</th>
+        <th colspan='3'>Prix / U (&euro;)</th>
+        <th rowspan='2'>Quantit&eacute;</th>
+        <th rowspan='2'>Unit&eacute;e de mesure total</th>
+        <th rowspan='2'>Masse total</th>
+        <th rowspan='2'>Prix total</th>
+        <tr>
+          <th>FOB</th>
+          <th>Coef Taxe</th>
+          <th>Prix</th>
+        </tr>
       </tr>
-    </tr>
-    <%= show_structured_commodities(@inventory) %>
-  </table>
-  <%= link_to("Retour", :action => 'index') %>
-</div>
+      <%= show_structured_commodities(@inventory) %>
+    </table>
+    <%= link_to("Retour", :action => 'index') %>
+  </div>

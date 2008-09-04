@@ -6,8 +6,15 @@
 <% end %>
 
 <% content_for :secondary_menu do %>
-  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
-  <%= @type != "show_all" ? link_to("Afficher toutes les categories et matières premières (deactivé inclus)", :action => "index", :type => "show_all") : link_to("Afficher toutes les categories et matières premières (actives uniquement)", :action => "index") %>
+  
+  <h1>tutu</h1>
+<span class='total'></span>
+<span id='total_ttc'></span>
+  <h1><span class='grey-color'>Actions</span></h1>
+  <ul>
+    <li><%= link_to("<img alt='Nouvelle Cat&eacute;gorie' src='/images/add_24x24.png?1220437164' title='Nouvelle Cat&eacute;gorie' />Nouvelle Cat&eacute;gorie", new_commodity_category_path) %></li>
+    <li><%= @type != "show_all" ? link_to("Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("Affich&eacute; Actifs", :action => "index") %></li>
+  </ul>
 <% end %>
 
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
@@ -28,6 +35,6 @@
         <th>Prix</th>
       </tr>
     </tr>
-<%= @type != "show_all" ? get_structured : get_structured(nil) %>
+    <%= @type != "show_all" ? get_structured : get_structured(nil) %>
   </table>
 </div>

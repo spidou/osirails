@@ -23,7 +23,7 @@ class InventoriesController < ApplicationController
     redirect_to :action => 'index'
   end
   
-  def closed
+  def update
     @inventory = Inventory.find(params[:id])
     if @inventory.inventory_closed?
       flash[:error] = "L'inventaire est d&eacute;j&agrave; cl&ocirc;tur&eacute;"
