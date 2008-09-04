@@ -1,8 +1,8 @@
 <%
-unless @reference_id == -1
+if @reference_id > 0
   reference = ProductReference.find(@reference_id) %>
 
-<h2>Informations concernant la r&eacute;f&eacute;rence "<%= reference.name %>"</h2>
+<h2>R&eacute;f&eacute;rence</h2>
 <p>
   <%= label_tag "Nom de la r&eacute;f&eacute;rence :" %>
   <strong><%= reference.name %></strong>
