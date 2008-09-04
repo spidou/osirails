@@ -213,12 +213,24 @@ namespace :osirails do
       SocietyActivitySector.create :name => "Routes"
       SocietyActivitySector.create :name => "Usinage"
       
+      # default file_type_extensions
+      FileTypeExtension.create(:name => "odt")
+      FileTypeExtension.create(:name => "doc")
+      FileTypeExtension.create(:name => "docx")
+      FileTypeExtension.create(:name => "pdf")
+      FileTypeExtension.create(:name => "jpg")
+      FileTypeExtension.create(:name => "jpeg")
+      FileTypeExtension.create(:name => "png")
+      FileTypeExtension.create(:name => "gif")
+      
+      
+      
       # default file types
       f = FileType.create :name => "CV", :model_owner => "Employee"
-      f.file_type_extensions << FileTypeExtension.create(:name =>"doc")
-      f.file_type_extensions << FileTypeExtension.create(:name =>"docx")
-      f.file_type_extensions << FileTypeExtension.create(:name =>"odt")
-      f.file_type_extensions << FileTypeExtension.create(:name =>"pdf")
+      f.file_type_extensions << FileTypeExtension.find_by_name("doc")
+      f.file_type_extensions << FileTypeExtension.find_by_name("docx")
+      f.file_type_extensions << FileTypeExtension.find_by_name("odt")
+      f.file_type_extensions << FileTypeExtension.find_by_name("pdf")
       
       f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
       f.file_type_extensions << FileTypeExtension.find_by_name("doc")
@@ -235,6 +247,13 @@ namespace :osirails do
       FileType.create :name => "Maquette", :model_owner => "Dossier"
       FileType.create :name => "Devis", :model_owner => "Dossier"
       FileType.create :name => "Facture", :model_owner => "Dossier"
+      
+      f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
+      f.file_type_extensions << FileTypeExtension.find_by_name("pdf")
+      f.file_type_extensions << FileTypeExtension.find_by_name("jpg")
+      f.file_type_extensions << FileTypeExtension.find_by_name("jpeg")
+      
+      
 
       # default calendars and events
       calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
