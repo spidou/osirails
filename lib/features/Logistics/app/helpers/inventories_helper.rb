@@ -13,7 +13,7 @@ module InventoriesHelper
   # This method permit to show closed button
   # , :confirm => 'Attention cette action est irr&eacute;versible'
   def show_closed_button(inventory)
-    inventory.inventory_closed? ? "" : "<div class='link_to_closed'>"+link_to("Cl&ocirc;turer l'inventaire", {:action => 'update', :method => 'put',  :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"}, :id => inventory.id)+"</div>"
+    inventory.inventory_closed? ? "" : link_to("Cl&ocirc;turer l'inventaire", {:action => 'update', :method => 'put',  :confirm => "Attention, une fois clôtur&eacute, vous ne pourrez plus modifier l'inventaire", :id => inventory.id}, {:class => 'link_to_closed'})
   end
   
   #  This method permit to add value of quantity
@@ -22,10 +22,11 @@ module InventoriesHelper
   end
   
   # This method permit to show category's total
-  def show_category_total(inventory, commodity_category, value = 0)
+  def show_total(inventory, commodity_category = nil, value = 0)
     total = 0
-    commodities = CommoditiesInventory.find_all_by_commodity_category_id_and_inventory_id(commodity_category.commodity_category_id, inventory.id)
-    commodities = CommoditiesInventory.find_all_by_parent_commodity_category_id_and_inventory_id(commodity_category.parent_commodity_category_id, inventory.id) if value > 0
+    commodities = CommoditiesInventory.find_all_by_commodity_category_id_and_inventory_id(commodity_category.commodity_category_id, inventory.id) if value == 0
+    commodities = CommoditiesInventory.find_all_by_parent_commodity_category_id_and_inventory_id(commodity_category.parent_commodity_category_id, inventory.id) if value == 1
+    commodities = CommoditiesInventory.find_all_by_inventory_id(inventory.id) if value == 2
     commodities.each do |commodity|
       total += (commodity.quantity * commodity.measure) * (commodity.fob_unit_price + ((commodity.fob_unit_price * commodity.taxe_coefficient)/100))
     end
@@ -45,7 +46,7 @@ module InventoriesHelper
       structured_commodities << "<img id='commodity_category_#{commodity_category.parent_commodity_category_id}_reduce' src='/images/reduce_button_16x16.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/>"
       structured_commodities << "#{commodity_category.parent_commodity_category_name}</td>"
       structured_commodities << "<td colspan='11'></td>"
-      structured_commodities << "<td class='commodity_category'><span class='commodity_category_#{commodity_category.parent_commodity_category_id}_total'>#{show_category_total(inventory,commodity_category,1)}</span> &euro;</td>"
+      structured_commodities << "<td class='commodity_category'><span class='commodity_category_#{commodity_category.parent_commodity_category_id}_total'>#{show_total(inventory,commodity_category,1)}</span> &euro;</td>"
       structured_commodities << "</tr>"
       parent.last.group_by(&:commodity_category_id).sort.each do |group|
         sub_commodity_category = inventory.commodities_inventories.find(:first, :conditions => {:inventory_id => inventory.id, :commodity_category_id => group.first})
@@ -56,7 +57,7 @@ module InventoriesHelper
         structured_commodities << "<img id='commodity_category_#{sub_commodity_category.commodity_category_id}_reduce' src='/images/reduce_button_16x16.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' />"
         structured_commodities << "#{sub_commodity_category.commodity_category_name}</td>"
         structured_commodities << "<td colspan='10'></td>"
-        structured_commodities << "<td class='sub_commodity_category'><span class='sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total' >#{show_category_total(inventory,sub_commodity_category)}</span> &euro;</td>"
+        structured_commodities << "<td class='sub_commodity_category'><span class='sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total' >#{show_total(inventory,sub_commodity_category)}</span> &euro;</td>"
         structured_commodities << "</tr>"
         group.last.each do |commodity|
 
