@@ -1,29 +1,30 @@
-<h4>Information consernant le <%= @product.name %></h4>
+<h2>Informations concernant le produit "<%= @product.name %>"</h2>
 
 <p>
-  <%= label_tag "name", @product.name %>
+  <%= label_tag "Nom du produit :" %>
+  <strong><%= @product.name %></strong>
 </p>
-
 <p>
-  <%= label_tag "description", @product.description %>
+  <%= label_tag "Description du produit :" %>
+  <strong><%= @product.description %></strong>
 </p>
-
 <p>
-  <%= label_tag "production_cost_manpower ", @product.production_cost_manpower %>
+  <%= label_tag "Coût de main d'&#339;uvre de production :" %>
+  <strong><%= @product.production_cost_manpower %></strong>
 </p>
-
 <p>
-  <%= label_tag "production_time ", @product.production_time %>
+  <%= label_tag "Temps de production :" %>
+  <strong><%= @product.production_time %></strong>
 </p>
-
 <p>
-  <%= label_tag "delivery_cost_manpower  ", @product.delivery_cost_manpower  %>
+  <%= label_tag "Cout de main d'&#339;uvre de livraison :" %>
+  <strong><%= @product.delivery_cost_manpower %></strong>
 </p>
-
 <p>
-  <%= label_tag "production_time ", @product.delivery_time  %>
+  <%= label_tag "Temps de livraison :" %>
+  <strong><%= @product.delivery_time %></strong>
 </p>
-
 <p>
-  <%= label_tag "information" , @product.information %>
+  <%= label_tag "Informations compl&eacute;mentaires :" %>
+  <strong><%= @product.information %></strong>
 </p>

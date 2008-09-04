@@ -111,33 +111,32 @@ class Menu < ActiveRecord::Base
   end
     
   private
-  # This method insert in the parents the menus   
-  def Menu.get_children(menus,current_menu_id, parents,indent)
-    menus.each do |menu|
-      unless menu.id == current_menu_id
-      menu.title = indent * menu.ancestors.size + menu.title if menu.title != nil
-      parents << menu
-          
-      # If the menu has children, the get_children method is call.
-      if menu.children.size > 0
-        get_children(menu.children,current_menu_id, parents, indent)
+    # This method insert in the parents the menus   
+    def Menu.get_children(menus,current_menu_id, parents,indent)
+      menus.each do |menu|
+        unless menu.id == current_menu_id
+        menu.title = indent * menu.ancestors.size + menu.title if menu.title != nil
+        parents << menu
+
+        # If the menu has children, the get_children method is call.
+        if menu.children.size > 0
+          get_children(menu.children,current_menu_id, parents, indent)
+        end
+        end
       end
-      end
+      parents
     end
-    parents
-  end
   
   protected
-  # This position permit to return a valide position for a menu.
-  def position_in_bounds(position)
-    if position < 1 
-      1
-    elsif position > self.self_and_siblings.size
-      puts self.self_and_siblings.size
-      self.self_and_siblings.size
-    else
-      position
+    # This position permit to return a valide position for a menu.
+    def position_in_bounds(position)
+      if position < 1 
+        1
+      elsif position > self.self_and_siblings.size
+        puts self.self_and_siblings.size
+        self.self_and_siblings.size
+      else
+        position
+      end
     end
-  end
-  
 end

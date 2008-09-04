@@ -13,6 +13,7 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
+    @roles = Role.find(:all, :order => "name")
   end
 
   # GET /users/1/edit

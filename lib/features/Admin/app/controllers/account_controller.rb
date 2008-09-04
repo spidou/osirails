@@ -80,16 +80,15 @@ class AccountController < ApplicationController
   end
   
   private
-  
-  def logged
-    if current_user
-      redirect_to user_home
+    def logged
+      if current_user
+        redirect_to user_home
+      end
     end
-  end
-  
-  def not_logged
-    unless current_user
-      redirect_to login_path
+
+    def not_logged
+      unless current_user
+        redirect_to login_path
+      end
     end
-  end
 end

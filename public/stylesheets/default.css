@@ -1119,8 +1119,8 @@ width: 50px ! important;
 /*LAYOUTS' FORM*/
 .frame form label {
 	text-align:right;
-	margin-right:10px;
-	width:210px;
+/*	margin-right:10px;*/
+	width:230px;
 	display:inline-block;
 }
 
@@ -1132,6 +1132,11 @@ width: 50px ! important;
 	margin-bottom:10px;
 	vertical-align:top;
 	border: #CCC 1px solid;
+}
+
+.frame strong {
+  margin-bottom:10px;
+	vertical-align:top;
 }
 /*
 .frame input.disable-stylesheet-width {

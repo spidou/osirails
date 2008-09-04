@@ -1,7 +1,8 @@
 <h1>Visualiser le catalogue des produits</h1>
 
 <div class="frame">
-  <div id='all_selects'>
+  <h2>Catalogue des produits</h2>
+  <div id='catalog'>
     <span id='show_categories'>
       <% (find_max_level + 1).times do |value|%>
         <%= show_category_column(@categories,value) %>
@@ -10,12 +11,12 @@
     <span id='show_references'>
       <%= render :partial => "show_references" %>
     </span>
+
+    <div id="products_list"></div>
+    <div id="product_reference_informations"></div>
+    <div id="product_informations"></div>
+
   </div>
-
-  <div id="products_list"></div>
-  <div id="product_reference"></div>
-  <div id="product_information"></div>
-
   <% find_max_level.times do |value|%>
     <%= observe_field("select_#{value}", :update => "show_references", :url => {:action => :show_references}, :with => 'parameter' ) %>
     <%= observe_field("select_#{value}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>

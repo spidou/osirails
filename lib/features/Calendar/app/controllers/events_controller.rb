@@ -162,8 +162,7 @@ class EventsController < ApplicationController
   end
 
   protected
-
-  def check
-    # TODO Verify if the current user have the authorization on the calendar and event
-  end
+    def check
+      # TODO Verify if the current user have the authorization on the calendar and event
+    end
 end

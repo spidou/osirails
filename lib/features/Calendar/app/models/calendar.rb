@@ -210,42 +210,41 @@ class Calendar < ActiveRecord::Base
   end
 
   protected
-
-  def daynum_to_dayname(num)
-    case num
-    when 0
-      return "SU"
-    when 1
-      return "MO"
-    when 2
-      return "TU"
-    when 3
-      return "WE"
-    when 4
-      return "TH"
-    when 5
-      return "FR"
-    when 6
-      return "SA"
+    def daynum_to_dayname(num)
+      case num
+      when 0
+        return "SU"
+      when 1
+        return "MO"
+      when 2
+        return "TU"
+      when 3
+        return "WE"
+      when 4
+        return "TH"
+      when 5
+        return "FR"
+      when 6
+        return "SA"
+      end
     end
-  end
 
-  def dayname_to_daynum(name)
-    case name
-    when "SU"
-      return 0
-    when "MO"
-      return 1
-    when "TU"
-      return 2
-    when "WE"
-      return 3
-    when "TH"
-      return 4
-    when "FR"
-      return 5
-    when "SA"
-      return 6
+    def dayname_to_daynum(name)
+      case name
+      when "SU"
+        return 0
+      when "MO"
+        return 1
+      when "TU"
+        return 2
+      when "WE"
+        return 3
+      when "TH"
+        return 4
+      when "FR"
+        return 5
+      when "SA"
+        return 6
+      end
     end
-  end
 end

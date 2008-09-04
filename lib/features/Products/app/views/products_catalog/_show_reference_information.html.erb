@@ -1,28 +1,34 @@
-<% unless @reference_id == -1 %>
-  <% reference = ProductReference.find(@reference_id)%>
-<h4>Information consernant la référence <%= reference.name %></h4>
+<%
+unless @reference_id == -1
+  reference = ProductReference.find(@reference_id) %>
 
-  <p>
-    <%= label_tag "name", reference.name %>
-  </p>
-
-  <p>
-    <%= label_tag "description", reference.description %>
-  </p>
-
+<h2>Informations concernant la r&eacute;f&eacute;rence "<%= reference.name %>"</h2>
 <p>
-    <%= label_tag "production_cost_manpower ", reference.production_cost_manpower %>
+  <%= label_tag "Nom de la r&eacute;f&eacute;rence :" %>
+  <strong><%= reference.name %></strong>
 </p>
-
 <p>
-    <%= label_tag "production_time ", reference.production_time %>
+  <%= label_tag "Description du produit :" %>
+  <strong><%= reference.description %></strong>
 </p>
-
 <p>
-    <%= label_tag "delivery_cost_manpower  ", reference.delivery_cost_manpower  %>
+  <%= label_tag "Coût de main d'&#339;uvre de production :" %>
+  <strong><%= reference.production_cost_manpower %></strong>
 </p>
-
 <p>
-    <%= label_tag "production_time ", reference.delivery_time  %>
+  <%= label_tag "Temps de production :" %>
+  <strong><%= reference.production_time %></strong>
+</p>
+<p>
+  <%= label_tag "Cout de main d'&#339;uvre de livraison :" %>
+  <strong><%= reference.delivery_cost_manpower  %></strong>
+</p>
+<p>
+  <%= label_tag "Temps de livraison :" %>
+  <strong><%= reference.delivery_time  %></strong>
+</p>
+<p>
+  <%= label_tag "Informations compl&eacute;mentaires :" %>
+  <strong><%= reference.information %></strong>
 </p>
 <% end %>

@@ -55,17 +55,7 @@
 	<div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->	
 		<div id="menu">				<!-- MENU PRINCIPAL-->	
 				<ul>
-          			<%= display_main_menu %>
-					<!--<li><a href="menu_liens/gestion_entreprise.html">Gestion de l'entreprise</a></li>
-					<li><a href="menu_liens/entreprise.html">L'entreprise</a></li>
-					<li><a href="menu_liens/ressource_humaine.html">Ressources Humaines</a></li>
-					<li><a href="menu_liens/ventes.html">Ventes</a></li>
-					<li><a href="menu_liens/productions.html">Productions</a></li>
-					<li><a href="menu_liens/achats.html">Achats</a></li>
-					<li><a href="menu_liens/equipements.html">Equipements</a></li>
-					<li><a href="menu_liens/finances.html">Finances</a></li>
-					<li><a href="menu_liens/bibliotheque.html">Bibliothèque</a></li>
-					<li><a href="menu_liens/administration_intranet.html">Administration de l'Intranet</a></li>-->
+          <%= display_main_menu %>
 				</ul>
 		</div>
 		<div id="page">			<!-- CONTENU DE LA PAGE -->
@@ -73,12 +63,13 @@
 			<div id="secondary_menu">
 				<div id="shadow_secondary_menu">
 					<div id="content_secondary_menu">
-						<h4 id="header_secondary_menu"><span class="gray_color">Second</span> <span class="blue_color">Menu</span></h4>
-						<p>	<span id="search">Recherche :</span><br />
-							<input type="text" /><br />
+						<h4 id="header_secondary_menu"><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h4>
+						<p>
+              <input type="text" /><br />
 							<a class="default-button" href="#">
 								<span>Rechercher</span>
-							</a>&nbsp;<a href="#" class="help">Recherche avancée</a>
+							</a>&nbsp;
+              <a href="#" class="help">Recherche avancée</a>
 						</p>
 						<%= yield :secondary_menu %>
 						<h4><span class="gray_color">Liens</span> <span class="blue_color">utiles</span></h4>
@@ -89,21 +80,6 @@
 								<li><a href="#">Lien N°3</a></li>
 							</ul>
 						</div>
-						<h4><span class="gray_color">Actions</span> <span class="blue_color">contextuelles</span></h4>
-						<ul>
-							<li class="icons_link">
-								<a href="#"><img src="/images/view.png" alt="voir" title="voir" class="view_icon" />Voir</a>
-							</li>
-							<li class="icons_link">
-								<a href="#"><img src="/images/add.png" alt="ajouter" title="ajouter" class="add_icon" />Ajouter</a>
-							</li>
-							<li class="icons_link">
-								<a href="#"><img src="/images/modif.png" alt="modifier" title="modifier" class="modif_icon" />Modifier</a>
-							</li>
-							<li class="icons_link">
-								<a href="#"><img src="/images/del.png" alt="supprimer" title="supprimer" class="del_icon" />Supprimer</a>
-							</li>
-						</ul>
 						<div id="footer_secondary_menu">&nbsp;</div>
 					</div>
 				</div>

@@ -1,21 +1,20 @@
 <% unless @products == "0" or @products.size == 0%>
   <table>
-      <thead>
-        <th>Produits</th>
-        <th>Categories</th>
-        <th>References</th>
-      </thead>
+    <thead>
+      <th>Produits</th>
+      <th>Categories</th>
+      <th>References</th>
+    </thead>
     <tbody>
-      <% for product in @products %>
-            <% reference = ProductReference.find(product.product_reference_id) %>
-            <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
-          <tr>
-            <td><%= link_to_remote("#{product.name}", :update => "product_information", :url => { :action => :show_product_information, :id => product.id}) %></td>
-            <td><%= category.name %></td>
-            <td><%= reference.name %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-  <% end %>
+    <% for product in @products %>
+      <% reference = ProductReference.find(product.product_reference_id) %>
+      <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
+      <tr>
+        <td><%= link_to_remote("#{product.name}", :update => "product_informations", :url => { :action => :show_product_information, :id => product.id}) %></td>
+        <td><%= category.name %></td>
+        <td><%= reference.name %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -3,6 +3,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### ROOT
   map.root :controller => "account"
+  ### END ROOT
   
   ### ADMIN
   map.login 'login', :controller => 'account'
@@ -65,7 +66,12 @@ ActionController::Routing::Routes.draw do |map|
   ### PRODUCTS
   map.resources :produts_catalog
   map.resources :product_references
-  map.resources :product_reference_categories
+  map.resources :product_reference_categories do |product_reference_category|
+    product_reference_category.resources :product_reference_categories
+    product_reference_category.resources :product_references do |product_reference|
+      product_reference.resources :products
+    end
+  end
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
   map.connect 'products', :controller => 'products_catalog' #default page for products
   ### END PRODUCTS

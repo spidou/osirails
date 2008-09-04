@@ -32,79 +32,79 @@ class ApplicationController < ActionController::Base
   
   
   protected
-  # Method to permit to add permission to an action in a controller
-  # options = {:list => ['myaction']}
-  def self.method_permission(options)
-    $permission[controller_path] = options
-  end
+    # Method to permit to add permission to an action in a controller
+    # options = {:list => ['myaction']}
+    def self.method_permission(options)
+      $permission[controller_path] = options
+    end
 
-  # This method return the feature name
-  def feature_name(file)
-    file = file.split("/").slice(0...-3).join('/')
-    yaml = YAML.load(File.open(file+'/config.yml'))
-    yaml['name']
-  end
+    # This method return the feature name
+    def feature_name(file)
+      file = file.split("/").slice(0...-3).join('/')
+      yaml = YAML.load(File.open(file+'/config.yml'))
+      yaml['name']
+    end
 
-  # This methods return an array with options configuration for a controller
-  def search_methods(file)
-    ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
-  end
+    # This methods return an array with options configuration for a controller
+    def search_methods(file)
+      ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
+    end
 
-  def current_user
-    session[:user]
-  end
+    def current_user
+      session[:user]
+    end
 
-  def user_home
-    permissions_path
-  end
+    def user_home
+      permissions_path
+    end
 
   private
-  # Called when an user try to acces to an unauthorized page
-  def unauthorized_action(status = nil)
-    case status
-    when 422
-      render :file => "#{RAILS_ROOT}/public/422.html", :status => "422"
-    else
-      render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
-    end
-  end
-
-  # Do every verification before shows the page
-  def authenticate
-    if session[:user].nil? # If you're not logged
-      session[:initial_uri] = request.request_uri
-      redirect_to login_path
-      flash[:error] = "Vous n'êtes pas logger !"
-    else # If you're logged
-      current_user.update_activity
-      if current_user.expired?
-        redirect_to :controller => 'account', :action => 'expired_password'
+    # Called when an user try to acces to an unauthorized page
+    def unauthorized_action(status = nil)
+      case status
+      when 422
+        render :file => "#{RAILS_ROOT}/public/422.html", :status => "422"
       else
-        # Manage permissions for actions
-        $permission[controller_path] ||= {}
-        case params[:action]
-        when *['index'] + ($permission[controller_path][:list] || [])
-          unless can_list?(current_user)
-            unauthorized_action
-          end
-        when *['show'] + ($permission[controller_path][:view] || [])
-          unless can_view?(current_user)
-            unauthorized_action
-          end
-        when *['add', 'create'] + ($permission[controller_path][:add] || [])
-          unless can_add?(current_user)
-            unauthorized_action(422)
-          end
-        when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-          unless can_edit?(current_user)
-            unauthorized_action(422)
-          end
-        when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
-          unless can_delete?(current_user)
-            unauthorized_action(422)
-          end
-        end # case
+        render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
+      end
+    end
+
+    # Do every verification before shows the page
+    def authenticate
+      if session[:user].nil? # If you're not logged
+        session[:initial_uri] = request.request_uri
+        redirect_to login_path
+        flash[:error] = "Vous n'êtes pas logger !"
+      else # If you're logged
+        current_user.update_activity
+        if current_user.expired?
+          redirect_to :controller => 'account', :action => 'expired_password'
+        else
+          # Manage permissions for actions
+          $permission[controller_path] ||= {}
+          case params[:action]
+          when *['index'] + ($permission[controller_path][:list] || [])
+            unless can_list?(current_user)
+              unauthorized_action
+            end
+          when *['show'] + ($permission[controller_path][:view] || [])
+            unless can_view?(current_user)
+              unauthorized_action
+            end
+          when *['add', 'create'] + ($permission[controller_path][:add] || [])
+            unless can_add?(current_user)
+              unauthorized_action(422)
+            end
+          when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
+            unless can_edit?(current_user)
+              unauthorized_action(422)
+            end
+          when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
+            unless can_delete?(current_user)
+              unauthorized_action(422)
+            end
+          end # case
+        end # if
       end # if
-    end # if
-  end # authenticate
+    end # authenticate
 end # class
