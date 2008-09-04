@@ -1,3 +1,17 @@
+/*	default.css------------------------------------------------------
+	----------	..::Par Oxydium::.
+
+Création : Juillet/Octobre 2008
+---------
+Description : feuille de style de la page d'index contenant la mise
+en forme du site (menus, en-têtes, pied de page...).
+---------------------------------------------------------------------
+				..::Powered by Oxydium::..
+creation : July/October 20008
+---------
+Description: stylesheet of the index page containing the layout's site 
+(menus, headers, footers ...).
+--------------------------------------------------------------------*/
 /*
 div {
 	border: solid 1px black; 
@@ -13,12 +27,12 @@ html, body {
 	min-width: 1250px;
 }
 
-#all_page { /*Pour étendre le menu principal*/
+#all_page { /*<==TO EXPAND THE CORE MENU*/
 	background:url("../images/background_core_menu_cheating.jpg") repeat-y bottom left;
 }
 
 a {
-	color:rgb(234,136,28); /*#698bcd : BLEU*/
+	color:rgb(234,136,28); /*#698bcd : BLUE*/
 }
 
 a:hover {
@@ -29,7 +43,7 @@ a>img {
 	border:none;
 }
 
-/*:::::::::TABLEAU:::::::::*/
+/*:::::::::TABLE:::::::::*/
 caption {
 	background: #afc2ea;
 	color: rgb(64,68,93);
@@ -40,7 +54,7 @@ caption {
 table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
-//	background: #eaeff8;/*Bleu très claire*/
+/*	background: #eaeff8; BLUE VERY CLEAR*/
 	background:#F8F8F8;
 	text-align:center;
 	min-width:70%;
@@ -74,96 +88,15 @@ tr:hover > td{
 tr:hover > td > a {
 	text-decoration:underline;
 }
-/*::::::::::::TABLEAU COMMODITY::::::::::::*/
 
-.commodity tr.disable > td {
-	color:#888;
-//	color:#B0383D;/*Rouge*/
-	font-style:italic;
-}
-
-.commodity tr.enable > td {
-//	color:#4C8B38;
-}
-
-.commodity td.sub_commodity_category {
-	/*font-style:italic;*/
-	color:#888;
-}
-
-.commodity td.commodity_category {
-	/*font-style:italic;*/
-	font-weight:bold;
-}
-
-/*:::::::::TABLEAU SANS STYLE:::::::::*/
-caption.no-style {
-	background: none;
-	color: inherit;
-	font-weight:none;
-	border-bottom: none;
-}
-
-table.no-style {
-	border-collapse: collapse;
-	border:solid 1px 333;
-	background: none;
-	text-align:center;
-	width:inherit;
-	margin: 10px 0 10px 10px;
-}
-
-table.no-style a {
-	text-decoration: none;
-	color:gray;
-}
-
-table.no-style a:hover {
-	text-decoration: none;
-	color:white !important;
-}
-
-table.no-style th{
-	border:solid 1px #333;
-	background: none;
-}
-
-table.no-style td{
-	border:solid 1px #333;
-}
-
-table.no-style tr:hover > td{
-	background: none;
-}
-
-table.no-style tr:hover > td > a {
-	text-decoration:underline;
-}
-/*/////////////////////////////////////////////////////
-					in_place_editor
-////////////////////////////////////////////////////*/
-
-.inplaceeditor-form input {
-width: 50px ! important;
-}
-
-/* button submit */
-.editor_ok_button {
-  display: none;
-}
-
-/* a */
-.editor_cancel {
-  display: none;
-}
 /*/////////////////////////////
-			TITRE
+			TITLE
 /////////////////////////////*/
 
 h1 {
-	margin-top:10px; /*à cause du float left du menu horizontal*/
-	text-indent:0px;		/*	sert à correctement	*/
-	text-align:center;		/*	centrer le titre	*/
+	margin-top:10px; /*<==BECAUSE OF "float left" HORIZONTAL MENU*/
+	text-indent:0px;
+	text-align:center;
 	background: #EBA04E repeat;
 	border:solid 1px #e5e5e5;
 	height:26px;
@@ -207,9 +140,9 @@ strong {
 	color: #698bcd;
 	font-weight:lighter;
 }
-/*/////////////FIN BALISE GENERAL////////////////////*/
+/*/////////////END OF GENERICS TAGS////////////////////*/
 /*/////////////////////////////////////////////////////
-					BANNIERE
+					BANNER
 ////////////////////////////////////////////////////*/
 #banner {
 	width: auto;
@@ -240,7 +173,7 @@ strong {
 }
 
 /*/////////////////////////////////////////////////////
-				BANNIERE > BOUTONS
+				BANNER > BUTTONS
 ////////////////////////////////////////////////////*/
 
 #block_button_banner {
@@ -298,7 +231,7 @@ a.button_banner:hover span {
 }
 
 /*/////////////////////////////////////////////////////
-					SOUS-BANNIERE
+					UNDER-BANNER
 ////////////////////////////////////////////////////*/
 
 #under_banner {
@@ -357,10 +290,11 @@ a.button_banner:hover span {
 	line-height:25px;
 }
 
-/*///////////////////////////////////////////////////////
-					CORPS DU SITE
-///////////////////////////////////////////////////////*/
-/*Contient tout le reste sauf BANNIERE et SOUS BANNIERE*/
+/*////////////////////////////////////////////////////////
+					BODY OF THE WEBSITE
+////////////////////////////////////////////////////////*/
+/*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
+					OF BANNERS							*/
 #block_body {
 	width:auto;
 	height:auto;
@@ -369,7 +303,7 @@ a.button_banner:hover span {
 }
 
 /*/////////////////////////////////////////////////////
-			CORPS DU SITE > MENU PRINCIPAL
+			BODY OF THE WEBSITE > CORE MENU
 ////////////////////////////////////////////////////*/
 #menu {
 	display:block;
@@ -424,7 +358,7 @@ a.button_banner:hover span {
 }
 
 /*/////////////////////////////////////////////////////
-			CORPS DU SITE > PAGE DU SITE
+			BODY OF THE WEBSITE > PAGE OF WEBSITE
 ////////////////////////////////////////////////////*/
 #page {
 	border: solid 1px #cecece;
@@ -434,9 +368,9 @@ a.button_banner:hover span {
 	-moz-border-radius: 10px 0 10px 10px;
 }
 
-/*/////////////////////////////////////////////////////
-	CORPS DU SITE > PAGE DU SITE > MENU SECONDAIRE
-////////////////////////////////////////////////////*/
+/*/////////////////////////////////////////////////////////
+	BODY OF THE WEBSITE > PAGE OF WEBSITE > SECONDARY-MENU
+/////////////////////////////////////////////////////////*/
 #secondary_menu {
 	float:right;
 	margin-left:10px;
@@ -561,9 +495,9 @@ img.del_icon {
 }
 
 /*////////////////////////////////////////////////////////////////////////////////////////*/
-/*::::::::::::::::::::::::::::::Bouton Par Defaut:::::::::::::::::::::::::::::::::::::::::*/
+/*::::::::::::::::::::::::::::::::DEFAULT BUTTONS:::::::::::::::::::::::::::::::::::::::::*/
 a.default-button { 																		/**/
-	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;	/**/
+	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;
 	display: block;                                                                    	/**/
 	float: left;                                                                        /**/
 	font-family: arial, verdana, sans-serif;                                       		/**/
@@ -578,7 +512,7 @@ a.default-button { 																		/**/
 }																				   		/**/
 																						/**/
 a.default-button span { 																/**/
-	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;	/**/
+	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;															/**/
 }																						/**/
@@ -593,7 +527,7 @@ a.default-button:hover span {															/**/
 }	 																					/**/
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 button.input-button { 																	/**/
-	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;	/**/
+	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;
 	font-family: arial, verdana, sans-serif;											/**/
 	font-size:85%;																		/**/
 	height: 26px;																		/**/
@@ -605,7 +539,7 @@ button.input-button { 																	/**/
 }																						/**/
 																						/**/
 button.input-button span { 																/**/
-	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;	/**/
+	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;                                                            /**/
 	margin-top:-2px;                                                                    /**/
@@ -613,15 +547,15 @@ button.input-button span { 																/**/
 	line-height:18px;                                                                   /**/
 }																					    /**/
 																					    /**/
-button.input-button:hover { 															 /**/
-	background: transparent url("../images/button_default_generic_left_side.png") no-repeat bottom left;/**/
-}																					   	 /**/
+button.input-button:hover { 															/**/
+	background: transparent url("../images/button_default_generic_left_side.png") no-repeat bottom left;
+}																					    /**/
 																					   	/**/
 button.input-button:hover span {													   	/**/
-	background: transparent url("../images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
+	background: transparent url("../images/button_default_generic_right_side.png") no-repeat 100% -26px;
 	color:black;                                                                       	/**/
 }																						/**/
-/*:::::::::::::::::::::::::::Bouton Suivant-Précédent:::::::::::::::::::::::::::::::::::::*/
+/*:::::::::::::::::::::::::::::::BUTTON PREVIOUS-NEXT:::::::::::::::::::::::::::::::::::::*/
 a.next-button,
 a.previous-button {
 	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;
@@ -665,7 +599,7 @@ a.previous-button:hover span {
 	color:black;
 }	 		
 
-/*Bouton calendrier*/
+/*CALENDAR'S BUTTONS*/
 .calendar-buttons {
 	margin:5px;
 }
@@ -754,9 +688,8 @@ span.checkbox_text_calendar {
 }
 
 /*//////////////////////////////////////////////////////////
-CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
+BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
-
 #content_page {
 	text-indent:20px;
 	padding-left: 15px;
@@ -776,7 +709,6 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE
 /*//////////////////////////////////////////////////////////////////
 CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 //////////////////////////////////////////////////////////////////*/
-
 #horizontal_menu {
 	overflow: hidden;
 	float:left;
@@ -821,25 +753,25 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	height:50px;
 }
 
-/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\		::::::MESSAGE INFORMATIF:::::::			  /!\
-/!\		::::::::[ERREUR/SIGNAL]::::::::			  /!\
-/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\			::::/::INFORMATIVE MESSAGE:::::::			  /!\
+/!\			:::::/:::[ERREUR/SIGNAL]:/:::::::			  /!\
+/!\/!\/!\/!\/!\/!\/!/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 
-/*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\/!\*/
 .flash_error {
 	background: url("../images/cross_16x16.png") no-repeat;
 	color: red;
 }
 
-/*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
 	background: url("../images/tick_16x16.png") no-repeat;
 	color: green;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\:::::::Config en commun : ERROR & SIGNAL:::::::/!\
+/!\:::::::CONFIG IN COMMON : ERROR & NOTICE:::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
 	background:#C7C7C7;
@@ -867,9 +799,8 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\:::::::::::::erreurs générales:::::::::::::::::/!\
+/!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
-
 .fieldWithErrors {
 	font-weight:bold;
 }
@@ -886,26 +817,26 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	content: " *";
 	color:#B0383D;
 }
+
 div.fieldWithErrors {
 	display:inline;
-//	margin-left:10px;
 }
+
 .fieldWithErrors label {
 	color:#B0383D;
 	margin-left:20px;
 	text-align:right;
 	display:inline-block;
-//	width:inherit;
 	position:relative;
 	left:10px;
 }
 
-/**/
+/*
 .frame > form > #errorExplanation {
-//	border:10px solid red;
-//	width:100%;
+	border:10px solid red;
+	width:100%;
 }
-
+*/
 #errorExplanation {
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
@@ -944,9 +875,8 @@ div.fieldWithErrors {
 	overflow:hidden;
 }
 
-/**/
 /*/////////////////////////////
-	CADRE et CONTENU
+		FRAME & CONTENT
 /////////////////////////////*/
 
 table.presentation {
@@ -986,6 +916,89 @@ table.presentation tr:hover > td{
 	background: none;
 }
 
+/*::::::::::::TABLE "COMMODITY"::::::::::::*/
+
+.commodity tr.disable > td {
+	color:#888;
+/*	color:#B0383D; RED*/
+	font-style:italic;
+}
+
+.commodity tr.enable > td {
+//	color:#4C8B38;
+}
+
+.commodity td.sub_commodity_category {
+	/*font-style:italic;*/
+	color:#888;
+}
+
+.commodity td.commodity_category {
+	/*font-style:italic;*/
+	font-weight:bold;
+}
+
+/*:::::::::TABLE WITHOUT STYLE:::::::::*/
+caption.no-style {
+	background: none;
+	color: inherit;
+	font-weight:none;
+	border-bottom: none;
+}
+
+table.no-style {
+	border-collapse: collapse;
+	border:solid 1px 333;
+	background: none;
+	text-align:center;
+	width:inherit;
+	margin: 10px 0 10px 10px;
+}
+
+table.no-style a {
+	text-decoration: none;
+	color:gray;
+}
+
+table.no-style a:hover {
+	text-decoration: none;
+	color:white !important;
+}
+
+table.no-style th{
+	border:solid 1px #333;
+	background: none;
+}
+
+table.no-style td{
+	border:solid 1px #333;
+}
+
+table.no-style tr:hover > td{
+	background: none;
+}
+
+table.no-style tr:hover > td > a {
+	text-decoration:underline;
+}
+
+/*/////////////////////////////
+		IN_PLACE_EDITOR
+/////////////////////////////*/
+
+.inplaceeditor-form input {
+width: 50px ! important;
+}
+
+/* SUBMITE BUTTON */
+.editor_ok_button {
+  display: none;
+}
+
+/* a (LINKS) */
+.editor_cancel {
+  display: none;
+}
 .frame {
 	margin-top:10px;
 	margin-bottom:10px;
@@ -999,10 +1012,10 @@ table.presentation tr:hover > td{
 }
 
 /*/////////////////////////////
-		FORMULAIRE
+			FORM
 /////////////////////////////*/
 /*///////////////////////*/
-/*// fieldset & legend //*/
+/*// FIELDSET & LEGEND //*/
 .frame fieldset {
 	background: #eaeff8;
 	border: 1px solid #444444;
@@ -1103,7 +1116,7 @@ table.presentation tr:hover > td{
 	margin-left: 160px;
 }
 */
-/*mise en page*/
+/*LAYOUTS' FORM*/
 .frame form label {
 	text-align:right;
 	margin-right:10px;
@@ -1144,7 +1157,7 @@ fieldset.no-style legend {
 	background:none;
 }
 
-/*/////////////////LISTE:HIERARCHIQUE/////////////////*/
+/*/////////////////LIST:HIERARCHICAL/////////////////*/
 .hierarchic {
 	margin-left:10px;
 }
@@ -1213,7 +1226,7 @@ ul.parent>li {
 	top:2px;
 }
 
-/*/////////////////Onglets/////////////////*/
+/*/////////////////TABS/////////////////*/
 /*
 div.tabs+.frame {
 	clear:left;
@@ -1237,7 +1250,6 @@ div.tabs {
 .frame.tabulation>h1 {
 	background:#E6B061;
 	color:#AB6600;
-//	-moz-border-radius:20px 0 0 0;
 	margin-left:12px;
 	text-align:left;
 	text-indent:10px;
@@ -1246,7 +1258,6 @@ div.tabs {
 
 .frame.tabulation>h2 {
 	border-top:1px solid white;
-//	-moz-border-radius:20px 0 0 0;
 }
 
 div.tabs ul {
@@ -1294,7 +1305,7 @@ select.select_catalog {
 	width:160px;
 }
 
-/*/////////////////ETAPES/////////////////*/
+/*/////////////////STEPS/////////////////*/
 .ring_finish,
 .ring_in_progress,
 .ring_disable,
@@ -1329,9 +1340,6 @@ select.select_catalog {
 #validation {
 	width:48px;
 	height:48px;
-/*	position:relative;	*//*	A appliquer si	*/
-/*	left:10px;			*//*	aucune marge	*/
-/*	top:10px;			*//*	dans #steps div	*/
 }
 
 .feet_finish,
@@ -1476,36 +1484,36 @@ div.frame>#steps {
 //	height:200px;
 }
 
-/*////////////DEPLACEMENT PAGES par PAGES////////////*/
-.shift {
+/*////////////BROWSING PAGE////////////*/
+.browsing_page {
 //	background:#CCC;
 	text-align:center;
 }
 
-.shift a.disable,
-.shift a.disable:hover {
+.browsing_page a.disable,
+.browsing_page a.disable:hover {
 	color:#888;
 	cursor:default;
 }
 
-.shift a.selected {
+.browsing_page a.selected {
 	color:#000;
 }
 
-.shift a {
+.browsing_page a {
 	text-decoration:none;
 }
 
-.shift span a {
+.browsing_page span a {
 	text-decoration:none;
 	color:#343434;
 }
 
-.shift span a:hover {
+.browsing_page span a:hover {
 	color:#747474;
 }
 
-.shift p {
+.browsing_page p {
 	display:inline;
 	text-indent:0;
 	margin-left:-20px;
@@ -1535,7 +1543,7 @@ div.frame>#steps {
 #footer {
 	text-align:center;
 	background: url("../images/background_dark_stripe.jpg") repeat;
-	border: solid 1px #444444;
+	border: solid 1px #444;
 	width:auto;
 	color:#FFFFFF;
 	font-size:0.6em;
