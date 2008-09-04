@@ -788,6 +788,8 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 
 .flash_container ul {
 	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
 }
 
 .flash_container ul li {
