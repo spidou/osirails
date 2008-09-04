@@ -32,21 +32,26 @@ class Employee < ActiveRecord::Base
     self.last_name.upcase!
   end
   
-  def pattern(pat,obj)
-    retour = ""
-    val = pat
-    return "Vous devez fermer les []!!" unless val.count("[") == val.count("]")
-    
-    val.gsub!(/\[/,"|")
-    val.gsub!(/\]/,"|")
+  def pattern(val,obj)
+    retour = "" 
+    # verify if opened [ are closed with ]
+     return "pattern invalide : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
+
+    val = val.gsub(/\[/,"|")
+    val = val.gsub(/\]/,"|")
     val = val.split("|")
     
     for i in (1...val.size) do
       if(i%2==0)
-        retour += val[i]        
+        retour += val[i]       
       else
         tmp = val[i].split(",")
+        # verify if opt is an integer
+        if tmp.size>1
+          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if /^[0-9]?$/.match(tmp[1]).nil? 
+        end
         txt = tmp[0].downcase
+        # verify if attr is valid
         if obj.respond_to?(txt)  
           if tmp.size==2
             for j in (1...tmp.size)             
@@ -69,7 +74,7 @@ class Employee < ActiveRecord::Base
             end
           end
         else
-           return retour = "Nom d'attribut ["+ tmp[0] +"] invalide"
+           return "pattern invalide : <br/>- Attribut ["+ tmp[0] +"] invalide"
         end
       end
     end
