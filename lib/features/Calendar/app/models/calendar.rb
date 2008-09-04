@@ -37,23 +37,16 @@ class Calendar < ActiveRecord::Base
   PRODUCT_LANG = "EN"
   TIME_ZONE = "Indian/Mauritius"
 
-  def test_events
-    3000.times do |i|
-      puts(Date::today + i.days).to_s if !events_at_date(Date::today + i.days).empty?
-    end
-  end
-  
-  # Returns a hash of events for every day in a pediod
+  # Returns an array of events for every day in a pediod
   def events_at_period(options)
     options[:start_date] ||= Date::today
     options[:end_date] ||= Date::today
     date = options[:start_date]
-    return_events = []
+    
+    return_events = {}
     while date <= options[:end_date]
-      i = date.wday - 1
-      i = 6 if date.wday == 0
-      return_events[i] ||= []
-      return_events[i] += events_at_date(date)
+      return_events[date.to_s] ||= []
+      return_events[date.to_s] += events_at_date(date)
       date += 1.day
     end
     return_events

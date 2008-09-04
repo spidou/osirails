@@ -6,14 +6,17 @@ class EventsController < ApplicationController
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
     case params[:period]
     when "day"
-      @start_date = @date
-      @events = [@calendar.events_at_date(@start_date)]
+      @events = {@date.to_s => @calendar.events_at_date(@date)}
     when "week"
-      @start_date = @date.beginning_of_week
-      @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_week)
+      @events = @calendar.events_at_period(
+        :start_date => @date.beginning_of_week,
+        :end_date => @date.end_of_week
+      )
     when "month"
-      @start_date = @date.beginning_of_month
-      @events = @calendar.events_at_period(:start_date => @start_date, :end_date => @date.end_of_month)
+      @events = @calendar.events_at_period(
+        :start_date => @date.beginning_of_month.beginning_of_week,
+        :end_date => @date.end_of_month.end_of_week
+      )
     end
 
     @period = params[:period]
@@ -66,7 +69,8 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
-    date = params[:date].to_datetime
+    date = Date.parse(params[:date])
+    exdate = Date.parse(params[:exdate]) if params[:exdate]
 
     if params[:delete]
       case params[:recur]
@@ -87,8 +91,8 @@ class EventsController < ApplicationController
 
     case params[:recur]
     when 'only'
-      unless @event.exception_dates.include?(date)
-        @event.exception_dates << ExceptionDate.create(:date => date) 
+      unless @event.exception_dates.include?(exdate)
+        @event.exception_dates << ExceptionDate.create(:date => exdate) 
       end
       event_attr_copy = @event.attributes
       ['frequence', 'until_date', 'count', 'by_day', 'by_month_day', 'by_month'].each do |key|
@@ -109,7 +113,7 @@ class EventsController < ApplicationController
     when 'future'
       unless @event.start_at.to_date == date
         event_copy = Event.create(@event.attributes)
-        @event.until_date = date - 1.day
+        @event.until_date = exdate - 1.day
         @event.save
         @event = event_copy
       end
@@ -137,18 +141,22 @@ class EventsController < ApplicationController
       else
         @message = "Erreur lors de la modification"
       end
-      respond_to do |format|
-        format.js
-      end
     else
-      @event.start_at = Date.parse(params[:date]).to_datetime + params[:top].to_i.minutes
-      @event.end_at = @event.start_at + (params[:height].to_i).minutes 
-
-      if @event.save
-        render :text => "true"
+      if params[:top].nil? && params[:height].nil?
+        @event.start_at = date.to_datetime + @event.start_at.hour.hours + @event.end_at.min.minutes
+        @event.end_at = date.to_datetime + @event.end_at.hour.hours + @event.end_at.min.minutes
       else
-        render :text => "false"
+        @event.start_at = date.to_datetime + params[:top].to_i.minutes
+        @event.end_at = @event.start_at + (params[:height].to_i).minutes 
       end
+      if @event.save
+        @message = "true"
+      else
+        @message = "false"
+      end
+    end
+    respond_to do |format|
+      format.js
     end
   end
 

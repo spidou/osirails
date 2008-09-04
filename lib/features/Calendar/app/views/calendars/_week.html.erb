@@ -8,7 +8,7 @@
 		<div id="grid_week">
 			<% date = @date.beginning_of_week %>
 			<% 7.times do %>
-			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid" <%= "style=\"background-color: #E2E0DA;\"" if date == Date::today %>>
+			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid<%= " today" if date == Date::today %>">
 				<div class="day_grid_border"><ul></ul></div>
 			</div>
 			<% date += 1.days %>

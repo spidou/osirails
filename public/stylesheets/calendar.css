@@ -32,6 +32,9 @@
 #calendar #scroll .hour {
 	height: 60px;
 }
+#calendar #scroll .day_grid.today {
+  background-color: #E2E0DA;
+}
 #calendar #scroll #grid_week {
 	position: relative;
 	margin-left: 70px;
@@ -101,13 +104,19 @@
 	height: 20%;
 	border: 1px solid;
 }
+#calendar #scroll #grid_month .day_grid .hover {
+  border: inline;
+}
 #calendar #scroll #grid_month .day_grid ul {
 	display: block;
 }
-#calendar #scroll #grid_month .event_month {
-	font-size: 12px;
+#calendar #scroll .e_month {
+	font-size: 10px;
 }
-#calendar #scroll .event {
+#calendar #scroll #grid_month .day_number.other_month {
+  color: #B4B4B4;
+}
+#calendar #scroll .e_day_or_week {
 	position: absolute;
 	width: 100%;
 	border: 1px solid black;

@@ -5,19 +5,31 @@
 	end
 %>
 	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
-<span>Titre</span>
-<%= e.text_field :title, :class => 'disable-stylesheet-width' %><br />
-<span>Emplacement</span>
-<%= e.text_field :location, :class => 'disable-stylesheet-width' %><br />
-<span>Jour entier</span>
-<%= e.check_box :full_day, :onclick => "full_day_checked(this);" %><br />
-<span>Du</span>
-<%= e.text_field :start_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %><br />
-<span>Au</span>
-<%= e.text_field :end_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %><br />
-<span>Description</span>
-<%= e.text_field :description, :class => 'disable-stylesheet-width' %><br />
-<span>R&eacute;p&eacute;ter</span>
+<p>
+<%= e.label :title, 'Titre' %>
+<%= e.text_field :title, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<%= e.label :location, 'Emplacement' %>
+<%= e.text_field :location, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<%= e.label :full_day, 'Jour entier' %>
+<%= e.check_box :full_day, :onclick => "full_day_checked(this);" %>
+</p>
+<p>
+<%= e.label :start_at, 'Du' %>
+<%= e.text_field :start_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+</p>
+<p>
+<%= e.label :end_at, 'Au' %>
+<%= e.text_field :end_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+</p>
+<p><%= e.label :description %>
+<%= e.text_field :description, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<label for="event_frequence_choice">R&eacute;p&eacute;ter</label>
 <%= e.hidden_field :frequence %>
 <select id="event_frequence_choice" onChange="event_change('frequence', this);">
 	<option value="">Jamais</option>
@@ -27,6 +39,7 @@
 	<option value="YEARLY"<%= ' selected' if @event.frequence == "YEARLY" && @event.by_month.nil? && @event.by_day.nil? %>>Tous les ans</option>
 	<option<%= ' selected' if !@event.frequence.nil? && (@event.interval > 1 || !@event.by_month.nil? || !@event.by_day.nil? || !@event.by_month_day.nil?) %>>Personnaliser</option>
 </select>
+</p>
 <!--
 <% e.select :frequence, {"Jamais" => nil, "Chaque jour" => "DAILY", "Chaque semaine" => "WEEKLY", "Tous les mois" => "MONTHLY", "Tous les ans" => "YEARLY", "Personnaliser" => nil}, {}, {:onChange => "event_change('frequence');"} %> -->
 <div id="event_frequence_custom" style="display: none;">
@@ -132,22 +145,24 @@
 	</fieldset>
 </div>
 <div id="event_frequence_limit" style="display: none;">
-	<span>Fin</span>
-	<select onChange="event_change('limit', this);">
+	<p>
+	<%= label_tag 'event_frequence_limit_select', 'Fin' %>
+	<select id="event_frequence_limit_select" onChange="event_change('limit', this);">
 	<option>Jamais</option>
 	<option>Apr&egrave;s</option>
 	<option>le</option>
 	</select>
+	</p>
 	<div style="display: none;"><%= e.text_field :count %> fois</div>
 	<div style="display: none;"><%= e.text_field :until_date %></div>
 </div>
-<br />
-<span>Alarme</span>
-<select onchange="alarm_selected(this);">
+<p>
+<%= label_tag 'event_alarm', 'Alarme' %>
+<select id="event_alarm" onchange="alarm_selected(this);">
 	<option>Aucune</option>
 	<option>Message</option>
 	<option>Courrier &eacute;lectronique</option>
-</select><br />
+</select>
 <div id="alarm" style="display: none;">
 	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before %> minutes avant<br />
 	<div id="alarm_display">
@@ -158,13 +173,20 @@
 	</div>
 	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
 	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
-</div><br />
-<span>Categorie</span>
-<%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %><br />
-<span>URL</span>
-<%= e.text_field :link %><br />
-<span>Status</span>
+</div>
+</p>
+<p>
+<%= e.label :event_category_id, 'Categorie' %>
+<%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %>
+</p>
+<p>
+<%= e.label :link, 'URL' %>
+<%= e.text_field :link %>
+</p>
+<p>
+<%= e.label :status %>
 <%= e.select :status, {"tentative" => "TENTATIVE", "confirmé" => "CONFIRMED", "annulé" =>"CANCELLED"}, :include_blank => true %>
+</p>
 <%= hidden_field_tag 'recur', '' %>
 <input id="recur_date" type="hidden" name="date" value="" />
 <div style="text-align: right;"><%= e.submit "Terminer", :onclick => "submit_event_box_form(this);" %></div>

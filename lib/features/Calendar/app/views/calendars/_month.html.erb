@@ -14,8 +14,8 @@
 			<% date = @date.beginning_of_month.beginning_of_week %>
 			<% 5.times do %>
 			<% 7.times do %>
-			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid">
-				<span class="day_number"><%= date.day %></span><ul></ul>
+			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid<%= " today" if date == Date::today %>">
+				<span class="day_number<%= " other_month" unless date.month == Date::today.month %>"><%= date.day %></span><ul></ul>
 			</div>
 			<script type="text/javascript">add_droppable('<%= date.to_s.gsub("-","") %>');</script>
 			<% date += 1.day %>
