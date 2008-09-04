@@ -2,18 +2,26 @@ class DocumentsController < ApplicationController
   
   def show
     @document = Document.find(params[:id])
+    
+    ## Store last version of document
+    @document_last_version = @document.document_versions.last
+    
     @document_versions = @document.document_versions
     @document_version = DocumentVersion.new()
   end
   
+  def edit
+    @document = Document.find(params[:id])
+    @document_last_version =@document.document_versions.last
+  end
+  
   def create
-    unless params[:upload][:datafile].blank?
-      
-      ## Store file extension and title
+    unless params[:upload][:datafile].blank?    
+      ## Store file extension and name
       document_extension = params[:upload][:datafile].original_filename.split(".").last
-      params[:document][:title].blank? ? document_title = params[:upload][:datafile].original_filename : document_title = params[:document][:title]
+      params[:document][:name].blank? ? document_name = (a = params[:upload][:datafile].original_filename.split("."); a.pop; a.to_s) : document_name = params[:document][:name]
       
-      if @document =Document.create(:title => document_title , :description => params[:document][:description], :extension => document_extension)
+      if @document =Document.create(:name => document_name , :description => params[:document][:description], :extension => document_extension)
         @document.file_type = FileType.find(params[:document][:file_type_id])
         
         ## Store all possible extension for file
@@ -31,33 +39,49 @@ class DocumentsController < ApplicationController
         EOV
       end
     end
+    redirect_to :back
   end
+  
   
   def update
+    @document = Document.find(params[:document_id])
+    message = ""
     unless params[:upload][:datafile].blank?
-      @document = Document.find(params[:document_id])
-      @owner  = @document.has_document
+      ## message variable store message that wiil be display in flash[:error]
       
       ## Store possible extensions
-      @possible_extensions = []
-      @document.file_type.file_type_extensions.each {|f| @possible_extensions << f.name}
-    
-      puts "test"
-      puts @possible_extensions
-      ## Creation of document_version
-      if @document_version = DocumentVersion.create(:description => params[:document_version][:description])      
-        path = "documents/" + @owner.class.name.downcase + "/" + @document.file_type_id.to_s + "/" + @document.id.to_s
+      possible_extensions = []
+      possible_extensions << @document.extension
+
+      ## Creation of document_version          
+        path = "documents/" + @document.owner_class.downcase + "/" + @document.file_type_id.to_s + "/" + @document.id.to_s      
+        file_response = FileManager.upload_file(:file => params[:upload], :name => (@document.document_versions.size + 1).to_s + "." +params[:upload][:datafile].original_filename.split(".").pop, 
+          :directory => path, :extensions => possible_extensions)
+        unless file_response
+          flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide"
+        else
+          @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)
+          @document.update_attributes(params[:document_version])          
+          @document.document_versions << @document_version
+        end
+        
       
-        FileManager.upload_file(:file => params[:upload], :name =>@document_version.id.to_s+"."+@document.extension, 
-          :directory => path, :extensions => @possible_extensions)
-        @document.document_versions << @document_version
-      end
-    end   
+    else
+      flash[:error] = "Fichier manquant"
+    end
+    
+    unless file_response     
+      render :action => "edit"
+    else
+      flash[:notice] = "Fichier upload&eacute; avec succ&egrave;s"
+      redirect_to document_path(@document)
+    end
   end
   
+  ## This method return the image to show
   def preview_image
     @document = Document.find(params[:id])
-    path = "documents/#{@document.has_document.class.name.downcase}/#{@document.file_type_id}/#{@document.id}.jpg"
+    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}.jpg"
     img=File.read(path)
     @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
   end

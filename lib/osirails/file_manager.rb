@@ -19,14 +19,12 @@ class FileManager
     valid_extension = false
     
     unless options[:extensions].nil?
-      valid_extension = false
       options[:extensions].each do |extension|
         if name.end_with?("." + extension)
           valid_extension = true
         end
       end
       unless valid_extension
-        raise "Not valid extension"
         return false
       end
     end
@@ -37,8 +35,8 @@ class FileManager
       Dir.mkdir(directory) unless File.exist?(directory)
     end
     path = File.join(options[:directory], name)
-    puts File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
-    true
+    f = File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
+    File.exist?(path)
   end
   
   def self.delete_file(file)

@@ -7,6 +7,11 @@ class Document < ActiveRecord::Base
   
   attr_accessor :models
   
+  # This method permit to attribute a value to versioned_at
+  def updated_at=(value)
+    self.versioned_at = value
+  end
+  
   @models = []
   @models << "Customer"
   # Add the model name inton models array
@@ -18,16 +23,16 @@ class Document < ActiveRecord::Base
     @models
   end
   
-  def self.delete_file(file)
-    
-  end
-  
   def self.can_have_document(model)
     if @models.include?(model)
       true
     else
       false
     end
+  end
+  
+  def owner_class
+    self.has_document.class.name
   end
   
 end

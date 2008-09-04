@@ -3,42 +3,35 @@
 <% end %>
 
 <div class="frame">
-<h2>Informations du document</h2>
+<h2>Informations concernant le  document</h2>
+
   <p>
-    <%= label :document, :title, "Nom :" %>
-    <%= @document.title %>
+    <%= label :document, :name, "Nom :" %>
+    <%= @document.name %>
   </p>
   
   <p>
     <%= label :document, :description, "Description :" %>
-    <%= @document.description %>
+    <%= @document.description%>
   </p>
 
-  <%if @document.extension == "jpg"%>
-    <p>
-      <%= lightbox_link_to "preview", url_for(:action => "preview_image", :id => @document.id)%>
-    </p>
-  <%end%>
+  <p>
+    <%if @document.extension == "jpg"%>
+
+        <%if @document.document_versions.empty?%>
+          <%= lightbox_link_to "preview", url_for(:controller => "documents",:action => "preview_image", :id => @document.id)%>
+        <%else%>
+          <%=lightbox_link_to "preview", url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id)%>
+        <%end%>
+        
+    <%end%>
+
+    <%= link_to("modifier", :action => "edit", :id => @document.id)%> 
+    <%= link_download_last_version(@document) %>
+    <%= get_return_link(@document)%>
+  </p>  
 </div>
 
-<div class="frame">
-<h2>Upload&eacute; une nouvelle version</h2>
-  <% form_for(:document_version, @document_version, :url => { :controller => "Documents", :action => "update" , :document_id => @document.id}, :html => { :multipart => true}) do |d| %>
-    
-    <p>
-      <%= d.label :description%>
-      <%= d.text_field :description%>
-    </p>
-
-    <p>
-      <%= label :file, :data, "Fichier :"%>
-      <%= file_upload%>
-    </p>
-    
-    <%= d.submit "Uploader"%>
-      
-  <%end%>
-</div>
 <div class="frame">
   <h2>Liste des versions</h2>
 <!-- Show document_version-->
@@ -46,9 +39,20 @@
 
     <% for document_version in @document_versions%>
       
-<div>
-  Version  : <%= document_version.id %> | <%= document_version.description%>
-</div>
+      <div>
+        Version  : <%= document_version.id %> | <%= document_version.name%> |<%= document_version.description%>
+
+        <%if @document.extension == "jpg"%>
+
+          <%= lightbox_link_to "preview", (@document.document_versions.first == document_version ? url_for(:controller => "documents", :action => "preview_image", :id => @document.id) : 
+            url_for(:controller => "document_versions", :action => "preview_image", :id => @document.document_versions.index(document_version)))%>
+          
+          <%= link_to("download", :controller => "Downloads", :action => "show", 
+        :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => "Document"} : {:id => @document.document_versions.index(document_version), :type => "DocumentVersion"} ))%>
+
+
+        <%end%>        
+        </div>
         
     <%end%>
 <%end%>

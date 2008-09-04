@@ -24,14 +24,6 @@ class CustomersController < ApplicationController
       @activity_sector.save
       flash[:notice] = "Client ajout&eacute; avec succes"
       redirect_to :action => 'index'
-      
-      ######## Test of FileManager##########
-      unless params[:upload][:datafile].blank?
-        document = params[:upload]
-        FileManager.upload_file(:file => document)
-        @customer.documents << Document.create(:titre => document[:datafile].original_filename)      
-      end
-      ###############################
     else
       params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
       render :action => 'new'
@@ -192,15 +184,6 @@ class CustomersController < ApplicationController
     end
         
     unless @error
-      ######## Test of FileManager##########
-      unless params[:upload][:datafile].blank?
-        if document =Document.create(:titre => params[:upload][:datafile].original_filename)
-          FileManager.upload_file(:file => params[:upload], :name =>document.id.to_s)
-          @customer.documents << document
-          @customer.save
-        end
-      end
-      ##############################
     
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
       redirect_to customers_path

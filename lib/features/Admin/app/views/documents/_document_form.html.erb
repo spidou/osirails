@@ -3,8 +3,8 @@
   <% form_for(:document, document, :url => { :controller => "Documents", :action => "create" , :owner => {:owner_id => owner.id, :owner_model => owner.class.name}}, :html => { :multipart => true}) do |d| %>
     
     <p>
-      <%= d.label :title%>
-      <%= d.text_field :title%>
+      <%= d.label :name%>
+      <%= d.text_field :name%>
     </p>
   
     <p>
@@ -14,7 +14,7 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier"%>
-      <%= get_file_type_select(d, owner)%>
+      <%= get_file_type_select(d, owner.class.name)%>
     </p>
 
     <p>
