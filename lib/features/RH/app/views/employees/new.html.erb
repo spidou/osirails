@@ -1,12 +1,3 @@
 <h1 id="test">Ajouter un employ&eacute;e</h1>
 
-
-<% content_for :header do %>
-     <%= stylesheet_link_tag 'lightbox' %> 
-     <%= stylesheet_link_tag 'redbox' %>
-     <%= javascript_include_tag 'redbox' %>
-<% end %>
-
-
-
 <%= render :partial => 'form', :locals => {:button_name=> "Ajouter"}%>

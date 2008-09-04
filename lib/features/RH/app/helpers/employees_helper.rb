@@ -45,9 +45,9 @@ module EmployeesHelper
    
   def display_bank_name(default=nil)
     if default.nil?
-      text_field_tag( 'iban[bank_name]',params[:iban].nil? ? "" : params[:iban]['bank_name'] , :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[bank_name]',params[:iban].nil? ? "" : params[:iban]['bank_name'] , :size => 15, :maxlength => 17, :class => 'disable-stylesheet-width')
     else
-      text_field_tag( 'iban[bank_name]',default, :size => 3, :maxlength => 5, :class => 'disable-stylesheet-width')
+      text_field_tag( 'iban[bank_name]',default, :size => 15, :maxlength => 17, :class => 'disable-stylesheet-width')
     end
   end
    

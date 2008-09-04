@@ -1,4 +1,5 @@
 class Employee < ActiveRecord::Base
+  acts_as_file
   
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
@@ -34,10 +35,10 @@ class Employee < ActiveRecord::Base
   def pattern(pat,obj)
     retour = ""
     val = pat
-    return "Vous devez fermer les {}!!" unless val.count("{") == val.count("}")
+    return "Vous devez fermer les []!!" unless val.count("[") == val.count("]")
     
-    val.gsub!(/\{/,"|")
-    val.gsub!(/\}/,"|")
+    val.gsub!(/\[/,"|")
+    val.gsub!(/\]/,"|")
     val = val.split("|")
     
     for i in (1...val.size) do
