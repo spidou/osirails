@@ -786,6 +786,14 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	font-family: "courier new", sans-serif;
 }
 
+.flash_container ul {
+	text-align:center;
+}
+
+.flash_container ul li {
+	text-align:left;
+}
+
 .flash_container span span,
 .flash_container span span {
 	margin-left:20px;
@@ -830,14 +838,6 @@ div.fieldWithErrors {
 	display:inline-block;
 	position:relative;
 	left:10px;
-}
-
-.fieldWithErrors ul {
-	text-align:center;
-}
-
-.fieldWithErrors ul li {
-	text-align:left;
 }
 
 /*
