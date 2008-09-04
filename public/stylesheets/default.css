@@ -416,7 +416,7 @@ a.button_banner:hover span {
 	color: rgb(234,136,28);
 }
 
-#secondary_menu h4 {
+#secondary_menu h1 {
 	background: url("../images/background_secondary_menu_header.jpg") repeat-x;
 	height:36px;
 	line-height: 36px;
@@ -429,7 +429,7 @@ a.button_banner:hover span {
 	font-size:1.1em;
 }
 
-#header_secondary_menu {
+#content_secondary_menu h1:first-child {
 	-moz-border-radius: 10px 0 0 0;
 }
 
