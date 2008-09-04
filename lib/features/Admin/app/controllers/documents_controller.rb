@@ -28,16 +28,27 @@ class DocumentsController < ApplicationController
         possible_extensions = []
         @document.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
         
-        path = params[:owner][:owner_model].downcase + "/" + params[:document][:file_type_id].downcase + "/"
-        FileManager.upload_file(:file => params[:upload], :name =>@document.id.to_s+"."+document_extension, 
-          :directory => "documents/#{path}", :extensions => possible_extensions)
+        path = "documents/" + params[:owner][:owner_model].downcase + "/" + params[:document][:file_type_id].downcase + "/"
+        file_response = FileManager.upload_file(:file => params[:upload], :name =>@document.id.to_s+"."+document_extension, 
+          :directory => path, :extensions => possible_extensions)
         
-        ## Add Document to owner
-        eval <<-EOV
-        @owner = #{params[:owner][:owner_model]}.find(#{params[:owner][:owner_id]})
-        @owner.documents << @document
-        EOV
+        ## If file succefuly create
+        if file_response
+          ## Add Document to owner
+          @owner = params[:owner][:owner_model].constantize.find(params[:owner][:owner_id])
+          @owner.documents << @document
+          
+          ## Create thumbnails
+          @document.create_thumbnails
+          
+        else
+          @document.destroy
+          flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide.\n Si le problème persiste veuillez contacté votre administrateur réseau" 
+        end
+        
       end
+    else
+      flash[:error] = "Fichier manquant"
     end
     redirect_to :back
   end
@@ -45,27 +56,27 @@ class DocumentsController < ApplicationController
   
   def update
     @document = Document.find(params[:document_id])
-    message = ""
     unless params[:upload][:datafile].blank?
-      ## message variable store message that wiil be display in flash[:error]
       
       ## Store possible extensions
       possible_extensions = []
       possible_extensions << @document.extension
 
       ## Creation of document_version          
-        path = "documents/" + @document.owner_class.downcase + "/" + @document.file_type_id.to_s + "/" + @document.id.to_s      
-        file_response = FileManager.upload_file(:file => params[:upload], :name => (@document.document_versions.size + 1).to_s + "." +params[:upload][:datafile].original_filename.split(".").pop, 
-          :directory => path, :extensions => possible_extensions)
-        unless file_response
-          flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide"
-        else
-          @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)
-          @document.update_attributes(params[:document_version])          
-          @document.document_versions << @document_version
-        end
+      path = "documents/" + @document.path + "/" +  @document.id.to_s + "/"
+      file_response = FileManager.upload_file(:file => params[:upload], :name => (@document.document_versions.size + 1).to_s + "." +params[:upload][:datafile].original_filename.split(".").pop, 
+        :directory => path, :extensions => possible_extensions)
+      unless file_response
+        flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide"
+      else
+        @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)
         
-      
+        @document_version.create_thumbnails
+        
+        params[:document_version][:name] = @document.name if params[:document_version][:name].blank?
+        @document.update_attributes(params[:document_version])          
+        @document.document_versions << @document_version
+      end      
     else
       flash[:error] = "Fichier manquant"
     end
@@ -82,6 +93,13 @@ class DocumentsController < ApplicationController
   def preview_image
     @document = Document.find(params[:id])
     path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}.jpg"
+    img=File.read(path)
+    @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
+  end
+  
+  def thumbnail 
+    @document = Document.find(params[:id])
+    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}_75_75.jpg"
     img=File.read(path)
     @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
   end

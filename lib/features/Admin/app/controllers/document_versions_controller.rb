@@ -6,4 +6,11 @@ class DocumentVersionsController < ApplicationController
     img=File.read(path)
     @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
   end
+  
+  def thumbnail 
+    @document_version = Document.find(params[:id])
+    path = "documents/#{@document_version.path}/#{@document_version.id}_75_75.jpg"
+    img=File.read(path)
+    @var = send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
+  end
 end

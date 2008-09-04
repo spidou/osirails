@@ -28,12 +28,14 @@ class FileManager
         return false
       end
     end
+    
     ## Creation of path on server
     directory = ""
     options[:directory].split("/").each do |d|
       directory += d +"/"
       Dir.mkdir(directory) unless File.exist?(directory)
     end
+    
     path = File.join(options[:directory], name)
     f = File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
     File.exist?(path)

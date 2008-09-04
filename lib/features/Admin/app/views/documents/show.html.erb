@@ -3,7 +3,7 @@
 <% end %>
 
 <div class="frame">
-<h2>Informations concernant le  document</h2>
+<h2>Informations concernant le document</h2>
 
   <p>
     <%= label :document, :name, "Nom :" %>
@@ -19,9 +19,9 @@
     <%if @document.extension == "jpg"%>
 
         <%if @document.document_versions.empty?%>
-          <%= lightbox_link_to "preview", url_for(:controller => "documents",:action => "preview_image", :id => @document.id)%>
+          <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
         <%else%>
-          <%=lightbox_link_to "preview", url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id)%>
+          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id))%>
         <%end%>
         
     <%end%>
@@ -40,18 +40,20 @@
     <% for document_version in @document_versions%>
       
       <div>
-        Version  : <%= document_version.id %> | <%= document_version.name%> |<%= document_version.description%>
+        Version  : <%= @document_versions.index(document_version) + 1 %> | <%= document_version.name%> |<%= document_version.description%>
 
         <%if @document.extension == "jpg"%>
-
-          <%= lightbox_link_to "preview", (@document.document_versions.first == document_version ? url_for(:controller => "documents", :action => "preview_image", :id => @document.id) : 
-            url_for(:controller => "document_versions", :action => "preview_image", :id => @document.document_versions.index(document_version)))%>
           
+        <%if @document.document_versions.first == document_version%>
+          <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
+        <%else%>
+          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id))%>
+        <%end%>
+          
+        <%end%>   
           <%= link_to("download", :controller => "Downloads", :action => "show", 
         :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => "Document"} : {:id => @document.document_versions.index(document_version), :type => "DocumentVersion"} ))%>
-
-
-        <%end%>        
+             
         </div>
         
     <%end%>
