@@ -442,12 +442,7 @@ a.button_banner:hover span {
 	margin-left: 5px;
 }
 
-.links {
-//	text-indent:0px;
-//	margin-left:10px;
-}
-
-#secondary_menu ul li a img {
+#content_secondary_menu ul li aimg {
 	text-decoration:none !important;
 }
 
@@ -941,7 +936,7 @@ table.presentation tr:hover > td{
 }
 
 .commodity tr.enable > td {
-//	color:#4C8B38;
+/*	color:#4C8B38;*/
 }
 
 .commodity td.sub_commodity_category {
@@ -1554,10 +1549,6 @@ div.frame>#steps {
 
 .link_to_closed:hover {
 	background:url("../images/lock_24x24.png") no-repeat 0px -1px;
-}
-
-a.link_to_closed {
-
 }
 
 /*/////////////////////////////////////////////////////
