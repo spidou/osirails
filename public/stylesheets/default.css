@@ -184,10 +184,12 @@ strong {
 
 #banner_datetime {
 	float:right;
-	margin:-7px 11px 0 0;
+	line-height:0px;
+	margin:0 11px -7px 0;
 	font-family: "Trebuchet MS" , Helvetica, Arial, sans-serif;
 	font-size:0.9em;
 	color:#EA972D;
+	text-align:right;
 }
 a.button_banner {
 	background: transparent url("../images/button_banner_left_side.png") no-repeat top left;
