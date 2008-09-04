@@ -55,6 +55,13 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'thirds', :controller => 'customers' #default page for thirds
   ### END SALES
   
+  ### DOCUMENTS
+  ## Temporary block
+  map.resources :documents do |document|
+    document.resources :document_versions
+  end 
+  ### END DOCUMENTS
+  
   ### PRODUCTS
   map.resources :produts_catalog
   map.resources :product_references
