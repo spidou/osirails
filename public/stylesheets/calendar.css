@@ -99,6 +99,7 @@
 	height: 600px;
 }
 #calendar #scroll #grid_month .day_grid {
+  overflow: hidden;
 	float: left;
 	width: 14%;
 	height: 20%;
@@ -108,7 +109,7 @@
   border: inline;
 }
 #calendar #scroll #grid_month .day_grid ul {
-	display: block;
+  
 }
 #calendar #scroll .e_month {
 	font-size: 10px;
