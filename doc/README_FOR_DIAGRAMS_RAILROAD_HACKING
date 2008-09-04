@@ -1,0 +1,11 @@
+#" Installation and hacking of RailRoad gem
+Add global variables into your shell config file (replace .zshrc by .bashrc or other, or /etc/environment for global setting) :
+  Run : echo "export GEM_HOME=/var/lib/gems/1.8:`pwd`/.gem" >> ~/.zshrc
+        echo "export GEM_PATH=/var/lib/gems/1.8:`pwd`/.gem" >> ~/.zshrc
+        echo "export PATH=\$PATH:`pwd`/.gem/bin" >> ~/.zshrc
+
+Install railroad and replace files :
+  Run "gem install railroad --version '0.5.0'"
+      "cp -f doc/railroad-0.5.0.hacked/lib/railroad/* ~/.gem/gems/railroad-0.5.0/lib/railroad/"
+
+Run "rake osirails:doc:diagrams" to generate diagrams for models and controllers
