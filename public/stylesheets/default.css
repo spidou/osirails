@@ -644,7 +644,7 @@ a.previous-button:hover span {
 }
 
 .cal-buttons {
-	background:url("../images/button_calendar_generic.png") repeat-x;
+	background:url("../images/calendar/button_calendar_generic.png") repeat-x;
 	width:1px;
 	height:19px;
 	position:relative;
