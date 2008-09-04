@@ -443,10 +443,11 @@ a.button_banner:hover span {
 	margin-left:10px;
 }
 
-#secondary_menu ul li.icons_link a {
+#secondary_menu ul li a < img {
 	text-decoration:none !important;
 }
 
+/*
 .view_icon,
 .add_icon,
 .modif_icon,
@@ -463,7 +464,7 @@ img.del_icon {
 	top:5px;
 	right:3px;
 }
-
+*/
 #footer_secondary_menu { 
 	margin-bottom:-9px;
 	padding:0;
@@ -610,7 +611,7 @@ a.previous-button:hover span {
 
 .cal-prev,
 .cal-next {
-	background:url("../images/button_next-previous_calendar.png");
+	background:url("/images/calendar/button_next-previous_calendar.png");
 	width:30px;
 	height:19px;
 	margin-left:-5px;
