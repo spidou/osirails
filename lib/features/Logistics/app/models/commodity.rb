@@ -1,8 +1,6 @@
 class Commodity < ActiveRecord::Base
   
   # Relationship
-  has_many :commodities_inventories
-  has_many :inventories, :through => :commodities_inventories
   belongs_to :commodity_category, :counter_cache => true
   
   # Name Scope
@@ -26,14 +24,8 @@ class Commodity < ActiveRecord::Base
   
   # Check if a resource can be destroy or disable
   def can_destroy?
-    #FIXME Inventory + files (dossier)
+    #FIXME files (dossier)
     false
   end
-  
-  # Check if params have element nil
-    def params_empty(tutu)
-      puts "coucou"
-    end
-  
   
 end

@@ -14,7 +14,6 @@ class Inventory < ActiveRecord::Base
           :taxe_coefficient => commodity.taxe_coefficient,
           :measure => commodity.measure,
           :unit_mass => commodity.unit_mass,
-          :commodity_id => commodity.id,
           :unit_measure_id => commodity_category.unit_measure_id,
           :supplier_id => commodity.supplier_id,
           :commodity_category_id => commodity_category.id,

@@ -1,11 +1,20 @@
-<% content_for :javascript do %>
+<% content_for :header do %>
   <script type="text/javascript" src="/javascripts/logisctic/totals_calculator.js"></script> 
   <script type="text/javascript" src="/javascripts/logisctic/refresh.js"></script> 
+  <script type="text/javascript" src="/javascripts/logisctic/reduce.js"></script>
+  <script type="text/javascript" src="/javascripts/logisctic/develop.js"></script>
+  <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
+<% end %>
+<% content_for :secondary_menu do %>
+  <h1><span class="gray_color">Action</span></h1>
+<ul><li>
+<%= show_closed_button(@inventory)%>
+  </li></ul>
 <% end %>
 
 <h1><%= "Inventaire du #{@inventory.created_at}" %></h1>
 <div class='frame'>
-  <table>
+  <table class='commodity'>
     <tr>
       <th rowspan='2'>Cat&eacute;gorie</th>
       <th rowspan='2'>Sous Cat&eacute;gorie</th>
@@ -26,5 +35,5 @@
     </tr>
     <%= show_structured_commodities(@inventory) %>
   </table>
-  <%= link_to("Retour", :action => 'index') %> <%= show_closed_button(@inventory)%>
+  <%= link_to("Retour", :action => 'index') %>
 </div>

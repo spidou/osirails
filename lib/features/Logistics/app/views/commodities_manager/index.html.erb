@@ -2,8 +2,14 @@
   <script type="text/javascript" src="/javascripts/logisctic/price_calculator.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/reduce.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/develop.js"></script>
-  <script type="text/javascript" src="/javascripts/logisctic/sub_category_total.js"></script>
+  <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
 <% end %>
+
+<% content_for :secondary_menu do %>
+  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
+  <%= @type != "show_all" ? link_to("Afficher toutes les categories et matières premières (deactivé inclus)", :action => "index", :type => "show_all") : link_to("Afficher toutes les categories et matières premières (actives uniquement)", :action => "index") %>
+<% end %>
+
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
 <div class="frame">
   <table class="commodity">
@@ -24,6 +30,4 @@
     </tr>
 <%= @type != "show_all" ? get_structured : get_structured(nil) %>
   </table>
-  <%= link_to("Nouvelle Cat&eacute;gorie", new_commodity_category_path) %>
-  <%= @type != "show_all" ? link_to("Afficher toutes les categories et matières premières (deactivé inclus)", :action => "index", :type => "show_all") : link_to("Afficher toutes les categories et matières premières (actives uniquement)", :action => "index") %>
 </div>
