@@ -1522,6 +1522,19 @@ div.frame>#steps {
 
 }
 
+/*/////////////////OTHER/////////////////*/
+
+.link_to_closed {
+	background:url("../images/lock_16x16.png") no-repeat;
+	width:16px;
+	height:16px;
+}
+
+.link_to_closed:hover {
+	background:url("../images/lock_off_16x16.png") no-repeat;
+	width:16px;
+	height:16px;
+}
 
 /*/////////////////////////////////////////////////////
 					FOOTER
