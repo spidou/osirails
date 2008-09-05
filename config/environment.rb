@@ -72,3 +72,4 @@ Rails::Initializer.run(:process, $config)
 gem 'mislav-will_paginate', '~> 2.2' # gem install mislav-will_paginate --version '~> 2.2' --source http://gems.github.com/
 require 'will_paginate'
 require 'overrides' 
+## Atc_as_taggable installation : ruby script/plugin install http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids
