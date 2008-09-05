@@ -111,7 +111,7 @@ h1 {
 h2 {
 	text-indent: 10px;
 	background: #afc2ea;
-	border:solid 1px #e5e5e5;
+	border:solid 1px #bbb;
 	font-size:1.4em;
 	color: rgb(117,141,189);
 	margin-top:0px;
@@ -121,15 +121,16 @@ h2 {
 }
 
 h3 {
-	text-indent:30px;
+	text-indent:10px;
 	background: url("../images/background_content_page_second_header.jpg") repeat-x;
-	border:solid 1px #e5e5e5;
+//	border:solid 1px #e5e5e5;
 	height:30px;
 	line-height:30px;
 	color:white;
 	font-weight:lighter;
 	padding-top:0px;
 	margin-top:-1px;
+	margin-left:30px;
 }
 
 h6 {
@@ -422,15 +423,10 @@ a.button_banner:hover span {
 #content_secondary_menu ul {
 	list-style-type: none;
 	padding:0;
-//	margin:-5px 0 -5px 0;
 }
 
 ul.center_list {
-//	margin-left:auto;
-//	margin-right:auto;
-//	margin:0 1px 0 1px;
 	text-align:center;
-//	width:80%;
 	text-indent:0;
 }
 
@@ -969,6 +965,11 @@ table.presentation tr:hover > td{
 	font-weight:bold;
 }
 
+/**/
+ul.current_inventory {
+	color:#CA7E21;
+}
+/**/
 /*:::::::::TABLE WITHOUT STYLE:::::::::*/
 caption.no-style {
 	background: none;
