@@ -29,13 +29,12 @@ $config = Rails::Configuration.new
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  $config.plugins = [ :acts_as_taggable, :acts_as_tree, :acts_as_list, :all ]
+  $config.plugins = [:acts_as_tree, :acts_as_list, :all ]
 
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   $config.load_paths += %W( #{RAILS_ROOT}/lib/osirails/ )
   $config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
-#     $config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features"]
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  
+  ## Add document routes
+#  ActAsFileRoute.add_routes_to map  
+  
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ROOT
@@ -58,13 +62,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'thirds', :controller => 'customers' #default page for thirds
   ### END SALES
   
-  ### DOCUMENTS
-  ## Temporary block
-  map.resources :documents do |document|
-    document.resources :document_versions
-  end 
-  ### END DOCUMENTS
-  
   ### PRODUCTS
   map.resources :produts_catalog
   map.resources :product_references
@@ -99,9 +96,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :inventories
   map.resources :commodities_inventories
   ### END LOGISTICS
-  
-  #### Test of Document Controller
-  map.resources :downloads
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
@@ -142,3 +136,5 @@ ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id.:format'
 
 end
+
+#ActionController::Routing::Routes.routes.each{|r| puts r} 
