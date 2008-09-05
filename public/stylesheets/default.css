@@ -954,13 +954,13 @@ table.commodity {
 
 table.commodity th {
 	text-align:center;
-	padding:2px;
+/*	padding:2px;*/
 }
 
 
 table.commodity td {
 	text-align:left;
-	padding:5px;
+/*	padding:5px;	*/
 } 
 
 .commodity tr.disable > td {
