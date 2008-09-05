@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   
   ## Add document routes
-  ActAsFileRoute.add_routes_to map  
+  ActAsFileRoute.add_routes_to map #FIXME modifier le nom de la class
   
   # The priority is based upon order of creation: first created -> highest priority.
   
