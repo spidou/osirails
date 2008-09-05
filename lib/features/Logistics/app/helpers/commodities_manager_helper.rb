@@ -12,7 +12,8 @@ module CommoditiesManagerHelper
   
   # This method permit to make in table editor
   def in_place_editor(object,attribute)
-    editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelText => '<span>Annuler</span>'})
+    editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {
+        :clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelTitle => '<span>Annuler</span>'})
   end
   
   # This method permit to generate a counter for  categories
