@@ -968,9 +968,15 @@ table.presentation tr:hover > td{
 	font-weight:bold;
 }
 
-ul.current_inventory {
+tr.current_inventory {
 	color:#CA7E21;
 }
+
+.commodity img {
+	float:left;
+	margin-top:3px;
+}
+
 /**/
 /*:::::::::TABLE WITHOUT STYLE:::::::::*/
 caption.no-style {
