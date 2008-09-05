@@ -18,12 +18,14 @@ class InventoriesController < ApplicationController
       @inventory = Inventory.create
       commodities = Commodity.activates
       @inventory.create_inventory(commodities)
+      redirect_to :action => 'show', :id => Inventory.find(:last)
     else
       flash[:error] = "Impossible de cr&eacute;er un nouvelle inventaire. V&eacute;rifi&eacute; que  les inventaires sont cl&ocirc;tur&eacute;s"
+      params[:type] == "inventory" ? redirect_to(:action => 'index') : redirect_to(:controller => 'commodities_manager', :action => 'index')
     end
-    redirect_to :action => 'index'
   end
   
+   # PUT /inventories/1
   def update
     @inventory = Inventory.find(params[:id])
     if @inventory.inventory_closed?

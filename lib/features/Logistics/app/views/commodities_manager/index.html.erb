@@ -26,7 +26,7 @@
   <h1><span class='gray_color'>Liens</span> <span class='blue_color'>Utiles</span></h1>
   <ul>
     <li><%= link_to("Visualiser la liste des inventaires", :controller => 'inventories', :action => 'index')%></li>
-      <li><%= link_to("Visualiser le dernier inventaire", :controller => "inventories", :action => 'show', :id => Inventory.find(:last).id) %></li>
+      <%= "<li>#{link_to('Visualiser le dernier inventaire', :controller => 'inventories', :action => 'show', :id => @inventory.id)}</li>" unless @inventory.nil? %>
       <li><%= link_to("&Eacute;tablir un nouvel inventaire", :controller => "inventories", :action => 'new')%></li>
     </ul>
 <% end %>
