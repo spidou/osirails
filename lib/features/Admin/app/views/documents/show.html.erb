@@ -18,10 +18,10 @@
   <p>
     <%if @document.extension == "jpg"%>
 
-        <%if @document.document_versions.empty?%>
+        <%if @document.document_versions.empty?%>        
           <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
         <%else%>
-          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id))%>
+          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id, :last => true), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.id, :last => true))%>
         <%end%>
         
     <%end%>
@@ -36,7 +36,6 @@
   <h2>Liste des versions</h2>
 <!-- Show document_version-->
 <%unless @document_versions.empty?%>    
-
     <% for document_version in @document_versions%>
       
       <div>
@@ -47,12 +46,13 @@
         <%if @document.document_versions.first == document_version%>
           <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
         <%else%>
-          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.document_versions.last.id))%>
+          id <%= document_version.id%>
+          <%= lightbox_image_tag(url_for(:controller => "document_versions", :action => "thumbnail", :id => document_version.id), url_for(:controller => "document_versions",:action => "preview_image", :id => document_version.id))%>
         <%end%>
           
         <%end%>   
           <%= link_to("download", :controller => "Downloads", :action => "show", 
-        :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => "Document"} : {:id => @document.document_versions.index(document_version), :type => "DocumentVersion"} ))%>
+        :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => "Document"} : {:id => document_version.id, :type => "DocumentVersion"} ))%>
              
         </div>
         

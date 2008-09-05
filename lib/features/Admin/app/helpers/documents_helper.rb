@@ -19,7 +19,7 @@ module DocumentsHelper
   
   def link_download_last_version(document)
     link_to("download", :controller => "Downloads", :action => "show", 
-        :document => (last_document = document.document_versions.last; last_document.nil? ? {:id => document.id, :type => "Document"} :  {:id => last_document, :type => "DocumentVersion"} ))
+        :document => (document.document_versions.empty? ? {:id => document.id, :type => "Document"} :  {:id => document.document_versions.size + 1, :type => "DocumentVersion"} ))
   end
   
 end

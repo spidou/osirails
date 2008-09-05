@@ -3,9 +3,6 @@ class DocumentsController < ApplicationController
   def show
     @document = Document.find(params[:id])
     
-    ## Store last version of document
-    @document_last_version = @document.document_versions.last
-    
     @document_versions = @document.document_versions
     @document_version = DocumentVersion.new()
   end
@@ -69,13 +66,12 @@ class DocumentsController < ApplicationController
       unless file_response
         flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide"
       else
-        @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)
-        
-        @document_version.create_thumbnails
+        @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)      
         
         params[:document_version][:name] = @document.name if params[:document_version][:name].blank?
         @document.update_attributes(params[:document_version])          
         @document.document_versions << @document_version
+        @document_version.create_thumbnails
       end      
     else
       flash[:error] = "Fichier manquant"
