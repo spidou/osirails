@@ -1,7 +1,7 @@
 <div class="frame">
   <% form_tag( {:controller =>"password_policies", :action => "update"}, :method => 'put' ) do %>
     <p>
-      <h4>Politique de mot de passe</h4>
+      <h3>Politique de mot de passe</h3>
       <strong>Choisir la politique de mot de passe pour les comptes utilisateurs de l'Intranet :</strong>
       <ul> 
          <li>
@@ -30,13 +30,13 @@
     </p>
     
     <p>
-      <h4>D&eacute;lai d'expiration des mots de passe</h4>
+      <h3>D&eacute;lai d'expiration des mots de passe</h3>
       <strong>Choisir la p&eacute;riode de validit&eacute; pour les mots de passe (mettre 0 pour que le mot de passe n'expire jamais) :<br/></strong>
       Les utilisateurs devront renouveler leur mot de passe tous les <%= display_text_field_for_validity_date %> jour(s).
     </p>
 
     <p>
-      <h4>Mod&egrave;le de cr&eacute;ation des comptes utilisateurs</h4>
+      <h3>Mod&egrave;le de cr&eacute;ation des comptes utilisateurs</h3
       <strong>Les comptes utilisateurs sont cr&eacute;&eacute;s automatiquement à l'enregistrement d'un employ&eacute;. Choisir le mod&egrave;le de cr&eacute;ation des comptes utilisateurs pour tous les employ&eacute;s :</strong>
       <p id="pattern_field"><%= display_text_field_for_pattern %><span id="pattern_help_link"> <%=link_to_remote "<img src=" + "/images/help_icns_16x16.png "  + " title=\"Aide\" alt=\"Bouton Aide\"/>",:url=>{:action=>"help_down"},:href=>(url_for :action=>"help_down")%></span></p>
       
