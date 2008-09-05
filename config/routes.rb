@@ -13,6 +13,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'
   map.resources :role_permissions, :path_prefix => 'permissions'
+  map.resources :document_permissions, :path_prefix => 'permissions'
   map.permissions "permissions", :controller => "role_permissions"
   # end
   

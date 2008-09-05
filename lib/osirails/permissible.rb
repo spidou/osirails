@@ -2,31 +2,31 @@ module Permissible
   module InstanceMethods
     #protected # If you want to use the methods in console mode, you must comment this line.
 
-    def can_list?(option = nil)
-      can?("list", option)
+    def can_list?(option = nil, document_model = nil)
+      can?("list", option, document_model)
     end
 
-    def can_view?(option = nil)
-      can?("view", option)
+    def can_view?(option = nil, document_model = nil)
+      can?("view", option, document_model)
     end
 
-    def can_add?(option = nil)
-      can?("add", option)
+    def can_add?(option = nil, document_model = nil)
+      can?("add", option, document_model)
     end
 
-    def can_edit?(option = nil)
-      can?("edit", option)
+    def can_edit?(option = nil, document_model = nil)
+      can?("edit", option, document_model)
     end
 
-    def can_delete?(option = nil)
-      can?("delete", option)
+    def can_delete?(option = nil, document_model = nil)
+      can?("delete", option, document_model)
     end
 
     private
       # You must pass 2 arguments for use this method:
       # action is a string like: list, view, add, edit, or delete.
       # option can be an User, a Role, a Role id, a Role name, or an array of Role / Role id / Role name.
-      def can?(action, option)
+      def can?(action, option, document_model)
         raise "Unexepected action" unless ["list", "view", "add", "edit", "delete"].include?(action) # TODO Use constance for this array.
 
         roles = []
@@ -52,12 +52,15 @@ module Permissible
             if role.class == String
               role = Role.find_by_name(role)
             end
-            if !self.class.name.grep(/Controller$/).empty? #self.ancestors.include?(ActionController::Base) # INSTANCE METHOD. If you call this method by a controller for verify if the user have the permission access for this controller
+            if self.class.name == "Document" && !document_model.nil?
+              # CLASS METHOD. If you want to know the permission of an user for a Document by his model owner.
+              perm = DocumentPermission.find_by_document_owner_and_role_id(document_model, role, :conditions => {action => true})
+            elsif !self.class.name.grep(/Controller$/).empty? #self.ancestors.include?(ActionController::Base) # INSTANCE METHOD. If you call this method by a controller for verify if the user have the permission access for this controller.
               menu = Menu.find_by_name(controller_path)    
               perm = MenuPermission.find_by_menu_id_and_role_id(menu.id, role, :conditions => {action => true})
-            elsif self.class.name == "Menu" # INSTANCE METHOD. If you want to know the permission of an user for a Menu
+            elsif self.class.name == "Menu" # INSTANCE METHOD. If you want to know the permission of an user for a Menu.
               perm = MenuPermission.find_by_menu_id_and_role_id(self.id, role, :conditions => {action => true})
-            else # CLASS METHOD. If you want to know the permission of an user for a Business Object
+            else # CLASS METHOD. If you want to know the permission of an user for a Business Object.
               perm = BusinessObjectPermission.find_by_has_permission_type_and_role_id(self.name, role, :conditions => {action => true})          
             end
             return_value ||= perm.list unless perm.nil?
