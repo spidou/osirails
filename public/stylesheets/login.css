@@ -101,14 +101,14 @@ h1 {
 }
 
 #logo {
-	background-image: url("/images/login/banniere.jpg");
+	background-image: url("/images/login/banner.jpg");
 	float: left;
 	width: 330px;
 	height: 75px;
 }
 
 #under_banner {
-	background-image: url("/images/login/banniere_repeat-x.jpg");
+	background-image: url("/images/login/banner_repeat-x.jpg");
 	width: auto;
 	height: 75px;
 	margin-left: 330px;
@@ -226,7 +226,7 @@ a { /*Pour le msg d'erreur*/
 /**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 button.input-button { 																	/**/
-	background: transparent url("../images/default-button_end.png") no-repeat top left;	/**/
+	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;	/**/
 	font-family: arial, verdana, sans-serif;											/**/
 	font-size:85%;																		/**/
 	height: 25px;																		/**/
@@ -243,7 +243,7 @@ button.input-button { 																	/**/
 }																						/**/
 																						/**/
 button.input-button span { 																/**/
-	background: transparent url("../images/default-button.png") no-repeat top right;	/**/
+	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;	/**/
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;                                                            /**/
 	margin-top:-2px;                                                                    /**/
@@ -252,11 +252,11 @@ button.input-button span { 																/**/
 }																					    /**/
 																					    /**/
 button.input-button:hover { 												           	 /**/
-	background: transparent url("../images/default-button_end.png") no-repeat 0 -26px; 	/**/
+	background: transparent url("../images/button_default_generic_left_side.png") no-repeat 0 -26px; 	/**/
 }																					    /**/
 																					   	/**/
 button.input-button:hover span {													   	/**/
-	background: transparent url("../images/default-button.png") no-repeat 100% -26px;  	/**/
+	background: transparent url("../images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
 	color:black;                                                                       	/**/
 }																						/**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
