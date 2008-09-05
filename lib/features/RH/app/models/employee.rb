@@ -1,6 +1,9 @@
 class Employee < ActiveRecord::Base
   acts_as_file
   
+  # restrict or add methods to be use into the pattern 'Attribut'
+  METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
+  
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
 
@@ -26,32 +29,44 @@ class Employee < ActiveRecord::Base
   after_create :user_create_methode
   before_save :case_managment
   
-  # Method to change the case of the fisrt_name and the last_name at the employee's creation
+  # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment
     self.first_name.capitalize!
     self.last_name.upcase!
   end
   
+  # method that generate the username with attribute of the created employee 
+  # it take two args that are:
+  # obj => class instance (the new employee object, that need to generate a user)
+  # val => a string that respect a model like "[Attribut,Option]"
+  # - where 'Attribut' is obj attributes like (obj.first_name )
+  # - where 'Option' is the number of chars that  will be pick into the Attribut, and put into the final generated username 
+  # exemple  obj.last_name => "Mike", obj.first_name => "O'brian", val => .[FIRST_NAME,1].[last_name]
+  # generated username => O.mike 
   def pattern(val,obj)
     retour = ""
     open = 0 
-    # verify if opened [ are closed with ]
     
-    return "pattern invalide : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
+    # verify if opened '[' are closed with ']'
+    return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
     
     (0..val.size).each do |i|
-      return "pattern invalide : <br/>- Vous ne devez pas utiliser "+'#'+'{}' if val[i..i+1] == '#{'
-      return "pattern invalide : <br/>- Vous ne devez pas utiliser |" if val[i..i] == "|"
+      # verify if there is forbidden char like "#{" or "|"
+      return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser "+'#'+'{}' if val[i..i+1] == '#{'
+      return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser |" if val[i..i] == "|"
+      # verify if there's tabs into tabs
       unless open == 2
         open += 1 if val[i..i] == "[" 
         open -= 1 if val[i..i] == "]"
       else
-        return "pattern invalide : <br/>- Vous devez fermer le premier [] avant d'ouvrir le second"
+        return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez fermer le premier [] avant d'ouvrir le second"
       end
     end
     
+    # prepare val to be split with "|"
     val = val.gsub(/\[/,"|")
     val = val.gsub(/\]/,"|")
+    # split val to can separate each part of val into a tab
     val = val.split("|")
     
     for i in (1...val.size) do
@@ -59,36 +74,41 @@ class Employee < ActiveRecord::Base
         retour += val[i]       
       else
         tmp = val[i].split(",")
-        # verify if opt is an integer
+        # verify if 'Option' is an integer
         if tmp.size>2
-           return "pattern invalide : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
+          return "Erreur modèle de création de comptes utilisateurs : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
+        elsif tmp.size == val[i].count(",")
+          return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
         elsif tmp.size>1
           tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
-          if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
-            return "pattern invalide : <br/>- Option [ " + option + " ] invalide "
-          end
-          # return "pattern invalide : <br/>- Option [ " + option + " ] invalide " if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
+          return "Erreur modèle de création de comptes utilisateurs : <br/>- Option [ " + option + " ] invalide " if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
         end
         unless tmp[0].blank?
           txt = tmp[0].downcase
-          # verify if attr is valid
-          if obj.respond_to?(txt)  
+          # verify if 'Attribut' is valid
+          if obj.respond_to?(txt) and Employee::METHODS[obj.class.name].include?(txt.downcase)  
             if tmp.size==2
-              for j in (1...tmp.size)             
+              for j in (1...tmp.size)  
+                  # test the case of the 'Attribut'            
                   if tmp[0]==tmp[0].upcase
                     tmp[0].downcase!
+                    # send the 'Attribut' name and truncate it with the Option that give us the length 
                     txt = obj.send(tmp[0])[0...tmp[1].to_i]
                     retour += txt.upcase
                   else
+                    # send the 'Attribut' name and truncate it with the Option that give us the length
+                    # replace the spaces with  "_" cd. .gsub(/\x20/,"_")
                     txt = obj.send(tmp[0])[0...tmp[1].to_i].gsub(/\x20/,"_")
                     retour += txt.downcase
                   end 
               end 
             else
-              if obj.respond_to?(val[i])
+              # verify a second time the 'Attribut' because if there is a coma with nil 'Option', the split don't see it takes two values
+              # then we need to raise that the 'Attribut' is following by a coma 
+              if obj.respond_to?(val[i].downcase)
                 tmp = val[i].downcase 
               else
-                return "pattern invalide : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que l'Option "
+                return "modèle de création de username invalide : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
               end
               txt = obj.send(tmp).gsub(/\x20/,"_")
               if val[i] == val[i].upcase
@@ -98,10 +118,10 @@ class Employee < ActiveRecord::Base
               end
             end
           else
-             return "pattern invalide : <br/>- Attribut ["+ tmp[0] +"] invalide"
+             return "modèle de création de username invalide : <br/>- Attribut ["+ tmp[0] +"] invalide : attribut inexistant ou non autorisé "
           end
         else
-          return "pattern invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] "  
+          return "modèle de création de username invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] "  
         end  
       end
     end

@@ -4,13 +4,18 @@ class PasswordPoliciesController < ApplicationController
   end
   
   def update
+    # verify the submit method 
     if request.put?
      
+     # create without save an employe to test the validity of pattern into admin when submiting 
      e = Employee.new(:last_name => "jean", :first_name => "paul", :society_email => "toto@emr-oi.fr",:email => "toto@emr-oi.fr",:social_security => "1111111111111 11")
      response = e.pattern(params[:pattern],e)
-     reg = /^(pattern invalide : <br)+(\x2F)+(>- )[\x0\x20-\xFF]*$/
+     
+     # identifie the pattern's returned var to be an error message
+     reg = /^(Erreur modèle de création de comptes utilisateurs : <br)+(\x2F)+(>- )[\x0\x20-\xFF]*$/
      reg.match(response).nil? ? pattern_error = false : pattern_error = true 
      
+     # if there is one error then errors flashes are displayed but value into DB are not modified
       if !params[:level].nil? and params[:pattern]!="" and params[:validity]!="" and params[:validity].size <= 5  and !(/^([0-9])*$/.match(params[:validity]).nil?) and pattern_error == false
         ConfigurationManager.admin_actual_password_policy = params[:level]
         ConfigurationManager.admin_user_pattern = params[:pattern].to_s
