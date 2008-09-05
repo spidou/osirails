@@ -48,7 +48,7 @@ class Employee < ActiveRecord::Base
         tmp = val[i].split(",")
         # verify if opt is an integer
         if tmp.size>1
-          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if /^[0-9]?$/.match(tmp[1]).nil? 
+          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if tmp[1].to_i==0 
         end
         txt = tmp[0].downcase
         # verify if attr is valid

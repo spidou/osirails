@@ -11,7 +11,7 @@ class PasswordPoliciesController < ApplicationController
      reg = /^(pattern invalide : <br)+(\x2F)+(>- )[\x20-\x7E]*$/
      reg.match(response).nil? ? pattern_error = false : pattern_error = true 
      
-      if !params[:level].nil? and params[:pattern]!="" and params[:validity]!="" and pattern_error == false
+      if !params[:level].nil? and params[:pattern]!="" and params[:validity]!="" and  (/^([a-bA-B])*$/.match(params[:validity]).nil?) and pattern_error == false
         ConfigurationManager.admin_actual_password_policy = params[:level]
         ConfigurationManager.admin_user_pattern = params[:pattern].to_s
         params[:validity].to_i < 0 ? ConfigurationManager.admin_password_validity = 0 : ConfigurationManager.admin_password_validity = params[:validity]
@@ -23,6 +23,7 @@ class PasswordPoliciesController < ApplicationController
         flash[:error] += "<li> Le modèle de création d'user est invalide, consultez l'aide pour plus d'informations </li>" if params[:pattern]==""
         flash[:error] += "<li> Vous devez entrer une durée de validité du mot de passe </li>"  if params[:validity]==""
         flash[:error] += "<li>" + response + "</li>" unless pattern_error == false
+        flash[:error] += "<li> Vous devez entrer un chiffre pour la durée de validité </li>" if !(/^([a-bA-B])*$/.match(params[:validity]).nil?)
         flash[:error] += "</ul>"
         
         flash.now[:error]

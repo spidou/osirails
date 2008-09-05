@@ -10,7 +10,8 @@ module PasswordPoliciesHelper
   end
   
   def display_text_field_for_validity_date
-    text_field_tag( "validity", ConfigurationManager.admin_password_validity, :size => 3 )
+  params[:validity].nil? ? validity = ConfigurationManager.admin_password_validity : validity = params[:validity]
+    text_field_tag( "validity", validity, :size => 3 )
   end
 
 end
