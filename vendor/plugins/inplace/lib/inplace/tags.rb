@@ -55,15 +55,15 @@ module Inplace
                                   new Effect.Highlight(element.id, {startcolor: '#ff0000'});
                                 }
 				element.innerHTML=transport.responseText.evalJSON().#{object.class.name.demodulize.tableize.singularize}.#{property};
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// hacked by Pentoo
+/* hacked by Jérémie LAVAL and Benjamin LAN-SUN-LUCK */
                               if( element.id.substring(12,15) == 'inv' ) {
                                   totals_calculator(element.ancestors()[1]);
                                }
                                else {
                                  price_calculator(element.ancestors()[1]);
-sub_total(element.ancestors()[1]);
                                 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                total(element.ancestors()[1]);
+/* hacked by Jérémie LAVAL and  Benjamin LAN-SUN-LUCK */
                               }"
         tg += ",#{options_for_edit}" unless options_for_edit.empty?
         tg += "});\n"
