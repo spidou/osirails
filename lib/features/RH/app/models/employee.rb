@@ -4,6 +4,11 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
+  cattr_accessor :pattern_error
+  @@pattern_error = false
+  
+  
+  
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
 
@@ -48,17 +53,27 @@ class Employee < ActiveRecord::Base
     open = 0 
     
     # verify if opened '[' are closed with ']'
-    return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
+    unless val.count("[") == val.count("]")
+      self.pattern_error = true
+      return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez fermer les []!!" 
+    end
     
     (0..val.size).each do |i|
       # verify if there is forbidden char like "#{" or "|"
-      return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser "+'#'+'{}' if val[i..i+1] == '#{'
-      return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser |" if val[i..i] == "|"
+      if val[i..i+1] == '#{'
+        self.pattern_error = true
+        return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser "+'#'+'{}'
+      end
+      if val[i..i] == "|"  
+        self.pattern_error = true
+        return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous ne devez pas utiliser |"
+      end
       # verify if there's tabs into tabs
       unless open == 2
         open += 1 if val[i..i] == "[" 
         open -= 1 if val[i..i] == "]"
       else
+        self.pattern_error = true
         return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez fermer le premier [] avant d'ouvrir le second"
       end
     end
@@ -76,12 +91,20 @@ class Employee < ActiveRecord::Base
         tmp = val[i].split(",")
         # verify if 'Option' is an integer
         if tmp.size>2
+          self.pattern_error = true
           return "Erreur modèle de création de comptes utilisateurs : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
+        elsif tmp[0].blank?
+          self.pattern_error = true
+          return "Erreur modèle de création de comptes utilisateurs : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] "
         elsif tmp.size == val[i].count(",")
+          self.pattern_error = true
           return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
         elsif tmp.size>1
           tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
-          return "Erreur modèle de création de comptes utilisateurs : <br/>- Option [ " + option + " ] invalide " if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
+          if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
+            self.pattern_error = true
+            return "Erreur modèle de création de comptes utilisateurs : <br/>- Option [ " + option + " ] invalide "
+          end
         end
         unless tmp[0].blank?
           txt = tmp[0].downcase
@@ -108,7 +131,8 @@ class Employee < ActiveRecord::Base
               if obj.respond_to?(val[i].downcase)
                 tmp = val[i].downcase 
               else
-                return "modèle de création de username invalide : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
+                self.pattern_error = true
+                return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
               end
               txt = obj.send(tmp).gsub(/\x20/,"_")
               if val[i] == val[i].upcase
@@ -118,13 +142,13 @@ class Employee < ActiveRecord::Base
               end
             end
           else
-             return "modèle de création de username invalide : <br/>- Attribut ["+ tmp[0] +"] invalide : attribut inexistant ou non autorisé "
+             self.pattern_error = true
+             return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut ["+ tmp[0] +"] invalide : attribut inexistant ou non autorisé "
           end
-        else
-          return "modèle de création de username invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] "  
         end  
       end
     end
+      self.pattern_error = false
       return retour.to_s
   end
   
