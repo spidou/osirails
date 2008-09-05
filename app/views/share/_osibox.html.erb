@@ -8,7 +8,7 @@
 						background-color: <%= options[:wall_color] %>;
 						opacity: <%= options[:wall_opacity] %>;
 						-moz-opacity: <%= options[:wall_opacity] %>;
-						filter:alpha(opacity=<%= options[:wall_opacity] * 100 %>);"
+						filter:alpha(opacity=<%= options[:wall_opacity].to_f * 100 %>);"
 	id="osibox_wall">
 </div>
 <div style="visibility: hidden;
