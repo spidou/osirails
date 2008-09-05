@@ -31,8 +31,13 @@ html, body {
 	background:url("../images/background_core_menu_cheating.jpg") repeat-y bottom left;
 }
 
-a {
+a, strong {
 	color:rgb(234,136,28); /*#698bcd : BLUE*/
+}
+
+strong {
+	font-weight:lighter;
+/*	color: #698bcd;*/
 }
 
 a:hover {
@@ -94,13 +99,13 @@ tr:hover > td > a {
 /////////////////////////////*/
 
 h1 {
-	margin-top:10px; /*<==BECAUSE OF "float left" HORIZONTAL MENU*/
+	margin-top:5px; /*<==BECAUSE OF "float left" HORIZONTAL MENU*/
 	text-indent:0px;
 	text-align:center;
-	background: #EBA04E repeat;
+	background: #7E98CB;/*#EBA04E repeat*/
 	border:solid 1px #e5e5e5;
 	height:26px;
-	color:#444;
+	color: white;/*#444;*/
 	font-size:1.6em;
 	line-height:23px;
 	font-weight:lighter;
@@ -123,26 +128,22 @@ h2 {
 }
 
 h3 {
-	text-indent:20px;
+	text-indent:25px;
 	background: #afc2ea;
 	border:solid 1px #bbb;
 	height:20px;
 	line-height:20px;
 	color: rgb(117,141,189);
-	font-weight:lighter;
+//	font-weight:lighter;
 	padding-top:0px;
 	margin-top:-1px;
-	font-size:1em;
+	font-size:1.05em;
 }
 
 h6 {
 	text-decoration: underline;
 }
 
-strong {
-	color: #698bcd;
-	font-weight:lighter;
-}
 /*/////////////END OF GENERICS TAGS////////////////////*/
 /*/////////////////////////////////////////////////////
 					BANNER
@@ -1033,7 +1034,7 @@ width: 50px ! important;
   display: none;
 }
 .frame {
-	margin-top:10px;
+	margin-top:-3px;
 	margin-bottom:10px;
 	background: #ffffff;
 	border: solid 1px #989898;
