@@ -63,7 +63,8 @@ class Employee < ActiveRecord::Base
         if tmp.size>2
            return "pattern invalide : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
         elsif tmp.size>1
-          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if tmp[1].to_i==0
+          tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
+          return "pattern invalide : <br/>- Option [ " + option + " ] invalide " if (/^([0-9]){0,15}$/.match(tmp[1]).nil?)
         end
         unless tmp[0].blank?
           txt = tmp[0].downcase
@@ -93,7 +94,7 @@ class Employee < ActiveRecord::Base
              return "pattern invalide : <br/>- Attribut ["+ tmp[0] +"] invalide"
           end
         else
-          return "pattern invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] ou les echapper "  
+          return "pattern invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] "  
         end  
       end
     end
