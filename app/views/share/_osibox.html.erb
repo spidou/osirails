@@ -59,6 +59,7 @@ function osibox_open () {
 
 	osibox_popup_elm.style.top = top + document.documentElement.scrollTop + 'px';
 	osibox_popup_elm.style.left = left + 'px';
+	osibox_wall_elm.style.height = document.documentElement.scrollHeight + "px";
 
 	document.body.style.overflow = 'hidden';
 	
@@ -77,6 +78,8 @@ function osibox_close () {
 	Effect.Fade(osibox_popup_elm, {duration: 0.6});
 
 	setTimeout(function() {
+		osibox_wall_elm.style.height = "0px";
+		
 		osibox_wall_elm.style.display = 'block';
 		osibox_popup_elm.style.display = 'block';
 
