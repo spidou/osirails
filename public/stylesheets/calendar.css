@@ -99,20 +99,19 @@
 	height: 600px;
 }
 #calendar #scroll #grid_month .day_grid {
-  overflow: hidden;
 	float: left;
 	width: 14%;
 	height: 20%;
 	border: 1px solid;
-}
-#calendar #scroll #grid_month .day_grid .hover {
-  border: inline;
 }
 #calendar #scroll #grid_month .day_grid ul {
   
 }
 #calendar #scroll .e_month {
 	font-size: 10px;
+}
+#calendar #scroll #grid_month .hover {
+  background-color: #BC7757;
 }
 #calendar #scroll #grid_month .day_number.other_month {
   color: #B4B4B4;

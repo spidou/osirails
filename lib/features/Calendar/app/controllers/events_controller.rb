@@ -3,6 +3,7 @@ class EventsController < ApplicationController
 
   def index
     @calendar = Calendar.find(params[:calendar_id])
+    render :text => 'false' unless @calendar.can_list?(current_user)
     @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
     case params[:period]
     when "day"
@@ -27,6 +28,7 @@ class EventsController < ApplicationController
 
   def show
     @calendar = Calendar.find(params[:calendar_id])
+    return false unless @calendar.can_view?(current_user)
     @event = Event.find(params[:id])
     respond_to do |format|
       format.js
@@ -35,6 +37,7 @@ class EventsController < ApplicationController
 
   def new
     @calendar = Calendar.find(params[:calendar_id])
+    return false unless @calendar.can_add?(current_user)
     @event = Event.new
     @alarm = Alarm.new
     @categories = EventCategory.find_all_accessible(@calendar)
@@ -48,6 +51,7 @@ class EventsController < ApplicationController
 
   def create
     @calendar = Calendar.find(params[:calendar_id])
+    return false unless @calendar.can_add?(current_user)
     params[:event][:by_day] = [params[:event].delete(:by_month_day_num) + params[:event].delete(:by_month_day_wday)] if params[:event][:by_month_day_num] && params[:event][:by_month_day_wday]
     @event = Event.create(params[:event])
     @event.alarms << Alarm.create(params[:alarm])
@@ -59,6 +63,7 @@ class EventsController < ApplicationController
 
   def edit
     @calendar = Calendar.find(params[:calendar_id])
+    return false unless @calendar.can_edit?(current_user)
     @event = Event.find(params[:id])
     @alarm = @event.alarms.first
     @categories = EventCategory.find_all_accessible(@calendar)
@@ -69,6 +74,7 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
+    return false unless @calendar.can_edit?(current_user)
     date = Date.parse(params[:date])
     exdate = Date.parse(params[:exdate]) if params[:exdate]
 
@@ -161,7 +167,8 @@ class EventsController < ApplicationController
   end
 
   def destroy
-    @event = Event.find(params[:id])    
+    @event = Event.find(params[:id])
+    return false unless @event.calendar.can_delete?(current_user)
     @event.destroy
 
     respond_to do |format|

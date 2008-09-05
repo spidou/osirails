@@ -28,6 +28,10 @@ class Calendar < ActiveRecord::Base
   require 'rubygems'
   require 'icalendar'
   require 'date'
+  include Permissible::InstanceMethods
+
+  # Callbacks
+  after_create :create_permissions
 
   # TODO Must be configurable
   # Constants
@@ -42,7 +46,7 @@ class Calendar < ActiveRecord::Base
     options[:start_date] ||= Date::today
     options[:end_date] ||= Date::today
     date = options[:start_date]
-    
+
     return_events = {}
     while date <= options[:end_date]
       return_events[date.to_s] ||= []
@@ -51,7 +55,7 @@ class Calendar < ActiveRecord::Base
     end
     return_events
   end
-  
+
   # Returns an array of events for the specified date
   # arg must be a Date object
   def events_at_date(date = Date::today)
@@ -63,7 +67,7 @@ class Calendar < ActiveRecord::Base
         list_ex_dates << ex.date
       end
       next if list_ex_dates.include?(date)
-      
+
       if date == event.start_at.to_date || date == event.end_at.to_date
         return_events << event
       elsif event.start_at.to_date < date
@@ -150,7 +154,7 @@ class Calendar < ActiveRecord::Base
               year_condition = false
             end
           end
-          
+
           if (date.year - event.start_at.year) % event.interval == 0 && year_condition
             if !event.until_date.nil?
               return_events << event if date <= event.until_date.to_date
@@ -203,41 +207,47 @@ class Calendar < ActiveRecord::Base
   end
 
   protected
-    def daynum_to_dayname(num)
-      case num
-      when 0
-        return "SU"
-      when 1
-        return "MO"
-      when 2
-        return "TU"
-      when 3
-        return "WE"
-      when 4
-        return "TH"
-      when 5
-        return "FR"
-      when 6
-        return "SA"
-      end
+  def daynum_to_dayname(num)
+    case num
+    when 0
+      return "SU"
+    when 1
+      return "MO"
+    when 2
+      return "TU"
+    when 3
+      return "WE"
+    when 4
+      return "TH"
+    when 5
+      return "FR"
+    when 6
+      return "SA"
     end
+  end
 
-    def dayname_to_daynum(name)
-      case name
-      when "SU"
-        return 0
-      when "MO"
-        return 1
-      when "TU"
-        return 2
-      when "WE"
-        return 3
-      when "TH"
-        return 4
-      when "FR"
-        return 5
-      when "SA"
-        return 6
-      end
+  def dayname_to_daynum(name)
+    case name
+    when "SU"
+      return 0
+    when "MO"
+      return 1
+    when "TU"
+      return 2
+    when "WE"
+      return 3
+    when "TH"
+      return 4
+    when "FR"
+      return 5
+    when "SA"
+      return 6
     end
+  end
+
+  def create_permissions
+    Role.find(:all).each do |role|
+      CalendarPermission.create(:role_id => role.id, :calendar_id => self.id)
+    end
+  end
 end

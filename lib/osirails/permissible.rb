@@ -2,6 +2,7 @@ module Permissible
   module InstanceMethods
     #protected # If you want to use the methods in console mode, you must comment this line.
 
+    # document_model is used by DocumentPermissions
     def can_list?(option = nil, document_model = nil)
       can?("list", option, document_model)
     end
@@ -55,6 +56,10 @@ module Permissible
             if self.class.name == "Document" && !document_model.nil?
               # CLASS METHOD. If you want to know the permission of an user for a Document by his model owner.
               perm = DocumentPermission.find_by_document_owner_and_role_id(document_model, role, :conditions => {action => true})
+            elsif self.class.name == "Calendar"
+              # INSTANCE METHOD. If you want to test the permission of an user for a Calendar who have not an owner.
+              return true unless self.user_id.nil?
+              perm = CalendarPermission.find_by_calendar_id_and_role_id(self.id, role, :conditions => {action => true})
             elsif !self.class.name.grep(/Controller$/).empty? #self.ancestors.include?(ActionController::Base) # INSTANCE METHOD. If you call this method by a controller for verify if the user have the permission access for this controller.
               menu = Menu.find_by_name(controller_path)    
               perm = MenuPermission.find_by_menu_id_and_role_id(menu.id, role, :conditions => {action => true})

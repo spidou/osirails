@@ -15,7 +15,7 @@ class CalendarsController < ApplicationController
   
   protected
     def check_date
-      @calendar = current_user.calendar || Calendar.find(params[:id])
+      @calendar = Calendar.find(params[:id] || current_user.calendar)
       params[:period] = "week" if params[:period].nil?
       unless ["day", "week", "month"].include?(params[:period].downcase)
         params[:period] = "week"

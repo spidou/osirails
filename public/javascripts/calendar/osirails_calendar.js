@@ -10,9 +10,14 @@ event_box_displayed = false;
 
 /* Initialization of the calendar */
 /* p must be: 'day' or 'week' or 'year' */
-function calendar_init (db_id, p, p_b, p_d, p_w, p_m, p_a, g_e) {
+function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p_a, g_e) {
   db_calendar_id = db_id;
   period = p;
+  can_list = c_l;
+  can_view = c_v;
+  can_add = c_a;
+  can_edit = c_e;
+  can_delete = c_d;
   link_period_before = p_b;
   link_period_day = p_d;
   link_period_week = p_w;
@@ -81,18 +86,21 @@ function add_event (id, title, top, height, color, week_day, full_day) {
 
     //Effect.Pulsate(elm_id, { pulses: 2, duration: 1 });
 
-    add_draggable(elm_id);
-    new Resizeable(elm_id, {
-      left:0,
-      right:0,
-      top: 0,
-      bottom: 4,
-      minHeight: 19,
-      resize: function() {
-        update_time(elm_id);
-        save_event(elm_id);
-      }
-    });
+    if (can_edit) {
+      add_draggable(elm_id);
+      new Resizeable(elm_id, {
+        left:0,
+        right:0,
+        top: 0,
+        bottom: 4,
+        minHeight: 19,
+        resize: function() {
+          update_time(elm_id);
+          save_event(elm_id);
+        }
+        });
+    };
+
     update_time(elm_id);	  
   };
 }
@@ -220,6 +228,8 @@ function reload_events () {
 /* Open the event box, who permit to show and edit an event */
 function display_event_box (action, event_id, event) {
   if (event_box_displayed) { return true; };
+  if (action == 'show' && can_view == false) { return false };
+  if (action == 'new' && can_add == false) { return false };
   event_box_loading();
   var event_box_elm = document.getElementById(event_box_id);
   switch (action) {

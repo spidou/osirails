@@ -55,6 +55,12 @@ menus:
           role_permissions:
             title: Role permissions
             description: Gestion des permissions des roles
+          document_permissions:
+            title: Document permissions
+            description: Gestion des permissions des documents
+          calendar_permissions:
+            title: Calendrier permissions
+            description: Gestion des permissions des calendriers
       society_configurations:
         title: Configuration de l'entreprise
         description: Gestion de la configuration de l'entreprise
