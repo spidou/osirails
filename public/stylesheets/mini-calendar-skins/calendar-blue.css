@@ -1,14 +1,19 @@
 /* The main calendar widget.  DIV containing a table. */
 
-div.calendar { position: relative; }
+div.calendar { 
+	position: relative; 
+	right:7px;
+	width:200px;
+}
 
-.calendar, .calendar table {
-  border: 1px solid #556;
-  font-size: 11px;
-  color: #000;
-  cursor: default;
-  background: #eef;
-  font-family: tahoma,verdana,sans-serif;
+.calendar,
+.calendar table {
+/*	border: 1px solid #556;	*/	
+	font-size: 11px;
+	color: #000;
+	cursor: default;
+/*	background: #eef;	*/
+	font-family: tahoma,verdana,sans-serif;
 }
 
 /* Header part -- contains navigation buttons and day names. */
@@ -19,7 +24,7 @@ div.calendar { position: relative; }
 }
 
 .calendar .nav {
-  background: #778 url(menuarrow.gif) no-repeat 100% 100%;
+  background: #888;/*#778 url(menuarrow.gif) no-repeat 100% 100%;*/
 }
 
 .calendar thead .title { /* This holds the current "month, year" */
@@ -36,18 +41,18 @@ div.calendar { position: relative; }
 }
 
 .calendar thead .daynames { /* Row <TR> containing the day names */
-  background: #bdf;
+  background: #7E98CB;
 }
 
 .calendar thead .name { /* Cells <TD> containing the day names */
-  border-bottom: 1px solid #556;
-  padding: 2px;
-  text-align: center;
-  color: #000;
+	border-bottom: 1px solid #333;
+	padding: 2px;
+	text-align: center;
+	color:#000;
 }
 
 .calendar thead .weekend { /* How a weekend day name shows in header */
-  color: #a66;
+	color:#7E5119;
 }
 
 .calendar thead .hilite { /* How do the buttons in header appear when hover */

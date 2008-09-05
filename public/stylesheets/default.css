@@ -134,7 +134,7 @@ h3 {
 	height:20px;
 	line-height:20px;
 	color: rgb(117,141,189);
-//	font-weight:lighter;
+/*	font-weight:lighter;	*/
 	padding-top:0px;
 	margin-top:-1px;
 	font-size:1.05em;
@@ -1047,8 +1047,13 @@ width: 50px ! important;
 
 /* a (LINKS) */
 .editor_cancel {
-  display: none;
+	background:url("/images/cross_16x16.png") no-repeat;
 }
+
+.editor_cancel span {
+	display:none;
+}
+
 .frame {
 	margin-top:-3px;
 	margin-bottom:10px;
@@ -1090,6 +1095,7 @@ width: 50px ! important;
 .date_days {
 	margin:0px 20px 0px -15px ;
 }
+
 /*
 .frame form {
 //	width: 70%;
@@ -1167,10 +1173,27 @@ width: 50px ! important;
 }
 */
 /*LAYOUTS' FORM*/
-.frame form label {
+.frame.presentation_large label {
 	text-align:right;
 /*	margin-right:10px;*/
-	width:230px;
+	width:250px;
+	display:inline-block;
+}
+
+.frame.presentation_medium label {
+	text-align:right;
+	width:150px;
+	display:inline-block;
+}
+
+.frame.presentation_large label {
+	text-align:right;
+	width:1000px;
+	display:inline-block;
+}
+
+.frame label {
+	text-align:right;
 	display:inline-block;
 }
 
@@ -1185,7 +1208,7 @@ width: 50px ! important;
 }
 
 .frame strong {
-  margin-bottom:10px;
+	margin-bottom:10px;
 	vertical-align:top;
 }
 /*
