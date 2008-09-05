@@ -8,7 +8,7 @@ class PasswordPoliciesController < ApplicationController
      
      e = Employee.new(:last_name => "jean", :first_name => "paul", :society_email => "toto@emr-oi.fr",:email => "toto@emr-oi.fr",:social_security => "1111111111111 11")
      response = e.pattern(params[:pattern],e)
-     reg = /^(pattern invalide : <br)+(\x2F)+(>- )[\x20-\xA5]*$/
+     reg = /^(pattern invalide : <br)+(\x2F)+(>- )[\x0\x20-\xFF]*$/
      reg.match(response).nil? ? pattern_error = false : pattern_error = true 
      
       if !params[:level].nil? and params[:pattern]!="" and params[:validity]!="" and params[:validity].size <= 5  and !(/^([0-9])*$/.match(params[:validity]).nil?) and pattern_error == false

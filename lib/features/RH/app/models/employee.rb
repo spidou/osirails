@@ -64,7 +64,10 @@ class Employee < ActiveRecord::Base
            return "pattern invalide : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
         elsif tmp.size>1
           tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
-          return "pattern invalide : <br/>- Option [ " + option + " ] invalide " if (/^([0-9]){0,15}$/.match(tmp[1]).nil?)
+          if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
+            return "pattern invalide : <br/>- Option [ " + option + " ] invalide "
+          end
+          # return "pattern invalide : <br/>- Option [ " + option + " ] invalide " if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
         end
         unless tmp[0].blank?
           txt = tmp[0].downcase
@@ -82,7 +85,11 @@ class Employee < ActiveRecord::Base
                   end 
               end 
             else
-              tmp = val[i].downcase
+              if obj.respond_to?(val[i])
+                tmp = val[i].downcase 
+              else
+                return "pattern invalide : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que l'Option "
+              end
               txt = obj.send(tmp).gsub(/\x20/,"_")
               if val[i] == val[i].upcase
                 retour += txt.upcase
