@@ -1,5 +1,5 @@
 class Document < ActiveRecord::Base
-  
+  acts_as_taggable
   include Permissible
   
   belongs_to :file_type
@@ -9,7 +9,7 @@ class Document < ActiveRecord::Base
   attr_accessor :models
   attr_accessor :image_extensions
   
-#  acts_as_taggable
+  
   
   @image_extensions = ["jpg", "jpeg","png","gif"]
   @models = []
