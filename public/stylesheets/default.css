@@ -948,6 +948,21 @@ table.presentation tr:hover > td{
 
 /*::::::::::::TABLE "COMMODITY"::::::::::::*/
 
+table.commodity {
+	font-weight:lighter;
+}
+
+table.commodity th {
+	text-align:center;
+	padding:2px;
+}
+
+
+table.commodity td {
+	text-align:left;
+	padding:5px;
+} 
+
 .commodity tr.disable > td {
 	color:#888;
 /*	color:#B0383D; RED*/
@@ -970,11 +985,6 @@ table.presentation tr:hover > td{
 
 tr.current_inventory {
 	color:#CA7E21;
-}
-
-.commodity img {
-	float:left;
-	margin-top:3px;
 }
 
 /**/
