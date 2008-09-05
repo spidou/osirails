@@ -77,7 +77,7 @@ class EmployeesController < ApplicationController
       
       # save job and employees
       unless params[:job].nil?
-        @job.save ? job = true : job = false 
+        job = @job.save
       else
         job = true   
       end  

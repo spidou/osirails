@@ -20,7 +20,6 @@
       <b>Date de naissance :</b>
       <%=h @employee.birth_date.strftime("%d %B %Y") %>
     </p>
-
     <p>
       <b>Situation familiale :</b>
       <%=h @employee.family_situation.name unless @employee.family_situation.nil?%>
@@ -70,7 +69,8 @@
   <h3>Adresse postale</h3>
     <p>
       <b>Adresse :</b>
-      <%=h @address.address1 + " - " + @address.address2 %>
+      <%=h @address.address1 %>
+      <%= " - " + h(@address.address2) unless @address.address2.empty? %>
     </p>
     <p>
       <b>Code postal :</b>

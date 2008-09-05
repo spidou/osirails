@@ -1,4 +1,3 @@
-<br/>
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
   <div class="frame">
@@ -31,18 +30,13 @@
   <!--#####################################-->
   <div class="frame">
   <h2>Coordonn&eacute;es</h2>
-  <h3>Adresse</h3>
+  <h3>Adresse postale</h3>
     <p>
       <%= label_tag 'address[address1]', "Adresse :"%> 
-      <%= display_address1(@address.nil? ? nil :@address[:address1] )%>
+      <%= display_address1(@address.nil? ? nil :@address[:address1] )%> - <%= display_address2(@address.nil? ? nil :@address[:address2] )%>
     </p>
-    <p>
-      <%= label_tag 'address[address2]', "Adresse :"%> 
-      <%= display_address2(@address.nil? ? nil :@address[:address2] )%>    
-    </p>
-    <%= render :partial => 'addresses/address', 
-      :locals => {:cpt=> 1, :owner_address => @employee.address}%>
-  <h3>Adresses éléctroniques</h3>
+    <%= render :partial => 'addresses/address', :locals => {:cpt=> 1, :owner_address => @employee.address} %>
+  <h3>Adresses &eacute;lectroniques</h3>
   <p>
     <%= f.label :email, "Email personnel :"%>
     <%= f.text_field :email%>
@@ -51,15 +45,15 @@
     <%= f.label :society_email, "Email professionnel :"%>
     <%= f.text_field :society_email%>
   </p>
-  <h3>Num&eacute;ros</h3>
+  <h3>Num&eacute;ros de t&eacute;l&eacute;phone</h3>
   <%= render :partial => 'numbers', :locals => {:attribute=> 'employee'}%>
   </div>
   <!--#####################################-->
   
   <div class="frame">
-  <h2>Identité Bancaire</h2>
+  <h2>Coordonn&eacute;es bancaires</h2>
   <p>
-    <%= label_tag 'iban[bank_name]' ,"banque :"%> 
+    <%= label_tag 'iban[bank_name]' ,"Nom de la banque :"%> 
     <%= display_bank_name(@iban.nil? ? nil :@iban[:bank_name])%>
   </p>
   <p>
@@ -75,7 +69,7 @@
     <%= display_account_number(@iban.nil? ? nil :@iban[:account_number])%>
   </p>
    <p>
-    <%= label_tag 'iban[key]' ,"Clée :"%> 
+    <%= label_tag 'iban[key]' ,"Clé :"%> 
     <%= display_key(@iban.nil? ? nil :@iban[:key])%>
   </p>
    <p>

@@ -3,19 +3,19 @@ namespace :osirails do
     desc "Populate the database"
     task :populate => :environment do
       # default civilities
-      Civility.create :name => "Mr"
+      mr = Civility.create :name => "Mr"
       Civility.create :name => "Mme"
       Civility.create :name => "Mademoiselle"
       
       # default family situations
-      FamilySituation.create :name => "Célibataire"
+      celib = FamilySituation.create :name => "Célibataire"
       FamilySituation.create :name => "Marié(e)"
       FamilySituation.create :name => "Veuf/Veuve"
       FamilySituation.create :name => "Divorcé(e)" 
       
       # default number types
-      NumberType.create :name => "Mobile"
-      NumberType.create :name => "Fixe"
+      mobile = NumberType.create :name => "Mobile"
+      fixe = NumberType.create :name => "Fixe"
       NumberType.create :name => "Fax"
       NumberType.create :name => "Mobile Professionnel"
       NumberType.create :name => "Fixe Professionnel"
@@ -41,7 +41,7 @@ namespace :osirails do
       china = Country.create :name => "Chine"
       
       # default indicatives
-      Indicative.create :indicative => "+262", :country_id => reunion.id
+      indicative = Indicative.create :indicative => "+262", :country_id => reunion.id
       Indicative.create :indicative => "+33",:country_id=> france.id 
       Indicative.create :indicative => "+34", :country_id => spain.id
       Indicative.create :indicative => "+44", :country_id => united_kingdom.id
@@ -223,44 +223,48 @@ namespace :osirails do
       FileTypeExtension.create(:name => "png")
       FileTypeExtension.create(:name => "gif")
       
-      
-      
-      # default file types
+      ## default file types
+      # for employees
       f = FileType.create :name => "CV", :model_owner => "Employee"
       f.file_type_extensions << FileTypeExtension.find_by_name("doc")
       f.file_type_extensions << FileTypeExtension.find_by_name("docx")
       f.file_type_extensions << FileTypeExtension.find_by_name("odt")
       f.file_type_extensions << FileTypeExtension.find_by_name("pdf")
-      
       f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
       f.file_type_extensions << FileTypeExtension.find_by_name("doc")
       f.file_type_extensions << FileTypeExtension.find_by_name("docx")
       f.file_type_extensions << FileTypeExtension.find_by_name("odt")
-      
       f = FileType.create :name => "Contrat de travail", :model_owner => "Employee"
       f.file_type_extensions << FileTypeExtension.find_by_name("doc")
       f.file_type_extensions << FileTypeExtension.find_by_name("docx")
       f.file_type_extensions << FileTypeExtension.find_by_name("odt")
-      
+      # for folders
       FileType.create :name => "Photo Survey", :model_owner => "Dossier"
       FileType.create :name => "Plan conception", :model_owner => "Dossier"
       FileType.create :name => "Maquette", :model_owner => "Dossier"
       FileType.create :name => "Devis", :model_owner => "Dossier"
       FileType.create :name => "Facture", :model_owner => "Dossier"
-      
+      # for customers
       f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
       f.file_type_extensions << FileTypeExtension.find_by_name("pdf")
       f.file_type_extensions << FileTypeExtension.find_by_name("jpg")
       f.file_type_extensions << FileTypeExtension.find_by_name("jpeg")
       
-      
-
       # default calendars and events
       calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
       Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 1", :description => "Description de l'evenement 1", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 2", :description => "Description de l'evenement 2", :start_at => DateTime.now + 1.days, :end_at => DateTime.now + 1.days + 2.hours
       calendar2 = Calendar.create :user_id => user_guest.id, :name => "Calendrier par défaut de Guest", :color => "blue", :title => "Titre du calendrier"
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
+      
+      # default employees
+      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
+      john.iban = iban
+      number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
+      number2 = Number.create :number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id
+      john.numbers << [number1,number2]
+      john.address = Address.create :address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400"
+      john.save
     end
     
 
@@ -269,7 +273,7 @@ namespace :osirails do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event].each do |model|
+        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all

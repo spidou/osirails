@@ -11,7 +11,9 @@ class User < ActiveRecord::Base
   
   # Validates
   validates_each :password do |record, attr, value|
-    record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
+    unless record.id.nil?
+      record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
+    end
   end
   validates_presence_of :username, :message => "ne peut être vide"
   with_options :if => :should_update_password? do |user|

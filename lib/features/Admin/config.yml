@@ -63,12 +63,15 @@ menus:
           society_identity_configuration:
             title: Paramètres globaux
             description: Configuration des paramètres globaux de l'entreprise
+            position: 1
           society_activity_sectors:
             title: Secteurs d'activités
             description: Gestion des secteurs d'activités
+            position: 2
           services:
             title: Services
             description: Gestion des services
+            position: 3
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
