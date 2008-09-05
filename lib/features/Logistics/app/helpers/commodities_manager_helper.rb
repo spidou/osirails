@@ -12,7 +12,7 @@ module CommoditiesManagerHelper
   
   # This method permit to make in table editor
   def in_place_editor(object,attribute)
-    editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'tutu'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true})
+    editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true})
   end
   
   # This method permit to generate a counter for  categories
@@ -62,8 +62,8 @@ module CommoditiesManagerHelper
       status = commodity_category.enable ? "enable" : "disable" if show == nil
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
-      table << "<td onkeydown ='refresh(this,event)'><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
-      table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/> " unless commodity_category.children.size == 0
+      table << "<td onkeydown ='refresh(this,event)'><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
+      table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])'/> " unless commodity_category.children.size == 0
       table << in_place_editor(commodity_category,'name')+" (#{show_counter_category(commodity_category,show)})</td>"
       table << "<td colspan='5'></td>"
       table << "<td colspan='3' class='commodity_category'><span class='commodity_category_#{commodity_category.id}_total'>#{show_categories_totals(commodity_category, show, 1)}</span> €</td>"
@@ -80,8 +80,8 @@ module CommoditiesManagerHelper
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
             table << "<td onkeydown ='refresh(this,event)'>"
-            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' /> " unless show_counter_category(category_child, show) == 0
-            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
+            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' onclick='develop(this.ancestors()[1])' /> " unless show_counter_category(category_child, show) == 0
+            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' title='D&eacute;rouler' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
             table << in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
             table << "<td colspan='4'></td>"
             table << "<td colspan='3' class='sub_commodity_category'><span class='sub_commodity_category_#{category_child.id}_total'>#{show_categories_totals(category_child, show)}</span> &euro;</td>"

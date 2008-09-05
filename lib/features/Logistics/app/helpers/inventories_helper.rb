@@ -55,8 +55,8 @@ module InventoriesHelper
       commodity_category = inventory.commodities_inventories.find(:first, :conditions => {:inventory_id => inventory.id, :parent_commodity_category_id => parent.first})
     
       structured_commodities << "<tr id='commodity_category_#{commodity_category.parent_commodity_category_id}' >"
-      structured_commodities << "<td><img id='commodity_category_#{commodity_category.parent_commodity_category_id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
-      structured_commodities << "<img id='commodity_category_#{commodity_category.parent_commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/> "
+      structured_commodities << "<td><img id='commodity_category_#{commodity_category.parent_commodity_category_id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
+      structured_commodities << "<img id='commodity_category_#{commodity_category.parent_commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])'/> "
       structured_commodities << "#{commodity_category.parent_commodity_category_name} (#{count_commodities(inventory, commodity_category, 1)})</td>"
       structured_commodities << "<td colspan='11'></td>"
       structured_commodities << "<td class='commodity_category'><span class='commodity_category_#{commodity_category.parent_commodity_category_id}_total'>#{show_total(inventory,commodity_category,1)}</span> &euro;</td>"
@@ -66,8 +66,8 @@ module InventoriesHelper
         
         structured_commodities << "<tr id='commodity_category_#{sub_commodity_category.commodity_category_id}' class='commodity_category_#{commodity_category.parent_commodity_category_id}' >"
         structured_commodities << "<td></td>"
-        structured_commodities << "<td><img id='commodity_category_#{sub_commodity_category.commodity_category_id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' /> "
-        structured_commodities << "<img id='commodity_category_#{sub_commodity_category.commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
+        structured_commodities << "<td><img id='commodity_category_#{sub_commodity_category.commodity_category_id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' /> "
+        structured_commodities << "<img id='commodity_category_#{sub_commodity_category.commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
         structured_commodities << "#{sub_commodity_category.commodity_category_name} (#{count_commodities(inventory, sub_commodity_category)})</td>"
         structured_commodities << "<td colspan='10'></td>"
         structured_commodities << "<td class='sub_commodity_category'><span class='sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total' >#{show_total(inventory,sub_commodity_category)}</span> &euro;</td>"
