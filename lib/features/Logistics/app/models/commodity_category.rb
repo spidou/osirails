@@ -9,7 +9,7 @@ class CommodityCategory < ActiveRecord::Base
   
   # Name Scope
   named_scope :activates, :conditions => {:enable => true}
-  named_scope :root,  :order => 'name', :conditions => {:enable => true, :commodity_category_id => nil}
+  named_scope :root, :conditions => {:enable => true, :commodity_category_id => nil}
   named_scope :root_child, :conditions => 'commodity_category_id is not null and enable is true'
   
   # Validates

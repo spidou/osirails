@@ -22,8 +22,7 @@
     </p>
 
       <p>
-<% puts params[:id] %>
-        <label id='commodity_unit_measure'><%= params[:id] != nil ? show_parent_measure(params[:id]) : show_parent_measure(@commodity_category_id) %></label>
+        <%= params[:id].to_i == -1 ? "<label id='commodity_unit_measure'>#{@unit_measure.symbol} / U :</label>" : "<label id='commodity_unit_measure'>#{params[:id] != nil ? show_parent_measure(params[:id]) : show_parent_measure(@commodity_category_id)}</label>"%>
       <%= commodity.text_field :measure %>
     </p> 
   

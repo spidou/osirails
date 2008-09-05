@@ -2,11 +2,12 @@ class CommoditiesController < ApplicationController
     
   # GET /commodities/new
   def new
-    @commodity = Commodity.new(:commodity_category_id => params[:id])
+    @commodity = Commodity.new(:commodity_category_id => params[:id]) unless params[:id] == -1
     @categories = CommodityCategory.root_child
     @suppliers = Supplier.find(:all)
-    commodity_category = CommodityCategory.find(params[:id])
-    @unit_measure = UnitMeasure.find(commodity_category.unit_measure_id)
+    commodity_category = CommodityCategory.find(params[:id]) unless params[:id].to_i == -1
+    @unit_measure = UnitMeasure.find(:first)
+    @unit_measure = UnitMeasure.find(commodity_category.unit_measure_id) unless params[:id].to_i == -1
   end
   
   # POST /commodities

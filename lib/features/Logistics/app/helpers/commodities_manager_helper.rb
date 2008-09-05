@@ -62,8 +62,8 @@ module CommoditiesManagerHelper
       status = commodity_category.enable ? "enable" : "disable" if show == nil
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
-      table << "<td><img id='commodity_category_#{commodity_category.id}_develop' src='/images/develop_button_16x16.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' style='display: none;'/>"
-      table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button_16x16.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/>" unless commodity_category.children.size == 0
+      table << "<td onkeydown ='refresh(this,event)'><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
+      table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])'/> " unless commodity_category.children.size == 0
       table << in_place_editor(commodity_category,'name')+" (#{show_counter_category(commodity_category,show)})</td>"
       table << "<td colspan='5'></td>"
       table << "<td colspan='3' class='commodity_category'><span class='commodity_category_#{commodity_category.id}_total'>#{show_categories_totals(commodity_category, show, 1)}</span> €</td>"
@@ -79,9 +79,9 @@ module CommoditiesManagerHelper
           
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
-            table << "<td>"
-            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/develop_button_16x16.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' />" unless show_counter_category(category_child, show) == 0
-            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_16x16.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' />"
+            table << "<td onkeydown ='refresh(this,event)'>"
+            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/add_10x10.png' alt='R&eacute;' onclick='develop(this.ancestors()[1])' /> " unless show_counter_category(category_child, show) == 0
+            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='R&eacute;' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
             table << in_place_editor(category_child,'name')+"(#{show_counter_category(category_child,show)})</td>"
             table << "<td colspan='4'></td>"
             table << "<td colspan='3' class='sub_commodity_category'><span class='sub_commodity_category_#{category_child.id}_total'>#{show_categories_totals(category_child, show)}</span> &euro;</td>"
@@ -100,11 +100,11 @@ module CommoditiesManagerHelper
                   table << "<tr id='commodity_#{commodity.id}' class='commodity_category_#{category_child.id} commodity_category_#{commodity_category.id} #{status}' style='display: none;'>"
                   table << "<td colspan='2'></td>"
                   table << "<td>#{supplier.name}</td>" #FIXME Add Cities
-                  table << "<td>"+in_place_editor(commodity,'name')+"</td>"
-                  table << "<td>"+in_place_editor(commodity,'measure')+" (#{unit_measure.symbol})</td>"
-                  table << "<td>"+in_place_editor(commodity,'unit_mass')+"kg</td>"
-                  table << "<td>"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
-                  table << "<td>"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
+                  table << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(commodity,'name')+"</td>"
+                  table << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(commodity,'measure')+" (#{unit_measure.symbol})</td>"
+                  table << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(commodity,'unit_mass')+"kg</td>"
+                  table << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(commodity,'fob_unit_price')+" €/#{unit_measure.symbol}</td>"
+                  table << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(commodity,'taxe_coefficient')+" %</td>"
                   table << "<td><span id='commodity_#{commodity.id}_price' class='total commodity_category_#{commodity_category.id}_total sub_commodity_category_#{category_child.id}_total'>#{commodity.fob_unit_price + (commodity.fob_unit_price * commodity.taxe_coefficient)/100}</span> €/#{unit_measure.symbol}</td>"
                   table << "<td>"+link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'})+"</td>" unless show == nil and commodity.enable == false
                   table << "</tr>"

@@ -1,8 +1,14 @@
 <% content_for :secondary_menu do %>
+    <h1><span class="gray_color">Statistiques</span></h1>
+    <ul>
+      <li><%= "<strong>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</strong>"%></li>
+      <li><%= @inventory_closed.size == 0 ? "<strong>Il n'y a pas d'inventaire en cours</strong>" : "Il y a 1 inventaire en cours" %></li>
+    </ul>
+  
   <h1><span class="gray_color">Action</span></h1>
-  <ul><li>
-      <%= link_to("<img alt='&Eacute;tablir un nouvel inventaire' src='/images/add_16x16.png?1220437164' title='&Eacute;tablir un nouvel inventaire' />&Eacute;tablir un nouvel inventaire", new_inventory_path)%>
-    </li></ul>
+  <ul>
+      <li><%= link_to("<img alt='&Eacute;tablir un nouvel inventaire' src='/images/add_16x16.png?1220437164' title='&Eacute;tablir un nouvel inventaire' /> &Eacute;tablir un nouvel inventaire", new_inventory_path)%></li>
+</ul>
   <% end %>
   <h1>Liste des inventaires</h1>
   <div class='frame'>
@@ -15,13 +21,13 @@
         <th>Action</th>
       </tr>
       <% for inventory in @inventories %>
-        <tr>
+      <%= inventory.closed ? "<tr>" : "<tr class='current_inventory'>" %>
           <td><%= inventory.id %></td>
           <td><%= get_structured_date(inventory) %></td>
           <td><%= show_last_update(inventory) %></td>
           <td><%= inventory.closed ? "Terminé" : "En cours" %>
           <td><%= link_to("D&eacute;tails", inventory_path(inventory)) %></td>
-        </tr>
+        <%= "</tr>"%>
       <% end %>
     </table>
   </div>

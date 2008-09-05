@@ -3,6 +3,7 @@ class InventoriesController < ApplicationController
     # GET /inventories
   def index
     @inventories = Inventory.find(:all, :order => 'id').reverse
+    @inventory_closed = Inventory.find_all_by_closed(false)
   end
   
     # GET /inventories/1
