@@ -33,10 +33,23 @@ class Employee < ActiveRecord::Base
   end
   
   def pattern(val,obj)
-    retour = "" 
+    retour = ""
+    open = 0 
     # verify if opened [ are closed with ]
-     return "pattern invalide : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
-
+    
+    return "pattern invalide : <br/>- Vous devez fermer les []!!" unless val.count("[") == val.count("]")
+    
+    (0..val.size).each do |i|
+      return "pattern invalide : <br/>- Vous ne devez pas utiliser "+'#'+'{}' if val[i..i+1] == '#{'
+      return "pattern invalide : <br/>- Vous ne devez pas utiliser |" if val[i..i] == "|"
+      unless open == 2
+        open += 1 if val[i..i] == "[" 
+        open -= 1 if val[i..i] == "]"
+      else
+        return "pattern invalide : <br/>- Vous devez fermer le premier [] avant d'ouvrir le second"
+      end
+    end
+    
     val = val.gsub(/\[/,"|")
     val = val.gsub(/\]/,"|")
     val = val.split("|")
@@ -47,35 +60,41 @@ class Employee < ActiveRecord::Base
       else
         tmp = val[i].split(",")
         # verify if opt is an integer
-        if tmp.size>1
-          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if tmp[1].to_i==0 
+        if tmp.size>2
+           return "pattern invalide : <br/>- trop de virgules dans le pattern, une seule au maximum pour ajouter une Option"
+        elsif tmp.size>1
+          return "pattern invalide : <br/>- Option [ " + tmp[1] + " ] invalide " if tmp[1].to_i==0
         end
-        txt = tmp[0].downcase
-        # verify if attr is valid
-        if obj.respond_to?(txt)  
-          if tmp.size==2
-            for j in (1...tmp.size)             
-                if tmp[0]==tmp[0].upcase
-                  tmp[0].downcase!
-                  txt = obj.send(tmp[0])[0...tmp[1].to_i]
-                  retour += txt.upcase
-                else
-                  txt = obj.send(tmp[0])[0...tmp[1].to_i].gsub(/\x20/,"_")
-                  retour += txt.downcase
-                end 
-            end 
-          else
-            tmp = val[i].downcase
-            txt = obj.send(tmp).gsub(/\x20/,"_")
-            if val[i] == val[i].upcase
-              retour += txt.upcase
+        unless tmp[0].blank?
+          txt = tmp[0].downcase
+          # verify if attr is valid
+          if obj.respond_to?(txt)  
+            if tmp.size==2
+              for j in (1...tmp.size)             
+                  if tmp[0]==tmp[0].upcase
+                    tmp[0].downcase!
+                    txt = obj.send(tmp[0])[0...tmp[1].to_i]
+                    retour += txt.upcase
+                  else
+                    txt = obj.send(tmp[0])[0...tmp[1].to_i].gsub(/\x20/,"_")
+                    retour += txt.downcase
+                  end 
+              end 
             else
-              retour += txt.downcase
+              tmp = val[i].downcase
+              txt = obj.send(tmp).gsub(/\x20/,"_")
+              if val[i] == val[i].upcase
+                retour += txt.upcase
+              else
+                retour += txt.downcase
+              end
             end
+          else
+             return "pattern invalide : <br/>- Attribut ["+ tmp[0] +"] invalide"
           end
         else
-           return "pattern invalide : <br/>- Attribut ["+ tmp[0] +"] invalide"
-        end
+          return "pattern invalide : <br/>- Vous devez ajouter au minimum l'Attribut dans les [] ou les echapper "  
+        end  
       end
     end
       return retour.to_s
