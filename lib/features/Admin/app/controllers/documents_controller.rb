@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
   
   
   def update
-    @document = Document.find(params[:document_id])
+    @document = Document.find(params[:id])
     unless params[:upload][:datafile].blank?
       
       ## Store possible extensions
@@ -68,8 +68,7 @@ class DocumentsController < ApplicationController
       else
         @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)      
         
-        params[:document_version][:name] = @document.name if params[:document_version][:name].blank?
-        @document.update_attributes(params[:document_version])          
+        @document.update_attributes(params[:document])          
         @document.document_versions << @document_version
         @document_version.create_thumbnails
       end      
@@ -81,7 +80,7 @@ class DocumentsController < ApplicationController
       render :action => "edit"
     else
       flash[:notice] = "Fichier upload&eacute; avec succ&egrave;s"
-      redirect_to document_path(@document)
+      redirect_to [@document.has_document, @document]
     end
   end
   

@@ -1,3 +1,4 @@
+<!-- Use by ligthbox -->
 <% content_for :header do %>
        <%= stylesheet_link_tag 'lightbox' %>
 <% end %>
@@ -17,7 +18,7 @@
 
   <p>
     <%if @document.extension == "jpg"%>
-
+        
         <%if @document.document_versions.empty?%>        
           <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
         <%else%>
@@ -46,13 +47,12 @@
         <%if @document.document_versions.first == document_version%>
           <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
         <%else%>
-          id <%= document_version.id%>
           <%= lightbox_image_tag(url_for(:controller => "document_versions", :action => "thumbnail", :id => document_version.id), url_for(:controller => "document_versions",:action => "preview_image", :id => document_version.id))%>
         <%end%>
           
         <%end%>   
           <%= link_to("download", :controller => "Downloads", :action => "show", 
-        :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => "Document"} : {:id => document_version.id, :type => "DocumentVersion"} ))%>
+        :document => (@document.document_versions.first == document_version ? {:id => @document.id, :type => @document.class.name} : {:id => document_version.id, :type => document_version.class.name} ))%>
              
         </div>
         

@@ -1,4 +1,7 @@
 class Document < ActiveRecord::Base
+  
+  include Permissible
+  
   belongs_to :file_type
   has_many :document_versions
   belongs_to :has_document, :polymorphic => true
@@ -6,7 +9,7 @@ class Document < ActiveRecord::Base
   attr_accessor :models
   attr_accessor :image_extensions
   
-  acts_as_taggable
+#  acts_as_taggable
   
   @image_extensions = ["jpg", "jpeg","png","gif"]
   @models = []

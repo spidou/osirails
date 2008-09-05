@@ -1,4 +1,5 @@
 module DocumentsHelper
+  
   def get_document_form(owner)
     if Document.can_have_document(owner.class.name)
       document = Document.new()
@@ -19,7 +20,7 @@ module DocumentsHelper
   
   def link_download_last_version(document)
     link_to("download", :controller => "Downloads", :action => "show", 
-        :document => (document.document_versions.empty? ? {:id => document.id, :type => "Document"} :  {:id => document.document_versions.size + 1, :type => "DocumentVersion"} ))
+        :document => (document.document_versions.empty? ? {:id => document.id, :type => "Document"} :  {:id => document.id, :type => "Document", :last => true} ))
   end
   
 end

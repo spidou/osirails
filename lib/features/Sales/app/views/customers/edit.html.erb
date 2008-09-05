@@ -95,7 +95,9 @@
     <h2>Liste des documents</h2>
     <% for document in @customer.documents%>
       <br/>
-      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png")%><%= link_to document.name, :controller => "documents", :action => "show", :id => document.id%>
+      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png")%><%= link_to document.name, customer_document_path(@customer, document)%>
+      
+      <%# link_to document.name, :controller => "documents", :action => "show", :id => document.id%>
       <%= link_download_last_version(document) %>
   <%end%>
   </div>
