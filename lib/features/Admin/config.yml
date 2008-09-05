@@ -46,21 +46,26 @@ menus:
         description: Gestion des permissions
         position: 7
         children:
-          business_object_permissions:
-            title: Business Objects permissions
-            description: Gestion des permissions des business objects
-          menu_permissions:
-            title: Menu permissions
-            description: Gestion des permissions des menus
           role_permissions:
-            title: Role permissions
-            description: Gestion des permissions des roles
+            title: Rôles
+            description: Gestion des permissions en fonction des rôles
+            position: 1
+          business_object_permissions:
+            title: Objets métiers
+            description: Gestion des permissions en fonction des objets métiers
+            position: 2
+          menu_permissions:
+            title: Menus
+            description: Gestion des permissions en fonction des menus
+            position: 3
           document_permissions:
-            title: Document permissions
-            description: Gestion des permissions des documents
+            title: Types de document
+            description: Gestion des permissions en fonction des types de documents
+            position: 4
           calendar_permissions:
-            title: Calendrier permissions
-            description: Gestion des permissions des calendriers
+            title: Plannings
+            description: Gestion des permissions en fonction des plannings
+            position: 5
       society_configurations:
         title: Configuration de l'entreprise
         description: Gestion de la configuration de l'entreprise

@@ -43,7 +43,7 @@ module ProductReferenceManagerHelper
   
   # display (or not) the add button for product reference
   def show_add_button_for_product_reference(category)
-    link_to(image_tag("/images/reference16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence', :title => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)  
+    link_to(image_tag("/images/reference_16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence', :title => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)  
   end
   
   # display (or not) the edit button for product reference
@@ -68,7 +68,7 @@ module ProductReferenceManagerHelper
   # display (or not) the add button for product reference category
   def show_add_button_for_product_reference_category(category)
     if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
-      link_to(image_tag("/images/category16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie') , new_product_reference_category_path(:id => category.id) )
+      link_to(image_tag("/images/category_16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie') , new_product_reference_category_path(:id => category.id) )
     end
   end
   

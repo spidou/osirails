@@ -64,7 +64,7 @@ module ApplicationHelper
     menu = current_menu
     menu.self_and_siblings.each do |m|
       selected = ( m == menu ? "class=\"selected\"" : "" )
-      html << "<li #{selected}>" + link_to(m.title, url_for_menu(m)) + "</li>"
+      html << "<li #{selected} title=\"#{m.description}\">" + link_to(m.title, url_for_menu(m)) + "</li>"
     end
     html << "</ul></div>"
   end

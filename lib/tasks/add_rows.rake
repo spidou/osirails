@@ -259,12 +259,12 @@ namespace :osirails do
       
       # default employees
       john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
-      john.iban = iban
       number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
       number2 = Number.create :number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id
       john.numbers << [number1,number2]
       john.address = Address.create :address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400"
       john.save
+      john.iban = iban
     end
     
 

@@ -1,9 +1,8 @@
-<h1>Fiche de <%=h @employee.civility.name unless @employee.civility.nil?%> <%=h @employee.last_name%> <%=h @employee.first_name%></h1>
-
+<h1>Informations d'un employ&eacute;</h1>
 
 <%if @list==true%>
   <div class="frame">
-  <h2>Fiche d'identité</h2>
+    <h2>Fiche d'identité</h2>
     <p>
       <b>Civilité :</b>
       <%=h @employee.civility.name unless @employee.civility.nil?%>
@@ -27,7 +26,7 @@
   </div>
 
   <div class="frame">
-  <h2>Fiche de poste</h2>  
+    <h2>Fiche de poste</h2>  
     <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
       <%for service in @employee.services%>
         <p>
@@ -109,7 +108,7 @@
   <div class="frame">
   <h2>Identité Bancaire</h2>
     <p>
-      <b>banque :</b>
+      <b>Nom de la banque :</b>
       <%=h @iban.bank_name %>
     </p>
     <p>
