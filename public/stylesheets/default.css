@@ -7,7 +7,7 @@ Description : feuille de style de la page d'index contenant la mise
 en forme du site (menus, en-têtes, pied de page...).
 ---------------------------------------------------------------------
 				..::Powered by Oxydium::..
-creation : July/October 20008
+creation : July/October 2008
 ---------
 Description: stylesheet of the index page containing the layout's site 
 (menus, headers, footers ...).
@@ -398,36 +398,13 @@ a.button_banner:hover span {
 	right:8px;
 }
 
-#secondary_menu ul {
-	display:block;
-	list-style-type: none;
-	padding:0;
-}
-
-
-#secondary_menu ul li {
-	padding: 10px 10px 10px 0px;
-	text-decoration: none;
-	text-indent:0px;
-	margin-left:10px;
-}
-
-#secondary_menu ul li a {
-	color: #444;
-}
-
-#secondary_menu a:hover {
-	color: rgb(234,136,28);
-}
-
-#secondary_menu h1 {
+#content_secondary_menu h1 {
 	background: url("../images/background_secondary_menu_header.jpg") repeat-x;
 	height:36px;
 	line-height: 36px;
 	text-indent: 0;
 	text-align: center;
 	margin-top:0;
-	margin-bottom:10px;
 	font-family: verdana, sans-serif;
 	font-weight:lighter;
 	font-size:1.1em;
@@ -442,8 +419,51 @@ a.button_banner:hover span {
 	margin-left: 5px;
 }
 
-#content_secondary_menu ul li aimg {
-	text-decoration:none !important;
+#content_secondary_menu ul {
+	list-style-type: none;
+	padding:0;
+//	margin:-5px 0 -5px 0;
+}
+
+ul.center_list {
+//	margin-left:auto;
+//	margin-right:auto;
+//	margin:0 1px 0 1px;
+	text-align:center;
+//	width:80%;
+	text-indent:0;
+}
+
+ul.center_list li {
+	padding-left:6px;
+}
+
+#content_secondary_menu ul li {
+	padding: 5px;
+	text-decoration: none;
+	text-indent:0px;
+	margin-top:-6px;
+	margin-bottom:-6px;
+}
+
+#content_secondary_menu ul li a {
+	text-decoration:none ;
+	color: #CA7E21;/*444*/
+}
+
+#content_secondary_menu a:hover {
+	color: #596B8E;/*rgb(234,136,28)*/
+}
+
+#content_secondary_menu ul li a img {
+	position:relative;
+	top:4px;
+}
+
+#content_secondary_menu p {
+	margin-left:10px;
+	margin-right:10px;
+	text-align:justify;
 }
 
 /*
@@ -477,7 +497,7 @@ img.del_icon {
 }
 
 .help {
-	font-size:0.8em;
+	font-size:0.7em;
 	color:#444;
 	margin-right:5px;
 }
@@ -959,7 +979,7 @@ caption.no-style {
 
 table.no-style {
 	border-collapse: collapse;
-	border:solid 1px 333;
+	border:solid 1px #333;
 	background: none;
 	text-align:center;
 	width:inherit;
