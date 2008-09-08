@@ -1,4 +1,5 @@
 class Commodity < ActiveRecord::Base
+    include Permissible
   
   # Relationship
   belongs_to :commodity_category, :counter_cache => true
@@ -18,13 +19,11 @@ class Commodity < ActiveRecord::Base
   def counter_update(value = -1)
     parent = CommodityCategory.find(self.commodity_category_id)
     CommodityCategory.update_counters(parent.id, :commodities_count => value)
-    #    grand_parent = CommodityCategory.find(parent.commodity_category_id)
-    #    CommodityCategory.update_counters(grand_parent.id, :commodities_count => value)
   end
   
   # Check if a resource can be destroy or disable
   def can_destroy?
-    #FIXME files (dossier)
+    #FIXME commande
     false
   end
   

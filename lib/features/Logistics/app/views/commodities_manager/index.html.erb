@@ -1,6 +1,5 @@
 <% content_for :header do %>
   <script type="text/javascript" src="/javascripts/logisctic/price_calculator.js"></script>
-  <script type="text/javascript" src="/javascripts/logisctic/refresh.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/reduce.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/develop.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
@@ -10,27 +9,20 @@
 
   <h1><span class='gray_color'>Statistiques</span></h1>
   <ul>
-    <li><%= "Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}" %></li>
-    <li><%= "Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}" %></li>
-    <li><%= "Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}"%></li>
+    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %></li>
+    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %></li>
+    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%></li>
     </ul>
 <span class='total' style='display: none;'></span>
 <span id='total_ttc' style='display: none;'></span>
-  <h1><span class='gray_color'>Actions</span></h1>
-  <ul>
-    <li><%= link_to("<img alt='Nouvelle cat&eacute;gorie' src='/images/add_16x16.png?1220437164' title='Nouvelle cat&eacute;gorie' /> Nouvelle cat&eacute;gorie", new_commodity_category_path) %></li>
-    <li><%= link_to("<img alt='Nouvelle mati&egrave;re premi&egrave;re' src='/images/add_16x16.png?1220437164' title='Nouvelle mati&egrave;re premi&egrave;re' /> Nouvelle mati&egrave;re premi&egrave;re", new_commodity_path(:id => -1)) %></li>
-    <li><%= @type != "show_all" ? link_to("Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("Affich&eacute; Actifs", :action => "index") %></li>
-  </ul>
 
-  <h1><span class='gray_color'>Liens</span> <span class='blue_color'>Utiles</span></h1>
-  <ul>
-    <li><%= link_to("Visualiser la liste des inventaires", :controller => 'inventories', :action => 'index')%></li>
-      <%= "<li>#{link_to('Visualiser le dernier inventaire', :controller => 'inventories', :action => 'show', :id => @inventory.id)}</li>" unless @inventory.nil? %>
-      <li><%= link_to("&Eacute;tablir un nouvel inventaire", :controller => "inventories", :action => 'new')%></li>
-    </ul>
+<%= show_action_menu(@type) %>
+
+<%= show_link_menu(@inventory)%>
+
 <% end %>
 
+<% if @inventories.size > 0 %>
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
 <div class="frame">
   <table class="commodity">
@@ -52,3 +44,4 @@
     <%= @type != "show_all" ? get_structured : get_structured(nil) %>
   </table>
 </div>
+<% end %>

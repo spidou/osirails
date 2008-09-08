@@ -1,6 +1,5 @@
 <% content_for :header do %>
-  <script type="text/javascript" src="/javascripts/logisctic/totals_calculator.js"></script> 
-  <script type="text/javascript" src="/javascripts/logisctic/refresh.js"></script> 
+  <script type="text/javascript" src="/javascripts/logisctic/totals_calculator.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/reduce.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/develop.js"></script>
   <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
@@ -8,15 +7,11 @@
 <% content_for :secondary_menu do %>
 
   <h1><span class='gray_color'>Statistiques</span></h1>
-<ul><li>
-    <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span><br/>
-    <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%></span>
-</li></ul>
-
-  <h1><span class="gray_color">Action</span></h1>
-<ul><li>
-      <%= show_closed_button(@inventory)%>
-</li></ul>
+  <ul><li>
+      <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span><br/>
+      <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%></span>
+  </li></ul>
+        <%= show_closed_button(@inventory)%>
   <% end %>
 
   <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>

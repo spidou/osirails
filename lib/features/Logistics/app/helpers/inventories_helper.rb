@@ -2,7 +2,7 @@ module InventoriesHelper
   
   # This method permit to structured date
   def get_structured_date(inventory)
-    return inventory.created_at.strftime('%d %B %Y')
+    inventory.created_at.strftime('%d %B %Y')
   end
   
   
@@ -18,12 +18,41 @@ module InventoriesHelper
   
   # This method permit to show closed button
   def show_closed_button(inventory)
-    inventory.inventory_closed? ? image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;")+" Cl&ocirc;tur&eacute;" : link_to("Cl&ocirc;turer l'inventaire", {:id => inventory.id}, {:method => :put, :class => 'link_to_closed', :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"})
+    closed_button = []
+    if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)
+      closed_button <<  "<h1><span class='gray_color'>Action</span></h1>"
+      closed_button << "<ul><li>"
+      closed_button << (inventory.inventory_closed? ? image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;")+" Cl&ocirc;tur&eacute;" : link_to("Cl&ocirc;turer l'inventaire", {:id => inventory.id}, {:method => :put, :class => 'link_to_closed', :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"}))
+      closed_button << "</li></ul>"
+    end
+    closed_button
+  end
+  
+  # This method permit to show view button
+  def show_view_button(inventory)
+    if controller.can_view?(current_user) and Inventory.can_view?(current_user)
+      link_to("D&eacute;tails", inventory_path(inventory))
+    end
+  end
+  
+  # This method permit to show action menu
+  def show_action_menu
+    actions = []
+    if controller.can_add?(current_user) and Inventory.can_add?(current_user)
+    actions <<  "<h1><span class=\"gray_color\">Action</span></h1>"
+    actions << "<ul><li>"
+    actions << link_to("<img alt='&Eacute;tablir un nouvel inventaire' src='/images/add_16x16.png?1220437164' title='&Eacute;tablir un nouvel inventaire' /> &Eacute;tablir un nouvel inventaire", new_inventory_path(:type => 'inventory'))
+    actions <<  "</li></ul>"
+    end
+    actions
   end
   
   #  This method permit to add value of quantity
   def in_place_editor(inventory,commodity)
-    inventory.inventory_closed? ? "<span>#{commodity.quantity}</span>" : editable_content_tag(:span, commodity, "quantity", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelText => "", :okControl => false})
+    if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)
+      return inventory.inventory_closed? ? "<span>#{commodity.quantity}</span>" : editable_content_tag(:span, commodity, "quantity", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
+    end
+    "<span>#{commodity.quantity}</span>"
   end
   
   # This method permit to show category's total
@@ -85,7 +114,7 @@ module InventoriesHelper
           structured_commodities << "<td>#{commodity.fob_unit_price} &euro;/#{unit_measure.symbol}</td>"
           structured_commodities << "<td>#{commodity.taxe_coefficient} %</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_price'>#{commodity.fob_unit_price + ((commodity.fob_unit_price * commodity.taxe_coefficient)/100)}</span> &euro;/#{unit_measure.symbol}</td>"
-          structured_commodities << "<td onkeydown ='refresh(this,event)'>"+in_place_editor(inventory,commodity)+"</td>"
+          structured_commodities << "<td> #{in_place_editor(inventory,commodity)}</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_measure_total'>#{commodity.quantity * commodity.measure}</span> #{unit_measure.symbol}</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_unit_mass_total'>#{commodity.quantity * commodity.unit_mass}</span> kg</td>"
           structured_commodities << "<td><span id='commodities_inventory_#{commodity.id}_total' class='total commodity_category_#{commodity_category.parent_commodity_category_id}_total sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total'>#{(commodity.quantity * commodity.measure) * (commodity.fob_unit_price + ((commodity.fob_unit_price * commodity.taxe_coefficient)/100))}</span> &euro;</td>"

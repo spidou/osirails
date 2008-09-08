@@ -1,5 +1,6 @@
 class CommoditiesInventoriesController < ApplicationController
   
+  # PUT /commodities_inventories/1
   def update
     @commodity_inventory = CommoditiesInventory.find(params[:id])
     @inventory = Inventory.find(@commodity_inventory.inventory_id)

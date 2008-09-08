@@ -1,5 +1,6 @@
 class CommoditiesManagerController < ApplicationController
 
+  # GET /commodities_manager
   def index
     @type = params[:type]
     @commodities_categories_root = CommodityCategory.root

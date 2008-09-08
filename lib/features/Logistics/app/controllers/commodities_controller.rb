@@ -24,6 +24,7 @@ class CommoditiesController < ApplicationController
     end
   end
   
+  # PUT /commodities/1
   def update
     @commodity = Commodity.find(params[:id])
     respond_to do |format|

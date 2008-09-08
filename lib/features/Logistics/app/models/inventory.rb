@@ -1,5 +1,6 @@
 class Inventory < ActiveRecord::Base
-  
+  include Permissible
+    
   # Relationship
   has_many :commodities_inventories
   has_many :commodities, :through => :commodities_inventories
@@ -9,7 +10,8 @@ class Inventory < ActiveRecord::Base
     commodities.each do |commodity|
       commodity_category = CommodityCategory.find(commodity.commodity_category_id)
       parent_commodity_category = CommodityCategory.find(commodity_category.commodity_category_id)
-      self.commodities_inventories.create({:name => commodity.name,
+      self.commodities_inventories.create({
+          :name => commodity.name,
           :fob_unit_price => commodity.fob_unit_price,
           :taxe_coefficient => commodity.taxe_coefficient,
           :measure => commodity.measure,

@@ -527,6 +527,9 @@ Ajax.InPlaceEditor = Class.create({
       link.appendChild(document.createTextNode(text));
       link.onclick = 'cancel' == mode ? this._boundCancelHandler : this._boundSubmitHandler;
       link.className = 'editor_' + mode + '_link';
+      // Hacked by Pentoo
+      link.title = 'Annuler la modification'
+      link.alt = 'Annuler'
       if (extraClasses)
         link.className += ' ' + extraClasses;
       this._form.appendChild(link);

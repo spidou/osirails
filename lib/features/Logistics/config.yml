@@ -3,27 +3,30 @@ version: 0.1
 dependencies:
 conflicts:
 business_objects:
+  - Inventory
+  - Commodity
+  - CommodityCategory
 menus:
   logistics:
     title: Logistique
     description: Gestion de la logistique
     children:
       inventories:
-       title: Gestion des Stocks
+       title: Gestion des inventaires
        description: Permet la gestion des stocks
        position: 2
        children:
         commodities_inventories:
-          title: Gestion des Stocks
+          title: Gestion des matières premières des inventaires
           description: Permet la gestion des stocks au niveau des matières premières
       commodities_manager:
-        title: Gestion matières premières
+        title: Gestion des matières premières
         description: Permet la gestion des familles et des matières premières
         position: 1
         children:
           commodity_categories:
-            title: Gestion des catégories de matières premières
+            title: Catégories de matières premières
             description: Permet la gestion des categories de matières premières
           commodities:
-            title: Gestion des matières premières
+            title: Matières premières
             description: Permet la gestion des matières premières

@@ -22,7 +22,8 @@ class CommodityCategoriesController < ApplicationController
     end
   end
     
-  def update #TODO Régler le probleme du validates prensence avec le in line
+  # PUT /commodity_categories/1
+  def update
     @commodity_category = CommodityCategory.find(params[:id])
     respond_to do |format|
       if params[:commodity_category][:name] != "" and @commodity_category.update_attributes(params[:commodity_category])
