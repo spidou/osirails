@@ -2,7 +2,6 @@ module InventoriesHelper
   
   # This method permit to structured date
   def get_structured_date(inventory)
-    form = inventory.created_at
     return inventory.created_at.strftime('%d %B %Y')
   end
   
@@ -24,7 +23,7 @@ module InventoriesHelper
   
   #  This method permit to add value of quantity
   def in_place_editor(inventory,commodity)
-    inventory.inventory_closed? ? "<span>#{commodity.quantity}</span>" : editable_content_tag(:span, commodity, "quantity", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true})
+    inventory.inventory_closed? ? "<span>#{commodity.quantity}</span>" : editable_content_tag(:span, commodity, "quantity", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelText => "", :okControl => false})
   end
   
   # This method permit to show category's total
@@ -66,8 +65,8 @@ module InventoriesHelper
         
         structured_commodities << "<tr id='commodity_category_#{sub_commodity_category.commodity_category_id}' class='commodity_category_#{commodity_category.parent_commodity_category_id}' >"
         structured_commodities << "<td></td>"
-        structured_commodities << "<td><img id='commodity_category_#{sub_commodity_category.commodity_category_id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' /> "
-        structured_commodities << "<img id='commodity_category_#{sub_commodity_category.commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])' style='display: none;' /> "
+        structured_commodities << "<td><img id='commodity_category_#{sub_commodity_category.commodity_category_id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> "
+        structured_commodities << "<img id='commodity_category_#{sub_commodity_category.commodity_category_id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])' /> "
         structured_commodities << "#{sub_commodity_category.commodity_category_name} (#{count_commodities(inventory, sub_commodity_category)})</td>"
         structured_commodities << "<td colspan='10'></td>"
         structured_commodities << "<td class='sub_commodity_category'><span class='sub_commodity_category_#{sub_commodity_category.commodity_category_id}_total' >#{show_total(inventory,sub_commodity_category)}</span> &euro;</td>"
@@ -77,7 +76,7 @@ module InventoriesHelper
           unit_measure = UnitMeasure.find(commodity.unit_measure_id)
           supplier = Supplier.find(commodity.supplier_id)
       
-          structured_commodities << "<tr id='commodities_inventory_#{commodity.id}' class='commodity_category_#{sub_commodity_category.commodity_category_id} commodity_category_#{commodity_category.parent_commodity_category_id}' style='display: none;'>"
+          structured_commodities << "<tr id='commodities_inventory_#{commodity.id}' class='commodity_category_#{sub_commodity_category.commodity_category_id} commodity_category_#{commodity_category.parent_commodity_category_id}'>"
           structured_commodities << "<td colspan='2'></td>"
           structured_commodities << "<td>#{supplier.name}</td>" #FIXME  Add cities
           structured_commodities << "<td>#{commodity.name}</td>"
