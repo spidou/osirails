@@ -8,11 +8,9 @@ div.calendar {
 
 .calendar,
 .calendar table {
-/*	border: 1px solid #556;	*/	
 	font-size: 11px;
 	color: #000;
 	cursor: default;
-/*	background: #eef;	*/
 	font-family: tahoma,verdana,sans-serif;
 }
 
@@ -45,7 +43,6 @@ div.calendar {
 }
 
 .calendar thead .name { /* Cells <TD> containing the day names */
-	border-bottom: 1px solid #333;
 	padding: 2px;
 	text-align: center;
 	color:#000;
@@ -58,7 +55,6 @@ div.calendar {
 .calendar thead .hilite { /* How do the buttons in header appear when hover */
   background-color: #596B8E;
   color: #000;
-  border: 1px solid #04f;
   padding: 1px;
 }
 
@@ -85,7 +81,6 @@ div.calendar {
 
 .calendar table .wn {
   padding: 2px 3px 2px 2px;
-  border-right: 1px solid #000;
   background: #7E98CB;
 }
 
@@ -96,14 +91,12 @@ div.calendar {
 .calendar tbody .rowhilite td.wn {
 	background: #3F375C;
 	color:white;
-	border:solid 1px white;
 }
 
 .calendar tbody td.hilite { /* Hovered cells <TD> */
 	background: #36415C;//rgb(234,136,28);
   	color:#aeaeae;
 	padding: 1px 3px 1px 1px;
-	border: 1px solid #F69825;
 }
 
 .calendar tbody td.active { /* Active (pressed) cells <TD> */
@@ -113,7 +106,6 @@ div.calendar {
 
 .calendar tbody td.selected { /* Cell showing today date */
   font-weight: bold;
-  border: 1px solid #000;
   padding: 1px 3px 1px 1px;
   background: #fff;
   color: #000;
@@ -149,13 +141,11 @@ div.calendar {
 .calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
   background: #fff;
   color: #445;
-  border-top: 1px solid #556;
   padding: 1px;
 }
 
 .calendar tfoot .hilite { /* Hover style for buttons in footer */
   background: #aaf;
-  border: 1px solid #04f;
   color: #000;
   padding: 1px;
 }
@@ -174,7 +164,6 @@ div.calendar {
   left: 0px;
   width: 4em;
   cursor: default;
-  border: 1px solid #655;
   background: #def;
   color: #000;
   font-size: 90%;
@@ -196,14 +185,11 @@ div.calendar {
 }
 
 .calendar .combo .active {
-  border-top: 1px solid #46a;
-  border-bottom: 1px solid #46a;
   background: #eef;
   font-weight: bold;
 }
 
 .calendar td.time {
-  border-top: 1px solid #000;
   padding: 1px 0px;
   text-align: center;
   background-color: #f4f0e8;
@@ -213,7 +199,6 @@ div.calendar {
 .calendar td.time .minute,
 .calendar td.time .ampm {
   padding: 0px 3px 0px 4px;
-  border: 1px solid #889;
   font-weight: bold;
   background-color: #fff;
 }
@@ -228,13 +213,11 @@ div.calendar {
 }
 
 .calendar td.time span.hilite {
-  border-color: #000;
   background-color: #667;
   color: #fff;
 }
 
 .calendar td.time span.active {
-  border-color: #f00;
   background-color: #000;
   color: #0f0;
 }
