@@ -58,16 +58,19 @@ class ApplicationController < ActionController::Base
       permissions_path
     end
 
-  private
     # Called when an user try to acces to an unauthorized page
-    def unauthorized_action(status = nil)
+    def error_access_page(status = nil)
       case status
       when 422
         render :file => "#{RAILS_ROOT}/public/422.html", :status => "422"
+      when 403
+        render :file => "#{RAILS_ROOT}/public/403.html", :status => "403"
       else
         render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
       end
     end
+
+  private
 
     # Do every verification before shows the page
     def authenticate
@@ -85,23 +88,23 @@ class ApplicationController < ActionController::Base
           case params[:action]
           when *['index'] + ($permission[controller_path][:list] || [])
             unless can_list?(current_user)
-              unauthorized_action
+              error_access_page
             end
           when *['show'] + ($permission[controller_path][:view] || [])
             unless can_view?(current_user)
-              unauthorized_action
+              error_access_page
             end
           when *['add', 'create'] + ($permission[controller_path][:add] || [])
             unless can_add?(current_user)
-              unauthorized_action(422)
+              error_access_page(422)
             end
           when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
             unless can_edit?(current_user)
-              unauthorized_action(422)
+              error_access_page(422)
             end
           when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
             unless can_delete?(current_user)
-              unauthorized_action(422)
+              error_access_page(422)
             end
           end # case
         end # if
