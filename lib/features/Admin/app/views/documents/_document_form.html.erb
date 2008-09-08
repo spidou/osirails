@@ -1,5 +1,4 @@
-<div class="frame">
-  <h2>Uploader un document</h2>
+  <h3>Uploader un document</h3>
   <% form_for(:document, document, :url => { :controller => "Documents", :action => "create" , :owner => {:owner_id => owner.id, :owner_model => owner.class.name}}, :html => { :multipart => true}) do |d| %>
     
     <p>
@@ -16,7 +15,12 @@
       <%= d.label :file_type_id, "Type de fichier"%>
       <%= get_file_type_select(d, owner.class.name)%>
     </p>
-
+    
+    <p>
+        <%= d.label :tag_list, "Tags"%>
+        <%= d.text_field :tag_list%>
+    </p>
+    
     <p>
       <%= label :file, "Fichier"%>
       <%= file_upload%>
@@ -30,5 +34,3 @@
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
       :with => "'file_type_id=' +value"%>
-
-</div>
