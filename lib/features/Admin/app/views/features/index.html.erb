@@ -2,7 +2,8 @@
 
 <%= display_success_flash %>
 <%= display_failure_flash %>
-
+<div class="frame">
+<h2>Modules</h2>
 <table id="feature_managment">
 	<tr>
 		<th>Nom</th>
@@ -26,12 +27,15 @@
 </table>
 
 <br />
-<div class="frame">
+
 <h2>Ajout d'un module</h2>
 <p>Format accepté: .tar.gz
   <%= form_tag({:action => 'add_feature'}, :multipart => true) %>
-</p>
+
 <%= file_upload %>
-</div>
+</p>
+<p>
 <%= submit_tag "Ajouter" %>
+</p>
+</div>
 </form>
