@@ -1,6 +1,6 @@
 class  ActAsFileRoute
   def self.add_routes_to(map)
-    
+     
     ### DOCUMENTS_VERSION
    
     
