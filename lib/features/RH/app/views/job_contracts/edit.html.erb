@@ -1,7 +1,7 @@
 <h1>Modifier le contrat de travail de <%=@employee.fullname%> </h1>
 
 
-<% form_for(@job_contract) do |f| %>
+<% form_for([:employee,@job_contract]) do |f| %>
   <%=f.error_messages%> 
   
   <div class="frame">
@@ -25,8 +25,7 @@
     <%= f.label :job_contract_type_id, "Type de contrat de l'employée :"%>
     <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
   </p>
-  </div>
-  <div class="frame">
+
   <h2>Salaire :</h2>
   <p>
     <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>

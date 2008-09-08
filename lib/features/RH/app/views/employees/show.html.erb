@@ -1,31 +1,35 @@
+<% content_for :secondary_menu do %>
+  <p>
+    <%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %>
+  </p>
+<% end %>
+
 <h1>Informations d'un employ&eacute;</h1>
 
 <%if @list==true%>
   <div class="frame">
     <h2>Fiche d'identité</h2>
     <p>
-      <b>Civilité :</b>
-      <%=h @employee.civility.name unless @employee.civility.nil?%>
+      Civilité :
+      <strong><%=h @employee.civility.name unless @employee.civility.nil?%></strong>
     </p>
     <p>
-      <b>Nom :</b>
-      <%=h @employee.last_name %>
+      Nom :
+      <strong><%=h @employee.last_name %></strong>
     </p>
     <p>
-      <b>Prénom :</b>
-      <%=h @employee.first_name %>
+      Prénom :
+      <strong><%=h @employee.first_name %></strong>
     </p>
     <p>
-      <b>Date de naissance :</b>
-      <%=h @employee.birth_date.strftime("%d %B %Y") %>
+      Date de naissance :
+      <strong><%=h @employee.birth_date.strftime("%d %B %Y") %></strong>
     </p>
     <p>
-      <b>Situation familiale :</b>
-      <%=h @employee.family_situation.name unless @employee.family_situation.nil?%>
+      Situation familiale :
+      <strong><%=h @employee.family_situation.name unless @employee.family_situation.nil?%></strong>
     </p>
-  </div>
 
-  <div class="frame">
     <h2>Fiche de poste</h2>  
     <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
       <%for service in @employee.services%>
@@ -38,7 +42,7 @@
     <h3>Fonction(s) dans l'entreprise</h3>
       <%for job in @employee.jobs%>
       <p>
-        <b><%=job.name + " :"%></b>
+        <%=job.name + " :"%>
         <table class="presentation">
           <tr class="left_cell">
             <td class="left_cell">- les missions :</td>
@@ -56,42 +60,42 @@
       </p>  
       <% end %>
 
-  </div> 
+
 <%end%>
 
 
 
 <%if @view==true%>
 
-  <div class="frame">
+
   <h2>Coordonn&eacute;es</h2>
   <h3>Adresse postale</h3>
     <p>
-      <b>Adresse :</b>
-      <%=h @address.address1 %>
-      <%= " - " + h(@address.address2) unless @address.address2.empty? %>
+      Adresse :
+      <strong><%=h @address.address1 %>
+      <%= " - " + h(@address.address2) unless @address.address2.empty? %></strong>
     </p>
     <p>
-      <b>Code postal :</b>
-      <%=h @address.zip_code %>
+      Code postal :
+      <strong><%=h @address.zip_code %></strong>
     </p>
     <p>
-      <b>Ville :</b>
-      <%=h @address.city_name %>
+      Ville :
+      <strong><%=h @address.city_name %></strong>
     </p>
     <p>
-      <b>Pays :</b>
-      <%=h @address.country_name %>
+      Pays :
+      <strong><%=h @address.country_name %></strong>
     </p>
     
     <%=emails_h3(@employee) %>
     <p>
-      <b>Personnel :</b>
-      <%=h @employee.email %>
+      Personnel :
+      <strong><%=h @employee.email %></strong>
     </p>
     <p>
-      <b>Professionnel :</b>
-      <%=h @employee.society_email %>
+      Professionnel :
+      <strong><%=h @employee.society_email %></strong>
     </p>
     <p>
     <%=numbers_h3(@employee)%>
@@ -103,73 +107,69 @@
         </p>
       <%end%>
     </p>
-  </div> 
-    
-  <div class="frame">
+
   <h2>Identité Bancaire</h2>
     <p>
-      <b>Nom de la banque :</b>
-      <%=h @iban.bank_name %>
+      Nom de la banque :
+      <strong><%=h @iban.bank_name %></strong>
     </p>
     <p>
-      <b>Code bancaire :</b>
-      <%=h @iban.bank_code %>
+      Code bancaire :
+      <strong><%=h @iban.bank_code %></strong>
     </p>
     <p>
-      <b>Code guichet :</b>
-      <%=h @iban.branch_code %>
+      Code guichet :
+      <strong><%=h @iban.branch_code %></strong>
     </p>
     <p>
-      <b>N° de compte :</b>
-      <%=h @iban.account_number %>
+      N° de compte :
+      <strong><%=h @iban.account_number %></strong>
     </p>
     <p>
-      <b>Clée :</b>
-      <%=h @iban.key %>
+      Clée :
+      <strong><%=h @iban.key %></strong>
     </p>
     <p>
-      <b>Nom du compte :</b>
-      <%=h @iban.account_name %>
+      Nom du compte :
+      <strong><%=h @iban.account_name %></strong>
     </p>
-  </div>
-<div class="frame">
-<h2>Contrat de travail</h2>
-  <p>
-    <b>Type de contrat :</b>
-    <%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %>
-  </p>
-  <p>
-    <b>D&eacute;but du contrat :</b>
-    <%=h @job_contract.start_date.nil? ? "Non spécifié" : @job_contract.start_date.strftime("%d %B %Y") %>
-  </p>
-  <p>  
-    <b>Fin du contrat :</b>
-    <%=h @job_contract.end_date.nil? ? "Non spécifiée" : @job_contract.end_date.strftime("%d %B %Y") %>
-  </p>
-  <p>
-    <b>Status employ&eacute;e :</b>
-    <%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %>
-  </p>
-  <p>
-    <b>Salaire brut actuel :</b>
-    <%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €"  %>
-    &#40;net &#58; <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €"  %>&#41;&nbsp; 
-    <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
-  </p>
-  
-  <%if @edit==true %>
-    <p>
-      <%= link_to 'Modifier le contract de travail', edit_job_contract_path(@job_contract) %> 
-    </p>
-  <%end%>    
 
-</div>
-<div class="frame">
-<h2>Primes</h2>    
+  <h2>Contrat de travail</h2>
+    <p>
+      Type de contrat :
+      <strong><%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %></strong>
+    </p>
+    <p>
+      D&eacute;but du contrat :
+      <strong><%=h @job_contract.start_date.nil? ? "Non spécifié" : @job_contract.start_date.strftime("%d %B %Y") %></strong>
+    </p>
+    <p>  
+      Fin du contrat :
+      <strong><%=h @job_contract.end_date.nil? ? "Non spécifiée" : @job_contract.end_date.strftime("%d %B %Y") %></strong>
+    </p>
+    <p>
+      Status employ&eacute;e :
+      <strong><%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %></strong>
+    </p>
+    <p>
+      Salaire brut actuel :
+      <strong><%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €"  %>
+      &#40;net &#58; <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
+      <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
+    </p>
+    
+    <%if @edit==true %>
+      <p>
+        <%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %> 
+      </p>
+    <%end%>    
+
+
+  <h2>Primes</h2>    
     <%@employee.premia.size > 5 ? min = -5 : min = @employee.premia.size*-1%> 
     <%@employee.premia[min..@employee.premia.size].each do |premium|%>
         <p>
-        <b><%=h( premium['premium'].to_s + " €")%></b>
+        <strong><%=h( premium['premium'].to_s + " €")%></strong>
         <%= premium['date'].strftime("le %d %B %Y ") unless premium['date'].nil? %>
         <%=h( "(Remarque: '" + premium['remark'] + "')" )%> 
         </p>

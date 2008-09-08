@@ -43,9 +43,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :employees do |employee|
     employee.resources :salaries
     employee.resources :premia
+    employee.resource :job_contract
   end
   map.resources :jobs
-  map.resources :job_contracts
+  
   map.connect 'rh', :controller => 'employees' #default page for human resources
   ### END HUMAN RESOURCES
   
