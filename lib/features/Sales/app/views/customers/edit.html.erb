@@ -91,9 +91,9 @@
       <%= link_to document.name, customer_document_path(@customer, document) %>      
       <%= link_download_last_version(document) %>
     <%end%>
-    <!-- Display document_form-->
-    <%= get_document_form(@customer) %>
   <%end%>
+  <!-- Display document_form-->
+  <%= get_document_form(@customer) %>
 </div>
 
 <%= link_to 'Retour', :action => 'index' %>
