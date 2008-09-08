@@ -80,12 +80,13 @@ module ApplicationHelper
   
   def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
     
+    ## Hack by Ulrich
     unless tag_options[:name].nil?
       temp = tag_options[:name].split('_')
       new_name = temp.shift
       temp.each{|a| new_name += '['+a+']'}
     end
-    
+    ############
     
     if(tag_options[:index])
       tag_id = "#{tag_options[:name]}_#{object}s_#{tag_options[:index]}_#{method}"
@@ -96,11 +97,10 @@ module ApplicationHelper
     end
     (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
       
-#              text_field(object, method, tag_options) +
     content_tag("input", "", :id => tag_id, :type => "text", :size => 30, 
       :name => tag_name, :autocomplete => "off") +
       content_tag("div", "", :id => tag_id + "_auto_complete", :class => "auto_complete") +
-      auto_complete_field(tag_id, { :url => {:action => "auto_complete_for_#{object}_#{method}"} }.update(completion_options))
+      auto_complete_field(tag_id, { :url => {:controller => "#{tag_options[:controller]}", :action => "auto_complete_for_#{object}_#{method}"} }.update(completion_options))
                                                                 
   end
 end
