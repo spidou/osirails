@@ -451,6 +451,10 @@ ul.center_list li {
 	color: #CA7E21;/*444*/
 }
 
+.secondary_menu_statistic {
+	color:#CA7E21;
+}
+
 #content_secondary_menu a:hover {
 	color: #596B8E;/*rgb(234,136,28)*/
 }
