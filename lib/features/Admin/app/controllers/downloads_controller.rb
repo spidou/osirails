@@ -11,7 +11,7 @@ class DownloadsController < ApplicationController
      
     elsif params[:document][:type].constantize.equal?(DocumentVersion)
       @document_version = params[:document][:type].constantize.find(params[:document][:id])
-      send_file("documents/#{@document.document.owner_class}/#{@document.document.file_type_id}/#{@document.document.id}/#{@document.version}.#{@document.document.extension}")      
+      send_file("documents/#{@document_version.document.owner_class}/#{@document_version.document.file_type_id}/#{@document_version.document.id}/#{@document_version.version}.#{@document_version.document.extension}")      
     end
 
     #FIXME Vérification des permissions sur le fichier et si le fichier existe ou pas

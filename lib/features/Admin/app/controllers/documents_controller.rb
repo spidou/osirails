@@ -13,7 +13,11 @@ class DocumentsController < ApplicationController
   end
   
   def create
-    unless params[:upload][:datafile].blank?    
+    unless params[:upload][:datafile].blank?
+      
+      ## Store tags list
+      
+
       ## Store file extension and name
       document_extension = params[:upload][:datafile].original_filename.split(".").last
       params[:document][:name].blank? ? document_name = (a = params[:upload][:datafile].original_filename.split("."); a.pop; a.to_s) : document_name = params[:document][:name]
