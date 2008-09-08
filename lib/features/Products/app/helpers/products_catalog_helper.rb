@@ -27,7 +27,7 @@ module ProductsCatalogHelper
   def show_category_column(categories,value)
     get_categories_columns = []
     collection = column(categories,value)
-    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\"  class=\"select_catalog\">" +
+    get_categories_columns << "<select name='select_#{value}' id='select_#{value}' size=\"10\" multiple=\"multiple\"  class=\"select_catalog catalog_3_columns\">" +
       "<option value=\"#{-(value+1)}\" selected=\"selected\" style=\"font-weight:bold\">Il y a " + pluralize(collection.size, "categorie", "categories") + "</option>"
     
     collection.each do |category|
@@ -39,7 +39,7 @@ module ProductsCatalogHelper
   # This method permit to have a reference column
   def show_reference_column(references)
     get_reference_column = []
-    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog\" >" +
+    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog catalog_3_columns\" >" +
       "<option value=\"-1\" selected=\"selected\" style=\"font-weight:bold\">Il y a " + pluralize(references.size, "reference", "references") + "</option>"
     references.each do |reference|
       get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">"+truncate("#{reference.name}", 18)+" (#{reference.products_count})</option>"

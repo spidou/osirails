@@ -778,7 +778,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\			::::/::INFORMATIVE MESSAGE:::::::			  /!\
+/!\			::::/::INATIVE MESSAGE:::::::			  /!\
 /!\			:::::/:::[ERREUR/SIGNAL]:/:::::::			  /!\
 /!\/!\/!\/!\/!\/!\/!/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 
@@ -1123,10 +1123,6 @@ width: 50px ! important;
 	cursor: pointer;
 }
 */
-.frame form p label:hover { /*suppr p.text_form*/
-	text-decoration:underline;
-	color: rgb(234,136,28);
-}
 /*
 .frame form p.text_form label span.info {
 	display: block;
@@ -1216,6 +1212,7 @@ width: 50px ! important;
 	margin-bottom:10px;
 	vertical-align:top;
 }
+
 /*
 .frame input.disable-stylesheet-width {
 	float:none;
@@ -1331,12 +1328,20 @@ div.tabs {
 }
 */
 .frame.tabulation>h1 {
-	background:#E6B061;
+	background:#E8A859;/*#E6B061;*/
 	color:#AB6600;
-	margin-left:12px;
+//	margin-left:12px;
 	text-align:left;
-	text-indent:10px;
-	margin-bottom:-1px;
+//	text-indent:10px;
+	margin-bottom:0px;
+	margin-top:0px;
+	border:white 1px solid;
+}
+
+.frame.tabulation form h2 {
+	line-height:30px  !important;
+	margin-top:0  !important;
+	height:30px  !important;
 }
 /*
 .frame.tabulation>h2 {
@@ -1380,12 +1385,27 @@ div.tabs ul li a:hover {
 	text-decoration:underline;
 }
 
+#catalog {
+	margin:10px;
+	text-indent:-1px;
+}
+/*
+#catalog>select {
+	width:100%;
+}
+*/
 select.select_catalog {
 	background: #f1f1f1;
 	border:1px solid #888;
 	margin-top:-1px;
 	margin-bottom:-1px;
-	width:160px;
+//	width:160px;
+}
+
+select.catalog_3_columns {
+	width:26.53%;
+	padding:0;
+	margin:0;
 }
 
 /*/////////////////STEPS/////////////////*/
