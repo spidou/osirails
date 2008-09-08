@@ -21,10 +21,15 @@ module ActiveRecord
           has_many :documents, :as => :has_document
           Document.add_model(self.name) unless Document.models.include?(self.name)
           
-          unless DocumentPermission.find_all_by_document_owner(self.name).size == Role.find(:all).size
-            Role.find(:all).each do |role|
-              DocumentPermission.find_or_create_by_document_owner_and_role_id(self.name, role.id)
+          ## Creation of document permission for all roles
+          begin
+            unless DocumentPermission.find_all_by_document_owner(self.name).size == Role.find(:all).size
+              Role.find(:all).each do |role|
+                DocumentPermission.find_or_create_by_document_owner_and_role_id(self.name, role.id)
+              end
             end
+          rescue e
+            puts "An error occured when create role's permissions. Please reload the server (error : #{e})"
           end
           
         end
