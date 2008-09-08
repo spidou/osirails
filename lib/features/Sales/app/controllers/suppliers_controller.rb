@@ -71,8 +71,7 @@ class SuppliersController < ApplicationController
     
     contacts = params[:supplier].delete("contacts")
     contacts_original = contacts
-    contact_objects = []
-    
+    contact_objects = []    
     
     if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
       @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
@@ -85,7 +84,7 @@ class SuppliersController < ApplicationController
  
     @supplier.activity_sector = @activity_sector
     @supplier.iban.update_attributes(iban)
-    puts params[:supplier]
+
     unless @supplier.update_attributes(params[:supplier])
       @error = true
     else
@@ -115,8 +114,7 @@ class SuppliersController < ApplicationController
       contact_objects.each do |contact|
         contact.save
         @supplier.contacts << contact
-      end
-      
+      end      
       flash[:notice] = 'Fournisseur ajouté avec succes'     
       redirect_to(suppliers_path)
     else

@@ -14,13 +14,9 @@
             <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
           <p>
         <%end%>   
-    <%end%>
-    <%puts "zaeaeazr"%>
-    <%puts @supplier%>
-    <%= display_contact_form(@supplier, @error, params)%>
-   </div>
-  
-  
-  
-  <%= supplier.submit  'Modifier' %> <%= link_to 'Retour', suppliers_path %>
+      <%end%>
+      <%= display_contact_form(@supplier, @error, params)%>
+    </div>
+
+    <%= supplier.submit  'Modifier' %> <%= link_to 'Retour', suppliers_path %>
   <% end %>

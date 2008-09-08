@@ -56,6 +56,11 @@ class CustomersController < ApplicationController
     
     activity_sector_name = params[:customer].delete("activity_sector")
     activity_sector_name[:name].capitalize!
+    
+    contacts = params[:customer].delete("contacts")
+    contacts_original = contacts
+    contact_objects = []
+    
     if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
       @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
       @customer.activity_sector = @activity_sector
@@ -71,6 +76,25 @@ class CustomersController < ApplicationController
       @error = true
     else 
       @activity_sector.save
+    end
+    
+    # If contact_form is not null
+    unless (new_contact_number = params[:new_contact_number]["value"].to_i) == 0
+      new_contact_number.times do |i|
+        unless contacts["#{i+1}"][:valid] == 'false'
+          if contacts["#{i+1}"][:id].blank?
+            contacts["#{i+1}"].delete("id")
+            contacts["#{i+1}"].delete("selected")
+            contacts["#{i+1}"].delete("valid")
+            contact_objects[i] = Contact.new(contacts["#{i+1}"])
+            unless contact_objects[i].valid?
+              @error = true
+            end
+          else
+            contact_objects[i] = Contact.find(contacts["#{i+1}"][:id])
+          end                  
+        end
+      end
     end
     
     # If establishment_form is not null
@@ -150,58 +174,62 @@ class CustomersController < ApplicationController
       end
     end
     
-    # If contact_form is not null
-    unless params[:new_contact_number]["value"].nil?
-      new_contact_number = params[:new_contact_number]["value"].to_i
-      new_contact_number.times do |i|
-        # For all new_contact  an instance variable is create.
-        # If his parameter is not valid, @error variable is set to true
-        eval "unless params['valid_contact_#{i+1}'].nil?
-                    unless params['valid_contact_#{i+1}']['value'] == 'false'
-                      unless instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
-                        @error = true
-                      end
-                      unless @new_contact#{i+1}.valid?
-                        @error = true
-                      end
-                    end
-                  end"
-      end
-    end
-    
-    # If all new_contact are valids, they are save 
-    unless @error
-      new_contact_number.times do |i|
-        eval"unless params['valid_contact_#{i+1}'].nil?
-                   unless params['valid_contact_#{i+1}']['value'] == 'false'
-                     if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-                       unless @customer.contacts << @new_contact#{i+1}
-                       @error = true
-                       end
-                       unless @new_contact#{i+1}.save
-                         @error = true
-                       end
-                     elsif params['new_contact#{i+1}_id'] != ''                        
-                       if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
-                         @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
-                       end
-                     else
-                       @error = true
-                     end
-                  end
-                end"
-      end
-    end
+#    # If contact_form is not null
+#    unless params[:new_contact_number]["value"].nil?
+#      new_contact_number = params[:new_contact_number]["value"].to_i
+#      new_contact_number.times do |i|
+#        # For all new_contact  an instance variable is create.
+#        # If his parameter is not valid, @error variable is set to true
+#        eval "unless params['valid_contact_#{i+1}'].nil?
+#                    unless params['valid_contact_#{i+1}']['value'] == 'false'
+#                      unless instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
+#                        @error = true
+#                      end
+#                      unless @new_contact#{i+1}.valid?
+#                        @error = true
+#                      end
+#                    end
+#                  end"
+#      end
+#    end
+#    
+#    # If all new_contact are valids, they are save 
+#    unless @error
+#      new_contact_number.times do |i|
+#        eval"unless params['valid_contact_#{i+1}'].nil?
+#                   unless params['valid_contact_#{i+1}']['value'] == 'false'
+#                     if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
+#                       unless @customer.contacts << @new_contact#{i+1}
+#                       @error = true
+#                       end
+#                       unless @new_contact#{i+1}.save
+#                         @error = true
+#                       end
+#                     elsif params['new_contact#{i+1}_id'] != ''                        
+#                       if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
+#                         @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
+#                       end
+#                     else
+#                       @error = true
+#                     end
+#                  end
+#                end"
+#      end
+#    end
         
     unless @error
-    
+      contact_objects.each do |contact|
+        contact.save
+        @customer.contacts << contact
+      end
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
       redirect_to customers_path
     else
-      params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
+      params[:customer][:activity_sector] = {:name => activity_sector_name[:name]} 
+      params[:customer][:contacts] = contacts_original
       @new_establishment_number = params[:new_establishment_number]["value"]
-      @new_contact_number = params[:new_contact_number]["value"]
       @establishments = @customer.establishments
+      @new_contact_number = params[:new_contact_number]["value"]
       @contacts = @customer.contacts
       flash[:error] = "Une erreur est survenu lors de la sauvegarde du client"
       render :action => 'edit'
