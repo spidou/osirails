@@ -52,18 +52,18 @@ div.calendar {
 }
 
 .calendar thead .weekend { /* How a weekend day name shows in header */
-	color:#7E5119;
+	color:#3F375C;
 }
 
 .calendar thead .hilite { /* How do the buttons in header appear when hover */
-  background-color: #aaf;
+  background-color: #596B8E;
   color: #000;
   border: 1px solid #04f;
   padding: 1px;
 }
 
 .calendar thead .active { /* Active (pressed) buttons in header */
-  background-color: #77c;
+  background-color: #3F375C;
   padding: 2px 0px 0px 2px;
 }
 
@@ -71,7 +71,7 @@ div.calendar {
 
 .calendar tbody .day { /* Cells <TD> containing month days dates */
   width: 2em;
-  color: #456;
+  color: #333;
   text-align: right;
   padding: 2px 4px 2px 2px;
 }
@@ -86,21 +86,24 @@ div.calendar {
 .calendar table .wn {
   padding: 2px 3px 2px 2px;
   border-right: 1px solid #000;
-  background: #bdf;
+  background: #7E98CB;
 }
 
 .calendar tbody .rowhilite td {
-  background: #def;
+  background: #bcbcbc;
 }
 
 .calendar tbody .rowhilite td.wn {
-  background: #eef;
+	background: #3F375C;
+	color:white;
+	border:solid 1px white;
 }
 
 .calendar tbody td.hilite { /* Hovered cells <TD> */
-  background: #def;
-  padding: 1px 3px 1px 1px;
-  border: 1px solid #bbb;
+	background: #36415C;//rgb(234,136,28);
+  	color:#aeaeae;
+	padding: 1px 3px 1px 1px;
+	border: 1px solid #F69825;
 }
 
 .calendar tbody td.active { /* Active (pressed) cells <TD> */

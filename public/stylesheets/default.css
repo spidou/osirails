@@ -1186,9 +1186,9 @@ width: 50px ! important;
 	display:inline-block;
 }
 
-.frame.presentation_large label {
+.frame.presentation_small label {
 	text-align:right;
-	width:1000px;
+	width:100px;
 	display:inline-block;
 }
 
