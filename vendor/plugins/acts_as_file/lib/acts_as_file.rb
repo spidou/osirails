@@ -28,7 +28,7 @@ module ActiveRecord
                 DocumentPermission.find_or_create_by_document_owner_and_role_id(self.name, role.id)
               end
             end
-          rescue e
+          rescue Exception => e
             puts "An error occured when create role's permissions. Please reload the server (error : #{e})"
           end
           
