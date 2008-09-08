@@ -29,7 +29,7 @@ module ActiveRecord
               end
             end
           rescue Exception => e
-            puts "An error occured when create role's permissions. Please reload the server (error : #{e})"
+            puts "An error occured while creating role's permissions. Please reload the server (error : #{e}). PATH : #{__FILE__}"
           end
           
         end
