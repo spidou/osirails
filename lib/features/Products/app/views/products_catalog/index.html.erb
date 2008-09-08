@@ -11,11 +11,12 @@
       <%= render :partial => "show_references" %>
     </span>
 
+  </div>
+
     <div id="products_list"></div>
     <div id="product_reference_informations"></div>
     <div id="product_informations"></div>
 
-  </div>
   <% find_max_level.times do |value|%>
     <%= observe_field("select_#{value}", :update => "show_references", :url => {:action => :show_references}, :with => 'parameter' ) %>
     <%= observe_field("select_#{value}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>
