@@ -1,5 +1,6 @@
 class Employee < ActiveRecord::Base
   acts_as_file
+  include Permissible
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}

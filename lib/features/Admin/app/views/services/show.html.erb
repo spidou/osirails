@@ -50,4 +50,4 @@
   
   
 </div>
-<%= link_to( "Modifier",edit_service_path)%> &#124; <%= link_to 'Retour', services_path %>
+<%= link_to( "Modifier",edit_service_path) + "|" if controller.can_edit?(current_user)%> <%= link_to 'Retour', services_path %>

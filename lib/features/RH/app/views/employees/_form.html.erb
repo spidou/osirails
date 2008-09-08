@@ -1,3 +1,4 @@
+<br/>
 <% form_for(@employee) do |f| %>
   <%= f.error_messages %> 
   <h2>Fiche d'identité</h2>
@@ -124,8 +125,20 @@
     <%= f.submit button_name %>
     <%= link_to 'Retour', employees_path %>
   </span>
+ 
 <% end %>
 
+<h2>Documents</h2>
+  <%unless @employee.documents.empty?%>  
+    <% for document in @employee.documents%>
+      <br/>
+      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png") %>
+      <%= link_to document.name, customer_document_path(@employee, document) %>      
+      <%= link_download_last_version(document) %>
+    <%end%>
+  <%end%>
+  <!-- Display document_form-->
+  <%= get_document_form(@employee) %>
 <!-- enlever pour demo avec osibox-->
 <a id="job_add_anchor"></a>
 <div id="job_add" style="display:none;" class="cadre">

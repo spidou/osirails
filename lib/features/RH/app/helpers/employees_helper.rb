@@ -1,7 +1,8 @@
 module EmployeesHelper
   
-  # Methods to display form parts with or without  content when raise an error 
-  ###########################################################################
+  ###############################################################################
+  # Methods to display form parts with or without  content when raise an error ##
+  ###############################################################################
   
   def display_address1(default=nil)
     if default.nil?
@@ -97,6 +98,7 @@ module EmployeesHelper
   end
   ##################################################################
   ########## NUMBERS METHODS #######################################
+
   
   def display_number0(owner)
     if params[owner].nil?
@@ -116,10 +118,6 @@ module EmployeesHelper
     html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
     html
   end
-  
-  
-          
-  
   
   # Method to generate collection_select for each number add
   def add_collection_select(owner)
@@ -156,7 +154,44 @@ module EmployeesHelper
     html
   end
   
-  #############################################################################
+  #########################################################################################
+  ##### Methods to show or not with permissions some stuff like buttons or link ###########
+  
+  def display_premia_add_link(employee, premia_controller)
+    html = ""
+    if premia_controller.can_add?(current_user) and Premium.can_add?(current_user)
+      html << "<p>" + link_to( 'Ajouter une prime',new_employee_premium_path(employee)) + "</p>"
+    end 
+    return html
+  end
+  
+  def display_premia_view_link(employee, premia_controller)
+    html = ""
+    if premia_controller.can_view?(current_user) and Premium.can_list?(current_user) 
+      if employee.premia.size>0 
+      html << "<p>" + link_to( 'Afficher toutes les primes',employee_premia_path(employee)) + "</p>"
+      end
+    end
+    return html
+  end
+  
+  def display_employee_back_link(employee)
+    html = ""
+    if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
+       html << link_to( 'Modifier', edit_employee_path(employee)) + "|"
+    end
+    return html
+  end
+  
+  def display_job_contract_edit_link(job_contract_controller, employee)
+    html = ""
+    if job_contract_controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
+      html << "<p>" + link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(employee)) + "</p>"
+    end  
+    return html 
+  end
+  
+  #########################################################################################
   
   # Method to verify if the params[:employee] and his attributes are null
   def is_in?(object, collection, attribute = nil, employee = nil)
@@ -167,6 +202,7 @@ module EmployeesHelper
       collection=='services'? employee.services.include?(object) : employee.jobs.include?(object)
     end
   end
+
   
   # Method to verify if the params[:responsable] and his attributes are null
   def is_resonsable_of_this_service?(service_id,employee = nil)
@@ -187,8 +223,7 @@ module EmployeesHelper
     tmp.each do |t|
       e = Employee.find(t.employee_id)
       manager +=  ", " unless manager==""
-      manager += @employee.id==t.employee_id ? e.fullname : link_to( e.fullname,employee_path(t.employee_id))
-      
+      manager += @employee.id==t.employee_id ? e.fullname : link_to( e.fullname,employee_path(t.employee_id))   
     end
     return manager + " )" 
   end
