@@ -32,7 +32,7 @@ class Calendar < ActiveRecord::Base
 
   # Callbacks
   after_create :create_permissions
-
+ 
   # TODO Must be configurable
   # Constants
   PATH_UPLOAD_ICS = "#{RAILS_ROOT}/public"
@@ -68,7 +68,7 @@ class Calendar < ActiveRecord::Base
       end
       next if list_ex_dates.include?(date)
 
-      if date == event.start_at.to_date || date == event.end_at.to_date
+      if date == event.start_at.to_date #&& date <= event.end_at.to_date
         return_events << event
       elsif event.start_at.to_date < date
         case event.frequence

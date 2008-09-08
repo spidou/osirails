@@ -19,4 +19,4 @@ fin: <%= event_freq_end(@event) %><br/>
 <% if !@event.alarms.first.action.nil? %>
 alarme: <%= alarm_sentence(@event) %><br />
 <% end %>
-<%= link_to_remote "Edition", :url => {:controller => 'events', :action => 'edit', :id => params[:id]}, :method => 'get', :loading => "event_box_loading();", :failure => "event_box_failure();" if @calendar.can_edit?(current_user) %> <% if @calendar.can_delete?(current_user) %><a onclick="event_box_delete(this, <%= @event.id %>); return false;" href="#">Supprimer</a><% end %>
+<%= link_to_remote "<br />Edition", :url => {:controller => 'events', :action => 'edit', :id => params[:id]}, :method => 'get', :loading => "event_box_loading();", :failure => "event_box_failure();" if @calendar.can_edit?(current_user) %> <% if @calendar.can_delete?(current_user) %><a onclick="event_box_delete(this, <%= @event.id %>); return false;" href="#">Supprimer</a><% end %>

@@ -1,6 +1,6 @@
 <h2><%= $month_fr[@date.month - 1] %> <%= @date.year %> (semaine <%= @date.week %>)</h2>
 <div id="calendar_content">
-	<div id="group_day"><%= everyday_of_a_week(@date) %><ul id="full_day_bar"><li>TODO Gerer les événements sur journée pleine</li></ul></div>
+	<div id="group_day"><%= everyday_of_a_week(@date) %></div>
 	<div id="scroll">
 		<div id="hour_column">
 			<% 24.times do |i| %><%= "<div class=\"hour\">#{i}h00</div>" %><% end %>

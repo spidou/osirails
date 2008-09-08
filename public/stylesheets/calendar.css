@@ -1,24 +1,39 @@
 #group_day {
 	position: relative;
-	margin-left: 70px;
+	margin-left: 88px;
 	margin-right: 15px;
 	right: 0px;
 }
 #group_day .day {
 	float :left;
-	width: 13.85%;
+	width: 14.2%;
 	text-align: center;
 }
-#group_day #full_day_bar {
-	display: inline;
-	padding-top: 18px;
+.day ul {
+  padding: 0px;
+  margin: 0px;
 }
-#calendar {
+.day li {
+  display: inline;
+}
+.day .e_week_fullday {
+  font-size: 10px;
+  text-align: left;
+  border: 1px solid black;
+  color: white;
+  background-color: red;
+	-moz-border-radius: 8px;
+}
+.day_fullday {
+  margin-left: 86px;
+  margin-right: 15px;
+  text-align: center;
 }
 #calendar_content {
 	overflow: hidden;
 }
 #calendar #scroll {
+  clear: left;
 	margin-left: 16px;
 	padding-right: 1px;
 	overflow: auto;
@@ -125,7 +140,6 @@
 	text-align: center;
 	font-size: 10px;
 	color: white;
-	cursor: move;
 	-moz-border-radius: 8px;
 	opacity: 0.8;
 	-moz-opacity: 0.8;

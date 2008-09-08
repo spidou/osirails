@@ -1,10 +1,17 @@
 /* Globals */
 draggables_events = new Array();
+
 event_box_id = "event_box";
 event_box_content_id = "event_box_content";
+
 recur_message = "<b>Modification d’un événement récurrent</b><br /><span>La modification de l’heure d’un événement récurrent est en cours. Souhaitez-vous reporter uniquement cette occurrence ou bien modifier l’heure de celle-ci et de tous les événements futurs ?</span>";
 recur_delete_message = "<b>Supprimer l'événement</b><br /><span>Souhaitez-vous supprimer cet événement ainsi que toutes ses occurrences futures ou uniquement celle sélectionnée ?</span>"
 event_box_displayed = false;
+
+full_day_events = new Array(7);
+for (var i=0; i < full_day_events.length; i++) {
+	full_day_events[i] = new Array();
+};
 
 /* Functions */
 
@@ -30,6 +37,17 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
     document.body.setAttribute('onResize', "resize_events();");
   };
   ajax_link(link_get_events);
+
+  // Disable text selecting
+  function disableselect() { return false };
+  function reEnable() { return true };
+  //if IE4+
+  document.getElementById('calendar').onselectstart = new Function ("return false");
+  //if NS6
+  if (window.sidebar){
+    document.getElementById('calendar').onmousedown = disableselect;
+    document.getElementById('calendar').onclick = reEnable;
+  };
 }
 
 /* Display an event on the calendar. This function is used by the server */
@@ -38,7 +56,7 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
 /* week_day   the date of the event. Example: 20080920 */
 /* full_day   boolean */
 function add_event (id, title, top, height, color, week_day, full_day) {
-  var elm_id = 'event' + id
+  var elm_id = 'event' + id;
 
   if (period == 'month') {
     var events = document.getElementsByClassName('event');
@@ -57,51 +75,54 @@ function add_event (id, title, top, height, color, week_day, full_day) {
     li_elm.setAttribute('ondblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
     ul_elm.appendChild(li_elm);
 
-    add_draggable(elm_id);
-  } else {
-    var events = document.getElementsByClassName('event');
-    for (var i=0; i < events.length; i++) {
-      if (events[i].id == elm_id) {
-        events[i].ancestors()[1].removeChild(events[i].parentNode);
-      };
+    if (can_edit) {
+      li_elm.style.cursor = 'move';
+      add_draggable(elm_id);
     };
-
-    var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
+  } else {
     var event_div = document.createElement('div');
-    var event_content = document.createElement('div');
     var li_elm = document.createElement('li');
-
     event_div.setAttribute('id', elm_id);
-    event_div.setAttribute('class', 'event e_day_or_week');
-    event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
     event_div.setAttribute('ondblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
 
-    event_content.setAttribute('class', 'event_content');
-
-    event_content.innerHTML = "<span name='start_at' class='start_at'></span>-<span name='end_at' class='end_at'></span><br /><span name='title' class='title'>" + title + "</span>";
-
-    event_div.appendChild(event_content);
+    if (full_day) {
+      var grid_day = document.getElementById(week_day + 'fullday').lastChild;
+      event_div.setAttribute('class', 'event e_week_fullday');
+      event_div.innerHTML = title;
+    } else {
+      var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
+      event_div.setAttribute('class', 'event e_day_or_week');
+      event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
+      var event_content = document.createElement('div');
+      event_content.setAttribute('class', 'event_content');
+      event_content.innerHTML = "<span name='start_at' class='start_at'></span>-<span name='end_at' class='end_at'></span><br /><span name='title' class='title'>" + title + "</span>";
+      event_div.appendChild(event_content);
+    };
+    
     li_elm.appendChild(event_div);
     grid_day.appendChild(li_elm);
 
     //Effect.Pulsate(elm_id, { pulses: 2, duration: 1 });
+    
+    if (!full_day) {
+      if (can_edit) {    
+        event_content.style.cursor = 'move';
+        add_draggable(elm_id);
+        new Resizeable(elm_id, {
+          left:0,
+          right:0,
+          top: 0,
+          bottom: 4,
+          minHeight: 19,
+          resize: function() {
+            update_time(elm_id);
+            save_event(elm_id);
+          }
+          });
+      };
 
-    if (can_edit) {
-      add_draggable(elm_id);
-      new Resizeable(elm_id, {
-        left:0,
-        right:0,
-        top: 0,
-        bottom: 4,
-        minHeight: 19,
-        resize: function() {
-          update_time(elm_id);
-          save_event(elm_id);
-        }
-        });
+      update_time(elm_id);
     };
-
-    update_time(elm_id);	  
   };
 }
 
@@ -164,9 +185,9 @@ function grid_area(draggable) {
 
 /* Update the correct time of an event. The function use the event's style */
 function update_time (id) {
-  var eventss = document.getElementsByClassName('event');
-  for (var i=0; i < eventss.length; i++) {
-    id = eventss[i].id;
+  var events = document.getElementsByClassName('e_day_or_week');
+  for (var i=0; i < events.length; i++) {
+    id = events[i].id;
 
     element = document.getElementById(id);
     var left_size = parseInt(element.style.left);
@@ -522,25 +543,29 @@ function hide_event_box () {
         Calendar.setup({ 
           inputField : "event_start_at",
           ifFormat : "%Y-%m-%d",
-          timeFormat : "24"
+          timeFormat : "24",
+          onUpdate : calcalc
         });
         Calendar.setup({ 
           inputField : "event_end_at",
           ifFormat : "%Y-%m-%d",
-          timeFormat : "24"
+          timeFormat : "24",
+          onUpdate : calcalc
         });
       } else {
         Calendar.setup({ 
           inputField : "event_start_at",
           ifFormat : "%Y-%m-%d %H:%M:%S",
           showsTime : true,
-          timeFormat : "24"
+          timeFormat : "24",
+          onUpdate : calcalc
         });
         Calendar.setup({ 
           inputField : "event_end_at",
           ifFormat : "%Y-%m-%d %H:%M:%S",
           showsTime : true,
-          timeFormat : "24"
+          timeFormat : "24",
+          onUpdate : calcalc
         });
       };
     }
@@ -582,7 +607,11 @@ function hide_event_box () {
     /* Remove all the children of the event box, who have a "display: none;" */
     /* style's */
     function submit_event_box_form (elm) {  
-      document.getElementById('recur_date').value = elm.ancestors()[7].id;
+      if (elm.ancestors()[7].id == 'group_day') {
+        document.getElementById('recur_date').value = elm.ancestors()[6].id;
+      } else {
+        document.getElementById('recur_date').value = elm.ancestors()[7].id;        
+      };
 
       var event_box_content_elm = document.getElementById('event_box_content');
       remove_undisplayed(event_box_content_elm);
@@ -685,4 +714,18 @@ function add_droppable (elm_id) {
       save_event(element.id);
     }
   });
+}
+
+function calcalc(cal) {
+    var date = cal.date;
+    var time = date.getTime()
+    var field = document.getElementById("event_end_at");
+    if (field == cal.params.inputField) {
+        field = document.getElementById("event_start_at");
+//        time -= Date.WEEK;
+    } else {
+//        time += Date.WEEK;
+    }
+    var date2 = new Date(time);
+    field.value = date2.print("%Y-%m-%d %H:%M");
 }

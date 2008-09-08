@@ -74,7 +74,7 @@ class EventsController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
-    return false unless @calendar.can_edit?(current_user)
+    return false unless @event.calendar.can_edit?(current_user)
     date = Date.parse(params[:date])
     exdate = Date.parse(params[:exdate]) if params[:exdate]
 
