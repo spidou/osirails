@@ -121,10 +121,11 @@ h2 {
 	color:white;
 	margin-top:-1px;
 	margin-bottom:0px;
-	height:30px;
-	line-height:30px;
+	height:29px;
+	line-height:29px;
 	font-weight:lighter;
 	letter-spacing:2px;
+	padding-top:1px;
 }
 
 h3 {
@@ -1320,11 +1321,11 @@ div.tabs {
 .frame.tabulation {
 	margin-top:44px;
 }
-
+/*
 .frame + div.tabs {
 	margin-bottom:0;
 }
-
+*/
 .frame.tabulation>h1 {
 	background:#E6B061;
 	color:#AB6600;
@@ -1333,11 +1334,11 @@ div.tabs {
 	text-indent:10px;
 	margin-bottom:-1px;
 }
-
+/*
 .frame.tabulation>h2 {
-	border-top:1px solid white;
+	border-top:1px solid transparent;
 }
-
+*/
 div.tabs ul {
 	padding: 0;
 	margin: 0;

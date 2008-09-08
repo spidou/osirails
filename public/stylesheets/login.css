@@ -218,8 +218,11 @@ a { /*Pour le msg d'erreur*/
 .errorExplanation ul li {
 	position:relative;
 	bottom:15px;
-	background: url("../images/warning.png") no-repeat 60px 0;
+	background: url("../images/warning_14x14.png") no-repeat 0px 0;
 	list-style-type:none;
+	width:300px;
+	margin-left:30px;
+	text-indent:13tabspx;
 }
 
 
