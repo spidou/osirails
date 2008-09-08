@@ -16,7 +16,8 @@ class DocumentsController < ApplicationController
     unless params[:upload][:datafile].blank?
       
       ## Store tags list
-      
+      tag_list = params[:document].delete("tag_list")
+      tag_list = tag_list.split(",")
 
       ## Store file extension and name
       document_extension = params[:upload][:datafile].original_filename.split(".").last
@@ -39,6 +40,11 @@ class DocumentsController < ApplicationController
           @owner = params[:owner][:owner_model].constantize.find(params[:owner][:owner_id])
           @owner.documents << @document
           
+          ## Add tag_list for document
+          tag_list.each {|tag| @document.tag_list << tag.strip}
+          @document.tag_list.uniq!
+          @document.save
+          
           ## Create thumbnails
           @document.create_thumbnails
           
@@ -59,6 +65,10 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     unless params[:upload][:datafile].blank?
       
+      ## Store tags list
+      tag_list = params[:document].delete("tag_list")
+      tag_list = tag_list.split(",")
+      
       ## Store possible extensions
       possible_extensions = []
       possible_extensions << @document.extension
@@ -72,6 +82,11 @@ class DocumentsController < ApplicationController
       else
         @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)      
         
+        ## Add tag_list for document
+        tag_list.each {|tag| @document.tag_list << tag.strip}
+        @document.tag_list.uniq!
+        @document.save
+          
         @document.update_attributes(params[:document])          
         @document.document_versions << @document_version
         @document_version.create_thumbnails

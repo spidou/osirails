@@ -6,7 +6,10 @@
 
         <%= render :partial => 'contact', :locals => {:contact => contact, :contact_type => @contact_type} %>
         
-        <%= render :partial => '/employees/numbers', :locals => {:attribute=> 'contact'}%>
+        <div class="frame">
+          <h2>Numéros de t&eacute;l&eacute;phone</h2>
+          <%= render :partial => '/employees/numbers', :locals => {:attribute=> 'contact'}%>
+        </div>
 
         <%= submit_tag 'Modifier' %>
         
