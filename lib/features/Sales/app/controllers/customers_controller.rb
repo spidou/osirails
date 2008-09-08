@@ -8,23 +8,28 @@ class CustomersController < ApplicationController
 
   def new
     @customer = Customer.new
-    @customer.activity_sector  = ActivitySector.new()
   end
 
   def create
     activity_sector_name = params[:customer].delete("activity_sector")
-    
     activity_sector_name[:name].capitalize!
-    unless @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
-      @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
-    end
+    
     @customer = Customer.new(params[:customer])
-    @customer.activity_sector = @activity_sector
-    if @customer.save      
+    
+    if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
+      @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
+      @customer.activity_sector = @activity_sector
+    elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+      @customer.activity_sector = @activity_sector  
+    end
+    
+    if @customer.save
+      ## In case of activity_sector wasn't present in database
       @activity_sector.save
       flash[:notice] = "Client ajout&eacute; avec succes"
       redirect_to :action => 'index'
     else
+      flash[:error] = 'Une erreur est survenu lors de la création du fournisseur'
       params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
       render :action => 'new'
     end
@@ -44,25 +49,30 @@ class CustomersController < ApplicationController
   end
 
   def update
-
+    # @error is use to know if all form are valids
+    @error = false
     @customer = Customer.find(params[:id])
-    @address = @customer.address
+#    @address = @customer.address
     
     activity_sector_name = params[:customer].delete("activity_sector")
     activity_sector_name[:name].capitalize!
-    unless @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+    if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
       @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
-    end
-    
-    # @error is use to know if all form are valids
-    @error = false
+      @customer.activity_sector = @activity_sector
+    elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+      @customer.activity_sector = @activity_sector
+    elsif activity_sector_name[:name].blank?
+      @customer.activity_sector = nil
+    end    
     
     @customer.activity_sector = @activity_sector
+    
     unless @customer.update_attributes(params[:customer])
       @error = true
     else 
       @activity_sector.save
     end
+    
     # If establishment_form is not null
     unless params[:new_establishment_number]["value"] == 0  
       new_estbalishment_number = params[:new_establishment_number]["value"].to_i
@@ -206,19 +216,6 @@ class CustomersController < ApplicationController
       flash[:error] = "Une erreur est survenu lors de la suppression du contact"
       redirect_to :back 
     end
-  end
-  
-  def auto_complete_for_activity_sector_name
-    auto_complete_responder_for_name(params[:value])
-  end
-  
-  def auto_complete_responder_for_name(value)
-    @activity_sectors = ActivitySector.find(:all, 
-      :conditions => [ 'LOWER(name) LIKE ?',
-        '%' + value.downcase + '%'], 
-      :order => 'name ASC',
-      :limit => 8)
-    render :partial => 'thirds/activity_sectors'
   end
   
 end

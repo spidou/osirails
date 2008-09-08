@@ -14,4 +14,4 @@
   <b>Job</b>
   <%= contact.job %>
 </p>
-<%= link_to_remote "Rechercher un contact", :url => {:controller => "contacts", :action => "show_contact_input", :cpt => cpt}%>
+<%= link_to_remote "modifier", :url => {:controller => "contacts", :action => "show_contact_input", :cpt => cpt, :owner_type => params[:owner_type]}%>

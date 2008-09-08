@@ -3,70 +3,81 @@
 <div class="frame">
   <h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
-    <%= label :supplier_name, "Nom :" %>
+    <%= label :supplier, :name, "Nom :" %>
     <%= @supplier.name %>
   </p>
   
   <p>
-    <%= label :supplier_legal_form, "Forme juridique :" %>
+    <%= label :supplier, :legal_form, "Forme juridique :" %>
     <%= LegalForm.find(@supplier.legal_form_id).name %>
   </p>
   
   <p>
-    <%= label :supplier_siret_number, "Num&eacute;ro Siret :" %>
+    <%= label :supplier, :siret_number, "Num&eacute;ro Siret :" %>
     <%= @supplier.siret_number %>
   </p>
   
   <p>
-    <%= label :supplier_activity_sector, "Secteur d'activit&eacute; :" %>
+    <%= label :supplier, :activity_sector, "Secteur d'activit&eacute; :" %>
     <%= @supplier.activity_sector.name %>
   </p>
   
   <p>
-    <%= label :supplier_activities, "Activit&eacute;s :" %>
+    <%= label :supplier, :activities, "Activit&eacute;s :" %>
     <%= @supplier.activities %>
   </p>
   
   <p>
-    <%= label :supplier_note, "Note :" %>
+    <%= label :supplier, :note, "Note :" %>
     <%= @supplier.note %>
   </p>
 </div>
 
 <div class="frame">
   <h2> Informations bancaires</h2>
+  
   <p>
-    <%= label :supplier, :iban, "Code bancaire :" %>
-    <%= @supplier.iban.bank_code%>
+    <%= label :supplier, :iban_bank_name, "Nom de la banque :" %>
+    <%= @supplier.iban.bank_name %>
   </p>
   
   <p>
-    <%= label :supplier, :iban, "Code guichet :" %>
-    <%= @supplier.iban.teller_code %>
+    <%= label :supplier, :iban_bank_code, "Code bancaire :" %>
+    <%= @supplier.iban.bank_code %>
   </p>
   
   <p>
-    <%= label :supplier, :iban, "N° de compte bancaire :" %>
+    <%= label :supplier, :iban_branch_code, "Code guichet :" %>
+    <%= @supplier.iban.branch_code %>
+  </p>
+  
+  <p>
+    <%= label :supplier, :iban_account_number, "N° de compte bancaire :" %>
     <%= @supplier.iban.account_number %>
   </p>
   
   <p>
-    <%= label :supplier, :iban, "Cl&eacute;e :" %>
+    <%= label :supplier, :iban_key, "Cl&eacute;e :" %>
     <%= @supplier.iban.key %>
+  </p>
+
+<p>
+    <%= label :supplier, :iban_account_number, "Nom du titulaire :" %>
+    <%= @supplier.iban.account_number %>
   </p>
 </div>
 
-<%unless @contacts.empty?%>
+<% unless @contacts.empty? %>
   <div class="frame">
-    <h2><%= "Contacts du fournisseur"%></h2>
-    <%for contact in @contacts%>
+    <h2><%= "Contacts du fournisseur" %></h2>
+    <% for contact in @contacts %>
       <p>
-        <%= contact.first_name + " " + contact.last_name%>
+        <%= contact.first_name + " " + contact.last_name %>
         <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
         <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
       </p>
-    <%end%>
+    <% end %>
   </div>
-<%end%>
+<% end %>
 
 <%= link_to 'Modifier', :action => 'edit' %> <%= link_to 'Retour', :action => 'index' %>

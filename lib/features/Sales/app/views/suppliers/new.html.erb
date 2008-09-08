@@ -2,7 +2,7 @@
   <% form_for(@supplier) do |supplier| %>
     <% @iban = @supplier.iban %>
       <%= supplier.error_messages %>
-      <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
+      <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier, :activity_sector_name => nil, :iban_ => Iban.new()} %>
       <%= supplier.submit  'Créer' %> 
 
   <% end %>  

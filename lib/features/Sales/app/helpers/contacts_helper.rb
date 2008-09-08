@@ -3,9 +3,14 @@ module ContactsHelper
     eval "link_to 'Retour', edit_#{owner_type.downcase}_path(@owner)"
   end
   
-  def get_new_contact_form(params)
-    render :partial => 'contacts/new_contact', 
-      :locals => {:cpt=> params[:cpt], :error => false, :owner_type => params[:owner_type], :owner_id => params[:owner_id]}
+  def get_new_contact_form(params, cpt, error)
+    render :partial => 'contacts/new_contact_form', 
+      :locals => {:cpt=> cpt, :error => error, :owner_type => params[:owner_type], :owner_id => params[:owner_id], :params => params}
+  end
+  
+  def get_new_contact_info(contact_id, cpt)
+    @contact = Contact.find(contact_id)
+    render :partial => 'contacts/contact_show_info', :locals => {:contact => @contact, :error => false, :cpt => cpt}
   end
   
 end

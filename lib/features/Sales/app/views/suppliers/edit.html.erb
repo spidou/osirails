@@ -2,25 +2,25 @@
 
   <% form_for(@supplier) do |supplier| %>
     <%= supplier.error_messages %>
-    <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier} %>
-
-    <% if @contacts.length > 0 -%>
-      <div class="frame">
-        <h2> Contacts du fournisseur</h2> 
-        <% for contact in @contacts%>
+    <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier, :activity_sector_name => @activity_sector, :iban_ => @supplier.iban} %>
+    
+    <div class="frame">
+      <h2> Contacts</h2> 
+      <% if @contacts.length > 0 -%>
+        <% for contact in @contacts %>
           <p>
-            <%= contact.first_name + " " + contact.last_name%>
+            <%= contact.first_name + " " + contact.last_name %>
             <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact,:owner_type => "Supplier") %>
             <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
           <p>
-        <%end #for%>   
-     </div>
-   <%end #if%>
+        <%end%>   
+    <%end%>
+    <%puts "zaeaeazr"%>
+    <%puts @supplier%>
+    <%= display_contact_form(@supplier, @error, params)%>
+   </div>
   
-  <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Supplier",
-                :owner_id => @supplier.id, :params => params, :new_contact_number => @new_contact_number,
-                :error => @error} %>
   
-  <br/><%= supplier.submit  'Modifier' %>
-  <% end %><br/>
-  <%= link_to 'Retour', suppliers_path %>
+  
+  <%= supplier.submit  'Modifier' %> <%= link_to 'Retour', suppliers_path %>
+  <% end %>

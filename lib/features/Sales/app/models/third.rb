@@ -14,7 +14,7 @@ class Third < ActiveRecord::Base
   
   validates_presence_of :name
   validates_presence_of :legal_form_id
-  validates_presence_of :activity_sector_id
+  validates_presence_of :activity_sector
   validates_format_of :siret_number, :with => /^[0-9]{14}/
   
 end
