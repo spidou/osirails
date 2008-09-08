@@ -132,8 +132,8 @@
   <%unless @employee.documents.empty?%>  
     <% for document in @employee.documents%>
       <br/>
-      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png") %>
-      <%= link_to document.name, customer_document_path(@employee, document) %>      
+      <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
+      <%= link_to document.name, employee_document_path(@employee, document) %>      
       <%= link_download_last_version(document) %>
     <%end%>
   <%end%>

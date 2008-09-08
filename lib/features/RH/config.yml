@@ -6,7 +6,6 @@ business_objects:
   - Employee
   - Premium
   - JobContract
-  - Salary 
 menus:
   rh:
     title: Ressources Humaines
