@@ -511,6 +511,10 @@ img.del_icon {
 	width:141px;
 }
 
+#input_help:focus {
+	color:black !important;
+}
+
 .help {
 	font-size:0.7em;
 	color:#444;
