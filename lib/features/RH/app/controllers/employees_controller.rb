@@ -83,8 +83,9 @@ class EmployeesController < ApplicationController
       @job = Job.new(params[:job]) 
       @employee.address = Address.new(params[:address])
       @employee.iban = Iban.new(params[:iban])
-      params[:numbers].each do |number|
-        @employee.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
+      params[:numbers].each_value do |number|
+        number['visible'] = false if number['visible'].nil?
+        @employee.numbers << Number.new(number) unless number.blank?
       end
       
       
@@ -122,6 +123,7 @@ class EmployeesController < ApplicationController
   # PUT /employees/1.xml
   def update
     if Employee.can_edit?(current_user)
+   
       @employee = Employee.find(params[:id])
       @services = Service.find(:all)
       @jobs = Job.find(:all)
@@ -134,12 +136,14 @@ class EmployeesController < ApplicationController
       # put numbers another place for a separate création
       params[:numbers] = params[:employee]['numbers']
       params[:employee].delete('numbers')
-      
       # add or update numbers who have been send to the controller
+      
       params[:numbers].each_key do |i|
         if @employee.numbers[i.to_i].nil?
+          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?
           @employee.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
-        else  
+        else
+          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?  
           @employee.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
         end
       end 
