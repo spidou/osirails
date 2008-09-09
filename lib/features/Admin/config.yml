@@ -136,3 +136,6 @@ configurations:
   society_identity_configuration_siret:
       description: Numéro SIRET
       value: 01234567891234
+  society_identity_configuration_domain: 
+    description: Nom de domaine
+    value: emr-oi.com    
