@@ -37,21 +37,22 @@
     <% unless error%>
       <% owner_address = Address.new() %>
     <%else%>
-      <%owner_address = Address.new(
-        :country_name => params[:customer][:establishment]["#{cpt}"][:name],
-        :city_name => params[:customer][:establishment]["#{cpt}"][:name],
-        :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
+    <%owner_address = Address.new(
+      :country_name => params[:customer][:establishment]["#{cpt}"][:name],
+      :city_name => params[:customer][:establishment]["#{cpt}"][:name],
+      :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
     <%end%>
 
-<%= render :partial => 'addresses/address', 
-      :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :owner => address}%>
+<%= render :partial => 'addresses/address',
+      :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :f => address}%>
 
+    <p>
+      <!-- To know if address will be save -->
+      <%= address.hidden_field(:valid, :value => 'true')%>
+    </p>
     <% end %>
 
 <% end %>
-
-
-<%= hidden_field("valid_establishment_#{cpt}", "value", "value" => 'true')%>
 
 </div>
 

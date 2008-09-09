@@ -1,5 +1,6 @@
 <div id='link_add_remove_contact_<%= cpt%>'>
   <%= error_messages_for("new_contact#{cpt}") %>
+
   <%= link_to_remote("supprimer", :url => {:controller => "contacts", :action => "delete_new_contact", :cpt => cpt, :owner_type => owner_type.downcase})%>
 </div>
 
@@ -8,7 +9,7 @@
   <div id='contact_<%=cpt%>_form' style='display: block;'>
     <p>
       <%= label :new_contact, "Nom" %>
-      <%= my_text_field_with_auto_complete(:contact, :first_name, {:name => owner_type.downcase, :index => cpt, :url => {:controller => 'contacts'}},{
+      <%= my_text_field_with_auto_complete(:contact, :first_name, {:name => owner_type.downcase, :index => cpt, :controller => 'contacts'},{
           :select => 'contact_first_name',
           :after_update_element => "function(){document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_selected').value = 'true';}",
           :with => "'value='+document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_first_name').value+
@@ -18,7 +19,7 @@
 
     <p>
       <%= label :new_contact, "Prénom" %>
-      <%= my_text_field_with_auto_complete(:contact, :last_name, {:name => owner_type.downcase, :index => cpt,:url => {:controller => 'contacts'}},{
+      <%= my_text_field_with_auto_complete(:contact, :last_name, {:name => owner_type.downcase, :index => cpt, :controller => 'contacts'},{
           :select => 'contact_last_name',
           :after_update_element => "function(){document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_selected').value = 'true';}",
           :with => "'value='+document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_last_name').value+
@@ -28,7 +29,7 @@
 
     <p>
       <%= label :new_contact, "Email" %>
-      <%= my_text_field_with_auto_complete(:contact, :email, {:name => owner_type.downcase, :index => cpt,:url => {:controller => 'contacts'}},{
+      <%= my_text_field_with_auto_complete(:contact, :email, {:name => owner_type.downcase, :index => cpt, :controller => 'contacts'},{
           :select => 'contact_email ',
           :after_update_element => "function(){document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_selected').value = 'true';}",
           :with => "'value='+document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_email').value+
@@ -58,7 +59,7 @@
 
     <p>
         <!-- Use to know if user selected a value proposed by auto-complete-->
-        <%= contact.hidden_field(:selected, 'value' => 'f1')%>
+        <%= contact.hidden_field(:selected, 'value' => '')%>
     </p>
   <%end%>
 
@@ -85,7 +86,6 @@
   </div> 
 </div>
 
-
 <%= hidden_field("new_contact#{cpt}","id", "value" => '')%>
 <%= hidden_field("create_contact", "#{cpt}", "value" => "true")%>
 
@@ -101,7 +101,7 @@
 
 <%= observe_field("#{owner_type.downcase}_contacts_#{cpt}_last_name",
         :url =>{:controller => "contacts", :action=>'text_field_change', :owner_id => owner_id, :owner_type => owner_type},
-        :frequency => 0.5, 
+        :frequency => 1, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_form').style.display)+ 
         '&value='+encodeURIComponent(value)+
         '&contact_id='+encodeURIComponent(document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_last_name_auto_complete').getElementsByClassName('contacts')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+
@@ -111,7 +111,7 @@
 
 <%= observe_field("#{owner_type.downcase}_contacts_#{cpt}_email",
         :url =>{:controller => "contacts", :action=>'text_field_change', :owner_id => owner_id, :owner_type => owner_type},
-        :frequency => 0.5, 
+        :frequency => 1, 
         :with => "'contact_input_info_visibility='+encodeURIComponent(document.getElementById('contact_#{cpt}_form').style.display)+ 
         '&value='+encodeURIComponent(value)+
         '&contact_id='+encodeURIComponent(document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_email_auto_complete').getElementsByClassName('contacts')[0].getElementsByClassName('selected')[0].getElementsByClassName('contact_id')[0].innerHTML)+

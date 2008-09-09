@@ -25,21 +25,20 @@ class AddressesController < ApplicationController
   end
   
   def auto_complete_responder_for_name(value,country_id)
-    puts value
     if country_id != 0
       @cities = City.find(:all, 
         :conditions => [ 'LOWER(name) LIKE ? AND country_id = ?',
           '%' + value.downcase + '%', country_id], 
         :order => 'name ASC',
         :limit => 10)
+      puts @cities.size
       render :partial => 'addresses/cities_name'
     else 
       @cities = City.find(:all, 
         :conditions => [ 'LOWER(name) LIKE ?',
           '%' + value.downcase + '%'], 
         :order => 'name ASC',
-        :limit => 10)
-      puts @cities.size
+        :limit => 10)     
       render :partial => 'addresses/cities_name'
     end
   end

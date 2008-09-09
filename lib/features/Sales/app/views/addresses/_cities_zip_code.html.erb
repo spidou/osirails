@@ -1,7 +1,8 @@
 <ul class="cities">
   <% for city in @cities do -%>
     <li>
-      <div class="city_zip_code"><%=city.zip_code -%></div>
+      <div class="city_zip_code" style="display:none;"><%=city.zip_code -%></div>
+      <div class="cityn_zip_code_and_country"><%=city.zip_code + "( " + city.country.name + ")" -%></div>
     </li>
   <% end -%>
 </ul>

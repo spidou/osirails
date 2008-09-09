@@ -18,7 +18,6 @@
   <!-- If there was some form, they are re-create -->
   <% unless new_contact_number_value == 0 %>
     <% new_contact_number_value.times do |i| %>
-      <%puts i+1%>
       <% unless params["#{owner_type.downcase}"]["contacts"]["#{i+1}"]["valid"] == 'false' %>
         <%# unless params["#{owner_type.downcase}"]["contacts"]["#{i+1}"] == "false" %>
 
@@ -26,6 +25,7 @@
             <% params["owner_type"] = owner_type %>       
 
             <% # get_new_contact_form return a new contact_form with the same value that older%>
+            <% puts params[:owner_type]%>
             <%= get_new_contact_form(params, cpt, true)%>            
 
         <%#end #unless%>
