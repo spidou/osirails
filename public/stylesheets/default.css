@@ -391,11 +391,58 @@ a.button_banner:hover span {
 	font-size:0.8em;
 }
 
+.hidden_secondary_menu,
+.show_secondary_menu {
+	text-align:right;
+	white-space:nowrap;
+}
+
+.hidden_secondary_menu #status_text_secondary_menu,
+.show_secondary_menu #status_text_secondary_menu {
+	background:url("/images/background_hidden-show_secondary_menu.png") no-repeat top left;
+	height:29px;
+	width:20px;
+	line-height:26px !important;
+	position:relative;
+	right:200px;
+	top:6px;
+	color:#6481AE;
+	max-width:800px;
+	overflow:hidden;
+	float:right;
+	padding-left:6px;
+}
+
+.hidden_secondary_menu #status_text_secondary_menu:hover,
+.show_secondary_menu #status_text_secondary_menu:hover {
+	width:auto;
+	cursor:pointer;
+}
+
+.hidden_secondary_menu span {
+	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat top left;
+	padding-right:2px;
+	padding-left:22px;
+	padding-top:3px;
+	padding-bottom:1px;
+}
+
+.hidden_secondary_menu.show_secondary_menu span {
+//	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
+	padding-right:2px;
+	padding-left:22px;
+	padding-top:3px;
+	padding-bottom:1px;
+}
+
 #shadow_secondary_menu {
 	position:relative;
 	left:8px;
 	background: url("../images/secondary_menu_shadow.png") no-repeat bottom right;
 	-moz-border-radius: 0 10px 0 10px;
+	clear:right;
+	position:relative;
+	bottom:33px;
 }
 
 #content_secondary_menu {
@@ -489,7 +536,7 @@ img.del_icon {
 }
 */
 #footer_secondary_menu { 
-	margin-bottom:-9px;
+	margin-bottom:-42px;
 	padding:0;
 }
 

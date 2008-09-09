@@ -26,10 +26,11 @@
 
 .day ul {
   padding: 0px;
-  margin: 0px;
+  margin: 0px -1px 0px 0px;
+	border-right:1px solid #C8C8C8;
 }
 .day li {
-  display: inline;
+	display: inline;
 }
 .day .e_week_fullday {
   font-size: 10px;
@@ -169,10 +170,10 @@
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
-	border: 3px solid black;
+	border: 1px solid #333;
 	padding: 8px;
 	-moz-border-radius: 8px;
-	background-color: #C8C8C8;
+	background: url("/images/background_content_page.jpg");
 	z-index: 1;
 	width: 380px;
 }
