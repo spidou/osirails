@@ -500,7 +500,7 @@ img.del_icon {
 	border: #444 1px solid;
 }
 
-#help_image {
+#help_image {  /*quick_search*/
 	position:relative;
 	right:20px;
 	top:2px;
