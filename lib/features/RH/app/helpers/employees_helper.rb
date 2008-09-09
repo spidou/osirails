@@ -107,7 +107,18 @@ module EmployeesHelper
     else
       number0 = text_field_tag( owner + '[numbers][0][number]',params[owner]['numbers']['0']['number'], :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
     end  
-    number0
+    return number0
+  end
+  
+  def display_check_box0(owner)
+    if params[owner].nil?
+      check_box0 = check_box_tag( owner + "[numbers][0][visible]", true,true) + "\n"
+      check_box0 += "&nbsp;Visible par tous \n" 
+    else
+      check_box0 = check_box_tag( owner + "[numbers][0][visible]", true, params[owner]['numbers']['0']['visible']) + "\n"
+      check_box0 += "&nbsp;Visible par tous \n" 
+    end
+    return check_box0
   end
   
    # Method to generate text_field for each number add
@@ -117,6 +128,9 @@ module EmployeesHelper
     html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected =>  8 ) + "\n"
     html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
     html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
+    html += check_box_tag(name + "[visible]",true,true) + "\n"
+    html += "&nbsp;Visible par tous \n" 
+    html += "&nbsp; \n"
     html
   end
   
@@ -128,13 +142,13 @@ module EmployeesHelper
   
   # Method to generate add_link for each number adding a number  
   def add_link_to(owner)
-    return link_to_remote( 'Ajouter un numéro ',:url=>{:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
+    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
   end
   
   # Method to generate remove_link for each adding or deleting
   def remove_link_to(owner)
     params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
-    return link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
+    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
   end
   
   # Method to regenerate textfield select and collection_for each number when there is a validation error
@@ -145,10 +159,13 @@ module EmployeesHelper
       unless params[owner]['numbers'][f.to_s].nil?
         name =  owner + "[numbers][" + f.to_s + "]"
         html += "<p id='number_" + f.to_s + "'>"
-        html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
+        html += select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
         html += text_field_tag( name+"[number]", params[owner]['numbers'][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
-        html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
-        html += link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?')
+        html += select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
+        html += check_box_tag( name + "[visible]", true, params[owner]['numbers'][f.to_s]['visible']) + "\n"
+        html += "&nbsp;Visible par tous \n" 
+        html += "&nbsp; \n"
+        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
         html += "</p>"
       end
     end  
