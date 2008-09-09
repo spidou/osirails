@@ -80,6 +80,7 @@
 
   <%= customer.submit  'Modifier' %>
 <% end %>
+<br/>
 
 <!-- Display Documents div -->
 <div class="frame">
@@ -87,7 +88,7 @@
   <%unless @customer.documents.empty?%>  
     <% for document in @customer.documents%>
       <br/>
-      <%= image_tag("/images/extension_fichier/#{document.extension}_16x16.png") %>
+      <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
       <%= link_to document.name, customer_document_path(@customer, document) %>      
       <%= link_download_last_version(document) %>
     <%end%>

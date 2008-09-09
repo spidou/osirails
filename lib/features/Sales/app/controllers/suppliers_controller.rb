@@ -1,7 +1,7 @@
 class SuppliersController < ApplicationController
   
   helper :thirds
-  helper :contacts
+  helper :contacts  
   
   # GET /suppliers
   def index
