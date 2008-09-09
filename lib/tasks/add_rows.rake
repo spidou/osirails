@@ -265,10 +265,12 @@ namespace :osirails do
       john.address = Address.create :address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400"
       john.save
       john.iban = iban
+      
+       # default contacts
+    Contact.create :first_name => "Contact_first_name", :last_name => "Contact_last_name", :contact_type_id => "1", :email => "contact@emr.com", :job => "stagiaire"
     end
     
-    # default contacts
-    Contact.create :first_name => "Contact_first_name", :last_name => "Contact_last_name", :contact_type_id => "1", :email => "contact@emr.com", :job => "stagiaire"
+   
     
 
     desc "Depopulate the database"
