@@ -62,10 +62,10 @@
 
 
 
-
+  <h2>Coordonn&eacute;es</h2>
+  
+  
   <%if controller.can_view?(current_user) and Employee.can_view?(current_user)%>
-
-    <h2>Coordonn&eacute;es</h2>
     <h3>Adresse postale</h3>
       <p>
         Adresse :
@@ -84,8 +84,12 @@
         Pays :
         <strong><%=h @address.country_name %></strong>
       </p>
+  <% end %>
+  
+        
+      <%= emails_h3(@employee) %>
       
-      <%=emails_h3(@employee) %>
+  <%if controller.can_view?(current_user) and Employee.can_view?(current_user)%>    
       <p>
         Personnel :
         <strong><%=h @employee.email %></strong>
@@ -94,17 +98,25 @@
         Professionnel :
         <strong><%=h @employee.society_email %></strong>
       </p>
+  <% end %>
+      <p>
+        Entreprise :
+        <strong><!--<%=h  @employee.intranet_email %>--></strong>
+      </p>
+            
       <p>
       <%=numbers_h3(@employee)%>
         <%for number in @numbers%>
-          <p>
-            <%="<img src=" + number_type_path(number.number_type.name) + " alt=" + number.number_type.name + " title=" + number.number_type.name + "/>"%>&nbsp;
-            <%=h number.indicative.indicative + " " + number.number%>&nbsp;
-            <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path(number.indicative.country.id.to_s) + " title=" + number.indicative.country.name + "  alt=" + number.indicative.country.name + " />"%>
-          </p>
+          <% if number.visible? or (controller.can_view?(current_user) and Employee.can_view?(current_user))%>
+            <p>
+              <%="<img src=" + number_type_path(number.number_type.name) + " alt=" + number.number_type.name + " title=" + number.number_type.name + "/>"%>&nbsp;
+              <%=h number.indicative.indicative + " " + number.number%>&nbsp;
+              <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path(number.indicative.country.id.to_s) + " title=" + number.indicative.country.name + "  alt=" + number.indicative.country.name + " />"%>
+            </p>
+          <% end %>  
         <%end%>
       </p>
-
+  <%if controller.can_view?(current_user) and Employee.can_view?(current_user)%>
     <h2>Identité Bancaire</h2>
       <p>
         Nom de la banque :
