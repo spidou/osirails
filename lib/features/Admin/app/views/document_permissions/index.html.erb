@@ -5,7 +5,7 @@
   <h2>Les documents</h2>
   <ul>
     <% for document in @document_permissions %>
-    <li><%= link_to document, edit_document_permission_path(document) %></li>	
+    <li><%= link_to document.document_owner, edit_document_permission_path(document.document_owner) %></li>	
     <% end %>
   </ul>
 

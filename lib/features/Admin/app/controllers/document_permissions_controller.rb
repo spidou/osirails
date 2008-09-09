@@ -1,10 +1,10 @@
 class DocumentPermissionsController < ApplicationController
   def index
-    @document_permissions = Document.models
+    @document_permissions = DocumentPermission.find(:all, :group => 'document_owner')
   end
 
   def edit
-    @document_permissions = DocumentPermission.find(:all, :conditions => ["document_owner = ?", params[:id]], :include => [:role] )
+    @document_permissions = DocumentPermission.find(:all, :conditions => ["document_owner = ?", params[:id]])
   end
 
   def update

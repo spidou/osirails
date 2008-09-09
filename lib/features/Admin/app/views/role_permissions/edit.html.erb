@@ -56,6 +56,58 @@
       <% end %>
     </table>
     
+		<h2>pour chaque type de document</h2>
+    <table>
+      <tr>
+        <th rowspan="2">Type de document</th>
+        <th colspan="5">Permissions</th>
+      </tr>
+      <tr>
+        <th>Lister</th>
+        <th>Voir</th>
+        <th>Ajouter</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+      </tr>
+      <% for document_permission in @document_permissions %>
+        
+        <tr>
+          <td><%= link_to document_permission.document_owner, edit_document_permission_path(document_permission.document_owner) %></td>
+          <td><%= check_box_tag "document[list][]", document_permission.id, document_permission.list %></td>
+          <td><%= check_box_tag "document[view][]", document_permission.id, document_permission.view %></td>
+          <td><%= check_box_tag "document[add][]", document_permission.id, document_permission.add %></td>
+          <td><%= check_box_tag "document[edit][]", document_permission.id, document_permission.edit %></td>
+          <td><%= check_box_tag "document[delete][]", document_permission.id, document_permission.delete %></td>
+        </tr>
+      <% end %>
+    </table>
+
+		<h2>pour chaque planning</h2>
+    <table>
+      <tr>
+        <th rowspan="2">Planning</th>
+        <th colspan="5">Permissions</th>
+      </tr>
+      <tr>
+        <th>Lister</th>
+        <th>Voir</th>
+        <th>Ajouter</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+      </tr>
+      <% for calendar_permission in @calendar_permissions %>
+        
+        <tr>
+          <td><%= link_to calendar_permission.calendar.name, edit_calendar_permission_path(calendar_permission.calendar) %></td>
+          <td><%= check_box_tag "calendar[list][]", calendar_permission.id, calendar_permission.list %></td>
+          <td><%= check_box_tag "calendar[view][]", calendar_permission.id, calendar_permission.view %></td>
+          <td><%= check_box_tag "calendar[add][]", calendar_permission.id, calendar_permission.add %></td>
+          <td><%= check_box_tag "calendar[edit][]", calendar_permission.id, calendar_permission.edit %></td>
+          <td><%= check_box_tag "calendar[delete][]", calendar_permission.id, calendar_permission.delete %></td>
+        </tr>
+      <% end %>
+    </table>
+
     <p> 
       <%= submit_tag "Mettre à jour" %>  
     <%end%>

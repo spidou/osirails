@@ -20,6 +20,10 @@ class Menu < ActiveRecord::Base
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
   
+  # Callbacks
+  after_create :create_permissions
+  after_destroy :destroy_permissions
+  
   # Includes
   include Permissible::InstanceMethods
   
@@ -29,7 +33,6 @@ class Menu < ActiveRecord::Base
       self.can_has_this_parent?(@new_parent_id)
     end
   end
-
  
   def after_update
     if self.update_parent
@@ -126,7 +129,17 @@ class Menu < ActiveRecord::Base
       end
       parents
     end
-  
+    
+    def create_permissions
+      Role.find(:all).each do |r|
+        MenuPermission.create(:menu_id => self.id, :role_id => r.id)
+      end
+    end
+    
+    def destroy_permissions
+      MenuPermission.destroy_all(:menu_id => self.id)
+    end
+      
   protected
     # This position permit to return a valide position for a menu.
     def position_in_bounds(position)
