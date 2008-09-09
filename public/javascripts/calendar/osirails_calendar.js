@@ -38,16 +38,16 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   };
   ajax_link(link_get_events);
 
-  // Disable text selecting
-  function disableselect() { return false };
-  function reEnable() { return true };
-  //if IE4+
-  document.getElementById('calendar').onselectstart = new Function ("return false");
-  //if NS6
-  if (window.sidebar){
-    document.getElementById('calendar').onmousedown = disableselect;
-    document.getElementById('calendar').onclick = reEnable;
-  };
+  //// Disable text selecting
+  //function disableselect() { return false };
+  //function reEnable() { return true };
+  ////if IE4+
+  //document.getElementById('calendar').onselectstart = new Function ("return false");
+  ////if NS6
+  //if (window.sidebar){
+  //  document.getElementById('calendar').onmousedown = disableselect;
+  //  document.getElementById('calendar').onclick = reEnable;
+  //};
 }
 
 /* Display an event on the calendar. This function is used by the server */

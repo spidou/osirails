@@ -20,7 +20,7 @@ Calendar.setup({
 		var year = cal.date.print("%Y");
 		var month = cal.date.print("%m");
 		var day = cal.date.print("%d");
-		window.location = "/calendars/" + db_calendar_id + "/" + period + "/" + year + "/" + month + "/" + day;
+		ajax_link('/calendars/' + db_calendar_id + '?period=' + period + '&year=' + year + '&month=' + month + '&day=' + day);
 	}
 });
 </script>
