@@ -23,13 +23,14 @@ class Role < ActiveRecord::Base
       MenuPermission.create(:role_id => self.id, :menu_id => m.id)
     end
     
-    all_document = DocumentPermission.find(:all, :group => 'document_owner')
-    all_document.each do |d|
+    all_document_types = DocumentPermission.find(:all, :group => 'document_owner')
+    all_document_types.each do |d|
       DocumentPermission.create(:role_id => self.id, :document_owner => d.document_owner)
     end
     
-    all_calendar = Calendar.find_all_by_user_id(nil)
-    all_calendar.each do |c|
+    # permissions are configurable only for calendar which have no owner
+    all_calendars = Calendar.find_all_by_user_id(nil)
+    all_calendars.each do |c|
       CalendarPermission.create(:role_id => self.id, :calendar_id => c.id)
     end
   end

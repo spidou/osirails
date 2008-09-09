@@ -18,9 +18,6 @@ menus:
     description: Administration de l'Intranet
     position: 1
     children:
-      documents:
-        title: Documents
-        description: Gestion des documents
       users:
         title: Utilisateurs
         description: Gestion des utilisateurs
@@ -83,6 +80,9 @@ menus:
             title: Services
             description: Gestion des services
             position: 3
+      documents:
+        title: Documents
+        description: Gestion des documents
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  

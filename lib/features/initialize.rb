@@ -161,8 +161,8 @@ def init(yaml, config, path)
 
     # This method insert into Database  all features options that wasn't present
     unless configurations.nil?
-      configurations.each_pair  do |key,value|
-        Configuration.create(:name => name.downcase+"_"+key, :value => value["value"], :description => value["description"]) unless Configuration.find_by_name(name+"_"+key)
+      configurations.each_pair do |key,value|
+        Configuration.create(:name => name.downcase+"_"+key, :value => value["value"], :description => value["description"]) unless Configuration.find_by_name(name.downcase+"_"+key)
       end
     end
   rescue ActiveRecord::StatementInvalid => e
