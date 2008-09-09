@@ -13,8 +13,14 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier"%>
-      <%= get_file_type_select(d, owner.class.name)%>
-    </p>
+      <select id='document_file_type_id' name='document[file_type_id]'> 
+        <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
+          <%b = a%>
+            <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
+          <%= a.name + "(" + (t.split(",").size > 3 ? t.split(",")[0..2].join(",").concat("...") : t) +")" %> </option>
+        <% end %>
+      </select>
+    </p> 
     
     <p>
         <%= d.label :tag_list, "Tags"%>

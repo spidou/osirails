@@ -57,7 +57,7 @@ class DocumentsController < ApplicationController
     else
       flash[:error] = "Fichier manquant"
     end
-    redirect_to :back
+#    redirect_to :back
   end
   
   
