@@ -1237,6 +1237,14 @@ width: 50px ! important;
 }
 */
 /*LAYOUTS' FORM*/
+.frame.presentation_calendar label {
+	text-align:right;
+	width:60px;
+	display:inline-block;
+}
+
+
+
 .frame.presentation_large label {
 	text-align:right;
 /*	margin-right:10px;*/
