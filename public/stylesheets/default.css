@@ -1320,6 +1320,7 @@ li.reference_enable {
 
 li.reference_disable {
 	font-style:italic;
+	color:#7E98CB !important;
 }
 
 .hierarchic ul {
