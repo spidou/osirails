@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
 
   helper :documents
+  helper :contacts
   
   def index
     @customers = Customer.find(:all)
@@ -57,6 +58,9 @@ class CustomersController < ApplicationController
     activity_sector_name = params[:customer].delete("activity_sector")
     activity_sector_name[:name].capitalize!
     
+    establishments = params[:customer].delete("establishments")
+    puts "test"
+    puts params[:customer].keys
     contacts = params[:customer].delete("contacts")
     contacts_original = contacts
     contact_objects = []
@@ -97,82 +101,82 @@ class CustomersController < ApplicationController
       end
     end
     
-    # If establishment_form is not null
-    unless params[:new_establishment_number]["value"] == 0  
-      new_estbalishment_number = params[:new_establishment_number]["value"].to_i
-      new_estbalishment_number.times do |i|
-        # For all new_establishment and addresses,  an instance variable is create.
-        # If his parameter is not valid, @error variable is set to true
-        eval "
-                unless params['valid_establishment_#{i+1}'].nil?
-                
-                  params['new_establishment_address#{i+1}'][:country_name] = params['new_country#{i+1}'][:name]
-                  params['new_establishment_address#{i+1}'][:city_name] = params['new_city#{i+1}'][:name]
-                  params['new_establishment_address#{i+1}'][:zip_code] = params['new_city#{i+1}'][:zip_code]
-
-                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
-                    instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
-                    instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))
-                    unless @new_establishment#{i+1}.address = @new_establishment_address#{i+1}             
-                      @error = true
-                    end
-                    unless @new_establishment#{i+1}.valid?                  
-                      @error = true
-                    end
-                    unless @new_establishment_address#{i+1}.valid?
-                      @error = true
-                    end
-                  end
-                end"
-      end
-
-      # If all new_establishment and addresses are valids, they are save 
-      unless @error
-        new_estbalishment_number.times do |i|
-          eval"
-                unless params['valid_establishment_#{i+1}'].nil?
-                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
-                    unless @new_establishment_address#{i+1}.save
-                        @error = true
-                    else
-                      unless @customer.establishments << @new_establishment#{i+1}
-                        @error = true
-                       else
-
-                      country = Country.find_by_name(params['new_country#{i+1}'][:name])
-                        unless country.nil?
-                          new_country = Country.create(:name => params['new_country#{i+1}'][:name])
-                          city = City.new(
-                            :name => params['new_city#{i+1}'][:name], 
-                            :zip_code => params['new_city#{i+1}'][:zip_code], 
-                            :country_id => new_country.id)
-                          if country.valid? and city.valid?
-                            country.save
-                            city.save
-                          end
-                        end
-                        unless City.find_by_name_and_country_id(params['new_country#{i+1}'][:name], country.id).nil? and country.nil?
-                          city = City.new(
-                            :name => params['new_city#{i+1}'][:name], 
-                            :zip_code => params['new_city#{i+1}'][:zip_code], 
-                            :country_id => country.id)
-                          if city.valid?
-                            city.save
-                          else 
-                            @error = false
-                          end
-                        end
-
-                      end
-                    end
-                    unless @new_establishment#{i+1}.save
-                      @error = true
-                    end
-                  end
-                end"
-        end
-      end
-    end
+#    # If establishment_form is not null
+#    unless params[:new_establishment_number]["value"] == 0  
+#      new_estbalishment_number = params[:new_establishment_number]["value"].to_i
+#      new_estbalishment_number.times do |i|
+#        # For all new_establishment and addresses,  an instance variable is create.
+#        # If his parameter is not valid, @error variable is set to true
+#        eval "
+#                unless params['valid_establishment_#{i+1}'].nil?
+#                
+#                  params['new_establishment_address#{i+1}'][:country_name] = params['new_country#{i+1}'][:name]
+#                  params['new_establishment_address#{i+1}'][:city_name] = params['new_city#{i+1}'][:name]
+#                  params['new_establishment_address#{i+1}'][:zip_code] = params['new_city#{i+1}'][:zip_code]
+#
+#                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
+#                    instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
+#                    instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))
+#                    unless @new_establishment#{i+1}.address = @new_establishment_address#{i+1}             
+#                      @error = true
+#                    end
+#                    unless @new_establishment#{i+1}.valid?                  
+#                      @error = true
+#                    end
+#                    unless @new_establishment_address#{i+1}.valid?
+#                      @error = true
+#                    end
+#                  end
+#                end"
+#      end
+#
+#      # If all new_establishment and addresses are valids, they are save 
+#      unless @error
+#        new_estbalishment_number.times do |i|
+#          eval"
+#                unless params['valid_establishment_#{i+1}'].nil?
+#                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
+#                    unless @new_establishment_address#{i+1}.save
+#                        @error = true
+#                    else
+#                      unless @customer.establishments << @new_establishment#{i+1}
+#                        @error = true
+#                       else
+#
+#                      country = Country.find_by_name(params['new_country#{i+1}'][:name])
+#                        unless country.nil?
+#                          new_country = Country.create(:name => params['new_country#{i+1}'][:name])
+#                          city = City.new(
+#                            :name => params['new_city#{i+1}'][:name], 
+#                            :zip_code => params['new_city#{i+1}'][:zip_code], 
+#                            :country_id => new_country.id)
+#                          if country.valid? and city.valid?
+#                            country.save
+#                            city.save
+#                          end
+#                        end
+#                        unless City.find_by_name_and_country_id(params['new_country#{i+1}'][:name], country.id).nil? and country.nil?
+#                          city = City.new(
+#                            :name => params['new_city#{i+1}'][:name], 
+#                            :zip_code => params['new_city#{i+1}'][:zip_code], 
+#                            :country_id => country.id)
+#                          if city.valid?
+#                            city.save
+#                          else 
+#                            @error = false
+#                          end
+#                        end
+#
+#                      end
+#                    end
+#                    unless @new_establishment#{i+1}.save
+#                      @error = true
+#                    end
+#                  end
+#                end"
+#        end
+#      end
+#    end
     
 #    # If contact_form is not null
 #    unless params[:new_contact_number]["value"].nil?
