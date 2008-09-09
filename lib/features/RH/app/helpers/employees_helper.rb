@@ -253,11 +253,27 @@ module EmployeesHelper
     return "<h3>Adresses électroniques </h3>" if employee.email!="" and employee.society_email!=""
   end
   
+  # Method that return an array of visible numbers
+  def visibles_numbers(numbers)
+    visibles = []
+    numbers.each do |number|
+      visibles << number if number.visible
+    end
+    visibles
+  end
+  
   # Method to pluralize or not the number's <h3></h3>
-  def numbers_h3(employee)
-    return "" if employee.numbers.size==0
-    return "<h3>Numéro de telephone</h3>" if employee.numbers.size==1
-    return "<h3>Numéros de telephone</h3>"if employee.numbers.size>1
+  def numbers_h3(numbers)
+    unless controller.can_view?(current_user) and Employee.can_view?(current_user)
+      visibles = visibles_numbers(numbers)
+      return "" if visibles.size==0 
+      return "<h3>Numéro de telephone</h3>" if visibles.size==1
+      return "<h3>Numéros de telephone</h3>"if visibles.size>1
+    else
+      return "" if numbers.size==0 
+      return "<h3>Numéro de telephone</h3>" if numbers.size==1
+      return "<h3>Numéros de telephone</h3>"if numbers.size>1
+    end
   end
   
   def flag_path(country_id)
@@ -268,6 +284,12 @@ module EmployeesHelper
     type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
     type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
     type = "fax" if type == "Fax" or type== "Fax Professionnel"
-    "/images/"+type+".png"
+    "/images/"+type+"_16x16.png"
   end
+  
+  def index_actions
+    return "<th colspan=\"2\">Actions</th>" if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
+    return "<th>Action</th>"  if !controller.can_edit?(current_user) or !Employee.can_edit?(current_user)
+  end
+  
 end

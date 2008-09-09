@@ -3,23 +3,38 @@
 <div class="frame">
 <table>
   <tr>
-    <th>First name</th>
-    <th>Last name</th>
-    <th colspan="3">Actions</th>
+    <th>Pr&eacute;nom</th>
+    <th>Nom</th>
+    <th>Service&#40;s&#41;</th>
+    <th>T&eacute;l&eacute;phone</th>
+    <th>Fonction</th>
+    <%= index_actions%>
   </tr>
 
 <% for employee in @employees %>
   <tr>
     <td><%=h employee.first_name %></td>
     <td><%=h employee.last_name %></td>
-    <td><%= link_to( 'Details', employee) if controller.can_view?(current_user) %></td>
-    <td><%= link_to( 'Modifier', edit_employee_path(employee)) if controller.can_edit?(current_user) %></td>
-    <td><%= link_to( 'Supprimer', employee, :confirm => 'Etes vous ?', :method => :delete) if controller.can_delete?(current_user) %></td>
+    <td>
+      <%for service in employee.services%>
+          <%=link_to service.name, service_path(service.id)%><br/>
+      <% end %>
+    </td>
+    <%="<td  title='" + visibles_numbers( employee.numbers ).first.indicative.indicative + " " + visibles_numbers( employee.numbers ).first.formated + " (" + visibles_numbers( employee.numbers ).first.indicative.country.name + ")'>" %>
+      <%=h visibles_numbers( employee.numbers ).first.formated %>&nbsp;
+    </td>
+    <td><%=h employee.intranet_email %></td>
+    <% if controller.can_list?(current_user) and Employee.can_list?(current_user)%>
+      <td><%= link_to( "<img src=\"/images/view_16x16.png\" title=\"Détails\" alt=\"Détails\" />", employee) %></td>
+    <% end %>
+    <% if controller.can_edit?(current_user) and Employee.can_edit?(current_user)%>
+      <td><%= link_to( "<img src=\"/images/edit_16x16.png\" title=\"Modifier\" alt=\"Modifier\" />", edit_employee_path(employee)) %></td>
+    <% end %>
   </tr>
 <% end %>
 </table>
 
-<br />
-
-<%= link_to 'Ajouter', new_employee_path %>
+<p>
+  <%= link_to "<img src=\"/images/add_24x24.png\" title=\"Ajouter\" alt=\"Ajouter\" />", new_employee_path %>
+</p>
 </div>

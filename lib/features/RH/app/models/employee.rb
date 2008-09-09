@@ -46,6 +46,11 @@ class Employee < ActiveRecord::Base
     self.last_name.upcase!
   end
   
+  # Method to generate the intranet email
+  def intranet_email
+    email = self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
+  end
+  
   # method that generate the username with attribute of the created employee 
   # it take two args that are:
   # obj => class instance (the new employee object, that need to generate a user)
