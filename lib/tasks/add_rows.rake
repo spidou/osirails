@@ -267,13 +267,16 @@ namespace :osirails do
       john.iban = iban
     end
     
+    # default contacts
+    Contact.create :first_name => "Contact_first_name", :last_name => "Contact_last_name", :contact_type_id => "1", :email => "contact@emr.com", :job => "stagiaire"
+    
 
     desc "Depopulate the database"
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address].each do |model|
+        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address, Contact].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
