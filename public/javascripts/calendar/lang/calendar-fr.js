@@ -54,7 +54,7 @@ Calendar._MN = new Array
  "Mai",
  "Juin",
  "Juillet",
- "Août",
+ "Ao&ucirc;t",
  "Septembre",
  "Octobre",
  "Novembre",
