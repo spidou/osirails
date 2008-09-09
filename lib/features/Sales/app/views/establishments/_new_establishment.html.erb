@@ -8,37 +8,48 @@
 
 <div id='<%= "new_establishment#{cpt}"%>'>
 
-<p>
-  <%= label "new_establishment#{cpt}", :name , "Nom du nouvel &eacute;tablissement" %>
-  <%= text_field("new_establishment#{cpt}","name")%>
-</p>
+<% etablissement_ = Establishment.new %>
+    <% fields_for "customer[establishments]", etablissement_ , :index => cpt do |establissement| %>
+      
+    <p>
+      <%= establissement.label :name, "Nom :" %>
+      <%= establissement.text_field :name %>
+    </p>
 
- <p>
-  <%= label "new_establishment#{cpt}", :establishment_type_id, "Type d'&eacute;tablissement" %>
-  <%= select("new_establishment#{cpt}", "establishment_type_id",EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] })%>
-</p>
+    <p>
+      <%= establissement.label :type_id, "Type d'&eacute;tablissement :" %>
+      <%= establissement.select("establishment_type_id", EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] }) %>
+    </p>
+    
+    <% address_ = Address.new unless error %>
+    <% fields_for "customer[establishments][#{cpt}][address]", address_ do |address| %>
+      
+    <p>      
+      <%= address.label :address1, "Address1" %>
+      <%= address.text_field :address1 %>
+    </p>
 
-<p>
-  <%= label "new_establishment_address#{cpt}", "address1", "Address1" %>
-  <%= text_field("new_establishment_address#{cpt}","address1")%>
-</p>
+    <p>      
+      <%= address.label :address2, "Address2" %>
+      <%= address.text_field :address2 %>
+    </p>
 
-<p>
-  <%= label :new_address, "Address2" %>
-  <%= text_field("new_establishment_address#{cpt}","address2")%>
-</p>
-
-<% unless error%>
-  <% owner_address = Address.new() %>
-<%else%>
-  <%owner_address = Address.new(
-    :country_name => params["new_country#{cpt}"][:name],
-    :city_name => params["new_city#{cpt}"][:name],
-    :zip_code => params["new_city#{cpt}"][:zip_code])%>  
-<%end%>
+    <% unless error%>
+      <% owner_address = Address.new() %>
+    <%else%>
+      <%owner_address = Address.new(
+        :country_name => params[:customer][:establishment]["#{cpt}"][:name],
+        :city_name => params[:customer][:establishment]["#{cpt}"][:name],
+        :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
+    <%end%>
 
 <%= render :partial => 'addresses/address', 
-      :locals => {:cpt=> cpt, :owner_address => owner_address}%>
+      :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :owner => address}%>
+
+    <% end %>
+
+<% end %>
+
 
 <%= hidden_field("valid_establishment_#{cpt}", "value", "value" => 'true')%>
 
@@ -46,7 +57,7 @@
 
 <% unless error%>
 <div id='<%= "link_add_remove_establishment_#{cpt.to_i + 1}"%>'>
-    <%=link_to_remote("(+)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt.to_i + 1},
+    <%=link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt.to_i + 1},
      :with => "'number=' + $('new_establishment_number_value').value")%>
 </div>
 <%end%>
