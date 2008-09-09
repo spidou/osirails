@@ -19,6 +19,11 @@ class Employee < ActiveRecord::Base
   has_one :iban, :as => :has_iban
   has_one :job_contract
   has_one :user
+  
+  # has_many_polymorphic
+  has_many :contacts_owners, :as => :has_contact, :class_name => "ContactsOwners"
+  has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
+  
   has_many :numbers, :as => :has_number
   has_many :premia
   has_many :employees_services

@@ -1,6 +1,4 @@
 class EventsController < ApplicationController
-  before_filter :check
-
   def index
     @calendar = Calendar.find(params[:calendar_id])
     render :text => 'false' unless @calendar.can_list?(current_user)
@@ -55,6 +53,12 @@ class EventsController < ApplicationController
     params[:event][:by_day] = [params[:event].delete(:by_month_day_num) + params[:event].delete(:by_month_day_wday)] if params[:event][:by_month_day_num] && params[:event][:by_month_day_wday]
     @event = Event.create(params[:event])
     @event.alarms << Alarm.create(params[:alarm])
+    
+    params[:participants][:list] ||= []
+    params[:participants][:list].each do |p|
+      @event.participants << Participant.create(Participant.parse(p))
+    end
+    
     @calendar.events << @event
     respond_to do |format|
       format.js
@@ -141,7 +145,12 @@ class EventsController < ApplicationController
         @alarm = Alarm.new(params[:alarm])
         @event.alarms.first = @alarm
       end
-
+      
+      params[:participants][:list] ||= []
+      params[:participants][:list].each do |p|
+        @event.participants << Participant.create(Participant.parse(p))
+      end
+      
       if @event.update_attributes(params[:event])
         @message = "Modification effectué avec succès"
       else
@@ -175,9 +184,4 @@ class EventsController < ApplicationController
       format.js
     end
   end
-
-  protected
-    def check
-      # TODO Verify if the current user have the authorization on the calendar and event
-    end
 end

@@ -58,14 +58,18 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
 function add_event (id, title, top, height, color, week_day, full_day) {
   var elm_id = 'event' + id;
 
-  if (period == 'month') {
-    var events = document.getElementsByClassName('event');
-    for (var i=0; i < events.length; i++) {
-      if (events[i].id == elm_id) {
-        events[i].parentNode.removeChild(events[i]);
+  var events = document.getElementsByClassName('event');
+  for (var i=0; i < events.length; i++) {
+    if (events[i].id == elm_id) {
+      if (period == 'month') {
+        events[i].remove();
+      } else {
+        events[i].parentNode.remove();
       };
     };
+  };
 
+  if (period == 'month') {
     var ul_elm = document.getElementById(week_day).childNodes[2];
     var li_elm = document.createElement('li');
     li_elm.setAttribute('id', elm_id);
@@ -293,6 +297,7 @@ function display_event_box (action, event_id, event) {
     document.getElementById(event_id).parentNode.appendChild(event_box_elm);    
   };
   event_box_elm.style.top = document.getElementById(event_id).style.top;
+  event_box_elm.style.left = 0;
   event_box_elm.style.visibility = 'visible';
   event_box_elm.style.display = 'none';
   Effect.Appear(event_box_id, {direction: 'center'});
@@ -311,9 +316,9 @@ function hide_event_box () {
     for (var i=0; i < events.length; i++) {
       if (events[i].id.substr(13, 3) == 'new') {
         if (period == 'month') {
-          events[i].parentNode.removeChild(events[i]);
+          events[i].remove();
         } else {
-          events[i].ancestors()[1].removeChild(events[i].parentNode);          
+          events[i].parentNode.remove();
         };
       };
     };
@@ -392,9 +397,9 @@ function hide_event_box () {
       var events = document.getElementsByClassName('event');
       for (var i=0; i < events.length; i++) {
         if (period == 'month') {
-          events[i].parentNode.removeChild(events[i]);
+          events[i].remove();
         } else {
-          events[i].ancestors()[1].removeChild(events[i].parentNode);          
+          events[i].parentNode.remove();
         };
       };
     }
@@ -621,7 +626,7 @@ function hide_event_box () {
     function remove_undisplayed (elm) {
       if (elm) {
         if (elm.tagName == 'DIV' && elm.style.display == 'none') {
-          elm.parentNode.removeChild(elm);
+          elm.remove();
         } else {
           for (var i=0; i < elm.childNodes.length; i++) {
             remove_undisplayed(elm.childNodes[i]);
@@ -728,4 +733,18 @@ function calcalc(cal) {
     }
     var date2 = new Date(time);
     field.value = date2.print("%Y-%m-%d %H:%M");
+}
+
+function add_participant () {
+  var list = document.getElementById('participants_list');
+  var textfield = document.getElementById('participants_text');
+  var li = document.createElement('li');
+  var input = document.createElement('input');
+  input.setAttribute('type', 'hidden');
+  input.setAttribute('name', 'participants[list][]');
+  input.setAttribute('value', textfield.value);
+  
+  li.innerHTML = textfield.value;
+  li.appendChild(input);
+  list.appendChild(li);
 }

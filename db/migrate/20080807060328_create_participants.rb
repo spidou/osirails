@@ -2,8 +2,8 @@ class CreateParticipants < ActiveRecord::Migration
   def self.up
     create_table :participants do |t|
       t.references :event
-      t.string :has_type
-      t.integer :has_id
+      t.text :name
+      t.string :email
       t.timestamps
     end
   end

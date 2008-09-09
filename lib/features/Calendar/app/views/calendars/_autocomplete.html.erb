@@ -1,0 +1,6 @@
+<% # UL use by Text_field_auto_complete %>
+<ul>
+  <% for contact in @contacts do -%>
+    <li><%= contact.first_name %> <%= contact.last_name %> &lt;<%= contact.email %>&gt;</li>
+  <% end %>
+</ul>

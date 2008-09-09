@@ -80,12 +80,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :calendars do |calendar|
     calendar.resources :events
   end
+  map.connect 'calendars/:action/:id', :controller => 'calendars'
   map.connect 'calendars/:id/:period/:year/:month/:day', :controller => 'calendars', :action => 'show', :period => nil, :year => nil, :month => nil, :day => nil
   ### END CALENDAR
 
   ### COMMONS
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
-  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get }
+  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}
   map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
   
