@@ -166,6 +166,6 @@ def init(yaml, config, path)
       end
     end
   rescue ActiveRecord::StatementInvalid => e
-    puts "An error occured at feature initialization. Please reload the server (error : #{e.message})"
+    puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   end
 end

@@ -49,6 +49,46 @@ namespace :osirails do
       Indicative.create :indicative => "+81", :country_id => japan.id
       Indicative.create :indicative => "+86", :country_id => china.id
       
+      # default cities
+      City.create :name => "BRAS PANON", :zip_code => "97412", :country_id => reunion.id
+      City.create :name => "CILAOS", :zip_code => "97413", :country_id => reunion.id
+      City.create :name => "ENTRE DEUX", :zip_code => "97414", :country_id => reunion.id
+      City.create :name => "ETANG SALE", :zip_code => "97427", :country_id => reunion.id
+      City.create :name => "LA CHALOUPE", :zip_code => "97416", :country_id => reunion.id
+      City.create :name => "LA MONTAGNE", :zip_code => "97417", :country_id => reunion.id
+      City.create :name => "LA NOUVELLE", :zip_code => "97428", :country_id => reunion.id
+      City.create :name => "LA PLAINE DES CAFRES", :zip_code => "97418", :country_id => reunion.id
+      City.create :name => "LA PLAINE DES PALMISTES", :zip_code => "97431", :country_id => reunion.id
+      City.create :name => "LA POSSESSION", :zip_code => "97419", :country_id => reunion.id
+      City.create :name => "LA RIVIERE", :zip_code => "97421", :country_id => reunion.id
+      City.create :name => "LA SALINE", :zip_code => "97422", :country_id => reunion.id
+      City.create :name => "LE GUILLAUME", :zip_code => "97423", :country_id => reunion.id
+      City.create :name => "LE PITON ST LEU", :zip_code => "97424", :country_id => reunion.id
+      City.create :name => "LE PORT", :zip_code => "97420", :country_id => reunion.id
+      City.create :name => "LE TAMPON", :zip_code => "97430", :country_id => reunion.id
+      City.create :name => "LES AVIRONS", :zip_code => "97425", :country_id => reunion.id
+      City.create :name => "LES TROIS BASSINS", :zip_code => "97426", :country_id => reunion.id
+      City.create :name => "PETITE ILE", :zip_code => "97429", :country_id => reunion.id
+      City.create :name => "PLATEAU CAILLOUX", :zip_code => "97460", :country_id => reunion.id
+      City.create :name => "RAVINE DES CABRIS", :zip_code => "97432", :country_id => reunion.id
+      City.create :name => "SALAZIE", :zip_code => "97433", :country_id => reunion.id
+      City.create :name => "ST ANDRE", :zip_code => "97440", :country_id => reunion.id
+      City.create :name => "ST BENOIT", :zip_code => "97470", :country_id => reunion.id
+      City.create :name => "ST DENIS", :zip_code => "97400", :country_id => reunion.id
+      City.create :name => "ST GILLES LES BAINS", :zip_code => "97434", :country_id => reunion.id
+      City.create :name => "ST GILLES LES HAUTS", :zip_code => "97435", :country_id => reunion.id
+      City.create :name => "ST JOSEPH", :zip_code => "97480", :country_id => reunion.id
+      City.create :name => "ST LEU", :zip_code => "97436", :country_id => reunion.id
+      City.create :name => "ST LOUIS", :zip_code => "97450", :country_id => reunion.id
+      City.create :name => "ST PAUL", :zip_code => "97411", :country_id => reunion.id
+      City.create :name => "ST PHILIPPE", :zip_code => "97442", :country_id => reunion.id
+      City.create :name => "ST PIERRE", :zip_code => "97410", :country_id => reunion.id
+      City.create :name => "STE ANNE", :zip_code => "97437", :country_id => reunion.id
+      City.create :name => "STE CLOTILDE", :zip_code => "97490", :country_id => reunion.id
+      City.create :name => "STE MARIE", :zip_code => "97438", :country_id => reunion.id
+      City.create :name => "STE ROSE", :zip_code => "97439", :country_id => reunion.id
+      City.create :name => "STE SUZANNE", :zip_code => "97441", :country_id => reunion.id
+      
       # default services
       dg = Service.create :name => "Direction Générale"
       Service.create :name => "Service Administratif", :service_parent_id => dg.id

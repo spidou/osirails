@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
                                                          
       # user.validates_format_of :password, :with => /^(a.A){32}$/ ,:message =>  " ne doit pas être votre ancien mot de passe" , :if => :same_password?
     rescue Exception =>  e
-      puts "Une erreur est survenue à l'initialisation du model User. Veuillez relancer le serveur. (erreur : #{e.message})"
+      puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     end
   end
   
