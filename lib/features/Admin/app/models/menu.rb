@@ -15,7 +15,7 @@ class Menu < ActiveRecord::Base
   attr_accessor :old_parent_id, :update_parent
   
   # Named scopes
-  named_scope :mains, :conditions => {:parent_id => nil}
+  named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

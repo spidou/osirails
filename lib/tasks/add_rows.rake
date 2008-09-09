@@ -98,10 +98,6 @@ namespace :osirails do
       Service.create :name => "Atelier Découpe", :service_parent_id => prod.id
       Service.create :name => "Atelier Fraisage", :service_parent_id => prod.id 
       
-      # default roles
-      role_admin = Role.create  :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
-      role_guest = Role.create  :name => "guest" ,:description => "Ce rôle permet un accés à toutes les ressources publiques en lecture seule" 
-      
       # default contact types
       ContactType.create :name => "Normal", :owner => "Customer"
       ContactType.create :name => "Contact de facturation", :owner => "Customer"
@@ -114,13 +110,20 @@ namespace :osirails do
       # default users and roles
       user_admin = User.create :username => "admin" ,:password => "admin", :enabled => 1
       user_guest = User.create :username => "guest",:password => "guest", :enabled => 1
+      role_admin = Role.create  :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
+      role_guest = Role.create  :name => "guest" ,:description => "Ce rôle permet un accés à toutes les ressources publiques en lecture seule" 
       user_admin.roles << role_admin
       user_guest.roles << role_guest
       
       # default menu permissions for default roles
-      Menu.find(:all).each do |m|
-        MenuPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :menu_id => m.id # admin
-        MenuPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :menu_id => m.id # guest
+      MenuPermission.find(:all).each do |mp|
+        if mp.role_id == role_admin.id
+          mp.list = mp.view = mp.add = mp.edit = mp.delete = true
+        elsif mp.role_id == role_guest.id
+          mp.list = mp.view = true
+          mp.add = mp.edit = mp.delete = false
+        end
+        mp.save
       end
       
       # default business object permissions for default roles

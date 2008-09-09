@@ -50,7 +50,6 @@ module ApplicationHelper
     html = []
     menu = current_menu
     main_menu = menu.last_ancestor
-    #return if main_menu.nil?
     main_menu.children.each do |m|
       first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
