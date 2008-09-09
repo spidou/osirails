@@ -105,7 +105,7 @@ module CommoditiesManagerHelper
       
       add_button = add_category_or_commodity(commodity_category) 
       delete_button = show_delete_category_button(commodity_category)
-      status = commodity_category.enable ? "enable" : "disable" if show == nil
+      status = commodity_category.enable ? "enable" : "disable"
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
       table << "<td><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
@@ -122,7 +122,7 @@ module CommoditiesManagerHelper
             add_button = add_category_or_commodity(category_child)
             delete_button = show_delete_category_button(category_child)
             status = category_child.enable ? "enable" : "disable" if show == nil
-          
+             
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
             table << "<td>"
