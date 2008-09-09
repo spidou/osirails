@@ -1310,7 +1310,7 @@ li.category_enable {
 }
 
 li.category_disable {
-	color:#888 !important;
+	color:#aeaeae !important;
 	font-style:italic;
 }
 
@@ -1320,7 +1320,7 @@ li.reference_enable {
 
 li.reference_disable {
 	font-style:italic;
-	color:#7E98CB !important;
+	color:#A2B5D9 !important;
 }
 
 .hierarchic ul {
