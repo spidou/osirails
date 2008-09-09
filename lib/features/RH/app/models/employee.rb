@@ -41,19 +41,6 @@ class Employee < ActiveRecord::Base
     self.last_name.upcase!
   end
   
-  # Method to replace accentuated chars by none accentuated chars
-  def format_string(string)
-
-    with_accent = "áéíóúýÁÉÍÓÚÝàèìòùÀÈÌÒÙäëïöüÿÄËÏÖÜâêîôûÂÊÎÔÛåÅøØßçÇãñõÃÑÕ".split("")
-    without_accent = "aeiouyAEIOUYaeiouAEIOUaeiouyAEIOUaeiouAEIOUaAoOscCanoANO".split("")
-    string.split("").each do |letter|
-      with_accent.each_with_index do |accentuate,index|
-        string = string.gsub(letter,without_accent[index]) if letter == accentuate 
-      end
-    end
-    return string
-  end
-  
   # method that generate the username with attribute of the created employee 
   # it take two args that are:
   # obj => class instance (the new employee object, that need to generate a user)
@@ -130,12 +117,12 @@ class Employee < ActiveRecord::Base
                   if tmp[0]==tmp[0].upcase
                     tmp[0].downcase!
                     # send the 'Attribut' name and truncate it with the Option that give us the length 
-                    txt = format_string(obj.send(tmp[0])[0...tmp[1].to_i])
+                    txt = obj.send(tmp[0])[0...tmp[1].to_i].strip_accents
                     retour += txt.upcase
                   else
                     # send the 'Attribut' name and truncate it with the Option that give us the length
                     # replace the spaces with  "_" cf=> .gsub(/\x20/,"_")
-                    txt = format_string(obj.send(tmp[0])[0...tmp[1].to_i].gsub(/\x20/,"_"))
+                    txt = obj.send(tmp[0])[0...tmp[1].to_i].gsub(/\x20/,"_").strip_accents
                     retour += txt.downcase
                   end 
               end 
@@ -148,7 +135,7 @@ class Employee < ActiveRecord::Base
                 self.pattern_error = true
                 return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
               end
-              txt = format_string(obj.send(tmp).gsub(/\x20/,"_"))
+              txt = obj.send(tmp).gsub(/\x20/,"_").strip_accents
               if val[i] == val[i].upcase
                 retour += txt.upcase
               else
