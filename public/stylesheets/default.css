@@ -841,8 +841,8 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\			::::/::INATIVE MESSAGE:::::::			  /!\
-/!\			:::::/:::[ERREUR/SIGNAL]:/:::::::			  /!\
+/!\			::::::::INATIVE MESSAGE::::::::				  /!\
+/!\			::::::::[ERREUR/SIGNAL]::::::::				  /!\
 /!\/!\/!\/!\/!\/!\/!/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 
 /*/!\/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\/!\*/
@@ -1305,12 +1305,21 @@ fieldset.no-style legend {
 	margin-left:10px;
 }
 
-li.category {
+li.category_enable {
 	color:#40445D !important;
 }
 
-li.reference {
+li.category_disable {
+	color:#333 !important;
+	font-style:italic;
+}
+
+li.reference_enable {
 	color:#7E98CB !important;
+}
+
+li.reference_disable {
+	font-style:italic;
 }
 
 .hierarchic ul {
