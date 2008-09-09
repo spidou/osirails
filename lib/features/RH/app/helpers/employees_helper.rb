@@ -93,12 +93,13 @@ module EmployeesHelper
     end
   end
   
-  def display_p_balise(i)
-    "<p id=" + i.to_s + ">"
-  end
+  
   ##################################################################
   ########## NUMBERS METHODS #######################################
-
+  
+  def display_p_balise(i)
+    "<p id='number_" + i.to_s + "'>"
+  end
   
   def display_number0(owner)
     if params[owner].nil?
@@ -112,7 +113,7 @@ module EmployeesHelper
    # Method to generate text_field for each number add
   def add_number_line(owner)
     name = owner + "[numbers][" + params[:opt] + "]"
-    html =  "<p id='" + params[:opt] + "'>" 
+    html =  "<p id='number_" + params[:opt] + "'>" 
     html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected =>  8 ) + "\n"
     html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
     html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
@@ -143,7 +144,7 @@ module EmployeesHelper
     (1..params[owner]['numbers'].size + 1).each do |f|
       unless params[owner]['numbers'][f.to_s].nil?
         name =  owner + "[numbers][" + f.to_s + "]"
-        html += "<p id=" + f.to_s + ">"
+        html += "<p id='number_" + f.to_s + "'>"
         html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
         html += text_field_tag( name+"[number]", params[owner]['numbers'][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
         html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
