@@ -1,14 +1,13 @@
-<!-- third_ variable content third object, customer or supplier -->
-<% third_type = third_.type.downcase%>
+  <!-- third_ variable content third object, customer or supplier -->
+  <% third_type = third_.type.downcase%>
 
-<div class="frame">
-<h2> Informations g&eacute;n&eacute;rales </h2>
+  <h2> Informations g&eacute;n&eacute;rales </h2>
   <p>
     <%= third.label :name, "Nom: " %>
     <%= third.text_field :name  %>
   </p>
 
-  <p>    
+  <p>
     <%= third.label :legal_form, "Forme juridique: " %>
     <!-- legal_form_value variable store the previous option selected by user-->
     <% params["#{third_type}"].nil? ? legal_form_value = third_.legal_form_id.to_i : legal_form_value = params["#{third_type}"][:legal_form_id].to_i%>
@@ -39,9 +38,7 @@
     <%= third.label :note, "Note du tiers :" %>
     <%= third.select("note", {"0" => 0, "1" => 1, "2"=> 2, "3" => 3, "4" => 4, "5"=> 5}) %>
   </p>
-</div>
 
-<div class="frame">
   <h2> Informations bancaires </h2>
   <!-- Iban instance will be use into fields_for-->
   
@@ -78,7 +75,7 @@
         <%= iban.text_field :account_name %>
     </p>
 
-    <%end# %>    
+    <% end %>    
   
   <% elsif third_type == "customer" %>
 
@@ -93,4 +90,3 @@
     </p>
 
   <% end %>
-</div>
