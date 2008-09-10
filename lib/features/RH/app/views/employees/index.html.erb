@@ -1,5 +1,17 @@
 <h1>Tous les employ&eacute;es</h1>
 
+
+
+<% content_for :secondary_menu do %>
+  <%if controller.can_view?(current_user) and Employee.can_view?(current_user)%> 
+    <p>
+      <%= link_to 'Voir tous les employées', employees_path %>
+    </p>
+  <% end %>
+<% end %>
+
+
+
 <div class="frame">
 <table>
   <tr>

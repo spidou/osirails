@@ -46,6 +46,11 @@ class Employee < ActiveRecord::Base
     self.last_name.upcase!
   end
   
+  # Method to find active employees
+  def self.active_employees
+    Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.end_date is null or job_contracts.end_date> ?', Time.now])
+  end
+  
   # Method to generate the intranet email
   def intranet_email
     email = self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain

@@ -34,7 +34,7 @@
     <%= label_tag 'address[address1]', "Adresse :"%> 
     <%= display_address1(@address.nil? ? nil :@address[:address1] )%> - <%= display_address2(@address.nil? ? nil :@address[:address2] )%>
   </p>
-  <%= render :partial => 'addresses/address', :locals => {:cpt=> 1, :owner_address => @employee.address} %>
+  <%= render :partial => 'addresses/address', :locals => {:cpt=> 1, :owner_address => @employee.address, :address_name => "employee"} %>
   <h3>Adresses &eacute;lectroniques</h3>
   <p>
     <%= f.label :email, "Email personnel :"%>
