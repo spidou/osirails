@@ -2,17 +2,17 @@
   <% form_for(:document, document, :url => { :controller => "Documents", :action => "create" , :owner => {:owner_id => owner.id, :owner_model => owner.class.name}}, :html => { :multipart => true}) do |d| %>
     
     <p>
-      <%= d.label :name%>
+      <%= d.label :name, "Nom:"%>
       <%= d.text_field :name%>
     </p>
   
     <p>
-      <%= d.label :description%>
+      <%= d.label :description, "Description:"%>
       <%= d.text_field :description%>
     </p>
   
     <p>
-      <%= d.label :file_type_id, "Type de fichier"%>
+      <%= d.label :file_type_id, "Type de fichier:"%>
       
       <select id='document_file_type_id' name='document[file_type_id]'> 
         <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
@@ -25,12 +25,12 @@
     </p> 
     
     <p>
-        <%= d.label :tag_list, "Tags"%>
+        <%= d.label :tag_list, "Tags:"%>
         <%= d.text_field :tag_list%>
     </p>
     
     <p>
-      <%= label :file, "Fichier"%>
+      <%= label :file, "Fichier:"%>
       <%= file_upload%>
     </p>
   
