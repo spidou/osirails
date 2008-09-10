@@ -59,6 +59,9 @@ class CustomersController < ApplicationController
     activity_sector_name[:name].capitalize!
 
     establishments = params[:customer].delete("establishments")
+    establishments_original = establishments
+    establishment_objects = []
+    address_objects = []
 
     contacts = params[:customer].delete("contacts")
     contacts_original = contacts
@@ -99,13 +102,17 @@ class CustomersController < ApplicationController
         end
       end
     end
+#    render_component :controller => "contacts", :action => "create"
     
+    # If establishment_form is not null
     unless (new_establishment_number = params[:new_establishment_number]["value"].to_i) == 0
       new_establishment_number.times do |i|
-        unless establishments["#{i+1}"] == 'false'
-#          @error = true
-          if establishments["#{i+1}"]
-            
+        unless establishments["#{i+1}"][:valid] == 'false'
+          establishments["#{i+1}"][:customer_id] = @customer.id
+          address_objects[i] = establishments["#{i+1}"].delete("address")
+          establishment_objects[i] =Establishment.new(establishments["#{i+1}"])
+          unless establishment_objects[i].valid? 
+            @error = true
           end
         end
       end
@@ -188,49 +195,6 @@ class CustomersController < ApplicationController
     #        end
     #      end
     #    end
-    
-    #    # If contact_form is not null
-    #    unless params[:new_contact_number]["value"].nil?
-    #      new_contact_number = params[:new_contact_number]["value"].to_i
-    #      new_contact_number.times do |i|
-    #        # For all new_contact  an instance variable is create.
-    #        # If his parameter is not valid, @error variable is set to true
-    #        eval "unless params['valid_contact_#{i+1}'].nil?
-    #                    unless params['valid_contact_#{i+1}']['value'] == 'false'
-    #                      unless instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
-    #                        @error = true
-    #                      end
-    #                      unless @new_contact#{i+1}.valid?
-    #                        @error = true
-    #                      end
-    #                    end
-    #                  end"
-    #      end
-    #    end
-    #    
-    #    # If all new_contact are valids, they are save 
-    #    unless @error
-    #      new_contact_number.times do |i|
-    #        eval"unless params['valid_contact_#{i+1}'].nil?
-    #                   unless params['valid_contact_#{i+1}']['value'] == 'false'
-    #                     if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-    #                       unless @customer.contacts << @new_contact#{i+1}
-    #                       @error = true
-    #                       end
-    #                       unless @new_contact#{i+1}.save
-    #                         @error = true
-    #                       end
-    #                     elsif params['new_contact#{i+1}_id'] != ''                        
-    #                       if @customer.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
-    #                         @customer.contacts << Contact.find(params['new_contact#{i+1}']['id'])
-    #                       end
-    #                     else
-    #                       @error = true
-    #                     end
-    #                  end
-    #                end"
-    #      end
-    #    end
         
     unless @error
       contact_objects.each do |contact|
@@ -242,6 +206,9 @@ class CustomersController < ApplicationController
     else
       params[:customer][:activity_sector] = {:name => activity_sector_name[:name]} 
       params[:customer][:contacts] = contacts_original
+      params[:customer][:establishments] =establishments_original
+      
+      
       @new_establishment_number = params[:new_establishment_number]["value"]
       @establishments = @customer.establishments
       @new_contact_number = params[:new_contact_number]["value"]

@@ -4,6 +4,27 @@ class ContactsController < ApplicationController
   
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]
   
+  def create  
+    # If contact_form is not null
+    unless (new_contact_number = params[:new_contact_number]["value"].to_i) == 0
+      new_contact_number.times do |i|
+        unless contacts["#{i+1}"][:valid] == 'false'
+          if contacts["#{i+1}"][:id].blank?
+            contacts["#{i+1}"].delete("id")
+            contacts["#{i+1}"].delete("selected")
+            contacts["#{i+1}"].delete("valid")
+            contact_objects[i] = Contact.new(contacts["#{i+1}"])
+            unless contact_objects[i].valid?
+              @error = true
+            end
+          else
+            contact_objects[i] = Contact.find(contacts["#{i+1}"][:id])
+          end                  
+        end
+      end
+    end
+  end
+  
   def edit
     @contact = Contact.find(params[:id])
     @owner_type  ||= params[:owner_type]
@@ -90,38 +111,6 @@ class ContactsController < ApplicationController
         end
       end
     end
-    
-    #    if @owner.contacts.length > 0
-    #      @owner.contacts.each do |owner_contact|
-    #        if owner_contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
-    #          @contacts << owner_contact
-    #        end
-    #      end
-    #    end
-    #    
-    #    if(owner_type == "Establishment")
-    #      unless @owner.customer.nil?
-    #        if @owner.customer.contacts.length > 0
-    #          @owner.customer.contacts.each do |owner_contact|
-    #            if owner_contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
-    #              @contacts << owner_contact
-    #            end
-    #          end         
-    #        end
-    #      end
-    #    end
-    #    
-    #    if(owner_type == "Customer")
-    #      if @owner.establishments.length > 0
-    #        @owner.establishments.each do |establishment|
-    #          establishment.contacts.each do |establishment_contact|
-    #            if establishment_contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
-    #              @contacts << establishment_contact
-    #            end
-    #          end
-    #        end
-    #      end
-    #    end
     @contacts = @contacts.uniq
     render :partial => 'contacts/contact_info'
   end
@@ -137,30 +126,11 @@ class ContactsController < ApplicationController
     Contact.find(:all).each do |contact|
       if @contacts.size < 10
         if contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
-          @contacts << contact 
+          @contacts << contact
         end
       end
     end
     
-    #    if @owner.contacts.length > 0
-    #      @owner.contacts.each do |owner_contact|
-    #        if owner_contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
-    #          @contacts << owner_contact
-    #        end
-    #      end
-    #    end
-    #    
-    #    if(owner_type == "Customer")
-    #      if @owner.establishments.length > 0
-    #        @owner.establishments.each do |establishment|
-    #          establishment.contacts.each do |establishment_contact|
-    #            if establishment_contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
-    #              @contacts << establishment_contact
-    #            end
-    #          end
-    #        end
-    #      end
-    #    end
     @contacts = @contacts.uniq
     render :partial => 'contacts/contact_info'
   end
@@ -179,25 +149,6 @@ class ContactsController < ApplicationController
       end
     end
     
-    #    if @owner.contacts.length > 0
-    #      @owner.contacts.each do |owner_contact|
-    #        if owner_contact.email.downcase.grep(/#{value.downcase}/).length > 0
-    #          @contacts << owner_contact
-    #        end
-    #      end
-    #    end
-    #    
-    #    if(owner_type == "Customer")
-    #      if @owner.establishments.length > 0
-    #        @owner.establishments.each do |establishment|
-    #          establishment.contacts.each do |establishment_contact|
-    #            if establishment_contact.email.downcase.grep(/#{value.downcase}/).length > 0
-    #              @contacts << establishment_contact
-    #            end
-    #          end
-    #        end
-    #      end
-    #    end
     @contacts = @contacts.uniq
     render :partial => 'contacts/contact_info'
   end

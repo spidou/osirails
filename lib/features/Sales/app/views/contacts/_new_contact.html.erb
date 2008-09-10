@@ -1,10 +1,7 @@
-
-
 <!-- Div that content new contacts-->
 <div id="new_contact">
   <% params[:new_contact_number].nil? ? new_contact_number_value = 0 : new_contact_number_value = params[:new_contact_number][:value].to_i %>
-  <%= hidden_field("new_contact_number", "value",  "value" => new_contact_number_value) %>
-  
+  <%= hidden_field("new_contact_number", "value",  "value" => new_contact_number_value) %>  
   
   <% unless new_contact_number_value > 0 %>
     <div id="link_add_remove_contact_1">
@@ -18,17 +15,13 @@
   <!-- If there was some form, they are re-create -->
   <% unless new_contact_number_value == 0 %>
     <% new_contact_number_value.times do |i| %>
-      <% unless params["#{owner_type.downcase}"]["contacts"]["#{i+1}"]["valid"] == 'false' %>
-        <%# unless params["#{owner_type.downcase}"]["contacts"]["#{i+1}"] == "false" %>
+      <% unless params["#{owner_type.downcase}"][:contacts]["#{i+1}"][:valid] == 'false' %>
 
-            <% params["owner_id"]= owner_id %>
-            <% params["owner_type"] = owner_type %>       
+        <% params["owner_id"]= owner_id %>
+        <% params["owner_type"] = owner_type %>       
 
-            <% # get_new_contact_form return a new contact_form with the same value that older%>
-            <% puts params[:owner_type]%>
-            <%= get_new_contact_form(params, cpt, true)%>            
+        <%= get_new_contact_form(params, cpt, true)%>            
 
-        <%#end #unless%>
       <%end #unless%>
     <% cpt += 1 %>
   <% end %>
@@ -38,4 +31,4 @@
           :owner_id => owner_id, :owner_type => owner_type}) %>
   </div>
 <% end %>
-</div> <% #new_contact%>
+</div>

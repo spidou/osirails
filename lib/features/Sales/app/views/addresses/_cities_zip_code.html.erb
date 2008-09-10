@@ -1,4 +1,5 @@
 <ul class="cities">
+<% unless @cities.empty?%>
   <% for city in @cities do -%>
     <li>
       <div class="city_zip_code" style="display:none;"><%=city.zip_code -%></div>
@@ -6,3 +7,4 @@
     </li>
   <% end -%>
 </ul>
+<% end %>

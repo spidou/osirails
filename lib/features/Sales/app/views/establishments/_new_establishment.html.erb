@@ -1,64 +1,33 @@
-<div id='<%= "link_add_remove_establishment_#{cpt}"%>'>
+<!-- Div that content new establishments -->
+<div id="new_establishment">
+  <%puts "test"%>
+  <%puts params%>
+  <% params[:new_establishment_number].nil? ? new_establishment_number_value = 0 : new_establishment_number_value = params[:new_establishment_number][:value].to_i -%>
+  <% # new_establishment_number_value store establishment number is there was an error -%>
+  <%= hidden_field("new_establishment_number", "value", "value" => new_establishment_number_value) %>
 
-  <%= error_messages_for("new_establishment#{cpt}") %>
-  
-  <%= link_to_remote("supprimer", :url => {:controller => "establishments", :action => "delete_new_establishment", :id => cpt}, 
-      :with => "'number=' + $('new_establishment_number_value').value")%>
-</div>
+  <%unless new_establishment_number_value > 0 %>
+    <div id="link_add_remove_establishment_1">
+      <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
+    </div>
+  <%end%>
 
-<div id='<%= "new_establishment#{cpt}"%>'>
-
-<% etablissement_ = Establishment.new %>
-    <% fields_for "customer[establishments]", etablissement_ , :index => cpt do |establissement| %>
+  <% # cpt store the number of form %>
+  <% cpt = 1 %>
+  <!-- If there was some form, they are re-create -->
+  <% unless new_establishment_number_value == 0 %>
+    <% new_establishment_number_value.times do |i| %>     
+      <% unless params[:customer][:establishments]["#{i+1}"]["valid"] == 'false' %>
+        
+        <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
+        
+      <%end #unless%>
+      <% cpt += 1 %>
       
-    <p>
-      <%= establissement.label :name, "Nom :" %>
-      <%= establissement.text_field :name %>
-    </p>
-
-    <p>
-      <%= establissement.label :type_id, "Type d'&eacute;tablissement :" %>
-      <%= establissement.select("establishment_type_id", EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] }) %>
-    </p>
-    
-    <% address_ = Address.new unless error %>
-    <% fields_for "customer[establishments][#{cpt}][address]", address_ do |address| %>
-      
-    <p>      
-      <%= address.label :address1, "Address1" %>
-      <%= address.text_field :address1 %>
-    </p>
-
-    <p>      
-      <%= address.label :address2, "Address2" %>
-      <%= address.text_field :address2 %>
-    </p>
-
-    <% unless error%>
-      <% owner_address = Address.new() %>
-    <%else%>
-    <%owner_address = Address.new(
-      :country_name => params[:customer][:establishment]["#{cpt}"][:name],
-      :city_name => params[:customer][:establishment]["#{cpt}"][:name],
-      :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
-    <%end%>
-
-<%= render :partial => 'addresses/address',
-      :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :f => address}%>
-
-    <p>
-      <!-- To know if address will be save -->
-      <%= address.hidden_field(:valid, :value => 'true')%>
-    </p>
     <% end %>
-
-<% end %>
-
-</div>
-
-<% unless error%>
-<div id='<%= "link_add_remove_establishment_#{cpt.to_i + 1}"%>'>
-    <%=link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt.to_i + 1},
-     :with => "'number=' + $('new_establishment_number_value').value")%>
-</div>
-<%end%>
+    
+  <div id="link_add_remove_establishment_<%=cpt%>">
+    <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
+  </div>
+  <% end %>          
+  </div>

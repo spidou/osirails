@@ -26,39 +26,10 @@
       </div>
     <% end #unless %>        
   <% end #for %>
+  
+  <%= render :partial => 'establishments/new_establishment', :locals => {:params => params, :new_establishment_number => @new_establishment_number, 
+    :error => @error} %>
 
-  <!------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------->
-  <!----- Mettre ce code dans un partiel comme pour les contacts ---->
-  <% params[:new_establishment_number].nil? ? new_number_form = 0 : new_number_form = @new_establishment_number -%>
-  <% # new_establishment_number store establishment number present in establishment_form -%>
-  <%= hidden_field("new_establishment_number", "value", "value" => new_number_form) %>
-
-  <% unless params[:new_establishment_number].nil? -%>        
-    <% new_establishment_number = params[:new_establishment_number]["value"].to_i -%>
-  <% end -%>
-
-  <div id="new_establishment">
-    <%unless @error%>
-      <div id="link_add_remove_establishment_1">
-        <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => 1})%>
-      </div>
-    <%end%>
-      <% cpt = 1 %>
-      <% unless params[:new_establishment_number].nil? %>
-        <% new_establishment_number.times do |i| %>
-          <%unless params["valid_establishment_#{i+1}"].nil?%>
-            <%unless params["valid_establishment_#{i+1}"]["value"] == "false"%>
-              <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
-            <%end #unless%>
-          <%end #unless%>
-          <% cpt += 1 %>
-        <% end %>
-      <div id="link_add_remove_establishment_<%=cpt%>">
-        <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
-      </div>
-    <% end %>          
-  </div>
-  <!------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------->
 
   <!-- Display Contacts div -->
   <h2> Contacts</h2>

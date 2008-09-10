@@ -1,56 +1,59 @@
 <p>
-    <%= label :address, "Pays"%>
+    <%= label "#{address_name}_address", "country_name", "Pays"%>
     <%= my_text_field_with_auto_complete(:country, :name, 
-        {:controller => "addresses", :name => address_name}, 
+        {:controller => "addresses", :name => address_name+"_address"}, 
         {:select => 'country_name',
-          :after_update_element => "function(){document.getElementById('#{address_name}_id').value = 'true';}",
-          :with => "'value='+document.getElementById('#{address_name}_country_name').value" }) -%>
+          :with => "'value='+document.getElementById('#{address_name}_address_country_name').value" }) -%>
     </p>
 
     <p>
-    <%= label :address, "Ville"%>
+    <%= label "#{address_name}_address", "city_name", "Ville"%>
     <%= my_text_field_with_auto_complete(:city, :name, 
-        {:controller => "addresses", :name => address_name}, 
+        {:controller => "addresses", :name => address_name+"_address"}, 
         {:select => 'city_name',
-        :with => "'value='+document.getElementById('#{address_name}_city_name').value+
-        '&country_name='+document.getElementById('#{address_name}_country_name').value" }) -%>
+        :with => "'value='+document.getElementById('#{address_name}_address_city_name').value+
+        '&country_name='+document.getElementById('#{address_name}_address_country_name').value" }) -%>
     </p>
       
     <p>
-    <%= label :address, "Code Postal"%>
+    <%= label "#{address_name}_address", "city_zip_code", "Code Postal"%>
     <%= my_text_field_with_auto_complete(:city, :zip_code,
-        {:controller => "addresses", :name => address_name}, 
+        {:controller => "addresses", :name => address_name+"_address"}, 
         {:select => 'city_zip_code',
-        :with => "'value='+document.getElementById('#{address_name}_city_zip_code').value+
-        '&country_name='+document.getElementById('#{address_name}_country_name').value"}) -%>
+        :with => "'value='+document.getElementById('#{address_name}_address_city_zip_code').value+
+        '&country_name='+document.getElementById('#{address_name}_address_country_name').value"}) -%>
     </p>
 
-    <%=  javascript_tag "document.getElementById('#{address_name}_country_name').value = '#{owner_address.country_name}'"%>
-    <%=  javascript_tag "document.getElementById('#{address_name}_city_name').value = '#{owner_address.city_name}'"%>
-    <%=  javascript_tag "document.getElementById('#{address_name}_country_name').value = '#{owner_address.zip_code}'"%>
+    <%= javascript_tag "document.getElementById('#{address_name}_address_country_name').value = '#{owner_address.country_name}'" %>
+    <%= javascript_tag "document.getElementById('#{address_name}_address_city_name').value = '#{owner_address.city_name}'" %>
+    <%= javascript_tag "document.getElementById('#{address_name}_address_country_name').value = '#{owner_address.zip_code}'" %>
+    
 
-    <%= observe_field "#{address_name}_country_name",
+    <%= javascript_tag "document.getElementById('#{address_name}_address_city_name').disabled=true" %>
+    <%= javascript_tag "document.getElementById('#{address_name}_address_city_zip_code').disabled='true'" %>
+
+
+    <%= observe_field "#{address_name}_address_country_name",
             :frequency => 0.1,
             :url=>{:controller => "addresses", :action=>'country_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_country_name').value)+
-            '&city_name='+encodeURIComponent(document.getElementById('#{address_name}_city_name').value)+
-            '&city_zip_code='+encodeURIComponent(document.getElementById('#{address_name}_city_zip_code').value)+
+            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_address_country_name').value)+
+            '&city_name='+encodeURIComponent(document.getElementById('#{address_name}_address_city_name').value)+
+            '&city_zip_code='+encodeURIComponent(document.getElementById('#{address_name}_address_city_zip_code').value)+
             '&address_name=#{address_name}'"
  %>
 
-      <%= observe_field "#{address_name}_city_name",
+      <%= observe_field "#{address_name}_address_city_name",
             :frequency => 0.1,
             :url=>{:controller => "addresses", :action=>'city_name_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_country_name').value)+
-            '&city_name='+encodeURIComponent(document.getElementById('#{address_name}_city_name').value)+
-            '&city_id='+encodeURIComponent(document.getElementById('#{address_name}_city_name_auto_complete').getElementsByClassName('cities')[0].getElementsByClassName('selected')[0] .getElementsByClassName('city_id')[0].innerHTML)+
+            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_address_country_name').value)+
+            '&city_name='+encodeURIComponent(document.getElementById('#{address_name}_address_city_name').value)+
             '&address_name=#{address_name}'"
     %>
     
-  <%= observe_field "#{address_name}_city_zip_code",
+  <%= observe_field "#{address_name}_address_city_zip_code",
             :frequency => 0.1,
             :url=>{:controller => "addresses", :action=>'city_zip_code_change'},
-            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_country_name').value)+
-            '&city_zip_code='+encodeURIComponent(document.getElementById('#{address_name}_city_zip_code').value)+
-            '&address_name=#{address_name}"
+            :with => "'country_name='+encodeURIComponent(document.getElementById('#{address_name}_address_country_name').value)+
+            '&city_zip_code='+encodeURIComponent(document.getElementById('#{address_name}_address_city_zip_code').value)+
+            '&address_name=#{address_name}'"
     %>

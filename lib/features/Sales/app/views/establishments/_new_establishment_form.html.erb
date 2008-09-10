@@ -1,0 +1,64 @@
+<div id='<%= "link_add_remove_establishment_#{cpt}"%>'>
+
+  <%= error_messages_for("new_establishment#{cpt}") %>
+  
+  <%= link_to_remote("supprimer", :url => {:controller => "establishments", :action => "delete_new_establishment", :id => cpt}, 
+      :with => "'number=' + $('new_establishment_number_value').value")%>
+</div>
+
+<div id='<%= "new_establishment#{cpt}"%>'>
+
+<% etablissement_ = Establishment.new %>
+    <% fields_for "customer[establishments]", etablissement_ , :index => cpt do |establissement| %>
+    <p>
+      <%= establissement.label :name, "Nom :" %>
+      <%= establissement.text_field :name %>
+    </p>
+
+    <p>
+      <%= establissement.label :establishment_type_id, "Type d'&eacute;tablissement :" %>
+      <%= establissement.select("establishment_type_id", EstablishmentType.find(:all).collect {|a| [ a.name, a.id ] }) %>
+    </p>
+    
+    <% address_ = Address.new unless error %>
+    <% fields_for "customer[establishments][#{cpt}][address]", address_ do |address| %>
+      
+    <p>      
+      <%= address.label :address1, "Address1", :id => "customer_establishments_#{cpt}_address_address1" %>
+      <%= address.text_field :address1, :id => "customer_establishments_#{cpt}_address_address1" %>
+    </p>
+
+    <p>      
+      <%= address.label :address2, "Address2", :id => "customer_establishments_#{cpt}_address_address2" %>
+      <%= address.text_field :address2, :id => "customer_establishments_#{cpt}_address_address2" %>
+    </p>
+
+    <% unless error%>
+      <% owner_address = Address.new() %>
+    <%else%>
+    <%owner_address = Address.new(
+      :country_name => params[:customer][:establishment]["#{cpt}"][:name],
+      :city_name => params[:customer][:establishment]["#{cpt}"][:name],
+      :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
+    <%end%>
+
+<%= render :partial => 'addresses/address',
+      :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :error => error}%>
+
+    <p>
+      <!-- To know if address will be save -->
+      <%= address.hidden_field(:valid, :value => 'true', :id => "customer_establishment_#{cpt}_valid")%>
+    </p>
+
+    <% end %>
+
+<% end %>
+
+</div>
+
+<% unless error%>
+<div id='<%= "link_add_remove_establishment_#{cpt.to_i + 1}"%>'>
+    <%=link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt.to_i + 1},
+     :with => "'number=' + $('new_establishment_number_value').value")%>
+</div>
+<%end%>
