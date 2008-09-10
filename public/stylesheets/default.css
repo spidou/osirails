@@ -381,6 +381,8 @@ a.button_banner:hover span {
 #secondary_menu_container {
 	float:right;
 	border:red 1px solid;
+//	overflow:hidden;
+//	width:50px;
 }
 
 #secondary_menu {
@@ -397,14 +399,14 @@ a.button_banner:hover span {
 }
 
 .hidden_secondary_menu,
-.show_secondary_menu {
+.shown_secondary_menu {
 	text-align:right;
 	white-space:nowrap;
 }
 
 .hidden_secondary_menu #status_text_secondary_menu,
-.show_secondary_menu #status_text_secondary_menu {
-	background:url("/images/background_hidden-show_secondary_menu.png") no-repeat top left;
+.shown_secondary_menu #status_text_secondary_menu {
+	background:url("/images/background_hidden-shown_secondary_menu.png.png") no-repeat top left;
 	height:29px;
 	width:20px;
 	line-height:26px !important;
@@ -413,13 +415,13 @@ a.button_banner:hover span {
 	top:6px;
 	color:#6481AE;
 	max-width:800px;
-	overflow:hidden;
 	float:right;
 	padding-left:6px;
+	overflow:hidden;
 }
 
 .hidden_secondary_menu #status_text_secondary_menu:hover,
-.show_secondary_menu #status_text_secondary_menu:hover {
+.shown_secondary_menu.png #status_text_secondary_menu:hover {
 	width:auto;
 	cursor:pointer;
 }
@@ -432,8 +434,8 @@ a.button_banner:hover span {
 	padding-bottom:1px;
 }
 
-.hidden_secondary_menu.show_secondary_menu span {
-//	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
+.hidden_secondary_menu span {
+	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
 	padding-right:2px;
 	padding-left:22px;
 	padding-top:3px;
@@ -1122,7 +1124,7 @@ width: 50px ! important;
 */
 .frame form p textarea {
 /*	min-height:50px;*/
-//	height:10px !important; /*test julien*/
+/*	height:10px !important; test julien*/
 }
 
 .frame form p select {
