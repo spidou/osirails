@@ -739,7 +739,7 @@ function calcalc(cal) {
 // Add a participant from the form
 function add_participant () {
   var list = document.getElementById('participants_list');
-  if (list.getElementsByTagName('span').length > 0) {
+  if (list.getElementsByTagName('span').length == 0) {
     var comma = '';
   } else {
     var comma = ', '
@@ -747,9 +747,10 @@ function add_participant () {
   var textfield = document.getElementById('participants_text');
   var new_participant = document.createElement('span');
   new_participant.innerHTML = comma + textfield.value +
-                              " <img src=\"/images/cross_16x16.png\" onclick=\"delete_participant(this, true);\">" +
+                              " <img src=\"/images/cross_12x12.png\" onclick=\"delete_participant(this, true);\">" +
                               "<input type=\"hidden\" name=\"participants[new][]\" value=\"" + textfield.value + "\" />";
   list.appendChild(new_participant);
+  textfield.innerHTML = '';
 }
 
 // Delete a participant from the form

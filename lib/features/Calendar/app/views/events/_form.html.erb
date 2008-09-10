@@ -187,7 +187,7 @@
 <a onclick="add_participant();">l'ajouter</a>
 <div id="participants_list">
 	<% @event.participants.each do |p| %>
-		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_16x16.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
+		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_12x12.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
 	<% end %>
 </div>
 </p>
