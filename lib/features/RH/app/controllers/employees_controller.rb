@@ -8,7 +8,7 @@ class EmployeesController < ApplicationController
   def index
     if Employee.can_list?(current_user)
     # raise params.inspect
-      params[:collection].nil? ? @employees = Employee.active_employees : @employees = Employee.find(:all) 
+      params[:collection].nil? ?  @employees = Employee.active_employees : @employees = Employee.find(:all) 
     else
       error_access_page(403)
     end
@@ -158,6 +158,14 @@ class EmployeesController < ApplicationController
       #   params[:numbers][i].destroy unless numbers_ids.include?(f['id'].to_i)
       # end
       
+      # prepare the address params hash  
+      params[:address] = {}
+      params[:address]['city_name'] = params[:employee]['address']['city']['name'] 
+      params[:address]['zip_code'] = params[:employee]['address']['city']['zip_code']
+      params[:address]['country_name'] = params[:employee]['address']['country']['name']
+      params[:address]['address1'] = params[:employee]['address']['address1']
+      params[:address]['address2'] = params[:employee]['address']['address2']
+      params[:employee].delete('address')
       
       # update attributes of employees ressources
       @employee.iban.update_attributes(params[:iban]) 
@@ -198,9 +206,11 @@ class EmployeesController < ApplicationController
         redirect_to(@employee)
       else
         @numbers.each_with_index do |number,index|
-          params[:deleted_numbers].each_value do |j|
-             @numbers[index]['number']= nil if @numbers[index]['id'].to_s == j.to_s  
-          end
+          unless params[:deleted_numbers].nil?
+            params[:deleted_numbers].each_value do |j|
+               @numbers[index]['number']= "deleted" if @numbers[index]['id'].to_s == j.to_s  
+            end
+          end  
         end
         
         @numbers_reloaded = @numbers

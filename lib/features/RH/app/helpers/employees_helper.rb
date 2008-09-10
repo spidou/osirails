@@ -6,44 +6,20 @@ module EmployeesHelper
   
   def display_address1(default=nil)
     if default.nil?
-      text_field_tag( 'address[address1]',params[:address].nil? ? nil : params[:address]['address1'] )
+      text_field_tag( 'employee[address][address1]',params[:address].nil? ? nil : params[:address]['address1'] )
     else
-      text_field_tag( 'address[address1]', default)
+      text_field_tag( 'employee[address][address1]', default)
     end
   end
   
    def display_address2(default=nil)
     if default.nil?
-      text_field_tag( 'address[address2]', params[:address].nil? ? nil : params[:address]['address2'] )
+      text_field_tag( 'employee[address][address2]', params[:address].nil? ? nil : params[:address]['address2'] )
     else
-      text_field_tag( 'address[address2]',default)
+      text_field_tag( 'employee[address][address2]',default)
     end  
   end
   
-  def display_country(default=nil)
-    if default.nil?
-      text_field_tag( 'address[country_name]',params[:address].nil? ? nil : params[:address]['country_name'])
-    else
-      text_field_tag( 'address[country_name]',default)
-    end
-  end
-  
-  def display_city(default=nil)
-    if default.nil?
-      text_field_tag( 'address[city_name]',params[:address].nil? ? nil : params[:address]['city_name'])
-    else
-      text_field_tag( 'address[city_name]', default)    
-    end
-  end
-  
-  def display_zip_code(default=nil)
-    if default.nil?
-      text_field_tag( 'address[zip_code]',params[:address].nil? ? nil : params[:address]['zip_code'])
-    else
-      text_field_tag( 'address[zip_code]',default)  
-    end
-  end
-   
   def display_bank_name(default=nil)
     if default.nil?
       text_field_tag( 'iban[bank_name]',params[:iban].nil? ? "" : params[:iban]['bank_name'] , :size => 15, :maxlength => 17, :class => 'disable-stylesheet-width')
@@ -172,6 +148,15 @@ module EmployeesHelper
     html
   end
   
+  def deleted_numbers(numbers)
+  number_id=0
+    for number in numbers 
+      if number[:number].blank?
+         hidden_field 'deleted_numbers[' + number_id.to_s + ']',number[:id].to_s
+      end
+      number_id+=1
+    end  
+  end
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   

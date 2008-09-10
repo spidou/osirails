@@ -2,16 +2,15 @@
   <% unless @numbers.nil?%>
     <%number_id=0%>
     <% for number in @numbers %>
-        <%unless number[:number]==""%>
+        <%unless number[:number]=="deleted"%>
         <!-- le <p> est ouvers à la ligne ci-dessous avec un id -->
         <%= display_p_balise(number_id) %>       
         <%= select(attribute + '[numbers][' + number_id.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
         <%= text_field_tag( attribute + '[numbers][' + number_id.to_s + '][number]', number[:number],:size => 7, :maxlength => 9, :class=>"disable-stylesheet-width" )%>
         <%= select(attribute + '[numbers][' + number_id.to_s + ']',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
-        <%= link_to_remote( 'Enlever le numéro',:url=>{:action=>'remove_line', :rem => number_id, :deleted_id => number[:id] },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?')%>
         <%= check_box_tag(attribute + '[numbers][' + number_id.to_s + '][visible]',true,number.visible)%>
-        <%="&nbsp;Visible par tous"%>
-        
+        <%="&nbsp;Visible par tous &nbsp;"%>
+        <%= link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:action=>'remove_line', :rem => number_id, :deleted_id => number[:id] },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?')%>
         
       </p>
       <%else%>
