@@ -1,6 +1,13 @@
 <h1>Modifier le contrat de travail de <%=@employee.fullname%> </h1>
 
 
+
+<% content_for :header do %>
+  <%= javascript_include_tag 'job_contract' %> 
+<% end %>  
+
+
+
 <% form_for([:employee,@job_contract]) do |f| %>
   <%=f.error_messages%> 
   
@@ -13,7 +20,9 @@
   
   <p>
     <%= f.label :end_date, "Date de fin du contrat :"%>
-    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year]%>
+    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => @job_contract.end_date.nil?%> 
+    <% @job_contract.end_date.nil? ? checked = "checked = checked" : checked = ""%>
+    &nbsp;<%= "<input type=\"checkbox\" onclick=\"skip_date();\" "  + checked + "/>" %> Date non d&eacute;termin&eacute;e
   </p>
   
   <p>
