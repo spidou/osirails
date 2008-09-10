@@ -32,15 +32,15 @@ namespace :osirails do
       JobContractType.create :name => "CDD"
       
       # default countries
-      france = Country.create :name => "France", :code => "fr"
-      reunion = Country.create :name => "Réunion", :code => "fr"
-      spain = Country.create :name => "Espagne", :code => "es"
-      united_kingdom = Country.create :name => "Angleterre", :code => "gb"
-      germany = Country.create :name => "Allemagne", :code => "de"
-      japan = Country.create :name => "Japon", :code => "jp"
-      china = Country.create :name => "Chine", :code => "cn"
-      etats_unis = Country.create :name => "Etats-Unis", :code => "us"
-      canada = Country.create :name => "Canada", :code => "ca"
+      france = Country.create :name => "FRANCE", :code => "fr"
+      reunion = Country.create :name => "REUNION", :code => "fr"
+      spain = Country.create :name => "ESPAGNE", :code => "es"
+      united_kingdom = Country.create :name => "ANGLETERRE", :code => "gb"
+      germany = Country.create :name => "ALLEMAGNE", :code => "de"
+      japan = Country.create :name => "JAPON", :code => "jp"
+      china = Country.create :name => "CHINE", :code => "cn"
+      united_states = Country.create :name => "ETATS-UNIS", :code => "us"
+      Country.create :name => "CANADA", :code => "ca"
       
       # default indicatives
       indicative = Indicative.create :indicative => "+262", :country_id => reunion.id
@@ -50,7 +50,7 @@ namespace :osirails do
       Indicative.create :indicative => "+49", :country_id => germany.id
       Indicative.create :indicative => "+81", :country_id => japan.id
       Indicative.create :indicative => "+86", :country_id => china.id
-      Indicative.create :indicative => "+1", :country_id => etat_unis.id
+      Indicative.create :indicative => "+1", :country_id => united_states.id
       
       # default cities
       City.create :name => "BRAS PANON", :zip_code => "97412", :country_id => reunion.id
@@ -75,22 +75,22 @@ namespace :osirails do
       City.create :name => "PLATEAU CAILLOUX", :zip_code => "97460", :country_id => reunion.id
       City.create :name => "RAVINE DES CABRIS", :zip_code => "97432", :country_id => reunion.id
       City.create :name => "SALAZIE", :zip_code => "97433", :country_id => reunion.id
-      City.create :name => "ST ANDRE", :zip_code => "97440", :country_id => reunion.id
-      City.create :name => "ST BENOIT", :zip_code => "97470", :country_id => reunion.id
-      City.create :name => "ST DENIS", :zip_code => "97400", :country_id => reunion.id
-      City.create :name => "ST GILLES LES BAINS", :zip_code => "97434", :country_id => reunion.id
-      City.create :name => "ST GILLES LES HAUTS", :zip_code => "97435", :country_id => reunion.id
-      City.create :name => "ST JOSEPH", :zip_code => "97480", :country_id => reunion.id
-      City.create :name => "ST LEU", :zip_code => "97436", :country_id => reunion.id
-      City.create :name => "ST LOUIS", :zip_code => "97450", :country_id => reunion.id
-      City.create :name => "ST PAUL", :zip_code => "97411", :country_id => reunion.id
-      City.create :name => "ST PHILIPPE", :zip_code => "97442", :country_id => reunion.id
-      City.create :name => "ST PIERRE", :zip_code => "97410", :country_id => reunion.id
-      City.create :name => "STE ANNE", :zip_code => "97437", :country_id => reunion.id
-      City.create :name => "STE CLOTILDE", :zip_code => "97490", :country_id => reunion.id
-      City.create :name => "STE MARIE", :zip_code => "97438", :country_id => reunion.id
-      City.create :name => "STE ROSE", :zip_code => "97439", :country_id => reunion.id
-      City.create :name => "STE SUZANNE", :zip_code => "97441", :country_id => reunion.id
+      City.create :name => "SAINT ANDRE", :zip_code => "97440", :country_id => reunion.id
+      City.create :name => "SAINT BENOIT", :zip_code => "97470", :country_id => reunion.id
+      City.create :name => "SAINT DENIS", :zip_code => "97400", :country_id => reunion.id
+      City.create :name => "SAINT GILLES LES BAINS", :zip_code => "97434", :country_id => reunion.id
+      City.create :name => "SAINT GILLES LES HAUTS", :zip_code => "97435", :country_id => reunion.id
+      City.create :name => "SAINT JOSEPH", :zip_code => "97480", :country_id => reunion.id
+      City.create :name => "SAINT LEU", :zip_code => "97436", :country_id => reunion.id
+      City.create :name => "SAINT LOUIS", :zip_code => "97450", :country_id => reunion.id
+      City.create :name => "SAINT PAUL", :zip_code => "97411", :country_id => reunion.id
+      City.create :name => "SAINT PHILIPPE", :zip_code => "97442", :country_id => reunion.id
+      City.create :name => "SAINT PIERRE", :zip_code => "97410", :country_id => reunion.id
+      City.create :name => "SAINTE ANNE", :zip_code => "97437", :country_id => reunion.id
+      City.create :name => "SAINTE CLOTILDE", :zip_code => "97490", :country_id => reunion.id
+      City.create :name => "SAINTE MARIE", :zip_code => "97438", :country_id => reunion.id
+      City.create :name => "SAINTE ROSE", :zip_code => "97439", :country_id => reunion.id
+      City.create :name => "SAINTE SUZANNE", :zip_code => "97441", :country_id => reunion.id
       
       # default services
       dg = Service.create :name => "Direction Générale"
