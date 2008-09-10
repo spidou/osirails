@@ -419,7 +419,7 @@ a.button_banner:hover span {
 	cursor:pointer;
 }
 
-.hidden_secondary_menu span {
+.shown_secondary_menu span {
 	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat top left;
 	padding-right:2px;
 	padding-left:22px;
@@ -427,7 +427,7 @@ a.button_banner:hover span {
 	padding-bottom:1px;
 }
 
-.shown_secondary_menu span {
+.hidden_secondary_menu span {
 	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
 	padding-right:2px;
 	padding-left:22px;
