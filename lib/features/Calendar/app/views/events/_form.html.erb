@@ -4,7 +4,7 @@
 		method = 'post'
 	end
 %>
-	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :html =>, :method => method do |e| %>
+	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
 <p>
 <%= e.label :title, 'Titre' %>
 <%= e.text_field :title, :class => 'disable-stylesheet-width' %>
