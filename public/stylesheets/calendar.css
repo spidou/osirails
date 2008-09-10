@@ -187,9 +187,9 @@
 	font-size: 10px;
 	color: white;
 	-moz-border-radius: 8px;
-	opacity: 0.8;
-	-moz-opacity: 0.8;
-	filter:alpha(opacity=80);
+	opacity: 0.9;
+	-moz-opacity: 0.9;
+	filter:alpha(opacity=90);
 }
 #calendar #scroll .event_content {
 	height: 100%;
