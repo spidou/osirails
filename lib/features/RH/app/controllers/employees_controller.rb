@@ -7,8 +7,9 @@ class EmployeesController < ApplicationController
   # GET /employees.xml
   def index
     if Employee.can_list?(current_user)
-    # raise params.inspect
-      params[:collection].nil? ?  @employees = Employee.active_employees : @employees = Employee.find(:all) 
+    puts params.inspect
+      params['all_employees']||= false 
+      params['all_employees'] ? @employees = Employee.find(:all) : @employees = Employee.active_employees 
     else
       error_access_page(403)
     end

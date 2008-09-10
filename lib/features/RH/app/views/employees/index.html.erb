@@ -5,7 +5,11 @@
 <% content_for :secondary_menu do %>
   <%if controller.can_view?(current_user) and Employee.can_view?(current_user)%> 
     <p>
-      <%= link_to 'Voir tous les employées', employees_path %>
+      <%if params[:all_employees]==false%>
+        <%= link_to 'Voir tous les employées', :controller => "employees", :action => "index", :all_employees => true %>
+      <% else %>
+        <%= link_to 'Voir les employées actifs', :controller => "employees", :action => "index", :all_employees => false %>
+      <% end %>
     </p>
   <% end %>
 <% end %>
