@@ -8,7 +8,7 @@ class EmployeesController < ApplicationController
   def index
     if Employee.can_list?(current_user)
       @employees = Employee.find(:all)
-      @active_employees = EMployee.find
+     # @active_employees = Employee.find
     else
       error_access_page(403)
     end
