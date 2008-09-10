@@ -27,11 +27,6 @@ class EmployeesController < ApplicationController
       @address = @employee.address
       @jobs = @employee.jobs
       
-      # permissions
-      @edit = self.can_edit?(current_user)
-      @view = self.can_view?(current_user)
-      @list = self.can_list?(current_user)
-      
       @job_contract = @employee.job_contract
     else
       error_access_page(403)

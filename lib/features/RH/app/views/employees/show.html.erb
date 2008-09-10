@@ -7,26 +7,26 @@
 <% end %>
 
 
-<div class="frame">
+<div class="frame presentation_medium">
   <h2>Fiche d'identité</h2>
   <p>
-    Civilité :
+    <%= label_tag "Civilité :"%>
     <strong><%=h @employee.civility.name unless @employee.civility.nil?%></strong>
   </p>
   <p>
-    Nom :
+    <%= label_tag "Nom :"%>
     <strong><%=h @employee.last_name %></strong>
   </p>
   <p>
-    Prénom :
+    <%= label_tag "Prénom :"%>
     <strong><%=h @employee.first_name %></strong>
   </p>
   <p>
-    Date de naissance :
+    <%= label_tag "Date de naissance :"%>
     <strong><%=h @employee.birth_date.strftime("%d %B %Y") %></strong>
   </p>
   <p>
-    Situation familiale :
+    <%= label_tag "Situation familiale :"%>
     <strong><%=h @employee.family_situation.name unless @employee.family_situation.nil?%></strong>
   </p>
 
@@ -68,20 +68,20 @@
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
     <h3>Adresse postale</h3>
       <p>
-        Adresse :
+        <%= label_tag "Adresse :"%>
         <strong><%=h @address.address1 %>
         <%= " - " + h(@address.address2) unless @address.address2.empty? %></strong>
       </p>
       <p>
-        Code postal :
+        <%= label_tag "Code postal :"%>
         <strong><%=h @address.zip_code %></strong>
       </p>
       <p>
-        Ville :
+        <%= label_tag "Ville :"%>
         <strong><%=h @address.city_name %></strong>
       </p>
       <p>
-        Pays :
+        <%= label_tag "Pays :"%>
         <strong><%=h @address.country_name %></strong>
       </p>
   <% end %>
@@ -92,17 +92,17 @@
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>    
       <%= emails_h3(@employee) %>
       <p>
-        Personnel :
+        <%= label_tag "Personnel :"%>
         <strong><%=h @employee.email %></strong>
       </p>
       <p>
-        Professionnel :
+        <%= label_tag "Professionnel :"%>
         <strong><%=h @employee.society_email %></strong>
       </p>
   <% end %>
       <%= "<h3>Adresse électronique</h3>" unless (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id %>
       <p>
-        Entreprise :
+        <%= label_tag "Entreprise :"%>
         <strong><%=h  @employee.intranet_email %></strong>
       </p>
             
@@ -121,50 +121,50 @@
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
     <h2>Identité Bancaire</h2>
       <p>
-        Nom de la banque :
+        <%= label_tag "Nom de la banque :"%>
         <strong><%=h @iban.bank_name %></strong>
       </p>
       <p>
-        Code bancaire :
+        <%= label_tag "Code bancaire :"%>
         <strong><%=h @iban.bank_code %></strong>
       </p>
       <p>
-        Code guichet :
+        <%= label_tag "Code guichet :"%>
         <strong><%=h @iban.branch_code %></strong>
       </p>
       <p>
-        N° de compte :
+        <%= label_tag "N° de compte :"%>
         <strong><%=h @iban.account_number %></strong>
       </p>
       <p>
-        Clée :
+        <%= label_tag "Clée :"%>
         <strong><%=h @iban.key %></strong>
       </p>
       <p>
-        Nom du compte :
+        <%= label_tag "Nom du compte :"%>
         <strong><%=h @iban.account_name %></strong>
       </p>
   <% end %>    
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
     <h2>Contrat de travail</h2>
       <p>
-        Type de contrat :
+        <%= label_tag "Type de contrat :"%>
         <strong><%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %></strong>
       </p>
       <p>
-        D&eacute;but du contrat :
+        <%= label_tag "D&eacute;but du contrat :"%>
         <strong><%=h @job_contract.start_date.nil? ? "Non spécifié" : @job_contract.start_date.strftime("%d %B %Y") %></strong>
       </p>
       <p>  
-        Fin du contrat :
+        <%= label_tag "Fin du contrat :"%>
         <strong><%=h @job_contract.end_date.nil? ? "Non spécifiée" : @job_contract.end_date.strftime("%d %B %Y") %></strong>
       </p>
       <p>
-        Status employ&eacute;e :
+        <%= label_tag "Status employ&eacute;e :"%>
         <strong><%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %></strong>
       </p>
       <p>
-        Salaire brut actuel :
+        <%= label_tag "Salaire brut actuel :"%>
         <strong><%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €"  %>
         &#40;net &#58; <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
         <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>

@@ -15,11 +15,13 @@
   </p>
   <p>
     <b>R&ocirc;les: </b> <%= "Aucun" if @user.roles.empty? %>
-    <% for role in @user.roles %>
-      <ul>
-        <li><%=link_to role.name,role %></li>
-      </ul>
-    <% end %>
+    <div class="scroll_checkboxes" >
+      <% for role in @user.roles %>
+        <ul>
+          <li><%=link_to role.name,role %></li>
+        </ul>
+      <% end %>
+    </div>
   </p>
 
   <%= link_to 'Modifier', edit_user_path(@user) %> |
