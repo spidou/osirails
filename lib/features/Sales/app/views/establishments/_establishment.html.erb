@@ -1,4 +1,4 @@
-<div class="frame">
+<h2> Informations g&eacute;n&eacute;rales </h2>
   <p>
     <%= label :establishment, :name, "Nom de l'etablissement" %>
     <%= establishment.text_field :name %>
@@ -6,7 +6,7 @@
 
   <p>
     <%= label :establishment, "Type d'etablissement"%>
-    <%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.name, a.id]})%>
+    <%= establishment.select(:establishment_type_id, EstablishmentType.find(:all).collect {|a| [ a.name, a.id]}) %>
   </p>
 
   <% fields_for :address, establishment_.address do |address|%>
@@ -21,10 +21,9 @@
       <%= address.text_field :address2%>  
       </p>
 
-    <%= render :partial => 'addresses/address', 
-        :locals => {:cpt=> 1, :owner_address => establishment_.address}%>
+        <%= javascript_tag "document.getElementById('customer_establishments_#{cpt}_name').value = '#{params[:customer][:establs]}'" %>
 
-      <%= hidden_field("country", "id", "value" => '')%>
-      <%= hidden_field("city", "id", "value" => '')%>
+    <%= render :partial => 'addresses/address', 
+        :locals => {:cpt=> 1, :owner_address => establishment_.address, :address_name => "establishment"}%>
+
   <%end #fields_for%>
- </div>

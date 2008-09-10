@@ -1,7 +1,5 @@
 <!-- Div that content new establishments -->
 <div id="new_establishment">
-  <%puts "test"%>
-  <%puts params%>
   <% params[:new_establishment_number].nil? ? new_establishment_number_value = 0 : new_establishment_number_value = params[:new_establishment_number][:value].to_i -%>
   <% # new_establishment_number_value store establishment number is there was an error -%>
   <%= hidden_field("new_establishment_number", "value", "value" => new_establishment_number_value) %>
@@ -19,7 +17,7 @@
     <% new_establishment_number_value.times do |i| %>     
       <% unless params[:customer][:establishments]["#{i+1}"]["valid"] == 'false' %>
         
-        <%= render :partial => 'establishments/new_establishment', :locals => {:cpt=> i+1, :error => true, :params => params} %>
+        <%= render :partial => 'establishments/new_establishment_form', :locals => {:cpt=> i+1, :error => true, :params => params} %>
         
       <%end #unless%>
       <% cpt += 1 %>

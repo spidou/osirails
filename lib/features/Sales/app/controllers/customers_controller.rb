@@ -59,7 +59,9 @@ class CustomersController < ApplicationController
     activity_sector_name[:name].capitalize!
 
     establishments = params[:customer].delete("establishments")
-    establishments_original = establishments
+    
+    establishments_test = establishments
+    
     establishment_objects = []
     address_objects = []
 
@@ -102,7 +104,6 @@ class CustomersController < ApplicationController
         end
       end
     end
-#    render_component :controller => "contacts", :action => "create"
     
     # If establishment_form is not null
     unless (new_establishment_number = params[:new_establishment_number]["value"].to_i) == 0
@@ -111,109 +112,56 @@ class CustomersController < ApplicationController
           establishments["#{i+1}"][:customer_id] = @customer.id
           address_objects[i] = establishments["#{i+1}"].delete("address")
           establishment_objects[i] =Establishment.new(establishments["#{i+1}"])
-          unless establishment_objects[i].valid? 
+          
+          ## If city_name and city_zip_code are disabled
+          unless address_objects[i][:city].nil?
+            establishment_objects[i].address = (address_objects[i] = Address.new(:address1 => address_objects[i][:address1], :address2 => address_objects[i][:address2], 
+              :country_name => address_objects[i][:country][:name], :city_name => address_objects[i][:city][:name], :zip_code => address_objects[i][:city][:zip_code]))
+          else
+            flash[:error] ||= "Le nom de ville et le code postal de l'etablissement #{i+1} ne sont pas définis"
+            @error = true
+          end
+          
+          unless establishment_objects[i].valid?
             @error = true
           end
         end
       end
-#      @error = true
+      #      @error = true
     end
-    
-    #    # If establishment_form is not null
-    #    unless params[:new_establishment_number]["value"] == 0  
-    #      new_estbalishment_number = params[:new_establishment_number]["value"].to_i
-    #      new_estbalishment_number.times do |i|
-    #        # For all new_establishment and addresses,  an instance variable is create.
-    #        # If his parameter is not valid, @error variable is set to true
-    #        eval "
-    #                unless params['valid_establishment_#{i+1}'].nil?
-    #                
-    #                  params['new_establishment_address#{i+1}'][:country_name] = params['new_country#{i+1}'][:name]
-    #                  params['new_establishment_address#{i+1}'][:city_name] = params['new_city#{i+1}'][:name]
-    #                  params['new_establishment_address#{i+1}'][:zip_code] = params['new_city#{i+1}'][:zip_code]
-    #
-    #                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
-    #                    instance_variable_set('@new_establishment#{i+1}', Establishment.new(params[:new_establishment#{i+1}]))
-    #                    instance_variable_set('@new_establishment_address#{i+1}', Address.new(params[:new_establishment_address#{i+1}]))
-    #                    unless @new_establishment#{i+1}.address = @new_establishment_address#{i+1}             
-    #                      @error = true
-    #                    end
-    #                    unless @new_establishment#{i+1}.valid?                  
-    #                      @error = true
-    #                    end
-    #                    unless @new_establishment_address#{i+1}.valid?
-    #                      @error = true
-    #                    end
-    #                  end
-    #                end"
-    #      end
-    #
-    #      # If all new_establishment and addresses are valids, they are save 
-    #      unless @error
-    #        new_estbalishment_number.times do |i|
-    #          eval"
-    #                unless params['valid_establishment_#{i+1}'].nil?
-    #                  unless params['valid_establishment_#{i+1}']['value'] == 'false'
-    #                    unless @new_establishment_address#{i+1}.save
-    #                        @error = true
-    #                    else
-    #                      unless @customer.establishments << @new_establishment#{i+1}
-    #                        @error = true
-    #                       else
-    #
-    #                      country = Country.find_by_name(params['new_country#{i+1}'][:name])
-    #                        unless country.nil?
-    #                          new_country = Country.create(:name => params['new_country#{i+1}'][:name])
-    #                          city = City.new(
-    #                            :name => params['new_city#{i+1}'][:name], 
-    #                            :zip_code => params['new_city#{i+1}'][:zip_code], 
-    #                            :country_id => new_country.id)
-    #                          if country.valid? and city.valid?
-    #                            country.save
-    #                            city.save
-    #                          end
-    #                        end
-    #                        unless City.find_by_name_and_country_id(params['new_country#{i+1}'][:name], country.id).nil? and country.nil?
-    #                          city = City.new(
-    #                            :name => params['new_city#{i+1}'][:name], 
-    #                            :zip_code => params['new_city#{i+1}'][:zip_code], 
-    #                            :country_id => country.id)
-    #                          if city.valid?
-    #                            city.save
-    #                          else 
-    #                            @error = false
-    #                          end
-    #                        end
-    #
-    #                      end
-    #                    end
-    #                    unless @new_establishment#{i+1}.save
-    #                      @error = true
-    #                    end
-    #                  end
-    #                end"
-    #        end
-    #      end
-    #    end
-        
     unless @error
+      
       contact_objects.each do |contact|
         contact.save
         @customer.contacts << contact
       end
+      
+      establishment_objects.each do |establishment|
+        establishment.save
+        @customer.establishments << establishment
+      end
+      
+      address_objects.each do |address|
+        address.save
+      end
+      
+      
       flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
       redirect_to customers_path
     else
       params[:customer][:activity_sector] = {:name => activity_sector_name[:name]} 
       params[:customer][:contacts] = contacts_original
-      params[:customer][:establishments] =establishments_original
-      
+
+      params[:customer][:establishments] = establishments_test
+      params[:new_establishment_number][:value].to_i.times do |i|
+       params[:customer][:establishments]["#{i+1}"][:address] = {:country => {:name => address_objects[i].country_name}}
+      end
       
       @new_establishment_number = params[:new_establishment_number]["value"]
       @establishments = @customer.establishments
       @new_contact_number = params[:new_contact_number]["value"]
       @contacts = @customer.contacts
-      flash[:error] = "Une erreur est survenu lors de la sauvegarde du client"
+#      flash[:error] ||= "Une erreur est survenu lors de la sauvegarde du client"
       render :action => 'edit'
     end
   end

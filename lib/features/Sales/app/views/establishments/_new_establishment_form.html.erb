@@ -37,10 +37,11 @@
       <% owner_address = Address.new() %>
     <%else%>
     <%owner_address = Address.new(
-      :country_name => params[:customer][:establishment]["#{cpt}"][:name],
-      :city_name => params[:customer][:establishment]["#{cpt}"][:name],
-      :zip_code => params[:customer][:establishment]["#{cpt}"][:zip_code])%>  
+      :country_name => params[:customer][:establishments]["#{cpt}"][:address][:country][:name],
+      :city_name => (params[:customer][:establishments]["#{cpt}"][:address][:city][:name] unless params[:customer][:establishments]["#{cpt}"][:address][:city].nil?),
+      :zip_code => (params[:customer][:establishments]["#{cpt}"][:address][:city][:zip_code] unless params[:customer][:establishments]["#{cpt}"][:address][:city].nil?))%>  
     <%end%>
+    <%# puts owner_address.country_name%>
 
 <%= render :partial => 'addresses/address',
       :locals => {:cpt=> cpt, :owner_address => owner_address, :address_name => "customer_establishments_#{cpt}", :error => error}%>

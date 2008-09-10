@@ -1,26 +1,24 @@
 <h1>Modifier un Etablissement</h1>
+<div class="frame">
   <% form_for([@customer, @establishment])  do |establishment| %>
     <%= establishment.error_messages %>
     
     <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment} %>
-  
-    <% if @contacts.length > 0 -%>
-      <h2> Contacts de l'&eacute;tablissement</h2>
-        <div class="frame"> 
-            <% for contact in @contacts%>
-                <div <%= "id='customer_contact#{contact.id}'" %>>
-                  <%= contact.first_name + " " + contact.last_name%>
-                  <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact,:owner_type => "Customer") %>
-                  <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-                </div>
-            <%end #for%>   
-        </div>
-    <%end #if%> 
-  
-    <% @error ||= false %>
-    <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
-                :owner_id => @establishment.id, :params => params, :new_contact_number => @new_contact_number,
-                :error => @error} %>
+    
+    <!-- Display Contacts div -->
+  <h2> Contacts</h2>
+  <% if @contacts.length > 0 -%>
+    <% for contact in @contacts%>
+      <div <%= "id='customer_contact#{contact.id}'" %>>
+        <%= contact.first_name + " " + contact.last_name%>
+        <%= link_to "Plus d'infos", edit_establishment_contact_path(@establishment, contact, :owner_type => "Customer") %>
+        <%= link_to("Supprimer", [@establishment, contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+      </div>
+    <%end #for%> 
+  <%end #if%>
+  <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
+                  :owner_id => @establishment.id, :params => params, :new_contact_number => @new_contact_number,
+                  :error => @error} %>
               
     <%= submit_tag 'Modifier' %>
     
@@ -29,3 +27,4 @@
   
 
 <%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
+    </div>
