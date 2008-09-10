@@ -12,6 +12,16 @@ module EmployeesHelper
     end
   end
   
+  def display_social_security(default=nil)
+    if default.nil?
+      html = text_field_tag( 'social_security_number[0]', params[:social_security].nil? ? "" : params[:social_security].split(" ")[0], :size => 11, :maxlength => 13, :class => "disable-stylesheet-width") + "\n"
+      html += text_field_tag( 'social_security_number[1]', params[:social_security].nil? ? "" : params[:social_security].split(" ")[1], :size => 1, :maxlength => 2, :class => "disable-stylesheet-width")
+    else
+      html = text_field_tag( 'social_security_number[0]', default.split(" ")[0],:size => 11, :maxlength => 13, :class => "disable-stylesheet-width") + "\n"
+      html += text_field_tag( 'social_security_number[1]', default.split(" ")[1],:size => 1, :maxlength => 2, :class => "disable-stylesheet-width")
+    end
+  end
+  
    def display_address2(default=nil)
     if default.nil?
       text_field_tag( 'employee[address][address2]', params[:address].nil? ? nil : params[:address]['address2'] )
@@ -261,8 +271,8 @@ module EmployeesHelper
     end
   end
   
-  def flag_path(country_id)
-    "/images/flag/"+country_id+".gif"
+  def flag_path(country_code)
+    "/images/flag/"+country_code+".gif"
   end
   
   def number_type_path(type)

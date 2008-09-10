@@ -23,8 +23,8 @@
     <%= collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name)%>
   </p>
   <p>
-    <%= f.label :social_security ,"N&deg; s&eacute;curit&eacute; sociale :"%>
-    <%= f.text_field :social_security , { :size => 14, :maxlength => 16, :class => "disable-stylesheet-width"} %>
+    <%= label_tag 'social_security_number' ,"N&deg; s&eacute;curit&eacute; sociale :"%>
+    <%= display_social_security(@employee.nil? ? nil : @employee[:social_security_number]) %>
   </p>
   <!--#####################################-->
 
@@ -32,7 +32,7 @@
   <h3>Adresse postale</h3>
   <p>
     <%= label_tag 'employee[address][address1]', "Adresse :"%> 
-    <%= display_address1(@address.nil? ? nil :@address[:address1] )%> - <%= display_address2(@address.nil? ? nil :@address[:address2] )%>
+    <%= display_address1(@address.nil? ? nil : @address[:address1] )%> - <%= display_address2(@address.nil? ? nil : @address[:address2] )%>
   </p>
   <%= render :partial => 'addresses/address', :locals => {:cpt=> 1, :owner_address => @employee.address, :address_name => "employee"} %>
   
@@ -52,27 +52,27 @@
   <h2>Coordonn&eacute;es bancaires</h2>
   <p>
     <%= label_tag 'iban[bank_name]' ,"Nom de la banque :"%> 
-    <%= display_bank_name(@iban.nil? ? nil :@iban[:bank_name])%>
+    <%= display_bank_name(@iban.nil? ? nil : @iban[:bank_name])%>
   </p>
   <p>
     <%= label_tag 'iban[bank_code]' ,"Code bancaire :"%> 
-    <%= display_bank_code(@iban.nil? ? nil :@iban[:bank_code])%>
+    <%= display_bank_code(@iban.nil? ? nil : @iban[:bank_code])%>
   </p>
   <p>
     <%= label_tag 'iban[branch_code]' ,"Code guichet :"%> 
-    <%= display_branch_code(@iban.nil? ? nil :@iban[:branch_code])%>
+    <%= display_branch_code(@iban.nil? ? nil : @iban[:branch_code])%>
   </p>
    <p>
     <%= label_tag 'iban[account_number]' ,"N&deg; de compte :"%> 
-    <%= display_account_number(@iban.nil? ? nil :@iban[:account_number])%>
+    <%= display_account_number(@iban.nil? ? nil : @iban[:account_number])%>
   </p>
    <p>
     <%= label_tag 'iban[key]' ,"Cl&eacute; :"%> 
-    <%= display_key(@iban.nil? ? nil :@iban[:key])%>
+    <%= display_key(@iban.nil? ? nil : @iban[:key])%>
   </p>
    <p>
     <%= label_tag 'iban[account_name]' ,"Nom du titulaire :"%> 
-    <%= display_account_name(@iban.nil? ? nil :@iban[:account_name] ) %>
+    <%= display_account_name(@iban.nil? ? nil : @iban[:account_name] ) %>
   </p>
 
   <h2>Fiche de poste</h2>

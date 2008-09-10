@@ -32,13 +32,15 @@ namespace :osirails do
       JobContractType.create :name => "CDD"
       
       # default countries
-      france = Country.create :name => "France"
-      reunion = Country.create :name => "Réunion"
-      spain = Country.create :name => "Espagne"
-      united_kingdom = Country.create :name => "Angleterre"
-      germany = Country.create :name => "Allemagne"
-      japan = Country.create :name => "Japon"
-      china = Country.create :name => "Chine"
+      france = Country.create :name => "France", :code => "fr"
+      reunion = Country.create :name => "Réunion", :code => "fr"
+      spain = Country.create :name => "Espagne", :code => "es"
+      united_kingdom = Country.create :name => "Angleterre", :code => "gb"
+      germany = Country.create :name => "Allemagne", :code => "de"
+      japan = Country.create :name => "Japon", :code => "jp"
+      china = Country.create :name => "Chine", :code => "cn"
+      etats_unis = Country.create :name => "Etats-Unis", :code => "us"
+      canada = Country.create :name => "Canada", :code => "ca"
       
       # default indicatives
       indicative = Indicative.create :indicative => "+262", :country_id => reunion.id
@@ -48,6 +50,7 @@ namespace :osirails do
       Indicative.create :indicative => "+49", :country_id => germany.id
       Indicative.create :indicative => "+81", :country_id => japan.id
       Indicative.create :indicative => "+86", :country_id => china.id
+      Indicative.create :indicative => "+1", :country_id => etat_unis.id
       
       # default cities
       City.create :name => "BRAS PANON", :zip_code => "97412", :country_id => reunion.id

@@ -29,7 +29,10 @@
     <%= label_tag "Situation familiale :"%>
     <strong><%=h @employee.family_situation.name unless @employee.family_situation.nil?%></strong>
   </p>
-
+  <p>
+    <%= label_tag "N&deg; s&eacute;curit&eacute; sociale :" %>
+    <strong><%=h @employee.social_security_number%></strong>
+  </p>
   <h2>Fiche de poste</h2>  
   <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
     <%for service in @employee.services%>
@@ -42,7 +45,7 @@
   <h3>Fonction(s) dans l'entreprise</h3>
   <%for job in @employee.jobs%>
   <p>
-    <%=job.name + " :"%>
+    <strong><%=job.name + " :"%></strong>
     <table class="presentation">
       <tr class="left_cell">
         <td class="left_cell">- les missions :</td>
@@ -113,7 +116,12 @@
             <p>
               <%="<img src=" + number_type_path(number.number_type.name) + " alt=" + number.number_type.name + " title=" + number.number_type.name + "/>"%>&nbsp;
               <%=h number.indicative.indicative + " " + number.number%>&nbsp;
-              <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path(number.indicative.country.id.to_s) + " title=" + number.indicative.country.name + "  alt=" + number.indicative.country.name + " />"%>
+              <% if number.indicative.country.code == "us" or number.indicative.country.code == "ca"%> 
+                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path("us") + " title=\"Etats-Unis\"  alt=\"Us\" />"%>
+                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path("ca") + " title=\"Canada\"  alt=\"Ca\" />"%>
+              <% else %>  
+                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path(number.indicative.country.code.to_s) + " title=" + number.indicative.country.name + "  alt=" + number.indicative.country.code + " />"%>
+              <% end %>
             </p>
           <% end %>  
         <%end%>
@@ -167,7 +175,9 @@
         <%= label_tag "Salaire brut actuel :"%>
         <strong><%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €"  %>
         &#40;net &#58; <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
-        <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
+        <% if @employee.job_contract.salaries.size>0 %>
+          <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
+        <% end %>
       </p>
       
       <%= display_job_contract_edit_link(@job_contract_controller, @employee)%> 

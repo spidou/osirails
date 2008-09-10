@@ -75,6 +75,10 @@ class EmployeesController < ApplicationController
       params[:numbers] = params[:employee]['numbers']
       params[:employee].delete('numbers')
       
+      # regroupe the two parts of social security number
+      params[:employee][:social_security_number]=  params['social_security_number']['0'] + " " + params['social_security_number']['1']
+      params.delete('social_security_number')
+      
       # create employees ressources
       @employee = Employee.new(params[:employee])
       @job = Job.new(params[:job]) 
@@ -133,8 +137,12 @@ class EmployeesController < ApplicationController
       # put numbers another place for a separate création
       params[:numbers] = params[:employee]['numbers']
       params[:employee].delete('numbers')
-      # add or update numbers who have been send to the controller
       
+      # regroupe the two parts of social security number
+      params[:employee][:social_security_number] =  params['social_security_number']['0'] + " " + params['social_security_number']['1']
+      params.delete('social_security_number')
+      
+      # add or update numbers who have been send to the controller
       params[:numbers].each_key do |i|
         if @employee.numbers[i.to_i].nil?
           params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?

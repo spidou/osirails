@@ -41,10 +41,10 @@
     </td>
     <td><%=h employee.intranet_email %></td>
     <% if controller.can_list?(current_user) and Employee.can_list?(current_user)%>
-      <td><%= link_to( "<img src=\"/images/view_16x16.png\" title=\"Détails\" alt=\"Détails\" />", employee) %></td>
+      <td title="Détails"  ><%= link_to( "<img src=\"/images/view_16x16.png\" alt=\"Détails\"/>", employee) %></td>
     <% end %>
     <% if controller.can_edit?(current_user) and Employee.can_edit?(current_user)%>
-      <td><%= link_to( "<img src=\"/images/edit_16x16.png\" title=\"Modifier\" alt=\"Modifier\" />", edit_employee_path(employee)) %></td>
+      <td title="Modifier" ><%= link_to( "<img src=\"/images/edit_16x16.png\" alt=\"Modifier\"/>", edit_employee_path(employee)) %></td>
     <% end %>
   </tr>
 <% end %>
