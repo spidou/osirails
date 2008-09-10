@@ -68,7 +68,7 @@
 	height: 60px;
 }
 #calendar #scroll .day_grid.today {
-	background-color: #E2E0DA;
+	background-color: #EAEAEA !important;/*E2E0DA*/
 }
 #calendar #scroll #grid_week {
 	position: relative;
@@ -137,10 +137,20 @@
 	float: left;
 	width: 14%;
 	height: 20%;
+	border:1px solid;
 }
-#calendar #scroll #grid_month .day_grid ul {
-  
+
+#calendar #scroll #grid_month .day_grid ul {	
+	margin:15px 20px 5px 20px;
+	padding-left:1px;
 }
+
+#calendar #scroll #grid_month .day_grid ul li {
+	width:125%;
+	margin-bottom:3px;
+	text-align:justify;
+}
+
 #calendar #scroll .e_month {
 	font-size: 10px;
 }
@@ -150,6 +160,13 @@
 #calendar #scroll #grid_month .day_number.other_month {
 	color: #B4B4B4;
 }
+
+#calendar #scroll #grid_month .day_number {
+	margin: 0 0 0 10px;
+	position:relative;
+	top:5px;
+}
+
 #calendar #scroll .e_day_or_week {
 	position: absolute;
 	width: 100%;
@@ -167,6 +184,12 @@
 #calendar #scroll .event_content {
 	height: 100%;
 }
+
+.event {
+//	background:url("/images/lightbox_blank.gif") !important;
+//	height:10px !important;
+}
+
 #event_box {
 	font-size: 12px;
 	color: black;
@@ -201,7 +224,7 @@
 	float:right;
 	position:relative;
 	bottom:21px;
-	right:20px;
+	right:25px;
 }
 
 .participants_area span {
@@ -224,6 +247,7 @@
 /*CALENDAR'S BUTTONS*/
 .calendar-buttons {
 	margin:5px;
+	text-align:center;
 }
 
 .calendar-buttons div {

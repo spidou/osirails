@@ -1190,11 +1190,22 @@ width: 50px ! important;
 }
 
 .scroll_checkboxes { 
+	margin:15px 15px 15px 20px;
+	width:200px;
 	height: 100px;
 	padding: 5px;
 	overflow: auto;
 	border: 1px solid #ccc
 }
+
+.scroll_checkboxes p {
+	width:100%;
+	padding:0;
+	margin:0;
+	text-indent:0;
+	height:20px;
+}
+
 
 /*
 .frame input.disable-stylesheet-width {
