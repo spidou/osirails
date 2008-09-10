@@ -38,16 +38,17 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   };
   ajax_link(link_get_events);
 
-  //// Disable text selecting
-  //function disableselect() { return false };
-  //function reEnable() { return true };
-  ////if IE4+
-  //document.getElementById('calendar').onselectstart = new Function ("return false");
-  ////if NS6
-  //if (window.sidebar){
-  //  document.getElementById('calendar').onmousedown = disableselect;
-  //  document.getElementById('calendar').onclick = reEnable;
-  //};
+
+}
+
+function disable_text_selecting (object) {
+  //if IE4+
+  object.onselectstart = new Function ("return false");
+  //if NS6
+  if (window.sidebar){
+    object.onmousedown = function() { return false };
+    object.onclick = function() { return true };
+  };
 }
 
 /* Display an event on the calendar. This function is used by the server */
@@ -91,7 +92,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
 
     if (full_day) {
       var grid_day = document.getElementById(week_day + 'fullday').lastChild;
-      event_div.setAttribute('class', 'event e_week_fullday');
+      event_div.setAttribute('class', 'event e_week_fullday resizeMe');
       event_div.innerHTML = title;
     } else {
       var grid_day = document.getElementById(week_day).childNodes[1].firstChild;

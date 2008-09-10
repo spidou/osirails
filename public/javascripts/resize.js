@@ -174,11 +174,22 @@ Resizeable.prototype = {
     var offsets = Position.cumulativeOffset(this.element);
     
 	var cursor = '';
-	if (this.between(pointer[1] - offsets[1], 0, this.options.top)) cursor += 'n';
-	if (this.between((offsets[1] + this.element.offsetHeight) - pointer[1], 0, this.options.bottom)) cursor += 's';
+	
+	/* BEGIN HACK */
+	/* HACKED by Benjamin LAN-SUN-LUK */
+	/* Fix a bug: when a resizeable object is in a scrolable element */
+	
+	/* Original code */
+	//if (this.between(pointer[1] - offsets[1], 0, this.options.top)) cursor += 'n';
+	//if (this.between((offsets[1] + this.element.offsetHeight) - pointer[1], 0, this.options.bottom)) cursor += 's';
+	
+	/* Hack code */
+	if (this.between(event.layerY, 0, this.options.top)) cursor += 'n';
+	if (this.between((this.element.offsetHeight - event.layerY), 0, this.options.bottom)) cursor += 's';
+	/* END HACK */
+	
 	if (this.between(pointer[0] - offsets[0], 0, this.options.left)) cursor += 'w';
 	if (this.between((offsets[0] + this.element.offsetWidth) - pointer[0], 0, this.options.right)) cursor += 'e';
-
 	return cursor;
   },
   cursor: function(event) {
