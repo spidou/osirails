@@ -1,9 +1,27 @@
 class ProductReferenceCategoriesController < ApplicationController
+
+  # GET /product_reference_categories
+  def index
+    if params[:product_reference_category_id].nil?
+    @categories = ProductReferenceCategory.find(:all)
+    @type = 'normal'
+    else
+    @category = ProductReferenceCategory.find(params[:product_reference_category_id])
+    render :layout => false
+    end
+    
+  end
   
   # GET /product_reference_categories/new
   def new
     @category = ProductReferenceCategory.new(:product_reference_category_id => params[:id])
     @categories = ProductReferenceCategory.find(:all)
+  end
+
+  # GET /product_reference_categories/1
+  def show
+    @category = ProductReferenceCategory.find(params[:id])
+    render :layout => false
   end
   
   # GET /product_reference_categories/1/edit
@@ -45,8 +63,14 @@ class ProductReferenceCategoriesController < ApplicationController
   def destroy
     @category = ProductReferenceCategory.find(params[:id])
     if @category.can_destroy?
-      @category.destroy
-      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+      if @category.has_children_disable?
+        @category.enable = false
+        @category.save
+        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+      else
+        @category.destroy
+        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+      end
     else
       flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e. V&eacute;rifiez qu'elle ne poss&egrave;de aucune autre cat&eacute;gorie ou r&eacute;f&eacute;rence."
     end

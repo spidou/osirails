@@ -64,6 +64,7 @@ ActionController::Routing::Routes.draw do |map|
   ### END SALES
   
   ### PRODUCTS
+  map.resources :products
   map.resources :produts_catalog
   map.resources :product_references
   map.resources :product_reference_categories do |product_reference_category|
@@ -73,7 +74,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
-  map.connect 'products', :controller => 'products_catalog' #default page for products
+#  map.connect 'products', :controller => 'products_catalog' #default page for products
   ### END PRODUCTS
   
   ### CALENDAR

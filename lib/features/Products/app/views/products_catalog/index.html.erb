@@ -1,3 +1,9 @@
+<% content_for :header do %>
+  <script type="text/javascript" src="/javascripts/products/product_catalog.js"></script>
+<% end %>
+
+
+
 <h1>Catalogue des produits</h1>
 
 <div class="frame">
@@ -8,19 +14,28 @@
       <% end %>
     </span>
     <span id='show_references'>
-      <%= render :partial => "show_references" %>
+      <%= show_reference_column(@references) %>
     </span>
 
   </div>
 
-    <div id="products_list"></div>
+<h2>Produits</h2>
+<div id="products_list">
+<table>
+  <thead>
+    <th>Nom</th>
+    <th>Categories</th>
+    <th>R&eacute;f&eacute;rence</th>
+    <th>Client</th>
+    <th>Dossier</th>
+  </thead>
+  <tbody>
+    <%= show_products %>
+  </tbody>
+</table>
+</div>
+
     <div id="product_reference_informations"></div>
     <div id="product_informations"></div>
 
-  <% find_max_level.times do |value|%>
-    <%= observe_field("select_#{value}", :update => "show_references", :url => {:action => :show_references}, :with => 'parameter' ) %>
-    <%= observe_field("select_#{value}", :url => {:action => :refresh_categories} ,:with => 'parameter' ) %>
-  <% end %>
-
-  <%= observe_field("select_#{find_max_level}", :update => "show_references", :url => {:action => :show_references}, :on => "click", :with => 'parameter' ) %>
 </div>

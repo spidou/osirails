@@ -49,4 +49,19 @@ class ProductReferenceCategory < ActiveRecord::Base
     self.product_references.empty? and self.product_reference_categories.empty?
   end
   
+  
+    # Check if a resource can be destroy or disable
+  def can_destroy?
+    references = ProductReference.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})
+    categories = ProductReferenceCategory.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})
+    references.empty? and categories.empty?
+  end
+  
+  # Check if a category have got children disable
+  def has_children_disable?
+    references = ProductReference.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => false})
+    categories = ProductReferenceCategory.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => false})
+    references.size > 0 or categories.size > 0
+  end
+  
 end

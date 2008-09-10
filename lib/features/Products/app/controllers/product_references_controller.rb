@@ -1,9 +1,26 @@
 class ProductReferencesController < ApplicationController
 
+  # GET /product_references
+  def index
+    if params[:product_reference_category_id].nil?
+    @references = ProductReference.find(:all)
+    @type = 'normal'
+    else
+    @category = ProductReferenceCategory.find(params[:product_reference_category_id])
+    render :layout => false
+    end
+  end
+
   # GET /product_references/new
   def new
     @reference = ProductReference.new(:product_reference_category_id => params[:id])
     @categories = ProductReferenceCategory.find(:all)
+  end
+  
+  # GET /product_reference/1
+  def show
+    @reference = ProductReference.find(params[:id])
+    render :layout => false
   end
 
   # GET /product_references/1/edit
@@ -46,7 +63,7 @@ class ProductReferencesController < ApplicationController
     if @reference.can_destroy?
       @reference.destroy
     else
-      @reference.enable = 0
+      @reference.enable = false
       @reference.counter_update("disable_or_before_update")
       @reference.save
     end

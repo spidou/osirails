@@ -1,6 +1,4 @@
-<% unless @products == "0" or @products.size == 0%>
-  <h2>Produits</h2>
-  <div>
+
     <table>
       <thead>
         <th>Nom</th>
@@ -14,7 +12,7 @@
         <% reference = ProductReference.find(product.product_reference_id) %>
         <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
         <tr>
-          <td><%= link_to_remote("#{product.name}", :update => "product_informations", :url => { :action => :show_product_information, :id => product.id}) %></td>
+          <td><%= link_to_remote("#{product.name}", :update => "product_informations", :url => product_path(product.id), :method => :get) %></td>
           <td><%= category.name %></td>
           <td><%= reference.name %></td>
           <td></td>
@@ -23,5 +21,4 @@
       <% end %>
       </tbody>
     </table>
-  </div>
-<% end %>
+
