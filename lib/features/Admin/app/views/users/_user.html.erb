@@ -23,14 +23,12 @@
     </p>
     <p>Choisir le(s) r&ocirc;le(s) de l'utilisateur</p>
     <div class="scroll_checkboxes" >
-      <table>
         <% for associated_role in @roles %>
-        <tr>
-          <td><%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %></td>
-          <td><%= associated_role.name %></td>
-        </tr>
+        <p>
+          <%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %>
+          <%= associated_role.name %>
+        </p>
         <% end %>
-      </table>
     </div>
     <%= f.submit submit_button_name %>
   <% end %>
