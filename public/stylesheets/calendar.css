@@ -17,11 +17,6 @@
 
 .day {
 	text-indent:0;
-	border-left:1px solid #C8C8C8;
-/*	border-bottom:1px solid red;	*/
-/*	margin-right:0.5px;				*/
-	margin-right:-0.11%; 
-	margin-left:0.1%;
 }
 
 .last_day {
@@ -44,6 +39,7 @@
 	border: 1px solid #333;
 	color: white;
 	-moz-border-radius: 8px;
+	margin-left:3px;
 }
 .day_fullday {
 	margin-left: 86px;
@@ -254,13 +250,15 @@
 }
 
 .not_working_day {
-	background:#aeaeae;
+	background-color:#eaeaea !important;
+	opacity:0.8 !important;
+	-moz-opacity:0.8 !important;
 }
 
 /*CALENDAR'S BUTTONS*/
 .calendar-buttons {
-	margin:5px;
-	text-align:center;
+	margin: 5px;
+	text-align: center;
 }
 
 .calendar-buttons div {
