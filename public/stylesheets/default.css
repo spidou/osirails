@@ -378,8 +378,17 @@ a.button_banner:hover span {
 /*/////////////////////////////////////////////////////////
 	BODY OF THE WEBSITE > PAGE OF WEBSITE > SECONDARY-MENU
 /////////////////////////////////////////////////////////*/
-#secondary_menu {
+#secondary_menu_container {
 	float:right;
+//	border:red 1px solid;
+}
+
+#secondary_menu_container #shadow_secondary_menu+#content_secondary_menu {
+//	border:red 1px solid;
+}
+
+#secondary_menu {
+//	float:right;
 	margin-left:10px;
 	margin-top:10px;
 	margin-right:6px;
@@ -685,94 +694,6 @@ a.previous-button:hover span {
 	background: transparent url("../images/button_default_generic_right_side.png") no-repeat 100% -26px;
 	color:black;
 }	 		
-
-/*CALENDAR'S BUTTONS*/
-.calendar-buttons {
-	margin:5px;
-}
-
-.calendar-buttons div {
-	display:inline-block;
-}
-
-.cal-prev,
-.cal-next {
-	background:url("/images/calendar/button_next-previous_calendar.png");
-	width:30px;
-	height:19px;
-	margin-left:-5px;
-}
-
-.cal-prev {
-	background-position:0 0;
-}
-
-.cal-prev:hover {
-	background-position:0 -19px;
-}
-
-.cal-prev:active,
-.cal-prev.selected {
-	background-position:0 -38px;
-}
-
-.cal-next {
-	background-position:-31px 0;
-}
-
-.cal-next:hover {
-	background-position:-31px -19px;
-}
-
-.cal-next:active,
-.cal-next.selected {
-	background-position:-31px -38px;
-}
-
-.cal-buttons {
-	background:url("../images/calendar/button_calendar_generic.png") repeat-x;
-	width:1px;
-	height:19px;
-	position:relative;
-	bottom:5px;
-	border-left:solid 1px #A5A5A5;
-	border-right:solid 1px #A5A5A5;
-	padding-left:5px;
-	padding-right:5px;
-	background-position:0 0;
-	margin-left:-5px;
-}
-
-.cal-buttons:hover {
-	background-position:0 -19px;
-}
-
-.cal-buttons:active,
-.cal-buttons.selected {
-	background-position:0 -38px;
-	color:black;
-}
-
-span.calendar_checkbox,
-span.calendar_checkbox.selected {
-	width:40px;
-	height:36px;
-	margin:10px;
-	line-height:36px;
-	text-indent:8px;
-}
-
-span.calendar_checkbox {
-	background:url("../images/calendar/month.jpg");
-}
-
-span.calendar_checkbox.selected {
-	background:url("../images/calendar/month_selected.jpg");
-}
-
-span.checkbox_text_calendar {
-	
-}
 
 /*//////////////////////////////////////////////////////////
 BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
@@ -1237,13 +1158,6 @@ width: 50px ! important;
 }
 */
 /*LAYOUTS' FORM*/
-.frame.presentation_calendar label {
-	text-align:right;
-	width:60px;
-	display:inline-block;
-}
-
-
 
 .frame.presentation_large label {
 	text-align:right;
@@ -1282,6 +1196,13 @@ width: 50px ! important;
 .frame strong {
 	margin-bottom:10px;
 	vertical-align:top;
+}
+
+.scroll_checkboxes { 
+	height: 100px;
+	padding: 5px;
+	overflow: auto;
+	border: 1px solid #ccc
 }
 
 /*

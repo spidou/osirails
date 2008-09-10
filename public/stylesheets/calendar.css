@@ -1,3 +1,7 @@
+#calendar {
+	text-indent:0;
+}
+
 #group_day {
 /*	position: relative;	*/
 	margin-left: 85px;
@@ -25,31 +29,31 @@
 
 
 .day ul {
-  padding: 0px;
-  margin: 0px -1px 0px 0px;
+	padding: 0px;
+	margin: 0px -1px 0px 0px;
 	border-right:1px solid #C8C8C8;
 }
 .day li {
 	display: inline;
 }
 .day .e_week_fullday {
-  font-size: 10px;
-  text-align: left;
-  border: 1px solid black;
-  color: white;
-  background-color: red;
+	font-size: 10px;
+	text-align: left;
+	border: 1px solid black;
+	color: white;
+	background-color: red;
 	-moz-border-radius: 8px;
 }
 .day_fullday {
-  margin-left: 86px;
-  margin-right: 15px;
-  text-align: center;
+	margin-left: 86px;
+	margin-right: 15px;
+//	text-align: center;
 }
 #calendar_content {
 	overflow: hidden;
 }
 #calendar #scroll {
-  clear: left;
+	clear: left;
 	margin-left: 16px;
 	padding-right: 1px;
 	overflow: auto;
@@ -64,7 +68,7 @@
 	height: 60px;
 }
 #calendar #scroll .day_grid.today {
-  background-color: #E2E0DA;
+	background-color: #E2E0DA;
 }
 #calendar #scroll #grid_week {
 	position: relative;
@@ -118,12 +122,12 @@
 	width: 99.8%;
 }
 #calendar #scroll #group_day_month {
-  width: 99%;
+	width: 99%;
 }
 #calendar #scroll #group_day_month .day_month {
-  float: left;
-  width: 14%;
-  text-align: center;
+	float: left;
+	width: 14%;
+	text-align: center;
 }
 #calendar #scroll #grid_month {
 	width: 99%;
@@ -133,7 +137,6 @@
 	float: left;
 	width: 14%;
 	height: 20%;
-	border: 1px solid;
 }
 #calendar #scroll #grid_month .day_grid ul {
   
@@ -142,10 +145,10 @@
 	font-size: 10px;
 }
 #calendar #scroll #grid_month .hover {
-  background-color: #BC7757;
+	background-color: #BC7757;
 }
 #calendar #scroll #grid_month .day_number.other_month {
-  color: #B4B4B4;
+	color: #B4B4B4;
 }
 #calendar #scroll .e_day_or_week {
 	position: absolute;
@@ -179,4 +182,104 @@
 }
 .calendar {
 	z-index: 2;
+}
+
+.frame.presentation_calendar label {
+	text-align:right !important;
+	width:60px;
+	display:inline-block;
+	margin-right:15px;
+}
+
+.frame.presentation_calendar p {
+	padding-left:1px;
+	padding-right: 1px;
+}
+
+/*CALENDAR'S BUTTONS*/
+.calendar-buttons {
+	margin:5px;
+}
+
+.calendar-buttons div {
+	display:inline-block;
+}
+
+.cal-prev,
+.cal-next {
+	background:url("/images/calendar/button_next-previous_calendar.png");
+	width:30px;
+	height:19px;
+	margin-left:-5px;
+}
+
+.cal-prev {
+	background-position:0 0;
+}
+
+.cal-prev:hover {
+	background-position:0 -19px;
+}
+
+.cal-prev:active,
+.cal-prev.selected {
+	background-position:0 -38px;
+}
+
+.cal-next {
+	background-position:-31px 0;
+}
+
+.cal-next:hover {
+	background-position:-31px -19px;
+}
+
+.cal-next:active,
+.cal-next.selected {
+	background-position:-31px -38px;
+}
+
+.cal-buttons {
+	background:url("../images/calendar/button_calendar_generic.png") repeat-x;
+	width:1px;
+	height:19px;
+	position:relative;
+	bottom:5px;
+	border-left:solid 1px #A5A5A5;
+	border-right:solid 1px #A5A5A5;
+	padding-left:5px;
+	padding-right:5px;
+	background-position:0 0;
+	margin-left:-5px;
+}
+
+.cal-buttons:hover {
+	background-position:0 -19px;
+}
+
+.cal-buttons:active,
+.cal-buttons.selected {
+	background-position:0 -38px;
+	color:black;
+}
+
+span.calendar_checkbox,
+span.calendar_checkbox.selected {
+	width:40px;
+	height:36px;
+	margin:10px;
+	line-height:36px;
+	text-indent:8px;
+}
+
+span.calendar_checkbox {
+	background:url("../images/calendar/month.jpg");
+}
+
+span.calendar_checkbox.selected {
+	background:url("../images/calendar/month_selected.jpg");
+}
+
+span.checkbox_text_calendar {
+	
 }
