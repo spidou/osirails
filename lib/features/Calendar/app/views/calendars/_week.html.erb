@@ -7,8 +7,8 @@
 		</div>
 		<div id="grid_week">
 			<% date = @date.beginning_of_week %>
-			<% 7.times do %>
-			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid<%= " today" if date == Date::today %>">
+			<% 7.times do |i| %>
+			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid<%= " today" if date == Date::today %><%= " not_working_day" unless ConfigurationManager.admin_society_identity_configuration_working_day.include?(i.to_s) %>">
 				<div class="day_grid_border"><ul></ul></div>
 			</div>
 			<% date += 1.days %>

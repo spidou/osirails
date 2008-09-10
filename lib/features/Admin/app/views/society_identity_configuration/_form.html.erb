@@ -37,3 +37,9 @@
   <b><%= label_tag 'admin_society_identity_configuration_address_country', "Pays :"%></b>
   <%= display_markup("admin_society_identity_configuration_address_country", @parameters["admin_society_identity_configuration_address_country"]) %>    
 </p>
+
+<h2>Calendrier</h2>
+<p>
+	<b><%= label_tag 'admin_society_identity_configuration_working_day', 'Jours ouvrables :' %></b>
+	<%= working_day(@parameters["admin_society_identity_configuration_working_day"]) %> 
+</p>

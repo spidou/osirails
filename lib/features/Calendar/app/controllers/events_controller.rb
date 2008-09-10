@@ -25,9 +25,9 @@ class EventsController < ApplicationController
   end
 
   def show
-    @calendar = Calendar.find(params[:calendar_id])
-    return false unless @calendar.can_view?(current_user)
     @event = Event.find(params[:id])
+    @calendar = @event.calendar
+    return false unless @calendar.can_view?(current_user)
     respond_to do |format|
       format.js
     end
@@ -70,9 +70,9 @@ class EventsController < ApplicationController
   end
 
   def edit
-    @calendar = Calendar.find(params[:calendar_id])
-    return false unless @calendar.can_edit?(current_user)
     @event = Event.find(params[:id])
+    @calendar = @event.calendar
+    return false unless @calendar.can_edit?(current_user)
     @alarm = @event.alarms.first
     @categories = EventCategory.find_all_accessible(@calendar)
     respond_to do |format|

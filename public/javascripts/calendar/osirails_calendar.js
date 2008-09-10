@@ -93,6 +93,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
     if (full_day) {
       var grid_day = document.getElementById(week_day + 'fullday').lastChild;
       event_div.setAttribute('class', 'event e_week_fullday resizeMe');
+      event_div.setAttribute('style', 'background-color: ' + color + ';')
       event_div.innerHTML = title;
     } else {
       var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
@@ -763,13 +764,4 @@ function delete_participant (object, is_new) {
     list.appendChild(object.parentNode.lastChild);
     object.parentNode.remove();
   };
-}
-
-function add_file() {
-  var list = document.getElementById('file_list');
-  var input_elm = document.createElement('input');
-  input_elm.setAttribute('name', 'upload[][datafile]');
-  input_elm.setAttribute('size', '20');
-  input_elm.setAttribute('type', 'file');
-  list.appendChild(input_elm);
 }
