@@ -380,11 +380,7 @@ a.button_banner:hover span {
 /////////////////////////////////////////////////////////*/
 #secondary_menu_container {
 	float:right;
-//	border:red 1px solid;
-}
-
-#secondary_menu_container #shadow_secondary_menu+#content_secondary_menu {
-//	border:red 1px solid;
+	border:red 1px solid;
 }
 
 #secondary_menu {
@@ -1126,7 +1122,7 @@ width: 50px ! important;
 */
 .frame form p textarea {
 /*	min-height:50px;*/
-	height:10px !important; /*test julien*/
+//	height:10px !important; /*test julien*/
 }
 
 .frame form p select {
