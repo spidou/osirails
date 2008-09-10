@@ -186,14 +186,39 @@
 
 .frame.presentation_calendar label {
 	text-align:right !important;
-	width:60px;
+	width:70px;
 	display:inline-block;
-	margin-right:15px;
+	margin-right:10px;
 }
 
 .frame.presentation_calendar p {
-	padding-left:1px;
-	padding-right: 1px;
+	padding:1px;
+	margin:0;
+	height:20px;
+}
+
+.participants_area a {
+	float:right;
+	position:relative;
+	bottom:21px;
+	right:20px;
+}
+
+.participants_area span {
+	clear:left;
+	margin-top:-10px;
+}
+
+#participants_list {
+	margin:-22px 5px 1px 86px;
+	padding:0;
+	width:285px;
+	color:#333;
+}
+
+#participants_list img {
+	position:relative;
+	top:2px;
 }
 
 /*CALENDAR'S BUTTONS*/
