@@ -19,7 +19,9 @@
 	text-indent:0;
 	border-left:1px solid #C8C8C8;
 /*	border-bottom:1px solid red;	*/
-	margin-right:-0.5px;
+/*	margin-right:0.5px;				*/
+	margin-right:-0.11%; 
+	margin-left:0.1%;
 }
 
 .last_day {
@@ -41,7 +43,6 @@
 	text-align: center;
 	border: 1px solid #333;
 	color: white;
-	background-color: #FF9900;
 	-moz-border-radius: 8px;
 }
 .day_fullday {
@@ -195,7 +196,7 @@
 }
 
 .event {
-	background:#FF9900 !important;
+
 }
 
 #event_box {
@@ -207,7 +208,7 @@
 	border: 1px solid #333;
 	padding: 8px;
 	-moz-border-radius: 8px;
-	background: url("/images/background_content_page.jpg");
+	background: url("/images/background_metal.gif");
 	z-index: 1;
 	width: 380px;
 }
@@ -250,6 +251,10 @@
 #participants_list img {
 	position:relative;
 	top:2px;
+}
+
+.not_working_day {
+	background:#aeaeae;
 }
 
 /*CALENDAR'S BUTTONS*/
