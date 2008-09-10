@@ -22,14 +22,16 @@
       <%= f.check_box :enabled %>
     </p>
     <p>Choisir le(s) r&ocirc;le(s) de l'utilisateur</p>
-    <table>
-      <% for associated_role in @roles %>
-      <tr>
-        <td><%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %></td>
-        <td><%= associated_role.name %></td>
-      </tr>
-      <% end %>
-    </table>
+    <div class="scroll_checkboxes" >
+      <table>
+        <% for associated_role in @roles %>
+        <tr>
+          <td><%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %></td>
+          <td><%= associated_role.name %></td>
+        </tr>
+        <% end %>
+      </table>
+    </div>
     <%= f.submit submit_button_name %>
   <% end %>
 
