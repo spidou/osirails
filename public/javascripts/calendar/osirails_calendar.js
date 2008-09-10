@@ -130,7 +130,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
       update_time(elm_id);
     } else {
       var all_day_height = new Array();
-      var all_fullday = document.getElementsByClassName('day');
+      var all_fullday = document.getElementById('group_day').getElementsByClassName('day');
       for (var i=0; i < all_fullday.length; i++) {
         all_day_height.push(all_fullday[i].offsetHeight);
       };
