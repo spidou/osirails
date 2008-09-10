@@ -14,6 +14,19 @@ div.calendar {
 	font-family: tahoma,verdana,sans-serif;
 }
 
+.calendar table td {
+	border:solid 1px #333;
+}
+
+.calendar tr:hover > td{
+	background: inherit;
+}
+
+.calendar tr:hover > td > a {
+	text-decoration:inherit;
+}
+
+
 /* Header part -- contains navigation buttons and day names. */
 
 .calendar .button { /* "<<", "<", ">", ">>" buttons have this class */

@@ -38,16 +38,19 @@
 }
 .day .e_week_fullday {
 	font-size: 10px;
-	text-align: left;
-	border: 1px solid black;
+	text-align: center;
+	border: 1px solid #333;
 	color: white;
-	background-color: red;
+	background-color: #FF9900;
 	-moz-border-radius: 8px;
 }
 .day_fullday {
 	margin-left: 86px;
+	text-indent:10px;
 	margin-right: 15px;
 //	text-align: center;
+	border-left:solid 1px #808080;
+	background:#E8A859;
 }
 #calendar_content {
 	overflow: hidden;
@@ -55,7 +58,7 @@
 #calendar #scroll {
 	clear: left;
 	margin-left: 16px;
-	padding-right: 1px;
+	padding-right: 2px;
 	overflow: auto;
 	height: 600px;
 }
@@ -68,7 +71,8 @@
 	height: 60px;
 }
 #calendar #scroll .day_grid.today {
-	background-color: #EAEAEA !important;/*E2E0DA*/
+	background-color: #FBCD95 !important; /*#EAEAEA !important;*/
+	color:#394A64;
 }
 #calendar #scroll #grid_week {
 	position: relative;
@@ -132,16 +136,21 @@
 #calendar #scroll #grid_month {
 	width: 99%;
 	height: 600px;
+	position:relative;
+	left:1px;
+	top:1px;
 }
 #calendar #scroll #grid_month .day_grid {
 	float: left;
 	width: 14%;
 	height: 20%;
-	border:1px solid;
+	border:solid 1px;
+	margin-left:-1px;
+	margin-top:-1px;
 }
 
 #calendar #scroll #grid_month .day_grid ul {	
-	margin:15px 20px 5px 20px;
+	margin:5px 20px 5px 20px;
 	padding-left:1px;
 }
 
@@ -170,7 +179,7 @@
 #calendar #scroll .e_day_or_week {
 	position: absolute;
 	width: 100%;
-	border: 1px solid black;
+	border: 1px solid #333;
 	padding: 4px 0px;
 	min-height: 20px;
 	text-align: center;
@@ -186,8 +195,7 @@
 }
 
 .event {
-//	background:url("/images/lightbox_blank.gif") !important;
-//	height:10px !important;
+	background:#FF9900 !important;
 }
 
 #event_box {

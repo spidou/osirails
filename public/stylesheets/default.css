@@ -1206,6 +1206,16 @@ width: 50px ! important;
 	height:20px;
 }
 
+.scroll_checkboxes ul {
+	width:100%;
+	padding:0;
+	margin:0;
+}
+
+.scroll_checkboxes ul li {
+	text-indent:0;
+	height:20px;
+}
 
 /*
 .frame input.disable-stylesheet-width {
