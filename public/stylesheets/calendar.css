@@ -28,7 +28,6 @@
 .day ul {
 	padding: 0px;
 	margin: 0px -1px 0px 0px;
-	border-right:1px solid #C8C8C8;
 }
 .day li {
 	display: inline;
@@ -201,10 +200,10 @@
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
-	border: 1px solid #333;
+	border: 1px solid #D2D2D2;
 	padding: 8px;
 	-moz-border-radius: 8px;
-	background: #444 url("/images/background_metal.gif");
+	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
 	z-index: 1;
 	width: 380px;
 }
