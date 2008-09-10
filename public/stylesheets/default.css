@@ -413,8 +413,8 @@ a.button_banner:hover span {
 	overflow:hidden;
 }
 
-.hidden_secondary_menu #status_text_secondary_menu:hover,
-.shown_secondary_menu #status_text_secondary_menu:hover {
+.hidden_secondary_menu #status_background_secondary_menu:hover,
+.shown_secondary_menu #status_background_secondary_menu:hover {
 	width:auto;
 	cursor:pointer;
 }
