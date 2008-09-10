@@ -120,8 +120,7 @@ class Event < ActiveRecord::Base
     end
     
     participants.each do |p|
-      # FIXME Replace with the correct columns names
-      event.add_attendee("MAILTO=" + p.email, {"cn" => p.fullname})
+      event.add_attendee("MAILTO=" + p.email, {"cn" => p.name})
     end
     
     alarms.each do |a|

@@ -54,8 +54,12 @@ class EventsController < ApplicationController
     @event = Event.create(params[:event])
     @event.alarms << Alarm.create(params[:alarm])
     
-    params[:participants][:list] ||= []
-    params[:participants][:list].each do |p|
+    params[:participants][:delete] ||= []
+    params[:participants][:delete].each do |p|
+      Participant.find(p).destroy if @event.participant_ids.include?(p.to_i)
+    end
+    params[:participants][:new] ||= []
+    params[:participants][:new].each do |p|
       @event.participants << Participant.create(Participant.parse(p))
     end
     
@@ -146,8 +150,12 @@ class EventsController < ApplicationController
         @event.alarms.first = @alarm
       end
       
-      params[:participants][:list] ||= []
-      params[:participants][:list].each do |p|
+      params[:participants][:delete] ||= []
+      params[:participants][:delete].each do |p|
+        Participant.find(p).destroy if @event.participant_ids.include?(p.to_i)
+      end
+      params[:participants][:new] ||= []
+      params[:participants][:new].each do |p|
         @event.participants << Participant.create(Participant.parse(p))
       end
       

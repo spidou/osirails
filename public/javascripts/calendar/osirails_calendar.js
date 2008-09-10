@@ -57,7 +57,7 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
 /* full_day   boolean */
 function add_event (id, title, top, height, color, week_day, full_day) {
   var elm_id = 'event' + id;
-
+  
   var events = document.getElementsByClassName('event');
   for (var i=0; i < events.length; i++) {
     if (events[i].id == elm_id) {
@@ -95,6 +95,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
       event_div.innerHTML = title;
     } else {
       var grid_day = document.getElementById(week_day).childNodes[1].firstChild;
+      if (height < 20) { height = 20; };
       event_div.setAttribute('class', 'event e_day_or_week');
       event_div.setAttribute('style', 'top: ' + top + 'px; height: ' + height + 'px; background-color: ' + color);
       var event_content = document.createElement('div');
@@ -381,7 +382,7 @@ function hide_event_box () {
     /* The calendar is scrolling to the correct direction */
     function drag_and_scroll (elm_id) {
       var event_elm = document.getElementById(elm_id);
-      var scroll_elm = document.getElementById('calendar').childNodes[9];
+      var scroll_elm = document.getElementById('scroll');
       var event_top = parseInt(event_elm.style.top);
       var event_height = parseInt(event_elm.style.height);
       var scroll_height = 600;
@@ -699,7 +700,8 @@ function hide_event_box () {
             ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id, 'delete');
           };
         }
-        
+
+// Manage the select category
 function category_select (elm) {
   var new_category_elm = document.getElementById('new_event_category_name');
   if (elm.options[elm.selectedIndex].text == 'Autre') {
@@ -709,6 +711,7 @@ function category_select (elm) {
   };
 }
 
+// Add a droppable area for each day in month view's
 function add_droppable (elm_id) {
   Droppables.add(elm_id, {
     accept: 'e_month',
@@ -721,30 +724,42 @@ function add_droppable (elm_id) {
   });
 }
 
+// Calculate the date when start_at or end_at are changed
 function calcalc(cal) {
     var date = cal.date;
     var time = date.getTime()
     var field = document.getElementById("event_end_at");
     if (field == cal.params.inputField) {
         field = document.getElementById("event_start_at");
-//        time -= Date.WEEK;
-    } else {
-//        time += Date.WEEK;
-    }
+    };
     var date2 = new Date(time);
     field.value = date2.print("%Y-%m-%d %H:%M");
 }
 
+// Add a participant from the form
 function add_participant () {
   var list = document.getElementById('participants_list');
+  if (list.getElementsByTagName('span').length > 0) {
+    var comma = '';
+  } else {
+    var comma = ', '
+  };
   var textfield = document.getElementById('participants_text');
-  var li = document.createElement('li');
-  var input = document.createElement('input');
-  input.setAttribute('type', 'hidden');
-  input.setAttribute('name', 'participants[list][]');
-  input.setAttribute('value', textfield.value);
-  
-  li.innerHTML = textfield.value;
-  li.appendChild(input);
-  list.appendChild(li);
+  var new_participant = document.createElement('span');
+  new_participant.innerHTML = comma + textfield.value +
+                              " <img src=\"/images/cross_16x16.png\" onclick=\"delete_participant(this, true);\">" +
+                              "<input type=\"hidden\" name=\"participants[new][]\" value=\"" + textfield.value + "\" />";
+  list.appendChild(new_participant);
+}
+
+// Delete a participant from the form
+function delete_participant (object, is_new) {
+  if (is_new) {
+    object.parentNode.remove();
+  } else {
+    var list = document.getElementById('participants_list')
+    object.parentNode.lastChild.name = "participants[delete][]";
+    list.appendChild(object.parentNode.lastChild);
+    object.parentNode.remove();
+  };
 }

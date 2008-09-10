@@ -179,13 +179,18 @@
 <%= e.label :event_category_id, 'Categorie' %>
 <%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %>
 </p>
-
+<p>
 <%= label_tag 'Participants' %>
-<%= text_field_with_auto_complete('participants', 'text', {}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :method => 'get'}) %> <a href="#" onclick="add_participant();">l'ajouter</a>
-<br />
-<ul id="participants_list">
-</ul>
-
+<%= text_field_with_auto_complete('participants', 'text', {}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :method => 'get'}) %>
+</p>
+<p class="participants_area">
+<a onclick="add_participant();">l'ajouter</a>
+<div id="participants_list">
+	<% @event.participants.each do |p| %>
+		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_16x16.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
+	<% end %>
+</div>
+</p>
 <p>
 <%= e.label :link, 'URL' %>
 <%= e.text_field :link %>
