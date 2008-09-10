@@ -128,6 +128,15 @@ function add_event (id, title, top, height, color, week_day, full_day) {
       };
 
       update_time(elm_id);
+    } else {
+      var all_day_height = new Array();
+      var all_fullday = document.getElementsByClassName('day');
+      for (var i=0; i < all_fullday.length; i++) {
+        all_day_height.push(all_fullday[i].offsetHeight);
+      };
+      for (var i=0; i < all_fullday.length; i++) {
+        all_fullday[i].style.height = all_day_height.sort().reverse()[0] + 'px';
+      };
     };
   };
 }
@@ -577,16 +586,6 @@ function hide_event_box () {
       };
     }
 
-    /* Move a full day event to the full day bar */
-    function full_day_event (event_elm, boolean) {
-      var day_elm = event_elm.ancestors()[3];
-      if (boolean) {
-
-      } else {
-
-      };
-    }
-
     /* Manage the select of the event's alarm */
     function alarm_selected (object) {
       var alarm_elm = document.getElementById('alarm');
@@ -759,9 +758,18 @@ function delete_participant (object, is_new) {
   if (is_new) {
     object.parentNode.remove();
   } else {
-    var list = document.getElementById('participants_list')
+    var list = document.getElementById('participants_list');
     object.parentNode.lastChild.name = "participants[delete][]";
     list.appendChild(object.parentNode.lastChild);
     object.parentNode.remove();
   };
+}
+
+function add_file() {
+  var list = document.getElementById('file_list');
+  var input_elm = document.createElement('input');
+  input_elm.setAttribute('name', 'upload[][datafile]');
+  input_elm.setAttribute('size', '20');
+  input_elm.setAttribute('type', 'file');
+  list.appendChild(input_elm);
 }
