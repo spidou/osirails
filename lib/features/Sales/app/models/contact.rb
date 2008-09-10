@@ -1,4 +1,5 @@
 class Contact < ActiveRecord::Base
+    include Permissible
   
   has_many :numbers
   validates_presence_of :first_name

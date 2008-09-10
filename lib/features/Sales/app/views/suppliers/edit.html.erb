@@ -5,17 +5,28 @@
   <%= supplier.error_messages %>
   <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier, :activity_sector_name => @activity_sector, :iban_ => @supplier.iban} %>
 
-  <h2>Contacts</h2> 
-  <% if @contacts.length > 0 -%>
-    <% for contact in @contacts %>
-      <p>
-        <%= contact.first_name + " " + contact.last_name %>
-        <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact,:owner_type => "Supplier") %>
-        <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-      <p>
-    <% end %>   
+  <!-- Display Contacts div -->
+  <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
+    <h2><%= "Contacts" %></h2>
+    <% unless @contacts.empty? %>    
+      <% for contact in @contacts %>
+          <p>
+            <%= contact.first_name + " " + contact.last_name%>
+            <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
+                <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
+            <% end %>
+            <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
+                <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+            <% end %>
+          </p>
+      <% end %>
+    <% end %>
+
+    <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Supplier",
+                  :owner_id => @supplier.id, :params => params, :new_contact_number => @new_contact_number,
+                  :error => @error} %>
+
   <% end %>
-  <%= display_contact_form(@supplier, @error, params)%>
 
   <%= supplier.submit  'Modifier' %> <%= link_to 'Retour', suppliers_path %>
 <% end %>

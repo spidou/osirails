@@ -1,5 +1,8 @@
 class Third < ActiveRecord::Base
-  # To get Document
+  
+  include Permissible
+  
+  # Plugin to have document
   acts_as_file
 
   has_one :address, :as => :has_address

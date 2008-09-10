@@ -4,7 +4,6 @@
   <h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
     <%= label :customer, :name, "Nom :" %>
-    <label>Nom :</label>
     <strong><%= @customer.name %></strong>
   </p>
   <p>
@@ -38,27 +37,40 @@
     <strong><%= @customer.payment_time_limit.name%></strong>
   </p>
 
-<% unless @establishments.empty? %>
-  <h2><%= "&Eacute;tablissements du client" %></h2>
-  
-  <% for establishment in @establishments %>
-  <p>
-    <%= establishment.name + '(' +establishment.address.city_name + ')' %>
-    <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
-  </p>
-  <% end %>
-<% end %>
-
-<% unless @contacts.empty? %>
-  <h2><%= "Contacts du client" %></h2>
-  <% for contact in @contacts %>
+  <% if @establishment_controller.can_list?(current_user) and Establishment.can_list?(current_user) %>
+    <% unless @establishments.empty? %>
+      <h2><%= "&Eacute;tablissements" %></h2>
+      <% for establishment in @establishments %>
       <p>
-        <%= contact.first_name + " " + contact.last_name%>
-        <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact, :owner_type => "Customer") %>
-        <%= link_to("Supprimer", [@customer,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+        <%= establishment.name + '(' +establishment.address.city_name + ')' %>
+        <% if @establishment_controller.can_view?(current_user) and Establishment.can_view?(current_user)%>
+        <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
+        <% end %>
       </p>
+      <% end %>
+    <% end %>
   <% end %>
-<% end %>
 
-<%= link_to 'Modifier', :action => 'edit' %> <%= link_to 'Retour', :action => 'index' %>
+
+  <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
+    <% unless @contacts.empty? %>
+      <h2><%= "Contacts" %></h2>
+      <% for contact in @contacts %>
+          <p>
+            <%= contact.first_name + " " + contact.last_name%>
+            <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
+                <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact, :owner_type => "Customer") %>
+            <% end %>
+            <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
+                <%= link_to("Supprimer", [@customer,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+            <% end %>
+          </p>
+      <% end %>
+    <% end %>
+  <% end %>
+  
+<% if controller.can_edit?(current_user) and Customer.can_edit?(current_user)%>
+  <%= link_to 'Modifier', :action => 'edit' %> 
+<% end %>
+  <%= link_to 'Retour', :action => 'index' %>
 </div>

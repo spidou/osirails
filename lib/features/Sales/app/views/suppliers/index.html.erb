@@ -15,11 +15,22 @@
           <td><%= supplier.name %></td>
           <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
           <td><%= supplier.note %></td>
-          <td><%= link_to("Voir", :action => :show, :id => supplier.id) %> <%= link_to("Modifier", edit_supplier_path(supplier)) %> <%= link_to("Supprimer", supplier, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
+          <td>
+            <% if controller.can_view?(current_user) and Supplier.can_view?(current_user) %>
+                <%= link_to( "<img src=\"/images/view_16x16.png\" title=\"Détails\" alt=\"Détails\" />", supplier) %>
+            <% end %>
+            <% if controller.can_edit?(current_user) and Supplier.can_edit?(current_user) %>
+                <%= link_to("<img src=\"/images/edit_16x16.png\" title=\"Modifier\" alt=\"Modifier\" />", edit_supplier_path(supplier)) %>
+            <% end %>
+            <% if controller.can_delete?(current_user) and Supplier.can_delete?(current_user) %>
+                <%= link_to("<img src=\"/images/delete_16x16.png\" title=\"Modifier\" alt=\"Supprimer\" />", supplier, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %>
+            <% end %>
+            </td>
         </tr>
     <%end%>
   <%end%>
   </table><br/>
-    
-  <%= link_to 'Ajouter', :action => 'new' %>
+  <% if controller.can_add?(current_user) and Supplier.can_add?(current_user) %>
+    <%= link_to "<img src=\"/images/add_24x24.png\" title=\"Ajouter\" alt=\"Ajouter\" />", new_supplier_path %>
+  <% end %>
 </div>

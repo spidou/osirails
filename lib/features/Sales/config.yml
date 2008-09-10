@@ -5,6 +5,10 @@ dependencies:
     - 0.1
 conflicts:
 business_objects:
+  - Customer
+  - Supplier
+  - Establishment
+  - Contact
 menus:
   thirds:
     title: Tiers

@@ -1,4 +1,6 @@
 class Establishment  < ActiveRecord::Base
+  include Permissible
+    
   has_one :address, :as => :has_address
   has_many  :contacts, :as => :has_contacts
   belongs_to :customer
