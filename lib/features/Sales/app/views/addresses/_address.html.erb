@@ -24,10 +24,9 @@
         '&country_name='+document.getElementById('#{address_name}_address_country_name').value"}) -%>
     </p>
 
-    <%= owner_address.country_name%>
-    <%=  javascript_tag "document.getElementById('#{address_name}_address_country_name').value='es'" %>
+    <%=  javascript_tag "document.getElementById('#{address_name}_address_country_name').value='#{owner_address.coutry_name}'" %>
     <%= javascript_tag "document.getElementById('#{address_name}_address_city_name').value = '#{owner_address.city_name}'" %>
-    <%= javascript_tag "document.getElementById('#{address_name}_address_country_name').value = '#{owner_address.zip_code}'" %>
+    <%= javascript_tag "document.getElementById('#{address_name}_address_city_zip_code').value = '#{owner_address.zip_code}'" %>
     
     <% if owner_address.country_name.blank?%>
     <%= javascript_tag "document.getElementById('#{address_name}_address_city_name').disabled=true" %>
