@@ -204,7 +204,7 @@
 	border: 1px solid #333;
 	padding: 8px;
 	-moz-border-radius: 8px;
-	background: url("/images/background_metal.gif");
+	background: #444 url("/images/background_metal.gif");
 	z-index: 1;
 	width: 380px;
 }
@@ -250,7 +250,7 @@
 }
 
 .not_working_day {
-	background-color:#eaeaea !important;
+	background-color:#333 !important;
 	opacity:0.8 !important;
 	-moz-opacity:0.8 !important;
 }
