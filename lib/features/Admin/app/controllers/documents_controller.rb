@@ -12,95 +12,13 @@ class DocumentsController < ApplicationController
     @document_last_version =@document.document_versions.last
   end
   
-  def create
-    unless params[:upload][:datafile].blank?
-      
-      ## Store tags list
-      tag_list = params[:document].delete("tag_list")
-      tag_list = tag_list.split(",")
-
-      ## Store file extension and name
-      document_extension = params[:upload][:datafile].original_filename.split(".").last
-      params[:document][:name].blank? ? document_name = (a = params[:upload][:datafile].original_filename.split("."); a.pop; a.to_s) : document_name = params[:document][:name]
-      
-      if @document =Document.create(:name => document_name , :description => params[:document][:description], :extension => document_extension)
-        @document.file_type = FileType.find(params[:document][:file_type_id])
-        
-        ## Store all possible extension for file
-        possible_extensions = []
-        @document.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
-        
-        path = "documents/" + params[:owner][:owner_model].downcase + "/" + params[:document][:file_type_id].downcase + "/"
-        file_response = FileManager.upload_file(:file => params[:upload], :name =>@document.id.to_s+"."+document_extension, 
-          :directory => path, :extensions => possible_extensions)
-        
-        ## If file succefuly create
-        if file_response
-          ## Add Document to owner
-          @owner = params[:owner][:owner_model].constantize.find(params[:owner][:owner_id])
-          @owner.documents << @document
-          
-          ## Add tag_list for document
-          tag_list.each {|tag| @document.tag_list << tag.strip}
-          @document.tag_list.uniq!
-          @document.save
-          
-          ## Create thumbnails
-          @document.create_thumbnails
-          
-        else
-          @document.destroy
-          flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide.\n Si le problème persiste veuillez contacté votre administrateur réseau" 
-        end
-        
-      end
-    else
-      flash[:error] = "Fichier manquant"
-    end
-#    redirect_to :back
-  end
-  
-  
   def update
     @document = Document.find(params[:id])
-    unless params[:upload][:datafile].blank?
-      
-      ## Store tags list
-      tag_list = params[:document].delete("tag_list")
-      tag_list = tag_list.split(",")
-      
-      ## Store possible extensions
-      possible_extensions = []
-      possible_extensions << @document.extension
-
-      ## Creation of document_version          
-      path = "documents/" + @document.path + "/" +  @document.id.to_s + "/"
-      file_response = FileManager.upload_file(:file => params[:upload], :name => (@document.document_versions.size + 1).to_s + "." +params[:upload][:datafile].original_filename.split(".").pop, 
-        :directory => path, :extensions => possible_extensions)
-      unless file_response
-        flash[:error] = "Une erreur est survenue lors de la sauvegarde du fichier. Vérifier que l'extension du fichier uploadé est bien valide"
-      else
-        @document_version = DocumentVersion.create(:name => @document.name, :description => @document.description, :versioned_at => @document.updated_at)      
-        
-        ## Add tag_list for document
-        tag_list.each {|tag| @document.tag_list << tag.strip}
-        @document.tag_list.uniq!
-        @document.save
-          
-        @document.update_attributes(params[:document])          
-        @document.document_versions << @document_version
-        @document_version.create_thumbnails
-      end      
-    else
-      flash[:error] = "Fichier manquant"
-    end
-    
-    unless file_response     
-      render :action => "edit"
-    else
-      flash[:notice] = "Fichier upload&eacute; avec succ&egrave;s"
-      redirect_to [@document.has_document, @document]
-    end
+    params[:document][:upload] = params[:upload]
+#    @document.update(params[:document])
+#    params[:document].delete("tag_list")
+#    params[:document].delete("upload")
+    @document.update_attributes(params[:document])
   end
   
   ## This method return the image to show

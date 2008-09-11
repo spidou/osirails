@@ -2,7 +2,8 @@ module DocumentsHelper
   
   def get_document_form(owner)
     if Document.can_have_document(owner.class.name)
-      document = Document.new()
+      
+      document = Document.new(:owner => owner)
       render :partial => "documents/document_form", :locals => {:owner => owner, :document => document} 
     end
   end
