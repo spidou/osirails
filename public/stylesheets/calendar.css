@@ -272,12 +272,14 @@
 
 .participants_area {
 	display:inline;
+	line-height:19px;
 }
 
-#event_box img {
+#add_participant {
 	float:right;
 	position:relative;
-	bottom:20px;
+	bottom:21px;
+	right:13px;
 }
 
 #event_box .close {
