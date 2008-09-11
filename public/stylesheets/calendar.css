@@ -299,7 +299,7 @@
 }
 
 .cal-buttons {
-	background:url("../images/calendar/button_calendar_generic.png") repeat-x;
+	background:url("/images/calendar/button_calendar_generic.png") repeat-x;
 	width:1px;
 	height:19px;
 	position:relative;
@@ -332,11 +332,11 @@ span.calendar_checkbox.selected {
 }
 
 span.calendar_checkbox {
-	background:url("../images/calendar/month.jpg");
+	background:url("/images/calendar/month.jpg");
 }
 
 span.calendar_checkbox.selected {
-	background:url("../images/calendar/month_selected.jpg");
+	background:url("/images/calendar/month_selected.jpg");
 }
 
 span.checkbox_text_calendar {

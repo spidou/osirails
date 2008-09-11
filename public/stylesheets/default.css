@@ -1643,6 +1643,31 @@ div.frame>#steps {
 	text-align:center;
 
 }
+/*/////////////////TIMELINE/////////////////*/
+#timeline {
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	text-align:center;
+	padding:0;
+	text-indent:0;
+	border:1px solid fuchsia;
+	width:700px;
+	padding-bottom:1px;
+	padding-right:2px;
+}
+
+#timeline_head,
+#timeline_body,
+#timeline_footer {
+	border:solid 1px black;
+	height:26px;
+	width:inherit;
+	margin-top:-1px;
+	position:relative;
+	top:1px;
+}
 
 /*/////////////////OTHER/////////////////*/
 
