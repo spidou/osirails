@@ -14,7 +14,11 @@ module ApplicationHelper
   end
   
   def current_user
-    session[:user]
+    begin
+      User.find(session[:user])
+    rescue
+      return false
+    end
   end
   
   def current_menu

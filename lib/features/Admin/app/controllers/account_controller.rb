@@ -27,7 +27,7 @@ class AccountController < ApplicationController
       if @user.compare_password(params[:password])
         if @user.enabled == true
           @user.update_connection
-          session[:user] = @user
+          session[:user] = @user.id
           session[:initial_uri] ||= user_home
           redirect_to session[:initial_uri]
           flash[:notice] = "Connexion r&eacute;ussie"

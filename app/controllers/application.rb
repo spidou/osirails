@@ -51,7 +51,11 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      session[:user]
+      begin
+        User.find(session[:user])
+      rescue
+        return false
+      end
     end
 
     def user_home
