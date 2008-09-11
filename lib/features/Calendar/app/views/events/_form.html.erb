@@ -181,7 +181,7 @@
 </p>
 <p>
 <%= label_tag 'Participants' %>
-<%= text_field_with_auto_complete('participants', 'text', {}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :method => 'get'}) %>
+<%= text_field_with_auto_complete('participants', 'text', {}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
 </p>
 <p class="participants_area">
 <a onclick="add_participant();">l'ajouter</a>

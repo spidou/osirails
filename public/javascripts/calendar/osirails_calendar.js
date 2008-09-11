@@ -282,6 +282,7 @@ function display_event_box (action, event_id, event) {
     };
     break;
     case 'new':
+    event_box_displayed = true;
     if (period == 'month') {
       if (event.target.className == 'day_grid') {
         var date = event.target.id;
@@ -418,7 +419,7 @@ function hide_event_box () {
 
     /* Show the loading message in the event box */
     function event_box_loading () {
-      document.getElementById(event_box_content_id).innerHTML = "<img src=\"/images/loading.gif\" /> Chargement";
+      document.getElementById(event_box_content_id).innerHTML = "<img src=\"/images/loading_32x32.gif\" /> Chargement";
     }
 
     /* Show the error message in the event box */
@@ -738,20 +739,31 @@ function calcalc(cal) {
 }
 
 // Add a participant from the form
-function add_participant () {
+function add_participant (is_autocomplete_click) {
   var list = document.getElementById('participants_list');
   if (list.getElementsByTagName('span').length == 0) {
     var comma = '';
   } else {
-    var comma = ', '
+    var comma = ', ';
   };
   var textfield = document.getElementById('participants_text');
   var new_participant = document.createElement('span');
-  new_participant.innerHTML = comma + textfield.value +
+  if (is_autocomplete_click) {
+    var autocomplete = document.getElementById('participants_text_auto_complete');
+    var selected_elm = autocomplete.getElementsByClassName('selected')[0];
+    var selected_content = selected_elm.getElementsByClassName('selected_content')[0].innerHTML;
+    var selected_id = selected_elm.getElementsByClassName('selected_id')[0].innerHTML;
+    var content = selected_content;
+  } else {
+    var selected_id = '';
+    var content = textfield.value;
+  };
+  new_participant.innerHTML = comma + content +
                               " <img src=\"/images/cross_12x12.png\" onclick=\"delete_participant(this, true);\">" +
-                              "<input type=\"hidden\" name=\"participants[new][]\" value=\"" + textfield.value + "\" />";
+                              "<input type=\"hidden\" name=\"participants[new][]\" value=\"" + content + "\" />" +
+                              "<input type=\"hidden\" name=\"participants[new][][id]\" value=\"" + selected_id + "\">";
   list.appendChild(new_participant);
-  textfield.innerHTML = '';
+  textfield.value = '';
 }
 
 // Delete a participant from the form

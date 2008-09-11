@@ -4,6 +4,7 @@ class CreateParticipants < ActiveRecord::Migration
       t.references :event
       t.text :name
       t.string :email
+      t.references :employee
       t.timestamps
     end
   end
