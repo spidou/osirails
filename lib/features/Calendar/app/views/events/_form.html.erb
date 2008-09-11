@@ -5,10 +5,10 @@
 	end
 %>
 	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
-<p>
+<h1>
 <%= e.label :title, 'Titre' %>
 <%= e.text_field :title, :class => 'disable-stylesheet-width' %>
-</p>
+</h1>
 <p>
 <%= e.label :location, 'Emplacement' %>
 <%= e.text_field :location, :class => 'disable-stylesheet-width' %>
@@ -169,7 +169,7 @@
 	<option>Courrier &eacute;lectronique</option>
 </select>
 </p>
-<div id="alarm" style="display: none;">
+<fieldset id="alarm" style="display: none;">
 	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before %> minutes avant<br />
 	<div id="alarm_display">
 		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration %> minutes<br />
@@ -179,7 +179,7 @@
 	</div>
 	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
 	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
-</div>
+</fieldset>
 <p>
 <%= e.label :event_category_id, 'Categorie' %>
 <%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %>
@@ -190,7 +190,6 @@
 <img src="/images/add_16x16.png" onclick="add_participant();">
 </p>
 <p class="participants_area">
-
 <div id="participants_list">
 	<% @event.participants.each do |p| %>
 		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_12x12.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
@@ -200,7 +199,6 @@
 <p>
 <%= e.label :link, 'URL' %>
 <%= e.text_field :link %>
-<div>TEST</div>
 </p>
 <p>
 <%= e.label :status %>

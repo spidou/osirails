@@ -1,4 +1,4 @@
-<%= h(@event.title) %>
+<h1><%= h(@event.title) %></h1>
 <%= "<br />Emplacement " + @event.location if @event.location %>
 <%= "<br />Description: " + @event.description if @event.description %>
 <%= "<br />Jour entier" if @event.full_day %>
