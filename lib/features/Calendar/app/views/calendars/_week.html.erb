@@ -18,4 +18,12 @@
 </div>
 <script type="text/javascript">
 calendar_init(<%= params[:id] %>, 'week', <%= @calendar.can_list?(current_user) %>, <%= @calendar.can_view?(current_user) %>, <%= @calendar.can_add?(current_user) %>, <%= @calendar.can_edit?(current_user) %>, <%= @calendar.can_delete?(current_user) %>, "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('week') %>", "<%= navigation('month') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>", "<%= form_authenticity_token %>");
+setTimeout(function() {
+	var all_events = document.getElementsByClassName('event');
+	for (var i=0; i < all_events.length; i++) {
+		all_events[i].setAttribute('onclick', "this.style.zIndex = 10;");
+	};
+	alert('test');
+}, 1000);
+
 </script>
