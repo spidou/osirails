@@ -8,7 +8,7 @@ class PasswordPoliciesController < ApplicationController
     if request.put?
      
      # create without save an employe to test the validity of pattern into admin when submiting 
-     e = Employee.new(:last_name => "jean", :first_name => "paul", :society_email => "toto@emr-oi.fr",:email => "toto@emr-oi.fr",:social_security => "1111111111111 11")
+     e = Employee.new(:last_name => "jean", :first_name => "paul", :society_email => "toto@emr-oi.fr",:email => "toto@emr-oi.fr",:social_security_number => "1111111111111 11")
      response = e.pattern(params[:pattern],e)
      
      # if there is one error then errors flashes are displayed but value into DB are not modified
