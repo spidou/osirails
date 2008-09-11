@@ -205,7 +205,7 @@
 	-moz-border-radius: 8px;
 	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
 	z-index: 1;
-	width: 380px;
+	width: 310px;
 }
 .calendar {
 	z-index: 2;

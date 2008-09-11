@@ -17,7 +17,7 @@ for (var i=0; i < full_day_events.length; i++) {
 
 /* Initialization of the calendar */
 /* p must be: 'day' or 'week' or 'year' */
-function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p_a, g_e) {
+function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p_a, g_e, a_t) {
   db_calendar_id = db_id;
   period = p;
   can_list = c_l;
@@ -31,6 +31,7 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   link_period_month = p_m;
   link_period_after = p_a;
   link_get_events = g_e;
+  auth_token = a_t;
   document.getElementById('grid_' + period).setAttribute('onDblClick', "display_event_box('new', null, event);");
   if (period != 'month') {
     document.getElementById('scroll').scrollTop = 480;
@@ -348,11 +349,11 @@ function hide_event_box () {
     };
     if (is_recur_event(elm_id)) {
       var only = new LertButton('Uniquement cette événement', function() {
-        ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date + '&exdate=' + exdate + '&recur=only', 'put');
+        ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date + '&exdate=' + exdate + '&recur=only' + '&authenticity_token=' + auth_token, 'put');
       });
 
       var future = new LertButton('Tous les événements futurs', function() {
-        ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date + '&exdate=' + exdate + '&recur=future', 'put');
+        ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id +'?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date + '&exdate=' + exdate + '&recur=future' + '&authenticity_token=' + auth_token, 'put');
       });
 
       var cancel = new LertButton('Annuler', function() {
@@ -370,9 +371,9 @@ function hide_event_box () {
         exampleLert.display();
       } else {
         if (period == 'month') {
-          ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id + '?date=' + date, 'put');          
+          ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id + '?date=' + date + '&authenticity_token=' + auth_token, 'put');          
         } else {
-          ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id + '?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date, 'put');          
+          ajax_link('/calendars/' + db_calendar_id + '/events/' + event_id + '?top=' + parseInt(cal_event.style.top) +'&height=' + (parseInt(cal_event.style.height) + 10) + '&date=' + date + '&authenticity_token=' + auth_token, 'put');          
         };
       };
     }
@@ -680,10 +681,10 @@ function hide_event_box () {
       function event_box_delete (elm, db_event_id) {
         if (is_recur_event('event'+ elm.ancestors()[5].id + db_event_id)) {
           var only = new LertButton('Uniquement cette événement', function() {
-            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id + '?delete=1&recur=only&date=' + elm.ancestors()[5].id, 'put');
+            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id + '?delete=1&recur=only&date=' + elm.ancestors()[5].id + '&authenticity_token=' + auth_token, 'put');
           });
           var future = new LertButton('Tous les événements futurs', function() {
-            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id + '?delete=1&recur=future&date=' + elm.ancestors()[5].id, 'put');
+            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id + '?delete=1&recur=future&date=' + elm.ancestors()[5].id + '&authenticity_token=' + auth_token, 'put');
           });
           var cancel = new LertButton('Annuler', function() {
 
@@ -699,7 +700,7 @@ function hide_event_box () {
 
             exampleLert.display();
           } else {
-            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id, 'delete');
+            ajax_link('/calendars/' + db_calendar_id + '/events/' + db_event_id + '?authenticity_token=' + auth_token, 'delete');
           };
         }
 
@@ -755,6 +756,7 @@ function add_participant (is_autocomplete_click) {
     var selected_id = selected_elm.getElementsByClassName('selected_id')[0].innerHTML;
     var content = selected_content;
   } else {
+    if (textfield.value == '') { return false; };
     var selected_id = '';
     var content = textfield.value;
   };
