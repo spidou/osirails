@@ -81,7 +81,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :calendars do |calendar|
     calendar.resources :events
   end
-  map.connect 'calendars/:action/:id', :controller => 'calendars'
+  map.connect 'calendars/auto_complete_for_event_participants/:id', :controller => 'calendars', :action => 'auto_complete_for_event_participants'
   map.connect 'calendars/:id/:period/:year/:month/:day', :controller => 'calendars', :action => 'show', :period => nil, :year => nil, :month => nil, :day => nil
   ### END CALENDAR
 
