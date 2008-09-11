@@ -187,9 +187,10 @@
 <p>
 <%= label_tag 'Participants' %>
 <%= text_field_with_auto_complete('participants', 'text', {:size => 26}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
+<img src="/images/add_16x16.png" onclick="add_participant();">
 </p>
 <p class="participants_area">
-<img src="/images/add_16x16.png" onclick="add_participant();">
+
 <div id="participants_list">
 	<% @event.participants.each do |p| %>
 		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_12x12.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
@@ -199,6 +200,7 @@
 <p>
 <%= e.label :link, 'URL' %>
 <%= e.text_field :link %>
+<div>TEST</div>
 </p>
 <p>
 <%= e.label :status %>
