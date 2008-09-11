@@ -195,13 +195,13 @@
 }
 
 #event_box {
+	padding:22px 8px 8px 8px;
 	font-size: 12px;
 	color: black;
 	visibility: hidden;
 	position: absolute;
 	top: 0px;
 	border: 1px solid #D2D2D2;
-	padding: 8px;
 	-moz-border-radius: 8px;
 	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
 	z-index: 1;
@@ -274,18 +274,16 @@
 	display:inline;
 }
 
-.participants_area img {
-//	float:right;
-//	position:relative;
-//	bottom:21px;
-//	right:15px;
-//	border:solid 1px black;
+#event_box img {
+	float:right;
+	position:relative;
+	bottom:20px;
 }
 
-.participants_area img p {
-//	margin-top:2px;
-//	clear:right;
-//		border:solid 1px black;
+#event_box .close {
+	position:absolute;
+	right:0px;
+	top:-2px;
 }
 
 /*CALENDAR'S BUTTONS*/
