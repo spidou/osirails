@@ -1645,14 +1645,10 @@ div.frame>#steps {
 }
 /*/////////////////TIMELINE/////////////////*/
 #timeline {
-	margin-left:auto;
-	margin-right:auto;
-	margin-top:10px;
-	margin-bottom:10px;
+	margin:10px 0 10px 10px;
 	text-align:center;
 	padding:0;
 	text-indent:0;
-//	border:1px solid fuchsia;
 	width:700px;/*69.03353057199211%;/*700px*/
 	padding-bottom:1px;
 	padding-right:2px;
@@ -1668,7 +1664,6 @@ div.frame>#steps {
 #timeline_head,
 .timeline_body,
 #timeline_footer {
-//	border:solid 1px black;
 	height:26px;
 	width:inherit;
 	margin-top:-1px;
@@ -1683,8 +1678,20 @@ div.frame>#steps {
 	border-right:1px solid #63975E;
 }
 
-#timeline_head .timeline_notice {
-	background:url("/images/timeline_head.png") no-repeat 15px 6px;
+#timeline_head.good .timeline_notice {
+	background:url("/images/tick_16x16.png") no-repeat 0 6px;
+}
+
+.timeline_body.good .timeline_notice {
+	background:url("/images/tick_16x16.png") no-repeat 0 6px;
+}
+
+.timeline_body.bad .timeline_notice {
+	background:url("/images/warning_14x14.png") no-repeat 0 6px;
+}
+
+#timeline_head .timeline_date {
+	background:url("/images/timeline_head.png") no-repeat 143px 6px;
 }
 
 .timeline_body.bad {
@@ -1695,28 +1702,32 @@ div.frame>#steps {
 
 .timeline_date {
 	text-align:right;
-	width:150px;
+	width:130px;
+	padding-right:40px;
 	float:left;
+	overflow:hidden;
+	height:26px;
 }
 
 .timeline_notice {
 	text-align:left;
-	width:500px;
+	width:510px;
 	overflow:hidden;
 	float:right;
-	padding-left:50px;
+	padding-left:18px;
+	height:26px;
 }
 
-.timeline_body .timeline_notice {
-	background: url("/images/timeline_line.gif") repeat-y 24px 0;
+.timeline_body .timeline_date {
+	background: url("/images/timeline_line.gif") repeat-y 152px 0;
 }
 
 .timeline_body {
-	background: url("/images/timeline_line.gif") repeat-y 175px 0;
+	background: url("/images/timeline_line.gif") repeat-y 153px 0;
 }
 
 #timeline_footer {
-	background:url("/images/timeline_footer_arrow.png") no-repeat 166px 0;
+	background:url("/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
 /*/////////////////OTHER/////////////////*/
 

@@ -254,6 +254,40 @@
 	-moz-opacity:0.8 !important;
 }
 
+#event_box fieldset {
+	border:1px solid #AEAEAE;
+	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
+	margin:8px 0 8px 0;
+	padding:3px 0 3px 0;
+}
+
+#event_box h1 {
+	background:url("/images/background_event_box_title.png");
+	color:#333;
+	border:solid 1px #CFCFCF;
+	height:20px;
+	line-height:20px;
+	font-size:1.1em;
+}
+
+.participants_area {
+	display:inline;
+}
+
+.participants_area img {
+//	float:right;
+//	position:relative;
+//	bottom:21px;
+//	right:15px;
+//	border:solid 1px black;
+}
+
+.participants_area img p {
+//	margin-top:2px;
+//	clear:right;
+//		border:solid 1px black;
+}
+
 /*CALENDAR'S BUTTONS*/
 .calendar-buttons {
 	margin: 5px;
