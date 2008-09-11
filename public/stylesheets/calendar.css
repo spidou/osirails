@@ -264,7 +264,7 @@
 #event_box h1 {
 	background:url("/images/background_event_box_title.png");
 	color:#333;
-	border:solid 1px #CFCFCF;
+	border:solid 1px #737373;/*#CFCFCF;*/
 	height:20px;
 	line-height:20px;
 	font-size:1.1em;
@@ -286,6 +286,10 @@
 	position:absolute;
 	right:0px;
 	top:-2px;
+}
+
+#event_box form {
+	margin-top:-25px;
 }
 
 /*CALENDAR'S BUTTONS*/
