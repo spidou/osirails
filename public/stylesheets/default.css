@@ -1652,16 +1652,23 @@ div.frame>#steps {
 	text-align:center;
 	padding:0;
 	text-indent:0;
-	border:1px solid fuchsia;
-	width:700px;
+//	border:1px solid fuchsia;
+	width:700px;/*69.03353057199211%;/*700px*/
 	padding-bottom:1px;
 	padding-right:2px;
+//	background:url("/images/timeline_line.gif") repeat-y 175px 0px;
+	line-height:26px;
+}
+
+#timeline div {
+//	position:relative;
+//	bottom:416px;
 }
 
 #timeline_head,
-#timeline_body,
+.timeline_body,
 #timeline_footer {
-	border:solid 1px black;
+//	border:solid 1px black;
 	height:26px;
 	width:inherit;
 	margin-top:-1px;
@@ -1669,6 +1676,48 @@ div.frame>#steps {
 	top:1px;
 }
 
+.timeline_body.good,
+#timeline_head.good {
+	background:url("/images/timeline_framework_good.png") repeat-x;
+	border-left:1px solid #63975E;
+	border-right:1px solid #63975E;
+}
+
+#timeline_head .timeline_notice {
+	background:url("/images/timeline_head.png") no-repeat 15px 6px;
+}
+
+.timeline_body.bad {
+	background:url("/images/timeline_framework_bad.png") repeat-x;
+	border-left:1px solid #FF7F7F;
+	border-right:1px solid #FF7F7F;
+}
+
+.timeline_date {
+	text-align:right;
+	width:150px;
+	float:left;
+}
+
+.timeline_notice {
+	text-align:left;
+	width:500px;
+	overflow:hidden;
+	float:right;
+	padding-left:50px;
+}
+
+.timeline_body .timeline_notice {
+	background: url("/images/timeline_line.gif") repeat-y 24px 0;
+}
+
+.timeline_body {
+	background: url("/images/timeline_line.gif") repeat-y 175px 0;
+}
+
+#timeline_footer {
+	background:url("/images/timeline_footer_arrow.png") no-repeat 166px 0;
+}
 /*/////////////////OTHER/////////////////*/
 
 .link_to_closed {
