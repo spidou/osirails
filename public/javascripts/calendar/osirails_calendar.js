@@ -777,3 +777,24 @@ function delete_participant (object, is_new) {
     object.parentNode.remove();
   };
 }
+
+function customize_checkbox () {
+  var all_checkbox_span = document.getElementsByClassName('calendar_checkbox');
+  for (var i=0; i < all_checkbox_span.length; i++) {
+    if (all_checkbox_span[i].nextSibling.checked) {
+      all_checkbox_span[i].className = 'calendar_checkbox selected';
+    };
+    all_checkbox_span[i].setAttribute('onclick', "check_span(this);");
+    var target_checkbox = all_checkbox_span[i].nextSibling;
+    target_checkbox.style.display = 'none';
+  };
+}
+
+function check_span (object) {
+  object.nextSibling.click();
+  if (object.nextSibling.checked) {
+    object.className = 'calendar_checkbox selected';
+  } else {
+    object.className = 'calendar_checkbox';
+  };
+}
