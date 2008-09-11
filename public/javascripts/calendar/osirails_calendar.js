@@ -89,6 +89,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
     var event_div = document.createElement('div');
     var li_elm = document.createElement('li');
     event_div.setAttribute('id', elm_id);
+    event_div.setAttribute('onclick', 'focus_on_event(this);')
     event_div.setAttribute('ondblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
 
     if (full_day) {
@@ -799,4 +800,12 @@ function check_span (object) {
   } else {
     object.className = 'calendar_checkbox';
   };
+}
+
+function focus_on_event (object) {
+  var all_events = document.getElementsByClassName('event');
+  for (var i=0; i < all_events.length; i++) {
+    all_events[i].style.zIndex = 0;
+  };
+  object.style.zIndex = 1;
 }
