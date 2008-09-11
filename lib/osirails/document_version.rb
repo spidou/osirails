@@ -12,9 +12,9 @@ class DocumentVersion < ActiveRecord::Base
   end
   
   ## Create thumbnails
-  def create_thumbnails
+  def create_thumbnails(document_id)
     require 'RMagick'
-    @document_original = self.document
+    @document_original = Document.find(document_id)
         
     if Document.image_extensions.include?(@document_original.extension)
       path = "documents/#{@document_original.owner_class.downcase}/#{@document_original.file_type_id}/#{@document_original.id}"
