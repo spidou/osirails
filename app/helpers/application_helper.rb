@@ -35,8 +35,11 @@ module ApplicationHelper
         url_for(:controller => menu.name)
       end
     else
-      # FIXME when the menu is linked with a Content, link to the Content
-      ""
+      unless menu.content.nil?
+        url_for(:controller => "contents", :action => "show", :id => menu.content.id)
+      else
+        ""
+      end
     end
   end
   

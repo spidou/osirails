@@ -17,8 +17,8 @@ function initEventListeners()
 
 function toggle_secondary_menu(item)
 {
-  position_shown = "-210px";
-  position_hidden = "6px";
+  position_hidden = "-210px";
+  position_shown = "6px";
   width_shown = "200px";
   width_hidden = "0px";
   class_shown = "shown_secondary_menu";
@@ -31,13 +31,12 @@ function toggle_secondary_menu(item)
     document.body.style.overflowX = 'hidden';
     new Effect.Morph(item.parentNode, {
       style: {
-        marginRight: position_shown
+        marginRight: position_hidden
       },
       duration: 1.5,
       afterFinish: function(){
         item.className = class_hidden;
         document.getElementById("status_text_secondary_menu").innerHTML = text_hidden;
-        //item.parentNode.style.width = width_hidden;
       }
     });
   }
@@ -47,9 +46,9 @@ function toggle_secondary_menu(item)
     item.parentNode.style.width = width_shown;
     new Effect.Morph(item.parentNode, {
       style: {
-        marginRight: position_hidden
+        marginRight: position_shown
       },
-      duration: 1.5,
+      duration: 0.8,
       afterFinish: function(){
         item.className = class_shown;
         document.getElementById("status_text_secondary_menu").innerHTML = text_shown;
