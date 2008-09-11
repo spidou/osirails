@@ -307,7 +307,7 @@ namespace :osirails do
       # default employees
       
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
-      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
+      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
       number2 = Number.create :number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id
       john.numbers << [number1,number2]
