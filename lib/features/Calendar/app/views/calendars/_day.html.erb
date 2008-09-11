@@ -1,4 +1,4 @@
-<h1><%= @calendar.title %> - <%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h1>
+<h4><%= @calendar.title %> - <%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h4>
 <div id="calendar_content">
 	<div id="<%= @date.to_s.gsub('-','') %>fullday" class="day day_fullday"><%= $day_fr[@date.wday] + " " + @date.day.to_s %><ul></ul></div>
 <div id="scroll">

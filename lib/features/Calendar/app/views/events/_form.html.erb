@@ -158,7 +158,7 @@
 	<option>le</option>
 	</select>
 	</p>
-	<div style="display: none;"><%= e.text_field :count %> fois</div>
+	<div style="display: none;"><%= e.text_field :count, :size => 3 %> fois</div>
 	<div style="display: none;"><%= e.text_field :until_date %></div>
 </div>
 <p>
@@ -168,6 +168,7 @@
 	<option>Message</option>
 	<option>Courrier &eacute;lectronique</option>
 </select>
+</p>
 <div id="alarm" style="display: none;">
 	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before %> minutes avant<br />
 	<div id="alarm_display">
@@ -179,7 +180,6 @@
 	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
 	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
 </div>
-</p>
 <p>
 <%= e.label :event_category_id, 'Categorie' %>
 <%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %>
