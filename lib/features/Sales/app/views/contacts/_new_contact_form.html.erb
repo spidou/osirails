@@ -5,6 +5,11 @@
 </div>
 
 <div id='<%= "new_contact#{cpt}"%>'>
+   <%if error %>
+    <!--  store contact in a instance variable to display is error_messages -->
+    <% @contact = @contact_objects[cpt-1]%>
+    <%= error_messages_for("contact")%>
+  <% end %>
 
   <div id='contact_<%=cpt%>_form' style='display: block;'>
     <p>

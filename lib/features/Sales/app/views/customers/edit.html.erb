@@ -10,8 +10,7 @@
   <!-- Display error messages for establishments -->
   <% if @establishments.length > 0 %>
     <% for establishment in @establishments %>
-      <%= error_messages_for("establishment#{establishment.id}") %>
-      <%= error_messages_for("establishment#{establishment.id}_address") %>
+      
     <% end %>
   <% end %>
 
@@ -58,10 +57,7 @@
   <% end %>
   <br/>
 
-  <%= customer.submit  'Modifier' %>
-<% end %>
-
-  <!-- Display Documents div -->
+    <!-- Display Documents div -->
   <h2>Documents</h2>
   <%unless @customer.documents.empty?%>  
     <% for document in @customer.documents%>
@@ -73,6 +69,12 @@
   <%end%>
   <!-- Display document_form-->
   <%= get_document_form(@customer) %>
+  
+
+  <%# customer.submit  'Modifier' %>
+<% end %>
+
+  
 
   <%= link_to 'Retour', :action => 'index' %>
 </div>

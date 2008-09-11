@@ -90,6 +90,10 @@ class CustomersController < ApplicationController
   # PUT /customerss/1.xml
   def update
     if Customer.can_edit?(current_user)
+      ## Objects use to test permission
+      @contact_controller = Menu.find_by_name('contacts')
+      @establishment_controller =Menu.find_by_name('establishments')
+      
       # @error is use to know if all form are valids
       @error = false
       @customer = Customer.find(params[:id])
@@ -99,15 +103,14 @@ class CustomersController < ApplicationController
       activity_sector_name[:name].capitalize!
 
       establishments = params[:customer].delete("establishments")
-    
-      establishments_test = establishments
-    
-      establishment_objects = []
+      @establishment_a = establishments
+      
+      @establishment_objects = []
       address_objects = []
 
       contacts = params[:customer].delete("contacts")
       contacts_original = contacts
-      contact_objects = []
+      @contact_objects = []
     
       if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
         @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
@@ -122,79 +125,65 @@ class CustomersController < ApplicationController
     
       unless @customer.update_attributes(params[:customer])
         @error = true
+        flash[:error] ||= "Une erreur est survenue lors de la sauvergarde du client"
       else 
         @activity_sector.save
       end
     
       # If contact_form is not null
-      unless (new_contact_number = params[:new_contact_number]["value"].to_i) == 0
-        new_contact_number.times do |i|
-          unless contacts["#{i+1}"][:valid] == 'false'
-            if contacts["#{i+1}"][:id].blank?
-              contacts["#{i+1}"].delete("id")
-              contacts["#{i+1}"].delete("selected")
-              contacts["#{i+1}"].delete("valid")
-              contact_objects[i] = Contact.new(contacts["#{i+1}"])
-              unless contact_objects[i].valid?
-                @error = true
-              end
-            else
-              contact_objects[i] = Contact.find(contacts["#{i+1}"][:id])
-            end                  
-          end
+      unless (params[:new_contact_number]["value"].to_i) == 0
+        contacts[:number] = params[:new_contact_number] 
+        @contact_objects = Contact.new(contacts)
+        @contact_objects.size.times do |i|
+          @error = true unless @contact_objects[i].valid?
         end
       end
     
       # If establishment_form is not null
-      unless (new_establishment_number = params[:new_establishment_number]["value"].to_i) == 0
-        new_establishment_number.times do |i|
-          unless establishments["#{i+1}"][:valid] == 'false'
-            establishments["#{i+1}"][:customer_id] = @customer.id
-            address_objects[i] = establishments["#{i+1}"].delete("address")
-            establishment_objects[i] =Establishment.new(establishments["#{i+1}"])
-          
-            ## If city_name and city_zip_code are disabled
-            unless address_objects[i][:city].nil?
-              establishment_objects[i].address = (address_objects[i] = Address.new(:address1 => address_objects[i][:address1], :address2 => address_objects[i][:address2], 
-                  :country_name => address_objects[i][:country][:name], :city_name => address_objects[i][:city][:name], :zip_code => address_objects[i][:city][:zip_code]))
-            else
-              flash[:error] ||= "Le nom de ville et le code postal de l'etablissement #{i+1} ne sont pas définis"
-              @error = true
-            end
-          
-            unless establishment_objects[i].valid?
-              @error = true
-            end
+      unless (params[:new_establishment_number]["value"].to_i) == 0
+        establishments[:number] = params[:new_establishment_number] 
+        @establishments_objects = Establishment.new(establishments)
+        @establishments_objects.size.times do |i|
+          @error = true unless @establishments_objects[i].valid?
+        end
+      end
+      
+      
+      if Document.can_add?(current_user)
+        unless params[:upload][:datafile].blank?
+          params[:document][:upload] = params[:upload]
+          params[:document][:owner] = @customer
+          @document = Document.new(params[:document])
+        end
+      end
+      
+      
+      unless @error
+        unless params[:upload][:datafile].blank?
+          if Document.can_add?(current_user)
+            @customer.documents << @document
           end
         end
-        #      @error = true
-      end
-      unless @error
       
-        contact_objects.each do |contact|
+        @contact_objects.each do |contact|
           contact.save
-          @customer.contacts << contact
+          @customer.contacts << contact unless @customer.contacts.include?(contact)
         end
       
-        establishment_objects.each do |establishment|
+        @establishment_objects.each do |establishment|
           establishment.save
           @customer.establishments << establishment
-        end
-      
+        end        
         address_objects.each do |address|
           address.save
-        end
-      
-      
+        end      
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         redirect_to customers_path
       else
         params[:customer][:activity_sector] = {:name => activity_sector_name[:name]} 
         params[:customer][:contacts] = contacts_original
-
-        params[:customer][:establishments] = establishments_test
         params[:new_establishment_number][:value].to_i.times do |i|
-          params[:customer][:establishments]["#{i+1}"][:address] = {:country => {:name => address_objects[i].country_name}}
+          #          params[:customer][:establishments]["#{i+1}"][:address] = {:country => {:name => "test"}}
         end
       
         @new_establishment_number = params[:new_establishment_number]["value"]
