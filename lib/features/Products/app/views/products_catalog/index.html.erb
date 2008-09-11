@@ -17,8 +17,9 @@
       <%= show_reference_column(@references) %>
     </span>
 
-<h2>Produits</h2>
+
 <div id="products_list">
+<h2>Liste de produits</h2>
 <table>
   <thead>
     <th>Nom</th>
@@ -28,13 +29,16 @@
     <th>Dossier</th>
   </thead>
   <tbody>
-    <%= show_products %>
+    <%= show_products(@products) %>
   </tbody>
 </table>
+  <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :remote => {:with => 'page', :update => 'products_list'}, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+</div><br/>
+    
+<div id="product_reference_informations"></div>
+<div id="product_informations"></div>
+
 </div>
-    <div id="product_reference_informations"></div>
-    <div id="product_informations"></div>
-  </div>
 
 
 

@@ -1,4 +1,5 @@
-
+<% unless @products.size == 0 %>
+<h2>Liste des produits</h2>
     <table>
       <thead>
         <th>Nom</th>
@@ -11,8 +12,8 @@
       <% for product in @products %>
         <% reference = ProductReference.find(product.product_reference_id) %>
         <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
-        <tr>
-          <td><%= link_to_remote("#{product.name}", :update => "product_informations", :url => product_path(product.id), :method => :get) %></td>
+        <%= "<tr id=\"product_#{product.id}\" onclick=\"refreshProduct(this)\">" %>
+          <td><%= product.name %></td>
           <td><%= category.name %></td>
           <td><%= reference.name %></td>
           <td></td>
@@ -21,4 +22,6 @@
       <% end %>
       </tbody>
     </table>
+      <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>", :path => '/product_catalog' %>
+<% end %>
 

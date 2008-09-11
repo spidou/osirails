@@ -225,6 +225,7 @@ namespace :osirails do
       sous_famille11 = ProductReferenceCategory.create :name => "Sous famille 1.1", :product_reference_category_id => famille1.id
       sous_famille12 = ProductReferenceCategory.create :name => "Sous famille 1.2", :product_reference_category_id => famille1.id
       sous_famille13 = ProductReferenceCategory.create :name => "Sous famille 1.3", :product_reference_category_id => famille1.id
+      sous_famille14 = ProductReferenceCategory.create :name => "Sous famille 2.4", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.1", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.2", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.3", :product_reference_category_id => famille2.id
@@ -236,6 +237,7 @@ namespace :osirails do
       reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id
       reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id
       reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id
+      reference114 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.2.4", :product_reference_category_id => sous_famille14.id
       ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille12.id
       ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille12.id
       ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille12.id
@@ -253,6 +255,28 @@ namespace :osirails do
       Product.create :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id
+      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                    Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                          Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                    Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                          Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
+                                                                                                                              
       
       # default society activity sectors
       SocietyActivitySector.create :name => "Enseigne"

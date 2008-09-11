@@ -29,7 +29,7 @@ module ProductsCatalogHelper
     collection = column(categories,value)
     first_select = (value == 0 ? "" : "sous-")
 
-    get_categories_columns << "<select id='select_#{value}' size=\"10\" multiple=\"multiple\"  class=\"select_catalog catalog_3_columns\" onclick=\"refreshCategories(this, '#{find_max_level}')\">"
+    get_categories_columns << "<select id='select_#{value}' size=\"10\" multiple=\"multiple\"  class=\"select_catalog catalog_3_columns\" onclick=\"refreshCategories(this, '#{find_max_level}', 0)\">"
     get_categories_columns << "<option style=\"font-weight:bold\" selected=\"selected\" value=\"0\">Il y a " + pluralize(collection.size, "#{first_select}famille", "#{first_select}familles") + "</option>"
     
     collection.each do |category|
@@ -41,43 +41,31 @@ module ProductsCatalogHelper
   # This method permit to have a reference column
   def show_reference_column(references)
     get_reference_column = []
-    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog catalog_3_columns\" >" +
-      "<option style=\"font-weight:bold\" selected=\"selected\">Il y a " + pluralize(references.size, "reference", "references") + "</option>"
+    get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog catalog_3_columns\" onclick=\"refreshReferenceInformation(this)\" >" +
+      "<option style=\"font-weight:bold\" selected=\"selected\" value=\"0\" >Il y a " + pluralize(references.size, "reference", "references") + "</option>"
     references.each do |reference|
       get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">"+truncate("#{reference.name}", 18)+" (#{reference.products_count})</option>"
     end
     get_reference_column << "</select>"
   end
-  
-  # This method permit to refresh select categories column
-  def refresh_select_categories(categories)
-    select_update = []
-    select_update << "<option value=#{categories.last} >Il y a " + pluralize((@categories.size - 1), "categorie", "categories")+"</option>"
-    categories.pop
-    categories.each do |category|
-      select_update << "<option value=\"#{category.id}\" title=\"#{category.name}\">" + truncate("#{category.name}", 18)+" (#{category.product_references_count})</option>"
-    end
-    select_update
-  end
 
   # This method permit to show products array
-  def show_products
+  def show_products(products)
     products_array = []
-    products = Product.find(:all)
 
     products.each do |product|
-    reference = ProductReference.find(product.product_reference_id)
-    category = ProductReferenceCategory.find(reference.product_reference_category_id)
+      reference = ProductReference.find(product.product_reference_id)
+      category = ProductReferenceCategory.find(reference.product_reference_category_id)
 
-    products_array << "<tr>"
-    products_array << "<td>"+link_to_remote("#{product.name}", :update => "product_informations", :url => product_path(product.id), :method => :get)+"</td>"
-    products_array << "<td>"+category.name+"</td>"
-    products_array << "<td>"+reference.name+"</td>"
-    products_array << "<td></td>"
-    products_array << "<td></td>"
-    products_array << "</tr>"
+      products_array << "<tr id=\"product_#{product.id}\" onclick=\"refreshProduct(this)\">"
+      products_array << "<td>#{product.name}</td>"
+      products_array << "<td>"+category.name+"</td>"
+      products_array << "<td>"+reference.name+"</td>"
+      products_array << "<td></td>"
+      products_array << "<td></td>"
+      products_array << "</tr>"
     end
-  products_array
+    products_array
   end
     
 end
