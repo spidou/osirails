@@ -5,10 +5,11 @@
 	end
 %>
 	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
-<h1>
+<h1><%= @event.title %></h1>
+<p>
 <%= e.label :title, 'Titre' %>
 <%= e.text_field :title, :class => 'disable-stylesheet-width' %>
-</h1>
+</p>
 <p>
 <%= e.label :location, 'Emplacement' %>
 <%= e.text_field :location, :class => 'disable-stylesheet-width' %>
@@ -186,8 +187,8 @@
 </p>
 <p>
 <%= label_tag 'Participants' %>
-<%= text_field_with_auto_complete('participants', 'text', {:size => 26}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
-<img src="/images/add_16x16.png" onclick="add_participant();">
+<%= text_field_with_auto_complete('participants', 'text', {:size => 26, :onkeypress => "if(event.keyCode == 13) add_participant();"}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
+<img id="add_participant" src="/images/add_16x16.png" onclick="add_participant();">
 </p>
 <p class="participants_area">
 <div id="participants_list">

@@ -41,7 +41,7 @@ Calendar.setup({
 	<div id="calendar_yield"></div>
 	<div id="event_box">
 		<img src="/images/close_icon.png" class="close" onclick="hide_event_box();" />
-		<div id="event_box_content"></div>
+		<div id="event_box_content" onkeypress="if(event.keyCode == 13) return false;"></div>
 	</div>
 	<script type="text/javascript">
 	ajax_link("<%= navigation(params[:period]) %>");

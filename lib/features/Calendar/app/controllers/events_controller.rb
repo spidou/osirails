@@ -151,7 +151,7 @@ class EventsController < ApplicationController
 
       if params[:alarm]
         @alarm = Alarm.new(params[:alarm])
-        @event.alarms.first = @alarm
+        @event.alarms[0] = @alarm
       end
       
       params[:participants][:delete] ||= []
