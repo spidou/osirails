@@ -1,10 +1,10 @@
-  <h1>Catégorie</h1>
+<h1>Catégorie</h1>
 <fieldset>
   <p>
     <%= category.label :name, "Nom"%><br/>
     <%= category.text_field :name %>
   </p>
-
+  
   <p>
     <%= category.label :product_reference_category_id, "Parent" %>
     <%= category.collection_select(:product_reference_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}) %>

@@ -1,5 +1,5 @@
 module ProductReferenceCategoriesHelper
-
+  
   # This method permit to show category and this children
   def show_category(categories)
     show_categories = []
@@ -25,5 +25,5 @@ module ProductReferenceCategoriesHelper
     end
     show_categories
   end
-
+  
 end

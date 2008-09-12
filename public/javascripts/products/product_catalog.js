@@ -1,7 +1,9 @@
+/* This method permit to return selected option value for a select */
 function selectedValue(select) {
     return select.options[select.selectedIndex].value;
 }
 
+/* This method permit to refresh categories select and this dependence */
 function refreshCategories(select, max_level, value) {
     
     position = select.id.lastIndexOf("_");
@@ -38,7 +40,7 @@ function refreshCategories(select, max_level, value) {
                         refreshProductsList(select_ref, id, 0);
                     }
                 }
-              )            
+            )            
         }
         
     }
@@ -84,6 +86,7 @@ function refreshCategories(select, max_level, value) {
     
 }
 
+/* This method permit to refresh reference information and this dependence */
 function refreshReferenceInformation(select) {
     id = selectedValue(select);
     
@@ -109,21 +112,22 @@ function refreshReferenceInformation(select) {
     
 }
 
+/* This method permit to refresh products table */
 function refreshProductsList(select, id, value) {
-
+    
     if (value == 0) {
-    select_ref = document.getElementById('select_reference')
-
-            select_ref_list = ""
-            for (i = 1; i < select_ref.options.length ; i++) {
-                if (i != (select_ref.options.length -1)) {
-                    select_ref_list += select_ref.options[i].value+',';
-                }
-                else {
-                    select_ref_list += select_ref.options[i].value;
-                }
+        select_ref = document.getElementById('select_reference')
+        
+        select_ref_list = ""
+        for (i = 1; i < select_ref.options.length ; i++) {
+            if (i != (select_ref.options.length -1)) {
+                select_ref_list += select_ref.options[i].value+',';
             }
-            
+            else {
+                select_ref_list += select_ref.options[i].value;
+            }
+        }
+        
         select_list = ""
         for (i = 1; i < select.options.length ; i ++) {
             if ( i != (select.options.length - 1) ) {
@@ -133,42 +137,43 @@ function refreshProductsList(select, id, value) {
                 select_list += select.options[i].value;
             }
         }
-        }
-    if (value == 1) {
-    select_list = selectedValue(select);
-    select_ref_list = id;
-    
     }
-            if (select_list != "" || select_ref_list != ""){
-            new Ajax.Request('/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/',
-                {
-                    method: 'get',
-                    onSuccess: function(transport){
-                        response = transport.responseText
-                                    document.getElementById('products_list').style.display = 'block';
-                        document.getElementById('products_list').innerHTML = response;
-                    }
+    if (value == 1) {
+        select_list = selectedValue(select);
+        select_ref_list = id;
+        
+    }
+    if (select_list != "" || select_ref_list != ""){
+        new Ajax.Request('/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/',
+            {
+                method: 'get',
+                onSuccess: function(transport){
+                    response = transport.responseText
+                    document.getElementById('products_list').style.display = 'block';
+                    document.getElementById('products_list').innerHTML = response;
                 }
-            )
-}
-            else {
-            document.getElementById('products_list').style.display = 'none';
             }
+        )
+    }
+    else {
+        document.getElementById('products_list').style.display = 'none';
+    }
 }
 
+/* This method permit to refresh product information */
 function refreshProduct(element){
     position = element.id.lastIndexOf("_");
     id = element.id.substr(position + 1);
     
     document.getElementById('product_informations').style.display = 'block';
-
+    
     new Ajax.Request('/products/'+id,
         {
-          method: 'get',
-          onSuccess: function(transport){
-            response = transport.responseText
-            document.getElementById('product_informations').innerHTML = response;
-          }
+            method: 'get',
+            onSuccess: function(transport){
+                response = transport.responseText
+                document.getElementById('product_informations').innerHTML = response;
+            }
         }
-      )
+    )
 }

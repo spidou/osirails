@@ -1,13 +1,14 @@
 class ProductReferenceCategoriesController < ApplicationController
-
+  
   # GET /product_reference_categories
   def index
     if params[:product_reference_category_id].nil?
       @categories = ProductReferenceCategory.find(:all)
-      @type = 'normal'
     else
       @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
-      render :layout => false
+      respond_to do |format|
+        format.js {render :layout => false}
+      end
     end
     
   end
@@ -17,11 +18,14 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.new(:product_reference_category_id => params[:id])
     @categories = ProductReferenceCategory.find(:all)
   end
-
+  
   # GET /product_reference_categories/1
   def show
     @categories = ProductReferenceCategory.find(params[:id].split(","))
-    render :layout => false
+    respond_to do |format|
+      format.html
+      format.js {render :layout => false}
+    end
   end
   
   # GET /product_reference_categories/1/edit

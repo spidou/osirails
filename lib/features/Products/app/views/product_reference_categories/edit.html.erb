@@ -1,8 +1,8 @@
 <h1>Modifier <%= @category.name %></h1>
 <div class="frame">
-<% form_for(@category) do |category| %>
-  <%= category.error_messages %>
-  <%= render :partial => "form", :locals => {:category => category} %>
-  <%= category.submit "Modifier"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
-<% end %>
+  <% form_for(@category) do |category| %>
+      <%= category.error_messages %>
+      <%= render :partial => "form", :locals => {:category => category} %>
+      <%= category.submit "Modifier"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
+  <% end %>
 </div>

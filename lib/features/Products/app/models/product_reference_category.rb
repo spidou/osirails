@@ -50,7 +50,7 @@ class ProductReferenceCategory < ActiveRecord::Base
   end
   
   
-    # Check if a resource can be destroy or disable
+  # Check if a resource can be destroy or disable
   def can_destroy?
     references = ProductReference.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})
     categories = ProductReferenceCategory.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})

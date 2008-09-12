@@ -1,16 +1,17 @@
 class ProductReferencesController < ApplicationController
-
+  
   # GET /product_references
   def index
     if params[:product_reference_category_id].nil?
       @references = ProductReference.find(:all)
-      @type = 'normal'
     else
       @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
-      render :layout => false
+      respond_to do |format|
+        format.js {render :layout => false}
+      end
     end
   end
-
+  
   # GET /product_references/new
   def new
     @reference = ProductReference.new(:product_reference_category_id => params[:id])
@@ -25,13 +26,13 @@ class ProductReferencesController < ApplicationController
       format.js { render :layout => false}
     end
   end
-
+  
   # GET /product_references/1/edit
   def edit
     @reference = ProductReference.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
   end
-
+  
   
   # POST /product_references
   def create
@@ -59,7 +60,7 @@ class ProductReferencesController < ApplicationController
       render :action => 'edit'
     end
   end
-
+  
   # DELETE /product_references/1
   def destroy
     @reference = ProductReference.find(params[:id])

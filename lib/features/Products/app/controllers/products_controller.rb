@@ -2,17 +2,22 @@ class ProductsController < ApplicationController
   
   # GET /products
   def index
+    if params[:product_reference_id].nil?
       @products = Product.paginate :page => params[:page], :per_page => 10
-    unless params[:product_reference_id].nil?
+    else
       @products = Product.paginate_all_by_product_reference_id  params[:product_reference_id].split(','), :page => params[:page], :per_page => 10
-      render :layout => false
+      respond_to do |format|
+        format.js {render :layout => false}     
+      end
     end 
   end
   
   # GET /products/1
   def show
     @product = Product.find(params[:id])
-    render :layout => false
+    respond_to do |format|
+      format.js {render :layout => false}
+    end
   end
 
   # GET /products/new
