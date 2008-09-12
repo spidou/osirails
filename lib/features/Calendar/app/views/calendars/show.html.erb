@@ -27,15 +27,15 @@ Calendar.setup({
 <% end %>
 <h1><%= h(@calendar.title) %></h1>
 <div id="calendar" class="frame presentation_calendar">
-	<div id="today" class="calendar-buttons">
-		<span class="cal-buttons" onclick="ajax_link('/calendars/' + db_calendar_id + '/' + period);">Aujourd'hui</span>
-	</div>
-	<div id="navigation" class="calendar-buttons" style="text-align: center;">
-		<div class="cal-prev" onclick="ajax_link(link_period_before);"></div>
-		<span class="cal-buttons<%= ' selected' if params[:period] == 'day' %>" onclick="navig_selected(link_period_day, this);">jour</span>
-		<span class="cal-buttons<%= ' selected' if params[:period] == 'week' %>" onclick="navig_selected(link_period_week, this);">semaine</span>
-		<span class="cal-buttons<%= ' selected' if params[:period] == 'month' %>" onclick="navig_selected(link_period_month, this);">mois</span>
-		<div class="cal-next" onclick="ajax_link(link_period_after);"></div>
+	<div class="calendar-buttons">
+		<span id="navig_today" class="cal-buttons" onclick="ajax_link('/calendars/' + db_calendar_id + '/' + period);">Aujourd'hui</span>
+		<div id="navig">
+			<div class="cal-prev" onclick="ajax_link(link_period_before);"></div>
+			<span class="cal-buttons<%= ' selected' if params[:period] == 'day' %>" onclick="navig_selected(link_period_day, this);">jour</span>
+			<span class="cal-buttons<%= ' selected' if params[:period] == 'week' %>" onclick="navig_selected(link_period_week, this);">semaine</span>
+			<span class="cal-buttons<%= ' selected' if params[:period] == 'month' %>" onclick="navig_selected(link_period_month, this);">mois</span>
+			<div class="cal-next" onclick="ajax_link(link_period_after);"></div>
+		</div>
 	</div>
 
 	<div id="calendar_yield"></div>
