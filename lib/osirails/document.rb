@@ -8,6 +8,8 @@ class Document < ActiveRecord::Base
   has_many :document_versions
   belongs_to :has_document, :polymorphic => true
   
+  validates_presence_of :name
+  
   attr_accessor :owner
   attr_accessor  :tag_list
   attr_accessor :file 
@@ -72,7 +74,7 @@ class Document < ActiveRecord::Base
   end
   
   ## Override new methods
-  def self.new(document)
+  def self.new(document = nil)
     
     unless document[:owner].valid?
       raise "Owner is required"
@@ -99,7 +101,6 @@ class Document < ActiveRecord::Base
   
   ## Override update
   def update_attributes(document = nil)
-    
     unless document.nil?
       unless document[:upload].nil?
         ## Store tags list
@@ -117,13 +118,17 @@ class Document < ActiveRecord::Base
           
           document.delete("upload")
           self.document_versions << @document_version
+          puts self.tag_list
           @document_version.create_thumbnails(self.id)
           super(document)
+          return true
         end      
       else
+        return false
       end
       unless file_response     
       else
+        return false
       end
     else
       super
@@ -161,7 +166,6 @@ class Document < ActiveRecord::Base
                 ## Create thumbnails
                 #FIXME Find why create_thumbnails don't work
                 self.create_thumbnails
-                puts "créer"
                 return true              
               else
                 self.destroy

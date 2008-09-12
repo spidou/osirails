@@ -1,5 +1,7 @@
 class DocumentVersion < ActiveRecord::Base
   
+  include Permissible
+  
   belongs_to :document
   
   def path
