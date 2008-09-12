@@ -289,7 +289,7 @@
 	height:20px;
 	line-height:20px;
 	font-size:1.1em;
-	-moz-border-radius:8px;
+	-moz-border-radius:8px 8px 0 0;
 	width:326px;
 	margin: 0 0 8px -9px;
 	padding:0;
@@ -344,11 +344,10 @@
 }
 
 #navig {
-//	float:right;
+	float:right;
 	width:auto;
 	height:18px;
-	position:absolute;
-	right:201px;
+	position:relative;
 	top:8px;
 }
 

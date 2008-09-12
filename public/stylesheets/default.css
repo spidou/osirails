@@ -946,9 +946,14 @@ table.commodity th {
 
 
 table.commodity td {
-	text-align:left;
+	text-align:center;
 /*	padding:5px;	*/
 } 
+
+table.commodity img[title="Enrouler"] + span,
+table.commodity img[title="Dérouler"] + span {
+	text-align:center;
+}
 
 .commodity tr.disable > td {
 	color:#888;
