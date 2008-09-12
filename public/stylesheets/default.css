@@ -952,7 +952,7 @@ table.commodity td {
 
 table.commodity img[title="Enrouler"] + span,
 table.commodity img[title="Dérouler"] + span {
-	text-align:center;
+	text-align:left;
 }
 
 .commodity tr.disable > td {
