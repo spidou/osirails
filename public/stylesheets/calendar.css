@@ -65,6 +65,9 @@
 }
 #calendar #scroll .hour {
 	height: 60px;
+	position:relative;
+	bottom:3px;
+	width:50px;
 }
 #calendar #scroll .day_grid.today {
 	background-color: #FBCD95 !important; /*#EAEAEA !important;*/
@@ -319,8 +322,16 @@
 	margin-top:-23px;
 }
 
-#calendar_yield h4 {
+#top h4 {
 	text-align:center;
+	height:20px;
+	font-size:1.2em;
+	margin-right:auto;
+	margin-left:auto;
+	margin-top:10px;
+	margin-bottom:-26px;
+	padding:0;
+	text-align:center !important;
 }
 
 #navig_today {

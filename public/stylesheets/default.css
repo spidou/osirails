@@ -87,6 +87,11 @@ table td{
 	border:solid 1px rgb(64,68,93);
 }
 
+table img {
+//	position: relative;
+//	top: 2px;
+}
+
 tr:hover > td{
 	background: #f5c384; /* rgb(234,136,28); */
 /*	color:white;	*/
@@ -1751,6 +1756,15 @@ div.frame>#steps {
 #timeline_footer {
 	background:url("/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
+
+/*/////////////////HUMAN RESSOURCES/////////////////*/
+td[title="Détails"] img,
+td[title="Modifier"] img {
+	position:relative;
+	top:2px;
+}
+
+
 /*/////////////////OTHER/////////////////*/
 
 .link_to_closed {
