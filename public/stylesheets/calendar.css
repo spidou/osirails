@@ -237,10 +237,14 @@
 }
 
 #participants_list {
-	margin:-22px 5px 1px 86px;
+	margin:-22px 5px 2px 86px;
 	padding:0;
-	width:285px;
+	width:210px;
 	color:#333;
+}
+
+#event_box_content {
+	margin-top:-23px;
 }
 
 #participants_list img {
@@ -264,12 +268,20 @@
 #event_box h1 {
 	background:url("/images/background_event_box_title.png");
 	color:#333;
-	border:solid 1px #737373;/*#CFCFCF;*/
+	border:solid 1px #888;/*#CFCFCF;*/
 	height:20px;
 	line-height:20px;
 	font-size:1.1em;
-	-moz-border-radius:3px;
+	-moz-border-radius:8px;
+	width:326px;
+	margin: 0 0 8px -9px;
+	padding:0;
 }
+
+#event_box p {
+	white-space:nowrap;
+}
+
 
 .participants_area {
 	display:inline;
@@ -285,12 +297,12 @@
 
 #event_box .close {
 	position:absolute;
-	right:0px;
-	top:-2px;
+	right:-5px;
+	top:-4px;
 }
 
 #event_box form {
-	margin-top:-25px;
+	margin-top:-23px;
 }
 
 /*CALENDAR'S BUTTONS*/
