@@ -44,6 +44,7 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   var yield_elm = document.getElementById('calendar_yield');
   var title_elm = yield_elm.getElementsByTagName('h4')[0];
   var top_elm = document.getElementById('top');
+  top_elm.innerHTML = '';
   top_elm.appendChild(title_elm);
 }
 
