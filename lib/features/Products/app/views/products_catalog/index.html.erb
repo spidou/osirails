@@ -27,5 +27,5 @@
 
 </div>
 
-<%= link_to("Mode Popup", {:controller => 'products_catalog', :action => 'index'}, :popup => true) %>
+<%= @type == "popup" ? link_to("Mode normal", :controller => 'products_catalog') : link_to("Mode Popup", {:controller => 'products_catalog', :type => 'popup'}, :popup => true) %>
 </div>

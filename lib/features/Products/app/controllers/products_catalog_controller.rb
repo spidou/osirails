@@ -5,8 +5,9 @@ class ProductsCatalogController < ApplicationController
     @categories = ProductReferenceCategory.find( :all, :conditions => {:product_reference_category_id => nil})
     @references = ProductReference.find(:all, :conditions => {:enable => true})
     @products = Product.paginate :page => params[:page],:per_page => 10
+    @type = params[:type]
     respond_to do |format|
-      format.html
+      params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
       format.js { render :layout => false, :partial => 'products'}
     end
   end
