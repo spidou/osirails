@@ -395,9 +395,11 @@ span.calendar_checkbox,
 span.calendar_checkbox.selected {
 	line-height:43px;
 	text-align:left;
-	text-indent:-3px;
 	padding:17px;
 	vertical-align:top;
+	position:relative;
+	top:4px;
+	left:2px;
 }
 
 span.calendar_checkbox span,
