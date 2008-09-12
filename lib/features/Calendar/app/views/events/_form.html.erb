@@ -116,7 +116,7 @@
 		<span class="calendar_checkbox"><span>Aou</span></span><%= check_box_tag "event[by_month][]", '8', (@event.by_month.include?('8') unless @event.by_month.nil?) %>
 		<span class="calendar_checkbox"><span>Sep</span></span><%= check_box_tag "event[by_month][]", '9', (@event.by_month.include?('9') unless @event.by_month.nil?) %>
 		<span class="calendar_checkbox"><span>Oct</span></span><%= check_box_tag "event[by_month][]", '10', (@event.by_month.include?('10') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Nov</span><%= check_box_tag "event[by_month][]", '11', (@event.by_month.include?('11') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Nov</span></span><%= check_box_tag "event[by_month][]", '11', (@event.by_month.include?('11') unless @event.by_month.nil?) %>
 		<span class="calendar_checkbox"><span>D&eacute;c</span></span><%= check_box_tag "event[by_month][]", '12', (@event.by_month.include?('12') unless @event.by_month.nil?) %><br>
 		<br><input id="event_monthly_choice" type="checkbox" onclick="if (this.checked == true) {
 		document.getElementById('event_by_year_day_num').disabled=false; 
@@ -171,9 +171,9 @@
 </select>
 </p>
 <fieldset id="alarm" style="display: none;">
-	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before %> minutes avant<br />
+	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before, :size => 3 %> minutes avant<br />
 	<div id="alarm_display">
-		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration %> minutes<br />
+		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration, :size => 3 %> minutes<br />
 	</div>
 	<div id="alarm_email">
 		A <%= text_field_tag 'alarm[email_to]', alarm.email_to %><br />		
