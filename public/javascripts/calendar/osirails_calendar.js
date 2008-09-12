@@ -32,15 +32,19 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   link_period_after = p_a;
   link_get_events = g_e;
   auth_token = a_t;
+  
+  ajax_link(link_get_events);
   document.getElementById('grid_' + period).setAttribute('onDblClick', "display_event_box('new', null, event);");
   document.body.setAttribute('onkeypress', "if(event.keyCode == 27) hide_event_box();");
   if (period != 'month') {
     document.getElementById('scroll').scrollTop = 480;
     document.body.setAttribute('onResize', "resize_events();");
   };
-  ajax_link(link_get_events);
 
-
+  var yield_elm = document.getElementById('calendar_yield');
+  var title_elm = yield_elm.getElementsByTagName('h4')[0];
+  var top_elm = document.getElementById('top');
+  top_elm.appendChild(title_elm);
 }
 
 function disable_text_selecting (object) {

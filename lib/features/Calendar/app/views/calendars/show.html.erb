@@ -27,6 +27,7 @@ Calendar.setup({
 <% end %>
 <h1><%= h(@calendar.title) %></h1>
 <div id="calendar" class="frame presentation_calendar">
+	<div id="top"></div>
 	<div class="calendar-buttons">
 		<span id="navig_today" class="cal-buttons" onclick="ajax_link('/calendars/' + db_calendar_id + '/' + period);">Aujourd'hui</span>
 		<div id="navig">
