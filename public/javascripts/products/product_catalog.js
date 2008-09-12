@@ -35,7 +35,7 @@ function refreshCategories(select, max_level, value) {
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
                         select_ref.innerHTML = response;
-                        refreshProductsList(select_ref, id);
+                        refreshProductsList(select_ref, id, 0);
                     }
                 }
               )            
@@ -75,7 +75,7 @@ function refreshCategories(select, max_level, value) {
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
                         select_ref.innerHTML = response;
-                        refreshProductsList(select, select_list);
+                        refreshProductsList(select, select_list, 0);
                     }
                 }
             )
@@ -96,6 +96,7 @@ function refreshReferenceInformation(select) {
                     
                     document.getElementById('product_reference_informations').style.display = 'block';
                     document.getElementById('product_reference_informations').innerHTML = response;
+                    refreshProductsList(select, id, 1);
                 }
             }
         )   
@@ -107,8 +108,9 @@ function refreshReferenceInformation(select) {
     
 }
 
-function refreshProductsList(select, id) {
+function refreshProductsList(select, id, value) {
 
+    if (value == 0) {
     select_ref = document.getElementById('select_reference')
 
             select_ref_list = ""
@@ -130,6 +132,12 @@ function refreshProductsList(select, id) {
                 select_list += select.options[i].value;
             }
         }
+        }
+    if (value == 1) {
+    select_list = selectedValue(select);
+    select_ref_list = id;
+    
+    }
             if (select_list != "" || select_ref_list != ""){
             new Ajax.Request('/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/',
                 {
