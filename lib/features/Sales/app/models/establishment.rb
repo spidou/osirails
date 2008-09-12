@@ -12,26 +12,18 @@ class Establishment  < ActiveRecord::Base
   has_many :contacts_owners, :as => :has_contact, :class_name => "ContactsOwners"
   has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
   
-  def self.new(establishments = nil)
-    unless establishments.nil? or establishments[:number].nil?
-      address_objects = []
-      establishment_objects = []
-      establishments[:number][:value].to_i.times do |i|
-        unless establishments["#{i+1}"][:valid] == 'false'
-          address_objects[i] = establishments["#{i+1}"].delete("address")
-          establishments["#{i+1}"].delete("valid")
-          establishment_objects[i] =Establishment.new(establishments["#{i+1}"])
-            
-          ## If city_name and city_zip_code are disabled
-          unless address_objects[i][:city].nil?
-            establishment_objects[i].address = (address_objects[i] = Address.new(:address1 => address_objects[i][:address1], :address2 => address_objects[i][:address2], 
-                :country_name => address_objects[i][:country][:name], :city_name => address_objects[i][:city][:name], :zip_code => address_objects[i][:city][:zip_code]))
-          end
-        end
-      end
-      return establishment_objects
+  def self.new(establishment = nil)
+    unless establishment.nil? or establishment[:valid].nil?
+      address = establishment.delete("address")
+      establishment.delete("valid")
+      establishment_object =Establishment.new(establishment)
+      ## unless city_name and city_zip_code are disabled
+      establishment_object.address = (address_object = Address.new(:address1 => address[:address1], :address2 => address[:address2], 
+          :country_name => address[:country][:name], :city_name => (address[:city][:name] unless address[:city].nil?), 
+          :zip_code => (address[:city][:zip_code] unless address[:city].nil?)))
+      return establishment_object
     else     
-      super(establishments)
+      super(establishment)
     end
   end
 end

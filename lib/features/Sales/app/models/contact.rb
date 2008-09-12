@@ -1,5 +1,5 @@
 class Contact < ActiveRecord::Base
-    include Permissible
+  include Permissible
   
   has_many :numbers
   validates_presence_of :first_name
@@ -13,26 +13,20 @@ class Contact < ActiveRecord::Base
   has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
 
 
-  def self.new(contacts = nil)
-    unless contacts.nil? or contacts[:number].nil?
-      contact_objects = []
-      contacts[:number][:value].to_i.times do |i|
-          unless contacts["#{i+1}"][:valid] == 'false'
-            if contacts["#{i+1}"][:id].blank?
-              contacts["#{i+1}"].delete("id")
-              contacts["#{i+1}"].delete("selected")
-              contacts["#{i+1}"].delete("valid")
-              contacts.delete("number")       
-              contact_objects[i] = super(contacts["#{i+1}"])
-            else
-              contact_objects[i] = Contact.find(contacts["#{i+1}"][:id])
-            end                 
-          end
-        end
-        return contact_objects
-    else
-      super(contacts)
+  def self.new(contact = nil)
+    
+    unless contact.nil? or contact[:id].nil?
+      if contact[:id].blank?
+        contact.delete("id")
+        contact.delete("selected")
+        contact.delete("valid")
+        contact.delete("number")       
+        return super(contact)
+      else
+        return Contact.find(contact[:id])
+      end           
     end
+    super(contact)
   end
   
 end

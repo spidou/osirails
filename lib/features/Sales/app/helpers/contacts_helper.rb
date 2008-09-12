@@ -1,6 +1,15 @@
 module ContactsHelper
   def get_return_link(owner_type)
-    eval "link_to 'Retour', edit_#{owner_type.downcase}_path(@owner)"
+    eval "link_to 'Retour', #{owner_type.downcase}_contact_path(@owner, @contact, :owner_type => @owner_type)"
+  end
+  
+  ## Retunr link to owner page
+  def get_owner_link(owner_type)
+    eval "link_to 'Retour', #{owner_type.downcase}_path(@owner)"
+  end
+  
+  def get_edit_link(owner_type)
+    eval "link_to 'Modifier', edit_#{owner_type.downcase}_contact_path(@owner, @contact, :owner_type => @owner_type)"
   end
   
   def get_new_contact_form(params, cpt, error)

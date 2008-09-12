@@ -16,7 +16,7 @@
   <% unless new_contact_number_value == 0 %>
     <% new_contact_number_value.times do |i| %>
       <% unless params["#{owner_type.downcase}"][:contacts]["#{i+1}"][:valid] == 'false' %>
-
+        
         <% params["owner_id"]= owner_id %>
         <% params["owner_type"] = owner_type %>
         

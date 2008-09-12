@@ -36,7 +36,6 @@
       <%= address.label :address2, "Address2", :id => "customer_establishments_#{cpt}_address_address2" %>
       <%= address.text_field :address2, :id => "customer_establishments_#{cpt}_address_address2" %>
     </p>
-
     <% unless error%>
       <% owner_address = Address.new() %>
     <%else%>
@@ -52,7 +51,7 @@
 
     <p>
       <!-- To know if address will be save -->
-      <%= establishment.hidden_field(:valid, :value => 'true', :id => "customer_establishment_#{cpt}_valid")%>
+      <%= establishment.hidden_field(:valid, :value => 'true', :id => "customer_establishments_#{cpt}_valid")%>
     </p>
 
     <% end %>
