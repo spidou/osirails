@@ -1407,6 +1407,20 @@ div.tabs ul li a:hover {
 
 #catalog table {
 	width:100%;
+	margin:0;
+}
+
+#catalog h2 {
+	background:inherit;
+	color:inherit;
+	border:none;
+	margin:5px 0 0 0;
+	padding:0;
+	text-indent:0;
+	width:auto;
+	border:1px solid #888;
+	text-align:center;
+	background:#eaeaea;
 }
 
 /*

@@ -262,7 +262,21 @@
 	border:1px solid #AEAEAE;
 	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
 	margin:8px 0 8px 0;
-	padding:3px 0 3px 0;
+	padding:5px;
+//	white-space:nowrap;
+//	width:200px;
+}
+
+#event_box fieldset input {
+	margin:5px;
+	border: #888 1px solid;
+}
+
+#event_box fieldset input:focus,
+#event_box fieldset input:hover,
+#event_box fieldset input:active {
+	background:#F5F5F5;
+	color:#FF9900;
 }
 
 #event_box h1 {
@@ -303,6 +317,10 @@
 
 #event_box form {
 	margin-top:-23px;
+}
+
+#calendar_yield h4 {
+	text-align:center;
 }
 
 /*CALENDAR'S BUTTONS*/
@@ -375,19 +393,26 @@
 
 span.calendar_checkbox,
 span.calendar_checkbox.selected {
-	width:40px;
-	height:36px;
-	margin:10px;
-	line-height:36px;
-	text-indent:8px;
+	line-height:43px;
+	text-align:left;
+	text-indent:-3px;
+	padding:17px;
+	vertical-align:top;
+}
+
+span.calendar_checkbox span,
+span.calendar_checkbox.selected span {
+	position:relative;
+	bottom:5px;
+	right:4px;
 }
 
 span.calendar_checkbox {
-	background:url("/images/calendar/month.jpg");
+	background:url("/images/calendar/month.jpg") no-repeat;
 }
 
 span.calendar_checkbox.selected {
-	background:url("/images/calendar/month_selected.jpg");
+	background:url("/images/calendar/month_selected.jpg") no-repeat;
 }
 
 span.checkbox_text_calendar {
