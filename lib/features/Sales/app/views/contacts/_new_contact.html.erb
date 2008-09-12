@@ -13,16 +13,20 @@
   <% # cpt store the number of form %>
   <% cpt = 1 %>
   <!-- If there was some form, they are re-create -->
-  <% unless new_contact_number_value == 0 %>
+
+  <% if new_contact_number_value > 0 %>
     <% new_contact_number_value.times do |i| %>
+      <%unless params["#{owner_type.downcase}"][:contacts]["#{i+1}"].nil?%>
       <% unless params["#{owner_type.downcase}"][:contacts]["#{i+1}"][:valid] == 'false' %>
         
         <% params["owner_id"]= owner_id %>
         <% params["owner_type"] = owner_type %>
         
+        
         <%= get_new_contact_form(params, cpt, true)%>            
 
       <%end #unless%>
+      <%end%>
     <% cpt += 1 %>
   <% end %>
 

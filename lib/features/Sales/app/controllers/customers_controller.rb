@@ -97,24 +97,18 @@ class CustomersController < ApplicationController
       @establishment_controller =Menu.find_by_name('establishments')
       @document_controller =Menu.find_by_name('documents')
       
-      customer = params[:customer]
-      
       # @error is use to know if all form are valids
       @error = false
       @customer = Customer.find(params[:id])
-#      raise params[:customer][:activity_sector].to_s    
-      activity_sector_name = customer.delete("activity_sector")
-#      raise params[:customer][:activity_sector].to_s
+
+      customer = params[:customer].dup
+      activity_sector_name = params[:customer][:activity_sector].dup
       
-      activity_sector_name[:name].capitalize!
+      activity_sector_name[:name].capitalize!    
       
-      establishments = customer.delete("establishments")
       
       @establishment_objects = []
-      @address_objects = []
-      
-      contacts = customer.delete("contacts")
-      
+      @address_objects = []  
       @contact_objects = []
     
       if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
@@ -127,28 +121,32 @@ class CustomersController < ApplicationController
       end    
     
       @customer.activity_sector = @activity_sector
-    
+      
+      customer.delete("activity_sector")
+      customer.delete("contacts")
       unless @customer.update_attributes(customer)
         @error = true
         flash[:error] ||= "Une erreur est survenue lors de la sauvergarde du client"
-      else 
+      else
         @activity_sector.save
       end
     
       if Contact.can_add?(current_user)
         # If contact_form is not null
-        params_index = 0
-        contact_object_index = -1
-        
+        contact_params_index = 0 
         if (params[:new_contact_number]["value"].to_i) > 0
-          params[:new_contact_number]["value"].to_i.times do |i|       
-            unless contacts["#{i+1}"][:valid] == 'false'
-              @contact_objects[contact_object_index += 1] = Contact.new(contacts["#{i+1}"])
+          contacts = params[:customer][:contacts].dup
+          params[:new_contact_number]["value"].to_i.times do |i|
+            unless contacts["#{i+1}"].nil?
+              unless contacts["#{i+1}"][:valid] == 'false'
+                @contact_objects << Contact.new(contacts["#{i+1}"])
+                params[:customer][:contacts]["#{contact_params_index += 1}"] = contacts["#{i+1}"]
+              end
             end
-          end
-          params[:new_contact_number]["value"] = @contact_objects.size
-          @contact_objects.size.times do |i|   
-            @error = true unless @contact_objects[i].valid?
+            params[:new_contact_number]["value"]  = @contact_objects.size
+            @contact_objects.size.times do |i|
+              @error = true unless @contact_objects[i].valid?
+            end
           end
         end
       end
@@ -156,19 +154,18 @@ class CustomersController < ApplicationController
       
       if Establishment.can_add?(current_user)
         # If establishment_form is not null
-        params[:customer][:establishments] = {}
         
         if (params[:new_establishment_number]["value"].to_i) > 0
+          establishments = params[:customer][:establishments].dup
           establishments.size.times do |i|
-
             unless establishments["#{i+1}"][:valid][:value] == "false"
               @establishment_objects << Establishment.new(establishments["#{i+1}"])
               params[:customer][:establishments]["#{params[:customer][:establishments].keys.size + 1}"] = {}
               params[:customer][:establishments]["#{params[:customer][:establishments].keys.size + 1}"] = establishments["#{i+1}"]
             end
           end
-          @establishment_objects.size.times do |i| 
-          @error = true unless @establishment_objects[i].valid?
+          @establishment_objects.size.times do |i|
+            @error = true unless @establishment_objects[i].valid?
           end
         end
       end
@@ -207,9 +204,6 @@ class CustomersController < ApplicationController
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         redirect_to customers_path
       else
-#        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]} 
-        
-      
         @new_establishment_number = params[:new_establishment_number]["value"]
         @establishments = @customer.establishments
         @new_contact_number = params[:new_contact_number]["value"]

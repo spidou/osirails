@@ -8,10 +8,14 @@
    <%if error %>
     <!--  store contact in a instance variable to display is error_messages -->
     <% @contact = @contact_objects[cpt-1]%>
-    <%= error_messages_for("contact")%>
+    
   <% end %>
 
   <div id='contact_<%=cpt%>_form' style='display: block;'>
+    <div id='contact_<%= cpt %>_error'>
+      <%= error_messages_for("contact")%>
+    </div>
+
     <p>
       <%= label "#{owner_type.downcase}_contacts_#{cpt}", "first_name", "Nom" %>
       <%= my_text_field_with_auto_complete(:contact, :first_name, {:name => owner_type.downcase, :index => cpt, :controller => 'contacts'},{
