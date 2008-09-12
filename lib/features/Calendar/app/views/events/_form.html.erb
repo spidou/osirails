@@ -56,13 +56,13 @@
 	</div>
 	<div id="event_weekly" style="display: none;">
 		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> semaine(s) le :<br />
-		<span class="calendar_checkbox">Lun</span><%= check_box_tag "event[by_day][]", 'MO', (@event.by_day.include?('MO') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Mar</span><%= check_box_tag "event[by_day][]", 'TU', (@event.by_day.include?('TU') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Mer</span><%= check_box_tag "event[by_day][]", 'WE', (@event.by_day.include?('WE') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Jeu</span><%= check_box_tag "event[by_day][]", 'TH', (@event.by_day.include?('TH') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Ven</span><%= check_box_tag "event[by_day][]", 'FR', (@event.by_day.include?('FR') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Sam</span><%= check_box_tag "event[by_day][]", 'SA', (@event.by_day.include?('SA') unless @event.by_day.nil?) %>
-		<span class="calendar_checkbox">Dim</span><%= check_box_tag "event[by_day][]", 'SU', (@event.by_day.include?('SU') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Lun</span></span><%= check_box_tag "event[by_day][]", 'MO', (@event.by_day.include?('MO') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Mar</span></span><%= check_box_tag "event[by_day][]", 'TU', (@event.by_day.include?('TU') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Mer</span></span><%= check_box_tag "event[by_day][]", 'WE', (@event.by_day.include?('WE') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Jeu</span></span><%= check_box_tag "event[by_day][]", 'TH', (@event.by_day.include?('TH') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Ven</span></span><%= check_box_tag "event[by_day][]", 'FR', (@event.by_day.include?('FR') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Sam</span></span><%= check_box_tag "event[by_day][]", 'SA', (@event.by_day.include?('SA') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Dim</span></span><%= check_box_tag "event[by_day][]", 'SU', (@event.by_day.include?('SU') unless @event.by_day.nil?) %>
 	</div>
 	<div id="event_monthly" style="display: none;">
 		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> mois
@@ -73,8 +73,8 @@
 		document.getElementById('event_by_month_day_wday').disabled=true;" />
 		Tous les<br />
 		<% 31.times do |i| %>
-		<% i+=1 %>
-		<span class="calendar_checkbox"><%= i %></span><%= check_box_tag "event[by_month_day][]", i, (@event.by_month_day.include?(i.to_s) unless @event.by_month_day.nil?) %>
+		<% i+=1 %><% i = '0' + i.to_s if i < 10 %>
+		<span class="calendar_checkbox"><span><%= i %></span></span><%= check_box_tag "event[by_month_day][]", i, (@event.by_month_day.include?(i.to_s) unless @event.by_month_day.nil?) %>
 		<% end %>
 		<br />
 		<input name="monthly_choice" type="radio"
@@ -106,18 +106,18 @@
 	</div>
 	<div id="event_yearly" style="display: none;">
 		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> ans en:<br>
-		<span class="calendar_checkbox">Jan</span><%= check_box_tag "event[by_month][]", '1', (@event.by_month.include?('1') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">F&eacute;v</span><%= check_box_tag "event[by_month][]", '2', (@event.by_month.include?('2') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Mar</span><%= check_box_tag "event[by_month][]", '3', (@event.by_month.include?('3') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Avr</span><%= check_box_tag "event[by_month][]", '4', (@event.by_month.include?('4') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Mai</span><%= check_box_tag "event[by_month][]", '5', (@event.by_month.include?('5') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Jui</span><%= check_box_tag "event[by_month][]", '6', (@event.by_month.include?('6') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Jui</span><%= check_box_tag "event[by_month][]", '7', (@event.by_month.include?('7') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Aou</span><%= check_box_tag "event[by_month][]", '8', (@event.by_month.include?('8') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Sep</span><%= check_box_tag "event[by_month][]", '9', (@event.by_month.include?('9') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">Oct</span><%= check_box_tag "event[by_month][]", '10', (@event.by_month.include?('10') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Jan</span></span><%= check_box_tag "event[by_month][]", '1', (@event.by_month.include?('1') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>F&eacute;v</span></span><%= check_box_tag "event[by_month][]", '2', (@event.by_month.include?('2') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Mar</span></span><%= check_box_tag "event[by_month][]", '3', (@event.by_month.include?('3') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Avr</span></span><%= check_box_tag "event[by_month][]", '4', (@event.by_month.include?('4') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Mai</span></span><%= check_box_tag "event[by_month][]", '5', (@event.by_month.include?('5') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Jui</span></span><%= check_box_tag "event[by_month][]", '6', (@event.by_month.include?('6') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Jui</span></span><%= check_box_tag "event[by_month][]", '7', (@event.by_month.include?('7') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Aou</span></span><%= check_box_tag "event[by_month][]", '8', (@event.by_month.include?('8') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Sep</span></span><%= check_box_tag "event[by_month][]", '9', (@event.by_month.include?('9') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Oct</span></span><%= check_box_tag "event[by_month][]", '10', (@event.by_month.include?('10') unless @event.by_month.nil?) %>
 		<span class="calendar_checkbox">Nov</span><%= check_box_tag "event[by_month][]", '11', (@event.by_month.include?('11') unless @event.by_month.nil?) %>
-		<span class="calendar_checkbox">D&eacute;c</span><%= check_box_tag "event[by_month][]", '12', (@event.by_month.include?('12') unless @event.by_month.nil?) %><br>
+		<span class="calendar_checkbox"><span>D&eacute;c</span></span><%= check_box_tag "event[by_month][]", '12', (@event.by_month.include?('12') unless @event.by_month.nil?) %><br>
 		<br><input id="event_monthly_choice" type="checkbox" onclick="if (this.checked == true) {
 		document.getElementById('event_by_year_day_num').disabled=false; 
 		document.getElementById('event_by_year_day_wday').disabled=false; 
