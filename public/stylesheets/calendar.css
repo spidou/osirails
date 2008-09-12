@@ -323,10 +323,27 @@
 	text-align:center;
 }
 
+#navig {
+//	float:left;
+//	margin-left:0px;
+//	border:1px solid black;
+}
+
+#navig_today {
+	float:right;
+	width:auto;
+	height:18px;
+	position:relative;
+	top:0px;
+	left:6px;
+}
+
 /*CALENDAR'S BUTTONS*/
 .calendar-buttons {
-	margin: 5px;
-	text-align: center;
+	margin:0 0 0 5px;
+	position:relative;
+	top:2px;
+	left:2px;
 }
 
 .calendar-buttons div {
