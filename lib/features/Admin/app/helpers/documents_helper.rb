@@ -1,11 +1,7 @@
 module DocumentsHelper
-  
-  def get_document_form(owner)
-    if Document.can_have_document(owner.class.name)
+  def get_document_form(params, cpt, owner_name)
       
-      document = Document.new(:owner => owner)
-      render :partial => "documents/document_form", :locals => {:owner => owner, :document => document} 
-    end
+      render :partial => "documents/new_document_form", :locals => {:cpt => cpt, :owner_name => owner_name, :params => params} 
   end
   
   def get_return_link(document)

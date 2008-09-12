@@ -1,5 +1,5 @@
   <h3>Uploader un document</h3>
-  <% form_for(:document, document, :url => { :controller => "Documents", :action => "create" , :owner => {:owner_id => owner.id, :owner_model => owner.class.name}}, :html => { :multipart => true}) do |d| %>
+  <% fields_for("customer[document]" , document_, :html => { :multipart => true}) do |d| %>
     
     <p>
       <%= d.label :name, "Nom:"%>
@@ -31,7 +31,7 @@
     
     <p>
       <%= label :file, "Fichier:"%>
-      <%= file_upload%>
+      <%= d.file_field 'upload'%>
     </p>
   
         <%= d.submit "Uploader"%>

@@ -18,13 +18,12 @@
 
   <p>
     <%if @document.extension == "jpg"%>
-        
-        <%if @document.document_versions.empty?%>        
-          <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
-        <%else%>
-          <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id, :last => true), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.id, :last => true))%>
-        <%end%>
-        
+      <!-- Display preview link of last document version -->
+      <%if @document.document_versions.empty?%>        
+        <%= lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => @document.id), url_for(:controller => "documents",:action => "preview_image", :id => @document.id))%>
+      <%else%>
+        <%= lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => @document.id, :last => true), url_for(:controller => "document_versions",:action => "preview_image", :id => @document.id, :last => true))%>
+      <%end%>        
     <%end%>
 
     <%= link_to("modifier", :action => "edit", :id => @document.id)%> 

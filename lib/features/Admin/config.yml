@@ -83,6 +83,9 @@ menus:
       documents:
         title: Documents
         description: Gestion des documents
+      downloads:
+        title: Downloads
+        description: Gestion des downloads
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
@@ -147,3 +150,4 @@ configurations:
       - "2"
       - "3"
       - "4"
+  
