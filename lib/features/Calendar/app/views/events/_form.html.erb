@@ -219,7 +219,7 @@ Calendar.setup({
 });
 <% unless @event.frequence.nil? %>
 event_change('frequence', document.getElementById('event_frequence_choice'));
-var type_elm = document.getElementById('event_frequence_limit').childNodes[3];
+var type_elm = document.getElementById('event_frequence_limit_select');
 <%= "type_elm.options[1].selected = true;" unless @event.count.nil? %>
 <%= "type_elm.options[2].selected = true;" unless @event.until_date.nil? %>
 event_change('limit', type_elm);

@@ -33,6 +33,7 @@ function calendar_init (db_id, p, c_l, c_v, c_a, c_e, c_d, p_b, p_d, p_w, p_m, p
   link_get_events = g_e;
   auth_token = a_t;
   document.getElementById('grid_' + period).setAttribute('onDblClick', "display_event_box('new', null, event);");
+  document.body.setAttribute('onkeypress', "if(event.keyCode == 27) hide_event_box();");
   if (period != 'month') {
     document.getElementById('scroll').scrollTop = 480;
     document.body.setAttribute('onResize', "resize_events();");

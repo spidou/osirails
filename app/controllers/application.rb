@@ -7,8 +7,14 @@ class ApplicationController < ActionController::Base
   layout "default"
   #layout "default_original"
   
+  # Filters
   before_filter :authenticate
+  
+  # Includes
   include Permissible::InstanceMethods
+  
+  # Password will not displayed in log files
+  filter_parameter_logging "password"
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
