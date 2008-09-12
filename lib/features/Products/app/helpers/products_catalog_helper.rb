@@ -57,7 +57,7 @@ module ProductsCatalogHelper
       reference = ProductReference.find(product.product_reference_id)
       category = ProductReferenceCategory.find(reference.product_reference_category_id)
 
-      products_array << "<tr id=\"product_#{product.id}\" onclick=\"refreshProduct(this)\">"
+      products_array << "<tr id=\"product_#{product.id}\" title=\"Cliquer pour afficher les d&eacute;tails du produit\" onclick=\"refreshProduct(this)\">"
       products_array << "<td>#{product.name}</td>"
       products_array << "<td>"+category.name+"</td>"
       products_array << "<td>"+reference.name+"</td>"

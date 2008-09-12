@@ -20,7 +20,10 @@ class ProductReferencesController < ApplicationController
   # GET /product_reference/1
   def show
     @reference = ProductReference.find(params[:id])
-    render :layout => false
+    respond_to do |format|
+      format.html
+      format.js { render :layout => false}
+    end
   end
 
   # GET /product_references/1/edit

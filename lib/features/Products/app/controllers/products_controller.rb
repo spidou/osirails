@@ -6,7 +6,7 @@ class ProductsController < ApplicationController
     unless params[:product_reference_id].nil?
       @products = Product.paginate_all_by_product_reference_id  params[:product_reference_id].split(','), :page => params[:page], :per_page => 10
       render :layout => false
-    end
+    end 
   end
   
   # GET /products/1
