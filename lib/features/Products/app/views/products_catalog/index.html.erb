@@ -33,8 +33,8 @@
     <%= show_products(@products) %>
   </tbody>
 </table>
-  <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :remote => {:with => 'page', :update => 'products_list'}, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
-</div><br/>
+  <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :remote => {:update => 'products_list'}, :layout => false, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+</div>
     
 <div id="product_reference_informations"></div>
 <div id="product_informations"></div>
