@@ -102,6 +102,7 @@ function refreshReferenceInformation(select) {
         )   
     }
     else {
+        document.getElementById('products_list').style.display = 'none';
         document.getElementById('product_informations').style.display = 'none';
         document.getElementById('product_reference_informations').style.display = 'none';
     }
