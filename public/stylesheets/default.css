@@ -53,7 +53,9 @@ caption {
 	background: #afc2ea;
 	color: rgb(64,68,93);
 	font-weight:bold;
-	border-bottom: solid 1px rgb(64,68,93);
+	border: solid 1px rgb(64,68,93);
+	margin-left:-1px;
+	margin-top:10px;
 }
 
 table {
@@ -1318,6 +1320,11 @@ ul.parent>li {
 .hierarchic ul li span>img {
 	position:relative;
 	top:2px;
+}
+
+.hierarchic img {
+	margin-left:3px;
+	margin-right:3px;
 }
 
 /*/////////////////TABS/////////////////*/
