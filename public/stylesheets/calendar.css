@@ -323,27 +323,31 @@
 	text-align:center;
 }
 
-#navig {
-//	float:left;
+#navig_today {
 //	margin-left:0px;
-//	border:1px solid black;
+	position:absolute;
+	top:8px;
+	left:13px;
+	height:18px;
+	width:auto;
 }
 
-#navig_today {
-	float:right;
+#navig {
+//	float:right;
 	width:auto;
 	height:18px;
-	position:relative;
-	top:0px;
-	left:6px;
+	position:absolute;
+	right:201px;
+	top:8px;
 }
 
 /*CALENDAR'S BUTTONS*/
-.calendar-buttons {
-	margin:0 0 0 5px;
+.calendar-buttons {	
+//	margin:0 0 0 5px;
 	position:relative;
-	top:2px;
-	left:2px;
+//	top:2px;
+//	left:2px;
+	height:35px;
 }
 
 .calendar-buttons div {
@@ -405,7 +409,7 @@
 .cal-buttons:active,
 .cal-buttons.selected {
 	background-position:0 -38px;
-	color:black;
+	color:#FFFFFF;
 }
 
 span.calendar_checkbox,
