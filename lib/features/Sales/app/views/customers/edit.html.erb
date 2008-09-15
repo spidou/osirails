@@ -71,7 +71,8 @@
     <% end %>
     
     <!-- Display document_form-->
-    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Customer', :owner_id => @customer.id} %>
+    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Customer', :owner_id => @customer.id, 
+    :new_contact_number => @new_contact_number, :error => @error} %>
   <% end %>
   
   

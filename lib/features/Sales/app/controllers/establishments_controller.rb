@@ -1,5 +1,6 @@
 class EstablishmentsController < ApplicationController
   
+  helper :contacts
   #  protect_from_forgery :except => [:auto_complete_for_city_name]
   
   def show
@@ -93,11 +94,19 @@ class EstablishmentsController < ApplicationController
         end
       end
     
-      if @error   
+      if @error 
         flash[:error] = "Une erreur est survenue lors de la sauvegarde de l'&eacute;tablissement"
         @new_contact_number = params[:new_contact_number]["value"]
         render :action => "edit"
       else
+        
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects.each do |contact|
+            contact.save
+            @establishment.contacts << contact unless @establishment.contacts.include?(contact)
+          end
+        end
+        
         flash[:notice] = "&Eacute;tablissement sauvegard&eacute;e avec succes"
         redirect_to :action => "show"
       end

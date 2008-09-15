@@ -122,6 +122,7 @@ class CustomersController < ApplicationController
       customer.delete("activity_sector")
       customer.delete("contacts")
       customer.delete("establishments")
+      customer.delete("documents")
       
       ## Save customer attributes
       unless @customer.update_attributes(customer)
@@ -132,7 +133,7 @@ class CustomersController < ApplicationController
       
       ## If contact_form is not null
       if Contact.can_add?(current_user)        
-        ## This variable is use to recreate in parms the contacts that are enable
+        ## This variable is use to recreate in params the contacts that are enable
         contact_params_index = 0 
         if params[:new_contact_number]["value"].to_i > 0
           @contact_objects = []
@@ -174,22 +175,34 @@ class CustomersController < ApplicationController
       end
       
       
-      #      if Document.can_add?(current_user)
-      #        unless params[:upload][:datafile].blank?
-      #          params[:document][:upload] = params[:upload]
-      #          params[:document][:owner] = @customer
-      #          @document = Document.new(params[:document])
-      #        end
-      #      end
+      if Document.can_add?(current_user)
+        document_params_index = 0 
+        if params[:new_document_number]["value"].to_i > 0
+          @document_objects = []
+          documents = params[:customer][:documents].dup
+          params[:new_document_number]["value"].to_i.times do |i|
+            unless documents["#{i+1}"][:valid] == "false"
+              @document_objects << Document.new(documents["#{i+1}"])
+              params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"]
+            end
+          end
+          params[:new_document_number]["value"]  = @document_objects.size
+          ## Test if all documents enable are valid
+          @document_objects.size.times do |i|
+            @error = true unless @document_objects[i].valid?
+          end
+        end   
+      end
       
       
       unless @error
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
-        #        unless params[:upload][:datafile].blank?
-        #          if Document.can_add?(current_user)
-        #            @customer.documents << @document
-        #          end
-        #        end
+        if params[:new_document_number]["value"].to_i > 0
+          @document_objects.each do |document|
+            document.save
+            @customer.documents << document
+          end
+        end
         if params[:new_contact_number]["value"].to_i > 0
           @contact_objects.each do |contact|
             contact.save
