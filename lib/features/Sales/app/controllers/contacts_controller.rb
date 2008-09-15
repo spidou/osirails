@@ -2,14 +2,15 @@ class ContactsController < ApplicationController
   
   helper :employees
   
-  protect_from_forgery :except => [:auto_complete_for_contact_first_name]
-  
+  protect_from_forgery :except => [:auto_complete_for_contact_first_name]  
   
   def show 
     if Contact.can_view?(current_user)
       @owner_type  = params[:owner_type]
       @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
       @contact = Contact.find(params[:id])
+    else
+      error_access_page(403)
     end
   end
   
@@ -19,6 +20,8 @@ class ContactsController < ApplicationController
       @owner_type  ||= params[:owner_type]
 
       @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+    else
+      error_access_page(403)
     end
   end
   
@@ -53,6 +56,8 @@ class ContactsController < ApplicationController
         flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
         redirect_to :action => "show"
       end
+    else
+      error_access_page(403)
     end
   end
   
@@ -68,6 +73,8 @@ class ContactsController < ApplicationController
       @owner.contacts.delete(@contact)
       flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
       redirect_to :back 
+    else
+      error_access_page(403)
     end
   end
   
