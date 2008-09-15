@@ -16,7 +16,7 @@ html, body {
 	height: 100%;
 	font-family: verdana , Geneva, sans-serif;
 	cursor: default;
-	min-width: 1200px;
+	min-width: 500px;
 	font-size:1em;
 	color:#343434;
 }
