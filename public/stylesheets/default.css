@@ -1731,6 +1731,15 @@ td[title="Modifier"] img {
 	background:url("/images/lock_24x24.png") no-repeat 0px -1px;
 }
 
+object {
+	margin:10px;
+}
+
+#test {
+	background:black;
+}
+
+
 /*/////////////////////////////////////////////////////
 					FOOTER
 ////////////////////////////////////////////////////*/
