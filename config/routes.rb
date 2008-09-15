@@ -73,7 +73,7 @@ end
 #ActionController::Routing::Routes.routes.each{|r| puts r}
 
 # Add dynamicaly features routes
-features_path = ["#{RAILS_ROOT}/lib/features"]
+features_path = $config.plugin_paths
 features_path.each do |p|
   list = Dir.open(p).sort
   list.each do |f|
