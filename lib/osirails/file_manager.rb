@@ -37,7 +37,8 @@ class FileManager
     end
     
     path = File.join(options[:directory], name)
-    f = File.open(path, "wb") { |f| f.write(options[:file]['datafile'].read) }
+#    raise options[:file][:datafile].to_s
+    f = File.open(path, "wb") { |f| f.write(options[:file][:datafile].read) }
     File.exist?(path)
   end
   

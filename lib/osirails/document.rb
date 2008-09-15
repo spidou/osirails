@@ -76,27 +76,27 @@ class Document < ActiveRecord::Base
   ## Override new methods
   def self.new(document = nil)
     
-    unless document[:owner].valid?
-      raise "Owner is required"
+    unless document[:owner].nil?
+    
+      ## Store file extension
+      document_extension = document[:datafile].original_filename.split(".").last unless document[:datafile].blank?
+    
+      ## affect document_name with original document name if associated textfield is undefined 
+      document[:name].blank? ? document_name = ((a = document[:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:datafile].blank?) : document_name = document[:name]
+    
+      @document =super(
+        :name => document_name , 
+        :description => document[:description], 
+        :extension => document_extension)
+      @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
+      @document.owner = document[:owner]
+      #    @document.tag_list = document[:tag_list].split(",") unless document[:tag_list].nil?
+      @document.file = document[:datafile] unless document[:datafile]. blank?
+      document[:owner].documents << @document
+      return @document
+    else
+      raise "Document require owner attribute. example : Document.new(:owner => Employee.last)"
     end
-    
-    ## Store file extension
-    document[:upload].nil? ? nil : (document_extension = document[:upload][:datafile].original_filename.split(".").last)
-    
-    ## affect document_name with original document name if associated textfield is undefined 
-    document[:name].blank? ? document_name = ((a = document[:upload][:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:upload].nil?) : document_name = document[:name]
-    
-    @document =super(
-      :name => document_name , 
-      :description => document[:description], 
-      :extension => document_extension)
-    
-    @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
-    @document.owner = document[:owner]
-    #    @document.tag_list = document[:tag_list].split(",") unless document[:tag_list].nil?
-    @document.file = document[:upload] unless document[:upload].nil?
-    
-    @document
   end
   
   ## Override update
@@ -137,52 +137,48 @@ class Document < ActiveRecord::Base
   
   ## Override save methods
   def save()
-    if self.new_record?
-      if self.owner.valid?
+    if self.owner.valid?
         
-        unless self.file.nil?
-          unless self.file[:datafile].blank?
+      unless self.file.nil?
+        unless self.file.blank?
         
-            ## Store all possible extension for file
-            possible_extensions = []
-            self.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
+          ## Store all possible extension for file
+          possible_extensions = []
+          self.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
           
-            if super
+          if super
             
-              path = "documents/" + self.owner.class.name.downcase + "/" + self.file_type.id.to_s.downcase + "/"
-              file_response = FileManager.upload_file(:file => self.file, :name => self.id.to_s+"."+ self.file[:datafile].original_filename.split(".").last, 
-                :directory => path, :extensions => possible_extensions)
+            path = "documents/" + self.owner.class.name.downcase + "/" + self.file_type.id.to_s.downcase + "/"
+            file_response = FileManager.upload_file(:file => {:datafile => self.file}, :name => self.id.to_s+"."+ self.file.original_filename.split(".").last, 
+              :directory => path, :extensions => possible_extensions)
             
-              ## If file succefuly create
-              if file_response
+            ## If file succefuly create
+            if file_response
           
-                ## Add tag_list for document
-                unless self.tag_list.nil?
-                  self.tag_list.each {|tag| self.tag_list << tag.strip} 
-                  #FIXME Verify if it's necessary
-                  self.tag_list.uniq!
-                end
-            
-                ## Create thumbnails
-                #FIXME Find why create_thumbnails don't work
-                self.create_thumbnails
-                return true              
-              else
-                self.destroy
+              ## Add tag_list for document
+              unless self.tag_list.nil?
+                self.tag_list.each {|tag| self.tag_list << tag.strip} 
+                #FIXME Verify if it's necessary
+                self.tag_list.uniq!
               end
-            end          
-          else
-            return false
-          end
+            
+              ## Create thumbnails
+              #FIXME Find why create_thumbnails don't work
+              self.create_thumbnails
+              return true              
+            else
+              self.destroy
+            end
+          end          
         else
           return false
-        end ## file.nil?
+        end
       else
         return false
-      end ## owner.valid?
+      end ## file.nil?
     else
-      super
-    end ## new_record?
+      return false
+    end ## owner.valid?
   end
   
 end
