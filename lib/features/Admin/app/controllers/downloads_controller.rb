@@ -2,7 +2,7 @@ class DownloadsController < ApplicationController
 
   def show
     @document = params[:document][:type].constantize.find(params[:document][:id])
-    if Document.can_view?(current_user, "Customer")
+    if Document.can_view?(current_user, Customer)
       if params[:document][:type].constantize.equal?(Document)
         @document = params[:document][:type].constantize.find(params[:document][:id])
         unless params[:document][:last] == 'true'
