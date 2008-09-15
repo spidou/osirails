@@ -202,6 +202,7 @@ class CustomersController < ApplicationController
           @document_objects.each do |document|
             document.save
             @customer.documents << document
+            document.create_thumbnails
           end
         end
         if params[:new_contact_number]["value"].to_i > 0
