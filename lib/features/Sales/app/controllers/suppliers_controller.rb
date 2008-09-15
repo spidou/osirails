@@ -89,19 +89,21 @@ class SuppliersController < ApplicationController
   
   # PUT /suppliers/1
   def update
+    ## Objects use to test permission
+    @contact_controller = Menu.find_by_name('contacts')
     if Supplier.can_edit?(current_user)
       # @error is use to know if all form are valids
       @error = false
       @supplier = Supplier.find(params[:id])
-
-      activity_sector_name = params[:supplier].delete("activity_sector")
+      
+      supplier = params[:supplier].dup
+      
+      activity_sector_name = supplier.delete("activity_sector")
       activity_sector_name[:name].capitalize!
     
-      iban = params[:supplier].delete("iban")
+      iban = supplier.delete("iban")
     
-      contacts = params[:supplier].delete("contacts")
-      contacts_original = contacts
-      contact_objects = []    
+      contacts = supplier.delete("contacts")
     
       if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
         @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
@@ -115,41 +117,46 @@ class SuppliersController < ApplicationController
       @supplier.activity_sector = @activity_sector
       @supplier.iban.update_attributes(iban)
 
-      unless @supplier.update_attributes(params[:supplier])
+      unless @supplier.update_attributes(supplier)
         @error = true
       else
         @activity_sector.save
       end
 
-      # If contact_form is not null
-      unless (new_contact_number = params[:new_contact_number]["value"].to_i) == 0
-        new_contact_number.times do |i|
-          unless contacts["#{i+1}"][:valid] == 'false'
-            if contacts["#{i+1}"][:id].blank?
-              contacts["#{i+1}"].delete("id")
-              contacts["#{i+1}"].delete("selected")
-              contacts["#{i+1}"].delete("valid")
-              contact_objects[i] = Contact.new(contacts["#{i+1}"])
-              unless contact_objects[i].valid?
-                @error = true
-              end
-            else
-              contact_objects[i] = Contact.find(contacts["#{i+1}"][:id])
-            end                  
+      ## If contact_form is not null
+      if Contact.can_add?(current_user)        
+        ## This variable is use to recreate in params the contacts that are enable
+        contact_params_index = 0 
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects = []
+          contacts = params[:supplier][:contacts].dup
+          params[:new_contact_number]["value"].to_i.times do |i|
+            unless contacts["#{i+1}"][:valid] == 'false'
+              @contact_objects << Contact.new(contacts["#{i+1}"])
+              params[:supplier][:contacts]["#{contact_params_index += 1}"] = params[:supplier][:contacts]["#{i + 1}"]
+            end
+          end
+          params[:new_contact_number]["value"]  = @contact_objects.size
+          ## Test if all contacts enable are valid
+          @contact_objects.size.times do |i|
+            @error = true unless @contact_objects[i].valid?
           end
         end
       end
     
       unless @error
-        contact_objects.each do |contact|
-          contact.save
-          @supplier.contacts << contact
-        end      
+        
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects.each do |contact|
+            contact.save
+            @supplier.contacts << contact unless @supplier.contacts.include?(contact)
+          end
+        end
+        
         flash[:notice] = 'Fournisseur ajouté avec succes'     
         redirect_to(suppliers_path)
       else
         params[:supplier][:activity_sector] = {:name => activity_sector_name[:name]}
-        params[:supplier][:contacts] = contacts_original
         flash[:error] = 'Une erreur est survenu lors de sauvegarde du fournisseur'
         @new_contact_number = params[:new_contact_number]["value"]
         @contacts = @supplier.contacts
