@@ -748,7 +748,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /*/!\/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\/!\*/
 .flash_error {
 	background: url("/images/cross_16x16.png") no-repeat;
-	color: red;
+	color: #B0383D;
 }
 
 /*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
@@ -800,7 +800,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors {
-	font-weight:bold;
+//	font-weight:bold;
 }
 
 .fieldWithErrors input,
@@ -812,8 +812,8 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 .fieldWithErrors label:after {
-	content: " *";
-	color:#B0383D;
+//	content: " *";
+//	color:#B0383D;
 }
 
 div.fieldWithErrors {
