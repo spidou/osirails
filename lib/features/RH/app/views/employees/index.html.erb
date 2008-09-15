@@ -36,12 +36,12 @@
           <%=link_to service.name, service_path(service.id)%><br/>
       <% end %>
     </td>
-    <%="<td  title='" + visibles_numbers( employee.numbers ).first.indicative.indicative + " " + visibles_numbers( employee.numbers ).first.formated + " (" + visibles_numbers( employee.numbers ).first.indicative.country.name + ")'>" %>
-      <%=h visibles_numbers( employee.numbers ).first.formated %>&nbsp;
+    <%= number_td(employee.numbers)%>
+      <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formated %>&nbsp;
     </td>
     <td><%=h employee.intranet_email %></td>
     <% if controller.can_list?(current_user) and Employee.can_list?(current_user)%>
-      <td title="Détails"  ><%= link_to( "<img src=\"/images/view_16x16.png\" alt=\"Détails\"/>", employee) %></td>
+      <td title="D&eacute;tails"  ><%= link_to( "<img src=\"/images/view_16x16.png\" alt=\"Détails\"/>", employee) %></td>
     <% end %>
     <% if controller.can_edit?(current_user) and Employee.can_edit?(current_user)%>
       <td title="Modifier" ><%= link_to( "<img src=\"/images/edit_16x16.png\" alt=\"Modifier\"/>", edit_employee_path(employee)) %></td>

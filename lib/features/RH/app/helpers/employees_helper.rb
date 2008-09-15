@@ -128,13 +128,13 @@ module EmployeesHelper
   
   # Method to generate add_link for each number adding a number  
   def add_link_to(owner)
-    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
+    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
   end
   
   # Method to generate remove_link for each adding or deleting
   def remove_link_to(owner)
     params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
-    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
+    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:controller => "employees",:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
   end
   
   # Method to regenerate textfield select and collection_for each number when there is a validation error
@@ -151,7 +151,7 @@ module EmployeesHelper
         html += check_box_tag( name + "[visible]", true, params[owner]['numbers'][f.to_s]['visible']) + "\n"
         html += "&nbsp;Visible par tous \n" 
         html += "&nbsp; \n"
-        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
+        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
         html += "</p>"
       end
     end  
@@ -255,6 +255,15 @@ module EmployeesHelper
       visibles << number if number.visible
     end
     visibles
+  end
+  
+  # Method that add the title to the phone number td
+  def number_td(numbers)
+    unless visibles_numbers(numbers)==[]
+      "<td  title='" + visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formated + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'>"
+    else
+      "<td>"
+    end
   end
   
   # Method to pluralize or not the number's <h3></h3>
