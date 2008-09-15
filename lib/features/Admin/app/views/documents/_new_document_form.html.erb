@@ -19,7 +19,7 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier:"%>      
-      <select id='document_file_type_id' name='document[file_type_id]'> 
+      <select id='<%=owner_type.downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type.downcase%>[documents][<%=cpt%>][file_type_id]' > 
         <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
           <%b = a%>
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
