@@ -92,15 +92,24 @@ class Document < ActiveRecord::Base
       @document.owner = document[:owner]
       #    @document.tag_list = document[:tag_list].split(",") unless document[:tag_list].nil?
       @document.file = document[:datafile] unless document[:datafile]. blank?
-      document[:owner].documents << @document
+#      document[:owner].documents << @document
       return @document
     else
       raise "Document require owner attribute. example : Document.new(:owner => Employee.last)"
     end
   end
   
-  def self.create_all(documents)
-    
+  def self.create_all(documents, owner)
+    if documents.keys.size.to_i > 0
+      document_objects = []
+      documents.keys.size.to_i.times do |i|
+        unless documents["#{i+1}"][:valid] == "false"
+          documents["#{i+1}"][:owner] = owner
+          document_objects << Document.new(documents["#{i+1}"])
+        end
+      end
+      return document_objects
+    end   
   end
   
   ## Override update
