@@ -7,21 +7,20 @@
 <h1>Catalogue des produits</h1>
 
 <div class="frame presentation_large">
-<div id='catalog'>
-  <span id='show_categories'>
-    <% (find_max_level + 1).times do |value|%>
-        <%= show_category_column(@categories,value) %>
-    <% end %>
-  </span>
-  <span id='show_references'>
-    <%= show_reference_column(@references) %>
-  </span>
-  
-  
-  <div id="products_list">
+  <div id='catalog'>
+    <span id='show_categories'>
+      <% (find_max_level + 1).times do |value|%>
+            <%= show_category_column(@categories,value) %>
+      <% end %>
+    </span>
+    <span id='show_references'>
+      <%= show_reference_column(@references) %>
+    </span>
     
-    <%= render :partial => 'products'%>
-        
+    
+    <div id="products_list"> 
+      <%= render :partial => 'products'%>
+    </div>     
     <div id="product_reference_informations"></div>
     <div id="product_informations"></div>
     

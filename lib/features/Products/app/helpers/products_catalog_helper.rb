@@ -1,4 +1,6 @@
 module ProductsCatalogHelper
+
+  MAX_LEVEL_CONS = 1 #FIXME This constant will be configurable by administrateur
   
   # This method permit to return a collection for all categories.
   def column(categories,value)
@@ -19,6 +21,9 @@ module ProductsCatalogHelper
       if category.ancestors.size > max_level
         max_level = category.ancestors.size
       end      
+    end
+    if max_level > MAX_LEVEL_CONS
+      return MAX_LEVEL_CONS
     end
     max_level
   end
