@@ -12,7 +12,7 @@ class Event < ActiveRecord::Base
   # description   :text
   # start_at      :date || :datetime
   # end_at        :date || :datetime
-  # organizer_id  :employee
+  # organizer_id  :user
   # until_date    :date
   # frequence     "DAILY" || "WEEKLY" || "MONTHLY" || "YEARLY"
   # count         :integer || :string
@@ -95,7 +95,7 @@ class Event < ActiveRecord::Base
   
   # Convert the event to the an Icalendar event object
   def to_ical_event
-    organizer = Employee.find(organizer_id) if organizer_id
+    organizer = User.find(organizer_id) if organizer_id
     
     event = Icalendar::Event.new
     event.summary               = title.to_s if title
@@ -111,7 +111,7 @@ class Event < ActiveRecord::Base
     event.properties["rrule"]   += ";BYMONTH=" + by_month.to_s if by_month_day
     event.properties["rrule"]   += ";WKST=MO" if by_day.grep(/\d/).empty?
     event.properties["rrule"].gsub!(" ", "")
-    event.organizer("MAILTO:" + organizer[:mail], {"cn" => organizer.fullname}) if organizer # FIXME Does Employee.fullname exist ?
+    event.organizer("MAILTO:" + organizer[:mail], {"cn" => (organizer.employee.fullname || organizer.username)}) if organizer
     event.dtstart(Calendar.to_ical_date(start_at), Calendar.param_tz) if start_at
     event.dtend(Calendar.to_ical_date(end_at), Calendar.param_tz) if end_at
     

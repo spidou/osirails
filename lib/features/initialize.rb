@@ -1,5 +1,18 @@
 def init(yaml, config, path)
   begin
+    # These variables store the feature's configuration from his config.yml file 
+    name = yaml['name']
+    version = yaml['version']
+    dependencies = yaml['dependencies']
+    conflicts = yaml['conflicts']
+    business_objects = yaml['business_objects']
+    menus = yaml['menus']
+    configurations = yaml['configurations']
+
+    # Manage the activation of a feature
+    # TODO Manage activation of a feature
+    # return false unless Feature.find_by_name(name).activated
+
     # Load every file in the app directory
     controller_path = File.join(path, 'app', 'controllers')
     $LOAD_PATH << controller_path
@@ -11,30 +24,22 @@ def init(yaml, config, path)
     config.controller_paths << model_path
     ActionController::Base.append_view_path(File.join(path, 'app', 'views'))
     $LOAD_PATH << File.join(path, 'app', 'helpers')
-
-    # These variables store the feature's configuration from his config.yml file 
-    name = yaml['name']
-    version = yaml['version']
-    dependencies = yaml['dependencies']
-    conflicts = yaml['conflicts']
-    business_objects = yaml['business_objects']
-    menus = yaml['menus']
-    configurations = yaml['configurations']
-
+    
     # This array store all menus in order than they will be displayed
     $menu_table ||= []
+    
     $option_configuration = []
 
     feature = Feature.find_or_create_by_name_and_version(name, version)
 
     # Test if feature belongs to base of the application
     if path == directory 
-      feature.installed = 1 
+      feature.installed = true
       feature.save
     end
 
     if Feature::FEATURES_NOT_ABLE_TO_DEACTIVATE.include?(feature.name)
-      feature.activated = 1
+      feature.activated = true
       feature.save  
     end
 
