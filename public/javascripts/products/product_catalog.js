@@ -4,7 +4,7 @@ function selectedValue(select) {
 }
 
 /* This method permit to refresh categories select and this dependence */
-function refreshCategories(select, max_level, value) {
+function refreshCategories(select, max_level, value, has_categories) {
     
     position = select.id.lastIndexOf("_");
     select_id = select.id.substr(position + 1);
@@ -15,20 +15,23 @@ function refreshCategories(select, max_level, value) {
     document.getElementById('product_informations').style.display = 'none';
     document.getElementById('product_reference_informations').style.display = 'none';
     
+    
     if (id != 0){
-        new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
-            {
-                method: 'get',
-                onSuccess: function(transport){
-                    response = transport.responseText
-                    document.getElementById('select_'+next_select).innerHTML = response;
-                    if (select_id < max_level) {
-                        value += 1
-                        refreshCategories(document.getElementById('select_'+next_select), max_level, value);
+        if (has_categories == true) {
+            new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
+                {
+                    method: 'get',
+                    onSuccess: function(transport){
+                        response = transport.responseText
+                        document.getElementById('select_'+next_select).innerHTML = response;
+                        if (select_id < max_level) {
+                            value += 1
+                            refreshCategories(document.getElementById('select_'+next_select), max_level, value, has_categories);
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
         if (value == 0) {
             new Ajax.Request('/product_reference_categories/'+id+'/product_references',
                 {
@@ -44,7 +47,7 @@ function refreshCategories(select, max_level, value) {
         }
         
     }
-    if (id == 0){
+    if (id == 0 && value != 1){
         select_list = ""
         for (i = 1; i < select.options.length ; i ++) {
             if ( i != (select.options.length - 1) ) {
@@ -77,6 +80,7 @@ function refreshCategories(select, max_level, value) {
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
                         select_ref.innerHTML = response;
+                        alert('Je suis passé ici');
                         refreshProductsList(select, select_list, 0);
                     }
                 }
@@ -103,6 +107,10 @@ function refreshReferenceInformation(select) {
                 }
             }
         )   
+    }
+    else if (id == 0){
+        select_list = ""
+        refreshProductsList(select, id, 1);
     }
     else {
         document.getElementById('products_list').style.display = 'none';
@@ -140,8 +148,20 @@ function refreshProductsList(select, id, value) {
         url = '/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/'
     }
     if (value == 1) {
-        select_list = selectedValue(select);
-        url = '/product_references/'+select_list+'/products/'
+        if (id != 0) {
+            select_list = selectedValue(select);
+        }
+        else if (id == 0) {
+            for (i = 1; i < select.options.length ; i ++) {
+                if ( i != (select.options.length - 1) ) {
+                    select_list += select.options[i].value+',';
+                }
+                else {
+                    select_list += select.options[i].value;
+                }
+            }       
+        }    
+        url = '/product_references/'+select_list+'/products/'      
     }
     if (select_list != "" || select_ref_list != ""){
         new Ajax.Request(url,
