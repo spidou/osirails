@@ -11,8 +11,6 @@ module ActionController
 end
 
 ActionController::Routing::Routes.draw do |map|
-
-  
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ROOT
@@ -75,9 +73,13 @@ features_path.each do |p|
   list = Dir.open(p).sort
   list.each do |f|
     next unless f.grep(/\./).empty?
+    begin
     feature = Feature.find_by_name(f)
     if feature
       next unless feature.activated      
+    end
+    rescue Exception => e
+      puts e
     end
     route_path = File.join(p, f, 'routes.rb')
     require route_path if File.exist?(route_path)

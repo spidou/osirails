@@ -172,6 +172,7 @@ class Feature < ActiveRecord::Base
       if self.save
         # Reload the configuration
         Rails::Initializer.run(:process, $config)
+        ActionController::Routing::Routes.reload!        
         return true
       end
     end
@@ -183,8 +184,8 @@ class Feature < ActiveRecord::Base
       self.activated = false
       if self.save
         # Reload the configuration
-        ActionController::Routing::Routes.reload!
         Rails::Initializer.run(:process, $config)
+        ActionController::Routing::Routes.reload!
         return true
       end
     end
