@@ -1,15 +1,11 @@
 class  ActAsFileRoute
   def self.add_routes_to(map)
-     
-    ### DOCUMENTS_VERSION
-   
     
     ### DOWLOADS
     map.resources :downloads
     ### END
    
     ### DOCUMENTS
-#    map.resources :documents
     Document.models.each do |model|
       map.resources "#{model.downcase.pluralize}" do |model_|
         model_.resources :documents do |document|
@@ -17,7 +13,7 @@ class  ActAsFileRoute
         end
       end 
     end
-    #    ### END DOCUMENTS
+    ### END DOCUMENTS
   
   end
 end
