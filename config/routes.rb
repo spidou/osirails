@@ -11,8 +11,7 @@ module ActionController
 end
 
 ActionController::Routing::Routes.draw do |map|
-  ## Add document routes
-  ActAsFileRoute.add_routes_to map #FIXME modifier le nom de la class
+
   
   # The priority is based upon order of creation: first created -> highest priority.
   
@@ -69,8 +68,6 @@ ActionController::Routing::Routes.draw do |map|
 
   # See how all your routes lay out with "rake routes"
 end
-
-#ActionController::Routing::Routes.routes.each{|r| puts r}
 
 # Add dynamicaly features routes
 features_path = $config.plugin_paths
