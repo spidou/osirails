@@ -56,7 +56,6 @@ module Permissible
               role = Role.find_by_name(role)
             end
             if self.to_s == "Document" && !document_model.nil?
-              raise "ici"
               # CLASS METHOD. If you want to know the permission of an user for a Document by his model owner.
               perm = DocumentPermission.find_by_document_owner_and_role_id(document_model.to_s, role, :conditions => {action => true})
             elsif self.class.name == "Calendar"
