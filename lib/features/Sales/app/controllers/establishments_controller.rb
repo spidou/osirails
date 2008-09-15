@@ -1,110 +1,116 @@
 class EstablishmentsController < ApplicationController
   
-  protect_from_forgery :except => [:auto_complete_for_city_name]
+  #  protect_from_forgery :except => [:auto_complete_for_city_name]
+  
+  def show
+    if Establishment.can_view?(current_user)
+      @contact_controller = Menu.find_by_name("contacts")    
+      @establishment = Establishment.find(params[:id])
+      @contacts = @establishment.contacts
+      @customer = Customer.find(params[:customer_id])
+    end
+  end
   
   def edit
-    @establishment = Establishment.find(params[:id])
-    @customer = Customer.find(params[:customer_id])
-    @contacts = @establishment.contacts
-
+    if Establishment.can_edit?(current_user)
+      @establishment = Establishment.find(params[:id])
+      @customer = Customer.find(params[:customer_id])
+      @contacts = @establishment.contacts
+      @contact_controller = Menu.find_by_name('contacts')
+    end
   end
   
   def update
-    @error = false
+    if Establishment.can_edit?(current_user)
+      @establishment = Establishment.find(params[:id])
+      @contact_controller = Menu.find_by_name('contacts')
+      @error = false
     
-    @establishment = Establishment.find(params[:id])
-    @address = @establishment.address
-    @customer = Customer.find(params[:customer_id])
-    @contacts = @establishment.contacts
-      
-    params[:address][:country_name] = params[:new_country1][:name]
-    params[:address][:city_name] = params[:new_city1][:name]
-    params[:address][:zip_code] = params[:new_city1][:zip_code]
+      @establishment = Establishment.find(params[:id])
+      @address = @establishment.address
+      @customer = Customer.find(params[:customer_id])
+      @contacts = @establishment.contacts
     
-    country = Country.find_by_name(params[:country][:name])
-    if country.nil?
-      country = Country.new(:name => params[:country][:name])
-      city = City.new(
-          :name => params[:city][:name], 
-          :zip_code => params[:city][:zip_code], 
-          :country_id => country.id)
-        if country.valid? and city.valid?
-          country.save
-          city.save
+      establishment = params[:establishment].dup
+      contacts = establishment.delete("contacts")
+      address = establishment.delete("address")
+    
+    
+      country = Country.find_by_name(address[:country_name])
+      if country.nil?
+        country = Country.new(:name => address[:country_name])
+      end
+      if country.valid?
+        country.save
+      end
+      if address[:city].nil?
+        @error = true
+      else
+        if City.find_by_name_and_country_id(address[:city][:name], country.id).nil?
+          city = City.new(
+            :name => address[:city][:name], 
+            :zip_code => address[:city][:name][:zip_code], 
+            :country_id => country.id)
+          if city.valid?
+            city.save
+          end
+          address[:city_name] = address[:city][:name]
+          address[:zip_code] = address[:city][:zip_code]
         end
-    elsif City.find_by_name_and_country_id(params[:country][:name], country.id).nil?
-      city = City.new(
-          :name => params[:city][:name], 
-          :zip_code => params[:city][:zip_code], 
-          :country_id => country.id)
-        if city.valid?
-          city.save
-        end   
-    end
-    
-    unless @establishment.update_attributes(params[:establishment])
-      @error = true
-    end
-    unless @address.update_attributes(params[:address])
-      @error = true
-    end
-    
-    # If contact_form is not null
-    unless params[:new_contact_number]["value"].nil?
-      puts "passe"
-      new_contact_number = params[:new_contact_number]["value"].to_i
-      new_contact_number.times do |i|
-        # For all new_contact  an instance variable is create.
-        # If his parameter is not valid, @error variable is set to true
-        eval "unless params['valid_contact_#{i+1}'].nil?
-                    unless params['valid_contact_#{i+1}']['value'] == 'false'
-                      unless instance_variable_set('@new_contact#{i+1}', Contact.new(params[:new_contact#{i+1}]))
-                          @error = true
-                      end
-                      unless @new_contact#{i+1}.valid?
-                          @error = true
-                      end
-                    end
-                  end"
       end
-    end
     
-    # If all new_contact are valids, they are save 
-    unless @error
-      new_contact_number.times do |i|
-        eval"unless params['valid_contact_#{i+1}'].nil?
-                     unless params['valid_contact_#{i+1}']['value'] == 'false'
-                       if @new_contact#{i+1} and params['new_contact#{i+1}']['id'] == ''
-                         unless @new_contact#{i+1}.save and @establishment.contacts << @new_contact#{i+1}
-                          @error = true
-                         end
-                       elsif params['new_contact#{i+1}_id'] != ''                        
-                         if @establishment.contacts.include?(Contact.find(params['new_contact#{i+1}']['id'])) == false                    
-                            @establishment.contacts << Contact.find(params['new_contact#{i+1}']['id'])
-                         end
-                        else
-                          @error = true
-                      end
-                    end
-                  end"
+      address[:country_name] = address[:country][:name]
+    
+    
+      address.delete("country")
+      address.delete("city")
+    
+      unless @establishment.update_attributes(establishment)
+        @error = true
       end
-    end
+      unless @address.update_attributes(address)
+        @error = true
+      end
     
-    if @error   
-      flash[:error] = "Une erreur est survenue lors de la sauvegarde de l'&eacute;tablissement"
-      @new_contact_number = params[:new_contact_number]["value"]
-      render :action => "edit"
-    else
-      flash[:notice] = "&Eacute;tablissement sauvegard&eacute;e avec succes"
-      redirect_to :action => "edit"
+      ## If contact_form is not null
+      if Contact.can_add?(current_user)        
+        ## This variable is use to recreate in parms the contacts that are enable
+        contact_params_index = 0 
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects = []
+          contacts = params[:establishment][:contacts].dup
+          params[:new_contact_number]["value"].to_i.times do |i|
+            unless contacts["#{i+1}"][:valid] == 'false'
+              @contact_objects << Contact.new(contacts["#{i+1}"])
+              params[:establishment][:contacts]["#{contact_params_index += 1}"] = params[:establishment][:contacts]["#{i + 1}"]
+            end
+          end
+          params[:new_contact_number]["value"]  = @contact_objects.size
+          ## Test if all contacts enable are valid
+          @contact_objects.size.times do |i|
+            @error = true unless @contact_objects[i].valid?
+          end
+        end
+      end
+    
+      if @error   
+        flash[:error] = "Une erreur est survenue lors de la sauvegarde de l'&eacute;tablissement"
+        @new_contact_number = params[:new_contact_number]["value"]
+        render :action => "edit"
+      else
+        flash[:notice] = "&Eacute;tablissement sauvegard&eacute;e avec succes"
+        redirect_to :action => "show"
+      end
     end
   end
   
   def destroy
-    @establishment = Establishment.find(params[:id])
-    @customer = @establishment.customer
-    @establishment.destroy
-    redirect_to(edit_customer_path(@customer)) 
+    if Establishment.can_delete?(current_user)
+      @establishment = Establishment.find(params[:id])
+      @customer = @establishment.customer
+      @establishment.destroy
+      redirect_to(edit_customer_path(@customer))
+    end
   end
   
 end

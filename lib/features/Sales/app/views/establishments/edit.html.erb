@@ -6,25 +6,28 @@
     <%= render :partial => 'establishment', :locals => {:establishment => establishment, :establishment_ => @establishment} %>
     
     <!-- Display Contacts div -->
-  <h2> Contacts</h2>
-  <% if @contacts.length > 0 -%>
-    <% for contact in @contacts%>
-      <div <%= "id='customer_contact#{contact.id}'" %>>
-        <%= contact.first_name + " " + contact.last_name%>
-        <%= link_to "Plus d'infos", edit_establishment_contact_path(@establishment, contact, :owner_type => "Customer") %>
-        <%= link_to("Supprimer", [@establishment, contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-      </div>
-    <%end #for%> 
-  <%end #if%>
-  <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
+    <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
+      <h2>Contacts</h2>
+      <% unless @contacts.empty? %>    
+        <% for contact in @contacts %>
+            <p>
+              <%= contact.first_name + " " + contact.last_name%>
+              <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
+                  <%= link_to "Plus d'infos", customer_contact_path(@establishment, contact, :owner_type => "Customer") %>
+              <% end %>
+              <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
+                  <%= link_to("Supprimer", [@establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
+              <% end %>
+            </p>
+        <% end %>
+      <% end %>
+    <% end %>
+    <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Establishment",
                   :owner_id => @establishment.id, :params => params, :new_contact_number => @new_contact_number,
                   :error => @error} %>
-              
-    <%= submit_tag 'Modifier' %>
     
-    <%= link_to "Supprimer", [@customer, @establishment], :method => :delete, :confirm => 'Etes vous sûr ?'%>
-  <%end%>
-  
-
-<%= link_to "Revenir sur la fiche du client", edit_customer_path(@customer)%>
-    </div>
+  </div>
+  <%= submit_tag 'Modifier' %>
+<%end%>
+<%= link_to "Retour", customer_establishment_path(@customer, @establishment)%>
+    

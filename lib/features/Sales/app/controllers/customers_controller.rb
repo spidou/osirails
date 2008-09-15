@@ -100,17 +100,14 @@ class CustomersController < ApplicationController
       # @error is use to know if all form are valids
       @error = false
       @customer = Customer.find(params[:id])
-
+      
+      ## dup is use to create a copy of params[:customer] because if we use simply =, when delete method is use on customer variable, params is modify too
       customer = params[:customer].dup
-      activity_sector_name = params[:customer][:activity_sector].dup
       
-      activity_sector_name[:name].capitalize!    
-      
-      
-      @establishment_objects = []
-      @address_objects = []  
-      @contact_objects = []
+      activity_sector_name = params[:customer][:activity_sector].dup      
+      activity_sector_name[:name].capitalize!
     
+      #FIXME See if this block can be in activity_sector models
       if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
         @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
         @customer.activity_sector = @activity_sector
@@ -121,49 +118,55 @@ class CustomersController < ApplicationController
       end    
     
       @customer.activity_sector = @activity_sector
-      
+
       customer.delete("activity_sector")
       customer.delete("contacts")
+      customer.delete("establishments")
+      
+      ## Save customer attributes
       unless @customer.update_attributes(customer)
         @error = true
-        flash[:error] ||= "Une erreur est survenue lors de la sauvergarde du client"
       else
         @activity_sector.save
       end
-    
-      if Contact.can_add?(current_user)
-        # If contact_form is not null
+      
+      ## If contact_form is not null
+      if Contact.can_add?(current_user)        
+        ## This variable is use to recreate in parms the contacts that are enable
         contact_params_index = 0 
-        if (params[:new_contact_number]["value"].to_i) > 0
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects = []
           contacts = params[:customer][:contacts].dup
           params[:new_contact_number]["value"].to_i.times do |i|
-            unless contacts["#{i+1}"].nil?
-              unless contacts["#{i+1}"][:valid] == 'false'
-                @contact_objects << Contact.new(contacts["#{i+1}"])
-                params[:customer][:contacts]["#{contact_params_index += 1}"] = contacts["#{i+1}"]
-              end
+            unless contacts["#{i+1}"][:valid] == 'false'
+              @contact_objects << Contact.new(contacts["#{i+1}"])
+              params[:customer][:contacts]["#{contact_params_index += 1}"] = params[:customer][:contacts]["#{i + 1}"]
             end
-            params[:new_contact_number]["value"]  = @contact_objects.size
-            @contact_objects.size.times do |i|
-              @error = true unless @contact_objects[i].valid?
-            end
+          end
+          params[:new_contact_number]["value"]  = @contact_objects.size
+          ## Test if all contacts enable are valid
+          @contact_objects.size.times do |i|
+            @error = true unless @contact_objects[i].valid?
           end
         end
       end
       
-      
+      ## If establishment_form is not null
       if Establishment.can_add?(current_user)
-        # If establishment_form is not null
-        
-        if (params[:new_establishment_number]["value"].to_i) > 0
+        establishment_params_index = 0 
+        if params[:new_establishment_number]["value"].to_i > 0
+          @establishment_objects = []
+          @address_objects = []
           establishments = params[:customer][:establishments].dup
-          establishments.size.times do |i|
-            unless establishments["#{i+1}"][:valid][:value] == "false"
+          
+          params[:new_establishment_number]["value"].to_i.times do |i|
+            unless establishments["#{i+1}"][:valid] == "false"
               @establishment_objects << Establishment.new(establishments["#{i+1}"])
-              params[:customer][:establishments]["#{params[:customer][:establishments].keys.size + 1}"] = {}
-              params[:customer][:establishments]["#{params[:customer][:establishments].keys.size + 1}"] = establishments["#{i+1}"]
+              params[:customer][:establishments]["#{establishment_params_index += 1}"] = params[:customer][:establishments]["#{i + 1}"]
             end
           end
+          params[:new_establishment_number]["value"]  = @establishment_objects.size
+          ## Test if all establishments enable are valid
           @establishment_objects.size.times do |i|
             @error = true unless @establishment_objects[i].valid?
           end
@@ -181,29 +184,29 @@ class CustomersController < ApplicationController
       
       
       unless @error
-        
+        flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         #        unless params[:upload][:datafile].blank?
         #          if Document.can_add?(current_user)
         #            @customer.documents << @document
         #          end
         #        end
-      
-        @contact_objects.each do |contact|
-          contact.save
-          @customer.contacts << contact unless @customer.contacts.include?(contact)
-        end
-      
-        @establishment_objects.each do |establishment|
-          establishment.save
-          @customer.establishments << establishment
+        if params[:new_contact_number]["value"].to_i > 0
+          @contact_objects.each do |contact|
+            contact.save
+            @customer.contacts << contact unless @customer.contacts.include?(contact)
+          end
         end
         
-        @address_objects.each do |address|
-          address.save
-        end      
-        flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
+        if params[:new_establishment_number]["value"].to_i > 0
+          @establishment_objects.each do |establishment|
+            establishment.save
+            @customer.establishments << establishment
+          end
+        end
+        
         redirect_to customers_path
       else
+        flash[:error] ||= "Une erreur est survenue lors de la sauvergarde du client"
         @new_establishment_number = params[:new_establishment_number]["value"]
         @establishments = @customer.establishments
         @new_contact_number = params[:new_contact_number]["value"]

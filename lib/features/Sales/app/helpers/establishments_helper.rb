@@ -7,4 +7,5 @@ module EstablishmentsHelper
     render :partial => 'contacts/new_contact_form', 
       :locals => {:cpt=> cpt, :error => error, :owner_type => params[:owner_type], :owner_id => params[:owner_id]}
   end
+  
 end

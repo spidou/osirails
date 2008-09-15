@@ -12,20 +12,19 @@
 
   <% # cpt store the number of form %>
   <% cpt = 1 %>
-  <!-- If there was some form, they are re-create -->
-  <% unless new_establishment_number_value == 0 %>
+  <!-- If there was some establishment form, they are re-create -->
+  <% if new_establishment_number_value > 0 %>
     <% new_establishment_number_value.times do |i| %>     
       <% unless params[:customer][:establishments]["#{i+1}"]["valid"] == 'false' %>
         
         <%= render :partial => 'establishments/new_establishment_form', :locals => {:cpt=> i+1, :error => true, :params => params} %>
         
       <%end #unless%>
-      <% cpt += 1 %>
-      
+      <% cpt += 1 %>     
     <% end %>
     
-  <div id="link_add_remove_establishment_<%=cpt%>">
-    <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
-  </div>
+    <div id="link_add_remove_establishment_<%=cpt%>">
+      <%= link_to_remote("(ajouter)", :url => {:controller => "establishments", :action => "add_establishment", :cpt => cpt}) %>
+    </div>
   <% end %>          
-  </div>
+</div>

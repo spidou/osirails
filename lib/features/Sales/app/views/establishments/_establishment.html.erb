@@ -21,8 +21,6 @@
       <%= address.text_field :address2%>  
       </p>
 
-        <%= javascript_tag "document.getElementById('customer_establishments_#{cpt}_name').value = '#{params[:customer][:establs]}'" %>
-
     <%= render :partial => 'addresses/address', 
         :locals => {:cpt=> 1, :owner_address => establishment_.address, :address_name => "establishment"}%>
 

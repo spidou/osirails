@@ -44,7 +44,10 @@
       <p>
         <%= establishment.name + '(' +establishment.address.city_name + ')' %>
         <% if @establishment_controller.can_view?(current_user) and Establishment.can_view?(current_user)%>
-        <%= link_to "Plus d'infos", edit_customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
+        <%= link_to "Plus d'infos", customer_establishment_path(@customer, establishment) %>
+        <% end %>
+        <% if @establishment_controller.can_delete?(current_user) and Establishment.can_view?(current_user)%>
+          <%= link_to "Supprimer", [@customer, establishment], :method => :delete, :confirm => 'Etes vous sûr ?'%>
         <% end %>
       </p>
       <% end %>
@@ -59,7 +62,7 @@
           <p>
             <%= contact.first_name + " " + contact.last_name%>
             <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-                <%= link_to "Plus d'infos", edit_customer_contact_path(@customer, contact, :owner_type => "Customer") %>
+                <%= link_to "Plus d'infos", customer_contact_path(@customer, contact, :owner_type => "Customer") %>
             <% end %>
             <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
                 <%= link_to("Supprimer", [@customer,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>

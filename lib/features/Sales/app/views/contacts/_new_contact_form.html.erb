@@ -1,14 +1,12 @@
 <div id='link_add_remove_contact_<%= cpt%>'>
-  <%= error_messages_for("new_contact#{cpt}") %>
-
   <%= link_to_remote("supprimer", :url => {:controller => "contacts", :action => "delete_new_contact", :cpt => cpt, :owner_type => owner_type.downcase})%>
 </div>
 
 <div id='<%= "new_contact#{cpt}"%>'>
+
    <%if error %>
-    <!--  store contact in a instance variable to display is error_messages -->
-    <% @contact = @contact_objects[cpt-1]%>
-    
+    <!--  store contact in a instance variable to display his error_messages -->
+    <% @contact = @contact_objects[cpt-1]%>    
   <% end %>
 
   <div id='contact_<%=cpt%>_form' style='display: block;'>
@@ -74,10 +72,10 @@
 
     <% # Affectation of variables when an error occur%>
     <%if error%>
-      <%=  javascript_tag "document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_first_name').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["first_name"]}'"%>
-      <%=  javascript_tag "document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_last_name').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["last_name"]}'"%>
-      <%=  javascript_tag "document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_email').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["email"]}'"%>
-      <%=  javascript_tag "document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_job').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["job"]}'"%>
+      <%= javascript_tag "document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_first_name').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["first_name"]}';
+      document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_last_name').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["last_name"]}';
+      document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_email').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["email"]}';
+      document.getElementById('#{owner_type.downcase}_contacts_#{cpt}_job').value = '#{params["#{owner_type.downcase}"]["contacts"]["#{cpt}"]["job"]}'"%>
     <%end%>
   </div>
 

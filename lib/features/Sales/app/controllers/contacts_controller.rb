@@ -14,61 +14,61 @@ class ContactsController < ApplicationController
   end
   
   def edit
-    @contact = Contact.find(params[:id])
-    @owner_type  ||= params[:owner_type]
+    if Contact.can_edit?(current_user)
+      @contact = Contact.find(params[:id])
+      @owner_type  ||= params[:owner_type]
 
-    @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
-
+      @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+    end
   end
   
   def update
-    @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
-    @contact = Contact.find(params[:id])
-    if params[:owner_type]  == "Customer"
-      @owner =Customer.find(params[:owner])
-      owner_path = "customer_path(@owner)"
-    elsif params[:owner_type]  == "Establishment"
-      @owner =Establishment.find(params[:owner])
-      owner_path = "establishent_path(@owner)"
-    elsif params[:owner_type]  == "Supplier"
-      @owner =Supplier.find(params[:owner])
-      owner_path = "supplier_path(@owner)"
-    end
-    
-    # put numbers another place for a separate creation
-    #    puts params[:contact].keys
-    params[:numbers] = params[:contact]['numbers']
-    params[:contact].delete('numbers')
-    puts params[:numbers]
-    
-    # update contact ressources
-    unless @contact.update_attributes(params[:contact])
-      params[:contact]['numbers'] = params[:numbers]
-      flash[:error] = "Une erreur est survenu lors de la modification du contact"
-      @error = true
-      @owner
-      render :action => "edit"
-    else
-      params[:numbers].each do |number|
-        @contact.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
+    if Contact.can_edit?(current_user)
+      @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+      @contact = Contact.find(params[:id])
+      if params[:owner_type]  == "Customer"
+        @owner =Customer.find(params[:owner])
+      elsif params[:owner_type]  == "Establishment"
+        @owner =Establishment.find(params[:owner])
+      elsif params[:owner_type]  == "Supplier"
+        @owner =Supplier.find(params[:owner])
       end
-      #      params[:contact]['numbers'] = params[:numbers]
-      flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
-      eval "redirect_to #{owner_path}"
+    
+      contact = params[:contact]
+      contact.delete("numbers")
+    
+      # update contact ressources
+      unless @contact.update_attributes(contact)
+        @error = true
+      end
+    
+      unless @error
+        params[:contact]['numbers'] = params[:numbers]
+        flash[:error] = "Une erreur est survenu lors de la modification du contact"
+        render :action => "edit"
+      else
+        params[:numbers].each do |number|
+          @contact.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
+        end
+        flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
+        redirect_to :action => "show"
+      end
     end
   end
   
   def destroy
-    @contact = Contact.find(params[:id])
+    if Contact.can_delete?(current_user)
+      @contact = Contact.find(params[:id])
     
-    @owner_type = params.keys.last.slice(0..-4)
-    @owner_id = params["#{@owner_type}_id"]
+      @owner_type = params.keys.last.slice(0..-4)
+      @owner_id = params["#{@owner_type}_id"]
 
-    eval "@owner =#{@owner_type.capitalize}.find(@owner_id)"
+      eval "@owner =#{@owner_type.capitalize}.find(@owner_id)"
     
-    @owner.contacts.delete(@contact)
-    flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
-    redirect_to :back  
+      @owner.contacts.delete(@contact)
+      flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
+      redirect_to :back 
+    end
   end
   
   def auto_complete_for_contact_first_name

@@ -1,4 +1,4 @@
-<div class="frame">
+
   <p>
     <%= label :contact, "Nom du contact" %>
     <%= contact.text_field :first_name %>
@@ -23,4 +23,3 @@
     <%=label :contact, "Type de contact"%>
     <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%>
   </p>
-</div>
