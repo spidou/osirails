@@ -156,7 +156,7 @@
 #calendar #scroll #grid_month .day_grid ul li {
 	width:125%;
 	margin-bottom:3px;
-	text-align:justify;
+	text-align:left;
 }
 
 #calendar #scroll .e_month {

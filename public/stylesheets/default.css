@@ -142,7 +142,6 @@ h3 {
 	height:20px;
 	line-height:20px;
 	color: rgb(117,141,189);
-/*	font-weight:lighter;	*/
 	padding-top:0px;
 	margin-top:-1px;
 	font-size:1.05em;
@@ -483,15 +482,6 @@ a.button_banner:hover span {
 	padding:0;
 }
 
-ul.center_list {
-	text-align:center;
-	text-indent:0;
-}
-
-ul.center_list li {
-	padding-left:6px;
-}
-
 #content_secondary_menu ul li {
 	padding: 5px;
 	text-decoration: none;
@@ -503,6 +493,15 @@ ul.center_list li {
 #content_secondary_menu ul li a {
 	text-decoration:none ;
 	color: #CA7E21;/*444*/
+}
+
+ul.center_list {
+	text-align:center;
+	text-indent:0;
+}
+
+ul.center_list li {
+	padding-left:6px;
 }
 
 .secondary_menu_statistic {
@@ -524,24 +523,6 @@ ul.center_list li {
 	text-align:justify;
 }
 
-/*
-.view_icon,
-.add_icon,
-.modif_icon,
-.del_icon {
-	margin-left: 15px;
-}
-
-img.view_icon,
-img.add_icon,
-img.modif_icon,
-img.del_icon {
-	border:none;
-	position:relative;
-	top:5px;
-	right:3px;
-}
-*/
 #footer_secondary_menu { 
 	margin-bottom:-42px;
 	padding:0;
@@ -1088,45 +1069,6 @@ width: 50px ! important;
 	margin:0px 20px 0px -15px ;
 }
 
-/*
-.frame form {
-//	width: 70%;
-	text-indent:0;
-}
-
-.frame form p {
-	margin: 0.8em 0;
-}
-
-.frame form p.text_form {
-	overflow: hidden;*/ /* Empêcher le dépassement des flottants */
-/*	width: 100%;
-}
-*//*
-.frame form p.text_form label {
-	float: left;
-	width: 150px;
-	text-align: right;
-	cursor: pointer;
-}
-*/
-/*
-.frame form p.text_form label span.info {
-	display: block;
-	margin-top: .2em;
-	font-size: .8em;
-	font-weight: normal;
-	cursor: default;
-}
-*//*
-.frame form p.text_form input,
-.frame form p.text_form textarea {
-	width: 250px;
-	margin-left: 12px;
-	border: #CCC 1px solid;
-	padding: 2px 4px;
-}
-*/
 .frame form p textarea {
 /*	min-height:50px;*/
 	height:50px !important; /*test julien*/
@@ -1769,6 +1711,12 @@ td[title="Modifier"] img {
 	top:2px;
 }
 
+.frame table + p a img {
+	margin-top:-10px;
+	margin-left:-20px;
+	position:relative;
+	top:4px;
+}
 
 /*/////////////////OTHER/////////////////*/
 

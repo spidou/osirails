@@ -18,6 +18,7 @@ html, body {
 	cursor: default;
 	min-width: 1200px;
 	font-size:1em;
+	color:#343434;
 }
 
 a, strong {
@@ -54,6 +55,7 @@ table {
 	text-align:center;
 	min-width:70%;
 	margin: 10px 0 10px 10px;
+	color:inherit;
 }
 
 table a {
@@ -81,6 +83,10 @@ tr:hover > td{
 
 tr:hover > td > a {
 	text-decoration:underline;
+}
+
+#products_list {
+	cursor:pointer;
 }
 
 /*/////////////////////////////
@@ -130,6 +136,7 @@ h3 {
 .frame {
 	padding:10px;
 	font-size:0.9em;
+	color:inherit;
 }
 
 #catalog {
@@ -139,6 +146,7 @@ h3 {
 #catalog table {
 	width:100%;
 	margin:0 0 10px 0;
+	color:inherit;
 }
 
 #catalog h2 {
@@ -163,6 +171,7 @@ h3 {
 select.select_catalog {
 	background: #f1f1f1;
 	border:1px solid #888;
+	color:inherit;
 }
 
 select.catalog_2_columns {
