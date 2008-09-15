@@ -182,6 +182,7 @@ class CustomersController < ApplicationController
           documents = params[:customer][:documents].dup
           params[:new_document_number]["value"].to_i.times do |i|
             unless documents["#{i+1}"][:valid] == "false"
+              documents["#{i+1}"][:owner] = @customer
               @document_objects << Document.new(documents["#{i+1}"])
               params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"]
             end
