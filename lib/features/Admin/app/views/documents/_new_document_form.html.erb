@@ -1,15 +1,23 @@
 <div id='link_add_remove_document_<%= cpt%>'>
-  <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner_type => owner_type})%>
+  <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner => owner})%>
 </div>
+
 <div id='<%= "new_document#{cpt}"%>'>
-  <% owner = get_owner(owner_type, owner_id) %>
-  <% document_ = Document.new(:owner => owner)%>
+    
+  <%if error %>
+    <!--  store contact in a instance variable to display his error_messages -->
+    <% @document = @document_objects[cpt-1]%>
+    <%= error_messages_for("document")%>
+  <% end %>
+  
+    <% document_ = Document.new(:owner => owner)%>
+
     
   <% fields_for("customer[documents]" , document_, :index => cpt,  :html => { :multipart => true}) do |d| %>
     
     <p>
       <%= d.label :name, "Nom:"%>
-      <%= d.text_field :name%>
+      <%= d.text_field :name%>  
     </p>
   
     <p>
@@ -19,7 +27,7 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier:"%>      
-      <select id='<%=owner_type.downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type.downcase%>[documents][<%=cpt%>][file_type_id]' > 
+      <select id='<%=owner.class.name.downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner.class.name.downcase%>[documents][<%=cpt%>][file_type_id]' > 
         <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
           <%b = a%>
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
@@ -44,7 +52,7 @@
 
   <%end%>
 
-  <%= observe_field :document_file_type_id,
+  <%= observe_field "#{owner.class.name.downcase}_documents_#{cpt}_file_type_id",
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
       :with => "'file_type_id=' +value"%>
