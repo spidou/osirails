@@ -1,5 +1,5 @@
 <div id='link_add_remove_document_<%= cpt%>'>
-  <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner => owner})%>
+  <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner_id => (owner_id unless owner_id.nil?), :owner_type => owner_type})%>
 </div>
 
 <div id='<%= "new_document#{cpt}"%>'>
@@ -10,14 +10,18 @@
     <%= error_messages_for("document")%>
   <% end %>
   
+  <% unless owner_id.nil? %>
+    <% owner = get_owner(owner_type, owner_id) %>
     <% document_ = Document.new(:owner => owner)%>
-
+   <%else%>
+     <% document_ = Document.new(:owner => owner_type.constantize.new())%>
+   <% end %>
     
   <% fields_for("customer[documents]" , document_, :index => cpt,  :html => { :multipart => true}) do |d| %>
     
     <p>
       <%= d.label :name, "Nom:"%>
-      <%= d.text_field :name%>  
+      <%= d.text_field :name%>
     </p>
   
     <p>
@@ -27,8 +31,8 @@
   
     <p>
       <%= d.label :file_type_id, "Type de fichier:"%>      
-      <select id='<%=owner.class.name.downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner.class.name.downcase%>[documents][<%=cpt%>][file_type_id]' > 
-        <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
+      <select id='<%=owner_type.downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type.downcase%>[documents][<%=cpt%>][file_type_id]' > 
+        <% FileType.find_all_by_model_owner(owner_type.capitalize).each do |a| %>
           <%b = a%>
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
           <%= a.name + "(" + (t.split(",").size > 2 ? t.split(",")[0..1].join(",").concat("...") : t) +")" %> </option>
@@ -52,7 +56,7 @@
 
   <%end%>
 
-  <%= observe_field "#{owner.class.name.downcase}_documents_#{cpt}_file_type_id",
+  <%= observe_field :document_file_type_id,
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
       :with => "'file_type_id=' +value"%>
