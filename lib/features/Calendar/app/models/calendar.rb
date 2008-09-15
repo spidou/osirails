@@ -21,7 +21,7 @@ class Calendar < ActiveRecord::Base
 
   # Relationships
   belongs_to :user
-  has_many :calendar_permissions
+  has_many :calendar_permissions, :dependent => :destroy
   has_many :events
   has_many :event_categories
 
@@ -33,7 +33,6 @@ class Calendar < ActiveRecord::Base
 
   # Callbacks
   after_create :create_permissions
-  after_destroy :destroy_permissions
  
   # TODO Must be configurable
   # Constants
@@ -253,9 +252,5 @@ class Calendar < ActiveRecord::Base
     Role.find(:all).each do |role|
       CalendarPermission.create(:role_id => role.id, :calendar_id => self.id)
     end
-  end
-  
-  def destroy_permissions
-    CalendarPermission.destroy_all(:calendar_id => self.id)
   end
 end

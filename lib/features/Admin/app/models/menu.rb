@@ -1,7 +1,7 @@
 class Menu < ActiveRecord::Base
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
-  has_many :menu_permissions
+  has_many :menu_permissions, :dependent => :destroy
   has_one :content
 
   # Plugin
@@ -22,7 +22,6 @@ class Menu < ActiveRecord::Base
   
   # Callbacks
   after_create :create_permissions
-  after_destroy :destroy_permissions
   
   # Includes
   include Permissible::InstanceMethods
@@ -134,10 +133,6 @@ class Menu < ActiveRecord::Base
       Role.find(:all).each do |r|
         MenuPermission.create(:menu_id => self.id, :role_id => r.id)
       end
-    end
-    
-    def destroy_permissions
-      MenuPermission.destroy_all(:menu_id => self.id)
     end
       
   protected
