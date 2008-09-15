@@ -128,7 +128,7 @@ module EmployeesHelper
   
   # Method to generate add_link for each number adding a number  
   def add_link_to(owner)
-    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner },:href=>(url_for :action=>'add_line')) 
+    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner }) 
   end
   
   # Method to generate remove_link for each adding or deleting
