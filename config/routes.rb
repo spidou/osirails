@@ -68,7 +68,7 @@ ActionController::Routing::Routes.draw do |map|
 end
 
 # Add dynamicaly features routes
-features_path = $config.plugin_paths
+features_path = ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 features_path.each do |p|
   list = Dir.open(p).sort
   list.each do |f|
@@ -76,13 +76,13 @@ features_path.each do |p|
     begin
     feature = Feature.find_by_name(f)
     if feature
-      next unless feature.activated      
+      next unless feature.activated
     end
     rescue Exception => e
-      puts e
+      puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     end
     route_path = File.join(p, f, 'routes.rb')
-    require route_path if File.exist?(route_path)
+    load route_path if File.exist?(route_path)
   end
 end
 

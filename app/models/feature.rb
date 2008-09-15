@@ -171,7 +171,6 @@ class Feature < ActiveRecord::Base
       self.activated = true
       if self.save
         # Reload the configuration
-        Rails::Initializer.run(:process, $config)
         ActionController::Routing::Routes.reload!        
         return true
       end
@@ -184,7 +183,6 @@ class Feature < ActiveRecord::Base
       self.activated = false
       if self.save
         # Reload the configuration
-        Rails::Initializer.run(:process, $config)
         ActionController::Routing::Routes.reload!
         return true
       end
@@ -382,7 +380,7 @@ class Feature < ActiveRecord::Base
       File.unlink(File.join(options[:directory], 'list_archive.txt'))
       # Reload all the environnement configuration (don't modify !)
       # $config is set in environment.rb
-      Rails::Initializer.run(:process, $config)
+      load File.join(RAILS_ROOT, 'config', 'environment.rb')
     rescue Exception => exc
       puts "ERROR: " + exc
       return false

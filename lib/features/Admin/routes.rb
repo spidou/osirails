@@ -1,5 +1,4 @@
 ActionController::Routing::Routes.add_routes do |map|
-  puts "-------ADMIN ROUTES SPE"
   # begin | To create the url architecture "/permissions/*"
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'
