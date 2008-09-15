@@ -1,5 +1,11 @@
-  <h3>Uploader un document</h3>
-  <% fields_for("customer[document]" , document_, :html => { :multipart => true}) do |d| %>
+<div id='link_add_remove_document_<%= cpt%>'>
+  <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner_type => owner_type})%>
+</div>
+<div id='<%= "new_document#{cpt}"%>'>
+  <% owner = get_owner(owner_type, owner_id) %>
+  <% document_ = Document.new(:owner => owner)%>
+    
+  <% fields_for("customer[documents]" , document_, :index => cpt,  :html => { :multipart => true}) do |d| %>
     
     <p>
       <%= d.label :name, "Nom:"%>
@@ -12,16 +18,14 @@
     </p>
   
     <p>
-      <%= d.label :file_type_id, "Type de fichier:"%>
-      
+      <%= d.label :file_type_id, "Type de fichier:"%>      
       <select id='document_file_type_id' name='document[file_type_id]'> 
         <% FileType.find_all_by_model_owner(owner.class.name).each do |a| %>
           <%b = a%>
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
           <%= a.name + "(" + (t.split(",").size > 2 ? t.split(",")[0..1].join(",").concat("...") : t) +")" %> </option>
         <% end %>
-      </select>
-  
+      </select>  
     </p> 
     
     <p>
@@ -31,10 +35,12 @@
     
     <p>
       <%= label :file, "Fichier:"%>
-      <%= d.file_field 'upload'%>
+      <%= d.file_field 'datafile'%>
     </p>
-  
-        <%= d.submit "Uploader"%>
+    
+    <p>
+      <%= d.hidden_field(:valid, :value => 'true') %>
+    </p>
 
   <%end%>
 
@@ -42,3 +48,4 @@
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
       :with => "'file_type_id=' +value"%>
+</div>

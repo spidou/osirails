@@ -5,7 +5,7 @@
   
   <% unless new_document_number_value > 0 %>
     <div id="link_add_remove_document_1">
-      <%= link_to_remote("(ajouter)", :url => {:controller => "documents",:action => "add_document", :cpt => 1}) %>
+      <%= link_to_remote("(ajouter)", :url => {:controller => "documents",:action => "add_document", :cpt => 1, :owner_type => owner_type, :owner_id => owner_id}) %>
     </div> 
   <% end %>
   
