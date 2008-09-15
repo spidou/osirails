@@ -49,4 +49,3 @@ class String
     return formated
   end  
 end
-

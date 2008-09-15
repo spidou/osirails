@@ -169,7 +169,9 @@ class Feature < ActiveRecord::Base
   def enable
     if able_to_activate?
       self.activated = true
-      if self.save 
+      if self.save
+        # Reload the configuration
+        Rails::Initializer.run(:process, $config)
         return true
       end
     end
@@ -180,6 +182,9 @@ class Feature < ActiveRecord::Base
     if able_to_deactivate?
       self.activated = false
       if self.save
+        # Reload the configuration
+        ActionController::Routing::Routes.reload!
+        Rails::Initializer.run(:process, $config)
         return true
       end
     end
