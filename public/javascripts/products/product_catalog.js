@@ -137,14 +137,14 @@ function refreshProductsList(select, id, value) {
                 select_list += select.options[i].value;
             }
         }
+        url = '/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/'
     }
     if (value == 1) {
         select_list = selectedValue(select);
-        select_ref_list = id;
-        
+        url = '/product_references/'+select_list+'/products/'
     }
     if (select_list != "" || select_ref_list != ""){
-        new Ajax.Request('/product_reference_categories/'+select_list+'/product_references/'+select_ref_list+'/products/',
+        new Ajax.Request(url,
             {
                 method: 'get',
                 onSuccess: function(transport){

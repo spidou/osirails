@@ -66,7 +66,9 @@ ActionController::Routing::Routes.draw do |map|
   ### PRODUCTS
   map.resources :products
   map.resources :produts_catalog
-  map.resources :product_references
+  map.resources :product_references do |product_reference|
+    product_reference.resources :products
+  end
   map.resources :product_reference_categories do |product_reference_category|
     product_reference_category.resources :product_reference_categories
     product_reference_category.resources :product_references do |product_reference|
@@ -99,6 +101,12 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :inventories
   map.resources :commodities_inventories
   ### END LOGISTICS
+  
+  ### MEMORANDUMS
+  map.resources :sended_memorandums
+  map.resources :received_memorandums
+  map.connect 'memorandums', :controller => 'received_memorandums' # default page for memorandum
+  ### END MEMORANDUMS
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
