@@ -173,27 +173,25 @@ class CustomersController < ApplicationController
           end
         end
       end
-      
-      
+     
       if Document.can_add?(current_user)
-        document_params_index = 0 
         if params[:new_document_number]["value"].to_i > 0
-          @document_objects = []
           documents = params[:customer][:documents].dup
-          params[:new_document_number]["value"].to_i.times do |i|
-            unless documents["#{i+1}"][:valid] == "false"
-              documents["#{i+1}"][:owner] = @customer
-              @document_objects << Document.new(documents["#{i+1}"])
-              params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"]
-            end
-          end
-          params[:new_document_number]["value"]  = @document_objects.size
-          ## Test if all documents enable are valid
-          @document_objects.size.times do |i|
-            @error = true unless @document_objects[i].valid?
-          end
-        end   
+          @document_objects = Document.create_all(documents, @customer)
+        end
+        ## Reaffect document number
+        params[:new_document_number]["value"]  = @document_objects.size
+        document_params_index = 0
+        params[:new_document_number]["value"].to_i.times do |i|
+          params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
+        end
+#        raise params[:customer][:documents].to_s
+        ## Test if all documents enable are valid
+        @document_objects.size.times do |i|
+          @error = true unless @document_objects[i].valid?
+        end
       end
+      
       
       
       unless @error
@@ -226,6 +224,7 @@ class CustomersController < ApplicationController
         @new_establishment_number = params[:new_establishment_number]["value"]
         @establishments = @customer.establishments
         @new_contact_number = params[:new_contact_number]["value"]
+        @new_document_number = params[:new_contact_number]["value"]
         @contacts = @customer.contacts
         @documents =@customer.documents
         render :action => 'edit'
