@@ -179,20 +179,19 @@ class CustomersController < ApplicationController
           documents = params[:customer][:documents].dup
           @document_objects = Document.create_all(documents, @customer)
         end
-        ## Reaffect document number
-        params[:new_document_number]["value"]  = @document_objects.size
         document_params_index = 0
         params[:new_document_number]["value"].to_i.times do |i|
           params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
         end
-#        raise params[:customer][:documents].to_s
         ## Test if all documents enable are valid
-        @document_objects.size.times do |i|
-          @error = true unless @document_objects[i].valid?
+        unless @document_objects.nil?
+          @document_objects.size.times do |i|
+            @error = true unless @document_objects[i].valid?
+          end
+          ## Reaffect document number
+        params[:new_document_number]["value"]  = @document_objects.size
         end
-      end
-      
-      
+      end     
       
       unless @error
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
