@@ -118,7 +118,6 @@ class Document < ActiveRecord::Base
           
           document.delete("upload")
           self.document_versions << @document_version
-          puts self.tag_list
           @document_version.create_thumbnails(self.id)
           super(document)
           return true
@@ -161,10 +160,6 @@ class Document < ActiveRecord::Base
                 #FIXME Verify if it's necessary
                 self.tag_list.uniq!
               end
-            
-              ## Create thumbnails
-              #FIXME Find why create_thumbnails don't work
-              self.create_thumbnails
               return true              
             else
               self.destroy
