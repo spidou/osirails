@@ -99,6 +99,10 @@ class Document < ActiveRecord::Base
     end
   end
   
+  def self.create_all(documents)
+    
+  end
+  
   ## Override update
   def update_attributes(document = nil)
     unless document.nil?
