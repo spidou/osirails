@@ -171,8 +171,7 @@ class Feature < ActiveRecord::Base
       self.activated = true
       if self.save
         # Reload the configuration
-        ActionController::Routing::Routes.reload!
-        load File.join(RAILS_ROOT, 'config', 'environment.rb')        
+        load File.join(RAILS_ROOT, 'config', 'environment.rb')
         return true
       end
     end
@@ -184,7 +183,6 @@ class Feature < ActiveRecord::Base
       self.activated = false
       if self.save
         # Reload the configuration
-        ActionController::Routing::Routes.reload!
         load File.join(RAILS_ROOT, 'config', 'environment.rb')
         return true
       end

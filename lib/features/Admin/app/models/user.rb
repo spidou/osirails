@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
   # Relationships
   has_and_belongs_to_many :roles
   belongs_to :employee
-  has_one :calendar
   
   # Validates
   validates_each :password do |record, attr, value|

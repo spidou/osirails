@@ -16,7 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   ### ROOT
   map.root :controller => "account"
   ### END ROOT
-  
+
   map.login 'login', :controller => 'account'
   map.logout 'logout', :controller => 'account',  :action => 'logout'
   
@@ -80,7 +80,6 @@ features_path.each do |p|
       puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     end
     route_path = File.join(p, f, 'routes.rb')
-    puts "--------" + route_path
     load route_path if File.exist?(route_path)
   end
 end
