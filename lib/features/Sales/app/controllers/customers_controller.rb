@@ -200,6 +200,7 @@ class CustomersController < ApplicationController
       end     
       
       unless @error
+        
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         if params[:new_document_number]["value"].to_i > 0
           @document_objects.each do |document|
