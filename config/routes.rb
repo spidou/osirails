@@ -75,13 +75,12 @@ features_path.each do |p|
     next unless f.grep(/\./).empty?
     begin
     feature = Feature.find_by_name(f)
-    if feature
-      next unless feature.activated
-    end
+    (next unless feature.activated) if feature
     rescue Exception => e
       puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     end
     route_path = File.join(p, f, 'routes.rb')
+    puts "--------" + route_path
     load route_path if File.exist?(route_path)
   end
 end
