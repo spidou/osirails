@@ -34,7 +34,7 @@
     </p>
       <%= save_lines(attribute)%>
     <p>
-      <%= "<span id='#{ attribute }_add_link'>" + link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :num => num, :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute } ) + "</span>" %>
+      <%= "<span id='#{ attribute }_add_link'>" + link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute } ) + "</span>" %>
     </p>  
   <%end%> 
 </div>
