@@ -10,7 +10,9 @@
         <%= select(attribute + '[numbers][' + number_id.to_s + ']',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
         <%= check_box_tag(attribute + '[numbers][' + number_id.to_s + '][visible]',true,number.visible)%>
         <%="&nbsp;Visible par tous &nbsp;"%>
-        <%= link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:action=>'remove_line', :rem => number_id, :deleted_id => number[:id] },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?')%>
+        <%= link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => number_id, :deleted_id => number[:id] },
+        # :href=>(url_for :action=>'remove_line'),
+        :confirm => 'Etes vous sur?')%>
         
       </p>
       <%else%>
@@ -19,7 +21,7 @@
       <%number_id+=1%>
     <%end%>  
     <p>
-      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:action=>"add_line", :opt => params[attribute].nil? ? @numbers.size : params[attribute]['numbers'].size, :attribute => attribute   },:href=>(url_for :action=>"add_line") )%></span>
+      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? @numbers.size : params[attribute]['numbers'].size, :attribute => attribute   } )%></span>
     </p>
   <%else%>
     <p>
@@ -32,7 +34,7 @@
     </p>
       <%= save_lines(attribute)%>
     <p>
-      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:action=>"add_line", :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute },:href=>(url_for :action=>"add_line") )%></span>
+      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute } )%></span>
     </p>  
   <%end%> 
 </div>
