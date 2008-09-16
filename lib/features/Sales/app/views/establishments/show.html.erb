@@ -42,7 +42,7 @@
           <p>
             <%= contact.first_name + " " + contact.last_name%>
             <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-                <%= link_to "Plus d'infos", customer_establishment_contact_path(@customer, @establishment, contact, :owner_type => "Establishment") %>
+                <%= link_to "Plus d'infos", customer_establishment_contact_path(@customer, @establishment, contact, :owner_type => "Customer/Establishment") %>
             <% end %>
             <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
                 <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>

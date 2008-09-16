@@ -1,13 +1,13 @@
 <h1>Modifier un Contact</h1>
 <div class="frame">
-  <% form_for([@owner, @contact],:url => {:action => "update", :owner => @owner, :owner_type => @owner_type})  do |contact| %>
+  <% form_for([@owner, @contact],:url => {:owner_type => @owner_type})  do |contact| %>
       <h2> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></h2>
         <%= contact.error_messages%>
 
         <%= render :partial => 'contact', :locals => {:contact => contact, :contact_type => @contact_type} %>
         
           <h2>Numéros de t&eacute;l&eacute;phone</h2>
-          <%= render :partial => '/employees/numbers', :locals => {:attribute=> 'contact'}%>
+          <%# render :partial => '/employees/numbers', :locals => {:attribute=> 'contact'}%>
 </div>
 <%= submit_tag 'Modifier' %>
 <%end%> 
