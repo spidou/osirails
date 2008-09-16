@@ -21,5 +21,5 @@
 
   <p>
     <%=label :contact, "Type de contact"%>
-    <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", contact_type]).collect {|a| [ a.name, a.id]})%>
+    <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", @owner.class.name.downcase]).collect {|a| [ a.name, a.name]})%>
   </p>

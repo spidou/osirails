@@ -1,6 +1,7 @@
 class Menu < ActiveRecord::Base
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
+  belongs_to :feature
   has_many :menu_permissions, :dependent => :destroy
   has_one :content
 

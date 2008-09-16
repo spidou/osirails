@@ -1,7 +1,7 @@
 class Contact < ActiveRecord::Base
   include Permissible
   
-  has_many :numbers
+  has_many :numbers, :as => :has_number
   validates_presence_of :first_name
   validates_presence_of :last_name
   belongs_to :contact_type
@@ -20,7 +20,6 @@ class Contact < ActiveRecord::Base
         contact.delete("id")
         contact.delete("selected")
         contact.delete("valid")
-        contact.delete("number")       
         return super(contact)
       else
         return Contact.find(contact[:id])

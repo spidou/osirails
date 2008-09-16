@@ -68,6 +68,8 @@
         <!-- Use to know if user selected a value proposed by auto-complete-->
         <%= contact.hidden_field(:selected, 'value' => '')%>
     </p>
+
+    <%= render :partial => '/employees/numbers', :locals => {:attribute=> "customer[contacts][#{cpt}]"}%>
   <%end%>
 
     <% # Affectation of variables when an error occur%>

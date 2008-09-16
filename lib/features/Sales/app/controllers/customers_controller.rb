@@ -42,7 +42,8 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.xml
   def create
-    if Customer.can_add?(current_user) 
+    if Customer.can_add?(current_user)
+      
       activity_sector_name = params[:customer].delete("activity_sector")
       activity_sector_name[:name].capitalize!
     
@@ -140,7 +141,12 @@ class CustomersController < ApplicationController
           contacts = params[:customer][:contacts].dup
           params[:new_contact_number]["value"].to_i.times do |i|
             unless contacts["#{i+1}"][:valid] == 'false'
-              @contact_objects << Contact.new(contacts["#{i+1}"])
+              numbers = contacts["#{i+1}"].delete("numbers")
+              @contact_objects << Contact.new(contacts["#{i+1}"])              
+              numbers.each_value do |number|
+                number['visible'] = false if number['visible'].nil?
+                @contact_objects.last.numbers << Number.new(number) unless number.blank?
+              end
               params[:customer][:contacts]["#{contact_params_index += 1}"] = params[:customer][:contacts]["#{i + 1}"]
             end
           end
@@ -189,7 +195,7 @@ class CustomersController < ApplicationController
             @error = true unless @document_objects[i].valid?
           end
           ## Reaffect document number
-        params[:new_document_number]["value"]  = @document_objects.size
+          params[:new_document_number]["value"]  = @document_objects.size
         end
       end     
       

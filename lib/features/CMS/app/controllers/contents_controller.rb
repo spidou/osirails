@@ -1,33 +1,42 @@
 class ContentsController < ApplicationController
   # GET /contents
   def index
-    @contents = Content.find(:all)
+    if Contents.can_list?(current_user)
+      @contents = Content.find(:all)
+    else
+      error_access_page(403)
+    end
   end
   
   # GET /contents/1
   def show
-    @content = Content.find(params[:id])
-    @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
-    @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
-    @contributors_full_names = []
-    @contributors.each {|contributor| @contributors_full_names << (contributor.employee.nil? ? contributor.username : contributor.employee.fullname)}
-    @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
+    if Contents.can_view?(current_user)
+      @content = Content.find(params[:id])
+      @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
+      @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
+      @contributors_full_names = []
+      @contributors.each {|contributor| @contributors_full_names << (contributor.employee.nil? ? contributor.username : contributor.employee.fullname)}
+      @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
+    else
+      error_access_page(403)
+    end
   end
   
   # GET /contents/new
   def new
-    @content = Content.new
-    @menu = Menu.new
-    # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("---")
-  end
-  
-  def preview
-    #TODO Make preview method.
+    if Customer.can_add?(current_user)
+      @content = Content.new
+      @menu = Menu.new
+      # get_structured_menus permit to make a indent for menu's list
+      @menus = Menu.get_structured_menus("---")
+    else
+      error_access_page(403)
+    end
   end
   
   # POST /contents
   def create
+    if Customer.can_add?(current_user)
     @menu = Menu.new(params[:menu])
     @menus = Menu.get_structured_menus("---")
     params[:content][:author_id] = current_user.id
@@ -44,6 +53,9 @@ class ContentsController < ApplicationController
       end
     else
       render :action => 'new'
+    end
+    else
+      error_access_page(403)
     end
   end
   

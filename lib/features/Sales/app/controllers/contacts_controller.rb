@@ -18,6 +18,7 @@ class ContactsController < ApplicationController
     if Contact.can_edit?(current_user)
       @contact = Contact.find(params[:id])
       @owner_type  ||= params[:owner_type]
+      @numbers = @contact.numbers   
 
       @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
     else
@@ -29,13 +30,31 @@ class ContactsController < ApplicationController
     if Contact.can_edit?(current_user)
       @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
       @contact = Contact.find(params[:id])
+      @numbers_reloaded||= nil
+      @numbers_reloaded.nil? ? @numbers = @contact.numbers : @numbers = @numbers_reloaded
+      
       if params[:owner_type]  == "Customer"
-        @owner =Customer.find(params[:owner])
+        @owner =Customer.find(params["#{params[:owner_type].downcase}_id"])
       elsif params[:owner_type]  == "Establishment"
         @owner =Establishment.find(params[:owner])
       elsif params[:owner_type]  == "Supplier"
         @owner =Supplier.find(params[:owner])
       end
+      
+      # put numbers another place for a separate creation
+      params[:numbers] = params[:contact]['numbers']
+      params[:contact].delete('numbers')
+      
+      # add or update numbers who have been send to the controller
+      params[:numbers].each_key do |i|
+        if @contact.numbers[i.to_i].nil?
+          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?
+          @contact.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
+        else
+          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?  
+          @contact.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
+        end
+      end 
     
       contact = params[:contact]
       contact.delete("numbers")
@@ -44,17 +63,33 @@ class ContactsController < ApplicationController
       unless @contact.update_attributes(contact)
         @error = true
       end
-    
-      unless @error
-        params[:contact]['numbers'] = params[:numbers]
-        flash[:error] = "Une erreur est survenu lors de la modification du contact"
-        render :action => "edit"
-      else
-        params[:numbers].each do |number|
-          @contact.numbers << Number.new(number[1]) unless number[1].nil? or number[1].blank?
+
+      if @error
+        @numbers.each_with_index do |number,index|
+          unless params[:deleted_numbers].nil?
+            params[:deleted_numbers].each_value do |j|
+               @numbers[index]['number']= "deleted" if @numbers[index]['id'].to_s == j.to_s  
+            end
+          end  
         end
+        
+        @numbers_reloaded = @numbers
+        params[:contact]['numbers'] = params[:numbers]
+        
+        flash[:error] = "Une erreur est survenu lors de la modification du contact"
+        render :controller => [@owner, @contact], :action => "edit"
+      else
+        # destroy the numbers that have been deleted in the update view
+        unless  params[:deleted_numbers].nil?
+          params[:deleted_numbers].each_value do |i|
+            @contact.numbers.each_index do |j|
+              @contact.numbers[j].destroy if  @contact.numbers[j]['id'].to_s == i.to_s
+            end
+          end
+        end
+        
         flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
-        redirect_to :action => "show"
+        redirect_to(eval("#{@owner.class.name.downcase}_contact_path(@owner, @contact, :owner_type => '#{@owner.class.name}')"))
       end
     else
       error_access_page(403)

@@ -134,37 +134,37 @@ def init(yaml, config, path)
       
       # Unless menu already exist
       unless menu_ = Menu.find_by_name(menu_array[:name])             
-        m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id)
-        unless menu_array[:position].nil?
-          m.insert_at(menu_array[:position])
-          m.save
+        unless (m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id, :feature_id => feature.id))
+          puts "Feature #{name} wants to instanciate the menu #{m.name}, that is impossible. Please change order of feature loading in environment.rb file"
+        else
+          unless menu_array[:position].nil?
+            m.insert_at(menu_array[:position])
+            m.save
+          end
         end
       else
         
-      # This block test if a menu isn't define with two different parent in many config file
-      $menu_table.each do |menu_test|
-        if menu_test[:name] == menu_array[:name]
-          if (!menu_test[:position].nil? and !menu_array[:position].nil?) and (menu_test[:position] != menu_array[:position])
-            puts " A Position conflict occured with menu '#{menu_array[:name]}'"
-          end
-          if menu_test[:parent] != menu_array[:parent]
-            raise("Double Declaration menu : a parent conflict occured with menu '#{menu_array[:name]}' in file '#{path}/config.yml'")
+        # This block test if a menu isn't define with two different parent in many config file
+        $menu_table.each do |menu_test|
+          if menu_test[:name] == menu_array[:name]
+            if (!menu_test[:position].nil? and !menu_array[:position].nil?) and (menu_test[:position] != menu_array[:position])
+              puts "A Position conflict occured with menu '#{menu_array[:name]}'"
+            end
+            if menu_test[:parent] != menu_array[:parent]
+              raise("Double Declaration menu : a parent conflict occured with menu '#{menu_array[:name]}' in file '#{path}/config.yml'")
+            end
           end
         end
-      end
 
-      # If menu option is not present in database
-      if !menu_array[:title].nil? and menu_.title.nil?
-        menu_.title = menu_array[:title]
-        menu_.insert_at(menu_array[:position]) unless menu_array[:position].nil?
-      end
-      menu_.description = menu_array[:description] if !menu_array[:description].nil? and menu_.description.nil?
+        # If menu option is not present in database
+        if !menu_array[:title].nil? and menu_.title.nil?
+          menu_.title = menu_array[:title]
+          menu_.insert_at(menu_array[:position]) unless menu_array[:position].nil?
+        end
+        menu_.description = menu_array[:description] if !menu_array[:description].nil? and menu_.description.nil?
 
-      menu_.save
+        menu_.save
       end
-    end
-
-    Menu.find(:all, :conditions => ['parent_id = ?', 2]).each do |test|
     end
 
     # This method insert into Database  all features options that wasn't present
