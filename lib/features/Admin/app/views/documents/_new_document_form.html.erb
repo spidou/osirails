@@ -17,7 +17,7 @@
      <% document_ = Document.new(:owner => owner_type.constantize.new())%>
    <% end %>
     
-  <% fields_for("#{owner_type.downcase}[documents]" , document_, :index => cpt,  :html => { :multipart => true}) do |d| %>
+  <% fields_for("#{owner_type.tableize.singularize}[documents]" , document_, :index => cpt,  :html => { :multipart => true}) do |d| %>
     
     <p>
       <%= d.label :name, "Nom:"%>
