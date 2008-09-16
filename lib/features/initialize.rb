@@ -1,5 +1,8 @@
-def init(yaml, config, path)
+def init(config, path)
   begin
+    require 'yaml'
+    yaml = YAML.load(File.open(path + '/config.yml'))
+    
     # These variables store the feature's configuration from his config.yml file 
     name = yaml['name']
     version = yaml['version']
@@ -24,6 +27,10 @@ def init(yaml, config, path)
     config.controller_paths << model_path
     ActionController::Base.append_view_path(File.join(path, 'app', 'views'))
     $LOAD_PATH << File.join(path, 'app', 'helpers')
+    
+    # Load overrides file
+    override_path = File.join(directory, 'overrides.rb')
+    require override_path if File.exist?(override_path)
     
     # This array store all menus in order than they will be displayed
     $menu_table ||= []
