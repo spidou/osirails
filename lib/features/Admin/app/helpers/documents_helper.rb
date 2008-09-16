@@ -1,5 +1,5 @@
 module DocumentsHelper
-  def get_new_document_form(params, cpt,owner, error)      
+  def get_new_document_form(params, cpt,owner_type, owner_id, error)      
       render :partial => "documents/new_document_form", :locals => {:cpt => cpt, :owner_type => owner_type, 
         :owner_id => owner_id, :params => params, :error => error} 
   end
