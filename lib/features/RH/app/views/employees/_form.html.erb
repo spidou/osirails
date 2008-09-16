@@ -1,5 +1,5 @@
 <br/>
-<% form_for(@employee) do |f| %>
+<% form_for(@employee, :html => {:multipart => true}) do |f| %>
   <%= f.error_messages %> 
   <h2>Fiche d'identité</h2>
   <p>
@@ -132,7 +132,7 @@
         <% for document in @documents %>
           <p>        
             <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
-            <%= link_to document.name, customer_document_path(@employee, document) %>
+            <%= link_to document.name, employee_document_path(@employee, document) %>
             <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
               <%= link_download_last_version(document) %>
             <% end %>

@@ -84,8 +84,8 @@ module EmployeesHelper
   ##################################################################
   ########## NUMBERS METHODS #######################################
   
-  def display_p_balise(i)
-    "<p id='number_" + i.to_s + "'>"
+  def display_p_balise(i,owner)
+    "<p id='#{ owner }_number_" + i.to_s + "'>"
   end
   
   def display_number0(owner)
@@ -110,8 +110,8 @@ module EmployeesHelper
   
    # Method to generate text_field for each number add
   def add_number_line(owner)
-    name = owner + "[numbers][" + params[:opt] + "]"
-    html =  "<p id='number_" + params[:opt] + "'>" 
+    name = "#{ owner }[numbers][#{ params[:opt] }]"
+    html =  "<p id='#{ owner }_number_#{ params[:opt] }'>" 
     html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected =>  8 ) + "\n"
     html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
     html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
@@ -123,7 +123,7 @@ module EmployeesHelper
   
   # Method to generate collection_select for each number add
   def add_collection_select(owner)
-    name = owner + "[numbers][" + params[:opt] + "]"
+    name = "#{ owner }[numbers][#{ params[:opt] }]"
     return  collection_select( name, :number_type_id, NumberType.find(:all), :id, :name) 
   end
   
@@ -135,7 +135,7 @@ module EmployeesHelper
   # Method to generate remove_link for each adding or deleting
   def remove_link_to(owner)
     params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
-    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:controller => "employees",:action=>'remove_line', :rem => rem.to_i},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
+    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:controller => "employees",:action=>'remove_line', :rem => rem.to_i, :attribute => owner},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
   end
   
   # Method to regenerate textfield select and collection_for each number when there is a validation error
@@ -144,15 +144,15 @@ module EmployeesHelper
     html = ""
     (1..params[owner]['numbers'].size + 1).each do |f|
       unless params[owner]['numbers'][f.to_s].nil?
-        name =  owner + "[numbers][" + f.to_s + "]"
-        html += "<p id='number_" + f.to_s + "'>"
+        name =  "#{ owner }[numbers][#{ f.to_s }]"
+        html += "<p id='#{ owner }_number_#{ f.to_s }'>"
         html += select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
         html += text_field_tag( name+"[number]", params[owner]['numbers'][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
         html += select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
         html += check_box_tag( name + "[visible]", true, params[owner]['numbers'][f.to_s]['visible']) + "\n"
         html += "&nbsp;Visible par tous \n" 
         html += "&nbsp; \n"
-        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => f.to_s  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
+        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => f.to_s, :attribute => owner  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
         html += "</p>"
       end
     end  

@@ -1,40 +1,40 @@
-<div id="add_lines">
+<div id='<%= "add_lines_#{ attribute }"%>' >
   <% unless @numbers.nil?%>
     <%number_id=0%>
     <% for number in @numbers %>
         <%unless number[:number]=="deleted"%>
         <!-- le <p> est ouvers à la ligne ci-dessous avec un id -->
-        <%= display_p_balise(number_id) %>       
-        <%= select(attribute + '[numbers][' + number_id.to_s + ']',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
-        <%= text_field_tag( attribute + '[numbers][' + number_id.to_s + '][number]', number[:number],:size => 7, :maxlength => 9, :class=>"disable-stylesheet-width" )%>
-        <%= select(attribute + '[numbers][' + number_id.to_s + ']',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
-        <%= check_box_tag(attribute + '[numbers][' + number_id.to_s + '][visible]',true,number.visible)%>
+        <%= display_p_balise(number_id,attribute) %>       
+        <%= select("#{ attribute }[numbers][#{ number_id.to_s }]",:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => number[:indicative_id])%>
+        <%= text_field_tag("#{ attribute }[numbers][#{ number_id.to_s }][number]", number[:number],:size => 7, :maxlength => 9, :class=>"disable-stylesheet-width" )%>
+        <%= select("#{attribute }[numbers][#{ number_id.to_s }]",:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => number[:number_type_id])%>
+        <%= check_box_tag("#{attribute }[numbers][#{ number_id.to_s }][visible]",true,number.visible)%>
         <%="&nbsp;Visible par tous &nbsp;"%>
-        <%= link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => number_id, :deleted_id => number[:id] },
+        <%= link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => number_id, :deleted_id => number[:id], :attribute => attribute },
         # :href=>(url_for :action=>'remove_line'),
         :confirm => 'Etes vous sur?')%>
         
       </p>
       <%else%>
-        <%= hidden_field 'deleted_numbers[' + number_id.to_s + ']',number[:id].to_s%>
+        <%= hidden_field "deleted_numbers[#{ number_id.to_s }]",number[:id].to_s%>
       <%end%>
       <%number_id+=1%>
     <%end%>  
     <p>
-      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? @numbers.size : params[attribute]['numbers'].size, :attribute => attribute   } )%></span>
+      <%= "<span id='#{ attribute }_add_link'>" + link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? @numbers.size : params[attribute]['numbers'].size, :attribute => attribute   } ) + "</span>" %>
     </p>
   <%else%>
     <p>
-      <%= select(attribute + '[numbers][0]',:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[attribute].nil? ? 8 : params[attribute]['numbers']['0']['indicative_id'].to_i)%>
+      <%= select("#{ attribute }[numbers][0]",:indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[attribute].nil? ? 8 : params[attribute]['numbers']['0']['indicative_id'].to_i)%>
       <%= display_number0(attribute) %>
-      <%= select(attribute + '[numbers][0]',:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[attribute].nil? ? 1 : params[attribute]['numbers']['0']['number_type_id'].to_i)%>
+      <%= select("#{ attribute }[numbers][0]",:number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[attribute].nil? ? 1 : params[attribute]['numbers']['0']['number_type_id'].to_i)%>
       <%= display_check_box0(attribute)%>
       
       
     </p>
       <%= save_lines(attribute)%>
     <p>
-      <span id='add_link'><%= link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute } )%></span>
+      <%= "<span id='#{ attribute }_add_link'>" + link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>"add_line", :num => num, :opt => params[attribute].nil? ? 1 : params[attribute]['numbers'].size , :attribute => attribute } ) + "</span>" %>
     </p>  
   <%end%> 
 </div>
