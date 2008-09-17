@@ -1,0 +1,6 @@
+name: sales
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+menus:
