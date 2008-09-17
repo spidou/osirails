@@ -17,6 +17,7 @@ class Menu < ActiveRecord::Base
   
   # Named scopes
   named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
+  named_scope :activated, :order => "position", :include => [:feature], :conditions => { 'features.activated' => true}
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
@@ -82,49 +83,44 @@ class Menu < ActiveRecord::Base
     
   # This method test if it possible to move up the menu
   def can_move_up?
-    return false if self.position == 1
-    return true
+    if self.ancestors.size > 0
+      self.parent_menu.children.first.position != self.position
+    else
+      self.self_and_siblings.first.position != self.position
+    end
   end
     
   # This method test if it possible to move down  the menu
   def can_move_down?
-    first_parent = Menu.find_all_by_parent_id(nil)
-    parent = Menu.find_by_id(self.parent_id)
     if self.ancestors.size > 0
-      return false if parent.children.size == self.position
-      return true
+      self.parent_menu.children.last.position != self.position
+    else
+      self.self_and_siblings.last.position != self.position
     end
-    if self.ancestors.size <= 0
-      return false if first_parent.size == self.position
-      return true
-    end
-    return false
   end
     
   # This method return an array with all menus
   # Current_menu_id permit to hide menu in select menu parent
-  def Menu.get_structured_menus(indent, current_menu_id = nil)
-      menus = Menu.find_all_by_parent_id(nil, :order => 'position' )
-      parents = []
-      root = Menu.new
-      root.title = "  "
-      root.id =nil
-      parents = get_children(menus, current_menu_id, parents, indent)
+  def self.get_structured_menus(current_menu_id = nil)
+    menus = Menu.mains.activated
+    parents = []
+    root = Menu.new
+    root.title = "  "
+    root.id = nil
+    parents = get_children(menus, current_menu_id, parents)
     parents
   end
     
   private
     # This method insert in the parents the menus   
-    def Menu.get_children(menus,current_menu_id, parents,indent)
+    def self.get_children(menus, current_menu_id, parents)
       menus.each do |menu|
         unless menu.id == current_menu_id
-        menu.title = indent * menu.ancestors.size + menu.title if menu.title != nil
-        parents << menu
-
-        # If the menu has children, the get_children method is call.
-        if menu.children.size > 0
-          get_children(menu.children,current_menu_id, parents, indent)
-        end
+          parents << menu
+          # If the menu has children, the get_children method is call.
+          if menu.children.size > 0
+            get_children(menu.children, current_menu_id, parents)
+          end
         end
       end
       parents
