@@ -46,7 +46,7 @@ class Menu < ActiveRecord::Base
     menu.ancestors.size > 0 ? ( menu.ancestors.size == 1 ? menu.parent_menu : last_ancestor(menu.parent_menu) ) : menu
   end
   
-  def insert_at_position(position)  
+  def insert_at(position)  
     super(position_in_bounds(position))
   end
   
