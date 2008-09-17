@@ -55,10 +55,6 @@ menus:
             title: Types de document
             description: Gestion des permissions en fonction des types de documents
             position: 4
-          calendar_permissions:
-            title: Plannings
-            description: Gestion des permissions en fonction des plannings
-            position: 5
       society_configurations:
         title: Configuration de l'entreprise
         description: Gestion de la configuration de l'entreprise
