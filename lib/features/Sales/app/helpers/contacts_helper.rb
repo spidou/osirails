@@ -5,11 +5,18 @@ module ContactsHelper
   
   ## Return link to owner page
   def get_owner_link(owner_type)
-    eval "link_to 'Retour', #{owner_type.downcase}_path(@owner)"
+    link = ""
+    controller =owner_type.split("/")
+    controller.pop
+    controller.each {|c| link += (c.underscore + "_")}
+    eval "link_to 'Retour', #{link}path(@owner)"
   end
   
   def get_edit_link(owner_type)
-    eval "link_to 'Modifier', edit_#{owner_type.downcase}_contact_path(@owner, @contact, :owner_type => @owner_type)"
+    link = ""
+    controller =owner_type.split("/")
+    controller.each {|c| link += (c.underscore + "_")}
+    eval "link_to 'Modifier', edit_#{link}contact_path(@owner, @contact, :owner_type => @owner_type)"
   end
   
   def get_new_contact_form(params, cpt, error)

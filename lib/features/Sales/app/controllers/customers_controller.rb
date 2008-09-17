@@ -2,6 +2,7 @@ class CustomersController < ApplicationController
 
   helper :documents
   helper :contacts
+  helper :employees  
   
   # GET /customers
   # GET /customers.xml

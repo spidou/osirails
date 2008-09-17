@@ -7,7 +7,7 @@ class ContactsController < ApplicationController
   def show 
     if Contact.can_view?(current_user)
       @owner_type  = params[:owner_type]
-      @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+      @owner = @owner_type.split("/").last.constantize.find(params["#{@owner_type.split("/").last.downcase}_id"])
       @contact = Contact.find(params[:id])
     else
       error_access_page(403)
