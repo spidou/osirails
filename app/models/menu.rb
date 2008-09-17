@@ -46,13 +46,17 @@ class Menu < ActiveRecord::Base
     menu.ancestors.size > 0 ? ( menu.ancestors.size == 1 ? menu.parent_menu : last_ancestor(menu.parent_menu) ) : menu
   end
   
+  def insert_at_position(position)  
+    super(position_in_bounds(position))
+  end
+  
   # This method permit to change the parent of a item
   # new_parent : represent the new parent            
   def change_parent(new_parent_id,position = nil)
     if self.can_has_this_parent?(new_parent_id) and new_parent_id.to_s != self.parent_id.to_s
       self.remove_from_list
       self.parent_id = new_parent_id
-      position.nil? ? self.insert_at : self.insert_at(position_in_bounds(position))
+      position.nil? ? self.insert_at : self.insert_at(position)
       self.move_to_bottom if position.nil?
       self.save
     end
