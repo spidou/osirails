@@ -97,9 +97,9 @@ class Menu < ActiveRecord::Base
   # This method test if it possible to move down  the menu
   def can_move_down?
     if self.ancestors.size > 0
-      self.parent_menu.children.last.position != self.position
+      self.parent_menu.children.size > self.position
     else
-      self.self_and_siblings.last.position != self.position
+      self.self_and_siblings.size > self.position
     end
   end
     
@@ -142,7 +142,6 @@ class Menu < ActiveRecord::Base
       if position < 1 
         1
       elsif position > self.self_and_siblings.size
-        puts self.self_and_siblings.size
         self.self_and_siblings.size
       else
         position
