@@ -16,17 +16,6 @@ def init(config, path)
     # TODO Manage activation of a feature
     # return false unless Feature.find_by_name(name).activated
 
-    # Load every feature who depends this feature
-    unless dependencies.nil?
-      dependencies.each do |key, val|
-        feature_path = File.join(RAILS_ROOT, 'lib/features', key)
-        vendor_feature_path = File.join(RAILS_ROOT, 'vendor/features', key)
-        feature = Rails::Plugin.new (File.exist?(feature_path) ? feature_path : vendor_feature_path)
-        feature.load(Rails::Initializer.run)
-        Rails::Initializer.run.loaded_plugins << feature
-      end
-    end
-
     # Load every file in the app directory
     controller_path = File.join(path, 'app', 'controllers')
     $LOAD_PATH << controller_path
@@ -194,4 +183,5 @@ def init(config, path)
   rescue ActiveRecord::StatementInvalid => e
     puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   end
+  puts "feature #{name}"
 end
