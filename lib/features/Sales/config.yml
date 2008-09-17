@@ -4,3 +4,5 @@ dependencies:
 conflicts:
 business_objects:
 menus:
+  order:
+    title: Order
