@@ -1,5 +1,7 @@
 class Content < ActiveRecord::Base
   
+  include Permissible
+  
   # Serialize
   serialize :contributors
   
