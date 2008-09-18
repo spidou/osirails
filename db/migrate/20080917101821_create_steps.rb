@@ -3,7 +3,7 @@ class CreateSteps < ActiveRecord::Migration
     create_table :steps do |t|
       t.string :name
       t.string :title
-      t.string :parent_name
+      t.integer :parent_id
       t.string :description
       t.integer :position
       
