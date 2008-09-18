@@ -25,14 +25,24 @@ class Step < ActiveRecord::Base
   end
   
   ## Return all orders which have finish current step
-  def finished_orders
-    
+  def terminated_orders
+    step_index = Step.tree.index(self)
+    orders = []
+    Order.find(:all).each do |order|
+      orders << order if Step.tree.index(order.step) > step_index
+    end
+    orders
   end
   
   ## Return all orders which haven't start current step
   #FIXME FInd the good word to say 'unstarted'
   def unstarted_orders
-    
+    step_index = Step.tree.index(self)
+    orders = []
+    Order.find(:all).each do |order|
+      orders << order if Step.tree.index(order.step) < step_index
+    end
+    orders
   end
   
   ## Acts_as_list mthods
