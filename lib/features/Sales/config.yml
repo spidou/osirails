@@ -4,5 +4,8 @@ dependencies:
 conflicts:
 business_objects:
 menus:
-  order:
+  orders:
     title: Order
+    description: Gestion des dossiers de ventes
+    children:
+      
