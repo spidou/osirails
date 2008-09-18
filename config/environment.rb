@@ -33,6 +33,7 @@ Rails::Initializer.run do |config|
   
   # BEGIN #
   # Manage feature's dependences
+  require 'yaml'
   $plugins = config.plugins
   $all_features_path = Dir.glob("#{RAILS_ROOT}/**/features/*/")
   
