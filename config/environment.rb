@@ -48,7 +48,7 @@ Rails::Initializer.run do |config|
           load_features_dependences(key.to_s)
         end
       end
-      $plugins.insert($plugins.index(:all) or $plugins.last, f.to_sym)
+      $plugins.insert($plugins.index(:all) || $plugins.last, f.to_sym)
       break
     end
   end
