@@ -1,4 +1,4 @@
 class ChecklistResponse < ActiveRecord::Base
   # Relationships
-  belongs_to :order_step
+  belongs_to :orders_steps, :class_name => "OrdersSteps"
 end

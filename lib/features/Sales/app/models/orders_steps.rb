@@ -1,4 +1,4 @@
-class OrderStep < ActiveRecord::Base
+class OrdersSteps < ActiveRecord::Base
   # Relationships
   belongs_to :order
   belongs_to :step
