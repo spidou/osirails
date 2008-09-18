@@ -1,0 +1,3 @@
+class CommercialController < ApplicationController
+  
+end

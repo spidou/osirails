@@ -4,8 +4,21 @@ dependencies:
 conflicts:
 business_objects:
 menus:
-  orders:
-    title: Order
-    description: Gestion des dossiers de ventes
+  prospectives:
+    title: Prospect
     children:
-      
+      commercial:
+        title: Etude commercial
+        description: Phase d'étude commercial
+  sales:
+    title: Ventes
+    children:
+      invoicing:
+        title: Facturation
+        description: Phase de facturation
+      closed:
+        title: Cloturés
+        description: Dossiers de vente cloturés
+      archived:
+        title: Archivés
+        description: Dossiers de vente cloturés
