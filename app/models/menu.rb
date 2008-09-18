@@ -137,7 +137,7 @@ class Menu < ActiveRecord::Base
     end
       
   protected
-    # This position permit to return a valide position for a menu.
+    # This method permit to return a valide position for a menu.
     def position_in_bounds(position)
       if position < 1 
         1
