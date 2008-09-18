@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :Admin, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -48,12 +48,13 @@ Rails::Initializer.run do |config|
           load_features_dependences(key.to_s)
         end
       end
-      $plugins.insert($plugins.index(:all), f.to_sym)
+      $plugins.insert($plugins.index(:all) or $plugins.last, f.to_sym)
       break
     end
   end
   
   $all_features_path.each do |feature_path|
+    puts $plugins.inspect
     load_features_dependences(feature_path.split('/').last)
   end
   
