@@ -54,7 +54,6 @@ Rails::Initializer.run do |config|
   end
   
   $all_features_path.each do |feature_path|
-    puts $plugins.inspect
     load_features_dependences(feature_path.split('/').last)
   end
   
