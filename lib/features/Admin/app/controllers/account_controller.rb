@@ -16,7 +16,7 @@ class AccountController < ApplicationController
     # Anti-flood system
     session[:tentative] ||= 0
     if session[:tentative] >= 3
-      flash[:error] = "Trois tentatives de connexion detect&eacute;es, vueillez patienter quelques instants avant de r&eacute;essayer ..."
+      flash[:error] = "Trois tentatives de connexion detect&eacute;es, veuillez patienter quelques instants avant de r&eacute;essayer ..."
       if (session[:tentative_time] + 10.seconds) < Time.now
         session[:tentative] = 0 
       end

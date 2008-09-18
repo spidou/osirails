@@ -30,7 +30,35 @@ Rails::Initializer.run do |config|
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :Admin, :all]
-
+  
+  # BEGIN #
+  # Manage feature's dependences
+  $plugins = config.plugins
+  $all_features_path = Dir.glob("#{RAILS_ROOT}/**/features/*/")
+  
+  def load_features_dependences(f)
+    return if $plugins.include?(f.to_sym)
+    $all_features_path.each do |feature_path|
+      feature_name = feature_path.split('/').last
+      next unless feature_name == f
+      yaml = YAML.load(File.open(File.join(feature_path, 'config.yml')))
+      unless yaml['dependencies'].nil?
+        yaml['dependencies'].each do |key, val|
+          load_features_dependences(key.to_s)
+        end
+      end
+      $plugins.insert($plugins.index(:all), f.to_sym)
+      break
+    end
+  end
+  
+  $all_features_path.each do |feature_path|
+    load_features_dependences(feature_path.split('/').last)
+  end
+  
+  config.plugins = $plugins
+  # END #
+  
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
