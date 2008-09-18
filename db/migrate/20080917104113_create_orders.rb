@@ -10,6 +10,8 @@ class CreateOrders < ActiveRecord::Migration
       t.references :activity_sector
       t.references :order_type
       t.datetime :closed_date
+      t.datetime :previsional_start
+      t.datetime :previsional_delivery
       
       t.timestamps
     end
