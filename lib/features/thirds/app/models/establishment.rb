@@ -26,4 +26,9 @@ class Establishment  < ActiveRecord::Base
       super(establishment)
     end
   end
+  
+  ## Return full address's establishment
+  def full_addresss
+    [self.address.address1,(self.address.address2 unless self.address.address2.blank?), self.address.zip_code, self.address.city_name, self.address.country_name].join(" ")
+  end
 end

@@ -1,5 +1,6 @@
 class Third < ActiveRecord::Base
   
+  require 'permissible'
   include Permissible
 
   has_one :address, :as => :has_address
