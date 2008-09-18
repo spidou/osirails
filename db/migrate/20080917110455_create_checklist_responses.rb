@@ -1,8 +1,7 @@
 class CreateChecklistResponses < ActiveRecord::Migration
   def self.up
     create_table :checklist_responses do |t|
-      t.references :order
-      t.references :checklist
+      t.references :orders_steps
       t.string :answer
       
       t.timestamps
