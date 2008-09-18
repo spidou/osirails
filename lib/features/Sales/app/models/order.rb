@@ -2,16 +2,15 @@ class Order < ActiveRecord::Base
   # Relationships
   belongs_to :society_activity_sector
   belongs_to :order_type
+  belongs_to :customer
+  belongs_to :establishment
   has_one :commercial_order
   has_one :facturation_order
   has_many :orders_steps, :class_name => "OrdersSteps"
   
   validates_presence_of :order_type
-  
-  ## status 
-  # terminated
-  # in_progress
-  # unstarted
+  validates_presence_of :establishment
+  validates_presence_of :customer
   
   ## Create all orders_steps after create
   def after_create
