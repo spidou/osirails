@@ -4,27 +4,25 @@ class MenusController < ApplicationController
   
   # GET /menus
   def index
-    # get_structured_menus permit to make a indent for menu's list
-    #FIXME Manage CSS for indent
-   #  @menus = Menu.get_structured_menus("__")#("<span class='admin_menus_indent'/>")
+   @menus = Menu.mains.activated
   end
   
   # GET /menus/new
   def new
     @menu = Menu.new
     # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("----")
+    @menus = Menu.get_structured_menus
   end
   
   # POST /menus
   def create
     @menu = Menu.new(params[:menu])
-    # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("----")
     if @menu.save
       flash[:notice] = 'Le menu a &eacute;t&eacute; cr&eacute;&eacute; avec succ&egrave;s'
       redirect_to :action => 'index'
     else
+      # get_structured_menus permit to make a indent for menu's list
+      @menus = Menu.get_structured_menus
       render :action => 'new'
     end
   end
@@ -33,7 +31,7 @@ class MenusController < ApplicationController
   def edit
     @menu = Menu.find(params[:id])
     # get_structured_menus permit to make a indent for menu's list
-    @menus = Menu.get_structured_menus("---",@menu.id)
+    @menus = Menu.get_structured_menus(@menu.id)
   end
   
   # can_has_this_parent? => Permit to check if the new parent can has this parent
@@ -46,8 +44,8 @@ class MenusController < ApplicationController
     if @menu.update_attributes(params[:menu])
       redirect_to menus_path
     else
-      flash[:error] = "Une erreur est survenue lors de la modification du menu"
-      redirect_to :action => 'edit'
+      @menus = Menu.get_structured_menus(@menu.id)
+      render :action => 'edit'
     end
   end
   

@@ -4,8 +4,10 @@
 <% end %>
 
 <h1>Modifier un contenu</h1>
+
+<div class="frame presentation_medium">
 <%= display_reload_button %>
 <% form_for(@content) do |content| %>
-  <%= content.error_messages %>
   <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Modifier"} %>
 <% end %>
+</div>

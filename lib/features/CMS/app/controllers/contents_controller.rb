@@ -27,8 +27,7 @@ class ContentsController < ApplicationController
     if Content.can_add?(current_user)
       @content = Content.new
       @menu = Menu.new
-      # get_structured_menus permit to make a indent for menu's list
-      @menus = Menu.get_structured_menus("---")
+      @menus = Menu.get_structured_menus
     else
       error_access_page(403)
     end
@@ -38,20 +37,20 @@ class ContentsController < ApplicationController
   def create
     if Content.can_add?(current_user)
       @menu = Menu.new(params[:menu])
-      @menus = Menu.get_structured_menus("---")
       params[:content][:author_id] = current_user.id
-      @content = Content.new(params[:content]) # TODO Add author name with his session_id
-    
+      @content = Content.new(params[:content])
       if @menu.save
         @content.menu_id = @menu.id
         if @content.save
-          flash[:notice] = 'Votre page est créée avec succes'
+          flash[:notice] = 'Votre page est créée avec succès'
           redirect_to :action => 'index'
         else
           @menu.destroy
+          @menus = Menu.get_structured_menus
           render :action => 'new'
         end
       else
+        @menus = Menu.get_structured_menus
         render :action => 'new'
       end
     else
@@ -65,7 +64,7 @@ class ContentsController < ApplicationController
       if @content.nil?
         @content = Content.find(params[:id])    
         @menu = Menu.find(@content.menu_id)
-        @menus = Menu.get_structured_menus("---")
+        @menus = Menu.get_structured_menus
         $session_lock = @content.lock_version
       end
     end
@@ -80,7 +79,7 @@ class ContentsController < ApplicationController
     
       # get_structured_menus permit to make a indent for menu's list
       # TODO Remove the menu item in the structure
-      @menus = Menu.get_structured_menus("---")
+      @menus = Menu.get_structured_menus
     
       #    # Update content's menu
       @menu = Menu.find(@content.menu.id)
@@ -101,14 +100,14 @@ class ContentsController < ApplicationController
       puts params[:menu].keys
       unless @menu.update_attributes(params[:menu])
         @error = true
-        flash[:error] = "Un probl&egrave;me est survenu lors de la modification du menu du content"
+        flash[:error] = "Un probl&egrave;me est survenu lors de la modification du menu du contenu"
         @content.title = params[:content][:title]
         @content.description = params[:content][:description]
         @content.text = params[:content][:text]
       else
         unless @content.update_attributes(params[:content])
           @error = true
-          flash[:error] = "Un probl&egrave;me est survenu lors de la modification du content"
+          flash[:error] = "Un probl&egrave;me est survenu lors de la modification du contenu"
         else
           # This variable permit to make a save of content
           content_attributes  = @content.attributes

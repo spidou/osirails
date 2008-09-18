@@ -67,18 +67,4 @@ module FeaturesHelper
     end
   end
   
-  # Helper method to display the good Flash message
-  def display_success_flash
-     if flash[:notice]
-      "<div class=\"admin_features_activated-installed\">"+flash[:notice]+"</div>"
-     end
-  end
-  
-  # Helper method to display the good Flash message
-  def display_failure_flash
-     if flash[:error] 
-     "<div class=\"admin_features_non_activated-installed\">" +flash[:error]+"</div>"
-     end
-  end
-  
 end

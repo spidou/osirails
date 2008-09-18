@@ -9,6 +9,12 @@ menus:
   account:
     title: Compte utilisateur
     description: Gestion des connexions
+  documents:
+    title: Documents
+    description: Gestion des documents
+  downloads:
+    title: Downloads
+    description: Gestion des downloads
   admin:
     title: Administration
     description: Administration de l'Intranet
@@ -29,11 +35,11 @@ menus:
       password_policies:
         title: Sécurité
         description: Gestion des politiques de sécurité
-        position: 5
+        position: 4
       permissions:
         title: Permissions
         description: Gestion des permissions
-        position: 6
+        position: 5
         children:
           role_permissions:
             title: Rôles
@@ -54,7 +60,7 @@ menus:
       society_configurations:
         title: Configuration de l'entreprise
         description: Gestion de la configuration de l'entreprise
-        position: 7
+        position: 6
         children:
           society_identity_configuration:
             title: Paramètres globaux
@@ -71,13 +77,7 @@ menus:
       features:
         title: Modules
         description: Gestion des modules
-        position: 8
-      documents:
-        title: Documents
-        description: Gestion des documents
-      downloads:
-        title: Downloads
-        description: Gestion des downloads
+        position: 7
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  

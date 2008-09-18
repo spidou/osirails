@@ -37,7 +37,7 @@
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
           <%= a.name + "(" + (t.split(",").size > 2 ? t.split(",")[0..1].join(",").concat("...") : t) +")" %> </option>
         <% end %>
-      </select>  
+      </select>
     </p> 
     
     <p>

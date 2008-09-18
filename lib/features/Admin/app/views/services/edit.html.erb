@@ -20,7 +20,7 @@
 
     <p>
       <%= service.label :service_parent_id, "Service parent :" %>
-      <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
+      <%= service.collection_select_with_indentation(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --", :indentation => 15})%>
     </p>
   
     <h3>Horaires du service :</h3>
@@ -30,8 +30,8 @@
       <span class="date_days">
         <%=  javascript_tag "document.getElementById('periode1')"%>
         <%= day_select(0) %> au <%= day_select(1) %>
-      </span>&nbsp; 
-      <span id="shedule_text_field"class="alignment">
+      </span>&nbsp;
+      <span id="shedule_text_field" class="alignment">
         <b>Matinée :</b>
         <%=display_shedule_text_field('morning',1)%>
         &nbsp;
@@ -39,7 +39,7 @@
         <%=display_shedule_text_field('afternoon',5)%>
       </span>
       <span>
-        &nbsp;<a onclick="modify_schedule();">(↓)</a>
+        <a href="#" onclick="modify_schedule();">Ajouter</a>
       </span>
       
       </fieldset>

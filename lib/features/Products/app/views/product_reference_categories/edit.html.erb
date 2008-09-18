@@ -1,8 +1,7 @@
 <h1>Modifier <%= @category.name %></h1>
-<div class="frame">
+<div class="frame presentation_medium">
   <% form_for(@category) do |category| %>
       <%= category.error_messages %>
-      <%= render :partial => "form", :locals => {:category => category} %>
-      <%= category.submit "Modifier"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
+      <%= render :partial => "form", :locals => {:category => category, :submit_button_name => "Modifier"} %>
   <% end %>
 </div>

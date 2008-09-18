@@ -1,6 +1,5 @@
 class DocumentVersionsController < ApplicationController
   def preview_image
-    puts params[:last]
     unless params[:last] == 'true'
       @document_version = DocumentVersion.find(params[:id])
       @document = @document_version.document    

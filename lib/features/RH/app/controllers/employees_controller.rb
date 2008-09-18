@@ -7,7 +7,6 @@ class EmployeesController < ApplicationController
   # GET /employees.xml
   def index
     if Employee.can_list?(current_user)
-    puts params.inspect
       params['all_employees']||= false 
       params['all_employees'] ? @employees = Employee.find(:all) : @employees = Employee.active_employees 
     else

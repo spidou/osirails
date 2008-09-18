@@ -4,7 +4,9 @@
 <% end %>
 
 <h1>Nouveau contenu</h1>
+
+<div class="frame presentation_medium">
 <% form_for(@content) do |content| %>
-  <%= content.error_messages %>
   <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Ajouter"} %>
 <% end %>
+</div>

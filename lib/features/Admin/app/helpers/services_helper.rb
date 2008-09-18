@@ -1,30 +1,29 @@
 module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
-  def show_delete_button(service,can_delete)
-    "&nbsp;" + link_to("<img src=\"/images/delete_16x16.png\" title=\"Supprimer\" alt=\"Supprimer\"/>", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) if service.can_delete? and can_delete
+  def show_delete_button(service)
+    "&nbsp;" + link_to("<img src=\"/images/delete_16x16.png\" title=\"Supprimer\" alt=\"Supprimer\"/>", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' })
   end
   
   # This method permit to have a services on <ul> type.
-  def show_structured_services(can_edit, can_delete, can_view)
-    services = Service.find_all_by_service_parent_id
+  def show_structured_services(services)
     list = []
     list << "<div class='hierarchic'><ul class=\"parent\">"
-    list = get_children(services,list,can_edit, can_delete, can_view)
+    list = get_children_services(services,list)
     list << "</ul></div>"
     list 
   end
   
   # This method permit to make a tree for services
-  def get_children(services,list,can_edit, can_delete, can_view)
+  def get_children_services(services,list)
     services.each do |service|
-      delete_button = show_delete_button(service, can_delete)
-      show_button = link_to("<img src=\"/images/view_16x16.png\" title =\"D&eacute;tails\" alt=\"Détails\" />",service_path(service)) if can_view
-      edit_button ="&nbsp;" + link_to("<img src=\"/images/edit_16x16.png\" title =\"Modifier\" alt=\"Modifier\" />", { :action => "edit", :id => service } ) if can_edit
+      delete_button = show_delete_button(service)
+      show_button = link_to("<img src=\"/images/view_16x16.png\" title =\"D&eacute;tails\" alt=\"Détails\" />",service_path(service))
+      edit_button ="&nbsp;" + link_to("<img src=\"/images/edit_16x16.png\" title =\"Modifier\" alt=\"Modifier\" />", { :action => "edit", :id => service } )
       list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{show_button} #{edit_button}#{delete_button}</span></li>"
       if service.children.size > 0
         list << "<ul>"
-        get_children(service.children,list,can_edit, can_delete, can_view)
+        get_children_services(service.children,list)
         list << "</ul>"
       end
     end

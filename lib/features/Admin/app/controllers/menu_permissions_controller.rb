@@ -1,7 +1,7 @@
 class MenuPermissionsController < ApplicationController
 
   def index
-    @menu_permissions = Menu.get_structured_menus("☞ ")
+    @menu_permissions = Menu.get_structured_menus
   end
 
   def edit

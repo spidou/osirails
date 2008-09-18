@@ -11,7 +11,7 @@ def init(config, path)
     business_objects = yaml['business_objects']
     menus = yaml['menus']
     configurations = yaml['configurations']
-
+    
     # Manage the activation of a feature
     # TODO Manage activation of a feature
     # return false unless Feature.find_by_name(name).activated
@@ -142,7 +142,7 @@ def init(config, path)
       # Unless menu already exist
       unless menu_ = Menu.find_by_name(menu_array[:name])             
         unless (m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id, :feature_id => feature.id))
-          puts "Feature #{name} wants to instanciate the menu #{m.name}, that is impossible. Please change order of feature loading in environment.rb file"
+          puts "The feature #{name} wants to instanciate the menu #{m.name}, but it's impossible. Please change order of feature loading in environment.rb file by changing the 'config.plugins' array"
         else
           unless menu_array[:position].nil?
             m.insert_at(menu_array[:position])

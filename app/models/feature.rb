@@ -234,18 +234,19 @@ class Feature < ActiveRecord::Base
 
   # Method that return the success message in function of  the  method passed in argument
   def display_flash_notice(method) 
+    message = "Le module '#{self.name}' a &eacute;t&eacute; "
     case method
     when "enable"
-      message =  self.name + " est activé."    
+      message << "activ&eacute;"
     when "disable"
-      message = self.name +  " est désactivé."  
+      message << "d&eacute;sactiv&eacute;"
     when "install"
-      message = self.name +  " est installé."     
+      message << "install&eacute;"
     when "uninstall"
-      message =  self.name +  " est désinstallé"      
+      message << "d&eacute;sinstall&eacute;"
     when "remove"
-      message = self.name + " est supprimé"
-    end 
+      message << "supprim&eacute;"
+    end
     return message
   end
 

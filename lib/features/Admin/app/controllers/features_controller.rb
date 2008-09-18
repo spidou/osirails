@@ -2,7 +2,7 @@ class FeaturesController < ApplicationController
 
   # Method to collect features and to show them into the index view
   def index
-    @features = Feature.find(:all)
+    @features = Feature.find(:all, :order => "installed, activated DESC, name")
   end
   
   # method to show warning message about uninstallation and to confirm the uninstallation

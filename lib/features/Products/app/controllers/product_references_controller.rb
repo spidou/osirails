@@ -2,13 +2,13 @@ class ProductReferencesController < ApplicationController
   
   # GET /product_references
   def index
-    if params[:product_reference_category_id].nil?
-      @references = ProductReference.find(:all)
-    else
+    if params[:product_reference_category_id]
       @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
       respond_to do |format|
         format.js {render :layout => false}
       end
+    else
+      redirect_to product_reference_manager_path
     end
   end
   

@@ -3,6 +3,6 @@
 
 <div class="frame tabulation">
 <h1>Les services de l'entreprise</h1>
-<%= show_structured_services(controller.can_edit?(current_user),controller.can_delete?(current_user),controller.can_view?(current_user)) %>
-<%= link_to("Nouveau service", :action => "new") if @add %>
+<%= show_structured_services(@services) %>
+<%= link_to("Nouveau service", :action => "new") %>
 </div>

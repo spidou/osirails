@@ -17,11 +17,7 @@
 
   <p>
     <%= service.label :service_parent_id, "Parent" %>
-    <% if @services.size == 0%>
-      <%= service.collection_select(:service_parent_id, @services, :id, :name, options = {:prompt => "-- Racine --"})%>
-    <% else %>
-      <%= service.collection_select(:service_parent_id, @services, :id, :name, {}) %>
-    <% end %>
+    <%= service.collection_select_with_indentation(:service_parent_id, @services, :id, :name, {:indentation => 15}.merge(@options))%>
   </p>
   
    
@@ -76,9 +72,7 @@
   <%= hidden_field_tag "schedules[6]", 'H | H | H | H |' %>
   <%= hidden_field_tag "schedules[7]", 'H | H | H | H |' %>
   
+  <%= service.submit "Créer" %> &#124; <%= link_to 'Retour', services_path %>
 </div>  
-  <p>
-    <%= service.submit "Créer" %> &#124; <%= link_to 'Retour', services_path %>
-  </p>
 <% end %>
 

@@ -46,7 +46,7 @@ module ApplicationHelper
   def display_main_menu
     html = ""
     menu = current_menu
-    Menu.mains.each do |m|
+    Menu.mains.activated.each do |m|
       selected = (menu == m or menu.ancestors.include?(m) ? "class=\"selected\"" : "")
       html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n"
     end
@@ -57,7 +57,7 @@ module ApplicationHelper
     html = []
     menu = current_menu
     main_menu = menu.last_ancestor
-    main_menu.children.each do |m|
+    main_menu.children.activated.each do |m|
       first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
       html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m))
@@ -68,7 +68,7 @@ module ApplicationHelper
   def display_tabulated_menu
     html = "<div class=\"tabs\"><ul>"
     menu = current_menu
-    menu.self_and_siblings.each do |m|
+    menu.self_and_siblings.activated.each do |m|
       selected = ( m == menu ? "class=\"selected\"" : "" )
       html << "<li #{selected} title=\"#{m.description}\">" + link_to(m.title, url_for_menu(m)) + "</li>"
     end

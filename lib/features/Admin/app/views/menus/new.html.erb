@@ -1,9 +1,7 @@
 <h1>Nouveau Menu</h1>
 
-<div class="frame">
+<div class="frame presentation_medium">
 <% form_for(@menu) do |menu| %>
-  <%= menu.error_messages %>
-  <%= render :partial => "menu", :locals => {:menu => menu} %><br/><br/>
-  <%= menu.submit "Ajouter" %> <%= link_to 'Retour', :action => 'index' %>
+  <%= render :partial => 'menu', :locals => {:menu => menu, :submit_button_name => "Ajouter"} %>
 <% end %>
 </div>

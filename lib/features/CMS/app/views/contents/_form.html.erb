@@ -1,36 +1,30 @@
-<div class="frame">
- <%= error_messages_for("menu")%>
-  <h2>Information du menu</h2>
+  <%= content.error_messages %>
+  <%= error_messages_for("menu")%>
+  <h2>Information concerant le menu</h2>
   <p>
-    <%= label :menu, :title, "Titre" %>
+    <%= label :menu, :title, "Titre du menu :" %>
     <%= text_field(:menu, :title)  %>
   </p>
-
   <p>
-    <%= label :menu, :description, "Description" %>
+    <%= label :menu, :description, "Description du menu :" %>
     <%= text_field(:menu, :description)  %>
   </p>
+  <p>
+    <%= label :parent_id, "Menu parent :"%>
+    <%= collection_select_with_indentation(:menu, :parent_id, @menus, :id, :title, options = {:include_blank => "-- Racine --", :indentation => 15}) %>
+  <p>
 
+  <h2>Information concernant le contenu</h2>
   <p>
-    <%= label :parent_id, "Parent"%>
-    <%= collection_select(:menu, :parent_id, @menus, :id, :title,options = {:include_blank => "-- Racine --"}) %>
-  <p>
-
-  <h2>Information du contenu</h2>
-  <p>
-    <%= content.label :title, "Titre" %>
+    <%= content.label :title, "Titre :" %>
     <%= content.text_field :title %>
   </p>
-  
   <p>
-    <%=content.label :description, "Description" %>
+    <%=content.label :description, "Description :" %>
     <%= content.text_field :description %>
   </p>
-  
   <p>
-    <%= content.label :text, "Votre texte" %>
     <%= content.text_area( :text, :cols => 100, :rows => 30) %>
   </p>
 
   <%= submit_tag submit_button_name %> <%= link_to 'Retour', :action => 'index' %>
-</div>

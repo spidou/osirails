@@ -4,7 +4,7 @@ class ProductsCatalogController < ApplicationController
   def index
     @categories = ProductReferenceCategory.find( :all, :conditions => {:product_reference_category_id => nil})
     @references = ProductReference.find(:all, :conditions => {:enable => true})
-    @products = Product.paginate :page => params[:page],:per_page => 10
+    @products = Product.paginate :page => params[:page], :per_page => 5
     @type = params[:type]
     respond_to do |format|
       params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html

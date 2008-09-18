@@ -10,7 +10,6 @@ class ProductReferenceCategoriesController < ApplicationController
         format.js {render :layout => false}
       end
     end
-    
   end
   
   # GET /product_reference_categories/new
@@ -40,7 +39,7 @@ class ProductReferenceCategoriesController < ApplicationController
     @category = ProductReferenceCategory.new(params[:product_reference_category])
     if @category.save
       flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
+      redirect_to product_reference_manager_path
     else
       render :action => 'new'
     end
@@ -56,9 +55,10 @@ class ProductReferenceCategoriesController < ApplicationController
       @category.update_attributes(params[:product_reference_category])
       @category.counter_update("after_update", @category.product_references_count)
       flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
+      redirect_to product_reference_manager_path
     else
       flash[:error] = 'D&eacute;placement impossible'
+      @categories = ProductReferenceCategory.find(:all)
       render :action => 'edit'
     end
   end  
@@ -78,7 +78,7 @@ class ProductReferenceCategoriesController < ApplicationController
     else
       flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e. V&eacute;rifiez qu'elle ne poss&egrave;de aucune autre cat&eacute;gorie ou r&eacute;f&eacute;rence."
     end
-    redirect_to :controller => 'product_reference_manager', :action => 'index'
+    redirect_to product_reference_manager_path
   end
   
 end

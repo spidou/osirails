@@ -9,6 +9,9 @@ class Service < ActiveRecord::Base
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"
   
+  # Named Scopes
+  named_scope :mains,:conditions => {:service_parent_id => nil}
+  
   # Validation Macros
   validates_presence_of :name, :message => "ne peut être vide"
 
@@ -40,30 +43,6 @@ class Service < ActiveRecord::Base
         self.save
       end
     end
-  end
-  
-  # This method permit to have structur for services
-  def Service.get_structured_services(indent,current_service_id = nil)
-    services = Service.find_all_by_service_parent_id
-    service_parents = []
-    root = Service.new
-    root.name = "  "
-    root.id = nil
-    get_children_services(services, current_service_id, service_parents,indent)
-  end
-  
-  # This method permit to have children for services
-  def Service.get_children_services(services, current_service_id, service_parents, indent)
-    services.each do |service|
-      unless service.id == current_service_id
-      service.name = indent * service.ancestors.size + service.name if service.name != nil
-      service_parents << service
-      if service.children.size > 0
-        get_children_services(service.children, current_service_id , service_parents, indent)
-      end
-      end
-    end
-    service_parents
   end
   
   def can_delete?
@@ -106,5 +85,29 @@ class Service < ActiveRecord::Base
     end
     return service 
   end
+  
+  # This method permit to have structur for services
+  def self.get_structured_services(current_service_id = nil)
+    services = Service.find_all_by_service_parent_id
+    service_parents = []
+    root = Service.new
+    root.name = "  "
+    root.id = nil
+    get_children(services, current_service_id, service_parents)
+  end
+  
+  private
+    # This method permit to have children for services
+    def self.get_children(services, current_service_id, service_parents)
+      services.each do |service|
+        unless service.id == current_service_id
+          service_parents << service
+          if service.children.size > 0
+            get_children(service.children, current_service_id , service_parents)
+          end
+        end
+      end
+      service_parents
+    end
   
 end

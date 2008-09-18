@@ -1,48 +1,40 @@
-  <h1>Référence</h1>
-<fieldset>
-  <p>
-    <%= reference.label :name, "Nom" %><br />
-    <%= reference.text_field :name %>
-  </p>
+<%= reference.error_messages %>
+<h2>Rérérence</h2>
+<p>
+  <%= reference.label :name, "Nom de la référence :" %>
+  <%= reference.text_field :name %>
+</p>
+<p>
+  <%= reference.label :description, "Description :" %>
+  <%= reference.text_field :description %>
+</p>
+<p>
+  <%= reference.label :information, "Informations complémentaires :" %>
+  <%= reference.text_field :information %>
+</p>
+<p>
+  <%= reference.label :product_reference_category_id, "Famille de produit :" %>
+  <%= reference.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}) %>
+</p>
   
-  <p>
-    <%= reference.label :description, "Description" %><br />
-    <%= reference.text_field :description %>
-  </p>
-  
-  <p>
-    <%= reference.label :information, "Information complémentaire" %><br />
-    <%= reference.text_field :information %>
-  </p>
-  
-  <p>
-    <%= reference.label :product_reference_category_id, "Famille" %>
-    <%= reference.collection_select(:product_reference_category_id, @categories, :id, :name, {}) %>
-  </p>
-  
-  <fieldset>
-    <legend>Production</legend>
-    <p>
-      <%= reference.label :production_cost_manpower, "Coût de main-d'oeuvre" %><br />
-      <%= reference.text_field :production_cost_manpower %>
-    </p>
-    
-    <p>
-      <%= reference.label :production_time, "Durée" %><br />
-      <%= reference.text_field :production_time %>
-    </p>
-  </fieldset>
-  
-  <fieldset>
-    <legend>Livraison</legend>
-    <p>
-      <%= reference.label :delivery_cost_manpower, "Coût de main-d'oeuvre" %><br />
-      <%= reference.text_field :delivery_cost_manpower %>
-    </p>
-    
-    <p>
-      <%= reference.label :delivery_time, "Durée" %><br />
-      <%= reference.text_field :delivery_time %>
-    </p>
-  </fieldset>
-</fieldset>
+<h2>Informations concernant la production</h2>
+<p>
+  <%= reference.label :production_cost_manpower, "Coût de main-d'oeuvre :" %>
+  <%= reference.text_field :production_cost_manpower %>
+</p>
+<p>
+  <%= reference.label :production_time, "Durée :" %>
+  <%= reference.text_field :production_time %>
+</p>
+
+<h2>Informations concernant la livraison</h2>
+<p>
+  <%= reference.label :delivery_cost_manpower, "Coût de main-d'oeuvre :" %>
+  <%= reference.text_field :delivery_cost_manpower %>
+</p>
+<p>
+  <%= reference.label :delivery_time, "Durée :" %>
+  <%= reference.text_field :delivery_time %>
+</p>
+
+<%= reference.submit submit_button_name %> <%= link_to( "Retour", product_reference_manager_path) %>

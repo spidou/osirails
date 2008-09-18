@@ -6,7 +6,7 @@ class Menu < ActiveRecord::Base
   has_one :content
 
   # Plugin
-  acts_as_tree :order =>:position
+  acts_as_tree :order => :position
   acts_as_list :scope => :parent_id
 
   # Accessor
@@ -17,7 +17,8 @@ class Menu < ActiveRecord::Base
   
   # Named scopes
   named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
-  named_scope :activated, :order => "position", :include => [:feature], :conditions => { 'features.activated' => true}
+  #FIXME toujours afficher les menus qui n'ont pas de name
+  named_scope :activated, :order => "position", :include => [:feature], :conditions => [ 'features.activated = ? or menus.name = ?', true, nil]
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

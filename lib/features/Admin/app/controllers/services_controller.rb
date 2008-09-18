@@ -1,16 +1,15 @@
 class ServicesController < ApplicationController
+  
   # GET /services
   def index
-    @add = self.can_add?(current_user)
-    @edit = self.can_edit?(current_user)
-    @delete = self.can_delete?(current_user)
+    @services = Service.mains
   end
   
   # GET /services/new
   def new
     @service = Service.new
-    @services = Service.get_structured_services("....")
-    
+    @services = Service.get_structured_services
+    @options = @services.empty? ? {:prompt => "-- Racine --"} : {}
   end
   
   # GET /services/show
@@ -30,16 +29,14 @@ class ServicesController < ApplicationController
   # GET /servicess.employees_services.each do |f|
   def edit
     @service = Service.find(params[:id])
-    @services = Service.get_structured_services("....", @service.id)
+    @services = Service.get_structured_services(@service.id)
     @service.schedule_find.schedules == [] ? @schedules = @service.schedules : @schedules = @service.schedule_find.schedules
-  #  raise @schedules.inspect
   end
 
   # POST /services
   def create
-  
     @service = Service.new(params[:service])
-    @services = Service.get_structured_services("....", @service.id)
+    @services = Service.get_structured_services(@service.id)
     @schedules = @service.schedules
 
     params[:schedules].sort.each do |f|
@@ -58,7 +55,7 @@ class ServicesController < ApplicationController
   # PUT /services/1
   def update
     @service = Service.find(params[:id])
-    @services = Service.get_structured_services("....", @service.id)
+    @services = Service.get_structured_services(@service.id)
     @service.old_service_parent_id, @service.update_service_parent = @service.service_parent_id, true
     @schedules = @service.schedules
           

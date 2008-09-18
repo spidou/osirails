@@ -23,7 +23,6 @@ class JobsController < ApplicationController
     respond_to do |format|
       if @job.save
         @jobs = Job.find(:all)
-        puts params.inspect
         unless params['employee_id']==""
           @employee = Employee.find(params['employee_id'])
           @numbers = @employee.numbers

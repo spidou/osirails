@@ -1,8 +1,7 @@
-<h1>Modifier <%= @reference.name %></h1>
-<div class="frame">
+<h1>Modifier une référence</h1>
+
+<div class="frame presentation_large">
 <% form_for @reference do |reference| %>
-  <%= reference.error_messages %>
-  <%= render :partial => "form", :locals => {:reference => reference} %>
-  <%= reference.submit "Modifier"%> &brvbar; <%= link_to( "Retour", :controller => 'product_reference_manager', :action => 'index' ) %>
+  <%= render :partial => "form", :locals => {:reference => reference, :submit_button_name => "Modifier" } %>
 <% end %>
 </div>
