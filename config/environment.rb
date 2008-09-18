@@ -29,7 +29,7 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :all, :acts_as_file]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -101,3 +101,10 @@ gem 'mislav-will_paginate', '~> 2.2' # gem install mislav-will_paginate --versio
 require 'will_paginate'
 require 'overrides'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
+
+## acts_as_file
+# This block is use because Document.add_model is call only when model is use
+files = Dir.glob("**/**/**/app/models/*.rb")
+files.each do |file|
+  file.split("/").last.chomp(".rb").camelize.constantize
+end
