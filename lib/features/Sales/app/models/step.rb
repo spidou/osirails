@@ -2,10 +2,9 @@ class Step < ActiveRecord::Base
   ## Relationships
   belongs_to :parent, :class_name =>"Step", :foreign_key => "parent_id"
   has_and_belongs_to_many :sales_processes
-  has_and_belongs_to_many :orders
+  has_many :orders_steps, :class_name => "OrdersSteps"
   has_many :childrens, :class_name => "Step", :foreign_key => "parent_id"
   has_many :checklists
-  
   
   ## Plugins
   acts_as_list :scope => :parent_id
@@ -26,22 +25,16 @@ class Step < ActiveRecord::Base
   
   ## Return all orders which have finish current step
   def terminated_orders
-    step_index = Step.tree.index(self)
     orders = []
-    Order.find(:all).each do |order|
-      orders << order if Step.tree.index(order.step) > step_index
-    end
+    OrdersSteps.find_all_by_step_id_and_status(self.id, "terminated").each{|order_step| orders << order_step.order}
     orders
   end
   
   ## Return all orders which haven't start current step
   #FIXME FInd the good word to say 'unstarted'
   def unstarted_orders
-    step_index = Step.tree.index(self)
     orders = []
-    Order.find(:all).each do |order|
-      orders << order if Step.tree.index(order.step) < step_index
-    end
+    OrdersSteps.find_all_by_step_id_and_status(self.id, "unstarted").each{|order_step| orders << order_step.order}
     orders
   end
   

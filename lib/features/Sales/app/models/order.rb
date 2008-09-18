@@ -4,12 +4,19 @@ class Order < ActiveRecord::Base
   belongs_to :order_type
   has_one :commercial_order
   has_one :facturation_order
-  has_and_belongs_to_many :steps
+  has_many :orders_steps, :class_name => "OrdersSteps"
   
-  ## stauts 
-  # finish
+  validates_presence_of :order_type
+  
+  ## status 
+  # terminated
   # in_progress
   # unstarted
+  
+  ## Create all orders_steps after create
+  def after_create
+    self.order_type.activated_steps.each {|step| OrdersSteps.create(:order_id => self.id, :step_id => step.id, :status => "unstarted")}
+  end
   
   ## Return current step order
   def step
