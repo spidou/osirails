@@ -22,3 +22,11 @@ class ConfigurationManager
     ConfigurationManager.methods.sort.grep(/^#{feature_name.downcase}_#{controller_name}.*[^=c]$/) #FIXME Faire en sorte que ça gère _desc
   end
 end
+
+begin
+  ConfigurationManager.initialize_options
+rescue Exception => e
+  puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+end
+
+puts "appel configuration manager"

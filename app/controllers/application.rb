@@ -27,15 +27,7 @@ class ApplicationController < ActionController::Base
   ActionController::Base.session_options[:session_expires] = 1.day.from_now
 
   # Global variables
-  $permission ||= {}
-
-  #initialize dynmamic methods from the configurations' table of the database
-  begin
-    ConfigurationManager.initialize_options
-  rescue Exception => e
-    puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
-  end
-  
+  $permission ||= {}  
   
   protected
     # Method to permit to add permission to an action in a controller
