@@ -1,6 +1,7 @@
 class CreateProductionOrders < ActiveRecord::Migration
   def self.up
     create_table :production_orders do |t|
+      t.references :order
       
       t.timestamps
     end

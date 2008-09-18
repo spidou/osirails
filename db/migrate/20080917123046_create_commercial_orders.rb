@@ -1,6 +1,7 @@
 class CreateCommercialOrders < ActiveRecord::Migration
   def self.up
     create_table :commercial_orders do |t|
+      t.references :order
       
       t.timestamps
     end
