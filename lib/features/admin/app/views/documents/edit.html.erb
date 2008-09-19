@@ -1,0 +1,28 @@
+<div class="frame">
+<h2>Upload&eacute; une nouvelle version</h2>
+  <% form_for([@document.has_document, @document], :html => { :multipart => true}) do |d| %>
+    
+    <p>
+      <%= d.label :name%>
+      <%= d.text_field :name%>
+    </p>
+    
+    <p>
+      <%= d.label :description%>
+      <%= d.text_field :description%>
+    </p>
+
+    <p>
+        <%= d.label :tag_list, "Tags"%>
+        <%= d.text_field :tag_list%>
+    </p>
+
+    <p>
+      <%= label :file, :data, "Fichier :"%>
+      <%= file_upload%>
+    </p>
+    
+    <%= d.submit "Uploader"%> <%= link_to "retour", [@document.has_document, @document]%>
+      
+  <%end%>
+</div>

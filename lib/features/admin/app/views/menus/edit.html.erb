@@ -1,0 +1,7 @@
+<h1>Modifier un menu</h1>
+
+<div class="frame presentation_medium">
+<% form_for(@menu) do |menu| %>
+  <%= render :partial => 'menu', :locals => {:menu => menu, :submit_button_name => "Mettre à jour"} %>
+<% end %> 
+</div>

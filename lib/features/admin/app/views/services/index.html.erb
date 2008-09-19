@@ -1,0 +1,8 @@
+<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
+<h1>Les services de l'entreprise</h1>
+<%= show_structured_services(@services) %>
+<%= link_to("Nouveau service", :action => "new") %>
+</div>

@@ -1,0 +1,26 @@
+<h1>Liste des  r&ocirc;les</h1>
+
+<div class="frame">
+  <table>
+    <tr>
+      <th>Nom du r&ocirc;le</th>
+      <th>Description du r&ocirc;le</th>
+      <th>Actions</th>
+    </tr>
+
+    <% for role in @roles %>
+      <tr>
+        <td><%=h role.name %></td>
+        <td title="<%=h role.description %>"><%=preview(role.description,30) %></td>
+        <td><%= link_to 'D&eacute;tails', role %> &#124;
+            <%= link_to 'Modifier', edit_role_path(role) %> &#124;
+            <%= link_to 'Supprimer', role, :confirm => 'Etes vous sûr?', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+  <%= link_to 'Ajouter', new_role_path %>
+</div>

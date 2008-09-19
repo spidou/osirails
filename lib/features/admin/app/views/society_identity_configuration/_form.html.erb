@@ -1,0 +1,49 @@
+<h2>Informations G&eacute;n&eacute;rales</h2>
+<p>
+  <b><%= label_tag "admin_society_identity_configuration_name", "Entreprise : " %></b>
+  <%= display_markup("admin_society_identity_configuration_name", @parameters["admin_society_identity_configuration_name"]) %>
+</p>
+
+<p>
+  <b><%= label_tag "admin_society_identity_configuration_siret", "Numéro SIRET : " %></b>
+  <%= display_markup("admin_society_identity_configuration_siret", @parameters["admin_society_identity_configuration_siret"]) %>
+</p>
+
+<p>
+  <b><%= label_tag "admin_society_identity_configuration_phone", "Numéro de téléphone : " %></b>
+  <%= display_markup("admin_society_identity_configuration_phone", @parameters["admin_society_identity_configuration_phone"]) %>
+</p>
+
+<p>
+  <b><%= label_tag "admin_society_identity_configuration_fax", "Numéro de fax : " %></b>
+  <%= display_markup("admin_society_identity_configuration_fax", @parameters["admin_society_identity_configuration_fax"]) %>
+</p>
+
+<h2>Coordonn&eacute;es</h2>
+<p>
+  <b><%= label_tag 'admin_society_identity_configuration_address_first_line', "Adresse :"%></b>
+  <%= display_markup("admin_society_identity_configuration_address_first_line", @parameters["admin_society_identity_configuration_address_first_line"]) %>&nbsp;-&nbsp;
+  <%= display_markup("admin_society_identity_configuration_address_second_line", @parameters["admin_society_identity_configuration_address_second_line"] == 0 ? "" : @parameters["admin_society_identity_configuration_address_second_line"]) %>
+</p>
+<p>
+  <b><%= label_tag 'admin_society_identity_configuration_address_zip', "Code Postal :"%></b>
+  <%= display_markup("admin_society_identity_configuration_address_zip", @parameters["admin_society_identity_configuration_address_zip"]) %>    
+</p>
+<p>
+  <b><%= label_tag 'admin_society_identity_configuration_address_town', "Ville :"%></b>
+  <%= display_markup("admin_society_identity_configuration_address_town", @parameters["admin_society_identity_configuration_address_town"]) %>    
+</p>
+<p>
+  <b><%= label_tag 'admin_society_identity_configuration_address_country', "Pays :"%></b>
+  <%= display_markup("admin_society_identity_configuration_address_country", @parameters["admin_society_identity_configuration_address_country"]) %>    
+</p>
+<h2>Informations complémentaires</h2>
+<p>
+  <b><%= label_tag 'admin_society_identity_configuration_domain', "Nom de domaine :" %></b>
+  <%= display_markup("admin_society_identity_configuration_domain", @parameters["admin_society_identity_configuration_domain"]) %>
+</p>
+<h2>Calendrier</h2>
+<p>
+	<b><%= label_tag 'admin_society_identity_configuration_working_day', 'Jours ouvrables :' %></b>
+	<%= working_day(@parameters["admin_society_identity_configuration_working_day"]) %> 
+</p>

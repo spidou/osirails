@@ -1,0 +1,11 @@
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
+  <h2>Les menus</h2>
+  <ul>
+    <% for menu_permission in @menu_permissions %>
+    <li><%= link_to menu_permission.title, edit_menu_permission_path(menu_permission) %></li>	
+    <% end %>
+  </ul>
+</div>

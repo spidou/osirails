@@ -1,0 +1,13 @@
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
+  <h2>Les documents</h2>
+  <ul>
+    <% for document in @document_permissions %>
+    <li><%= link_to document.document_owner, edit_document_permission_path(document.document_owner) %></li>	
+    <% end %>
+  </ul>
+
+  <%= link_to "Retour", permissions_path %>
+</div>

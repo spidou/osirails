@@ -1,0 +1,36 @@
+<!-- Div that content new documents-->
+<div id="new_document">
+  <% params[:new_document_number].nil? ? new_document_number_value = 0 : new_document_number_value = params[:new_document_number][:value].to_i %>
+  <%= hidden_field("new_document_number", "value",  "value" => new_document_number_value) %>  
+  
+  <% unless new_document_number_value > 0 %>
+    <div id="link_add_remove_document_1">
+
+      <%owner_id = owner_id unless owner_id.nil?%>
+      
+      <%= link_to_remote("(ajouter)", :url => {:controller => "documents",:action => "add_document", :cpt => 1, :owner_type => owner_type, :owner_id => (owner_id unless owner_id.nil?)}) %>
+    </div> 
+  <% end %>
+  
+  <% # cpt store the number of form %>
+  <% cpt = 1 %>
+  <!-- If there was some form, they are re-create -->
+  <% if new_document_number_value > 0 %>
+    <% new_document_number_value.times do |i| %>
+      <% unless params["#{owner_type.downcase}"][:documents]["#{i+1}"][:valid] == 'false' %>
+
+        <% params["owner_id"]= owner_id %>
+        <% params["owner_type"] = owner_type %>
+        
+        <%= get_new_document_form(params, cpt, owner_type, owner_id, error)%>            
+
+      <%end #unless%>
+    <% cpt += 1 %>
+  <% end %>
+
+  <div id='link_add_remove_document_<%=cpt%>'>
+    <%= link_to_remote("(ajouter)", :url => {:controller => "documents",:action => "add_document", :cpt => cpt, :owner_id => (owner_id unless owner_id.nil?), 
+          :owner_type => owner_type}) %>
+  </div>
+<% end %>
+</div>
