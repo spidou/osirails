@@ -1,0 +1,234 @@
+<% if action == 'update'
+		method = 'put'
+	else
+		method = 'post'
+	end
+%>
+	<% remote_form_for :event, @event, :url => calendar_event_path(@calendar, @event), :method => method do |e| %>
+<h1><%= @event.title %></h1>
+<p>
+<%= e.label :title, 'Titre' %>
+<%= e.text_field :title, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<%= e.label :location, 'Emplacement' %>
+<%= e.text_field :location, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<%= e.label :full_day, 'Jour entier' %>
+<%= e.check_box :full_day, :onclick => "full_day_checked(this);" %>
+</p>
+<p>
+<%= e.label :start_at, 'Du' %>
+<%= e.text_field :start_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+</p>
+<p>
+<%= e.label :end_at, 'Au' %>
+<%= e.text_field :end_at, {:class => 'disable-stylesheet-width', :onfocus => "event_box_edit_date(this, " + @event.id.to_s + ");"} %>
+</p>
+<p><%= e.label :description %>
+<%= e.text_field :description, :class => 'disable-stylesheet-width' %>
+</p>
+<p>
+<label for="event_frequence_choice">R&eacute;p&eacute;ter</label>
+<%= e.hidden_field :frequence %>
+<select id="event_frequence_choice" onChange="event_change('frequence', this);">
+	<option value="">Jamais</option>
+	<option value="DAILY"<%= ' selected' if @event.frequence == "DAILY" && @event.interval == 1 %>>Chaque jour</option>
+	<option value="WEEKLY"<%= ' selected' if @event.frequence == "WEEKLY" && @event.by_day.nil? %>>Chaque semaine</option>
+	<option value="MONTHLY"<%= ' selected' if @event.frequence == "MONTHLY" && @event.by_month_day.nil? && @event.by_day.nil? %>>Tous les mois</option>
+	<option value="YEARLY"<%= ' selected' if @event.frequence == "YEARLY" && @event.by_month.nil? && @event.by_day.nil? %>>Tous les ans</option>
+	<option<%= ' selected' if !@event.frequence.nil? && (@event.interval > 1 || !@event.by_month.nil? || !@event.by_day.nil? || !@event.by_month_day.nil?) %>>Personnaliser</option>
+</select>
+</p>
+<!--
+<% e.select :frequence, {"Jamais" => nil, "Chaque jour" => "DAILY", "Chaque semaine" => "WEEKLY", "Tous les mois" => "MONTHLY", "Tous les ans" => "YEARLY", "Personnaliser" => nil}, {}, {:onChange => "event_change('frequence');"} %> -->
+<div id="event_frequence_custom" style="display: none;">
+	<fieldset class="no-style">
+	<select onChange="event_change('custom', this);">
+	<option>quotidienne</option>
+	<option>hebdomadaire</option>
+	<option>mensuelle</option>
+	<option>annuelle</option>
+	</select>
+	<div id="event_daily" style="display: none;">
+	Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> jour(s)
+	</div>
+	<div id="event_weekly" style="display: none;">
+		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> semaine(s) le :<br />
+		<span class="calendar_checkbox"><span>Lun</span></span><%= check_box_tag "event[by_day][]", 'MO', (@event.by_day.include?('MO') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Mar</span></span><%= check_box_tag "event[by_day][]", 'TU', (@event.by_day.include?('TU') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Mer</span></span><%= check_box_tag "event[by_day][]", 'WE', (@event.by_day.include?('WE') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Jeu</span></span><%= check_box_tag "event[by_day][]", 'TH', (@event.by_day.include?('TH') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Ven</span></span><%= check_box_tag "event[by_day][]", 'FR', (@event.by_day.include?('FR') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Sam</span></span><%= check_box_tag "event[by_day][]", 'SA', (@event.by_day.include?('SA') unless @event.by_day.nil?) %>
+		<span class="calendar_checkbox"><span>Dim</span></span><%= check_box_tag "event[by_day][]", 'SU', (@event.by_day.include?('SU') unless @event.by_day.nil?) %>
+	</div>
+	<div id="event_monthly" style="display: none;">
+		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> mois
+		<br />
+		<input name="monthly_choice" type="radio" checked
+		onclick="document.getElementById('event_by_month_day').disabled=false; 
+		document.getElementById('event_by_month_day_num').disabled=true; 
+		document.getElementById('event_by_month_day_wday').disabled=true;" />
+		Tous les<br />
+		<% 31.times do |i| %>
+		<% i+=1 %><% i = '0' + i.to_s if i < 10 %>
+		<span class="calendar_checkbox"><span><%= i %></span></span><%= check_box_tag "event[by_month_day][]", i, (@event.by_month_day.include?(i.to_s) unless @event.by_month_day.nil?) %>
+		<% end %>
+		<br />
+		<input name="monthly_choice" type="radio"
+		onclick=" document.getElementById('event_by_month_day').disabled=true; 
+		document.getElementById('event_by_month_day_num').disabled=false; 
+		document.getElementById('event_by_month_day_wday').disabled=false;" />
+		<% if !@event.by_day.nil? %>
+		<script type="text/javascript">
+			document.getElementById('event_monthly').childNodes[10].click();
+		</script>
+		<% end %>
+		Le <select id="event_by_month_day_num"
+		name="event[by_day_num]" disabled>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 1 unless @event.by_day.nil?) %> value='1'>premier</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 2 unless @event.by_day.nil?) %> value='2'>deuxieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 3 unless @event.by_day.nil?) %> value='3'>troixieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 4 unless @event.by_day.nil?) %> value='4'>quatrieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == -1 unless @event.by_day.nil?) %> value='-1'>dernier</option>
+		</select><select id="event_by_month_day_wday"
+		name="event[by_day_wday]" disabled>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'MO' unless @event.by_day.nil?) %> value="MO">lundi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'TU' unless @event.by_day.nil?) %> value="TU">mardi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'WE' unless @event.by_day.nil?) %> value="WE">mercredi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'TH' unless @event.by_day.nil?) %> value="TH">jeudi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'FR' unless @event.by_day.nil?) %> value="FR">vendredi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'SA' unless @event.by_day.nil?) %> value="SA">samedi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'SU' unless @event.by_day.nil?) %> value="SU">dimanche</option>
+		</select>
+	</div>
+	<div id="event_yearly" style="display: none;">
+		Tous les <%= e.text_field :interval, {:class => 'disable-stylesheet-width', :size => 3} %> ans en:<br>
+		<span class="calendar_checkbox"><span>Jan</span></span><%= check_box_tag "event[by_month][]", '1', (@event.by_month.include?('1') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>F&eacute;v</span></span><%= check_box_tag "event[by_month][]", '2', (@event.by_month.include?('2') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Mar</span></span><%= check_box_tag "event[by_month][]", '3', (@event.by_month.include?('3') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Avr</span></span><%= check_box_tag "event[by_month][]", '4', (@event.by_month.include?('4') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Mai</span></span><%= check_box_tag "event[by_month][]", '5', (@event.by_month.include?('5') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Jui</span></span><%= check_box_tag "event[by_month][]", '6', (@event.by_month.include?('6') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Jui</span></span><%= check_box_tag "event[by_month][]", '7', (@event.by_month.include?('7') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Aou</span></span><%= check_box_tag "event[by_month][]", '8', (@event.by_month.include?('8') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Sep</span></span><%= check_box_tag "event[by_month][]", '9', (@event.by_month.include?('9') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Oct</span></span><%= check_box_tag "event[by_month][]", '10', (@event.by_month.include?('10') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>Nov</span></span><%= check_box_tag "event[by_month][]", '11', (@event.by_month.include?('11') unless @event.by_month.nil?) %>
+		<span class="calendar_checkbox"><span>D&eacute;c</span></span><%= check_box_tag "event[by_month][]", '12', (@event.by_month.include?('12') unless @event.by_month.nil?) %><br>
+		<br><input id="event_monthly_choice" type="checkbox" onclick="if (this.checked == true) {
+		document.getElementById('event_by_year_day_num').disabled=false; 
+		document.getElementById('event_by_year_day_wday').disabled=false; 
+		} else {
+		document.getElementById('event_by_year_day_num').disabled=true; 
+		document.getElementById('event_by_year_day_wday').disabled=true; 				
+		};" />
+		<% if !@event.by_day.nil? %>
+		<script type="text/javascript">
+			document.getElementById('event_monthly_choice').click();
+		</script>
+		<% end %>
+		Le <select id="event_by_year_day_num"
+		name="event[by_day_num]" disabled>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 1 unless @event.by_day.nil?) %> value='1'>premier</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 2 unless @event.by_day.nil?) %> value='2'>deuxieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 3 unless @event.by_day.nil?) %> value='3'>troixieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == 4 unless @event.by_day.nil?) %> value='4'>quatrieme</option>
+		<option<%= ' selected' if (@event.by_day.first[0...-2].to_i == -1 unless @event.by_day.nil?) %> value='-1'>dernier</option>
+		</select><select id="event_by_year_day_wday"
+		name="event[by_day_wday]" disabled>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'MO' unless @event.by_day.nil?) %> value="MO">lundi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'TU' unless @event.by_day.nil?) %> value="TU">mardi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'WE' unless @event.by_day.nil?) %> value="WE">mercredi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'TH' unless @event.by_day.nil?) %> value="TH">jeudi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'FR' unless @event.by_day.nil?) %> value="FR">vendredi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'SA' unless @event.by_day.nil?) %> value="SA">samedi</option>
+		<option<%= ' selected' if (@event.by_day.first[-2...@event.by_day.first.size] == 'SU' unless @event.by_day.nil?) %> value="SU">dimanche</option>
+		</select>
+	</div>
+	</fieldset>
+</div>
+<div id="event_frequence_limit" style="display: none;">
+	<p>
+	<%= label_tag 'event_frequence_limit_select', 'Fin' %>
+	<select id="event_frequence_limit_select" onChange="event_change('limit', this);">
+	<option>Jamais</option>
+	<option>Apr&egrave;s</option>
+	<option>le</option>
+	</select>
+	</p>
+	<div style="display: none;"><%= e.text_field :count, :size => 3 %> fois</div>
+	<div style="display: none;"><%= e.text_field :until_date %></div>
+</div>
+<p>
+<%= label_tag 'event_alarm', 'Alarme' %>
+<select id="event_alarm" onchange="alarm_selected(this);">
+	<option>Aucune</option>
+	<option>Message</option>
+	<option>Courrier &eacute;lectronique</option>
+</select>
+</p>
+<fieldset id="alarm" style="display: none;">
+	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before, :size => 3 %> minutes avant<br />
+	<div id="alarm_display">
+		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration, :size => 3 %> minutes<br />
+	</div>
+	<div id="alarm_email">
+		A <%= text_field_tag 'alarm[email_to]', alarm.email_to %><br />		
+	</div>
+	Titre <%= text_field_tag 'alarm[title]', alarm.title %><br />	
+	Description <%= text_field_tag 'alarm[description]', alarm.description %><br />
+</fieldset>
+<p>
+<%= e.label :event_category_id, 'Categorie' %>
+<%= e.select :event_category_id, @categories.collect {|c| [ c.name, c.id ] } << 'Autre', :include_blank => true, :onchange => "category_select(this);" %> <%= e.text_field :new_event_category_name, :style => "display: none;" %>
+</p>
+<p>
+<%= label_tag 'Participants' %>
+<%= text_field_with_auto_complete('participants', 'text', {:size => 26, :onkeypress => "if(event.keyCode == 13) add_participant();"}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
+<img id="add_participant_icon" src="/images/add_16x16.png" onclick="add_participant();">
+</p>
+<p class="participants_area">
+<div id="participants_list">
+	<% @event.participants.each do |p| %>
+		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_12x12.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
+	<% end %>
+</div>
+</p>
+<p>
+<%= e.label :link, 'URL' %>
+<%= e.text_field :link %>
+</p>
+<p>
+<%= e.label :status %>
+<%= e.select :status, {"tentative" => "TENTATIVE", "confirmé" => "CONFIRMED", "annulé" =>"CANCELLED"}, :include_blank => true %>
+</p>
+<%= hidden_field_tag 'recur', '' %>
+<input id="recur_date" type="hidden" name="date" value="" />
+<div style="text-align: right;"><%= e.submit "Terminer", :onclick => "submit_event_box_form(this);" %></div>
+<% end %>
+<script type="text/javascript">
+customize_checkbox();
+full_day_checked(document.getElementById('event_full_day'));
+Calendar.setup({ 
+	inputField : "event_until_date",
+	ifFormat : "%Y-%m-%d",
+	timeFormat : "24"
+});
+<% unless @event.frequence.nil? %>
+event_change('frequence', document.getElementById('event_frequence_choice'));
+var type_elm = document.getElementById('event_frequence_limit_select');
+<%= "type_elm.options[1].selected = true;" unless @event.count.nil? %>
+<%= "type_elm.options[2].selected = true;" unless @event.until_date.nil? %>
+event_change('limit', type_elm);
+var custom_elm = document.getElementById('event_frequence_custom');
+var custom_select_elm = custom_elm.childNodes[1].childNodes[1];
+<%= "custom_select_elm.options[0].selected = true;" if @event.is_custom_daily_frequence? %>
+<%= "custom_select_elm.options[1].selected = true;" if @event.is_custom_weekly_frequence? %>
+<%= "custom_select_elm.options[2].selected = true;" if @event.is_custom_monthly_frequence? %>
+<%= "custom_select_elm.options[3].selected = true;" if @event.is_custom_yearly_frequence? %>
+event_change('custom', custom_select_elm);
+<% end %>
+</script>

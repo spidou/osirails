@@ -1,0 +1,29 @@
+<h4><%= $month_fr[@date.month - 1] %> <%= @date.year %></h4>
+<div id="calendar_content">
+	<div id="scroll">
+		<div id="group_day_month">
+			<div class="day_month">Lundi</div>
+			<div class="day_month">Mardi</div>
+			<div class="day_month">Mercredi</div>
+			<div class="day_month">Jeudi</div>
+			<div class="day_month">Vendredi</div>
+			<div class="day_month">Samedi</div>
+			<div class="day_month">Dimanche</div>
+		</div>
+		<div id="grid_month">
+			<% date = @date.beginning_of_month.beginning_of_week %>
+			<% 5.times do %>
+			<% 7.times do |i| %>
+			<div id="<%= date.to_s.gsub("-","") %>" class="day_grid<%= " today" if date == Date::today %><%= " not_working_day" unless ConfigurationManager.admin_society_identity_configuration_working_day.include?(i.to_s) %>">
+				<span class="day_number<%= " other_month" unless date.month == Date::today.month %>"><%= date.day %></span><ul></ul>
+			</div>
+			<script type="text/javascript">add_droppable('<%= date.to_s.gsub("-","") %>');</script>
+			<% date += 1.day %>
+			<% end %>
+			<% end %>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+calendar_init(<%= params[:id] %>, 'month', <%= @calendar.can_list?(current_user) %>, <%= @calendar.can_view?(current_user) %>, <%= @calendar.can_add?(current_user) %>, <%= @calendar.can_edit?(current_user) %>, <%= @calendar.can_delete?(current_user) %>, "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('week') %>", "<%= navigation('month') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>", "<%= form_authenticity_token %>");
+</script>

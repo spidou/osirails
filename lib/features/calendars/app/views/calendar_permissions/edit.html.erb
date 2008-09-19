@@ -1,0 +1,34 @@
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
+  <h1>Modifier les permissions du calendrier "<%= @calendar.name %>"</h1>
+  <h2>pour chaque r&ocirc;le</h2>
+  <table>
+    <tr>
+      <th rowspan="2">Roles</th>
+      <th colspan="5">Permissions</th>
+    </tr>
+    <tr>
+      <th>Lister</th>
+      <th>Voir</th>
+      <th>Ajouter</th>
+      <th>Modifier</th>
+      <th>Supprimer</th>
+    </tr>
+  <% form_tag(calendar_permission_path, :method => 'put') do %>
+  <% for calendar in @calendar_permissions %>
+    <tr>
+        <td><%= link_to calendar.role.name, edit_role_permission_path(calendar.role.id) %></td>
+        <td><%= check_box_tag "list[]", calendar.role_id, calendar.list %></td>
+        <td><%= check_box_tag "view[]", calendar.role_id, calendar.view %></td>
+        <td><%= check_box_tag "add[]", calendar.role_id, calendar.add %></td>
+        <td><%= check_box_tag "edit[]", calendar.role_id, calendar.edit %></td>
+        <td><%= check_box_tag "delete[]", calendar.role_id, calendar.delete %></td>
+      </tr>
+  <% end %>
+  </table><br/>
+  <%= submit_tag "Mettre à jour" %>
+  <% end %><br/><br/>
+  <%= link_to "Retour", calendar_permissions_path %>
+</div>
