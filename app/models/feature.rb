@@ -8,7 +8,7 @@ class Feature < ActiveRecord::Base
   DIR_BASE_FEATURES = "lib/features/"
   DIR_VENDOR_FEATURES = "vendor/features/"
   KERNEL_FEATURES = ["admin"]
-  FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms"]
+  FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "products", "rh", "sales", "thirds"]
 
   validates_uniqueness_of :name
 
