@@ -260,11 +260,14 @@ class EmployeesController < ApplicationController
       if @employee.update_attributes(params[:employee]) and @number_error == false
         
         # save the employee's documents
-        if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|
-            document.save
-            @employee.documents << document
-            document.create_thumbnails
+        #FIXME LOOK HERE FOR PROBLEM JULIEN
+        unless params[:new_document_number].nil?
+          if params[:new_document_number]["value"].to_i > 0
+            @document_objects.each do |document|
+              document.save
+              @employee.documents << document
+              document.create_thumbnails
+            end
           end
         end
         
