@@ -7,6 +7,7 @@ development:
   username: root
   password: root
   socket: /Application/MAMP/tmp/mysql/mysql.sock
+  # socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -18,6 +19,7 @@ test:
   username: root
   password: root
   socket: /Application/MAMP/tmp/mysql/mysql.sock
+  # socket: /var/run/mysqld/mysqld.sock
 
 production:
   adapter: mysql
@@ -26,3 +28,4 @@ production:
   username: root
   password: root
   socket: /Application/MAMP/tmp/mysql/mysql.sock
+  # socket: /var/run/mysqld/mysqld.sock
