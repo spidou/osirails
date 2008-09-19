@@ -9,12 +9,21 @@ class Order < ActiveRecord::Base
   has_many :orders_steps, :class_name => "OrdersSteps"
   
   validates_presence_of :order_type
-  validates_presence_of :establishment
+#  validates_presence_of :establishment
   validates_presence_of :customer
   
   ## Create all orders_steps after create
   def after_create
     self.order_type.activated_steps.each {|step| OrdersSteps.create(:order_id => self.id, :step_id => step.id, :status => "unstarted")}
+  end
+  
+  ## Return a tree with activated step
+  def tree
+    steps =[]
+    self.order_type.sales_processes.each do |sales_process|
+      steps << sales_process if sales_process.activated
+    end
+    steps
   end
   
   ## Return current step order
