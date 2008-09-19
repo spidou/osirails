@@ -1751,7 +1751,8 @@ object {
 }
 
 .formated_content hr {
-	background: #333;
+	background:#666;
+	height:1px;
 }
 
 .formated_content strong {
