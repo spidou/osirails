@@ -1,0 +1,28 @@
+<h1>Ajouter une nouvelle cat&eacute;gorie de mati&egrave;re premi&egrave;re</h1>
+<div class="frame">
+  <% form_for(@category) do |category| %>
+    
+    <p>
+      <%= category.error_messages %>
+    </p>
+  
+    <p>
+      <%= category.label :name, "Nom :"%>
+      <%= category.text_field :name %>
+    </p>
+  
+    <p>
+      <% if @type == "child" or @root_commodity_category != nil %>
+        <%= category.label :unit_measure_id, "Unit&eacute;e de mesure :" %>
+        <%= category.collection_select(:unit_measure_id, format_unit_measure, :id, :name, {}) %>
+      <% end %>
+    </p>
+  
+    <p>
+      <%= category.label :commodity_category_id, "Appartient &agrave; :" %>
+      <%= category.collection_select(:commodity_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}) %>
+    </p>
+  
+      <%= category.submit "Ajouter" %> &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
+  <% end %>
+</div>

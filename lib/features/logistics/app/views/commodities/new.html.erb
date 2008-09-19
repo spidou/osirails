@@ -1,0 +1,46 @@
+<h1>Ajouter une nouvelle mati&egrave;re premi&egrave;re</h1>
+<div class="frame">
+
+  <% form_for(@commodity) do |commodity| %>
+ <p>
+  <%= commodity.error_messages %>
+</p>
+      <p>
+      <%= commodity.label :name, "D&eacute;signation :"%>
+      <%= commodity.text_field :name %>
+    </p>
+  
+    <p>
+      <%= commodity.label :commodity_category_id, "Appartient &agrave; :" %>
+      <%= commodity.collection_select(:commodity_category_id, @categories, :id, :name , {}) %>
+      <%= observe_field("commodity_commodity_category_id",:url => {:action => 'refresh_measure'}, :with => 'parameter')%>
+    </p>
+  
+    <p>
+      <%= commodity.label :supplier_id, "Fournisseur :" %>
+      <%= commodity.collection_select(:supplier_id, @suppliers, :id, :name , {}) %>
+    </p>
+
+      <p>
+        <%= params[:id].to_i == -1 ? "<label id='commodity_unit_measure'>#{@unit_measure.symbol} / U :</label>" : "<label id='commodity_unit_measure'>#{params[:id] != nil ? show_parent_measure(params[:id]) : show_parent_measure(@commodity_category_id)}</label>"%>
+      <%= commodity.text_field :measure %>
+    </p> 
+  
+    <p>
+      <%= commodity.label :unit_mass, "kg / U :"%>
+      <%= commodity.text_field :unit_mass %>
+    </p> 
+
+    <p>
+      <%= commodity.label :fob_unit_price, "fob :"%>
+      <%= commodity.text_field :fob_unit_price %>
+    </p> 
+  
+    <p>
+      <%= commodity.label :taxe_coefficient, "Coef Taxe (%) :"%>
+      <%= commodity.text_field :taxe_coefficient %>
+    </p> 
+  
+        <%= commodity.submit("Ajouter") %> &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
+  <% end %>
+</div>
