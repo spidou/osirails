@@ -1,5 +1,20 @@
 module SendedMemorandumsHelper
 
+  # This method permit to structured date
+  def get_structured_date(sended_memorandum)
+    if sended_memorandum.published_at.nil?
+      sended_memorandum.updated_at.strftime('%d %B %Y')
+    else
+      sended_memorandum.published_at.strftime('%d %B %Y')
+    end
+  end
+  
+  # This method permit to get employee information
+  def get_employee(sended_memorandum)
+    user = User.find(sended_memorandum.user_id)
+    employee = "#{user.employee.last_name} #{user.employee.first_name}"
+  end
+
   # This method permit to show or hide add button and she check if a user belong employee
   def show_add_button
   add_button = []

@@ -2,12 +2,20 @@
 
 <div class='frame'>
 <h2 style='text-align: center;'><%= @sended_memorandum.title %></h2>
-<p style ='text-align: center;text-indent: 0;margin: 0;'> le : <%= @sended_memorandum.updated_at %></p>
-<p><strong>Sujet : </strong><%= @sended_memorandum.subject %></p>
-<div class='formated_content'><fieldset><%= @sended_memorandum.text %></fieldset></div>
-<fieldset>
-<p><strong>De : </strong> <%= @sended_memorandum.signature %></p>
-<p><strong>Publier par : </strong> <%= @sended_memorandum.user_id %></p>
-</fieldset>
+
+<div class='formated_content'>
+  <fieldset>
+
+    <p><strong>Object : </strong><%= @sended_memorandum.subject %></p>
+  <p><strong>Date : </strong><%= get_structured_date(@sended_memorandum) %></p>
+    <hr/>
+  <legend>Note de service</legend> 
+  <%= @sended_memorandum.text %>
+  <hr/>
+    <p><strong>De : </strong> <%= @sended_memorandum.signature %></p>
+  <p><strong>Publi&eacute; par : </strong> <%= get_employee(@sended_memorandum) %></p>
+  </fieldset>
+</div>
+
 <%= link_to("Modifier", edit_sended_memorandum_path(@sended_memorandum)) %> <%= link_to("Retour", sended_memorandums_path) %>
 </div>
