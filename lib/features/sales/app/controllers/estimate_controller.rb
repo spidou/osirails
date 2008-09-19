@@ -1,0 +1,3 @@
+class EstimateController < ApplicationController
+  
+end

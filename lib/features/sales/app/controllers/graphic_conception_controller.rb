@@ -1,0 +1,3 @@
+class GraphicConception < ApplicationController
+  
+end
