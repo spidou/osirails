@@ -1,0 +1,13 @@
+<% content_for :header do %>
+  <%= javascript_include_tiny_mce_if_used %>
+  <%= tiny_mce if using_tiny_mce? %>
+<% end %>
+
+<h1>Modifier un contenu</h1>
+
+<div class="frame presentation_medium">
+<%= display_reload_button %>
+<% form_for(@content) do |content| %>
+  <%= render :partial => 'form', :locals => {:content => content, :submit_button_name => "Modifier"} %>
+<% end %>
+</div>

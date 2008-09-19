@@ -1,0 +1,26 @@
+<h1>Liste des contenus</h1>
+
+<div class="frame">
+<% unless @contents.empty? %>
+  <table>
+    <tr>
+      <th>Titre du menu</th> 
+      <th>Titre de la page</th>
+      <th>Description de la page</th>
+      <th>Actions</th>
+    </tr>
+
+      <% for content in @contents %>
+        <% menu = Menu.find_by_id(content.menu_id) %>
+        <tr>
+          <td title='<%= menu.description %>'><%= menu.title %></td>
+          <td><%= content.title %></td>
+          <td><%= content.description %></td> 
+          <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Modifier", edit_content_path(content)) %> <%= link_to("Supprimer", content, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
+        </tr>
+      <% end%>
+  </table>
+<% end %>
+
+<%= link_to 'Ajouter', :action => 'new' %>
+</div>

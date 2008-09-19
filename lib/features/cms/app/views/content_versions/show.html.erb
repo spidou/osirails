@@ -1,0 +1,16 @@
+<% for content_version in @content_versions.reverse %>
+<p>Document référent : <%= link_to(content_version.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
+<h1><%= content_version.title %></h1>
+<h2> <%= content_version.description %></h2>
+            <p><%= content_version.text%></p>
+<%unless @author.nil?%>
+<p>Auteur : <%=@author.employee.nil? ? @author.username : @author.employee.fullname %></p>
+<%end%>
+<% unless content_version.contributor.nil? or content_version.contributor == ""%>
+  <p> Contributeur : <%= contributor_full_name(content_version)%>
+  </p>
+<%end%>
+
+ 
+ <%end%>
+  <%= will_paginate @content_versions, :param_name => :version, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
