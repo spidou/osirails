@@ -1,0 +1,11 @@
+<p><%= sended_memorandums.label :title, "Titre : "%>
+<%= sended_memorandums.text_field :title  %></p>
+
+<p><%= sended_memorandums.label :subject, "Objet : "%>
+<%= sended_memorandums.text_field :subject  %></p>
+
+<p><%= sended_memorandums.label :text, "Votre texte : " %>
+<%= sended_memorandums.text_area( :text, :cols => 100, :rows => 30) %></p>
+
+<p><%= sended_memorandums.label :signature, "Signature : "%>
+<%= initialize_signature %></p>
