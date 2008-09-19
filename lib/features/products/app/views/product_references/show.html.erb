@@ -1,0 +1,29 @@
+<h2>R&eacute;f&eacute;rence</h2>
+<p>
+  <%= label_tag "Nom de la r&eacute;f&eacute;rence :" %>
+  <strong><%= @reference.name %></strong>
+</p>
+<p>
+  <%= label_tag "Description du produit :" %>
+  <strong><%= @reference.description %></strong>
+</p>
+<p>
+  <%= label_tag "Coût de main d'&#339;uvre de production :" %>
+  <strong><%= @reference.production_cost_manpower %></strong>
+</p>
+<p>
+  <%= label_tag "Temps de production :" %>
+  <strong><%= @reference.production_time %></strong>
+</p>
+<p>
+  <%= label_tag "Cout de main d'&#339;uvre de livraison :" %>
+  <strong><%= @reference.delivery_cost_manpower  %></strong>
+</p>
+<p>
+  <%= label_tag "Temps de livraison :" %>
+  <strong><%= @reference.delivery_time  %></strong>
+</p>
+<p>
+  <%= label_tag "Informations compl&eacute;mentaires :" %>
+  <strong><%= @reference.information %></strong>
+</p>

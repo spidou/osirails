@@ -1,0 +1,13 @@
+<% content_for :secondary_menu do %>
+
+<%= show_action_menu(@type) %>
+
+<% end %>
+
+
+<h1>Liste des cat&eacute;gories et des r&eacute;f&eacute;rences</h1>
+
+<div class="frame">
+  <%= @type != "show_all" ? get_structured_categories : get_structured_categories(nil) %>
+  <%= show_add_link_for_product_reference_category %>
+</div>
