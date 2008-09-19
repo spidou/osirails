@@ -1,18 +1,33 @@
 module SendedMemorandumsHelper
 
   # This method permit to structured date
-  def get_structured_date(sended_memorandum)
-    if sended_memorandum.published_at.nil?
-      sended_memorandum.updated_at.strftime('%d %B %Y')
+  def get_structured_date(memorandum)
+    if memorandum.published_at.nil?
+      memorandum.updated_at.strftime('%d %B %Y')
     else
-      sended_memorandum.published_at.strftime('%d %B %Y')
+      memorandum.published_at.strftime('%d %B %Y')
     end
   end
   
   # This method permit to get employee information
-  def get_employee(sended_memorandum)
-    user = User.find(sended_memorandum.user_id)
-    employee = "#{user.employee.last_name} #{user.employee.first_name}"
+  def get_employee(memorandum)
+    user = User.find(memorandum.user_id)
+    employee = "#{user.employee.first_name} #{user.employee.last_name}"
+  end
+  
+  # This method permit to get recpient
+  def get_recipient(memorandum)
+    services = ""
+    memorandums_services_size = memorandum.memorandums_services.size
+    memorandum.memorandums_services.reverse.each do |memorandum_service|
+      service = Service.find(memorandum_service.service_id)
+      unless memorandum.memorandums_services.first == memorandum_service
+        services += "#{service.name}, "
+      else
+        services += "#{service.name}."
+      end      
+    end
+    services
   end
 
   # This method permit to show or hide add button and she check if a user belong employee
@@ -125,18 +140,17 @@ module SendedMemorandumsHelper
     
     memorandums.each do |memorandum|
     
-    published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{memorandum.published_at}")
+    published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{get_structured_date(memorandum)}")
     show_button = link_to("Voir", sended_memorandum_path(memorandum))
-    edit_button = link_to("Modifier", edit_sended_memorandum_path(memorandum))
-    #TODO 
-  #  publish_button = memorandum.published_memorandu
+    edit_button = ( memorandum.published_at.nil? ? link_to("Modifier", edit_sended_memorandum_path(memorandum)) : "" )
+    publish_button = ( memorandum.published_at.nil? ? link_to("Publier", {:method => :put, :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"}) : "" )
     
     sended_memorandums << "<tr title='#{memorandum.subject}'>"
     sended_memorandums << "<td>#{memorandum.title}</td>"
     sended_memorandums << "<td>#{published}</td>"
-    sended_memorandums << "<td>#{show_button}</td>"
-    sended_memorandums << "<td>#{edit_button}</td>"
-    sended_memorandums << "<td>TODO</td>"
+    sended_memorandums << "<td style='width: 50px;'>#{show_button}</td>"
+    sended_memorandums << "<td style='width: 50px;'>#{edit_button}</td>"
+    sended_memorandums << "<td style='width: 50px;'>#{publish_button}</td>"
     end
   sended_memorandums << "</table>"
   end

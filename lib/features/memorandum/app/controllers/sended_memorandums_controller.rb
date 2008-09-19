@@ -21,39 +21,40 @@ class SendedMemorandumsController < ApplicationController
   def create
     @sended_memorandum = Memorandum.new(params[:memorandum])
     @sended_memorandum.user_id = current_user.id
-    #TODO Réfléchir la dessus nil si pas coché
-    # @sended_memorandum.published_at = Time.now
-    
-    #raise params.inspect
-    if @sended_memorandum.save
-      if params.has_key?(:memorandums_services)
-        if params[:memorandums_services][:service_id].first != "0"
-          memorandums_services_not_recursive = params[:memorandums_services][:service_id]
-          if params[:memorandums_services].has_key?(:recursive)
-            memorandums_services_recursive = params[:memorandums_services][:recursive]
-            memorandums_services_recursive.each do |id|
-              MemorandumsService.create(:service_id => id, :memorandum_id => @sended_memorandum.id, :recursive => true)
-              memorandums_services_not_recursive.delete_if {|memorandum_not_recursive| memorandum_not_recursive == id}
-            end
-          end
-          memorandums_services_not_recursive.each do |id|
-            MemorandumsService.create(:service_id => id, :memorandum_id => @sended_memorandum.id, :recursive => false)          
-          end
-        else
-          service = Service.find_by_service_parent_id(nil)
-          MemorandumsService.create(:service_id => service.id, :memorandum_id => @sended_memorandum.id, :recursive => true)
-        end
-        flash[:notice] = "La note de service est bien cr&eacute;&eacute;e"
-        redirect_to :action => 'index'
-      else
-        flash[:error] = "La note de service doit &egrave;tre associ&eacute; &agrave; un service"
-        redirect_to :action => 'new'
-      end
-    else
-      flash[:error] = "La creacute;ation de la note de service a &eacute;chou&eacute;e"
-      render :action => 'new'
+
+    raise params.inspect
+    if params[:published][:publish] == "true"
+      @sended_memorandum.published_at = Time.now
     end
-  end
+      if @sended_memorandum.save
+        if params.has_key?(:memorandums_services)
+          if params[:memorandums_services][:service_id].first != "0"
+            memorandums_services_not_recursive = params[:memorandums_services][:service_id]
+            if params[:memorandums_services].has_key?(:recursive)
+              memorandums_services_recursive = params[:memorandums_services][:recursive]
+              memorandums_services_recursive.each do |id|
+                MemorandumsService.create(:service_id => id, :memorandum_id => @sended_memorandum.id, :recursive => true)
+                memorandums_services_not_recursive.delete_if {|memorandum_not_recursive| memorandum_not_recursive == id}
+              end
+            end
+            memorandums_services_not_recursive.each do |id|
+              MemorandumsService.create(:service_id => id, :memorandum_id => @sended_memorandum.id, :recursive => false)          
+            end
+          else
+            service = Service.find_by_service_parent_id(nil)
+            MemorandumsService.create(:service_id => service.id, :memorandum_id => @sended_memorandum.id, :recursive => true)
+          end
+          flash[:notice] = "La note de service est bien cr&eacute;&eacute;e"
+          redirect_to :action => 'index'
+        else
+          flash[:error] = "La note de service doit &egrave;tre associ&eacute; &agrave; un service"
+          redirect_to :action => 'new'
+        end
+      else
+        flash[:error] = "La creacute;ation de la note de service a &eacute;chou&eacute;e"
+        render :action => 'new'
+      end
+    end
   
   # GET /sended_memorandums/1/edit
   def edit
@@ -63,8 +64,10 @@ class SendedMemorandumsController < ApplicationController
   # PUT /sended_memorandums/1
   def update
     @sended_memorandum = Memorandum.find(params[:id])
+    if params[:published][:publish] == "true"
+      @sended_memorandum.published_at = Time.now
+    end
     if @sended_memorandum.update_attributes(params[:memorandum])
-      #  raise params.inspect
       if params.has_key?(:memorandums_services)
         memorandums_services = @sended_memorandum.memorandums_services    
         if params[:memorandums_services][:service_id].first != "0"

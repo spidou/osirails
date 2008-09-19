@@ -5,15 +5,14 @@
 
 <div class='formated_content'>
   <fieldset>
-
     <p><strong>Object : </strong><%= @sended_memorandum.subject %></p>
-  <p><strong>Date : </strong><%= get_structured_date(@sended_memorandum) %></p>
+    <p><strong>Date : </strong><%= get_structured_date(@sended_memorandum) %></p>
+    <p><strong>Destinataire : </strong><%= get_recipient(@sended_memorandum) %></p>
     <hr/>
-  <legend>Note de service</legend> 
-  <%= @sended_memorandum.text %>
-  <hr/>
+    <%= @sended_memorandum.text %>
+    <hr/>
     <p><strong>De : </strong> <%= @sended_memorandum.signature %></p>
-  <p><strong>Publi&eacute; par : </strong> <%= get_employee(@sended_memorandum) %></p>
+    <p><strong>Publi&eacute; par : </strong> <%= get_employee(@sended_memorandum) %></p>
   </fieldset>
 </div>
 

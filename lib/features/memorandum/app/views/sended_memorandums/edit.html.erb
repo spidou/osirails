@@ -26,7 +26,8 @@
     </tbody>
   </table>
 </div>
-  
-  <%= sended_memorandums.submit("Modifier") %> <%= link_to(" Retour", sended_memorandums_path) %>
+<p><label>Publier : </label>
+<input type='checkbox' value='true' name='published[publish]' /><i> (Attention cette action annule la possibilit&eacute;e de modifier la note de service)</i></p>  
+  <%= sended_memorandums.submit("Modifier") if @sended_memorandum.published_at.nil? %> <%= link_to(" Retour", sended_memorandums_path) %>
 <% end %>
 </div>
