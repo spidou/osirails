@@ -2,6 +2,7 @@ class Feature < ActiveRecord::Base
   serialize :dependencies
   serialize :conflicts
   serialize :business_objects
+  serialize :search
 
   # Constants
   DIR_BASE_FEATURES = "lib/features/"

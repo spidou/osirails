@@ -10,6 +10,7 @@ def init(config, path)
     conflicts = yaml['conflicts']
     business_objects = yaml['business_objects']
     menus = yaml['menus']
+    searches = yaml['search']
     configurations = yaml['configurations']
     
     # Manage the activation of a feature
@@ -49,7 +50,45 @@ def init(config, path)
       feature.activated = true
       feature.save  
     end
+    
+    # test and add search indexes into db
+    error_message = "syntaxe error in '#{ name }' yaml."
+    
+    def verify_sub_resources(hash,error_message)
+      hash.each_pair do |sub_attribute,value|
+        if value.class == {}.class
+          value.each_pair do |sub_attribute2,value2|
+            if value2.class=={}.class
+              return verify_sub_resources(value2,error_message) unless verify_sub_resources(value2,error_message).blank?
+            else
+              return "#{ error_message } the attribute '#{ sub_attribute2 }' is incorrect for '#{ sub_attribute }'!" unless sub_attribute.constantize.new.respond_to?(sub_attribute2)
+       
+            end
+          end
+        else
+          return "#{ error_message } missing attribute type or sub attributes hash for  '#{ sub_attribute }' "
+        end
+      end
+      return "" 
+    end
+     unless searches.blank? or searches == []
+      searches.each_key do |key|
+        searches[key].each_key do |elmnt|  
+          searches[key][elmnt].each_pair do |attr_name,attr_type|
+            if attr_type.class=={}.class
+              raise verify_sub_resources(attr_type,error_message) unless verify_sub_resources(attr_type,error_message).blank?
+              raise "#{ error_message } The sub resource '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
+            else
+              raise "#{ error_message } The attribute '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
+            end
+          end
+        end
+      end 
+      feature.search = searches
+      feature.save
+    end 
 
+    
     #Test of dependencies for this feature
     dependencies_hash = []
     unless dependencies.nil?
@@ -92,7 +131,7 @@ def init(config, path)
       end
     end
     
-
+ 
     #Test if all permission for all menus are present
     def menus_permisisons_verification(menus)
       roles_count = Role.count

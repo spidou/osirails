@@ -1,7 +1,7 @@
 <h1>Ajouter une Prime à <%=@employee.fullname%> </h1>
 
 <% content_for :header do %>
-     <%= javascript_include_tag 'premium' %>
+     <%= javascript_include_tag 'rh/premium' %>
 <% end %>
 
 <% form_for([@employee,@premium]) do |f| %>

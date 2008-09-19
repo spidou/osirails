@@ -137,7 +137,7 @@ class EmployeesController < ApplicationController
       
       
       # save or show errors 
-      if @employee.save and job == true
+      if @employee.save # and job == true
         
         # save the employee's documents
         if params[:new_document_number]["value"].to_i > 0
@@ -149,11 +149,11 @@ class EmployeesController < ApplicationController
         end
         
         # save job and employees
-        unless params[:job].nil?
-          job = @job.save
-        else
-          job = true   
-        end  
+        #unless params[:job].nil?
+        #  job = @job.save
+        #else
+        #  job = true   
+        #end  
         
         # configure the employee as a responsable of his services if responsable is checked
         unless params[:responsable].nil?
@@ -188,8 +188,8 @@ class EmployeesController < ApplicationController
       @numbers_reloaded||= nil
       @numbers_reloaded.nil? ? @numbers = @employee.numbers : @numbers = @numbers_reloaded
       @address = @employee.address
-      
-      
+      @number_error = false
+      @errors_messages = []
       
       # put numbers another place for a separate création
       params[:numbers] = params[:employee]['numbers']
@@ -257,7 +257,7 @@ class EmployeesController < ApplicationController
       params[:employee].delete('documents')
       
       # save or show errors
-      if @employee.update_attributes(params[:employee])
+      if @employee.update_attributes(params[:employee]) and @number_error == false
         
         # save the employee's documents
         if params[:new_document_number]["value"].to_i > 0
@@ -268,6 +268,8 @@ class EmployeesController < ApplicationController
           end
         end
         
+        # FIXME use transaction with the checkboxes params when destroy all!
+        ########################################################################
         # destroy all responsables
         @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
         @responsable.each do |r|
@@ -277,6 +279,8 @@ class EmployeesController < ApplicationController
         # destroy all services and jobs if there's no checked checkbox
         params[:employee]['service_ids']||= [] 
         params[:employee]['job_ids']||= []
+        ########################################################################"
+        
         
         # destroy the numbers that have been deleted in the update view
         unless  params[:deleted_numbers].nil?
@@ -299,6 +303,7 @@ class EmployeesController < ApplicationController
         
         redirect_to(@employee)
       else
+        
         @numbers.each_with_index do |number,index|
           unless params[:deleted_numbers].nil?
             params[:deleted_numbers].each_value do |j|
