@@ -7,7 +7,7 @@ class Feature < ActiveRecord::Base
   # Constants
   DIR_BASE_FEATURES = "lib/features/"
   DIR_VENDOR_FEATURES = "vendor/features/"
-  FEATURES_NOT_ABLE_TO_DEACTIVATE = ["Admin"]
+  FEATURES_NOT_ABLE_TO_DEACTIVATE = ["admin", "calendars", "cms", "logistics", "products", "rh", "sales", "thirds"]
 
   validates_uniqueness_of :name
 

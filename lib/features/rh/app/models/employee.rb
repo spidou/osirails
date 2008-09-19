@@ -1,5 +1,6 @@
 class Employee < ActiveRecord::Base
   acts_as_file
+  
   include Permissible
   
   # restrict or add methods to be use into the pattern 'Attribut'
@@ -7,8 +8,6 @@ class Employee < ActiveRecord::Base
   
   cattr_accessor :pattern_error
   @@pattern_error = false
-  
-  
   
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
@@ -37,7 +36,7 @@ class Employee < ActiveRecord::Base
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   
   # Callbacks
-  after_create :user_create_methode
+  after_create :create_user
   before_save :case_managment
   
   # Method to change the case of the first_name and the last_name at the employee's creation
@@ -180,7 +179,8 @@ class Employee < ActiveRecord::Base
     "#{self.first_name} #{self.last_name}"
   end
   
-  def user_create_methode
+  def create_user
+    ConfigurationManager.initialize_options unless ConfigurationManager.respond_to?("admin_user_pattern")
     User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd",:employee_id => self.id)
     JobContract.create(:start_date => "", :end_date => "", :employee_id => self.id, :employee_state_id => "",:job_contract_type_id => "" )  
   end 

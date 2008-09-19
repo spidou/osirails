@@ -22,15 +22,13 @@ class User < ActiveRecord::Base
     # manage the error that occure when reset database with admin_actual_password_policy that is empty
     begin
       # find the index of the actual selected regex to choose the good one into the db
+      ConfigurationManager.initialize_options unless ConfigurationManager.respond_to?("admin_actual_password_policy")
       actual = ConfigurationManager.admin_actual_password_policy
       reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
       # replace the "l" by "d" into 'admin_actual_password_policy' to find the message into admin password_policy (cf. config.yml) concerning the regexp name ex: "d1" message for "l1" regex 
       message = ConfigurationManager.admin_password_policy[ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")]
-      user.validates_format_of :password, :with => reg ,:message => message 
-      
-
+      user.validates_format_of :password, :with => reg ,:message => message
       # user.validate :must_be_different
-                                                         
       # user.validates_format_of :password, :with => /^(a.A){32}$/ ,:message =>  " ne doit pas être votre ancien mot de passe" , :if => :same_password?
     rescue Exception =>  e
       puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
