@@ -1,34 +1,39 @@
+<div class="frame">
 <p>
-  <%= label :order, :title, "Nom de projet :" %>
-  <strong><%= order.title %></strong>
+  <%= label :@order, :title, "Nom de projet :" %>
+  <strong><%= @order.title %></strong>
 </p>
 
 <p>
-  <%= label :order, :client, "Client / &Eacute;tablissement  :" %>
-  <strong><%= order.customer.name %><%= order.etablishment.name %></strong>
+  <%= label :@order, :client, "Client / &Eacute;tablissement  :" %>
+  <strong><%= @order.customer.name %><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
 </p>
 
 <p>
-  <%= label :order, :establishment_address, "Lieu de livraison  :" %>
-  <strong><%= order.etablishment.full_address %></strong>
+  <%= label :@order, :establishment_address, "Lieu de livraison  :" %>
+  <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
 </p>
 
 <p>
-  <%= label :order, :step, "Niveau d'avancement actuel  :" %>
-  <strong><%= order.step.title %></strong>
+  <%= label :@order, :step, "Niveau d'avancement actuel  :" %>
+  <strong><%= "TEST" || @order.step.title %></strong>
 </p>
 
 <p>
-  <%= label :order, :commercial_full_name, "Suivi commercial  :" %>
-  <strong><%= order %></strong>
+  <%= label :@order, :commercial_full_name, "Suivi commercial  :" %>
+  <strong><%= @order %></strong>
 </p>
 
 <p>
-  <%= label :order, :order_type, "Type de dossier  :" %>
-  <strong><%= order.order_type.title %></strong>
+  <%= label :@order, :@order_type, "Type de dossier  :" %>
+  <strong><%= @order.order_type.title %></strong>
 </p>
 
 <p>
-  <%= label :order, :previsional_delivery, "Date pr&eacute;visionnelle de livraison  :" %>
-  <strong><%= order.previsional_delivery %></strong>
+  <%= label :@order, :previsional_delivery, "Date pr&eacute;visionnelle de livraison  :" %>
+  <strong><%= @order.previsional_delivery %></strong>
 </p>
+<% if controller.can_edit?(current_user) %>
+<%= link_to 'Modifier', "/orders/#{params[:id]}/commercial/edit" %>
+<% end %>
+</div>

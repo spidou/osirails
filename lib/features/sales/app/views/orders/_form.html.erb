@@ -1,0 +1,33 @@
+<% form_for @order, :url => {:controller => 'commercial'} do |o| %>
+<h2>Informations</h2>
+<p>
+	<%= o.label :title, 'Nom du projet' %>
+	<%= o.text_field :title %>
+</p>
+<p>
+	<%= o.label :order_type, 'Type de dossier' %>
+	<%= o.select :order_type, OrderType.find(:all).collect {|ot| ot.title } %>
+</p>
+<p>
+	<%= o.label :commercial %>
+	<%= text_field_tag 'TODO', 'TODO' %>
+</p>
+
+<h2>Client</h2>
+<p>TODO</p>
+
+<h2>Dates</h2>
+<p>
+	<%= o.label :created_at, 'Date de cr&eacute;ation' %>
+	<input id="created_at" type="text" disabled="disable" value="<%= @order.created_at %>">
+</p>
+<p>
+	<%= o.label :previsional_start, 'Date pr&eacute;visionnelle de mise en production' %>
+	<%= o.text_field :previsional_start %>
+</p>
+<p>
+	<%= o.label :previsional_delivery, 'Date pr&eacute;visionnelle de livraison' %>
+	<%= o.text_field :previsional_delivery %>
+</p>
+<%= o.submit 'Modifier' %>
+<% end %>

@@ -1,5 +1,9 @@
 <h1> Liste des dossier en phase Commerciale </h1>
 
 <div class="frame">
-
+	<ul>
+		<% @orders.each do |order| %>
+		<li><a href="/orders/<%= order.id %>/commercial/show"><%= order.title %></a></li>
+		<% end %>
+	</ul>
 </div>

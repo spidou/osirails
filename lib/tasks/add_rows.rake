@@ -341,9 +341,17 @@ namespace :osirails do
       
       # default contacts
       Contact.create :first_name => "Contact_first_name", :last_name => "Contact_last_name", :contact_type_id => "1", :email => "contact@emr.com", :job => "stagiaire"
+      
+      # Default order_type
+      OrderType.create :title => "Normal"
+      OrderType.first.society_activity_sectors = SocietyActivitySector.find(:all)
+      OrderType.create :title => "SAV"
+      OrderType.last.society_activity_sectors << SocietyActivitySector.first
+      
+      # default orders
+      Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
+      Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
     end
-    
-   
     
 
     desc "Depopulate the database"
@@ -351,7 +359,7 @@ namespace :osirails do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address, Contact].each do |model|
+        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address, Contact, OrderType, Order].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all

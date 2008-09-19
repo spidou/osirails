@@ -1,1 +1,8 @@
-<%= display_tabulated_menu %>
+<% content_for :secondary_menu do %>
+<h1><span class="blue_color">Options</span></h1>
+<a href="/orders/new">Cr&eacute;er un nouveau dossier</a>
+<% end %>
+
+<%= order_header %>
+
+<%= general_information %>
