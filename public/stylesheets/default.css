@@ -1300,14 +1300,21 @@ div.tabs {
 	margin-bottom:0;
 }
 */
+
 .frame.tabulation>h1 {
-	background:#E8A859;/*#E6B061;*/
-	color:#AB6600;
-//	margin-left:12px;
-	text-align:left;
-//	text-indent:10px;
+	background:url('/images/background_tabs_h2.jpg') repeat;
+	color:#FFE7C4;
+	text-align:center;
 	margin-bottom:0px;
 	margin-top:0px;
+}
+
+.frame.tabulation>h2 {
+	background:#FFBC5E;/*#E6B061;*/
+	color:white;
+	text-align:left;
+	margin-bottom:0px;
+	margin-top:-1px;
 	border:white 1px solid;
 }
 
@@ -1330,13 +1337,13 @@ div.tabs ul {
 div.tabs ul li {
 	float: left;
 	margin-left: 1px;
-	background: url("/images/background_tabs.png") repeat-x top;
+	background: url("/images/background_tabs_test.png") repeat-x top;
 	height:30px;
 	cursor:pointer;
 }
 
 div.tabs ul li.selected {
-	background-position: bottom;
+	background-position:bottom;
 	border-bottom:none;
 	border-right:solid 1px #989898;
 	border-left:solid 1px #989898;
@@ -1740,14 +1747,9 @@ object {
 }
 
 .formated_content * {
-//	margin:inherit;
-//	padding:inherit;
 	background:inherit;
 	color:inherit;
-//	font:inherit;
-//	text-indent:inherit;
 	border:none;
-//	position:inherit;
 }
 
 .formated_content hr {
