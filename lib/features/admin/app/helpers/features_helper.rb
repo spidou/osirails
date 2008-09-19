@@ -41,7 +41,7 @@ module FeaturesHelper
   
   # Helper method to display the good link for the gestion of activation/deactivation of a feature
   def display_activate_link(feature)
-    if feature.base_feature? and feature.is_kernel_feature? 
+    if feature.base_feature? and feature.kernel_feature? 
       if feature.activated?
         button= "<a class=\"admin_features_activated-installed\" href=\" \" title=\"Vous ne pouvez pas désactiver le module "+feature.name+" car c&#146est un module critique du noyau!\" Onclick=\"alert ('Vous ne devez pas désactiver le module "+feature.name+" car il appartient au noyau!');return false\" >Oui</a>"
       end

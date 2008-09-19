@@ -46,7 +46,7 @@ def init(config, path)
       feature.save
     end
 
-    if Feature::FEATURES_NOT_ABLE_TO_DEACTIVATE.include?(feature.name)
+    if feature.kernel_feature? or feature.activate_by_default?
       feature.activated = true
       feature.save  
     end

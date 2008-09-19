@@ -7,7 +7,8 @@ class Feature < ActiveRecord::Base
   # Constants
   DIR_BASE_FEATURES = "lib/features/"
   DIR_VENDOR_FEATURES = "vendor/features/"
-  FEATURES_NOT_ABLE_TO_DEACTIVATE = ["admin", "calendars", "cms", "logistics", "products", "rh", "sales", "thirds"]
+  KERNEL_FEATURES = ["admin"]
+  FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms"]
 
   validates_uniqueness_of :name
 
@@ -146,11 +147,12 @@ class Feature < ActiveRecord::Base
   end
 
   # Method to verify if the feature belongs to the features that cannot be deactivated 
-  def is_kernel_feature?
-    FEATURES_NOT_ABLE_TO_DEACTIVATE.each do |name|
-      return true if name == self.name
-    end 
-    false
+  def kernel_feature?
+    KERNEL_FEATURES.include?(self.name)
+  end
+  
+  def activate_by_default?
+    FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
   end
 
   def able_to_deactivate?
@@ -257,19 +259,18 @@ class Feature < ActiveRecord::Base
 
     message = ""
     case method
-
     when "enable"
-      message = "Une erreur est survenue lors de l'activation du module \" " + self.name + "\"."
+      message = "Une erreur est survenue lors de l'activation du module #{self.name}. "
       unless self.activate_dependencies.empty?
-        self.activate_dependencies.size>1 ? message << "Les  modules suivantes sont requises:<ul> " : message << "Le  module suivant est requis:<ul> " 
+        self.activate_dependencies.size > 1 ? message << "Les modules suivants sont requis :" : message << "Le module suivant est requis : "
+        deps = []
         self.activate_dependencies.each do |error|
-          message << "<li>" + error[:name] + " [v:" + error[:version].join(",  v:") + "]</li>"
+          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
         end
-        message << "</ul>"
+        message << deps.join(", ")
       end         
-
     when "disable" 
-      message = "Une erreur est survenue lors de la désactivation du module \" " + self.name + "\"."
+      message = "Une erreur est survenue lors de la désactivation du module #{self.name}."
       unless self.deactivate_children.empty?
         self.deactivate_children.size>1 ? message  << "D'autres modules dépendent de ce module:<ul> ": message  << "Un module dépend de ce module:<ul> " 
         self.deactivate_children.each do |error|
@@ -277,7 +278,6 @@ class Feature < ActiveRecord::Base
         end
         message << "</ul>"
       end
-
     when "install" 
       message = "Une erreur est survenue lors de l'installaton de " + self.name + "."
       unless self.able_to_install_dependencies.empty?
@@ -287,7 +287,6 @@ class Feature < ActiveRecord::Base
         end
         message << "</ul>"
       end
-
       unless self.able_to_install_conflicts.empty?
         self.able_to_install_conflicts.size>1 ? message << "<br/>les conflits suivants ont été détectés:<ul> " : message << "<br />le conflit suivant a été détecté:<ul> "
         self.able_to_install_conflicts.each do |error|
@@ -295,13 +294,11 @@ class Feature < ActiveRecord::Base
         end
         message << "</ul>"
       end
-
       unless self.install_log.empty?
         self.install_log.each do |error|
           message << "<br />" + error
         end
       end
-
     when "uninstall"   
       message = "Une erreur est survenue lors de la désinstallation du module \" " + self.name + "\"."
       unless self.able_to_uninstall_children.empty?
@@ -311,16 +308,13 @@ class Feature < ActiveRecord::Base
         end
         message << "</ul>"
       end
-
-
       unless self.uninstall_log.empty?
         self.uninstall_log.each do |error|
           message << "<br />" + error
         end
       end  
-
     when "remove"
-      message = "Une erreur est survenue lorsde la suppression du module \""+ self.name + "\"."
+      message = "Une erreur est survenue lors de la suppression du module \""+ self.name + "\"."
     end
     return message
   end
