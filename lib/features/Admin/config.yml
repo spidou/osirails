@@ -1,8 +1,16 @@
 # FIXME yamled
-name: Admin
+name: admin
+title: Administration
 version: 0.1
-dependencies:
-conflicts:
+#dependencies:
+#  feature_name:
+#    - 0.1
+#  feature_name2:
+#    - 0.1
+#conflicts:
+#  feature_name:
+#    - 0.1
+#    - 0.2
 business_objects:
   - Features
 menus:

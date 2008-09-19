@@ -1,4 +1,4 @@
-name: Cms
+name: cms
 version: 0.1
 dependencies:
 conflicts:

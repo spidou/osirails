@@ -1,4 +1,4 @@
-name: Products
+name: products
 version: 0.1
 dependencies:
 conflicts:
