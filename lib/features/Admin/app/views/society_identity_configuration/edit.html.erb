@@ -1,9 +1,0 @@
-<h1>Modifier les param&egrave;tres de base de l'entreprise</h1>
-<%= display_tabulated_menu %>
-
-<div class="frame tabulation">
-<% form_tag :action => 'update' do %>
-    <%= render :partial => 'form' %>
-    <%= submit_tag 'Mettre &agrave; jour' %> &#124; <%= link_to "Retour", :action => 'index' %>
-<% end %>
-</div>
