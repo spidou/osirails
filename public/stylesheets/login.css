@@ -1,4 +1,25 @@
-* { margin: 0; padding: 0; }
+/*	login.css--------------------------------------------------------
+	----------	..::Par Oxydium::.
+
+Création : Juillet/Octobre 2008
+---------
+Description : feuille de style de la page de login permettant à tout
+utilisateur référencer de se logger dans l'intranet Osirails.
+---------------------------------------------------------------------
+				..::Powered by Oxydium::..
+creation : July/October 2008
+---------
+Description: stylesheet of the login page that allow any
+known user to log into the Osirails' intranet.
+--------------------------------------------------------------------*/
+/*
+div {
+	border: solid 1px black; 
+}
+*/
+* { 
+	margin: 0; padding: 0;
+}
 
 body {
 	font: 12px "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
@@ -71,11 +92,6 @@ input[type=password] {
 	width: 169px;/*171*/
 	height: 22px;
 	padding-top:5px;
-//	text-indent: 8px;
-//	margin:10px;
-//	position:relative;
-//	right:40px;
-//	top:22px;
 	margin-left:auto;
 	margin-right:auto;
 	display:block;

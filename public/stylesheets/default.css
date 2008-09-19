@@ -1739,7 +1739,13 @@ object {
 	background:black;
 }
 
-
+.formated_content {
+	margin:inherit;
+	padding:inherit;
+	background:inherit;
+	color:inherit;
+	font-family:inherit;
+}
 /*/////////////////////////////////////////////////////
 					FOOTER
 ////////////////////////////////////////////////////*/
