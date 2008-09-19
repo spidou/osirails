@@ -1,6 +1,6 @@
 function action_choose(select)
       { 
-        switch( select.options[select.selectedIndex].id )
+        switch( select.options[select.selectedIndex].value.split(",")[1] )
         {
           case "date" :
             document.getElementById('actions').innerHTML = ""
@@ -33,7 +33,7 @@ function action_choose(select)
       
       function inputType(select)
       {
-        switch( select.options[select.selectedIndex].id )
+        switch( select.options[select.selectedIndex].value.split(",")[1] )
         {
           case "string" :
             document.getElementById('input_type').innerHTML = "<input type=\"text\" />";                                             
@@ -69,16 +69,4 @@ function action_choose(select)
       		document.getElementById(elemnt.id).value ="";
 
       	}
-      }
-      
-      function see()
-      {
-        for( el = 0; el<document.getElementsByName('model_radio').length; el++)
-        {
-          if(document.getElementsByName('model_radio')[el].checked==true)
-          {
-            alert(document.getElementsByName('model_radio')[el].value);
-            document.getElementById('choosen_model').value = document.getElementsByName('model_radio')[el].value
-          }
-        }
       }

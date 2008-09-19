@@ -7,7 +7,7 @@
 <% form_for([@employee,@premium]) do |f| %>
   <%=f.error_messages%> 
 
-  <div class="frame">
+  <div class="frame presentation_small">
   <h2>Prime :</h2>
   <p>
     <%= f.label :premium, "Prime :"%>
@@ -19,7 +19,9 @@
     <%= f.label :remark, "motif :"%>
     <%= f.text_area :remark%>
   </p>
-  
+  <p>
+    <%= f.submit "Ajouter", :onclick => "return confirm_premium();" %>
+  </p>
   </div>
-  <%= f.submit "Ajouter", :onclick => "return confirm_premium();" %>  
-<%end%>  
+    
+<%end%>

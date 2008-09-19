@@ -24,15 +24,15 @@ class Search
     sub_resources_array==[] ?  nil : sub_resources_array
   end
   
-  def self.regroup_attributes(hash)
-    result_hash = hash.values[0]
-    hash.values[1].each_pair do |key,value|
-      unless value.class=={}
-        result_hash.merge(hash.values[1])
-      else
-        result_hash[key].nil? ? result_hash.merge(values) : result_hash[key].merge(values[key])
-      end
-    end
+ def self.regroup_attributes(hash)
+    result_hash = hash.values[0].merge(hash.values[1])
+    #hash.values[1].each_pair do |key,value|
+    #  unless value.class=={}
+    #    result_hash.merge(hash.values[1])
+    #  else
+    #    result_hash[key].nil? ? result_hash.merge(values) : result_hash[key].merge(values[key])
+    #  end
+    #end
     return result_hash
   end
   
