@@ -1,0 +1,70 @@
+<h1>Modifier le contrat de travail de <%=@employee.fullname%> </h1>
+
+
+
+<% content_for :header do %>
+  <%= javascript_include_tag 'rh/job_contract' %> 
+<% end %>  
+
+
+
+<% form_for([:employee,@job_contract]) do |f| %>
+  <%=f.error_messages%> 
+  
+  <div class="frame">
+  <h2>Informations :</h2> 
+  <p>
+    <%= f.label :start_date, "Date de début du contrat :"%>
+    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year]%>
+  </p>
+  
+  <p>
+    <%= f.label :end_date, "Date de fin du contrat :"%>
+    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => @job_contract.end_date.nil?%> 
+    <% @job_contract.end_date.nil? ? checked = "checked = checked" : checked = ""%>
+    &nbsp;<%= "<input type=\"checkbox\" onclick=\"skip_date();\" "  + checked + "/>" %> Date non d&eacute;termin&eacute;e
+  </p>
+  
+  <p>
+    <%= f.label :employee_state_id, "Status employée :"%>
+    <%= f.collection_select :employee_state_id, EmployeeState.find(:all), :id, :name, :inlude_blank => true %>
+  </p>
+  
+  <p>
+    <%= f.label :job_contract_type_id, "Type de contrat de l'employée :"%>
+    <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
+  </p>
+
+  <h2>Salaire :</h2>
+  <p>
+    <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>
+    <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"%>
+    <%= select('salaries[type]','value', ["Brut","Net"], :selected => "Brut")%>
+  </p>
+  
+  <!-- Display Documents div -->
+  
+  <h2>Avenant au contrat</h2>
+    <% unless @documents.nil?%>
+      <% unless @documents.empty? %>
+        <% for document in @documents %>
+          <p>        
+            <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
+            <%= link_to document.name, employee_document_path(@employee, document) %>
+            <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
+              <%= link_download_last_version(document) %>
+            <% end %>
+          </p>
+        <% end %>
+      <% end %> 
+    <% end %>
+    <!-- Display document_form-->
+    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'JobContract',
+    :new_contact_number => @new_contact_number, :error => @error} %>
+  
+
+  </div>
+  <%= submit_tag "Modifier" %>
+<%end%>
+<%=link_to 'Retour', employee_path(@employee)%>
+

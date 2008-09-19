@@ -1,0 +1,26 @@
+<h1>Modification d'une fonction</h1>
+
+<div class="frame">
+<% form_for(@job) do |j|%>
+  <p>
+    <%= j.label :name, "Nom :"%>
+    <%= j.text_field :name, { :size => 14, :maxlength => 16}%>
+  </p>
+  <p>
+    <%= j.label :mission, "Mission :"%>
+    <%= j.text_area :mission %>
+  </p>
+  <p>
+    <%= j.label :activity, "Activités :"%>
+    <%= j.text_area :activity%>
+  </p>
+  <p>
+    <%= j.label :goal, "Objectifs :"%>
+    <%= j.text_area :goal%>
+  </p>
+  <p>
+  <%=j.submit 'Modifier'%>
+  </p>
+  <%= link_to 'Retour', jobs_path %>
+<%end%>
+</div>

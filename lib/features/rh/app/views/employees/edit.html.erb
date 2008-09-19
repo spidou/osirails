@@ -1,0 +1,11 @@
+<% content_for :secondary_menu do %>
+  <p>
+    <%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %>
+  </p>
+<% end %>
+
+<h1>Modifier un employ&eacute;e</h1>
+
+<div class="frame presentation_medium" >
+<%= render :partial => 'form', :locals => {:button_name=> "Modifier"}%>
+</div>

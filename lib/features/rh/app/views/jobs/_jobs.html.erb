@@ -1,0 +1,17 @@
+<div id="jobs_list">
+  <table>
+    <tr>
+      <th colspan="2">Fonctions</th>
+    </tr>
+    <% for associated_job in jobs %>
+      <tr>
+        <td>
+          <%= check_box_tag "employee[job_ids][]", associated_job.id , is_in?(associated_job, 'jobs','job_ids',numbers.nil? ? nil : employee)   %>
+        </td>
+        <td>
+          <%= associated_job.name %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

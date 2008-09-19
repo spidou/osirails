@@ -1,0 +1,25 @@
+<h1>Ajouter une Prime à <%=@employee.fullname%> </h1>
+
+<% content_for :header do %>
+     <%= javascript_include_tag 'rh/premium' %>
+<% end %>
+
+<% form_for([@employee,@premium]) do |f| %>
+  <%=f.error_messages%> 
+
+  <div class="frame">
+  <h2>Prime :</h2>
+  <p>
+    <%= f.label :premium, "Prime :"%>
+    <%= f.text_field :premium,{:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"}%>
+    &nbsp;le&nbsp;
+    <%= f.date_select :date, :start_year => 2000, :order => [:day,:month,:year] %>
+  </p>
+  <p>
+    <%= f.label :remark, "motif :"%>
+    <%= f.text_area :remark%>
+  </p>
+  
+  </div>
+  <%= f.submit "Ajouter", :onclick => "return confirm_premium();" %>  
+<%end%>  

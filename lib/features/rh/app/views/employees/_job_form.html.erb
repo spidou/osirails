@@ -1,0 +1,27 @@
+ <div class="frame">
+ <h2>Ajout de fonction</h2>
+      <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
+        <%=j.error_messages%>
+      <p style="display:none">
+        <%= hidden_field_tag 'employee_id',params[:id].nil? ? nil : params[:id]%>
+      </p>  
+      <p class="text_form">
+        <%= j.label :name, "Nom :"%>
+        <%= j.text_field :name%>
+      </p>
+      <p class="text_form">
+        <%= j.label :mission, "Mission :"%>
+        <%= j.text_area :mission %>
+      </p>
+      <p class="text_form">
+        <%= j.label :activity, "Activités :"%>
+        <%= j.text_area :activity%>
+      </p>
+      <p class="text_form">
+        <%= j.label :goal, "Objectifs :"%>
+        <%= j.text_area :goal%>
+      </p>
+      <%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close()'%>
+      <%=link_to_remote "Annuler",:url=>{:action=>"job_form_cancel"},:href=>(url_for :action=>"job_form_cancel")%>
+      <%end%>
+    </div>
