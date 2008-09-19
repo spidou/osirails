@@ -1750,6 +1750,14 @@ object {
 //	position:inherit;
 }
 
+.formated_content hr {
+	background: #333;
+}
+
+.formated_content strong {
+	color:rgb(234,136,28);
+}
+
 /*/////////////////////////////////////////////////////
 					FOOTER
 ////////////////////////////////////////////////////*/
