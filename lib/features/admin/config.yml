@@ -1,0 +1,153 @@
+# FIXME yamled
+name: admin
+title: Administration
+version: 0.1
+#dependencies:
+#  feature_name:
+#    - 0.1
+#  feature_name2:
+#    - 0.1
+#conflicts:
+#  feature_name:
+#    - 0.1
+#    - 0.2
+business_objects:
+  - Features
+menus:
+  account:
+    title: Compte utilisateur
+    description: Gestion des connexions
+  documents:
+    title: Documents
+    description: Gestion des documents
+  downloads:
+    title: Downloads
+    description: Gestion des downloads
+  admin:
+    title: Administration
+    description: Administration de l'Intranet
+    position: 1
+    children:
+      users:
+        title: Utilisateurs
+        description: Gestion des utilisateurs
+        position: 1
+      roles:
+        title: Rôles
+        description: Gestion des rôles
+        position: 2
+      menus:
+        title: Navigation
+        description: Gestion de la navigation
+        position: 3
+      password_policies:
+        title: Sécurité
+        description: Gestion des politiques de sécurité
+        position: 4
+      permissions:
+        title: Permissions
+        description: Gestion des permissions
+        position: 5
+        children:
+          role_permissions:
+            title: Rôles
+            description: Gestion des permissions en fonction des rôles
+            position: 1
+          business_object_permissions:
+            title: Objets métiers
+            description: Gestion des permissions en fonction des objets métiers
+            position: 2
+          menu_permissions:
+            title: Menus
+            description: Gestion des permissions en fonction des menus
+            position: 3
+          document_permissions:
+            title: Types de document
+            description: Gestion des permissions en fonction des types de documents
+            position: 4
+      society_configurations:
+        title: Configuration de l'entreprise
+        description: Gestion de la configuration de l'entreprise
+        position: 6
+        children:
+          society_identity_configuration:
+            title: Paramètres globaux
+            description: Configuration des paramètres globaux de l'entreprise
+            position: 1
+          society_activity_sectors:
+            title: Secteurs d'activités
+            description: Gestion des secteurs d'activités
+            position: 2
+          services:
+            title: Services
+            description: Gestion des services
+            position: 3
+      features:
+        title: Modules
+        description: Gestion des modules
+        position: 7
+configurations:
+  password_policy:
+    description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
+    value:
+      # level 0
+      l0: ''
+      d0: Le niveau actuel ne requiere aucun modéle particulier mais n'offre aucune sécurité!
+      # level 1
+      l1: '^([\x20-\x7E]){6,40}$'
+      d1: Vous devez utiliser un mot de passe comportant entre 6 et 40 caractères et devant comporter des chiffres ou des lettres.
+      # level 2
+      l2: '^(?=.*\d)(?=.*([a-z]|[A-Z]))(?=.*\W)([\x20-\x7E]){8,40}$'
+      d2: Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, et des lettres et au moins un caractére spécial(ex:@~"'(!:/.? etc...).
+      # level 3
+      l3: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)([\x20-\x7E]){8,40}$'
+      d3: Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres et des lettres(en majuscule et minuscule), et au moins un caractére spécial(ex:@~"'(!:/.? etc...).
+  # current selected level
+  actual_password_policy: 
+    description: Configuration de sécuritée actuelle
+    value: l0  
+  user_pattern:  
+    description: modéle que doit respecter le générateur de compte d'utilisateur
+    value: '[first_name].[last_name]'
+  password_validity:
+    description: durée pendant laquelle le mot de passe est valide
+    value: 30
+  society_identity_configuration_name:
+    description: Nom de l'entreprise
+    value: EMR
+  society_identity_configuration_address_first_line:
+    description: Premiere ligne pour l'adresse
+    value: 32, Rue des pommes
+  society_identity_configuration_address_second_line:
+    description: Seconde ligne pour l'adresse
+    value: Batiment Rouge
+  society_identity_configuration_address_town:
+    description: Nom de la ville
+    value: Sainte-Clotilde
+  society_identity_configuration_address_zip:
+    description: Code Postal
+    value: 97400
+  society_identity_configuration_address_country:
+    description: Pays/Departement
+    value: "France - Réunion"
+  society_identity_configuration_phone:
+      description: Numéro de téléphone de l'entreprise
+      value: 0692001122
+  society_identity_configuration_fax:
+      description: Numéro de fax de l'entreprise
+      value: 0692001123
+  society_identity_configuration_siret:
+      description: Numéro SIRET
+      value: 01234567891234
+  society_identity_configuration_domain: 
+    description: Nom de domaine
+    value: emr-oi.com    
+  society_identity_configuration_working_day:
+    description: Jours ouvrables
+    value:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+  

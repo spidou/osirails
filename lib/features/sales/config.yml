@@ -1,0 +1,26 @@
+name: sales
+version: 0.1
+dependencies:
+  thirds:
+    - 0.1
+conflicts:
+business_objects:
+menus:
+  prospectives:
+    title: Prospect
+    children:
+      commercial:
+        title: Etude commercial
+        description: Phase d'étude commercial
+  sales:
+    title: Ventes
+    children:
+      invoicing:
+        title: Facturation
+        description: Phase de facturation
+      closed:
+        title: Cloturés
+        description: Dossiers de vente cloturés
+      archived:
+        title: Archivés
+        description: Dossiers de vente cloturés

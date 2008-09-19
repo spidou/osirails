@@ -1,0 +1,21 @@
+name: calendars
+version: 0.1
+dependencies:
+conflicts:
+business_objects:
+menus:
+  calendars:
+    title: Calendrier
+    description: Gestion des calendriers
+    children:
+      events:
+        title: Evenements
+        description: Gestion des événements
+  admin:
+    children:
+      permissions:
+        children:
+          calendar_permissions:
+            title: Plannings
+            description: Gestion des permissions en fonction des plannings
+            position: 5
