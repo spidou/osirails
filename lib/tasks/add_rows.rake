@@ -255,28 +255,6 @@ namespace :osirails do
       Product.create :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id
-      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                    Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                          Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                    Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                          Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                      Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                            Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                                  Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                                        Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                                              Product.create :name => "Produit 4.4.4.1", :product_reference_id => reference114.id
-                                                                                                                              
       
       # default society activity sectors
       SocietyActivitySector.create :name => "Enseigne"
@@ -329,7 +307,6 @@ namespace :osirails do
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
       # default employees
-      
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
       john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
@@ -352,14 +329,14 @@ namespace :osirails do
       Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
     end
-    
 
     desc "Depopulate the database"
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address, Contact, OrderType, Order].each do |model|
+        SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
+        SocietyActivitySectorsOrderTypes].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all

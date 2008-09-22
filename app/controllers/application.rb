@@ -62,11 +62,8 @@ class ApplicationController < ActionController::Base
 
     # Called when an user try to acces to an unauthorized page
     def error_access_page(status = nil)
-      case status
-      when 422
-        render :file => "#{RAILS_ROOT}/public/422.html", :status => "422"
-      when 403
-        render :file => "#{RAILS_ROOT}/public/403.html", :status => "403"
+      if status.class == Fixnum
+        render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
       else
         render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
       end
@@ -79,7 +76,7 @@ class ApplicationController < ActionController::Base
       if session[:user].nil? # If you're not logged
         session[:initial_uri] = request.request_uri
         redirect_to login_path
-        flash[:error] = "Vous n'êtes pas logger !"
+        flash[:error] = "Vous n'êtes pas connecté !"
       else # If you're logged
         current_user.update_activity
         if current_user.expired?

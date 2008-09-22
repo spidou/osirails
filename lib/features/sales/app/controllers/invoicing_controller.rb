@@ -1,7 +1,7 @@
 class InvoicingController < ApplicationController
   helper 'orders'
   
-  attr_accessor :currect_order_step
+  attr_accessor :current_order_step
   before_filter :check, :except => [:index]
   
   def index
@@ -17,9 +17,8 @@ class InvoicingController < ApplicationController
   end
   
   protected
-  
-  def check
-    @order = Order.find(params[:id])
-    currect_order_step = @order.step.name
-  end
+    def check
+      @order = Order.find(params[:id])
+      @current_order_step = @order.step.name
+    end
 end

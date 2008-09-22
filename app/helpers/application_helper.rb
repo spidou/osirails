@@ -10,7 +10,7 @@ module ApplicationHelper
       html << '<br/>' unless html == ""
       html << "<span class=\"flash_#{key}\"><span>#{value}</span></span>"
     end
-    html == "" ? "" : "<div class=\"flash_container\">" << html << "</div>"
+    html.empty? ? "" : "<div class=\"flash_container\">" << html << "</div>"
   end
   
   def current_user
