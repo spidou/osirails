@@ -6,6 +6,8 @@ dependencies:
 conflicts:
 business_objects:
 menus:
+  orders:
+    title: Dossier de commande
   prospectives:
     title: Prospect
     children:

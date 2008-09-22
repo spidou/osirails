@@ -1,3 +1,3 @@
-class GraphicConception < ApplicationController
+class GraphicConceptionsController < ApplicationController
   
 end
