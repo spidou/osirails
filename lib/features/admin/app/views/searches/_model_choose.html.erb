@@ -1,7 +1,11 @@
 <div id="criteria_list">
   <p>
-    <%= display_model_choose_select(model)%>
-    <span id="actions"></span>  
-    <span id="input_type"></span>
+    <%= display_criterion_choose_select(model,line)%>
+    <%= "<span id=\"actions#{line}\" ></span>" %>
+    <%= "<span id=\"input_type#{line}\"></span>" %>
+    <% line = (line.to_i + 1).to_s%>
+    <span id="add_link" style="display:none;"><%=link_to_remote("<img src=\"/images/add_16x16.png \"/>",:url=>{:action=>"criterion_add",:model=> model, :line=> line.to_s},:href=>(url_for :action=>"criterion_add")) %></span>
   </p>
+  
 </div>
+

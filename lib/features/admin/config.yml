@@ -86,6 +86,9 @@ menus:
         title: Modules
         description: Gestion des modules
         position: 7
+      searches:
+        title: Recherche
+        description: Moteur de recherche  
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  

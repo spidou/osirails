@@ -1,13 +1,13 @@
 module SearchesHelper
 
-  def display_model_choose_select(value)
+  def display_criterion_choose_select(value,id)
     model = Feature.find_by_name(value)
-    html="<select onchange='action_choose(this)'>"
+    html="<select onchange='action_choose(this,#{id})'><option id='blank#{id}' selected='selected'></option>"
     model.search.each_pair do |model,categories|
       attributes = Search.regroup_attributes(categories)
-      html += get_attributes_recursively(attributes,model)
+      html += get_attributes_recursively(attributes,model) if model.constantize.can_view?(current_user)
     end
-    html+="</select>"
+    html+="</select name=\"criteria[#{id}][attribute]\" >"
     return html    
   end
   
@@ -22,7 +22,13 @@ module SearchesHelper
     sub_html = ""
     attributes.each_pair do |attribute,type|
       if type.class == {}.class
-        sub_html = get_attributes_recursively(type,attribute)
+        if type.size==1 and type.values[0].class=={}.class 
+          sub_html += get_attributes_recursively(type,attribute)
+        elsif attribute.constantize.respond_to?('can_view?')
+          sub_html += get_attributes_recursively(type,attribute) if attribute.constantize.can_view?(current_user)
+        else
+          sub_html += get_attributes_recursively(type,attribute)
+        end  
       else
         html+="<option value='#{attribute},#{type}'>#{attribute}</option> "
       end
