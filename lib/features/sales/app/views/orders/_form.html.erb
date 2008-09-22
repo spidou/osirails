@@ -1,4 +1,4 @@
-<% form_for @order, :url => {:controller => 'commercial'} do |o| %>
+<% form_for @order do |o| %>
 <h2>Informations</h2>
 <p>
 	<%= o.label :title, 'Nom du projet' %>
@@ -6,7 +6,7 @@
 </p>
 <p>
 	<%= o.label :order_type, 'Type de dossier' %>
-	<%= o.select :order_type, OrderType.find(:all).collect {|ot| ot.title } %>
+	<%= o.select :order_type, order_type_for_select %>
 </p>
 <p>
 	<%= o.label :commercial %>

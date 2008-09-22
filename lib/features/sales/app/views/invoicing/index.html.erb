@@ -3,7 +3,7 @@
 <div class="frame">
 	<ul>
 		<% @orders.each do |order| %>
-		<li><a href="/orders/<%= order.id %>/invoicing/show"><%= order.title %></a></li>
+		<li><a href="/orders/<%= order.id %>/invoicing/"><%= order.title %></a></li>
 		<% end %>
 	</ul>
 </div>

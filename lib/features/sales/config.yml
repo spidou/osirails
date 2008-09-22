@@ -19,11 +19,11 @@ menus:
     title: Prospect
     children:
       commercial:
-        title: Etude commercial
+        title: Etude commerciale
         description: Phase d'étude commercial
         children:
           survey:
-            title: Visite commercial
+            title: Visite commerciale
             description: Etape de la visite commercial
           graphic_conception:
             title: Conception graphique
