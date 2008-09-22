@@ -1,31 +1,25 @@
 class InvoicingController < ApplicationController
+  helper 'orders'
+  
+  attr_accessor :currect_order_step
+  before_filter :check, :except => [:index]
+  
   def index
     @orders = Order.find(:all)
   end
   
   def show
-    @order = Order.find(params[:id])
-  end
-  
-  def new
-    @order = Order.new
+    
   end
   
   def edit
+    
+  end
+  
+  protected
+  
+  def check
     @order = Order.find(params[:id])
-  end
-  
-  def create
-    @order = Order.create(params[:order])
-  end
-  
-  def update
-    @order = Order.find(params[:id])
-    @order.update_attributes(params[:order])
-  end
-  
-  def destroy
-    @order = params[:id]
-    @order.destroy
+    currect_order_step = @order.step.name
   end
 end
