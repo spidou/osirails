@@ -1,0 +1,14 @@
+<div class='frame'>
+<table>
+  <thead>
+    <th>Object</th>
+    <th>Re&ccedil;u</th>
+    <th>De</th>
+  </thead>
+  <tbody>
+<%= show_memorandums(@received_memorandums) %>
+
+  </tbody>
+</table>
+<%= will_paginate @received_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+</div>
