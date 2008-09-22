@@ -5,6 +5,7 @@ class SendedMemorandumsController < ApplicationController
     if current_user.employee_id.nil?
       flash.now[:error] = "Vous ne pouvez pas envoyer de note de service si vous n'etes pas associ&eacute;s &agrave; un service"
     end
+      @memorandums = Memorandum.find_all_by_user_id(current_user.id)
   end
   
   # GET /sended_memorandums/show
@@ -21,13 +22,12 @@ class SendedMemorandumsController < ApplicationController
   def create
     @sended_memorandum = Memorandum.new(params[:memorandum])
     @sended_memorandum.user_id = current_user.id
-
-    raise params.inspect
-    if params[:published][:publish] == "true"
+    
+    if params.has_key?(:published)
       @sended_memorandum.published_at = Time.now
     end
-      if @sended_memorandum.save
-        if params.has_key?(:memorandums_services)
+    
+      if params.has_key?(:memorandums_services) and @sended_memorandum.save
           if params[:memorandums_services][:service_id].first != "0"
             memorandums_services_not_recursive = params[:memorandums_services][:service_id]
             if params[:memorandums_services].has_key?(:recursive)
@@ -46,12 +46,8 @@ class SendedMemorandumsController < ApplicationController
           end
           flash[:notice] = "La note de service est bien cr&eacute;&eacute;e"
           redirect_to :action => 'index'
-        else
-          flash[:error] = "La note de service doit &egrave;tre associ&eacute; &agrave; un service"
-          redirect_to :action => 'new'
-        end
       else
-        flash[:error] = "La creacute;ation de la note de service a &eacute;chou&eacute;e"
+        flash[:error] = "La cr&eacute;ation de la note de service a &eacute;chou&eacute;e. V&eacute;rifier que la note de service est associ&eacute;e &agrave; un service."
         render :action => 'new'
       end
     end
@@ -64,11 +60,10 @@ class SendedMemorandumsController < ApplicationController
   # PUT /sended_memorandums/1
   def update
     @sended_memorandum = Memorandum.find(params[:id])
-    if params[:published][:publish] == "true"
+    if params.has_key?(:published)
       @sended_memorandum.published_at = Time.now
     end
-    if @sended_memorandum.update_attributes(params[:memorandum])
-      if params.has_key?(:memorandums_services)
+    if params.has_key?(:memorandums_services) and @sended_memorandum.update_attributes(params[:memorandum])
         memorandums_services = @sended_memorandum.memorandums_services    
         if params[:memorandums_services][:service_id].first != "0"
           memorandums_services_not_recursive = params[:memorandums_services][:service_id]
@@ -112,12 +107,8 @@ class SendedMemorandumsController < ApplicationController
         end
         flash[:notice] = "La note de service est mise &agrave; jour"
         redirect_to :action => 'index'
-      else
-        flash[:error] = "La note de service doit &egrave;tre associ&eacute; &agrave; un service"
-        redirect_to :action => 'edit'
-      end
     else
-      flash[:error] = "Erreur de mise &agrave; jour"
+      flash[:error] = "Erreur de mise &agrave; jour. V&eacute;rifier que la note de service est associ&eacute;e &agrave; un service."
       render :action => 'edit'
     end
   end
