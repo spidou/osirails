@@ -15,7 +15,7 @@ class OrdersController < ApplicationController
   end
   
   def edit
-    render_step('edit')
+    render_step('edit') if params[:step]
   end
   
   def create

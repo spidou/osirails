@@ -1435,8 +1435,8 @@ select.catalog_3_columns {
 .feet_disable,
 #technical_visit,
 #survey,
-#model,
-#figuring,
+#graphic_conception,
+#estimate,
 #sending_estimate,
 #validation {
 	background:url("/images/image-step.png") no-repeat;
@@ -1455,8 +1455,8 @@ select.catalog_3_columns {
 .feet_disable,
 #technical_visit,
 #survey,
-#model,
-#figuring,
+#graphic_conception,
+#estimate,
 #sending_estimate,
 #validation {
 	width:48px;
@@ -1503,11 +1503,11 @@ select.catalog_3_columns {
 	background-position:-48px -48px;
 }
 
-#model {
+#graphic_conception {
 	background-position:-96px -48px;
 }
 
-#figuring {
+#estimate {
 	background-position:-144px -48px;
 }
 
@@ -1527,11 +1527,11 @@ select.catalog_3_columns {
 	background-position:-48px 0;
 }
 
-#model:hover {
+#graphic_conception:hover {
 	background-position:-96px 0;
 }
 
-#figuring:hover {
+#estimate:hover {
 	background-position:-144px 0;
 }
 
@@ -1560,8 +1560,8 @@ select.catalog_3_columns {
 
 #technical_visit,
 #survey,
-#model,
-#figuring,
+#graphic_conception,
+#estimate,
 #sending_estimate,
 #validation,
 .feet_finish,

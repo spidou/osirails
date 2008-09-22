@@ -34,6 +34,6 @@
   <strong><%= @order.previsional_delivery %></strong>
 </p>
 <% if controller.can_edit?(current_user) %>
-<%= link_to 'Modifier', "/orders/#{params[:id]}/commercial/edit" %>
+<%= link_to 'Modifier', edit_order_path(@order) %>
 <% end %>
 </div>
