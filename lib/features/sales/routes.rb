@@ -18,6 +18,6 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :orders
   map.connect 'orders/:id/:step/:action', :controller => 'orders'
   
-  map.prospectives 'prospective', :controller => 'orders', :step => 'commercial'
-  map.sales 'sales', :controller => 'orders', :step => 'invoicing'
+  map.prospectives 'prospectives', :controller => 'commercial', :action => 'index'
+  map.sales 'sales', :controller => 'invoicing', :action => 'index'
 end

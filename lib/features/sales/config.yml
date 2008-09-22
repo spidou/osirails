@@ -8,6 +8,13 @@ business_objects:
 menus:
   orders:
     title: Dossier de commande
+    children:
+      informations:
+        title: Informations de commande
+        description: Informations générales sur les dossiers de commandes
+      logs:
+        title: Historiques
+        description: Historiques des actions effectués sur le dossier de commmande
   prospectives:
     title: Prospect
     children:

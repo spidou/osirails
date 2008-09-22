@@ -1,4 +1,7 @@
 class CommercialController < ApplicationController
+  attr_accessor :currect_order_step
+  before_filter :check, :except => [:index]
+  
   helper 'orders'
   
   def index
@@ -7,15 +10,18 @@ class CommercialController < ApplicationController
     @orders = Order.find(:all)
   end
   
-  def new
-    @order = Order.new
-  end
-  
   def show
-    @order = Order.find(params[:id])
+
   end
   
   def edit
+
+  end
+  
+  protected
+  
+  def check
     @order = Order.find(params[:id])
+    currect_order_step = @order.step.name
   end
 end

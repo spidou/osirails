@@ -1,4 +1,4 @@
-class EstimateController < ApplicationController
+class InformationsController < ApplicationController
   helper 'orders'
   
   attr_accessor :currect_order_step

@@ -21,7 +21,7 @@ class Order < ActiveRecord::Base
   def tree
     steps =[]
     self.order_type.sales_processes.each do |sales_process|
-      steps << sales_process if sales_process.activated
+      steps << sales_process.step if sales_process.activated
     end
     steps
   end
