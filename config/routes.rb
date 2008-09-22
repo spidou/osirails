@@ -15,6 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   
   ### ROOT
   map.root :controller => "account"
+  map.search "search" , :controller => "searches"
   ### END ROOT
 
   map.login 'login', :controller => 'account'
