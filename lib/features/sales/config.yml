@@ -24,3 +24,16 @@ menus:
       archived:
         title: Archivés
         description: Dossiers de vente cloturés
+steps:
+  commercial:
+    description: descqsdqds
+    title: Etude Commercial
+    children:
+      estimate:
+        title: Devis
+      survey:
+        title: Visite commerciale
+      graphic_conception:
+        title: Conception Graphique
+  invoincing:
+    title: Facturation
