@@ -1314,7 +1314,7 @@ div.tabs {
 
 .frame.tabulation>h1 {
 	background:url('/images/background_tabs_h2.jpg') repeat;
-	color:#FFE7C4;
+	color:#FFFFFF;
 	text-align:center;
 	margin-bottom:0px;
 	margin-top:0px;
@@ -1332,9 +1332,10 @@ div.tabs {
 
 .frame.tabulation>form>h2 {
 	border-top:#FFBC5E;
-	line-height:30px;
+	height:25px;
+	line-height:25px;
 	margin-top:0;
-	height:30px;
+//	height:30px;
 }
 
 div.tabs ul {
@@ -1346,16 +1347,26 @@ div.tabs ul {
 div.tabs ul li {
 	float: left;
 	margin-left: 1px;
-	background: url("/images/background_tabs_test.png") repeat-x top;
-	height:30px;
+	background: url("/images/background_tabs_test.png") repeat-x 0 -7px;
+	height:22px;
+	line-height:0px;
 	cursor:pointer;
+	border-right:solid 1px #737373;
+	border-left:solid 1px #737373;
+	position:relative;
+	top:7px;
+	right:1px;
 }
 
 div.tabs ul li.selected {
 	background-position:bottom;
 	border-bottom:none;
-	border-right:solid 1px #989898;
-	border-left:solid 1px #989898;
+	border-right:solid 1px #737373;
+	border-left:solid 1px #737373;
+	height:30px;
+	line-height:10px;
+	position:relative;
+	top:-1px;
 }
 
 div.tabs ul li a {
