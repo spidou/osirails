@@ -18,6 +18,10 @@ class Service < ActiveRecord::Base
   # Store the ancient services_parent_id before update_service_parent
   attr_accessor :old_service_parent_id, :update_service_parent
   
+    # Relationships
+  has_many :memorandums_services
+  has_many :memorandums, :through => :memorandums_services
+  
   # This method permit to check if a service can be a parent
   def before_update
     if self.update_service_parent

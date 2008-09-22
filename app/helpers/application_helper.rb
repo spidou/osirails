@@ -111,4 +111,19 @@ module ApplicationHelper
       auto_complete_field(tag_id, { :url => {:controller => "#{tag_options[:controller]}", :action => "auto_complete_for_#{object}_#{method}"} }.update(completion_options))
                                                                 
   end
+  
+  def display_memorandums
+    under_banner = []
+    under_banner << "<div id='text_under_banner'>"	#<!-- Limiter le texte à 297 caractères !! [Sous risque de bug] -->
+		under_banner << "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse semper, arcu non rhoncus fermentum,
+				nisl odio semper pede, a pellentesque erat dui sit amet elit. Sed pede est, tempus a, fringilla eu, suscipit eget,
+				lorem. In feugiat suscipit dolor. Lorem ipsum dolor sit amet, consectetuer. AA"
+		under_banner << "</div>"
+		under_banner <<	"<div id='block_button_under_banner'>"
+		under_banner << "<input type='button' id='previous' alt='bouton précédent' title='Information précédente'/>"
+		under_banner << "<span class='number'>02</span>|<span class='number'>10</span>"
+		under_banner << "<input type='button' id='next' alt='bouton suivant' title='Information suivante'/>"
+		under_banner << "</div>"
+  end
+  
 end
