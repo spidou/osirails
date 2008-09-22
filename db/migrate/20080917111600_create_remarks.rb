@@ -5,6 +5,7 @@ class CreateRemarks < ActiveRecord::Migration
       t.text :text
       t.references :user # Store id's user who have create remark
       t.references :has_remark, :polymorphic => true
+      t.references :user
       
       t.timestamps
     end
