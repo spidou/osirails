@@ -1093,8 +1093,7 @@ width: 50px ! important;
 }
 */
 .frame form p input:focus,
-.frame form p textarea:focus,
-.frame form p select:focus {
+.frame form p textarea:focus {
 	background: #f5c384;
 }
 /*
@@ -1335,7 +1334,6 @@ div.tabs {
 	height:25px;
 	line-height:25px;
 	margin-top:0;
-//	height:30px;
 }
 
 div.tabs ul {
