@@ -1,7 +1,7 @@
 class InformationsController < ApplicationController
   helper 'orders'
   
-  attr_accessor :currect_order_step
+  attr_accessor :current_order_step
   before_filter :check, :except => [:index]
   
   def show
@@ -16,6 +16,6 @@ class InformationsController < ApplicationController
   
   def check
     @order = Order.find(params[:id])
-    currect_order_step = @order.step.name
+    @current_order_step = @order.step.name
   end
 end

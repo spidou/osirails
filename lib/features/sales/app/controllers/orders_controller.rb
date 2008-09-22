@@ -20,12 +20,13 @@ class OrdersController < ApplicationController
   
   def create
     if params[:order][:order_type]
-      OrderType.find(params[:order][:order_type])
+      params[:order][:order_type] = OrderType.find(params[:order][:order_type])
     end
-    @order = Order.create(params[:order])
-    if @order
+    
+    @order = Order.new(params[:order])
+    if @order.save
       flash[:notice] = "Dossier crée avec succés"
-      redirect_to order_path(@order)
+      redirect_to orders_path(@order)
     else
       flash[:error] = "Erreur lors de la création du dossier"
       redirect_to prospectives_path
