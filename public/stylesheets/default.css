@@ -276,26 +276,33 @@ a.button_banner:hover span {
 	text-align:right;
 }
 
+#previous,
+#previous:hover,
+#next,
+#next:hover {
+	background: url("/images/button_under_banner_arrow.png") no-repeat;
+	width:24px;
+	height:21px;
+	border:none;
+}
+
 #previous {
-	background: url("/images/button_under_banner_arrow_left.png") no-repeat;
-	width: 25px;
-	height: 21px;
-	border: none;
+	background-position:0 0;
+	
 }
 
 #previous:hover {
-	background: url("/images/button_under_banner_arrow_left_hover.png") no-repeat
+	background-position:0 -21px;
+	cursor:pointer;
 }
 
 #next {
-	background: url("/images/button_under_banner_arrow_right.png") no-repeat;
-	width: 25px;
-	height: 21px;
-	border: none;
+	background-position:-24px 0;
 }
 
 #next:hover {
-	background: url("/images/button_under_banner_arrow_right_hover.png") no-repeat;
+	background-position: -24px -21px;
+	cursor:pointer;
 }
 
 .number {
