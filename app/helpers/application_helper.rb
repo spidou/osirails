@@ -22,7 +22,9 @@ module ApplicationHelper
   end
   
   def current_menu
-    Menu.find_by_name(controller.controller_name) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
+    step = controller.current_order_step if controller.respond_to?("current_order_step")
+    menu = step || controller.controller_name
+    Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
   end
   
   def url_for_menu(menu)
