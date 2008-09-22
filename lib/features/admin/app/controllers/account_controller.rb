@@ -4,6 +4,9 @@ class AccountController < ApplicationController
   before_filter :not_logged, :only => [:logout, :expired_password]
   layout "login"
 
+  # Constants
+  TENTATIVE_LOGIN = 3
+  
   # All the following action are accessible without login
   
   def index
@@ -12,17 +15,7 @@ class AccountController < ApplicationController
 
   def login
     return unless request.post?
-    
-    # Anti-flood system
-    session[:tentative] ||= 0
-    if session[:tentative] >= 3
-      flash[:error] = "Trois tentatives de connexion detect&eacute;es, veuillez patienter quelques instants avant de r&eacute;essayer ..."
-      if (session[:tentative_time] + 10.seconds) < Time.now
-        session[:tentative] = 0 
-      end
-      return
-    end
-    
+        
     if @user = User.find_by_username(params[:username], :include => :employee)
       if @user.compare_password(params[:password])
         if @user.enabled == true
@@ -41,8 +34,18 @@ class AccountController < ApplicationController
     redirect_to login_path
     flash[:error] = "Le nom d'utilisateur et le mot de passe ne correspondent pas. Veuillez r&eacute;essayer."
     
+    # Anti-flood system
+    session[:tentative] ||= 0
+    if session[:tentative] >= TENTATIVE_LOGIN - 1
+      flash[:error] = "Trois tentatives de connexion detect&eacute;es, veuillez patienter quelques instants avant de r&eacute;essayer ..."
+      if (session[:tentative_time] + 10.seconds) < Time.now
+        session[:tentative] = 0 
+      end
+      return
+    end
+    
     # Manage error tentative for the anti-flood
-    if session[:tentative] < 3
+    if session[:tentative] < TENTATIVE_LOGIN
       session[:tentative] += 1
       session[:tentative_time] = Time.now
     end
