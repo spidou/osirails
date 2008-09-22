@@ -9,12 +9,19 @@ class Order < ActiveRecord::Base
   has_many :orders_steps, :class_name => "OrdersSteps"
   
   validates_presence_of :order_type
-#  validates_presence_of :establishment
+  #  validates_presence_of :establishment
   validates_presence_of :customer
   
   ## Create all orders_steps after create
   def after_create
-    self.order_type.activated_steps.each {|step| OrdersSteps.create(:order_id => self.id, :step_id => step.id, :status => "unstarted")}
+    unless self.order_type.nil?
+      self.order_type.activated_steps.each do |step| 
+        o = OrdersSteps.create(:order_id => self.id, :step_id => step.id, :status => "unstarted")
+        step.checklists.each do |checklist|
+          ChecklistResponse.create(:orders_steps_id => o.id, :checklist_id => checklist.id)
+        end
+      end
+    end
   end
   
   ## Return a tree with activated step

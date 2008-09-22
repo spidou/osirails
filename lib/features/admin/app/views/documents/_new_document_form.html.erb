@@ -59,5 +59,6 @@
   <%= observe_field "#{owner_type.tableize.singularize}_documents_#{cpt}_file_type_id",
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
-      :with => "'file_type_id=' +value"%>
+      :with => "'file_type_id='+value+
+    '&select_name=#{owner_type.tableize.singularize}_documents_#{cpt}_file_type_id'"%>
 </div>

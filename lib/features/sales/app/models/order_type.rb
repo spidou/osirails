@@ -15,6 +15,7 @@ class OrderType < ActiveRecord::Base
   def activated_steps
     steps = []
     self.sales_processes.each {|sales_process| steps << sales_process.step}
+    steps
   end
   
 end

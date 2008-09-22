@@ -181,7 +181,7 @@ class CustomersController < ApplicationController
         end
       end
      
-      if Document.can_add?(current_user)
+#      if Document.can_add?(current_user)
         if params[:new_document_number]["value"].to_i > 0
           documents = params[:customer][:documents].dup
           @document_objects = Document.create_all(documents, @customer)
@@ -198,7 +198,7 @@ class CustomersController < ApplicationController
           ## Reaffect document number
           params[:new_document_number]["value"]  = @document_objects.size
         end
-      end     
+#      end     
       
       unless @error
         
@@ -231,7 +231,7 @@ class CustomersController < ApplicationController
         @new_establishment_number = params[:new_establishment_number]["value"]
         @establishments = @customer.establishments
         @new_contact_number = params[:new_contact_number]["value"]
-        @new_document_number = params[:new_contact_number]["value"]
+        @new_document_number = params[:new_document_number]["value"]
         @contacts = @customer.contacts
         @documents =@customer.documents
         render :action => 'edit'

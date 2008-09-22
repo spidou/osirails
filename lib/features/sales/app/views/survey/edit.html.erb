@@ -1,0 +1,37 @@
+<div class="frame presentation_medium">
+  <h2> Checklist </h2>
+  <% form_for(@order_step, :url => { :controller =>"orders", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
+    <%# raise @checklist_responses.inspect%>
+    <% for checklist_response in @checklist_responses %>
+      <% fields_for "order[survey][checklists]", checklist_response, :index => checklist_response.id do |checklist_| %>
+        <p>
+          <%= checklist_.label "checklist", "#{checklist_response.checklist.name} :"%>
+          <% unless checklist_response.checklist.checklist_options.empty? %>
+            <%= checklist_.select("answer", checklist_response.checklist.checklist_options.collect {|a| [ a.name, a.name ] }, {:include_blank => ""}) %>
+          <% else %>
+            <%= checklist_.select("answer", { "" => "", "Oui" => "oui", "Non" => "non"}) %>
+          <% end %>
+        </p>
+      <% end %>
+    <% end %>
+   
+    <h2> Documents </h2>
+    <!-- Display document_form-->
+    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Survey', :owner_id => @step.id, :error => @error} %>
+    
+    <h2> Commentaires </h2>
+    
+    <% for remark in @remarks %>
+      <%= "Post&eacute; par #{remark.user.full_name} le #{remark.created_at} : #{remark.text}"%>
+    <% end %>
+    <br/>
+    <%remark_ = Remark.new%>
+    <% fields_for "order[survey][remark]", remark_ do |remark| %>
+      <%= remark.label :text, "Ajouter un commentaire :"%>
+      <%= remark.text_area :text , :size => "60x2"%>
+    <% end %>
+    </div>
+
+  <%= order_step.submit  'Modifier' %>
+  <%= order_step.submit  'Cloturer' %>
+<% end %>
