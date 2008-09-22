@@ -1,9 +1,13 @@
-<p>
+
+<%="<p id=\"criterion#{line}\">"%>
   <%= display_criterion_choose_select(model,line)%>
+  <%= "<span id=\"attribute_name#{line}\"></span>" %>
   <%= "<span id=\"actions#{line}\" ></span>" %>
   <%= "<span id=\"input_type#{line}\"></span>" %>
+  <%= "<span id=\"delete_link#{line}\" style=\"display:none;\">" + link_to_remote("<img src=\"/images/delete_16x16.png \"/>",:url=>{:action=>"criterion_delete", :model=> model, :line=>line.to_s},:href=>(url_for :action=>"criterion_delete")) %></span>
   <% line = (line.to_i + 1).to_s%>
+</p>  
   <span id="add_link" style="display:none;"><%=link_to_remote("<img src=\"/images/add_16x16.png \"/>",:url=>{:action=>"criterion_add", :model=> model, :line=>line.to_s},:href=>(url_for :action=>"criterion_add")) %></span>
-</p>
+
 
 

@@ -1,0 +1,14 @@
+<h2>R&eacute;sultats de la recherche</h2>
+
+<table>
+
+  <% @columns.each do |column| %>
+   <td>
+    <th><% column %></th>
+   <td>
+  <% end %>
+  
+  <% generate_rows(@rows,@columns) %>
+  
+  
+</table>

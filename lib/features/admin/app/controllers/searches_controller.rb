@@ -8,5 +8,14 @@ class SearchesController < ApplicationController
       end  
     end
   end
-
+  
+  def update
+    
+    flash.now[:notice]= params.inspect
+    @searches = {}
+    respond_to do |format|
+      format.js {render :action => "result", :layout => false}
+    end
+  end
+  
 end

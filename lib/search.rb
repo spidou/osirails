@@ -1,5 +1,7 @@
 class Search
 
+include Permissible
+
   # method to get the :include hash in the find
   def self.get_include_hash(hash)
     result_values = []

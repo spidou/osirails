@@ -21,9 +21,16 @@
     
     <%=observe_field("model_select",:on=>"onselect",:with => "'model=' + value" ,:url=>{:action=>"model_choose",:line=>0},:href=>(url_for :action=>"model_choose"),:confirm => "Etes vous sur de vouloir changer de section de recherche? \nCeci aura pour conséquence de réinitiliser les critères") %>
   </p>
-  <h2>Crit&egrave;re</h2>
+<%form_remote_tag :url =>  "searches/update", :update => "search_result"  do%>
+  <h2>Crit&egrave;res</h2>
   <div id="criteria">
     <div id="criteria_list">
     </div>
   </div>
+  <p id="submit_button">
+    <%=submit_tag("rechercher")%>
+  <p>
+<% end %>
+<div id="search_result">
+</div>
 </div>
