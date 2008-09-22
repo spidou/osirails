@@ -11,14 +11,13 @@ class Memorandum < ActiveRecord::Base
   def Memorandum.find_by_services(services)
     memorandums_services_list = []
     memorandums =[]
-    ancestor = []
     services.each do |service|
       memorandums_services_list << service.memorandums_services
       if service.ancestors.size > 0
         service.ancestors.each do |parent_service|
           if parent_service.memorandums_services.size > 0
 
-              parent_service.memorandums_services.delete_if { |x| x.recursive == false }
+              parent_service.memorandums_services.delete_if { |memorandum_service| memorandum_service.recursive == false }
               memorandums_services_list << parent_service.memorandums_services
 
           end
@@ -50,7 +49,7 @@ class Memorandum < ActiveRecord::Base
   # This method permit to get employee information
   def Memorandum.get_employee(memorandum)
     user = User.find(memorandum.user_id)
-    employee = "#{user.employee.first_name} #{user.employee.last_name}"
+    "#{user.employee.first_name} #{user.employee.last_name}"
   end
       
   # This method permit to structured date
