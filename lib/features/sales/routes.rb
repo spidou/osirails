@@ -7,13 +7,16 @@ ActionController::Routing::Routes.add_routes do |map|
   #map.connect 'orders/:id/commercial/estimate/:action', :controller => 'estimate'
   #map.connect 'orders/:id/invoicing/:action', :controller => 'invoicing'
   
-  map.resources :orders do |order|
-    order.resources :commercial
-    order.resources :survey
-    order.resources :graphic_conception
-    order.resources :estimate
-    order.resources :invoicing
-  end
+  #map.resources :orders do |order|
+  #  order.resources :commercial
+  #  order.resources :survey
+  #  order.resources :graphic_conception
+  #  order.resources :estimate
+  #  order.resources :invoicing
+  #end
+
+  map.resources :orders
+  map.connect 'orders/:id/:step', :controller => 'orders'
   
   map.prospectives 'prospective', :controller => 'orders', :step => 'commercial'
   map.sales 'sales', :controller => 'orders', :step => 'invoicing'
