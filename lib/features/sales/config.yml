@@ -14,6 +14,16 @@ menus:
       commercial:
         title: Etude commercial
         description: Phase d'étude commercial
+        children:
+          survey:
+            title: Visite commercial
+            description: Etape de la visite commercial
+          graphic_conception:
+            title: Conception graphique
+            description: Etape de conception graphique
+          estimate:
+            title: Devis
+            description: Etape du devis
   sales:
     title: Ventes
     children:
