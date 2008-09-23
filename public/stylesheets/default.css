@@ -1727,6 +1727,67 @@ div.frame>#steps {
 #timeline_footer {
 	background:url("/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
+/*/////////////////BORDER VIEW/////////////////*/
+.border_view {
+	border:2px solid #888;
+	-moz-border-radius:5px;
+	width:48%;
+	margin:10px 5px 10px 5px;
+	background:#CCC;
+	text-indent:0;
+	text-align:left;
+	display:inline-block;
+	vertical-align:top;
+}
+
+.border_view h1 {
+	background:inherit;
+	color:inherit;
+	border:0;
+	margin:5px 0 5px 0;
+	padding:0;
+}
+
+.border_view_content {
+	width:235px;
+	display:inline-block;
+	margin-left:2px;
+	padding-top:9px;
+}
+
+.border_view_content p:hover {
+	background:#eaeaea;
+	-moz-border-radius:3px;
+	cursor:pointer;
+}
+
+.border_view_content img {
+	width:75px;
+	height:75px;
+	margin-left:-3px;
+}
+
+.border_view_content p {
+	vertical-align:top;
+	width:150px;
+	height:65px;
+	overflow:hidden;
+	text-indent:0;
+	font-size:0.8em;
+	background:#DDD;
+	padding:5px;
+	text-align:justify;
+	-moz-border-radius:3px;
+	margin-left:70px;
+	margin-top:-78px;
+}
+
+.border_view_content strong {
+	font-weight:bold;
+	color:#333;
+	font-size:1.05em;
+	text-decoration:underline;
+}
 
 /*/////////////////HUMAN RESSOURCES/////////////////*/
 td[title="Détails"] img,
