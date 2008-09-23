@@ -1736,8 +1736,8 @@ div.frame>#steps {
 .document_view {
 	border:2px solid #888;
 	-moz-border-radius:5px;
-	width:48%;
-	margin:10px 5px 10px 5px;
+	width:49%;
+	margin:10px 0.1% 10px 0.1%;
 	background:#CCC;
 	text-indent:0;
 	text-align:left;
