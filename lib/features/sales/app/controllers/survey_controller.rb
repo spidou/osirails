@@ -1,4 +1,4 @@
-class SurveysController < ApplicationController
+class SurveyController < ApplicationController
 
    helper :documents
   
