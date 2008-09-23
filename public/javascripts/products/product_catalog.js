@@ -80,7 +80,6 @@ function refreshCategories(select, max_level, value, has_categories) {
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
                         select_ref.innerHTML = response;
-                        alert('Je suis passé ici');
                         refreshProductsList(select, select_list, 0);
                     }
                 }

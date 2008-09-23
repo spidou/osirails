@@ -20,7 +20,7 @@ module ReceivedMemorandumsHelper
   # This method permit to view a memorandum
   def view_memorandum(memorandum)
     view = []
-    view << "<p><strong>Object : </strong>#{memorandum.subject}</p>"
+    view << "<p><strong>Objet : </strong>#{memorandum.subject}</p>"
     view << "<p><strong>Date : </strong>#{Memorandum.get_structured_date(memorandum)}</p>"
     view << "<p><strong>Destinataire : </strong>#{Memorandum.get_recipient(memorandum)}</p>"
     view << "<hr/>"
