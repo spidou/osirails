@@ -11,11 +11,11 @@ class OrdersController < ApplicationController
   end
 
   def show
-    render_step('show')
+    
   end
   
   def edit
-    render_step('edit') if params[:step]
+    
   end
   
   def create
@@ -47,14 +47,5 @@ class OrdersController < ApplicationController
   
   def check
     @order = Order.find(params[:id])
-  end
-  
-  def render_step(action)
-    params[:step] ||= @order.step.name
-    begin
-    render_component :controller => params[:step], :action => action, :id => params[:id]
-    rescue NameError
-      error_access_page(404)
-    end
   end
 end

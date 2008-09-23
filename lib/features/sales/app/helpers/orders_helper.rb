@@ -96,7 +96,11 @@ module OrdersHelper
   
   def generate_order_tabs
     step = Step.find_by_name(controller.controller_name)
-    tab_name = step.parent.nil? ? step.name : step.parent.name
+    unless step.nil?
+      tab_name = step.parent.nil? ? step.name : step.parent.name
+    else
+      tab_name = controller.controller_name
+    end
     
     html = "<div class=\"tabs\"><ul>"
     html += "<li "
