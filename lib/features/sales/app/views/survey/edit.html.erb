@@ -1,6 +1,6 @@
 <div class="frame presentation_medium">
   <h2> Checklist </h2>
-  <% form_for(@order_step, :url => { :controller =>"orders", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
+  <% form_for(@order_step, :url => { :controller =>"survey", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
     <%# raise @checklist_responses.inspect%>
     <% for checklist_response in @checklist_responses %>
       <% fields_for "order[survey][checklists]", checklist_response, :index => checklist_response.id do |checklist_| %>
@@ -17,7 +17,7 @@
    
     <h2> Documents </h2>
     <!-- Display document_form-->
-    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Survey', :owner_id => @step.id, :error => @error} %>
+    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'OrdersSteps', :owner_id => @order_step.id, :error => @error} %>
     
     <h2> Commentaires </h2>
     

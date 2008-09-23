@@ -4,9 +4,9 @@ class Order < ActiveRecord::Base
   belongs_to :order_type
   belongs_to :customer
   belongs_to :establishment
-  has_one :commercial_order
-  has_one :facturation_order
-  has_many :orders_steps, :class_name => "OrdersSteps"
+  has_many :commercial_order
+  has_many :facturation_order
+  has_many :commercial_order
   
   validates_presence_of :order_type
   #  validates_presence_of :establishment

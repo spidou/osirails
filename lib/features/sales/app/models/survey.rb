@@ -1,3 +1,3 @@
-class Survey < Step
-  acts_as_file
+class Survey < CommercialOrder
+
 end

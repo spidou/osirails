@@ -1,10 +1,13 @@
-class SurveyController < ApplicationController
+class SurveysController < ApplicationController
 
    helper :documents
   
-  def show
-    raise params.inspect
-    @order = Order.find(:id)
+  def edit
+    @order = Order.find(params[:id])
+    @step = Survey.first
+    @order_step = OrdersSteps.find_by_order_id_and_step_id(@order.id, @step.id)
+    @checklist_responses = @order_step.checklist_responses
+    @remarks = @order_step.remarks
   end
   
    def update
