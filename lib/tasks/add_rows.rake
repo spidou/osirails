@@ -336,7 +336,7 @@ namespace :osirails do
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
         SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
-        SocietyActivitySectorsOrderTypes].each do |model|
+        OrderTypesSocietyActivitySectors].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all
