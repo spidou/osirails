@@ -1427,9 +1427,10 @@ select.catalog_3_columns {
 }
 
 /*/////////////////STEPS/////////////////*/
-.ring_finish,
+.ring_terminated,
 .ring_in_progress,
-.ring_disable,
+.ring_unstarted,
+.ring_uncomplete,
 .feet_finish,
 .feet_in_progress,
 .feet_disable,
@@ -1442,9 +1443,9 @@ select.catalog_3_columns {
 	background:url("/images/image-step.png") no-repeat;
 }
 
-.ring_finish,
+.ring_terminated,
 .ring_in_progress,
-.ring_disable {
+.ring_unstarted {
 	width:67px;
 	height:67px;
 	cursor:pointer;
@@ -1471,7 +1472,11 @@ select.catalog_3_columns {
 	padding:0 0px 0 20px;
 }
 
-.ring_finish {
+.ring_uncomplete {
+	background-position:-201px -96px;
+}
+
+.ring_terminated {
 	background-position:-134px -96px;
 }
 
@@ -1479,12 +1484,12 @@ select.catalog_3_columns {
 	background-position:-67px -96px;
 }
 
-.ring_disable {
+.ring_unstarted {
 	background-position:0 -96px;
 }
 
 .feet_finish {
-	background-position:-201px -96px;
+	background-position:-288px -96px;
 }
 
 .feet_in_progress {
@@ -1552,9 +1557,9 @@ select.catalog_3_columns {
 
 }
 
-#steps div.ring_finish,
+#steps div.ring_terminated,
 #steps div.ring_in_progress,
-#steps div.ring_disable {
+#steps div.ring_unstarted {
 	margin:10px 19px 0px -4px;
 }
 
