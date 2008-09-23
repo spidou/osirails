@@ -49,3 +49,19 @@ class String
     return formated
   end  
 end
+
+class Hash
+  def fusion(hash)
+    return_hash = hash
+    self.each do |key, value|
+      if hash[key].nil?
+        return_hash[key] = value
+      elsif self[key].class == Hash && hash[key].class == Hash
+        return_hash[key] = self[key].fusion(hash[key])
+      else
+        raise "You can't fusion a #{self[key].class} with a #{hash[key].class}"
+      end
+    end
+    return_hash
+  end
+end
