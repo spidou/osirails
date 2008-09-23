@@ -19,7 +19,7 @@ class Order < ActiveRecord::Base
           step.name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
         else
           name = step.name+"_order"
-          name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
+          name.camelize.constantize.create(:order_id => self.id,:step_id => step.id, :status => "unstarted")
         end
         ## here the code to create default commercial orders
       end
@@ -38,8 +38,14 @@ class Order < ActiveRecord::Base
   ## Return current step order
   def step
     models = []
+    step = nil
     self.commercial_orders.each {|model| models << model}
-    models.each {|model| return model.step if model.status == "in_progress" }
+    #TODO models must content models sorted by position
+    models.each {|model| step =  model.step if model.status == "in_progress"}
+    if step.nil? 
+      models.each {|model| return model.step if model.status == "unstarted"}
+    end
+    return step
   end
   
   ## Return remarks's order
