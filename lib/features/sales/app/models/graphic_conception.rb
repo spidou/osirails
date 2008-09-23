@@ -1,0 +1,3 @@
+class GraphicConception < CommercialOrder
+  
+end
