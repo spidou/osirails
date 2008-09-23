@@ -4,9 +4,8 @@ class Order < ActiveRecord::Base
   belongs_to :order_type
   belongs_to :customer
   belongs_to :establishment
-  has_many :commercial_order
-  has_many :facturation_order
-  has_many :commercial_order
+  has_many :commercial_orders
+  has_many :facturation_orders
   
   validates_presence_of :order_type
   #  validates_presence_of :establishment
@@ -16,10 +15,9 @@ class Order < ActiveRecord::Base
   def after_create
     unless self.order_type.nil?
       self.order_type.activated_steps.each do |step| 
-        o = OrdersSteps.create(:order_id => self.id, :step_id => step.id, :status => "unstarted")
-        step.checklists.each do |checklist|
-          ChecklistResponse.create(:orders_steps_id => o.id, :checklist_id => checklist.id)
-        end
+        
+        ## here the code to create default commercial order 
+        
       end
     end
   end
@@ -35,7 +33,9 @@ class Order < ActiveRecord::Base
   
   ## Return current step order
   def step
-    OrdersSteps.find_by_order_id_and_status(self.id, "in_progress").nil? ? OrdersSteps.find_by_order_id_and_status(self.id, "unstarted") : OrdersSteps.find_by_order_id_and_status(self.id, "in_progress").step
+    models = []
+    self.commercial_orders.each {|model| models << model}
+    models.each {|model| return model.step if model.status == "in_progress" }
   end
   
   ## Return remarks's order
