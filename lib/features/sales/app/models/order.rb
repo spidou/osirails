@@ -15,7 +15,12 @@ class Order < ActiveRecord::Base
   def after_create
     unless self.order_type.nil?
       self.order_type.activated_steps.each do |step|
-        step.name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
+        unless step.parent.nil?
+          step.name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
+        else
+          name = step.name+"_order"
+          name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
+        end
         ## here the code to create default commercial orders
       end
     end
