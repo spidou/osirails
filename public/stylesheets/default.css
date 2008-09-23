@@ -1769,7 +1769,7 @@ div.frame>#steps {
 .document_view_content img {
 	width:75px;
 	height:75px;
-	margin-left:-3px;
+	margin-left: 2px;
 }
 
 .document_view_content p {
@@ -1781,10 +1781,10 @@ div.frame>#steps {
 	font-size:0.8em;
 	background:#DDD;
 	padding:5px;
-	text-align:justify;
+	text-align:left;
 	-moz-border-radius:3px;
-	margin-left:70px;
-	margin-top:-78px;
+	margin-left:81px;
+	margin-top:-79px;
 }
 
 .document_view_content strong {
