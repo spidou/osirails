@@ -65,11 +65,13 @@ class JobContractsController < ApplicationController
     if @job_contract.update_attributes(params[:job_contract]) and @salaries << Salary.create(params[:salaries]) 
        
        # save the employee's documents
-        if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|
-            document.save
-            @employee.documents << document
-            document.create_thumbnails
+        unless params[:new_document_number].nil?
+          if params[:new_document_number]["value"].to_i > 0
+            @document_objects.each do |document|
+              document.save
+              @employee.documents << document
+              document.create_thumbnails
+            end
           end
         end
         
