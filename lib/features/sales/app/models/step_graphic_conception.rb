@@ -1,3 +1,3 @@
-class StepGraphicConception < CommercialOrder
+class StepGraphicConception < ActiveRecord::Base
   
 end

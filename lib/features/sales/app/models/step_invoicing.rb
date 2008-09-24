@@ -1,3 +1,3 @@
-class StepInvoicing < CommercialOrder
+class StepInvoicing < ActiveRecord::Base
   
 end

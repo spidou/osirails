@@ -1,4 +1,4 @@
-class CreateStepCommercial < ActiveRecord::Migration
+class CreateStepCommercials < ActiveRecord::Migration
   def self.up
     create_table :step_commercials do |t|
       t.references :order

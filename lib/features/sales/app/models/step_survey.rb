@@ -1,3 +1,3 @@
-class StepSurvey < CommercialOrder
+class StepSurvey < ActiveRecord::Base
 
 end

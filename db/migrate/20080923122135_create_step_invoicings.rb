@@ -1,4 +1,4 @@
-class CreateStepInvoicing < ActiveRecord::Migration
+class CreateStepInvoicings < ActiveRecord::Migration
   def self.up
     create_table :step_invoicings do |t|
       t.references :order

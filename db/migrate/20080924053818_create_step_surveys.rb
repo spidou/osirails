@@ -1,4 +1,4 @@
-class CreateStepSurvey < ActiveRecord::Migration
+class CreateStepSurveys < ActiveRecord::Migration
   def self.up
     create_table :step_surveys do |t|
       t.references :order

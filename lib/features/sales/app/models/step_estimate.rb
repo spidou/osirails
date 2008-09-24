@@ -1,3 +1,3 @@
-class StepEstimate < CommercialOrder
+class StepEstimate < ActiveRecord::Base
   
 end

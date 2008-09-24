@@ -1,4 +1,4 @@
-class CreateStepEstimate < ActiveRecord::Migration
+class CreateStepEstimates < ActiveRecord::Migration
   def self.up
     create_table :step_estimates do |t|
       t.references :order

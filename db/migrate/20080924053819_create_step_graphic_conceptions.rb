@@ -1,4 +1,4 @@
-class CreateGraphicConception < ActiveRecord::Migration
+class CreateStepGraphicConceptions < ActiveRecord::Migration
   def self.up
     create_table :step_graphic_conceptions do |t|
       t.references :order
