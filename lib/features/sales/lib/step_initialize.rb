@@ -23,13 +23,13 @@ module StepInitialize ## Module that permit to create steps
     unless $step_array.empty?
       $step_array.each do |step_array|
         # Parent step is create if it isn't in database 
-        unless parent_step = Step.find_by_name(step_array[:parent])
-          parent_step = Step.create(:name => step_array[:parent]) unless step_array[:parent].blank?
+        unless parent_step = Step.find_by_name("step_"+step_array[:parent])
+          parent_step = Step.create(:name => "step_"+step_array[:parent]) unless step_array[:parent].blank?
         end
       
         # Unless step already exist
-        if (step = Step.find_by_name(step_array[:name])).nil?
-          unless (m = Step.create(:title =>step_array[:title], :description => step_array[:description], :name => step_array[:name], :parent_id =>(parent_step.id unless parent_step.nil?)))
+        if (step = Step.find_by_name("step_"+step_array[:name])).nil?
+          unless (m = Step.create(:title =>step_array[:title], :description => step_array[:description], :name => "step_"+step_array[:name], :parent_id =>(parent_step.id unless parent_step.nil?)))
             puts "The feature #{name} wants to instanciate the step #{m.name}, but it's impossible."
           else
             unless step_array[:position].nil?
