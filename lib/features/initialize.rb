@@ -53,6 +53,22 @@ def init(config, path)
     
     # test and add search indexes into db
     error_message = "syntaxe error in '#{ name }' yaml."
+
+    def verify_attribute_type(attr_class, type)
+      case attr_class  
+        when String
+          return 1 unless type=="string"
+        when Date
+          return 1 unless type=="date"
+        when DateTime
+          return 1 unless type=="date" 
+        when Time  
+          return 1 unless type=="date"
+        else  
+          return 1 unless type=="number"
+      end
+      return 0    
+    end
     
     def verify_sub_resources(hash,error_message)
       hash.each_pair do |sub_attribute,value|
@@ -62,7 +78,6 @@ def init(config, path)
               return verify_sub_resources(value2,error_message) unless verify_sub_resources(value2,error_message).blank?
             else
               return "#{ error_message } the attribute '#{ sub_attribute2 }' is incorrect for '#{ sub_attribute }'!" unless sub_attribute.constantize.new.respond_to?(sub_attribute2)
-       
             end
           end
         else
@@ -80,6 +95,7 @@ def init(config, path)
               raise "#{ error_message } The sub resource '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
             else
               raise "#{ error_message } The attribute '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
+              
             end
           end
         end

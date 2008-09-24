@@ -1,7 +1,9 @@
 module SearchesHelper
 
   def display_criterion_choose_select(value,id)
-    model = Feature.find_by_name(value)
+    # take the first part of value that represent the feature name
+    feature = Feature.find_by_name(value.split(",")[0])
+    model = value.split(",")[1]
     
     month_array="["
     Date::MONTHNAMES.each do |month|
@@ -10,11 +12,14 @@ module SearchesHelper
     end
     month_array+="]"
     
-    html="<select onchange='action_choose(this,#{id},#{month_array})'><option id='blank#{id}' selected='selected'></option>"
-    model.search.each_pair do |model,categories|
-      attributes = Search.regroup_attributes(categories)
-      html += get_attributes_recursively(attributes,model) if model.constantize.can_view?(current_user)
-    end
+    html="<select name='criteria[#{id}][attribute]' onchange='action_choose(this,#{id},#{month_array})'><option id='blank#{id}' selected='selected'></option>"
+    #feature.search.each_pair do |model,categories|
+    #  attributes = Search.regroup_attributes(categories)
+    #  html += get_attributes_recursively(attributes,feature) if feature.constantize.can_view?(current_user)
+    #end
+    attributes = feature.search[model]['base'].fusion(feature.search[model]['other'])
+    html += get_attributes_recursively(attributes,model) if model.constantize.can_view?(current_user)
+    
     html+="</select name=\"criteria[#{id}][attribute]\" >"
     return html    
   end
@@ -46,17 +51,33 @@ module SearchesHelper
   end
   
   
-  def generate_rows(rows,columns)
+  def generate_rows(objects,columns)
     html = ""
-    rows.each do |row|
+    objects.each do |object|
+      html+="<tr>"
       columns.each do |column|
-        if column.class!={}.class
-          html+="<td><tr>#{row.send(column)} </tr><td>\n"
-        else
-          html+="<td><tr>" + nested_column (row,column) + "</tr><td>\n"
-        end  
-      end 
-    end 
+        
+        result = object
+        column.each do |attribute|
+          if attribute.class == Array
+            result = nil
+          else
+            puts result.to_s + " " + attribute
+            result = result.send(attribute) unless result.nil?
+          end
+        end
+        result = "null" if result.nil?
+        puts result
+        html+="<td>#{result}</td>\n"
+        #if column.class!={}.class
+        #  html+="<td><tr>#{row.send(column)} </tr><td>\n"
+        #else
+        #  html+="<td><tr>" + nested_column (row,column) + "</tr><td>\n"
+        #end  
+      end
+      html+="</tr>" 
+    end
+    return html 
   end
   
   def nested_column(row,column)

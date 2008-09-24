@@ -13,6 +13,12 @@ search:
       email: string
       social_security_number: string
       society_email: string
+      jobs:
+        Job:
+          name: string
+          mission: string
+          activity: string
+          goal: string
       premia:
         Premium:
           date: date
@@ -25,12 +31,13 @@ search:
           end_date: date
           created_at: date
           updated_at: date
+          salary:
+            Salary:
+              salary: number
+          created_at: date
           job_contract_type:
             JobContractType:
-              name: string
-      jobs:        
-        Job:
-          name: string
+              name: string           
 dependencies:
 conflicts:
 business_objects:

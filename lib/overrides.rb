@@ -32,6 +32,15 @@ class Array
     return var 
   end
   
+  def fusion(arg)
+    array = Array.new + arg
+    return nil unless array.class == Array
+    self.each do |elmnt|
+      array << elmnt unless array.include?(elmnt)
+    end
+    return array
+  end
+  
 end
 
 class String
@@ -47,6 +56,11 @@ class String
       end
     end
     return formated
+  end
+  
+  # method to view if a word is or not is plural 
+  def plural?
+    self.singularize == self ? false : true
   end  
 end
 
