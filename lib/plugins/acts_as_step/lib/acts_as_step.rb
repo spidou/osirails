@@ -16,17 +16,21 @@ module ActiveRecord
           extend ActiveRecord::Acts::Step::SingletonMethods
           include ActiveRecord::Acts::Step::InstanceMethods
           
+          # Plugins
           acts_as_file
           
+          # Relationships
           has_many :remarks
           has_many :checklist_responses
-          
+          has_many :missing_elements
         end
       end
       
       # Adds SingletonMethods
       module SingletonMethods
-       
+        def step
+          'Step'.constantize.find_by_name(self.name.tableize.singularize)
+        end
       end
       
       # Adds instance methods.

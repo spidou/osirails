@@ -13,9 +13,6 @@ class OrderType < ActiveRecord::Base
   
   ## Return activated step for order_type
   def activated_steps
-    steps = []
-    self.sales_processes.each {|sales_process| steps << sales_process.step}
-    steps
+    self.sales_processes.collect {|sp| sp.step if sp.activated }
   end
-  
 end

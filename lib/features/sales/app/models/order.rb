@@ -7,24 +7,21 @@ class Order < ActiveRecord::Base
   has_one :step_commercial
   has_one :step_facturation
 
+  # Validations
   validates_presence_of :order_type
   #  validates_presence_of :establishment
   validates_presence_of :customer
 
-  ## Create all orders_steps after create
-  #def after_create
-  #  unless self.order_type.nil?
-  #    self.order_type.activated_steps.each do |step|
-  #      unless step.parent.nil?
-  #        step.name.camelize.constantize.create(:order_id => self.id,:step_id => step.id)
-  #      else
-  #        name = step.name+"_order"
-  #        name.camelize.constantize.create(:order_id => self.id,:step_id => step.id, :status => "unstarted")
-  #      end
-  #      ## here the code to create default commercial orders
-  #    end
-  #  end
-  #end
+  # Create all orders_steps after create
+  def after_create
+    order_type.activated_steps.each do |step|
+      if step.parent.nil?
+        step.name.camelize.constantize.create(:order_id => self.id, :status => 'unstarted')
+      else
+        step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id, :status => 'unstarted')
+      end
+    end
+  end
 
   ## Return a tree with activated step
   def tree
@@ -48,7 +45,7 @@ class Order < ActiveRecord::Base
   def steps
     order_type.sales_processes.collect { |sp| sp.step if sp.activated }
   end
-  
+
   ## Return current step order
   def step
     models = []

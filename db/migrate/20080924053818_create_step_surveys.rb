@@ -1,8 +1,7 @@
 class CreateStepSurveys < ActiveRecord::Migration
   def self.up
     create_table :step_surveys do |t|
-      t.references :order
-      t.references :step
+      t.references :step_commercial
       t.string :status
       t.datetime :start_date
       t.datetime :end_date
