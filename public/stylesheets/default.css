@@ -1468,6 +1468,7 @@ select.catalog_3_columns {
 
 .ring_terminated,
 .ring_in_progress,
+.ring_uncomplete,
 .ring_unstarted {
 	width:67px;
 	height:67px;
