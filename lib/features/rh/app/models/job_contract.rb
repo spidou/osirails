@@ -7,4 +7,9 @@ class JobContract < ActiveRecord::Base
   has_many :salaries
   
   acts_as_file
+  
+  def salary
+    return self.salaries.first 
+  end
+  
 end 

@@ -10,9 +10,10 @@
 
 <% form_for([:employee,@job_contract]) do |f| %>
   <%=f.error_messages%> 
+  <%= error_messages_for(:salary)%>
   
   <div class="frame">
-  <h2>Informations :</h2> 
+  <h2>Informations</h2> 
   <p>
     <%= f.label :start_date, "Date de début du contrat :"%>
     <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year]%>
@@ -35,7 +36,7 @@
     <%= f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name, :inlude_blank => true %>
   </p>
 
-  <h2>Salaire :</h2>
+  <h2>Salaire</h2>
   <p>
     <%= label_tag 'salaries[salary]', "Salaire Actuel de l'employé :"%>
     <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width"%>
@@ -44,7 +45,7 @@
   
   <!-- Display Documents div -->
   
-  <h2>Avenant au contrat</h2>
+  <h2>Documents joints</h2>
     <% unless @documents.nil?%>
       <% unless @documents.empty? %>
         <% for document in @documents %>
@@ -62,9 +63,10 @@
     <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'JobContract',
     :new_contact_number => @new_contact_number, :error => @error} %>
   
-
-  </div>
   <%= submit_tag "Modifier" %>
+  <%=link_to 'Retour', employee_path(@employee)%>
+  </div>
+  
 <%end%>
-<%=link_to 'Retour', employee_path(@employee)%>
+
 

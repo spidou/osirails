@@ -26,7 +26,7 @@ class JobContractsController < ApplicationController
     
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
-    @salaries = @job_contract.salaries
+    #@salaries = @job_contract.salaries
      
     if params[:salaries]['type']['value'] == "Net"
       tmp = params[:salaries]['salary'].to_f/0.8
@@ -62,8 +62,11 @@ class JobContractsController < ApplicationController
    # y= params[:premia]['date']['(1i)'] 
    # params[:premia]['date'] = "#{m}/#{d}/#{y}".to_date
    params[:job_contract]['end_date'] = nil if params[:job_contract]['end_date'].nil?
-    if @job_contract.update_attributes(params[:job_contract]) and @salaries << Salary.create(params[:salaries]) 
-       
+   
+   @salary = Salary.new(params[:salaries])
+   
+    if @job_contract.update_attributes(params[:job_contract]) and @salary.save 
+       @job_contract.salaries << @salary
        # save the employee's documents
         unless params[:new_document_number].nil?
           if params[:new_document_number]["value"].to_i > 0
