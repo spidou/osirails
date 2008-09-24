@@ -1,0 +1,3 @@
+class StepGraphicConception < CommercialOrder
+  
+end

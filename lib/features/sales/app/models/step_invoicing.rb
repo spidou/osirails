@@ -1,0 +1,3 @@
+class StepInvoicing < CommercialOrder
+  
+end

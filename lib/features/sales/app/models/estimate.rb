@@ -1,3 +1,0 @@
-class Estimate < CommercialOrder
-  
-end

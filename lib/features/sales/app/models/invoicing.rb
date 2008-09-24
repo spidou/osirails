@@ -1,3 +1,0 @@
-class Invoicing < CommercialOrder
-  
-end

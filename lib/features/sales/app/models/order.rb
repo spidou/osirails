@@ -6,11 +6,11 @@ class Order < ActiveRecord::Base
   belongs_to :establishment
   has_many :commercial_orders
   has_many :facturation_orders
-  
+
   validates_presence_of :order_type
   #  validates_presence_of :establishment
   validates_presence_of :customer
-  
+
   ## Create all orders_steps after create
   def after_create
     unless self.order_type.nil?
@@ -25,7 +25,7 @@ class Order < ActiveRecord::Base
       end
     end
   end
-  
+
   ## Return a tree with activated step
   def tree
     steps =[]
@@ -37,39 +37,43 @@ class Order < ActiveRecord::Base
       unless step.parent_id.nil?
         step_objects << step.name.camelize.constantize.find_by_order_id(self.id)
       else
-        step_name = step.name+"_order"
+        step_name = step.name + "_order"
         step_objects << step_name.camelize.constantize.find_by_order_id(self.id)
       end
     end
     step_objects
   end
-  
-  
-## Return current step order
-def step
-  models = []
-  step = nil
-  self.commercial_orders.each {|model| models << model}
-  #TODO models must content models sorted by position
-  models.each {|model| step =  model.step if model.status == "in_progress"}
-  if step.nil? 
-    models.each {|model| return model.step if model.status == "unstarted"}
+
+  # Return all steps of the order
+  def steps
+    order_type.sales_processes.collect { |sp| sp.step if sp.activated }
   end
-  return step
-end
   
-## Return remarks's order
-def remarks
-  remarks = []
-  OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.remarks.each {|remark| remarks << remark} }
-  remarks
-end
-  
-## Return missing elements's order
-def missing_elements
-  missing_elements = []
-  OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.missing_elements.each {|missing_element| missing_elements << missing_element} }
-  missing_elements
-end
-  
+  ## Return current step order
+  def step
+    models = []
+    step = nil
+    self.commercial_orders.each {|model| models << model}
+    #TODO models must content models sorted by position
+    models.each {|model| step =  model.step if model.status == "in_progress"}
+    if step.nil? 
+      models.each {|model| return model.step if model.status == "unstarted"}
+    end
+    return step
+  end
+
+  ## Return remarks's order
+  def remarks
+    remarks = []
+    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.remarks.each {|remark| remarks << remark} }
+    remarks
+  end
+
+  ## Return missing elements's order
+  def missing_elements
+    missing_elements = []
+    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.missing_elements.each {|missing_element| missing_elements << missing_element} }
+    missing_elements
+  end
+
 end

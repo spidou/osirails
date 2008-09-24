@@ -6,7 +6,6 @@ class CreateSteps < ActiveRecord::Migration
       t.integer :parent_id
       t.string :description
       t.integer :position
-      t.string :type
       
       t.timestamps
     end

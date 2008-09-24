@@ -11,14 +11,16 @@ module OrdersHelper
   
   def step_ring_class(status)
     case status
-  	when 'unstarted'
-  	  html = 'ring_disable'
-	  when 'terminated'
-	    html = 'ring_finish'
+    when 'unstarted'
+      html = 'ring_disable'
+    when 'uncomplete'
+      html = 'ring_uncomplete'
     when 'in_progress'
       html = 'ring_in_progress'
-  	end
-  	html
+    when 'terminated'
+      html = 'ring_finish'
+    end
+    html
   end
   
   def step_feet_class(status)
@@ -30,7 +32,7 @@ module OrdersHelper
     when 'in_progress'
       html = 'feet_in_progress'
   	end
-  	html 
+  	html
   end
   
   def order_steps
@@ -38,9 +40,9 @@ module OrdersHelper
     
     step = Step.find_by_name(controller.controller_name)
     parent_step = step.parent.nil? ? step.name : step.parent.name
-    @order.orders_steps.each do |ot|
-      next if ot.step.parent.nil?
-      orders_steps << ot if ot.step.parent.name == parent_step
+    @order.tree.each do |step|
+      next if step.parent.nil?
+      orders_steps << step if step.parent.name == parent_step
     end
     
     html = "<div id=\"steps\">"

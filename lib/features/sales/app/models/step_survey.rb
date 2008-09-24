@@ -1,0 +1,3 @@
+class StepSurvey < CommercialOrder
+
+end

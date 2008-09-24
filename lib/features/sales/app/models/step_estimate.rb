@@ -1,0 +1,3 @@
+class StepEstimate < CommercialOrder
+  
+end
