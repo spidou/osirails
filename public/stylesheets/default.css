@@ -323,7 +323,7 @@ a.button_banner:hover span {
 	font-weight:bold;
 }
 
-.not_employee_reference {
+#not_employee_reference {
 	text-align:center;
 	font-size:1.1em;
 	color:#333;
