@@ -2,16 +2,14 @@
   
   <%= show_add_button %>
   
-  <h1><span class="gray_color">Lien</span> <span class="blue_color">Utile</span></h1>
-  <ul>
-    <li><%= link_to("Voir la liste des notes de service re&ccedil;u", received_memorandums_path) %></li>
-  </ul>
+ <%= show_received_memorandums %>
   
 <% end %>
 
 <h1>Notes de services envoy&eacute;s</h1>
-<% unless @memorandums.size == 0 %>
+<% unless @sended_memorandums.size == 0 or (!Memorandum.can_list?(current_user) and controller.can_list?(current_user))%>
   <div class='frame'>
-    <%= show_memorandum(@memorandums) %>
+    <%= show_memorandum(@sended_memorandums) %>
+    <%= will_paginate @sended_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
   </div>
 <% end %>
