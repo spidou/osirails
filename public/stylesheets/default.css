@@ -327,7 +327,9 @@ a.button_banner:hover span {
 	text-align:center;
 	font-size:1.1em;
 	color:#333;
-	margin-top:10px;
+	position:relative;
+	top:10px;
+	width:100%;
 }
 
 /*////////////////////////////////////////////////////////
