@@ -20,8 +20,8 @@ module ActiveRecord
           acts_as_file
           
           # Relationships
-          has_many :remarks
-          has_many :checklist_responses
+          has_many :remarks, :as => :has_remark
+          has_many :checklist_responses, :as => :has_checklist_response
           has_many :missing_elements
         end
       end

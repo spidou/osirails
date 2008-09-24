@@ -5,7 +5,7 @@ class Order < ActiveRecord::Base
   belongs_to :customer
   belongs_to :establishment
   has_one :step_commercial
-  has_one :step_facturation
+  has_one :step_invoicing
 
   # Validations
   validates_presence_of :order_type

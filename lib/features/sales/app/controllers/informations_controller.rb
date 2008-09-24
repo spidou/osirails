@@ -16,6 +16,5 @@ class InformationsController < ApplicationController
   
   def check
     @order = Order.find(params[:order_id])
-    @current_order_step = @order.step.name
   end
 end

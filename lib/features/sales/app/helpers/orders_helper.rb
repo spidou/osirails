@@ -34,7 +34,7 @@ module OrdersHelper
     	html += "		</div>"
     	html += "		<div class=\"steps_text\">"
     	html += "			<p>"
-    	html += "				<a href=\"\">#{ot.step.title}</a>"
+    	html += "				<a href=\"#{order_path(@order)}/#{ot.step.name[5..-1]}\">#{ot.step.title}</a>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"
@@ -75,23 +75,23 @@ module OrdersHelper
   end
   
   def generate_order_tabs
-    generate_order_tabs_for('step_' + controller.controller_name)
+    generate_order_tabs_for(controller.controller_name)
   end
   
   def generate_order_tabs_for(s)
-    step = Step.find_by_name(s || current_step_name)
-    Step.cant_find if step.nil?
-    tab_name = step.parent.nil? ? step.name : step.parent.name
+    step = Step.find_by_name('step_' + s)
+    tab_name = step.nil? ? s : step.first_parent.name
     
     html = "<div class=\"tabs\"><ul>"
     html += "<li "
     html += class_selected if tab_name == 'informations'
     html +="><a href=\"/orders/#{@order.id}/informations/\">Informations générales</a></li>"
-    @order.send(tab_name).steps.each do |step|
+    @order.steps.each do |step|
       if step.parent.nil?
         html += "<li "
         html += class_selected if tab_name == step.name
-        html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
+        html += link_to step.title, "#{order_path(@order)}/#{step.name[5..-1]}"
+#        html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
       end
     end
     html += "<li "

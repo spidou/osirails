@@ -3,11 +3,10 @@ class SurveyController < ApplicationController
    helper :documents
   
   def edit
-    @order = Order.find(params[:id])
-    @step = Survey.first
-    @order_step = OrdersSteps.find_by_order_id_and_step_id(@order.id, @step.id)
-    @checklist_responses = @order_step.checklist_responses
-    @remarks = @order_step.remarks
+    @order = Order.find(params[:order_id])
+    @survey = @order.step_commercial.step_survey
+    @checklist_responses = @survey.checklist_responses
+    @remarks = @survey.remarks
   end
   
    def update
