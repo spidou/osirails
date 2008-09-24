@@ -1583,6 +1583,7 @@ select.catalog_3_columns {
 
 #steps div.ring_terminated,
 #steps div.ring_in_progress,
+#steps div.ring_uncomplete,
 #steps div.ring_unstarted {
 	margin:10px 19px 0px -4px;
 }
