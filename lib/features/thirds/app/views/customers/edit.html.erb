@@ -59,15 +59,29 @@
   <% if @document_controller.can_list?(current_user)# and Document.can_list?(current_user) %>
     <h2>Documents</h2>
     <% unless @documents.empty? %>
-      <% for document in @documents %>
-        <p>        
-          <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
-          <%= link_to document.name, customer_document_path(@customer, document) %>
-          <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
-            <%= link_download_last_version(document) %>
-          <% end %>
-        </p>
+      <div class="document_view">
+        <h1>Images</h1>
+        <% for document in @documents %>
+        <div class="document_view_content">
+          <%#if document.document_versions.empty?%>        
+            <%# lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id), url_for(:controller => "documents",:action => "preview_image", :id => document.id))%>
+          <%#else%>
+             <%# lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => document.id, :last => true), url_for(:controller => "document_versions",:action => "preview_image", :id => document.id, :last => true))%>
+          <%#end%>
+          <%# image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id)) %>
+          <%= image_tag("/images/file_extensions/#{document.extension}_75x75.png") %>
+          <p>        
+            <strong><%=document.name%></strong><br />
+            <%= "Enregistre le "+ document.updated_at.to_s%><br/>
+            <%=get_description(document)%>
+              
+            <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
+              <%= link_download_last_version(document) %>
+            <% end %>
+          </p>
+      </div>
       <% end %>
+    </div>
     <% end %>
     
     <!-- Display document_form-->
