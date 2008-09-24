@@ -56,7 +56,7 @@
   <% end %>
 
    <!-- Display Documents div -->
-  <% if @document_controller.can_list?(current_user)# and Document.can_list?(current_user) %>
+  <% if @document_controller.can_list?(current_user) and Document.can_list?(current_user, @customer.class) %>
     <h2>Documents</h2>
     <% unless @documents.empty? %>
       <div class="document_view">

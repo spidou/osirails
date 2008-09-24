@@ -181,26 +181,26 @@ class CustomersController < ApplicationController
         end
       end
      
-      ## If Document.can_add?(current_user)
-      if params[:new_document_number]["value"].to_i > 0
-        documents = params[:customer][:documents].dup
-        @document_objects = Document.create_all(documents, @customer)
-      end
-      document_params_index = 0
-      params[:new_document_number]["value"].to_i.times do |i|
-        params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
-      end
-      ## Test if all documents enable are valid
-      unless @document_objects.nil?
-        @document_objects.size.times do |i|
-          unless @document_objects[i].valid?
-            @error = true
-          end
+      if Document.can_add?(current_user, @customer.class)
+        if params[:new_document_number]["value"].to_i > 0
+          documents = params[:customer][:documents].dup
+          @document_objects = Document.create_all(documents, @customer)
         end
-        ## Reaffect document number
-        params[:new_document_number]["value"]  = @document_objects.size
-      end
-      #      end     
+        document_params_index = 0
+        params[:new_document_number]["value"].to_i.times do |i|
+          params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
+        end
+        ## Test if all documents enable are valid
+        unless @document_objects.nil?
+          @document_objects.size.times do |i|
+            unless @document_objects[i].valid?
+              @error = true
+            end
+          end
+          ## Reaffect document number
+          params[:new_document_number]["value"]  = @document_objects.size
+        end
+      end     
       
       unless @error        
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
