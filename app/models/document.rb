@@ -1,21 +1,27 @@
 class Document < ActiveRecord::Base
   
-  acts_as_taggable
-  
   include Permissible
   
+  ## Relationship
   belongs_to :file_type
   has_many :document_versions
   belongs_to :has_document, :polymorphic => true
   
+  ## Validates
   validates_presence_of :name
   
-  attr_accessor :owner
+  ## Instance accessor
+  attr_accessor :is_new
+  attr_accessor :owner  
+  attr_accessor :file
   attr_accessor  :tag_list
-  attr_accessor :file 
   
+  ## Class accessor
   attr_accessor :models
   attr_accessor :image_extensions
+  
+  ## Plugins
+  acts_as_taggable
   
   
   @image_extensions = ["jpg", "jpeg","png","gif"]
@@ -60,8 +66,8 @@ class Document < ActiveRecord::Base
   ## Create thumbnails
   def create_thumbnails
     require 'RMagick'
-    if Document.image_extensions.include?(self.extension)
-      path = "documents/#{self.owner_class.downcase}/#{self.file_type_id}/"
+    if Document.image_extensions.include?(self.extension)     
+      path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
       thumbnail = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
       thumbnail.crop_resized!(75, 75, Magick::NorthGravity)
       thumbnail.write("#{path}/#{self.id}_75_75.#{self.extension}")
@@ -70,16 +76,20 @@ class Document < ActiveRecord::Base
   
   ## Return document path
   def path
-    self.owner_class + "/" + self.file_type_id.to_s + "/"
+    unless self.class != OrdersSteps
+      return self.owner_class + "/" + self.file_type_id.to_s + "/"
+    else
+      return "order/" + self.file_type_id.to_s + "/"
+    end
   end
   
-  ## Override new methods
+  ## Override new method
   def self.new(document = nil)
-    
     unless document[:owner].nil?
-    
+      
       ## Store file extension
       document_extension = document[:datafile].original_filename.split(".").last unless document[:datafile].blank?
+      document_extension = File.mime_type?(File.open(document[:datafile].path, "r")) unless document[:datafile].blank?
     
       ## affect document_name with original document name if associated textfield is undefined 
       document[:name].blank? ? document_name = ((a = document[:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:datafile].blank?) : document_name = document[:name]
@@ -90,9 +100,8 @@ class Document < ActiveRecord::Base
         :extension => document_extension)
       @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
       @document.owner = document[:owner]
-      #    @document.tag_list = document[:tag_list].split(",") unless document[:tag_list].nil?
       @document.file = document[:datafile] unless document[:datafile]. blank?
-#      document[:owner].documents << @document
+      @document.is_new = true
       return @document
     else
       raise "Document require owner attribute. example : Document.new(:owner => Employee.last)"
@@ -112,17 +121,18 @@ class Document < ActiveRecord::Base
     end   
   end
   
-  ## Override update
+  ## Override update_attributes method
   def update_attributes(document = nil)
     unless document.nil?
       unless document[:upload].nil?
         ## Store tags list
         tag_list = document.delete("tag_list").split(",")
-
+        
         ## Creation of document_version          
+        
         path = "documents/" + self.path + "/" +  self.id.to_s + "/"
         file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s + "." +document[:upload][:datafile].original_filename.split(".").pop, 
-          :directory => path, :extensions => [self.extension])
+          :directory => path, :file_type_id => self.file_type.id)
         if file_response
           @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)      
         
@@ -147,46 +157,72 @@ class Document < ActiveRecord::Base
     end
   end
   
-  ## Override save methods
-  def save()
-    if self.owner.valid?
-        
+  ## Override valid? method
+  def valid?
+    unless self.file_type.nil?
       unless self.file.nil?
-        unless self.file.blank?
-        
-          ## Store all possible extension for file
-          possible_extensions = []
-          self.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
-          
-          if super
-            
-            path = "documents/" + self.owner.class.name.downcase + "/" + self.file_type.id.to_s.downcase + "/"
-            file_response = FileManager.upload_file(:file => {:datafile => self.file}, :name => self.id.to_s+"."+ self.file.original_filename.split(".").last, 
-              :directory => path, :extensions => possible_extensions)
-            
-            ## If file succefuly create
-            if file_response
-          
-              ## Add tag_list for document
-              unless self.tag_list.nil?
-                self.tag_list.each {|tag| self.tag_list << tag.strip} 
-                #FIXME Verify if it's necessary
-                self.tag_list.uniq!
-              end
-              return true              
-            else
-              self.destroy
-            end
-          end          
+        if FileManager.valid_mime_type?(self.file, self.file_type.id)
+          return super     
         else
+          ## If document mime_type is invalid for his file_type
+          self.errors.add("Le type", "du fichier ne correspond pas avec son extension")
           return false
         end
       else
-        return false
-      end ## file.nil?
+        self.errors.add("Le fichier", "n'a pas été trouvé")
+      end
     else
+      ## If his file_type is undefine, it impossible to test if it's a valid document
       return false
-    end ## owner.valid?
+    end
+    return false
+  end
+  
+  ## Override save method
+  def save()
+    if self.is_new == true
+      if self.owner.valid?
+        
+        unless self.file.nil?
+          unless self.file.blank?
+        
+            ## Store all possible extension for file
+            possible_extensions = []
+            self.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
+          
+            if self.valid?
+              super
+              path = "documents/" + self.owner.class.name.downcase + "/" + self.file_type.id.to_s.downcase + "/"
+              file_response = FileManager.upload_file(:file => {:datafile => self.file}, :name => self.id.to_s, 
+                :directory => path, :file_type_id => self.file_type.id)
+              ## If file succefuly create
+              if file_response == true
+                
+                ## Add tag_list for document
+                unless self.tag_list.nil?
+                  self.tag_list.each {|tag| self.tag_list << tag.strip} 
+                  #FIXME Verify if it's necessary
+                  self.tag_list.uniq!
+                end
+                self.is_new = false
+                return true            
+              else
+                self.destroy
+                return file_response
+              end
+            end      
+          else
+            return false
+          end
+        else
+          return false
+        end ## file.nil?
+      else
+        return false
+      end ## owner.valid?
+    else
+      super
+    end
   end
   
 end
