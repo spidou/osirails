@@ -36,7 +36,7 @@ module ActiveRecord
       # Adds instance methods.
       module InstanceMethods
         def parent
-          Step.find_by_name(Step.find_by_name(self.name).parent.name).camelize.constantize.find_by_order_id(self.order.id)
+          send(self.class.step.parent.name)
         end
       end
       
