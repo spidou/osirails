@@ -11,7 +11,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :order_type
   #  validates_presence_of :establishment
   validates_presence_of :customer
-
+  
   # Create all orders_steps after create
   def after_create
     order_type.activated_steps.each do |step|

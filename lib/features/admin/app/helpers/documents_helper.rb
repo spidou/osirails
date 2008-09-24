@@ -16,7 +16,11 @@ module DocumentsHelper
   end
   
   def get_owner(owner_type, owner_id)
-    owner_type.constantize.find(owner_id)
+    owner_type.constantize.find(owner_id).inspect
+  end
+  
+  def get_description(document)
+    document.description.size < 30 ? document.description : document.description[0,25] + "..."
   end
   
 end

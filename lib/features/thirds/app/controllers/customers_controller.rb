@@ -161,7 +161,7 @@ class CustomersController < ApplicationController
       
       ## If establishment_form is not null
       if Establishment.can_add?(current_user)
-        establishment_params_index = 0 
+        establishment_params_index = 0
         if params[:new_establishment_number]["value"].to_i > 0
           @establishment_objects = []
           @address_objects = []
@@ -181,33 +181,38 @@ class CustomersController < ApplicationController
         end
       end
      
-#      if Document.can_add?(current_user)
-        if params[:new_document_number]["value"].to_i > 0
-          documents = params[:customer][:documents].dup
-          @document_objects = Document.create_all(documents, @customer)
-        end
-        document_params_index = 0
-        params[:new_document_number]["value"].to_i.times do |i|
-          params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
-        end
-        ## Test if all documents enable are valid
-        unless @document_objects.nil?
-          @document_objects.size.times do |i|
-            @error = true unless @document_objects[i].valid?
+      ## If Document.can_add?(current_user)
+      if params[:new_document_number]["value"].to_i > 0
+        documents = params[:customer][:documents].dup
+        @document_objects = Document.create_all(documents, @customer)
+      end
+      document_params_index = 0
+      params[:new_document_number]["value"].to_i.times do |i|
+        params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
+      end
+      ## Test if all documents enable are valid
+      unless @document_objects.nil?
+        @document_objects.size.times do |i|
+          unless @document_objects[i].valid?
+            @error = true
           end
-          ## Reaffect document number
-          params[:new_document_number]["value"]  = @document_objects.size
         end
-#      end     
+        ## Reaffect document number
+        params[:new_document_number]["value"]  = @document_objects.size
+      end
+      #      end     
       
-      unless @error
-        
+      unless @error        
         flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|
-            document.save
-            @customer.documents << document
-            document.create_thumbnails
+          @document_objects.each do |document|           
+            if (d = document.save) == true
+              @customer.documents << document
+              document.create_thumbnails
+            else 
+              @error = true
+              flash[:error] = d
+            end
           end
         end
         

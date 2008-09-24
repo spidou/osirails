@@ -1,3 +1,4 @@
+#
 require 'active_record'
 
 module ActiveRecord

@@ -57,7 +57,8 @@ class DocumentsController < ApplicationController
   def thumbnail 
     @document = Document.find(params[:id])
     #    if Document.can_view?(current_user, @document.owner_class.capitalize)
-    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}_75_75.jpg"
+    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}_75_75.jpeg"
+    raise path.to_s
     img=File.read(path)
     send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
     #    end

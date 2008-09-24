@@ -54,6 +54,16 @@
       <%= d.hidden_field(:valid, :value => 'true') %>
     </p>
 
+    <% # Affectation of variables when an error occur%>
+    <%if error%>
+      <%= javascript_tag "document.getElementById('#{owner_type.downcase}_documents_#{cpt}_name').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["name"]}';
+      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_description').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["description"]}';
+      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_file_type_id').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["file_type_id"]}';
+      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_tag_list').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["tag_list"]}';
+      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_datafile').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["datafile"]}'"%>
+    <%end%>
+  </div>
+
   <%end%>
 
   <%= observe_field "#{owner_type.tableize.singularize}_documents_#{cpt}_file_type_id",

@@ -5,17 +5,17 @@ class FileManager
   # :directory (optional, it's a string contain the path, example: "public/upload")
   # :name (optional, it's a string to define the new name of the file)
   # :extensions (optional, it's an array of string where contains the allowed extensions, example: ["gif", "jpg"])
+  # :file_type_id correspond to the id of a file_type
   def self.upload_file(options)
     return false if options[:file].nil?
     if options[:directory].nil?
       options[:directory] = "tmp/"
     end
     if options[:name].nil?
-      name =  options[:file]['datafile'].original_filename
+      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r"))
     else
-      name = options[:name]
+      name = options[:name] + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r"))
     end
-    
     valid_extension = false
     
     unless options[:extensions].nil?
@@ -37,11 +37,25 @@ class FileManager
     end
     
     path = File.join(options[:directory], name)
-    #    raise options[:file][:datafile].to_s
     unless File.exist?(path)
-      File.open(path, "wb") { |f| f.write(options[:file][:datafile].read) }
+      ## Test if mime_type correspond with possible extension
+      #TODO change this code to integre a test for mime type like "- application /..."
+      #FIXME When file uploaded is in text format, the file classs is UploadedStringIO instead of UploadedTempfile
+      if self.valid_mime_type?(File.open(options[:file][:datafile].path, "r"), options[:file_type_id])
+        File.open(path, "wb") { |f| f.write(options[:file][:datafile].read)}
+        File.exist?(path)
+      else
+        FileManager.delete_file(path)
+        return "Le mimetype du fichier n'est pas autoriser pour ce type de fichier"
+      end
     end
-    File.exist?(path)
+  end
+  
+  def self.valid_mime_type?(file, file_type_id)
+    extensions = []
+    mime_type = File.mime_type?(File.open(((file.class == String) ? file : file.path), "r"))
+    FileType.find(file_type_id).file_type_extensions.each{|extension| extensions << extension.name}
+    return extensions.include?(mime_type)
   end
   
   def self.delete_file(file)

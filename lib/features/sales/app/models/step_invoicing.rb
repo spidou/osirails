@@ -4,3 +4,4 @@ class StepInvoicing < ActiveRecord::Base
   # Plugins
   acts_as_step
 end
+#
