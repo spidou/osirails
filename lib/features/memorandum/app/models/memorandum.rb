@@ -1,5 +1,6 @@
 class Memorandum < ActiveRecord::Base
-
+  include Permissible
+  
   # Relationships
   has_many :memorandums_services
   has_many :services, :through => :memorandums_services
@@ -12,13 +13,13 @@ class Memorandum < ActiveRecord::Base
     memorandums_services_list = []
     memorandums =[]
     services.each do |service|
-      memorandums_services_list << service.memorandums_services
+      memorandums_services_list << service.memorandums_services.reverse
       if service.ancestors.size > 0
         service.ancestors.each do |parent_service|
           if parent_service.memorandums_services.size > 0
 
               parent_service.memorandums_services.delete_if { |memorandum_service| memorandum_service.recursive == false }
-              memorandums_services_list << parent_service.memorandums_services
+              memorandums_services_list << parent_service.memorandums_services.reverse
 
           end
         end

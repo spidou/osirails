@@ -17,12 +17,25 @@ module SendedMemorandumsHelper
   def show_add_button
     add_button = []
     unless current_user.employee_id.nil?
-      add_button << "<h1><span class='gray_color'>Action</span></h1>"
-      add_button << "<ul>"
-      add_button << "<li>#{link_to('Nouvelle note de service', new_sended_memorandum_path)}</li>"
-      add_button << "</ul>"
+      if Memorandum.can_add?(current_user) and controller.can_add?(current_user)
+        add_button << "<h1><span class='gray_color'>Action</span></h1>"
+        add_button << "<ul>"
+        add_button << "<li>#{link_to('Nouvelle note de service', new_sended_memorandum_path)}</li>"
+        add_button << "</ul>"
+        end
     end
     add_button
+  end
+  
+  # This method permit to show received memorandums
+  def show_received_memorandums
+    if Memorandum.can_view?(current_user) and controller.can_view?(current_user)
+      show_received_memorandum = []
+      show_received_memorandum << "<h1><span class='gray_color'>Lien</span> <span class='blue_color'>Utile</span></h1>"
+      show_received_memorandum << "<ul>"
+      show_received_memorandum << "<li>#{link_to('Voir la liste des notes de service re&ccedil;u', received_memorandums_path)}</li>"
+      show_received_memorandum << "</ul>"
+    end
   end
   
   # This method permit to initialize signature
@@ -124,8 +137,8 @@ module SendedMemorandumsHelper
     memorandums.each do |memorandum|
       
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
-      show_button = link_to("Voir", sended_memorandum_path(memorandum))
-      edit_button = ( memorandum.published_at.nil? ? link_to("Modifier", edit_sended_memorandum_path(memorandum)) : "<strong>Publi&eacute;</strong>" )
+      show_button = link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), sended_memorandum_path(memorandum)) if Memorandum.can_view?(current_user)
+      edit_button = show_edit_button(memorandum)
       
       
       sended_memorandums << "<tr title='#{memorandum.subject}'>"
@@ -135,6 +148,17 @@ module SendedMemorandumsHelper
       sended_memorandums << "<td style='width: 50px;'>#{edit_button}</td>"
     end
     sended_memorandums << "</table>"
+  end
+  
+  # This method permit to show or hide edit buttton
+  def show_edit_button(memorandum)
+    if memorandum.published_at.nil?
+      if Memorandum.can_edit?(current_user) and controller.can_edit?(current_user)
+        return link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_sended_memorandum_path(memorandum))
+      end
+    else 
+      return "<img src='/images/tick_16x16.png' alt='Publier' title='Publier' />"
+    end
   end
   
 end

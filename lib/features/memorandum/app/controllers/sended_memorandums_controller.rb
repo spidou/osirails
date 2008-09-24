@@ -5,7 +5,7 @@ class SendedMemorandumsController < ApplicationController
     if current_user.employee_id.nil?
       flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'etes pas associ&eacute;s &agrave; un service"
     end
-      @memorandums = Memorandum.find_all_by_user_id(current_user.id)
+      @sended_memorandums = Memorandum.find_all_by_user_id(current_user.id).reverse.paginate :page => params[:memorandum],:per_page => 10
   end
   
   # GET /sended_memorandums/show

@@ -127,7 +127,7 @@ module ApplicationHelper
       under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='next_memorandum(this, #{size})'/>"
       under_banner << "</div>"
     else
-      under_banner << "<div id='text_under_banner' style='text-align: center;' >Vous ne pouvez recevoir de notes de service car vous n'&egrave;tes pas associ&eacute; &agrave; un employ&eacute;</div>"
+      under_banner << "<div id='text_under_banner' style='text-align: center;' >Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</div>"
     end
   end
    
@@ -142,7 +142,7 @@ module ApplicationHelper
         last_memorandum << format_memorandum(memorandum, max_memorandums) if max_memorandums < 11
       end
     
-      last_memorandum
+      last_memorandum.reverse
     end
   end
   

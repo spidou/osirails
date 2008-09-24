@@ -14,7 +14,7 @@ if (window.addEventListener)
             secondary_menu_toggle_button = document.getElementById('secondary_menu_toggle_button');
             
             secondary_menu_toggle_button.addEventListener("click", function(){toggle_secondary_menu(secondary_menu_toggle_button)}, false);
-            click_next();
+            click_next(0);
         }
         
         function toggle_secondary_menu(item)
@@ -126,11 +126,19 @@ if (window.addEventListener)
                     }
                 }
                 
-                function click_next() {
+                function click_next(value) {
+                    if (document.getElementsByClassName('number')[1] != null) {
                     total_memorandum = document.getElementsByClassName('number')[1].innerHTML;
+                    
                     if ( total_memorandum != 0 && total_memorandum != 1 ) {
+                      if (value == 0) {
+                        setTimeout('click_next('+1+');', 15000);
+                        }
+                        else {
                         document.getElementById('next').click();
-                        setTimeout('click_next();', 15000);
+                        setTimeout('click_next('+1+');', 15000);
+                        }
+                    }
                     }
                 }
                 
