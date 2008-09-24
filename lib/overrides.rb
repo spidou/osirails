@@ -52,14 +52,14 @@ end
 
 class Hash
   def fusion(hash)
-    return_hash = hash
+    return_hash = Hash.new.merge(hash)
     self.each do |key, value|
       if hash[key].nil?
         return_hash[key] = value
       elsif self[key].class == Hash && hash[key].class == Hash
         return_hash[key] = self[key].fusion(hash[key])
       else
-        raise "You can't fusion a #{self[key].class} with a #{hash[key].class}"
+        raise TypeError, "can't fusion #{self[key].class} with #{hash[key].class}"
       end
     end
     return_hash
