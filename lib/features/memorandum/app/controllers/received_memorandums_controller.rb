@@ -6,7 +6,7 @@ class ReceivedMemorandumsController < ApplicationController
       received_memorandums = Memorandum.find_by_services(current_user.employee.services)
       @received_memorandums = received_memorandums.paginate :page => params[:memorandum],:per_page => 10
     else
-      flash.now[:error] = "Vous ne pouvez pas recevoir de notes de service si vous n'etes pas associ&eacute;s &agrave; un service"
+      flash.now[:error] = "Vous ne pouvez pas recevoir de notes de service si vous n'&eacute;tes pas associ&eacute;s &agrave; un employ&eacute;"
     end
   end
   

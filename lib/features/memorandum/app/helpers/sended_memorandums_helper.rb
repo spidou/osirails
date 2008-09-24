@@ -139,9 +139,9 @@ module SendedMemorandumsHelper
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
       show_button = link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), sended_memorandum_path(memorandum)) if Memorandum.can_view?(current_user)
       edit_button = show_edit_button(memorandum)
+      period_memorandum = Memorandum.color_memorandums(memorandum)
       
-      
-      sended_memorandums << "<tr title='#{memorandum.subject}'>"
+      sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"
       sended_memorandums << "<td>#{memorandum.title}</td>"
       sended_memorandums << "<td>#{published}</td>"
       sended_memorandums << "<td style='width: 50px;'>#{show_button}</td>"

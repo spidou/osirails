@@ -118,7 +118,7 @@ module ApplicationHelper
     unless current_user.employee.nil?
       size = last_memorandums.size
       memorandum_number = ( size == 0 ? "0" : "1" )
-      under_banner << "<div id='text_under_banner' style='overflow: hidden;'>"
+      under_banner << "<div id='text_under_banner' style='overflow: hidden;' onclick='show_memorandum(this, 0)'>"
       under_banner << last_memorandums
       under_banner << "</div>"
       under_banner <<	"<div id='block_button_under_banner'>"
@@ -127,7 +127,7 @@ module ApplicationHelper
       under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='next_memorandum(this, #{size})'/>"
       under_banner << "</div>"
     else
-      under_banner << "<div id='text_under_banner' style='text-align: center;' >Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</div>"
+      under_banner << "<div id='text_under_banner'><div id='text_under_banner'><span id='not_employee_reference'>Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</span></div></div>"
     end
   end
    
@@ -151,12 +151,12 @@ module ApplicationHelper
     formated_memorandum = []
     memorandum_signature = "<strong>"+memorandum.signature+".</strong>"
     memorandum_date = "<span class='memorandum_date'>Le "+Memorandum.get_structured_date(memorandum)+".</span> "
-    memorandum_title = "<span class='memorandum_title'>"+memorandum.title+".</span> "
+    memorandum_title = "<span class='memorandum_title'>"+memorandum.title+"</span> : "
     memorandum_size = 400
     memorandum_subject_size = memorandum_size - (memorandum_signature.size + memorandum_date.size + memorandum_title.size) 
     memorandum_subject = "<span class='memorandum_subject'>"+truncate(memorandum.subject, memorandum_subject_size)+".</span> "
     display = ( max_memorandums == 1 ? "inline" : "none" )
-    formated_memorandum << "<div id='banner_memorandum_#{memorandum.id}' class='memorandums position_#{max_memorandums}' style='display: #{display};' onclick='show_memorandum(this)'>"
+    formated_memorandum << "<div id='banner_memorandum_#{memorandum.id}' class='memorandums position_#{max_memorandums}' style='display: #{display};'>"
     formated_memorandum << memorandum_date
     formated_memorandum << memorandum_title
     formated_memorandum << memorandum_subject

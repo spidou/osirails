@@ -59,10 +59,19 @@ if (window.addEventListener)
                     }
                 }
                 
-                function show_memorandum(element) {
+                function show_memorandum(element_or_position, value) {
                     
-                    position = element.id.lastIndexOf("_");
-                    id = element.id.substr(position + 1);
+                    if (value == 0) {
+                        
+                        position = element_or_position.lastChild.id.lastIndexOf("_");
+                        id = element_or_position.lastChild.id.substr(position + 1);
+                    }
+                    
+                    else {
+                        memorandum = document.getElementsByClassName('position_'+element_or_position)[0]
+                        position = memorandum.id.lastIndexOf("_");
+                        id = memorandum.id.substr(position + 1);
+                    }
                     
                     document.location = "/received_memorandums/"+id
                 }
@@ -79,6 +88,7 @@ if (window.addEventListener)
                         if ((position - 1) == 0 ) {
                             document.getElementById('previous').className = 'previous_memorandum_'+parseInt(memorandum_number);
                             new Effect.Fade(document.getElementsByClassName('position_'+memorandum_number)[0], {duration: 0.3});
+                            
                         }
                         else {
                             document.getElementById('previous').className = 'previous_memorandum_'+parseInt(position - 1);
@@ -92,7 +102,7 @@ if (window.addEventListener)
                         else {
                             document.getElementById('next').className = 'next_memorandum_1';
                         }
-                        
+                        document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
                         new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
                     }
                 }
@@ -121,24 +131,25 @@ if (window.addEventListener)
                             document.getElementById('next').className = 'next_memorandum_1';
                             new Effect.Fade(document.getElementsByClassName('position_1')[0], {duration: 0.3});
                         }
-                        
+                        document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
                         new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
                     }
                 }
                 
                 function click_next(value) {
                     if (document.getElementsByClassName('number')[1] != null) {
-                    total_memorandum = document.getElementsByClassName('number')[1].innerHTML;
-                    
-                    if ( total_memorandum != 0 && total_memorandum != 1 ) {
-                      if (value == 0) {
-                        setTimeout('click_next('+1+');', 15000);
+                        total_memorandum = document.getElementsByClassName('number')[1].innerHTML;
+                        
+                        if ( total_memorandum != 0 && total_memorandum != 1 ) {
+                            if (value == 0) {
+                                setTimeout('click_next('+1+');', 15000);
+                            }
+                            else {
+                                document.getElementById('next').click();
+                                setTimeout('click_next('+1+');', 15000);
+                            }
                         }
-                        else {
-                        document.getElementById('next').click();
-                        setTimeout('click_next('+1+');', 15000);
-                        }
-                    }
                     }
                 }
+                
                 

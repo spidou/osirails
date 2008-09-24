@@ -62,4 +62,21 @@ class Memorandum < ActiveRecord::Base
     end
   end
   
+  # This method permit to color memorandum list in table
+  # 604800 respond_to one week period in seconds
+  def Memorandum.color_memorandums(memorandum)
+
+    unless memorandum.published_at.nil?
+      time_now = Time.now
+      period = time_now - memorandum.published_at
+        if ( period < 604800 )
+          return "new_memorandum"
+        else
+          return "old_memorandum"
+        end
+    else
+      return "not_published_memorandum"
+    end
+  end
+  
 end
