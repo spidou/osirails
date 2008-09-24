@@ -1,19 +1,31 @@
 class Step < ActiveRecord::Base
-  ## Relationships
-  belongs_to :parent, :class_name =>"Step", :foreign_key => "parent_id"
+  # Relationships
+  belongs_to :parent, :class_name =>'Step', :foreign_key => 'parent_id'
   has_and_belongs_to_many :sales_processes
-  has_many :orders_steps, :class_name => "OrdersSteps"
-  has_many :childrens, :class_name => "Step", :foreign_key => "parent_id"
+  has_many :childrens, :class_name => 'Step', :foreign_key => 'parent_id'
   has_many :checklists
+  has_and_belongs_to_many :steps, :join_table => 'step_dependencies', :foreign_key => 'step_id', :association_foreign_key => 'step_dependent'
   
-  ## Plugins
+  # Plugins
   acts_as_list :scope => :parent_id
-  acts_as_tree :order =>:position
+  acts_as_tree :order => :position
+  
+  # Alias
+  alias_method :dependencies, :steps
   
   ## Return a tree which represent step architecture
   def self.tree()
     parents = []
     get_children(Step.find_all_by_parent_id(:order => "position"), parents)  
+  end
+  
+  def self.cant_find(step_name = '')
+    raise "can't find step #{step_name}"
+  end
+  
+  # Return his parent or himself
+  def first_parent
+    self.parent.nil? ? self : self.parent
   end
   
   ## Return all orders which are in current step

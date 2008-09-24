@@ -10,46 +10,24 @@ module OrdersHelper
   end
   
   def step_ring_class(status)
-    case status
-    when 'unstarted'
-      html = 'ring_disable'
-    when 'uncomplete'
-      html = 'ring_uncomplete'
-    when 'in_progress'
-      html = 'ring_in_progress'
-    when 'terminated'
-      html = 'ring_finish'
-    end
-    html
-  end
-  
-  def step_feet_class(status)
-    case status
-  	when 'unstarted'
-  	  html = 'feet_disable'
-	  when 'terminated'
-	    html = 'feet_finish'
-    when 'in_progress'
-      html = 'feet_in_progress'
-  	end
-  	html
+    "ring_#{status}"
   end
   
   def order_steps
-    orders_steps = []
+    order_steps_for('step_' + controller.controller_name)
+  end
+  
+  def order_steps_for(step_name)
+    step = Step.find_by_name(step_name)
+    Step.cant_find if step.nil?
     
-    step = Step.find_by_name(controller.controller_name)
-    parent_step = step.parent.nil? ? step.name : step.parent.name
-    @order.tree.each do |step|
-      next if step.parent.nil?
-      orders_steps << step if step.parent.name == parent_step
-    end
+    orders_steps = @order.send(step_name).childrens
     
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
     	html += "<div>"
-    	html += "	<div class=\"#{step_ring_class(ot.status.downcase)}\">"
-    	html += "		<div id=\"#{ot.step.name}\">"
+    	html += "	<div class=\"#{step_ring_class(  ot.status)}\">"
+    	html += "		<div id=\"#{ot.step.name[5..-1]}\">"
     	html += "			<p>"
     	html += "				<span><strong>[#{ot.step.title}]</strong></span>"
     	html += "			</p>"
@@ -61,10 +39,10 @@ module OrdersHelper
     	html += "		</div>"
     	html += "	</div>"
     	html += "</div>"
-    	html += "<div class=\"#{step_feet_class(ot.status.downcase)}\"></div>"
+#    	html += "<div class=\"disable\"></div>"
     end
-    @order.orders_steps.each do |ot|
-       html += order_step_validation(ot) if ot.step.name == controller.controller_name
+    orders_steps.each do |ot|
+       html += order_step_validation(ot) if ot.step.name == step_name
     end
     html += "</div>"
   	html
@@ -72,7 +50,7 @@ module OrdersHelper
   
   def order_step_validation(step)
     html = "<div>"
-  	html += "	<div class=\"#{step_ring_class(step.status.downcase)}\">"
+  	html += "	<div class=\"#{step_ring_class(step.status)}\">"
   	html += "		<div id=\"validation\">"
   	html += "			<p>"
   	html += "				<span><strong>[Validation]</strong></span>"
@@ -97,18 +75,19 @@ module OrdersHelper
   end
   
   def generate_order_tabs
-    step = Step.find_by_name(controller.controller_name)
-    unless step.nil?
-      tab_name = step.parent.nil? ? step.name : step.parent.name
-    else
-      tab_name = controller.controller_name
-    end
+    generate_order_tabs_for('step_' + controller.controller_name)
+  end
+  
+  def generate_order_tabs_for(s)
+    step = Step.find_by_name(s || current_step_name)
+    Step.cant_find if step.nil?
+    tab_name = step.parent.nil? ? step.name : step.parent.name
     
     html = "<div class=\"tabs\"><ul>"
     html += "<li "
     html += class_selected if tab_name == 'informations'
     html +="><a href=\"/orders/#{@order.id}/informations/\">Informations générales</a></li>"
-    @order.tree.each do |step|
+    @order.send(tab_name).steps.each do |step|
       if step.parent.nil?
         html += "<li "
         html += class_selected if tab_name == step.name

@@ -24,22 +24,22 @@ class Order < ActiveRecord::Base
   end
 
   ## Return a tree with activated step
-  def tree
-    steps =[]
-    step_objects = []
-    self.order_type.sales_processes.each do |sales_process|
-      steps << sales_process.step if sales_process.activated
-    end
-    steps.each do |step|
-      unless step.parent_id.nil?
-        step_objects << step.name.camelize.constantize.find_by_order_id(self.id)
-      else
-        step_name = step.name + "_order"
-        step_objects << step_name.camelize.constantize.find_by_order_id(self.id)
-      end
-    end
-    step_objects
-  end
+  #def tree
+  #  steps =[]
+  #  step_objects = []
+  #  self.order_type.sales_processes.each do |sales_process|
+  #    steps << sales_process.step if sales_process.activated
+  #  end
+  #  steps.each do |step|
+  #    unless step.parent_id.nil?
+  #      step_objects << step.name.camelize.constantize.find_by_order_id(self.id)
+  #    else
+  #      step_name = step.name + "_order"
+  #      step_objects << step_name.camelize.constantize.find_by_order_id(self.id)
+  #    end
+  #  end
+  #  step_objects
+  #end
 
   # Return all steps of the order
   def steps
@@ -47,17 +47,17 @@ class Order < ActiveRecord::Base
   end
 
   ## Return current step order
-  def step
-    models = []
-    step = nil
-    self.commercial_orders.each {|model| models << model}
-    #TODO models must content models sorted by position
-    models.each {|model| step =  model.step if model.status == "in_progress"}
-    if step.nil? 
-      models.each {|model| return model.step if model.status == "unstarted"}
-    end
-    return step
-  end
+  #def step
+  #  models = []
+  #  step = nil
+  #  self.commercial_orders.each {|model| models << model}
+  #  #TODO models must content models sorted by position
+  #  models.each {|model| step =  model.step if model.status == "in_progress"}
+  #  if step.nil? 
+  #    models.each {|model| return model.step if model.status == "unstarted"}
+  #  end
+  #  return step
+  #end
 
   ## Return remarks's order
   def remarks

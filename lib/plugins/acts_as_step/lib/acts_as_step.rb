@@ -31,13 +31,84 @@ module ActiveRecord
         def step
           'Step'.constantize.find_by_name(self.name.tableize.singularize)
         end
+        
+        def sibling_steps
+          sibling.collect { |s| s.step }
+        end
       end
       
       # Adds instance methods.
       module InstanceMethods
         def parent
+          return nil if self.class.parent.nil?
           send(self.class.step.parent.name)
         end
+        
+        def childrens
+          self.steps.collect { |s| send(s.name) }
+        end
+        
+        def step
+          'Step'.constantize.find_by_name(self.class.name.tableize.singularize)
+        end
+        
+        def steps
+          step = 'Step'.constantize.find_by_name(self.class.name.tableize.singularize)
+          'Step'.constantize.find(:all, :conditions => ["parent_id = ?", step])
+        end
+        
+        def sibling
+          parent.childrens
+        end
+        
+        def order
+          parent ? parent.order : order
+        end
+        
+        def unstarted?
+          status == 'unstarted'
+        end
+
+        def in_progress?
+          status == 'in_progress'
+        end
+
+        def terminated?
+          status == 'terminated'
+        end
+        
+        def uncomplete?
+          dependencies_are_terminated? && unstarted?
+        end
+        
+        def dependencies
+          deps = []
+          sibling.each do |s|
+            step_deps = step.dependencies.collect { |step| step.name }
+            deps << s if step_deps.include?(s.step.name)
+          end
+          deps
+        end
+        
+        def dependencies_are_unstarted?
+          dependencies_are_in_status('unstarted')
+        end
+        
+        def dependencies_are_in_progress?
+          dependencies_are_in_status('in_progress')
+        end
+        
+        def dependencies_are_terminated?
+          dependencies_are_in_status('terminated')
+        end
+        
+        private
+        
+        def dependencies_are_in_status(status)
+          dependencies.each { |s| return false unless s.status == status }
+          true
+        end
+        
       end
       
     end
