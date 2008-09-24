@@ -3,7 +3,7 @@ class SendedMemorandumsController < ApplicationController
   # GET /sended_memorandums
   def index
     if current_user.employee_id.nil?
-      flash.now[:error] = "Vous ne pouvez pas envoyer de note de service si vous n'etes pas associ&eacute;s &agrave; un service"
+      flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'etes pas associ&eacute;s &agrave; un service"
     end
       @memorandums = Memorandum.find_all_by_user_id(current_user.id)
   end
