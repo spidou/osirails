@@ -140,11 +140,13 @@ class EmployeesController < ApplicationController
       if @employee.save # and job == true
         
         # save the employee's documents
-        if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|
-            document.save
-            @employee.documents << document
-            document.create_thumbnails
+        unless params[:new_document_number].nil?
+          if params[:new_document_number]["value"].to_i > 0
+            @document_objects.each do |document|
+              document.save
+              @employee.documents << document
+              document.create_thumbnails
+            end
           end
         end
         
