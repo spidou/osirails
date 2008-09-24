@@ -1,36 +1,36 @@
 <div class="frame">
 <p>
-  <%= label :@order, :title, "Nom de projet :" %>
+  <%= label :title, "Nom de projet :" %>
   <strong><%= @order.title %></strong>
 </p>
 
 <p>
-  <%= label :@order, :client, "Client / &Eacute;tablissement :" %>
-  <strong><%= @order.customer.name %><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+  <%= label :client, "Client / &Eacute;tablissement :" %>
+  <strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
 </p>
 
 <p>
-  <%= label :@order, :establishment_address, "Lieu de livraison :" %>
+  <%= label :establishment_address, "Lieu de livraison :" %>
   <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
 </p>
 
 <p>
-  <%= label :@order, :step, "Niveau d'avancement actuel :" %>
-  <strong><%= "TODO" || @order.step.title %></strong>
+  <label>Etapes finies / Etapes totales :</label>
+  <strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
 </p>
 
 <p>
-  <%= label :@order, :commercial_full_name, "Suivi commercial :" %>
-  <strong><%= @order %></strong>
+  <%= label :commercial_full_name, "Suivi commercial :" %>
+  <strong><%= @order.commercial.fullname %></strong>
 </p>
 
 <p>
-  <%= label :@order, :@order_type, "Type de dossier :" %>
+  <%= label :order_type, "Type de dossier :" %>
   <strong><%= @order.order_type.title %></strong>
 </p>
 
 <p>
-  <%= label :@order, :previsional_delivery, "Date pr&eacute;visionnelle de livraison :" %>
+  <%= label :previsional_delivery, "Date pr&eacute;visionnelle de livraison :" %>
   <strong><%= @order.previsional_delivery %></strong>
 </p>
 <% if controller.can_edit?(current_user) %>

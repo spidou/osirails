@@ -4,6 +4,7 @@ class Order < ActiveRecord::Base
   belongs_to :order_type
   belongs_to :customer
   belongs_to :establishment
+  belongs_to :commercial, :class_name => 'Employee'
   has_one :step_commercial
   has_one :step_invoicing
 
@@ -46,18 +47,19 @@ class Order < ActiveRecord::Base
     order_type.sales_processes.collect { |sp| sp.step if sp.activated }
   end
 
-  ## Return current step order
-  #def step
-  #  models = []
-  #  step = nil
-  #  self.commercial_orders.each {|model| models << model}
-  #  #TODO models must content models sorted by position
-  #  models.each {|model| step =  model.step if model.status == "in_progress"}
-  #  if step.nil? 
-  #    models.each {|model| return model.step if model.status == "unstarted"}
-  #  end
-  #  return step
-  #end
+  # Return a has for advance statistics
+  def advance
+    steps_obj = []
+    advance = {}
+    steps.each do |step|
+      next if step.parent
+      steps_obj += send(step.name).childrens
+    end
+    advance[:total] = steps_obj.size
+    advance[:terminated] = 0
+    steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
+    advance
+  end
 
   ## Return remarks's order
   def remarks

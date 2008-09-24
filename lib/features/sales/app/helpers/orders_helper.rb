@@ -2,6 +2,7 @@ module OrdersHelper
   def order_header
     html = render :partial => 'orders/order_header'
     html += generate_order_tabs
+    html += render :partial => 'orders/secondary_menu'
     html
   end
     

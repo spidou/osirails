@@ -1,6 +1,6 @@
 class SurveyController < ApplicationController
 
-   helper :documents
+  helper :documents
   
   def edit
     @order = Order.find(params[:order_id])
