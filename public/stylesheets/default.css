@@ -310,6 +310,25 @@ a.button_banner:hover span {
 	line-height:25px;
 }
 
+.memorandum_date{
+	font-weight:bold;
+}
+
+.memorandum_title {
+	text-decoration:underline;
+}
+
+#under_banner strong {
+	color:#333;
+	font-weight:bold;
+}
+
+.not_employee_reference {
+	text-align:center;
+	font-size:1.1em;
+	color:#333;
+}
+
 /*////////////////////////////////////////////////////////
 					BODY OF THE WEBSITE
 ////////////////////////////////////////////////////////*/
