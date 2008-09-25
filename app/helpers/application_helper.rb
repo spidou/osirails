@@ -122,9 +122,9 @@ module ApplicationHelper
       under_banner << last_memorandums
       under_banner << "</div>"
       under_banner <<	"<div id='block_button_under_banner'>"
-      under_banner << "<input type='button' id='previous' class='previous_memorandum_#{size}' alt='bouton précédent' title='Information précédente' onclick='previous_memorandum(this, #{size})' />"
+      under_banner << "<input type='button' id='previous' class='previous_memorandum_#{size}' alt='bouton précédent' title='Information précédente' onclick='previous_memorandum(this, #{size}, event)'  />"
       under_banner << "<span class='number'> #{memorandum_number} </span>|<span class='number'> #{size} </span>"
-      under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='next_memorandum(this, #{size})'/>"
+      under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='next_memorandum(this, #{size}, event)'  />"
       under_banner << "</div>"
     else
       under_banner << "<div id='text_under_banner'><div id='text_under_banner'><span id='not_employee_reference'>Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</span></div></div>"

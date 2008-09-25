@@ -76,7 +76,7 @@ if (window.addEventListener)
                     document.location = "/received_memorandums/"+id
                 }
                 
-                function next_memorandum(element, memorandum_number) {
+                function next_memorandum(element, memorandum_number, event) {
                     
                     if (memorandum_number != 0 && memorandum_number != 1) {
                         
@@ -104,10 +104,11 @@ if (window.addEventListener)
                         }
                         document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
                         new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
+                     refresh_timer()   
                     }
                 }
                 
-                function previous_memorandum(element, memorandum_number) {
+                function previous_memorandum(element, memorandum_number, event) {
                     
                     if (memorandum_number != 0 && memorandum_number != 1) {
                         
@@ -133,8 +134,11 @@ if (window.addEventListener)
                         }
                         document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
                         new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
+                    refresh_timer()
                     }
                 }
+                
+                var timer
                 
                 function click_next(value) {
                     if (document.getElementsByClassName('number')[1] != null) {
@@ -142,14 +146,18 @@ if (window.addEventListener)
                         
                         if ( total_memorandum != 0 && total_memorandum != 1 ) {
                             if (value == 0) {
-                                setTimeout('click_next('+1+');', 15000);
+                            
+                               timer = setTimeout('click_next('+1+');', 1000);
+                        
                             }
                             else {
                                 document.getElementById('next').click();
-                                setTimeout('click_next('+1+');', 15000);
                             }
                         }
                     }
                 }
                 
-                
+                function refresh_timer() {
+                clearTimeout(timer);
+                timer = setTimeout('click_next('+1+');', 5000);
+                }
