@@ -24,7 +24,7 @@ module OsiboxHelper
     "<script type=\"text/javascript\">osibox_open(#{id});</script>"
   end
   
-  def osibox_close(id = 1)
-    "<script type=\"text/javascript\">osibox_close(#{id});</script>"    
+  def osibox_close()
+    "<script type=\"text/javascript\">osibox_close();</script>"    
   end
 end
