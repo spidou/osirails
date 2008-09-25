@@ -8,7 +8,7 @@
 						opacity: <%= options[:wall_opacity] %>;
 						-moz-opacity: <%= options[:wall_opacity] %>;
 						filter:alpha(opacity=<%= options[:wall_opacity].to_f * 100 %>);"
-	id="osibox_wall">
+	id="osibox_wall<%= options[:id] %>">
 </div>
 <div style="visibility: hidden;
 						position: absolute;
@@ -27,10 +27,10 @@
 						width: <%= options[:width] %>;
 						<% end %>
 						overflow: <%= options[:scroll] %>;"
-	id="osibox_popup">
+	id="osibox_popup<%= options[:id] %>">
 	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br>
 	<% if !options[:partial].nil? %>
-		<%= render :partial => options[:partial] %>
+		<%= render :partial => options[:partial], :locals => options[:locals] %>
 	<% elsif !options[:url].empty? %>
 		<%= render_component options[:url] %>
 	<% else %>
@@ -41,13 +41,18 @@
 osibox_wall = 'osibox_wall';
 osibox_popup = 'osibox_popup';
 
-osibox_wall_elm = document.getElementById('osibox_wall');
-osibox_popup_elm = document.getElementById('osibox_popup');
+osibox_wall_elm = document.getElementById(osibox_wall + '<%= options[:id] %>');
+osibox_popup_elm = document.getElementById(osibox_popup + '<%= options[:id] %>');
 
 document.body.appendChild(osibox_wall_elm);
 document.body.appendChild(osibox_popup_elm);
 
-function osibox_open () {
+function osibox_open (id) {
+	id = id ? id : 1;
+	
+	osibox_wall_elm = document.getElementById(osibox_wall + id);
+	osibox_popup_elm = document.getElementById(osibox_popup + id);
+	
 	osibox_popup_elm.style.display = 'block';
 	osibox_wall_elm.style.display = 'block';
 	
@@ -78,9 +83,11 @@ function osibox_open () {
 	Effect.Appear(osibox_popup_elm);
 }
 
-function osibox_close () {
-	osibox_wall_elm = document.getElementById('osibox_wall');
-	osibox_popup_elm = document.getElementById('osibox_popup');
+function osibox_close (id) {
+	id = id ? id : 1;
+	
+	osibox_wall_elm = document.getElementById(osibox_wall + id);
+	osibox_popup_elm = document.getElementById(osibox_popup + id);
 	
 	Effect.Fade(osibox_wall_elm, {duration: 0.6});
 	Effect.Fade(osibox_popup_elm, {duration: 0.6});

@@ -1,9 +1,10 @@
 module OsiboxHelper
   def osibox_init (options = {})
     configuration = {
-      :id => nil,
+      :id => 1,
       :url => {},
       :partial => nil,
+      :locals => nil,
       :wall_color => 'black',
       :wall_opacity => '0.8',
       :border_radius => '10px',
@@ -19,11 +20,11 @@ module OsiboxHelper
     render :partial => "share/osibox", :locals => {:options => configuration}
   end
   
-  def osibox_open
-    "<script type=\"text/javascript\">osibox_open();</script>"
+  def osibox_open(id = 1)
+    "<script type=\"text/javascript\">osibox_open(#{id});</script>"
   end
   
-  def osibox_close
-    "<script type=\"text/javascript\">osibox_close();</script>"    
+  def osibox_close(id = 1)
+    "<script type=\"text/javascript\">osibox_close(#{id});</script>"    
   end
 end
