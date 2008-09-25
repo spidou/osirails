@@ -582,7 +582,7 @@ ul.center_list li {
 	width:141px;
 }
 
-#search_image:focus {
+#input_search:focus {
 	color:black !important;
 }
 
