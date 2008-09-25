@@ -1340,6 +1340,8 @@ div.tabs {
 	text-align:center;
 	margin-bottom:0px;
 	margin-top:0px;
+	height:30px;
+	line-height:30px;
 }
 
 .frame.tabulation>h2,
@@ -1350,6 +1352,9 @@ div.tabs {
 	margin-bottom:0px;
 	margin-top:-1px;
 	border:white 1px solid;
+	height:23px;
+	line-height:23px;
+	font-size:1.1em;
 }
 
 .frame.tabulation>form>h2 {
