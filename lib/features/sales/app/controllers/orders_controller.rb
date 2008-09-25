@@ -8,7 +8,12 @@ class OrdersController < ApplicationController
   
   def new
     @order = Order.new
-    @customer = Customer.find(params[:customer]) if params[:customer]
+    if params[:customer_id]
+      @customer = Customer.find(params[:customer_id])
+    elsif params[:customer]
+      @customer = Customer.find_by_name(params[:customer][:third][:name])
+    end
+    flash[:error] = "Client non trouvé" if (@customer.nil? && params[:customer])
   end
 
   def show
