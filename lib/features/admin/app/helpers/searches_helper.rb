@@ -5,6 +5,7 @@ module SearchesHelper
     feature = Feature.find_by_name(value.split(",")[0])
     model = value.split(",")[1]
     
+    # OPTIMIZE use .inspect on the constant and replace nil by "" (Date::MONTHNAMES[0])
     month_array="["
     Date::MONTHNAMES.each do |month|
       month.nil? ? month = "" : month
@@ -55,25 +56,19 @@ module SearchesHelper
     html = ""
     objects.each do |object|
       html+="<tr>"
+      puts columns.inspect
       columns.each do |column|
-        
         result = object
         column.each do |attribute|
-          if attribute.class == Array
-            result = nil
+          if result.class == Array
+            html += "<td>" + link_to("voir") + "</td>"
+            result = ""
           else
-            puts result.to_s + " " + attribute
-            result = result.send(attribute) unless result.nil?
+            result = result.send(attribute) unless result.blank?
           end
         end
         result = "null" if result.nil?
-        puts result
-        html+="<td>#{result}</td>\n"
-        #if column.class!={}.class
-        #  html+="<td><tr>#{row.send(column)} </tr><td>\n"
-        #else
-        #  html+="<td><tr>" + nested_column (row,column) + "</tr><td>\n"
-        #end  
+        html+="<td>#{result}</td>\n" unless result.blank?
       end
       html+="</tr>" 
     end
@@ -91,9 +86,9 @@ module SearchesHelper
   def generate_columns_contents(column)
     html=[column.keys[0]]
     if column.values[0].class
-      html<< generate_columns_contents(column.values[0]) 
+      html << generate_columns_contents(column.values[0]) 
     else
-      html<< column.values[0]
+      html << column.values[0]
     end
     return html
   end

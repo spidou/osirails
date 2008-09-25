@@ -10,7 +10,6 @@ function action_choose(select,line,month)
     case "date" :
       document.getElementById('actions' + line).innerHTML = ""
       document.getElementById('actions' + line).innerHTML = "<select name=\"criteria["+ line+ "][action]\">" +
-                                                              "<option value=\"egal &agrave;\"> egal &agrave</option>"+
                                                               "<option value=\"=\"> le </option>"+
                                                               "<option value=\"!=\"> diff&eacute;rrent du </option>"+
                                                               "<option value=\">\"> aprés le </option>"+
@@ -35,8 +34,8 @@ function action_choose(select,line,month)
     case "string" :
       document.getElementById('actions' + line).innerHTML = ""
       document.getElementById('actions' + line).innerHTML = "<select name=\"criteria[" + line + "][action]\">" +
-                                                              "<option value=\"%like%\"> contient</option>"+
-                                                              "<option value=\"!%like%\">ne contient pas</option>"+
+                                                              "<option value=\"like\"> contient</option>"+
+                                                              "<option value=\"not like\">ne contient pas</option>"+
                                                               "<option value=\"=\"> est</option>"+
                                                               "<option value=\"!=\"> n&apos;est pas</option>"+
                                                             "</select>";                                                  
@@ -126,6 +125,15 @@ function isNumber(elemnt)
 		document.getElementById(elemnt.id).value ="";
 
 	}
+}
+
+function has_criteria(select)
+{
+  disable_blank(select)
+  if(document.getElementById('criteria_list').childNodes.length>4)
+  {
+    alert( "Etes vous sur de vouloir changer de section de recherche? \nCeci aura pour conséquence de réinitiliser les critères");
+  }
 }
 
 function disable_blank(select)

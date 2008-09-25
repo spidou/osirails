@@ -3,28 +3,30 @@ class Search
   include Permissible
   
   # method to generate an array containing the result array headers ( in the view )
-  def self.search_result_headers(hash)
+  def self.search_result_headers(hash, parent)
     columns ||= []
     hash.each_pair do |attribute,type|
       if type.class == Hash
-        columns = columns.fusion(search_result_headers(type))
+        attribute.camelize = attribute ? columns = columns.fusion(search_result_headers(type,attribute)) : columns = columns.fusion(search_result_headers(type))
       else
-        columns << attribute 
+        parent != model ? columns << [parent, attribute]  : columns << attribute 
       end
     end  
     return columns
   end  
   
   # methode that return in an array the hiearchie of keys into recursives hashes and put a "_" in front of the attribute 
-  def self.get_attribute_hierarchie(hash,attribute)
+  # hash = an array containing all attributes
+  # attribute = the attribute that you want the hierarchy  
+  def self.get_attribute_hierarchy(hash,attribute,parent)
     hash.each_pair do |key,element|
       tab = []
       if element.class == Hash
-      
-        key.camelize == key ? tab = get_attribute_hierarchie(element,attribute) : tab = get_attribute_hierarchie(element,attribute).fusion([key])
-        return tab if tab.include?("_"+attribute)
-      elsif key==attribute and element.class != Hash
-        return ["_"+key]
+        key.camelize == key ? sub_model = key : sub_model = parent 
+        key.camelize == key ? tab = get_attribute_hierarchy(element,attribute,key) : tab = get_attribute_hierarchy(element,attribute,parent).fusion([key])
+        return tab if tab.include?("_"+attribute) and parent == sub_model
+      elsif key==attribute 
+        return ["_"+key]  
       end
     end
     return []
@@ -55,13 +57,30 @@ class Search
     sub_resources_array==[] ?  nil : sub_resources_array
   end
    
-  def self.get_conditions_array(criteria_hash) 
-    conditions_array ||= []
-    
+  def self.get_conditions_array(criteria_hash,model) 
+    conditions_array ||= [""]
     criteria_hash.each_value do |criterion|
-      
+      conditions_array[0].blank? ? group="" : group = " and "
+      criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
+      conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" 
+      conditions_array << format_value(criterion)
+    end 
+    return conditions_array
+  end
+  
+  def self.format_value(params)
+    case params['attribute'].split(",")[1]
+      when 'date'
+        m= params['date(2i)'] 
+        d= params['date(3i)'] 
+        y= params['date(1i)'] 
+        result = "#{y}/#{m}/#{d}"
+      when 'number'
+        result =params['value'].to_d
+      else
+        result = "%" + params['value'] + "%"
     end
-    
+    return result
   end
   
 end
