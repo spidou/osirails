@@ -13,7 +13,7 @@ module ProductReferencesHelper
     end
     
     select_header = pluralize(count, 'reference', 'references')
-    show_references << "<option value=\"0\" selected=\"selected\">Il y a #{select_header}</option>"
+    show_references << "<option value=\"0\" selected=\"selected\" style=\"font-weight:bold\">Il y a #{select_header}</option>"
       
     categories.each do |category|
       show_references << get_show_reference(category)

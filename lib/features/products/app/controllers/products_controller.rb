@@ -3,9 +3,9 @@ class ProductsController < ApplicationController
   # GET /products
   def index
     if params[:product_reference_id].nil?
-      @products = Product.paginate :page => params[:page], :per_page => 10
+      @products = Product.paginate(:page => params[:page], :per_page => Product::PRODUCTS_PER_PAGE)
     else
-      @products = Product.paginate_all_by_product_reference_id  params[:product_reference_id].split(','), :page => params[:page], :per_page => 10
+      @products = Product.paginate_all_by_product_reference_id(params[:product_reference_id].split(','), :page => params[:page], :per_page => Product::PRODUCTS_PER_PAGE)
       respond_to do |format|
         format.js {render :layout => false}     
       end

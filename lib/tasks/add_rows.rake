@@ -247,11 +247,8 @@ namespace :osirails do
       
       # default products
       Product.create :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id
-      Product.create :name => "Produit 1.1.1.2", :description => "Description du produit 1.1.1.2", :product_reference_id => reference111.id
-      Product.create :name => "Produit 1.1.1.3", :description => "Description du produit 1.1.1.3", :product_reference_id => reference111.id
       Product.create :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id
       Product.create :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference112.id
-      Product.create :name => "Produit 1.1.2.3", :description => "Description du produit 1.1.2.3", :product_reference_id => reference112.id
       Product.create :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference113.id
       Product.create :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id

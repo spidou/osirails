@@ -73,11 +73,11 @@ class ApplicationController < ActionController::Base
 
     # Do every verification before shows the page
     def authenticate
-      if session[:user].nil? # If you're not logged
+      if session[:user].nil? or current_user.class != User # if session is empty or if current_user return false
         session[:initial_uri] = request.request_uri
         redirect_to login_path
         flash[:error] = "Vous n'êtes pas connecté !"
-      else # If you're logged
+      else # if user is logged and current_user return a valid user
         current_user.update_activity
         if current_user.expired?
           redirect_to :controller => 'account', :action => 'expired_password'

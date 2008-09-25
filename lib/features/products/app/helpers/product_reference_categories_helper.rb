@@ -13,7 +13,7 @@ module ProductReferenceCategoriesHelper
     end
     
     select_header = pluralize(count, "sous-famille", "sous-familles")
-    show_categories << "<option value=\"0\" selected=\"selected\">Il y a #{select_header}</option>"
+    show_categories << "<option value=\"0\" selected=\"selected\" style=\"font-weight:bold\">Il y a #{select_header}</option>"
     
     categories.each do |category|
       if category.children.size != 0
