@@ -147,7 +147,7 @@ if (window.addEventListener)
                         if ( total_memorandum != 0 && total_memorandum != 1 ) {
                             if (value == 0) {
                             
-                               timer = setTimeout('click_next('+1+');', 1000);
+                               timer = setTimeout('click_next('+1+');', 15000);
                         
                             }
                             else {
@@ -159,5 +159,5 @@ if (window.addEventListener)
                 
                 function refresh_timer() {
                 clearTimeout(timer);
-                timer = setTimeout('click_next('+1+');', 5000);
+                timer = setTimeout('click_next('+1+');', 15000);
                 }
