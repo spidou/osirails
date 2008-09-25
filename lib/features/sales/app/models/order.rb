@@ -60,6 +60,24 @@ class Order < ActiveRecord::Base
     steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
     advance
   end
+  
+  def childrens
+    childs = []
+    steps.each do |step|
+      next if step.parent
+      childs << send(step.name)
+    end
+    childs
+  end
+  
+  def all_childrens
+    all_childs = []
+    childrens.each do |child|
+      all_childs << child
+      all_childs += child.childrens
+    end
+    all_childs
+  end
 
   ## Return remarks's order
   def remarks
@@ -74,5 +92,12 @@ class Order < ActiveRecord::Base
     OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.missing_elements.each {|missing_element| missing_elements << missing_element} }
     missing_elements
   end
-
+  
+  def terminated?
+    return false unless closed_date?
+    childrens.each do |child|
+      return false unless child.terminated?
+    end
+    true
+  end
 end

@@ -8,10 +8,6 @@ class InformationsController < ApplicationController
     
   end
   
-  def edit
-    
-  end
-  
   protected
   
   def check

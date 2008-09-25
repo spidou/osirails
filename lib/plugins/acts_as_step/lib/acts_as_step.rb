@@ -23,6 +23,8 @@ module ActiveRecord
           has_many :remarks, :as => :has_remark
           has_many :checklist_responses, :as => :has_checklist_response
           has_many :missing_elements
+          
+          # attr_reader :status # FIXME Protect status attr
         end
       end
       
@@ -39,6 +41,10 @@ module ActiveRecord
       
       # Adds instance methods.
       module InstanceMethods
+        def name
+          self.class.name.tableize.singularize
+        end
+        
         def parent
           return nil if self.class.parent.nil?
           send(self.class.step.parent.name)
@@ -65,6 +71,21 @@ module ActiveRecord
           parent ? parent.order : order
         end
         
+        def unstarted!
+          self.status = 'unstarted'
+          self.save
+        end
+        
+        def in_progress!
+          self.status = 'in_progress'
+          self.save
+        end
+        
+        def terminated!
+          self.status = 'terminated'
+          self.save
+        end
+        
         def unstarted?
           status == 'unstarted'
         end
@@ -80,12 +101,12 @@ module ActiveRecord
         def uncomplete?
           dependencies_are_terminated? && unstarted?
         end
-        
+                
         def dependencies
           deps = []
           sibling.each do |s|
             step_deps = step.dependencies.collect { |step| step.name }
-            deps << s if step_deps.include?(s.step.name)
+            deps << s if step_deps.include?(s.name)
           end
           deps
         end

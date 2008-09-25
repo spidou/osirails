@@ -8,10 +8,11 @@ class OrdersController < ApplicationController
   
   def new
     @order = Order.new
+    @customer = Customer.find(params[:customer]) if params[:customer]
   end
 
   def show
-    
+#    redirect_to order_path(@order) + '/' + @order.step.name
   end
   
   def edit
@@ -19,14 +20,14 @@ class OrdersController < ApplicationController
   end
   
   def create
-    if params[:order][:order_type]
-      params[:order][:order_type] = OrderType.find(params[:order][:order_type])
-    end
+    params[:order][:order_type] = OrderType.find(params[:order][:order_type]) if params[:order][:order_type]
+
+    params[:order][:customer] = Customer.find(params[:order][:customer]) if params[:order][:customer]
     
     @order = Order.new(params[:order])
     if @order.save
       flash[:notice] = "Dossier crée avec succés"
-      redirect_to orders_path(@order)
+      redirect_to order_path(@order)
     else
       flash[:error] = "Erreur lors de la création du dossier"
       redirect_to prospectives_path
@@ -47,5 +48,6 @@ class OrdersController < ApplicationController
   
   def check
     @order = Order.find(params[:id])
+    @customer = @order.customer
   end
 end

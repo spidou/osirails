@@ -3,6 +3,8 @@ version: 0.1
 dependencies:
   thirds:
     - 0.1
+  rh:
+    - 0.1
 conflicts:
 business_objects:
 menus:

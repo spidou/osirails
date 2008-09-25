@@ -1,5 +1,40 @@
+<h2>Client</h2>
+
+<h3>Informations</h3>
+<p>Nom: <%= @customer.name %></p>
+<p>Secteur d'activité: <%= @customer.activity_sector.name %></p>
+<p>Activité: <%= @customer.activities %></p>
+<p>Enseignes: <%= @customer.establishments.collect { |e| "#{e.name} "} %></p>
+<p>Etablissements: <%= @customer.establishments.size %></p>
+<p>Forme juridique: <%= @customer.legal_form.name %></p>
+<p>N° SIRET: <%= @customer.siret_number %></p>
+
+<h3>Statistiques</h3>
+<p>Nombre de ventes réalisées au total: <%= @customer.orders.size %></p>
+<p>Client depuis: <%= @customer.created_at %></p>
+<p>Note: <%= @customer.note %></p>
+
+<h3>Historique des dernières ventes</h3>
+<table>
+	<tr>
+		<td>Date de facturation</td>
+		<td>Etablissement</td>
+		<td>Produits</td>
+		<td>Prix total de vente</td>
+		<td>Ratio de la marge réalisée</td>
+	</tr>
+	<tr>
+		<td>?</td>
+		<td>?</td>
+		<td>?</td>
+		<td>?</td>
+		<td>?</td>
+	</tr>
+</table>
+
+<h2>Dossier</h2>
 <% form_for @order do |o| %>
-<h2>Informations</h2>
+<h3>Informations</h3>
 <p>
 	<%= o.label :title, 'Nom du projet' %>
 	<%= o.text_field :title %>
@@ -13,10 +48,17 @@
 	<%= text_field_tag 'TODO', 'TODO' %>
 </p>
 
-<h2>Client</h2>
-<p>TODO</p>
+<h3>Client</h3>
+<p>
+	<%= label_tag 'Etablissement:' %>
+	<%= select_tag @customer.establishments.collect { |e| e.name } %>
+</p>
+<p>
+	<%= label_tag 'Contacts sur site:' %>
+	<%= select_tag @customer.contacts.collect { |c| e.full_name } %>
+</p>
 
-<h2>Dates</h2>
+<h3>Dates</h3>
 <% if params[:action] == 'edit' %>
 <p>
 	<%= o.label :created_at, 'Date de cr&eacute;ation' %>
@@ -31,5 +73,6 @@
 	<%= o.label :previsional_delivery, 'Date pr&eacute;visionnelle de livraison' %>
 	<%= o.text_field :previsional_delivery %>
 </p>
+<%= o.hidden_field :customer, :value  => @customer.id %>
 <%= o.submit params[:action] == 'edit' ? 'Modifier' : 'Créer' %>
 <% end %>

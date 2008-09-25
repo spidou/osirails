@@ -18,24 +18,29 @@ module OrdersHelper
     order_steps_for('step_' + controller.controller_name)
   end
   
+  def order_timeline
+    render :partial => 'informations/timeline'
+  end
+  
   def order_steps_for(step_name)
     step = Step.find_by_name(step_name)
     Step.cant_find if step.nil?
+    step = step.first_parent
     
-    orders_steps = @order.send(step_name).childrens
+    orders_steps = @order.send(step.name).childrens
     
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
     	html += "<div>"
     	html += "	<div class=\"#{step_ring_class(ot.uncomplete? ? 'uncomplete' : ot.status)}\">"
-    	html += "		<div id=\"#{ot.step.name[5..-1]}\">"
+    	html += "		<div id=\"#{ot.name[5..-1]}\">"
     	html += "			<p>"
     	html += "				<span><strong>[#{ot.step.title}]</strong></span>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "		<div class=\"steps_text\">"
     	html += "			<p>"
-    	html += "				<a href=\"#{order_path(@order)}/#{ot.step.name[5..-1]}/edit\">#{ot.step.title}</a>"
+    	html += "				<a href=\"#{order_path(@order)}/#{ot.name[5..-1]}/edit\">#{ot.step.title}</a>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"
@@ -43,7 +48,7 @@ module OrdersHelper
 #    	html += "<div class=\"disable\"></div>"
     end
     orders_steps.each do |ot|
-       html += order_step_validation(ot) if ot.step.name == step_name
+       html += order_step_validation(ot) if ot.name == step_name
     end
     html += "</div>"
   	html

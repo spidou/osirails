@@ -1,4 +1,7 @@
-<div class="frame presentation_medium">
+<%= order_header %>
+<div class="frame tabulation">
+	<%= order_steps %>
+	
   <h2> Checklist </h2>
   <% form_for(@survey, :url => { :controller =>"survey", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
     <%# raise @checklist_responses.inspect%>

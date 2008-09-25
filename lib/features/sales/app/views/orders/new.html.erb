@@ -1,14 +1,20 @@
 <h1>Nouveau dossier</h1>
 
 <div class="frame">
+<% unless @customer %>
 <p>
 	Vous êtes sur la page blabla ...
 </p>
 
 <p>
-<label for="client" >Client existant :</label>
-<input id="client" type="text" />
+	<label for="client" >Client existant :</label>
+ 	<%= my_text_field_with_auto_complete(:third, :name, {:name => 'customer', :controller => 'customers'}, { :select => 'contact_first_name' }) %> Valider
 </p>
-
+<p>
+	<label>Nouveau client</label>
+	<input type="button" value="Nouveau client">
+</p>
+<% else %>
 <%= order_form %>
+<%end%>
 </div>
