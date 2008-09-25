@@ -499,7 +499,7 @@ a.button_banner:hover span {
 	font-size:1.1em;
 }
 
-#content_secondary_menu h1 a {
+#content_secondary_menu h1>a {
 	text-decoration:none;
 	cursor:pointer;
 }
@@ -571,18 +571,18 @@ ul.center_list li {
 	border: #444 1px solid;
 }
 
-#help_image {  /*quick_search*/
+#search_image {  /*quick_search*/
 	position:relative;
 	right:20px;
 	top:2px;
 }
 
-#input_help {
+#input_search {
 	padding-right:15px !important;
 	width:141px;
 }
 
-#input_help:focus {
+#search_image:focus {
 	color:black !important;
 }
 
