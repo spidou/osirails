@@ -16,9 +16,9 @@ class User < ActiveRecord::Base
   end
   validates_presence_of :username, :message => "ne peut être vide"
   with_options :if => :should_update_password? do |user|
-    user.before_save :password_encryption 
-    user.validates_presence_of :password, :message => "ne peut être vide "
-    user.validates_confirmation_of :password, :message => "ne correspondent pas "
+    user.before_save :password_encryption
+    user.validates_presence_of :password
+    user.validates_confirmation_of :password
     # manage the error that occure when reset database with admin_actual_password_policy that is empty
     begin
       # find the index of the actual selected regex to choose the good one into the db

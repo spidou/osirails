@@ -1,17 +1,34 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  name: MyString
-  version: MyString
-  dependencies: MyText
-  conflicts: MyText
-  installed: 
-  activated: 
+  name: Feature1
+  version: 0.1
+  dependencies:
+    feature_name:
+      - 0.1
+    feature_name2:
+      - 0.1
+  conflicts:
+    feature_name:
+      - 0.1
+      - 0.2
+  installed: true
+  activated: true
 
 two:
-  name: MyString
-  version: MyString
-  dependencies: MyText
-  conflicts: MyText
-  installed: 
-  activated: 
+  name: Feature2
+  version: 0.2
+  dependencies:
+    feature_name:
+      - 0.1
+    feature_name2:
+      - 0.1
+  conflicts:
+    feature_name:
+      - 0.1
+      - 0.2
+  business_objects:
+    - BusinessObject1
+    - BusinessObject1
+  installed: true
+  activated: false

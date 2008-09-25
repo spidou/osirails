@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="author" content="Oxydium - SUPINFO PS1"/>
+		<meta name="category" content="ERP"/>
+		<meta name="publisher" content="Oxydium - SUPINFO PS1"/>
+		<meta name="copyright" content="Oxydium - SUPINFO PS1"/>
+		<link rel="stylesheet" media="screen" type="text/css" title="Design" href="/stylesheets/default.css"/>
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+    <%= javascript_include_tag :defaults %>
+    <%= yield :header %>
+		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
+	</head>
+	<body>
+
+<div id="all_page">
+									<!-- BANNIERE -->
+		<div id="banner">
+			<div id="logo"> 
+				<span id="welcome_message"></span>
+			</div>	
+			<div id="background_banner">
+				<div id="block_button_banner">
+          <div id="button_on_banner">
+            <a class="button_banner" href="">
+              <span>Ma page d'accueil</span>
+						</a>
+            <a class="button_banner" href="">
+							<span>Rechercher</span>
+						</a>
+						<a class="button_banner" href="">
+							<span>Se déconnecter</span>
+						</a>
+					</div>
+					<div id="banner_datetime">
+						<p></p>
+					</div>
+				</div>
+			</div>
+		</div>						<!-- SOUS-BANNIERE -->
+		<div id="under_banner">
+      <%= yield :memorandums %>
+		</div>
+	<div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->	
+		<div id="menu">				<!-- MENU PRINCIPAL-->	
+      <%= yield :vertical_menu %>
+		</div>
+		<div id="page">	<!-- CONTENT OF THE PAGE -->
+			<div id="secondary_menu"> <!-- SECONDARY MENU -->
+				<div class="shown_secondary_menu" id="secondary_menu_toggle_button">
+					<span id="status_background_secondary_menu">
+						<span id="status_text_secondary_menu">Cacher le menu</span>
+					</span>
+				</div>
+				<div id="shadow_secondary_menu">
+					<div id="content_secondary_menu">
+            <%= yield :secondary_menu %>
+					</div>
+				</div>
+			</div>
+			<div id="content_page">
+
+						<!-- MENU HORIZONTAL -->
+<!--Conseil :____________________________________________
+			écrire le menu de bas en haut pour avoir	|
+			un ordre hiérarchique de gauche à droite    |
+			____________________________________________|-->
+				<div id="horizontal_menu">
+          <%= yield :horizontal_menu %>
+				</div>
+        <div id="empty">
+          <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
+        </div>
+        <%= yield %>
+		</div> <!-- content_page : FIN -->
+	</div> <!-- PAGE : FIN -->
+	<div id="footer_page">
+		<div id="footer">
+			<div id="bottom_core_menu">
+				<div id="footer_content">
+					<p>
+						Coordonnées : <span>pae la mare - ilot 7 - n°48 - 97438 sainte-marie - la réunion </span> | 
+						tél. +262 (0)2 62 53 12 89 - Fax +262 (0)2 62 53 16 42 <br />
+						&copy; Tous droits réservés 2008 <br />
+						<a href="http://validator.w3.org/check?uri=referer">
+							<img	class="bottom_icons"
+									src="/images/valid-xhtml.png"
+									alt="Valid XHTML 1.0 Strict" height="15" width="80" />
+							</a>&nbsp;
+						<img	class="bottom_icons" 
+								src="/images/plume-cms-powered.png"
+								alt="powered by Oxydium" height="15" width="80"/>&nbsp;&nbsp;
+						<img 	class="bottom_icons"
+								src="/images/madeonamac.png"
+								alt="Made On a Mac" height="15" width="80"/>
+					</p>
+				</div><!--FOOTER_CONTAIN : FIN  -->
+			</div><!-- bottom_core_menu : FIN -->
+		</div><!-- FOOTER : FIN-->
+	</div><!-- footer_page : FIN -->
+</div> <!-- CORPS : FIN -->
+</div><!-- ALL PAGE : FIN-->
+	</body>
+</html>

@@ -14,12 +14,12 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ROOT
-  map.root :controller => "account"
+  map.root :controller => "account", :action => "index"
   map.search "search" , :controller => "searches"
   ### END ROOT
 
-  map.login 'login', :controller => 'account'
-  map.logout 'logout', :controller => 'account',  :action => 'logout'
+  map.login 'account/login', :controller => 'account', :action => 'login'
+  map.logout 'account/logout', :controller => 'account',  :action => 'logout'
   
   ### COMMONS
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
