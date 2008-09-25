@@ -21,8 +21,7 @@ class Document < ActiveRecord::Base
   attr_accessor :image_extensions
   
   ## Plugins
-  acts_as_taggable
-  
+  acts_as_taggable  
   
   @image_extensions = ["jpg", "jpeg","png","gif"]
   @models = []
@@ -76,11 +75,11 @@ class Document < ActiveRecord::Base
   
   ## Return document path
   def path
-    unless self.class != OrdersSteps
+#    unless self.class == OrdersSteps
       return self.owner_class + "/" + self.file_type_id.to_s + "/"
-    else
-      return "order/" + self.file_type_id.to_s + "/"
-    end
+#    else
+#      return "order/" + self.file_type_id.to_s + "/"
+#    end
   end
   
   ## Override new method
@@ -131,7 +130,7 @@ class Document < ActiveRecord::Base
         ## Creation of document_version          
         
         path = "documents/" + self.path + "/" +  self.id.to_s + "/"
-        file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s + "." +document[:upload][:datafile].original_filename.split(".").pop, 
+        file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s, 
           :directory => path, :file_type_id => self.file_type.id)
         if file_response
           @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)      

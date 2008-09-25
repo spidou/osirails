@@ -7,7 +7,7 @@ ActionController::Routing::Routes.add_routes do |map|
     Document.models.each do |model|
       map.resources "#{model.downcase.pluralize}" do |model_|
         model_.resources :documents do |document|
-          document.resources :document_verisons
+          document.resources :document_versions
         end
       end 
     end

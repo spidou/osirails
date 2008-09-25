@@ -1,0 +1,36 @@
+
+<% document_versions = DocumentVersion.paginate :page => params[:page], :per_page => 1 if params[:page].nil?%>
+<div class = "test">
+<%= image_tag(url_for(:controller => "documents",:action => "preview_image", :id => document.id)) %>
+
+<%#raise document.id.to_s%>
+<!-- form  -->
+<iframe id="upload_frame" name="upload_frame" style="display: none"></iframe>
+
+<% form_for([document.has_document, document], :html => { :multipart => true, :target => "upload_frame"}) do |d| %>
+    <%= d.error_messages %>
+    <p>
+      <%= d.label :name%>
+      <%= d.text_field :name%>
+    </p>
+    
+    <p>
+      <%= d.label :description%>
+      <%= d.text_field :description%>
+    </p>
+
+    <p>
+        <%= d.label :tag_list, "Tags"%>
+        <%= d.text_field :tag_list%>ocumentVersion.pagina
+    </p>
+
+    <p>
+      <%= label :file, :data, "Fichier :"%>
+      <%= file_upload%>
+    </p>
+    
+    <%= d.submit("Uploader")%>
+  <%end%>
+  </div>
+
+<%= will_paginate document_versions, :document_id => document.id, :renderer => 'RemoteLinkRenderer', :remote => {:update => "test"}, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
