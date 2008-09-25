@@ -1,9 +1,8 @@
 
-<% document_versions = DocumentVersion.paginate :page => params[:page], :per_page => 1 if params[:page].nil?%>
-<div class = "test">
-<%= image_tag(url_for(:controller => "documents",:action => "preview_image", :id => document.id)) %>
+<div id = "testpage">
+<% document_versions = DocumentVersion.paginate_all_by_document_id(document.id, :page => params[:page].to_i, :per_page => 1)%>
+<%= image_tag(url_for(:controller => "documents",:action => "preview_image", :model => document_versions.first.class, :id => document_versions.first.id )) %>
 
-<%#raise document.id.to_s%>
 <!-- form  -->
 <iframe id="upload_frame" name="upload_frame" style="display: none"></iframe>
 
@@ -21,7 +20,7 @@
 
     <p>
         <%= d.label :tag_list, "Tags"%>
-        <%= d.text_field :tag_list%>ocumentVersion.pagina
+        <%= d.text_field :tag_list%>
     </p>
 
     <p>
@@ -29,8 +28,10 @@
       <%= file_upload%>
     </p>
     
-    <%= d.submit("Uploader")%>
+    <%= d.submit("Uploader")%> <%= link_to("download", :controller => "Downloads", :action => "show", 
+        :document => ({:id => document_versions.first.id, :type => document_versions.first.class.name} ))%>
   <%end%>
-  </div>
+  
 
-<%= will_paginate document_versions, :document_id => document.id, :renderer => 'RemoteLinkRenderer', :remote => {:update => "test"}, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+<%= will_paginate document_versions, :renderer => 'RemoteLinkRenderer', :remote => {:update => "testpage"}, :prev_label => " << pr&eacute;c&eacute;dent", :params => {:document_id => document.id}, :next_label => "suivant >>" %>
+</div>

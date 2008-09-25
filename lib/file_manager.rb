@@ -12,9 +12,9 @@ class FileManager
       options[:directory] = "tmp/"
     end
     if options[:name].nil?
-      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r"))
+      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s
     else
-      name = options[:name] + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r"))
+      name = options[:name] + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s
     end
     valid_extension = false
     
@@ -53,7 +53,7 @@ class FileManager
   
   def self.valid_mime_type?(file, file_type_id)
     extensions = []
-    mime_type = File.mime_type?(File.open(((file.class == String) ? file : file.path), "r"))
+    mime_type = File.mime_type?(File.open(((file.class == String) ? file : file.path), "r")).strip.split("/")[1].split(";")[0].to_s
     FileType.find(file_type_id).file_type_extensions.each{|extension| extensions << extension.name}
     return extensions.include?(mime_type)
   end

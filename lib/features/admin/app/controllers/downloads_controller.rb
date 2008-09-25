@@ -13,7 +13,7 @@ class DownloadsController < ApplicationController
      
       elsif params[:document][:type].constantize.equal?(DocumentVersion)
         @document_version = params[:document][:type].constantize.find(params[:document][:id])
-        send_file("documents/#{@document_version.document.owner_class}/#{@document_version.document.file_type_id}/#{@document_version.document.id}/#{@document_version.version}.#{@document_version.document.extension}")      
+        send_file("documents/#{@document_version.document.owner_class}/#{@document_version.document.file_type_id}/#{@document_version.document.id}/#{@document_version.id}.#{@document_version.document.extension}")      
       end
     else
       error_access_page(403)

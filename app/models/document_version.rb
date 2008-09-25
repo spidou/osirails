@@ -13,6 +13,10 @@ class DocumentVersion < ActiveRecord::Base
     self.document.document_versions.index(self)
   end
   
+  def extension 
+    self.document.extension
+  end
+  
   ## Create thumbnails
   def create_thumbnails(document_id)
     require 'RMagick'

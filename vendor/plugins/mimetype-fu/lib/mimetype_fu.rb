@@ -29,7 +29,7 @@ class File
       if RUBY_PLATFORM.include?('mswin32') or !File.exists?(path_to_file)
         return EXTENSIONS[File.extname(path_to_file).gsub('.','').downcase.to_sym]
       else
-        return `file -bir #{path_to_file}`.strip.split("/")[1].split(";")[0].to_s
+        return `file -bir #{path_to_file}`
       end
     end
     

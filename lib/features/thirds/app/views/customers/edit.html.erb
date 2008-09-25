@@ -1,12 +1,6 @@
 <h1>Modifier un client </h1>
 <div class="frame presentation_medium">
 
-<% @customer.class_documents.each_pair do |type, documents|%>
-  <% documents.each do |document|%>
-    <%= osibox_init :partial => "documents/edit_partial", :id => document.id,  :locals => {:document => document} %> <!-- #, :width => "500px", :height => "500px"-->
-  <% end %>
-<% end %>
-
 <% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
     
   <%= customer.error_messages %>
@@ -96,10 +90,14 @@
   <% end %>
   
   <%= customer.submit  'Modifier' %>
-</div>
-
-      <%= render :partial => 'documents/edit_partial', :locals => {:document => @customer.documents.first} %>
+</div>      
 
 <% end %>
   <%= link_to 'Retour', :action => 'index' %>
+  
+    <% @customer.class_documents.each_pair do |type, documents|%>
+  <% documents.each do |document|%>
+    <%= osibox_init :partial => "documents/edit_partial", :id => document.id,  :locals => {:document => document}, :width => "1000px", :height => "1000px" %>
+  <% end %>
+<% end %>
 

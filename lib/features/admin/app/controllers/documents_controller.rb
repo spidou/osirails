@@ -46,14 +46,19 @@ class DocumentsController < ApplicationController
   
   ## This method return the image to show
   def preview_image
-    @document = Document.find(params[:id])
+    puts "ppppppppppppppppppppppppppppppppppppppppppppppppp"
+##    puts path 
+    model = params[:model]
+    @document = model.constantize.find(params[:id])
     #    if Document.can_view?(current_user, @document.owner_class.capitalize)
-    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}.#{@document.extension}"
     
+    path = "documents/#{@document.path}#{@document.id}.#{@document.extension}"
+#    path = "documents/customer/9/1.jpeg"
+
     require 'RMagick'
 
-    clown = Magick::Image.read(path).first
-    clown.crop_resized!(75, 75, Magick::NorthGravity)
+#    clown = Magick::Image.read(path).first
+#    clown.crop_resized!(75, 75, Magick::NorthGravity)
 #    clown.write('crop_resized.jpg')
 
     

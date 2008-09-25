@@ -74,6 +74,7 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
+    params[:page] ||= 1
     ## Objects use to test permission
     @contact_controller = Menu.find_by_name('contacts')
     @establishment_controller =Menu.find_by_name('establishments')
@@ -91,8 +92,7 @@ class CustomersController < ApplicationController
     
     respond_to do |format|
       params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
-#      raise params.inspect
-      format.js { render :layout => false, :partial => 'documents/edit_partial'}
+      format.js { render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => Document.find(params[:document_id])})}
     end
     
   end
@@ -101,6 +101,7 @@ class CustomersController < ApplicationController
   # PUT /customerss/1.xml
   def update
     if Customer.can_edit?(current_user)
+      params[:page] ||= 1
       ## Objects use to test permission
       @contact_controller = Menu.find_by_name('contacts')
       @establishment_controller =Menu.find_by_name('establishments')
