@@ -8,7 +8,7 @@
 						opacity: <%= options[:wall_opacity] %>;
 						-moz-opacity: <%= options[:wall_opacity] %>;
 						filter:alpha(opacity=<%= options[:wall_opacity].to_f * 100 %>);"
-	id="osibox_wall<%= options[:id] %>">
+	id="osibox_wall<%= options[:id] %>" class="osibox">
 </div>
 <div style="visibility: hidden;
 						position: absolute;
@@ -27,7 +27,7 @@
 						width: <%= options[:width] %>;
 						<% end %>
 						overflow: <%= options[:scroll] %>;"
-	id="osibox_popup<%= options[:id] %>">
+	id="osibox_popup<%= options[:id] %>" class="osibox">
 	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br>
 	<% if !options[:partial].nil? %>
 		<%= render :partial => options[:partial], :locals => options[:locals] %>
@@ -83,22 +83,15 @@ function osibox_open (id) {
 	Effect.Appear(osibox_popup_elm);
 }
 
-function osibox_close (id) {
-	id = id ? id : 1;
-	
-	osibox_wall_elm = document.getElementById(osibox_wall + id);
-	osibox_popup_elm = document.getElementById(osibox_popup + id);
-	
-	Effect.Fade(osibox_wall_elm, {duration: 0.6});
-	Effect.Fade(osibox_popup_elm, {duration: 0.6});
+function osibox_close () {
+	osibox_elements = document.getElementsByClassName('osibox');
 
-	setTimeout(function() {
-
-
-		osibox_wall_elm.style.visibility = 'hidden';
-		osibox_popup_elm.style.visibility = 'hidden';
-	}, 600);
-
-	document.body.style.overflow = '';
+	for (var i=0; i < osibox_elements.length; i++) {
+		Effect.Fade(osibox_elements[i], {duration: 0.6});
+		setTimeout(function() {
+			osibox_elements[i].style.visibility = 'hidden';
+			}, 600);
+		};
+		document.body.style.overflow = '';
 }
 </script>
