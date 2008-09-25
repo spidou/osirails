@@ -1,3 +1,7 @@
+<% content_for :secondary_menu do %>
+<%= show_add_button %>
+<% end %>
+
 <h1>Liste des contenus</h1>
 
 <div class="frame">
@@ -10,17 +14,10 @@
       <th>Actions</th>
     </tr>
 
-      <% for content in @contents %>
-        <% menu = Menu.find_by_id(content.menu_id) %>
-        <tr>
-          <td title='<%= menu.description %>'><%= menu.title %></td>
-          <td><%= content.title %></td>
-          <td><%= content.description %></td> 
-          <td><%= link_to("Voir", :action => :show, :id => content.id) %> <%= link_to("Modifier", edit_content_path(content)) %> <%= link_to("Supprimer", content, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %></td>
-        </tr>
-      <% end%>
+      <%= show_contents(@contents) %>
+
   </table>
 <% end %>
 
-<%= link_to 'Ajouter', :action => 'new' %>
+
 </div>

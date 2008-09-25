@@ -1,16 +1,36 @@
 <% for content_version in @content_versions.reverse %>
-<p>Document référent : <%= link_to(content_version.content.title, :controller => :contents, :action => :show, :id => @content.id) %></p>
-<h1><%= content_version.title %></h1>
-<h2> <%= content_version.description %></h2>
-            <p><%= content_version.text%></p>
-<%unless @author.nil?%>
-<p>Auteur : <%=@author.employee.nil? ? @author.username : @author.employee.fullname %></p>
-<%end%>
-<% unless content_version.contributor.nil? or content_version.contributor == ""%>
-  <p> Contributeur : <%= contributor_full_name(content_version)%>
-  </p>
-<%end%>
+
+<% content_for :secondary_menu do %>
+<h1><span class='gray_color'>Liens</span> <span class='blue_color'>Utiles</span></h1>
+<ul>
+<li><%= link_to("Document r&eacute;f&eacute;rent", :controller => :contents, :action => :show, :id => @content.id) %></li>
+</ul>
+<% end  %>
+
+
+
+<h1><%= content_version.title %> (<%= content_version.versioned_at.strftime('0%w/%m/%Y %H:%M') %>)</h1>
+
+<div class='frame'>
+<div class='formated_content' >
+
+<fieldset>
+
+
+
+<p><%= content_version.description %></p>
+
+<hr/>
+  <p><%= content_version.text%></p>
+<hr/>
+
+<p><strong>Auteur :</strong> <%=@author.employee.nil? ? @author.username : @author.employee.fullname unless @author.nil?%></p>
+<p> <strong>Contributeur :</strong> <%= contributor_full_name(content_version) unless content_version.contributor.nil? or content_version.contributor == "" %></p>
+
+</fieldset>
 
  
  <%end%>
   <%= will_paginate @content_versions, :param_name => :version, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+  </div>
+</div>
