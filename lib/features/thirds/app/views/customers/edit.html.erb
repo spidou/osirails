@@ -98,6 +98,8 @@
   <%= customer.submit  'Modifier' %>
 </div>
 
+      <%= render :partial => 'documents/edit_partial', :locals => {:document => @customer.documents.first} %>
+
 <% end %>
   <%= link_to 'Retour', :action => 'index' %>
 

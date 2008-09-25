@@ -88,6 +88,13 @@ class CustomersController < ApplicationController
     else
       error_access_page(403)
     end
+    
+    respond_to do |format|
+      params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
+#      raise params.inspect
+      format.js { render :layout => false, :partial => 'documents/edit_partial'}
+    end
+    
   end
 
   # PUT /customerss/1
