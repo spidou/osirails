@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
             unless can_view?(current_user)
               error_access_page
             end
-          when *['add', 'create'] + ($permission[controller_path][:add] || [])
+          when *['new', 'create'] + ($permission[controller_path][:add] || [])
             unless can_add?(current_user)
               error_access_page(422)
             end
@@ -101,7 +101,7 @@ class ApplicationController < ActionController::Base
             unless can_edit?(current_user)
               error_access_page(422)
             end
-          when *['delete', 'destroy'] + ($permission[controller_path][:delete] || [])
+          when *['destroy'] + ($permission[controller_path][:delete] || [])
             unless can_delete?(current_user)
               error_access_page(422)
             end
