@@ -267,6 +267,7 @@ a.button_banner:hover span {
 	height:43px;
 	min-width: 893px;
 	min-height: 43px;
+	cursor:pointer;
 }
 
 #block_button_under_banner {
@@ -496,6 +497,11 @@ a.button_banner:hover span {
 	font-family: verdana, sans-serif;
 	font-weight:lighter;
 	font-size:1.1em;
+}
+
+#content_secondary_menu h1 a {
+	text-decoration:none;
+	cursor:pointer;
 }
 
 #content_secondary_menu h1:first-child {
