@@ -262,4 +262,22 @@ class CustomersController < ApplicationController
     end
   end
   
+  def auto_complete_for_third_name 
+    auto_complete_responder_for_name(params[:customer][:third][:name])
+  end
+
+  def auto_complete_responder_for_name(value)
+    @customers = []
+    
+    Customer.find(:all).each do |customer|
+      if @customers.size < 10
+        if customer.name.downcase.grep(/#{value.downcase}/).length > 0
+          @customers << customer
+        end
+      end
+    end
+    @customers = @customers.uniq
+    render :partial => 'thirds/third_info'    
+  end
+
 end
