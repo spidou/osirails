@@ -35,7 +35,7 @@ module OrdersHelper
     	html += "		</div>"
     	html += "		<div class=\"steps_text\">"
     	html += "			<p>"
-    	html += "				<a href=\"#{order_path(@order)}/#{ot.step.name[5..-1]}\">#{ot.step.title}</a>"
+    	html += "				<a href=\"#{order_path(@order)}/#{ot.step.name[5..-1]}/edit\">#{ot.step.title}</a>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"
