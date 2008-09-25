@@ -27,7 +27,7 @@ module OrdersHelper
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
     	html += "<div>"
-    	html += "	<div class=\"#{step_ring_class(  ot.status)}\">"
+    	html += "	<div class=\"#{step_ring_class(ot.uncomplete? ? 'uncomplete' : ot.status)}\">"
     	html += "		<div id=\"#{ot.step.name[5..-1]}\">"
     	html += "			<p>"
     	html += "				<span><strong>[#{ot.step.title}]</strong></span>"
