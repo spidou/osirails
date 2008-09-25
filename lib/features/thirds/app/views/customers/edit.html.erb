@@ -1,5 +1,12 @@
 <h1>Modifier un client </h1>
 <div class="frame presentation_medium">
+
+<% @customer.class_documents.each_pair do |type, documents|%>
+  <% documents.each do |document|%>
+    <%= osibox_init :partial => "documents/edit_partial", :id => document.id,  :locals => {:document => document} %> <!-- #, :width => "500px", :height => "500px"-->
+  <% end %>
+<% end %>
+
 <% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
     
   <%= customer.error_messages %>
@@ -54,47 +61,43 @@
                     :error => @error} %>
 
   <% end %>
-
+   
    <!-- Display Documents div -->
   <% if @document_controller.can_list?(current_user) and Document.can_list?(current_user, @customer.class) %>
     <h2>Documents</h2>
     <% unless @documents.empty? %>
-      <div class="document_view">
-        <h1>Images</h1>
-        <% for document in @documents %>
-        <div class="document_view_content">
-          <%#if document.document_versions.empty?%>        
-            <%# lightbox_image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id), url_for(:controller => "documents",:action => "preview_image", :id => document.id))%>
-          <%#else%>
-             <%# lightbox_image_tag(url_for(:controller => "document_versions",:action => "thumbnail", :id => document.id, :last => true), url_for(:controller => "document_versions",:action => "preview_image", :id => document.id, :last => true))%>
-          <%#end%>
-          <%# image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id)) %>
-          <%= image_tag("/images/file_extensions/#{document.extension}_75x75.png") %>
-          <p>        
-            <strong><%=document.name%></strong><br />
-            <%= "Enregistre le "+ document.updated_at.to_s%><br/>
-            <%=get_description(document)%>
-              
-            <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
-              <%= link_download_last_version(document) %>
-            <% end %>
-          </p>
-      </div>
+      <% @customer.class_documents.each_pair do |type, documents|%>
+        <div class="document_view">
+          <h1> <%= type%> </h1>
+          <% documents.each do |document|%>
+            <div class="document_view_content">
+              <%= image_tag("/images/file_extensions/#{document.extension}_75x75.png") %>              
+             
+              <a onclick="osibox_open(<%= document.id %>);">Modifier</a>
+              <p>
+                <strong><%=document.name%></strong><br />
+                <%= "Enregistre le "+ document.updated_at.to_s%><br/>
+                <%=get_description(document)%>
+
+                <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
+                  <%= link_download_last_version(document) %>
+                <% end %>
+              </p>
+            </div>
+          <%end%>
+        </div>
       <% end %>
-    </div>
     <% end %>
+    
     
     <!-- Display document_form-->
     <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Customer', :owner_id => @customer.id, 
     :new_contact_number => @new_contact_number, :error => @error} %>
   <% end %>
   
-  
-</div>
   <%= customer.submit  'Modifier' %>
+</div>
+
 <% end %>
-
-  
-
   <%= link_to 'Retour', :action => 'index' %>
 

@@ -2,6 +2,10 @@
 
 <div class="frame presentation_medium">
   <h2> Informations g&eacute;n&eacute;rales</h2>
+
+  <%# my_text_field_with_auto_complete(:third, :name, {:name => "customer", :controller => 'customers'},{
+          :select => 'contact_first_name'})%>
+
   <p>
     <%= label :customer, :name, "Nom :" %>
     <strong><%= @customer.name %></strong>

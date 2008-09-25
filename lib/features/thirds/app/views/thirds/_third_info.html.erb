@@ -1,0 +1,9 @@
+<% # UL use by Text_field_auto_complete %>
+<ul class="customers">
+  <% for customer in @customers do -%>
+    <li>
+      <div class="customer_id" style="display:none;"><%=customer.id%></div>
+      <div class ="customer_name"><%=customer.name %></div>
+    </li>
+  <% end -%>
+</ul>
