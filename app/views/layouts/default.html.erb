@@ -13,186 +13,93 @@
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
-
-<div id="all_page">
-									<!-- BANNIERE -->
-		<div id="banner">
-			<div id="logo"> 
-				<span id="welcome_message"><%= display_welcome_message %></span>
-			</div>	
-			<div id="background_banner">
-				<div id="block_button_banner">
-          <div id="button_on_banner">
-            <a class="button_banner" href="<%= root_path %>">
-              <span>Ma page d'accueil</span>
-						</a>
-            <a class="button_banner" href="<%= search_path %>">
-							<span>Rechercher</span>
-						</a>
-						<a class="button_banner" href="<%= logout_url %>">
-							<span>Se déconnecter</span>
-						</a>
-					</div>
-					<div id="banner_datetime">
-						<p><%= display_date_time %></p>
-					</div>
-				</div>
-			</div>
-		</div>						<!-- SOUS-BANNIERE -->
-		<div id="under_banner">
-			<%= display_memorandums %>
-		</div>
-	<div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->	
-		<div id="menu">				<!-- MENU PRINCIPAL-->	
-				<ul>
-          <%= display_main_menu %>
-				</ul>
-		</div>
-		<div id="page">	<!-- CONTENT OF THE PAGE -->
-			<div id="secondary_menu"> <!-- SECONDARY MENU -->
-				<div class="shown_secondary_menu" id="secondary_menu_toggle_button">
-					<span id="status_background_secondary_menu">
-						<span id="status_text_secondary_menu">Cacher le menu</span>
-					</span>
-				</div>
-				<div id="shadow_secondary_menu">
-					<div id="content_secondary_menu">
-						<h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
-						<p>
-              <input id="input_help" type="text" value="Rechercher" style="color:grey;"/><a href="#"><img id="help_image" src="/images/view_12x12.png" alt="bouton de recherche" title="Rechercher" /></a><br />
-							<!--<a class="default-button" href="#">
-								<span>Rechercher</span> SEARCH BUTTON
-							</a>-->
-              <a href="#" class="help">Recherche avancée</a>
-						</p>
-						<%= yield :secondary_menu %>
-						<h1><span class="gray_color">Liens</span> <span class="blue_color">utiles</span></h1>
-						<div id="link">
-							<ul>
-								<li><a href="#">Lien N°1</a></li>
-								<li><a href="#">Lien N°2</a></li>
-								<li><a href="#">Lien N°3</a></li>
-							</ul>
-						</div>
-						<div id="footer_secondary_menu">&nbsp;</div>
-					</div>
-				</div>
-			</div>
-			<div id="content_page">
-
-						<!-- MENU HORIZONTAL -->
-<!--Conseil :____________________________________________
-			écrire le menu de bas en haut pour avoir	|
-			un ordre hiérarchique de gauche à droite    |
-			____________________________________________|-->
-				<div id="horizontal_menu">
-          <%= display_second_menu %>
-				</div>
-        <div id="empty">
-          <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
+    <div id="all_page">
+      <!-- BANNIERE -->
+      <div id="banner">
+        <div id="logo"> 
+          <span id="welcome_message"><%= display_welcome_message %></span>
+        </div>	
+        <div id="background_banner">
+          <div id="block_button_banner">
+            <div id="button_on_banner">
+              <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
+              <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
+              <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
+            </div>
+            <div id="banner_datetime">
+              <p><%= display_date_time %></p>
+            </div>
+          </div>
         </div>
-		<%= display_flash %>
-        <%= yield %>
-		<div class="frame">
-		<h2>Vue de Documents</h2>
-			<div class="document_view">
-				<h1>Write Title here</h1>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/>
-						<p>
-							<strong>Commande lambda</strong><br /> 
-							Enregistré le 23 Septembre 2008 à 11h01
-						</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/jpg_75x75.png" alt="image jpg" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/gif_75x75.png" alt="image gif" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/txt_75x75.png" alt="image text" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/pdf_75x75.png" alt="image pdf" title=""/><p>Write text here.</p>
-					</div>
-			</div>
-			<div class="document_view">
-				<h1>Write Title here</h1>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/jpg_75x75.png" alt="image jpg" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/gif_75x75.png" alt="image gif" title=""/><p>Write text here.</p>
-					</div>
-			</div>
-			<div class="document_view">
-				<h1>Write Title here</h1>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/><p>Write text here.</p>
-					</div>
-					<div class="document_view_content">
-						<img src="/images/file_extensions/jpg_75x75.png" alt="image jpg" title=""/><p>Write text here.</p>
-					</div>
-			</div>
-		</div>
-			<!-- div class="frame">
-				<h2>Test de ...</h2>
-				<h3>...frise ...</h3>
-				<div id="timeline">
-					<div id="timeline_head" class="good"><span class="timeline_date">20 Avril 2008</span><span class="timeline_notice">Création de dossier</span></div>
-					<div class="timeline_body good"><span class="timeline_date">23 Avril 2008</span><span class="timeline_notice">SAS de production</span></div>
-					<div class="timeline_body"></div>
-					<div class="timeline_body good"><span class="timeline_date">30 Avril 2008</span><span class="timeline_notice">Production</span></div>
-					<div class="timeline_body bad"><span class="timeline_date">3 Mai 2008</span><span class="timeline_notice">Echéance</span></div>
-					<div class="timeline_body"></div><div class="timeline_body"></div>
-					<div class="timeline_body bad"><span class="timeline_date">10 Mai 2008</span><span class="timeline_notice">Livraison (retard)</span></div>
-					<div class="timeline_body good"><span class="timeline_date">12 Mai 2008</span><span class="timeline_notice">SAS de facturation</span></div>
-					<div class="timeline_body"></div><div class="timeline_body"></div><div class="timeline_body"></div>
-					<div class="timeline_body good"><span class="timeline_date">20 Septembre 2008</span><span class="timeline_notice">Règlement</span></div>
-					<div class="timeline_body good"><span class="timeline_date" title="25 Novembh ihi huhi hu ire 2008">25 Novembh ihi huhi hu ire 2008</span><span class="timeline_notice">Clôture</span></div>
-					<div id="timeline_footer"></div>
-				</div>
-				<h2>Test d'intégration d'une image SVG</h2>
-				<object type="image/svg+xml" data="/images/test.svg">
-					<img src="/images/test.svg" alt="test d'intégration d'image en svg" title="test d'intégration d'image en svg" />
-				</object >
-				<div id="test">
-					<object type="image/svg+xml" data="/images/test.svg">
-						<img src="/images/test.svg" alt="test d'intégration d'image en svg" title="test d'intégration d'image en svg" />
-					</object >
-				</div>
-			</div -->
-		</div> <!-- content_page : FIN -->
-	</div> <!-- PAGE : FIN -->
-	<div id="footer_page">
-		<div id="footer">
-			<div id="bottom_core_menu">
-				<div id="footer_content">
-					<p>
-						Coordonnées : <span>pae la mare - ilot 7 - n°48 - 97438 sainte-marie - la réunion </span> | 
-						tél. +262 (0)2 62 53 12 89 - Fax +262 (0)2 62 53 16 42 <br />
-						&copy; Tous droits réservés 2008 <br />
-						<a href="http://validator.w3.org/check?uri=referer">
-							<img	class="bottom_icons"
-									src="/images/valid-xhtml.png"
-									alt="Valid XHTML 1.0 Strict" height="15" width="80" />
-							</a>&nbsp;
-						<img	class="bottom_icons" 
-								src="/images/plume-cms-powered.png"
-								alt="powered by Oxydium" height="15" width="80"/>&nbsp;&nbsp;
-						<img 	class="bottom_icons"
-								src="/images/madeonamac.png"
-								alt="Made On a Mac" height="15" width="80"/>
-					</p>
-				</div><!--FOOTER_CONTAIN : FIN  -->
-			</div><!-- bottom_core_menu : FIN -->
-		</div><!-- FOOTER : FIN-->
-	</div><!-- footer_page : FIN -->
-</div> <!-- CORPS : FIN -->
-</div><!-- ALL PAGE : FIN-->
+      </div>
+      <!-- SOUS-BANNIERE -->
+      <div id="under_banner">
+        <%= display_memorandums %>
+      </div>
+      <div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->	
+        <div id="menu">				<!-- MENU PRINCIPAL-->	
+          <ul>
+            <%= display_main_menu %>
+          </ul>
+        </div>
+        <div id="page">	<!-- CONTENT OF THE PAGE -->
+          <div id="secondary_menu"> <!-- SECONDARY MENU -->
+            <div class="shown_secondary_menu" id="secondary_menu_toggle_button">
+              <span id="status_background_secondary_menu">
+                <span id="status_text_secondary_menu">Cacher le menu</span>
+              </span>
+            </div>
+            <div id="shadow_secondary_menu">
+              <div id="content_secondary_menu">
+                <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
+                <p>
+                  <input id="input_help" type="text" value="Rechercher" style="color:grey;"/>
+                  <a href="#"><img id="help_image" src="/images/view_12x12.png" alt="bouton de recherche" title="Rechercher" /></a><br />
+                  <a href="#" class="help">Recherche avancée</a>
+                </p>
+                <%= yield :secondary_menu %>
+                <h1><span class="gray_color">Liens</span> <span class="blue_color">utiles</span></h1>
+                <div id="link">
+                  <ul>
+                    <li><a href="#">Lien N°1</a></li>
+                    <li><a href="#">Lien N°2</a></li>
+                    <li><a href="#">Lien N°3</a></li>
+                  </ul>
+                </div>
+                <div id="footer_secondary_menu">&nbsp;</div>
+              </div>
+            </div>
+          </div>
+          <div id="content_page">
+            <div id="horizontal_menu">
+              <%= display_second_menu %>
+            </div>
+            <div id="empty">
+              <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
+            </div>
+            <%= display_flash %>
+            <%= yield %>
+          </div> <!-- content_page : FIN -->
+        </div> <!-- PAGE : FIN -->
+        <div id="footer_page">
+          <div id="footer">
+            <div id="bottom_core_menu">
+              <div id="footer_content">
+                <p>
+                  Coordonnées : <span>pae la mare - ilot 7 - n°48 - 97438 sainte-marie - la réunion </span> | 
+                  tél. +262 (0)2 62 53 12 89 - Fax +262 (0)2 62 53 16 42 <br />
+                  &copy; Tous droits réservés 2008 <br />
+                  <a href="http://validator.w3.org/check?uri=referer">
+                    <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
+                  </a>&nbsp;
+                  <img class="bottom_icons" src="/images/plume-cms-powered.png" alt="powered by Oxydium" height="15" width="80"/>&nbsp;&nbsp;
+                  <img class="bottom_icons" src="/images/madeonamac.png" alt="Made On a Mac" height="15" width="80"/>
+                </p>
+              </div><!--FOOTER_CONTAIN : FIN  -->
+            </div><!-- bottom_core_menu : FIN -->
+          </div><!-- FOOTER : FIN-->
+        </div><!-- footer_page : FIN -->
+      </div> <!-- CORPS : FIN -->
+    </div><!-- ALL PAGE : FIN-->
 	</body>
 </html>
