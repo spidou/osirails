@@ -45,8 +45,8 @@ class SearchesController < ApplicationController
       path[path.index(path.last)] = column[1]
       @columns[index] = path
     end
-
-    @rows = model.constantize.find(:all, :include => Search.get_include_hash(section.search), :conditions => Search.get_conditions_array(params[:criteria],model) )
+  # raise Search.get_conditions_array(params[:criteria],model,params[:search_type]).inspect
+    @rows = model.constantize.find(:all, :include => Search.get_include_hash(section.search), :conditions => Search.get_conditions_array(params[:criteria],model,params[:search_type]) )
     @searches = {}
     respond_to do |format|
       format.js {render :action => "result", :layout => false}

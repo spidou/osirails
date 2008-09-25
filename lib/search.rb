@@ -57,15 +57,31 @@ class Search
     sub_resources_array==[] ?  nil : sub_resources_array
   end
    
-  def self.get_conditions_array(criteria_hash,model) 
+  def self.get_conditions_array(criteria_hash,model,search_type) 
     conditions_array ||= [""]
     criteria_hash.each_value do |criterion|
-      conditions_array[0].blank? ? group="" : group = " and "
+      if search_type == "and"
+        conditions_array[0].blank? ? group="" : group = " and "
+      elsif search_type == "or"
+        conditions_array[0].blank? ? group="" : group = " or "
+      elsif search_type == "not"
+        conditions_array[0].blank? ? group="" : group = " and "
+        criterion['action'] = negative(criterion['action'])
+      else
+        group = ""
+      end  
       criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
       conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" 
       conditions_array << format_value(criterion)
     end 
     return conditions_array
+  end
+  
+  def self.negative(action)
+    positive = ["=",">","<",">=","<=","like"]
+    negative = ["!=","<",">","<=",">=","not like"]
+    return negative[positive.index(action)] if positive.include?(action)
+    return positive[negative.index(action)] if negative.include?(action)
   end
   
   def self.format_value(params)
