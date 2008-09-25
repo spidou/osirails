@@ -2,7 +2,30 @@ module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
   def show_delete_button(service)
-    "&nbsp;" + link_to("<img src=\"/images/delete_16x16.png\" title=\"Supprimer\" alt=\"Supprimer\"/>", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' })
+    if controller.can_delete?(current_user)
+      "&nbsp;" + link_to("<img src=\"/images/delete_16x16.png\" title=\"Supprimer\" alt=\"Supprimer\"/>", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' })
+    end
+  end
+  
+  # This method test permission for edit_button
+  def show_edit_button(service)
+    if controller.can_edit?(current_user)
+      "&nbsp;" + link_to("<img src=\"/images/edit_16x16.png\" title =\"Modifier\" alt=\"Modifier\" />", { :action => "edit", :id => service } )
+    end
+  end
+  
+  # This method test permission for view_button
+  def show_view_button(service)
+    if controller.can_view?(current_user)
+      link_to("<img src=\"/images/view_16x16.png\" title =\"D&eacute;tails\" alt=\"Détails\" />",service_path(service))
+    end
+  end
+  
+  # This method test permission for add_button
+  def show_add_button
+    if controller.can_add?(current_user)
+      link_to("Nouveau service", :action => "new")
+    end
   end
   
   # This method permit to have a services on <ul> type.
@@ -18,8 +41,8 @@ module ServicesHelper
   def get_children_services(services,list)
     services.each do |service|
       delete_button = show_delete_button(service)
-      show_button = link_to("<img src=\"/images/view_16x16.png\" title =\"D&eacute;tails\" alt=\"Détails\" />",service_path(service))
-      edit_button ="&nbsp;" + link_to("<img src=\"/images/edit_16x16.png\" title =\"Modifier\" alt=\"Modifier\" />", { :action => "edit", :id => service } )
+      show_button = show_view_button(service)
+      edit_button = show_edit_button(service)
       list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{show_button} #{edit_button}#{delete_button}</span></li>"
       if service.children.size > 0
         list << "<ul>"
