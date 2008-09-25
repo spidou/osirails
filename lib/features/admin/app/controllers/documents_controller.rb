@@ -48,9 +48,18 @@ class DocumentsController < ApplicationController
   def preview_image
     @document = Document.find(params[:id])
     #    if Document.can_view?(current_user, @document.owner_class.capitalize)
-    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}.jpg"
+    path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}.#{@document.extension}"
+    
+    require 'RMagick'
+
+    clown = Magick::Image.read(path).first
+    clown.crop_resized!(75, 75, Magick::NorthGravity)
+#    clown.write('crop_resized.jpg')
+
+    
     img=File.read(path)
-    send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
+    send_data(img, :filename =>'workshopimage', :type => "image/jpeg", :disposition => "inline")
+#    send_data(clown, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
     #    end
   end
   
@@ -58,7 +67,6 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     #    if Document.can_view?(current_user, @document.owner_class.capitalize)
     path = "documents/#{@document.owner_class.downcase}/#{@document.file_type_id}/#{@document.id}_75_75.jpeg"
-    raise path.to_s
     img=File.read(path)
     send_data(img, :filename =>'workshopimage', :type => "image/jpg", :disposition => "inline")
     #    end
