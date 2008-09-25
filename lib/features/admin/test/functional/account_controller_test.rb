@@ -35,11 +35,19 @@ class AccountControllerTest < ActionController::TestCase
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
-    def test_login_for_loggon_with_enabled_user_and_bad_password
+  def test_login_for_loggon_with_enabled_user_and_bad_password
     user = users(:one)
     post :login, {:username => user.username, :password => "bad_password"}
     assert_not_nil flash[:error]
     assert_redirected_to :controller => "account", :action => "login"
     assert_routing "account/login", {:controller => "account", :action => "login"}
+  end
+  
+  def test_lost_password_when_not_logged_in
+    
+  end
+  
+  def test_lost_password_when_logged_in
+    
   end
 end
