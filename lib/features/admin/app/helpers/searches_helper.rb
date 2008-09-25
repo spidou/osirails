@@ -2,6 +2,7 @@ module SearchesHelper
 
   def display_criterion_choose_select(value,id)
     # take the first part of value that represent the feature name
+    return "" if value.nil?
     feature = Feature.find_by_name(value.split(",")[0])
     model = value.split(",")[1]
     
@@ -61,7 +62,7 @@ module SearchesHelper
         result = object
         column.each do |attribute|
           if result.class == Array
-            html += "<td>" + link_to("voir") + "</td>"
+            html += "<td>" + link_to("voir",object) + "</td>"
             result = ""
           else
             result = result.send(attribute) unless result.blank?

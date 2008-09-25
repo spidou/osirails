@@ -1,14 +1,14 @@
 <h2>R&eacute;sultats de la recherche</h2>
-
+<% if @rows.size>0%>
 <table>
-
+  <tr>
   <% @columns.each do |column| %>
-   <td>
-    <th><% column %></th>
-   <td>
+    <th><%= column.last %></th>
   <% end %>
-  
-  <% generate_rows(@rows,@columns) %>
-  
+  </tr>
+  <%= generate_rows(@rows,@columns) %>
+<% else %>
+  <p><strong>Aucuns résultats</strong></p>
+<% end %>  
   
 </table>

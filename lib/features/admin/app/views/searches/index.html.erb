@@ -22,7 +22,7 @@
     <%=observe_field("model_select",:on=>"onselect",:with => "'model=' + value" ,:url=>{:action=>"model_choose",:line=>0},:href=>(url_for :action=>"model_choose")) %>
   </p>
 
-  <h2>Crit&egrave;res</h2>
+  <%="<h2>Crit&egrave;res</h2>" %>
   <p id="search_type" style="display:none;">
     respecter 
     <select name="search_type">
@@ -35,7 +35,7 @@
     <div id="criteria_list">
     </div>
   </div>
-  <p id="submit_button">
+  <p id="submit_button" style="display:none;">
     <%=submit_tag("rechercher")%>
   <p>
 <% end %>

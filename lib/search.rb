@@ -71,7 +71,7 @@ class Search
         group = ""
       end  
       criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
-      conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" 
+      conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" unless criterion['attribute'].nil? or criterion['action'].nil?
       conditions_array << format_value(criterion)
     end 
     return conditions_array
@@ -92,9 +92,9 @@ class Search
         y= params['date(1i)'] 
         result = "#{y}/#{m}/#{d}"
       when 'number'
-        result =params['value'].to_d
+        result =params['value'].to_d unless params['value'].nil?
       else
-        result = "%" + params['value'] + "%"
+        result = "%" + params['value'] + "%" unless params['value'].nil?
     end
     return result
   end
