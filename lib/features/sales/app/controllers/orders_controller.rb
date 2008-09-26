@@ -1,6 +1,18 @@
 class OrdersController < ApplicationController
   # Callbacks
-  before_filter :check, :except => [:index, :new, :create]
+  before_filter :check, :except => [:index, :new, :create, :auto_complete_for_employee_fullname]
+  
+  method_permission :add => ['auto_complete_for_employee_first_name']
+  
+  def auto_complete_for_employee_fullname
+    all_employees = Employee.find(:all)
+    fullname = params[:employee][:fullname].downcase
+    @employees = []
+    all_employees.each do |e|
+      @employees << e if !e.first_name.downcase.grep(/#{fullname}/).empty? || !e.last_name.downcase.grep(/#{fullname}/).empty?
+    end
+    render :partial => 'auto_complete_for_employee_fullname'
+  end
   
   def index
     
@@ -25,11 +37,7 @@ class OrdersController < ApplicationController
   end
   
   def create
-    params[:order][:order_type] = OrderType.find(params[:order][:order_type]) if params[:order][:order_type]
-
-    params[:order][:customer] = Customer.find(params[:order][:customer]) if params[:order][:customer]
-    
-    @order = Order.new(params[:order])
+    @order = Order.new(@parameters)
     if @order.save
       flash[:notice] = "Dossier crée avec succés"
       redirect_to order_path(@order)
@@ -40,8 +48,7 @@ class OrdersController < ApplicationController
   end
   
   def update
-    @order = Order.update_attributes(params[:order])
-    if @order
+    if @order.update_attributes(@parameters)
       flash[:notice] = "Dossier modifié avec succés"
       redirect_to order_path(@order)
     else
@@ -54,5 +61,13 @@ class OrdersController < ApplicationController
   def check
     @order = Order.find(params[:id])
     @customer = @order.customer
+    
+    if params[:order]
+      @parameters = {}
+      @parameters.update(params[:order])
+      @parameters[:commercial] = Employee.find(params[:employee_id])
+      @parameters[:order_type] = OrderType.find(params[:order][:order_type])
+      @parameters[:customer] = Customer.find(params[:order][:customer])
+    end
   end
 end

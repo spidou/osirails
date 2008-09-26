@@ -44,8 +44,8 @@
 	<%= o.select :order_type, order_type_for_select %>
 </p>
 <p>
-	<%= o.label :commercial %>
-	<%= text_field_tag 'TODO', 'TODO' %>
+	<%= label_tag 'employee_fullname', 'Commercial' %>
+	<%= text_field_with_auto_complete :employee, :fullname, {}, { :after_update_element => "function(){ var emp_id = document.getElementById('employee_fullname_auto_complete').getElementsByClassName('selected')[0].getElementsByClassName('employee_id')[0]; document.getElementById('employee_id').value = emp_id.innerHTML; var textfield = document.getElementById('employee_fullname'); textfield.value = textfield.value.substr(emp_id.innerHTML.length, textfield.value.length);}" } %>
 </p>
 
 <h3>Client</h3>
@@ -73,6 +73,7 @@
 	<%= o.label :previsional_delivery, 'Date pr&eacute;visionnelle de livraison' %>
 	<%= o.text_field :previsional_delivery %>
 </p>
+<%= hidden_field_tag 'employee_id' %>
 <%= o.hidden_field :customer, :value  => @customer.id %>
 <%= o.submit params[:action] == 'edit' ? 'Modifier' : 'Créer' %>
 <% end %>
