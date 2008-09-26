@@ -3,5 +3,6 @@ class DesignCanvasController < ApplicationController
   skip_before_filter :authenticate
   
   def index
+    @stylesheet = params[:stylesheet] || "default"
   end
 end
