@@ -3,6 +3,7 @@ class DesignCanvasController < ApplicationController
   skip_before_filter :authenticate
   
   def index
-    @stylesheet = params[:stylesheet] || "default"
+    @stylesheet = "/themes/#{params[:stylesheet]}/stylesheets/default.css" if params[:stylesheet]
+    @stylesheet ||= "/stylesheets/default.css"
   end
 end
