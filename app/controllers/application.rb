@@ -61,15 +61,11 @@ class ApplicationController < ActionController::Base
     end
 
     # Called when an user try to acces to an unauthorized page
-    def error_access_page(status = nil)
-      if status.class == Fixnum
-        render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
-      else
-        render :text => "Vous n'avez pas le droit d'effectuer cette action", :status => 401
-      end
+    def error_access_page(status = 403)
+      render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
     end
 
-  private
+    private
 
     # Do every verification before shows the page
     def authenticate
