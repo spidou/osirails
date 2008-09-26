@@ -7,7 +7,7 @@
   <table>
     <tr>
       <th rowspan="2">Roles</th>
-      <th colspan="5">Permissions</th>
+      <th colspan="6">Permissions</th>
     </tr>
     <tr>
       <th>Lister</th>
@@ -15,6 +15,7 @@
       <th>Ajouter</th>
       <th>Modifier</th>
       <th>Supprimer</th>
+			<th>Tout cocher</th>
     </tr>
   <% form_tag(document_permission_path, :method => 'put') do %>
   <% for document in @document_permissions %>
@@ -25,6 +26,7 @@
         <td><%= check_box_tag "add[]", document.role_id, document.add %></td>
         <td><%= check_box_tag "edit[]", document.role_id, document.edit %></td>
         <td><%= check_box_tag "delete[]", document.role_id, document.delete %></td>
+				<td><input type="checkbox" class="checkbox_permission"></td>
       </tr>
   <% end %>
   </table><br/>
@@ -32,3 +34,4 @@
   <% end %><br/><br/>
   <%= link_to "Retour", document_permissions_path %>
 </div>
+<%= javascript_include_tag 'permission' %>

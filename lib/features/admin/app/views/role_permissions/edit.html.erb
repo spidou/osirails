@@ -8,7 +8,7 @@
   <table>
     <tr>
       <th rowspan="2">Pages</th>
-      <th colspan="5">Permissions</th>
+      <th colspan="6">Permissions</th>
     </tr>
     <tr>
       <th>Lister</th>
@@ -16,6 +16,7 @@
       <th>Ajouter</th>
       <th>Modifier</th>
       <th>Supprimer</th>
+			<th>Tout cocher</th>
     </tr>
     <% for menu_permission in @menu_permissions %>
       
@@ -26,6 +27,7 @@
           <td><%= check_box_tag "menu[add][]", menu_permission.id, menu_permission.add %></td>
           <td><%= check_box_tag "menu[edit][]", menu_permission.id, menu_permission.edit %></td>
           <td><%= check_box_tag "menu[delete][]", menu_permission.id, menu_permission.delete %></td>
+					<td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>
@@ -34,7 +36,7 @@
     <table>
       <tr>
         <th rowspan="2">Objets m&eacute;tiers</th>
-        <th colspan="5">Permissions</th>
+        <th colspan="6">Permissions</th>
       </tr>
       <tr>
         <th>Lister</th>
@@ -42,6 +44,7 @@
         <th>Ajouter</th>
         <th>Modifier</th>
         <th>Supprimer</th>
+				<th>Tout cocher</th>
       </tr>
       <% for business_object_permission in @business_object_permissions %>
         
@@ -52,6 +55,7 @@
           <td><%= check_box_tag "business_object[add][]", business_object_permission.id, business_object_permission.add %></td>
           <td><%= check_box_tag "business_object[edit][]", business_object_permission.id, business_object_permission.edit %></td>
           <td><%= check_box_tag "business_object[delete][]", business_object_permission.id, business_object_permission.delete %></td>
+					<td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>
@@ -60,7 +64,7 @@
     <table>
       <tr>
         <th rowspan="2">Type de document</th>
-        <th colspan="5">Permissions</th>
+        <th colspan="6">Permissions</th>
       </tr>
       <tr>
         <th>Lister</th>
@@ -68,6 +72,7 @@
         <th>Ajouter</th>
         <th>Modifier</th>
         <th>Supprimer</th>
+				<th>Tout cocher</th>
       </tr>
       <% for document_permission in @document_permissions %>
         
@@ -78,6 +83,7 @@
           <td><%= check_box_tag "document[add][]", document_permission.id, document_permission.add %></td>
           <td><%= check_box_tag "document[edit][]", document_permission.id, document_permission.edit %></td>
           <td><%= check_box_tag "document[delete][]", document_permission.id, document_permission.delete %></td>
+					<td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>
@@ -86,7 +92,7 @@
     <table>
       <tr>
         <th rowspan="2">Planning</th>
-        <th colspan="5">Permissions</th>
+        <th colspan="6">Permissions</th>
       </tr>
       <tr>
         <th>Lister</th>
@@ -94,6 +100,7 @@
         <th>Ajouter</th>
         <th>Modifier</th>
         <th>Supprimer</th>
+				<th>Tout cocher</th>
       </tr>
       <% for calendar_permission in @calendar_permissions %>
         
@@ -104,6 +111,7 @@
           <td><%= check_box_tag "calendar[add][]", calendar_permission.id, calendar_permission.add %></td>
           <td><%= check_box_tag "calendar[edit][]", calendar_permission.id, calendar_permission.edit %></td>
           <td><%= check_box_tag "calendar[delete][]", calendar_permission.id, calendar_permission.delete %></td>
+					<td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>
@@ -116,3 +124,4 @@
     <%=link_to"Retour",role_permissions_path%> 
   </p>
 </div>
+<%= javascript_include_tag 'permission' %>
