@@ -86,15 +86,16 @@ class CustomersController < ApplicationController
       @contacts = @customer.contacts
       @documents =@customer.documents
       @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?
+      
+      respond_to do |format|
+        params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
+        @javascript = "<script langage='javascript'> parent.document.getElementById('testpage').innerHTML = document.getElementById('testpage').innerHTML</script>"
+        format.js { render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => (Document.find(params[:document_id]) unless params[:document_id].nil?), :javascript => @javascript})}
+      end
+    
     else
       error_access_page(403)
-    end
-    
-    respond_to do |format|
-      params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
-      format.js { render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => Document.find(params[:document_id])})}
-    end
-    
+    end    
   end
 
   # PUT /customerss/1
@@ -202,6 +203,7 @@ class CustomersController < ApplicationController
         unless @document_objects.nil?
           @document_objects.size.times do |i|
             unless @document_objects[i].valid?
+              
               @error = true
             end
           end
