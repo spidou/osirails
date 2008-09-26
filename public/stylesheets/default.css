@@ -875,25 +875,25 @@ div.fieldWithErrors {
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
 	margin:10px;
-	width:450px;
+	width:530px;
 }
-
 
 #errorExplanation ul li,
 .errorExplanation ul li {
-	position:relative;
-	bottom:2px;
+	//position:relative;
+	//bottom:2px;
 	background: url("/images/warning_14x14.png") no-repeat;
 	list-style-type:none;
-	text-indent:15px;
-	margin:3px 3px 10px 3px;
-	color:#EA7805;	
+	text-indent:21px;
+	margin:3px 3px 7px 0px;
+	color:#EA7805;
 }
 
 #errorExplanation ul,
 .errorExplanation ul {
-	width:380px;
-	text-align:justify;
+  //width:380px;
+	//text-align:justify;
+  padding-left: 30px;
 }
 
 
@@ -907,6 +907,12 @@ div.fieldWithErrors {
 	padding-left:5px;
 	padding-right:5px;
 	overflow:hidden;
+  text-align:center;
+}
+
+#errorExplanation p,
+.errorExplanation p {
+  padding-left: 0px;
 }
 
 /*/////////////////////////////
