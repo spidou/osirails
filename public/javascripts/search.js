@@ -140,4 +140,21 @@ function disable_blank(select)
 {
   select.options[0].disabled = true; 
 }
+
+function collection_display(array,attribute)
+{ 
+  text = attribute + " : \n\n"
+  for(i=0;i<array.length;i++)
+  {
+    if(array.length==1 && array[0]=="")
+    {
+      text = "Aucun(e)s " + attribute ;
+    }
+    else
+    {
+      text +=". " + array[i] + "\n"
+    }
+  }
+  return alert(text);
+}
       

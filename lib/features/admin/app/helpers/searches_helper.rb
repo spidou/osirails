@@ -26,6 +26,8 @@ module SearchesHelper
     return html    
   end
   
+  # methods to get the attribute recursively and to display it 
+  # into otions that are under optgoups to respect a hierarchy
   def get_attributes_recursively(attributes,parent)
     if attributes.size==1 and attributes.values[0].class=={}.class 
       html = ""
@@ -52,17 +54,29 @@ module SearchesHelper
     return html
   end
   
-  
+  # method to generate result array's rows 
   def generate_rows(objects,columns)
     html = ""
     objects.each do |object|
       html+="<tr>"
-      puts columns.inspect
       columns.each do |column|
         result = object
         column.each do |attribute|
+          # if the attribute return an array the tab will show a link (that will display an alert prompt to see the collection )
           if result.class == Array
-            html += "<td>" + link_to("voir",object) + "</td>"
+          
+            ### generate the tab to pass 
+            # as arg into collection_display method
+            tab = "['"
+            puts result.inspect + "|" + attribute
+            result.each do |element|
+              tab == "['" ? sep = "" : sep = "','"
+              tab << sep + element.send(attribute).to_s 
+            end
+            tab += "']" 
+            ############################
+            
+            html += "<td onclick=\"return collection_display(#{tab},'#{attribute}');\"> <a >voir</a></td>"
             result = ""
           else
             result = result.send(attribute) unless result.blank?
@@ -76,22 +90,6 @@ module SearchesHelper
     return html 
   end
   
-  def nested_column(row,column)
-    e = row.send(column.keys[0])
-    generate_columns_contents(column.values[0]).each do |attribute|
-      e = e.send(attribute)
-    end
-    return e
-  end
-  
-  def generate_columns_contents(column)
-    html=[column.keys[0]]
-    if column.values[0].class
-      html << generate_columns_contents(column.values[0]) 
-    else
-      html << column.values[0]
-    end
-    return html
-  end
+
   
 end

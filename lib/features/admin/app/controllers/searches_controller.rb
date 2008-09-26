@@ -50,6 +50,7 @@ class SearchesController < ApplicationController
         @columns.each_with_index do |column,index|
           path = Search.get_attribute_hierarchy(hash,column[1],column[0])
           # modify the last value to pick out the "_"
+          puts path.inspect
           path[path.index(path.last)] = column[1]
           @columns[index] = path
         end
