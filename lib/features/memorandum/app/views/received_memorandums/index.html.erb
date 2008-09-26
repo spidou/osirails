@@ -1,4 +1,4 @@
-<% unless current_user.employee.nil? %>
+<% unless current_user.employee.nil? or !Memorandum.can_list?(current_user)%>
 <div class='frame'>
 <table>
   <thead>

@@ -22,9 +22,16 @@ module ServicesHelper
   end
   
   # This method test permission for add_button
-  def show_add_button
+  def show_add_button(service = 'none')
     if controller.can_add?(current_user)
-      link_to("Nouveau service", :action => "new")
+      if service == 'none'
+        add_button = []
+        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
+        add_button << link_to("<img src='/images/add_16x16.png' title='Ajouter' alt='Ajouter' /> Nouveau service", :action => "new")
+        add_button << "</li></ul>"
+      else
+        link_to("<img src='/images/add_16x16.png' title='Ajouter' alt='title' />" , new_service_path(:service_id => service.id))
+      end
     end
   end
   
@@ -43,7 +50,7 @@ module ServicesHelper
       delete_button = show_delete_button(service)
       show_button = show_view_button(service)
       edit_button = show_edit_button(service)
-      list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{show_button} #{edit_button}#{delete_button}</span></li>"
+      list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{show_button} #{show_add_button(service)} #{edit_button}#{delete_button}</span></li>"
       if service.children.size > 0
         list << "<ul>"
         get_children_services(service.children,list)

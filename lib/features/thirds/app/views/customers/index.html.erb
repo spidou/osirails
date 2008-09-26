@@ -1,3 +1,7 @@
+<% content_for :secondary_menu do %>
+  <%= show_add_button %>
+<% end %>
+
 <h1> Liste des clients </h1>
 
 <div class="frame">
@@ -16,21 +20,12 @@
           <td><%= customer.activity_sector.name unless  customer.activity_sector.nil?%></td>
           <td><%= customer.note %></td>
           <td>
-            <% if controller.can_view?(current_user) and Customer.can_view?(current_user) %>
-                <%= link_to( "<img src=\"/images/view_16x16.png\" title=\"Détails\" alt=\"Détails\" />", customer) %>
-            <% end %>
-            <% if controller.can_edit?(current_user) and Customer.can_edit?(current_user) %>
-                <%= link_to("<img src=\"/images/edit_16x16.png\" title=\"Modifier\" alt=\"Modifier\" />", edit_customer_path(customer)) %>
-            <% end %>
-            <% if controller.can_delete?(current_user) and Customer.can_delete?(current_user) %>
-                <%= link_to("<img src=\"/images/delete_16x16.png\" title=\"Modifier\" alt=\"Supprimer\" />", customer, {:method => :delete, :confirm => 'Etes vous sûr ?'}) %>
-            <% end %>
+            <%= show_view_button(customer) %> 
+            <%= show_edit_button(customer) %>
+            <%= show_delete_button(customer) %>
           </td>
         </tr>
     <%end%>
   <%end%>
   </table>
-  <% if controller.can_add?(current_user) and Customer.can_add?(current_user) %>
-    <%= link_to "<img src=\"/images/add_24x24.png\" title=\"Ajouter\" alt=\"Ajouter\" />", new_customer_path %>
-  <% end %>
 </div>

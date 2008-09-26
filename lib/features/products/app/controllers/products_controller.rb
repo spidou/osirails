@@ -2,6 +2,7 @@ class ProductsController < ApplicationController
   
   # GET /products
   def index
+    puts "passe ici ?"
     if params[:product_reference_id].nil?
       @products = Product.paginate(:page => params[:page], :per_page => Product::PRODUCTS_PER_PAGE)
     else

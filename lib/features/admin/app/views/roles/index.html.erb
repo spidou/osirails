@@ -1,3 +1,7 @@
+<% content_for :secondary_menu do %>
+  <%= show_add_button %>
+<% end %>
+
 <h1>Liste des  r&ocirc;les</h1>
 
 <div class="frame">
@@ -12,15 +16,9 @@
       <tr>
         <td><%=h role.name %></td>
         <td title="<%=h role.description %>"><%=preview(role.description,30) %></td>
-        <td><%= link_to 'D&eacute;tails', role %> &#124;
-            <%= link_to 'Modifier', edit_role_path(role) %> &#124;
-            <%= link_to 'Supprimer', role, :confirm => 'Etes vous sûr?', :method => :delete %>
+        <td><%= show_view_button(role) %> <%= show_edit_button(role) %> <%= show_delete_button(role) %>
         </td>
       </tr>
     <% end %>
   </table>
-
-  <br />
-
-  <%= link_to 'Ajouter', new_role_path %>
 </div>

@@ -20,6 +20,7 @@ class ProductReferencesController < ApplicationController
   
   # GET /product_reference/1
   def show
+  puts "je suis ici"
     @reference = ProductReference.find(params[:id])
     respond_to do |format|
       format.html

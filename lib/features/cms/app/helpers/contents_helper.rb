@@ -16,7 +16,7 @@ module ContentsHelper
   def show_add_button
     if controller.can_add?(current_user) and Content.can_add?(current_user)
       add_button = []
-      add_button << "<h1><span class='gray_color'>Action</span></h1><ul><li>"
+      add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
       add_button << link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Ajouter un contenu", new_content_path)
       return add_button << "</li></ul>"
     end
@@ -37,7 +37,7 @@ module ContentsHelper
   
   # This method permit to test permission for delete_button
   def show_delete_button(content)
-    if controller.can_edit?(current_user) and Content.can_edit?(current_user)
+    if controller.can_delete?(current_user) and Content.can_delete?(current_user)
       link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), content, {:method => :delete, :confirm => 'Etes vous s&ucirc;r ?'})
     end
   end

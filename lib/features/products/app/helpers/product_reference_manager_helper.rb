@@ -2,12 +2,23 @@ module ProductReferenceManagerHelper
   
   # This method permit to show or hide action menu
   def show_action_menu(type)
-    actions = []
-    actions << "<h1><span class='gray_color'>Action</span></h1>"
-    actions << "<ul>"
-    actions << "<li>#{show_add_link_for_product_reference_category}</li>"
-    actions << "<li>#{type != "show_all" ? link_to("Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("Affich&eacute; Actifs", :action => "index")}</li>"
-    actions << "</ul>"
+    if (controller.can_add?(current_user) and (ProductReferenceCategory.can_add?(current_user) or ProductReference.can_add?(current_user))) or controller.can_view?(current_user)
+      actions = []
+      actions << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
+      actions << "<ul>"
+      if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
+        actions << "<li>#{show_add_link_for_product_reference_category}</li>"
+      end
+      
+      if controller.can_add?(current_user) and ProductReference.can_add?(current_user)
+        actions << "<li>"+link_to("<img src='/images/reference_16x16.png' alt='Ajouter une r&eacute;f&eacute;rence' title='Ajouter une r&eacute;f&eacute;rence' /> Ajouter une r&eacute;f&eacute;rence", new_product_reference_path )+"</li>"
+      end
+      
+      if controller.can_view?(current_user)
+        actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Affich&eacute; Actifs", :action => "index")}</li>"
+      end
+      actions << "</ul>"
+    end
   end
   
   # This method permit to make a counter for category
@@ -98,7 +109,7 @@ module ProductReferenceManagerHelper
   
   # display (or not) the add link for product reference
   def show_add_link_for_product_reference_category
-    link_to('Ajouter une cat&eacute;gorie', new_product_reference_category_path ) if ProductReferenceCategory.can_add?(current_user)
+    link_to("<img src='/images/category_16x16.png' alt='Ajouter une cat&eacute;gorie' title='Ajouter une cat&eacute;gorie' /> Ajouter une cat&eacute;gorie", new_product_reference_category_path ) if ProductReferenceCategory.can_add?(current_user)
   end
   
   # display (or not) the add button for product reference category

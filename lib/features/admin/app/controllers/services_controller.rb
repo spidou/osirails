@@ -7,7 +7,7 @@ class ServicesController < ApplicationController
   
   # GET /services/new
   def new
-    @service = Service.new
+    @service = Service.new(:service_parent_id => params[:service_id])
     @services = Service.get_structured_services
     @options = @services.empty? ? {:prompt => "-- Racine --"} : {}
   end

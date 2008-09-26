@@ -1,0 +1,7 @@
+
+--Cette ligne, et les suivantes ci-dessous, seront ignorées--
+
+M    lib/features/memorandum/app/views/sended_memorandums/index.html.erb
+M    lib/features/memorandum/app/views/received_memorandums/index.html.erb
+M    lib/features/memorandum/overrides.rb
+M    lib/features/memorandum/init.rb

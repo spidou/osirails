@@ -26,10 +26,10 @@ module CommoditiesManagerHelper
   def show_action_menu(type)
     actions = []
     if controller.can_add?(current_user) and (CommodityCategory.can_add?(current_user) or Commodity.can_add?(current_user))
-      actions << "<h1><span class='gray_color'>Actions</span></h1><ul>"
+      actions << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul>"
       actions << "<li>#{link_to("<img alt='Nouvelle cat&eacute;gorie' src='/images/add_16x16.png?1220437164' title='Nouvelle cat&eacute;gorie' /> Nouvelle cat&eacute;gorie", new_commodity_category_path)}</li>" if CommodityCategory.can_add?(current_user)
       actions << "<li>#{link_to("<img alt='Nouvelle mati&egrave;re premi&egrave;re' src='/images/add_16x16.png?1220437164' title='Nouvelle mati&egrave;re premi&egrave;re' /> Nouvelle mati&egrave;re premi&egrave;re", new_commodity_path(:id => -1))}</li>" if Commodity.can_add?(current_user)
-      actions << "<li>#{type != "show_all" ? link_to("Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("Affich&eacute; Actifs", :action => "index")}</li>"
+      actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("Affich&eacute; Actifs", :action => "index")}</li>"
       actions << "</ul>"
     end
   end
