@@ -9,7 +9,7 @@ class MenusController < ApplicationController
   
   # GET /menus/new
   def new
-    @menu = Menu.new
+    @menu = Menu.new(:parent_id => params[:parent_menu_id])
     # get_structured_menus permit to make a indent for menu's list
     @menus = Menu.get_structured_menus
   end

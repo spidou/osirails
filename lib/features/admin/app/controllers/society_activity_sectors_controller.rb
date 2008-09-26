@@ -3,10 +3,6 @@ class SocietyActivitySectorsController < ApplicationController
   # GET /society_activity_sectors
   def index
     @society_activity_sectors = SocietyActivitySector.activates
-    # Permissions
-    @add = self.can_add?(current_user)
-    @edit = self.can_edit?(current_user)
-    @delete = self.can_delete?(current_user)
   end
   
   # GET /society_activity_sectors/new

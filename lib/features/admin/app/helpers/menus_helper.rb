@@ -40,6 +40,20 @@ module MenusHelper
     end
   end
   
+  # This method permit to show or hide button for add menu
+  def show_add_button(menu = 'none')
+    if controller.can_add?(current_user)
+      if menu == 'none'
+        add_button = []
+        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
+        add_button << link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Ajouter un menu", new_menu_path)
+        return add_button << "</li></ul>"
+      else
+        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter un sous menu", :title => "Ajouter un sous menu"), new_menu_path(:parent_menu_id => menu.id))
+      end
+    end
+  end
+  
   # This method permit to have a menu on <ul> type.
   def show_structured_menus(menus)
     list = []
@@ -52,7 +66,7 @@ module MenusHelper
   # This method permit to make a tree for menus
   def get_children_menus(menus,list)
     menus.each do |menu|
-      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu)} #{show_down_button(menu)} #{show_edit_button(menu)} #{show_delete_button(menu)}</span></li>"
+      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu)} #{show_down_button(menu)} #{show_add_button(menu)} #{show_edit_button(menu)} #{show_delete_button(menu)}</span></li>"
       if menu.children.size > 0
         list << "<ul>"
         get_children_menus(menu.children,list)

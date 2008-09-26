@@ -1,3 +1,7 @@
+<% content_for :secondary_menu do %>
+  <%= show_add_button %>
+<% end %>
+
 <h1>Liste des comptes utilisateurs</h1>
 
 <div class="frame">
@@ -16,12 +20,10 @@
         <td><%= link_to user.username, user %></td>
         <td><%= user.enabled ? "Oui" : "Non" %></td>
         <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.strftime("%d/%m/%Y  [%Hh%M]") %></td>
-        <td><%= link_to 'D&eacute;tails', user %> &#124;
-                <%= link_to 'Modifier', edit_user_path(user) %>
+        <td><%= show_view_button(user) %> <%= show_edit_button(user) %>
         </td>
       </tr>
     <% end %>
   </table>
 
-  <%= link_to 'Ajouter', new_user_path%>
 </div>

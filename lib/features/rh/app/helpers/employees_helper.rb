@@ -205,6 +205,29 @@ module EmployeesHelper
     return html 
   end
   
+  # This method permit to show or hide content of secondary menu
+  def show_content_secondary_menu(show_all)
+    if ( controller.can_view?(current_user) and Employee.can_view?(current_user) ) or ( controller.can_add?(current_user) and Employee.can_add?(current_user))
+      contents = []
+      contents << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
+      contents << "<ul>"
+      
+      if controller.can_add?(current_user) and Employee.can_add?(current_user)
+        contents << "<li>"+link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Ajouter un employ&eacute;", new_employee_path)+"</li>"
+      end
+      
+      if controller.can_view?(current_user) and Employee.can_view?(current_user)
+          if show_all == false
+            contents << "<li>"+link_to('Voir tous les employ&eacute;s', :controller => 'employees', :action => 'index', :all_employees => true)+"</li>"
+          else
+            contents << "<li>"+link_to('Voir tous les employ&eacute;s actifs', :controller => 'employees', :action => 'index', :all_employees => false)+"</li>"
+          end
+      end
+      
+      contents << "</ul>"
+    end
+  end
+  
   #########################################################################################
   
   # Method to verify if the params[:employee] and his attributes are null

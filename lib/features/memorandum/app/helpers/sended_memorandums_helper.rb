@@ -18,9 +18,9 @@ module SendedMemorandumsHelper
     add_button = []
     unless current_user.employee_id.nil?
       if Memorandum.can_add?(current_user) and controller.can_add?(current_user)
-        add_button << "<h1><span class='gray_color'>Action</span></h1>"
+        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
         add_button << "<ul>"
-        add_button << "<li>#{link_to('Nouvelle note de service', new_sended_memorandum_path)}</li>"
+        add_button << "<li>#{link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Nouvelle note de service", new_sended_memorandum_path)}</li>"
         add_button << "</ul>"
         end
     end
