@@ -52,12 +52,15 @@ class AccountController < ApplicationController
   end
 
   def lost_password
-    if !params[:username].nil?
-      if User.find_by_username(params[:username])
+    #TODO faire un anti-flood également pour le lost_password!
+    if request.post?
+      if !params[:username].empty? and (user = User.find_by_username(params[:username])) and user.username != "admin"
         AdminMailer.deliver_notice_admin_lost_password(params[:username])
         AdminMailer.deliver_notice_user_lost_password(params[:username])
         flash[:notice] = "L'administrateur a &eacute;t&eacute; pr&eacute;venu que vous voulez modifier votre mot de passe. Merci de patienter."
         redirect_to login_path
+      else
+        flash.now[:error] = "Nom d'utilisateur inconnu."
       end
     end
   end

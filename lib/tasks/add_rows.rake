@@ -192,8 +192,8 @@ namespace :osirails do
       UnitMeasure.create :name => "Litre", :symbol => "l"
       
       # default establishment types
-      EstablishmentType.create :name => "Magasin"
-      EstablishmentType.create :name => "Station service"
+      magasin = EstablishmentType.create :name => "Magasin"
+      station = EstablishmentType.create :name => "Station service"
       
       # default suppliers
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
@@ -201,9 +201,15 @@ namespace :osirails do
       supplier.iban = iban
       supplier.save
       
-      # default customers
-      Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
+      # default customers and establishements
+      customer = Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
         :payment_method_id => virement.id, :payment_time_limit_id => comptant.id
+      customer.establishments << establishment1 = Establishment.create(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      customer.establishments << establishment2 = Establishment.create(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      customer.establishments << establishment3 = Establishment.create(:name => "Super Etablissement", :establishment_type_id => station.id)
+      establishment1.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
+      establishment2.address = Address.create(:address1 => "2 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
+      establishment3.address = Address.create(:address1 => "3 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
       
       # default commodity categories
       metal = CommodityCategory.create :name => "Metal"
@@ -320,7 +326,7 @@ namespace :osirails do
       number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
       number2 = Number.create :number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id
       john.numbers << [number1,number2]
-      john.address = Address.create :address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400"
+      john.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       john.save
       john.iban = iban
       john.services << Service.first
@@ -376,7 +382,7 @@ namespace :osirails do
     task :depopulate => :environment do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
+        UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
         SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
         OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum].each do |model|
         

@@ -1,13 +1,16 @@
 ## YAML Template.
 
+admin:
+  username: admin
+  password: <%= Digest::SHA1.hexdigest("admin") %>
+  enabled: true
+  
 one:
-  id: 1
   username: user_activated
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: true
 
 two:
-  id: 2
   username: user_not_activated
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: false
