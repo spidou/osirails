@@ -835,28 +835,28 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
-.fieldWithErrors {
+.frame .fieldWithErrors {
 //	font-weight:bold;
 }
 
-.fieldWithErrors input,
-.fieldWithErrors select {
+.frame .fieldWithErrors input,
+.frame .fieldWithErrors select {
 	border:solid 2px #B0383D !important;
 	color:#B0383D;
 	margin-left: 10px;
 	vertical-align:top;
 }
 
-.fieldWithErrors label:after {
+.frame .fieldWithErrors label:after {
 //	content: " *";
 //	color:#B0383D;
 }
 
-div.fieldWithErrors {
+.frame div.fieldWithErrors {
 	display:inline;
 }
 
-.fieldWithErrors label {
+.frame .fieldWithErrors label {
 	color:#B0383D;
 	margin-left:20px;
 	text-align:right;
@@ -871,15 +871,15 @@ div.fieldWithErrors {
 	width:100%;
 }
 */
-#errorExplanation {
+.frame #errorExplanation {
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
 	margin:10px;
 	width:530px;
 }
 
-#errorExplanation ul li,
-.errorExplanation ul li {
+.frame #errorExplanation ul li,
+.frame .errorExplanation ul li {
 	//position:relative;
 	//bottom:2px;
 	background: url("/images/warning_14x14.png") no-repeat;
@@ -889,16 +889,16 @@ div.fieldWithErrors {
 	color:#EA7805;
 }
 
-#errorExplanation ul,
-.errorExplanation ul {
+.frame #errorExplanation ul,
+.frame .errorExplanation ul {
   //width:380px;
 	//text-align:justify;
   padding-left: 30px;
 }
 
 
-#errorExplanation h2,
-.errorExplanation h2 {
+.frame #errorExplanation h2,
+.frame .errorExplanation h2 {
 	border:none;
 	color:#B0383D;
 	text-align:left;
@@ -910,8 +910,8 @@ div.fieldWithErrors {
   text-align:center;
 }
 
-#errorExplanation p,
-.errorExplanation p {
+.frame #errorExplanation p,
+.frame .errorExplanation p {
   padding-left: 0px;
 }
 
