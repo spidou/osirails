@@ -95,7 +95,7 @@
 <% end %>
   <%= link_to 'Retour', :action => 'index' %>
   
-    <% @customer.class_documents.each_pair do |type, documents|%>
+<% @customer.class_documents.each_pair do |type, documents|%>
   <% documents.each do |document|%>
     <%= osibox_init :partial => "documents/edit_partial", :id => document.id,  :locals => {:document => document}, :width => "1000px", :height => "1000px" %>
   <% end %>
