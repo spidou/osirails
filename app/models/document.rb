@@ -61,6 +61,16 @@ class Document < ActiveRecord::Base
   def owner_class
     self.has_document.class.name.downcase
   end
+  ## Return file of document
+  def get_file
+    if self.is_new
+      return file
+    else
+      path = "documents/" + self.path +  self.id.to_s + "." + self.extension
+      return File.open((path), "r")
+    end
+    return false
+  end
   
   ## Create thumbnails
   def create_thumbnails
@@ -75,35 +85,38 @@ class Document < ActiveRecord::Base
   
   ## Return document path
   def path
-#    unless self.class == OrdersSteps
-      return self.owner_class + "/" + self.file_type_id.to_s + "/"
-#    else
-#      return "order/" + self.file_type_id.to_s + "/"
-#    end
+    #    unless self.class == OrdersSteps
+    return self.owner_class + "/" + self.file_type_id.to_s + "/"
+    #    else
+    #      return "order/" + self.file_type_id.to_s + "/"
+    #    end
   end
   
   ## Override new method
   def self.new(document = nil)
-    unless document[:owner].nil?
-      
-      ## Store file extension
-      document_extension = document[:datafile].original_filename.split(".").last unless document[:datafile].blank?
-      document_extension = File.mime_type?(File.open(document[:datafile].path, "r")) unless document[:datafile].blank?
+    unless document.nil?
+      unless document[:owner].nil?      
+        ## Store file extension
+        document_extension = document[:datafile].original_filename.split(".").last unless document[:datafile].blank?
+        document_extension = File.mime_type?(File.open(document[:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s unless document[:datafile].blank?
     
-      ## affect document_name with original document name if associated textfield is undefined 
-      document[:name].blank? ? document_name = ((a = document[:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:datafile].blank?) : document_name = document[:name]
+        ## affect document_name with original document name if associated textfield is undefined 
+        document[:name].blank? ? document_name = ((a = document[:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:datafile].blank?) : document_name = document[:name]
     
-      @document =super(
-        :name => document_name , 
-        :description => document[:description], 
-        :extension => document_extension)
-      @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
-      @document.owner = document[:owner]
-      @document.file = document[:datafile] unless document[:datafile]. blank?
-      @document.is_new = true
-      return @document
+        @document =super(
+          :name => document_name , 
+          :description => document[:description], 
+          :extension => document_extension)
+        @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
+        @document.owner = document[:owner]
+        @document.file = document[:datafile] unless document[:datafile].blank?
+        @document.is_new = true
+        return @document
+      else
+        raise "Document require owner attribute. example : Document.new(:owner => Employee.last)"
+      end
     else
-      raise "Document require owner attribute. example : Document.new(:owner => Employee.last)"
+      return false
     end
   end
   
@@ -124,51 +137,57 @@ class Document < ActiveRecord::Base
   def update_attributes(document = nil)
     unless document.nil?
       unless document[:upload].nil?
-        ## Store tags list
-        tag_list = document.delete("tag_list").split(",")
+        unless document[:upload][:datafile].blank?
+          self.file = document[:upload][:datafile]
+          if self.valid?
+            ## Store tags list
+            tag_list = document.delete("tag_list").split(",")
         
-        ## Creation of document_version          
+            ## Creation of document_version          
+            path = "documents/" + self.path + "/" +  self.id.to_s + "/"
+            file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s, 
+              :directory => path, :file_type_id => self.file_type.id)
+            if file_response
+              @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)      
         
-        path = "documents/" + self.path + "/" +  self.id.to_s + "/"
-        file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s, 
-          :directory => path, :file_type_id => self.file_type.id)
-        if file_response
-          @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)      
-        
-          ## Add tag_list for document
-          self.tag_list = tag_list
+              ## Add tag_list for document
+              self.tag_list = tag_list
           
-          document.delete("upload")
-          self.document_versions << @document_version
-          @document_version.create_thumbnails(self.id)
-          super(document)
-          return true
-        end      
-      else
-        return false
-      end
-      unless file_response     
+              document.delete("upload")
+              self.document_versions << @document_version
+              @document_version.create_thumbnails(self.id)
+              super(document)
+              return self
+            end
+          else
+            return self
+          end
+        else
+          self.errors.add("Le fichier", "n'a pas été trouvé")
+          return self
+        end        
       else
         return false
       end
     else
-      super
+      super ## document.nil?
     end
   end
   
   ## Override valid? method
   def valid?
     unless self.file_type.nil?
-      unless self.file.nil?
-        if FileManager.valid_mime_type?(self.file, self.file_type.id)
-          return super     
-        else
-          ## If document mime_type is invalid for his file_type
-          self.errors.add("Le type", "du fichier ne correspond pas avec son extension")
-          return false
-        end
-      else
+      unless self.file
         self.errors.add("Le fichier", "n'a pas été trouvé")
+        return false
+      end
+      
+      if FileManager.valid_mime_type?(self.file, self.file_type.id)
+        return super     
+      else
+        ## If document mime_type is invalid for his file_type
+        self.errors.add("Le type", "du fichier ne correspond pas avec son extension")
+        return false
       end
     else
       ## If his file_type is undefine, it impossible to test if it's a valid document

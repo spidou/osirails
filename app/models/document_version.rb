@@ -1,6 +1,7 @@
 class DocumentVersion < ActiveRecord::Base
   
   include Permissible
+  validates_presence_of :name
   
   belongs_to :document
   
