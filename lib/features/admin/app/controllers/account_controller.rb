@@ -74,6 +74,7 @@ class AccountController < ApplicationController
   end
   
   def expired_password
+    redirect_to :action => 'logout' if (Time.now - current_user.last_activity) > 5.minutes
     flash.now[:error] = "Votre mot de passe est expir&eacute;. Merci d'en choisir un autre."
     return unless request.post?
     user = current_user
