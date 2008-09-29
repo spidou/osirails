@@ -1,6 +1,8 @@
-module StepInitialize ## Module that permit to create steps
+def step_initialize(path)
+  begin
+    require 'yaml'
+    yaml = YAML.load(File.open(path + '/config.yml'))
 
-  def self.initialize_step(yaml)
     name = yaml['name']
     steps  = yaml['steps']
     $step_array = []
@@ -45,6 +47,7 @@ module StepInitialize ## Module that permit to create steps
         end
       end
     end
-    
+  rescue ActiveRecord::StatementInvalid => e
+    puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   end
 end
