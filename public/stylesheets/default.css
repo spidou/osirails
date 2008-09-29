@@ -357,7 +357,7 @@ a.button_banner:hover span {
 #menu {
 	display:block;
 	width: 201px;
-	padding: 0 0 0px 0;	
+	padding:0;	
 	float: left;
 	background: #d9e4ff;
 	border: solid 1px #cecece;
@@ -1381,6 +1381,12 @@ div.tabs {
 	margin-top:0;
 }
 
+.frame.tabulation>h3 {
+	background:#FFD191;
+	color:white;
+	border:white solid 1px;
+}
+
 div.tabs ul {
 	padding: 0;
 	margin: 0;
@@ -1889,6 +1895,18 @@ object {
 
 .formated_content strong {
 	color:rgb(234,136,28);
+}
+
+table .new_memorandum {
+	color:rgb(234,136,28);
+}
+
+table .old_memorandum {
+	color:#aeaeae;
+}
+
+table .not_published_memorandum {
+	color:#B0383D;
 }
 
 /*/////////////////////////////////////////////////////
