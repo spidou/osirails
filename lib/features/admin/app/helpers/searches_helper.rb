@@ -87,13 +87,17 @@ module SearchesHelper
           end
         end
         result = "null" if result.nil?
-        html+="<td>#{result}</td>\n" unless result.blank?
+        
+        # get all criteria in an array
+        criteria = []
+        params[:criteria].each_value do |c|
+          criteria << c[:value]
+        end
+        
+        html+="<td>#{highlight(result, criteria.sort_by{ |c| c.size }.reverse)}</td>\n" unless result.blank?
       end
       html+="</tr>" 
     end
     return html 
   end
-  
-
-  
 end

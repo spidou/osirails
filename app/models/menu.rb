@@ -17,8 +17,7 @@ class Menu < ActiveRecord::Base
   
   # Named scopes
   named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
-  #FIXME toujours afficher les menus qui n'ont pas de name
-  named_scope :activated, :order => "position", :include => [:feature], :conditions => [ 'features.activated = ? or menus.name = ?', true, nil]
+  named_scope :activated, :order => "position", :include => [:feature], :conditions => ['features.activated or menus.name IS NULL', nil]
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
@@ -47,7 +46,7 @@ class Menu < ActiveRecord::Base
     menu.ancestors.size > 0 ? ( menu.ancestors.size == 1 ? menu.parent_menu : last_ancestor(menu.parent_menu) ) : menu
   end
   
-  def insert_at(position)  
+  def insert_at(position = 0)
     super(position_in_bounds(position))
   end
   
