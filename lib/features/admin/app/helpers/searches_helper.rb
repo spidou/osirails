@@ -20,7 +20,11 @@ module SearchesHelper
     #  html += get_attributes_recursively(attributes,feature) if feature.constantize.can_view?(current_user)
     #end
     attributes = feature.search[model]['base'].fusion(feature.search[model]['other'])
-    html += get_attributes_recursively(attributes,model) if model.constantize.can_view?(current_user)
+    if model.constantize.respond_to?('can_view?')
+      html += get_attributes_recursively(attributes,model) if model.constantize.can_view?(current_user)
+    else
+      html += get_attributes_recursively(attributes,model)
+    end
     
     html+="</select name=\"criteria[#{id}][attribute]\" >"
     return html    
