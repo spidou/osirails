@@ -2,6 +2,28 @@ class Search
 
   include Permissible
   
+  # method to group sub attributes
+  
+  def self.group(array)
+  grouped = []
+  tmp = {}
+  array.each do |elmnt|
+    if elmnt.size==1
+      grouped << elmnt 
+    else
+      tmp[elmnt[0]] = [] if tmp[elmnt[0]].nil?
+      tmp[elmnt[0]] << elmnt 
+    end 
+  end
+  tmp.each_pair do |key,value|
+    value.each do |elmnt|
+    grouped << elmnt
+    end
+  end
+  return grouped
+end
+  
+  
   # method to generate an array containing the result array headers ( in the view )
   
   def self.search_result_headers(hash, parent)
@@ -20,18 +42,18 @@ class Search
   # hash = an array containing all attributes
   # attribute = the attribute that you want the hierarchy  
  
-  def self.get_attribute_hierarchy(hash,attribute,parent)
+  def self.get_attribute_hierarchy(hash,attribute,parent,model)
     hash.each_pair do |key,element|
       tab = []
       if element.class == Hash
-        key.camelize == key ? sub_model = key : sub_model = parent 
-        key.camelize == key ? tab =get_attribute_hierarchy(element,attribute,parent) : tab = get_attribute_hierarchy(element,attribute,parent).fusion([key])
-  
+        tab = get_attribute_hierarchy(element,attribute,parent,key)
+        tab = tab.fusion([key]) unless key.camelize == key
+
   # replace the identificator '_' by '#' to pass the recursive return sequence
  
         tab[tab.index(tab.last)] = "#"+attribute if tab.include?("_"+attribute) and parent == key
         return tab if tab.include?("#"+attribute)
-      elsif key==attribute 
+      elsif key==attribute and parent==model
         return ["_"+key]  
       end
     end
@@ -41,12 +63,23 @@ class Search
   ####################################################
   ### methods to get the :include hash in the find ###
   
-  def self.get_include_hash(hash)
+  #def self.get_include_hash(hash)
+  #  result_values = []
+  #  hash.each_pair do |model,categories|
+  #    categories.each_value do |attributes|
+  #      result_values = sub_resources(attributes) unless sub_resources(attributes).nil?
+  #    end
+  #  end
+  #  return result_values
+  #end
+  
+  def self.get_include_hash(categories)
     result_values = []
-    hash.each_pair do |model,categories|
-      categories.each_value do |attributes|
+    categories.each_value do |attributes|
+      if attributes.class == Hash
+      puts attributes.inspect
         result_values = sub_resources(attributes) unless sub_resources(attributes).nil?
-      end
+      end   
     end
     return result_values
   end
@@ -82,10 +115,39 @@ class Search
       else
         group = ""
       end  
-      criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
-      conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" unless criterion['attribute'].nil? or criterion['action'].nil?
-      conditions_array << format_value(criterion)
+      # criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
+      parent = criterion['parent'].tableize + "."
+      unless criterion['value'].nil?
+      
+        if criterion['value'].split(" ").size>1
+          conditions_array[0] += "("
+          tmp = {}
+          
+          criterion['value'].split(" ").each do |value|
+            # if the comparison sign is negative there's more results with 'and', that 'or'
+            if criterion['action'] == "not like" or criterion['action'] == "!="
+              tmp == {} ? tmp_group = "" : tmp_group = " and "
+            else
+              tmp == {} ? tmp_group = "" : tmp_group = " or "
+            end
+            conditions_array[0] += tmp_group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" unless criterion['attribute'].nil? or criterion['action'].nil?
+            tmp['attribute'] = criterion['attribute']
+            tmp['value'] = value
+            conditions_array << format_value(tmp)
+          end
+          
+          conditions_array[0]+= ")"
+        else
+          conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" unless criterion['attribute'].nil? or criterion['action'].nil?
+          conditions_array << format_value(criterion)
+        end  
+        
+      else
+        conditions_array[0] += group + parent + criterion['attribute'].split(",")[0] + " " + criterion['action'] + "?" unless criterion['attribute'].nil? or criterion['action'].nil?
+        conditions_array << format_value(criterion)    
+      end
     end 
+
     return conditions_array
   end
   
@@ -107,8 +169,10 @@ class Search
         result = "#{y}/#{m}/#{d}"
       when 'number'
         result =params['value'].to_d unless params['value'].nil?
+      when 'boolean'
+        result = params['value']  
       else
-        result = "%" + params['value'] + "%" unless params['value'].nil?
+        result = "%" + params['value'].strip + "%" unless params['value'].nil?
     end
     return result
   end

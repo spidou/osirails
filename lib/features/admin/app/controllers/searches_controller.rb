@@ -45,16 +45,18 @@ class SearchesController < ApplicationController
         params[:criteria].each_value do |criterion|
           @columns << [criterion['parent'], criterion['attribute'].split(",")[0]] unless @columns.include?([criterion['parent'],criterion['attribute'].split(",")[0]]) or criterion['attribute'].split(",")[0].blank?
         end
-      
+
         # get attribute url
         @columns.each_with_index do |column,index|
-          path = Search.get_attribute_hierarchy(hash,column[1],column[0])
-          # modify the last value to pick out the "_"
-          puts path.inspect
+          path = Search.get_attribute_hierarchy(hash,column[1],column[0],model)
+        # modify the last value to pick out the "_"
           path[path.index(path.last)] = column[1]
           @columns[index] = path
         end
-        @rows = model.constantize.find(:all, :include => Search.get_include_hash(section.search), :conditions => Search.get_conditions_array(params[:criteria],model,params[:search_type]) )
+        # group sub attributes
+        @columns = Search.group(@columns)
+        
+        @rows = model.constantize.find(:all, :include => Search.get_include_hash(section.search[model]), :conditions => Search.get_conditions_array(params[:criteria],model,params[:search_type]) )
       
       end
     end

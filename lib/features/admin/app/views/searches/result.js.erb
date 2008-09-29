@@ -2,9 +2,7 @@
 <% if @rows.size>0%>
 <table>
   <tr>
-  <% @columns.each do |column| %>
-    <th><%= column.last %></th>
-  <% end %>
+    <%= result_table_headers(@columns) %>
   </tr>
   <%= generate_rows(@rows,@columns) %>
 <% else %>

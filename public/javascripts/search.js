@@ -31,6 +31,14 @@ function action_choose(select,line,month)
                                                             "</select>";
       inputType(select,line,month);
       break;
+    case "boolean" :
+      document.getElementById('actions' + line).innerHTML = ""
+      document.getElementById('actions' + line).innerHTML = "<select name=\"criteria[" + line + "][action]\">" +
+                                                              "<option value=\"=\"> est</option>"+
+                                                              "<option value=\"!=\"> n&apos;est pas</option>"+
+                                                            "</select>";
+      inputType(select,line,month);
+      break;  
     case "string" :
       document.getElementById('actions' + line).innerHTML = ""
       document.getElementById('actions' + line).innerHTML = "<select name=\"criteria[" + line + "][action]\">" +
@@ -50,7 +58,13 @@ function inputType(select,line,month)
   {
     case "string" :
       document.getElementById('input_type' + line).innerHTML = "<input type=\"text\" name=\"criteria[" + line + "][value]\" />";                                             
-      break;                                                
+      break;
+    case "boolean" :
+      document.getElementById('input_type' + line).innerHTML = "<select name=\"criteria[" + line + "][value]\">" +
+                                                                "<option value=\"1\">Vrai</option>"
+                                                                "<option value=\"0\">Faux</option>"
+                                                               "</select>";                                            
+      break;                                                  
     case "number" :
       document.getElementById('input_type' + line).innerHTML = "<input type=\"text\" name=\"criteria[" + line + "][value]\" id=\"number_input\" onkeyup=\"isNumber(this);\" />";
       break;
@@ -117,13 +131,17 @@ function getDateArray(days,months,years)
   return date_array 
 }
 
-function isNumber(elemnt)
+function isNumber(element)
 {
-  if (isFinite(elemnt.value) == 0 )
-	{
-		alert ("vous devez entrer des chiffres");
-		document.getElementById(elemnt.id).value ="";
+  elemnt = elment.split(" ")
+  for(i=0;i<elemnt.length;i++)
+  { 
+    if (isFinite(elemnt.value) == 0 )
+	  {
+		  alert ("vous devez entrer des chiffres");
+		  document.getElementById(elemnt.id).value ="";
 
+	  }
 	}
 }
 

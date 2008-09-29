@@ -91,13 +91,39 @@ module SearchesHelper
         # get all criteria in an array
         criteria = []
         params[:criteria].each_value do |c|
-          criteria << c[:value]
+          c[:value].nil? ? criteria << "#{c['date(3i)']}/#{c['date(2i)']}/#{c['date(1i)']}" : criteria << c[:value]
         end
-        
-        html+="<td>#{highlight(result, criteria.sort_by{ |c| c.size }.reverse)}</td>\n" unless result.blank?
+        # html+="<td>#{highlight(result, criteria.sort_by{ |c| c.size }.reverse)}</td>\n" unless result.blank?
+        html+="<td>#{result}</td>\n" unless result.blank?        
       end
       html+="</tr>" 
     end
     return html 
+  end
+  
+  # method to display the array '<th>' with hierarchy
+  def result_table_headers(columns)
+    tab = []
+    columns.each do |c|
+      tab << c.values_at(-2).first if c.size>1
+    end
+    # attributes
+    html = ""
+    columns.each do |column| 
+      if column.size==1
+      html += "<th rowspan='2' >#{column.last}</th>"
+      end
+    end
+    # sub attributes titles
+    tab.uniq.each do |title|
+      html += "<th colspan='#{tab.count(title)}'>#{title}</th>"
+    end
+    html+= "</tr><tr>"
+    # sub attributes
+    columns.each do |column|
+      html += "<th>#{column.last}</th>" if column.size>1 
+    end
+    
+    return html
   end
 end
