@@ -42,6 +42,14 @@ class Order < ActiveRecord::Base
   #  step_objects
   #end
 
+  def step
+    self.all_childrens.each do |child|
+      next if child.step.parent.nil?
+      return child.step if (child.in_progress? || child.unstarted?)
+    end
+    return nil
+  end
+
   # Return all steps of the order
   def steps
     order_type.sales_processes.collect { |sp| sp.step if sp.activated }

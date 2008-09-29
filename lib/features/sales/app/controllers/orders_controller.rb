@@ -29,7 +29,7 @@ class OrdersController < ApplicationController
   end
 
   def show
-#    redirect_to order_path(@order) + '/' + @order.step.name
+    redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase
   end
   
   def edit
