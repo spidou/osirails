@@ -1,0 +1,1393 @@
+/*	default.css------------------------------------------------------
+	----------	..::Par Oxydium::..
+
+Création : Juillet/Octobre 2008
+---------
+Description : feuille de style de la page d'index contenant la mise
+en forme du site (menus, en-têtes, pied de page...). design Osirails
+---------------------------------------------------------------------
+				..::Powered by Oxydium::..
+creation : July/October 2008
+---------
+Description: stylesheet of the index page containing the layout's site 
+(menus, headers, footers ...).
+--------------------------------------------------------------------*/
+/*
+div {
+	border: solid 1px black; 
+}
+*/										/*--------------------------------------*/
+html { 									/* Table of proportionality em => px	*/
+	font-size:100%; /*Equal to 16px*/	/* Initialization : 100% = 16px = 1em	*/
+}										/* So : 1.2em = 19.2px		=> 120%		*/
+										/* 		0.9em = 14.4px		=> 90%		*/
+html, body { 							/*		0.8em = 12.8px		=> 80%		*/
+	margin: 0;							/*--------------------------------------*/
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	font-family: helvetica, Arial, sans-serif;
+	cursor: default;
+	min-width: 1250px;
+}
+
+body {
+	font-size:0.8em;
+}
+
+#all_page { /*<==TO EXPAND THE CORE MENU*/
+	background:#DDD;
+	border-left:solid 1px white;
+}
+
+a, strong {
+}
+
+strong {
+}
+
+a:hover {
+}
+
+a>img {
+	border:none;
+}
+
+/*:::::::::TABLE:::::::::*/
+caption {
+}
+
+table {
+}
+
+table a {
+}
+
+table a:hover {
+}
+
+table th{
+}
+
+table td{
+}
+
+table img {
+}
+
+tr:hover > td{
+}
+
+tr:hover > td > a {
+}
+
+/*/////////////////////////////
+			TITLE
+/////////////////////////////*/
+
+h1 {
+}
+
+h2 {
+}
+
+h3 {
+}
+
+h6 {
+}
+
+/*/////////////END OF GENERICS TAGS////////////////////*/
+/*/////////////////////////////////////////////////////
+					BANNER
+////////////////////////////////////////////////////*/
+#banner {
+	width:auto;
+	height:75px;
+	border-bottom:solid 9px #71D800;
+}
+
+#logo {
+	background: url("/themes/osirails-green/images/banner_logo.jpg");
+	float: left;
+	width: 347px;
+	height: 75px;
+}
+
+#welcome_message {
+	position:absolute;
+	right:10px;
+	top:20px;
+	color:#71D800;
+	font-weight:lighter;
+}
+
+#background_banner {
+	background: url("/themes/osirails-green/images/banner_repeat-x.jpg");
+	width: auto;
+	height: 75px;
+	margin-left:347px;
+}
+
+/*/////////////////////////////////////////////////////
+				BANNER > BUTTONS
+////////////////////////////////////////////////////*/
+
+#block_button_banner {
+	float:right;
+	margin-top:55px;
+}
+
+#banner_datetime {
+	position:absolute;
+	top:50px;
+	left:347px;
+	color: #333;
+}
+a.button_banner {
+	text-decoration:none;
+	color:#444;
+	font-family: arial, verdana, sans-serif;
+	background: #CCC;
+	-moz-border-radius:7px 7px 0 0;
+	margin: 0 0 0 5px;
+	padding:5px 8px 2px 8px;
+	text-align:center;
+	font-size:1.2em;
+	text-transform:uppercase;
+}
+
+a:link.button_banner,
+a:visited.button_banner,
+a:active.button_banner {
+
+}
+
+a.button_banner span {
+
+}
+
+a.button_banner:hover {
+	color:black;
+	background: #71D900;
+}
+
+a.button_banner:hover span {
+
+}
+
+#button_on_banner {
+
+}
+
+/*/////////////////////////////////////////////////////
+					UNDER-BANNER
+////////////////////////////////////////////////////*/
+
+#under_banner {
+	background:#8EDE29;
+	color:white;
+	padding:5px;
+	height: auto;
+	margin:0;
+}
+
+#text_under_banner {
+	width:93%;
+	height:30px;
+	overflow:hidden;
+	overflow:hidden;
+	font-size:1.1em;
+}
+
+#block_button_under_banner {
+	width:auto;
+	position:absolute;
+	top:94px;
+	right:10px;
+}
+
+#previous,
+#previous:hover,
+#next,
+#next:hover {
+
+}
+
+#previous {
+	
+}
+
+#previous:hover {
+
+}
+
+#next {
+
+}
+
+#next:hover {
+
+}
+
+.number {
+	color:black;
+}
+
+.memorandum_date{
+
+}
+
+.memorandum_title {
+
+}
+
+#under_banner strong {
+
+}
+
+#not_employee_reference {
+
+}
+
+/*////////////////////////////////////////////////////////
+					BODY OF THE WEBSITE
+////////////////////////////////////////////////////////*/
+/*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
+					OF BANNERS							*/
+#block_body {
+
+}
+
+/*/////////////////////////////////////////////////////
+			BODY OF THE WEBSITE > CORE MENU
+////////////////////////////////////////////////////*/
+#menu {
+	display:block;
+	float:left;
+	background:#D5D5D5;
+	margin:0;
+	padding:0;
+	width:203px;
+
+}
+
+#menu ul {
+	margin:0;
+	padding:0;
+	display:block;
+	height:100%;
+}
+
+#menu ul li {
+	border-top:solid 1px white;
+	border-bottom:solid 1px #9C9C9C;
+	background: #DDD url("/themes/osirails-green/images/background_core_menu.jpg") repeat-x;
+
+}
+
+#menu ul li:hover {
+	background: #71D900 url("/themes/osirails-green/images/background_core_menu_hover.jpg") repeat-x;
+}
+
+#menu ul li.selected {
+
+}
+
+#menu ul li.selected a {
+
+}
+
+#menu ul li a {
+	display:block;
+	text-decoration:none;
+	color:#535353;
+	font-size:1.1em;
+//	border:solid 1px red;
+	padding:16px 10px 12px 30px;
+	line-height:13px;
+}
+
+#menu ul li a:hover {
+	color:black;
+}
+
+#menu ul li a:active {
+
+}
+
+/*/////////////////////////////////////////////////////
+			BODY OF THE WEBSITE > PAGE OF WEBSITE
+////////////////////////////////////////////////////*/
+#page {
+
+}
+
+/*/////////////////////////////////////////////////////////
+	BODY OF THE WEBSITE > PAGE OF WEBSITE > SECONDARY-MENU
+/////////////////////////////////////////////////////////*/
+#secondary_menu {
+	float:right;
+	margin-left:10px;
+	margin-top:10px;
+	margin-right:6px;
+	border: 1px solid green;
+	-moz-border-radius: 10px 0 0 10px;
+	background: lime;
+	width: 200px;
+	text-indent:0px;
+	font-size:0.8em;
+}
+
+.hidden_secondary_menu,
+.shown_secondary_menu {
+
+}
+
+.hidden_secondary_menu #status_background_secondary_menu,
+.shown_secondary_menu #status_background_secondary_menu {
+
+}
+
+.hidden_secondary_menu #status_background_secondary_menu:hover,
+.shown_secondary_menu #status_background_secondary_menu:hover {
+
+}
+
+.shown_secondary_menu span {
+
+}
+
+.hidden_secondary_menu span {
+
+}
+
+#shadow_secondary_menu {
+
+}
+
+#content_secondary_menu {
+
+}
+
+#content_secondary_menu h1 {
+
+}
+
+#content_secondary_menu h1>a {
+
+}
+
+#content_secondary_menu h1:first-child {
+
+}
+
+#search {
+
+}
+
+#content_secondary_menu ul {
+
+}
+
+#content_secondary_menu ul li {
+
+}
+
+#content_secondary_menu ul li a {
+
+}
+
+ul.center_list {
+
+}
+
+ul.center_list li {
+
+}
+
+.secondary_menu_statistic {
+
+}
+
+#content_secondary_menu a:hover {
+
+}
+
+#content_secondary_menu ul li a img {
+
+}
+
+#content_secondary_menu p {
+
+}
+
+#footer_secondary_menu { 
+
+}
+
+#secondary_menu input[type=text] {
+
+}
+
+#search_image {  /*quick_search*/
+
+}
+
+#input_search {
+
+}
+
+#input_search:focus {
+
+}
+
+.help {
+
+}
+
+.gray_color {
+
+}
+
+.blue_color {
+
+}
+
+#secondary_menu a.default-button {
+
+}
+
+/*////////////////////////////////////////////////////////////////////////////////////////*/
+/*::::::::::::::::::::::::::::::::DEFAULT BUTTONS:::::::::::::::::::::::::::::::::::::::::*/
+a.default-button {           
+                             
+}							 
+							 
+a.default-button span { 	 
+							 
+}							 
+							 
+a.default-button:hover { 	 
+							 
+}							 
+							 
+a.default-button:hover span {
+							 
+}	 						 
+/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+button.input-button { 			
+								
+}								
+								
+button.input-button span { 		
+	                            
+}								
+								
+button.input-button:hover { 	
+	
+}								
+								
+button.input-button:hover span {
+}								
+/*:::::::::::::::::::::::::::::::BUTTON PREVIOUS-NEXT:::::::::::::::::::::::::::::::::::::*/
+a.next-button,
+a.previous-button {
+
+}
+
+a.next-button span,
+a.previous-button span {
+
+}
+
+a.next-button span:after {
+	content:" >";
+}
+
+a.previous-button span:before {
+	content:"< ";
+}
+
+a.next-button:hover,
+a.previous-button:hover { 															 
+
+}
+
+a.next-button:hover span,
+a.previous-button:hover span {						
+
+}	 		
+
+/*//////////////////////////////////////////////////////////
+BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
+//////////////////////////////////////////////////////////*/
+#content_page {
+	font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+	margin-left:203px;
+	border:solid 1px white;
+	background:white;
+	
+}
+
+/*//////////////////////////////////////////////////////////////////
+CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
+//////////////////////////////////////////////////////////////////*/
+#horizontal_menu {
+	border:solid 1px red;
+	height:41px;
+	background:lime;
+}
+
+#horizontal_menu a {
+	vertical-align:middle;
+	border:solid 1px red;
+	margin:3px;
+	padding:6px;
+	position:relative;
+	top:10px;
+	text-decoration:none;
+}
+
+#horizontal_menu a span {
+
+}
+
+#menu_horizontal_first {
+
+}
+
+#horizontal_menu a:hover span {
+
+}
+
+#horizontal_menu a span.selected {
+
+}
+
+#empty {
+
+}
+
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\			::::::::INATIVE MESSAGE::::::::				  /!\
+/!\			::::::::[ERREUR/SIGNAL]::::::::				  /!\
+/!\/!\/!\/!\/!\/!\/!/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+
+/*/!\/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\/!\*/
+.flash_error {
+
+}
+
+/*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
+.flash_notice {
+
+}
+
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\:::::::CONFIG IN COMMON : ERROR & NOTICE:::::::/!\
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+.flash_container {
+
+}
+
+.flash_container ul {
+
+}
+
+.flash_container ul li {
+
+}
+
+.flash_container span span,
+.flash_container span span {
+
+}
+
+.flash_error,
+.flash_notice {
+
+}
+
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+.fieldWithErrors {
+
+}
+
+.fieldWithErrors input,
+.fieldWithErrors select {
+
+}
+
+.fieldWithErrors label:after {
+
+}
+
+div.fieldWithErrors {
+
+}
+
+.fieldWithErrors label {
+
+}
+
+#errorExplanation {
+
+}
+
+#errorExplanation ul li,
+.errorExplanation ul li {
+
+}
+
+#errorExplanation ul,
+.errorExplanation ul {
+
+}
+
+#errorExplanation h2,
+.errorExplanation h2 {
+
+}
+
+/*/////////////////////////////
+		FRAME & CONTENT
+/////////////////////////////*/
+
+table.presentation {
+
+}
+
+table.presentation a {
+
+}
+
+table.presentation a:hover {
+
+}
+
+table.presentation tr td{
+
+}
+
+td.left_cell {
+
+}
+
+td.right_cell {
+
+}
+
+table.presentation tr:hover > td{
+
+}
+
+/*::::::::::::TABLE "COMMODITY"::::::::::::*/
+
+table.commodity {
+
+}
+
+table.commodity th {
+
+}
+
+
+table.commodity td {
+
+} 
+
+table.commodity img[title="Enrouler"] + span,
+table.commodity img[title="Dérouler"] + span {
+	text-align:left;
+}
+
+.commodity tr.disable > td {
+
+}
+
+.commodity tr.enable > td {
+
+}
+
+.commodity td.sub_commodity_category {
+
+}
+
+.commodity td.commodity_category {
+
+}
+
+tr.current_inventory {
+
+}
+
+/*:::::::::TABLE WITHOUT STYLE:::::::::*/
+caption.no-style {
+
+}
+
+table.no-style {
+
+}
+
+table.no-style a {
+
+}
+
+table.no-style a:hover {
+
+}
+
+table.no-style th{
+
+}
+
+table.no-style td{
+
+}
+
+table.no-style tr:hover > td{
+
+}
+
+table.no-style tr:hover > td > a {
+
+}
+
+/*/////////////////////////////
+		IN_PLACE_EDITOR
+/////////////////////////////*/
+
+.inplaceeditor-form input {
+
+}
+
+/* SUBMIT BUTTON */
+.editor_ok_button {
+
+}
+
+/* a (LINKS) */
+.editor_cancel {
+
+}
+
+.editor_cancel span {
+
+}
+
+.frame {
+
+}
+
+.frame p {
+
+}
+
+/*/////////////////////////////
+			FORM
+/////////////////////////////*/
+/*///////////////////////*/
+/*// FIELDSET & LEGEND //*/
+.frame fieldset {
+
+}
+
+.frame fieldset legend {
+
+}
+
+.alignment {
+
+}
+
+.date_days {
+
+}
+
+.frame form p textarea {
+
+}
+
+.frame form p select {
+
+}
+
+.frame form p input:focus,
+.frame form p textarea:focus {
+	background: #f5c384;
+}
+
+/*LAYOUTS' FORM*/
+
+.frame.presentation_large label {
+
+}
+
+.frame.presentation_medium label {
+
+}
+
+.frame.presentation_small label {
+
+}
+
+.frame label {
+
+}
+
+.frame form p input[type=text],
+.frame form p input[type=password],
+.frame form p input[type=checkbox],
+.frame form p textarea {
+
+}
+
+.frame form p select {
+
+}
+
+.frame strong {
+
+}
+
+.scroll_checkboxes { 
+
+}
+
+.scroll_checkboxes p {
+
+}
+
+.scroll_checkboxes ul {
+
+}
+
+.scroll_checkboxes ul li {
+
+}
+
+fieldset.no-style {
+
+}
+
+fieldset.no-style legend {
+
+}
+
+/*/////////////////LIST:HIERARCHICAL/////////////////*/
+.hierarchic {
+
+}
+
+li.category_enable {
+
+}
+
+li.category_disable {
+
+}
+
+li.reference_enable {
+
+}
+
+li.reference_disable {
+
+}
+
+.hierarchic ul {
+
+}
+
+ul.parent {
+
+}
+
+ul.parent>li {
+
+}
+
+.hierarchic ul li {
+
+}
+
+.hierarchic ul li:hover {
+
+}
+
+.hierarchic ul li span{
+
+}
+
+.hierarchic ul li a {
+
+}
+
+.hierarchic ul li a:hover {
+
+}
+
+.hierarchic ul li a>img {
+
+}
+
+.hierarchic ul li span>img {
+
+}
+
+.hierarchic img {
+
+}
+
+/*/////////////////TABS/////////////////*/
+.frame.tabulation {
+
+}
+
+.frame.tabulation>h1 {
+
+}
+
+.frame.tabulation>h2,
+.frame.tabulation>form>h2 {
+
+}
+
+.frame.tabulation>form>h2 {
+
+}
+
+.frame.tabulation>h3 {
+
+}
+
+div.tabs ul {
+
+}
+
+div.tabs ul li {
+
+}
+
+div.tabs ul li.selected {
+
+}
+
+div.tabs ul li a {
+
+}
+
+div.tabs ul li a:hover {
+	
+}
+
+#catalog {
+
+}
+
+#catalog table {
+
+}
+
+#catalog h2 {
+
+}
+
+select.select_catalog {
+
+}
+
+select.catalog_3_columns {
+
+}
+
+/*/////////////////STEPS/////////////////*/
+.ring_terminated,
+.ring_in_progress,
+.ring_unstarted,
+.ring_uncomplete,
+.feet_finish,
+.feet_in_progress,
+.feet_disable,
+#technical_visit,
+#survey,
+#graphic_conception,
+#estimate,
+#sending_estimate,
+#validation {
+
+}
+
+.ring_terminated,
+.ring_in_progress,
+.ring_uncomplete,
+.ring_unstarted {
+	width:67px;
+	height:67px;
+	cursor:pointer;
+}
+
+.feet_finish,
+.feet_in_progress,
+.feet_disable,
+#technical_visit,
+#survey,
+#graphic_conception,
+#estimate,
+#sending_estimate,
+#validation {
+	width:48px;
+	height:48px;
+}
+
+.feet_finish,
+.feet_in_progress,
+.feet_disable {
+	position:relative;
+	bottom:15px;
+	padding:0 0px 0 20px;
+}
+
+.ring_uncomplete {
+	background-position:-201px -96px;
+}
+
+.ring_terminated {
+	background-position:-134px -96px;
+}
+
+.ring_in_progress {
+	background-position:-67px -96px;
+}
+
+.ring_unstarted {
+	background-position:0 -96px;
+}
+
+.feet_finish {
+	background-position:-288px -96px;
+}
+
+.feet_in_progress {
+	background-position:-288px -48px;
+}
+
+.feet_disable {
+	background-position:-288px 0;
+}
+
+#technical_visit {
+	background-position:0 -48px;
+}
+
+#survey {
+	background-position:-48px -48px;
+}
+
+#graphic_conception {
+	background-position:-96px -48px;
+}
+
+#estimate {
+	background-position:-144px -48px;
+}
+
+#sending_estimate {
+	background-position:-192px -48px;
+}
+	
+#validation {
+	background-position:-240px -48px;
+}
+
+#technical_visit:hover {
+	background-position:0 0;
+}
+
+#survey:hover {
+	background-position:-48px 0;
+}
+
+#graphic_conception:hover {
+	background-position:-96px 0;
+}
+
+#estimate:hover {
+	background-position:-144px 0;
+}
+
+#sending_estimate:hover {
+	background-position:-192px 0;
+}
+	
+#validation:hover {
+	background-position:-240px 0;
+}
+
+#steps span {
+	display:none;
+}
+
+#steps div {
+	display:inline-block;
+
+}
+
+#steps div.ring_terminated,
+#steps div.ring_in_progress,
+#steps div.ring_uncomplete,
+#steps div.ring_unstarted {
+	margin:10px 19px 0px -4px;
+}
+
+#technical_visit,
+#survey,
+#graphic_conception,
+#estimate,
+#sending_estimate,
+#validation,
+.feet_finish,
+.feet_in_progress,
+.feet_disable {
+	margin:9px 0px 9px 9px;
+}
+
+
+div.steps_text p {
+	text-align: center;
+	width:100px;
+	margin:0 0 0 -16px;
+	padding:0;
+	text-indent:0px;
+	// font-size:0.8em;
+	text-align:center;
+}
+
+#steps div.selected {
+	background:#DBE2F0;
+	-moz-border-radius:8px;
+	padding-bottom:10px;
+}
+
+#steps div.selected p {
+	font-weight:bold;
+}
+
+#steps {
+	margin-left:10px;
+}
+
+
+#steps a {
+	text-decoration:none;
+	color:#444;
+}
+
+div.frame>#steps {
+
+}
+
+/*////////////BROWSING PAGE////////////*/
+.browsing_page {
+}
+
+.browsing_page a.disable,
+.browsing_page a.disable:hover {
+
+}
+
+.browsing_page a.selected {
+
+}
+
+.browsing_page a {
+	
+}
+
+.browsing_page span a {
+
+}
+
+.browsing_page span a:hover {
+
+}
+
+.browsing_page p {
+
+}
+/*/////////////////TIMELINE/////////////////*/
+#timeline {
+
+}
+
+#timeline div {
+
+}
+
+#timeline_head,
+.timeline_body,
+#timeline_footer {
+
+}
+
+.timeline_body.good,
+#timeline_head.good {
+
+}
+
+#timeline_head.good .timeline_notice {
+
+}
+
+.timeline_body.good .timeline_notice {
+
+}
+
+.timeline_body.bad .timeline_notice {
+
+}
+
+#timeline_head .timeline_date {
+
+}
+
+.timeline_body.bad {
+
+}
+
+.timeline_date {
+
+}
+
+.timeline_notice {
+
+}
+
+.timeline_body .timeline_date {
+
+}
+
+.timeline_body {
+
+}
+
+#timeline_footer {
+
+}
+/*/////////////////DOCUMENT VIEW/////////////////*/
+.document_view {
+
+}
+
+.document_view h1 {
+
+}
+
+.document_view_content {
+
+}
+
+.document_view_content p:hover {
+
+}
+
+.document_view_content img {
+
+}
+
+.document_view_content p {
+
+}
+
+.document_view_content strong {
+
+}
+
+/*/////////////////HUMAN RESSOURCES/////////////////*/
+td[title="Détails"] img,
+td[title="Modifier"] img {
+
+}
+
+.frame table + p a img {
+
+}
+
+/*/////////////////OTHER/////////////////*/
+
+.link_to_closed {
+
+}
+
+.link_to_closed:hover {
+
+}
+
+object {
+
+}
+
+#test {
+
+}
+
+.formated_content * {
+
+}
+
+.formated_content hr {
+
+}
+
+.formated_content strong {
+
+}
+
+table .new_memorandum {
+
+}
+
+table .old_memorandum {
+
+}
+
+table .not_published_memorandum {
+
+}
+
+/*/////////////////////////////////////////////////////
+					FOOTER
+////////////////////////////////////////////////////*/
+
+#bottom_core_menu {
+
+}
+
+#footer_page {
+	background:#9C9C9C;
+	margin:0;
+	padding:1px;
+	text-align:center;
+	color:white;
+	font-size:0.8em;
+}
+
+#footer {
+
+}
+
+#footer_content {
+
+}
+
+#footer_page span {
+	color:#333;
+}
+
+.bottom_icons {
+
+}
