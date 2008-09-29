@@ -46,7 +46,7 @@ def init(config, path)
       feature.save
     end
 
-    if feature.kernel_feature? or feature.activate_by_default?
+    if feature.kernel_feature? or feature.activate_by_default? or !feature.activated
       feature.activated = true
       feature.save  
     end
