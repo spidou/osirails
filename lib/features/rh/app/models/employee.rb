@@ -167,8 +167,6 @@ class Employee < ActiveRecord::Base
       return retour.to_s
   end
   
-   
-  
   def manager(service_id)
     EmployeesService.find(:all,:conditions => ["service_id=? ,responsable=?", service_id, true])
     manager = Employee.find(tmp.employee_id)

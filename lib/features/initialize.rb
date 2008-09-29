@@ -36,23 +36,14 @@ def init(config, path)
     # This array store all menus in order than they will be displayed
     $menu_table ||= []
     
-    $option_configuration = []
-
-    feature = Feature.find_or_create_by_name_and_version(name, version)
-
-    # Test if feature belongs to base of the application
-    if path == directory 
-      feature.installed = true
-      feature.save
-    end
-
-    if feature.kernel_feature? or feature.activate_by_default? or !feature.activated
+    feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version)
+    if ( feature.new_record? and feature.activate_by_default? ) or feature.kernel_feature?
       feature.activated = true
-      feature.save  
+      feature.installed = true
     end
     
     # test and add search indexes into db
-    error_message = "syntaxe error in '#{ name }' yaml."
+    error_message = "syntaxe error in '#{name}' yaml."
 
     def verify_attribute_type(attr_class, type)
       case attr_class  
@@ -100,8 +91,7 @@ def init(config, path)
           end
         end
       end 
-      feature.search = searches
-      feature.save
+      feature.update_attribute('search', searches)
     end 
 
     
@@ -112,8 +102,7 @@ def init(config, path)
         dependencies_hash << {:name => key, :version => value}
       end
     end
-    feature.dependencies = dependencies_hash
-    feature.save
+    feature.update_attribute('dependencies', dependencies_hash)
 
     #Test of conflicts for this feature
     conflicts_hash = []
@@ -122,8 +111,7 @@ def init(config, path)
         conflicts_hash << {:name => key, :version => value}
       end
     end
-    feature.conflicts = conflicts_hash
-    feature.save
+    feature.update_attribute('conflicts', conflicts_hash)
 
     #Test of business Objects
     business_objects_array =  []
@@ -131,8 +119,7 @@ def init(config, path)
       business_objects.each do |business_object|
         business_objects_array << [business_object]
       end
-      feature.business_objects = business_objects_array
-      feature.save
+      feature.update_attribute('business_objects', business_objects_array)
     end
 
     roles_count = Role.count
