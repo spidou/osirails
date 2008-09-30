@@ -1,10 +1,12 @@
+<% content_for :secondary_menu do %>
+  <%= show_action_menu(@customer)%>
+<% end %>
+
 <h1>Informations concernant le client </h1>
 
 <div class="frame presentation_medium">
-  <h2> Informations g&eacute;n&eacute;rales</h2>
 
-  <%# my_text_field_with_auto_complete(:third, :name, {:name => "customer", :controller => 'customers'},{
-          :select => 'contact_first_name'})%>
+  <h2> Informations g&eacute;n&eacute;rales</h2>
 
   <p>
     <%= label :customer, :name, "Nom :" %>
@@ -42,43 +44,14 @@
   </p>
 
   <!-- Show Customer establishments -->
-  <% if @establishment_controller.can_list?(current_user) and Establishment.can_list?(current_user) %>
-    <% unless @establishments.empty? %>
-      <h2><%= "&Eacute;tablissements" %></h2>
-      <% for establishment in @establishments %>
-      <p>
-        <%= establishment.name + '(' +establishment.address.city_name + ')' %>
-        <% if @establishment_controller.can_view?(current_user) and Establishment.can_view?(current_user)%>
-        <%= link_to "Plus d'infos", customer_establishment_path(@customer, establishment) %>
-        <% end %>
-        <% if @establishment_controller.can_delete?(current_user) and Establishment.can_view?(current_user)%>
-          <%= link_to "Supprimer", [@customer, establishment], :method => :delete, :confirm => 'Etes vous sûr ?'%>
-        <% end %>
-      </p>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= display_establishments(@customer, @establishments)%>
 
   <!-- Show Customer Contacts -->
-  <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
-    <% unless @contacts.empty? %>
-      <h2><%= "Contacts" %></h2>
-      <% for contact in @contacts %>
-          <p>
-            <%= contact.first_name + " " + contact.last_name%>
-            <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-                <%= link_to "Plus d'infos", customer_contact_path(@customer, contact, :owner_type => "Customer") %>
-            <% end %>
-            <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
-                <%= link_to("Supprimer", [@customer,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-            <% end %>
-          </p>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= display_contacts(@customer, @contacts)%>
+    
+  <!-- Show Customer Documents -->
+  <%= display_documents(@customer, @documents)%>
   
-<% if controller.can_edit?(current_user) and Customer.can_edit?(current_user)%>
-  <%= link_to 'Modifier', :action => 'edit' %> 
-<% end %>
-  <%= link_to 'Retour', :action => 'index' %>
 </div>
+
+<%= link_to 'Retour', :action => 'index' %>

@@ -117,7 +117,8 @@ class EstablishmentsController < ApplicationController
     if Establishment.can_delete?(current_user)
       @establishment = Establishment.find(params[:id])
       @customer = @establishment.customer
-      @establishment.destroy
+      @establishment.activated = false
+      @establishment.save
       redirect_to(edit_customer_path(@customer))
     end
   end

@@ -21,8 +21,9 @@ class CustomersController < ApplicationController
       @establishment_controller =Menu.find_by_name('establishments')
       
       @customer = Customer.find(params[:id])
-      @establishments = @customer.establishments
+      @establishments = @customer.activated_establishments
       @contacts = @customer.contacts
+      @documents = @customer.documents
     else
       error_access_page(403)
     end
@@ -80,7 +81,7 @@ class CustomersController < ApplicationController
       
     if Customer.can_edit?(current_user)
       @customer = Customer.find(params[:id])
-      @establishments = @customer.establishments
+      @establishments = @customer.activated_establishments
       @contacts = @customer.contacts
       @documents =@customer.documents
       @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?

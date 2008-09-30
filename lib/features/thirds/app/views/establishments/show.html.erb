@@ -1,5 +1,8 @@
 <h1>Informations concernant l' &eacute;tablissement</h1>
+
 <div class="frame presentation_medium">  
+
+<h2> Informations g&eacute;n&eacute;rales</h2>
   <p>
     <%= label_tag "Nom :"%>
     <strong><%= @establishment.name %></strong>
@@ -35,22 +38,8 @@
     <strong><%= @establishment.address.zip_code %></strong>
   </p>
 
-  <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
-    <% unless @contacts.empty? %>
-      <h2><%= "Contacts" %></h2>
-      <% for contact in @contacts %>
-          <p>
-            <%= contact.first_name + " " + contact.last_name%>
-            <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-                <%= link_to "Plus d'infos", customer_establishment_contact_path(@customer, @establishment, contact, :owner_type => "Customer/Establishment") %>
-            <% end %>
-            <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
-                <%= link_to("Supprimer", [@customer, @establishment,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-            <% end %>
-          </p>
-      <% end %>
-    <% end %>
-  <% end %>
+  <!-- Show Establishment Contacts -->
+  <%= display_contacts(@establishment, @contacts)%>
 
   <% if controller.can_edit?(current_user) and Establishment.can_edit?(current_user)%>
     <%= link_to 'Modifier', edit_customer_establishment_path(@customer, @establishment) %>

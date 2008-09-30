@@ -4,15 +4,8 @@
 <% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
     
   <%= customer.error_messages %>
-  <% #Display customer infos%>
+  <!-- Display customer infos -->
   <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer, :activity_sector_name => @activity_sector} %>
-
-  <!-- Display error messages for establishments -->
-  <% if @establishments.length > 0 %>
-    <% for establishment in @establishments %>
-      
-    <% end %>
-  <% end %>
 
   <!-- Display Establishments div -->
   <%= display_establishment_and_add_establishment_button(@customer, @establishments, params, @new_establisment_number, @error)%>
@@ -22,9 +15,9 @@
    
   <!-- Display Documents div -->
   <%= display_documents_and_add_documents_button(@customer, @documents, params, @new_document_number, @error) %>
-  </div>
+  
   <%= customer.submit  'Modifier' %>
-
+  </div>
 
 <% end %>
 <%= link_to 'Retour', :action => 'index' %>

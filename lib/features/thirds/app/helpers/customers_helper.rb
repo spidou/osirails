@@ -1,7 +1,18 @@
 module CustomersHelper
   
+  # This method permit to show or hide action menu
+  def show_action_menu(customer)
+    if controller.can_edit?(current_user)
+      html = ""
+      html += "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
+      html += "<ul>"
+      html +=  "<li>#{display_edit_button(customer)} Modifier le client</li>"
+      html += "</ul>"
+    end
+  end
+  
   # This method permit to test permission for add button
-  def show_add_button
+  def display_add_button
     if controller.can_add?(current_user) and Customer.can_add?(current_user)
       add_button = []
       add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
@@ -10,22 +21,22 @@ module CustomersHelper
     end
   end
   
-  # This method permit to test pemrission for view button
-  def show_view_button(customer)
+  # This method permit to test pemission for view button
+  def display_view_button(customer)
     if controller.can_view?(current_user) and Customer.can_view?(current_user)
       link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), customer_path(customer)) 
     end
   end
   
-  # This method permit to test pemrission for edit button
-  def show_edit_button(customer)
+  # This method permit to test pemission for edit button
+  def display_edit_button(customer)
     if controller.can_edit?(current_user) and Customer.can_edit?(current_user)
       link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_customer_path(customer)) 
     end
   end
   
   # This method permit to test permission for delete button
-  def show_delete_button(customer)
+  def display_delete_button(customer)
     if controller.can_delete?(current_user) and Customer.can_delete?(current_user)
       link_to(image_tag("/images/delete_16x16.png", :alt => "Supprimer", :title => "Supprimer"), customer, {:method => :delete, :confirm => 'Etes vous s&ucirc;r ?'})
     end

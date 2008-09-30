@@ -2,6 +2,7 @@
 
 <div class="frame presentation_medium">
   <h2> Informations g&eacute;n&eacute;rales</h2>
+
   <p>
     <%= label :supplier, :name, "Nom :" %>
     <%= @supplier.name %>
@@ -53,25 +54,12 @@
     <%= @supplier.iban.account_number %>
   </p>
 
-<% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
-  <% unless @contacts.empty? %>
-    <h2><%= "Contacts" %></h2>
-    <% for contact in @contacts %>
-      <p>
-        <%= contact.first_name + " " + contact.last_name%>
-        <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-          <%= link_to "Plus d'infos", edit_supplier_contact_path(@supplier, contact, :owner_type => "Supplier") %>
-        <% end %>
-        <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
-          <%= link_to("Supprimer", [@supplier,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-        <% end %>
-      </p>
-    <% end %>
-  <% end %>
-<% end %>
+  <!-- Show Supplier Contacts -->
+  <%= display_contacts(@supplier, @contacts)%>
 
-<% if controller.can_edit?(current_user) and Supplier.can_edit?(current_user)%>
-  <%= link_to 'Modifier', :action => 'edit' %> 
-<% end %>
-<%= link_to 'Retour', :action => 'index' %>
 </div>
+
+<!-- Display edit button -->
+<%= display_edit_button(@supplier)%>
+
+<%= link_to 'Retour', :action => 'index' %>

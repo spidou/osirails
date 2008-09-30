@@ -1,5 +1,5 @@
 <% content_for :secondary_menu do %>
-  <%= show_add_button %>
+  <%= display_add_button %>
 <% end %>
 
 <h1> Liste des fournisseurs </h1>
@@ -20,9 +20,9 @@
           <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
           <td><%= supplier.note %></td>
           <td>
-            <%= show_view_button(supplier) %> 
-            <%= show_edit_button(supplier) %>
-            <%= show_delete_button(supplier) %>
+            <%= display_view_button(supplier) %> 
+            <%= display_edit_button(supplier) %>
+            <%= display_delete_button(supplier) %>
             </td>
         </tr>
     <%end%>
