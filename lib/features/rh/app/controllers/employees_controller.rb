@@ -235,7 +235,7 @@ class EmployeesController < ApplicationController
       @employee.address.update_attributes(params[:address])
       
       # raise params[:employee][:documents].inspect
-      if Document.can_add?(current_user)
+      if Document.can_add?(current_user, @employee.class)
         if params[:new_document_number]["value"].to_i > 0
           documents = params[:employee][:documents].dup
           @document_objects = Document.create_all(documents, @employee)
@@ -263,12 +263,16 @@ class EmployeesController < ApplicationController
         
         # save the employee's documents
         #FIXME LOOK HERE FOR PROBLEM JULIEN
-        unless params[:new_document_number].nil?
+        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
           if params[:new_document_number]["value"].to_i > 0
             @document_objects.each do |document|
-              document.save
-              @employee.documents << document
-              document.create_thumbnails
+              if (d = document.save) == true
+                @employee.documents << document
+                document.create_thumbnails
+              else
+                @error = true
+                flash[:error] = d
+              end
             end
           end
         end
