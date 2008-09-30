@@ -1,7 +1,7 @@
 module EstablishmentsHelper
   
   # This method permit to show or hide action menu
-  def show_action_menu(establishment)
+  def show_establishment_action_menu(establishment)
     if controller.can_edit?(current_user) and Establishment.can_add?(current_user)
       html = ""
       html += "<h1><span class='gray_color'>Actions</span> <span class='blue_color'>possible</span></h1>"
@@ -11,7 +11,7 @@ module EstablishmentsHelper
     end
   end
   
-  def display_edit_button(establishment)
+  def display_establishment_edit_button(establishment, customer)
     if controller.can_edit?(current_user) and Establishment.can_edit?(current_user)
       link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_establishment_path(establishment)) 
     end

@@ -1,5 +1,5 @@
 <% content_for :secondary_menu do %>
-  <%= display_add_button %>
+  <%= display_customer_add_button %>
 <% end %>
 
 <h1> Liste des clients </h1>
@@ -20,9 +20,9 @@
           <td><%= customer.activity_sector.name unless  customer.activity_sector.nil?%></td>
           <td><%= customer.note %></td>
           <td>
-            <%= display_view_button(customer) %> 
-            <%= display_edit_button(customer) %>
-            <%= display_delete_button(customer) %>
+            <%= display_customer_view_button(customer) %> 
+            <%= display_customer_edit_button(customer) %>
+            <%= display_customer_delete_button(customer) %>
           </td>
         </tr>
     <%end%>
