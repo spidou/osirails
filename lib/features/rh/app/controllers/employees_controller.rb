@@ -29,6 +29,7 @@ class EmployeesController < ApplicationController
       @jobs = @employee.jobs
       
       @job_contract = @employee.job_contract
+      @documents = @employee.documents
     else
       error_access_page(403)
     end  
@@ -116,7 +117,7 @@ class EmployeesController < ApplicationController
         @employee.numbers << Number.new(number) unless number.blank?
       end
       
-      if Document.can_add?(current_user)
+      if Document.can_add?(current_user, @employee.class)
         if params[:new_document_number]["value"].to_i > 0
           documents = params[:employee][:documents].dup
           @document_objects = Document.create_all(documents, @customer)
@@ -140,12 +141,16 @@ class EmployeesController < ApplicationController
       if @employee.save # and job == true
         
         # save the employee's documents
-        unless params[:new_document_number].nil?
+        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
           if params[:new_document_number]["value"].to_i > 0
             @document_objects.each do |document|
-              document.save
-              @employee.documents << document
-              document.create_thumbnails
+              if ( d = document.save) == true
+                @employee.documents << document
+                document.create_thumbnails
+              else
+                @error = true
+                flash[:error] = d
+              end
             end
           end
         end
@@ -262,7 +267,6 @@ class EmployeesController < ApplicationController
       if @employee.update_attributes(params[:employee]) and @number_error == false
         
         # save the employee's documents
-        #FIXME LOOK HERE FOR PROBLEM JULIEN
         unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
           if params[:new_document_number]["value"].to_i > 0
             @document_objects.each do |document|
