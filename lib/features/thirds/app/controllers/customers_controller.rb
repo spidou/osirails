@@ -199,6 +199,7 @@ class CustomersController < ApplicationController
         params[:new_document_number]["value"].to_i.times do |i|
           params[:customer][:documents]["#{document_params_index += 1}"] = params[:customer][:documents]["#{i + 1}"] unless params[:customer][:documents]["#{i + 1}"][:valid] == "false"
         end
+        
         ## Test if all documents enable are valid
         unless @document_objects.nil?
           @document_objects.size.times do |i|
@@ -210,19 +211,20 @@ class CustomersController < ApplicationController
           ## Reaffect document number
           params[:new_document_number]["value"]  = @document_objects.size
         end
-      end     
+      end
       
       unless @error
-        
-        unless params[:new_document_number].nil? and !Document.can_add?(current_user)
-          if params[:new_document_number]["value"].to_i > 0
-            @document_objects.each do |document|           
-              if (d = document.save) == true
-                @customer.documents << document
-                document.create_thumbnails
-              else 
-                @error = true
-                flash[:error] = d
+        if Document.can_add?(current_user, @customer.class)
+          unless params[:new_document_number].nil? and !Document.can_add?(current_user)
+            if params[:new_document_number]["value"].to_i > 0
+              @document_objects.each do |document|
+                if (d = document.save) == true
+                  @customer.documents << document
+                  document.create_thumbnails
+                else 
+                  @error = true
+                  flash[:error] = d
+                end
               end
             end
           end

@@ -294,7 +294,10 @@ namespace :osirails do
       f.file_type_extensions << FileTypeExtension.find_by_name("docx")
       f.file_type_extensions << FileTypeExtension.find_by_name("odt")
       # for folders
-      FileType.create :name => "Photo Survey", :model_owner => "Dossier"
+      f = FileType.create :name => "Photo Survey", :model_owner => "StepSurvey"
+      f.file_type_extensions << FileTypeExtension.find_by_name("pdf")
+      f.file_type_extensions << FileTypeExtension.find_by_name("jpg")
+      f.file_type_extensions << FileTypeExtension.find_by_name("jpeg")
       FileType.create :name => "Plan conception", :model_owner => "Dossier"
       FileType.create :name => "Maquette", :model_owner => "Dossier"
       FileType.create :name => "Devis", :model_owner => "Dossier"

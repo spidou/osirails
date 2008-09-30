@@ -17,9 +17,9 @@ class SurveyController < ApplicationController
     @document_controller =Menu.find_by_name('documents')
     
     @order = Order.find(params[:order_id])
-    @step_commercial = StepCommercial.find_by_order_id(@order.id)
-    @step_survey = StepSurvey.find_by_step_commercial_id(@step_commercial.id)
+    @step_survey = @order.step_commercial.step_survey
     @checklist_responses = @step_survey.checklist_responses
+    @documents = @step_survey.documents
     @remarks = @step_survey.remarks
     
     ## Save checklist_responses

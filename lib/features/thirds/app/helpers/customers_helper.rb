@@ -2,7 +2,7 @@ module CustomersHelper
   
   # This method permit to show or hide action menu
   def show_customer_action_menu(customer)
-    if controller.can_edit?(current_user)
+    if controller.can_edit?(current_user) and Customer.can_edit?(current_user)
       html = ""
       html += "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
       html += "<ul>"
