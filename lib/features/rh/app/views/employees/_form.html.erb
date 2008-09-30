@@ -124,31 +124,13 @@
     </div>
     
   <!-- Display Documents div -->
-  
-  <% if @document_controller.can_list?(current_user) and Document.can_list?(current_user) %>
-    <% unless @documents.nil?%>
-      <h2>Documents</h2>
-      <% unless @documents.empty? %>
-        <% for document in @documents %>
-          <p>        
-            <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
-            <%= link_to document.name, employee_document_path(@employee, document) %>
-            <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
-              <%= link_download_last_version(document) %>
-            <% end %>
-          </p>
-        <% end %>
-      <% end %>
-    <%end%>  
-    
-    <!-- Display document_form-->
-    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Employee',
-    :new_contact_number => @new_contact_number, :error => @error} %>
-  <% end %>
+  <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
     
     
     <span id="main_submit">
-      <button type=submit class="input-button">  	    <span><%= button_name %></span>      </button>
+      <button type=submit class="input-button">
+  	    <span><%= button_name %></span>
+      </button>
       <%= link_to 'Retour', employees_path %>
     </span>
   </div>
