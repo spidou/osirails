@@ -3,6 +3,7 @@ class CreateStepDependencies < ActiveRecord::Migration
     create_table :step_dependencies, :id => false do |t|
       t.references :step
       t.integer :step_dependent
+      t.timestamps
     end
   end
 

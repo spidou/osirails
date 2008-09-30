@@ -5,6 +5,7 @@ class CreateStepEstimates < ActiveRecord::Migration
       t.string :status
       t.datetime :start_date
       t.datetime :end_date
+      t.timestamps
     end
   end
 

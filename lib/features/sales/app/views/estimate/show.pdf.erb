@@ -1,0 +1,121 @@
+<table width="100%">
+	<tr>
+		<td>
+			<img src="http://127.0.0.1:3000/images/logo_emr.jpg" width="100"/><br />
+			PAE La Mare - ilot 7 - n°48<br />
+			97438 Sainte-Marie - La Réunion<br />
+			Tél. +262 (0)2 62 53 12 89<br />
+			Fax +262 (0)2 62 53 16 42
+		</td>
+		<td width="25%"></td>
+		<td>
+			<strong><%= @customer.name %></strong><br />
+			ADRESSE
+		</td>
+	</tr>
+</table>
+
+<table border="1" width="100%" style="text-align: center">
+	<tr>
+		<td width="50%" rowspan="2"></td>
+		<th>Etablissement</th>
+		<th>Tél.</th>
+		<th>Fax</th>
+	</tr>
+	<tr>
+		<td>?</td>
+		<td>0262 ?</td>
+		<td>0262 ?</td>
+	</tr>
+</table>
+
+<br />
+
+<table border="1" width="100%" style="text-align: center">
+	<tr>
+		<th colspan="6" style="font-size: 26px">DEVIS</th>
+	</tr>
+	<tr height="16px"><td></td></tr>
+	<tr>
+		<th>Date</th>
+		<th>Commercial</th>
+		<th>N° Client</th>
+		<th>N° Devis</th>
+		<th>Durée de validité</th>
+		<th>Référence de Commande</th>
+	</tr>
+	<tr>
+		<td><%= Date.today %></td>
+		<td><%= @order.commercial.fullname %></td>
+		<td><%= @customer.id %></td>
+		<td>?</td>
+		<td>1 mois</td>
+		<td><%= @order.title %></td>
+	</tr>
+</table>
+
+<br />
+
+<table border="1" width="100%" style="text-align: center;">
+	<tr>
+		<th width="10%">Référence</th>
+		<th width="70%">Désignation</th>
+		<th>Qté</th>
+		<th width="12%">P.U HT</th>
+		<th width="15%">Montant HT</th>
+	</tr>
+	<tr height="350">
+		<td>CALTEXDIV035</td>
+		<td style="text-align: left;">PLAQUE DE PORTE</td>
+		<td>2</td>
+		<td>45,00</td>
+		<td>90,00</td>
+	</tr>
+	<tr>
+		<td colspan="2" style="text-align: left;">
+			Informations:
+		</td>
+		<td colspan="3">
+			<table>
+				<tr>
+					<th width="50%">Total HT</th>
+					<td width="50%">90,00</td>
+				</tr>
+				<tr>
+					<td>Remise</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Frais de port</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Escompte</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>TVA</td>
+					<td>8,5 %</td>
+				</tr>
+				<tr>
+					<td>Total taxes</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Acompte</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Total TTC</th>
+					<td>90,00</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<br />
+
+<div>
+	Bon pour accord, dater et signer,
+</div>

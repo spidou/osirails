@@ -2,13 +2,51 @@ class EstimateController < ApplicationController
   helper 'orders'
   
   attr_accessor :current_order_step
-  before_filter :check, :except => [:index]
+  before_filter :check_order
   
-  def show
-    
+  def index
+    @estimates = @order.step_commercial.step_estimate.estimates
+  end
+  
+  def new
+    @estimate = Estimate.new
   end
   
   def edit
+    @estimate = Estimate.find(params[:id])
+  end
+  
+  def show
+    #require 'htmldoc'
+    #data = render_to_string(:action => 'show.pdf.erb', :layout => false)
+    #pdf = PDF::HTMLDoc.new
+    #pdf.set_option :bodycolor, :white
+    #pdf.set_option :toc, false
+    #pdf.set_option :charset, 'utf-8'
+    #pdf.set_option :portrait, true
+    #pdf.set_option :links, false
+    #pdf.set_option :webpage, true
+    #pdf.set_option :left, '1cm'
+    #pdf.set_option :right, '1cm'
+    #pdf << data
+    #document = pdf.generate
+    #
+    #send_data document, :filename => "estimate.pdf"
+  end
+  
+  def create
+    if @estimate = Estimate.create
+      params[:add_product_references].each do |pr|
+        @estimate.estimates_product_references << EstimatesProductReference.create(:product_reference_id => pr.to_i)
+        flash[:notice] = "Devis créer avec succès"
+      end
+    else
+      flash[:error] = "Erreur lors de la création du devis"
+    end
+    redirect_to :action => 'index'
+  end
+  
+  def update
     ## Objects use to test permission
     @document_controller =Menu.find_by_name('documents')
     
@@ -89,7 +127,8 @@ class EstimateController < ApplicationController
   
   protected
   
-  def check
+  def check_order
     @order = Order.find(params[:order_id])
+    @customer = @order.customer
   end
 end

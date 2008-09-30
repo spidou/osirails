@@ -31,7 +31,7 @@ module OrdersHelper
     
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
-    	html += "<div>"
+    	html += "<div #{class_selected if ot.name == step_name}>"
     	html += "	<div class=\"#{step_ring_class(ot.uncomplete? ? 'uncomplete' : ot.status)}\">"
     	html += "		<div id=\"#{ot.name[5..-1]}\">"
     	html += "			<p>"

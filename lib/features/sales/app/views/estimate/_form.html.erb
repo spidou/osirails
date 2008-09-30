@@ -1,0 +1,56 @@
+<%= osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1024px', :scroll => 'auto', :css => 'max-height: 500px;' %>
+
+<script type="text/javascript">
+var catalog = document.getElementById('catalog');
+var div_elm = document.createElement('div');
+div_elm.innerHTML = "<input type=\"button\" onclick=\"add_reference();\" value=\"Ajouter la référence\" style=\"float :right;\">";
+catalog.appendChild(div_elm);
+
+function add_reference () {
+	var all_ref = document.getElementById('select_reference').childNodes;
+	if (all_ref[0].selected) { alert('Veuillez sélectionner une référence'); return false; };
+	for (var i=0; i < all_ref.length; i++) {
+		if (all_ref[i].selected) {
+			new Ajax.Request('/product_references/' + all_ref[i].value + '.json', {
+				method: 'get',
+				onSuccess: function(transport) {
+					var ref_obj = transport.responseText.evalJSON()["product_reference"];
+					var list = document.getElementById('list_product').lastChild;
+					list.innerHTML += "<tr><td>" + ref_obj['id'] + "</td><td>" + ref_obj['name'] + "</td><td>?</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
+					var div_refs = document.getElementById('input_references');
+					var input = document.createElement('input');
+					input.setAttribute('type', 'hidden');
+					input.setAttribute('value', ref_obj['id']);
+					input.setAttribute('name', 'add_product_references[]');
+					div_refs.appendChild(input);
+					osibox_close();
+				}
+			});
+			return true;
+		};
+	};
+	return false;
+}
+</script>
+
+<h2>Produit de la commande</h2>
+
+<table id="list_product">
+	<tr>
+		<td>Référence</td>
+		<td>Désignation</td>
+		<td>Quantité</td>
+		<td>P.U. HT</td>
+		<td>Montant HT</td>
+		<td>Montant TTC</td>
+		<td>Action</td>
+	</tr>
+</table>
+
+<input type="text"> <button>Ajouter</button>
+<button onclick="osibox_open(1);">Ouvrir le catalogue de produits</button>
+
+<% form_for @estimate, :url => { :controller => 'estimate' } do |e| %>
+<div id="input_references"></div>
+<%= e.submit 'Enregistrer' %>
+<% end %>

@@ -109,3 +109,5 @@ files = Dir.glob("**/**/**/app/models/*.rb")
 files.each do |file|
   file.split("/").last.chomp(".rb").camelize.constantize
 end
+
+Mime::Type.register 'application/pdf', :pdf

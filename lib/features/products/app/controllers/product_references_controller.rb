@@ -24,6 +24,7 @@ class ProductReferencesController < ApplicationController
     respond_to do |format|
       format.html
       format.js { render :layout => false}
+      format.json { render :json => @reference }
     end
   end
   

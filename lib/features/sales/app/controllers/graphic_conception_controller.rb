@@ -1,4 +1,4 @@
-class GraphicConceptionsController < ApplicationController
+class GraphicConceptionController < ApplicationController
   helper 'orders'
   
   attr_accessor :current_order_step
