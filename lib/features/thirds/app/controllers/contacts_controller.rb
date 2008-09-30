@@ -5,6 +5,7 @@ class ContactsController < ApplicationController
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]  
   
   def show 
+#    raise CGI.unescape(params[:owner_type]).inspect
     if Contact.can_view?(current_user)
       @owner_type  = params[:owner_type]
       @owner = @owner_type.split("/").last.constantize.find(params["#{@owner_type.split("/").last.downcase}_id"])
@@ -18,8 +19,8 @@ class ContactsController < ApplicationController
     if Contact.can_edit?(current_user)
       @contact = Contact.find(params[:id])
       @owner_type  ||= params[:owner_type]
-      @numbers = @contact.numbers   
-
+      @numbers = @contact.numbers
+      
       @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
     else
       error_access_page(403)
@@ -28,18 +29,19 @@ class ContactsController < ApplicationController
   
   def update
     if Contact.can_edit?(current_user)
-      @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+      @owner = params[:contact][:owner_type].constantize.find(params["#{params[:contact][:owner_type].downcase}_id"])
       @contact = Contact.find(params[:id])
+      @owner_type  = params[:contact][:owner_type]
       @numbers_reloaded||= nil
       @numbers_reloaded.nil? ? @numbers = @contact.numbers : @numbers = @numbers_reloaded
       
-      if params[:owner_type]  == "Customer"
-        @owner =Customer.find(params["#{params[:owner_type].downcase}_id"])
-      elsif params[:owner_type]  == "Establishment"
-        @owner =Establishment.find(params[:owner])
-      elsif params[:owner_type]  == "Supplier"
-        @owner =Supplier.find(params[:owner])
-      end
+#      if params[:owner_type]  == "Customer"
+#        @owner =Customer.find(params["#{params[:owner_type].downcase}_id"])
+#      elsif params[:owner_type]  == "Establishment"
+#        @owner =Establishment.find(params[:owner])
+#      elsif params[:owner_type]  == "Supplier"
+#        @owner =Supplier.find(params[:owner])
+#      end
       
       # put numbers another place for a separate creation
       params[:numbers] = params[:contact]['numbers']
@@ -56,8 +58,9 @@ class ContactsController < ApplicationController
         end
       end 
     
-      contact = params[:contact]
+      contact = params[:contact].dup
       contact.delete("numbers")
+      contact.delete("owner_type")
     
       # update contact ressources
       unless @contact.update_attributes(contact)
@@ -89,7 +92,7 @@ class ContactsController < ApplicationController
         end
         
         flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
-        redirect_to(eval("#{@owner.class.name.downcase}_contact_path(@owner, @contact, :owner_type => '#{@owner.class.name}')"))
+        redirect_to(eval("#{@owner.class.name.tableize.singularize}_contact_path(@owner, @contact, :owner_type => '#{params[:contact][:owner_type]}')"))
       end
     else
       error_access_page(403)
@@ -100,7 +103,9 @@ class ContactsController < ApplicationController
     if Contact.can_delete?(current_user)
       @contact = Contact.find(params[:id])
     
-      @owner_type = params.keys.last.slice(0..-4)
+      raise params.keys.inspect
+      @owner_type = params.keys.last
+      raise @owner_type
       @owner_id = params["#{@owner_type}_id"]
 
       eval "@owner =#{@owner_type.capitalize}.find(@owner_id)"

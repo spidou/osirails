@@ -15,32 +15,19 @@ class Order < ActiveRecord::Base
   
   # Create all orders_steps after create
   def after_create
+    ## Creation of steps
     order_type.activated_steps.each do |step|
       if step.parent.nil?
         step.name.camelize.constantize.create(:order_id => self.id, :status => 'unstarted')
       else
-        step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id, :status => 'unstarted')
+        s = step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id, :status => 'unstarted')
+        step.checklists.each do |checklist|
+          checklist_response = ChecklistResponse.create :checklist_id => checklist.id
+          s.checklist_responses << checklist_response  
+        end
       end
-    end
+    end    
   end
-
-  ## Return a tree with activated step
-  #def tree
-  #  steps =[]
-  #  step_objects = []
-  #  self.order_type.sales_processes.each do |sales_process|
-  #    steps << sales_process.step if sales_process.activated
-  #  end
-  #  steps.each do |step|
-  #    unless step.parent_id.nil?
-  #      step_objects << step.name.camelize.constantize.find_by_order_id(self.id)
-  #    else
-  #      step_name = step.name + "_order"
-  #      step_objects << step_name.camelize.constantize.find_by_order_id(self.id)
-  #    end
-  #  end
-  #  step_objects
-  #end
 
   def step
     self.all_childrens.each do |child|

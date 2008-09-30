@@ -17,7 +17,6 @@ module ActiveRecord
           include ActiveRecord::Acts::Step::InstanceMethods
           
           # Plugins
-          acts_as_file
           
           # Relationships
           has_many :remarks, :as => :has_remark

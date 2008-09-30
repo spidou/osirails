@@ -1,8 +1,6 @@
 class CustomersController < ApplicationController
 
-  helper :documents
-  helper :contacts
-  helper :employees  
+  helper :establishments, :contacts, :documents, :employees
   
   # GET /customers
   # GET /customers.xml
@@ -111,6 +109,7 @@ class CustomersController < ApplicationController
       # @error is use to know if all form are valids
       @error = false
       @customer = Customer.find(params[:id])
+      @establishments = @customer.establishments
       
       ## dup is use to create a copy of params[:customer] because if we use simply =, when delete method is use on customer variable, params is modify too
       customer = params[:customer].dup
@@ -212,16 +211,18 @@ class CustomersController < ApplicationController
         end
       end     
       
-      unless @error        
-        flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
-        if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|           
-            if (d = document.save) == true
-              @customer.documents << document
-              document.create_thumbnails
-            else 
-              @error = true
-              flash[:error] = d
+      unless @error
+        
+        unless params[:new_document_number].nil? and !Document.can_add?(current_user)
+          if params[:new_document_number]["value"].to_i > 0
+            @document_objects.each do |document|           
+              if (d = document.save) == true
+                @customer.documents << document
+                document.create_thumbnails
+              else 
+                @error = true
+                flash[:error] = d
+              end
             end
           end
         end
@@ -240,13 +241,14 @@ class CustomersController < ApplicationController
           end
         end
         
+        flash[:notice] = "Client modifi&eacute; avec succ&egrave;s"
         redirect_to customers_path
       else
         flash[:error] ||= "Une erreur est survenue lors de la sauvergarde du client"
-        @new_establishment_number = params[:new_establishment_number]["value"]
-        @establishments = @customer.establishments
-        @new_contact_number = params[:new_contact_number]["value"]
-        @new_document_number = params[:new_document_number]["value"]
+        
+        @new_establishment_number = params[:new_establishment_number]["value"] unless params[:new_establishment_number].nil?       
+        @new_contact_number = params[:new_contact_number]["value"] unless params[:new_contact_number].nil?
+        @new_document_number = params[:new_document_number]["value"] unless params[:new_document_number].nil?
         @contacts = @customer.contacts
         @documents =@customer.documents
         render :action => 'edit'

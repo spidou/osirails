@@ -1,4 +1,17 @@
 <%= order_header %>
-<div class="frame tabulation">
-	Ceci est un devi :-) 
+<div class="frame tabulation presentation_medium">
+	<% order_steps %>
+  
+<% form_for(@step_estimate, :url => { :controller =>"estimate", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
+   <h2> Checklist </h2>  
+
+   <% for checklist_response in @checklist_responses %>
+      <% fields_for "step_estimate[checklists]", checklist_response, :index => checklist_response.id do |checklist| %>
+        <p>
+          <%= display_checklist(checklist, checklist_response, @step_survey) %>
+        </p>
+      <% end %>
+    <% end %>
+    
+<% end %>
 </div>

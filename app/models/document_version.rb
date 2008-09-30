@@ -25,6 +25,7 @@ class DocumentVersion < ActiveRecord::Base
         
     if Document.image_extensions.include?(@document_original.extension)
       path = "documents/#{@document_original.owner_class.downcase}/#{@document_original.file_type_id}/#{@document_original.id}"
+      raise @document_original.inspect
       thumbnail = Magick::Image.read("#{path}/#{@document_original.document_versions.index(self) + 1}.#{@document_original.extension}").first
       thumbnail.crop_resized!(75, 75, Magick::NorthGravity)
       thumbnail.write("#{path}/#{self.id}_75_75.#{@document_original.extension}")

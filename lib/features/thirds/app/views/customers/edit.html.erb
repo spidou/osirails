@@ -15,89 +15,19 @@
   <% end %>
 
   <!-- Display Establishments div -->
-  <% if @establishment_controller.can_list?(current_user) and Establishment.can_list?(current_user) %>
-    <h2>&Eacute;tablissements</h2>
-    <% unless @establishments.empty? %>     
-      <% for establishment in @establishments %>
-      <p>
-        <%= establishment.name + '(' +establishment.address.city_name + ')' %>
-        <% if @establishment_controller.can_view?(current_user) and Establishment.can_view?(current_user)%>
-            <%= link_to "Plus d'infos", customer_establishment_path(@customer, establishment, :owner_type => "Customer") %>
-        <% end %>
-      </p>
-      <% end %>
-    <% end %>  
-
-      <%= render :partial => 'establishments/new_establishment', :locals => {:params => params, :new_establishment_number => @new_establishment_number, 
-      :error => @error} %>
-
-<% end %>
-
+  <%= display_establishment_and_add_establishment_button(@customer, @establishments, params, @new_establisment_number, @error)%>
+ 
   <!-- Display Contacts div -->
-  <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
-    <h2>Contacts</h2>
-    <% unless @contacts.empty? %>    
-      <% for contact in @contacts %>
-          <p>
-            <%= contact.first_name + " " + contact.last_name%>
-            <% if @contact_controller.can_view?(current_user) and Contact.can_view?(current_user) %>
-                <%= link_to "Plus d'infos", customer_contact_path(@customer, contact, :owner_type => "Customer") %>
-            <% end %>
-            <% if @contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user) %>
-                <%= link_to("Supprimer", [@customer,  contact], :method => :delete, :confirm => 'Etes vous sûr ?') %>
-            <% end %>
-          </p>
-      <% end %>
-    <% end %>
-    
-      <%= render :partial => 'contacts/new_contact', :locals => {:owner_type => "Customer",
-                    :owner_id => @customer.id, :params => params, :new_contact_number => @new_contact_number,
-                    :error => @error} %>
-
-  <% end %>
+  <%= display_contacts_and_add_contact_button(@customer, @contacts, params, @new_contact_number, @error)%>
    
-   <!-- Display Documents div -->
-  <% if @document_controller.can_list?(current_user) and Document.can_list?(current_user, @customer.class) %>
-    <h2>Documents</h2>
-    <% unless @documents.empty? %>
-      <% @customer.class_documents.each_pair do |type, documents|%>
-        <div class="document_view">
-          <h1> <%= type%> </h1>
-          <% documents.each do |document|%>
-            <div class="document_view_content">
-              <%= image_tag("/images/file_extensions/#{document.extension}_75x75.png") %>              
-             
-              <a onclick="osibox_open(<%= document.id %>);">Modifier</a>
-              <p>
-                <strong><%=document.name%></strong><br />
-                <%= "Enregistre le "+ document.updated_at.to_s%><br/>
-                <%=get_description(document)%>
-
-                <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
-                  <%= link_download_last_version(document) %>
-                <% end %>
-              </p>
-            </div>
-          <%end%>
-        </div>
-      <% end %>
-    <% end %>
-    
-    
-    <!-- Display document_form-->
-    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'Customer', :owner_id => @customer.id, 
-    :new_contact_number => @new_contact_number, :error => @error} %>
-  <% end %>
-  
+  <!-- Display Documents div -->
+  <%= display_documents_and_add_documents_button(@customer, @documents, params, @new_document_number, @error) %>
+  </div>
   <%= customer.submit  'Modifier' %>
-</div>      
+
 
 <% end %>
-  <%= link_to 'Retour', :action => 'index' %>
+<%= link_to 'Retour', :action => 'index' %>
   
-<% @customer.class_documents.each_pair do |type, documents|%>
-  <% documents.each do |document|%>
-    <%= osibox_init :partial => "documents/edit_partial", :id => document.id,  :locals => {:document => document}, :width => "1000px", :height => "1000px" %>
-  <% end %>
-<% end %>
-
+<!-- Osibox initialisation -->
+<%= osibox_initialisation(@customer, "/customer/#{@customer.id}/survey/documents/")%>

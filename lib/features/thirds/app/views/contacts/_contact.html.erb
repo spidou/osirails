@@ -23,3 +23,7 @@
     <%=label :contact, "Type de contact"%>
     <%= contact.select("contact_type_id", ContactType.find(:all, :conditions => ["owner = ?", @owner.class.name.downcase]).collect {|a| [ a.name, a.name]})%>
   </p>
+
+  <p>
+    <%= contact.hidden_field "owner_type", :value => @owner_type%>
+  </p>

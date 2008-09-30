@@ -1,3 +1,4 @@
+<% owner_type_downcase = owner_type.tableize.singularize %>
 <div id='link_add_remove_document_<%= cpt%>'>
   <%= link_to_remote("supprimer", :url => {:controller => "documents", :action => "delete_new_document", :cpt => cpt, :owner_id => (owner_id unless owner_id.nil?), :owner_type => owner_type})%>
 </div>
@@ -30,8 +31,8 @@
     </p>
   
     <p>
-      <%= d.label :file_type_id, "Type de fichier:"%>      
-      <select id='<%=owner_type.tableize.singularize%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type.downcase%>[documents][<%=cpt%>][file_type_id]' > 
+      <%= d.label :file_type_id, "Type de fichier:"%>
+      <select id='<%=owner_type_downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type_downcase%>[documents][<%=cpt%>][file_type_id]' > 
         <% FileType.find_all_by_model_owner(owner_type.capitalize).each do |a| %>
           <%b = a%>
             <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
@@ -56,18 +57,18 @@
 
     <% # Affectation of variables when an error occur%>
     <%if error%>
-      <%= javascript_tag "document.getElementById('#{owner_type.downcase}_documents_#{cpt}_name').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["name"]}';
-      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_description').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["description"]}';
-      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_file_type_id').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["file_type_id"]}';
-      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_tag_list').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["tag_list"]}';
-      document.getElementById('#{owner_type.downcase}_documents_#{cpt}_datafile').value = '#{params["#{owner_type.downcase}"]["documents"]["#{cpt}"]["datafile"]}'"%>
+      <%= javascript_tag "document.getElementById('#{owner_type_downcase}_documents_#{cpt}_name').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["name"]}';
+      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_description').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["description"]}';
+      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_file_type_id').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["file_type_id"]}';
+      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_tag_list').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["tag_list"]}';
+      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_datafile').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["datafile"]}'"%>
     <%end%>
   </div>
 
   <%end%>
 
-  <%= observe_field "#{owner_type.tableize.singularize}_documents_#{cpt}_file_type_id",
+  <%= observe_field "#{owner_type_downcase}_documents_#{cpt}_file_type_id",
       :url => { :controller => 'documents', :action => 'file_type_change' },
        :on => 'focus', 
       :with => "'file_type_id='+value+
-    '&select_name=#{owner_type.tableize.singularize}_documents_#{cpt}_file_type_id'"%>
+    '&select_name=#{owner_type_downcase}_documents_#{cpt}_file_type_id'"%>

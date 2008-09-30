@@ -41,6 +41,7 @@
     <strong><%= @customer.payment_time_limit.name%></strong>
   </p>
 
+  <!-- Show Customer establishments -->
   <% if @establishment_controller.can_list?(current_user) and Establishment.can_list?(current_user) %>
     <% unless @establishments.empty? %>
       <h2><%= "&Eacute;tablissements" %></h2>
@@ -58,7 +59,7 @@
     <% end %>
   <% end %>
 
-
+  <!-- Show Customer Contacts -->
   <% if @contact_controller.can_list?(current_user) and Contact.can_list?(current_user) %>
     <% unless @contacts.empty? %>
       <h2><%= "Contacts" %></h2>

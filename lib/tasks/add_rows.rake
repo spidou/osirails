@@ -373,6 +373,19 @@ namespace :osirails do
       OrderType.create :title => "SAV"
       OrderType.last.society_activity_sectors << SocietyActivitySector.first
       
+      # default checklist 
+      Checklist.create :name => "Livraison sur site", :step_id => Step.find_by_name("step_survey").id
+      Checklist.create :name => "Accès voiture", :step_id => Step.find_by_name("step_survey").id
+      c = Checklist.create :name => "Localisation", :step_id => Step.find_by_name("step_survey").id
+      c.checklist_options << ChecklistOption.create(:name => "Region NORD")
+      c.checklist_options << ChecklistOption.create(:name => "Region EST")
+      c.checklist_options << ChecklistOption.create(:name => "Region SUD")
+      c.checklist_options << ChecklistOption.create(:name => "Region OUEST")
+      c = Checklist.create :name => "Distance depuis l'entreprise", :step_id => Step.find_by_name("step_survey").id
+      c.checklist_options << ChecklistOption.create(:name => "< 10 km")
+      c.checklist_options << ChecklistOption.create(:name => "< 50 km")
+      c.checklist_options << ChecklistOption.create(:name => "< 80 km")      
+      
       # default orders
       Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => nil, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :closed_date => DateTime.now + 3.days, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
@@ -384,7 +397,7 @@ namespace :osirails do
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
         SocietyActivitySector,ActivitySector,FileType,FileTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
-        OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum].each do |model|
+        OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
         model.destroy_all

@@ -8,7 +8,7 @@ class Document < ActiveRecord::Base
   belongs_to :has_document, :polymorphic => true
   
   ## Validates
-  validates_presence_of :name
+#  validates_presence_of :name
   
   ## Instance accessor
   attr_accessor :is_new

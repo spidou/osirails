@@ -1,6 +1,6 @@
 <h1>Modifier un Contact</h1>
 <div class="frame">
-  <% form_for :contact, @contact,  :url => {:controller => customer_contact_path(@owner, @contact), :owner_type    => @owner.class.name}, :html => { :method => :put, :id => "edit_post_45" } do |contact| %>  
+  <% form_for :contact, @contact,  :url => {:controller => customer_contact_path(@owner, @contact)}, :html => { :method => :put, :id => "edit_post_45" } do |contact| %>  
 
    <h2> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></h2>
         <%= contact.error_messages%>
@@ -12,4 +12,4 @@
 </div>
 <%= submit_tag 'Modifier' %>
 <%end%> 
-<%= get_return_link(params[:owner_type])%>
+<%= get_return_link(params[:owner_type].nil? ? params[:contact][:owner_type] : params[:owner_type])%>

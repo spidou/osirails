@@ -17,7 +17,7 @@
   <!-- If there was some form, they are re-create -->
   <% if new_document_number_value > 0 %>
     <% new_document_number_value.times do |i| %>
-      <% unless params["#{owner_type.downcase}"][:documents]["#{i+1}"][:valid] == 'false' %>
+      <% unless params["#{owner_type.tableize.singularize}"][:documents]["#{i+1}"][:valid] == 'false' %>
 
         <% params["owner_id"]= owner_id %>
         <% params["owner_type"] = owner_type %>

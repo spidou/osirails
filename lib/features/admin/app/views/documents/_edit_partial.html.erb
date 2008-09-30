@@ -17,8 +17,7 @@
 <!-- form  -->
 <iframe id="upload_frame" name="upload_frame" style="display:none;"> 
 </iframe>
-
-<% form_for([document.has_document, document], :html => { :multipart => true, :target => "upload_frame", :test => 2}, :test => 3) do |d| %>
+<% form_for(:document,@document,  :url => url, :html => { :multipart => true, :target => "upload_frame", :method => "PUT"}) do |d| %>
     <%= d.error_messages %>
     <p>
       <%= d.label :name%>

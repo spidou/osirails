@@ -20,6 +20,10 @@
     <strong><%= @contact.job %></strong>
   </p>
 
+  <p>
+    <%= hidden_field_tag("contact_type", :value => @owner_type)%>
+  </p>
+
   <% if controller.can_edit?(current_user) and Contact.can_edit?(current_user)%>
     <%= get_edit_link(@owner_type) %>
   <% end %>
