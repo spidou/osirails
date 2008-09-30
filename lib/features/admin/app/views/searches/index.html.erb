@@ -10,7 +10,7 @@
   <p>
     <input type="hidden" id="choosen_model" value=""/>
     <select id="model_select" name="model[name]" onchange="has_criteria(this);">
-      <option selected="true"></option>  
+      <option selected="true">Veuillez choisir une section</option>  
       <% @searches.each_pair do |feature,models| %>
         <%="<optgroup label='#{ feature }'"%>
         <% models.each do |model|%>

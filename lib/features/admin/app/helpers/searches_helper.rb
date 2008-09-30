@@ -14,7 +14,7 @@ module SearchesHelper
     end
     month_array+="]"
     
-    html="<select name='criteria[#{id}][attribute]' onchange='action_choose(this,#{id},#{month_array})'><option id='blank#{id}' selected='selected'></option>"
+    html="<select name='criteria[#{id}][attribute]' onchange='action_choose(this,#{id},#{month_array})'><option id='blank#{id}' selected='selected'>Veuillez choisir un crit&egrave;re</option>"
     #feature.search.each_pair do |model,categories|
     #  attributes = Search.regroup_attributes(categories)
     #  html += get_attributes_recursively(attributes,feature) if feature.constantize.can_view?(current_user)
