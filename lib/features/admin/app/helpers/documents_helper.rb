@@ -38,13 +38,13 @@ module DocumentsHelper
   def display_documents_and_add_documents_button(owner, documents, params, new_document_number, error)
     document_controller = Menu.find_by_name('documents')
     html = ""
-    if document_controller.can_list?(current_user) and Establishment.can_list?(current_user)
+    if document_controller.can_list?(current_user) and Document.can_list?(current_user, owner.class)
       html += "<p>"
       html = display_documents(owner, documents)
       html += "</p>"
     end
     
-    if document_controller.can_add?(current_user) and Establishment.can_add?(current_user)
+    if document_controller.can_add?(current_user) and Document.can_add?(current_user, owner.class)
       html += "<p>"
       html += display_add_document_button(owner, params, new_document_number, error) + "<br/>"
       html += "</p>"
@@ -81,6 +81,10 @@ module DocumentsHelper
         end
         html += "</div>"
       end
+    else 
+      html += "<p>"
+      html += "Aucun documents"
+      html += "</p>"
     end
     
     return html 
@@ -88,8 +92,7 @@ module DocumentsHelper
 
   ## Display add document button
   def display_add_document_button(owner, params, new_document_number, error)
-    render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => owner.class.name, :owner_id => owner.id, 
-      :new_contact_number => new_document_number, :error => error}
+    render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => owner.class.name, :owner_id => owner.id, :new_document_number => new_document_number, :error => error}
   end
   
 end
