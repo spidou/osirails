@@ -76,68 +76,47 @@ function show_memorandum(element_or_position, value) {
   document.location = "/received_memorandums/"+id
 }
 
-function next_memorandum(element, memorandum_number, event) {
-
-  if (memorandum_number != 0 && memorandum_number != 1) {
-
+function change_memorandum(element, memorandum_number, event) {
+  if (memorandum_number != 0 && memorandum_number !=1) {
     place = element.className.lastIndexOf("_");
-    position = element.className.substr(place + 1);
-
-    document.getElementsByClassName('number')[0].innerHTML = " "+(parseInt(position))+" " ;
-
-    if ((position - 1) == 0 ) {
-      document.getElementById('previous').className = 'previous_memorandum_'+parseInt(memorandum_number);
-      new Effect.Fade(document.getElementsByClassName('position_'+memorandum_number)[0], {duration: 0.3});
-
-    }
-    else {
-      document.getElementById('previous').className = 'previous_memorandum_'+parseInt(position - 1);
-      new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) -1))[0], {duration: 0.3});
-    }
-
-    if (position < memorandum_number) {
-
-      document.getElementById('next').className = 'next_memorandum_'+(parseInt(position) + 1);
-    }
-    else {
-      document.getElementById('next').className = 'next_memorandum_1';
-    }
-    document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
-    new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
-    refresh_timer()   
-  }
-}
-
-function previous_memorandum(element, memorandum_number, event) {
-
-  if (memorandum_number != 0 && memorandum_number != 1) {
-
-    place = element.className.lastIndexOf("_");
-    position = element.className.substr(place + 1);
-
-    document.getElementsByClassName('number')[0].innerHTML = " "+parseInt(position)+" " ;
-
-    if ((parseInt(position) -1) == 0) {
+    position = element.className.substr(place +1);
+    
+    document.getElementsByClassName('number')[0].innerHTML = " "+(parseInt(position))+" ";
+    
+    element_id = element.id
+    
+    if ((parseInt(position) - 1) == 0 ) {
       document.getElementById('previous').className = 'previous_memorandum_'+(parseInt(memorandum_number));
+      if (element_id == 'next') {
+        new Effect.Fade(document.getElementsByClassName('position_'+memorandum_number)[0], {duration: 0.3});
+      }
     }
     else {
-      document.getElementById('previous').className = 'previous_memorandum_'+(parseInt(position) -1);
+      document.getElementById('previous').className = 'previous_memorandum_'+(parseInt(position) - 1);
+      if (element_id == 'next') {
+        new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) -1))[0], {duration: 0.3});
+      }
     }
-
-    if (parseInt(position) != memorandum_number) {
-      document.getElementById('next').className = 'next_memorandum_'+(parseInt(position) +1);
-      new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) +1))[0], {duration: 0.3});
+    
+    if (parseInt(position) < memorandum_number) {
+      document.getElementById('next').className = 'next_memorandum_'+(parseInt(position) + 1);
+      if (element_id = 'previous') {
+        new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) +1))[0], {duration: 0.3});
+      }
     }
     else {
       document.getElementById('next').className = 'next_memorandum_1';
-      new Effect.Fade(document.getElementsByClassName('position_1')[0], {duration: 0.3});
+      if (element_id = 'previous') {
+        new Effect.Fade(document.getElementsByClassName('position_1')[0], {duration: 0.3});
+      }
     }
+    
+    
     document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
     new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
     refresh_timer()
-  }
+    }
 }
-
 var timer
 
 function click_next(value) {
