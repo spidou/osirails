@@ -22,14 +22,14 @@ namespace :osirails do
       NumberType.create :name => "Fax Professionnel"
       
       # default employee states
-      titulaire = EmployeeState.create :name => "Titulaire"
-      EmployeeState.create :name => "Stagiaire"
-      EmployeeState.create :name => "Licencié(e)"
-      EmployeeState.create :name => "Démissionnaire"
+      titulaire = EmployeeState.create :name => "Titulaire", :active => 1
+      EmployeeState.create :name => "Stagiaire", :active => 1
+      EmployeeState.create :name => "Licencié(e)", :active => 0
+      EmployeeState.create :name => "Démissionnaire", :active => 0
       
       # default job contract types
-      cdi = JobContractType.create :name => "CDI"
-      JobContractType.create :name => "CDD"
+      cdi = JobContractType.create :name => "CDI", :limited => 0
+      JobContractType.create :name => "CDD", :limited => 1
       
       # default countries
       france = Country.create :name => "FRANCE", :code => "fr"
