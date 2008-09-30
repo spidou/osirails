@@ -264,17 +264,17 @@ class Feature < ActiveRecord::Base
         self.activate_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message << "Le module suivant est requis : "
         deps = []
         self.activate_dependencies.each do |error|
-          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end         
-    when "disable" 
+    when "disable"
       message = "Une erreur est survenue lors de la désactivation du module '#{self.name}'. "
       unless self.deactivate_children.empty?
-        self.deactivate_children.size > 1 ? message << "D'autres modules dépendent de ce module : " : message  << "Un module dépend de ce module : "
+        self.deactivate_children.size > 1 ? message << "D'autres modules dépendent de ce module : " : message  << "Un autre module dépend de ce module : "
         deps = []
         self.deactivate_children.each do |error|
-          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -284,7 +284,7 @@ class Feature < ActiveRecord::Base
         self.able_to_install_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message <<  "Le module suivants est requis : "
         deps = []
         self.able_to_install_dependencies.each do |error|
-          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -292,7 +292,7 @@ class Feature < ActiveRecord::Base
         self.able_to_install_conflicts.size > 1 ? message << "<br/>Les conflits suivants ont été détectés : " : message << "<br />Le conflit suivant a été détecté : "
         deps = []
         self.able_to_install_conflicts.each do |error|
-          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -307,7 +307,7 @@ class Feature < ActiveRecord::Base
         message << "D'autres modules dépendent de ce module : "
         deps = []
         self.able_to_uninstall_children.each do |error|
-          deps << "#{error[:name]} v#{error[:version].join(", v:")}"
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
