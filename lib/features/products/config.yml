@@ -1,5 +1,29 @@
 name: products
+title: Produits
 version: 0.1
+search:
+  Product:
+    base:
+      name: string
+    other:
+      production_cost_manpower: string
+      production_time: string
+      delivery_cost_manpower: string
+      delivery_time: string
+  ProductReference:
+    base:
+      name: string
+    other:
+      production_cost_manpower: string
+      production_time: string
+      delivery_cost_manpower: string
+      delivery_time: string
+      enable: boolean
+      product_reference_category:
+        ProductReferenceCategory:
+          name: string
+          enable: boolean
+        
 dependencies:
 conflicts:
 business_objects:

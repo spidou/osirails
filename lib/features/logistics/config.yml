@@ -1,5 +1,17 @@
 name: logistics
+title: Gestion de la logistique
 version: 0.1
+search:
+  CommodityCategory:
+    base:
+      name: string
+    other:
+      commodities:
+        Commodity:
+          name: string
+          enable: boolean
+          unit_mass: number
+          measure: number            
 dependencies:
 conflicts:
 business_objects:
