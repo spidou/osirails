@@ -52,12 +52,17 @@ class ProductReferenceCategoriesController < ApplicationController
     new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
     if @category.can_has_this_parent?(new_parent_category_id)
       @category.counter_update("before_update", @category.product_references_count)
-      @category.update_attributes(params[:product_reference_category])
-      @category.counter_update("after_update", @category.product_references_count)
-      flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
-      redirect_to product_reference_manager_path
+      if @category.update_attributes(params[:product_reference_category])
+         @category.counter_update("after_update", @category.product_references_count)
+         flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
+         redirect_to product_reference_manager_path
+      else
+        @category.counter_update("after_update", @category.product_references_count)
+        flash[:error] = 'Erreur dans la mise &agrave; jour'
+        render :action => 'edit'
+      end
     else
-      flash[:error] = 'D&eacute;placement impossible'
+      flash[:error] = 'Erreur dans le d&eacute;placement'
       @categories = ProductReferenceCategory.find(:all)
       render :action => 'edit'
     end

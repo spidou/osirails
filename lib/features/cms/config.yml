@@ -1,4 +1,5 @@
 name: cms
+title: Gestion de contenu
 version: 0.1
 dependencies:
 conflicts:

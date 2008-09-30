@@ -50,16 +50,24 @@ class MenusController < ApplicationController
   end
   
   # This method permit to move up a menu.
+  # how_many_brother_activated permit to move corectly all menus
   def move_up
     menu = Menu.find_by_id(params[:id])
-    menu.move_higher
+    value = menu.how_many_brother_activated('higher')
+    value.times do
+      menu.move_higher
+    end
     redirect_to menus_path
   end
   
   # This method permit to move down a menu.
+  # how_many_brother_activated permit to move corectly all menus
   def move_down
     menu = Menu.find_by_id(params[:id])
-    menu.move_lower
+    value = menu.how_many_brother_activated('lower')
+    value.times do
+      menu.move_lower
+    end
     redirect_to menus_path
   end
   

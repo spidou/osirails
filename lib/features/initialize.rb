@@ -5,6 +5,7 @@ def init(config, path)
     
     # These variables store the feature's configuration from his config.yml file 
     name = yaml['name']
+    title = yaml['title']
     version = yaml['version']
     dependencies = yaml['dependencies']
     conflicts = yaml['conflicts']
@@ -36,7 +37,7 @@ def init(config, path)
     # This array store all menus in order than they will be displayed
     $menu_table ||= []
     
-    feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version)
+    feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version, :title => title)
     if ( feature.new_record? and feature.activate_by_default? ) or feature.kernel_feature?
       feature.activated = true
       feature.installed = true

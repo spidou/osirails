@@ -85,6 +85,39 @@ class Menu < ActiveRecord::Base
     self.children.size > 0 ? true : false
   end
     
+  # This method permit to get how many brother are not actived
+  def how_many_brother_activated(sign)
+    menus = Menu.mains.activated
+    menu_position = self.position
+    number = 0
+    brothers = []
+    
+    if sign == 'lower'
+      self.siblings.sort_by(&:position).each do |brother|
+        brothers << brother if menu_position < brother.position
+      end
+      brothers.each do |brother|
+        if menus.include?(brother)
+          return number += 1
+        else
+          number += 1
+        end
+      end
+    elsif sign == 'higher'
+      self.siblings.sort_by(&:position).each do |brother|
+        brothers << brother if menu_position > brother.position
+      end
+      brothers.reverse.each do |brother|
+        if menus.include?(brother)
+          return number += 1
+        else
+          number += 1
+        end
+      end
+    end    
+    number += 1
+  end  
+    
   # This method test if it possible to move up the menu
   def can_move_up?
     if self.ancestors.size > 0
@@ -116,35 +149,35 @@ class Menu < ActiveRecord::Base
   end
     
   private
-    # This method insert in the parents the menus   
-    def self.get_children(menus, current_menu_id, parents)
-      menus.each do |menu|
-        unless menu.id == current_menu_id
-          parents << menu
-          # If the menu has children, the get_children method is call.
-          if menu.children.size > 0
-            get_children(menu.children, current_menu_id, parents)
-          end
+  # This method insert in the parents the menus   
+  def self.get_children(menus, current_menu_id, parents)
+    menus.each do |menu|
+      unless menu.id == current_menu_id
+        parents << menu
+        # If the menu has children, the get_children method is call.
+        if menu.children.size > 0
+          get_children(menu.children, current_menu_id, parents)
         end
       end
-      parents
     end
+    parents
+  end
     
-    def create_permissions
-      Role.find(:all).each do |r|
-        MenuPermission.create(:menu_id => self.id, :role_id => r.id)
-      end
+  def create_permissions
+    Role.find(:all).each do |r|
+      MenuPermission.create(:menu_id => self.id, :role_id => r.id)
     end
+  end
       
   protected
-    # This method permit to return a valide position for a menu.
-    def position_in_bounds(position)
-      if position < 1 
-        1
-      elsif position > self.self_and_siblings.size
-        self.self_and_siblings.size
-      else
-        position
-      end
+  # This method permit to return a valide position for a menu.
+  def position_in_bounds(position)
+    if position < 1 
+      1
+    elsif position > self.self_and_siblings.size
+      self.self_and_siblings.size
+    else
+      position
     end
+  end
 end

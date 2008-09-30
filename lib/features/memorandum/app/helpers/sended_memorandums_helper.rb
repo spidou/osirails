@@ -29,7 +29,7 @@ module SendedMemorandumsHelper
   
   # This method permit to show received memorandums
   def show_received_memorandums
-    if Memorandum.can_view?(current_user) and controller.can_view?(current_user)
+    if Memorandum.can_view?(current_user) and controller.can_view?(current_user) and !current_user.employee.nil?
       show_received_memorandum = []
       show_received_memorandum << "<h1><span class='gray_color'>Lien</span> <span class='blue_color'>Utile</span></h1>"
       show_received_memorandum << "<ul>"
@@ -64,11 +64,12 @@ module SendedMemorandumsHelper
       service.ancestors.each do |ancestor|
         ancestors_name << "parent_service_#{ancestor.id} " unless ancestors_name.include?("parent_service_#{ancestor.id} ")
       end
+      indent = service.ancestors.size * 15
       list << "<option value='-1' selected='selected'>-- Selectionner un service --</option>" if value == 0 
       list << "<option value='0' title='Tous les services' id='service_option_0' class='parent_service_0'>Tous les services</option>" if value == 0 and action == "new"
       list << "<option value='0' title='Tous les services' id='service_option_0' class='parent_service_0' #{disabled}>Tous les services</option>" if value == 0 and action == "edit"
-      list << "<option value='#{service.id}' title='#{service.name}' id='service_option_#{service.id}' class='#{ancestors_name}parent_service_0' #{disabled} >#{service.name}</option>" if action == "edit"
-      list << "<option value='#{service.id}' title='#{service.name}' id='service_option_#{service.id}' class='#{ancestors_name}parent_service_0' >#{service.name}</option>" if action == "new"
+      list << "<option value='#{service.id}' title='#{service.name}' id='service_option_#{service.id}' class='#{ancestors_name}parent_service_0' #{disabled} style='margin-left:#{indent}px;'> #{service.name}</option>" if action == "edit"
+      list << "<option value='#{service.id}' title='#{service.name}' id='service_option_#{service.id}' class='#{ancestors_name}parent_service_0' style='margin-left:#{indent}px;' > #{service.name}</option>" if action == "new"
       if service.children.size > 0
         value += 1
         get_children(memorandum, service.children,list,action,value)

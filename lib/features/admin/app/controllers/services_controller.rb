@@ -85,7 +85,7 @@ class ServicesController < ApplicationController
   # DELETE /services/1
   def destroy
     @service = Service.find(params[:id])
-    if @service.can_delete?
+    if @service.can_destroy?
       @service.destroy
       flash[:notice] = "Le service est bien supprim&eacute;"
     else

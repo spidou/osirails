@@ -1,4 +1,5 @@
 name: rh
+title: Ressources Humaines
 version: 0.1
 search:
   Employee:

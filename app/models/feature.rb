@@ -237,7 +237,7 @@ class Feature < ActiveRecord::Base
 
   # Method that return the success message in function of  the  method passed in argument
   def display_flash_notice(method) 
-    message = "Le module '#{self.name}' a &eacute;t&eacute; "
+    message = "Le module '#{self.title}' a &eacute;t&eacute; "
     case method
     when "enable"
       message << "activ&eacute;"
@@ -259,32 +259,32 @@ class Feature < ActiveRecord::Base
     message = ""
     case method
     when "enable"
-      message = "Une erreur est survenue lors de l'activation du module '#{self.name}'. "
+      message = "Une erreur est survenue lors de l'activation du module '#{self.title}'. "
       unless self.activate_dependencies.empty?
         self.activate_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message << "Le module suivant est requis : "
         deps = []
         self.activate_dependencies.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end         
     when "disable"
-      message = "Une erreur est survenue lors de la désactivation du module '#{self.name}'. "
+      message = "Une erreur est survenue lors de la désactivation du module '#{self.title}'. "
       unless self.deactivate_children.empty?
         self.deactivate_children.size > 1 ? message << "D'autres modules dépendent de ce module : " : message  << "Un autre module dépend de ce module : "
         deps = []
         self.deactivate_children.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
     when "install" 
-      message = "Une erreur est survenue lors de l'installaton du module '#{self.name}'. "
+      message = "Une erreur est survenue lors de l'installaton du module '#{self.title}'. "
       unless self.able_to_install_dependencies.empty?
         self.able_to_install_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message <<  "Le module suivants est requis : "
         deps = []
         self.able_to_install_dependencies.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -292,7 +292,7 @@ class Feature < ActiveRecord::Base
         self.able_to_install_conflicts.size > 1 ? message << "<br/>Les conflits suivants ont été détectés : " : message << "<br />Le conflit suivant a été détecté : "
         deps = []
         self.able_to_install_conflicts.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -302,12 +302,12 @@ class Feature < ActiveRecord::Base
         end
       end
     when "uninstall"   
-      message = "Une erreur est survenue lors de la désinstallation du module '#{self.name}'. "
+      message = "Une erreur est survenue lors de la désinstallation du module '#{self.title}'. "
       unless self.able_to_uninstall_children.empty?
         message << "D'autres modules dépendent de ce module : "
         deps = []
         self.able_to_uninstall_children.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -317,7 +317,7 @@ class Feature < ActiveRecord::Base
         end
       end  
     when "remove"
-      message = "Une erreur est survenue lors de la suppression du module '#{self.name}'. "
+      message = "Une erreur est survenue lors de la suppression du module '#{self.title}'. "
     end
     return message
   end

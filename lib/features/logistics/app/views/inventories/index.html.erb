@@ -6,9 +6,9 @@
   </ul>
   <%= show_action_menu %>
 <% end %>
-<% if @inventories.size > 0 %>
   <h1>Liste des inventaires</h1>
   <div class='frame'>
+  <% if @inventories.size > 0 %>
     <table>
       <tr>
         <th>Inventaire</th>
@@ -27,5 +27,7 @@
           <%= "</tr>"%>
       <% end %>
       </table>
+    <% else %>
+      Il n'y a aucun inventaire actuellement
+    <% end %>    
     </div>
-<% end %>
