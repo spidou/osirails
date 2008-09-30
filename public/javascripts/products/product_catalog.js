@@ -4,7 +4,7 @@ function selectedValue(select) {
 }
 
 /* This method permit to refresh categories select and this dependence */
-function refreshCategories(select, max_level, value, has_categories) {
+function refreshCategories(select, max_level, value) {
     
     position = select.id.lastIndexOf("_");
     select_id = select.id.substr(position + 1);
@@ -15,23 +15,23 @@ function refreshCategories(select, max_level, value, has_categories) {
     document.getElementById('product_informations').style.display = 'none';
     document.getElementById('product_reference_informations').style.display = 'none';
     
-    
     if (id != 0){
-        if (has_categories == true) {
+       
             new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
                 {
                     method: 'get',
                     onSuccess: function(transport){
                         response = transport.responseText
+                                       
                         document.getElementById('select_'+next_select).innerHTML = response;
                         if (select_id < max_level) {
                             value += 1
-                            refreshCategories(document.getElementById('select_'+next_select), max_level, value, has_categories);
+                            refreshCategories(document.getElementById('select_'+next_select), max_level, value);
                         }
                     }
                 }
             )
-        }
+        
         if (value == 0) {
             new Ajax.Request('/product_reference_categories/'+id+'/product_references',
                 {

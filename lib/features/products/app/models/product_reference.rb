@@ -6,7 +6,8 @@ class ProductReference < ActiveRecord::Base
   belongs_to :product_reference_category, :counter_cache => true
   
   # Validation Macros
-  validates_presence_of :name, :message => "ne peut être vide"
+  validates_presence_of :name, :reference, :message => "ne peut être vide"
+  validates_uniqueness_of :reference, :message => "doit être unique"
   
   def after_create
     self.counter_update("create")
@@ -19,7 +20,6 @@ class ProductReference < ActiveRecord::Base
   # This method permit to update counter of parents categories
   def counter_update(index)
     category = ProductReferenceCategory.find(self.product_reference_category_id)
-    #if index == "create"
     case index
     when "create"
       category.ancestors.each do |parent_category|

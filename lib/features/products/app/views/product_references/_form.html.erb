@@ -1,7 +1,11 @@
 <%= reference.error_messages %>
 <h2>Rérérence</h2>
 <p>
-  <%= reference.label :name, "Nom de la référence :" %>
+  <%= reference.label :reference, "R&eacute;f&eacute;rence :" %>
+  <%= reference.text_field :reference %>
+</p>
+<p>
+  <%= reference.label :name, "Nom :" %>
   <%= reference.text_field :name %>
 </p>
 <p>

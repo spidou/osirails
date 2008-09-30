@@ -1,10 +1,15 @@
 <h2>R&eacute;f&eacute;rence</h2>
 <p>
-  <%= label_tag "Nom de la r&eacute;f&eacute;rence :" %>
+  <%= label_tag "R&eacute;f&eacute;rence :" %>
+  <strong><%= @reference.reference %></strong>
+</p>
+
+<p>
+  <%= label_tag "Nom :" %>
   <strong><%= @reference.name %></strong>
 </p>
 <p>
-  <%= label_tag "Description du produit :" %>
+  <%= label_tag "Description :" %>
   <strong><%= @reference.description %></strong>
 </p>
 <p>
