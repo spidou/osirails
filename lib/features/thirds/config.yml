@@ -1,4 +1,5 @@
 name: thirds
+title: Tiers
 version: 0.1
 dependencies:
   Admin:

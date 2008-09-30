@@ -54,6 +54,7 @@ function addServiceCell(select) {
 
             if (service_id == 0) {
             checkbox.disabled=true;
+            checkbox.checked=true;
             recursiveModeOn(select.options[select.selectedIndex].value);
             }
             else {

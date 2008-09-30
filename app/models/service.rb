@@ -49,7 +49,7 @@ class Service < ActiveRecord::Base
     end
   end
   
-  def can_delete?
+  def can_destroy?
     return false if self.employees.size > 0 or self.children.size > 0
     true
   end

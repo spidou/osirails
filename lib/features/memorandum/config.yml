@@ -1,4 +1,5 @@
 name: memorandum
+title: Notes de services
 version: 0.1
 dependencies:
 conflicts:
