@@ -5,7 +5,10 @@ class SendedMemorandumsController < ApplicationController
     if current_user.employee_id.nil?
       flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'&ecirc;tes pas associ&eacute;s &agrave; un employ&eacute;"
     end
-      @sended_memorandums = Memorandum.find_all_by_user_id(current_user.id).reverse.paginate :page => params[:memorandum],:per_page => 10
+     memorandum = []
+     memorandum += Memorandum.not_published(current_user).sort_by(&:updated_at)
+     memorandum += Memorandum.published(current_user).sort_by(&:published_at).reverse
+      @sended_memorandums = memorandum.paginate :page => params[:memorandum],:per_page => 10
   end
   
   # GET /sended_memorandums/show
@@ -47,8 +50,8 @@ class SendedMemorandumsController < ApplicationController
           flash[:notice] = "La note de service est bien cr&eacute;&eacute;e"
           redirect_to :action => 'index'
       else
-        flash[:error] = "La cr&eacute;ation de la note de service a &eacute;chou&eacute;e. V&eacute;rifier que la note de service est associ&eacute;e &agrave; un service."
-        render :action => 'new'
+        @sended_memorandum.errors.add("Destinataire") unless params.has_key?(:memorandums_services)
+        render :action => 'new', :locals => {:id => params[:id], :memorandums_services => params[:memorandums_services]}
       end
     end
   

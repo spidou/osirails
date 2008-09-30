@@ -14,8 +14,10 @@ module ProductReferenceManagerHelper
         actions << "<li>"+link_to("<img src='/images/reference_16x16.png' alt='Ajouter une r&eacute;f&eacute;rence' title='Ajouter une r&eacute;f&eacute;rence' /> Ajouter une r&eacute;f&eacute;rence", new_product_reference_path )+"</li>"
       end
       
-      if controller.can_view?(current_user)
-        actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Affich&eacute; Actifs", :action => "index")}</li>"
+      if controller.can_view?(current_user) # and (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
+        if (ProductReference.find(:all).size != ProductReference.find_all_by_enable(true).size) or (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
+          actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Affich&eacute; Actifs", :action => "index")}</li>"
+        end
       end
       actions << "</ul>"
     end

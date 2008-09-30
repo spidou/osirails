@@ -7,6 +7,11 @@ class Memorandum < ActiveRecord::Base
   
   # Validates
   validates_presence_of :title, :subject, :text, :signature, :message => ' ne peut etre vide.'
+  validates_associated :services, :memorandums_services
+  
+  # Name Scope
+  named_scope :not_published, lambda { |current_user| {:conditions => ["published_at is null and user_id = ?", current_user]} }
+  named_scope :published, lambda { |current_user| {:conditions => ["published_at is not null and user_id = ?", current_user]} }
 
   # This method permit to find employee's memorandum
   def Memorandum.find_by_services(services)

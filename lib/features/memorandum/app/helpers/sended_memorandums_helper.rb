@@ -49,9 +49,9 @@ module SendedMemorandumsHelper
   def show_structured_services(memorandum = "none", action = "new")
     services = Service.find_all_by_service_parent_id
     list = []
-    list << "<p><label>Liste des services : </label> <select onchange='addServiceCell(this)'>"
+    list << "<p><label>Destinataire(s) : </label> <select onchange='addServiceCell(this)'>"
     list = get_children(memorandum, services,list,action)
-    list << "</select></p>"
+    list << "</select> <i>(Vous devez obligatoirement choisir au moin un destinataire)</i></p>"
     list 
   end
   
