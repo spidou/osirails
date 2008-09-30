@@ -173,8 +173,8 @@
       </p>
       <p>
         <%= label_tag "Salaire brut actuel :"%>
-        <strong><%=h @job_contract.salaries == [] ? "Aucun" :  @job_contract.salaries.last['salary'].to_s + " €"  %>
-        &#40;net &#58; <%=h   @job_contract.salaries == [] ? "Aucun" : net(@job_contract.salaries.last['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
+        <strong><%=h @job_contract.salary.nil? ? "Aucun" :  @job_contract.salary['salary'].to_s + " €"  %>
+        &#40;net &#58; <%=h   @job_contract.salary.nil? ? "Aucun" : net(@job_contract.salary['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
         <% if @employee.job_contract.salaries.size>0 %>
           <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
         <% end %>
@@ -199,7 +199,9 @@
     
       
   <%end%>
-    
+   
+  <!-- Display Documents div -->
+  <%= display_documents(@employee, @documents) %>  
 </div>
   
     
