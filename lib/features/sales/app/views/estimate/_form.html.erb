@@ -16,7 +16,7 @@ function add_reference () {
 				onSuccess: function(transport) {
 					var ref_obj = transport.responseText.evalJSON()["product_reference"];
 					var list = document.getElementById('list_product').lastChild;
-					list.innerHTML += "<tr><td>" + ref_obj['id'] + "</td><td>" + ref_obj['name'] + "</td><td>?</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
+					list.innerHTML += "<tr><td>" + ref_obj['id'] + "</td><td><textarea name=\"product_reference[][description]\">" + ref_obj['name'] + '\n' + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_reference[][quantity]\" value=\"1\"></td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
 					var div_refs = document.getElementById('input_references');
 					var input = document.createElement('input');
 					input.setAttribute('type', 'hidden');
@@ -35,6 +35,7 @@ function add_reference () {
 
 <h2>Produit de la commande</h2>
 
+<% form_for @estimate, :url => { :controller => 'estimate' } do |e| %>
 <table id="list_product">
 	<tr>
 		<td>Référence</td>
@@ -48,9 +49,8 @@ function add_reference () {
 </table>
 
 <input type="text"> <button>Ajouter</button>
-<button onclick="osibox_open(1);">Ouvrir le catalogue de produits</button>
+<button onclick="osibox_open(1); return false;">Ouvrir le catalogue de produits</button>
 
-<% form_for @estimate, :url => { :controller => 'estimate' } do |e| %>
 <div id="input_references"></div>
 <%= e.submit 'Enregistrer' %>
 <% end %>

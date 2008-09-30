@@ -2,7 +2,7 @@ class OrdersController < ApplicationController
   # Callbacks
   before_filter :check, :except => [:index, :new, :create, :auto_complete_for_employee_fullname]
   
-  method_permission :add => ['auto_complete_for_employee_first_name']
+  method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
   
   def auto_complete_for_employee_fullname
     all_employees = Employee.find(:all)

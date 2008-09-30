@@ -40,12 +40,12 @@ module OrdersHelper
     	html += "		</div>"
     	html += "		<div class=\"steps_text\">"
     	html += "			<p>"
-    	html += "				<a href=\"#{order_path(@order)}/#{ot.name[5..-1]}/edit\">#{ot.step.title}</a>"
+    	html += "				<a href=\"#{order_path(@order)}/#{ot.name[5..-1]}\">#{ot.step.title}</a>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"
     	html += "</div>"
-#    	html += "<div class=\"disable\"></div>"
+    	# html += "<div class=\"disable\"></div>"
     end
     orders_steps.each do |ot|
        html += order_step_validation(ot) if ot.name == step_name
@@ -97,7 +97,7 @@ module OrdersHelper
         html += "<li "
         html += class_selected if tab_name == step.name
         html += link_to step.title, "#{order_path(@order)}/#{step.name[5..-1]}"
-#        html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
+        # html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
       end
     end
     html += "<li "

@@ -64,13 +64,15 @@
 		<th width="12%">P.U HT</th>
 		<th width="15%">Montant HT</th>
 	</tr>
-	<tr height="350">
-		<td>CALTEXDIV035</td>
+	<% @estimates.estimates_product_references.each do |p| %>
+	<tr>
+		<td>?</td>
 		<td style="text-align: left;">PLAQUE DE PORTE</td>
 		<td>2</td>
 		<td>45,00</td>
 		<td>90,00</td>
 	</tr>
+	<% end %>
 	<tr>
 		<td colspan="2" style="text-align: left;">
 			Informations:

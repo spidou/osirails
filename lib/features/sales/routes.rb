@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.add_routes do |map|
   map.resources :orders do |order|
     order.resource 'commercial', :controller => 'commercial'
-    order.resources 'estimates', :controller => 'estimate'
+    order.resources 'estimate', :controller => 'estimate'
     order.resource 'graphic_conception', :controller => 'graphic_conception'
     order.resource 'informations', :controller => 'informations'
     order.resource 'invoicing', :controller => 'invoicing'

@@ -3,6 +3,7 @@ class CreateEstimatesProductReferences < ActiveRecord::Migration
     create_table :estimates_product_references do |t|
       t.references :estimate
       t.references :product_reference
+      t.text :description
       t.integer :quantity
       t.float :unit_price
       t.timestamps

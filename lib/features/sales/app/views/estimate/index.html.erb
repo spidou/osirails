@@ -4,4 +4,7 @@
 	<h1>Devis signé et validé</h1>
 	
 	<h1>Autres devis</h1>
+	<% @estimates.each do |e| %>
+		<a href="<%= order_estimate_path(@order, e) %>">Devis (crée le <%= e.created_at %>)</a>
+	<% end %>
 </div>
