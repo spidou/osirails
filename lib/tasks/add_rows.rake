@@ -244,16 +244,15 @@ namespace :osirails do
       ProductReferenceCategory.create :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
       
       # default product references
-      reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id
-      reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id
-      reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id
-      ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.2.4", :product_reference_category_id => sous_famille14.id
-      ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille12.id
-      ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille12.id
-      ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille12.id
-      ProductReference.create :name => "Reference 1.3.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille13.id
-      ProductReference.create :name => "Reference 1.3.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille13.id
-      ProductReference.create :name => "Reference 1.3.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille13.id
+      reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 12233, :production_time => 2222, :delivery_cost_manpower => 1234, :delivery_time => 928, :information => 'Reference information'
+      reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 5424, :production_time => 524245, :delivery_cost_manpower => 2542, :delivery_time => 12452543, :information => 'Reference information'
+      reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 66, :production_time => 51, :delivery_cost_manpower => 879, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 17517, :production_time => 45245, :delivery_cost_manpower => 252544, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 7157, :production_time => 524525, :delivery_cost_manpower => 12524524534, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 7151715, :production_time => 245245, :delivery_cost_manpower => 4524, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.3.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 1751751, :production_time => 2225425252, :delivery_cost_manpower => 45245, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.3.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 255425, :production_time => 2452452222, :delivery_cost_manpower => 4524524, :delivery_time => 0, :information => 'Reference information'
+      ProductReference.create :name => "Reference 1.3.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 122828233, :production_time => 28282248, :delivery_cost_manpower => 452542, :delivery_time => 0, :information => 'Reference information'
       
       # default products
       Product.create :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id
