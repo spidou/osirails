@@ -204,12 +204,16 @@ namespace :osirails do
       # default customers and establishements
       customer = Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
         :payment_method_id => virement.id, :payment_time_limit_id => comptant.id
-      customer.establishments << establishment1 = Establishment.create(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
-      customer.establishments << establishment2 = Establishment.create(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
-      customer.establishments << establishment3 = Establishment.create(:name => "Super Etablissement", :establishment_type_id => station.id)
+      customer.establishments << establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      customer.establishments << establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      customer.establishments << establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
       establishment1.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       establishment2.address = Address.create(:address1 => "2 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
       establishment3.address = Address.create(:address1 => "3 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
+      
+      establishment1.save
+      establishment2.save
+      establishment3.save
       
       # default commodity categories
       metal = CommodityCategory.create :name => "Metal"
