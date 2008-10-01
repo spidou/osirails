@@ -15,22 +15,51 @@
 
 <% content_for :vertical_menu do %>
 <ul>
-  <li class="selected" title="Titre 1"><a href="#">Titre 1</a></li>
-  <li title="Titre 2"><a href="#">Administration de l'intranet'</a></li>
-  <li title="Titre 3"><a href="#">Titre 3</a></li>
+  <li title="Gestion de l'entreprise">					<a href="#">Gestion de l'entreprise</a>			</li>
+  <li class="selected" title="L'entreprise">		<a href="#">L'entreprise</a>								</li>
+  <li title="Ressources Humaines">							<a href="#">Ressources Humaines</a>					</li>
+	<li title="Ventes">														<a href="#">Ventes</a>											</li>
+	<li title="Production">												<a href="#">Production</a>									</li>
+	<li title="Achats">														<a href="#">Achats</a>											</li>
+	<li title="Equipements">											<a href="#">Equipements</a>									</li>
+	<li title="Finances">													<a href="#">Finances</a>										</li>
+	<li title="Bibliothèque">											<a href="#">Bibliothèque</a>								</li>
+	<li title="Administration de l'intranet">			<a href="#">Administration de l'intranet</a></li>
 </ul>
 <% end %>
 
 <% content_for :horizontal_menu do %>
 <a href="#">
-  <span title="Sous menu 3">Sous menu 3</span>
+  <span title="Etude commercial" class="selected" id="menu_horizontal_first">Etude commercial</span>
 </a>
 <a href="#">
-  <span title="Sous menu 2">Sous menu 2</span>
+  <span title="SAS de production">SAS de production</span>
 </a>
 <a href="#">
-  <span title="Sous menu 1" class="selected" id="menu_horizontal_first">Sous menu 1</span>
+  <span title="Production">Production</span>
 </a>
+<a href="#">
+  <span title="SAS de facturation">SAS de facturation</span>
+</a>
+<a href="#">
+  <span title="Facturation">Facturation</span>
+</a>
+<a href="#">
+  <span title="Cloturé recemment">Cloturé recemment</span>
+</a>
+<a href="#">
+  <span title="Cloturé recemment">Cloturé recemment</span>
+</a>
+<a href="#">
+  <span title="Cloturé recemment">Cloturé recemment</span>
+</a>
+<a href="#">
+  <span title="Cloturé recemment">Cloturé recemment</span>
+</a>
+<a href="#">
+  <span title="Cloturé recemment">Cloturé recemment</span>
+</a>
+
 <% end %>
 
 <% content_for :secondary_menu do %>
@@ -50,13 +79,117 @@
     <li><a href="#">Lien N°2</a></li>
     <li><a href="#">Lien N°3</a></li>
   </ul>
+  <ul>
+    <li><a href="#">Lien N°1</a></li>
+    <li><a href="#">Lien N°2</a></li>
+    <li><a href="#">Lien N°3</a></li>
+  </ul>
+  <ul>
+    <li><a href="#">Lien N°1</a></li>
+    <li><a href="#">Lien N°2</a></li>
+    <li><a href="#">Lien N°3</a></li>
+  </ul>
+  <ul>
+    <li><a href="#">Lien N°1</a></li>
+    <li><a href="#">Lien N°2</a></li>
+    <li><a href="#">Lien N°3</a></li>
+  </ul>
+  <ul>
+    <li><a href="#">Lien N°1</a></li>
+    <li><a href="#">Lien N°2</a></li>
+    <li><a href="#">Lien N°3</a></li>
+  </ul>
 </div>
 <div id="footer_secondary_menu">&nbsp;</div>
 <% end %>
+<h1>Titre h1 hors frame</h1>
+<div class="frame presentation_medium">
+	<h2>Titre h2 dans Frame</h2>
+	<h3>Informations</h3>
+	<p><label>Nom : </label><strong>MAREBAM (<a>voir fiche complète</a>) ejfezjfijezo ejiojeozjfoz ejfezjfijezo ejiojeozjfoz ejfezjfijezo ejiojeozjfoz ejfezjfijezo ejiojeozjfoz ejfezjfijezo ejiojeozjfoz ejfezjfijezo ejiojeozjfoz </strong></p>
+	<p><label>Secteur d'activité ayant un très long text juste pour m'embêter : </label><strong>Commerce</strong></p>
+	<p><label>Activité : </label><strong>Vendeur d'articles de sport en magasin spécialisé</strong></p>
+	<p><label>Enseignes : </label><strong>Décathlon, GO Sport</strong></p>
+	<p><label>Etablissements : </label><strong>10</strong></p>
+	<h3>Statistiques</h3>
+	<p><label>Nombre de ventes réalisées au total : </label><strong>30</strong></p>
+	<p><label>Client depuis : </label><strong>2ans et 3mois</strong></p>
+	<p><label>Note :</label>	<strong><img src="/themes/osirails-green/images/green_star.png" alt="étoile positive" />
+																<img src="/themes/osirails-green/images/green_star.png" alt="étoile positive" />
+																<img src="/themes/osirails-green/images/green_star.png" alt="étoile positive" />
+																<img src="/themes/osirails-green/images/black_star.png" alt="étoile négative" />
+																<img src="/themes/osirails-green/images/black_star.png" alt="étoile négative" />
+															</strong></p>
+	<h3>Historiques des dernières ventes</h3>
+	<table>
+		<tr>
+			<th>Date de facturation</th>
+			<th>&Eacute;tablissement</th>
+			<th>Produits</th>
+			<th>Prix total de vente</th>
+			<th>Ratio de la marge réalisée</th>
+		</tr>
+		<tr>
+			<td>22 Mai 2008</td>
+			<td>Décathlon Sainte Suzanne</td>
+			<td>Totem 6m, bandeaux lumineux ...</td>
+			<td>10.000€</td>
+			<td>30%</td>
+		</tr>
+		<tr>
+			<td>14 Mars 2008</td>
+			<td>Décathlon Sainte Suzanne</td>
+			<td>Totem 6m, bandeaux lumineux ...</td>
+			<td>10.000€</td>
+			<td>30%</td>
+		</tr>
+		<tr>
+			<td>05 Janvier 2008</td>
+			<td>Décathlon Sainte Suzanne</td>
+			<td>Totem 6m, bandeaux lumineux ...</td>
+			<td>10.000€</td>
+			<td>30%</td>
+		</tr>
+		<tr>
+			<td>21 Mai 2007</td>
+			<td>Décathlon Sainte Suzanne</td>
+			<td>Totem 6m, bandeaux lumineux ...</td>
+			<td>10.000€</td>
+			<td>30%</td>
+		</tr>
+		<tr>
+			<td>10 Mars 2007</td>
+			<td>Décathlon Sainte Suzanne</td>
+			<td>Totem 6m, bandeaux lumineux ...</td>
+			<td>10.000€</td>
+			<td>30%</td>
+		</tr>
+	</table>
+</div>
+	<div class="frame presentation_medium">
+	<h2>Titre h2 dans Frame</h2>
+	<h3>Informations</h3>
+	<p><label>Nom : </label><strong>MAREBAM (<a>voir fiche complète</a>)</strong></p>
+	<p><label>Secteur d'activité ayant un très long text juste pour m'embêter : </label><strong>Commerce</strong></p>
+	<p><label>Activité : </label><strong>Vendeur d'articles de sport en magasin spécialisé</strong></p>
+	<p><label>Enseignes : </label><strong>Décathlon, GO Sport</strong></p>
+	<p><label>Etablissements : </label><strong>10</strong></p>
+	</div>
+	<div class="frame">
+		<h2>Test de text autogénéré</h2>
+		<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce ipsum diam, viverra porta, semper eget, ullamcorper sed, ligula. Ut consectetuer, odio vulputate pulvinar consectetuer, justo nunc vulputate lacus, sed egestas diam neque quis neque. Nullam pharetra, <strong>Oxydium roxe</strong> sollicitudin accumsan, tellus mi rutrum metus, eget suscipit risus lorem vel mi. Praesent suscipit. Cras tincidunt pellentesque leo. Donec orci quam, consequat eu, pulvinar auctor, vehicula sodales, risus. Duis molestie semper nisi. Suspendisse potenti. Suspendisse justo magna, sagittis et, adipiscing eleifend, pellentesque ac, augue. Curabitur ante. Cras vel nibh ac ante cursus tincidunt.</p>
 
-<div class="frame">
-  <h2>Vue de Documents</h2>
-  <div class="document_view">
+		<p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed non dui at sapien pretium pellentesque. In lacinia felis eu tellus. Maecenas rhoncus cursus arcu. Maecenas sit amet mauris vel risus tempus dictum. Sed in erat nec justo volutpat consectetuer. Duis eleifend, diam quis lacinia varius, mauris turpis congue purus, quis blandit libero quam ut nisi. Etiam cursus sagittis purus. Fusce ullamcorper quam vel dui. Nullam dolor. Integer accumsan dui sed nisi. Donec blandit.</p>
+
+		<p>Phasellus vitae libero. Integer fermentum tristique felis. Morbi imperdiet. Pellentesque pede magna, tempus blandit, eleifend non, vestibulum sed, pede. Curabitur elit lorem, vestibulum sit amet, interdum ac, elementum et, mi. Suspendisse potenti. Integer fringilla nunc sit amet elit. Vestibulum ac nibh et quam condimentum pulvinar. Ut eu leo ut quam dictum malesuada. Vivamus sollicitudin quam vel justo aliquam varius. Nunc dapibus mi rutrum nisi. Integer varius neque. Nulla facilisi. Mauris mollis fermentum neque. Duis a mi.</p>
+
+		<p>Sed molestie luctus lorem. Vestibulum lobortis. Vivamus nec orci ac metus convallis ultricies. Quisque erat turpis, pretium et, eleifend et, rutrum sit amet, nisi. Proin fringilla suscipit libero. Aenean bibendum laoreet sem. Quisque adipiscing magna eu purus. Donec feugiat hendrerit tortor. Cras laoreet purus at pede. Suspendisse tincidunt, neque vitae venenatis bibendum, pede libero laoreet lacus, vitae consectetuer metus tellus et risus. Donec eget ipsum. Donec tincidunt sapien sit amet nibh. Ut urna. Fusce sem velit, ultrices at, fermentum lacinia, posuere ut, leo. Cras aliquet varius purus. Nullam quis massa a est viverra convallis.</p>
+
+		<p>Mauris placerat odio. Aenean est urna, aliquam non, accumsan posuere, suscipit sed, nunc. Aliquam rutrum mi eget mi. Integer ultricies pulvinar mi. Vivamus vestibulum. Mauris quis mauris at purus tempus bibendum. Aenean risus leo, malesuada quis, dapibus vitae, ultricies quis, magna. Vivamus vitae libero ut augue tristique vestibulum. Sed dui justo, venenatis eleifend, cursus et, tempor non, risus. In hac habitasse platea dictumst. Ut blandit dui id purus. In pede. Quisque vel nibh. Curabitur tincidunt. Donec neque metus, accumsan non, feugiat sit amet, adipiscing quis, nunc. Nullam varius, nisl vel feugiat auctor, massa enim mattis risus, id ultrices lacus pede eu ligula. Nam orci.</p>
+	</div>
+	<div class="frame presentation_medium">
+	<h3>Titre h3 dans Frame</h3>
+  <div class="document_view half">
     <h1>Write Title here</h1>
     <div class="document_view_content">
       <img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/>
@@ -77,7 +210,7 @@
       <img src="/images/file_extensions/pdf_75x75.png" alt="image pdf" title=""/><p>Write text here.</p>
     </div>
   </div>
-  <div class="document_view">
+  <div class="document_view half">
     <h1>Write Title here</h1>
     <div class="document_view_content">
       <img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/><p>Write text here.</p>
@@ -95,6 +228,9 @@
       <img src="/images/file_extensions/doc_75x75.png" alt="image doc" title=""/><p>Write text here.</p>
     </div>
     <div class="document_view_content">
+      <img src="/images/file_extensions/jpg_75x75.png" alt="image jpg" title=""/><p>Write text here.</p>
+    </div>
+		<div class="document_view_content">
       <img src="/images/file_extensions/jpg_75x75.png" alt="image jpg" title=""/><p>Write text here.</p>
     </div>
   </div>

@@ -752,6 +752,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	margin-left:-20px;
 	margin-top:10px;
 	margin-bottom:10px;
+	
 }
 
 #horizontal_menu a span {
@@ -1457,6 +1458,17 @@ div.tabs ul li a:hover {
 	text-align:center;
 	background:#eaeaea;
 	width:98.59%;
+}
+
+#catalog_loading {
+	text-align:right;
+	vertical-align:middle;
+}
+
+#catalog_loading span {
+	background: url("/images/loading_16x16.gif") no-repeat;
+	background:#aeaeae;
+	padding:5px 10px 5px 10px;
 }
 
 /*
