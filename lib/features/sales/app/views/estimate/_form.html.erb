@@ -1,6 +1,8 @@
 <%= osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1024px', :scroll => 'auto', :css => 'max-height: 500px;' %>
 
 <script type="text/javascript">
+taxes_vat = <%= ConfigurationManager.sales_taxes_vat %>;
+
 var catalog = document.getElementById('catalog');
 var div_elm = document.createElement('div');
 div_elm.innerHTML = "<input type=\"button\" onclick=\"add_reference();\" value=\"Ajouter la référence\" style=\"float :right;\">";
@@ -15,14 +17,7 @@ function add_reference () {
 				method: 'get',
 				onSuccess: function(transport) {
 					var ref_obj = transport.responseText.evalJSON()["product_reference"];
-					var list = document.getElementById('list_product').lastChild;
-					list.innerHTML += "<tr><td>" + ref_obj['id'] + "</td><td><textarea name=\"product_reference[][description]\">" + ref_obj['name'] + '\n' + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_reference[][quantity]\" value=\"1\"></td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td>" + ref_obj['production_cost_manpower'] + "</td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
-					var div_refs = document.getElementById('input_references');
-					var input = document.createElement('input');
-					input.setAttribute('type', 'hidden');
-					input.setAttribute('value', ref_obj['id']);
-					input.setAttribute('name', 'add_product_references[]');
-					div_refs.appendChild(input);
+					append_reference(ref_obj);
 					osibox_close();
 				}
 			});
@@ -31,11 +26,38 @@ function add_reference () {
 	};
 	return false;
 }
+
+function append_reference (ref_obj) {
+	var list = document.getElementById('list_product').lastChild;
+	list.innerHTML += "<tr><td>REF #</td><td><textarea name=\"product_references[][description]\">" + (ref_obj['name'] || '') + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_references[][quantity]\" class=\"quantity\" onkeyup=\"calculate(this)\" size=\"3\" value=\"1\" /></td><td><input type=\"text\" name=\"product_references[][unit_price]\" onkeyup=\"calculate(this)\" class=\"unit_price\" value=\"" + (ref_obj['production_cost_manpower'] || ref_obj['unit_price']) + "\" /></td><td class=\"total_price\"></td><td class=\"total_price_taxes\"></td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
+
+	all_tr = document.getElementById('list_product').getElementsByTagName('tr');
+	calculate(all_tr[all_tr.length-1].getElementsByClassName('quantity')[0]);
+
+	if (ref_obj['unit_price']) {
+		var div_refs = document.getElementById('input_references');
+		var input = document.createElement('input');
+		input.setAttribute('type', 'hidden');
+		input.setAttribute('value', ref_obj['id']);
+		input.setAttribute('name', 'product_references[][id]');
+		div_refs.appendChild(input);
+	};
+}
+
+function calculate (elm) {
+	var row_elm = elm.ancestors()[1];
+	var quantity = row_elm.getElementsByClassName('quantity')[0];
+	var unit_price = row_elm.getElementsByClassName('unit_price')[0];
+	var total_price = row_elm.getElementsByClassName('total_price')[0];
+	var total_price_taxes = row_elm.getElementsByClassName('total_price_taxes')[0];
+	total_price.innerHTML = parseFloat(unit_price.value) * parseInt(quantity.value);
+	total_price_taxes.innerHTML = parseFloat(total_price.innerHTML) + parseFloat(total_price.innerHTML) / 100 * taxes_vat;
+}
 </script>
 
 <h2>Produit de la commande</h2>
 
-<% form_for @estimate, :url => { :controller => 'estimate' } do |e| %>
+<% form_for @estimate, :url => order_estimate_path(@order, @estimate) do |e| %>
 <table id="list_product">
 	<tr>
 		<td>Référence</td>
@@ -53,4 +75,10 @@ function add_reference () {
 
 <div id="input_references"></div>
 <%= e.submit 'Enregistrer' %>
+<% end %>
+
+<% @estimate.estimates_product_references.each do |epr| %>
+	<script type="text/javascript">
+	append_reference('<%= epr.to_json %>'.evalJSON()["estimates_product_reference"])
+	</script>
 <% end %>

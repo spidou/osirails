@@ -10,7 +10,7 @@
 		<td width="25%"></td>
 		<td>
 			<strong><%= @customer.name %></strong><br />
-			ADRESSE
+			<%= @order.establishment.full_address %>
 		</td>
 	</tr>
 </table>
@@ -48,7 +48,7 @@
 		<td><%= Date.today %></td>
 		<td><%= @order.commercial.fullname %></td>
 		<td><%= @customer.id %></td>
-		<td>?</td>
+		<td><%= @estimate.id %></td>
 		<td>1 mois</td>
 		<td><%= @order.title %></td>
 	</tr>
@@ -64,13 +64,13 @@
 		<th width="12%">P.U HT</th>
 		<th width="15%">Montant HT</th>
 	</tr>
-	<% @estimates.estimates_product_references.each do |p| %>
+	<% @estimate.estimates_product_references.each do |p| %>
 	<tr>
 		<td>?</td>
-		<td style="text-align: left;">PLAQUE DE PORTE</td>
-		<td>2</td>
-		<td>45,00</td>
-		<td>90,00</td>
+		<td style="text-align: left;"><%= p.description %></td>
+		<td><%= p.quantity %></td>
+		<td><%= p.amount %></td>
+		<td><%= p.amount_with_taxes %></td>
 	</tr>
 	<% end %>
 	<tr>
@@ -81,7 +81,7 @@
 			<table>
 				<tr>
 					<th width="50%">Total HT</th>
-					<td width="50%">90,00</td>
+					<td width="50%"><%= @estimate.total %></td>
 				</tr>
 				<tr>
 					<td>Remise</td>
@@ -97,11 +97,11 @@
 				</tr>
 				<tr>
 					<td>TVA</td>
-					<td>8,5 %</td>
+					<td><%= ConfigurationManager.sales_taxes_vat %> %</td>
 				</tr>
 				<tr>
 					<td>Total taxes</td>
-					<td>0</td>
+					<td><%= @estimate.summon_of_taxes %></td>
 				</tr>
 				<tr>
 					<td>Acompte</td>
@@ -109,7 +109,7 @@
 				</tr>
 				<tr>
 					<th>Total TTC</th>
-					<td>90,00</td>
+					<td><%= @estimate.total_with_taxes %></td>
 				</tr>
 			</table>
 		</td>

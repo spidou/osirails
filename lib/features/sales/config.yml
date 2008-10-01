@@ -59,3 +59,7 @@ steps:
         title: Conception Graphique
   invoicing:
     title: Facturation
+configurations:
+  taxes_vat:
+    description: Taxe TVA
+    value: 8.5
