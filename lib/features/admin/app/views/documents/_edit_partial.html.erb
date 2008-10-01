@@ -4,6 +4,7 @@
 <%end%>
 
 <!-- Affichage de l'image -->
+<div style="width:200px">
 <% unless document_versions.empty? %>
   <%= image_tag(url_for(:controller => "documents",:action => "preview_image", :model => document_versions.first.class, :id => document_versions.first.id)) %> <!-- :id => document_versions.first.id -->
   <%= link_to("download", :controller => "Downloads", :action => "show", 
@@ -13,6 +14,7 @@
    <%= link_to("download", :controller => "Downloads", :action => "show", 
       :document => ({:id => document.id, :type => document.class.name} ))%>
 <% end %> 
+</div>
 
 <!-- form  -->
 <iframe id="upload_frame" name="upload_frame" style="display:none;"> 

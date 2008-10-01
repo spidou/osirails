@@ -8,7 +8,7 @@ class Document < ActiveRecord::Base
   belongs_to :has_document, :polymorphic => true
   
   ## Validates
-#  validates_presence_of :name
+  #  validates_presence_of :name
   
   ## Instance accessor
   attr_accessor :is_new
@@ -83,6 +83,15 @@ class Document < ActiveRecord::Base
     end
   end
   
+  ## Create preview format
+  def create_preview_format
+    require 'RMagick'
+    path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
+    image = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
+    image.resize_to_fit!(770, 450)
+    image.write("#{path}/#{self.id}_resize.#{self.extension}")
+  end
+  
   ## Return document path
   def path
     #    unless self.class == OrdersSteps
@@ -139,10 +148,25 @@ class Document < ActiveRecord::Base
       unless document[:upload].nil?
         unless document[:upload][:datafile].blank?
           self.file = document[:upload][:datafile]
+          self.create_preview_format
           if self.valid?
             ## Store tags list
             tag_list = document.delete("tag_list").split(",")
-        
+            
+            ## Creation of first_version
+            if self.document_versions.empty?
+              path = "documents/" + self.path + "/" +  self.id.to_s + "/"
+            
+              file_response = FileManager.upload_file(:file => File.open("documents/" + self.path + self.id.to_s+ "." + self.extension, "r"), :name => "1", 
+                :directory => path, :file_type_id => self.file_type.id)
+              
+              if file_response
+                @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)
+                self.document_versions << @document_version
+                @document_version.create_thumbnails(self.id)
+              end
+            end
+            
             ## Creation of document_version          
             path = "documents/" + self.path + "/" +  self.id.to_s + "/"
             file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s, 

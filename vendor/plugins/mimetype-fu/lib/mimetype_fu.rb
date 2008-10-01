@@ -4,7 +4,7 @@ class File
     if file.class == File
       mime = find_mimetype(file.path)
     elsif file.class == ActionController::UploadedTempfile
-      mime = find_mimetype(File.open(file))
+      mime = find_mimetype(file.path)
     elsif file.class == String
       mime = find_mimetype(file)
     elsif file.class == StringIO or file.class == ActionController::UploadedStringIO

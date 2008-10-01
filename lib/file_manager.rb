@@ -12,9 +12,9 @@ class FileManager
       options[:directory] = "tmp/"
     end
     if options[:name].nil?
-      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s
+      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(options[:file][:datafile]).split("/")[1].split(";")[0].to_s
     else
-      name = options[:name] + "." + File.mime_type?(File.open(options[:file][:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s
+      name = options[:name] + "." + File.mime_type?(options[:file][:datafile].path, "r").split("/")[1].split(";")[0].to_s
     end
     valid_extension = false
     

@@ -60,7 +60,7 @@ module ContactsHelper
         html += "<p>"
         html += contact.first_name + " " + contact.last_name + "&nbsp;"
         if contact_controller.can_view?(current_user) and Contact.can_view?(current_user)
-          html += eval "link_to 'Plus d infos', #{owner.class.name.tableize.singularize}_contact_path(owner, contact, :owner_type => owner.class.name)"
+          html += eval "link_to 'Plus d&#39;infos', #{owner.class.name.tableize.singularize}_contact_path(owner, contact, :owner_type => owner.class.name)"
         end
         if contact_controller.can_delete?(current_user) and Contact.can_delete?(current_user)
           html += "&nbsp;" + link_to("Supprimer", [owner,  contact], :method => :delete, :confirm => 'Etes vous sûr ?')

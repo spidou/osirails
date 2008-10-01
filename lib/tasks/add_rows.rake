@@ -277,6 +277,7 @@ namespace :osirails do
       FileTypeExtension.create(:name => "jpeg")
       FileTypeExtension.create(:name => "png")
       FileTypeExtension.create(:name => "gif")
+      FileTypeExtension.create(:name => "tar.gz")
       
       ## default file types
       # for employees

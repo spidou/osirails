@@ -56,7 +56,8 @@ module DocumentsHelper
   ## Display documents lists
   def display_documents(owner, documents)
     document_controller = Menu.find_by_name('documents')
-    
+    html = ""
+    if document_controller.can_list?(current_user) and Document.can_list?(current_user, owner.class.name)
     html = "<h2> Documents </h2>"
     unless documents.empty?
       owner.class_documents.each_pair do |type, documents|
@@ -73,9 +74,9 @@ module DocumentsHelper
           if document_controller.can_view?(current_user) and Document.can_view?(current_user, owner.class.name)
             html += "&nbsp;" + link_download_last_version(document)
           end
-          if document_controller.can_delete?(current_user) and Document.can_delete?(current_user, owner.class.name)
-            html += "&nbsp;" + link_to("Supprimer", [owner,  document], :method => :delete, :confirm => 'Etes vous sûr ?')
-          end
+#          if document_controller.can_delete?(current_user) and Document.can_delete?(current_user, owner.class.name)
+#            html += "&nbsp;" + link_to("Supprimer", [owner,  document], :method => :delete, :confirm => 'Etes vous sûr ?')
+#          end
           html += "</p>"
           html += "</div>"
         end
@@ -86,7 +87,7 @@ module DocumentsHelper
       html += "Aucun documents"
       html += "</p>"
     end
-    
+  end
     return html 
   end
 

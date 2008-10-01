@@ -351,7 +351,7 @@ class Feature < ActiveRecord::Base
 
   # Class method to upload a tar.gz to the the server and untar it
   def self.add(options)
-    begin
+#    begin
       # Choose the directory and the valid extension
       options[:directory] = "tmp/features/"
       options[:extensions] = ["tar.gz"]
@@ -380,11 +380,11 @@ class Feature < ActiveRecord::Base
       # Reload all the environnement configuration (don't modify !)
       # $config is set in environment.rb
       load File.join(RAILS_ROOT, 'config', 'environment.rb')
-    rescue Exception => exc
-      puts "ERROR: " + exc
-      return false
-    end
-    true
+#    rescue Exception => exc
+#      puts "ERROR: " + exc
+#      return false
+#    end
+#    true
   end
 
 
