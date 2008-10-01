@@ -944,6 +944,7 @@ table.no-style tr:hover > td > a {
 	text-align:left;
 	color:#333;
 	text-indent:0;
+	text-align:right;
 }
 
 .frame.presentation_small label {
