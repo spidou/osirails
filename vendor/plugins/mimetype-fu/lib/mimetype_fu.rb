@@ -5,7 +5,7 @@ class File
       mime = find_mimetype(file.path)
     elsif file.class == String
       mime = find_mimetype(file)
-    elsif file.class == StringIO or file.class == UploadedStringIO
+    elsif file.class == StringIO or file.class == ActionController::UploadedStringIO
       temp = File.open(Dir.tmpdir + '/upload_file.' + Process.pid.to_s, "wb")
       temp << file.string
       temp.close
