@@ -23,7 +23,7 @@
 		<th>Fax</th>
 	</tr>
 	<tr>
-		<td>?</td>
+		<td><%= @order.establishment.name %></td>
 		<td>0262 ?</td>
 		<td>0262 ?</td>
 	</tr>
@@ -37,19 +37,19 @@
 	</tr>
 	<tr height="16px"><td></td></tr>
 	<tr>
-		<th>Date</th>
-		<th>Commercial</th>
-		<th>N° Client</th>
 		<th>N° Devis</th>
-		<th>Durée de validité</th>
+		<th>N° Client</th>
+		<th>Date</th>
+		<th>Validité</th>
+		<th>Commercial</th>
 		<th>Référence de Commande</th>
 	</tr>
 	<tr>
-		<td><%= Date.today %></td>
-		<td><%= @order.commercial.fullname %></td>
-		<td><%= @customer.id %></td>
 		<td><%= @estimate.id %></td>
-		<td>1 mois</td>
+		<td><%= @customer.id %></td>
+		<td><%= @estimate.created_at.to_date %></td>
+		<td><%= @estimate.validity_date %></td>
+		<td><%= @order.commercial.fullname %></td>
 		<td><%= @order.title %></td>
 	</tr>
 </table>
@@ -85,15 +85,11 @@
 				</tr>
 				<tr>
 					<td>Remise</td>
-					<td>0</td>
+					<td><%= @estimate.reduction %></td>
 				</tr>
 				<tr>
 					<td>Frais de port</td>
-					<td>0</td>
-				</tr>
-				<tr>
-					<td>Escompte</td>
-					<td>0</td>
+					<td><%= @estimate.carriage_costs %></td>
 				</tr>
 				<tr>
 					<td>TVA</td>
@@ -105,7 +101,7 @@
 				</tr>
 				<tr>
 					<td>Acompte</td>
-					<td>0</td>
+					<td><%= @estimate.account %></td>
 				</tr>
 				<tr>
 					<th>Total TTC</th>

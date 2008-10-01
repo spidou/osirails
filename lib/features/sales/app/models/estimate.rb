@@ -13,9 +13,7 @@ class Estimate < ActiveRecord::Base
   end
   
   def total_with_taxes
-    result = 0
-    self.estimates_product_references.each { |epr| result += epr.amount_with_taxes }
-    result
+    total + total / 100 * ConfigurationManager.sales_taxes_vat
   end
   
   def summon_of_taxes

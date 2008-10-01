@@ -14,10 +14,20 @@ class EstimateController < ApplicationController
   end
 
   def edit
+    unless can_edit?(current_user)
+      redirect_to :action => 'show'
+      return
+    end
+    
     @estimate = Estimate.find(params[:id])
   end
 
   def show
+    if can_edit?(current_user)
+      redirect_to :action => 'edit'
+      return
+    end
+    
     @estimate = Estimate.find(params[:id])
     respond_to do |format|
       format.html

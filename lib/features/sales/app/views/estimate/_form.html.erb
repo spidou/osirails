@@ -55,9 +55,28 @@ function calculate (elm) {
 }
 </script>
 
+<% form_for @estimate, :url => order_estimate_path(@order, @estimate) do |e| %>
+
+<h2>Conditions commerciales</h2>
+<p>
+<%= e.label :validity_date, 'Date de fin de validité' %>
+<%= e.text_field :validity_date %>
+</p>
+<p>
+<%= e.label :carriage_costs, 'Frais de port' %>
+<%= e.text_field :carriage_costs %>
+</p>
+<p>
+<%= e.label :reduction, 'Remise' %>
+<%= e.text_field :reduction %>
+</p>
+<p>
+<%= e.label :account, 'Acompte' %>
+<%= e.text_field :account %>
+</p>
+
 <h2>Produit de la commande</h2>
 
-<% form_for @estimate, :url => order_estimate_path(@order, @estimate) do |e| %>
 <table id="list_product">
 	<tr>
 		<td>Référence</td>
@@ -78,7 +97,7 @@ function calculate (elm) {
 <% end %>
 
 <% @estimate.estimates_product_references.each do |epr| %>
-	<script type="text/javascript">
-	append_reference('<%= epr.to_json %>'.evalJSON()["estimates_product_reference"])
-	</script>
+<script type="text/javascript">
+append_reference('<%= epr.to_json %>'.evalJSON()["estimates_product_reference"])
+</script>
 <% end %>
