@@ -2,7 +2,7 @@ class CreateEstimate < ActiveRecord::Migration
   def self.up
     create_table :estimates do |t|
       t.references :step_estimate
-      t.boolean :validated
+      t.boolean :validated, :default => false
       t.date :validity_date
       t.float :carriage_costs, :default => 0
       t.float :reduction, :default => 0

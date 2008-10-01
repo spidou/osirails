@@ -93,12 +93,11 @@ module OrdersHelper
     html += class_selected if tab_name == 'informations'
     html +="><a href=\"/orders/#{@order.id}/informations/\">Informations générales</a></li>"
     @order.steps.each do |step|
-      if step.parent.nil?
-        html += "<li "
-        html += class_selected if tab_name == step.name
-        html += link_to step.title, "#{order_path(@order)}/#{step.name[5..-1]}"
-        # html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
-      end
+      next if step.parent
+      html += "<li "
+      html += class_selected if tab_name == step.name
+      html += link_to step.title, "#{order_path(@order)}/#{step.childrens.first.name[5..-1] unless step.childrens.empty?}"
+      # html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
     end
     html += "<li "
     html += class_selected if tab_name == 'logs'
