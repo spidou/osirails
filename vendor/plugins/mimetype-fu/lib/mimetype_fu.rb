@@ -3,13 +3,15 @@ class File
   def self.mime_type?(file)
     if file.class == File
       mime = find_mimetype(file.path)
+    elsif file.class == ActionController::UploadedTempFile
+      mime = find_mimetype(File.open(file))
     elsif file.class == String
       mime = find_mimetype(file)
     elsif file.class == StringIO or file.class == ActionController::UploadedStringIO
       temp = File.open(Dir.tmpdir + '/upload_file.' + Process.pid.to_s, "wb")
       temp << file.string
       temp.close
-      mime = `file -bir #{temp.path}`.strip
+      mime = find_mimetype(temp.path)
       mime = mime.gsub(/^.*: */,"")
       mime = mime.gsub(/;.*$/,"")
       mime = mime.gsub(/,.*$/,"")
