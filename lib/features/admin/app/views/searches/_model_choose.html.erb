@@ -5,11 +5,11 @@
     <%= "<input type=\"hidden\" id=\"parent_name#{line}\" value=\"\" name=\"criteria[#{line}][parent]\"/>" %>
     <%= "<span id=\"actions#{line}\" ></span>" %>
     <%= "<span id=\"input_type#{line}\"></span>" %>
-    <%= "<span id=\"delete_link#{line}\" >" + link_to_remote("<img src=\"/images/delete_16x16.png \"/>",:url=>{:action=>"criterion_delete", :model=> model, :line=>line.to_s},:href=>(url_for :action=>"criterion_delete")) %></span>
+    <%= "<span id=\"delete_link#{line}\" >" + link_to_remote("<img src=\"/images/delete_16x16.png \" alt=\"Supprimer\" title=\"supprimer un critère\"/>",:url=>{:action=>"criterion_delete", :model=> model, :line=>line.to_s},:href=>(url_for :action=>"criterion_delete")) %></span>
     <% line = (line.to_i + 1).to_s%> 
     
    </p>  
-    <span id="add_link" style="display:none;"><%=link_to_remote("<img src=\"/images/add_16x16.png \"/>",:url=>{:action=>"criterion_add",:model=> model, :line=> line.to_s},:href=>(url_for :action=>"criterion_add")) %></span>
+    <span id="add_link" style="display:none;"><%=link_to_remote("<img src=\"/images/add_16x16.png\" alt=\"Ajouter\" title=\"Ajouter un critère\" />",:url=>{:action=>"criterion_add",:model=> model, :line=> line.to_s},:href=>(url_for :action=>"criterion_add")) %></span>
  
   
 </div>

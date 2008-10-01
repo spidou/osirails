@@ -4,33 +4,35 @@
      <%= javascript_include_tag 'search' %>
      <%= javascript_include_tag :defaults %> 
 <% end %>
+
+
+
 <%form_remote_tag :url =>  "searches/update", :update => "search_result"  do%>
 <div class="frame presentation_medium">
   <h2>Section</h2>
   <p>
-    <input type="hidden" id="choosen_model" value=""/>
-    <select id="model_select" name="model[name]" onchange="has_criteria(this);">
-      <option selected="true">Veuillez choisir une section</option>  
-      <% @searches.each_pair do |feature,models| %>
-        <%="<optgroup label='#{ feature }'"%>
-        <% models.each do |model|%>
-          <%="<option value='#{ feature },#{ model }'> #{ model }"%></option>
-        <% end %>
-      <% end %>
-    </select>
+    <!--<input type="hidden" id="choosen_model" value=""/>-->
     
+    <!--Small hack to catch the model name with the controller object -->
+    <% choose_model = params[:choosen_model].split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless params[:choosen_model].nil?%>
+    <%= "<input style='display:none;' type='checkbox' id='hidden_model' value='#{choose_model}' />"%>
+    <!--observe field for preselected model => advanced search -->
+    <%=observe_field("hidden_model", :with => "'model=' + value" ,:url=>{:action=>"model_choose",:line=>0},:href=>(url_for :action=>"model_choose")) %>
+    
+    <%= model_select(@searches,choose_model)%>
     <%=observe_field("model_select",:on=>"onselect",:with => "'model=' + value" ,:url=>{:action=>"model_choose",:line=>0},:href=>(url_for :action=>"model_choose")) %>
   </p>
-
-  <%="<h2>Crit&egrave;res</h2>" %>
-  <p id="search_type" style="display:none;">
-    respecter 
-    <select name="search_type">
-      <option value="or">l&apos;un des crit&egrave;res</option>
-      <option value="and">tous les crit&egrave;res</option>
-      <option value="not">aucun des crit&egrave;res</option>
-    </select>
-  </p>
+  <div id="search_type" style="display:none;">
+    <h2>Crit&egrave;res</h2>
+    <p>
+      respecter 
+      <select name="search_type">
+        <option value="or">l&apos;un des crit&egrave;res</option>
+        <option value="and">tous les crit&egrave;res</option>
+        <option value="not">aucun des crit&egrave;res</option>
+      </select>
+    </p>
+  </div>  
   <div id="criteria">
     <div id="criteria_list">
     </div>
@@ -39,6 +41,8 @@
     <%=submit_tag("rechercher")%>
   <p>
 <% end %>
-<div id="search_result">
-</div>
+  <div id="search_result">
+  </div>
+<!-- method call to preselect model if using advanced search-->
+<script> loading_function();</script>
 </div>

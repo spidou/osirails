@@ -165,4 +165,11 @@ module ApplicationHelper
       formated_memorandum << memorandum_signature+"</div>"
   end
   
+  def contextual_search()
+    html= "<p>"
+    html+="<input onfocus=\"this.value='';\" onblur=\"this.value='Rechercher';\" id=\"input_search\" type=\"text\" value=\"Rechercher\" style=\"color:grey;\"/>"
+    html+= link_to( "<img id=\"search_image\" src= \"/images/view_12x12.png\" alt=\"bouton de recherche\" title=\"Rechercher\" />")
+    html+= link_to( "Recherche avancée",{ :controller => 'search', :method => 'put', :choosen_model =>controller},{:class => 'help'})
+    html+="</p>"
+  end
 end

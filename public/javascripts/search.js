@@ -1,3 +1,24 @@
+function loading_function()
+{
+  model = document.getElementById('hidden_model').value;
+  select = document.getElementById('model_select');
+   
+  for(i=0;i<select.options.length;i++)
+  {
+    if(select.options[i].text==model)
+    {
+      select.selectedIndex=i;
+      if(select.options[i].value.split(",").length>1)
+      {
+        document.getElementById('hidden_model').value = select.options[i].value;
+        document.getElementById('hidden_model').click();
+      }
+    }
+  }
+}
+
+
+
 function action_choose(select,line,month)
 { 
   document.getElementById("blank" + line).disabled=true;

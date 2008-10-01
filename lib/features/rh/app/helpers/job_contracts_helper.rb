@@ -15,7 +15,8 @@ module JobContractsHelper
   end
   
   def employee_state_inactive(default_job_contract)
-    html="<select id='job_contract_employee_state_inactive' name='job_contract[employee_state_inactive]'"
+    is_gone?(default_job_contract) ? disabled = "" : disabled = "disabled='disabled'"
+    html="<select id='job_contract_employee_state_inactive' name='job_contract[employee_state_inactive]' #{disabled}>"
       EmployeeState.find(:all,:conditions => ["active=?",0]).each do |state|
         if default_job_contract.nil?  
           params[:job_contract][:employee_state_id]== state.id ? selected = "selected='selected'" : selected = ""
@@ -29,7 +30,7 @@ module JobContractsHelper
   
   def is_gone?(job_contract)
     return false if job_contract.nil?
-    return !job_contract.employee_state.active
+    return !job_contract.employee_state.active unless job_contract.employee_state.nil?
   end
   
 end

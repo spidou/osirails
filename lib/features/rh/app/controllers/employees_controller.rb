@@ -49,6 +49,7 @@ class EmployeesController < ApplicationController
       @jobs = Job.find(:all)
       @employee.address = Address.new
       @address = @employee.address
+      @documents = @employee.documents
     else
       error_access_page(403)
     end
@@ -84,6 +85,8 @@ class EmployeesController < ApplicationController
       @services = Service.find(:all)
       @jobs = Job.find(:all) 
       
+
+      
        # @error is use to know if all form are valids
       @error = false
       
@@ -105,13 +108,16 @@ class EmployeesController < ApplicationController
       params[:address]['address1'] = params[:employee]['address']['address1']
       params[:address]['address2'] = params[:employee]['address']['address2']
       employee.delete('address')
-
+      
+      docs = employee.delete('documents')
+      
       # create employees ressources
       @employee = Employee.new(employee)
       @job = Job.new(params[:job]) 
       @employee.address = Address.new(params[:address])
       @employee.iban = Iban.new(params[:iban])
-  
+      @documents = @employee.documents
+      
       params[:numbers].each_value do |number|
         number['visible'] = false if number['visible'].nil?
         @employee.numbers << Number.new(number) unless number.blank?
@@ -120,11 +126,11 @@ class EmployeesController < ApplicationController
       if Document.can_add?(current_user, @employee.class)
         if params[:new_document_number]["value"].to_i > 0
           documents = params[:employee][:documents].dup
-          @document_objects = Document.create_all(documents, @customer)
+          @document_objects = Document.create_all(documents, @employee)
         end
         document_params_index = 0
         params[:new_document_number]["value"].to_i.times do |i|
-          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:document][:documents]["#{i + 1}"][:valid] == "false"
+          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:employee][:documents]["#{i + 1}"][:valid] == "false"
         end
         ## Test if all documents enable are valid
         unless @document_objects.nil?
@@ -138,7 +144,7 @@ class EmployeesController < ApplicationController
       
       
       # save or show errors 
-      if @employee.save # and job == true
+      if @employee.save and @error == false # and job == true
         
         # save the employee's documents
         unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
@@ -174,6 +180,8 @@ class EmployeesController < ApplicationController
         redirect_to(@employee)
       else
         params[:employee]['numbers'] = params[:numbers]
+        params[:employee]['documents'] = docs
+        
         render :action => "new" 
       end
     else
@@ -196,6 +204,8 @@ class EmployeesController < ApplicationController
       @numbers_reloaded.nil? ? @numbers = @employee.numbers : @numbers = @numbers_reloaded
       @address = @employee.address
       @number_error = false
+      @error = false
+      @documents = @employee.documents
       @errors_messages = []
       
       # put numbers another place for a separate création
@@ -239,7 +249,7 @@ class EmployeesController < ApplicationController
       @employee.iban.update_attributes(params[:iban]) 
       @employee.address.update_attributes(params[:address])
       
-      # raise params[:employee][:documents].inspect
+
       if Document.can_add?(current_user, @employee.class)
         if params[:new_document_number]["value"].to_i > 0
           documents = params[:employee][:documents].dup
@@ -261,10 +271,10 @@ class EmployeesController < ApplicationController
       
       
       # delete the documents in params
-      params[:employee].delete('documents')
+      docs = params[:employee].delete('documents')
       
       # save or show errors
-      if @employee.update_attributes(params[:employee]) and @number_error == false
+      if @employee.update_attributes(params[:employee]) and @number_error == false and @error == false
         
         # save the employee's documents
         unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
@@ -327,7 +337,8 @@ class EmployeesController < ApplicationController
         
         @numbers_reloaded = @numbers
         params[:employee]['numbers'] = params[:numbers]
-
+        params[:employee]['documents'] = docs
+          
         render :action => "edit"
       end
     else

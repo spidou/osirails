@@ -11,17 +11,16 @@
       </p>
       <p class="text_form">
         <%= j.label :mission, "Mission :"%>
-        <%= j.text_area :mission %>
+        <%= j.text_area :mission, {:rows => 5} %>
       </p>
       <p class="text_form">
         <%= j.label :activity, "Activités :"%>
-        <%= j.text_area :activity%>
+        <%= j.text_area :activity, {:rows => 5}%>
       </p>
       <p class="text_form">
         <%= j.label :goal, "Objectifs :"%>
-        <%= j.text_area :goal%>
+        <%= j.text_area :goal, {:rows => 5}%>
       </p>
       <%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close()'%>
-      <%=link_to_remote "Annuler",:url=>{:action=>"job_form_cancel"},:href=>(url_for :action=>"job_form_cancel")%>
       <%end%>
     </div>

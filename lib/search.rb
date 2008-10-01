@@ -178,4 +178,12 @@ end
   end
   
   #####################################################
+  
+  def self.include_model?(hash,model)
+    hash.values.each do |h_model|
+      return true if h_model == model
+    end
+    return false
+  end
+  
 end
