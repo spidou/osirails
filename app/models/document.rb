@@ -75,7 +75,7 @@ class Document < ActiveRecord::Base
   ## Create thumbnails
   def create_thumbnails
     require 'RMagick'
-    if Document.image_extensions.include?(self.extension)     
+    if Document.image_extensions.include?(self.extension)
       path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
       thumbnail = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
       thumbnail.crop_resized!(75, 75, Magick::NorthGravity)

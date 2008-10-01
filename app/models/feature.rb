@@ -351,40 +351,41 @@ class Feature < ActiveRecord::Base
 
   # Class method to upload a tar.gz to the the server and untar it
   def self.add(options)
-#    begin
-      # Choose the directory and the valid extension
-      options[:directory] = "tmp/features/"
-      options[:extensions] = ["tar.gz"]
-      # Up the archive to the server
-      raise "Error file upload" unless FileManager.upload_file(options)
-      # Get the name file
-      file_name = options[:file]['datafile'].original_filename
-      # List the archive
-      raise "Can't open the archive" unless system("cd " + options[:directory] + " && tar -tf " + file_name + " > list_archive.txt")
-      # Get the directory name of the new feature
-      feature_dir_name = File.open(File.join('tmp', 'features', 'list_archive.txt')).read.split("/").first
-      # Untar the archive
-      raise "Can't untar" unless system("cd " + options[:directory] + " && tar -xzvf " + file_name )
-      # Open the yaml file config.yml
-      yaml = YAML.load(File.open(File.join(options[:directory], feature_dir_name ,'config.yml')))
-      # Check if the directory name doesnt already exist in lib/features/
-      dir_base_features = Dir.open(DIR_VENDOR_FEATURES).sort
-      dir_base_features.each do |dir|
-        raise "Directory " + yaml['name'] + " already exist" if dir == yaml['name']
-      end
-      # Rename the feature with his real name and move it to lib/features/
-      raise "Can't move " + yaml['name'] + " to " + DIR_VENDOR_FEATURES unless system("mv " + File.join(options[:directory], feature_dir_name) + " " + DIR_VENDOR_FEATURES + yaml['name'])
-      # Delete the archive list_archive.txt
-      File.unlink(File.join(options[:directory], file_name))
-      File.unlink(File.join(options[:directory], 'list_archive.txt'))
-      # Reload all the environnement configuration (don't modify !)
-      # $config is set in environment.rb
-      load File.join(RAILS_ROOT, 'config', 'environment.rb')
-#    rescue Exception => exc
-#      puts "ERROR: " + exc
-#      return false
-#    end
-#    true
+        begin
+    # Choose the directory and the valid extension
+    options[:directory] = "tmp/features/"
+    options[:extensions] = ["tar.gz"]
+    options[:file_type_id] = FileType.find_by_model_owner("Feature").id
+    # Up the archive to the server
+    FileManager.upload_file(options)
+    # Get the name file
+    file_name = options[:file]['datafile'].original_filename
+    # List the archive
+    raise "Can't open the archive" unless system("cd " + options[:directory] + " && tar -tf " + file_name + " > list_archive.txt")
+    # Get the directory name of the new feature
+    feature_dir_name = File.open(File.join('tmp', 'features', 'list_archive.txt')).read.split("/").first
+    # Untar the archive
+    raise "Can't untar" unless system("cd " + options[:directory] + " && tar -xzvf " + file_name )
+    # Open the yaml file config.yml
+    yaml = YAML.load(File.open(File.join(options[:directory], feature_dir_name ,'config.yml')))
+    # Check if the directory name doesnt already exist in lib/features/
+    dir_base_features = Dir.open(DIR_VENDOR_FEATURES).sort
+    dir_base_features.each do |dir|
+      raise "Directory " + yaml['name'] + " already exist" if dir == yaml['name']
+    end
+    # Rename the feature with his real name and move it to lib/features/
+    raise "Can't move " + yaml['name'] + " to " + DIR_VENDOR_FEATURES unless system("mv " + File.join(options[:directory], feature_dir_name) + " " + DIR_VENDOR_FEATURES + yaml['name'])
+    # Delete the archive list_archive.txt
+    File.unlink(File.join(options[:directory], file_name))
+    File.unlink(File.join(options[:directory], 'list_archive.txt'))
+    # Reload all the environnement configuration (don't modify !)
+    # $config is set in environment.rb
+    load File.join(RAILS_ROOT, 'config', 'environment.rb')
+  rescue Exception => exc
+      puts "ERROR: " + exc
+      return false
+    end
+    true
   end
 
 

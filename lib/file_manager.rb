@@ -11,13 +11,14 @@ class FileManager
     if options[:directory].nil?
       options[:directory] = "tmp/"
     end
-    if options[:name].nil?
-      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(options[:file][:datafile]).split("/")[1].split(";")[0].to_s
-    else
-      name = options[:name] + "." + File.mime_type?(options[:file][:datafile].path, "r").split("/")[1].split(";")[0].to_s
-    end
+#    if options[:name].nil?
+#      name =  options[:file]['datafile'].original_filename + "." + File.mime_type?(options[:file][:datafile]).split("/")[1].split(";")[0].to_s
+#    else
+#      name = options[:name] + "." + File.mime_type?(options[:file][:datafile].path).split("/")[1].split(";")[0].to_s
+#    end
+    name = options[:file]['datafile'].original_filename
     valid_extension = false
-    
+
     unless options[:extensions].nil?
       options[:extensions].each do |extension|
         if name.end_with?("." + extension)
@@ -35,13 +36,13 @@ class FileManager
       directory += d +"/"
       Dir.mkdir(directory) unless File.exist?(directory)
     end
-    
     path = File.join(options[:directory], name)
-    unless File.exist?(path)     
+    
+    unless File.exist?(path)
       #TODO change this code to integre a test for mime type like "- application /..."
       #FIXME When file uploaded is in text format, the file classs is UploadedStringIO instead of UploadedTempfile
       ## Test if mime_type correspond with possible extension
-      if self.valid_mime_type?(File.open(options[:file][:datafile].path, "r"), options[:file_type_id])
+      if self.valid_mime_type?(options[:file][:datafile], options[:file_type_id])
         File.open(path, "wb") { |f| f.write(options[:file][:datafile].read)}
         return File.exist?(path)
       else
@@ -53,7 +54,7 @@ class FileManager
   
   def self.valid_mime_type?(file, file_type_id)
     extensions = []
-    mime_type = File.mime_type?(File.open(((file.class == String) ? file : file.path), "r")).strip.split("/")[1].split(";")[0].to_s
+    mime_type = File.mime_type?(file).split("/")[1].split(";")[0].to_s
     FileType.find(file_type_id).file_type_extensions.each{|extension| extensions << extension.name}
     return extensions.include?(mime_type)
   end

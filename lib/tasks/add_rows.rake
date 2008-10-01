@@ -277,9 +277,12 @@ namespace :osirails do
       FileTypeExtension.create(:name => "jpeg")
       FileTypeExtension.create(:name => "png")
       FileTypeExtension.create(:name => "gif")
-      FileTypeExtension.create(:name => "tar.gz")
+      FileTypeExtension.create(:name => "x-gzip")
       
       ## default file types
+      # for feature
+      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"
+      f.file_type_extensions << FileTypeExtension.find_by_name("x-gzip")
       # for employees
       f = FileType.create :name => "CV", :model_owner => "Employee"
       f.file_type_extensions << FileTypeExtension.find_by_name("doc")
