@@ -79,6 +79,7 @@ class SurveyController < ApplicationController
       
     else
       @documents  = @step.documents
+      @checklist_responses = @step.checklist_responses
       @new_document_number = params[:new_document_number]["value"]
       flash[:error] = "Une erreur est survenue lors de la sauvegarde du dossier"
       render :action => 'edit'
