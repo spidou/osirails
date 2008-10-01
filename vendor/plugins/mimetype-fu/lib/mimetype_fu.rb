@@ -3,7 +3,7 @@ class File
   def self.mime_type?(file)
     if file.class == File
       mime = find_mimetype(file.path)
-    elsif file.class == ActionController::UploadedTempFile
+    elsif file.class == ActionController::UploadedTempfile
       mime = find_mimetype(File.open(file))
     elsif file.class == String
       mime = find_mimetype(file)
