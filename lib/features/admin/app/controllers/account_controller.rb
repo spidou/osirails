@@ -16,7 +16,7 @@ class AccountController < ApplicationController
   def login
     return unless request.post?
         
-    if @user = User.find_by_username(params[:username], :include => :employee)
+    if @user = User.find(:first, :conditions => ['username LIKE BINARY ?', params[:username]], :include => :employee)
       if @user.compare_password(params[:password])
         if @user.enabled == true
           @user.update_connection
