@@ -1,0 +1,22 @@
+<table>
+	<tr>
+		<th>N°</th>
+		<th>Nom</th>
+		<th>Commercial</th>
+		<th>Client</th>
+		<th>Etablissement</th>
+		<th>Etapes</th>
+		<th>Date</th>
+	</tr>
+<% @orders.each do |order| %>
+	<tr>
+		<td><a href="<%= order_path(order) %>"><%= order.id %></a></td>
+		<td><%= order.title %></td>
+		<td><%= order.commercial.fullname %></td>
+		<td><%= order.customer.name %></td>
+		<td><%= order.establishment.full_address %></td>
+		<td><%= order.advance[:terminated].to_s + "/" + order.advance[:total].to_s %></td>
+		<td><%= order.created_at.to_date %></td>
+	</tr>
+<% end %>
+</table>

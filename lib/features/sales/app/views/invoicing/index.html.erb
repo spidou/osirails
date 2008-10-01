@@ -1,9 +1,5 @@
 <h1> Liste des dossier en phase de facturation</h1>
 
 <div class="frame">
-	<ul>
-		<% @orders.each do |order| %>
-		<li><a href="/orders/<%= order.id %>/invoicing/"><%= order.title %></a></li>
-		<% end %>
-	</ul>
+<%= render :partial => 'orders/index' %>
 </div>

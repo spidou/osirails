@@ -5,9 +5,7 @@ class CommercialController < ApplicationController
   helper 'orders'
   
   def index
-    #@orders = []
-    #Order.find(:all).each {|order| @orders << order if order.step = ""}
-    @orders = Order.find(:all)
+    @orders = StepCommercial.find(:all, :conditions => "status <> 'terminated'").collect { |sc| sc.order }
   end
   
   def show
