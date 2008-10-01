@@ -37,16 +37,16 @@ class FileManager
     end
     
     path = File.join(options[:directory], name)
-    unless File.exist?(path)
-      ## Test if mime_type correspond with possible extension
+    unless File.exist?(path)     
       #TODO change this code to integre a test for mime type like "- application /..."
       #FIXME When file uploaded is in text format, the file classs is UploadedStringIO instead of UploadedTempfile
+      ## Test if mime_type correspond with possible extension
       if self.valid_mime_type?(File.open(options[:file][:datafile].path, "r"), options[:file_type_id])
         File.open(path, "wb") { |f| f.write(options[:file][:datafile].read)}
-        File.exist?(path)
+        return File.exist?(path)
       else
         FileManager.delete_file(path)
-        return "Le mimetype du fichier n'est pas autoriser pour ce type de fichier"
+        return false
       end
     end
   end
