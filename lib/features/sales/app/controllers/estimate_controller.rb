@@ -23,23 +23,18 @@ class EstimateController < ApplicationController
   end
 
   def show
-    if can_edit?(current_user)
-      redirect_to :action => 'edit'
-      return
-    end
-    
     @estimate = Estimate.find(params[:id])
     respond_to do |format|
-      format.html
+      format.html { redirect_to :action => 'edit' if can_edit?(current_user) }
       format.pdf { send_data render_pdf, :filename => "Devis-#{@estimate.id}.pdf" }
     end
   end
 
   def create
-    @estimate = Estimate.create
+    @estimate = Estimate.create(params[:estimate])
     @order.step_commercial.step_estimate.estimates << @estimate
     params[:product_references].each do |pr|
-      @estimate.estimates_product_references << EstimatesProductReference.create(:product_reference_id => pr[:id].to_i, :description => pr[:description], :quantity => pr[:quantity].to_i, :unit_price => pr[:unit_price].to_f)
+      @estimate.estimates_product_references << EstimatesProductReference.create(pr)
     end
     if @order.save and @estimate.save
       flash[:notice] = "Devis créer avec succès"
@@ -62,7 +57,7 @@ class EstimateController < ApplicationController
       end
     end
     
-    if @estimate.save
+    if @estimate.save and @estimate.update_attributes(params[:estimate])
       flash[:notice] = "Devis mis à jour avec succès"
     else
       flash[:error] = "Erreur lors de la mise à jour du devis"

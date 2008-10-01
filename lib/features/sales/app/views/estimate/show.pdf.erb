@@ -64,13 +64,13 @@
 		<th width="12%">P.U HT</th>
 		<th width="15%">Montant HT</th>
 	</tr>
-	<% @estimate.estimates_product_references.each do |p| %>
+	<% @estimate.estimates_product_references.each do |epr| %>
 	<tr>
-		<td>?</td>
-		<td style="text-align: left;"><%= p.description %></td>
-		<td><%= p.quantity %></td>
-		<td><%= p.amount %></td>
-		<td><%= p.amount_with_taxes %></td>
+		<td><%= epr.product_reference.reference %></td>
+		<td style="text-align: left;"><%= epr.description %></td>
+		<td><%= epr.quantity %></td>
+		<td><%= epr.amount %></td>
+		<td><%= epr.amount_with_taxes %></td>
 	</tr>
 	<% end %>
 	<tr>

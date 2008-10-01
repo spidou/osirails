@@ -5,7 +5,7 @@ taxes_vat = <%= ConfigurationManager.sales_taxes_vat %>;
 
 var catalog = document.getElementById('catalog');
 var div_elm = document.createElement('div');
-div_elm.innerHTML = "<input type=\"button\" onclick=\"add_reference();\" value=\"Ajouter la référence\" style=\"float :right;\">";
+div_elm.innerHTML = "<input type=\"button\" onclick=\"add_reference(); return false;\" value=\"Ajouter la référence\" style=\"float :right;\">";
 catalog.appendChild(div_elm);
 
 function add_reference () {
@@ -18,7 +18,7 @@ function add_reference () {
 				onSuccess: function(transport) {
 					var ref_obj = transport.responseText.evalJSON()["product_reference"];
 					append_reference(ref_obj);
-					osibox_close();
+					osibox_close(); 
 				}
 			});
 			return true;
@@ -29,19 +29,31 @@ function add_reference () {
 
 function append_reference (ref_obj) {
 	var list = document.getElementById('list_product').lastChild;
-	list.innerHTML += "<tr><td>REF #</td><td><textarea name=\"product_references[][description]\">" + (ref_obj['name'] || '') + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_references[][quantity]\" class=\"quantity\" onkeyup=\"calculate(this)\" size=\"3\" value=\"1\" /></td><td><input type=\"text\" name=\"product_references[][unit_price]\" onkeyup=\"calculate(this)\" class=\"unit_price\" value=\"" + (ref_obj['production_cost_manpower'] || ref_obj['unit_price']) + "\" /></td><td class=\"total_price\"></td><td class=\"total_price_taxes\"></td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
+	list.innerHTML += "<tr><td>" + (ref_obj['reference'] || ref_obj['product_reference']['reference']) + "</td><td><textarea name=\"product_references[][description]\">" + (ref_obj['name'] || '') + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_references[][quantity]\" class=\"quantity\" onkeyup=\"calculate(this)\" size=\"3\" value=\"1\" /></td><td><input type=\"text\" name=\"product_references[][unit_price]\" onkeyup=\"calculate(this)\" class=\"unit_price\" value=\"" + (ref_obj['production_cost_manpower'] || ref_obj['unit_price']) + "\" /></td><td class=\"total_price\"></td><td class=\"total_price_taxes\"></td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
 
 	all_tr = document.getElementById('list_product').getElementsByTagName('tr');
 	calculate(all_tr[all_tr.length-1].getElementsByClassName('quantity')[0]);
 
+	var div_refs = document.getElementById('input_references');
+	var input_ref = document.createElement('input');
+	input_ref.setAttribute('type', 'hidden');
+
 	if (ref_obj['unit_price']) {
-		var div_refs = document.getElementById('input_references');
 		var input = document.createElement('input');
 		input.setAttribute('type', 'hidden');
 		input.setAttribute('value', ref_obj['id']);
 		input.setAttribute('name', 'product_references[][id]');
 		div_refs.appendChild(input);
+
+		input_ref.setAttribute('value', ref_obj['product_reference_id']);
+	} else {
+		input_ref.setAttribute('value', ref_obj['id']);
 	};
+	
+	input_ref.setAttribute('name', 'product_references[][product_reference_id]');
+	div_refs.appendChild(input_ref);
+
+	return true;
 }
 
 function calculate (elm) {
@@ -96,8 +108,8 @@ function calculate (elm) {
 <%= e.submit 'Enregistrer' %>
 <% end %>
 
-<% @estimate.estimates_product_references.each do |epr| %>
 <script type="text/javascript">
-append_reference('<%= epr.to_json %>'.evalJSON()["estimates_product_reference"])
-</script>
+<% @estimate.estimates_product_references.each do |epr| %>
+append_reference('<%= epr.to_json(:include => :product_reference) %>'.evalJSON()["estimates_product_reference"])
 <% end %>
+</script>
