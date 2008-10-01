@@ -1513,6 +1513,7 @@ select.catalog_3_columns {
 	width:67px;
 	height:67px;
 	cursor:pointer;
+	vertical-align:top;
 }
 
 .feet_finish,
@@ -1531,7 +1532,7 @@ select.catalog_3_columns {
 .feet_finish,
 .feet_in_progress,
 .feet_disable {
-	position:relative;
+//	position:relative;
 	bottom:15px;
 	padding:0 0px 0 20px;
 }
@@ -1618,7 +1619,6 @@ select.catalog_3_columns {
 
 #steps div {
 	display:inline-block;
-
 }
 
 #steps div.ring_terminated,
@@ -1644,11 +1644,10 @@ select.catalog_3_columns {
 div.steps_text p {
 	text-align: center;
 	width:100px;
-	margin:0 0 0 -16px;
+	margin:0 0 0 -17px;
 	padding:0;
 	text-indent:0px;
 	font-size:0.8em;
-	text-align:center;
 }
 
 #steps div.selected {
@@ -1663,8 +1662,8 @@ div.steps_text p {
 
 #steps {
 	margin-left:10px;
+	margin-bottom:25px;
 }
-
 
 #steps a {
 	text-decoration:none;

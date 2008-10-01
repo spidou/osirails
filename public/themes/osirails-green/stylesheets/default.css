@@ -937,34 +937,35 @@ table.no-style tr:hover > td > a {
 }
 
 /*LAYOUTS' FORM*/
-
+.frame.presentation_small label,
+.frame.presentation_medium label,
 .frame.presentation_large label {
 	display:inline-block;
-	width:200px;
 	text-align:left;
 	color:#333;
 	text-indent:0;
-}
-
-.frame.presentation_medium label {
-	display:inline-block;
-	width:200px;
-	text-align:left;
-	color:#333;
-	text-indent:0;
-}
-
-.frame.presentation_medium strong {
-	vertical-align:top;
-//	border-bottom:solid 1px #eaeaea;
 }
 
 .frame.presentation_small label {
+	width:150px;
+}
 
+.frame.presentation_medium label {
+	width:200px;
+}
+
+.frame.presentation_large label {
+	width:250px;
 }
 
 .frame label {
+	width:auto;
+}
 
+.frame.presentation_small strong,
+.frame.presentation_medium strong,
+.frame.presentation_large strong {
+	vertical-align:top;
 }
 
 .frame form p input[type=text],
@@ -1091,44 +1092,93 @@ ul.parent>li {
 }
 /*/////////////////TABS/////////////////*/
 .frame.tabulation {
-
+	margin-top:44px;
 }
 
 .frame.tabulation>h1 {
-
+//	background:url('/images/background_tabs_h2.jpg') repeat;
+//	color:#FFFFFF;
+//	text-align:center;
+//	margin-bottom:0px;
+//	margin-top:0px;
+//	height:30px;
+//	line-height:30px;
 }
 
 .frame.tabulation>h2,
 .frame.tabulation>form>h2 {
-
+//	background:#FFBC5E;
+//	color:white;
+//	text-align:left;
+//	margin-bottom:0px;
+//	margin-top:-1px;
+//	border:white 1px solid;
+//	height:24px;
+//	line-height:24px;
+//	font-size:1.15em;
 }
 
 .frame.tabulation>form>h2 {
-
+	border-top:#FFBC5E;
+	height:25px;
+	line-height:25px;
+	margin-top:0;
 }
 
 .frame.tabulation>h3 {
-
+//	background:#FFD191;
+//	color:white;
+//	border:white solid 1px;
 }
 
 div.tabs ul {
-
+	padding: 0;
+	margin: 0;
+	list-style: none;
 }
 
 div.tabs ul li {
-
+	float: left;
+	margin-left: 1px;
+	background: url("/themes/osirails-green/images/background_tabs.png") repeat-x 0 -7px;
+	height:22px;
+	line-height:0px;
+	cursor:pointer;
+	border-right:solid 1px #BEBEBE;
+	border-left:solid 1px #BEBEBE;
+	border-top:solid 1px #BEBEBE;
+	position:relative;
+	top:5px;
+	left:20px;
+	padding:0 10px 0 10px;
+	-moz-border-radius:9px 9px 0 0;
 }
 
 div.tabs ul li.selected {
-
+	background-position:bottom;
+	border-bottom:none;
+	border-right:solid 1px #BEBEBE;
+	border-left:solid 1px #BEBEBE;
+	height:30px;
+	line-height:10px;
+	position:relative;
+	top:-3px;
 }
 
 div.tabs ul li a {
-
+	float: left;
+	display: block;
+	text-align: center;
+	color: #000;
+	font-size: 11px;
+	padding: 12px 0px 0 0px;
+	font-weight: bold;
+	text-decoration:none;
+	font-weight: lighter;
 }
 
 div.tabs ul li a:hover {
-	
+	text-decoration:underline;
 }
 
 #catalog {
