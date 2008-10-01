@@ -7,7 +7,10 @@
 <h1>Catalogue des produits</h1>
 
 <div class="frame presentation_large">
+
   <div id='catalog'>
+    <p id='catalog_loading'> <span>Veuillez patienter</span> <img src='/images/loading_16x16.gif'></p>
+
     <span id='show_categories'>
       <% (find_max_level + 1).times do |value|%>
             <%= show_category_column(@categories,value) %>
@@ -15,8 +18,7 @@
     </span>
     <span id='show_references'>
       <%= show_reference_column(@references) %>
-    </span>
-    
+    </span>    
     
     <div id="products_list"> 
       <%= render :partial => 'products'%>
