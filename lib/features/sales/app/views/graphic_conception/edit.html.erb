@@ -1,5 +1,22 @@
 <%= order_header %>
 <div class="frame tabulation">
 	<%= order_steps %>
-	Ceci est une conception graphique
+  <% form_for(@step, :url => { :controller =>"graphic_conception", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
+    
+    <!-- Display Checklists div -->
+    <%= display_checklist(@checklist_responses, @step_survey)%>
+
+    <!-- Display Documents div -->
+    <%= display_documents_and_add_documents_button(@step, @documents, params, @new_document_number, @error) %>
+
+    <!-- Display Remarks div -->
+    <%= display_remarks_and_add_remark_text_area(@remarks, @step) %>
+
+    <%= order_step.submit  'Modifier' %>
+    <%= order_step.submit  'Cloturer' %>
+    
+  <% end %>
 </div>
+
+<!-- Osibox initialisation -->
+<%= osibox_initialisation(@step, "/orders/#{@order.id}/graphic_conception/documents/")%>

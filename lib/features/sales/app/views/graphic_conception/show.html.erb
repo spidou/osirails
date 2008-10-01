@@ -1,5 +1,14 @@
 <%= order_header %>
 <div class="frame tabulation">
 	<%= order_steps %>
-	Ceci est une conception graphique
+	
+  <!-- Display Checklists div -->
+  <%= display_checklist(@checklist_responses, @step)%>
+
+  <!-- Display Documents div -->
+  <%= display_documents(@step, @documents)%>
+
+  <!-- Display Remarks div -->
+  <%= display_remarks(@remarks) %>
+
 </div>

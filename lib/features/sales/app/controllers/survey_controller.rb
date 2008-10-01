@@ -1,31 +1,37 @@
 class SurveyController < ApplicationController
   helper :documents, :orders, :step
   
-  def edit
-    ## Objects use to test permission
-    @document_controller =Menu.find_by_name('documents')
-    
+  def show
+    if can_edit?(current_user)
+      redirect_to :action => "edit"
+    end
+      
     @order = Order.find(params[:order_id])
-    @step_survey = @order.step_commercial.step_survey
-    @checklist_responses = @step_survey.checklist_responses
-    @documents = @step_survey.documents
-    @remarks = @step_survey.remarks
+    @step = @order.step_commercial.step_survey
+    @checklist_responses = @step.checklist_responses
+    @documents = @step.documents
+    @remarks = @step.remarks
+  end
+  
+  def edit
+    @order = Order.find(params[:order_id])
+    @step = @order.step_commercial.step_survey
+    @checklist_responses = @step.checklist_responses
+    @documents = @step.documents
+    @remarks = @step.remarks
   end
   
   def update
-    ## Objects use to test permission
-    @document_controller =Menu.find_by_name('documents')
-    
     @order = Order.find(params[:order_id])
-    @step_survey = @order.step_commercial.step_survey
-    @checklist_responses = @step_survey.checklist_responses
-    @documents = @step_survey.documents
-    @remarks = @step_survey.remarks
+    @step = @order.step_commercial.step_survey
+    @checklist_responses = @step.checklist_responses
+    @documents = @step.documents
+    @remarks = @step.remarks
     
     ## Save checklist_responses
     unless params[:step_survey][:checklists].nil?
       @checklist_responses.each do |checklist_response|
-        checklist_response.update_attributes(params[:step_survey][:checklists]["#{checklist_response.id}"])
+        checklist_response.update_attributes(params[:step_survey][:checklists]["#{checklist_response.id}"]) unless params[:step_survey][:checklists]["#{checklist_response.id}"][:answer].blank?
       end
     end
     
@@ -35,7 +41,7 @@ class SurveyController < ApplicationController
     ## Save Documents
     if params[:new_document_number]["value"].to_i > 0
       documents = params[:step_survey][:documents].dup
-      @document_objects = Document.create_all(documents, @step_survey)
+      @document_objects = Document.create_all(documents, @step)
     end
     document_params_index = 0
     params[:new_document_number]["value"].to_i.times do |i|
@@ -55,16 +61,16 @@ class SurveyController < ApplicationController
       if params[:new_document_number]["value"].to_i > 0
         @document_objects.each do |document|
           document.save
-          @step_survey.documents << document
+          @step.documents << document
           document.create_thumbnails
         end
       end
         
-      @step_survey.remarks << @remark unless @remark.nil?
+      @step.remarks << @remark unless @remark.nil?
       #      raise params.inspect
       if params[:commit] == "Cloturer"
-        @step_survey.status = "terminated"
-        @step_survey.save
+        @step.status = "terminated"
+        @step.save
         redirect_to :action => 'show'
       else
         flash[:notice] = "Dossier modifi&eacute avec succ&egrave;s"
@@ -72,7 +78,7 @@ class SurveyController < ApplicationController
       end
       
     else
-      @documents  = @step_survey.documents
+      @documents  = @step.documents
       @new_document_number = params[:new_document_number]["value"]
       flash[:error] = "Une erreur est survenue lors de la sauvegarde du dossier"
       render :action => 'edit'
