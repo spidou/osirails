@@ -9,16 +9,18 @@
   </h1>
   <p>
     <% checked = "" if @job_contract.nil?  %>
-    <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>
+    <% unless @job_contract.employee_state.nil?%>
+      <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>
+    <% end %>  
     <%="<input type='checkbox' #{checked} id='employee_departure' onclick='disable_all();' />"%>
     d&eacute;part employ&eacute; 
   </p>
 <% end %>   
 
 <h1>Modifier un contrat de travail</h1>
-  
+
 <div class="frame presentation_medium">
-<% form_for([:employee,@job_contract]) do |f| %>
+<% form_for(@job_contract, :url => employee_job_contract_path([@employee,@job_contract]), :html => {:multipart => true}) do |f| %>
   <%= f.error_messages %>
   <%= error_messages_for(:salary)%>
 
@@ -45,12 +47,11 @@
   </p>
   <p>
     <%= f.label :start_date, "Date de début :"%>
-    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => is_gone?(@job_contract)%>
+    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => is_gone?(@job_contract) %>
   </p>
   <p>
     <%= f.label :end_date, "Date de fin :"%>
-    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => (@job_contract.end_date.nil? or is_gone?(@job_contract))%> 
-    <% @job_contract.end_date.nil? ? checked = "checked = checked" : checked = ""%>
+    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => (@job_contract.end_date.nil? or is_gone?(@job_contract) or @job_contract.job_contract_type.limited==false) %> 
   </p>
   <p>
     <%= f.label :employee_state_id, "Status :"%>
@@ -76,28 +77,11 @@
     </p>
     <p>
       <%= label :departure, "Date de d&eacute;part"%>
-      <%= f.date_select :departure, :start_year => 1950, :order => [:day,:month,:year]%>
+      <%= f.date_select :departure, :start_year => 1950, :order => [:day,:month,:year], :disabled => !is_gone?(@job_contract)%>
     </p>
   </div>
   <!-- Display Documents div -->
-  
-  <h2>Documents joints</h2>
-    <% unless @documents.nil?%>
-      <% unless @documents.empty? %>
-        <% for document in @documents %>
-          <p>        
-            <%= image_tag("/images/file_extensions/#{document.extension}_16x16.png") %>
-            <%= link_to document.name, employee_document_path(@employee, document) %>
-            <% if @document_controller.can_view?(current_user) and Document.can_view?(current_user) %>            
-              <%= link_download_last_version(document) %>
-            <% end %>
-          </p>
-        <% end %>
-      <% end %> 
-    <% end %>
-    <!-- Display document_form-->
-    <%= render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => 'JobContract',
-    :new_contact_number => @new_contact_number, :error => @error} %>
+  <%= display_documents_and_add_documents_button(@job_contract, @documents, params, @new_document_number, @error) %>
   
   <%= submit_tag "Modifier" %>
   <%=link_to 'Retour', employee_path(@employee)%>

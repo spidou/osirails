@@ -4,11 +4,12 @@ class JobContractsController < ApplicationController
 
 # GET /employees/1/edit
   def edit
-     
+
     @document_controller = Menu.find_by_name('documents')
     
     @employee =  Employee.find(params[:employee_id])
-    @job_contract = @employee.job_contract 
+    @job_contract = @employee.job_contract
+    @documents = @job_contract.documents 
   end
 
 # GET /employees/1/show  
@@ -18,15 +19,18 @@ class JobContractsController < ApplicationController
     
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
+    @documents = @job_contract.documents
   end
 # PUT /employees/1/update  
   def update
-
+  
     @document_controller = Menu.find_by_name('documents')
-    
+
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
-
+    @documents = @job_contract.documents
+    @error = false
+    
     unless params[:salaries].nil? 
       if params[:salaries]['type']['value'] == "Net"
         tmp = params[:salaries]['salary'].to_f/0.8
@@ -34,10 +38,10 @@ class JobContractsController < ApplicationController
       end
     end
     
-    if Document.can_add?(current_user)
+    if Document.can_add?(current_user, @job_contract.class)
       if params[:new_document_number]["value"].to_i > 0
         documents = params[:job_contract][:documents].dup
-        @document_objects = Document.create_all(documents, @employee)
+        @document_objects = Document.create_all(documents, @job_contract)
       end
       document_params_index = 0
       params[:new_document_number]["value"].to_i.times do |i|
@@ -55,7 +59,7 @@ class JobContractsController < ApplicationController
       
       
     # delete the documents in params
-    params[:job_contract].delete('documents')
+    docs = params[:job_contract].delete('documents')
     
     params[:job_contract]['end_date'] = nil if params[:job_contract]['end_date'].nil?
     
@@ -71,20 +75,24 @@ class JobContractsController < ApplicationController
       salary_validate = @salary.save 
     end
 
-    if @job_contract.update_attributes(params[:job_contract]) and  salary_validate
+    if @job_contract.update_attributes(params[:job_contract]) and  salary_validate and @error==false
     
       # put at null the departure date if the there's no departure param
       @job_contract.departure = nil if params[:job_contract]['departure(3i)'].nil?
       @job_contract.save
       
       @job_contract.salaries << @salary unless @salary.nil?
-      # save the employee's documents
+      # save the job_contract's documents
       unless params[:new_document_number].nil?
         if params[:new_document_number]["value"].to_i > 0
           @document_objects.each do |document|
-            document.save
-            @employee.documents << document
-            document.create_thumbnails
+            if (d = document.save) == true
+              @job_contract.documents << document
+              document.create_thumbnails
+            else
+              @error = true
+              flash[:error] = d
+            end
           end
         end
       end
@@ -92,6 +100,7 @@ class JobContractsController < ApplicationController
       flash[:notice] = ' Le contrat de travail de ' + @employee.fullname + ' a été modifié avec succés.'
       redirect_to(@employee) 
     else
+      params[:job_contract]['documents'] = docs
       render :action => "edit" 
     end
   end
