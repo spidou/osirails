@@ -5,6 +5,7 @@ class CreateDocuments < ActiveRecord::Migration
       t.string :description
       t.string :extension
       t.references :file_type
+      t.boolean :activated, :default => true
       t.references :has_document, :polymorphic => true
       
       t.timestamps
