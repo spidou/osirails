@@ -9,7 +9,7 @@ class File
       temp = File.open(Dir.tmpdir + '/upload_file.' + Process.pid.to_s, "wb")
       temp << file.string
       temp.close
-      mime = `file -bir #{temp.path}`
+      mime = `file -bir #{temp.path}`.strip
       mime = mime.gsub(/^.*: */,"")
       mime = mime.gsub(/;.*$/,"")
       mime = mime.gsub(/,.*$/,"")
@@ -29,7 +29,7 @@ class File
       if RUBY_PLATFORM.include?('mswin32') or !File.exists?(path_to_file)
         return EXTENSIONS[File.extname(path_to_file).gsub('.','').downcase.to_sym]
       else
-        return `file -bir #{path_to_file}`
+        return `file -bir #{path_to_file}`.strip
       end
     end
     
