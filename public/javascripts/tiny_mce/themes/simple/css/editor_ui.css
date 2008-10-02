@@ -42,6 +42,11 @@
 	line-height: 1px;
 	font-size: 1px;
 	padding-bottom: 1px;
+	cursor:default !important;
+}
+
+.mceToolbar img:hover{
+	cursor:pointer !important;
 }
 
 .mceEditorIframe {

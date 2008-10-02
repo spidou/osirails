@@ -123,7 +123,7 @@ h2 {
 	margin:0 -5px 0 -5px;
 	padding:0;
 	font-size:1.6em;
-	text-indent:4px;
+	text-indent:9px;
 	padding-top:1px;
 	padding-bottom:2px;
 	height:35px;
@@ -131,7 +131,7 @@ h2 {
 
 h3 {
 	border-bottom:dashed 1px #ccc;
-	text-indent:12px;
+	text-indent:17px;
 	font-size:1.4em;
 	color:#86CE00;
 	font-weight:lighter;
@@ -162,7 +162,7 @@ p {
 #banner {
 	width:auto;
 	height:75px;
-/*	border-bottom:solid 9px #86CE00;/*#71D800;*/
+	border-bottom:solid 9px #86CE00;/*#71D800;*/
 }
 
 #logo {
@@ -253,12 +253,11 @@ a.button_banner:hover span {
 	padding:5px;
 	height: auto;
 	margin:0;
-	border-top:solid 9px #86CE00;
 }
 
 #text_under_banner {
 	width:93%;
-	height:2.07em;/*30px;*/
+	height:2.07em;/*30px;2.07em*/
 	overflow:hidden;
 	overflow:hidden;
 	font-size:1.1em;
@@ -275,23 +274,28 @@ a.button_banner:hover span {
 #previous:hover,
 #next,
 #next:hover {
-
+	background: url("/themes/osirails-green/images/arrows.png") no-repeat;
+	width:15px;
+	height:17px;
+	border:none;
 }
 
 #previous {
-	
+	background-position:0 0;	
 }
 
 #previous:hover {
-
+	background-position:0 -17px;
+	cursor:pointer;
 }
 
 #next {
-
+	background-position:-15px 0;
 }
 
 #next:hover {
-
+	background-position:-15px -17px;
+	cursor:pointer;
 }
 
 .number {
@@ -387,9 +391,9 @@ a.button_banner:hover span {
 /////////////////////////////////////////////////////////*/
 #secondary_menu {
 	position:absolute;
-	top:170px;
+	top:169px;
 	right:6px;
-//	right:-206px;
+/*	right:-206px; For hide the menu*/
 	margin-left:10px;
 	border: 1px solid #A4D671;
 	-moz-border-radius: 10px 0 0 10px;
@@ -398,40 +402,71 @@ a.button_banner:hover span {
 	text-indent:0px;
 	font-size:0.8em;
 	z-index:1;
-	
 }
-
+/*						...:::|> Not operational yet <|:::...			*/
 .hidden_secondary_menu,
 .shown_secondary_menu {
-	display:none; /*Temporary*/
+/*	text-align:right;
+	white-space:nowrap;*/
+	display:none; /*To escape some errors*/
 }
 
+/*						...:::|> Not operational yet <|:::...
 .hidden_secondary_menu #status_background_secondary_menu,
 .shown_secondary_menu #status_background_secondary_menu {
-	display:none; /*Temporary*/
+	background: url("/themes/osirails-green/images/base_hidden-shown_secondary_menu.png") no-repeat 27px 6px;
+	width:6px;
+	height:45px;
+//	border:solid red 1px;
+	position:relative;
+	right:37px;
+	top:35px;
+	color:#86CE00;
 }
-
+*/
+/*						...:::|> Not operational yet <|:::...
 .hidden_secondary_menu #status_background_secondary_menu:hover,
 .shown_secondary_menu #status_background_secondary_menu:hover {
-	display:none; /*Temporary*/
+	width:auto;
+	cursor:pointer;
+	float:left;
 }
-
-.shown_secondary_menu span {
-	display:none; /*Temporary*/
+*/
+/*						...:::|> Not operational yet <|:::...
+.shown_secondary_menu span:hover,
+.hidden_secondary_menu span:hover {
+	
+}
+						...:::|> Not operational yet <|:::...
+.shown_secondary_menu span,
+.hidden_secondary_menu span {
+	background:url("/themes/osirails-green/images/background_hidden-shown_secondary_menu.png") no-repeat top left;
+	padding-top:14px;
+	padding-bottom:12px;
+	padding-left:20px;
+	padding-right:10px;	
+	max-width:205px;
+	float:left;
+	font-size:1.1em;
+	overflow:hidden;
+	border:solid 1px red;
 }
 
 .hidden_secondary_menu span {
-	display:none; /*Temporary*/
+//	display:none; Temporary
 }
-
+*/
 #shadow_secondary_menu {
  /*useless in this design*/
 }
-
+/*						...:::|> Not operational yet <|:::...
 #content_secondary_menu {
- /*useless in this design*/
+	clear:both;
+	position:relative;
+	bottom:26px;
+	margin-bottom:-26px;
 }
-
+*/
 #content_secondary_menu h1 {
 	font-size:1.3em;
 	font-family:arial, sans-serif;
@@ -482,15 +517,21 @@ a.button_banner:hover span {
 }
 
 #content_secondary_menu ul li a {
+	text-decoration:none;
+	color:#252525;
+}
 
+#content_secondary_menu ul li a:hover {
+	color:#558800;
 }
 
 ul.center_list {
-
+	text-align:center;
+	text-indent:0;
 }
 
 ul.center_list li {
-
+	padding-left:6px;
 }
 
 .secondary_menu_statistic {
@@ -502,11 +543,14 @@ ul.center_list li {
 }
 
 #content_secondary_menu ul li a img {
-
+	position:relative;
+	top:2px;
 }
 
 #content_secondary_menu p {
-
+	margin-left:10px;
+	margin-right:10px;
+	text-align:justify;
 }
 
 #footer_secondary_menu { 
@@ -687,81 +731,126 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 
 /*/!\/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\/!\*/
 .flash_error {
-
+	background: url("/images/cross_16x16.png") no-repeat;
+	color: #B0383D;
 }
 
 /*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
-
+	background: url("/images/tick_16x16.png") no-repeat;
+	color: green;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\:::::::CONFIG IN COMMON : ERROR & NOTICE:::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
-
+	background:#eaeaea;
+	border: solid 1px #aeaeae;
+	text-align:center;
+	line-height:10px;
+	height:auto;
+	padding:10px 20px 10px 20px;
+	text-indent:0px;
+	font-family: "courier new", sans-serif;
+	margin:5px;
 }
 
 .flash_container ul {
-
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	width:50%;
 }
 
 .flash_container ul li {
-
+	text-align:left;
 }
 
 .flash_container span span,
 .flash_container span span {
-
+	margin-left:20px;
+	line-height:20px;
 }
 
 .flash_error,
 .flash_notice {
-
+	background-position:center left;
+	width:9px;
+	height:9px;
 }
+
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
-.fieldWithErrors {
-
-}
-
 .fieldWithErrors input,
 .fieldWithErrors select {
-
-}
-
-.fieldWithErrors label:after {
-
+	border:solid 2px #CC0033 !important;
+	color:#CC0033;
+	margin-left: 10px;
+	vertical-align:top;
 }
 
 div.fieldWithErrors {
-
+	display:inline;
 }
 
-.fieldWithErrors label {
-
+div.fieldWithErrors label {
+	color:#CC0033 !important;
+	margin-left:5px;
+	text-align:right;
+	position:relative;
+	left:10px;	
 }
 
 #errorExplanation {
-
+	border:solid 1px #CC0033;
+	-moz-border-radius:7px 0 7px 0;
+	background:#FFFAFA;
+	margin: 5px 0 20px 5px;
+	width:530px;
 }
 
 #errorExplanation ul li,
 .errorExplanation ul li {
-
+	background: url("/themes/osirails-green/images/warning_14x14.png") no-repeat 0 2px;
+	list-style-type:none;
+	text-indent:25px;
+	margin:3px 3px 7px 0px;
+	color:#333;
+	font-weight:bold;
 }
 
 #errorExplanation ul,
 .errorExplanation ul {
-
+	padding-left: 30px;
 }
 
-#errorExplanation h2,
-.errorExplanation h2 {
 
+#errorExplanation > h2,
+.errorExplanation > h2 {
+	-moz-border-radius:9px 0 0 0;
+	border-top:solid 1px white;
+	border-right:solid 1px white;
+	border-bottom:solid 1px #CC0033;
+	color:#CC0033;
+	text-align:left;
+	text-indent:0;
+	background:inherit;
+	background-color:#FFCCCC;
+	padding:10px 0 0 0;
+	margin:0 0 10px 0;
+	text-align:center;
 }
+
+#errorExplanation p,
+.errorExplanation p {
+	margin:0;
+	padding:0 0 0 5px;
+	text-indent:0;
+}
+
 
 /*/////////////////////////////
 		FRAME & CONTENT
@@ -897,8 +986,8 @@ table.no-style tr:hover > td > a {
 
 .frame {
 	border:solid 1px #BEBEBE;
-	-moz-border-radius:7px 0 7px 0;
-	margin:5px 10px 5px 10px;
+	-moz-border-radius:15px 0 15px 0;
+	margin:5px 10px 15px 10px;
 	padding:5px;
 }
 
@@ -1154,7 +1243,7 @@ div.tabs ul li {
 	border-top:solid 1px #BEBEBE;
 	position:relative;
 	top:5px;
-	left:20px;
+	left:30px;
 	padding:0 10px 0 10px;
 	-moz-border-radius:9px 9px 0 0;
 }
@@ -1394,6 +1483,7 @@ div.frame>#steps {
 
 /*////////////BROWSING PAGE////////////*/
 .browsing_page {
+	
 }
 
 .browsing_page a.disable,
@@ -1510,7 +1600,7 @@ div.frame>#steps {
 .document_view_content {
 	width:237px;
 	display:inline-block;
-	margin:5px;
+	margin:3px;
 	border:dashed 1px #ccc;
 	background:#fafafa;
 	-moz-border-radius:4px 0 4px 0;

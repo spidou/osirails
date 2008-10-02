@@ -72,6 +72,8 @@
         <div id="empty">
           <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
         </div>
+				<!--div class="flash_container"><span class="flash_notice"><span>Connexion réussie</span></span></div-->
+				<div class="flash_container"><span class="flash_error"><span>Erreur lors de la connexion.</span></span></div>
         <%= yield %>
 		<h1>Configurer les permissions</h1>
 		<div class="tabs">
@@ -744,7 +746,597 @@
 
 		  <a href="/menus/new">Ajouter</a>
 		</div>
-		
+		<!--|||||||||||||||||||||||||   IIIICCCCIIII |||||||||||||||||||||||||||||||-->
+		<div class="frame presentation_medium">
+		<form action="/employees/1" class="edit_employee" enctype="multipart/form-data" id="edit_employee_1" method="post"><div style="margin: 0pt; padding: 0pt;"><input name="_method" value="put" type="hidden"><input name="authenticity_token" value="8efd1f658333c99f8c62321a5e24761b5bcaca3c" type="hidden"></div>
+		  <div class="errorExplanation" id="errorExplanation"><h2>3 erreurs sont survenues lors de la sauvegarde</h2><p>Les champs suivants ne sont pas valides :</p><ul><li>Social security number format numéro de sécurité social incorrect</li><li>First name ne peut être vide</li><li>Last name ne peut être vide</li></ul></div> 
+		  <h2>Fiche d'identité</h2>
+		  <p>
+		    <label for="employee_civility">Civilité :</label>
+		    <select id="employee_civility_id" name="employee[civility_id]"><option value="1" selected="selected">Mr</option>
+
+		<option value="2">Mme</option>
+		<option value="3">Mademoiselle</option></select>  
+		  </p>
+		  <p>
+		    </p><div class="fieldWithErrors"><label for="employee_last_name">Nom :</label></div>
+		    <div class="fieldWithErrors"><input id="employee_last_name" name="employee[last_name]" size="30" value="" type="text"></div>
+
+		  <p>
+		    </p><div class="fieldWithErrors"><label for="employee_first_name">Prénom :</label></div>
+
+		    <div class="fieldWithErrors"><input id="employee_first_name" name="employee[first_name]" size="30" value="" type="text"></div>
+
+		  <p>
+		    <label for="employee_birth_date">Date de naissance :</label>
+		    <select id="employee_birth_date_3i" name="employee[birth_date(3i)]">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option selected="selected" value="30">30</option>
+		<option value="31">31</option>
+
+		</select>
+		<select id="employee_birth_date_2i" name="employee[birth_date(2i)]">
+		<option value="1">Janvier</option>
+		<option value="2">Février</option>
+		<option value="3">Mars</option>
+		<option value="4">Avril</option>
+		<option value="5">Mai</option>
+		<option value="6">Juin</option>
+		<option value="7">Juillet</option>
+		<option value="8">Août</option>
+
+		<option selected="selected" value="9">Septembre</option>
+		<option value="10">Octobre</option>
+		<option value="11">Novembre</option>
+		<option value="12">Décembre</option>
+		</select>
+		<select id="employee_birth_date_1i" name="employee[birth_date(1i)]">
+		<option value="1900">1900</option>
+		<option value="1901">1901</option>
+		<option value="1902">1902</option>
+		<option value="1903">1903</option>
+
+		<option value="1904">1904</option>
+		<option value="1905">1905</option>
+		<option value="1906">1906</option>
+		<option value="1907">1907</option>
+		<option value="1908">1908</option>
+		<option value="1909">1909</option>
+		<option value="1910">1910</option>
+		<option value="1911">1911</option>
+		<option value="1912">1912</option>
+
+		<option value="1913">1913</option>
+		<option value="1914">1914</option>
+		<option value="1915">1915</option>
+		<option value="1916">1916</option>
+		<option value="1917">1917</option>
+		<option value="1918">1918</option>
+		<option value="1919">1919</option>
+		<option value="1920">1920</option>
+		<option value="1921">1921</option>
+
+		<option value="1922">1922</option>
+		<option value="1923">1923</option>
+		<option value="1924">1924</option>
+		<option value="1925">1925</option>
+		<option value="1926">1926</option>
+		<option value="1927">1927</option>
+		<option value="1928">1928</option>
+		<option value="1929">1929</option>
+		<option value="1930">1930</option>
+
+		<option value="1931">1931</option>
+		<option value="1932">1932</option>
+		<option value="1933">1933</option>
+		<option value="1934">1934</option>
+		<option value="1935">1935</option>
+		<option value="1936">1936</option>
+		<option value="1937">1937</option>
+		<option value="1938">1938</option>
+		<option value="1939">1939</option>
+
+		<option value="1940">1940</option>
+		<option value="1941">1941</option>
+		<option value="1942">1942</option>
+		<option value="1943">1943</option>
+		<option value="1944">1944</option>
+		<option value="1945">1945</option>
+		<option value="1946">1946</option>
+		<option value="1947">1947</option>
+		<option value="1948">1948</option>
+
+		<option value="1949">1949</option>
+		<option value="1950">1950</option>
+		<option value="1951">1951</option>
+		<option value="1952">1952</option>
+		<option value="1953">1953</option>
+		<option value="1954">1954</option>
+		<option value="1955">1955</option>
+		<option value="1956">1956</option>
+		<option value="1957">1957</option>
+
+		<option value="1958">1958</option>
+		<option value="1959">1959</option>
+		<option value="1960">1960</option>
+		<option value="1961">1961</option>
+		<option value="1962">1962</option>
+		<option value="1963">1963</option>
+		<option value="1964">1964</option>
+		<option value="1965">1965</option>
+		<option value="1966">1966</option>
+
+		<option value="1967">1967</option>
+		<option value="1968">1968</option>
+		<option value="1969">1969</option>
+		<option value="1970">1970</option>
+		<option value="1971">1971</option>
+		<option value="1972">1972</option>
+		<option value="1973">1973</option>
+		<option value="1974">1974</option>
+		<option value="1975">1975</option>
+
+		<option value="1976">1976</option>
+		<option value="1977">1977</option>
+		<option value="1978">1978</option>
+		<option value="1979">1979</option>
+		<option value="1980">1980</option>
+		<option value="1981">1981</option>
+		<option value="1982">1982</option>
+		<option value="1983">1983</option>
+		<option value="1984">1984</option>
+
+		<option value="1985">1985</option>
+		<option value="1986">1986</option>
+		<option value="1987">1987</option>
+		<option selected="selected" value="1988">1988</option>
+		<option value="1989">1989</option>
+		<option value="1990">1990</option>
+		<option value="1991">1991</option>
+		<option value="1992">1992</option>
+		<option value="1993">1993</option>
+
+		</select>
+
+		  </p>
+		  <p>
+		    <label for="employee_family_situation">Situation familiale :</label>
+		    <select id="employee_family_situation_id" name="employee[family_situation_id]"><option value="1" selected="selected">Célibataire</option>
+		<option value="2">Marié(e)</option>
+		<option value="3">Veuf/Veuve</option>
+		<option value="4">Divorcé(e)</option></select>
+
+		  </p>
+		  <p>
+		    <label for="social_security_number">N° sécurité sociale :</label>
+		    <input class="disable-stylesheet-width" id="social_security_number[0]" maxlength="13" name="social_security_number[0]" size="11" type="text">
+		<input class="disable-stylesheet-width" id="social_security_number[1]" maxlength="2" name="social_security_number[1]" size="1" type="text">
+		  </p>
+		  <!--#####################################-->
+
+		  <h2>Coordonnées</h2>
+
+		  <h3>Adresse postale</h3>
+		  <p>
+		    <label for="employee[address][address1]">Adresse :</label> 
+		    <input id="employee[address][address1]" name="employee[address][address1]" value="1 rue des rosiers" type="text"> - <input id="employee[address][address2]" name="employee[address][address2]" value="" type="text">
+		  </p>
+		  <p>
+		    <label for="employee_address_country_name">Pays</label>
+
+		    <style type="text/css">        div.auto_complete {
+		          width: 350px;
+		          background: #fff;
+		        }
+		        div.auto_complete ul {
+		          border:1px solid #888;
+		          margin:0;
+		          padding:0;
+		          width:100%;
+		          list-style-type:none;
+		        }
+		        div.auto_complete ul li {
+		          margin:0;
+		          padding:3px;
+		        }
+		        div.auto_complete ul li.selected {
+		          background-color: #ffb;
+		        }
+		        div.auto_complete ul strong.highlight {
+		          color: #800; 
+		          margin:0;
+		          padding:0;
+		        }
+		</style><input autocomplete="off" id="employee_address_country_name" name="employee[address][country][name]" size="30" type="text"></p><div style="display: none;" class="auto_complete" id="employee_address_country_name_auto_complete"></div><script type="text/javascript">
+		//<![CDATA[
+		var employee_address_country_name_auto_completer = new Ajax.Autocompleter('employee_address_country_name', 'employee_address_country_name_auto_complete', '/addresses/auto_complete_for_country_name', {callback:function(element, value) { return 'value='+document.getElementById('employee_address_country_name').value }, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c'), select:'country_name'})
+		//]]>
+		</script>    
+
+		    <p>
+		    <label for="employee_address_city_name">Ville</label>
+		    <style type="text/css">        div.auto_complete {
+		          width: 350px;
+		          background: #fff;
+		        }
+		        div.auto_complete ul {
+		          border:1px solid #888;
+		          margin:0;
+		          padding:0;
+		          width:100%;
+		          list-style-type:none;
+		        }
+		        div.auto_complete ul li {
+		          margin:0;
+		          padding:3px;
+		        }
+		        div.auto_complete ul li.selected {
+		          background-color: #ffb;
+		        }
+		        div.auto_complete ul strong.highlight {
+		          color: #800; 
+		          margin:0;
+		          padding:0;
+		        }
+		</style><input autocomplete="off" id="employee_address_city_name" name="employee[address][city][name]" size="30" type="text"></p><div style="display: none;" class="auto_complete" id="employee_address_city_name_auto_complete"></div><script type="text/javascript">
+		//<![CDATA[
+		var employee_address_city_name_auto_completer = new Ajax.Autocompleter('employee_address_city_name', 'employee_address_city_name_auto_complete', '/addresses/auto_complete_for_city_name', {callback:function(element, value) { return 'value='+document.getElementById('employee_address_city_name').value+
+		        '&country_name='+document.getElementById('employee_address_country_name').value }, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c'), select:'city_name'})
+		//]]>
+		</script>    
+
+		    <p>
+		    <label for="employee_address_city_zip_code">Code Postal</label>
+		    <style type="text/css">        div.auto_complete {
+		          width: 350px;
+		          background: #fff;
+		        }
+		        div.auto_complete ul {
+		          border:1px solid #888;
+		          margin:0;
+		          padding:0;
+		          width:100%;
+		          list-style-type:none;
+		        }
+		        div.auto_complete ul li {
+		          margin:0;
+		          padding:3px;
+		        }
+		        div.auto_complete ul li.selected {
+		          background-color: #ffb;
+		        }
+		        div.auto_complete ul strong.highlight {
+		          color: #800; 
+		          margin:0;
+		          padding:0;
+		        }
+
+		</style><input autocomplete="off" id="employee_address_city_zip_code" name="employee[address][city][zip_code]" size="30" type="text"></p><div style="display: none;" class="auto_complete" id="employee_address_city_zip_code_auto_complete"></div><script type="text/javascript">
+		//<![CDATA[
+		var employee_address_city_zip_code_auto_completer = new Ajax.Autocompleter('employee_address_city_zip_code', 'employee_address_city_zip_code_auto_complete', '/addresses/auto_complete_for_city_zip_code', {callback:function(element, value) { return 'value='+document.getElementById('employee_address_city_zip_code').value+
+		        '&country_name='+document.getElementById('employee_address_country_name').value }, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c'), select:'city_zip_code'})
+		//]]>
+		</script>    
+
+		    <script type="text/javascript">
+		//<![CDATA[
+		document.getElementById('employee_address_country_name').value='Réunion'
+		//]]>
+		</script>
+		    <script type="text/javascript">
+		//<![CDATA[
+		document.getElementById('employee_address_city_name').value = 'Saint-Denis'
+		//]]>
+		</script>
+		    <script type="text/javascript">
+		//<![CDATA[
+		document.getElementById('employee_address_city_zip_code').value = '97400'
+		//]]>
+		</script>
+
+
+
+		    <script type="text/javascript">
+		//<![CDATA[
+		new Form.Element.Observer('employee_address_country_name', 0.1, function(element, value) {new Ajax.Request('/addresses/country_change', {asynchronous:true, evalScripts:true, parameters:'country_name='+encodeURIComponent(document.getElementById('employee_address_country_name').value)+
+		            '&city_name='+encodeURIComponent(document.getElementById('employee_address_city_name').value)+
+		            '&city_zip_code='+encodeURIComponent(document.getElementById('employee_address_city_zip_code').value)+
+		            '&address_name=employee' + '&authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')})})
+		//]]>
+		</script>
+
+		      <script type="text/javascript">
+		//<![CDATA[
+		new Form.Element.Observer('employee_address_city_name', 0.1, function(element, value) {new Ajax.Request('/addresses/city_name_change', {asynchronous:true, evalScripts:true, parameters:'country_name='+encodeURIComponent(document.getElementById('employee_address_country_name').value)+
+		            '&city_name='+encodeURIComponent(document.getElementById('employee_address_city_name').value)+
+		            '&address_name=employee' + '&authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')})})
+		//]]>
+		</script>
+
+
+		  <script type="text/javascript">
+		//<![CDATA[
+		new Form.Element.Observer('employee_address_city_zip_code', 0.1, function(element, value) {new Ajax.Request('/addresses/city_zip_code_change', {asynchronous:true, evalScripts:true, parameters:'country_name='+encodeURIComponent(document.getElementById('employee_address_country_name').value)+
+		            '&city_zip_code='+encodeURIComponent(document.getElementById('employee_address_city_zip_code').value)+
+		            '&address_name=employee' + '&authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')})})
+		//]]>
+		</script>
+
+
+		  <h3>Adresses électroniques</h3>
+		  <p>
+		    <label for="employee_email">Email personnel :</label>
+		    <input id="employee_email" name="employee[email]" size="30" value="john@doe.com" type="text">
+		  </p>
+		  <p>
+
+		    <label for="employee_society_email">Email professionnel :</label>
+		    <input id="employee_society_email" name="employee[society_email]" size="30" value="john.doe@society.com" type="text">
+		  </p>
+		  <h3>Numéros de téléphone</h3>
+		  <div id="add_lines_employee">
+
+
+
+
+		        <!-- le <p> est ouvers à la ligne ci-dessous avec un id -->
+		        <p id="employee_number_0">       
+		        <select id="employee_numbers__0_indicative_id" name="employee[numbers][0][indicative_id]"><option value="1" selected="selected">+262</option>
+
+		<option value="2">+33</option>
+		<option value="3">+34</option>
+		<option value="4">+44</option>
+		<option value="5">+49</option>
+		<option value="6">+81</option>
+		<option value="7">+86</option>
+		<option value="8">+1</option></select>
+		        <input class="disable-stylesheet-width" id="employee[numbers][0][number]" maxlength="9" name="employee[numbers][0][number]" size="7" value="692123456" type="text">
+		        <select id="employee_numbers__0_number_type_id" name="employee[numbers][0][number_type_id]"><option value="1" selected="selected">Mobile</option>
+
+		<option value="2">Fixe</option>
+		<option value="3">Fax</option>
+		<option value="4">Mobile Professionnel</option>
+		<option value="5">Fixe Professionnel</option>
+		<option value="6">Fax Professionnel</option></select>
+		        <input checked="checked" id="employee[numbers][0][visible]" name="employee[numbers][0][visible]" value="true" type="checkbox">
+		        &nbsp;Visible par tous &nbsp;
+		        <a href="#" onclick="if (confirm('Etes vous sur?')) { new Ajax.Request('/employees/remove_line?attribute=employee&amp;deleted_id=1&amp;rem=0', {asynchronous:true, evalScripts:true, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')}); }; return false;"><img src="/images/delete_16x16.png" alt="Enlever le numéro" title="Enlever le numéro"></a>
+
+
+		      </p>
+
+
+
+
+		        <!-- le <p> est ouvers à la ligne ci-dessous avec un id -->
+		        <p id="employee_number_1">       
+		        <select id="employee_numbers__1_indicative_id" name="employee[numbers][1][indicative_id]"><option value="1" selected="selected">+262</option>
+		<option value="2">+33</option>
+		<option value="3">+34</option>
+		<option value="4">+44</option>
+		<option value="5">+49</option>
+		<option value="6">+81</option>
+
+		<option value="7">+86</option>
+		<option value="8">+1</option></select>
+		        <input class="disable-stylesheet-width" id="employee[numbers][1][number]" maxlength="9" name="employee[numbers][1][number]" size="7" value="262987654" type="text">
+		        <select id="employee_numbers__1_number_type_id" name="employee[numbers][1][number_type_id]"><option value="1">Mobile</option>
+		<option value="2" selected="selected">Fixe</option>
+		<option value="3">Fax</option>
+		<option value="4">Mobile Professionnel</option>
+		<option value="5">Fixe Professionnel</option>
+
+		<option value="6">Fax Professionnel</option></select>
+		        <input checked="checked" id="employee[numbers][1][visible]" name="employee[numbers][1][visible]" value="true" type="checkbox">
+		        &nbsp;Visible par tous &nbsp;
+		        <a href="#" onclick="if (confirm('Etes vous sur?')) { new Ajax.Request('/employees/remove_line?attribute=employee&amp;deleted_id=2&amp;rem=1', {asynchronous:true, evalScripts:true, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')}); }; return false;"><img src="/images/delete_16x16.png" alt="Enlever le numéro" title="Enlever le numéro"></a>
+
+		      </p>
+
+
+
+		    <p>
+		      <span id="employee_add_link"><a href="#" onclick="new Ajax.Request('/employees/add_line?attribute=employee&amp;opt=2', {asynchronous:true, evalScripts:true, parameters:'authenticity_token=' + encodeURIComponent('8efd1f658333c99f8c62321a5e24761b5bcaca3c')}); return false;"><img src="/images/add_16x16.png" alt="Ajouter le numéro" title="Ajouter le numéro"></a></span>
+		    </p>
+
+
+		</div>
+
+		  <!--#####################################-->
+
+		  <h2>Coordonnées bancaires</h2>
+		  <p>
+		    <label for="iban[bank_name]">Nom de la banque :</label> 
+		    <input class="disable-stylesheet-width" id="iban[bank_name]" maxlength="17" name="iban[bank_name]" size="15" value="Bred" type="text">
+		  </p>
+		  <p>
+
+		    <label for="iban[bank_code]">Code bancaire :</label> 
+		    <input class="disable-stylesheet-width" id="iban[bank_code]" maxlength="5" name="iban[bank_code]" size="3" value="12345" type="text">
+		  </p>
+		  <p>
+		    <label for="iban[branch_code]">Code guichet :</label> 
+		    <input class="disable-stylesheet-width" id="iban[branch_code]" maxlength="5" name="iban[branch_code]" size="3" value="12345" type="text">
+		  </p>
+		   <p>
+		    <label for="iban[account_number]">N° de compte :</label> 
+		    <input class="disable-stylesheet-width" id="iban[account_number]" maxlength="10" name="iban[account_number]" size="8" value="2147483647" type="text">
+
+		  </p>
+		   <p>
+		    <label for="iban[key]">Clé :</label> 
+		    <input class="disable-stylesheet-width" id="iban[key]" maxlength="2" name="iban[key]" size="1" value="12" type="text">
+		  </p>
+		   <p>
+		    <label for="iban[account_name]">Nom du titulaire :</label> 
+		    <input id="iban[account_name]" name="iban[account_name]" value="" type="text">
+		  </p>
+
+		  <h2>Fiche de poste</h2>
+		  <p>
+		    </p><div>
+		      <table>
+		        <tbody><tr>
+		          <th colspan="2">Services</th>
+		          <th>Responsable?</th>
+
+		        </tr>      
+
+		        <tr>
+		          <td>
+		            <input checked="checked" id="employee[service_ids][]" name="employee[service_ids][]" value="1" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+		          </td>
+		          <td>
+		            Direction Générale
+		          </td>
+		          <td>
+
+		            <input id="responsable[1]" name="responsable[1]" value="1" type="checkbox">
+		          </td>
+		        </tr>
+
+		        <tr>
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="2" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+		          </td>
+		          <td>
+
+		            Service Administratif
+		          </td>
+		          <td>
+		            <input id="responsable[2]" name="responsable[2]" value="2" type="checkbox">
+		          </td>
+		        </tr>
+
+		        <tr>
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="3" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+
+		          </td>
+		          <td>
+		            Service Commercial
+		          </td>
+		          <td>
+		            <input id="responsable[3]" name="responsable[3]" value="3" type="checkbox">
+		          </td>
+		        </tr>
+
+		        <tr>
+
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="4" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+		          </td>
+		          <td>
+		            Production
+		          </td>
+		          <td>
+		            <input id="responsable[4]" name="responsable[4]" value="4" type="checkbox">
+		          </td>
+
+		        </tr>
+
+		        <tr>
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="5" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+		          </td>
+		          <td>
+		            Atelier Décor
+		          </td>
+		          <td>
+
+		            <input id="responsable[5]" name="responsable[5]" value="5" type="checkbox">
+		          </td>
+		        </tr>
+
+		        <tr>
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="6" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+		          </td>
+		          <td>
+
+		            Atelier Découpe
+		          </td>
+		          <td>
+		            <input id="responsable[6]" name="responsable[6]" value="6" type="checkbox">
+		          </td>
+		        </tr>
+
+		        <tr>
+		          <td>
+		            <input id="employee[service_ids][]" name="employee[service_ids][]" value="7" type="checkbox"> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->
+
+		          </td>
+		          <td>
+		            Atelier Fraisage
+		          </td>
+		          <td>
+		            <input id="responsable[7]" name="responsable[7]" value="7" type="checkbox">
+		          </td>
+		        </tr>
+
+		      </tbody></table>
+
+		    </div>
+
+		  <div id="jobs_choice">
+		    <div id="jobs_list">
+		      <table>
+		        <tbody><tr>
+		          <th colspan="2">Fonctions</th>
+		        </tr>
+
+		      </tbody></table>
+
+		    </div>
+		    <p>
+		      <a onclick="osibox_open();" style="text-decoration: underline;">Ajouter une fonction</a>
+		    </p>
+		  <!-- Display Documents div -->
+
+
+
+		    <span id="main_submit">
+		      <button type="submit" class="input-button">
+		  	    <span>Modifier</span>
+
+		      </button>
+		      <a href="/employees">Retour</a>
+		    </span>
+		  </div>
+
+		</form>
+		</div>
 	</div> <!-- content_page : FIN -->
 </div> <!-- PAGE : FIN -->
 <div id="footer_page">
