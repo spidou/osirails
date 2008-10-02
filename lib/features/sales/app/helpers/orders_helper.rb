@@ -47,9 +47,9 @@ module OrdersHelper
     	html += "</div>"
     	# html += "<div class=\"disable\"></div>"
     end
-    orders_steps.each do |ot|
-       html += order_step_validation(ot) if ot.name == step_name
-    end
+    #orders_steps.each do |ot|
+    #   html += order_step_validation(ot) if ot.name == step_name
+    #end
     html += "</div>"
   	html
   end

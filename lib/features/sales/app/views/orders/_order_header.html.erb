@@ -1,79 +1,44 @@
 <div class="frame">
-	<?xml version="1.0" encoding="utf-8"?>
-	<svg
-	   xmlns="http://www.w3.org/2000/svg" 
-	   xmlns:xlink="http://www.w3.org/1999/xlink"
-	   xmlns:ev="http://www.w3.org/2001/xml-events"
-	   version="1.1"
-	   baseProfile="full"
-	   x="0"
-	   y="0"
-	   width="300"
-	   height="200"
-	   id="svg2">
-	  <title>Rectangles</title>
-	  <defs
-	     id="defs4" />
-	  <g
-	     id="layer1">
-	    <rect
-	       width="300"
-	       height="120"
-	       x="0"
-	       y="20"
-	       fill="green"
-	       id="rect1306" />
-	    <rect
-	       width="80"
-	       height="150"
-	       x="20"
-	       y="30"
-	       fill="red"
-	       id="rect1308" />
-	    <rect
-	       width="140"
-	       height="80"
-	       x="50"
-	       y="50"
-	       fill="blue"
-	       id="rect1310" />
-	  </g>
-	</svg>
-<p>
-  <%= label :title, "Nom de projet :" %>
-  <strong><%= @order.title %></strong>
-</p>
+	<!-- TODO Code manualy the svg >
+	<object data="<%= order_path(@order) + '.svg' %>" type="image/svg+xml">
+		<img src="<%= order_path(@order) + '.svg' %>"/>
+	</object>
+	-->
+	<p>
+		<%= label :title, "Nom de projet :" %>
+		<strong><%= @order.title %></strong>
+	</p>
 
-<p>
-  <%= label :client, "Client / &Eacute;tablissement :" %>
-  <strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
-</p>
+	<p>
+		<%= label :client, "Client / &Eacute;tablissement :" %>
+		<strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+	</p>
 
-<p>
-  <%= label :establishment_address, "Lieu de livraison :" %>
-  <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
-</p>
+	<p>
+		<%= label :establishment_address, "Lieu de livraison :" %>
+		<strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
+	</p>
 
-<p>
-  <label>Etapes finies / Etapes totales :</label>
-  <strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
-</p>
+	<p>
+		<label>Etapes finies / Etapes totales :</label>
+		<strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
+	</p>
 
-<p>
-  <%= label :commercial_full_name, "Suivi commercial :" %>
-  <strong><%= @order.commercial.fullname %></strong>
-</p>
+	<p>
+		<%= label :commercial_full_name, "Suivi commercial :" %>
+		<strong><%= @order.commercial.fullname %></strong>
+	</p>
 
-<p>
-  <%= label :order_type, "Type de dossier :" %>
-  <strong><%= @order.order_type.title %></strong>
-</p>
+	<p>
+		<%= label :order_type, "Type de dossier :" %>
+		<strong><%= @order.order_type.title %></strong>
+	</p>
 
-<p>
-  <%= label :previsional_delivery, "Date pr&eacute;visionnelle de livraison :" %>
-  <strong><%= @order.previsional_delivery %></strong>
-</p>
-<% if controller.can_edit?(current_user) %>
-<%= link_to 'Modifier', edit_order_path(@order) %>
-<% end %>
-</div>
+	<p>
+		<%= label :previsional_delivery, "Date pr&eacute;visionnelle de livraison :" %>
+		<strong><%= @order.previsional_delivery %></strong>
+	</p>
+	<% if controller.can_edit?(current_user) %>
+		<%= link_to 'Modifier', edit_order_path(@order) %>
+		<% end %>
+	</div>

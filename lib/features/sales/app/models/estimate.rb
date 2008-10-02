@@ -1,6 +1,18 @@
 class Estimate < ActiveRecord::Base
+  # Relationships
   belongs_to :step_estimate
   has_many :estimates_product_references
+  
+  # Callbacks
+  after_create :default_validity_date
+  
+  # Validations
+  validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
+  
+  def default_validity_date
+    self.validity_date = self.created_at + 1.month
+    self.save
+  end
   
   def product_references
     self.estimates_product_references.collect { |epr| epr.product_reference }

@@ -111,3 +111,4 @@ files.each do |file|
 end
 
 Mime::Type.register 'application/pdf', :pdf
+Mime::Type.register 'image/svg+xml', :svg

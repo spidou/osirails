@@ -1,3 +1,4 @@
+<%= render_secondary_menu %>
 <%= order_header %>
 <div class="frame tabulation">
 	<%= order_steps %>
@@ -6,7 +7,7 @@
 	<h1>Autres devis</h1>
 	<ul>
 	<% @estimates.each do |e| %>
-		<li><a href="<%= order_estimate_path(@order, e) %>">Devis (crée le <%= e.created_at %>)</a></li>
+		<li><a href="<%= controller.can_edit?(current_user) ? edit_order_estimate_path(@order, e) : order_estimate_path(@order, e)%>">Devis (crée le <%= e.created_at %>)</a></li>
 	<% end %>
 	</ul>
 </div>

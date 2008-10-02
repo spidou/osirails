@@ -69,8 +69,7 @@ class SurveyController < ApplicationController
       @step.remarks << @remark unless @remark.nil?
       #      raise params.inspect
       if params[:commit] == "Cloturer"
-        @step.status = "terminated"
-        @step.save
+        @step.terminated!
         redirect_to :action => 'show'
       else
         flash[:notice] = "Dossier modifi&eacute avec succ&egrave;s"

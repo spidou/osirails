@@ -29,7 +29,10 @@ class OrdersController < ApplicationController
   end
 
   def show
-    redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase
+    respond_to do |format|
+      format.html { redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase }
+      format.svg {render :partial => 'step' }
+    end
   end
   
   def edit

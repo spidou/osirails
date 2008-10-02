@@ -1,11 +1,18 @@
-<%= osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1024px', :scroll => 'auto', :css => 'max-height: 500px;' %>
+<% content_for :header do %>
+<script type="text/javascript" src="/javascripts/calendar/calendar.js"></script> 
+<script type="text/javascript" src="/javascripts/calendar/lang/calendar-fr.js"></script> 
+<script type="text/javascript" src="/javascripts/calendar/calendar-setup.js"></script>
+
+<link href="/stylesheets/mini-calendar-skins/calendar-blue.css" rel="stylesheet" type="text/css"/>
+<% end %>
+<%= osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1280px', :scroll => 'auto', :css => 'max-height: 500px;' %>
 
 <script type="text/javascript">
 taxes_vat = <%= ConfigurationManager.sales_taxes_vat %>;
 
 var catalog = document.getElementById('catalog');
 var div_elm = document.createElement('div');
-div_elm.innerHTML = "<input type=\"button\" onclick=\"add_reference(); return false;\" value=\"Ajouter la référence\" style=\"float :right;\">";
+div_elm.innerHTML = "<button onclick=\"osibox_close(); return false;\" style=\"float :right;\">Fermer</button> <button onclick=\"add_reference(); return false;\" style=\"float :right;\">Ajouter</button> <button onclick=\"add_reference(); osibox_close(); return false;\" style=\"float :right;\">Ajouter et fermer</button>";
 catalog.appendChild(div_elm);
 
 function add_reference () {
@@ -18,7 +25,6 @@ function add_reference () {
 				onSuccess: function(transport) {
 					var ref_obj = transport.responseText.evalJSON()["product_reference"];
 					append_reference(ref_obj);
-					osibox_close(); 
 				}
 			});
 			return true;
@@ -27,14 +33,22 @@ function add_reference () {
 	return false;
 }
 
+function remove_reference (obj) {
+	var div_input = document.getElementById('input_references');
+	var input_id = obj.parentNode.nextSibling;
+	input_id.setAttribute('name', 'delete_product_reference[]');
+	div_input.appendChild(input_id);
+	obj.ancestors()[1].remove();
+}
+
 function append_reference (ref_obj) {
 	var list = document.getElementById('list_product').lastChild;
-	list.innerHTML += "<tr><td>" + (ref_obj['reference'] || ref_obj['product_reference']['reference']) + "</td><td><textarea name=\"product_references[][description]\">" + (ref_obj['name'] || '') + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_references[][quantity]\" class=\"quantity\" onkeyup=\"calculate(this)\" size=\"3\" value=\"1\" /></td><td><input type=\"text\" name=\"product_references[][unit_price]\" onkeyup=\"calculate(this)\" class=\"unit_price\" value=\"" + (ref_obj['production_cost_manpower'] || ref_obj['unit_price']) + "\" /></td><td class=\"total_price\"></td><td class=\"total_price_taxes\"></td><td><img src=\"/images/cross_16x16.png\"></td></tr>";
+	list.innerHTML += "<tr><td>" + (ref_obj['reference'] || ref_obj['product_reference']['reference']) + "</td><td><textarea name=\"product_references[][description]\">" + (ref_obj['name'] || '') + ref_obj['description'] + "</textarea></td><td><input type=\"text\" name=\"product_references[][quantity]\" class=\"quantity\" onkeyup=\"calculate(this)\" size=\"3\" value=\"1\" /></td><td><input type=\"text\" name=\"product_references[][unit_price]\" onkeyup=\"calculate(this)\" class=\"unit_price\" value=\"" + (ref_obj['production_cost_manpower'] || ref_obj['unit_price']) + "\" /></td><td class=\"total_price\"></td><td class=\"total_price_taxes\"></td><td><img src=\"/images/cross_16x16.png\" onclick=\"remove_reference(this);\"></td></tr>";
 
-	all_tr = document.getElementById('list_product').getElementsByTagName('tr');
-	calculate(all_tr[all_tr.length-1].getElementsByClassName('quantity')[0]);
+	var all_tr = document.getElementById('list_product').getElementsByTagName('tr');
+	var last_tr = all_tr[all_tr.length-1];
+	calculate(last_tr.getElementsByClassName('quantity')[0]);
 
-	var div_refs = document.getElementById('input_references');
 	var input_ref = document.createElement('input');
 	input_ref.setAttribute('type', 'hidden');
 
@@ -43,15 +57,15 @@ function append_reference (ref_obj) {
 		input.setAttribute('type', 'hidden');
 		input.setAttribute('value', ref_obj['id']);
 		input.setAttribute('name', 'product_references[][id]');
-		div_refs.appendChild(input);
+		last_tr.appendChild(input);
 
 		input_ref.setAttribute('value', ref_obj['product_reference_id']);
 	} else {
 		input_ref.setAttribute('value', ref_obj['id']);
 	};
-	
+
 	input_ref.setAttribute('name', 'product_references[][product_reference_id]');
-	div_refs.appendChild(input_ref);
+	last_tr.appendChild(input_ref);
 
 	return true;
 }
@@ -68,7 +82,7 @@ function calculate (elm) {
 </script>
 
 <% form_for @estimate, :url => order_estimate_path(@order, @estimate) do |e| %>
-
+<%= e.error_messages %>
 <h2>Conditions commerciales</h2>
 <p>
 <%= e.label :validity_date, 'Date de fin de validité' %>
@@ -101,14 +115,26 @@ function calculate (elm) {
 	</tr>
 </table>
 
-<input type="text"> <button>Ajouter</button>
 <button onclick="osibox_open(1); return false;">Ouvrir le catalogue de produits</button>
 
 <div id="input_references"></div>
-<%= e.submit 'Enregistrer' %>
+
+<%= params[:action] == 'show' ? display_remarks(@remarks) : display_remarks_and_add_remark_text_area(@remarks, @step)%>
+
+<% if params[:action] == 'new' %>
+<%= e.submit 'Créer' %>
+<% else %>
+<%= e.submit 'Modifier' %>
+<%= e.submit 'Cloturer' %>
+<% end %>
 <% end %>
 
 <script type="text/javascript">
+Calendar.setup({ 
+	inputField : "estimate_validity_date",
+	ifFormat : "%Y-%m-%d",
+	timeFormat : "24"
+});
 <% @estimate.estimates_product_references.each do |epr| %>
 append_reference('<%= epr.to_json(:include => :product_reference) %>'.evalJSON()["estimates_product_reference"])
 <% end %>
