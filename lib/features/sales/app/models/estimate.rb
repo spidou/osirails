@@ -24,11 +24,19 @@ class Estimate < ActiveRecord::Base
     result
   end
   
+  def net
+    total - self.reduction + self.carriage_costs
+  end
+  
   def total_with_taxes
     total + total / 100 * ConfigurationManager.sales_taxes_vat
   end
   
   def summon_of_taxes
     self.total_with_taxes - self.total
+  end
+  
+  def net_to_paid
+    total_with_taxes - self.account
   end
 end

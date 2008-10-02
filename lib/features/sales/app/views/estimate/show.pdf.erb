@@ -92,6 +92,10 @@
 					<td><%= @estimate.carriage_costs %></td>
 				</tr>
 				<tr>
+					<td>Net HT</td>
+					<td><%= @estimate.net %></td>
+				</tr>
+				<tr>
 					<td>TVA</td>
 					<td><%= ConfigurationManager.sales_taxes_vat %> %</td>
 				</tr>
@@ -104,8 +108,12 @@
 					<td><%= @estimate.account %></td>
 				</tr>
 				<tr>
-					<th>Total TTC</th>
+					<td>Total TTC</td>
 					<td><%= @estimate.total_with_taxes %></td>
+				</tr>
+				<tr>
+					<th>Net a payer</th>
+					<td><%= @estimate.net_to_paid %></td>
 				</tr>
 			</table>
 		</td>

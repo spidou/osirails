@@ -1,7 +1,7 @@
 <% content_for :secondary_menu do %>
 <h1><span class="gray_color">Actions</span> <span class="blue_color">sur le devis</span></h1>
 <ul>
-	<% if params[:action] == 'edit' %>
+	<% if params[:action] == 'edit' or params[:action] == 'update' %>
 	<li><%= link_to 'Afficher le devis (PDF)', order_estimate_path(@order, @estimate) %></li>
 	<% end %>
 	<li><%= link_to 'Créer un nouveau devis', new_order_estimate_path(@order) %></li>
