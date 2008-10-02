@@ -21,4 +21,18 @@ module SocietyIdentityConfigurationHelper
     end
     html
   end
+  
+  def choosen_theme(name, value)
+    path = "public/themes"
+    disabled = (params[:action] != 'edit' ? "disabled " : "")
+    
+    html = ""
+    html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
+    Dir.open(path).each do |theme|
+      selected = (theme == value ? "selected='selected' " : "" )
+      html << "<option #{selected}value='#{theme}'>#{theme}</option>\n" unless theme.start_with?(".")
+    end
+    html << "</select>\n"
+    html
+  end
 end

@@ -48,3 +48,8 @@
 	<b><%= label_tag 'admin_society_identity_configuration_working_day', 'Jours ouvrables :' %></b>
 	<%= working_day(@parameters["admin_society_identity_configuration_working_day"]) %> 
 </p>
+<h2>Style</h2>
+<p>
+	<b><%= label_tag 'admin_society_identity_configuration_choosen_theme', 'Choisir le thème de l\'Intranet :' %></b>
+	<%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %> 
+</p>

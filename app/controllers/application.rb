@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   
   # Filters
   before_filter :authenticate
+  before_filter :select_stylesheet
   
   # Includes
   include Permissible::InstanceMethods
@@ -65,7 +66,7 @@ class ApplicationController < ActionController::Base
       render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
     end
 
-    private
+  private
 
     # Do every verification before shows the page
     def authenticate
@@ -105,4 +106,18 @@ class ApplicationController < ActionController::Base
         end # if
       end # if
     end # authenticate
+    
+    def select_stylesheet
+      begin
+        stylesheet = ConfigurationManager.admin_society_identity_configuration_choosen_theme
+        stylesheet_path = "public/themes/#{ConfigurationManager.admin_society_identity_configuration_choosen_theme}"
+        if File.exists?(stylesheet_path) and File.directory?(stylesheet_path)
+          @stylesheet = "/themes/#{stylesheet}/stylesheets/default.css"
+        else
+          @stylesheet = "/stylesheets/default.css"
+        end
+      rescue
+        @stylesheet = "/stylesheets/default.css"
+      end
+    end
 end # class
