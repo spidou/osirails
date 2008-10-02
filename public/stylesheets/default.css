@@ -585,6 +585,9 @@ ul.center_list li {
 
 button.contextual_search_button {
 	background:("/images/view_12x12.png");
+	position:relative;
+	right:20px;
+	top:2px;
 }
 
 #input_search {
