@@ -1,5 +1,7 @@
 <h1>Désinstallation d'un module</h1>
-<p>ATTENTION vous essayez de désinstaller un module, ce qui aura pour consequence de suprimer les tables et donc les fonctionnalités liés aux objects suivants:
-<%= @feature.business_objects.join(", ") unless @feature.business_objects.nil? %></p>
-<%= button_to "Ok", {:action => "uninstall", :id => @feature.id}, :confirm => 'Voulez-vous désinstaller ?', :method => :put %>
-<%= button_to "Retour", {:action => "index"},:method => :get%>
+<div class='frame'>
+<p><strong>ATTENTION :</strong> vous essayez de désinstaller un module, ce qui aura pour consequence de suprimer les tables et donc les fonctionnalités liés aux objects suivants :
+"<%= @feature.business_objects.join(", ") unless @feature.business_objects.nil? %>"</p>
+<%= link_to "D&eacute;installer", {:action => "uninstall", :id => @feature.id}, :confirm => 'Voulez-vous désinstaller ?', :method => :put %> <%= link_to(" Retour", feature_path) %>
+
+</div>

@@ -14,28 +14,31 @@ function refreshCategories(select, max_level, value) {
     
     document.getElementById('product_informations').style.display = 'none';
     document.getElementById('product_reference_informations').style.display = 'none';
+
     
     if (id != 0){
-       
-            new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
-                {
-                    method: 'get',
-                    onSuccess: function(transport){
-                        response = transport.responseText
-                                       
-                        document.getElementById('select_'+next_select).innerHTML = response;
-                        if (select_id < max_level) {
-                            value += 1
-                            refreshCategories(document.getElementById('select_'+next_select), max_level, value);
-                        }
+        
+        new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
+            {
+                method: 'get',
+                onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'},
+                onSuccess: function(transport){
+                    response = transport.responseText
+                    
+                    document.getElementById('select_'+next_select).innerHTML = response;
+                    if (select_id < max_level) {
+                        value += 1
+                        refreshCategories(document.getElementById('select_'+next_select), max_level, value);
                     }
                 }
-            )
+            }
+        )
         
         if (value == 0) {
             new Ajax.Request('/product_reference_categories/'+id+'/product_references',
                 {
                     method: 'get',
+                    onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'},
                     onSuccess: function(transport){
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
@@ -62,6 +65,7 @@ function refreshCategories(select, max_level, value) {
         new Ajax.Request('/product_reference_categories/'+select_list+'/product_reference_categories',
             {
                 method: 'get',
+                onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'},
                 onSuccess: function(transport){
                     response = transport.responseText
                     document.getElementById('select_'+next_select).innerHTML = response;
@@ -76,6 +80,7 @@ function refreshCategories(select, max_level, value) {
             new Ajax.Request('/product_reference_categories/'+select_list+'/product_references',
                 {
                     method: 'get',
+                    onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'},
                     onSuccess: function(transport){
                         response = transport.responseText
                         select_ref = document.getElementById('select_reference');
@@ -97,9 +102,11 @@ function refreshReferenceInformation(select) {
         new Ajax.Request('/product_references/'+id,
             {
                 method: 'get',
+                onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'}, onComplete: function() {document.getElementById('catalog_loading').style.visibility = 'hidden'},
                 onSuccess: function(transport){
                     response = transport.responseText
                     
+                    document.getElementById('product_informations').style.display = 'none';
                     document.getElementById('product_reference_informations').style.display = 'block';
                     document.getElementById('product_reference_informations').innerHTML = response;
                     refreshProductsList(select, id, 1);
@@ -110,6 +117,8 @@ function refreshReferenceInformation(select) {
     else if (id == 0){
         select_list = ""
         refreshProductsList(select, id, 1);
+        document.getElementById('product_informations').style.display = 'none';
+        document.getElementById('product_reference_informations').style.display = 'none';
     }
     else {
         document.getElementById('products_list').style.display = 'none';
@@ -166,6 +175,8 @@ function refreshProductsList(select, id, value) {
         new Ajax.Request(url,
             {
                 method: 'get',
+                onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'},
+                onComplete: function() {document.getElementById('catalog_loading').style.visibility = 'hidden'},
                 onSuccess: function(transport){
                     response = transport.responseText
                     document.getElementById('products_list').style.display = 'block';
@@ -176,6 +187,7 @@ function refreshProductsList(select, id, value) {
     }
     else {
         document.getElementById('products_list').style.display = 'none';
+        document.getElementById('catalog_loading').style.visibility = 'hidden';
     }
 }
 
@@ -189,6 +201,7 @@ function refreshProduct(element){
     new Ajax.Request('/products/'+id,
         {
             method: 'get',
+            onLoading: function() {document.getElementById('catalog_loading').style.visibility = 'visible'}, onComplete: function() {document.getElementById('catalog_loading').style.visibility = 'hidden'},
             onSuccess: function(transport){
                 response = transport.responseText
                 document.getElementById('product_informations').innerHTML = response;

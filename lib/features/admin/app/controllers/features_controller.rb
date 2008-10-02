@@ -1,5 +1,8 @@
 class FeaturesController < ApplicationController
 
+  # Add permissions for methods
+  method_permission(:edit => ['disable', 'enable', 'install', 'uninstall', 'change_state'], :delete => ['remove_feature'], :new => ['add_feature'])
+
   # Method to collect features and to show them into the index view
   def index
     @features = Feature.find(:all, :order => "installed, activated DESC, name")
@@ -27,7 +30,15 @@ class FeaturesController < ApplicationController
   # Method for untar an uploaded feature to the default feature path
   def add_feature
     file_to_upload = {:file => params[:upload]}
-    Feature.add(file_to_upload) ? flash[:notice] = "Fichier envoy&eacute; et ajout&eacute; avec succ&egrave;s." : flash[:error] = "Erreur lors de l'envoi du fichier"
+    state = Feature.add(file_to_upload)
+    
+    if state == true
+      flash[:notice] = "Fichier envoy&eacute; et ajout&eacute; avec succ&egrave;s."
+    elsif state == false
+      flash[:error] = "Erreur lors de l'envoi du fichier"
+    else
+      flash[:error] = "#{state}"
+    end
     redirect_to features_path
   end
   

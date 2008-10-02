@@ -3,7 +3,7 @@ class Feature < ActiveRecord::Base
   serialize :conflicts
   serialize :business_objects
   serialize :search
-
+  
   # Constants
   DIR_BASE_FEATURES = "lib/features/"
   DIR_VENDOR_FEATURES = "vendor/features/"
@@ -85,7 +85,9 @@ class Feature < ActiveRecord::Base
     if has_conflicts?
       conflicts.each do |conflicts|
         if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).size > 0
-          @able_to_install_conflicts << conflicts
+          feature = Feature.find_by_name(conflicts[:name])
+          features_in_conflicts = { :title => feature.title, :version => feature.version }
+          @able_to_install_conflicts << features_in_conflicts
         end     
       end
     end
@@ -93,11 +95,11 @@ class Feature < ActiveRecord::Base
     # Test if the current feature is not present in the conflicts list of all other features
     Feature.find(:all, :conditions => ["installed = 1"]).each do |feature|
       if feature.has_conflicts?
-        feature.conflicts.each do |conflicts|
-          if conflicts[:name] == self.name and conflicts[:version].include?(self.version)
-            @able_to_install_conflicts <<  conflicts
+          feature.conflicts.each do |conflicts|
+            if conflicts[:name] == self.name and conflicts[:version].include?(self.version)
+              @able_to_install_conflicts <<  conflicts
+            end
           end
-        end
       end
     end
 
@@ -120,7 +122,9 @@ class Feature < ActiveRecord::Base
     if !self.activated? and self.installed? and !self.child_dependencies.nil?
       self.child_dependencies.each  do |child|
         if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
-          @able_to_uninstall_children << child
+          feature = Feature.find_by_name_and_version(child[:name], child[:version])
+          deactivated_feature = {:title => feature.title, :version => feature.version}
+          @able_to_uninstall_children << deactivated_feature
         end
       end
     else
@@ -150,7 +154,9 @@ class Feature < ActiveRecord::Base
     unless self.child_dependencies.nil?
       self.child_dependencies.each do |child|
         if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
-          @deactivate_children << child
+          feature = Feature.find_by_name_and_version(child[:name], child[:version])
+          deactivated_feature = {:title => feature.title, :version => feature.version}
+          @deactivate_children << deactivated_feature
         end
       end
     end
@@ -282,7 +288,7 @@ class Feature < ActiveRecord::Base
         self.able_to_install_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message <<  "Le module suivants est requis : "
         deps = []
         self.able_to_install_dependencies.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
         end
         message << deps.join(", ")
       end
@@ -349,7 +355,7 @@ class Feature < ActiveRecord::Base
 
   # Class method to upload a tar.gz to the the server and untar it
   def self.add(options)
-        begin
+    begin
     # Choose the directory and the valid extension
     options[:directory] = "tmp/features/"
     options[:file_type_id] = FileType.find_by_model_owner("Feature").id
@@ -358,33 +364,48 @@ class Feature < ActiveRecord::Base
     # Get the name file
     file_name = options[:file]['datafile'].original_filename
     # List the archive
-    raise "Can't open the archive" unless system("cd " + options[:directory] + " && tar -tf " + file_name + " > list_archive.txt")
+    return "Impossible d'ouvrir l'archive." unless system("cd " + options[:directory] + " && tar -tf " + file_name + " > list_archive.txt")
     # Get the directory name of the new feature
     feature_dir_name = File.open(File.join('tmp', 'features', 'list_archive.txt')).read.split("/").first
     # Untar the archive
-    raise "Can't untar" unless system("cd " + options[:directory] + " && tar -xzvf " + file_name )
+    return "Impossible d'ouvrir l'archive" unless system("cd " + options[:directory] + " && tar -xzvf " + file_name )
+    # Check if config.yml exist in the new feature
+    unless File.exist?( "#{options[:directory]}/#{feature_dir_name}/config.yml")
+      FileUtils.rm_rf("#{options[:directory]}/#{feature_dir_name}")
+      FileUtils.rm_rf("#{options[:directory]}/#{file_name}")
+      return "Le fichier config.yml est absent du nouveau module"
+    end
+    # Check if init.rb exist in the new feature
+    unless File.exist?( "#{options[:directory]}/#{feature_dir_name}/init.rb")
+      FileUtils.rm_rf("#{options[:directory]}/#{feature_dir_name}")
+      FileUtils.rm_rf("#{options[:directory]}/#{file_name}")
+      return "Le fichier init.rb est absent du nouveau module"
+    end
     # Open the yaml file config.yml
     yaml = YAML.load(File.open(File.join(options[:directory], feature_dir_name ,'config.yml')))
     # Check if the directory name doesnt already exist in lib/features/
     dir_base_features = Dir.open(DIR_VENDOR_FEATURES).sort
     dir_base_features.each do |dir|
-      raise "Directory " + yaml['name'] + " already exist" if dir == yaml['name']
+      if dir == yaml['name']
+        FileUtils.rm_rf("#{options[:directory]}/#{feature_dir_name}")
+        FileUtils.rm_rf("#{options[:directory]}/#{file_name}")
+        return "Le r&eacute;p&eacute;toire #{yaml['name']} existe d&eacute;j&agrave;. V&eacute;rifier le fichier config.yml du nouveau module."
+      end
     end
     # Rename the feature with his real name and move it to lib/features/
-    raise "Can't move " + yaml['name'] + " to " + DIR_VENDOR_FEATURES unless system("mv " + File.join(options[:directory], feature_dir_name) + " " + DIR_VENDOR_FEATURES + yaml['name'])
+    return "Can't move " + yaml['name'] + " to " + DIR_VENDOR_FEATURES unless system("mv " + File.join(options[:directory], feature_dir_name) + " " + DIR_VENDOR_FEATURES + yaml['name'])
     # Delete the archive list_archive.txt
     File.unlink(File.join(options[:directory], file_name))
     File.unlink(File.join(options[:directory], 'list_archive.txt'))
     # Reload all the environnement configuration (don't modify !)
     # $config is set in environment.rb
     load File.join(RAILS_ROOT, 'config', 'environment.rb')
-  rescue Exception => exc
+    rescue Exception => exc
       puts "ERROR: " + exc
       return false
     end
     true
   end
-
 
   # Method to remove a feature
   def remove

@@ -7,9 +7,9 @@
 		<th>Nom</th>
 		<th>Version</th>
 		<th>Date d'ajout</th>
-		<th>Installé</th>
-		<th>Activé</th>
-		<th>Suppression</th>
+		<th style='width: 40px;'>Installé</th>
+		<th style='width: 40px;'>Activé</th>
+		<th style='width: 70px;'>Suppression</th>
 
 	</tr>
 	<% for feature in @features %>
@@ -24,8 +24,7 @@
 	<% end %>
 </table>
 
-<br />
-
+<% if controller.can_add?(current_user) %>
 <h2>Ajout d'un module</h2>
 <p>Format accepté: .tar.gz
   <%= form_tag({:action => 'add_feature'}, :multipart => true) %>
@@ -35,5 +34,6 @@
 <p>
 <%= submit_tag "Ajouter" %>
 </p>
-</div>
 </form>
+<% end %>
+</div>
