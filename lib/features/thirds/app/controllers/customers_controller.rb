@@ -203,10 +203,7 @@ class CustomersController < ApplicationController
         ## Test if all documents enable are valid
         unless @document_objects.nil?
           @document_objects.size.times do |i|
-            unless @document_objects[i].valid?
-              
-              @error = true
-            end
+            @error = true unless @document_objects[i].valid?
           end
           ## Reaffect document number
           params[:new_document_number]["value"]  = @document_objects.size
@@ -218,12 +215,12 @@ class CustomersController < ApplicationController
           unless params[:new_document_number].nil? and !Document.can_add?(current_user)
             if params[:new_document_number]["value"].to_i > 0
               @document_objects.each do |document|
-                if (d = document.save) == true
+                if document.save == true
                   @customer.documents << document
                   document.create_thumbnails
+                  document.create_preview_format
                 else 
                   @error = true
-                  flash[:error] = d
                 end
               end
             end

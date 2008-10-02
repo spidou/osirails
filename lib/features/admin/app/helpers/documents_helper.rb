@@ -58,38 +58,40 @@ module DocumentsHelper
     document_controller = Menu.find_by_name('documents')
     html = ""
     if document_controller.can_list?(current_user) and Document.can_list?(current_user, owner.class.name)
-    html = "<h2> Documents </h2>"
-    unless documents.empty?
-      owner.class_documents.each_pair do |type, documents|
-        html += "<div class='document_view'>"
-        html += "<h1> #{type} </h1>"
-        documents.each do |document|
-          html += "<div class='document_view_content'>"
-          
-          html += image_tag("/images/file_extensions/#{document.extension}_75x75.png")
-          
-          html += "<p>"
-          html += "<strong>#{document.name}</strong><br />"
-          html += "Enregistr&eacute; le #{document.updated_at.strftime('%d %B %Y')} à #{document.updated_at.strftime('%H:%M')}<br/>"
-          html += "<a onclick='osibox_open(#{document.id});'>Modifier</a>"
-          html += get_description(document)
-          if document_controller.can_view?(current_user) and Document.can_view?(current_user, owner.class.name)
-            html += "&nbsp;" + link_download_last_version(document)
+      html = "<h2> Documents </h2>"
+      unless documents.empty?
+        owner.class_documents.each_pair do |type, documents|
+          html += "<div class='document_view'>"
+          html += "<h1> #{type} </h1>"
+          documents.each do |document|
+            html += "<div class='document_view_content'>"
+            if Document.image_mime_types.include?(document.mime_type)
+              html += image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id))
+            else
+              html += image_tag("/images/mime_types/#{document.mime_type.gsub("/", "_")}_75x75.png")
+            end
+            html += "<p>"
+            html += "<strong>#{document.name}</strong><br />"
+            html += "Enregistr&eacute; le #{document.updated_at.strftime('%d %B %Y')} à #{document.updated_at.strftime('%H:%M')}<br/>"
+            html += "<a onclick='osibox_open(#{document.id});'>Modifier</a>"
+            html += get_description(document)
+            if document_controller.can_view?(current_user) and Document.can_view?(current_user, owner.class.name)
+              html += "&nbsp;" + link_download_last_version(document)
+            end
+            #          if document_controller.can_delete?(current_user) and Document.can_delete?(current_user, owner.class.name)
+            #            html += "&nbsp;" + link_to("Supprimer", [owner,  document], :method => :delete, :confirm => 'Etes vous sûr ?')
+            #          end
+            html += "</p>"
+            html += "</div>"
           end
-#          if document_controller.can_delete?(current_user) and Document.can_delete?(current_user, owner.class.name)
-#            html += "&nbsp;" + link_to("Supprimer", [owner,  document], :method => :delete, :confirm => 'Etes vous sûr ?')
-#          end
-          html += "</p>"
           html += "</div>"
         end
-        html += "</div>"
+      else 
+        html += "<p>"
+        html += "Aucun documents"
+        html += "</p>"
       end
-    else 
-      html += "<p>"
-      html += "Aucun documents"
-      html += "</p>"
     end
-  end
     return html 
   end
 

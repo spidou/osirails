@@ -63,6 +63,7 @@ class SurveyController < ApplicationController
           document.save
           @step.documents << document
           document.create_thumbnails
+          document.create_preview_format
         end
       end
         

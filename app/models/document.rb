@@ -23,7 +23,7 @@ class Document < ActiveRecord::Base
   ## Plugins
   acts_as_taggable  
   
-  @image_extensions = ["jpg", "jpeg","png","gif"]
+  @image_mime_types = ["image/jpeg","image/png"]
   @models = []
   
   # Add the model name into models array
@@ -36,12 +36,12 @@ class Document < ActiveRecord::Base
     @models
   end
   
-  def self.add_image_extension(image_extension)
-    @image_extensions << image_extension
+  def self.add_image_mime_type(image_mime_type)
+    @image_mime_types << image_mime_type
   end
   
-  def self.image_extensions
-    @image_extensions
+  def self.image_mime_types
+    @image_mime_types
   end
   
   def self.can_have_document(model)
@@ -52,13 +52,8 @@ class Document < ActiveRecord::Base
     end
   end
   
-  def convert_to_png
-    require 'RMagick'
-    if Document.image_extensions.include?(self.extension)
-      path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
-      image = Magick::ImageList.new("#{path}#{self.id}.#{self.extension}")
-      image.write("#{path}#{self.id}.png")
-    end
+  def mime_type 
+    File.mime_type?("#{self.path}#{self.id}.#{self.extension}")
   end
   
   # This method permit to attribute a value to versioned_at
@@ -70,6 +65,7 @@ class Document < ActiveRecord::Base
   def owner_class
     self.has_document.class.name.downcase
   end
+  
   ## Return file of document
   def get_file
     if self.is_new
@@ -84,7 +80,7 @@ class Document < ActiveRecord::Base
   ## Create thumbnails
   def create_thumbnails
     require 'RMagick'
-    if Document.image_extensions.include?(self.extension)
+    if Document.image_mime_types.include?(self.mime_type)
       path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
       thumbnail = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
       thumbnail.crop_resized!(75, 75, Magick::NorthGravity)
@@ -97,19 +93,28 @@ class Document < ActiveRecord::Base
   ## Create preview format
   def create_preview_format
     require 'RMagick'
-    path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
-    image = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
-    image.resize_to_fit!(770, 450)
-    image.write("#{path}/#{self.id}_resize.#{self.extension}")
+    if Document.image_mime_types.include?(self.mime_type)
+      path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
+      image = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
+      image.resize_to_fit!(770, 450)
+      image.write("#{path}/#{self.id}_770_450.#{self.extension}")
+    else
+      return false
+    end
+  end
+  
+  def convert_to_png
+    require 'RMagick'
+    if Document.image_mime_types.include?(self.mime_type)
+      path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
+      image = Magick::ImageList.new("#{path}#{self.id}.#{self.extension}")
+      image.write("#{path}#{self.id}.png")
+    end
   end
   
   ## Return document path
   def path
-    #    unless self.class == OrdersSteps
     return self.owner_class + "/" + self.file_type_id.to_s + "/"
-    #    else
-    #      return "order/" + self.file_type_id.to_s + "/"
-    #    end
   end
   
   ## Override new method
