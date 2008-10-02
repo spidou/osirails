@@ -28,13 +28,9 @@ class File
   
   private
     def self.find_mimetype(path_to_file)
-      raise RUBY_PLATFORM.inspect
       if RUBY_PLATFORM.include?('mswin32') or !File.exists?(path_to_file)
         return EXTENSIONS[File.extname(path_to_file).gsub('.','').downcase.to_sym]
-      else if RUBY_PLATFORM.include?('macosx')
-        return `file -bIr #{path_to_file}`.strip
       else
-        raise RUBY_PLATFORM.inspect
         return `file -bir #{path_to_file}`.strip
       end
     end
