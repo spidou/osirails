@@ -1,16 +1,53 @@
 ## YAML Template.
 
-admin:
+admin_user:
   username: admin
-  password: <%= Digest::SHA1.hexdigest("admin") %>
+  password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: true
-  
-one:
-  username: user_activated
+  password_updated_at: <%= Time.now - 1.hours %>
+
+powerful_user:
+  username: powerful_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+can_list_user:
+  username: can_list_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+can_view_user:
+  username: can_view_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+can_add_user:
+  username: can_add_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+can_edit_user:
+  username: can_edit_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+can_delete_user:
+  username: can_delete_user
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>
+
+activated_but_has_expired_password_user:
+  username: activated_but_has_expired_password_user
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: true
 
-two:
-  username: user_not_activated
+unactivated_user:
+  username: unactivated_user
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: false

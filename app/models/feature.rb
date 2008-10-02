@@ -10,6 +10,7 @@ class Feature < ActiveRecord::Base
   KERNEL_FEATURES = ["admin"]
   FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "products", "rh", "sales", "thirds"]
 
+  validates_presence_of :name
   validates_uniqueness_of :name
 
   # we use ' #{method_name}_#{content} ex=> able_to_install_conflicts  '  to name ower tabs
@@ -33,14 +34,11 @@ class Feature < ActiveRecord::Base
   # contains all features that depend on current feature
   attr_reader :deactivate_children
 
-
   # contains log concerning installation_script error
   attr_reader :install_log
 
   # contains log concerning uninstallation_script error
   attr_reader :uninstall_log
-
-
 
   def installed?
     self.installed
@@ -145,16 +143,7 @@ class Feature < ActiveRecord::Base
     @activate_dependencies = @activate_dependencies.uniq
     @activate_dependencies.size > 0 ? false : true
   end
-
-  # Method to verify if the feature belongs to the features that cannot be deactivated 
-  def kernel_feature?
-    KERNEL_FEATURES.include?(self.name)
-  end
   
-  def activate_by_default?
-    FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
-  end
-
   def able_to_deactivate?
     @deactivate_children = []
     return false if !self.activated?
@@ -167,6 +156,15 @@ class Feature < ActiveRecord::Base
     end
     @deactivate_children = @deactivate_children.uniq
     @deactivate_children.size > 0 ? false : true
+  end
+
+  # Method to verify if the feature belongs to the features that cannot be deactivated 
+  def kernel_feature?
+    KERNEL_FEATURES.include?(self.name)
+  end
+  
+  def activate_by_default?
+    FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
   end
 
   def enable

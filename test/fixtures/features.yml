@@ -1,34 +1,77 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: Feature1
+# no other feature may depend to this feature
+independant_feature:
+  name: independant_feature
+  title: Independant feature
   version: 0.1
   dependencies:
-    feature_name:
-      - 0.1
-    feature_name2:
-      - 0.1
   conflicts:
-    feature_name:
-      - 0.1
-      - 0.2
   installed: true
   activated: true
 
-two:
-  name: Feature2
-  version: 0.2
+normal_feature1:
+  name: normal_feature1
+  title: Normal Feature 1
+  version: 0.1
   dependencies:
-    feature_name:
-      - 0.1
-    feature_name2:
+  conflicts:
+  installed: true
+  activated: true
+
+normal_feature2:
+  name: normal_feature2
+  title: Normal Feature 2
+  version: 0.1
+  dependencies:
+  conflicts:
+  installed: true
+  activated: true
+
+feature_with_one_dep:
+  name: feature_with_one_dep
+  title: Feature with one dependence
+  version: 0.1
+  dependencies:
+    normal_feature1:
       - 0.1
   conflicts:
-    feature_name:
-      - 0.1
-      - 0.2
-  business_objects:
-    - BusinessObject1
-    - BusinessObject1
   installed: true
+  activated: true
+
+feature_with_two_deps:
+  name: feature_with_two_deps
+  title: Feature with two dependences
+  version: 0.1
+  dependencies:
+    normal_feature2:
+      - 0.1
+    feature_with_one_dep:
+      - 0.1
+  conflicts:
+  installed: true
+  activated: true
+
+feature_with_one_conflict:
+  name: feature_with_one_conflict
+  title: Feature with one conflict
+  version: 0.1
+  dependencies:
+  conflicts:
+    normal_feature1:
+      - 0.1
+  installed: false
+  activated: false
+
+feature_with_two_conflicts:
+  name: feature_with_two_conflicts
+  title: Feature with two conflicts
+  version: 0.1
+  dependencies:
+  conflicts:
+    normal_feature1:
+      - 0.1
+    normal_feature2:
+      - 0.1
+  installed: false
   activated: false

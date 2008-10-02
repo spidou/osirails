@@ -26,7 +26,7 @@ class Test::Unit::TestCase
   # test cases which use the @david style and don't mind the speed hit (each
   # instantiated fixtures translates to a database query per test method),
   # then set this back to true.
-  self.use_instantiated_fixtures  = false
+  self.use_instantiated_fixtures  = true
 
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
@@ -35,4 +35,40 @@ class Test::Unit::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  # Class-level method to quickly create validation tests for a bunch of actions at once.
+  # For example, if you have a FooController with three actions, just add one line to foo_controller_test.rb:
+  #
+  #   assert_valid_markup :bar, :baz, :qux
+  #
+  # If you pass :but_first => :something, #something will be called at the beginning of each test case
+  def assert_not_routing(path, options, defaults={}, extras={}, message=nil)
+    #TODO test if this method works really
+    !assert_routing(path, options, defaults, extras, message)
+  end
+  
+  def self.assert_valid_permissions(*actions)
+    #TODO faire les assertions qui permettent de tester facilement les permissions sur tous les controlleurs
+  end
+end
+
+module ActionController
+  module Assertions
+    module ModelAssertions
+      # Ensures that the passed record is valid by Active Record standards and
+      # returns any error messages if it is not.
+      #
+      # ==== Examples
+      #
+      #   # assert that a newly created record is not valid
+      #   model = Model.new
+      #   assert_not_valid(model)
+      #
+      def assert_not_valid(record)
+        clean_backtrace do
+          assert !record.valid?, record.errors.full_messages.join("\n")
+        end
+      end
+    end
+  end
 end

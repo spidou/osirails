@@ -1,0 +1,38 @@
+= assert_valid_markup plugin for Rails
+
+Validate your (X)HTML against the W3C Validator web service (http://validator.w3.org/)
+from within your functional tests. If anything changes to invalidate your markup, you'll
+know pronto. Responses from the web service are cached, so your tests aren't slowed down
+unless something has changed.
+
+== Usage
+
+  # Calling the assertion with no parameters validates whatever is in @request.body,
+  # which is automatically set by the existing get/post/etc helpers. For example:
+
+    class FooControllerTest < Test::Unit::TestCase
+      def test_bar_markup
+        get :bar
+        assert_valid_markup
+      end
+    end
+
+  # Add a string parameter to the assertion to validate any random fragment. Por ejemplo:
+
+    class FooControllerTest < Test::Unit::TestCase
+      def test_bar_markup
+        assert_valid_markup "<div>Hello, world.</div>"
+      end
+    end
+
+  # For the ultimate in convenience, use the class-level method to validate a slew of
+  # actions in one line. Par exemple:
+
+    class FooControllerTest < Test::Unit::TestCase
+      assert_valid_markup :bar, :baz, :qux
+    end
+
+== Credits
+
+Scott Raymond <sco@scottraymond.net>. Released under the MIT license.
+Latest version: http://redgreenblu.com/svn/projects/assert_valid_markup/
