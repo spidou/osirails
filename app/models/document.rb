@@ -52,6 +52,15 @@ class Document < ActiveRecord::Base
     end
   end
   
+  def convert_to_png
+    require 'RMagick'
+    if Document.image_extensions.include?(self.extension)
+      path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
+      image = Magick::ImageList.new("#{path}#{self.id}.#{self.extension}")
+      image.write("#{path}#{self.id}.png")
+    end
+  end
+  
   # This method permit to attribute a value to versioned_at
   def updated_at=(value)
     self.versioned_at = value
@@ -80,6 +89,8 @@ class Document < ActiveRecord::Base
       thumbnail = Magick::Image.read("#{path}#{self.id}.#{self.extension}").first
       thumbnail.crop_resized!(75, 75, Magick::NorthGravity)
       thumbnail.write("#{path}/#{self.id}_75_75.#{self.extension}")
+    else 
+      return false
     end
   end
   
@@ -104,18 +115,15 @@ class Document < ActiveRecord::Base
   ## Override new method
   def self.new(document = nil)
     unless document.nil?
-      unless document[:owner].nil?      
-        ## Store file extension
-        document_extension = document[:datafile].original_filename.split(".").last unless document[:datafile].blank?
-        document_extension = File.mime_type?(File.open(document[:datafile].path, "r")).strip.split("/")[1].split(";")[0].to_s unless document[:datafile].blank?
+      unless document[:owner].nil?
     
         ## affect document_name with original document name if associated textfield is undefined 
         document[:name].blank? ? document_name = ((a = document[:datafile].original_filename.split("."); a.pop; a.to_s) unless document[:datafile].blank?) : document_name = document[:name]
     
         @document =super(
           :name => document_name , 
-          :description => document[:description], 
-          :extension => document_extension)
+          :description => document[:description],
+          :extension => (FileManager.real_extension(document[:datafile]) unless document[:datafile].nil?))
         @document.file_type = FileType.find(document[:file_type_id]) unless document[:file_type_id].nil?
         @document.owner = document[:owner]
         @document.file = document[:datafile] unless document[:datafile].blank?
@@ -227,11 +235,6 @@ class Document < ActiveRecord::Base
         
         unless self.file.nil?
           unless self.file.blank?
-        
-            ## Store all possible extension for file
-            possible_extensions = []
-            self.file_type.file_type_extensions.each {|f| possible_extensions << f.name}
-          
             if self.valid?
               super
               path = "documents/" + self.owner.class.name.downcase + "/" + self.file_type.id.to_s.downcase + "/"
@@ -252,16 +255,16 @@ class Document < ActiveRecord::Base
                 self.destroy
                 return file_response
               end
-            end      
+            end
           else
             return false
           end
         else
-          return false
-        end ## file.nil?
+          return false ## file.nil?
+        end
       else
-        return false
-      end ## owner.valid?
+        return false ## owner.valid?
+      end
     else
       super
     end

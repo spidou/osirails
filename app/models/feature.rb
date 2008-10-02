@@ -354,7 +354,6 @@ class Feature < ActiveRecord::Base
         begin
     # Choose the directory and the valid extension
     options[:directory] = "tmp/features/"
-    options[:extensions] = ["tar.gz"]
     options[:file_type_id] = FileType.find_by_model_owner("Feature").id
     # Up the archive to the server
     FileManager.upload_file(options)

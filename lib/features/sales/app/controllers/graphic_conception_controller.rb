@@ -19,6 +19,8 @@ class GraphicConceptionController < ApplicationController
   def edit
     @order = Order.find(params[:order_id])
     @step = @order.step_commercial.step_graphic_conception
+    @press_proof = PressProof.new()
+    @step.press_proofs << @press_proof
     @checklist_responses = @step.checklist_responses
     @documents = @step.documents
     @remarks = @step.remarks

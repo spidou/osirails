@@ -48,17 +48,22 @@ menus:
         description: Dossiers de vente cloturés
 steps:
   commercial:
-    description: descqsdqds
+    description: Etape commerciale
     title: Etude Commercial
+    position: 1
     children:
       estimate:
         title: Devis
+        position: 3
       survey:
         title: Visite commerciale
+        position: 1
       graphic_conception:
         title: Conception Graphique
+        position: 2
   invoicing:
     title: Facturation
+    position: 2
 configurations:
   taxes_vat:
     description: Taxe TVA

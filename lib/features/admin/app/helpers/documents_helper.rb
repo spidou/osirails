@@ -65,7 +65,9 @@ module DocumentsHelper
         html += "<h1> #{type} </h1>"
         documents.each do |document|
           html += "<div class='document_view_content'>"
+          
           html += image_tag("/images/file_extensions/#{document.extension}_75x75.png")
+          
           html += "<p>"
           html += "<strong>#{document.name}</strong><br />"
           html += "Enregistr&eacute; le #{document.updated_at.strftime('%d %B %Y')} à #{document.updated_at.strftime('%H:%M')}<br/>"

@@ -1,6 +1,5 @@
 class FileType < ActiveRecord::Base
   
-  has_many :file_types_file_type_extensions, :class_name => "FileTypesFileTypeExtensions"
-  has_many :file_type_extensions, :through => :file_types_file_type_extensions
+  has_and_belongs_to_many :mime_types, :join_table => 'file_types_mime_types', :foreign_key => 'file_type_id', :association_foreign_key => 'mime_type_id'
   
 end

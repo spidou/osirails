@@ -33,10 +33,11 @@
     <p>
       <%= d.label :file_type_id, "Type de fichier:"%>
       <select id='<%=owner_type_downcase%>_documents_<%=cpt%>_file_type_id' name='<%=owner_type_downcase%>[documents][<%=cpt%>][file_type_id]' > 
-        <% FileType.find_all_by_model_owner(owner_type.capitalize).each do |a| %>
-          <%b = a%>
-            <option value='<%= a.id%>' title='<%= (t = a.file_type_extensions.each{|f| a.file_type_extensions[a.file_type_extensions.index(f)] = f.name}.join(",");)%>' > 
-          <%= a.name + "(" + (t.split(",").size > 2 ? t.split(",")[0..1].join(",").concat("...") : t) +")" %> </option>
+        <% FileType.find_all_by_model_owner(owner_type.capitalize).each do |file_type| %>
+          <%mime_type_extension_array = []%>
+          <%file_type.mime_types.each{|mime_type| mime_type.mime_type_extensions.each{|mime_type_extension| mime_type_extension_array << mime_type_extension.name}}%>
+            <option value='<%= file_type.id%>' title='<%= mime_type_extension_array.join(",")%>' > 
+          <%= file_type.name + "(" + (mime_type_extension_array.size > 2 ? mime_type_extension_array[0..1].join(",").concat("...") : mime_type_extension_array.join(",")) +")" %> </option>
         <% end %>
       </select>
     </p> 
@@ -60,8 +61,7 @@
       <%= javascript_tag "document.getElementById('#{owner_type_downcase}_documents_#{cpt}_name').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["name"]}';
       document.getElementById('#{owner_type_downcase}_documents_#{cpt}_description').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["description"]}';
       document.getElementById('#{owner_type_downcase}_documents_#{cpt}_file_type_id').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["file_type_id"]}';
-      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_tag_list').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["tag_list"]}';
-      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_datafile').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["datafile"]}'"%>
+      document.getElementById('#{owner_type_downcase}_documents_#{cpt}_tag_list').value = '#{params["#{owner_type_downcase}"]["documents"]["#{cpt}"]["tag_list"]}"%>
     <%end%>
   </div>
 

@@ -5,12 +5,15 @@
     
     <!-- Display Checklists div -->
     <%= display_checklist(@checklist_responses, @step_survey)%>
+      
+    <!-- Display Remarks div -->
+    <%= display_remarks_and_add_remark_text_area(@remarks, @step) %>
 
     <!-- Display Documents div -->
     <%= display_documents_and_add_documents_button(@step, @documents, params, @new_document_number, @error) %>
-
-    <!-- Display Remarks div -->
-    <%= display_remarks_and_add_remark_text_area(@remarks, @step) %>
+    
+    <h2> Composer un bon à tirer </h2>
+    <div class="press_proofs"></div>
 
     <%= order_step.submit  'Modifier' %>
     <%= order_step.submit  'Cloturer' %>
