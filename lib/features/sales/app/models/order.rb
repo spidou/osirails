@@ -7,6 +7,7 @@ class Order < ActiveRecord::Base
   belongs_to :commercial, :class_name => 'Employee'
   has_one :step_commercial
   has_one :step_invoicing
+  has_many :order_logs
 
   # Validations
   validates_presence_of :order_type

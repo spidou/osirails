@@ -8,8 +8,7 @@ ActionController::Routing::Routes.add_routes do |map|
     order.resource 'survey', :controller => 'survey' do |survey|
       survey.resources :documents
     end
-    
-    order.resource 'logs', :controller => 'logs'
+    order.resources 'logs', :controller => 'logs'
   end
   
   map.prospectives 'prospectives', :controller => 'commercial', :action => 'index'

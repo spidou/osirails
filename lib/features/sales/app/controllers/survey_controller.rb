@@ -1,6 +1,8 @@
 class SurveyController < ApplicationController
   helper :documents, :orders, :step
   
+  before_filter :logs
+  
   def show
     if can_edit?(current_user)
       redirect_to :action => "edit"
@@ -84,5 +86,11 @@ class SurveyController < ApplicationController
       flash[:error] = "Une erreur est survenue lors de la sauvegarde du dossier"
       render :action => 'edit'
     end
+  end
+  
+  protected
+  
+  def logs
+    OrderLog.set(@order, current_user, params)
   end
 end

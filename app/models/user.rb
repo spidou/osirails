@@ -97,6 +97,8 @@ class User < ActiveRecord::Base
     end
   end
   
-  
+  def employee_name
+    self.employee ? self.employee.fullname : self.username
+  end
 # TODO delete the Add link that been used for dev purposes
 end

@@ -1,6 +1,7 @@
 class OrdersController < ApplicationController
   # Callbacks
   before_filter :check, :except => [:index, :new, :create, :auto_complete_for_employee_fullname]
+  before_filter :logs
   
   method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
   
@@ -60,6 +61,10 @@ class OrdersController < ApplicationController
   end
   
   private
+  
+  def logs
+    OrderLog.set(@order, current_user, params)
+  end
   
   def check
     @order = Order.find(params[:id])

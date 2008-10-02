@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<div class="frame tabulation">
+	<h1>Historiques</h1>
+	<table>
+		<tr>
+			<th>Date</th>
+			<th>Utilisateur</th>
+			<th>Menu</th>
+			<th>Action</th>
+			<th>Détails</th>
+		</tr>
+<% @logs.each do |log| %>
+		<tr>
+			<td><%= log.created_at.strftime("%A %d %B %Y à %H:%M:%S") %></td>
+			<td><%= log.user.employee_name %></td>
+			<td><%= log.controller.humanize %></td>
+			<td><%= log.action.humanize %></td>
+			<td><%= (log.action == 'create' or log.action == 'update') ? (link_to 'disponible', order_log_path(@order, log)) : 'non disponible' %></td>
+		</tr>
+<% end %>
+	</table>
+	<%= will_paginate @logs, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+</div>

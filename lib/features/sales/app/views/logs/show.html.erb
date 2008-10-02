@@ -1,5 +1,10 @@
 <%= order_header %>
-
 <div class="frame tabulation">
-	Ceci contient les historiques
+	<h1>Détails de l'historique</h1>
+	<p>Date: <%= @log.created_at %></p>
+	<p>Utilisateur: <%= @log.user.employee_name %></p>
+	<p>Menu: <%= @log.controller.humanize %></p>
+	<p>Action: <%= @log.action.humanize %></p>
+	<p>Paramètres supplémentaire: <br /><code><%= @log.parameters.inspect %></code></p>
+	<p><%= link_to 'Retour', order_logs_path(@order) %></p>
 </div>
