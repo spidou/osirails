@@ -78,11 +78,13 @@ module ActiveRecord
         
         def in_progress!
           self.status = 'in_progress'
+          self.start_date = DateTime.now
           self.save
         end
         
         def terminated!
           self.status = 'terminated'
+          self.end_date = DateTime.now
           self.save
         end
         

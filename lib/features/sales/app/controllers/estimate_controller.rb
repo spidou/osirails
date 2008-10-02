@@ -24,7 +24,7 @@ class EstimateController < ApplicationController
 
   def show
     @estimate = Estimate.find(params[:id])
-    send_data render_pdf, :filename => "Devis-#{@estimate.id}.pdf"
+    send_data render_pdf, :filename => "Devis_#{@estimate.id}}.pdf"
   end
 
   def create
