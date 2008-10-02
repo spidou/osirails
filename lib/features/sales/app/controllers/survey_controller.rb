@@ -1,35 +1,21 @@
 class SurveyController < ApplicationController
   helper :documents, :orders, :step
   
-  before_filter :logs
+  before_filter :check
   
   def show
     if can_edit?(current_user)
       redirect_to :action => "edit"
     end
       
-    @order = Order.find(params[:order_id])
-    @step = @order.step_commercial.step_survey
-    @checklist_responses = @step.checklist_responses
-    @documents = @step.documents
-    @remarks = @step.remarks
+
   end
   
   def edit
-    @order = Order.find(params[:order_id])
-    @step = @order.step_commercial.step_survey
-    @checklist_responses = @step.checklist_responses
-    @documents = @step.documents
-    @remarks = @step.remarks
+
   end
   
   def update
-    @order = Order.find(params[:order_id])
-    @step = @order.step_commercial.step_survey
-    @checklist_responses = @step.checklist_responses
-    @documents = @step.documents
-    @remarks = @step.remarks
-    
     ## Save checklist_responses
     unless params[:step_survey][:checklists].nil?
       @checklist_responses.each do |checklist_response|
@@ -90,7 +76,12 @@ class SurveyController < ApplicationController
   
   protected
   
-  def logs
-    OrderLog.set(@order, current_user, params)
+  def check
+    @order = Order.find(params[:order_id])
+    OrderLog.set(@order, current_user, params) # Manage logs
+    @step = @order.step_commercial.step_survey
+    @checklist_responses = @step.checklist_responses
+    @documents = @step.documents
+    @remarks = @step.remarks
   end
 end

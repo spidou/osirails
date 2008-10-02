@@ -3,7 +3,6 @@ class EstimateController < ApplicationController
 
   attr_accessor :current_order_step
   before_filter :check
-  before_filter :logs
 
   def index
     @estimates = @order.step_commercial.step_estimate.estimates
@@ -93,12 +92,9 @@ class EstimateController < ApplicationController
 
   protected
 
-  def logs
-    OrderLog.set(@order, current_user, params)
-  end
-
   def check
     @order = Order.find(params[:order_id])
+    OrderLog.set(@order, current_user, params) # Manage logs
     @customer = @order.customer
     
     @step = @order.step_commercial.step_estimate
