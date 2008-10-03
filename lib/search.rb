@@ -139,7 +139,7 @@ class Search
         group = ""
       end  
       # criterion['parent']==model ? parent = " " : parent = criterion['parent'].tableize + "."
-      parent = criterion['parent'].tableize + "."
+      parent = criterion['parent'].constantize.table_name + "." 
       unless criterion['value'].nil?
       
         if criterion['value'].split(" ").size>1

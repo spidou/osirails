@@ -1,9 +1,10 @@
 <h1>Informations d'un employ&eacute;</h1>
 
 <% content_for :secondary_menu do %>
-  <p>
-    <%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %>
-  </p>
+  <h1><span class="gray_color">Actions</span> <span class="blue_color">possibles</span></h1>
+  <ul>
+    <li><%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %></li>
+  </ul>
 <% end %>
 
 
@@ -38,7 +39,7 @@
     <%for service in @employee.services%>
       <p>
         <%=link_to service.name, service_path(service.id)%>
-        <%= "(Responsable(s) : " + responsable(service.id)%>
+        <%= responsable(service.id)=="" ? "" : "(Responsable(s) : #{responsable(service.id)} )"%>
       </p>
     <% end %>
     
@@ -155,6 +156,7 @@
   <% end %>    
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
     <h2>Contrat de travail</h2>
+    <% if @job_contract.employee_state.active==true %>  
       <p>
         <%= label_tag "Type de contrat :"%>
         <strong><%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %></strong>
@@ -167,10 +169,12 @@
         <%= label_tag "Fin du contrat :"%>
         <strong><%=h @job_contract.end_date.nil? ? "Non spécifiée" : @job_contract.end_date.strftime("%d %B %Y") %></strong>
       </p>
+    <% end %>  
       <p>
         <%= label_tag "Status employ&eacute;e :"%>
         <strong><%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %></strong>
       </p>
+    <% if @job_contract.employee_state.active==true %>   
       <p>
         <%= label_tag "Salaire brut actuel :"%>
         <strong><%=h @job_contract.salary.nil? ? "Aucun" :  @job_contract.salary['salary'].to_s + " €"  %>
@@ -179,7 +183,7 @@
           <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
         <% end %>
       </p>
-      
+    <% end %>  
       <%= display_job_contract_edit_link(@job_contract_controller, @employee)%> 
     
   <% end %>    

@@ -111,7 +111,7 @@ module SearchesHelper
       tab << c.values_at(-2).first if c.size>1
     end
     # attributes
-    html = "<th style='width:10px;' > (↓) </th>"
+    html = "<th rowspan='2'  style='width:10px;' > (↓) </th>"
     columns.each do |column| 
       if column.size==1
       html += "<th rowspan='2' >#{column.last.humanize}</th>"
@@ -138,9 +138,8 @@ module SearchesHelper
     searches.each_pair do |feature,models|
       html+="<optgroup label='#{ feature }'"
       models.each do |model|
-        # model == choosen_model ? m_selected = "selected=\"selected\"" : m_selected = ""
-        m_selected = ""
-        html+="<option #{m_selected} value='#{ feature },#{ model }'> #{ model }</option>"
+
+        html+="<option value='#{ feature },#{ model }'> #{ model }</option>"
       end
     end
     html+="</select>"

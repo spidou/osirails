@@ -81,6 +81,10 @@ class JobContractsController < ApplicationController
       @job_contract.departure = nil if params[:job_contract]['departure(3i)'].nil?
       @job_contract.save
       
+      # disable user
+      @employee.user.enabled=false
+      @employee.user.save
+      
       @job_contract.salaries << @salary unless @salary.nil?
       # save the job_contract's documents
       unless params[:new_document_number].nil?

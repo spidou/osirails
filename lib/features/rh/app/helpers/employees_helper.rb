@@ -218,9 +218,9 @@ module EmployeesHelper
       
       if controller.can_view?(current_user) and Employee.can_view?(current_user)
           if show_all == false
-            contents << "<li>"+link_to('Voir tous les employ&eacute;s', :controller => 'employees', :action => 'index', :all_employees => true)+"</li>"
+            contents << "<li>"+link_to("<img src=\"/images/view_16x16.png\" alt=\"Ajouter\" title=\"Ajouter\" />  Voir tous les employ&eacute;s", :controller => 'employees', :action => 'index', :all_employees => true)+"</li>"
           else
-            contents << "<li>"+link_to('Voir tous les employ&eacute;s actifs', :controller => 'employees', :action => 'index', :all_employees => false)+"</li>"
+            contents << "<li>"+link_to("<img src=\"/images/view_16x16.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Voir tous les employ&eacute;s actifs", :controller => 'employees', :action => 'index', :all_employees => false)+"</li>"
           end
       end
       
@@ -262,7 +262,7 @@ module EmployeesHelper
       manager +=  ", " unless manager==""
       manager += @employee.id==t.employee_id ? e.fullname : link_to( e.fullname,employee_path(t.employee_id))   
     end
-    return manager + " )" 
+    return manager  
   end
   
   # Method to pluralize or not the email's <h3></h3>
