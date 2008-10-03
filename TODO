@@ -1,0 +1,44 @@
+Reglement détails :
+
+Personne              Lieu                                              Problème
+
+Julien              index(password_policies)                          Politique de mot de passe (Afficher le détail des niveau de sécurité) (Actuellement ils sont dans les title des noms)
+Julien              new(premia)                                       Incohérence au niveau de l'ajout des primes (Actuellement on peut donné des primes 8 ans en arrière)
+Julien              index(employee)                                   On voit tout les employee licencier et demissinaire inclus
+Julien              show(employee)(au niveau des services)            Si l'employée est dans un service et que ce dernier n'a pas de responsable on doit responsable vide, il faut le cacher
+Julien              show(employee)(au niveau des primes)              Affichage des primes a revoir, si dans l'ajout d'une prime on met un motif de prime très long ça s'explose)
+Julien              show(employee)(au niveau des documents)           S'il n'y a pas de document on peut caché cette partie
+Julien              show(employee)(au niveau de contrat de travail)   Quand le statue et l'employee est licencier ou démissionnaire il y a plein d'information inutile (on devrai voir que le status liciencé...)
+Julien              show(employee)(au niveau du secondary menu)       Le lien pour modifier le job_contrat est mis en bourrin (Ajouter Action possible ou quelque chose du genre)
+Julien              edit(job_contrart)                                Le bouton pour licencier un employee (menu contextuelle) la case devrai ce coché quand on click ou sur la checkbox ou le texte de la checkbox
+Julien              index(premia)                                     On si on met un long commentaire dans le motif ça explose le tableau, il faut egalement changer l'entete commentaire en motif 
+
+Morgan              index(product_catalog)                            le bouton loading (l'image loading doit etre center par rapport au text)
+
+Jeremie             index(product_catalog)                            Caché le lien mode popup
+Jeremie             new(product_references)                           indentation trop importante pour le formulaire
+Jeremie             index(mode tout voir)                             Posibilité de reactivé une reference et une categroei de reference ?
+Jeremie             new(comoditie_category)                           lorsqu'on crée une nouvelle category au niveau d'un parent si on choisi le bouton --Racine-- Comme parent on dois pas avoir la possibilité de choisir l'unité de mesure
+Jeremie             index(commodities_manager)                        avoir une taille plus grande lorsqu'on change un name ou un designation
+Jeremie             show(inventory)                                   idem
+Jeremie             show(inventory)                                   configuré la TVA (ne pasoublier de pouvoir la rentré pour la configuration d'un module)
+
+Ulrich              new(customer)                                     Mise en forme pour les information bancaire, ça reviens a la ligne pour unique les ' : ' (utilisé la class <div class="frame presentation_medium ou large"> )
+Ulrich              show(customer)                                    Si pas d'activité il est affiché rien " Activité : "(ne pas affiché les activités si le client n'en a pas)
+Ulrich              show(establishments)                              2eme ligne d'adresse affiché meme si elle n'est pas utilisé ( il faut caché le label Adresse 2 )
+Ulrich              show(establishments)                              aucun contact Affiché (il faudrai caché les titres quand il n'y as pas de contact)
+Ulrich              show(establisements)                              idem + quand aucun document il faudrai caché les titres
+Ulrich              show(customer)                                    le bouton retour est en dehors de la div frame (il doit etre dedans)
+Ulrich              show(customer)(au niveau secondary menu)          le bouton modifier doit aussi etre un lien on dois pouvoir cliquer sur les 2
+Ulrich              edit(custommer)(au niveau contact et document)    le formulaire est mis sans les " : " 
+Ulrich              new(supplier)                                     lorsqu'on fait une erreur dans les information bancaire on dois refaire tout le formulaire bancaire(il faudrai faire commme julien en limitant les caracteres possible a mettre)
+Ulrich              new(supplier)                                     lorsqu'on fait une erreur dans le formulaire si on fait le bouton retour le flash reste la alors qu'on a fait un retour (donc un annulé)
+Ulrich              show(supplier)                                    aucun contact affiché (il faudrai caché les titres quand il n'y a pas de contact)
+Ulrich(IMPORTANT)   index(supplier)                                   on doit pas pouvoir supprimer un etablissement il faut le deactivé car d'autres features (comme logistique peuvent dependre des etablissement)
+Ulrich(IMPORTANT)   index(customer)                                   idem
+Ulrich(IMPORTANT)   customer & supplier                               Faire en sorte que l'on puisse voir sur l'index des suppliers et des customers ceux qui sont désactiver. Se baser sur ce qu'on fait les autres. 
+
+Ulrich & Benjamin   index(sales)                                      Lien pour voir les details pas intuitif
+Ulrich & Benjamin   edit(order)                                       Raise impossible de trouver une employee sans id
+
+Benjamin(IMPORTANT) HTMLDOC                                           Fige le processus le temps de la génération du PDF du devis
