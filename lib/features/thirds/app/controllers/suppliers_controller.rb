@@ -7,7 +7,7 @@ class SuppliersController < ApplicationController
   # GET /suppliers.xml
   def index
     if Supplier.can_list?(current_user)
-      @suppliers = Supplier.find_all_by_activated(true)
+      @suppliers = Supplier.activates 
     else
       error_access_page(403)
     end

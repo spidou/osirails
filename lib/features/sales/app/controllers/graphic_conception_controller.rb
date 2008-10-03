@@ -48,8 +48,6 @@ class GraphicConceptionController < ApplicationController
   def edit
     @order = Order.find(params[:order_id])
     @step = @order.step_commercial.step_graphic_conception
-    @press_proof = PressProof.new()
-    @step.press_proofs << @press_proof
     @checklist_responses = @step.checklist_responses
     @documents = @step.documents
     @remarks = @step.remarks
@@ -100,9 +98,14 @@ class GraphicConceptionController < ApplicationController
           document.create_preview_format
         end
       end
+      
+      unless params[:press_proofs].empty?
+        @press_proof = PressProof.create(:status => "in_progress")
+        params[:press_proofs].each {|document_id|  @press_proof.documents << Document.find(document_id.split("_")[1])}
+      end
         
       @step.remarks << @remark unless @remark.nil?
-      #      raise params.inspect
+      
       if params[:commit] == "Cloturer"
         @step.terminated!
         redirect_to :action => 'show'

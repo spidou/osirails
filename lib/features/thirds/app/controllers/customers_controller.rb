@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
   # GET /customers.xml
   def index
     if Customer.can_list?(current_user)
-      @customers = Customer.find_all_by_activated(true)
+      @customers = Customer.activates
     else
       error_access_page(403)
     end
