@@ -23,7 +23,7 @@
 <h2>Coordonn&eacute;es</h2>
 <p>
   <%= label_tag 'admin_society_identity_configuration_address_first_line', "Adresse :"%>
-  <strong><%= display_markup("admin_society_identity_configuration_address_first_line", @parameters["admin_society_identity_configuration_address_first_line"]) %>&nbsp;-&nbsp;
+  <strong><%= display_markup("admin_society_identity_configuration_address_first_line", @parameters["admin_society_identity_configuration_address_first_line"]) %> <%= "-" if params[:action] == "edit" or @parameters["admin_society_identity_configuration_address_second_line"] != 0 %> 
   <%= display_markup("admin_society_identity_configuration_address_second_line", @parameters["admin_society_identity_configuration_address_second_line"] == 0 ? "" : @parameters["admin_society_identity_configuration_address_second_line"]) %></strong>
 </p>
 <p>

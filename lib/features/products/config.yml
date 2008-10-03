@@ -30,7 +30,7 @@ business_objects:
   - ProductReference
   - ProductReferenceCategory
 menus:
-  products:
+  goods:
     title: Produits
     description: Gestion des produits
     children:
