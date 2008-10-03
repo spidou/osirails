@@ -52,10 +52,11 @@
             <div id="shadow_secondary_menu">
               <div id="content_secondary_menu">
                 <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
-                
-                <% form_tag() do |f|%>
+                <!--contetual search formulary -->
+                <% form_tag({:controller => 'searches', :action => 'update'}, :method => 'put',:id => "contextual_search_form" ) do%>
                   <%= contextual_search()%>
-                <% end %>  
+                <% end %> 
+ 
                 <%= yield :secondary_menu %>
                 <div id="footer_secondary_menu">&nbsp;</div>
               </div>

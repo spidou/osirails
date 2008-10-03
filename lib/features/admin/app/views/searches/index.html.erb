@@ -13,8 +13,7 @@
   <p>
     <!--<input type="hidden" id="choosen_model" value=""/>-->
     
-    <!--Small hack to catch the model name with the controller object -->
-    <% choose_model = params[:choosen_model].split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless params[:choosen_model].nil?%>
+    <% choose_model = get_model_name(params[:choosen_model])%>
     <%= "<input style='display:none;' type='checkbox' id='hidden_model' value='#{choose_model}' />"%>
     <!--observe field for preselected model => advanced search -->
     <%=observe_field("hidden_model", :with => "'model=' + value" ,:url=>{:action=>"model_choose",:line=>0},:href=>(url_for :action=>"model_choose")) %>

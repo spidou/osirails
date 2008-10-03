@@ -62,7 +62,7 @@ module SearchesHelper
   def generate_rows(objects,columns)
     html = ""
     objects.each do |object|
-      html+="<tr>"
+      html+="<tr><td >" + link_to("<img src='/images/view_16x16.png' alt='voir' title='Voir'/></td>",object)
       columns.each do |column|
         result = object
         column.each do |attribute|
@@ -88,13 +88,16 @@ module SearchesHelper
         end
         result = "null" if result.nil?
         
-        # get all criteria in an array
-        criteria = []
-        params[:criteria].each_value do |c|
-          c[:value].nil? ? criteria << "#{c['date(3i)']}/#{c['date(2i)']}/#{c['date(1i)']}" : criteria << c[:value]
-        end
+        ## get all criteria in an array
+        # criteria = []
+        # params[:criteria].each_value do |c|
+        #  c[:value].nil? ? criteria << "#{c['date(3i)']}/#{c['date(2i)']}/#{c['date(1i)']}" : criteria << c[:value]
+        # end
         # html+="<td>#{highlight(result, criteria.sort_by{ |c| c.size }.reverse)}</td>\n" unless result.blank?
-        html+="<td>#{result}</td>\n" unless result.blank?        
+        
+        result = Search.format_date(result)
+        
+        html+="<td>#{result}</td>" +"\n" unless result.blank?        
       end
       html+="</tr>" 
     end
@@ -108,22 +111,44 @@ module SearchesHelper
       tab << c.values_at(-2).first if c.size>1
     end
     # attributes
-    html = ""
+    html = "<th style='width:10px;' > (↓) </th>"
     columns.each do |column| 
       if column.size==1
-      html += "<th rowspan='2' >#{column.last}</th>"
+      html += "<th rowspan='2' >#{column.last.humanize}</th>"
       end
     end
     # sub attributes titles
     tab.uniq.each do |title|
-      html += "<th colspan='#{tab.count(title)}'>#{title}</th>"
+      html += "<th colspan='#{tab.count(title)}'>#{title.humanize}</th>"
     end
     html+= "</tr><tr>"
     # sub attributes
     columns.each do |column|
-      html += "<th>#{column.last}</th>" if column.size>1 
+      html += "<th>#{column.last.humanize}</th>" if column.size>1 
     end
     
     return html
   end
+  
+  def model_select(searches,choosen_model)
+    html = "<select id=\"model_select\" name=\"model[name]\" onchange=\"has_criteria(this);\">"
+    Search.include_model?(searches,choosen_model) ? selected = "" : selected = "selected=\"selected\""   
+    
+    html+="<option #{selected}>Veuillez choisir une section</option>"  
+    searches.each_pair do |feature,models|
+      html+="<optgroup label='#{ feature }'"
+      models.each do |model|
+        # model == choosen_model ? m_selected = "selected=\"selected\"" : m_selected = ""
+        m_selected = ""
+        html+="<option #{m_selected} value='#{ feature },#{ model }'> #{ model }</option>"
+      end
+    end
+    html+="</select>"
+  end
+  # Small hack to catch the model name with the controller object
+  def get_model_name(model_param)
+     return model_param if model_param.count(">")==0
+     return model_param.split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless model_param.nil?
+  end
+  
 end

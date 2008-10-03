@@ -167,8 +167,13 @@ module ApplicationHelper
   
   def contextual_search()
     html= "<p>"
-    html+="<input onfocus=\"this.value='';\" onblur=\"this.value='Rechercher';\" id=\"input_search\" type=\"text\" value=\"Rechercher\" style=\"color:grey;\"/>"
-    html+= link_to( "<img id=\"search_image\" src= \"/images/view_12x12.png\" alt=\"bouton de recherche\" title=\"Rechercher\" />")
+    
+    # Small hack to catch the model name with the controller object
+    choose_model = controller.to_s.split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless controller.nil?
+    
+    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{choose_model}' />"
+    html+= text_field_tag "contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus=>"if(this.value=='Rechercher'){this.value='';}", :onblur=>"if(this.value==\"\"){this.value='Rechercher';}", :style=>"color:grey;"
+    html+= "<button type=\"submit\" class=\"contextual_search_button\"></button>"
     html+= link_to( "Recherche avancée",{ :controller => 'search', :method => 'put', :choosen_model =>controller},{:class => 'help'})
     html+="</p>"
   end

@@ -1,0 +1,43 @@
+<h1>Rechercher</h1>
+
+<% info = "<img src=\"/images/warning_14x14.png\"/>"  %>
+
+
+
+<% if !@error.nil?%>
+  <% flash.now[:error]=@error%>
+<% elsif @rows==[] %>
+  <% flash.now[:notice]='Aucun résultat'%>
+<% else %>
+
+<div class="frame presentation">
+  <h2>R&eacute;sultat de la recherche contextuelle</h2>
+  
+  <% unless @model.nil?%>
+    <p>
+      <strong><%= info + link_to( "Affiner la recherche dans le module '#{@model}'",{ :controller => 'search', :method => 'put', :choosen_model =>@model})%> </strong>
+    </p>
+  <% end%>
+  <table>
+  <tr><th>(↓)</th>
+    <% @columns.each do |column| %>
+      <th><%= column[0].humanize%></th>
+    <% end %>
+  </tr>
+  <tr>
+    <% @rows.each do |row| %>
+      <tr><td><%= link_to("<img src=\"/images/view_16x16.png\"/>", row)%></td>
+        <% @columns.each do |column| %>
+        <% if row.send(column[0]).class == ActiveSupport::TimeWithZone%>
+          <% row.send(column[0]).strftime("%d/%m/%Y") %> 
+        <% end %>  
+          <td><%=row.send(column[0]).nil? ? "null" : highlight(Search.format_date(row.send(column[0])).to_s , @value.split(" ")) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table> 
+<% end %>
+<p>
+  <%= link_to "retour", :back %>
+</p>
+</div> 

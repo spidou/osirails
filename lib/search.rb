@@ -1,28 +1,52 @@
 class Search
 
   include Permissible
-  
+  @features = Feature.find(:all)
   # method to group sub attributes
   
   def self.group(array)
-  grouped = []
-  tmp = {}
-  array.each do |elmnt|
-    if elmnt.size==1
-      grouped << elmnt 
-    else
-      tmp[elmnt[0]] = [] if tmp[elmnt[0]].nil?
-      tmp[elmnt[0]] << elmnt 
-    end 
+    grouped = []
+    tmp = {}
+    array.each do |elmnt|
+      if elmnt.size==1
+        grouped << elmnt 
+      else
+        tmp[elmnt[0]] = [] if tmp[elmnt[0]].nil?
+        tmp[elmnt[0]] << elmnt 
+      end 
+    end
+    tmp.each_pair do |key,value|
+      value.each do |elmnt|
+      grouped << elmnt
+      end
+    end
+    return grouped
   end
-  tmp.each_pair do |key,value|
-    value.each do |elmnt|
-    grouped << elmnt
+  
+  # method to catch the feature and the attributes of the model passed in arg
+  
+  def self.get_feature(model)
+    @features.each do |feature|
+      feature.search.nil? ? result = "null" : result = search_include(model,feature.search) 
+      return [feature.name,result] if result != {} and result != "null"
+    end
+    return []
+  end
+  
+  def self.search_include(model,search)
+    if search.keys.include?(model)
+      return search[model]
+    else
+      search.values.each do |value|
+        result = {}
+        result = search_include(model,value) if value.class == Hash
+        return result if result != {}
+      end
+      return {}
     end
   end
-  return grouped
-end
   
+  ############################################################################
   
   # method to generate an array containing the result array headers ( in the view )
   
@@ -77,7 +101,6 @@ end
     result_values = []
     categories.each_value do |attributes|
       if attributes.class == Hash
-      puts attributes.inspect
         result_values = sub_resources(attributes) unless sub_resources(attributes).nil?
       end   
     end
@@ -120,7 +143,7 @@ end
       unless criterion['value'].nil?
       
         if criterion['value'].split(" ").size>1
-          conditions_array[0] += "("
+          conditions_array[0] += group + "("
           tmp = {}
           
           criterion['value'].split(" ").each do |value|
@@ -186,4 +209,17 @@ end
     return false
   end
   
+  def self.format_date(result)
+    if result.class == ActiveSupport::TimeWithZone
+      return result.strftime("%d/%b/%Y à %H:%M")
+    elsif result.class == Date
+      return result.strftime("%d/%b/%Y")
+    elsif result.class == DateTime
+      return result.strftime("%d/%b/%Y à %H:%M")
+    elsif result.class == Time
+      return result.strftime("%H:%M")
+    else
+      return result
+    end
+  end
 end
