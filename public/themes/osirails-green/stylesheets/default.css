@@ -252,12 +252,12 @@ a.button_banner:hover span {
 	padding:5px;
 	min-height: 40px;
 	margin:0;
+//	height:40px;
+//	height:auto;
 }
 
 #text_under_banner {
 	width:93%;
-	height:30px;
-	overflow:hidden;
 	font-size:1.1em;
 	margin-top:5px;
 }
