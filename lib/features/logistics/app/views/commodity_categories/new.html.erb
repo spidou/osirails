@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <script type="text/javascript" src="/javascripts/logisctic/commodity_category.js"></script>
+<% end %>
+
 <h1>Ajouter une nouvelle cat&eacute;gorie de mati&egrave;re premi&egrave;re</h1>
 <div class="frame">
   <% form_for(@category) do |category| %>
@@ -20,7 +24,7 @@
   
     <p>
       <%= category.label :commodity_category_id, "Appartient &agrave; :" %>
-      <%= category.collection_select(:commodity_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}) %>
+      <%= category.collection_select(:commodity_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}, {:onchange => 'disableUnitMeasure();'}) %>
     </p>
   
       <%= category.submit "Ajouter" %> &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
