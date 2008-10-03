@@ -1623,16 +1623,10 @@ div.steps_text p {
 	text-align:center;
 	padding:0;
 	text-indent:0;
-	width:700px;/*69.03353057199211%;/*700px*/
+	width:700px;
 	padding-bottom:1px;
 	padding-right:2px;
-//	background:url("/themes/emr/images/timeline_line.gif") repeat-y 175px 0px;
 	line-height:26px;
-}
-
-#timeline div {
-//	position:relative;
-//	bottom:416px;
 }
 
 #timeline_head,
@@ -1703,6 +1697,7 @@ div.steps_text p {
 #timeline_footer {
 	background:url("/themes/emr/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
+
 /*/////////////////DOCUMENT VIEW/////////////////*/
 .document_view {
 	border:2px solid #888;

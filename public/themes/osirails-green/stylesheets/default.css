@@ -1708,6 +1708,7 @@ table .not_published_memorandum {
 	font-size:0.8em;
 	border-top:1px solid white;
 	border-right:1px solid white;
+	clear:both;
 }
 
 #footer_page p {
@@ -1728,5 +1729,7 @@ table .not_published_memorandum {
 }
 
 .bottom_icons {
-
+	margin-top:5px;
+	margin-bottom:-5px;
+	border:none;
 }
