@@ -28,7 +28,7 @@ html, body {
 }
 
 #all_page { /*<==TO EXPAND THE CORE MENU*/
-	background:url("/images/background_core_menu_cheating.jpg") repeat-y bottom left;
+	background:url("/themes/emr/images/background_core_menu_cheating.jpg") repeat-y bottom left;
 }
 
 a {
@@ -127,7 +127,7 @@ h1 {
 
 h2 {
 	text-indent: 10px;
-	background: url("/images/background_content_page_second_header.jpg") repeat-x;
+	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	border-bottom:solid 1px #e5e5e5;
 	font-size:1.4em;
 	color:white;
@@ -166,7 +166,7 @@ h6 {
 }
 
 #logo {
-	background-image: url("/images/banner_logo.jpg");
+	background-image: url("/themes/emr/images/banner_logo.jpg");
 	float: left;
 	width: 629px;
 	height: 56px;
@@ -182,7 +182,7 @@ h6 {
 }
 
 #background_banner {
-	background-image: url("/images/banner_repeat-x.jpg");
+	background-image: url("/themes/emr/images/banner_repeat-x.jpg");
 	width: auto;
 	height: 56px;
 	margin-left: 629px;
@@ -208,7 +208,7 @@ h6 {
 	text-align:right;
 }
 a.button_banner {
-	background: transparent url("/images/button_banner_left_side.png") no-repeat top left;
+	background: transparent url("/themes/emr/images/button_banner_left_side.png") no-repeat top left;
 	display: block;
 	float: left;
 	font-family: arial, verdana, sans-serif;
@@ -229,7 +229,7 @@ a:active.button_banner {
 }
 
 a.button_banner span {
-	background: transparent url("/images/button_banner_right_side.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/button_banner_right_side.png") no-repeat top right;
 	display: block;
 	padding: 4px 8px 4px 0;
 }
@@ -254,7 +254,7 @@ a.button_banner:hover span {
 
 #under_banner {
 	clear:both;
-	background: url("/images/background_under_banner_repeat-x.jpg") repeat;
+	background: url("/themes/emr/images/background_under_banner_repeat-x.jpg") repeat;
 	border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
@@ -286,7 +286,7 @@ a.button_banner:hover span {
 #previous:hover,
 #next,
 #next:hover {
-	background: url("/images/button_under_banner_arrow.png") no-repeat;
+	background: url("/themes/emr/images/button_under_banner_arrow.png") no-repeat;
 	width:24px;
 	height:21px;
 	border:none;
@@ -331,7 +331,7 @@ a.button_banner:hover span {
 
 #not_employee_reference {
 	text-align:center;
-	font-size:1.22em;
+	font-size:1.22em;/*1.22*/
 	color:#333;
 	position:relative;
 	top:7px;
@@ -375,19 +375,19 @@ a.button_banner:hover span {
 }
 
 #menu ul li {
-	background: url("/images/background_core_menu.jpg") repeat;
+	background: url("/themes/emr/images/background_core_menu.jpg") repeat;
 	text-decoration: none;
 	border-bottom:1px solid #444444;
 	border-top:1px solid #bfd1f5;
 }
 
 #menu ul li:hover {
-	background: url("/images/background_core_menu_hover.jpg") repeat;
+	background: url("/themes/emr/images/background_core_menu_hover.jpg") repeat;
 	cursor:pointer;
 }
 
 #menu ul li.selected {
-	background: url("/images/background_dark_stripe.jpg") repeat;
+	background: url("/themes/emr/images/background_dark_stripe.jpg") repeat;
 }
 
 #menu ul li.selected a {
@@ -427,7 +427,7 @@ a.button_banner:hover span {
 	margin-right:6px;
 	border: 1px solid #A8A8A8;
 	-moz-border-radius: 10px 0 0 10px;
-	background: url("/images/background_secondary_menu.gif") repeat;
+	background: url("/themes/emr/images/background_secondary_menu.gif") repeat;
 	width: 200px;
 	text-indent:0px;
 	font-size:0.8em;
@@ -441,7 +441,7 @@ a.button_banner:hover span {
 
 .hidden_secondary_menu #status_background_secondary_menu,
 .shown_secondary_menu #status_background_secondary_menu {
-	background:url("/images/background_hidden-shown_secondary_menu.png") no-repeat top left;
+	background:url("/themes/emr/images/background_hidden-shown_secondary_menu.png") no-repeat top left;
 	height:29px;
 	width:20px;
 	line-height:26px !important;
@@ -470,17 +470,17 @@ a.button_banner:hover span {
 }
 
 .hidden_secondary_menu span {
-	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
+	background:url("/themes/emr/images/arrow_status_secondary_menu.jpg") no-repeat bottom left;
 }
 
 .shown_secondary_menu span {
-	background:url("/images/arrow_status_secondary_menu.jpg") no-repeat top left;
+	background:url("/themes/emr/images/arrow_status_secondary_menu.jpg") no-repeat top left;
 }
 
 #shadow_secondary_menu {
 	position:relative;
 	left:8px;
-	background: url("/images/secondary_menu_shadow.png") no-repeat bottom right;
+	background: url("/themes/emr/images/secondary_menu_shadow.png") no-repeat bottom right;
 	-moz-border-radius: 0 10px 0 10px;
 	clear:right;
 	position:relative;
@@ -493,7 +493,7 @@ a.button_banner:hover span {
 }
 
 #content_secondary_menu h1 {
-	background: url("/images/background_secondary_menu_header.jpg") repeat-x;
+	background: url("/themes/emr/images/background_secondary_menu_header.jpg") repeat-x;
 	height:36px;
 	line-height: 36px;
 	text-indent: 0;
@@ -584,7 +584,7 @@ ul.center_list li {
 */
 
 button.contextual_search_button {
-	background:url("/images/view_12x12.png");
+	background:url("/themes/emr/images/view_12x12.png");
 	position:relative;
 	right:20px;
 	bottom:3px;
@@ -624,7 +624,7 @@ button.contextual_search_button {
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 /*::::::::::::::::::::::::::::::::DEFAULT BUTTONS:::::::::::::::::::::::::::::::::::::::::*/
 a.default-button { 																		/**/
-	background: transparent url("/images/button_default_generic_left_side.png") no-repeat top left;
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat top left;
 	display: block;                                                                    	/**/
 	float: left;                                                                        /**/
 	font-family: arial, verdana, sans-serif;                                       		/**/
@@ -639,7 +639,7 @@ a.default-button { 																		/**/
 }																				   		/**/
 																						/**/
 a.default-button span { 																/**/
-	background: transparent url("/images/button_default_generic_right_side.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat top right;
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;															/**/
 }																						/**/
@@ -654,7 +654,7 @@ a.default-button:hover span {															/**/
 }	 																					/**/
 /*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 button.input-button { 																	/**/
-	background: transparent url("/images/button_default_generic_left_side.png") no-repeat top left;
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat top left;
 	font-family: arial, verdana, sans-serif;											/**/
 	font-size:85%;																		/**/
 	height: 26px;																		/**/
@@ -666,7 +666,7 @@ button.input-button { 																	/**/
 }																						/**/
 																						/**/
 button.input-button span { 																/**/
-	background: transparent url("/images/button_default_generic_right_side.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat top right;
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;                                                            /**/
 	margin-top:-2px;                                                                    /**/
@@ -675,17 +675,17 @@ button.input-button span { 																/**/
 }																					    /**/
 																					    /**/
 button.input-button:hover { 															/**/
-	background: transparent url("/images/button_default_generic_left_side.png") no-repeat bottom left;
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat bottom left;
 }																					    /**/
 																					   	/**/
 button.input-button:hover span {													   	/**/
-	background: transparent url("/images/button_default_generic_right_side.png") no-repeat 100% -26px;
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;
 	color:black;                                                                       	/**/
 }																						/**/
 /*:::::::::::::::::::::::::::::::BUTTON PREVIOUS-NEXT:::::::::::::::::::::::::::::::::::::*/
 a.next-button,
 a.previous-button {
-	background: transparent url("/images/button_default_generic_left_side.png") no-repeat top left;
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat top left;
 	font-family: arial, verdana, sans-serif;
 	font-size:85%;
 	height: 26px;
@@ -699,7 +699,7 @@ a.previous-button {
 
 a.next-button span,
 a.previous-button span {
-	background: transparent url("/images/button_default_generic_right_side.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat top right;
 	padding: 3px 12px 8px 0; 
 	border:none;
 	line-height:18px;
@@ -717,12 +717,12 @@ a.previous-button span:before {
 
 a.next-button:hover,
 a.previous-button:hover { 															 
-	background: transparent url("/images/button_default_generic_left_side.png") no-repeat bottom left;
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat bottom left;
 }
 
 a.next-button:hover span,
 a.previous-button:hover span {						
-	background: transparent url("/images/button_default_generic_right_side.png") no-repeat 100% -26px;
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;
 	color:black;
 }	 		
 
@@ -738,7 +738,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	margin-top:5px;
 	margin-bottom:5px;
 	text-align: justify;
-	background: url("/images/background_content_page.jpg") repeat;
+	background: url("/themes/emr/images/background_content_page.jpg") repeat;
 	color: #343434;
 	font-size:0.87em;
 	font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
@@ -767,7 +767,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 #horizontal_menu a span {
-	background: transparent url("/images/horizontal_menu_arrow.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/horizontal_menu_arrow.png") no-repeat top right;
 	display: block;
 	padding: 4px 20px 4px 27px;
 	height:20px;
@@ -780,11 +780,11 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 }
 
 #horizontal_menu a:hover span {
-	background: transparent url("/images/horizontal_menu_arrow_hover.png") no-repeat top right;
+	background: transparent url("/themes/emr/images/horizontal_menu_arrow_hover.png") no-repeat top right;
 }
 
 #horizontal_menu a span.selected {
-	background:url("/images/horizontal_menu_arrow_selected.png") no-repeat top right;
+	background:url("/themes/emr/images/horizontal_menu_arrow_selected.png") no-repeat top right;
 	color: #444
 }
 
@@ -899,7 +899,7 @@ div.fieldWithErrors {
 .errorExplanation ul li {
 	//position:relative;
 	//bottom:2px;
-	background: url("/images/warning_14x14.png") no-repeat;
+	background: url("/themes/emr/images/warning_14x14.png") no-repeat;
 	list-style-type:none;
 	text-indent:21px;
 	margin:3px 3px 7px 0px;
@@ -1304,7 +1304,7 @@ ul.parent>li {
 	text-indent:5px;
 	background-position:0 0;
 	margin-left:-20px;
-	list-style-image:url("/images/hierarchical_bullet.gif");	
+	list-style-image:url("/themes/emr/images/hierarchical_bullet.gif");	
 }
 
 .hierarchic ul li:hover {
@@ -1364,7 +1364,7 @@ div.tabs {
 */
 
 .frame.tabulation>h1 {
-	background:url('/images/background_tabs_h2.jpg') repeat;
+	background:url('/themes/emr/images/background_tabs_h2.jpg') repeat;
 	color:#FFFFFF;
 	text-align:center;
 	margin-bottom:0px;
@@ -1408,7 +1408,7 @@ div.tabs ul {
 div.tabs ul li {
 	float: left;
 	margin-left: 1px;
-	background: url("/images/background_tabs_test.png") repeat-x 0 -7px;
+	background: url("/themes/emr/images/background_tabs_test.png") repeat-x 0 -7px;
 	height:22px;
 	line-height:0px;
 	cursor:pointer;
@@ -1477,7 +1477,7 @@ div.tabs ul li a:hover {
 }
 
 #catalog_loading span {
-	background: url("/images/loading_16x16.gif") no-repeat;
+	background: url("/loading_16x16.gif") no-repeat;
 	background:#aeaeae;
 	padding:5px 10px 5px 10px;
 }
@@ -1514,7 +1514,7 @@ select.catalog_3_columns {
 #estimate,
 #sending_estimate,
 #validation {
-	background:url("/images/image-step.png") no-repeat;
+	background:url("/themes/emr/images/image-step.png") no-repeat;
 }
 
 .ring_terminated,
@@ -1730,7 +1730,7 @@ div.frame>#steps {
 	width:700px;/*69.03353057199211%;/*700px*/
 	padding-bottom:1px;
 	padding-right:2px;
-//	background:url("/images/timeline_line.gif") repeat-y 175px 0px;
+//	background:url("/themes/emr/images/timeline_line.gif") repeat-y 175px 0px;
 	line-height:26px;
 }
 
@@ -1751,7 +1751,7 @@ div.frame>#steps {
 
 .timeline_body.good,
 #timeline_head.good {
-	background:url("/images/timeline_framework_good.png") repeat-x;
+	background:url("/themes/emr/images/timeline_framework_good.png") repeat-x;
 	border-left:1px solid #63975E;
 	border-right:1px solid #63975E;
 }
@@ -1765,15 +1765,15 @@ div.frame>#steps {
 }
 
 .timeline_body.bad .timeline_notice {
-	background:url("/images/warning_14x14.png") no-repeat 0 6px;
+	background:url("/themes/emr/images/warning_14x14.png") no-repeat 0 6px;
 }
 
 #timeline_head .timeline_date {
-	background:url("/images/timeline_head.png") no-repeat 143px 6px;
+	background:url("/themes/emr/images/timeline_head.png") no-repeat 143px 6px;
 }
 
 .timeline_body.bad {
-	background:url("/images/timeline_framework_bad.png") repeat-x;
+	background:url("/themes/emr/images/timeline_framework_bad.png") repeat-x;
 	border-left:1px solid #FF7F7F;
 	border-right:1px solid #FF7F7F;
 }
@@ -1797,15 +1797,15 @@ div.frame>#steps {
 }
 
 .timeline_body .timeline_date {
-	background: url("/images/timeline_line.gif") repeat-y 152px 0;
+	background: url("/themes/emr/images/timeline_line.gif") repeat-y 152px 0;
 }
 
 .timeline_body {
-	background: url("/images/timeline_line.gif") repeat-y 153px 0;
+	background: url("/themes/emr/images/timeline_line.gif") repeat-y 153px 0;
 }
 
 #timeline_footer {
-	background:url("/images/timeline_footer_arrow.png") no-repeat 144px 0;
+	background:url("/themes/emr/images/timeline_footer_arrow.png") no-repeat 144px 0;
 }
 /*/////////////////DOCUMENT VIEW/////////////////*/
 .document_view {
@@ -1886,14 +1886,14 @@ td[title="Modifier"] img {
 /*/////////////////OTHER/////////////////*/
 
 .link_to_closed {
-	background:url("/images/lock_off_24x24.png") no-repeat 0px -1px;
+	background:url("/themes/emr/images/lock_off_24x24.png") no-repeat 0px -1px;
 	margin-left:10px;
 	padding:5px 0 0px 28px;
 	text-decoration:none !important;
 }
 
 .link_to_closed:hover {
-	background:url("/images/lock_24x24.png") no-repeat 0px -1px;
+	background:url("/themes/emr/images/lock_24x24.png") no-repeat 0px -1px;
 }
 
 object {
@@ -1951,6 +1951,10 @@ table.mceEditor {
 	cursor:text;
 }
 
+#feature_loading p {
+	vertical-align:center;
+}
+
 /*/////////////////////////////////////////////////////
 					FOOTER
 ////////////////////////////////////////////////////*/
@@ -1959,7 +1963,7 @@ table.mceEditor {
 	position:relative;
 	bottom:35px;
 	right:1px;
-	background: url("/images/background_bottom_core_menu.jpg") no-repeat;
+	background: url("/themes/emr/images/background_bottom_core_menu.jpg") no-repeat;
 }
 
 #footer_page {
@@ -1970,7 +1974,7 @@ table.mceEditor {
 
 #footer {
 	text-align:center;
-	background: url("/images/background_dark_stripe.jpg") repeat;
+	background: url("/themes/emr/images/background_dark_stripe.jpg") repeat;
 	border: solid 1px #444;
 	width:auto;
 	color:#FFFFFF;

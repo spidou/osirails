@@ -1,22 +1,17 @@
 /*	login.css--------------------------------------------------------
-	----------	..::Par Oxydium::.
+	----------	::Par Oxydium::.
 
 Création : Juillet/Octobre 2008
 ---------
-Description : feuille de style de la page de login permettant à tout
+Description : feuille de style de la page de login [EMR] permettant à tout
 utilisateur référencer de se logger dans l'intranet Osirails.
 ---------------------------------------------------------------------
-				..::Powered by Oxydium::..
+				::Powered by Oxydium::
 creation : July/October 2008
 ---------
-Description: stylesheet of the login page that allow any
+Description: stylesheet of the login [EMR] page that allow any
 known user to log into the Osirails' intranet.
 --------------------------------------------------------------------*/
-/*
-div {
-	border: solid 1px black; 
-}
-*/
 * { 
 	margin: 0; padding: 0;
 }
@@ -51,7 +46,7 @@ a:hover {
 
 .fieldWithErrors input[type=text],
 .fieldWithErrors input[type=password] {
-	background: url("/images/login/input_text.png") no-repeat bottom;
+	background: url("/themes/emr/images/login/input_text.png") no-repeat bottom;
 }
 
 #errorExplanation p {
@@ -87,9 +82,9 @@ p.message {
 input[type=text],
 input[type=password] {
 	color: #f69826;
-	background: url("/images/login/input_text.png") no-repeat;
+	background: url("/themes/emr/images/login/input_text.png") no-repeat;
 	border: none;
-	width: 169px;/*171*/
+	width: 169px;
 	height: 22px;
 	padding-top:5px;
 	margin-left:auto;
@@ -109,7 +104,7 @@ h1 {
 	margin-right:auto;
 }
 /*/////////////////////////////////////////////////////
-					BANNIERE
+					BANNER
 ////////////////////////////////////////////////////*/
 #banner {
 	width: auto;
@@ -117,20 +112,20 @@ h1 {
 }
 
 #logo {
-	background-image: url("/images/login/banner.jpg");
+	background-image: url("/themes/emr/images/login/banner.jpg");
 	float: left;
 	width: 330px;
 	height: 75px;
 }
 
 #under_banner {
-	background-image: url("/images/login/banner_repeat-x.jpg");
+	background-image: url("/themes/emr/images/login/banner_repeat-x.jpg");
 	width: auto;
 	height: 75px;
 	margin-left: 330px;
 }
 /*/////////////////////////////////////////////////////
-					LOGIN CADRE
+					LOGIN FRAME
 ////////////////////////////////////////////////////*/
 
 #login_content {
@@ -146,55 +141,45 @@ h1 {
 	border:1px solid #ddd;
 }
 
-span a,
-div {
-//	border:1px solid black;
-}
-
 span a {
-//	width:171px;
 	float:right;
 	margin-right:3px;
 	position:relative;
 	bottom:13px;
 }
 
-a { /*Pour le msg d'erreur*/
-//	width:171px;
+a { /*for errors messages*/
 	float:right;
-//	margin-right:3px;
 	position:relative;
 	bottom:13px;
 	
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\		::::::MESSAGE INFORMATIF:::::::			  /!\
-/!\		::::::::[ERREUR/SIGNAL]::::::::			  /!\
+/!\		::::::::NOTICE MESSAGE:::::::::			  /!\
+/!\		::::::::[ERROR/NOTICE]:::::::::			  /!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
 	border: solid 1px #cacaca;
-	background:#ddd url("../images/cross_16x16.png") no-repeat;
+	background:#ddd url("/images/cross_16x16.png") no-repeat;
 	color: red;
 	padding: 10px 10px 10px 5px;
 }
 
-/*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
 	border: solid 1px #cacaca;
-	background:#ddd url("../images/tick_16x16.png") no-repeat;
+	background:#ddd url("/images/tick_16x16.png") no-repeat;
 	color: green;
 	padding: 10px 10px 10px 5px;
 }
 
-/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-/!\:::::::Config en commun : ERROR & SIGNAL:::::::/!\
-/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+/!\:::::::CONFIGURATION IN COMMON : ERROR & NOTICE:::::::/!\
+/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
-//	background:#C7C7C7;
-//	border: solid 1px #E4E4E4;
 	text-align:center;
 	line-height:10px;
 	height:auto;
@@ -230,52 +215,48 @@ a { /*Pour le msg d'erreur*/
 	background:#F1BD73;
 	-moz-border-radius:3px 3px 0 0;
 }
+
 #errorExplanation ul li,
 .errorExplanation ul li {
 	position:relative;
 	bottom:15px;
-	background: url("../images/warning_14x14.png") no-repeat 0px 0;
+	background: url("/themes/emr/images/warning_14x14.png") no-repeat 0px 0;
 	list-style-type:none;
 	width:300px;
 	margin-left:30px;
-	text-indent:13tabspx;
+	text-indent:13px;
 }
 
+/* //////////////////////////// DEFAULT BUTTON //////////////////////////// */
+button.input-button {
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat top left;
+	font-family: arial, verdana, sans-serif;
+	font-size:85%;
+	height: 25px;
+	padding-left: 5px;
+	color:black;
+	border:none;
+	min-width:70px;
+	margin-top:0px;
+	margin-bottom:15px;
+	margin-right:auto;
+	margin-left:auto;
+	position:relative;
+	bottom:10px;
+}
+button.input-button span {
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat top right;
+	display: block;
+	padding: 2px 12px 6px 0;
+	margin-top:-2px;
+	border:none;
+	line-height:18px;
+}
+button.input-button:hover {
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat 0 -26px;
+}
 
-/**/
-/*////////////////////////////////////////////////////////////////////////////////////////*/
-button.input-button { 																	/**/
-	background: transparent url("../images/button_default_generic_left_side.png") no-repeat top left;	/**/
-	font-family: arial, verdana, sans-serif;											/**/
-	font-size:85%;																		/**/
-	height: 25px;																		/**/
-	padding-left: 5px;																	/**/															/**/
-	color:black;																		/**/
-	border:none;																		/**/
-	min-width:70px;																		/**/
-	margin-top:0px;																		/**/
-	margin-bottom:15px;																	/**/
-	margin-right:auto;																	/**/
-	margin-left:auto;																	/**/
-	position:relative;																	/**/
-	bottom:10px;																		/**/
-}																						/**/
-																						/**/
-button.input-button span { 																/**/
-	background: transparent url("../images/button_default_generic_right_side.png") no-repeat top right;	/**/
-	display: block;																		/**/
-	padding: 2px 12px 6px 0;                                                            /**/
-	margin-top:-2px;                                                                    /**/
-	border:none;                                                                        /**/
-	line-height:18px;                                                                   /**/
-}																					    /**/
-																					    /**/
-button.input-button:hover { 												           	 /**/
-	background: transparent url("../images/button_default_generic_left_side.png") no-repeat 0 -26px; 	/**/
-}																					    /**/
-																					   	/**/
-button.input-button:hover span {													   	/**/
-	background: transparent url("../images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
-	color:black;                                                                       	/**/
-}																						/**/
-/*////////////////////////////////////////////////////////////////////////////////////////*/
+button.input-button:hover span {
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;
+	color:black;
+}
