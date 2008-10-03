@@ -3,6 +3,7 @@ class CreatePressProofs < ActiveRecord::Migration
     create_table :press_proofs do |t|
       t.string :status
       t.string :transmission_mode
+      t.references :step_graphic_conception
       
       t.datetime :created_at
     end
