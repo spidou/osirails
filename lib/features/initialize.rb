@@ -165,7 +165,7 @@ def init(config, path)
     def menu_insertion(menus,parent_name)
       unless menus.nil?
         menus.each_pair do |key,value|
-          $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name, :position => value["position"]}
+          $menu_table << {  :name => key, :title => value["title"], :description => value["description"], :parent => parent_name, :position => value["position"], :skip_display => value["skip_display"]}
           unless value["children"].nil?
             menu_insertion(value["children"], key)
           end
@@ -184,7 +184,7 @@ def init(config, path)
       
       # Unless menu already exist
       unless menu_ = Menu.find_by_name(menu_array[:name])             
-        unless (m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id, :feature_id => feature.id))
+        unless (m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id, :feature_id => feature.id, :skip_display => menu_array[:skip_display]))
           puts "The feature #{name} wants to instanciate the menu #{m.name}, but it's impossible. Please change order of feature loading in environment.rb file by changing the 'config.plugins' array"
         else
           unless menu_array[:position].nil?

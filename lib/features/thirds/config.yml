@@ -28,3 +28,4 @@ menus:
       contacts:
         title: Contacts de Client
         description: Gestion des contacts des clients
+        skip_display: true

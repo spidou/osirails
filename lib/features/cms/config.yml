@@ -16,3 +16,4 @@ menus:
           content_versions:
             title: Versions de contenus
             description: Gestion des versions de contenus
+            skip_display: true

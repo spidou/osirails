@@ -16,12 +16,19 @@ menus:
   account:
     title: Compte utilisateur
     description: Gestion des connexions
+    skip_display: true
   documents:
     title: Documents
     description: Gestion des documents
+    skip_display: true
   downloads:
     title: Downloads
     description: Gestion des downloads
+    skip_display: true
+  searches:
+    title: Recherche
+    description: Moteur de recherche  
+    skip_display: true
   admin:
     title: Administration
     description: Administration de l'Intranet
@@ -85,9 +92,6 @@ menus:
         title: Modules
         description: Gestion des modules
         position: 7
-      searches:
-        title: Recherche
-        description: Moteur de recherche  
 configurations:
   password_policy:
     description: hash contenant les differentes options concernant les expressions reguliére de validation des mots de passes  
