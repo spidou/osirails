@@ -10,8 +10,8 @@
 	</tr>
 <% @orders.each do |order| %>
 	<tr>
-		<td><a href="<%= order_path(order) %>"><%= order.id %></a></td>
-		<td><%= order.title %></td>
+		<td><%= link_to order.id, order_path(order) %></td>
+		<td><%= link_to order.title, order_path(order) %></a></td>
 		<td><%= order.commercial.fullname %></td>
 		<td><%= order.customer.name %></td>
 		<td><%= order.establishment.full_address %></td>
