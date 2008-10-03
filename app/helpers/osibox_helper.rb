@@ -1,7 +1,7 @@
 module OsiboxHelper
   def osibox_init (options = {})
     configuration = {
-      :close_button => true
+      :close_button => true,
       :id => 1,
       :url => {},
       :partial => nil,
