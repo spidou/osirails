@@ -2,7 +2,7 @@ osibox_wall = 'osibox_wall';
 osibox_popup = 'osibox_popup';
 
 function osibox_open (id) {
-	id = id ? id : 1;
+	id = id ? id : 'default';
 	
 	osibox_wall_elm = document.getElementById(osibox_wall + id);
 	osibox_popup_elm = document.getElementById(osibox_popup + id);
