@@ -147,7 +147,7 @@ module SearchesHelper
   end
   # Small hack to catch the model name with the controller object
   def get_model_name(model_param)
-     return model_param if model_param.count(">")==0
+     return model_param if model_param.count(">")==0 unless model_param.nil?
      return model_param.split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless model_param.nil?
   end
   
