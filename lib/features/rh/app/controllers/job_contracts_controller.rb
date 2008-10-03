@@ -86,12 +86,12 @@ class JobContractsController < ApplicationController
       unless params[:new_document_number].nil?
         if params[:new_document_number]["value"].to_i > 0
           @document_objects.each do |document|
-            if (d = document.save) == true
+            if document.save == true
               @job_contract.documents << document
               document.create_thumbnails
+              document.create_preview_format
             else
               @error = true
-              flash[:error] = d
             end
           end
         end

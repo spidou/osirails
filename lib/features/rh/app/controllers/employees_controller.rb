@@ -150,12 +150,12 @@ class EmployeesController < ApplicationController
         unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
           if params[:new_document_number]["value"].to_i > 0
             @document_objects.each do |document|
-              if ( d = document.save) == true
+              if document.save == true
                 @employee.documents << document
                 document.create_thumbnails
+                document.create_preview_format
               else
                 @error = true
-                flash[:error] = d
               end
             end
           end
@@ -172,7 +172,7 @@ class EmployeesController < ApplicationController
         unless params[:responsable].nil?
           params[:responsable].each_key do |rep|
             @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
-            @responsable[0].update_attributes({:responsable => 1}) 
+            @responsable[0].update_attributes({:responsable => 1})  unless @responsable[0].nil?
           end
         end  
         
@@ -280,12 +280,12 @@ class EmployeesController < ApplicationController
         unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
           if params[:new_document_number]["value"].to_i > 0
             @document_objects.each do |document|
-              if (d = document.save) == true
+              if document.save == true
                 @employee.documents << document
                 document.create_thumbnails
+                document.create_preview_format
               else
                 @error = true
-                flash[:error] = d
               end
             end
           end
