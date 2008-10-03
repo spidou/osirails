@@ -256,7 +256,7 @@ a.button_banner:hover span {
 
 #text_under_banner {
 	width:93%;
-	height:2.07em;/*30px;2.07em*/
+	height:30px;
 	overflow:hidden;
 	font-size:1.1em;
 	margin-top:5px;
