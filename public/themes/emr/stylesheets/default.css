@@ -12,11 +12,7 @@ creation : July/October 2008
 Description: stylesheet of the index page containing the layout's site 
 (menus, headers, footers ...).
 --------------------------------------------------------------------*/
-/*
-div {
-	border: solid 1px black; 
-}
-*/
+
 html, body {
 	margin: 0;
 	padding: 0;
@@ -66,7 +62,6 @@ caption {
 table {
 	border-collapse: collapse;
 	border:solid 1px rgb(64,68,93);
-/*	background: #eaeff8; BLUE VERY CLEAR*/
 	background:#F8F8F8;
 	text-align:center;
 	min-width:70%;
@@ -98,8 +93,7 @@ table img {
 }
 
 tr:hover > td{
-	background: #f5c384; /* rgb(234,136,28); */
-/*	color:white;	*/
+	background: #f5c384;
 }
 
 tr:hover > td > a {
@@ -207,6 +201,7 @@ h6 {
 	color:#EA972D;
 	text-align:right;
 }
+
 a.button_banner {
 	background: transparent url("/themes/emr/images/button_banner_left_side.png") no-repeat top left;
 	display: block;
@@ -531,7 +526,7 @@ a.button_banner:hover span {
 
 #content_secondary_menu ul li a {
 	text-decoration:none ;
-	color: #CA7E21;/*444*/
+	color: #CA7E21;
 }
 
 ul.center_list {
@@ -573,15 +568,8 @@ ul.center_list li {
 	line-height:22px;
 	border: #444 1px solid;
 }
-/*
-#search_image {  /*quick_search*//*
-	position:relative;
-	right:20px;
-	top:2px;
-}
-*/
 
-button.contextual_search_button {
+button.contextual_search_button {/*button in the input type text [secondary_menu]*/
 	background:url("/themes/emr/images/view_12x12.png");
 	position:relative;
 	right:20px;
@@ -806,7 +794,7 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 	color: #B0383D;
 }
 
-/*/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\*/
+/*/!\/!\/!\/!\/!\/!\:::::::NOTICE:::::::/!\/!\/!\/!\/!\/!\*/
 .flash_notice {
 	background: url("/images/tick_16x16.png") no-repeat;
 	color: green;
@@ -854,21 +842,12 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
-.fieldWithErrors {
-//	font-weight:bold;
-}
-
 .fieldWithErrors input,
 .fieldWithErrors select {
 	border:solid 2px #B0383D !important;
 	color:#B0383D;
 	margin-left: 10px;
 	vertical-align:top;
-}
-
-.fieldWithErrors label:after {
-//	content: " *";
-//	color:#B0383D;
 }
 
 div.fieldWithErrors {
@@ -884,12 +863,6 @@ div.fieldWithErrors {
 	left:10px;
 }
 
-/*
-.frame > form > #errorExplanation {
-	border:10px solid red;
-	width:100%;
-}
-*/
 #errorExplanation {
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
@@ -899,8 +872,6 @@ div.fieldWithErrors {
 
 #errorExplanation ul li,
 .errorExplanation ul li {
-	//position:relative;
-	//bottom:2px;
 	background: url("/themes/emr/images/warning_14x14.png") no-repeat;
 	list-style-type:none;
 	text-indent:21px;
@@ -910,8 +881,6 @@ div.fieldWithErrors {
 
 #errorExplanation ul,
 .errorExplanation ul {
-  //width:380px;
-	//text-align:justify;
   padding-left: 30px;
 }
 
@@ -926,18 +895,17 @@ div.fieldWithErrors {
 	padding-left:5px;
 	padding-right:5px;
 	overflow:hidden;
-  text-align:center;
+	text-align:center;
 }
 
 #errorExplanation p,
 .errorExplanation p {
-  padding-left: 0px;
+	padding-left: 0px;
 }
 
 /*/////////////////////////////
 		FRAME & CONTENT
 /////////////////////////////*/
-
 table.presentation {
 	border-collapse: collapse;
 	text-align:left;
@@ -945,7 +913,6 @@ table.presentation {
 	margin-left:15px;
 	border:none;
 	background:white;
-
 }
 
 table.presentation a {
@@ -976,20 +943,17 @@ table.presentation tr:hover > td{
 }
 
 /*::::::::::::TABLE "COMMODITY"::::::::::::*/
-
 table.commodity {
 	font-weight:lighter;
 }
 
 table.commodity th {
 	text-align:center;
-/*	padding:2px;*/
 }
 
 
 table.commodity td {
 	text-align:center;
-/*	padding:5px;	*/
 } 
 
 table.commodity img[title="Enrouler"] + span,
@@ -999,21 +963,14 @@ table.commodity img[title="Dérouler"] + span {
 
 .commodity tr.disable > td {
 	color:#888;
-/*	color:#B0383D; RED*/
 	font-style:italic;
 }
 
-.commodity tr.enable > td {
-/*	color:#4C8B38;*/
-}
-
 .commodity td.sub_commodity_category {
-	/*font-style:italic;*/
 	color:#888;
 }
 
 .commodity td.commodity_category {
-	/*font-style:italic;*/
 	font-weight:bold;
 }
 
@@ -1069,7 +1026,6 @@ table.no-style tr:hover > td > a {
 /*/////////////////////////////
 		IN_PLACE_EDITOR
 /////////////////////////////*/
-
 .inplaceeditor-form input {
 width: 50px ! important;
 }
@@ -1130,43 +1086,15 @@ width: 50px ! important;
 	margin:0px 20px 0px -15px ;
 }
 
-.frame form p textarea {
-/*	min-height:50px;*/
-/*	height:50px !important; test julien*/
-}
-
-.frame form p select {
-/*	border: #CCC 1px solid;*/
-}
-/*
-.frame form p input[type=text]:hover,
-.frame form p input[type=password]:hover,
-.frame form p textarea:hover {
-	border: #aeaeae 1px solid;
-	background: #f5f5f5;
-}
-*/
 .frame form p input:focus,
 .frame form p textarea:focus {
 	background: #f5c384;
 }
-/*
-.frame form p.text_form textarea {
-	padding: 2px 0 0 4px;
-	width: 320px;
-	height: 6em;
-	max-width:320px;
-}
-*//*
-.frame form p.simple {
-	margin-left: 160px;
-}
-*/
+
 /*LAYOUTS' FORM*/
 
 .frame.presentation_large label {
 	text-align:right;
-/*	margin-right:10px;*/
 	width:250px;
 	display:inline-block;
 }
@@ -1235,13 +1163,6 @@ width: 50px ! important;
 	height:20px;
 }
 
-/*
-.frame input.disable-stylesheet-width {
-	float:none;
-	margin:0;
-	width:inherit;
-}
-*/
 fieldset.no-style {
 	background: none;
 	border: none;
@@ -1283,8 +1204,8 @@ li.reference_disable {
 }
 
 .hierarchic ul {
-border-left:1px solid gray;
-line-height:28px;
+	border-left:1px solid gray;
+	line-height:28px;
 }
 
 ul.parent {
@@ -1344,26 +1265,9 @@ ul.parent>li {
 }
 
 /*/////////////////TABS/////////////////*/
-/*
-div.tabs+.frame {
-	clear:left;
-}
-
-div.tabs {
-	position:relative;
-	top:1px;
-	right:1px;
-	clear:left;
-}
-*/
 .frame.tabulation {
 	margin-top:44px;
 }
-/*
-.frame + div.tabs {
-	margin-bottom:0;
-}
-*/
 
 .frame.tabulation>h1 {
 	background:url('/themes/emr/images/background_tabs_h2.jpg') repeat;
@@ -1484,11 +1388,6 @@ div.tabs ul li a:hover {
 	padding:5px 10px 5px 10px;
 }
 
-/*
-#catalog>select {
-	width:100%;
-}
-*/
 select.select_catalog {
 	background: #f1f1f1;
 	border:1px solid #888;
@@ -1497,7 +1396,7 @@ select.select_catalog {
 }
 
 select.catalog_3_columns {
-	width:32.6%;/*26.53%;*/
+	width:32.6%;
 	padding:0;
 	margin:0;
 }
@@ -1545,7 +1444,6 @@ select.catalog_3_columns {
 .feet_finish,
 .feet_in_progress,
 .feet_disable {
-//	position:relative;
 	bottom:15px;
 	padding:0 0px 0 20px;
 }
@@ -1666,7 +1564,8 @@ div.steps_text p {
 #steps div.selected {
 	background:#DBE2F0;
 	-moz-border-radius:8px;
-	padding-bottom:10px;
+	padding-bottom:33px;
+	margin-top:3px;
 }
 
 #steps div.selected p {
@@ -1675,16 +1574,11 @@ div.steps_text p {
 
 #steps {
 	margin-left:10px;
-	margin-bottom:25px;
 }
 
 #steps a {
 	text-decoration:none;
 	color:#444;
-}
-
-div.frame>#steps {
-/*	height:200px;*/
 }
 
 /*////////////BROWSING PAGE////////////*/

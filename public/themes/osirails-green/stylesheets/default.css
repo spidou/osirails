@@ -3,13 +3,13 @@
 
 Création : Juillet/Octobre 2008
 ---------
-Description : feuille de style de la page d'index contenant la mise
+Description : feuille de style de la page d'index par default [Osirails] contenant la mise
 en forme du site (menus, en-têtes, pied de page...). design Osirails
 ---------------------------------------------------------------------
 				..::Powered by Oxydium::..
 creation : July/October 2008
 ---------
-Description: stylesheet of the index page containing the layout's site 
+Description: stylesheet of the default's index page [Osirails] containing the layout's site 
 (menus, headers, footers ...).
 --------------------------------------------------------------------*/
 /*
@@ -30,7 +30,6 @@ html, body { 							/*		0.8em = 12.8px		=> 80%		*/
 	cursor: default;
 	min-width: 1250px;
 	color:#333;
-//	overflow:hidden;
 }
 
 body {
