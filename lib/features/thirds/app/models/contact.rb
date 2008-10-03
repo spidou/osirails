@@ -12,7 +12,6 @@ class Contact < ActiveRecord::Base
   has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
   has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
 
-
   def self.new(contact = nil)
     
     unless contact.nil? or contact[:id].nil?

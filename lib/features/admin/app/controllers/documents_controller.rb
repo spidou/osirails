@@ -11,12 +11,14 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     #    if Document.can_edit?(current_user, @document.owner_class.capitalize)
     params[:document][:upload] = params[:upload]
-    @document.update_attributes(params[:document])
-    params[:document].delete("tag_list")
-    params[:document].delete("upload")
+    ## Create firs version
+    if @document.document_versions.empty?
+      hash = {:upload => {:datafile => File.open(("documents/" + @document.path + @document.id.to_s+ "." + @document.extension), "r")}, :name => "1"}
+      @document.update_attributes(hash)
+    end
+    
     @document.update_attributes(params[:document])
     @javascript = "<script langage='javascript'> parent.document.getElementById('testpage').innerHTML = document.getElementById('testpage').innerHTML</script>"
-    params[:document][:upload] = params[:upload]
     
     render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => @document, :javascript => @javascript})
   end

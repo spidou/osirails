@@ -10,14 +10,14 @@ module ActiveRecord
       end
       
       module ClassMethods
-        def acts_as_step
+        def acts_as_step(options = {})
           # this is at the class level
           # add any class level manipulations you need here, like has_many, etc.
           extend ActiveRecord::Acts::Step::SingletonMethods
           include ActiveRecord::Acts::Step::InstanceMethods
           
           # Plugins
-          acts_as_file
+          acts_as_file(:document_route => options[:document_route]) unless options[:document_route].nil?
           
           # Relationships
           has_many :remarks, :as => :has_remark

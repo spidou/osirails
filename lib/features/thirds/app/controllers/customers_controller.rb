@@ -73,7 +73,6 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
-    params[:page] ||= 1
     ## Objects use to test permission
     @contact_controller = Menu.find_by_name('contacts')
     @establishment_controller =Menu.find_by_name('establishments')
@@ -87,6 +86,7 @@ class CustomersController < ApplicationController
       @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?
       
       respond_to do |format|
+#        params[:page] ||= 1
         params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
         @javascript = "<script langage='javascript'> parent.document.getElementById('testpage').innerHTML = document.getElementById('testpage').innerHTML</script>"
         format.js { render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => (Document.find(params[:document_id]) unless params[:document_id].nil?), :javascript => @javascript})}

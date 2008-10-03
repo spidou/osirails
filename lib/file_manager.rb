@@ -26,7 +26,6 @@ class FileManager
     path = File.join(options[:directory], name)
     
 #    raise self.valid_mime_type?(options[:file][:datafile], options[:file_type_id]).inspect
-    
     unless File.exist?(path)
       #TODO change this code to integre a test for mime type like "- application /..."
       ## Test if mime_type correspond with possible extension

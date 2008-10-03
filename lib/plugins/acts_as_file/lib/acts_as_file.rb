@@ -3,7 +3,7 @@ require 'active_record'
 module ActiveRecord
   module Acts #:nodoc:
     module File #:nodoc:
-
+      
       def self.included(mod)
         mod.extend(ClassMethods)
       end
@@ -12,12 +12,16 @@ module ActiveRecord
       # will load the relevant instance methods
       # defined below when invoked
       module ClassMethods
-        def acts_as_file
+        
+        def acts_as_file(options = {})
           # this is at the class level
           # add any class level manipulations you need here, like has_many, etc.
           extend ActiveRecord::Acts::File::SingletonMethods
           include ActiveRecord::Acts::File::InstanceMethods
           
+          @document_route = options[:document_route]
+          DocumentRouteDefinition.create_route(options[:document_route])
+            
           has_many :documents, :as => :has_document
           Document.add_model(self.name) unless Document.models.include?(self.name)
           
@@ -33,15 +37,18 @@ module ActiveRecord
           end
           
         end
-      end
+      end     
 
       # Adds SingletonMethods
       module SingletonMethods
-       
+        def document_route
+        instance_variable_get('@document_route')
+      end
       end
 
       # Adds instance methods.
       module InstanceMethods
+       
         def class_documents
           class_documents = {}
           self.documents.each do |document|

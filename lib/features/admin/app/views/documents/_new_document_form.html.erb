@@ -37,7 +37,7 @@
           <%mime_type_extension_array = []%>
           <%file_type.mime_types.each{|mime_type| mime_type.mime_type_extensions.each{|mime_type_extension| mime_type_extension_array << mime_type_extension.name}}%>
             <option value='<%= file_type.id%>' title='<%= mime_type_extension_array.join(",")%>' > 
-          <%= file_type.name + "(" + (mime_type_extension_array.size > 2 ? mime_type_extension_array[0..1].join(",").concat("...") : mime_type_extension_array.join(",")) +")" %> </option>
+          <%= file_type.name + " (" + (mime_type_extension_array.size > 2 ? mime_type_extension_array[0..1].join(", ").concat("...") : mime_type_extension_array.join(",")) +")" %> </option>
         <% end %>
       </select>
     </p> 

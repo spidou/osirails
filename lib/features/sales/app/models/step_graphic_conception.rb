@@ -4,5 +4,5 @@ class StepGraphicConception < ActiveRecord::Base
   has_many :press_proofs
   
   # Plugins
-  acts_as_step
+  acts_as_step({:document_route => ["orders", "step_graphic_conception"]})
 end

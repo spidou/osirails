@@ -8,7 +8,7 @@ class Document < ActiveRecord::Base
   belongs_to :has_document, :polymorphic => true
   
   ## Validates
-  #  validates_presence_of :name
+  validates_presence_of :name
   
   ## Instance accessor
   attr_accessor :is_new
@@ -42,6 +42,14 @@ class Document < ActiveRecord::Base
   
   def self.image_mime_types
     @image_mime_types
+  end
+  
+  def press_proof_valid?
+    if Document.image_mime_types.include?(self.mime_type)
+      return true
+    else
+      return false
+    end
   end
   
   def self.can_have_document(model)
@@ -164,35 +172,24 @@ class Document < ActiveRecord::Base
           self.create_preview_format
           if self.valid?
             ## Store tags list
-            tag_list = document.delete("tag_list").split(",")
-            
-            ## Creation of first_version
-            if self.document_versions.empty?
-              path = "documents/" + self.path + "/" +  self.id.to_s + "/"
-            
-              file_response = FileManager.upload_file(:file => File.open("documents/" + self.path + self.id.to_s+ "." + self.extension, "r"), :name => "1", 
-                :directory => path, :file_type_id => self.file_type.id)
-              
-              if file_response
-                @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)
-                self.document_versions << @document_version
-                @document_version.create_thumbnails(self.id)
-              end
-            end
+            tag_list = document.delete("tag_list").split(",")  unless document[:tag_list].nil?
             
             ## Creation of document_version          
-            path = "documents/" + self.path + "/" +  self.id.to_s + "/"
-            file_response = FileManager.upload_file(:file => document[:upload], :name => (self.document_versions.size + 1).to_s, 
+            path = "documents/" + self.path + self.id.to_s + "/"
+            file_response = FileManager.upload_file(:file => {:datafile =>document[:upload][:datafile]}, :name => (self.document_versions.size + 1).to_s, 
               :directory => path, :file_type_id => self.file_type.id)
-            if file_response
-              @document_version = DocumentVersion.create(:name => self.name, :description => self.description, :versioned_at => self.updated_at)      
-        
+            if file_response == true
+              @document_version = DocumentVersion.create(:name => (document[:name].blank? ? document[:upload][:datafile].original_filename : document[:name]), :description => self.description, :versioned_at => self.updated_at)      
               ## Add tag_list for document
               self.tag_list = tag_list
-          
-              document.delete("upload")
+              
               self.document_versions << @document_version
-              @document_version.create_thumbnails(self.id)
+              
+              @document_version.create_thumbnails
+              @document_version.create_preview_format
+              document.delete("name") if document[:name].blank?
+              document.delete(:upload)
+#              raise document.inspect
               super(document)
               return self
             end
@@ -247,7 +244,6 @@ class Document < ActiveRecord::Base
                 :directory => path, :file_type_id => self.file_type.id)
               ## If file succefuly create
               if file_response == true
-                
                 ## Add tag_list for document
                 unless self.tag_list.nil?
                   self.tag_list.each {|tag| self.tag_list << tag.strip} 

@@ -5,9 +5,7 @@ ActionController::Routing::Routes.add_routes do |map|
     order.resource 'graphic_conception', :controller => 'graphic_conception'
     order.resource 'informations', :controller => 'informations'
     order.resource 'invoicing', :controller => 'invoicing'
-    order.resource 'survey', :controller => 'survey' do |survey|
-      survey.resources :documents
-    end
+    order.resource 'survey', :controller => 'survey'
     order.resources 'logs', :controller => 'logs'
   end
   
