@@ -1,5 +1,5 @@
 <% content_for :secondary_menu do %>
-  <%= show_action_menu(@customer)%>
+  <%= display_customer_action_menu(@customer)%>
 <% end %>
 
 <h1>Informations concernant le client </h1>
@@ -43,13 +43,13 @@
     <strong><%= @customer.payment_time_limit.name%></strong>
   </p>
 
-  <!-- Show Customer establishments -->
+  <!-- Display Customer establishments -->
   <%= display_establishments(@customer, @establishments)%>
 
-  <!-- Show Customer Contacts -->
+  <!-- Display Customer Contacts -->
   <%= display_contacts(@customer, @contacts)%>
     
-  <!-- Show Customer Documents -->
+  <!-- Display Customer Documents -->
   <%= display_documents(@customer, @documents)%>
   
 </div>
