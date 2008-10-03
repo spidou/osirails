@@ -7,7 +7,7 @@ class SuppliersController < ApplicationController
   # GET /suppliers.xml
   def index
     if Supplier.can_list?(current_user)
-      @suppliers = Supplier.find(:all)
+      @suppliers = Supplier.find_all_by_activated(true)
     else
       error_access_page(403)
     end
@@ -171,8 +171,13 @@ class SuppliersController < ApplicationController
   def destroy
     if Supplier.can_delete?(current_user)
       @supplier = Supplier.find(params[:id])
-      @supplier.destroy
-      redirect_to(suppliers_path) 
+      @supplier.activated = false
+      if @supplier.save
+        redirect_to(suppliers_path)
+      else
+        flash[:error] = "Une erreur est survenu lors de la suppression du fournisseur"
+        redirect_to :back 
+      end
     else
       error_access_page(403)
     end

@@ -72,7 +72,7 @@ class EstablishmentsController < ApplicationController
       unless @address.update_attributes(address)
         @error = true
       end
-    
+
       ## If contact_form is not null
       if Contact.can_add?(current_user)        
         ## This variable is use to recreate in parms the contacts that are enable
@@ -99,7 +99,7 @@ class EstablishmentsController < ApplicationController
         @new_contact_number = params[:new_contact_number]["value"]
         render :action => "edit"
       else
-        
+      
         if params[:new_contact_number]["value"].to_i > 0
           @contact_objects.each do |contact|
             contact.save
@@ -112,7 +112,7 @@ class EstablishmentsController < ApplicationController
       end
     end
   end
-  
+
   def destroy
     if Establishment.can_delete?(current_user)
       @establishment = Establishment.find(params[:id])

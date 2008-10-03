@@ -117,7 +117,7 @@ class Document < ActiveRecord::Base
   end
   
   ## Return address file
-  def get_png    
+  def get_png
     path = "documents/" + self.path +  self.id.to_s + ".png"
     File.exist?(path) ? File.join(RAISE_ROOT, path) : false
   end

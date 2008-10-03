@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
   # GET /customers.xml
   def index
     if Customer.can_list?(current_user)
-      @customers = Customer.find(:all)
+      @customers = Customer.find_all_by_activated(true)
     else
       error_access_page(403)
     end
@@ -263,7 +263,8 @@ class CustomersController < ApplicationController
   def destroy
     if Customer.can_delete?(current_user)
       @customer = Customer.find(params[:id])
-      if @customer.destroy
+      @customer.activated = false
+      if @customer.save
         redirect_to(customers_path)
       else
         flash[:error] = "Une erreur est survenu lors de la suppression du contact"
