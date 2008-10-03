@@ -17,9 +17,9 @@
 		<td><%= feature.title %></td>
 		<td><%= feature.version %></td>
 		<td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
-		<td><%= display_install_link(feature) %></td>
-		<td><%= display_activate_link(feature) %></td>
-		<td><%= display_remove_link(feature) %></td>
+		<td onclick="osibox_open();"><%= display_install_link(feature) %></td>
+		<td onclick="osibox_open();"><%= display_activate_link(feature) %></td>
+		<td onclick="osibox_open();"><%= display_remove_link(feature) %></td>
 	</tr>
 	<% end %>
 </table>
@@ -32,8 +32,11 @@
 <%= file_upload %>
 </p>
 <p>
-<%= submit_tag "Ajouter" %>
+<%# submit_tag "Ajouter" %>
+<input type="submit" value="Ajouter" name="commit" onclick='osibox_open();' />
 </p>
 </form>
 <% end %>
 </div>
+
+<%= osibox_init :partial => 'feature_loading', :border_size => '1', :close_button => false %>
