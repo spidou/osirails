@@ -176,7 +176,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
 	border: solid 1px #cacaca;
-	background:#ddd url("/themes/osirails-green/images/cross_16x16.png") no-repeat;
+	background:#ddd url("/images/cross_16x16.png") no-repeat;
 	color: red;
 	padding: 10px 10px 10px 5px;
 }
@@ -184,7 +184,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
 	border: solid 1px #cacaca;
-	background:#ddd url("/themes/osirails-green/images/tick_16x16.png") no-repeat;
+	background:#ddd url("/images/tick_16x16.png") no-repeat;
 	color: green;
 	padding: 10px 10px 10px 5px;
 }
