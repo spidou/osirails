@@ -262,6 +262,10 @@ a.button_banner:hover span {
 	font-size:1.1em;
 }
 
+#text_under_banner strong {
+	color:#252525;
+}
+
 #block_button_under_banner {
 	width:auto;
 	position:absolute;
@@ -566,16 +570,26 @@ ul.center_list li {
 	padding-top:3px;
 }
 
-#search_image {  /*quick_search*/
+button.contextual_search_button {/*button in the input type text [secondary_menu]*/
+	background:url("/images/view_12x12.png");
+	position:relative;
+	right:20px;
+	bottom:3px;
+	border:none;
+	width:12px;
+	height:12px;
+}
 
+button.contextual_search_button:hover {
+	cursor:pointer;
 }
 
 #input_search {
-
+	
 }
 
 #input_search:focus {
-
+	color:black !important;
 }
 
 .help {
@@ -667,7 +681,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	margin-left:203px;
 	border:solid 1px white;
 	background:white url("/themes/osirails-green/images/background_content_page.gif") repeat-x 0 41px;
-	
+	min-height:600px;
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -988,6 +1002,7 @@ table.no-style tr:hover > td > a {
 	-moz-border-radius:15px 0 15px 0;
 	margin:5px 10px 15px 10px;
 	padding:5px;
+	background:white;
 }
 
 .frame p {
@@ -1672,7 +1687,10 @@ object {
 }
 
 .formated_content hr {
-
+	border-top:1px solid #ABDD46;
+	border-bottom:1px solid #86CE00;
+	border-left:none;
+	border-right:none;
 }
 
 .formated_content strong {
