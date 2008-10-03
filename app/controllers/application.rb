@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   
   # Filters
   before_filter :authenticate
-  before_filter :select_stylesheet
+  before_filter :select_theme
   
   # Includes
   include Permissible::InstanceMethods
@@ -106,12 +106,16 @@ class ApplicationController < ActionController::Base
       end # if
     end # authenticate
     
-    def select_stylesheet
+    def select_theme
       begin
-        stylesheet = ConfigurationManager.admin_society_identity_configuration_choosen_theme
-        stylesheet_path = "public/themes/#{stylesheet}"
-        if File.exists?(stylesheet_path) and File.directory?(stylesheet_path)
-          @stylesheet = "/themes/#{stylesheet}/stylesheets"
+        choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
+        choosen_theme_site_path = "/themes/#{choosen_theme}"
+        choosen_theme_real_path = "public#{choosen_theme_site_path}"
+        if File.exists?(choosen_theme_real_path) and File.directory?(choosen_theme_real_path)
+          @theme_path = choosen_theme_site_path
+        else
+          #select the default theme
+          @theme_path = "/themes/osirails-green/stylesheets"
         end
       end
     end
