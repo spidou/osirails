@@ -208,7 +208,7 @@
 	-moz-border-radius: 8px;
 	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
 	z-index: 1;
-	width: 310px;
+	width:auto;
 }
 .calendar {
 	z-index: 2;
@@ -216,7 +216,7 @@
 
 .frame.presentation_calendar label {
 	text-align:right !important;
-	width:70px;
+	width:80px;
 	display:inline-block;
 	margin-right:10px;
 }
@@ -285,12 +285,12 @@
 #event_box h1 {
 	background:url("/images/background_event_box_title.png");
 	color:#333;
-	border:solid 1px #888;/*#CFCFCF;*/
+	border:solid 1px #888;
 	height:20px;
 	line-height:20px;
 	font-size:1.1em;
 	-moz-border-radius:8px 8px 0 0;
-	width:326px;
+	width:105%;
 	margin: 0 0 8px -9px;
 	padding:0;
 }

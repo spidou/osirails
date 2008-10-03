@@ -201,7 +201,7 @@ p {
 
 #banner_datetime {
 	position:absolute;
-	top:60px;
+	top:55px;
 	left:350px;
 	color: #333;
 }
@@ -256,8 +256,7 @@ a.button_banner:hover span {
 
 #text_under_banner {
 	width:93%;
-//	height:2.07em;/*30px;2.07em*/
-	overflow:hidden;
+	height:2.07em;/*30px;2.07em*/
 	overflow:hidden;
 	font-size:1.1em;
 	margin-top:5px;
