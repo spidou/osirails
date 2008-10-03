@@ -61,7 +61,7 @@ class EventsController < ApplicationController
     params[:participants][:new] ||= []
     params[:participants][:new].each do |p|
       participant_index = params[:participants][:new].index(p)
-      emp_id = params[:participants][:new_id][participant_index]
+      emp_id = params[:participants][:new_id][:participant_index]
       participant_option = Participant.parse(p)
       participant_option[:employee_id] = emp_id
       @event.participants << Participant.create(participant_option)
