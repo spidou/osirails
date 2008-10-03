@@ -31,6 +31,11 @@ Rails::Initializer.run do |config|
   # :all can be used as a placeholder for all plugins not explicitly named
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :all]
   
+  # Reload the plugins in dev mode
+  if ENV['RAILS_ENV'] == 'development'
+#    config.reload_plugins = true
+  end
+  
   # BEGIN #
   # Manage feature's dependences
   require 'yaml'

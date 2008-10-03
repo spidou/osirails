@@ -13,9 +13,6 @@ config.action_controller.consider_all_requests_local = true
 config.action_view.debug_rjs                         = true
 config.action_controller.perform_caching             = false
 
-# TODO Enlever la ligne suivante
-# config.action_controller.allow_forgery_protection    = false
-
 # Don't care if the mailer can't send
 config.action_mailer.raise_delivery_errors = false
 
