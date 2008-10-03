@@ -1,0 +1,30 @@
+<h1 align="center">Bon à tirer</h1>
+
+<p>
+	Nom de projet :
+	<strong><%= @order.title %></strong>
+</p>
+<p>
+	Client / &Eacute;tablissement :
+	<strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+</p>
+<p>
+	Lieu de livraison :
+	<strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
+</p>
+<p>
+	Etapes finies / Etapes totales :
+	<strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
+</p>
+<p>
+	Suivi commercial :
+	<strong><%= @order.commercial.fullname %></strong>
+</p>
+<p>
+	Type de dossier :
+	<strong><%= @order.order_type.title %></strong>
+</p>
+<p>
+	Date pr&eacute;visionnelle de livraison :
+	<strong><%= @order.previsional_delivery %></strong>
+</p>

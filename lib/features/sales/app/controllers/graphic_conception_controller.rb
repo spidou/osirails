@@ -5,8 +5,9 @@ class GraphicConceptionController < ApplicationController
   before_filter :check, :except => [:index]
   
   def show
-    if can_edit?(current_user)
+    if can_edit?(current_user) and !(params[:format] == 'pdf')
       redirect_to :action => "edit"
+      return
     end
     
     @order = Order.find(params[:order_id])
@@ -14,6 +15,31 @@ class GraphicConceptionController < ApplicationController
     @checklist_responses = @step.checklist_responses
     @documents = @step.documents
     @remarks = @step.remarks
+    
+    respond_to do |format|
+      format.html {}
+      format.pdf {
+        require 'htmldoc'
+        data = render_to_string(:action => "show.pdf.erb", :layout => false)
+        pdf = PDF::HTMLDoc.new
+        pdf.set_option :bodycolor, :white
+        pdf.set_option :toc, false
+        pdf.set_option :charset, 'utf-8'
+        pdf.set_option :portrait, true
+        pdf.set_option :links, false
+        pdf.set_option :webpage, true
+        pdf.set_option :left, '1cm'
+        pdf.set_option :right, '1cm'
+        pdf.set_option :textcolor, 'black'
+        
+        pdf << data
+        
+        
+        pdf.footer "./."
+                
+        send_data pdf.generate, :filename => "bonatirer_#{@order.id}.pdf"
+      }
+    end
   end
   
   def edit

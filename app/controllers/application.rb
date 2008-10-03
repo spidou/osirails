@@ -64,6 +64,22 @@ class ApplicationController < ActionController::Base
     def error_access_page(status = 403)
       render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
     end
+    
+    def render_pdf
+      require 'htmldoc'
+      data = render_to_string(:action => "#{params[:action]}.pdf.erb", :layout => false)
+      pdf = PDF::HTMLDoc.new
+      pdf.set_option :bodycolor, :white
+      pdf.set_option :toc, false
+      pdf.set_option :charset, 'utf-8'
+      pdf.set_option :portrait, true
+      pdf.set_option :links, false
+      pdf.set_option :webpage, true
+      pdf.set_option :left, '1cm'
+      pdf.set_option :right, '1cm'
+      pdf << data
+      pdf.generate
+    end
 
   private
 

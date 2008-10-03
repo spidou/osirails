@@ -45,11 +45,7 @@ class Document < ActiveRecord::Base
   end
   
   def press_proof_valid?
-    if Document.image_mime_types.include?(self.mime_type)
-      return true
-    else
-      return false
-    end
+    Document.image_mime_types.include?(self.mime_type)
   end
   
   def self.can_have_document(model)
