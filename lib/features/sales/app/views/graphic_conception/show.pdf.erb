@@ -1,4 +1,12 @@
-<h1 align="center">Bon à tirer</h1>
+<table width="100%">
+	<tr>
+		<td width="30%"><img src="<%= File.join(RAILS_ROOT, 'public/themes/emr/images/logo_emr.jpg') %>" width="100"/>
+		</td>
+		<td><h1>Bon à tirer</h1></td>
+	</tr>
+</table>
+
+<br />
 
 <p>
 	Nom de projet :
@@ -24,7 +32,13 @@
 	Type de dossier :
 	<strong><%= @order.order_type.title %></strong>
 </p>
-<p>
-	Date pr&eacute;visionnelle de livraison :
-	<strong><%= @order.previsional_delivery %></strong>
-</p>
+
+<br />
+
+<table width="100%">
+	<tr>
+		<td width="20%"></td>
+		<td width="40%">Validation "bon pour accord"</td>
+		<td width="40%">Date et signature</td>
+	</tr>
+</table>

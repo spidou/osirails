@@ -10,9 +10,8 @@ class Order < ActiveRecord::Base
   has_many :order_logs
 
   # Validations
-  validates_presence_of :order_type
-  #  validates_presence_of :establishment
-  validates_presence_of :customer
+  validates_presence_of [:order_type, :establishment, :customer, :commercial]
+  
   
   # Create all orders_steps after create
   def after_create

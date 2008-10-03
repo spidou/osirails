@@ -22,7 +22,7 @@ class GraphicConceptionController < ApplicationController
         require 'htmldoc'
         data = render_to_string(:action => "show.pdf.erb", :layout => false)
         pdf = PDF::HTMLDoc.new
-        pdf.set_option :bodycolor, :white
+        pdf.set_option :bodycolor, 'white'
         pdf.set_option :toc, false
         pdf.set_option :charset, 'utf-8'
         pdf.set_option :portrait, true
@@ -33,7 +33,10 @@ class GraphicConceptionController < ApplicationController
         pdf.set_option :textcolor, 'black'
         
         pdf << data
-        
+        @documents.each do |document|
+          document.convert_to_png
+          pdf << "<h2 align=\"center\">#{document.name}</h2><br /><div align=\"center\"><img src=\"#{document.get_png}\" /></div>"
+        end
         
         pdf.footer "./."
                 
@@ -121,5 +124,6 @@ class GraphicConceptionController < ApplicationController
   def check
     @order = Order.find(params[:order_id])
     OrderLog.set(@order, current_user, params) # Manage logs
+    @current_order_step = @order.step.first_parent.name[5..-1]
   end
 end

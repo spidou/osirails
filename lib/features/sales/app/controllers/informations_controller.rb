@@ -13,5 +13,6 @@ class InformationsController < ApplicationController
   def check
     @order = Order.find(params[:order_id])
     OrderLog.set(@order, current_user, params) # Manage logs
+    @current_order_step = @order.step.first_parent.name[5..-1]
   end
 end
