@@ -112,7 +112,7 @@ class Document < ActiveRecord::Base
     if Document.image_mime_types.include?(self.mime_type)
       path = "documents/#{self.owner_class.downcase}/#{self.file_type.id}/"
       image = Magick::ImageList.new("#{path}#{self.id}.#{self.extension}")
-      image.resize_to_fit!(770, 450)
+      image.resize_to_fit!(550, 800)
       image.write("#{path}#{self.id}.png")
     end
   end
