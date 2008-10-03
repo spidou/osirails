@@ -333,10 +333,8 @@ a.button_banner:hover span {
 	font-size:1em;
 	color:#333;
 	position:relative;
-	top:7px;
-	margin:0;
-	border:solid red 1px;
-	width:100%;
+	top:10px;
+	margin:0 0 0 27%;
 }
 
 /*////////////////////////////////////////////////////////
@@ -591,6 +589,10 @@ button.contextual_search_button {
 	border:none;
 	width:12px;
 	height:12px;
+}
+
+button.contextual_search_button:hover {
+	cursor:pointer;
 }
 
 #input_search {
