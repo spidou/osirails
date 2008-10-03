@@ -250,16 +250,19 @@ a.button_banner:hover span {
 	background:#9CD622;
 	color:white;
 	padding:5px;
-	min-height: 40px;
 	margin:0;
-//	height:40px;
-//	height:auto;
+	height:40px;
 }
 
 #text_under_banner {
 	width:93%;
 	font-size:1.1em;
 	margin-top:5px;
+	height:40px;
+	overflow:hidden;
+	line-height:15px;
+	position:relative;
+	bottom:3px;
 }
 
 #text_under_banner strong {
