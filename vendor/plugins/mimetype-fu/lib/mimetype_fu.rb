@@ -1,5 +1,5 @@
 class File
-  
+
   def self.mime_type?(file)
     if file.class == File
       mime = find_mimetype(file.path)
@@ -17,7 +17,7 @@ class File
       mime = mime.gsub(/,.*$/,"")
       File.delete(temp.path)
     end
-    
+
     mime ||= false
     return mime
   end
@@ -25,14 +25,15 @@ class File
   def self.extensions
     EXTENSIONS
   end
-  
+
   private
-    def self.find_mimetype(path_to_file)
-      if RUBY_PLATFORM.include?('mswin32') or !File.exists?(path_to_file)
-        return EXTENSIONS[File.extname(path_to_file).gsub('.','').downcase.to_sym]
-      else
-        return `file -bir #{path_to_file}`.strip
-      end
+  def self.find_mimetype(path_to_file)
+    if RUBY_PLATFORM.include?('mswin32') or !File.exists?(path_to_file)
+      return EXTENSIONS[File.extname(path_to_file).gsub('.','').downcase.to_sym]
+    elsif RUBY_PLATFORM.include?('darwin')
+      return `file -bIr #{path_to_file}`.strip
+    else
+      return `file -bir #{path_to_file}`.strip
     end
-    
+  end
 end
