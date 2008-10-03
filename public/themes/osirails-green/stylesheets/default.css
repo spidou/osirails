@@ -250,7 +250,7 @@ a.button_banner:hover span {
 	background:#9CD622;
 	color:white;
 	padding:5px;
-	height: auto;
+	min-height: 40px;
 	margin:0;
 }
 
