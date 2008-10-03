@@ -29,7 +29,9 @@
 						overflow: <%= options[:scroll] %>;
 						<%= options[:css] %>"
 	id="osibox_popup<%= options[:id] %>" class="osibox">
-	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br>
+	<% if options[:close_button] %>
+	<a style="float: right; font-size: 12px;" onclick="osibox_close();">Fermer</a><br />
+	<% end %>
 	<% if !options[:partial].nil? %>
 		<%= render :partial => options[:partial], :locals => options[:locals] %>
 	<% elsif !options[:url].empty? %>
