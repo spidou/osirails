@@ -64,7 +64,7 @@ module DocumentsHelper
           html += "<div class='document_view'>"
           html += "<h1> #{type} </h1>"
           documents.each do |document|
-            html += "<div class='document_view_content'>"
+            html += "<div id=\"document_#{document.id}\" class=\"document_view_content\">"
             if Document.image_mime_types.include?(document.mime_type)
               html += image_tag(url_for(:controller => "documents",:action => "thumbnail", :id => document.id))
             else
