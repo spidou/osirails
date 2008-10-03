@@ -5,7 +5,6 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   layout "default"
-  #layout "default_original"
   
   # Filters
   before_filter :authenticate
@@ -110,14 +109,10 @@ class ApplicationController < ActionController::Base
     def select_stylesheet
       begin
         stylesheet = ConfigurationManager.admin_society_identity_configuration_choosen_theme
-        stylesheet_path = "public/themes/#{ConfigurationManager.admin_society_identity_configuration_choosen_theme}"
+        stylesheet_path = "public/themes/#{stylesheet}"
         if File.exists?(stylesheet_path) and File.directory?(stylesheet_path)
-          @stylesheet = "/themes/#{stylesheet}/stylesheets/default.css"
-        else
-          @stylesheet = "/stylesheets/default.css"
+          @stylesheet = "/themes/#{stylesheet}/stylesheets"
         end
-      rescue
-        @stylesheet = "/stylesheets/default.css"
       end
     end
 end # class
