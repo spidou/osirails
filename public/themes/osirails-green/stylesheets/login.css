@@ -1,32 +1,28 @@
 /*	login.css--------------------------------------------------------
-	----------	..::Par Oxydium::.
+	----------	::Par Oxydium::.
 
 Création : Juillet/Octobre 2008
 ---------
 Description : feuille de style de la page de login permettant à tout
 utilisateur référencer de se logger dans l'intranet Osirails.
 ---------------------------------------------------------------------
-				..::Powered by Oxydium::..
+				::Powered by Oxydium::
 creation : July/October 2008
 ---------
 Description: stylesheet of the login page that allow any
 known user to log into the Osirails' intranet.
 --------------------------------------------------------------------*/
-/*
-div {
-	border: solid 1px black; 
-}
-*/
 * { 
 	margin: 0; padding: 0;
 }
 
 body {
 	font: 12px "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+	min-width:500px;
 }
 
 a {
-	color: #f69825;
+	color: #5F792A;
 	font-size: 70%;
 }
 
@@ -35,7 +31,7 @@ form {
 }
 
 a:hover {
-	color: #f2c40f;
+	color: #252525;
 }
 
 .fieldWithErrors label {
@@ -51,7 +47,7 @@ a:hover {
 
 .fieldWithErrors input[type=text],
 .fieldWithErrors input[type=password] {
-	background: url("/themes/emr/images/login/input_text.png") no-repeat bottom;
+	background: url("/themes/osirails-green/images/login/input_text.png") no-repeat bottom;
 }
 
 #errorExplanation p {
@@ -61,12 +57,16 @@ a:hover {
 }
 
 h2 {
-	color:#B0383D;
+	color:#5F792A;
 }
 
 strong {
 	color: #888;
 	font-weight:lighter;
+}
+
+abbr {
+	cursor:;
 }
 
 p {
@@ -86,8 +86,8 @@ p.message {
 
 input[type=text],
 input[type=password] {
-	color: #f69826;
-	background: url("/themes/emr/images/login/input_text.png") no-repeat;
+	color: #4D6A14;
+	background: url("/themes/osirails-green/images/login/input_text.png") no-repeat;
 	border: none;
 	width: 169px;/*171*/
 	height: 22px;
@@ -100,7 +100,7 @@ input[type=password] {
 
 h1 {
 	margin-top:146px;
-	color: #f69826;
+	color: #5F792A;
 	font-weight: lighter;
 	font-size:1.4em;
 	text-align:center;
@@ -111,24 +111,24 @@ h1 {
 /*/////////////////////////////////////////////////////
 					BANNIERE
 ////////////////////////////////////////////////////*/
-#banner {
+/*#banner {
 	width: auto;
 	height: 75px;
 }
 
 #logo {
-	background-image: url("/themes/emr/images/login/banner.jpg");
+	background-image: url("/themes/osirails-green/images/login/banner_logo.jpg");
 	float: left;
-	width: 330px;
+	width: 347px;
 	height: 75px;
 }
 
 #under_banner {
-	background-image: url("/themes/emr/images/login/banner_repeat-x.jpg");
+	background-image: url("/themes/osirails-green/images/login/banner_repeat-x.jpg");
 	width: auto;
 	height: 75px;
 	margin-left: 330px;
-}
+}*/
 /*/////////////////////////////////////////////////////
 					LOGIN CADRE
 ////////////////////////////////////////////////////*/
@@ -138,12 +138,12 @@ h1 {
 	margin-right:auto;
 	text-align:center;
 	width:351px;
-	background:#eee;
+	background:#eaeaea url("/themes/osirails-green/images/login/logo.png") -50px 0 no-repeat;
 	-moz-border-radius:5px;
 	height:auto;
 	margin-top:10px;
 	padding-top:15px;
-	border:1px solid #ddd;
+	border:1px solid #ccc;
 }
 
 span a,
@@ -176,7 +176,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
 	border: solid 1px #cacaca;
-	background:#ddd url("../themes/emr/images/cross_16x16.png") no-repeat;
+	background:#ddd url("/themes/osirails-green/images/cross_16x16.png") no-repeat;
 	color: red;
 	padding: 10px 10px 10px 5px;
 }
@@ -184,7 +184,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
 	border: solid 1px #cacaca;
-	background:#ddd url("../themes/emr/images/tick_16x16.png") no-repeat;
+	background:#ddd url("/themes/osirails-green/images/tick_16x16.png") no-repeat;
 	color: green;
 	padding: 10px 10px 10px 5px;
 }
@@ -234,7 +234,7 @@ a { /*Pour le msg d'erreur*/
 .errorExplanation ul li {
 	position:relative;
 	bottom:15px;
-	background: url("../themes/emr/images/warning_14x14.png") no-repeat 0px 0;
+	background: url("/themes/osirails-green/images/warning_14x14.png") no-repeat 0px 0;
 	list-style-type:none;
 	width:300px;
 	margin-left:30px;
@@ -245,13 +245,13 @@ a { /*Pour le msg d'erreur*/
 /**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 button.input-button { 																	/**/
-	background: transparent url("../themes/emr/images/button_default_generic_left_side.png") no-repeat top left;	/**/
+	background: #A1C536;
+	-moz-border-radius:2px;
+	border:solid 1px #446227;
 	font-family: arial, verdana, sans-serif;											/**/
-	font-size:85%;																		/**/
-	height: 25px;																		/**/
-	padding-left: 5px;																	/**/															/**/
-	color:black;																		/**/
-	border:none;																		/**/
+	font-size:0.85em;																		/**/
+	height: 25px;
+	color:white;
 	min-width:70px;																		/**/
 	margin-top:0px;																		/**/
 	margin-bottom:15px;																	/**/
@@ -259,23 +259,15 @@ button.input-button { 																	/**/
 	margin-left:auto;																	/**/
 	position:relative;																	/**/
 	bottom:10px;																		/**/
-}																						/**/
-																						/**/
-button.input-button span { 																/**/
-	background: transparent url("../themes/emr/images/button_default_generic_right_side.png") no-repeat top right;	/**/
-	display: block;																		/**/
-	padding: 2px 12px 6px 0;                                                            /**/
-	margin-top:-2px;                                                                    /**/
-	border:none;                                                                        /**/
-	line-height:18px;                                                                   /**/
-}																					    /**/
-																					    /**/
+}
+button.input-button span {
+	background:#79A222;
+	padding:5px 10px 4px 10px;
+	margin-left:-3px;
+	margin-right:-3px;
+	}																						/**/
 button.input-button:hover { 												           	 /**/
-	background: transparent url("../themes/emr/images/button_default_generic_left_side.png") no-repeat 0 -26px; 	/**/
+	background: #eaeaea;
+	cursor:pointer;	/**/
 }																					    /**/
-																					   	/**/
-button.input-button:hover span {													   	/**/
-	background: transparent url("../themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
-	color:black;                                                                       	/**/
-}																						/**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
