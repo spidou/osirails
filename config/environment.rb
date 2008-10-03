@@ -97,19 +97,14 @@ Rails::Initializer.run do |config|
 #end
 end
 
-
 gem 'mislav-will_paginate', '~> 2.2' # gem install mislav-will_paginate --version '~> 2.2' --source http://gems.github.com/
 require 'will_paginate'
 require 'overrides'
 require 'mimetype_fu'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
 
-## acts_as_file
-# This block is use because Document.add_model is call only when model is use
-files = Dir.glob("**/**/**/app/models/*.rb")
-files.each do |file|
-  file.split("/").last.chomp(".rb").camelize.constantize
-end
-
 Mime::Type.register 'application/pdf', :pdf
 Mime::Type.register 'image/svg+xml', :svg
+
+DocumentRouteDefinition.parse_model
+Document.models.each {|model| DocumentRouteDefinition.create_route(model)}

@@ -20,7 +20,6 @@ module ActiveRecord
           include ActiveRecord::Acts::File::InstanceMethods
           
           @document_route = options[:document_route]
-#          DocumentRouteDefinition.create_route(options[:document_route])
             
           has_many :documents, :as => :has_document
           Document.add_model(self.name) unless Document.models.include?(self.name)
@@ -42,8 +41,8 @@ module ActiveRecord
       # Adds SingletonMethods
       module SingletonMethods
         def document_route
-        instance_variable_get('@document_route')
-      end
+          instance_variable_get('@document_route')
+        end
       end
 
       # Adds instance methods.

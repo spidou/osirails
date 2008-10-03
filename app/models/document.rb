@@ -120,6 +120,10 @@ class Document < ActiveRecord::Base
     end
   end
   
+  def get_png    
+    
+  end
+  
   ## Return document path
   def path
     return self.owner_class + "/" + self.file_type_id.to_s + "/"
@@ -189,7 +193,7 @@ class Document < ActiveRecord::Base
               @document_version.create_preview_format
               document.delete("name") if document[:name].blank?
               document.delete(:upload)
-#              raise document.inspect
+              #              raise document.inspect
               super(document)
               return self
             end
