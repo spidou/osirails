@@ -26,6 +26,16 @@ search:
           created_at: date
           updated_at: date
           premium: number
+      numbers:
+        Number:
+          number: number
+          visible: boolean
+          number_type:
+            NumberType:
+              name: string
+          indicative:
+            Indicative:
+              indicative: string
       job_contract:    
         JobContract:
           start_date: date
@@ -38,7 +48,7 @@ search:
           created_at: date
           job_contract_type:
             JobContractType:
-              name: string           
+              name: string                         
 dependencies:
 conflicts:
 business_objects:

@@ -47,7 +47,7 @@ class Employee < ActiveRecord::Base
   
   # Method to find active employees
   def self.active_employees
-    Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.end_date is null or job_contracts.end_date> ?', Time.now])
+    Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.departure is null', Time.now])
   end
   
   # Method to generate the intranet email
