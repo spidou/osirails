@@ -103,7 +103,9 @@ class GraphicConceptionController < ApplicationController
         @press_proof = PressProof.create(:status => "in_progress")
         params[:press_proofs].each {|document_id|  @press_proof.documents << Document.find(document_id.split("_")[1])}
       end
-        
+      
+      @step.press_proofs << @press_proofs
+      
       @step.remarks << @remark unless @remark.nil?
       
       if params[:commit] == "Cloturer"
