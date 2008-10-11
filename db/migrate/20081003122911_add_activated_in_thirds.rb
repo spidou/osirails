@@ -1,6 +1,6 @@
 class AddActivatedInThirds < ActiveRecord::Migration
   def self.up
-    add_column :thirds, :activated, :boolean
+    add_column :thirds, :activated, :boolean, :default => true
   end
 
   def self.down

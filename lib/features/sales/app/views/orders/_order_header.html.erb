@@ -1,41 +1,37 @@
-<div class="frame">
-	<!-- TODO Code manualy the svg >
-	<object data="<%= order_path(@order) + '.svg' %>" type="image/svg+xml">
-		<img src="<%= order_path(@order) + '.svg' %>"/>
-	</object>
-	-->
+<div class="frame presentation_large">
+  <object data="<%= formatted_order_path(@order, "svg") %>" type="image/svg+xml" style="float: right"></object>
 	<p>
-		<%= label :title, "Nom de projet :" %>
+    <label>Nom de projet :</label>
 		<strong><%= @order.title %></strong>
 	</p>
 
 	<p>
-		<%= label :client, "Client / &Eacute;tablissement :" %>
+    <label>Client / &Eacute;tablissement :</label>
 		<strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
 	</p>
 
 	<p>
-		<%= label :establishment_address, "Lieu de livraison :" %>
+    <label>Lieu de livraison :</label>
 		<strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
 	</p>
 
 	<p>
-		<label>Etapes finies / Etapes totales :</label>
+		<label>&Eacute;tapes finies / &Eacute;tapes totales :</label>
 		<strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
 	</p>
 
 	<p>
-		<%= label :commercial_full_name, "Suivi commercial :" %>
+    <label>Suivi commercial :</label>
 		<strong><%= @order.commercial.fullname %></strong>
 	</p>
 
 	<p>
-		<%= label :order_type, "Type de dossier :" %>
+    <label>Type de dossier :</label>
 		<strong><%= @order.order_type.title %></strong>
 	</p>
 
 	<p>
-		<%= label :previsional_delivery, "Date pr&eacute;visionnelle de livraison :" %>
+    <label>Date pr&eacute;visionnelle de livraison :</label>
 		<strong><%= @order.previsional_delivery %></strong>
 	</p>
 	<% if controller.can_edit?(current_user) %>

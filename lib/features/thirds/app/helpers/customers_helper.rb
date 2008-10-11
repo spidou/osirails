@@ -6,7 +6,7 @@ module CustomersHelper
       html = ""
       html += "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
       html += "<ul>"
-      html +=  "<li>#{display_customer_edit_button(customer)} Modifier le client</li>"
+      html +=  "<li>#{link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier") + " Modifier le client", edit_customer_path(customer)) }</li>"
       html += "</ul>"
     end
   end

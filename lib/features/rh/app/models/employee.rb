@@ -24,7 +24,7 @@ class Employee < ActiveRecord::Base
   has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
   
   has_many :numbers, :as => :has_number
-  has_many :premia
+  has_many :premia, :order => "created_at DESC"
   has_many :employees_services
   has_many :services, :through => :employees_services
   has_and_belongs_to_many :jobs
@@ -45,6 +45,7 @@ class Employee < ActiveRecord::Base
     self.last_name.upcase!
   end
   
+  #OPTIMIZE why don't put this method in a named_scope?
   # Method to find active employees
   def self.active_employees
     Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.departure is null', Time.now])
@@ -52,11 +53,11 @@ class Employee < ActiveRecord::Base
   
   # Method to generate the intranet email
   def intranet_email
-    email = self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
+    self.user.username + "@" + ConfigurationManager.admin_society_identity_configuration_domain
   end
   
   # method that generate the username with attribute of the created employee 
-  # it take two args that are:
+  # it take two args which are:
   # obj => class instance (the new employee object, that need to generate a user)
   # val => a string that respect a model like "[Attribut,Option]"
   # - where 'Attribut' is obj attributes like (obj.first_name )
@@ -167,6 +168,7 @@ class Employee < ActiveRecord::Base
       return retour.to_s
   end
   
+  #FIXME this method should not work properly!
   def manager(service_id)
     EmployeesService.find(:all,:conditions => ["service_id=? ,responsable=?", service_id, true])
     manager = Employee.find(tmp.employee_id)
@@ -183,6 +185,7 @@ class Employee < ActiveRecord::Base
     JobContract.create(:start_date => "", :end_date => "", :employee_id => self.id, :employee_state_id => "",:job_contract_type_id => "" )  
   end 
   
+  #OPTIMIZE this method return an array of numbers. why not return objects instead of numbers? and why don't put this method in the Service model???!
   def responsable?(service_id)
     tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
     manager = []
@@ -193,6 +196,7 @@ class Employee < ActiveRecord::Base
     return manager
   end
   
+  #OPTIMIZE what this method is doing here ?!!?
   def format_text(line_length,text)
     t_end = text.size
     line_end = 0

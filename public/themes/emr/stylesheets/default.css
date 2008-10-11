@@ -87,10 +87,12 @@ table td{
 	border:solid 1px rgb(64,68,93);
 }
 
+/*
 table img {
-//	position: relative;
-//	top: 2px;
+  position: relative;
+	top: 2px;
 }
+*/
 
 tr:hover > td{
 	background: #f5c384;
@@ -1270,7 +1272,8 @@ ul.parent>li {
 }
 
 .frame.tabulation>h1 {
-	background:url('/themes/emr/images/background_tabs_h2.jpg') repeat;
+	/* background:url('/themes/emr/images/background_tabs_h2.jpg') repeat; #orange */
+  background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	color:#FFFFFF;
 	text-align:center;
 	margin-bottom:0px;
@@ -1281,7 +1284,8 @@ ul.parent>li {
 
 .frame.tabulation>h2,
 .frame.tabulation>form>h2 {
-	background:#FFBC5E;
+/* ##orange
+  background:#FFBC5E;
 	color:white;
 	text-align:left;
 	margin-bottom:0px;
@@ -1290,6 +1294,16 @@ ul.parent>li {
 	height:24px;
 	line-height:24px;
 	font-size:1.15em;
+*/
+  background: #afc2ea;
+  border:solid 1px #bbb;
+	height:20px;
+	line-height:20px;
+	color: rgb(117,141,189);
+	padding-top:0px;
+	margin-top:-1px;
+	font-size:1.05em;
+  font-weight: bold;
 }
 
 .frame.tabulation>form>h2 {

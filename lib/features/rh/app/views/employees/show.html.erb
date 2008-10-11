@@ -7,7 +7,6 @@
   </ul>
 <% end %>
 
-
 <div class="frame presentation_medium">
   <h2>Fiche d'identité</h2>
   <p>
@@ -64,11 +63,8 @@
   </p>  
   <% end %>
 
-
-
   <h2>Coordonn&eacute;es</h2>
-  
-  
+
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
     <h3>Adresse postale</h3>
       <p>
@@ -89,10 +85,7 @@
         <strong><%=h @address.country_name %></strong>
       </p>
   <% end %>
-  
-        
-      
-      
+
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>    
       <%= emails_h3(@employee) %>
       <p>
@@ -156,7 +149,7 @@
   <% end %>    
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
     <h2>Contrat de travail</h2>
-    <% if @job_contract.employee_state.active==true %>  
+    <% if !@job_contract.employee_state.nil? and @job_contract.employee_state.active %>
       <p>
         <%= label_tag "Type de contrat :"%>
         <strong><%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %></strong>
@@ -174,7 +167,7 @@
         <%= label_tag "Status employ&eacute;e :"%>
         <strong><%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %></strong>
       </p>
-    <% if @job_contract.employee_state.active==true %>   
+    <% if !@job_contract.employee_state.nil? and @job_contract.employee_state.active %>
       <p>
         <%= label_tag "Salaire brut actuel :"%>
         <strong><%=h @job_contract.salary.nil? ? "Aucun" :  @job_contract.salary['salary'].to_s + " €"  %>
@@ -189,26 +182,22 @@
   <% end %>    
   <% if Premium.can_view?(current_user)or @employee.user.id == current_user.id%>
     <h2>Primes</h2>    
-      <%@employee.premia.size > 5 ? min = -5 : min = @employee.premia.size*-1%> 
-      <%@employee.premia[min..@employee.premia.size].each do |premium|%>
+      <% @employee.premia[0...5].each do |p|%>
           <p>
-          <strong><%=h( premium['premium'].to_s + " €")%></strong>
-          <%= premium['date'].strftime("le %d %B %Y ") unless premium['date'].nil? %>
-          <%=h( "(Remarque: '" + premium['remark'] + "')" )%> 
+            <strong><%= p.premium %> &euro;</strong>
+            <%= p.date.strftime("le %d %B %Y") unless p.date.nil? %>
+            <%=h( "(#{p.remark})")%> 
           </p>
-      <%end%>
+      <% end %>
       
       <%= display_premia_view_link( @employee, @premia_controller) %>
       <%= display_premia_add_link( @employee, @premia_controller) %>
-    
-      
   <%end%>
    
   <!-- Display Documents div -->
   <%= display_documents(@employee, @documents) %>  
 </div>
-  
-    
+
 <%=display_employee_back_link(@employee)%>
 
 <%= link_to 'Retour', employees_path %>

@@ -24,7 +24,12 @@ class EstimateController < ApplicationController
 
   def show
     @estimate = Estimate.find(params[:id])
-    send_data render_pdf, :filename => "Devis_#{@estimate.id}}.pdf"
+    pdf = render_pdf
+    if pdf
+      send_data pdf, :filename => "devis_#{@estimate.id}.pdf"
+    else
+      error_access_page(500)
+    end
   end
 
   def create
@@ -56,10 +61,10 @@ class EstimateController < ApplicationController
 
     @estimate = Estimate.find(params[:id])
 
-    params[:delete_product_reference].each do |dpr|
-      next if dpr.blank?
-      dpr_obj = EstimatesProductReference.find(dpr)
-      dpr_obj.destroy if @estimate.estimates_product_references.include?(dpr_obj)
+    params[:delete_product_reference].each do |to_delete|
+      next if to_delete.blank?
+      to_delete_object = EstimatesProductReference.find(to_delete)
+      to_delete_object.destroy if @estimate.estimates_product_references.include?(to_delete_object)
     end unless params[:delete_product_reference].nil?
 
     if params[:product_references].nil?

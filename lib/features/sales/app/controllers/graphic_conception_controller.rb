@@ -99,10 +99,11 @@ class GraphicConceptionController < ApplicationController
         end
       end
       
-      unless params[:press_proofs].nil? # FIXME May params empty?
+      unless params[:press_proofs].nil? or params[:press_proofs].empty?
         @press_proof = PressProof.create(:status => "in_progress")
-        params[:press_proofs].each {|document_id|  @press_proof.documents << Document.find(document_id.split("_")[1])}
-        @step.press_proofs << @press_proof
+        params[:press_proofs].each {|document_id| @press_proof.documents << Document.find(document_id.split("_")[1])}
+        
+        @step.press_proofs << @press_proof if @press_proof
       end
       
       @step.remarks << @remark unless @remark.nil?

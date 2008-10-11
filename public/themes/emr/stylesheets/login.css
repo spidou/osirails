@@ -176,7 +176,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\::::::::ERROR:::::::/!\/!\/!\/!\/!\*/
 .flash_error {
 	border: solid 1px #cacaca;
-	background:#ddd url("../themes/emr/images/cross_16x16.png") no-repeat;
+	background:#ddd url("/images/cross_16x16.png") no-repeat;
 	color: red;
 	padding: 10px 10px 10px 5px;
 }
@@ -184,7 +184,7 @@ a { /*Pour le msg d'erreur*/
 /*/!\/!\/!\/!\/!\:::::::SIGNAL:::::::/!\/!\/!\/!\/!\*/
 .flash_notice {
 	border: solid 1px #cacaca;
-	background:#ddd url("../themes/emr/images/tick_16x16.png") no-repeat;
+	background:#ddd url("/images/tick_16x16.png") no-repeat;
 	color: green;
 	padding: 10px 10px 10px 5px;
 }
@@ -234,7 +234,7 @@ a { /*Pour le msg d'erreur*/
 .errorExplanation ul li {
 	position:relative;
 	bottom:15px;
-	background: url("../themes/emr/images/warning_14x14.png") no-repeat 0px 0;
+	background: url("/images/warning_14x14.png") no-repeat 0px 0;
 	list-style-type:none;
 	width:300px;
 	margin-left:30px;
@@ -245,7 +245,7 @@ a { /*Pour le msg d'erreur*/
 /**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
 button.input-button { 																	/**/
-	background: transparent url("../themes/emr/images/button_default_generic_left_side.png") no-repeat top left;	/**/
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat top left;	/**/
 	font-family: arial, verdana, sans-serif;											/**/
 	font-size:85%;																		/**/
 	height: 25px;																		/**/
@@ -262,7 +262,7 @@ button.input-button { 																	/**/
 }																						/**/
 																						/**/
 button.input-button span { 																/**/
-	background: transparent url("../themes/emr/images/button_default_generic_right_side.png") no-repeat top right;	/**/
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat top right;	/**/
 	display: block;																		/**/
 	padding: 2px 12px 6px 0;                                                            /**/
 	margin-top:-2px;                                                                    /**/
@@ -271,11 +271,11 @@ button.input-button span { 																/**/
 }																					    /**/
 																					    /**/
 button.input-button:hover { 												           	 /**/
-	background: transparent url("../themes/emr/images/button_default_generic_left_side.png") no-repeat 0 -26px; 	/**/
+	background: transparent url("/themes/emr/images/button_default_generic_left_side.png") no-repeat 0 -26px; 	/**/
 }																					    /**/
 																					   	/**/
 button.input-button:hover span {													   	/**/
-	background: transparent url("../themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
+	background: transparent url("/themes/emr/images/button_default_generic_right_side.png") no-repeat 100% -26px;  	/**/
 	color:black;                                                                       	/**/
 }																						/**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/

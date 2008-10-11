@@ -21,36 +21,13 @@ module ApplicationHelper
     end
   end
   
-  def current_menu
-    step = controller.current_order_step if controller.respond_to?("current_order_step")
-    menu = step || controller.controller_name
-    Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
-  end
-  
-  def url_for_menu(menu)
-    # OPTIMIZE optimize this IF block code
-    if menu.name
-      path = menu.name + "_path"
-      if self.respond_to?(path)
-        self.send(path)
-      else
-        url_for(:controller => menu.name)
-      end
-    else
-      unless menu.content.nil?
-        url_for(:controller => "contents", :action => "show", :id => menu.content.id)
-      else
-        ""
-      end
-    end
-  end
-  
   def display_main_menu
     html = ""
     menu = current_menu
     Menu.mains.activated.each do |m|
       selected = (menu == m or menu.ancestors.include?(m) ? "class=\"selected\"" : "")
-      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n"
+      html << "<li #{selected} title=\"#{m.description}\" class=\"disabled\">#{link_to(m.title, "#")}</li>\n" if m.can_list?(current_user) and !m.can_view?(current_user)
+      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n" if m.can_list?(current_user) and m.can_view?(current_user)
     end
     html
   end
@@ -62,7 +39,8 @@ module ApplicationHelper
     main_menu.children.activated.each do |m|
       first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
-      html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m))
+      html << link_to("<span title=\"#{m.description}\" #{selected} #{first} class=\"disabled\">#{m.title}</span>", "#") if m.can_list?(current_user) and !m.can_view?(current_user)
+      html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m)) if m.can_list?(current_user) and m.can_view?(current_user)
     end
     html.reverse.to_s
   end
@@ -72,7 +50,8 @@ module ApplicationHelper
     menu = current_menu
     menu.self_and_siblings.activated.each do |m|
       selected = ( m == menu ? "class=\"selected\"" : "" )
-      html << "<li #{selected} title=\"#{m.description}\">" + link_to(m.title, url_for_menu(m)) + "</li>"
+      html << "<li #{selected} title=\"#{m.description}\" class=\"disabled\">#{link_to(m.title, "#")}</li>" if m.can_list?(current_user) and !m.can_view?(current_user)
+      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>" if m.can_list?(current_user) and m.can_view?(current_user)
     end
     html << "</ul></div>"
   end
@@ -177,4 +156,30 @@ module ApplicationHelper
     html+= link_to( "Recherche avancée",{ :controller => 'search', :method => 'put', :choosen_model =>controller},{:class => 'help'})
     html+="</p>"
   end
+  
+  private
+    def url_for_menu(menu)
+      # OPTIMIZE optimize this IF block code
+      if menu.name
+        path = menu.name + "_path"
+        if self.respond_to?(path)
+          self.send(path)
+        else
+          url_for(:controller => menu.name)
+        end
+      else
+        unless menu.content.nil?
+          url_for(:controller => "contents", :action => "show", :id => menu.content.id)
+        else
+          ""
+        end
+      end
+    end
+    
+    def current_menu
+      #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
+      step = controller.current_order_step if controller.respond_to?("current_order_step")
+      menu = step || controller.controller_name
+      Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
+    end
 end
