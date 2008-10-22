@@ -43,5 +43,3 @@ Ulrich & Benjamin   edit(order)                                       Raise impo
 
 Benjamin(IMPORTANT) HTMLDOC                                           Fige le processus le temps de la génération du PDF du devis
 Benjamin						config.yml(sales)																	Ajouter les dépendances entre steps dans le config.yml du feature sales
-
-ceci est un juste un test des droits de commits sur rubyforge
