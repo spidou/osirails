@@ -6,7 +6,7 @@ development:
   timeout: 5000
   username: root
   password: root
-  socket: /Application/MAMP/tmp/mysql/mysql.sock
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock
   # socket: /var/run/mysqld/mysqld.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -18,7 +18,7 @@ test:
   timeout: 5000
   username: root
   password: root
-  socket: /Application/MAMP/tmp/mysql/mysql.sock
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock
   # socket: /var/run/mysqld/mysqld.sock
 
 production:
@@ -27,5 +27,5 @@ production:
   timeout: 5000
   username: root
   password: root
-  socket: /Application/MAMP/tmp/mysql/mysql.sock
+  socket: /Applications/MAMP/tmp/mysql/mysql.sock
   # socket: /var/run/mysqld/mysqld.sock
