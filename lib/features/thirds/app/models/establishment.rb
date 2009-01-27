@@ -29,6 +29,10 @@ class Establishment  < ActiveRecord::Base
   
   ## Return full address's establishment
   def full_address
-    [self.address.address1,(self.address.address2 unless self.address.address2.blank?), self.address.zip_code, self.address.city_name, self.address.country_name].join(" ")
+    address.formatted
+  end
+  
+  def name_and_full_address
+    "#{self.name} (#{self.full_address})"
   end
 end

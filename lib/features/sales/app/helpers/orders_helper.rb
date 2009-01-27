@@ -1,13 +1,24 @@
 module OrdersHelper
+  
   def order_header
-    html = render :partial => 'orders/order_header'
+    html = generate_order_order_partial
     html += generate_order_tabs
-    html += render :partial => 'orders/secondary_menu'
+    html += generate_secondary_menu_partial
     html
   end
-    
-  def order_form
-    render :partial => 'orders/form'
+  
+  def generate_secondary_menu_partial
+    render :partial => 'orders/secondary_menu'
+  end
+  
+  def generate_order_order_partial
+    render :partial => 'orders/order_header'
+  end
+  
+  def display_customer_overview
+    if @order.new_record?
+      render :partial => 'orders/customer_overview'
+    end
   end
   
   def step_ring_class(status)
@@ -70,14 +81,6 @@ module OrdersHelper
   	html += "	</div>"
   	html += "</div>"
   	html
-  end
-  
-  def order_type_for_select
-    hash = {}
-    OrderType.find(:all).each do |ot|
-      hash[ot.title] = ot.id
-    end
-    hash
   end
   
   def generate_order_tabs

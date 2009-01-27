@@ -22,7 +22,7 @@ menus:
         title: Historiques
         description: Historiques des actions effectués sur le dossier de commmande
   prospectives:
-    title: Prospect
+    title: Prospects
     children:
       commercial:
         title: Etude commerciale

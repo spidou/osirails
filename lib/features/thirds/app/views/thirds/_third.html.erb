@@ -18,15 +18,12 @@
 
   <p>
     <%= third.label :siret_number, "Num&eacute;ro SIRET :" %>
-    <%= third.text_field(:siret_number, "maxlength" => 14) %>
+    <%= third.text_field(:siret_number, "maxlength" => 14) %> (14 chiffres)
   </p>
   
   <p>
-    <%= third.label :activity_sector, "Secteur d'activit&eacute; :" %>
-    <% params["#{third_type}"].nil? ? activity_sector_value = activity_sector_name : activity_sector_value = params["#{third_type}"][:activity_sector][:name]%>
-    <%= my_text_field_with_auto_complete(:activity_sector, :name, {:name => "#{third_type}", :controller => "activity_sectors", :method => "GET", :skip_style => false}, {:methods => "GET", :skip_style => false, :select => 'activity_sector_name',
-       :with => "'value='+document.getElementById('#{third_type}_activity_sector_name').value"}) %>
-   <%=  javascript_tag "document.getElementById('#{third_type}_activity_sector_name').value = '#{activity_sector_value}'" %>
+    <%= third.label :activity_sector_id, "Secteur d'activit&eacute; :" %>
+    <%= third.collection_select(:activity_sector_id, @activity_sectors, :id, :name) %>
   </p>
 
   <p>

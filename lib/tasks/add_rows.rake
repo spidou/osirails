@@ -102,13 +102,13 @@ namespace :osirails do
       Service.create :name => "Atelier Fraisage", :service_parent_id => prod.id 
       
       # default contact types
-      ContactType.create :name => "Normal", :owner => "Customer"
-      ContactType.create :name => "Contact de facturation", :owner => "Customer"
-      ContactType.create :name => "Contact de livraison", :owner => "Customer"
-      ContactType.create :name => "Normal", :owner => "Establishment"
-      ContactType.create :name => "Contact de livraison", :owner => "Establishment"    
-      ContactType.create :name => "Acceuill", :owner => "Establishment"
-      ContactType.create :name => "Normal", :owner => "Supplier"
+      contact_customer1 = ContactType.create :name => "Normal", :owner => "Customer"
+      contact_customer2 = ContactType.create :name => "Contact de facturation", :owner => "Customer"
+      contact_customer3 = ContactType.create :name => "Contact de livraison", :owner => "Customer"
+      contact_establishment1 = ContactType.create :name => "Normal", :owner => "Establishment"
+      contact_establishment2 = ContactType.create :name => "Contact de livraison", :owner => "Establishment"    
+      contact_establishment3 = ContactType.create :name => "Acceuill", :owner => "Establishment"
+      contact_supplier1 = ContactType.create :name => "Normal", :owner => "Supplier"
       
       # default users and roles
       user_admin = User.create :username => "admin" ,:password => "admin", :enabled => 1
@@ -215,6 +215,20 @@ namespace :osirails do
       establishment2.save
       establishment3.save
       
+      # default contacts
+      contact1 = Contact.create :first_name => "Jean-Jacques", :last_name => "Dupont", :contact_type_id => contact_customer1.id, :email => "jean-jacques@dupont.fr", :job => "Commercial"
+      contact2 = Contact.create :first_name => "Pierre-Paul", :last_name => "Dupond", :contact_type_id => contact_establishment1.id, :email => "pierre-paul@dupond.fr", :job => "Commercial"
+      
+      # assign contact to client and establishment
+      customer.contacts << contact1
+      establishment1.contacts << contact2
+      
+      # create numbers and assign numbers to contacts
+      number00 = Number.create :number => "692246801", :indicative_id => indicative.id, :number_type_id => mobile.id
+      number01 = Number.create :number => "262357913", :indicative_id => indicative.id, :number_type_id => fixe.id
+      contact1.numbers << number00
+      contact2.numbers << number01
+      
       # default commodity categories
       metal = CommodityCategory.create :name => "Metal"
       toles = CommodityCategory.create :name => "Tôles", :commodity_category_id => metal.id, :unit_measure_id => metre_carre.id
@@ -235,7 +249,7 @@ namespace :osirails do
       sous_famille11 = ProductReferenceCategory.create :name => "Sous famille 1.1", :product_reference_category_id => famille1.id
       sous_famille12 = ProductReferenceCategory.create :name => "Sous famille 1.2", :product_reference_category_id => famille1.id
       sous_famille13 = ProductReferenceCategory.create :name => "Sous famille 1.3", :product_reference_category_id => famille1.id
-      sous_famille14 = ProductReferenceCategory.create :name => "Sous famille 2.4", :product_reference_category_id => famille2.id
+      ProductReferenceCategory.create :name => "Sous famille 2.4", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.1", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.2", :product_reference_category_id => famille2.id
       ProductReferenceCategory.create :name => "Sous famille 2.3", :product_reference_category_id => famille2.id
@@ -378,9 +392,6 @@ namespace :osirails do
       m10.services << Service.first
       m11.services << Service.first
       m12.services << Service.first
-      
-      # default contacts
-      Contact.create :first_name => "Contact_first_name", :last_name => "Contact_last_name", :contact_type_id => "1", :email => "contact@emr.com", :job => "stagiaire"
       
       # Default order_type
       OrderType.create :title => "Normal"

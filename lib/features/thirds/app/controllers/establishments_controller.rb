@@ -3,6 +3,16 @@ class EstablishmentsController < ApplicationController
   helper :contacts
   #  protect_from_forgery :except => [:auto_complete_for_city_name]
   
+  # GET /establishments
+  # GET /customer/1/establishments
+  def index
+    if params[:customer_id]
+      @establishments = Customer.find(params[:customer_id]).activated_establishments
+    else
+      error_access_page(400)
+    end
+  end
+  
   def show
     if Establishment.can_view?(current_user)
       @contact_controller = Menu.find_by_name("contacts")    

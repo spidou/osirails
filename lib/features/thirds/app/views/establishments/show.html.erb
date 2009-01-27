@@ -39,7 +39,7 @@
   </p>
 
   <!-- Show Establishment Contacts -->
-  <%= display_contacts(@establishment, @contacts)%>
+  <%= display_contacts([@establishment.customer, @establishment], @contacts)%>
 
   <% if controller.can_edit?(current_user) and Establishment.can_edit?(current_user)%>
     <%= link_to 'Modifier', edit_customer_establishment_path(@customer, @establishment) %>

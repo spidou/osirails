@@ -846,10 +846,10 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors input,
 .fieldWithErrors select {
-	border:solid 2px #B0383D !important;
+	/*border:solid 2px #B0383D !important;
 	color:#B0383D;
-	margin-left: 10px;
-	vertical-align:top;
+	vertical-align:top;*/
+  margin-left: 10px;
 }
 
 div.fieldWithErrors {
@@ -1032,7 +1032,7 @@ table.no-style tr:hover > td > a {
 width: 50px ! important;
 }
 
-/* SUBMITE BUTTON */
+/* SUBMIT BUTTON */
 .editor_ok_button {
   display: none;
 }
@@ -1088,7 +1088,6 @@ width: 50px ! important;
 	margin:0px 20px 0px -15px ;
 }
 
-.frame form p input:focus,
 .frame form p textarea:focus {
 	background: #f5c384;
 }
@@ -1139,7 +1138,7 @@ width: 50px ! important;
 
 .scroll_checkboxes { 
 	margin:15px 15px 15px 20px;
-	width:200px;
+	//width:200px;
 	height: 100px;
 	padding: 5px;
 	overflow: auto;
@@ -1154,6 +1153,11 @@ width: 50px ! important;
 	height:20px;
 }
 
+.scroll_checkboxes p:hover {
+	background-color: #f5c384;
+}
+
+/*
 .scroll_checkboxes ul {
 	width:100%;
 	padding:0;
@@ -1164,6 +1168,7 @@ width: 50px ! important;
 	text-indent:0;
 	height:20px;
 }
+*/
 
 fieldset.no-style {
 	background: none;
@@ -1180,6 +1185,36 @@ fieldset.no-style legend {
 	font-size: inherit;
 	color: inherit;
 	background:none;
+}
+
+/* /// auto-complete input text /// */
+div.auto_complete {
+  width: 350px;
+  background: #fff;
+}
+
+div.auto_complete ul {
+  border:1px solid #888;
+  margin:0;
+  padding:0;
+  width:100%;
+  list-style-type:none;
+}
+
+div.auto_complete ul li {
+  margin:0;
+  padding:3px;
+}
+
+div.auto_complete ul li.selected {
+  background-color: #ffb;
+}
+
+div.auto_complete ul strong.highlight {
+  margin:0;
+  padding:0;
+  background-color: inherit;
+  font-weight: bold;
 }
 
 /*/////////////////LIST:HIERARCHICAL/////////////////*/

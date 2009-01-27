@@ -1,23 +1,36 @@
 <h1>Nouveau dossier</h1>
 
-<div class="frame">
 <% unless @customer %>
-<p>
-	Vous êtes sur la page blabla ...
-</p>
-<% form_tag new_order_path do %>
-<p>
-	<label for="client" >Client existant :</label>
- 	<%= my_text_field_with_auto_complete(:third, :name, {:name => 'customer', :controller => 'customers'}, {:select => 'contact_first_name', :after_update_element => "function() { document.getElementById('customer_third_name').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[3].innerHTML; document.getElementById('customer_id').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[1].innerHTML;}"}) %>
-</p>
-<%= submit_tag "Envoyer" %>
-<% end %>
-<p>
-	<label>Nouveau client</label>
-	<%= hidden_field_tag 'customer_id' %>
-	<input type="button" value="Nouveau client">
-</p>
-<% else %>
-<%= order_form %>
-<% end %>
+
+<div class="frame">
+  <p>
+    Vous &ecirc;tes sur la page de cr&eacute;ation de dossier.<br/>
+    Pour cr&eacute;er un nouveau dossier, vous devez choisir le client qui sera associ&eacute; &agrave; cette commande.
+  </p>
+  <p>Pour cette commande, avez-vous affaire à un client connu OU à un nouveau client ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
+
+  <% form_tag new_order_path do %>
+  <h2>1. Client existant</h2>
+  <p>
+    <label for="customer_third_name">Rechercher le client dans la base :</label>
+    <%= hidden_field_tag('customer_id') %>
+    <%= my_text_field_with_auto_complete(:third, :name, {:name => 'customer', :controller => 'customers'}, {
+        :select => 'customer_third_name',
+        :skip_style => true,
+        :after_update_element => "function() { document.getElementById('customer_third_name').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[3].innerHTML; document.getElementById('customer_id').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[1].innerHTML;}"
+      } ) %>
+  </p>
+  <% end %>
+
+  <h2>2. Nouveau client</h2>
+  <% form_tag new_customer_path do %>
+  <p>
+    <%= hidden_field_tag :return_uri, new_order_path %>
+    <%= submit_tag "Créer un nouveau client" %>
+  </p>
+  <% end %>
 </div>
+
+<% else %>
+  <%= render :partial => 'orders/form' %>
+<% end %>

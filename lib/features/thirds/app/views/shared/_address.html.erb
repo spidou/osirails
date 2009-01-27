@@ -1,0 +1,7 @@
+<% fields_for "customer[establishment_attributes[][address_attributes]]", address do |form| %>
+    <%= form.text_field :address1 %>
+    <%= form.text_field :address2 %>
+    <%= form.text_field :country_name %>
+    <%= form.text_field :city_name %>
+    <%= form.text_field :zip_code %>
+<% end  %>

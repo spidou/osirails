@@ -34,6 +34,7 @@ class CustomersController < ApplicationController
   def new
     if Customer.can_add?(current_user)
       @customer = Customer.new
+      @activity_sectors = ActivitySector.activates
     else
       error_access_page(403)
     end
@@ -42,28 +43,31 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.xml
   def create
+    @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
+    
     if Customer.can_add?(current_user)
       
-      activity_sector_name = params[:customer].delete("activity_sector")
-      activity_sector_name[:name].capitalize!
+#      activity_sector_name = params[:customer].delete("activity_sector")
+#      activity_sector_name[:name].capitalize!
     
       @customer = Customer.new(params[:customer])
     
-      if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
-        @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
-        @customer.activity_sector = @activity_sector
-      elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
-        @customer.activity_sector = @activity_sector  
-      end
+#      if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
+#        @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
+#        @customer.activity_sector = @activity_sector
+#      elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+#        @customer.activity_sector = @activity_sector  
+#      end
     
       if @customer.save
         ## In case of activity_sector wasn't present in database
-        @activity_sector.save
+#        @activity_sector.save
         flash[:notice] = "Client ajout&eacute; avec succes"
-        redirect_to :action => 'index'
+        @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to( :action => "index" )
       else
-        flash[:error] = 'Une erreur est survenu lors de la création du fournisseur'
-        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
+        flash[:error] = 'Une erreur est survenu lors de la création du client'
+#        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
+        @activity_sectors = ActivitySector.activates
         render :action => 'new'
       end
     else
@@ -75,15 +79,16 @@ class CustomersController < ApplicationController
   def edit
     ## Objects use to test permission
     @contact_controller = Menu.find_by_name('contacts')
-    @establishment_controller =Menu.find_by_name('establishments')
-    @document_controller =Menu.find_by_name('documents')
+    @establishment_controller = Menu.find_by_name('establishments')
+    @document_controller = Menu.find_by_name('documents')
       
     if Customer.can_edit?(current_user)
       @customer = Customer.find(params[:id])
       @establishments = @customer.activated_establishments
       @contacts = @customer.contacts
-      @documents =@customer.documents
+      @documents = @customer.documents
       @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?
+      @activity_sectors = ActivitySector.activates
       
       respond_to do |format|
 #        params[:page] ||= 1
@@ -97,15 +102,15 @@ class CustomersController < ApplicationController
     end    
   end
 
-  # PUT /customerss/1
-  # PUT /customerss/1.xml
+  # PUT /customers/1
+  # PUT /customers/1.xml
   def update
     if Customer.can_edit?(current_user)
       params[:page] ||= 1
       ## Objects use to test permission
       @contact_controller = Menu.find_by_name('contacts')
-      @establishment_controller =Menu.find_by_name('establishments')
-      @document_controller =Menu.find_by_name('documents')
+      @establishment_controller = Menu.find_by_name('establishments')
+      @document_controller = Menu.find_by_name('documents')
       
       # @error is use to know if all form are valids
       @error = false
@@ -284,13 +289,14 @@ class CustomersController < ApplicationController
     
     Customer.find(:all).each do |customer|
       if @customers.size < 10
-        if customer.name.downcase.grep(/#{value.downcase}/).length > 0
-          @customers << customer
-        end
+#        if customer.name.downcase.grep(/#{value.downcase}/).length > 0
+#          @customers << customer
+#        end
+        @customers << customer unless customer.name.downcase.grep(/#{value.downcase}/).empty?
       end
     end
     @customers = @customers.uniq
-    render :partial => 'thirds/third_info'    
+    render :partial => 'thirds/third_info', :locals => { :search_pattern => value }
   end
 
 end

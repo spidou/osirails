@@ -5,12 +5,14 @@ class Order < ActiveRecord::Base
   belongs_to :customer
   belongs_to :establishment
   belongs_to :commercial, :class_name => 'Employee'
+  
   has_one :step_commercial
   has_one :step_invoicing
   has_many :order_logs
+  has_many :contacts
 
   # Validations
-  validates_presence_of [:order_type, :establishment, :customer, :commercial]
+  validates_presence_of [:customer, :title, :order_type, :commercial, :establishment ]
   
   
   # Create all orders_steps after create

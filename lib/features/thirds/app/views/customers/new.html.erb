@@ -2,10 +2,10 @@
 
 <div class="frame presentation_medium">
 <% form_for(@customer) do |customer| %>
-    
-    <%= customer.error_messages %>
-    <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer, :activity_sector_name => nil} %> 
-    <%= customer.submit  'Créer' %> 
+  <%= customer.error_messages %>
+  <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer, :activity_sector_name => nil} %> 
+  <%= hidden_field_tag( :return_uri, params[:return_uri] ) if params[:return_uri] %> 
+  <%= customer.submit  'Créer' %> 
 <% end %>
 <%= link_to "Retour a l'accueil", :action => 'index' %>
 </div>

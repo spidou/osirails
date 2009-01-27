@@ -1,0 +1,14 @@
+<tr>
+<% fields_for "customer[establishment_attributes][]", establishment do |form| %>
+  <td>
+    <%= form.text_field :name %>
+  </td>
+  <td>
+    <%= form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name) %>
+  </td>
+  <td>
+    <%= render :partial => 'shared/address', :object => establishment.address %>
+  </td>
+  <td></td>
+<% end  %>
+</tr>

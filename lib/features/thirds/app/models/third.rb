@@ -1,5 +1,6 @@
 class Third < ActiveRecord::Base
   
+  #OPTIMIZE require or include 'permissible', or both ???
   require 'permissible'
   include Permissible
 

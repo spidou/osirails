@@ -5,6 +5,7 @@ ActionController::Routing::Routes.add_routes do |map|
       establishment.resources :contacts
     end
   end
+  
   map.resources :suppliers do |supplier|
     supplier.resources :contacts
   end

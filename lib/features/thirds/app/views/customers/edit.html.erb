@@ -1,14 +1,25 @@
 <h1>Modifier un client </h1>
 <div class="frame presentation_medium">
 
-<% form_for(@customer,  :html => { :multipart => true}) do |customer| %>
+<% form_for(@customer,  :html => { :multipart => true }) do |customer| %>
     
   <%= customer.error_messages %>
   <!-- Display customer infos -->
   <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer, :activity_sector_name => @activity_sector} %>
 
   <!-- Display Establishments div -->
-  <%= display_establishment_and_add_establishment_button(@customer, @establishments, params, @new_establisment_number, @error)%>
+  <%# display_establishment_and_add_establishment_button(@customer, @establishments, params, @new_establisment_number, @error)%>
+  <%#  display_establishments_list %>
+  <h2>&Eacute;tablissements</h2>
+  <table>
+    <tr>
+      <th>Nom</th>
+      <th>Type</th>
+      <th>Adresse</th>
+      <th>Actions</th>
+    </tr>
+    <%= render :partial => 'shared/establishment', :collection => @customer.establishments %>
+  </table>
  
   <!-- Display Contacts div -->
   <%= display_contacts_and_add_contact_button(@customer, @contacts, params, @new_contact_number, @error)%>

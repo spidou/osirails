@@ -4,28 +4,37 @@ class OrdersController < ApplicationController
   
   method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
   
-  def auto_complete_for_employee_fullname
-    all_employees = Employee.find(:all)
-    fullname = params[:employee][:fullname].downcase
-    @employees = []
-    all_employees.each do |e|
-      @employees << e if !e.first_name.downcase.grep(/#{fullname}/).empty? || !e.last_name.downcase.grep(/#{fullname}/).empty?
-    end
-    render :partial => 'auto_complete_for_employee_fullname'
-  end
+#  def auto_complete_for_employee_fullname
+#    all_employees = Employee.find(:all)
+#    fullname = params[:employee][:fullname].downcase
+#    @employees = []
+#    all_employees.each do |e|
+#      @employees << e if !e.first_name.downcase.grep(/#{fullname}/).empty? || !e.last_name.downcase.grep(/#{fullname}/).empty?
+#    end
+#    render :partial => 'auto_complete_for_employee_fullname'
+#  end
   
   def index
     
   end
   
   def new
+    @current_order_step = "commercial"
     @order = Order.new
-    if params[:customer_id]
-      @customer = Customer.find(params[:customer_id])
-    elsif params[:customer]
-      @customer = Customer.find_by_name(params[:customer][:third][:name])
+    #raise params.inspect
+    
+    if params[:customer_id] or params[:new_customer_id] # this is the second step of the order creation
+      customer_id = params[:customer_id] || params[:new_customer_id]
+      
+      begin
+        @customer = Customer.find(customer_id)
+        @commercials = Employee.find(:all)
+        @order_types = OrderType.find(:all)
+        @contacts = @customer.contacts_all
+      rescue
+        flash.now[:error] = "Le client n'a pas été trouvé. Veuillez réessayer."
+      end
     end
-    flash[:error] = "Client non trouvé" if (@customer.nil? && params[:customer])
   end
 
   def show
@@ -36,17 +45,29 @@ class OrdersController < ApplicationController
   end
   
   def edit
-    
+    @commercials = Employee.find(:all)
+    @order_types = OrderType.find(:all)
+    @contacts = @customer.contacts_all
   end
   
   def create
-    @order = Order.new(@parameters)
+    #raise params[:order].inspect
+    order_type = OrderType.find(params[:order].delete(:order_type))
+    
+    @order = Order.new(params[:order])
+    @order.order_type = 
     if @order.save
       flash[:notice] = "Dossier crée avec succés"
       redirect_to order_path(@order)
-    else
-      flash[:error] = "Erreur lors de la création du dossier"
-      redirect_to prospectives_path
+    else # error
+      ## variables for the form
+      @customer = @order.customer
+      @commercials = Employee.find(:all)
+      @order_types = OrderType.find(:all)
+      @contacts = @customer.contacts_all
+      
+      # render the new action
+      render :action => "new"
     end
   end
   

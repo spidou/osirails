@@ -4,12 +4,15 @@ class ContactsController < ApplicationController
   
   protect_from_forgery :except => [:auto_complete_for_contact_first_name]  
   
-  def show 
-#    raise CGI.unescape(params[:owner_type]).inspect
+  def show
     if Contact.can_view?(current_user)
-      @owner_type  = params[:owner_type]
-      @owner = @owner_type.split("/").last.constantize.find(params["#{@owner_type.split("/").last.downcase}_id"])
-      @contact = Contact.find(params[:id])
+      if params[:owner_type]
+        @owner_type = params[:owner_type]
+        @owner = @owner_type.split("/").last.constantize.find(params["#{@owner_type.split("/").last.downcase}_id"])
+        @contact = Contact.find(params[:id])
+      else
+        error_access_page(404)
+      end
     else
       error_access_page(403)
     end
@@ -17,11 +20,14 @@ class ContactsController < ApplicationController
   
   def edit
     if Contact.can_edit?(current_user)
-      @contact = Contact.find(params[:id])
-      @owner_type  ||= params[:owner_type]
-      @numbers = @contact.numbers
-      
-      @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+      if params[:owner_type]
+        @contact = Contact.find(params[:id])
+        @owner_type ||= params[:owner_type]
+        @numbers = @contact.numbers
+        @owner = params[:owner_type].constantize.find(params["#{params[:owner_type].downcase}_id"])
+      else
+        error_access_page(404)
+      end
     else
       error_access_page(403)
     end
@@ -103,7 +109,7 @@ class ContactsController < ApplicationController
     if Contact.can_delete?(current_user)
       @contact = Contact.find(params[:id])
     
-      raise params.keys.inspect
+      raise @contact.contacts_owners.inspect
       @owner_type = params.keys.last
       raise @owner_type
       @owner_id = params["#{@owner_type}_id"]
