@@ -1,7 +1,24 @@
-<% fields_for "customer[establishment_attributes[][address_attributes]]", address do |form| %>
-    <%= form.text_field :address1 %>
-    <%= form.text_field :address2 %>
-    <%= form.text_field :country_name %>
-    <%= form.text_field :city_name %>
-    <%= form.text_field :zip_code %>
+<% #fields_for "customer[establishment_attributes][][address_attributes]", address do |form| 
+%>
+<% fields_for "customer[address_attributes][]", address do |form| %>
+  <p>
+    <%= form.label :address1, "Adresse :", :index => nil %>
+    <%= form.text_field :address1, :index => nil %> - <%= form.text_field :address2, :index => nil %>
+  </p>
+  <p>
+    <%= form.label :country_name, "Pays :", :index => nil %>
+    <%= form.text_field :country_name, :index => nil %>
+  </p>
+  <p>
+    <%= form.label :city_name, "Ville :", :index => nil %>
+    <%= form.text_field :city_name, :index => nil %>
+  </p>
+  <p>
+    <%= form.label :zip_code, "Code postal :", :index => nil %>
+    <%= form.text_field :zip_code, :index => nil %>
+  </p>
+  <% #OPTIMIZE the herein hidden fields would not be exists if the fields_for command accept argument like 'customer[establishment_attributes][][address_attributes]' %>
+  <%= form.hidden_field :id, :index => nil %>
+  <%= form.hidden_field :has_address_id, :index => nil %>
+  <%= form.hidden_field :has_address_type, :index => nil %>
 <% end  %>

@@ -1123,7 +1123,7 @@ width: 50px ! important;
 .frame form p textarea {
 	margin-bottom:10px;
 	vertical-align:top;
-	border: #CCC 1px solid;
+	/* border: #CCC 1px solid; */
 }
 
 .frame form p select {

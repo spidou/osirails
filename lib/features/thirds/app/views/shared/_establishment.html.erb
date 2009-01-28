@@ -1,14 +1,21 @@
-<tr>
+<div class="establishment_general_infos">
 <% fields_for "customer[establishment_attributes][]", establishment do |form| %>
-  <td>
-    <%= form.text_field :name %>
-  </td>
-  <td>
-    <%= form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name) %>
-  </td>
-  <td>
-    <%= render :partial => 'shared/address', :object => establishment.address %>
-  </td>
-  <td></td>
+  <p id="establishment_<%= establishment.id  %>">
+    <%= image_tag 'warning_14x14.png' if establishment.new_record? or !establishment.errors.empty? %>
+    
+    <%# "#{establishment.name} (#{establishment.address.country_name}, #{establishment.address.city_name})" %>
+    <%= "#{establishment.name}" %>
+    <%# link_to_remote "Plus d'infos", :update => "this.up('.establishment')" %>
+    
+    <%= link_to_function "Modifier", "mark_for_update(this.up('.establishment_general_infos'))" %>
+    
+    <% if establishment.new_record? %>
+      <%= link_to_function "Supprimer", "this.up('.establishment_general_infos').remove()" %>
+    <% else %>
+      <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_for_destroy('establishment_form_#{establishment.id}')" %>
+    <% end %>
+
+    <%= render :partial => 'shared/establishment_form', :object => establishment %>
+  </p>
 <% end  %>
-</tr>
+</div>

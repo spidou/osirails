@@ -17,9 +17,9 @@ module EstablishmentsHelper
     end
   end
   
-  def get_address_form(owner_address)
-    render :partial => 'addresses/address',  :locals => {:owner_address => owner_address, :cpt => 1}
-  end
+#  def get_address_form(owner_address)
+#    render :partial => 'addresses/address',  :locals => {:owner_address => owner_address, :cpt => 1}
+#  end
   
 #  ## Display all establishments and add button (use in edit)
 #  def display_establishment_and_add_establishment_button(customer, establishments, params, new_establisment_number, error)
@@ -40,7 +40,7 @@ module EstablishmentsHelper
 #    
 #    return html
 #  end
-#  
+  
 #  ## Display establishments lists
 #  def display_establishments(customer, establishments)
 #    establisment_controller = Menu.find_by_name('establishments') 
@@ -66,16 +66,23 @@ module EstablishmentsHelper
 #    
 #    return html
 #  end
-  def display_establishments_list
+
+  def display_establishments_list(establishments)
     html = "<h2>&Eacute;tablissements</h2>"
     html << "<div id=\"establishments\">"
-    html << render(:partial => 'establishments/establishments_list')
+    html << render(:partial => 'shared/establishment', :collection => establishments)
     html << "</div>"
   end
   
-  ## Display add establishment button
-  def display_add_establishment_button(params, new_establishment_number, error)
-    render :partial => 'establishments/new_establishment', :locals => {:params => params, :new_establishment_number => new_establishment_number, :error => error}
+  def display_establishment_add_button
+    link_to_function "Ajouter un établissement" do |page|
+      page.insert_html :bottom, :establishments, :partial => 'shared/establishment_form', :object => Establishment.new
+    end
   end
+  
+#  ## Display add establishment button
+#  def display_add_establishment_button(params, new_establishment_number, error)
+#    render :partial => 'establishments/new_establishment', :locals => {:params => params, :new_establishment_number => new_establishment_number, :error => error}
+#  end
   
 end

@@ -23,7 +23,7 @@
   
   <p>
     <%= third.label :activity_sector_id, "Secteur d'activit&eacute; :" %>
-    <%= third.collection_select(:activity_sector_id, @activity_sectors, :id, :name) %>
+    <%= third.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name) %>
   </p>
 
   <p>
@@ -78,12 +78,12 @@
 
     <p>
       <%= third.label :payment_method_id, "Moyen de paiement pr&eacute;f&eacute;r&eacute; :" %>
-      <%= third.select("payment_method_id", PaymentMethod.find(:all).collect {|a| [ a.name, a.id ] }) %>
+      <%= third.collection_select(:payment_method_id, PaymentMethod.find(:all), :id, :name) %>
     </p>
 
     <p>
       <%= third.label :payment_time_limit_id, "D&eacute;lai de paiement pr&eacute;f&eacute;r&eacute; :" %>
-      <%= third.select("payment_time_limit_id", PaymentTimeLimit.find(:all).collect {|a| [ a.name, a.id ] }) %>
+      <%= third.collection_select(:payment_time_limit_id, PaymentTimeLimit.find(:all), :id, :name) %>
     </p>
 
   <% end %>

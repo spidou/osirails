@@ -3,13 +3,18 @@ class Customer < Third
   belongs_to :payment_time_limit
   has_many :establishments
   
+  ## Validations
   validates_uniqueness_of :name, :siret_number
+  validates_associated :establishments
   
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}
   
   ## Plugins
   acts_as_file
+  
+  ## Callbacks
+  after_update :save_establishments
   
   def activated_establishments
     establishment_array = []
@@ -33,5 +38,44 @@ class Customer < Third
     
     self.contacts + contacts
   end
+  
+  def establishment_attributes=(establishment_attributes)
+    establishment_attributes.each do |attributes|
+      if attributes[:id].blank?
+        establishments.build(attributes)
+      else
+        establishment = establishments.detect { |t| t.id == attributes[:id].to_i }
+        establishment.attributes = attributes
+      end
+    end
+  end
+  
+  def save_establishments
+    establishments.each do |e|
+      if e.should_destroy?
+        e.destroy
+      elsif e.should_update?
+        e.save(false)
+      end
+    end
+  end
+  
+#  def address_attributes=(address_attributes)
+#    # raise address_attributes.inspect
+#    # raise establishments.inspect
+#    address_attributes.each do |attributes|
+#      if attributes[:has_address_id].blank?
+#        establishment = establishments.detect { |t| t.temp_establishment_id == attributes[:temp_establishment_id].to_i}
+#        establishment.address.attributes = attributes
+#      else
+#        establishment = establishments.detect { |t| t.id == attributes[:has_address_id].to_i }
+#        if establishment.address.nil?
+#          establishment.build_address(attributes)
+#        else
+#          establishment.address.attributes = attributes
+#        end
+#      end
+#    end
+#  end
   
 end
