@@ -10,7 +10,7 @@
       <%= form.label :establishment_type_id, "Type :", :index => nil %>
       <%= form.collection_select :establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil %>
     </p>
-    <%= render :partial => "shared/address_form", :object => establishment.address || establishment.build_address %>
+    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address %>
     
     <p>
       <% if establishment.new_record? %>

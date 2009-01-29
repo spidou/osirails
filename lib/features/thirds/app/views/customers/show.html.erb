@@ -3,6 +3,7 @@
 <% end %>
 
 <h1>Informations concernant le client </h1>
+<%= render :partial => @customer %>
 
 <div class="frame presentation_medium">
 
@@ -48,7 +49,7 @@
   <%= display_establishments_list(@customer.activated_establishments) %>
 
   <!-- Display Customer Contacts -->
-  <%= display_contacts(@customer, @contacts)%>
+  <%# display_contacts(@customer, @contacts)%>
     
   <!-- Display Customer Documents -->
   <%# display_documents(@customer, @documents)%>

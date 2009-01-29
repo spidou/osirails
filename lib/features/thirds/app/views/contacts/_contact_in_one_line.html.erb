@@ -6,6 +6,8 @@
     <%= image_tag 'warning_14x14.png' if contact.new_record? or !contact.errors.empty? %>
     
     <%= "#{contact.fullname}" %>
+
+    <%= link_to "Fiche complète", customer_contact_path(@customer, contact) if !is_edit_view? %>
     
     <%= link_to_function "Modifier", "mark_contact_for_update(this.up('.contact_general_infos'))" if is_edit_view? and menu_contacts.can_edit?(current_user) %>
     
@@ -17,7 +19,7 @@
       <% end %>
     <% end %>
 
-    <%= render :partial => 'shared/contact_form', :object => contact || Contact.new, :locals => { :contacts_owner => contacts_owner } %>
+    <%= render :partial => 'contacts/contact_form', :object => contact || Contact.new, :locals => { :contacts_owner => contacts_owner } %>
   </p>
 <% end  %>
 </div>

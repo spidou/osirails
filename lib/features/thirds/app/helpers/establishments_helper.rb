@@ -70,13 +70,13 @@ module EstablishmentsHelper
   def display_establishments_list(establishments)
     html = "<h2>&Eacute;tablissements</h2>"
     html << "<div id=\"establishments\">"
-    html << render(:partial => 'shared/establishment_in_one_line', :collection => establishments)
+    html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments)
     html << "</div>"
   end
   
   def display_establishment_add_button
     link_to_function "Ajouter un établissement" do |page|
-      page.insert_html :bottom, :establishments, :partial => 'shared/establishment_form', :object => Establishment.new
+      page.insert_html :bottom, :establishments, :partial => 'establishments/establishment_form', :object => Establishment.new
     end
   end
   
