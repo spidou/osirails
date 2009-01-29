@@ -14,7 +14,7 @@
   </p>
   <p>
     <%= label :customer, :legal_form, "Forme juridique :" %>
-    <strong><%= LegalForm.find(@customer.legal_form_id).name %></strong>
+    <strong><%= @customer.legal_form.name %></strong>
   </p>
   <p>
     <%= label :customer, :siret_number, "Num&eacute;ro Siret :" %>
@@ -36,23 +36,23 @@
   <h2> Informations bancaires</h2>
   <p>
     <%= label :customer, :payment_method, "Moyen de paiement pr&eacute;f&eacute;r&eacute; :" %>
-    <strong><%= @customer.payment_method.name%></strong>
+    <strong><%= @customer.payment_method.name unless @customer.payment_method.nil? %></strong>
   </p>
   <p>
     <%= label :customer, :payment_timit_limit, "D&eacute;lai de paiement pr&eacute;f&eacute;r&eacute; :" %>
-    <strong><%= @customer.payment_time_limit.name%></strong>
+    <strong><%= @customer.payment_time_limit.name unless @customer.payment_time_limit.nil? %></strong>
   </p>
 
   <!-- Display Customer establishments -->
   <%#  display_establishments(@customer, @establishments)%>
-  <%= display_establishments_list %>
+  <%= display_establishments_list(@customer.activated_establishments) %>
 
   <!-- Display Customer Contacts -->
   <%= display_contacts(@customer, @contacts)%>
     
   <!-- Display Customer Documents -->
-  <%= display_documents(@customer, @documents)%>
+  <%# display_documents(@customer, @documents)%>
   
 </div>
 
-<%= link_to 'Retour', :action => 'index' %>
+<%= link_to 'Retour', customers_path %>

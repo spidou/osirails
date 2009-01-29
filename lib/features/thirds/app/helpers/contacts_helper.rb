@@ -31,7 +31,18 @@ module ContactsHelper
   
   
   ##########################################################################
+  def display_contacts_list(contacts_owner)
+    html = "<h2>Contacts</h2>"
+    html << "<div id=\"contacts\">"
+    html << render(:partial => 'shared/contact_in_one_line', :collection => contacts_owner.contacts, :locals => { :contacts_owner => contacts_owner } )
+    html << "</div>"
+  end
   
+  def display_contact_add_button(contacts_owner)
+    link_to_function "Ajouter un contact" do |page|
+      page.insert_html :bottom, :contacts, :partial => 'shared/contact_form', :object => Contact.new, :locals => { :contacts_owner => contacts_owner }
+    end
+  end
   
   ## Display all contacts and add button (use in edit)
   def display_contacts_and_add_contact_button(owner, contacts, params, new_contact_number, error)

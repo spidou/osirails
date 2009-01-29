@@ -1,6 +1,6 @@
 class CustomersController < ApplicationController
 
-  helper :establishments, :contacts, :documents, :employees
+  helper :establishments, :contacts, :documents #, :employees
   
   # GET /customers
   # GET /customers.xml
@@ -18,13 +18,9 @@ class CustomersController < ApplicationController
     if Customer.can_view?(current_user)
       @customer = Customer.find(params[:id])
       
-      ## Objects use to test permission
-      @contact_controller = Menu.find_by_name('contacts')
-      @establishment_controller =Menu.find_by_name('establishments')
-      
       # needed collections
+      @contacts = @customer.contacts
 #      @establishments = @customer.activated_establishments
-#      @contacts = @customer.contacts
 #      @documents = @customer.documents
     else
       error_access_page(403)
@@ -44,47 +40,70 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.xml
   def create
+    ##############
+    ## this block could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    if params[:customer][:establishment_attributes] and params[:customer][:address_attributes]
+      params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
+        establishment_attributes[:address_attributes] = params[:customer][:address_attributes][index]
+      end
+      params[:customer].delete(:address_attributes)
+    end
+    ##############
+    
     @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
     
     if Customer.can_add?(current_user)
-      
-#      activity_sector_name = params[:customer].delete("activity_sector")
-#      activity_sector_name[:name].capitalize!
-    
       @customer = Customer.new(params[:customer])
-    
-#      if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
-#        @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
-#        @customer.activity_sector = @activity_sector
-#      elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
-#        @customer.activity_sector = @activity_sector  
-#      end
-    
       if @customer.save
-        ## In case of activity_sector wasn't present in database
-#        @activity_sector.save
-        flash[:notice] = "Client ajout&eacute; avec succes"
+        flash[:notice] = "Client ajout&eacute; avec succ&egrave;s"
         @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to( :action => "index" )
       else
-        flash[:error] = 'Une erreur est survenu lors de la création du client'
-#        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
         render :action => 'new'
       end
     else
       error_access_page(403)
     end
   end
+  
+#  def create
+#    @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
+#    
+#    if Customer.can_add?(current_user)
+#      
+##      activity_sector_name = params[:customer].delete("activity_sector")
+##      activity_sector_name[:name].capitalize!
+#    
+#      @customer = Customer.new(params[:customer])
+#    
+##      if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
+##        @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
+##        @customer.activity_sector = @activity_sector
+##      elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
+##        @customer.activity_sector = @activity_sector  
+##      end
+#    
+#      if @customer.save
+#        ## In case of activity_sector wasn't present in database
+##        @activity_sector.save
+#        flash[:notice] = "Client ajout&eacute; avec succes"
+#        @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to( :action => "index" )
+#      else
+#        flash[:error] = 'Une erreur est survenu lors de la création du client'
+##        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
+#        render :action => 'new'
+#      end
+#    else
+#      error_access_page(403)
+#    end
+#  end
 
   # GET /customers/1/edit
   def edit
-    ## Objects use to test permission
-    @contact_controller = Menu.find_by_name('contacts')
-    @establishment_controller = Menu.find_by_name('establishments')
-    @document_controller = Menu.find_by_name('documents')
-      
     if Customer.can_edit?(current_user)
       @customer = Customer.find(params[:id])
-      @establishments = @customer.activated_establishments
+#      @establishments = @customer.activated_establishments
       @contacts = @customer.contacts
       @documents = @customer.documents
       @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?
@@ -105,13 +124,15 @@ class CustomersController < ApplicationController
   # PUT /customers/1.xml
   def update    
     ##############
-    ## this block could be delete when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## this block could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
-    params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
-      establishment_attributes[:address_attributes] = params[:customer][:address_attributes][index]
+    if params[:customer][:establishment_attributes] and params[:customer][:address_attributes]
+      params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
+        establishment_attributes[:address_attributes] = params[:customer][:address_attributes][index]
+      end
+      params[:customer].delete(:address_attributes)
     end
-    params[:customer].delete(:address_attributes)
     ##############
     
     if Customer.can_edit?(current_user)
@@ -122,6 +143,8 @@ class CustomersController < ApplicationController
       else
         render :action => 'edit'
       end
+    else
+      error_access_page(403)
     end
   end
   

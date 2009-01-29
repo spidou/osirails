@@ -19,4 +19,6 @@ class Third < ActiveRecord::Base
   validates_presence_of :activity_sector
   validates_format_of :siret_number, :with => /^[0-9]{14}/, :message => "doit comporter exactement 14 chiffres"
   
+  RATINGS = { "0" => 0, "1" => 1, "2" => 2, "3" => 3, "4" => 4, "5" => 5 }
+  
 end

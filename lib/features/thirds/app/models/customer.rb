@@ -5,7 +5,7 @@ class Customer < Third
   
   ## Validations
   validates_uniqueness_of :name, :siret_number
-  validates_associated :establishments
+  validates_associated :establishments, :contacts
   
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}
@@ -14,7 +14,7 @@ class Customer < Third
   acts_as_file
   
   ## Callbacks
-  after_update :save_establishments
+  after_update :save_establishments, :save_contacts
   
   def activated_establishments
     establishment_array = []
@@ -59,6 +59,27 @@ class Customer < Third
       end
     end
   end
+  
+  def contact_attributes=(contact_attributes)
+    contact_attributes.each do |attributes|
+      if attributes[:id].blank?
+        contacts.build(attributes)
+      else
+        contact = contacts.detect { |t| t.id == attributes[:id].to_i }
+        contact.attributes = attributes
+      end
+    end
+  end
+  
+    def save_contacts
+      contacts.each do |c|
+        if c.should_destroy?
+          contacts.delete(c) # delete the contact from the customer contacts' list, but dont delete the contact itself
+        elsif c.should_update?
+          c.save(false)
+        end
+      end
+    end
   
 #  def address_attributes=(address_attributes)
 #    # raise address_attributes.inspect

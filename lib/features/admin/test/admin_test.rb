@@ -53,7 +53,7 @@ class Test::Unit::TestCase
 #    assert_response :redirect
 #    assert_redirected_to "permissions"
 #    assert_not_nil flash[:notice]
-#    assert_not_nil session[:user]
+#    assert_not_nil session[:user_id]
 #    @controller = old_controller
 #  end
 end

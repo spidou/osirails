@@ -31,14 +31,14 @@ class AccountControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to "permissions"
     assert_not_nil flash[:notice]
-    assert_not_nil session[:user]
+    assert_not_nil session[:user_id]
   end
   
   def test_should_not_login_with_unactivated_user_and_good_password
     login_as(:unactivated_user, "password")
     
     assert_not_nil flash[:error]
-    assert_nil session[:user]
+    assert_nil session[:user_id]
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
@@ -46,7 +46,7 @@ class AccountControllerTest < ActionController::TestCase
     login_as(:powerful_user, "bad_password")
     
     assert_not_nil flash[:error]
-    assert_nil session[:user]
+    assert_nil session[:user_id]
     assert_redirected_to :controller => "account", :action => "login"
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
@@ -56,7 +56,7 @@ class AccountControllerTest < ActionController::TestCase
     
     raise @response.body.inspect
     assert_not_nil flash[:error], "flash[:error] should not be nil"
-    assert_not_nil session[:user], "session[:user] should not be nil"
+    assert_not_nil session[:user_id], "session[:user_id] should not be nil"
     assert_redirected_to :controller => "account", :action => "expired_password"
     follow_redirect
     submit_form do |form|
@@ -71,7 +71,7 @@ class AccountControllerTest < ActionController::TestCase
     
     raise @response.body.inspect
     assert_not_nil flash[:error], "flash[:error] should not be nil"
-    assert_not_nil session[:user], "session[:user] should not be nil"
+    assert_not_nil session[:user_id], "session[:user_id] should not be nil"
     assert_redirected_to :controller => "account", :action => "expired_password"
     follow_redirect
     submit_form do |form|
@@ -145,13 +145,13 @@ class AccountControllerTest < ActionController::TestCase
   
   def test_login_with_get_request
     get :login, {:username => users(:powerful_user).username, :password => "password"}
-    assert_nil session[:user]
+    assert_nil session[:user_id]
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
   def test_login_with_put_request
     put :login, {:username => users(:powerful_user).username, :password => "password"}
-    assert_nil session[:user]
+    assert_nil session[:user_id]
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   

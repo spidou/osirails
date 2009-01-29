@@ -5,27 +5,27 @@
 
   <p>
     <%= label :supplier, :name, "Nom :" %>
-    <%= @supplier.name %>
+    <strong><%= @supplier.name %></strong>
   </p>
   <p>
     <%= label :supplier, :legal_form, "Forme juridique :" %>
-    <%= LegalForm.find(@supplier.legal_form_id).name %>
+    <strong><%= @supplier.legal_form.name %></strong>
   </p>
   <p>
     <%= label :supplier, :siret_number, "Num&eacute;ro Siret :" %>
-    <%= @supplier.siret_number %>
+    <strong><%= @supplier.siret_number %></strong>
   </p>
   <p>
     <%= label :supplier, :activity_sector, "Secteur d'activit&eacute; :" %>
-    <%= @supplier.activity_sector.name %>
+    <strong><%= @supplier.activity_sector.name %></strong>
   </p>
   <p>
     <%= label :supplier, :activities, "Activit&eacute;s :" %>
-    <%= @supplier.activities %>
+    <strong><%= @supplier.activities %></strong>
   </p>
   <p>
     <%= label :supplier, :note, "Note :" %>
-    <%= @supplier.note %>
+    <strong><%= @supplier.note %></strong>
   </p>
 
   <h2> Informations bancaires</h2>

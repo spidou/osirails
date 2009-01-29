@@ -70,7 +70,7 @@ module EstablishmentsHelper
   def display_establishments_list(establishments)
     html = "<h2>&Eacute;tablissements</h2>"
     html << "<div id=\"establishments\">"
-    html << render(:partial => 'shared/establishment', :collection => establishments)
+    html << render(:partial => 'shared/establishment_in_one_line', :collection => establishments)
     html << "</div>"
   end
   

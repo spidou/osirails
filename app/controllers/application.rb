@@ -7,8 +7,7 @@ class ApplicationController < ActionController::Base
   layout "default"
   
   # Filters
-  before_filter :authenticate
-  before_filter :select_theme
+  before_filter :authenticate, :select_theme
   
   # Includes
   include Permissible::InstanceMethods
@@ -50,7 +49,7 @@ class ApplicationController < ActionController::Base
 
     def current_user
       begin
-        User.find(session[:user])
+        User.find(session[:user_id])
       rescue
         return false
       end
@@ -87,7 +86,7 @@ class ApplicationController < ActionController::Base
 
     # Do every verification before shows the page
     def authenticate
-      if session[:user].nil? or current_user.class != User # if session is empty or if current_user return false
+      if session[:user_id].nil? or current_user.class != User # if session is empty or if current_user return false
         session[:initial_uri] = request.request_uri
         redirect_to login_path
         flash[:error] = "Vous n'êtes pas connecté !"

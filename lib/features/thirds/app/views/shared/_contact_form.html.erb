@@ -1,0 +1,45 @@
+<% owner_type = contacts_owner.class.name.downcase %>
+
+<% fields_for "#{owner_type}[contact_attributes][]", contact = contact_form do |form| %>
+<div class="contact_form" id="contact_form_<%=contact.id%>" <%= "style=\"display:none\"" unless contact.new_record? or !contact.errors.empty? %> >
+  <div style="border: 1px solid red; padding: 5px; margin: 5px">
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :first_name, "Pr&eacute;nom :", :index => nil %>
+      <%= form.text_field :first_name, :index => nil %>
+    </p>
+    <p>
+      <%= form.label :last_name, "Nom de famille :", :index => nil %>
+      <%= form.text_field :last_name, :index => nil %>
+    </p>
+    <p>
+      <%= form.label :email, "E-mail :", :index => nil %>
+      <%= form.text_field :email, :index => nil %>
+    </p>
+    <p>
+      <%= form.label :job, "R&ocirc;le :", :index => nil %>
+      <%= form.text_field :job, :index => nil %>
+    </p>
+    <p>
+      <%= form.label :contact_type_id, "Type de contact :", :index => nil%>
+      <%= form.collection_select( :contact_type_id, ContactType.find(:all, :conditions => ["owner = ?", owner_type]), :id, :name, {}, :index => nil) %>
+    </p>
+    <p>
+      <% if contact.new_record? %>
+        <%= link_to_function "Annuler la création du contact", "this.up('.contact_form').remove()" %>
+      <% else %>
+        <%= link_to_function "Annuler la modification du contact", "mark_contact_for_dont_update(this.up('.contact_general_infos'))" %>
+      <% end %>
+
+      <% unless contact.new_record? %>
+        <%= form.hidden_field :id, :index => nil %>
+        <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+        <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+      <% end %>
+    </p>
+  </div>
+</div>
+
+  <%  #form.hidden_field "owner_type", :value => @owner_type
+  %>
+<% end %>

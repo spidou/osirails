@@ -1,6 +1,7 @@
 <% #fields_for "customer[establishment_attributes][][address_attributes]", address do |form| 
 %>
-<% fields_for "customer[address_attributes][]", address do |form| %>
+<% fields_for "customer[address_attributes][]", address = address_form do |form| %>
+  <%= form.error_messages %>
   <p>
     <%= form.label :address1, "Adresse :", :index => nil %>
     <%= form.text_field :address1, :index => nil %> - <%= form.text_field :address2, :index => nil %>

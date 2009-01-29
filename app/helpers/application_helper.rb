@@ -15,7 +15,7 @@ module ApplicationHelper
   
   def current_user
     begin
-      User.find(session[:user])
+      User.find(session[:user_id])
     rescue
       return false
     end
@@ -156,6 +156,22 @@ module ApplicationHelper
     html+= link_to( "Recherche avancée",{ :controller => 'search', :method => 'put', :choosen_model =>controller},{:class => 'help'})
     html+="</p>"
   end
+  
+  def is_edit_view?
+    params[:action] == "edit" or params[:_method] == "put"
+  end
+  
+  
+  ## dynamic methods generated with the menus object
+  #  
+  #  Example :
+  #  menus :             users, groups, thirds
+  #  generated methods : menu_users, menu_groups, menu_thirds
+  Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
+      define_method("menu_#{menu.name}") do
+        menu
+      end
+    end
   
   private
     def url_for_menu(menu)

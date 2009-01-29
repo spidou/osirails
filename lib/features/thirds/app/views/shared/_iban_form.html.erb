@@ -1,0 +1,28 @@
+<% fields_for "#{iban_owner}[iban_attributes]", iban = iban_form do |form| %>
+  <%= form.error_messages %>
+<p>
+  <%= form.label :bank_name, "Nom de la banque :" %>
+  <%= form.text_field :bank_name %>
+</p>
+<p>
+  <%= form.label :bank_code, "Code banquaire :" %>
+  <%= form.text_field :bank_code, :maxlength => 5, :size => 5 %>
+</p>
+<p>
+  <%= form.label :branch_code, "Code guichet :" %>
+  <%= form.text_field :branch_code, :maxlength => 5, :size => 5 %>
+</p>
+<p>
+  <%= form.label :account_number, "N&deg; de compte :" %>
+  <%= form.text_field :account_number, :maxlength => 11, :size => 11 %>
+</p>
+<p>
+  <%= form.label :key, "Cl&eacute; :" %>
+  <%= form.text_field :key, :maxlength => 2, :size => 2 %>
+</p>
+<p>
+  <%= form.label :account_name, "Nom du titulaire :" %>
+  <%= form.text_field :account_name %>
+</p>
+  <%= form.hidden_field :id  %>
+<% end %>

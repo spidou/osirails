@@ -1,17 +1,4 @@
 <h1>Modifier un fournisseur </h1>
-<div class="frame presentation_medium">
-
-<% form_for(@supplier) do |supplier| %>
-  
-  <%= supplier.error_messages %>
-  <!-- Display supplier infos -->
-  <%= render :partial => 'thirds/third', :locals => {:third => supplier, :third_ => @supplier, :activity_sector_name => @activity_sector, :iban_ => @supplier.iban} %>
-
-  <!-- Display Contacts div -->
-  <%= display_contacts_and_add_contact_button(@supplier, @contacts, params, @new_contact_number, @error)%>
-    
-  <%= supplier.submit  'Modifier' %>
-<% end %>
-</div>
+<%= render :partial => @supplier, :locals => { :submit_button_name => "Mettre &agrave; jour"} %>
 
 <%= link_to 'Retour', suppliers_path %>

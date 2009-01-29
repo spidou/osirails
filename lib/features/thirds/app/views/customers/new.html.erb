@@ -1,11 +1,7 @@
-<h1>Nouveau Client</h1>
-
-<div class="frame presentation_medium">
-<% form_for(@customer) do |customer| %>
-  <%= customer.error_messages %>
-  <%= render :partial => 'thirds/third', :locals => {:third => customer, :third_ => @customer, :activity_sector_name => nil} %> 
-  <%= hidden_field_tag( :return_uri, params[:return_uri] ) if params[:return_uri] %> 
-  <%= customer.submit  'Créer' %> 
+<% content_for :header do %>
+  <%= javascript_include_tag "thirds/thirds" %>
 <% end %>
-<%= link_to "Retour a l'accueil", :action => 'index' %>
-</div>
+
+
+<h1>Nouveau client </h1>
+<%= render :partial => @customer, :locals => { :submit_button_name => "Ajouter"} %>
