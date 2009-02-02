@@ -1,25 +1,28 @@
 <% fields_for "customer[establishment_attributes][]", establishment = establishment_form do |form| %>
-<div class="establishment_form" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? %> >
+<div class="resource_form" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? %> >
   <div style="border: 1px solid red; padding: 5px; margin: 5px">
     <%= form.error_messages %>
     <p>
-      <%= form.label :name, "Nom :", :index => nil %>
-      <%= form.text_field :name, :index => nil %>
+      <%= form.label :name, :index => nil %>
+      <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
     </p>
     <p>
-      <%= form.label :establishment_type_id, "Type :", :index => nil %>
-      <%= form.collection_select :establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil %>
+      <%= form.label :establishment_type_id, :index => nil %>
+      <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
     </p>
+    
     <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address %>
     
     <p>
       <% if establishment.new_record? %>
-        <%= link_to_function "Annuler la création de l'établissement", "this.up('.establishment_form').remove()" %>
+        <%= link_to_function "Annuler la création de l'établissement", "this.up('.resource_form').remove()" %>
+      <% elsif is_form_view? %>
+        <%= link_to_function "Annuler la modification de l'établissement", "mark_resource_for_dont_update(this.up('.establishment_general_infos'))" %>
       <% else %>
-        <%= link_to_function "Annuler la modification de l'établissement", "mark_establishment_for_dont_update(this.up('.establishment_general_infos'))" %>
+        <%= link_to_function "Fermer", "this.up('.establishment_general_infos').down('.resource_form').hide()" %>
       <% end %>
 
-      <% unless establishment.new_record? %>
+      <% if !establishment.new_record? and is_form_view? %>
         <%= form.hidden_field :id, :index => nil %>
         <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
         <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>

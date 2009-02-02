@@ -1,0 +1,44 @@
+<% third_type = third.class.name.downcase %>
+
+<% fields_for third_type, third do |form| %>
+  <%= form.error_messages %>
+  <h2>Informations g&eacute;n&eacute;rales</h2>
+  <p>
+    <%= form.label :name %>
+    <%= form.form_or_view(form.text_field(:name), :name) %>
+  </p>
+  <p>
+    <%= form.label :legal_form_id %>
+    <%= form.form_or_view(form.collection_select_with_option_groups(:legal_form_id, ThirdType.find(:all), :legal_forms, :name, :id, :name, third.legal_form_id), :legal_form, :name) %>
+  </p>
+  <p>
+    <%= form.label :siret_number %>
+    <%= form.form_or_view(form.text_field(:siret_number, "maxlength" => 14) + " (14 chiffres)", :siret_number) %>
+  </p>
+  <p>
+    <%= form.label :activity_sector_id %>
+    <%= form.form_or_view(form.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name), :activity_sector, :name)%>
+  </p>
+  <p>
+    <%= form.label :activities %>
+    <%= form.form_or_view(form.text_field(:activities), :activities) %>
+  </p>
+  <p>
+    <%= form.label :note %>
+    <%= form.form_or_view(form.select(:note, Third::RATINGS), :note) %>
+  </p>
+
+  <h2>Informations bancaires</h2>
+    <% if third.class.equal?(Customer) %>
+  <p>
+      <%= form.label :payment_method_id %>
+      <%= form.form_or_view(form.collection_select(:payment_method_id, PaymentMethod.find(:all), :id, :name), :payment_method, :name ) %>
+  </p>
+  <p>
+      <%= form.label :payment_time_limit_id %>
+      <%= form.form_or_view(form.collection_select(:payment_time_limit_id, PaymentTimeLimit.find(:all), :id, :name), :payment_time_limit, :name) %>
+  </p>
+    <% elsif third.class.equal?(Supplier) %>
+      <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban %>
+    <%  end %>
+<% end %>

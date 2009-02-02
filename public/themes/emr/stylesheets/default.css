@@ -1096,13 +1096,13 @@ width: 50px ! important;
 
 .frame.presentation_large label {
 	text-align:right;
-	width:250px;
+	width:350px;
 	display:inline-block;
 }
 
 .frame.presentation_medium label {
 	text-align:right;
-	width:150px;
+	width:200px;
 	display:inline-block;
 }
 
@@ -1121,13 +1121,13 @@ width: 50px ! important;
 .frame form p input[type=password],
 .frame form p input[type=checkbox],
 .frame form p textarea {
-	margin-bottom:10px;
-	vertical-align:top;
-	/* border: #CCC 1px solid; */
+  vertical-align:top;
+	/* margin-bottom:10px;
+	border: #CCC 1px solid; */
 }
 
 .frame form p select {
-	margin-bottom:10px;
+	/* margin-bottom:10px; */
 	vertical-align:top;
 }
 

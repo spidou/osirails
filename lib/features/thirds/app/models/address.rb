@@ -8,6 +8,19 @@ class Address < ActiveRecord::Base
   validates_presence_of :zip_code
   validates_numericality_of :zip_code
   
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:address1] = "Adresse :"
+  @@form_labels[:country_name] = "Pays :"
+  @@form_labels[:city_name] = "Ville :"
+  @@form_labels[:zip_code] = "Code postal :"
+  
+  def address1and2
+    address = address1
+    address << " - " + address2 unless address2.blank?
+    address
+  end
+  
   def formatted
     [address1, (address2 unless address2.blank?), zip_code, city_name, country_name].join(" ")
   end

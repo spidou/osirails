@@ -1,26 +1,29 @@
 <div class="frame presentation_medium">
 
-<% if is_edit_view? %>
+<% if is_form_view? %>
   <% form_for @customer, :html => { :multipart => true } do |form| %>
-    <%= form.error_messages %>
-    <%= render :partial => 'thirds/third_form', :object => @customer %>
+    <%= render :partial => 'thirds/third', :object => @customer %>
 
     <%= display_establishments_list(@customer.activated_establishments) %>
     <%= display_establishment_add_button %>
 
-    <% #display_contacts_and_add_contact_button(@customer, @contacts, params, @new_contact_number, @error)
-    %>
     <%= display_contacts_list(@customer) %>
     <%= display_contact_add_button(@customer) %>
 
     <%# display_documents_and_add_documents_button(@customer, @documents, params, @new_document_number, @error) %>
-
+    
+  <p>
+    <%= form.reset 'Annuler' %>
     <%= form.submit submit_button_name %>
-  <% end %>
-
-  <%= link_to 'Retour', customers_path %>
+  </p>
+  <% end %>  
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>
+  <%= display_establishments_list(@customer.activated_establishments) %>
+  <%= display_contacts_list(@customer) %>
 <% end %>
 
 </div>
+<p>
+  <%= link_to 'Retour', :back %>
+</p>

@@ -15,7 +15,6 @@ class Contact < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :last_name
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/ #,:message => "format adresse email incorrect"
-
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
@@ -24,6 +23,14 @@ class Contact < ActiveRecord::Base
   # should_update = 1 if the form is visible # see the /customers/1/edit
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see the /customers/1/edit
   attr_accessor :should_update
+  
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:first_name] = "Prénom :"
+  @@form_labels[:last_name] = "Nom de famille :"
+  @@form_labels[:email] = "Adresse e-mail :"
+  @@form_labels[:job] = "Fonction :"
+  @@form_labels[:contact_type] = "Type de contact :"
   
 #  def self.new(contact = nil)
 #    

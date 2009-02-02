@@ -1,16 +1,5 @@
 module CustomersHelper
   
-  # This method permit to show or hide action menu
-  def display_customer_action_menu(customer)
-    if controller.can_edit?(current_user) and Customer.can_edit?(current_user)
-      html = ""
-      html += "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-      html += "<ul>"
-      html +=  "<li>#{link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier") + " Modifier le client", edit_customer_path(customer)) }</li>"
-      html += "</ul>"
-    end
-  end
-  
   # This method permit to test permission for add button
   def display_customer_add_button
     if controller.can_add?(current_user) and Customer.can_add?(current_user)

@@ -22,6 +22,11 @@ class Establishment  < ActiveRecord::Base
   
   after_update :save_address
   
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "Nom de l'enseigne :"
+  @@form_labels[:establishment_type] = "Type d'établissement :"
+  
 #  def self.new(establishment = nil)
 #    unless establishment.nil? or establishment[:valid].nil?
 #      address = establishment.delete("address")

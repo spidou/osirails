@@ -157,8 +157,20 @@ module ApplicationHelper
     html+="</p>"
   end
   
-  def is_edit_view?
-    params[:action] == "edit" or params[:_method] == "put"
+  # Returns - true if the current page is an editable page (add/edit)
+  #         - false if the current page is an view page (show)
+  #
+  def is_form_view?
+    params[:action] == "edit" or request.put? or
+      params[:action] == "new" or request.post?
+  end
+  
+  def can_edit?(object)
+    test_permission(object, "edit")
+  end
+  
+  def can_add?(object)
+    test_permission(object, "add")
   end
   
   
@@ -197,5 +209,15 @@ module ApplicationHelper
       step = controller.current_order_step if controller.respond_to?("current_order_step")
       menu = step || controller.controller_name
       Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
+    end
+    
+    def test_permission(object, method)
+      controller_name = object.class.name.downcase.pluralize
+      begin
+        send("menu_#{controller_name}").send("can_#{method}?", current_user)
+      rescue NoMethodError => e
+        real_controller_name = "#{controller_name}_controller".camelize
+        raise "You may create a controller called '#{real_controller_name}' and create a menu entry in the 'config.yml' file of the correspondant feature. #{e.message}"
+      end
     end
 end

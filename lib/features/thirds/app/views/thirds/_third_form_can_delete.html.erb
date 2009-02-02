@@ -1,6 +1,6 @@
-<% third_type = third.type.downcase %>
+<% third_type = third_form.type.downcase %>
 
-<% fields_for third_type, third do |form| %>
+<% fields_for third_type, third = third_form do |form| %>
   <h2>Informations g&eacute;n&eacute;rales</h2>
   <p>
     <%= form.label :name, "Nom: " %>

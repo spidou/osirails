@@ -1,19 +1,19 @@
-<div class="establishment_general_infos">
+<div class="establishment_general_infos" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
 <% fields_for "customer[establishment_attributes][]", establishment = establishment_in_one_line do %>
   <p id="establishment_<%= establishment.id  %>">
     <%= image_tag 'warning_14x14.png' if establishment.new_record? or !establishment.errors.empty? %>
     
     <%= "#{establishment.name} (#{establishment.address.country_name}, #{establishment.address.city_name})" %>
 
-    <%= link_to "Fiche complète", customer_establishment_path(@customer, establishment) if !is_edit_view? %>
+    <%= link_to_function "Fiche complète", "this.up('.establishment_general_infos').down('.resource_form').show()" if !is_form_view? %>
     
-    <%= link_to_function "Modifier", "mark_establishment_for_update(this.up('.establishment_general_infos'))" if is_edit_view? and menu_establishments.can_edit?(current_user) %>
+    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.establishment_general_infos'))" if is_form_view? and menu_establishments.can_edit?(current_user) %>
     
-    <% if is_edit_view? and menu_establishments.can_delete?(current_user) %>
+    <% if is_form_view? and menu_establishments.can_delete?(current_user) %>
       <% if establishment.new_record? %>
         <%= link_to_function "Supprimer", "this.up('.establishment_general_infos').remove()" %>
       <% else %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_establishment_for_destroy('establishment_form_#{establishment.id}')" %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.establishment_general_infos'))" %>
       <% end %>
     <% end %>
 

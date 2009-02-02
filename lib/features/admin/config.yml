@@ -29,6 +29,10 @@ menus:
     title: Recherche
     description: Moteur de recherche  
     skip_display: true
+  ibans:
+    title: RIBs
+    description: Gestion des RIBs
+    skip_display: true
   admin:
     title: Administration
     description: Administration de l'Intranet
