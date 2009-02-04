@@ -70,7 +70,11 @@ module EstablishmentsHelper
   def display_establishments_list(establishments)
     html = "<h2>&Eacute;tablissements</h2>"
     html << "<div id=\"establishments\">"
-    html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments)
+    unless establishments.empty?
+      html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments)
+    else
+      html << "<p>Aucun établissement n'a été trouvé</p>"
+    end
     html << "</div>"
   end
   

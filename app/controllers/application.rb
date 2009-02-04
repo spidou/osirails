@@ -125,6 +125,7 @@ class ApplicationController < ActionController::Base
     
     def select_theme
       begin
+        #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
         choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
         choosen_theme_site_path = "/themes/#{choosen_theme}"
         choosen_theme_real_path = "public#{choosen_theme_site_path}"

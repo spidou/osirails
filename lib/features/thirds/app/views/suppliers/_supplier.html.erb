@@ -1,7 +1,7 @@
 <div class="frame presentation_medium">
 
 <% if is_form_view? %>
-  <% form_for @supplier, :html => { :multipart => true } do |form| %>
+  <% form_for @supplier do |form| %>
     <%= render :partial => 'thirds/third', :object => @supplier %>
 
     <%= display_contacts_list(@supplier) %>

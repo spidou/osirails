@@ -111,9 +111,9 @@ module ActionView
         elsif !text.kind_of?(String) and !text.kind_of?(NilClass)
           raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
         end
-        
         if text.nil?
           text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub("_id","").to_sym] : "#{method}:"
+          text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
         end
         ###### end hack
         
@@ -154,10 +154,6 @@ module ActionView
         @template.collection_select_with_option_groups(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key)
       end
       
-      def strong(text)
-        @template.strong(text)
-      end
-      
       # Returns either the edit_tag or the view_tag.
       # The *is_form_view*? method of the ApplicationHelper module permits to know if we are in an editable view (add/edit) or not (show)
       # 
@@ -166,6 +162,7 @@ module ActionView
       # **view_methods* : the methods to call to display if we are in a view page (show)
       # 
       # ==== Examples
+      # > First example with a text_field tag and a default attribute (:name)
       #   form.label :name, "Name"
       #   form.form_or_view(form.text_field(:name), :name)
       #   (add/edit)
@@ -175,10 +172,10 @@ module ActionView
       #   => <label>Name</label>
       #      <strong>Your text</strong>
       # 
-      # 
+      # > Second example with a collection_select tag and nested objects attributes (:group, :name)
       #   form.label :group_name_id, "Group Name"
       #   form.form_or_view(form.collection_select(:group_name_id, Group.find(:all), :id, :name),
-      #                     :groupe, :name)
+      #                     :group, :name)
       #   (add/edit)
       #   => <label>Group Name</label>
       #      <select>
@@ -188,18 +185,29 @@ module ActionView
       #   (show)
       #   => <label>Group Name</label>
       #      <strong>Admin</strong> # @user.group.name (see the 2 last args of the 'form_or_view' call method)
+      #      
+      # > Third example with a text_field tag and a custom value for view page
+      #   form.form_or_view(form.text_field(:name), "<span>My custom value</span>")
+      #   (add/edit)
+      #   => <label>Name</label>
+      #      <input type="text" value="Your text" />
+      #   (show)
+      #   => <span>My custom value</span>
       # 
       def form_or_view(form_tag = nil, *view_methods)
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
         return form_tag if view_methods.empty? # return first if second is nil
-        
         if @template.is_form_view? and !form_tag.nil?
           form_tag
         else
           view_text = @object
-          view_methods.each { |method| view_text = view_text.send(method) } # if view_text.respond_to?(method)
-          strong(view_text)
+          view_methods.each { |method| view_text = view_text.send(method) if view_text.respond_to?(method) and !method.to_s.include?('destroy') }
+          view_text.equal?(@object) ? view_methods.to_s : strong(view_text) #if the view_methods doesn't correspond with any real method, so the view_text still equal to @object. In this case the raw value of 'view_methods' is displayed, otherwise we display a strong tag
         end
+      end
+      
+      def strong(text)
+        @template.strong(text)
       end
       
       def reset(text)

@@ -34,7 +34,11 @@ module ContactsHelper
   def display_contacts_list(contacts_owner)
     html = "<h2>Contacts</h2>"
     html << "<div id=\"contacts\">"
-    html << render(:partial => 'contacts/contact_in_one_line', :collection => contacts_owner.contacts, :locals => { :contacts_owner => contacts_owner } )
+    unless contacts_owner.contacts.empty?
+      html << render(:partial => 'contacts/contact_in_one_line', :collection => contacts_owner.contacts, :locals => { :contacts_owner => contacts_owner } )
+    else
+      html << "<p>Aucun contact n'a été trouvé</p>"
+    end
     html << "</div>"
   end
   

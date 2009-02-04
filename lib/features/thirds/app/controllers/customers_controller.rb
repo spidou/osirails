@@ -58,7 +58,7 @@ class CustomersController < ApplicationController
       @customer = Customer.new(params[:customer])
       if @customer.save
         flash[:notice] = "Client ajout&eacute; avec succ&egrave;s"
-        @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to( :action => "index" )
+        @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to(customer_path(@customer))
       else
         render :action => 'new'
       end
@@ -139,7 +139,7 @@ class CustomersController < ApplicationController
       @customer = Customer.find(params[:id])
       if @customer.update_attributes(params[:customer])
         flash[:notice] = "Le client a été modifié avec succès"
-        redirect_to customers_path
+        redirect_to customer_path(@customer)
       else
         render :action => 'edit'
       end

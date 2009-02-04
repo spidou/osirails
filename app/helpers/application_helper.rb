@@ -173,17 +173,20 @@ module ApplicationHelper
     test_permission(object, "add")
   end
   
-  
-  ## dynamic methods generated with the menus object
-  #  
-  #  Example :
-  #  menus :             users, groups, thirds
-  #  generated methods : menu_users, menu_groups, menu_thirds
-  Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
+  begin
+    ## dynamic methods generated with the menus object
+    #  
+    #  Example :
+    #  menus :             users, groups, thirds
+    #  generated methods : menu_users, menu_groups, menu_thirds
+    Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
       define_method("menu_#{menu.name}") do
         menu
       end
     end
+  rescue Exception => e
+    puts "An error has occured in file #{__FILE__}. Please restart the server so that the application works properly. (error : #{e.message})"
+  end
   
   private
     def url_for_menu(menu)
