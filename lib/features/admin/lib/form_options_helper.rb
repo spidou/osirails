@@ -112,7 +112,7 @@ module ActionView
           raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
         end
         if text.nil?
-          text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub("_id","").to_sym] : "#{method}:"
+          text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub("_id","").to_sym] : "#{method.to_s}:"
           text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
         end
         ###### end hack
@@ -197,7 +197,8 @@ module ActionView
       def form_or_view(form_tag = nil, *view_methods)
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
         return form_tag if view_methods.empty? # return first if second is nil
-        if @template.is_form_view? and !form_tag.nil?
+#        if @template.is_form_view? and !form_tag.nil?
+        if ( @object.new_record? or (!@object.new_record? and @template.is_edit_view?) ) and !form_tag.nil?
           form_tag
         else
           view_text = @object
@@ -207,6 +208,9 @@ module ActionView
       end
       
       def strong(text)
+        if text.class.equal?(Symbol)
+          text = @object.send(text)
+        end
         @template.strong(text)
       end
       

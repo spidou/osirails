@@ -2,7 +2,7 @@ class Step < ActiveRecord::Base
   # Relationships
   belongs_to :parent, :class_name =>'Step', :foreign_key => 'parent_id'
   has_and_belongs_to_many :sales_processes
-  has_many :childrens, :class_name => 'Step', :foreign_key => 'parent_id'
+  has_many :children, :class_name => 'Step', :foreign_key => 'parent_id'
   has_many :checklists
   has_and_belongs_to_many :steps, :join_table => 'step_dependencies', :foreign_key => 'step_id', :association_foreign_key => 'step_dependent'
   

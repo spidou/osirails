@@ -1095,21 +1095,15 @@ width: 50px ! important;
 /*LAYOUTS' FORM*/
 
 .frame.presentation_large label {
-	text-align:right;
 	width:350px;
-	display:inline-block;
 }
 
 .frame.presentation_medium label {
-	text-align:right;
 	width:200px;
-	display:inline-block;
 }
 
 .frame.presentation_small label {
-	text-align:right;
 	width:100px;
-	display:inline-block;
 }
 
 .frame label {
@@ -1131,10 +1125,73 @@ width: 50px ! important;
 	vertical-align:top;
 }
 
+.frame form p span {
+  border: 1px solid red;
+  display: inline-block;
+}
+
 .frame strong {
 	margin-bottom:10px;
 	vertical-align:top;
 }
+
+/* FORM WITH MULTIPLE VALUES */
+
+.frame .form_multiple_entries {
+  margin: 0 0 0 9px;
+  padding: 0px;
+}
+
+.frame .form_multiple_entries label:first-child {
+  text-align: right;
+	display:inline-block;
+}
+
+.frame .form_multiple_entries .collection {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 5px 5px 0;
+  text-indent: 0px;
+}
+
+.frame .form_multiple_entries .object {
+  margin-bottom: 10px;
+}
+
+.frame .form_multiple_entries .object .details {
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  border-color: #ddd;
+  -moz-border-radius: 0 0 6px 6px ;
+  margin: 0 5px 5px 5px;
+  padding: 0;
+}
+
+.frame .form_multiple_entries .object .details p {
+  margin: 0;
+  padding: 3px 5px 3px 5px;
+}
+
+.frame.presentation_large .form_multiple_entries label {
+	width:350px;
+}
+
+.frame.presentation_medium .form_multiple_entries label {
+	width:200px;
+}
+
+.frame.presentation_small .form_multiple_entries label {
+	width:100px;
+}
+
+.frame .form_multiple_entries .object label {
+  width: auto;
+  padding: 0px;
+  margin: 0px;
+  text-indent: 0px;
+}
+
+/* /////////// */
 
 .scroll_checkboxes { 
 	margin:15px 15px 15px 20px;

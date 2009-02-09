@@ -9,8 +9,8 @@ class Establishment  < ActiveRecord::Base
   validates_presence_of :address
   
   # has_many_polymorphic
-  has_many :contacts_owners, :as => :has_contact, :class_name => "ContactsOwners"
-  has_many :contacts, :source => :contact, :foreign_key => "contact_id", :through => :contacts_owners, :class_name => "Contact"
+  has_many :contacts_owners, :as => :has_contact
+  has_many :contacts, :source => :contact, :through => :contacts_owners
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy

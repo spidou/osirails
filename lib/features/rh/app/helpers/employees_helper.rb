@@ -284,7 +284,7 @@ module EmployeesHelper
   # Method that add the title to the phone number td
   def number_td(numbers)
     unless visibles_numbers(numbers)==[]
-      "<td  title='" + visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formated + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'>"
+      "<td  title='" + visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formatted + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'>"
     else
       "<td>"
     end

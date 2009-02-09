@@ -1,7 +1,30 @@
 <%= generate_secondary_menu_partial %>
 
-<h1> Liste des dossier en phase Commerciale </h1>
+<h1>Liste des dossier en phase Commerciale</h1>
 
-<div class="frame">
-<%= render :partial => 'orders/index' %>
+<div class="frame presentation_medium">
+  <% unless @orders.empty?  %>
+  <table>
+    <tr>
+      <th>N°</th>
+      <th>Nom</th>
+      <th>Commercial</th>
+      <th>Client</th>
+      <th>Etablissement</th>
+      <th>Etapes</th>
+      <th>Date</th>
+    </tr>
+    <% for order in @orders %>
+      <tr>
+        <td><%= link_to order.id, order_path(order) %></td>
+        <td><%= link_to order.title, order_path(order) %></td>
+        <td><%= order.commercial.fullname %></td>
+        <td><%= order.customer.name %></td>
+        <td><%= order.establishment.full_address %></td>
+        <td><%= order.advance[:terminated].to_s + "/" + order.advance[:total].to_s %></td>
+        <td><%= order.created_at.to_date %></td>
+      </tr>
+    <% end %>
+  </table>
+  <% end %>
 </div>

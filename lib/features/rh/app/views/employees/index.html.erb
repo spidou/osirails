@@ -25,7 +25,7 @@
       <% end %>
     </td>
     <%= number_td(employee.numbers)%>
-      <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formated %>&nbsp;
+      <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
     </td>
     <td><%=h employee.intranet_email %></td>
     <% if controller.can_list?(current_user) and Employee.can_list?(current_user)%>

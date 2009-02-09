@@ -98,3 +98,11 @@ module ActiveRecord
     })
   end
 end
+
+module ActiveSupport
+  class TimeWithZone
+    def humanize
+      self.strftime("%d %B %Y à %I:%M")
+    end
+  end
+end

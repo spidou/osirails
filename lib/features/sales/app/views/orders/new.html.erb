@@ -1,6 +1,6 @@
 <h1>Nouveau dossier</h1>
 
-<% unless @customer %>
+<% unless @order.customer %>
 
 <div class="frame">
   <p>
@@ -32,5 +32,5 @@
 </div>
 
 <% else %>
-  <%= render :partial => 'orders/form' %>
+  <%= render :partial => @order, :locals => { :submit_button_name => "Nouveau"} %>
 <% end %>

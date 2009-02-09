@@ -16,8 +16,12 @@ module OrdersHelper
   end
   
   def display_customer_overview
+    html = ""
     if @order.new_record?
-      render :partial => 'orders/customer_overview'
+      #render :partial => 'orders/customer_overview'
+      html << "<div class='frame presentation_medium'>"
+      html << render(:partial => 'thirds/third', :object => @order.customer, :locals => { :force_view_mode => true })
+      html << "</div>"
     end
   end
   
@@ -38,7 +42,7 @@ module OrdersHelper
     Step.cant_find if step.nil?
     step = step.first_parent
     
-    orders_steps = @order.send(step.name).childrens
+    orders_steps = @order.send(step.name).children
     
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
@@ -99,7 +103,7 @@ module OrdersHelper
       next if step.parent
       html += "<li "
       html += class_selected if tab_name == step.name
-      html += link_to step.title, "#{order_path(@order)}/#{step.childrens.first.name[5..-1] unless step.childrens.empty?}"
+      html += link_to step.title, "#{order_path(@order)}/#{step.children.first.name[5..-1] unless step.children.empty?}"
       # html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
     end
     html += "<li "

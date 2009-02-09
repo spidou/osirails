@@ -1,6 +1,6 @@
 <div id="timeline">
 	<div id="timeline_head" class="good"><span class="timeline_date"><%= @order.created_at.strftime("%C %B %Y") %></span><span class="timeline_notice">Création de dossier</span></div>
-<% @order.all_childrens.each do |child| %>
+<% @order.all_children.each do |child| %>
 	<% if child.start_date %>
 	<div class="timeline_body good"><span class="timeline_date"><%= child.start_date.strftime("%C %B %Y") %></span><span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.step.title.downcase %></span></div>
 	<% end %>

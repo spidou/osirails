@@ -9,7 +9,8 @@ class Order < ActiveRecord::Base
   has_one :step_commercial
   has_one :step_invoicing
   has_many :order_logs
-  has_many :contacts
+  has_many :contacts_owners, :as => :has_contact
+  has_many :contacts, :source => :contact, :through => :contacts_owners
 
   # Validations
   validates_presence_of [:customer, :title, :order_type, :commercial, :establishment ]
@@ -32,7 +33,7 @@ class Order < ActiveRecord::Base
   end
 
   def step
-    self.all_childrens.each do |child|
+    self.all_children.each do |child|
       next if child.step.parent.nil?
       return child.step if (child.in_progress? || child.unstarted?)
     end
@@ -50,7 +51,7 @@ class Order < ActiveRecord::Base
     advance = {}
     steps.each do |step|
       next if step.parent
-      steps_obj += send(step.name).childrens
+      steps_obj += send(step.name).children
     end
     advance[:total] = steps_obj.size
     advance[:terminated] = 0
@@ -58,22 +59,22 @@ class Order < ActiveRecord::Base
     advance
   end
   
-  def childrens
-    childs = []
+  def children
+    array_children = []
     steps.each do |step|
       next if step.parent
-      childs << send(step.name)
+      array_children << send(step.name)
     end
-    childs
+    array_children
   end
   
-  def all_childrens
-    all_childs = []
-    childrens.each do |child|
-      all_childs << child
-      all_childs += child.childrens
+  def all_children
+    array_children = []
+    children.each do |child|
+      array_children << child
+      array_children += child.children
     end
-    all_childs
+    array_children
   end
 
   ## Return remarks's order
@@ -92,7 +93,7 @@ class Order < ActiveRecord::Base
   
   def terminated?
     return false unless closed_date?
-    childrens.each do |child|
+    children.each do |child|
       return false unless child.terminated?
     end
     true

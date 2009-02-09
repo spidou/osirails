@@ -1,0 +1,61 @@
+<%= display_customer_overview %>
+
+<div class="frame presentation_medium">
+  <h2>Dossier</h2>
+  <% form_for @order do |form| %>
+    <%= form.error_messages %>
+  
+  <h3>Informations</h3>
+  <p>
+    <%= form.label :title, 'Nom du projet :' %>
+    <%= form.text_field :title %>
+  </p>
+  <p>
+    <%= form.label :order_type_id, 'Type de dossier :' %>
+    <%= @order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title) : strong(@order.order_type.title) %>
+  </p>
+  <p>
+    <%= form.label :commercial_id, 'Commercial :' %>
+    <%= form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => @order.new_record?) %>
+  </p>
+
+  <h3>Client</h3>
+  <p>
+    <%= form.label :establishment_id, 'Etablissement concerné :' %>
+    <% if is_new_view? %>
+      <%= form.collection_select(:establishment_id, @order.customer.establishments, :id, :name_and_full_address, :include_blank => true) %>
+      <%= link_to( "(+) Ajouter un établissement", new_customer_establishment_path(@order.customer) ) %>
+    <% else %>
+      <%= form.strong @order.establishment.name_and_full_address %>
+    <% end %>
+  </p>
+  
+  <div class="form_multiple_entries">
+    <%= form.label :contacts_ids, "Contact(s) concerné(s) :"  %>
+    <div class="collection">
+      <%= render :partial => 'contacts/contact_with_infos', :collection => @contacts, :locals => { :contacts_owner => @order } %>
+    </div>
+  </div>
+  
+  <h3>Dates</h3>
+  <% if is_edit_view? %>
+    <p>
+      <%= form.label :created_at, 'Date de cr&eacute;ation :' %>
+      <%= form.strong order.created_at.humanize  %>
+    </p>
+  <% end %>
+  <p>
+    <%= form.label :previsional_start, 'Date pr&eacute;visionnelle de mise en production :' %>
+    <%= form.text_field :previsional_start %>
+  </p>
+  <p>
+    <%= form.label :previsional_delivery, 'Date pr&eacute;visionnelle de livraison :' %>
+    <%= form.text_field :previsional_delivery %>
+  </p>
+  <p>
+    <%= form.hidden_field :customer_id, :value  => @order.customer_id %>
+    <%= form.reset 'Annuler' %>
+    <%= form.submit submit_button_name %>
+  </p>
+  <% end %>
+</div>

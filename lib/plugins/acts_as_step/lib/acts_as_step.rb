@@ -46,25 +46,26 @@ module ActiveRecord
         end
         
         def parent
-          return nil if self.class.parent.nil?
+          #return nil if self.class.parent.nil?
+          return nil if self.class.step.parent.nil?
           send(self.class.step.parent.name)
         end
         
-        def childrens
-          self.steps.collect { |s| send(s.name) }
+        def children
+          self.children_steps.collect { |s| send(s.name) }
         end
         
         def step
           'Step'.constantize.find_by_name(self.class.name.tableize.singularize)
         end
         
-        def steps
-          step = 'Step'.constantize.find_by_name(self.class.name.tableize.singularize)
+        def children_steps #def steps
+          #step = 'Step'.constantize.find_by_name(self.class.name.tableize.singularize)
           'Step'.constantize.find(:all, :conditions => ["parent_id = ?", step])
         end
         
         def sibling
-          parent.childrens
+          parent ? parent.children : []
         end
         
         def order

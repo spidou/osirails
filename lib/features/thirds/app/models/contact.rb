@@ -4,7 +4,7 @@ class Contact < ActiveRecord::Base
   has_many :numbers, :as => :has_number
   belongs_to :contact_type
   # Declaration for has_many_polymorph association
-  has_many :contacts_owners, :foreign_key => "contact_id", :class_name => "ContactsOwners"
+  has_many :contacts_owners, :foreign_key => "contact_id"
   #TODO are those lines really useful? 'has_many :contacts_owners' is not necessary alone?
   has_many :thirds, :source => :has_contact, :through => :contacts_owners, :source_type => "Third", :class_name => "Third"
   has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
@@ -64,7 +64,7 @@ class Contact < ActiveRecord::Base
     
     self.numbers.each do |n|
       if n.visible?
-        number = ", Tél: #{n.formated}"
+        number = ", Tél: #{n.formatted}"
       end
     end
     

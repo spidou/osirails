@@ -161,8 +161,15 @@ module ApplicationHelper
   #         - false if the current page is an view page (show)
   #
   def is_form_view?
-    params[:action] == "edit" or request.put? or
-      params[:action] == "new" or request.post?
+     is_edit_view? or is_new_view?
+  end
+  
+  def is_new_view?
+    params[:action] == "new" or request.post?
+  end
+  
+  def is_edit_view?
+    params[:action] == "edit" or request.put?
   end
   
   def can_edit?(object)
