@@ -1,0 +1,52 @@
+<% content_for :header do %>
+  <%= javascript_include_tiny_mce_if_used %>
+  <%= tiny_mce if using_tiny_mce? %>
+  <script type="text/javascript" src="/javascripts/memorandums/sended_memorandums.js"></script>
+<% end %>
+
+<div class="frame presentation_medium">
+ <% form_for @sended_memorandum, :url => {:controller => 'sended_memorandums'} do |sended_memorandums|%>
+   <%= sended_memorandums.error_messages %>
+  <p><%= sended_memorandums.label :title %>
+  <%= sended_memorandums.text_field :title  %></p>
+
+  <p><%= sended_memorandums.label :subject%>
+  <%= sended_memorandums.text_field :subject  %></p>
+
+  <p><%= sended_memorandums.label :text %>
+  <%= sended_memorandums.text_area( :text, :cols => 100, :rows => 30) %></p>
+
+  <p><%= sended_memorandums.label :signature %>
+  <%= initialize_signature %></p>
+
+  <%= show_structured_services(@sended_memorandum, action = params[:action]) %>
+  <div  id='services'>
+    <table>
+      <thead>
+        <th rowspan='2' >Service</th>
+        <th colspan='2'>Action</th>
+        <tr>
+          <th>R&eacute;cursif</th>
+          <th>Enlever</th>
+        </tr>
+      </thead>
+      <tbody id='services_list'>
+      <% if params[:action] == 'edit' %>
+        <%= show_services(@sended_memorandum) %>
+      <% end  %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if !@sended_memorandum.published_at? %>
+    <p><label>Publier : </label>
+    <input type='checkbox' value='true' name='published[publish]' /><i> (Attention cette action annule la possibilit&eacute;e de modifier la note de service)</i></p>
+  <% end %>
+
+  <% if (params[:action] == 'new') or (params[:action] == 'create')%>
+    <%= sended_memorandums.submit("Enregistrer") %>
+  <% elsif (params[:action] == 'edit') or (params[:action] == 'update') and !@sended_memorandum.published_at? %>
+     <%= sended_memorandums.submit("Modifier") %>
+  <%  end %>
+<% end %>
+</div>

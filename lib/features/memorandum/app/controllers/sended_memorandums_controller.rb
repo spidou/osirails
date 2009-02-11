@@ -58,11 +58,16 @@ class SendedMemorandumsController < ApplicationController
   # GET /sended_memorandums/1/edit
   def edit
     @sended_memorandum = Memorandum.find(params[:id])
+    if @sended_memorandum.published_at?
+      flash[:error] = "Vous ne pouvez pas modifier une note de service d&eacute;j&agrave; publi&eacute;"
+      redirect_to :action => 'index'
+    end
   end
   
   # PUT /sended_memorandums/1
   def update
     @sended_memorandum = Memorandum.find(params[:id])
+    return if @sended_memorandum.published_at?
     if params.has_key?(:published)
       @sended_memorandum.published_at = Time.now
     end

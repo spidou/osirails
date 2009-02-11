@@ -11,6 +11,11 @@ class Role < ActiveRecord::Base
   # Callbacks
   after_create :create_role_permissions
   after_destroy :destroy_role_permissions
+
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "Nom du r&ocirc;le :"
+  @@form_labels[:description] = "Description du r&ocirc;le :"
   
   def create_role_permissions
     all_business_objects = BusinessObjectPermission.find(:all, :group => 'has_permission_type')

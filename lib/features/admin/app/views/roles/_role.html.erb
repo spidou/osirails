@@ -1,31 +1,49 @@
+<div class="frame presentation_medium">
+
 <% form_for(@role) do |f| %>
   <%= f.error_messages %>
   
   <p>
-    <%= f.label :name, "Nom du r&ocirc;le" %><br />
-    <%= f.text_field :name %>
+    <%= f.label :name %>
+    <%= f.form_or_view(f.text_field(:name), :name) %>
   </p>
   <p>
-    <%= f.label :description, "Description du r&ocirc;le"%><br/>
-    <%= f.text_area :description %>
+    <%= f.label :description %>
+    <%= f.form_or_view(f.text_area(:description), :description) %>
   </p>
-  <p>Choisir les utilisateurs qui poss&egrave;dent ce r&ocirc;le</p>
   
-  <div class="scroll_checkboxes"> 
-    <table>
-      <% for associated_user in @users %>
-        <tr>
-          <td>
-            <%= check_box_tag "role[user_ids][]", associated_user.id, @role.users.include?(associated_user) %>
-          </td>
-          <td>
-            <%= associated_user.username %>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-  <p>
+  <% if is_form_view? %>
+    <p>Choisir les utilisateurs qui poss&egrave;dent ce r&ocirc;le :</p>
+
+    <div class="scroll_checkboxes"> 
+      <table>
+        <% for associated_user in @users %>
+          <tr>
+            <td>
+              <%= check_box_tag "role[user_ids][]", associated_user.id, @role.users.include?(associated_user) %>
+            </td>
+            <td>
+              <%= associated_user.username %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+    <p>
     <%= f.submit submit_button_name %>
-  </p>
+    </p>
+  <% else %>
+    <p>
+      <%= label_tag "Utilisateurs poss&eacute;dants ce r&ocirc;le :"%>
+      <div class="scroll_checkboxes" >
+        <ul>
+          <% for user in @role.users %>
+            <li><%= link_to user.username, user %></li>
+          <% end %>
+        </ul>
+      </div>
+    </p>
+    <%= link_to 'Modifier', edit_role_path(@role) %>
+  <% end %>
 <% end %>
+</div>

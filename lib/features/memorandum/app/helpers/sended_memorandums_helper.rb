@@ -47,6 +47,8 @@ module SendedMemorandumsHelper
   
   # This method permit to have a services on <ul> type.
   def show_structured_services(memorandum = "none", action = "new")
+    action = 'edit' if action == 'update'
+    action = 'new' if action == 'create'
     services = Service.find_all_by_service_parent_id
     list = []
     list << "<p><label>Destinataire(s) : </label> <select onchange='addServiceCell(this)'>"

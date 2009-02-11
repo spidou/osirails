@@ -1,7 +1,6 @@
 class Content < ActiveRecord::Base
-  
   include Permissible
-  
+
   # Serialize
   serialize :contributors
   
@@ -10,8 +9,6 @@ class Content < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   has_many :versions, :class_name => "ContentVersion", :dependent => :destroy
 
-
     # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
-  
 end

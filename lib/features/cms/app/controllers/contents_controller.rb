@@ -12,7 +12,7 @@ class ContentsController < ApplicationController
   def show
     if Content.can_view?(current_user)
       @content = Content.find(params[:id])
-      @author = User.find(@content.author, :include => [:employee]) unless @content.author.nil? or @content.author == ""
+      @author = User.find(@content.author, :include => [:employee]) unless @content.author.blank?
       @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
       @contributors_full_names = []
       @contributors.each {|contributor| @contributors_full_names << (contributor.employee.nil? ? contributor.username : contributor.employee.fullname)}
@@ -42,7 +42,7 @@ class ContentsController < ApplicationController
       if @menu.save
         @content.menu_id = @menu.id
         if @content.save
-          flash[:notice] = 'Votre page est créée avec succès'
+          flash[:notice] = 'Votre page est crée avec succès'
           redirect_to :action => 'index'
         else
           @menu.destroy
