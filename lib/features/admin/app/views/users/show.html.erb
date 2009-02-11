@@ -1,30 +1,4 @@
 <h1>Informations d'un compte utilisateur</h1>
 
-<div class="frame">
-  <p>
-    <b>Nom du compte utilisateur:</b>
-    <%=h @user.username %>
-  </p>
-  <p>
-    <b>Activ&eacute;:</b>
-    <%= @user.enabled ? "Oui" : "Non" %>
-  </p>
-  <p>
-    <b>Derni&egrave;re connexion:</b>
-    <%= @user.last_connection.nil? ? "Jamais connecté" :@user.last_connection.strftime("%d/%m/%Y  [%H:%M]")  %>
-  </p>
-  <p>
-    <b>R&ocirc;les: </b> <%= "Aucun" if @user.roles.empty? %>
-    <div class="scroll_checkboxes" >
-      <% for role in @user.roles %>
-        <ul>
-          <li><%=link_to role.name,role %></li>
-        </ul>
-      <% end %>
-    </div>
-  </p>
+<%= render :partial => @user %>
 
-  <%= link_to 'Modifier', edit_user_path(@user) %> |
-  <%= link_to 'Retour', users_path %>
-
-</div>

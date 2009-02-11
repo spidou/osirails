@@ -13,6 +13,14 @@ module UsersHelper
       link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), user_path(user)) 
     end
   end
+
+  # This method permit to test permission for view button
+  def show_delete_button(user)
+    if controller.can_view?(current_user)
+      link_to(image_tag("/images/delete_16x16.png", :alt =>"<Supprimer", :title =>"Supprimer"), user, {:method => :delete , :confirm => 'Etes vous s&ucirc;r ?' } ) 
+
+    end
+  end
   
   # This method permit to show or hide add button
   def show_add_button

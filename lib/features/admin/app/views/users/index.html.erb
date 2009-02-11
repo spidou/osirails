@@ -20,7 +20,7 @@
         <td><%= link_to user.username, user %></td>
         <td><%= user.enabled ? "Oui" : "Non" %></td>
         <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.strftime("%d/%m/%Y  [%Hh%M]") %></td>
-        <td><%= show_view_button(user) %> <%= show_edit_button(user) %>
+        <td><%= show_view_button(user) %> <%= show_edit_button(user) %> <%= show_delete_button(user)%>
         </td>
       </tr>
     <% end %>

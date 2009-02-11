@@ -35,8 +35,20 @@ class User < ActiveRecord::Base
     end
   end
   
+  # CallBacks
+  before_destroy :can_destroy
+
   # Accessors
   attr_accessor :updating_password
+  cattr_reader :form_labels
+
+  @@form_labels = Hash.new
+  @@form_labels[:username] = "Nom du compte utilisateur :"
+  @@form_labels[:password] = "Mot de passe :"
+  @@form_labels[:password_confirmation] = "Confirmation du mot de passe :"
+  @@form_labels[:enabled] = "Activ&eacute; :"
+  @@form_labels[:last_connection] = "dernière connection :"
+  @@form_labels[:roles] = "Le(s) r&ocirc;le(s) de l'utilisateur :"
  
 
   # Method to encrypt a string
@@ -100,5 +112,10 @@ class User < ActiveRecord::Base
   def employee_name
     self.employee ? self.employee.fullname : self.username
   end
+
+  def can_destroy
+    self.employee.nil?
+  end
+
 # TODO delete the Add link that been used for dev purposes
 end

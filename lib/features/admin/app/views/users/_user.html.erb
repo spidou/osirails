@@ -1,38 +1,43 @@
 <div class="frame presentation_medium">
-  <% form_for(@user) do |f| %>
-    <%= f.error_messages %>
+  <% form_for(@user) do |form| %>
+    <%= form.error_messages %>
     <p>
-      <%= f.label :username, "Nom du compte utilisateur :" %>
-      <%= f.text_field :username %>
+      <%= form.label :username %>
+      <%= form.form_or_view(form.text_field(:username),:username) %>
     </p>
+      <% if is_form_view?%> 
+      <p>
+        <%= form.label :password %>
+        <%= form.password_field :password, :value => "" %>
+      </p>
+      <p>
+        <%= form.label :password_confirmation%>
+        <%= form.password_field :password, :value => "" %>
+      </p>
+      <p>
+        <%= label_tag :temporary_password, "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :", :class => "disable-stylesheet-width" %>
+        <%= check_box_tag :temporary_password, false %>
+      </p>
+      <% end %>
     <p>
-      <%= f.label :password, "Mot de passe :" %>
-      <%= f.password_field :password, :value => "" %>
+      <%= form.label :enabled %>
+      <%= form.form_or_view(form.check_box( :enabled), @user.enabled ? "<strong>oui</strong>":"<strong>non</strong>") %>
     </p>
-    <p>
-      <%= f.label :password_confirmation, "Confirmation du mot de passe :" %>
-      <%= f.password_field :password_confirmation, :value => "" %>
-    </p>
-    <p>
-      <%= label_tag :temporary_password, "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :", :class => "disable-stylesheet-width" %>
-      <%= check_box_tag :temporary_password, false %>
-    </p>
-    <p>
-      <%= f.label :enabled, "Compte activ&eacute; :" %>
-      <%= f.check_box :enabled %>
-    </p>
-    <p>Choisir le(s) r&ocirc;le(s) de l'utilisateur</p>
+    <p><%= form.label :roles %></p>    
     <div class="scroll_checkboxes" >
         <% for associated_role in @roles %>
-        <p>
-          <%= check_box_tag "user[role_ids][]", associated_role.id, @user.roles.include?(associated_role) %>
-          <%= associated_role.name %>
-        </p>
+        <ul>
+          <li><%= form.form_or_view(check_box_tag("user[role_ids][]", associated_role.id, @user.roles.include?(associated_role)) +" "+  associated_role.name, link_to(associated_role.name,associated_role))%></li>
+        </ul>
         <% end %>
     </div>
-    <%= f.submit submit_button_name %>
+    <%if is_form_view?%>  
+      <p>
+        <%= form.reset 'Annuler' %>
+        <%= form.submit submit_button_name %>  
+      </p>
+    <%end%>    
   <% end %>
 
-
-  <%= link_to 'Retour', users_path %>
 </div>
+<%= link_to 'Retour', users_path %>
