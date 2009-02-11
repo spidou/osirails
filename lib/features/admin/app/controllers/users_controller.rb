@@ -8,6 +8,7 @@ class UsersController < ApplicationController
   # GET /users/1
   def show
     @user = User.find(params[:id])
+    @roles = Role.find(:all, :order => "name")
   end
 
   # GET /users/new
