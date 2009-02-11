@@ -8,7 +8,7 @@ class SendedMemorandumsController < ApplicationController
      memorandum = []
      memorandum += Memorandum.not_published(current_user).sort_by(&:updated_at)
      memorandum += Memorandum.published(current_user).sort_by(&:published_at).reverse
-      @sended_memorandums = memorandum.paginate :page => params[:memorandum],:per_page => 10
+     @sended_memorandums = memorandum.paginate :page => params[:memorandum],:per_page => 10
   end
   
   # GET /sended_memorandums/show

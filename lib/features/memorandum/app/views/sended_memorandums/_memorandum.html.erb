@@ -5,7 +5,11 @@
 <% end %>
 
 <div class="frame presentation_medium">
- <% form_for @sended_memorandum, :url => {:controller => 'sended_memorandums'} do |sended_memorandums|%>
+ <% form_for(   :memorandum,
+                        @sended_memorandum,
+                        :url => sended_memorandum_path(@sended_memorandum),
+                        :html => ((params[:action] == 'edit') or (params[:action] == 'update')) ? {:method => :put} : {}
+                        ) do |sended_memorandums| %>
    <%= sended_memorandums.error_messages %>
   <p><%= sended_memorandums.label :title %>
   <%= sended_memorandums.text_field :title  %></p>
