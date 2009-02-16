@@ -81,6 +81,7 @@ module ActionView
       #   Class Post
       #     cattr_reader :form_labels
       #     @@form_labels[:title] = "A short title :"
+      #     @@form_labels[:group] = "Groups :"
       #   end
       #   
       #   label(:post, :title)
@@ -88,6 +89,9 @@ module ActionView
       #   
       #   label(:post, :sub_title)
       #   # => <label for="post_sub_title">Sub title</label> # if form_labels[:symbol] is not defined, the 'method_name' is humanized
+      #   
+      #   label(:post, :group_ids)
+      #   # => <label for="post_sub_title">Groups :</label> # if form_labels[:symbol] ends with '_id' or '_ids', the symbol is checked without these characters
       # ###############
       # 
       # ###############
@@ -112,7 +116,7 @@ module ActionView
           raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
         end
         if text.nil?
-          text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub("_id","").to_sym] : "#{method.to_s}:"
+          text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub(/_id(s)?$/,"").to_sym] : "#{method.to_s}:"
           text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
         end
         ###### end hack
@@ -126,7 +130,7 @@ module ActionView
       #   strong 'Your text'
       #   # => <strong>Your text</strong>
       def strong(text)
-        content_tag :strong, text
+        content_tag :strong, h(text)
       end
       
       def reset(object, text)
