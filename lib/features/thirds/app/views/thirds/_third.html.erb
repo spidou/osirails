@@ -39,6 +39,6 @@
       <%= form.form_or_view(form.collection_select(:payment_time_limit_id, PaymentTimeLimit.find(:all), :id, :name), :payment_time_limit, :name) %>
   </p>
     <% elsif third.class.equal?(Supplier) %>
-      <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban %>
+      <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
     <%  end %>
 <% end %>

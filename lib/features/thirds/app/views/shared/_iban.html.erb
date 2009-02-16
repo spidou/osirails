@@ -1,4 +1,6 @@
-<% fields_for "#{iban.has_iban.class.name.downcase}[iban_attributes]", iban do |form| %>
+<% iban_type = iban_owner.class.name.downcase %>
+
+<% fields_for "#{iban_type}[iban_attributes]", iban do |form| %>
   <%= form.error_messages %>
 <p>
   <%= form.label :bank_name %>
