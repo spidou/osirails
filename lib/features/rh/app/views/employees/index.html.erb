@@ -28,12 +28,10 @@
       <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
     </td>
     <td><%=h employee.intranet_email %></td>
-    <% if controller.can_list?(current_user) and Employee.can_list?(current_user)%>
-      <td title="D&eacute;tails"  ><%= link_to( "<img src=\"/images/view_16x16.png\" alt=\"Détails\"/>", employee) %></td>
-    <% end %>
-    <% if controller.can_edit?(current_user) and Employee.can_edit?(current_user)%>
-      <td title="Modifier" ><%= link_to( "<img src=\"/images/edit_16x16.png\" alt=\"Modifier\"/>", edit_employee_path(employee)) %></td>
-    <% end %>
+    <td>
+      <%= show_view_button(employee) %>
+      <%= show_edit_button(employee)%>
+    </td>
   </tr>
 <% end %>
 </table>

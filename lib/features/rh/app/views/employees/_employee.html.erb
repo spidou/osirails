@@ -1,0 +1,98 @@
+<div class="frame presentation_medium">
+  <% form_for(@employee, :html => {:multipart => true}) do |f| %>
+    <%= f.error_messages %> 
+    <h2>Fiche d'identité</h2>
+    <p>
+      <%= f.label :civility %>
+      <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
+    </p>
+    <p>
+      <%= f.label :last_name %>
+      <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
+    </p>
+    <p>
+      <%= f.label :first_name %>
+      <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
+    </p>
+    <p>
+      <%= f.label :birth_date %>
+      <%= f.form_or_view(f.date_select( :birth_date,{ :start_year => 1900, :order => [:day,:month,:year] }),:birth_date)%>
+    </p>
+    <p>
+      <%= f.label :family_situation %>
+      <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
+    </p>
+    <p>
+      <%= label_tag 'social_security_number' %>
+      <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
+    </p>
+
+    <!--##################################### the following part was not modified at all -->
+
+    <% if is_form_view? %> 
+      <h2>Coordonn&eacute;es</h2>
+      <h3>Adresse postale</h3>
+      <p>
+        <%= label_tag 'employee[address][address1]', "Adresse :"%> 
+        <%= display_address1(@address.nil? ? nil : @address[:address1] )%> - <%= display_address2(@address.nil? ? nil : @address[:address2] )%>
+      </p>
+      <%= render :partial => 'addresses_old/address', :locals => {:cpt=> 1, :owner_address => @employee.address, :address_name => "employee"} %>
+      
+      <h3>Adresses &eacute;lectroniques</h3>
+      <p>
+        <%= f.label :email, "Email personnel :"%>
+        <%= f.text_field :email%>
+      </p>
+      <p>
+        <%= f.label :society_email, "Email professionnel :"%>
+        <%= f.text_field :society_email%>
+      </p>
+      <h3>Num&eacute;ros de t&eacute;l&eacute;phone</h3>
+      <%= render :partial => 'numbers', :locals => {:attribute=> 'employee'}%>
+    <% end%>
+
+    <!--#####################################-->
+    <!--########### jobs ####################-->
+    
+    <%= render :partial => 'jobs/jobs' %>    
+
+    <!--#####################################-->
+    <!--########### Iban ####################-->
+    <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
+      <h2>Identité Bancaire</h2>
+      <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals =>{ :iban_owner => @employee } %>
+    <% end %>  
+    
+    <!--#####################################-->
+    <!--########### JobContract #############-->
+    <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
+      <%= render :partial => @job_contract, :object => @job_contract%> 
+
+    <!--#####################################-->
+    <!--############## Premia ##############-->
+    <%= render :partial => @premia, :object => @employee%>     
+
+    <% end %>
+      <!--######################################--> 
+      <!--###### Display Documents div ######### -->
+    <% if is_form_view? %>
+      <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
+        
+      <span id="main_submit">
+        <p><button type=submit class="input-button">
+    	    <span><%= button_name %></span>
+        </button></p>      
+      </span>
+
+    <% end %>
+    
+
+  <% end %><!--end form -->
+</div><!--end class frame -->
+
+<%= link_to 'Retour', employees_path %>
+ 
+  
+ 
+   
+<%if is_form_view?%><%= osibox_init :partial => 'job_form', :border_size => '32'%><%end%>

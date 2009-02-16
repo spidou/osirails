@@ -25,6 +25,6 @@ class Iban < ActiveRecord::Base
   @@form_labels[:branch_code] = "Code guichet :"
   @@form_labels[:account_number] = "N&deg; de compte :"
   @@form_labels[:key] = "Cl&eacute; :"
-  @@form_labels[:account_name] = "Nom du titulaire :"
+  @@form_labels[:account_name] = "Nom du compte :"
 end  
  

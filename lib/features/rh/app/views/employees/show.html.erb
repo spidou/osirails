@@ -7,61 +7,10 @@
   </ul>
 <% end %>
 
+<%= render :partial => @employee %>
+ 
+
 <div class="frame presentation_medium">
-  <h2>Fiche d'identité</h2>
-  <p>
-    <%= label_tag "Civilité :"%>
-    <strong><%=h @employee.civility.name unless @employee.civility.nil?%></strong>
-  </p>
-  <p>
-    <%= label_tag "Nom :"%>
-    <strong><%=h @employee.last_name %></strong>
-  </p>
-  <p>
-    <%= label_tag "Prénom :"%>
-    <strong><%=h @employee.first_name %></strong>
-  </p>
-  <p>
-    <%= label_tag "Date de naissance :"%>
-    <strong><%=h @employee.birth_date.strftime("%d %B %Y") %></strong>
-  </p>
-  <p>
-    <%= label_tag "Situation familiale :"%>
-    <strong><%=h @employee.family_situation.name unless @employee.family_situation.nil?%></strong>
-  </p>
-  <p>
-    <%= label_tag "N&deg; s&eacute;curit&eacute; sociale :" %>
-    <strong><%=h @employee.social_security_number%></strong>
-  </p>
-  <h2>Fiche de poste</h2>  
-  <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
-    <%for service in @employee.services%>
-      <p>
-        <%=link_to service.name, service_path(service.id)%>
-        <%= responsable(service.id)=="" ? "" : "(Responsable(s) : #{responsable(service.id)} )"%>
-      </p>
-    <% end %>
-    
-  <h3>Fonction(s) dans l'entreprise</h3>
-  <%for job in @employee.jobs%>
-  <p>
-    <strong><%=job.name + " :"%></strong>
-    <table class="presentation">
-      <tr class="left_cell">
-        <td class="left_cell">- les missions :</td>
-        <td class="right_cell"> <%=job.mission%></td>
-      </tr>
-      <tr>
-        <td class="left_cell">- les activitées :</td>
-        <td class="right_cell"><%=job.activity %></td>
-      </tr>
-      <tr>
-        <td class="left_cell">- les objectifs :</td> 
-        <td class="right_cell"> <%=job.goal %></td>
-      </tr>
-    </table>
-  </p>  
-  <% end %>
 
   <h2>Coordonn&eacute;es</h2>
 
@@ -85,6 +34,7 @@
         <strong><%=h @address.country_name %></strong>
       </p>
   <% end %>
+
 
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>    
       <%= emails_h3(@employee) %>
@@ -118,81 +68,9 @@
               <% end %>
             </p>
           <% end %>  
-        <%end%>
-      </p>
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
-    <h2>Identité Bancaire</h2>
-      <p>
-        <%= label_tag "Nom de la banque :"%>
-        <strong><%=h @iban.bank_name %></strong>
-      </p>
-      <p>
-        <%= label_tag "Code bancaire :"%>
-        <strong><%=h @iban.bank_code %></strong>
-      </p>
-      <p>
-        <%= label_tag "Code guichet :"%>
-        <strong><%=h @iban.branch_code %></strong>
-      </p>
-      <p>
-        <%= label_tag "N° de compte :"%>
-        <strong><%=h @iban.account_number %></strong>
-      </p>
-      <p>
-        <%= label_tag "Clée :"%>
-        <strong><%=h @iban.key %></strong>
-      </p>
-      <p>
-        <%= label_tag "Nom du compte :"%>
-        <strong><%=h @iban.account_name %></strong>
-      </p>
-  <% end %>    
-  <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
-    <h2>Contrat de travail</h2>
-    <% if !@job_contract.employee_state.nil? and @job_contract.employee_state.active %>
-      <p>
-        <%= label_tag "Type de contrat :"%>
-        <strong><%=h @job_contract.job_contract_type.nil? ? "Aucun": @job_contract.job_contract_type.name %></strong>
-      </p>
-      <p>
-        <%= label_tag "D&eacute;but du contrat :"%>
-        <strong><%=h @job_contract.start_date.nil? ? "Non spécifié" : @job_contract.start_date.strftime("%d %B %Y") %></strong>
-      </p>
-      <p>  
-        <%= label_tag "Fin du contrat :"%>
-        <strong><%=h @job_contract.end_date.nil? ? "Non spécifiée" : @job_contract.end_date.strftime("%d %B %Y") %></strong>
-      </p>
-    <% end %>  
-      <p>
-        <%= label_tag "Status employ&eacute;e :"%>
-        <strong><%=h @job_contract.employee_state.nil? ? "Aucun": @job_contract.employee_state.name   %></strong>
-      </p>
-    <% if !@job_contract.employee_state.nil? and @job_contract.employee_state.active %>
-      <p>
-        <%= label_tag "Salaire brut actuel :"%>
-        <strong><%=h @job_contract.salary.nil? ? "Aucun" :  @job_contract.salary['salary'].to_s + " €"  %>
-        &#40;net &#58; <%=h   @job_contract.salary.nil? ? "Aucun" : net(@job_contract.salary['salary']).to_s + " €"  %>&#41;&nbsp; </strong>
-        <% if @employee.job_contract.salaries.size>0 %>
-          <%= link_to 'Voir historique des salaires',employee_salaries_path(@employee)%>
         <% end %>
       </p>
-    <% end %>  
-      <%= display_job_contract_edit_link(@job_contract_controller, @employee)%> 
-    
-  <% end %>    
-  <% if Premium.can_view?(current_user)or @employee.user.id == current_user.id%>
-    <h2>Primes</h2>    
-      <% @employee.premia[0...5].each do |p|%>
-          <p>
-            <strong><%= p.premium %> &euro;</strong>
-            <%= p.date.strftime("le %d %B %Y") unless p.date.nil? %>
-            <%=h( "(#{p.remark})")%> 
-          </p>
-      <% end %>
-      
-      <%= display_premia_view_link( @employee, @premia_controller) %>
-      <%= display_premia_add_link( @employee, @premia_controller) %>
-  <%end%>
+  
    
   <!-- Display Documents div -->
   <%= display_documents(@employee, @documents) %>  

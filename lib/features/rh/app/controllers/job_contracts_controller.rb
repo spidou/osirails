@@ -31,13 +31,6 @@ class JobContractsController < ApplicationController
     @documents = @job_contract.documents
     @error = false
     
-    unless params[:salaries].nil? 
-      if params[:salaries]['type']['value'] == "Net"
-        tmp = params[:salaries]['salary'].to_f/0.8
-        params[:salaries]['salary'] = tmp
-      end
-    end
-    
     if Document.can_add?(current_user, @job_contract.class)
       if params[:new_document_number]["value"].to_i > 0
         documents = params[:job_contract][:documents].dup
@@ -56,7 +49,6 @@ class JobContractsController < ApplicationController
       params[:new_document_number]["value"]  = @document_objects.size
       end
     end
-      
       
     # delete the documents in params
     docs = params[:job_contract].delete('documents')

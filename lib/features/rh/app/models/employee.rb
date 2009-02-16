@@ -5,9 +5,19 @@ class Employee < ActiveRecord::Base
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
-  
-  cattr_accessor :pattern_error
+
+  # Accessors  
+  cattr_accessor :pattern_error,:form_labels
   @@pattern_error = false
+
+  @@form_labels = Hash.new
+  @@form_labels[:civility] = "Civilit&eacute; :"
+  @@form_labels[:last_name] = "Nom :"
+  @@form_labels[:first_name] = "Pr&eacute;nom :"
+  @@form_labels[:birth_date] = "Date de naissance :"
+  @@form_labels[:family_situation] = "Situation familiale :"
+  @@form_labels[:social_security_number] = "N&deg; s&eacute;curit&eacute; sociale :"
+  
   
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
@@ -36,8 +46,9 @@ class Employee < ActiveRecord::Base
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   
   # Callbacks
-  after_create :create_user
+  after_create :create_user,:save_iban
   before_save :case_managment
+  after_update :save_iban
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment
@@ -207,6 +218,19 @@ class Employee < ActiveRecord::Base
         line_end += line_length
       end
     formated_text  
+  end
+
+    # this method permit to save the iban of the employee when it is passed with the employee form
+  def iban_attributes=(iban_attributes)
+    if iban_attributes[:id].blank?
+      self.iban = build_iban(iban_attributes)
+    else
+      self.iban.attributes = iban_attributes
+    end
+  end
+  
+  def save_iban
+     self.iban.save
   end
   
 end

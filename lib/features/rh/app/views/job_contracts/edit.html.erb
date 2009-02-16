@@ -1,4 +1,3 @@
-
 <% content_for :header do %>
   <%= javascript_include_tag 'rh/job_contract' %> 
 <% end %>
@@ -19,72 +18,5 @@
 
 <h1>Modifier un contrat de travail</h1>
 
-<div class="frame presentation_medium">
-<% form_for(@job_contract, :url => employee_job_contract_path([@employee,@job_contract]), :html => {:multipart => true}) do |f| %>
-  <%= f.error_messages %>
-  <%= error_messages_for(:salary)%>
+<%= render :partial => @job_contract, :object => @job_contract%>
 
-  <h2>Informations de l'employé</h2>
-  <p>
-    <label>Civilité :</label>
-    <strong><%= @employee.civility.name %></strong>
-  </p>
-  <p>
-    <label>Nom :</label>
-    <strong><%= @employee.last_name %></strong>
-  </p>
-  <p>
-    <label>Prénom :</label>
-    <strong><%= @employee.first_name %></strong>
-  </p>
-  
-  <h2>Informations du contrat de travail</h2>
-  <p>
-    <%= f.label :job_contract_type_id, "Type de contrat :"%>
-    <%# f.collection_select :job_contract_type_id, JobContractType.find(:all), :id, :name,{},{:title => :name} 
-    %>
-    <%= job_contract_type_select(@job_contract) %>
-  </p>
-  <p>
-    <%= f.label :start_date, "Date de début :"%>
-    <%= f.date_select :start_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => is_gone?(@job_contract) %>
-  </p>
-  <p>
-    <%= f.label :end_date, "Date de fin :"%>
-    <%= f.date_select :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => (@job_contract.end_date.nil? or is_gone?(@job_contract) or @job_contract.job_contract_type.limited==false) %> 
-  </p>
-  <p>
-    <%= f.label :employee_state_id, "Status :"%>
-    <%= f.collection_select :employee_state_id, EmployeeState.find(:all,:conditions => ["active=?",1]), :id, :name,{} , {:disabled => is_gone?(@job_contract)}%>
-  </p>
-  
-  <p>
-    <%= label_tag 'salaries[salary]', "Montant du salaire :"%>
-    <%= text_field_tag 'salaries[salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width",:disabled => is_gone?(@job_contract)%>
-    <%= select('salaries[type]','value', ["Brut","Net"],{ :selected => "Brut"},{:disabled => is_gone?(@job_contract)})%>
-  </p>
-  <% if is_gone?(@job_contract)%>
-  <div id="employee_departure_form" >
-  <% else %>
-  <div id="employee_departure_form" style="display:none;">
-  <% end %>
-    <h2>D&eacute;part de l&apos;employ&eacute;e</h2>
-    <p>
-      <%= f.label :employee_state_id, "Status :"%>
-      <%# f.collection_select :employee_state_id + "inactive", EmployeeState.find(:all,:conditions => ["active=?",0]), :id, :name 
-      %>
-      <%= employee_state_inactive(@job_contract)%>
-    </p>
-    <p>
-      <%= label :departure, "Date de d&eacute;part"%>
-      <%= f.date_select :departure, :start_year => 1950, :order => [:day,:month,:year], :disabled => !is_gone?(@job_contract)%>
-    </p>
-  </div>
-  <!-- Display Documents div -->
-  <%= display_documents_and_add_documents_button(@job_contract, @documents, params, @new_document_number, @error) %>
-  
-  <%= submit_tag "Modifier" %>
-  <%=link_to 'Retour', employee_path(@employee)%>
-  </div>
-  
-<% end %>

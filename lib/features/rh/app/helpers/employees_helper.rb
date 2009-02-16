@@ -320,4 +320,19 @@ module EmployeesHelper
     return "<th>Action</th>"  if !controller.can_edit?(current_user) or !Employee.can_edit?(current_user)
   end
   
+
+    # This method permit to test permission for edit button
+  def show_edit_button(employee)
+    if controller.can_edit?(current_user)
+      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_employee_path(employee))
+    end
+  end
+  
+  # This method permit to test permission for view button
+  def show_view_button(employee)
+    if controller.can_view?(current_user)
+      link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), employee_path(employee)) 
+    end
+  end
+  
 end

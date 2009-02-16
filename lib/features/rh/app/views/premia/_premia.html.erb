@@ -1,0 +1,16 @@
+<% if is_form_view?%>
+<% else %>
+	 <% if Premium.can_view?(current_user)or @employee.user.id == current_user.id%>
+    <h2>Primes</h2>    
+      <% @employee.premia[0...5].each do |p|%>
+          <p>
+            <strong><%= p.premium %> &euro;</strong>
+            <%= p.date.strftime("le %d %B %Y") unless p.date.nil? %>
+            <%=h( "(#{p.remark})")%> 
+          </p>
+      <% end %>
+      
+      <%= display_premia_view_link( @employee, @premia_controller) %>
+      <%= display_premia_add_link( @employee, @premia_controller) %>
+  <%end%>
+<% end%>

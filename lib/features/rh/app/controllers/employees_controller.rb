@@ -1,5 +1,8 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :documents
+  helper :salaries, :documents, :job_contracts
+
+  # Callbacks
+  before_filter :load_collections, :only => [:new, :create, :edit, :update]
   
   method_permission(:list => ["show"])
   
@@ -23,11 +26,10 @@ class EmployeesController < ApplicationController
       @job_contract_controller = Menu.find_by_name("job_contracts")
       
       @employee = Employee.find(params[:id])
-      @iban = @employee.iban
       @numbers = @employee.numbers
       @address = @employee.address
       @jobs = @employee.jobs
-      
+      @services = @employee.services
       @job_contract = @employee.job_contract
       @documents = @employee.documents
     else
@@ -42,11 +44,8 @@ class EmployeesController < ApplicationController
       
       @document_controller = Menu.find_by_name('documents')
       
-      
       @employee = Employee.new
       @job = Job.new
-      @services = Service.find(:all)
-      @jobs = Job.find(:all)
       @employee.address = Address.new
       @address = @employee.address
       @documents = @employee.documents
@@ -62,10 +61,7 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.find(params[:id])
-      @services = Service.find(:all)
-      @job = Job.new
-      @jobs = Job.find(:all)    
-      @iban = @employee.iban
+      @job = Job.new   
       @numbers = @employee.numbers
       @address = @employee.address
       @documents =@employee.documents
@@ -81,12 +77,8 @@ class EmployeesController < ApplicationController
     if Employee.can_add?(current_user)
       
       @document_controller = Menu.find_by_name('documents')
-      
-      @services = Service.find(:all)
-      @jobs = Job.find(:all) 
-      
 
-      
+     
        # @error is use to know if all form are valids
       @error = false
       
@@ -115,7 +107,6 @@ class EmployeesController < ApplicationController
       @employee = Employee.new(employee)
       @job = Job.new(params[:job]) 
       @employee.address = Address.new(params[:address])
-      @employee.iban = Iban.new(params[:iban])
       @documents = @employee.documents
       
       params[:numbers].each_value do |number|
@@ -142,7 +133,7 @@ class EmployeesController < ApplicationController
         end
       end
       
-      
+
       # save or show errors 
       if @employee.save and @error == false # and job == true
         
@@ -196,10 +187,7 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.find(params[:id])
-      @services = Service.find(:all)
-      @jobs = Job.find(:all)
       @job = Job.new(params[:job]) 
-      @iban = @employee.iban
       @numbers_reloaded||= nil
       @numbers_reloaded.nil? ? @numbers = @employee.numbers : @numbers = @numbers_reloaded
       @address = @employee.address
@@ -358,6 +346,11 @@ class EmployeesController < ApplicationController
       error_access_page(403)
     end  
   end
+
+  def load_collections
+    @jobs = Job.find(:all)
+    @services = Service.find(:all)
+  end 
   
 
 end
