@@ -44,7 +44,7 @@ search:
           updated_at: date
           salaries:
             Salary:
-              salary: number
+              gross_amount: number
           created_at: date
           job_contract_type:
             JobContractType:

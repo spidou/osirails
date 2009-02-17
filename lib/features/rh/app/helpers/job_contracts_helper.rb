@@ -34,12 +34,9 @@ module JobContractsHelper
   end
   
   # method to show the net and the brut salary if not empty
-  def display_formatted_salary(job_contract,employee)
-    job_contract.salary.nil? ? result = "Aucun" : result = job_contract.salary.brut_salary.to_s + " €"
-    result += " (net : " 
-    job_contract.salary.nil? ? result += "Aucun" : result += job_contract.salary.net_salary.to_s + " €"
-    result += ") "
-    return strong( result ) + link_to( 'Voir historique des salaires',employee_salaries_path(employee)) 
+  def display_formatted_salary(salary)
+    return "Aucun" if salary.nil?
+    "#{salary.gross_amount} € (Net : #{salary.net_amount} €)"
   end
 
 end

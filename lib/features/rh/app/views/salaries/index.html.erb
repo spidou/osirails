@@ -1,20 +1,18 @@
 <h1>Historique des salaires</h1>
 
 <div class="frame">
-<table>
-    <tr>
-      <th>Montant brut</th>
-      <th>Montant net</th>
-      <th>Date de mise en application</th>
-    </tr>
-    <% for salary in @salaries%>
-    <tr>
-      <td><%=h salary.salary%> &euro;</td>
-      <td><%=h net(salary.salary)%> &euro;</td>
-      <td><%=h salary.created_at.strftime("%d/%m/%Y")%></td>
-    </tr> 
-    <%end%>
-</table>
-
-<%= link_to  'Retour', employee_path(@employee) %>
+  <table>
+      <tr>
+        <th>Montant brut</th>
+        <th>Montant net</th>
+        <th>Date de mise en application</th>
+      </tr>
+      <% for salary in @salaries%>
+      <tr>
+        <td><%=h salary.gross_amount%> &euro;</td>
+        <td><%=h net(salary.net_amount)%> &euro;</td>
+        <td><%=h salary.created_at.strftime("%d/%m/%Y")%></td>
+      </tr> 
+      <%end%>
+  </table>
 </div>

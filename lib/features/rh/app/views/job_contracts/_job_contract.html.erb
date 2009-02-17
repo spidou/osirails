@@ -38,12 +38,11 @@
   </p>
   
   <p>
-    <%= f.label :salary%>
+    <%= f.label :gross_amount%>
     <% if is_form_view? %>
-      <%= text_field_tag( 'job_contract[salary_attributes][salary]',@job_contract.salaries==[]? "": @job_contract.salaries.last['salary'].to_s,{:size =>8,:maxlength => 10,:class=>"disable-stylesheet-width",:disabled => is_gone?(@job_contract)})%>
-      <%= select('job_contract[salary_attributes][type]','value', ["Brut","Net"],{ :selected => "Brut"},{:disabled => is_gone?(@job_contract)})%>
+      <%= text_field_tag( 'job_contract[salary_attributes][gross_amount]', @job_contract.actual_salary.gross_amount, { :size => 8, :maxlength => 10, :class => "disable-stylesheet-width",:disabled => is_gone?(@job_contract) } )%>
     <% else%>
-      <%= display_formatted_salary(@job_contract,@employee)%>
+      <%= strong(display_formatted_salary(@job_contract.actual_salary)) + " " + link_to( 'Voir historique des salaires', employee_salaries_path(@employee)) %>
       <%= display_job_contract_edit_link(@job_contract_controller, @employee)%>
     <% end %>
   </p>

@@ -31,27 +31,27 @@ class JobContractsController < ApplicationController
     @documents = @job_contract.documents
     @error = false
     
-    if Document.can_add?(current_user, @job_contract.class)
-      if params[:new_document_number]["value"].to_i > 0
-        documents = params[:job_contract][:documents].dup
-        @document_objects = Document.create_all(documents, @job_contract)
-      end
-      document_params_index = 0
-      params[:new_document_number]["value"].to_i.times do |i|
-        params[:job_contract][:documents]["#{document_params_index += 1}"] = params[:job_contract][:documents]["#{i + 1}"] unless params[:job_contract][:documents]["#{i + 1}"][:valid] == "false"
-      end
-      ## Test if all documents enable are valid
-      unless @document_objects.nil?
-        @document_objects.size.times do |i|
-          @error = true unless @document_objects[i].valid?
-        end
-        ## Reaffect document number
-      params[:new_document_number]["value"]  = @document_objects.size
-      end
-    end
-      
-    # delete the documents in params
-    docs = params[:job_contract].delete('documents')
+#    if Document.can_add?(current_user, @job_contract.class)
+#      if params[:new_document_number]["value"].to_i > 0
+#        documents = params[:job_contract][:documents].dup
+#        @document_objects = Document.create_all(documents, @job_contract)
+#      end
+#      document_params_index = 0
+#      params[:new_document_number]["value"].to_i.times do |i|
+#        params[:job_contract][:documents]["#{document_params_index += 1}"] = params[:job_contract][:documents]["#{i + 1}"] unless params[:job_contract][:documents]["#{i + 1}"][:valid] == "false"
+#      end
+#      ## Test if all documents enable are valid
+#      unless @document_objects.nil?
+#        @document_objects.size.times do |i|
+#          @error = true unless @document_objects[i].valid?
+#        end
+#        ## Reaffect document number
+#      params[:new_document_number]["value"]  = @document_objects.size
+#      end
+#    end
+#      
+#    # delete the documents in params
+#    docs = params[:job_contract].delete('documents')
     
     params[:job_contract]['end_date'] = nil if params[:job_contract]['end_date'].nil?
     
@@ -78,20 +78,20 @@ class JobContractsController < ApplicationController
       @employee.user.save
       
       @job_contract.salaries << @salary unless @salary.nil?
-      # save the job_contract's documents
-      unless params[:new_document_number].nil?
-        if params[:new_document_number]["value"].to_i > 0
-          @document_objects.each do |document|
-            if document.save == true
-              @job_contract.documents << document
-              document.create_thumbnails
-              document.create_preview_format
-            else
-              @error = true
-            end
-          end
-        end
-      end
+#      # save the job_contract's documents
+#      unless params[:new_document_number].nil?
+#        if params[:new_document_number]["value"].to_i > 0
+#          @document_objects.each do |document|
+#            if document.save == true
+#              @job_contract.documents << document
+#              document.create_thumbnails
+#              document.create_preview_format
+#            else
+#              @error = true
+#            end
+#          end
+#        end
+#      end
         
       flash[:notice] = ' Le contrat de travail de ' + @employee.fullname + ' a été modifié avec succés.'
       redirect_to(@employee) 
