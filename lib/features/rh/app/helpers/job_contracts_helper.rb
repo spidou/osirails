@@ -38,8 +38,8 @@ module JobContractsHelper
     job_contract.salary.nil? ? result = "Aucun" : result = job_contract.salary.brut_salary.to_s + " €"
     result += " (net : " 
     job_contract.salary.nil? ? result += "Aucun" : result += job_contract.salary.net_salary.to_s + " €"
-    result += ") " + link_to( 'Voir historique des salaires',employee_salaries_path(employee))
-    return result  
+    result += ") "
+    return strong( result ) + link_to( 'Voir historique des salaires',employee_salaries_path(employee)) 
   end
 
 end
