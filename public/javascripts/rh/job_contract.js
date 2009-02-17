@@ -28,7 +28,7 @@ function is_limited(select)
 
 function disable_all()
 {
-  tab = ['job_contract_end_date_3i','job_contract_end_date_2i','job_contract_end_date_1i','job_contract_start_date_3i','job_contract_start_date_2i','job_contract_start_date_1i','job_contract_job_contract_type_id','job_contract_employee_state_id','salaries[salary]','salaries_type_value']
+  tab = ['job_contract_end_date_3i','job_contract_end_date_2i','job_contract_end_date_1i','job_contract_start_date_3i','job_contract_start_date_2i','job_contract_start_date_1i','job_contract_job_contract_type_id','job_contract_employee_state_id','job_contract[salary_attributes][salary]','job_contract_salary_attributes__type_value']
   if (document.getElementById('employee_departure').checked==true)
   {
     for(i=0;i<tab.length;i++)
