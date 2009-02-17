@@ -1,5 +1,5 @@
 <% if is_form_view?%>
-
+  <%@premium||=nil %>
   <% form_for([@employee,@premium]) do |f| %>
     <%=f.error_messages%> 
     <h2>Prime</h2>
