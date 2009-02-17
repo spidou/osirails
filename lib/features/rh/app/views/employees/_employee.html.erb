@@ -23,11 +23,11 @@
       <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
     </p>
     <p>
-      <%= label_tag 'social_security_number' %>
+      <%= f.label 'social_security_number' %>
       <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
     </p>
 
-    <!--##################################### the following part was not modified at all -->
+<!--##################################### the following part was not modified at all -->
 
     <% if is_form_view? %> 
       <h2>Coordonn&eacute;es</h2>
@@ -51,30 +51,37 @@
       <%= render :partial => 'numbers', :locals => {:attribute=> 'employee'}%>
     <% end%>
 
-    <!--#####################################-->
-    <!--########### jobs ####################-->
+<!--#####################################-->
+<!--########### jobs ####################-->
     
     <%= render :partial => 'jobs/jobs' %>    
 
-    <!--#####################################-->
-    <!--########### Iban ####################-->
+<!--#####################################-->
+<!--########### Iban ####################-->
+
     <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
       <h2>Identité Bancaire</h2>
       <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals =>{ :iban_owner => @employee } %>
     <% end %>  
     
-    <!--#####################################-->
-    <!--########### JobContract #############-->
+<!--#####################################-->
+<!--########### JobContract #############-->
+
     <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
       <%= render :partial => @job_contract, :object => @job_contract%> 
+     <% end %>
 
-    <!--#####################################-->
-    <!--############## Premia ##############-->
-    <%= render :partial => @premia, :object => @employee%>     
+<!--####################################-->
+<!--############## Premia ##############-->
+<!--# the partial premia/premia is the file _premia in the folder premia in teh views folder of rh feature--> 
 
+    <% if Premium.can_view?(current_user)or @employee.user.id == current_user.id%>
+      <%= render :partial => 'premia/premia', :object => @employee%>     
     <% end %>
-      <!--######################################--> 
-      <!--###### Display Documents div ######### -->
+   
+<!--####################################--> 
+<!--###### Display Documents div #######-->
+
     <% if is_form_view? %>
       <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
         

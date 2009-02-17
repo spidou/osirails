@@ -6,22 +6,6 @@
 
 <div class="frame presentation_small">
 
-<% form_for([@employee,@premium]) do |f| %>
-  <%=f.error_messages%> 
-  <h2>Prime</h2>
-  <p>
-    <%= f.label :premium, "Prime :" %>
-    <%= f.text_field :premium, {:size => 8, :maxlength => 10, :class => "disable-stylesheet-width"} %>
-    &nbsp;le&nbsp;
-    <%= f.date_select :date, :start_year => 2000, :order => [:day,:month,:year] %>
-  </p>
-  <p>
-    <%= f.label :remark, "Motif :" %>
-    <%= f.text_area :remark, :rows => "5" %>
-  </p>
-  <p>
-    <%= f.submit "Ajouter", :onclick => "return confirm_premium();" %>
-  </p>
-<%end%>
+  <%= render :partial => "premia/premia", :object => [@employee,@premia] %>
 
 </div>
