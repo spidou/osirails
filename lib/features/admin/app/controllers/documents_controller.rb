@@ -40,7 +40,7 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     path = "documents/#{@document.path}#{@document.id}_75_75.#{@document.extension}"
     img=File.read(path)
-    send_data(img, :filename =>'workshopimage', :type => "image/jpeg", :disposition => "inline")
+    send_data(img, :filename => 'workshopimage', :type => "image/jpeg", :disposition => "inline")
     #    end
   end
   

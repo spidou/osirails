@@ -99,5 +99,22 @@ module DocumentsHelper
   def display_add_document_button(owner, params, new_document_number, error)
     render :partial => 'documents/new_document', :locals => {:params => params, :owner_type => owner.class.name, :owner_id => owner.id, :new_document_number => new_document_number, :error => error}
   end
+
+  def display_documents_list(documents_owner)
+    html = "<h2>Documents</h2>"
+    html << "<div id=\"documents\">"
+    unless documents_owner.documents.empty?
+      html << "Classer par Type | Date | Nom"
+      html << render(:partial => 'documents/document', :collection => documents_owner.documents)
+    else
+      html << "<p>Aucun document n'a été trouvé</p>"
+    end
+    html << "</div>"
+  end
   
+  def display_document_add_button(documents_owner)
+    link_to_function "Ajouter un document" do |page|
+      page.insert_html :bottom, :documents, :partial => 'documents/document_form', :object => documents_owner.documents.build , :locals => { :documents_owner => documents_owner }
+    end
+  end
 end
