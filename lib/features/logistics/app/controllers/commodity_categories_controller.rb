@@ -9,7 +9,6 @@ class CommodityCategoriesController < ApplicationController
   
   # POST /commodity_categories
   def create
-    @categories = CommodityCategory.root
     @category = CommodityCategory.new(params[:commodity_category])
     if @category.save
       flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
@@ -18,6 +17,7 @@ class CommodityCategoriesController < ApplicationController
       unless params[:commodity_category][:commodity_category_id].to_i == 0
         @root_commodity_category = params[:commodity_category][:commodity_category_id].to_i
       end
+      @categories = CommodityCategory.root
       render :action => 'new'
     end
   end

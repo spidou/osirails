@@ -35,19 +35,19 @@ class ProductReferenceCategoriesController < ApplicationController
   
   # POST /product_reference_categories
   def create
-    @categories = ProductReferenceCategory.find(:all)
     @category = ProductReferenceCategory.new(params[:product_reference_category])
     if @category.save
       flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to product_reference_manager_path
     else
+      @categories = ProductReferenceCategory.find(:all)
       render :action => 'new'
     end
   end
   
   # PUT /product_reference_categories/1
   def update
-    @categories = ProductReferenceCategory.find(:all)
+    # @categories = ProductReferenceCategory.find(:all)
     @category = ProductReferenceCategory.find(params[:id])
     new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
     if @category.can_has_this_parent?(new_parent_category_id)

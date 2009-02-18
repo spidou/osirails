@@ -1,7 +1,2 @@
 <h1>Création d'une nouvelle référence</h1>
-
-<div class="frame presentation_large">
-<% form_for(@reference) do |reference| %>
-  <%= render :partial => "form", :locals => {:reference => reference, :submit_button_name => "Ajouter"} %>
-<% end %>
-</div>
+<%= render :partial => @reference, :locals => {:submit_button_name => "Ajouter"} %>

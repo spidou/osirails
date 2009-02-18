@@ -1,6 +1,2 @@
 <h1>Modifier <%= @category.name %></h1>
-<div class="frame presentation_medium">
-  <% form_for(@category) do |category| %>
-      <%= render :partial => "form", :locals => {:category => category, :submit_button_name => "Modifier"} %>
-  <% end %>
-</div>
+<%= render:partial => @category, :locals => {:submit_button_name => "Modifier"} %>

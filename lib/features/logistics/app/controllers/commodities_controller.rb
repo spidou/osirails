@@ -12,13 +12,13 @@ class CommoditiesController < ApplicationController
   
   # POST /commodities
   def create
-    @categories = CommodityCategory.root_child
-    @suppliers = Supplier.find(:all)
     @commodity = Commodity.new(params[:commodity])
     if @commodity.save
       flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
+      @categories = CommodityCategory.root_child
+      @suppliers = Supplier.find(:all)
       @commodity_category_id = params[:commodity][:commodity_category_id]
       render :action => 'new'
     end
@@ -44,13 +44,19 @@ class CommoditiesController < ApplicationController
   def destroy
     @commodity = Commodity.find(params[:id])
     if @commodity.can_destroy?
-      @commodity.destroy
-      flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+      if @commodity.destroy
+        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+      else
+        flash[:error] = 'Erreur lors de la suppression'
+      end
     else
       @commodity.enable = false
       @commodity.counter_update
-      @commodity.save
-      flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+      if @commodity.save
+        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+      else
+        flash[:error] = 'Erreur lors de la suppression'
+      end
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end

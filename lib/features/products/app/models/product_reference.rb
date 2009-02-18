@@ -9,6 +9,18 @@ class ProductReference < ActiveRecord::Base
   validates_presence_of :name, :reference, :message => "ne peut être vide"
   validates_uniqueness_of :reference, :message => "doit être unique"
   
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:reference] = "R&eacute;f&eacute;rence :"
+  @@form_labels[:name] = "Nom :"
+  @@form_labels[:description] = "Description :"
+  @@form_labels[:information] = "Informations complémentaires :"
+  @@form_labels[:product_reference_category] = "Famille de produit :"
+  @@form_labels[:production_cost_manpower] = "Coût de main-d'oeuvre :"
+  @@form_labels[:production_time] = "Durée :"
+  @@form_labels[:delivery_cost_manpower] = "Coût de main-d'oeuvre :"
+  @@form_labels[:delivery_time] = "Durée :"
+  
   def after_create
     self.counter_update("create")
   end

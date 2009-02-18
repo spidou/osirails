@@ -21,6 +21,7 @@ class ProductReferencesController < ApplicationController
   # GET /product_reference/1
   def show
     @reference = ProductReference.find(params[:id])
+    @categories = ProductReferenceCategory.find(:all)
     respond_to do |format|
       format.html
       format.js { render :layout => false}
@@ -34,22 +35,20 @@ class ProductReferencesController < ApplicationController
     @categories = ProductReferenceCategory.find(:all)
   end
   
-  
   # POST /product_references
   def create
-    @categories = ProductReferenceCategory.find(:all)
     @reference = ProductReference.new(params[:product_reference])
     if @reference.save
       flash[:notice] = "La r&eacute;f&eacute;rence a &eacute;t&eacute; cr&eacute;&eacute;e avec succ&egrave;s"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
+      @categories = ProductReferenceCategory.find(:all)
       render :action => 'new'
     end
   end
   
   # PUT /product_references/1
   def update
-    @categories = ProductReferenceCategory.find(:all)
     @reference = ProductReference.find(params[:id])
     @reference.counter_update("disable_or_before_update")
     if @reference.update_attributes(params[:product_reference])
@@ -58,6 +57,7 @@ class ProductReferencesController < ApplicationController
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       flash[:error] = 'Une erreur est survenue lors de la mise &agrave; jour'
+      @categories = ProductReferenceCategory.find(:all)
       render :action => 'edit'
     end
   end

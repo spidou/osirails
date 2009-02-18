@@ -11,6 +11,11 @@ class ProductReferenceCategory < ActiveRecord::Base
   # Validation Macros
   validates_presence_of :name, :message => "ne peut être vide"
 
+   cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "Nom :"
+  @@form_labels[:product_reference_category] = "Cat&eacute;gorie parente :"
+  
   # This method permit to update counter of parents categories
   def counter_update(index,value)
     category = ProductReferenceCategory.find(self.id)
