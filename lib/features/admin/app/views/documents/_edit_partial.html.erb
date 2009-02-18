@@ -20,21 +20,21 @@
 </iframe>
 
 <!-- form  -->
-<% form_for(:document, @document,  :url => url, :html => { :multipart => true, :target => "upload_frame", :method => "PUT"}) do |d| %>
-    <%= d.error_messages %>
+<% form_for(:document, @document,  :url => url, :html => { :multipart => true, :target => "upload_frame", :method => "PUT"}) do |form| %>
+    <%= form.error_messages %>
     <p>
-      <%= d.label :name%>
-      <%= d.text_field :name%>
+      <%= form.label :name%>
+      <%= form.text_field :name%>
     </p>
     
     <p>
-      <%= d.label :description%>
-      <%= d.text_field :description%>
+      <%= form.label :description%>
+      <%= form.text_field :description%>
     </p>
 
     <p>
-        <%= d.label :tag_list, "Tags"%>
-        <%= d.text_field :tag_list%>
+        <%= form.label :tag_list, "Tags"%>
+        <%= form.text_field :tag_list%>
     </p>
 
     <p>
@@ -42,7 +42,7 @@
       <%= file_upload%>
     </p>
     
-    <%= d.submit("Uploader")%> 
+    <%= form.submit("Uploader")%> 
     <%= will_paginate document_versions, :renderer => 'RemoteLinkRenderer', :remote => {:update => "testpage"}, :prev_label => " << pr&eacute;c&eacute;dent", :params => {:document_id => document.id}, :next_label => "suivant >>" %>
   <%end%>
 

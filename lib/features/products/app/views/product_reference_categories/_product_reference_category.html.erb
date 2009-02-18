@@ -1,14 +1,14 @@
 <div class="frame presentation_medium">
-<% form_for @category do |category|%>
-<%= category.error_messages %>
+<% form_for @category do |form|%>
+<%= form.error_messages %>
   <p>
-    <%= category.label :name %>
-    <%= category.text_field :name %>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
   </p>
   <p>
-    <%= category.label :product_reference_category_id %>
-    <%= category.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name , options = {:indentation => 15, :include_blank => '-- Racine --'}) %>
+    <%= form.label :product_reference_category_id %>
+    <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name , options = {:indentation => 15, :include_blank => '-- Racine --'}) %>
   </p>
-  <%= category.submit submit_button_name %> <%= link_to( "Retour", product_reference_manager_path ) %>
+  <%= form.submit submit_button_name %> <%= link_to( "Retour", product_reference_manager_path ) %>
 <% end %>
 </div>

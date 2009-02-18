@@ -4,8 +4,8 @@
 <% end %>
 
 <div class="frame presentation_medium">
-<% form_for(@content) do |content| %> 
- <%= content.error_messages %>
+<% form_for(@content) do |form| %> 
+ <%= form.error_messages %>
     <%= error_messages_for("menu")%>
     <h2>Information concerant le menu</h2>
     <p>
@@ -23,15 +23,15 @@
 
     <h2>Information concernant le contenu</h2>
     <p>
-      <%= content.label :title, "Titre :" %>
-      <%= content.text_field :title %>
+      <%= form.label :title %>
+      <%= form.text_field :title %>
     </p>
     <p>
-      <%=content.label :description, "Description :" %>
-      <%= content.text_field :description %>
+      <%= form.label :description %>
+      <%= form.text_field :description %>
     </p>
     <p>
-      <%= content.text_area( :text, :cols => 100, :rows => 30) %>
+      <%= form.text_area(:text, :cols => 100, :rows => 30) %>
     </p>
 
     <%= submit_tag submit_button_name %>

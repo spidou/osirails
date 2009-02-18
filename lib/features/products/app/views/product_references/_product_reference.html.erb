@@ -1,48 +1,48 @@
 <div class="frame presentation_large">
-<% form_for @reference do |reference| %>
-<%= reference.error_messages %>
+<% form_for @reference do |form| %>
+<%= form.error_messages %>
   <h2>Rérérence</h2>
   <p>
-    <%= reference.label :reference %>
-    <%= reference.form_or_view(reference.text_field(:reference), :reference) %>
+    <%= form.label :reference %>
+    <%= form.form_or_view(form.text_field(:reference), :reference) %>
   </p>
   <p>
-    <%= reference.label :name %>
-    <%=  reference.form_or_view(reference.text_field(:name), :name) %>
+    <%= form.label :name %>
+    <%= form.form_or_view(form.text_field(:name), :name) %>
   </p>
   <p>
-    <%= reference.label :description %>
-    <%=  reference.form_or_view(reference.text_area(:description, :rows => "5", :cols => "50"), :description) %>
+    <%= form.label :description %>
+    <%= form.form_or_view(form.text_area(:description, :rows => "5", :cols => "50"), :description) %>
   </p>
   <p>
-    <%= reference.label :information %>
-    <%=  reference.form_or_view(reference.text_field(:information)) %>
+    <%= form.label :information %>
+    <%= form.form_or_view(form.text_field(:information)) %>
   </p>
   <p>
-    <%= reference.label :product_reference_category_id %>
-    <%= reference.form_or_view(reference.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category_id, :name) %>
+    <%= form.label :product_reference_category_id %>
+    <%= form.form_or_view(form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category_id, :name) %>
   </p>
 
   <h2>Informations concernant la production</h2>
   <p>
-    <%= reference.label :production_cost_manpower %>
-    <%= reference.form_or_view(reference.text_field(:production_cost_manpower), :production_cost_manpower) %>
+    <%= form.label :production_cost_manpower %>
+    <%= form.form_or_view(form.text_field(:production_cost_manpower), :production_cost_manpower) %>
   </p>
   <p>
-    <%= reference.label :production_time %>
-    <%= reference.form_or_view(reference.text_field(:production_time), :production_time) %>
+    <%= form.label :production_time %>
+    <%= form.form_or_view(form.text_field(:production_time), :production_time) %>
   </p>
 
   <h2>Informations concernant la livraison</h2>
   <p>
-    <%= reference.label :delivery_cost_manpower %>
-    <%= reference.form_or_view(reference.text_field(:delivery_cost_manpower), :delivery_cost_manpower) %>
+    <%= form.label :delivery_cost_manpower %>
+    <%= form.form_or_view(form.text_field(:delivery_cost_manpower), :delivery_cost_manpower) %>
   </p>
   <p>
-    <%= reference.label :delivery_time %>
-    <%= reference.form_or_view(reference.text_field(:delivery_time), :delivery_time) %>
+    <%= form.label :delivery_time %>
+    <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
   </p>
 
-  <%= reference.submit submit_button_name %> <%= link_to( "Retour", product_reference_manager_path) %>
+  <%= form.submit submit_button_name %> <%= link_to( "Retour", product_reference_manager_path) %>
 <% end %>
 </div>

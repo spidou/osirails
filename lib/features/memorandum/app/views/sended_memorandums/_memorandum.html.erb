@@ -5,22 +5,22 @@
 <% end %>
 
 <div class="frame presentation_medium">
- <% form_for(   :memorandum,
-                        @sended_memorandum,
-                        :url => sended_memorandum_path(@sended_memorandum),
-                        :html => ((params[:action] == 'edit') or (params[:action] == 'update')) ? {:method => :put} : {}
-                        ) do |sended_memorandums| %>
-   <%= sended_memorandums.error_messages %>
-  <p><%= sended_memorandums.label :title %>
-  <%= sended_memorandums.text_field :title  %></p>
+ <% form_for( :memorandum,
+              @sended_memorandum,
+              :url => sended_memorandum_path(@sended_memorandum),
+              :html => ((params[:action] == 'edit') or (params[:action] == 'update')) ? {:method => :put} : {}
+              ) do |form| %>
+   <%= form.error_messages %>
+  <p><%= form.label :title %>
+  <%= form.text_field :title  %></p>
 
-  <p><%= sended_memorandums.label :subject%>
-  <%= sended_memorandums.text_field :subject  %></p>
+  <p><%= form.label :subject%>
+  <%= form.text_field :subject  %></p>
 
-  <p><%= sended_memorandums.label :text %>
-  <%= sended_memorandums.text_area( :text, :cols => 100, :rows => 30) %></p>
+  <p><%= form.label :text %>
+  <%= form.text_area( :text, :cols => 100, :rows => 30) %></p>
 
-  <p><%= sended_memorandums.label :signature %>
+  <p><%= form.label :signature %>
   <%= initialize_signature %></p>
 
   <%= show_structured_services(@sended_memorandum, action = params[:action]) %>
@@ -42,15 +42,10 @@
     </table>
   </div>
 
-  <% if !@sended_memorandum.published_at? %>
-    <p><label>Publier : </label>
-    <input type='checkbox' value='true' name='published[publish]' /><i> (Attention cette action annule la possibilit&eacute;e de modifier la note de service)</i></p>
-  <% end %>
-
-  <% if (params[:action] == 'new') or (params[:action] == 'create')%>
-    <%= sended_memorandums.submit("Enregistrer") %>
-  <% elsif (params[:action] == 'edit') or (params[:action] == 'update') and !@sended_memorandum.published_at? %>
-     <%= sended_memorandums.submit("Modifier") %>
-  <%  end %>
+   <p>
+     <label>Publier : </label>
+     <input type='checkbox' value='true' name='published[publish]' /><i> (Attention cette action annule la possibilit&eacute;e de modifier la note de service)</i>
+   </p>
+   <%= form.submit submit_button_name %>
 <% end %>
 </div>

@@ -11,6 +11,15 @@ class Commodity < ActiveRecord::Base
   validates_presence_of :name, :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :message => "ne peut être vide."
   validates_numericality_of :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :message => "ne peut être des lettres."
 
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "D&eacute;signation :"
+  @@form_labels[:commodity_category] = "Appartient &agrave; :"
+  @@form_labels[:supplier] = "Fournisseur :"
+  @@form_labels[:unit_mass] = "kg / U :"
+  @@form_labels[:fob_unit_price] = "fob :"
+  @@form_labels[:taxe_coefficient] = "Coef Taxe (%) :"
+
   def after_destroy
     self.counter_update(1)
   end

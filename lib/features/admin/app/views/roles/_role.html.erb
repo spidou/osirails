@@ -1,18 +1,18 @@
 <div class="frame presentation_medium">
 
-<% form_for(@role) do |f| %>
-  <%= f.error_messages %>
+<% form_for(@role) do |form| %>
+  <%= form.error_messages %>
   
   <p>
-    <%= f.label :name %>
-    <%= f.form_or_view(f.text_field(:name), :name) %>
+    <%= form.label :name %>
+    <%= form.form_or_view(f.text_field(:name), :name) %>
   </p>
   <p>
-    <%= f.label :description %>
-    <%= f.form_or_view(f.text_area(:description), :description) %>
+    <%= form.label :description %>
+    <%= form.form_or_view(f.text_area(:description), :description) %>
   </p>
   <div class="form_multiple_entries">
-    <%= f.label :user_ids %>
+    <%= form.label :user_ids %>
     <div class="collection">
       <% for user in (is_form_view? ? User.find(:all, :order => :username) : @role.users) %>
         <div class="object">

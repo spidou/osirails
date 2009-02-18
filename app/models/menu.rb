@@ -28,6 +28,12 @@ class Menu < ActiveRecord::Base
   # Includes
   include Permissible::InstanceMethods
   
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:title] = "Titre :"
+  @@form_labels[:description] = "Description :"
+  @@form_labels[:parent] = "Menu parent :"
+  
   def before_update
     if self.update_parent
       @new_parent_id, self.parent_id = self.parent_id, self.old_parent_id
