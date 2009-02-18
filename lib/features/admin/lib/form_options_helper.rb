@@ -116,7 +116,12 @@ module ActionView
           raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
         end
         if text.nil?
-          text = options[:object].class.respond_to?("form_labels") ? options[:object].class.form_labels[method.to_s.gsub(/_id(s)?$/,"").to_sym] : "#{method.to_s}:"
+          key = method.to_s.gsub(/_id(s)?$/,"").to_sym
+          if options[:object].class.respond_to?("form_labels") and !options[:object].class.form_labels[key].nil?
+            text = options[:object].class.form_labels[key]
+          else
+            text = "#{key.to_s}:"
+          end
           text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
         end
         ###### end hack

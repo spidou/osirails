@@ -13,13 +13,11 @@ class RolesController < ApplicationController
   # GET /roles/new
   def new
     @role = Role.new
-    @users = User.find(:all, :order => :username)
   end
 
   # GET /roles/1/edit
   def edit
     @role = Role.find(params[:id])
-    @users = User.find(:all, :order => :username)
   end
 
   # POST /roles
@@ -29,20 +27,18 @@ class RolesController < ApplicationController
       flash[:notice] = 'Le r&ocirc;le a &eacute;t&eacute; ajout&eacute; avec succ&egrave;s.'
       redirect_to(@role) 
     else
-      @users = User.find(:all, :order => :username)
       render :action => "new"
     end
   end
 
   # PUT /roles/1
   def update
-     params[:role][:user_ids] ||= []
+    params[:role][:user_ids] ||= []
     @role = Role.find(params[:id])
     if @role.update_attributes(params[:role])
       flash[:notice] = 'Le r&ocirc;le a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
       redirect_to(@role)
     else
-      @users = User.find(:all, :order => :username)
       render :action => "edit" 
     end
   end
@@ -53,6 +49,4 @@ class RolesController < ApplicationController
     @role.destroy
     redirect_to(roles_url) 
   end
-
 end
-

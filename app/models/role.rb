@@ -16,6 +16,7 @@ class Role < ActiveRecord::Base
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom du r&ocirc;le :"
   @@form_labels[:description] = "Description du r&ocirc;le :"
+  @@form_labels[:user] = "Membres :"
   
   def create_role_permissions
     all_business_objects = BusinessObjectPermission.find(:all, :group => 'has_permission_type')
