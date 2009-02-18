@@ -101,7 +101,11 @@ end
 
 module ActiveSupport
   class TimeWithZone
-    def humanize
+    def to_humanized_date
+      self.strftime("%d %B %Y")
+    end
+    
+    def to_humanized_datetime
       self.strftime("%d %B %Y à %I:%M")
     end
   end

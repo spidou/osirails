@@ -1,7 +1,7 @@
 <div class="frame presentation_medium">
 
 <% if is_form_view? %>
-  <% form_for @customer do |form| %>
+  <% form_for @customer, :html => { :multipart => true } do |form| %>
     <%= render :partial => 'thirds/third', :object => @customer %>
 
     <%= display_establishments_list(@customer.activated_establishments) %>
@@ -10,7 +10,8 @@
     <%= display_contacts_list(@customer) %>
     <%= display_contact_add_button(@customer) %>
 
-    <%# display_documents_and_add_documents_button(@customer, @documents, params, @new_document_number, @error) %>
+    <%= display_documents_list(@customer) %>
+    <%= display_document_add_button(@customer) %>
     
   <p>
     <%= form.reset 'Annuler' %>
@@ -21,6 +22,7 @@
   <%= render :partial => 'thirds/third', :object => @customer %>
   <%= display_establishments_list(@customer.activated_establishments) %>
   <%= display_contacts_list(@customer) %>
+  <%= display_documents_list(@customer) %>
 <% end %>
 
 </div>

@@ -2,10 +2,13 @@
 
 <div class="frame tabulation">
 	<h2>Avancement global</h2>
-		<%= order_timeline %>
-	<h2>Contacts</h2>
-	<p>Contacts sur site</p>
+  <%= render :partial => 'orders/order_timeline', :object => @order %>
 
-	<p>Contacts pour facturation</p>
+	<h2>Contacts</h2>
+  <div class="form_multiple_entries">
+    <div class="collection">
+      <%= render :partial => 'contacts/contact_chooser', :collection => @order.contacts, :locals => { :contacts_owner => @order } %>
+    </div>
+  </div>
 	<h2>Remarques</h2>
 </div>

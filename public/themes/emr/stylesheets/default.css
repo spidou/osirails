@@ -1135,7 +1135,7 @@ width: 50px ! important;
 	vertical-align:top;
 }
 
-/* FORM WITH MULTIPLE VALUES */
+/* FORM WITH MULTIPLE ENTRIES */
 
 .frame .form_multiple_entries {
   margin: 0 0 0 9px;
@@ -1158,7 +1158,7 @@ width: 50px ! important;
   margin-bottom: 10px;
 }
 
-.frame .form_multiple_entries .object .details {
+.frame .form_multiple_entries .object .object_details {
   border-width: 0 1px 1px 1px;
   border-style: solid;
   border-color: #ddd;
@@ -1167,7 +1167,7 @@ width: 50px ! important;
   padding: 0;
 }
 
-.frame .form_multiple_entries .object .details p {
+.frame .form_multiple_entries .object .object_details p {
   margin: 0;
   padding: 3px 5px 3px 5px;
 }
@@ -1864,6 +1864,19 @@ div.steps_text p {
 	color:#333;
 	font-size:1.05em;
 	text-decoration:underline;
+}
+
+/*/////////////////DOCUMENT VIEW V2/////////////////*/
+
+#documents {
+  padding: 8px;
+  margin: 8px;
+}
+
+.document {
+  border: 1px dashed grey;
+  margin: 4px;
+  padding: 2px;
 }
 
 /*/////////////////HUMAN RESSOURCES/////////////////*/

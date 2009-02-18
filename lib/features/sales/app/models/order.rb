@@ -15,6 +15,16 @@ class Order < ActiveRecord::Base
   # Validations
   validates_presence_of [:customer, :title, :order_type, :commercial, :establishment ]
   
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:title] = 'Nom du projet :'
+  @@form_labels[:order_type] = 'Type de dossier :'
+  @@form_labels[:commercial] = 'Commercial :'
+  @@form_labels[:establishment] = 'Etablissement concerné :'
+  @@form_labels[:contacts] =  'Contact(s) concerné(s) :'
+  @@form_labels[:created_at] = 'Date de cr&eacute;ation :'
+  @@form_labels[:previsional_start] = 'Date pr&eacute;visionnelle de mise en production :'
+  @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
   
   # Create all orders_steps after create
   def after_create

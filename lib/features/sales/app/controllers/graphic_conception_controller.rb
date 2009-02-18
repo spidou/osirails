@@ -39,7 +39,7 @@ class GraphicConceptionController < ApplicationController
         end
         
         pdf.footer "./."
-                
+        
         send_data pdf.generate, :filename => "bonatirer_#{@order.id}.pdf"
       }
     end

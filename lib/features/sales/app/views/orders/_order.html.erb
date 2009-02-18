@@ -7,21 +7,21 @@
   
   <h3>Informations</h3>
   <p>
-    <%= form.label :title, 'Nom du projet :' %>
+    <%= form.label :title %>
     <%= form.text_field :title %>
   </p>
   <p>
-    <%= form.label :order_type_id, 'Type de dossier :' %>
+    <%= form.label :order_type_id %>
     <%= @order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title) : strong(@order.order_type.title) %>
   </p>
   <p>
-    <%= form.label :commercial_id, 'Commercial :' %>
+    <%= form.label :commercial_id %>
     <%= form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => @order.new_record?) %>
   </p>
 
   <h3>Client</h3>
   <p>
-    <%= form.label :establishment_id, 'Etablissement concerné :' %>
+    <%= form.label :establishment_id %>
     <% if is_new_view? %>
       <%= form.collection_select(:establishment_id, @order.customer.establishments, :id, :name_and_full_address, :include_blank => true) %>
       <%= link_to( "(+) Ajouter un établissement", new_customer_establishment_path(@order.customer) ) %>
@@ -31,25 +31,26 @@
   </p>
   
   <div class="form_multiple_entries">
-    <%= form.label :contacts_ids, "Contact(s) concerné(s) :"  %>
+    <%= form.label :contacts_ids %>
     <div class="collection">
-      <%= render :partial => 'contacts/contact_with_infos', :collection => @contacts, :locals => { :contacts_owner => @order } %>
+      <%= render :partial => 'contacts/contact_chooser', :collection => @contacts, :locals => { :contacts_owner => @order } %>
+      <%= link_to( "(+) Ajouter un contact", new_customer_contact_path(@order.customer) ) %>
     </div>
   </div>
   
   <h3>Dates</h3>
   <% if is_edit_view? %>
     <p>
-      <%= form.label :created_at, 'Date de cr&eacute;ation :' %>
-      <%= form.strong order.created_at.humanize  %>
+      <%= form.label :created_at %>
+      <%= form.strong order.created_at.to_humanized_datetime  %>
     </p>
   <% end %>
   <p>
-    <%= form.label :previsional_start, 'Date pr&eacute;visionnelle de mise en production :' %>
+    <%= form.label :previsional_start %>
     <%= form.text_field :previsional_start %>
   </p>
   <p>
-    <%= form.label :previsional_delivery, 'Date pr&eacute;visionnelle de livraison :' %>
+    <%= form.label :previsional_delivery %>
     <%= form.text_field :previsional_delivery %>
   </p>
   <p>

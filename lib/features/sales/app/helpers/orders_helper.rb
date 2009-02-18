@@ -33,10 +33,6 @@ module OrdersHelper
     order_steps_for('step_' + controller.controller_name)
   end
   
-  def order_timeline
-    render :partial => 'informations/timeline'
-  end
-  
   def order_steps_for(step_name)
     step = Step.find_by_name(step_name)
     Step.cant_find if step.nil?

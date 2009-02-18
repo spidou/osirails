@@ -1,9 +1,9 @@
 <% contact_type = contacts_owner.class.name.downcase  %>
-<% contact = contact_with_infos %>
+<% contact = contact_chooser %>
 <div class="object">
-  <%= check_box_tag("#{contact_type}[contact_ids][]", contact.id, contacts_owner.contacts.include?(contact)) %>
-  <label><%= link_to_function(contact.fullname, "this.up('.object').down('.details').toggle()") %></label>
-  <div class="details" style="display:none">
+  <%= check_box_tag("#{contact_type}[contact_ids][]", contact.id, contacts_owner.contacts.include?(contact)) if is_form_view? %>
+  <label><%= link_to_function(contact.fullname, "this.up('.object').down('.object_details').toggle()") %></label>
+  <div class="object_details" style="display:none">
     <p>
       <label>Fonction : </label>
       <strong><%= contact.job %></strong>

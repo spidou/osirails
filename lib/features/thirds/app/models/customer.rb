@@ -60,4 +60,31 @@ class Customer < Third
     end
   end
   
+  ######################
+  # OPTIMIZE place these methods in the acts_as_file module
+  def document_attributes=(document_attributes)
+    document_attributes.each do |attributes|
+      attributes[:name] = attributes[:file].original_filename if attributes[:name].blank?
+      if attributes[:id].blank?
+        documents.build(attributes)
+      else
+        document = documents.detect { |t| t.id == attributes[:id].to_i }
+        document.attributes = attributes
+      end
+    end
+  end
+  
+  after_update :save_documents
+  
+  def save_documents
+    documents.each do |d|
+      if d.should_destroy?
+        d.destroy
+      elsif d.should_update?
+        d.save(false)
+      end
+    end
+  end
+  #######################""
+  
 end
