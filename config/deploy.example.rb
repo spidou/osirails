@@ -1,11 +1,15 @@
 require 'mongrel_cluster/recipes'
 
-set :application, "example"
-set :repository,  "http://svn.example.com/svn/trunk/"
+set :application, "example.com"
+role :app, application
+role :web, application
+role :db,  application, :primary => true
+
+set :repository,  "http://osirails.rubyforge.org/svn/trunk/"
 set :web_user, "www-data"
 set :web_group, "www-data"
-set :admin_runner, "admin" # for try_sudo command
-set :user, "admin" # for ssh connection
+set :admin_runner, "admin"  # for try_sudo command
+set :user, "admin"          # for ssh connection
 
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
@@ -16,16 +20,26 @@ set :deploy_to, "/var/www/#{application}"
 # your SCM below:
 # set :scm, :subversion
 
-role :app, "example.com"
-role :web, "example.com"
-role :db,  "example.com", :primary => true
+namespace :deploy do
+  desc "Tell Passenger to restart the app."
+  task :restart do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
+  
+  desc "Symlink shared configs and folders on each release."
+  task :symlink_shared do
+    run "ln -nfs #{shared_path}/config/database.production.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{shared_path}/assets #{release_path}/assets"
 
-task :after_update_code, :roles => :app do
-  # crée le fichier database.yml
-  db_prod = "#{shared_path}/config/database.production.yml"
-  run "cp #{db_prod} #{release_path}/config/database.yml"
-
-  # règle les droits sur le dossier de deploiement
-  sudo "chown #{web_user}:#{web_group} -R #{deploy_to}"
-  sudo "chmod 775 -R #{deploy_to}"
+    # règle les droits sur le dossier de deploiement
+    #sudo "chown #{web_user}:#{web_group} -R #{deploy_to}"
+    #sudo "chmod 775 -R #{deploy_to}"
+  end
+  
+  desc "Sync the assets directory."
+  task :assets do
+    system "rsync -vr --exclude='.DS_Store' assets #{user}@#{application}:#{shared_path}/"
+  end
 end
+
+after 'deploy:update_code', 'deploy:symlink_shared'
