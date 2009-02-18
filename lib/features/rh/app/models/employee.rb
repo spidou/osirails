@@ -6,7 +6,7 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
 
-  # Accessors  
+  # Accessors
   cattr_accessor :pattern_error,:form_labels
   @@pattern_error = false
 
@@ -17,6 +17,8 @@ class Employee < ActiveRecord::Base
   @@form_labels[:birth_date] = "Date de naissance :"
   @@form_labels[:family_situation] = "Situation familiale :"
   @@form_labels[:social_security_number] = "N&deg; s&eacute;curit&eacute; sociale :"
+  @@form_labels[:email] = "Email personnel :"
+  @@form_labels[:society_email] = "Email professionnel :"
   
   
   # Relationships
@@ -40,6 +42,7 @@ class Employee < ActiveRecord::Base
   has_and_belongs_to_many :jobs
   
   # Validates
+  validates_associated :numbers, :iban, :address
   validates_presence_of :last_name, :first_name, :message => "ne peut être vide"
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/,:message => "format numéro de sécurité social incorrect"
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
@@ -48,7 +51,7 @@ class Employee < ActiveRecord::Base
   # Callbacks
   after_create :create_user,:save_iban
   before_save :case_managment
-  after_update :save_iban
+  after_update :save_iban, :save_numbers, :save_address
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment
@@ -219,18 +222,56 @@ class Employee < ActiveRecord::Base
       end
     formated_text  
   end
+  
 
-    # this method permit to save the iban of the employee when it is passed with the employee form
+  # this method permit to save the iban of the employee when it is passed with the employee form
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?
-      self.iban = build_iban(iban_attributes)
+      self.iban = self.build_iban(iban_attributes)
     else
       self.iban.attributes = iban_attributes
+    end 
+  end
+
+  # this method permit to save the address of the employee when it is passed with the employee form
+  # we use address_attributes.first because the partial he also use to define mutiple addresses but for the employee there is only one that's why we use the only one address in the array
+  def address_attributes=(address_attributes)
+    if address_attributes.first[:id].blank?
+      self.address = self.build_address(address_attributes.first)
+    else
+
+      self.address.attributes = address_attributes.first
+    end    
+  end
+  
+  # this method permit to save the numbers of the employee when it is passed with the employee form
+  def number_attributes=(number_attributes)
+    number_attributes.each do |attributes|
+      if attributes[:id].blank?
+        self.numbers.build(attributes)
+      else
+        number = self.numbers.detect { |t| t.id == attributes[:id].to_i} 
+        number.attributes = attributes
+      end
     end
   end
   
+  def save_numbers
+    self.numbers.each do |number|
+      if number.should_destroy?    
+        number.destroy    
+      else
+        number.save(false)
+      end
+    end 
+  end  
+  
   def save_iban
-     self.iban.save
+     self.iban.save(false)
+  end
+
+  def save_address
+    self.address.save(false)
   end
   
 end

@@ -11,7 +11,7 @@
       <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
     </p>
     
-    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address %>
+    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => {:address_owner => establishment.customer}%>
     
     <p>
       <% if establishment.new_record? %>

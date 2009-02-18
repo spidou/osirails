@@ -1,6 +1,6 @@
 <% content_for :secondary_menu do %>
   <p>
-    <%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %>
+    <%= show_edit_button(@employee) + link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(@employee)) %>
   </p>
 <% end %>
 

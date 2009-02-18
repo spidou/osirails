@@ -1,81 +1,17 @@
-<h1>Informations d'un employ&eacute;</h1>
-
 <% content_for :secondary_menu do %>
   <h1><span class="gray_color">Actions</span> <span class="blue_color">possibles</span></h1>
   <ul>
-    <li><%= link_to 'Modifier le contract de travail', edit_employee_job_contract_path(@employee) %></li>
+    <li><%= show_edit_button(@employee) + link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(@employee)) %></li>
+    <li><%= show_edit_button(@employee," Modifier un employée") %></li>
   </ul>
+  
 <% end %>
 
-<%= render :partial => @employee %>
- 
-
-<div class="frame presentation_medium">
-
-  <h2>Coordonn&eacute;es</h2>
-
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
-    <h3>Adresse postale</h3>
-      <p>
-        <%= label_tag "Adresse :"%>
-        <strong><%=h @address.address1 %>
-        <%= " - " + h(@address.address2) unless @address.address2.empty? %></strong>
-      </p>
-      <p>
-        <%= label_tag "Code postal :"%>
-        <strong><%=h @address.zip_code %></strong>
-      </p>
-      <p>
-        <%= label_tag "Ville :"%>
-        <strong><%=h @address.city_name %></strong>
-      </p>
-      <p>
-        <%= label_tag "Pays :"%>
-        <strong><%=h @address.country_name %></strong>
-      </p>
-  <% end %>
+<h1>Informations d&apos;un employ&eacute;</h1>
 
 
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>    
-      <%= emails_h3(@employee) %>
-      <p>
-        <%= label_tag "Personnel :"%>
-        <strong><%=h @employee.email %></strong>
-      </p>
-      <p>
-        <%= label_tag "Professionnel :"%>
-        <strong><%=h @employee.society_email %></strong>
-      </p>
-  <% end %>
-      <%= "<h3>Adresse électronique</h3>" unless (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id %>
-      <p>
-        <%= label_tag "Entreprise :"%>
-        <strong><%=h  @employee.intranet_email %></strong>
-      </p>
-            
-      <p>
-      <%=numbers_h3(@employee.numbers)%>
-        <%for number in @numbers%>
-          <% if ( number.visible? or (controller.can_view?(current_user) and Employee.can_view?(current_user))) or @employee.user.id == current_user.id %>
-            <p>
-              <%="<img src=" + number_type_path(number.number_type.name) + " alt=" + number.number_type.name + " title=" + number.number_type.name + "/>"%>&nbsp;
-              <%=h number.indicative.indicative + " " + number.number%>&nbsp;
-              <% if number.indicative.country.code == "us" or number.indicative.country.code == "ca"%> 
-                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path("us") + " title=\"Etats-Unis\"  alt=\"Us\" />"%>
-                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path("ca") + " title=\"Canada\"  alt=\"Ca\" />"%>
-              <% else %>  
-                <%="<img style=\"border:solid 1px #BBB; \" src=" + flag_path(number.indicative.country.code.to_s) + " title=" + number.indicative.country.name + "  alt=" + number.indicative.country.code + " />"%>
-              <% end %>
-            </p>
-          <% end %>  
-        <% end %>
-      </p>
-  
+	<%= render :partial => @employee %>
    
   <!-- Display Documents div -->
-  <%= display_documents(@employee, @documents) %>  
-</div>
+  <%= display_documents(@employee, @documents) %> 
 
-<%=display_employee_back_link(@employee)%>
-
-<%= link_to 'Retour', employees_path %>

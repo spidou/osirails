@@ -7,10 +7,12 @@ class JobContract < ActiveRecord::Base
   
   has_many :salaries, :order => "created_at DESC"
   
+  validates_associated :salaries  
+
   acts_as_file
 
   #Callbacks
-  after_create :save_salary
+  after_update :save_salary 
 
   cattr_accessor :form_labels
   @@form_labels = Hash.new
@@ -25,13 +27,15 @@ class JobContract < ActiveRecord::Base
     self.salaries.first
   end
   
-  # this method permit to save the iban of the employee when it is passed with the employee form
+  # this method permit to save the salary of the employee when it is passed with the job_contract form
   def salary_attributes=(salary_attributes)
-    salaries.build(salary_attributes)
+    salaries.build(salary_attributes) unless salary_attributes[:gross_amount].to_f == salaries.first[:gross_amount]
   end
   
   def save_salary
-     salaries.save unless self.salaries==[]
+    self.salaries.each do |salary| 
+      salary.save(false) if salary.new_record?
+    end
   end
-  
+
 end

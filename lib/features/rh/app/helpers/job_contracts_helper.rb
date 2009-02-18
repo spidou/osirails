@@ -39,4 +39,5 @@ module JobContractsHelper
     "#{salary.gross_amount} € (Net : #{salary.net_amount} €)"
   end
 
+
 end

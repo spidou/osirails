@@ -9,7 +9,7 @@ class JobContractsController < ApplicationController
     
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
-    @documents = @job_contract.documents 
+#    @documents = @job_contract.documents 
   end
 
 # GET /employees/1/show  
@@ -19,8 +19,9 @@ class JobContractsController < ApplicationController
     
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
-    @documents = @job_contract.documents
+#    @documents = @job_contract.documents
   end
+
 # PUT /employees/1/update  
   def update
   
@@ -28,8 +29,8 @@ class JobContractsController < ApplicationController
 
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
-    @documents = @job_contract.documents
-    @error = false
+#    @documents = @job_contract.documents
+#    @error = false
     
 #    if Document.can_add?(current_user, @job_contract.class)
 #      if params[:new_document_number]["value"].to_i > 0
@@ -60,24 +61,20 @@ class JobContractsController < ApplicationController
     
     
     
-    if params[:salaries].nil?
-      salary_validate = true
-    else
-      @salary = Salary.new(params[:salaries]) unless params[:salaries].nil?
-      salary_validate = @salary.save 
-    end
+#    if params[:salaries].nil?
+#      salary_validate = true
+#    else
+#      @salary = Salary.new(params[:salaries]) unless params[:salaries].nil?
+#      salary_validate = @salary.save 
+#    end
 
-    if @job_contract.update_attributes(params[:job_contract]) and  salary_validate and @error==false
-    
-      # put at null the departure date if the there's no departure param
-      @job_contract.departure = nil if params[:job_contract]['departure(3i)'].nil?
-      @job_contract.save
+    # put at null the departure date if there's no departure param
+    @job_contract.departure = nil if params[:job_contract]['departure(3i)'].nil?
+
+    if @job_contract.update_attributes(params[:job_contract]) # and  salary_validate  and @error==false
       
-      # disable user
-      @employee.user.enabled=false
-      @employee.user.save
-      
-      @job_contract.salaries << @salary unless @salary.nil?
+      # @job_contract.salaries << @salary unless @salary.nil?
+
 #      # save the job_contract's documents
 #      unless params[:new_document_number].nil?
 #        if params[:new_document_number]["value"].to_i > 0
@@ -96,7 +93,7 @@ class JobContractsController < ApplicationController
       flash[:notice] = ' Le contrat de travail de ' + @employee.fullname + ' a été modifié avec succés.'
       redirect_to(@employee) 
     else
-      params[:job_contract]['documents'] = docs
+#      params[:job_contract]['documents'] = docs
       render :action => "edit" 
     end
   end

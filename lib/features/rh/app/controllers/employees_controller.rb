@@ -45,6 +45,9 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.new
+
+      @employee.numbers.build
+
       @job = Job.new
       @employee.address = Address.new
       @address = @employee.address
@@ -84,9 +87,9 @@ class EmployeesController < ApplicationController
       
       employee = params[:employee].dup
       
-      # put numbers another place for a separate création
-      params[:numbers] = employee['numbers']
-      employee.delete('numbers')
+      ## put numbers another place for a separate création
+      ## params[:numbers] = employee['numbers']
+      ## employee.delete('numbers')
       
       # regroupe the two parts of social security number
       employee[:social_security_number] =  params['social_security_number']['0'] + " " + params['social_security_number']['1']
@@ -109,10 +112,10 @@ class EmployeesController < ApplicationController
       @employee.address = Address.new(params[:address])
       @documents = @employee.documents
       
-      params[:numbers].each_value do |number|
-        number['visible'] = false if number['visible'].nil?
-        @employee.numbers << Number.new(number) unless number.blank?
-      end
+      ## params[:numbers].each_value do |number|
+      ##  number['visible'] = false if number['visible'].nil?
+      ##  @employee.numbers << Number.new(number) unless number.blank?
+      ##end
       
       if Document.can_add?(current_user, @employee.class)
         if params[:new_document_number]["value"].to_i > 0
@@ -170,7 +173,7 @@ class EmployeesController < ApplicationController
         flash[:notice] = 'L&apos;employée a été crée avec succés.'
         redirect_to(@employee)
       else
-        params[:employee]['numbers'] = params[:numbers]
+        ## params[:employee]['numbers'] = params[:numbers]
         params[:employee]['documents'] = docs
         
         render :action => "new" 
@@ -184,36 +187,24 @@ class EmployeesController < ApplicationController
   # PUT /employees/1.xml
   def update
     if Employee.can_edit?(current_user)
+      
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.find(params[:id])
       @job = Job.new(params[:job]) 
-      @numbers_reloaded||= nil
-      @numbers_reloaded.nil? ? @numbers = @employee.numbers : @numbers = @numbers_reloaded
+
       @address = @employee.address
-      @number_error = false
+
       @error = false
       @documents = @employee.documents
       @errors_messages = []
-      
-      # put numbers another place for a separate création
-      params[:numbers] = params[:employee]['numbers']
-      params[:employee].delete('numbers')
+
       
       # regroupe the two parts of social security number
       params[:employee][:social_security_number] =  params['social_security_number']['0'] + " " + params['social_security_number']['1']
       params.delete('social_security_number')
-      
-      # add or update numbers who have been send to the controller
-      params[:numbers].each_key do |i|
-        if @employee.numbers[i.to_i].nil?
-          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?
-          @employee.numbers[i.to_i] =  Number.new(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
-        else
-          params[:numbers][i]['visible'] = false if params[:numbers][i]['visible'].nil?  
-          @employee.numbers[i.to_i].update_attributes(params[:numbers][i]) unless params[:numbers][i].nil? or params[:numbers][i].blank?
-        end
-      end 
+
+
       
       # TODO do not forget to delete this if do not use to remove numbers using visual effects
       # numbers_ids = []
@@ -225,59 +216,60 @@ class EmployeesController < ApplicationController
       # end
       
       # prepare the address params hash  
-      params[:address] = {}
-      params[:address]['city_name'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['name']
-      params[:address]['zip_code'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['zip_code']
-      params[:address]['country_name'] = params[:employee]['address']['country']['name']
-      params[:address]['address1'] = params[:employee]['address']['address1']
-      params[:address]['address2'] = params[:employee]['address']['address2']
-      params[:employee].delete('address')
+ #     params[:address] = {}
+ #     params[:address]['city_name'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['name']
+#      params[:address]['zip_code'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['zip_code']
+#      params[:address]['country_name'] = params[:employee]['address']['country']['name']
+#      params[:address]['address1'] = params[:employee]['address']['address1']
+#      params[:address]['address2'] = params[:employee]['address']['address2']
+#      params[:employee].delete('address')
       
       # update attributes of employees ressources
-      @employee.iban.update_attributes(params[:iban]) 
-      @employee.address.update_attributes(params[:address])
+#      @employee.iban.update_attributes(params[:iban]) 
+
+#      @employee.address.update_attributes(params[:address])
       
 
-      if Document.can_add?(current_user, @employee.class)
-        if params[:new_document_number]["value"].to_i > 0
-          documents = params[:employee][:documents].dup
-          @document_objects = Document.create_all(documents, @employee)
-        end
-        document_params_index = 0
-        params[:new_document_number]["value"].to_i.times do |i|
-          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:employee][:documents]["#{i + 1}"][:valid] == "false"
-        end
+#      if Document.can_add?(current_user, @employee.class)
+#        if params[:new_document_number]["value"].to_i > 0
+#          documents = params[:employee][:documents].dup
+#          @document_objects = Document.create_all(documents, @employee)
+#        end
+#        document_params_index = 0
+#        params[:new_document_number]["value"].to_i.times do |i|
+#          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:employee][:documents]["#{i + 1}"][:valid] == "false"
+#        end
         ## Test if all documents enable are valid
-        unless @document_objects.nil?
-          @document_objects.size.times do |i|
-            @error = true unless @document_objects[i].valid?
-          end
+#        unless @document_objects.nil?
+#          @document_objects.size.times do |i|
+#            @error = true unless @document_objects[i].valid?
+#          end
           ## Reaffect document number
-        params[:new_document_number]["value"]  = @document_objects.size
-        end
-      end
+#        params[:new_document_number]["value"]  = @document_objects.size
+#        end
+#      end
       
       
       # delete the documents in params
-      docs = params[:employee].delete('documents')
+#      docs = params[:employee].delete('documents')
       
       # save or show errors
-      if @employee.update_attributes(params[:employee]) and @number_error == false and @error == false
+      if @employee.update_attributes(params[:employee])  and @error == false #and @number_error == false
         
         # save the employee's documents
-        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
-          if params[:new_document_number]["value"].to_i > 0
-            @document_objects.each do |document|
-              if document.save == true
-                @employee.documents << document
-                document.create_thumbnails
-                document.create_preview_format
-              else
-                @error = true
-              end
-            end
-          end
-        end
+#        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
+#          if params[:new_document_number]["value"].to_i > 0
+#            @document_objects.each do |document|
+#              if document.save == true
+#                @employee.documents << document
+#                document.create_thumbnails
+#                document.create_preview_format
+#              else
+#                @error = true
+#              end
+#            end
+#          end
+#        end
         
         # FIXME use transaction with the checkboxes params when destroy all!
         ########################################################################
@@ -292,15 +284,7 @@ class EmployeesController < ApplicationController
         params[:employee]['job_ids']||= []
         ########################################################################"
         
-        
-        # destroy the numbers that have been deleted in the update view
-        unless  params[:deleted_numbers].nil?
-          params[:deleted_numbers].each_value do |i|
-            @employee.numbers.each_index do |j|
-              @employee.numbers[j].destroy if  @employee.numbers[j]['id'].to_s == i.to_s
-            end
-          end
-        end 
+       
         
         # update responsable attribute of the employee's service 
         unless params[:responsable].nil?
@@ -315,17 +299,7 @@ class EmployeesController < ApplicationController
         redirect_to(@employee)
       else
         
-        @numbers.each_with_index do |number,index|
-          unless params[:deleted_numbers].nil?
-            params[:deleted_numbers].each_value do |j|
-               @numbers[index]['number']= "deleted" if @numbers[index]['id'].to_s == j.to_s  
-            end
-          end  
-        end
-        
-        @numbers_reloaded = @numbers
-        params[:employee]['numbers'] = params[:numbers]
-        params[:employee]['documents'] = docs
+#        params[:employee]['documents'] = docs
           
         render :action => "edit"
       end

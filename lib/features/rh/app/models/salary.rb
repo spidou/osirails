@@ -4,6 +4,12 @@ class Salary < ActiveRecord::Base
   
   RATIO_FOR_NET_AMOUNT = 0.3
   
+  #Accessors
+  cattr_accessor :form_labels
+
+  @@form_labels = Hash.new
+  @@form_labels[:gross_amount] = "Salaire Brut :"
+  
   # method that return the net amount of the salary
   def net_amount
     self.gross_amount -= self.gross_amount * RATIO_FOR_NET_AMOUNT

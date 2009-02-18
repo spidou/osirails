@@ -84,90 +84,28 @@ module EmployeesHelper
   ##################################################################
   ########## NUMBERS METHODS #######################################
   
-  def display_p_balise(i,owner)
-    "<p id='#{ owner }_number_" + i.to_s + "'>"
-  end
-  
-  def display_number0(owner)
-    if params[owner].nil?
-      number0 = text_field_tag( owner + '[numbers][0][number]', '', :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
-    else
-      number0 = text_field_tag( owner + '[numbers][0][number]',params[owner]['numbers']['0']['number'], :size => 7, :maxlength => 9, :class => 'disable-stylesheet-width')
+  # method that permit to add with javascript a new record of number
+  def add_number_link()
+    balise_img = "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>"
+    link_to_function balise_img do |page|
+      page.insert_html :bottom, :numbers, :partial => "number", :object => Number.new, :locals => {:attribute => 'employee' }
     end  
-    return number0
-  end
+  end 
   
-  def display_check_box0(owner)
-    if params[owner].nil?
-      check_box0 = check_box_tag( owner + "[numbers][0][visible]", true,true) + "\n"
-      check_box0 += "&nbsp;Visible par tous \n" 
-    else
-      check_box0 = check_box_tag( owner + "[numbers][0][visible]", true, params[owner]['numbers']['0']['visible']) + "\n"
-      check_box0 += "&nbsp;Visible par tous \n" 
-    end
-    return check_box0
-  end
+  # method that permit to remove with javascript a new record of number
+  def remove_number_link()
+    balise_img = "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>"
+    link_to_function( balise_img , "$(this).up('.number').remove()")  
+  end 
   
-   # Method to generate text_field for each number add
-  def add_number_line(owner)
-    name = "#{ owner }[numbers][#{ params[:opt] }]"
-    html =  "<p id='#{ owner }_number_#{ params[:opt] }'>" 
-    html +=  select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected =>  8 ) + "\n"
-    html += text_field_tag( name + "[number]", '', :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) + "\n"
-    html +=  select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => 1 ) + "\n"
-    html += check_box_tag(name + "[visible]",true,true) + "\n"
-    html += "&nbsp;Visible par tous \n" 
-    html += "&nbsp; \n"
-    html
+  # method that permit to remove with javascript an existing number
+  def remove_old_number_link()
+    balise_img = "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>"
+    link_to_function( balise_img , "mark_resource_for_destroy(this)") 
   end
-  
-  # Method to generate collection_select for each number add
-  def add_collection_select(owner)
-    name = "#{ owner }[numbers][#{ params[:opt] }]"
-    return  collection_select( name, :number_type_id, NumberType.find(:all), :id, :name) 
-  end
-  
-  # Method to generate add_link for each number adding a number  
-  def add_link_to(owner)
-    return link_to_remote( "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>",:url=>{:controller => "employees",:action=>'add_line', :opt => params[:opt].to_i + 1 , :attribute => owner }) 
-  end
-  
-  # Method to generate remove_link for each adding or deleting
-  def remove_link_to(owner)
-    params[:rem].nil? ? rem = params[:opt] : rem = params[:rem] + 1
-    return link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>" ,:url=>{:controller => "employees",:action=>'remove_line', :rem => rem.to_i, :attribute => owner},:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "</p>"
-  end
-  
-  # Method to regenerate textfield select and collection_for each number when there is a validation error
-  def save_lines(owner)
-    return "" if params[owner].nil?
-    html = ""
-    (1..params[owner]['numbers'].size + 1).each do |f|
-      unless params[owner]['numbers'][f.to_s].nil?
-        name =  "#{ owner }[numbers][#{ f.to_s }]"
-        html += "<p id='#{ owner }_number_#{ f.to_s }'>"
-        html += select(name, :indicative_id,  Indicative.find(:all).collect {|p| [ p.indicative, p.id ] }, :selected => params[owner].nil? ? 8 : params[owner]['numbers'][ f.to_s ]['indicative_id'].to_i) + "\n"
-        html += text_field_tag( name+"[number]", params[owner]['numbers'][f.to_s]['number'], :size => 7, :maxlength => 9,:class=>"disable-stylesheet-width" ) +"\n"
-        html += select(name, :number_type_id,  NumberType.find(:all).collect {|p| [ p.name, p.id ] }, :selected => params[owner].nil? ? 1 : params[owner]['numbers'][ f.to_s ]['number_type_id'].to_i) + "\n"
-        html += check_box_tag( name + "[visible]", true, params[owner]['numbers'][f.to_s]['visible']) + "\n"
-        html += "&nbsp;Visible par tous \n" 
-        html += "&nbsp; \n"
-        html += link_to_remote( "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>",:url=>{:controller => "employees",:action=>'remove_line', :rem => f.to_s, :attribute => owner  },:href=>(url_for :action=>'remove_line'),:confirm => 'Etes vous sur?') + "\n"
-        html += "</p>"
-      end
-    end  
-    html
-  end
-  
-  def deleted_numbers(numbers)
-  number_id=0
-    for number in numbers 
-      if number[:number].blank?
-         hidden_field 'deleted_numbers[' + number_id.to_s + ']',number[:id].to_s
-      end
-      number_id+=1
-    end  
-  end
+
+
+ 
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
@@ -189,10 +127,10 @@ module EmployeesHelper
     return html
   end
   
-  def display_employee_back_link(employee)
+  def display_employee_edit_link(employee)
     html = ""
     if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
-       html << link_to( 'Modifier', edit_employee_path(employee)) + "|"
+       html << link_to( 'Modifier', edit_employee_path(employee))
     end
     return html
   end
@@ -284,7 +222,9 @@ module EmployeesHelper
   # Method that add the title to the phone number td
   def number_td(numbers)
     unless visibles_numbers(numbers)==[]
-      "<td  title='" + visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formatted + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'>"
+      td = "<td" 
+      td+= " title='" + visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formatted + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'" unless visibles_numbers( numbers ).first.indicative.nil?
+      td+= ">"    
     else
       "<td>"
     end
@@ -315,23 +255,22 @@ module EmployeesHelper
     "/images/"+type+"_16x16.png"
   end
   
-  def index_actions
-    return "<th colspan=\"2\">Actions</th>" if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
-    return "<th>Action</th>"  if !controller.can_edit?(current_user) or !Employee.can_edit?(current_user)
+  # method that permit the showing of img balise with otions passed aas arguments  
+  def display_image(path,alt,title=alt)
+    image_tag(path, :alt => alt, :title => title)
   end
-  
 
     # This method permit to test permission for edit button
-  def show_edit_button(employee)
+  def show_edit_button(employee,text="")
     if controller.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_employee_path(employee))
+      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier")+text, edit_employee_path(employee))
     end
   end
   
   # This method permit to test permission for view button
-  def show_view_button(employee)
+  def show_view_button(employee,text="")
     if controller.can_view?(current_user)
-      link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), employee_path(employee)) 
+      link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails")+text, employee_path(employee)) 
     end
   end
   
