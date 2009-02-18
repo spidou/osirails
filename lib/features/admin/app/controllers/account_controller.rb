@@ -22,6 +22,7 @@ class AccountController < ApplicationController
           @user.update_connection
           session[:user_id] = @user.id
           session[:initial_uri] ||= user_home
+          session[:user_expired] = @user.expired?
           redirect_to session[:initial_uri]
           flash[:notice] = "Connexion r&eacute;ussie"
         else
@@ -89,7 +90,7 @@ class AccountController < ApplicationController
       flash[:notice] = "Votre mot de passe a &eacute;t&eacute; mis &agrave; jour avec succ&egrave;s"
     end
     user.updating_password = false
-    user.save
+    session[:user_expired] = false if user.save
   end
   
   private

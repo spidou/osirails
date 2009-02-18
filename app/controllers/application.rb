@@ -92,7 +92,7 @@ class ApplicationController < ActionController::Base
         flash[:error] = "Vous n'êtes pas connecté !"
       else # if user is logged and current_user return a valid user
         current_user.update_activity
-        if current_user.expired?
+        if session[:user_expired]
           redirect_to :controller => 'account', :action => 'expired_password'
         else
           # Manage permissions for actions

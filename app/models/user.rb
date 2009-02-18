@@ -36,10 +36,12 @@ class User < ActiveRecord::Base
   end
   
   # CallBacks
+  before_save :password_verif
   before_destroy :can_destroy
 
   # Accessors
-  attr_accessor :updating_password
+  attr_accessor :updating_password   
+  attr_accessor :temporary_password
   cattr_reader :form_labels
 
   @@form_labels = Hash.new
@@ -49,6 +51,7 @@ class User < ActiveRecord::Base
   @@form_labels[:enabled] = "Activ&eacute; :"
   @@form_labels[:last_connection] = "dernière connection :"
   @@form_labels[:roles] = "Le(s) r&ocirc;le(s) de l'utilisateur :"
+  @@form_labels[:temporary_password] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
  
 
   # Method to encrypt a string
@@ -115,6 +118,14 @@ class User < ActiveRecord::Base
 
   def can_destroy
     self.employee.nil?
+  end
+
+  private
+
+  def password_verif
+    return if @temporary_password.nil?
+    @temporary_password = true if @temporary_password == '1'
+    self.password_updated_at = (@temporary_password == true ? nil : Time.now)
   end
 
 # TODO delete the Add link that been used for dev purposes

@@ -15,8 +15,8 @@
         <%= form.password_field :password, :value => "" %>
       </p>
       <p>
-        <%= label_tag :temporary_password, "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :", :class => "disable-stylesheet-width" %>
-        <%= check_box_tag :temporary_password, false %>
+        <%= form.label :temporary_password, nil, :class => "disable-stylesheet-width" %>
+        <%= form.check_box :temporary_password %>
       </p>
       <% end %>
     <p>

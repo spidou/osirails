@@ -38,23 +38,17 @@ class UsersController < ApplicationController
 
   #PUT /users/1
   def update
-    params[:user] ||= []
-    @user = User.find(params[:id]) 
-    unless params[:user][:password].empty?
-      @user.updating_password = true
-      
-      if params[:temporary_password].nil?
-        @user.password_updated_at = Time.now 
-      else
-        @user.password_updated_at = nil
-      end
-      @user.save
-    else
-    @user.password_updated_at = nil if !params[:temporary_password].nil?
-    
+    return if params[:user].empty?
+
+    @user = User.find(params[:id])
+
+    if params[:user][:password].empty?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
+    else
+      @user.updating_password = true
     end
+
     if @user.update_attributes(params[:user])
       flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
       redirect_to(@user) 
@@ -74,8 +68,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-    
 
   def load_collections
      @roles = Role.find(:all, :order => "name")
