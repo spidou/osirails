@@ -1,0 +1,31 @@
+<h3>Statistiques</h3>
+<p>
+  <label>Nombre de ventes au total :</label>
+  <strong><%= "@order.customer.orders.size" %></strong>
+</p>
+<p>
+  <label>Client depuis le :</label>
+  <strong><%= @order.customer.created_at.strftime("%d %B %Y") %></strong>
+</p>
+<p>
+  <label>Note :</label>
+  <strong><%= @order.customer.note %></strong>
+</p>
+
+<h3>Historique des dernières ventes</h3>
+<table>
+  <tr>
+    <td>Date de facturation</td>
+    <td>Etablissement</td>
+    <td>Produits</td>
+    <td>Prix total de vente</td>
+    <td>Ratio de la marge réalisée</td>
+  </tr>
+  <tr>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+    <td>?</td>
+  </tr>
+</table>

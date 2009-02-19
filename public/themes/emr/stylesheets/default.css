@@ -1125,11 +1125,6 @@ width: 50px ! important;
 	vertical-align:top;
 }
 
-.frame form p span {
-  border: 1px solid red;
-  display: inline-block;
-}
-
 .frame strong {
 	margin-bottom:10px;
 	vertical-align:top;
@@ -1193,6 +1188,7 @@ width: 50px ! important;
 
 /* /////////// */
 
+/*
 .scroll_checkboxes { 
 	margin:15px 15px 15px 20px;
 	//width:200px;
@@ -1214,7 +1210,6 @@ width: 50px ! important;
 	background-color: #f5c384;
 }
 
-/*
 .scroll_checkboxes ul {
 	width:100%;
 	padding:0;

@@ -57,8 +57,8 @@ class OrdersController < ApplicationController
   end
   
   def update
-    @order = Order.find(params[:id])
     params[:order][:contact_ids] ||= []
+    @order = Order.find(params[:id])
     if @order.update_attributes(params[:order])
       flash[:notice] = "Dossier modifié avec succés"
       redirect_to order_path(@order)

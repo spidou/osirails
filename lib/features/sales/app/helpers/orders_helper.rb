@@ -16,11 +16,11 @@ module OrdersHelper
   end
   
   def display_customer_overview
-    html = ""
     if @order.new_record?
-      #render :partial => 'orders/customer_overview'
+      html = "<h2>Informations concernant le client</h2>"
       html << "<div class='frame presentation_medium'>"
-      html << render(:partial => 'thirds/third', :object => @order.customer, :locals => { :force_view_mode => true })
+      html << render(:partial => 'thirds/third', :object => @order.customer)
+      html << render(:partial => 'customers/customer_stats', :object => @order.customer)
       html << "</div>"
     end
   end
