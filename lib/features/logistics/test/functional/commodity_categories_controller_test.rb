@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DesignCanvasControllerTest < ActionController::TestCase
+class CommodityCategoriesControllerTest < ActionController::TestCase
   # Replace this with your real tests.
   def test_truth
     assert true

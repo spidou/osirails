@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SendedControllerTest < ActionController::TestCase
+class ReceivedMemorandumsControllerTest < ActionController::TestCase
   # Replace this with your real tests.
   def test_truth
     assert true
