@@ -79,25 +79,25 @@ module ServicesHelper
       responsables_list << link_to( Employee.find(responsable_id).fullname, employee_path(responsable_id))
     end
     
-    return "<b>Responsable hierachique :</b> \n" + responsables_list  if ids.size==1
-    return "<b>Responsables hierachiques :</b> \n" + responsables_list if ids.size>1
+    return "<label>Responsable hierachique :</label> \n" + responsables_list  if ids.size==1
+    return "<label>Responsables hierachiques :</label> \n" + responsables_list if ids.size>1
     return "" if ids.size==0
   end
   
   # method choose the good title for members
   def members(ids)
-    return "<b>Membre :</b>" if ids.size==1
-    return "<b>Membres :</b>" if ids.size>1 
+    return "<label>Membre :</label>" if ids.size==1
+    return "<label>Membres :</label>" if ids.size>1 
     return "" if ids.size==0
   end
   
   # method to display textfield where the user puts his shedules
   def display_shedule_text_field(moment,tabindex)
-    html = text_field_tag( moment + '_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabIndex => tabindex.to_s, :id => tabindex.to_s,:onkeyup=>"time(this);") + " <b>H</b> "
+    html = text_field_tag( moment + '_start[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabIndex => tabindex.to_s, :id => tabindex.to_s,:onkeyup=>"time(this);") + " H "
     tabindex+=1
-    html += text_field_tag( moment + '_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") + " <b>-</b> " 
+    html += text_field_tag( moment + '_start[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") + " - " 
     tabindex+=1
-    html += text_field_tag( moment + '_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") + " <b>H</b> "
+    html += text_field_tag( moment + '_end[hour]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") + " H "
     tabindex+=1
     html += text_field_tag( moment + '_end[minute]',nil,:size=> 1,:maxlength =>2,:class => "disable-stylesheet-width",:tabindex => tabindex.to_s, :id => tabindex.to_s, :onkeyup=>"time(this);") 
     html
@@ -167,15 +167,11 @@ module ServicesHelper
       equal = false if days_array[ind - 1].afternoon_start != days_array[ind].afternoon_start
       equal = false if days_array[ind - 1].afternoon_end != days_array[ind].afternoon_end
       if equal == true
-        puts tab[4]
-        puts tab[first].day
         tab[first].day += "|" + Time::R_DAYS[ind]
       elsif  !days_array[ind].morning_start.nil? and !days_array[ind].morning_end.nil? and !days_array[ind].afternoon_start.nil? and !days_array[ind].afternoon_end.nil?
         tab << days_array[ind]
         first += 1
       end
-      puts tab.inspect
-      puts "test"
       ind+=1
     end
     tab

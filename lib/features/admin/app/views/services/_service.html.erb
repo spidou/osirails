@@ -1,13 +1,33 @@
-<% content_for :secondary_menu do %>
+<%if is_form_view?%>
+  
+  <h1>Service</h1>
+  <% form_for(service) do |service| %>
+    <%= service.error_messages %>
+    <h2>Informations du service :</h2>
+    <p>
+      <%= service.label :name%>
+      <%= service.form_or_view(service.text_field( :name ),:name) %>
+    </p>
+
+    <p>
+      <%= service.label :service_parent_id %>
+      <%= service.form_or_view(service.collection_select_with_indentation(:service_parent_id, @services, :id, :name, options = {:indentation => 15}.merge(@options)),:parent,:name)%>
+    </p>
+
+      
+    <h2>Horaires du service :</h2>
+  
+  <%= render :partial => 'shedules/shedule' , :object => @shedules%>      
+
   <p>
-    <%=  image_tag("/images/edit_16x16.png") + link_to("Modifier",edit_service_path)  if controller.can_edit?(current_user) %>
+    <%= service.submit button_name %> 
   </p>
-<% end %>
 
-<h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
-<%= display_tabulated_menu %>
-
-
+    <% end %>
+  
+<% else %>
+   
+  
 <div  class="frame tabulation presentation_medium">
   <h2>Fiche du service</h2>
   <p>
@@ -59,6 +79,6 @@
       <% end %>
     </table>
   <% end %>   
-  
-  
-</div>
+   
+<% end %> 
+

@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   @@form_labels[:password_confirmation] = "Confirmation du mot de passe :"
   @@form_labels[:enabled] = "Activ&eacute; :"
   @@form_labels[:last_connection] = "dernière connection :"
-  @@form_labels[:roles] = "Le(s) r&ocirc;le(s) de l'utilisateur :"
+  @@form_labels[:roles] = "R&ocirc;les :"
   @@form_labels[:temporary_password] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
  
 

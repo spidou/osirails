@@ -27,6 +27,6 @@
       <%= category.collection_select(:commodity_category_id, @categories, :id, :name , options = {:include_blank => '-- Racine --'}, {:onchange => 'disableUnitMeasure();'}) %>
     </p>
   
-      <%= category.submit "Ajouter" %> &brvbar; <%= link_to( "Retour", :controller => 'commodities_manager', :action => 'index' ) %>
+      <p><%= category.submit "Ajouter" %></p>
   <% end %>
 </div>

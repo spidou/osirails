@@ -274,4 +274,12 @@ module EmployeesHelper
     end
   end
   
+
+  def secondary_menu( &block )
+    content_for :secondary_menu do 
+      "liens utiles";
+      "<h2>liens utiles2</h2>";     
+      raise block.first
+    end   
+  end
 end

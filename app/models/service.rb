@@ -17,6 +17,11 @@ class Service < ActiveRecord::Base
 
   # Store the ancient services_parent_id before update_service_parent
   attr_accessor :old_service_parent_id, :update_service_parent
+  cattr_accessor :form_labels
+
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "Nom :"
+  @@form_labels[:service_parent] = "Service parent :"
   
     # Relationships
   has_many :memorandums_services

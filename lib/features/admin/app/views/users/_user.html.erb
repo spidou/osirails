@@ -23,14 +23,16 @@
       <%= form.label :enabled %>
       <%= form.form_or_view(form.check_box( :enabled ), @user.enabled ? "<strong>oui</strong>":"<strong>non</strong>") %>
     </p>
-    <p><%= form.label :roles %></p>    
-    <div class="scroll_checkboxes" >
+  <div class="form_multiple_entries">
+    <%= form.label :roles %>   
+    <div class="collection">
         <% for associated_role in @roles %>
-        <ul>
-          <li><%= form.form_or_view(check_box_tag("user[role_ids][]", associated_role.id, @user.roles.include?(associated_role)) +" "+  associated_role.name, link_to(associated_role.name,associated_role))%></li>
-        </ul>
+        <div class="object">
+          <%= form.form_or_view(check_box_tag("user[role_ids][]", associated_role.id, @user.roles.include?(associated_role)) +" "+  associated_role.name,link_to(associated_role.name,associated_role))%>
+        </div>
         <% end %>
     </div>
+  </div>
     <%if is_form_view?%>  
       <p>
         <%= form.reset 'Annuler' %>
@@ -40,4 +42,3 @@
   <% end %>
 
 </div>
-<%= link_to 'Retour', users_path %>

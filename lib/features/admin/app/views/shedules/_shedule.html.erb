@@ -1,0 +1,54 @@
+      <fieldset id="fieldset_config">
+      <legend>Configurer les horaires</legend>
+      <span class="date_days">
+        <%=  javascript_tag "document.getElementById('periode1')"%>
+        <%= day_select(0) %> au <%= day_select(1) %>
+      </span>&nbsp;
+      <span id="shedule_text_field" class="alignment">
+        Matinée :
+        <%=display_shedule_text_field('morning',1)%>
+        &nbsp;
+        Apr&egrave;s midi :
+        <%=display_shedule_text_field('afternoon',5)%>
+      </span>
+      <span>
+        <a onclick="modify_schedule();">Ajouter</a>
+      </span>
+      
+      </fieldset>
+      
+  
+  <table id="shedules_array">
+    <tr>
+      <th></th>
+      <th colspan="2">Matin</th>
+      <th colspan="2">Apr&egrave;s-midi</th>
+    </tr>
+
+    <% if @schedules.nil?%>
+      <% params[:schedules].nil? ? days = Time::DEFAULT_DAYS_ARRAY : days = format_param(params[:schedules])%>
+    <% else %> 
+      <%( params[:schedules].nil? )? ( (@schedules == [] )? days = Time::DEFAULT_DAYS_ARRAY : days = days_sort(@schedules) ) : ( days = format_param(params[:schedules]) ) %>
+    <% end %>
+
+    <% days.each_with_index do |elmnt,index|%>
+      <% unless index==0%>
+        <%="<tr id='t_" + elmnt['day'] + "'>" %>
+          <%="<td name=" + elmnt['day'] + ">" %><%= elmnt['day']%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['morning_start'].to_f) unless elmnt['morning_start'].nil? %></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['morning_end'].to_f) unless elmnt['morning_end'].nil?%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['afternoon_start'].to_f) unless elmnt['afternoon_start'].nil?%></td>
+          <%="<td name=" + elmnt['day'] + ">" %><%= to_hour(elmnt['afternoon_end'].to_f) unless elmnt['afternoon_end'].nil?%></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+
+  
+    <% 7.times.each do |i| %>
+      <% @schedules.nil? ? string = ' H | H | H | H |' : string = schedule_to_s(days[i+1]) %>
+      <%= hidden_field_tag( "schedules[#{i+1}]", @schedules.nil? ? ' H | H | H | H |' : schedule_to_s(days[i+1]) )%>
+    <% end %>
+
+
+

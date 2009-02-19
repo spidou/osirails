@@ -31,6 +31,7 @@ class ServicesController < ApplicationController
     @service = Service.find(params[:id])
     @services = Service.get_structured_services(@service.id)
     @service.schedule_find.schedules == [] ? @schedules = @service.schedules : @schedules = @service.schedule_find.schedules
+    @options =  {:prompt => "-- Racine --"}
   end
 
   # POST /services
@@ -39,9 +40,9 @@ class ServicesController < ApplicationController
     @services = Service.get_structured_services(@service.id)
     @schedules = @service.schedules
 
-    params[:schedules].sort.each do |f|
-      @schedules << Schedule.new(@service.get_time(f[0].to_i,f[1]))
-      params[:schedules][f[0]] = @service.get_time(f[0].to_i,f[1])
+    params[:schedules].sort.each do |day|  #sort on a hash give an array of arrays containing a couple of [key,value]
+      @schedules << Schedule.new(@service.get_time(day[0].to_i,day[1]))
+      params[:schedules][day[0]] = @service.get_time(day[0].to_i,day[1])
     end
 
     if @service.save
@@ -61,10 +62,11 @@ class ServicesController < ApplicationController
           
     if @schedules==[]
       params[:schedules].sort.each do |f|
-      @schedules << Schedule.new(@service.get_time(f[0].to_i,f[1]))
-      params[:schedules][f[0]] = @service.get_time(f[0].to_i,f[1])
-    end
+        @schedules << Schedule.new(@service.get_time(f[0].to_i,f[1]))
+        params[:schedules][f[0]] = @service.get_time(f[0].to_i,f[1])
+      end
     else
+
       @schedules.each_with_index do |f,i|
         i+=1
         f.update_attributes(@service.get_time(i,params[:schedules][i.to_s]))
