@@ -62,7 +62,7 @@
 <!--#####################################-->
 <!--########### jobs ####################-->
     <h2>Fiche de poste</h2>
-    <%= render :partial => 'jobs/jobs' %>    
+    <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new}%>    
 
 <!--#####################################-->
 <!--########### Iban ####################-->
@@ -76,7 +76,7 @@
 <!--########### JobContract #############-->
 
     <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
-      <%= render :partial => @job_contract, :object => @job_contract%> 
+      <%= render( :partial => @job_contract, :object => @job_contract) unless @employee.new_record?%> 
      <% end %>
 
 <!--####################################-->
@@ -103,4 +103,4 @@
 </div><!--end class frame -->
 
    
-<%if is_form_view?%><%= osibox_init :partial => 'job_form', :border_size => '32'%><%end%>
+<%if is_form_view?%><%= osibox_init :partial => 'job_form', :locals => { :job => Job.new}, :border_size => '32'%><% end %>

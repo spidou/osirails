@@ -1,6 +1,6 @@
 <% form_for(@employee, :html => {:multipart => true}) do |f| %>
   <%= f.error_messages %> 
-  <h2>Fiche d'identité</h2>
+  <h2>Fiche d&apos;identité</h2>
   <p>
     <%= f.label :civility, "Civilit&eacute; :"%>
     <%= collection_select(:employee, :civility_id, Civility.find(:all), :id, :name)%>  

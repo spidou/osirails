@@ -48,7 +48,7 @@ class EmployeesController < ApplicationController
 
       @employee.numbers.build
 
-      @job = Job.new
+
       @employee.address = Address.new
       @address = @employee.address
       @documents = @employee.documents
@@ -63,8 +63,7 @@ class EmployeesController < ApplicationController
     
       @document_controller = Menu.find_by_name('documents')
       
-      @employee = Employee.find(params[:id])
-      @job = Job.new   
+      @employee = Employee.find(params[:id]) 
       @numbers = @employee.numbers
       @address = @employee.address
       @documents =@employee.documents
@@ -80,10 +79,10 @@ class EmployeesController < ApplicationController
     if Employee.can_add?(current_user)
       
       @document_controller = Menu.find_by_name('documents')
-
+ 
      
        # @error is use to know if all form are valids
-      @error = false
+      #@error = false
       
       employee = params[:employee].dup
       
@@ -95,72 +94,57 @@ class EmployeesController < ApplicationController
       employee[:social_security_number] =  params['social_security_number']['0'] + " " + params['social_security_number']['1']
       params.delete('social_security_number')
       
-      # prepare the address params hash  
-      params[:address] = {}
-      params[:address]['city_name'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['name']
-      params[:address]['zip_code'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['zip_code']
-      params[:address]['country_name'] = params[:employee]['address']['country']['name']
-      params[:address]['address1'] = params[:employee]['address']['address1']
-      params[:address]['address2'] = params[:employee]['address']['address2']
-      employee.delete('address')
-      
-      docs = employee.delete('documents')
+      # docs = employee.delete('documents')
       
       # create employees ressources
       @employee = Employee.new(employee)
-      @job = Job.new(params[:job]) 
-      @employee.address = Address.new(params[:address])
-      @documents = @employee.documents
+
+
+      # @employee.address = Address.new(params[:address])
+      # @documents = @employee.documents
       
       ## params[:numbers].each_value do |number|
       ##  number['visible'] = false if number['visible'].nil?
       ##  @employee.numbers << Number.new(number) unless number.blank?
       ##end
       
-      if Document.can_add?(current_user, @employee.class)
-        if params[:new_document_number]["value"].to_i > 0
-          documents = params[:employee][:documents].dup
-          @document_objects = Document.create_all(documents, @employee)
-        end
-        document_params_index = 0
-        params[:new_document_number]["value"].to_i.times do |i|
-          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:employee][:documents]["#{i + 1}"][:valid] == "false"
-        end
-        ## Test if all documents enable are valid
-        unless @document_objects.nil?
-          @document_objects.size.times do |i|
-            @error = true unless @document_objects[i].valid?
-          end
-          ## Reaffect document number
-        params[:new_document_number]["value"]  = @document_objects.size
-        end
-      end
+ #     if Document.can_add?(current_user, @employee.class)
+#        if params[:new_document_number]["value"].to_i > 0
+#          documents = params[:employee][:documents].dup
+#          @document_objects = Document.create_all(documents, @employee)
+#        end
+#        document_params_index = 0
+#        params[:new_document_number]["value"].to_i.times do |i|
+#          params[:employee][:documents]["#{document_params_index += 1}"] = params[:employee][:documents]["#{i + 1}"] unless params[:employee][:documents]["#{i + 1}"][:valid] == "false"
+#        end
+#        ## Test if all documents enable are valid
+#        unless @document_objects.nil?
+#          @document_objects.size.times do |i|
+#            @error = true unless @document_objects[i].valid?
+#          end
+#          ## Reaffect document number
+#        params[:new_document_number]["value"]  = @document_objects.size
+#        end
+#      end
       
 
       # save or show errors 
-      if @employee.save and @error == false # and job == true
+      if @employee.save #and @error == false # and job == true
         
         # save the employee's documents
-        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
-          if params[:new_document_number]["value"].to_i > 0
-            @document_objects.each do |document|
-              if document.save == true
-                @employee.documents << document
-                document.create_thumbnails
-                document.create_preview_format
-              else
-                @error = true
-              end
-            end
-          end
-        end
-        
-        # save job and employees
-        #unless params[:job].nil?
-        #  job = @job.save
-        #else
-        #  job = true   
-        #end  
+        #unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
+          #if params[:new_document_number]["value"].to_i > 0
+            #@document_objects.each do |document|
+              #if document.save == true
+              #  @employee.documents << document
+              #  document.create_thumbnails
+              #  document.create_preview_format
+              #else
+              #  @error = true
+              #end
+            #end
+          #end
+        #end
         
         # configure the employee as a responsable of his services if responsable is checked
         unless params[:responsable].nil?
@@ -174,7 +158,7 @@ class EmployeesController < ApplicationController
         redirect_to(@employee)
       else
         ## params[:employee]['numbers'] = params[:numbers]
-        params[:employee]['documents'] = docs
+       # params[:employee]['documents'] = docs
         
         render :action => "new" 
       end
@@ -191,7 +175,6 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.find(params[:id])
-      @job = Job.new(params[:job]) 
 
       @address = @employee.address
 
@@ -253,6 +236,10 @@ class EmployeesController < ApplicationController
       # delete the documents in params
 #      docs = params[:employee].delete('documents')
       
+      # destroy all services and jobs 
+      params[:employee]['service_ids']||= [] 
+      params[:employee]['job_ids']||= []
+
       # save or show errors
       if @employee.update_attributes(params[:employee])  and @error == false #and @number_error == false
         
@@ -271,18 +258,17 @@ class EmployeesController < ApplicationController
 #          end
 #        end
         
-        # FIXME use transaction with the checkboxes params when destroy all!
-        ########################################################################
-        # destroy all responsables
+
+        # destroy all responsables if there's no checked checkbox
         @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
-        @responsable.each do |r|
-          r.update_attributes({:responsable => 0})
+        EmployeesService.transaction do        
+          @responsable.each do |r|
+            r.update_attributes({:responsable => 0})
+          end
         end
         
-        # destroy all services and jobs if there's no checked checkbox
-        params[:employee]['service_ids']||= [] 
-        params[:employee]['job_ids']||= []
-        ########################################################################"
+
+
         
        
         

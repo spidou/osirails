@@ -35,17 +35,17 @@
     <%= form.label :employee_state_id%>
     <%= form.form_or_view(form.collection_select( :employee_state_id, EmployeeState.find(:all,:conditions => ["active=?",1]), :id, :name,{} , {:disabled => is_gone?(@job_contract)}), :employee_state, :name)%>
   </p>
-
-  <% fields_for 'job_contract[salary_attributes]',@job_contract.salaries.first do |salary_form| %>
-    <%= salary_form.error_messages %>
-    <p>
-      <%= salary_form.label  :gross_amount%>
-      <%= salary_form.form_or_view(salary_form.text_field( :gross_amount, { :size => 8, :maxlength => 10, :class => "disable-stylesheet-width",:disabled => is_gone?(@job_contract) } ),' ' )%>
-      <% if !is_form_view? %>
-      <%= strong(display_formatted_salary(@job_contract.actual_salary))+" "+link_to( 'Voir historique des salaires', employee_salaries_path(@employee))%>
-      <%= display_job_contract_edit_link(@job_contract_controller, @employee)%>
-      <% end %>
-    </p>
+  <%unless job_contract.salaries.first.nil?%>
+    <% fields_for 'job_contract[salary_attributes]',@job_contract.salaries.first do |salary_form| %>
+      <p>
+        <%= salary_form.label  :gross_amount%>
+        <%= salary_form.form_or_view(salary_form.text_field( :gross_amount, { :size => 8, :maxlength => 10, :class => "disable-stylesheet-width",:disabled => is_gone?(@job_contract) } ),' ' )%>
+        <% if !is_form_view? %>
+        <%= strong(display_formatted_salary(@job_contract.actual_salary))+" "+link_to( 'Voir historique des salaires', employee_salaries_path(@employee))%>
+        <%= display_job_contract_edit_link(@job_contract_controller, @employee)%>
+        <% end %>
+      </p>
+    <% end %>
   <% end %>
 
 

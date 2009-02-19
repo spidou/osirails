@@ -49,7 +49,7 @@ class Employee < ActiveRecord::Base
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
   
   # Callbacks
-  after_create :create_user,:save_iban
+  after_create :create_other_resources, :save_address #,:save_iban
   before_save :case_managment
   after_update :save_iban, :save_numbers, :save_address
   
@@ -193,7 +193,7 @@ class Employee < ActiveRecord::Base
     "#{self.first_name} #{self.last_name}"
   end
   
-  def create_user
+  def create_other_resources
     ConfigurationManager.initialize_options unless ConfigurationManager.respond_to?("admin_user_pattern")
     User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd",:employee_id => self.id)
     JobContract.create(:start_date => "", :end_date => "", :employee_id => self.id, :employee_state_id => "",:job_contract_type_id => "" )  

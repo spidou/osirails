@@ -1,6 +1,6 @@
  <div class="frame">
  <h2>Ajout de fonction</h2>
-      <%form_remote_for(@job,:html=>{:id=>'job_add_form'}) do |j|%>
+      <%form_remote_for(job,:html=>{:id=>'job_add_form'}) do |j|%>
         <%=j.error_messages%>
       <p style="display:none">
         <%= hidden_field_tag 'employee_id',params[:id].nil? ? nil : params[:id]%>

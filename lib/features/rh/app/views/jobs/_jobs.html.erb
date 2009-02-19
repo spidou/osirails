@@ -35,16 +35,17 @@
 
 
     <% else %>
-
-
       <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
-      <%for service in @employee.services%>
-        <p>
-          <%=link_to service.name, service_path(service.id)%>
-          <%= responsable(service.id)=="" ? "" : "(Responsable(s) : #{responsable(service.id)} )"%>
-        </p>
-      <% end %>
-      
+      <div class="collection">
+        <div class="form_multiple_entries">
+        <%for service in @employee.services%>
+          <div class="object">
+            <%=link_to service.name, service_path(service.id)%>
+            <%= responsable(service.id)=="" ? "" : "(Responsable(s) : #{responsable(service.id)} )"%>
+          </div>
+        <% end %>
+        </div>
+      </div>
       <%= @employee.jobs.size<=1 ? "<h3>Fonction dans l'entreprise</h3>":"<h3>Fonctions dans l'entreprise</h3>"%>
       <%= "<p>aucune</p>" if @employee.jobs.size==0  %>
       <%for job in @employee.jobs%>
