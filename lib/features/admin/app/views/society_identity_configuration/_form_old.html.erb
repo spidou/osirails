@@ -1,0 +1,55 @@
+<h1>Les param&egrave;tres globaux de l'entreprise</h1>
+<h2>Informations G&eacute;n&eacute;rales</h2>
+<p>
+  <%= label_tag "admin_society_identity_configuration_name", "Entreprise : " %>
+  <strong><%= display_markup("admin_society_identity_configuration_name", @parameters["admin_society_identity_configuration_name"]) %></strong>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_siret", "Numéro SIRET : " %>
+  <strong><%= display_markup("admin_society_identity_configuration_siret", @parameters["admin_society_identity_configuration_siret"]) %></strong>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_phone", "Numéro de téléphone : " %>
+  <strong><%= display_markup("admin_society_identity_configuration_phone", @parameters["admin_society_identity_configuration_phone"]) %></strong>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_fax", "Numéro de fax : " %>
+  <strong><%= display_markup("admin_society_identity_configuration_fax", @parameters["admin_society_identity_configuration_fax"]) %></strong>
+</p>
+
+<h2>Coordonn&eacute;es</h2>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_address_first_line', "Adresse :"%>
+  <strong><%= display_markup("admin_society_identity_configuration_address_first_line", @parameters["admin_society_identity_configuration_address_first_line"]) %> <%= "-" if params[:action] == "edit" or @parameters["admin_society_identity_configuration_address_second_line"] != 0 %> 
+  <%= display_markup("admin_society_identity_configuration_address_second_line", @parameters["admin_society_identity_configuration_address_second_line"] == 0 ? "" : @parameters["admin_society_identity_configuration_address_second_line"]) %></strong>
+</p>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_address_zip', "Code Postal :"%>
+  <strong><%= display_markup("admin_society_identity_configuration_address_zip", @parameters["admin_society_identity_configuration_address_zip"]) %></strong>
+</p>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_address_town', "Ville :"%>
+  <strong><%= display_markup("admin_society_identity_configuration_address_town", @parameters["admin_society_identity_configuration_address_town"]) %></strong>    
+</p>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_address_country', "Pays :"%>
+  <strong><%= display_markup("admin_society_identity_configuration_address_country", @parameters["admin_society_identity_configuration_address_country"]) %></strong>  
+</p>
+<h2>Informations complémentaires</h2>
+<p>
+  <%= label_tag 'admin_society_identity_configuration_domain', "Nom de domaine :" %>
+  <strong><%= display_markup("admin_society_identity_configuration_domain", @parameters["admin_society_identity_configuration_domain"]) %></strong>
+</p>
+<h2>Calendrier</h2>
+<p>
+	<%= label_tag 'admin_society_identity_configuration_working_day', 'Jours ouvrables :' %>
+	<strong><%= working_day(@parameters["admin_society_identity_configuration_working_day"]) %></strong>
+</p>
+<h2>Style</h2>
+<p>
+	<%= label_tag 'admin_society_identity_configuration_choosen_theme', 'Choisir le thème de l\'Intranet :' %>
+	<strong><%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %></strong>
+</p>

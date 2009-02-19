@@ -3,18 +3,5 @@
 
 <div class="frame tabulation">
 <h1>Modifier un secteur d'activit&eacute;</h1>
-<% form_for(@society_activity_sector) do |society_activity_sector| %>
-  <%= society_activity_sector.error_messages %>
-
-  <p>
-    <%= society_activity_sector.label :name, "Nom" %><br />
-    <%= society_activity_sector.text_field :name %>
-  </p>
-
-  <p>
-    <%= society_activity_sector.submit "Mettre à jour" %>
-  </p>
-<% end %>
-
-<%= link_to 'Retour', society_activity_sectors_path %>
+<%= render :partial => @society_activity_sector, :locals => {:submit_button_name => "Mettre &agrave; jour"} %>
 </div>

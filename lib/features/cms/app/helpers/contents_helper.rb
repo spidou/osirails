@@ -77,4 +77,11 @@ module ContentsHelper
     end
   end
   
+  def contributors_full_names(contributors)
+    full_name = []
+    contributors.each do |contributor|
+      full_name << (contributor.employee.nil? ? contributor.username : contributor.employee.fullname)
+    end
+    full_name.join(', ')
+  end
 end

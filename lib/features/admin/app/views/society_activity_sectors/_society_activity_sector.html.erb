@@ -1,0 +1,12 @@
+<% form_for(@society_activity_sector) do |form| %>
+  <%= form.error_messages %>
+
+  <p>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <%= form.submit submit_button_name %>
+  </p>
+<% end %>

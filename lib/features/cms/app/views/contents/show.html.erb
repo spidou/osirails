@@ -9,27 +9,31 @@
   </ul>
   <% if @content.versions.length > 0 %>
     <h1>
-      <%= link_to_function("<span class='gray_color'>Version</span>") do |page| 
+      <%= link_to_function("<span class='gray_color'>Version</span>") do |page|
         page.visual_effect(:toggle_slide, "list_content_versions") 
-      end%></h1>
+      end %>
+    </h1>
 
     <div id="list_content_versions" style="display:none">
       <%= show_contents_versions(@content_versions) %>
     </div>
-
-    <% end %>
+  <% end %>
 <% end %>
-<h1> <%= @content.title %></h1>
+
+<h1><%= @content.title %></h1>
 <div class="frame formated_content">
   <fieldset>
     <p><%= @content.description %></p>
     <hr/>
     <p><%= @content.text %></p>
     <hr/>
-    <p> <%="<strong>Auteur :</strong> "+ (@author.employee.nil? ? @author.username : @author.employee.fullname) unless @author.nil? %></p>
-    <p> <%="<strong>Contributeurs : </strong>"+ @contributors_full_names.join(', ') if @contributors_full_names.length > 0%></p>
+    <p>
+      <strong>Auteur :</strong>
+      <%= (@author.employee.nil? ? @author.username : @author.employee.fullname) unless @author.nil? %>
+    </p>
+    <p>
+      <strong>Contributeurs :</strong>
+      <%= contributors_full_names(@contributors) %>
+    </p>
   </fieldset>
-
 </div>
-
-

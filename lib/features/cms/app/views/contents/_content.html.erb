@@ -4,36 +4,24 @@
 <% end %>
 
 <div class="frame presentation_medium">
-<% form_for(@content) do |form| %> 
- <%= form.error_messages %>
-    <%= error_messages_for("menu")%>
-    <h2>Information concerant le menu</h2>
-    <p>
-      <%= label :menu, :title, "Titre du menu :" %>
-      <%= text_field(:menu, :title)  %>
-    </p>
-    <p>
-      <%= label :menu, :description, "Description du menu :" %>
-      <%= text_field(:menu, :description)  %>
-    </p>
-    <p>
-      <%= label :parent_id, "Menu parent :"%>
-      <%= collection_select_with_indentation(:menu, :parent_id, @menus, :id, :title, options = {:include_blank => "-- Racine --", :indentation => 15}) %>
-    <p>
+<% form_for(@content) do |form| %>
+  <%= render :partial => 'menus/menu_form', :object => @content.menu, :locals => {:menu_owner => @content} %>
 
-    <h2>Information concernant le contenu</h2>
-    <p>
-      <%= form.label :title %>
-      <%= form.text_field :title %>
-    </p>
-    <p>
-      <%= form.label :description %>
-      <%= form.text_field :description %>
-    </p>
-    <p>
-      <%= form.text_area(:text, :cols => 100, :rows => 30) %>
-    </p>
+  <h2>Information concernant le contenu</h2>
+  <%= form.error_messages %>
+  
+  <p>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </p>
+  <p>
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </p>
+  <p>
+    <%= form.text_area(:text, :cols => 100, :rows => 30) %>
+  </p>
 
-    <%= submit_tag submit_button_name %>
+  <%= submit_tag submit_button_name %>
 <% end %>
 </div>
