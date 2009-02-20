@@ -7,8 +7,14 @@
   
 <% end %>
 
-<% secondary_menu do%>
-  toto
+<% secondary_menu "Supplement 1", "gray_color" do%>
+  foo
+  bar
+  <a href="#" onclick="alert('It works!');">foobar</a>
+<% end %>
+<% secondary_menu "Supplement 2", "blue_color" do%>
+  foo
+  bar
 <% end %>
 
 <h1>Informations d&apos;un employ&eacute;</h1>

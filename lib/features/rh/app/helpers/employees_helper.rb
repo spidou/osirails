@@ -275,11 +275,14 @@ module EmployeesHelper
   end
   
 
-  def secondary_menu( &block )
-    content_for :secondary_menu do 
-      "liens utiles";
-      "<h2>liens utiles2</h2>";     
-      raise block.first
-    end   
+  def secondary_menu(title = nil, html_class = "gray_color", &block)
+    html = content_tag(:h1, content_tag(:div, title, :class => html_class))
+    html += "<ul>"
+    capture(&block).split("\n").each do |line|
+      next if line.blank?
+      html += content_tag :li, line
+    end
+    html += "</ul>"
+    content_for(:secondary_menu) {html}
   end
 end
