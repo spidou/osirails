@@ -195,6 +195,17 @@ module ApplicationHelper
     puts "An error has occured in file #{__FILE__}. Please restart the server so that the application works properly. (error : #{e.message})"
   end
   
+  def secondary_menu(title, &block)
+    html = content_tag(:h1, title)
+    html += "<ul>"
+    capture(&block).split("\n").each do |line|
+      next if line.blank?
+      html += content_tag :li, line
+    end
+    html += "</ul>"
+    content_for(:secondary_menu) {html}
+  end
+  
   private
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code

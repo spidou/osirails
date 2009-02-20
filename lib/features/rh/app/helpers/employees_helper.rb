@@ -273,16 +273,4 @@ module EmployeesHelper
       link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails")+text, employee_path(employee)) 
     end
   end
-  
-
-  def secondary_menu(title = nil, html_class = "gray_color", &block)
-    html = content_tag(:h1, content_tag(:div, title, :class => html_class))
-    html += "<ul>"
-    capture(&block).split("\n").each do |line|
-      next if line.blank?
-      html += content_tag :li, line
-    end
-    html += "</ul>"
-    content_for(:secondary_menu) {html}
-  end
 end

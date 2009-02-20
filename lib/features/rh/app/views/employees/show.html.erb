@@ -4,24 +4,10 @@
     <li><%= show_edit_button(@employee) + link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(@employee)) %></li>
     <li><%= show_edit_button(@employee," Modifier un employée") %></li>
   </ul>
-  
-<% end %>
-
-<% secondary_menu "Supplement 1", "gray_color" do%>
-  foo
-  bar
-  <a href="#" onclick="alert('It works!');">foobar</a>
-<% end %>
-<% secondary_menu "Supplement 2", "blue_color" do%>
-  foo
-  bar
 <% end %>
 
 <h1>Informations d&apos;un employ&eacute;</h1>
+<%= render :partial => @employee %>
 
-
-	<%= render :partial => @employee %>
-   
-  <!-- Display Documents div -->
-  <%= display_documents(@employee, @documents) %> 
-
+<!-- Display Documents div -->
+<%= display_documents(@employee, @documents) %>
