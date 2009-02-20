@@ -16,6 +16,12 @@ class CommodityCategory < ActiveRecord::Base
   # Validates
   validates_presence_of :name, :message => "ne peut être vide."
 
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:name] = "Nom :"
+  @@form_labels[:commodity_category] = "Appartient &agrave; :"
+  @@form_labels[:unit_measure] = "Unit&eacute;e de mesure :"
+
   # Check if a resource can be destroy or disable
   def can_destroy?
     commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
@@ -29,5 +35,4 @@ class CommodityCategory < ActiveRecord::Base
     categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => false})
     commodities.size > 0 or categories.size > 0
   end
-  
 end
