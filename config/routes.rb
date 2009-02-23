@@ -19,13 +19,15 @@ ActionController::Routing::Routes.draw do |map|
   ### END ROOT
 
   map.login 'account/login', :controller => 'account', :action => 'login'
-  map.logout 'account/logout', :controller => 'account',  :action => 'logout'
+  map.logout 'account/logout', :controller => 'account', :action => 'logout'
   
   ### COMMONS
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
   map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}
   map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
+  
+  map.connect 'attachments/:id/:style', :controller => 'attachments', :action => 'show'
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'

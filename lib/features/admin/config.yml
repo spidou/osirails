@@ -21,6 +21,11 @@ menus:
     title: Documents
     description: Gestion des documents
     skip_display: true
+    children:
+      attachments:
+        title: Fichiers
+        description: Fichiers attachés au document
+        skip_display: true
   downloads:
     title: Downloads
     description: Gestion des downloads

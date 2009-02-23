@@ -17,8 +17,8 @@
       <%= form.form_or_view(form.collection_select(:file_type_id, FileType.by_owner(owner_type), :id, :name, {}, :index => nil), :file_type, :name ) %>
     </p>
     <p>
-      <%= form.label :file, :index => nil %>
-      <%= form.form_or_view(form.file_field(:file, :index => nil), :name ) %>
+      <%= form.label :attachment, :index => nil %>
+      <%= form.form_or_view(form.file_field(:attachment, :index => nil), :name ) %>
     </p>
     <p>
       <% if document.new_record? %>

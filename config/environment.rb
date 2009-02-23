@@ -106,5 +106,5 @@ require 'mimetype_fu'
 Mime::Type.register 'application/pdf', :pdf
 Mime::Type.register 'image/svg+xml', :svg
 
-DocumentRouteDefinition.parse_model
-Document.models.each {|model| DocumentRouteDefinition.create_route(model)}
+#DocumentRouteDefinition.parse_model
+#Document.models.each {|model| DocumentRouteDefinition.create_route(model)}
