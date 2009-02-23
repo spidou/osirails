@@ -10,8 +10,8 @@
     <%=f.error_messages%> 
     <h2>Prime</h2>
     <p>
-      <%= f.label :premium %>
-      <%= f.text_field :premium, {:size => 8, :maxlength => 10, :class => "disable-stylesheet-width"} %>
+      <%= f.label :amount %>
+      <%= f.text_field :amount, { :size => 10, :maxlength => 10 } %>
       &nbsp;le&nbsp;
       <%= f.form_or_view(f.date_select( :date,{ :start_year => 2000, :order => [:day,:month,:year] } ) ) %>
     </p>

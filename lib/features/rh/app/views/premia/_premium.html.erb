@@ -1,0 +1,5 @@
+<p>
+  <strong><%= premium.amount %> &euro;</strong>
+  <%= premium.date.strftime("le %d %B %Y") unless premium.date.nil? %>
+  <%= h("(#{premium.remark})")%> 
+</p>

@@ -9,9 +9,9 @@
     </tr>
     <% for premium in @premia%>
     <tr>
-      <td><%=h premium.premium%></td>
-      <td><%=h premium.remark%></td>
-      <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil?%></td>
+      <td><%=h premium.amount %></td>
+      <td><%=h premium.remark %></td>
+      <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil? %></td>
     </tr> 
     <%end%>
 </table>

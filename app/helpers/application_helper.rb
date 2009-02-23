@@ -157,6 +157,32 @@ module ApplicationHelper
     html+="</p>"
   end
   
+  # This method permit to point out if a required local variable hasn't been passed (or with a nil object) with the 'render :partial' call
+  # 
+  # Example 1 :
+  # in edit.html.erb
+  # <%= render :partial => @user %>
+  # 
+  # in _user.html.erb
+  # <% require_locals my_missing_local %> # => raise an error
+  # 
+  # Example 2 :
+  # in new.html.erb
+  # <%= render :partial => @user, :locals => { :my_local => my_local } %>
+  # 
+  # in _user.html.erb
+  # <% require_locals my_local %> # => no error
+  # 
+  # 
+  # The method accepts many variable at time :
+  # <% require_locals local1, local2, local3 %>
+  #
+  def require_locals *locals
+    locals.each do |local|
+      raise "The partial you called requires at least one local variable. Please verify if the(se) local(s) is/are correctly referenced when you call your render :partial" if local.nil?
+    end
+  end
+  
   # Returns - true if the current page is an editable page (add/edit)
   #         - false if the current page is an view page (show)
   #
@@ -196,6 +222,8 @@ module ApplicationHelper
   end
   
   def secondary_menu(title, &block)
+    raise ArgumentError, "Missing block" unless block_given?
+    
     html = content_tag(:h1, title)
     html += "<ul>"
     capture(&block).split("\n").each do |line|

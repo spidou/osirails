@@ -308,10 +308,12 @@ a.button_banner:hover span {
 	cursor:pointer;
 }
 
+/*
 .number {
 	color: white;
 	line-height:25px;
 }
+*/
 
 .memorandum_date{
 	font-weight:bold;
@@ -508,6 +510,10 @@ a.button_banner:hover span {
 	-moz-border-radius: 10px 0 0 0;
 }
 
+#content_secondary_menu h1 {
+	color: rgb(234,136,28);
+}
+
 #search {
 	text-indent:0px;
 	margin-left: 5px;
@@ -581,6 +587,10 @@ button.contextual_search_button {/*button in the input type text [secondary_menu
 	height:12px;
 }
 
+#secondary_menu a.default-button {
+	margin:0 5px 0px 5px;
+}
+
 button.contextual_search_button:hover {
 	cursor:pointer;
 }
@@ -599,18 +609,6 @@ button.contextual_search_button:hover {
 	color:#444;
 	margin-right:5px;
 	margin-left:5px;
-}
-
-.gray_color {
-	color: rgb(120,120,120);
-}
-
-.blue_color {
-	color: #8ea4cf;
-}
-
-#secondary_menu a.default-button {
-	margin:0 5px 0px 5px;
 }
 
 /*////////////////////////////////////////////////////////////////////////////////////////*/
@@ -846,23 +844,11 @@ CORPS DU SITE > PAGE DU SITE > CONTENU DE LA PAGE > MENU HORIZONTAL
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors input,
 .fieldWithErrors select {
-	/*border:solid 2px #B0383D !important;
-	color:#B0383D;
-	vertical-align:top;*/
-  margin-left: 10px;
-}
-
-div.fieldWithErrors {
-	display:inline;
+  color:#B0383D;
 }
 
 .fieldWithErrors label {
 	color:#B0383D;
-	margin-left:20px;
-	text-align:right;
-	display:inline-block;
-	position:relative;
-	left:10px;
 }
 
 #errorExplanation {
@@ -1086,10 +1072,6 @@ width: 50px ! important;
 
 .date_days {
 	margin:0px 20px 0px -15px ;
-}
-
-.frame form p textarea:focus {
-	background: #f5c384;
 }
 
 /*LAYOUTS' FORM*/

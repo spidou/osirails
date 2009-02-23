@@ -1,7 +1,7 @@
 function confirm_premium()
 {
   text = "Etes vous sûr de vouloir ajouter la prime suivante? \n\n"
-  text += "Montant : " + document.getElementById('premium_premium').value + "€ \n";
+  text += "Montant : " + document.getElementById('premium_amount').value + "€ \n";
   text += "Commentaire : " + document.getElementById('premium_remark').value + "\n";
   text += "Date : " + document.getElementById('premium_date_3i').value + "/";
   text += document.getElementById('premium_date_2i').value + "/";

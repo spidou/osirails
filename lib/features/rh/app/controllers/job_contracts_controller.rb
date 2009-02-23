@@ -2,7 +2,7 @@ class JobContractsController < ApplicationController
 
   helper :documents
 
-# GET /employees/1/edit
+# GET /employees/1/job_contract/edit
   def edit
 
     @document_controller = Menu.find_by_name('documents')
@@ -12,17 +12,7 @@ class JobContractsController < ApplicationController
 #    @documents = @job_contract.documents 
   end
 
-# GET /employees/1/show  
-  def show
-    
-    @document_controller = Menu.find_by_name('documents')
-    
-    @employee =  Employee.find(params[:employee_id])
-    @job_contract = @employee.job_contract
-#    @documents = @job_contract.documents
-  end
-
-# PUT /employees/1/update  
+# PUT /employees/1/job_contract/update  
   def update
   
     @document_controller = Menu.find_by_name('documents')

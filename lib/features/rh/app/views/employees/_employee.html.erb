@@ -1,106 +1,93 @@
 <div class="frame presentation_medium">
-  <% form_for(@employee, :html => {:multipart => true}) do |f| %>
-    <%= f.error_messages %> 
-    <h2>Fiche d&apos;identité</h2>
-    <p>
-      <%= f.label :civility %>
-      <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
-    </p>
-    <p>
-      <%= f.label :last_name %>
-      <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
-    </p>
-    <p>
-      <%= f.label :first_name %>
-      <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
-    </p>
-    <p>
-      <%= f.label :birth_date %>
-      <%= f.form_or_view(f.date_select( :birth_date,{ :start_year => 1900, :order => [:day,:month,:year] }),:birth_date)%>
-    </p>
-    <p>
-      <%= f.label :family_situation %>
-      <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
-    </p>
-    <p>
-      <%= f.label 'social_security_number' %>
-      <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
-    </p>
+<% form_for(@employee, :html => {:multipart => true}) do |f| %>
+  <%= f.error_messages %> 
+  <h2>Fiche d&apos;identité</h2>
+  <p>
+    <%= f.label :civility %>
+    <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
+  </p>
+  <p>
+    <%= f.label :first_name %>
+    <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
+  </p>
+  <p>
+    <%= f.label :last_name %>
+    <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
+  </p>
+  <p>
+    <%= f.label :birth_date %>
+    <%= f.form_or_view(f.date_select( :birth_date,{ :start_year => 1900, :order => [:day,:month,:year] }),:birth_date)%>
+  </p>
+  <p>
+    <%= f.label :family_situation %>
+    <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
+  </p>
+  <p>
+    <%= f.label 'social_security_number' %>
+    <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
+  </p>
 
-<!--#####################################-->
 <!--############## Address ##############-->
-    <h2>Coordonn&eacute;es</h2>
-    <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
-      <h3>Adresse postale</h3>
-      <%= render :partial => "addresses/address_form", :object => @employee.address || @employee.build_address , :locals => {:address_owner => @employee}%>
-    <% end %>
+  <h2>Coordonn&eacute;es</h2>
+  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
+    <h3>Adresse postale</h3>
+    <%= render :partial => "addresses/address_form", :object => @employee.address || @employee.build_address , :locals => { :address_owner => @employee}%>
+  <% end %>
 
-<!--####################################-->
 <!--############## Emails ##############-->
-  
-    <h3>Adresses &eacute;lectroniques</h3>
-    <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%> 
-      <p>
-        <%= f.label :email %>
-        <%= f.form_or_view(f.text_field( :email ), :email)%>
-      </p>
-      <p>
-        <%= f.label :society_email %>
-        <%= f.form_or_view(f.text_field( :society_email ), :society_email )%>
-      </p>
-    <% end %>
-    <%="<p>#{label_tag( "Entreprise :" )} #{strong(@employee.intranet_email)}</p>" if !is_form_view?%>
+  <h3>Adresses &eacute;lectroniques</h3>
+  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%> 
+    <p>
+      <%= f.label :email %>
+      <%= f.form_or_view(f.text_field( :email ), :email)%>
+    </p>
+    <p>
+      <%= f.label :society_email %>
+      <%= f.form_or_view(f.text_field( :society_email ), :society_email )%>
+    </p>
+  <% end %>
+  <%="<p>#{label_tag( "Entreprise :" )} #{strong(@employee.intranet_email)}</p>" if !is_form_view?%>
 
-<!--####################################-->
 <!--############## Numbers #############-->
-    <h3>Num&eacute;ro de t&eacute;l&eacute;phone</h3>
-    <div id="numbers">    
-      <%= render :partial => 'number', :collection => @employee.numbers , :locals => {:attribute => 'employee' }%>
-    </div>
-    <p><%= add_number_link() if is_form_view?%></p>
+  <h3>Num&eacute;ro de t&eacute;l&eacute;phone</h3>
+  <div id="numbers">    
+    <%= render :partial => 'numbers/number', :collection => @employee.numbers , :locals => { :number_owner => @employee }%>
+  </div>
+  <p><%= add_number_link(@employee) if is_form_view? %></p>
 
-<!--#####################################-->
-<!--########### jobs ####################-->
-    <h2>Fiche de poste</h2>
-    <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new}%>    
+<!--########### Jobs ####################-->
+  <h2>Fiche de poste</h2>
+  <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new}%>    
 
-<!--#####################################-->
 <!--########### Iban ####################-->
+  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
+    <h2>Identité Bancaire</h2>
+    <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals =>{ :iban_owner => @employee } %>
+  <% end %>  
 
-    <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
-      <h2>Identité Bancaire</h2>
-      <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals =>{ :iban_owner => @employee } %>
-    <% end %>  
-    
-<!--#####################################-->
 <!--########### JobContract #############-->
+  <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
+    <%= render( :partial => @job_contract ) unless @employee.new_record? %> 
+   <% end %>
 
-    <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
-      <%= render( :partial => @job_contract, :object => @job_contract) unless @employee.new_record?%> 
-     <% end %>
-
-<!--####################################-->
 <!--############## Premia ##############-->
-<!--# the partial premia/premia is the file _premia in the folder premia in teh views folder of rh feature--> 
-    
-    <% if Premium.can_view?(current_user)or @employee.user.id == current_user.id%>
-      <%= render :partial => 'premia/premia', :object => @employee%>     
-    <% end %>
+  <%= display %>
+  <% if Premium.can_view?(current_user) or @employee.user.id == current_user.id %>
+    <h2>Primes</h2>
+    <%= render :partial => 'premia/premium', :collection => @employee.premia if !is_form_view? %>     
+    <%= display_premia_view_link(@employee) %>
+    <%= display_premia_add_link(@employee) %>
+  <% end %>
 
-
-<!--####################################--> 
-<!--###### Display Documents div #######-->
-
-    <% if is_form_view? %>
-      <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
-        
-      <p><%= f.submit button_name  %></p>
-
-    <% end %>
-    
-
-  <% end %><!--end form -->
-</div><!--end class frame -->
+<!--###### Documents div #######-->
+  <% if is_form_view? %>
+    <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
+    <p><%= f.submit button_name  %></p>
+  <% end %>
+<% end %><!--end form -->
+</div><!--end div -->
 
    
-<%if is_form_view?%><%= osibox_init :partial => 'job_form', :locals => { :job => Job.new}, :border_size => '32'%><% end %>
+<%if is_form_view? %>
+  <%= osibox_init :partial => 'job_form', :locals => { :job => Job.new }, :border_size => '32'%>
+<% end %>

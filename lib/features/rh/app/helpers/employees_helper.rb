@@ -85,23 +85,20 @@ module EmployeesHelper
   ########## NUMBERS METHODS #######################################
   
   # method that permit to add with javascript a new record of number
-  def add_number_link()
-    balise_img = "<img src=\"/images/add_16x16.png\" alt=\"Ajouter le numéro\" title=\"Ajouter le numéro\"/>"
-    link_to_function balise_img do |page|
-      page.insert_html :bottom, :numbers, :partial => "number", :object => Number.new, :locals => {:attribute => 'employee' }
+  def add_number_link(employee)
+    link_to_function "Ajouter un numéro" do |page|
+      page.insert_html :bottom, :numbers, :partial => "numbers/number", :object => Number.new, :locals => { :number_owner => employee }
     end  
   end 
   
   # method that permit to remove with javascript a new record of number
   def remove_number_link()
-    balise_img = "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>"
-    link_to_function( balise_img , "$(this).up('.number').remove()")  
+    link_to_function "Supprimer", "$(this).up('.number').remove()"
   end 
   
   # method that permit to remove with javascript an existing number
   def remove_old_number_link()
-    balise_img = "<img src=\"/images/delete_16x16.png\" alt=\"Enlever le numéro\" title=\"Enlever le numéro\"/>"
-    link_to_function( balise_img , "mark_resource_for_destroy(this)") 
+    link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
   end
 
 
@@ -109,19 +106,19 @@ module EmployeesHelper
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
-  def display_premia_add_link(employee, premia_controller)
+  def display_premia_add_link(employee)
     html = ""
-    if premia_controller.can_add?(current_user) and Premium.can_add?(current_user)
+    if menu_premia.can_add?(current_user) and Premium.can_add?(current_user)
       html << "<p>" + link_to( 'Ajouter une prime',new_employee_premium_path(employee)) + "</p>"
     end 
     return html
   end
   
-  def display_premia_view_link(employee, premia_controller)
+  def display_premia_view_link(employee)
     html = ""
-    if premia_controller.can_view?(current_user) and Premium.can_list?(current_user) 
+    if menu_premia.can_view?(current_user) and Premium.can_list?(current_user) 
       if employee.premia.size>0 
-      html << "<p>" + link_to( 'Afficher toutes les primes',employee_premia_path(employee)) + "</p>"
+      html << "<p>" + link_to( 'Afficher toutes les primes', employee_premia_path(employee)) + "</p>"
       end
     end
     return html

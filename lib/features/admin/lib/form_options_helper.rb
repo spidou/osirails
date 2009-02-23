@@ -2,37 +2,6 @@ require 'action_view/helpers/form_helper'
 
 module ActionView
   module Helpers
-    
-#    module FormHelper
-#      
-#      # Creates a strong field
-#      #
-#      # ==== Options  
-#      # * Creates standard HTML attributes for the tag.
-#      #
-#      # ==== Examples
-#      #   strong_tag 'Your text'
-#      #   # => <strong>Your text</strong>
-#      def strong(text)
-#        content_tag :strong, text
-#      end
-#    end
-#    
-#    module FormTagHelper
-#      
-#      # Creates a strong field
-#      #
-#      # ==== Options  
-#      # * Creates standard HTML attributes for the tag.
-#      #
-#      # ==== Examples
-#      #   strong_tag 'Your text'
-#      #   # => <strong>Your text</strong>
-#      def strong_tag(text)
-#        content_tag :strong, text
-#      end
-#    end
-    
     module FormOptionsHelper
       def collection_select_with_indentation(object, method, collection, value_method, text_method, options = {}, html_options = {})
         InstanceTag.new(object, method, self, nil, options.delete(:object)).to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
@@ -129,11 +98,18 @@ module ActionView
         InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_label_tag(text, options)
       end
       
-      # Creates a strong field
+      # Creates a strong tag
       #
-      # ==== Examples
-      #   strong 'Your text'
+      # ==== Example
+      #   <%= strong 'Your text' %>
       #   # => <strong>Your text</strong>
+      # 
+      # 
+      # The content is automatically escaped thanks to the 'h' method
+      # ==== Example
+      #   <%= strong "<span>Your text</span>" %>
+      #   # => <strong>&lt;span&gt;Your text&lt;span&gt;</strong>
+      #
       def strong(text)
         content_tag :strong, h(text)
       end
@@ -171,37 +147,43 @@ module ActionView
       # **view_methods* : the methods to call to display if we are in a view page (show)
       # 
       # ==== Examples
-      # > First example with a text_field tag and a default attribute (:name)
-      #   form.label :name, "Name"
-      #   form.form_or_view(form.text_field(:name), :name)
-      #   (add/edit)
-      #   => <label>Name</label>
-      #      <input type="text" value="Your text" />
-      #   (show)
-      #   => <label>Name</label>
-      #      <strong>Your text</strong>
+      # First example with a text_field tag and a default attribute (:name)
+      #   <%= form.label :name, "Name" %>
+      #   <%= form.form_or_view(form.text_field(:name), :name) %>
+      #   
+      #   # (add/edit)
+      #   # => <label>Name</label>
+      #   #    <input type="text" value="Your text" />
+      #   
+      #   # (show)
+      #   # => <label>Name</label>
+      #   #    <strong>Your text</strong>
       # 
-      # > Second example with a collection_select tag and nested objects attributes (:group, :name)
-      #   form.label :group_name_id, "Group Name"
-      #   form.form_or_view(form.collection_select(:group_name_id, Group.find(:all), :id, :name),
-      #                     :group, :name)
-      #   (add/edit)
-      #   => <label>Group Name</label>
-      #      <select>
-      #         <option value="1">Admin</option>
-      #         <option value="2">User</option>
-      #      </select>
-      #   (show)
-      #   => <label>Group Name</label>
-      #      <strong>Admin</strong> # @user.group.name (see the 2 last args of the 'form_or_view' call method)
+      # Second example with a collection_select tag and nested objects attributes (:group, :name)
+      #   <%= form.label :group_name_id, "Group Name" %>
+      #   <%= form.form_or_view(form.collection_select(:group_name_id, Group.find(:all), :id, :name),
+      #                     :group, :name) %>
+      #   
+      #   # (add/edit)
+      #   # => <label>Group Name</label>
+      #   #    <select>
+      #   #       <option value="1">Admin</option>
+      #   #       <option value="2">User</option>
+      #   #    </select>
+      #   
+      #   # (show)
+      #   # => <label>Group Name</label>
+      #   #    <strong>Admin</strong> # @user.group.name (see the 2 last args of the 'form_or_view' call method)
       #      
-      # > Third example with a text_field tag and a custom value for view page
-      #   form.form_or_view(form.text_field(:name), "<span>My custom value</span>")
-      #   (add/edit)
-      #   => <label>Name</label>
-      #      <input type="text" value="Your text" />
-      #   (show)
-      #   => <span>My custom value</span>
+      # Third example with a text_field tag and a custom value for view page
+      #   <%= form.form_or_view(form.text_field(:name), "<span>My custom value</span>") %>
+      #   
+      #   # (add/edit)
+      #   # => <label>Name</label>
+      #   #    <input type="text" value="Your text" />
+      #   
+      #   # (show)
+      #   # => <span>My custom value</span>
       # 
       def form_or_view(form_tag = nil, *view_methods)
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
@@ -211,14 +193,35 @@ module ActionView
           form_tag
         else
           view_text = @object
-          view_methods.each { |method| view_text = view_text.send(method) if view_text.respond_to?(method) and !method.to_s.include?('destroy') }
+          view_methods.each { |method| view_text = view_text.send(method) if view_text.respond_to?(method) }
           view_text.equal?(@object) ? view_methods.to_s : strong(view_text) #if the view_methods doesn't correspond with any real method, so the view_text still equal to @object. In this case the raw value of 'view_methods' is displayed, otherwise we display a strong tag
         end
       end
       
-      def strong(text)
-        if text.class.equal?(Symbol)
-          text = @object.send(text)
+      # This method permits to display a strong tag using directly the object of the form
+      # 
+      # ==== Examples
+      #   <% fields_for @user do |form| %>
+      #     <p>
+      #       <%= form.label :username %>
+      #       <%= form.strong :username # => <strong>john.doe</strong> %>
+      #     </p>
+      #     <p>
+      #       <%= form.label :group %>
+      #       <%= form.strong :group, :name # => <strong>admin</strong> %>
+      #     </p>
+      #     <p>
+      #       <%= form.strong "My custom text" # => <strong>My custom text</strong> %>
+      #     </p>
+      #   <% end %>
+      #
+      def strong(*text_methods)
+        if text_methods.first.class.equal?(Symbol)
+          text = @object
+          text_methods.each { |method| text = text.send(method) if text.respond_to?(method) } #OPTIMIZE this is not DRY > put it in a method instead of repeat it!
+          text = text_methods.to_s if text.equal?(@object)
+        else
+          text = text_methods.join(" ")
         end
         @template.strong(text)
       end

@@ -25,7 +25,7 @@ search:
           date: date
           created_at: date
           updated_at: date
-          premium: number
+          amount: number
       numbers:
         Number:
           number: number

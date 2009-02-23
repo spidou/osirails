@@ -2,19 +2,12 @@
   <%= javascript_include_tag 'rh/job_contract' %> 
 <% end %>
 
-<% content_for :secondary_menu do %>
-  <h1>
-    <span class="gray_color">Options</span> <span class="blue_color">annexes</span>
-  </h1>
-  <p>
-    <% checked = "" if @job_contract.nil?  %>
-    <% unless @job_contract.employee_state.nil?%>
-      <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>
-    <% end %>  
-    <%="<input type='checkbox' #{checked} id='employee_departure' onclick='disable_all();' />"%>
-    d&eacute;part employ&eacute; 
-  </p>
-<% end %>   
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <% checked = "" if @job_contract.nil?  %>
+  <% unless @job_contract.employee_state.nil?%>
+    <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>
+  <% end %> <%="<input type='checkbox' #{checked} id='employee_departure' onclick='disable_all();' />"%> d&eacute;part employ&eacute; 
+<% end %>
 
 <h1>Modifier un contrat de travail</h1>
 <div class="frame presentation_medium">
