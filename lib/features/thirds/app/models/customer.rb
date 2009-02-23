@@ -63,8 +63,9 @@ class Customer < Third
   ######################
   # OPTIMIZE place these methods in the acts_as_file module
   def document_attributes=(document_attributes)
+#    raise document_attributes.inspect
     document_attributes.each do |attributes|
-      attributes[:name] = attributes[:file].original_filename if attributes[:name].blank?
+#      attributes[:name] = attributes[:file].original_filename if attributes[:name].blank?
       if attributes[:id].blank?
         documents.build(attributes)
       else

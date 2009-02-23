@@ -7,7 +7,7 @@ class JobContract < ActiveRecord::Base
   
   has_many :salaries, :order => "created_at DESC"
   
-  validates_associated :salaries  
+#  validates_associated :salaries  
 
   acts_as_file
 
@@ -36,6 +36,6 @@ class JobContract < ActiveRecord::Base
   end
   
   def save_salary
-    salaries.last.save(false) if salaries.last.new_record?
+    salaries.last.save(false) if !salaries.last.nil? and salaries.last.new_record?
   end
 end
