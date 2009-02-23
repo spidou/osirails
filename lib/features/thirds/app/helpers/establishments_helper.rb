@@ -67,20 +67,21 @@ module EstablishmentsHelper
 #    return html
 #  end
 
-  def display_establishments_list(establishments)
+  def display_establishments_list(customer)
+    establishments = customer.activated_establishments
     html = "<h2>&Eacute;tablissements</h2>"
     html << "<div id=\"establishments\">"
     unless establishments.empty?
-      html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments)
+      html << render(:partial => 'establishments/establishment_in_one_line', :collection => establishments, :locals => { :establishment_owner => customer })
     else
       html << "<p>Aucun établissement n'a été trouvé</p>"
     end
     html << "</div>"
   end
   
-  def display_establishment_add_button
+  def display_establishment_add_button(customer)
     link_to_function "Ajouter un établissement" do |page|
-      page.insert_html :bottom, :establishments, :partial => 'establishments/establishment_form', :object => Establishment.new
+      page.insert_html :bottom, :establishments, :partial => 'establishments/establishment_form', :object => Establishment.new, :locals => { :establishment_owner => customer }
     end
   end
   

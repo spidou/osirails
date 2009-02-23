@@ -1,4 +1,7 @@
-<% fields_for "customer[establishment_attributes][]", establishment = establishment_form do |form| %>
+<% require_locals establishment_owner %>
+<% owner_type = establishment_owner.class.name.downcase %>
+
+<% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form do |form| %>
 <div class="resource_form" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? %> >
   <div style="border: 1px solid red; padding: 5px; margin: 5px">
     <%= form.error_messages %>
@@ -11,7 +14,8 @@
       <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
     </p>
     
-    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => {:address_owner => establishment.customer}%>
+    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment_owner } #{ :address_owner => establishment } # actually the address_owner is the establishment, but we have to get customer[address_attributes] indeed customer[establishment_attributes][][address_attributes] => FIXME once the bug fixed
+    %>
     
     <p>
       <% if establishment.new_record? %>

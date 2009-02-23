@@ -5,14 +5,14 @@
   <% form_for @customer, :html => { :multipart => true } do |form| %>
     <%= render :partial => 'thirds/third', :object => @customer %>
 
-    <%= display_establishments_list(@customer.activated_establishments) %>
-    <%= display_establishment_add_button %>
+    <%= display_establishments_list(@customer) %>
+    <%= display_establishment_add_button(@customer) %>
 
     <%= display_contacts_list(@customer) %>
     <%= display_contact_add_button(@customer) %>
 
-    <%= display_documents_list(@customer) %>
-    <%= display_document_add_button(@customer) %>
+    <%# display_documents_list(@customer) %>
+    <%# display_document_add_button(@customer) %>
     
   <p>
     <%= form.reset 'Annuler' %>
@@ -21,9 +21,9 @@
   <% end %>  
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>
-  <%= display_establishments_list(@customer.activated_establishments) %>
+  <%= display_establishments_list(@customer) %>
   <%= display_contacts_list(@customer) %>
-  <%= display_documents_list(@customer) %>
+  <%# display_documents_list(@customer) %>
 <% end %>
 
 </div>

@@ -66,38 +66,6 @@ class CustomersController < ApplicationController
       error_access_page(403)
     end
   end
-  
-#  def create
-#    @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
-#    
-#    if Customer.can_add?(current_user)
-#      
-##      activity_sector_name = params[:customer].delete("activity_sector")
-##      activity_sector_name[:name].capitalize!
-#    
-#      @customer = Customer.new(params[:customer])
-#    
-##      if (@activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])).nil? and !activity_sector_name[:name].blank?
-##        @activity_sector = ActivitySector.new(:name => activity_sector_name[:name])
-##        @customer.activity_sector = @activity_sector
-##      elsif @activity_sector = ActivitySector.find_by_name(activity_sector_name[:name])
-##        @customer.activity_sector = @activity_sector  
-##      end
-#    
-#      if @customer.save
-#        ## In case of activity_sector wasn't present in database
-##        @activity_sector.save
-#        flash[:notice] = "Client ajout&eacute; avec succes"
-#        @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to( :action => "index" )
-#      else
-#        flash[:error] = 'Une erreur est survenu lors de la création du client'
-##        params[:customer][:activity_sector] = {:name => activity_sector_name[:name]}
-#        render :action => 'new'
-#      end
-#    else
-#      error_access_page(403)
-#    end
-#  end
 
   # GET /customers/1/edit
   def edit

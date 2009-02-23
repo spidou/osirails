@@ -1,5 +1,8 @@
+<% require_locals establishment_owner %>
+<% owner_type = establishment_owner.class.name.downcase %>
+
 <div class="establishment_general_infos" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
-<% fields_for "customer[establishment_attributes][]", establishment = establishment_in_one_line do %>
+<% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_in_one_line do %>
   <p id="establishment_<%= establishment.id  %>">
     <%= image_tag 'warning_14x14.png' if establishment.new_record? or !establishment.errors.empty? %>
     
@@ -17,7 +20,7 @@
       <% end %>
     <% end %>
 
-    <%= render :partial => 'establishments/establishment_form', :object => establishment %>
+    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishment_owner => establishment_owner } %>
   </p>
 <% end  %>
 </div>
