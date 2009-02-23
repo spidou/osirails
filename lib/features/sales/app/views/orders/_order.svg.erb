@@ -1,8 +1,61 @@
-<?xml version="1.0" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet type="text/css" href="/stylesheets/order_clock.css"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="128px" height="128px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-	<circle cx="64" cy="64" r="62" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="2" />
-	<g>
-		<path d="M 64 64 L 126 64 A 62 62 0 0,0 64 2 L 64 64" fill="#9CB5DC" stroke="#536B90" stroke-width="2" />
-	</g>
+<svg width="256px" height="256px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <!-- External circle -->
+    <g id="external_circle" class="circles">
+      <circle cx="0" cy="0" r="80" class="external" />
+    </g>
+    <!-- Internal circle -->
+    <g id="internal_circle" class="circles">
+      <circle cx="0" cy="0" r="64" class="internal" />
+    </g>
+
+    <!-- External lines -->
+    <g id="external_line" class="lines">
+      <line x1="0" y1="-64" x2="0" y2="-80"/>
+    </g>
+    <!-- Internal lines -->
+    <g id="internal_line" class="lines" >
+      <line x1="0" y1="0" x2="0" y2="-64"/>
+    </g>
+
+    <!-- External clock part -->
+    <g id="external_portion" class="portions">
+      <path d="M 0 0 L 0 -80 A 80 80 0 0,1 <%= 80 * Math::sin((360/4)*Math::PI/180) %> <%= -80 * Math::cos((360/4)*Math::PI/180) %> L 0 0" />
+    </g>
+    <!-- Internal clock part -->
+    <g id="internal_portion" class="portions">
+      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/6)*Math::PI/180) %> <%= -64 * Math::cos((360/6)*Math::PI/180) %> L 0 0" />
+    </g>
+  </defs>
+
+  <!-- Show external element -->
+
+  <use xlink:href="#external_circle" x="128" y="128"/>
+
+  <% angle = 360 / 4 %>
+  <% 4.times do |time| %>
+    <use xlink:href="#external_line" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+  <% end %>
+  <% 1.times do |time| %>
+    <use xlink:href="#external_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+  <% end %>
+
+  <!-- Show internal element -->
+
+  <use xlink:href="#internal_circle" x="128" y="128"/>
+
+  <% angle = 360 / 6 %>
+  <% 6.times do |time| %>
+    <use xlink:href="#internal_line" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+
+    <% if time == 0 %>
+      <use xlink:href="#internal_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+    <% end %>
+  <% end %>
+  <% 2.times do |time| %>
+    <use xlink:href="#internal_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+  <% end %>
 </svg>

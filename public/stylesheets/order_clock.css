@@ -1,0 +1,17 @@
+line, circle, path {
+  stroke-width: 2;
+}
+
+.circles {
+  fill: white;
+  stroke: #CCCCCC;
+}
+
+.lines {
+  stroke: #CCCCCC;
+}
+
+.portions {
+  fill: #9CB5DC;
+  stroke: #536B90; 
+}
