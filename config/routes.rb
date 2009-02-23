@@ -15,6 +15,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
   
+  map.connect 'attachments/:id/:style', :controller => 'attachments', :action => 'show'
+  
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'
   # Keep in mind you can assign values other than :controller and :action
