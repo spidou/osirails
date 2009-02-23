@@ -5,11 +5,11 @@
   
   <p>
     <%= form.label :name %>
-    <%= form.form_or_view(f.text_field(:name), :name) %>
+    <%= form.form_or_view(form.text_field(:name), :name) %>
   </p>
   <p>
     <%= form.label :description %>
-    <%= form.form_or_view(f.text_area(:description), :description) %>
+    <%= form.form_or_view(form.text_area(:description), :description) %>
   </p>
   <div class="form_multiple_entries">
     <%= form.label :user_ids %>

@@ -49,5 +49,7 @@ def step_initialize(path)
     end
   rescue ActiveRecord::StatementInvalid => e
     puts "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+  rescue Mysql::Error => e
+    puts "A MySQL error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   end
 end
