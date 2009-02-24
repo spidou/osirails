@@ -1,8 +1,20 @@
+# Manage the override of each features
+# OPTIMIZE Move this block of code to a better place
+if RAILS_ENV == 'development'
+  features = Dir.open("#{RAILS_ROOT}/lib/features")
+  features.sort.each do |dir|
+    next if dir.starts_with?('.')
+    # next if !Feature.find_by_name(dir).activated?
+    file_path = "#{RAILS_ROOT}/lib/features/#{dir}/overrides.rb"
+    load file_path if File.exist?(file_path)
+  end
+end
+
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 
-
 class ApplicationController < ActionController::Base
+
   helper :all # include all helpers, all the time
   layout "default"
   
