@@ -1,44 +1,20 @@
 line, circle, path {
   stroke-width: 1;
+  stroke: black;
 }
 
-.circles {
+.portions {
   fill: white;
 }
 
-#external_circle {
-  stroke: black;
-}
-
-#internal_circle {
-  stroke: #CCCCCC;
-}
-
-.lines {}
-
-#external_line {
-  stroke: black;
-}
-
-#internal_line {
-  stroke: #CCCCCC;
-}
-
-.portions {}
-
-#external_portion {
-  stroke: black;
-}
-
-#external_portion.step_commercial {
+.portions.step_commercial {
   fill: #9CB5DC;
 }
 
-#external_portion.step_invoicing {
+.portions.step_invoicing {
   fill: yellow;
 }
 
-#internal_portion {
+.portions.terminated {
   fill: #FFAE24;
-  stroke: #536B90;
 }
