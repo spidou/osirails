@@ -3,18 +3,20 @@ line, circle, path {
   stroke: black;
 }
 
+/* Default background color for portions */
 .portions {
   fill: white;
 }
 
+/* Background color for the external portion */
 .portions.step_commercial {
   fill: #9CB5DC;
 }
-
 .portions.step_invoicing {
   fill: yellow;
 }
 
+/* Background color for the internal portion */
 .portions.terminated {
   fill: #FFAE24;
 }
