@@ -73,6 +73,7 @@ class Order < ActiveRecord::Base
     children.reverse.each do |child|
       return child unless child.unstarted?
     end
+    return children.first
   end
 
   def children
