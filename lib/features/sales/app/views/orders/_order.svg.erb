@@ -5,11 +5,11 @@
   <defs>
     <!-- External circle -->
     <g id="external_circle" class="circles">
-      <circle cx="0" cy="0" r="80" class="external" />
+      <circle cx="0" cy="0" r="80" />
     </g>
     <!-- Internal circle -->
     <g id="internal_circle" class="circles">
-      <circle cx="0" cy="0" r="64" class="internal" />
+      <circle cx="0" cy="0" r="64" />
     </g>
 
     <!-- External lines -->
@@ -22,12 +22,13 @@
     </g>
 
     <!-- External clock part -->
-    <g id="external_portion" class="portions">
-      <path d="M 0 0 L 0 -80 A 80 80 0 0,1 <%= 80 * Math::sin((360/4)*Math::PI/180) %> <%= -80 * Math::cos((360/4)*Math::PI/180) %> L 0 0" />
+    <g id="external_portion" class="portions <%= @order.step.parent.name%>">
+      <path d="M 0 0 L 0 -80 A 80 80 0 0,1 <%= 80 * Math::sin((360/@order.children.size)*Math::PI/180) %> <%= -80 * Math::cos((360/@order.children.size)*Math::PI/180) %> L 0 0" />
     </g>
     <!-- Internal clock part -->
     <g id="internal_portion" class="portions">
-      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/6)*Math::PI/180) %> <%= -64 * Math::cos((360/6)*Math::PI/180) %> L 0 0" />
+      <% number_of_steps = 1 + @order.step.siblings.size %>
+      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/number_of_steps)*Math::PI/180) %> <%= -64 * Math::cos((360/number_of_steps)*Math::PI/180) %> L 0 0" />
     </g>
   </defs>
 
@@ -35,27 +36,32 @@
 
   <use xlink:href="#external_circle" x="128" y="128"/>
 
-  <% angle = 360 / 4 %>
-  <% 4.times do |time| %>
+  <% angle = 360 / @order.children.size %>
+  <% @order.children.size.times do |time| %>
     <use xlink:href="#external_line" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
   <% end %>
-  <% 1.times do |time| %>
-    <use xlink:href="#external_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+
+  <% @order.children.each_with_index do |step, index| %>
+    <% if step.in_progress? or step.terminated? %>
+      <use xlink:href="#external_portion" x="128" y="128" transform="rotate(<%= index * angle %>,128,128)" />
+    <% end %>
   <% end %>
 
   <!-- Show internal element -->
 
   <use xlink:href="#internal_circle" x="128" y="128"/>
 
-  <% angle = 360 / 6 %>
-  <% 6.times do |time| %>
+  <% angle = 360 / number_of_steps %>
+  <% number_of_steps.times do |time| %>
     <use xlink:href="#internal_line" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
-
-    <% if time == 0 %>
-      <use xlink:href="#internal_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
+  <% end %>
+  <% number_of_terminated_steps = 0 %>
+  <% @order.children.each do |step| %>
+    <% if step.in_progress? %>
+      <% step.children.each { |step| number_of_terminated_steps+=1 if step.terminated? } %>
     <% end %>
   <% end %>
-  <% 2.times do |time| %>
+  <% number_of_terminated_steps.times do |time| %>
     <use xlink:href="#internal_portion" x="128" y="128" transform="rotate(<%= time * angle %>,128,128)" />
   <% end %>
 </svg>
