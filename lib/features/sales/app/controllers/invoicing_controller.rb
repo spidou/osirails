@@ -5,7 +5,7 @@ class InvoicingController < ApplicationController
   before_filter :check, :except => [:index]
   
   def index
-    @orders = Order.find(:all)
+    @orders = StepInvoicing.find(:all, :conditions => "status <> 'terminated'").collect { |si| si.order }
   end
   
   def show
