@@ -82,9 +82,15 @@ class Document < ActiveRecord::Base
     should_update.to_i == 1
   end
   
+<<<<<<< HEAD:lib/plugins/has_documents/app/models/document.rb
 #  def mime_type 
 #    File.mime_type?("#{self.path}#{self.id}.#{self.extension}")
 #  end
+=======
+  def mime_type 
+    File.mime_type?("#{self.path}#{self.id}.#{self.extension}")
+  end
+>>>>>>> Merging from the trunk to the branch:app/models/document.rb
   
 #  # This method permit to attribute a value to versioned_at
 #  def updated_at=(value)
