@@ -89,14 +89,6 @@ class Document < ActiveRecord::Base
     should_update.to_i == 1
   end
   
-  def should_destroy?
-    should_destroy.to_i == 1
-  end
-  
-  def should_update?
-    should_update.to_i == 1
-  end
-  
   def mime_type 
     File.mime_type?("#{self.path}#{self.id}.#{self.extension}")
   end
