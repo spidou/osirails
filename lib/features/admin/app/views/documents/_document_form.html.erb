@@ -13,6 +13,10 @@
       <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
     </p>
     <p>
+      <%= form.label :tag_list, :index => nil %>
+      <%= form.form_or_view(form.text_field(:tag_list, :index => nil), :tag_list ) %>
+    </p>
+    <p>
       <%= form.label :file_type_id, :index => nil %>
       <%= form.form_or_view(form.collection_select(:file_type_id, FileType.by_owner(owner_type), :id, :name, {}, :index => nil), :file_type, :name ) %>
     </p>

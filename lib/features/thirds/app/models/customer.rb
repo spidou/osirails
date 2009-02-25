@@ -12,6 +12,7 @@ class Customer < Third
   
   ## Plugins
   acts_as_file
+  #has_document
   
   ## Callbacks
   after_update :save_establishments

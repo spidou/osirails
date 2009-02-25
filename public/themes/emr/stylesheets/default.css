@@ -142,7 +142,7 @@ h3 {
 	border:solid 1px #bbb;
 	height:20px;
 	line-height:20px;
-	color: rgb(117,141,189);
+	color: rgb(70,94,142);
 	padding-top:0px;
 	margin-top:-1px;
 	font-size:1.05em;
@@ -1846,14 +1846,80 @@ div.steps_text p {
 /*/////////////////DOCUMENT VIEW V2/////////////////*/
 
 #documents {
-  padding: 8px;
-  margin: 8px;
+  margin: 5px 0 5px 0;
+}
+
+.document_group {
+  -moz-border-radius: 0 0 10px 10px;
+  border: 1px solid #7E98CB;
+  padding: 4px;
+  margin: 0px 15px 10px 15px;
+  text-align: left;
+}
+
+.document_group h1 {
+  background-color: #afc2ea;
+  color: rgb(70,94,142);
+	border:0;
+	margin: -4px -4px 0 -4px;
+  height: auto;
+	padding: 0;
+  font-size: smaller;
+  font-weight: bold;
+	font-variant: inherit;
+  text-align:left;
+  text-indent: 7px;
 }
 
 .document {
-  border: 1px dashed grey;
+  display: inline-block;
+  border: 1px dashed #ddd;
   margin: 4px;
   padding: 2px;
+  min-height: 100px; /* thumb height*/
+  width: 400px;
+  vertical-align: top;
+}
+
+.document:hover {
+  border: 1px dashed grey;
+}
+
+.document img.thumb {
+  float: left;
+  margin: 3px 0px 3px 3px;
+  padding: 0;
+}
+
+.document .details {
+  background-color: #eaeaea;
+  margin: 3px 3px 3px 110px; /* 110px => thumb width + 1Opx */
+  min-height: 100px; /* thumb height*/
+  padding: 0 5px 0 5px;
+}
+
+.document .details h1 {
+  background:inherit;
+	color:inherit;
+	border:0;
+	margin:0;
+	padding:0;
+  font-size: large;
+  font-weight: bold;
+	font-variant: inherit;
+  text-align:left; 
+  text-indent: 0;
+}
+
+.document div.preview {
+  position: absolute;
+}
+
+.document img.preview {
+  border: 1px solid red;
+  margin 0;
+  padding: 0;
+  left: 0;
 }
 
 /*/////////////////HUMAN RESSOURCES/////////////////*/
