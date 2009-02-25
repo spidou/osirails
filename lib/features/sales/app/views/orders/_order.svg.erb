@@ -9,8 +9,7 @@
     </g>
     <!-- Internal clock part -->
     <g id="internal_portion">
-      <% number_of_steps = @order.child.children.size %>
-      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/number_of_steps)*Math::PI/180) %> <%= -64 * Math::cos((360/number_of_steps)*Math::PI/180) %> L 0 0" />
+      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/@order.child.children.size)*Math::PI/180) %> <%= -64 * Math::cos((360/@order.child.children.size)*Math::PI/180) %> L 0 0" />
     </g>
   </defs>
 
@@ -23,7 +22,7 @@
   <% end %>
 
   <!-- Show internal element -->
-  <% angle = 360 / number_of_steps %>
+  <% angle = 360 / @order.child.children.size %>
   <% @order.child.children.sort_by {|s| s.status }.each_with_index do |c, index| %>
   <g title="<%= c.step.title %>" class="portions<%= " terminated" if c.terminated? %>">
     <use xlink:href="#internal_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
