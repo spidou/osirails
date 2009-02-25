@@ -2,6 +2,9 @@ class Document < ActiveRecord::Base
   
   include Permissible
   
+  ## Plugins
+  acts_as_taggable
+  
   ## Relationship
   belongs_to :file_type
 #  has_many :document_versions
@@ -36,13 +39,10 @@ class Document < ActiveRecord::Base
   @@form_labels[:tag_list] = "Mots-clés :"
   @@form_labels[:file] = "Fichier :"
   
-  ## Plugins
-  acts_as_taggable
-  
   has_attached_file :attachment, 
                     :styles => { :medium => "500x500>",
                                  :thumb => "100x100#" },
-                    :path => ":rails_root/assets/:class/:id/:style.:extension",
+                    :path => ":rails_root/assets/:owner_class/:owner_id/:class/:id/:style.:extension",
                     :url => "/attachments/:id/:style",
                     :default_url => "/:assets/missing_:style.png"
   

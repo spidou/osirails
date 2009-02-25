@@ -330,6 +330,8 @@ namespace :osirails do
       f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
       f.mime_types << MimeType.find_by_name("image/jpeg")
       f.mime_types << MimeType.find_by_name("image/png")
+      f = FileType.create :name => "Plan de fabrication", :model_owner => "Customer"
+      f.mime_types << MimeType.find_by_name("application/pdf")
       # for job_contracts
       f = FileType.create :name => "Contrat de travail", :model_owner => "JobContract"
       f.mime_types << MimeType.find_by_name("image/jpeg")
