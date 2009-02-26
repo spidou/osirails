@@ -9,7 +9,7 @@ class JobContract < ActiveRecord::Base
   
 #  validates_associated :salaries  
 
-  acts_as_file
+  #acts_as_file
 
   #Callbacks
   after_update :save_salary 

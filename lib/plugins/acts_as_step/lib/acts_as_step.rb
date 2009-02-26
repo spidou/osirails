@@ -17,7 +17,7 @@ module ActiveRecord
           include ActiveRecord::Acts::Step::InstanceMethods
           
           # Plugins
-          acts_as_file(:document_route => options[:document_route]) unless options[:document_route].nil?
+          # acts_as_file(:document_route => options[:document_route]) unless options[:document_route].nil?
           
           # Relationships
           has_many :remarks, :as => :has_remark

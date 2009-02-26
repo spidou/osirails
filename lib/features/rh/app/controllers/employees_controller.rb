@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :documents, :job_contracts
+  helper :salaries, :job_contracts
 
   # Callbacks
   before_filter :load_collections, :only => [:new, :create, :edit, :update]

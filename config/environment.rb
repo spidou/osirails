@@ -29,7 +29,8 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_file, :has_document, :all]
+  #config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable, :acts_as_versioned, :paperclip, :has_documents, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :paperclip, :has_documents, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -64,6 +65,8 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 
+  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers } #FIXME this line permits to add controllers in plugins. if it cause issues anywhere, comment this line and verify if all plugins works properly
+  
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug

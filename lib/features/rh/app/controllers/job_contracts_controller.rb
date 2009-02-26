@@ -1,7 +1,5 @@
 class JobContractsController < ApplicationController
 
-  helper :documents
-
 # GET /employees/1/job_contract/edit
   def edit
 

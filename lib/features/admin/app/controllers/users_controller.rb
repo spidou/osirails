@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   def index
     # TODO In the view index, add the sessions management
-    @users = User.find(:all, :include =>[:employee])
+    @users = User.find(:all)
   end
 
   # GET /users/1

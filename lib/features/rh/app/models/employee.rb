@@ -1,5 +1,5 @@
 class Employee < ActiveRecord::Base
-  acts_as_file
+  #acts_as_file
   
   include Permissible
   
