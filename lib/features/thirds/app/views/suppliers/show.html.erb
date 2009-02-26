@@ -1,5 +1,10 @@
-<% content_for :secondary_menu do %>
-  <%= display_edit_button_in_second_menu(@supplier)%>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+	<%= show_add_button("Ajouter un fournisseur")%>
+  <%= show_edit_button_in_second_menu(@supplier)%>
+	<%= show_delete_button(@supplier,"Supprimer ce fournisseur")%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do%>
+	<%= link_to "Liste des fournisseurs", suppliers_path%>
 <% end %>
 
 <h1>Informations concernant le fournisseur </h1>

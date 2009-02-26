@@ -2,6 +2,14 @@
   <%= javascript_include_tag "thirds/thirds" %>
 <% end %>
 
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_customer_add_button("Ajouter un client")%>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>
+  <%= link_to "Liste des clients", customers_path%>
+<% end %>
+
 <h1>Modifier un client</h1>
 <%= render :partial => @customer, :locals => { :submit_button_name => "Mettre &agrave; jour"} %>
 

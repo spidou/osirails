@@ -1,5 +1,10 @@
-<% content_for :secondary_menu do %>
-  <%= display_edit_button_in_second_menu(@customer)%>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_customer_add_button("Ajouter un client")%>
+  <%= show_edit_button_in_second_menu(@customer)%>
+  <%= show_customer_delete_button(@customer,"Supprimmer ce client")%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+  <%= link_to "Liste des clients", customers_path%>
 <% end %>
 
 <h1>Informations concernant le client</h1>
