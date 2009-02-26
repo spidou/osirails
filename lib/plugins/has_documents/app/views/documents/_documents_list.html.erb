@@ -1,0 +1,38 @@
+<% require_locals documents %>
+<%
+group_by ||= "date"
+order_by ||= "asc" # ascendent
+
+case group_by
+when "type"
+  groups = documents.to_enum.group_by{ |e| e.file_type_id }
+when "name"
+  groups = { 1 => documents.sort_by{ |e| e.name } }
+when "tag"
+  #TODO group by tag
+else # group by date by default
+  groups = documents.sort_by{ |e| e.created_at }.to_enum.group_by{ |e| time_ago_in_words(e.created_at) }.reverse # reverse because by default we want to display the earlier to the later
+end
+
+groups = groups.reverse if order_by == "desc"
+#raise groups.inspect
+%>
+
+<% groups.each do |group, collection| %>
+  <%
+  case group_by
+  when "type"
+    header_group = content_tag(:h1, FileType.find(group).name)
+  when "name"
+    header_group = content_tag(:h1, "Alphabétique")
+  when "tag"
+    #TODO group by tag
+  else # group by date by default
+    header_group = content_tag(:h1, group)
+  end
+  %>
+  <div class="document_group">
+    <%= header_group %>
+    <%= render :partial => 'documents/document', :collection => collection  %>
+  </div>
+<% end %>
