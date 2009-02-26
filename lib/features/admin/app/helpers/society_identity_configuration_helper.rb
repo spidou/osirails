@@ -35,4 +35,11 @@ module SocietyIdentityConfigurationHelper
     html << "</select>\n"
     html
   end
+  
+  # This method permit to test permission for edit_button
+  def show_edit_button(txt="")
+    if controller.can_edit?(current_user)
+      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier")+" #{txt}", :action =>"edit")
+    end
+  end
 end

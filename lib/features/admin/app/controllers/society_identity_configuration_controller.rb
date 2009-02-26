@@ -1,11 +1,7 @@
 class SocietyIdentityConfigurationController < ApplicationController
-  # GET /society_identity_configuration/
-  def index
-    redirect_to :action => 'show'
-  end
   
-  # GET /society_identity_configuration/show
-  def show
+  # GET /society_identity_configuration
+  def index
     @parameters = {}
     for parameter in search_methods(__FILE__) do
       @parameters[parameter] = ConfigurationManager.send(parameter)

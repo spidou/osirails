@@ -1,40 +1,37 @@
 module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
-  def show_delete_button(service)
+  def show_delete_button(service,txt="")
     if controller.can_delete?(current_user)
       if service.can_destroy? 
-        link_to("<img src=\"/images/delete_16x16.png\" title=\"Supprimer\" alt=\"Supprimer\"/>", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) 
+        link_to(image_tag("/images/delete_16x16.png", :title =>"Supprimer", :alt => "Supprimer")+" #{txt}", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) 
       else
-        image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")
+        image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")+" #{txt}"
       end
     end
   end
   
   # This method test permission for edit_button
-  def show_edit_button(service)
+  def show_edit_button(service,txt="")
     if controller.can_edit?(current_user)
-      "&nbsp;" + link_to("<img src=\"/images/edit_16x16.png\" title =\"Modifier\" alt=\"Modifier\" />", { :action => "edit", :id => service } )
+      link_to(image_tag("/images/edit_16x16.png", :title => "Modifier", :alt => "Modifier")+" #{txt}", { :action => "edit", :id => service } )
     end
   end
   
   # This method test permission for view_button
-  def show_view_button(service)
+  def show_view_button(service,txt="")
     if controller.can_view?(current_user)
-      link_to("<img src=\"/images/view_16x16.png\" title =\"D&eacute;tails\" alt=\"Détails\" />",service_path(service))
+      link_to(image_tag("/images/view_16x16.png", :title => "D&eacute;tails", :alt => "Détails")+" #{txt}",service_path(service))
     end
   end
   
   # This method test permission for add_button
-  def show_add_button(service = 'none')
+  def show_add_button(service,txt="")
     if controller.can_add?(current_user)
-      if service == 'none'
-        add_button = []
-        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
-        add_button << link_to("<img src='/images/add_16x16.png' title='Ajouter' alt='Ajouter' /> Nouveau service", :action => "new")
-        add_button << "</li></ul>"
+      if service == "none"
+        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", :action => "new")
       else
-        link_to("<img src='/images/add_16x16.png' title='Ajouter' alt='title' />" , new_service_path(:service_id => service.id))
+        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", new_service_path(:service_id => service.id))
       end
     end
   end

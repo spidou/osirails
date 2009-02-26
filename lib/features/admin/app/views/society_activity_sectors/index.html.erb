@@ -1,12 +1,13 @@
-<% content_for :secondary_menu do %>
-  <%= show_add_button %>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button("Ajouter un secteur d&apos;ativité") %>
 <% end %>
 
-<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
+
+<h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
 <%= display_tabulated_menu %>
 
 <div class="frame tabulation">
-<h1>Les secteurs d'activit&eacute;s de l'entreprise</h1>
+<h1>Les secteurs d&apos;activit&eacute;s de l&apos;entreprise</h1>
 <table>
   <tr>
     <th>Nom</th>
@@ -16,8 +17,7 @@
 <% for society_activity_sector in @society_activity_sectors %>
   <tr>
     <td><%= society_activity_sector.name %></td>
-    <td style='width: 30px;'><%= show_edit_button(society_activity_sector) %></td>
-    <td style='width: 30px;'><%= show_delete_button(society_activity_sector) %></td>
+    <td style='width: 30px;'><%= show_edit_button(society_activity_sector) %><%= show_delete_button(society_activity_sector) %></td>
   </tr>
 <% end %>
 </table>

@@ -42,15 +42,12 @@ module MenusHelper
   end
   
   # This method permit to show or hide button for add menu
-  def show_add_button(menu = 'none')
+  def show_add_button(menu,txt="")
     if controller.can_add?(current_user)
       if menu == 'none'
-        add_button = []
-        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul><li>"
-        add_button << link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Ajouter un menu", new_menu_path)
-        return add_button << "</li></ul>"
+        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter", :title => "Ajouter")+" #{txt}", new_menu_path)
       else
-        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter un sous menu", :title => "Ajouter un sous menu"), new_menu_path(:parent_menu_id => menu.id))
+        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter un sous menu", :title => "Ajouter un sous menu")+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
       end
     end
   end

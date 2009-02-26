@@ -1,7 +1,10 @@
-<h1>Param&egrave;tres de base de l'entreprise</h1>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_edit_button("Modifier la configuration") %>
+<% end %>
+
+<h1>Param&egrave;tres de base de l&apos;entreprise</h1>
 <%= display_tabulated_menu %>
 
 <div class="frame tabulation presentation_medium">
   <%= render :partial => 'form' %>
-  <p><%= link_to("Modifier", :action => 'edit') if @edit  %></p>
 </div>

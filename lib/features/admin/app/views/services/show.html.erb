@@ -1,7 +1,10 @@
-<% content_for :secondary_menu do %>
-  <p>
-    <%=  image_tag("/images/edit_16x16.png") + link_to("Modifier",edit_service_path)  if controller.can_edit?(current_user) %>
-  </p>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button(@service,"Ajouter un service")%>
+  <%= show_edit_button(@service,"Modifier ce service") %>
+  <%= show_delete_button(@service,"Supprimer ce service") if @service.can_destroy?%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+  <%= link_to "Liste des services", services_path %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
