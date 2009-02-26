@@ -1,7 +1,10 @@
 <h1>Tous les employ&eacute;es</h1>
 
-<% content_for :secondary_menu do %>
-  <%= show_content_secondary_menu(params[:all_employees]) %>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button("Ajouter un employé")%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+  <%= show_actives_employees_view_button(params[:all_employees]) %>
 <% end %>
 
 <div class="frame">

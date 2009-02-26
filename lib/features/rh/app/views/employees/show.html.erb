@@ -1,6 +1,13 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_edit_button(@employee) + link_to(' Modifier le contract de travail', edit_employee_job_contract_path(@employee)) %>
-  <%= show_edit_button(@employee," Modifier un employée") %>
+  <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier")} Modifier le contract de travail", edit_employee_job_contract_path(@employee)) %>
+  <%= show_edit_button(@employee," Modifier cet employée") %>
+  <%= show_premia_add_link(@employee) %>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>
+  <%= link_to "Liste des employés", employees_path %>
+  <%= show_premia_view_link(@employee) %>
+  <%= link_to("historique des salaires", employee_salaries_path(@employee))%>
 <% end %>
 
 <h1>Informations d&apos;un employ&eacute;</h1>

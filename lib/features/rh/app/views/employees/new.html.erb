@@ -1,3 +1,7 @@
+<% secondary_menu USEFUL_LINKS do%>
+	<%= link_to "Liste des employé", employees_path%>
+<% end %>
+
 <h1>Ajouter un employ&eacute;e</h1>
 
 <%= render :partial => @employee, :locals => {:button_name=> "Ajouter"}%>

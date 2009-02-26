@@ -1,4 +1,4 @@
- <div class="frame">
+ <div class="frame presentation_small">
  <h2>Ajout de fonction</h2>
       <%form_remote_for(job,:html=>{:id=>'job_add_form'}) do |j|%>
         <%=j.error_messages%>
@@ -21,6 +21,6 @@
         <%= j.label :goal, "Objectifs :"%>
         <%= j.text_area :goal, {:rows => 5}%>
       </p>
-      <%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close()'%>
+      <p><%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close()'%></p>
       <%end%>
     </div>

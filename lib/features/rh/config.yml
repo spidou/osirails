@@ -55,6 +55,7 @@ business_objects:
   - Employee
   - Premium
   - JobContract
+  - Job
 menus:
   rh:
     title: Ressources Humaines
@@ -64,9 +65,6 @@ menus:
         title: Personnel
         description: Gestion du personnel
         children:
-          jobs:
-            title: Fonctions
-            description: Gestions des fonctions
           salaries:
             title: Salaires
             description: Historique des salaires
@@ -76,4 +74,7 @@ menus:
           premia:
             title: Primes
             description: Gestion des primes
-             
+      jobs:
+          title: Fiches de poste
+          description: Gestions des fiches de poste          
+           

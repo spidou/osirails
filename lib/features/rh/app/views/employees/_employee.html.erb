@@ -57,7 +57,7 @@
 
 <!--########### Jobs ####################-->
   <h2>Fiche de poste</h2>
-  <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new}%>    
+  <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new, :jobs => @jobs,:services => @services}%>    
 
 <!--########### Iban ####################-->
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
@@ -73,10 +73,11 @@
 <!--############## Premia ##############-->
   <%= display %>
   <% if Premium.can_view?(current_user) or @employee.user.id == current_user.id %>
-    <h2>Primes</h2>
-    <%= render :partial => 'premia/premium', :collection => @employee.premia if !is_form_view? %>     
-    <%= display_premia_view_link(@employee) %>
-    <%= display_premia_add_link(@employee) %>
+    <% if !is_form_view? %>    
+      <h2>Primes</h2>
+      <%= render :partial => 'premia/premium', :collection => @employee.premia[0..4] %>     
+      <p><%= show_premia_view_link(@employee) %></p>
+    <% end %>
   <% end %>
 
 <!--###### Documents div #######-->
