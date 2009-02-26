@@ -1,3 +1,10 @@
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button("Ajouter un secteur d&apos;ativité") %>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+	<%= link_to "Liste des enseignes",society_activity_sectors_path%>
+<% end %>
+
 <h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
 <%= display_tabulated_menu %>
 

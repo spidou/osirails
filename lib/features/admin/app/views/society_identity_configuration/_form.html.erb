@@ -61,8 +61,6 @@
 <p>
   <% if is_form_view? %>
   <%= submit_tag 'Mettre &agrave; jour' %>
-  <% else %>
-  <p><%= link_to("Modifier", :action => 'edit') if @edit  %></p>
   <% end %>
 </p>
 <% end %>

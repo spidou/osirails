@@ -106,60 +106,61 @@ module EmployeesHelper
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
-  def display_premia_add_link(employee)
-    html = ""
+  def show_premia_add_link(employee,txt="")
     if menu_premia.can_add?(current_user) and Premium.can_add?(current_user)
-      html << "<p>" + link_to( 'Ajouter une prime',new_employee_premium_path(employee)) + "</p>"
+      link_to( "#{image_tag("/images/add_16x16.png", :alt=>"Ajouter", :title => "Ajouter")} #{txt}",new_employee_premium_path(employee))
     end 
-    return html
   end
   
-  def display_premia_view_link(employee)
-    html = ""
+  def show_premia_view_link(employee)
     if menu_premia.can_view?(current_user) and Premium.can_list?(current_user) 
       if employee.premia.size>0 
-      html << "<p>" + link_to( 'Afficher toutes les primes', employee_premia_path(employee)) + "</p>"
+        link_to( 'Afficher toutes les primes', employee_premia_path(employee))
       end
     end
-    return html
   end
   
-  def display_employee_edit_link(employee)
-    html = ""
+  def show_employee_edit_link(employee)
     if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
-       html << link_to( 'Modifier', edit_employee_path(employee))
+       link_to( 'Modifier', edit_employee_path(employee))
     end
-    return html
   end
   
-  def display_job_contract_edit_link(job_contract_controller, employee)
-    html = ""
+  def show_job_contract_edit_link(job_contract_controller, employee)
     if job_contract_controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
-      html << "<p>" + link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(employee)) + "</p>"
-    end  
-    return html 
+      link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(employee))
+    end   
   end
   
   # This method permit to show or hide content of secondary menu
-  def show_content_secondary_menu(show_all)
-    if ( controller.can_view?(current_user) and Employee.can_view?(current_user) ) or ( controller.can_add?(current_user) and Employee.can_add?(current_user))
-      contents = []
-      contents << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-      contents << "<ul>"
-      
-      if controller.can_add?(current_user) and Employee.can_add?(current_user)
-        contents << "<li>"+link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Ajouter un employ&eacute;", new_employee_path)+"</li>"
-      end
-      
+  def show_actives_employees_view_button(show_all)   
       if controller.can_view?(current_user) and Employee.can_view?(current_user)
           if show_all == false
-            contents << "<li>"+link_to("<img src=\"/images/view_16x16.png\" alt=\"Ajouter\" title=\"Ajouter\" />  Voir tous les employ&eacute;s", :controller => 'employees', :action => 'index', :all_employees => true)+"</li>"
+            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")}  Voir tous les employ&eacute;s", :controller => "employees", :action => "index", :all_employees => true)
           else
-            contents << "<li>"+link_to("<img src=\"/images/view_16x16.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Voir tous les employ&eacute;s actifs", :controller => 'employees', :action => 'index', :all_employees => false)+"</li>"
+            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")} Voir tous les employ&eacute;s actifs", :controller => "employees", :action => "index", :all_employees => false)
           end
       end
-      
-      contents << "</ul>"
+  end
+
+  # This method permit to test permission for add button
+  def show_add_button(txt="")
+    if controller.can_add?(current_user) and Employee.can_add?(current_user)
+      link_to("#{image_tag("/images/add_16x16.png", :alt => "Ajouter", :title => "Ajouter")} #{txt}", new_employee_path)
+    end  
+  end
+
+  # This method permit to test permission for edit button
+  def show_edit_button(employee,txt="")
+    if controller.can_edit?(current_user)
+      link_to("#{image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier")} #{txt}", edit_employee_path(employee))
+    end
+  end
+  
+  # This method permit to test permission for view button
+  def show_view_button(employee,txt="")
+    if controller.can_view?(current_user)
+      link_to("#{image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails")} #{txt}", employee_path(employee)) 
     end
   end
   
@@ -257,17 +258,4 @@ module EmployeesHelper
     image_tag(path, :alt => alt, :title => title)
   end
 
-    # This method permit to test permission for edit button
-  def show_edit_button(employee,text="")
-    if controller.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier")+text, edit_employee_path(employee))
-    end
-  end
-  
-  # This method permit to test permission for view button
-  def show_view_button(employee,text="")
-    if controller.can_view?(current_user)
-      link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails")+text, employee_path(employee)) 
-    end
-  end
 end

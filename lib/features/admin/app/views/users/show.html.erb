@@ -1,3 +1,11 @@
+<% secondary_menu POSSIBLE_ACTIONS do%>
+	<%= show_add_button("Ajouter un utilisateur")%>
+	<%= show_edit_button(@user,"Modifier cet utilsateur")%>
+	<%= show_delete_button(@user,"Supprimer cet utilisateur")%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+	<%= link_to "Liste des utlisateurs",users_path%>
+<% end %>
 <h1>Informations d'un compte utilisateur</h1>
 
 <%= render :partial => @user %>

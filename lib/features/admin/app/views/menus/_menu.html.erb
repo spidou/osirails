@@ -13,6 +13,6 @@
     <%= form.label :parent_id %>
     <%= form.collection_select_with_indentation(:parent_id, @menus, :id, :title, {:indentation => 15, :include_blank => "-- Racine --"}) %>
   </p>
-  <%= form.submit submit_button_name %> <%= link_to 'Retour', menus_path %>    
+  <p><%= form.submit submit_button_name %></p>
 <% end %>
 </div>                                                                  

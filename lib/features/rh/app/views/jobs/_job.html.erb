@@ -1,0 +1,21 @@
+<div class="frame presentation_medium">
+<%form_for(job) do |form|%>
+  <p>
+    <%= form.label :name %>
+    <%= form.form_or_view(form.text_field( :name, { :size => 14, :maxlength => 16}),:name)%>
+  </p>
+  <p>
+    <%= form.label :mission %>
+    <%= form.form_or_view(form.text_area( :mission, {:rows => 5}),:mission) %>
+  </p>
+  <p>
+    <%= form.label :activity %>
+    <%= form.form_or_view(form.text_area( :activity,  {:rows => 5}),:activity)%>
+  </p>
+  <p>
+    <%= form.label :goal%>
+    <%= form.form_or_view(form.text_area( :goal,  {:rows => 5}),:goal)%>
+  </p>
+  <p><%= form.submit( submit_button_name ) if is_form_view?%></p>
+<%end%>
+</div>

@@ -1,3 +1,7 @@
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button(@service,"Ajouter un sous service") %>
+  <%= show_add_button("none","Ajouter un service") %>
+<% end %>
 <% secondary_menu USEFUL_LINKS do %>
   <%= link_to "Liste des services", services_path %>
 <% end %>

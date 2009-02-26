@@ -1,3 +1,10 @@
+<% secondary_menu POSSIBLE_ACTIONS do %>
+	<%= show_add_button("Ajouter un rôle")%>
+  <%= show_view_button(@role,"Voir ce rôle")%>
+<% end %>
+<% secondary_menu USEFUL_LINKS do %>
+	<%= link_to "Liste des rôles",roles_path%>
+<% end %>
 <h1>Modifier un r&ocirc;le</h1>
 <%= render :partial => @role, :locals => {:submit_button_name => "Mettre &agrave; jour"} %>
 

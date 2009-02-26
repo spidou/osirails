@@ -1,7 +1,7 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier")} Modifier le contract de travail", edit_employee_job_contract_path(@employee)) %>
-  <%= show_edit_button(@employee," Modifier cet employée") %>
-  <%= show_premia_add_link(@employee) %>
+  <%= show_edit_button(@employee,"Modifier cet employée") %>
+  <%= show_premia_add_link(@employee, "Ajouter une prime") %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>

@@ -1,2 +1,8 @@
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_add_button(@menu,"Ajouter un menu") %>
+<% end %>
+<% secondary_menu USEFUL_LINKS do%>
+	<%= link_to "Liste des menus", menus_path%>
+<% end %>
 <h1>Modifier un menu</h1>
 <%= render :partial => @menu, :locals => {:submit_button_name => "Mettre à jour"} %>
