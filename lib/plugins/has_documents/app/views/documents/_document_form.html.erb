@@ -1,0 +1,44 @@
+<% owner_type = documents_owner.class.name.downcase %>
+
+<% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
+<div class="resource_form" id="document_<%=document.id%>" <%= "style=\"display:none\"" unless document.new_record? or !document.errors.empty? %> >
+  <div style="border: 1px solid red; padding: 5px; margin: 5px">
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :name, :index => nil %>
+      <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
+    </p>
+    <p>
+      <%= form.label :description, :index => nil %>
+      <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
+    </p>
+    <p>
+      <%= form.label :tag_list, :index => nil %>
+      <%= form.form_or_view(form.text_field(:tag_list, :index => nil), :tag_list ) %>
+    </p>
+    <p>
+      <%= form.label :file_type_id, :index => nil %>
+      <%= form.form_or_view(form.collection_select(:file_type_id, FileType.by_owner(owner_type), :id, :name, {}, :index => nil), :file_type, :name ) %>
+    </p>
+    <p>
+      <%= form.label :attachment, :index => nil %>
+      <%= form.form_or_view(form.file_field(:attachment, :index => nil), :name ) %>
+    </p>
+    <p>
+      <% if document.new_record? %>
+        <%= link_to_function "Annuler la création du document", "this.up('.resource_form').remove()" %>
+      <% elsif is_form_view? %>
+        <%= link_to_function "Annuler la modification du document", "mark_resource_for_dont_update(this.up('.document_general_infos'))" %>
+      <% else %>
+        <%= link_to_function "Fermer", "this.up('.document_general_infos').down('.resource_form').hide()" %>
+      <% end %>
+
+      <% if !document.new_record? and is_form_view? %>
+        <%= form.hidden_field :id, :index => nil %>
+        <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+        <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+      <% end %>
+    </p>
+  </div>
+</div>
+<% end %>
