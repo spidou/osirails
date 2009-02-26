@@ -1,6 +1,6 @@
 class CustomersController < ApplicationController
 
-  helper :thirds, :establishments, :contacts, :documents #, :employees
+  helper :thirds, :establishments, :contacts, :documents
   
   # GET /customers
   # GET /customers.xml

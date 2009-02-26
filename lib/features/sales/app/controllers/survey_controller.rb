@@ -1,5 +1,5 @@
 class SurveyController < ApplicationController
-  helper :documents, :orders, :step
+  helper :orders, :step
   
   before_filter :check
   

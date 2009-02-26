@@ -1,7 +1,9 @@
-Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
-Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
-Date::DAYNAMES = %w( Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi )
-Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
+silence_warnings do
+  Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
+  Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
+  Date::DAYNAMES = %w( Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi )
+  Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
+end
 
 class Time
  alias :strftime_nolocale :strftime

@@ -11,8 +11,8 @@ class Customer < Third
   named_scope :activates, :conditions => {:activated => true}
   
   ## Plugins
-  acts_as_file
-  #has_document
+  # acts_as_file
+  has_documents
   
   ## Callbacks
   after_update :save_establishments

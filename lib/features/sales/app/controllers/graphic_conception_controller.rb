@@ -1,5 +1,5 @@
 class GraphicConceptionController < ApplicationController
-  helper :documents, :orders, :step
+  helper :orders, :step
   
   attr_accessor :current_order_step
   before_filter :check, :except => [:index]
