@@ -13,10 +13,18 @@ def init(config, path)
     menus = yaml['menus']
     searches = yaml['search']
     configurations = yaml['configurations']
+
+    # This array store all menus in order than they will be displayed
+    $menu_table ||= []
     
+    feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version, :title => title)
+    if ( feature.new_record? and feature.activate_by_default? ) or feature.kernel_feature?
+      feature.activated = true
+      feature.installed = true
+    end
+
     # Manage the activation of a feature
-    # TODO Manage activation of a feature
-    # return false unless Feature.find_by_name(name).activated
+    return false unless Feature.find_by_name(name).activated
 
     # Load every file in the app directory
     controller_path = File.join(path, 'app', 'controllers')
@@ -26,22 +34,13 @@ def init(config, path)
     model_path = File.join(path, 'app', 'models')
     $LOAD_PATH << model_path
     Dependencies.load_paths << model_path
-    config.controller_paths << model_path
+#    config.controller_paths << model_path
     ActionController::Base.append_view_path(File.join(path, 'app', 'views'))
     $LOAD_PATH << File.join(path, 'app', 'helpers')
-    
+
     # Load overrides file
     override_path = File.join(directory, 'overrides.rb')
     require override_path if File.exist?(override_path)
-    
-    # This array store all menus in order than they will be displayed
-    $menu_table ||= []
-    
-    feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version, :title => title)
-    if ( feature.new_record? and feature.activate_by_default? ) or feature.kernel_feature?
-      feature.activated = true
-      feature.installed = true
-    end
     
     # test and add search indexes into db
     error_message = "syntaxe error in '#{name}' yaml."
