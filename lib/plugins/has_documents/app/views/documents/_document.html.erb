@@ -1,15 +1,24 @@
 <div class="document" id="document_<%= document.id %>">
   <%= content_tag :div, nil, :class => :preview, :id => "document_preview_#{document.id}" %>
   <%= image_tag(document.attachment.url(:thumb), :class => "thumb") %>
-  <div class="details">
+  <div class="details" id="details_<%= document.id %>">
     <%= content_tag(:h1, document.name) %>
-    <%= content_tag(:span, document.tag_list.join(", ")) + content_tag(:br) unless document.tags.empty? %>
+    <%= content_tag(:span, document.tag_list.join(", ")) + content_tag(:br) unless document.tag_list.empty? %>
     <%= content_tag(:span, document.description) + content_tag(:br) %>
-    <%= content_tag(:span, document.created_at.to_humanized_datetime) %>
+    <%= content_tag(:span, document.created_at.to_humanized_datetime) unless document.new_record? %>
     <br/>
     <%= link_to_function("Aperçu", :title => "Cliquer pour agrandir") do |page|
       #page.insert_html( :bottom, "document_preview_#{document.id}", image_tag(document.attachment.url(:medium), :class => "preview", :onclick => "this.remove()") )
     end %>
     <%= link_to "Télécharger", attachment_path(document.id, :download => "1") %>
+    <%= link_to_function "Modifer" do |page| 
+      page.toggle "details_#{document.id}"
+      page.toggle "document_form_#{document.id}"
+    end if is_form_view? %>
   </div>
+  <% if is_form_view? %>
+    <div class="form" id="form_<%= document.id %>">
+      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => document.has_document } %>
+    </div>
+  <% end %>
 </div>

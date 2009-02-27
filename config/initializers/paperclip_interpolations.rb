@@ -7,5 +7,6 @@ Paperclip::Attachment.interpolations[:owner_id] = proc do |attachment, style|
 end
 
 Paperclip::Attachment.interpolations[:mimetype] = proc do |attachment, style|
-  attachment.send(attachment.name.to_s + "_file_type").camelize
+  content_type = attachment.instance.send(attachment.name.to_s + "_content_type")
+  content_type.nil? ? "UnknownType" : content_type.camelize
 end

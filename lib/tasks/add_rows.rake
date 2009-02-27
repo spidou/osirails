@@ -283,64 +283,71 @@ namespace :osirails do
       SocietyActivitySector.create :name => "Usinage"
       
       ## default_mime_type
-      m = MimeType.create(:name => "image/jpeg")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "jpeg")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "jpe")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "jpg")
-      m = MimeType.create(:name => "application/x-gzip")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "gz")
-      m = MimeType.create(:name => "application/pdf")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "pdf")
-      m = MimeType.create(:name => "image/png")
-      m.mime_type_extensions << MimeTypeExtension.create(:name => "png")
+      jpg = MimeType.create(:name => "image/jpeg")
+      jpg.mime_type_extensions << MimeTypeExtension.create(:name => "jpeg")
+      jpg.mime_type_extensions << MimeTypeExtension.create(:name => "jpe")
+      jpg.mime_type_extensions << MimeTypeExtension.create(:name => "jpg")
+      gzip = MimeType.create(:name => "application/x-gzip")
+      gzip.mime_type_extensions << MimeTypeExtension.create(:name => "gz")
+      pdf = MimeType.create(:name => "application/pdf")
+      pdf.mime_type_extensions << MimeTypeExtension.create(:name => "pdf")
+      png = MimeType.create(:name => "image/png")
+      png.mime_type_extensions << MimeTypeExtension.create(:name => "png")
+      
+      ## default document types
+      # for customers
+      d = DocumentType.create :name => "graphic_charter", :title => "Charte graphique"
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.create :name => "logo", :title => "Logo"
+      d.mime_types << [ pdf, jpg, png ]
       
       ## default file types
       # for feature
-      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"
-      f.mime_types << MimeType.find_by_name("application/x-gzip")
+#      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"
+#      f.mime_types << MimeType.find_by_name("application/x-gzip")
       # for employees
-      f = FileType.create :name => "CV", :model_owner => "Employee"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f = FileType.create :name => "Contrat de travail", :model_owner => "Employee"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f = FileType.create :name => "CV", :model_owner => "Employee"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f = FileType.create :name => "Contrat de travail", :model_owner => "Employee"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
       # for step survey
-      f = FileType.create :name => "Photo Survey", :model_owner => "StepSurvey"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Photo Survey", :model_owner => "StepSurvey"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("image/png")
       # for step graphic conception
-      f = FileType.create :name => "Maquette", :model_owner => "StepGraphicConception"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f.mime_types << MimeType.find_by_name("image/png")
-      f = FileType.create :name => "Plan de conception", :model_owner => "StepGraphicConception"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Maquette", :model_owner => "StepGraphicConception"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Plan de conception", :model_owner => "StepGraphicConception"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f.mime_types << MimeType.find_by_name("image/png")
       # for press proof
-      f = FileType.create :name => "PressProof", :model_owner => "PressProof"
-      f.mime_types << MimeType.find_by_name("image/png")
-      FileType.create :name => "Devis", :model_owner => "Dossier"
-      FileType.create :name => "Facture", :model_owner => "Dossier"
+#      f = FileType.create :name => "PressProof", :model_owner => "PressProof"
+#      f.mime_types << MimeType.find_by_name("image/png")
+#      FileType.create :name => "Devis", :model_owner => "Dossier"
+#      FileType.create :name => "Facture", :model_owner => "Dossier"
       # for customers
-      f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("image/png")
-      f = FileType.create :name => "Plan de fabrication", :model_owner => "Customer"
-      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Plan de fabrication", :model_owner => "Customer"
+#      f.mime_types << MimeType.find_by_name("application/pdf")
       # for job_contracts
-      f = FileType.create :name => "Contrat de travail", :model_owner => "JobContract"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f.mime_types << MimeType.find_by_name("image/png")
-      f = FileType.create :name => "Avenant au contrat", :model_owner => "JobContract"
-      f.mime_types << MimeType.find_by_name("image/jpeg")
-      f.mime_types << MimeType.find_by_name("application/pdf")
-      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Contrat de travail", :model_owner => "JobContract"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f.mime_types << MimeType.find_by_name("image/png")
+#      f = FileType.create :name => "Avenant au contrat", :model_owner => "JobContract"
+#      f.mime_types << MimeType.find_by_name("image/jpeg")
+#      f.mime_types << MimeType.find_by_name("application/pdf")
+#      f.mime_types << MimeType.find_by_name("image/png")
       
       # default calendars and events
       calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
@@ -423,7 +430,7 @@ namespace :osirails do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,FileType,MimeType, MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
+        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
         OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"
