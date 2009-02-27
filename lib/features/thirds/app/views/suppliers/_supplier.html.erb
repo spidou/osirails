@@ -16,6 +16,9 @@
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>
   <%= display_contacts_list(@supplier) %>
+  
+  <h2>Documents</h2>
+  <%= display_documents_list(@supplier) %>
 <% end %>
 
 </div>
