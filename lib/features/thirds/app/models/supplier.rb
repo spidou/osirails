@@ -8,6 +8,8 @@ class Supplier < Third
   
   after_update :save_iban
   
+  has_documents :test_a_supprimer
+  
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?
       self.iban = build_iban(iban_attributes)

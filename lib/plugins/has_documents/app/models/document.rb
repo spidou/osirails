@@ -4,21 +4,14 @@ class Document < ActiveRecord::Base
   
   ## Plugins
   acts_as_taggable
-  acts_as_versioned
+  #acts_as_versioned
   
   ## Relationship
-#  belongs_to :file_type
-#  has_many :document_versions
   belongs_to :has_document, :polymorphic => true
+  belongs_to :document_type
   
   ## Validates
-  validates_presence_of :name, :file_type
-  
-  ## Instance accessor
-#  attr_accessor :is_new
-#  attr_accessor :owner  
-#  attr_accessor :file
-#  attr_accessor :tag_list
+  validates_presence_of :name, :document_type_id
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see for example the /customers/1/edit
   attr_accessor :should_destroy
@@ -28,24 +21,23 @@ class Document < ActiveRecord::Base
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see for example the /customers/1/edit
   attr_accessor :should_update
   
-  ## Class accessor
-#  cattr_accessor :models
-#  cattr_accessor :image_extensions
+  cattr_accessor :documents_owners
+  @@documents_owners = []
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"
   @@form_labels[:description] = "Description :"
-  @@form_labels[:file_type] = "Type de fichier :"
+  @@form_labels[:document_type] = "Type de document :"
   @@form_labels[:tag_list] = "Mots-clés :"
-  @@form_labels[:file] = "Fichier :"
+  @@form_labels[:attachment] = "Fichier :"
   
   has_attached_file :attachment, 
                     :styles => { :medium => "500x500>",
                                  :thumb => "100x100#" },
-                    :path => ":rails_root/assets/:owner_class/:owner_id/:class/:id/:style.:extension",
+                    :path => ":rails_root/assets/:class/:owner_class/:owner_id/:id/:style.:extension",
                     :url => "/attachments/:id/:style",
-                    :default_url => "/:assets/missings/:mimetype_:style.png"
+                    :default_url => "#{$CURRENT_THEME_PATH}/images/documents/missings/:mimetype_:style.png"
   
   validates_attachment_presence :attachment
   

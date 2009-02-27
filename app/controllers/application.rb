@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   ActionController::Base.session_options[:session_expires] = 1.day.from_now
 
   # Global variables
-  $permission ||= {}  
+  $permission ||= {}
   
   protected
     # Method to permit to add permission to an action in a controller
@@ -124,16 +124,17 @@ class ApplicationController < ActionController::Base
     end # authenticate
     
     def select_theme
+      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
+      #return $CURRENT_THEME_PATH unless $CURRENT_THEME_PATH.nil? # this works, but we need to observe a changement in the configuration manager to flush the global variable when the "admin_society_identity_configuration_choosen_theme" variable has changed!
       begin
-        #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
         choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
         choosen_theme_site_path = "/themes/#{choosen_theme}"
         choosen_theme_real_path = "public#{choosen_theme_site_path}"
         if File.exists?(choosen_theme_real_path) and File.directory?(choosen_theme_real_path)
-          @theme_path = choosen_theme_site_path
+          $CURRENT_THEME_PATH = choosen_theme_site_path
         else
           #select the default theme
-          @theme_path = "/themes/osirails-green/stylesheets"
+          $CURRENT_THEME_PATH = "/themes/osirails-green"
         end
       end
     end

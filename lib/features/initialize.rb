@@ -22,6 +22,7 @@ def init(config, path)
       feature.activated = true
       feature.installed = true
     end
+    feature.save
 
     # Manage the activation of a feature
     return false unless Feature.find_by_name(name).activated

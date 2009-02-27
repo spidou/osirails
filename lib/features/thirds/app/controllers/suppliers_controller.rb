@@ -1,6 +1,6 @@
 class SuppliersController < ApplicationController
   
-  helper :thirds, :contacts
+  helper :thirds, :contacts, :documents
   
   # GET /suppliers
   # GET /suppliers.xml

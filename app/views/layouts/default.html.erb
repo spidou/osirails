@@ -6,8 +6,8 @@
 		<meta name="category" content="ERP"/>
 		<meta name="publisher" content="Oxydium - SUPINFO PS1"/>
 		<meta name="copyright" content="Oxydium - SUPINFO PS1"/>
-    <%= stylesheet_link_tag "#{@theme_path}/stylesheets/default.css" %>
-    <%= tag("link", { "rel" => "shortcut icon", "type" => "image/x-icon", "href" => "#{@theme_path}/favicon.ico" }) %>
+    <%= stylesheet_link_tag_with_theme_support "default.css" %>
+    <%= tag("link", { "rel" => "shortcut icon", "type" => "image/x-icon", "href" => "#{$CURRENT_THEME_PATH}/favicon.ico" }) %>
     <%= javascript_include_tag :defaults %>
     <%= yield :header %>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>

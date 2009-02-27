@@ -8,7 +8,9 @@
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 
-    <%# display_documents_and_add_documents_button(@customer, @documents, params, @new_document_number, @error) %>
+    <h2>Documents</h2>
+    <%= display_documents_list(@supplier) %>
+    <%= display_document_add_button(@supplier) %>
 
   <p>
     <%= form.reset 'Annuler' %>
@@ -18,6 +20,9 @@
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>
   <%= display_contacts_list(@supplier) %>
+  
+  <h2>Documents</h2>
+  <%= display_documents_list(@supplier) %>
 <% end %>
 
 </div>

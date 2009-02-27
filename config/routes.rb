@@ -1,15 +1,3 @@
-# Permit to add new route from another files
-module ActionController
-  module Routing
-    class RouteSet
-      def add_routes
-        yield Mapper.new(self)
-        install_helpers([ActionController::Base, ActionView::Base], true)
-      end
-    end
-  end
-end
-
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
@@ -26,10 +14,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}
   map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
-  
-  map.attachment 'attachments/:id/:style', :controller => 'attachments', :action => 'show', 
-                                           :requirements => { :style => /(original|thumb|medium)/ },
-                                           :style => nil
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'

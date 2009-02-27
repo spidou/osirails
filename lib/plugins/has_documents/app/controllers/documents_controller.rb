@@ -7,26 +7,17 @@ class DocumentsController < ApplicationController
   #   GET /employees/1/documents
   #
   def index
-    # params.collect{ |x, y| x.to_s.grep(/_id/).to_s }
-    @documents = Customer.find(params[:customer_id]).documents
+    hash = params.select{ |key, value| key.end_with?("_id") }
+    raise "An error has occured. The DocumentsController should receive at least 1 param which ends with '_id'" if hash.size < 1
+    raise "An error has occured. The DocumentsController shouldn't receive more than 1 params which ends with '_id'" if hash.size > 1
     
+    owner_class = hash.first.first.gsub("_id", "").camelize.constantize
+    owner_id = hash.first.last
+    @documents_owner = owner_class.send(:find, owner_id)
+
     @group_by = params[:group_by] || "date"
     @order_by = params[:order_by] || "asc" # ascendent
 
-    case @group_by
-    when "type"
-      @groups = @documents.to_enum.group_by{ |d| d.file_type.name }
-    when "name"
-      @groups = { :the_only_one => @documents.sort_by{ |d| d.name } }
-    when "tag"
-      #OPTIMIZE fix the bug when a document has multiple tags
-      @groups = @documents.to_enum.group_by{ |d| d.tags.collect{ |t| t.name } }
-    else # group by date by default
-      @groups = @documents.sort_by{ |d| d.created_at }.to_enum.group_by{ |d| @template.time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
-    end
-
-    @groups.reverse! if @order_by == "desc"
-    
     render :layout => false
   end
   
@@ -73,5 +64,5 @@ class DocumentsController < ApplicationController
 #    send_data(img, :filename => 'workshopimage', :type => "image/jpeg", :disposition => "inline")
 #    #    end
 #  end
-  
+
 end

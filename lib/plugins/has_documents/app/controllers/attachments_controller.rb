@@ -15,7 +15,7 @@ class AttachmentsController < ApplicationController
     url = "#{dir}/#{params[:style]||"original"}#{ext}"
     url = File.exists?(url) ? url : @document.attachment
     
-    send_data File.read(url), :filename => @document.attachment_file_name, :type => @document.attachment_content_type, :disposition => disposition
+    send_data File.read(url), :filename => "#{@document.id}_#{@document.attachment_file_name}", :type => @document.attachment_content_type, :disposition => disposition
   end
   
 end

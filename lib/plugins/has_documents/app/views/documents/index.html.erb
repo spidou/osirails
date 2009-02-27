@@ -1,17 +1,1 @@
-<div id="documents">
-  <%= "<p>Classer par #{group_by_method("type", @documents)} | #{group_by_method("date", @documents)} | #{group_by_method("name", @documents)} | #{group_by_method("tag", @documents)}</p>" %>
-  <% @groups.each do |group, collection| %>
-    <%
-    case @group_by
-    when "name"
-      header_group = "Alphabétique"
-    else
-      header_group = group
-    end
-    %>
-    <div class="document_group">
-      <%= content_tag(:h1, header_group) %>
-      <%= render :partial => 'documents/document', :collection => collection  %>
-    </div>
-  <% end %>
-</div>
+<%= render_documents_list(@documents_owner, :group_by => @group_by, :order_by => @order_by) %>
