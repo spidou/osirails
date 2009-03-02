@@ -106,8 +106,5 @@ require 'overrides'
 require 'mimetype_fu'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
 
-Mime::Type.register 'application/pdf', :pdf
-Mime::Type.register 'image/svg+xml', :svg
-
 #DocumentRouteDefinition.parse_model
 #Document.models.each {|model| DocumentRouteDefinition.create_route(model)}
