@@ -2,8 +2,8 @@ def init(config, path)
   begin
     require 'yaml'
     yaml = YAML.load(File.open(path + '/config.yml'))
-    
-    # These variables store the feature's configuration from his config.yml file 
+
+    # These variables store the feature's configuration from his config.yml file
     name = yaml['name']
     title = yaml['title']
     version = yaml['version']
@@ -16,12 +16,13 @@ def init(config, path)
 
     # This array store all menus in order than they will be displayed
     $menu_table ||= []
-    
+
     feature = Feature.find_by_name_and_version(name, version) || Feature.new(:name => name, :version => version, :title => title)
     if ( feature.new_record? and feature.activate_by_default? ) or feature.kernel_feature?
       feature.activated = true
       feature.installed = true
     end
+    feature.save
 
     # Manage the activation of a feature
     return false unless Feature.find_by_name(name).activated
@@ -41,26 +42,26 @@ def init(config, path)
     # Load overrides file
     override_path = File.join(directory, 'overrides.rb')
     require override_path if File.exist?(override_path)
-    
+
     # test and add search indexes into db
     error_message = "syntaxe error in '#{name}' yaml."
 
     def verify_attribute_type(attr_class, type)
-      case attr_class  
+      case attr_class
         when String
           return 1 unless type=="string"
         when Date
           return 1 unless type=="date"
         when DateTime
-          return 1 unless type=="date" 
-        when Time  
           return 1 unless type=="date"
-        else  
+        when Time
+          return 1 unless type=="date"
+        else
           return 1 unless type=="number"
       end
-      return 0    
+      return 0
     end
-    
+
     def verify_sub_resources(hash,error_message)
       hash.each_pair do |sub_attribute,value|
         if value.class == {}.class
@@ -75,26 +76,26 @@ def init(config, path)
           return "#{ error_message } missing attribute type or sub attributes hash for  '#{ sub_attribute }' "
         end
       end
-      return "" 
+      return ""
     end
      unless searches.blank? or searches == []
       searches.each_key do |key|
-        searches[key].each_key do |elmnt|  
+        searches[key].each_key do |elmnt|
           searches[key][elmnt].each_pair do |attr_name,attr_type|
             if attr_type.class=={}.class
               raise verify_sub_resources(attr_type,error_message) unless verify_sub_resources(attr_type,error_message).blank?
               raise "#{ error_message } The sub resource '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
             else
               raise "#{ error_message } The attribute '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
-              
+
             end
           end
         end
-      end 
+      end
       feature.update_attribute('search', searches)
-    end 
+    end
 
-    
+
     #Test of dependencies for this feature
     dependencies_hash = []
     unless dependencies.nil?
@@ -130,11 +131,11 @@ def init(config, path)
           Role.find(:all).each do |role|
             BusinessObjectPermission.find_or_create_by_has_permission_type_and_role_id(bo, role.id)
           end
-        end  
+        end
       end
     end
-    
- 
+
+
     #Test if all permission for all menus are present
     def menus_permisisons_verification(menus)
       roles_count = Role.count
@@ -174,15 +175,15 @@ def init(config, path)
 
     menu_insertion(menus,"")
 
-    # This block insert into Database the menus that wasn't present 
+    # This block insert into Database the menus that wasn't present
     $menu_table.each do |menu_array|
-      # Parent menu is create if it isn't in database 
+      # Parent menu is create if it isn't in database
       unless parent_menu = Menu.find_by_name(menu_array[:parent])
         parent_menu = Menu.create(:name => menu_array[:parent])
       end
-      
+
       # Unless menu already exist
-      unless menu_ = Menu.find_by_name(menu_array[:name])             
+      unless menu_ = Menu.find_by_name(menu_array[:name])
         unless (m = Menu.create(:title =>menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id =>parent_menu.id, :feature_id => feature.id, :skip_display => menu_array[:skip_display]))
           puts "The feature #{name} wants to instanciate the menu #{m.name}, but it's impossible. Please change order of feature loading in environment.rb file by changing the 'config.plugins' array"
         else
@@ -192,7 +193,7 @@ def init(config, path)
           end
         end
       else
-        
+
         # This block test if a menu isn't define with two different parent in many config file
         $menu_table.each do |menu_test|
           if menu_test[:name] == menu_array[:name]
