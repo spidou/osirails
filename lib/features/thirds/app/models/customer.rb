@@ -59,5 +59,5 @@ class Customer < Third
       end
     end
   end
-  
+
 end

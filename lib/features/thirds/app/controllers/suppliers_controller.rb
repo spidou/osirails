@@ -1,7 +1,7 @@
 class SuppliersController < ApplicationController
-  
+
   helper :thirds, :contacts, :documents
-  
+
   # GET /suppliers
   # GET /suppliers.xml
   def index
