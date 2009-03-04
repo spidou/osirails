@@ -1,5 +1,6 @@
 <% content_for :header do %>
-  <%= stylesheet_link_tag_with_theme_support "core/acts_as_documents/acts_as_documents" %>
+  <%= stylesheet_link_tag_with_theme_support 'core/acts_as_documents/acts_as_documents' %>
+  <%= javascript_include_tag 'core/documents/documents.js' %>
 <% end %>
 
 <%
@@ -10,37 +11,40 @@
 
 case @group_by
 when "type"
-  @groups = @documents.to_enum.group_by{ |d| d.document_type.title }
+  @groups = @documents.sort_by{ |d| d.document_type.title }.group_by{ |d| d.document_type.title }
 when "name"
-  @groups = { :the_only_one => @documents.sort_by{ |d| d.name } }
+  @groups = @documents.sort_by{ |d| d.name }.group_by{ |d| letter = d.name[0..0]
+                                                           if letter.between("A", "D")
+                                                             "A-D"
+                                                           elsif letter.between("E", "H")
+                                                             "E-H"
+                                                           elsif letter.between("I", "L")
+                                                             "I-L"
+                                                           elsif letter.between("M", "P")
+                                                             "M-P"
+                                                           elsif letter.between("Q", "T")
+                                                             "Q-T"
+                                                           elsif letter.between("U", "Z")
+                                                             "U-Z"
+                                                           end }
 when "tag"
   #OPTIMIZE fix the bug when a document has multiple tags
-  @groups = @documents.to_enum.group_by{ |d| d.tags.collect{ |t| t.name } }
+  @groups = @documents.sort_by{ |d| d.tag_list }.group_by{ |d| d.tags.collect{ |t| t.name } }
 else # group by date by default
-  @groups = @documents.sort_by{ |d| d.new_record? ? Time.now : d.created_at }.to_enum.group_by{ |d| d.new_record? ? time_ago_in_words(Time.now) : time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
+  @groups = @documents.sort_by{ |d| d.new_record? ? Time.now : d.created_at }.group_by{ |d| d.new_record? ? time_ago_in_words(Time.now) : time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
 end
 
 @groups.reverse! if @order_by == "desc"
 %>
 
-<div id="documents">
-  <% unless @groups.empty? %>
-    <%= "<p>Classer par #{group_by_method("type", @documents_owner)} | #{group_by_method("date", @documents_owner)} | #{group_by_method("name", @documents_owner)} | #{group_by_method("tag", @documents_owner)}</p>" %>
-    <% @groups.each do |group, collection| %>
-      <%
-      case @group_by
-      when "name"
-        header_group = "Alphabétique"
-      else
-        header_group = group
-      end
-      %>
-      <div class="document_group">
-        <%= content_tag(:h1, header_group) %>
-        <%= render :partial => 'documents/document', :collection => collection  %>
-      </div>
-    <% end %>
-  <% else %>
-    <%= content_tag :p, "Aucun document n'a été trouvé." %>
+<% unless @groups.empty? %>
+  <%= "<p>Classer par #{group_by_method("type", @documents_owner)} | #{group_by_method("date", @documents_owner)} | #{group_by_method("name", @documents_owner)} | #{group_by_method("tag", @documents_owner)}</p>" %>
+  <% @groups.each do |group, collection| %>
+    <div class="document_group">
+      <%= content_tag(:h1, group) %>
+      <%= render :partial => 'documents/document', :collection => collection, :locals => { :documents_owner => @documents_owner }  %>
+    </div>
   <% end %>
-</div>
+<% else %>
+  <%= content_tag :p, "Aucun document n'a été trouvé." %>
+<% end %>

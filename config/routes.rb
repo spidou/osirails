@@ -51,17 +51,22 @@ ActionController::Routing::Routes.draw do |map|
 end
 
 # Add dynamicaly features routes
-features_path = ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
-features_path.each do |path|
-  list = Dir.open(path).sort
-  list.each do |dirname|
-    next unless dirname.grep(/\./).empty?
-    if feature = Feature.find_by_name(dirname)
-      next unless feature.activated?
+# the begin rescue enclosure permits to avoid errors while the installation because of the non-existent tables in the database (at this time)
+begin
+  features_path = ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
+  features_path.each do |path|
+    list = Dir.open(path).sort
+    list.each do |dirname|
+      next unless dirname.grep(/\./).empty?
+      if feature = Feature.find_by_name(dirname)
+        next unless feature.activated?
+      end
+      route_path = File.join(path, dirname, 'routes.rb')
+      load route_path if File.exist?(route_path)
     end
-    route_path = File.join(path, dirname, 'routes.rb')
-    load route_path if File.exist?(route_path)
   end
+rescue Exception => e
+  puts "An error occured in file #{__FILE__}. #{e.message}"
 end
 
 

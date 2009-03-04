@@ -7,12 +7,12 @@ end
 
 class Time
  alias :strftime_nolocale :strftime
- 
+
  # constants for schedules
  DAYS = {"Lundi"=>1,"Mardi"=>2,"Mercredi"=>3,"Jeudi"=>4,"Vendredi"=>5,"Samedi"=>6,"Dimanche"=>7}
  R_DAYS = {1=>"Lundi",2=>"Mardi",3=>"Mercredi",4=>"Jeudi",5=>"Vendredi",6=>"Samedi",7=>"Dimanche"}
  DEFAULT_DAYS_ARRAY = ["",{ 'day' => "Lundi" },{ 'day' => "Mardi"},{ 'day' => "Mercredi"},{ 'day' => "Jeudi"},{ 'day' => "Vendredi"},{ 'day' => "Samedi"},{ 'day' => "Dimanche"}]
- 
+
  def strftime(format)
   format = format.dup
   format.gsub!(/%a/, Date::ABBR_DAYNAMES[self.wday])
@@ -31,9 +31,9 @@ class Array
     self.each do |f|
       var = false if !f.nil?
     end
-    return var 
+    return var
   end
-  
+
   def fusion(arg)
     array = Array.new + arg
     return nil unless array.class == Array
@@ -42,11 +42,11 @@ class Array
     end
     return array
   end
-  
+
 end
 
 class String
-    
+
   # Method to return formated string without accents
   def strip_accents
     formated = self
@@ -54,16 +54,16 @@ class String
     without_accent = "aeiouyAEIOUYaeiouAEIOUaeiouyAEIOUaeiouAEIOUaAoOscCanoANO".split("")
     self.split("").each do |letter|
       with_accent.each_with_index do |accentuate,index|
-        formated = formated.gsub(letter,without_accent[index]) if letter == accentuate 
+        formated = formated.gsub(letter,without_accent[index]) if letter == accentuate
       end
     end
     return formated
   end
-  
-  # method to view if a word is or not is plural 
+
+  # method to view if a word is or not is plural
   def plural?
     self.singularize == self ? false : true
-  end  
+  end
 end
 
 class Hash
@@ -106,7 +106,7 @@ module ActiveSupport
     def to_humanized_date
       self.strftime("%d %B %Y")
     end
-    
+
     def to_humanized_datetime
       self.strftime("%d %B %Y à %I:%M")
     end

@@ -7,14 +7,10 @@
     <%= content_tag(:span, document.description) + content_tag(:br) %>
     <%= content_tag(:span, document.created_at.to_humanized_datetime) unless document.new_record? %>
     <br/>
-    <%= link_to_function("Aperçu", :title => "Cliquer pour agrandir") do |page|
-      #page.insert_html( :bottom, "document_preview_#{document.id}", image_tag(document.attachment.url(:medium), :class => "preview", :onclick => "this.remove()") )
-    end %>
-    <%= link_to "Télécharger", attachment_path(document.id, :download => "1") %>
-    <%= link_to_function "Modifer" do |page| 
-      page.toggle "details_#{document.id}"
-      page.toggle "document_form_#{document.id}"
-    end if is_form_view? %>
+    <%= display_document_preview_button(document) %>
+    <%= display_document_download_button(document) %>
+    <%= display_document_edit_button(document) %>
+    <%= display_document_delete_button(document) %>
   </div>
   <% if is_form_view? %>
     <div class="form" id="form_<%= document.id %>">

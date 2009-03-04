@@ -2,7 +2,7 @@ class AttachmentsController < ApplicationController
   
   # GET /attachments/:id/:style
   # 
-  # ==== Example
+  # ==== Examples
   #   GET /attachments/1/thumb
   #   GET /attachments/1 # => original by default
   #

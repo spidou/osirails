@@ -2,28 +2,28 @@ class Customer < Third
   belongs_to :payment_method
   belongs_to :payment_time_limit
   has_many :establishments
-  
+
   ## Validations
   validates_uniqueness_of :name, :siret_number
   validates_associated :establishments, :contacts
-  
+
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}
-  
+
   ## Plugins
-  has_documents :graphic_charter, :logooo
-  
+  has_documents :graphic_charter, :logo
+
   ## Callbacks
   after_update :save_establishments
-  
+
   def activated_establishments
     establishment_array = []
     self.establishments.each {|establishment| establishment_array << establishment if establishment.activated}
     return establishment_array
   end
-  
+
   # customer.contacts_all            => array
-  # 
+  #
   # return the direct contacts of the customer,
   # with the contacts of all its establishments.
   #
@@ -35,10 +35,10 @@ class Customer < Third
         contacts << contact
       end
     end
-    
+
     self.contacts + contacts
   end
-  
+
   def establishment_attributes=(establishment_attributes)
     establishment_attributes.each do |attributes|
       if attributes[:id].blank?
@@ -49,7 +49,7 @@ class Customer < Third
       end
     end
   end
-  
+
   def save_establishments
     establishments.each do |e|
       if e.should_destroy?
@@ -59,5 +59,5 @@ class Customer < Third
       end
     end
   end
-  
+
 end

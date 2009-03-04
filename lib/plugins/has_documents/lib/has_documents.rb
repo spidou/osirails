@@ -1,14 +1,3 @@
-# load models, controllers and helpers
-%w{ models controllers helpers }.each do |dir|
-  path = File.join(File.dirname(__FILE__), '..', 'app', dir)
-  $LOAD_PATH << path
-  Dependencies.load_paths << path
-  Dependencies.load_once_paths.delete(path) # in development mode, this permits to avoid restart the server after any modifications on these paths (to confirm)
-end
-
-# load views
-ActionController::Base.append_view_path(File.join(File.dirname(__FILE__), '..', 'app', 'views'))
-
 module HasDocuments
   
   class << self
@@ -38,6 +27,9 @@ module HasDocuments
         def document_attributes=(document_attributes)
           document_attributes.each do |attributes|
             if attributes[:id].blank?
+              if attributes[:attachment].kind_of?(String) and !attributes[:attachment].empty?
+                raise "Attachment requires form with multipart support (call form_for or form_tag with option :html => { :multipart => true })"
+              end
               documents.build(attributes)
             else
               document = documents.detect { |t| t.id == attributes[:id].to_i }
@@ -45,9 +37,9 @@ module HasDocuments
             end
           end
         end
-
+        
         after_update :save_documents
-
+        
         def save_documents
           documents.each do |d|
             if d.should_destroy?
@@ -63,13 +55,13 @@ module HasDocuments
     
     def validates_documents_presence
     end
-
+    
     def validates_documents_number options = {}
     end
     
   end
   
-  module InstanceMethods #:nodoc:
+  module InstanceMethods
     
     def build_document
       Document.new(:has_document_id => self.id, :has_document_type => self.class.name)

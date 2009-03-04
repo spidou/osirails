@@ -294,11 +294,13 @@ namespace :osirails do
       png = MimeType.create(:name => "image/png")
       png.mime_type_extensions << MimeTypeExtension.create(:name => "png")
       
-      ## default document types
+      ## default document types (document types are created automatically when the class of the owner is parsed)
       # for customers
-      d = DocumentType.create :name => "graphic_charter", :title => "Charte graphique"
+      d = DocumentType.find_or_create_by_name("graphic_charter")
+      d.update_attribute(:title, "Charte graphique")
       d.mime_types << [ pdf, jpg, png ]
-      d = DocumentType.create :name => "logo", :title => "Logo"
+      d = DocumentType.find_or_create_by_name("logo")
+      d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
       
       ## default file types

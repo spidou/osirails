@@ -39,10 +39,11 @@ class User < ActiveRecord::Base
   before_destroy :can_destroy
 
   # Accessors
+  # attr_protected :login, :password #TODO uncomment this line and test if it brings some issues!
   attr_accessor :updating_password   
   attr_accessor :temporary_password
+  
   cattr_reader :form_labels
-
   @@form_labels = Hash.new
   @@form_labels[:username] = "Nom du compte utilisateur :"
   @@form_labels[:password] = "Mot de passe :"

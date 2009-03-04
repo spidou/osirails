@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090220065801) do
+ActiveRecord::Schema.define(:version => 20090227115246) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -237,23 +237,29 @@ ActiveRecord::Schema.define(:version => 20090220065801) do
     t.datetime "updated_at"
   end
 
-  create_table "document_versions", :force => true do |t|
-    t.string   "description"
-    t.integer  "document_id",  :limit => 11
-    t.datetime "versioned_at"
+  create_table "document_types", :force => true do |t|
     t.string   "name"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "document_types_mime_types", :id => false, :force => true do |t|
+    t.integer "document_type_id", :limit => 11
+    t.integer "mime_type_id",     :limit => 11
   end
 
   create_table "documents", :force => true do |t|
     t.string   "description"
-    t.string   "extension"
-    t.integer  "file_type_id",      :limit => 11
-    t.boolean  "activated",                       :default => true
-    t.integer  "has_document_id",   :limit => 11
+    t.integer  "has_document_id",         :limit => 11
     t.string   "has_document_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size",    :limit => 11
+    t.integer  "document_type_id",        :limit => 11
   end
 
   create_table "employee_states", :force => true do |t|

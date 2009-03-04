@@ -8,25 +8,14 @@
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 
-    <h2>Documents</h2>
-    <%= display_documents_list(@supplier) %>
-    <%= display_document_add_button(@supplier) %>
-
   <p>
     <%= form.reset 'Annuler' %>
     <%= form.submit submit_button_name %>
   </p>
-  <% end %>  
+  <% end %>
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>
   <%= display_contacts_list(@supplier) %>
-  
-  <h2>Documents</h2>
-  <%= display_documents_list(@supplier) %>
 <% end %>
 
 </div>
-
-<p>
-  <%= link_to 'Retour', :back %>
-</p>

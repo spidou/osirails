@@ -26,10 +26,6 @@ menus:
         title: Fichiers
         description: Fichiers attachés au document
         skip_display: true
-  downloads:
-    title: Downloads
-    description: Gestion des downloads
-    skip_display: true
   searches:
     title: Recherche
     description: Moteur de recherche  
