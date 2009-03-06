@@ -26,9 +26,6 @@ search:
         
 dependencies:
 conflicts:
-business_objects:
-  - ProductReference
-  - ProductReferenceCategory
 menus:
   goods:
     title: Produits

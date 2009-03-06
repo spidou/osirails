@@ -51,11 +51,6 @@ search:
               name: string                         
 dependencies:
 conflicts:
-business_objects:
-  - Employee
-  - Premium
-  - JobContract
-  - Job
 menus:
   rh:
     title: Ressources Humaines

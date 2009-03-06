@@ -74,15 +74,15 @@
         <th>Supprimer</th>
 				<th>Tout cocher</th>
       </tr>
-      <% for document_permission in @document_permissions %>
+      <% for document_type_permission in @document_type_permissions %>
         
         <tr>
-          <td><%= link_to document_permission.document_owner, edit_document_permission_path(document_permission.document_owner) %></td>
-          <td><%= check_box_tag "document[list][]", document_permission.id, document_permission.list %></td>
-          <td><%= check_box_tag "document[view][]", document_permission.id, document_permission.view %></td>
-          <td><%= check_box_tag "document[add][]", document_permission.id, document_permission.add %></td>
-          <td><%= check_box_tag "document[edit][]", document_permission.id, document_permission.edit %></td>
-          <td><%= check_box_tag "document[delete][]", document_permission.id, document_permission.delete %></td>
+          <td><%= link_to document_type_permission.document_type.title, edit_document_type_permission_path(document_type_permission.document_type_id) %></td>
+          <td><%= check_box_tag "document[list][]", document_type_permission.id, document_type_permission.list %></td>
+          <td><%= check_box_tag "document[view][]", document_type_permission.id, document_type_permission.view %></td>
+          <td><%= check_box_tag "document[add][]", document_type_permission.id, document_type_permission.add %></td>
+          <td><%= check_box_tag "document[edit][]", document_type_permission.id, document_type_permission.edit %></td>
+          <td><%= check_box_tag "document[delete][]", document_type_permission.id, document_type_permission.delete %></td>
 					<td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>

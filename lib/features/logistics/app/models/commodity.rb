@@ -1,5 +1,5 @@
 class Commodity < ActiveRecord::Base
-    include Permissible
+  has_permissions :as_business_object
   
   # Relationship
   belongs_to :commodity_category, :counter_cache => true

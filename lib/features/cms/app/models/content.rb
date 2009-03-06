@@ -1,5 +1,5 @@
 class Content < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
 
   # Serialize
   serialize :contributors

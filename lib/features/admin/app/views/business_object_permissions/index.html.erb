@@ -4,8 +4,8 @@
 <div class="frame tabulation">
   <h2>Les objets m&eacute;tiers</h2>
   <ul>
-    <% for business_object in @business_object_permissions %>
-    <li><%= link_to business_object.has_permission_type, edit_business_object_permission_path(business_object.has_permission_type) %></li>	
+    <% for business_object in @business_objects %>
+    <li><%= link_to business_object.name, edit_business_object_permission_path(business_object) %></li>	
     <% end %>
   </ul>
 

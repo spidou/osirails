@@ -233,3 +233,5 @@ module ActionView
     
   end
 end
+
+ActionController::Base.helper ActionView::Helpers::FormOptionsHelper

@@ -9,7 +9,7 @@ class RolePermissionsController < ApplicationController
     @menu_permissions = MenuPermission.find(:all, :include => [:menu], :conditions => ["role_id = ?", params[:id]])
     
     @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => ["role_id = ?", params[:id]])
-    @document_permissions = DocumentPermission.find(:all, :group => 'document_owner', :conditions => ["role_id = ?", params[:id]])
+    @document_type_permissions = DocumentTypePermission.find(:all, :conditions => ["role_id = ?", params[:id]])
     @all_calendar = Calendar.find_all_by_user_id(nil)
     @calendar_permissions = CalendarPermission.find(:all, :conditions => ["role_id = ? and calendar_id IN (?)", params[:id], @all_calendar])
   end
@@ -37,13 +37,13 @@ class RolePermissionsController < ApplicationController
         MenuPermission.update_all("`delete` = 1", :id => params[:menu][:delete], :role_id =>params[:id])
       end
       
-      transaction_error3 = DocumentPermission.transaction do
-        DocumentPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :role_id =>params[:id])
-        DocumentPermission.update_all("`list` = 1", :id => params[:document][:list], :role_id =>params[:id])
-        DocumentPermission.update_all("`view` = 1", :id => params[:document][:view], :role_id =>params[:id])
-        DocumentPermission.update_all("`add` = 1", :id => params[:document][:add], :role_id =>params[:id])
-        DocumentPermission.update_all("`edit` = 1", :id => params[:document][:edit], :role_id =>params[:id])
-        DocumentPermission.update_all("`delete` = 1", :id => params[:document][:delete], :role_id =>params[:id])
+      transaction_error3 = DocumentTypePermission.transaction do
+        DocumentTypePermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :role_id =>params[:id])
+        DocumentTypePermission.update_all("`list` = 1", :id => params[:document][:list], :role_id =>params[:id])
+        DocumentTypePermission.update_all("`view` = 1", :id => params[:document][:view], :role_id =>params[:id])
+        DocumentTypePermission.update_all("`add` = 1", :id => params[:document][:add], :role_id =>params[:id])
+        DocumentTypePermission.update_all("`edit` = 1", :id => params[:document][:edit], :role_id =>params[:id])
+        DocumentTypePermission.update_all("`delete` = 1", :id => params[:document][:delete], :role_id =>params[:id])
       end
       
       transaction_error4 = CalendarPermission.transaction do

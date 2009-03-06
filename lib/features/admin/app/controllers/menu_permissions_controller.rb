@@ -1,13 +1,18 @@
 class MenuPermissionsController < ApplicationController
-
+  
+  # GET /menu_permissions
   def index
     @menu_permissions = Menu.get_structured_menus
   end
-
+  
+  # GET /menu_permissions/:id/edit
+  # :id corresponds to a menu id
   def edit
     @menu_permissions = MenuPermission.find(:all, :conditions => ["menu_id = ?", params[:id]], :include => [:menu])
   end
-
+  
+  # POST /menu_permissions/:id
+  # :id corresponds to a menu id
   def update
     transaction_error = MenuPermission.transaction do
       MenuPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :menu_id => params[:id])

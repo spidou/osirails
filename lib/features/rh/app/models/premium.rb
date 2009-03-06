@@ -1,5 +1,5 @@
 class Premium < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
   
   belongs_to :employee 
   validates_format_of :amount , :with => /^[1-9]+(\d)*((\x2E)(\d)*)+$/ , :message => "le montant de la prime doit être un nombre"

@@ -1,8 +1,11 @@
 class Menu < ActiveRecord::Base
+  has_permissions
+  add_create_permissions_callback
+  
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   belongs_to :feature
-  has_many :menu_permissions, :dependent => :destroy
+  has_many :permissions, :class_name => "MenuPermission", :dependent => :destroy
   has_one :content
 
   # Plugin
@@ -21,12 +24,6 @@ class Menu < ActiveRecord::Base
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"
-  
-  # Callbacks
-  after_create :create_permissions
-  
-  # Includes
-  include Permissible::InstanceMethods
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
@@ -155,35 +152,29 @@ class Menu < ActiveRecord::Base
   end
     
   private
-  # This method insert in the parents the menus   
-  def self.get_children(menus, current_menu_id, parents)
-    menus.each do |menu|
-      unless menu.id == current_menu_id
-        parents << menu
-        # If the menu has children, the get_children method is call.
-        if menu.children.size > 0
-          get_children(menu.children, current_menu_id, parents)
+    # This method insert in the parents the menus   
+    def self.get_children(menus, current_menu_id, parents)
+      menus.each do |menu|
+        unless menu.id == current_menu_id
+          parents << menu
+          # If the menu has children, the get_children method is call.
+          if menu.children.size > 0
+            get_children(menu.children, current_menu_id, parents)
+          end
         end
       end
+      parents
     end
-    parents
-  end
-    
-  def create_permissions
-    Role.find(:all).each do |r|
-      MenuPermission.create(:menu_id => self.id, :role_id => r.id)
-    end
-  end
       
   protected
-  # This method permit to return a valide position for a menu.
-  def position_in_bounds(position)
-    if position < 1 
-      1
-    elsif position > self.self_and_siblings.size
-      self.self_and_siblings.size
-    else
-      position
+    # This method permit to return a valide position for a menu.
+    def position_in_bounds(position)
+      if position < 1 
+        1
+      elsif position > self.self_and_siblings.size
+        self.self_and_siblings.size
+      else
+        position
+      end
     end
-  end
 end

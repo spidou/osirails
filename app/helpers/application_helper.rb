@@ -198,13 +198,13 @@ module ApplicationHelper
     params[:action] == "edit" or request.put?
   end
   
-  def can_edit?(object)
-    test_permission(object, "edit")
-  end
-  
-  def can_add?(object)
-    test_permission(object, "add")
-  end
+#  def can_edit?(object)
+#    test_permission("edit", object)
+#  end
+#  
+#  def can_add?(object)
+#    test_permission("add", object)
+#  end
   
   begin
     ## dynamic methods generated with the menus object
@@ -260,13 +260,13 @@ module ApplicationHelper
       Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
     end
     
-    def test_permission(object, method)
-      controller_name = object.class.name.downcase.pluralize
-      begin
-        send("menu_#{controller_name}").send("can_#{method}?", current_user)
-      rescue NoMethodError => e
-        real_controller_name = "#{controller_name}_controller".camelize
-        raise "You may create a controller called '#{real_controller_name}' and create a menu entry in the 'config.yml' file of the correspondant feature. #{e.message}"
-      end
-    end
+#    def test_permission(method, object)
+#      controller_name = object.class.name.downcase.pluralize
+#      begin
+#        send("menu_#{controller_name}").send("can_#{method}?", current_user)
+#      rescue NoMethodError => e
+#        real_controller_name = "#{controller_name}_controller".camelize
+#        raise "You may create a controller called '#{real_controller_name}' and create a menu entry in the 'config.yml' file of the corresponding feature. #{e.message}"
+#      end
+#    end
 end

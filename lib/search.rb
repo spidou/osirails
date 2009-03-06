@@ -1,6 +1,6 @@
 class Search
-
-  include Permissible
+  has_permissions
+  
   @features = Feature.find(:all)
   # method to group sub attributes
   

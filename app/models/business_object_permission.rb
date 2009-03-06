@@ -1,4 +1,4 @@
 class BusinessObjectPermission < ActiveRecord::Base
-  belongs_to :has_permission, :polymorphic => true
+  belongs_to :business_object
   belongs_to :role
 end

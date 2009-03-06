@@ -1,5 +1,5 @@
 class Contact < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
   
   has_many :numbers, :as => :has_number
   belongs_to :contact_type

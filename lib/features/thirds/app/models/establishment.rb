@@ -1,5 +1,5 @@
 class Establishment  < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
     
   has_one :address, :as => :has_address
   has_many  :contacts, :as => :has_contacts

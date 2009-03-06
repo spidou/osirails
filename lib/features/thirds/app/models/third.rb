@@ -1,9 +1,4 @@
 class Third < ActiveRecord::Base
-  
-  #OPTIMIZE require or include 'permissible', or both ???
-  require 'permissible'
-  include Permissible
-
   has_one :address, :as => :has_address
   
   belongs_to :activity_sector

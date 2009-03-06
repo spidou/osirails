@@ -1,6 +1,5 @@
 class Document < ActiveRecord::Base
-  
-  include Permissible
+  has_permissions
   
   ## Plugins
   acts_as_taggable

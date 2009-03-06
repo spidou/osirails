@@ -3,8 +3,6 @@ title: Gestion de contenu
 version: 0.1
 dependencies:
 conflicts:
-business_objects:
-  - Content
 menus:
   admin:
     children:

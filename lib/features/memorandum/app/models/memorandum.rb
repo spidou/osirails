@@ -1,5 +1,5 @@
 class Memorandum < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
   
   # Relationships
   has_many :memorandums_services

@@ -1,5 +1,5 @@
 class ProductReference < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
   
   # Relationship
   has_many :products

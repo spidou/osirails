@@ -9,30 +9,28 @@ class Date
   alias_method :yweek, :week_of_year
 end
 
+
+# The structure of the Calendar is based on the RFC 2445. It permit to make
+# iCalendar format.
+# Convert method are based on the Icalendar plugins made by Jeff Rose.
+# Describing:
+# user_id     Can't be used with name column
+# name        Can't be used with user_id column
+# color       Hexa color (optinal)
+# title       :string
 class Calendar < ActiveRecord::Base
-  # The structure of the Calendar is based on the RFC 2445. It permit to make
-  # iCalendar format.
-  # Convert method are based on the Icalendar plugins made by Jeff Rose.
-  # Describing:
-  # user_id     Can't be used with name column
-  # name        Can't be used with user_id column
-  # color       Hexa color (optinal)
-  # title       :string
+  has_permissions
+  add_create_permissions_callback
+  
+  require 'rubygems'
+  require 'icalendar'
+  require 'date'
 
   # Relationships
   belongs_to :user
   has_many :calendar_permissions, :dependent => :destroy
   has_many :events
   has_many :event_categories
-
-  # Requires
-  require 'rubygems'
-  require 'icalendar'
-  require 'date'
-  include Permissible::InstanceMethods
-
-  # Callbacks
-  after_create :create_permissions
  
   # TODO Must be configurable
   # Constants
@@ -243,14 +241,6 @@ class Calendar < ActiveRecord::Base
       return 5
     when "SA"
       return 6
-    end
-  end
-
-  private
-
-  def create_permissions
-    Role.find(:all).each do |role|
-      CalendarPermission.create(:role_id => role.id, :calendar_id => self.id)
     end
   end
 end

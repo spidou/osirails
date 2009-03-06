@@ -9,7 +9,6 @@ dependencies:
   products:
     - 0.1
 conflicts:
-business_objects:
 menus:
   orders:
     title: Dossier de commande

@@ -14,10 +14,6 @@ search:
           measure: number            
 dependencies:
 conflicts:
-business_objects:
-  - Inventory
-  - Commodity
-  - CommodityCategory
 menus:
   logistics:
     title: Logistique

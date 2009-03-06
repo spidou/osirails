@@ -1,4 +1,6 @@
 class Iban < ActiveRecord::Base
+  has_permissions :as_business_object
+  
   belongs_to :has_iban, :polymorphic => true
   
 #  ########### 

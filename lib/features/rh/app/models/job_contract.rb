@@ -1,5 +1,5 @@
 class JobContract < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
   
   belongs_to :employee
   belongs_to :employee_state

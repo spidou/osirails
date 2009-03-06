@@ -14,15 +14,13 @@ end
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-
+  has_permissions
+  
   helper :all # include all helpers, all the time
   layout "default"
   
   # Filters
   before_filter :authenticate, :select_theme
-  
-  # Includes
-  include Permissible::InstanceMethods
   
   # Password will not displayed in log files
   filter_parameter_logging "password"
@@ -111,25 +109,19 @@ class ApplicationController < ActionController::Base
           $permission[controller_path] ||= {}
           case params[:action]
           when *['index'] + ($permission[controller_path][:list] || [])
-            unless can_list?(current_user)
-              error_access_page
-            end
+            error_access_page unless can_list?(current_user)
+            
           when *['show'] + ($permission[controller_path][:view] || [])
-            unless can_view?(current_user)
-              error_access_page
-            end
+            error_access_page unless can_view?(current_user)
+            
           when *['new', 'create'] + ($permission[controller_path][:add] || [])
-            unless can_add?(current_user)
-              error_access_page(422)
-            end
+            error_access_page(422) unless can_add?(current_user)
+            
           when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-            unless can_edit?(current_user)
-              error_access_page(422)
-            end
+            error_access_page(422) unless can_edit?(current_user)
+            
           when *['destroy'] + ($permission[controller_path][:delete] || [])
-            unless can_delete?(current_user)
-              error_access_page(422)
-            end
+            error_access_page(422) unless can_delete?(current_user)
           end # case
         end # if
       end # if

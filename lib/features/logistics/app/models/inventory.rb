@@ -1,5 +1,5 @@
 class Inventory < ActiveRecord::Base
-  include Permissible
+  has_permissions :as_business_object
     
   # Relationship
   has_many :commodities_inventories

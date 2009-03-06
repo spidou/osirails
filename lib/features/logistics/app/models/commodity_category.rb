@@ -1,5 +1,5 @@
 class CommodityCategory < ActiveRecord::Base
-    include Permissible
+  has_permissions :as_business_object
   
   # Plugin
   acts_as_tree :order => :name, :foreign_key => 'commodity_category_id'

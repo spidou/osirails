@@ -130,17 +130,9 @@ namespace :osirails do
       end
       
       # default business object permissions for default roles
-      bo = []                               # put all business objects into the array 'bo'
-      Feature.find(:all).each do |f|        #
-        unless f.business_objects.nil?      #
-          f.business_objects.each do |g|    #
-            bo << g unless bo.include?(g)   #
-          end                               #
-        end                                 #
-      end                                   #
-      bo.each do |m|
-        BusinessObjectPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :has_permission_type => m[0] # admin
-        BusinessObjectPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :has_permission_type => m[0] # aall
+      BusinessObject.find(:all).each do |bo|
+        BusinessObjectPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :business_object_id => bo.id
+        BusinessObjectPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :business_object_id => bo.id
       end
       
       # default activity sectors

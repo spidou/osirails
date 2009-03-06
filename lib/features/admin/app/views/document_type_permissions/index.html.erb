@@ -1,0 +1,13 @@
+<h1>Configurer les permissions</h1>
+<%= display_tabulated_menu %>
+
+<div class="frame tabulation">
+  <h2>Les types de document</h2>
+  <ul>
+    <% @document_types.each do |document_type| %>
+    <li><%= link_to document_type.title, edit_document_type_permission_path(document_type) %></li>	
+    <% end %>
+  </ul>
+
+  <%= link_to "Retour", permissions_path %>
+</div>

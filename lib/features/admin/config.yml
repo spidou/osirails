@@ -72,7 +72,7 @@ menus:
             title: Menus
             description: Gestion des permissions en fonction des menus
             position: 3
-          document_permissions:
+          document_type_permissions:
             title: Types de document
             description: Gestion des permissions en fonction des types de documents
             position: 4
