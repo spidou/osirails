@@ -186,15 +186,39 @@ class Feature < ActiveRecord::Base
   end
 
   def disable
-    if able_to_deactivate?
-      self.activated = false
-      if self.save
-        # Reload the configuration
-        load File.join(RAILS_ROOT, 'config', 'environment.rb')
-        return true
+    return false unless able_to_deactivate?
+    self.activated = false
+    if self.save
+      begin
+        # Remove paths to the feature
+        app_path = File.join(RAILS_ROOT, 'lib/features', self.name, 'app')
+        $LOAD_PATH.each do |path|
+          $LOAD_PATH.delete(app_path) if path.starts_with?(app_path)
+        end
+        Dependencies.load_paths.each do |path|
+          Dependencies.load_paths.delete(app_path) if path.starts_with?(app_path)
+        end
+
+        controllers_list = []
+        Dir.open(app_path + '/controllers').sort.each do |dirname|
+          next if dirname.starts_with?('.')
+          controllers_list << dirname.split('.').first[0..-12]
+        end
+
+        # Remove routes to the features
+        #ActionController::Routing::Routes.routes.each do |route|
+        #  if controllers_list.include?(route.requirements[:controllers])
+        #    ActionController::Routing::Routes.routes.remove(route)
+        #    puts "delete ---- " + route.inspect
+        #  end
+        #end
+      rescue
+        self.activated = true;
+        self.save
+        return false
       end
+      return true
     end
-    false
   end
 
   def install

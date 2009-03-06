@@ -360,9 +360,8 @@ namespace :osirails do
       john.user.roles << role_admin
       john.user.enabled = true
       john.user.save
-      job_contract = JobContract.create(:start_date => Date.today - 1.years, :end_date => Date.today + 5.months, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id)
-      job_contract.salaries << Salary.create(:gross_amount => "2000")
-      john.job_contract = job_contract
+      john.create_job_contract(:start_date => Date.today - 1.years, :end_date => Date.today + 5.months, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id, :salary => "2000")
+#      john.job_contract = job_contract
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"
       Event.create :calendar_id => calendar_john_doe.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
