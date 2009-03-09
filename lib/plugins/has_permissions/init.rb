@@ -1,12 +1,8 @@
-require File.join(File.dirname(__FILE__), "lib", "has_permissions")
+require File.join(RAILS_ROOT, 'lib', 'initialize_feature.rb')
+init(config, directory, "has_permissions")
 
-# load models, controllers and helpers
-%w{ models controllers helpers }.each do |dir|
-  path = File.join(File.dirname(__FILE__), 'app', dir)
-  $LOAD_PATH << path
-  Dependencies.load_paths << path
-  Dependencies.load_once_paths.delete(path) # in development mode, this permits to avoid restart the server after any modifications on these paths (to confirm)
+Dir.glob(File.join(File.dirname(__FILE__), "app", "models", "*_permission.rb")).each do |permission_file|
+  require permission_file
 end
 
-# load views
-ActionController::Base.append_view_path(File.join(File.dirname(__FILE__), 'app', 'views'))
+require 'has_permissions'

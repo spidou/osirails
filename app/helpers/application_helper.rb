@@ -65,31 +65,44 @@ module ApplicationHelper
     DateTime.now.strftime("Nous sommes le #{day} %d %B %Y, il est %H:%M")
   end
   
-  def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
-    
-    ## Hack by Ulrich
-    unless tag_options[:name].nil?
-      temp = tag_options[:name].split('_')
-      new_name = temp.shift
-      temp.each{|a| new_name += '['+a+']'}
-    end
-    ############
-    
-    if(tag_options[:index])
-      tag_id = "#{tag_options[:name]}_#{object}s_#{tag_options[:index]}_#{method}"
-      tag_name = "#{new_name}[#{object}s][#{tag_options[:index]}][#{method}]"
-    else
-      tag_id = "#{tag_options[:name]}_#{object}_#{method}"
-      tag_name = "#{new_name}[#{object}][#{method}]"
-    end
-    (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
-      
-      content_tag("input", "", :id => tag_id, :type => "text", :size => 30, 
-      :name => tag_name, :autocomplete => "off") +
-      content_tag("div", "", :id => tag_id + "_auto_complete", :class => "auto_complete") +
-      auto_complete_field(tag_id, { :url => {:controller => "#{tag_options[:controller]}", :action => "auto_complete_for_#{object}_#{method}"} }.update(completion_options))
-                                                                
+  def display_footer
+    society_name  = content_tag :span, ConfigurationManager.admin_society_identity_configuration_name
+    siret         = content_tag :span, ConfigurationManager.admin_society_identity_configuration_siret
+    address       = content_tag :span, "#{ConfigurationManager.admin_society_identity_configuration_address_first_line} - \
+                                        #{ConfigurationManager.admin_society_identity_configuration_address_second_line} - \
+                                        #{ConfigurationManager.admin_society_identity_configuration_address_zip} \
+                                        #{ConfigurationManager.admin_society_identity_configuration_address_town} - \
+                                        #{ConfigurationManager.admin_society_identity_configuration_address_country}"
+    phone         = content_tag :span, ConfigurationManager.admin_society_identity_configuration_phone
+    fax           = content_tag :span, ConfigurationManager.admin_society_identity_configuration_fax
+    "#{society_name} SIRET : #{siret} TEL : #{phone} FAX : #{fax} <br/> ADRESSE : #{address}"
   end
+  
+#  def my_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+#    
+#    ## Hack by Ulrich
+#    unless tag_options[:name].nil?
+#      temp = tag_options[:name].split('_')
+#      new_name = temp.shift
+#      temp.each{|a| new_name += '['+a+']'}
+#    end
+#    ############
+#    
+#    if(tag_options[:index])
+#      tag_id = "#{tag_options[:name]}_#{object}s_#{tag_options[:index]}_#{method}"
+#      tag_name = "#{new_name}[#{object}s][#{tag_options[:index]}][#{method}]"
+#    else
+#      tag_id = "#{tag_options[:name]}_#{object}_#{method}"
+#      tag_name = "#{new_name}[#{object}][#{method}]"
+#    end
+#    (completion_options[:skip_style] ? "" : auto_complete_stylesheet) +
+#      
+#      content_tag("input", "", :id => tag_id, :type => "text", :size => 30, 
+#      :name => tag_name, :autocomplete => "off") +
+#      content_tag("div", "", :id => tag_id + "_auto_complete", :class => "auto_complete") +
+#      auto_complete_field(tag_id, { :url => {:controller => "#{tag_options[:controller]}", :action => "auto_complete_for_#{object}_#{method}"} }.update(completion_options))
+#                                                                
+#  end
   
   # This method permit to make diplay memorandums under banner
   def display_memorandums
@@ -214,11 +227,12 @@ module ApplicationHelper
     #  generated methods : menu_users, menu_groups, menu_thirds
     Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
       define_method("menu_#{menu.name}") do
-        menu
+        Menu.find_by_name(menu.name)
       end
     end
-  rescue Exception => e
-    puts "An error has occured in file #{__FILE__}. Please restart the server so that the application works properly. (error : #{e.message})"
+  rescue ActiveRecord::StatementInvalid, Mysql::Error => e
+    error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+    RAKE_TASK ? puts(error) : raise(error)
   end
   
   def secondary_menu(title, &block)

@@ -1,10 +1,10 @@
 class Role < ActiveRecord::Base
   # Relationships
   has_and_belongs_to_many :users
-  has_many :menu_permissions, :dependent => :destroy
-  has_many :business_object_permissions, :dependent => :destroy
-  has_many :document_type_permissions, :dependent => :destroy
-  has_many :calendar_permissions, :include => :calendar , :conditions => [ "calendars.user_id = ?",  nil ], :dependent => :destroy
+  has_many :menu_permissions,             :include => :menu,            :dependent => :destroy
+  has_many :business_object_permissions,  :include => :business_object, :dependent => :destroy
+  has_many :document_type_permissions,    :include => :document_type,   :dependent => :destroy
+  has_many :calendar_permissions,         :include => :calendar,        :dependent => :destroy, :conditions => [ "calendars.user_id = ?",  nil ]
   
   # Validations
   validates_uniqueness_of :name

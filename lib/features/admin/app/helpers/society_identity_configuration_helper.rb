@@ -5,7 +5,7 @@ module SocietyIdentityConfigurationHelper
     if is_form_view?
       text_field_tag name, value 
     else
-      "#{value}"
+      "#{strong(value)}"
     end
   end
   

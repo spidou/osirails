@@ -1,3 +1,5 @@
-User.module_eval do
+require_dependency 'user'
+
+class User
   belongs_to :employee
 end

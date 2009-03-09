@@ -1,5 +1,4 @@
 ActionController::Routing::Routes.add_routes do |map|
-  ### HUMAN RESOURCES
   map.resources :employees do |employee|
     employee.resources :salaries
     employee.resources :premia
@@ -7,6 +6,5 @@ ActionController::Routing::Routes.add_routes do |map|
   end
   map.resources :jobs
   
-  map.connect 'rh', :controller => 'employees' #default page for human resources
-  ### END HUMAN RESOURCES
+  map.rh 'rh', :controller => 'employees' #default page for human resources
 end

@@ -1,0 +1,10 @@
+menus:
+  documents:
+    title: Documents
+    description: Gestion des documents
+    hidden: true
+    children:
+      attachments:
+        title: Fichiers
+        description: Fichiers attachés au document
+        hidden: true

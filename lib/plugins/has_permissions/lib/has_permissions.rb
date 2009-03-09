@@ -21,7 +21,7 @@ module HasPermissions
         end
       end
       
-      declare_private_permissions_methods
+      declare_private_permission_methods
     end
     
     def setup_has_permissions_model options = {}
@@ -33,7 +33,8 @@ module HasPermissions
                                                 :name => "#{self.name.tableize.singularize}_permissions".to_sym,
                                                 :class_name => "#{self.name}Permission",
                                                 :foreign_key => "#{self.name.tableize.singularize}_id".to_sym,
-                                                :dependent => :destroy
+                                                :dependent => :destroy,
+                                                :include => :role
                                               }.merge(options[:association_options] || {})
       
       # set up callback
@@ -94,7 +95,7 @@ module HasPermissions
       end
     end
     
-    def declare_private_permissions_methods
+    def declare_private_permission_methods
       class_eval do
         private
           def can_do?(action, user_or_role)
@@ -125,17 +126,19 @@ module HasPermissions
               next if return_value # skip test for other roles if one role match and return true
               
               ### INSTANCE METHODS
-              if object.instance_of?(Calendar) # CALENDAR
-                return true unless object.user_id.nil?
-                perm = object.permissions.find_by_role_id(role, :conditions => { action => true })
-              elsif object.instance_of?(Menu) # MENU
-                perm = object.permissions.find_by_role_id(role, :conditions => { action => true })
+#              if object.instance_of?(Calendar) # CALENDAR
+#                return true unless object.user_id.nil?
+#                perm = object.permissions.find_by_role_id(role)
+              if object.class.respond_to?(:permissions_association_options) # Menu, DocumentType and any models which call the method "setup_has_permissions_model"
+                perm = object.permissions.find_by_role_id(role)
+              elsif object.instance_of?(Document)
+                perm = object.document_type.permissions.find_by_role_id(role)
               elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
-                perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role, :conditions => { action => true })
+                (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "permissions error for #{self}:#{self.class}"
 
               ### CLASS METHODS
               elsif object.respond_to?("business_object?") # BUSINESS OBJECT
-                perm = object.business_object.permissions.find_by_role_id(role, :conditions => { action => true })          
+                perm = object.business_object.permissions.find_by_role_id(role)
               else
                 raise "I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
               end

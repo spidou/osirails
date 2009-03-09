@@ -10,5 +10,5 @@ ActionController::Routing::Routes.add_routes do |map|
     supplier.resources :contacts
   end
   
-  map.connect 'thirds', :controller => 'customers' #default page for thirds
+  map.thirds 'thirds', :controller => 'customers' #default page for thirds
 end

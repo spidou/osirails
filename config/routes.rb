@@ -67,8 +67,9 @@ begin
       load route_path if File.exist?(route_path)
     end
   end
-rescue Exception => e
-  puts "An error occured in file #{__FILE__}. #{e.message}"
+rescue ActiveRecord::StatementInvalid, Mysql::Error => e
+  error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+  RAKE_TASK ? puts(error) : raise(error)
 end
 
 

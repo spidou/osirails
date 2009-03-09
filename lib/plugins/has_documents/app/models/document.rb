@@ -42,7 +42,8 @@ class Document < ActiveRecord::Base
   
   attr_protected :attachment_file_name, :attachment_content_type, :attachment_file_size
   
-  
+  cattr_accessor :forbidden_document_image_path
+  @@forbidden_document_image_path = "public/#{$CURRENT_THEME_PATH}/images/documents/forbidden.png"
   
 #  @@models = []
 #  @image_mime_types = ["image/jpeg","image/png"]

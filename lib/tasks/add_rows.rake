@@ -118,21 +118,12 @@ namespace :osirails do
       user_admin.roles << role_admin
       user_guest.roles << role_guest
       
-      # default menu permissions for default roles
-      MenuPermission.find(:all).each do |mp|
-        if mp.role_id == role_admin.id
-          mp.list = mp.view = mp.add = mp.edit = mp.delete = true
-        elsif mp.role_id == role_guest.id
-          mp.list = mp.view = true
-          mp.add = mp.edit = mp.delete = false
+      # set up all permissions for default roles (admin and guest)
+      %W{ Menu BusinessObject DocumentType }.each do |klass|
+        klass.constantize.send(:find, :all).each do |object|
+          object.permissions.find_by_role_id(role_admin.id).update_attributes(:list => true, :view => true, :add => true, :edit => true, :delete => true)
+          object.permissions.find_by_role_id(role_guest.id).update_attributes(:list => true, :view => true, :add => false, :edit => false, :delete => false)
         end
-        mp.save
-      end
-      
-      # default business object permissions for default roles
-      BusinessObject.find(:all).each do |bo|
-        BusinessObjectPermission.create :list => 1, :view => 1, :add => 1,:edit => 1, :delete => 1, :role_id => role_admin.id, :business_object_id => bo.id
-        BusinessObjectPermission.create :list => 1, :view => 1, :add => 0,:edit => 0, :delete => 0, :role_id => role_guest.id, :business_object_id => bo.id
       end
       
       # default activity sectors
@@ -363,7 +354,7 @@ namespace :osirails do
       john.user.roles << role_admin
       john.user.enabled = true
       john.user.save
-      john.create_job_contract(:start_date => Date.today - 1.years, :end_date => Date.today + 5.months, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id, :salary => "2000")
+      john.job_contract.update_attributes(:start_date => Date.today, :end_date => Date.today + 1.years, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id, :salary => "2000")
 #      john.job_contract = job_contract
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"
       Event.create :calendar_id => calendar_john_doe.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours

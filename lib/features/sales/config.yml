@@ -12,7 +12,7 @@ conflicts:
 menus:
   orders:
     title: Dossier de commande
-    skip_display: true
+    hidden: true
     children:
       informations:
         title: Informations de commande

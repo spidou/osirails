@@ -1,12 +1,8 @@
-SocietyActivitySector.module_eval do 
-  has_and_belongs_to_many :order_types
-end
-
-Customer.module_eval do 
-  has_many :orders
-end
+require_dependency 'customer'
 
 class Customer
+  has_many :orders
+  
   def terminated_orders
     orders = []
     self.orders.each { |o| orders << o if o.terminated? }
@@ -14,6 +10,14 @@ class Customer
   end
 end
 
-Establishment.module_eval do 
+require_dependency 'establishment'
+
+class Establishment
   has_many :orders
+end
+
+require_dependency 'society_activity_sector'
+
+class SocietyActivitySector
+  has_and_belongs_to_many :order_types
 end
