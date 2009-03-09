@@ -27,6 +27,6 @@ class Content < ActiveRecord::Base
   private
 
   def delete_duplicate_contributors
-    self.contributors.uniq!
+    self.contributors.uniq! unless self.contributors.nil?
   end
 end

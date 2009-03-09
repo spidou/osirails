@@ -68,7 +68,14 @@ class Order < ActiveRecord::Base
     steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
     advance
   end
-  
+
+  def child
+    children.reverse.each do |child|
+      return child unless child.unstarted?
+    end
+    return children.first
+  end
+
   def children
     array_children = []
     steps.each do |step|

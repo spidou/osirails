@@ -111,4 +111,12 @@ module OrdersHelper
   def class_selected
     "class=\"selected\""
   end
+  
+  def class_for_clock_progress(step)
+    if params[:for] == 'step'
+      return " #{step.name}" if step.in_progress? or step.terminated?
+    else
+      return ' terminated' if step.terminated?
+    end
+  end
 end

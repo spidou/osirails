@@ -1,0 +1,9 @@
+.DS_Store
+*~
+assets
+config/database.yml
+coverage
+db/*.sqlite3
+log/*.log
+nbproject
+tmp/**/*

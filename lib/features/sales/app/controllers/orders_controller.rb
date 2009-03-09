@@ -19,7 +19,15 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     respond_to do |format|
       format.html { redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase }
-      format.svg {render :partial => 'order' }
+      format.svg {
+        case params[:for]
+        when 'step'
+          render :partial => 'mini_order', :locals => {:children_list => @order.children }
+        when 'understep'
+          render :partial => 'mini_order', :locals => {:children_list => @order.child.children}
+        else
+          render :partial => 'order'
+        end }
     end
   end
   
