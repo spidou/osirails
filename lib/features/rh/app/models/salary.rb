@@ -1,4 +1,6 @@
 class Salary < ActiveRecord::Base
+  has_permissions :as_business_object
+  
   belongs_to :job_contract
   validates_format_of :gross_amount, :with => /^[1-9]+(\d)*((\x2E)(\d)*)+$/ , :message => "le montant du salaire doit être un nombre"
   

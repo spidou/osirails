@@ -6,12 +6,12 @@ class RolePermissionsController < ApplicationController
   
   def edit
     @role = Role.find(params[:id])
-    @menu_permissions = MenuPermission.find(:all, :include => [:menu], :conditions => ["role_id = ?", params[:id]])
-    
-    @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => ["role_id = ?", params[:id]])
-    @document_type_permissions = DocumentTypePermission.find(:all, :conditions => ["role_id = ?", params[:id]])
-    @all_calendar = Calendar.find_all_by_user_id(nil)
-    @calendar_permissions = CalendarPermission.find(:all, :conditions => ["role_id = ? and calendar_id IN (?)", params[:id], @all_calendar])
+    @menu_permissions = @role.menu_permissions
+    @business_object_permissions = @role.business_object_permissions
+    @document_type_permissions = @role.document_type_permissions
+    #@all_calendar = Calendar.find_all_by_user_id(nil)
+    #@calendar_permissions = CalendarPermission.find(:all, :conditions => ["role_id = ? and calendar_id IN (?)", params[:id], @all_calendar])
+    @calendar_permissions = @role.calendar_permissions
   end
  
   

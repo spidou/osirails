@@ -1,5 +1,6 @@
 <% secondary_menu USEFUL_LINKS do%>
-	<%= link_to "Liste des fournisseurs", suppliers_path%>
+	<%= link_to "Liste des fournisseurs", suppliers_path %>
 <% end %>
+
 <h1>Nouveau fournisseur</h1>
 <%= render :partial => @supplier, :locals => { :submit_button_name => "Ajouter"} %>

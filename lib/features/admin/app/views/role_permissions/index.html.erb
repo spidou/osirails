@@ -6,7 +6,7 @@
   <ul>
     <% for role in @roles%>
       <li>
-        <%=link_to(role.name, { :controller =>"role_permissions", :action =>"edit", :id => role } , :method => :get) %>
+        <%=link_to(role.name, edit_role_permission_path(role)) %>
       </li>
     <%end%>
   </ul>

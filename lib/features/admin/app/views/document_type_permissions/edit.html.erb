@@ -2,35 +2,37 @@
 <%= display_tabulated_menu %>
 
 <div class="frame tabulation">
-  <h1>Modifier les permissions du type de document "<%= DocumentType.find(params[:id]).title %>"</h1>
+  <h1>Modifier les permissions du type de document "<%= @document_type.title %>"</h1>
   <h2>pour chaque r&ocirc;le</h2>
-  <table>
-    <tr>
-      <th rowspan="2">Roles</th>
-      <th colspan="6">Permissions</th>
-    </tr>
-    <tr>
-      <th>Lister</th>
-      <th>Voir</th>
-      <th>Ajouter</th>
-      <th>Modifier</th>
-      <th>Supprimer</th>
-			<th>Tout cocher</th>
-    </tr>
   <% form_tag(document_type_permission_path, :method => 'put') do %>
-  <% @document_types_permission.each do |permission| %>
-    <tr>
-        <td><%= link_to permission.role.name, edit_role_permission_path(permission.role.id) %></td>
-        <td><%= check_box_tag "list[]", permission.role_id, permission.list %></td>
-        <td><%= check_box_tag "view[]", permission.role_id, permission.view %></td>
-        <td><%= check_box_tag "add[]", permission.role_id, permission.add %></td>
-        <td><%= check_box_tag "edit[]", permission.role_id, permission.edit %></td>
-        <td><%= check_box_tag "delete[]", permission.role_id, permission.delete %></td>
-				<td><input type="checkbox" class="checkbox_permission"></td>
+    <table>
+      <tr>
+        <th rowspan="2">Roles</th>
+        <th colspan="6">Permissions</th>
       </tr>
-  <% end %>
-  </table><br/>
-  <%= submit_tag "Mettre à jour" %>
+      <tr>
+        <th>Lister</th>
+        <th>Voir</th>
+        <th>Ajouter</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+			  <th>Tout cocher</th>
+      </tr>
+    <% for permissions in @document_type_permissions %>
+      <tr>
+        <td><%= link_to permissions.role.name, edit_role_permission_path(permissions.role.id) %></td>
+        <td><%= check_box_tag "list[]", permissions.role_id, permissions.list %></td>
+        <td><%= check_box_tag "view[]", permissions.role_id, permissions.view %></td>
+        <td><%= check_box_tag "add[]", permissions.role_id, permissions.add %></td>
+        <td><%= check_box_tag "edit[]", permissions.role_id, permissions.edit %></td>
+        <td><%= check_box_tag "delete[]", permissions.role_id, permissions.delete %></td>
+			  <td><input type="checkbox" class="checkbox_permission"></td>
+      </tr>
+    <% end %>
+    </table>
+    <p>
+      <%= submit_tag "Mettre à jour" %>
+    </p>
   <% end %>
 </div>
 

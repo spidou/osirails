@@ -9,145 +9,156 @@ module HasPermissions
   module ClassMethods    
     PERM_METHODS = %W{ list view add edit delete }
     
-    def add_create_permissions_callback
+    def has_permissions *options
+      
+      if options.empty?
+        add_instance_permission_methods
+      end
+      
+      options.each do |option|
+        if option == :as_business_object
+          add_business_object_permission_methods
+        end
+      end
+      
+      declare_private_permissions_methods
+    end
+    
+    def setup_has_permissions_model options = {}
+      return unless !defined?(self.permissions_association_options) # don't allow multiple calls
+      
+      cattr_accessor :permissions_association_options
+      
+      self.permissions_association_options  = {
+                                                :name => "#{self.name.tableize.singularize}_permissions".to_sym,
+                                                :class_name => "#{self.name}Permission",
+                                                :foreign_key => "#{self.name.tableize.singularize}_id".to_sym,
+                                                :dependent => :destroy
+                                              }.merge(options[:association_options] || {})
+      
+      # set up callback
       class_eval do
         after_create :create_permissions
         
         private 
           def create_permissions
-            Role.find(:all).each do |r|
-              permission_class = "#{self.class.name}Permission"
-              field = "#{self.class.name.tableize.singularize}_id"
-              raise NameError, "#{permission_class} is not a valid class" unless permission_class.constantize
-              permission_class.constantize.create(field.to_sym => self.id, :role_id => r.id)
+            Role.find(:all).each do |role|
+              permission_class = permissions_association_options[:class_name]
+              foreign_key = permissions_association_options[:foreign_key]
+              raise NameError, "#{ppermission_class} is not a valid class" unless Object.const_defined?(permission_class)
+              permission_class.constantize.create(foreign_key => self.id, :role_id => role.id)
             end
           end
       end
+      
+      # set up association
+      has_many self.permissions_association_options.delete(:name), self.permissions_association_options
     end
     
-    def has_permissions *options
-      options.each do |option|
-        case option
-        when :as_business_object
-          bo = BusinessObject.find_or_create_by_name(self.name)
-          
-          write_inheritable_attribute(:business_object_id, bo.id)
-          
-          class_eval do
-            def self.business_object?
-              true
-            end
-            
-            def self.business_object_id
-              read_inheritable_attribute(:business_object_id)
-            end
+    def add_instance_permission_methods
+      PERM_METHODS.each do |method|
+        class_eval <<-EOL
+          def can_#{method}?(user_or_role = nil)
+            can_do?("#{method}", user_or_role)
           end
+        EOL
+      end
+    end
+    
+    def add_business_object_permission_methods
+      bo = BusinessObject.find_or_create_by_name(self.name.titleize)
           
-        else
-          raise ArgumentError, "Invalid argument #{option}:#{option.class}"
+      write_inheritable_attribute(:business_object_id, bo.id)
+      write_inheritable_attribute(:business_object, bo)
+      
+      class_eval do
+        def self.business_object?
+          true
+        end
+        
+        def self.business_object_id
+          read_inheritable_attribute(:business_object_id)
+        end
+        
+        def self.business_object
+          read_inheritable_attribute(:business_object)
         end
       end
       
       PERM_METHODS.each do |method|
         class_eval <<-EOL
-          def can_#{method}?(option = nil)
-            can_do?("#{method}", option)
-          end
-          
-          def self.can_#{method}?(option = nil)
-            can_do?("#{method}", option)
+          def self.can_#{method}?(user_or_role = nil)
+            can_do?("#{method}", user_or_role)
           end
         EOL
       end
-      
+    end
+    
+    def declare_private_permissions_methods
       class_eval do
         private
-          def can_do?(action, object)
-            roles = self.class.get_roles(action, object)
-            
-            return false if roles.nil?
-            return false unless roles.size > 0
-            
-            return_value = false
-            roles.each do |role|
-              if role.class.equal?(String)
-                tmp_role = Role.find_by_name(role)
-                if tmp_role.nil?
-                  raise "#{role} is not a valid role."
-                else
-                  role = tmp_role
-                end
-              end
-              
-              if self.class.equal?(Calendar) # If you want to test the permission of an user for an instance of Calendar who have not an owner.
-                return true unless self.user_id.nil?
-                perm = CalendarPermission.find_by_calendar_id_and_role_id(self.id, role, :conditions => {action => true})
-              elsif self.class.equal?(Menu) # INSTANCE METHOD. If you want to know the permission of an user for a Menu.
-                perm = MenuPermission.find_by_menu_id_and_role_id(self.id, role, :conditions => {action => true})
-              elsif self.class.ancestors.include?(ActionController::Base) #!self.class.name.grep(/Controller$/).empty? # INSTANCE METHOD. If you call this method by a controller for verify if the user have the permission access for this controller.
-                  menu = Menu.find_by_name(controller_path)
-                  perm = MenuPermission.find_by_menu_id_and_role_id(menu.id, role, :conditions => {action => true})
-              else
-                raise "I don't know what to do with that : self => #{self}:#{self.class}; object => #{object}:#{object.class}'"
-              end
-              return_value ||= perm.send(action) unless perm.nil?
-            end
-            
-            return_value
+          def can_do?(action, user_or_role)
+            self.class.get_permissions(action, user_or_role, self)
           end
-        
-          # You must pass 2 arguments for use this method:
-          # action is a string like: list, view, add, edit, or delete.
-          # object can be an User, a Role, a Role id, a Role name, or an array of Role / Role id / Role name.
-          def self.can_do?(action, object)
-            roles = get_roles(action, object)
+          
+          def self.can_do?(action, user_or_role)
+            get_permissions(action, user_or_role)
+          end
+          
+          # Permits to retrieve permissions to do an action (list/view/add/edit/delete) about a given object or model
+          #   +action+        tells WHICH ACTION we want get permission. It must be a string within "list, view, add, edit, and delete".
+          #   +user_or_role+  tells for WHICH user or role we want to get permission.
+          #   +object+        tells in WHAT KIND of object we want to get permission.
+          def self.get_permissions(action, user_or_role, object = nil)
+            raise "#{action} is an unexepected action for permission control" unless good_action?(action)
+            object ||= self # object represents an instance when it is called from an instance
+                            # and a class when it is called from a class
+                            # > We cannot use directly 'self' when it is called from an instance because we use a class method (self.get_permissions)
+                            # and in this case, self return a class. So we have to pass 'self' in argument
             
-            return false if roles.nil?
-            return false unless roles.size > 0
-
+            roles = get_roles(user_or_role)
+            return false if roles.nil? or roles.empty?
+            
             return_value = false
             roles.each do |role|
-              if role.class.equal?(String)
-                tmp_role = Role.find_by_name(role)
-                if tmp_role.nil?
-                  raise "#{role} is not a valid role."
-                else
-                  role = tmp_role
-                end
-              end
+              raise TypeError, "The given argument is not an instance of Role. #{role}:#{role.class}" unless role.instance_of?(Role)
+              next if return_value # skip test for other roles if one role match and return true
               
-              if self.to_s == "Document"# && !document_model.nil?
-                # CLASS METHOD. If you want to know the permission of an user for a Document by his model owner.
-                perm = DocumentPermission.find_by_document_owner_and_role_id(document_model.to_s, role, :conditions => {action => true})
-              elsif self.respond_to?("business_object?") # CLASS METHOD. If you want to know the permission of an user for a Business Object.
-                perm = BusinessObjectPermission.find_by_business_object_id_and_role_id(self.business_object_id, role, :conditions => {action => true})          
+              ### INSTANCE METHODS
+              if object.instance_of?(Calendar) # CALENDAR
+                return true unless object.user_id.nil?
+                perm = object.permissions.find_by_role_id(role, :conditions => { action => true })
+              elsif object.instance_of?(Menu) # MENU
+                perm = object.permissions.find_by_role_id(role, :conditions => { action => true })
+              elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
+                perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role, :conditions => { action => true })
+
+              ### CLASS METHODS
+              elsif object.respond_to?("business_object?") # BUSINESS OBJECT
+                perm = object.business_object.permissions.find_by_role_id(role, :conditions => { action => true })          
               else
-                raise "I don't know what to do with that : self => #{self}:#{self.class}; object => #{object}:#{object.class}'"
+                raise "I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
               end
               return_value ||= perm.send(action) unless perm.nil?
-              
-              ## TODO commiter tous ce qui est en rapport avec Document dans la branche document
-              ## faire un backup du dossier osirails (au cas où le checkout dans la nouvelle branche me ferai perdre mes modifs!!)
-              ## créer une branche (à partir de la branche document) pour les permissions et commiter toutes les modifs dans cette branche
             end
-
+            
             return_value
           end
           
-          def self.get_roles(action, object)
-            raise "#{action} is an unexepected action for permission control" unless good_action?(action)
+          def self.get_roles(object)
             roles = []
-            case object.class
-            when User.class
+            if object.instance_of?(User)
               roles = object.roles
-            when Role.class, Fixnum.class
+            elsif object.instance_of?(Role)
               roles << object
-            when String.class
+            elsif object.instance_of?(Fixnum)
+              roles << Role.find(object)
+            elsif object.instance_of?(String)
               roles << Role.find_by_name(object)
-            when Array.class
+            elsif object.instance_of?(Array)
               roles = object
             else
-              raise ArgumentError, "Not a valid argument passed in can?"
+              raise ArgumentError, "Not a valid argument passed in 'get_roles'. #{object}:#{object.class}"
             end
           end
           
@@ -155,7 +166,6 @@ module HasPermissions
             PERM_METHODS.include?(action)
           end
       end
-      
     end
   end
 end

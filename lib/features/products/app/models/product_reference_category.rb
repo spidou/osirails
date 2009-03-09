@@ -49,17 +49,9 @@ class ProductReferenceCategory < ActiveRecord::Base
     end
   end
   
-  # This method permit to check if category can be deleted or not
-  def can_destroy?
+  # Check if category should be deleted or not
+  def can_be_destroyed?
     self.product_references.empty? and self.product_reference_categories.empty?
-  end
-  
-  
-  # Check if a resource can be destroy or disable
-  def can_destroy?
-    references = ProductReference.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})
-    categories = ProductReferenceCategory.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => true})
-    references.empty? and categories.empty?
   end
   
   # Check if a category have got children disable

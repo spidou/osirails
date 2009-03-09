@@ -20,7 +20,7 @@ end
 # title       :string
 class Calendar < ActiveRecord::Base
   has_permissions
-  add_create_permissions_callback
+  setup_has_permissions_model :association_options => { :name => :permissions, :class_name => "CalendarPermission" }
   
   require 'rubygems'
   require 'icalendar'
@@ -28,7 +28,6 @@ class Calendar < ActiveRecord::Base
 
   # Relationships
   belongs_to :user
-  has_many :calendar_permissions, :dependent => :destroy
   has_many :events
   has_many :event_categories
  

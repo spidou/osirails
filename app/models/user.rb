@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   
   # CallBacks
   before_save :password_verif
-  before_destroy :can_destroy
+  before_destroy :can_be_destroyed?
 
   # Accessors
   # attr_protected :login, :password #TODO uncomment this line and test if it brings some issues!
@@ -116,7 +116,7 @@ class User < ActiveRecord::Base
     self.employee ? self.employee.fullname : self.username
   end
 
-  def can_destroy
+  def can_be_destroyed?
     self.employee.nil?
   end
 

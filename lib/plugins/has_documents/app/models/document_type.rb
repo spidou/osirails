@@ -1,8 +1,7 @@
 class DocumentType < ActiveRecord::Base
-  add_create_permissions_callback
+  setup_has_permissions_model :association_options => { :name => :permissions, :class_name => "DocumentTypePermission" }
   
   has_and_belongs_to_many :mime_types
-  has_many :permissions, :class_name => "DocumentTypePermission", :dependent => :destroy
   
   # returns name if title is nil or empty
   def title

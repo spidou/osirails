@@ -1,11 +1,11 @@
 class Menu < ActiveRecord::Base
   has_permissions
-  add_create_permissions_callback
+  has_permissions :as_business_object
+  setup_has_permissions_model :association_options => { :name => :permissions, :class_name => "MenuPermission" }
   
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   belongs_to :feature
-  has_many :permissions, :class_name => "MenuPermission", :dependent => :destroy
   has_one :content
 
   # Plugin

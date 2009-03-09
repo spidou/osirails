@@ -8,7 +8,8 @@ class BusinessObjectPermissionsController < ApplicationController
   # GET /business_object_permissions/:id/edit
   # :id corresponds to a business_object id
   def edit
-    @business_object_permissions = BusinessObjectPermission.find(:all, :conditions => { :business_object_id => params[:id] })
+    @business_object = BusinessObject.find(params[:id])
+    @business_object_permissions = @business_object.permissions
   end
   
   # POST /business_object_permissions/:id

@@ -10,7 +10,7 @@ module CommoditiesManagerHelper
   # This method permit to show or hide delete button for categories
   def show_delete_category_button(commodity_category)
     if controller.can_delete?(current_user) and CommodityCategory.can_delete?(current_user)
-      link_to(image_tag("url", :alt => "Supprimer"), commodity_category, { :method => :delete, :confirm => 'Etes vous sûr  ?'}) if commodity_category.can_destroy?
+      link_to(image_tag("url", :alt => "Supprimer"), commodity_category, { :method => :delete, :confirm => 'Etes vous sûr  ?'}) if commodity_category.can_be_destroyed?
     end
   end
   

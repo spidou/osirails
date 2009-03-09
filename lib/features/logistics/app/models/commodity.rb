@@ -30,9 +30,9 @@ class Commodity < ActiveRecord::Base
     CommodityCategory.update_counters(parent.id, :commodities_count => value)
   end
   
-  # Check if a resource can be destroy or disable
-  def can_destroy?
-    #FIXME commande
+  # Check if a resource should be destroy or disable
+  def can_be_destroyed?
+    #TODO code the method can_be_destroyed? for commodity
     false
   end
   

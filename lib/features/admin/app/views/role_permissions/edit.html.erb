@@ -3,35 +3,34 @@
 
 <div class="frame tabulation">
   <h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
-  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do%>
-  <h2>pour chaque page</h2>
-  <table>
-    <tr>
-      <th rowspan="2">Pages</th>
-      <th colspan="6">Permissions</th>
-    </tr>
-    <tr>
-      <th>Lister</th>
-      <th>Voir</th>
-      <th>Ajouter</th>
-      <th>Modifier</th>
-      <th>Supprimer</th>
-			<th>Tout cocher</th>
-    </tr>
-    <% for menu_permission in @menu_permissions %>
-      
+  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do %>
+    <h2>pour chaque page</h2>
+    <table>
       <tr>
-        <td><%= link_to menu_permission.menu.title, edit_menu_permission_path(menu_permission.menu)%></td>
+        <th rowspan="2">Pages</th>
+        <th colspan="6">Permissions</th>
+      </tr>
+      <tr>
+        <th>Lister</th>
+        <th>Voir</th>
+        <th>Ajouter</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+			  <th>Tout cocher</th>
+      </tr>
+      <% for menu_permission in @menu_permissions %> 
+        <tr>
+          <td><%= link_to menu_permission.menu.title, edit_menu_permission_path(menu_permission.menu)%></td>
           <td><%= check_box_tag "menu[list][]", menu_permission.id, menu_permission.list %></td>
           <td><%= check_box_tag "menu[view][]", menu_permission.id, menu_permission.view %></td>
           <td><%= check_box_tag "menu[add][]", menu_permission.id, menu_permission.add %></td>
           <td><%= check_box_tag "menu[edit][]", menu_permission.id, menu_permission.edit %></td>
           <td><%= check_box_tag "menu[delete][]", menu_permission.id, menu_permission.delete %></td>
-					<td><input type="checkbox" class="checkbox_permission"></td>
+				  <td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>
-    
+      
     <h2>pour chaque objets m&eacute;tiers</h2>
     <table>
       <tr>
@@ -47,9 +46,8 @@
 				<th>Tout cocher</th>
       </tr>
       <% for business_object_permission in @business_object_permissions %>
-        
         <tr>
-          <td><%= link_to business_object_permission.has_permission_type, edit_business_object_permission_path(business_object_permission.has_permission_type) %></td>
+          <td><%= link_to business_object_permission.business_object.name, edit_business_object_permission_path(business_object_permission.business_object_id) %></td>
           <td><%= check_box_tag "business_object[list][]", business_object_permission.id, business_object_permission.list %></td>
           <td><%= check_box_tag "business_object[view][]", business_object_permission.id, business_object_permission.view %></td>
           <td><%= check_box_tag "business_object[add][]", business_object_permission.id, business_object_permission.add %></td>
@@ -75,7 +73,6 @@
 				<th>Tout cocher</th>
       </tr>
       <% for document_type_permission in @document_type_permissions %>
-        
         <tr>
           <td><%= link_to document_type_permission.document_type.title, edit_document_type_permission_path(document_type_permission.document_type_id) %></td>
           <td><%= check_box_tag "document[list][]", document_type_permission.id, document_type_permission.list %></td>
@@ -103,7 +100,6 @@
 				<th>Tout cocher</th>
       </tr>
       <% for calendar_permission in @calendar_permissions %>
-        
         <tr>
           <td><%= link_to calendar_permission.calendar.name, edit_calendar_permission_path(calendar_permission.calendar) %></td>
           <td><%= check_box_tag "calendar[list][]", calendar_permission.id, calendar_permission.list %></td>
@@ -118,10 +114,7 @@
 
     <p> 
       <%= submit_tag "Mettre à jour" %>  
-    <%end%>
-  </p>
-  <p>
-    <%=link_to"Retour",role_permissions_path%> 
-  </p>
+    </p>
+  <%end%>
 </div>
 <%= javascript_include_tag 'permission' %>

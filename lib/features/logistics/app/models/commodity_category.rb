@@ -22,11 +22,9 @@ class CommodityCategory < ActiveRecord::Base
   @@form_labels[:commodity_category] = "Appartient &agrave; :"
   @@form_labels[:unit_measure] = "Unit&eacute;e de mesure :"
 
-  # Check if a resource can be destroy or disable
-  def can_destroy?
-    commodities = Commodity.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
-    categories = CommodityCategory.find(:all, :conditions => {:commodity_category_id => self.id, :enable => true})
-    commodities.empty? and categories.empty?
+  # Check if a resource should be destroyed or disabled
+  def can_be_destroyed?
+    self.commodity_categories.empty? and self.commodities.empty?
   end
   
   # Check if a category have got children disable

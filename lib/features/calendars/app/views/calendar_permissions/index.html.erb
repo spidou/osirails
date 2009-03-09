@@ -4,10 +4,10 @@
 <div class="frame tabulation">
   <h2>Les calendriers</h2>
   <ul>
-    <% for calendar in @calendar_permissions %>
-    <li><%= link_to calendar.name, edit_calendar_permission_path(calendar) %></li>	
+    <% for calendar in @calendars %>
+      <li>
+        <%= link_to calendar.name, edit_calendar_permission_path(calendar) %>
+      </li>	
     <% end %>
   </ul>
-
-  <%= link_to "Retour", permissions_path %>
 </div>

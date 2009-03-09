@@ -1,11 +1,11 @@
 class CalendarPermissionsController < ApplicationController
   def index
-    @calendar_permissions = Calendar.find_all_by_user_id(nil)
+    @calendars = Calendar.find_all_by_user_id(nil)
   end
 
   def edit
     @calendar = Calendar.find(params[:id])
-    @calendar_permissions = CalendarPermission.find(:all, :conditions => ["calendar_id = ?", params[:id]], :include => [:role])
+    @calendar_permissions = @calendar.permissions
   end
 
   def update

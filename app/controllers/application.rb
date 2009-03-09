@@ -1,14 +1,14 @@
-# Manage the override of each features
-# OPTIMIZE Move this block of code to a better place
-if RAILS_ENV == 'development'
-  features = Dir.open("#{RAILS_ROOT}/lib/features")
-  features.sort.each do |dir|
-    next if dir.starts_with?('.')
-    # next if !Feature.find_by_name(dir).activated?
-    file_path = "#{RAILS_ROOT}/lib/features/#{dir}/overrides.rb"
-    load file_path if File.exist?(file_path)
-  end
-end
+## Manage the override of each features
+## OPTIMIZE Move this block of code to a better place
+#if RAILS_ENV == 'development'
+#  features = Dir.open("#{RAILS_ROOT}/lib/features")
+#  features.sort.each do |dir|
+#    next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")
+#    # next if !Feature.find_by_name(dir).activated?
+#    file_path = "#{RAILS_ROOT}/lib/features/#{dir}/overrides.rb"
+#    load file_path if File.exist?(file_path)
+#  end
+#end
 
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   
   # Filters
   before_filter :authenticate, :select_theme
+  before_filter :load_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
   filter_parameter_logging "password"
@@ -140,6 +141,18 @@ class ApplicationController < ActionController::Base
           #select the default theme
           $CURRENT_THEME_PATH = "/themes/osirails-green"
         end
+      end
+    end
+    
+    def load_overrides
+      # Manage the override of each features
+      # OPTIMIZE Move this block of code to a better place
+      features = Dir.open("#{RAILS_ROOT}/lib/features")
+      features.sort.each do |dir|
+        next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")
+        # next if !Feature.find_by_name(dir).activated?
+        file_path = "#{RAILS_ROOT}/lib/features/#{dir}/overrides.rb"
+        load file_path if File.exist?(file_path)
       end
     end
 end # class

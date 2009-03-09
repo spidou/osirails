@@ -5,9 +5,9 @@
   <h2>Les objets m&eacute;tiers</h2>
   <ul>
     <% for business_object in @business_objects %>
-    <li><%= link_to business_object.name, edit_business_object_permission_path(business_object) %></li>	
+      <li>
+        <%= link_to business_object.name, edit_business_object_permission_path(business_object) %>
+      </li>	
     <% end %>
   </ul>
-
-  <%= link_to "Retour", permissions_path %>
 </div>

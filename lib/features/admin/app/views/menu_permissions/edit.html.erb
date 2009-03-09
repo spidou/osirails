@@ -1,36 +1,38 @@
 <h1>Configurer les permissions</h1>
 <%= display_tabulated_menu %>
+
 <div class="frame tabulation">
-  <h1>Modifier les permissions du menu "<%= @menu_permissions.first.menu.title %>"</h1>
+  <h1>Modifier les permissions du menu "<%= @menu.title %>"</h1>
   <h2>pour chaque r&ocirc;le</h2>
-  <table>
-    <tr>
-      <th rowspan="2">R&ocirc;les</th>
-      <th colspan="6">Permissions</th>
-    </tr>
-    <tr>
-      <th>Lister</th>
-      <th>Voir</th>
-      <th>Ajouter</th>
-      <th>Modifier</th>
-      <th>Supprimer</th>
-			<th>Tout cocher</th>
-    </tr>
   <% form_tag(menu_permission_path, :method => 'put') do %>
-  <% for menu in @menu_permissions %>
-    <tr>
-        <td><%= link_to menu.role.name, edit_role_permission_path(menu.role.id) %></td>
-        <td><%= check_box_tag "list[]", menu.role_id, menu.list %></td>
-        <td><%= check_box_tag "view[]", menu.role_id, menu.view %></td>
-        <td><%= check_box_tag "add[]", menu.role_id, menu.add %></td>
-        <td><%= check_box_tag "edit[]", menu.role_id, menu.edit %></td>
-        <td><%= check_box_tag "delete[]", menu.role_id, menu.delete %></td>
-				<td><input type="checkbox" class="checkbox_permission"></td>
+    <table>
+      <tr>
+        <th rowspan="2">R&ocirc;les</th>
+        <th colspan="6">Permissions</th>
       </tr>
+      <tr>
+        <th>Lister</th>
+        <th>Voir</th>
+        <th>Ajouter</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+			  <th>Tout cocher</th>
+      </tr>
+    <% for permissions in @menu_permissions %>
+      <tr>
+        <td><%= link_to permissions.role.name, edit_role_permission_path(permissions.role.id) %></td>
+        <td><%= check_box_tag "list[]", permissions.role_id, permissions.list %></td>
+        <td><%= check_box_tag "view[]", permissions.role_id, permissions.view %></td>
+        <td><%= check_box_tag "add[]", permissions.role_id, permissions.add %></td>
+        <td><%= check_box_tag "edit[]", permissions.role_id, permissions.edit %></td>
+        <td><%= check_box_tag "delete[]", permissions.role_id, permissions.delete %></td>
+			  <td><input type="checkbox" class="checkbox_permission"></td>
+      </tr>
+    <% end %>
+    </table>
+    <p>
+      <%= submit_tag "Mettre à jour" %>
+    </p>
   <% end %>
-  </table><br/>
-  <%= submit_tag "Mettre à jour" %>
-  <% end %><br/><br/>
-  <%= link_to "Retour", menu_permissions_path %>
 </div>
 <%= javascript_include_tag 'permission' %>

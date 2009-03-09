@@ -2,13 +2,14 @@ class MenuPermissionsController < ApplicationController
   
   # GET /menu_permissions
   def index
-    @menu_permissions = Menu.get_structured_menus
+    @menus = Menu.get_structured_menus
   end
   
   # GET /menu_permissions/:id/edit
   # :id corresponds to a menu id
   def edit
-    @menu_permissions = MenuPermission.find(:all, :conditions => ["menu_id = ?", params[:id]], :include => [:menu])
+    @menu = Menu.find(params[:id])
+    @menu_permissions = @menu.permissions
   end
   
   # POST /menu_permissions/:id

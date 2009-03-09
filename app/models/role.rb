@@ -4,7 +4,7 @@ class Role < ActiveRecord::Base
   has_many :menu_permissions, :dependent => :destroy
   has_many :business_object_permissions, :dependent => :destroy
   has_many :document_type_permissions, :dependent => :destroy
-  has_many :calendar_permissions, :dependent => :destroy
+  has_many :calendar_permissions, :include => :calendar , :conditions => [ "calendars.user_id = ?",  nil ], :dependent => :destroy
   
   # Validations
   validates_uniqueness_of :name

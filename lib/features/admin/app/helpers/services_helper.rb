@@ -3,7 +3,7 @@ module ServicesHelper
   # This method permit to verify if a service have got children or employees
   def show_delete_button(service,txt="")
     if controller.can_delete?(current_user)
-      if service.can_destroy? 
+      if service.can_be_destroyed?
         link_to(image_tag("/images/delete_16x16.png", :title =>"Supprimer", :alt => "Supprimer")+" #{txt}", service , { :method => :delete, :confirm => 'Etes vous sûr  ?' }) 
       else
         image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")+" #{txt}"

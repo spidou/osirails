@@ -1,8 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_customer_add_button("Ajouter un client")%>
-  <%= show_edit_button_in_second_menu(@customer)%>
-  <%= show_customer_delete_button(@customer,"Supprimmer ce client")%>
+  <%= show_customer_add_button %>
+  <%= show_third_edit_button(@customer, "Edit current %")%>
+  <%= show_third_delete_button(@customer,"Delete current %")%>
 <% end %>
+
 <% secondary_menu USEFUL_LINKS do %>
   <%= link_to "Liste des clients", customers_path%>
 <% end %>

@@ -54,9 +54,8 @@ class Service < ActiveRecord::Base
     end
   end
   
-  def can_destroy?
-    return false if self.employees.size > 0 or self.children.size > 0
-    true
+  def can_be_destroyed?
+    self.employees.empty? and self.children.empty?
   end
   
   # method to return the params[:schedules] hash completed with the form values 

@@ -4,8 +4,10 @@
 <div class="frame tabulation">
   <h2>Les menus</h2>
   <ul>
-    <% for menu_permission in @menu_permissions %>
-    <li><%= link_to menu_permission.title, edit_menu_permission_path(menu_permission) %></li>	
+    <% for menu in @menus %>
+      <li>
+        <%= link_to menu.title, edit_menu_permission_path(menu) %>
+      </li>	
     <% end %>
   </ul>
 </div>

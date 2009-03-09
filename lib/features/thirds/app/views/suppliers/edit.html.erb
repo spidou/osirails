@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter un fournisseur") %>
+  <%= show_supplier_add_button %>
 <% end %>
+
 <% secondary_menu USEFUL_LINKS do%>
 	<%= link_to "Liste des fournisseurs", suppliers_path%>
 <% end %>
+
 <h1>Modifier un fournisseur </h1>
 <%= render :partial => @supplier, :locals => { :submit_button_name => "Mettre &agrave; jour"} %>
-
-<%= link_to 'Retour', suppliers_path %>

@@ -8,7 +8,8 @@ class DocumentTypePermissionsController < ApplicationController
   # GET /document_type_permissions/:id/edit
   # :id corresponds to a document_type id
   def edit
-    @document_types_permission = DocumentTypePermission.find(:all, :conditions => { :document_type_id => params[:id] } )
+    @document_type = DocumentType.find(params[:id])
+    @document_type_permissions = @document_type.permissions
   end
   
   # POST /document_type_permissions/:id
