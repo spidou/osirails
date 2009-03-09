@@ -1,3 +1,5 @@
+require 'calendar_permission' # this is necessary, otherwise the plugin 'has_permissions' can't find the CalendarPermission class.
+
 # To resolve a bug time
 # refer to: http://dev.rubyonrails.org/ticket/7975
 class Date
@@ -8,7 +10,6 @@ class Date
   alias_method :week, :week_of_year
   alias_method :yweek, :week_of_year
 end
-
 
 # The structure of the Calendar is based on the RFC 2445. It permit to make
 # iCalendar format.

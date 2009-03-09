@@ -45,7 +45,7 @@ module HasPermissions
             Role.find(:all).each do |role|
               permission_class = permissions_association_options[:class_name]
               foreign_key = permissions_association_options[:foreign_key]
-              raise NameError, "#{ppermission_class} is not a valid class" unless Object.const_defined?(permission_class)
+              raise NameError, "#{permission_class} is not a valid class" unless Object.const_defined?(permission_class)
               permission_class.constantize.create(foreign_key => self.id, :role_id => role.id)
             end
           end
