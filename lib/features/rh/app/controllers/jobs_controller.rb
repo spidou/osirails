@@ -1,7 +1,5 @@
 class JobsController < ApplicationController
   
-  helper :employees
-  
   def index
     @jobs = Job.find(:all)
   end
