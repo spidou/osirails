@@ -176,7 +176,21 @@ module ApplicationHelper
     html += "</ul>"
     content_for(:secondary_menu) {html}
   end
-  
+
+	##############################################
+	# link: http://weblog.jamisbuck.org/2006/12/1/under-the-hood-activerecord-base-find-part-3  
+	# TODO finish the implementation of the dynamicamic methods
+	# exmaple ==> show_customer_add_button 
+	#             show_supplier_edit_button
+	# Object.const_defined?(model.camelize??)
+	
+	def method_missing(method_id, *arguments)
+		super if method_id.to_s == "toto"		
+		raise "whouaou ça marche #{method_id}"	
+		
+	end
+	##############################################
+
   private
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code

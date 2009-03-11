@@ -28,5 +28,4 @@ module UsersHelper
       link_to("#{image_tag("/images/add_16x16.png", :alt => "Ajouter", :title => "Ajouter")} #{txt}", new_user_path)
     end
   end
-
 end
