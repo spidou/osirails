@@ -2,7 +2,7 @@
   <%= form.error_messages %>
 
   <% if is_form_view?%>
-    <h2>Informations de l'employé</h2>
+    <h2>Informations de l&apos;employé</h2>
     <% fields_for "employee", job_contract.employee do |f| %>
       <p>
         <%= f.label :civility %>
@@ -44,7 +44,6 @@
     <% else %>
       <%= strong(display_formatted_salary(job_contract.actual_salary)) %>
       <%= link_to('Voir historique des salaires', employee_salaries_path(@employee)) %>
-      <%= display_job_contract_edit_link(@job_contract_controller, @employee) %>
     <% end %>
   </p>
 

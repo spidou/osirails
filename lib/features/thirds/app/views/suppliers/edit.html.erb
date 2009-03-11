@@ -1,8 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= show_supplier_add_button %>
+	<%= show_view_button(@supplier,"Voir ce fournisseur")%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do%>
+<% secondary_menu USEFUL_LINKS do %>
 	<%= link_to "Liste des fournisseurs", suppliers_path%>
 <% end %>
 
