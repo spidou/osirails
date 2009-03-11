@@ -57,9 +57,7 @@ class Feature < ActiveRecord::Base
     Feature.find(:all).each do |feature|
       if feature.has_dependencies?
         feature.dependencies.each do |dependence|
-          # raise dependence.version.include?(self.version).to_s if dependence[:name]!="Test3"
           if dependence[:name] == self.name and dependence[:version].to_s.include?(self.version)
-            # raise feature.name+" "+feature.version
             dependencies << {:name => feature.name, :version => feature.version}
           end
         end
@@ -234,97 +232,6 @@ class Feature < ActiveRecord::Base
     end
   end
 
-  def check
-    # TODO Code the check function: permissions and other
-  end
-
-  # Method that return the success message in function of  the  method passed in argument
-  def display_flash_notice(method) 
-    message = "Le module '#{self.title}' a &eacute;t&eacute; "
-    case method
-    when "enable"
-      message << "activ&eacute;"
-    when "disable"
-      message << "d&eacute;sactiv&eacute;"
-    when "install"
-      message << "install&eacute;"
-    when "uninstall"
-      message << "d&eacute;sinstall&eacute;"
-    when "remove"
-      message << "supprim&eacute;"
-    end
-    return message
-  end
-
-  # Method that return the failure message in function of  the  method passed in argument 
-  # and the differents hashes that contain information about the problem
-  def display_flash_error(method)
-    message = ""
-    case method
-    when "enable"
-      message = "Une erreur est survenue lors de l'activation du module '#{self.title}'. "
-      unless self.activate_dependencies.empty?
-        self.activate_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message << "Le module suivant est requis : "
-        deps = []
-        self.activate_dependencies.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end         
-    when "disable"
-      message = "Une erreur est survenue lors de la désactivation du module '#{self.title}'. "
-      unless self.deactivate_children.empty?
-        self.deactivate_children.size > 1 ? message << "D'autres modules dépendent de ce module : " : message  << "Un autre module dépend de ce module : "
-        deps = []
-        self.deactivate_children.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-    when "install" 
-      message = "Une erreur est survenue lors de l'installaton du module '#{self.title}'. "
-      unless self.able_to_install_dependencies.empty?
-        self.able_to_install_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message <<  "Le module suivants est requis : "
-        deps = []
-        self.able_to_install_dependencies.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.able_to_install_conflicts.empty?
-        self.able_to_install_conflicts.size > 1 ? message << "<br/>Les conflits suivants ont été détectés : " : message << "<br />Le conflit suivant a été détecté : "
-        deps = []
-        self.able_to_install_conflicts.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.install_log.empty?
-        self.install_log.each do |error|
-          message << "<br />" + error
-        end
-      end
-    when "uninstall"   
-      message = "Une erreur est survenue lors de la désinstallation du module '#{self.title}'. "
-      unless self.able_to_uninstall_children.empty?
-        message << "D'autres modules dépendent de ce module : "
-        deps = []
-        self.able_to_uninstall_children.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.uninstall_log.empty?
-        self.uninstall_log.each do |error|
-          message << "<br />" + error
-        end
-      end  
-    when "remove"
-      message = "Une erreur est survenue lors de la suppression du module '#{self.title}'. "
-    end
-    return message
-  end
-
   # Return true if the feature is a base feature stored in lib/features/
   def base_feature?
     dir_base_features = Dir.open("lib/features").sort
@@ -409,7 +316,7 @@ class Feature < ActiveRecord::Base
   # Method to remove a feature
   def remove
     return false unless self.able_to_remove?
-    system("rm -rf " + File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
+    FileManager.delete_file(File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
     self.destroy
   end
 
