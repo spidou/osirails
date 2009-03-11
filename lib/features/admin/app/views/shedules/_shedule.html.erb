@@ -45,7 +45,7 @@
   </table>
 
   
-    <% 7.times.each do |i| %>
+    <% 7.times do |i| %>
       <% @schedules.nil? ? string = ' H | H | H | H |' : string = schedule_to_s(days[i+1]) %>
       <%= hidden_field_tag( "schedules[#{i+1}]", @schedules.nil? ? ' H | H | H | H |' : schedule_to_s(days[i+1]) )%>
     <% end %>

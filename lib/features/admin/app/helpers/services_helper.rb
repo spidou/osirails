@@ -14,7 +14,7 @@ module ServicesHelper
   # This method test permission for edit_button
   def show_edit_button(service,txt="")
     if controller.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :title => "Modifier", :alt => "Modifier")+" #{txt}", { :action => "edit", :id => service } )
+      link_to(image_tag("/images/edit_16x16.png", :title => "Modifier", :alt => "Modifier")+" #{txt}", edit_service_path(service) )
     end
   end
   
@@ -29,7 +29,7 @@ module ServicesHelper
   def show_add_button(service,txt="")
     if controller.can_add?(current_user)
       if service == "none"
-        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", :action => "new")
+        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", new_service_path)
       else
         link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", new_service_path(:service_id => service.id))
       end

@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= show_add_button("Ajouter un employé") %>
+	<%= link_to "Voir cet employé", @employee%>
   <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier")} Modifier le contract de travail", edit_employee_job_contract_path(@employee)) %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do%>
-	<%= link_to "Voir cet employé", @employee%>
 	<%= link_to "Liste des employés", employees_path%>
 <% end %>
 
