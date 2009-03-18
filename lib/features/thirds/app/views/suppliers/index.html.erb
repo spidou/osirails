@@ -20,9 +20,9 @@
           <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
           <td><%= supplier.note %></td>
           <td>
-            <%= show_third_view_button(supplier) %> 
-            <%= show_third_edit_button(supplier) %>
-            <%= show_third_delete_button(supplier) %>
+            <%= show_supplier_view_button(supplier,"") %> 
+            <%= show_supplier_edit_button(supplier,"") %>
+            <%= show_supplier_delete_button(supplier,"") %>
             </td>
         </tr>
     <%end%>

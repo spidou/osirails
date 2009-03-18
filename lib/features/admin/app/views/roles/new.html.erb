@@ -1,5 +1,5 @@
 <% secondary_menu USEFUL_LINKS do %>
-	<%= link_to "Liste des rôles",roles_path%>
+	<%= show_role_list_button %>
 <% end %>
 <h1>Cr&eacute;er un r&ocirc;le</h1>
 <%= render :partial => @role, :locals => {:submit_button_name => "Ajouter"} %>

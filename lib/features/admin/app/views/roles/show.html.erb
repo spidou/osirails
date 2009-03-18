@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-	<%= show_add_button("Ajouter un rôle")%>
-	<%= show_edit_button(@role,"Modifier ce rôle")%>
-	<%= show_delete_button(@role,"Supprimer ce rôle")%>
+	<%= show_role_add_button %>
+	<%= show_role_edit_button(@role) %>
+	<%= show_role_delete_button(@role) %>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= link_to "Liste des rôles",roles_path%>
+	<%= show_role_list_button %>
 <% end %>
 <h1>D&eacute;tails du r&ocirc;le</h1>
 <%= render :partial => @role %>

@@ -5,9 +5,9 @@ module MenusHelper
     if controller.can_edit?(current_user)
     
       if menu.can_move_up? and !first_menu
-        link_to(image_tag("/images/arrow_up_16x16.png", :alt =>"Monter", :title =>"Monter"), move_up_menu_path(menu))
+        link_to(image_tag("/images/arrow_up_16x16.png", :alt => "Up", :title => "Up"), move_up_menu_path(menu))
       else
-        image_tag("/images/arrow_up_disable_16x16.png", :alt =>"Monter", :title =>"Monter")
+        image_tag("/images/arrow_up_disable_16x16.png", :alt => "Up", :title => "Up")
       end
     end
   end
@@ -16,17 +16,10 @@ module MenusHelper
   def show_down_button(menu, last_menu)
     if controller.can_edit?(current_user)
       if menu.can_move_down? and !last_menu
-        link_to(image_tag("/images/arrow_down_16x16.png", :alt => "Descendre", :title => "Descendre"), move_down_menu_path(menu))
+        link_to(image_tag("/images/arrow_down_16x16.png", :alt => "Down", :title => "Down"), move_down_menu_path(menu))
       else
-        image_tag("/images/arrow_down_disable_16x16.png", :alt => "Descendre", :title => "Descendre")
+        image_tag("/images/arrow_down_disable_16x16.png", :alt => "Down", :title => "Down")
       end
-    end
-  end
-  
-  # This method permit to show or not show button for edit menu
-  def show_edit_button(menu)
-    if controller.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier"), edit_menu_path(menu))
     end
   end
   
@@ -34,21 +27,17 @@ module MenusHelper
   def show_delete_button(menu)
     if controller.can_delete?(current_user)
       unless menu.base_item?
-        link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), menu, {:method => :delete, :confirm => 'Etes vous sûr  ?' })
+        link_to(image_tag("/images/delete_16x16.png", :alt =>"Delete", :title =>"Delete"), menu, {:method => :delete, :confirm => 'Etes vous sûr  ?' })
       else
-        image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")
+        image_tag("/images/delete_disable_16x16.png", :alt =>"Delete", :title =>"Delete")
       end
     end
   end
   
   # This method permit to show or hide button for add menu
-  def show_add_button(menu,txt="")
+  def show_menu_add_button_with_parent(menu,txt="New sub menu")
     if controller.can_add?(current_user)
-      if menu == 'none'
-        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter", :title => "Ajouter")+" #{txt}", new_menu_path)
-      else
-        link_to(image_tag("/images/add_16x16.png", :alt => "Ajouter un sous menu", :title => "Ajouter un sous menu")+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
-      end
+      link_to(image_tag("/images/add_16x16.png", :alt => "New sub menu", :title => "New sub menu")+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
     end
   end
   
@@ -66,7 +55,8 @@ module MenusHelper
     menus.each do |menu|
       first_menu = ( menus.first == menu ? true : false )
       last_menu = ( menus.last == menu ? true : false )
-      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu, first_menu)} #{show_down_button(menu, last_menu)} #{show_add_button(menu)} #{show_edit_button(menu)} #{show_delete_button(menu)}</span></li>"
+			menu.base_item? ? delete_button = "" : delete_button = show_menu_delete_button(menu,"")
+      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu, first_menu)} #{show_down_button(menu, last_menu)} #{show_menu_add_button_with_parent(menu,"")} #{show_menu_edit_button(menu,"")} #{delete_button}</span></li>"
       if menu.children.size > 0
         list << "<ul>"
         get_children_menus(menu.children,list)

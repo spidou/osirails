@@ -1,11 +1,11 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter une fiche de poste")%>
-  <%= show_edit_button(@job,"Modifier cette fiche de poste")%>
-  <%= show_delete_button(@job,"Supprimer cette fiche de poste")%>
+  <%= show_job_add_button%>
+  <%= show_job_edit_button(@job)%>
+  <%= show_job_delete_button(@job)%>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= link_to "Liste des fiches de poste",jobs_path%>
+  <%= show_job_list_button %>
 <% end %>
 
 <h1>D&eacute;tails sur "<%=h@job.name%>"</h1>

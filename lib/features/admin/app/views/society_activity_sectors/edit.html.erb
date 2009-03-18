@@ -1,8 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter un secteur d&apos;activités") %>
+  <%= show_society_activity_sector_add_button %>
+	<%= show_society_activity_sector_delete_button(@society_activity_sector)%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= link_to "Liste des secteurs d'activités'", society_activity_sectors_path%>
+	<%= show_society_activity_sector_list_button %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l'entreprise</h1>

@@ -1,9 +1,11 @@
-<% secondary_menu "Actions possibles" do %>
-  <%= show_edit_button(@content, 1) %>
+<% secondary_menu POSSIBLE_ACTIONS do %>
+	<%= show_content_add_button %>
+	<%= show_content_edit_button(@content) %>
+	<%= show_content_delete_button(@content) %>
 <% end %>
 
-<% secondary_menu "Liens utiles" do %>
-  <%= link_to 'Voir la liste des contenus', :action => 'index' %>
+<% secondary_menu USEFUL_LINKS do %>
+	<%= show_content_list_button %>
 <% end %>
 
 <% if @content.versions.length > 0 %>

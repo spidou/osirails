@@ -1,11 +1,11 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= show_customer_add_button %>
-  <%= show_third_edit_button(@customer, "Edit current %")%>
-  <%= show_third_delete_button(@customer,"Delete current %")%>
+  <%= show_customer_edit_button(@customer)%>
+  <%= show_customer_delete_button(@customer)%>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= link_to "Liste des clients", customers_path%>
+  <%= show_customer_list_button %>
 <% end %>
 
 <h1>Informations concernant le client</h1>

@@ -1,5 +1,5 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter un rôle") %>
+  <%= show_role_add_button %>
 <% end %>
 
 <h1>Liste des  r&ocirc;les</h1>
@@ -16,7 +16,7 @@
       <tr>
         <td><%=h role.name %></td>
         <td title="<%=h role.description %>"><%=preview(role.description,30) %></td>
-        <td><%= show_view_button(role) %> <%= show_edit_button(role) %> <%= show_delete_button(role) %>
+        <td><%= show_role_view_button(role,"") %> <%= show_role_edit_button(role,"") %> <%= show_role_delete_button(role,"") %>
         </td>
       </tr>
     <% end %>

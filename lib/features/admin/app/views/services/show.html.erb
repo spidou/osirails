@@ -1,10 +1,11 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button(@service,"Ajouter un service")%>
-  <%= show_edit_button(@service,"Modifier ce service") %>
-  <%= show_delete_button(@service,"Supprimer ce service") if @service.can_be_destroyed?%>
+	<%= show_service_add_button %>
+  <%= show_service_add_button_with_parent(@service,"New sub service")%>
+  <%= show_service_edit_button(@service) %>
+  <%= show_service_delete_button(@service) if @service.can_be_destroyed?%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-  <%= link_to "Liste des services", services_path %>
+  <%= show_service_list_button %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>

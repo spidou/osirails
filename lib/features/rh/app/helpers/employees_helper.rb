@@ -106,29 +106,23 @@ module EmployeesHelper
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
-  def show_premia_add_link(employee,txt="")
+  def show_premia_add_button(employee,txt="")
     if menu_premia.can_add?(current_user) and Premium.can_add?(current_user)
-      link_to( "#{image_tag("/images/add_16x16.png", :alt=>"Ajouter", :title => "Ajouter")} #{txt}",new_employee_premium_path(employee))
+      link_to( "#{image_tag("/images/add_16x16.png", :alt=>"Add", :title => "Add")} #{txt}",new_employee_premium_path(employee))
     end 
   end
   
-  def show_premia_view_link(employee)
+  def show_premia_view_button(employee)
     if menu_premia.can_view?(current_user) and Premium.can_list?(current_user) 
       if employee.premia.size>0 
-        link_to( 'Afficher toutes les primes', employee_premia_path(employee))
+        link_to( 'View all premia', employee_premia_path(employee))
       end
     end
   end
   
-  def show_employee_edit_link(employee)
-    if controller.can_edit?(current_user) and Employee.can_edit?(current_user)
-       link_to( 'Modifier', edit_employee_path(employee))
-    end
-  end
-  
-  def show_job_contract_edit_link(job_contract_controller, employee)
-    if job_contract_controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
-      link_to( 'Modifier le contract de travail', edit_employee_job_contract_path(employee))
+  def show_job_contract_edit_button( employee,txt = "Edit job contract")
+    if controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
+      <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Edit", :title => "Edit")} #{txt}", edit_employee_job_contract_path(employee)) %>
     end   
   end
   
@@ -141,27 +135,6 @@ module EmployeesHelper
             link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")} Voir tous les employ&eacute;s actifs", :controller => "employees", :action => "index", :all_employees => false)
           end
       end
-  end
-
-  # This method permit to test permission for add button
-  def show_add_button(txt="")
-    if controller.can_add?(current_user) and Employee.can_add?(current_user)
-      link_to("#{image_tag("/images/add_16x16.png", :alt => "Ajouter", :title => "Ajouter")} #{txt}", new_employee_path)
-    end  
-  end
-
-  # This method permit to test permission for edit button
-  def show_edit_button(employee,txt="")
-    if controller.can_edit?(current_user)
-      link_to("#{image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier")} #{txt}", edit_employee_path(employee))
-    end
-  end
-  
-  # This method permit to test permission for view button
-  def show_view_button(employee,txt="")
-    if controller.can_view?(current_user)
-      link_to("#{image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails")} #{txt}", employee_path(employee)) 
-    end
   end
   
   #########################################################################################

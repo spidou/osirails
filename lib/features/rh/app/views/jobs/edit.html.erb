@@ -1,9 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter une fiche de poste")%>
-  <%= show_view_button(@job,"Voir cette fiche de poste")%>
+  <%= show_job_add_button%>
+  <%= show_job_view_button(@job)%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-  <%= link_to "Liste des fiches de poste",jobs_path%>
+  <%= show_job_list_button %>
 <% end %>
 
 <h1>Modification de la fiche de poste</h1>

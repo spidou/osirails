@@ -4,11 +4,12 @@
 
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= show_customer_add_button %>
-  <%= show_customer_view_button(@customer,"Voir ce client")%>
+  <%= show_customer_view_button(@customer)%>
+  <%= show_customer_delete_button(@customer)%>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= link_to "Liste des clients", customers_path %>
+  <%= show_customer_list_button%>
 <% end %>
 
 <h1>Modifier un client</h1>

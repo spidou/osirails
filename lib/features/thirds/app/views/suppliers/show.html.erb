@@ -1,11 +1,11 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
 	<%= show_supplier_add_button %>
-  <%= show_third_edit_button(@supplier, "Edit current %") %>
-	<%= show_third_delete_button(@supplier,"Delete current %") %>
+  <%= show_supplier_edit_button(@supplier) %>
+	<%= show_supplier_delete_button(@supplier) %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do%>
-	<%= link_to "Liste des fournisseurs", suppliers_path %>
+	<%= show_supplier_list_button %>
 <% end %>
 
 <h1>Informations concernant le fournisseur </h1>

@@ -1,5 +1,5 @@
 <% secondary_menu USEFUL_LINKS do%>
-	<%= link_to "Liste des menus", menus_path%>
+	<%= show_menu_list_button %>
 <% end %>
 <h1>Nouveau Menu</h1>
 <%= render :partial => @menu, :locals => {:submit_button_name => "Ajouter"} %>

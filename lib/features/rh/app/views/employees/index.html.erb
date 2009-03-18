@@ -1,7 +1,7 @@
 <h1>Tous les employ&eacute;es</h1>
 
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_add_button("Ajouter un employé")%>
+  <%= show_employee_add_button%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
   <%= show_actives_employees_view_button(params[:all_employees]) %>

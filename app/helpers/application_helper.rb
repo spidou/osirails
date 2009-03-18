@@ -177,19 +177,104 @@ module ApplicationHelper
     content_for(:secondary_menu) {html}
   end
 
-	##############################################
-	# link: http://weblog.jamisbuck.org/2006/12/1/under-the-hood-activerecord-base-find-part-3  
-	# TODO finish the implementation of the dynamicamic methods
-	# exmaple ==> show_customer_add_button 
+	#####################################################
+  ######### Dynamic helper method management ##########
+
+  # Method to respect DRY when coding several times similars helpers like : 
+	# example ==> show_customer_add_button 
 	#             show_supplier_edit_button
-	# Object.const_defined?(model.camelize??)
+  # if the method do not correspond to the model "show_model_method_button", it call "super" to manage "no method error"
+  # - "model" : could be "emloyee" or "number_type", etc...
+  # - "method" : could be (view, add, delete, edit, list)
+	#
+	# ==== Arguments
+	#	it take a maximum of two arguments (Obj,Txt)
+	# You can pass some arguments according to the method that you type :
+	# For example when type "add" -> (show_customer_add_button) it doesn't need "Obj", because you create a new one,
+	# 	but you can add "Txt" as an optionnal argument to replace the default text
+	# But if you type "edit" -> (show_customer_edit_button) then you need to precise what object to modify, 
+	#		so you have to pass "Obj" as argument but "Txt" still optionnal
+	# PS: If you want to avoid the presence of any text next to the image type "" as "Txt" value, to replace the default one  
+	
+	# ==== Examples
+  # show_third_add_button
+  #   # <a href="..."><img src="..."></a>  
+  # 
+	## without text as argument
+  # show_third_edit_button(@customer)
+  #   # <a href="..."><img src="..."> default txt</a>
+	#	
+	## with text as argument
+	# show_third_edit_button(@customer,"txt")
+  #   # <a href="..."><img src="..."> txt</a>
+  #
+  # link: http://weblog.jamisbuck.org/2006/12/1/under-the-hood-activerecord-base-find-part-3  
+
 	
 	def method_missing(method_id, *arguments)
-		super if method_id.to_s == "toto"		
-		raise "whouaou ça marche #{method_id}"	
-		
-	end
-	##############################################
+    # check if the method _name correspond to the model
+		super unless method_id.to_s.match(/^show_[a-z]*((_)[a-z]*)*_(view|add|edit|list|delete)_button$/)
+	
+    method_info = method_name(method_id.to_s)
+		( method_info[:model].respond_to?("can_"+method_info[:method]+"?") )? model_permission = method_info[:model].send("can_"+method_info[:method]+"?",current_user) : model_permission = true
+
+    if controller.send("can_"+method_info[:method]+"?",current_user) and model_permission
+				path = {"view" => "", "edit" => "edit_"}
+				image = image_tag("/images/#{method_info[:method]}_16x16.png", :alt => method_info[:method], :title => method_info[:method]) + " #{add_some_text(method_info, arguments[1])}"
+# OPTIMIZE try to optimize the adaptation of the links when changing method
+				if method_info[:method]=="delete"
+					link_to( image, arguments[0],{:method => :delete, :confirm => "Are you s&ucirc;r?"})
+				elsif method_info[:method]=="list"
+					link_to( image, send("#{method_info[:model].to_s.tableize}_path"))
+				elsif method_info[:method]=="add"
+					link_to( image, send("new_#{method_info[:model].to_s.tableize.singularize}_path"))
+        else		
+					link_to( image, send("#{path[method_info[:method]]}#{method_info[:model].to_s.tableize.singularize}_path",arguments[0]))
+        end
+    end
+
+  end
+	
+  # method that permit to add some default text regarding the method (add,edit ,etc...)
+  # it take in arguments txt, and method_info hash variable
+  # txt="" => default, txt="none" => "", txt="some text" => "some text"
+  # it return a string result containig the formatting text corresponding to the method
+  # ==== example 
+	# add_some_text("", {:model => Employee, :method => list})
+  # ==> result = "view all employees"
+  def add_some_text(method_info,txt)
+    default_text= { "view" => "View current ",
+										"add" => "New ",
+										"edit" => "Edit current ",
+										"delete" => "Delete current ",
+										"list" => "View all " }
+
+    if txt.nil?
+      result = default_text[method_info[:method]] + method_info[:model].to_s.tableize.gsub("_"," ")
+      result = result.singularize unless method_info[:method]=="list"
+      return result
+    else
+      return txt
+    end
+  end
+
+  # method that split the helper name to get the model's name and the button's type
+  # return a hash like {:model => name, :method => type} 
+  # ==== exmaple 
+	# => show_customer_view_button(args*) model:Customer  button type: view 
+  def method_name(method_id)
+      result = Hash.new
+      tmp = method_id.split("show_").last.split("_button").last.split("_")
+      result[:method] = tmp.pop 
+      if Object.const_defined?(tmp.join("_").camelize)
+        result[:model] = tmp.join("_").camelize.constantize 
+      else
+        raise "Model #{tmp.join("_").camelize} doesn't exist please verify the name "
+      end      
+      return result 
+  end
+
+	######################################################
 
   private
     def url_for_menu(menu)
