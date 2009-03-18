@@ -11,35 +11,10 @@ module ServicesHelper
     end
   end
   
-<<<<<<< HEAD:lib/features/admin/app/helpers/services_helper.rb
-=======
-  # This method test permission for edit_button
-  def show_edit_button(service,txt="")
-    if controller.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :title => "Modifier", :alt => "Modifier")+" #{txt}", edit_service_path(service) )
-    end
-  end
-  
-  # This method test permission for view_button
-  def show_view_button(service,txt="")
-    if controller.can_view?(current_user)
-      link_to(image_tag("/images/view_16x16.png", :title => "D&eacute;tails", :alt => "Détails")+" #{txt}",service_path(service))
-    end
-  end
-  
->>>>>>> optimization of code:lib/features/admin/app/helpers/services_helper.rb
   # This method test permission for add_button
   def show_service_add_button_with_parent(service,txt="")
     if controller.can_add?(current_user)
-<<<<<<< HEAD:lib/features/admin/app/helpers/services_helper.rb
 			link_to(image_tag("/images/add_16x16.png", :title => "Add", :alt => "Add")+" #{txt}", new_service_path(:service_id => service.id))
-=======
-      if service == "none"
-        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", new_service_path)
-      else
-        link_to(image_tag("/images/add_16x16.png", :title => "Ajouter", :alt => "Ajouter")+" #{txt}", new_service_path(:service_id => service.id))
-      end
->>>>>>> optimization of code:lib/features/admin/app/helpers/services_helper.rb
     end
   end
   
