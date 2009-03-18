@@ -6,7 +6,7 @@ class Menu < ActiveRecord::Base
   # Relationship
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   belongs_to :feature
-  has_one :content
+
 
   # Plugin
   acts_as_tree :order => :position
@@ -63,13 +63,13 @@ class Menu < ActiveRecord::Base
       self.move_to_bottom if position.nil?
       self.save
     end
-  end       
+  end
   
   # This method permit to view if a child can have a new_parent
   def can_has_this_parent?(new_parent_id)
-    return true if new_parent_id == "" or new_parent_id.nil?
+    return true if new_parent_id.blank?
     new_parent = Menu.find(new_parent_id)
-    return false if new_parent.id == self.id or new_parent.ancestors.include?(self) or !new_parent.content.nil?
+    return false if new_parent.id == self.id or new_parent.ancestors.include?(self)
     true
   end
  
