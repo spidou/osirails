@@ -113,28 +113,6 @@ def init(config, path)
     end
     feature.update_attribute('conflicts', conflicts_hash)
 
-    #Test of business Objects
-    business_objects_array =  []
-    unless business_objects.nil?
-      business_objects.each do |business_object|
-        business_objects_array << [business_object]
-      end
-      feature.update_attribute('business_objects', business_objects_array)
-    end
-
-    roles_count = Role.count
-    #Test if all permission for all business objects are present
-    unless business_objects.nil?
-      business_objects.each do |bo|
-        unless BusinessObjectPermission.find_all_by_has_permission_type(bo).size == roles_count
-          Role.find(:all).each do |role|
-            BusinessObjectPermission.find_or_create_by_has_permission_type_and_role_id(bo, role.id)
-          end
-        end  
-      end
-    end
-    
- 
     #Test if all permission for all menus are present
     def menus_permisisons_verification(menus)
       roles_count = Role.count
