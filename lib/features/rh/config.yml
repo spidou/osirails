@@ -50,6 +50,8 @@ search:
             JobContractType:
               name: string                         
 dependencies:
+  thirds:
+    - 0.1
 conflicts:
 menus:
   rh:

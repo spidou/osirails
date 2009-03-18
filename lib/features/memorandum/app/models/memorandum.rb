@@ -29,10 +29,8 @@ class Memorandum < ActiveRecord::Base
       if service.ancestors.size > 0
         service.ancestors.each do |parent_service|
           if parent_service.memorandums_services.size > 0
-
-              parent_service.memorandums_services.delete_if { |memorandum_service| memorandum_service.recursive == false }
-              memorandums_services_list << parent_service.memorandums_services.reverse
-
+            parent_service.memorandums_services.delete_if { |memorandum_service| memorandum_service.recursive == false }
+            memorandums_services_list << parent_service.memorandums_services.reverse
           end
         end
       end
@@ -43,10 +41,9 @@ class Memorandum < ActiveRecord::Base
           memorandums << Memorandum.find(:first, :conditions => ["id = (?)", memorandum_service.memorandum_id])
         end
       end
-      
     end
-    
-  memorandums
+
+    memorandums
   end
 
   # This method permit to get recipient

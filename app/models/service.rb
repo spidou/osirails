@@ -1,8 +1,6 @@
 class Service < ActiveRecord::Base
   
   # Relationship
-  has_many :employees_services
-  has_many :employees, :through => :employees_services
   belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
   has_many :schedules
   
@@ -22,11 +20,7 @@ class Service < ActiveRecord::Base
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"
   @@form_labels[:service_parent] = "Service parent :"
-  
-    # Relationships
-  has_many :memorandums_services
-  has_many :memorandums, :through => :memorandums_services
-  
+
   # This method permit to check if a service can be a parent
   def before_update
     if self.update_service_parent
@@ -55,7 +49,7 @@ class Service < ActiveRecord::Base
   end
   
   def can_be_destroyed?
-    self.employees.empty? and self.children.empty?
+    self.children.empty?
   end
   
   # method to return the params[:schedules] hash completed with the form values 

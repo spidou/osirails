@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
       features = Dir.open("#{RAILS_ROOT}/lib/features")
       features.sort.each do |dir|
         next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")
-        # next if !Feature.find_by_name(dir).activated?
+        next if !Feature.find_by_name(dir).activated?
         file_path = "#{RAILS_ROOT}/lib/features/#{dir}/overrides.rb"
         load file_path if File.exist?(file_path)
       end

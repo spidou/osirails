@@ -94,8 +94,6 @@ search:
           job: string
           email: string                                        
 dependencies:
-  Admin:
-    - 0.1
 conflicts:
 menus:
   thirds:
