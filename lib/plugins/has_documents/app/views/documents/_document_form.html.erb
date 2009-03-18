@@ -1,8 +1,12 @@
 <% owner_type = documents_owner.class.name.downcase %>
 
 <% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
-<div class="resource_form" id="document_form_<%=document.id%>" <%= "style=\"display:none\"" unless document.new_record? or !document.errors.empty? %> >
-  <div style="border: 1px solid red; padding: 5px; margin: 5px">
+
+<% id_attr = "id=\"document_form_#{document.id}\"" unless document.new_record? %>
+<% style_attr = 'style="display:none"' unless document.new_record? or !document.errors.empty? or document.should_update? %>
+
+<div class="resource_form" <%= id_attr %> <%= style_attr %> >
+  <div>
     <%= form.error_messages %>
     <p>
       <%= form.label :name, :index => nil %>
@@ -25,13 +29,7 @@
       <%= form.form_or_view(form.file_field(:attachment, :index => nil), :name ) %>
     </p>
     <p>
-      <% if document.new_record? %>
-        <%= link_to_function "Annuler la création du document", "this.up('.resource_form').remove()" %>
-      <% elsif is_form_view? %>
-        <%= link_to_function "Annuler la modification du document", "mark_resource_for_dont_update(this.up('.document'))" %>
-      <% else %>
-        <%= link_to_function "Fermer", "this.up('.document_general_infos').down('.resource_form').hide()" %>
-      <% end %>
+      <%= display_document_close_form_button(document) %>
 
       <% if !document.new_record? and is_form_view? %>
         <%= form.hidden_field :id, :index => nil %>

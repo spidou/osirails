@@ -23,6 +23,7 @@ module HasDocuments
       
       class_eval do
         has_many :documents, :as => :has_document
+        validates_associated :documents
         
         def document_attributes=(document_attributes)
           document_attributes.each do |attributes|
