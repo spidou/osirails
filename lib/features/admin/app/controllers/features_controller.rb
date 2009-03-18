@@ -32,7 +32,7 @@ class FeaturesController < ApplicationController
       if @feature.enable
         flash[:notice] << "activ&eacute;"
       else
-        flash[:error] = "Une erreur est survenue lors de l'activation du module '#{self.title}'. "
+        flash[:error] = "Une erreur est survenue lors de l'activation du module '#{@feature.title}'. "
         unless @feature.activate_dependencies.empty?
           @feature.activate_dependencies.size > 1 ? flash[:error] << "Les modules suivants sont requis : " : flash[:error] << "Le module suivant est requis : "
           deps = []
@@ -46,7 +46,7 @@ class FeaturesController < ApplicationController
       if @feature.disable
         flash[:notice] << "d&eacute;sactiv&eacute;"
       else
-        flash[:error] = "Une erreur est survenue lors de la désactivation du module '#{self.title}'. "
+        flash[:error] = "Une erreur est survenue lors de la désactivation du module '#{@feature.title}'. "
         unless @feature.deactivate_children.empty?
           @feature.deactivate_children.size > 1 ? flash[:error] << "D'autres modules dépendent de ce module : " : flash[:error]  << "Un autre module dépend de ce module : "
           deps = []
@@ -60,7 +60,7 @@ class FeaturesController < ApplicationController
       if @feature.install
         flash[:notice] << "install&eacute;"
       else
-        flash[:error] = "Une erreur est survenue lors de l'installaton du module '#{self.title}'. "
+        flash[:error] = "Une erreur est survenue lors de l'installaton du module '#{@feature.title}'. "
         unless @feature.able_to_install_dependencies.empty?
           @feature.able_to_install_dependencies.size > 1 ? flash[:error] << "Les modules suivants sont requis : " : flash[:error] <<  "Le module suivants est requis : "
           deps = []
@@ -87,7 +87,7 @@ class FeaturesController < ApplicationController
       if @feature.uninstall
         flash[:notice] << "d&eacute;sinstall&eacute;"
       else
-        flash[:error] = "Une erreur est survenue lors de la désinstallation du module '#{self.title}'. "
+        flash[:error] = "Une erreur est survenue lors de la désinstallation du module '#{@feature.title}'. "
         unless @feature.able_to_uninstall_children.empty?
           flash[:error] << "D'autres modules dépendent de ce module : "
           deps = []
@@ -103,6 +103,8 @@ class FeaturesController < ApplicationController
         end
       end
     end
+
+    flash.delete(:notice) if flash[:error]
 
     redirect_to features_path
   end

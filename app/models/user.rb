@@ -108,13 +108,9 @@ class User < ActiveRecord::Base
       end
     end
   end
-  
-  def employee_name
-    self.employee ? self.employee.fullname : self.username
-  end
 
   def can_be_destroyed?
-    self.employee.nil?
+    true
   end
 
   private
