@@ -1,42 +1,43 @@
-<% owner_type = documents_owner.class.name.downcase %>
+<%
+owner_type = documents_owner.class.singularized_table_name
+document = document_form
+id_attr = "id=\"document_form_#{document.id}\"" unless document.new_record?
+style_attr = 'style="display:none"' unless document.new_record? or !document.errors.empty? or document.should_update?
+%>
 
-<% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
+<% fields_for "#{owner_type}[document_attributes][]", document do |form| %>
+  <div class="resource_form" <%= id_attr %> <%= style_attr %> >
+    <div>
+      <%= form.error_messages %>
+      <p>
+        <%= form.label :name, :index => nil %>
+        <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
+      </p>
+      <p>
+        <%= form.label :description, :index => nil %>
+        <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
+      </p>
+      <p>
+        <%= form.label :tag_list, :index => nil %>
+        <%= form.form_or_view(form.text_field(:tag_list, :index => nil), :tag_list ) %>
+      </p>
+      <p>
+        <%= form.label :document_type_id, :index => nil %>
+        <%= form.form_or_view(form.collection_select(:document_type_id, documents_owner.class.available_document_types, :id, :title, {}, :index => nil), :file_type, :name ) %>
+      </p>
+      <p>
+        <%= form.label :attachment, :index => nil %>
+        <%= form.form_or_view(form.file_field(:attachment, :index => nil), :name ) %>
+      </p>
+      <p>
+        <%= display_document_close_form_button(document) %>
 
-<% id_attr = "id=\"document_form_#{document.id}\"" unless document.new_record? %>
-<% style_attr = 'style="display:none"' unless document.new_record? or !document.errors.empty? or document.should_update? %>
-
-<div class="resource_form" <%= id_attr %> <%= style_attr %> >
-  <div>
-    <%= form.error_messages %>
-    <p>
-      <%= form.label :name, :index => nil %>
-      <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
-    </p>
-    <p>
-      <%= form.label :description, :index => nil %>
-      <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
-    </p>
-    <p>
-      <%= form.label :tag_list, :index => nil %>
-      <%= form.form_or_view(form.text_field(:tag_list, :index => nil), :tag_list ) %>
-    </p>
-    <p>
-      <%= form.label :document_type_id, :index => nil %>
-      <%= form.form_or_view(form.collection_select(:document_type_id, documents_owner.class.available_document_types, :id, :title, {}, :index => nil), :file_type, :name ) %>
-    </p>
-    <p>
-      <%= form.label :attachment, :index => nil %>
-      <%= form.form_or_view(form.file_field(:attachment, :index => nil), :name ) %>
-    </p>
-    <p>
-      <%= display_document_close_form_button(document) %>
-
-      <% if !document.new_record? and is_form_view? %>
-        <%= form.hidden_field :id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-        <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
-      <% end %>
-    </p>
+        <% if !document.new_record? and is_form_view? %>
+          <%= form.hidden_field :id, :index => nil %>
+          <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+          <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+        <% end %>
+      </p>
+    </div>
   </div>
-</div>
 <% end %>

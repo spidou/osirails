@@ -73,9 +73,9 @@ module HasPermissions
       cattr_accessor :permissions_association_options
       
       self.permissions_association_options  = {
-                                                :name => "#{self.name.tableize.singularize}_permissions".to_sym,
+                                                :name => "#{self.singularized_table_name}_permissions".to_sym,
                                                 :class_name => "#{self.name}Permission",
-                                                :foreign_key => "#{self.name.tableize.singularize}_id".to_sym,
+                                                :foreign_key => "#{self.singularized_table_name}_id".to_sym,
                                                 :dependent => :destroy,
                                                 :include => :role
                                               }.merge(options[:association_options] || {})

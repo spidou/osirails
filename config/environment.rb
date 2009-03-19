@@ -12,6 +12,7 @@ RAKE_TASK = false unless defined? RAKE_TASK
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'rails_hacks'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.

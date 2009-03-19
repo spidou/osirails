@@ -98,7 +98,7 @@ class ContactsController < ApplicationController
         end
         
         flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
-        redirect_to(eval("#{@owner.class.name.tableize.singularize}_contact_path(@owner, @contact, :owner_type => '#{params[:contact][:owner_type]}')"))
+        redirect_to(eval("#{@owner.class.singularized_table_name}_contact_path(@owner, @contact, :owner_type => '#{params[:contact][:owner_type]}')"))
       end
     else
       error_access_page(403)

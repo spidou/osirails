@@ -6,7 +6,7 @@ module StepHelper
     unless checklist_responses.empty?
       html = " <h2> Checklist </h2>"
       for checklist_response in checklist_responses
-        fields_for "#{step.class.name.tableize.singularize}[checklists]", checklist_response, :index => checklist_response.id do |checklist_|
+        fields_for "#{step.class.singularized_table_name}[checklists]", checklist_response, :index => checklist_response.id do |checklist_|
           if action == "edit"
             html += "<p>"
             html += checklist_.label "checklist", "#{checklist_response.checklist.name} :" + "&nbsp;"
@@ -62,7 +62,7 @@ module StepHelper
   def display_add_remark_text_area(step)
     remark = Remark.new
     html = ""
-    fields_for "#{step.class.name.tableize.singularize}[remark]", remark do |remark_|
+    fields_for "#{step.class.singularized_table_name}[remark]", remark do |remark_|
       html += "<p>"
       html += remark_.label :text, "Ajouter un commentaire :"
       html += remark_.text_area :text , :size => "60x2"
