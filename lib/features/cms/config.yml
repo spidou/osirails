@@ -2,7 +2,8 @@ name: cms
 title: Gestion de contenu
 version: 0.1
 dependencies:
-conflicts:
+  admin:
+    - 0.1
 menus:
   admin:
     children:

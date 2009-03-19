@@ -4,7 +4,6 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-conflicts:
 menus:
   calendars:
     title: Calendrier

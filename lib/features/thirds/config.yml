@@ -1,6 +1,9 @@
 name: thirds
 title: Tiers
 version: 0.1
+dependencies:
+  admin:
+    - 0.1
 search:
   Customer:
     base:
@@ -92,11 +95,7 @@ search:
             name: string
             owner: string
           job: string
-          email: string                                        
-dependencies:
-  Admin:
-    - 0.1
-conflicts:
+          email: string
 menus:
   thirds:
     title: Tiers

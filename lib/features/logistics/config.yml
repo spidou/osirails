@@ -1,6 +1,10 @@
 name: logistics
 title: Gestion de la logistique
 version: 0.1
+dependencies:
+conflicts:
+  admin:
+    - 0.1
 search:
   CommodityCategory:
     base:
@@ -11,9 +15,7 @@ search:
           name: string
           enable: boolean
           unit_mass: number
-          measure: number            
-dependencies:
-conflicts:
+          measure: number
 menus:
   logistics:
     title: Logistique

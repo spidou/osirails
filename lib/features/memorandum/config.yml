@@ -2,7 +2,8 @@ name: memorandum
 title: Notes de services
 version: 0.1
 dependencies:
-conflicts:
+  admin:
+    - 0.1
 menus:
   memorandums:
     title: Notes de service
