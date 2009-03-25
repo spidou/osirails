@@ -142,7 +142,6 @@ class FeatureManager
     end
     
     def load_paths
-      $activated_features_path ||= []
       $activated_features_path << @path
       
       # load models, controllers and helpers

@@ -60,6 +60,8 @@ Rails::Initializer.run do |config|
   config.plugins = $plugins
   # END #
   
+  $activated_features_path = []
+  
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]

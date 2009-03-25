@@ -55,17 +55,13 @@ end
 # Add dynamicaly features routes
 # the begin rescue enclosure permits to avoid errors while the installation because of the non-existent tables in the database (at this time)
 begin
-  features_path = ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
-  features_path.each do |path|
-    list = Dir.open(path).sort
-    list.each do |dirname|
-      next unless dirname.grep(/\./).empty?
-      if feature = Feature.find_by_name(dirname)
-        next unless feature.activated?
-      end
-      route_path = File.join(path, dirname, 'routes.rb')
-      load route_path if File.exist?(route_path)
-    end
+  $activated_features_path.each do |feature_path|
+#    if feature = Feature.find_by_name(feature_path.split('/').last)
+#      next unless feature.activated?
+#    end
+    routes_path = File.join(feature_path, 'routes.rb')
+    load routes_path if File.exist?(routes_path)
+    puts "---------" + routes_path
   end
 rescue ActiveRecord::StatementInvalid, Mysql::Error => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
