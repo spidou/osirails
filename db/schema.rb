@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090306072102) do
+ActiveRecord::Schema.define(:version => 20090312132045) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -380,11 +380,10 @@ ActiveRecord::Schema.define(:version => 20090306072102) do
     t.string   "version"
     t.text     "dependencies"
     t.text     "conflicts"
-    t.boolean  "installed",        :default => false, :null => false
-    t.boolean  "activated",        :default => false, :null => false
+    t.boolean  "installed",    :default => false, :null => false
+    t.boolean  "activated",    :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "business_objects"
     t.text     "search"
     t.string   "title"
   end
@@ -497,12 +496,12 @@ ActiveRecord::Schema.define(:version => 20090306072102) do
     t.string   "title"
     t.string   "description"
     t.string   "name"
-    t.integer  "position",     :limit => 11
-    t.integer  "parent_id",    :limit => 11
+    t.integer  "position",    :limit => 11
+    t.integer  "parent_id",   :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "feature_id",   :limit => 11
-    t.boolean  "skip_display",               :default => false
+    t.integer  "feature_id",  :limit => 11
+    t.boolean  "hidden"
   end
 
   create_table "mime_type_extensions", :force => true do |t|

@@ -1,10 +1,4 @@
-# Include hook code here
+require File.join(RAILS_ROOT, 'lib', 'initialize_feature.rb')
+init(config, directory, "acts_as_step")
 
 require 'acts_as_step'
-
-# reopen ActiveRecord and include all the above to make
-# them available to all our models if they want it
-ActiveRecord::Base.class_eval do
-  include ActiveRecord::Acts::Step
-end
-

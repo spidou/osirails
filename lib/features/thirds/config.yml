@@ -1,6 +1,9 @@
 name: thirds
 title: Tiers
 version: 0.1
+dependencies:
+  admin:
+    - 0.1
 search:
   Customer:
     base:
@@ -92,9 +95,7 @@ search:
             name: string
             owner: string
           job: string
-          email: string                                        
-dependencies:
-conflicts:
+          email: string
 menus:
   thirds:
     title: Tiers
@@ -113,4 +114,4 @@ menus:
       contacts:
         title: Contacts de Client
         description: Gestion des contacts des clients
-        skip_display: true
+        hidden: true

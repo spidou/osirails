@@ -1,6 +1,9 @@
 name: products
 title: Produits
 version: 0.1
+dependencies:
+  admin:
+    - 0.1
 search:
   Product:
     base:
@@ -23,9 +26,6 @@ search:
         ProductReferenceCategory:
           name: string
           enable: boolean
-        
-dependencies:
-conflicts:
 menus:
   goods:
     title: Produits

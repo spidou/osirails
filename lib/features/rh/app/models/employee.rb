@@ -192,9 +192,13 @@ class Employee < ActiveRecord::Base
   end
   
   def create_other_resources
-    ConfigurationManager.initialize_options unless ConfigurationManager.respond_to?("admin_user_pattern")
-    User.create(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd",:employee_id => self.id)
-    JobContract.create(:start_date => "", :end_date => "", :employee_id => self.id, :employee_state_id => "",:job_contract_type_id => "" )  
+    raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_user_pattern)
+    
+    # create associated user
+    self.build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd").save
+    
+    # create empty job contract
+    self.build_job_contract.save
   end 
   
   #OPTIMIZE this method return an array of numbers. why not return objects instead of numbers? and why don't put this method in the Service model???!

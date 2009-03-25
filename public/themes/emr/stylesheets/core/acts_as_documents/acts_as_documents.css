@@ -74,3 +74,31 @@
   padding: 0;
   left: 0;
 }
+
+form .document p {
+  margin: 0;
+  padding: 2px 0 2px 0;
+  text-indent: 0;
+}
+
+form .document label {
+   width: 100px !important;
+}
+
+form .document p input[type=text],
+form .document p input[type=password],
+form .document p input[type=checkbox],
+form .document p textarea,
+form .document p select {
+  vertical-align:top;
+  width: 220px;
+}
+
+.document #errorExplanation {
+	width: 370px;
+}
+
+.document #errorExplanation p {
+	margin: inherit;
+	padding: inherit;
+}

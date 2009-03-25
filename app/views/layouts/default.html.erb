@@ -55,7 +55,7 @@
                 <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
                 <!--contetual search formulary -->
                 <% form_tag({:controller => 'searches', :action => 'update'}, :method => 'put',:id => "contextual_search_form" ) do%>
-                  <%= contextual_search()%>
+                  <%= contextual_search %>
                 <% end %> 
  
                 <%= yield :secondary_menu %>
@@ -82,14 +82,11 @@
             <div id="bottom_core_menu">
               <div id="footer_content">
                 <p>
-                  Coordonnées : <span>pae la mare - ilot 7 - n°48 - 97438 sainte-marie - la réunion </span> | 
-                  tél. +262 (0)2 62 53 12 89 - Fax +262 (0)2 62 53 16 42 <br />
-                  &copy; Tous droits réservés 2008 <br />
+                  <%= display_footer %>
+                  <br/>
                   <a href="http://validator.w3.org/check?uri=referer">
                     <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
-                  </a>&nbsp;
-                  <img class="bottom_icons" src="/images/plume-cms-powered.png" alt="powered by Oxydium" height="15" width="80"/>&nbsp;&nbsp;
-                  <img class="bottom_icons" src="/images/madeonamac.png" alt="Made On a Mac" height="15" width="80"/>
+                  </a>
                 </p>
               </div><!--FOOTER_CONTAIN : FIN  -->
             </div><!-- bottom_core_menu : FIN -->

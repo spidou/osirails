@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   
   # Filters
   before_filter :authenticate, :select_theme
-  before_filter :load_overrides if RAILS_ENV == "development"
+  before_filter :load_features_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
   filter_parameter_logging "password"
@@ -71,8 +71,8 @@ class ApplicationController < ActionController::Base
     end
 
     # Called when an user try to acces to an unauthorized page
-    def error_access_page(status = 403)
-      render :file => "#{RAILS_ROOT}/public/#{status.to_s}.html", :status => status
+    def error_access_page(status = nil)
+      render_optional_error_file(status)
     end
     
     # this method need to hack htmldoc (/var/lib/gems/1.8/gems/htmldoc-0.2.1/lib/htmldoc.rb > under ubuntu 8.04)
@@ -110,15 +110,21 @@ class ApplicationController < ActionController::Base
           $permission[controller_path] ||= {}
           case params[:action]
           when *['index'] + ($permission[controller_path][:list] || [])
-            error_access_page unless can_list?(current_user)
+            error_access_page(403) unless can_list?(current_user)
             
           when *['show'] + ($permission[controller_path][:view] || [])
-            error_access_page unless can_view?(current_user)
+            error_access_page(403) unless can_view?(current_user)
             
-          when *['new', 'create'] + ($permission[controller_path][:add] || [])
+          when *['new'] + ($permission[controller_path][:add] || [])
+            error_access_page(403) unless can_add?(current_user)
+            
+          when *['create'] + ($permission[controller_path][:add] || [])
             error_access_page(422) unless can_add?(current_user)
             
-          when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
+          when *['edit'] + ($permission[controller_path][:edit] || [])
+            error_access_page(403) unless can_edit?(current_user)
+            
+          when *['update'] + ($permission[controller_path][:edit] || [])
             error_access_page(422) unless can_edit?(current_user)
             
           when *['destroy'] + ($permission[controller_path][:delete] || [])
@@ -131,22 +137,20 @@ class ApplicationController < ActionController::Base
     def select_theme
       #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
       #return $CURRENT_THEME_PATH unless $CURRENT_THEME_PATH.nil? # this works, but we need to observe a changement in the configuration manager to flush the global variable when the "admin_society_identity_configuration_choosen_theme" variable has changed!
-      begin
-        choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
-        choosen_theme_site_path = "/themes/#{choosen_theme}"
-        choosen_theme_real_path = "public#{choosen_theme_site_path}"
-        if File.exists?(choosen_theme_real_path) and File.directory?(choosen_theme_real_path)
-          $CURRENT_THEME_PATH = choosen_theme_site_path
-        else
-          #select the default theme
-          $CURRENT_THEME_PATH = "/themes/osirails-green"
-        end
+      choosen_theme = ConfigurationManager.admin_society_identity_configuration_choosen_theme
+      choosen_theme_site_path = "/themes/#{choosen_theme}"
+      choosen_theme_real_path = "public#{choosen_theme_site_path}"
+      if File.exists?(choosen_theme_real_path) and File.directory?(choosen_theme_real_path)
+        $CURRENT_THEME_PATH = choosen_theme_site_path
+      else
+        #select the default theme
+        $CURRENT_THEME_PATH = "/themes/osirails-green"
       end
     end
     
-    def load_overrides
-      # Manage the override of each features
-      # OPTIMIZE Move this block of code to a better place
+    # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.
+    # that is necessary only on development environment, because the classes cache is cleaned every time in this environment.
+    def load_features_overrides
       features = Dir.open("#{RAILS_ROOT}/lib/features")
       features.sort.each do |dir|
         next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")

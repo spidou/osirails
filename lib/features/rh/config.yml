@@ -1,6 +1,12 @@
 name: rh
 title: Ressources Humaines
 version: 0.1
+dependencies:
+  admin:
+    - 0.1
+  thirds:
+    - 0.1
+conflicts:
 search:
   Employee:
     base:
@@ -48,11 +54,7 @@ search:
           created_at: date
           job_contract_type:
             JobContractType:
-              name: string                         
-dependencies:
-  thirds:
-    - 0.1
-conflicts:
+              name: string
 menus:
   rh:
     title: Ressources Humaines

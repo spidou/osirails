@@ -26,23 +26,34 @@ module DocumentsHelper
 
   def display_document_add_button(documents_owner)
     link_to_function "Ajouter un document" do |page|
-      page.insert_html :bottom, :documents, :partial => 'documents/document_form',
-                                            :object => documents_owner.build_document ,
-                                            :locals => { :documents_owner => documents_owner }
+      page.insert_html :bottom, :new_documents, :partial => 'documents/document',
+                                                :object => documents_owner.build_document
+      page['new_documents'].show if page['new_documents'].visible
+      page['new_documents'].select('.document').last.show
+      page['new_documents'].select('.document').last.visual_effect :highlight
     end
+    # link_to_remote "Ajouter un document", :url => { :controller => :documents, :action => :new, :customer_id => 2 }, :method => :get
   end
 
   def display_document_edit_button(document)
-    link_to_function "Modifier", "mark_resource_for_update('document_#{document.id}')" if is_form_view?
+    link_to_function "Modifier", "mark_document_for_update('#{document.id}')" if is_form_view?
   end
 
   def display_document_delete_button(document)
-    link_to_function "Supprimer", "mark_resource_for_destroy('document_#{document.id}')" if is_form_view?
+    link_to_function "Supprimer", "mark_document_for_destroy('#{document.id}')" if is_form_view?
   end
 
   def display_document_preview_button(document)
     link_to_function("Aperçu", :title => "Cliquer pour agrandir") do |page|
       #page.insert_html( :bottom, "document_preview_#{document.id}", image_tag(document.attachment.url(:medium), :class => "preview", :onclick => "this.remove()") )
+    end
+  end
+  
+  def display_document_close_form_button(document)
+    if document.new_record?
+      link_to_function "Annuler la création du document", "cancel_creation_of_new_document(this)"
+    else is_form_view?
+      link_to_function "Annuler la modification du document", "mark_document_for_dont_update('#{document.id}')"
     end
   end
 

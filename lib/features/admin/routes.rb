@@ -19,8 +19,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :roles
   map.resources :features
   map.resources :menus
-  map.resources :contents
   map.resources :password_policies
   
-  map.connect 'admin', :controller => 'users' #default page for admin
+  map.admin 'admin', :controller => 'users' #default page for admin
 end

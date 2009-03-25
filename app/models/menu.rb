@@ -20,7 +20,7 @@ class Menu < ActiveRecord::Base
   
   # Named scopes
   named_scope :mains, :order => "position" ,:conditions => {:parent_id => nil}
-  named_scope :activated, :order => "position", :include => [:feature], :conditions => ['(features.activated = true or menus.name IS NULL) and menus.skip_display IS NULL']
+  named_scope :activated, :order => "position", :include => [:feature], :conditions => ['(features.activated = true or menus.name IS NULL) and menus.hidden IS NULL']
  
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

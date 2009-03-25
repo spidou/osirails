@@ -1,4 +1,8 @@
+# Be sure to restart your server when you modify this file.
+#
 # Permit to add new route from other file than config/routes.rb
+# Do not modify this file.
+
 module ActionController
   module Routing
     class RouteSet

@@ -2,10 +2,6 @@ require_dependency 'society_activity_sector'
 require_dependency 'customer'
 require_dependency 'establishment'
 
-class SocietyActivitySector
-  has_and_belongs_to_many :order_types
-end
-
 class Customer
   has_many :orders
 
@@ -18,4 +14,8 @@ end
 
 class Establishment
   has_many :orders
+end
+
+class SocietyActivitySector
+  has_and_belongs_to_many :order_types
 end

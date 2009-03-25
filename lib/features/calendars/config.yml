@@ -2,7 +2,8 @@ name: calendars
 title: Calendrier
 version: 0.1
 dependencies:
-conflicts:
+  admin:
+    - 0.1
 menus:
   calendars:
     title: Calendrier

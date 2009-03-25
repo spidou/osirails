@@ -11,5 +11,5 @@ ActionController::Routing::Routes.add_routes do |map|
     end
   end
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
-  map.connect 'goods', :controller => 'products_catalog' #default page for products
+  map.goods 'goods', :controller => 'products_catalog' #default page for products
 end

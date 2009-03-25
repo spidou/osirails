@@ -5,6 +5,8 @@
 
 <%
 @documents = documents_list
+@new_documents = @documents.select{ |d| d.new_record? }  # put new records in a separate variable
+@documents.reject!{ |d| d.new_record? }                  # delete new records from @documents
 
 @group_by ||= "date"
 @order_by ||= "asc" # ascendent
@@ -34,6 +36,7 @@ else # group by date by default
   @groups = @documents.sort_by{ |d| d.new_record? ? Time.now : d.created_at }.group_by{ |d| d.new_record? ? time_ago_in_words(Time.now) : time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
 end
 
+@groups.push(["Nouveau(x) document(s) avec erreurs", @new_documents]) unless @new_documents.empty?
 @groups.reverse! if @order_by == "desc"
 %>
 
@@ -48,3 +51,8 @@ end
 <% else %>
   <%= content_tag :p, "Aucun document n'a été trouvé." %>
 <% end %>
+
+<div class="document_group" id="new_documents" style="display:none">
+  <h1>Nouveaux documents</h1>
+  
+</div>

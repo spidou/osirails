@@ -1096,15 +1096,9 @@ width: 50px ! important;
 .frame form p input[type=text],
 .frame form p input[type=password],
 .frame form p input[type=checkbox],
-.frame form p textarea {
-  vertical-align:top;
-	/* margin-bottom:10px;
-	border: #CCC 1px solid; */
-}
-
+.frame form p textarea,
 .frame form p select {
-	/* margin-bottom:10px; */
-	vertical-align:top;
+  vertical-align:top;
 }
 
 .frame strong {

@@ -7,6 +7,10 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 
+# Specifies if the application are lanuch with rake or not
+# You must not edit this constant
+RAKE_TASK = false
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
@@ -64,7 +68,9 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 
-  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers } #FIXME this line permits to add controllers in plugins. if it cause issues anywhere, comment this line and verify if all plugins works properly
+  # this line permits to add controllers and helpers in plugins
+  # FIXME if it cause issues anywhere, comment this line and verify if all plugins works properly
+  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers #{RAILS_ROOT}/app/helpers }
   
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -96,11 +102,7 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
-#end
 end
 
-gem 'mislav-will_paginate', '~> 2.2' # gem install mislav-will_paginate --version '~> 2.2' --source http://gems.github.com/
-require 'will_paginate'
-require 'overrides'
-require 'mimetype_fu'
+# require 'mimetype_fu'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
