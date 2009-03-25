@@ -177,6 +177,7 @@ class Feature < ActiveRecord::Base
       if self.save
         # Reload the configuration
         load File.join(RAILS_ROOT, 'config', 'environment.rb')
+        ActionController::Routing::Routes.reload!
         return true
       end
     end
