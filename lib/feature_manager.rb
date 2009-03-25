@@ -43,9 +43,6 @@ class FeatureManager
       # stop here if the feature is not marked as activated
       return unless @feature.activated
       
-      $activated_features_path ||= []
-      $activated_features_path << @path
-      
       # load paths first
       load_paths
       
@@ -145,6 +142,9 @@ class FeatureManager
     end
     
     def load_paths
+      $activated_features_path ||= []
+      $activated_features_path << @path
+      
       # load models, controllers and helpers
       %w{ models controllers helpers }.each do |dir|
         dir_path = File.join(@path, 'app', dir)
