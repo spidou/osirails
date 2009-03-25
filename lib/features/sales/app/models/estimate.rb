@@ -3,30 +3,22 @@ class Estimate < ActiveRecord::Base
   belongs_to :step_estimate
   has_many :estimates_product_references
   
-  # Callbacks
-  after_create :default_validity_date
-  
   # Validations
   validates_presence_of :step_estimate_id
   validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
   
-  def default_validity_date
-    self.validity_date = self.created_at + 1.month
-    self.save
-  end
-  
   def product_references
-    self.estimates_product_references.collect { |epr| epr.product_reference }
+    estimates_product_references.collect { |epr| epr.product_reference }
   end
   
   def total
     result = 0
-    self.estimates_product_references.each { |epr| result += epr.amount }
+    estimates_product_references.each { |epr| result += epr.amount }
     result
   end
   
   def net
-    total - self.reduction + self.carriage_costs
+    total - reduction + carriage_costs
   end
   
   def total_with_taxes

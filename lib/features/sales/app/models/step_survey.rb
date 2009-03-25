@@ -1,9 +1,6 @@
-class StepSurvey < ActiveRecord::Base
-  # Relationships
-  belongs_to :step_commercial
+class StepSurvey < ActiveRecord::Base  
   
-  # plugins
-  has_documents :survey
-  acts_as_step({:document_route => ["orders", "step_survey"]})
+  has_documents :photo
+  acts_as_step :parent => :step_commercial
   
 end

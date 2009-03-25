@@ -4,6 +4,24 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
+menus:
+  goods:
+    title: Produits
+    description: Gestion des produits
+    children:
+      product_reference_manager:
+        title: Gestion des références produits
+        description: Permet la gestion des familles et des références produits
+        children:
+          product_reference_categories:
+            title: Gestion des catégories
+            description: Permet la gestion des categories
+          product_references:
+            title: Gestion des références
+            description: Permet la gestion des références
+      products_catalog:
+          title: Catalogue des produits et références
+          description: "Permet l'affichage du catalogue de produit"
 search:
   Product:
     base:
@@ -26,21 +44,3 @@ search:
         ProductReferenceCategory:
           name: string
           enable: boolean
-menus:
-  goods:
-    title: Produits
-    description: Gestion des produits
-    children:
-      product_reference_manager:
-        title: Gestion des références produits
-        description: Permet la gestion des familles et des références produits
-        children:
-          product_reference_categories:
-            title: Gestion des catégories
-            description: Permet la gestion des categories
-          product_references:
-            title: Gestion des références
-            description: Permet la gestion des références
-      products_catalog:
-          title: Catalogue des produits et références
-          description: Permet l'affichage du catalogue de produit 

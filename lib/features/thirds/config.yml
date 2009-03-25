@@ -4,6 +4,25 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
+menus:
+  thirds:
+    title: Tiers
+    description: Gestion des fournisseurs et des clients
+    children:
+      customers:
+        title: Clients
+        description: Gestion des clients
+        children:
+          establishments:
+            title: Etablissement du Client
+            description: Gestion des establissement du client
+      suppliers:
+        title: Fournisseurs
+        description: Gestion des fournisseurs
+      contacts:
+        title: Contacts de Client
+        description: Gestion des contacts des clients
+        hidden: true
 search:
   Customer:
     base:
@@ -59,7 +78,7 @@ search:
             name: string
             owner: string
           job: string
-          email: string               
+          email: string        
   Supplier:
     base:
       name: string
@@ -96,22 +115,3 @@ search:
             owner: string
           job: string
           email: string
-menus:
-  thirds:
-    title: Tiers
-    description: Gestion des fournisseurs et des clients
-    children:
-      customers:
-        title: Clients
-        description: Gestion des clients
-        children:
-          establishments:
-            title: Etablissement du Client
-            description: Gestion des establissement du client
-      suppliers:
-        title: Fournisseurs
-        description: Gestion des fournisseurs
-      contacts:
-        title: Contacts de Client
-        description: Gestion des contacts des clients
-        hidden: true

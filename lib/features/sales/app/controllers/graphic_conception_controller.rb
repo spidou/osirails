@@ -1,21 +1,9 @@
 class GraphicConceptionController < ApplicationController
-  helper :orders, :step, :documents
+  helper :documents, :press_proofs
   
-  attr_accessor :current_order_step
-  before_filter :check, :except => [:index]
+  acts_as_step_controller :parent => :step_commercial
   
   def show
-    if can_edit?(current_user) and !(params[:format] == 'pdf')
-      redirect_to :action => "edit"
-      return
-    end
-    
-    @order = Order.find(params[:order_id])
-    @step = @order.step_commercial.step_graphic_conception
-    @checklist_responses = @step.checklist_responses
-    @documents = @step.documents
-    @remarks = @step.remarks
-    
     respond_to do |format|
       format.html {}
       format.pdf {
@@ -46,25 +34,13 @@ class GraphicConceptionController < ApplicationController
   end
   
   def edit
-    @order = Order.find(params[:order_id])
-    @step = @order.step_commercial.step_graphic_conception
-    @checklist_responses = @step.checklist_responses
-    @documents = @step.documents
-    @remarks = @step.remarks
   end
   
   def update
-    #if ??.can_edit?(current_user)
-      @customer = Customer.find(params[:id])
-      if @customer.update_attributes(params[:customer])
-        flash[:notice] = "Le client a été modifié avec succès"
-        redirect_to customer_path(@customer)
-      else
-        render :action => 'edit'
-      end
-    #else
-    #  error_access_page(403)
-    #end
+    if @step.update_attributes(params[:step_graphic_conception])
+      flash[:notice] = "L'étape a été modifié avec succès"
+    end
+    render :nothing => true
   end
   
 #  def update
@@ -137,12 +113,4 @@ class GraphicConceptionController < ApplicationController
 #      render :action => 'edit'
 #    end
 #  end
-  
-  protected
-  
-  def check
-    @order = Order.find(params[:order_id])
-    OrderLog.set(@order, current_user, params) # Manage logs
-    @current_order_step = @order.step.first_parent.name[5..-1]
-  end
 end

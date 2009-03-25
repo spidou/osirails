@@ -1,0 +1,18 @@
+steps:
+  commercial:
+    description: Etape commerciale
+    title: Etude Commercial
+    position: 1
+    children:
+      survey:
+        title: Visite commerciale
+        position: 1
+      graphic_conception:
+        title: Conception Graphique
+        position: 2
+      estimate:
+        title: Devis
+        position: 3
+  invoicing:
+    title: Facturation
+    position: 2

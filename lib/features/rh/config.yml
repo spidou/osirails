@@ -4,8 +4,27 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-  thirds:
-    - 0.1
+menus:
+  rh:
+    title: Ressources Humaines
+    description: Administration des Ressources Humaines
+    children:
+      employees:
+        title: Personnel
+        description: Gestion du personnel
+        children:
+          salaries:
+            title: Salaires
+            description: Historique des salaires
+          job_contracts:
+            title: Contrat de travail
+            description: Gestion du contrat de travail avec avenant au contrat
+          premia:
+            title: Primes
+            description: Gestion des primes
+      jobs:
+          title: Fiches de poste
+          description: Gestions des fiches de poste
 search:
   Employee:
     base:
@@ -54,25 +73,3 @@ search:
           job_contract_type:
             JobContractType:
               name: string
-menus:
-  rh:
-    title: Ressources Humaines
-    description: Administration des Ressources Humaines
-    children:  
-      employees:
-        title: Personnel
-        description: Gestion du personnel
-        children:
-          salaries:
-            title: Salaires
-            description: Historique des salaires
-          job_contracts:
-            title: Contrat de travail
-            description: Gestion du contrat de travail avec avenant au contrat 
-          premia:
-            title: Primes
-            description: Gestion des primes
-      jobs:
-          title: Fiches de poste
-          description: Gestions des fiches de poste          
-           

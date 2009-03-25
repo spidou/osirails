@@ -5,22 +5,25 @@
 
 <% form_for(@step, :url => { :controller =>"graphic_conception", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
   <!-- Display Checklists div -->
-  <%= display_checklist(@checklist_responses, @step_survey)%>
+  <%= display_checklists_list(@step)%>
 
   <!-- Display Documents div -->
   <h2>Documents</h2>
   <%= display_documents_list(@step) %>
   <%= display_document_add_button(@step) %>
-
-  <h2> Composer un bon à tirer </h2>
-  <div id="press_proofs" class="document_view"></div>
+  
+  <h2>Bons à tirer</h2>
+  <%= display_press_proofs_dropbox %>
+  <%= display_press_proofs_list %>
+  <%= display_press_proofs_buttons %>
 
   <!-- Display Remarks div -->
-  <%= display_remarks_and_add_remark_text_area(@remarks, @step) %>
+  <%= display_remarks_list(@step) %>
+  <%= display_remark_add_button(@step) %>
   
   <p>
     <%= order_step.submit 'Modifier' %>
-    <%= order_step.submit 'Cloturer' %>
+    <%= order_step.submit 'Cloturer', :name => :close_step %>
   </p>
 <% end %>
 </div>
@@ -31,59 +34,59 @@
 
 
 <style>
-#press_proofs {
-	width: 700px;
-	min-height: 100px;
-}
-#press_proofs.hover {
-	border-style: dashed;
-}
+//#press_proofs {
+//	width: 700px;
+//	min-height: 100px;
+//}
+//#press_proofs.hover {
+//	border-style: dashed;
+//}
 </style>
 
 
 <script type="text/javascript">
-function add_document_draggable (id) {
-	new Draggable('document_' + id, {
-		revert: true
-	});
-}
-
-function remove_document_draggable (obj) {
-	obj.ancestors()[1].remove();
-}
-
-<% @documents.each do |document| %>
-add_document_draggable('<%= document.id %>');
-<% end %>
-
-Droppables.add('press_proofs', {
-	accept: 'document_view_content',
-	hoverclass: 'hover',
-	onDrop: function(draggable) {
-		var press_proofs_elm = document.getElementById('press_proofs');
-		press_proofs_elm.highlight();
-		var all_selected = press_proofs_elm.getElementsByClassName('document_view_content');
-		for (var i=0; i < all_selected.length; i++) {
-			if (draggable.id == all_selected[i].id) {
-				alert('Ce document a déjà été selectionner');
-				return false;
-			}
-		};
-		press_proofs_elm.appendChild(draggable.cloneNode(true));
-		
-		var input = document.createElement('input');
-		input.setAttribute('name', 'press_proofs[]');
-		input.setAttribute('value', draggable.id);
-		input.setAttribute('type', 'hidden');
-		
-		press_proofs_elm.lastChild.lastChild.lastChild.remove();
-		press_proofs_elm.lastChild.lastChild.childNodes[4].setAttribute('onclick', 'remove_document_draggable(this);');
-		press_proofs_elm.lastChild.lastChild.childNodes[4].innerHTML = 'Enlever';
-		press_proofs_elm.lastChild.style.top = '0';
-		press_proofs_elm.lastChild.style.left = '0';
-		press_proofs_elm.lastChild.appendChild(input);
-	}
-});
+//function add_document_draggable (id) {
+//	new Draggable('document_' + id, {
+//		revert: true
+//	});
+//}
+//
+//function remove_document_draggable (obj) {
+//	obj.ancestors()[1].remove();
+//}
+//
+//<% @documents.each do |document| %>
+//add_document_draggable('<%= document.id %>');
+//<% end %>
+//
+//Droppables.add('press_proofs', {
+//	accept: 'document',
+//	hoverclass: 'hover',
+//	onDrop: function(draggable) {
+//		var press_proofs_elm = document.getElementById('press_proofs');
+//		press_proofs_elm.highlight();
+//		var all_selected = press_proofs_elm.getElementsByClassName('document');
+//		for (var i=0; i < all_selected.length; i++) {
+//			if (draggable.id == all_selected[i].id) {
+//				alert('Ce document a déjà été selectionner');
+//				return false;
+//			}
+//		};
+//		press_proofs_elm.appendChild(draggable.cloneNode(true));
+//		
+//		var input = document.createElement('input');
+//		input.setAttribute('name', 'press_proofs[]');
+//		input.setAttribute('value', draggable.id);
+//		input.setAttribute('type', 'hidden');
+//		
+//		press_proofs_elm.lastChild.lastChild.lastChild.remove();
+//		press_proofs_elm.lastChild.lastChild.childNodes[4].setAttribute('onclick', 'remove_document_draggable(this);');
+//		press_proofs_elm.lastChild.lastChild.childNodes[4].innerHTML = 'Enlever';
+//		press_proofs_elm.lastChild.style.top = '0';
+//		press_proofs_elm.lastChild.style.left = '0';
+//		press_proofs_elm.lastChild.appendChild(input);
+//	}
+//});
 
 </script>
 

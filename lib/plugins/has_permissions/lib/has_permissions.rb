@@ -119,14 +119,6 @@ module HasPermissions
         def self.business_object?
           true
         end
-        
-        def self.business_object_id
-          read_inheritable_attribute(:business_object_id)
-        end
-        
-        def self.business_object
-          read_inheritable_attribute(:business_object)
-        end
       end
       
       self.permissions_definitions[:permission_methods].each do |method|

@@ -26,26 +26,25 @@ class Order < ActiveRecord::Base
   @@form_labels[:previsional_start] = 'Date pr&eacute;visionnelle de mise en production :'
   @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
   
-  # Create all orders_steps after create
+  # Create all orders_steps after create order
   def after_create
-    ## Creation of steps
     order_type.activated_steps.each do |step|
       if step.parent.nil?
-        step.name.camelize.constantize.create(:order_id => self.id, :status => 'unstarted')
+        step.name.camelize.constantize.create(:order_id => self.id)
       else
-        s = step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id, :status => 'unstarted')
+        s = step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id)
         step.checklists.each do |checklist|
           checklist_response = ChecklistResponse.create :checklist_id => checklist.id
           s.checklist_responses << checklist_response  
         end
       end
-    end    
+    end
   end
-
-  def step
-    self.all_children.each do |child|
-      next if child.step.parent.nil?
-      return child.step if (child.in_progress? || child.unstarted?)
+  
+  def current_step
+    all_steps.each do |child|
+      next if !child.respond_to?(:parent_step)
+      return child.class.original_step if (child.in_progress? || child.unstarted?)
     end
     return nil
   end
@@ -61,7 +60,7 @@ class Order < ActiveRecord::Base
     advance = {}
     steps.each do |step|
       next if step.parent
-      steps_obj += send(step.name).children
+      steps_obj += send(step.name).children_steps
     end
     advance[:total] = steps_obj.size
     advance[:terminated] = 0
@@ -70,36 +69,48 @@ class Order < ActiveRecord::Base
   end
 
   def child
-    children.reverse.each do |child|
+    first_level_steps.reverse.each do |child|
       return child unless child.unstarted?
     end
-    return children.first
-  end
-
-  def children
-    array_children = []
-    steps.each do |step|
-      next if step.parent
-      array_children << send(step.name)
-    end
-    array_children
+    return first_level_steps.first
   end
   
-  def all_children
-    array_children = []
-    children.each do |child|
-      array_children << child
-      array_children += child.children
-    end
-    array_children
+  # Returns steps of the first level
+  # 
+  # order:
+  #   step_commercial
+  #     step_graphic_conception
+  #     step_survey
+  #     step_estimate
+  #   step_invoicing
+  #     step_finished
+  # 
+  # @order.first_level_steps # => [ #<StepCommercial>, #<StepInvoicing> ]
+  # 
+  def first_level_steps # children
+    steps.select{ |step| !step.parent }.map{ |step| send(step.name) }
+  end
+  
+  # Returns all steps
+  # 
+  # order:
+  #   step_commercial
+  #     step_graphic_conception
+  #   step_invoicing
+  #     step_finished
+  # 
+  # @order.all_steps # => [ #<StepCommercial>, #<StepGraphicConception>, #<StepInvoicing>, #<StepFinished> ]
+  # 
+  def all_steps # all_children
+    first_level_steps.collect { |step| [step] << step.children_steps }.flatten
   end
 
-  ## Return remarks's order
-  def remarks
-    remarks = []
-    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.remarks.each {|remark| remarks << remark} }
-    remarks
-  end
+#  ## Return remarks's order
+#  def remarks
+#    remarks = []
+#    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.remarks.each {|remark| remarks << remark} }
+#    remarks
+#  end
 
   ## Return missing elements's order
   def missing_elements
@@ -110,7 +121,7 @@ class Order < ActiveRecord::Base
   
   def terminated?
     return false unless closed_date?
-    children.each do |child|
+    children_steps.each do |child|
       return false unless child.terminated?
     end
     true

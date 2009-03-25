@@ -2,20 +2,8 @@ name: logistics
 title: Gestion de la logistique
 version: 0.1
 dependencies:
-conflicts:
   admin:
     - 0.1
-search:
-  CommodityCategory:
-    base:
-      name: string
-    other:
-      commodities:
-        Commodity:
-          name: string
-          enable: boolean
-          unit_mass: number
-          measure: number
 menus:
   logistics:
     title: Logistique
@@ -40,3 +28,14 @@ menus:
           commodities:
             title: Matières premières
             description: Permet la gestion des matières premières
+search:
+  CommodityCategory:
+    base:
+      name: string
+    other:
+      commodities:
+        Commodity:
+          name: string
+          enable: boolean
+          unit_mass: number
+          measure: number

@@ -2,10 +2,11 @@
 
 <div class="presentation_medium">
 	<%= order_steps %>
-  <% form_for(@step, :url => { :controller =>"survey", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
-
+  <% form_for(@step, :url => { :controller =>"survey", :action => "update" },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
     <!-- Display Checklists div -->
-    <%= display_checklist(@checklist_responses, @step)%>
+    <%= display_checklists_list(@step)%>
 
     <!-- Display Documents div -->
     <h2>Documents</h2>
@@ -13,11 +14,13 @@
     <%= display_document_add_button(@step) %>
 
     <!-- Display Remarks div -->
-    <%= display_remarks_and_add_remark_text_area(@remarks, @step) %>
-
-    <%= order_step.submit  'Modifier' %>
-    <%= order_step.submit  'Cloturer' %>
+    <%= display_remarks_list(@step) %>
+    <%= display_remark_add_button(@step) %>
     
+    <p>
+      <%= form.submit 'Modifier' %>
+      <%= form.submit 'Cloturer', :name => :close_step %>
+    </p>
   <% end %>
 </div>
 

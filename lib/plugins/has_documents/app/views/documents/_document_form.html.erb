@@ -14,12 +14,12 @@ style_attr = 'style="display:none"' unless document.new_record? or !document.err
         <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
       </p>
       <p>
-        <%= form.label :description, :index => nil %>
-        <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
-      </p>
-      <p>
         <%= form.label :tag_list, :index => nil %>
         <%= form.form_or_view(form.text_field(:tag_list, :index => nil), :tag_list ) %>
+      </p>
+      <p>
+        <%= form.label :description, :index => nil %>
+        <%= form.form_or_view(form.text_field(:description, :index => nil), :description ) %>
       </p>
       <p>
         <%= form.label :document_type_id, :index => nil %>

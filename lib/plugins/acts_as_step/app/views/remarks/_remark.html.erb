@@ -1,0 +1,19 @@
+<% owner_type = remarks_owner.class.singularized_table_name if is_form_view? %>
+
+<div class='remark'>
+<% if is_form_view? and remark.new_record? %>
+  <% fields_for "#{owner_type}[remark_attributes]", remark do |form| -%>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :text, :index => nil %>
+      <%= form.text_area :text , :size => "60x2", :index => nil %>
+      <%= link_to_function "Annuler", "this.up('.remark').remove()"%>
+    </p>
+  <% end -%>
+<% else -%>
+  <p>
+    Ajouté le <%= remark.created_at.to_humanized_datetime %> par <%= remark.user.employee_name %> :<br/>
+    <%= h remark.text %>
+  </p>
+<% end -%>
+</div>

@@ -12,12 +12,10 @@ ActionController::Routing::Routes.draw do |map|
   map.expired_password 'account/expired_password', :controller => 'account', :action => 'expired_password'
   
   ### COMMONS
-  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
-  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}
-  map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
+#  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
+#  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}
+#  map.resources :activity_sectors, :collection => {:auto_complete_for_activity_sector_name => :get }
   ### END COMMONS
-  
-  map.connect 'attachments/:id/:style', :controller => 'attachments', :action => 'show'
   
   # Sample of regular route:
   #   map.connect 'products/:id', :controller => 'catalog', :action => 'view'

@@ -1,10 +1,3 @@
 class StepCommercial < ActiveRecord::Base
-  # Relationships
-  belongs_to :order
-  has_one :step_survey
-  has_one :step_graphic_conception
-  has_one :step_estimate
-  
-  # Plugins
-  acts_as_step
+  acts_as_step :children => [ :step_survey, :step_graphic_conception, :step_estimate ]
 end

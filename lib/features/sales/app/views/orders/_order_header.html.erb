@@ -1,3 +1,7 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end -%>
+
 <div class="presentation_large">
   <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="float: right; width: 162px; height: 162px;"></object>
 	<p>

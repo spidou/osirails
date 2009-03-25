@@ -29,8 +29,9 @@ module DocumentsHelper
       page.insert_html :bottom, :new_documents, :partial => 'documents/document',
                                                 :object => documents_owner.build_document
       page['new_documents'].show if page['new_documents'].visible
-      page['new_documents'].select('.document').last.show
-      page['new_documents'].select('.document').last.visual_effect :highlight
+      last_document = page['new_documents'].select('.document').last
+      last_document.show
+      last_document.visual_effect :highlight
     end
     # link_to_remote "Ajouter un document", :url => { :controller => :documents, :action => :new, :customer_id => 2 }, :method => :get
   end

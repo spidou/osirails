@@ -23,51 +23,43 @@ menus:
         description: Historiques des actions effectués sur le dossier de commmande
   prospectives:
     title: Prospects
+    description: Dossiers en phase de prospection
     children:
       commercial:
         title: Etude commerciale
-        description: Phase d'étude commercial
+        description: "Phase d'étude commerciale"
         children:
           survey:
             title: Visite commerciale
             description: Etape de la visite commercial
+            position: 1
           graphic_conception:
             title: Conception graphique
             description: Etape de conception graphique
+            position: 2
           estimate:
             title: Devis
             description: Etape du devis
+            position: 3
   sales:
     title: Ventes
     children:
       invoicing:
         title: Facturation
         description: Phase de facturation
+        position: 1
       closed:
         title: Cloturés
         description: Dossiers de vente cloturés
+        position: 2
       archived:
         title: Archivés
         description: Dossiers de vente cloturés
-steps:
-  commercial:
-    description: Etape commerciale
-    title: Etude Commercial
-    position: 1
-    children:
-      estimate:
-        title: Devis
         position: 3
-      survey:
-        title: Visite commerciale
-        position: 1
-      graphic_conception:
-        title: Conception Graphique
-        position: 2
-  invoicing:
-    title: Facturation
-    position: 2
 configurations:
   taxes_vat:
-    description: Taxe TVA
+    description: TVA
     value: 8.5
+  estimate_validity_in_days:
+    description: Période de validité du devis
+    value: 30

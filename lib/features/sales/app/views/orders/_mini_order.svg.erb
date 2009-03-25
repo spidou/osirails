@@ -8,10 +8,11 @@
     </g>
   </defs>
 
-  <% angle = 360 / children_list.size %>
-  <% children_list.sort_by {|s| s.status }.each_with_index do |c, index| %>
-  <g title="<%= c.step.title %>" class="portions<%= class_for_clock_progress(c) %>">
+<% angle = 360 / children_list.size %>
+<% children_list.each_with_index do |c, index| %>
+  <%= disposition = params[:for] == "step" ? "outside" : "inside" %>
+  <g title="<%= "#{c.class.original_step.title} [#{c.status.titleize}]" %>" class="<%= "#{disposition} #{c.status} #{@order.child.class.original_step_name}" %>">
     <use xlink:href="#internal_portion" x="16" y="16" transform="rotate(<%= index * angle %>,16,16)" />
   </g>
-  <% end %>
+<% end %>
 </svg>

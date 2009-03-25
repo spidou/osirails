@@ -1,0 +1,19 @@
+#checklists {
+  text-align: left;
+  text-indent: 0;
+  padding: 10px;
+}
+
+#checklists p.checklist {
+  display: inline-block;
+  vertical-align: top;
+  text-indent: 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#checklists label {
+  vertical-align: middle;
+  text-align: left;
+  width: auto;
+}

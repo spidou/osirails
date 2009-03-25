@@ -385,15 +385,17 @@ namespace :osirails do
       # default checklist 
       Checklist.create :name => "Livraison sur site", :step_id => Step.find_by_name("step_survey").id
       Checklist.create :name => "Accès voiture", :step_id => Step.find_by_name("step_survey").id
-      c = Checklist.create :name => "Localisation", :step_id => Step.find_by_name("step_survey").id
-      c.checklist_options << ChecklistOption.create(:name => "Region NORD")
-      c.checklist_options << ChecklistOption.create(:name => "Region EST")
-      c.checklist_options << ChecklistOption.create(:name => "Region SUD")
-      c.checklist_options << ChecklistOption.create(:name => "Region OUEST")
-      c = Checklist.create :name => "Distance depuis l'entreprise", :step_id => Step.find_by_name("step_survey").id
+      c = Checklist.create :name => "Frais de déplacement", :step_id => Step.find_by_name("step_survey").id
       c.checklist_options << ChecklistOption.create(:name => "< 10 km")
       c.checklist_options << ChecklistOption.create(:name => "< 50 km")
-      c.checklist_options << ChecklistOption.create(:name => "< 80 km")      
+      c.checklist_options << ChecklistOption.create(:name => "< 80 km")
+      
+      Checklist.create :name => "Question 1", :step_id => Step.find_by_name("step_graphic_conception").id
+      Checklist.create :name => "Question numéro 2", :step_id => Step.find_by_name("step_graphic_conception").id
+      c = Checklist.create :name => "Question numéro 123", :step_id => Step.find_by_name("step_graphic_conception").id
+      c.checklist_options << ChecklistOption.create(:name => "Option 1")
+      c.checklist_options << ChecklistOption.create(:name => "Option 2")
+      c.checklist_options << ChecklistOption.create(:name => "Option 3")
       
       # default orders
       Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
@@ -423,19 +425,23 @@ namespace :osirails do
 
     desc "Depopulate the database"
     task :depopulate => :environment do
-      [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
-        JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
-        OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
-        
-        puts "destroying all rows for model '#{model.name}'"
-        model.destroy_all
-      end
+      %W{ Role User Civility FamilySituation BusinessObjectPermission MenuPermission DocumentTypePermission CalendarPermission NumberType
+          Indicative Job JobContractType JobContract Service EmployeeState ThirdType Employee ContactType Salary Premium Country LegalForm
+          PaymentMethod PaymentTimeLimit UnitMeasure EstablishmentType Establishment Supplier Iban Customer Commodity CommodityCategory
+          Product ProductReference ProductReferenceCategory SocietyActivitySector ActivitySector DocumentType FileType MimeType MimeTypeExtension
+          Calendar Event Employee EmployeesService Number Address Contact OrderType Order OrderTypesSocietyActivitySectors SalesProcess
+          MemorandumsService Memorandum Checklist ChecklistOption Estimate EstimatesProductReference Step StepCommercial StepSurvey
+          StepGraphicConception StepEstimate StepInvoicing
+        }.each do |model_name|
+          model = model_name.constantize
+          puts "destroying all rows for model '#{model.name}'"
+          model.destroy_all
+        end
     end
 
-    desc "Reset the database"
-    task :reset => [:depopulate, :populate]
+    #TODO find how to execute environment for each dependencies of the task reset, or to call explicitly the tasks with their environment
+#    desc "Reset the database"
+#    task :reset => [:depopulate, :populate]
     
     desc "Destroy all rows for all tables of the database"
     task :destroy_all => :environment do

@@ -1,0 +1,10 @@
+<% owner_type = checklists_owner.class.singularized_table_name if is_form_view? %>
+<% checklist_response = checklist.mapped_response(@step) %>
+<% return if checklist_response.nil? %>
+
+<% fields_for "#{owner_type}[checklist_response_attributes][]", checklist_response do |form| -%>
+  <p class='checklist'>
+    <%= form.label :answer, checklist_response.checklist.name + " :" %>
+    <%= form.select :answer, checklist.options.collect{ |c| c.name }, { :include_blank => true } %>
+  </p>
+<% end -%>

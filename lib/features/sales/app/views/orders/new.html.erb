@@ -9,18 +9,15 @@
   </p>
   <p>Pour cette commande, avez-vous affaire à un client connu OU à un nouveau client ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
 
-  <% form_tag new_order_path do %>
   <h2>1. Client existant</h2>
-  <p>
-    <label for="customer_third_name">Rechercher le client dans la base :</label>
-    <%= hidden_field_tag('customer_id') %>
-    <%= my_text_field_with_auto_complete(:third, :name, {:name => 'customer', :controller => 'customers'}, {
-        :select => 'customer_third_name',
-        :skip_style => true,
-        :after_update_element => "function() { document.getElementById('customer_third_name').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[3].innerHTML; document.getElementById('customer_id').value = document.getElementsByClassName('customers')[0].getElementsByClassName('selected')[0].childNodes[1].innerHTML;}"
-      } ) %>
-  </p>
-  <% end %>
+  <% form_for @order, :url => { :action => :new } do |form| -%>
+    <p>
+      <label for="customer_name">Rechercher le client dans la base :</label>
+      <%= hidden_field_tag :customer_id %>
+      <%= custom_text_field_with_auto_complete(:customer, :name, {}, { :after_update_element => "function(){ $('customer_id').value = $('customer_name_auto_complete').down('.selected').down('.customer_id').innerHTML }" } ) %>
+      <%= form.submit 'Valider' %>
+    </p>
+  <% end -%>
 
   <h2>2. Nouveau client</h2>
   <% form_tag new_customer_path do %>

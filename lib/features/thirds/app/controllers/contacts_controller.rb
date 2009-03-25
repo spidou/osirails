@@ -124,61 +124,61 @@ class ContactsController < ApplicationController
     end
   end
   
-  def auto_complete_for_contact_first_name
-    auto_complete_responder_for_first_name(params[:owner_id], params[:owner_type], params[:value])  
-  end
-  
-  def auto_complete_responder_for_first_name(owner_id, owner_type, value)
-    @contacts = []
-    
-    @owner = owner_type.constantize.find(owner_id)
-    Contact.find(:all).each do |contact|
-      if @contacts.size < 10
-        if contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
-          @contacts << contact
-        end
-      end
-    end
-    @contacts = @contacts.uniq
-    render :partial => 'contacts/contact_info'
-  end
-  
-  def auto_complete_for_contact_last_name
-    auto_complete_responder_for_last_name(params[:owner_id], params[:owner_type], params[:value])  
-  end
-  
-  def auto_complete_responder_for_last_name(owner_id, owner_type, value)
-    @contacts = []
-    
-    @owner = owner_type.constantize.find(owner_id)
-    Contact.find(:all).each do |contact|
-      if @contacts.size < 10
-        if contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
-          @contacts << contact
-        end
-      end
-    end
-    
-    @contacts = @contacts.uniq
-    render :partial => 'contacts/contact_info'
-  end
-  
-  def auto_complete_for_contact_email
-    auto_complete_responder_for_email(params[:owner_id], params[:owner_type], params[:value])  
-  end
-  
-  def auto_complete_responder_for_email(owner_id, owner_type, value)
-    @contacts = []
-    
-    @owner = owner_type.constantize.find(owner_id)
-    Contact.find(:all).each do |contact|
-      if contact.email.downcase.grep(/#{value.downcase}/).length > 0
-        @contacts << contact
-      end
-    end
-    
-    @contacts = @contacts.uniq
-    render :partial => 'contacts/contact_info'
-  end
+#  def auto_complete_for_contact_first_name
+#    auto_complete_responder_for_first_name(params[:owner_id], params[:owner_type], params[:value])  
+#  end
+#  
+#  def auto_complete_responder_for_first_name(owner_id, owner_type, value)
+#    @contacts = []
+#    
+#    @owner = owner_type.constantize.find(owner_id)
+#    Contact.find(:all).each do |contact|
+#      if @contacts.size < 10
+#        if contact.first_name.downcase.grep(/#{value.downcase}/).length > 0
+#          @contacts << contact
+#        end
+#      end
+#    end
+#    @contacts = @contacts.uniq
+#    render :partial => 'contacts/contact_info'
+#  end
+#  
+#  def auto_complete_for_contact_last_name
+#    auto_complete_responder_for_last_name(params[:owner_id], params[:owner_type], params[:value])  
+#  end
+#  
+#  def auto_complete_responder_for_last_name(owner_id, owner_type, value)
+#    @contacts = []
+#    
+#    @owner = owner_type.constantize.find(owner_id)
+#    Contact.find(:all).each do |contact|
+#      if @contacts.size < 10
+#        if contact.last_name.downcase.grep(/#{value.downcase}/).length > 0
+#          @contacts << contact
+#        end
+#      end
+#    end
+#    
+#    @contacts = @contacts.uniq
+#    render :partial => 'contacts/contact_info'
+#  end
+#  
+#  def auto_complete_for_contact_email
+#    auto_complete_responder_for_email(params[:owner_id], params[:owner_type], params[:value])  
+#  end
+#  
+#  def auto_complete_responder_for_email(owner_id, owner_type, value)
+#    @contacts = []
+#    
+#    @owner = owner_type.constantize.find(owner_id)
+#    Contact.find(:all).each do |contact|
+#      if contact.email.downcase.grep(/#{value.downcase}/).length > 0
+#        @contacts << contact
+#      end
+#    end
+#    
+#    @contacts = @contacts.uniq
+#    render :partial => 'contacts/contact_info'
+#  end
   
 end

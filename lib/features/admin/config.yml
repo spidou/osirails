@@ -10,7 +10,6 @@ version: 0.1
 #  feature_name:
 #    - 0.1
 #    - 0.2
-business_objects:
 menus:
   account:
     title: Compte utilisateur
@@ -26,7 +25,7 @@ menus:
     hidden: true
   admin:
     title: Administration
-    description: Administration de l'Intranet
+    description: "Administration de l'Intranet"
     position: 1
     children:
       users:
@@ -73,11 +72,11 @@ menus:
         children:
           society_identity_configuration:
             title: Paramètres globaux
-            description: Configuration des paramètres globaux de l'entreprise
+            description: "Configuration des paramètres globaux de l'entreprise"
             position: 1
           society_activity_sectors:
-            title: Secteurs d'activités
-            description: Gestion des secteurs d'activités
+            title: "Secteurs d'activités"
+            description: "Gestion des secteurs d'activités"
             position: 2
           services:
             title: Services
@@ -108,19 +107,19 @@ configurations:
     description: Configuration de sécuritée actuelle
     value: l0  
   user_pattern:  
-    description: modèle que doit respecter le générateur de compte d'utilisateur
+    description: "modèle que doit respecter le générateur de compte d'utilisateur"
     value: '[first_name].[last_name]'
   password_validity:
     description: durée pendant laquelle le mot de passe est valide
     value: 30
   society_identity_configuration_name:
-    description: Nom de l'entreprise
+    description: "Nom de l'entreprise"
     value: EMR (Enseigne Maintenance Réunion)
   society_identity_configuration_address_first_line:
-    description: Premiere ligne pour l'adresse
+    description: "Premiere ligne pour l'adresse"
     value: PAE La Mare
   society_identity_configuration_address_second_line:
-    description: Seconde ligne pour l'adresse
+    description: "Seconde ligne pour l'adresse"
     value: Ilôt n° 7 - N° 48
   society_identity_configuration_address_town:
     description: Nom de la ville
@@ -132,10 +131,10 @@ configurations:
     description: Pays/Departement
     value: FRANCE (Réunion)
   society_identity_configuration_phone:
-      description: Numéro de téléphone de l'entreprise
+      description: "Numéro de téléphone de l'entreprise"
       value: +262 (0)2 62 53 12 89
   society_identity_configuration_fax:
-      description: Numéro de fax de l'entreprise
+      description: "Numéro de fax de l'entreprise"
       value: +262 (0)2 62 53 16 42
   society_identity_configuration_siret:
       description: Numéro SIRET
@@ -152,5 +151,5 @@ configurations:
       - "3"
       - "4"
   society_identity_configuration_choosen_theme:
-    description: Style de l'Intranet
+    description: "Style de l'Intranet"
     value: emr

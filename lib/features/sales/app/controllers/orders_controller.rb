@@ -1,9 +1,8 @@
 class OrdersController < ApplicationController
-  # Callbacks
   before_filter :load_collections, :only => [:new, :create, :edit, :update]
-  after_filter :check, :except => [:index, :new, :create, :auto_complete_for_employee_fullname]
+  after_filter :check, :except => [:index, :new, :create]
   
-  method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
+#  method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
   
 #  def auto_complete_for_employee_fullname
 #    all_employees = Employee.find(:all)
@@ -18,13 +17,13 @@ class OrdersController < ApplicationController
   def show
     @order = Order.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase }
+      format.html { redirect_to order_path(@order) + '/' + @order.current_step.path }
       format.svg {
         case params[:for]
         when 'step'
-          render :partial => 'mini_order', :locals => {:children_list => @order.children }
+          render :partial => 'mini_order', :locals => { :children_list => @order.first_level_steps }
         when 'understep'
-          render :partial => 'mini_order', :locals => {:children_list => @order.child.children}
+          render :partial => 'mini_order', :locals => { :children_list => @order.child.children_steps }
         else
           render :partial => 'order'
         end }
@@ -79,7 +78,7 @@ class OrdersController < ApplicationController
   
     def check
       OrderLog.set(@order, current_user, params) # Manage logs
-      @current_order_step = @order.step.first_parent.name[5..-1]
+      @current_order_step = @order.current_step.path
 #      @customer = @order.customer
 #
 #      if params[:order]

@@ -38,20 +38,20 @@ module OrdersHelper
     Step.cant_find if step.nil?
     step = step.first_parent
     
-    orders_steps = @order.send(step.name).children
+    orders_steps = @order.send(step.name).children_steps
     
     html = "<div id=\"steps\">"
     orders_steps.each do |ot|
-    	html += "<div #{class_selected if ot.name == step_name}>"
+    	html += "<div #{class_selected if ot.class.original_step_name == step_name}>"
     	html += "	<div class=\"#{step_ring_class(ot.uncomplete? ? 'uncomplete' : ot.status)}\">"
-    	html += "		<div id=\"#{ot.name[5..-1]}\">"
+    	html += "		<div id=\"#{ot.class.original_step.path}\">"
     	html += "			<p>"
-    	html += "				<span><strong>[#{ot.step.title}]</strong></span>"
+    	html += "				<span><strong>[#{ot.class.original_step.title}]</strong></span>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "		<div class=\"steps_text\">"
     	html += "			<p>"
-    	html += "				<a href=\"#{order_path(@order)}/#{ot.name[5..-1]}\">#{ot.step.title}</a>"
+    	html += "				<a href=\"#{order_path(@order)}/#{ot.class.original_step.path}\">#{ot.class.original_step.title}</a>"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"
@@ -99,7 +99,7 @@ module OrdersHelper
       next if step.parent
       html += "<li "
       html += class_selected if tab_name == step.name
-      html += link_to step.title, "#{order_path(@order)}/#{step.children.first.name[5..-1] unless step.children.empty?}"
+      html += link_to step.title, "#{order_path(@order)}/#{step.path}"
       # html += "><a href=\"/orders/#{@order.id}/#{step.name}/\">#{step.title}</a></li>"
     end
     html += "<li "
@@ -110,13 +110,5 @@ module OrdersHelper
   
   def class_selected
     "class=\"selected\""
-  end
-  
-  def class_for_clock_progress(step)
-    if params[:for] == 'step'
-      return " #{step.name}" if step.in_progress? or step.terminated?
-    else
-      return ' terminated' if step.terminated?
-    end
   end
 end

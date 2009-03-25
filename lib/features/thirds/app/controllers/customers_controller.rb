@@ -1,5 +1,4 @@
 class CustomersController < ApplicationController
-
   helper :thirds, :establishments, :contacts, :documents
   
   # GET /customers
@@ -292,23 +291,30 @@ class CustomersController < ApplicationController
     end
   end
   
-  def auto_complete_for_third_name 
-    auto_complete_responder_for_name(params[:customer][:third][:name])
+  def auto_complete_for_customer_name
+    regex = Regexp.new("#{params[:customer][:name]}", "i")
+    find_options = { :order => "name ASC" }
+    @customers = Customer.find(:all, find_options).select { |customer| customer.name.match regex }
+    render :inline => <<-EOL
+    <%= content_tag( :ul, @customers.map do |customer|
+          content_tag(:li, h(customer.name) + content_tag(:span, customer.id, :class => :customer_id, :style=> 'display:none'))
+        end ) %>
+    EOL
   end
 
-  def auto_complete_responder_for_name(value)
-    @customers = []
-    
-    Customer.find(:all).each do |customer|
-      if @customers.size < 10
-#        if customer.name.downcase.grep(/#{value.downcase}/).length > 0
-#          @customers << customer
-#        end
-        @customers << customer unless customer.name.downcase.grep(/#{value.downcase}/).empty?
-      end
-    end
-    @customers = @customers.uniq
-    render :partial => 'thirds/third_info', :locals => { :search_pattern => value }
-  end
+#  def auto_complete_responder_for_name(value)
+#    @customers = []
+#    
+#    Customer.find(:all).each do |customer|
+#      if @customers.size < 10
+##        if customer.name.downcase.grep(/#{value.downcase}/).length > 0
+##          @customers << customer
+##        end
+#        @customers << customer unless customer.name.downcase.grep(/#{value.downcase}/).empty?
+#      end
+#    end
+#    @customers = @customers.uniq
+#    render :partial => 'thirds/third_info', :locals => { :search_pattern => value }
+#  end
 
 end

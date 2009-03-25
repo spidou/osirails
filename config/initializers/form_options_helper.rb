@@ -117,6 +117,13 @@ module ActionView
       def reset(object, text)
         "<input type='reset' value='#{text}' name='reset' id='#{object}_reset'/>"
       end
+      
+      def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+        completion_options =  { :skip_style => true,
+                                :url => send("auto_complete_for_#{object}_#{method}_path")
+                              }.merge!(completion_options)
+        text_field_with_auto_complete(object, method, tag_options, completion_options)
+      end
     end
     
     class InstanceTag #:nodoc:
