@@ -58,6 +58,7 @@ begin
   $activated_features_path.each do |feature_path|
     routes_path = File.join(feature_path, 'routes.rb')
     load routes_path if File.exist?(routes_path)
+    puts "---------" + routes_path
   end
 rescue ActiveRecord::StatementInvalid, Mysql::Error => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
