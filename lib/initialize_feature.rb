@@ -11,7 +11,7 @@ def init(config, path, plugin = false)
     yaml = YAML.load(File.open(yaml_path)) rescue {}
     
     FeatureManager.new(yaml, plugin, config, path)
-    
+
 #    ######### SEARCH
 #    # test and add search indexes into db
 #    error_message = "syntaxe error in '#{name}' yaml."

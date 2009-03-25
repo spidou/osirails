@@ -56,11 +56,12 @@ end
 # the begin rescue enclosure permits to avoid errors while the installation because of the non-existent tables in the database (at this time)
 begin
   $activated_features_path.each do |feature_path|
-    if feature = Feature.find_by_name(feature_path.split('/').last)
-      next unless feature.activated?
-    end
+#    if feature = Feature.find_by_name(feature_path.split('/').last)
+#      next unless feature.activated?
+#    end
     routes_path = File.join(feature_path, 'routes.rb')
     load routes_path if File.exist?(routes_path)
+    puts "---------" + routes_path
   end
 rescue ActiveRecord::StatementInvalid, Mysql::Error => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
