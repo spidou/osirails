@@ -1,3 +1,12 @@
+<% secondary_menu POSSIBLE_ACTIONS do %>
+	<%= show_memorandum_add_button %>
+	<%= show_memorandum_edit_button(@sended_memorandum) %>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>
+	<%= show_memorandum_list_button("View all sended memorandums") %> 
+	<%= show_received_memorandum_list_button %>
+<% end %>
 <h1>Note de service</h1>
 
 <div class='frame'>
@@ -9,5 +18,4 @@
   </fieldset>
 </div>
 
-<%= link_to("Modifier", edit_sended_memorandum_path(@sended_memorandum)) if @sended_memorandum.published_at.nil? %> <%= link_to("Retour", sended_memorandums_path) %>
 </div>

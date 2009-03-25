@@ -1,2 +1,6 @@
+<% secondary_menu USEFUL_LINKS do %>
+	<%= show_memorandum_list_button("View all sended memorandums") %> 
+	<%= show_received_memorandum_list_button %>
+<% end %>
 <h1>Nouvelle note de service</h1>
 <%= render :partial => "memorandum", :locals => { :submit_button_name => "Enregistrer"} %>

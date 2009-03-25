@@ -13,7 +13,15 @@
       <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%></span>
   </li></ul>
         <%= show_closed_button(@inventory)%>
-  <% end %>
+<% end %>
+
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_inventory_add_button %>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>
+  <%= show_inventory_list_button %>
+<% end %>
 
   <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>
   <div class='frame'>

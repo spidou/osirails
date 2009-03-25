@@ -131,7 +131,7 @@ module ProductReferenceManagerHelper
   # display (or not) the delete button for product reference category
   def show_delete_button_for_product_reference_category(category)
     if controller.can_delete?(current_user) and ProductReferenceCategory.can_delete?(current_user)
-      if category.can_destroy?
+      if category.can_be_destroyed?
         link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } )
       else
         image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")

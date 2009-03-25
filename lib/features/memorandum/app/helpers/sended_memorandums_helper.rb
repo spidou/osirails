@@ -12,32 +12,20 @@ module SendedMemorandumsHelper
     view << "<p><strong>De : </strong> #{memorandum.signature}</p>"
     view << "<p><strong>Publi&eacute; par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
   end
+
+  #####################################################################################
+  # These methods permit to show or hide buttons about POSSIBLE ACTIONS or USEFUL LINKS
+  # we don't use dynamic method because we need another controller ( received_memorandum_controller)
   
-  # This method permit to show or hide add button and she check if a user belong employee
-  def show_add_button
-    add_button = []
-    unless current_user.employee_id.nil?
-      if Memorandum.can_add?(current_user) and controller.can_add?(current_user)
-        add_button << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-        add_button << "<ul>"
-        add_button << "<li>#{link_to("<img src='/images/add_16x16.png' alt='Ajouter' title='Ajouter' /> Nouvelle note de service", new_sended_memorandum_path)}</li>"
-        add_button << "</ul>"
-        end
-    end
-    add_button
-  end
-  
-  # This method permit to show received memorandums
-  def show_received_memorandums
-    if Memorandum.can_view?(current_user) and controller.can_view?(current_user) and !current_user.employee.nil?
-      show_received_memorandum = []
-      show_received_memorandum << "<h1><span class='gray_color'>Lien</span> <span class='blue_color'>Utile</span></h1>"
-      show_received_memorandum << "<ul>"
-      show_received_memorandum << "<li>#{link_to('Voir la liste des notes de service re&ccedil;u', received_memorandums_path)}</li>"
-      show_received_memorandum << "</ul>"
+  def show_received_memorandum_list_button(txt = "View all received memoramdums")
+    if Memorandum.can_list?(current_user) and controller.can_list?(current_user) and !current_user.employee.nil?
+      link_to(image_tag("/images/list_16x16.png", :alt => "list", :title => "list")+" #{txt}", received_memorandums_path)
     end
   end
+
+  ######################################################################################
   
+ 
   # This method permit to initialize signature
   def initialize_signature
     services = current_user.employee.services
@@ -128,27 +116,26 @@ module SendedMemorandumsHelper
   end
   
   # This method permit to show sended memorandum
-  def show_memorandum(memorandums)
+  def show_memorandums(memorandums)
     sended_memorandums = []
     sended_memorandums << "<table>"
     sended_memorandums << "<tr>"
     sended_memorandums << "<th>Titre de la note de service</th>"
     sended_memorandums << "<th>Date de publication</th>"
-    sended_memorandums << "<th colspan='2'>Action</th>"
+    sended_memorandums << "<th>Action</th>"
     sended_memorandums << "</tr>"
     
     memorandums.each do |memorandum|
       
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
-      show_button = link_to(image_tag("/images/view_16x16.png", :alt =>"D&eacute;tails", :title =>"D&eacute;tails"), sended_memorandum_path(memorandum)) if Memorandum.can_view?(current_user)
-      edit_button = show_edit_button(memorandum)
+      show_button = show_memorandum_view_button(memorandum,"")
+      edit_button = show_memorandum_edit_button(memorandum,"")
       period_memorandum = Memorandum.color_memorandums(memorandum)
       
       sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"
       sended_memorandums << "<td>#{memorandum.title}</td>"
       sended_memorandums << "<td>#{published}</td>"
-      sended_memorandums << "<td style='width: 50px;'>#{show_button}</td>"
-      sended_memorandums << "<td style='width: 50px;'>#{edit_button}</td>"
+      sended_memorandums << "<td style='width: 70px;'>#{show_button} #{edit_button}</td>"
     end
     sended_memorandums << "</table>"
   end

@@ -1,15 +1,15 @@
-<% content_for :secondary_menu do %>
-  
-  <%= show_add_button %>
-  
- <%= show_received_memorandums %>
-  
+<% secondary_menu POSSIBLE_ACTIONS do %>
+ <%= show_memorandum_add_button %>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>  
+ <%= show_received_memorandum_list_button %>
 <% end %>
 
 <% unless @sended_memorandums.size == 0 or (!Memorandum.can_list?(current_user) and controller.can_list?(current_user))%>
 <h1>Notes de services envoy&eacute;s</h1>
   <div class='frame'>
-    <%= show_memorandum(@sended_memorandums) %>
+    <%= show_memorandums(@sended_memorandums) %>
     <%= will_paginate @sended_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
   </div>
 <% end %>

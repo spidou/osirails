@@ -1,4 +1,5 @@
 class CommoditiesController < ApplicationController
+helper :commodities_manager
     
   # GET /commodities/new
   def new

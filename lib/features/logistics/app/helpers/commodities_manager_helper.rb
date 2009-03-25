@@ -23,7 +23,7 @@ module CommoditiesManagerHelper
   
   # This method permit to format link that should be display into secondary menu
   # we can't use the dynamic helper method 'generator' because of an unexpected argument passed to new_commodity_path => ':id =>-1'
-  def show_commodity_add_button(txt = "New Commodity")
+  def show_commodity_add_button(txt = "New commodity")
     if Commodity.can_add?(current_user)
       link_to(image_tag( "/images/add_16x16.png", :alt => "New", :title => "New" )+" #{txt}", new_commodity_path(:id => -1) )    
     end  
@@ -43,6 +43,32 @@ module CommoditiesManagerHelper
     end
   end
   
+  # this method permit to display commodity category add button
+  # we can't use dynamic method helper because commodity_category_controller != commodity_manager_controller
+  def show_commodity_category_add_button(txt = "New commodity category")  
+    if CommodityCategory.can_add?(current_user)
+      link_to(image_tag("/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}",new_commodity_category_path)    
+    end  
+  end
+
+  def show_inventory_list_button(txt ="View all inventories")
+    if Inventory.can_list?(current_user)    
+      link_to(image_tag("/images/list_16x16.png", :alt => "List", :title => "List")+" #{txt}",inventories_path)
+    end  
+  end
+
+  def show_inventory_view_button(object, txt = "View current inventory")
+    if Inventory.can_view?(current_user)
+      link_to(image_tag("/images/view_16x16.png", :alt => "View", :title => "View")+" #{txt}", inventory_path(object))    
+    end
+  end
+
+  def show_inventory_add_button(txt = "New inventory")
+    if Inventory.can_add?(current_user)
+      link_to(image_tag("/images/add_16x16.png", :alt => "Add", :title => "Add")+" #{txt}", new_inventory_path)
+    end
+  end
+
   # This method permit to make in table editor
   def in_place_editor(object,attribute,value = 0)
     if value == 1 and (controller.can_edit?(current_user) and CommodityCategory.can_edit?(current_user))

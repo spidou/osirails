@@ -221,18 +221,19 @@ module ApplicationHelper
     if controller.send("can_"+method_info[:method]+"?",current_user) and model_permission
 
 				path = {"view" => "", "edit" => "edit_"}
-				image = image_tag("/images/#{method_info[:method]}_16x16.png", :alt => method_info[:method], :title => method_info[:method]) + " #{add_some_text(method_info, arguments[1])}"
+				image = image_tag("/images/#{method_info[:method]}_16x16.png", :alt => method_info[:method], :title => method_info[:method]) + " #{add_some_text(method_info, arguments.last)}"
 
-# OPTIMIZE try to optimize the adaptation of the links when changing method
-				
+        name = controller.to_s.split(":")[0].split("<")[1].gsub("Controller","")    # USE the controller
+        # name = method_info[:model].to_s                                             # USE the model
+
+        # OPTIMIZE try to optimize the adaptation of the links when changing method				
 				return link_to( image, arguments[0],{:method => :delete, :confirm => "Are you s&ucirc;r?"}) if method_info[:method]=="delete" 
-				
         if method_info[:method]=="list"
-					link = send("#{method_info[:model].to_s.tableize}_path")
+					link = send("#{name.tableize}_path")
 				elsif method_info[:method]=="add"
-					link = send("new_#{method_info[:model].to_s.tableize.singularize}_path")
+					link = send("new_#{name.tableize.singularize}_path")
         else		
-					link = send("#{path[method_info[:method]]}#{method_info[:model].to_s.tableize.singularize}_path",arguments[0])
+					link = send("#{path[method_info[:method]]}#{name.tableize.singularize}_path",arguments[0])
         end
         return link_to( image, link )
 
@@ -254,13 +255,12 @@ module ApplicationHelper
 										"delete" => "Delete current ",
 										"list" => "View all " }
 
-    if txt.nil?
-      result = default_text[method_info[:method]] + method_info[:model].to_s.tableize.gsub("_"," ")
-      result = result.singularize unless method_info[:method]=="list"
-      return result
-    else
-      return txt
-    end
+    return txt if txt.is_a?(String)
+
+    result = default_text[method_info[:method]] + method_info[:model].to_s.tableize.gsub("_"," ")
+    result = result.singularize unless method_info[:method]=="list"
+    return result
+ 
   end
 
   # method that split the helper name to get the model's name and the button's type

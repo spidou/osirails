@@ -27,7 +27,7 @@
         <td><%= get_structured_date(inventory) %></td>
         <td><%= show_last_update(inventory) %></td>
         <td><%= inventory.closed ? "Terminé" : "En cours" %>
-        <td><%= show_view_button(inventory) %></td>
+        <td><%= show_inventory_view_button(inventory,"") %></td>
           <%= "</tr>"%>
       <% end %>
       </table>

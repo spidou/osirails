@@ -112,10 +112,10 @@ module EmployeesHelper
     end 
   end
   
-  def show_premia_view_button(employee)
+  def show_premia_view_button(employee,txt = "View all premia")
     if menu_premia.can_view?(current_user) and Premium.can_list?(current_user) 
       if employee.premia.size>0 
-        link_to( 'View all premia', employee_premia_path(employee))
+        link_to( image_tag( "/images/view_16x16.png", :alt => "View", :title => "View")+" #{txt}", employee_premia_path(employee))
       end
     end
   end
