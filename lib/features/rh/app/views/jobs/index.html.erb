@@ -13,7 +13,7 @@
     <% for job in @jobs%>
     <tr>
       <td><%=job.name %></td>
-      <td style="width:70px;"><%=show_view_button(job)%> <%=show_edit_button(job)%> <%=show_delete_button(job)%></td>
+      <td style="width:70px;"><%=show_job_view_button(job, "")%> <%=show_job_edit_button(job, "")%> <%=show_job_delete_button(job, "")%></td>
     </tr>
     <%end%>
 </table>

@@ -5,19 +5,19 @@
       <p style="display:none">
         <%= hidden_field_tag 'employee_id',params[:id].nil? ? nil : params[:id]%>
       </p>  
-      <p class="text_form">
+      <p>
         <%= j.label :name, "Nom :"%>
         <%= j.text_field :name%>
       </p>
-      <p class="text_form">
+      <p>
         <%= j.label :mission, "Mission :"%>
         <%= j.text_area :mission, {:rows => 5} %>
       </p>
-      <p class="text_form">
+      <p>
         <%= j.label :activity, "Activités :"%>
         <%= j.text_area :activity, {:rows => 5}%>
       </p>
-      <p class="text_form">
+      <p>
         <%= j.label :goal, "Objectifs :"%>
         <%= j.text_area :goal, {:rows => 5}%>
       </p>

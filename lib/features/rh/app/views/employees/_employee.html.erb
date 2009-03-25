@@ -76,13 +76,13 @@
     <% if !is_form_view? %>    
       <h2>Primes</h2>
       <%= render :partial => 'premia/premium', :collection => @employee.premia[0..4] %>     
-      <p><%= show_premia_view_link(@employee) %></p>
+      <p><%= show_premia_view_button(@employee) %></p>
     <% end %>
   <% end %>
 
 <!--###### Documents div #######-->
   <% if is_form_view? %>
-    <%= display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
+    <%# display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
     <p><%= f.submit button_name  %></p>
   <% end %>
 <% end %><!--end form -->

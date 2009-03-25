@@ -31,7 +31,7 @@ class EmployeesController < ApplicationController
       @jobs = @employee.jobs
       @services = @employee.services
       @job_contract = @employee.job_contract
-      @documents = @employee.documents
+      # @documents = @employee.documents
     else
       error_access_page(403)
     end  
@@ -51,7 +51,7 @@ class EmployeesController < ApplicationController
 
       @employee.address = Address.new
       @address = @employee.address
-      @documents = @employee.documents
+      #@documents = @employee.documents
     else
       error_access_page(403)
     end
@@ -66,7 +66,7 @@ class EmployeesController < ApplicationController
       @employee = Employee.find(params[:id]) 
       @numbers = @employee.numbers
       @address = @employee.address
-      @documents =@employee.documents
+      #@documents =@employee.documents
       
     else
       error_access_page(403)

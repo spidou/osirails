@@ -106,7 +106,7 @@ module EmployeesHelper
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
-  def show_premia_add_button(employee,txt="")
+  def show_premia_add_button(employee,txt="New premium")
     if menu_premia.can_add?(current_user) and Premium.can_add?(current_user)
       link_to( "#{image_tag("/images/add_16x16.png", :alt=>"Add", :title => "Add")} #{txt}",new_employee_premium_path(employee))
     end 
@@ -122,7 +122,7 @@ module EmployeesHelper
   
   def show_job_contract_edit_button( employee,txt = "Edit job contract")
     if controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
-      <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Edit", :title => "Edit")} #{txt}", edit_employee_job_contract_path(employee)) %>
+      link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Edit", :title => "Edit")} #{txt}", edit_employee_job_contract_path(employee))
     end   
   end
   
@@ -130,9 +130,9 @@ module EmployeesHelper
   def show_actives_employees_view_button(show_all)   
       if controller.can_view?(current_user) and Employee.can_view?(current_user)
           if show_all == false
-            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")}  Voir tous les employ&eacute;s", :controller => "employees", :action => "index", :all_employees => true)
+            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")}  View all employees (including inactives)", :controller => "employees", :action => "index", :all_employees => true)
           else
-            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")} Voir tous les employ&eacute;s actifs", :controller => "employees", :action => "index", :all_employees => false)
+            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")} View all active employees", :controller => "employees", :action => "index", :all_employees => false)
           end
       end
   end
