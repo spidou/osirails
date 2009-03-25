@@ -34,17 +34,13 @@ module InventoriesHelper
       link_to("D&eacute;tails", inventory_path(inventory))
     end
   end
-  
-  # This method permit to show action menu
-  def show_action_menu
-    actions = []
+
+  # method that permit to show action link into secondary menu
+  #( we don't use the dynamic finder because of :type argument passed to new_inventory_path)  
+  def show_inventory_add_button(txt = "New inventory")
     if controller.can_add?(current_user) and Inventory.can_add?(current_user)
-    actions <<  "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-    actions << "<ul><li>"
-    actions << link_to("<img alt='&Eacute;tablir un nouvel inventaire' src='/images/add_16x16.png?1220437164' title='&Eacute;tablir un nouvel inventaire' /> &Eacute;tablir un nouvel inventaire", new_inventory_path(:type => 'inventory'))
-    actions <<  "</li></ul>"
-    end
-    actions
+      link_to( image_tag( "/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}", new_inventory_path(:type => "inventory"))    
+    end    
   end
   
   #  This method permit to add value of quantity

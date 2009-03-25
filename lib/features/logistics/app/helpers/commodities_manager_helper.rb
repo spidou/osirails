@@ -21,35 +21,26 @@ module CommoditiesManagerHelper
     end
   end
   
-  
-  # This method permit to show action menu
-  def show_action_menu(type)
-    actions = []
-    if controller.can_add?(current_user) and (CommodityCategory.can_add?(current_user) or Commodity.can_add?(current_user))
-      actions << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1><ul>"
-      actions << "<li>#{link_to("<img alt='Nouvelle cat&eacute;gorie' src='/images/add_16x16.png?1220437164' title='Nouvelle cat&eacute;gorie' /> Nouvelle cat&eacute;gorie", new_commodity_category_path)}</li>" if CommodityCategory.can_add?(current_user)
-      actions << "<li>#{link_to("<img alt='Nouvelle mati&egrave;re premi&egrave;re' src='/images/add_16x16.png?1220437164' title='Nouvelle mati&egrave;re premi&egrave;re' /> Nouvelle mati&egrave;re premi&egrave;re", new_commodity_path(:id => -1))}</li>" if Commodity.can_add?(current_user)
-      if ( CommodityCategory.find(:all).size != CommodityCategory.find_all_by_enable(true).size ) or ( Commodity.find(:all).size != Commodity.find_all_by_enable(true).size )
-        actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Affich&eacute; Actifs", :action => "index")}</li>"
-      end
-      actions << "</ul>"
-    end
+  # This method permit to format link that should be display into secondary menu
+  # we can't use the dynamic helper method 'generator' because of an unexpected argument passed to new_commodity_path => ':id =>-1'
+  def show_commodity_add_button(txt = "New Commodity")
+    if Commodity.can_add?(current_user)
+      link_to(image_tag( "/images/add_16x16.png", :alt => "New", :title => "New" )+" #{txt}", new_commodity_path(:id => -1) )    
+    end  
   end
   
-  # This methods permit to show link menu
-  def show_link_menu(inventory)
-    links = []
-    if controller.can_view?(current_user) and (Inventory.can_view?(current_user) or Inventory.can_add?(current_user))
-      links << "<h1><span class='gray_color'>Liens</span> <span class='blue_color'>Utiles</span></h1><ul>"
-      if Inventory.can_view?(current_user)
-        links << "<li>#{link_to("Visualiser la liste des inventaires", :controller => 'inventories', :action => 'index')}</li>"
-        links << "<li>"
-        links << link_to('Visualiser le dernier inventaire', :controller => 'inventories', :action => 'show', :id => inventory.id) unless inventory.nil?
-        links << "</li>"
+  # This method permit to display the good link if the commodities categories or commodities, are enabled or not
+  def show_commodities_view_button(type)
+    if ( CommodityCategory.find(:all).size != CommodityCategory.find_all_by_enable(true).size ) or ( Commodity.find(:all).size != Commodity.find_all_by_enable(true).size )
+      if type != "show_all" 
+        html_opt = { :alt => "View all commodities", :title => "View all commodities including destroyed"}
+        hash = { :action => "index", :type => "show_all"}
+      else
+        html_opt = { :alt => "View commodities", :title => "View all commodities without destroyed"}
+        hash = { :action => "index"}
       end
-      links << "<li>#{link_to("&Eacute;tablir un nouvel inventaire", :controller => "inventories", :action => 'new')}</li>" if Inventory.can_add?(current_user)
-      links << "</ul>"
-    end   
+        link_to(image_tag("/images/view_16x16.png")+" #{html_opt[:alt]}",hash,html_opt)
+    end
   end
   
   # This method permit to make in table editor

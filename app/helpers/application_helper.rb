@@ -219,18 +219,23 @@ module ApplicationHelper
 		( method_info[:model].respond_to?("can_"+method_info[:method]+"?") )? model_permission = method_info[:model].send("can_"+method_info[:method]+"?",current_user) : model_permission = true
 
     if controller.send("can_"+method_info[:method]+"?",current_user) and model_permission
+
 				path = {"view" => "", "edit" => "edit_"}
 				image = image_tag("/images/#{method_info[:method]}_16x16.png", :alt => method_info[:method], :title => method_info[:method]) + " #{add_some_text(method_info, arguments[1])}"
+
 # OPTIMIZE try to optimize the adaptation of the links when changing method
-				if method_info[:method]=="delete"
-					link_to( image, arguments[0],{:method => :delete, :confirm => "Are you s&ucirc;r?"})
-				elsif method_info[:method]=="list"
-					link_to( image, send("#{method_info[:model].to_s.tableize}_path"))
+				
+				return link_to( image, arguments[0],{:method => :delete, :confirm => "Are you s&ucirc;r?"}) if method_info[:method]=="delete" 
+				
+        if method_info[:method]=="list"
+					link = send("#{method_info[:model].to_s.tableize}_path")
 				elsif method_info[:method]=="add"
-					link_to( image, send("new_#{method_info[:model].to_s.tableize.singularize}_path"))
+					link = send("new_#{method_info[:model].to_s.tableize.singularize}_path")
         else		
-					link_to( image, send("#{path[method_info[:method]]}#{method_info[:model].to_s.tableize.singularize}_path",arguments[0]))
+					link = send("#{path[method_info[:method]]}#{method_info[:model].to_s.tableize.singularize}_path",arguments[0])
         end
+        return link_to( image, link )
+
     end
 
   end

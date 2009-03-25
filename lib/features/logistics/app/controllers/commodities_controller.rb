@@ -43,7 +43,7 @@ class CommoditiesController < ApplicationController
   # DELETE /commodities/1
   def destroy
     @commodity = Commodity.find(params[:id])
-    if @commodity.can_destroy?
+    if @commodity.can_be_destroyed?
       if @commodity.destroy
         flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
       else

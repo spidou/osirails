@@ -16,11 +16,23 @@
 <span class='total' style='display: none;'></span>
 <span id='total_ttc' style='display: none;'></span>
 
-<%= show_action_menu(@type) %>
-
-<%= show_link_menu(@inventory)%>
-
 <% end %>
+
+      
+
+
+<% secondary_menu POSSIBLE_ACTIONS do %>
+  <%= show_commodity_category_add_button %>
+  <%= show_commodity_add_button %>
+  <%= show_commodities_view_button(@type) %>
+<% end %>
+
+<% secondary_menu USEFUL_LINKS do %>
+  <%= show_inventory_list_button %>
+  <%= show_inventory_view_button(@inventory) unless @inventory.nil? %>
+  <%= show_inventory_add_button%>
+<% end %>
+
 
 <% if @commodities.size > 0 %>
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
