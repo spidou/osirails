@@ -67,7 +67,7 @@ def init(config, path, plugin = false)
 #    ######### END SEARCH
 
     
-  rescue ActiveRecord::StatementInvalid, Mysql::Error => e
+  rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError => e
     error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     RAKE_TASK ? puts(error) : raise(error)
   end
