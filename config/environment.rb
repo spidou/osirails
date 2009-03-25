@@ -64,7 +64,9 @@ Rails::Initializer.run do |config|
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 
-  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers } #FIXME this line permits to add controllers in plugins. if it cause issues anywhere, comment this line and verify if all plugins works properly
+  # this line permits to add controllers and helpers in plugins
+  # FIXME if it cause issues anywhere, comment this line and verify if all plugins works properly
+  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers #{RAILS_ROOT}/app/helpers }
   
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

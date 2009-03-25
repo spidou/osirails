@@ -103,8 +103,8 @@ class FeatureManager
     def insert_menus_in_database
       @@all_menus.each do |menu_array|
         parent_menu = Menu.find_by_name(menu_array[:parent])
-        feature_id = @feature.id rescue parent_menu.feature.id rescue nil # "parent_menu.feature.id permits to get the feature id of the parent menu, but actually that works only if the feature of the parent menu is loaded before the current feature
-        parent_menu_id = parent_menu.id rescue nil
+        feature_id = @feature.nil? ? parent_menu.nil? ? nil : parent_menu.feature_id : @feature.id # "parent_menu.feature.id permits to get the feature id of the parent menu, but actually that works only if the feature of the parent menu is loaded before the current feature
+        parent_menu_id = parent_menu.nil? ? nil : parent_menu.id
 
         # unless menu already exist
         unless current_menu = Menu.find_by_name(menu_array[:name])
