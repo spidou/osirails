@@ -4,41 +4,51 @@
 
 <div class="presentation_large">
   <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="float: right; width: 162px; height: 162px;"></object>
-	<p>
-    <label>Nom de projet :</label>
-		<strong><%= @order.title %></strong>
-	</p>
 
-	<p>
-    <label>Client / &Eacute;tablissement :</label>
-		<strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
-	</p>
+  <div class="order_header">
+    <div class="right">
+      <p>
+        <label>&Eacute;tapes finies :</label>
+        <strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
+      </p>
+      
+      <p>
+        <label>Type de dossier :</label>
+        <strong><%= @order.order_type.title %></strong>
+      </p>
 
-	<p>
-    <label>Lieu de livraison :</label>
-		<strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
-	</p>
+      <p>
+        <label>Suivi commercial :</label>
+        <strong><%= @order.commercial.fullname %></strong>
+      </p>
+    </div>
+    <div class="left">
+      <p>
+        <label>Nom de projet :</label>
+        <strong><%= @order.title %></strong>
+      </p>
 
-	<p>
-		<label>&Eacute;tapes (finies/total) :</label>
-		<strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
-	</p>
+      <p>
+        <label>Client / &Eacute;tablissement :</label>
+        <strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+      </p>
 
-	<p>
-    <label>Suivi commercial :</label>
-		<strong><%= @order.commercial.fullname %></strong>
-	</p>
+      <p>
+        <label>Lieu de livraison :</label>
+        <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
+      </p>
 
-	<p>
-    <label>Type de dossier :</label>
-		<strong><%= @order.order_type.title %></strong>
-	</p>
+      <p>
+        <label>Date pr&eacute;visionnelle de livraison :</label>
+        <strong><%= @order.previsional_delivery %></strong>
+      </p>
+    </div>
+  </div>
 
-	<p>
-    <label>Date pr&eacute;visionnelle de livraison :</label>
-		<strong><%= @order.previsional_delivery %></strong>
-	</p>
-	<% if controller.can_edit?(current_user) %>
-		<%= link_to 'Modifier', edit_order_path(@order) %>
-	<% end %>
+  <p>
+  <% if controller.can_edit?(current_user) %>
+    <%= link_to 'Modifier', edit_order_path(@order) %>
+  <% end %>
+  </p>
 </div>
+ 

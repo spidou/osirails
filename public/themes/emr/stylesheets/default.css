@@ -1783,3 +1783,24 @@ table.mceEditor {
 	margin-bottom:-5px;
 	border:none;
 }
+
+.order_header p {
+  text-align: left;
+}
+
+.order_header .left {
+  width: 500px;
+}
+
+.order_header .left label {
+  width: 170px;
+}
+
+.order_header .right {
+  float: right;
+  width: 280px;
+}
+
+.order_header .right label {
+  width: 140px;
+}
