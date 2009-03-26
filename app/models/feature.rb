@@ -170,30 +170,44 @@ class Feature < ActiveRecord::Base
   def activate_by_default?
     FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
   end
-
+  
   def enable
-    if able_to_activate?
-      self.activated = true
-      if self.save
-        # Reload the configuration
-        load File.join(RAILS_ROOT, 'config', 'environment.rb')
-        ActionController::Routing::Routes.reload!
-        return true
-      end
+    return false unless able_to_activate?
+    
+    if update_attribute(:activated, true)
+      reload_environment!
+    else
+      false
     end
-    false
   end
 
   def disable
     return false unless able_to_deactivate?
-    self.activated = false
-    if self.save
-      # Reload the configuration
-      load File.join(RAILS_ROOT, 'config', 'environment.rb')
-      ActionController::Routing::Routes.reload!
-      return true
+    
+    if update_attribute(:activated, false)
+      reload_environment!
+    else
+      false
     end
-    false
+  end
+  
+  def reload_environment!
+    begin
+      # reload configuration
+      load File.join(RAILS_ROOT, 'config', 'environment.rb')
+      
+      # reload routes
+      ActionController::Routing::Routes.reload!
+      
+      # return true if all is right
+      true
+    rescue Exception => e
+      error_message = "(#{e.class}) #{e.message}\n" +
+                      "An error occured during the reloading of the environment after trying to enable/disable/install/uninstall a feature.\n" +
+                      "You should restart the server if you want the application works properly."
+      RAILS_ENV == "production" ? RAILS_DEFAULT_LOGGER.error(error_message) : raise(error_message)
+      false
+    end
   end
 
   def install
