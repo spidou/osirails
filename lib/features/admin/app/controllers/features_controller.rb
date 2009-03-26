@@ -37,7 +37,7 @@ class FeaturesController < ApplicationController
           @feature.activate_dependencies.size > 1 ? flash[:error] << "Les modules suivants sont requis : " : flash[:error] << "Le module suivant est requis : "
           deps = []
           @feature.activate_dependencies.each do |error|
-            deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+            deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
           end
           flash[:error] << deps.join(", ")
         end
@@ -51,7 +51,7 @@ class FeaturesController < ApplicationController
           @feature.deactivate_children.size > 1 ? flash[:error] << "D'autres modules dépendent de ce module : " : flash[:error]  << "Un autre module dépend de ce module : "
           deps = []
           @feature.deactivate_children.each do |error|
-            deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+            deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
           end
           flash[:error] << deps.join(", ")
         end
@@ -73,7 +73,7 @@ class FeaturesController < ApplicationController
           @feature.able_to_install_conflicts.size > 1 ? flash[:error] << "<br/>Les conflits suivants ont été détectés : " : flash[:error] << "<br />Le conflit suivant a été détecté : "
           deps = []
           @feature.able_to_install_conflicts.each do |error|
-            deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+            deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
           end
           flash[:error] << deps.join(", ")
         end
@@ -92,7 +92,7 @@ class FeaturesController < ApplicationController
           flash[:error] << "D'autres modules dépendent de ce module : "
           deps = []
           @feature.able_to_uninstall_children.each do |error|
-            deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
+            deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
           end
           flash[:error] << deps.join(", ")
         end

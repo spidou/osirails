@@ -4,6 +4,7 @@
   <h2>Modules</h2>
   <table id="feature_managment">
     <tr>
+      <th>Titre</th>
       <th>Nom</th>
       <th>Version</th>
       <th>Date d'ajout</th>
@@ -15,6 +16,7 @@
     <% for feature in @features %>
     <tr>
       <td><%= feature.title %></td>
+      <td><%= feature.name %></td>
       <td><%= feature.version %></td>
       <td><%= feature.created_at.strftime("0%w/%m/%Y") %></td>
       <td><%= display_install_link(feature) %></td>

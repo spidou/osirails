@@ -84,7 +84,7 @@ class Feature < ActiveRecord::Base
       conflicts.each do |conflicts|
         if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).size > 0
           feature = Feature.find_by_name(conflicts[:name])
-          features_in_conflicts = { :title => feature.title, :version => feature.version }
+          features_in_conflicts = { :name => feature.name, :version => feature.version }
           @able_to_install_conflicts << features_in_conflicts
         end     
       end
@@ -121,7 +121,7 @@ class Feature < ActiveRecord::Base
       self.child_dependencies.each  do |child|
         if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
           feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:title => feature.title, :version => feature.version}
+          deactivated_feature = {:name => feature.name, :version => feature.version}
           @able_to_uninstall_children << deactivated_feature
         end
       end
@@ -153,7 +153,7 @@ class Feature < ActiveRecord::Base
       self.child_dependencies.each do |child|
         if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
           feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:title => feature.title, :version => feature.version}
+          deactivated_feature = {:name => feature.name, :version => feature.version}
           @deactivate_children << deactivated_feature
         end
       end
