@@ -1,5 +1,5 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_supplier_add_button %>
+  <%= new_supplier_link %>
 <% end %>
 
 <h1> Liste des fournisseurs </h1>
@@ -20,9 +20,9 @@
           <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
           <td><%= supplier.note %></td>
           <td>
-            <%= show_supplier_view_button(supplier,"") %> 
-            <%= show_supplier_edit_button(supplier,"") %>
-            <%= show_supplier_delete_button(supplier,"") %>
+            <%= supplier_link(supplier, :link_text => "") %> 
+            <%= edit_supplier_link(supplier, :link_text => "") %>
+            <%= delete_supplier_link(supplier, :link_text => "") %>
             </td>
         </tr>
     <%end%>

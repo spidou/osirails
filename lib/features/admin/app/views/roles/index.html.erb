@@ -1,5 +1,5 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_role_add_button %>
+  <%= new_role_link %>
 <% end %>
 
 <h1>Liste des  r&ocirc;les</h1>
@@ -16,7 +16,10 @@
       <tr>
         <td><%=h role.name %></td>
         <td title="<%=h role.description %>"><%=preview(role.description,30) %></td>
-        <td><%= show_role_view_button(role,"") %> <%= show_role_edit_button(role,"") %> <%= show_role_delete_button(role,"") %>
+        <td>
+          <%= role_link(role, :link_text => "") %>
+          <%= edit_role_link(role, :link_text => "") %>
+          <%= delete_role_link(role, :link_text => "") %>
         </td>
       </tr>
     <% end %>

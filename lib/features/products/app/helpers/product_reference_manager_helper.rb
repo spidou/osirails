@@ -16,7 +16,7 @@ module ProductReferenceManagerHelper
       
       if controller.can_view?(current_user) # and (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
         if (ProductReference.find(:all).size != ProductReference.find_all_by_enable(true).size) or (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
-          actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Tout affich&eacute;", :action => "index", :type => "show_all") : link_to("<img alt='Tout affich&eacute;' title='Tout affich&eacute;' src='/images/view_16x16.png' /> Affich&eacute; Actifs", :action => "index")}</li>"
+          actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout afficher' title='Tout afficher' src='/images/view_16x16.png' /> Tout afficher", :action => "index", :type => "show_all") : link_to("<img alt='Afficher actifs' title='Afficher actifs' src='/images/view_16x16.png' /> Afficher actifs", :action => "index")}</li>"
         end
       end
       actions << "</ul>"

@@ -1,5 +1,5 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_job_add_button%>
+  <%= new_job_link %>
 <% end %>
 
 <h1> Liste des fiches de poste</h1>
@@ -13,7 +13,11 @@
     <% for job in @jobs%>
     <tr>
       <td><%=job.name %></td>
-      <td style="width:70px;"><%=show_job_view_button(job, "")%> <%=show_job_edit_button(job, "")%> <%=show_job_delete_button(job, "")%></td>
+      <td style="width:70px;">
+        <%= job_link(job, :link_text => "") %>
+        <%= edit_job_link(job, :link_text => "") %>
+        <%= delete_job_link(job, :link_text => "") %>
+      </td>
     </tr>
     <%end%>
 </table>

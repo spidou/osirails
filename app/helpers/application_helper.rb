@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  
   def file_upload
     file_field 'upload', 'datafile'
   end
@@ -177,111 +178,274 @@ module ApplicationHelper
     content_for(:secondary_menu) {html}
   end
 
-	#####################################################
-  ######### Dynamic helper method management ##########
-
-  # Method to respect DRY when coding several times similars helpers like : 
-	# example ==> show_customer_add_button 
-	#             show_supplier_edit_button
-  # if the method do not correspond to the model "show_model_method_button", it call "super" to manage "no method error"
-  # - "model" : could be "emloyee" or "number_type", etc...
-  # - "method" : could be (view, add, delete, edit, list)
-	#
-	# ==== Arguments
-	#	it take a maximum of two arguments (Obj,Txt)
-	# You can pass some arguments according to the method that you type :
-	# For example when type "add" -> (show_customer_add_button) it doesn't need "Obj", because you create a new one,
-	# 	but you can add "Txt" as an optionnal argument to replace the default text
-	# But if you type "edit" -> (show_customer_edit_button) then you need to precise what object to modify, 
-	#		so you have to pass "Obj" as argument but "Txt" still optionnal
-	# PS: If you want to avoid the presence of any text next to the image type "" as "Txt" value, to replace the default one  
-	
-	# ==== Examples
-  # show_third_add_button
-  #   # <a href="..."><img src="..."></a>  
-  # 
-	## without text as argument
-  # show_third_edit_button(@customer)
-  #   # <a href="..."><img src="..."> default txt</a>
-	#	
-	## with text as argument
-	# show_third_edit_button(@customer,"txt")
-  #   # <a href="..."><img src="..."> txt</a>
-  #
-  # link: http://weblog.jamisbuck.org/2006/12/1/under-the-hood-activerecord-base-find-part-3  
-
-	
-	def method_missing(method_id, *arguments)
-    # check if the method _name correspond to the model
-		super unless method_id.to_s.match(/^show_[a-z]*((_)[a-z]*)*_(view|add|edit|list|delete)_button$/)
-	
-    method_info = method_name(method_id.to_s)
-		( method_info[:model].respond_to?("can_"+method_info[:method]+"?") )? model_permission = method_info[:model].send("can_"+method_info[:method]+"?",current_user) : model_permission = true
-
-    if controller.send("can_"+method_info[:method]+"?",current_user) and model_permission
-
-				path = {"view" => "", "edit" => "edit_"}
-				image = image_tag("/images/#{method_info[:method]}_16x16.png", :alt => method_info[:method], :title => method_info[:method]) + " #{add_some_text(method_info, arguments.last)}"
-
-        name = controller.to_s.split(":")[0].split("<")[1].gsub("Controller","")    # USE the controller
-        # name = method_info[:model].to_s                                             # USE the model
-
-        # OPTIMIZE try to optimize the adaptation of the links when changing method				
-				return link_to( image, arguments[0],{:method => :delete, :confirm => "Are you s&ucirc;r?"}) if method_info[:method]=="delete" 
-        if method_info[:method]=="list"
-					link = send("#{name.tableize}_path")
-				elsif method_info[:method]=="add"
-					link = send("new_#{name.tableize.singularize}_path")
-        else		
-					link = send("#{path[method_info[:method]]}#{name.tableize.singularize}_path",arguments[0])
-        end
-        return link_to( image, link )
-
-    end
-
-  end
-	
-  # method that permit to add some default text regarding the method (add,edit ,etc...)
-  # it take in arguments txt, and method_info hash variable
-  # txt="" => default, txt="none" => "", txt="some text" => "some text"
-  # it return a string result containig the formatting text corresponding to the method
-  # ==== example 
-	# add_some_text("", {:model => Employee, :method => list})
-  # ==> result = "view all employees"
-  def add_some_text(method_info,txt)
-    default_text= { "view" => "View current ",
-										"add" => "New ",
-										"edit" => "Edit current ",
-										"delete" => "Delete current ",
-										"list" => "View all " }
-
-    return txt if txt.is_a?(String)
-
-    result = default_text[method_info[:method]] + method_info[:model].to_s.tableize.gsub("_"," ")
-    result = result.singularize unless method_info[:method]=="list"
-    return result
- 
-  end
-
-  # method that split the helper name to get the model's name and the button's type
-  # return a hash like {:model => name, :method => type} 
-  # ==== exmaple 
-	# => show_customer_view_button(args*) model:Customer  button type: view 
-  def method_name(method_id)
-      result = Hash.new
-      tmp = method_id.split("show_").last.split("_button").last.split("_")
-      result[:method] = tmp.pop 
-      if Object.const_defined?(tmp.join("_").camelize)
-        result[:model] = tmp.join("_").camelize.constantize 
-      else
-        raise "Model #{tmp.join("_").camelize} doesn't exist please verify the name "
-      end      
-      return result 
-  end
-
-	######################################################
-
   private
+    # Creates dynamic helpers to generate standard links in all page
+    # These dynamic helpers are based on RESTful path methods generated from routes
+    # 
+    # Methods must start end by "_link"
+    # 
+    # ==== Examples
+    #   users_link                          # model => user        | action => list   | method called => users_path
+    #   new_group_link                      # model => group       | action => add    | method called => new_group_path
+    #   user_link(@user)                    # model => user        | action => view   | method called => user_path(@user)
+    #   edit_user_link(@user)               # model => user        | action => edit   | method called => edit_user(@user)
+    #   delete_geat_model_link(@geat_model) # model => geat_model  | action => delete | method called => link_to("Delete", @user, { :method => :delete, :confirm => "Are you sure?"})
+	  #
+	  # ==== Arguments
+	  # For the actions +list+ and +add+, only one parameter is allowed
+	  # 
+	  # For the actions +view+, +edit+, +delete+, the first parameter (+object+) is required, and a second parameter is allowed
+	  # 
+	  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
+	  # 
+	  # <tt>:image_tag</tt> permits to define a custom image tag for the link
+    #   <%= user_link(@user, :image_tag => image_tag("/images/view.png") ) %>
+    # 
+    # <tt>:link_text</tt> permits to define a custom value for the link label
+    #   <%= new_user_link( :link_text => "Add a user" ) %>
+    # 
+    def method_missing_with_dynamic_link_catcher(method, *args)
+      # did somebody tried to use a dynamic link helper?
+      unless method.to_s.match(/_link$/)
+        if block_given?
+          return method_missing_without_dynamic_link_catcher(method, *args) { |*a| yield(*a) }
+        else
+          return method_missing_without_dynamic_link_catcher(method, *args) 
+        end
+      end
+      
+      # retrieve infos about model and path from the given method
+      method_infos              = dynamic_link_catcher_retrieve_method_infos(method.to_s)
+      path_name                 = method_infos[:path_name]
+      model_name                = method_infos[:model_name]
+      
+      # define what is the permission method name according to the given method
+      if model_name == model_name.pluralize         # users
+        permission_name = :list
+        model_name = model_name.singularize
+      
+      elsif path_name.match(/^(formatted_)?[^_]*$/) # user        | formatted_user
+        permission_name = :view
+      
+      elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
+        permission_name = :add
+      
+      elsif path_name.match(/^(formatted_)?edit_/)  # edit_user   | formatted_edit_user
+        permission_name = :edit
+      
+      elsif path_name.match(/^delete_/)             # delete_user
+        permission_name = :delete
+      
+      else
+        raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
+      end
+      
+      # define the corresponding model, and check the permissions
+      model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
+		  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
+		  has_controller_permission = controller.send("can_#{permission_name}?", current_user)
+      
+      # check if the method called is well-formed
+	    case permission_name
+      when :list, :add              # add, list          => 1 parameter at most (params)
+		    options = args[0] || {}
+      else                          # view, edit, delete => 1 parameter at least, 2 parameters at most (object, params)
+        object_or_id = args[0]
+        raise ArgumentError, 'parameter object or ID expected' if object_or_id.nil?
+        options = args[1] || {}
+      end
+      raise ArgumentError, 'parameter hash expected' unless options.is_a?(Hash)
+      
+      # default options
+		  options = { :link_text   => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
+		              :image_tag   => image_tag( "/images/#{permission_name}_16x16.png",
+		                                         :title => default_title,
+		                                         :alt => default_title )
+	              }.merge(options)
+	    
+	    # return the correspondong link_to tag if permissions are allowing that!
+      if has_controller_permission and has_model_permission
+			  content = "#{options[:image_tag]} #{options[:link_text]}"
+        case permission_name
+        when :delete
+          return link_to( content, object_or_id, { :method => :delete, :confirm => "Are you sure?" } )
+        when :list, :add
+          url = send("#{path_name}_path")
+        else
+          url = send("#{path_name}_path", object_or_id)
+        end
+        return link_to( content, url )
+      end
+    end
+    
+    alias_method_chain :method_missing, :dynamic_link_catcher
+    
+    # retrives the model name and the method name from the called method
+    # 
+    # ==== Examples
+    #   dynamic_link_catcher_retrieve_method_infos("edit_user_link")
+    #   # => { :model_name => "user", :path_name => "edit_user" }
+    # 
+    #   dynamic_link_catcher_retrieve_method_infos("new_great_model_link")
+    #   # => { :model_name => "great_model", :path_name => "new_great_model" }
+    # 
+    def dynamic_link_catcher_retrieve_method_infos(method)
+      infos = method.split("_")   # "formatted_new_great_model_link" => [ "formatted", "new", "great", "model", "link" ]
+      infos.pop
+      model_name = infos.reject{ |s| %W{ formatted new edit delete}.include?(s) } # [ "formatted", "new", "great", "model" ] => [ "great", "model" ]
+      { :model_name => model_name.join("_"), :path_name => infos.join("_") }
+    end
+    
+    # returns a readable link text according to the given method and model
+    # 
+    # ==== Examples
+	  #   dynamic_link_catcher_default_link_text(:edit, "user")
+	  #   # => "Edit current user"
+	  # 
+	  #   dynamic_link_catcher_default_link_text(:add, "great_model")
+    #   # => "New great model"
+    # 
+    #   dynamic_link_catcher_default_link_text(:list, "group")
+    #   # => "List all groups"
+    # 
+    def dynamic_link_catcher_default_link_text(method_name, model_name)
+      default_text = { :list    => "List all ",
+                       :view    => "View this ",
+										   :add     => "New ",
+										   :edit    => "Edit this ",
+										   :delete  => "Delete this " }
+
+      result = default_text[method_name] + model_name.gsub("_"," ")
+      result = result.singularize unless method_name == :list
+      return result
+    end
+    
+#    # creates dynamic helpers to generate standard buttons in all page
+#    # these dynamic helpers are generated according to the +model+ and +action+ given in the method name
+#    # 
+#    # Methods must start by "show_" and end by "_button"
+#    # The before last word represents the +action+ to do (list, add, view, edit or delete)
+#    # The set of words between the first underscore and the before-before last underscore represents the +model+
+#    # An +object+ must be given for the following actions : view, edit, delete
+#    # 
+#    # ==== Examples
+#    #   show_user_list_button                       # model => user         | action => list
+#    #   show_group_add_button                       # model => group        | action => add
+#    #   show_user_view_button(@user)                # model => user         | action => view     | object => @user
+#    #   show_user_edit_button(@user)                # model => user         | action => edit     | object => @user
+#    #   show_geat_model_delete_button(@geat_model)  # model => geat_model   | action => delete   | object => @geat_model
+#	  #
+#	  # ==== Arguments
+#	  # For the actions +list+ and +add+, only one parameter is allowed
+#	  # 
+#	  # For the actions +view+, +edit+, +delete+, the first parameter (+object+) is required, and a second parameter is allowed
+#	  # 
+#	  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
+#	  # 
+#	  # <tt>:image_src</tt> permits to define a custom image source for the link
+#    #   <%= show_user_list_button( :image_src => "/images/list.png" ) %>
+#    #
+#    # <tt>:image_title</tt> permits to define a custom image title for the link
+#    #   <%= show_user_list_button( :image_title => "My Custom Title" ) %>
+#    #
+#    # <tt>:image_alt</tt> permits to define a custom image alternative text for the link
+#    #   <%= show_user_list_button( :image_alt => "My custom alternative text" ) %>
+#    # 
+#    # <tt>:link_text</tt> permits to define a custom value for the link label
+#    #   <%= show_user_add_button( :link_text => "Add a user" ) %>
+#    # 
+#	  def method_missing_with_dynamic_button_helper(method, *args)
+#      # did somebody tried to use a dynamic button helper?
+#      unless method.to_s.match(/^show_[a-z]*((_)[a-z]*)*_(list|view|add|edit|delete)_button$/)
+#        if block_given?
+#          return method_missing_without_dynamic_button_helper(method, *args) { |*a| yield(*a) }
+#        else
+#          return method_missing_without_dynamic_button_helper(method, *args) 
+#        end
+#      end
+#      
+#      method_infos              = dynamic_button_helper_retrieve_method_infos(method.to_s)
+#      method_name               = method_infos[:method_name]
+#      model_name                = method_infos[:model_name]
+#      model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
+#		  has_model_permission      = model.respond_to?("can_#{method_name}?") ? model.send("can_#{method_name}?", current_user) : true
+#		  has_controller_permission = controller.send("can_#{method_name}?", current_user)
+#		  tableized_model_name      = model_name.tableize                      # if we use model name
+#	#	  tableized_model_name      = controller.controller_name.tableize      # if we use the controller name
+#		  
+#		  if [:add, :list].include?(method_name)  # add, list          => 1 parameter at most (params)
+#		    options = args[0] || {}
+#      else                                    # view, edit, delete => 1 parameter at least, 2 parameters at most (object, params)
+#        object_or_id = args[0]
+#        raise ArgumentError, 'parameter object or ID expected' if object_or_id.nil?
+#        options = args[1] || {}
+#      end
+#      
+#      raise ArgumentError, 'parameter hash expected' unless options.is_a?(Hash)
+#		  
+#		  options = { :image_src   => "/images/#{method_name}_16x16.png",
+#		              :image_title => default_title = dynamic_button_helper_default_link_text(method_name, tableized_model_name),
+#		              :image_alt   => default_title,
+#		              :link_text   => default_title,
+#	              }.merge(options)
+#
+#      if has_controller_permission and has_model_permission
+#			  path = { :view => "", :edit => "edit_" }
+#			  content = image_tag( options[:image_src], :alt => options[:image_alt], :title => options[:image_title]) + " #{options[:link_text]}"
+#        
+#        case method_name
+#        when :delete
+#          return link_to( content, object_or_id, { :method => :delete, :confirm => "Êtes-vous sûr ?" } )
+#        when :list
+#          url = send("#{tableized_model_name}_path")
+#        when :add
+#          url = send("new_#{tableized_model_name.singularize}_path")
+#        else	
+#				  url = send("#{path[method_name]}#{tableized_model_name.singularize}_path", object_or_id)
+#        end
+#        
+#        return link_to( content, url )
+#      end
+#    end
+    
+#    # retrives the model name and the method name from the called method
+#    # 
+#    # ==== Examples
+#    #   dynamic_button_helper_retrieve_method_infos("show_user_edit_button")
+#    #   # => { :model_name => "user", :method_name => "edit" }
+#    # 
+#    #   dynamic_button_helper_retrieve_method_infos("show_great_model_add_button")
+#    #   # => { :model_name => "great_model", :method_name => "add" }
+#    # 
+#    def dynamic_button_helper_retrieve_method_infos(method)
+#      infos = method[5...method.rindex("_button")].split("_")               # "show_great_model_edit_button" => [ "great", "model", "edit" ]
+#      { :method_name => infos.pop.to_sym, :model_name => infos.join("_") }
+#    end
+    
+#    # returns a readable link text according to the given method and model
+#    # 
+#    # ==== Examples
+#	  #   dynamic_button_helper_default_link_text(:edit, "user")
+#	  #   # => "Edit current user"
+#	  # 
+#	  #   dynamic_button_helper_default_link_text(:add, "great_model")
+#    #   # => "New great model"
+#    # 
+#    #   dynamic_button_helper_default_link_text(:list, "group")
+#    #   # => "List all groups"
+#    # 
+#    def dynamic_button_helper_default_link_text(method_name, model_name)
+#      default_text = { :list    => "List all ",
+#                       :view    => "View this ",
+#										   :add     => "New ",
+#										   :edit    => "Edit this ",
+#										   :delete  => "Delete this " }
+#
+#      result = default_text[method_name] + model_name.gsub("_"," ")
+#      result = result.singularize unless method_name == :list
+#      return result
+#    end
+    
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code
       if menu.name
@@ -316,4 +480,5 @@ module ApplicationHelper
 #        raise "You may create a controller called '#{real_controller_name}' and create a menu entry in the 'config.yml' file of the corresponding feature. #{e.message}"
 #      end
 #    end
+  
 end

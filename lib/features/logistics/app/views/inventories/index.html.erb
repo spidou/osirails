@@ -1,13 +1,10 @@
-<% content_for :secondary_menu do %>
-  <h1><span class="gray_color">Statistiques</span></h1>
-  <ul>
-    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>"%></li>
-    <li><%= @inventory_closed.size == 0 ? "<span class='secondary_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='secondary_menu_statistic'>Il y a 1 inventaire en cours</span>" %></li>
-  </ul>
+<% secondary_menu "Statistiques" do %>
+	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>" %>
+	<%= @inventory_closed.size == 0 ? "<span class='secondary_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='secondary_menu_statistic'>Il y a 1 inventaire en cours</span>" %>
 <% end %>
 
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_inventory_add_button %>
+  <%= new_inventory_link %>
 <% end %>
   
   <h1>Liste des inventaires</h1>
@@ -27,7 +24,7 @@
         <td><%= get_structured_date(inventory) %></td>
         <td><%= show_last_update(inventory) %></td>
         <td><%= inventory.closed ? "Terminé" : "En cours" %>
-        <td><%= show_inventory_view_button(inventory,"") %></td>
+        <td><%= inventory_link(inventory, :link_text => "") %></td>
           <%= "</tr>"%>
       <% end %>
       </table>

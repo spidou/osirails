@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do%>
-	<%= show_user_add_button %>
-	<%= show_user_edit_button(@user)%>
-	<%= show_user_delete_button(@user)%>
+	<%= new_user_link %>
+	<%= edit_user_link(@user)%>
+	<%= delete_user_link(@user)%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_user_list_button %>
+	<%= users_link %>
 <% end %>
 <h1>Informations d'un compte utilisateur</h1>
 

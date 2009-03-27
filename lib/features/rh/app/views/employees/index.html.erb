@@ -1,7 +1,7 @@
 <h1>Tous les employ&eacute;es</h1>
 
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_employee_add_button%>
+  <%= new_employee_link %>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
   <%= show_actives_employees_view_button(params[:all_employees]) %>
@@ -32,7 +32,8 @@
     </td>
     <td><%=h employee.intranet_email %></td>
     <td>
-      <%= show_employee_view_button(employee,"")%> <%= show_employee_edit_button(employee,"")%>
+      <%= employee_link(employee, :link_text => "") %>
+      <%= edit_employee_link(employee,:link_text => "") %>
     </td>
   </tr>
 <% end %>

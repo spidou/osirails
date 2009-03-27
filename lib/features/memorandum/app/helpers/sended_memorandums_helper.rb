@@ -128,8 +128,8 @@ module SendedMemorandumsHelper
     memorandums.each do |memorandum|
       
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
-      show_button = show_memorandum_view_button(memorandum,"")
-      edit_button = show_memorandum_edit_button(memorandum,"")
+      show_button = show_memorandum_view_button(memorandum, :link_text => "")
+      edit_button = show_memorandum_edit_button(memorandum, :link_text => "")
       period_memorandum = Memorandum.color_memorandums(memorandum)
       
       sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"

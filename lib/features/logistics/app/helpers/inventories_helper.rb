@@ -18,14 +18,13 @@ module InventoriesHelper
   
   # This method permit to show closed button
   def show_closed_button(inventory)
-    closed_button = []
     if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)
-      closed_button <<  "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-      closed_button << "<ul><li>"
-      closed_button << (inventory.inventory_closed? ? image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;")+" Cl&ocirc;tur&eacute;" : link_to("Cl&ocirc;turer l'inventaire", {:id => inventory.id}, {:method => :put, :class => 'link_to_closed', :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"}))
-      closed_button << "</li></ul>"
+      if inventory.inventory_closed?
+        image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;") + " Cl&ocirc;tur&eacute;"
+      else
+        link_to("Cl&ocirc;turer l'inventaire", {:id => inventory.id}, {:method => :put, :class => 'link_to_closed', :confirm => "Attention, une fois clôtur&eacute;, vous ne pourrez plus modifier l'inventaire"})
+      end
     end
-    closed_button
   end
   
   # This method permit to show view button

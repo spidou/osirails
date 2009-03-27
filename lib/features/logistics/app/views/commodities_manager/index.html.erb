@@ -1,36 +1,23 @@
 <% content_for :header do %>
-  <script type="text/javascript" src="/javascripts/logisctic/price_calculator.js"></script>
-  <script type="text/javascript" src="/javascripts/logisctic/reduce.js"></script>
-  <script type="text/javascript" src="/javascripts/logisctic/develop.js"></script>
-  <script type="text/javascript" src="/javascripts/logisctic/total.js"></script>
+  <%= javascript_include_tag 'logistics/commodities' %>
 <% end %>
 
-<% content_for :secondary_menu do %>
-
-  <h1><span class='gray_color'>Statistiques</span></h1>
-  <ul>
-    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %></li>
-    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %></li>
-    <li><%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%></li>
-    </ul>
-<span class='total' style='display: none;'></span>
-<span id='total_ttc' style='display: none;'></span>
-
+<% secondary_menu "Statistiques" do %>
+	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
+	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
+	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%>
 <% end %>
-
-      
-
 
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_commodity_category_add_button %>
-  <%= show_commodity_add_button %>
-  <%= show_commodities_view_button(@type) %>
+  <%= new_commodity_category_link %>
+  <%= new_commodity_link %>
+  <% #TODO display all OR display only activated ones %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= show_inventory_list_button %>
-  <%= show_inventory_view_button(@inventory) unless @inventory.nil? %>
-  <%= show_inventory_add_button%>
+  <%= inventories_link %>
+  <%= inventory_link(@last_inventory, :link_text => "View last inventory") unless @last_inventory.nil? %>
+  <%= new_inventory_link %>
 <% end %>
 
 
