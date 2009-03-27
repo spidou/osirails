@@ -53,12 +53,6 @@ class Employee < ActiveRecord::Base
   before_save :case_managment
   after_update :save_iban, :save_numbers, :save_address
   
-  # Method to change the case of the first_name and the last_name at the employee's creation
-  def case_managment
-    self.first_name.capitalize!
-    self.last_name.upcase!
-  end
-  
   #OPTIMIZE why don't put this method in a named_scope?
   # Method to find active employees
   def self.active_employees
