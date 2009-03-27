@@ -20,7 +20,7 @@ module ActsAsStepController
         cattr_accessor :current_order_step
         
         before_filter :lookup_order_environment
-        before_filter :assign_user_in_remark_attributes,  :only => :update
+        before_filter :assign_user_in_remark_attributes, :only => :update
         
         class_eval do
           private
@@ -31,7 +31,8 @@ module ActsAsStepController
               OrderLog.set(@order, current_user, params)
               
               # define the current order step
-              @@current_order_step = @order.current_step.path
+              self.current_order_step = @order.current_step.first_parent.path
+              raise "It's impossible to define in which step the order is! Please verify if your steps are properly configured." if self.current_order_step.nil?
             end
             
             def assign_user_in_remark_attributes
@@ -40,6 +41,14 @@ module ActsAsStepController
                   remark_attributes[:user_id] = current_user.id
                 end
               end
+            end
+            
+            def self.current_order_step
+              read_inheritable_attribute(:current_order_step)
+            end
+            
+            def self.current_order_step=(step)
+              write_inheritable_attribute(:current_order_step, step)
             end
         end
       end

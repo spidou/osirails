@@ -1,3 +1,44 @@
+/* ORDER HEADER */
+#order_header {
+  text-align: left;
+  text-indent: 0;
+}
+
+#order_header p {
+  text-align: left;
+  text-indent: 0;
+  padding: 0 0 0 8px;
+  margin-bottom: 0;
+}
+
+#order_header .first_column {
+  display: inline-block;
+  max-width: 500px;
+  vertical-align: top;
+}
+
+#order_header .first_column label {
+  width: 160px;
+}
+
+#order_header .second_column {
+  display: inline-block;
+  max-width: 340px;
+  vertical-align: top;
+}
+
+#order_header .second_column label {
+  width: 140px;
+}
+
+#order_header .header_svg {
+  display: inline-block;
+  width: 162px;
+  height: 162px;
+  margin-left: 50px;
+}
+
+/* CHECKLISTS */
 #checklists {
   text-align: left;
   text-indent: 0;
