@@ -56,6 +56,10 @@ module ApplicationHelper
     html << "</ul></div>"
   end
   
+  def display_memorandums
+    ""
+  end
+  
   def display_welcome_message
     "Bienvenue, " + current_user.username
   end

@@ -176,6 +176,14 @@ class Feature < ActiveRecord::Base
     
     if update_attribute(:activated, true)
       reload_environment!
+      
+      # Load the route file of feture after reload the environment
+      $activated_features_path.each do |path|
+        if path.include?(self.name)
+          routes_path = File.join(path, 'routes.rb')
+          load routes_path if File.exist?(routes_path)
+        end
+      end
     else
       false
     end
@@ -185,6 +193,10 @@ class Feature < ActiveRecord::Base
     return false unless able_to_deactivate?
     
     if update_attribute(:activated, false)
+      # Reload routes
+      
+      ActionController::Routing::Routes.reload!
+      # Reload the environment after load routes
       reload_environment!
     else
       false
@@ -195,9 +207,6 @@ class Feature < ActiveRecord::Base
     begin
       # reload configuration
       load File.join(RAILS_ROOT, 'config', 'environment.rb')
-      
-      # reload routes
-      ActionController::Routing::Routes.reload!
       
       # return true if all is right
       return true
