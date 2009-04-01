@@ -7,6 +7,9 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 
+# Specifies if the application is launch from a rake task or not (set at TRUE in Rakefile)
+RAKE_TASK = false unless defined? RAKE_TASK
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
@@ -59,6 +62,8 @@ Rails::Initializer.run do |config|
   
   config.plugins = $plugins
   # END #
+  
+  $activated_features_path = []
   
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )

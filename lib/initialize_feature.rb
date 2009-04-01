@@ -11,7 +11,7 @@ def init(config, path, plugin = false)
     yaml = YAML.load(File.open(yaml_path)) rescue {}
     
     FeatureManager.new(yaml, plugin, config, path)
-    
+
 #    ######### SEARCH
 #    # test and add search indexes into db
 #    error_message = "syntaxe error in '#{name}' yaml."
@@ -67,7 +67,7 @@ def init(config, path, plugin = false)
 #    ######### END SEARCH
 
     
-  rescue ActiveRecord::StatementInvalid, Mysql::Error => e
+  rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError => e
     error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
     RAKE_TASK ? puts(error) : raise(error)
   end

@@ -57,9 +57,7 @@ class Feature < ActiveRecord::Base
     Feature.find(:all).each do |feature|
       if feature.has_dependencies?
         feature.dependencies.each do |dependence|
-          # raise dependence.version.include?(self.version).to_s if dependence[:name]!="Test3"
           if dependence[:name] == self.name and dependence[:version].to_s.include?(self.version)
-            # raise feature.name+" "+feature.version
             dependencies << {:name => feature.name, :version => feature.version}
           end
         end
@@ -86,7 +84,7 @@ class Feature < ActiveRecord::Base
       conflicts.each do |conflicts|
         if Feature.find(:all, :conditions => ["name=? and version in (?) and installed = 1", conflicts[:name], conflicts[:version]]).size > 0
           feature = Feature.find_by_name(conflicts[:name])
-          features_in_conflicts = { :title => feature.title, :version => feature.version }
+          features_in_conflicts = { :name => feature.name, :version => feature.version }
           @able_to_install_conflicts << features_in_conflicts
         end     
       end
@@ -123,7 +121,7 @@ class Feature < ActiveRecord::Base
       self.child_dependencies.each  do |child|
         if Feature.find(:all, :conditions =>["name = ? and version in (?) and (activated = 1 or installed = 1)", child[:name], child[:version]]).size > 0
           feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:title => feature.title, :version => feature.version}
+          deactivated_feature = {:name => feature.name, :version => feature.version}
           @able_to_uninstall_children << deactivated_feature
         end
       end
@@ -155,7 +153,7 @@ class Feature < ActiveRecord::Base
       self.child_dependencies.each do |child|
         if  Feature.find(:all, :conditions => ["name = ? and version in (?) and activated = 1", child[:name], child[:version]]).size > 0
           feature = Feature.find_by_name_and_version(child[:name], child[:version])
-          deactivated_feature = {:title => feature.title, :version => feature.version}
+          deactivated_feature = {:name => feature.name, :version => feature.version}
           @deactivate_children << deactivated_feature
         end
       end
@@ -172,52 +170,43 @@ class Feature < ActiveRecord::Base
   def activate_by_default?
     FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
   end
-
+  
   def enable
-    if able_to_activate?
-      self.activated = true
-      if self.save
-        # Reload the configuration
-        load File.join(RAILS_ROOT, 'config', 'environment.rb')
-        return true
-      end
+    return false unless able_to_activate?
+    
+    if update_attribute(:activated, true)
+      reload_environment!
+    else
+      false
     end
-    false
   end
 
   def disable
     return false unless able_to_deactivate?
-    self.activated = false
-    if self.save
-      begin
-        # Remove paths to the feature
-        app_path = File.join(RAILS_ROOT, 'lib/features', self.name, 'app')
-        $LOAD_PATH.each do |path|
-          $LOAD_PATH.delete(app_path) if path.starts_with?(app_path)
-        end
-        Dependencies.load_paths.each do |path|
-          Dependencies.load_paths.delete(app_path) if path.starts_with?(app_path)
-        end
-
-        controllers_list = []
-        Dir.open(app_path + '/controllers').sort.each do |dirname|
-          next if dirname.starts_with?('.')
-          controllers_list << dirname.split('.').first[0..-12]
-        end
-
-        # Remove routes to the features
-        #ActionController::Routing::Routes.routes.each do |route|
-        #  if controllers_list.include?(route.requirements[:controllers])
-        #    ActionController::Routing::Routes.routes.remove(route)
-        #    puts "delete ---- " + route.inspect
-        #  end
-        #end
-      rescue
-        self.activated = true;
-        self.save
-        return false
-      end
+    
+    if update_attribute(:activated, false)
+      reload_environment!
+    else
+      false
+    end
+  end
+  
+  def reload_environment!
+    begin
+      # reload configuration
+      load File.join(RAILS_ROOT, 'config', 'environment.rb')
+      
+      # reload routes
+      ActionController::Routing::Routes.reload!
+      
+      # return true if all is right
       return true
+    rescue Exception => e
+      error_message = "(#{e.class}) #{e.message}\n" +
+                      "An error occured during the reloading of the environment after trying to enable/disable/install/uninstall a feature.\n" +
+                      "You should restart the server if you want the application works properly."
+      RAILS_ENV == "production" ? RAILS_DEFAULT_LOGGER.error(error_message) : raise(error_message)
+      return false
     end
   end
 
@@ -257,97 +246,6 @@ class Feature < ActiveRecord::Base
       puts @uninstall_log
       return false
     end
-  end
-
-  def check
-    # TODO Code the check function: permissions and other
-  end
-
-  # Method that return the success message in function of  the  method passed in argument
-  def display_flash_notice(method) 
-    message = "Le module '#{self.title}' a &eacute;t&eacute; "
-    case method
-    when "enable"
-      message << "activ&eacute;"
-    when "disable"
-      message << "d&eacute;sactiv&eacute;"
-    when "install"
-      message << "install&eacute;"
-    when "uninstall"
-      message << "d&eacute;sinstall&eacute;"
-    when "remove"
-      message << "supprim&eacute;"
-    end
-    return message
-  end
-
-  # Method that return the failure message in function of  the  method passed in argument 
-  # and the differents hashes that contain information about the problem
-  def display_flash_error(method)
-    message = ""
-    case method
-    when "enable"
-      message = "Une erreur est survenue lors de l'activation du module '#{self.title}'. "
-      unless self.activate_dependencies.empty?
-        self.activate_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message << "Le module suivant est requis : "
-        deps = []
-        self.activate_dependencies.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end         
-    when "disable"
-      message = "Une erreur est survenue lors de la désactivation du module '#{self.title}'. "
-      unless self.deactivate_children.empty?
-        self.deactivate_children.size > 1 ? message << "D'autres modules dépendent de ce module : " : message  << "Un autre module dépend de ce module : "
-        deps = []
-        self.deactivate_children.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-    when "install" 
-      message = "Une erreur est survenue lors de l'installaton du module '#{self.title}'. "
-      unless self.able_to_install_dependencies.empty?
-        self.able_to_install_dependencies.size > 1 ? message << "Les modules suivants sont requis : " : message <<  "Le module suivants est requis : "
-        deps = []
-        self.able_to_install_dependencies.each do |error|
-          deps << "#{error[:name]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.able_to_install_conflicts.empty?
-        self.able_to_install_conflicts.size > 1 ? message << "<br/>Les conflits suivants ont été détectés : " : message << "<br />Le conflit suivant a été détecté : "
-        deps = []
-        self.able_to_install_conflicts.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.install_log.empty?
-        self.install_log.each do |error|
-          message << "<br />" + error
-        end
-      end
-    when "uninstall"   
-      message = "Une erreur est survenue lors de la désinstallation du module '#{self.title}'. "
-      unless self.able_to_uninstall_children.empty?
-        message << "D'autres modules dépendent de ce module : "
-        deps = []
-        self.able_to_uninstall_children.each do |error|
-          deps << "#{error[:title]} " + (error[:version].class == Array ? "v#{error[:version].join(", v:")}" : "v#{error[:version]}")
-        end
-        message << deps.join(", ")
-      end
-      unless self.uninstall_log.empty?
-        self.uninstall_log.each do |error|
-          message << "<br />" + error
-        end
-      end  
-    when "remove"
-      message = "Une erreur est survenue lors de la suppression du module '#{self.title}'. "
-    end
-    return message
   end
 
   # Return true if the feature is a base feature stored in lib/features/
@@ -434,7 +332,7 @@ class Feature < ActiveRecord::Base
   # Method to remove a feature
   def remove
     return false unless self.able_to_remove?
-    system("rm -rf " + File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
+    FileManager.delete_file(File.join('vendor', 'features', self.name)) if self.name.grep(/\//).empty? and self.name.grep(/\.\./).empty?
     self.destroy
   end
 

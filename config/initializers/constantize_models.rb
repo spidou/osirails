@@ -2,8 +2,8 @@
 #   just like those are in app/models
 
 begin
-  unless !defined?($all_features_path)
-    ($all_features_path).each do |feature_path|
+  unless !defined?($activated_features_path)
+    ($activated_features_path).each do |feature_path|
       Dir.glob(File.join(feature_path, "app", "models", "*.rb")).each do |model|
         if File.exists?(model)
           class_name = File.basename(model).chomp(File.extname(model)).camelize
