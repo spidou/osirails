@@ -118,14 +118,6 @@ namespace :osirails do
       user_admin.roles << role_admin
       user_guest.roles << role_guest
       
-      # set up all permissions for default roles (admin and guest)
-      %W{ Menu BusinessObject DocumentType }.each do |klass|
-        klass.constantize.send(:find, :all).each do |object|
-          object.permissions.find_by_role_id(role_admin.id).update_attributes(:list => true, :view => true, :add => true, :edit => true, :delete => true)
-          object.permissions.find_by_role_id(role_guest.id).update_attributes(:list => true, :view => true, :add => false, :edit => false, :delete => false)
-        end
-      end
-      
       # default activity sectors
       distribution = ActivitySector.create :name => "Grande distribution"
       ActivitySector.create :name => "Hôtellerie"
@@ -408,11 +400,19 @@ namespace :osirails do
       # default orders
       Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
+      
+      # set up all permissions for default roles (admin and guest)
+      %W{ Menu BusinessObject DocumentType Calendar }.each do |klass|
+        klass.constantize.send(:find, :all).each do |object|
+          object.permissions.find_by_role_id(role_admin.id).update_attributes(:list => true, :view => true, :add => true, :edit => true, :delete => true)
+          object.permissions.find_by_role_id(role_guest.id).update_attributes(:list => true, :view => true, :add => false, :edit => false, :delete => false)
+        end
+      end
     end
 
     desc "Depopulate the database"
     task :depopulate => :environment do
-      [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,NumberType,Indicative,Job,JobContractType,
+      [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
         SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
