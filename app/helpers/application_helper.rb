@@ -214,16 +214,25 @@ module ApplicationHelper
         end
       end
       
+      # retrieve objects and options hash into args array
+			args_objects = Array.new
+      options_hash = nil
+			args.each do |arg|
+				arg.is_a?(Hash) ? options_hash = arg : args_objects << arg 
+			end
+
       # retrieve infos about model and path from the given method
-      method_infos              = dynamic_link_catcher_retrieve_method_infos(method.to_s)
+      method_infos              = dynamic_link_catcher_retrieve_method_infos(method.to_s, args_objects)
       path_name                 = method_infos[:path_name]
       model_name                = method_infos[:model_name]
-      
+      expected_objects          = method_infos[:expected_objects]
+ 
+
       # define what is the permission method name according to the given method
-      if model_name == model_name.pluralize         # users
+      if model_name != model_name.singularize         # users
         permission_name = :list
-        model_name = model_name.singularize
-      
+        model_name = model_name.singularize    
+              
       elsif path_name.match(/^(formatted_)?[^_]*$/) # user        | formatted_user
         permission_name = :view
       
@@ -237,7 +246,7 @@ module ApplicationHelper
         permission_name = :delete
       
       else
-        raise NameError, "'#{method}' seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
+        raise NameError, "'#{method}'seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
       end
       
       # define the corresponding model, and check the permissions
@@ -246,14 +255,9 @@ module ApplicationHelper
 		  has_controller_permission = controller.send("can_#{permission_name}?", current_user)
       
       # check if the method called is well-formed
-	    case permission_name
-      when :list, :add              # add, list          => 1 parameter at most (params)
-		    options = args[0] || {}
-      else                          # view, edit, delete => 1 parameter at least, 2 parameters at most (object, params)
-        object_or_id = args[0]
-        raise ArgumentError, 'parameter object or ID expected' if object_or_id.nil?
-        options = args[1] || {}
-      end
+      dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
+      object_or_id = args_objects
+		  options = options_hash || {}
       raise ArgumentError, 'parameter hash expected' unless options.is_a?(Hash)
       
       # default options
@@ -266,20 +270,78 @@ module ApplicationHelper
 	    # return the correspondong link_to tag if permissions are allowing that!
       if has_controller_permission and has_model_permission
 			  content = "#{options[:image_tag]} #{options[:link_text]}"
+
         case permission_name
         when :delete
-          return link_to( content, object_or_id, { :method => :delete, :confirm => "Are you sure?" } )
-        when :list, :add
-          url = send("#{path_name}_path")
+          # TODO make works nested ressources when deleting 
+          return link_to( content, object_or_id.first, { :method => :delete, :confirm => "Are you sure?" } )
+#        when :list, :add
+#          url = send("#{path_name}_path", object_or_id)
         else
-          url = send("#{path_name}_path", object_or_id)
+          #################################################
+          # eval url-genrator method : employee_path(2) => '/employees/2' 
+          tmp = "#{path_name}_path("
+          object_or_id.each_index do |i|
+            tmp << "," unless i == 0
+            tmp << "object_or_id[#{i}]"
+          end
+          tmp << ")"
+          url = eval(tmp)
+          #################################################
+
+#          url = send("#{path_name}_path", object_or_id)
         end
         return link_to( content, url )
+
       end
     end
     
     alias_method_chain :method_missing, :dynamic_link_catcher
     
+    # retrieve nested ressource
+    #
+    # ==== Example
+    #   nested_ressources( ["great","model","sub","model"], [GreatModel.new])
+    #   # =>  { :models =>["great_model"], :nested_ressource =>"sub_model"}
+    #
+    #   nested_ressources( ["great","model","model","sub","model"], [GreatModel.new,Model.new])
+    #   # =>  { :models =>["great_model","model"], :nested_ressource =>"sub_model"}
+
+    def nested_ressources(models, args_objects)
+      objects = Array.new      
+      args_objects.each do |o|
+        objects << o.class.to_s.tableize.singularize      
+      end
+      nested_ressource = models.join("_")
+      objects.each  do |o|
+        if nested_ressource.include?(o)
+          nested_ressource = nested_ressource.gsub(o+"_","")
+        else 
+          objects.delete(o)
+        end
+      end
+      objects.delete(models)
+      return {:models => objects, :nested_ressource => nested_ressource}
+    end
+
+    # check if all objects passed into args correspond to the helper name
+    #
+    # raise an ArgumentError error type if one the 'expected_object' is missed into 'args_objects'
+    # ==== Exmaple
+    #   dynamic_link_catcher_check_arguments_objects(["employee","job"], [Employee.new] )
+    #   # => raise "expected object or id of Job class"
+    
+    def dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
+      objects = Array.new      
+      args_objects.each do |o|
+        objects << o.class.to_s.tableize.singularize      
+      end
+
+      expected_objects.each do |o|
+        raise ArgumentError, "expected object or id of #{o.titleize} class" unless objects.join("_").singularize.include?(o)      
+      end
+    end
+
     # retrives the model name and the method name from the called method
     # 
     # ==== Examples
@@ -288,12 +350,19 @@ module ApplicationHelper
     # 
     #   dynamic_link_catcher_retrieve_method_infos("new_great_model_link")
     #   # => { :model_name => "great_model", :path_name => "new_great_model" }
+    #
+    #   dynamic_link_catcher_retrieve_method_infos("new_great_model_sub_model_link")
+    #   # => { :model_name => "sub_model", :path_name => "new_great_model_sub_model" }
     # 
-    def dynamic_link_catcher_retrieve_method_infos(method)
+    def dynamic_link_catcher_retrieve_method_infos(method, args_objects)
       infos = method.split("_")   # "formatted_new_great_model_link" => [ "formatted", "new", "great", "model", "link" ]
-      infos.pop
-      model_name = infos.reject{ |s| %W{ formatted new edit delete}.include?(s) } # [ "formatted", "new", "great", "model" ] => [ "great", "model" ]
-      { :model_name => model_name.join("_"), :path_name => infos.join("_") }
+      infos.pop 
+      models = infos.reject{ |s| %W{ formatted new edit delete }.include?(s) } # [ "formatted", "new", "great", "model" ] => [ "great", "model" ]
+      t = nested_ressources(models, args_objects) 
+      model_name = t[:nested_ressource]
+      models = t[:models]      
+
+      { :model_name => model_name, :path_name => infos.join("_"), :expected_objects => models}
     end
     
     # returns a readable link text according to the given method and model
@@ -319,7 +388,52 @@ module ApplicationHelper
       result = result.singularize unless method_name == :list
       return result
     end
-    
+   ###########################################""""
+    # "employee_premium" => premium, or "employee_number_type" => number_type
+    def dynamic_link_catcher_retrieve_nested_ressource(models, args_models)
+
+      ressources = models.split("_").last
+      return ressources.last
+
+
+
+
+      
+      return models unless models.include?(prime_ressource) # that mean there's not nested ressources 
+
+
+			args_models.each do |model|
+				raise "you missed an object or id of #{model.class.to_s.tableize.singularize} class" if !ressources.include?(model.class.to_s.tableize.singularize) and model != nested_ressource
+			end
+
+      
+      result = prime_ressource
+      # OPTIMIZE use .singularized_table_name() in place of .to_s.tableize.singularize
+      # ressource = args_models.first.to_s.tableize.singularize # get the primary ressource    
+
+      ressource = args_models.first
+
+      ressources.each_with_index do |nested_r,i|
+        nested_ressource << nested_r
+        if args_models.include?(ressource) 
+          if ressource.respond_to?(nested_ressource) or ressource.respond_to?(nested_ressource.pluralize)
+            raise "nr: "+nested_ressource+" r:"+ressource.inspect
+            ressource = args_models[i] 
+            result = nested_ressource
+            nested_ressource = ""
+          else
+            nested_ressource << "_"
+          end
+        else
+          nested_ressource << "_"
+        end   
+      end
+      #raise "r:"+ressources.inspect+" p:"+prime_ressource+" n:"+result
+      return result
+
+      raise "#{nested_ressource} doesn't exist please verify the name" 
+    end
+############################################## 
 #    # creates dynamic helpers to generate standard buttons in all page
 #    # these dynamic helpers are generated according to the +model+ and +action+ given in the method name
 #    # 

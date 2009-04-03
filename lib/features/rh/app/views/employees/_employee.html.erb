@@ -76,7 +76,7 @@
     <% if !is_form_view? %>    
       <h2>Primes</h2>
       <%= render :partial => 'premia/premium', :collection => @employee.premia[0..4] %>     
-      <p><%= show_premia_view_button(@employee) %></p>
+      <p><%= premia_link(@employee) %></p>
     <% end %>
   <% end %>
 

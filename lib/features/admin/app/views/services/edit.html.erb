@@ -1,11 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_service_add_button %>
-  <%= show_service_add_button(@service,"New sub service") %>
-  <%= show_service_view_button(@service)%>
-	<%= show_service_delete_button(@service)%>
+  <%= new_service_link_with_parent(@service,"New service") %>
+  <%= service_link(@service)%>
+	<%= delete_service_link(@service)%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-  <%= show_service_list_button %>
+  <%= services_link %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>

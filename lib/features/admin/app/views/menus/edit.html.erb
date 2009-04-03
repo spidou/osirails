@@ -1,10 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-	<%= show_menu_add_button%>
-  <%= show_menu_add_button_with_parent(@menu) %>
-	<%= show_menu_delete_button(@menu) unless @menu.base_item?%>
+  <%= new_menu_link_with_parent(@menu) %>
+	<%= delete_menu_link(@menu) unless @menu.base_item?%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do%>
-	<%= show_menu_list_button %>
+	<%= menus_link %>
 <% end %>
 <h1>Modifier un menu</h1>
 <%= render :partial => @menu, :locals => {:submit_button_name => "Mettre à jour"} %>

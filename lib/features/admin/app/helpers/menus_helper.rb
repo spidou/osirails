@@ -35,9 +35,9 @@ module MenusHelper
   end
   
   # This method permit to show or hide button for add menu
-  def show_menu_add_button_with_parent(menu,txt="New sub menu")
+  def new_menu_link_with_parent(menu,txt="New menu")
     if controller.can_add?(current_user)
-      link_to(image_tag("/images/add_16x16.png", :alt => "New sub menu", :title => "New sub menu")+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
+      link_to(image_tag("/images/add_16x16.png", :alt => txt, :title => txt)+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
     end
   end
   
@@ -55,8 +55,8 @@ module MenusHelper
     menus.each do |menu|
       first_menu = ( menus.first == menu ? true : false )
       last_menu = ( menus.last == menu ? true : false )
-			menu.base_item? ? delete_button = "" : delete_button = show_menu_delete_button(menu,"")
-      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu, first_menu)} #{show_down_button(menu, last_menu)} #{show_menu_add_button_with_parent(menu,"")} #{show_menu_edit_button(menu,"")} #{delete_button}</span></li>"
+			menu.base_item? ? delete_button = "" : delete_button = delete_menu_link(menu,:link_text => "")
+      list << "<li class=\"category\">#{menu.title}<span class=\"action\">#{show_up_button(menu, first_menu)} #{show_down_button(menu, last_menu)} #{new_menu_link_with_parent(menu,"")} #{edit_menu_link(menu,:link_text => "")} #{delete_button}</span></li>"
       if menu.children.size > 0
         list << "<ul>"
         get_children_menus(menu.children,list)

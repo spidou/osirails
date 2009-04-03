@@ -8,14 +8,14 @@ module CommoditiesManagerHelper
   end
   
   # This method permit to show or hide delete button for categories
-  def show_delete_category_button(commodity_category)
+  def delete_category_link(commodity_category)
     if controller.can_delete?(current_user) and CommodityCategory.can_delete?(current_user)
       link_to(image_tag("url", :alt => "Supprimer"), commodity_category, { :method => :delete, :confirm => 'Etes vous sûr  ?'}) if commodity_category.can_be_destroyed?
     end
   end
   
   # This method permit to show or hide delete button for commodities
-  def show_delete_commodity_button(commodity,show)
+  def delete_commodity_link(commodity,show)
     if controller.can_delete?(current_user) and Commodity.can_delete?(current_user)
       link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'}) unless show == nil and commodity.enable == false
     end
@@ -23,10 +23,17 @@ module CommoditiesManagerHelper
   
   # This method permit to format link that should be display into secondary menu
   # we can't use the dynamic helper method 'generator' because of an unexpected argument passed to new_commodity_path => ':id =>-1'
-  def show_commodity_add_button(txt = "New commodity")
+  def new_commodity_link(txt = "New commodity")
     if Commodity.can_add?(current_user)
       link_to(image_tag( "/images/add_16x16.png", :alt => "New", :title => "New" )+" #{txt}", new_commodity_path(:id => -1) )    
     end  
+  end
+
+  # method that permit to access to commodities categories list using /commodities_manager route  
+  def commodity_categories_link(txt = "List all commodities categories")
+    if controller.can_list?(current_user) and CommodityCategory.can_list?(current_user)
+      link_to(image_tag( "/images/list_16x16.png", :alt => "List", :title => "List" )+" #{txt}", "/commodities_manager")
+    end 
   end
   
   # This method permit to display the good link if the commodities categories or commodities, are enabled or not
@@ -43,31 +50,7 @@ module CommoditiesManagerHelper
     end
   end
   
-  # this method permit to display commodity category add button
-  # we can't use dynamic method helper because commodity_category_controller != commodity_manager_controller
-  def show_commodity_category_add_button(txt = "New commodity category")  
-    if CommodityCategory.can_add?(current_user)
-      link_to(image_tag("/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}",new_commodity_category_path)    
-    end  
-  end
 
-  def show_inventory_list_button(txt ="View all inventories")
-    if Inventory.can_list?(current_user)    
-      link_to(image_tag("/images/list_16x16.png", :alt => "List", :title => "List")+" #{txt}",inventories_path)
-    end  
-  end
-
-  def show_inventory_view_button(object, txt = "View current inventory")
-    if Inventory.can_view?(current_user)
-      link_to(image_tag("/images/view_16x16.png", :alt => "View", :title => "View")+" #{txt}", inventory_path(object))    
-    end
-  end
-
-  def show_inventory_add_button(txt = "New inventory")
-    if Inventory.can_add?(current_user)
-      link_to(image_tag("/images/add_16x16.png", :alt => "Add", :title => "Add")+" #{txt}", new_inventory_path)
-    end
-  end
 
   # This method permit to make in table editor
   def in_place_editor(object,attribute,value = 0)
@@ -123,7 +106,7 @@ module CommoditiesManagerHelper
     commodity_categories.each do |commodity_category|
       
       add_button = add_category_or_commodity(commodity_category) 
-      delete_button = show_delete_category_button(commodity_category)
+      delete_button = delete_category_link(commodity_category)
       status = commodity_category.enable ? "enable" : "disable"
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
@@ -139,7 +122,7 @@ module CommoditiesManagerHelper
         commodity_category.children.each do |category_child|
           unless category_child.enable == show
             add_button = add_category_or_commodity(category_child)
-            delete_button = show_delete_category_button(category_child)
+            delete_button = delete_category_link(category_child)
             status = category_child.enable ? "enable" : "disable" if show == nil
              
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
@@ -160,7 +143,7 @@ module CommoditiesManagerHelper
                   supplier = Supplier.find(commodity.supplier_id)
                   unit_measure = UnitMeasure.find(category_child.unit_measure_id)
                   
-                  delete_button = show_delete_commodity_button(commodity,show)
+                  delete_button = delete_commodity_link(commodity,show)
                   
                   status = commodity.enable ? "enable" : "disable" if show == nil
                   table << "<tr id='commodity_#{commodity.id}' class='commodity_category_#{category_child.id} commodity_category_#{commodity_category.id} #{status}'>"

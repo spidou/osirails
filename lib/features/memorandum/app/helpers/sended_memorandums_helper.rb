@@ -17,7 +17,7 @@ module SendedMemorandumsHelper
   # These methods permit to show or hide buttons about POSSIBLE ACTIONS or USEFUL LINKS
   # we don't use dynamic method because we need another controller ( received_memorandum_controller)
   
-  def show_received_memorandum_list_button(txt = "View all received memoramdums")
+  def received_memorandums_link(txt = "View all received memoramdums")
     if Memorandum.can_list?(current_user) and controller.can_list?(current_user) and !current_user.employee.nil?
       link_to(image_tag("/images/list_16x16.png", :alt => "list", :title => "list")+" #{txt}", received_memorandums_path)
     end
@@ -128,8 +128,8 @@ module SendedMemorandumsHelper
     memorandums.each do |memorandum|
       
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
-      show_button = show_memorandum_view_button(memorandum, :link_text => "")
-      edit_button = show_memorandum_edit_button(memorandum, :link_text => "")
+      show_button = memorandum_link(memorandum, :link_text => "")
+      edit_button = edit_memorandum_link(memorandum, :link_text => "")
       period_memorandum = Memorandum.color_memorandums(memorandum)
       
       sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"
@@ -138,17 +138,6 @@ module SendedMemorandumsHelper
       sended_memorandums << "<td style='width: 70px;'>#{show_button} #{edit_button}</td>"
     end
     sended_memorandums << "</table>"
-  end
-  
-  # This method permit to show or hide edit buttton
-  def show_edit_button(memorandum)
-    if memorandum.published_at.nil?
-      if Memorandum.can_edit?(current_user) and controller.can_edit?(current_user)
-        return link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_sended_memorandum_path(memorandum))
-      end
-    else 
-      return "<img src='/images/tick_16x16.png' alt='Publier' title='Publier' />"
-    end
   end
   
 end

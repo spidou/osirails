@@ -1,5 +1,5 @@
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_user_list_button %>
+	<%= users_link %>
 <% end %>
 <h1>Créer un utilisateur</h1>
 <%= render :partial => @user, :locals => { :submit_button_name => "Ajouter"} %>

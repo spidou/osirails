@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-	<%= show_role_add_button%>
-  <%= show_role_view_button(@role)%>
-	<%= show_role_delete_button(@role)%>
+	<%= new_role_link %>
+  <%= role_link(@role) %>
+	<%= delete_role_link(@role) %>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_role_list_button %>
+	<%= roles_link %>
 <% end %>
 <h1>Modifier un r&ocirc;le</h1>
 <%= render :partial => @role, :locals => {:submit_button_name => "Mettre &agrave; jour"} %>

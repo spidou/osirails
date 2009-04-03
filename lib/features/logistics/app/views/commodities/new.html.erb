@@ -1,12 +1,13 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_commodity_category_add_button %>
-  <%= show_commodity_add_button %>
+  <%= new_commodity_category_link%>
+  <%= new_commodity_link %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= show_inventory_list_button %>
-  <%= show_inventory_view_button(@inventory) unless @inventory.nil? %>
-  <%= show_inventory_add_button%>
+  <%= commodity_categories_link %>
+  <%= inventories_link %>
+  <%= inventory_link(@inventory) unless @inventory.nil? %>
+  <%= new_inventory_link%>
 <% end %>
 <h1>Ajouter une nouvelle mati&egrave;re premi&egrave;re</h1>
 <div class="frame presentation_medium">

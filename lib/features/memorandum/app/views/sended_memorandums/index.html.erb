@@ -1,9 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
- <%= show_memorandum_add_button %>
+ <%= new_memorandum_link %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>  
- <%= show_received_memorandum_list_button %>
+ <%= received_memorandums_link %>
 <% end %>
 
 <% unless @sended_memorandums.size == 0 or (!Memorandum.can_list?(current_user) and controller.can_list?(current_user))%>

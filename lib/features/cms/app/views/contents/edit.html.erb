@@ -1,10 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-	<%= show_content_add_button %>
-	<%= show_content_view_button(@content) %>
-	<%= show_content_delete_button(@content) %>
+	<%= new_content_link %>
+	<%= content_link(@content) %>
+	<%= delete_content_link(@content) %>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_content_list_button %>
+	<%= contents_link %>
 <% end %>
 <h1>Modifier un contenu</h1>
 <%= render :partial => @content, :locals => {:submit_button_name => "Modifier"} %>

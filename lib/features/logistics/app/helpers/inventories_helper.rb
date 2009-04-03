@@ -26,22 +26,26 @@ module InventoriesHelper
       end
     end
   end
-  
-  # This method permit to show view button
-  def show_view_button(inventory)
-    if controller.can_view?(current_user) and Inventory.can_view?(current_user)
-      link_to("D&eacute;tails", inventory_path(inventory))
-    end
-  end
 
-  # method that permit to show action link into secondary menu
-  #( we don't use the dynamic finder because of :type argument passed to new_inventory_path)  
-  def show_inventory_add_button(txt = "New inventory")
-    if controller.can_add?(current_user) and Inventory.can_add?(current_user)
-      link_to( image_tag( "/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}", new_inventory_path(:type => "inventory"))    
-    end    
-  end
-  
+# TODO delete this method if it's not necessary to pass (:type => "inventory") to new_inventory_path() method
+# it works without it but before the code otimization it seemed to bee necessary so i let it 
+# to be sure not to delete important code
+
+#  # method that permit to show action link into secondary menu
+#  #( we don't use the dynamic finder because of :type argument passed to new_inventory_path)  
+#  def new_inventory_link(txt = "New inventory")
+#    if controller.can_add?(current_user) and Inventory.can_add?(current_user)
+#      link_to( image_tag( "/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}", new_inventory_path(:type => "inventory"))    
+#    end    
+#  end
+
+  # method that permit to access to commodities categories list using /commodities_manager route  
+  def commodity_categories_link(txt = "List all commodities categories")
+    if controller.can_list?(current_user) and CommodityCategory.can_list?(current_user)
+      link_to(image_tag( "/images/list_16x16.png", :alt => "List", :title => "List" )+" #{txt}", "/commodities_manager")
+    end 
+  end  
+
   #  This method permit to add value of quantity
   def in_place_editor(inventory,commodity)
     if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)

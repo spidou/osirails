@@ -7,7 +7,7 @@ module ProductReferenceManagerHelper
       actions << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
       actions << "<ul>"
       if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
-        actions << "<li>#{show_add_link_for_product_reference_category}</li>"
+        actions << "<li>#{new_product_reference_category_link}</li>"
       end
       
       if controller.can_add?(current_user) and ProductReference.can_add?(current_user)
@@ -54,10 +54,10 @@ module ProductReferenceManagerHelper
         
         list << "<li class='category #{status}'>#{category.name} (#{show_counter_category(category, show_all)}) <span class=\"action\">"
         if category.enable == true
-          list << show_add_button_for_product_reference_category(category) 
-          list << show_add_button_for_product_reference(category)
-          list << show_edit_button_for_product_reference_category(category)
-          list << show_delete_button_for_product_reference_category(category)
+          list << new_product_reference_category_link(category,"") 
+          list << new_product_reference_link(category)
+          list << edit_product_reference_category_link(category)
+          list << delete_product_reference_category_link(category)
         end
         list << "</span></li>"
         
@@ -76,8 +76,8 @@ module ProductReferenceManagerHelper
                 
                 list << "<li class='reference #{status}'>#{reference.name} (#{reference.products_count}) <span class=\"action\">"
                 if reference.enable == true
-                  list << show_edit_button_for_product_reference(reference)
-                  list << show_delete_button_for_product_reference(reference)
+                  list << edit_product_reference_link(reference)
+                  list << delete_product_reference_link(reference)
                 end
                 list << "</span></li>"
               end
@@ -91,45 +91,42 @@ module ProductReferenceManagerHelper
   end
   
   # display (or not) the add button for product reference
-  def show_add_button_for_product_reference(category)
+  def new_product_reference_link(category)
     link_to(image_tag("/images/reference_16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence', :title => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)  
   end
   
   # display (or not) the edit button for product reference
-  def show_edit_button_for_product_reference(reference)
+  def edit_product_reference_link(reference)
     if controller.can_edit?(current_user) and ProductReference.can_edit?(current_user)
       link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_product_reference_path(reference))
     end
   end
   
   # display (or not) the delete button for product reference
-  def show_delete_button_for_product_reference(reference)
+  def delete_product_reference_link(reference)
     if controller.can_delete?(current_user) and ProductReference.can_delete?(current_user)
       link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), reference, { :method => :delete, :confirm => 'Etes vous sûr  ?'})
     end
   end
   
-  # display (or not) the add link for product reference
-  def show_add_link_for_product_reference_category
-    link_to("<img src='/images/category_16x16.png' alt='Ajouter une cat&eacute;gorie' title='Ajouter une cat&eacute;gorie' /> Ajouter une cat&eacute;gorie", new_product_reference_category_path ) if ProductReferenceCategory.can_add?(current_user)
-  end
   
   # display (or not) the add button for product reference category
-  def show_add_button_for_product_reference_category(category)
+  def new_product_reference_category_link(category=nil, txt="Ajouter une cat&eacute;gorie")
+    category.nil? ?  path_method =  new_product_reference_category_path : path_method = new_product_reference_category_path(:id => category.id)
     if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
-      link_to(image_tag("/images/category_16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie') , new_product_reference_category_path(:id => category.id) )
+      link_to(image_tag("/images/category_16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie')+" #{txt}" ,  path_method )
     end
   end
   
   # display (or not) the edit button for product reference category
-  def show_edit_button_for_product_reference_category(category)
+  def edit_product_reference_category_link(category)
     if controller.can_edit?(current_user) and ProductReferenceCategory.can_delete?(current_user)
       link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_product_reference_category_path(category))
     end
   end
   
   # display (or not) the delete button for product reference category
-  def show_delete_button_for_product_reference_category(category)
+  def delete_product_reference_category_link(category)
     if controller.can_delete?(current_user) and ProductReferenceCategory.can_delete?(current_user)
       if category.can_be_destroyed?
         link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } )

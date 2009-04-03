@@ -12,7 +12,7 @@ module ServicesHelper
   end
   
   # This method test permission for add_button
-  def show_service_add_button_with_parent(service,txt="")
+  def new_service_link_with_parent(service,txt="")
     if controller.can_add?(current_user)
 			link_to(image_tag("/images/add_16x16.png", :title => "Add", :alt => "Add")+" #{txt}", new_service_path(:service_id => service.id))
     end
@@ -30,10 +30,10 @@ module ServicesHelper
   # This method permit to make a tree for services
   def get_children_services(services,list)
     services.each do |service|
-      delete_button = show_service_delete_button(service,"")
-      show_button = show_service_view_button(service,"")
-      edit_button = show_service_edit_button(service,"")
-			add_button = show_service_add_button(service,"")
+      delete_button = delete_service_link(service,:link_text => "")
+      show_button = service_link(service,:link_text => "")
+      edit_button = edit_service_link(service,:link_text => "")
+			add_button = new_service_link_with_parent(service,"")
       list << "<li class=\"menus\">#{service.name} &nbsp; <span class=\"action\">#{show_button} #{add_button} #{edit_button}#{delete_button}</span></li>"
       if service.children.size > 0
         list << "<ul>"

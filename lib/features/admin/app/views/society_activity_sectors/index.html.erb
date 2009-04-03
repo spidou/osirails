@@ -1,8 +1,8 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_society_activity_sector_add_button %>
+  <%= new_society_activity_sector_link %>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_society_activity_sector_list_button %>
+	<%= society_activity_sectors_link %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
@@ -19,7 +19,7 @@
 <% for society_activity_sector in @society_activity_sectors %>
   <tr>
     <td><%= society_activity_sector.name %></td>
-    <td style='width: 30px;'><%= show_society_activity_sector_edit_button(society_activity_sector,"") %><%= show_society_activity_sector_delete_button(society_activity_sector,"") %></td>
+    <td style='width: 30px;'><%= edit_society_activity_sector_link(society_activity_sector, :link_text => "") %><%= delete_society_activity_sector_link(society_activity_sector, :link_text => "") %></td>
   </tr>
 <% end %>
 </table>

@@ -1,9 +1,9 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_society_activity_sector_add_button %>
-	<%= show_society_activity_sector_delete_button(@society_activity_sector)%>
+  <%= new_society_activity_sector_link %>
+	<%= delete_society_activity_link(@society_activity_sector)%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
-	<%= show_society_activity_sector_list_button %>
+	<%= society_activity_sectors_link %>
 <% end %>
 
 <h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
