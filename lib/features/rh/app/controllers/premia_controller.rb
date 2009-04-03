@@ -2,7 +2,7 @@ class PremiaController < ApplicationController
 
 # GET /premia/1/index  
   def index
-    params[:employee_id].nil? ? @employee = current_user.employee.id : @employee = params[:employee_id]
+    params[:employee_id].nil? ? @employee = current_user.employee : @employee = Employee.find(params[:employee_id])
     @premia = Employee.find(@employee).premia
   end
   

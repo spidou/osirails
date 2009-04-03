@@ -39,26 +39,6 @@ module EmployeesHelper
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
-  def new_premia_link(employee,txt="New premium")
-    if menu_premia.can_add?(current_user) and Premium.can_add?(current_user)
-      link_to( "#{image_tag("/images/add_16x16.png", :alt=>"Add", :title => "Add")} #{txt}",new_employee_premium_path(employee))
-    end 
-  end
-  
-  def premia_link(employee,txt = "View all premia")
-    if menu_premia.can_view?(current_user) and Premium.can_list?(current_user) 
-      if employee.premia.size>0 
-        link_to( image_tag( "/images/view_16x16.png", :alt => "View", :title => "View")+" #{txt}", employee_premia_path(employee))
-      end
-    end
-  end
-  
-  def edit_job_contract_link_deprecated( employee,txt = "Edit job contract")
-    if controller.can_list?(current_user) and JobContract.can_edit?(current_user) 
-      link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Edit", :title => "Edit")} #{txt}", edit_employee_job_contract_path(employee))
-    end   
-  end
-  
   # This method permit to show or hide content of secondary menu
   def actives_employees_link(show_all)   
       if controller.can_view?(current_user) and Employee.can_view?(current_user)

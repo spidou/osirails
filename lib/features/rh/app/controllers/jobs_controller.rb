@@ -21,7 +21,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       if @job.save
         @jobs = Job.find(:all)
-        unless params['employee_id'].empty? or params['employee_id'].nil?
+        unless params['employee_id'].blank?
           @employee = Employee.find(params['employee_id'])
           @numbers = @employee.numbers
         end

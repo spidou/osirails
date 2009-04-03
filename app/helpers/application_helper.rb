@@ -226,15 +226,11 @@ module ApplicationHelper
       path_name                 = method_infos[:path_name]
       model_name                = method_infos[:model_name]
       expected_objects          = method_infos[:expected_objects]
- 
 
       # define what is the permission method name according to the given method
       if model_name != model_name.singularize         # users
         permission_name = :list
-        model_name = model_name.singularize    
-              
-      elsif path_name.match(/^(formatted_)?[^_]*$/) # user        | formatted_user
-        permission_name = :view
+        model_name = model_name.singularize
       
       elsif path_name.match(/^(formatted_)?new_/)   # new_user    | formatted_new_user
         permission_name = :add
@@ -244,6 +240,9 @@ module ApplicationHelper
       
       elsif path_name.match(/^delete_/)             # delete_user
         permission_name = :delete
+  
+      elsif path_name.match(/^(formatted_)?/)        # user       | formatted_user  | great_model |  formatted_great_model
+        permission_name = :view
       
       else
         raise NameError, "'#{method}'seems to be a dynamic helper link, but it has an unexpected form. Maybe you misspelled it? "
@@ -316,11 +315,19 @@ module ApplicationHelper
       objects.each  do |o|
         if nested_ressource.include?(o)
           nested_ressource = nested_ressource.gsub(o+"_","")
+<<<<<<< HEAD:app/helpers/application_helper.rb
         else 
           objects.delete(o)
         end
       end
       objects.delete(models)
+=======
+        else
+          raise "The object '#{o}' don't correspond to the method name" 
+        end
+      end
+      objects.delete(nested_ressource)
+>>>>>>> Implementation and modification of the method to generate dynamic helpers to display links:app/helpers/application_helper.rb
       return {:models => objects, :nested_ressource => nested_ressource}
     end
 

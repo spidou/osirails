@@ -14,7 +14,7 @@
 			<%= strong("#{number.indicative.indicative} #{number.number}") %>
 		<% else %>
 			<%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
-			<%= form.text_field(:number, { :index => nil, :size => 7, :maxlength => 9 }) %>
+			<%= form.text_field(:number, { :index => nil, :size => 9, :maxlength => 9 }) %>
     	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :index => nil, :selected => number[:number_type_id] }) %>
     	<%= form.select(:visible, Number::VISIBLE_STATES , {}, { :index => nil }) %>
 		<% end %>

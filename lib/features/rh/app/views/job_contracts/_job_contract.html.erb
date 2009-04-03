@@ -43,7 +43,7 @@
       <%= form.text_field(:salary, :size => 8, :maxlength => 10, :disabled => is_gone?(job_contract)) %>
     <% else %>
       <%= strong(display_formatted_salary(job_contract.actual_salary)) %>
-      <%= link_to('Voir historique des salaires', employee_salaries_path(@employee)) %>
+      <%= employee_salaries_link(@employee, :image_tag => "") %>
     <% end %>
   </p>
 

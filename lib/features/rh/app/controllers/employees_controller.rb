@@ -179,7 +179,7 @@ class EmployeesController < ApplicationController
       @address = @employee.address
 
       @error = false
-      @documents = @employee.documents
+      #@documents = @employee.documents
       @errors_messages = []
 
       

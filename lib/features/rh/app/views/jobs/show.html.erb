@@ -1,11 +1,11 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= show_job_add_button%>
-  <%= show_job_edit_button(@job)%>
-  <%= show_job_delete_button(@job)%>
+  <%= new_job_link %>
+  <%= edit_job_link(@job)%>
+  <%= delete_job_link(@job)%>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-  <%= show_job_list_button %>
+  <%= jobs_link %>
 <% end %>
 
 <h1>D&eacute;tails sur "<%=h@job.name%>"</h1>

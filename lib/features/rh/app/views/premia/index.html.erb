@@ -1,9 +1,9 @@
 <% secondary_menu USEFUL_LINKS do %>
-  <%= show_employee_view_button(@employee) %>
-  <%= show_employee_list_button %>
+  <%= employee_link(@employee) %>
+  <%= employees_link %>
 <% end %>
 
-<h1>Historique des primes</h1>
+<h1>Historique des primes de <%=@employee.fullname%></h1>
 
 <div class="frame">
 <table>
