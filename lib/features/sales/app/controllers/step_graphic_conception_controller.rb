@@ -1,7 +1,7 @@
-class GraphicConceptionController < ApplicationController
+class StepGraphicConceptionController < ApplicationController
   helper :documents, :press_proofs
   
-  acts_as_step_controller :parent => :step_commercial
+  acts_as_step_controller :step_name => :step_graphic_conception
   
   def show
     respond_to do |format|
@@ -40,7 +40,7 @@ class GraphicConceptionController < ApplicationController
     if @step.update_attributes(params[:step_graphic_conception])
       flash[:notice] = "L'étape a été modifié avec succès"
     end
-    render :nothing => true
+    render :action => :edit
   end
   
 #  def update

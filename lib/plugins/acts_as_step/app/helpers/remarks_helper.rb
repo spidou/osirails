@@ -13,7 +13,8 @@ module RemarksHelper
   end
   
   def display_remark_add_button(remarks_owner)
-    link_to_function "Ajouter un commentaire" do |page|
+    html = "<p>"
+    html << link_to_function("Ajouter un commentaire") do |page|
       page.insert_html :bottom, :remarks, :partial => 'remarks/remark',
                                           :object => Remark.new,
                                           :locals => { :remarks_owner => remarks_owner }
@@ -26,6 +27,7 @@ module RemarksHelper
       # => create a helper like "insert_html" in ActionView::Helpers::PrototypeHelper::JavaScriptGenerator::GeneratorMethods 
       #    to initialize auto-growing textarea called "expandable_textarea" or "autogrow"
     end
+    html << "</p>"
   end
   
 end

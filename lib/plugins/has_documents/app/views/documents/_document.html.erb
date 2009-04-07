@@ -1,7 +1,6 @@
 <% id_attr = "id=\"document_#{document.id}\"" unless document.new_record? %>
-<% style_attr = 'style="display:none"' if document.new_record? and document.errors.empty? %>
 
-<div class="document" <%= id_attr %> <%= style_attr %> >
+<div class="document" <%= id_attr %> >
   <% unless document.new_record? -%>
     <%= content_tag :div, nil, :class => :preview, :id => "document_preview_#{@document_id}" %>
     <%= image_tag(document.attachment.url(:thumb), :class => "thumb") %>

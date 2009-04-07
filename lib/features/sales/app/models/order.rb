@@ -42,9 +42,8 @@ class Order < ActiveRecord::Base
   end
   
   def current_step
-    all_steps.each do |child|
-      next if !child.respond_to?(:parent_step)
-      return child.class.original_step if (child.in_progress? || child.unstarted?)
+    all_steps.select{ |step| step.respond_to?(:parent_step) }.each do |child|
+      return child.original_step if (child.in_progress? || child.unstarted?)
     end
     return nil
   end

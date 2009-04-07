@@ -1,19 +1,16 @@
-class Estimate < ActiveRecord::Base
+class Quote < ActiveRecord::Base
   # Relationships
   belongs_to :step_estimate
-  has_many :estimates_product_references
+  has_many :quotes_product_references
+  has_many :product_references, :through => :quotes_product_references
   
   # Validations
   validates_presence_of :step_estimate_id
   validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
   
-  def product_references
-    estimates_product_references.collect { |epr| epr.product_reference }
-  end
-  
   def total
     result = 0
-    estimates_product_references.each { |epr| result += epr.amount }
+    product_references.each { |epr| result += epr.amount }
     result
   end
   

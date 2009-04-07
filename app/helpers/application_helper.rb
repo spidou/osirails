@@ -383,7 +383,7 @@ module ApplicationHelper
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code
       if menu.name
-        path = menu.name + "_path"
+        path = "#{menu.name}_path"
         if self.respond_to?(path)
           self.send(path)
         else
@@ -399,10 +399,25 @@ module ApplicationHelper
     end
     
     def current_menu
-      #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
-      step = controller.current_order_step if controller.respond_to?("current_order_step")
-      menu = step || controller.controller_name
-      Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
+      menu = controller.controller_name
+      Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
+    end
+    
+    def generate_tabulated_menu(menu, siblings = nil)
+      siblings ||= menu.self_and_siblings
+      html = "<div class=\"tabs\"><ul>"
+      siblings.each do |m|    #siblings.activated.each do |m|
+        selected = ( m == menu ? "class=\"selected\"" : "" )
+        if m.can_list?(current_user) and !m.can_view?(current_user)
+          disabled = "class=\"disabled\""
+          url = "#"
+        else
+          disabled = ""
+          url = url_for_menu(m)
+        end
+        html << "<li #{selected} #{disabled} title=\"#{m.description}\">#{link_to(m.title, url)}</li>" if m.can_list?(current_user) and m.can_view?(current_user)
+      end
+      html << "</ul></div>"
     end
     
 end

@@ -1,7 +1,7 @@
 class StepEstimate < ActiveRecord::Base
   # Relationships
-  has_many :estimates
+  has_many :quotes
   
   # Plugins
-  acts_as_step :parent => :step_commercial, :remarks => false
+  acts_as_step :remarks => false
 end

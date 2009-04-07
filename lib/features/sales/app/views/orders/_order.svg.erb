@@ -18,7 +18,7 @@
   <!-- Show external element -->
 <% angle = 360 / @order.first_level_steps.size -%>
 <% @order.first_level_steps.each_with_index do |c, index| %>
-  <g title="<%= "#{c.class.original_step.title} [#{c.status.titleize}]" %>" class="outside <%= "#{c.status} #{@order.child.class.original_step_name}" %>">
+  <g title="<%= "#{c.original_step.title} [#{c.status.titleize}]" %>" class="outside <%= "#{c.status} #{@order.child.original_step_name}" %>">
     <use xlink:href="#external_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
   </g>
 <% end -%>
@@ -27,7 +27,7 @@
   <!-- Show internal element -->
   <% angle = 360 / @order.child.children_steps.size -%>
   <% @order.child.children_steps.each_with_index do |c, index| %>
-    <g title="<%= "#{c.class.original_step.title} [#{c.status.titleize}]" %>" class="inside <%= "#{c.status} #{@order.child.class.original_step_name}" %>">
+    <g title="<%= "#{c.original_step.title} [#{c.status.titleize}]" %>" class="inside <%= "#{c.status} #{@order.child.original_step_name}" %>">
       <use xlink:href="#internal_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
     </g>
   <% end -%>

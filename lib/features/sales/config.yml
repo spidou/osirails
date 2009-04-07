@@ -18,48 +18,69 @@ menus:
       informations:
         title: Informations de commande
         description: Informations générales sur les dossiers de commandes
-      logs:
-        title: Historiques
-        description: Historiques des actions effectués sur le dossier de commmande
-  prospectives:
-    title: Prospects
-    description: Dossiers en phase de prospection
-    children:
-      commercial:
+        position: 1
+      step_commercial:
         title: Etude commerciale
         description: "Phase d'étude commerciale"
+        position: 2
         children:
-          survey:
+          step_survey:
             title: Visite commerciale
             description: Etape de la visite commercial
             position: 1
-          graphic_conception:
+          step_graphic_conception:
             title: Conception graphique
             description: Etape de conception graphique
             position: 2
-          estimate:
+          step_estimate:
             title: Devis
             description: Etape du devis
             position: 3
-  sales:
-    title: Ventes
-    children:
-      invoicing:
+            children:
+              quotes:
+                title: Devis
+                description: Elaboration des devis
+      step_invoicing:
         title: Facturation
         description: Phase de facturation
+        position: 3
+        children:
+          step_unknown1:
+            title: Inconnu 1
+          step_unknown2:
+            title: Inconnu 2
+      logs:
+        title: Historiques
+        description: Historiques des actions effectués sur le dossier de commmande
+        position: 4
+  prospectives:
+    title: Prospects
+    description: Dossiers en phase de prospection
+    position: 8
+    children:
+      commercial_orders:
+        title: Etude commerciale
+        description: "Dossiers actuellement en phase d'étude commerciale"
+  sales:
+    title: Ventes
+    position: 9
+    children:
+      invoicing_orders:
+        title: Facturation
+        description: Dossiers actuellement en phase de facturation
         position: 1
-      closed:
+      closed_orders:
         title: Cloturés
-        description: Dossiers de vente cloturés
+        description: Dossiers cloturés
         position: 2
-      archived:
+      archived_orders:
         title: Archivés
-        description: Dossiers de vente cloturés
+        description: Dossiers archivés
         position: 3
 configurations:
   taxes_vat:
     description: TVA
     value: 8.5
-  estimate_validity_in_days:
+  quote_validity_in_days:
     description: Période de validité du devis
     value: 30

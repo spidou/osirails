@@ -58,3 +58,114 @@
   text-align: left;
   width: auto;
 }
+
+/* STEPS */
+.step_status,
+.step_ring {
+	background:url("/themes/emr/images/image-step.png") no-repeat;
+}
+
+.step_ring {
+	width:48px;
+	height:48px;
+}
+
+.step_status {
+	width:67px;
+	height:67px;
+	vertical-align:top;
+}
+
+#steps div.step_status {
+	margin:10px 19px 0px -4px;
+}
+
+.step_status.uncomplete {
+	background-position:-201px -96px;
+}
+
+.step_status.terminated {
+	background-position:-134px -96px;
+}
+
+.step_status.in_progress {
+	background-position:-67px -96px;
+}
+
+.step_status.unstarted {
+	background-position:0 -96px;
+}
+
+.step_ring {
+	margin:9px 0px 9px 9px;
+}
+
+#steps a {
+	text-decoration:none;
+	color:#444;
+}
+
+#steps span {
+	display:none;
+}
+
+#steps div {
+	display:inline-block;
+}
+
+#steps div.step_text p {
+	text-align: center;
+	width:100px;
+	margin:0 0 0 -17px;
+	padding:0;
+	text-indent:0px;
+	font-size:0.8em;
+}
+
+#steps div.step {
+	margin: 3px 5px 3px 5px;
+	padding: 0 3px 33px 3px;
+	background:#ecf2ff;
+	-moz-border-radius:8px;
+	cursor: pointer;
+}
+
+#steps div.step:hover {
+	background:#cfdeff;
+	-moz-border-radius:8px;
+}
+
+#steps div.selected {
+	background:#cfdeff;
+	-moz-border-radius:8px;
+}
+
+#steps div.selected p {
+	font-weight:bold;
+}
+
+/* CUSTOM STEP CSS DECLARATIONS */
+#step_survey {
+	background-position:-48px -48px;
+}
+
+#step_graphic_conception {
+	background-position:-96px -48px;
+}
+
+#step_estimate {
+	background-position:-144px -48px;
+}
+
+.selected div#step_survey {
+  background-position:-48px 0;
+}
+
+.selected div#step_graphic_conception {
+  background-position:-96px 0;
+}
+
+.selected div#step_estimate {
+  background-position:-144px 0;
+}
+/* END OF CUSTOM STEP CSS DECLARATIONS */

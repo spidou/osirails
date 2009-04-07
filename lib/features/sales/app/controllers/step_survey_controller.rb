@@ -1,7 +1,7 @@
-class SurveyController < ApplicationController
+class StepSurveyController < ApplicationController
   helper :documents
   
-  acts_as_step_controller :parent => :step_commercial
+  acts_as_step_controller
   
   def show
   end
@@ -13,7 +13,7 @@ class SurveyController < ApplicationController
     if @step.update_attributes(params[:step_survey])
       flash[:notice] = "L'étape a été modifié avec succès"
     end
-    render :nothing => true
+    render :action => :edit
   end
   
 #  def update

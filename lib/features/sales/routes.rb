@@ -1,17 +1,24 @@
 ActionController::Routing::Routes.add_routes do |map|
   map.resources :orders do |order|
-    order.resource 'commercial', :controller => 'commercial'
-    order.resources 'estimate', :controller => 'estimate'
-    order.resource 'graphic_conception', :controller => 'graphic_conception'
-    order.resource 'informations', :controller => 'informations'
-    order.resource 'invoicing', :controller => 'invoicing'
-    order.resource 'survey', :controller => 'survey'
-    order.resources 'logs', :controller => 'logs'
+    # step commercial
+    order.step_commercial 'commercial', :controller => 'step_commercial'
+    order.resource :step_survey,             :as => 'survey',             :controller => 'step_survey' # :only => [ :show, :edit, :update ]
+    order.resource :step_graphic_conception, :as => 'graphic_conception', :controller => 'step_graphic_conception'
+    order.resource :step_estimate,           :as => 'estimate',           :controller => 'step_estimate' do |step_estimate|
+      step_estimate.resources :quotes
+    end
+    
+    # step invoicing
+    order.step_invoicing 'invoicing', :controller => 'step_invoicing'
+    
+    # other resources
+    order.resources :logs
+    order.informations 'informations', :controller => 'informations'
   end
   
-  map.closed 'closed', :controller => 'closed_orders'
-  map.archived 'archived', :controller => 'archived_orders'
+  map.closed       'closed',       :controller => 'closed_orders'
+  map.archived     'archived',     :controller => 'archived_orders'
   
-  map.prospectives 'prospectives', :controller => 'commercial', :action => 'index'
-  map.sales 'sales', :controller => 'invoicing', :action => 'index'
+  map.prospectives 'prospectives', :controller => 'commercial_orders'
+  map.sales        'sales',        :controller => 'invoicing_orders'
 end

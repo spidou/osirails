@@ -2,7 +2,7 @@
 
 <div class="presentation_medium">
 	<%= order_steps %>
-  <% form_for(@step, :url => { :controller =>"survey", :action => "update" },  :html => { :multipart => true}) do |form| %>
+  <% form_for(@step, :url => { :controller => "step_survey", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
     <!-- Display Checklists div -->
@@ -19,7 +19,7 @@
     
     <p>
       <%= form.submit 'Modifier' %>
-      <%= form.submit 'Cloturer', :name => :close_step %>
+      <%= form.submit 'Cloturer', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
     </p>
   <% end %>
 </div>

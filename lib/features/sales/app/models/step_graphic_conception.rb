@@ -3,5 +3,5 @@ class StepGraphicConception < ActiveRecord::Base
   
   # plugins
   has_documents :graphic_charter
-  acts_as_step :parent => :step_commercial
+  acts_as_step
 end

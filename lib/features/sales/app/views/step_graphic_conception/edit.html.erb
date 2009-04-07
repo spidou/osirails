@@ -3,7 +3,7 @@
 <div>
 <%= order_steps %>
 
-<% form_for(@step, :url => { :controller =>"graphic_conception", :action => "update" },  :html => { :multipart => true}) do |order_step| %>
+<% form_for(@step, :url => { :controller =>"step_graphic_conception", :action => :update },  :html => { :multipart => true }) do |order_step| %>
   <!-- Display Checklists div -->
   <%= display_checklists_list(@step)%>
 

@@ -10,9 +10,9 @@
       <%= link_to_function "Annuler", "this.up('.remark').remove()"%>
     </p>
   <% end -%>
-<% else -%>
+<% elsif !remark.new_record? -%>
   <p>
-    Ajouté le <%= remark.created_at.to_humanized_datetime %> par <%= remark.user.employee_name %> :<br/>
+    Ajouté le <strong><%= remark.created_at.to_humanized_datetime %></strong> par <strong><%= link_to_unless(remark.user.employee_id.nil?, remark.user.employee_name, employee_path(remark.user.employee_id)) %></strong> :<br/>
     <%= h remark.text %>
   </p>
 <% end -%>

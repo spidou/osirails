@@ -1,19 +1,15 @@
-class EstimateController < ApplicationController
+class StepEstimateController < ApplicationController
     
-  acts_as_step_controller :parent => :step_commercial
+  acts_as_step_controller
 
-  def index
-    @estimates = @order.step_commercial.step_estimate.estimates
-    redirect_to new_order_estimate_path if @estimates.blank?
-  end
+  # def index
+  #   @estimates = @order.step_commercial.step_estimate.estimates
+  #   redirect_to new_order_estimate_path if @estimates.empty?
+  # end
 
-  def new
-    @estimate = Estimate.new
-  end
-
-  def edit
-    @estimate = Estimate.find(params[:id])
-  end
+  # def new
+  #   @estimate = Estimate.new
+  # end
 
   def show
     @estimate = Estimate.find(params[:id])
@@ -24,30 +20,38 @@ class EstimateController < ApplicationController
       error_access_page(500)
     end
   end
-
-  def create
-    @step.in_progress! if @step.unstarted?
-    
-    ## Save Remarks
-    @remark = Remark.new(:text => params[:step_estimate][:remark][:text], :user_id => current_user.id) unless params[:step_estimate][:remark][:text].blank?
-    
-    @step.remarks << @remark unless @remark.nil?
-    
-    @estimate = Estimate.create(params[:estimate])
-    @order.step_commercial.step_estimate.estimates << @estimate
-    params[:product_references].each do |pr|
-      @estimate.estimates_product_references << EstimatesProductReference.create(pr)
-    end unless params[:product_references].nil?
-    if @order.save and @estimate.save
-      flash[:notice] = "Devis créer avec succès"
-      redirect_to :action => 'index'
-    else
-      flash[:error] = "Erreur lors de la création du devis"
-      redirect_to :action => 'new'
-    end
+  
+  def edit
+    # @estimate = Estimate.find(params[:id])
   end
+
+  # def create
+  #   @step.in_progress! if @step.unstarted?
+  #   
+  #   ## Save Remarks
+  #   @remark = Remark.new(:text => params[:step_estimate][:remark][:text], :user_id => current_user.id) unless params[:step_estimate][:remark][:text].blank?
+  #   
+  #   @step.remarks << @remark unless @remark.nil?
+  #   
+  #   @estimate = Estimate.create(params[:estimate])
+  #   @order.step_commercial.step_estimate.estimates << @estimate
+  #   params[:product_references].each do |pr|
+  #     @estimate.estimates_product_references << EstimatesProductReference.create(pr)
+  #   end unless params[:product_references].nil?
+  #   if @order.save and @estimate.save
+  #     flash[:notice] = "Devis créer avec succès"
+  #     redirect_to :action => 'index'
+  #   else
+  #     flash[:error] = "Erreur lors de la création du devis"
+  #     redirect_to :action => 'new'
+  #   end
+  # end
   
   def update
+    if @step.update_attributes(params[:step_estimate])
+      flash[:notice] = "L'étape a été modifié avec succès"
+    end
+    render :action => :edit
   end
 
 

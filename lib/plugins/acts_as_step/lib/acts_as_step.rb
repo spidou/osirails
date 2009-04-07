@@ -11,46 +11,62 @@ module ActsAsStep
       include SingletonMethods
       include InstanceMethods
       
-      if options[:children] # so if it's a parent step
-        belongs_to :order
-        
-        write_inheritable_attribute(:list_children_steps, options[:children])
-        options[:children].each do |child|
-          has_one child
-        end
-        
-        class_eval do
-          def self.list_children_steps
-            read_inheritable_attribute(:list_children_steps)
-          end
-          
-          def children_steps
-            self.class.list_children_steps.collect{ |c| send(c) }.flatten
-          end
-        end
-        
-      elsif options[:parent] # so if it's a child step
-        belongs_to :parent_step, :class_name => options[:parent].to_s.camelize, :foreign_key => "#{options[:parent]}_id"
+      step_name = self.singularized_table_name
+      step = Step.find_by_name(step_name)
+      raise "The step '#{step_name}' doesn't exist. Please check in the config yaml file." if step.nil?
+      
+      step_children = step.children
+      step_parent = step.parent
+      
+      if step_parent # so it's a child step
+        belongs_to :parent_step, :class_name => step_parent.name.camelize, :foreign_key => "#{step_parent.name}_id"
         
         class_eval do
           def order
             parent_step.order
           end
         end
+      else # so it's a parent step
+        belongs_to :order
         
+        write_inheritable_attribute(:list_children_steps, step_children.collect{ |child| child.name })
+        
+        step_children.each do |child|
+          has_one child.name
+        end
+        
+        class_eval do
+          def children_steps
+            self.class.list_children_steps.collect{ |step| send(step) }
+          end
+          
+          private
+            def self.list_children_steps
+              read_inheritable_attribute(:list_children_steps)
+            end
+        end
       end
       
-      write_inheritable_attribute(:original_step_name, self.singularized_table_name)
-      write_inheritable_attribute(:original_step, Step.find_by_name(self.singularized_table_name))
+      write_inheritable_attribute(:original_step_name, step_name)
+      write_inheritable_attribute(:original_step, step)
       
       class_eval do
-        def self.original_step
-          read_inheritable_attribute(:original_step)
+        def original_step
+          self.class.original_step
         end
         
-        def self.original_step_name
-          read_inheritable_attribute(:original_step_name)
+        def original_step_name
+          self.class.original_step_name
         end
+        
+        private
+          def self.original_step
+            read_inheritable_attribute(:original_step)
+          end
+          
+          def self.original_step_name
+            read_inheritable_attribute(:original_step_name)
+          end
       end
       
       unless options[:remarks] == false
@@ -170,7 +186,7 @@ module ActsAsStep
     def dependencies_steps
       deps = []
       siblings_steps.each do |sibling|
-        deps << sibling if self.class.original_step.dependencies.collect{ |step| step.name }.include?(sibling.class.original_step_name)
+        deps << sibling if self.original_step.dependencies.collect{ |step| step.name }.include?(sibling.original_step_name)
       end
       deps
     end

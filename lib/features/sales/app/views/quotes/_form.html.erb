@@ -82,12 +82,12 @@
   }
 </script>
 
-<% form_for @estimate, :url => order_estimate_path(@order, @estimate) do |e| %>
+<% form_for @quote, :url => order_step_estimate_quote_path(@order, @step) do |e| %>
   <h2>Conditions commerciales</h2>
   <%= e.error_messages %>
   <p>
     <%= e.label :validity_date, 'Date de fin de validité' %>
-    <%= e.text_field :validity_date, :value => Date.today + ConfigurationManager.sales_estimate_validity_in_days.days %>
+    <%= e.text_field :validity_date, :value => Date.today + ConfigurationManager.sales_quote_validity_in_days.days %>
   </p>
   <p>
     <%= e.label :carriage_costs, 'Frais de port' %>
@@ -133,11 +133,11 @@
 
 <script type="text/javascript">
 Calendar.setup({ 
-	inputField : "estimate_validity_date",
+	inputField : "quote_validity_date",
 	ifFormat : "%Y-%m-%d",
 	timeFormat : "24"
 });
-<% @estimate.estimates_product_references.each do |epr| %>
-append_reference('<%= epr.to_json(:include => :product_reference) %>'.evalJSON()["estimates_product_reference"])
+<% @quote.product_references.each do |epr| %>
+append_reference('<%= epr.to_json(:include => :product_reference) %>'.evalJSON()["product_reference"])
 <% end %>
 </script>

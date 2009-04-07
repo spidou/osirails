@@ -9,19 +9,19 @@
 	<% if child.start_date %>
 	<div class="timeline_body good">
     <span class="timeline_date" title="<%=child.start_date.to_humanized_datetime %>"><%= child.start_date.to_humanized_date %></span>
-    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.class.original_step.title.downcase %></span>
+    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
   <% else %>
   <div class="timeline_body bad">
-    <span class="timeline_date"><%= child.class.original_step_name %></span>
-    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.class.original_step.title.downcase %></span>
+    <span class="timeline_date"><%= child.original_step_name %></span>
+    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>
 
 	<% if child.end_date %>
 	<div class="timeline_body good">
     <span class="timeline_date" title="<%= child.end_date.to_humanized_datetime %>"><%= child.end_date.to_humanized_date %></span>
-    <span class="timeline_notice">Fin de l'&eacute;tape <%= child.class.original_step.title.downcase %></span>
+    <span class="timeline_notice">Fin de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>
 <% end %>

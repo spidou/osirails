@@ -32,8 +32,9 @@ class Document < ActiveRecord::Base
   @@form_labels[:attachment] = "Fichier :"
   
   has_attached_file :attachment, 
-                    :styles => { :medium => "500x500>",
-                                 :thumb => "100x100#" },
+                    :styles => { :thumb => "100x100#",
+                                 :medium => "640x480>",
+                                 :large => "1024x768>" },
                     :path => ":rails_root/assets/:class/:owner_class/:owner_id/:id/:style.:extension",
                     :url => "/attachments/:id/:style",
                     :default_url => "#{$CURRENT_THEME_PATH}/images/documents/missings/:mimetype_:style.png"

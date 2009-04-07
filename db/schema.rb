@@ -318,27 +318,6 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.boolean  "activated",                           :default => true
   end
 
-  create_table "estimates", :force => true do |t|
-    t.integer  "step_estimate_id", :limit => 11
-    t.boolean  "validated",                      :default => false
-    t.date     "validity_date"
-    t.float    "carriage_costs",                 :default => 0.0
-    t.float    "reduction",                      :default => 0.0
-    t.float    "account",                        :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "estimates_product_references", :force => true do |t|
-    t.integer  "estimate_id",          :limit => 11
-    t.integer  "product_reference_id", :limit => 11
-    t.text     "description"
-    t.integer  "quantity",             :limit => 11
-    t.float    "unit_price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "event_categories", :force => true do |t|
     t.integer "calendar_id", :limit => 11
     t.string  "name"
@@ -655,6 +634,27 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string   "delivery_time"
     t.string   "information"
     t.integer  "product_reference_id",     :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotes", :force => true do |t|
+    t.integer  "step_estimate_id", :limit => 11
+    t.boolean  "validated",                      :default => false
+    t.date     "validity_date"
+    t.float    "carriage_costs",                 :default => 0.0
+    t.float    "reduction",                      :default => 0.0
+    t.float    "account",                        :default => 0.0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quotes_product_references", :force => true do |t|
+    t.integer  "quote_id",             :limit => 11
+    t.integer  "product_reference_id", :limit => 11
+    t.text     "description"
+    t.integer  "quantity",             :limit => 11
+    t.float    "unit_price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

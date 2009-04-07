@@ -45,10 +45,10 @@
 		<th>Référence de Commande</th>
 	</tr>
 	<tr>
-		<td><%= @estimate.id %></td>
+		<td><%= @quote.id %></td>
 		<td><%= @customer.id %></td>
-		<td><%= @estimate.created_at.to_date %></td>
-		<td><%= @estimate.validity_date %></td>
+		<td><%= @quote.created_at.to_date %></td>
+		<td><%= @quote.validity_date %></td>
 		<td><%= @order.commercial.fullname %></td>
 		<td><%= @order.title %></td>
 	</tr>
@@ -64,7 +64,7 @@
 		<th width="12%">P.U HT</th>
 		<th width="15%">Montant HT</th>
 	</tr>
-	<% @estimate.estimates_product_references.each do |epr| %>
+	<% @quote.product_references.each do |epr| %>
 	<tr>
 		<td><%= epr.product_reference.reference %></td>
 		<td style="text-align: left;"><%= epr.description %></td>
@@ -81,19 +81,19 @@
 			<table>
 				<tr>
 					<th width="50%">Total HT</th>
-					<td width="50%"><%= @estimate.total %></td>
+					<td width="50%"><%= @quote.total %></td>
 				</tr>
 				<tr>
 					<td>Remise</td>
-					<td><%= @estimate.reduction %></td>
+					<td><%= @quote.reduction %></td>
 				</tr>
 				<tr>
 					<td>Frais de port</td>
-					<td><%= @estimate.carriage_costs %></td>
+					<td><%= @quote.carriage_costs %></td>
 				</tr>
 				<tr>
 					<td>Net HT</td>
-					<td><%= @estimate.net %></td>
+					<td><%= @quote.net %></td>
 				</tr>
 				<tr>
 					<td>TVA</td>
@@ -101,19 +101,19 @@
 				</tr>
 				<tr>
 					<td>Total taxes</td>
-					<td><%= @estimate.summon_of_taxes %></td>
+					<td><%= @quote.summon_of_taxes %></td>
 				</tr>
 				<tr>
 					<td>Acompte</td>
-					<td><%= @estimate.account %></td>
+					<td><%= @quote.account %></td>
 				</tr>
 				<tr>
 					<td>Total TTC</td>
-					<td><%= @estimate.total_with_taxes %></td>
+					<td><%= @quote.total_with_taxes %></td>
 				</tr>
 				<tr>
 					<th>Net a payer</th>
-					<td><%= @estimate.net_to_paid %></td>
+					<td><%= @quote.net_to_paid %></td>
 				</tr>
 			</table>
 		</td>

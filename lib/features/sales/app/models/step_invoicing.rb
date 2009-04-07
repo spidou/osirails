@@ -1,3 +1,3 @@
 class StepInvoicing < ActiveRecord::Base
-  acts_as_step :children => []
+  acts_as_step
 end

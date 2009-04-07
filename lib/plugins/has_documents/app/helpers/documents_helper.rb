@@ -25,7 +25,8 @@ module DocumentsHelper
   end
 
   def display_document_add_button(documents_owner)
-    link_to_function "Ajouter un document" do |page|
+    html = "<p>"
+    html << link_to_function("Ajouter un document") do |page|
       page.insert_html :bottom, :new_documents, :partial => 'documents/document',
                                                 :object => documents_owner.build_document
       page['new_documents'].show if page['new_documents'].visible
@@ -33,7 +34,7 @@ module DocumentsHelper
       last_document.show
       last_document.visual_effect :highlight
     end
-    # link_to_remote "Ajouter un document", :url => { :controller => :documents, :action => :new, :customer_id => 2 }, :method => :get
+    html << "</p>"
   end
 
   def display_document_edit_button(document)
