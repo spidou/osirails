@@ -1,0 +1,19 @@
+menu_one:
+  title: "Menu 1"
+  description: "Desc of menu 1"
+  name: "menu_one"
+
+menu_two:
+  title: "Menu 2"
+  description: "Desc of menu 2"
+  name: "menu_two"
+
+menu_three:
+  title: "Menu 3"
+  description: "Desc of menu 3"
+  name: "menu_three"
+
+menu_four:
+  title: "Menu 4"
+  description: "Desc of menu 4"
+  name: "menu_four"
