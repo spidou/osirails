@@ -107,3 +107,7 @@ end
 
 # require 'mimetype_fu'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
+
+# ApplicationHelper's method are overloaded by another feature. So, load the
+# file to reset ApplicationHelper's method.
+load "#{RAILS_ROOT}/app/helpers/application_helper.rb"
