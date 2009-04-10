@@ -60,6 +60,7 @@ module ApplicationHelper
     html << "</ul></div>"
   end
   
+  #TODO remove that for good!
   def display_memorandums
     ""
   end
