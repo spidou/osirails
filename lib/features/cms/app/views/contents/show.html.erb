@@ -1,22 +1,14 @@
-<% content_for :secondary_menu do %>
-  <h1><span class='gray_color'>Actions</span></h1>
-  <ul>
-    <li><%= show_edit_button(@content, 1) %></li>
-  </ul>
-  <h1><span class='gray_color'>Liens</span> <span class='blue_color'>Utiles</span></h1>
-  <ul>
-    <li><%= link_to 'Voir la liste des contenus', :action => 'index' %></li>
-  </ul>
-  <% if @content.versions.length > 0 %>
-    <h1>
-      <%= link_to_function("<span class='gray_color'>Version</span>") do |page|
-        page.visual_effect(:toggle_slide, "list_content_versions") 
-      end %>
-    </h1>
+<% secondary_menu "Actions possibles" do %>
+  <%= show_edit_button(@content, 1) %>
+<% end %>
 
-    <div id="list_content_versions" style="display:none">
-      <%= show_contents_versions(@content_versions) %>
-    </div>
+<% secondary_menu "Liens utiles" do %>
+  <%= link_to 'Voir la liste des contenus', :action => 'index' %>
+<% end %>
+
+<% if @content.versions.length > 0 %>
+  <% secondary_menu "Historique" do %>
+    <%= show_contents_versions(@content_versions) %>
   <% end %>
 <% end %>
 

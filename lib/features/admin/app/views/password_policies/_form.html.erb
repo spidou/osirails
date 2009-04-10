@@ -1,5 +1,5 @@
 <div class="frame">
-  <% form_tag( {:controller =>"password_policies", :action => "update"}, :method => 'put' ) do %>
+  <% form_tag( password_policies_path, :method => 'put' ) do %>
     
    <h2>Politique de mot de passe</h2>
    <strong>Choisir la politique de mot de passe pour les comptes utilisateurs de l'Intranet :</strong>
@@ -37,7 +37,7 @@
     <strong>Les comptes utilisateurs sont cr&eacute;&eacute;s automatiquement à l'enregistrement d'un employ&eacute;. Choisir le mod&egrave;le de cr&eacute;ation des comptes utilisateurs pour tous les employ&eacute;s :</strong>
     <p>
 
-      <p id="pattern_field"><%= display_text_field_for_pattern %><span id="pattern_help_link"> <%=link_to_remote "<img src=" + "/images/help_icns_16x16.png "  + " title=\"Aide\" alt=\"Bouton Aide\"/>",:url=>{:action=>"help_down"},:href=>(url_for :action=>"help_down")%></span></p>
+      <p id="pattern_field"><%= display_text_field_for_pattern %><span id="pattern_help_link"> <%= link_to_function( image_tag( "/images/help_icon_16x16.png", :title => "Aide", :alt => "Aide" ), "Effect.toggle('pattern_help', 'slide')" ) %></span></p>
       
       <p style="display: none;" id="pattern_help">Vous devez utiliser le modèle suivant ' [attribut,option] ' pour composer votre squellette: 
         <br/>-attribut : représente les attributs que possédent un utilisateur(first_name,last_name)

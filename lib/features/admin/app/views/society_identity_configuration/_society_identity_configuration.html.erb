@@ -3,7 +3,7 @@
 <h1>Les param&egrave;tres globaux de l'entreprise</h1>
 <h2>Informations G&eacute;n&eacute;rales</h2>
 
-<% form_tag :action => 'update' do %>
+<% form_tag society_identity_configuration_path, :method => :put do %>
 <p>
   <%= label_tag "admin_society_identity_configuration_name", "Entreprise : " %>
   <%= display_markup("admin_society_identity_configuration_name", @parameters["admin_society_identity_configuration_name"]) %>

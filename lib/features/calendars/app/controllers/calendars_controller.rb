@@ -41,26 +41,25 @@ class CalendarsController < ApplicationController
    
   protected
     def check_date
-      @calendar = Calendar.find(params[:id] || current_user.calendar)
-      params[:period] = "week" if params[:period].nil?
-      unless ["day", "week", "month"].include?(params[:period].downcase)
-        params[:period] = "week"
-        flash[:error] = "La période demander est invalide"
-      end
+      calendar_id = params[:id] || current_user.calendar
+      params[:period] ||= "week"
+      
+      today = Date.today
+      params[:year] ||= today.year
+      params[:month] ||= today.month
+      params[:day] ||= today.day
+      
+      @calendar = Calendar.find(calendar_id)
       begin
-      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+        @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+      rescue ArgumentError => e
+        raise ActionController::RoutingError, e.message
       rescue Exception => e
-        if params[:year] && params[:month] && params[:day]
-          flash[:error] = "Date incorrecte"        
-        end
-        @date = Date::today
-        params[:year] = @date.year
-        params[:month] = @date.month
-        params[:day] = @date.day
+        error_access_page(500)
       end
     end
 
     def check_permissions
-      render :text => "Vous n'avez pas le droit de voir ce calendrier" unless (@calendar.user.nil? || @calendar.user == current_user)
+      error_access_page(403) unless (@calendar.user.nil? || @calendar.user == current_user)
     end
 end

@@ -1,7 +1,7 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= show_add_button(@service,"Ajouter un service")%>
   <%= show_edit_button(@service,"Modifier ce service") %>
-  <%= show_delete_button(@service,"Supprimer ce service") if @service.can_destroy?%>
+  <%= show_delete_button(@service,"Supprimer ce service") if @service.can_be_destroyed?%>
 <% end %>
 <% secondary_menu USEFUL_LINKS do %>
   <%= link_to "Liste des services", services_path %>

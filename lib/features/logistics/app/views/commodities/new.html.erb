@@ -13,7 +13,7 @@
     <p>
       <%= form.label :commodity_category_id %>
       <%= form.collection_select(:commodity_category_id, @categories, :id, :name , {}) %>
-      <%= observe_field("commodity_commodity_category_id",:url => {:action => 'refresh_measure'}, :with => 'parameter')%>
+      <%= observe_field("commodity_commodity_category_id", :url => refresh_measure_commodity_path, :with => 'parameter')%>
     </p>
   
     <p>

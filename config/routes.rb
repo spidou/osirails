@@ -8,6 +8,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.login 'account/login', :controller => 'account', :action => 'login'
   map.logout 'account/logout', :controller => 'account', :action => 'logout'
+  map.lost_password 'account/lost_password', :controller => 'account', :action => 'lost_password'
+  map.expired_password 'account/expired_password', :controller => 'account', :action => 'expired_password'
   
   ### COMMONS
   map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
@@ -62,11 +64,4 @@ begin
 rescue ActiveRecord::StatementInvalid, Mysql::Error => e
   error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
   RAKE_TASK ? puts(error) : raise(error)
-end
-
-
-ActionController::Routing::Routes.add_routes do |map|
-  # Install the default routes as the lowest priority.
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
 end

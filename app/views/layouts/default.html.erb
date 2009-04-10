@@ -54,7 +54,7 @@
               <div id="content_secondary_menu">
                 <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
                 <!--contetual search formulary -->
-                <% form_tag({:controller => 'searches', :action => 'update'}, :method => 'put',:id => "contextual_search_form" ) do%>
+                <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
                   <%= contextual_search %>
                 <% end %> 
  

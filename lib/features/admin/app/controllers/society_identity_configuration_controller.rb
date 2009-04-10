@@ -1,7 +1,7 @@
 class SocietyIdentityConfigurationController < ApplicationController
   
   # GET /society_identity_configuration
-  def index
+  def show
     @parameters = {}
     for parameter in search_methods(__FILE__) do
       @parameters[parameter] = ConfigurationManager.send(parameter)
@@ -18,13 +18,13 @@ class SocietyIdentityConfigurationController < ApplicationController
     end
   end
   
-  # POST /society_identity_configuration
+  # PUT /society_identity_configuration
   def update
     for parameter in search_methods(__FILE__)
       ConfigurationManager.send(parameter+"=", params[parameter])
     end
     flash[:notice] = "Les modifications ont &eacute;t&eacute; prises en compte"
-    redirect_to :action => 'index'
+    redirect_to :action => :show
   end
   
 end

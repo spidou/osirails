@@ -7,11 +7,12 @@ dependencies:
 menus:
   calendars:
     title: Calendrier
-    description: Gestion des calendriers
+    description: Votre calendrier personnel
     children:
       events:
         title: Evenements
         description: Gestion des événements
+        hidden: true
   admin:
     children:
       permissions:

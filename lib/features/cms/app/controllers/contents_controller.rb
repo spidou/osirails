@@ -77,7 +77,7 @@ class ContentsController < ApplicationController
       # Add the current user as a contributor of the content
       # Duplicate entry are automatically deleted by the model
       content_attributes = params[:content]
-      content_attributes[:contributors] = @content.contributors
+      content_attributes[:contributors] = @content.contributors || []
       content_attributes[:contributors] << current_user.id
 
       if @content.update_attributes(content_attributes)

@@ -1,6 +1,6 @@
 class MenusController < ApplicationController
   # Add permissions for methods
-  method_permission(:edit => ['move_up', 'move_down'])
+  method_permission :edit => ['move_up', 'move_down']
   
   # GET /menus
   def index
@@ -10,7 +10,6 @@ class MenusController < ApplicationController
   # GET /menus/new
   def new
     @menu = Menu.new(:parent_id => params[:parent_menu_id])
-    # get_structured_menus permit to make a indent for menu's list
     @menus = Menu.get_structured_menus
   end
   
@@ -21,23 +20,18 @@ class MenusController < ApplicationController
       flash[:notice] = 'Le menu a &eacute;t&eacute; cr&eacute;&eacute; avec succ&egrave;s'
       redirect_to :action => 'index'
     else
-      # get_structured_menus permit to make a indent for menu's list
       @menus = Menu.get_structured_menus
       render :action => 'new'
     end
   end
   
-  # GET /menu/1/edit
+  # GET /menu/:id/edit
   def edit
     @menu = Menu.find(params[:id])
-    # get_structured_menus permit to make a indent for menu's list
     @menus = Menu.get_structured_menus(@menu.id)
   end
   
-  # can_has_this_parent? => Permit to check if the new parent can has this parent
-  # change_parent => method to change parent
-  # 
-  # PUT /menus/1
+  # PUT /menus/:id
   def update
     @menu = Menu.find(params[:id])
     @menu.old_parent_id, @menu.update_parent = @menu.parent_id, true
@@ -49,29 +43,25 @@ class MenusController < ApplicationController
     end
   end
   
-  # This method permit to move up a menu.
-  # how_many_brother_activated permit to move corectly all menus
+  # GET /menus/:id/move_up
   def move_up
     menu = Menu.find_by_id(params[:id])
-    value = menu.how_many_brother_activated('higher')
-    value.times do
-      menu.move_higher
+    unless menu.move_up
+      flash[:error] = "Impossible de déplacer ce menu"
     end
     redirect_to menus_path
   end
   
-  # This method permit to move down a menu.
-  # how_many_brother_activated permit to move corectly all menus
+  # GET /menus/:id/move_down
   def move_down
     menu = Menu.find_by_id(params[:id])
-    value = menu.how_many_brother_activated('lower')
-    value.times do
-      menu.move_lower
+    unless menu.move_down
+      flash[:error] = "Impossible de déplacer ce menu"
     end
     redirect_to menus_path
   end
   
-  # DELETE /menus/1
+  # DELETE /menus/:id
   def destroy
     menu = Menu.find_by_id(params[:id])
     if menu.can_delete_menu?

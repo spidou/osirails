@@ -25,7 +25,7 @@ module ApplicationHelper
     html = ""
     menu = current_menu
     Menu.mains.activated.each do |m|
-      selected = (menu == m or menu.ancestors.include?(m) ? "class=\"selected\"" : "")
+      selected = ( menu == m || menu.ancestors.include?(m) ? "class=\"selected\"" : "")
       html << "<li #{selected} title=\"#{m.description}\" class=\"disabled\">#{link_to(m.title, "#")}</li>\n" if m.can_list?(current_user) and !m.can_view?(current_user)
       html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n" if m.can_list?(current_user) and m.can_view?(current_user)
     end
@@ -37,12 +37,16 @@ module ApplicationHelper
     menu = current_menu
     main_menu = menu.last_ancestor
     main_menu.children.activated.each do |m|
-      first = main_menu.children.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
+      first = main_menu.children.activated.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
       selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
       html << link_to("<span title=\"#{m.description}\" #{selected} #{first} class=\"disabled\">#{m.title}</span>", "#") if m.can_list?(current_user) and !m.can_view?(current_user)
       html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m)) if m.can_list?(current_user) and m.can_view?(current_user)
     end
-    html.reverse.to_s
+    if html.empty?
+      javascript_tag "window.onload = function() { $('empty').style.display='none' }"
+    else
+      html.reverse.to_s
+    end
   end
   
   def display_tabulated_menu
@@ -85,13 +89,12 @@ module ApplicationHelper
   def contextual_search()
     html= "<p>"
     
-    # Small hack to catch the model name with the controller object
-    choose_model = controller.to_s.split("<")[1].split(":")[0].gsub(/Controller/,"").singularize unless controller.nil?
+    model_for_search = controller.controller_name.singularize.camelize
     
-    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{choose_model}' />"
+    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{model_for_search}' />"
     html+= text_field_tag "contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus=>"if(this.value=='Rechercher'){this.value='';}", :onblur=>"if(this.value==\"\"){this.value='Rechercher';}", :style=>"color:grey;"
     html+= "<button type=\"submit\" class=\"contextual_search_button\"></button>"
-    html+= link_to( "Recherche avancée",{ :controller => 'search', :method => 'put', :choosen_model =>controller},{:class => 'help'})
+    html+= link_to( "Recherche avancée", search_path(:choosen_model => model_for_search), :class => 'help')
     html+="</p>"
   end
   

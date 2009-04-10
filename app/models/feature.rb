@@ -176,15 +176,6 @@ class Feature < ActiveRecord::Base
     
     if update_attribute(:activated, true)
       reload_environment!
-      
-      # Load the route file of feature after reload the environment
-      ActionController::Routing.use_controllers! nil
-      $activated_features_path.each do |path|
-        if path.split('/').last == self.name
-          routes_path = File.join(path, 'routes.rb')
-          load routes_path if File.exist?(routes_path)
-        end
-      end
     else
       false
     end
@@ -202,6 +193,9 @@ class Feature < ActiveRecord::Base
   
   def reload_environment!
     begin
+      # touch the routes.rb file to be sure it will be parsed while reloading the environment
+      `touch #{RAILS_ROOT}/config/routes.rb`
+      
       # reload configuration
       load File.join(RAILS_ROOT, 'config', 'environment.rb')
       

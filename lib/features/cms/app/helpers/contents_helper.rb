@@ -46,14 +46,12 @@ module ContentsHelper
   def show_contents(contents)
     contents_list = []
     contents.each do |content|
-      menu = Menu.find_by_id(content.menu_id)
-      
       view_button = show_view_button(content)
       edit_button = show_edit_button(content)
       delete_button = show_delete_button(content)
       
-      contents_list << "<tr title='#{menu.description}'>"
-      contents_list << "<td>#{menu.title}</td>"
+      contents_list << "<tr title='#{content.menu.description}'>"
+      contents_list << "<td>#{content.menu.title}</td>"
       contents_list << "<td>#{content.title}</td>"
       contents_list << "<td>#{content.description}</td>" 
       contents_list << "<td>#{view_button}  #{edit_button}  #{delete_button}</td>"
@@ -66,14 +64,14 @@ module ContentsHelper
   def show_contents_versions(content_versions)
     if controller.can_view?(current_user) and Content.can_view?(current_user)
       contents_versions_list = []
-        contents_versions_list << "<p><ul>"
-        content_versions.each_with_index do |content_version, index|
-          contents_versions_list << "<li>"
-          contents_versions_list << link_to(content_version.versioned_at.strftime('0%w/%m/%Y %H:%M:%S'),:controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1 )
-          contents_versions_list << "</li>"             
-          end
-          contents_versions_list << will_paginate(content_versions)
-          contents_versions_list << "</ul></p>"
+      contents_versions_list << "<p><ul>"
+      content_versions.each_with_index do |content_version, index|
+        contents_versions_list << "<li>"
+        contents_versions_list << link_to(content_version.versioned_at.to_humanized_datetime,:controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1 )
+        contents_versions_list << "</li>"             
+      end
+      contents_versions_list << will_paginate(content_versions)
+      contents_versions_list << "</ul></p>"
     end
   end
   

@@ -7,7 +7,6 @@ class Menu < ActiveRecord::Base
   belongs_to :parent_menu, :class_name =>"Menu", :foreign_key => "parent_id"
   belongs_to :feature
 
-
   # Plugin
   acts_as_tree :order => :position
   acts_as_list :scope => :parent_id
@@ -88,38 +87,38 @@ class Menu < ActiveRecord::Base
     self.children.size > 0 ? true : false
   end
     
-  # This method permit to get how many brother are not actived
-  def how_many_brother_activated(sign)
-    menus = Menu.mains.activated
-    menu_position = self.position
-    number = 0
-    brothers = []
-    
-    if sign == 'lower'
-      self.siblings.sort_by(&:position).each do |brother|
-        brothers << brother if menu_position < brother.position
-      end
-      brothers.each do |brother|
-        if menus.include?(brother)
-          return number += 1
-        else
-          number += 1
-        end
-      end
-    elsif sign == 'higher'
-      self.siblings.sort_by(&:position).each do |brother|
-        brothers << brother if menu_position > brother.position
-      end
-      brothers.reverse.each do |brother|
-        if menus.include?(brother)
-          return number += 1
-        else
-          number += 1
-        end
-      end
-    end    
-    number += 1
-  end  
+#  # Permits to get how many siblings are not actived, so to move properly all menus
+#  def how_many_brother_activated(sign)
+#    menus = Menu.mains.activated
+#    menu_position = self.position
+#    number = 0
+#    brothers = []
+#    
+#    if sign == 'lower'
+#      self.siblings.sort_by(&:position).each do |brother|
+#        brothers << brother if menu_position < brother.position
+#      end
+#      brothers.each do |brother|
+#        if menus.include?(brother)
+#          return number += 1
+#        else
+#          number += 1
+#        end
+#      end
+#    elsif sign == 'higher'
+#      self.siblings.sort_by(&:position).each do |brother|
+#        brothers << brother if menu_position > brother.position
+#      end
+#      brothers.reverse.each do |brother|
+#        if menus.include?(brother)
+#          return number += 1
+#        else
+#          number += 1
+#        end
+#      end
+#    end    
+#    number += 1
+#  end  
     
   # This method test if it possible to move up the menu
   def can_move_up?
@@ -137,6 +136,16 @@ class Menu < ActiveRecord::Base
     else
       self.self_and_siblings.size > self.position
     end
+  end
+  
+  def move_up
+    return false unless can_move_up?
+    self.move_higher
+  end
+  
+  def move_down
+    return false unless can_move_down?
+    self.move_lower
   end
     
   # This method return an array with all menus

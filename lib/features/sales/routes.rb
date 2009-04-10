@@ -9,6 +9,9 @@ ActionController::Routing::Routes.add_routes do |map|
     order.resources 'logs', :controller => 'logs'
   end
   
+  map.closed 'closed', :controller => 'closed_orders'
+  map.archived 'archived', :controller => 'archived_orders'
+  
   map.prospectives 'prospectives', :controller => 'commercial', :action => 'index'
   map.sales 'sales', :controller => 'invoicing', :action => 'index'
 end

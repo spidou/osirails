@@ -5,7 +5,7 @@ module MenusHelper
     if controller.can_edit?(current_user)
     
       if menu.can_move_up? and !first_menu
-        link_to(image_tag("/images/arrow_up_16x16.png", :alt =>"Monter", :title =>"Monter"), { :action => "move_up", :id => menu.id })
+        link_to(image_tag("/images/arrow_up_16x16.png", :alt =>"Monter", :title =>"Monter"), move_up_menu_path(menu))
       else
         image_tag("/images/arrow_up_disable_16x16.png", :alt =>"Monter", :title =>"Monter")
       end
@@ -16,7 +16,7 @@ module MenusHelper
   def show_down_button(menu, last_menu)
     if controller.can_edit?(current_user)
       if menu.can_move_down? and !last_menu
-        link_to(image_tag("/images/arrow_down_16x16.png", :alt => "Descendre", :title => "Descendre"), { :action => "move_down", :id => menu.id })
+        link_to(image_tag("/images/arrow_down_16x16.png", :alt => "Descendre", :title => "Descendre"), move_down_menu_path(menu))
       else
         image_tag("/images/arrow_down_disable_16x16.png", :alt => "Descendre", :title => "Descendre")
       end

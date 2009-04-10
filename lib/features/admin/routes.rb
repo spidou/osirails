@@ -1,25 +1,35 @@
 ActionController::Routing::Routes.add_routes do |map|
-  # begin | To create the url architecture "/permissions/*"
+  # permissions
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'
   map.resources :role_permissions, :path_prefix => 'permissions'
   map.resources :document_type_permissions, :path_prefix => 'permissions'
   map.resources :calendar_permissions, :path_prefix => 'permissions'
   map.permissions "permissions", :controller => "role_permissions"
-  # end
   
-  # begin | To create the url architecture "/society_configurations/*"
-  map.resources :society_activity_sectors, :path_prefix => 'society_configurations'
-  map.resources :services, :path_prefix => 'society_configurations'
-  map.society_identity_configuration "society_identity_configuration", :path_prefix => 'society_configurations', :controller => "society_identity_configuration"
-  map.society_configurations "society_configurations", :controller => "society_identity_configuration"
-  # end
+  # society_configurations
+  map.resources :society_activity_sectors
+  map.resources :services
+  map.resource :society_identity_configuration, :controller => 'society_identity_configuration'
+  map.society_configurations "society_configurations", :controller => "society_identity_configuration", :action => "show"
   
+  # security
+  map.password_policies 'password_policies', :controller => 'password_policies'
+  
+  # menus
+  map.resources :menus
+  map.move_up_menu 'menus/:id/move_up', :controller => "menus", 
+                                        :action => "move_up", 
+                                        :conditions => { :method => :get }
+  map.move_down_menu 'menus/:id/move_down', :controller => "menus", 
+                                            :action => "move_down", 
+                                            :conditions => { :method => :get }
+  
+  # others
   map.resources :users
   map.resources :roles
   map.resources :features
-  map.resources :menus
-  map.resources :password_policies
   
-  map.admin 'admin', :controller => 'users' #default page for admin
+  # default page for admin section
+  map.admin 'admin', :controller => 'users'
 end
