@@ -45,10 +45,11 @@ class Order < ActiveRecord::Base
     all_steps.select{ |step| step.respond_to?(:parent_step) }.each do |child|
       return child.original_step if (child.in_progress? || child.unstarted?)
     end
+    # if this code is reached, all steps (unless first level ones) are terminated!
     return nil
   end
 
-  # Return all steps of the order
+  # Return all steps of the order according to the choosen order type
   def steps
     order_type.sales_processes.collect { |sp| sp.step if sp.activated }
   end

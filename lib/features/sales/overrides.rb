@@ -34,8 +34,14 @@ module ApplicationHelper
       if menu.name
         path = "#{menu.name}_path"
         
-        if controller.respond_to?(:current_order_path)
-          path = "order_#{path}"
+        controller_name = "#{menu.name.camelize}Controller"
+        begin
+          controller_class = controller_name.constantize
+          if controller_class.respond_to?(:current_order_path)
+            path = "order_#{path}"
+          end
+        rescue NameError => e
+          # do nothing if the controller doesn't exist, just stay the basic path pattern
         end
         
         if self.respond_to?(path)

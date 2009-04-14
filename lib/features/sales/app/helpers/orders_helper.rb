@@ -14,9 +14,8 @@ module OrdersHelper
   def generate_order_tabulated_menu
     #step_name = controller.controller_name
     #step = Step.find_by_name(step_name)
-    step = controller.class.step
-    step_name = step.name
-    menu_name = step.nil? ? step_name : step.first_parent.name
+    step = controller.class.step rescue nil
+    menu_name = step.nil? ? controller.controller_name : step.first_parent.name
     generate_tabulated_menu(Menu.find_by_name(menu_name), Menu.activated.find_all_by_parent_id(Menu.find_by_name("orders").id))
   end
   
@@ -60,7 +59,7 @@ module OrdersHelper
     	html += "		</div>"
     	html += "		<div class=\"step_text\">"
     	html += "			<p>"
-    	html += "       #{step_title}"
+    	html += "       #{link_to(step_title, step_link)}"
     	html += "			</p>"
     	html += "		</div>"
     	html += "	</div>"

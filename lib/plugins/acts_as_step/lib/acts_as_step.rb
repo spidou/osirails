@@ -8,17 +8,19 @@ module ActsAsStep
       
   module ClassMethods
     def acts_as_step options = {}
-      include SingletonMethods
+      extend SingletonMethods
       include InstanceMethods
       
-      step_name = self.singularized_table_name
-      step = Step.find_by_name(step_name)
-      raise "The step '#{step_name}' doesn't exist. Please check in the config yaml file." if step.nil?
+      options = { :step_name        => self.singularized_table_name,
+                  :remarks          => true,
+                  :checklists       => true,
+                  :missing_elements => true
+                }.merge!(options)
       
-      step_children = step.children
-      step_parent = step.parent
+      step = Step.find_by_name(options[:step_name])
+      raise "The step '#{options[:step_name]}' doesn't exist. Please check in the config yaml file." if step.nil?
       
-      if step_parent # so it's a child step
+      if (step_parent = step.parent) # so it's a child step
         belongs_to :parent_step, :class_name => step_parent.name.camelize, :foreign_key => "#{step_parent.name}_id"
         
         class_eval do
@@ -26,7 +28,7 @@ module ActsAsStep
             parent_step.order
           end
         end
-      else # so it's a parent step
+      elsif (step_children = step.children) # so it's a parent step
         belongs_to :order
         
         write_inheritable_attribute(:list_children_steps, step_children.collect{ |child| child.name })
@@ -47,41 +49,22 @@ module ActsAsStep
         end
       end
       
-      write_inheritable_attribute(:original_step_name, step_name)
+      write_inheritable_attribute(:original_step_name, options[:step_name])
       write_inheritable_attribute(:original_step, step)
       
-      class_eval do
-        def original_step
-          self.class.original_step
-        end
-        
-        def original_step_name
-          self.class.original_step_name
-        end
-        
-        private
-          def self.original_step
-            read_inheritable_attribute(:original_step)
-          end
-          
-          def self.original_step_name
-            read_inheritable_attribute(:original_step_name)
-          end
-      end
-      
-      unless options[:remarks] == false
+      if options[:remarks]
         has_many              :remarks,     :as => :has_remark
         validates_associated  :remarks
         after_update          :save_remarks
       end
       
-      unless options[:checklists] == false
+      if options[:checklists]
         has_many              :checklist_responses,     :as => :has_checklist_response
         validates_associated  :checklist_responses
         after_update          :save_checklist_responses
       end
       
-      unless options[:missings_elements] == false
+      if options[:missing_elements]
         has_many :missing_elements
       end
       
@@ -90,9 +73,13 @@ module ActsAsStep
   end
   
   module SingletonMethods
-#    def sibling_steps
-#      sibling.collect { |s| s.step }
-#    end
+    def original_step
+      read_inheritable_attribute(:original_step)
+    end
+    
+    def original_step_name
+      read_inheritable_attribute(:original_step_name)
+    end
   end
   
   module InstanceMethods
@@ -100,18 +87,28 @@ module ActsAsStep
     IN_PROGRESS = 'in_progress'
     TERMINATED  = 'terminated'
     
+    def original_step
+      self.class.original_step
+    end
+    
+    def original_step_name
+      self.class.original_step_name
+    end
+    
     def after_create
       unstarted!
     end
     
     def after_update
-      if in_progress? and respond_to?(:parent_step) and !parent_step.in_progress?
-        parent_step.in_progress!
-      elsif terminated? and respond_to?(:parent_step)
-        if self_and_siblings_steps.select{ |s| s.terminated? }.size == self_and_siblings_steps.size
-          parent_step.terminated!
-        else
+      if respond_to?(:parent_step)
+        if in_progress? and !parent_step.in_progress?
           parent_step.in_progress!
+        elsif terminated?
+          if self_and_siblings_steps.select{ |s| s.terminated? }.size == self_and_siblings_steps.size
+            parent_step.terminated!
+          else
+            parent_step.in_progress!
+          end
         end
       end
     end
@@ -192,15 +189,15 @@ module ActsAsStep
     end
     
     def dependencies_are_unstarted?
-      dependencies_are_in_status('unstarted')
+      dependencies_are_in_status(UNSTARTED)
     end
     
     def dependencies_are_in_progress?
-      dependencies_are_in_status('in_progress')
+      dependencies_are_in_status(IN_PROGRESS)
     end
     
     def dependencies_are_terminated?
-      dependencies_are_in_status('terminated')
+      dependencies_are_in_status(TERMINATED)
     end
     
     private

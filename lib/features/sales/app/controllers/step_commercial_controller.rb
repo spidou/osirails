@@ -1,8 +1,7 @@
 class StepCommercialController < ApplicationController
-  helper :orders
+  acts_as_step_controller :sham => true
 
   def index
-    @order = Order.find(params[:order_id])
     if @order.step_commercial.terminated?
       step_to_display = @order.step_commercial.children_steps.last
     else

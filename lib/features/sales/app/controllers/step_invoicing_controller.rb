@@ -1,8 +1,7 @@
 class StepInvoicingController < ApplicationController
-  helper :orders
+  acts_as_step_controller :sham => true
 
   def index
-    @order = Order.find(params[:order_id])
     if @order.step_invoicing.terminated?
       step_to_display = @order.step_invoicing.children_steps.last
     else

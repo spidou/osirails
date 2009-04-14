@@ -17,7 +17,15 @@ class OrdersController < ApplicationController
   def show
     @order = Order.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to order_path(@order) + '/' + @order.current_step.path }
+      format.html {
+        if @order.current_step
+          # redirection = order_path(@order) + '/' + @order.current_step.path
+          redirection = send("order_step_#{@order.current_step.path}_path", @order)
+        else
+          redirection = order_informations_path(@order)
+        end
+        redirect_to redirection
+      }
       format.svg {
         case params[:for]
         when 'step'
@@ -26,12 +34,13 @@ class OrdersController < ApplicationController
           render :partial => 'mini_order', :locals => { :children_list => @order.child.children_steps }
         else
           render :partial => 'order'
-        end }
+        end
+      }
     end
   end
   
   def new
-    @current_order_step = "commercial"
+    # @current_order_step = "commercial"
     @order = Order.new
     
     if params[:customer_id] or params[:new_customer_id] # this is the second step of the order creation
@@ -78,7 +87,7 @@ class OrdersController < ApplicationController
   
     def check
       OrderLog.set(@order, current_user, params) # Manage logs
-      @current_order_step = @order.current_step.path
+      # @current_order_step = @order.current_step.path
 #      @customer = @order.customer
 #
 #      if params[:order]

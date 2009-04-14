@@ -9,7 +9,10 @@ module ActsAsStepController
   module ClassMethods
     def acts_as_step_controller options = {}
       default_step_controller_methods
-      real_step_controller_methods(options) unless options[:sham]
+      
+      real_step_controller_methods(options) unless options[:sham] and !options[:step_name]
+      
+      setup_sub_resources unless options[:sham]
     end
     
     private
@@ -17,7 +20,6 @@ module ActsAsStepController
         helper :orders
         
         before_filter :lookup_order_environment
-        before_filter :assign_user_in_remark_attributes, :only => :update
         
         class_eval do
           # permits to define in which level of the sales process the order is
@@ -26,14 +28,17 @@ module ActsAsStepController
           end
           
           def self.current_order_step=(step)
-            raise "It's impossible to define in which step the order is! Please verify if your steps are properly configured in the yaml file." if step.nil?
+            #raise "It's impossible to define in which step the order is! Please verify if your steps are properly configured in the yaml file." if step.nil?
             write_inheritable_attribute(:current_order_step, step)
           end
           
           # return the first level step in which the order is currently
           def self.current_order_path
-            return nil if current_order_step.nil?
-            current_order_step.first_parent.path
+            unless current_order_step.nil?
+              current_order_step.first_parent.path
+            else
+              "closed"
+            end
           end
           
           private
@@ -45,14 +50,6 @@ module ActsAsStepController
               
               # define the current order step
               self.class.current_order_step = @order.current_step
-            end
-            
-            def assign_user_in_remark_attributes
-              if params[self.class.step_name][:remark_attributes]
-                params[self.class.step_name][:remark_attributes].each do |remark_attributes|
-                  remark_attributes[:user_id] = current_user.id
-                end
-              end
             end
         end
       end
@@ -66,21 +63,10 @@ module ActsAsStepController
         
         step = Step.find_by_name(options[:step_name].to_s)
         raise "The step '#{options[:step_name]}' doesn't exist. Please check in the config yaml file." if step.nil?
-        #parent_step = step.parent
         
         write_inheritable_attribute(:step, step)
-        #write_inheritable_attribute(:parent_step, parent_step)
         
         class_eval do
-          ## permits to define the parent step name in which the controller is mapped
-          #def self.parent_step
-          #  read_inheritable_attribute(:parent_step)
-          #end
-          #
-          #def self.parent_step_name
-          #  read_inheritable_attribute(:parent_step).nil? ? nil : read_inheritable_attribute(:parent_step).name
-          #end
-          
           # permits to define the step name in which the controller is mapped
           def self.step
             read_inheritable_attribute(:step)
@@ -89,13 +75,17 @@ module ActsAsStepController
           def self.step_name
             step.name
           end
-        end
-        
-        model_step = self.step_name.camelize.constantize
-        helper :remarks     if model_step.instance_methods.include?('remarks')
-        helper :checklists  if model_step.instance_methods.include?('checklist_responses')
-        
-        class_eval do
+          
+          # return if the controller should use remarks
+          def self.has_remarks?
+            step_name.camelize.constantize.instance_methods.include?('remarks')
+          end
+          
+          # return if the controller should use checklists
+          def self.has_checklists?
+            step_name.camelize.constantize.instance_methods.include?('checklist_responses')
+          end
+          
           private
             def lookup_step_environment
               step = self.class.step
@@ -129,6 +119,28 @@ module ActsAsStepController
             end
         end
         
+      end
+      
+      def setup_sub_resources
+        if has_remarks?
+          helper :remarks
+          before_filter :assign_user_in_remark_attributes, :only => :update
+        end
+        
+        if has_checklists?
+          helper :checklists
+        end
+        
+        class_eval do
+          private
+            def assign_user_in_remark_attributes
+              if params[self.class.step_name][:remark_attributes]
+                params[self.class.step_name][:remark_attributes].each do |remark_attributes|
+                  remark_attributes[:user_id] = current_user.id
+                end
+              end
+            end
+        end
       end
   end
 end

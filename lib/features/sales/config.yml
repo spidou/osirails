@@ -4,11 +4,11 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-  thirds:
+  products:
     - 0.1
   rh:
     - 0.1
-  products:
+  thirds:
     - 0.1
 menus:
   orders:
