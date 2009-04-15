@@ -1,0 +1,5 @@
+parent:
+  name: Parent Service
+child:
+  name: Child Service
+  

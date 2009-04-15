@@ -51,6 +51,7 @@ class AccountControllerTest < ActionController::TestCase
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
+  # FIXME
   def test_should_change_an_expired_password
     login_as_activated_but_has_expired_password_user
     
@@ -59,13 +60,14 @@ class AccountControllerTest < ActionController::TestCase
     assert_not_nil session[:user_id], "session[:user_id] should not be nil"
     assert_redirected_to :controller => "account", :action => "expired_password"
     follow_redirect
-    submit_form do |form|
+    submit_form do |form|          ¡
       form.user_password = "new P@ssw0rd"
       form.user_password_confirmation = "new P@ssw0rd"
     end
     assert @request.post?
   end
   
+  # FIXME
   def test_should_not_change_an_expired_password_because_of_same_old_password
     login_as_activated_but_has_expired_password_user
     

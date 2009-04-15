@@ -9,10 +9,13 @@ class MenuTest < ActiveSupport::TestCase
     @menu_two = menus(:menu_two)
     @menu_three = menus(:menu_three)
     @menu_four = menus(:menu_four)
+    
+    @menu_three.update_attributes(:parent_id => @menu_one.id, :position => 1)
+    @menu_four.update_attributes(:parent_id => @menu_one.id, :position => 2)
   end
 
   def test_create
-    assert_difference 'Feature.count', +1 do
+    assert_difference 'Menu.count', +1 do
       assert Menu.create(:title => "Menu Test",
                         :description => "Test for menu creation",
                         :name => "test_menu",
@@ -35,27 +38,29 @@ class MenuTest < ActiveSupport::TestCase
   end
 
   def test_delete
-    assert_difference 'Feature.count', -1 do
+    assert_difference 'Menu.count', -1 do
+      @menu_two.destroy
+    end
+  end
+
+  def test_recursiv_delete
+    assert_difference 'Menu.count', -3 do
       @menu_one.destroy
     end
   end
 
-  def test_prescence_of_title
+  def test_presence_of_title
     @menu_one.update_attributes(:title => '')
     assert_not_nil @menu_one.errors.on(:title), "A Menu should have a title"
   end
 
-  def test_prescence_of_name
+  def test_presence_of_name
     @menu_one.update_attributes(:name => '')
     assert_not_nil @menu_one.errors.on(:name), "A Menu should have a name"
   end
 
   def test_parent
-    # TODO
-  end
-
-  def test_children_menu
-    # TODO
+    assert_equal @menu_three.parent, @menu_one, "This Menu should have this parent"
   end
 
   def test_siblings_activated
@@ -63,7 +68,8 @@ class MenuTest < ActiveSupport::TestCase
   end
 
   def test_change_parent
-    # TODO
+    @menu_three.change_parent(@menu_two.id)
+    assert_equal @menu_three.parent, @menu_two, "This Menu should have this parent"
   end
 
   def move_up

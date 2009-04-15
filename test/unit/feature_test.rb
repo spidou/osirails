@@ -37,10 +37,10 @@ class FeatureTest < ActiveSupport::TestCase
     end
   end
 
-  def test_prescence_of_name
+  def test_presence_of_name
     assert_no_difference 'Feature.count' do
        feature = Feature.create(:name => '')
-       assert_not_nil feature.errors.on(:name), "A Feature should not have a blank title"
+       assert_not_nil feature.errors.on(:name), "A Feature should not have a blank name"
      end
   end
 
@@ -51,7 +51,7 @@ class FeatureTest < ActiveSupport::TestCase
      end
   end
 
-  def test_prescence_of_version
+  def test_presence_of_version
     @normal_feature_one.update_attributes(:version => nil)
     assert_not_nil @normal_feature_one.errors.on(:version), "A Feature should have a version"
   end
@@ -130,26 +130,26 @@ class FeatureTest < ActiveSupport::TestCase
     assert !@normal_feature_one.able_to_install?
   end
 
-  def ability_to_uninstall
+  def test_ability_to_uninstall
     @feature_with_one_dep.update_attributes(:installed => false, :activated => false)
     @normal_feature_one.update_attributes(:installed => true, :activated => false)
     assert @normal_feature_one.able_to_uninstall?
   end
 
-  def unability_to_uninstall
+  def test_unability_to_uninstall
     @feature_with_one_dep.update_attributes(:installed => true, :activated => false)
     @normal_feature_one.update_attributes(:installed => true, :activated => false)
     assert !@normal_feature_one.able_to_uninstall?
   end
 
   def test_installation
-    @normal_feature_one.update_attributes(:installed => false, :activated => false)
+    @normal_feature_one.update_attributes(:installed => true, :activated => false)
+    @normal_feature_one.uninstall
     assert !@normal_feature_one.installed?, "This Feature should be uninstalled"
 
-    @normal_feature_one.update_attributes(:installed => true)
+    @normal_feature_one.update_attributes(:installed => false, :activated => false)
+    @normal_feature_one.install
     assert @normal_feature_one.installed?, "This Feature should be installed"
-
-    # TODO Test the method install and uninstall
   end
 
   def test_ability_to_activate
@@ -183,12 +183,10 @@ class FeatureTest < ActiveSupport::TestCase
   end
 
   def test_activation
-    @normal_feature_one.update_attributes(:activated => nil)
+    @normal_feature_one.disable
     assert !@normal_feature_one.activated?, "This Feature should be disabled"
     
-    @normal_feature_one.update_attributes(:activated => true)
+    @normal_feature_one.enable
     assert @normal_feature_one.activated?, "This Feature should be activate"
-
-    # TODO Test the method enable and disable
   end
 end

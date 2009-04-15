@@ -1,0 +1,6 @@
+one:
+  name: roletest
+  description: My powerful role
+two:
+  name: roletest2
+  description: Another one
