@@ -1,6 +1,12 @@
 class User < ActiveRecord::Base
+  
+  has_search_index  :attributes => ["username","last_activity"], 
+                    :additional_attributes => {"expired?" => "boolean" , "password_updated_at" => "datetime"},
+                    :sub_models => ["Role"]
+
   before_save :username_unicity
   
+
   # Requires
   require "digest/sha1"
 

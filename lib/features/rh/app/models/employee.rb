@@ -1,5 +1,8 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
+
+  has_search_index  :attributes => ["last_name","first_name"],
+                    :sub_models => [JobContract]
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}

@@ -1,6 +1,10 @@
 class Contact < ActiveRecord::Base
   has_permissions :as_business_object
   
+  has_search_index  :attributes => ["first_name","last_name"],
+                    :additional_attributes => {"first_name"=> "string"},
+                    :sub_models => ["Number"]
+
   has_many :numbers, :as => :has_number
   belongs_to :contact_type
   # Declaration for has_many_polymorph association

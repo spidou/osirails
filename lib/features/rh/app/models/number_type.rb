@@ -1,5 +1,8 @@
 class NumberType < ActiveRecord::Base
-  # Relationships
+
+  has_search_index  :attributes => ["id"],
+                    :additional_attributes => {"name" => "string"}
+
   has_many :numbers
 
   # Validations

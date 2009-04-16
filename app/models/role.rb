@@ -1,4 +1,9 @@
 class Role < ActiveRecord::Base
+
+  has_search_index  :attributes => ["name","description"],
+                    :additional_attributes => {"name" => "string"},
+                    :sub_models => ["User"]
+
   # Relationships
   has_and_belongs_to_many :users
   has_many :menu_permissions,             :include => :menu,            :dependent => :destroy

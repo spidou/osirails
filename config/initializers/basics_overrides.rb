@@ -60,7 +60,7 @@ class String
     return formated
   end
 
-  # method to view if a word is or not is plural
+  # method to view if a word is or not plural
   def plural?
     self.singularize == self ? false : true
   end

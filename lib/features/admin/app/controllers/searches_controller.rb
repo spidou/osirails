@@ -15,7 +15,7 @@ class SearchesController < ApplicationController
     @rows ||=[]
     
     # determine if its a standard search or contextual search
-    if params[:contextual_search].nil?
+    if params[:contextual_search].nil? # standard search
     
       unless params[:model]['name'].blank?
       
@@ -64,7 +64,7 @@ class SearchesController < ApplicationController
         end
       end
       
-    else
+    else # contextual search
       model = params[:contextual_search]['model']
       @value = params[:contextual_search]['value']
       unless Search.get_feature(model) == [] 

@@ -1,5 +1,5 @@
 class Search
-  has_permissions
+#  has_permissions
   
   @features = Feature.find(:all)
   # method to group sub attributes
@@ -142,7 +142,7 @@ class Search
       parent = criterion['parent'].constantize.table_name + "." 
       unless criterion['value'].nil?
       
-        if criterion['value'].split(" ").size>1
+        if criterion['value'].split(" ").size>1   # if there's severals expressions for one attribute
           conditions_array[0] += group + "("
           tmp = {}
           
@@ -195,7 +195,7 @@ class Search
       when 'boolean'
         result = params['value']  
       else
-        result = "%" + params['value'].strip + "%" unless params['value'].nil?
+        result = "%" + params['value'].strip + "%" unless params['value'].nil? # .strip permit to avoid unused spaces
     end
     return result
   end

@@ -1,5 +1,7 @@
 class Number < ActiveRecord::Base
-  # Relationships
+
+  has_search_index  :attributes => ["number"]
+
   belongs_to :indicative
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true

@@ -55,6 +55,9 @@ class FeatureManager
       load_menus(@menus)
       
       insert_menus_in_database
+
+      # search load
+      initialize_search
     end
     
     def create_feature_if_necessary
@@ -159,5 +162,61 @@ class FeatureManager
       # load overrides.rb file
       override_path = File.join(@path, 'overrides.rb')
       require override_path if File.exist?(override_path)
+    end
+
+    def initialize_search
+        #    ######### SEARCH
+      # test and add search indexes into db
+      error_message = "syntaxe error in '#{@name}' yaml."
+
+      unless @searches.blank? or @searches == []
+        @searches.each_key do |key|
+          @searches[key].each_key do |elmnt|
+            @searches[key][elmnt].each_pair do |attr_name,attr_type|
+              if attr_type.instance_of?(Hash)
+                raise verify_sub_resources(attr_type,error_message) unless verify_sub_resources(attr_type,error_message).blank?
+                raise "#{ error_message } The sub resource '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
+              else
+                raise "#{ error_message } The attribute '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
+              end
+            end
+          end
+        end
+        feature.update_attribute('search', @searches)
+      end
+      ######### END SEARCH    
+    end
+
+    def verify_attribute_type(attr_class, type)
+      case attr_class
+        when String
+          return 1 unless type=="string"
+        when Date
+          return 1 unless type=="date"
+        when DateTime
+          return 1 unless type=="date"
+        when Time
+          return 1 unless type=="date"
+        else
+          return 1 unless type=="number"
+      end
+      return 0
+    end
+
+    def verify_sub_resources(hash,error_message)
+      hash.each_pair do |sub_attribute,value|
+        if value.instance_of?(Hash)
+          value.each_pair do |sub_attribute2,value2|
+            if value2.instance_of?(Hash)
+              return verify_sub_resources(value2,error_message) unless verify_sub_resources(value2,error_message).blank?
+            else
+              return "#{ error_message } the attribute '#{ sub_attribute2 }' is incorrect for '#{ sub_attribute }'!" unless sub_attribute.constantize.new.respond_to?(sub_attribute2)
+            end
+          end
+        else
+          return "#{ error_message } missing attribute type or sub attributes hash for  '#{ sub_attribute }' "
+        end
+      end
+      return ""
     end
 end
