@@ -1,5 +1,8 @@
 class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
+
+  has_search_index  :attributes => ["start_date"],
+                    :sub_models => [JobContractType]
   
   # Relationships
   belongs_to :employee
