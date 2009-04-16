@@ -2,7 +2,7 @@ class Customer < Third
   has_permissions :as_business_object
   
   has_search_index  :attributes => ["name","siret_number"],
-                    :sub_models => [Establishment]
+                    :sub_models => ["Establishment"]
   
   belongs_to :payment_method
   belongs_to :payment_time_limit

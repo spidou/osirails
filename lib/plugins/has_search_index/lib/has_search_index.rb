@@ -83,6 +83,7 @@
         def get_include_array(ignore=[])
           include_array = Array.new
           self.search_index[:sub_models].each do |model|
+            model = model.constantize
             unless ignore.include?(model) # avoid stack level to deep for has and belongs too many relationships ex: user <-roles  ,  role<-users
               self.new.respond_to?(model.to_s.tableize) ? attribute = model.to_s.tableize : attribute = model.to_s.tableize.singularize
               if  model.search_index[:sub_models].nil? or model.get_include_array(ignore << self )==[]
