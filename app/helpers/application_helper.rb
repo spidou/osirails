@@ -215,10 +215,10 @@ module ApplicationHelper
       end
       
       # retrieve objects and options hash into args array
-			args_objects = Array.new
-      options_hash = nil
+			args_objects = []
+      options = {}
 			args.each do |arg|
-				arg.is_a?(Hash) ? options_hash = arg : args_objects << arg 
+				arg.is_a?(Hash) ? options = arg : args_objects << arg 
 			end
 
       # retrieve infos about model and path from the given method
@@ -255,8 +255,6 @@ module ApplicationHelper
       
       # check if the method called is well-formed
       dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
-      object_or_id = args_objects
-		  options = options_hash || {}
       raise ArgumentError, 'parameter hash expected' unless options.is_a?(Hash)
       
       # default options
@@ -268,30 +266,24 @@ module ApplicationHelper
 	    
 	    # return the correspondong link_to tag if permissions are allowing that!
       if has_controller_permission and has_model_permission
-			  content = "#{options[:image_tag]} #{options[:link_text]}"
+			  link_content = "#{options[:image_tag]} #{options[:link_text]}"
 
         case permission_name
         when :delete
           # TODO make works nested ressources when deleting 
-          return link_to( content, object_or_id.first, { :method => :delete, :confirm => "Are you sure?" } )
-#        when :list, :add
-#          url = send("#{path_name}_path", object_or_id)
+          return link_to( link_content, args_objects.first, { :method => :delete, :confirm => "Are you sure?" } )
         else
-          #################################################
-          # eval url-genrator method : employee_path(2) => '/employees/2' 
+          # eval url-genrator method : user_path(1) => '/users/1' , edit_user_group_path(1,1) => '/users/1/groups/1/edit'
           tmp = "#{path_name}_path("
-          object_or_id.each_index do |i|
+          args_objects.each_index do |i|
             tmp << "," unless i == 0
-            tmp << "object_or_id[#{i}]"
+            tmp << "args_objects[#{i}]"
           end
           tmp << ")"
           url = eval(tmp)
-          #################################################
-
-#          url = send("#{path_name}_path", object_or_id)
         end
-        return link_to( content, url )
-
+        puts "> #{url}"
+        return link_to( link_content, url )
       end
     end
     
@@ -300,35 +292,34 @@ module ApplicationHelper
     # retrieve nested ressource
     #
     # ==== Example
-    #   nested_ressources( ["great","model","sub","model"], [GreatModel.new])
-    #   # =>  { :models =>["great_model"], :nested_ressource =>"sub_model"}
+    #   nested_ressources( [ "user" ], [ @user ] )
+    #   # =>  { :nested_resources => [], :model => "user"}
     #
-    #   nested_ressources( ["great","model","model","sub","model"], [GreatModel.new,Model.new])
-    #   # =>  { :models =>["great_model","model"], :nested_ressource =>"sub_model"}
-
+    #   nested_ressources( [ "user" ], [] )
+    #   # =>  { :nested_resources => [], :model => "user"}
+    #
+    #   nested_ressources( [ "user", "group", "type" ], [ @user, @group_type ] )
+    #   # =>  { :nested_resources => [ "user" ], :model => "group_type"}
+    #
+    #   nested_ressources( ["user", "role", "group", "type" ], [ @user, @role, @group_type ])
+    #   # =>  { :nested_resources => [ "user", "role" ], :model =>"group_type"}
     def nested_ressources(models, args_objects)
-      objects = Array.new      
+      nested_resources = []
       args_objects.each do |o|
-        objects << o.class.to_s.tableize.singularize      
+        nested_resources << o.class.to_s.tableize.singularize      
       end
-      nested_ressource = models.join("_")
-      objects.each  do |o|
-        if nested_ressource.include?(o)
-          nested_ressource = nested_ressource.gsub(o+"_","")
-<<<<<<< HEAD:app/helpers/application_helper.rb
-        else 
-          objects.delete(o)
-        end
-      end
-      objects.delete(models)
-=======
+      model = models.join("_")
+      
+      nested_resources.each  do |nested_resource|
+        if model.include?(nested_resource)
+          model = model.gsub("#{nested_resource}_","")
         else
-          raise "The object '#{o}' don't correspond to the method name" 
+          raise "The nested resource '#{nested_resource}' doesn't match to the method name" 
         end
       end
-      objects.delete(nested_ressource)
->>>>>>> Implementation and modification of the method to generate dynamic helpers to display links:app/helpers/application_helper.rb
-      return {:models => objects, :nested_ressource => nested_ressource}
+      nested_resources.delete(model)
+      puts ">>> call nested resources => nested_resources : #{nested_resources.inspect} | model : #{model.inspect}"
+      return { :nested_resources => nested_resources, :model => model}
     end
 
     # check if all objects passed into args correspond to the helper name
@@ -337,7 +328,6 @@ module ApplicationHelper
     # ==== Exmaple
     #   dynamic_link_catcher_check_arguments_objects(["employee","job"], [Employee.new] )
     #   # => raise "expected object or id of Job class"
-    
     def dynamic_link_catcher_check_arguments_objects(expected_objects, args_objects)
       objects = Array.new      
       args_objects.each do |o|
@@ -366,8 +356,8 @@ module ApplicationHelper
       infos.pop 
       models = infos.reject{ |s| %W{ formatted new edit delete }.include?(s) } # [ "formatted", "new", "great", "model" ] => [ "great", "model" ]
       t = nested_ressources(models, args_objects) 
-      model_name = t[:nested_ressource]
-      models = t[:models]      
+      model_name = t[:model]
+      models = t[:nested_resources]      
 
       { :model_name => model_name, :path_name => infos.join("_"), :expected_objects => models}
     end

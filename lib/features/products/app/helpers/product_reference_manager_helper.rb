@@ -76,13 +76,8 @@ module ProductReferenceManagerHelper
                 
                 list << "<li class='reference #{status}'>#{reference.name} (#{reference.products_count}) <span class=\"action\">"
                 if reference.enable == true
-<<<<<<< HEAD:lib/features/products/app/helpers/product_reference_manager_helper.rb
-                  list << edit_product_reference_link(reference)
-                  list << delete_product_reference_link(reference)
-=======
-                  list << edit_product_reference_link(reference,:link_text =>"")
-                  list << delete_product_reference_link(reference,:link_text =>"")
->>>>>>> Implementation and modification of the method to generate dynamic helpers to display links:lib/features/products/app/helpers/product_reference_manager_helper.rb
+                  list << edit_product_reference_link(reference, :link_text =>"")
+                  list << delete_product_reference_link(reference, :link_text =>"")
                 end
                 list << "</span></li>"
               end

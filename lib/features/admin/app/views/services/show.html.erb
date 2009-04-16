@@ -3,6 +3,7 @@
   <%= edit_service_link(@service) %>
   <%= delete_service_link(@service) if @service.can_be_destroyed?%>
 <% end %>
+
 <% secondary_menu USEFUL_LINKS do %>
   <%= services_link %>
 <% end %>

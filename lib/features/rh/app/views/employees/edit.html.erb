@@ -1,7 +1,7 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
   <%= new_employee_link %>
-	<%= employee_link(@employee)%>
-	<%= edit_employee_job_contract_link(@employee)%>
+	<%= employee_link(@employee) %>
+	<%= edit_employee_job_contract_link(@employee) %>
   <%= link_to( "#{image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier")} Modifier le contract de travail", edit_employee_job_contract_path(@employee)) %>
 <% end %>
 
