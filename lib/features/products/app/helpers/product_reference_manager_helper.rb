@@ -56,7 +56,7 @@ module ProductReferenceManagerHelper
         if category.enable == true
           list << new_product_reference_category_link(category,"") 
           list << new_product_reference_link(category)
-          list << edit_product_reference_category_link(category, :link_text =>"")
+          list << edit_product_reference_category_link(category, :link_text => "")
           list << delete_product_reference_category_link(category)
         end
         list << "</span></li>"
@@ -76,8 +76,8 @@ module ProductReferenceManagerHelper
                 
                 list << "<li class='reference #{status}'>#{reference.name} (#{reference.products_count}) <span class=\"action\">"
                 if reference.enable == true
-                  list << edit_product_reference_link(reference, :link_text =>"")
-                  list << delete_product_reference_link(reference, :link_text =>"")
+                  list << edit_product_reference_link(reference, :link_text => "")
+                  list << delete_product_reference_link(reference, :link_text => "")
                 end
                 list << "</span></li>"
               end
@@ -95,39 +95,11 @@ module ProductReferenceManagerHelper
     link_to(image_tag("/images/reference_16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence', :title => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)  
   end
   
-<<<<<<< HEAD:lib/features/products/app/helpers/product_reference_manager_helper.rb
-  # display (or not) the edit button for product reference
-  def edit_product_reference_link(reference)
-    if controller.can_edit?(current_user) and ProductReference.can_edit?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_product_reference_path(reference))
-    end
-  end
-  
-  # display (or not) the delete button for product reference
-  def delete_product_reference_link(reference)
-    if controller.can_delete?(current_user) and ProductReference.can_delete?(current_user)
-      link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), reference, { :method => :delete, :confirm => 'Etes vous sûr  ?'})
-    end
-  end
-  
-=======
->>>>>>> Implementation and modification of the method to generate dynamic helpers to display links:lib/features/products/app/helpers/product_reference_manager_helper.rb
-  
   # display (or not) the add button for product reference category
   def new_product_reference_category_link(category=nil, txt="Ajouter une cat&eacute;gorie")
     category.nil? ?  path_method =  new_product_reference_category_path : path_method = new_product_reference_category_path(:id => category.id)
     if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
       link_to(image_tag("/images/category_16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie')+" #{txt}" ,  path_method )
-<<<<<<< HEAD:lib/features/products/app/helpers/product_reference_manager_helper.rb
-    end
-  end
-  
-  # display (or not) the edit button for product reference category
-  def edit_product_reference_category_link(category)
-    if controller.can_edit?(current_user) and ProductReferenceCategory.can_delete?(current_user)
-      link_to(image_tag("/images/edit_16x16.png", :alt =>"Modifier", :title =>"Modifier"), edit_product_reference_category_path(category))
-=======
->>>>>>> Implementation and modification of the method to generate dynamic helpers to display links:lib/features/products/app/helpers/product_reference_manager_helper.rb
     end
   end
 

@@ -65,7 +65,7 @@ class ProductReferencesController < ApplicationController
   # DELETE /product_references/1
   def destroy
     @reference = ProductReference.find(params[:id])
-    if @reference.can_destroy?
+    if @reference.can_be_destroyed?
       @reference.destroy
     else
       @reference.enable = false

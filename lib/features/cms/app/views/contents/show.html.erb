@@ -8,7 +8,7 @@
 	<%= contents_link %>
 <% end %>
 
-<% if @content.versions.length > 0 %>
+<% unless @content.versions.empty? %>
   <% secondary_menu "Historique" do %>
     <%= show_contents_versions(@content_versions) %>
   <% end %>

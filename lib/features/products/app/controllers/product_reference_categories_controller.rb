@@ -71,7 +71,7 @@ class ProductReferenceCategoriesController < ApplicationController
   # DELETE /product_reference_categories/1
   def destroy
     @category = ProductReferenceCategory.find(params[:id])
-    if @category.can_destroy?
+    if @category.can_be_destroyed?
       if @category.has_children_disable?
         @category.enable = false
         @category.save

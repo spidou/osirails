@@ -1,17 +1,18 @@
 class PremiaController < ApplicationController
 
-# GET /premia/1/index  
+  # GET /employees/:employee_id/premia
   def index
-    params[:employee_id].nil? ? @employee = current_user.employee : @employee = Employee.find(params[:employee_id])
-    @premia = Employee.find(@employee).premia
+    @employee = Employee.find(params[:employee_id])
+    @premia = @employee.premia
   end
   
-# EDIT /premia/1/edit  
+  # GET /employees/:employee_id/premia/new
   def new
     @employee = Employee.find(params[:employee_id])
     @premium = Premium.new
   end
   
+  # POST /employees/:employee_id/premia
   def create
     @employee = Employee.find(params[:employee_id])
     @premia = @employee.premia
