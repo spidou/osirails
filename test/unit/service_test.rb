@@ -45,7 +45,7 @@ class ServiceTest < ActiveSupport::TestCase
     assert_equal @child_service.parent_service, @parent_service, "This service should have a parent service"
   end
   
-  def test_prescence_of_name
+  def test_presence_of_name
     assert_no_difference 'Service.count' do
        service = Service.create(:name => '')
        assert_not_nil service.errors.on(:name), "A Service should not have a blank name"

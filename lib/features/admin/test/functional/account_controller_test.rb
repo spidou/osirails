@@ -60,7 +60,7 @@ class AccountControllerTest < ActionController::TestCase
     assert_not_nil session[:user_id], "session[:user_id] should not be nil"
     assert_redirected_to :controller => "account", :action => "expired_password"
     follow_redirect
-    submit_form do |form|          ¡
+    submit_form do |form|
       form.user_password = "new P@ssw0rd"
       form.user_password_confirmation = "new P@ssw0rd"
     end

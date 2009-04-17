@@ -4,8 +4,8 @@ class RoleTest < ActiveSupport::TestCase
   fixtures :roles, :users
   
   def setup
-    @role_one = roles(:one)
-    @role_two = roles(:two)
+    @role_admin = roles(:admin)
+    @role_guest = roles(:guest)
   end
   
   def test_create
@@ -29,18 +29,18 @@ class RoleTest < ActiveSupport::TestCase
   
   def test_read
     assert_nothing_raised "A Role should be read" do
-      Role.find_by_name(@role_one.name)
+      Role.find_by_name(@role_admin.name)
     end
   end
   
   def test_update
-    assert @role_one.update_attributes(:name => 'new_name'), "A Role should be updated"
+    assert @role_admin.update_attributes(:name => 'new_name'), "A Role should be updated"
   end
   
   def test_delete
-    role_id = @role_one.id
+    role_id = @role_admin.id
     assert_difference 'Role.count', -1 do
-      @role_one.destroy
+      @role_admin.destroy
     end
     assert_equal [], BusinessObjectPermission.find_all_by_role_id(role_id), "Some BusinessObjectPermission should be destroyed"
     assert_equal [], MenuPermission.find_all_by_role_id(role_id), "Some MenuPermission should be destroyed"
@@ -57,20 +57,19 @@ class RoleTest < ActiveSupport::TestCase
   
   def test_uniqness_of_name
     assert_no_difference 'Role.count' do
-       role = Role.create(:name => @role_one.name)
+       role = Role.create(:name => @role_admin.name)
        assert_not_nil role.errors.on(:name), "A Role should have an uniq name"
      end
   end
   
   def test_role_has_many_users
-    @role_one.users = [User.first, User.last]
-    @role_one.save
-    assert_equal @role_one.users, [User.first, User.last], "Some Users should be belongs to a Role"
+    @role_admin.users = [User.first, User.last]
+    @role_admin.save
+    assert_equal @role_admin.users, [User.first, User.last], "Some Users should be belongs to a Role"
   end
   
   def test_user_has_many_roles
-    @role_one.users = [User.first]
-    @role_two.users = [User.first]
-    assert_equal @role_one.users, @role_two.users, "A User should have two roles"
+    User.first.roles = [@role_admin, @role_guest]
+    assert_equal @role_admin.users, @role_guest.users, "This User should have two roles"
   end
 end

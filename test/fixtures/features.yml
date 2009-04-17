@@ -33,8 +33,9 @@ feature_with_one_dep:
   title: Feature with one dependence
   version: 0.1
   dependencies:
-    normal_feature1:
-      - 0.1
+    - :name: normal_feature1
+      :version:
+        - 0.1
   conflicts:
   installed: true
   activated: true
@@ -44,10 +45,12 @@ feature_with_two_deps:
   title: Feature with two dependences
   version: 0.1
   dependencies:
-    normal_feature2:
-      - 0.1
-    feature_with_one_dep:
-      - 0.1
+    - :name: normal_feature2
+      :version:
+        - 0.1
+    - :name: feature_with_one_dep
+      :version:
+        - 0.1
   conflicts:
   installed: true
   activated: true
@@ -58,8 +61,9 @@ feature_with_one_conflict:
   version: 0.1
   dependencies:
   conflicts:
-    normal_feature1:
-      - 0.1
+    - :name: normal_feature1
+      :version:
+        - 0.1
   installed: false
   activated: false
 
@@ -69,9 +73,11 @@ feature_with_two_conflicts:
   version: 0.1
   dependencies:
   conflicts:
-    normal_feature1:
-      - 0.1
-    normal_feature2:
-      - 0.1
+    - :name: normal_feature1
+      :version:
+        - 0.1
+    - :name: normal_feature2
+      :version:
+        - 0.1
   installed: false
   activated: false

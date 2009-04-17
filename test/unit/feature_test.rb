@@ -59,7 +59,7 @@ class FeatureTest < ActiveSupport::TestCase
   def test_dependencies
     flunk "This Feature should have a dependency" unless @feature_with_one_dep.has_dependencies?
 
-    assert @feature_with_one_dep.dependencies.include?(@normal_feature_one.name),
+    assert @feature_with_one_dep.dependencies.include?({ :name => "normal_feature1", :version=> [0.1] }),
       "This Feature should have this specified dependency"
   end
 
@@ -72,7 +72,7 @@ class FeatureTest < ActiveSupport::TestCase
     flunk "This Feature should have a conflict" unless @feature_with_one_conflict.has_conflicts?
 
     assert_equal @feature_with_one_conflict.conflicts,
-      {@normal_feature_one.name => [@normal_feature_one.version.to_f]},
+      [{ :name=>"normal_feature1", :version=>[0.1] }],
       "This Feature should have this specified conflict"
   end
 
@@ -143,13 +143,15 @@ class FeatureTest < ActiveSupport::TestCase
   end
 
   def test_installation
-    @normal_feature_one.update_attributes(:installed => true, :activated => false)
-    @normal_feature_one.uninstall
-    assert !@normal_feature_one.installed?, "This Feature should be uninstalled"
-
     @normal_feature_one.update_attributes(:installed => false, :activated => false)
     @normal_feature_one.install
     assert @normal_feature_one.installed?, "This Feature should be installed"
+  end
+
+  def test_uninstallation
+    @normal_feature_one.update_attributes(:installed => true, :activated => false)
+    @normal_feature_one.uninstall
+    assert !@normal_feature_one.installed?, "This Feature should be uninstalled"
   end
 
   def test_ability_to_activate
@@ -183,10 +185,12 @@ class FeatureTest < ActiveSupport::TestCase
   end
 
   def test_activation
-    @normal_feature_one.disable
-    assert !@normal_feature_one.activated?, "This Feature should be disabled"
-    
     @normal_feature_one.enable
     assert @normal_feature_one.activated?, "This Feature should be activate"
+  end
+
+  def test_deactivation
+    @normal_feature_one.disable
+    assert !@normal_feature_one.activated?, "This Feature should be disabled"
   end
 end

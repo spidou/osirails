@@ -1,6 +1,6 @@
-one:
-  name: roletest
+admin:
+  name: roletest1
   description: My powerful role
-two:
+guest:
   name: roletest2
   description: Another one
