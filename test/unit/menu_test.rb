@@ -54,11 +54,6 @@ class MenuTest < ActiveSupport::TestCase
     assert_not_nil @menu_one.errors.on(:title), "A Menu should have a title"
   end
 
-  def test_presence_of_name
-    @menu_one.update_attributes(:name => '')
-    assert_not_nil @menu_one.errors.on(:name), "A Menu should have a name"
-  end
-
   def test_parent
     assert_equal @menu_three.parent, @menu_one, "This Menu should have this parent"
   end

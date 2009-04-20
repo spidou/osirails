@@ -1,0 +1,38 @@
+require 'test_helper'
+
+class AddressTest < ActiveSupport::TestCase
+  def test_presence_of_address1
+    assert_no_difference 'Address.count' do
+      address = Address.create
+      assert_not_nil address.errors.on(:address1), "An Address should have an address1"
+    end
+  end
+
+  def test_presence_of_country_name
+    assert_no_difference 'Address.count' do
+      address = Address.create
+      assert_not_nil address.errors.on(:country_name), "An Address should have a country name"
+    end
+  end
+
+  def test_presence_of_city_name
+    assert_no_difference 'Address.count' do
+      address = Address.create
+      assert_not_nil address.errors.on(:city_name), "An Address should have a city name"
+    end
+  end
+
+  def test_presence_of_zip_code
+    assert_no_difference 'Address.count' do
+      address = Address.create
+      assert_not_nil address.errors.on(:zip_code), "An Address should have a zip code"
+    end
+  end
+
+  def test_numericality_of_zip_code
+    assert_no_difference 'Address.count' do
+      address = Address.create(:zip_code => 'a')
+      assert_not_nil address.errors.on(:zip_code), "An Address should have a zip code"
+    end
+  end
+end
