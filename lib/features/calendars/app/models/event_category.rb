@@ -1,6 +1,10 @@
 class EventCategory < ActiveRecord::Base
   # Relationships
   belongs_to :calendar
+
+  # Validations
+  validates_presence_of :calendar_id, :name
+  validates_uniqueness_of :name
   
   def self.find_all_shared
     self.find_all_by_calendar_id(nil)

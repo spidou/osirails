@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   
   # Validates
+  validates_uniqueness_of :username
   validates_each :password do |record, attr, value|
     unless record.id.nil?
       record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password

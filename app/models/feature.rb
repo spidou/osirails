@@ -10,7 +10,7 @@ class Feature < ActiveRecord::Base
   KERNEL_FEATURES = ["admin"]
   FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "products", "rh", "sales", "thirds"]
 
-  validates_presence_of :name
+  validates_presence_of :name, :version
   validates_uniqueness_of :name
 
   # we use ' #{method_name}_#{content} ex=> able_to_install_conflicts  '  to name ower tabs

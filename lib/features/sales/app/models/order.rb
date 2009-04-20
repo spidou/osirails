@@ -13,7 +13,7 @@ class Order < ActiveRecord::Base
   has_many :contacts, :source => :contact, :through => :contacts_owners
 
   # Validations
-  validates_presence_of [:customer, :title, :order_type, :commercial, :establishment ]
+  validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id
   
   cattr_accessor :form_labels
   @@form_labels = {}

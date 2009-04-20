@@ -29,7 +29,7 @@ class NumberTest < ActiveSupport::TestCase
     end
   end
   
-  def test_has_number_type
+  def test_presence_of_has_number_type
     assert_no_difference 'Number.count' do
       number = Number.create
       assert_not_nil number.errors.on(:number_type), "A Number should have a number type"

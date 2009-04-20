@@ -78,7 +78,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_encryption_of_password
     require "digest/sha1"
-    user = User.create(:username => @user_one.username,
+    user = User.create(:username => 'foo',
                        :password => 'password',
                        :password_confirmation => 'password',
                        :enabled => true)

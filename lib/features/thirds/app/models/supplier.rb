@@ -1,8 +1,11 @@
 class Supplier < Third
+  # Permissions
   has_permissions :as_business_object
-  
+
+  # Relationships
   has_one :iban, :as => :has_iban
 
+  # Validations
   validates_uniqueness_of :name, :siret_number
 
   # Name Scope

@@ -7,6 +7,7 @@ class Estimate < ActiveRecord::Base
   after_create :default_validity_date
   
   # Validations
+  validates_presence_of :step_estimate_id
   validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
   
   def default_validity_date

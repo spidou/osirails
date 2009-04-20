@@ -1,8 +1,11 @@
 class Number < ActiveRecord::Base
+  # Relationships
   belongs_to :indicative
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true
-  
+
+  # Validations
+  validates_presence_of :has_number_type, :indicative_id, :number_type_id
   validates_format_of 'number',:with => /^[0-9]{9}$/, :message => " le numéro doit contenir 10 chiffres"
   
   attr_accessor :should_destroy 

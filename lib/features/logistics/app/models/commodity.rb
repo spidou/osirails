@@ -8,7 +8,7 @@ class Commodity < ActiveRecord::Base
   named_scope :activates, :conditions => {:enable => true}
   
   # Validates
-  validates_presence_of :name, :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :message => "ne peut être vide."
+  validates_presence_of :name, :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :category_id, :commodity_category_id,:message => "ne peut être vide."
   validates_numericality_of :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :message => "ne peut être des lettres."
 
   cattr_reader :form_labels

@@ -3,6 +3,9 @@ class OrderType < ActiveRecord::Base
   has_and_belongs_to_many :society_activity_sectors
   has_many :sales_processes
   has_many :orders
+
+  # Validations
+  validates_presence_of :title
   
   ## Create all sales Process after create
   def after_create

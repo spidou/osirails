@@ -27,6 +27,9 @@ class Alarm < ActiveRecord::Base
   
   # Relationships
   belongs_to :event
+
+  # Validations
+  validates_presence_of :event_id
   
   # Requires
   require 'rubygems'

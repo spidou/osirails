@@ -5,7 +5,10 @@ class Step < ActiveRecord::Base
   has_many :children, :class_name => 'Step', :foreign_key => 'parent_id'
   has_many :checklists
   has_and_belongs_to_many :steps, :join_table => 'step_dependencies', :foreign_key => 'step_id', :association_foreign_key => 'step_dependent'
-  
+
+  # Validations
+  validates_presence_of :description, :name
+
   # Plugins
   acts_as_list :scope => :parent_id
   acts_as_tree :order => :position

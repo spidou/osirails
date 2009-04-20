@@ -1,6 +1,9 @@
 class Participant < ActiveRecord::Base
   # Relationships
   belongs_to :event
+
+  # Validations
+  validates_presence_of :event_id
   
   def self.parse(p)
     p = p.split(/[<>]/)

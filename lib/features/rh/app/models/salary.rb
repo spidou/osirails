@@ -1,7 +1,11 @@
 class Salary < ActiveRecord::Base
   has_permissions :as_business_object
-  
+
+  # Relationships
   belongs_to :job_contract
+
+  # Validations
+  validates_presence_of :user_id, :job_contract_id
   validates_format_of :gross_amount, :with => /^[1-9]+(\d)*((\x2E)(\d)*)+$/ , :message => "le montant du salaire doit être un nombre"
   
   RATIO_FOR_NET_AMOUNT = 0.3

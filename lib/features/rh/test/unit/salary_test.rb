@@ -8,7 +8,7 @@ class SalaryTest < ActiveSupport::TestCase
   def test_presence_of_job_contract_id
     assert_no_difference 'Salary.count' do
       salary = Salary.create
-      assert_not_nil salary.errors.on(:contract_id), "A Salary should have a job contract id"
+      assert_not_nil salary.errors.on(:job_contract_id), "A Salary should have a job contract id"
     end
   end
   

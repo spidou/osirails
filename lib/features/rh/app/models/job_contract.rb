@@ -1,12 +1,14 @@
 class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
   
+  # Relationships
   belongs_to :employee
   belongs_to :employee_state
   belongs_to :job_contract_type
-  
   has_many :salaries, :order => "created_at DESC"
-  
+
+  # Validations
+  validates_presence_of :employee_id, :employee_state_id, :job_contract_type_id
 #  validates_associated :salaries  
 
   #acts_as_file
