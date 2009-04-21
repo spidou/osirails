@@ -7,16 +7,15 @@
       end
 
       module ClassMethods
-
-        ACTIONS = Hash.new
-        ACTIONS[:string] = ["not like","like","=","!="]
-        ACTIONS[:text] = ACTIONS[:string]
-        ACTIONS[:integer] = [">=","<=","<",">","=","!="]
-        ACTIONS[:date] = ACTIONS[:integer]
-        ACTIONS[:datetime] = ACTIONS[:integer]
-        ACTIONS[:float] = ACTIONS[:integer]
-        ACTIONS[:boolean] = ["=","!="]
-
+        
+        ACTIONS = { :string   => string = ["not like","like","=","!="],
+                    :text     => string,
+                    :integer  => integer = [">=","<=","<",">","=","!="],
+                    :date     => integer,
+                    :datetime => integer,
+                    :float    => integer,
+                    :boolean  => ["=","!="] }
+        
         # method called into all models that implement the plugin 
         # it define search_index class variable based on passed options hash
         #
@@ -66,9 +65,10 @@
           else
             object = self
           end
-          raise "Implementation error #{object} model must implement has_search_index plugin in order to use diretly or undirectly the plugin" unless object.respond_to?("search_index")
+          raise "Implementation error #{object} model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless object.respond_to?("search_index")
           return false if object.search_index[:additional_attributes].nil?
-          object.search_index[:additional_attributes].include?(attribute) ? true : false
+          
+          object.search_index[:additional_attributes].include?(attribute)
         end  
 
         # method that permit to get the include array recursively(according to sub models)
@@ -85,8 +85,8 @@
           self.search_index[:sub_models].each do |model|
             model = model.constantize
             unless ignore.include?(model) # avoid stack level to deep for has and belongs too many relationships ex: user <-roles  ,  role<-users
-              self.new.respond_to?(model.to_s.tableize) ? attribute = model.to_s.tableize : attribute = model.to_s.tableize.singularize
-              if  model.search_index[:sub_models].nil? or model.get_include_array(ignore << self )==[]
+              attribute = self.new.respond_to?(model.to_s.tableize) ? model.to_s.tableize : model.to_s.tableize.singularize
+              if model.search_index[:sub_models].nil? or model.get_include_array(ignore << self )==[]
                 include_array << attribute.to_sym        
               else
                 include_array << {attribute.to_sym => model.get_include_array(ignore << self )}  
