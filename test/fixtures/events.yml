@@ -2,59 +2,59 @@ normal:
   calendar: normal
   title: Foo
   description: Bar
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= Time.now.to_s(:db) %>
 two_days_ago:
   calendar: normal
   title: Foo
   description: Bar
-  start_at: <%= Time.now - 2.hours - 2.days %>
-  end_at: <%= Time.now - 2.days %>
+  start_at: <%= (Time.now - 2.hours - 2.days).to_s(:db) %>
+  end_at: <%= (Time.now - 2.days).to_s(:db) %>
 two_weeks_ago:
   calendar: normal
   title: Foo
   description: Bar
-  start_at: <%= Time.now - 2.hours - 2.week %>
-  end_at: <%= Time.now - 2.week %>
+  start_at: <%= (Time.now - 2.hours - 2.week).to_s(:db) %>
+  end_at: <%= (Time.now - 2.week).to_s(:db) %>
 two_months_ago:
   calendar: normal
   title: Foo
   description: Bar
-  start_at: <%= Time.now - 2.hours - 2.month %>
-  end_at: <%= Time.now - 2.month %>
+  start_at: <%= (Time.now - 2.hours - 2.month).to_s(:db) %>
+  end_at: <%= (Time.now - 2.month).to_s(:db) %>
 every_two_days:
   calendar: normal
   title: Foo
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= Time.now.to_s(:db) %>
   frequence: DAILY
   interval: 2
 every_two_weeks:
   calendar: normal
   title: Foo
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= (Time.now).to_s(:db) %>
   frequence: WEEKLY
   interval: 2
 every_monday:
   calendar: normal
   title: Foo
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= Time.now.to_s(:db) %>
   frequence: WEEKLY
   by_day:
     - "MO"
 every_two_months:
   calendar: normal
   title: Foo
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= Time.now.to_s(:db) %>
   frequence: MONTHLY
   interval: 2
 every_two_years:
   calendar: normal
   title: Foo
-  start_at: <%= Time.now - 2.hours %>
-  end_at: <%= Time.now %>
+  start_at: <%= (Time.now - 2.hours).to_s(:db) %>
+  end_at: <%= Time.now.to_s(:db) %>
   frequence: YEARLY
   interval: 2

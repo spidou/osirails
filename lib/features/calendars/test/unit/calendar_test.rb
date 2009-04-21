@@ -29,8 +29,8 @@ class CalendarTest < ActiveSupport::TestCase
 
   def test_events_at_date
     @calendar.events_at_date(Date.today) do |event|
-      assert (event.start_at.to_date <= Date.today) and
-        (event.end_at.to_date >= Date.today),
+      assert ((event.start_at.to_date <= Date.today) and
+        (event.end_at.to_date >= Date.today)),
         "This Calendar return wrong Events at the specified date"
     end
   end
