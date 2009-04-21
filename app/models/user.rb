@@ -8,7 +8,6 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   
   # Validates
-  validates_uniqueness_of :username
   validates_each :password do |record, attr, value|
     unless record.id.nil?
       record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
@@ -56,12 +55,7 @@ class User < ActiveRecord::Base
   def encrypt(string)
     Digest::SHA1.hexdigest(string)
   end
-  
-  # Method to encrypt the password to the data base
-  def password_encryption
-    self.password = encrypt(self.password)
-  end
-  
+
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)
     self.password == encrypt(password)
@@ -120,6 +114,11 @@ class User < ActiveRecord::Base
     return if @temporary_password.nil?
     @temporary_password = true if @temporary_password == '1'
     self.password_updated_at = (@temporary_password == true ? nil : Time.now)
+  end
+
+  # Method to encrypt the password to the data base
+  def password_encryption
+    self.password = encrypt(self.password)
   end
 
 # TODO delete the Add link that been used for dev purposes

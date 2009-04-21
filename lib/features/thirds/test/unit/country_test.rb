@@ -1,8 +1,9 @@
 require 'test_helper'
 
 class CountryTest < ActiveSupport::TestCase
+  fixtures :countries
   def setup
-    @country = Country.create(:name => 'FRANCE', :code => 'fr')
+    @country = countries(:france)
   end
 
   def test_presence_of_name

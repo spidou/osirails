@@ -1,8 +1,10 @@
 require 'test_helper'
 
 class FamilySituationTest < ActiveSupport::TestCase
+  fixtures :family_situations
+
   def setup
-    @family_situation = FamilySituation.create(:name => 'single')
+    @family_situation = family_situations(:single)
   end
   
   def test_presence_of_name

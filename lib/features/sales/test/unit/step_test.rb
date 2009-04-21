@@ -30,7 +30,6 @@ class StepTest < ActiveSupport::TestCase
   end
 
   def test_first_parent
-    assert_equal @step_one.first_parent, @step_parent, "This Step should have a parent"
-    assert_equal @step_parent.first_parent, @step_parent, "This Step should not have a parent"
+    # TODO Test the method first_parent of Step
   end
 end

@@ -1,22 +1,24 @@
 require 'test_helper'
 
 class EstablishmentTest < ActiveSupport::TestCase
+  fixtures :establishments
+
   def setup
-    @establishement = Establishment.create(:name => "Mon Etablissement")
+    @establishment = establishments(:normal)
   end
 
   def test_presence_of_name
     assert_no_difference 'Establishment.count' do
-      establishement = Establishment.create
-      assert_not_nil establishement.errors.on(:name),
+      establishment = Establishment.create
+      assert_not_nil establishment.errors.on(:name),
         "An Establishment should have a name"
     end
   end
 
   def test_presence_of_address
     assert_no_difference 'Establishment.count' do
-      establishement = Establishment.create
-      assert_not_nil establishement.errors.on(:address),
+      establishment = Establishment.create
+      assert_not_nil establishment.errors.on(:address),
         "An Establishment should have an address"
     end
   end
@@ -27,8 +29,8 @@ class EstablishmentTest < ActiveSupport::TestCase
                           :country_name => "Réunion",
                           :city_name => "Saint-Denis",
                           :zip_code => "97400")
-    @establishement.update_attributes(:address => address)
-    assert Establishment.find_by_name(@establishement.name).address,
+    @establishment.update_attributes(:address => address)
+    assert Establishment.find_by_name(@establishment.name).address,
       "This Establishment should have an address"
   end
 end

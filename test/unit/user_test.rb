@@ -2,6 +2,7 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   fixtures :users
+  require "digest/sha1"
 
   def setup
     @user_one = users(:admin_user)
@@ -43,16 +44,6 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  def test_uniqness_of_username
-    assert_no_difference 'User.count' do
-      user = User.create(:username => @user_one.username,
-                         :password => 'password',
-                         :password_confirmation => 'password',
-                         :enabled => true)
-      assert_not_nil user.errors.on(:username), "An User should have an uniq username"
-    end
-  end
-
   def test_presence_of_password
     assert_no_difference 'User.count' do
       user = User.create(:username => 'new_user',
@@ -77,7 +68,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_encryption_of_password
-    require "digest/sha1"
     user = User.create(:username => 'foo',
                        :password => 'password',
                        :password_confirmation => 'password',
@@ -109,5 +99,10 @@ class UserTest < ActiveSupport::TestCase
   def test_update_password
     assert @user_one.update_attributes(:password => 'new_password',
                                        :password_confirmation => 'new_password')
+  end
+
+  def test_encryption
+    assert_equal @user_one.encrypt('foo'), Digest::SHA1.hexdigest('foo'),
+      "User should encrypt the password with SHA1"
   end
 end

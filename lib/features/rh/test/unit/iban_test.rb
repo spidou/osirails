@@ -1,12 +1,10 @@
 require 'test_helper'
 
 class IbanTest < ActiveSupport::TestCase
+  fixtures :ibans
+
   def setup
-    @iban = Iban.create :bank_name => "Bank",
-                        :bank_code => "12345",
-                        :branch_code => "12345",
-                        :account_number => "12345678901",
-                        :key => "12"
+    @iban = ibans(:normal)
   end
 
   def test_read

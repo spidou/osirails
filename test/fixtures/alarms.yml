@@ -1,0 +1,4 @@
+normal:
+  event: normal
+  action: DISPLAY
+  description: Don't forget !

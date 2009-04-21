@@ -1,8 +1,10 @@
 require 'test_helper'
 
 class CivilityTest < ActiveSupport::TestCase
+  fixtures :civilities
+
   def setup
-    @civility = Civility.create(:name => 'Mister')
+    @civility = civilities(:mister)
   end
 
   def test_presence_of_name

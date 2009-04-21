@@ -4,6 +4,7 @@ class Memorandum < ActiveRecord::Base
   # Relationships
   has_many :memorandums_services
   has_many :services, :through => :memorandums_services
+  belongs_to :user
   
   # Validates
   validates_presence_of :title, :subject, :text, :signature, :message => ' ne peut etre vide.'

@@ -2,3 +2,7 @@ one:
   title: Test content
   description: Description of this content
   text: fooooo
+  menu: menu_one
+  author: powerful_user
+  contributors:
+    - 1

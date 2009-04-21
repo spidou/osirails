@@ -7,6 +7,7 @@ class ProductReferenceCategory < ActiveRecord::Base
   # Relationship
   has_many :product_references
   has_many :product_reference_categories
+  belongs_to :product_reference_category
   
   # Validation Macros
   validates_presence_of :name, :message => "ne peut être vide"

@@ -7,6 +7,7 @@ class CommodityCategory < ActiveRecord::Base
   # Relationship
   has_many :commodities
   has_many :commodity_categories
+  belongs_to :commodity_category
   
   # Name Scope
   named_scope :activates, :conditions => {:enable => true}

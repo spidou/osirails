@@ -1,0 +1,7 @@
+normal:
+  last_name: Pan
+  first_name: Peter
+  birth_date: <%= Date.today - 20.years %>
+  email: peter@pan.org
+  society_email: peter.pan@society.com
+  social_security_number: 1234567891234 45

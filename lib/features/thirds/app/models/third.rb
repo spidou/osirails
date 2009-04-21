@@ -4,15 +4,14 @@ class Third < ActiveRecord::Base
   belongs_to :activity_sector
   belongs_to :third_type
   belongs_to :legal_form
+  belongs_to :payment_method
+  belongs_to :payment_time_limit
   
   # has_many_polymorphic
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
   
-  validates_presence_of :name
-  validates_presence_of :legal_form
-  validates_presence_of :siret_number
-  validates_presence_of :activity_sector
+  validates_presence_of :name, :legal_form, :siret_number, :activity_sector
   validates_format_of :siret_number, :with => /^[0-9]{14}/, :allow_blank => true #even if its presence is required, to avoid double error message #, :message => "doit comporter 14 chiffres"
   
   after_update :save_contacts

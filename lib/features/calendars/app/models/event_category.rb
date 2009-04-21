@@ -3,7 +3,7 @@ class EventCategory < ActiveRecord::Base
   belongs_to :calendar
 
   # Validations
-  validates_presence_of :calendar_id, :name
+  validates_presence_of :name
   validates_uniqueness_of :name
   
   def self.find_all_shared

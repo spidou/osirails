@@ -1,0 +1,7 @@
+normal:
+  name: Foo
+parent:
+  name: Parent
+child:
+  name: Child
+  commodity_category: parent

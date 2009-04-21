@@ -1,9 +1,11 @@
 require 'test_helper'
 
 class CommodityCategoryTest < ActiveSupport::TestCase
+  fixtures :commodity_categories, :commodities
+
   def setup
-    @commodity_category = CommodityCategory.create(:name => 'test one')
-    @commodity_category_with_parent = CommodityCategory.create(:name => 'test two', :commodity_category_id => @commodity_category.id)
+    @commodity_category = commodity_categories(:parent)
+    @commodity_category_with_parent = commodity_categories(:child)
   end
 
   def test_read
@@ -13,7 +15,8 @@ class CommodityCategoryTest < ActiveSupport::TestCase
   end
 
   def test_update
-    assert @commodity_category.update_attributes(:name => 'new name'), "A CommodityCategory should be update"
+    assert @commodity_category.update_attributes(:name => 'new name'),
+      "A CommodityCategory should be update"
   end
 
   def test_delete
@@ -31,26 +34,43 @@ class CommodityCategoryTest < ActiveSupport::TestCase
   def test_presence_of_name
     assert_no_difference 'CommodityCategory.count' do
       commodity_category = CommodityCategory.create
-      assert_not_nil commodity_category.errors.on(:name), "A CommodityCategory should have a name"
+      assert_not_nil commodity_category.errors.on(:name),
+        "A CommodityCategory should have a name"
     end
   end
 
   def test_ability_to_delete
-    assert @commodity_category_with_parent.can_be_destroyed?, "This CommodityCategory should be deletable"
+    assert @commodity_category_with_parent.can_be_destroyed?,
+      "This CommodityCategory should be deletable"
   end
 
   def test_unability_to_delete
-    assert !@commodity_category.can_be_destroyed?, "This CommodityCategory should not be deletable"
+    assert !@commodity_category.can_be_destroyed?,
+      "This CommodityCategory should not be deletable"
   end
 
   def test_disabled_children
-    assert !@commodity_category.has_children_disable?, "This CommodityCategory should not have disabled children"
+    assert !@commodity_category.has_children_disable?,
+      "This CommodityCategory should not have disabled children"
 
     @commodity_category_with_parent.update_attributes(:enable => false)
-    assert @commodity_category.has_children_disable?, "This CommodityCategory should have disabled children"
+    assert @commodity_category.has_children_disable?,
+    "This CommodityCategory should have disabled children"
   end
 
-  def test_parent_commodity_category
-    assert_equal @commodity_category.commodity_categories, [@commodity_category_with_parent], "This CommodityCategory should have a child commodity category"
+  def test_has_many_commodity_categories
+    assert_equal @commodity_category.commodity_categories,
+      [@commodity_category_with_parent],
+      "This CommodityCategory should have a child commodity category"
+  end
+
+  def test_belongs_to_commodity_category
+    assert_equal @commodity_category_with_parent.commodity_category,
+      @commodity_category, "This CommodityCategory should have this parent"
+  end
+
+  def test_has_many_commodities
+    assert_equal commodity_categories(:normal).commodities,
+      [commodities(:normal)], "This CommodityCategory should have this Commodity"
   end
 end

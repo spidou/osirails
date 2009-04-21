@@ -1,10 +1,10 @@
 require 'test_helper'
 
 class JobContractTest < ActiveSupport::TestCase
+  fixtures :job_contracts
+
   def setup
-    @job_contract = JobContract.create(:employee_id => 1,
-                                       :employee_state_id => 1,
-                                       :job_contract_type_id => 1)
+    @job_contract = job_contracts(:normal)
   end
 
   def test_presence_of_employee_id

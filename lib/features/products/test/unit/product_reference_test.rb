@@ -1,9 +1,11 @@
 require 'test_helper'
 
 class ProductReferenceTest < ActiveSupport::TestCase
+  fixtures :product_reference_categories, :product_references
+
   def setup
-    @product_reference_category = ProductReferenceCategory.create(:name => 'test')
-    @product_reference = ProductReference.create(:name => 'testproductref', :reference => 'XG59I0', :product_reference_category_id => @product_reference_category.id)
+    @product_reference_category = product_reference_categories(:child)
+    @product_reference = product_references(:normal)
   end
 
   def test_read

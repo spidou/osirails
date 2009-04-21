@@ -1,10 +1,6 @@
 require 'test_helper'
 
 class UnitMeasureTest < ActiveSupport::TestCase
-  def setup
-    @unit_measure = UnitMeasure.create(:name => "Centimètre", :symbol => "cm")
-  end
-
   def test_presence_of_name
     assert_no_difference 'UnitMeasure.count' do
       unit_measure = UnitMeasure.create

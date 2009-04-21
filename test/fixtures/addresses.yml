@@ -1,0 +1,11 @@
+normal:
+  address1: 1 rue des rosiers
+  country_name: Réunion
+  city_name: Saint-Denis
+  zip_code: 97400
+type_employee:
+  has_address: normal (Employee)
+  address1: 1 rue des rosiers
+  country_name: Réunion
+  city_name: Saint-Denis
+  zip_code: 97400

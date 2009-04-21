@@ -1,0 +1,4 @@
+normal:
+  employee: powerful_user
+  employee_state: normal
+  job_contract_type: cdi

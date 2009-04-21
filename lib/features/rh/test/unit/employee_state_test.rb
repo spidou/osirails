@@ -1,8 +1,10 @@
 require 'test_helper'
 
 class EmployeeStateTest < ActiveSupport::TestCase
+  fixtures :employee_states
+
   def setup
-    @employee_state = EmployeeState.create(:name => 'Freelance', :active => true)
+    @employee_state = employee_states(:freelance)
   end
 
   def test_presence_of_name

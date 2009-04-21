@@ -26,10 +26,10 @@ class OrderTest < ActiveSupport::TestCase
     end
   end
 
-  def test_presence_of_establishement_id
+  def test_presence_of_establishment_id
     assert_no_difference 'Order.count' do
       order = Order.create
-      assert_not_nil order.errors.on(:establishement_id), "An Order should have an establishement id"
+      assert_not_nil order.errors.on(:establishment_id), "An Order should have an establishement id"
     end
   end
 

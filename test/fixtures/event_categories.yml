@@ -1,0 +1,5 @@
+normal:
+  calendar: normal
+  name: Foo
+without_calendar:
+  name: Foo alone

@@ -1,0 +1,15 @@
+customer_normal:
+  name: Customer
+  siret_number: 12345678912345
+  activity_sector: normal
+  legal_form: normal
+  payment_method: normal
+  payment_time_limit: normal
+  activated: true
+supplier_normal:
+  name: Supplier
+  siret_number: 12345678912345
+  activity_sector: normal
+  legal_form: normal
+  activated: true
+  

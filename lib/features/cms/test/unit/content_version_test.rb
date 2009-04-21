@@ -5,8 +5,6 @@ class ContentVersionTest < ActiveSupport::TestCase
   
   def setup
     @content = contents(:one)
-    @content.update_attributes(:menu_id => Menu.first.id, :contributors => [])
-    
     @content_version = ContentVersion.create_from_content(@content)
   end
   
@@ -17,14 +15,12 @@ class ContentVersionTest < ActiveSupport::TestCase
   end
   
   def test_content_version
-    assert_no_difference 'ContentVersion.count' do
-      assert_equal @content.title, @content_version.title
-      assert_equal @content.description, @content_version.description
-      assert_equal @content.text, @content_version.text
-      assert_equal @content.menu_id, @content_version.menu_id
-      assert_equal @content.id, @content_version.content_id
-      assert_equal @content.author_id, @content_version.contributor_id
-    end
+    assert_equal @content.title, @content_version.title
+    assert_equal @content.description, @content_version.description
+    assert_equal @content.text, @content_version.text
+    assert_equal @content.menu_id, @content_version.menu_id
+    assert_equal @content.id, @content_version.content_id
+    assert_equal @content.contributors.first, @content_version.contributor_id
   end
   
   def test_time_at_versionning

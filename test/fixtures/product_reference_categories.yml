@@ -1,0 +1,5 @@
+parent:
+  name: Foo parent
+child:
+  name: Foo child
+  product_reference_category: parent
