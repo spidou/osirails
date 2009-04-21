@@ -1,26 +1,15 @@
 module ProductReferenceManagerHelper
   
-  # This method permit to show or hide action menu
-  def show_action_menu(type)
-    if (controller.can_add?(current_user) and (ProductReferenceCategory.can_add?(current_user) or ProductReference.can_add?(current_user))) or controller.can_view?(current_user)
-      actions = []
-      actions << "<h1><span class='gray_color'>Action</span> <span class='blue_color'>possible</span></h1>"
-      actions << "<ul>"
-      if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
-        actions << "<li>#{new_product_reference_category_link}</li>"
-      end
-      
-      if controller.can_add?(current_user) and ProductReference.can_add?(current_user)
-        actions << "<li>"+link_to("<img src='/images/reference_16x16.png' alt='Ajouter une r&eacute;f&eacute;rence' title='Ajouter une r&eacute;f&eacute;rence' /> Ajouter une r&eacute;f&eacute;rence", new_product_reference_path )+"</li>"
-      end
-      
-      if controller.can_view?(current_user) # and (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
-        if (ProductReference.find(:all).size != ProductReference.find_all_by_enable(true).size) or (ProductReferenceCategory.find(:all).size == ProductReferenceCategory.find_all_by_enable(true).size)
-          actions << "<li>#{type != "show_all" ? link_to("<img alt='Tout afficher' title='Tout afficher' src='/images/view_16x16.png' /> Tout afficher", :action => "index", :type => "show_all") : link_to("<img alt='Afficher actifs' title='Afficher actifs' src='/images/view_16x16.png' /> Afficher actifs", :action => "index")}</li>"
-        end
-      end
-      actions << "</ul>"
+  def display_show_link
+    if params[:display] == "all"
+      text = "Display actives"
+      option = { :display => "active"}
+    else
+      text = "Display all"
+      option = { :display => "all"}
     end
+    
+    link_to( image_tag("view_16x16.png", :alt => text, :title => text) + " #{text}", product_reference_manager_path(option))
   end
   
   # This method permit to make a counter for category
@@ -54,10 +43,10 @@ module ProductReferenceManagerHelper
         
         list << "<li class='category #{status}'>#{category.name} (#{show_counter_category(category, show_all)}) <span class=\"action\">"
         if category.enable == true
-          list << new_product_reference_category_link(category,"") 
-          list << new_product_reference_link(category)
+          list << new_product_reference_category_link_overrided(:link_text => "", :options => { :category_id => category.id })
+          list << new_product_reference_link_overrided(:link_text => "", :options => { :category_id => category.id })
           list << edit_product_reference_category_link(category, :link_text => "")
-          list << delete_product_reference_category_link(category)
+          list << delete_product_reference_category_link_overrided(category, :link_text => "")
         end
         list << "</span></li>"
         
@@ -77,7 +66,7 @@ module ProductReferenceManagerHelper
                 list << "<li class='reference #{status}'>#{reference.name} (#{reference.products_count}) <span class=\"action\">"
                 if reference.enable == true
                   list << edit_product_reference_link(reference, :link_text => "")
-                  list << delete_product_reference_link(reference, :link_text => "")
+                  list << delete_product_reference_link_overrided(reference, :link_text => "")
                 end
                 list << "</span></li>"
               end
@@ -89,29 +78,54 @@ module ProductReferenceManagerHelper
     end
     list
   end
-  
-  # display (or not) the add button for product reference
-  def new_product_reference_link(category)
-    link_to(image_tag("/images/reference_16x16.png", :alt => 'Ajouter une r&eacute;f&eacute;rence', :title => 'Ajouter une r&eacute;f&eacute;rence') , new_product_reference_path(:id => category.id) ) if ProductReference.can_add?(current_user)  
+
+  def new_product_reference_category_link_overrided(options = {})
+    text = "New product reference category"
+    options = { :link_text => text, :image_tag => image_tag("category_16x16.png",
+                                                          :alt => text,
+                                                          :title => text)
+              }.merge(options)
+    
+    new_product_reference_category_link(options)
   end
   
-  # display (or not) the add button for product reference category
-  def new_product_reference_category_link(category=nil, txt="Ajouter une cat&eacute;gorie")
-    category.nil? ?  path_method =  new_product_reference_category_path : path_method = new_product_reference_category_path(:id => category.id)
-    if controller.can_add?(current_user) and ProductReferenceCategory.can_add?(current_user)
-      link_to(image_tag("/images/category_16x16.png", :alt => 'Ajouter une cat&eacute;gorie', :title => 'Ajouter une cat&eacute;gorie')+" #{txt}" ,  path_method )
-    end
+  def new_product_reference_link_overrided(options = {})
+    text = "New product reference"
+    options = { :link_text => text, :image_tag => image_tag("reference_16x16.png",
+                                                          :alt => text,
+                                                          :title => text)
+              }.merge(options)
+    
+    new_product_reference_link(options)
   end
 
   
   # display (or not) the delete button for product reference category
-  def delete_product_reference_category_link(category)
-    if controller.can_delete?(current_user) and ProductReferenceCategory.can_delete?(current_user)
-      if category.can_be_destroyed?
-        link_to(image_tag("/images/delete_16x16.png", :alt =>"Supprimer", :title =>"Supprimer"), category, { :method => :delete, :confirm => 'Etes vous sûr  ?' } )
-      else
-        image_tag("/images/delete_disable_16x16.png", :alt =>"Supprimer", :title =>"Supprimer")
-      end
+  def delete_product_reference_category_link_overrided(category, options = {})
+    text = "Delete this product reference category"
+    options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
+                                                          :alt => text,
+                                                          :title => text)
+              }.merge(options)
+    
+    if category.can_be_destroyed?
+      delete_product_reference_category_link(category, options)
+    else
+      image_tag("delete_disable_16x16.png", :alt => text, :title => text)
+    end
+  end
+  
+  def delete_product_reference_link_overrided(reference, options = {})
+    text = "Delete this product reference"
+    options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
+                                                          :alt => text,
+                                                          :title => text)
+              }.merge(options)
+    
+    if reference.can_be_destroyed?
+      delete_product_reference_link(reference, options)
+    else
+      image_tag("delete_disable_16x16.png", :alt => text, :title => text)
     end
   end
   

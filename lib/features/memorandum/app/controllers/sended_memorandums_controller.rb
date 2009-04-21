@@ -1,5 +1,6 @@
 class SendedMemorandumsController < ApplicationController
-
+  helper :received_memorandums
+  
   # GET /sended_memorandums
   def index
     if current_user.employee_id.nil?

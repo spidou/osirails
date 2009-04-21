@@ -1,7 +1,7 @@
 module ReceivedMemorandumsHelper
 
   # This method permit to show memorandums
-  def show_memorandums(memorandums)
+  def show_received_memorandums(memorandums)
   memorandums_list = []
       memorandums.each do |memorandum|
         unless memorandum.published_at.nil?
@@ -19,7 +19,7 @@ module ReceivedMemorandumsHelper
   end
 
   # This method permit to view a memorandum
-  def view_memorandum(memorandum)
+  def view_received_memorandum(memorandum)
     view = []
     view << "<p><strong>Objet : </strong>#{memorandum.subject}</p>"
     view << "<p><strong>Date : </strong>#{Memorandum.get_structured_date(memorandum)}</p>"
@@ -29,6 +29,11 @@ module ReceivedMemorandumsHelper
     view << "<hr/>"
     view << "<p><strong>De : </strong> #{memorandum.signature}</p>"
     view << "<p><strong>Publi&eacute; par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
+  end
+  
+  def received_memorandums_link
+    text = "List all received memorandums"
+    link_to image_tag("list_16x16.png", :alt => text, :title => text) + " #{text}", received_memorandums_path
   end
 
 end

@@ -20,6 +20,10 @@ class Memorandum < ActiveRecord::Base
   @@form_labels[:text] = "Votre texte :"
   @@form_labels[:signature] = "Signature :"
   
+  def published?
+    published_at != nil
+  end
+  
   # This method permit to find employee's memorandum
   def Memorandum.find_by_services(services)
     memorandums_services_list = []

@@ -4,8 +4,7 @@
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-	<%= memorandums_link("View all sended memorandums") %> 
-	<%= received_memorandums_link %>
+	<%= memorandums_link(:link_text => "List all sended memorandums") %> 
 <% end %>
 <h1>Modifier une note de service</h1>
 <%= render :partial => "memorandum", :locals => { :submit_button_name => "Modifier"} %>

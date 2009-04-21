@@ -1,11 +1,10 @@
 <% secondary_menu POSSIBLE_ACTIONS do %>
 	<%= new_memorandum_link %>
-	<%= memorandum_link(@sended_memorandum) %>
+	<%= edit_memorandum_link(@sended_memorandum) unless @sended_memorandum.published? %>
 <% end %>
 
 <% secondary_menu USEFUL_LINKS do %>
-	<%= memorandums_link("View all sended memorandums") %> 
-	<%= received_memorandums_link %>
+	<%= memorandums_link(:link_text => "List all sended memorandums") %> 
 <% end %>
 <h1>Note de service</h1>
 
@@ -14,7 +13,7 @@
 
 <div class='formated_content'>
   <fieldset>
-    <%= view_memorandum(@sended_memorandum) %>
+    <%= view_sended_memorandum(@sended_memorandum) %>
   </fieldset>
 </div>
 

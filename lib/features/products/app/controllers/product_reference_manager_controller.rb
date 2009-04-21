@@ -4,6 +4,6 @@ class ProductReferenceManagerController < ApplicationController
   def index
     @categories = ProductReferenceCategory.find(:all, :order => "product_reference_category_id")
     @references = ProductReference.find_all_by_id(:conditions => {:enable => true})
-    @type = params[:type]
+    @display = params[:display] || "active"
   end
 end

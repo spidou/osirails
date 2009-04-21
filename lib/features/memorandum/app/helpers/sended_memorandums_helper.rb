@@ -1,7 +1,7 @@
 module SendedMemorandumsHelper
   
   # This method permit to view a memorandum
-  def view_memorandum(memorandum)    
+  def view_sended_memorandum(memorandum)    
     view = []
     view << "<p><strong>Object : </strong>#{memorandum.subject}</p>"
     view << "<p><strong>Date : </strong>#{Memorandum.get_structured_date(memorandum)}</p>"
@@ -12,20 +12,7 @@ module SendedMemorandumsHelper
     view << "<p><strong>De : </strong> #{memorandum.signature}</p>"
     view << "<p><strong>Publi&eacute; par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
   end
-
-  #####################################################################################
-  # These methods permit to show or hide buttons about POSSIBLE ACTIONS or USEFUL LINKS
-  # we don't use dynamic method because we need another controller ( received_memorandum_controller)
   
-  def received_memorandums_link(txt = "View all received memoramdums")
-    if Memorandum.can_list?(current_user) and controller.can_list?(current_user) and !current_user.employee.nil?
-      link_to(image_tag("/images/list_16x16.png", :alt => "list", :title => "list")+" #{txt}", received_memorandums_path)
-    end
-  end
-
-  ######################################################################################
-  
- 
   # This method permit to initialize signature
   def initialize_signature
     services = current_user.employee.services
@@ -116,7 +103,7 @@ module SendedMemorandumsHelper
   end
   
   # This method permit to show sended memorandum
-  def show_memorandums(memorandums)
+  def show_sended_memorandums(memorandums)
     sended_memorandums = []
     sended_memorandums << "<table>"
     sended_memorandums << "<tr>"
@@ -129,7 +116,7 @@ module SendedMemorandumsHelper
       
       published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
       show_button = memorandum_link(memorandum, :link_text => "")
-      edit_button = edit_memorandum_link(memorandum, :link_text => "")
+      edit_button = edit_memorandum_link(memorandum, :link_text => "") unless memorandum.published?
       period_memorandum = Memorandum.color_memorandums(memorandum)
       
       sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"

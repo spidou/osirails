@@ -13,12 +13,13 @@ class ProductReferencesController < ApplicationController
   end
   
   # GET /product_references/new
+  # GET /product_references/new?category_id=:category_id
   def new
-    @reference = ProductReference.new(:product_reference_category_id => params[:id])
+    @reference = ProductReference.new(:product_reference_category_id => params[:category_id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
-  # GET /product_reference/1
+  # GET /product_reference/:id
   def show
     @reference = ProductReference.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
@@ -29,7 +30,7 @@ class ProductReferencesController < ApplicationController
     end
   end
   
-  # GET /product_references/1/edit
+  # GET /product_references/:id/edit
   def edit
     @reference = ProductReference.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
@@ -47,7 +48,7 @@ class ProductReferencesController < ApplicationController
     end
   end
   
-  # PUT /product_references/1
+  # PUT /product_references/:id
   def update
     @reference = ProductReference.find(params[:id])
     @reference.counter_update("disable_or_before_update")
@@ -62,7 +63,7 @@ class ProductReferencesController < ApplicationController
     end
   end
   
-  # DELETE /product_references/1
+  # DELETE /product_references/:id
   def destroy
     @reference = ProductReference.find(params[:id])
     if @reference.can_be_destroyed?

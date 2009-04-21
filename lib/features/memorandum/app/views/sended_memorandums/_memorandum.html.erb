@@ -7,7 +7,7 @@
 <div class="frame presentation_medium">
  <% form_for( :memorandum,
               @sended_memorandum,
-              :url => sended_memorandum_path(@sended_memorandum),
+              :url => memorandum_path(@sended_memorandum),
               :html => ((params[:action] == 'edit') or (params[:action] == 'update')) ? {:method => :put} : {}
               ) do |form| %>
    <%= form.error_messages %>

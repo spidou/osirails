@@ -13,12 +13,13 @@ class ProductReferenceCategoriesController < ApplicationController
   end
   
   # GET /product_reference_categories/new
+  # GET /product_reference_categories/new?category_id=:category_id
   def new
-    @category = ProductReferenceCategory.new(:product_reference_category_id => params[:id])
+    @category = ProductReferenceCategory.new(:product_reference_category_id => params[:category_id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
-  # GET /product_reference_categories/1
+  # GET /product_reference_categories/:id
   def show
     @categories = ProductReferenceCategory.find(params[:id].split(","))
     respond_to do |format|
@@ -27,7 +28,7 @@ class ProductReferenceCategoriesController < ApplicationController
     end
   end
   
-  # GET /product_reference_categories/1/edit
+  # GET /product_reference_categories/:id/edit
   def edit
     @category = ProductReferenceCategory.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
@@ -45,9 +46,8 @@ class ProductReferenceCategoriesController < ApplicationController
     end
   end
   
-  # PUT /product_reference_categories/1
+  # PUT /product_reference_categories/:id
   def update
-    # @categories = ProductReferenceCategory.find(:all)
     @category = ProductReferenceCategory.find(params[:id])
     new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
     if @category.can_has_this_parent?(new_parent_category_id)
@@ -68,7 +68,7 @@ class ProductReferenceCategoriesController < ApplicationController
     end
   end  
   
-  # DELETE /product_reference_categories/1
+  # DELETE /product_reference_categories/:id
   def destroy
     @category = ProductReferenceCategory.find(params[:id])
     if @category.can_be_destroyed?

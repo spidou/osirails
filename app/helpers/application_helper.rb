@@ -204,15 +204,9 @@ module ApplicationHelper
     # <tt>:link_text</tt> permits to define a custom value for the link label
     #   <%= new_user_link( :link_text => "Add a user" ) %>
     # 
-    def method_missing_with_dynamic_link_catcher(method, *args)
+    def method_missing(method, *args)
       # did somebody tried to use a dynamic link helper?
-      unless method.to_s.match(/_link$/)
-        if block_given?
-          return method_missing_without_dynamic_link_catcher(method, *args) { |*a| yield(*a) }
-        else
-          return method_missing_without_dynamic_link_catcher(method, *args) 
-        end
-      end
+      super(method, *args) unless method.to_s.match(/_link$/)
       
       # retrieve objects and options hash into args array
 			args_objects = []
@@ -264,33 +258,33 @@ module ApplicationHelper
 		  has_controller_permission = controller.send("can_#{permission_name}?", current_user)
       
       # default options
-		  options = { :link_text   => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-		              :image_tag   => image_tag( "/images/#{permission_name}_16x16.png",
-		                                         :title => default_title,
-		                                         :alt => default_title )
+		  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
+		              :image_tag    => image_tag( "/images/#{permission_name}_16x16.png",
+		                                          :title => default_title,
+		                                          :alt => default_title ),
+                  :options      => {},
+                  :html_options => {}
 	              }.merge(options)
 	    
 	    # return the correspondong link_to tag if permissions are allowing that!
       if has_controller_permission and has_model_permission
 			  link_content = "#{options[:image_tag]} #{options[:link_text]}"
-			  
+        
         # eval url-genrator method : user_path(1) => '/users/1' , edit_user_group_path(1,1) => '/users/1/groups/1/edit'
         complete_path_method = "#{path_name}_path("
         args_objects.each_index do |i|
-          complete_path_method << "," unless i == 0
+          complete_path_method << ", " unless i == 0
           complete_path_method << "args_objects[#{i}]"
         end
+        complete_path_method << "#{"," unless args_objects.empty?} options[:options]" unless options[:options].empty?
         complete_path_method << ")"
         link_url = eval(complete_path_method)
         
-        link_options = {}
-        link_options.merge!({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
+        options[:html_options] = options[:html_options].merge({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
         
-        link_to( link_content, link_url, link_options )
+        link_to( link_content, link_url, options[:html_options] )
       end
     end
-    
-    alias_method_chain :method_missing, :dynamic_link_catcher
     
     # check if all objects passed into args correspond to the helper name
     #

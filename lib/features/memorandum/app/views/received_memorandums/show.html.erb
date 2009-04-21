@@ -1,13 +1,11 @@
 <h1>Note de service</h1>
 
 <div class='frame'>
-<h2 style='text-align: center;'><%= @received_memorandum.title %></h2>
+  <h2 style='text-align: center;'><%= @received_memorandum.title %></h2>
 
-<div class='formated_content'>
-  <fieldset>
-  <%= view_memorandum(@received_memorandum) %>
-  </fieldset>
-</div>
-
-<%= link_to("Retour", received_memorandums_path) %>
+  <div class='formated_content'>
+    <fieldset>
+    <%= view_received_memorandum(@received_memorandum) %>
+    </fieldset>
+  </div>
 </div>
