@@ -1,5 +1,6 @@
 require_dependency 'user'
 require_dependency 'service'
+require_dependency 'application_helper'
 
 class User
   belongs_to :employee

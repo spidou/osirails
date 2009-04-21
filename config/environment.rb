@@ -105,9 +105,8 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 end
 
-# require 'mimetype_fu'
-## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
+# ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
+# to be sure to remove old references to unexistant methods (after disabling a feature for example)
+load 'application_helper.rb'
 
-# ApplicationHelper's method are overloaded by another feature. So, load the
-# file to reset ApplicationHelper's method.
-load "#{RAILS_ROOT}/app/helpers/application_helper.rb"
+## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y

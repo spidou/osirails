@@ -1,4 +1,5 @@
 require_dependency 'service'
+require_dependency 'application_helper'
 
 class Service
   has_many :memorandums_services
