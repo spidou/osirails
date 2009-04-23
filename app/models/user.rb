@@ -98,18 +98,8 @@ class User < ActiveRecord::Base
   
   def expired?
     return true if self.password_updated_at.nil?
-<<<<<<< HEAD:app/models/user.rb
     return false if ConfigurationManager.admin_password_validity == 0
     (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
-=======
-    if ConfigurationManager.admin_password_validity == 0
-      false
-    elsif (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
-      true
-    else
-      false
-    end
->>>>>>> Coding has_search_index plugin and test in some models:app/models/user.rb
   end
   
   def username_unicity
