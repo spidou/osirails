@@ -60,9 +60,13 @@ class String
     return formated
   end
 
+  # FIXME you may base on inflector class
   # method to view if a word is or not plural
   def plural?
-    self.singularize == self ? false : true
+    return false if self.last == "s" and self.pluralize != self
+    return true if self.last == "s" and self.pluralize == self
+    return true if self.last != "s" and self.singularize != self
+    return false if self.last != "s" and self.singularize == self
   end
   
   # return if the string is between the first and the second argument (without taking case into account)

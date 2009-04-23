@@ -35,8 +35,8 @@
               tmp = tmp.merge(elmnt.name => elmnt.type.to_s) if elmnt.name==a
             end
           end
-          options[:attributes] = tmp 
-
+          options[:attributes] = tmp
+          options[:additional_attributes] ||= {}                              # create empty Hash if don't exist
 
           # create class var to permit to access to search option from te model
           class_eval do
@@ -60,7 +60,12 @@
         #
         def is_additional?(attribute)
           if attribute.include?(".")
-            object = attribute.split(".")[attribute.split(".").size-2].singularize.camelize.constantize
+            tmp = attribute.split(".")[-2]
+            if tmp.pluralize == tmp
+              object = tmp.singularize.camelize.constantize
+            else
+              object = tmp.camelize.constantize
+            end
             attribute = attribute.split(".").last            
           else
             object = self
@@ -70,6 +75,24 @@
           
           object.search_index[:additional_attributes].include?(attribute)
         end  
+        
+        # Methods that permit to test all attributes
+        # #1 return true if all are additional attributes (cf "is_additional?(attribute)" method)
+        # #2 return true if all are database attributes (cf "is_additional?(attribute)" method)
+        #
+        def only_additional_attributes?(attributes)
+          attributes.each_key do |attribute|
+            return false unless self.is_additional?(attribute)          
+          end
+          return true
+        end
+
+        def only_database_attributes?(attributes)
+          attributes.each_key do |attribute|
+            return false unless !self.is_additional?(attribute)
+          end
+          return true
+        end
 
         # method that permit to get the include array recursively(according to sub models)
         # arguments --> ignore=[] (!) You must not use it, it's just for recursive call of the method
@@ -91,9 +114,9 @@
               else
                 include_array << {attribute.to_sym => model.get_include_array(ignore << self )}  
               end  
-            end
-            return include_array
+            end            
           end
+          return include_array
         end
         
         # Method that permit to verify the match between object's attribute and the value passed into args acording to data type (and action if there is one) 
@@ -105,22 +128,27 @@
         #
         def match?(object,attribute,value)
           attributes = self.search_index[:additional_attributes]
-          data = object.send(attribute)
+          data = object.send(attribute).to_s
           return false if data.nil?
-        
-          return data == value unless value.is_a?(Hash)          
+          if !value.is_a?(Hash)
+            if object.search_index[:additional_attributes][attribute]=="string"          #  use regexp for string attributes same that use like into sql queries
+              return data.downcase.match(Regexp.new(value.to_s.downcase))               #  downcase data and value to make the match method case insensitive
+            else
+              return data == value.to_s
+            end
+          end       
           raise ArgumentError, "Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if value[:action].nil?           
 
           if value[:action] == "like"
-            return data.match(Regexp.new(value[:value]))   
+            return data.downcase.match(Regexp.new(value[:value].downcase))              #  downcase data and value to make the match method case insensitive
           elsif value[:action] == "not like"
-            return !data.match(Regexp.new(value[:value]))
+            return !data.downcase.match(Regexp.new(value[:value].downcase))             #  downcase data and value to make the match method case insensitive
           elsif value[:action] == "!="
-            return !data.send("==",value[:value])
+            return !data.send("==",value[:value].to_s)
           elsif value[:action] == "="
-            return data.send("==",value[:value])
+            return data.send("==",value[:value].to_s)
           elsif ACTIONS[attributes[attribute].to_sym].include?(value[:action])
-            return data.send(value[:action],value[:value])
+            return data.send(value[:action],value[:value].to_s)
           else
             raise ArgumentError, "unproper operator '#{value[:action]}' for #{attributes[attribute]} datatype"
           end
@@ -165,105 +193,158 @@
         #
         ## with an attribute that is not into database
         #
-        #     User.search("expired?" => true)       or User.search("expired" => {:value => true :action => "=="})
+        #     User.search_with("expired?" => true)       or User.search("expired" => {:value => true :action => "="})
         #     => all users like an_user.expired?==true
         #
-        ## with a nested attribute
+        ## with a nested attribute into database or not
+        #(!) you must type the attribute in plural if the resource has many or has and belongs to many and in singular if the resource has one
         #
-        #     User.search("roles.name" => "admin")
+        #    #  User Has and belongs to many Role
+        #     User.search_with("roles.name" => "admin")
         #     => all users that one role name is equal to "admin" at least 
+        #      
+        #    # Employee Has one JobContract
+        #     Employee.search_with("job_contract.start_date" => "2/2/1900")
+        #     => nothing because the date is to old, there's no user that have a job_contract's start_date equal to that one
         #
-        def search(attributes={})
-          collection = self.find(:all)
-          attributes[:search_type].nil? ? search_type = "and" : search_type = attributes.delete(:search_type)    # default value for the search type if not precised
-          search_type=="or" ? additional_result = Array.new : additional_result = collection                     # initialization is different according to search type because of using  & or | on arrays
+        #    # Customer has many Establishment and Establishment Has one Address
+        #     Customer.search_with("establishments.address.zip_code" => 97438)
+        #     => return all customers that have an establishments with zip code equal to 97438
+        #
+        def search_with(attributes={})
+   
+          if !attributes.is_a?(Hash)
+            attribute_value = attributes
+            attributes = Hash.new
+            
+            self.search_index[:attributes].merge( self.search_index[:additional_attributes]).each_key do |attribute|
+              attributes = attributes.merge({attribute => attribute_value})
+            end
+            search_type = "or"
+          else
+            attributes[:search_type].nil? ? search_type = "and" : search_type = attributes.delete(:search_type)    # default value for the search type if not precised  
+            attributes.each_key do |att|
+              
+              if att.split(".")[-2].camelize.plural?
+                model = att.split(".")[-2].camelize.singularize.constantize
+              else
+                model = att.split(".")[-2].camelize.constantize
+              end
+## you must test for the model and his sub models if countaining the attribute
+              txt = "You can't search for attribute '#{att.split(".").last}', because it's not indexed into #{model.to_s} model"          
+              unless search_index[:attributes].include?(att.split(".").last) or model.search_index[:additional_attributes].include?(att.split(".").last)              
+                raise ArgumentError ,txt
+              end 
+            end  
+          end
 
-          # search for additional attributes
-          # ################################
-          attributes.each_pair do |attribute,value|
-            tmp = Array.new             
-            collection.each do |object|
-              if is_additional?(attribute)                                                      
-                if attribute.include?(".")                                                                      # nested resource ex=> roles.name                        
-                  nested_resources = attribute.split(".")                 
-                  nested_attribute = nested_resources.pop
-                  nested_object = get_nested_object(object, nested_resources )
-                  if nested_object.is_a?(Array)                                                                 # has many sub resources
-                    nested_object.each do |sub_obj|
-                      tmp << object if match?(sub_obj, nested_attribute, value)                  
+          database_result = search_database_attributes(attributes, search_type)
+          additional_result = search_additional_attributes(attributes, search_type)
+
+          # discard one of the two results array if there's only one type of attributes
+          return additional_result if only_additional_attributes?(attributes)                        # return only additional attributes research result 
+          return database_result if only_database_attributes?(attributes)                            # return only database research result
+          
+          # regroup the two results array according to search type 
+          # PS: for the search type 'not' it's equal to 'and' because we need to keep values that are into the two arrays in the same time
+          if search_type=="or"
+            return additional_result | database_result                                               # get results that respond to one criterion at least
+          else
+            return additional_result & database_result                                               # get results that respond to all criteria or no criteria
+          end          
+
+        end
+        
+#        private
+          
+          # Method that permit to search for additional attributes
+          # look for search_with() public method for examples
+          # # 'attributes' is an array like ["attribute" => "value", etc...] or ["attribute"=> {:value => "value", :action => "="}]
+          # # 'search_type' is a string include into that range ["or","and","not"]
+          #
+          def search_additional_attributes(attributes, search_type)
+            collection = self.find(:all)
+            search_type=="or" ? additional_result = Array.new : additional_result = collection        # initialization is different according to search type because of using  & or | on arrays
+
+            attributes.each_pair do |attribute,value|
+              if is_additional?(attribute)
+              tmp = Array.new             
+              collection.each do |object|                                                                
+                  if attribute.include?(".")                                                         # nested resource ex=> roles.name                        
+                    nested_resources = attribute.split(".")                 
+                    nested_attribute = nested_resources.pop
+                    nested_object = get_nested_object(object, nested_resources)
+                    if nested_object.is_a?(Array)                                                    # has many sub resources
+                      nested_object.each do |sub_obj|
+                        tmp << object if match?(sub_obj, nested_attribute, value)                  
+                      end
+                    else
+                      tmp << object if match?(nested_object, nested_attribute, value)                      
+                    end        
+                  else
+                    tmp << object if match?(object, attribute, value)
+                  end            
+              end
+              additional_result = additional_result | tmp  if search_type=="or"                                         # get results that respond to one criterion at least
+              additional_result = additional_result & tmp  if search_type=="and"                                        # get results that respond to all criteria
+              end
+            end
+            additional_result = collection - additional_result if search_type == "not" and is_additional?(attribute)    # get results that don't respond to all criteria
+
+            return additional_result
+          end
+
+          # Method to search into database for attributes
+          # look for search_with() public method for examples
+          # # 'attributes' is an array like ["attribute" => "value", etc...] or ["attribute"=> {:value => "value", :action => "="}]
+          # # 'search_type' is a string include into that range ["or","and","not"]
+          #
+          def search_database_attributes(attributes, search_type)
+            conditions_array = [""]
+            unless attributes.nil?
+              attributes.each_pair do |attribute,value|
+                unless is_additional?(attribute)
+                  if attribute.include?(".")
+                    tmp = attribute.split(".")[-2]                                                               # -2 point to the second element from the end of the array
+                    if tmp.pluralize == tmp
+                      model = tmp.singularize.camelize.constantize
+                    else
+                      model = tmp.camelize.constantize
+                    end
+                    good_attribute = model.new.respond_to?(attribute.split(".").last)
+                  else
+                    good_attribute = self.new.respond_to?(attribute)
+                  end
+                  if good_attribute
+                    conditions_array[0] << " #{search_type} " unless conditions_array[0]==""
+                    formatted_attribute = "#{model.table_name}." unless model.nil?
+                    formatted_attribute = "#{attribute.split(".").last}"                                         # to get a nested resource => table_name.nested_resource
+                    if value.is_a?(Hash)
+                      conditions_array[0] << "#{formatted_attribute} #{value[:action]}?"
+                      if value[:action] == "like" or value[:action] == "not like"
+                        conditions_array << "%#{value[:value]}%"
+                      else 
+                        conditions_array << value[:value]
+                      end
+                    else
+                      conditions_array[0] << "#{formatted_attribute}"
+                      if search_index[:attributes][attribute.split(".").last]=="string"
+                        conditions_array[0] << " like?"
+                        conditions_array << "%#{value}%"
+                      else
+                        conditions_array[0] << " =?"
+                        conditions_array << value
+                      end
                     end
                   else
-                    tmp << object if match?(nested_object, nested_attribute, value)                      
-                  end        
-                else
-                  tmp << object if match?(object,attribute,value)
-                end
-                attributes.delete(attribute)
-              end
-            end
-            additional_result = additional_result | tmp  if search_type=="or"                             # get results that respond to one criterion at least
-            additional_result = additional_result & tmp  if search_type=="and"                            # get results that respond to all criteria
-          end
-          additional_result = collection - additional_result if search_type == "not"                      # get results that don't respond to all criteria
-
-
-          # search for attributes into database
-          ##################################### 
-          conditions_array = [""]
-          unless attributes.nil?
-            attributes.each_pair do |attribute,value|
-              # TODO improve error detections for nested resources if the attribute respond to the last resource it works but we don't verify the other nested resources for example : job_contact.job_contract_type.name will work because name respond to job_contract_type even if job_contact* is wrong     (*job_contract)
-              if attribute.include?(".")
-                model = attribute.split(".")[attribute.split(".").size-2].camelize.constantize
-                good_attribute = model.new.respond_to?(attribute.split(".").last)
-              else
-                good_attribute = self.new.respond_to?(attribute)
-              end
-puts "yes" if good_attribute 
-              if good_attribute
-puts search_type
-                conditions_array[0]<< " #{search_type} " unless conditions_array[0]==""
-puts " before condition_array[0] = #{conditions_array[0]}"
-                if value.is_a?(Hash)
-                  conditions_array[0]<<"#{attribute} #{value[:action]}?"
-                  if value[:action]=="like" or value[:action]=="not like"
-                    conditions_array << "%#{value[:value]}%"
-                  else 
-                    conditions_array << value[:value]
+                    raise ArgumentError,  "Wrong argument #{a} maybe you misspelled it"
                   end
-                else
-                  conditions_array[0]<<"#{attribute} =?"
-                  conditions_array << value
-                end
-puts "after condition_array[0] = #{conditions_array[0]}"
-                
-puts "condition_array = #{conditions_array.inspect}"
-              else
-                raise ArgumentError,  "Wrong argument #{a} maybe you misspelled it"
+                end 
               end
-              return self.find(:all ,:include => get_include_array, :conditions => conditions_array)
+              return   self.find(:all, :include => get_include_array, :conditions => conditions_array)
             end
+            return nil
           end
-      
-          return additional_result
-          
-
-        end
-
-        def find_with(exp,opt={})
-          if opt=={}
-            conditions_array = [""]
-            options[:attributes].each do |a|
-              if( self.new.respond_to?(a) and self.new.a.class)
-    		        conditions_array[0]<<" or " unless conditions_array[0]==""
-    		        conditions_array[0]<<"#{a} like ?"
-    		        conditions_array << exp
-    		      end
-            end
-            return self.find(:all,:conditions => conditions_array)
-          end
-        end
-
       end
 
     end

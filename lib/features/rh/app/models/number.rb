@@ -1,6 +1,7 @@
 class Number < ActiveRecord::Base
 
-  has_search_index  :attributes => ["number"]
+  has_search_index  :attributes => ["number"],
+                    :sub_models => ["NumberType"]
 
   belongs_to :indicative
   belongs_to :number_type

@@ -1,4 +1,7 @@
 class Address < ActiveRecord::Base
+  
+  has_search_index :attributes => ["zip_code","city_name","country_name"]
+
   belongs_to :has_address, :polymorphic => true
   has_one :city
   

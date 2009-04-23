@@ -1,7 +1,7 @@
 class Role < ActiveRecord::Base
 
   has_search_index  :attributes => ["name","description"],
-                    :additional_attributes => {"name" => "string"},
+                    #:additional_attributes => {"name" => "string"},
                     :sub_models => ["User"]
 
   # Relationships
