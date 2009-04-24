@@ -1,9 +1,5 @@
 class Contact < ActiveRecord::Base
   has_permissions :as_business_object
-  
-  has_search_index  :attributes => ["first_name","last_name"],
-                    :additional_attributes => {"first_name"=> "string"},
-                    :sub_models => ["Number"]
 
   has_many :numbers, :as => :has_number
   belongs_to :contact_type
@@ -36,6 +32,11 @@ class Contact < ActiveRecord::Base
   @@form_labels[:job] = "Fonction :"
   @@form_labels[:contact_type] = "Type de contact :"
   
+  # Search Plugin
+  has_search_index  :only_attributes => ["first_name","last_name"],
+                    :additional_attributes => {"first_name"=> "string"},
+                    :only_sub_models => ["Number"]
+                    
 #  def self.new(contact = nil)
 #    
 #    unless contact.nil? or contact[:id].nil?

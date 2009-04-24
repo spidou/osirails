@@ -1,10 +1,7 @@
 class Establishment  < ActiveRecord::Base
-  has_permissions :as_business_object
+  has_permissions :as_business_object  
 
-  has_search_index  :attributes => ["name","activated"],
-                    :sub_models => ["Contact","Address"]  
-
-
+  # Relationships
   has_one :address, :as => :has_address
   has_many  :contacts, :as => :has_contacts
   belongs_to :customer
@@ -26,6 +23,10 @@ class Establishment  < ActiveRecord::Base
   
   after_update :save_address
   
+  # Search Plugin
+  has_search_index  :only_attributes => ["name","activated"],
+                    :only_sub_models => ["Contact","Address"]
+                    
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom de l'enseigne :"

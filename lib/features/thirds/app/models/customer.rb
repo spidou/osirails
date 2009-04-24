@@ -1,27 +1,28 @@
 class Customer < Third
   has_permissions :as_business_object
-  
-  has_search_index  :attributes => ["name","siret_number"],
-                    :sub_models => ["Establishment"]
 
-  
+  # Relationships
   belongs_to :payment_method
   belongs_to :payment_time_limit
   has_many :establishments
 
-  ## Validations
+  # Validations
   validates_uniqueness_of :name, :siret_number
   validates_associated :establishments, :contacts
 
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}
 
-  ## Plugins
+  # Plugins
   has_documents :graphic_charter, :logo
 
-  ## Callbacks
+  # Callbacks
   after_update :save_establishments
 
+  # Search Plugin
+  has_search_index  :only_attributes => ["name","siret_number"],
+                    :only_sub_models => ["Establishment"]
+                    
   def activated_establishments
     establishment_array = []
     self.establishments.each {|establishment| establishment_array << establishment if establishment.activated}

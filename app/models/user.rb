@@ -1,12 +1,7 @@
 class User < ActiveRecord::Base
-  
-  has_search_index  :attributes => ["id","username","last_activity"], 
-                    :additional_attributes => {"expired?" => "boolean" , "password_updated_at" => "datetime"},
-                    :sub_models => ["Role"]
 
   before_save :username_unicity
   
-
   # Requires
   require "digest/sha1"
 
@@ -60,6 +55,11 @@ class User < ActiveRecord::Base
   @@form_labels[:last_connection] = "dernière connection :"
   @@form_labels[:roles] = "R&ocirc;les :"
   @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
+ 
+  # Search Plugin
+  has_search_index  :additional_attributes => {"expired?" => "boolean" , "password_updated_at" => "datetime"},
+                    :only_sub_models => ["Role"]
+                    
   
   # store old encrypted password to be aware if a new password is given
   def after_find

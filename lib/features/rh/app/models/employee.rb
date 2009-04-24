@@ -1,9 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
 
-  has_search_index  :attributes => ["last_name","first_name"],
-                    :sub_models => ["JobContract","Number"]
-  
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
 
@@ -55,6 +52,9 @@ class Employee < ActiveRecord::Base
   before_validation_on_create :build_associated_resources
   before_save :case_managment
   after_update :save_iban, :save_numbers, :save_address
+  
+  # Search Plugin 
+  has_search_index  :only_attributes => ["last_name","first_name"]
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment

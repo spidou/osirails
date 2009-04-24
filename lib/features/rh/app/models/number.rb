@@ -1,8 +1,5 @@
 class Number < ActiveRecord::Base
 
-  has_search_index  :attributes => ["number"],
-                    :sub_models => ["NumberType"]
-
   belongs_to :indicative
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true
@@ -17,6 +14,10 @@ class Number < ActiveRecord::Base
   attr_accessor :should_destroy 
 
   VISIBLE_STATES = { "Privé" => false, "Public" => true } 
+  
+  # Search Plugin
+  has_search_index  :only_attributes => ["number"],
+                    :only_sub_models => ["NumberType"]
   
   def formatted
     # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number

@@ -7,7 +7,13 @@ begin
       Dir.glob(File.join(feature_path, "app", "models", "*.rb")).each do |model|
         if File.exists?(model)
           class_name = File.basename(model).chomp(File.extname(model)).camelize
-          class_name.constantize rescue raise NameError, "uninitialized constant #{class_name} in file #{model}"
+          begin
+            class_name.constantize 
+          rescue NameError => e
+            raise "uninitialized constant #{class_name} in file #{model}"
+          rescue Exception => e
+            raise e.message
+          end
         end
       end
     end

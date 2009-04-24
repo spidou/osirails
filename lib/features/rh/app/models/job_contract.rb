@@ -1,8 +1,5 @@
 class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
-
-  has_search_index  :attributes => ["start_date"],
-                    :sub_models => ["JobContractType"]
   
   # Relationships
   belongs_to :employee
@@ -31,6 +28,10 @@ class JobContract < ActiveRecord::Base
   @@form_labels[:end_date] = "Date de fin :"
   @@form_labels[:employee_state] = "Statut :"
   @@form_labels[:salary] = "Salaire brut :"
+  
+  # Search Plugin
+  has_search_index  :only_attributes => ["start_date"],
+                    :only_sub_models => ["JobContractType"]
   
   #return the actual salary
   def actual_salary
