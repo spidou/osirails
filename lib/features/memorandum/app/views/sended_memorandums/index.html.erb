@@ -1,14 +1,14 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
  <%= new_memorandum_link %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>  
+<% contextual_menu USEFUL_LINKS do %>  
  <%= received_memorandums_link %>
 <% end %>
 
 <% unless @sended_memorandums.size == 0 or (!Memorandum.can_list?(current_user) and controller.can_list?(current_user))%>
 <h1>Notes de services envoy&eacute;s</h1>
-  <div class='frame'>
+  <div>
     <%= show_sended_memorandums(@sended_memorandums) %>
     <%= will_paginate @sended_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
   </div>

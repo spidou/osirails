@@ -2,12 +2,12 @@
 <script type="text/javascript" src="/javascripts/logisctic/commodity_category.js"></script>
 <% end %>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_commodity_category_link %>
   <%= new_commodity_link %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= commodity_categories_link %>
   <%= inventories_link %>
   <%= inventory_link(@inventory) unless @inventory.nil? %>
@@ -15,7 +15,7 @@
 <% end %>
 
 <h1>Ajouter une nouvelle cat&eacute;gorie de mati&egrave;re premi&egrave;re</h1>
-<div class="frame presentation_medium">
+<div class="presentation_medium">
   <% form_for(@category) do |form| %>
 
   <p>

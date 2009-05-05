@@ -13,86 +13,70 @@
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
 	<body>
-    <div id="all_page">
-      <!-- BANNIERE -->
-      <div id="banner">
-        <div id="logo"> 
-          <span id="welcome_message"><%= display_welcome_message %></span>
-        </div>	
-        <div id="background_banner">
-          <div id="block_button_banner">
-            <div id="button_on_banner">
-              <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
-              <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
-              <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
-            </div>
-            <div id="banner_datetime">
-              <p><%= display_date_time %></p>
-            </div>
+    <!-- BANNIERE -->
+    <div id="banner">
+      <div id="logo"> 
+        <span id="welcome_message"><%= display_welcome_message %></span>
+      </div>	
+      <div id="background_banner">
+        <div id="block_button_banner">
+          <div id="button_on_banner">
+            <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
+            <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
+            <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
+          </div>
+          <div id="banner_datetime">
+            <p><%= display_date_time %></p>
           </div>
         </div>
       </div>
-      <!-- SOUS-BANNIERE -->
-      <div id="under_banner">
-        <!-- TODO disable this helper when feature memorandum are disable -->
-        <%= display_memorandums %>
+    </div>
+    <!-- SOUS-BANNIERE -->
+    <div id="under_banner">
+      <!-- TODO disable this helper when feature memorandum are disable -->
+      <%= display_memorandums %>
+    </div>
+    <div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->
+      <div id="nav">
+        <%= display_menu %>
       </div>
-      <div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->	
-        <div id="menu">				<!-- MENU PRINCIPAL-->	
-          <ul>
-            <%= display_main_menu %>
-          </ul>
-        </div>
-        <div id="page">	<!-- CONTENT OF THE PAGE -->
-          <div id="secondary_menu"> <!-- SECONDARY MENU -->
-            <div class="shown_secondary_menu" id="secondary_menu_toggle_button">
-              <span id="status_background_secondary_menu">
-                <span id="status_text_secondary_menu">Cacher le menu</span>
-              </span>
-            </div>
-            <div id="shadow_secondary_menu">
-              <div id="content_secondary_menu">
-                <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
-                <!--contetual search formulary -->
-                <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
-                  <%= contextual_search %>
-                <% end %> 
- 
-                <%= yield :secondary_menu %>
-                <div id="footer_secondary_menu">&nbsp;</div>
-              </div>
+      <div id="page">	<!-- CONTENT OF THE PAGE -->
+        <div id="contextual_menu"> <!-- CONTEXTUAL MENU -->
+          <div class="shown_contextual_menu" id="contextual_menu_toggle_button">
+            <span id="status_background_contextual_menu">
+              <span id="status_text_contextual_menu">Cacher le menu</span>
+            </span>
+          </div>
+          <div id="shadow_contextual_menu">
+            <div id="content_contextual_menu">
+              <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
+              <!--contetual search formulary -->
+              <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
+                <%= contextual_search %>
+              <% end %> 
+
+              <%= yield :contextual_menu %>
+              <div id="footer_contextual_menu">&nbsp;</div>
             </div>
           </div>
-          <div id="content_page">
-            <div id="horizontal_menu">
-              <%= display_second_menu %>
-            </div>
-            <div id="empty">
-              <!-- Permet de contrer le float du menu horizontal en mettant une marge qui englobe celui-ci -->
-            </div>
-            <%= display_flash %>
-            <%= yield %>
-            <p>
-              <%= link_to 'Retour', :back %>
-            </p>
-          </div> <!-- content_page : FIN -->
-        </div> <!-- PAGE : FIN -->
-        <div id="footer_page">
-          <div id="footer">
-            <div id="bottom_core_menu">
-              <div id="footer_content">
-                <p>
-                  <%= display_footer %>
-                  <br/>
-                  <a href="http://validator.w3.org/check?uri=referer">
-                    <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
-                  </a>
-                </p>
-              </div><!--FOOTER_CONTAIN : FIN  -->
-            </div><!-- bottom_core_menu : FIN -->
-          </div><!-- FOOTER : FIN-->
-        </div><!-- footer_page : FIN -->
-      </div> <!-- CORPS : FIN -->
-    </div><!-- ALL PAGE : FIN-->
+        </div>
+        <div id="content_page">
+          <%= display_flash %>
+          
+          <%= yield %>
+          
+          <p><%= link_to 'Retour', :back %></p>
+        </div> <!-- content_page : FIN -->
+      </div> <!-- PAGE : FIN -->
+      <div id="footer">
+        <p>
+          <%= display_footer %>
+          <br/>
+          <a href="http://validator.w3.org/check?uri=referer">
+            <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
+          </a>
+        </p>
+      </div><!-- FOOTER : FIN-->
+    </div> <!-- CORPS : FIN -->
 	</body>
 </html>

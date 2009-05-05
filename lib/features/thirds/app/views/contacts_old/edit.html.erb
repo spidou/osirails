@@ -1,5 +1,5 @@
 <h1>Modifier un Contact</h1>
-<div class="frame">
+<div>
   <% form_for :contact, @contact,  :url => {:controller => customer_contact_path(@owner, @contact)}, :html => { :method => :put, :id => "edit_post_45" } do |contact| %>  
 
    <h2> Informations concernant <%= @contact.first_name + " " +@contact.last_name%></h2>

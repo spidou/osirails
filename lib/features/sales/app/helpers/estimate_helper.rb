@@ -1,5 +1,5 @@
 module EstimateHelper
-  def render_secondary_menu
-    render :partial => 'secondary_menu'
+  def render_contextual_menu
+    render :partial => 'contextual_menu'
   end
 end

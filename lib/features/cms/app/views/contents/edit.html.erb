@@ -1,10 +1,12 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_content_link %>
 	<%= content_link(@content) %>
 	<%= delete_content_link(@content) %>
 <% end %>
-<% secondary_menu USEFUL_LINKS do %>
+
+<% contextual_menu USEFUL_LINKS do %>
 	<%= contents_link %>
 <% end %>
+
 <h1>Modifier un contenu</h1>
 <%= render :partial => @content, :locals => {:submit_button_name => "Modifier"} %>

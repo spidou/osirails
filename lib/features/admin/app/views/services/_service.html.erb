@@ -1,6 +1,5 @@
-<%if is_form_view?%>
-  
-  <h1>Service</h1>
+<% if is_form_view? %>
+
   <% form_for(service) do |service| %>
     <%= service.error_messages %>
     <h2>Informations du service :</h2>
@@ -13,30 +12,28 @@
       <%= service.label :service_parent_id %>
       <%= service.form_or_view(service.collection_select_with_indentation(:service_parent_id, @services, :id, :name, options = {:indentation => 15}.merge(@options)),:parent,:name)%>
     </p>
-
-      
+    
     <h2>Horaires du service :</h2>
-  
-  <%= render :partial => 'shedules/shedule' , :object => @shedules%>      
-
-  <p>
-    <%= service.submit button_name %> 
-  </p>
-
+    
+    <%= render :partial => 'shedules/shedule' , :object => @shedules%>      
+    
+    <p>
+      <%= service.submit button_name %> 
+    </p>
+    
     <% end %>
-  
+    
 <% else %>
    
-  
-<div  class="frame tabulation presentation_medium">
+<div class="presentation_medium">
   <h2>Fiche du service</h2>
   <p>
-    <label>Nom &#58;</label>
+    <label>Nom :</label>
     <%= strong( @service.name )%>
   </p>
   <p>
     <%unless @service.parent.nil?%>
-    <label>Service responsable &#58;</label>
+    <label>Service responsable :</label>
     <%= strong(@service.parent.name)%>
     <%end%>
   </p>
@@ -58,27 +55,25 @@
   <p>
   
   <h2>Horaires du service : <%= @schedules_service%></h2>
-  <%if schedules_empty?(@schedules) %>
+  <% if schedules_empty?(@schedules) %>
     <p><strong>Aucun Horaires définis!</strong></p>
   <% else %>
-      <% days = days_group(days_sort(@schedules)) %>
-      <% days.each_with_index do |schedule,index|%>
-        <%unless index==0%>
-          <p>
-            <strong><%= period(schedule.day)%></strong>
-            : Le Matin de
-            <strong><%= to_hour(schedule.morning_start) unless schedule.morning_start.nil? %></strong>
-             à 
-            <strong><%= to_hour(schedule.morning_end) unless schedule.morning_end.nil?%></strong>
-            et l&apos;Apr&egrave;s&#45;midi de
-            <strong><%= to_hour(schedule.afternoon_start) unless schedule.afternoon_start.nil?%></strong>
-             à 
-            <strong><%= to_hour(schedule.afternoon_end) unless schedule.afternoon_end.nil?%></strong>
-          </p>  
-        <% end %>
+    <% days = days_group(days_sort(@schedules)) %>
+    <% days.each_with_index do |schedule,index| %>
+      <%unless index==0%>
+        <p>
+          <strong><%= period(schedule.day)%></strong>
+          : Le Matin de
+          <strong><%= to_hour(schedule.morning_start) unless schedule.morning_start.nil? %></strong>
+           à 
+          <strong><%= to_hour(schedule.morning_end) unless schedule.morning_end.nil?%></strong>
+          et l&apos;Apr&egrave;s&#45;midi de
+          <strong><%= to_hour(schedule.afternoon_start) unless schedule.afternoon_start.nil?%></strong>
+           à 
+          <strong><%= to_hour(schedule.afternoon_end) unless schedule.afternoon_end.nil?%></strong>
+        </p>  
       <% end %>
+    <% end %>
     </table>
   <% end %>   
-   
 <% end %> 
-

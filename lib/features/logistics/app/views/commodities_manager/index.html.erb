@@ -2,19 +2,19 @@
   <%= javascript_include_tag 'logistics/commodities' %>
 <% end %>
 
-<% secondary_menu "Statistiques" do %>
-	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
-	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
-	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%>
+<% contextual_menu "Statistiques" do %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%>
 <% end %>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_commodity_category_link %>
   <%= new_commodity_link %>
   <% #TODO display all OR display only activated ones %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= inventories_link %>
   <%= inventory_link(@last_inventory, :link_text => "View last inventory") unless @last_inventory.nil? %>
   <%= new_inventory_link %>
@@ -23,7 +23,7 @@
 
 <% if @commodities.size > 0 %>
 <h1>Liste des Cat&eacute;gories de mati&egrave;res premi&egrave;res</h1>
-<div class="frame">
+<div>
   <table class="commodity">
     <tr>
       <th rowspan='2'>Cat&eacute;gorie</th>

@@ -1,9 +1,9 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_menu_link %>
 <% end %>
 
 <h1>Liste des menus</h1>
 
-<div class="frame">
+<div>
   <%= show_structured_menus(@menus) %>
 </div>

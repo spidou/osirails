@@ -1,7 +1,6 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= edit_society_identity_configuration_link("Modifier les paramètres") %>
 <% end %>
 
 <h1>Param&egrave;tres de base de l'entreprise</h1>
-<%= display_tabulated_menu %>
 <%= render :partial => 'society_identity_configuration' %>

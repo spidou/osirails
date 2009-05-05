@@ -1,12 +1,11 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_job_link %>
   <%= job_link(@job) %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= jobs_link %>
 <% end %>
 
 <h1>Modification de la fiche de poste</h1>
-
 <%= render :partial => @job, :object => @job, :locals =>{:submit_button_name => "Modifier"}%>

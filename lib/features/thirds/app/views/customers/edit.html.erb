@@ -2,13 +2,13 @@
   <%= javascript_include_tag "thirds/thirds" %>
 <% end %>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_customer_link %>
   <%= customer_link(@customer)%>
   <%= delete_customer_link(@customer)%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= customers_link%>
 <% end %>
 

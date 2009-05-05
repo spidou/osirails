@@ -1,21 +1,21 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_content_link %>
 	<%= edit_content_link(@content) %>
 	<%= delete_content_link(@content) %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= contents_link %>
 <% end %>
 
 <% unless @content.versions.empty? %>
-  <% secondary_menu "Historique" do %>
+  <% contextual_menu "Historique" do %>
     <%= show_contents_versions(@content_versions) %>
   <% end %>
 <% end %>
 
 <h1><%= @content.title %></h1>
-<div class="frame formated_content">
+<div class="formated_content">
   <fieldset>
     <p><%= @content.description %></p>
     <hr/>

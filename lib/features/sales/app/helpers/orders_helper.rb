@@ -3,12 +3,12 @@ module OrdersHelper
   def order_header
     html = generate_order_order_partial
     html += generate_order_tabs
-    html += generate_secondary_menu_partial
+    html += generate_contextual_menu_partial
     html
   end
   
-  def generate_secondary_menu_partial
-    render :partial => 'orders/secondary_menu'
+  def generate_contextual_menu_partial
+    render :partial => 'orders/contextual_menu'
   end
   
   def generate_order_order_partial
@@ -18,7 +18,7 @@ module OrdersHelper
   def display_customer_overview
     if @order.new_record?
       html = "<h2>Informations concernant le client</h2>"
-      html << "<div class='frame presentation_medium'>"
+      html << "<div class='presentation_medium'>"
       html << render(:partial => 'thirds/third', :object => @order.customer)
       html << render(:partial => 'customers/customer_stats', :object => @order.customer)
       html << "</div>"

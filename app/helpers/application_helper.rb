@@ -22,43 +22,40 @@ module ApplicationHelper
     end
   end
   
-  def display_main_menu
-    html = ""
+  def display_menu
     menu = current_menu
-    Menu.mains.activated.each do |m|
-      selected = ( menu == m || menu.ancestors.include?(m) ? "class=\"selected\"" : "")
-      html << "<li #{selected} title=\"#{m.description}\" class=\"disabled\">#{link_to(m.title, "#")}</li>\n" if m.can_list?(current_user) and !m.can_view?(current_user)
-      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>\n" if m.can_list?(current_user) and m.can_view?(current_user)
-    end
+    html = ""
+    html << display_menu_entries(menu)
     html
   end
   
-  def display_second_menu
-    html = []
-    menu = current_menu
-    main_menu = menu.last_ancestor
-    main_menu.children.activated.each do |m|
-      first = main_menu.children.activated.first == m ? "id=\"menu_horizontal_first\"": "" #detect if is the first element
-      selected = ( ( menu == m or menu.ancestors.include?(m) ) ? "class=\"selected\"" : "") #detect if the element is selected
-      html << link_to("<span title=\"#{m.description}\" #{selected} #{first} class=\"disabled\">#{m.title}</span>", "#") if m.can_list?(current_user) and !m.can_view?(current_user)
-      html << link_to("<span title=\"#{m.description}\" #{selected} #{first}>#{m.title}</span>", url_for_menu(m)) if m.can_list?(current_user) and m.can_view?(current_user)
-    end
-    if html.empty?
-      javascript_tag "window.onload = function() { $('empty').style.display='none' }"
+  def display_menu_entries(current)
+    real_current_menu = current_menu
+    output = ""
+    
+    if current.parent
+      output << display_menu_entries(current.parent)
+      siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
     else
-      html.reverse.to_s
+      siblings = Menu.mains.activated
     end
-  end
-  
-  def display_tabulated_menu
-    html = "<div class=\"tabs\"><ul>"
-    menu = current_menu
-    menu.self_and_siblings.activated.each do |m|
-      selected = ( m == menu ? "class=\"selected\"" : "" )
-      html << "<li #{selected} title=\"#{m.description}\" class=\"disabled\">#{link_to(m.title, "#")}</li>" if m.can_list?(current_user) and !m.can_view?(current_user)
-      html << "<li #{selected} title=\"#{m.description}\">#{link_to(m.title, url_for_menu(m))}</li>" if m.can_list?(current_user) and m.can_view?(current_user)
+    
+    more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
+    
+    if real_current_menu.parent
+      unless current.parent
+        output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
+      else
+        h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
+        output << content_tag(:h4, link_to(current.parent.title, url_for_menu(current.parent), :title => current.parent.description), h4_options)
+      end
     end
-    html << "</ul></div>"
+    output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
+    siblings.each do |menu|
+      li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
+      output << content_tag(:li, link_to(menu.title, url_for_menu(menu), :title => menu.description), li_options)
+    end
+    output << "</ul>"
   end
   
   #TODO remove that for good!
@@ -165,7 +162,7 @@ module ApplicationHelper
     RAKE_TASK ? puts(error) : raise(error)
   end
   
-  def secondary_menu(title, &block)
+  def contextual_menu(title, &block)
     raise ArgumentError, "Missing block" unless block_given?
     
     html = content_tag(:h1, title)
@@ -175,7 +172,7 @@ module ApplicationHelper
       html += content_tag :li, line
     end
     html += "</ul>"
-    content_for(:secondary_menu) {html}
+    content_for(:contextual_menu) {html}
   end
 
   private

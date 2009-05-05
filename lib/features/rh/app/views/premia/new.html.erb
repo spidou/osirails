@@ -1,4 +1,4 @@
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= employee_link(@employee) %>
   <%= employees_link %>
 <% end %>
@@ -9,7 +9,7 @@
      <%= javascript_include_tag 'rh/premium' %>
 <% end %>
 
-<div class="frame presentation_small">
+<div class="presentation_small">
 
   <% form_for([@employee,@premium]) do |f| %>
     <%=f.error_messages%> 

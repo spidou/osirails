@@ -393,9 +393,9 @@ a.button_banner:hover span {
 }
 
 /*/////////////////////////////////////////////////////////
-	BODY OF THE WEBSITE > PAGE OF WEBSITE > SECONDARY-MENU
+	BODY OF THE WEBSITE > PAGE OF WEBSITE > CONTEXTUAL-MENU
 /////////////////////////////////////////////////////////*/
-#secondary_menu {
+#contextual_menu {
 	position:absolute;
 	top:169px;
 	right:6px;
@@ -410,17 +410,17 @@ a.button_banner:hover span {
 	z-index:1;
 }
 /*						...:::|> Not operational yet <|:::...			*/
-.hidden_secondary_menu,
-.shown_secondary_menu {
+.hidden_contextual_menu,
+.shown_contextual_menu {
 /*	text-align:right;
 	white-space:nowrap;*/
 	display:none; /*To escape some errors*/
 }
 
 /*						...:::|> Not operational yet <|:::...
-.hidden_secondary_menu #status_background_secondary_menu,
-.shown_secondary_menu #status_background_secondary_menu {
-	background: url("/themes/osirails-green/images/base_hidden-shown_secondary_menu.png") no-repeat 27px 6px;
+.hidden_contextual_menu #status_background_contextual_menu,
+.shown_contextual_menu #status_background_contextual_menu {
+	background: url("/themes/osirails-green/images/base_hidden-shown_contextual_menu.png") no-repeat 27px 6px;
 	width:6px;
 	height:45px;
 //	border:solid red 1px;
@@ -431,22 +431,22 @@ a.button_banner:hover span {
 }
 */
 /*						...:::|> Not operational yet <|:::...
-.hidden_secondary_menu #status_background_secondary_menu:hover,
-.shown_secondary_menu #status_background_secondary_menu:hover {
+.hidden_contextual_menu #status_background_contextual_menu:hover,
+.shown_contextual_menu #status_background_contextual_menu:hover {
 	width:auto;
 	cursor:pointer;
 	float:left;
 }
 */
 /*						...:::|> Not operational yet <|:::...
-.shown_secondary_menu span:hover,
-.hidden_secondary_menu span:hover {
+.shown_contextual_menu span:hover,
+.hidden_contextual_menu span:hover {
 	
 }
 						...:::|> Not operational yet <|:::...
-.shown_secondary_menu span,
-.hidden_secondary_menu span {
-	background:url("/themes/osirails-green/images/background_hidden-shown_secondary_menu.png") no-repeat top left;
+.shown_contextual_menu span,
+.hidden_contextual_menu span {
+	background:url("/themes/osirails-green/images/background_hidden-shown_contextual_menu.png") no-repeat top left;
 	padding-top:14px;
 	padding-bottom:12px;
 	padding-left:20px;
@@ -458,22 +458,22 @@ a.button_banner:hover span {
 	border:solid 1px red;
 }
 
-.hidden_secondary_menu span {
+.hidden_contextual_menu span {
 //	display:none; Temporary
 }
 */
-#shadow_secondary_menu {
+#shadow_contextual_menu {
  /*useless in this design*/
 }
 /*						...:::|> Not operational yet <|:::...
-#content_secondary_menu {
+#content_contextual_menu {
 	clear:both;
 	position:relative;
 	bottom:26px;
 	margin-bottom:-26px;
 }
 */
-#content_secondary_menu h1 {
+#content_contextual_menu h1 {
 	font-size:1.3em;
 	font-family:arial, sans-serif;
 	font-weight:lighter;
@@ -481,27 +481,27 @@ a.button_banner:hover span {
 	padding:6px 0 6px 0;
 	text-indent:0;
 	text-align:center;
-	background: #86CE00 url("/themes/osirails-green/images/background_secondary_menu_header.jpg") repeat-x;
+	background: #86CE00 url("/themes/osirails-green/images/background_contextual_menu_header.jpg") repeat-x;
 	border-top:solid 1px #C7E39A;
 	border-bottom:solid 1px #A6D42C;
 	line-height:15px;
 	text-transform:capitalize;
 }
 
-#content_secondary_menu h1:before {
+#content_contextual_menu h1:before {
 	content:"..:: ";
 }
 
-#content_secondary_menu h1:after {
+#content_contextual_menu h1:after {
 	content:" ::..";
 }
 
-#content_secondary_menu h1>a {
+#content_contextual_menu h1>a {
 	text-decoration:none;
 	cursor:pointer;
 }
 
-#content_secondary_menu h1:first-child {
+#content_contextual_menu h1:first-child {
 	-moz-border-radius:7px 0 0 0;
 	border-top:none;
 }
@@ -510,24 +510,24 @@ a.button_banner:hover span {
 
 }
 
-#content_secondary_menu ul {
+#content_contextual_menu ul {
 	list-style-type:none;
 	padding:0;
 	margin:10px;
 	font-size:1.2em;
 }
 
-#content_secondary_menu ul li {
+#content_contextual_menu ul li {
 	margin-top:15px;
 	margin-bottom:15px;
 }
 
-#content_secondary_menu ul li a {
+#content_contextual_menu ul li a {
 	text-decoration:none;
 	color:#252525;
 }
 
-#content_secondary_menu ul li a:hover {
+#content_contextual_menu ul li a:hover {
 	color:#558800;
 }
 
@@ -540,30 +540,30 @@ ul.center_list li {
 	padding-left:6px;
 }
 
-.secondary_menu_statistic {
+.contextual_menu_statistic {
 
 }
 
-#content_secondary_menu a:hover {
+#content_contextual_menu a:hover {
 
 }
 
-#content_secondary_menu ul li a img {
+#content_contextual_menu ul li a img {
 	position:relative;
 	top:2px;
 }
 
-#content_secondary_menu p {
+#content_contextual_menu p {
 	margin-left:10px;
 	margin-right:10px;
 	text-align:justify;
 }
 
-#footer_secondary_menu { 
+#footer_contextual_menu { 
 	display:none;
 }
 
-#secondary_menu input[type=text] {
+#contextual_menu input[type=text] {
 	margin:8px 2px 6px 15px;
 	border:solid 1px #252525;
 	font-family:sans-serif;
@@ -573,7 +573,7 @@ ul.center_list li {
 	padding-top:3px;
 }
 
-button.contextual_search_button {/*button in the input type text [secondary_menu]*/
+button.contextual_search_button {/*button in the input type text [contextual_menu]*/
 	background:url("/images/view_12x12.png");
 	position:relative;
 	right:20px;
@@ -611,7 +611,7 @@ button.contextual_search_button:hover {
 	color:#444;
 }
 
-#secondary_menu a.default-button {
+#contextual_menu a.default-button {
 
 }
 

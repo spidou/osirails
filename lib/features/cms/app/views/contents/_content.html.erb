@@ -3,7 +3,7 @@
   <%= tiny_mce if using_tiny_mce? %>
 <% end %>
 
-<div class="frame presentation_medium">
+<div class="presentation_medium">
 <% form_for(@content) do |form| %>
   <%= render :partial => 'menus/menu_form', :object => @content.menu, :locals => {:menu_owner => @content} %>
 

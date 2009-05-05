@@ -1,15 +1,14 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_society_activity_sector_link %>
 <% end %>
-<% secondary_menu USEFUL_LINKS do %>
+
+<% contextual_menu USEFUL_LINKS do %>
 	<%= society_activity_sectors_link %>
 <% end %>
 
-<h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
-<%= display_tabulated_menu %>
-
-<div class="frame tabulation">
 <h1>Les secteurs d&apos;activit&eacute;s de l&apos;entreprise</h1>
+
+<div>
 <table>
   <tr>
     <th>Nom</th>

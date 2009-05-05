@@ -1,11 +1,9 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_service_link %>
 <% end %>
 
-<h1>Configuration des param&egrave;tres de base de l'entreprise</h1>
-<%= display_tabulated_menu %>
-
-<div class="frame tabulation">
 <h1>Les services de l'entreprise</h1>
+
+<div>
 <%= show_structured_services(@services) %>
 </div>

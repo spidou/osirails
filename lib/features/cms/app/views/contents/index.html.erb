@@ -1,14 +1,14 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_content_link %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= contents_link %>
 <% end %>
 
 <h1>Liste des contenus</h1>
 
-<div class="frame">
+<div>
 <% unless @contents.empty? %>
   <table>
     <tr>

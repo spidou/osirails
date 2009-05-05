@@ -1,9 +1,11 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_menu_link_with_parent(@menu) %>
 	<%= delete_menu_link(@menu) unless @menu.base_item?%>
 <% end %>
-<% secondary_menu USEFUL_LINKS do%>
+
+<% contextual_menu USEFUL_LINKS do%>
 	<%= menus_link %>
 <% end %>
+
 <h1>Modifier un menu</h1>
 <%= render :partial => @menu, :locals => {:submit_button_name => "Mettre à jour"} %>

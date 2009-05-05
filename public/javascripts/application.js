@@ -11,20 +11,22 @@ else if (document.addEventListener)
     
 function initEventListeners()
 {
-  secondary_menu_toggle_button = document.getElementById('secondary_menu_toggle_button');
+  nav_more_links_handler();
+  
+  contextual_menu_toggle_button = $('contextual_menu_toggle_button');
 
-  secondary_menu_toggle_button.addEventListener("click", function(){toggle_secondary_menu(secondary_menu_toggle_button)}, false);
+  contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
   click_next(0);
 }
 
-function toggle_secondary_menu(item)
+function toggle_contextual_menu(item)
 {
   position_hidden = "-210px";
   position_shown = "6px";
   width_shown = "200px";
   width_hidden = "0px";
-  class_shown = "shown_secondary_menu";
-  class_hidden = "hidden_secondary_menu";
+  class_shown = "shown_contextual_menu";
+  class_hidden = "hidden_contextual_menu";
   text_shown = "Cacher le menu";
   text_hidden = "Afficher le menu";
 
@@ -38,7 +40,7 @@ function toggle_secondary_menu(item)
       duration: 1.5,
       afterFinish: function(){
         item.className = class_hidden;
-        document.getElementById("status_text_secondary_menu").innerHTML = text_hidden;
+        document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
       }
     });
   }
@@ -53,7 +55,7 @@ function toggle_secondary_menu(item)
       duration: 0.8,
       afterFinish: function(){
         item.className = class_shown;
-        document.getElementById("status_text_secondary_menu").innerHTML = text_shown;
+        document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
       }
     });
   }
@@ -140,3 +142,36 @@ function refresh_timer() {
   clearTimeout(timer);
   timer = setTimeout('click_next('+1+');', 15000);
 }
+
+// permits to display the hidden menu when we click on the link
+// and to hide it when we click elsewhere in the page.
+function nav_more_links_handler() {
+  more_links = $('nav').getElementsBySelector('a.nav_more')
+  more_links.each(function(link) {
+    Event.observe(link, 'click', function(menu_event) {
+      menu = link.up('h4').nextSiblings().first()
+      if (menu.getStyle('display') == 'none') {
+        menu.setStyle({display:'block'})
+      } else {
+        Effect.toggle(menu, 'appear', {duration: 0.3})
+      }
+      
+      Event.observe(window, 'mouseup', function(window_event) {
+        if (menu.getStyle('display') != 'none') {
+          Effect.toggle(menu, 'appear', {delay: 0.1, duration:0.3})
+          Event.stop(window_event)
+        }
+      });
+    });
+  })
+}
+
+
+
+
+
+
+
+
+
+

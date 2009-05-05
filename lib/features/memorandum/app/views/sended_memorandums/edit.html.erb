@@ -1,10 +1,11 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_memorandum_link %>
 	<%= memorandum_link(@sended_memorandum) %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= memorandums_link(:link_text => "List all sended memorandums") %> 
 <% end %>
+
 <h1>Modifier une note de service</h1>
 <%= render :partial => "memorandum", :locals => { :submit_button_name => "Modifier"} %>

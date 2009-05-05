@@ -1,16 +1,15 @@
 <% unless current_user.employee.nil? or !Memorandum.can_list?(current_user)%>
-<div class='frame'>
-<table>
-  <thead>
-    <th>Object</th>
-    <th>Re&ccedil;u</th>
-    <th>De</th>
-  </thead>
-  <tbody>
-<%= show_received_memorandums(@received_memorandums) %>
-
-  </tbody>
-</table>
-<%= will_paginate @received_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+<div>
+  <table>
+    <thead>
+      <th>Object</th>
+      <th>Re&ccedil;u</th>
+      <th>De</th>
+    </thead>
+    <tbody>
+      <%= show_received_memorandums(@received_memorandums) %>
+    </tbody>
+  </table>
+  <%= will_paginate @received_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
 </div>
 <% end %>

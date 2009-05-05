@@ -1,18 +1,16 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_service_link_with_parent(@service,"New service")%>
   <%= edit_service_link(@service) %>
   <%= delete_service_link(@service) if @service.can_be_destroyed?%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= services_link %>
 <% end %>
 
-<h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
-<%= display_tabulated_menu %>
+<h1>Fiche détaillée du service</h1>
 
-
-<div  class="frame tabulation presentation_medium">
+<div class="presentation_medium">
   <h2>Fiche du service</h2>
   <p>
     <label>Nom &#58;</label>

@@ -1,5 +1,6 @@
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= contents_link %>
 <% end %>
+
 <h1>Nouveau contenu</h1>
 <%= render :partial => @content, :locals => {:submit_button_name => "Ajouter"} %>

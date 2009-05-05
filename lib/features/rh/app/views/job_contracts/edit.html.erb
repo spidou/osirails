@@ -2,7 +2,7 @@
   <%= javascript_include_tag 'rh/job_contract' %> 
 <% end %>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <% checked = "" if @job_contract.nil?  %>
   <% unless @job_contract.employee_state.nil?%>
     <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>
@@ -10,6 +10,6 @@
 <% end %>
 
 <h1>Modifier un contrat de travail</h1>
-<div class="frame presentation_medium">
+<div class="presentation_medium">
   <%= render :partial => @job_contract, :object => @job_contract%>
 </div>

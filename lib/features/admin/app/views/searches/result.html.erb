@@ -2,15 +2,13 @@
 
 <% info = "<img src=\"/images/warning_14x14.png\"/>"  %>
 
-
-
 <% if !@error.nil?%>
   <% flash.now[:error]=@error%>
 <% elsif @rows==[] %>
   <% flash.now[:notice]='Aucun résultat'%>
 <% else %>
 
-<div class="frame presentation">
+<div>
   <h2>R&eacute;sultat de la recherche contextuelle</h2>
   
   <% unless @model.nil?%>
@@ -37,7 +35,4 @@
     <% end %>
   </table> 
 <% end %>
-<p>
-  <%= link_to "retour", :back %>
-</p>
 </div> 

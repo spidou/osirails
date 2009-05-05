@@ -1,8 +1,6 @@
-<% secondary_menu USEFUL_LINKS do%>
+<% contextual_menu USEFUL_LINKS do%>
 	<%= employees_link %>
 <% end %>
 
 <h1>Ajouter un employ&eacute;e</h1>
-
 <%= render :partial => @employee, :locals => {:button_name=> "Ajouter"}%>
-

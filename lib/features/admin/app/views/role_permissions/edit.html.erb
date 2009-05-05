@@ -1,8 +1,6 @@
-<h1>Configurer les permissions</h1>
-<%= display_tabulated_menu %>
+<h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
 
-<div class="frame tabulation">
-  <h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
+<div>
   <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do %>
     <h2>pour chaque page</h2>
     <table>

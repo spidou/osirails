@@ -1,11 +1,13 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_role_link %>
   <%= role_link(@role) %>
 	<%= delete_role_link(@role) %>
 <% end %>
-<% secondary_menu USEFUL_LINKS do %>
+
+<% contextual_menu USEFUL_LINKS do %>
 	<%= roles_link %>
 <% end %>
+
 <h1>Modifier un r&ocirc;le</h1>
 <%= render :partial => @role, :locals => {:submit_button_name => "Mettre &agrave; jour"} %>
 

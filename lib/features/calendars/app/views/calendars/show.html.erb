@@ -10,7 +10,7 @@
 <link href="/stylesheets/mini-calendar-skins/calendar-blue.css" rel="stylesheet" type="text/css"/>
 <link href="/stylesheets/calendar.css" rel="stylesheet" type="text/css"/>
 <% end %>
-<% content_for :secondary_menu do %>
+<% content_for :contextual_menu do %>
 <h1><span class="gray_color">Calendrier</span></h1>
 <div id="mini_calendar"></div>
 <script type="text/javascript">
@@ -26,7 +26,7 @@ Calendar.setup({
 </script>
 <% end %>
 <h1><%= h(@calendar.title) %></h1>
-<div id="calendar" class="frame presentation_calendar">
+<div id="calendar" class="presentation_calendar">
 	<div id="top"></div>
 	<div class="calendar-buttons">
 		<span id="navig_today" class="cal-buttons" onclick="ajax_link('/calendars/' + db_calendar_id + '/' + period);">Aujourd'hui</span>

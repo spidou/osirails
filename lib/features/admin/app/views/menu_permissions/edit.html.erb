@@ -1,8 +1,6 @@
-<h1>Configurer les permissions</h1>
-<%= display_tabulated_menu %>
+<h1>Modifier les permissions du menu "<%= @menu.title %>"</h1>
 
-<div class="frame tabulation">
-  <h1>Modifier les permissions du menu "<%= @menu.title %>"</h1>
+<div>
   <h2>pour chaque r&ocirc;le</h2>
   <% form_tag(menu_permission_path, :method => 'put') do %>
     <table>

@@ -1,5 +1,5 @@
 <h1>Désinstallation d'un module</h1>
-<div class='frame'>
+<div>
 <p><strong>ATTENTION :</strong> vous essayez de désinstaller un module, ce qui aura pour consequence de suprimer définitivement les fonctionnalités associées à ce module</p>
 <%= link_to "D&eacute;installer", {:action => "uninstall", :id => @feature.id}, :confirm => 'Voulez-vous désinstaller ?', :method => :put %> <%= link_to(" Retour", feature_path) %>
 

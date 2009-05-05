@@ -1,4 +1,4 @@
-<div class="frame presentation_large">
+<div class="presentation_large">
   <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="float: right; width: 162px; height: 162px;"></object>
 	<p>
     <label>Nom de projet :</label>
@@ -36,5 +36,5 @@
 	</p>
 	<% if controller.can_edit?(current_user) %>
 		<%= link_to 'Modifier', edit_order_path(@order) %>
-		<% end %>
-	</div>
+	<% end %>
+</div>

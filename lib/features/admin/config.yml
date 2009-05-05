@@ -153,4 +153,4 @@ configurations:
       - "4"
   society_identity_configuration_choosen_theme:
     description: Style de l'Intranet
-    value: osirails-green
+    value: emr

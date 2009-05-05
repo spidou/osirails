@@ -1,23 +1,20 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% content_for :header do %>
+     <%= javascript_include_tag 'shedules' %>
+<% end %>
+
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_service_link_with_parent(@service,"New service") %>
   <%= service_link(@service)%>
 	<%= delete_service_link(@service)%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= services_link %>
 <% end %>
 
-<h1>Configuration des param&egrave;tres de base de l&apos;entreprise</h1>
-<%= display_tabulated_menu %>
+<h1>Modifier le service</h1>
 
-<% content_for :header do %>
-     <%= javascript_include_tag 'shedules' %>
-<% end %>
-
-<div class="frame tabulation presentation_medium">
-
+<div class="presentation_medium">
   <%= render :partial => @service , :object => @service, :locals => {:button_name => "Modifier"}%>
-
 </div>
 

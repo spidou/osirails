@@ -1,10 +1,10 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
-  <%= new_supplier_list %>
-	<%= supplier_list(@supplier)%>
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= new_supplier_link %>
+	<%= supplier_link(@supplier)%>
 	<%= delete_supplier_link(@supplier)%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= suppliers_link %>
 <% end %>
 

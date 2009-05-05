@@ -3,24 +3,23 @@
   <%= javascript_include_tag 'logistics/inventories' %>
 <% end %>
 
-<% secondary_menu "Totaux" do %>
+<% contextual_menu "Totaux" do %>
   <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span>
   <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%>
 <% end %>
 
-
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_inventory_link %>
   <%= show_closed_button(@inventory)%>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= commodity_categories_link %>
   <%= inventories_link %>
 <% end %>
 
   <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>
-  <div class='frame'>
+  <div>
     <table class='commodity'>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>

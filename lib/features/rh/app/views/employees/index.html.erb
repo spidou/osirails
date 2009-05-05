@@ -1,13 +1,14 @@
 <h1>Tous les employ&eacute;es</h1>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_employee_link %>
 <% end %>
-<% secondary_menu USEFUL_LINKS do %>
+
+<% contextual_menu USEFUL_LINKS do %>
   <%= actives_employees_link(params[:all_employees]) %>
 <% end %>
 
-<div class="frame">
+<div>
 <table>
   <tr>
     <th>Pr&eacute;nom</th>

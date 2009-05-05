@@ -1,18 +1,18 @@
-<% secondary_menu "Statistiques" do %>
-	<%= "<span class='secondary_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>" %>
-	<%= @inventory_closed.size == 0 ? "<span class='secondary_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='secondary_menu_statistic'>Il y a 1 inventaire en cours</span>" %>
+<% contextual_menu "Statistiques" do %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>" %>
+	<%= @inventory_closed.size == 0 ? "<span class='contextual_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='contextual_menu_statistic'>Il y a 1 inventaire en cours</span>" %>
 <% end %>
 
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_inventory_link %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
   <%= commodity_categories_link %>
 <% end %>
   
   <h1>Liste des inventaires</h1>
-  <div class='frame'>
+  <div>
   <% if @inventories.size > 0 %>
     <table>
       <tr>

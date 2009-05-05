@@ -1,10 +1,10 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_supplier_link %>
 <% end %>
 
 <h1> Liste des fournisseurs </h1>
 
-<div class="frame">
+<div>
   <% unless @suppliers.empty?%>
     <table>
       <tr>

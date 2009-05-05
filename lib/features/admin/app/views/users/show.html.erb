@@ -1,12 +1,13 @@
-<% secondary_menu POSSIBLE_ACTIONS do%>
+<% contextual_menu POSSIBLE_ACTIONS do%>
 	<%= new_user_link %>
 	<%= edit_user_link(@user)%>
 	<%= delete_user_link(@user)%>
 <% end %>
-<% secondary_menu USEFUL_LINKS do %>
+
+<% contextual_menu USEFUL_LINKS do %>
 	<%= users_link %>
 <% end %>
-<h1>Informations d'un compte utilisateur</h1>
 
+<h1>Informations d'un compte utilisateur</h1>
 <%= render :partial => @user %>
 

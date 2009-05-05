@@ -1,14 +1,15 @@
-<% secondary_menu POSSIBLE_ACTIONS do %>
+<% contextual_menu POSSIBLE_ACTIONS do %>
 	<%= new_memorandum_link %>
 	<%= edit_memorandum_link(@sended_memorandum) unless @sended_memorandum.published? %>
 <% end %>
 
-<% secondary_menu USEFUL_LINKS do %>
+<% contextual_menu USEFUL_LINKS do %>
 	<%= memorandums_link(:link_text => "List all sended memorandums") %> 
 <% end %>
+
 <h1>Note de service</h1>
 
-<div class='frame'>
+<div>
 <h2 style='text-align: center;'><%= @sended_memorandum.title %></h2>
 
 <div class='formated_content'>
