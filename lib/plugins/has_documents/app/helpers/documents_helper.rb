@@ -28,7 +28,8 @@ module DocumentsHelper
     html = "<p>"
     html << link_to_function("Ajouter un document") do |page|
       page.insert_html :bottom, :new_documents, :partial => 'documents/document',
-                                                :object => documents_owner.build_document
+                                                :object => documents_owner.build_document,
+                                                :locals => { :documents_owner => documents_owner }
       page['new_documents'].show if page['new_documents'].visible
       last_document = page['new_documents'].select('.document').last
       last_document.show

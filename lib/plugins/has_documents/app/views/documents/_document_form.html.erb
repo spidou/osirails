@@ -1,4 +1,5 @@
 <%
+require_locals documents_owner
 owner_type = documents_owner.class.singularized_table_name
 document = document_form
 id_attr = "id=\"document_form_#{document.id}\"" unless document.new_record?

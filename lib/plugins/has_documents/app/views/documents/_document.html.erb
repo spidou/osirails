@@ -1,4 +1,7 @@
-<% id_attr = "id=\"document_#{document.id}\"" unless document.new_record? %>
+<%
+require_locals documents_owner
+id_attr = "id=\"document_#{document.id}\"" unless document.new_record?
+%>
 
 <div class="document" <%= id_attr %> >
   <% unless document.new_record? -%>
@@ -18,7 +21,7 @@
   
   <% if is_form_view? -%>
     <div class="form">
-      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => document.has_document } %>
+      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner } %>
     </div>
   <% end -%>
 </div>
