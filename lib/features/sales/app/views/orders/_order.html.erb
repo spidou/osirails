@@ -47,11 +47,11 @@
   <% end %>
   <p>
     <%= form.label :previsional_start %>
-    <%= form.text_field :previsional_start %>
+    <%= form.date_select :previsional_start, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true %>
   </p>
   <p>
     <%= form.label :previsional_delivery %>
-    <%= form.text_field :previsional_delivery %>
+    <%= form.date_select :previsional_delivery, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true %>
   </p>
   <p>
     <%= form.hidden_field :customer_id, :value  => @order.customer_id %>

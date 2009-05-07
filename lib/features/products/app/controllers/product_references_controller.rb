@@ -78,4 +78,9 @@ class ProductReferencesController < ApplicationController
     redirect_to :controller => 'product_reference_manager', :action => 'index'
   end
   
+  def auto_complete_for_product_reference_name
+    @items = ProductReference.find(:all, :conditions => [ 'reference LIKE ? or name like ? or information like ? or description like ?', pattern = "%#{params[:product_reference][:name]}%", pattern, pattern, pattern ])
+    render :inline => "<%= custom_auto_complete_result(@items, 'name reference', params[:product_reference][:name]) %>"
+  end
+  
 end

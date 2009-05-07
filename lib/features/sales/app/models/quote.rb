@@ -1,5 +1,6 @@
 class Quote < ActiveRecord::Base
-  # Relationships
+  has_permissions :as_business_object
+  
   belongs_to :step_estimate
   has_many :quotes_product_references
   has_many :product_references, :through => :quotes_product_references
@@ -28,5 +29,9 @@ class Quote < ActiveRecord::Base
   
   def net_to_paid
     total_with_taxes - self.account
+  end
+  
+  def validated?
+    validated
   end
 end

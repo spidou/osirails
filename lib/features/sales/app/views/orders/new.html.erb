@@ -10,19 +10,18 @@
   <p>Pour cette commande, avez-vous affaire à un client connu OU à un nouveau client ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
 
   <h2>1. Client existant</h2>
-  <% form_for @order, :url => { :action => :new } do |form| -%>
-    <p>
-      <label for="customer_name">Rechercher le client dans la base :</label>
+  <% form_for @order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
+    <div>
       <%= hidden_field_tag :customer_id %>
-      <%= custom_text_field_with_auto_complete(:customer, :name, {}, { :after_update_element => "function(){ $('customer_id').value = $('customer_name_auto_complete').down('.selected').down('.customer_id').innerHTML }" } ) %>
+      <%= custom_text_field_with_auto_complete(:customer, :name, { :value => "Chercher un client dans la base" }, { :update_id => "customer_id" } ) %>
       <%= form.submit 'Valider' %>
-    </p>
+    </div>
   <% end -%>
 
   <h2>2. Nouveau client</h2>
-  <% form_tag new_customer_path do %>
+  <% form_tag new_customer_path, :method => :get do %>
   <p>
-    <%= hidden_field_tag :return_uri, new_order_path %>
+    <%= hidden_field_tag :order_request, 1 %>
     <%= submit_tag "Créer un nouveau client" %>
   </p>
   <% end %>

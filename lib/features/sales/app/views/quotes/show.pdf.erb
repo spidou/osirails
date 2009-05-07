@@ -9,7 +9,7 @@
 		</td>
 		<td width="25%"></td>
 		<td>
-			<strong><%= @customer.name %></strong><br />
+			<strong><%= @order.customer.name %></strong><br />
 			<%= @order.establishment.full_address %>
 		</td>
 	</tr>
@@ -46,7 +46,7 @@
 	</tr>
 	<tr>
 		<td><%= @quote.id %></td>
-		<td><%= @customer.id %></td>
+		<td><%= @order.customer.id %></td>
 		<td><%= @quote.created_at.to_date %></td>
 		<td><%= @quote.validity_date %></td>
 		<td><%= @order.commercial.fullname %></td>

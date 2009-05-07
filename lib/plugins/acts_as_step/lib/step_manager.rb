@@ -16,6 +16,7 @@ class StepManager
   
   def load_steps(steps, parent_name)
     steps.each_pair do |step, options|
+      options ||= {}
       @@all_steps << { :name => step, :title => options["title"], :description => options["description"], :parent => parent_name, :position => options["position"]}
       load_steps(options["children"], step) unless options["children"].nil?
     end

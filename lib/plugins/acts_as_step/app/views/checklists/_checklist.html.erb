@@ -5,6 +5,10 @@
 <% fields_for "#{owner_type}[checklist_response_attributes][]", checklist_response do |form| -%>
   <p class='checklist'>
     <%= form.label :answer, checklist_response.checklist.name + " :" %>
-    <%= form.select :answer, checklist.options.collect{ |c| c.name }, { :include_blank => true } %>
+    <% if is_form_view? %>
+      <%= form.select :answer, checklist.options.collect{ |c| c.name }, { :include_blank => true } %>
+    <% else %>
+      <%= form.strong :answer %>
+    <% end %>
   </p>
 <% end -%>

@@ -78,34 +78,27 @@ module ProductReferenceManagerHelper
     end
     list
   end
-
+  
+  # override the default method to display custom images
   def new_product_reference_category_link_overrided(options = {})
-    text = "New product reference category"
-    options = { :link_text => text, :image_tag => image_tag("category_16x16.png",
-                                                          :alt => text,
-                                                          :title => text)
+    options = { :link_text => text = "New product reference category",
+                :image_tag => image_tag("category_16x16.png", :alt => text, :title => text)
               }.merge(options)
-    
     new_product_reference_category_link(options)
   end
   
+  # override the default method to display custom images
   def new_product_reference_link_overrided(options = {})
-    text = "New product reference"
-    options = { :link_text => text, :image_tag => image_tag("reference_16x16.png",
-                                                          :alt => text,
-                                                          :title => text)
+    options = { :link_text => text = "New product reference",
+                :image_tag => image_tag("reference_16x16.png", :alt => text, :title => text)
               }.merge(options)
-    
     new_product_reference_link(options)
   end
-
   
-  # display (or not) the delete button for product reference category
+  # override the default method to display a disabled button if the object is not destroyable
   def delete_product_reference_category_link_overrided(category, options = {})
-    text = "Delete this product reference category"
-    options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
-                                                          :alt => text,
-                                                          :title => text)
+    options = { :link_text => text = "Delete this product reference category",
+                :image_tag => image_tag("delete_16x16.png", :alt => text, :title => text)
               }.merge(options)
     
     if category.can_be_destroyed?
@@ -115,11 +108,10 @@ module ProductReferenceManagerHelper
     end
   end
   
+  # override the default method to display a disabled button if the object is not destroyable
   def delete_product_reference_link_overrided(reference, options = {})
-    text = "Delete this product reference"
-    options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
-                                                          :alt => text,
-                                                          :title => text)
+    options = { :link_text => text = "Delete this product reference",
+                :image_tag => image_tag("delete_16x16.png", :alt => text, :title => text)
               }.merge(options)
     
     if reference.can_be_destroyed?

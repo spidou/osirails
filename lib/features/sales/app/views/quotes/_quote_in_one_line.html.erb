@@ -1,0 +1,14 @@
+<% quote = quote_in_one_line %>
+
+<tr class="quote">
+  <td><%= quote.created_at.to_humanized_date %></td>
+  <td><%= quote.product_references.size %></td>
+  <td><%= quote.total %></td>
+  <td>#createur</td>
+  <td>#envoyé?</td>
+  <td>
+    <%= order_step_estimate_quote_link_overrided(@order, quote, :link_text => "", :options => { :format => :pdf }) %>
+    <%= edit_order_step_estimate_quote_link_overrided(@order, quote, :link_text => "") %>
+    <%= delete_order_step_estimate_quote_link_overrided(@order, quote, :link_text => "") %>
+  </td>
+</tr>

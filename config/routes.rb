@@ -2,7 +2,8 @@ ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
   ### ROOT
-  map.root :controller => "account", :action => "index"
+  map.root :controller => 'account', :action => 'index'
+  map.home '', :controller => 'account'
   map.search "search" , :controller => "searches"
   ### END ROOT
 

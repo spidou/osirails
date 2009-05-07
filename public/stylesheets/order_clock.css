@@ -46,6 +46,12 @@ line, circle, path {
   fill: yellow;
 }
 
+#deadline {
+  x: 10px;
+  y: 20px;
+  fill: yellow;
+}
+
 /* background color according to the current step */
 /* OUTSIDE */
 /*.outside.unstarted.step_commercial {

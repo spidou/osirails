@@ -16,11 +16,11 @@
   </p>
   <p>
     <%= form.label :information %>
-    <%= form.form_or_view(form.text_field(:information)) %>
+    <%= form.form_or_view(form.text_field(:information), :information) %>
   </p>
   <p>
     <%= form.label :product_reference_category_id %>
-    <%= form.form_or_view(form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category_id, :name) %>
+    <%= form.form_or_view(form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category, :name) %>
   </p>
 
   <h2>Informations concernant la production</h2>
@@ -43,6 +43,6 @@
     <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
   </p>
 
-  <p><%= form.submit submit_button_name %></p>
+  <p><%= form.submit(submit_button_name) if defined?(submit_button_name) %></p>
 <% end %>
 </div>

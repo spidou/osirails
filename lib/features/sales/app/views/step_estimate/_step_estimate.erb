@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<h1>Chiffrage</h1>
+
+<div>
+<% if is_form_view? %>
+  <% form_for(@step, :url => { :controller => "step_estimate", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
+    <%= display_quotes_list(@step) %>
+    <%= display_quote_add_button %>
+    
+    <p>
+      <%= form.submit 'Modifier' %>
+      <%= form.submit 'Cloturer', :name => :close_step %>
+    </p>
+  <% end %>
+<% else %>
+  <%= display_quotes_list(@step) %>
+<% end %>
+</div>
+
+<!-- Osibox initialisation -->
+<% #osibox_initialisation(@step, "/orders/#{@order.id}/survey/documents/") %>

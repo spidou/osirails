@@ -1,0 +1,35 @@
+<%= order_header %>
+
+<h1>Visite technique</h1>
+
+<div>
+<% if is_form_view? %>
+  <% form_for(@step, :url => { :controller => "step_survey", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
+    <%= display_checklists_list(@step)%>
+    
+    <h2>Documents</h2>
+    <%= display_documents_list(@step) %>
+    <%= display_document_add_button(@step) %>
+    
+    <%= display_remarks_list(@step) %>
+    <%= display_remark_add_button(@step) %>
+    
+    <p>
+      <%= form.submit 'Modifier' %>
+      <%= form.submit 'Cloturer', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+    </p>
+  <% end %>
+<% else %>
+  <%= display_checklists_list(@step)%>
+  
+  <h2>Documents</h2>
+  <%= display_documents_list(@step) %>
+  
+  <%= display_remarks_list(@step) %>
+<% end %>
+</div>
+
+<!-- Osibox initialisation -->
+<% #osibox_initialisation(@step, "/orders/#{@order.id}/survey/documents/") %>

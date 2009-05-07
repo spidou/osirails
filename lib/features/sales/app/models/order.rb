@@ -6,14 +6,15 @@ class Order < ActiveRecord::Base
   belongs_to :establishment
   belongs_to :commercial, :class_name => 'Employee'
   
-  has_one :step_commercial
-  has_one :step_invoicing
+  has_one :step_commercial, :dependent => :destroy
+  has_one :step_invoicing, :dependent => :destroy
   has_many :order_logs
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
 
   # Validations
   validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id
+  #TODO validates_date :previsional_delivery (check if the date is correct, if it's after Date.today (creation date of the order), etc. )
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -26,9 +27,11 @@ class Order < ActiveRecord::Base
   @@form_labels[:previsional_start] = 'Date pr&eacute;visionnelle de mise en production :'
   @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
   
+  after_create :create_steps
+  
   # Create all orders_steps after create order
-  def after_create
-    order_type.activated_steps.each do |step|
+  def create_steps
+    steps.each do |step|
       if step.parent.nil?
         step.name.camelize.constantize.create(:order_id => self.id)
       else
@@ -41,17 +44,49 @@ class Order < ActiveRecord::Base
     end
   end
   
+  # Return all steps of the order according to the choosen order type
+  def steps
+    raise "You must configure an order type for the current order before trying to retrieve its steps. Perhaps the order is a new record and has not been created yet?" if order_type.nil?
+    order_type.activated_steps
+  end
+  
+  # Returns steps of the first level
+  # 
+  # order:
+  #   step_commercial
+  #     step_graphic_conception
+  #     step_survey
+  #     step_estimate
+  #   step_invoicing
+  #     step_finished
+  # 
+  # @order.first_level_steps # => [ #<StepCommercial>, #<StepInvoicing> ]
+  # 
+  def first_level_steps
+    steps.select{ |step| !step.parent }.map{ |step| send(step.name) }
+  end
+  
+  # Returns all steps
+  # 
+  # order:
+  #   step_commercial
+  #     step_graphic_conception
+  #   step_invoicing
+  #     step_finished
+  # 
+  # @order.all_steps # => [ #<StepCommercial>, #<StepGraphicConception>, #<StepInvoicing>, #<StepFinished> ]
+  # 
+  def all_steps
+    first_level_steps.collect { |step| [step] << step.children_steps }.flatten
+  end
+  
   def current_step
+    return default_step if new_record?
     all_steps.select{ |step| step.respond_to?(:parent_step) }.each do |child|
       return child.original_step if (child.in_progress? || child.unstarted?)
     end
     # if this code is reached, all steps (unless first level ones) are terminated!
     return nil
-  end
-
-  # Return all steps of the order according to the choosen order type
-  def steps
-    order_type.sales_processes.collect { |sp| sp.step if sp.activated }
   end
 
   # Return a has for advance statistics
@@ -73,36 +108,6 @@ class Order < ActiveRecord::Base
       return child unless child.unstarted?
     end
     return first_level_steps.first
-  end
-  
-  # Returns steps of the first level
-  # 
-  # order:
-  #   step_commercial
-  #     step_graphic_conception
-  #     step_survey
-  #     step_estimate
-  #   step_invoicing
-  #     step_finished
-  # 
-  # @order.first_level_steps # => [ #<StepCommercial>, #<StepInvoicing> ]
-  # 
-  def first_level_steps # children
-    steps.select{ |step| !step.parent }.map{ |step| send(step.name) }
-  end
-  
-  # Returns all steps
-  # 
-  # order:
-  #   step_commercial
-  #     step_graphic_conception
-  #   step_invoicing
-  #     step_finished
-  # 
-  # @order.all_steps # => [ #<StepCommercial>, #<StepGraphicConception>, #<StepInvoicing>, #<StepFinished> ]
-  # 
-  def all_steps # all_children
-    first_level_steps.collect { |step| [step] << step.children_steps }.flatten
   end
 
 #  ## Return remarks's order
@@ -126,4 +131,9 @@ class Order < ActiveRecord::Base
     end
     true
   end
+  
+  private
+    def default_step
+      Step.find_by_name("step_commercial")
+    end
 end

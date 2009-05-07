@@ -24,11 +24,19 @@ end
 
 module ApplicationHelper
   private
-    def current_menu # override the original current_menu method in ApplicationHelper
-      step_menu = "#{controller.class.current_order_path}_orders" if controller.class.respond_to?("current_order_path")
-      menu = step_menu || controller.controller_name
-      Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
+    #def current_menu # override the original current_menu method in ApplicationHelper
+    #  step_menu = "#{controller.class.current_order_path}_orders" if controller.class.respond_to?("current_order_path")
+    #  menu = step_menu || controller.controller_name
+    #  Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
+    #end
+    
+    # permits to display only steps which are activated for the current order
+    def display_menu_entry_with_sales_support(menu, li_options)
+      return "" if menu.name.start_with?("step_") and !@order.steps.collect{ |s| s.name }.include?(menu.name)
+      display_menu_entry_without_sales_support(menu, li_options)
     end
+    
+    alias_method_chain :display_menu_entry, :sales_support
     
     def url_for_menu(menu) # override the original url_for_menu method in ApplicationHelper
       if menu.name
@@ -57,4 +65,34 @@ module ApplicationHelper
         end
       end
     end
+end
+
+require 'application'
+require_dependency 'customers_controller'
+
+class CustomersController < ApplicationController
+  after_filter :detect_request_for_order_creation, :only => :new
+  after_filter :redirect_to_new_order, :only => :create
+  
+  def auto_complete_for_customer_name
+    find_options = { :conditions => [ "name like ?", "%#{params[:customer][:name]}%"],
+                     :order => "name ASC",
+                     :limit => 15 }
+    @items = Customer.find(:all, find_options)
+    render :inline => "<%= custom_auto_complete_result(@items, 'name', params[:customer][:name]) %>"
+  end
+  
+  private
+    def detect_request_for_order_creation
+      session[:request_for_order_creation] = params[:order_request] === "1" ? true : false
+    end
+    
+    def redirect_to_new_order
+      if @customer.errors.empty? and session[:request_for_order_creation]
+        session[:request_for_order_creation] = nil
+        erase_redirect_results
+        redirect_to( new_order_path(:customer_id => @customer.id) )
+      end
+    end
+  
 end

@@ -1,7 +1,6 @@
 steps:
   commercial:
-    description: Etape commerciale
-    title: Etude Commercial
+    title: Étude commerciale
     position: 1
     children:
       survey:
@@ -11,7 +10,7 @@ steps:
         title: Conception Graphique
         position: 2
       estimate:
-        title: Devis
+        title: Chiffrage
         position: 3
   invoicing:
     title: Facturation

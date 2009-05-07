@@ -1,6 +1,16 @@
 <% content_for :header do -%>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <%= javascript_include_tag 'sales/order' %>
 <% end -%>
+
+<% contextual_menu "Avancement du projet" do %>
+  <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object>
+  <%= remaining_time_before_delivery(@order) %>
+<% end %>
+
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= link_to 'Modifier le dossier', order_edit_informations_path(@order) if menu_informations.can_edit?(current_user) %>
+<% end %>
 
 <div>
   <div id="order_header">
@@ -12,18 +22,20 @@
 
       <p>
         <label>Client / &Eacute;tablissement :</label>
-        <strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+        <strong><%= @order.customer.name %> / <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
       </p>
 
-      <p>
-        <label>Lieu de livraison :</label>
-        <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
-      </p>
+      <div class="order_header_extra">
+        <p>
+          <label>Lieu de livraison :</label>
+          <strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
+        </p>
 
-      <p>
-        <label>Date pr&eacute;visionnelle de livraison :</label>
-        <strong><%= @order.previsional_delivery %></strong>
-      </p>
+        <p>
+          <label>Date pr&eacute;visionnelle de livraison :</label>
+          <strong><%= @order.previsional_delivery %></strong>
+        </p>
+      </div>
     </div>
     <div class="second_column">
       <p>
@@ -35,16 +47,22 @@
         <label>Suivi commercial :</label>
         <strong><%= @order.commercial.fullname %></strong>
       </p>
+      
+      <div class="order_header_extra">
+        <p>
+          <label>Contact :</label>
+          <strong>#contact</strong>
+        </p>
+      </div>
     </div>
-    
-    <div class="header_svg">
-      <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="float: right; width: 162px; height: 162px;"></object>
-    </div>
+  </div>
+  <div id="order_header_more">
+    <%= link_to "Plus d'informations", '#order_more_infos' %>
   </div>
 
   <p>
-  <% if controller.can_edit?(current_user) %>
-    <%= link_to 'Modifier', edit_order_path(@order) %>
+  <% if menu_informations.can_edit?(current_user) %>
+    <%= link_to 'Modifier', order_edit_informations_path(@order) %>
   <% end %>
   </p>
 </div>

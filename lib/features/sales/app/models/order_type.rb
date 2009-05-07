@@ -7,15 +7,20 @@ class OrderType < ActiveRecord::Base
   # Validations
   validates_presence_of :title
   
+  def activated?
+    activated
+  end
+  
   ## Create all sales Process after create
   def after_create
     Step.find(:all).each do |step|
-      SalesProcess.create(:order_type_id => self.id, :step_id => step.id)
+      sales_processes.create(:step_id => step.id, :activated => true, :depending_previous => false, :required => true)
     end
   end
   
   ## Return activated step for order_type
   def activated_steps
-    self.sales_processes.collect {|sp| sp.step if sp.activated }
+    sales_processes.select{ |sp| sp.activated? }.collect{ |sp| sp.step }
   end
+  
 end

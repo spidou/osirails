@@ -126,3 +126,9 @@ module ActiveSupport
     end
   end
 end
+
+class Date
+  def humanize
+    self.strftime("%d %B %Y")
+  end
+end

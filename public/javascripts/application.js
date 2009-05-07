@@ -146,12 +146,13 @@ function refresh_timer() {
 // permits to display the hidden menu when we click on the link
 // and to hide it when we click elsewhere in the page.
 function nav_more_links_handler() {
-  more_links = $('nav').getElementsBySelector('a.nav_more')
+  more_links = $('nav').select('a.nav_more')
   more_links.each(function(link) {
     Event.observe(link, 'click', function(menu_event) {
-      menu = link.up('h4').nextSiblings().first()
+      h4 = link.up('h4')
+      menu = h4.nextSiblings().first()
       if (menu.getStyle('display') == 'none') {
-        menu.setStyle({display:'block'})
+        menu.setStyle({left: h4.offsetLeft+'px', display: 'block'})
       } else {
         Effect.toggle(menu, 'appear', {duration: 0.3})
       }
@@ -165,13 +166,3 @@ function nav_more_links_handler() {
     });
   })
 }
-
-
-
-
-
-
-
-
-
-

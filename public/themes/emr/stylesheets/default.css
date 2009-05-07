@@ -355,7 +355,7 @@ a.button_banner:hover span {
   font-size: 0.8em;
   display: inline-block;
   background-color: #a2b3d7;
-  padding: 6px 17px 6px 17px;
+  padding: 6px 29px 6px 17px;
   margin: 0 7px 0 0;
   border-top: 1px solid #737373;
   border-right: 1px solid #737373;
@@ -365,7 +365,7 @@ a.button_banner:hover span {
 #nav h4.nav_current {
   background-color: #e99727;
   -moz-border-radius: 0 10px 0 0;
-  padding: 6px 17px 6px 17px;
+  padding-right: 17px;
   
   /* 1px offset to 'remove' the UL's border just below the selected menu */
   z-index: 2;
@@ -374,7 +374,6 @@ a.button_banner:hover span {
 
 #nav h4:first-child {
   margin-left: 15px;
-  padding-right: 29px;
 }
 
 #nav h4 a {

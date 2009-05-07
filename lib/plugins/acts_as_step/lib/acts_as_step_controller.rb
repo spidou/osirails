@@ -8,15 +8,15 @@ module ActsAsStepController
       
   module ClassMethods
     def acts_as_step_controller options = {}
-      default_step_controller_methods
+      default_step_controller_methods(options)
       
-      real_step_controller_methods(options) unless options[:sham] and !options[:step_name]
+      real_step_controller_methods unless options[:sham]
       
       setup_sub_resources unless options[:sham]
     end
     
     private
-      def default_step_controller_methods
+      def default_step_controller_methods options
         helper :orders
         
         before_filter :lookup_order_environment
@@ -28,7 +28,6 @@ module ActsAsStepController
           end
           
           def self.current_order_step=(step)
-            #raise "It's impossible to define in which step the order is! Please verify if your steps are properly configured in the yaml file." if step.nil?
             write_inheritable_attribute(:current_order_step, step)
           end
           
@@ -43,39 +42,51 @@ module ActsAsStepController
           
           private
             def lookup_order_environment
-              @order = Order.find(params[:order_id])
-              
-              # manage logs
-              OrderLog.set(@order, current_user, params)
+              if params[:order_id]  # so we are in an order's sub resource
+                @order = Order.find(params[:order_id])
+              elsif params[:id]     # if order_id doesn't exist but id, so we want to display '/orders/:id' or '/orders/:id/edit' or anything like that
+                @order = Order.find(params[:id])
+              else                  # so I guess we want to display '/orders/new'
+                @order = Order.new
+              end
               
               # define the current order step
               self.class.current_order_step = @order.current_step
+              
+              # manage logs
+              OrderLog.set(@order, current_user, params)
             end
+        end
+        
+        unless options[:sham]
+          options = { :step_name => self.controller_name }.merge(options)
+        end
+        
+        if options[:step_name]
+          step = Step.find_by_name(options[:step_name].to_s)
+          raise "The step '#{options[:step_name]}' doesn't exist. Please check in the config yaml file." if step.nil?
+          
+          write_inheritable_attribute(:step, step)
+          
+          class_eval do
+            # permits to define the step name in which the controller is mapped
+            def self.step
+              read_inheritable_attribute(:step)
+            end
+            
+            def self.step_name
+              step.name
+            end
+          end
         end
       end
       
-      def real_step_controller_methods options
+      def real_step_controller_methods
         before_filter :lookup_step_environment
         before_filter :should_display_edit,     :only => [ :index, :show ]
         after_filter  :update_step_status,      :only => :update
         
-        options = { :step_name => self.controller_name }.merge!(options)
-        
-        step = Step.find_by_name(options[:step_name].to_s)
-        raise "The step '#{options[:step_name]}' doesn't exist. Please check in the config yaml file." if step.nil?
-        
-        write_inheritable_attribute(:step, step)
-        
         class_eval do
-          # permits to define the step name in which the controller is mapped
-          def self.step
-            read_inheritable_attribute(:step)
-          end
-          
-          def self.step_name
-            step.name
-          end
-          
           # return if the controller should use remarks
           def self.has_remarks?
             step_name.camelize.constantize.instance_methods.include?('remarks')
@@ -98,7 +109,7 @@ module ActsAsStepController
             end
             
             def should_display_edit
-              if (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
+              if params[:format].nil? and (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
                 redirect_to :action => "edit"
               end
             end
@@ -113,7 +124,7 @@ module ActsAsStepController
                   path = send("order_#{self.class.step_name[0..self.class.step_name.size]}_path", @order)
                 end
                 
-                erase_render_results # permits to override the 'render :action => :edit' in the controller
+                erase_render_results
                 redirect_to path
               end
             end

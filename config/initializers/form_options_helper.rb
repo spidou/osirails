@@ -119,10 +119,55 @@ module ActionView
       end
       
       def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+        if tag_options[:value]
+          #OPTIMIZE use class instead of style attribute
+          tag_options = { :style => "color: grey; font-style: italic",
+                          :onfocus => "if (this.value == '#{tag_options[:value]}') { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
+                          :onblur => "if (this.value == '' || this.value == '#{tag_options[:value]}') { this.value = '#{tag_options[:value]}'; this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
+                        }.merge(tag_options)
+        end
+        
+        completion_options =  { :update_id => "#{object}_#{method}_id" }.merge(completion_options)
+        
         completion_options =  { :skip_style => true,
-                                :url => send("auto_complete_for_#{object}_#{method}_path")
-                              }.merge!(completion_options)
+                                :url => send("auto_complete_for_#{object}_#{method}_path"),
+                                :update_element => "function(li){
+                                                      this.element = $('#{object}_#{method}')
+                                                      this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                      if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
+                                                    }",
+                                :after_update_element => "function(input,li){
+                                                            $('#{completion_options[:update_id]}').value = li.down('.#{object}_#{method}_id').innerHTML 
+                                                          }"
+                              }.merge(completion_options)
         text_field_with_auto_complete(object, method, tag_options, completion_options)
+      end
+      
+      # Use this method in your view to generate a return for the AJAX autocomplete requests.
+      #
+      # Example action:
+      #
+      #   def auto_complete_for_item_title
+      #     @items = Item.find(:all, 
+      #       :conditions => [ 'LOWER(description) LIKE ?', 
+      #       '%' + request.raw_post.downcase + '%' ])
+      #     render :inline => "<%= custom_auto_complete_result(@items, 'title description') %>"
+      #   end
+      #
+      # The auto_complete_result can of course also be called from a view belonging to the 
+      # auto_complete action if you need to decorate it further.
+      def custom_auto_complete_result(entries, fields, phrase = nil)
+        return unless entries
+        fields = fields.split(" ")
+        items = entries.map do |entry|
+          text = fields.map { |field| entry[field] }.join(" - ")
+          #OPTIMIZE return less data to save bandwith, like => { "1" => "reference 1", "2" => "reference 2" }.to_json
+          # and make all the treatment by the client (in javascript)
+          content_tag 'li', content_tag( 'div', phrase ? highlight(text, phrase) : h(text) ) +
+                            content_tag( 'div', h(text), :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_value" ) +
+                            content_tag( 'div', entry.id, :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_id" )
+        end
+        content_tag('ul', items.uniq)
       end
     end
     

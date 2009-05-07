@@ -29,35 +29,6 @@ module ApplicationHelper
     html
   end
   
-  def display_menu_entries(current)
-    real_current_menu = current_menu
-    output = ""
-    
-    if current.parent
-      output << display_menu_entries(current.parent)
-      siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
-    else
-      siblings = Menu.mains.activated
-    end
-    
-    more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
-    
-    if real_current_menu.parent
-      unless current.parent
-        output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
-      else
-        h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
-        output << content_tag(:h4, link_to(current.parent.title, url_for_menu(current.parent), :title => current.parent.description), h4_options)
-      end
-    end
-    output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
-    siblings.each do |menu|
-      li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
-      output << content_tag(:li, link_to(menu.title, url_for_menu(menu), :title => menu.description), li_options)
-    end
-    output << "</ul>"
-  end
-  
   #TODO remove that for good!
   def display_memorandums
     ""
@@ -165,14 +136,16 @@ module ApplicationHelper
   def contextual_menu(title, &block)
     raise ArgumentError, "Missing block" unless block_given?
     
+    at_least_one_line = false
     html = content_tag(:h1, title)
     html += "<ul>"
     capture(&block).split("\n").each do |line|
       next if line.blank?
+      at_least_one_line = true
       html += content_tag :li, line
     end
     html += "</ul>"
-    content_for(:contextual_menu) {html}
+    return content_for(:contextual_menu) {html} if at_least_one_line
   end
 
   private
@@ -403,21 +376,36 @@ module ApplicationHelper
       Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
     end
     
-    def generate_tabulated_menu(menu, siblings = nil)
-      siblings ||= menu.self_and_siblings
-      html = "<div class=\"tabs\"><ul>"
-      siblings.each do |m|    #siblings.activated.each do |m|
-        selected = ( m == menu ? "class=\"selected\"" : "" )
-        if m.can_list?(current_user) and !m.can_view?(current_user)
-          disabled = "class=\"disabled\""
-          url = "#"
-        else
-          disabled = ""
-          url = url_for_menu(m)
-        end
-        html << "<li #{selected} #{disabled} title=\"#{m.description}\">#{link_to(m.title, url)}</li>" if m.can_list?(current_user) and m.can_view?(current_user)
+    def display_menu_entries(current)
+      real_current_menu = current_menu
+      output = ""
+      
+      if current.parent
+        output << display_menu_entries(current.parent)
+        siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
+      else
+        siblings = Menu.mains.activated
       end
-      html << "</ul></div>"
+      
+      more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
+      
+      if real_current_menu.parent
+        unless current.parent
+          output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
+        else
+          h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
+          output << content_tag(:h4, link_to(current.parent.title, url_for_menu(current.parent), :title => current.parent.description) + more_link, h4_options)
+        end
+      end
+      output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
+      siblings.each do |menu|
+        li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
+        output << display_menu_entry(menu, li_options)
+      end
+      output << "</ul>"
     end
     
+    def display_menu_entry(menu, li_options)
+      content_tag(:li, link_to(menu.title, url_for_menu(menu), :title => menu.description), li_options)
+    end
 end

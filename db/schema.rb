@@ -552,8 +552,8 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "activity_sector_id",   :limit => 11
     t.integer  "order_type_id",        :limit => 11
     t.datetime "closed_date"
-    t.datetime "previsional_start"
-    t.datetime "previsional_delivery"
+    t.date     "previsional_start"
+    t.date     "previsional_delivery"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

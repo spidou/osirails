@@ -1,26 +1,26 @@
-<div class="presentation_medium">
+<div>
   <% if @orders.empty? %>
   <p>Aucun dossier</p>
   <% else %>
   <table>
     <tr>
       <th>N°</th>
-      <th>Nom</th>
+      <th>Projet</th>
+      <th>Client / Établissement</th>
+      <th>Ville</th>
       <th>Commercial</th>
-      <th>Client</th>
-      <th>Etablissement</th>
-      <th>Etapes</th>
-      <th>Date</th>
+      <th>Avancement</th>
+      <th>Livraison</th>
     </tr>
     <% for order in @orders %>
     <tr>
-      <td><%= link_to order.id, order_path(order) %></td>
-      <td><%= link_to order.title, order_path(order) %></td>
-      <td><%= order.commercial.fullname %></td>
-      <td><%= order.customer.name %></td>
-      <td><%= order.establishment.full_address %></td>
+      <td><%= link_to(order.id, order_path(order), :title => "Accéder au dossier") %></td>
+      <td><%= link_to(order.title, order_path(order), :title => "Accéder au dossier") %></td>
+      <td><%= link_to("#{order.customer.name} / #{order.establishment.name}", customer_path(order.customer), :title => "Voir la fiche du client") %></td>
+      <td><%= order.establishment.address.city_name %></td>
+      <td><%= link_to(order.commercial.fullname, employee_path(order.commercial), :title => "Voir la fiche de l'employé") %></td>
       <td><object data="<%= formatted_order_path(order, 'svg', {:for => 'understep'}) %>" type="image/svg+xml" style="width: 32px; height: 32px;"></object></td>
-      <td><%= order.created_at.to_date %></td>
+      <td><%= order.previsional_delivery.humanize %></td>
     </tr>
     <% end %>
 
