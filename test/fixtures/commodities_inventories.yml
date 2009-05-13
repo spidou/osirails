@@ -4,4 +4,6 @@ normal:
   taxe_coefficient: 0
   measure: 4.50
   unit_mass: 70.65
-  commodity_category: child
+  commodity: normal
+  inventory: normal
+  

@@ -65,9 +65,8 @@ class MemorandumTest < ActiveSupport::TestCase
       "This Memorandum should have this service"
   end
 
-  # FIXME The user_id of this memorandum contain a wrong id
-  #def test_belongs_to_user
-  #  assert_equal @memorandum.user, users(:admin_user),
-  #    "This Memorandum should belongs to this User"
-  #end
+  def test_belongs_to_user
+    assert_equal @memorandum.user, users(:powerful_user),
+      "This Memorandum should belongs to this User"
+  end
 end

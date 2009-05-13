@@ -26,7 +26,7 @@ class JobContract < ActiveRecord::Base
   
   #return the actual salary
   def actual_salary
-    salaries.first
+    salaries.last
   end
   
   def salary

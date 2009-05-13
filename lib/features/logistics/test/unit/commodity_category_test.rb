@@ -70,7 +70,7 @@ class CommodityCategoryTest < ActiveSupport::TestCase
   end
 
   def test_has_many_commodities
-    assert_equal commodity_categories(:normal).commodities,
+    assert_equal commodity_categories(:child).commodities,
       [commodities(:normal)], "This CommodityCategory should have this Commodity"
   end
 end

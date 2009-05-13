@@ -1,4 +1,5 @@
 customer_normal:
+  type: Customer
   name: Customer
   siret_number: 12345678912345
   activity_sector: normal
@@ -7,6 +8,7 @@ customer_normal:
   payment_time_limit: normal
   activated: true
 supplier_normal:
+  type: Supplier
   name: Supplier
   siret_number: 12345678912345
   activity_sector: normal

@@ -54,13 +54,12 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_confirmation_of_password
-    # FIXME Test the confirmation of password
-    #assert_no_difference 'User.count' do
-    #  user = User.create(:username => 'new_user',
-    #                     :password => 'password',
-    #                     :enabled => true)
-    #  assert_not_nil user.errors.on(:password_confirmation), "An User should have a confirmation of the password"
-    #end
+    assert_no_difference 'User.count' do
+      user = User.create(:username => 'new_user',
+                         :password => 'password',
+                         :enabled => true)
+      assert_not_nil user.errors.on(:password_confirmation), "An User should have a confirmation of the password"
+    end
   end
 
   def test_format_of_password

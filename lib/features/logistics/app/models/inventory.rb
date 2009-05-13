@@ -8,8 +8,8 @@ class Inventory < ActiveRecord::Base
   # This methods permit to create a inventory with current commodities
   def create_inventory(commodities)
     commodities.each do |commodity|
-      commodity_category = CommodityCategory.find(commodity.commodity_category_id)
-      parent_commodity_category = CommodityCategory.find(commodity_category.commodity_category_id)
+      commodity_category = commodity.commodity_category
+      parent_commodity_category = commodity_category.commodity_category
       self.commodities_inventories.create({
           :name => commodity.name,
           :fob_unit_price => commodity.fob_unit_price,

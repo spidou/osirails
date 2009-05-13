@@ -4,7 +4,7 @@ class CommodityTest < ActiveSupport::TestCase
   fixtures :commodity_categories, :commodities
 
   def setup
-    @commodity_category = commodity_categories(:normal)
+    @commodity_category = commodity_categories(:child)
     @commodity = commodities(:normal)
   end
 
