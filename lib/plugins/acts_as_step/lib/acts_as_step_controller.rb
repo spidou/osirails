@@ -84,7 +84,7 @@ module ActsAsStepController
       def real_step_controller_methods
         before_filter :lookup_step_environment
         before_filter :should_display_edit,     :only => [ :index, :show ]
-        after_filter  :update_step_status,      :only => :update
+        after_filter  :update_step_status,      :only => [ :create, :update ]
         
         class_eval do
           # return if the controller should use remarks
@@ -124,8 +124,9 @@ module ActsAsStepController
                   path = send("order_#{self.class.step_name[0..self.class.step_name.size]}_path", @order)
                 end
                 
-                erase_render_results
-                redirect_to path
+                #flash.keep
+                #erase_render_results
+                #redirect_to path
               end
             end
         end

@@ -80,9 +80,9 @@ module EstablishmentsHelper
   end
   
   def display_establishment_add_button(customer)
-    link_to_function "Ajouter un établissement" do |page|
+    content_tag( :p, link_to_function "Ajouter un établissement" do |page|
       page.insert_html :bottom, :establishments, :partial => 'establishments/establishment_form', :object => Establishment.new, :locals => { :establishment_owner => customer }
-    end
+    end )
   end
   
 #  ## Display add establishment button

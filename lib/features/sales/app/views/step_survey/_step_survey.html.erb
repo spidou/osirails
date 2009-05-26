@@ -17,8 +17,8 @@
     <%= display_remark_add_button(@step) %>
     
     <p>
-      <%= form.submit 'Modifier' %>
-      <%= form.submit 'Cloturer', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+      <%= form.submit 'Enregistrer' %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
     </p>
   <% end %>
 <% else %>

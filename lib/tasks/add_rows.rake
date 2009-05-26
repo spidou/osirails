@@ -173,18 +173,20 @@ namespace :osirails do
       # default suppliers
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
       supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :activated => true
+      supplier.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400", :has_address_type => "Third")
       supplier.iban = iban
       supplier.save
       
       # default customers and establishements
       customer = Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
         :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true
+      customer.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400", :has_address_type => "Third")
       customer.establishments << establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       customer.establishments << establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       customer.establishments << establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
-      establishment1.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
-      establishment2.address = Address.create(:address1 => "2 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
-      establishment3.address = Address.create(:address1 => "3 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
+      establishment1.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
+      establishment2.create_address(:street_name => "2 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
+      establishment3.create_address(:street_name => "3 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
       
       establishment1.save
       establishment2.save
@@ -216,6 +218,12 @@ namespace :osirails do
         :commodity_category_id => toles.id, :supplier_id => supplier.id
       Commodity.create :name => "Galva rond Ø20x2 Lg 6m", :fob_unit_price => "1.63", :taxe_coefficient => "0", :measure => "6", :unit_mass => "5.32",
         :commodity_category_id => tubes.id, :supplier_id => supplier.id
+        
+      # default VAT rates
+      vat1 = Vat.create(:name => "19.6", :rate => "19.6")
+      vat2 = Vat.create(:name => "8.5", :rate => "8.5")
+      vat3 = Vat.create(:name => "5.5", :rate => "5.5")
+      vat4 = Vat.create(:name => "Exo.", :rate => "0")
       
       # default product reference categories
       famille1 = ProductReferenceCategory.create :name => "Famille 1"
@@ -233,15 +241,15 @@ namespace :osirails do
       ProductReferenceCategory.create :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
       
       # default product references
-      reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 12233, :production_time => 2222, :delivery_cost_manpower => 1234, :delivery_time => 928, :information => 'Reference information', :reference => "XKTO89"
-      reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 5424, :production_time => 524245, :delivery_cost_manpower => 2542, :delivery_time => 12452543, :information => 'Reference information', :reference => "XKTO90"
-      reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 66, :production_time => 51, :delivery_cost_manpower => 879, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO91"
-      ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 17517, :production_time => 45245, :delivery_cost_manpower => 252544, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO92"
-      ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 7157, :production_time => 524525, :delivery_cost_manpower => 12524524534, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO93"
-      ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 7151715, :production_time => 245245, :delivery_cost_manpower => 4524, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO94"
-      ProductReference.create :name => "Reference 1.3.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 1751751, :production_time => 2225425252, :delivery_cost_manpower => 45245, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO95"
-      ProductReference.create :name => "Reference 1.3.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 255425, :production_time => 2452452222, :delivery_cost_manpower => 4524524, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO96"
-      ProductReference.create :name => "Reference 1.3.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 122828233, :production_time => 28282248, :delivery_cost_manpower => 452542, :delivery_time => 0, :information => 'Reference information', :reference => "XKTO97"
+      reference111 = ProductReference.create :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 10, :production_time => 2, :delivery_cost_manpower => 20, :delivery_time => 3, :information => 'Reference information', :reference => "XKTO89", :vat => vat1.rate
+      reference112 = ProductReference.create :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 20, :production_time => 2, :delivery_cost_manpower => 10, :delivery_time => 1.5, :information => 'Reference information', :reference => "XKTO90", :vat => vat2.rate
+      reference113 = ProductReference.create :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 30, :production_time => 3, :delivery_cost_manpower => 30, :delivery_time => 3, :information => 'Reference information', :reference => "XKTO91", :vat => vat3.rate
+      ProductReference.create :name => "Reference 1.2.1", :description => "Description de la référence 1.2.1", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 10, :production_time => 2.7, :delivery_cost_manpower => 30, :delivery_time => 2, :information => 'Reference information', :reference => "XKTO92", :vat => vat4.rate
+      ProductReference.create :name => "Reference 1.2.2", :description => "Description de la référence 1.2.2", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 20, :production_time => 4, :delivery_cost_manpower => 40, :delivery_time => 4, :information => 'Reference information', :reference => "XKTO93", :vat => vat1.rate
+      ProductReference.create :name => "Reference 1.2.3", :description => "Description de la référence 1.2.3", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 30, :production_time => 4, :delivery_cost_manpower => 20, :delivery_time => 2, :information => 'Reference information', :reference => "XKTO94", :vat => vat2.rate
+      ProductReference.create :name => "Reference 1.3.1", :description => "Description de la référence 1.3.1", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 10, :production_time => 1, :delivery_cost_manpower => 10, :delivery_time => 3.5, :information => 'Reference information', :reference => "XKTO95", :vat => vat2.rate
+      ProductReference.create :name => "Reference 1.3.2", :description => "Description de la référence 1.3.2", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 20, :production_time => 5, :delivery_cost_manpower => 20, :delivery_time => 1, :information => 'Reference information', :reference => "XKTO96", :vat => vat3.rate
+      ProductReference.create :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 30, :production_time => 2.9, :delivery_cost_manpower => 10, :delivery_time => 2.3, :information => 'Reference information', :reference => "XKTO97", :vat => vat4.rate
       
       # default products
       Product.create :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id
@@ -277,6 +285,9 @@ namespace :osirails do
       d = DocumentType.find_or_create_by_name("logo")
       d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("photo")
+      d.update_attribute(:title, "Photo")
+      d.mime_types << [ jpg, png ]
       
       ## default file types
       # for feature
@@ -398,8 +409,12 @@ namespace :osirails do
       c.checklist_options << ChecklistOption.create(:name => "Option 3")
       
       # default orders
-      Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
-      Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
+      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days)
+      order1.contacts << Customer.first.contacts.first
+      order1.save
+      order2 = Order.new(:title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days)
+      order2.contacts << Customer.first.contacts.first
+      order2.save
       
       # set up all permissions for default roles (admin and guest)
       %W{ Menu DocumentType Calendar }.each do |klass|

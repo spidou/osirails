@@ -19,8 +19,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   end
 
   create_table "addresses", :force => true do |t|
-    t.string   "address1"
-    t.string   "address2"
+    t.text     "street_name"
     t.integer  "has_address_id",   :limit => 11
     t.string   "has_address_type"
     t.datetime "created_at"
@@ -28,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string   "country_name"
     t.string   "city_name"
     t.string   "zip_code"
+    t.string   "has_address_key"
   end
 
   create_table "alarms", :force => true do |t|
@@ -611,10 +611,10 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
 
   create_table "product_references", :force => true do |t|
     t.string   "name"
-    t.string   "production_cost_manpower"
-    t.string   "production_time"
-    t.string   "delivery_cost_manpower"
-    t.string   "delivery_time"
+    t.float    "production_cost_manpower"
+    t.float    "production_time"
+    t.float    "delivery_cost_manpower"
+    t.float    "delivery_time"
     t.string   "information"
     t.integer  "product_reference_category_id", :limit => 11
     t.datetime "created_at"
@@ -623,6 +623,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.boolean  "enable",                                      :default => true
     t.text     "description"
     t.string   "reference"
+    t.float    "vat"
   end
 
   create_table "products", :force => true do |t|
@@ -647,6 +648,8 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.float    "account",                        :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id",          :limit => 11
+    t.datetime "validated_at"
   end
 
   create_table "quotes_product_references", :force => true do |t|
@@ -657,6 +660,13 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.float    "unit_price"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "position",             :limit => 11
+    t.text     "original_description"
+    t.float    "original_unit_price"
+    t.string   "name"
+    t.string   "original_name"
+    t.float    "vat"
+    t.float    "discount"
   end
 
   create_table "remarks", :force => true do |t|
@@ -850,6 +860,12 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "last_activity"
+  end
+
+  create_table "vats", :force => true do |t|
+    t.string  "name"
+    t.float   "rate"
+    t.integer "position", :limit => 11
   end
 
 end

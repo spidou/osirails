@@ -1,99 +1,78 @@
 <table width="100%">
 	<tr>
 		<td>
-			<img src="<%= File.join(RAILS_ROOT, 'public/themes/emr/images/logo_emr.jpg') %>"/><br />
-			PAE La Mare - ilot 7 - n°48<br />
-			97438 Sainte-Marie - La Réunion<br />
-			Tél. +262 (0)2 62 53 12 89<br />
-			Fax +262 (0)2 62 53 16 42
+			<h1><%= enc("DEVIS N° #{@quote.id}") %></h1>
+      <h5><%= enc("Date : #{@quote.created_at.to_humanized_date}") %></h5>
+      <h5><%= enc("Votre conseiller commercial:") %></h5>
+      <p><%= "#{@order.commercial.fullname}" %><br/>
+      <% for number in @order.commercial.numbers %>
+        <%= enc("#{number.number_type.name}: #{number.formatted}") %><br/>
+      <% end %>
+      <%= enc("Email: #{@order.commercial.email}") unless @order.commercial.email.nil? or @order.commercial.email.empty? %>
+      </p>
 		</td>
 		<td width="25%"></td>
 		<td>
-			<strong><%= @order.customer.name %></strong><br />
-			<%= @order.establishment.full_address %>
+			<strong><%= enc(@order.customer.name) %></strong><br />
+			<%= enc(@quote.bill_to_address.street_name) %><br/>
+			<%= enc(@quote.bill_to_address.zip_code) + " " + enc(@quote.bill_to_address.city_name) %><br/>
+			<%= enc(@quote.bill_to_address.country_name) %><br/><br/>
+			
+			<strong><%= enc("À l´attention de #{@order.contacts.first.fullname}") %></strong><br/>
+			<% for number in @order.contacts.first.numbers %>
+  			<%= enc("#{number.number_type.name}: #{number.formatted}") %><br/>
+			<% end %>
+			<%= enc("Email: #{@order.contacts.first.email}") unless @order.contacts.first.email.nil? or @order.contacts.first.email.empty? %>
 		</td>
 	</tr>
 </table>
 
-<table border="1" width="100%" style="text-align: center">
-	<tr>
-		<td width="50%" rowspan="2"></td>
-		<th>Etablissement</th>
-		<th>Tél.</th>
-		<th>Fax</th>
-	</tr>
-	<tr>
-		<td><%= @order.establishment.name %></td>
-		<td>0262 ?</td>
-		<td>0262 ?</td>
-	</tr>
-</table>
+<br/>
 
-<br />
-
-<table border="1" width="100%" style="text-align: center">
-	<tr>
-		<th colspan="6" style="font-size: 26px">DEVIS</th>
-	</tr>
-	<tr height="16px"><td></td></tr>
-	<tr>
-		<th>N° Devis</th>
-		<th>N° Client</th>
-		<th>Date</th>
-		<th>Validité</th>
-		<th>Commercial</th>
-		<th>Référence de Commande</th>
-	</tr>
-	<tr>
-		<td><%= @quote.id %></td>
-		<td><%= @order.customer.id %></td>
-		<td><%= @quote.created_at.to_date %></td>
-		<td><%= @quote.validity_date %></td>
-		<td><%= @order.commercial.fullname %></td>
-		<td><%= @order.title %></td>
-	</tr>
-</table>
-
-<br />
+<h4><%= enc("#{@order.title.upcase}") %></h4>
 
 <table border="1" width="100%" style="text-align: center;">
-	<tr>
-		<th width="10%">Référence</th>
-		<th width="70%">Désignation</th>
-		<th>Qté</th>
-		<th width="12%">P.U HT</th>
-		<th width="15%">Montant HT</th>
+	<tr bgcolor="#CCCCCC">
+		<th width="10%"><%= enc("Réf.") %></th>
+		<th width="60%"><%= enc("Désignation") %></th>
+		<th><%= enc("Qté") %></th>
+		<th><%= enc("P.U HT") %></th>
+		<th><%= enc("Rem.") %></th>
+		<th><%= enc("Total HT") %></th>
+		<th><%= enc("TVA") %></th>
 	</tr>
-	<% @quote.product_references.each do |epr| %>
+	<% @quote.quotes_product_references.each do |qpr| %>
 	<tr>
-		<td><%= epr.product_reference.reference %></td>
-		<td style="text-align: left;"><%= epr.description %></td>
-		<td><%= epr.quantity %></td>
-		<td><%= epr.amount %></td>
-		<td><%= epr.amount_with_taxes %></td>
+		<td><%= enc(qpr.product_reference.reference) %></td>
+		<td style="text-align: left;"><pre><%= enc(qpr.description) %></pre></td>
+		<td><%= qpr.quantity %></td>
+		<td><%= qpr.unit_price.round_to(2).to_s(2) %></td>
+		<td><%= qpr.discount.round_to(2).to_s(2) %></td>
+		<td><%= qpr.total.round_to(2).to_s(2) %></td>
+		<td><%= qpr.vat %></td>
 	</tr>
 	<% end %>
 	<tr>
 		<td colspan="2" style="text-align: left;">
 			Informations:
 		</td>
-		<td colspan="3">
+		<td colspan="5">
 			<table>
 				<tr>
-					<th width="50%">Total HT</th>
-					<td width="50%"><%= @quote.total %></td>
+					<td>Total HT</td>
+					<td><%= @quote.total %></td>
 				</tr>
 				<tr>
-					<td>Remise</td>
+					<td>Remise (%)</td>
 					<td><%= @quote.reduction %></td>
+				</tr>
+				<tr>
+					<td><strong>Net HT</strong></td>
+					<td><strong><%= @quote.net.round_to(2).to_s(2) %></strong></td>
 				</tr>
 				<tr>
 					<td>Frais de port</td>
 					<td><%= @quote.carriage_costs %></td>
-				</tr>
-				<tr>
-					<td>Net HT</td>
-					<td><%= @quote.net %></td>
 				</tr>
 				<tr>
 					<td>TVA</td>
@@ -101,19 +80,19 @@
 				</tr>
 				<tr>
 					<td>Total taxes</td>
-					<td><%= @quote.summon_of_taxes %></td>
+					<td><%= @quote.summon_of_taxes.round_to(2).to_s(2) %></td>
 				</tr>
 				<tr>
 					<td>Acompte</td>
-					<td><%= @quote.account %></td>
+					<td><%= @quote.account.round_to(2).to_s(2) %></td>
 				</tr>
 				<tr>
 					<td>Total TTC</td>
-					<td><%= @quote.total_with_taxes %></td>
+					<td><%= @quote.total_with_taxes.round_to(2).to_s(2) %></td>
 				</tr>
-				<tr>
-					<th>Net a payer</th>
-					<td><%= @quote.net_to_paid %></td>
+				<tr bgcolor="#CCCCCC">
+					<td width="80%"><strong><%= enc("NET À PAYER") %></strong></td>
+					<td><strong><%= @quote.net_to_paid.round_to(2).to_s(2) %>&#160;&euro;</strong></td>
 				</tr>
 			</table>
 		</td>

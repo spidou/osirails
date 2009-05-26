@@ -1,3 +1,8 @@
+// ADD PROTOTYPE METHODS
+String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
+String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
+String.prototype.trim = function() { return this.ltrim().rtrim(); };
+
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 if (window.addEventListener)

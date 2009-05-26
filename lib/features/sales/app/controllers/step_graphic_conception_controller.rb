@@ -7,7 +7,6 @@ class StepGraphicConceptionController < ApplicationController
     respond_to do |format|
       format.html {}
       format.pdf {
-        require 'htmldoc'
         data = render_to_string(:action => "show.pdf.erb", :layout => false)
         pdf = PDF::HTMLDoc.new
         pdf.set_option :bodycolor, 'white'
@@ -21,9 +20,9 @@ class StepGraphicConceptionController < ApplicationController
         pdf.set_option :textcolor, 'black'
         
         pdf << data
-        @documents.each do |document|
-          document.convert_to_png
-          pdf << "<h2 align=\"center\">#{document.name}</h2><br /><div align=\"center\"><img src=\"#{document.get_png}\" /></div>"
+        @step.documents.each do |document|
+          # document.convert_to_png
+          pdf << "<h2 align=\"center\">#{document.name}</h2><br /><div align=\"center\"><img src=\"#{document.attachment.path(:medium)}\" /></div>"
         end
         
         pdf.footer "./."

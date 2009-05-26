@@ -8,7 +8,7 @@
     
     <%= "#{establishment.name} (#{establishment.address.country_name}, #{establishment.address.city_name})" %>
 
-    <%= link_to_function "Fiche complète", "this.up('.establishment_general_infos').down('.resource_form').show()" if !is_form_view? %>
+    <%= link_to_function "Fiche complète", "this.up('.establishment_general_infos').down('.resource_form').toggle()" if !is_form_view? %>
     
     <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.establishment_general_infos'))" if is_form_view? and menu_establishments.can_edit?(current_user) %>
     

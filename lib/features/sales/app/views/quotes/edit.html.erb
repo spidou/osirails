@@ -1,12 +1,6 @@
-<% content_for :header do %>
-  <%= javascript_include_tag 'sales/quotes' %>
-<% end %>
-<% # render :partial => 'contextual_menu' %>
-
 <%= order_header %>
 
 <div class="presentation_medium">
-	<%= order_steps %>
 	<h1>Modification du devis</h1>
 	<% form_for @quote, :url => { :controller => "quotes", :action => "update", :order_id => @order.id }, :method => :put do |form| %>
 	  <%= render :partial => 'quote_form', :object => @quote, :locals => { :form => form} %>

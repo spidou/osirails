@@ -22,6 +22,10 @@
     <%= form.label :product_reference_category_id %>
     <%= form.form_or_view(form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category, :name) %>
   </p>
+  <p>
+    <%= form.label :vat %>
+    <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name), :vat, :name) %>
+  </p>
 
   <h2>Informations concernant la production</h2>
   <p>

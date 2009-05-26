@@ -1,18 +1,52 @@
 class Quote < ActiveRecord::Base
   has_permissions :as_business_object
+  has_address :bill_to_address
+  has_address :ship_to_address
   
+  belongs_to :creator, :class_name => 'User', :foreign_key => 'user_id'
   belongs_to :step_estimate
-  has_many :quotes_product_references
+  has_many :quotes_product_references, :dependent => :destroy
   has_many :product_references, :through => :quotes_product_references
   
   # Validations
   validates_presence_of :step_estimate_id
   validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
+  validates_associated :quotes_product_references, :product_references
+  
+  after_update :save_quotes_product_references
+  
+  def quotes_product_reference_attributes=(quotes_product_reference_attributes)
+    quotes_product_reference_attributes.each do |attributes|
+      unless attributes[:product_reference_id].blank?
+        if attributes[:id].blank?
+          product_reference = ProductReference.find(attributes[:product_reference_id])
+          
+          quotes_product_reference = quotes_product_references.build(attributes)
+          
+          # original_name, original_description and original_unit_price are protected form mass-assignment !
+          quotes_product_reference.update_attribute(:original_name, product_reference.name)
+          quotes_product_reference.update_attribute(:original_description, product_reference.description)
+          quotes_product_reference.update_attribute(:original_unit_price, product_reference.unit_price)
+        else
+          quotes_product_reference = quotes_product_references.detect { |x| x.id == attributes[:id].to_i }
+          quotes_product_reference.attributes = attributes
+        end
+      end
+    end
+  end
+  
+  def save_quotes_product_references
+    quotes_product_references.each do |x|
+      if x.should_destroy?
+        x.destroy
+      else
+        x.save(false)
+      end
+    end
+  end
   
   def total
-    result = 0
-    product_references.each { |epr| result += epr.amount }
-    result
+    quotes_product_references.collect{ |qpr| qpr.total }.sum
   end
   
   def net
@@ -20,18 +54,22 @@ class Quote < ActiveRecord::Base
   end
   
   def total_with_taxes
-    total + total / 100 * ConfigurationManager.sales_taxes_vat
+    quotes_product_references.collect{ |qpr| qpr.total_with_taxes }.sum
   end
   
   def summon_of_taxes
-    self.total_with_taxes - self.total
+    total_with_taxes - total
   end
   
   def net_to_paid
-    total_with_taxes - self.account
+    total_with_taxes - account
   end
   
   def validated?
     validated
+  end
+  
+  def number_of_pieces
+    quotes_product_references.collect{ |qpr| qpr.quantity }.sum
   end
 end

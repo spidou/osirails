@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag 'sales/sales' %>
+<% end %>
+
 <div>
   <% if @orders.empty? %>
   <p>Aucun dossier</p>
@@ -11,16 +15,18 @@
       <th>Commercial</th>
       <th>Avancement</th>
       <th>Livraison</th>
+      <th>Actions</th>
     </tr>
     <% for order in @orders %>
     <tr>
-      <td><%= link_to(order.id, order_path(order), :title => "Accéder au dossier") %></td>
-      <td><%= link_to(order.title, order_path(order), :title => "Accéder au dossier") %></td>
-      <td><%= link_to("#{order.customer.name} / #{order.establishment.name}", customer_path(order.customer), :title => "Voir la fiche du client") %></td>
+      <td><%= order.id %></td>
+      <td><%= order.title %></td>
+      <td><%= "#{order.customer.name} / #{order.establishment.name} " + customer_link(order.customer, :link_text => "") %></td>
       <td><%= order.establishment.address.city_name %></td>
-      <td><%= link_to(order.commercial.fullname, employee_path(order.commercial), :title => "Voir la fiche de l'employé") %></td>
+      <td><%= order.commercial.fullname + " " + employee_link(order.commercial, :link_text => "") %></td>
       <td><object data="<%= formatted_order_path(order, 'svg', {:for => 'understep'}) %>" type="image/svg+xml" style="width: 32px; height: 32px;"></object></td>
       <td><%= order.previsional_delivery.humanize %></td>
+      <td><%= order_link(order, :link_text => "") %></td>
     </tr>
     <% end %>
 

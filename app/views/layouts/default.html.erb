@@ -36,47 +36,45 @@
       <!-- TODO disable this helper when feature memorandum are disable -->
       <%= display_memorandums %>
     </div>
-    <div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->
+    <div id="page">	<!-- CONTENT OF THE PAGE -->
       <div id="nav">
         <%= display_menu %>
       </div>
-      <div id="page">	<!-- CONTENT OF THE PAGE -->
-        <div id="contextual_menu"> <!-- CONTEXTUAL MENU -->
-          <div class="shown_contextual_menu" id="contextual_menu_toggle_button">
-            <span id="status_background_contextual_menu">
-              <span id="status_text_contextual_menu">Cacher le menu</span>
-            </span>
-          </div>
-          <div id="shadow_contextual_menu">
-            <div id="content_contextual_menu">
-              <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
-              <!--contetual search formulary -->
-              <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
-                <%= contextual_search %>
-              <% end %> 
+      <div id="contextual_menu"> <!-- CONTEXTUAL MENU -->
+        <div class="shown_contextual_menu" id="contextual_menu_toggle_button">
+          <span id="status_background_contextual_menu">
+            <span id="status_text_contextual_menu">Cacher le menu</span>
+          </span>
+        </div>
+        <div id="shadow_contextual_menu">
+          <div id="content_contextual_menu">
+            <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
+            <!--contetual search formulary -->
+            <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
+              <%= contextual_search %>
+            <% end %> 
 
-              <%= yield :contextual_menu %>
-              <div id="footer_contextual_menu">&nbsp;</div>
-            </div>
+            <%= yield :contextual_menu %>
+            <div id="footer_contextual_menu">&nbsp;</div>
           </div>
         </div>
-        <div id="content_page">
-          <%= display_flash %>
-          
-          <%= yield %>
-          
-          <p><%= link_to 'Retour', :back %></p>
-        </div> <!-- content_page : FIN -->
-      </div> <!-- PAGE : FIN -->
-      <div id="footer">
-        <p>
-          <%= display_footer %>
-          <br/>
-          <a href="http://validator.w3.org/check?uri=referer">
-            <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
-          </a>
-        </p>
-      </div><!-- FOOTER : FIN-->
-    </div> <!-- CORPS : FIN -->
+      </div>
+      <div id="content_page">
+        <%= display_flash %>
+        
+        <%= yield %>
+        
+        <p class="link_back"><%= link_to 'Retour', :back %></p>
+      </div> <!-- content_page : FIN -->
+    </div> <!-- PAGE : FIN -->
+    <div id="footer">
+      <p>
+        <%= display_footer %>
+        <br/>
+        <a href="http://validator.w3.org/check?uri=referer">
+          <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
+        </a>
+      </p>
+    </div><!-- FOOTER : FIN-->
 	</body>
 </html>

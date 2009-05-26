@@ -31,7 +31,7 @@ class Customer < Third
   #
   def contacts_all
     contacts = []
-    #OPTIMIZE can this loop be optimize with an unique sql request ?
+    #OPTIMIZE can't this loop be optimized with an unique sql request ?
     self.establishments.each do |establishment|
       establishment.contacts.each do |contact|
         contacts << contact

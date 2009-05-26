@@ -20,7 +20,7 @@ html, body {
 	height: 100%;
 	font-family: verdana , Geneva, sans-serif;
 	cursor: default;
-	min-width: 1250px;
+	min-width: 1024px;
 }
 
 a {
@@ -57,10 +57,9 @@ caption {
 
 table {
 	border-collapse: collapse;
-	border:solid 1px rgb(64,68,93);
-	background:#F8F8F8;
-	text-align:center;
-	min-width:70%;
+	border: solid 1px rgb(64,68,93);
+	background: #F8F8F8;
+	text-align: center;
 	margin: 10px 0 10px 10px;
 }
 
@@ -71,33 +70,28 @@ table a {
 
 table a:hover {
 	text-decoration: underline;
-	color:white !important;
 }
 
-table th{
+table th {
 	border:solid 1px rgb(64,68,93);
 	background: #dedede;
+	padding: 4px 8px 4px 8px;
 }
 
-table td{
+table td {
 	border:solid 1px rgb(64,68,93);
-}
-
-/*
-table img {
-  position: relative;
-	top: 2px;
-}
-*/
-
-tr:hover > td{
-	background: #f5c384;
+	padding: 4px 8px 4px 8px;
 }
 
 tr:hover > td > a {
 	text-decoration:underline;
 }
 
+
+object {
+  margin: 0;
+  padding: 0;
+}
 /*/////////////////////////////
 			TITLE
 /////////////////////////////*/
@@ -128,7 +122,6 @@ h2 {
 	line-height:29px;
 	font-weight:lighter;
 	letter-spacing:2px;
-	padding-top:1px;
 }
 
 h3 {
@@ -138,8 +131,9 @@ h3 {
 	height:20px;
 	line-height:20px;
 	color: rgb(70,94,142);
-	padding-top:0px;
-	margin-top:-1px;
+	padding-top:-1px;
+	margin-top:0px;
+	margin-bottom:0px;
 	font-size:1.05em;
 }
 
@@ -247,7 +241,6 @@ a.button_banner:hover span {
 #under_banner {
 	clear:both;
 	background: url("/themes/emr/images/background_under_banner_repeat-x.jpg") repeat;
-	border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
 	color:#444444;
@@ -331,18 +324,6 @@ a.button_banner:hover span {
 	margin:0 0 0 27%;
 }
 
-/*////////////////////////////////////////////////////////
-					BODY OF THE WEBSITE
-////////////////////////////////////////////////////////*/
-/*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
-					OF BANNERS							*/
-#block_body {
-	width:auto;
-	height:auto;
-	margin: -16px 0 5px 0;
-	padding:0;
-}
-
 /*/////////////////////////////////////////////////////
 			BODY OF THE WEBSITE > MENU NAVIGATION
 ////////////////////////////////////////////////////*/
@@ -356,7 +337,7 @@ a.button_banner:hover span {
   display: inline-block;
   background-color: #a2b3d7;
   padding: 6px 29px 6px 17px;
-  margin: 0 7px 0 0;
+  margin: 4px 4px 0 0;
   border-top: 1px solid #737373;
   border-right: 1px solid #737373;
   border-left: 1px solid #737373;
@@ -475,7 +456,7 @@ a.button_banner:hover span {
 			BODY OF THE WEBSITE > PAGE OF WEBSITE
 ////////////////////////////////////////////////////*/
 #page {
-	border: solid 1px #cecece;
+	background: url("/themes/emr/images/background_content_page.jpg") repeat;
 }
 
 /*/////////////////////////////////////////////////////////
@@ -594,10 +575,11 @@ a.button_banner:hover span {
 	text-indent:0px;
 	margin-top:-6px;
 	margin-bottom:-6px;
+	text-align: center;
 }
 
 #content_contextual_menu ul li a {
-	text-decoration:none ;
+	text-decoration:none;
 	color: #CA7E21;
 }
 
@@ -784,14 +766,33 @@ a.previous-button:hover span {
 BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
 #content_page {
-	padding: 10px 8px 5px 8px;
-	margin: 2px 0 2px 0;
+	padding: 5px 5px 8px 5px;
+	//margin: 2px 0 2px 0;
 	text-align: justify;
-	background: url("/themes/emr/images/background_content_page.jpg") repeat;
+	
 	color: #343434;
 	font-size:0.87em;
 	font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
 	min-height:564px;
+}
+
+.link_back {
+  display: inline;
+  background-color: white;
+  padding: 3px 10px 3px 10px;
+  border: solid 1px #989898;
+}
+
+#content_page > div {
+	margin-bottom: 10px;
+	background: #ffffff;
+	border: solid 1px #989898;
+}
+
+#content_page > div p {
+  padding-left: 10px;
+	padding-right: 10px;
+	margin: 6px 0 6px 0;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
@@ -846,12 +847,10 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 /!\::::::::::::::::GENERAL ERRORS:::::::::::::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .fieldWithErrors input,
-.fieldWithErrors select {
+.fieldWithErrors select,
+.fieldWithErrors label,
+.fieldWithErrors textarea {
   color:#B0383D;
-}
-
-.fieldWithErrors label {
-	color:#B0383D;
 }
 
 #errorExplanation {
@@ -1035,18 +1034,6 @@ width: 50px ! important;
 	display:none;
 }
 
-#content_page > div {
-  margin-top:-3px;
-	margin-bottom:10px;
-	background: #ffffff;
-	border: solid 1px #989898;
-}
-
-#content_page > div p {
-  padding-left:10px;
-	padding-right: 10px;
-}
-
 /*/////////////////////////////
 			FORM
 /////////////////////////////*/
@@ -1102,6 +1089,11 @@ width: 50px ! important;
 #content_page > div form p textarea,
 #content_page > div form p select {
   vertical-align:top;
+}
+
+#content_page > div form p input[type=submit],
+#content_page > div form p input[type=reset] {
+  margin-right: 10px;
 }
 
 #content_page > div strong {
@@ -1523,10 +1515,6 @@ td[title="Modifier"] img {
 
 .link_to_closed:hover {
 	background:url("/themes/emr/images/lock_24x24.png") no-repeat 0px -1px;
-}
-
-object {
-	margin:10px;
 }
 
 #test {

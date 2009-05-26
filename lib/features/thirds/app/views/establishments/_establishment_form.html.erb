@@ -1,5 +1,5 @@
 <% require_locals establishment_owner %>
-<% owner_type = establishment_owner.class.name.downcase %>
+<% owner_type = establishment_owner.class.singularized_table_name %>
 
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form do |form| %>
 <div class="resource_form" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? %> >
@@ -14,7 +14,7 @@
       <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
     </p>
     
-    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment_owner } #{ :address_owner => establishment } # actually the address_owner is the establishment, but we have to get customer[address_attributes] indeed customer[establishment_attributes][][address_attributes] => FIXME once the bug fixed
+    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment }
     %>
     
     <p>

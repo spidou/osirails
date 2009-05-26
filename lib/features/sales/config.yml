@@ -60,7 +60,6 @@ menus:
                   quotes:
                     title: Devis
                     description: Elaboration des devis
-                    hidden: true
           step_invoicing:
             title: Facturation
             description: Phase de facturation
@@ -77,7 +76,7 @@ menus:
 configurations:
   taxes_vat:
     description: TVA
-    value: 8.5
+    value: 8.5 
   quote_validity_in_days:
     description: Période de validité du devis
     value: 30

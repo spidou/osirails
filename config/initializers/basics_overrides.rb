@@ -132,3 +132,28 @@ class Date
     self.strftime("%d %B %Y")
   end
 end
+
+class Numeric
+  def round_to(precision = 0)
+    if self.kind_of?(Float)
+      (self * (10 ** precision)).round / (10 ** precision).to_f
+    else
+      self
+    end
+  end
+end
+
+class Float
+  def to_s_with_precision(precision = nil)
+    if precision.nil?
+      self.to_s_without_precision
+    elsif precision.instance_of?(Fixnum)
+      str = self.to_s_without_precision
+      integer = str.to(str.index(".") - 1)
+      decimals = str.from(str.index(".") + 1).ljust(precision, "0")
+      "#{integer}.#{decimals}"
+    end
+  end
+  
+  alias_method_chain :to_s, :precision
+end

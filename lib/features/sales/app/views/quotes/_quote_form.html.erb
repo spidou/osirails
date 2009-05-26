@@ -1,56 +1,56 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'sales/quotes' %>
+<% end %>
+
 <% quote = quote_form %>
 
-<%= osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1280px', :scroll => 'auto', :css => 'max-height: 500px;' %>
+<%# osibox_init :url => {:controller => 'products_catalog', :params => {:type => 'popup'}}, :width => '1280px', :scroll => 'auto', :css => 'max-height: 500px;' %>
 
 <script type="text/javascript">
   taxes_vat = <%= ConfigurationManager.sales_taxes_vat %>;
-  add_buttons_in_catalog()
+  //add_buttons_in_catalog();
 </script>
 
-<h2>Conditions commerciales</h2>
 <%= form.error_messages %>
-<p>
-  <%= form.label :validity_date, 'Date de fin de validité :' %>
-  <%= form.text_field :validity_date, :value => Date.today + ConfigurationManager.sales_quote_validity_in_days.days %>
-</p>
-<p>
-  <%= form.label :carriage_costs, 'Frais de port :' %>
-  <%= form.text_field :carriage_costs %>
-</p>
-<p>
-  <%= form.label :reduction, 'Remise :' %>
-  <%= form.text_field :reduction %>
-</p>
-<p>
-  <%= form.label :account, 'Acompte :' %>
-  <%= form.text_field :account %>
-</p>
 
-<h2>Produit de la commande</h2>
-<table id="list_product">
+<h2>Entête</h2>
+  <%= render :partial => 'quote_header', :object => @quote %>
+
+<h2>Corps</h2>
+<table id="quotes_product_references">
   <tr>
 	  <th>Référence</th>
 	  <th>Désignation</th>
 	  <th>Quantité</th>
-	  <th>P.U. HT</th>
-	  <th>Montant HT</th>
-	  <th>Montant TTC</th>
+	  <th>P.U. Brut HT</th>
+	  <th>Remise (%)</th>
+	  <th>P.U. Net HT</th>
+	  <th>Total HT</th>
+	  <th>TVA</th>
+	  <th>Total TTC</th>
 	  <th>Action</th>
   </tr>
+  <%= render :partial => 'quotes_product_reference_in_one_line', :collection => @quote.quotes_product_references %>
+  <%= render :partial => 'quotes_product_reference_in_one_line', :locals => { :quote => @quote } %>
 </table>
 
-<div>
-  <%= hidden_field_tag 'add_this_product_reference_id' %>
-  <%= custom_text_field_with_auto_complete( :product_reference, :name,
-                                            { :value => "Chercher dans le catalogue de produit",
-                                              :onkeydown => "if (event.keyCode == 13) { return false; }" },
-                                            { :update_id => 'add_this_product_reference_id' } ) %>
-  <%= button_to_function "Ajouter", "" %>
-  
-  <button onclick="osibox_open(); return false;">Ouvrir le catalogue de produits</button>
-</div>
-
-<div id="input_references"></div>
+<h2>Pied</h2>
+<p>
+  <%= form.label :validity_date, 'Date de fin de validité :' %>
+  <%= form.date_select :validity_date, :start_year => Date.today.year, :order => [:day, :month, :year], :default => Date.today + ConfigurationManager.sales_quote_validity_in_days.days %>
+</p>
+<p>
+  <%= form.label :carriage_costs, 'Frais de port :' %>
+  <%= form.text_field :carriage_costs, :size => 5 %>
+</p>
+<p>
+  <%= form.label :reduction, 'Remise (%) :' %>
+  <%= form.text_field :reduction, :size => 5 %>
+</p>
+<p>
+  <%= form.label :account, 'Acompte :' %>
+  <%= form.text_field :account, :size => 5 %>
+</p>
 
 <% if params[:action] == 'new' %>
   <p>
@@ -58,12 +58,6 @@
   </p>
 <% else %>
   <p>
-    <%= form.submit 'Modifier' %>
+    <%= form.submit 'Enregistrer' %>
   </p>
 <% end %>
-
-<script type="text/javascript">
-<% @quote.product_references.each do |reference| %>
-  append_reference('<%= reference.to_json(:include => :product_reference) %>'.evalJSON()["product_reference"])
-<% end %>
-</script>

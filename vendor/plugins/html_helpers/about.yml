@@ -1,0 +1,7 @@
+author: Ruben Nine
+summary: Encode and decode HTML entities in your views and other classes.
+homepage: http://www.leftbee.net
+plugin: http://svn.bountysource.com/leftbee-plugins/html_helpers
+license: MIT
+version: 1.1.1
+rails_version: 1.0+

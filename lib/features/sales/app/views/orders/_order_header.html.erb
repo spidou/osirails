@@ -33,7 +33,7 @@
 
         <p>
           <label>Date pr&eacute;visionnelle de livraison :</label>
-          <strong><%= @order.previsional_delivery %></strong>
+          <strong><%= @order.previsional_delivery.humanize %></strong>
         </p>
       </div>
     </div>
@@ -51,7 +51,7 @@
       <div class="order_header_extra">
         <p>
           <label>Contact :</label>
-          <strong>#contact</strong>
+          <strong><%= @order.contacts.first.fullname %> <%= link_to("(Voir plus)", order_informations_path(:anchor => 'contacts')) %></strong>
         </p>
       </div>
     </div>

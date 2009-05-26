@@ -1,0 +1,34 @@
+2008-09-02 paploo <jeff@paploo.net>
+
+  * Fixed a bug in :set_option where it would see the value false as nil
+  instead of :no
+  
+  * Updated the website URL in README.txt
+
+2007-03-07 ronaldo <ronaldo@reflectivesurface.com>
+
+	* Changed the instance variable result to a hash of information
+	about the generation, including bytes and pages generated, and the
+	raw result of the program's execution
+
+	* Added an errors instance variable to register all the errors
+	generated in the course of the program's execution
+	
+	* Refactored generate
+	
+	* Changed generate so it now raises an exception if the program
+	path cannot be found
+
+	* Improved the tests
+
+	* Improved the documentation
+	
+2007-03-06 ronaldo <ronaldo@reflectivesurface.com>
+
+	* Fixed spelling and grammatical error in README.txt
+	
+	* Fixed a couple of naming issues in Rakefile
+	
+2007-03-05 ronaldo <ronaldo@reflectivesurface.com>
+
+	* Initial release

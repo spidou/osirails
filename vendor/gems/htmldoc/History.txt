@@ -1,0 +1,11 @@
+0.2.1
+* Fixed a bug in set_option where the value false would be seen as nil instead of :no
+
+0.2.0
+* Improved the way results are reported
+* Added information about errors generated in the course of execution
+* Refactored a couple of internal methods
+* Improved the tests and documentation
+
+0.1.0
+* Initial release

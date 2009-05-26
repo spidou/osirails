@@ -1,6 +1,8 @@
 class CustomersController < ApplicationController
   helper :thirds, :establishments, :contacts, :documents
   
+  before_filter :hack_params_for_establishments_addresses, :only => [ :create, :update ]
+  
   # GET /customers
   # GET /customers.xml
   def index
@@ -39,18 +41,6 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.xml
   def create
-    ##############
-    ## this block could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
-    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
-    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
-    if params[:customer][:establishment_attributes] and params[:customer][:address_attributes]
-      params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
-        establishment_attributes[:address_attributes] = params[:customer][:address_attributes][index]
-      end
-      params[:customer].delete(:address_attributes)
-    end
-    ##############
-    
     if Customer.can_add?(current_user)
       @customer = Customer.new(params[:customer])
       if @customer.save
@@ -88,18 +78,7 @@ class CustomersController < ApplicationController
   # PUT /customers/1
   # PUT /customers/1.xml
   def update    
-    ##############
-    ## this block could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
-    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
-    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
-    if params[:customer][:establishment_attributes] and params[:customer][:address_attributes]
-      params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
-        establishment_attributes[:address_attributes] = params[:customer][:address_attributes][index]
-      end
-      params[:customer].delete(:address_attributes)
-    end
-    ##############
-    
+    # raise params.inspect
     if Customer.can_edit?(current_user)
       @customer = Customer.find(params[:id])
       if @customer.update_attributes(params[:customer])
@@ -129,5 +108,19 @@ class CustomersController < ApplicationController
       error_access_page(403)
     end
   end
+  
+  private
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_establishments_addresses
+      # raise params.inspect
+      if params[:customer][:establishment_attributes] and params[:establishment][:address_attributes]
+        params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
+          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+        end
+        params.delete(:establishment)
+      end
+    end
 
 end

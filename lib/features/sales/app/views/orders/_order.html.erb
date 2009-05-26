@@ -22,12 +22,8 @@
   <h3>Client</h3>
   <p>
     <%= form.label :establishment_id %>
-    <% if is_new_view? %>
-      <%= form.collection_select(:establishment_id, @order.customer.establishments, :id, :name_and_full_address, :include_blank => true) %>
-      <%= link_to( "(+) Ajouter un établissement", new_customer_establishment_path(@order.customer) ) %>
-    <% else %>
-      <%= form.strong @order.establishment.name_and_full_address %>
-    <% end %>
+    <%= form.collection_select(:establishment_id, @order.customer.establishments, :id, :name_and_full_address, :include_blank => true) %>
+    <%= link_to( "(+) Ajouter un établissement", new_customer_establishment_path(@order.customer) ) %>
   </p>
   
   <div class="form_multiple_entries">

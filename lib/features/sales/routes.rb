@@ -21,9 +21,15 @@ ActionController::Routing::Routes.add_routes do |map|
   map.archived     'archived',     :controller => 'archived_orders'
   
   map.prospectives 'prospectives', :controller => 'commercial_orders'
-  map.sales        'sales',        :controller => 'invoicing_orders'
+  map.invoicings   'invoicings',   :controller => 'invoicing_orders'
+  map.sales        'sales',        :controller => 'commercial_orders'# :controller => 'invoicing_orders'
   
   map.auto_complete_for_customer_name 'auto_complete_for_customer_name', :controller => 'customers', 
                                                                          :action => 'auto_complete_for_customer_name',
                                                                          :method => :get
+  
+  map.auto_complete_for_product_reference_reference 'auto_complete_for_product_reference_reference',
+                                               :controller => 'product_references',
+                                               :action => 'auto_complete_for_product_reference_reference',
+                                               :method => :get
 end

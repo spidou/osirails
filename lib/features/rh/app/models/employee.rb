@@ -1,5 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
+  has_address :address
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
@@ -226,17 +227,6 @@ class Employee < ActiveRecord::Base
     else
       self.iban.attributes = iban_attributes
     end 
-  end
-
-  # this method permit to save the address of the employee when it is passed with the employee form
-  # we use address_attributes.first because the partial he also use to define mutiple addresses but for the employee there is only one that's why we use the only one address in the array
-  def address_attributes=(address_attributes)
-    if address_attributes.first[:id].blank?
-      self.address = self.build_address(address_attributes.first)
-    else
-
-      self.address.attributes = address_attributes.first
-    end    
   end
   
   # this method permit to save the numbers of the employee when it is passed with the employee form

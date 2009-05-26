@@ -22,11 +22,23 @@ class ProductReferencesController < ApplicationController
   # GET /product_reference/:id
   def show
     @reference = ProductReference.find(params[:id])
-    @categories = ProductReferenceCategory.find(:all)
     respond_to do |format|
-      format.html
-      format.js { render :layout => false}
-      format.json { render :json => @reference }
+      format.html {
+        @categories = ProductReferenceCategory.find(:all)
+      }
+      format.js {
+        @categories = ProductReferenceCategory.find(:all)
+        render :layout => false
+      }
+      
+      format.json {
+        keys_to_delete = [ :products_count, :delivery_cost_manpower, :delivery_time, :production_cost_manpower, :production_time,
+                           :product_reference_category_id, :information, :enable, :created_at, :updated_at ]
+        json = JSON.parse(@reference.to_json)
+        keys_to_delete.each { |key| json['product_reference'].delete(key.to_s) } # remove unused keys to shorten the AJAX request
+        json['product_reference']['unit_price'] = @reference.unit_price
+        render :json => json
+      }
     end
   end
   
@@ -76,11 +88,6 @@ class ProductReferencesController < ApplicationController
     
     flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;e' 
     redirect_to :controller => 'product_reference_manager', :action => 'index'
-  end
-  
-  def auto_complete_for_product_reference_name
-    @items = ProductReference.find(:all, :conditions => [ 'reference LIKE ? or name like ? or information like ? or description like ?', pattern = "%#{params[:product_reference][:name]}%", pattern, pattern, pattern ])
-    render :inline => "<%= custom_auto_complete_result(@items, 'name reference', params[:product_reference][:name]) %>"
   end
   
 end

@@ -33,8 +33,9 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
-                    :auto_complete, :paperclip, :has_permissions, :has_documents, :acts_as_step, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :tiny_mce,
+                    :acts_as_versioned, :auto_complete, :paperclip, :has_permissions,
+                    :has_documents, :has_address, :acts_as_step, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -69,6 +70,10 @@ Rails::Initializer.run do |config|
   
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
+    File.directory?(lib = "#{dir}/lib") ? lib : dir
+  end
+  
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 
   # this line permits to add controllers and helpers in plugins
@@ -105,10 +110,16 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
+  config.gem 'json'
+  config.gem 'RedCloth'
+  config.gem 'htmlentities' #TODO freeze all gem dependencies
 end
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
 load 'application_helper.rb'
 
+require 'json'
+require 'htmldoc'
+require 'htmlentities'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y

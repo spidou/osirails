@@ -69,14 +69,16 @@ end
 
 require 'application'
 require_dependency 'customers_controller'
+require_dependency 'product_references_controller'
 
 class CustomersController < ApplicationController
   after_filter :detect_request_for_order_creation, :only => :new
   after_filter :redirect_to_new_order, :only => :create
   
   def auto_complete_for_customer_name
-    find_options = { :conditions => [ "name like ?", "%#{params[:customer][:name]}%"],
-                     :order => "name ASC",
+    find_options = { :include => :establishments,
+                     :conditions => [ "thirds.name like ? or establishments.name like ?", "%#{params[:customer][:name]}%", "%#{params[:customer][:name]}%"],
+                     :order => "thirds.name ASC",
                      :limit => 15 }
     @items = Customer.find(:all, find_options)
     render :inline => "<%= custom_auto_complete_result(@items, 'name', params[:customer][:name]) %>"
@@ -94,5 +96,13 @@ class CustomersController < ApplicationController
         redirect_to( new_order_path(:customer_id => @customer.id) )
       end
     end
+end
+
+class ProductReferencesController < ApplicationController
+  
+  def auto_complete_for_product_reference_reference
+    @items = ProductReference.find(:all, :conditions => [ 'reference LIKE ? or name like ? or information like ? or description like ?', pattern = "%#{params[:product_reference][:reference]}%", pattern, pattern, pattern ])
+    render :inline => "<%= custom_auto_complete_result(@items, 'reference name', params[:product_reference][:reference]) %>"
+  end
   
 end

@@ -78,7 +78,6 @@ class ApplicationController < ActionController::Base
     # this method need to hack htmldoc (/var/lib/gems/1.8/gems/htmldoc-0.2.1/lib/htmldoc.rb > under ubuntu 8.04)
     # add 'line.strip!' just after the line 185
     def render_pdf
-      require 'htmldoc'
       data = render_to_string(:action => "#{params[:action]}.pdf.erb", :layout => false)
       pdf = PDF::HTMLDoc.new
       pdf.set_option :bodycolor, :white

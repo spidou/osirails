@@ -16,13 +16,16 @@ menus:
           product_reference_categories:
             title: Gestion des catégories
             description: Permet la gestion des categories
+            hidden: true
           product_references:
             title: Gestion des références
             description: Permet la gestion des références
+            hidden: true
             children:
               products:
                 title: Gestion des produits
                 description: Permet la gestion de produits
+                hidden: true
       products_catalog:
           title: Catalogue des produits et références
           description: "Permet l'affichage du catalogue de produit"

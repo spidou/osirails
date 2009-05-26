@@ -7,7 +7,7 @@ class Order < ActiveRecord::Base
   belongs_to :commercial, :class_name => 'Employee'
   
   has_one :step_commercial, :dependent => :destroy
-  has_one :step_invoicing, :dependent => :destroy
+  has_one :step_invoicing,  :dependent => :destroy
   has_many :order_logs
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners

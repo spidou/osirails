@@ -41,9 +41,9 @@ module ContactsHelper
   end
   
   def display_contact_add_button(contacts_owner)
-    link_to_function "Ajouter un contact" do |page|
+    content_tag( :p, link_to_function "Ajouter un contact" do |page|
       page.insert_html :bottom, :contacts, :partial => 'contacts/contact_form', :object => Contact.new, :locals => { :contacts_owner => contacts_owner }
-    end
+    end )
   end
   
 end

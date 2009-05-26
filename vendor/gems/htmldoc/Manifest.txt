@@ -1,0 +1,13 @@
+CHANGELOG.txt
+History.txt
+LICENSE.txt
+Manifest.txt
+README.txt
+Rakefile
+init.rb
+lib/htmldoc.rb
+lib/htmldoc/version.rb
+setup.rb
+test/basic_test.rb
+test/generation_test.rb
+test/test_helper.rb

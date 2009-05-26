@@ -26,7 +26,10 @@
     <%= form.label :note %>
     <%= form.form_or_view(form.select(:note, Third::RATINGS), :note) %>
   </p>
-
+  
+  <h3>Adresse de facturation</h3>
+  <%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third } %>
+  
   <h3>Informations bancaires</h3>
     <% if third.class.equal?(Customer) %>
     <p>

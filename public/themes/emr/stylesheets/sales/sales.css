@@ -22,7 +22,7 @@
 
 #order_header .second_column {
   display: inline-block;
-  max-width: 340px;
+  //max-width: 340px;
   vertical-align: top;
 }
 
@@ -84,5 +84,89 @@ p.order_deadline.late {
 }
 
 #order_header_more {
+  text-align: center;
+}
+
+/* QUOTES */
+.new_quotes_product_reference {
+  text-align: left;
+}
+
+table#quotes_product_references td,
+table#quotes_product_references span {
+  vertical-align: top;
+}
+
+table#quotes_product_references td.description {
+  text-align: left;
+}
+
+table#quotes_product_references td.description img,
+table#quotes_product_references td.unit_price img {
+  vertical-align: middle;
+}
+
+table#quotes_product_references td.description input,
+table#quotes_product_references td.description textarea {
+  width: 400px;
+}
+
+table#quotes_product_references span.fieldWithErrors {
+  display: inline-block;
+}
+
+table#quotes_product_references span.fieldWithErrors:after {
+  color: red;
+  vertical-align: top;
+  content: " *"
+}
+
+table#quotes_product_references tr.aggregates td {
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+table#quotes_product_references tr.aggregates td.aggregate_label {
+  border-right: none;
+}
+
+table#quotes_product_references tr.aggregates td.aggregate_amount {
+  border-left: none;
+  text-align: right;
+}
+
+table#quotes_product_references tr.aggregates.global {
+  font-weight: bold;
+  background-color: #CCC;
+  border-top: 1px solid black;
+}
+
+/* QUOTE HEADER */
+#quote_header {
+  text-align: left;
+  text-indent: 0;
+}
+
+#quote_header p {
+  text-align: left;
+  text-indent: 0;
+  padding: 0 0 0 8px;
+  margin-bottom: 0;
+}
+
+#quote_header div {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 400px;
+  margin: 5px 7px 5px 7px;
+}
+
+#quote_header div label {
+  width: 100px !important;
+  vertical-align: top;
+}
+
+#quote_header div h3 {
   text-align: center;
 }

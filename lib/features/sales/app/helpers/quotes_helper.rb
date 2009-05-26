@@ -1,26 +1,7 @@
 module QuotesHelper
   
-  def display_quotes_list(step)
-    quotes = step.quotes
-    html = "<table>"
-    html << "<tr>"
-    html << content_tag(:th, "Date")
-    html << content_tag(:th, "Nb Pièces")
-    html << content_tag(:th, "Total Net TTC")
-    html << content_tag(:th, "Créateur du devis")
-    html << content_tag(:th, "Envoyé au client ?")
-    html << content_tag(:th, "Actions")
-    html << "</tr>"
-    
-    html << render(:partial => 'quotes/quote_in_one_line', :collection => quotes)
-    
-    html << "</table>"
-  end
-  
   def display_quote_add_button
-    html = "<p>"
-    html << link_to("Nouveau devis", new_order_step_estimate_quote_path)
-    html << "</p>"
+    content_tag(:p, link_to("Nouveau devis", new_order_step_estimate_quote_path))
   end
   
   def order_step_estimate_quote_link_overrided(order, quote, options = {})

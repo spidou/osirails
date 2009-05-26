@@ -34,7 +34,7 @@ module ActsAsStep
         write_inheritable_attribute(:list_children_steps, step_children.collect{ |child| child.name })
         
         step_children.each do |child|
-          has_one child.name
+          has_one child.name, :dependent => :destroy
         end
         
         class_eval do
