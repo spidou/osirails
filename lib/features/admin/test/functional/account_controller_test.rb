@@ -1,5 +1,5 @@
 require 'test_helper'
-require File.dirname(__FILE__) + '/../admin_test'
+# require File.dirname(__FILE__) + '/../admin_test'
 
 require 'account_controller'
 
@@ -51,36 +51,23 @@ class AccountControllerTest < ActionController::TestCase
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
-  # FIXME
+  # FIXME This test should be an integration test
   def test_should_change_an_expired_password
     login_as_activated_but_has_expired_password_user
-    
-    raise @response.body.inspect
-    assert_not_nil flash[:error], "flash[:error] should not be nil"
-    assert_not_nil session[:user_id], "session[:user_id] should not be nil"
-    assert_redirected_to :controller => "account", :action => "expired_password"
-    follow_redirect
-    submit_form do |form|
-      form.user_password = "new P@ssw0rd"
-      form.user_password_confirmation = "new P@ssw0rd"
-    end
-    assert @request.post?
+
+    session[:initial_uri] = '/permissions'
+    post :expired_password, :user => { :password => 'new P@ssw0rd', :password_confirmation => 'new P@ssw0rd'}
+    assert_not_nil flash[:notice], "flash[:notice] should not be nil"
+    assert_redirected_to '/permissions'
   end
-  
-  # FIXME
+
   def test_should_not_change_an_expired_password_because_of_same_old_password
     login_as_activated_but_has_expired_password_user
-    
-    raise @response.body.inspect
+
+    session[:initial_uri] = '/permissions'
+    post :expired_password, :user => { :password => 'password', :password_confirmation => 'password'}
     assert_not_nil flash[:error], "flash[:error] should not be nil"
-    assert_not_nil session[:user_id], "session[:user_id] should not be nil"
-    assert_redirected_to :controller => "account", :action => "expired_password"
-    follow_redirect
-    submit_form do |form|
-      form.user_password = "password"
-      form.user_password_confirmation = "password"
-    end
-    assert @request.post?
+    assert_response :success
   end
   
   def test_should_logout_when_logged_in
@@ -138,7 +125,13 @@ class AccountControllerTest < ActionController::TestCase
   end
   
   def test_anti_flood_on_login
-    #TODO test_anti_flood_on_login
+    tentative_time = AccountController::TENTATIVE_LOGIN
+    tentative_time.times do
+      post :login, { :username => users(:admin_user), :password => 'flood', :password_confirmation => 'flood' }
+    end
+
+    assert session[:tentative] >= (tentative_time -1)
+    assert_not_nil flash[:error], "flash[:notice] should not be nil"
   end
   
   def test_anti_flood_on_lost_password
@@ -157,4 +150,43 @@ class AccountControllerTest < ActionController::TestCase
     assert_routing "account/login", {:controller => "account", :action => "login"}
   end
   
+  private
+  
+  def login_as(user, password)
+    get :login
+    assert_response :success
+    submit_form do |form|
+      form.username = users(user).username
+      form.password = password
+    end
+    assert @request.post?
+  end
+  
+  def login_as_powerful_user
+    login_as(:powerful_user, "password")
+  end
+  
+  def login_as_can_list_user
+    login_as(:can_list_user, "password")
+  end
+  
+  def login_as_can_view_user
+    login_as(:can_view_user, "password")
+  end
+  
+  def login_as_can_add_user
+    login_as(:can_add_user, "password")
+  end
+  
+  def login_as_can_edit_user
+    login_as(:can_edit_user, "password")
+  end
+  
+  def login_as_can_delete_user
+    login_as(:can_delete_user, "password")
+  end
+  
+  def login_as_activated_but_has_expired_password_user
+    login_as(:activated_but_has_expired_password_user, "password")
+  end
 end
