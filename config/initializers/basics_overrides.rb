@@ -82,6 +82,17 @@ class String
     raise TypeError, "Both parameters must be #{self.class}. #{first}:#{first.class}, #{second}:#{second.class}" unless first.class.equal?(self.class) and second.class.equal?(self.class)
     self >= first and self <= second
   end
+  
+  # return the boolean value according to the string
+  #
+  def to_b
+    case self.strip             # avoid spaces
+      when "true", "1"
+        return  true
+      else
+        return false 
+    end 
+  end
 end
 
 class Hash

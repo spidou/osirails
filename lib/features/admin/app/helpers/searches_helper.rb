@@ -113,9 +113,7 @@ module SearchesHelper
     # attributes
     html = "<th rowspan='2'  style='width:10px;' > (↓) </th>"
     columns.each do |column| 
-      if column.size==1
-      html += "<th rowspan='2' >#{column.last.humanize}</th>"
-      end
+      html += "<th rowspan='2' >#{column.last.humanize}</th>" if column.size==1
     end
     # sub attributes titles
     tab.uniq.each do |title|

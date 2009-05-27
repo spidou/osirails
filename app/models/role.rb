@@ -20,9 +20,9 @@ class Role < ActiveRecord::Base
   @@form_labels[:description] = "Description du r&ocirc;le :"
   @@form_labels[:user] = "Membres :"
   
-  has_search_index  :only_attributes => ["name","description"],
-                    #:additional_attributes => {"name" => "string"},
-                    :only_sub_models => ["User"]
+#  has_search_index  :only_attributes => ["name","description"],
+#                    #:additional_attributes => {"name" => "string"},
+#                    :only_sub_models => ["User"]
                     
   private
     def create_role_permissions

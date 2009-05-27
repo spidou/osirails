@@ -1,14 +1,23 @@
     module HasSearchIndex
-
+    MODELS = []
+    ACTIONS_TEXT = { "=" => "is ",
+                    "!=" => "is not ",
+                    "like" => "is like",
+                    "not like" => "is not like",
+                    ">=" => "is greater to equal than",
+                    "<=" => "is smaller to equal than",
+                    ">" => "is smaller than",
+                    "<" => "is greater than"}
+    
       class << self
         def included base #:nodoc:
           base.extend ClassMethods
-        end
+        end      
       end
 
       module ClassMethods
-      
-        AUTHORIZED_OPTIONS = [:except_attributes, :only_attributes, :additional_attributes, :only_sub_models, :except_sub_models]
+
+        AUTHORIZED_OPTIONS = [:except_attributes, :only_attributes, :additional_attributes, :only_sub_models, :except_sub_models, :displayed_attributes]
         ACTIONS = { :string   => string = ["not like","like","=","!="],
                     :text     => string,
                     :integer  => integer = [">=","<=","<",">","=","!="],
@@ -21,14 +30,14 @@
         # it define search_index class variable based on passed options hash
         #
         def has_search_index( options={} )
-        
+          HasSearchIndex::MODELS << self.to_s unless HasSearchIndex::MODELS.include?(self.to_s)
           # affect if nil to avoid testing nullity and emptyness
-          options[:additional_attributes]||={}
-          options[:only_attributes]||=[]
-          options[:except_attributes]||=[]
-          options[:except_sub_models]||=[]
-          options[:only_sub_models]||=[]
-          
+          options[:additional_attributes] ||={}
+          options[:only_attributes]       ||=[]
+          options[:except_attributes]     ||=[]
+          options[:except_sub_models]     ||=[]
+          options[:only_sub_models]       ||=[]
+          options[:displayed_attributes]  ||=[]
           
           # check options arg for some errors
 #          raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Argument missing you must specify attributes like :attributes => [\"attr1\",\"attr2\",etc...]" if options[:attributes].empty?
@@ -75,10 +84,10 @@
             end 
           else
             raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Warning you mustn't specify both 'only_attributes' and 'except_attributes' options, please choose one" unless options[:except_attributes].empty?
-            options[:only_attributes].each do |a|
-              raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown attribute '#{a}' please check it" unless self.new.respond_to?(a)
+            options[:only_attributes].each do |attribute|
+              raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown attribute '#{attribute}' please check it" unless self.new.respond_to?(attribute)
               self.columns.each do |elmnt|
-                tmp = tmp.merge(elmnt.name => elmnt.type.to_s) if elmnt.name == a
+                tmp = tmp.merge(elmnt.name => elmnt.type.to_s) if elmnt.name == attribute
               end
             end
           end
@@ -175,33 +184,43 @@
         # search_match?(employee.first,"first_name","jean")
         # ==> return employee  like -> employee.frist_name=="jean"
         #
-        def search_match?(object,attribute,value)
+        def search_match?(object, attribute, value, search_type)
           attributes = self.search_index[:additional_attributes]
           data = object.send(attribute).to_s
           return false if data.nil?
-          if !value.is_a?(Hash)
+          if !value.is_a?(Hash) and !value.is_a?(Array)
             if object.search_index[:additional_attributes][attribute]=="string"          #  use regexp for string attributes same that use like into sql queries
               return data.downcase.match(Regexp.new(value.to_s.downcase))               #  downcase data and value to make the match method case insensitive
             else
               return data == value.to_s
             end
           end       
-          raise ArgumentError, "(Has_search_index): Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if value[:action].nil?           
 
-          if value[:action] == "like"
-            return data.downcase.match(Regexp.new(value[:value].downcase))              #  downcase data and value to make the match method case insensitive
-          elsif value[:action] == "not like"
-            return !data.downcase.match(Regexp.new(value[:value].downcase))             #  downcase data and value to make the match method case insensitive
-          elsif value[:action] == "!="
-            return !data.send("==",value[:value].to_s)
-          elsif value[:action] == "="
-            return data.send("==",value[:value].to_s)
-          elsif ACTIONS[attributes[attribute].to_sym].include?(value[:action])
-            return data.send(value[:action],value[:value].to_s)
-          else
-            raise ArgumentError, "(Has_search_index): Unproper operator '#{value[:action]}' for #{attributes[attribute]} datatype"
+          value_array = (value.is_a?(Array))? value : [ value ]                           # manage the case when only one attribute
+          result = nil
+          value_array.each do |val|
+            raise ArgumentError, "(Has_search_index): Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if val[:action].nil?
+          
+            if val[:action] == "like"
+              res = data.downcase.match(Regexp.new(val[:value].downcase))              #  downcase data and value to make the match method case insensitive
+            elsif val[:action] == "not like"
+              res = !data.downcase.match(Regexp.new(val[:value].downcase))             #  downcase data and value to make the match method case insensitive
+            elsif val[:action] == "!="
+              res = !data.send("==",val[:value].to_s)
+            elsif val[:action] == "="
+              res = data.send("==",val[:value].to_s)
+            elsif ACTIONS[attributes[attribute].to_sym].include?(val[:action])
+              res = data.send(val[:action],val[:value].to_s)
+            else
+              raise ArgumentError, "(Has_search_index): Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
+            end
+            result = res if result.nil?                                                # init the result value
+            result |= res if search_type=='or'                                          # make boolean test to return the result of a multiple value for one attribute
+            result &= res if search_type =='and' or search_type == 'not'
+            
           end
           
+          return result
         end
 
         # Method that permit to get nested resources of an object with an array of these nested resources
@@ -278,38 +297,61 @@
         #
         #==== example:
         #
+        ## General case
+        #
+        #    # Standard search :
+        #
+        #     Model.search_with("[sub_model.]attribute" => value | {:value => value, :action => action} [, ...] [,:search_type => "and"])
+        #
+        #    # Or pass a value at first argument and an array the models wheres to perform the search :
+        #
+        #     Model.search_with( value ,[Model1,Model2] )
+        #
+        #    # In some cases you can need to test more than one value for only one attribute :
+        
+        #     Model.search_with( attribute =>[ {:value => first_value, :action => first_action}, {:value => second_value, :action => second_action} ])
+        #     => it' s like to do ' attribute => {:value => first_value, :action => first_action}, attribute =>{:value => second_value, :action => second_action} '
+        #        :but as you know, you can't pass the same key twice into an Hash.
+        #
         ## with an attribute that is not into database
         #     
         #     User.search_with("expired?" => true) or User.search_with("expired?" => {:value => true, :action => "="})
         #     => all users like an_user.expired?==true    (PS : the both are equal because default action is '=' for all data types, and 'like' (cf. sql) for strings )
         #
         ## with a nested attribute into database or not
-        #(!) you must type the attribute in plural if the resource has many or has and belongs to many and in singular if the resource has one
+        #(!) you must type the attribute in plural if the resource has many or has and belongs to many, and in singular if the resource has one
         #
-        #    #  User Has and belongs to many Role
+        #    #  User Has and belongs to many Role :
+        #
         #     User.search_with("roles.name" => "admin")
         #     => all users that one role name is equal to "admin" at least 
         #      
-        #    # Employee Has one JobContract
+        #    # Employee Has one JobContract :
+        #
         #     Employee.search_with("job_contract.start_date" => "2/2/1900")
         #     => nothing because the date is to old, there's no user that have a job_contract's start_date equal to that one
         #
-        #    # the same has precedent with some args
+        #    # the same has precedent with some args :
+        #
         #     Employee.search_with("job_contract.start_date" =>{:value => "2/2/1900", :action => ">"})
         #     => all employees that job_contract start_date is greater than 2/2/1900
         #
-        #    # Customer has many Establishment and Establishment Has one Address
+        #    # Customer has many Establishment and Establishment Has one Address :
+        #
         #     Customer.search_with("establishments.address.zip_code" => 97438)
         #     => return all customers that have at least one establishment with zip code equal to '97438'
         #
+        
+        
+        
         def search_with(attributes={}, include_array=nil)
    
-          if !attributes.is_a?(Hash)
+          if !attributes.is_a?(Hash)                                                      # perform a general search onto the ragument value
             attribute_value = attributes
             attributes = self.search_attributes_format_hash(attribute_value ,include_array||=[])
             search_type = "or"
           else
-            attributes[:search_type].nil? ? search_type = "and" : search_type = attributes.delete(:search_type)    # default value for the search type if not precised  
+            search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type)    # default value for the search type if not precised  
             attributes.each_key do |att|
 
               # att.split(".").last  --> represent the last part of the attribute tree
@@ -324,7 +366,6 @@
               else                                                                         # there's one nested resource te model is the nested resource
                 model = att.split(".")[-2].camelize.constantize
               end
-              
               if !model.search_index[:attributes].include?(att.split(".").last) and !model.search_index[:additional_attributes].include?(att.split(".").last)             
                 raise ArgumentError, "(Has_search_index): You can't search for attribute '#{att.split(".").last}', because it's not indexed into #{model.to_s} model"
               end 
@@ -348,6 +389,40 @@
 
         end
         
+        # method to get the negative form of the comparators ex =! for =
+        def negative(action)
+          positive = ["=",">","<","like"]
+          negative = ["!=","<=",">=","not like"]
+          return negative[positive.index(action)] if positive.include?(action)
+          return positive[negative.index(action)] if negative.include?(action)
+        end
+                  
+        # method to format the criterion's value
+        def format_value(params)
+          case params['attribute'].split(",")[0]
+            when 'date'
+              m= params['date(3i)'] 
+              d= params['date(2i)'] 
+              y= params['date(0i)'] 
+              return "#{y}/#{m}/#{d}"
+            when 'datetime'
+              min= params['date(5i)']
+              h= params['date(4i)']
+              m= params['date(3i)'] 
+              d= params['date(2i)'] 
+              y= params['date(0i)'] 
+              return "#{y}/#{m}/#{d}"
+            when 'boolean'
+              return params['value'].to_b                        # .strip permit to avoid unused spaces
+            when 'float'
+              return params['value'].to_f
+            when 'integer'
+              return params['value'].to_i
+            else
+              return params['value'] unless params['value'].nil? 
+          end
+        end
+        
         private
           
           # Method that permit to search for additional attributes
@@ -369,20 +444,20 @@
                     nested_object = get_nested_object(object, nested_resources)
                     if nested_object.is_a?(Array)                                                    # has many sub resources
                       nested_object.each do |sub_obj|
-                        tmp_result << object if search_match?(sub_obj, nested_attribute, value)                  
+                        tmp_result << object if search_match?(sub_obj, nested_attribute, value, search_type)
                       end
                     else
-                      tmp_result << object if search_match?(nested_object, nested_attribute, value)                      
-                    end        
+                      tmp_result << object if search_match?(nested_object, nested_attribute, value, search_type)
+                    end
                   else
-                    tmp_result << object if search_match?(object, attribute, value)
+                    tmp_result << object if search_match?(object, attribute, value, search_type)
                   end            
               end
               additional_result = additional_result | tmp_result  if search_type=="or"               # get results that respond to one criterion at least
               additional_result = additional_result & tmp_result  if search_type=="and"              # get results that respond to all criteria
               end
             end
-            additional_result = collection - additional_result if search_type == "not" and is_additional?(attribute)    # get results that don't respond to all criteria
+            additional_result = collection - additional_result if search_type == "not"               # get results that don't respond to all criteria
 
             return additional_result
           end
@@ -394,11 +469,12 @@
           #
           def search_database_attributes(attributes, search_type)
             conditions_array = [""]
+            operator = (search_type=='not')? 'and' : search_type                                              # if search type is 'not', invert all actions and use 'and' search_type
             unless attributes.nil?
               attributes.each_pair do |attribute,value|
                 unless is_additional?(attribute)
                   if attribute.include?(".")
-                    nested_resource = attribute.split(".")[-2]                                                 # '-2' point to the second element from the end of the array
+                    nested_resource = attribute.split(".")[-2]                                                # '-2' point to the second element from the end of the array
                     if nested_resource.plural?
                       model = nested_resource.singularize.camelize.constantize
                     else
@@ -410,16 +486,10 @@
                     good_attribute = self.new.respond_to?(attribute)
                   end
                   if good_attribute
-                    conditions_array[0] << " #{search_type} " unless conditions_array[0]==""   
                     formatted_attribute = "#{model.table_name}.#{attribute.split(".").last}"                  # prefix attribut with the model that it depend on to avoid ambiguous or for nested resource
-                    if value.is_a?(Hash)
-                      conditions_array[0] << "#{formatted_attribute} #{value[:action]}?"
-                      if value[:action] == "like" or value[:action] == "not like"
-                        conditions_array << "%#{value[:value]}%"
-                      else 
-                        conditions_array << value[:value]
-                      end
-                    else
+                    
+                    if !value.is_a?(Hash) and !value.is_a?(Array)
+                      conditions_array[0] << " #{operator} " unless conditions_array[0]==""
                       conditions_array[0] << "#{formatted_attribute}"
                       if model.search_index[:attributes][attribute.split(".").last]=="string"
                         conditions_array[0] << " like?"
@@ -428,16 +498,31 @@
                         conditions_array[0] << " =?"
                         conditions_array << value
                       end
+                    else
+                      value_array = (value.is_a?(Array))? value : [ value ]                                 # manage the case when only one attribute
+                      
+                      value_array.each do |val|
+                      val[:action] = self.negative(val[:action]) if search_type == "not"
+                        conditions_array[0] << " #{operator} " unless conditions_array[0]==""
+                        conditions_array[0] << "#{formatted_attribute} #{val[:action]}?"
+                        if val[:action] == "like" or val[:action] == "not like"
+                          conditions_array << "%#{val[:value]}%"
+                        else 
+                          conditions_array << val[:value]
+                        end
+                      end
                     end
                   else
                     raise ArgumentError,  "(Has_search_index): Wrong argument #{a} maybe you misspelled it"
                   end
                 end 
               end
+#raise conditions_array.inspect+" "+attributes.inspect
               return   self.find(:all, :include => get_include_array, :conditions => conditions_array)
             end
             return nil
           end
+          
       end
 
     end

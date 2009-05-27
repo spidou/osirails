@@ -32,7 +32,7 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :paperclip, :has_permissions, :has_documents, :has_search_index, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :paperclip, :has_permissions, :has_search_index, :has_documents, :all]
   
   # BEGIN #
   # Manage feature's dependences

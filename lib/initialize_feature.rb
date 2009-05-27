@@ -11,9 +11,6 @@ def init(config, path, plugin = false)
     yaml = YAML.load(File.open(yaml_path)) rescue {}
     
     FeatureManager.new(yaml, plugin, config, path)
-
-
-
     
   rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError => e
     error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"

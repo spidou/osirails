@@ -134,7 +134,7 @@ module HasPermissions
               elsif object.instance_of?(Document)
                 perm = object.document_type.permissions.find_by_role_id(role)
               elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
-                (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "permissions error for #{self}:#{self.class}"
+                (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "Permissions error for #{self}:#{self.class}. Please check if the a Menu named '#{controller_path}' exists."
 
               ### CLASS METHODS
               elsif object.respond_to?("business_object?") # BUSINESS OBJECT
