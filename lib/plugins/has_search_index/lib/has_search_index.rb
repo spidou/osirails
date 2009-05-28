@@ -411,7 +411,7 @@
               m= params['date(3i)'] 
               d= params['date(2i)'] 
               y= params['date(0i)'] 
-              return "#{y}/#{m}/#{d}"
+              return "#{y}/#{m}/#{d} #{h}:#{min}:00"                      #FIXME pas bon manque les heures et les minutes!
             when 'boolean'
               return params['value'].to_b                        # .strip permit to avoid unused spaces
             when 'float'
@@ -458,7 +458,7 @@
               end
             end
             additional_result = collection - additional_result if search_type == "not"               # get results that don't respond to all criteria
-
+            
             return additional_result
           end
 
@@ -517,9 +517,9 @@
                   end
                 end 
               end
-#raise conditions_array.inspect+" "+attributes.inspect
-              return   self.find(:all, :include => get_include_array, :conditions => conditions_array)
+              return self.find(:all, :include => get_include_array, :conditions => conditions_array)
             end
+
             return nil
           end
           
