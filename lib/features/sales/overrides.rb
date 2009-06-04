@@ -32,7 +32,7 @@ module ApplicationHelper
     
     # permits to display only steps which are activated for the current order
     def display_menu_entry_with_sales_support(menu, li_options)
-      return "" if menu.name.start_with?("step_") and !@order.steps.collect{ |s| s.name }.include?(menu.name)
+      return if menu.name and menu.name.start_with?("step_") and !@order.steps.collect{ |s| s.name }.include?(menu.name)
       display_menu_entry_without_sales_support(menu, li_options)
     end
     
@@ -43,9 +43,12 @@ module ApplicationHelper
         path = "#{menu.name}_path"
         
         controller_name = "#{menu.name.camelize}Controller"
+        # return if controller_name == "OrdersController"
         begin
           controller_class = controller_name.constantize
-          if controller_class.respond_to?(:current_order_path)
+          if controller_name == "OrdersController"
+            path = "order_path(@order)"
+          elsif controller_class.respond_to?(:current_order_path)
             path = "order_#{path}"
           end
         rescue NameError => e

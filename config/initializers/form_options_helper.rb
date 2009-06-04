@@ -183,6 +183,9 @@ module ActionView
     end
     
     class FormBuilder
+      attr_accessor :force_show_view
+      @force_show_view ||= false
+      
       def collection_select_with_indentation(method, collection, value_method, text_method, options = {}, html_options = {})
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
       end
@@ -241,7 +244,7 @@ module ActionView
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
         return form_tag if view_methods.empty? # return first if second is nil
 #        if @template.is_form_view? and !form_tag.nil?
-        if ( @object.new_record? or (!@object.new_record? and @template.is_edit_view?) ) and !form_tag.nil?
+        if !force_show_view? and ( @object.new_record? or (!@object.new_record? and @template.is_form_view?) ) and !form_tag.nil?
           form_tag
         else
           view_text = @object
@@ -280,6 +283,14 @@ module ActionView
       
       def reset(text)
         @template.reset(@object_name, text)
+      end
+      
+      def force_show_view?
+        @force_show_view
+      end
+      
+      def force_show_view=(bool)
+        @force_show_view = bool
       end
     end
     

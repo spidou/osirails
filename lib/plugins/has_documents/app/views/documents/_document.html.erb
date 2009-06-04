@@ -1,12 +1,12 @@
 <%
 require_locals documents_owner
-id_attr = "id=\"document_#{document.id}\"" unless document.new_record?
+id_attr = "id=\"resource_document_#{document.id}\"" unless document.new_record?
 %>
 
-<div class="document" <%= id_attr %> >
+<div class="resource document" <%= id_attr %> >
   <% unless document.new_record? -%>
     <%= content_tag :div, nil, :class => :preview, :id => "document_preview_#{@document_id}" %>
-    <%= image_tag(document.attachment.url(:thumb), :class => "thumb") %>
+    <%= content_tag(:div, image_tag(document.attachment.url(:thumb)), :class => :thumb) %>
     <% content_tag :div, :class => :details do -%>
       <%= content_tag(:h1, h(document.name)) unless document.name.nil? or document.name.empty? %>
       <%= content_tag(:span, h(document.tag_list.join(", "))) + content_tag(:br) unless document.tag_list.empty? %>
@@ -19,9 +19,5 @@ id_attr = "id=\"document_#{document.id}\"" unless document.new_record?
     <% end -%>
   <% end -%>
   
-  <% if is_form_view? -%>
-    <div class="form">
-      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner } %>
-    </div>
-  <% end -%>
+  <%= render(:partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner }) if is_form_view? %>
 </div>

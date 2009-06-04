@@ -1,12 +1,10 @@
 <% content_for :header do %>
-  <%= stylesheet_link_tag_with_theme_support 'core/acts_as_documents/acts_as_documents' %>
-  <%= javascript_include_tag 'core/documents/documents.js' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources.js' %>
 <% end %>
 
 <%
 @documents = documents_list
-@new_documents = @documents.select{ |d| d.new_record? }  # put new records in a separate variable
-@documents.reject!{ |d| d.new_record? }                  # delete new records from @documents
 
 @group_by ||= "date"
 @order_by ||= "asc" # ascendent
@@ -32,27 +30,22 @@ when "name"
 when "tag"
   #OPTIMIZE fix the bug when a document has multiple tags
   @groups = @documents.sort_by{ |d| d.tag_list }.group_by{ |d| d.tags.collect{ |t| t.name } }
-else # group by date by default
+else # group by 'date' by default
   @groups = @documents.sort_by{ |d| d.new_record? ? Time.now : d.created_at }.group_by{ |d| d.new_record? ? time_ago_in_words(Time.now) : time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
 end
 
-@groups.push(["Nouveau(x) document(s) avec erreurs", @new_documents]) unless @new_documents.empty?
+# @groups.push(["Nouveau(x) document(s) avec erreurs", @new_documents]) unless @new_documents.empty?
 @groups.reverse! if @order_by == "desc"
 %>
 
 <% unless @groups.empty? %>
-  <%= "<p>Classer par #{group_by_method("type", @documents_owner)} | #{group_by_method("date", @documents_owner)} | #{group_by_method("name", @documents_owner)} | #{group_by_method("tag", @documents_owner)}</p>" %>
+  <%= "<p>Classer par #{group_documents_by_method("type", @documents_owner)} | #{group_documents_by_method("date", @documents_owner)} | #{group_documents_by_method("name", @documents_owner)} | #{group_documents_by_method("tag", @documents_owner)}</p>" %>
   <% @groups.each do |group, collection| %>
-    <div class="document_group">
-      <%= content_tag(:h1, group) %>
+    <div class="resource_group document_group">
+      <%= content_tag(:h1, group.blank? ? "\"Aucun\"" : group) %>
       <%= render :partial => 'documents/document', :collection => collection, :locals => { :documents_owner => @documents_owner }  %>
     </div>
   <% end %>
 <% else %>
   <%= content_tag :p, "Aucun document n'a été trouvé." %>
 <% end %>
-
-<div class="document_group" id="new_documents" style="display:none">
-  <h1>Nouveaux documents</h1>
-  
-</div>

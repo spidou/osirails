@@ -1,3 +1,7 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end -%>
+
 <h1>Nouveau dossier</h1>
 
 <% unless @order.customer %>
@@ -11,7 +15,7 @@
 
   <h2>1. Client existant</h2>
   <% form_for @order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
-    <div>
+    <div id="order_search_customer">
       <%= hidden_field_tag :customer_id %>
       <%= custom_text_field_with_auto_complete(:customer, :name, { :value => "Chercher un client dans la base" }, { :update_id => "customer_id" } ) %>
       <%= form.submit 'Valider' %>

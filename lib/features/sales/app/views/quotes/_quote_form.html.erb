@@ -14,7 +14,7 @@
 <%= form.error_messages %>
 
 <h2>Entête</h2>
-  <%= render :partial => 'quote_header', :object => @quote %>
+  <%= render :partial => 'quote_header', :object => quote, :locals => { :form => form } %>
 
 <h2>Corps</h2>
 <table id="quotes_product_references">
@@ -30,8 +30,8 @@
 	  <th>Total TTC</th>
 	  <th>Action</th>
   </tr>
-  <%= render :partial => 'quotes_product_reference_in_one_line', :collection => @quote.quotes_product_references %>
-  <%= render :partial => 'quotes_product_reference_in_one_line', :locals => { :quote => @quote } %>
+  <%= render :partial => 'quotes_product_reference_in_one_line', :collection => quote.quotes_product_references %>
+  <%= render :partial => 'quotes_product_reference_in_one_line', :locals => { :quote => quote } %>
 </table>
 
 <h2>Pied</h2>

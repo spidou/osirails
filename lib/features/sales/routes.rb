@@ -14,7 +14,6 @@ ActionController::Routing::Routes.add_routes do |map|
     # other resources
     order.resources :logs
     order.informations 'informations', :controller => 'informations'
-    order.edit_informations 'informations/edit', :controller => 'informations', :action => 'edit'
   end
   
   map.closed       'closed',       :controller => 'closed_orders'
@@ -22,6 +21,7 @@ ActionController::Routing::Routes.add_routes do |map|
   
   map.prospectives 'prospectives', :controller => 'commercial_orders'
   map.invoicings   'invoicings',   :controller => 'invoicing_orders'
+  map.in_progress  'in_progress',  :controller => 'in_progress_orders'
   map.sales        'sales',        :controller => 'commercial_orders'# :controller => 'invoicing_orders'
   
   map.auto_complete_for_customer_name 'auto_complete_for_customer_name', :controller => 'customers', 

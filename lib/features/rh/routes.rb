@@ -6,7 +6,7 @@ ActionController::Routing::Routes.add_routes do |map|
   end
   
   map.resources :jobs
-  map.resources :job_contracts
+  map.job_contracts 'job_contracts', :controller => 'job_contracts', :action => 'index' #FIXME remove that line once the url_for_menu helper is upgraded!
   
   map.rh 'rh', :controller => 'employees' #default page for human resources
 end

@@ -25,32 +25,25 @@ module OrdersHelper
   end
   
   def remaining_time_before_delivery(order)
-    return "" unless order.previsional_delivery
-    
-    delay = (Date.today - order.previsional_delivery.to_date).to_i
-    if delay < -7
-      status = "good"
-    elsif delay < 0
-      status = "medium"
-    elsif delay >= 0
-      status = "late"
-    end
-    
-    if delay < 0
-      message = "Livraison prévue dans"
-      time = distance_of_time_from_delivery(order)
-    elsif delay == 0
+    case order.critical_status
+    when status = Order::CRITICAL
+      message = "Livraison en retard de"
+    when status = Order::LATE
+      message = "Livraison en retard de"
+    when status = Order::TODAY
       message = "Livraison prévue pour"
       time = "aujourd'hui"
+    when status = Order::SOON
+      message = "Livraison prévue dans"
+    when status = Order::FAR
+      message = "Livraison prévue dans"
     else
-      message = "Livraison en retard de"
-      time = distance_of_time_from_delivery(order)
+      return
     end
     
-    html = "<p class=\"order_deadline #{status}\">"
-    html << content_tag(:span, message) + " "
-    html << content_tag(:span, time)
-    html << "</p>"
+    time ||= distance_of_time_from_delivery(order)
+    
+    content_tag( :p, content_tag(:span, message) + " " + content_tag(:span, time), :class => "order_deadline #{status}" )
   end
   
   def distance_of_time_from_delivery(order)

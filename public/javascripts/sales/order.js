@@ -1,17 +1,3 @@
-//function toggle_order_header(element) {
-//  if ($('order_header').select('.order_header_extra').first().getStyle('display') == "none") {
-//    $('order_header').select('.order_header_extra').each(function(item) {
-//      item.setStyle({display: 'block'})
-//    });
-//    element.innerHTML = "Cacher"
-//  } else {
-//    $('order_header').select('.order_header_extra').each(function(item) {
-//      item.setStyle({display: 'none'})
-//    });
-//    element.innerHTML = "Plus d'informations"
-//  }
-//}
-
 if (window.addEventListener)
 {
   window.addEventListener('load', initOrderEventListeners, false);
@@ -28,7 +14,7 @@ function initOrderEventListeners() {
 function initialize_toggle_order_header() {
   link = $('order_header_more').select('a').first();
   original_title_link = link.innerHTML;
-  to_hide_title_link = "Cacher";
+  to_hide_title_link = "Réduire";
   
   Event.observe(link, 'click', function(menu_event) {
     if ($('order_header').select('.order_header_extra').first().getStyle('display') == "none") {
@@ -44,4 +30,9 @@ function initialize_toggle_order_header() {
     });
     link.innerHTML = new_text;
   });
+}
+
+function initialize_select_contact() {
+  select = $('order_contact_ids')
+  alert(select)
 }

@@ -1,8 +1,8 @@
 class Supplier < Third
   # Permissions
   has_permissions :as_business_object
-
-  # Relationships
+  has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
+  
   has_one :iban, :as => :has_iban
 
   # Validations

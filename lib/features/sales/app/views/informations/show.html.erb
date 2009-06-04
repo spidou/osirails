@@ -4,12 +4,9 @@
 	<h2>Avancement global</h2>
   <%= render :partial => 'orders/order_timeline', :object => @order %>
 
-	<h2 id="contacts">Contacts</h2>
-  <div class="form_multiple_entries">
-    <div class="collection">
-      <%= render :partial => 'contacts/contact_chooser', :collection => @order.contacts, :locals => { :contacts_owner => @order } %>
-    </div>
-  </div>
+	<h2 id="contacts_section">Contacts</h2>
+	<%= display_contacts_list(@order) %>
+	
 	<h2>Toutes les remarques</h2>
 	
 	<h2>Tous les documents</h2>

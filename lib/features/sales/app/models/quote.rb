@@ -2,6 +2,7 @@ class Quote < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :bill_to_address
   has_address :ship_to_address
+  has_contacts :many => false, :validates_presence => true
   
   belongs_to :creator, :class_name => 'User', :foreign_key => 'user_id'
   belongs_to :step_estimate

@@ -18,11 +18,12 @@
 			<%= enc(@quote.bill_to_address.zip_code) + " " + enc(@quote.bill_to_address.city_name) %><br/>
 			<%= enc(@quote.bill_to_address.country_name) %><br/><br/>
 			
-			<strong><%= enc("À l´attention de #{@order.contacts.first.fullname}") %></strong><br/>
-			<% for number in @order.contacts.first.numbers %>
+			<% @contact = @quote.contact %>
+			<strong><%= enc("À l´attention de #{@contact.fullname}") %></strong><br/>
+			<% for number in @contact.numbers %>
   			<%= enc("#{number.number_type.name}: #{number.formatted}") %><br/>
 			<% end %>
-			<%= enc("Email: #{@order.contacts.first.email}") unless @order.contacts.first.email.nil? or @order.contacts.first.email.empty? %>
+			<%= enc("Email: #{@contact.email}") unless @contact.email.nil? or @contact.email.empty? %>
 		</td>
 	</tr>
 </table>

@@ -1,5 +1,14 @@
-<div class="presentation_medium">
-<% form_for(@menu) do |form| %>
+<%
+menu_owner ||= nil
+if menu_owner
+  owner_type = menu_owner.class.singularized_table_name
+  field_name = "#{owner_type}[menu_attributes]"
+else
+  field_name = 'menu'
+end
+%>
+
+<% fields_for field_name, menu do |form| %>
   <%= form.error_messages %>
   <p>
     <%= form.label :title %>
@@ -11,8 +20,10 @@
   </p>
   <p>
     <%= form.label :parent_id %>
-    <%= form.collection_select_with_indentation(:parent_id, @menus, :id, :title, {:indentation => 15, :include_blank => "-- Racine --"}) %>
+    <%= form.collection_select_with_indentation(:parent_id, Menu.get_structured_menus, :id, :title, {:indentation => 15, :include_blank => "-- Racine --"}) %>
   </p>
-  <p><%= form.submit submit_button_name %></p>
+  <p>
+    <%= form.label :separator %>
+    <%= form.select(:separator, { "Avant" => "before", "Après" => "after" }, :include_blank => "Non") %>
+  </p>
 <% end %>
-</div>                                                                  

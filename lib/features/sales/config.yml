@@ -16,21 +16,27 @@ menus:
     position: 9
     children:
       commercial_orders:
-        title: Etude commerciale
-        description: "Dossiers actuellement en phase d'étude commerciale"
+        title: Dossiers en Étude Commerciale
+        description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
         position: 1
       invoicing_orders:
-        title: Facturation
-        description: Dossiers actuellement en phase de facturation
+        title: Dossiers en Facturation
+        description: Afficher la liste des dossiers actuellement en phase de facturation
         position: 2
-      closed_orders:
-        title: Cloturés
-        description: Dossiers cloturés
-        position: 3
-      archived_orders:
-        title: Archivés
-        description: Dossiers archivés
+        separator: after
+      in_progress_orders:
+        title: Tous les dossiers
+        description: Afficher la liste complète des dossiers en cours
         position: 4
+        separator: after
+      closed_orders:
+        title: Dossiers Cloturés
+        description: Afficher la liste des dossiers déjà cloturés
+        position: 6
+      archived_orders:
+        title: Dossiers Archivés
+        description: Afficher la liste des dossiers déjà archivés
+        position: 7
       orders:
         title: Dossier
         description: Dossier de vente

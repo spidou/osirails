@@ -1,5 +1,6 @@
 class Customer < Third
   has_permissions :as_business_object
+  has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
   
   belongs_to :payment_method
   belongs_to :payment_time_limit
@@ -7,7 +8,7 @@ class Customer < Third
 
   ## Validations
   validates_uniqueness_of :name, :siret_number
-  validates_associated :establishments, :contacts
+  validates_associated :establishments
 
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}
@@ -24,12 +25,12 @@ class Customer < Third
     return establishment_array
   end
 
-  # customer.contacts_all            => array
+  # customer.all_contacts            => array
   #
   # return the direct contacts of the customer,
   # with the contacts of all its establishments.
   #
-  def contacts_all
+  def all_contacts
     contacts = []
     #OPTIMIZE can't this loop be optimized with an unique sql request ?
     self.establishments.each do |establishment|

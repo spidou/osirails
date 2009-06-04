@@ -1,3 +1,7 @@
+#order_search_customer {
+  margin: 7px 10px 7px 10px;
+}
+
 /* ORDER HEADER */
 #order_header {
   text-align: left;
@@ -17,7 +21,7 @@
 }
 
 #order_header .first_column label {
-  width: 160px;
+  width: 200px;
 }
 
 #order_header .second_column {
@@ -27,7 +31,7 @@
 }
 
 #order_header .second_column label {
-  width: 140px;
+  width: 200px;
 }
 
 /* CHECKLISTS */
@@ -62,18 +66,20 @@ p.order_deadline span:first-child:after {
   white-space: pre;
 }
 
-p.order_deadline.good {
+p.order_deadline.far {
   color: blue;
   text-decoration: underline;
 }
 
-p.order_deadline.medium {
+p.order_deadline.soon,
+p.order_deadline.today {
   font-weight: bold;
   color: red;
   text-decoration: underline;
 }
 
-p.order_deadline.late {
+p.order_deadline.late,
+p.order_deadline.critical {
   font-weight: bold;
   color: red;
   text-decoration: blink;
@@ -148,25 +154,37 @@ table#quotes_product_references tr.aggregates.global {
   text-indent: 0;
 }
 
-#quote_header p {
+#quote_header > p {
   text-align: left;
   text-indent: 0;
   padding: 0 0 0 8px;
   margin-bottom: 0;
 }
 
-#quote_header div {
+#quote_header > div {
   display: inline-block;
   vertical-align: top;
   min-width: 400px;
   margin: 5px 7px 5px 7px;
 }
 
-#quote_header div label {
+#quote_header > div label {
   width: 100px !important;
   vertical-align: top;
 }
 
-#quote_header div h3 {
+#quote_header > div h3 {
   text-align: center;
+}
+
+#quote_header #contact_container {
+  min-width: 814px;
+}
+
+#quote_header #contact_container label {
+  width: auto !important;
+}
+
+#quote_header #contact_container #order_preview_contacts {
+  margin-left: 110px;
 }

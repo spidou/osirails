@@ -19,10 +19,6 @@ menus:
       suppliers:
         title: Fournisseurs
         description: Gestion des fournisseurs
-      contacts:
-        title: Contacts de Client
-        description: Gestion des contacts des clients
-        hidden: true
 search:
   Customer:
     base:

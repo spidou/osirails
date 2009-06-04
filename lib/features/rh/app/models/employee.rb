@@ -243,6 +243,12 @@ class Employee < ActiveRecord::Base
   
   private
   
+    # Method to change the case of the first_name and the last_name at the employee's creation
+    def case_management
+      self.first_name = self.first_name.chars.capitalize
+      self.last_name = self.last_name.chars.upcase
+    end
+    
     def save_numbers
       self.numbers.each do |number|
         if number.should_destroy?    

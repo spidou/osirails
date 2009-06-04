@@ -190,12 +190,16 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contact_type_id", :limit => 11
+    t.integer  "contact_type_id",     :limit => 11
     t.string   "job"
     t.string   "email"
+    t.string   "gender"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size",    :limit => 11
   end
 
-  create_table "contacts_owners", :id => false, :force => true do |t|
+  create_table "contacts_owners", :force => true do |t|
     t.integer "contact_id",       :limit => 11
     t.integer "has_contact_id",   :limit => 11
     t.string  "has_contact_type"
@@ -483,6 +487,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.datetime "updated_at"
     t.integer  "feature_id",  :limit => 11
     t.boolean  "hidden"
+    t.string   "separator"
   end
 
   create_table "mime_type_extensions", :force => true do |t|
@@ -552,10 +557,11 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "activity_sector_id",   :limit => 11
     t.integer  "order_type_id",        :limit => 11
     t.datetime "closed_date"
-    t.date     "previsional_start"
     t.date     "previsional_delivery"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "quotation_deadline"
+    t.integer  "delivery_time",        :limit => 11
   end
 
   create_table "participants", :force => true do |t|

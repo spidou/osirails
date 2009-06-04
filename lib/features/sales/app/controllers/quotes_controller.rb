@@ -1,18 +1,9 @@
 class QuotesController < ApplicationController
-  helper :orders
+  helper :orders, :contacts
   
   after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
   
   acts_as_step_controller :step_name => :step_estimate
-
-  def index
-    if Quote.can_list?(current_user)
-      @quotes = @order.step_commercial.step_estimate.quotes
-      redirect_to new_order_step_estimate_quote_path if @quotes.empty?
-    else
-      error_access_page(403)
-    end
-  end
   
   def show
     if Quote.can_view?(current_user)
@@ -31,6 +22,7 @@ class QuotesController < ApplicationController
   def new
     if Quote.can_add?(current_user)
       @quote = @order.step_commercial.step_estimate.quotes.build
+      @quote.contacts << @order.contacts.last unless @order.contacts.empty?
     else
       error_access_page(403)
     end

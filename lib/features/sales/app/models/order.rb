@@ -1,4 +1,6 @@
 class Order < ActiveRecord::Base
+  has_contacts :validates_presence => true
+  
   # Relationships
   belongs_to :society_activity_sector
   belongs_to :order_type
@@ -9,11 +11,9 @@ class Order < ActiveRecord::Base
   has_one :step_commercial, :dependent => :destroy
   has_one :step_invoicing,  :dependent => :destroy
   has_many :order_logs
-  has_many :contacts_owners, :as => :has_contact
-  has_many :contacts, :source => :contact, :through => :contacts_owners
 
   # Validations
-  validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id
+  validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id, :previsional_delivery
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after Date.today (creation date of the order), etc. )
   
   cattr_accessor :form_labels
@@ -24,8 +24,15 @@ class Order < ActiveRecord::Base
   @@form_labels[:establishment] = 'Etablissement concerné :'
   @@form_labels[:contacts] =  'Contact(s) concerné(s) :'
   @@form_labels[:created_at] = 'Date de cr&eacute;ation :'
-  @@form_labels[:previsional_start] = 'Date pr&eacute;visionnelle de mise en production :'
   @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
+  @@form_labels[:quotation_deadline] = "Date butoire d'envoi du devis :"
+  
+  # contantes for level
+  CRITICAL = 'critical'
+  LATE = 'late'
+  TODAY = 'today'
+  SOON = 'soon'
+  FAR = 'far'
   
   after_create :create_steps
   
@@ -132,8 +139,40 @@ class Order < ActiveRecord::Base
     true
   end
   
+  def critical_status
+    return unless previsional_delivery
+    delay = (Date.today - previsional_delivery.to_date).to_i
+    
+    if delay < -14
+      FAR
+    elsif delay < 0
+      SOON
+    elsif delay > 7
+      CRITICAL
+    elsif delay > 0
+      LATE
+    elsif delay == 0
+      TODAY
+    end
+  end
+  
   private
     def default_step
       Step.find_by_name("step_commercial")
     end
+    
+    # that method permits to bound the new contact with the customer of the order.
+    # after that, the contact which is first created for the order, is also associated to the customer (of the order)
+    def save_contacts_with_order_support
+      save_contacts_without_order_support
+      
+      all_contacts = customer.all_contacts
+      contacts.each do |contact|
+        unless all_contacts.include?(contact)
+          customer.contacts << contact
+        end
+      end
+    end
+    
+    alias_method_chain :save_contacts, :order_support
 end

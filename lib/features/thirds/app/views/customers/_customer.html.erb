@@ -7,7 +7,8 @@
 
     <%= display_establishments_list(@customer) %>
     <%= display_establishment_add_button(@customer) %>
-
+    
+    <h2>Contacts</h2>
     <%= display_contacts_list(@customer) %>
     <%= display_contact_add_button(@customer) %>
     
@@ -23,6 +24,8 @@
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>
   <%= display_establishments_list(@customer) %>
+  
+  <h2>Contacts</h2>
   <%= display_contacts_list(@customer) %>
   
   <h2>Documents</h2>

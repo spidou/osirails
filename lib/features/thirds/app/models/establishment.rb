@@ -1,15 +1,11 @@
 class Establishment  < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :address, :one_or_many => :many
+  has_contacts
   
-  has_many  :contacts, :as => :has_contacts
   belongs_to :customer
   belongs_to :establishment_type
   validates_presence_of :name
-  
-  # has_many_polymorphic
-  has_many :contacts_owners, :as => :has_contact
-  has_many :contacts, :source => :contact, :through => :contacts_owners
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy

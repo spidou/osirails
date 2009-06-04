@@ -9,7 +9,7 @@
 <% end %>
 
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= link_to 'Modifier le dossier', order_edit_informations_path(@order) if menu_informations.can_edit?(current_user) %>
+  <%= link_to 'Modifier le dossier', edit_order_path(@order) if menu_orders.can_edit?(current_user) %>
 <% end %>
 
 <div>
@@ -22,7 +22,8 @@
 
       <p>
         <label>Client / &Eacute;tablissement :</label>
-        <strong><%= @order.customer.name %> / <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
+        <% establishment_name = @order.establishment.nil? ? "" : "/ #{@order.establishment.name}" %>
+        <strong><%= link_to( "#{@order.customer.name} #{establishment_name}", @order.customer) %></strong>
       </p>
 
       <div class="order_header_extra">
@@ -51,7 +52,7 @@
       <div class="order_header_extra">
         <p>
           <label>Contact :</label>
-          <strong><%= @order.contacts.first.fullname %> <%= link_to("(Voir plus)", order_informations_path(:anchor => 'contacts')) %></strong>
+          <strong><%= @order.contacts.first.fullname %> <%= link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) %></strong>
         </p>
       </div>
     </div>
@@ -61,8 +62,8 @@
   </div>
 
   <p>
-  <% if menu_informations.can_edit?(current_user) %>
-    <%= link_to 'Modifier', order_edit_informations_path(@order) %>
+  <% if menu_orders.can_edit?(current_user) %>
+    <%= link_to 'Modifier', edit_order_path(@order) %>
   <% end %>
   </p>
 </div>

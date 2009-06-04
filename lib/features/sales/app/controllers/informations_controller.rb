@@ -1,7 +1,7 @@
 class InformationsController < ApplicationController
-  acts_as_step_controller :sham => true
+  helper :contacts
   
-  before_filter :load_collections
+  acts_as_step_controller :sham => true
   
   def index
     render :action => :show
@@ -12,11 +12,4 @@ class InformationsController < ApplicationController
   
   def edit
   end
-  
-  private
-    def load_collections
-      @commercials = Employee.find(:all)
-      @order_types = OrderType.find(:all)
-      @contacts = @order.customer.contacts_all
-    end
 end

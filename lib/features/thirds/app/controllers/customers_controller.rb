@@ -77,8 +77,7 @@ class CustomersController < ApplicationController
 
   # PUT /customers/1
   # PUT /customers/1.xml
-  def update    
-    # raise params.inspect
+  def update
     if Customer.can_edit?(current_user)
       @customer = Customer.find(params[:id])
       if @customer.update_attributes(params[:customer])

@@ -110,6 +110,7 @@ module ActsAsStepController
             
             def should_display_edit
               if params[:format].nil? and (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
+                flash.keep
                 redirect_to :action => "edit"
               end
             end

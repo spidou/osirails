@@ -1,19 +1,13 @@
 class OrdersController < ApplicationController
+  helper :contacts
+  
   before_filter :load_collections
-  
-#  method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
-  
-#  def auto_complete_for_employee_fullname
-#    all_employees = Employee.find(:all)
-#    fullname = params[:employee][:fullname].downcase
-#    @employees = []
-#    all_employees.each do |e|
-#      @employees << e if !e.first_name.downcase.grep(/#{fullname}/).empty? || !e.last_name.downcase.grep(/#{fullname}/).empty?
-#    end
-#    render :partial => 'auto_complete_for_employee_fullname'
-#  end
 
   acts_as_step_controller :sham => true, :step_name => "step_commercial"
+  
+  def index
+    redirect_to :action => :new
+  end
   
   def show
     respond_to do |format|
@@ -23,6 +17,7 @@ class OrdersController < ApplicationController
         else
           redirection = order_informations_path(@order)
         end
+        flash.keep
         redirect_to redirection
       }
       format.svg {
@@ -43,7 +38,6 @@ class OrdersController < ApplicationController
     if params[:customer_id] # this is the second step of the order creation
       begin
         @order.customer = Customer.find(params[:customer_id])
-        @contacts = @order.customer.contacts_all
       rescue Exception => e
         flash.now[:error] = "Le client n'a pas été trouvé. Veuillez réessayer. Erreur : #{e.message}"
       end
@@ -56,22 +50,20 @@ class OrdersController < ApplicationController
       flash[:notice] = "Dossier crée avec succès"
       redirect_to order_informations_path(@order)
     else
-      @contacts = @order.customer.contacts_all
       render :action => "new"
     end
   end
   
   def edit
-    @contacts = @order.customer.contacts_all
   end
   
   def update
     params[:order][:contact_ids] ||= []
     if @order.update_attributes(params[:order])
       flash[:notice] = "Dossier modifié avec succés"
-      redirect_to order_path(@order)
+      redirect_to order_informations_path(@order)
     else
-      flash[:error] = "Erreur lors de la mise à jour du dossier"
+      render :action => 'edit'
     end
   end
   

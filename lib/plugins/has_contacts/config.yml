@@ -1,0 +1,10 @@
+menus:
+  contacts:
+    title: "Carnet d'adresses"
+    description: Gestion des contacts
+    hidden: true
+    children:
+      contact_avatars:
+        title: Avatar des contacts
+        description: Avatar des contacts
+        hidden: true

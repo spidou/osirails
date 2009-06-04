@@ -107,7 +107,7 @@ namespace :osirails do
       contact_customer3 = ContactType.create :name => "Contact de livraison", :owner => "Customer"
       contact_establishment1 = ContactType.create :name => "Normal", :owner => "Establishment"
       contact_establishment2 = ContactType.create :name => "Contact de livraison", :owner => "Establishment"    
-      contact_establishment3 = ContactType.create :name => "Acceuill", :owner => "Establishment"
+      contact_establishment3 = ContactType.create :name => "Accueil", :owner => "Establishment"
       contact_supplier1 = ContactType.create :name => "Normal", :owner => "Supplier"
       
       # default users and roles
@@ -193,8 +193,8 @@ namespace :osirails do
       establishment3.save
       
       # default contacts
-      contact1 = Contact.create :first_name => "Jean-Jacques", :last_name => "Dupont", :contact_type_id => contact_customer1.id, :email => "jean-jacques@dupont.fr", :job => "Commercial"
-      contact2 = Contact.create :first_name => "Pierre-Paul", :last_name => "Dupond", :contact_type_id => contact_establishment1.id, :email => "pierre-paul@dupond.fr", :job => "Commercial"
+      contact1 = Contact.create :first_name => "Jean-Jacques", :last_name => "Dupont", :contact_type_id => contact_customer1.id, :email => "jean-jacques@dupont.fr", :job => "Commercial", :gender => "M"
+      contact2 = Contact.create :first_name => "Pierre-Paul", :last_name => "Dupond", :contact_type_id => contact_establishment1.id, :email => "pierre-paul@dupond.fr", :job => "Commercial", :gender => "M"
       
       # assign contact to client and establishment
       customer.contacts << contact1
@@ -409,10 +409,10 @@ namespace :osirails do
       c.checklist_options << ChecklistOption.create(:name => "Option 3")
       
       # default orders
-      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days)
+      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
       order1.contacts << Customer.first.contacts.first
       order1.save
-      order2 = Order.new(:title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days)
+      order2 = Order.new(:title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
       order2.contacts << Customer.first.contacts.first
       order2.save
       

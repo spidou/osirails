@@ -98,7 +98,7 @@ module ApplicationHelper
   #         - false if the current page is an view page (show)
   #
   def is_form_view?
-     is_edit_view? or is_new_view?
+    is_edit_view? or is_new_view?
   end
   
   def is_new_view?
@@ -366,7 +366,7 @@ module ApplicationHelper
         unless menu.content.nil?
           url_for(:controller => "contents", :action => "show", :id => menu.content.id)
         else
-          ""
+          return
         end
       end
     end
@@ -394,7 +394,8 @@ module ApplicationHelper
           output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
         else
           h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
-          output << content_tag(:h4, link_to(current.parent.title, url_for_menu(current.parent), :title => current.parent.description) + more_link, h4_options)
+          url = url_for_menu(current.parent)
+          output << content_tag(:h4, ( url.nil? ? current.parent.title : link_to(current.parent.title, url, :title => current.parent.description) ) + more_link, h4_options)
         end
       end
       output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
@@ -406,6 +407,10 @@ module ApplicationHelper
     end
     
     def display_menu_entry(menu, li_options)
-      content_tag(:li, link_to(menu.title, url_for_menu(menu), :title => menu.description), li_options)
+      return "" if (url = url_for_menu(menu)).nil?
+      unless menu.separator.blank?
+        li_options.merge!({:class => "#{li_options[:class]} #{menu.separator}_separator"}) if ( menu.separator == 'before' and menu.can_move_up? ) or ( menu.separator == 'after' and menu.can_move_down? )
+      end
+      content_tag(:li, link_to(menu.title, url, :title => menu.description), li_options)
     end
 end
