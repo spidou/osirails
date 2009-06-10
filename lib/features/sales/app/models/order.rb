@@ -8,8 +8,10 @@ class Order < ActiveRecord::Base
   belongs_to :establishment
   belongs_to :commercial, :class_name => 'Employee'
   
-  has_one :step_commercial, :dependent => :destroy
-  has_one :step_invoicing,  :dependent => :destroy
+  has_one :commercial_step,    :dependent => :nullify
+  has_one :pre_invoicing_step, :dependent => :nullify
+  has_one :invoicing_step,     :dependent => :nullify
+  
   has_many :order_logs
 
   # Validations
@@ -34,7 +36,7 @@ class Order < ActiveRecord::Base
   SOON = 'soon'
   FAR = 'far'
   
-  after_create :create_steps
+  after_create :create_steps, :activate_first_step
   
   # Create all orders_steps after create order
   def create_steps
@@ -42,13 +44,21 @@ class Order < ActiveRecord::Base
       if step.parent.nil?
         step.name.camelize.constantize.create(:order_id => self.id)
       else
-        s = step.name.camelize.constantize.create(step.parent.name + '_id' => self.send(step.parent.name).id)
+        step_model = step.name.camelize.constantize                # SurveyStep
+        parent_step_model = step.parent.name.camelize.constantize  # CommercialStep
+        
+        s = step_model.create(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
+        
         step.checklists.each do |checklist|
-          checklist_response = ChecklistResponse.create :checklist_id => checklist.id
-          s.checklist_responses << checklist_response  
+          checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
+          s.checklist_responses << checklist_response
         end
       end
     end
+  end
+  
+  def activate_first_step
+    first_level_steps.first.pending!
   end
   
   # Return all steps of the order according to the choosen order type
@@ -60,14 +70,15 @@ class Order < ActiveRecord::Base
   # Returns steps of the first level
   # 
   # order:
-  #   step_commercial
-  #     step_graphic_conception
-  #     step_survey
-  #     step_estimate
-  #   step_invoicing
-  #     step_finished
+  #   commercial_step
+  #     graphic_conception_step
+  #     survey_step
+  #     estimate_step
+  #   invoicing_step
+  #     invoice_step
+  #     payment_step
   # 
-  # @order.first_level_steps # => [ #<StepCommercial>, #<StepInvoicing> ]
+  # @order.first_level_steps # => [ #<CommercialStep>, #<InvoicingStep> ]
   # 
   def first_level_steps
     steps.select{ |step| !step.parent }.map{ |step| send(step.name) }
@@ -76,27 +87,37 @@ class Order < ActiveRecord::Base
   # Returns all steps
   # 
   # order:
-  #   step_commercial
-  #     step_graphic_conception
-  #   step_invoicing
-  #     step_finished
+  #   commercial_step
+  #     graphic_conception_step
+  #     survey_step
+  #     estimate_step
+  #   invoicing_step
+  #     invoice_step
+  #     payment_step
   # 
-  # @order.all_steps # => [ #<StepCommercial>, #<StepGraphicConception>, #<StepInvoicing>, #<StepFinished> ]
+  # @order.all_steps # => [ #<CommercialStep>, #<GraphicConceptionStep>, #<SurveyStep>, ... ]
   # 
   def all_steps
     first_level_steps.collect { |step| [step] << step.children_steps }.flatten
   end
   
-  def current_step
-    return default_step if new_record?
-    all_steps.select{ |step| step.respond_to?(:parent_step) }.each do |child|
-      return child.original_step if (child.in_progress? || child.unstarted?)
+  def current_first_level_step
+    first_level_steps.each do |child|
+      return child unless child.terminated?
     end
-    # if this code is reached, all steps (unless first level ones) are terminated!
-    return nil
+    return first_level_steps.last
+  end
+  
+  def current_step
+#    return default_step if new_record?
+    children_steps = all_steps.select{ |step| step.respond_to?(:parent_step) }
+    children_steps.each do |child|
+      return child unless child.terminated?
+    end
+    return children_steps.last
   end
 
-  # Return a has for advance statistics
+  # Return a hash for advance statistics
   def advance
     steps_obj = []
     advance = {}
@@ -110,18 +131,11 @@ class Order < ActiveRecord::Base
     advance
   end
 
-  def child
-    first_level_steps.reverse.each do |child|
-      return child unless child.unstarted?
-    end
-    return first_level_steps.first
-  end
-
-#  ## Return remarks's order
-#  def remarks
-#    remarks = []
-#    OrdersSteps.find(:all, :conditions => ["order_id = ?", self.id]).each {|order_step| order_step.remarks.each {|remark| remarks << remark} }
-#    remarks
+#  def child
+#    first_level_steps.reverse.each do |child|
+#      return child unless child.unstarted?
+#    end
+#    return first_level_steps.first
 #  end
 
   ## Return missing elements's order
@@ -157,9 +171,9 @@ class Order < ActiveRecord::Base
   end
   
   private
-    def default_step
-      Step.find_by_name("step_commercial")
-    end
+#    def default_step
+#      Step.find_by_name("commercial_step")
+#    end
     
     # that method permits to bound the new contact with the customer of the order.
     # after that, the contact which is first created for the order, is also associated to the customer (of the order)

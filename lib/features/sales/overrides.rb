@@ -48,7 +48,7 @@ module ApplicationHelper
           controller_class = controller_name.constantize
           if controller_name == "OrdersController"
             path = "order_path(@order)"
-          elsif controller_class.respond_to?(:current_order_path)
+          elsif controller_class.respond_to?(:current_order_step) # so it is a controller with acts_as_step support
             path = "order_#{path}"
           end
         rescue NameError => e

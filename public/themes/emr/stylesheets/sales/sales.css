@@ -107,6 +107,16 @@ table#quotes_product_references td.description {
   text-align: left;
 }
 
+table#quotes_product_references td.description p {
+  margin: 0;
+  padding: 0;
+}
+
+table#quotes_product_references td.description strong {
+  color: inherit;
+  font-weight: bold;
+}
+
 table#quotes_product_references td.description img,
 table#quotes_product_references td.unit_price img {
   vertical-align: middle;

@@ -289,54 +289,6 @@ namespace :osirails do
       d.update_attribute(:title, "Photo")
       d.mime_types << [ jpg, png ]
       
-      ## default file types
-      # for feature
-#      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"
-#      f.mime_types << MimeType.find_by_name("application/x-gzip")
-      # for employees
-#      f = FileType.create :name => "CV", :model_owner => "Employee"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f = FileType.create :name => "Lettre de motivation", :model_owner => "Employee"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f = FileType.create :name => "Contrat de travail", :model_owner => "Employee"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-      # for step survey
-#      f = FileType.create :name => "Photo Survey", :model_owner => "StepSurvey"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("image/png")
-      # for step graphic conception
-#      f = FileType.create :name => "Maquette", :model_owner => "StepGraphicConception"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f.mime_types << MimeType.find_by_name("image/png")
-#      f = FileType.create :name => "Plan de conception", :model_owner => "StepGraphicConception"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f.mime_types << MimeType.find_by_name("image/png")
-      # for press proof
-#      f = FileType.create :name => "PressProof", :model_owner => "PressProof"
-#      f.mime_types << MimeType.find_by_name("image/png")
-#      FileType.create :name => "Devis", :model_owner => "Dossier"
-#      FileType.create :name => "Facture", :model_owner => "Dossier"
-      # for customers
-#      f = FileType.create :name => "Charte graphique", :model_owner => "Customer"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("image/png")
-#      f = FileType.create :name => "Plan de fabrication", :model_owner => "Customer"
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-      # for job_contracts
-#      f = FileType.create :name => "Contrat de travail", :model_owner => "JobContract"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f.mime_types << MimeType.find_by_name("image/png")
-#      f = FileType.create :name => "Avenant au contrat", :model_owner => "JobContract"
-#      f.mime_types << MimeType.find_by_name("image/jpeg")
-#      f.mime_types << MimeType.find_by_name("application/pdf")
-#      f.mime_types << MimeType.find_by_name("image/png")
-      
       # default calendars and events
       calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
       Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 1", :description => "Description de l'evenement 1", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
@@ -394,16 +346,16 @@ namespace :osirails do
       OrderType.last.society_activity_sectors << SocietyActivitySector.first
       
       # default checklist 
-      Checklist.create :name => "Livraison sur site", :step_id => Step.find_by_name("step_survey").id
-      Checklist.create :name => "Accès voiture", :step_id => Step.find_by_name("step_survey").id
-      c = Checklist.create :name => "Frais de déplacement", :step_id => Step.find_by_name("step_survey").id
+      Checklist.create :name => "Livraison sur site", :step_id => survey_step = Step.find_by_name("survey_step").id
+      Checklist.create :name => "Accès voiture", :step_id => survey_step
+      c = Checklist.create :name => "Frais de déplacement", :step_id => survey_step
       c.checklist_options << ChecklistOption.create(:name => "< 10 km")
       c.checklist_options << ChecklistOption.create(:name => "< 50 km")
       c.checklist_options << ChecklistOption.create(:name => "< 80 km")
       
-      Checklist.create :name => "Question 1", :step_id => Step.find_by_name("step_graphic_conception").id
-      Checklist.create :name => "Question numéro 2", :step_id => Step.find_by_name("step_graphic_conception").id
-      c = Checklist.create :name => "Question numéro 123", :step_id => Step.find_by_name("step_graphic_conception").id
+      Checklist.create :name => "Question 1", :step_id => graphic_concetion_step = Step.find_by_name("graphic_conception_step").id
+      Checklist.create :name => "Question numéro 2", :step_id => graphic_concetion_step
+      c = Checklist.create :name => "Question numéro 123", :step_id => graphic_concetion_step
       c.checklist_options << ChecklistOption.create(:name => "Option 1")
       c.checklist_options << ChecklistOption.create(:name => "Option 2")
       c.checklist_options << ChecklistOption.create(:name => "Option 3")
@@ -438,21 +390,21 @@ namespace :osirails do
       end
     end
 
-    desc "Depopulate the database"
-    task :depopulate => :environment do
-      %W{ Role User Civility FamilySituation BusinessObjectPermission MenuPermission DocumentTypePermission CalendarPermission NumberType
-          Indicative Job JobContractType JobContract Service EmployeeState ThirdType Employee ContactType Salary Premium Country LegalForm
-          PaymentMethod PaymentTimeLimit UnitMeasure EstablishmentType Establishment Supplier Iban Customer Commodity CommodityCategory
-          Product ProductReference ProductReferenceCategory SocietyActivitySector ActivitySector DocumentType FileType MimeType MimeTypeExtension
-          Calendar Event Employee EmployeesService Number Address Contact OrderType Order OrderTypesSocietyActivitySectors SalesProcess
-          MemorandumsService Memorandum Checklist ChecklistOption Estimate EstimatesProductReference Step StepCommercial StepSurvey
-          StepGraphicConception StepEstimate StepInvoicing
-        }.each do |model_name|
-          model = model_name.constantize
-          puts "destroying all rows for model '#{model.name}'"
-          model.destroy_all
-        end
-    end
+#    desc "Depopulate the database"
+#    task :depopulate => :environment do
+#      %W{ Role User Civility FamilySituation BusinessObjectPermission MenuPermission DocumentTypePermission CalendarPermission NumberType
+#          Indicative Job JobContractType JobContract Service EmployeeState ThirdType Employee ContactType Salary Premium Country LegalForm
+#          PaymentMethod PaymentTimeLimit UnitMeasure EstablishmentType Establishment Supplier Iban Customer Commodity CommodityCategory
+#          Product ProductReference ProductReferenceCategory SocietyActivitySector ActivitySector DocumentType FileType MimeType MimeTypeExtension
+#          Calendar Event Employee EmployeesService Number Address Contact OrderType Order OrderTypesSocietyActivitySectors SalesProcess
+#          MemorandumsService Memorandum Checklist ChecklistOption Estimate EstimatesProductReference Step StepCommercial StepSurvey
+#          StepGraphicConception StepEstimate StepInvoicing
+#        }.each do |model_name|
+#          model = model_name.constantize
+#          puts "destroying all rows for model '#{model.name}'"
+#          model.destroy_all
+#        end
+#    end
 
     #TODO find how to execute environment for each dependencies of the task reset, or to call explicitly the tasks with their environment
 #    desc "Reset the database"
@@ -460,7 +412,7 @@ namespace :osirails do
     
     desc "Destroy all rows for all tables of the database"
     task :destroy_all => :environment do
-      puts "This task was not made yet"
+      puts "TODO"
     end
   end
 end

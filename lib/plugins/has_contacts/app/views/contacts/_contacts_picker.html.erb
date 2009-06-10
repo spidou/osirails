@@ -4,15 +4,17 @@ owner_type = contacts_owner.class.singularized_table_name
 contacts = contacts_picker
 %>
 
-<select id="select_contacts" name="select[contacts]">
-  <option value="0">Choisissez un contact</option>
-  <% for contact in contacts %>
-    <% selected_contact = contacts_owner.contacts.include?(contact) %>
-    <% disabled = selected_contact ? 'disabled="disabled"' : '' %>
-    
-    <%= "<option value=\"#{contact.id}\" #{disabled}>#{contact.fullname}</option>" %>
-  <% end %>
-</select>
+<% if is_form_view? %>
+  <select id="select_contacts" name="select[contacts]">
+    <option value="0">Choisissez un contact</option>
+    <% for contact in contacts %>
+      <% selected_contact = contacts_owner.contacts.include?(contact) %>
+      <% disabled = selected_contact ? 'disabled="disabled"' : '' %>
+      
+      <%= "<option value=\"#{contact.id}\" #{disabled}>#{contact.fullname}</option>" %>
+    <% end %>
+  </select>
+<% end %>
 
 <div id="preview_contacts">
 <% for contact in contacts %>
@@ -31,11 +33,13 @@ contacts = contacts_picker
 <% end %>
 </div>
 
-<script type="text/javascript">
-  var contacts_picker = new ContactsPicker({select: 'select_contacts',
-                                            mode: '<%= contacts_owner.has_many_contacts? ? "many" : "one" %>',
-                                            hidden_element_prefix: 'preview_contact',
-                                            input_class: 'contact_input',
-                                            removable_element_class: 'preview_contact',
-                                            element_actions_class: 'contact_actions'})
-</script>
+<% if is_form_view? %>
+  <script type="text/javascript">
+    var contacts_picker = new ContactsPicker({select: 'select_contacts',
+                                              mode: '<%= contacts_owner.has_many_contacts? ? "many" : "one" %>',
+                                              hidden_element_prefix: 'preview_contact',
+                                              input_class: 'contact_input',
+                                              removable_element_class: 'preview_contact',
+                                              element_actions_class: 'contact_actions'})
+  </script>
+<% end %>

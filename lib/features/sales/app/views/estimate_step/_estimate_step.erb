@@ -4,7 +4,7 @@
 
 <div>
 <% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "step_estimate", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+  <% form_for(@step, :url => { :controller => "estimate_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
     <%= render :partial => 'quotes/quotes_list', :object => @step.quotes %>
@@ -12,7 +12,7 @@
     
     <p>
       <%= form.submit 'Enregistrer' %>
-      <%= form.submit 'Clôturer cette étape', :name => :close_step %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
     </p>
   <% end %>
 <% else %>

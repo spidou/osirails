@@ -4,7 +4,7 @@
 
 <div>
 <% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "step_survey", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+  <% form_for(@step, :url => { :controller => "survey_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
     <%= display_checklists_list(@step)%>

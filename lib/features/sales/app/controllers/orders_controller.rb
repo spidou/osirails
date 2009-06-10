@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   
   before_filter :load_collections
 
-  acts_as_step_controller :sham => true, :step_name => "step_commercial"
+  acts_as_step_controller :sham => true, :step_name => :commercial_step
   
   def index
     redirect_to :action => :new
@@ -13,7 +13,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
       format.html {
         if @order.current_step
-          redirection = send("order_step_#{@order.current_step.path}_path", @order)
+          redirection = send(@order.current_step.original_step.path, @order)
         else
           redirection = order_informations_path(@order)
         end
@@ -21,13 +21,10 @@ class OrdersController < ApplicationController
         redirect_to redirection
       }
       format.svg {
-        case params[:for]
-        when 'step'
-          render :partial => 'mini_order', :locals => { :children_list => @order.first_level_steps }
-        when 'understep'
-          render :partial => 'mini_order', :locals => { :children_list => @order.child.children_steps }
+        if params[:for]
+          render :partial => 'mini_order', :object => @order
         else
-          render :partial => 'order'
+          render :partial => 'order', :object => @order
         end
       }
     end

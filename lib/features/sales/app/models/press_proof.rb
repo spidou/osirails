@@ -1,6 +1,6 @@
 class PressProof < ActiveRecord::Base
   
-  belongs_to :step_graphic_conception
+  belongs_to :graphic_conception_step
   
   ## Plugins
   #acts_as_file

@@ -12,6 +12,20 @@ steps:
       estimate:
         title: Chiffrage
         position: 3
+  pre_invoicing:
+    title: SAS de facturation
+    position: 2
+    children:
+      delivery:
+        title: Livraison
+        position: 1
   invoicing:
     title: Facturation
-    position: 2
+    position: 3
+    children:
+      invoice:
+        title: Factures
+        position: 1
+      payment:
+        title: Paiements
+        position: 2

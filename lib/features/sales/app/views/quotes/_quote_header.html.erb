@@ -8,7 +8,7 @@
 require_locals form
 
 quote = quote_header
-order = quote.step_estimate.order
+order = quote.estimate_step.order
 default_bill_to_address = order.customer.address
 default_ship_to_address = order.establishment ? order.establishment.address : order.customer.address
 %>

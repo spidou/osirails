@@ -4,7 +4,7 @@
 
 <div>
 <% if is_form_view? %>
-  <% form_for(@step, :url => { :controller =>"step_graphic_conception", :action => :update },  :html => { :multipart => true }) do |form| %>
+  <% form_for(@step, :url => { :controller => "graphic_conception_step", :action => :update },  :html => { :multipart => true }) do |form| %>
     <%= form.error_messages %>
     
     <%= display_checklists_list(@step)%>
@@ -23,7 +23,7 @@
     
     <p>
       <%= form.submit 'Enregistrer' %>
-      <%= form.submit 'Clôturer cette étape', :name => :close_step %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
     </p>
   <% end %>
 <% else %>

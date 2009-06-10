@@ -3,16 +3,22 @@ class QuotesController < ApplicationController
   
   after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
   
-  acts_as_step_controller :step_name => :step_estimate
+  acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
   
   def show
     if Quote.can_view?(current_user)
       @quote = Quote.find(params[:id])
-      pdf = render_pdf
-      if pdf
-        send_data pdf, :filename => "devis_#{@quote.id}.pdf", :disposition => 'attachment'
-      else
-        error_access_page(500)
+      
+      respond_to do |format|
+        format.pdf {
+          pdf = render_pdf
+          if pdf
+            send_data pdf, :filename => "devis_#{@quote.id}.pdf", :disposition => 'attachment'
+          else
+            error_access_page(500)
+          end
+        }
+        format.html { }
       end
     else
       error_access_page(403)
@@ -21,7 +27,7 @@ class QuotesController < ApplicationController
   
   def new
     if Quote.can_add?(current_user)
-      @quote = @order.step_commercial.step_estimate.quotes.build
+      @quote = @order.commercial_step.estimate_step.quotes.build
       @quote.contacts << @order.contacts.last unless @order.contacts.empty?
     else
       error_access_page(403)
@@ -30,11 +36,11 @@ class QuotesController < ApplicationController
   
   def create
     if Quote.can_add?(current_user)
-      @quote = @order.step_commercial.step_estimate.quotes.build(params[:quote])
+      @quote = @order.commercial_step.estimate_step.quotes.build(params[:quote])
       @quote.creator = current_user
       if @quote.save
         flash[:notice] = "Le devis a été ajout&eacute; avec succ&egrave;s"
-        redirect_to order_step_estimate_path(@order)
+        redirect_to order_estimate_step_quote_path(@order, @quote)
       else
         render :action => 'new'
       end
@@ -55,7 +61,7 @@ class QuotesController < ApplicationController
       
       if @quote.update_attributes(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
-        redirect_to edit_order_step_estimate_path(@order)
+        redirect_to order_estimate_step_quote_path(@order, @quote)
       else
         render :controller => 'quotes', :action => 'edit'
       end

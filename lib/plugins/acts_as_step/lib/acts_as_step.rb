@@ -11,17 +11,18 @@ module ActsAsStep
       extend SingletonMethods
       include InstanceMethods
       
-      options = { :step_name        => self.singularized_table_name,
-                  :remarks          => true,
-                  :checklists       => true,
-                  :missing_elements => true
+      options = { :step_name         => self.singularized_table_name,
+                  :remarks           => true,
+                  :checklists        => true,
+                  :missing_elements  => true
                 }.merge!(options)
       
       step = Step.find_by_name(options[:step_name])
       raise "The step '#{options[:step_name]}' doesn't exist. Please check in the config yaml file." if step.nil?
       
       if (step_parent = step.parent) # so it's a child step
-        belongs_to :parent_step, :class_name => step_parent.name.camelize, :foreign_key => "#{step_parent.name}_id"
+        parent_step_model = step_parent.name.camelize.constantize
+        belongs_to :parent_step, :class_name => step_parent.name.camelize, :foreign_key => "#{parent_step_model.table_name.singularize}_id"
         
         class_eval do
           def order
@@ -34,7 +35,8 @@ module ActsAsStep
         write_inheritable_attribute(:list_children_steps, step_children.collect{ |child| child.name })
         
         step_children.each do |child|
-          has_one child.name, :dependent => :destroy
+          step_model = step.name.camelize.constantize
+          has_one child.name, :foreign_key => "#{step_model.table_name.singularize}_id", :dependent => :destroy
         end
         
         class_eval do
@@ -69,6 +71,16 @@ module ActsAsStep
       end
       
       attr_protected :status
+      
+      # retrieve all instances of this step currently in progress or pending
+      named_scope :currently_pending_or_in_progress, :conditions => [ "status IN ('pending', 'in_progress')" ]
+      
+      # retrieve all orders which are currently in progress or pending in this step
+      class_eval do
+        def self.orders
+          currently_pending_or_in_progress.collect(&:order).sort_by(&:previsional_delivery)
+        end
+      end
     end
   end
   
@@ -84,6 +96,7 @@ module ActsAsStep
   
   module InstanceMethods
     UNSTARTED   = 'unstarted'
+    PENDING     = 'pending'
     IN_PROGRESS = 'in_progress'
     TERMINATED  = 'terminated'
     
@@ -138,34 +151,57 @@ module ActsAsStep
       end
     end
     
-    def siblings_steps # sibling
-      self_and_siblings_steps.select{ |s| s != self }
+    def siblings_steps
+      self_and_siblings_steps - [self]
     end
     
     def self_and_siblings_steps
-      respond_to?(:parent_step) ? parent_step.children_steps : []
+      respond_to?(:parent_step) ? parent_step.children_steps : order.first_level_steps
+    end
+    
+    def next
+      collection = self_and_siblings_steps
+      index = collection.index(self) + 1
+      index >= collection.size ? nil : collection[index]
+    end
+    
+    def previous
+      collection = self_and_siblings_steps
+      index = collection.index(self) - 1
+      index < 0 ? nil : collection[index]
     end
     
     def unstarted!
-      update_attribute(:status, UNSTARTED) unless unstarted?
+      update_attribute(:status, UNSTARTED) if status.blank?
+    end
+    
+    def pending!
+      update_attribute(:status, PENDING) if unstarted?
     end
     
     def in_progress!
-      unless in_progress?
+      if pending? or unstarted?
         update_attribute(:status, IN_PROGRESS)
-        update_attribute(:start_date, DateTime.now)
+        update_attribute(:started_at, DateTime.now)
       end
     end
     
     def terminated!
-      unless terminated?
+      if in_progress? or pending? or unstarted?
         update_attribute(:status, TERMINATED)
-        update_attribute(:end_date, DateTime.now)
+        update_attribute(:finished_at, DateTime.now)
+        if next_step = self.next
+          next_step.pending!
+        end
       end
     end
     
     def unstarted?
       status == UNSTARTED
+    end
+    
+    def pending?
+      status == PENDING
     end
 
     def in_progress?
@@ -190,6 +226,10 @@ module ActsAsStep
     
     def dependencies_are_unstarted?
       dependencies_are_in_status(UNSTARTED)
+    end
+    
+    def dependencies_are_pending?
+      dependencies_are_in_status(PENDING)
     end
     
     def dependencies_are_in_progress?

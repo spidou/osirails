@@ -10,7 +10,7 @@ module ActsAsStepController
     def acts_as_step_controller options = {}
       default_step_controller_methods(options)
       
-      real_step_controller_methods unless options[:sham]
+      real_step_controller_methods(options) unless options[:sham]
       
       setup_sub_resources unless options[:sham]
     end
@@ -31,14 +31,14 @@ module ActsAsStepController
             write_inheritable_attribute(:current_order_step, step)
           end
           
-          # return the first level step in which the order is currently
-          def self.current_order_path
-            unless current_order_step.nil?
-              current_order_step.first_parent.path
-            else
-              "closed"
-            end
-          end
+#          # return the first level step in which the order is currently
+#          def self.current_order_path
+#            unless current_order_step.nil?
+#              current_order_step.first_parent.path
+#            else
+#              "closed"
+#            end
+#          end
           
           private
             def lookup_order_environment
@@ -51,7 +51,7 @@ module ActsAsStepController
               end
               
               # define the current order step
-              self.class.current_order_step = @order.current_step
+              self.class.current_order_step = @order.current_step.original_step
               
               # manage logs
               OrderLog.set(@order, current_user, params)
@@ -81,9 +81,9 @@ module ActsAsStepController
         end
       end
       
-      def real_step_controller_methods
+      def real_step_controller_methods options
         before_filter :lookup_step_environment
-        before_filter :should_display_edit,     :only => [ :index, :show ]
+        before_filter :should_display_edit,     :only => [ :index, :show ]    unless options[:skip_edit_redirection]
         after_filter  :update_step_status,      :only => [ :create, :update ]
         
         class_eval do
@@ -109,9 +109,9 @@ module ActsAsStepController
             end
             
             def should_display_edit
-              if params[:format].nil? and (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
+              if (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
                 flash.keep
-                redirect_to :action => "edit"
+                redirect_to params.merge(:action => "edit")
               end
             end
             
@@ -147,7 +147,7 @@ module ActsAsStepController
         class_eval do
           private
             def assign_user_in_remark_attributes
-              if params[self.class.step_name][:remark_attributes]
+              if params[self.class.step_name] and params[self.class.step_name][:remark_attributes]
                 params[self.class.step_name][:remark_attributes].each do |remark_attributes|
                   remark_attributes[:user_id] = current_user.id
                 end

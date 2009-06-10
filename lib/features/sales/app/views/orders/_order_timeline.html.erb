@@ -6,9 +6,9 @@
   </div>
   
 <% order.all_steps.each do |child| %>
-	<% if child.start_date %>
+	<% if child.started_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%=child.start_date.to_humanized_datetime %>"><%= child.start_date.to_humanized_date %></span>
+    <span class="timeline_date" title="<%=child.started_at.to_humanized_datetime %>"><%= child.started_at.to_humanized_date %></span>
     <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
   <% else %>
@@ -18,9 +18,9 @@
   </div>
 	<% end %>
 
-	<% if child.end_date %>
+	<% if child.finished_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%= child.end_date.to_humanized_datetime %>"><%= child.end_date.to_humanized_date %></span>
+    <span class="timeline_date" title="<%= child.finished_at.to_humanized_datetime %>"><%= child.finished_at.to_humanized_date %></span>
     <span class="timeline_notice">Fin de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>

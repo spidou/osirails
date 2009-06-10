@@ -45,7 +45,7 @@
 	<% @quote.quotes_product_references.each do |qpr| %>
 	<tr>
 		<td><%= enc(qpr.product_reference.reference) %></td>
-		<td style="text-align: left;"><pre><%= enc(qpr.description) %></pre></td>
+		<td style="text-align: left;"><pre><%= textilize(enc(qpr.description)) %></pre></td>
 		<td><%= qpr.quantity %></td>
 		<td><%= qpr.unit_price.round_to(2).to_s(2) %></td>
 		<td><%= qpr.discount.round_to(2).to_s(2) %></td>

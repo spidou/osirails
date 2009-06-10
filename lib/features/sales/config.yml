@@ -15,66 +15,83 @@ menus:
     title: Ventes
     position: 9
     children:
-      commercial_orders:
-        title: Dossiers en Étude Commerciale
-        description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
-        position: 1
-      invoicing_orders:
-        title: Dossiers en Facturation
-        description: Afficher la liste des dossiers actuellement en phase de facturation
-        position: 2
-        separator: after
       in_progress_orders:
         title: Tous les dossiers
         description: Afficher la liste complète des dossiers en cours
+        position: 1
+        separator: after
+      commercial_orders:
+        title: Dossiers en Étude Commerciale
+        description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
+        position: 2
+      pre_invoicing_orders:
+        title: Dossiers en SAS de Facturation
+        description: Afficher la liste des dossiers actuellement en phase de SAS de facturation
+        position: 3
+      invoicing_orders:
+        title: Dossiers en Facturation
+        description: Afficher la liste des dossiers actuellement en phase de facturation
         position: 4
         separator: after
       closed_orders:
         title: Dossiers Cloturés
         description: Afficher la liste des dossiers déjà cloturés
-        position: 6
+        position: 5
       archived_orders:
         title: Dossiers Archivés
         description: Afficher la liste des dossiers déjà archivés
-        position: 7
+        position: 6
       orders:
         title: Dossier
         description: Dossier de vente
+        hidden: true
         children:
           informations:
             title: Informations de commande
             description: Informations générales sur les dossiers de commandes
             position: 1
-          step_commercial:
+          commercial_step:
             title: Étude commerciale
-            description: "Phase d'étude commerciale"
+            description: "Phase de l'étude commerciale"
             position: 2
             children:
-              step_survey:
+              survey_step:
                 title: Visite commerciale
-                description: Etape de la visite commercial
+                description: Étape de la visite commercial
                 position: 1
-              step_graphic_conception:
+              graphic_conception_step:
                 title: Conception graphique
-                description: Etape de conception graphique
+                description: Étape de conception graphique
                 position: 2
-              step_estimate:
+              estimate_step:
                 title: Chiffrage
-                description: Etape du devis
+                description: Étape du devis
                 position: 3
                 children:
                   quotes:
                     title: Devis
                     description: Elaboration des devis
-          step_invoicing:
-            title: Facturation
-            description: Phase de facturation
+          pre_invoicing_step:
+            title: SAS de Facturation
+            description: Phase du SAS de Facturation
             position: 3
             children:
-              step_unknown1:
-                title: Inconnu 1
-              step_unknown2:
-                title: Inconnu 2
+              delivery_step:
+                title: Livraison
+                description: Étape de la livraison
+          invoicing_step:
+            title: Facturation
+            description: Phase de la Facturation
+            position: 4
+            children:
+              invoice_step:
+                title: Factures
+                description: "Étape de l'élaboration des factures"
+                position: 1
+              payment_step:
+                title: Paiements
+                description: "Étape de l'enregistrement des paiments"
+                position: 2
           logs:
             title: Historiques
             description: Historiques des actions effectués sur le dossier de commmande

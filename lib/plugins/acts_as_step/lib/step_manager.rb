@@ -24,15 +24,15 @@ class StepManager
   
   def insert_steps_in_database
     @@all_steps.each do |step|
-      parent_step = Step.find_or_create_by_name("step_#{step[:parent]}") unless step[:parent].blank?
+      parent_step = Step.find_or_create_by_name("#{step[:parent]}_step") unless step[:parent].blank?
       parent_id = parent_step.nil? ? nil : parent_step.id
       
-      if (current_step = Step.find_by_name("step_#{step[:name]}"))
+      if (current_step = Step.find_by_name("#{step[:name]}_step"))
         current_step.title       = step[:title]       if current_step.title.blank?       and !step[:title].nil?       and !step[:title].blank?
         current_step.description = step[:description] if current_step.description.blank? and !step[:description].nil? and !step[:description].blank?
         current_step.save if current_step.changed?
       else
-        if (new_step = Step.create(:title => step[:title], :description => step[:description], :name => "step_#{step[:name]}", :parent_id => parent_id))
+        if (new_step = Step.create(:title => step[:title], :description => step[:description], :name => "#{step[:name]}_step", :parent_id => parent_id))
           unless step[:position].nil?
             new_step.insert_at(step[:position])
             new_step.save

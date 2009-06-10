@@ -1,16 +1,16 @@
 class Quote < ActiveRecord::Base
   has_permissions :as_business_object
-  has_address :bill_to_address
-  has_address :ship_to_address
-  has_contacts :many => false, :validates_presence => true
+  has_address     :bill_to_address
+  has_address     :ship_to_address
+  has_contacts    :many => false,     :validates_presence => true
   
-  belongs_to :creator, :class_name => 'User', :foreign_key => 'user_id'
-  belongs_to :step_estimate
+  belongs_to :creator,       :class_name  => 'User',                  :foreign_key => 'user_id'
+  belongs_to :estimate_step
+  
   has_many :quotes_product_references, :dependent => :destroy
-  has_many :product_references, :through => :quotes_product_references
+  has_many :product_references,        :through   => :quotes_product_references
   
-  # Validations
-  validates_presence_of :step_estimate_id
+  validates_presence_of :estimate_step, :reduction, :carriage_costs, :account, :creator, :quotes_product_references
   validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
   validates_associated :quotes_product_references, :product_references
   

@@ -121,6 +121,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string "name"
   end
 
+  create_table "commercial_steps", :force => true do |t|
+    t.integer  "order_id",    :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "commodities", :force => true do |t|
     t.string   "name"
     t.float    "fob_unit_price"
@@ -233,6 +242,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string "code"
   end
 
+  create_table "delivery_steps", :force => true do |t|
+    t.integer  "pre_invoicing_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "document_type_permissions", :force => true do |t|
     t.boolean  "list"
     t.boolean  "view"
@@ -322,6 +340,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.boolean  "activated",                           :default => true
   end
 
+  create_table "estimate_steps", :force => true do |t|
+    t.integer  "commercial_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "event_categories", :force => true do |t|
     t.integer "calendar_id", :limit => 11
     t.string  "name"
@@ -387,6 +414,13 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.datetime "updated_at"
   end
 
+  create_table "graphic_conception_steps", :force => true do |t|
+    t.integer  "commercial_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+  end
+
   create_table "ibans", :force => true do |t|
     t.string   "account_name"
     t.integer  "has_iban_id",    :limit => 11
@@ -409,6 +443,24 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
 
   create_table "inventories", :force => true do |t|
     t.boolean  "closed",     :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoice_steps", :force => true do |t|
+    t.integer  "invoicing_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoicing_steps", :force => true do |t|
+    t.integer  "order_id",    :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -579,6 +631,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.datetime "updated_at"
   end
 
+  create_table "payment_steps", :force => true do |t|
+    t.integer  "invoicing_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "payment_time_limits", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -588,6 +649,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   create_table "permission_methods", :force => true do |t|
     t.string "name"
     t.string "title"
+  end
+
+  create_table "pre_invoicing_steps", :force => true do |t|
+    t.integer  "order_id",    :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "premia", :force => true do |t|
@@ -646,7 +716,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   end
 
   create_table "quotes", :force => true do |t|
-    t.integer  "step_estimate_id", :limit => 11
+    t.integer  "estimate_step_id", :limit => 11
     t.boolean  "validated",                      :default => false
     t.date     "validity_date"
     t.float    "carriage_costs",                 :default => 0.0
@@ -755,52 +825,9 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.datetime "updated_at"
   end
 
-  create_table "step_commercials", :force => true do |t|
-    t.integer  "order_id",   :limit => 11
-    t.string   "status"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "step_dependencies", :id => false, :force => true do |t|
     t.integer  "step_id",        :limit => 11
     t.integer  "step_dependent", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "step_estimates", :force => true do |t|
-    t.integer  "step_commercial_id", :limit => 11
-    t.string   "status"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "step_graphic_conceptions", :force => true do |t|
-    t.integer  "step_commercial_id", :limit => 11
-    t.string   "status"
-    t.datetime "start_date"
-    t.datetime "end_date"
-  end
-
-  create_table "step_invoicings", :force => true do |t|
-    t.integer  "order_id",   :limit => 11
-    t.string   "status"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "step_surveys", :force => true do |t|
-    t.integer  "step_commercial_id", :limit => 11
-    t.string   "status"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -811,6 +838,15 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "parent_id",   :limit => 11
     t.string   "description"
     t.integer  "position",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "survey_steps", :force => true do |t|
+    t.integer  "commercial_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

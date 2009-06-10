@@ -22,7 +22,8 @@ class Step < ActiveRecord::Base
 #  end
   
   def path
-    name[5..-1].downcase
+    # name[0..-6].downcase
+    "order_#{name}_path"
   end
   
   # Return his parent or himself
