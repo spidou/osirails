@@ -53,6 +53,7 @@ module ApplicationHelper
           end
         rescue NameError => e
           # do nothing if the controller doesn't exist, just stay the basic path pattern
+          logger.warn "[url_for_menu] the controller '#{controller_name}' doesn't exist, but I will try if ActionView responds to '#{path}'?"
         end
         
         if self.respond_to?(path)

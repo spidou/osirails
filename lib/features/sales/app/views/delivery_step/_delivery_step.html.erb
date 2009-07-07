@@ -1,0 +1,21 @@
+<%= order_header %>
+
+<h1>Livraison</h1>
+
+<div>
+<% if is_form_view? %>
+  <% form_for(@step, :url => { :controller => "delivery_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
+    <%= render :partial => 'delivery_notes/delivery_notes_list', :object => @step.delivery_notes %>
+    <%= display_delivery_note_add_button %>
+    
+    <p>
+      <%= form.submit 'Enregistrer' %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+    </p>
+  <% end %>
+<% else %>
+  
+<% end %>
+</div>

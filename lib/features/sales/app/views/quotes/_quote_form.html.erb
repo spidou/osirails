@@ -38,27 +38,27 @@
 
 <h2>Pied</h2>
 <p>
-  <%= form.label :validity_date, 'Date de fin de validité :' %>
-  <%= form.date_select :validity_date, :start_year => Date.today.year, :order => [:day, :month, :year], :default => Date.today + ConfigurationManager.sales_quote_validity_in_days.days %>
+  <%= form.label :validity_delay %>
+  <%= form.form_or_view(form.text_field(:validity_delay, :size => 2), :validity_delay) %> <%= form.form_or_view(form.select(:validity_delay_unit, Quote::VALIDITY_DELAY_UNITS), :validity_delay_unit) %>
 </p>
 <p>
   <%= form.label :carriage_costs, 'Frais de port :' %>
-  <%= form.text_field :carriage_costs, :size => 5 %>
+  <%= form.form_or_view(form.text_field(:carriage_costs, :size => 5), :carriage_costs) %>
 </p>
 <p>
   <%= form.label :reduction, 'Remise (%) :' %>
-  <%= form.text_field :reduction, :size => 5 %>
+  <%= form.form_or_view(form.text_field(:reduction, :size => 5), :reduction) %>
 </p>
 <p>
   <%= form.label :account, 'Acompte :' %>
-  <%= form.text_field :account, :size => 5 %>
+  <%= form.form_or_view(form.text_field(:account, :size => 5), :account) %>
 </p>
 
 <% if params[:action] == 'new' %>
   <p>
     <%= form.submit 'Créer' %>
   </p>
-<% else %>
+<% elsif is_form_view? %>
   <p>
     <%= form.submit 'Enregistrer' %>
   </p>

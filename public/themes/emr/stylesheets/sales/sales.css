@@ -93,6 +93,50 @@ p.order_deadline.critical {
   text-align: center;
 }
 
+/* QUOTES LIST */
+table tr.quote.validated_quote {
+  background-color: #e99727;
+  color: white;
+}
+
+table tr.quote.invalidated_quote,
+.invalidated_quote {
+  background-color: #ff3528;
+  color: white;
+}
+
+table tr.quote.sended_quote,
+.sended_quote {
+  background-color: #e99727;
+  color: white;
+  font-weight: bold;
+}
+
+table tr.quote.signed_quote,
+.signed_quote {
+  background-color: #60bc00;
+  color: white;
+  font-weight: bold;
+}
+
+table tr.quote td.actions {
+  background-color: white;
+}
+
+table tr.quote_send_form {
+  text-align: right;
+}
+
+table tr.quote_send_form p input[type=submit] {
+  margin: 0 !important;
+}
+
+ul.quote_caption {
+  list-style: none;
+  padding-left: 25px;
+  margin-top: 5px;
+}
+
 /* QUOTES */
 .new_quotes_product_reference {
   text-align: left;
@@ -175,6 +219,7 @@ table#quotes_product_references tr.aggregates.global {
   display: inline-block;
   vertical-align: top;
   min-width: 400px;
+  width: 400px;
   margin: 5px 7px 5px 7px;
 }
 
@@ -197,4 +242,72 @@ table#quotes_product_references tr.aggregates.global {
 
 #quote_header #contact_container #order_preview_contacts {
   margin-left: 110px;
+}
+
+/* DELIVERY NOTE HEADER */
+#delivery_note_header {
+  text-align: left;
+  text-indent: 0;
+}
+
+#delivery_note_header > div {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 400px;
+  margin: 5px 7px 5px 7px;
+}
+
+#delivery_note_header > div label {
+  width: 100px !important;
+  vertical-align: top;
+}
+
+#delivery_note_header > div h3 {
+  text-align: center;
+}
+
+#delivery_note_header #contact_container label {
+  width: auto !important;
+}
+
+/* REMARKS */
+#remarks {
+  padding: 10px;
+}
+
+#remarks .remark {
+  border: 1px solid grey;
+  -moz-border-radius: 0 5px 0 5px;
+  margin-bottom: 7px;
+}
+
+#remarks .remark .remark_counter {
+  border: 1px solid grey;
+  -moz-border-radius: 10px;
+  padding: 0 4px 0 4px;
+}
+
+#remarks .remark.style1 .remark_header {
+  background-color: #c3d8ff;
+}
+
+#remarks .remark.style2 .remark_header {
+  background-color: #ffe3bb;
+}
+
+#remarks .remark .remark_header {
+  border-bottom: 1px solid grey;
+  padding: 4px;
+  margin: 0;
+}
+
+#remarks .remark .remark_header strong {
+  color: black;
+  font-weight: normal;
+  text-decoration: underline;
+}
+
+#remarks .remark .remark_body strong {
+  color: black;
+  font-weight: bold;
 }

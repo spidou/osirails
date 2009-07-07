@@ -242,6 +242,23 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string "code"
   end
 
+  create_table "delivery_notes", :force => true do |t|
+    t.integer  "delivery_step_id",      :limit => 11
+    t.boolean  "on_site"
+    t.datetime "signed_at"
+    t.datetime "scheduled_delivery_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_notes_quotes_product_references", :force => true do |t|
+    t.integer  "delivery_note_id",            :limit => 11
+    t.integer  "quotes_product_reference_id", :limit => 11
+    t.integer  "report_type_id",              :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "delivery_steps", :force => true do |t|
     t.integer  "pre_invoicing_step_id", :limit => 11
     t.string   "status"
@@ -578,6 +595,10 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.boolean  "visible",                       :default => true
   end
 
+  create_table "order_form_types", :force => true do |t|
+    t.string "name"
+  end
+
   create_table "order_logs", :force => true do |t|
     t.string   "controller"
     t.string   "action"
@@ -716,17 +737,29 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   end
 
   create_table "quotes", :force => true do |t|
-    t.integer  "estimate_step_id", :limit => 11
-    t.boolean  "validated",                      :default => false
-    t.date     "validity_date"
-    t.float    "carriage_costs",                 :default => 0.0
-    t.float    "reduction",                      :default => 0.0
-    t.float    "account",                        :default => 0.0
+    t.integer  "estimate_step_id",        :limit => 11
+    t.float    "carriage_costs",                        :default => 0.0
+    t.float    "reduction",                             :default => 0.0
+    t.float    "account",                               :default => 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",          :limit => 11
-    t.datetime "validated_at"
+    t.integer  "user_id",                 :limit => 11
+    t.string   "status"
+    t.string   "validity_delay_unit"
+    t.integer  "validity_delay",          :limit => 11
+    t.date     "validated_on"
+    t.date     "invalidated_on"
+    t.date     "sended_on"
+    t.integer  "send_quote_method_id",    :limit => 11
+    t.date     "signed_on"
+    t.string   "public_number"
+    t.string   "order_form_file_name"
+    t.string   "order_form_content_type"
+    t.integer  "order_form_file_size",    :limit => 11
+    t.integer  "order_form_type_id",      :limit => 11
   end
+
+  add_index "quotes", ["public_number"], :name => "index_quotes_on_public_number", :unique => true
 
   create_table "quotes_product_references", :force => true do |t|
     t.integer  "quote_id",             :limit => 11
@@ -799,6 +832,10 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "service_id",      :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "send_quote_methods", :force => true do |t|
+    t.string "name"
   end
 
   create_table "services", :force => true do |t|

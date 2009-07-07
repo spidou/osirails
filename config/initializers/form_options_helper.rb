@@ -184,7 +184,6 @@ module ActionView
     
     class FormBuilder
       attr_accessor :force_show_view
-      @force_show_view ||= false
       
       def collection_select_with_indentation(method, collection, value_method, text_method, options = {}, html_options = {})
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
@@ -286,11 +285,7 @@ module ActionView
       end
       
       def force_show_view?
-        @force_show_view
-      end
-      
-      def force_show_view=(bool)
-        @force_show_view = bool
+        @force_show_view == true
       end
     end
     

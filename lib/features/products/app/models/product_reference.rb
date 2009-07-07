@@ -4,8 +4,8 @@ class ProductReference < ActiveRecord::Base
   # Relationship
   has_many :products
   belongs_to :product_reference_category, :counter_cache => true
-  has_many :quotes_product_references, :dependent => :nullify
-  has_many :quotes, :through => :quotes_product_references
+#  has_many :quotes_product_references, :dependent => :nullify
+#  has_many :quotes, :through => :quotes_product_references
   
   # Validation Macros
   validates_presence_of :name, :reference, :message => "ne peut être vide"

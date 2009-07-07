@@ -1,5 +1,6 @@
 class Order < ActiveRecord::Base
-  has_contacts :validates_presence => true
+  has_contacts :accept_from => :customer_contacts
+  validates_contact_length :minimum => 1, :too_short => "est trop court (%s contact minimum)"
   
   # Relationships
   belongs_to :society_activity_sector
@@ -16,7 +17,11 @@ class Order < ActiveRecord::Base
 
   # Validations
   validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id, :previsional_delivery
-  #TODO validates_date :previsional_delivery (check if the date is correct, if it's after Date.today (creation date of the order), etc. )
+  validates_presence_of :customer,   :if => :customer_id
+  validates_presence_of :order_type, :if => :order_type_id
+  validates_presence_of :commercial, :if => :commercial_id
+  validates_presence_of :establishment, :if => :establishment_id
+  #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -168,6 +173,15 @@ class Order < ActiveRecord::Base
     elsif delay == 0
       TODAY
     end
+  end
+  
+  def signed_quote
+    commercial_step.estimate_step.signed_quote
+  end
+  
+  def customer_contacts
+    # customer.all_contacts #TODO also take in account contacts in customer's establishments
+    customer.contacts
   end
   
   private

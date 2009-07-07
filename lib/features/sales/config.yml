@@ -16,8 +16,8 @@ menus:
     position: 9
     children:
       in_progress_orders:
-        title: Tous les dossiers
-        description: Afficher la liste complète des dossiers en cours
+        title: Dossiers en cours
+        description: Afficher la liste complète des dossiers actuellement en cours
         position: 1
         separator: after
       commercial_orders:
@@ -70,7 +70,11 @@ menus:
                 children:
                   quotes:
                     title: Devis
-                    description: Elaboration des devis
+                    description: Élaboration des devis
+                    children:
+                      order_forms:
+                        title: Bon de commande
+                        description: Bon de commande associé au devis
           pre_invoicing_step:
             title: SAS de Facturation
             description: Phase du SAS de Facturation
@@ -79,6 +83,10 @@ menus:
               delivery_step:
                 title: Livraison
                 description: Étape de la livraison
+                children:
+                  delivery_notes:
+                    title: Bon de livraison
+                    description: Élaboration des bons de livraison
           invoicing_step:
             title: Facturation
             description: Phase de la Facturation
@@ -100,6 +108,9 @@ configurations:
   taxes_vat:
     description: TVA
     value: 8.5 
-  quote_validity_in_days:
-    description: Période de validité du devis
-    value: 30
+  quote_validity_delay:
+    description: Délai de validité du devis
+    value: 15
+  quote_validity_delay_unit:
+    description: Unité de temps pour la validité du devis
+    value: days

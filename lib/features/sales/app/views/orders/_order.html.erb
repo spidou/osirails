@@ -35,7 +35,7 @@
   
   <h3>Contacts</h3>
   <p>
-    <%= form.label :contacts_ids %>
+    <%= form.label :contacts %>
     <%= display_contacts_picker(order, order.customer.contacts) %>
   </p>
   <%= render_new_contacts_list(order) %>
@@ -45,7 +45,7 @@
   <% if is_edit_view? %>
     <p>
       <%= form.label :created_at %>
-      <%= form.strong order.created_at.to_humanized_datetime  %>
+      <%= form.strong order.created_at.to_datetime.humanize  %>
     </p>
   <% end %>
   <p>

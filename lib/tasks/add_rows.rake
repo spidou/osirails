@@ -368,6 +368,15 @@ namespace :osirails do
       order2.contacts << Customer.first.contacts.first
       order2.save
       
+      # default send quote methods
+      SendQuoteMethod.create(:name => "Courrier")
+      SendQuoteMethod.create(:name => "E-mail")
+      SendQuoteMethod.create(:name => "Fax")
+      
+      # default order form types
+      OrderFormType.create(:name => "Devis signé")
+      OrderFormType.create(:name => "Bon de commande")
+      
       # set up all permissions for default roles (admin and guest)
       %W{ Menu DocumentType Calendar }.each do |klass|
         klass.constantize.send(:all).each do |object|

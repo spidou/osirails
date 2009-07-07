@@ -1,6 +1,10 @@
-<% third_type = third.class.name.downcase %>
+<%
+third_type = third.class.name.downcase
+force_show_view ||= false
+%>
 
 <% fields_for third_type, third do |form| %>
+  <% form.force_show_view = force_show_view %>
   <%= form.error_messages %>
   <p>
     <%= form.label :name %>
@@ -28,7 +32,7 @@
   </p>
   
   <h3>Adresse de facturation</h3>
-  <%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third } %>
+  <%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third, :force_show_view => force_show_view } %>
   
   <h3>Informations bancaires</h3>
     <% if third.class.equal?(Customer) %>

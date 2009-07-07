@@ -1,0 +1,18 @@
+<%= order_header %>
+
+<h1>Factures</h1>
+
+<div>
+<% if is_form_view? %>
+  <% form_for(@step, :url => { :controller => "invoice_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
+    <p>
+      <%= form.submit 'Enregistrer' %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+    </p>
+  <% end %>
+<% else %>
+
+<% end %>
+</div>

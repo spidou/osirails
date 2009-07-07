@@ -33,7 +33,7 @@ module ContentsHelper
       contents_versions_list << "<p><ul>"
       content_versions.each_with_index do |content_version, index|
         contents_versions_list << "<li>"
-        contents_versions_list << link_to(content_version.versioned_at.to_humanized_datetime,:controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1 )
+        contents_versions_list << link_to(content_version.versioned_at.to_datetime.humanize, :controller => :content_versions, :action => :show, :content_id => content_version.content.id, :version => index+1 )
         contents_versions_list << "</li>"             
       end
       contents_versions_list << will_paginate(content_versions)

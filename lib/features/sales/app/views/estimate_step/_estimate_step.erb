@@ -1,23 +1,57 @@
 <%= order_header %>
 
+<% content_for :header do -%>
+  <%= javascript_include_tag 'sales/quotes_list' %>
+<% end -%>
+
 <h1>Chiffrage</h1>
 
 <div>
-<% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "estimate_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
-    <%= form.error_messages %>
-    
-    <%= render :partial => 'quotes/quotes_list', :object => @step.quotes %>
-    <%= display_quote_add_button %>
-    
+  <p>
+    L'étape de chiffrage permet d'établir le devis pour la commande en cours.<br/>
+    Vous avez la possibilité de rédiger autant de devis que vous le souhaitez, mais seul UN devis peut être validé à la fois.<br/>
+    L'étape de chiffrage est automatique clos lorsqu'un devis est déclaré comme <strong>signé</strong>
+  </p>
+  
+  <div id="quotes_list_more_infos" style="display:none">
     <p>
-      <%= form.submit 'Enregistrer' %>
-      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+      Après avoir été validé <%= image_tag("/images/#{Quote::STATUS_VALIDATED}_16x16.png", :alt => "Valider", :title => "Valider") %>, un devis peut être signalé comme :
     </p>
-  <% end %>
-<% else %>
+    
+    <ul class="quote_caption">
+      <li><%= image_tag("/images/#{Quote::STATUS_INVALIDATED}_16x16.png", :alt => "Invalider", :title => "Invalider") %> <strong>invalidé</strong>, car le devis est incorrect et doit être modifié</li>
+      <li><%= image_tag("/images/#{Quote::STATUS_SENDED}_16x16.png", :alt => "Envoyer", :title => "Envoyer") %> <strong>envoyé</strong>, car le devis a été envoyé au client</li>
+      <li><%= image_tag("/images/#{Quote::STATUS_SIGNED}_16x16.png", :alt => "Signer", :title => "Signer") %> <strong>signé</strong>, car le devis (ou un bon de commande) a été signé par le client</li>
+    </ul>
+    
+    
+    <p>Voici la légende utilisée :</p>
+    <table>
+      <tr class="quote <%= Quote::STATUS_SIGNED %>_quote">
+        <td>Devis signé</td>
+      </tr>
+      <tr class="quote <%= Quote::STATUS_SENDED %>_quote">
+        <td>Devis envoyé</td>
+      </tr>
+      <tr class="quote <%= Quote::STATUS_VALIDATED %>_quote">
+        <td>Devis validé</td>
+      </tr>
+      <tr class="quote <%= Quote::STATUS_INVALIDATED %>_quote">
+        <td>Devis invalidé</td>
+      </tr>
+      <tr class="quote">
+        <td>Devis incomplet</td>
+      </tr>
+    </table>
+  </div>
+  
+  <p>
+    <%= link_to "Plus de détails", '#quote_list_more', :id => 'quotes_list_more_infos_link' %>
+  </p>
+  
+  <h2>Devis</h2>
   <%= render :partial => 'quotes/quotes_list', :object => @step.quotes %>
-<% end %>
+  <%= display_quote_add_button if is_form_view? %>
 </div>
 
 <!-- Osibox initialisation -->

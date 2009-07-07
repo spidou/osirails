@@ -19,7 +19,7 @@
         <td><%=  user.employee.nil? ? "" : user.employee.fullname  %></td>
         <td><%= link_to user.username, user %></td>
         <td><%= user.enabled ? "Oui" : "Non" %></td>
-        <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.to_humanized_datetime %></td>
+        <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.to_datetime.humanize %></td>
         <td>
           <%= user_link(user, :link_text => "") %>
           <%= edit_user_link(user, :link_text => "") %>

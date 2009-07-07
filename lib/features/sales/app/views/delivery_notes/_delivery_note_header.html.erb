@@ -1,0 +1,27 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'core/has_contacts/contacts_picker' %>
+<% end -%>
+
+<%
+require_locals form
+
+delivery_note = delivery_note_header
+order = delivery_note.delivery_step.order
+default_ship_to_address = order.signed_quote.ship_to_address
+%>
+<div id="delivery_note_header">
+  <div>
+    <h3>Adresse de livraison</h3>
+    <%= render :partial => 'addresses/address_form', :object => delivery_note.ship_to_address || delivery_note.build_ship_to_address(default_ship_to_address.attributes), :locals => { :address_owner => delivery_note } %>
+  </div>
+  
+  <div id="contact_container">
+    <h3>Contact</h3>
+    <p>
+      <%= label :select_contacts, "À l'attention de " %>
+      <%= display_contacts_picker(delivery_note, order.contacts) %>
+    </p>
+  </div>
+</div>

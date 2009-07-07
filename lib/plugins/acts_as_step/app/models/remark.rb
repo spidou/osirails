@@ -5,5 +5,5 @@ class Remark < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:text] = "Taper votre commentaire ici:"
+  @@form_labels[:text] = "Votre commentaire :"
 end

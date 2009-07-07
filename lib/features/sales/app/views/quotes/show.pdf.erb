@@ -2,7 +2,7 @@
 	<tr>
 		<td>
 			<h1><%= enc("DEVIS N° #{@quote.id}") %></h1>
-      <h5><%= enc("Date : #{@quote.created_at.to_humanized_date}") %></h5>
+      <h5><%= enc("Date : #{@quote.created_at.to_date.humanize}") %></h5>
       <h5><%= enc("Votre conseiller commercial:") %></h5>
       <p><%= "#{@order.commercial.fullname}" %><br/>
       <% for number in @order.commercial.numbers %>

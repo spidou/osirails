@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<h1>Signaler que le devis a été envoyé au client</h1>
+
+<div class="presentation_medium">
+  <table>
+    <%= render :partial => 'quotes_list', :object => [ Quote.find(@quote.id) ] %>
+  </table>
+  
+	<% form_for @quote, :url => { :controller => "quotes", :action => "send_to_customer", :order_id => @order.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :sended_on %>
+      <%= form.date_select :sended_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :send_quote_method_id %>
+      <%= form.collection_select :send_quote_method_id, SendQuoteMethod.all, :id, :name, :include_blank => true %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

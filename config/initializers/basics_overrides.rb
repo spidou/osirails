@@ -107,7 +107,7 @@ module ActiveRecord
       :empty => "ne peut pas être vide",
       :blank => "est requis",
       :too_long => "est trop long (%d caractères maximum)",
-      :too_short => "est trop court(%d caractères minimum)",
+      :too_short => "est trop court (%d caractères minimum)",
       :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
       :taken => "est déjà  prit",
       :not_a_number => "n'est pas un nombre",
@@ -115,21 +115,15 @@ module ActiveRecord
   end
 end
 
-module ActiveSupport
-  class TimeWithZone
-    def to_humanized_date
-      self.strftime("%d %B %Y")
-    end
-
-    def to_humanized_datetime
-      self.strftime("%d %B %Y à %I:%M")
-    end
-  end
-end
-
 class Date
   def humanize
     self.strftime("%d %B %Y")
+  end
+end
+
+class DateTime
+  def humanize
+    self.strftime("%d %B %Y à %I:%M")
   end
 end
 

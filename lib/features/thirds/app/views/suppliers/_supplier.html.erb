@@ -4,7 +4,8 @@
 <% if is_form_view? %>
   <% form_for @supplier do |form| %>
     <%= render :partial => 'thirds/third', :object => @supplier %>
-
+    
+    <h2>Contacts</h2>
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 

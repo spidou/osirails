@@ -2,6 +2,7 @@
 <%
 address = address_form
 owner_type = address_owner.class.singularized_table_name
+force_show_view ||= false
 
 #FIXME remove this test block accessor when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
 if address_owner.class.one_or_many == :many
@@ -11,6 +12,7 @@ else
 end
 %>
 <% fields_for "#{owner_type}[#{address.has_address_key}_attributes]", address do |form| %>
+  <% form.force_show_view = force_show_view %>
   <%= form.error_messages %>
   <p>
     <%= form.label :street_name, options %>

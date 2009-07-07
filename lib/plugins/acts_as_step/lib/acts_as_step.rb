@@ -55,7 +55,7 @@ module ActsAsStep
       write_inheritable_attribute(:original_step, step)
       
       if options[:remarks]
-        has_many              :remarks,     :as => :has_remark
+        has_many              :remarks,     :as => :has_remark, :order => "created_at DESC"
         validates_associated  :remarks
         after_update          :save_remarks
       end
@@ -172,17 +172,19 @@ module ActsAsStep
     end
     
     def unstarted!
-      update_attribute(:status, UNSTARTED) if status.blank?
+      status.blank? ? update_attribute(:status, UNSTARTED) : false
     end
     
     def pending!
-      update_attribute(:status, PENDING) if unstarted?
+      unstarted? ? update_attribute(:status, PENDING) : false
     end
     
     def in_progress!
       if pending? or unstarted?
         update_attribute(:status, IN_PROGRESS)
         update_attribute(:started_at, DateTime.now)
+      else
+        false
       end
     end
     
@@ -193,6 +195,8 @@ module ActsAsStep
         if next_step = self.next
           next_step.pending!
         end
+      else
+        false
       end
     end
     

@@ -1,0 +1,40 @@
+<% content_for :header do %>
+  <%# javascript_include_tag 'sales/quotes' %>
+<% end %>
+
+<% delivery_note = delivery_note_form %>
+
+<%= form.error_messages %>
+
+<h2>Entête</h2>
+  <%= render :partial => 'delivery_note_header', :object => delivery_note, :locals => { :form => form } %>
+
+<h2>Corps</h2>
+<table id="delivery_notes_quotes_product_references">
+  <tr>
+	  <th>Réf.</th>
+	  <th>Désignation</th>
+	  <th>Qté</th>
+	  <th>P.U.<br/>Brut HT</th>
+	  <th>Rem.<br/>(%)</th>
+	  <th>P.U.<br/>Net HT</th>
+	  <th>Total<br/>HT</th>
+	  <th>TVA</th>
+	  <th>Total<br/>TTC</th>
+	  <% if is_form_view? %>
+	    <th>Action</th>
+    <% end %>
+  </tr>
+  <%# render :partial => 'quotes_product_reference_in_one_line', :collection => quote.quotes_product_references %>
+  <%# render :partial => 'quotes_product_reference_in_one_line', :locals => { :quote => quote } %>
+</table>
+
+<% if params[:action] == 'new' %>
+  <p>
+    <%= form.submit 'Créer' %>
+  </p>
+<% else %>
+  <p>
+    <%= form.submit 'Enregistrer' %>
+  </p>
+<% end %>

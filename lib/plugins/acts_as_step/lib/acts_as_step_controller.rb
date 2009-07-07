@@ -51,7 +51,7 @@ module ActsAsStepController
               end
               
               # define the current order step
-              self.class.current_order_step = @order.current_step.original_step
+              self.class.current_order_step = @order.current_step.original_step rescue nil #TODO test if "rescue nil" does not raise collateral damages!
               
               # manage logs
               OrderLog.set(@order, current_user, params)
@@ -109,9 +109,11 @@ module ActsAsStepController
             end
             
             def should_display_edit
-              if (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
-                flash.keep
-                redirect_to params.merge(:action => "edit")
+              unless @step.terminated?
+                if (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
+                  flash.keep
+                  redirect_to params.merge(:action => "edit")
+                end
               end
             end
             

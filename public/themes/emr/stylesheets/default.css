@@ -1,4 +1,4 @@
-/*	default.css------------------------------------------------------
+r/*	default.css------------------------------------------------------
 	----------	..::Par Oxydium::.
 
 Création : Juillet/Octobre 2008
@@ -840,9 +840,15 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	line-height:20px;
 }
 
+.flash_container span span strong {
+  color: red;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
 .flash_error {
 	background: url("/images/cross_16x16.png") no-repeat;
-	color: #B0383D;
+	color: red; 
 }
 
 .flash_notice {

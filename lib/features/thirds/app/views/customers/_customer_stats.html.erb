@@ -5,7 +5,7 @@
 </p>
 <p>
   <label>Client depuis le :</label>
-  <strong><%= @order.customer.created_at.to_humanized_date %></strong>
+  <strong><%= @order.customer.created_at.to_date.humanize %></strong>
 </p>
 <p>
   <label>Note :</label>

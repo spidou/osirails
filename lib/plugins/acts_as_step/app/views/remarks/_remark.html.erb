@@ -1,6 +1,6 @@
 <% owner_type = remarks_owner.class.singularized_table_name if is_form_view? %>
 
-<div class='remark'>
+<div class='remark <%= remark_counter%2 == 0 ? 'style2' : 'style1' %>'>
 <% if is_form_view? and remark.new_record? %>
   <% fields_for "#{owner_type}[remark_attributes]", remark do |form| -%>
     <%= form.error_messages %>
@@ -11,9 +11,11 @@
     </p>
   <% end -%>
 <% elsif !remark.new_record? -%>
-  <p>
-    Ajouté le <strong><%= remark.created_at.to_humanized_datetime %></strong> par <strong><%= link_to_unless(remark.user.employee_id.nil?, remark.user.employee_name, employee_path(remark.user.employee_id)) %></strong> :<br/>
-    <%= h remark.text %>
+  <p class="remark_header">
+    <span class="remark_counter"><%= remark_counter %></span> Ajouté le <strong><%= remark.created_at.to_datetime.humanize %></strong> par <%= link_to_unless(remark.user.employee_id.nil?, remark.user.employee_name, employee_path(remark.user.employee_id)) %> :
   </p>
+  <div class="remark_body">
+    <%=textilize h(remark.text) %>
+  </div>
 <% end -%>
 </div>

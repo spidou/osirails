@@ -11,7 +11,7 @@ id_attr = "id=\"resource_document_#{document.id}\"" unless document.new_record?
       <%= content_tag(:h1, h(document.name)) unless document.name.nil? or document.name.empty? %>
       <%= content_tag(:span, h(document.tag_list.join(", "))) + content_tag(:br) unless document.tag_list.empty? %>
       <%= content_tag(:span, h(document.description)) + content_tag(:br) unless document.description.nil? or document.description.empty? %>
-      <%= content_tag(:span, document.created_at.to_humanized_datetime) + content_tag(:br) unless document.created_at.nil? %>
+      <%= content_tag(:span, document.created_at.to_datetime.humanize) + content_tag(:br) unless document.created_at.nil? %>
       <%= display_document_preview_button(document) %>
       <%= display_document_download_button(document) %>
       <%= display_document_edit_button(document) %>

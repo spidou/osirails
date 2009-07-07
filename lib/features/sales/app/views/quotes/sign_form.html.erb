@@ -1,0 +1,28 @@
+<%= order_header %>
+
+<h1>Signaler que le devis a été signé par le client</h1>
+
+<div class="presentation_medium">
+  <table>
+    <%= render :partial => 'quotes_list', :object => [ Quote.find(@quote.id) ] %>
+  </table>
+  
+	<% form_for @quote, :url => { :controller => "quotes", :action => "sign", :order_id => @order.id }, :html => { :multipart => true }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :signed_on %>
+      <%= form.date_select :signed_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :order_form_type_id %>
+      <%= form.collection_select :order_form_type_id, OrderFormType.all, :id, :name, :include_blank => true %>
+    </p>
+    <p>
+      <%= form.label :order_form %>
+      <%= form.file_field :order_form %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

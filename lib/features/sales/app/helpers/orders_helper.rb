@@ -18,7 +18,7 @@ module OrdersHelper
     if @order.new_record?
       html = "<h2>Informations concernant le client</h2>"
       html << "<div class='presentation_medium'>"
-      html << render(:partial => 'thirds/third', :object => @order.customer)
+      html << render(:partial => 'thirds/third', :object => @order.customer, :locals => { :force_show_view => true })
       html << render(:partial => 'customers/customer_stats', :object => @order.customer)
       html << "</div>"
     end

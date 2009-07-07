@@ -1,0 +1,15 @@
+<% if delivery_notes_list and !delivery_notes_list.empty? %>
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Nb Pièces</th>
+      <th>Total TTC</th>
+      <th>Créateur du devis</th>
+      <th>A l'attention de</th>
+      <th>Actions</th>
+    </tr>
+    <%# render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
+  </table>
+<% else %>
+  <p>Aucun bon de livraison n'a été trouvé</p>
+<% end %>

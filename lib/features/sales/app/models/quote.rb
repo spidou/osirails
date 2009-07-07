@@ -4,17 +4,89 @@ class Quote < ActiveRecord::Base
   has_address     :ship_to_address
   has_contacts    :many => false,     :validates_presence => true
   
-  belongs_to :creator,       :class_name  => 'User',                  :foreign_key => 'user_id'
+  belongs_to :creator,          :class_name  => 'User', :foreign_key => 'user_id'
   belongs_to :estimate_step
+  belongs_to :send_quote_method
+  belongs_to :order_form_type
   
   has_many :quotes_product_references, :dependent => :destroy
   has_many :product_references,        :through   => :quotes_product_references
   
-  validates_presence_of :estimate_step, :reduction, :carriage_costs, :account, :creator, :quotes_product_references
-  validates_numericality_of [:reduction, :carriage_costs, :account], :allow_nil => false
-  validates_associated :quotes_product_references, :product_references
+  has_attached_file :order_form,
+                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
+                    :url => '/quotes/:quote_id/order_form'
+                    
+  VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
+                           'jours'  => 'days',
+                           'mois'   => 'months' }
+  
+  validates_presence_of     :estimate_step, :reduction, :carriage_costs, :account, :creator, :quotes_product_references
+  validates_numericality_of [:reduction, :carriage_costs, :account, :validity_delay], :allow_nil => false
+  validates_associated      :quotes_product_references, :product_references
+  validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
+  
+  ## VALIDATIONS ON VALIDATING QUOTE
+  validates_date :validated_on, :equal_to => Proc.new { Date.today }, :if => :validated?
+  
+  ## VALIDATIONS ON INVALIDATING QUOTE
+  validates_date :invalidated_on, :equal_to => Proc.new { Date.today }, :if => :invalidated?
+  
+  ## VALIDATIONS ON SENDING QUOTE
+  with_options :if => :sended? do |quote|
+    quote.validates_date  :sended_on,
+                          :on_or_after  => :created_at, :on_or_after_message => "ne doit pas être AVANT la date de création du devis&#160;(%s)",
+                          :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    
+    quote.validates_presence_of :send_quote_method_id
+    quote.validates_presence_of :send_quote_method, :if => :send_quote_method_id # prevent errors by providing wrong ID
+  end
+  
+  ## VALIDATIONS ON SIGNING QUOTE
+  with_options :if => :signed? do |quote|
+    quote.validates_presence_of :order_form_type_id, :order_form
+    quote.validates_presence_of :order_form_type, :if => :order_form_type_id
+    
+    quote.validates_date  :signed_on,
+                          :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
+                          :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+  end
+  
+  def validate # the method validates_attachment_presence of paperclip seems to be broken if we want to use conditions
+    if signed?
+      if order_form.nil? or order_form.instance.order_form_file_name.blank? or order_form.instance.order_form_file_size.blank? or order_form.instance.order_form_content_type.blank?
+        errors.add(:order_form, "est requis")
+      end
+    end
+  end
   
   after_update :save_quotes_product_references
+  after_update :update_estimate_step_status #TODO enable that callback to update status step
+  
+  # attr_accessor  :should_update_sign_attributes
+  attr_protected :status, :public_number, :validated_on, :invalidated_on, :sended_on, :send_quote_method_id,
+                 :signed_on, :order_form_type_id, :order_form, :should_update_sign_attributes
+  
+  PROTECTED_ATTRIBUTES = %W( :validated_on :invalidated_on :sended_on :send_quote_method_id :signed_on )
+  
+  STATUS_VALIDATED    = 'validated'
+  STATUS_INVALIDATED  = 'invalidated'
+  STATUS_SENDED       = 'sended'
+  STATUS_SIGNED       = 'signed'
+  
+  #VALIDITY_DELAY_IN_HOURS  = 'hours'
+  #VALIDITY_DELAY_IN_DAYS   = 'days'
+  #VALIDITY_DELAY_IN_MONTHS = 'months'
+  
+  PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
+  
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:validity_delay] = 'Période de validité :'
+  @@form_labels[:sended_on] = 'Devis envoyé au client le :'
+  @@form_labels[:send_quote_method] = 'Par :'
+  @@form_labels[:signed_on] = 'Devis signé par client le :'
+  @@form_labels[:order_form_type] = 'Type de document :'
+  @@form_labels[:order_form] = 'Fichier :'
   
   def quotes_product_reference_attributes=(quotes_product_reference_attributes)
     quotes_product_reference_attributes.each do |attributes|
@@ -25,9 +97,9 @@ class Quote < ActiveRecord::Base
           quotes_product_reference = quotes_product_references.build(attributes)
           
           # original_name, original_description and original_unit_price are protected form mass-assignment !
-          quotes_product_reference.update_attribute(:original_name, product_reference.name)
-          quotes_product_reference.update_attribute(:original_description, product_reference.description)
-          quotes_product_reference.update_attribute(:original_unit_price, product_reference.unit_price)
+          quotes_product_reference.original_name        = product_reference.name
+          quotes_product_reference.original_description = product_reference.description
+          quotes_product_reference.original_unit_price  = product_reference.unit_price
         else
           quotes_product_reference = quotes_product_references.detect { |x| x.id == attributes[:id].to_i }
           quotes_product_reference.attributes = attributes
@@ -43,6 +115,12 @@ class Quote < ActiveRecord::Base
       else
         x.save(false)
       end
+    end
+  end
+  
+  def update_estimate_step_status
+    if signed?
+      estimate_step.terminated!
     end
   end
   
@@ -66,11 +144,120 @@ class Quote < ActiveRecord::Base
     total_with_taxes - account
   end
   
-  def validated?
-    validated
-  end
-  
   def number_of_pieces
     quotes_product_references.collect{ |qpr| qpr.quantity }.sum
   end
+  
+  def validate_quote
+    if can_be_validated?
+      self.validated_on = Date.today
+      self.public_number = generate_public_number
+      self.status = STATUS_VALIDATED
+      self.save
+    else
+      false
+    end
+  end
+  
+  def invalidate_quote
+    if can_be_invalidated?
+      self.invalidated_on = Date.today
+      self.status = STATUS_INVALIDATED
+      self.save
+    else
+      false
+    end
+  end
+  
+  def send_quote(attributes)
+    if can_be_sended?
+      self.sended_on = Date.civil( attributes["sended_on(1i)"].to_i,
+                                   attributes["sended_on(2i)"].to_i,
+                                   attributes["sended_on(3i)"].to_i ) rescue nil # return nil if the date is invalid
+      self.send_quote_method_id = attributes[:send_quote_method_id]
+      self.status = STATUS_SENDED
+      self.save
+    else
+      false
+    end
+  end
+  
+  def sign_quote(attributes)
+    if can_be_signed?
+      # self.should_update_sign_attributes = true
+      self.attributes = attributes
+      self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
+                                   attributes["signed_on(2i)"].to_i,
+                                   attributes["signed_on(3i)"].to_i ) rescue nil
+      self.order_form_type_id = attributes[:order_form_type_id]
+      self.order_form = attributes[:order_form]
+      self.status = STATUS_SIGNED
+      # raise self.order_form.instance.inspect
+      self.save
+    else
+      false
+    end
+  end
+  
+  # quote is considered as 'uncomplete' if its status is nil
+  def uncomplete?
+    status.nil?
+  end
+  
+  def validated?
+    status == STATUS_VALIDATED
+  end
+  
+  def invalidated?
+    status == STATUS_INVALIDATED
+  end
+  
+  def sended?
+    status == STATUS_SENDED
+  end
+  
+  def signed?
+    status == STATUS_SIGNED
+  end
+  
+  def validity_date
+    return unless validated_on and validity_delay_unit and validity_delay
+    validated_on + validity_delay.send(validity_delay_unit)
+  end
+  
+  def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
+    uncomplete?
+  end
+  
+  def can_be_deleted?
+    uncomplete?
+  end
+  
+  def can_be_validated?
+    uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
+  end
+  
+  def can_be_invalidated?
+    validated? or sended?
+  end
+  
+  def can_be_sended?
+    validated?
+  end
+  
+  def can_be_signed?
+    sended?
+  end
+  
+  private
+    def generate_public_number
+      return public_number if !public_number.blank?
+      prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
+      quantity = Quote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
+      "#{prefix}#{quantity.to_s.rjust(3,'0')}"
+    end
+    
+    def should_update_sign_attributes?
+      should_update_sign_attributes
+    end
 end
