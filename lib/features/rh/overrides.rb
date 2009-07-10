@@ -3,7 +3,7 @@ require_dependency 'service'
 require_dependency 'application_helper'
 
 class User
-  belongs_to :employee
+  has_one :employee
 
   def employee_name
     self.employee ? self.employee.fullname : self.username

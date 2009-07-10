@@ -11,12 +11,12 @@
         <%= form.password_field :password, :value => "" %>
       </p>
       <p>
-        <%= form.label :password_confirmation%>
-        <%= form.password_field :password, :value => "" %>
+        <%= form.label :password_confirmation %>
+        <%= form.password_field :password_confirmation, :value => "" %>
       </p>
       <p>
-        <%= form.label :temporary_password, nil, :class => "disable-stylesheet-width" %>
-        <%= form.check_box :temporary_password %>
+        <%= form.label :force_password_expiration, nil, :class => "disable-stylesheet-width" %>
+        <%= form.check_box :force_password_expiration %>
       </p>
       <% end %>
     <p>

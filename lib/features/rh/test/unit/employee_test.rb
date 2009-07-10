@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class EmployeeTest < ActiveSupport::TestCase
-  fixtures :employees
+  fixtures :employees, :civilities
 
   def setup
     @employee = employees(:normal)
@@ -12,11 +12,10 @@ class EmployeeTest < ActiveSupport::TestCase
       Employee.find(@employee.id)
     end
   end
-
-  def test_update
-    assert_no_difference 'Employee.count' do
-      assert @employee.update_attributes(:last_name => 'new last name'),
-        "An Employee should be update"
+  
+  def test_create
+    assert_difference 'Employee.count', +1, "Employee should be created" do
+      e = Employee.create(@employee.attributes)
     end
   end
 

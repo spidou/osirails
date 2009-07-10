@@ -6,11 +6,14 @@ class Number < ActiveRecord::Base
 
   # Validations
   validates_presence_of :has_number_type, :indicative_id, :number_type_id
-  validates_format_of 'number',:with => /^[0-9]{9}$/, :message => " le numéro doit contenir 10 chiffres"
+  validates_presence_of :indicative,  :if => :indicative_id
+  validates_presence_of :number_type, :if => :number_type_id
+  
+  validates_length_of :number, :is => 9
   
   attr_accessor :should_destroy 
 
-  VISIBLE_STATES = {"Privé"=> false,"Public" => true} 
+  VISIBLE_STATES = { "Privé" => false, "Public" => true } 
   
   def formatted
     # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090312132045) do
+ActiveRecord::Schema.define(:version => 20090709052426) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -284,6 +284,7 @@ ActiveRecord::Schema.define(:version => 20090312132045) do
     t.string   "social_security_number"
     t.integer  "civility_id",            :limit => 11
     t.integer  "family_situation_id",    :limit => 11
+    t.integer  "user_id",                :limit => 11
   end
 
   create_table "employees_jobs", :id => false, :force => true do |t|
@@ -716,7 +717,7 @@ ActiveRecord::Schema.define(:version => 20090312132045) do
   end
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :default => "", :null => false
+    t.string   "session_id", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -840,7 +841,6 @@ ActiveRecord::Schema.define(:version => 20090312132045) do
     t.boolean  "enabled"
     t.datetime "password_updated_at"
     t.datetime "last_connection"
-    t.integer  "employee_id",         :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "last_activity"

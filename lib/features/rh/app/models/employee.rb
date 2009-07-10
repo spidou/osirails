@@ -24,10 +24,10 @@ class Employee < ActiveRecord::Base
 
   belongs_to :family_situation
   belongs_to :civility
+  belongs_to :user
   has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
-  has_one :user
   
   # has_many_polymorphic
   has_many :contacts_owners, :as => :has_contact
@@ -40,14 +40,16 @@ class Employee < ActiveRecord::Base
   has_and_belongs_to_many :jobs
   
   # Validates
-  validates_associated :numbers, :iban, :address
-  validates_presence_of :last_name, :first_name, :message => "ne peut être vide"
-  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/,:message => "format numéro de sécurité social incorrect"
-  validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
-  validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,:message => "format adresse email incorrect"
+  validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
+  validates_presence_of :family_situation, :if => :family_situation_id
+  validates_presence_of :civility, :if => :civility_id
+  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
+  validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia #, :services, :jobs
   
   # Callbacks
-  after_create :create_other_resources, :save_address #,:save_iban
+  before_validation_on_create :build_associated_resources
   before_save :case_managment
   after_update :save_iban, :save_numbers, :save_address
   
@@ -137,7 +139,7 @@ class Employee < ActiveRecord::Base
         unless tmp[0].blank?
           txt = tmp[0].downcase
           # verify if 'Attribut' is valid
-          if obj.respond_to?(txt) and Employee::METHODS[obj.class.name].include?(txt.downcase)  
+          if obj.respond_to?(txt) and Employee::METHODS[obj.class.name].include?(txt.downcase)
             if tmp.size==2
               for j in (1...tmp.size)  
                   # test the case of the 'Attribut'            
@@ -162,7 +164,14 @@ class Employee < ActiveRecord::Base
                 self.pattern_error = true
                 return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
               end
-              txt = obj.send(tmp).gsub(/\x20/,"_").strip_accents
+              
+              txt = obj.send(tmp)
+              if txt.blank?
+                self.pattern_error = true
+                return nil
+              end
+              
+              txt.gsub(/\x20/,"_").strip_accents
               if val[i] == val[i].upcase
                 retour += txt.upcase
               else
@@ -190,16 +199,6 @@ class Employee < ActiveRecord::Base
   def fullname
     "#{self.first_name} #{self.last_name}"
   end
-  
-  def create_other_resources
-    raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_user_pattern)
-    
-    # create associated user
-    self.build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd").save
-    
-    # create empty job contract
-    self.build_job_contract.save
-  end 
   
   #OPTIMIZE this method return an array of numbers. why not return objects instead of numbers? and why don't put this method in the Service model???!
   def responsable?(service_id)
@@ -258,22 +257,33 @@ class Employee < ActiveRecord::Base
     end
   end
   
-  def save_numbers
-    self.numbers.each do |number|
-      if number.should_destroy?    
-        number.destroy    
-      else
-        number.save(false)
-      end
-    end 
-  end  
+  private
   
-  def save_iban
-     self.iban.save(false)
-  end
+    def save_numbers
+      self.numbers.each do |number|
+        if number.should_destroy?    
+          number.destroy    
+        else
+          number.save(false)
+        end
+      end 
+    end  
+    
+    def save_iban
+       self.iban.save(false)
+    end
 
-  def save_address
-    self.address.save(false)
-  end
+    def save_address
+      self.address.save(false)
+    end
   
+    def build_associated_resources
+      raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_user_pattern)
+      
+      # create associated user
+      user = build_user(:username => pattern(ConfigurationManager.admin_user_pattern,self), :password =>"P@ssw0rd")
+      
+      # create empty job contract
+      job_contract = build_job_contract
+    end
 end

@@ -7,25 +7,23 @@ class SalaryTest < ActiveSupport::TestCase
     @salary = salaries(:normal)
   end
 
-  def test_presence_of_job_contract_id
-    assert_no_difference 'Salary.count' do
-      salary = Salary.create
-      assert_not_nil salary.errors.on(:job_contract_id),
-        "A Salary should have a job contract id"
-    end
-  end
-
   def test_presence_of_gross_amount
-    assert_no_difference 'Salary.count' do
-      salary = Salary.create
-      assert_not_nil salary.errors.on(:gross_amount),
-        "A Salary should have a gross amount"
-    end
+    salary = Salary.new
+    salary.valid?
+    assert salary.errors.invalid?(:gross_amount), "gross_amount should NOT be valid because it's nil"
   end
 
-  def test_format_of_gross_amount
-    @salary.update_attributes(:gross_amount => 'a')
-    assert_not_nil @salary.errors.on(:gross_amount),
-      "A Salary should have a numeric value for gross amount"
+  def test_numericality_of_gross_amount
+    salary = Salary.new(:gross_amount => "string")
+    salary.valid?
+    assert salary.errors.invalid?(:gross_amount), "gross_amount should NOT be valid because it's not a number"
+    
+    salary.gross_amount = 1000
+    salary.valid?
+    assert !salary.errors.invalid?(:gross_amount), "gross_amount should be valid because it's a fixnum"
+    
+    salary.gross_amount = 1000.00
+    salary.valid?
+    assert !salary.errors.invalid?(:gross_amount), "gross_amount should be valid because it's a float"
   end
 end

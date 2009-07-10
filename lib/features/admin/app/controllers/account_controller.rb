@@ -18,7 +18,7 @@ class AccountController < ApplicationController
         
     if @user = User.find(:first, :conditions => ['username LIKE BINARY ?', params[:username]], :include => :employee)
       if @user.compare_password(params[:password])
-        if @user.enabled == true
+        if @user.enabled?
           @user.update_connection
           session[:user_id] = @user.id
           session[:initial_uri] ||= user_home
@@ -85,7 +85,6 @@ class AccountController < ApplicationController
     user = current_user
     user.updating_password = true
     if user.update_attributes(params[:user])
-      user.update_attributes(:password_updated_at => Time.now)
       redirect_to session[:initial_uri]
       flash[:notice] = "Votre mot de passe a &eacute;t&eacute; mis &agrave; jour avec succ&egrave;s"
     end

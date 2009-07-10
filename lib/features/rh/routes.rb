@@ -4,7 +4,9 @@ ActionController::Routing::Routes.add_routes do |map|
     employee.resources :premia
     employee.resource :job_contract
   end
+  
   map.resources :jobs
+  map.resources :job_contracts
   
   map.rh 'rh', :controller => 'employees' #default page for human resources
 end

@@ -1,7 +1,9 @@
 normal:
-  last_name: Pan
-  first_name: Peter
+  first_name: John
+  last_name: Doe
   birth_date: <%= Date.today - 20.years %>
-  email: peter@pan.org
-  society_email: peter.pan@society.com
+  email: john@doe.org
+  society_email: john.doe@society.com
   social_security_number: 1234567891234 45
+  family_situation: single
+  civility: mister

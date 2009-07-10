@@ -13,7 +13,9 @@ class User < ActiveRecord::Base
       record.errors.add attr, "ne doit pas être votre ancien mot de passe" if Digest::SHA1.hexdigest(value) == User.find(record['id']).password
     end
   end
-  validates_presence_of :username, :message => "ne peut être vide"
+  
+  validates_presence_of :username
+  
   with_options :if => :should_update_password? do |user|
     user.before_save :password_encryption
     user.validates_presence_of :password
@@ -26,19 +28,22 @@ class User < ActiveRecord::Base
     reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
     # replace the "l" by "d" into 'admin_actual_password_policy' to find the message into admin password_policy (cf. config.yml) concerning the regexp name ex: "d1" message for "l1" regex 
     message = ConfigurationManager.admin_password_policy[ConfigurationManager.admin_actual_password_policy.gsub(/l/,"d")]
-    user.validates_format_of :password, :with => reg ,:message => message
-    # user.validate :must_be_different
-    # user.validates_format_of :password, :with => /^(a.A){32}$/ ,:message =>  " ne doit pas être votre ancien mot de passe" , :if => :same_password?
+    user.validates_format_of :password, :with => reg, :message => message
   end
   
   # CallBacks
-  before_save :password_verif
+  before_save    :change_password_updated_at
   before_destroy :can_be_destroyed?
 
   # Accessors
-  # attr_protected :login, :password #TODO uncomment this line and test if it brings some issues!
-  attr_accessor :updating_password   
-  attr_accessor :temporary_password
+  # set up this variable to 'true' if you want to update password
+  attr_accessor :updating_password
+  
+  # after_find store the password after each find request in that variable
+  attr_accessor :old_encrypted_password
+  
+  # this variable must be set at "1" if we want to force password expiration (by setting at nil 'password_updated_at')
+  attr_accessor :force_password_expiration
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
@@ -48,22 +53,25 @@ class User < ActiveRecord::Base
   @@form_labels[:enabled] = "Activ&eacute; :"
   @@form_labels[:last_connection] = "dernière connection :"
   @@form_labels[:roles] = "R&ocirc;les :"
-  @@form_labels[:temporary_password] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
- 
-
-  # Method to encrypt a string
-  def encrypt(string)
-    Digest::SHA1.hexdigest(string)
+  @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
+  
+  # store old encrypted password to be aware if a new password is given
+  def after_find
+    self.old_encrypted_password = self.password
   end
-
+  
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)
     self.password == encrypt(password)
   end
   
-  # Method to verify if the password is empty or not
+  # Method to check is the password should be updated or not
   def should_update_password?
     updating_password || new_record?
+  end
+  
+  def force_password_expiration?
+    force_password_expiration.to_i == 1
   end
   
   # Update the column last_connection when a user loggin
@@ -77,10 +85,14 @@ class User < ActiveRecord::Base
     update_attribute('last_activity', Time.now)
   end
   
+  def enabled?
+    enabled == true
+  end
+  
   def expired?
     return true if self.password_updated_at.nil?
     return false if ConfigurationManager.admin_password_validity == 0
-    return true if (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
+    (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
   end
   
   def username_unicity
@@ -105,21 +117,38 @@ class User < ActiveRecord::Base
   end
 
   def can_be_destroyed?
-    true
+    true #TODO check if the user can be destroyed...
   end
 
   private
+    def change_password_updated_at
+      if force_password_expiration?
+        self.password_updated_at = nil
+      elsif should_update_password?
+        self.password_updated_at = Time.now
+      end
+    end
+    
+    ## determine if we want to update password or not
+    #def updating_password?
+    #  puts "> #{self.password.blank?.inspect} > #{self.password} > #{self.old_encrypted_password}"
+    #  return false if self.password.blank?
+    #  return false if self.password == self.old_encrypted_password
+    #  return true
+    #  #raise (!self.password.blank? and self.password != self.old_encrypted_password).inspect
+    #  ##if !self.password.blank? and encrypt(self.password) != self.old_encrypted_password
+    #  ##  raise (!self.password.blank? and encrypt(self.password) != self.old_encrypted_password).inspect
+    #  ##end
+    #  #!self.password.blank? and self.password != self.old_encrypted_password
+    #end
+    
+    # Method to encrypt a string
+    def encrypt(string)
+      Digest::SHA1.hexdigest(string)
+    end
 
-  def password_verif
-    return if @temporary_password.nil?
-    @temporary_password = true if @temporary_password == '1'
-    self.password_updated_at = (@temporary_password == true ? nil : Time.now)
-  end
-
-  # Method to encrypt the password to the data base
-  def password_encryption
-    self.password = encrypt(self.password)
-  end
-
-# TODO delete the Add link that been used for dev purposes
+    # Method to encrypt the password to the data base
+    def password_encryption
+      self.password = encrypt(self.password)
+    end
 end

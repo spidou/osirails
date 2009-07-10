@@ -334,18 +334,16 @@ namespace :osirails do
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
       # default employees
-      iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
       john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
-      number1 = Number.create :number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id
-      number2 = Number.create :number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id
-      john.numbers << [number1,number2]
-      john.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
-      john.save
-      john.iban = iban
+      john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
+      john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
+      john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
+      john.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
+      john.save!
       john.services << Service.first
       john.user.roles << role_admin
       john.user.enabled = true
-      john.user.save
+      john.user.save!
       john.job_contract.update_attributes(:start_date => Date.today, :end_date => Date.today + 1.years, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id, :salary => "2000")
 #      john.job_contract = job_contract
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"

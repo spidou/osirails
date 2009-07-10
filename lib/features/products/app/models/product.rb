@@ -6,6 +6,7 @@ class Product < ActiveRecord::Base
 
   # Validations
   validates_presence_of :name, :product_reference_id
+  validates_presence_of :product_reference, :if => :product_reference_id
   
   PRODUCTS_PER_PAGE = 5
 end
