@@ -57,7 +57,7 @@ class FeatureManager
       insert_menus_in_database
 
       # search load
-      initialize_search
+      # initialize_search
     end
     
     def create_feature_if_necessary

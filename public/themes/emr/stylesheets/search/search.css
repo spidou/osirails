@@ -1,0 +1,57 @@
+/*main desing of the attribute chooser drop down menu*/
+.attrChooser, .attrChooser ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	background: #7e98cb;
+	-moz-border-radius:0px 4px 0px 4px;
+}
+
+.attrChooser a {
+	display: block;
+	width: 15em;
+	text-decoration: none;
+  color: #E0E0E0;
+}
+
+.attrChooser a.selected{
+  background: #4773C9 ;
+}
+
+.attrChooser a:hover{
+  color: #303030;
+}
+
+/* the attribute */
+.attrChooser li {
+	float: left;
+	width: auto;
+}
+
+/* the menu start hidden */
+.attrChooser li ul {
+	position: absolute;
+	width: 15em;
+	left: -999em;
+}
+
+/* show or hide the attribute vb=visible uvb=unvisible*/
+.attrChooser li ul li.sub_m ul.vb{
+  position: absolute;
+  left: 15em;
+  background: #7e98cb;
+}
+
+.attrChooser li ul li.sub_m ul.uvb{
+  position: absolute;
+  left: -999em;
+}
+/*---------------------------------------------------*/
+.attrChooser li.sub_m{
+  background: url('/themes/emr/images/search/arrow.png') no-repeat right;
+}
+
+/* show the drop down menu when the attribute name his pointed by the mouse*/
+.attrChooser li.clicked:hover ul{
+	left: auto;
+}

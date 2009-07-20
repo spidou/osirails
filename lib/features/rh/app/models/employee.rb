@@ -54,7 +54,8 @@ class Employee < ActiveRecord::Base
   after_update :save_iban, :save_numbers, :save_address
   
   # Search Plugin 
-  has_search_index  :only_attributes => ["last_name","first_name"]
+  has_search_index  :except_attributes => ["*_id","*_at"],
+                    :displayed_attributes => ["id", "first_name", "last_name", "email", "society_email", "birth_date","last_activity"]
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment
@@ -114,7 +115,7 @@ class Employee < ActiveRecord::Base
     # prepare val to be split with "|"
     val = val.gsub(/\[/,"|")
     val = val.gsub(/\]/,"|")
-    # split val to can separate each part of val into a tab
+    # split val to be able to separate each part of val into a tab
     val = val.split("|")
     
     for i in (1...val.size) do

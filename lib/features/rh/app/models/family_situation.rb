@@ -5,4 +5,6 @@ class FamilySituation < ActiveRecord::Base
   # Validations
   validates_presence_of :name
   validates_uniqueness_of :name
+  
+  has_search_index  :main_model => false
 end

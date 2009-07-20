@@ -20,8 +20,7 @@ class Customer < Third
   after_update :save_establishments
 
   # Search Plugin
-  has_search_index  :only_attributes => ["name","siret_number"],
-                    :only_sub_models => ["Establishment"]
+  has_search_index  :only_attributes => ["name","siret_number"]
                     
   def activated_establishments
     establishment_array = []

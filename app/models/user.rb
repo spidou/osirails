@@ -57,8 +57,9 @@ class User < ActiveRecord::Base
   @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
  
   # Search Plugin
-  has_search_index  :additional_attributes => {"expired?" => "boolean" , "password_updated_at" => "datetime"},
-                    :except_sub_models => ["Role"],
+  has_search_index  :additional_attributes => {"expired?" => "boolean" },
+                    :only_attributes => ["username", "enabled", "last_connection","last_activity"],
+                    :except_relationships => [:roles],
                     :displayed_attributes => ["id","username","enabled","expired?","last_activity"]
                     
   

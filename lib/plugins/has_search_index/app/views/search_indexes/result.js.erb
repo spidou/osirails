@@ -3,9 +3,9 @@
 <% if @collection.size>0%>
 <table>
   <tr>
-    <%= generate_table_headers(@columns) %>
+    <%= generate_table_headers(@columns, generate_nested_resources_array(@criteria)) %>
   </tr>
-  <%= generate_results_table_cells(@collection, @columns) %>
+  <%= generate_results_table_cells(@collection, @columns, generate_nested_resources_array(@criteria)) %>
 <% else %>
   <p><strong>Aucuns r&eacute;sultats</strong></p>
 <% end %>  

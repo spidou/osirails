@@ -31,7 +31,8 @@ class JobContract < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["start_date"],
-                    :only_sub_models => ["JobContractType"]
+                    :only_relationships => [:job_contract_type],
+                    :main_model => false
   
   #return the actual salary
   def actual_salary

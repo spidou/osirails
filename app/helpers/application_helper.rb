@@ -85,17 +85,34 @@ module ApplicationHelper
     "#{society_name} SIRET : #{siret} TEL : #{phone} FAX : #{fax} <br/> ADRESSE : #{address}"
   end
   
-  def contextual_search()
-    html= "<p>"
+  
+  def contextual_search(model, arguments)
+    html = content_tag(:h1, "Recherche Contextuelle")  
+    html += form_tag("/search_index/update", :id => "contextual_search_form" )
     
-    model_for_search = controller.controller_name.singularize.camelize
+    html += "<p>"
+    html += "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
+    html += "<input type='hidden' name='contextual_search[options]' value='#{arguments.to_yaml}'/>"
+    focus = ["if(this.value==\"\"){this.value='Rechercher';}", "if(this.value=='Rechercher'){this.value='';}"]
+    html += text_field_tag("contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus => focus[1], :onblur => focus[0])
+    html += "<button type=\"submit\" class=\"contextual_search_button\"></button>"
+    html += "</p>"
     
-    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{model_for_search}' />"
-    html+= text_field_tag "contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus=>"if(this.value=='Rechercher'){this.value='';}", :onblur=>"if(this.value==\"\"){this.value='Rechercher';}", :style=>"color:grey;"
-    html+= "<button type=\"submit\" class=\"contextual_search_button\"></button>"
-    html+= link_to( "Recherche avancée", search_path(:choosen_model => model_for_search), :class => 'help')
-    html+="</p>"
+    html+= "</form>"
+    content_for(:secondary_menu){html} 
   end
+  
+#  def contextual_search()
+#    html= "<p>"
+#    
+#    model_for_search = controller.controller_name.singularize.camelize
+#    
+#    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{model_for_search}' />"
+#    html+= text_field_tag "contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus=>"if(this.value=='Rechercher'){this.value='';}", :onblur=>"if(this.value==\"\"){this.value='Rechercher';}", :style=>"color:grey;"
+#    html+= "<button type=\"submit\" class=\"contextual_search_button\"></button>"
+#    html+= link_to( "Recherche avancée", search_path(:choosen_model => model_for_search), :class => 'help')
+#    html+="</p>"
+#  end
   
   # This method permit to point out if a required local variable hasn't been passed (or with a nil object) with the 'render :partial' call
   # 

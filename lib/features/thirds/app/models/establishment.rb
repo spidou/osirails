@@ -25,7 +25,8 @@ class Establishment  < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["name","activated"],
-                    :only_sub_models => ["Contact","Address"]
+                    :only_relationships => [:contacts,:address],
+                    :main_model => false;
                     
   cattr_reader :form_labels
   @@form_labels = Hash.new

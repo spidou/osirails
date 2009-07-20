@@ -6,10 +6,10 @@ class Contact < ActiveRecord::Base
   # Declaration for has_many_polymorph association
   has_many :contacts_owners, :foreign_key => "contact_id"
   #TODO are those lines really useful? 'has_many :contacts_owners' is not necessary alone?
-  has_many :thirds, :source => :has_contact, :through => :contacts_owners, :source_type => "Third", :class_name => "Third"
-  has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
-  has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
-  has_many :orders, :source => :has_contact, :through => :contacts_owners, :source_type => "Order", :class_name => "Order"
+#  has_many :thirds, :source => :has_contact, :through => :contacts_owners, :source_type => "Third", :class_name => "Third"
+#  has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
+#  has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
+#  has_many :orders, :source => :has_contact, :through => :contacts_owners, :source_type => "Order", :class_name => "Order"
   #####
   
   validates_presence_of :first_name
@@ -34,8 +34,8 @@ class Contact < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["first_name","last_name"],
-                    :additional_attributes => {"first_name"=> "string"},
-                    :only_sub_models => ["Number"]
+                    :except_relationships => [:contacts],
+                    :main_model => false; #FIXME because there's no view to access directly to the resource from a result link
                     
 #  def self.new(contact = nil)
 #    

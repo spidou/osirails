@@ -1,19 +1,28 @@
 <!-- store all attributes by model onto the page to avoid useless database request-->
 <% javascript_tag do %>
-  var ACTIONS = <%= HasSearchIndex::ACTIONS_TEXT.to_json.to_s %>;
-  var DATA_TYPES = <%= HasSearchIndex::ClassMethods::ACTIONS.to_json.to_s %>;
+  var ACTIONS = <%= @actions %>;
+  var DATA_TYPES = <%= @data_types %>;
   var ID = 0;
   var MODELS = new Hash();
   <% @models.each do |model| %>
-    MODELS.set('<%= model %>', new Hash(<%=  model.constantize.search_index[:attributes].merge(model.constantize.search_index[:additional_attributes]).to_json %>));
+    var m_option = new Hash();
+    var relationships = new Hash();
+    m_option.set('attributes',new Hash(<%= generate_attributes_hash(model.constantize).to_json%>) );
+    <% generate_relationships_hash(model.constantize.get_include_array, model).each_pair do |key, value|%>
+      relationships.set('<%= key %>',<%= value.to_json %>)
+    <% end%>
+    m_option.set('relationships',relationships );
+    MODELS.set('<%= model %>', m_option);
   <% end %>
 <% end %>
+  
+
 
 <% content_for :header do %>
      <%= javascript_include_tag 'has_search_index/search_index' %>
-     <%= javascript_include_tag :defaults %> 
+     <%= javascript_include_tag :defaults %>
+     <%= stylesheet_link_tag "../themes/emr/stylesheets/search/search.css" %> 
 <% end %>
- 
 
 <h1>Rechercher</h1>
 
@@ -25,11 +34,11 @@
 
     <p><select id="model_select" name="model" onchange="get_attributes_select(false);">
       <option selected='selected' value="blank">Veuillez choisir la ressource</option>
-      <% @models.each do |model| %>
+      <% @main_models.each do |model| %>
         <%= "<option value='#{ model.to_s }'>#{ model.to_s.tableize.titleize }</option>" %>  
       <% end %>
     </select><p>
-    
+
   <h3>Quels sont les crit&egrave;res?</h3>
   
     <p>
@@ -44,10 +53,9 @@
     <div id="criteria_div">
     </div>
     <div style='display:none;' id='add_link' >
-      <p><a href='#' onclick='get_attributes_select(true);'><img src='/images/add_16x16.png'/></a></p>
+      <p><a name='attribute_add_link' href='#attribute_add_link' onclick='get_attributes_select(true);'><img src='/images/add_16x16.png'/></a></p>
       <p><%= submit_tag "search"%><p>
     </div>
-
 <% end %>
 
   <div id="search_result">
