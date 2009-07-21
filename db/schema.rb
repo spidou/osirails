@@ -242,11 +242,22 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string "code"
   end
 
+  create_table "deliverers_interventions", :force => true do |t|
+    t.integer "deliverer_id",    :limit => 11
+    t.integer "intervention_id", :limit => 11
+  end
+
   create_table "delivery_notes", :force => true do |t|
-    t.integer  "delivery_step_id",      :limit => 11
-    t.boolean  "on_site"
-    t.datetime "signed_at"
-    t.datetime "scheduled_delivery_at"
+    t.integer  "delivery_step_id",        :limit => 11
+    t.integer  "user_id",                 :limit => 11
+    t.string   "status"
+    t.date     "validated_on"
+    t.date     "invalidated_on"
+    t.date     "signed_on"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size",    :limit => 11
+    t.string   "public_number"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -255,6 +266,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "delivery_note_id",            :limit => 11
     t.integer  "quotes_product_reference_id", :limit => 11
     t.integer  "report_type_id",              :limit => 11
+    t.integer  "quantity",                    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -264,6 +276,19 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "discard_types", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "discards", :force => true do |t|
+    t.integer  "delivery_notes_quotes_product_reference_id", :limit => 11
+    t.integer  "discard_type_id",                            :limit => 11
+    t.text     "comments"
+    t.integer  "quantity",                                   :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -458,6 +483,16 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.integer  "country_id", :limit => 11
   end
 
+  create_table "interventions", :force => true do |t|
+    t.integer  "delivery_note_id",      :limit => 11
+    t.boolean  "on_site"
+    t.datetime "scheduled_delivery_at"
+    t.boolean  "delivered"
+    t.text     "comments"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "inventories", :force => true do |t|
     t.boolean  "closed",     :default => false
     t.datetime "created_at"
@@ -623,18 +658,18 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   create_table "orders", :force => true do |t|
     t.string   "title"
     t.string   "description"
-    t.integer  "commercial_id",        :limit => 11
-    t.integer  "user_id",              :limit => 11
-    t.integer  "customer_id",          :limit => 11
-    t.integer  "establishment_id",     :limit => 11
-    t.integer  "activity_sector_id",   :limit => 11
-    t.integer  "order_type_id",        :limit => 11
+    t.integer  "commercial_id",              :limit => 11
+    t.integer  "user_id",                    :limit => 11
+    t.integer  "customer_id",                :limit => 11
+    t.integer  "establishment_id",           :limit => 11
+    t.integer  "society_activity_sector_id", :limit => 11
+    t.integer  "order_type_id",              :limit => 11
     t.datetime "closed_date"
     t.date     "previsional_delivery"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "quotation_deadline"
-    t.integer  "delivery_time",        :limit => 11
+    t.integer  "delivery_time",              :limit => 11
   end
 
   create_table "participants", :force => true do |t|

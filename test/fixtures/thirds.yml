@@ -1,17 +1,16 @@
-customer_normal:
+first_customer:
   type: Customer
-  name: Customer
+  name: First Customer
   siret_number: 12345678912345
-  activity_sector: normal
-  legal_form: normal
-  payment_method: normal
-  payment_time_limit: normal
+  activity_sector: telephony
+  legal_form: local_authority
+  payment_method: bank_transfer
+  payment_time_limit: cod
   activated: true
-supplier_normal:
+first_supplier:
   type: Supplier
-  name: Supplier
+  name: First Supplier
   siret_number: 12345678912345
-  activity_sector: normal
-  legal_form: normal
+  activity_sector: supermarket_retail
+  legal_form: llc
   activated: true
-  

@@ -1,4 +1,6 @@
-normal:
-  name: SA
-  third_type: normal
-  
+llc:
+  name: LLC (Limited Liability Company)
+  third_type: private
+local_authority:
+  name: Local Authority
+  third_type: public

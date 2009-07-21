@@ -28,19 +28,18 @@ module HasContacts
       
       after_save :save_contacts
       validates_associated :contacts
-      #validates_inclusion_of :contacts, :in => :customer_contacts
+      validate :accept_contacts_from_method
       
       class_eval do
         
-        def validate # check if contacts are allowed
+        def accept_contacts_from_method # check if contacts are allowed
           accept_from_method = self.class.has_contacts_definitions[:accept_from]
           return if contacts.empty? or accept_from_method == :all
           
           collection = self.send(accept_from_method)
-          raise "#{accept_from_method} must return an instance of Array" unless collection.kind_of?(Array)
+          raise "#{accept_from_method} should return an instance of Array" unless collection.kind_of?(Array)
           
           wrong_contacts = contacts.select{ |c| !collection.include?(c) }
-          #errors.add(:contacts, "contient des éléments qui ne sont pas admis") unless wrong_contacts.empty?
           errors.add(:contacts, ActiveRecord::Errors.default_error_messages[:inclusion]) unless wrong_contacts.empty?
         end
         

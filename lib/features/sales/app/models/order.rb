@@ -8,6 +8,7 @@ class Order < ActiveRecord::Base
   belongs_to :customer
   belongs_to :establishment
   belongs_to :commercial, :class_name => 'Employee'
+  belongs_to :creator, :class_name => 'User', :foreign_key => 'user_id'
   
   has_one :commercial_step,    :dependent => :nullify
   has_one :pre_invoicing_step, :dependent => :nullify
@@ -16,11 +17,14 @@ class Order < ActiveRecord::Base
   has_many :order_logs
 
   # Validations
-  validates_presence_of :customer_id, :title, :order_type_id, :commercial_id, :establishment_id, :previsional_delivery
-  validates_presence_of :customer,   :if => :customer_id
-  validates_presence_of :order_type, :if => :order_type_id
-  validates_presence_of :commercial, :if => :commercial_id
-  validates_presence_of :establishment, :if => :establishment_id
+  validates_presence_of :title, :previsional_delivery
+  validates_presence_of :customer_id, :order_type_id, :commercial_id, :establishment_id, :user_id#, :society_activity_sector_id
+  validates_presence_of :customer,                :if => :customer_id
+  validates_presence_of :order_type,              :if => :order_type_id
+  validates_presence_of :commercial,              :if => :commercial_id
+  validates_presence_of :establishment,           :if => :establishment_id
+  validates_presence_of :creator,                 :if => :user_id
+  #validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
   cattr_accessor :form_labels
@@ -34,37 +38,14 @@ class Order < ActiveRecord::Base
   @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
   @@form_labels[:quotation_deadline] = "Date butoire d'envoi du devis :"
   
-  # contantes for level
-  CRITICAL = 'critical'
-  LATE = 'late'
-  TODAY = 'today'
-  SOON = 'soon'
-  FAR = 'far'
+  # level constants
+  CRITICAL  = 'critical'
+  LATE      = 'late'
+  TODAY     = 'today'
+  SOON      = 'soon'
+  FAR       = 'far'
   
-  after_create :create_steps, :activate_first_step
-  
-  # Create all orders_steps after create order
-  def create_steps
-    steps.each do |step|
-      if step.parent.nil?
-        step.name.camelize.constantize.create(:order_id => self.id)
-      else
-        step_model = step.name.camelize.constantize                # SurveyStep
-        parent_step_model = step.parent.name.camelize.constantize  # CommercialStep
-        
-        s = step_model.create(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
-        
-        step.checklists.each do |checklist|
-          checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
-          s.checklist_responses << checklist_response
-        end
-      end
-    end
-  end
-  
-  def activate_first_step
-    first_level_steps.first.pending!
-  end
+  after_create :create_steps
   
   # Return all steps of the order according to the choosen order type
   def steps
@@ -181,13 +162,40 @@ class Order < ActiveRecord::Base
   
   def customer_contacts
     # customer.all_contacts #TODO also take in account contacts in customer's establishments
-    customer.contacts
+    customer ? customer.contacts : []
   end
   
   private
 #    def default_step
 #      Step.find_by_name("commercial_step")
 #    end
+  # Create all orders_steps after create order
+    
+    def create_steps
+      steps.each do |step|
+        if step.parent.nil?
+          step.name.camelize.constantize.create(:order_id => self.id)
+        else
+          step_model = step.name.camelize.constantize                # SurveyStep
+          parent_step_model = step.parent.name.camelize.constantize  # CommercialStep
+          
+          s = step_model.create(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
+          
+          ## TODO create another method called "create_checklist_responses" to generate checklist responses
+          step.checklists.each do |checklist|
+            checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
+            s.checklist_responses << checklist_response
+          end
+          ##########
+        end
+      end
+      
+      activate_first_step
+    end
+    
+    def activate_first_step
+      first_level_steps.first.pending!
+    end
     
     # that method permits to bound the new contact with the customer of the order.
     # after that, the contact which is first created for the order, is also associated to the customer (of the order)

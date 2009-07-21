@@ -1,4 +1,4 @@
-normal:
+john_doe:
   first_name: John
   last_name: Doe
   birth_date: <%= Date.today - 20.years %>

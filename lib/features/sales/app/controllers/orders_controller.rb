@@ -32,6 +32,7 @@ class OrdersController < ApplicationController
   
   def new
     @order = Order.new
+    @order.creator = current_user
     if params[:customer_id] # this is the second step of the order creation
       begin
         @order.customer = Customer.find(params[:customer_id])
@@ -43,8 +44,9 @@ class OrdersController < ApplicationController
   
   def create
     @order = Order.new(params[:order])
+    @order.creator = current_user
     if @order.save
-      flash[:notice] = "Dossier crée avec succès"
+      flash[:notice] = "Dossier créé avec succès"
       redirect_to order_informations_path(@order)
     else
       render :action => "new"

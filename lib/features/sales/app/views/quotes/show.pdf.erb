@@ -1,7 +1,7 @@
 <table width="100%">
 	<tr>
 		<td>
-			<h1><%= enc("DEVIS N° #{@quote.id}") %></h1>
+			<h1><%= enc("DEVIS N° #{@quote.public_number}") %></h1>
       <h5><%= enc("Date : #{@quote.created_at.to_date.humanize}") %></h5>
       <h5><%= enc("Votre conseiller commercial:") %></h5>
       <p><%= "#{@order.commercial.fullname}" %><br/>
@@ -36,9 +36,9 @@
 	<tr bgcolor="#CCCCCC">
 		<th width="10%"><%= enc("Réf.") %></th>
 		<th width="60%"><%= enc("Désignation") %></th>
-		<th><%= enc("Qté") %></th>
 		<th><%= enc("P.U HT") %></th>
 		<th><%= enc("Rem.") %></th>
+		<th><%= enc("Qté") %></th>
 		<th><%= enc("Total HT") %></th>
 		<th><%= enc("TVA") %></th>
 	</tr>
@@ -46,9 +46,9 @@
 	<tr>
 		<td><%= enc(qpr.product_reference.reference) %></td>
 		<td style="text-align: left;"><pre><%= textilize(enc(qpr.description)) %></pre></td>
-		<td><%= qpr.quantity %></td>
 		<td><%= qpr.unit_price.round_to(2).to_s(2) %></td>
 		<td><%= qpr.discount.round_to(2).to_s(2) %></td>
+		<td><%= qpr.quantity %></td>
 		<td><%= qpr.total.round_to(2).to_s(2) %></td>
 		<td><%= qpr.vat %></td>
 	</tr>

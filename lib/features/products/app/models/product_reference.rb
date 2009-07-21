@@ -8,8 +8,8 @@ class ProductReference < ActiveRecord::Base
 #  has_many :quotes, :through => :quotes_product_references
   
   # Validation Macros
-  validates_presence_of :name, :reference, :message => "ne peut être vide"
-  validates_uniqueness_of :reference, :message => "doit être unique"
+  validates_presence_of :name, :reference
+  validates_uniqueness_of :reference
   
   cattr_reader :form_labels
   @@form_labels = Hash.new

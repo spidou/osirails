@@ -36,7 +36,7 @@ class Contact < ActiveRecord::Base
                     :default_style => :thumb,
                     :path => ":rails_root/assets/contacts/avatars/:id/:style.:extension",
                     :url => "/contacts/:id/avatar",
-                    :default_url => "#{$CURRENT_THEME_PATH}/images/avatars/:gender.png"
+                    :default_url => ":current_theme_path/images/avatars/:gender.png"
   
   before_save :case_management
 

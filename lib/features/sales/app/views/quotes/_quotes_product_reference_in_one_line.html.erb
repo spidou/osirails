@@ -65,13 +65,6 @@
           <%= textilize(h(quotes_product_reference.description)) %>
         <% end %>
       </td>
-      <td class="quantity">
-        <% if is_form_view? %>
-          <%= form.text_field :quantity, :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quotes_product_reference'))", :class => :input_quantity, :title => "Fixer la quantité pour cette référence", :index => nil %>
-        <% else %>
-          <%= quotes_product_reference.quantity %>
-        <% end %>
-      </td>
       <td class="unit_price">
         <% if is_form_view? %>
           <%= form.text_field :unit_price, :value => quotes_product_reference.unit_price.to_f.to_s(2), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quotes_product_reference'))", :class => :input_unit_price, :title => "Fixer le prix unitaire brut pour cette référence", :index => nil %>
@@ -93,6 +86,13 @@
       </td>
       <td class="unit_price_with_discount">
         <%= quotes_product_reference.unit_price_with_discount.round_to(2).to_s(2) %>
+      </td>
+      <td class="quantity">
+        <% if is_form_view? %>
+          <%= form.text_field :quantity, :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quotes_product_reference'))", :class => :input_quantity, :title => "Fixer la quantité pour cette référence", :index => nil %>
+        <% else %>
+          <%= quotes_product_reference.quantity %>
+        <% end %>
       </td>
       <td class="total">
         <%= quotes_product_reference.total.round_to(2).to_s(2) %>

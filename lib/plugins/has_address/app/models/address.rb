@@ -3,7 +3,8 @@ class Address < ActiveRecord::Base
   
   validates_presence_of :has_address_type, :has_address_key
   validates_presence_of :street_name, :country_name, :city_name, :zip_code
-  validates_numericality_of :zip_code
+  
+  validates_numericality_of :zip_code, :allow_blank => true # allow_blank to avoid to have 2 errors for the same field due to validates_presence_of :zip_code
   
   cattr_reader :form_labels
   @@form_labels = Hash.new

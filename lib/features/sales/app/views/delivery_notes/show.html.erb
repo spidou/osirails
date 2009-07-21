@@ -1,0 +1,9 @@
+<%= order_header %>
+
+<h1>Informations concernant le bon de livraison</h1>
+
+<div class="presentation_medium">
+	<% fields_for @delivery_note do |form| %>
+	  <%= render :partial => 'delivery_note_form', :object => @delivery_note, :locals => { :form => form} %>
+  <% end %>
+</div>

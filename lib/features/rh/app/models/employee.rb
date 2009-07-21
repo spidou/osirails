@@ -26,7 +26,6 @@ class Employee < ActiveRecord::Base
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
-  has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
@@ -44,15 +43,17 @@ class Employee < ActiveRecord::Base
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
   validates_presence_of :family_situation, :if => :family_situation_id
   validates_presence_of :civility, :if => :civility_id
+  
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia #, :services, :jobs
+  
+  validates_associated :iban, :job_contract, :user, :contacts, :numbers, :premia #, :services, :jobs
   
   # Callbacks
   before_validation_on_create :build_associated_resources
-  before_save :case_managment
-  after_update :save_iban, :save_numbers, :save_address
+  before_save :case_management
+  after_update :save_iban, :save_numbers
   
   #OPTIMIZE why don't put this method in a named_scope?
   # Method to find active employees
@@ -261,10 +262,6 @@ class Employee < ActiveRecord::Base
     
     def save_iban
        self.iban.save(false)
-    end
-
-    def save_address
-      self.address.save(false)
     end
   
     def build_associated_resources

@@ -4,7 +4,7 @@ class EmployeeTest < ActiveSupport::TestCase
   fixtures :employees, :civilities
 
   def setup
-    @employee = employees(:normal)
+    @employee = employees(:john_doe)
   end
 
   def test_read

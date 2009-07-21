@@ -124,17 +124,17 @@ namespace :osirails do
       ActivitySector.create :name => "Téléphonie"
       
       # default third types
-      private = ThirdType.create :name => "Privé"
-      public = ThirdType.create :name => "Public"
+      private_third_type = ThirdType.create :name => "Privé"
+      public_third_type = ThirdType.create :name => "Public"
       
       # default legal forms
-      sarl = LegalForm.create :name => "SARL", :third_type_id => private.id
-      LegalForm.create :name => "SA", :third_type_id => private.id
-      LegalForm.create :name => "SAS", :third_type_id => private.id
-      LegalForm.create :name => "EURL", :third_type_id => private.id
-      LegalForm.create :name => "Association", :third_type_id => private.id
-      LegalForm.create :name => "Etat", :third_type_id => public.id
-      LegalForm.create :name => "Collectivité territoriale", :third_type_id => public.id
+      sarl = LegalForm.create :name => "SARL", :third_type_id => private_third_type.id
+      LegalForm.create :name => "SA", :third_type_id => private_third_type.id
+      LegalForm.create :name => "SAS", :third_type_id => private_third_type.id
+      LegalForm.create :name => "EURL", :third_type_id => private_third_type.id
+      LegalForm.create :name => "Association", :third_type_id => private_third_type.id
+      LegalForm.create :name => "Etat", :third_type_id => public_third_type.id
+      LegalForm.create :name => "Collectivité territoriale", :third_type_id => public_third_type.id
       
       # default payment methods
       virement = PaymentMethod.create :name => "Virement"
@@ -173,14 +173,14 @@ namespace :osirails do
       # default suppliers
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
       supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :activated => true
-      supplier.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400", :has_address_type => "Third")
+      supplier.create_address(:street_name => "1 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")#, :has_address_type => "Third")
       supplier.iban = iban
       supplier.save
       
       # default customers and establishements
       customer = Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
         :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true
-      customer.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400", :has_address_type => "Third")
+      customer.create_address(:street_name => "2 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")#, :has_address_type => "Third")
       customer.establishments << establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       customer.establishments << establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       customer.establishments << establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
@@ -300,9 +300,9 @@ namespace :osirails do
       john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
       john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
-      john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       john.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
       john.save!
+      john.create_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       john.services << Service.first
       john.user.roles << role_admin
       john.user.enabled = true
@@ -361,10 +361,10 @@ namespace :osirails do
       c.checklist_options << ChecklistOption.create(:name => "Option 3")
       
       # default orders
-      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
+      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
       order1.contacts << Customer.first.contacts.first
       order1.save
-      order2 = Order.new(:title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
+      order2 = Order.new(:title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
       order2.contacts << Customer.first.contacts.first
       order2.save
       

@@ -1,0 +1,21 @@
+<% delivery_note = delivery_note_in_one_line %>
+<%# status = quote.status ? " #{quote.status}_quote" : '' %>
+<%# title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''%>
+
+<tr class="quote<%# status %>"<%# title %>>
+  <td><%# delivery_note.public_number %></td>
+  <td><%= delivery_note.created_at.to_datetime.humanize %></td>
+  <td><%# delivery_note.creator.employee_name %></td>
+  <td><%= delivery_note.contact.fullname %></td>
+  <td><%# delivery_note.number_of_pieces %></td>
+  <td><%# delivery_note.total_with_taxes.round_to(2).to_s(2) %></td>
+  <td><%# "#{quote.sended_on.to_date.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
+  <td><%# quote.signed_on.to_date.humanize if quote.signed_on %></td>
+  <td class="actions">
+    <%# display_additional_actions_quote_button(@order, quote) %>
+    <%# order_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "", :options => { :format => :pdf }) if DeliveryNote.can_view?(current_user) and !quote.uncomplete? %>
+    <%= order_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") if DeliveryNote.can_view?(current_user) %>
+    <%# edit_order_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_edit?(current_user) and quote.can_be_edited? %>
+    <%# delete_order_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_delete?(current_user) and quote.can_be_deleted? %>
+  </td>
+</tr>

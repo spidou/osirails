@@ -21,15 +21,15 @@
   <tr>
 	  <th>Réf.</th>
 	  <th>Désignation</th>
-	  <th>Qté</th>
 	  <th>P.U.<br/>Brut HT</th>
 	  <th>Rem.<br/>(%)</th>
 	  <th>P.U.<br/>Net HT</th>
+	  <th>Qté</th>
 	  <th>Total<br/>HT</th>
 	  <th>TVA</th>
 	  <th>Total<br/>TTC</th>
 	  <% if is_form_view? %>
-	    <th>Action</th>
+	    <th>Actions</th>
     <% end %>
   </tr>
   <%= render :partial => 'quotes_product_reference_in_one_line', :collection => quote.quotes_product_references %>

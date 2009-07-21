@@ -1,8 +1,20 @@
 class Quote < ActiveRecord::Base
+  STATUS_VALIDATED    = 'validated'
+  STATUS_INVALIDATED  = 'invalidated'
+  STATUS_SENDED       = 'sended'
+  STATUS_SIGNED       = 'signed'
+  
+  PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
+  
+  VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
+                           'jours'  => 'days',
+                           'mois'   => 'months' }
+  
   has_permissions :as_business_object
   has_address     :bill_to_address
   has_address     :ship_to_address
-  has_contacts    :many => false,     :validates_presence => true
+  has_contacts    :many => false
+  validates_contact_length :is => 1, :message => "doit contenir exactement %s contact"
   
   belongs_to :creator,          :class_name  => 'User', :foreign_key => 'user_id'
   belongs_to :estimate_step
@@ -15,15 +27,15 @@ class Quote < ActiveRecord::Base
   has_attached_file :order_form,
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
                     :url => '/quotes/:quote_id/order_form'
-                    
-  VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
-                           'jours'  => 'days',
-                           'mois'   => 'months' }
   
-  validates_presence_of     :estimate_step, :reduction, :carriage_costs, :account, :creator, :quotes_product_references
+  validates_presence_of     :estimate_step_id, :user_id, :reduction, :carriage_costs, :account, :quotes_product_references
+  validates_presence_of     :estimate_step, :if => :estimate_step
+  validates_presence_of     :creator,       :if => :user_id
+  
   validates_numericality_of [:reduction, :carriage_costs, :account, :validity_delay], :allow_nil => false
-  validates_associated      :quotes_product_references, :product_references
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
+  validates_inclusion_of    :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
+  validates_associated      :quotes_product_references, :product_references
   
   ## VALIDATIONS ON VALIDATING QUOTE
   validates_date :validated_on, :equal_to => Proc.new { Date.today }, :if => :validated?
@@ -62,22 +74,10 @@ class Quote < ActiveRecord::Base
   after_update :save_quotes_product_references
   after_update :update_estimate_step_status #TODO enable that callback to update status step
   
-  # attr_accessor  :should_update_sign_attributes
   attr_protected :status, :public_number, :validated_on, :invalidated_on, :sended_on, :send_quote_method_id,
-                 :signed_on, :order_form_type_id, :order_form, :should_update_sign_attributes
+                 :signed_on, :order_form_type_id, :order_form
   
-  PROTECTED_ATTRIBUTES = %W( :validated_on :invalidated_on :sended_on :send_quote_method_id :signed_on )
-  
-  STATUS_VALIDATED    = 'validated'
-  STATUS_INVALIDATED  = 'invalidated'
-  STATUS_SENDED       = 'sended'
-  STATUS_SIGNED       = 'signed'
-  
-  #VALIDITY_DELAY_IN_HOURS  = 'hours'
-  #VALIDITY_DELAY_IN_DAYS   = 'days'
-  #VALIDITY_DELAY_IN_MONTHS = 'months'
-  
-  PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
+#  PROTECTED_ATTRIBUTES = %W( :validated_on :invalidated_on :sended_on :send_quote_method_id :signed_on )
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -171,9 +171,13 @@ class Quote < ActiveRecord::Base
   
   def send_quote(attributes)
     if can_be_sended?
-      self.sended_on = Date.civil( attributes["sended_on(1i)"].to_i,
-                                   attributes["sended_on(2i)"].to_i,
-                                   attributes["sended_on(3i)"].to_i ) rescue nil # return nil if the date is invalid
+      if attributes[:sended_on] and attributes[:sended_on].kind_of?(Date)
+        self.sended_on = attributes[:sended_on]
+      else
+        self.sended_on = Date.civil( attributes["sended_on(1i)"].to_i,
+                                     attributes["sended_on(2i)"].to_i,
+                                     attributes["sended_on(3i)"].to_i ) rescue nil # return nil if the date is invalid
+      end
       self.send_quote_method_id = attributes[:send_quote_method_id]
       self.status = STATUS_SENDED
       self.save
@@ -184,15 +188,17 @@ class Quote < ActiveRecord::Base
   
   def sign_quote(attributes)
     if can_be_signed?
-      # self.should_update_sign_attributes = true
       self.attributes = attributes
-      self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
-                                   attributes["signed_on(2i)"].to_i,
-                                   attributes["signed_on(3i)"].to_i ) rescue nil
+      if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
+        self.signed_on = attributes[:signed_on]
+      else
+        self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
+                                     attributes["signed_on(2i)"].to_i,
+                                     attributes["signed_on(3i)"].to_i ) rescue nil
+      end
       self.order_form_type_id = attributes[:order_form_type_id]
       self.order_form = attributes[:order_form]
       self.status = STATUS_SIGNED
-      # raise self.order_form.instance.inspect
       self.save
     else
       false
@@ -255,9 +261,5 @@ class Quote < ActiveRecord::Base
       prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
       quantity = Quote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
       "#{prefix}#{quantity.to_s.rjust(3,'0')}"
-    end
-    
-    def should_update_sign_attributes?
-      should_update_sign_attributes
     end
 end

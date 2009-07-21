@@ -1,14 +1,17 @@
 <% if delivery_notes_list and !delivery_notes_list.empty? %>
   <table>
     <tr>
-      <th>Date</th>
-      <th>Nb Pièces</th>
-      <th>Total TTC</th>
-      <th>Créateur du devis</th>
+      <th>N°</th>
+      <th>Créé le</th>
+      <th>Créé par</th>
       <th>A l'attention de</th>
+      <th>Nb Pièces</th>
+      <th>Total TTC (&euro;)</th>
+      <th>Livraison prévue le</th>
+      <th>Livraison effectuée le</th>
       <th>Actions</th>
     </tr>
-    <%# render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
+    <%= render :partial => 'delivery_notes/delivery_note_in_one_line', :collection => delivery_notes_list %>
   </table>
 <% else %>
   <p>Aucun bon de livraison n'a été trouvé</p>
