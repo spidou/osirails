@@ -1,7 +1,7 @@
 module SearchIndexesHelper
 
   def generate_table_headers(columns, nested_columns=[])
-    html=""
+    html = ""
     
     # direct attributes
     columns.each do |column|
@@ -41,13 +41,13 @@ module SearchIndexesHelper
   end
   
   def generate_results_table_cells(collection, columns, nested_columns=[])
-    html=""
+    html = ""
     collection.each do |object|
-      html+="<tr>"
+      html += "<tr>"
       # direct attributes
       columns.each do |attribute|
         data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html+="<td>#{ data||="null" }</td>" 
+        html += "<td>#{data||=""}#{object}</td>" 
       end
       # FIXME that part is commented because it don't work properly for some deep nested ressources
 #      # nested attributes 
@@ -71,19 +71,19 @@ module SearchIndexesHelper
 #        end
 #      end
 
-      html+="<td>#{send("#{object.class.to_s.downcase}_link",object,:link_text=>'')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
-      html+="</tr>"
+      html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
+      html += "</tr>"
     end
     return html
   end
   
   def format_date(result)
     if result.class == ActiveSupport::TimeWithZone
-      return result.strftime("%d/%b/%Y at %H:%M")
+      return result.strftime("%d %b %Y at %H:%M")
     elsif result.class == Date
-      return result.strftime("%d/%b/%Y")
+      return result.strftime("%d %b %Y")
     elsif result.class == DateTime
-      return result.strftime("%d/%b/%Y at %H:%M")
+      return result.strftime("%d %b %Y at %H:%M")
     elsif result.class == Time
       return result.strftime("%H:%M")
     else

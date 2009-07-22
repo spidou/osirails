@@ -102,18 +102,6 @@ module ApplicationHelper
     content_for(:secondary_menu){html} 
   end
   
-#  def contextual_search()
-#    html= "<p>"
-#    
-#    model_for_search = controller.controller_name.singularize.camelize
-#    
-#    html+= "<input type='hidden' name=\"contextual_search[model]\" value='#{model_for_search}' />"
-#    html+= text_field_tag "contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus=>"if(this.value=='Rechercher'){this.value='';}", :onblur=>"if(this.value==\"\"){this.value='Rechercher';}", :style=>"color:grey;"
-#    html+= "<button type=\"submit\" class=\"contextual_search_button\"></button>"
-#    html+= link_to( "Recherche avancée", search_path(:choosen_model => model_for_search), :class => 'help')
-#    html+="</p>"
-#  end
-  
   # This method permit to point out if a required local variable hasn't been passed (or with a nil object) with the 'render :partial' call
   # 
   # Example 1 :

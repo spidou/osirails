@@ -55,9 +55,6 @@ class FeatureManager
       load_menus(@menus)
       
       insert_menus_in_database
-
-      # search load
-      # initialize_search
     end
     
     def create_feature_if_necessary
@@ -162,29 +159,6 @@ class FeatureManager
       # load overrides.rb file
       override_path = File.join(@path, 'overrides.rb')
       require override_path if File.exist?(override_path)
-    end
-
-    def initialize_search
-        #    ######### SEARCH
-      # test and add search indexes into db
-      error_message = "syntaxe error in '#{@name}' yaml."
-
-      unless @searches.blank? or @searches == []
-        @searches.each_key do |key|
-          @searches[key].each_key do |elmnt|
-            @searches[key][elmnt].each_pair do |attr_name,attr_type|
-              if attr_type.instance_of?(Hash)
-                raise verify_sub_resources(attr_type,error_message) unless verify_sub_resources(attr_type,error_message).blank?
-                raise "#{ error_message } The sub resource '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
-              else
-                raise "#{ error_message } The attribute '#{ attr_name }' is incorrect for '#{ key }'!" unless key.constantize.new.respond_to?(attr_name)
-              end
-            end
-          end
-        end
-        feature.update_attribute('search', @searches)
-      end
-      ######### END SEARCH    
     end
 
     def verify_attribute_type(attr_class, type)

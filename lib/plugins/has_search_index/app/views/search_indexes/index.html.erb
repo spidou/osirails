@@ -15,8 +15,6 @@
     MODELS.set('<%= model %>', m_option);
   <% end %>
 <% end %>
-  
-
 
 <% content_for :header do %>
      <%= javascript_include_tag 'has_search_index/search_index' %>
@@ -24,38 +22,40 @@
      <%= stylesheet_link_tag "../themes/emr/stylesheets/search/search.css" %> 
 <% end %>
 
-<h1>Rechercher</h1>
+<h1>Faire une recherche</h1>
 
-<div class="frame presentation_medium">
+<div class="frame">
 
 <% form_remote_tag :url => "search_index/update", :update => "search_result" do %>
 
-  <h3>Que cherchez vous?</h3>
-
-    <p><select id="model_select" name="model" onchange="get_attributes_select(false);">
-      <option selected='selected' value="blank">Veuillez choisir la ressource</option>
+  <h2>Que recherchez-vous ?</h2>
+  <p>
+    <select id="model_select" name="model" onchange="get_attributes_select(false);">
+      <option selected='selected' value="blank">Veuillez choisir un élément</option>
       <% @main_models.each do |model| %>
-        <%= "<option value='#{ model.to_s }'>#{ model.to_s.tableize.titleize }</option>" %>  
+        <%= "<option value='#{ model.to_s }'>#{ model.to_s.tableize.humanize }</option>" %>  
       <% end %>
-    </select><p>
+    </select>
+  <p>
 
-  <h3>Quels sont les crit&egrave;res?</h3>
-  
-    <p>
-      respecter 
-      <select name="search_type">
-        <option value="or">l&apos;un des crit&egrave;res</option>
-        <option value="and">tous les crit&egrave;res</option>
-        <option value="not">aucun des crit&egrave;res</option>
-      </select>
-    </p>
+  <h2>Quels sont les crit&egrave;res ?</h2>
+  <p>
+    <label for="search_type">Doit respecter :</label>
+    <select id="search_type" name="search_type">
+      <option value="or">l&apos;un des crit&egrave;res</option>
+      <option value="and">tous les crit&egrave;res</option>
+      <option value="not">aucun des crit&egrave;res</option>
+    </select>
+  </p>
     
-    <div id="criteria_div">
-    </div>
-    <div style='display:none;' id='add_link' >
-      <p><a name='attribute_add_link' href='#attribute_add_link' onclick='get_attributes_select(true);'><img src='/images/add_16x16.png'/></a></p>
-      <p><%= submit_tag "search"%><p>
-    </div>
+  <div id="criteria_div">
+  </div>
+  
+  <div style='display:none;' id='add_link' >
+    <p><a name='attribute_add_link' href='#attribute_add_link' onclick='get_attributes_select(true);'><img src='/images/add_16x16.png'/></a></p>
+    <p><%= submit_tag "search" %><p>
+  </div>
+  
 <% end %>
 
   <div id="search_result">
