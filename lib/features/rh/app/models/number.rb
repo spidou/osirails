@@ -17,10 +17,6 @@ class Number < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["number"],
-                    :only_sub_models => ["NumberType"]
-  
-  # Search Plugin
-  has_search_index  :only_attributes => ["number"],
                     :only_relationships => [:number_type,:indicative],
                     :main_model => false;
   

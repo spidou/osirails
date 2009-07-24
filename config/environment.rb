@@ -105,6 +105,8 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 end
 
+require 'contextual_menu_manager'
+
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
 load 'application_helper.rb'

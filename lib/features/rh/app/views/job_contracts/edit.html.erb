@@ -2,7 +2,7 @@
   <%= javascript_include_tag 'rh/job_contract' %> 
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <% checked = "" if @job_contract.nil?  %>
   <% unless @job_contract.employee_state.nil?%>
     <% @job_contract.employee_state.active ? checked = "" : checked = "checked='checked'" %>

@@ -1,11 +1,12 @@
 <h1>Tous les employ&eacute;es</h1>
 
 <% contextual_search("Employee", {:numbers=>[],:user=>["username"]}) %>
-<% contextual_menu POSSIBLE_ACTIONS do %>
+
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_employee_link %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= actives_employees_link(params[:all_employees]) %>
 <% end %>
 

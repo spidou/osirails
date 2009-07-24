@@ -85,23 +85,6 @@ module ApplicationHelper
     "#{society_name} SIRET : #{siret} TEL : #{phone} FAX : #{fax} <br/> ADRESSE : #{address}"
   end
   
-  
-  def contextual_search(model, arguments)
-    html = content_tag(:h1, "Recherche Contextuelle")  
-    html += form_tag("/search_index/update", :id => "contextual_search_form" )
-    
-    html += "<p>"
-    html += "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
-    html += "<input type='hidden' name='contextual_search[options]' value='#{arguments.to_yaml}'/>"
-    focus = ["if(this.value==\"\"){this.value='Rechercher';}", "if(this.value=='Rechercher'){this.value='';}"]
-    html += text_field_tag("contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus => focus[1], :onblur => focus[0])
-    html += "<button type=\"submit\" class=\"contextual_search_button\"></button>"
-    html += "</p>"
-    
-    html+= "</form>"
-    content_for(:secondary_menu){html} 
-  end
-  
   # This method permit to point out if a required local variable hasn't been passed (or with a nil object) with the 'render :partial' call
   # 
   # Example 1 :
@@ -167,17 +150,84 @@ module ApplicationHelper
     RAKE_TASK ? puts(error) : raise(error)
   end
   
-  def contextual_menu(title, &block)
-    raise ArgumentError, "Missing block" unless block_given?
-    
-    html = content_tag(:h1, title)
-    html += "<ul>"
-    capture(&block).split("\n").each do |line|
-      next if line.blank?
-      html += content_tag :li, line
+  # add item in the given section of the contextual menu
+  #
+  # Examples :
+  #   # => add single item in the section 'section_name'
+  #   add_contextual_menu_item(:section_name, item)
+  #   
+  #   # => add multiple items
+  #   add_contextual_menu_item(:section_name, item1, item2)
+  #
+  #   # => add single or multiple items with block
+  #   add_contextual_menu_item(:section_name) do
+  #     item
+  #   end
+  #
+  # Default behaviour is to create a <ul></ul> element under the section
+  # and to create <li></li> for each line of the block (so for each items).
+  # You can override this behaviour by passing true in second argument
+  #
+  # Examples :
+  #   add_contextual_menu_item(:section_name, true, item)
+  #
+  #   add_contextual_menu_item(:section_name, true) do
+  #     item
+  #   end
+  #
+  def add_contextual_menu_item(*args, &block)
+    if block_given?
+      section = args.first
+      force_not_list = args.last.instance_of?(TrueClass)
+      items = capture(&block).split("\n")
+    else
+      section = args.shift
+      force_not_list = args.first.instance_of?(TrueClass)
+      args.shift if force_not_list
+      items = [args].flatten
     end
-    html += "</ul>"
-    content_for(:contextual_menu) {html}
+    
+    items.each do |item|
+      @contextual_menu.add_item(section, force_not_list, item)
+    end
+  end
+  
+  def display_contextual_menu
+    render :partial => 'share/contextual_menu' unless @contextual_menu.sections.empty?
+  end
+  
+  def display_contextual_menu_content
+    html = ''
+    @contextual_menu.sections.each do |section|
+      next if section.items.empty?
+      html << content_tag(:h1, section.to_s)
+      html << "<ul>" if section.list?
+      section.items.each do |item|
+        if section.list?
+          html << content_tag(:li, item.content)
+        else
+          html << item.content
+        end
+      end
+      html << '</ul>' if section.list?
+    end
+    
+    html
+  end
+  
+  def contextual_search(model, arguments)
+    html =  form_tag("/search_index/update", :id => "contextual_search_form" )
+    html << "<p>"
+    html << "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
+    html << "<input type='hidden' name='contextual_search[options]' value='#{arguments.to_yaml}'/>"
+    focus = "if(this.value=='Rechercher'){this.value='';}"
+    blur  = "if(this.value==\"\"){this.value='Rechercher';}"
+    html << text_field_tag("contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus => focus, :onblur => blur)
+    html << "<button type=\"submit\" class=\"contextual_search_button\"></button>"
+    html << "</p>"
+    html << "</form>"
+    
+    add_contextual_menu_item(:contextual_search, true, html)
   end
 
   private

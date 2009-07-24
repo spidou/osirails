@@ -1,6 +1,6 @@
 <% for content_version in @content_versions.reverse %>
 
-  <% contextual_menu USEFUL_LINKS do %>
+  <% add_contextual_menu_item :useful_links do %>
     <%= link_to("Document r&eacute;f&eacute;rent", :controller => :contents, :action => :show, :id => @content.id) %>
   <% end %>
 

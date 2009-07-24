@@ -1,10 +1,10 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= edit_employee_job_contract_link(@employee) %>
   <%= edit_employee_link(@employee) %>
   <%= new_employee_premium_link(@employee) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= employees_link %>
   <%= employee_premia_link(@employee) %>
   <%= employee_salaries_link(@employee) %>
