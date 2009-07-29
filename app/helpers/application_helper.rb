@@ -216,13 +216,13 @@ module ApplicationHelper
   end
   
   def contextual_search(model, arguments)
-    html =  form_tag("/search_index/update", :id => "contextual_search_form" )
+    html =  form_remote_tag( :url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()" )
     html << "<p>"
     html << "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
     html << "<input type='hidden' name='contextual_search[options]' value='#{arguments.to_yaml}'/>"
     focus = "if(this.value=='Rechercher'){this.value='';}"
-    blur  = "if(this.value==\"\"){this.value='Rechercher';}"
-    html << text_field_tag("contextual_search[value]",'Rechercher',:id => 'input_search',:onfocus => focus, :onblur => blur)
+    blur  = "if(this.value==''){this.value='Rechercher'}"
+    html << text_field_tag("contextual_search[value]",'Rechercher',:id => 'contextual_search', :onfocus => focus, :onblur => blur)
     html << "<button type=\"submit\" class=\"contextual_search_button\"></button>"
     html << "</p>"
     html << "</form>"

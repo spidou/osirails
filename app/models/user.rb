@@ -59,8 +59,8 @@ class User < ActiveRecord::Base
   # Search Plugin
   has_search_index  :additional_attributes => {"expired?" => "boolean" },
                     :only_attributes => ["username", "enabled", "last_connection","last_activity"],
-                    :except_relationships => [:roles],
-                    :displayed_attributes => ["id","username","enabled","expired?","last_activity"]
+                    :displayed_attributes => ["id","username","enabled","expired?","last_activity"],
+                    :main_model => true
                     
   
   # store old encrypted password to be aware if a new password is given

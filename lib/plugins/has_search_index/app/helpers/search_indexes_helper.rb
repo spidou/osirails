@@ -1,12 +1,13 @@
 module SearchIndexesHelper
 
   def generate_table_headers(columns, nested_columns=[])
-    html = ""
+    html = "<table>"
+    html << "<tr>"
     
     # direct attributes
     columns.each do |column|
-      rowspan = ""#nested_columns.empty? ? "" : "rowspan='2'"
-      html += "<th #{rowspan} >#{column.humanize.titleize}</th>"
+      rowspan = "" #nested_columns.empty? ? "" : "rowspan='2'"
+      html << "<th #{rowspan} >#{column.humanize.titleize}</th>"
     end
     # FIXME that part is commented because it don't work properly for some deep nested ressources
     # nested attributes models
@@ -20,7 +21,9 @@ module SearchIndexesHelper
 #        html += "<th>;#{value.humanize}</th>"
 #      end
 #    end
-    return html+"<th>Actions</th>"
+    
+    html << "<th>Actions</th>"
+    html << "</tr>"
   end
   
   # FIXME that part is unused because there is a problem of conception when deals with deep nested resources 
@@ -47,7 +50,7 @@ module SearchIndexesHelper
       # direct attributes
       columns.each do |attribute|
         data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html += "<td>#{data||=""}#{object}</td>" 
+        html += "<td>#{data||=""}</td>" 
       end
       # FIXME that part is commented because it don't work properly for some deep nested ressources
 #      # nested attributes 

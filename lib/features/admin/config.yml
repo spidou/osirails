@@ -10,15 +10,10 @@ version: 0.1
 #  feature_name:
 #    - 0.1
 #    - 0.2
-business_objects:
 menus:
   account:
     title: Compte utilisateur
     description: Gestion des connexions
-    hidden: true
-  searches:
-    title: Recherche
-    description: Moteur de recherche  
     hidden: true
   ibans:
     title: RIBs

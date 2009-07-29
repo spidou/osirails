@@ -34,24 +34,8 @@ class Contact < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["first_name","last_name"],
-                    :except_relationships => [:contacts],
-                    :main_model => false; #FIXME because there's no view to access directly to the resource from a result link
-                    
-#  def self.new(contact = nil)
-#    
-#    unless contact.nil? or contact[:id].nil?
-#      if contact[:id].blank?
-#        contact.delete("id")
-#        contact.delete("selected")
-#        contact.delete("valid")
-#        return super(contact)
-#      else
-#        return Contact.find(contact[:id])
-#      end           
-#    end
-#    super(contact)
-#  end
-
+                    :except_relationships => [:contacts]
+  
   def should_destroy?
     should_destroy.to_i == 1
   end

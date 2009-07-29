@@ -20,6 +20,8 @@ class Iban < ActiveRecord::Base
   validates_format_of 'account_number', :with => /^[0-9]{11}$/, :allow_blank => true #, :message => "le numéros de compte doit contenir 11 chiffres"
   validates_format_of 'key', :with => /^[0-9]{2}$/, :allow_blank => true #, :message => "La clée doit contenir 2 chiffres"
   
+  has_search_index :only_attributes => ["account_name", "bank_name", "bank_code", "branch_code", "account_number", "key"]
+  
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:bank_name] = "Nom de la banque :"
@@ -28,5 +30,4 @@ class Iban < ActiveRecord::Base
   @@form_labels[:account_number] = "N&deg; de compte :"
   @@form_labels[:key] = "Cl&eacute; :"
   @@form_labels[:account_name] = "Nom du compte :"
-end  
- 
+end

@@ -1,12 +1,2 @@
-<h3>R&eacute;sultats de la recherche</h3>
-<%# "<fieldset>Command : <strong>#{@query}</strong></fieldset>" %>
-<% if @collection.size>0%>
-<table>
-  <tr>
-    <%= generate_table_headers(@columns, generate_nested_resources_array(@criteria)) %>
-  </tr>
-  <%= generate_results_table_cells(@collection, @columns, generate_nested_resources_array(@criteria)) %>
-<% else %>
-  <p><strong>Aucun r&eacute;sultat</strong></p>
-<% end %>
-</table>
+<h3>Résultat de la recherche</h3>
+<%= render :partial => 'search_result' %>

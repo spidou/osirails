@@ -44,6 +44,16 @@
         <div id="content_page">
           <%= display_flash %>
           
+          <div id="ajax_holder" style="display:none">
+            <div id="ajax_holder_waiting">
+              <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>
+            </div>
+            <div id="ajax_holder_content"></div>
+            <div id="ajax_holder_command">
+              <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
+            </div>
+          </div>
+          
           <%= yield %>
           
           <p><%= link_to 'Retour', :back %></p>

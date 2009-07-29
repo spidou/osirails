@@ -1,8 +1,9 @@
 class Job < ActiveRecord::Base
   has_permissions :as_business_object
-
-  has_and_belongs_to_many :employees
+  
   validates_uniqueness_of :name
+  
+  has_search_index :only_attributes => ["name"]
   
   cattr_reader :form_labels
   @@form_labels = Hash.new

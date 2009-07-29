@@ -1,3 +1,11 @@
+#criteria_div {
+  padding-left: 10px;
+}
+
+.criterion_label {
+  padding-right: 5px;
+}
+
 /*main desing of the attribute chooser drop down menu*/
 .attrChooser, .attrChooser ul {
 	padding: 0;

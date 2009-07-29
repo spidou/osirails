@@ -9,7 +9,7 @@ function get_models_hierarchy(relationships, parent_div_id, current_relationship
   for(var i=0;i<relationships.get(current_relationship).length;i++){
     var attributes = MODELS.get(relationships.get(current_relationship)[i][1]).get('attributes');
     var relationship = relationships.get(current_relationship)[i][0];
-    result += "<li class='sub_m' onmouseover='show_menu(this);' onmouseout='hide_menu(this);'><ul class=uvb>"; 
+    result += "<li class='sub_m' onmouseover='show_menu(this);' onmouseout='hide_menu(this);'><ul class='uvb'>"; 
     
     attributes.each(function(pair){
       result += "<li><a href='#"+ parent_div_id +"_attribute_chooser' onclick=\"save_path(this, '"+ parent_div_id +"','"+ pair.value +"');\">"+ pair.key +"</a></li>";
@@ -32,7 +32,7 @@ function get_models_hierarchy(relationships, parent_div_id, current_relationship
 //
 function get_attributes_select(add)
 {
-  var select = document.getElementById('model_select');
+  var select = $('model_select');
   var model = select.options[select.selectedIndex].value;
   var model_attributes = MODELS.get(model).get('attributes');
   var model_relationships = MODELS.get(model).get('relationships');
@@ -46,13 +46,13 @@ function get_attributes_select(add)
   // I use appendChild to perform a clean element add to avoid the reinterpretation of the html code into the current node when using innerHTML
   var parent_div = document.createElement('div');
   parent_div.setAttribute('id','criterion_'+ ID);
-  document.getElementById('criteria_div').appendChild(parent_div);
+  $('criteria_div').appendChild(parent_div);
   
   // ###############  attribute chooser ###################
   
   // use a small hack changing classname to permit to display the menu only when the li is clicked (cf. search.css)
-  li = "<li onclick=\"this.className = 'clicked';\"><strong id='criterion_"+ ID +"_label'>";
-  criterion = "<ul name='criterion_"+ ID +"_attribute_chooser' class='attrChooser'>"+ li +"Choose an attribute</strong><ul>";
+  criterion =  "<ul name='criterion_"+ ID +"_attribute_chooser' class='attrChooser'>"
+  criterion += "<li onclick=\"this.className = 'clicked';\"><span id='criterion_"+ ID +"_label' class='criterion_label'>Veuillez choisir un critère</span><ul>"
 
   //direct attributes
   model_attributes.each(function(pair){
@@ -70,22 +70,20 @@ function get_attributes_select(add)
   criterion += "<input type='hidden' id='criterion_"+ ID +"_attribute' value='' name='criteria[criterion_"+ ID +"][attribute]'></div><h5>...</h5></div>";
   parent_div.innerHTML += criterion ; // add the criterion to the parent div
   
-  if( document.getElementById('add_link').style.display != 'none'){
-    document.getElementById('add_link').hide(); // new Effect.SlideUp('add_link',1);
+  if( $('add_link').style.display != 'none'){
+    $('add_link').hide(); // new Effect.SlideUp('add_link',1);
   }
   select.options[0].disabled=true;
   ID++;
 }
 
 // method called by the delete link it destroy the parent div of a criterion
-// elemnt -> represent the delete link
+// element -> represent the delete link
 //
-function criterion_destroy(elemnt)
+function criterion_destroy(element)
 {
-  var parent_div = elemnt.parentNode.parentNode;
-  //p.disabled = true;
-  // new Effect.SlideUp(p.id,1);
-  parent_div.parentNode.removeChild(parent_div);
+  id = element.id.substring(element.id.indexOf("_") + 1)
+  element.up('#' + id).remove()
 }
 
 // method to check the attribute data type and to give the good action select
@@ -100,10 +98,11 @@ function get_action_select(type, parent_div_id)
   for(var i=0;i<data_types.get(type).length;i++){
     criterion += "<option value= '"+ type +","+ data_types.get(type)[i] +"'> "+ actions.get( data_types.get(type)[i] ) +" </option> " ;
   }
-  delete_link = "<a href='#' onclick='criterion_destroy(this);'><img src='/images/delete_16x16.png'/></a>";
-  document.getElementById(parent_div_id).lastChild.innerHTML = criterion +"</select>"+ input_type(type, parent_div_id) + delete_link;  //add the criterion into the span cf l.21
-  if(document.getElementById('add_link').style.display == 'none'){
-    document.getElementById('add_link').show();// new Effect.SlideDown('add_link',1);
+  delete_link = " <a href='#' onclick='criterion_destroy(this);' id='delete_"+parent_div_id+"'><img src='/images/delete_16x16.png'/></a>";
+  $(parent_div_id).lastChild.innerHTML = criterion +"</select>"+ input_type(type, parent_div_id) + delete_link;  //add the criterion into the span cf l.21
+  
+  if($('add_link').style.display == 'none'){
+    $('add_link').show();// new Effect.SlideDown('add_link',1);
   }
 }
 
@@ -200,11 +199,11 @@ function getDateArray(days,years)
 
 function isNumber(element)
 {
-  elemnt = element.split(" ");
-  for(var i=0;i<elemnt.length;i++){ 
-    if (isFinite(elemnt.value) == 0 ){
+  element = element.split(" ");
+  for (var i=0; i<element.length; i++){ 
+    if (isFinite(element.value) == 0 ){
 		  alert ("You should type a number");
-		  document.getElementById(elemnt.id).value ="";
+		  document.getElementById(element.id).value ="";
 	  }
 	}
 }
@@ -212,7 +211,7 @@ function isNumber(element)
 //-------------------------------------------- dynamique attribute chooser methods------------------------------ 
 function show_menu(obj)
 {
-  for(var i=0;i<obj.childNodes.length;i++){
+  for(var i=0; i<obj.childNodes.length; i++){
     obj.childNodes[i].className="vb";
   }
 }
@@ -248,8 +247,8 @@ function save_path(obj, parent_div_id, attribute_type)
     }
   }
   tab = tab.reverse();     // put in the good order because the path is parsed from the destination (attribtute) to the source (parent)
-  document.getElementById('criterion_'+ parent_div_id.split('_')[1] +'_label').innerHTML = tab.join(" > ");
-  document.getElementById('criterion_'+ parent_div_id.split('_')[1] +'_attribute').value = tab.join(".");
+  $('criterion_'+ parent_div_id.split('_')[1] +'_label').innerHTML = tab.join(" > ");
+  $('criterion_'+ parent_div_id.split('_')[1] +'_attribute').value = tab.join(".");
   current.firstChild.className='';
   get_action_select(attribute_type, parent_div_id);
 }

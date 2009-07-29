@@ -141,5 +141,12 @@ module EmployeesHelper
   def display_image(path,alt,title=alt)
     image_tag(path, :alt => alt, :title => title)
   end
+  
+  def contextual_search_for_employee
+    contextual_search("Employee", { :numbers  => ["number"],
+                                    :user     => ["username"],
+                                    :services => ["name"],
+                                    :jobs     => ["name"] })
+  end
 
 end

@@ -166,12 +166,35 @@ function nav_more_links_handler() {
   })
 }
 
+function prepare_ajax_holder() {
+  clean_ajax_holder_content()
+  
+  holder = $('ajax_holder')
+  holder.show()
+  
+  ajax_holder_loading()
+}
 
+function ajax_holder_loading() {
+  loader = $('ajax_holder_waiting')
+  loader.show()
+}
 
+function ajax_holder_loaded() {
+  loader = $('ajax_holder_waiting')
+  loader.hide()
+  
+  display_ajax_holder_content()
+}
 
+function clean_ajax_holder_content() {
+  $('ajax_holder_content').hide()
+}
 
+function display_ajax_holder_content() {
+  new Effect.Appear('ajax_holder_content')
+}
 
-
-
-
-
+function close_ajax_holder() {
+  new Effect.Fade('ajax_holder', { duration:'0.3', afterFinish:function(){ clean_ajax_holder_content()} })
+}

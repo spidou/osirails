@@ -19,7 +19,7 @@ class Service < ActiveRecord::Base
   
   # Search Plugin
   has_search_index :only_attributes => ["name"],
-                   :only_relationships => [:parent,:children,:schedules]
+                   :only_relationships => [:parent, :children, :schedules]
 
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"

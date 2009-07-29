@@ -4,6 +4,5 @@ class JobContractType < ActiveRecord::Base
   # Validations
   validates_presence_of :limited, :name
   
-  has_search_index  :only_attributes => ["limited","name"],
-                    :main_model => false
+  has_search_index :only_attributes => ["limited","name"]
 end

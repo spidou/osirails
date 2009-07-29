@@ -10,7 +10,6 @@ class SearchIndexesController < ApplicationController
   end
   
   def update
-  
     # get the model where to perform the search
     @model = (params[:contextual_search].nil? )? params[:model].constantize : params[:contextual_search][:model].constantize
     
@@ -21,7 +20,6 @@ class SearchIndexesController < ApplicationController
     end
     
     if params[:contextual_search].nil?                                              # standard search
-
       criteria = {}
       @criteria = params[:criteria].values
       
@@ -42,11 +40,11 @@ class SearchIndexesController < ApplicationController
       @query = "#{@model.to_s}.search_with('#{searched_value}',#{options.inspect})" # Optimize delete that if not needed for debuging
       @collection = @model.search_with(searched_value, options)
     end  
+    
     respond_to do |format|
       format.js {render :action => "result", :layout => false}
       format.html {render :action => "contextual_search"}
     end
-    
   end
   
 end

@@ -1,0 +1,8 @@
+<%# "<fieldset>Command : <strong>#{@query}</strong></fieldset> " %>
+<% unless @collection.empty? %>
+  <%= generate_table_headers(@columns) %>
+  <%= generate_results_table_cells(@collection, @columns) %>
+<% else %>
+  <p><strong>Aucun résultat </strong></p>
+<% end %>
+  </table>

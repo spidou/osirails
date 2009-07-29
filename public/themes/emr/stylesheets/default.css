@@ -360,11 +360,13 @@ a.button_banner:hover span {
   border-top: 1px solid #737373;
   border-right: 1px solid #737373;
   border-left: 1px solid #737373;
+  -moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
 }
 
 #nav h4.nav_current {
   background-color: #e99727;
   -moz-border-radius: 0 10px 0 0;
+  -moz-box-shadow: none;
   padding: 6px 17px 6px 17px;
   
   /* 1px offset to 'remove' the UL's border just below the selected menu */
@@ -485,37 +487,36 @@ a.button_banner:hover span {
 /////////////////////////////////////////////////////////*/
 #contextual_menu {
   position: absolute;
-	float:right;
-	right: 8px;
-	top: 10px;
+	float: right;
+	right: 16px;
+	top: 8px;
 	border: 1px solid #A8A8A8;
 	-moz-border-radius: 10px 0 0 10px;
+	-moz-box-shadow: 6px 4px 8px rgba(0,0,0,0.3);
 	background: url("/themes/emr/images/background_contextual_menu.gif") repeat;
 	width: 200px;
-	text-indent:0px;
-	font-size:0.8em;
+	text-indent: 0px;
+	font-size: 0.8em;
 }
 
 .hidden_contextual_menu,
 .shown_contextual_menu {
-	text-align:right;
-	white-space:nowrap;
+	text-align: right;
+	white-space: nowrap;
 }
 
 .hidden_contextual_menu #status_background_contextual_menu,
 .shown_contextual_menu #status_background_contextual_menu {
-	background:url("/themes/emr/images/background_hidden-shown_contextual_menu.png") no-repeat top left;
-	height:29px;
-	width:20px;
-	line-height:26px !important;
-	position:relative;
-	right:200px;
-	top:6px;
-	color:#6481AE;
-	max-width:800px;
-	float:right;
-	padding-left:6px;
-	overflow:hidden;
+	position: absolute;
+	background: url("/themes/emr/images/background_hidden-shown_contextual_menu.png") no-repeat top left;
+	line-height: 26px !important;
+	color: #6481AE;
+	height: 29px;
+	width: 20px;
+	right: 200px;
+	top: 6px;
+	max-width: 800px;
+	padding-left: 6px;
 }
 
 .hidden_contextual_menu #status_background_contextual_menu:hover,
@@ -526,10 +527,7 @@ a.button_banner:hover span {
 
 .shown_contextual_menu span,
 .hidden_contextual_menu span {
-	padding-right:2px;
-	padding-left:22px;
-	padding-top:3px;
-	padding-bottom:1px;
+  padding: 3px 2px 1px 22px;
 }
 
 .hidden_contextual_menu span {
@@ -540,100 +538,59 @@ a.button_banner:hover span {
 	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat top left;
 }
 
-#shadow_contextual_menu {
-	position:relative;
-	left:8px;
-	background: url("/themes/emr/images/contextual_menu_shadow.png") no-repeat bottom right;
-	-moz-border-radius: 0 10px 0 10px;
-	clear:right;
-	position:relative;
-	bottom:33px;
+#contextual_menu_content {
 }
 
-#content_contextual_menu {
-	position:relative;
-	right:8px;
-}
-
-#content_contextual_menu h1 {
-	background: url("/themes/emr/images/background_contextual_menu_header.jpg") repeat-x;
-	height:36px;
-	line-height: 36px;
-	text-indent: 0;
-	text-align: center;
-	margin-top:0;
+#contextual_menu_content h1 {
+  position: relative;
+	background-color: #e99727;
 	font-family: verdana, sans-serif;
-	font-weight:lighter;
 	font-size:1.1em;
+	font-weight: bold;
+	color: black;
+	-moz-box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+	border: none;
+	height: auto;
+	line-height: 2.4em;
+	margin: 0;
+	padding: 0;
 }
 
-#content_contextual_menu h1>a {
-	text-decoration:none;
-	cursor:pointer;
-}
-
-#content_contextual_menu h1:first-child {
+#contextual_menu_content h1:first-child {
 	-moz-border-radius: 10px 0 0 0;
 }
 
-#content_contextual_menu h1 {
-	color: rgb(234,136,28);
-}
-
-#search {
-	text-indent:0px;
-	margin-left: 5px;
-}
-
-#content_contextual_menu ul {
+#contextual_menu_content ul {
 	list-style-type: none;
-	padding:0;
+	padding: 0 6px 0 6px;
+	margin: 8px 0 12px 0;
 }
 
-#content_contextual_menu ul li {
-	padding: 5px;
+#contextual_menu_content ul li {
 	text-decoration: none;
 	text-indent:0px;
-	margin-top:-6px;
-	margin-bottom:-6px;
+	margin-bottom: 4px;
 }
 
-#content_contextual_menu ul li a {
-	text-decoration:none ;
-	color: #CA7E21;
+#contextual_menu_content a {
+	text-decoration: none;
+	color: black;//#CA7E21;
+	padding: 2px 4px 2px 4px;
 }
 
-ul.center_list {
-	text-align:center;
-	text-indent:0;
+#contextual_menu_content a:hover {
+	background-color: #ecc48b;
 }
 
-ul.center_list li {
-	padding-left:6px;
-}
-
-.contextual_menu_statistic {
-	color:#CA7E21;
-}
-
-#content_contextual_menu a:hover {
-	color: #596B8E;/*rgb(234,136,28)*/
-}
-
-#content_contextual_menu ul li a img {
+#contextual_menu_content a img {
 	position:relative;
 	top:2px;
 }
 
-#content_contextual_menu p {
+#contextual_menu_content p {
 	margin-left:10px;
 	margin-right:10px;
 	text-align:justify;
-}
-
-#footer_contextual_menu { 
-	margin-bottom:-42px;
-	padding:0;
 }
 
 #contextual_menu input[type=text] {
@@ -653,6 +610,18 @@ button.contextual_search_button {/*button in the input type text [contextual_men
 	height:12px;
 }
 
+#contextual_search {
+  padding-right: 15px !important;
+  width: 141px !important;
+  color: grey !important;
+  font-style: italic !important;
+}
+
+#contextual_search:focus {
+  color: black !important;
+  font-style: normal !important;
+}
+
 #contextual_menu a.default-button {
 	margin:0 5px 0px 5px;
 }
@@ -661,14 +630,20 @@ button.contextual_search_button:hover {
 	cursor:pointer;
 }
 
-#input_search {
-	padding-right:15px !important;
-	width:141px;
+/*
+ul.center_list {
+	text-align:center;
+	text-indent:0;
 }
 
-#input_search:focus {
-	color:black !important;
+ul.center_list li {
+	padding-left:6px;
 }
+
+.contextual_menu_statistic {
+	color:#CA7E21;
+}
+*/
 
 .help {
 	font-size:0.7em;
@@ -794,6 +769,31 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	font-size:0.87em;
 	font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
 	min-height:564px;
+}
+
+#ajax_holder {
+  position: absolute;
+  top: 60px;
+  left: 18px;
+  min-height: 100px;
+  width: 80%;
+  -moz-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
+}
+
+#ajax_holder_waiting {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+}
+
+#ajax_holder_content {
+}
+
+#ajax_holder_command {
+  position: absolute;
+  top: -4px;
+  right: 0px;
+  float: right;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\

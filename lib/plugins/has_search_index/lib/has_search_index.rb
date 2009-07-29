@@ -45,7 +45,7 @@ module HasSearchIndex
       options[:except_relationships]  ||=[]
       options[:only_relationships]    ||=[]
       options[:displayed_attributes]  ||=[]
-      options[:main_model]              = true if options[:main_model].nil?  # default value for main model
+      options[:main_model]            ||= false
       
       # puts "-- initialisation de #{self} --"   ##### use this in debug purpose to see when the model call the plugin init
 
@@ -187,6 +187,7 @@ module HasSearchIndex
     #
     def get_include_array(ignore=[])
       include_array = Array.new
+      raise "'#{self.class_name}' class doesn't respond to 'search_index' method" unless self.respond_to?(:search_index)
       self.search_index[:relationships].each do |relationship|
         model = self.association_list[relationship][:class_name]
         unless ignore.include?("#{model.to_s}") 

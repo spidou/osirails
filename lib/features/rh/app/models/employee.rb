@@ -5,7 +5,7 @@ class Employee < ActiveRecord::Base
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
 
   # Accessors
-  cattr_accessor :pattern_error,:form_labels
+  cattr_accessor :pattern_error, :form_labels
   @@pattern_error = false
 
   @@form_labels = Hash.new
@@ -18,26 +18,27 @@ class Employee < ActiveRecord::Base
   @@form_labels[:email] = "Email personnel :"
   @@form_labels[:society_email] = "Email professionnel :"
   
-  
   # Relationships
-# TODO Add a role to the user when create an employee => for permissions 
-
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
+  
   has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
-  # has_many_polymorphic
+  ## polymorphic has_many :through
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
   
   has_many :numbers, :as => :has_number
   has_many :premia, :order => "created_at DESC"
+  
   has_many :employees_services
   has_many :services, :through => :employees_services
-  has_and_belongs_to_many :jobs
+  
+  has_many :employees_jobs
+  has_many :jobs, :through => :employees_jobs
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
@@ -55,7 +56,8 @@ class Employee < ActiveRecord::Base
   
   # Search Plugin 
   has_search_index  :except_attributes => ["*_id","*_at"],
-                    :displayed_attributes => ["id", "first_name", "last_name", "email", "society_email", "birth_date","last_activity"]
+                    :displayed_attributes => ["id", "first_name", "last_name", "email", "society_email"],
+                    :main_model => true
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment

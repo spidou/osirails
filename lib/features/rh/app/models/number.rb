@@ -17,8 +17,7 @@ class Number < ActiveRecord::Base
   
   # Search Plugin
   has_search_index  :only_attributes => ["number"],
-                    :only_relationships => [:number_type,:indicative],
-                    :main_model => false;
+                    :only_relationships => [:number_type,:indicative]
   
   def formatted
     # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number

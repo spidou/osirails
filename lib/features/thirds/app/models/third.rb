@@ -29,7 +29,6 @@ class Third < ActiveRecord::Base
   @@form_labels[:payment_method] = "Moyen de paiement préféré :"
   @@form_labels[:payment_time_limit] = "Délai de paiement préféré :"
   
-  
   def contact_attributes=(contact_attributes)
     contact_attributes.each do |attributes|
       if attributes[:id].blank?
