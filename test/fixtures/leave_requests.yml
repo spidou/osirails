@@ -1,0 +1,46 @@
+step_submit:
+  employee: normal
+  start_date: "2009-10-30"
+  end_date: "2009-11-02"
+  leave_type_id: 1
+
+step_check:
+  status: 1
+  employee: normal
+  start_date: "2009-10-30"
+  end_date: "2009-11-02"
+  leave_type_id: 1
+  responsible: normal
+  checked_at: nil
+  responsible_agreement: true
+
+step_notice:
+  status: 2
+  employee: normal
+  start_date: "2009-10-30"
+  end_date: "2009-11-02"
+  leave_type_id: 1
+  responsible: normal
+  checked_at: nil
+  responsible_agreement: true
+  observer: normal
+  noticed_at: nil
+  observer_remarks: "4 hours acquired"
+  acquired_leaves_days: 15
+
+step_close:
+  status: 3
+  employee: normal
+  start_date: "2009-10-30"
+  end_date: "2009-11-02"
+  leave_type_id: 1
+  responsible: normal
+  checked_at: nil
+  responsible_agreement: true
+  observer: normal
+  noticed_at: nil
+  observer_remarks: "4 hours acquired"
+  acquired_leaves_days: 15
+  director: normal
+  ended_at: nil
+  director_agreement: true

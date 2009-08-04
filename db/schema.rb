@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090731054522) do
+ActiveRecord::Schema.define(:version => 20090731131619) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -457,6 +457,33 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
     t.text     "goal"
   end
 
+  create_table "leave_requests", :force => true do |t|
+    t.integer  "status",                :limit => 11
+    t.integer  "leave_type_id",         :limit => 11
+    t.integer  "cancelled_by",          :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "checked_at"
+    t.datetime "noticed_at"
+    t.datetime "ended_at"
+    t.datetime "cancelled_at"
+    t.boolean  "start_half"
+    t.boolean  "end_half"
+    t.boolean  "responsible_agreement"
+    t.boolean  "director_agreement"
+    t.text     "comment"
+    t.text     "responsible_remarks"
+    t.text     "observer_remarks"
+    t.text     "director_remarks"
+    t.float    "acquired_leaves_days"
+    t.integer  "employee_id",           :limit => 11
+    t.integer  "responsible_id",        :limit => 11
+    t.integer  "observer_id",           :limit => 11
+    t.integer  "director_id",           :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "legal_forms", :force => true do |t|
     t.string   "name"
     t.integer  "third_type_id", :limit => 11
@@ -723,7 +750,7 @@ ActiveRecord::Schema.define(:version => 20090731054522) do
   end
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
+    t.string   "session_id", :default => "", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
