@@ -22,7 +22,14 @@ class Role < ActiveRecord::Base
   private
     def create_role_permissions
       business_objects = BusinessObject.find(:all).each do |bo|
-        BusinessObjectPermission.create(:role_id => self.id, :business_object_id => bo.id)
+        # create business object permission
+        bo_permission = BusinessObjectPermission.create(:role_id => self.id, :business_object_id => bo.id)
+        
+        # create one entry for each method for this business object
+        bo.name.constantize.permissions_definitions[:permission_methods].each do |method|
+          BusinessObjectPermissionsPermissionMethod.create(:business_object_permission_id => bo_permission.id,
+                                                           :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
+        end
       end
       
       Menu.find(:all).each do |menu|

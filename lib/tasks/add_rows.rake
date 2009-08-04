@@ -400,10 +400,23 @@ namespace :osirails do
       Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       
       # set up all permissions for default roles (admin and guest)
-      %W{ Menu BusinessObject DocumentType Calendar }.each do |klass|
-        klass.constantize.send(:find, :all).each do |object|
+      %W{ Menu DocumentType Calendar }.each do |klass|
+        klass.constantize.send(:all).each do |object|
           object.permissions.find_by_role_id(role_admin.id).update_attributes(:list => true, :view => true, :add => true, :edit => true, :delete => true)
           object.permissions.find_by_role_id(role_guest.id).update_attributes(:list => true, :view => true, :add => false, :edit => false, :delete => false)
+        end
+      end
+      
+      # set up business objects permissions
+      BusinessObject.all.each do |bo|
+        bo.permissions.each do |perm|
+          perm.business_object_permissions_permission_methods.each do |bo_perm|
+            if perm.role == role_guest and ( bo_perm.permission_method.name != "list" and bo_perm.permission_method.name != "view" )
+              bo_perm.update_attribute(:active, false)
+            else
+              bo_perm.update_attribute(:active, true)
+            end
+          end
         end
       end
     end

@@ -31,27 +31,32 @@
       
     <h2>pour chaque objets m&eacute;tiers</h2>
     <table>
+      <% max_size = @business_object_permissions.collect{|p|p.permission_methods.size}.max %>
       <tr>
-        <th rowspan="2">Objets m&eacute;tiers</th>
-        <th colspan="6">Permissions</th>
-      </tr>
-      <tr>
-        <th>Lister</th>
-        <th>Voir</th>
-        <th>Ajouter</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
-				<th>Tout cocher</th>
+        <th>Objets métiers</th>
+        <th colspan="<%= max_size + 1 %>">Permissions</th>
       </tr>
       <% for business_object_permission in @business_object_permissions %>
         <tr>
-          <td><%= link_to business_object_permission.business_object.name, edit_business_object_permission_path(business_object_permission.business_object_id) %></td>
-          <td><%= check_box_tag "business_object[list][]", business_object_permission.id, business_object_permission.list %></td>
-          <td><%= check_box_tag "business_object[view][]", business_object_permission.id, business_object_permission.view %></td>
-          <td><%= check_box_tag "business_object[add][]", business_object_permission.id, business_object_permission.add %></td>
-          <td><%= check_box_tag "business_object[edit][]", business_object_permission.id, business_object_permission.edit %></td>
-          <td><%= check_box_tag "business_object[delete][]", business_object_permission.id, business_object_permission.delete %></td>
-					<td><input type="checkbox" class="checkbox_permission"></td>
+          <td rowspan="2"><%= link_to business_object_permission.business_object.name, edit_business_object_permission_path(business_object_permission.business_object_id) %></td>
+          <% for method in business_object_permission.permission_methods %>
+            <%= "<th>#{method.name.titleize}</th>"%>
+          <% end %>
+          <% (max_size - business_object_permission.permission_methods.size).times do %>
+            <th>&nbsp;</th>
+          <% end %>
+		      <th>Tout cocher</th>
+        </tr>
+        <tr>
+          <% fields_for "business_object_permissions[]", business_object_permission do |form| %>
+            <% for method in business_object_permission.permission_methods %>
+              <td><%= form.check_box method.name %></td>
+            <% end %>
+            <% (max_size - business_object_permission.permission_methods.size).times do %>
+              <td>&nbsp;</td>
+            <% end %>
+          <% end %>
+				  <td><input type="checkbox" class="checkbox_permission"></td>
         </tr>
       <% end %>
     </table>

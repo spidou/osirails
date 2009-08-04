@@ -7,12 +7,55 @@ module HasPermissions
   end
   
   module ClassMethods    
-    PERM_METHODS = %W{ list view add edit delete }
+    DEFAULT_METHODS = [ :list, :view, :add, :edit, :delete ]
     
+    # has_permissions permits to configure permissions between roles and other kind of models
+    # 
+    # ==== Business Objects ====
+    # TODO
+    # 
+    # === Examples
+    #   class Klass < ActiveRecord::Base
+    #     has_permissions :as_business_object
+    #   end
+    # 
+    # ==== Menus ====
+    # TODO
+    #
+    # === Examples
+    # 
+    # ==== Calendars ====
+    # TODO
+    #
+    # === Examples
+    # 
+    # ==== Document Types =====
+    # TODO
+    #
+    # === Examples
+    #
+    # ==== Custom permission methods ====
+    # TODO
+    #
     def has_permissions *options
+      cattr_accessor :permissions_definitions
+      
+      self.permissions_definitions = { :permission_methods => DEFAULT_METHODS }
       
       if options.empty?
         add_instance_permission_methods
+      end
+      
+      options.each do |option|
+        if option.instance_of?(Hash)
+          if option[:additional_methods]
+            raise ":additional_methods expected to be an array" unless option[:additional_methods].instance_of?(Array)
+            self.permissions_definitions = { :permission_methods => DEFAULT_METHODS + option[:additional_methods] }
+          elsif option[:methods]
+            raise ":methods expected to be an array" unless option[:methods].instance_of?(Array)
+            self.permissions_definitions = { :permission_methods => option[:methods] }
+          end
+        end
       end
       
       options.each do |option|
@@ -43,10 +86,10 @@ module HasPermissions
         
         private 
           def create_permissions
-            Role.find(:all).each do |role|
-              permission_class = permissions_association_options[:class_name]
-              foreign_key = permissions_association_options[:foreign_key]
-              raise NameError, "#{permission_class} is not a valid class" unless Object.const_defined?(permission_class)
+            permission_class = permissions_association_options[:class_name]
+            foreign_key = permissions_association_options[:foreign_key]
+            raise NameError, "#{permission_class} is not a valid class" unless Object.const_defined?(permission_class)
+            Role.all.each do |role|
               permission_class.constantize.create(foreign_key => self.id, :role_id => role.id)
             end
           end
@@ -57,7 +100,7 @@ module HasPermissions
     end
     
     def add_instance_permission_methods
-      PERM_METHODS.each do |method|
+      self.permissions_definitions[:permission_methods].each do |method|
         class_eval <<-EOL
           def can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
@@ -67,7 +110,7 @@ module HasPermissions
     end
     
     def add_business_object_permission_methods
-      bo = BusinessObject.find_or_create_by_name(self.name.titleize)
+      bo = BusinessObject.find_or_create_by_name(self.name)
           
       write_inheritable_attribute(:business_object_id, bo.id)
       write_inheritable_attribute(:business_object, bo)
@@ -86,7 +129,9 @@ module HasPermissions
         end
       end
       
-      PERM_METHODS.each do |method|
+      self.permissions_definitions[:permission_methods].each do |method|
+        PermissionMethod.find_or_create_by_name(method.to_s)
+        
         class_eval <<-EOL
           def self.can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
@@ -166,7 +211,7 @@ module HasPermissions
           end
           
           def self.good_action?(action)
-            PERM_METHODS.include?(action)
+            self.permissions_definitions[:permission_methods].include?(action.to_sym)
           end
       end
     end
