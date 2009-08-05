@@ -5,6 +5,14 @@ silence_warnings do
   Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
 end
 
+class Date
+  
+  def last_week
+    monday - 1.week
+  end
+  
+end
+
 class Time
  #alias :strftime_nolocale :strftime
 

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090709052426) do
+ActiveRecord::Schema.define(:version => 20090804103224) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -78,6 +78,30 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "checkings", :force => true do |t|
+    t.date     "date"
+    t.integer  "user_id",                    :limit => 11
+    t.integer  "employee_id",                :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "absence",                    :limit => 11
+    t.text     "morning_overtime_comment"
+    t.text     "morning_delay_comment"
+    t.text     "afternoon_overtime_comment"
+    t.text     "afternoon_delay_comment"
+    t.text     "absence_comment"
+    t.integer  "morning_overtime_hours",     :limit => 11
+    t.integer  "morning_overtime_minutes",   :limit => 11
+    t.integer  "morning_delay_hours",        :limit => 11
+    t.integer  "morning_delay_minutes",      :limit => 11
+    t.integer  "afternoon_overtime_hours",   :limit => 11
+    t.integer  "afternoon_overtime_minutes", :limit => 11
+    t.integer  "afternoon_delay_hours",      :limit => 11
+    t.integer  "afternoon_delay_minutes",    :limit => 11
+  end
+
+  add_index "checkings", ["date", "employee_id"], :name => "date_employee_id_key", :unique => true
 
   create_table "checklist_options", :force => true do |t|
     t.string   "name"
@@ -285,19 +309,12 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
     t.integer  "civility_id",            :limit => 11
     t.integer  "family_situation_id",    :limit => 11
     t.integer  "user_id",                :limit => 11
+    t.integer  "service_id",             :limit => 11
   end
 
   create_table "employees_jobs", :id => false, :force => true do |t|
     t.integer  "job_id",      :limit => 11
     t.integer  "employee_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "employees_services", :force => true do |t|
-    t.integer  "employee_id", :limit => 11
-    t.integer  "service_id",  :limit => 11
-    t.boolean  "responsable",               :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -454,6 +471,28 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
     t.text     "mission"
     t.text     "activity"
     t.text     "goal"
+    t.integer  "service_id",  :limit => 11
+    t.boolean  "responsible"
+  end
+
+  create_table "leave_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leaves", :force => true do |t|
+    t.integer  "employee_id",   :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.boolean  "start_half"
+    t.boolean  "end_half"
+    t.boolean  "cancelled"
+    t.float    "retrieval"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "leave_type_id", :limit => 11
+    t.float    "duration"
   end
 
   create_table "legal_forms", :force => true do |t|

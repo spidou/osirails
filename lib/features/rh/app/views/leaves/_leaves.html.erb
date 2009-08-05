@@ -1,0 +1,28 @@
+<h3>Liste des congés <%= get_current_leave_year(@shift)%></h3>
+<% if @leaves.empty? %>
+  <p>
+    <strong>Aucun(s) congé(s) pris pour cette année</strong>
+  </p>
+<% else %>
+<table>
+  <tr>
+    <th>P&egrave;riode</th>
+    <th>Dur&eacute;e (effective/total)</th>
+    <th>Type</th>
+    <th>Action</th>
+  </tr>
+  <% (@leaves + @retrieval_leave).each do |leave| %>
+    <tr>
+      <td><%= get_effective_leave_periode(leave, Employee.get_leave_year_start_date + @shift.year) %></td>
+      <td><%= @retrieval_leave.include?(leave)? leave.retrieval||=0 : leave.duration %>/<%= leave.duration %></td>
+      <td><%= leave.leave_type.name %></td>
+      <td><%= link_to image_tag("/images/delete_16x16.png"),
+                      [@employee, leave],
+                      :confirm => "Etes vous sûr de vouloir invalider ce congé?",
+                      :method => :delete %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+<% end %>
+

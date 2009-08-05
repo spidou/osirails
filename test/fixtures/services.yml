@@ -2,4 +2,8 @@ parent:
   name: Parent Service
 child:
   name: Child Service
+
+direction_general:
+  name: direction
+  
   

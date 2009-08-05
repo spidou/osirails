@@ -1,73 +1,55 @@
  <!--#####################################-->
  <!--### fiche de post ###################-->
+    
+    <h3>Service</h3>
+    <p>
+      <%= form.label :name , "Nom :"%>
+      <%= form.form_or_view(form.collection_select(:service_id, @services, :id, :name), :service, :name) %>
+    </p>
+    <%= "<p> #{form.label :responsable, "Responsable(s) :"} #{responsibles} </p>" unless is_form_view?%>
 
-    <% if is_form_view? %> 
-      <p>
+    
+    <% if is_form_view? %>
+    
+    <h3>Fonction(s) dans l'entreprise</h3>
+    <div id="jobs_choice">
+      <div id='jobs_list'>
         <table>
+          <tr><th colspan="2">Fonctions</th></tr>
+        <% for associated_job in @jobs %>
           <tr>
-            <th colspan="2">Services</th>
-            <th>Responsable?</th>
-          </tr>      
-        <% for associated_service in @services %>
-          <tr>
-            <td><%= check_box_tag "employee[service_ids][]", associated_service.id, is_in?( associated_service, 'services','service_ids',@numbers.nil? ? nil : @employee )%></td> <!-- @numbers is define only in 'edit' and 'update' methods then if it is null we are using 'new' or 'create' method -->            
-            <td><%= associated_service.name %></td>
-            <td><%= check_box_tag "responsable[" + associated_service.id.to_s + "]", associated_service.id, is_resonsable_of_this_service?(associated_service.id,@numbers.nil? ? nil : @employee)%></td>
+            <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids',@numbers.nil? ? nil : @employee)%></td>
+            <td><%= associated_job.name %></td>
           </tr>
         <% end %>
         </table>
-      </p>
-
-      <div id="jobs_choice">
-        <div id='jobs_list'>
-          <table>
-            <tr><th colspan="2">Fonctions</th></tr>
-          <% for associated_job in @jobs %>
-            <tr>
-              <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids',@numbers.nil? ? nil : @employee)%></td>
-              <td><%= associated_job.name %></td>
-            </tr>
-          <% end %>
-          </table>
-        </div> <!--end jobs_list -->
-        <p><a onclick="osibox_open();" style="text-decoration:underline;">new job</a></p>
-      </div> <!--end jobs_choice -->
-
+      </div> <!--end jobs_list -->
+      <p><a onclick="osibox_open();" style="text-decoration:underline;">new job</a></p>
+    </div> <!--end jobs_choice -->
 
     <% else %>
-      <%= @employee.services.size<=1 ? "<h3>Membre du service</h3>":"<h3>Membre des services</h3>"%>
-      <div class="collection">
-        <div class="form_multiple_entries">
-        <%for service in @employee.services%>
-          <div class="object">
-            <%=link_to service.name, service_path(service.id)%>
-            <%= responsable(service.id)=="" ? "" : "(Responsable(s) : #{responsable(service.id)} )"%>
-          </div>
-        <% end %>
-        </div>
-      </div>
+      
       <%= @employee.jobs.size<=1 ? "<h3>Fonction dans l'entreprise</h3>":"<h3>Fonctions dans l'entreprise</h3>"%>
       <%= "<p>aucune</p>" if @employee.jobs.size==0  %>
       <%for job in @employee.jobs%>
-        <p>
-          <strong><%=job.name + " :"%></strong>
-          <table class="presentation">
-            <tr class="left_cell">
-              <td class="left_cell">- les missions :</td>
-              <td class="right_cell"> <%=job.mission%></td>
-            </tr>
-            <tr>
-              <td class="left_cell">- les activitées :</td>
-              <td class="right_cell"><%=job.activity %></td>
-            </tr>
-            <tr>
-              <td class="left_cell">- les objectifs :</td> 
-              <td class="right_cell"> <%=job.goal %></td>
-            </tr>
-          </table>
-        </p>  
+      <p>
+        <strong><%=job.name + " :"%></strong>
+        <table class="presentation">
+          <tr class="left_cell">
+            <td class="left_cell">- les missions :</td>
+            <td class="right_cell"> <%=job.mission %></td>
+          </tr>
+          <tr>
+            <td class="left_cell">- les activitées :</td>
+            <td class="right_cell"><%=job.activity %></td>
+          </tr>
+          <tr>
+            <td class="left_cell">- les objectifs :</td> 
+            <td class="right_cell"> <%=job.goal %></td>
+          </tr>
+        </table>
+      </p>  
       <% end %>
-
 
     <% end %>
 

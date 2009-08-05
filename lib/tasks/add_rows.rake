@@ -334,13 +334,12 @@ namespace :osirails do
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
       # default employees
-      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
+      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :service_id => dg.id, :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
       john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
       john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       john.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
       john.save!
-      john.services << Service.first
       john.user.roles << role_admin
       john.user.enabled = true
       john.user.save!
@@ -413,7 +412,7 @@ namespace :osirails do
       [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
         JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
         UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
+        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
         OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
         
         puts "destroying all rows for model '#{model.name}'"

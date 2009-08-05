@@ -72,7 +72,13 @@ menus:
           premia:
             title: Primes
             description: Gestion des primes
+          leaves:
+            title: Congés
+            descriptions: Affichage des congés pour l'employée
       jobs:
-          title: Fiches de poste
-          description: Gestions des fiches de poste          
+        title: Fiches de poste
+        description: Gestions des fiches de poste
+      checkings:
+        title: Pointages
+        description: Gestion des pointages
            

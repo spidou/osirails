@@ -5,11 +5,13 @@ class JobsController < ApplicationController
   end
   
   def new
-    @job= Job.new 
+    @job= Job.new
+    @services = Service.all
   end
   
   def edit
     @job= Job.find(params[:id])
+    @services = Service.all
   end
   
   def show

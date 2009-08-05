@@ -57,7 +57,7 @@
 
 <!--########### Jobs ####################-->
   <h2>Fiche de poste</h2>
-  <%= render :partial => 'jobs/jobs' , :locals => {:job => Job.new, :jobs => @jobs,:services => @services}%>    
+  <%= render :partial => 'jobs/jobs' , :locals => {:form => f, :job => Job.new, :jobs => @jobs,:service => @service} %>
 
 <!--########### Iban ####################-->
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
@@ -68,7 +68,7 @@
 <!--########### JobContract #############-->
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
     <%= render( :partial => @job_contract ) unless @employee.new_record? %> 
-   <% end %>
+  <% end %>
 
 <!--############## Premia ##############-->
   <%= display %>

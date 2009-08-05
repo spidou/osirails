@@ -29,7 +29,8 @@ class EmployeesController < ApplicationController
       @numbers = @employee.numbers
       @address = @employee.address
       @jobs = @employee.jobs
-      @services = @employee.services
+      @service = @employee.service
+      @services = Service.all
       @job_contract = @employee.job_contract
       # @documents = @employee.documents
     else
@@ -45,12 +46,10 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.new
-
       @employee.numbers.build
-
-
       @employee.address = Address.new
       @address = @employee.address
+      @services = Service.all
       #@documents = @employee.documents
     else
       error_access_page(403)
@@ -66,6 +65,7 @@ class EmployeesController < ApplicationController
       @employee = Employee.find(params[:id]) 
       @numbers = @employee.numbers
       @address = @employee.address
+      @services = Service.all
       #@documents =@employee.documents
       
     else
@@ -102,11 +102,6 @@ class EmployeesController < ApplicationController
 
       # @employee.address = Address.new(params[:address])
       # @documents = @employee.documents
-      
-      ## params[:numbers].each_value do |number|
-      ##  number['visible'] = false if number['visible'].nil?
-      ##  @employee.numbers << Number.new(number) unless number.blank?
-      ##end
       
  #     if Document.can_add?(current_user, @employee.class)
 #        if params[:new_document_number]["value"].to_i > 0
@@ -146,14 +141,6 @@ class EmployeesController < ApplicationController
           #end
         #end
         
-        # configure the employee as a responsable of his services if responsable is checked
-        unless params[:responsable].nil?
-          params[:responsable].each_key do |rep|
-            @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
-            @responsable[0].update_attributes({:responsable => 1})  unless @responsable[0].nil?
-          end
-        end  
-        
         flash[:notice] = 'L&apos;employée a été crée avec succés.'
         redirect_to(@employee)
       else
@@ -175,7 +162,6 @@ class EmployeesController < ApplicationController
       @document_controller = Menu.find_by_name('documents')
       
       @employee = Employee.find(params[:id])
-
       @address = @employee.address
 
       @error = false
@@ -187,30 +173,6 @@ class EmployeesController < ApplicationController
       params[:employee][:social_security_number] =  params['social_security_number']['0'] + " " + params['social_security_number']['1']
       params.delete('social_security_number')
 
-
-      
-      # TODO do not forget to delete this if do not use to remove numbers using visual effects
-      # numbers_ids = []
-      # @employee.numbers.each do |number|
-      #   numbers_ids << number[:id]
-      # end
-      # param[:numbers].each do |i|
-      #   params[:numbers][i].destroy unless numbers_ids.include?(f['id'].to_i)
-      # end
-      
-      # prepare the address params hash  
- #     params[:address] = {}
- #     params[:address]['city_name'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['name']
-#      params[:address]['zip_code'] = params[:employee]['address']['city'].nil? ? "" : params[:employee]['address']['city']['zip_code']
-#      params[:address]['country_name'] = params[:employee]['address']['country']['name']
-#      params[:address]['address1'] = params[:employee]['address']['address1']
-#      params[:address]['address2'] = params[:employee]['address']['address2']
-#      params[:employee].delete('address')
-      
-      # update attributes of employees ressources
-#      @employee.iban.update_attributes(params[:iban]) 
-
-#      @employee.address.update_attributes(params[:address])
       
 
 #      if Document.can_add?(current_user, @employee.class)
@@ -236,12 +198,11 @@ class EmployeesController < ApplicationController
       # delete the documents in params
 #      docs = params[:employee].delete('documents')
       
-      # destroy all services and jobs 
-      params[:employee]['service_ids']||= [] 
+      # destroy all jobs 
       params[:employee]['job_ids']||= []
 
       # save or show errors
-      if @employee.update_attributes(params[:employee])  and @error == false #and @number_error == false
+      if @employee.update_attributes(params[:employee])  and @error == false 
         
         # save the employee's documents
 #        unless params[:new_document_number].nil? and !Document.can_add?(current_user) and @employee.class
@@ -257,28 +218,6 @@ class EmployeesController < ApplicationController
 #            end
 #          end
 #        end
-        
-
-        # destroy all responsables if there's no checked checkbox
-        @responsable = EmployeesService.find(:all, :conditions => ["employee_id=?",params[:id]])
-        EmployeesService.transaction do        
-          @responsable.each do |r|
-            r.update_attributes({:responsable => 0})
-          end
-        end
-        
-
-
-        
-       
-        
-        # update responsable attribute of the employee's service 
-        unless params[:responsable].nil?
-          params[:responsable].each_key do |rep|
-            @responsable = EmployeesService.find(:all, :conditions => ["employee_id=? and service_id=?",@employee.id,rep ])
-            @responsable[0].update_attributes({:responsable => 1}) unless @responsable[0].nil?
-          end
-        end 
           
         flash[:notice] = ' L&apos;employée a été modifié avec succés.'
         

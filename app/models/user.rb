@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   # Relationships
   has_and_belongs_to_many :roles
+  has_many :checkings
   
   # Validates
   validates_each :password do |record, attr, value|

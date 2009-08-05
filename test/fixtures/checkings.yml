@@ -1,0 +1,82 @@
+good_checking:
+  morning_overtime_hours: 1
+  afternoon_overtime_hours: 2
+  afternoon_delay_hours: 1
+  afternoon_delay_minutes: 30
+  morning_delay_hours: 2
+  morning_delay_minutes: 30
+  absence: 0
+  date: 2009-03-20
+  absence_comment: beaucoup de retards
+  morning_overtime_comment: beaucoup de retards
+  morning_delay_comment: beaucoup de retards
+  afternoon_overtime_comment: beaucoup de retards
+  afternoon_delay_comment: beaucoup de retards
+  user: powerful_user
+  employee: normal
+  
+bad_checking_with_morning_absence:
+  morning_overtime_hours: 1
+  morning_overtime_minutes: 10
+  morning_delay_hours: 2
+  morning_delay_minutes: 30
+  afternoon_overtime_hours: 2
+  afternoon_overtime_minutes: 20
+  afternoon_delay_hours: 1
+  afternoon_delay_minutes: 30
+  absence: 1
+  date: 2009-03-10
+  user: powerful_user
+  employee: normal
+  
+bad_checking_with_afternoon_absence:
+  morning_overtime_hours: 1
+  morning_overtime_minutes: 10
+  morning_delay_hours: 2
+  morning_delay_minutes: 30
+  afternoon_overtime_hours: 2
+  afternoon_overtime_minutes: 20
+  afternoon_delay_hours: 1
+  afternoon_delay_minutes: 30
+  absence: 2
+  date: 2009-03-11
+  user: powerful_user
+  employee: normal
+  
+bad_checking_with_day_absence:
+  morning_overtime_hours: 1
+  morning_overtime_minutes: 10
+  morning_delay_hours: 2
+  morning_delay_minutes: 30
+  afternoon_overtime_hours: 2
+  afternoon_overtime_minutes: 20
+  afternoon_delay_hours: 1
+  afternoon_delay_minutes: 30
+  absence: 3
+  date: 2009-03-12
+  user: powerful_user
+  employee: normal
+
+good_checking_with_morning_absence:
+  afternoon_overtime_hours: 2
+  afternoon_delay_hours: 1
+  afternoon_delay_minutes: 30
+  absence: 1
+  date: 2009-03-13
+  user: powerful_user
+  employee: normal
+  
+good_checking_with_afternoon_absence:
+  morning_overtime_hours: 1
+  morning_delay_hours: 2
+  morning_delay_minutes: 30
+  absence: 2
+  date: 2009-03-14
+  user: powerful_user
+  employee: normal
+  
+good_checking_with_day_absence:
+  absence: 3
+  date: 2009-03-15
+  user: powerful_user
+  employee: normal

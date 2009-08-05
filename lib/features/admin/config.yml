@@ -144,13 +144,45 @@ configurations:
     description: Nom de domaine
     value: emr-oi.com    
   society_identity_configuration_working_day:
-    description: Jours ouvrables
+    description: Jours ouvrés
     value:
-      - "0"
       - "1"
       - "2"
       - "3"
       - "4"
+      - "5"
+  society_identity_configuration_workable_days:
+    description: Jours ouvrables
+    value:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
+  society_identity_configuration_legal_holidays:
+    description: Jours fériés
+    value:
+      - "07/14"
+      - "08/15"
+      - "11/1"
+      - "11/11"
+      - "12/25"
+      - "01/01"
+      - "04/13"
+      - "05/01"
+      - "05/08"
+      - "05/21"
+      - "06/01"
   society_identity_configuration_choosen_theme:
     description: Style de l'Intranet
     value: emr
+  society_identity_configuration_leave_year_start_date:
+    description: Date de début de l'année effective de l'entreprise
+    value: "1/2"
+  society_identity_configuration_leave_days_credit_per_month:
+    description: Valeur du crédit de jours par mois que l'on ajoute au solde total de jours de congés disponible sur l'année effective
+    value: 2.5
+  society_identity_configuration_leave_duration_limit:
+    description: Durée maximale d'un congé
+    value: 24
