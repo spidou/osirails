@@ -5,7 +5,7 @@ class Role < ActiveRecord::Base
   has_many :menu_permissions,             :include => :menu,            :dependent => :destroy
   has_many :business_object_permissions,  :include => :business_object, :dependent => :destroy
   has_many :document_type_permissions,    :include => :document_type,   :dependent => :destroy
-  has_many :calendar_permissions,         :include => :calendar,        :dependent => :destroy, :conditions => [ "calendars.user_id = ?",  nil ]
+  #has_many :calendar_permissions,         :include => :calendar,        :dependent => :destroy, :conditions => [ "calendars.user_id = ?",  nil ]
   
   # Validations
   validates_uniqueness_of :name
@@ -36,9 +36,9 @@ class Role < ActiveRecord::Base
         DocumentTypePermission.create(:role_id => self.id, :document_type_id => document_type.id)
       end
       
-      # permissions are configurable only for calendar which have no owner
-      Calendar.find_all_by_user_id(nil).each do |calendar|
-        CalendarPermission.create(:role_id => self.id, :calendar_id => calendar.id)
-      end
+      ## permissions are configurable only for calendar which have no owner
+      #Calendar.find_all_by_user_id(nil).each do |calendar|
+      #  CalendarPermission.create(:role_id => self.id, :calendar_id => calendar.id)
+      #end
     end
 end

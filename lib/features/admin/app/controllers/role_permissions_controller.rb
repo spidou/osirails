@@ -11,7 +11,7 @@ class RolePermissionsController < ApplicationController
     @document_type_permissions = @role.document_type_permissions
     #@all_calendar = Calendar.find_all_by_user_id(nil)
     #@calendar_permissions = CalendarPermission.find(:all, :conditions => ["role_id = ? and calendar_id IN (?)", params[:id], @all_calendar])
-    @calendar_permissions = @role.calendar_permissions
+    #@calendar_permissions = @role.calendar_permissions
   end
  
   
@@ -19,7 +19,7 @@ class RolePermissionsController < ApplicationController
     params[:business_object] ||= {}
     params[:menu] ||= {}
     params[:document] ||= {}
-    params[:calendar] ||= {}
+    #params[:calendar] ||= {}
       transaction_error = BusinessObjectPermission.transaction do
         BusinessObjectPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :role_id =>params[:id])
         BusinessObjectPermission.update_all("`list` = 1", :id => params[:business_object][:list], :role_id =>params[:id])
@@ -46,16 +46,16 @@ class RolePermissionsController < ApplicationController
         DocumentTypePermission.update_all("`delete` = 1", :id => params[:document][:delete], :role_id =>params[:id])
       end
       
-      transaction_error4 = CalendarPermission.transaction do
-        CalendarPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :role_id =>params[:id])
-        CalendarPermission.update_all("`list` = 1", :id => params[:calendar][:list], :role_id =>params[:id])
-        CalendarPermission.update_all("`view` = 1", :id => params[:calendar][:view], :role_id =>params[:id])
-        CalendarPermission.update_all("`add` = 1", :id => params[:calendar][:add], :role_id =>params[:id])
-        CalendarPermission.update_all("`edit` = 1", :id => params[:calendar][:edit], :role_id =>params[:id])
-        CalendarPermission.update_all("`delete` = 1", :id => params[:calendar][:delete], :role_id =>params[:id])
-      end
+      #transaction_error4 = CalendarPermission.transaction do
+      #  CalendarPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :role_id =>params[:id])
+      #  CalendarPermission.update_all("`list` = 1", :id => params[:calendar][:list], :role_id =>params[:id])
+      #  CalendarPermission.update_all("`view` = 1", :id => params[:calendar][:view], :role_id =>params[:id])
+      #  CalendarPermission.update_all("`add` = 1", :id => params[:calendar][:add], :role_id =>params[:id])
+      #  CalendarPermission.update_all("`edit` = 1", :id => params[:calendar][:edit], :role_id =>params[:id])
+      #  CalendarPermission.update_all("`delete` = 1", :id => params[:calendar][:delete], :role_id =>params[:id])
+      #end
     
-    if transaction_error or transaction_error2 or transaction_error3 or transaction_error4
+    if transaction_error or transaction_error2 or transaction_error3# or transaction_error4
       flash[:notice] = "Les permissions ont été modifié avec succés"
       redirect_to :action => "edit",:id => params[:id]
     else

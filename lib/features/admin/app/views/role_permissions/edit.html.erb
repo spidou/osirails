@@ -97,17 +97,17 @@
         <th>Supprimer</th>
 				<th>Tout cocher</th>
       </tr>
-      <% for calendar_permission in @calendar_permissions %>
-        <tr>
-          <td><%= link_to calendar_permission.calendar.name, edit_calendar_permission_path(calendar_permission.calendar) %></td>
-          <td><%= check_box_tag "calendar[list][]", calendar_permission.id, calendar_permission.list %></td>
-          <td><%= check_box_tag "calendar[view][]", calendar_permission.id, calendar_permission.view %></td>
-          <td><%= check_box_tag "calendar[add][]", calendar_permission.id, calendar_permission.add %></td>
-          <td><%= check_box_tag "calendar[edit][]", calendar_permission.id, calendar_permission.edit %></td>
-          <td><%= check_box_tag "calendar[delete][]", calendar_permission.id, calendar_permission.delete %></td>
+      <%# for calendar_permission in @calendar_permissions %>
+        <!-- <tr>
+          <td><%# link_to calendar_permission.calendar.name, edit_calendar_permission_path(calendar_permission.calendar) %></td>
+          <td><%# check_box_tag "calendar[list][]", calendar_permission.id, calendar_permission.list %></td>
+          <td><%# check_box_tag "calendar[view][]", calendar_permission.id, calendar_permission.view %></td>
+          <td><%# check_box_tag "calendar[add][]", calendar_permission.id, calendar_permission.add %></td>
+          <td><%# check_box_tag "calendar[edit][]", calendar_permission.id, calendar_permission.edit %></td>
+          <td><%# check_box_tag "calendar[delete][]", calendar_permission.id, calendar_permission.delete %></td>
 					<td><input type="checkbox" class="checkbox_permission"></td>
-        </tr>
-      <% end %>
+        </tr> -->
+      <%# end %>
     </table>
 
     <p> 
