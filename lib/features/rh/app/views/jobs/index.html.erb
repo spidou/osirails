@@ -8,12 +8,14 @@
  <table>
     <tr>
       <th>Nom</th>
+      <th>Lié au service</th>
       <th>Actions</th>
     </tr>
     <% for job in @jobs%>
     <tr>
-      <td><%=job.name %></td>
-      <td style="width:70px;">
+      <td><%= job.name %></td>
+      <td><%= job.service.name %></td>
+      <td>
         <%= job_link(job, :link_text => "") %>
         <%= edit_job_link(job, :link_text => "") %>
         <%= delete_job_link(job, :link_text => "") %>

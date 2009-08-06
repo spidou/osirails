@@ -4,8 +4,9 @@ class CheckingsController < ApplicationController
   def index
     if !current_user.employee.nil?
       @employees = current_user.employee.subordinates
-      params[:employee_id]||= @employees.first
-      params[:date]||= Date.today.monday
+      
+      params[:employee_id] ||= @employees.first ? @employees.first.id : nil
+      params[:date] ||= Date.today.monday
             
       unless params[:employee_id].nil?
         emp_id = params[:employee_id].to_i

@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
   
   def index
-    @jobs = Job.find(:all)
+    @jobs = Job.find(:all, :include => :service, :order => "services.service_parent_id, services.name, jobs.name, jobs.responsible DESC")
   end
   
   def new

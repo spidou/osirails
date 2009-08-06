@@ -7,17 +7,21 @@ module LeavesHelper
   end
   
   def get_leave_years_select(employee, after)
-    unless employee.job_contract.nil? or employee.job_contract.start_date.nil?
-      before = employee.job_contract.start_date.year - Date.today.year
-      html = "<select name='leave_year_shift'>"
-      (before..-1).each do |i|
-        html += "<option value='#{i}'>#{ get_current_leave_year(i)}</option>"
-      end
+    return if employee.job_contract.nil? or employee.job_contract.start_date.nil?
+    
+    html = "<select name='leave_year_shift'>"
+    
+    before = employee.job_contract.start_date.year - Date.today.year
+    (before..-1).each do |i|
+      html += "<option value='#{i}'>#{ get_current_leave_year(i)}</option>"
     end
+    
     html += "<option selected='selected' value='0'>#{ get_current_leave_year }</option>"
+    
     (1..after).each do |j|
       html += "<option value='#{j}'>#{ get_current_leave_year(j)}</option>"
     end
+    
     html += "</select>"
   end
   

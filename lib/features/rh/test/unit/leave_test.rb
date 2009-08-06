@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class LeaveTest < ActiveSupport::TestCase
   
@@ -168,7 +168,7 @@ class LeaveTest < ActiveSupport::TestCase
   
     workable_days = ConfigurationManager.admin_society_identity_configuration_workable_days = "123456".split("")
     # bad date (periode)
-    @leave = leaves(:good_leave)
+    @leave = @good_leave
     @leave.end_date -= 20.days
     assert_equal @leave.total_estimate_duration, 0, "total_estimate_duration should be 0 because end_date < start_date,  workable_days: #{workable_days.inspect}"
     # one day
@@ -229,8 +229,7 @@ class LeaveTest < ActiveSupport::TestCase
   end
   
   def test_not_extend_on_two_years_method_with_wrong_start_date
-    @leave.start_date = Date.today - 11.month - 2.days
-    @leave.end_date = @leave.start_date
+    @leave.start_date = @leave.end_date = Date.today - 11.month - 2.days
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave year start date < start_date = end_date"
     @leave.end_date = @leave.start_date + 4.day
@@ -239,8 +238,7 @@ class LeaveTest < ActiveSupport::TestCase
   end
   
   def test_not_extend_on_two_years_method_with_wrong_end_date
-    @leave.end_date = Date.today + 1.month + 4.days
-    @leave.start_date = @leave.end_date
+    @leave.start_date = @leave.end_date = Date.today + 1.month + 4.days
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "end_date should be valid because leave year end date < start_date = end_date"
     @leave.start_date = @leave.end_date - 14.days

@@ -14,12 +14,11 @@ class LeavesController < ApplicationController
     end
   end
   
-  def create
-  end
-  
   def destroy
     @leave = Leave.find(params[:id])
-    @leave.cancel
+    unless @leave.cancel
+      flash[:notice] = "Impossible de supprimer le congé"
+    end
     redirect_to employee_leaves_path
   end
   

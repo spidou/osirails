@@ -5,7 +5,6 @@ good_checking:
   afternoon_delay_minutes: 30
   morning_delay_hours: 2
   morning_delay_minutes: 30
-  absence: 0
   date: 2009-03-20
   absence_comment: beaucoup de retards
   morning_overtime_comment: beaucoup de retards

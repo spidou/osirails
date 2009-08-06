@@ -1,10 +1,11 @@
 class Checking < ActiveRecord::Base
-
-  # Relationships
+  MORNING_ABSENCE   = 1
+  AFTERNOON_ABSENCE = 2
+  DAY_ABSENCE       = 3
+  
   belongs_to :employee
   belongs_to :user
-
-  # Validations
+  
   with_options :allow_nil => true do |c|
     c.validates_numericality_of :morning_overtime_hours, :morning_overtime_minutes, :morning_delay_hours, :morning_delay_minutes
     c.validates_numericality_of :afternoon_overtime_hours, :afternoon_overtime_minutes, :afternoon_delay_hours, :afternoon_delay_minutes
@@ -20,32 +21,58 @@ class Checking < ActiveRecord::Base
   validates_presence_of :user_id, :employee_id
   validates_presence_of :user, :if => :user_id
   validates_presence_of :employee, :if => :employee_id
+  
   validate :one_checking_per_day_and_per_employee
   validate :restricted_edit, :if => :employee_id and :date
   validate :correlation_between_absence_and_other_datas, :if => :absence
   validate :good_hours, :good_minutes
   
-  # absences constants
-  MORNING_ABSENCE = 1
-  AFTERNOON_ABSENCE = 2
-  DAY_ABSENCE = 3
-
-  # Accessors
+  validates_inclusion_of :absence, :in => [ nil, MORNING_ABSENCE, AFTERNOON_ABSENCE, DAY_ABSENCE ]
+  
   cattr_accessor :form_labels
-
   @@form_labels = Hash.new
-  @@form_labels[:employee]  = "Employ&eacute; :"
-  @@form_labels[:absence]   = "Signaler une absence :"
-  @@form_labels[:comment]   = "Commentaire :"
-  @@form_labels[:overtime]  = "Heures suppl&eacute;mentaires :"
-  @@form_labels[:delay]     = "Retards :"
-  @@form_labels[:date]      = "Date :"
+  @@form_labels[:employee]                    = "Employ&eacute; :"
+  @@form_labels[:date]                        = "Date :"
+  @@form_labels[:absence]                     = "Signaler une absence :"
+  @@form_labels[:absence_comment]             = "Commentaire :"
+  @@form_labels[:morning_overtime_hours]      = "Heures suppl&eacute;mentaires :"
+  @@form_labels[:afternoon_overtime_hours]    = "Heures suppl&eacute;mentaires :"
+  @@form_labels[:morning_overtime_comment]    = "Commentaire :"
+  @@form_labels[:afternoon_overtime_comment]  = "Commentaire :"
+  @@form_labels[:morning_delay_hours]         = "Retard :"
+  @@form_labels[:afternoon_delay_hours]       = "Retard :"
+  @@form_labels[:morning_delay_comment]       = "Commentaire :"
+  @@form_labels[:afternoon_delay_comment]     = "Commentaire :"
+  
+  def mandatory_absence_comment?
+    mandatory_comment?(absence)
+  end
+  
+  def mandatory_morning_overtime_comment?
+    mandatory_comment?(morning_overtime_hours, morning_overtime_minutes)
+  end
+  
+  def mandatory_morning_delay_comment?
+    mandatory_comment?(morning_delay_hours, morning_delay_minutes)
+  end
+  
+  def mandatory_afternoon_overtime_comment?
+    mandatory_comment?(afternoon_overtime_hours, afternoon_overtime_minutes)
+  end
+  
+  def mandatory_afternoon_delay_comment?
+    mandatory_comment?(afternoon_delay_hours, afternoon_delay_minutes)
+  end
+  
+  def get_float_hour(h, min)
+    h.to_f + min.minutes.to_f/3600
+  end
   
   private
     
     # Method that return true if the to arguments are not null and not equal to 0
     #
-    def mandatory_comment?(hours, minutes)
+    def mandatory_comment?(hours, minutes = nil)
       (!hours.nil? and hours != 0) or (!minutes.nil? and minutes != 0)
     end
     
@@ -107,32 +134,6 @@ class Checking < ActiveRecord::Base
           errors.add(attribute, message) if value > wanted_value
         end
       end
-    end
-
-  public
-  
-    def mandatory_absence_comment?
-      mandatory_comment?(absence, nil)
-    end
-    
-    def mandatory_morning_overtime_comment?
-      mandatory_comment?(morning_overtime_hours, morning_overtime_minutes)
-    end
-    
-    def mandatory_morning_delay_comment?
-      mandatory_comment?(morning_delay_hours, morning_delay_minutes)
-    end
-    
-    def mandatory_afternoon_overtime_comment?
-      mandatory_comment?(afternoon_overtime_hours, afternoon_overtime_minutes)
-    end
-    
-    def mandatory_afternoon_delay_comment?
-      mandatory_comment?(afternoon_delay_hours, afternoon_delay_minutes)
-    end
-    
-    def get_float_hour(h, min)
-      h.to_f + min.minutes.to_f/3600
     end
     
 end

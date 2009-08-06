@@ -1,7 +1,7 @@
 <h3>Liste des congés <%= get_current_leave_year(@shift)%></h3>
 <% if @leaves.empty? %>
   <p>
-    <strong>Aucun(s) congé(s) pris pour cette année</strong>
+    <strong>Aucun congé pris pour cette année</strong>
   </p>
 <% else %>
 <table>
@@ -25,4 +25,3 @@
   <% end %>
 </table>
 <% end %>
-

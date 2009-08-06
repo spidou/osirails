@@ -8,12 +8,12 @@
 
 <% if @employees.empty? %>
 
-  <p>Vous n&apos;avez pas de subordonn&eacute;s</p>
+  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p>
   
 <% else %>
 
   <h2>
-    Semaine <%= params[:date].to_date.monday.cweek %>&nbsp;
+    Semaine <%= params[:date].to_date.monday.cweek %>
     (du <%= params[:date].to_date.monday.strftime("%A %d %B %Y") %> au <%= params[:date].to_date.next_week.yesterday.strftime("%A %d %B %Y") %>)
   </h2>
   
@@ -27,7 +27,7 @@
   
   <% if @checkings.empty? %>
   
-    <p>aucun(s) pointage(s)</p>
+    <p>Aucun pointage pour cette p&eacute;riode</p>
     
   <% else %>
   
@@ -35,15 +35,15 @@
       <tr>
         <th rowspan="2">Date</th>
         <th rowspan="2">Absence</th>
+        <th colspan="2">Retards</th>
         <th colspan="2">Heures suppl&eacute;mentaires</th>
-        <th colspan="2">Retards</th>  
         <th rowspan="2">Actions</th>
       </tr>
       <tr>
         <th>matinée</th>
-        <th>apr&eacute;s-midi</th>
+        <th>apr&egrave;s-midi</th>
         <th>matinée</th>
-        <th>apr&eacute;s-midi</th>
+        <th>apr&egrave;s-midi</th>
       </tr>
       
       <% for checking in @checkings %>
@@ -51,7 +51,7 @@
         <tr>
           <td><%= checking.date.strftime("%A %d %B %Y") %></td>
           <td><%= absence_meaning(checking.absence) %></td>
-          <%= generate_overtime_and_delay_td(checking) %>
+          <%= generate_delay_and_overtime_td(checking) %>
           <td><%= edit_checking_link(checking, :link_text=>"")%></td>
         </tr>
         

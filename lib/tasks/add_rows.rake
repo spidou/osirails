@@ -94,12 +94,43 @@ namespace :osirails do
       
       # default services
       dg = Service.create :name => "Direction Générale"
-      Service.create :name => "Service Administratif", :service_parent_id => dg.id
-      Service.create :name => "Service Commercial", :service_parent_id => dg.id
+      af = Service.create :name => "Administratif et Financier", :service_parent_id => dg.id
+      com = Service.create :name => "Commercial", :service_parent_id => dg.id
+      av = Service.create :name => "Achats/Ventes", :service_parent_id => dg.id
+      si = Service.create :name => "Informatique", :service_parent_id => dg.id
+      cg = Service.create :name => "Conception Graphique", :service_parent_id => dg.id
       prod = Service.create :name => "Production", :service_parent_id => dg.id
-      Service.create :name => "Atelier Décor", :service_parent_id => prod.id
-      Service.create :name => "Atelier Découpe", :service_parent_id => prod.id
-      Service.create :name => "Atelier Fraisage", :service_parent_id => prod.id 
+      pose = Service.create :name => "Pose", :service_parent_id => dg.id
+      
+      # default jobs
+      Job.create :name => "Directeur Général", :responsible => true, :service_id => dg.id
+      Job.create :name => "Directeur Commercial", :responsible => true, :service_id => com.id
+      Job.create :name => "Commercial", :responsible => false, :service_id => com.id
+      Job.create :name => "Chargé d'affaires", :responsible => false, :service_id => com.id
+      Job.create :name => "Directeur Administratif et Financier", :responsible => true, :service_id => af.id
+      Job.create :name => "Secrétaire", :responsible => false, :service_id => af.id
+      Job.create :name => "Assistante de Direction", :responsible => false, :service_id => af.id
+      Job.create :name => "Comptable", :responsible => false, :service_id => af.id
+      Job.create :name => "Assistante des Ressources Humaines", :responsible => false, :service_id => af.id
+      Job.create :name => "Responsable des Achats/Ventes", :responsible => true, :service_id => av.id
+      Job.create :name => "Assistante des Achats/Ventes", :responsible => false, :service_id => av.id
+      Job.create :name => "Ingénieur Informaticien", :responsible => true, :service_id => si.id
+      Job.create :name => "Responsable Conception Graphique", :responsible => true, :service_id => cg.id
+      Job.create :name => "Graphiste Sénior", :responsible => false, :service_id => cg.id
+      Job.create :name => "Graphiste", :responsible => false, :service_id => cg.id
+      Job.create :name => "Poseur de film", :responsible => false, :service_id => cg.id
+      Job.create :name => "Responsable de Production", :responsible => true, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Plasturgie", :responsible => false, :service_id => prod.id
+      Job.create :name => "Monteur Câbleur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Plasticien Monteur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Métallier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Métallier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chaudronnier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Dessinateur Fraiseur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Peintre", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Pose", :responsible => false, :service_id => pose.id
+      Job.create :name => "Poseur d'enseignes", :responsible => false, :service_id => pose.id
+      Job.create :name => "Poseur", :responsible => false, :service_id => pose.id
       
       # default contact types
       contact_customer1 = ContactType.create :name => "Normal", :owner => "Customer"
