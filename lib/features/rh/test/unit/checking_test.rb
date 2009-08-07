@@ -346,17 +346,17 @@ class CheckingTest < ActiveSupport::TestCase
   
   def test_get_float_hour
     {3.5 => [3, 30], 0.5 => [0, 30], 1.0 => [1, 0], 0.25 => [0, 15]}.each_pair do |float_value, time_value|
-      assert_equal @good_checking.get_float_hour(time_value[0], time_value[1]), float_value, "#{time_value[0]}:#{time_value[1]} should be equal to #{float_value} h"
+      assert_equal float_value, @good_checking.get_float_hour(time_value[0], time_value[1]), "#{time_value[0]}:#{time_value[1]} should be equal to #{float_value} h"
     end
   end
   
-  def test_mandatory_comment?_method
-    assert_equal mandatory_comment(1,1), true, "mandatory_comment should return true, hours:#{1} ,minutes:#{1}"
-    assert_equal mandatory_comment(1,0), true, "mandatory_comment should return true, hours:#{1} ,minutes:#{0}"
-    assert_equal mandatory_comment(1,nil), true, "mandatory_comment should return true, hours:#{1} ,minutes:#{nil}"
-    assert_equal mandatory_comment(nil,nil), false, "mandatory_comment should return false, hours:#{nil} ,minutes:#{nil}"
-    assert_equal mandatory_comment(0,nil), false, "mandatory_comment should return false, hours:#{0} ,minutes:#{nil}"
-    assert_equal mandatory_comment(0,0), false, "mandatory_comment should return false, hours:#{0} ,minutes:#{0}"
+  def test_mandatory_comment
+    assert_equal true, mandatory_comment(1,1), "mandatory_comment should return true, hours:1 ,minutes:1"
+    assert_equal true, mandatory_comment(1,0), "mandatory_comment should return true, hours:1 ,minutes:0"
+    assert_equal true, mandatory_comment(1,nil), "mandatory_comment should return true, hours:#{1} ,minutes:#{nil}"
+    assert_equal false, mandatory_comment(nil,nil), "mandatory_comment should return false, hours:#{nil} ,minutes:#{nil}"
+    assert_equal false, mandatory_comment(0,nil), "mandatory_comment should return false, hours:#{0} ,minutes:#{nil}"
+    assert_equal false, mandatory_comment(0,0), "mandatory_comment should return false, hours:#{0} ,minutes:#{0}"
   end
   
 end

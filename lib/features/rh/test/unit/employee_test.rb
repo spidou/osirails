@@ -7,7 +7,7 @@ class EmployeeTest < ActiveSupport::TestCase
     @good_employee = employees(:james_doe)
     @employee_with_job = employees(:johnny)
     @employee_with_job.jobs << jobs(:responsible_job)
-    @leave_days_credit_per_month = ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month
+    #@leave_days_credit_per_month = ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month
     @default_leave = Leave.new(:start_date => (Date.today - 11.month) + 3.month,
                                  :end_date => (Date.today - 11.month) + 3.month + 6.days,
                                  :duration => 7.0,
@@ -115,12 +115,12 @@ class EmployeeTest < ActiveSupport::TestCase
   #FIXME if today.month == December it may not work because the start cannot be past year (1.year = 12.months and december == 12e month)
   def test_get_leave_year_method_for_past_year
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{Date.today.month + 1}/#{Date.today.day}"
-    assert_equal Employee.get_leave_year_start_date.year, Date.today.year-1, "leave_year_start_date Should be equal to #{Date.today.year-1}"
+    assert_equal Date.today.year-1, Employee.get_leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year-1}"
   end
   
   def test_get_leave_year_method_for_current_year
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{Date.today.month}/#{Date.today.day}"
-    assert_equal Employee.get_leave_year_start_date.year, Date.today.year, "leave_year_start_date Should be equal to #{Date.today.year-1}"
+    assert_equal Date.today.year, Employee.get_leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year}"
   end
   
   def test_get_leaves_for_choosen_year_method
@@ -149,21 +149,23 @@ class EmployeeTest < ActiveSupport::TestCase
                                   :leave_type_id => LeaveType.first.id).save
     end
     flunk "error with leaves" if @good_employee.leaves.empty?
-    assert_equal @good_employee.get_leaves_for_choosen_year(-1).size, 1, "it should have 1 leave for past year"
-    assert_equal @good_employee.get_leaves_for_choosen_year(0).size, 2, "it should have 2 leaves for current year"
-    assert_equal @good_employee.get_leaves_for_choosen_year(1).size, 3, "it should have 3 leaves for next year"
+    assert_equal 1, @good_employee.get_leaves_for_choosen_year(-1).size, "it should have 1 leave for past year"
+    assert_equal 2, @good_employee.get_leaves_for_choosen_year(0).size, "it should have 2 leaves for current year"
+    assert_equal 3, @good_employee.get_leaves_for_choosen_year(1).size, "it should have 3 leaves for next year"
   end
   
   def test_services_under_responsibility
     assert @good_employee.services_under_responsibility.empty?, "good_employee should NOT have service under his responsibility"
-    assert_equal @employee_with_job.services_under_responsibility.size, 1, "employee_with_job should have a service under his responsibility"
+    
+    assert_equal 1, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 1 service under his responsibility"
+    
     @employee_with_job.jobs << jobs(:responsible_job)
-    assert_equal @employee_with_job.services_under_responsibility.size, 2, "employee_with_job should have 2 services under his responsibility"
+    assert_equal 2, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 2 services under his responsibility"
   end
   
   def test_subordinates
     assert @good_employee.subordinates.empty?, "good_employee should NOT have subordinates"
-    assert_equal @employee_with_job.subordinates.size, 1, "employee_with_job should have 1 subordinate because james_doe belongs to direction_general that is a service under his responsability"
+    assert_equal 1, @employee_with_job.subordinates.size, "employee_with_job should have 1 subordinate because james_doe belongs to direction_general that is a service under his responsability"
   end
   
   private 

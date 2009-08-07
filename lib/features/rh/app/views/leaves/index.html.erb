@@ -7,11 +7,10 @@
 
 <div class='presentation_medium'>
 
-  <% form_remote_tag :url => employee_leaves_path,:method => "get", :html => {:id => "leave_year_change"},  :update => "leaves_list" do%> 
+  <% form_remote_tag :url => employee_leaves_path, :method => "get", :html => { :id => "leave_year_change" },  :update => "leaves_list" do %>
    <p>
-      <strong> Liste des cong&eacute;s </strong>
-      <%= get_leave_years_select(@employee, 1) %>
-      <input type="submit" value="voir"/>
+      Liste des cong&eacute;s payés pour l'année <%= get_leave_years_select(@employee, 1) %>
+      <input type="submit" value="Afficher"/>
    </p>
   </form> 
   <% end %>

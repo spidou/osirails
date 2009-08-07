@@ -73,12 +73,11 @@ menus:
             title: Primes
             description: "Gestion des primes de l'employé"
           leaves:
-            title: Congés
-            descriptions: "Gestion des congés de l'employée"
+            title: Congés payés
+            descriptions: "Gestion des congés payés de l'employée"
       jobs:
         title: Fiches de poste
         description: Gestions des fiches de poste
       checkings:
         title: Pointage
         description: Signaler une absence, un retard ou des heures supplémentaires pour un employé
-           

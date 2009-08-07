@@ -1,7 +1,6 @@
 class LeavesController < ApplicationController
 
-  # GET /employees/ID/leaves
-  # GET /employees/ID/leaves.xml
+  # GET /employees/:employee_id/leaves
   def index
     @employee = Employee.find(params[:employee_id])
     @shift = (params[:leave_year_shift].nil?)? 0 : params[:leave_year_shift].to_i
@@ -14,6 +13,7 @@ class LeavesController < ApplicationController
     end
   end
   
+  # DELETE /employees/:employee_id/leaves/:id
   def destroy
     @leave = Leave.find(params[:id])
     unless @leave.cancel

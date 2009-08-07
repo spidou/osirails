@@ -13,7 +13,7 @@ class LeaveTypeTest < ActiveSupport::TestCase
   
   def teardown
    @good_leave_type = nil
-   @leave = nil
+   @leave_type = nil
   end
   
   def test_presence_of_name

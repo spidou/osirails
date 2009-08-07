@@ -26,9 +26,11 @@ module LeavesHelper
   end
   
   def get_effective_leave_periode(leave, leave_year_start_date)
-    html = "du <strong>#{leave.start_date.strftime("%d %b %Y")}</strong>"
+    html = "du <strong>#{leave.start_date.strftime("%d %B %Y")}"
     html += leave.start_half ? " (apr&egrave;s-midi) " : " "
-    html += "jusqu'au <strong>#{leave.end_date.strftime("%d %b %Y")}</strong> "
-    html += leave.end_half ? "(matin&e&cute;e)" : ""
+    html += "</strong>"
+    html += "au <strong>#{leave.end_date.strftime("%d %B %Y")}"
+    html += leave.end_half ? " (matin&e&cute;e)" : " "
+    html += "</strong>"
   end
 end

@@ -156,9 +156,9 @@ class LeaveTest < ActiveSupport::TestCase
   
   def test_total_estimate_duration_without_in_parameters
     ConfigurationManager.admin_society_identity_configuration_workable_days = []
-    assert_equal @good_leave.total_estimate_duration, 0, "total_estimate_duration should be 0 because there's no workable days"
+    assert_equal 0, @good_leave.total_estimate_duration, "total_estimate_duration should be 0 because there's no workable days"
     @leave = Leave.new
-    assert_equal @leave.total_estimate_duration, 0, "total_estimate_duration should be 0 because there's no workable days and, start_date or end_date is nil"
+    assert_equal 0, @leave.total_estimate_duration, "total_estimate_duration should be 0 because there's no workable days and, start_date or end_date is nil"
   end
   
   def test_total_estimate_duration_with_in_parameters
@@ -170,10 +170,10 @@ class LeaveTest < ActiveSupport::TestCase
     # bad date (periode)
     @leave = @good_leave
     @leave.end_date -= 20.days
-    assert_equal @leave.total_estimate_duration, 0, "total_estimate_duration should be 0 because end_date < start_date,  workable_days: #{workable_days.inspect}"
+    assert_equal 0, @leave.total_estimate_duration, "total_estimate_duration should be 0 because end_date < start_date,  workable_days: #{workable_days.inspect}"
     # one day
     @leave.end_date = @leave.start_date
-    assert_equal @leave.total_estimate_duration, 1, "total_estimate_duration Should be 1 because end_date == start_date,  workable_days: #{workable_days.inspect}"
+    assert_equal 1, @leave.total_estimate_duration, "total_estimate_duration Should be 1 because end_date == start_date,  workable_days: #{workable_days.inspect}"
   end
        
   def test_total_estimate_duration_with_3_successives_workable_days
@@ -206,26 +206,55 @@ class LeaveTest < ActiveSupport::TestCase
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
     mess = " #{@leave.start_date} to #{@leave.end_date},start_half: #{@leave.start_half},end_half: #{@leave.end_half}"
     wanted_duration = 2
-    assert_equal @leave.total_estimate_duration, wanted_duration, "total_estimate_duration Should be #{wanted_duration} :#{mess}"
+    assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} :#{mess}"
     
     @leave.end_half = true
     wanted_duration = 1.5
-    assert_equal @leave.total_estimate_duration, wanted_duration, "total_estimate_duration Should be #{wanted_duration} :#{mess}"
+    assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} :#{mess}"
     
     @leave.start_half = true  
     wanted_duration = 1
-    assert_equal @leave.total_estimate_duration, wanted_duration, "total_estimate_duration Should be #{wanted_duration} :#{mess}"
+    assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} :#{mess}"
   end
   
   def test_total_estimate_duration_with_legal_holidays
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
     ConfigurationManager.admin_society_identity_configuration_legal_holidays = ["10/14","10/17"]
-    assert_equal @good_leave.total_estimate_duration, 5, "total_estimate_duration should be 5 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
+    assert_equal 5, @good_leave.total_estimate_duration, "total_estimate_duration should be 5 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
   end
   
   def test_estimate_duration
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
-    assert_equal @good_leave.estimate_duration, 5, "estimate_duration should be 5 because the leave duration is 7 and retrieval is 2 and all days are workable"
+    assert_equal 5, @good_leave.estimate_duration, "estimate_duration should be 5 because the leave duration is 7 and retrieval is 2 and all days are workable"
+  end
+  
+  def test_calendar_duration
+    # when start_date == nil and end_date == nil
+    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
+    
+    # when start_date or end_date == nil
+    @leave.start_date = Date.today
+    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
+    
+    # when start_date == end_date
+    @leave.end_date = @leave.start_date
+    assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
+    
+    # when start_date > end_date
+    @leave.end_date = Date.today - 1.day
+    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
+    
+    # when start_date < end_date
+    @leave.end_date = Date.today + 1.day
+    assert_equal 2, @leave.calendar_duration, "calendar_duration should be equal to 2"
+    
+    # with start_half
+    @leave.start_half = true
+    assert_equal 1.5, @leave.calendar_duration, "calendar_duration should be equal to 1.5"
+    
+    # with end_half
+    @leave.end_half = true
+    assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
   end
   
   def test_not_extend_on_two_years_method_with_wrong_start_date
@@ -253,6 +282,6 @@ class LeaveTest < ActiveSupport::TestCase
       @leave.end_date = "2009-4-26".to_date      
       ConfigurationManager.admin_society_identity_configuration_workable_days = workable_days
       wanted_duration = workable_days.size*2
-      assert_equal @leave.total_estimate_duration, wanted_duration, "total_estimate_duration Should be #{wanted_duration} : #{@leave.start_date} to #{@leave.end_date}, workable_days: #{workable_days.inspect} #{ConfigurationManager.admin_society_identity_configuration_workable_days.inspect}"
+      assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration Should be #{wanted_duration} : #{@leave.start_date} to #{@leave.end_date}, workable_days: #{workable_days.inspect} #{ConfigurationManager.admin_society_identity_configuration_workable_days.inspect}"
     end
 end

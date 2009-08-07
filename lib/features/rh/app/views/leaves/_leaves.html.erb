@@ -1,26 +1,26 @@
-<h3>Liste des congés <%= get_current_leave_year(@shift)%></h3>
+<% current_year = get_current_leave_year(@shift) %>
 <% if @leaves.empty? %>
   <p>
-    <strong>Aucun congé pris pour cette année</strong>
+    <strong>Aucun congé payé pris pour l'année <%= current_year %></strong>
   </p>
 <% else %>
 <table>
   <tr>
-    <th>P&egrave;riode</th>
-    <th>Dur&eacute;e (effective/total)</th>
+    <th>P&eacute;riode</th>
+    <th>Nb. jours<br/>calendaires</th>
+    <th>Nb. jours pris<br/>au total</th>
+    <th>Nb. jours comptant<br/>pour cette année</th>
     <th>Type</th>
     <th>Action</th>
   </tr>
   <% (@leaves + @retrieval_leave).each do |leave| %>
     <tr>
       <td><%= get_effective_leave_periode(leave, Employee.get_leave_year_start_date + @shift.year) %></td>
-      <td><%= @retrieval_leave.include?(leave)? leave.retrieval||=0 : leave.duration %>/<%= leave.duration %></td>
+      <td><%= leave.calendar_duration %></td>
+      <td><%= leave.duration %></td>
+      <td><%= @retrieval_leave.include?(leave)? leave.retrieval || 0 : leave.duration - (leave.retrieval || 0) %></td>
       <td><%= leave.leave_type.name %></td>
-      <td><%= link_to image_tag("/images/delete_16x16.png"),
-                      [@employee, leave],
-                      :confirm => "Etes vous sûr de vouloir invalider ce congé?",
-                      :method => :delete %>
-      </td>
+      <td><%= delete_employee_leave_link(@employee, leave, :link_text => nil) %></td>
     </tr>
   <% end %>
 </table>

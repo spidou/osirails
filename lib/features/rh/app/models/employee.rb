@@ -27,30 +27,32 @@ class Employee < ActiveRecord::Base
   belongs_to  :civility
   belongs_to  :user
   belongs_to  :service
+  
   has_one     :address, :as => :has_address
   has_one     :iban, :as => :has_iban
   has_one     :job_contract
-  has_many    :leaves, :class_name => "Leave"
-  has_many    :checkings
 
   has_many    :contacts_owners, :as => :has_contact
   has_many    :contacts, :source => :contact, :through => :contacts_owners
-  
   has_many    :numbers, :as => :has_number
   has_many    :premia, :order => "created_at DESC"
   has_many    :employees_jobs
   has_many    :jobs, :through => :employees_jobs
-  
+  has_many    :leaves, :class_name => "Leave"
+  has_many    :checkings
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
   validates_presence_of :family_situation, :if => :family_situation_id
   validates_presence_of :civility, :if => :civility_id
   validates_presence_of :service, :if => :service_id
+  
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
   validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  
   validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings #, :services, :jobs
+  
   validate :responsible_job_limit, :if => :service
   
   # Callbacks
@@ -111,8 +113,8 @@ class Employee < ActiveRecord::Base
   def get_leaves_for_choosen_year(n, all = false)
     leave_year_start_date = self.class.get_leave_year_start_date + n.year                                                               
     leave_year_end_date = leave_year_start_date + 1.year - 1.day
-    collection = (all)? Leave.all : Leave.actives
-    collection.reject {|n| !(n.end_date > leave_year_start_date and n.start_date < leave_year_end_date and n.employee_id==self.id)}
+    collection = all ? leaves : leaves.actives
+    collection.select {|n| n.end_date > leave_year_start_date and n.start_date < leave_year_end_date }
   end
   
   # Method to get all services that he is responsible of

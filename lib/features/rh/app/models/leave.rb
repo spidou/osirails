@@ -48,22 +48,33 @@ class Leave < ActiveRecord::Base
   end
   
   # method that take in account retrieval value if there's one
-  def estimate_duration(period_start = start_date, period_end = end_date)
-    total_estimate_duration(period_start, period_end) - retrieval unless retrieval.nil?
+  def estimate_duration
+    #total_estimate_duration(period_start, period_end) - retrieval unless retrieval.nil?
+    value = total_estimate_duration(start_date, end_date)
+    value -= retrieval unless retrieval.nil?
+    value
+  end
+  
+  def calendar_duration
+    return 0 if start_date.nil? or end_date.nil? or (start_date > end_date)
+    total = (end_date - start_date).to_i + 1
+    total -= 0.5 if end_half
+    total -= 0.5 if start_half
+    total
   end
   
   private
     
     def not_cancelled_at_creation
-      errors.add(:cancelled,"ce cong&eacute; est d&eacute;j&agrave; d&eacute;sactiv&eacute;") if cancelled and new_record?
+      errors.add(:cancelled, "est invalide") if cancelled and new_record?
     end
     
     def not_extend_on_two_years
-    error_message = " vous devriez cr&eacute;er deux cong&eacute; diff&eacute;rents"
+      error_message = " vous devriez créer deux congés différents"
       leave_year_start_date = Employee.get_leave_year_start_date
       leave_year_end_date = leave_year_start_date + 1.year - 1.day
-      errors.add(:start_date, "doit &ecirc;tre plus grand &agrave &eacute;gal &agrave; leave year end, #{error_message}") if start_date < leave_year_start_date and end_date > leave_year_start_date
-      errors.add(:end_date, "doit &ecirc;tre plus petit &agrave &eacute;gal &agrave; leave year start, #{error_message}") if end_date > leave_year_end_date and start_date < leave_year_end_date
+      errors.add(:start_date, "doit être plus grand ou égal à leave year end, #{error_message}") if start_date < leave_year_start_date and end_date > leave_year_start_date
+      errors.add(:end_date, "doit être plus petit ou égal à leave year start, #{error_message}") if end_date > leave_year_end_date and start_date < leave_year_end_date
     end
     
 #    def duration_is_correct
