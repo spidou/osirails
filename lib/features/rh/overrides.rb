@@ -15,8 +15,7 @@ class User
 end
 
 class Service
-  has_many :employees_services
-  has_many :employees, :through => :employees_services
+  has_many :employees
 
   def can_be_destroyed?
     self.employees.empty? and self.children.empty?

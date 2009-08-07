@@ -7,3 +7,24 @@ normal:
   social_security_number: 1234567891234 45
   family_situation: single
   civility: mister
+
+james_doe:
+  first_name: James
+  last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister
+  service: direction_general
+
+johnny:
+  first_name: Johnny
+  last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister

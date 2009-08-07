@@ -75,16 +75,15 @@ module EmployeesHelper
   
 
   
-  # Method to find the service's responsables
-  def responsable(service_id)
-    tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
-    manager = ""
-    tmp.each do |t|
-      e = Employee.find(t.employee_id)
-      manager +=  ", " unless manager==""
-      manager += @employee.id==t.employee_id ? e.fullname : link_to( e.fullname,employee_path(t.employee_id))   
+  # Method to find the service's responsibles
+  def responsibles
+    return "<strong>aucun(s)</strong>" if @service.responsibles.empty?
+    html = ""
+    for responsible in @service.responsibles
+      html += ", " unless @service.responsibles.first == responsible
+      html += (@employee.id == responsible.id)? responsible.fullname : link_to(responsible.fullname, employee_path(responsible))
     end
-    return manager  
+    return html
   end
   
   # Method to pluralize or not the email's <h3></h3>

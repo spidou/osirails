@@ -3,7 +3,7 @@ class SendedMemorandumsController < ApplicationController
   
   # GET /sended_memorandums
   def index
-    if current_user.employee_id.nil?
+    unless current_user.employee
       flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'&ecirc;tes pas associ&eacute;s &agrave; un employ&eacute;"
     end
     memorandum = []

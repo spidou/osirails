@@ -3,10 +3,12 @@ ActionController::Routing::Routes.add_routes do |map|
     employee.resources :salaries
     employee.resources :premia
     employee.resource :job_contract
+    employee.resources :leaves
   end
   
   map.resources :jobs
   map.resources :job_contracts
+  map.resources :checkings
   
   map.resources :leave_requests
   map.accepted_leave_requests 'accepted_leave_requests', :controller => 'leave_requests', :action => 'accepted'

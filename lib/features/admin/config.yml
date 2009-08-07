@@ -26,7 +26,7 @@ menus:
     hidden: true
   admin:
     title: Administration
-    description: Administration de l'Intranet
+    description: "Administration de l'Intranet"
     position: 1
     children:
       users:
@@ -67,17 +67,17 @@ menus:
             description: Gestion des permissions en fonction des types de documents
             position: 4
       society_configurations:
-        title: Configuration de l'entreprise
-        description: Gestion de la configuration de l'entreprise
+        title: "Configuration de l'entreprise"
+        description: "Gestion de la configuration de l'entreprise"
         position: 6
         children:
           society_identity_configuration:
             title: Paramètres globaux
-            description: Configuration des paramètres globaux de l'entreprise
+            description: "Configuration des paramètres globaux de l'entreprise"
             position: 1
           society_activity_sectors:
-            title: Secteurs d'activités
-            description: Gestion des secteurs d'activités
+            title: "Secteurs d'activités"
+            description: "Gestion des secteurs d'activités"
             position: 2
           services:
             title: Services
@@ -99,28 +99,28 @@ configurations:
       d1: Vous devez utiliser un mot de passe comportant entre 6 et 40 caractères et devant comporter des chiffres ou des lettres.
       # level 2
       l2: '^(?=.*\d)(?=.*([a-z]|[A-Z]))(?=.*\W)([\x20-\x7E]){8,40}$'
-      d2: Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, et des lettres et au moins un caractére spécial(ex:@~"'(!:/.? etc...).
+      d2: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, et des lettres et au moins un caractére spécial(ex:@~\"'(!:/.? etc...)."
       # level 3
       l3: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)([\x20-\x7E]){8,40}$'
-      d3: Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres et des lettres(en majuscule et minuscule), et au moins un caractére spécial(ex:@~"'(!:/.? etc...).
+      d3: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres et des lettres(en majuscule et minuscule), et au moins un caractére spécial(ex:@~\"'(!:/.? etc...)."
   # current selected level
   actual_password_policy: 
     description: Configuration de sécuritée actuelle
     value: l0  
   user_pattern:  
-    description: modèle que doit respecter le générateur de compte d'utilisateur
+    description: "modèle que doit respecter le générateur de compte d'utilisateur"
     value: '[first_name].[last_name]'
   password_validity:
     description: durée pendant laquelle le mot de passe est valide
     value: 30
   society_identity_configuration_name:
-    description: Nom de l'entreprise
+    description: "Nom de l'entreprise"
     value: EMR (Enseigne Maintenance Réunion)
   society_identity_configuration_address_first_line:
-    description: Premiere ligne pour l'adresse
+    description: "Premiere ligne pour l'adresse"
     value: PAE La Mare
   society_identity_configuration_address_second_line:
-    description: Seconde ligne pour l'adresse
+    description: "Seconde ligne pour l'adresse"
     value: Ilôt n° 7 - N° 48
   society_identity_configuration_address_town:
     description: Nom de la ville
@@ -132,10 +132,10 @@ configurations:
     description: Pays/Departement
     value: FRANCE (Réunion)
   society_identity_configuration_phone:
-      description: Numéro de téléphone de l'entreprise
+      description: "Numéro de téléphone de l'entreprise"
       value: +262 (0)2 62 53 12 89
   society_identity_configuration_fax:
-      description: Numéro de fax de l'entreprise
+      description: "Numéro de fax de l'entreprise"
       value: +262 (0)2 62 53 16 42
   society_identity_configuration_siret:
       description: Numéro SIRET
@@ -144,13 +144,43 @@ configurations:
     description: Nom de domaine
     value: emr-oi.com    
   society_identity_configuration_working_day:
-    description: Jours ouvrables
+    description: Jours ouvrés
     value:
-      - "0"
       - "1"
       - "2"
       - "3"
       - "4"
+      - "5"
+  society_identity_configuration_workable_days:
+    description: Jours ouvrables
+    value:
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "6"
+  society_identity_configuration_legal_holidays:
+    description: Jours fériés
+    value:
+      - "01/01"
+      - "05/01"
+      - "05/08"
+      - "07/14"
+      - "08/15"
+      - "11/01"
+      - "11/11"
+      - "12/20"
+      - "12/25"
   society_identity_configuration_choosen_theme:
-    description: Style de l'Intranet
+    description: "Style de l'Intranet"
     value: emr
+  society_identity_configuration_leave_year_start_date:
+    description: "Date de début de l'année effective de l'entreprise"
+    value: "6/1" # 1er Juin
+  #society_identity_configuration_leave_days_credit_per_month:
+  #  description: Valeur du crédit de jours par mois que l'on ajoute au solde total de jours de congés disponible sur l'année effective
+  #  value: 2.5
+  society_identity_configuration_leave_duration_limit:
+    description: "Durée maximale d'un congé"
+    value: 24

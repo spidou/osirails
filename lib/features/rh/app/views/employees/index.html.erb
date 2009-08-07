@@ -1,5 +1,3 @@
-<h1>Tous les employ&eacute;es</h1>
-
 <% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_employee_link %>
 <% end %>
@@ -8,12 +6,14 @@
   <%= actives_employees_link(params[:all_employees]) %>
 <% end %>
 
-<div>
+<h1>Tous les employ&eacute;es</h1>
+
+<div class="presentation_medium">
 <table>
   <tr>
     <th>Pr&eacute;nom</th>
     <th>Nom</th>
-    <th>Service&#40;s&#41;</th>
+    <th>Service</th>
     <th>T&eacute;l&eacute;phone</th>
     <th>Fonction</th>
     <th>Actions</th>
@@ -23,11 +23,7 @@
   <tr>
     <td><%=h employee.first_name %></td>
     <td><%=h employee.last_name %></td>
-    <td>
-      <%for service in employee.services%>
-          <%=link_to service.name, service_path(service.id)%><br/>
-      <% end %>
-    </td>
+    <td><%= link_to employee.service.name, service_path(employee.service)%></td>
     <%= number_td(employee.numbers)%>
       <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
     </td>

@@ -65,16 +65,22 @@ menus:
         children:
           salaries:
             title: Salaires
-            description: Historique des salaires
+            description: "Historique des salaires de l'employé"
           job_contracts:
             title: Contrat de travail
-            description: Gestion du contrat de travail avec avenant au contrat 
+            description: "Gestion du contrat de travail de l'employé"
           premia:
             title: Primes
-            description: Gestion des primes
+            description: "Gestion des primes de l'employé"
+          leaves:
+            title: Congés payés
+            descriptions: "Gestion des congés payés de l'employée"
       jobs:
         title: Fiches de poste
         description: Gestion des fiches de poste          
       leave_requests:
         title: Demandes de congés
         description: Gestion des demandes de congés
+      checkings:
+        title: Pointage
+        description: Signaler une absence, un retard ou des heures supplémentaires pour un employé

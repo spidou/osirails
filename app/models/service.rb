@@ -1,8 +1,10 @@
 class Service < ActiveRecord::Base
   
   # Relationship
+  has_many :employees
   belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
   has_many :schedules
+  has_many :jobs
   
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"
@@ -21,6 +23,20 @@ class Service < ActiveRecord::Base
   @@form_labels[:name] = "Nom :"
   @@form_labels[:service_parent] = "Service parent :"
 
+  # Method to get all responsibles for the service (it return employees)
+  def responsibles
+    responsibles_employees = []
+    self.jobs.reject {|n| n.responsible == false}.each do |job|
+      responsibles_employees += job.employees
+    end
+    return responsibles_employees.uniq
+  end
+  
+  # Method that return all employees that belongs to current service according to the belonging jobs or the belonging employees
+  def members
+    Employee.all(:include => [:service, {:jobs => [:service] }], :conditions => ["services.id =? or services_jobs.id =?", id, id])
+  end
+  
   # This method permit to check if a service can be a parent
   def before_update
     if self.update_service_parent
