@@ -73,6 +73,8 @@ menus:
             title: Primes
             description: Gestion des primes
       jobs:
-          title: Fiches de poste
-          description: Gestions des fiches de poste          
-           
+        title: Fiches de poste
+        description: Gestion des fiches de poste          
+      leave_requests:
+        title: Demandes de congés
+        description: Gestion des demandes de congés

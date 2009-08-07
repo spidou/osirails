@@ -131,6 +131,13 @@ h2 {
 	padding-top:1px;
 }
 
+h2.warning {
+  background:none;
+	background-color: #e99727;
+	border-top: 1px solid #737373;
+	color:black;
+}
+
 h3 {
 	text-indent:25px;
 	background: #afc2ea;

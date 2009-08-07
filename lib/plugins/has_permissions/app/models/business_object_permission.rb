@@ -11,7 +11,7 @@ class BusinessObjectPermission < ActiveRecord::Base
     accepted_methods = business_object_permissions_permission_methods.collect{|m|m.permission_method.name} # for getters
     accepted_methods += accepted_methods.collect{|m|m + "="} # for setters
     
-    super(method, *args) unless accepted_methods.include?(method.to_s)
+    return super(method, *args) unless accepted_methods.include?(method.to_s)
     
     if method.to_s.ends_with?("=")
       # dynamic setter

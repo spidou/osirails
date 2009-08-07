@@ -1,0 +1,33 @@
+<h1>Toutes les demandes de cong&eacute;s</h1>
+
+<% if @employee %>
+
+  <% contextual_menu POSSIBLE_ACTIONS do %>
+    <%= new_leave_request_link %>
+  <% end %>
+  
+  <% if @accepted_leave_requests.size == 5 or @refused_leave_requests.size == 5 %>
+    <% contextual_menu USEFUL_LINKS do %>
+      <% if @accepted_leave_requests.size == 5 %>
+        <%= image_tag("view_16x16.png") %> <%= accepted_leave_requests_link %>
+      <% end %>
+      <% if @refused_leave_requests.size == 5 %>
+        <%= image_tag("view_16x16.png") %> <%= refused_leave_requests_link %>
+      <% end %>  
+    <% end %>
+  <% end %>
+
+  <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user) %>
+  <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user) %>
+  <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user) %>
+  <%= render :partial => "active_leave_requests" %>
+  <%= render :partial => "accepted_leave_requests" %>
+  <%= render :partial => "refused_leave_requests" %>
+  
+<% else %>
+
+  <div>
+    <p>Vous ne pouvez accéder à ce menu car vous n'êtes pas associé à un employé</p>
+  </div>
+
+<% end %>
