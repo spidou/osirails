@@ -7,7 +7,7 @@
 }
 
 /*main desing of the attribute chooser drop down menu*/
-.attrChooser, .attrChooser ul {
+.attr_chooser, .attr_chooser ul {
 	padding: 0;
 	margin: 0;
 	list-style: none;
@@ -15,51 +15,51 @@
 	-moz-border-radius:0px 4px 0px 4px;
 }
 
-.attrChooser a {
+.attr_chooser a {
 	display: block;
 	width: 15em;
 	text-decoration: none;
   color: #E0E0E0;
 }
 
-.attrChooser a.selected{
+.attr_chooser a.selected{
   background: #4773C9 ;
 }
 
-.attrChooser a:hover{
+.attr_chooser a:hover{
   color: #303030;
 }
 
 /* the attribute */
-.attrChooser li {
+.attr_chooser li {
 	float: left;
 	width: auto;
 }
 
 /* the menu start hidden */
-.attrChooser li ul {
+.attr_chooser li ul {
 	position: absolute;
 	width: 15em;
 	left: -999em;
 }
 
-/* show or hide the attribute vb=visible uvb=unvisible*/
-.attrChooser li ul li.sub_m ul.vb{
+/* show or hide the attribute */
+.attr_chooser li ul li.sub_menu ul.visible_menu{
   position: absolute;
   left: 15em;
   background: #7e98cb;
 }
 
-.attrChooser li ul li.sub_m ul.uvb{
+.attr_chooser li ul li.sub_menu ul.hidden_menu{
   position: absolute;
   left: -999em;
 }
 /*---------------------------------------------------*/
-.attrChooser li.sub_m{
+.attr_chooser li.sub_menu{
   background: url('/themes/emr/images/search/arrow.png') no-repeat right;
 }
 
 /* show the drop down menu when the attribute name his pointed by the mouse*/
-.attrChooser li.clicked:hover ul{
+.attr_chooser li.clicked:hover ul{
 	left: auto;
 }

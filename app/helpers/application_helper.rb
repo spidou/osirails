@@ -215,6 +215,22 @@ module ApplicationHelper
     html
   end
   
+  # Method to display contestual search into secondary menu
+  # you mays give two arguments:
+  # model => the model where to perform the search
+  # arguments => an array of all attributes to add as criterion to perform the search
+  #
+  # == examples
+  #
+  # # contextual_search("Model", ["relationship.attribute", "relationship1.relationship1-1.attribute"]) 
+  #
+  # # contextual_search("Employee", ["user.username"])
+  # #=> it will perform a search into employee as : Employee.search_with("user.username" => value)  
+  #     ps: +value+ is typed by user into the contextual search's text_field
+  #
+  # # contextual_search("Employee", ["numbers.number_type.name"])
+  # #=> you can search into the attributes of sub models using their own relationships
+  #
   def contextual_search(model, arguments)
     html =  form_remote_tag( :url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()" )
     html << "<p>"

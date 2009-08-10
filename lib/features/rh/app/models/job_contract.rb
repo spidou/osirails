@@ -35,7 +35,7 @@ class JobContract < ActiveRecord::Base
   
   #return the actual salary
   def actual_salary
-    salaries.last
+    salaries.first
   end
   
   def salary
@@ -47,6 +47,6 @@ class JobContract < ActiveRecord::Base
   end
   
   def save_salary
-    salaries.last.save(false) if !salaries.last.nil? and salaries.last.new_record?
+    actual_salary.save(false) if !actual_salary.nil? and actual_salary.new_record?
   end
 end

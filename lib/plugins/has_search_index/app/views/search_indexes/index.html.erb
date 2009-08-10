@@ -19,7 +19,7 @@
 <% content_for :header do %>
      <%= javascript_include_tag 'has_search_index/search_index' %>
      <%= javascript_include_tag :defaults %>
-     <%= stylesheet_link_tag "../themes/emr/stylesheets/search/search.css" %> 
+     <%= stylesheet_link_tag "../themes/emr/stylesheets/search/search.css" %>
 <% end %>
 
 <h1>Faire une recherche</h1>
@@ -33,7 +33,7 @@
     <select id="model_select" name="model" onchange="get_attributes_select(false);">
       <option selected='selected' value="blank">Veuillez choisir un élément</option>
       <% @main_models.each do |model| %>
-        <%= "<option value='#{ model.to_s }'>#{ model.to_s.tableize.humanize }</option>" %>  
+        <%= "<option value='#{ model.to_s }'>#{ model.to_s.tableize.humanize }</option>" %>
       <% end %>
     </select>
   <p>
@@ -51,11 +51,10 @@
   <div id="criteria_div">
   </div>
   
-  <div style='display:none;' id='add_link' >
+  <!--<div style='display:none;' id='add_link' >
     <p><a name='attribute_add_link' href='#attribute_add_link' onclick='get_attributes_select(true);'><img src='/images/add_16x16.png'/></a></p>
-    <p><%= submit_tag "search" %><p>
-  </div>
-  
+  </div>-->
+  <p><%= submit_tag "Rechercher" , {:id => "submit_tag", :disabled => "disabled" }%><p>
 <% end %>
 
   <div id="search_result">

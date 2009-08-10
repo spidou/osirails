@@ -1,7 +1,7 @@
 class Service < ActiveRecord::Base
   
   # Relationship
-  belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
+#  belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
   has_many :schedules
   
   # Plugin

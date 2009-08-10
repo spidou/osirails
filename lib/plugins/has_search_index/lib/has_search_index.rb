@@ -1,23 +1,23 @@
 module HasSearchIndex
-  
+
   MODELS = []
-  ACTIONS_TEXT = { "="        => "is ",
-                   "!="       => "is not ",
-                   "like"     => "is like",
-                   "not like" => "is not like",
-                   ">="       => "is greater to equal than",
-                   "<="       => "is smaller to equal than",
-                   "<"        => "is smaller than",
-                   ">"        => "is greater than" }
-  
+  ACTIONS_TEXT = { "="        => "est &eacute;gale &agrave; ",#"is ",
+                   "!="       => "est diff&eacute;rent de ",#"is not ",
+                   "like"     => "contient ",#"is like",
+                   "not like" => "ne contient pas ",#"is not like",
+                   ">="       => "est plus grand &agrave; &eacute;gale &agrave; ",#"is greater to equal than",
+                   "<="       => "est plus petit &agrave; &eacute;gale &agrave; ",#"is smaller to equal than",
+                   "<"        => "est plus petit que ",#"is smaller than",
+                   ">"        => "est plus grand que ",}#"is greater than" }
+
   class << self
     def included base #:nodoc:
       base.extend ClassMethods
-    end      
+    end
   end
 
   module ClassMethods
-    
+
     AUTHORIZED_OPTIONS = [ :except_attributes,
                            :only_attributes,
                            :additional_attributes,
@@ -25,15 +25,15 @@ module HasSearchIndex
                            :except_relationships,
                            :displayed_attributes,
                            :main_model ]
-    
-    ACTIONS = { :string   => string = [ "not like", "like", "=", "!=" ],
+
+    ACTIONS = { :string   => string = [ "like", "not like", "=", "!=" ],
                 :text     => string,
-                :integer  => integer = [ ">=", "<=", "<", ">", "=", "!=" ],
+                :integer  => integer = [ ">=", "<=", ">","<", "=", "!=" ],
                 :date     => integer,
                 :datetime => integer,
                 :float    => integer,
                 :boolean  => [ "=", "!=" ] }
-    
+
     # method called into all models that implement the plugin 
     # it define search_index class variable based on passed options hash
     def has_search_index( options = {} )
@@ -46,8 +46,8 @@ module HasSearchIndex
       options[:only_relationships]    ||=[]
       options[:displayed_attributes]  ||=[]
       options[:main_model]            ||= false
-      
-      # puts "-- initialisation de #{self} --"   ##### use this in debug purpose to see when the model call the plugin init
+
+#       puts "-- initialisation de #{self} --"   ##### use this in debug purpose to see when the model call the plugin init
 
       # check options arg for some errors
       options.keys.each do |key|
@@ -55,7 +55,7 @@ module HasSearchIndex
       end
       
       # create a hash to store all associations that concerned the current model
-      assoc_list = Hash.new           
+      assoc_list = Hash.new
       self.reflect_on_all_associations.each do |assoc|
         assoc_list = assoc_list.merge({ assoc.name => { :class_name => assoc.class_name, :macro => assoc.macro.to_s } }) if assoc.options[:polymorphic].nil? or assoc.options[:polymorphic]==false
       end
@@ -66,7 +66,7 @@ module HasSearchIndex
         Logger.new(STDOUT).info("(Has_search_index)[Warning] relationships aren\'t defined for #{self.to_s} model") if assoc_list.empty?
         options[:relationships] = Array.new
         assoc_list.each_pair do |relationship_name, relationship|
-          relationship[:class_name].constantize
+          relationship[:class_name].constantize                                                                           # constantize dependant models
           # filter relationships implementing the plugin 'has_search_index'
            Logger.new(STDOUT).info("(Has_search_index) model: #{self.to_s} : Wrong relationship name '#{relationship_name}', maybe you misspelled it") unless self.new.respond_to?(relationship_name.to_s)
           options[:relationships] << relationship_name if HasSearchIndex::MODELS.include?(relationship[:class_name])
@@ -78,6 +78,7 @@ module HasSearchIndex
         end
       else
         raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Warning you mustn't specify both 'only_relationships' and 'except_relationships' options, please choose one" unless options[:except_relationships].empty?
+        options[:only_relationships].each {|relationship_name| assoc_list[relationship_name][:class_name].constantize}    # constantize dependant models
         options[:relationships] = options[:only_relationships]
       end
       options.delete(:except_relationships)
@@ -91,22 +92,24 @@ module HasSearchIndex
         end
         tmp.delete_if {|n,x| match_regexp(n, "*_id")}          # filter default attributes that are used as foreign key
         unless options[:except_attributes].empty?
-          options[:except_attributes].each do |e_a|
-            tmp.delete_if {|n,x| match_regexp(n, e_a)}
+          options[:except_attributes].each do |attribute|
+            tmp.delete_if {|n,x| match_regexp(n, attribute.to_s)}
           end
         end 
       else
         raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Warning you mustn't specify both 'only_attributes' and 'except_attributes' options, please choose one" unless options[:except_attributes].empty?
         options[:only_attributes].each do |attribute|
-          raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown attribute '#{attribute}' please check it" unless self.new.respond_to?(attribute)
+          raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown attribute '#{attribute}' please check it" unless self.new.respond_to?(attribute.to_s)
           self.columns.each do |element|
-            tmp = tmp.merge(element.name => element.type.to_s) if element.name == attribute
+            tmp = tmp.merge(element.name => element.type.to_s) if element.name == attribute.to_s
           end
         end
       end
       options[:attributes] = tmp
       options.delete(:except_attributes)
       options.delete(:only_attributes)
+      
+      options[:displayed_attributes].each_index {|i| options[:displayed_attributes][i] = options[:displayed_attributes][i].to_s} 
       
       # create class var to permit to access to search option from te model
       class_eval do
@@ -141,7 +144,7 @@ module HasSearchIndex
     def get_attribute_type(attribute)
       self.columns.each do |element|
         return element.type if element.name==attribute
-      end     
+      end
     end
     
     # method to identify if an attribute belongs to tha additionals attributes
@@ -166,7 +169,7 @@ module HasSearchIndex
     #
     def only_additional_attributes?(attributes)
       attributes.each_key do |attribute|
-        return false unless self.is_additional?(attribute)          
+        return false unless self.is_additional?(attribute)
       end
       return true
     end
@@ -191,14 +194,14 @@ module HasSearchIndex
       self.search_index[:relationships].each do |relationship|
         model = self.association_list[relationship][:class_name]
         unless ignore.include?("#{model.to_s}") 
-          ignore_cp = ignore.fusion(["#{self.to_s}"])
+          ignore_copy = ignore.fusion(["#{self.to_s}"])
           model = model.constantize
-          if model.get_include_array(ignore_cp.clone)==[]
-            include_array << relationship       
+          if model.get_include_array(ignore_copy.clone)==[]
+            include_array << relationship
           else
-            include_array << {relationship => model.get_include_array(ignore_cp.clone)}
+            include_array << {relationship => model.get_include_array(ignore_copy.clone)}
           end
-        end            
+        end
       end
       return include_array
     end
@@ -226,23 +229,23 @@ module HasSearchIndex
       result = nil
       value_array.each do |val|
         raise ArgumentError, "(Has_search_index): Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if val[:action].nil?
-      
+
         if val[:action] == "like"
-          res = data.downcase.match(Regexp.new(val[:value].downcase))        # downcase data and value to make the match method case insensitive
+          tmp_result = data.downcase.match(Regexp.new(val[:value].downcase))        # downcase data and value to make the match method case insensitive
         elsif val[:action] == "not like"
-          res = !data.downcase.match(Regexp.new(val[:value].downcase))       # downcase data and value to make the match method case insensitive
+          tmp_result = !data.downcase.match(Regexp.new(val[:value].downcase))       # downcase data and value to make the match method case insensitive
         elsif val[:action] == "!="
-          res = !data.send("==",val[:value].to_s)
+          tmp_result = !data.send("==",val[:value].to_s)
         elsif val[:action] == "="
-          res = data.send("==",val[:value].to_s)
+          tmp_result = data.send("==",val[:value].to_s)
         elsif ACTIONS[attributes[attribute].to_sym].include?(val[:action])
-          res = data.send(val[:action],val[:value].to_s)
+          tmp_result = data.send(val[:action],val[:value].to_s)
         else
           raise ArgumentError, "(Has_search_index): Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
         end
-        result = res if result.nil?                                          # init the result value
-        result |= res if search_type=='or'                                    # return the result of multiple values for one attribute
-        result &= res if search_type =='and' or search_type == 'not'
+        result = tmp_result if result.nil?                                          # init the result value
+        result |= tmp_result if search_type=='or'                                    # return the result of multiple values for one attribute
+        result &= tmp_result if search_type =='and' or search_type == 'not'
       end
       
       return result
@@ -263,17 +266,17 @@ module HasSearchIndex
       nested_resources.each do |nested_ressource|
         if object.is_a?(Array)
           collection = Array.new
-          object.each do |sub_obj|
-              if sub_obj.send(nested_ressource).is_a?(Array)
-                collection = collection.fusion(sub_obj.send(nested_ressource))
+          object.each do |sub_object|
+              if sub_object.send(nested_ressource).is_a?(Array)
+                collection = collection.fusion(sub_object.send(nested_ressource))
               else
-                collection << sub_obj.send(nested_ressource)
-              end          
+                collection << sub_object.send(nested_ressource)
+              end
           end
           object = collection
-        else              
+        else
           object = object.send(nested_ressource)
-        end          
+        end
       end
       return object
     end
@@ -371,24 +374,23 @@ module HasSearchIndex
       if !attributes.is_a?(Hash)                                                                  # perform a general search onto the argument value
         attribute_value = attributes
         attributes = self.search_attributes_format_hash(attribute_value ,include_array||={})
-        puts attributes.inspect
         search_type = "or"
       else
         search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type)    # default value for the search type if not precised  
-        attributes.each_key do |att|
+        attributes.each_key do |attribute|
           model = self
-          if att.include?(".")
-            att.chomp(".#{att.split(".").last}").split(".").each do |a|
+          if attribute.include?(".")
+            attribute.chomp(".#{attribute.split(".").last}").split(".").each do |a|
               raise "(Has_search_index): Wrong attribute name '#{att}' maybe you misspelled it" if model.association_list[a.to_sym].nil?
               model = model.association_list[a.to_sym][:class_name].constantize
             end
           end
 
-          raise "(Has_search_index) model:#{self.to_s} : Implementation error '#{model.to_s}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless model.respond_to?("search_index")              
+          raise "(Has_search_index) model:#{self.to_s} : Implementation error '#{model.to_s}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless model.respond_to?("search_index")
           
-          if !model.search_index[:attributes].include?(att.split(".").last) and !model.search_index[:additional_attributes].include?(att.split(".").last)             
-            raise ArgumentError, "(Has_search_index): You can't search for attribute '#{att.split(".").last}', because it's not indexed into #{model.to_s} model"
-          end 
+          if !model.search_index[:attributes].include?(attribute.split(".").last) and !model.search_index[:additional_attributes].include?(attribute.split(".").last)             
+            raise ArgumentError, "(Has_search_index): You can't search for attribute '#{attribute.split(".").last}', because it's not indexed into #{model.to_s} model"
+          end
         end
       end
 
@@ -401,11 +403,11 @@ module HasSearchIndex
       
       # regroup the two results array according to search type 
       # PS: for the search type 'not' it's equal to 'and' because we need to keep values that are into the two arrays in the same time
-      if search_type=="or"
+      if search_type == "or"
         return additional_result | database_result                                         # get results that respond to one criterion at least
       else
         return additional_result & database_result                                         # get results that respond to all criteria or no criteria
-      end          
+      end
 
     end
 
@@ -418,8 +420,8 @@ module HasSearchIndex
     end
               
     # method to format the criterion's value
-    def format_value(params)
-      case params['action'].split(",")[0]
+    def format_value(params, data_type)
+      case data_type
         when 'date'
           d= params['date(0i)']
           m= params['date(1i)'] 
@@ -456,10 +458,10 @@ module HasSearchIndex
 
         attributes.each_pair do |attribute,value|
           if is_additional?(attribute)
-          tmp_result = Array.new             
-          collection.each do |object|                                                                
+          tmp_result = Array.new
+          collection.each do |object|
             if attribute.include?(".")                                                        # nested resource ex=> roles.name
-              nested_resources = attribute.split(".")                 
+              nested_resources = attribute.split(".")
               nested_attribute = nested_resources.pop
               nested_object = get_nested_object(object, nested_resources)
               if nested_object.is_a?(Array)                                                   # has many sub resources
@@ -498,7 +500,7 @@ module HasSearchIndex
                 attribute_path = attr_with_prefix.chomp(".#{attribute}")
                 attribute_prefix = generate_attribute_prefix(self, "#{self.table_name}.#{attribute_path}")
                 model = self
-                attribute_path.split(".").each do |att|                 
+                attribute_path.split(".").each do |att|
                   model = model.association_list[att.to_sym][:class_name].constantize if model.new.respond_to?(att)
                 end
               else
@@ -538,7 +540,7 @@ module HasSearchIndex
               end
             end 
           end
-          # puts "(debug)[has_search_index.rb l.524] #{self}.find(:all, :include =>#{get_include_array.inspect}, :conditions =>#{conditions_array.inspect})"                    #### use this line when need to debug the search engine to see the find with arguments
+#           puts "(debug)[has_search_index.rb l.#{__LINE__}] #{self}.find(:all, :include =>#{get_include_array.inspect}, :conditions =>#{conditions_array.inspect})"                    #### use this line when need to debug the search engine to see the find with arguments
           return self.all(:include => get_include_array, :conditions => conditions_array)
         end
 
@@ -568,7 +570,7 @@ module HasSearchIndex
         count_table = get_model_order(parent_model.table_name, parent_model.get_include_array, sub_model, model)
         
         #### filter the count_table to get only the models_hierarchy that is not the first and that is like the current models_hierarchy
-        filtered_count_table = count_table.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n==count_table.first}
+        filtered_count_table = count_table.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == count_table.first}
         ################  
         
         model_index = filtered_count_table.index(attribute_prefix)
@@ -609,10 +611,10 @@ module HasSearchIndex
       def get_model_order(parent_model, include_array, sub_model, model, path="")
         path += "#{parent_model}."
         count_table = []
-        include_array.each do |e| 
+        include_array.each do |e|
           if e.is_a?(Hash)
             current = e.keys[0].to_s
-            count_table = count_table + get_model_order(current, e.values[0], sub_model, model, path)           
+            count_table = count_table + get_model_order(current, e.values[0], sub_model, model, path)
           else
             current = e.to_s
           end
@@ -627,10 +629,10 @@ module HasSearchIndex
       #
       def retrieve_relationship_class(path, relationship)
         model = self
-        return self.to_s if relationship == self.table_name       
+        return self.to_s if relationship == self.table_name
         path.gsub("#{self.table_name}.","").split(".").each do |e|
             return model.association_list[e.to_sym][:class_name] if e == relationship
-            model = model.association_list[e.to_sym][:class_name].constantize              
+            model = model.association_list[e.to_sym][:class_name].constantize
         end
       end
   end

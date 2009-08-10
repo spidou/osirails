@@ -55,9 +55,10 @@ class Employee < ActiveRecord::Base
   after_update :save_iban, :save_numbers, :save_address
   
   # Search Plugin 
-  has_search_index  :except_attributes => ["*_id","*_at"],
-                    :displayed_attributes => ["id", "first_name", "last_name", "email", "society_email"],
-                    :main_model => true
+  has_search_index  :except_attributes    => ["*_id","*_at"],
+                    :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
+                    :except_relationships => [:employees_services],
+                    :main_model           => true
   
   # Method to change the case of the first_name and the last_name at the employee's creation
   def case_managment

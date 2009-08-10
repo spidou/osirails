@@ -1,79 +1,77 @@
 module SearchIndexesHelper
-
-  def generate_table_headers(columns, nested_columns=[])
-    html = "<table>"
-    html << "<tr>"
-    
+  
+  # Method to generate table_header for search result
+  # direct_attribute = called from the object
+  # nested_attributes = attributes that come from object's relationships hierarchy
+  #
+  def generate_table_headers(direct_attributes, nested_attributes=[])
+    html = "<tr>"
     # direct attributes
-    columns.each do |column|
-      rowspan = "" #nested_columns.empty? ? "" : "rowspan='2'"
-      html << "<th #{rowspan} >#{column.humanize.titleize}</th>"
+    rowspan = (nested_attributes.empty?)? "" : "rowspan='2'"
+    direct_attributes.each do |attribute|    
+      html << "<th #{rowspan} >#{attribute.humanize.titleize}</th>"
     end
-    # FIXME that part is commented because it don't work properly for some deep nested ressources
-    # nested attributes models
-#    nested_columns.keys.sort.each do |prefix|
-#      html += "<th colspan='#{nested_columns[prefix].size}' >#{prefix.gsub("."," > ")}</th>"
-#    end
-#    html+= "</tr><tr>"
-#    # nested attributes
-#    nested_columns.keys.sort.each do |prefix|
-#      nested_columns[prefix].each do |value|
-#        html += "<th>;#{value.humanize}</th>"
-#      end
-#    end
-    
-    html << "<th>Actions</th>"
-    html << "</tr>"
+    if nested_attributes.empty?
+      html += "<th>Actions</th></tr>"
+    else
+      # nested attributes models
+      nested_attributes.keys.sort.each do |prefix|
+        html += "<th colspan='#{nested_attributes[prefix].size}' >#{prefix.gsub("."," > ").humanize}</th>"
+      end
+      html += "<th #{rowspan} >Actions</th>"
+      html += "</tr><tr>"
+      nested_attributes.keys.sort.each do |prefix|
+        nested_attributes[prefix].each do |value|
+          html += "<th>#{value.humanize}</th>"
+        end
+      end
+      html << "</tr>"
+    end
   end
   
-  # FIXME that part is unused because there is a problem of conception when deals with deep nested resources 
-  def generate_nested_resources_array(criteria)
+  # Method that return a nested_columns_hash from attributes array
+  # attributes that return collections are discarded to avoid problems
+  # with data formating
+  #
+  def generate_nested_resources_hash(nested_attributes)
     criteria_hash = {}
-    criteria.each do |criterion|
-      if criterion['attribute'].include?(".")
-        attribute = criterion['attribute'].split(".").last
-        attribute_prefix = criterion['attribute'].chomp(".#{attribute}")
-        if criteria_hash.keys.include?(attribute_prefix)
-          criteria_hash[attribute_prefix] << attribute  unless criteria_hash[attribute_prefix].include?(attribute)
-        else
-          criteria_hash = criteria_hash.merge({ attribute_prefix => [ attribute ] })
-        end
+    nested_attributes.each do |attribute_with_prefix|
+      attribute = attribute_with_prefix.split(".").last
+      attribute_prefix = attribute_with_prefix.chomp(".#{attribute}")
+      if criteria_hash.keys.include?(attribute_prefix)
+        criteria_hash[attribute_prefix] << attribute  unless criteria_hash[attribute_prefix].include?(attribute)
+      else       
+        contain_collections = !attribute_prefix.reject {|n| !n.plural?}.empty?
+        criteria_hash = criteria_hash.merge( attribute_prefix => [ attribute ] ) unless contain_collections
       end
     end
     return criteria_hash
   end
   
-  def generate_results_table_cells(collection, columns, nested_columns=[])
+  # Method that generate table_cells cantaining values according to table headers
+  # collection => objects returned by the search engine
+  #
+  def generate_results_table_cells(collection, direct_attributes, nested_attributes=[])
     html = ""
     collection.each do |object|
       html += "<tr>"
       # direct attributes
-      columns.each do |attribute|
+      direct_attributes.each do |attribute|
         data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html += "<td>#{data||=""}</td>" 
+        html += "<td>#{data||="-"}</td>" 
       end
-      # FIXME that part is commented because it don't work properly for some deep nested ressources
-#      # nested attributes 
-#      nested_columns.keys.sort.each do |key|
-#        if object.respond_to?(key)
-#          nested_columns[key].each do |attribute|
-#            if object.send(key).respond_to?(attribute)
-#              data = (object.send(key).send(attribute).nil? )? "null" : "#{ format_date(object.send(key).send(attribute)) }"
-#              html+="<td>#{data}</td>"
-#            elsif object.send(key).is_a?(Array)
-#              data = "null" if object.send(key).empty? 
-#              html+= "<td>#{data}"
-#              object.send(key).each do |elm| 
-#                html+= "#{format_date(elm.send(attribute))}<br/>" if elm.respond_to?(attribute)
-#              end
-#              html+= "</td>"
-#            else
-#              html+= "<td>unknown data #{attribute}</td>"
-#            end
-#          end
-#        end
-#      end
-
+      # nested_attributes
+      nested_attributes.sort.each do |attribute|
+        nested_data = object
+        attribute.join(".").split(".").each do |element|
+          if nested_data.respond_to?(element)
+            nested_data = nested_data.send(element)
+          else
+            nested_data = "-"
+          end
+        end
+        html += "<td>#{nested_data||='-'}</td>"
+      end
       html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
       html += "</tr>"
     end
@@ -96,11 +94,15 @@ module SearchIndexesHelper
   
   # method to generate an hash containing the direct attributes of a model
   def generate_attributes_hash(model)
-    model.search_index[:attributes].merge(model.search_index[:additional_attributes])
+  result = {}
+    model.search_index[:attributes].merge(model.search_index[:additional_attributes]).each_pair do |key, value|
+      result = result.merge(key.humanize.downcase => value)
+    end
+  result 
   end
   
   # method to generate a hash that contain all relationships and their own relationships
-  # for a model according according to that model's include_array
+  # for a model according to that model's include_array
   #
   def generate_relationships_hash(include_array,parent_model,ancestor=nil,relationship="")
     result = {}
@@ -109,12 +111,12 @@ module SearchIndexesHelper
       if element.is_a?(Hash)
         element.each do |key, value|
           model = parent_model.constantize.association_list[key][:class_name]        
-          (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s}", model]       
-          result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s}"))
+          (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s.humanize.downcase}", model]       
+          result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s.humanize.downcase}"))
         end
       else
         model = parent_model.constantize.association_list[element][:class_name]
-        (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s}", model]
+        (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s.humanize.downcase}", model]
       end
     end
     return result
