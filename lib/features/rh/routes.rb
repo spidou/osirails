@@ -7,7 +7,6 @@ ActionController::Routing::Routes.add_routes do |map|
   end
   
   map.resources :jobs
-  map.resources :job_contracts
   map.resources :checkings
   
   map.rh 'rh', :controller => 'employees' #default page for human resources

@@ -1,4 +1,5 @@
 <% contextual_menu USEFUL_LINKS do %>
+  <%= leaves_link(@employee, !@view_cancelled)%>
   <%= employee_link(@employee) %>
   <%= employees_link %>
 <% end %>
@@ -7,16 +8,24 @@
 
 <div class='presentation_medium'>
 
-  <% form_remote_tag :url => employee_leaves_path, :method => "get", :html => { :id => "leave_year_change" },  :update => "leaves_list" do %>
-   <p>
-      Liste des cong&eacute;s payés pour l'année <%= get_leave_years_select(@employee, 1) %>
-      <input type="submit" value="Afficher"/>
-   </p>
-  </form> 
-  <% end %>
-  
-  <div id='leaves_list'>
-    <%= render :partial => "leaves"%>
-  </div>
-  
+<% if @employee.job_contract.start_date.nil?%>
+  <p>
+    <strong>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</strong>
+  </p>
+<% else %>
+
+    <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
+     <p>
+        Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, 1, @year) %>
+        <input type="submit" value="Afficher"/>
+     </p>
+    </form> 
+    <% end %>
+    
+    <div id='leaves_list'>
+      <%= render :partial => "leaves"%>
+    </div>
+
+<% end %>
+
 </div>

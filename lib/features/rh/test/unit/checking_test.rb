@@ -6,27 +6,6 @@ class CheckingTest < ActiveSupport::TestCase
     @good_checking = checkings(:good_checking)
     flunk "good cheking is not valid #{@good_checking.errors.inspect}" unless @good_checking.valid?
     
-    @good_checking_with_morning_absence = checkings(:good_checking_with_morning_absence)
-    @good_checking_with_morning_absence.valid?
-    
-    @good_checking_with_afternoon_absence = checkings(:good_checking_with_afternoon_absence)
-    @good_checking_with_afternoon_absence.valid?
-    
-    @good_checking_with_day_absence = checkings(:good_checking_with_day_absence)
-    @good_checking_with_day_absence.valid?
-    
-    @bad_checking_with_morning_absence = checkings(:bad_checking_with_morning_absence)
-    @bad_checking_with_morning_absence.valid?
-    
-    @bad_checking_with_afternoon_absence = checkings(:bad_checking_with_afternoon_absence)
-    @bad_checking_with_afternoon_absence.valid?
-    
-    @bad_checking_with_day_absence = checkings(:bad_checking_with_day_absence)
-    @bad_checking_with_day_absence.valid?
-    
-    @comment_checking = checkings(:good_checking) # good checking used to test comments
-    @comment_checking.valid?
-    
     @checking = Checking.new
     @checking.valid?
   end
@@ -36,167 +15,76 @@ class CheckingTest < ActiveSupport::TestCase
     @checking = nil
   end
   
-  def test_numericality_of_absence
-    assert !@checking.errors.invalid?(:absence), "absence should be valid"
+  # overtime
+  
+  def test_numericality_of_overtime_hours
+    assert !@checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because nil is allowed"
     
-    @checking.absence = "string"
+    @checking.overtime_hours = "string"
     @checking.valid?
-    assert @checking.errors.invalid?(:absence), "absence should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:absence), "absence should be valid"
+    assert @checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because it's not a numerical value"
+    assert !@good_checking.errors.invalid?(:overtime_hours), "overtime_hours should be valid"
   end
   
-  # morning_overtime
-  
-  def test_numericality_of_morning_overtime_hours
-    assert !@checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid because nil is allowed"
+  def test_numericality_of_overtime_minutes
+    assert !@checking.errors.invalid?(:overtime_minutes), "overtime_minutes should NOT be valid because nil is allowed"
     
-    @checking.morning_overtime_hours = "string"
+    @checking.overtime_minutes = "string"
     @checking.valid?
-    assert @checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid"
+    assert @checking.errors.invalid?(:overtime_minutes), "overtime_minutes should NOT be valid because it's not a numerical value"
+    assert !@good_checking.errors.invalid?(:overtime_minutes), "overtime_minutes should be valid"
   end
   
-  def test_numericality_of_morning_overtime_minutes
-    assert !@checking.errors.invalid?(:morning_overtime_minutes), "morning_overtime_min should be valid because nil is allowed"
+  def test_presence_of_overtime_comment
+    assert !@good_checking.errors.invalid?(:overtime_comment), "overtime_comment should be valid"
     
-    @checking.morning_overtime_minutes = "string"
-    @checking.valid?
-    assert @checking.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should be valid"
+    @good_checking.overtime_comment = nil
+    @good_checking.overtime_hours = 2
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:overtime_comment), "overtime_comment should NOT be valid because it's nil"
+    
+    @good_checking.overtime_hours = nil
+    @good_checking.overtime_minutes = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:overtime_comment), "overtime_comment should be valid because it still not mandatory"
   end
   
-  # afternoon_overtime
+  # absence
   
-  def test_numericality_of_afternoon_overtime_hours
-    assert !@checking.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should NOT be valid because nil is allowed"
+  def test_numericality_of_absence_hours
+    assert !@checking.errors.invalid?(:absence_hours), "absence_hours should NOT be valid because nil is allowed"
     
-    @checking.afternoon_overtime_hours = "string"
+    @checking.absence_hours = "string"
     @checking.valid?
-    assert @checking.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should be valid"
+    assert @checking.errors.invalid?(:absence_hours), "absence_hours should NOT be valid because it's not a numerical value"
+    assert !@good_checking.errors.invalid?(:absence_hours), "absence_hours should be valid"
   end
   
-  def test_numericality_of_afternoon_overtime_minutes
-    assert !@checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should NOT be valid because nil is allowed"
+  def test_numericality_of_absence_minutes
+    assert !@checking.errors.invalid?(:absence_minutes), "absence_minutes should NOT be valid because nil is allowed"
     
-    @checking.afternoon_overtime_minutes = "string"
+    @checking.absence_minutes = "string"
     @checking.valid?
-    assert @checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should be valid"
+    assert @checking.errors.invalid?(:absence_minutes), "absence_minutes should NOT be valid because it's not a numerical value"
+    assert !@good_checking.errors.invalid?(:absence_minutes), "absence_minutes should be valid"
   end
   
-  # morning_delay
-  
-  def test_numericality_of_morning_delay_hours
-    assert !@checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should NOT be valid because nil is allowed"
+  def test_presence_of_absence_comment
+    assert !@good_checking.errors.invalid?(:absence_comment), "absence_comment should be valid"
     
-    @checking.morning_delay_hours = "string"
-    @checking.valid?
-    assert @checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should be valid"
-  end
-  
-  def test_numericality_of_morning_delay_minutes
-    assert !@checking.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should NOT be valid because nil is allowed"
+    @good_checking.absence_comment = nil
+    @good_checking.absence_hours = 2
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:absence_comment), "absence_comment should NOT be valid because it's nil"
     
-    @checking.morning_delay_minutes = "string"
-    @checking.valid?
-    assert @checking.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should be valid"
-  end
-  
-  # afternoon_delay
-  
-  def test_numericality_of_afternoon_delay_hours
-    assert !@checking.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should NOT be valid because nil is allowed"
-    
-    @checking.afternoon_delay_hours = "string"
-    @checking.valid?
-    assert @checking.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should be valid"
-  end
-  
-  def test_numericality_of_afternoon_delay_minutes
-    assert !@checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should NOT be valid because nil is allowed"
-    
-    @checking.afternoon_delay_minutes = "string"
-    @checking.valid?
-    assert @checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should NOT be valid because it's not a numerical value"
-    assert !@good_checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should be valid"
+    @good_checking.absence_hours = nil
+    @good_checking.absence_minutes = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:absence_comment), "absence_comment should be valid because it still not mandatory"
   end
   
   ####
-
-  def test_presence_of_absence_comment
-    assert !@comment_checking.errors.invalid?(:absence_comment), "absence_comment should be valid"
     
-    @comment_checking.absence_comment = nil
-    @comment_checking.absence = 2
-    @comment_checking.valid?
-    assert @comment_checking.errors.invalid?(:absence_comment), "absence_comment should NOT be valid because it's nil"
-    
-    @comment_checking.absence = nil
-    @comment_checking.valid?
-    assert !@comment_checking.errors.invalid?(:absence_comment), "absence_comment should be valid because it still not mandatory"
-  end
-  
-  def test_presence_of_morning_overtime_comment
-    assert !@comment_checking.errors.invalid?(:morning_overtime_comment), "morning_overtime_comment should be valid"
-    
-    @comment_checking.morning_overtime_comment = nil
-    @comment_checking.morning_overtime_hours = 2
-    @comment_checking.valid?
-    assert @comment_checking.errors.invalid?(:morning_overtime_comment), "morning_overtime_comment should NOT be valid because it's nil"
-    
-    @comment_checking.morning_overtime_hours = nil
-    @comment_checking.morning_overtime_minutes = nil
-    @comment_checking.valid?
-    assert !@comment_checking.errors.invalid?(:morning_overtime_comment), "morning_overtime_comment should be valid because it still not mandatory"
-  end
-  
-  def test_presence_of_morning_delay_comment
-    assert !@comment_checking.errors.invalid?(:absence_comment), "morning_delay_comment should be valid"
-    
-    @comment_checking.morning_delay_comment = nil
-    @comment_checking.morning_delay_hours = 2
-    @comment_checking.valid?
-    assert @comment_checking.errors.invalid?(:morning_delay_comment), "morning_delay_comment should NOT be valid because it's nil"
-    
-    @comment_checking.morning_delay_hours = nil
-    @comment_checking.morning_delay_minutes = nil
-    @comment_checking.valid?
-    assert !@comment_checking.errors.invalid?(:morning_delay_comment), "morning_delay_comment should be valid because it still not mandatory"
-  end
-  
-  def test_presence_of_afternoon_overtime_comment
-    assert !@comment_checking.errors.invalid?(:afternoon_overtime_comment), "afternoon_overtime_comment should be valid"
-    
-    @comment_checking.afternoon_overtime_comment = nil
-    @comment_checking.afternoon_overtime_hours = 2
-    @comment_checking.valid?
-    assert @comment_checking.errors.invalid?(:afternoon_overtime_comment), "afternoon_overtime_comment should NOT be valid because it's nil"
-    
-    @comment_checking.afternoon_overtime_hours = nil
-    @comment_checking.afternoon_overtime_minutes = nil
-    @comment_checking.valid?
-    assert !@comment_checking.errors.invalid?(:afternoon_overtime_comment), "afternoon_overtime_comment should be valid because it still not mandatory"
-  end
-  
-  def test_presence_of_afternoon_delay_comment
-    assert !@comment_checking.errors.invalid?(:afternoon_delay_comment), "afternoon_delay_comment should be valid"
-    
-    @comment_checking.afternoon_delay_comment = nil
-    @comment_checking.afternoon_delay_hours = 2
-    @comment_checking.valid?
-    assert @comment_checking.errors.invalid?(:afternoon_delay_comment), "afternoon_delay_comment should NOT be valid because it's nil"
-    
-    @comment_checking.afternoon_delay_hours = nil
-    @comment_checking.afternoon_delay_minutes = nil
-    @comment_checking.valid?
-    assert !@comment_checking.errors.invalid?(:afternoon_delay_comment), "afternoon_delay_comment should be valid because it still not mandatory"
-  end
-
-  
   def test_presence_of_date
     assert @checking.errors.invalid?(:date), "employee_id should NOT be valid because it's nil"
     assert !@good_checking.errors.invalid?(:date), "employee_id should be valid"
@@ -238,17 +126,28 @@ class CheckingTest < ActiveSupport::TestCase
     assert @checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because the couple (date, employee_id) already exists"
     
     # same employee but change the date
-    @checking.date += 1.day
+    @checking.date -= 1.day
     @checking.valid?
     assert !@checking.errors.invalid?(:date), "date should be valid"
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
     
     # same date but change the employee
     @checking = Checking.new(checkings(:good_checking).attributes)
-    @checking.employee = employees(:james_doe)
+    @checking.employee = employees(:another_employee)
     @checking.valid?
     assert !@checking.errors.invalid?(:date), "date should be valid"
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
+  end
+  
+  def test_modification_period_limit
+    # 6 day ago -> less than 1 week (use new record because it is forbidden to modify the date)
+    @good_checking.absence_comment = "modification limit test"
+    assert_equal true, @good_checking.valid?, "good_checking should be valid because checking isn't too late"
+    
+    # 2 weeks ago -> more than 1 week (use new record because it is forbidden to modify the date)
+    @good_checking.created_at = Date.today - 2.week
+    @good_checking.absence_comment = "modification limit test"
+    assert_equal false, @good_checking.valid?, "good_checking should NOT be valid because checking isn't too late"
   end
   
   def test_restricted_edit
@@ -256,92 +155,88 @@ class CheckingTest < ActiveSupport::TestCase
     @good_checking.valid?
     assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
     assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
+    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
     
-    @good_checking.date += 1.day
+    # try to modify the date
+    @good_checking.reload
+    @good_checking.date -= 1.day
     @good_checking.valid?
     assert @good_checking.errors.invalid?(:date), "date should NOT be valid because is modified"
     assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
+    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
     
+    # try to modify the employee_id
     @good_checking.reload
     @good_checking.employee_id = employees(:james_doe).id
     @good_checking.valid?
     assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
-    assert @good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"    
+    assert @good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
+    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+    
+    # try to modify the user_id
+    @good_checking.reload
+    @good_checking.user_id = users(:admin_user).id
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
+    assert !@good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
+    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"  
   end
   
-  def test_correlation_between_absence_and_other_datas_with_morning_absence
-    assert !@good_checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should be valid because there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should be valid because there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid there's no absence"
-    
-    assert !@good_checking_with_morning_absence.errors.invalid?(:morning_delay_hours), "morning_delay_hours should be valid"
-    assert !@good_checking_with_morning_absence.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should be valid"
-    assert !@good_checking_with_morning_absence.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid"
-    assert !@good_checking_with_morning_absence.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should be valid"
-    assert @bad_checking_with_morning_absence.errors.invalid?(:morning_delay_hours), "morning_delay_hours should NOT be valid"
-    assert @bad_checking_with_morning_absence.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should NOT be valid"
-    assert @bad_checking_with_morning_absence.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should NOT be valid"
-    assert @bad_checking_with_morning_absence.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should NOT be valid"
-  end
+#  def test_correlation_between_absence_and_other_datas_with_morning_absence
+#    @good_checking_with_morning_absence = checkings(:good_checking_with_morning_absence)
+#    @good_checking_with_morning_absence.valid?
+#    
+#    @bad_checking_with_morning_absence = checkings(:bad_checking_with_morning_absence)
+#    @bad_checking_with_morning_absence.valid?
+#    
+#    [:morning_delay_hours, :morning_delay_minutes, :morning_overtime_hours, :morning_overtime_minutes].each do |attribute|
+#      assert !@good_checking.errors.invalid?(attribute), "#{attribute.to_s} should be valid because there's no absence"
+#      assert !@good_checking_with_morning_absence.errors.invalid?(attribute), "#{attribute.to_s} should be valid"
+#      assert @bad_checking_with_morning_absence.errors.invalid?(attribute), "#{attribute.to_s} should NOT be valid"
+#    end
+#  end
   
-  def test_correlation_between_absence_and_other_datas_with_afternoon_absence
-    assert !@good_checking.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should be valid there's no absence"
-    
-    assert !@good_checking_with_afternoon_absence.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should be valid"
-    assert !@good_checking_with_afternoon_absence.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should be valid"
-    assert !@good_checking_with_afternoon_absence.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should be valid"
-    assert !@good_checking_with_afternoon_absence.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should be valid"
-    assert @bad_checking_with_afternoon_absence.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should NOT be valid"
-    assert @bad_checking_with_afternoon_absence.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should NOT be valid"
-    assert @bad_checking_with_afternoon_absence.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should NOT be valid"
-    assert @bad_checking_with_afternoon_absence.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should NOT be valid"
-  end
+#  def test_correlation_between_absence_and_other_datas_with_afternoon_absence
+#    @good_checking_with_afternoon_absence = checkings(:good_checking_with_afternoon_absence)
+#    @good_checking_with_afternoon_absence.valid?
+#    
+#    @bad_checking_with_afternoon_absence = checkings(:bad_checking_with_afternoon_absence)
+#    @bad_checking_with_afternoon_absence.valid?
+#    
+#    [:afternoon_delay_hours, :afternoon_delay_minutes, :afternoon_overtime_hours, :afternoon_overtime_minutes].each do |attribute|
+#      assert !@good_checking.errors.invalid?(attribute), "afternoon_delay_hours should be valid there's no absence"
+#      assert !@good_checking_with_afternoon_absence.errors.invalid?(attribute), "afternoon_delay_hours should be valid"
+#      assert @bad_checking_with_afternoon_absence.errors.invalid?(attribute), "afternoon_delay_hours should NOT be valid"
+#    end
+#  end
   
-  def test_correlation_between_absence_and_other_datas_with_day_absence
-    assert !@good_checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should be valid there's no absence"
-    assert !@good_checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should be valid there's no absence"
-    
-    assert !@good_checking_with_day_absence.errors.invalid?(:morning_delay_hours), "morning_delay_hours should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should be valid"
-    assert !@good_checking_with_day_absence.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should be valid"
-    
-    assert @bad_checking_with_day_absence.errors.invalid?(:morning_delay_hours), "morning_delay_hours should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:afternoon_delay_hours), "afternoon_delay_hours should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:afternoon_overtime_hours), "afternoon_overtime_hours should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:morning_delay_minutes), "morning_delay_minutes should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:morning_overtime_minutes), "morning_overtime_minutes should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should NOT be valid"
-    assert @bad_checking_with_day_absence.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should NOT be valid"
-  end
+#  def test_correlation_between_absence_and_other_datas_with_day_absence 
+#    @good_checking_with_day_absence = checkings(:good_checking_with_day_absence)
+#    @good_checking_with_day_absence.valid?
+
+#    @bad_checking_with_day_absence = checkings(:bad_checking_with_day_absence)
+#    @bad_checking_with_day_absence.valid?
+#    
+#    [:morning_delay_hours, :morning_delay_minutes, :morning_overtime_hours, :morning_overtime_minutes,
+#    :afternoon_delay_hours, :afternoon_delay_minutes, :afternoon_overtime_hours, :afternoon_overtime_minutes].each do |attribute|
+#       assert !@good_checking.errors.invalid?(attribute), "morning_delay_hours should be valid there's no absence"
+#       assert !@good_checking_with_day_absence.errors.invalid?(attribute), "morning_delay_hours should be valid"
+#       assert @bad_checking_with_day_absence.errors.invalid?(attribute), "morning_delay_hours should NOT be valid"
+#    end
+#  end
   
-  # test only for the the four main variables if the method works with them so it will work with the 8 others
+
   def test_verify_time
     @checking = Checking.new(checkings(:good_checking).attributes)
-    @checking.morning_delay_hours = 25
-    @checking.morning_overtime_hours = 25
-    @checking.afternoon_delay_minutes = 70
-    @checking.afternoon_overtime_minutes = 70
+    @checking.overtime_hours = 25
+    @checking.absence_hours = 25
+    @checking.overtime_minutes = 70
+    @checking.absence_minutes = 70
     @checking.valid?
-    assert @checking.errors.invalid?(:morning_delay_hours), "morning_delay_hours should NOT be valid because is greater than 23"
-    assert @checking.errors.invalid?(:morning_overtime_hours), "morning_overtime_hours should NOT be valid because is greater than 23"
-    assert @checking.errors.invalid?(:afternoon_delay_minutes), "afternoon_delay_minutes should NOT be valid because is greater than 59"
-    assert @checking.errors.invalid?(:afternoon_overtime_minutes), "afternoon_overtime_minutes should NOT be valid because is greater than 59"
+    assert @checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because is greater than 23"
+    assert @checking.errors.invalid?(:absence_hours), "morning_overtime_hours should NOT be valid because is greater than 23"
+    assert @checking.errors.invalid?(:overtime_minutes), "overtime_minutes should NOT be valid because is greater than 59"
+    assert @checking.errors.invalid?(:absence_minutes), "afternoon_overtime_minutes should NOT be valid because is greater than 59"
   end
   
   def test_get_float_hour
@@ -351,12 +246,56 @@ class CheckingTest < ActiveSupport::TestCase
   end
   
   def test_mandatory_comment
-    assert_equal true, mandatory_comment(1,1), "mandatory_comment should return true, hours:1 ,minutes:1"
-    assert_equal true, mandatory_comment(1,0), "mandatory_comment should return true, hours:1 ,minutes:0"
-    assert_equal true, mandatory_comment(1,nil), "mandatory_comment should return true, hours:#{1} ,minutes:#{nil}"
-    assert_equal false, mandatory_comment(nil,nil), "mandatory_comment should return false, hours:#{nil} ,minutes:#{nil}"
-    assert_equal false, mandatory_comment(0,nil), "mandatory_comment should return false, hours:#{0} ,minutes:#{nil}"
-    assert_equal false, mandatory_comment(0,0), "mandatory_comment should return false, hours:#{0} ,minutes:#{0}"
+    assert_equal true, @good_checking.mandatory_comment?(1,1), "mandatory_comment should return true, hours:1 ,minutes:1"
+    assert_equal true, @good_checking.mandatory_comment?(1,0), "mandatory_comment should return true, hours:1 ,minutes:0"
+    assert_equal true, @good_checking.mandatory_comment?(1,nil), "mandatory_comment should return true, hours:1 ,minutes:nil"
+    assert_equal false, @good_checking.mandatory_comment?(nil,nil), "mandatory_comment should return false, hours:nil ,minutes:nil"
+    assert_equal false, @good_checking.mandatory_comment?(0,nil), "mandatory_comment should return false, hours:0 ,minutes:nil"
+    assert_equal false, @good_checking.mandatory_comment?(0,0), "mandatory_comment should return false, hours:0 ,minutes:0"
   end
   
+  def test_not_empty_checking
+    @empty_checking = checkings(:empty_checking)
+    # no fields
+    assert_equal false, @empty_checking.valid?, "empty_checking should NOT be valid"
+    
+    # many fields
+    assert_equal true, @good_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
+    
+    # only one field => hours
+    @empty_checking.absence_hours = 1
+    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
+    
+    # only one field => minutes
+    @empty_checking.absence_hours = nil
+    @empty_checking.overtime_minutes = 3
+    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
+    
+    # only one field => minutes
+    @empty_checking.overtime_hours = nil
+    @empty_checking.overtime_minutes = 3
+    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
+  end
+
+  def test_date_not_too_far_away
+    @checking.date = Date.today
+    @checking.valid?
+    assert !@checking.errors.invalid?(:date), "date should be valid because date == today"
+    
+    @checking.date = Date.today + 1.week
+    @checking.valid?
+    assert !@checking.errors.invalid?(:date), "date should be valid because date isn't too far away"
+    
+    @checking.date = Date.today - 1.week
+    @checking.valid?
+    assert !@checking.errors.invalid?(:date), "date should be valid because date isn't too far away"
+    
+    @checking.date = Date.today + 2.month
+    @checking.valid?
+    assert @checking.errors.invalid?(:date), "date should be valid because date is too far away"
+    
+    @checking.date = Date.today - 1.month - 1.day
+    @checking.valid?
+    assert @checking.errors.invalid?(:date), "date should be valid because date is too far away"
+  end
 end

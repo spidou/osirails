@@ -56,7 +56,7 @@ class CheckingsController < ApplicationController
       flash[:notice] = "Pointage modifi&eacute; avec succ&eacute;s"
       redirect_to checkings_path({:date => Date.today.monday, :employee_id => @checking.employee_id})
     else
-      render :action => "new"
+      render :action => "edit"
     end
   end
   

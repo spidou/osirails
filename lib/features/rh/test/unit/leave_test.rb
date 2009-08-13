@@ -6,12 +6,9 @@ class LeaveTest < ActiveSupport::TestCase
     @good_leave = Leave.new(:start_date => "2009-10-12".to_date,
                               :end_date => "2009-10-18".to_date,
                               :duration => 7.0,
-                              :retrieval => 2.0,
                               :employee_id => Employee.first.id,
                               :leave_type_id => LeaveType.first.id)
-    @good_leave.valid?
-    flunk "good_leave is not valid?" unless @good_leave.valid?
-    @good_leave.save
+    flunk "good_leave is not valid #{@good_leave.errors.inspect}" unless @good_leave.save
     
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.month).strftime("%m/%d")
     
@@ -55,14 +52,14 @@ class LeaveTest < ActiveSupport::TestCase
     assert !@good_leave.errors.invalid?(:duration), "duration should be valid"
   end
   
-  def test_numericality_of_retrieval
-    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because nil is allowed"
-    
-    @leave.retrieval = "string"
-    @leave.valid?
-    assert @leave.errors.invalid?(:retrieval), "retrieval should NOT be valid because it's not a numerical value"
-    assert !@good_leave.errors.invalid?(:retrieval), "retrieval should be valid"
-  end
+#  def test_numericality_of_retrieval
+#    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because nil is allowed"
+#    
+#    @leave.retrieval = "string"
+#    @leave.valid?
+#    assert @leave.errors.invalid?(:retrieval), "retrieval should NOT be valid because it's not a numerical value"
+#    assert !@good_leave.errors.invalid?(:retrieval), "retrieval should be valid"
+#  end
   
   def test_presence_of_leave_type
     assert @leave.errors.invalid?(:leave_type_id), "leave_type_id should NOT be valid because it's nil"
@@ -113,23 +110,23 @@ class LeaveTest < ActiveSupport::TestCase
 #    assert @leave.errors.invalid?(:end_date), "end_date should NOT Be valid because the duration is too high :#{@leave.duration}"
 #  end
   
-  def test_retrieval_value_is_correct
-    @leave = Leave.new(:start_date => "2009-10-12".to_date,
-                        :end_date => "2009-10-18".to_date,
-                        :duration => 5.0,
-                        :retrieval => 6.0,
-                        :employee_id => Employee.first.id,
-                        :leave_type_id => LeaveType.first.id)
-
-    @leave.valid?
-    assert @leave.errors.invalid?(:retrieval), "retrieval should NOT be valid because is greater than the limit" 
-    @leave.retrieval -= 1
-    @leave.valid?
-    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because is equal to the limit"
-    @leave.retrieval -= 1
-    @leave.valid?
-    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because is less than the limit"
-  end
+#  def test_retrieval_value_is_correct
+#    @leave = Leave.new(:start_date => "2009-10-12".to_date,
+#                        :end_date => "2009-10-18".to_date,
+#                        :duration => 5.0,
+#                        :retrieval => 6.0,
+#                        :employee_id => Employee.first.id,
+#                        :leave_type_id => LeaveType.first.id)
+#     
+#    @leave.valid?
+#    assert @leave.errors.invalid?(:retrieval), "retrieval should NOT be valid because is greater than the limit" 
+#    @leave.retrieval -= 1
+#    @leave.valid?
+#    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because is equal to the limit"
+#    @leave.retrieval -= 1
+#    @leave.valid?
+#    assert !@leave.errors.invalid?(:retrieval), "retrieval should be valid because is less than the limit"
+#  end
 
   def test_date_is_correct
     assert !@good_leave.errors.invalid?(:start_date), "start_date should be valid"
@@ -145,8 +142,24 @@ class LeaveTest < ActiveSupport::TestCase
     @leave.start_half = @leave.end_half = true
     @leave.valid?
     assert @leave.errors.invalid?(:start_half), "date should NOT be valid"
-    assert @leave.errors.invalid?(:end_half), "date should NOT be valid"
+    assert @leave.errors.invalid?(:end_half), "date should NOT be valid"   
+  end
+  
+  def test_not_overlay_with_other_leave
+    @leave = Leave.new(@good_leave.attributes)
+    @leave.start_date = @good_leave.end_date + 4.day
+    @leave.end_date = @leave.start_date + 4.day
+    @leave.valid?
+    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
+    assert !@leave.errors.invalid?(:end_date), "start_date should be valid because leave period don't overlay good_leave one"
     
+    @leave.start_date = @good_leave.end_date - 2.day
+    @leave.valid?
+    assert @leave.errors.invalid?(:start_date), "start_date should be valid because leave period overlay good_leave one"
+    @leave.start_date = @good_leave.start_date - 2.day
+    @leave.end_date = @leave.start_date + 4.day
+    @leave.valid?
+    assert @leave.errors.invalid?(:end_date), "start_date should be valid because leave period overlay good_leave one"
   end
   
   def test_able_to_cancel
@@ -223,10 +236,11 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal 5, @good_leave.total_estimate_duration, "total_estimate_duration should be 5 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
   end
   
-  def test_estimate_duration
-    ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
-    assert_equal 5, @good_leave.estimate_duration, "estimate_duration should be 5 because the leave duration is 7 and retrieval is 2 and all days are workable"
-  end
+#  def test_estimate_duration
+#    ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
+#    @good_leave.retrieval = 2
+#    assert_equal 5, @good_leave.estimate_duration, "estimate_duration should be 5 because the leave duration is 7 but retrieval is 2 and all days are workable"
+#  end
   
   def test_calendar_duration
     # when start_date == nil and end_date == nil
@@ -257,23 +271,23 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
   end
   
-  def test_not_extend_on_two_years_method_with_wrong_start_date
-    @leave.start_date = @leave.end_date = Date.today - 11.month - 2.days
-    @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave year start date < start_date = end_date"
-    @leave.end_date = @leave.start_date + 4.day
-    @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because start_date  < leave_year_start_date < end_date"
-  end
+#  def test_not_extend_on_two_years_method_with_wrong_start_date
+#    @leave.start_date = @leave.end_date = Date.today - 11.month - 2.days
+#    @leave.valid?
+#    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave_year_start_date < start_date = end_date"
+#    @leave.end_date = @leave.start_date + 4.day
+#    @leave.valid?
+#    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because start_date  < leave_year_start_date < end_date"
+#  end
   
-  def test_not_extend_on_two_years_method_with_wrong_end_date
-    @leave.start_date = @leave.end_date = Date.today + 1.month + 4.days
-    @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "end_date should be valid because leave year end date < start_date = end_date"
-    @leave.start_date = @leave.end_date - 14.days
-    @leave.valid?
-    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because start_date < leave_year_end_date < end_date"
-  end
+#  def test_not_extend_on_two_years_method_with_wrong_end_date
+#    @leave.start_date = @leave.end_date = Date.today + 1.month + 4.days
+#    @leave.valid?
+#    assert !@leave.errors.invalid?(:start_date), "end_date should be valid because leave year end date < start_date = end_date"
+#    @leave.start_date = @leave.end_date - 14.days
+#    @leave.valid?
+#    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because start_date < leave_year_end_date < end_date"
+#  end
   
   private
     

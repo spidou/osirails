@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'rh/checkings' %> 
+<% end %>
+
 <div class="presentation_large">
   <% form_for @checking do |f|%>
     <%= f.error_messages%>
@@ -16,69 +20,30 @@
       <% if is_edit_view? %>
         <%= strong(@checking.date.strftime("%d %B %Y")) %>
       <% else %>
-        <%= f.form_or_view(f.date_select(:date, {:order => [:day, :month, :year]}), :date)%>
+        <%= f.form_or_view(f.date_select(:date, {:start_year => Date.today.year-1, :end_year => Date.today.year+1, :order => [:day, :month, :year]}), :date)%>
       <% end %>
     </p>
     
     <h2>Signaler une absence</h2>
     <p>
       <%= f.label :absence %>
-      <%= f.form_or_view(f.select(:absence, {"aucune absence" => nil, 
-                                             "le matin" => 1,
-                                             "l'après-midi"=> 2,
-                                             "toute la journée" => 3}, {:selected => @checking.absence}), :absence)%>
+      <%= f.form_or_view(f.select(:absence_hours, (0..23).to_a), :absence_hours)%> heures et
+      <%= f.form_or_view(f.select(:absence_minutes, (0..59).to_a), :absence_minutes)%> minutes
     </p>
     <p>
       <%= f.label :absence_comment %>
       <%= f.form_or_view(f.text_area(:absence_comment,{:rows => 5}),:absence_comment)%>
     </p>
     
-    <h2>Signaler des retards</h2>
-    
-    <h3>Matinée</h3>
-    <p>
-      <%= f.label :morning_delay_hours %>
-      <%= f.form_or_view(f.select(:morning_delay_hours, (0..23).to_a), :morning_delay_hours)%> heures et
-      <%= f.form_or_view(f.select(:morning_delay_minutes, (0..59).to_a), :morning_delay_minutes)%> minutes
-    </p>
-    <p>
-      <%= f.label :morning_delay_comment %>
-      <%= f.form_or_view(f.text_area(:morning_delay_comment,{:rows => 5}),:morning_delay_comment)%>
-    </p>
-    
-    <h3>Aprés-midi</h3>
-    <p>
-      <%= f.label :afternoon_delay_hours %>
-      <%= f.form_or_view(f.select(:afternoon_delay_hours, (0..23).to_a), :afternoon_delay_hours)%> heures et
-      <%= f.form_or_view(f.select(:afternoon_delay_minutes, (0..59).to_a), :afternoon_delay_minutes)%> minutes
-    </p>
-    <p>
-      <%= f.label :afternoon_delay_comment %>
-      <%= f.form_or_view(f.text_area(:afternoon_delay_comment,{:rows => 5}),:afternoon_delay_comment)%>
-    </p>
-    
     <h2>Signaler des heures suppl&eacute;mentaires</h2>
-    
-    <h3>Matinée</h3>
     <p>
-      <%= f.label :morning_overtime_hours %>
-      <%= f.form_or_view(f.select(:morning_overtime_hours,(0..23).to_a), :morning_overtime_hours)%> heures et
-      <%= f.form_or_view(f.select(:morning_overtime_minutes, (0..59).to_a), :morning_overtime_minutes)%> minutes
+      <%= f.label :overtime_hours %>
+      <%= f.form_or_view(f.select(:overtime_hours,(0..23).to_a), :overtime_hours)%> heures et
+      <%= f.form_or_view(f.select(:overtime_minutes, (0..59).to_a), :overtime_minutes)%> minutes
     </p>
     <p>
-      <%= f.label :morning_overtime_comment %>
-      <%= f.form_or_view(f.text_area(:morning_overtime_comment,{:rows => 5}),:morning_overtime_comment)%>
-    </p>
-    
-    <h3>Aprés-midi</h3>
-    <p>
-      <%= f.label :afternoon_overtime_hours %>
-      <%= f.form_or_view(f.select(:afternoon_overtime_hours, (0..23).to_a), :afternoon_overtime_hours)%> heures et
-      <%= f.form_or_view(f.select(:afternoon_overtime_minutes, (0..59).to_a), :afternoon_overtime_minutes)%> minutes
-    </p>
-    <p>
-      <%= f.label :afternoon_overtime_comment %>
-      <%= f.form_or_view(f.text_area(:afternoon_overtime_comment,{:rows => 5}),:afternoon_overtime_comment)%>
+      <%= f.label :overtime_comment %>
+      <%= f.form_or_view(f.text_area(:overtime_comment,{:rows => 5}),:overtime_comment)%>
     </p>
     
     <p>

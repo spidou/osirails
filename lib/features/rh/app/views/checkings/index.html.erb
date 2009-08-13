@@ -33,25 +33,17 @@
   
     <table>
       <tr>
-        <th rowspan="2">Date</th>
-        <th rowspan="2">Absence</th>
-        <th colspan="2">Retards</th>
-        <th colspan="2">Heures suppl&eacute;mentaires</th>
-        <th rowspan="2">Actions</th>
+        <th>Date</th>
+        <th>Absence</th>
+        <th>Heures suppl&eacute;mentaires</th>
+        <th>Actions</th>
       </tr>
-      <tr>
-        <th>matinée</th>
-        <th>apr&egrave;s-midi</th>
-        <th>matinée</th>
-        <th>apr&egrave;s-midi</th>
-      </tr>
-      
+
       <% for checking in @checkings %>
       
         <tr>
           <td><%= checking.date.strftime("%A %d %B %Y") %></td>
-          <td><%= absence_meaning(checking.absence) %></td>
-          <%= generate_delay_and_overtime_td(checking) %>
+          <%= generate_absence_and_overtime_td(checking) %>
           <td><%= edit_checking_link(checking, :link_text=>"")%></td>
         </tr>
         

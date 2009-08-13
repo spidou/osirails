@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090804103224) do
+ActiveRecord::Schema.define(:version => 20090812094807) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -81,24 +81,16 @@ ActiveRecord::Schema.define(:version => 20090804103224) do
 
   create_table "checkings", :force => true do |t|
     t.date     "date"
-    t.integer  "user_id",                    :limit => 11
-    t.integer  "employee_id",                :limit => 11
+    t.integer  "user_id",          :limit => 11
+    t.integer  "employee_id",      :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "absence",                    :limit => 11
-    t.text     "morning_overtime_comment"
-    t.text     "morning_delay_comment"
-    t.text     "afternoon_overtime_comment"
-    t.text     "afternoon_delay_comment"
+    t.integer  "absence_hours",    :limit => 11
+    t.integer  "absence_minutes",  :limit => 11
     t.text     "absence_comment"
-    t.integer  "morning_overtime_hours",     :limit => 11
-    t.integer  "morning_overtime_minutes",   :limit => 11
-    t.integer  "morning_delay_hours",        :limit => 11
-    t.integer  "morning_delay_minutes",      :limit => 11
-    t.integer  "afternoon_overtime_hours",   :limit => 11
-    t.integer  "afternoon_overtime_minutes", :limit => 11
-    t.integer  "afternoon_delay_hours",      :limit => 11
-    t.integer  "afternoon_delay_minutes",    :limit => 11
+    t.integer  "overtime_hours",   :limit => 11
+    t.integer  "overtime_minutes", :limit => 11
+    t.text     "overtime_comment"
   end
 
   add_index "checkings", ["date", "employee_id"], :name => "date_employee_id_key", :unique => true
@@ -488,7 +480,6 @@ ActiveRecord::Schema.define(:version => 20090804103224) do
     t.boolean  "start_half"
     t.boolean  "end_half"
     t.boolean  "cancelled"
-    t.float    "retrieval"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "leave_type_id", :limit => 11

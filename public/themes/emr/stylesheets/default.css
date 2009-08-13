@@ -98,6 +98,11 @@ tr:hover > td > a {
 	text-decoration:underline;
 }
 
+table tr.disabled > td {
+	font-style:italic;
+	background-color:#CCC;
+}
+
 /*/////////////////////////////
 			TITLE
 /////////////////////////////*/
@@ -951,11 +956,6 @@ table.commodity td {
 table.commodity img[title="Enrouler"] + span,
 table.commodity img[title="Dérouler"] + span {
 	text-align:left;
-}
-
-.commodity tr.disable > td {
-	color:#888;
-	font-style:italic;
 }
 
 .commodity td.sub_commodity_category {
