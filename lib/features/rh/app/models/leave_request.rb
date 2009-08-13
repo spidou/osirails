@@ -66,10 +66,6 @@ class LeaveRequest < ActiveRecord::Base
   STATUS_CLOSED = 4
   STATUS_REFUSED_BY_DIRECTOR = -4
   
-  # Time configuration
-  
-  Time.zone = ConfigurationManager.admin_society_identity_configuration_time_zone
-  
   # Validates
   ##TODO Dates validations
   
