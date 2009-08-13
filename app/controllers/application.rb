@@ -14,13 +14,11 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  has_permissions
-  
   helper :all # include all helpers, all the time
   layout "default"
   
   # Filters
-  before_filter :authenticate, :select_theme
+  before_filter :configure_model, :authenticate, :select_theme
   before_filter :load_features_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
@@ -39,11 +37,24 @@ class ApplicationController < ActionController::Base
   # Global variables
   $permission ||= {}
   
+  @@models ||= {}
+  
+  def current_menu
+    #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
+    step = current_order_step if respond_to?("current_order_step")
+    menu = step || controller_name
+    Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
+  end
+  
   protected
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}
     def self.method_permission(options)
       $permission[controller_path] = options
+    end
+    
+    def self.model(model_name)
+      @@models[controller_path] = model_name
     end
 
     # This method return the feature name
@@ -92,6 +103,10 @@ class ApplicationController < ActionController::Base
       pdf << data
       pdf.generate
     end
+    
+    def configure_model
+      @@models[controller_path] ||= controller_name.singularize.camelize
+    end
 
   private
 
@@ -106,30 +121,43 @@ class ApplicationController < ActionController::Base
         if session[:user_expired]
           redirect_to :controller => 'account', :action => 'expired_password'
         else
-          # Manage permissions for actions
-          $permission[controller_path] ||= {}
-          case params[:action]
-          when *['index'] + ($permission[controller_path][:list] || [])
-            error_access_page(403) unless can_list?(current_user)
+          return error_access_page(403) unless current_menu.can_access?(current_user)
+          
+          return unless @@models[controller_path] and !@@models[controller_path].blank?
+          model = @@models[controller_path].constantize rescue nil
+          
+          if model and model.respond_to?(:business_object)
+            $permission[controller_path] ||= {}
+            code = request.get? ? 403 : 422
             
-          when *['show'] + ($permission[controller_path][:view] || [])
-            error_access_page(403) unless can_view?(current_user)
+            case params[:action]
+            # LIST
+            when *['index'] + ($permission[controller_path][:list] || [])
+              return error_access_page(code) unless model.can_list?(current_user)
             
-          when *['new'] + ($permission[controller_path][:add] || [])
-            error_access_page(403) unless can_add?(current_user)
+            # VIEW
+            when *['show'] + ($permission[controller_path][:view] || [])
+              return error_access_page(code) unless model.can_view?(current_user)
             
-          when *['create'] + ($permission[controller_path][:add] || [])
-            error_access_page(422) unless can_add?(current_user)
+            # ADD
+            when *['new', 'create'] + ($permission[controller_path][:add] || [])
+              return error_access_page(code) unless model.can_add?(current_user)
             
-          when *['edit'] + ($permission[controller_path][:edit] || [])
-            error_access_page(403) unless can_edit?(current_user)
+            # EDIT
+            when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
+              return error_access_page(code) unless model.can_edit?(current_user)
             
-          when *['update'] + ($permission[controller_path][:edit] || [])
-            error_access_page(422) unless can_edit?(current_user)
+            # DELETE
+            when *['destroy'] + ($permission[controller_path][:delete] || [])
+              return error_access_page(code) unless model.can_delete?(current_user)
             
-          when *['destroy'] + ($permission[controller_path][:delete] || [])
-            error_access_page(422) unless can_delete?(current_user)
-          end # case
+            # OTHER METHODS
+            else
+              if model.respond_to?("can_#{params[:action]}?")
+                return error_access_page(code) unless model.send("can_#{params[:action]}?", current_user)
+              end
+            end
+          end
         end # if
       end # if
     end # authenticate

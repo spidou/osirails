@@ -35,9 +35,9 @@ module ApplicationHelper
     
     if current.parent
       output << display_menu_entries(current.parent)
-      siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
+      siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated.select{|m|m.can_access?(current_user)}
     else
-      siblings = Menu.mains.activated
+      siblings = Menu.mains.activated.select{|m|m.can_access?(current_user)}
     end
     
     more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
@@ -138,29 +138,21 @@ module ApplicationHelper
     params[:action] == "edit" or request.put?
   end
   
-#  def can_edit?(object)
-#    test_permission("edit", object)
-#  end
-#  
-#  def can_add?(object)
-#    test_permission("add", object)
-#  end
-  
-  begin
-    ## dynamic methods generated with the menus object
-    #  
-    #  Example :
-    #  menus :             users, groups, thirds
-    #  generated methods : menu_users, menu_groups, menu_thirds
-    Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
-      define_method("menu_#{menu.name}") do
-        Menu.find_by_name(menu.name)
-      end
-    end
-  rescue ActiveRecord::StatementInvalid, Mysql::Error => e
-    error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
-    RAKE_TASK ? puts(error) : raise(error)
-  end
+  #begin
+  #  ## dynamic methods generated with the menus object
+  #  #  
+  #  #  Example :
+  #  #  menus :             users, groups, thirds
+  #  #  generated methods : menu_users, menu_groups, menu_thirds
+  #  Menu.find(:all, :conditions => [ "name IS NOT NULL" ]).each do |menu|
+  #    define_method("menu_#{menu.name}") do
+  #      Menu.find_by_name(menu.name)
+  #    end
+  #  end
+  #rescue ActiveRecord::StatementInvalid, Mysql::Error => e
+  #  error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+  #  RAKE_TASK ? puts(error) : raise(error)
+  #end
   
   def contextual_menu(title, &block)
     raise ArgumentError, "Missing block" unless block_given?
@@ -252,7 +244,7 @@ module ApplicationHelper
       # define the corresponding model, and check the permissions
       model                     = model_name.camelize.constantize # this will raise a NameError Exception if the constant is not defined
 		  has_model_permission      = model.respond_to?("business_object?") ? model.send("can_#{permission_name}?", current_user) : true
-		  has_controller_permission = controller.send("can_#{permission_name}?", current_user)
+		  has_controller_permission = controller.current_menu.send("can_access?", current_user)
       
       # default options
 		  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),

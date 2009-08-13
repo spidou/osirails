@@ -41,7 +41,7 @@ module EmployeesHelper
   
   # This method permit to show or hide content of secondary menu
   def actives_employees_link(show_all)   
-      if controller.can_view?(current_user) and Employee.can_view?(current_user)
+      if Employee.can_view?(current_user)
           if show_all == false
             link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")}  View all employees (including inactives)", :controller => "employees", :action => "index", :all_employees => true)
           else
@@ -114,7 +114,7 @@ module EmployeesHelper
   
   # Method to pluralize or not the number's <h3></h3>
   def numbers_h3(numbers)
-    unless controller.can_view?(current_user) and Employee.can_view?(current_user)
+    unless Employee.can_view?(current_user)
       visibles = visibles_numbers(numbers)
       return "" if visibles.size==0 
       return "<h3>Numéro de telephone</h3>" if visibles.size==1

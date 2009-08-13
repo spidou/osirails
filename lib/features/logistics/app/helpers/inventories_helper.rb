@@ -18,7 +18,7 @@ module InventoriesHelper
   
   # This method permit to show closed button
   def show_closed_button(inventory)
-    if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)
+    if Inventory.can_edit?(current_user)
       if inventory.inventory_closed?
         image_tag("/images/lock_16x16.png", :alt => "Cl&ocirc;tur&eacute;") + " Cl&ocirc;tur&eacute;"
       else
@@ -34,21 +34,21 @@ module InventoriesHelper
 #  # method that permit to show action link into secondary menu
 #  #( we don't use the dynamic finder because of :type argument passed to new_inventory_path)  
 #  def new_inventory_link(txt = "New inventory")
-#    if controller.can_add?(current_user) and Inventory.can_add?(current_user)
+#    if Inventory.can_add?(current_user)
 #      link_to( image_tag( "/images/add_16x16.png", :alt => "New", :title => "New")+" #{txt}", new_inventory_path(:type => "inventory"))    
 #    end    
 #  end
 
   # method that permit to access to commodities categories list using /commodities_manager route  
   def commodity_categories_link(txt = "List all commodities categories")
-    if controller.can_list?(current_user) and CommodityCategory.can_list?(current_user)
+    if CommodityCategory.can_list?(current_user)
       link_to(image_tag( "/images/list_16x16.png", :alt => "List", :title => "List" )+" #{txt}", "/commodities_manager")
     end 
   end  
 
   #  This method permit to add value of quantity
   def in_place_editor(inventory,commodity)
-    if controller.can_edit?(current_user) and Inventory.can_edit?(current_user)
+    if Inventory.can_edit?(current_user)
       return inventory.inventory_closed? ? "<span>#{commodity.quantity}</span>" : editable_content_tag(:span, commodity, "quantity", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
     "<span>#{commodity.quantity}</span>"

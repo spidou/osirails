@@ -7,7 +7,8 @@ module HasPermissions
   end
   
   module ClassMethods    
-    DEFAULT_METHODS = [ :list, :view, :add, :edit, :delete ]
+    DEFAULT_CLASS_METHODS =    [ :list, :view, :add, :edit, :delete ]
+    DEFAULT_INSTANCE_METHODS = [ :list, :view, :add, :edit, :delete ]
     
     # has_permissions permits to configure permissions between roles and other kind of models
     # 
@@ -40,45 +41,69 @@ module HasPermissions
     def has_permissions *options
       cattr_accessor :permissions_definitions
       
-      self.permissions_definitions = { :permission_methods => DEFAULT_METHODS }
+      self.permissions_definitions ||= { :class_permission_methods    => DEFAULT_CLASS_METHODS,
+                                         :instance_permission_methods => DEFAULT_INSTANCE_METHODS }
       
-      if options.empty?
-        add_instance_permission_methods
+      class_eval do
+        def self.all_permission_methods
+          (self.permissions_definitions[:class_permission_methods] + self.permissions_definitions[:instance_permission_methods]).uniq
+        end
       end
       
-      options.each do |option|
-        if option.instance_of?(Hash)
-          if option[:additional_methods]
-            raise ":additional_methods expected to be an array" unless option[:additional_methods].instance_of?(Array)
-            self.permissions_definitions = { :permission_methods => DEFAULT_METHODS + option[:additional_methods] }
-          elsif option[:methods]
-            raise ":methods expected to be an array" unless option[:methods].instance_of?(Array)
-            self.permissions_definitions = { :permission_methods => option[:methods] }
+      params = options.last.is_a?(Hash) ? options.pop : {}
+      
+      if options.empty?
+        
+        if params[:additional_instance_methods]
+          raise "[has_permissions] :additional_instance_methods expected to be an array" unless params[:additional_instance_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:instance_permission_methods => DEFAULT_INSTANCE_METHODS + params[:additional_instance_methods])
+        elsif params[:instance_methods]
+          raise "[has_permissions] :instance_methods expected to be an array" unless params[:instance_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:instance_permission_methods => params[:instance_methods])
+        end
+        
+        add_instance_permission_methods
+        
+      else
+        options.each do |option|
+          if option == :as_business_object
+            
+            if params[:additional_class_methods]
+              raise "[has_permissions] :additional_class_methods expected to be an array" unless params[:additional_class_methods].is_a?(Array)
+              self.permissions_definitions.merge!(:class_permission_methods => DEFAULT_CLASS_METHODS + params[:additional_class_methods])
+            elsif params[:class_methods]
+              raise "[has_permissions] :class_methods expected to be an array" unless params[:class_methods].is_a?(Array)
+              self.permissions_definitions.merge!(:class_permission_methods => params[:class_methods])
+            end
+            
+            add_business_object_permission_methods
           end
         end
       end
       
-      options.each do |option|
-        if option == :as_business_object
-          add_business_object_permission_methods
-        end
+      self.all_permission_methods.each do |method|
+        PermissionMethod.find_or_create_by_name(method.to_s)
       end
       
       declare_private_permission_methods
     end
     
     def setup_has_permissions_model options = {}
-      return unless !defined?(self.permissions_association_options) # don't allow multiple calls
+      return false unless !defined?(self.permissions_association_options) # don't allow multiple calls
       
       cattr_accessor :permissions_association_options
       
       self.permissions_association_options  = {
-                                                :name => "#{self.name.tableize.singularize}_permissions".to_sym,
-                                                :class_name => "#{self.name}Permission",
-                                                :foreign_key => "#{self.name.tableize.singularize}_id".to_sym,
-                                                :dependent => :destroy,
-                                                :include => :role
+                                                :name         => :permissions,
+                                                :as           => :has_permissions,
+                                                :class_name   => "Permission",
+                                                :foreign_key  => :has_permissions_id,
+                                                :dependent    => :destroy,
+                                                :include      => :role
                                               }.merge(options[:association_options] || {})
+      
+      # set up association
+      has_many self.permissions_association_options.delete(:name), self.permissions_association_options
       
       # set up callback
       class_eval do
@@ -86,21 +111,23 @@ module HasPermissions
         
         private 
           def create_permissions
-            permission_class = permissions_association_options[:class_name]
-            foreign_key = permissions_association_options[:foreign_key]
-            raise NameError, "#{permission_class} is not a valid class" unless Object.const_defined?(permission_class)
             Role.all.each do |role|
-              permission_class.constantize.create(foreign_key => self.id, :role_id => role.id)
+              permission = Permission.create!(:has_permissions_id   => self.id,
+                                              :has_permissions_type => self.class.class_name,
+                                              :role_id              => role.id)
+              
+              klass = self.is_a?(BusinessObject) ? self.name.constantize : self.class
+              klass.all_permission_methods.each do |method|
+                PermissionsPermissionMethod.create!(:permission_id        => permission.id,
+                                                    :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
+              end
             end
           end
       end
-      
-      # set up association
-      has_many self.permissions_association_options.delete(:name), self.permissions_association_options
     end
     
     def add_instance_permission_methods
-      self.permissions_definitions[:permission_methods].each do |method|
+      self.permissions_definitions[:instance_permission_methods].each do |method|
         class_eval <<-EOL
           def can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
@@ -129,9 +156,7 @@ module HasPermissions
         end
       end
       
-      self.permissions_definitions[:permission_methods].each do |method|
-        PermissionMethod.find_or_create_by_name(method.to_s)
-        
+      self.permissions_definitions[:class_permission_methods].each do |method|
         class_eval <<-EOL
           def self.can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
@@ -156,7 +181,7 @@ module HasPermissions
           #   +user_or_role+  tells for WHICH user or role we want to get permission.
           #   +object+        tells in WHAT KIND of object we want to get permission.
           def self.get_permissions(action, user_or_role, object = nil)
-            raise "#{action} is an unexepected action for permission control" unless good_action?(action)
+            raise "[has_permissions] #{action} is an unexepected action for permission control for #{self} > #{self.all_permission_methods.inspect}" unless good_action?(action)
             object ||= self # object represents an instance when it is called from an instance
                             # and a class when it is called from a class
                             # > We cannot use directly 'self' when it is called from an instance because we use a class method (self.get_permissions)
@@ -167,7 +192,7 @@ module HasPermissions
             
             return_value = false
             roles.each do |role|
-              raise TypeError, "The given argument is not an instance of Role. #{role}:#{role.class}" unless role.instance_of?(Role)
+              raise TypeError, "[has_permissions] The given argument is not an instance of Role. #{role}:#{role.class}" unless role.instance_of?(Role)
               next if return_value # skip test for other roles if one role match and return true
               
               ### INSTANCE METHODS
@@ -178,14 +203,15 @@ module HasPermissions
                 perm = object.permissions.find_by_role_id(role)
               elsif object.instance_of?(Document)
                 perm = object.document_type.permissions.find_by_role_id(role)
-              elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
-                (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "permissions error for #{self}:#{self.class}"
+              #elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
+              #  (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "permissions error for #{self}:#{self.class}"
 
               ### CLASS METHODS
               elsif object.respond_to?("business_object?") # BUSINESS OBJECT
+                puts ">>>> #{object} : #{object.business_object?} : #{object.business_object_id} : #{object.business_object}"
                 perm = object.business_object.permissions.find_by_role_id(role)
               else
-                raise "I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
+                raise "[has_permissions] I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
               end
               return_value ||= perm.send(action) unless perm.nil?
             end
@@ -205,13 +231,13 @@ module HasPermissions
               roles << Role.find_by_name(object)
             elsif object.instance_of?(Array)
               roles = object
-            else
-              raise ArgumentError, "Not a valid argument passed in 'get_roles'. #{object}:#{object.class}"
+          else
+              raise ArgumentError, "[has_permissions] Not a valid argument passed in 'get_roles'. #{object}:#{object.class}"
             end
           end
           
           def self.good_action?(action)
-            self.permissions_definitions[:permission_methods].include?(action.to_sym)
+            self.all_permission_methods.include?(action.to_sym)
           end
       end
     end

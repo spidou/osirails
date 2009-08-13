@@ -1,111 +1,89 @@
 class ContentsController < ApplicationController
   # GET /contents
   def index
-    if Content.can_list?(current_user)
-      @contents = Content.find(:all)
-    else
-      error_access_page(403)
-    end
+    @contents = Content.find(:all)
   end
   
   # GET /contents/1
   def show
-    if Content.can_view?(current_user)
-      @content = Content.find(params[:id])
-      @author = User.find(@content.author, :include => [:employee]) unless @content.author.blank?
-      @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
-      @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
-    else
-      error_access_page(403)
-    end
+    @content = Content.find(params[:id])
+    @author = User.find(@content.author, :include => [:employee]) unless @content.author.blank?
+    @contributors = User.find_all_by_id(@content.contributors, :include => [:employee])
+    @content_versions = ContentVersion.paginate_by_content_id @content.id, :page => params[:page]
   end
   
   # GET /contents/new
   def new
-    if Content.can_add?(current_user)
-      @content = Content.new
-      @content.menu = Menu.new
-      @menus = Menu.get_structured_menus
-    else
-      error_access_page(403)
-    end
+    @content = Content.new
+    @content.menu = Menu.new
+    @menus = Menu.get_structured_menus
   end
   
   # POST /contents
   def create
-    if Content.can_add?(current_user)
-      params[:content][:author_id] = current_user.id
-      @content = Content.new(params[:content])
-      if @content.save
-        flash[:notice] = 'Votre page est crée avec succès'
-        redirect_to :action => 'index'
-      else
-        @menus = Menu.get_structured_menus
-        render :action => 'new'
-      end
+    params[:content][:author_id] = current_user.id
+    @content = Content.new(params[:content])
+    if @content.save
+      flash[:notice] = 'Votre page est crée avec succès'
+      redirect_to :action => 'index'
     else
-      error_access_page(403)
+      @menus = Menu.get_structured_menus
+      render :action => 'new'
     end
   end
   
   # GET /contents/1/edit
   def edit
-    if Content.can_edit?(current_user)
-      if @content.nil?
-        @content = Content.find(params[:id])
-        @menus = Menu.get_structured_menus
-        $session_lock = @content.lock_version
-      end
+    if @content.nil?
+      @content = Content.find(params[:id])
+      @menus = Menu.get_structured_menus
+      $session_lock = @content.lock_version
     end
   end
   
   # PUT /contents/1
   def update
-    if Content.can_edit?(current_user)
-      @content = Content.find(params[:id])
-      @lock_version = @content.lock_version
+    @content = Content.find(params[:id])
+    @lock_version = @content.lock_version
 
-      # get_structured_menus permit to make a indent for menu's list
-      # TODO Remove the menu item in the structure
-      @menus = Menu.get_structured_menus
+    # get_structured_menus permit to make a indent for menu's list
+    # TODO Remove the menu item in the structure
+    @menus = Menu.get_structured_menus
 
-      # If content isn't in his last version
-      if @content.lock_version != $session_lock
-        raise ActiveRecord::StaleObjectError
-      end
-
-      # Add the current user as a contributor of the content
-      # Duplicate entry are automatically deleted by the model
-      content_attributes = params[:content]
-      content_attributes[:contributors] = @content.contributors || []
-      content_attributes[:contributors] << current_user.id
-
-      if @content.update_attributes(content_attributes)
-        ContentVersion.create_from_content(@content)
-        
-        flash[:notice] = "Contenu modifi&eacute; avec succ&egrave;s"
-        redirect_to contents_path
-      else
-        flash[:error] = "Un probl&egrave;me est survenu lors de la modification du contenu"
-        render :action => "edit"
-      end
+    # If content isn't in his last version
+    if @content.lock_version != $session_lock
+      raise ActiveRecord::StaleObjectError
     end
 
-    # If @content.update_attributes() failed
-    rescue ActiveRecord::StaleObjectError
-      @affiche = true
-      flash.now[:error] = "Impossible de modifier le contenu car vous travaillez sur une version antérieur"
-      @content.attributes = params[:content]
-      render :action => :edit
+    # Add the current user as a contributor of the content
+    # Duplicate entry are automatically deleted by the model
+    content_attributes = params[:content]
+    content_attributes[:contributors] = @content.contributors || []
+    content_attributes[:contributors] << current_user.id
+
+    if @content.update_attributes(content_attributes)
+      ContentVersion.create_from_content(@content)
+      
+      flash[:notice] = "Contenu modifi&eacute; avec succ&egrave;s"
+      redirect_to contents_path
+    else
+      flash[:error] = "Un probl&egrave;me est survenu lors de la modification du contenu"
+      render :action => "edit"
+    end
+
+  # If @content.update_attributes() failed
+  rescue ActiveRecord::StaleObjectError
+    @affiche = true
+    flash.now[:error] = "Impossible de modifier le contenu car vous travaillez sur une version antérieur"
+    @content.attributes = params[:content]
+    render :action => :edit
   end
 
   # DELETE /contents/1  
   def destroy
-    if Content.can_delete?(current_user)
-      content = Content.find_by_id(params[:id])
-      content.destroy
-      redirect_to contents_path
-    end
+    @content = Content.find_by_id(params[:id])
+    @content.destroy
+    redirect_to contents_path
   end
   
   # uses_tiny_mce permit to configure text_area's options

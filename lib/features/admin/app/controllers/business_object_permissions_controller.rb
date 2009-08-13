@@ -17,8 +17,8 @@ class BusinessObjectPermissionsController < ApplicationController
   # :id corresponds to a business_object id
   def update
     error = false
-    for permission in params[:business_object_permissions]
-      error = true unless BusinessObjectPermission.find(permission[0]).update_attributes(permission[1])
+    for permission in params[:permissions]
+      error = true unless Permission.find(permission[0]).update_attributes(permission[1])
     end
     
     if error
