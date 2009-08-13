@@ -166,12 +166,8 @@ function nav_more_links_handler() {
   })
 }
 
-
-
-
-
-
-
-
-
-
+Event.observe(window, 'load', function() {
+        $$('.text_area-autoresize').each(function(textarea) {
+          new Widget.Textarea(textarea);
+        });     
+});

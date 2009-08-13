@@ -229,6 +229,13 @@ module ActionView
       def reset(text)
         @template.reset(@object_name, text)
       end
+      
+      def autoresize_text_area(method, options = {})
+        options = { "style" => "overflow-y: hidden", "class" => "text_area-autoresize", "rows" => options["rows"] }.freeze.merge(options.stringify_keys)
+        InstanceTag.new(@object_name, method, self, options.delete(:object)).to_text_area_tag(options)
+      end
+      
+      alias_method :text_area_autoresize, :autoresize_text_area
     end
     
   end

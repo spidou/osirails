@@ -154,3 +154,6 @@ configurations:
   society_identity_configuration_choosen_theme:
     description: Style de l'Intranet
     value: emr
+  society_identity_configuration_time_zone:
+    description: "GMT :"
+    value: 4

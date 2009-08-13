@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag_with_theme_support "default.css" %>
     <%= tag("link", { "rel" => "shortcut icon", "type" => "image/x-icon", "href" => "#{$CURRENT_THEME_PATH}/favicon.ico" }) %>
     <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag "text_area_autoresize" %>
     <%= yield :header %>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>

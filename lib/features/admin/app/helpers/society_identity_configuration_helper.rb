@@ -35,6 +35,20 @@ module SocietyIdentityConfigurationHelper
     html << "</select>\n"
     html
   end
+  
+  def display_time_zone(name, value)
+    disabled = (params[:action] != 'edit' ? "disabled " : "")
+    
+    html = ""
+    html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
+    
+    (-12..13).each do |f|
+      selected = (f == value ? "selected='selected' " : "" )
+      html << "<option #{selected}value='#{f}'>#{'+' if f > 0}#{f}</option>\n" 
+    end
+    html << "</select>\n"
+    html 
+  end
 
 	# This method permit to test permission for edit_button (overide dynamic method because there's not model)
   def edit_society_identity_configuration_link(text="")
