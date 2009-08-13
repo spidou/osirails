@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090804103224) do
+ActiveRecord::Schema.define(:version => 20090812052203) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -476,26 +476,6 @@ ActiveRecord::Schema.define(:version => 20090804103224) do
     t.boolean  "responsible"
   end
 
-  create_table "leave_types", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "leaves", :force => true do |t|
-    t.integer  "employee_id",   :limit => 11
-    t.date     "start_date"
-    t.date     "end_date"
-    t.boolean  "start_half"
-    t.boolean  "end_half"
-    t.boolean  "cancelled"
-    t.float    "retrieval"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "leave_type_id", :limit => 11
-    t.float    "duration"
-  end
-
   create_table "leave_requests", :force => true do |t|
     t.integer  "status",                :limit => 11
     t.integer  "leave_type_id",         :limit => 11
@@ -521,6 +501,29 @@ ActiveRecord::Schema.define(:version => 20090804103224) do
     t.integer  "director_id",           :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "duration"
+    t.float    "retrieval"
+  end
+
+  create_table "leave_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leaves", :force => true do |t|
+    t.integer  "employee_id",      :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.boolean  "start_half"
+    t.boolean  "end_half"
+    t.boolean  "cancelled"
+    t.float    "retrieval"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "leave_type_id",    :limit => 11
+    t.float    "duration"
+    t.integer  "leave_request_id", :limit => 11
   end
 
   create_table "legal_forms", :force => true do |t|

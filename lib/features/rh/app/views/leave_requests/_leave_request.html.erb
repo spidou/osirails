@@ -3,21 +3,24 @@
   
   <!--############## SHOW : Leave informations / FORM : Leave period ##############-->
   
-  <% if !is_form_view? or [1,-2,2,3,-4,4].include?(leave_request.status_was)%>
+  <% if !is_form_view? or leave_request.was_higher_than_step_unstarted? %>
  
     <%= "<h2>Informations</h2>" %>
     <p>
       <%= f.label :status %>
       <%= f.strong view_status(leave_request) %>
     </p>
-    
+    <% if leave_request.was_cancelled? %>
+      <p>
+        <%= f.label :cancelled_at %>
+        <%= f.strong leave_request.cancelled_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+      </p>
+    <% end %>
     <p>
       <%= f.label :employee %>
       <%= link_to "#{leave_request.employee.first_name} #{leave_request.employee.last_name}", employee_path(@employee) %>
-      <%=  f.label(leave_request.employee.services.size<=1 ? "Service":"Services") %>
-      <%for service in leave_request.employee.services %>
-        <%=link_to service.name, service_path(service.id) %> 
-      <% end %>   
+      <%=  f.label("Service")%>
+      <%= link_to leave_request.employee.service.name, service_path(leave_request.employee.service.id) %>    
     </p>
     <p>
       <%= f.label :created_at %>
@@ -30,7 +33,7 @@
     
     <p>
       <%= f.label :leave_type %>
-      <%= f.strong @leave_type %>
+      <%= f.strong leave_request.leave_type.name %>
     </p>
     <p>
       <%= f.label :comment%>
@@ -44,20 +47,20 @@
   
   </p>
   
-  <% if is_form_view? and leave_request.status_was == nil %>
+  <% if is_form_view? and leave_request.was_unstarted? %>
     <%= f.hidden_field(:employee_id, :value => @employee_id) %>  
     
     <%= "<h2>Période du congé</h2>" %>
     <%= f.error_messages %> 
     <p>
       <%= f.label:start_date %>
-      <%= f.date_select( :start_date,{ :start_year => Date.today.year, :order => [:day,:month,:year] }) %>
+      <%= f.date_select( :start_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
       <%= f.label :start_half %>
       <%= f.check_box(:start_half) %>
     </p>
     <p>
       <%= f.label :end_date %>
-      <%= f.date_select( :end_date,{ :start_year => Date.today.year, :order => [:day,:month,:year] }) %>
+      <%= f.date_select( :end_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
       <%= f.label :end_half %>
       <%= f.check_box(:end_half) %>
     </p>
@@ -65,7 +68,7 @@
   
   <!--############## SHOW : Responsible check / FORM : Leave type ##############-->
   
-  <% if (!is_form_view? and [-2,2,3,-4,4].include?(leave_request.status_was)) or (is_form_view? and [2,3,4,-4].include?(leave_request.status_was)) %>
+  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_submit? %>
     <%= "<h2>Réponse du responsable</h2>" %>
     <p>  
       <%= f.label :responsible_agreement %>
@@ -87,21 +90,15 @@
     </p>
   <% end %>
   
-  <% if is_form_view? and leave_request.status_was == nil %>
+  <% if is_form_view? and leave_request.was_unstarted? %>
     <%= "<h2>Type du congé</h2>" %>
     <p>  
-      <%= f.label("Congés payés") %>
-      <%= f.radio_button(:leave_type_id, 1) %>
-      <%= f.label("Congés de formation") %>
-      <%= f.radio_button(:leave_type_id, 2) %>    
-      <%= f.label("Congé paternité") %>
-      <%= f.radio_button(:leave_type_id, 3) %>
-      <%= f.label("Congés d'examen") %>
-      <%= f.radio_button(:leave_type_id, 4) %>    
+      <%= f.label :leave_type_id %>
+      <%= collection_select(:leave_request, :leave_type_id, LeaveType.find(:all), :id, :name, {:prompt => "Sélectionnez le type du congé"}) %>
     </p>  
     <p>
-      <%= f.label("Commentaire (facultatif)") %>
-      <%= f.text_area(:comment, :rows => 5) %> 
+      <%= f.label :comment %>
+      <%= f.text_area_autoresize(:comment, :rows => 2) %> 
     
     <p>
       <%= f.reset "Réinitialiser" %>
@@ -111,17 +108,27 @@
   
 <% end %>
   
-<% form_for(leave_request, :html => {:multipart => true}) do |f| %> 
+<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "check" }) do |f| %> 
   
   <!--############## SHOW : Observer notification / FORM : Responsible check ##############-->
   
-  <% if !is_form_view? and [3,-4,4].include?(leave_request.status_was) or (is_form_view? and [3,-4,4].include?(leave_request.status_was)) %>
+  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_check? %>
     <%= "<h2>Observation des ressources humaines</h2>" %>
     <p>  
       <%= f.label :acquired_leaves_days %>
       <%= f.strong "#{leave_request.acquired_leaves_days} jours" %>   
       <%= f.label :observer %>
       <%= link_to "#{leave_request.observer.first_name} #{leave_request.observer.last_name}", employee_path(leave_request.observer) %>  
+    </p> 
+    <p>  
+      <%= f.label :retrieval %>
+      <% if !leave_request.retrieval.nil? %> 
+        <%= f.strong "#{leave_request.retrieval} jours" %>
+      <% else %>
+        <%= f.strong "aucun" %>
+      <% end %>
+      <%= f.label :duration %>
+      <%= f.strong "#{leave_request.duration} jours" %> 
     </p> 
     <p>
       <%= f.label :noticed_at %>
@@ -133,31 +140,35 @@
     </p>   
   <% end %>
   
-  <% if is_form_view? and leave_request.status_was == 1 %>
+  <% if is_form_view? and leave_request.was_submitted_or_refused_by_responsible?  %>
     <%= f.hidden_field(:responsible_id, :value => current_user.employee.id) %>   
     <%= f.hidden_field(:checked_at, :value => Time.now) %> 
   
     <%= "<h2>Réponse du responsable</h2>"%>
     <%= f.error_messages %>
     <p>  
-      <%= f.label("Accord") %>
+      <%= f.label :agreement_true %>
       <%= f.radio_button(:responsible_agreement, "true") %>
-      <%= f.label("Refus") %>
+      <%= f.label :agreement_false %>
       <%= f.radio_button(:responsible_agreement, "false") %>     
     </p>  
     <p>
-      <%= f.label("Commentaire") %>
-      <%= f.text_area(:responsible_remarks, :rows => 5) %> 
+      <%= f.label :responsible_remarks %>
+      <%= f.text_area_autoresize(:responsible_remarks, :rows => 2) %> 
     </p>
     <p>
-      <%= f.reset "Réinitialiser" %>
+      <%= f.reset "Réinitialiser" %>  
       <%= f.submit button_name %>
     </p>
   <% end %>
   
+<% end %>
+
+<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "notice" }) do |f| %> 
+  
   <!--############## SHOW : Director close / FORM : Observer notification ##############-->
   
-  <% if !is_form_view? and [-4,4].include?(leave_request.status_was) %>
+  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_notice? %>
     <%= "<h2>Réponse de la direction</h2>" %>
     <p>  
       <%= f.label :director_agreement %>
@@ -179,7 +190,7 @@
     </p>
   <% end %>
   
-  <% if is_form_view? and leave_request.status_was == 2 %>
+  <% if is_form_view? and leave_request.was_checked? %>
     <%= f.hidden_field(:observer_id, :value => current_user.employee.id) %>   
     <%= f.hidden_field(:noticed_at, :value => Time.now) %> 
   
@@ -187,11 +198,17 @@
     <%= f.error_messages %>
     <p>  
       <%= f.label :acquired_leaves_days %>
-      <%= f.text_field(:acquired_leaves_days, :size => 1) %> jours 
-    </p>  
+      <%= f.text_field(:acquired_leaves_days, :size => 1) %> jours  
+    </p> 
+    <p> 
+      <%= f.label :retrieval %>
+      <%= f.text_field(:retrieval, :size => 1) %> jours
+      <%= f.label :duration %>
+      <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration(leave_request.start_date, leave_request.end_date)) %> jours 
+    </p>    
     <p>
       <%= f.label :observer_remarks %>
-      <%= f.text_area(:observer_remarks, :rows => 5) %>  
+      <%= f.text_area_autoresize(:observer_remarks, :rows => 2) %>  
     </p>
     <p>
       <%= f.reset "Réinitialiser" %>
@@ -199,23 +216,27 @@
     </p>
   <% end %>
   
+<% end %>
+
+<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "close" }) do |f| %> 
+  
   <!--############## FORM : Director close ##############-->
   
-  <% if is_form_view? and [-4,3].include?(leave_request.status_was) %>
+  <% if is_form_view? and leave_request.was_noticed_or_refused_by_director? %>
     <%= f.hidden_field(:director_id, :value => current_user.employee.id) %>   
     <%= f.hidden_field(:ended_at, :value => Time.now) %> 
   
     <%= "<h2>Réponse de la direction</h2>"%>
     <%= f.error_messages %>
     <p>  
-      <%= f.label("Accord") %>
+      <%= f.label :agreement_true %>
       <%= f.radio_button(:director_agreement, "true") %>
-      <%= f.label("Refus") %>
+      <%= f.label :agreement_false %>
       <%= f.radio_button(:director_agreement, "false") %>     
     </p>  
     <p>
-      <%= f.label("Commentaire") %>
-      <%= f.text_area(:director_remarks, :rows => 5) %> 
+      <%= f.label :director_remarks %>
+      <%= f.text_area_autoresize(:director_remarks, :rows => 2) %> 
     </p>
     <p>
       <%= f.reset "Réinitialiser" %>

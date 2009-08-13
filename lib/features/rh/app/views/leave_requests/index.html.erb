@@ -6,20 +6,41 @@
     <%= new_leave_request_link %>
   <% end %>
   
-  <% if @accepted_leave_requests.size == 5 or @refused_leave_requests.size == 5 %>
-    <% contextual_menu USEFUL_LINKS do %>
-      <% if @accepted_leave_requests.size == 5 %>
-        <%= image_tag("view_16x16.png") %> <%= accepted_leave_requests_link %>
-      <% end %>
-      <% if @refused_leave_requests.size == 5 %>
-        <%= image_tag("view_16x16.png") %> <%= refused_leave_requests_link %>
-      <% end %>  
+  <% contextual_menu USEFUL_LINKS do %>
+    <% if @accepted_leave_requests.size == 5 %>
+      <%= image_tag("view_16x16.png") %> <%= accepted_leave_requests_link %>
     <% end %>
+    <% if @refused_leave_requests.size == 5 %>
+      <%= image_tag("view_16x16.png") %> <%= refused_leave_requests_link %>
+    <% end %>
+    <%= image_tag("view_16x16.png") %> <%= cancelled_leave_requests_link %>
   <% end %>
+  
+  <% if @leave_requests_to_treat %>
+  
+    <h2 class="warning" >Demandes d'employés à traiter</h2>
 
-  <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user) %>
-  <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user) %>
-  <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user) %>
+      <div>
+        <table>
+          <tr>
+            <th>Employé</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Créée le</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+    
+          <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user) %>
+          <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user) %>
+          <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user) %>
+          <%= render :partial => "refused_by_me_leave_requests" if @refused_by_me_leave_requests.size > 0 %>
+          
+            
+        </table>
+      </div>
+  <% end %>
+    
   <%= render :partial => "active_leave_requests" %>
   <%= render :partial => "accepted_leave_requests" %>
   <%= render :partial => "refused_leave_requests" %>

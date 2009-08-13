@@ -12,19 +12,18 @@
       </tr>
       
       <% for leave_request in accepted_leave_requests %>
-        <% if leave_request.employee_id == current_user.employee.id %>
-          <tr>
-            <td><%=h leave_request.start_date.strftime("%A %d %B %Y") %></td>
-            <td><%=h leave_request.end_date.strftime("%A %d %B %Y") %></td>
-            <td><%=h leave_request.created_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
-            <td>
-              <%= leave_request_link(leave_request, :link_text => "") %>
-            </td>
-          </tr>
-        <% end %>
+        <tr>
+          <td><%=h leave_request.start_date.strftime("%A %d %B %Y") %></td>
+          <td><%=h leave_request.end_date.strftime("%A %d %B %Y") %></td>
+          <td><%=h leave_request.created_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+          <td>
+            <%= leave_request_link(leave_request, :link_text => "") %>
+          </td>
+        </tr>
       <% end %>
       
     </table>
+    <%= will_paginate accepted_leave_requests, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" if !@index %>
   </div>
 
 <% else %>

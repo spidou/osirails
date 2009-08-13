@@ -39,7 +39,12 @@ class Employee < ActiveRecord::Base
   has_many    :employees_jobs
   has_many    :jobs, :through => :employees_jobs
   has_many    :leaves, :class_name => "Leave"
+  has_many    :future_leaves, :class_name => "Leave", :conditions => ["end_date >= ?", Date.today]
   has_many    :checkings
+  has_many    :active_leave_requests, :class_name => "LeaveRequest", :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED,LeaveRequest::STATUS_CHECKED,LeaveRequest::STATUS_NOTICED]], :order => "start_date, created_at DESC"
+  has_many    :accepted_leave_requests, :class_name => "LeaveRequest", :conditions => ["status = ?", LeaveRequest::STATUS_CLOSED], :order => "start_date, created_at DESC", :limit => 5
+  has_many    :refused_leave_requests, :class_name => "LeaveRequest", :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE,LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]], :order => "start_date, created_at DESC", :limit => 5
+  has_many    :in_progress_leave_requests, :class_name => "LeaveRequest", :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED,LeaveRequest::STATUS_CHECKED,LeaveRequest::STATUS_NOTICED]]
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
@@ -120,9 +125,7 @@ class Employee < ActiveRecord::Base
   # Method to get all services that he is responsible of
   #
   def services_under_responsibility
-    result = []
-    jobs.each {|job| result << job.service if job.responsible}
-    result
+    jobs.select{ |job| job.responsible }.collect{ |job| job.service }
   end
   
   # Method to get all subordinates of the employee according to the services that he is responsible of
@@ -131,6 +134,14 @@ class Employee < ActiveRecord::Base
     result = []
     services_under_responsibility.each {|service| result += service.members }
     result.uniq.reject {|n| n.id == id}
+  end
+  
+  # Method to get all subordinates of the employee according to the services that he is responsible of, and himself
+  #
+  def subordinates_and_himself
+    result = []
+    services_under_responsibility.each {|service| result += service.members }
+    result
   end
   
   # Method that get the leave start date year to know if it's the current year or it's the past year

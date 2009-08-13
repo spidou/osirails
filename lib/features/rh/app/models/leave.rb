@@ -1,10 +1,13 @@
+require 'estimate_duration.rb'
 class Leave < ActiveRecord::Base
+  include EstimateDuration
   
   named_scope :actives, :conditions => ['cancelled =? or cancelled is null', false]
   named_scope :cancelled_leaves, :conditions => ['cancelled =?', true]
   
   belongs_to :employee
   belongs_to :leave_type
+  belongs_to :leave_request
   
   validates_presence_of :start_date
   validates_presence_of :end_date
@@ -12,7 +15,9 @@ class Leave < ActiveRecord::Base
   validates_presence_of :leave_type, :if => :leave_type_id
   validates_presence_of :employee_id
   validates_presence_of :employee, :if => :employee_id
-  
+  validates_presence_of :leave_request_id
+  validates_presence_of :leave_request, :if => :leave_request_id
+      
   validates_numericality_of :duration
   validates_numericality_of :retrieval, :allow_nil => true
   
@@ -29,30 +34,6 @@ class Leave < ActiveRecord::Base
     else
       false
     end
-  end
-  
-  # method to get leave duration in days(float), the period start is taken in account
-  def total_estimate_duration(period_start = start_date, period_end = end_date)
-    return 0 if period_start.nil? or period_end.nil?
-    total = 0.0
-    workable_days = ConfigurationManager.admin_society_identity_configuration_workable_days
-    legal_holidays = ConfigurationManager.admin_society_identity_configuration_legal_holidays
-    current = period_start
-    (period_end - period_start + 1).to_i.times do
-      total += 1 if workable_days.include?(current.wday.to_s) and !legal_holidays.include?("#{current.month}/#{current.day}")
-      current = current.tomorrow 
-    end
-    total -= 0.5 if end_half and workable_days.include?(period_end.wday.to_s)
-    total -= 0.5 if start_half and workable_days.include?(period_start.wday.to_s)  
-    return total
-  end
-  
-  # method that take in account retrieval value if there's one
-  def estimate_duration
-    #total_estimate_duration(period_start, period_end) - retrieval unless retrieval.nil?
-    value = total_estimate_duration(start_date, end_date)
-    value -= retrieval unless retrieval.nil?
-    value
   end
   
   def calendar_duration
@@ -87,7 +68,7 @@ class Leave < ActiveRecord::Base
     
     def retrieval_value_is_correct
       unless retrieval.nil?
-        errors.add(:retrieval, "doit &ecirc;tre plus grand que #{duration}") if retrieval > duration
+        errors.add(:retrieval, "doit &ecirc;tre plus petit que #{duration}") if retrieval > duration
       end
     end
     

@@ -11,7 +11,8 @@ class EmployeeTest < ActiveSupport::TestCase
     @default_leave = Leave.new(:start_date => (Date.today - 11.month) + 3.month,
                                  :end_date => (Date.today - 11.month) + 3.month + 6.days,
                                  :duration => 7.0,
-                                 :leave_type_id => LeaveType.first.id)
+                                 :leave_type_id => LeaveType.first.id,
+                                 :leave_request_id => LeaveRequest.first.id)
     @default_leave.save 
     @employee = Employee.new
   end
@@ -131,14 +132,16 @@ class EmployeeTest < ActiveSupport::TestCase
     @good_employee.leaves.new(:start_date => leave_year_start - 1.year,
                                   :end_date => leave_year_start - 1.year + 4.days,
                                   :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id).save
+                                  :leave_type_id => LeaveType.first.id,
+                                  :leave_request_id => LeaveRequest.first.id).save
         
     # 2 leaves into current year
     2.times do
       @good_employee.leaves.new(:start_date => leave_year_start,
                                   :end_date => leave_year_start + 4.days,
                                   :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id).save
+                                  :leave_type_id => LeaveType.first.id,
+                                  :leave_request_id => LeaveRequest.first.id).save
     end
     
     # 3 leaves into next year
@@ -146,7 +149,8 @@ class EmployeeTest < ActiveSupport::TestCase
       @good_employee.leaves.new(:start_date => leave_year_start + 1.year,
                                   :end_date => leave_year_start + 1.year + 4.days,
                                   :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id).save
+                                  :leave_type_id => LeaveType.first.id,
+                                  :leave_request_id => LeaveRequest.first.id).save
     end
     flunk "error with leaves" if @good_employee.leaves.empty?
     assert_equal 1, @good_employee.get_leaves_for_choosen_year(-1).size, "it should have 1 leave for past year"

@@ -1,7 +1,7 @@
 module LeaveRequestsHelper
   
   def view_status(leave_request)
-    case leave_request.status
+    case leave_request.status_was
       when 1
         "En attente de la réponse du responsable"
       when 2
@@ -14,7 +14,22 @@ module LeaveRequestsHelper
         "Acceptée"
       when -4 
         "Refusée par la direction"
+      when 0 
+        "Annulée par #{cancelled_by(leave_request)}"  
      end
+  end
+  
+  def cancelled_by(leave_request)
+    case leave_request.cancelled_by
+      when leave_request.employee_id
+        "le demandeur"
+      when leave_request.responsible_id
+        "le responsable"
+      when leave_request.observer_id
+        "les ressources humaines"
+      when leave_request.director_id
+        "la direction"
+    end
   end
   
   def view_start_half(leave_request)
@@ -54,12 +69,15 @@ module LeaveRequestsHelper
   end
   
   def accepted_leave_requests_link
-    link_to "List all accepted leave requests", accepted_leave_requests_path
+    link_to "Voir toutes mes demandes acceptées", accepted_leave_requests_path
   end
   
   def refused_leave_requests_link
-    link_to "List all refused leave requests", refused_leave_requests_path
+    link_to "Voir toutes mes demandes refusées", refused_leave_requests_path
   end
-
+  
+  def cancelled_leave_requests_link
+    link_to "Voir toutes mes demandes annulées", cancelled_leave_requests_path
+  end
   
 end

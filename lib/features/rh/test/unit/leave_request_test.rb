@@ -1,17 +1,19 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class LeaveRequestTest < ActiveSupport::TestCase
   fixtures :leave_requests
 
   def setup
+    @employee = employees(:normal)
+    @leave_type = leave_types(:good_leave_type)
+    
     @step_submit = leave_requests(:step_submit)
     @step_check = leave_requests(:step_check)
     @step_notice = leave_requests(:step_notice)
-    @step_close = leave_requests(:step_close)  
-  
-    @leave_request = LeaveRequest.new
-    @leave_request.valid?
-    
+    @step_close = leave_requests(:step_close) 
+      
+    @leave_request = LeaveRequest.new({:start_date => Date.today + 19, :end_date => Date.today + 25, :employee => @employee})
+    @leave_request.valid?    
   end
 
   def test_dates_validity_when_step_check
@@ -36,36 +38,41 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_employee
+    @leave_request.employee_id = nil
+    @leave_request.valid?
     assert @leave_request.errors.invalid?(:employee_id), "employee_id should NOT be valid because it's nil"
     
     @leave_request.employee_id = 0
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:employee_id), "employee_id should be valid"
-    assert @leave_request.errors.invalid?(:employee), "employee should NOT be valid because it doesn't exist"
     
-    @leave_request.employee_id = employees(:normal).id
+    @leave_request.employee_id = @employee.id
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:employee_id), "employee_id should be valid"
     assert !@leave_request.errors.invalid?(:employee), "employee should be valid"
     
-    @leave_request.employee = employees(:normal)
+    @leave_request.employee = @employee
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:employee_id), "employee_id should be valid"
     assert !@leave_request.errors.invalid?(:employee), "employee should be valid"
   end
   
   def test_presence_of_start_date
+    @leave_request.start_date = nil
+    @leave_request.valid?
     assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it's nil"
     
-    @leave_request.start_date = Date.today
+    @leave_request.start_date = Date.today + 26
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
   end
 
   def test_presence_of_end_date
+    @leave_request.end_date = nil
+    @leave_request.valid?
     assert @leave_request.errors.invalid?(:end_date), "end_date should NOT be valid because it's nil"
     
-    @leave_request.end_date = Date.today
+    @leave_request.end_date = Date.today + 27
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:end_date), "end_date should be valid"
   end
@@ -73,9 +80,20 @@ class LeaveRequestTest < ActiveSupport::TestCase
   def test_presence_of_leave_type_id
     assert @leave_request.errors.invalid?(:leave_type_id), "leave_type_id should NOT be valid because it's nil"
     
-    @leave_request.leave_type_id = 1
+    @leave_request.leave_type_id = 0
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:leave_type_id), "leave_type_id should be valid"
+    assert @leave_request.errors.invalid?(:leave_type), "leave_type should NOT be valid because it doesn't exist"
+    
+    @leave_request.leave_type_id = @leave_type.id
+    @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:leave_type_id), "leave_type_id should be valid"
+    assert !@leave_request.errors.invalid?(:leave_type), "leave_type should be valid"
+    
+    @leave_request.leave_type = @leave_type
+    @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:leave_type_id), "leave_type_id should be valid"
+    assert !@leave_request.errors.invalid?(:leave_type), "leave_type should be valid"
   end
   
   def test_dates_coherence_order
@@ -85,7 +103,14 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
   
   def test_dates_coherence_validity
+    @step_submit.valid?
+    assert !@step_submit.errors.invalid?(:start_date), "start_date should be valid"
+    
     @step_submit.start_date = Date.today - 1
+    @step_submit.valid?
+    assert @step_submit.errors.invalid?(:start_date), "start_date should NOT be valid"
+    
+    @step_submit.start_date = Date.today
     @step_submit.valid?
     assert @step_submit.errors.invalid?(:start_date), "start_date should NOT be valid"
   end
@@ -95,10 +120,31 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @step_submit.valid?
     assert @step_submit.errors.invalid?(:end_half), "end_half should NOT be valid"
   end
+  
+  def test_unique_dates
+    @step_submit.valid?
+    assert !@step_submit.errors.invalid?(:start_date), "period should be valid"
+    
+    @one = LeaveRequest.new({:employee => @employee, :start_date => Date.today + 30, :end_date => Date.today + 30, :start_half => true,  :leave_type => @leave_type})
+    @one.valid?
+    assert @one.errors.invalid?(:start_date), "period should NOT be valid"
+    
+    @two = LeaveRequest.new({:start_date => Date.today + 29, :end_date => Date.today + 30, :end_half => true, :employee => @employee})
+    @two.valid?
+    assert !@two.errors.invalid?(:start_date), "period should be valid"
+    
+    @three = LeaveRequest.new({:start_date => Date.today + 40, :end_date => Date.today + 40, :end_half => true, :employee => @employee})
+    @three.valid?
+    assert @three.errors.invalid?(:start_date), "period should NOT be valid"
+    
+    @four = LeaveRequest.new({:start_date => Date.today + 40, :end_date => Date.today + 41, :start_half => true, :employee => @employee})
+    @four.valid?
+    assert !@four.errors.invalid?(:start_date), "period should be valid"
+  end
 
   def test_submit_leave_request
-    assert @step_submit.submit 
-    assert @step_submit.was_submitted?
+    @step_submit.submit
+    assert @step_submit.was_submitted?, "leave_request should be submitted"
   end
   
   def test_presence_of_responsible_id
@@ -112,12 +158,12 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_check.errors.invalid?(:responsible_id), "responsible_id should be valid"
     assert @step_check.errors.invalid?(:responsible), "responsible should NOT be valid because it doesn't exist"
     
-    @step_check.responsible_id = employees(:normal).id
+    @step_check.responsible_id = @employee.id
     @step_check.valid?
     assert !@step_check.errors.invalid?(:responsible_id), "responsible_id should be valid"
     assert !@step_check.errors.invalid?(:responsible), "responsible should be valid"
     
-    @step_check.responsible = employees(:normal)
+    @step_check.responsible = @employee
     @step_check.valid?
     assert !@step_check.errors.invalid?(:responsible_id), "responsible_id should be valid"
     assert !@step_check.errors.invalid?(:responsible), "responsible should be valid"
@@ -147,17 +193,16 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
 
   def test_check_leave_request_with_agreement
-    assert @step_check.check
-    @step_check.save
-    assert @step_check.was_checked?
+    @step_check.check
+    assert @step_check.was_checked?, "leave_request should be checked"
   end
   
   def test_check_leave_request_with_refusal
     @step_check.responsible_agreement = false
     @step_check.responsible_remarks = "Nombre insuffisant d'employés"
-    assert @step_check.check
-    @step_check.save
-    assert @step_check.was_refused_by_responsible?
+    @step_check.check
+
+    assert @step_check.was_refused_by_responsible?, "leave_request should be refused by responsible"
   end
   
   def test_presence_of_observer_id
@@ -171,12 +216,12 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_notice.errors.invalid?(:observer_id), "observer_id should be valid"
     assert @step_notice.errors.invalid?(:observer), "observer should NOT be valid because it doesn't exist"
     
-    @step_notice.observer_id = employees(:normal).id
+    @step_notice.observer_id = @employee.id
     @step_notice.valid?
     assert !@step_notice.errors.invalid?(:observer_id), "observer_id should be valid"
     assert !@step_notice.errors.invalid?(:observer), "observer should be valid"
     
-    @step_notice.observer = employees(:normal)
+    @step_notice.observer = @employee
     @step_notice.valid?
     assert !@step_notice.errors.invalid?(:observer_id), "observer_id should be valid"
     assert !@step_notice.errors.invalid?(:observer), "observer should be valid"
@@ -191,6 +236,17 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @step_notice.noticed_at = Time.now
     @step_notice.valid?
     assert !@step_notice.errors.invalid?(:noticed_at), "noticed_at should be valid"
+  end
+  
+  def test_presence_of_duration
+    @step_notice.duration = nil
+    
+    @step_notice.valid?
+    assert @step_notice.errors.invalid?(:duration), "duration should NOT be valid because it's nil"
+    
+    @step_notice.duration = 5.0
+    @step_notice.valid?
+    assert !@step_notice.errors.invalid?(:duration), "duration should be valid"
   end
 
   def test_presence_of_observer_remarks
@@ -216,9 +272,8 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
 
   def test_notice_leave_request
-    assert @step_notice.notice
-    @step_notice.save
-    assert @step_notice.was_noticed?
+    @step_notice.notice
+    assert @step_notice.was_noticed?, "leave_request should be noticed"
   end
   
   def test_presence_of_director_id
@@ -232,12 +287,12 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_close.errors.invalid?(:director_id), "director_id should be valid"
     assert @step_close.errors.invalid?(:director), "director should NOT be valid because it doesn't exist"
     
-    @step_close.director_id = employees(:normal).id
+    @step_close.director_id = @employee.id
     @step_close.valid?
     assert !@step_close.errors.invalid?(:director_id), "director_id should be valid"
     assert !@step_close.errors.invalid?(:director), "director should be valid"
     
-    @step_close.director = employees(:normal)
+    @step_close.director = @employee
     @step_close.valid?
     assert !@step_close.errors.invalid?(:director_id), "director_id should be valid"
     assert !@step_close.errors.invalid?(:director), "director should be valid"
@@ -267,17 +322,17 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
 
   def test_close_leave_request_with_agreement
-    assert @step_close.close
-    @step_close.save
-    assert @step_close.was_closed?
+    @step_close.close
+    assert @step_close.was_closed?, "leave_request should be closed"
+    assert @step_close.leave.is_a?(Leave), "leave_request should genereate a valid leave"
+    assert !@step_close.leave.new_record?, "the leave generated should be a new record"
   end
   
   def test_close_leave_request_with_refusal
     @step_close.director_agreement = false
     @step_close.director_remarks = "Pas de nouveau congé avant la fin de la crise interne"
-    assert @step_close.close
-    @step_close.save
-    assert @step_close.was_refused_by_director?
+    @step_close.close
+    assert @step_close.was_refused_by_director?, "leave_request should be refused by director"
   end
   
   def test_persistent_attributes_when_step_check
@@ -289,8 +344,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
       @step_submit.send("#{element}=",nil)
     end
     
-    @step_submit.check
-    !@step_submit.save
+    assert !@step_submit.check, "leave_request should fail at step check"
     
     for element in persistent_attributes
     assert @step_submit.errors.invalid?(element), "#{element} should have changed"
@@ -307,8 +361,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
       @step_check.send("#{element}=",nil)
     end
         
-    assert @step_check.notice
-    assert !@step_check.save
+    assert !@step_check.notice, "leave_request should fail at step notice"
     
     for element in persistent_attributes
     assert @step_check.errors.invalid?(element), "#{element} should have changed"
@@ -319,19 +372,33 @@ class LeaveRequestTest < ActiveSupport::TestCase
   def test_persistent_attributes_when_step_close
     @step_notice.notice
     
-    persistent_attributes = ["employee", "start_date", "end_date", "start_half", "end_half", "leave_type_id", "responsible","checked_at", "responsible_agreement", "responsible_remarks", "observer", "observer_remarks", "acquired_leaves_days"]
+    persistent_attributes = ["employee", "start_date", "end_date", "start_half", "end_half", "leave_type_id", "responsible","checked_at", "responsible_agreement", "responsible_remarks", "observer", "observer_remarks", "acquired_leaves_days", "duration", "retrieval"]
     
     for element in persistent_attributes
       @step_notice.send("#{element}=",nil)
     end
         
-    assert @step_notice.close
-    assert !@step_notice.save
+    assert !@step_notice.close, "leave_request should fail at step close"
     
     for element in persistent_attributes
     assert @step_notice.errors.invalid?(element), "#{element} should have changed"
     end
 
+  end
+  
+  def test_cancel_at_step_check
+    @step_check.cancel
+    assert @step_check.cancelled?, "leave_request should be cancelled"
+  end
+  
+  def test_cancel_at_step_notice
+    @step_notice.cancel
+    assert @step_notice.cancelled?, "leave_request should be cancelled"
+  end
+  
+  def test_cancel_at_step_close
+    @step_close.cancel
+    assert @step_close.cancelled?, "leave_request should be cancelled"
   end
     
 end

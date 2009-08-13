@@ -8,7 +8,8 @@ class LeaveTest < ActiveSupport::TestCase
                               :duration => 7.0,
                               :retrieval => 2.0,
                               :employee_id => Employee.first.id,
-                              :leave_type_id => LeaveType.first.id)
+                              :leave_type_id => LeaveType.first.id,
+                              :leave_request_id => LeaveRequest.first.id)
     @good_leave.valid?
     flunk "good_leave is not valid?" unless @good_leave.valid?
     @good_leave.save
@@ -29,7 +30,8 @@ class LeaveTest < ActiveSupport::TestCase
                              :end_date => "2009-10-20".to_date,
                              :duration => 5.0,
                              :employee_id => Employee.first.id,
-                             :leave_type_id => LeaveType.first.id)
+                             :leave_type_id => LeaveType.first.id,
+                             :leave_request_id => LeaveRequest.first.id)
     assert @test_leave.errors.empty?, "leave should be valid because it's a new record"
     @test_leave.save
     @test_leave.valid?
@@ -119,7 +121,8 @@ class LeaveTest < ActiveSupport::TestCase
                         :duration => 5.0,
                         :retrieval => 6.0,
                         :employee_id => Employee.first.id,
-                        :leave_type_id => LeaveType.first.id)
+                        :leave_type_id => LeaveType.first.id,
+                        :leave_request_id => LeaveRequest.first.id)
 
     @leave.valid?
     assert @leave.errors.invalid?(:retrieval), "retrieval should NOT be valid because is greater than the limit" 
