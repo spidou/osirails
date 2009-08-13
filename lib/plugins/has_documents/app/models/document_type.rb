@@ -1,5 +1,5 @@
 class DocumentType < ActiveRecord::Base
-  setup_has_permissions_model :association_options => { :name => :permissions, :class_name => "DocumentTypePermission" }
+  setup_has_permissions_model :association_options => { :name => :permissions }
   
   has_and_belongs_to_many :mime_types
   

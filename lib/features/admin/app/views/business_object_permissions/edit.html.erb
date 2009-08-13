@@ -6,24 +6,22 @@
     <table>
       <tr>
         <th rowspan="2">Roles</th>
-        <th colspan="6">Permissions</th>
+        <th colspan="<%= @permission_methods.size + 1 %>">Permissions</th>
       </tr>
       <tr>
-        <th>Lister</th>
-        <th>Voir</th>
-        <th>Ajouter</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
+        <% for method in @permission_methods %>
+          <%= "<th>#{method.name.titleize}</th>"%>
+        <% end %>
 			  <th>Tout cocher</th>
       </tr>
-    <% for permissions in @business_object_permissions %>
+    <% for permission in @business_object_permissions %>
       <tr>
-        <td><%= link_to permissions.role.name, edit_role_permission_path(permissions.role.id) %></td>
-        <td><%= check_box_tag "list[]", permissions.role_id, permissions.list %></td>
-        <td><%= check_box_tag "view[]", permissions.role_id, permissions.view %></td>
-        <td><%= check_box_tag "add[]", permissions.role_id, permissions.add %></td>
-        <td><%= check_box_tag "edit[]", permissions.role_id, permissions.edit %></td>
-        <td><%= check_box_tag "delete[]", permissions.role_id, permissions.delete %></td>
+        <td><%= link_to permission.role.name, edit_role_permission_path(permission.role.id) %></td>
+        <% fields_for "business_object_permissions[]", permission do |form| %>
+          <% for method in permission.permission_methods %>
+            <td><%= form.check_box method.name %></td>
+          <% end %>
+        <% end %>
 		    <td><input type="checkbox" class="checkbox_permission"></td>
       </tr>
     <% end %>
