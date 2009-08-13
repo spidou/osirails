@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class SendedMemorandumsControllerTest < ActionController::TestCase
   # Replace this with your real tests.

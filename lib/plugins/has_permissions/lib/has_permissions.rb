@@ -203,12 +203,9 @@ module HasPermissions
                 perm = object.permissions.find_by_role_id(role)
               elsif object.instance_of?(Document)
                 perm = object.document_type.permissions.find_by_role_id(role)
-              #elsif object.class.ancestors.include?(ActionController::Base) # CONTROLLER > MENU
-              #  (perm = Menu.find_by_name(controller_path).permissions.find_by_role_id(role)) rescue raise "permissions error for #{self}:#{self.class}"
 
               ### CLASS METHODS
               elsif object.respond_to?("business_object?") # BUSINESS OBJECT
-                puts ">>>> #{object} : #{object.business_object?} : #{object.business_object_id} : #{object.business_object}"
                 perm = object.business_object.permissions.find_by_role_id(role)
               else
                 raise "[has_permissions] I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"

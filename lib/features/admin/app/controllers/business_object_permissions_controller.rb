@@ -2,7 +2,7 @@ class BusinessObjectPermissionsController < ApplicationController
   
   # GET /business_object_permissions
   def index
-    @business_objects = BusinessObject.find(:all)
+    @business_objects = BusinessObject.all
   end
   
   # GET /business_object_permissions/:id/edit

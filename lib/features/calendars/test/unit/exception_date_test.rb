@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class ExceptionDateTest < ActiveSupport::TestCase
   fixtures :exception_dates, :events
