@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   layout "default"
   
   # Filters
-  before_filter :authenticate, :select_theme
+  before_filter :authenticate, :select_theme, :select_time_zone
   before_filter :load_features_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
@@ -146,6 +146,11 @@ class ApplicationController < ActionController::Base
         #select the default theme
         $CURRENT_THEME_PATH = "/themes/osirails-green"
       end
+    end
+    
+    def select_time_zone
+      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
+      Time.zone = ConfigurationManager.admin_society_identity_configuration_time_zone
     end
     
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.

@@ -166,8 +166,15 @@ function nav_more_links_handler() {
   })
 }
 
+// Load the initial attributes of the document forms for the
+// function preventClose, and active the autoresize for the
+// targeted the textarea with class "text_area_autoresize"
 Event.observe(window, 'load', function() {
-        $$('.text_area-autoresize').each(function(textarea) {
-          new Widget.Textarea(textarea);
-        });     
-});
+  initializeAttributes();
+  
+  $$('.text_area-autoresize').each(function(textarea) {
+    new Widget.Textarea(textarea);
+  });    
+});  
+
+window.onbeforeunload = preventClose;
