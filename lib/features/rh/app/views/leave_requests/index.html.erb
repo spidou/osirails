@@ -31,11 +31,10 @@
             <th>Actions</th>
           </tr>
     
-          <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user) %>
-          <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user) %>
-          <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user) %>
-          <%= render :partial => "refused_by_me_leave_requests" if @refused_by_me_leave_requests.size > 0 %>
-          
+          <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 %>
+          <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 %>
+          <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 %>
+          <%= render :partial => "refused_by_me_leave_requests" if @refused_by_me_leave_requests.size > 0 %>          
             
         </table>
       </div>

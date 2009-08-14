@@ -23,7 +23,7 @@ class LeaveRequestsController < ApplicationController
       
       @refused_by_me_leave_requests = LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date > ?", LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, @employee.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, @employee.id, Date.today], :order => "start_date, created_at DESC" )        
       
-      @leave_requests_to_treat = true if (@leave_requests_to_check.size > 0 or @leave_requests_to_notice.size > 0 or @leave_requests_to_close.size > 0 or @refused_by_me_leave_requests.size > 0)
+      @leave_requests_to_treat = true if ((@leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user)) or (@leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user)) or (@leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user)) or @refused_by_me_leave_requests.size > 0)
       
     end
   end
