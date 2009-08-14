@@ -214,37 +214,6 @@ module ApplicationHelper
     
     html
   end
-  
-  # Method to display contestual search into secondary menu
-  # you mays give two arguments:
-  # model => the model where to perform the search
-  # arguments => an array of all attributes to add as criterion to perform the search
-  #
-  # == examples
-  #
-  # # contextual_search("Model", ["relationship.attribute", "relationship1.relationship1-1.attribute"]) 
-  #
-  # # contextual_search("Employee", ["user.username"])
-  # #=> it will perform a search into employee as : Employee.search_with("user.username" => value)  
-  #     ps: +value+ is typed by user into the contextual search's text_field
-  #
-  # # contextual_search("Employee", ["numbers.number_type.name"])
-  # #=> you can search into the attributes of sub models using their own relationships
-  #
-  def contextual_search(model, arguments)
-    html =  form_remote_tag( :url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()" )
-    html << "<p>"
-    html << "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
-    html << "<input type='hidden' name='contextual_search[options]' value='#{arguments.to_yaml}'/>"
-    focus = "if(this.value=='Rechercher'){this.value='';}"
-    blur  = "if(this.value==''){this.value='Rechercher'}"
-    html << text_field_tag("contextual_search[value]",'Rechercher',:id => 'contextual_search', :onfocus => focus, :onblur => blur)
-    html << "<button type=\"submit\" class=\"contextual_search_button\"></button>"
-    html << "</p>"
-    html << "</form>"
-    
-    add_contextual_menu_item(:contextual_search, true, html)
-  end
 
   private
     # Creates dynamic helpers to generate standard links in all page

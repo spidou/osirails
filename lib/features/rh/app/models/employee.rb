@@ -55,7 +55,7 @@ class Employee < ActiveRecord::Base
   after_update :save_iban, :save_numbers, :save_address
   
   # Search Plugin 
-  has_search_index  :except_attributes    => ["*_id","*_at"],
+  has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
                     :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
                     :except_relationships => [:employees_services],
                     :main_model           => true

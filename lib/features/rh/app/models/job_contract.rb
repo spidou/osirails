@@ -30,10 +30,11 @@ class JobContract < ActiveRecord::Base
   @@form_labels[:salary] = "Salaire brut :"
   
   # Search Plugin
-  has_search_index  :only_attributes => ["start_date"],
+  has_search_index  :only_attributes    => [:start_date],
                     :only_relationships => [:job_contract_type]
   
   #return the actual salary
+  #OPTIMIZE use 'has_one :current_salary' instead!
   def actual_salary
     salaries.first
   end

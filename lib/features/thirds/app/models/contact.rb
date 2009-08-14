@@ -33,7 +33,7 @@ class Contact < ActiveRecord::Base
   @@form_labels[:contact_type] = "Type de contact :"
   
   # Search Plugin
-  has_search_index  :only_attributes => ["first_name","last_name"],
+  has_search_index  :only_attributes      => [:first_name, :last_name],
                     :except_relationships => [:contacts]
   
   def should_destroy?

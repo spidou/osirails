@@ -18,7 +18,7 @@ class Service < ActiveRecord::Base
   cattr_accessor :form_labels
   
   # Search Plugin
-  has_search_index :only_attributes => ["name"],
+  has_search_index :only_attributes    => [:name],
                    :only_relationships => [:parent, :children, :schedules]
 
   @@form_labels = Hash.new

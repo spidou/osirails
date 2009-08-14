@@ -7,12 +7,10 @@
 }
 
 /*main desing of the attribute chooser drop down menu*/
-.attr_chooser, .attr_chooser ul {
-	padding: 0;
+.attr_chooser {
+  list-style: none;
+  padding: 0;
 	margin: 0;
-	list-style: none;
-	background: #7e98cb;
-	-moz-border-radius:0px 4px 0px 4px;
 }
 
 .attr_chooser a {
@@ -30,10 +28,23 @@
   color: #303030;
 }
 
+.attr_chooser ul {
+  list-style: none;
+	padding: 5px;
+	margin: 0;
+	background-color: #7e98cb;
+	-moz-border-radius:0px 7px 0px 7px;
+	-moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+}
+
 /* the attribute */
 .attr_chooser li {
 	float: left;
 	width: auto;
+}
+
+.attr_chooser li ul li:hover {
+  background-color: orange;
 }
 
 /* the menu start hidden */

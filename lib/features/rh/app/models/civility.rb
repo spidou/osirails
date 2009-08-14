@@ -7,5 +7,5 @@ class Civility < ActiveRecord::Base
   validates_uniqueness_of :name
   
   # Search Plugin 
-  has_search_index :only_attributes => ["name"]
+  has_search_index :only_attributes => [:name]
 end

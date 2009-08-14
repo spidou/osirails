@@ -9,9 +9,9 @@ class Supplier < Third
 
   after_update :save_iban
   
-  has_search_index :only_attributes => ["name","siret_number"],
+  has_search_index :only_attributes    => [:name, :siret_number],
                    :only_relationships => [:activity_sector, :legal_form, :iban],
-                   :main_model => true
+                   :main_model         => true
 
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

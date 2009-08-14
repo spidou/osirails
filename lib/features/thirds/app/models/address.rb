@@ -17,7 +17,7 @@ class Address < ActiveRecord::Base
   @@form_labels[:zip_code] = "Code postal :"
   
   # Search Plugin
-  has_search_index :only_attributes => ["zip_code","city_name","country_name"]
+  has_search_index :only_attributes => [:zip_code, :city_name, :country_name]
   
   def address1and2
     address = address1

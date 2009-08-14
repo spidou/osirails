@@ -13,9 +13,9 @@ class Customer < Third
   
   after_update :save_establishments
   
-  has_search_index :only_attributes => ["name","siret_number"],
+  has_search_index :only_attributes    => [:name, :siret_number],
                    :only_relationships => [:activity_sector, :legal_form],
-                   :main_model => true
+                   :main_model         => true
   
   def activated_establishments
     establishment_array = []

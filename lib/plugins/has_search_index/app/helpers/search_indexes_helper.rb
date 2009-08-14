@@ -94,11 +94,11 @@ module SearchIndexesHelper
   
   # method to generate an hash containing the direct attributes of a model
   def generate_attributes_hash(model)
-  result = {}
+    result = {}
     model.search_index[:attributes].merge(model.search_index[:additional_attributes]).each_pair do |key, value|
-      result = result.merge(key.humanize.downcase => value)
+      result = result.merge(key.to_s.humanize => value)
     end
-  result 
+    result 
   end
   
   # method to generate a hash that contain all relationships and their own relationships
@@ -111,12 +111,12 @@ module SearchIndexesHelper
       if element.is_a?(Hash)
         element.each do |key, value|
           model = parent_model.constantize.association_list[key][:class_name]        
-          (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s.humanize.downcase}", model]       
-          result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s.humanize.downcase}"))
+          (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s.humanize}", model]       
+          result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s.humanize}"))
         end
       else
         model = parent_model.constantize.association_list[element][:class_name]
-        (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s.humanize.downcase}", model]
+        (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s.humanize}", model]
       end
     end
     return result

@@ -143,7 +143,7 @@ module EmployeesHelper
   end
   
   def contextual_search_for_employee
-    contextual_search("Employee", ["*", "user.*", "user.username","services.name","jobs.name"])
+    contextual_search("Employee", ["*", "user.*", "services.name", "jobs.name"])
   end
 
 end

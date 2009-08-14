@@ -45,8 +45,6 @@ class UsersController < ApplicationController
     if params[:user][:password].empty?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
-    else
-      @user.updating_password = true
     end
 
     if @user.update_attributes(params[:user])
@@ -55,7 +53,6 @@ class UsersController < ApplicationController
     else
       render :action => "edit"
     end
-    @user.updating_password = false
   end
 
   # DELETE /users/1

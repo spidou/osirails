@@ -17,6 +17,9 @@ class User < ActiveRecord::Base
   
   validates_presence_of :username
   
+  before_save    :change_password_updated_at # that callback must be before 'before_save :password_encryption'
+  before_destroy :can_be_destroyed?
+  
   with_options :if => :should_update_password? do |user|
     user.before_save :password_encryption
     user.validates_presence_of :password
@@ -32,17 +35,6 @@ class User < ActiveRecord::Base
     user.validates_format_of :password, :with => reg, :message => message
   end
   
-  # CallBacks
-  before_save    :change_password_updated_at
-  before_destroy :can_be_destroyed?
-
-  # Accessors
-  # set up this variable to 'true' if you want to update password
-  attr_accessor :updating_password
-  
-  # after_find store the password after each find request in that variable
-  attr_accessor :old_encrypted_password
-  
   # this variable must be set at "1" if we want to force password expiration (by setting at nil 'password_updated_at')
   attr_accessor :force_password_expiration
   
@@ -57,16 +49,10 @@ class User < ActiveRecord::Base
   @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
  
   # Search Plugin
-  has_search_index  :additional_attributes => {"expired?" => "boolean" },
-                    :only_attributes => ["username", "enabled", "last_connection","last_activity"],
-                    :displayed_attributes => ["id","username","enabled","expired?","last_activity"],
-                    :main_model => true
-                    
-  
-  # store old encrypted password to be aware if a new password is given
-  def after_find
-    self.old_encrypted_password = self.password
-  end
+  has_search_index  :additional_attributes => { :expired? => :boolean },
+                    :only_attributes       => [:username, :enabled, :last_connection, :last_activity],
+                    :displayed_attributes  => [:id, :username, :enabled, :expired?, :last_activity],
+                    :main_model            => true
   
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)
@@ -75,7 +61,7 @@ class User < ActiveRecord::Base
   
   # Method to check is the password should be updated or not
   def should_update_password?
-    updating_password || new_record?
+    updating_password? || new_record?
   end
   
   def force_password_expiration?
@@ -137,18 +123,10 @@ class User < ActiveRecord::Base
       end
     end
     
-    ## determine if we want to update password or not
-    #def updating_password?
-    #  puts "> #{self.password.blank?.inspect} > #{self.password} > #{self.old_encrypted_password}"
-    #  return false if self.password.blank?
-    #  return false if self.password == self.old_encrypted_password
-    #  return true
-    #  #raise (!self.password.blank? and self.password != self.old_encrypted_password).inspect
-    #  ##if !self.password.blank? and encrypt(self.password) != self.old_encrypted_password
-    #  ##  raise (!self.password.blank? and encrypt(self.password) != self.old_encrypted_password).inspect
-    #  ##end
-    #  #!self.password.blank? and self.password != self.old_encrypted_password
-    #end
+    # determine if we want to update password or not
+    def updating_password?
+      password != password_was
+    end
     
     # Method to encrypt a string
     def encrypt(string)
