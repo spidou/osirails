@@ -135,7 +135,7 @@ module ApplicationHelper
   end
   
   def is_edit_view?
-    params[:action] == "edit" or request.put?
+    params[:action].match(/^\w*_form$/) or params[:action] == "edit" or request.put?
   end
   
 #  def can_edit?(object)

@@ -4,7 +4,7 @@ class Employee < ActiveRecord::Base
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
-  named_scope :active_employees, :include => [:job_contract] , :conditions => ['job_contracts.departure is null', Time.now]
+  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
   # Accessors
   cattr_accessor :pattern_error,:form_labels

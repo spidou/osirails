@@ -5,7 +5,6 @@ class CheckingTest < ActiveSupport::TestCase
   def setup
     @good_checking = checkings(:good_checking)
     flunk "good cheking is not valid #{@good_checking.errors.inspect}" unless @good_checking.valid?
-    
     @checking = Checking.new
     @checking.valid?
   end
@@ -113,7 +112,7 @@ class CheckingTest < ActiveSupport::TestCase
     assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid"
     assert !@good_checking.errors.invalid?(:user), "user should be invalid"
   end
-  
+    
   def test_one_checking_per_day_and_per_employee
     # not a new record
     assert !@good_checking.errors.invalid?(:date), "date should be valid"
@@ -145,12 +144,24 @@ class CheckingTest < ActiveSupport::TestCase
     assert_equal true, @good_checking.valid?, "good_checking should be valid because checking isn't too late"
     
     # 2 weeks ago -> more than 1 week (use new record because it is forbidden to modify the date)
-    @good_checking.created_at = Date.today - 2.week
+    @good_checking.created_at = (Date.today - 2.week).to_datetime
     @good_checking.absence_comment = "modification limit test"
     assert_equal false, @good_checking.valid?, "good_checking should NOT be valid because checking isn't too late"
   end
   
+  def test_override
+    assert_equal false, @good_checking.override, "good_checking should NOT be valid because the cweek is equal to the created_at one"
+    @good_checking.created_at = Date.today.last_week.to_datetime
+    assert_equal true, @good_checking.override, "good_checking should be valid"
+  end
+  
   def test_restricted_edit
+    assert_equal true, @good_checking.valid?, "good_checking should NOT be valid"
+    @good_checking.created_at = Date.today.last_week.to_datetime
+    assert_equal false, @good_checking.valid?, "good_checking should NOT be valid because the cweek is not equal to the created_at one"
+  end
+  
+  def test_verify_fixed_attributes
     @good_checking.absence_comment = "another comment"
     @good_checking.valid?
     assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
@@ -179,53 +190,18 @@ class CheckingTest < ActiveSupport::TestCase
     @good_checking.valid?
     assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
     assert !@good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
-    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"  
+    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+  end
+    
+  def test_validate_cancel_flag
+    @good_checking.cancelled = true
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:cancelled), "cancelled should NOT be valid because is modified while a normal edit"
+    
+    @good_checking.reload
+    assert_equal true, @good_checking.cancel, "cancelled should be valid because is modified while a cancel"
   end
   
-#  def test_correlation_between_absence_and_other_datas_with_morning_absence
-#    @good_checking_with_morning_absence = checkings(:good_checking_with_morning_absence)
-#    @good_checking_with_morning_absence.valid?
-#    
-#    @bad_checking_with_morning_absence = checkings(:bad_checking_with_morning_absence)
-#    @bad_checking_with_morning_absence.valid?
-#    
-#    [:morning_delay_hours, :morning_delay_minutes, :morning_overtime_hours, :morning_overtime_minutes].each do |attribute|
-#      assert !@good_checking.errors.invalid?(attribute), "#{attribute.to_s} should be valid because there's no absence"
-#      assert !@good_checking_with_morning_absence.errors.invalid?(attribute), "#{attribute.to_s} should be valid"
-#      assert @bad_checking_with_morning_absence.errors.invalid?(attribute), "#{attribute.to_s} should NOT be valid"
-#    end
-#  end
-  
-#  def test_correlation_between_absence_and_other_datas_with_afternoon_absence
-#    @good_checking_with_afternoon_absence = checkings(:good_checking_with_afternoon_absence)
-#    @good_checking_with_afternoon_absence.valid?
-#    
-#    @bad_checking_with_afternoon_absence = checkings(:bad_checking_with_afternoon_absence)
-#    @bad_checking_with_afternoon_absence.valid?
-#    
-#    [:afternoon_delay_hours, :afternoon_delay_minutes, :afternoon_overtime_hours, :afternoon_overtime_minutes].each do |attribute|
-#      assert !@good_checking.errors.invalid?(attribute), "afternoon_delay_hours should be valid there's no absence"
-#      assert !@good_checking_with_afternoon_absence.errors.invalid?(attribute), "afternoon_delay_hours should be valid"
-#      assert @bad_checking_with_afternoon_absence.errors.invalid?(attribute), "afternoon_delay_hours should NOT be valid"
-#    end
-#  end
-  
-#  def test_correlation_between_absence_and_other_datas_with_day_absence 
-#    @good_checking_with_day_absence = checkings(:good_checking_with_day_absence)
-#    @good_checking_with_day_absence.valid?
-
-#    @bad_checking_with_day_absence = checkings(:bad_checking_with_day_absence)
-#    @bad_checking_with_day_absence.valid?
-#    
-#    [:morning_delay_hours, :morning_delay_minutes, :morning_overtime_hours, :morning_overtime_minutes,
-#    :afternoon_delay_hours, :afternoon_delay_minutes, :afternoon_overtime_hours, :afternoon_overtime_minutes].each do |attribute|
-#       assert !@good_checking.errors.invalid?(attribute), "morning_delay_hours should be valid there's no absence"
-#       assert !@good_checking_with_day_absence.errors.invalid?(attribute), "morning_delay_hours should be valid"
-#       assert @bad_checking_with_day_absence.errors.invalid?(attribute), "morning_delay_hours should NOT be valid"
-#    end
-#  end
-  
-
   def test_verify_time
     @checking = Checking.new(checkings(:good_checking).attributes)
     @checking.overtime_hours = 25

@@ -1,8 +1,13 @@
 class Checking < ActiveRecord::Base
-  has_permissions :as_business_object, :additional_methods => [:super_edit]
+  has_permissions :as_business_object, :additional_methods => [:override, :cancel]
   
   belongs_to :employee
   belongs_to :user
+  
+  named_scope :actives, :conditions => ["cancelled=? or cancelled is null", false]
+  
+  attr_accessor :validate_override, :validate_cancel
+  attr_protected :validate_override, :validate_cancel
   
   with_options :allow_nil => true do |c|
     c.validates_numericality_of :overtime_hours, :overtime_minutes,:absence_hours, :absence_minutes
@@ -16,8 +21,7 @@ class Checking < ActiveRecord::Base
   validates_presence_of :employee,                   :if => :employee_id
   
   validate :validates_one_checking_per_day_and_per_employee
-  validate :validates_restricted_edit,                             :if => :employee_id and :date
-#  validate :validates_correlation_between_absence_and_other_datas, :if => :absence
+  validate :validates_restricted_edit,                             :if => :date and :employee_id
   validate :validates_good_hours, :validates_good_minutes
   validate :validates_not_empty_checking
   validate :validates_date_not_too_far_away,                       :if => :date
@@ -55,6 +59,35 @@ class Checking < ActiveRecord::Base
     (!hours.nil? and hours != 0) or (!minutes.nil? and minutes != 0)
   end
   
+  
+  def can_be_overrided?
+    Date.today.cweek != created_at.to_date.cweek
+  end
+  
+  # Method that permit to override a record
+  #
+  def override
+    if can_be_overrided?
+      self.validate_override = true
+      result = save
+      self.validate_override = false
+    else
+      errors.add_to_base("le pointage ne peut pas etre corrigé")
+    end
+    return result || false
+  end
+  
+  # Method that permit to cancel a record
+  # and to use validations according to the cancel needs
+  # thank's to validate_cancel flag
+  #
+  def cancel
+    self.validate_cancel = true
+    result = update_attributes(:cancelled => true)
+    self.validate_cancel = false
+    result
+  end
+  
   private
     
     def validates_one_checking_per_day_and_per_employee
@@ -70,32 +103,20 @@ class Checking < ActiveRecord::Base
     def validates_restricted_edit
       unless new_record?
         if Date.today.cweek != created_at.to_date.cweek
-          errors.add_to_base("Trop tard pour modifier le pointage") unless self.attributes.select {|attribute,value| value != send("#{attribute}_was")}.empty?
+          errors.add_to_base("le pointage ne peut plus etre modifié") if !self.validate_override
         else
-          errors.add(:employee_id, "ne doit pas être modifié") if employee_id != employee_id_was
-          errors.add(:date, "ne doit pas être modifié") if date != date_was
-          errors.add(:user_id, "invalide : seul le créateur du pointage peut le modifier") if user_id != user_id_was
+          verify_fixed_attributes
         end
       end
     end
     
-#    def validates_correlation_between_absence_and_other_datas
-#      error_message = "doit être à 0 si il y a une absence"
-#      if [MORNING_ABSENCE, DAY_ABSENCE].include?(absence)      
-#        errors.add(:morning_delay_hours, "#{error_message} le matin") unless morning_delay_hours.nil? or morning_delay_hours == 0
-#        errors.add(:morning_overtime_hours,"#{error_message} le matin") unless morning_overtime_hours.nil?  or morning_overtime_hours == 0
-#        errors.add(:morning_delay_minutes, "#{error_message} le matin") unless morning_delay_minutes.nil? or morning_delay_minutes == 0
-#        errors.add(:morning_overtime_minutes,"#{error_message} le matin") unless morning_overtime_minutes.nil?  or morning_overtime_minutes == 0
-#      end
-#      if [AFTERNOON_ABSENCE, DAY_ABSENCE].include?(absence)
-#        afternoon = "l'aprés-midi"
-#        errors.add(:afternoon_delay_hours, "#{error_message} #{afternoon}") unless afternoon_delay_hours.nil? or afternoon_delay_hours == 0
-#        errors.add(:afternoon_overtime_hours,"#{error_message} #{afternoon}") unless afternoon_overtime_hours.nil? or afternoon_overtime_hours == 0
-#        errors.add(:afternoon_delay_minutes, "#{error_message} #{afternoon}") unless afternoon_delay_minutes.nil? or afternoon_delay_minutes == 0
-#        errors.add(:afternoon_overtime_minutes,"#{error_message} #{afternoon}") unless afternoon_overtime_minutes.nil? or afternoon_overtime_minutes == 0
-#      end  
-#    end
-    
+    def verify_fixed_attributes
+      errors.add(:cancelled, "ne doit pas être modifié") if cancelled != cancelled_was and !self.validate_cancel
+      errors.add(:employee_id, "ne doit pas être modifié") if employee_id != employee_id_was
+      errors.add(:date, "ne doit pas être modifié") if date != date_was
+      errors.add(:user_id, "invalide : seul le créateur du pointage peut le modifier") if user_id != user_id_was
+    end
+
     def validates_good_hours
       verify_times({:overtime_hours => overtime_hours, :absence_hours => absence_hours}, "ne doit pas être plus grand que 23 heures", 23)
     end

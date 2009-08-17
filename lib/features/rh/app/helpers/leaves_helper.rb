@@ -7,7 +7,7 @@ module LeavesHelper
     after = nil if after < 0   
     last_year = Employee.leave_year_start_date.year + (after || 0)
     
-    html = "<select name='leave_year'>"   
+    html = "<select name='leave_year' onchange='submit();' >"   
     (employee.job_contract.start_date.year..last_year).each do |year|
       selected = (year == current_year.to_i)? "selected='selected'" : ""
       html += "<option #{ selected } value='#{ year }'>#{ year }</option>"

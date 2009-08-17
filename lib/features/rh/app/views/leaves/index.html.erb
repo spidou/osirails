@@ -4,28 +4,18 @@
   <%= employees_link %>
 <% end %>
 
-<h1>Historique des cong&eacute;s</h1>
+<h1>Historique des cong&eacute;s de <%=@employee.fullname%></h1>
 
 <div class='presentation_medium'>
 
 <% if @employee.job_contract.start_date.nil?%>
-  <p>
-    <strong>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</strong>
-  </p>
+  <p>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</p>
 <% else %>
-
-    <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
-     <p>
-        Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, 1, @year) %>
-        <input type="submit" value="Afficher"/>
-     </p>
-    </form> 
-    <% end %>
-    
-    <div id='leaves_list'>
-      <%= render :partial => "leaves"%>
-    </div>
-
+  <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
+    <p>Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, 1, @year) %></p>
+  </form> 
+  <% end %>   
+  <div id='leaves_list'><%= render :partial => "leaves"%></div>
 <% end %>
 
 </div>

@@ -1,7 +1,11 @@
 class Leave < ActiveRecord::Base
+  has_permissions :as_business_object, :additional_methods => [:cancel]
   
   named_scope :actives, :conditions => ['cancelled =? or cancelled is null', false]
   named_scope :cancelled_leaves, :conditions => ['cancelled =?', true]
+  
+  attr_accessor :validate_cancel
+  attr_protected :validate_cancel
   
   belongs_to :employee
   belongs_to :leave_type
@@ -14,23 +18,22 @@ class Leave < ActiveRecord::Base
   validates_presence_of :employee,      :if => :employee_id
   
   validates_numericality_of :duration
-#  validates_numericality_of :retrieval, :allow_nil => true
   
-  validate :validates_is_new_record
+  validate :validates_is_new_record,                :unless => :validate_cancel
+  validate :validates_only_cancel,                  :if => :validate_cancel
   validate :validates_not_cancelled_at_creation
-#  validate :validates_retrieval_value_is_correct,   :if => :duration
   validate :validates_date_is_correct,              :if => :start_date and :end_date
   validate :validates_not_overlay_with_other_leave, :if => :employee
   
-#  validate :validates_not_extend_on_two_years, :if => :start_date and :end_date
-  
-  # method to permit a leave cancellation
+  # Method that permit to cancel a record
+  # and to use validations according to the cancel needs
+  # thank's to validate_cancel flag
+  #
   def cancel
-    unless cancelled_was
-      self.reload.update_attribute_with_validation_skipping("cancelled", true)
-    else
-      false
-    end
+    self.validate_cancel = true
+    result = update_attributes(:cancelled => true);
+    self.validate_cancel = false
+    result
   end
   
   # method to get leave duration in days(float), the period start is taken in account
@@ -49,13 +52,6 @@ class Leave < ActiveRecord::Base
     return total
   end
   
-#  # method that take in account retrieval value if there's one
-#  def estimate_duration
-#    value = total_estimate_duration(start_date, end_date)
-##    value -= retrieval unless retrieval.nil?
-#    value
-#  end
-  
   def calendar_duration
     return 0 if start_date.nil? or end_date.nil? or (start_date > end_date)
     total = (end_date - start_date).to_i + 1
@@ -64,9 +60,20 @@ class Leave < ActiveRecord::Base
     total
   end
   
-  # TODO the tests
   def is_for_current_year?
     end_date >= Employee.leave_year_start_date and start_date <= Employee.leave_year_end_date
+  end
+  
+  def start_datetime
+    result = start_date.to_datetime
+    result += 12.hours if start_half
+    result
+  end
+  
+  def end_datetime
+    result = end_date.to_datetime
+    result -= 12.hours if end_half
+    result
   end
   
   private
@@ -74,28 +81,6 @@ class Leave < ActiveRecord::Base
     def validates_not_cancelled_at_creation
       errors.add(:cancelled, "est invalide") if cancelled and new_record?
     end
-    
-#    def validates_not_extend_on_two_years
-#      error_message = " vous devriez créer deux congés différents"
-#      l_year_start_date = Employee.leave_year_start_date
-#      l_year_end_date = Employee.leave_year_end_date
-#      errors.add(:start_date, "doit être plus grand ou égal à leave year end, #{error_message}") if start_date < l_year_start_date and end_date > l_year_start_date
-#      errors.add(:end_date, "doit être plus petit ou égal à leave year start, #{error_message}") if end_date > l_year_end_date and start_date < l_year_end_date
-#    end
-#  
-#    def validates_duration_is_correct
-#      leave_duration_limit = ConfigurationManager.admin_society_identity_configuration_leave_duration_limit
-#      if duration > leave_duration_limit
-#        errors.add(:start_date, "wrong value : leave duration mustn't be higher than #{leave_duration_limit}")
-#        errors.add(:end_date, "wrong value : leave duration mustn't be higher than #{leave_duration_limit}")
-#      end  
-#    end
-#    
-#    def retrieval_value_is_correct
-#      unless retrieval.nil?
-#        errors.add(:retrieval, "doit être plus petit à égale à #{duration}") if retrieval > duration
-#      end
-#    end
     
     def validates_date_is_correct
       if start_date > end_date
@@ -111,16 +96,18 @@ class Leave < ActiveRecord::Base
     end
     
     def validates_not_overlay_with_other_leave
-      other_leaves = employee.leaves.actives
-      unless employee.nil?
-        errors.add(:start_date, " est invalide, fait partie d'un autre congé") unless other_leaves.select {|n| (n.start_date..n.end_date).include?(start_date)}.empty?
-        errors.add(:end_date, "est invalide, fait partie d'un autre congé") unless other_leaves.select {|n| (n.start_date..n.end_date).include?(end_date)}.empty?
-      end
+      leaves = employee.leaves.actives
+      leaves.delete_if {|l| l.id == id} unless new_record?
+      errors.add(:start_date, "est invalide, fait partie d'un autre congé") unless leaves.select {|n| (n.start_datetime..n.end_datetime).include?(start_datetime)}.empty?
+      errors.add(:end_date, "est invalide, fait partie d'un autre congé") unless leaves.select {|n| (n.start_datetime..n.end_datetime).include?(end_datetime)}.empty?
     end
     
     def validates_is_new_record
       errors.add_to_base("un congé ne peut être modifié") unless self.new_record?
     end
-    
-      
+  
+    def validates_only_cancel
+      attributes_without_cancelled = attributes.reject {|attribute, v| attribute == "cancelled"}
+      errors.add_to_base("un congé peut uniquement être annulé") unless attributes_without_cancelled.select {|attribute, value| value != send("#{attribute}_was")}.empty?
+    end
 end

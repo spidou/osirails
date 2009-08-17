@@ -57,7 +57,7 @@
 
 <!--########### Jobs ####################-->
   <h2>Fiche de poste</h2>
-  <%= render :partial => 'jobs/jobs' , :locals => {:form => f, :job => Job.new, :jobs => @jobs,:service => @service} %>
+  <%= render :partial => 'jobs/jobs' , :locals => {:form => f, :job => Job.new, :jobs => @jobs,:service => @employee.service} %>
 
 <!--########### Iban ####################-->
   <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
@@ -67,7 +67,7 @@
 
 <!--########### JobContract #############-->
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
-    <%= render( :partial => @job_contract ) unless @employee.new_record? %> 
+    <%= render(:partial => @employee.job_contract) unless is_form_view? %> 
   <% end %>
 
 <!--############## Premia ##############-->
@@ -82,13 +82,12 @@
 
 <!--###### Documents div #######-->
   <% if is_form_view? %>
-    <%# display_documents_and_add_documents_button(@employee, @documents, params, @new_document_number, @error) %>
     <p><%= f.submit button_name  %></p>
   <% end %>
 <% end %><!--end form -->
 </div><!--end div -->
 
    
-<%if is_form_view? %>
+<% if is_form_view? %>
   <%= osibox_init :partial => 'job_form', :locals => { :job => Job.new }, :border_size => '32'%>
 <% end %>

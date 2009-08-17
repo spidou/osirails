@@ -15,12 +15,17 @@ class LeavesController < ApplicationController
     end
   end
   
+  # GET /employees/:employee_id/leaves/:id/cancel
+  def cancel
+    @leave = Leave.find(params[:id])
+    @leave.cancel
+    redirect_to employee_leaves_path
+  end
+  
   # DELETE /employees/:employee_id/leaves/:id
   def destroy
     @leave = Leave.find(params[:id])
-    unless @leave.cancel
-      flash[:notice] = "Impossible de supprimer le congé"
-    end
+    @leave.destroy
     redirect_to employee_leaves_path
   end
   

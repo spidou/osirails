@@ -1,24 +1,25 @@
 <% if @leaves.empty? %>
-  <p>
-    <strong>Aucun cong&eacute; pay&eacute; pris pour l'ann&eacute;e <%= @year %></strong>
-  </p>
+  <p>Aucun cong&eacute; pay&eacute; pris pour l'ann&eacute;e <%= @year %></p>
 <% else %>
-<table>
-  <tr>
-    <th>P&eacute;riode</th>
-    <th>Nb. jours<br/>calendaires</th>
-    <th>Nb. jours pris<br/>au total</th>
-    <th>Type</th>
-    <th>Action</th>
-  </tr>
-  <% @leaves.each do |leave| %>
-    <%="<tr #{"class='disabled'" if leave.cancelled} >" %>
-      <td><%= get_effective_leave_periode(leave) %></td>
-      <td><%= leave.calendar_duration %></td>
-      <td><%= leave.duration %></td>
-      <td><%= leave.leave_type.name %></td>
-      <td><%= leave.cancelled ? image_tag("/images/delete_disable_16x16.png") : delete_employee_leave_link(@employee, leave, :link_text => nil) %></td>
+  <table>
+    <tr>
+      <th>P&eacute;riode</th>
+      <th>Nb. jours<br/>calendaires</th>
+      <th>Nb. jours pris<br/>au total</th>
+      <th>Type</th>
+      <th>Action</th>
     </tr>
-  <% end %>
-</table>
+    <% @leaves.each do |leave| %>
+      <%="<tr #{"class='disabled'" if leave.cancelled} >" %>
+        <td><%= get_effective_leave_periode(leave) %></td>
+        <td><%= leave.calendar_duration %></td>
+        <td><%= leave.duration %></td>
+        <td><%= leave.leave_type.name %></td>
+        <td>
+          <%= link_to( image_tag("/images/delete_16x16.png", :alt => "Annuler", :title => "Annuler"), cancel_employee_leave_path(@employee, leave)) unless leave.cancelled %>
+          <%= delete_employee_leave_link(@employee, leave, :link_text => nil) unless leave.cancelled %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>

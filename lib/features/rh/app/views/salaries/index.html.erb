@@ -3,9 +3,12 @@
   <%= employees_link %>
 <% end %>
 
-<h1>Historique des salaires</h1>
+<h1>Historique des salaires de <%=@employee.fullname%></h1>
+<div class="presentation-medium">
 
-<div>
+<% if @salaries.empty? %>
+  <p>Aucun salaire</p>  
+<% else %>
   <table>
       <tr>
         <th>Montant brut</th>
@@ -19,5 +22,6 @@
         <td><%=h salary.created_at.strftime("%d/%m/%Y")%></td>
       </tr> 
       <%end%>
-  </table>
+  </table>  
+<% end %>
 </div>

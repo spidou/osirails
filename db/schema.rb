@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090812094807) do
+ActiveRecord::Schema.define(:version => 20090814045511) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20090812094807) do
     t.integer  "overtime_hours",   :limit => 11
     t.integer  "overtime_minutes", :limit => 11
     t.text     "overtime_comment"
+    t.boolean  "cancelled"
   end
 
   add_index "checkings", ["date", "employee_id"], :name => "date_employee_id_key", :unique => true

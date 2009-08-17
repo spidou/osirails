@@ -3,13 +3,13 @@
 <% end %>
 
 <div class="presentation_large">
-  <% form_for @checking do |f|%>
+  <% form_for @checking, :url => { :action => action } do |f| %>
     <%= f.error_messages%>
     
     <h2>Qui? et Quand?</h2>
     <p>
       <%= f.label :employee_id %>
-      <% if is_edit_view? %>
+      <% if is_edit_view?%>
         <%= strong(@checking.employee.fullname) %>
       <% else %>
         <%= f.form_or_view(f.collection_select(:employee_id, @employees, :id, :fullname, { :prompt => "Veuillez choisir un employé" }), :employee, :fullname)%>
@@ -47,7 +47,7 @@
     </p>
     
     <p>
-    <%= f.submit button_name%>
+      <%= f.submit button_name %>
     </p>
   <% end %>
 </div>

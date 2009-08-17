@@ -5,13 +5,10 @@ module EmployeesHelper
   ###############################################################################
   
   def display_social_security(default=nil)
-    if default.nil?
-      html = text_field_tag( 'social_security_number[0]', params[:social_security].nil? ? "" : params[:social_security].split(" ")[0], :size => 13, :maxlength => 13, :class => "disable-stylesheet-width") + "\n"
-      html += text_field_tag( 'social_security_number[1]', params[:social_security].nil? ? "" : params[:social_security].split(" ")[1], :size => 2, :maxlength => 2, :class => "disable-stylesheet-width")
-    else
-      html = text_field_tag( 'social_security_number[0]', default.split(" ")[0],:size => 13, :maxlength => 13, :class => "disable-stylesheet-width") + "\n"
-      html += text_field_tag( 'social_security_number[1]', default.split(" ")[1],:size => 2, :maxlength => 2, :class => "disable-stylesheet-width")
-    end
+    option = [{:size => 13, :maxlength => 13, :class => "disable-stylesheet-width"}, {:size => 2, :maxlength => 2, :class => "disable-stylesheet-width"}]
+    social_security = default.nil? ? params[:social_security] || "" : default
+    html = text_field_tag( 'social_security_number[0]', social_security.split(" ")[0], option[0]) + "\n"
+    html += text_field_tag( 'social_security_number[1]', social_security.split(" ")[1], option[1])
   end
   
   ##################################################################
@@ -40,19 +37,14 @@ module EmployeesHelper
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
   # This method permit to show or hide content of secondary menu
-  def actives_employees_link(show_all)   
-      if controller.can_view?(current_user) and Employee.can_view?(current_user)
-          if show_all == false
-            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")}  View all employees (including inactives)", :controller => "employees", :action => "index", :all_employees => true)
-          else
-            link_to("#{image_tag("/images/view_16x16.png", :alt => "Ajouter", :title => "Ajouter")} View all active employees", :controller => "employees", :action => "index", :all_employees => false)
-          end
-      end
+  def actives_employees_link(view_inactives)   
+    message = view_inactives ? "Voir" : "Cacher"
+    link_to("#{display_image("/images/view_16x16.png","#{message}")} #{message} les employ&eacute; inactifs", employees_path(:all_employees => !view_inactives))
   end
   
   #########################################################################################
   
-  # Method to verify if the params[:employee] and his attributes are null
+  # Method to verify if the params[:employee] and his attributes are null #OPTIMIZE the name and the method (services don't use it anymore)
   def is_in?(object, collection, attribute = nil, employee = nil)
     if employee.nil? and !attribute.nil? 
       return false if params[:employee].nil?
@@ -61,26 +53,13 @@ module EmployeesHelper
       collection=='services'? employee.services.include?(object) : employee.jobs.include?(object)
     end
   end
-
-  
-  # Method to verify if the params[:responsable] and his attributes are null
-  def is_resonsable_of_this_service?(service_id,employee = nil)
-    if employee.nil?
-      return false if params[:responsable].nil?
-      params[:responsable][service_id.to_s].nil? ? false : true
-    else
-      employee.responsable?(service_id).include?(employee.id)
-    end
-  end
-  
-
   
   # Method to find the service's responsibles
-  def responsibles
-    return "<strong>aucun(s)</strong>" if @service.responsibles.empty?
+  def get_responsibles
+    return "<strong>aucun(s)</strong>" if @employee.service.responsibles.empty?
     html = ""
-    for responsible in @service.responsibles
-      html += ", " unless @service.responsibles.first == responsible
+    for responsible in @employee.service.responsibles
+      html += ", " unless @employee.service.responsibles.first == responsible
       html += (@employee.id == responsible.id)? responsible.fullname : link_to(responsible.fullname, employee_path(responsible))
     end
     return html
@@ -88,24 +67,21 @@ module EmployeesHelper
   
   # Method to pluralize or not the email's <h3></h3>
   def emails_h3(employee)
-    return "" if employee.email=="" and employee.society_email==""
-    return "<h3>Adresse électronique </h3>" if (employee.email=="") ^ (employee.society_email=="")
-    return "<h3>Adresses électroniques </h3>" if employee.email!="" and employee.society_email!=""
+    return "" if employee.email == "" and employee.society_email == ""
+    return "<h3>Adresse électronique </h3>" if (employee.email == "") ^ (employee.society_email == "")
+    return "<h3>Adresses électroniques </h3>" if employee.email != "" and employee.society_email != ""
   end
   
   # Method that return an array of visible numbers
   def visibles_numbers(numbers)
-    visibles = []
-    numbers.each do |number|
-      visibles << number if number.visible
-    end
-    visibles
+    numbers.select {|number|  number.visible}
   end
   
   # Method that add the title to the phone number td
   def number_td(numbers)
-    unless visibles_numbers(numbers)==[]
-      td = "<td  title='#{ visibles_numbers( numbers ).first.indicative.indicative + " " + visibles_numbers( numbers ).first.formatted + " (" + visibles_numbers( numbers ).first.indicative.country.name + ")'" unless visibles_numbers( numbers ).first.indicative.nil? } >"
+    unless visibles_numbers(numbers).empty? or visibles_numbers(numbers).first.indicative.nil?
+      number = visibles_numbers(numbers).first
+      "<td title='#{number.indicative.indicative} #{number.formatted} (#{number.indicative.country.name})'>"
     else
       "<td>"
     end
@@ -115,13 +91,13 @@ module EmployeesHelper
   def numbers_h3(numbers)
     unless controller.can_view?(current_user) and Employee.can_view?(current_user)
       visibles = visibles_numbers(numbers)
-      return "" if visibles.size==0 
-      return "<h3>Numéro de telephone</h3>" if visibles.size==1
-      return "<h3>Numéros de telephone</h3>"if visibles.size>1
+      return "" if visibles.size == 0 
+      return "<h3>Numéro de telephone</h3>" if visibles.size == 1
+      return "<h3>Numéros de telephone</h3>"if visibles.size > 1
     else
-      return "" if numbers.size==0 
-      return "<h3>Numéro de telephone</h3>" if numbers.size==1
-      return "<h3>Numéros de telephone</h3>"if numbers.size>1
+      return "" if numbers.size == 0 
+      return "<h3>Numéro de telephone</h3>" if numbers.size == 1
+      return "<h3>Numéros de telephone</h3>"if numbers.size > 1
     end
   end
   
@@ -136,7 +112,7 @@ module EmployeesHelper
     "/images/"+type+"_16x16.png"
   end
   
-  # method that permit the showing of img balise with otions passed aas arguments  
+  # method that permit the showing of img balise with otions passed as arguments  
   def display_image(path,alt,title=alt)
     image_tag(path, :alt => alt, :title => title)
   end
