@@ -1,4 +1,5 @@
-require 'estimate_duration.rb'
+require 'estimate_duration'
+
 class Leave < ActiveRecord::Base
   include EstimateDuration
   

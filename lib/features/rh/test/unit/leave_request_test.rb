@@ -103,22 +103,28 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
   
   def test_dates_coherence_validity
+    flunk "start_date should be set at tomorrow" if @step_submit.start_date != Date.tomorrow
     @step_submit.valid?
     assert !@step_submit.errors.invalid?(:start_date), "start_date should be valid"
     
-    @step_submit.start_date = Date.today - 1
-    @step_submit.valid?
-    assert @step_submit.errors.invalid?(:start_date), "start_date should NOT be valid"
-    
     @step_submit.start_date = Date.today
     @step_submit.valid?
-    assert @step_submit.errors.invalid?(:start_date), "start_date should NOT be valid"
+    assert !@step_submit.errors.invalid?(:start_date), "start_date should be valid"
+    
+    @step_submit.start_date = Date.yesterday
+    @step_submit.valid?
+    assert @step_submit.errors.invalid?(:start_date), "start_date should NOT be valid because it should be today or after today"
   end
   
   def test_same_dates_and_a_half_max
+    flunk "start_half and end_half should be set at true" unless @step_submit.start_half and @step_submit.end_half
     @step_submit.end_date = @step_submit.start_date
     @step_submit.valid?
     assert @step_submit.errors.invalid?(:end_half), "end_half should NOT be valid"
+    
+    @step_submit.end_half = false
+    @step_submit.valid?
+    assert !@step_submit.errors.invalid?(:end_half), "end_half should be valid"
   end
   
   def test_unique_dates
@@ -347,7 +353,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_submit.check, "leave_request should fail at step check"
     
     for element in persistent_attributes
-    assert @step_submit.errors.invalid?(element), "#{element} should have changed"
+      assert @step_submit.errors.invalid?(element), "#{element} should NOT be valid because it should be persistent"
     end
 
   end
@@ -364,7 +370,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_check.notice, "leave_request should fail at step notice"
     
     for element in persistent_attributes
-    assert @step_check.errors.invalid?(element), "#{element} should have changed"
+      assert @step_check.errors.invalid?(element), "#{element} should NOT be valid because it should be persistent"
     end
 
   end
@@ -381,7 +387,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert !@step_notice.close, "leave_request should fail at step close"
     
     for element in persistent_attributes
-    assert @step_notice.errors.invalid?(element), "#{element} should have changed"
+      assert @step_notice.errors.invalid?(element), "#{element} should NOT be valid because it should be persistent"
     end
 
   end

@@ -18,7 +18,6 @@ module EstimateDuration
   
   # method that take in account retrieval value if there's one
   def estimate_duration
-    #total_estimate_duration(period_start, period_end) - retrieval unless retrieval.nil?
     value = total_estimate_duration(start_date, end_date)
     value -= retrieval unless retrieval.nil?
     value

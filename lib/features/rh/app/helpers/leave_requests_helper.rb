@@ -54,30 +54,30 @@ module LeaveRequestsHelper
   
   def view_responsible_agreement(leave_request)
     if leave_request.responsible_agreement
-      "ACCORD"
+      "ACCORDÉ"
     else
-      "REFUS"
+      "REFUSÉ"
     end
   end
   
   def view_director_agreement(leave_request)
     if leave_request.director_agreement
-      "ACCORD"
+      "ACCORDÉ"
     else
-      "REFUS"
+      "REFUSÉ"
     end
   end
   
   def accepted_leave_requests_link
-    link_to "Voir toutes mes demandes acceptées", accepted_leave_requests_path
+    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes acceptées", accepted_leave_requests_path)
   end
   
   def refused_leave_requests_link
-    link_to "Voir toutes mes demandes refusées", refused_leave_requests_path
+    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes refusées", refused_leave_requests_path)
   end
   
   def cancelled_leave_requests_link
-    link_to "Voir toutes mes demandes annulées", cancelled_leave_requests_path
+    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes annulées", cancelled_leave_requests_path)
   end
   
 end

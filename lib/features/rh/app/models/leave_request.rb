@@ -1,60 +1,39 @@
-require 'estimate_duration.rb'
+require 'estimate_duration'
+
 class LeaveRequest < ActiveRecord::Base
   include EstimateDuration
+  
   has_permissions :as_business_object, :additional_methods => [:submit, :check, :notice, :close, :cancel]
   
-  # Callbacks
-  
-  def before_save
-    if self.closed?
-      self.create_leave
-    end
-  end
-    
-  # Accessors
-  
   cattr_accessor :form_labels
-  
   @@form_labels = Hash.new
-  @@form_labels[:status] = "STATUT:"
-  @@form_labels[:employee] = "Employé:"
-  @@form_labels[:created_at] = "Date de la demande:"
-  @@form_labels[:period] = "Période demandée:"
-  @@form_labels[:start_date] = "Du:"
-  @@form_labels[:end_date] = "Au:"
-  @@form_labels[:start_half] = "Après-midi (inclus):"
-  @@form_labels[:end_half] = "Matin (inclus):"  
-  @@form_labels[:leave_type] = "Type du congé:"
-  @@form_labels[:comment] = "Commentaire:"
-  @@form_labels[:responsible_agreement] = "Réponse du responsable:"
-  @@form_labels[:checked_at] = "Date:"
-  @@form_labels[:responsible] = "Nom du responsable:"
-  @@form_labels[:responsible_remarks] = "Commentaire:"
-  @@form_labels[:acquired_leaves_days] = "Etat des congés payés acquis:"
-  @@form_labels[:retrieval] = "Report sur l'année N-1:"
-  @@form_labels[:duration] = "Durée effective totale:"
-  @@form_labels[:observer_remarks] = "Observations:"
-  @@form_labels[:observer] = "Notifié par:"
-  @@form_labels[:noticed_at] = "Date:"
-  @@form_labels[:director] = "Clôturé par:"
-  @@form_labels[:director_agreement] = "Réponse de la direction:"
-  @@form_labels[:agreement_true] = "ACCORD:"
-  @@form_labels[:agreement_false] = "REFUS"
-  @@form_labels[:director_remarks] = "Commentaire:"
-  @@form_labels[:ended_at] = "Date:"  
-  @@form_labels[:cancelled_at] = "Annulée le:" 
-  
-  # Relationships
-  
-  has_one :leave
-
-  belongs_to :employee
-  belongs_to :responsible, :class_name => "Employee", :foreign_key => "responsible_id"
-  belongs_to :observer, :class_name => "Employee", :foreign_key => "observer_id"
-  belongs_to :director, :class_name => "Employee", :foreign_key => "director_id"
-  belongs_to :leave_type
-
-  # Constants
+  @@form_labels[:status]                = "STATUT :"
+  @@form_labels[:employee]              = "Employé :"
+  @@form_labels[:created_at]            = "Date de la demande :"
+  @@form_labels[:period]                = "Période demandée :"
+  @@form_labels[:start_date]            = "Du :"
+  @@form_labels[:end_date]              = "Au :"
+  @@form_labels[:start_half]            = "Après-midi (inclus) :"
+  @@form_labels[:end_half]              = "Matin (inclus) :"
+  @@form_labels[:leave_type]            = "Type du congé :"
+  @@form_labels[:comment]               = "Commentaire :"
+  @@form_labels[:responsible_agreement] = "Réponse du responsable :"
+  @@form_labels[:checked_at]            = "Date :"
+  @@form_labels[:responsible]           = "Nom du responsable :"
+  @@form_labels[:responsible_remarks]   = "Commentaire :"
+  @@form_labels[:acquired_leaves_days]  = "Etat des congés payés acquis :"
+  @@form_labels[:retrieval]             = "Report sur l'année N-1:" #TODO that should not be removed ?
+  @@form_labels[:duration]              = "Durée effective totale :"
+  @@form_labels[:observer_remarks]      = "Observations :"
+  @@form_labels[:observer]              = "Notifié par :"
+  @@form_labels[:noticed_at]            = "Date :"
+  @@form_labels[:director]              = "Clôturé par :"
+  @@form_labels[:director_agreement]    = "Réponse de la direction :"
+  @@form_labels[:agreement_true]        = "ACCORD :"
+  @@form_labels[:agreement_false]       = "REFUS :"
+  @@form_labels[:director_remarks]      = "Commentaire :"
+  @@form_labels[:ended_at]              = "Date :"
+  @@form_labels[:cancelled_at]          = "Annulée le :"
   
   LEAVE_REQUESTS_PER_PAGE = 15
   
@@ -65,6 +44,16 @@ class LeaveRequest < ActiveRecord::Base
   STATUS_NOTICED = 3
   STATUS_CLOSED = 4
   STATUS_REFUSED_BY_DIRECTOR = -4
+  
+  has_one :leave
+
+  belongs_to :employee
+  belongs_to :responsible, :class_name => "Employee", :foreign_key => "responsible_id"
+  belongs_to :observer, :class_name => "Employee", :foreign_key => "observer_id"
+  belongs_to :director, :class_name => "Employee", :foreign_key => "director_id"
+  belongs_to :leave_type
+  
+  before_save :build_associated_leave
   
   # Validates
   ##TODO Dates validations
@@ -106,8 +95,6 @@ class LeaveRequest < ActiveRecord::Base
   validates_persistence_of :observer, :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :retrieval, :duration, :if => :higher_than_step_notice?
   
   validates_associated :leave, :if => :closed?
-  
-  # Validates methods
 
   def validates_dates_coherence_order
     if self.start_date != nil and self.end_date != nil
@@ -117,7 +104,7 @@ class LeaveRequest < ActiveRecord::Base
   
   def validates_dates_coherence_validity
     if self.start_date != nil
-      errors.add(:start_date, "ne peut être antérieure ou égale à aujourd'hui !") if self.start_date <= Date.today
+      errors.add(:start_date, "ne peut être antérieure à aujourd'hui !") if self.start_date < Date.today
     end
   end
   
@@ -183,15 +170,27 @@ class LeaveRequest < ActiveRecord::Base
   end
   
   def validates_responsible_remarks
-    !self.responsible_agreement == true and self.was_submitted_or_refused_by_responsible?
+    !self.responsible_agreement and self.was_submitted_or_refused_by_responsible?
   end
 
   def validates_director_remarks
-    !self.director_agreement == true and self.was_noticed_or_refused_by_director?
+    !self.director_agreement and self.was_noticed_or_refused_by_director?
   end
 
 
-  # Methods
+  def build_associated_leave
+    if leave_can_be_created?
+      self.leave = build_leave(:leave_request_id  => self.id,
+                               :employee_id       => self.employee_id,
+                               :start_date        => self.start_date,
+                               :end_date          => self.end_date,
+                               :start_half        => self.start_half,
+                               :end_half          => self.end_half,
+                               :retrieval         => self.retrieval,
+                               :leave_type_id     => self.leave_type_id, 
+                               :duration          => self.duration)
+    end  
+  end
   
   def start_or_end_datetime(date, half, is_start)
     unless date.nil?
@@ -227,7 +226,7 @@ class LeaveRequest < ActiveRecord::Base
     self.was_noticed_or_refused_by_director?
   end
   
-  def can_be_created?
+  def leave_can_be_created?
     self.closed?
   end
 
@@ -277,12 +276,6 @@ class LeaveRequest < ActiveRecord::Base
       self.status = STATUS_CANCELLED  
       self.save
     end
-  end
-  
-  def create_leave
-    if can_be_created?
-      self.leave = build_leave({:leave_request_id => self.id, :employee_id => self.employee_id, :start_date => self.start_date, :end_date => self.end_date, :start_half => self.start_half, :end_half => self.end_half, :retrieval => self.retrieval, :leave_type_id => self.leave_type_id, :duration => self.duration})
-    end  
   end
   
   def unstarted?
@@ -366,11 +359,11 @@ class LeaveRequest < ActiveRecord::Base
   end
   
   def higher_than_step_submit?
-    self.checked? or self.refused_by_responsible? or self.noticed? or self.closed? or self.refused_by_director?
+    self.checked? or self.refused_by_responsible? or self.higher_than_step_check?
   end
 
   def higher_than_step_check?
-    self.noticed? or self.closed? or self.refused_by_director?
+    self.noticed? or self.higher_than_step_notice?
   end
 
   def higher_than_step_notice?
@@ -378,15 +371,15 @@ class LeaveRequest < ActiveRecord::Base
   end
   
   def was_higher_than_step_unstarted?
-    self.was_submitted? or self.was_checked? or self.was_refused_by_responsible? or self.was_noticed? or self.was_closed? or self.was_refused_by_director?
+    self.was_submitted? or self.was_higher_than_step_submit?
   end
   
   def was_higher_than_step_submit?
-    self.was_checked? or self.was_refused_by_responsible? or self.was_noticed? or self.was_closed? or self.was_refused_by_director?
+    self.was_checked? or self.was_refused_by_responsible? or self.was_higher_than_step_check?
   end
 
   def was_higher_than_step_check?
-    self.was_noticed? or self.was_closed? or self.was_refused_by_director?
+    self.was_noticed? or self.was_higher_than_step_notice?
   end
 
   def was_higher_than_step_notice?

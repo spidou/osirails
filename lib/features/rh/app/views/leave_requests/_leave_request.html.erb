@@ -18,8 +18,8 @@
     <% end %>
     <p>
       <%= f.label :employee %>
-      <%= link_to "#{leave_request.employee.first_name} #{leave_request.employee.last_name}", employee_path(@employee) %>
-      <%=  f.label("Service")%>
+      <%= link_to leave_request.employee.fullname, employee_path(leave_request.employee) %>
+      <%= f.label("Service")%>
       <%= link_to leave_request.employee.service.name, service_path(leave_request.employee.service.id) %>    
     </p>
     <p>
@@ -48,7 +48,6 @@
   </p>
   
   <% if is_form_view? and leave_request.was_unstarted? %>
-    <%= f.hidden_field(:employee_id, :value => @employee_id) %>  
     
     <%= "<h2>Période du congé</h2>" %>
     <%= f.error_messages %> 
@@ -68,7 +67,7 @@
   
   <!--############## SHOW : Responsible check / FORM : Leave type ##############-->
   
-  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_submit? %>
+  <% if leave_request.was_higher_than_step_submit? %>
     <%= "<h2>Réponse du responsable</h2>" %>
     <p>  
       <%= f.label :responsible_agreement %>
@@ -81,12 +80,8 @@
       <%= f.strong leave_request.checked_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
     </p>
     <p>
-      <%= f.label :responsible_remarks%>
-      <% if leave_request.responsible_remarks.nil? or leave_request.responsible_remarks == ""  %>
-        <%= f.strong "aucun" %>
-      <% else %>
-        <%= f.strong leave_request.responsible_remarks %>
-      <% end %>
+      <%= f.label :responsible_remarks %>
+      <%= f.strong(leave_request.responsible_remarks.blank? ? "aucun" : leave_request.responsible_remarks) %>
     </p>
   <% end %>
   
@@ -98,7 +93,7 @@
     </p>  
     <p>
       <%= f.label :comment %>
-      <%= f.text_area_autoresize(:comment, :rows => 2) %> 
+      <%= f.text_area(:comment, :rows => 2) %> 
     
     <p>
       <%= f.reset "Réinitialiser" %>
@@ -108,7 +103,7 @@
   
 <% end %>
   
-<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "check" }) do |f| %> 
+<% form_for(leave_request, :html => {:multipart => true}, :url => check_leave_request_path(leave_request)) do |f| %> 
   
   <!--############## SHOW : Observer notification / FORM : Responsible check ##############-->
   
@@ -154,7 +149,7 @@
     </p>  
     <p>
       <%= f.label :responsible_remarks %>
-      <%= f.text_area_autoresize(:responsible_remarks, :rows => 2) %> 
+      <%= f.text_area(:responsible_remarks, :rows => 2) %> 
     </p>
     <p>
       <%= f.reset "Réinitialiser" %>  
@@ -164,7 +159,7 @@
   
 <% end %>
 
-<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "notice" }) do |f| %> 
+<% form_for(leave_request, :html => {:multipart => true}, :url => notice_leave_request_path(leave_request)) do |f| %> 
   
   <!--############## SHOW : Director close / FORM : Observer notification ##############-->
   
@@ -203,12 +198,14 @@
     <p> 
       <%= f.label :retrieval %>
       <%= f.text_field(:retrieval, :size => 1) %> jours
+    </p>
+    <p>
       <%= f.label :duration %>
       <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration(leave_request.start_date, leave_request.end_date)) %> jours 
     </p>    
     <p>
       <%= f.label :observer_remarks %>
-      <%= f.text_area_autoresize(:observer_remarks, :rows => 2) %>  
+      <%= f.text_area(:observer_remarks, :rows => 2) %>  
     </p>
     <p>
       <%= f.reset "Réinitialiser" %>
@@ -218,7 +215,7 @@
   
 <% end %>
 
-<% form_for(leave_request, :html => {:multipart => true}, :url => { :action => "close" }) do |f| %> 
+<% form_for(leave_request, :html => {:multipart => true}, :url => close_leave_request_path(leave_request)) do |f| %> 
   
   <!--############## FORM : Director close ##############-->
   
@@ -236,7 +233,7 @@
     </p>  
     <p>
       <%= f.label :director_remarks %>
-      <%= f.text_area_autoresize(:director_remarks, :rows => 2) %> 
+      <%= f.text_area(:director_remarks, :rows => 2) %> 
     </p>
     <p>
       <%= f.reset "Réinitialiser" %>

@@ -31,6 +31,13 @@ namespace :osirails do
       cdi = JobContractType.create :name => "CDI", :limited => 0
       JobContractType.create :name => "CDD", :limited => 1
       
+      # default leave types
+      LeaveType.create :name => "Congé payé"
+      LeaveType.create :name => "Congé maternité"
+      LeaveType.create :name => "Congé paternité"
+      LeaveType.create :name => "Congé spéciaux"
+      LeaveType.create :name => "Récupération"
+      
       # default countries
       france = Country.create :name => "FRANCE", :code => "fr"
       reunion = Country.create :name => "REUNION", :code => "fr"

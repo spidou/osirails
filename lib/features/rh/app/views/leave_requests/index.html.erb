@@ -7,13 +7,9 @@
   <% end %>
   
   <% contextual_menu USEFUL_LINKS do %>
-    <% if @accepted_leave_requests.size == 5 %>
-      <%= image_tag("view_16x16.png") %> <%= accepted_leave_requests_link %>
-    <% end %>
-    <% if @refused_leave_requests.size == 5 %>
-      <%= image_tag("view_16x16.png") %> <%= refused_leave_requests_link %>
-    <% end %>
-    <%= image_tag("view_16x16.png") %> <%= cancelled_leave_requests_link %>
+    <%= accepted_leave_requests_link %>
+    <%= refused_leave_requests_link %>
+    <%= cancelled_leave_requests_link %>
   <% end %>
   
   <% if @leave_requests_to_treat %>

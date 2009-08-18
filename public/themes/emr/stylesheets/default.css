@@ -125,17 +125,17 @@ h2 {
 	margin-top:-1px;
 	margin-bottom:0px;
 	height:29px;
-	line-height:29px;
+	line-height:26px;
 	font-weight:lighter;
 	letter-spacing:2px;
 	padding-top:1px;
 }
 
 h2.warning {
-  background:none;
+  background: url("/themes/emr/images/warning_14x14.png") no-repeat 7px;
 	background-color: #e99727;
-	border-top: 1px solid #737373;
-	color:black;
+	border: 1px solid #737373;
+	text-indent: 27px;
 }
 
 h3 {
