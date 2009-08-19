@@ -5,7 +5,7 @@ module ReceivedMemorandumsHelper
   memorandums_list = []
       memorandums.each do |memorandum|
         unless memorandum.published_at.nil?
-          link_to_show = ( (controller.can_view?(current_user) and Memorandum.can_view?(current_user)) ? link_to("#{memorandum.title}", received_memorandum_path(memorandum.id)) : "#{memorandum.title}")
+          link_to_show = ( Memorandum.can_view?(current_user) ? link_to("#{memorandum.title}", received_memorandum_path(memorandum.id)) : "#{memorandum.title}")
           period_memorandum = Memorandum.color_memorandums(memorandum)
           
           memorandums_list << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"

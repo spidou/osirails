@@ -1,17 +1,16 @@
 class Establishment  < ActiveRecord::Base
-  has_permissions :as_business_object  
-
-  # Relationships
+  has_permissions :as_business_object
+  
   has_one :address, :as => :has_address
   
   belongs_to :customer
   belongs_to :establishment_type
   
-  has_many  :contacts, :as => :has_contacts
+  has_many :contacts, :as => :has_contacts
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
   
-  validates_presence_of :name
+  validates_presence_of :name, :address
   validates_associated :address
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit

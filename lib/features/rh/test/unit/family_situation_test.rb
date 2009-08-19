@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class FamilySituationTest < ActiveSupport::TestCase
   fixtures :family_situations

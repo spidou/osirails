@@ -6,21 +6,19 @@ class CalendarPermissionsController < ApplicationController
   def edit
     @calendar = Calendar.find(params[:id])
     @calendar_permissions = @calendar.permissions
+    @permission_methods = @calendar_permissions.first.permission_methods
   end
 
   def update
-    transaction_error = CalendarPermission.transaction do
-      CalendarPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :calendar_id => params[:id])
-      CalendarPermission.update_all("`list` = 1", :role_id => params[:list], :calendar_id => params[:id])
-      CalendarPermission.update_all("`view` = 1", :role_id => params[:view], :calendar_id => params[:id])
-      CalendarPermission.update_all("`add` = 1", :role_id => params[:add], :calendar_id => params[:id])
-      CalendarPermission.update_all("`edit` = 1", :role_id => params[:edit], :calendar_id => params[:id])
-      CalendarPermission.update_all("`delete` = 1", :role_id => params[:delete], :calendar_id => params[:id])
+    error = false
+    for permission in params[:permissions]
+      error = true unless Permission.find(permission[0]).update_attributes(permission[1])
     end
-    if transaction_error
-      flash[:notice] = "Les permissions ont été modifié avec succés"
+    
+    if error
+      flash[:error] = "Erreur lors de la mise à jour des permissions"
     else
-      flash[:error] = "Erreur lors de la mise à jour des permissions"      
+      flash[:notice] = "Les permissions ont été modifié avec succés"
     end
     redirect_to(edit_calendar_permission_path)
   end

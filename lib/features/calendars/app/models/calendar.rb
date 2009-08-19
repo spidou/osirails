@@ -21,7 +21,7 @@ end
 # title       :string
 class Calendar < ActiveRecord::Base
   has_permissions
-  setup_has_permissions_model :association_options => { :name => :permissions, :class_name => "CalendarPermission" }
+  setup_has_permissions_model
   
   require 'rubygems'
   require 'icalendar'
@@ -38,7 +38,7 @@ class Calendar < ActiveRecord::Base
   PRODUCT_CORP = "E.M.R."
   PRODUCT_NAME = "Osirails 0.1"
   PRODUCT_LANG = "EN"
-  TIME_ZONE = "Indian/Mauritius"
+  TIME_ZONE = "Indian/Reunion"
 
   # Returns an array of events for every day in a pediod
   def events_at_period(options)

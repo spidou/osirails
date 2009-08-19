@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class InventoryTest < ActiveSupport::TestCase
   fixtures :inventories, :commodities, :commodities_inventories

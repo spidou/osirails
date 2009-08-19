@@ -1,4 +1,5 @@
 class Service < ActiveRecord::Base
+  has_permissions :as_business_object
   
   # Relationship
 #  belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"

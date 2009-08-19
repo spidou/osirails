@@ -37,9 +37,7 @@ module SocietyIdentityConfigurationHelper
   end
 
   def edit_society_identity_configuration_link(text="")
-    if controller.can_edit?(current_user)
-      link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
-    end
+    link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
   end
   
   def society_identity_configuration_link(text="")

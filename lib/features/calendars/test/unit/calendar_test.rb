@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class CalendarTest < ActiveSupport::TestCase
   fixtures :calendars, :users, :event_categories

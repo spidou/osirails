@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090709052426) do
+ActiveRecord::Schema.define(:version => 20090807095058) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -42,32 +42,8 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
     t.datetime "updated_at"
   end
 
-  create_table "business_object_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",            :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "business_object_id", :limit => 11
-  end
-
   create_table "business_objects", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "calendar_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",     :limit => 11
-    t.integer  "calendar_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "calendars", :force => true do |t|
@@ -226,18 +202,6 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
   create_table "countries", :force => true do |t|
     t.string "name"
     t.string "code"
-  end
-
-  create_table "document_type_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",          :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "document_type_id", :limit => 11
   end
 
   create_table "document_types", :force => true do |t|
@@ -481,18 +445,6 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
     t.datetime "updated_at"
   end
 
-  create_table "menu_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",    :limit => 11
-    t.integer  "menu_id",    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "menus", :force => true do |t|
     t.string   "title"
     t.string   "description"
@@ -595,6 +547,27 @@ ActiveRecord::Schema.define(:version => 20090709052426) do
 
   create_table "payment_time_limits", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "permission_methods", :force => true do |t|
+    t.string "name"
+    t.string "title"
+  end
+
+  create_table "permissions", :force => true do |t|
+    t.integer  "role_id",              :limit => 11
+    t.string   "has_permissions_type"
+    t.integer  "has_permissions_id",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "permissions_permission_methods", :force => true do |t|
+    t.integer  "permission_id",        :limit => 11
+    t.integer  "permission_method_id", :limit => 11
+    t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

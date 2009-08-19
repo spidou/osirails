@@ -10,23 +10,21 @@ class MenuPermissionsController < ApplicationController
   def edit
     @menu = Menu.find(params[:id])
     @menu_permissions = @menu.permissions
+    @permission_methods = @menu_permissions.first.permission_methods
   end
   
   # POST /menu_permissions/:id
   # :id corresponds to a menu id
   def update
-    transaction_error = MenuPermission.transaction do
-      MenuPermission.update_all("`list` = 0, `view` = 0, `add` = 0, `edit` = 0, `delete` = 0", :menu_id => params[:id])
-      MenuPermission.update_all("`list` = 1", :role_id => params[:list], :menu_id => params[:id])
-      MenuPermission.update_all("`view` = 1", :role_id => params[:view], :menu_id => params[:id])
-      MenuPermission.update_all("`add` = 1", :role_id => params[:add], :menu_id => params[:id])
-      MenuPermission.update_all("`edit` = 1", :role_id => params[:edit], :menu_id => params[:id])
-      MenuPermission.update_all("`delete` = 1", :role_id => params[:delete], :menu_id => params[:id])
+    error = false
+    for permission in params[:permissions]
+      error = true unless Permission.find(permission[0]).update_attributes(permission[1])
     end
-    if transaction_error
-      flash[:notice] = "Les permissions ont été modifié avec succés"
-    else
+    
+    if error
       flash[:error] = "Erreur lors de la mise à jour des permissions"
+    else
+      flash[:notice] = "Les permissions ont été modifié avec succés"
     end
     redirect_to(edit_menu_permission_path)
   end
