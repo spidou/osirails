@@ -26,8 +26,12 @@ module HasSearchIndex
     #   contextual_search("Employee", ["numbers.number_type.name"])
     #
     def contextual_search(model, attributes)
+      errors = check_arguments(model, attributes)
+      attributes.delete_if {|attribute| errors[:wrong_attributes].include?(attribute) or errors[:wrong_model]}        # filter attributes according to errors
+      
       html =  form_remote_tag( :url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()" )
       html << "<p>"
+      html << "<input type='hidden' name='contextual_search[errors]' value='#{errors.to_yaml}'/>" # errors_hash
       html << "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
       html << "<input type='hidden' name='contextual_search[options]' value='#{attributes.to_yaml}'/>"
       focus = "if(this.value=='Rechercher'){this.value='';}"
@@ -39,6 +43,38 @@ module HasSearchIndex
       
       add_contextual_menu_item(:contextual_search, true, html)
     end
+    
+    private
+    
+      # Method to verify arguments
+      # return an hash containing the errors for each attributes:
+      # ==> :wrong_model : if false no errors (default) , if true it won't be possible to perform a contextual search with the current configuration
+      # ==> :wrong_attributes : an array of attributes 
+      #
+      def check_arguments(model, attributes)
+        result = {:wrong_model => false, :wrong_attributes => []}
+        if HasSearchIndex::MODELS.include?(model)       
+          attributes.each do |attribute|
+            object = model.constantize.new
+            attribute.split(".").each do |element|
+              break if element == "*"  # go to the next attribute if '*' is reached
+              if object.search_index[:attributes].merge(object.search_index[:additional_attributes]).include?(element) or object.search_index[:relationships].include?(element.to_sym)
+                object = element.classify.constantize.new unless element == attribute.split(".").last
+              else
+                result[:wrong_attributes] << attribute
+                type       = (element == attribute.split(".").last)? "attribute" : "relationship"
+                error_mess = "[#{DateTime.now}](Has_search_index) contextual_search: Wrong argument '#{attribute}', #{type} '#{element}' is undefined for has_search_index into '#{model}.rb'"
+                RAILS_ENV == "production" ? logger.error(error_mess) : raise(error_mess)
+                break  
+              end
+            end
+          end
+        else
+          result[:wrong_model] = true
+        end
+        result
+      end
+    
   end
 end
 

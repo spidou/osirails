@@ -15,7 +15,7 @@ class SearchIndexesController < ApplicationController
     @model                = ( params[:contextual_search].nil? )? params[:model].constantize : params[:contextual_search][:model].constantize
     @nested_attributes    = []
     criteria              = {}
-    @class_to_update = 'search_result'
+    @class_to_update      = 'search_result'
     
     if @model.search_index[:displayed_attributes].empty?
       @direct_attributes = @model.search_index[:attributes].merge(@model.search_index[:additional_attributes]).keys
@@ -23,7 +23,12 @@ class SearchIndexesController < ApplicationController
       @direct_attributes = @model.search_index[:displayed_attributes]
     end
      
-    if !params[:contextual_search].nil?                                             # contextual_search
+    if !params[:contextual_search].nil?                                                                            # contextual_search
+      # Errors management
+      errors        = YAML.load(params[:contextual_search][:errors])
+      message       = "Recherche mal configur&eacute;e veuillez signaler cette erreur &agrave; votre administrateur"
+      flash.now[:error] = message if errors[:wrong_model] or !errors[:wrong_attributes].empty?
+      
       searched_value = params[:contextual_search][:value]    
       YAML.load(params[:contextual_search][:options]).each do |attribute|
       model = (attribute.include?("."))? attribute.split(".")[-2].classify.constantize : @model
@@ -36,9 +41,9 @@ class SearchIndexesController < ApplicationController
       end
       criteria.merge!(:search_type => 'or')
       @class_to_update = 'ajax_holder_content'
-    elsif params[:criteria].nil?                                                    # standard search without criteria
+    elsif params[:criteria].nil?                                                                                    # standard search without criteria
       @collection = @model.all  
-    else                                                                            # standard search
+    else                                                                                                            # standard search
       params[:criteria].each_value do |criterion|
         attribute = criterion['attribute']
         data_type = criterion['action'].split(",")[0]
@@ -52,7 +57,8 @@ class SearchIndexesController < ApplicationController
         end
       end
       criteria.merge!(:search_type => params['search_type'])    
-    end  
+    end
+     
 #    @query = "#{@model.to_s}.search_with(#{criteria.inspect})" 
     @collection = @model.search_with(criteria) unless criteria.empty?
     

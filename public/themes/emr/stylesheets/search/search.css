@@ -67,7 +67,7 @@
 }
 /*---------------------------------------------------*/
 .attr_chooser li.sub_menu{
-  background: url('/themes/emr/images/search/arrow.png') no-repeat right;
+  background: url('/themes/emr/images/search/arrow.png') no-repeat 95%;  
 }
 
 /* show the drop down menu when the attribute name his pointed by the mouse*/

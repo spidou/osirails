@@ -17,7 +17,7 @@ module HasSearchIndex
   end
 
   module ClassMethods
-
+    
     AUTHORIZED_OPTIONS = [ :except_attributes,
                            :only_attributes,
                            :additional_attributes,
@@ -37,6 +37,9 @@ module HasSearchIndex
     # method called into all models that implement the plugin 
     # it define search_index class variable based on passed options hash
     def has_search_index( options = {} )
+      
+      error_prefix = "(Has_search_index) model: #{self.to_s}" # DRY respect when dealing with error messages
+      
       HasSearchIndex::MODELS << self.to_s unless HasSearchIndex::MODELS.include?(self.to_s)
       # affect if nil to avoid testing nullity and emptyness
       options[:additional_attributes] ||={}
@@ -51,7 +54,7 @@ module HasSearchIndex
 
       # check options arg for some errors
       options.keys.each do |key|
-        raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown option :#{key.to_s}" unless AUTHORIZED_OPTIONS.include?(key)      
+        raise ArgumentError, "#{error_prefix} : Unknown option :#{key.to_s}" unless AUTHORIZED_OPTIONS.include?(key)      
       end
       
       # create a hash to store all associations that concerned the current model
@@ -63,22 +66,22 @@ module HasSearchIndex
       # generate default relationships array if not present into 'options' argument
       # if except_relationships is not empty it will discard relationships from the default relationships array
       if options[:only_relationships].empty?
-        logger.warn("(Has_search_index) no relationships defined for the model '#{self.to_s}'") if assoc_list.empty?
+        logger.warn("#{error_prefix} no relationships defined") if assoc_list.empty?
         options[:relationships] = Array.new
         assoc_list.each_pair do |relationship_name, relationship|
-          relationship[:class_name].constantize                                                                           # constantize dependant models
+          relationship[:class_name].constantize                                                                                # constantize dependant models
           # filter relationships implementing the plugin 'has_search_index'
-          logger.error("(Has_search_index) model: #{self.to_s} : Wrong relationship name '#{relationship_name}', maybe you misspelled it") unless self.new.respond_to?(relationship_name.to_s)
+          raise "#{error_prefix}: Wrong relationship name '#{relationship_name}', maybe you misspelled it" unless self.new.respond_to?(relationship_name.to_s)
           options[:relationships] << relationship_name if HasSearchIndex::MODELS.include?(relationship[:class_name])
         end
-        if !options[:except_relationships].empty?              # filter it if except_relationships isn't empty
+        if !options[:except_relationships].empty?                      # filter it if except_relationships isn't empty
           options[:except_relationships].each do |e|
             options[:relationships].delete(e)
           end
         end
       else
-        raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Warning you mustn't specify both 'only_relationships' and 'except_relationships' options, please choose one" unless options[:except_relationships].empty?
-        options[:only_relationships].each {|relationship_name| assoc_list[relationship_name][:class_name].constantize}    # constantize dependant models
+        raise ArgumentError, "#{error_prefix}: Warning you mustn't specify both 'only_relationships' and 'except_relationships'" unless options[:except_relationships].empty?
+        options[:only_relationships].each { |relationship_name| model = assoc_list[relationship_name][:class_name].constantize } # constantize dependant models
         options[:relationships] = options[:only_relationships]
       end
       options.delete(:except_relationships)
@@ -97,9 +100,9 @@ module HasSearchIndex
           end
         end 
       else
-        raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Warning you mustn't specify both 'only_attributes' and 'except_attributes' options, please choose one" unless options[:except_attributes].empty?
+        raise ArgumentError, "#{error_prefix}: Warning you mustn't specify both 'only_attributes' and 'except_attributes' options, please choose one" unless options[:except_attributes].empty?
         options[:only_attributes].each do |attribute|
-          raise ArgumentError, "(Has_search_index) model: #{self.to_s} : Unknown attribute '#{attribute}' please check it" unless self.new.respond_to?(attribute.to_s)
+          raise ArgumentError, "#{error_prefix}: Unknown attribute '#{attribute}' please check it" unless self.new.respond_to?(attribute.to_s)
           self.columns.each do |element|
             tmp = tmp.merge(element.name => element.type.to_s) if element.name == attribute.to_s
           end
@@ -114,10 +117,16 @@ module HasSearchIndex
       # create class var to permit to access to search option from te model
       class_eval do
         cattr_accessor :search_index, :association_list
-        self.search_index = options
+        self.search_index     = options
         self.association_list = assoc_list
+        self.const_set "ERROR_PREFIX", error_prefix                                               # permit to use that constant for errors into other methods of the plugin
       end
-
+      
+      options[:relationships].each do |relationship_name|                                         # verify if all relationships implement has_search_index
+        model = assoc_list[relationship_name][:class_name].constantize
+        raise ArgumentError, "#{error_prefix}: relationship '#{relationship_name}' , require '#{model.to_s}' model to implement has_search_index plugin" unless HasSearchIndex::MODELS.include?(model.to_s)
+      end
+      
     end
     
     # Method to match a regexp with a simple syntax
@@ -143,7 +152,7 @@ module HasSearchIndex
     #
     def get_attribute_type(attribute)
       self.columns.each do |element|
-        return element.type if element.name==attribute
+        return element.type if element.name == attribute
       end
     end
     
@@ -159,7 +168,7 @@ module HasSearchIndex
             object = object.association_list[a.to_sym][:class_name].constantize
           end
         end
-      raise "(Has_search_index) model:#{self.to_s} : Implementation error '#{object}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless object.respond_to?("search_index")
+      raise "#{ERROR_PREFIX}: Implementation error '#{object}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless object.respond_to?(:search_index)
       
       object.search_index[:additional_attributes].include?(attribute)
     end  
@@ -191,7 +200,6 @@ module HasSearchIndex
     #
     def get_include_array(ignore=[])
       include_array = Array.new
-      raise "'#{self.class_name}' class doesn't respond to 'search_index' method" unless self.respond_to?(:search_index)
       self.search_index[:relationships].each do |relationship|
         model = self.association_list[relationship][:class_name]
         unless ignore.include?("#{model.to_s}") 
@@ -230,7 +238,7 @@ module HasSearchIndex
       value_array = (value.is_a?(Array))? value : [ value ]                  # manage the case when only one attribute
       result = nil
       value_array.each do |val|
-        raise ArgumentError, "(Has_search_index): Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if val[:action].nil?
+        raise ArgumentError, "#{ERROR_PREFIX}: Argument missing into value hash : if you use the value hash instead of value you must type it like {:value => foo :action => bar} " if val[:action].nil?
 
         if val[:action] == "like"
           tmp_result = data.downcase.match(Regexp.new(val[:value].downcase))        # downcase data and value to make the match method case insensitive
@@ -243,7 +251,7 @@ module HasSearchIndex
         elsif ACTIONS[attributes[attribute].to_sym].include?(val[:action])
           tmp_result = data.send(val[:action],val[:value].to_s)
         else
-          raise ArgumentError, "(Has_search_index): Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
+          raise ArgumentError, "#{ERROR_PREFIX}: Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
         end
         result = tmp_result if result.nil?                                          # init the result value
         result |= tmp_result if search_type=='or'                                    # return the result of multiple values for one attribute
@@ -304,7 +312,7 @@ module HasSearchIndex
         attributes = attributes.merge({attribute => value})
       end
       return attributes if include_hash.empty?
-      raise ArgumentError, "(Has_search_index): Undefined relationships :#{include_array.inspect} for #{self.to_s} model" if self.search_index[:relationships].nil?
+      raise ArgumentError, "#{ERROR_PREFIX}: relationships :#{include_array.inspect} undefined for has_search_index" if self.search_index[:relationships].nil?
       self.search_index[:relationships].each do |relationship|
         if include_hash.keys.include?(relationship)
           self.association_list[relationship][:class_name].constantize.search_attributes_format_hash(value).each_pair do |sub_attrib,val|
@@ -384,15 +392,15 @@ module HasSearchIndex
           model = self
           if attribute.include?(".")
             attribute.chomp(".#{attribute.split(".").last}").split(".").each do |a|
-              raise "(Has_search_index): Wrong attribute name '#{attribute}' maybe you misspelled it" if model.association_list[a.to_sym].nil?
+              raise "#{ERROR_PREFIX}: Wrong attribute name '#{attribute}' maybe you misspelled it" if model.association_list[a.to_sym].nil?
               model = model.association_list[a.to_sym][:class_name].constantize
             end
           end
 
-          raise "(Has_search_index) model:#{self.to_s} : Implementation error '#{model.to_s}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless model.respond_to?("search_index")
+          raise "#{ERROR_PREFIX}: Implementation error '#{model.to_s}' model must implement has_search_index plugin in order to use directly or undirectly the plugin" unless model.respond_to?("search_index")
           
           if !model.search_index[:attributes].include?(attribute.split(".").last) and !model.search_index[:additional_attributes].include?(attribute.split(".").last)
-            raise ArgumentError, "(Has_search_index): You can't search for attribute '#{attribute.split(".").last}', because it's not indexed into #{model.to_s} model"
+            raise ArgumentError, "#{ERROR_PREFIX}: Attribute '#{attribute.split(".").last}', undefined for has_search_index into #{model.to_s} model"
           end
         end
       end
@@ -457,7 +465,7 @@ module HasSearchIndex
       #
       def search_additional_attributes(attributes, search_type)
         collection = self.find(:all)
-        search_type=="or" ? additional_result = Array.new : additional_result = collection       # initialization is different according to search type because of using  & or | on arrays
+        search_type=="or" ? additional_result = Array.new : additional_result = collection    # initialization is different according to search type because of using  & or | on arrays
 
         attributes.each_pair do |attribute,value|
           if is_additional?(attribute)
@@ -514,7 +522,7 @@ module HasSearchIndex
               end
      
               if model.new.respond_to?(attribute)
-                formatted_attribute = "#{attribute_prefix}.#{attribute}"     # prefix attribut with the model that it depend on to avoid ambiguous or for nested resource                   
+                formatted_attribute = "#{attribute_prefix}.#{attribute}"     # prefix attribut with the model that it depend on to avoid ambiguous or for nested resource
                 if !value.is_a?(Hash) and !value.is_a?(Array)
                   conditions_array[0] << " #{operator} " unless conditions_array[0]==""
                   conditions_array[0] << "#{formatted_attribute}"
@@ -540,7 +548,7 @@ module HasSearchIndex
                   end
                 end
               else
-                raise ArgumentError, "(Has_search_index): Wrong argument #{attr_with_prefix} maybe you misspelled it"
+                raise ArgumentError, "#{ERROR_PREFIX}: Wrong argument #{attr_with_prefix} maybe you misspelled it"
               end
             end 
           end
@@ -569,8 +577,8 @@ module HasSearchIndex
       #
       def generate_attribute_prefix(parent_model, attribute_prefix)
 
-        model = attribute_prefix.split(".")[-2]
-        sub_model = attribute_prefix.split(".")[-1]
+        model       = attribute_prefix.split(".")[-2]
+        sub_model   = attribute_prefix.split(".")[-1]
         count_table = get_model_order(parent_model.table_name, parent_model.get_include_array, sub_model, model)
         
         #### filter the count_table to get only the models_hierarchy that is not the first and that is like the current models_hierarchy
@@ -581,11 +589,11 @@ module HasSearchIndex
         
         # OPTIMIZE maybe remove that comment if it's not necessary
         #  manage the pluralize wiht caution because pluralize do not works properly with plural strings that do not finish with one "s"
-        #  and when a when you add a relationship into the include array if there is a redundancy of that relationship the find seems to use 
+        #  and when you add a relationship into the include array if there is a redundancy of that relationship the find seems to use 
         #  the pluralize method that add one 's' to already pluralize string like (children that come from employees) become 'childrens_employees'
         #  then to make the find work properly we have to respect the name given to the table joins aliases by the find to be able to acces to the 
         #  data.
-        #  But that error concerne only the redundancy management, so if the the relationship do not suffer of redundancy there will not have an
+        #  But that error concerne only the redundancy management, so if the relationship do not suffer of redundancy there will not have an
         #  error. 
         #  example :
         #   # => Employee.all(:include => [:premia], :conditions => ["premia.id =?",0])                     it will work
@@ -602,7 +610,7 @@ module HasSearchIndex
         return "#{sub_model}" if count_table.first == attribute_prefix #models_hierarchy
         case model_index
           when nil
-            raise "(search_index) AttributPrefixError: #{attribute_prefix} is not correct please check it"
+            raise "#{ERROR_PREFIX}: AttributPrefixError: #{attribute_prefix} do not match with the plugin definition into the model"
           when 0
             return "#{sub_model.pluralize}_#{model.pluralize}"
           else

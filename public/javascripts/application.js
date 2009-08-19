@@ -14,9 +14,11 @@ function initEventListeners()
   nav_more_links_handler();
   
   contextual_menu_toggle_button = $('contextual_menu_toggle_button');
-
-  contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
-  click_next(0);
+  
+  if (contextual_menu_toggle_button){
+    contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
+    click_next(0);
+  }
 }
 
 function toggle_contextual_menu(item)

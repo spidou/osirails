@@ -10,7 +10,7 @@ class Supplier < Third
   after_update :save_iban
   
   has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:activity_sector, :legal_form, :iban],
+                   :only_relationships => [:activity_sector, :legal_form, :iban, :contacts],
                    :main_model         => true
 
   def iban_attributes=(iban_attributes)

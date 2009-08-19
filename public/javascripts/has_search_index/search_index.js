@@ -75,7 +75,7 @@ function get_attributes_select(add)
   criterion += "</ul></li></ul>";
   // #######################################################
   
-  criterion += "</div><div id=\"criterion_"+ID+"_action\" >...</div><br/></div>";// use 3 dot to avoid the floating content to go with non floating content
+  criterion += "</div><div id=\"criterion_"+ID+"_action\" >&nbsp;</div><br/></div>";// use 3 dot to avoid the floating content to go with non floating content
   parent_div.innerHTML += criterion ; // add the criterion to the parent div
   
 //  $('clicked').observe('click', function(window_event) {    //same as onclick clause
