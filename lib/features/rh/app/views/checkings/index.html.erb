@@ -1,15 +1,15 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_checking_link unless @employees.empty?%>
+  <%= new_checking_link unless @subordinates.empty?%>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
-  <%= checkings_link(@employee_id, @date, !@view_cancelled)%>
+  <%= display_checkings_link %>
 <% end %>
 
 <h1>Liste des pointages</h1> 
 <div class="presentation-medium">
 
-<% if @employees.empty? %>
+<% if @subordinates.empty? %>
   <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p> 
 <% else %>
 
@@ -18,7 +18,7 @@
   <p>
     <%= previous_week(@employee_id, @date, @view_cancelled) %>
     <select onchange="<%= javascript_location_url(@date, @view_cancelled)%>" >
-      <%= employee_options(@employees, @employee_id)%>
+      <%= employee_options(@subordinates, @employee_id)%>
     </select>
     <%= next_week(@employee_id, @date, @view_cancelled) %>
   </p> 
@@ -41,8 +41,8 @@
           <td>         
             <% unless checking.cancelled %>
               <%= edit_checking_link(checking, :link_text => "") unless checking.can_be_overrided? %>
-              <%= link_to image_tag("/images/delete_16x16.png", :alt => "annuler",:title => "annuler"), cancel_checking_path(checking)%>
-              <%= link_to image_tag("/images/edit_16x16.png", :alt => "corriger",:title => "corriger"), override_form_checking_path(checking) if checking.can_be_overrided?%>
+              <%= link_to image_tag("/images/delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage"), cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?" %>
+              <%= link_to image_tag("/images/edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage"), override_form_checking_path(checking) if checking.can_be_overrided? %>
             <% end %>
             <%= delete_checking_link(checking, :link_text => "")%>           
           </td>        

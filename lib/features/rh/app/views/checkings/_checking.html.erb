@@ -12,7 +12,7 @@
       <% if is_edit_view?%>
         <%= strong(@checking.employee.fullname) %>
       <% else %>
-        <%= f.form_or_view(f.collection_select(:employee_id, @employees, :id, :fullname, { :prompt => "Veuillez choisir un employé" }), :employee, :fullname)%>
+        <%= f.form_or_view(f.collection_select(:employee_id, @subordinates, :id, :fullname, { :prompt => "Veuillez choisir un employé" }), :employee, :fullname)%>
       <% end %>
     </p>
     <p>
@@ -26,7 +26,7 @@
     
     <h2>Signaler une absence</h2>
     <p>
-      <%= f.label :absence %>
+      <%= f.label :absence_hours %>
       <%= f.form_or_view(f.select(:absence_hours, (0..23).to_a), :absence_hours)%> heures et
       <%= f.form_or_view(f.select(:absence_minutes, (0..59).to_a), :absence_minutes)%> minutes
     </p>

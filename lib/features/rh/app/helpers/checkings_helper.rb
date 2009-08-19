@@ -29,15 +29,13 @@ module CheckingsHelper
     html    
   end
   
-  def checkings_link(employee_id, date, cancelled = true)
-    if cancelled
-      message = "voir les pointages annul&eacute;s"
-      txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+  def display_checkings_link(cancelled = false)
+    if params[:cancelled] or cancelled
+      options = { :link_text => "Liste des pointages", :options => { :date => params[:date] }}
     else
-      message = "cacher les pointages annul&eacute;s"
-      txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+      options = { :link_text => "Voir les pointages annulés", :options => { :cancelled => true, :date => params[:date] } }
     end
-    link_to txt, checkings_path({:employee_id => employee_id, :cancelled => cancelled, :date => date}) 
+    checkings_link(options)
   end
   
   def javascript_location_url(date, cancelled)

@@ -9,9 +9,7 @@ class Checking < ActiveRecord::Base
   attr_accessor :validate_override, :validate_cancel
   attr_protected :validate_override, :validate_cancel
   
-  with_options :allow_nil => true do |c|
-    c.validates_numericality_of :overtime_hours, :overtime_minutes,:absence_hours, :absence_minutes
-  end
+  validates_numericality_of :overtime_hours, :overtime_minutes, :absence_hours, :absence_minutes, :allow_nil => true
   
   validates_presence_of :absence_comment,            :if => Proc.new { |o| o.mandatory_absence_comment? }
   validates_presence_of :overtime_comment,           :if => Proc.new { |o| o.mandatory_overtime_comment? }
@@ -30,16 +28,10 @@ class Checking < ActiveRecord::Base
   @@form_labels = Hash.new
   @@form_labels[:employee]                    = "Employ&eacute; :"
   @@form_labels[:date]                        = "Date :"
-  @@form_labels[:absence]                     = "Signaler une absence :"
+  @@form_labels[:absence_hours]               = "Absence :"
   @@form_labels[:absence_comment]             = "Commentaire :"
-  @@form_labels[:morning_overtime_hours]      = "Heures suppl&eacute;mentaires :"
-  @@form_labels[:afternoon_overtime_hours]    = "Heures suppl&eacute;mentaires :"
-  @@form_labels[:morning_overtime_comment]    = "Commentaire :"
-  @@form_labels[:afternoon_overtime_comment]  = "Commentaire :"
-  @@form_labels[:morning_delay_hours]         = "Retard :"
-  @@form_labels[:afternoon_delay_hours]       = "Retard :"
-  @@form_labels[:morning_delay_comment]       = "Commentaire :"
-  @@form_labels[:afternoon_delay_comment]     = "Commentaire :"
+  @@form_labels[:overtime_hours]              = "Heures supplémentaires :"
+  @@form_labels[:overtime_comment]            = "Commentaire :"
   
   def mandatory_absence_comment?
     mandatory_comment?(absence_hours, absence_minutes)
@@ -59,7 +51,6 @@ class Checking < ActiveRecord::Base
     (!hours.nil? and hours != 0) or (!minutes.nil? and minutes != 0)
   end
   
-  
   def can_be_overrided?
     Date.today.cweek != created_at.to_date.cweek
   end
@@ -72,7 +63,7 @@ class Checking < ActiveRecord::Base
       result = save
       self.validate_override = false
     else
-      errors.add_to_base("le pointage ne peut pas etre corrigé")
+      errors.add_to_base("Ce pointage ne peut pas être corrigé")
     end
     return result || false
   end
@@ -91,11 +82,12 @@ class Checking < ActiveRecord::Base
   private
     
     def validates_one_checking_per_day_and_per_employee
-      if new_record?
-        duplicate_checkings = !Checking.all(:conditions => ["employee_id =? and date =?", employee_id, date]).empty?
+      if new_record? and employee
+        duplicate_checkings = !employee.checkings.actives.all(:conditions => ["date = ?", date]).empty?
         if duplicate_checkings
-          errors.add(:employee_id, "invalide : cet employé a déjà un pointage aujourd'hui")
-          errors.add(:date, "invalide : cet employé a déjà un pointage aujourd'hui")
+          error_message = "est invalide : cet employé a déjà un pointage pour aujourd'hui"
+          errors.add(:employee_id, error_message)
+          errors.add(:date, error_message)
         end
       end
     end
@@ -103,7 +95,7 @@ class Checking < ActiveRecord::Base
     def validates_restricted_edit
       unless new_record?
         if Date.today.cweek != created_at.to_date.cweek
-          errors.add_to_base("le pointage ne peut plus etre modifié") if !self.validate_override
+          errors.add_to_base("Ce pointage ne peut plus etre modifié") if !self.validate_override
         else
           verify_fixed_attributes
         end
@@ -134,8 +126,11 @@ class Checking < ActiveRecord::Base
     end
     
     def validates_not_empty_checking
-      at_least_one = ![ absence_hours, absence_minutes, overtime_minutes, overtime_hours ].reject {|n|  n.nil? or n == 0}.empty?
-      errors.add_to_base("un pointage doit comporter au moins une absence, heure supplémentaire ou retard") unless at_least_one
+      at_least_one = ![ absence_hours, absence_minutes, overtime_hours, overtime_minutes ].reject{ |n| n.nil? or n == 0 }.empty?
+      unless at_least_one
+        errors.add(:absence_hours, "Vous devez au moins signaler une absence")
+        errors.add(:overtime_hours, "Vous devez au moins signaler des heures supplémentaires")
+      end
     end
     
     def validates_date_not_too_far_away

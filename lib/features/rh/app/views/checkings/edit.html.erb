@@ -1,2 +1,10 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= new_checking_link unless @subordinates.empty?%>
+<% end %>
+
+<% contextual_menu USEFUL_LINKS do %>
+  <%= display_checkings_link(true) %>
+<% end %>
+
 <h1>Modifier un Pointage</h1>
 <%= render :partial => "checking", :locals => {:button_name => "Modifier", :action => "update"} %>

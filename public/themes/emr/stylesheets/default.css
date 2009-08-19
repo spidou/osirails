@@ -842,10 +842,16 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 }
 
 .flash_error,
-.flash_notice {
+.flash_notice,
+.flash_warning {
 	background-position:center left;
 	width:9px;
 	height:9px;
+}
+
+.flash_warning {
+  background: url("/themes/emr/images/warning_14x14.png") no-repeat;
+	color: #e99727;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\

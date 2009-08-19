@@ -17,7 +17,7 @@ class CheckingTest < ActiveSupport::TestCase
   # overtime
   
   def test_numericality_of_overtime_hours
-    assert !@checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because nil is allowed"
+    #assert !@checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because nil is allowed"
     
     @checking.overtime_hours = "string"
     @checking.valid?
@@ -51,7 +51,7 @@ class CheckingTest < ActiveSupport::TestCase
   # absence
   
   def test_numericality_of_absence_hours
-    assert !@checking.errors.invalid?(:absence_hours), "absence_hours should NOT be valid because nil is allowed"
+    #assert !@checking.errors.invalid?(:absence_hours), "absence_hours should NOT be valid because nil is allowed"
     
     @checking.absence_hours = "string"
     @checking.valid?
@@ -133,6 +133,16 @@ class CheckingTest < ActiveSupport::TestCase
     # same date but change the employee
     @checking = Checking.new(checkings(:good_checking).attributes)
     @checking.employee = employees(:another_employee)
+    @checking.valid?
+    assert !@checking.errors.invalid?(:date), "date should be valid"
+    assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
+  end
+  
+  def test_one_checking_per_day_and_per_employee_with_first_checking_cancelled
+    @checking.attributes = @good_checking.attributes
+
+    flunk "@good_checking should be cancelled" unless @good_checking.cancel
+
     @checking.valid?
     assert !@checking.errors.invalid?(:date), "date should be valid"
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
