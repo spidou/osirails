@@ -2,7 +2,7 @@ class SocietyActivitySectorsController < ApplicationController
 
   # GET /society_activity_sectors
   def index
-    @society_activity_sectors = SocietyActivitySector.activates
+    @society_activity_sectors = SocietyActivitySector.activates.paginate(:page => params[:page], :per_page => SocietyActivitySector::SOCIETY_ACTIVITY_SECTORS_PER_PAGE)
   end
   
   # GET /society_activity_sectors/new

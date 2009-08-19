@@ -1,7 +1,7 @@
 class FeaturesController < ApplicationController
   # GET /features
   def index
-    @features = Feature.find(:all, :order => "installed, activated DESC, name")
+    @features = Feature.find(:all, :order => "installed, activated DESC, name").paginate(:page => params[:page], :per_page => Feature::FEATURES_PER_PAGE)
   end
 
   # GET /features/1

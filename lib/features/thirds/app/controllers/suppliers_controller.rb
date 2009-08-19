@@ -6,7 +6,7 @@ class SuppliersController < ApplicationController
   # GET /suppliers.xml
   def index
     if Supplier.can_list?(current_user)
-      @suppliers = Supplier.activates
+      @suppliers = Supplier.activates.paginate(:page => params[:page], :per_page => Supplier::SUPPLIERS_PER_PAGE)
     else
       error_access_page(403)
     end

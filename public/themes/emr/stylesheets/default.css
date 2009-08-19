@@ -482,23 +482,29 @@ a.button_banner:hover span {
 /*/////////////////////////////////////////////////////////
 	BODY OF THE WEBSITE > PAGE OF WEBSITE > CONTEXTUAL-MENU
 /////////////////////////////////////////////////////////*/
+#contextual_menu_container{
+  position:absolute;
+  left:1048px;
+  float:right;
+}
+
 #contextual_menu {
-	float:right;
-	margin-left:10px;
-	margin-top:10px;
-	margin-right:6px;
+	margin-top:7px;
 	border: 1px solid #A8A8A8;
 	-moz-border-radius: 10px 0 0 10px;
 	background: url("/themes/emr/images/background_contextual_menu.gif") repeat;
-	width: 200px;
+	width:200px;
 	text-indent:0px;
 	font-size:0.8em;
+	float:right;
 }
 
 .hidden_contextual_menu,
 .shown_contextual_menu {
 	text-align:right;
 	white-space:nowrap;
+	text-indent:0px;
+	font-size:0.8em;
 }
 
 .hidden_contextual_menu #status_background_contextual_menu,
@@ -507,14 +513,14 @@ a.button_banner:hover span {
 	height:29px;
 	width:20px;
 	line-height:26px !important;
-	position:relative;
-	right:200px;
-	top:6px;
+  position:relative;
+  right:200px;
+	top:12px;
 	color:#6481AE;
 	max-width:800px;
-	float:right;
 	padding-left:6px;
 	overflow:hidden;
+	float:right;
 }
 
 .hidden_contextual_menu #status_background_contextual_menu:hover,
@@ -522,6 +528,7 @@ a.button_banner:hover span {
 	width:auto;
 	cursor:pointer;
 }
+
 
 .shown_contextual_menu span,
 .hidden_contextual_menu span {
@@ -785,6 +792,7 @@ a.previous-button:hover span {
 BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
 #content_page {
+  
 	padding: 10px 8px 5px 8px;
 	margin: 2px 0 2px 0;
 	text-align: justify;
@@ -1782,4 +1790,64 @@ table.mceEditor {
 	margin-top:5px;
 	margin-bottom:-5px;
 	border:none;
+}
+
+/*/////////////////////////////////////////////////////
+					PAGINATION
+////////////////////////////////////////////////////*/
+
+div.pagination {
+	padding: 3px;
+	margin-left: 10px;
+	margin-top: 3px;
+	margin-bottom: 10px;
+	text-align:left;
+	color:black;
+	font-size:80%;
+}
+
+div.pagination a {
+	border: 1px solid #737373;
+	margin-right:3px;
+	padding:5px 7px;
+
+	background-color:#7e98cb;
+	background-position:bottom;
+	text-decoration: none;
+
+	color: white;		
+}
+div.pagination a:hover {
+	border: 1px solid #737373;
+	background-image:none;
+	background-color:#e4bd86;
+	
+	color: black;
+}
+div.pagination span.current {
+	margin-right:3px;
+	padding:5px 7px;
+	border: 1px solid black;
+	
+	font-weight: bold;
+	background-color: #e99727;
+	color: black;
+}
+
+div.pagination span.disabled {
+	margin-right:3px;
+	padding:5px 7px;
+	border: 1px solid #CFCFCF;
+	background-color: #E5DBDB;
+
+	color: #BFBFBF;
+}
+
+div.pagination span.gap {
+	margin-right:3px;
+	padding:1px 1px;
+	border: 0px solid black;
+	
+	font-weight: bold;
+	color: black;
 }

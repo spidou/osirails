@@ -35,7 +35,3 @@ function preventClose(){
     return "Vous avez effectué des modifications non enregistrées.";
   }
 }
-
-Event.observe(window, 'submit', function(ev) {
-  window.onbeforeunload = null; 
-});

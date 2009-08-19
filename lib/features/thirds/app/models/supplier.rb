@@ -7,6 +7,9 @@ class Supplier < Third
 
   # Validations
   validates_uniqueness_of :name, :siret_number
+  
+  # for pagination : number of instances by index page
+  SUPPLIERS_PER_PAGE = 15
 
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}

@@ -6,6 +6,9 @@ class Role < ActiveRecord::Base
   has_many :document_type_permissions,    :include => :document_type,   :dependent => :destroy
   has_many :calendar_permissions,         :include => :calendar,        :dependent => :destroy, :conditions => [ "calendars.user_id = ?",  nil ]
   
+  # for pagination : number of instances by index page
+  ROLES_PER_PAGE = 15
+  
   # Validations
   validates_uniqueness_of :name
   validates_presence_of :name

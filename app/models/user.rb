@@ -3,6 +3,9 @@ class User < ActiveRecord::Base
   
   # Requires
   require "digest/sha1"
+  
+  # for pagination : number of instances by index page
+  USERS_PER_PAGE = 15
 
   # Relationships
   has_and_belongs_to_many :roles

@@ -11,7 +11,7 @@ class EmployeesController < ApplicationController
   def index
     if Employee.can_list?(current_user)
       params['all_employees']||= false 
-      params['all_employees'] ? @employees = Employee.find(:all) : @employees = Employee.active_employees 
+      params['all_employees'] ? @employees = Employee.find(:all).paginate(:page => params[:page], :per_page => Employee::EMPLOYEES_PER_PAGE) : @employees = Employee.active_employees.paginate(:page => params[:page], :per_page => Employee::EMPLOYEES_PER_PAGE)
     else
       error_access_page(403)
     end

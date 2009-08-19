@@ -12,7 +12,6 @@ else if (document.addEventListener)
 function initEventListeners()
 {
   nav_more_links_handler();
-  
   contextual_menu_toggle_button = $('contextual_menu_toggle_button');
 
   contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
@@ -21,10 +20,6 @@ function initEventListeners()
 
 function toggle_contextual_menu(item)
 {
-  position_hidden = "-210px";
-  position_shown = "6px";
-  width_shown = "200px";
-  width_hidden = "0px";
   class_shown = "shown_contextual_menu";
   class_hidden = "hidden_contextual_menu";
   text_shown = "Cacher le menu";
@@ -33,12 +28,16 @@ function toggle_contextual_menu(item)
   if (item.className == class_shown)
   {
     document.body.style.overflowX = 'hidden';
-    new Effect.Morph(item.parentNode, {
+    new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: position_hidden
+        marginLeft: $('contextual_menu_container').offsetWidth+14+"px"
       },
-      duration: 1.5,
-      afterFinish: function(){
+      duration: 1,
+      afterFinish: function(){    
+        $('status_background_contextual_menu').setAttribute('style','position:absolute;right:0px');
+        item.setAttribute('style','position:relative;left:1px');
+        document.body.style.overflowX = 'auto';
+        $('contextual_menu').style.display = 'none';
         item.className = class_hidden;
         document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
       }
@@ -46,14 +45,16 @@ function toggle_contextual_menu(item)
   }
   else if (item.className == class_hidden)
   {
-    document.body.style.overflowX = 'none';
-    item.parentNode.style.width = width_shown;
-    new Effect.Morph(item.parentNode, {
+    $('status_background_contextual_menu').setAttribute('style','position:relative');
+    document.body.style.overflowX = 'hidden';
+    $('contextual_menu').style.display = 'block';
+    new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: position_shown
+        marginLeft: "0px"
       },
       duration: 0.8,
       afterFinish: function(){
+        document.body.style.overflowX = 'auto';
         item.className = class_shown;
         document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
       }
@@ -166,15 +167,25 @@ function nav_more_links_handler() {
   })
 }
 
-// Load the initial attributes of the document forms for the
-// function preventClose, and active the autoresize for the
-// targeted the textarea with class "text_area_autoresize"
+// Load the initial attributes of the document forms for
+// the function preventClose, active the autoresize for the
+// targeted textarea with class "text_area_autoresize" and
+// intialize the javascript time function
 Event.observe(window, 'load', function() {
   initializeAttributes();
   
   $$('.text_area-autoresize').each(function(textarea) {
     new Widget.Textarea(textarea);
-  });    
+  });
+  
+  display_time();
 });  
+
+// Avoid the prevent close message if the action is called
+// by a submit button
+
+Event.observe(window, 'submit', function(ev) {
+  window.onbeforeunload = null; 
+});
 
 window.onbeforeunload = preventClose;

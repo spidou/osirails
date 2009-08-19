@@ -67,6 +67,22 @@ module ApplicationHelper
     "Bienvenue, " + current_user.username
   end
   
+  def daynames_and_monthnames_retrieval
+      html = "<script>"
+      html << "var dayNames = new Array();"
+      0.upto(6){|day|
+        html << "dayNames["+day.to_s+"] = \""+Date::DAYNAMES[day].downcase+"\";"
+      }
+      html << "</script>"
+      
+      html << "<script>"
+      html << "var monthNames = new Array();"
+      0.upto(11){|month|
+        html << "monthNames["+month.to_s+"] = \""+Date::MONTHNAMES[month+1]+"\";"
+      }
+      html << "</script>"
+  end
+  
   def display_date_time
     day = DateTime.now.strftime("%A").downcase
     DateTime.now.strftime("Nous sommes le #{day} %d %B %Y, il est %H:%M")

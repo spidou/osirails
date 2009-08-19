@@ -2,7 +2,7 @@ class ContentsController < ApplicationController
   # GET /contents
   def index
     if Content.can_list?(current_user)
-      @contents = Content.find(:all)
+      @contents = Content.find(:all).paginate(:page => params[:page], :per_page => Content::CONTENTS_PER_PAGE)
     else
       error_access_page(403)
     end

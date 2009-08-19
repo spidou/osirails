@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
   # GET /customers.xml
   def index
     if Customer.can_list?(current_user)
-      @customers = Customer.activates
+      @customers = Customer.activates.paginate(:page => params[:page], :per_page => Customer::CUSTOMERS_PER_PAGE)
     else
       error_access_page(403)
     end

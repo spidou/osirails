@@ -8,6 +8,9 @@ class Customer < Third
   ## Validations
   validates_uniqueness_of :name, :siret_number
   validates_associated :establishments, :contacts
+  
+  # for pagination : number of instances by index page
+  CUSTOMERS_PER_PAGE = 15
 
   # Name Scope
   named_scope :activates, :conditions => {:activated => true}

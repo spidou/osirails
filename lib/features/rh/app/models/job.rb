@@ -10,4 +10,7 @@ class Job < ActiveRecord::Base
   @@form_labels[:activity] = "Activit&eacute;s :"
   @@form_labels[:mission] = "Missions :"
   @@form_labels[:goal] = "Objectifs :"
+  
+  # for pagination : number of instances by index page
+  JOBS_PER_PAGE = 15
 end  
