@@ -9,7 +9,7 @@ module ApplicationHelper
     html = ""
     flash.each_pair do |key, value|
       html << '<br/>' unless html == ""
-      html << "<span class=\"flash_#{key}\"><span>#{value}</span></span>"
+      html << "<div class=\"flash_#{key}\"><span>#{value}</span></div>"
     end
     html.empty? ? "" : "<div class=\"flash_container\">" << html << "</div>"
   end

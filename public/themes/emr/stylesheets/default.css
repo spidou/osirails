@@ -800,15 +800,9 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 /!\::::::: FLASH MESSAGES :::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
-	background: #DDD;
-	border: solid 1px white;
 	text-align:center;
-	line-height:10px;
-	height:auto;
-	width:auto;
 	font-family: "courier new", sans-serif;
-	margin: 0;
-	padding: 5px 5px 5px 5px;
+	padding: 5px 5px 0 5px;
 }
 
 .flash_container ul {
@@ -822,26 +816,30 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	text-align:left;
 }
 
-.flash_container span span {
+.flash_container div span {
 	margin-left:20px;
 	line-height:20px;
 }
 
-.flash_error {
-	background: url("/images/cross_16x16.png") no-repeat;
-	color: #B0383D;
+.flash_container div {
+  display: inline-block;
+	padding: 8px;
+	margin: 0 0 5px 0;
+	background-position: 7px 10px;
+  background-repeat: no-repeat;
+  -moz-border-radius: 8px;
 }
 
-.flash_notice {
-	background: url("/images/tick_16x16.png") no-repeat;
+.flash_container div.flash_error {
+	background-image: url("/images/cross_16x16.png");
+	color: red;
+	-moz-box-shadow: inset 0 0 8px rgba(255,0,0,0.8);
+}
+
+.flash_container div.flash_notice {
+	background-image: url("/images/tick_16x16.png");
 	color: green;
-}
-
-.flash_error,
-.flash_notice {
-	background-position:center left;
-	width:9px;
-	height:9px;
+	-moz-box-shadow: inset 0 0 8px rgba(0,255,0,0.8);
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\

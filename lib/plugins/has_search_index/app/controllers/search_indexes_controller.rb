@@ -26,7 +26,7 @@ class SearchIndexesController < ApplicationController
     if !params[:contextual_search].nil?                                                                            # contextual_search
       # Errors management
       errors        = YAML.load(params[:contextual_search][:errors])
-      message       = "Recherche mal configur&eacute;e veuillez signaler cette erreur &agrave; votre administrateur"
+      message       = "Le moteur de recherche contextuel de cette page contient une erreur. Merci de signaler le problème à votre administrateur."
       flash.now[:error] = message if errors[:wrong_model] or !errors[:wrong_attributes].empty?
       
       searched_value = params[:contextual_search][:value]    

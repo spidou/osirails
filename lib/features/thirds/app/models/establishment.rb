@@ -24,8 +24,8 @@ class Establishment  < ActiveRecord::Base
   after_update :save_address
   
   # Search Plugin
-#  has_search_index :only_attributes    => [:name, :activated],
-#                   :only_relationships => [:contacts, :address]
+  has_search_index :only_attributes    => [:name, :activated],
+                   :only_relationships => [:contacts, :address]
                     
   cattr_reader :form_labels
   @@form_labels = Hash.new
