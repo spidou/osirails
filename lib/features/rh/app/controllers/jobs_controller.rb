@@ -53,7 +53,7 @@ class JobsController < ApplicationController
   
   def destroy
     @job = Job.find(params[:id])
-    @job.destroy 
+    @job.destroy
 
     respond_to do |format|
       format.html { redirect_to(jobs_url) }

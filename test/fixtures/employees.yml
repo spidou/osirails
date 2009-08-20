@@ -18,10 +18,53 @@ james_doe:
   family_situation: single
   civility: mister
   service: direction_general
+  
+trish_doe:
+  first_name: Trish
+  last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister
+  service: administration
+  
+janette_doe:
+  first_name: Janette
+  last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister
+  service: direction_general
+  
+franck_doe:
+  first_name: Franck
+  last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister
+  service: administration
 
 johnny:
   first_name: Johnny
   last_name: Doe
+  birth_date: <%= Date.today - 20.years %>
+  email: john@doe.org
+  society_email: james.doe@society.com
+  social_security_number: 1234567591234 45
+  family_situation: single
+  civility: mister
+  
+another_employee:
+  first_name: unknow
+  last_name: one
   birth_date: <%= Date.today - 20.years %>
   email: john@doe.org
   society_email: james.doe@society.com

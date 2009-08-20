@@ -1,36 +1,38 @@
 module LeavesHelper
-
-  def get_current_leave_year(shift=0)
-    leave_year_start_date = Employee.get_leave_year_start_date + shift.year
-    today = Date.today + shift.year
-    (leave_year_start_date.year != today.year)? "#{today.year-1}/#{today.year}" : today.year 
-  end
   
-  def get_leave_years_select(employee, after)
+  def get_leave_years_select(employee, after, current_year = nil)
     return if employee.job_contract.nil? or employee.job_contract.start_date.nil?
     
-    html = "<select name='leave_year_shift'>"
+    current_year ||= Employee.leave_year_start_date.year
+    after = nil if after < 0   
+    last_year = Employee.leave_year_start_date.year + (after || 0)
     
-    before = employee.job_contract.start_date.year - Date.today.year
-    (before..-1).each do |i|
-      html += "<option value='#{i}'>#{ get_current_leave_year(i)}</option>"
-    end
-    
-    html += "<option selected='selected' value='0'>#{ get_current_leave_year }</option>"
-    
-    (1..after).each do |j|
-      html += "<option value='#{j}'>#{ get_current_leave_year(j)}</option>"
-    end
-    
+    html = "<select name='leave_year' onchange='submit();' >"   
+    (employee.job_contract.start_date.year..last_year).each do |year|
+      selected = (year == current_year.to_i)? "selected='selected'" : ""
+      html += "<option #{ selected } value='#{ year }'>#{ year }</option>"
+    end  
     html += "</select>"
   end
   
-  def get_effective_leave_periode(leave, leave_year_start_date)
+  def get_effective_leave_periode(leave)
     html = "du <strong>#{leave.start_date.strftime("%d %B %Y")}"
     html += leave.start_half ? " (apr&egrave;s-midi) " : " "
     html += "</strong>"
     html += "au <strong>#{leave.end_date.strftime("%d %B %Y")}"
-    html += leave.end_half ? " (matin&e&cute;e)" : " "
+    html += leave.end_half ? " (matin&eacute;e)" : " "
     html += "</strong>"
   end
+  
+  def leaves_link(employee, cancelled = true)
+  if cancelled
+    message = "voir les cong&eacute;s annul&eacute;s"
+    txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+  else
+    message = "cacher les cong&eacute;s annul&eacute;s"
+    txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+  end
+  link_to txt, employee_leaves_path({:cancelled => cancelled}) 
+  end
+  
 end

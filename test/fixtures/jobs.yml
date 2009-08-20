@@ -1,8 +1,13 @@
 developer:
   name: Developer
 
-responsible_job:
+direction_responsible_job:
   name: computer_director
   responsible: true
   service: direction_general
+  
+administration_responsible_job:
+  name: administrative_director
+  responsible: true
+  service: administration
   

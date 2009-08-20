@@ -5,19 +5,24 @@
 
 <h1>Historique des primes de <%=@employee.fullname%></h1>
 
-<div>
-<table>
-    <tr>
-      <th>Montant</th>
-      <th>Commentaire</th>
-      <th>Date</th>
-    </tr>
-    <% for premium in @premia%>
-    <tr>
-      <td><%=h premium.amount %></td>
-      <td><%=h premium.remark %></td>
-      <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil? %></td>
-    </tr> 
-    <%end%>
-</table>
+<div class="presentation-medium">
+
+<% if @premia.empty? %>
+  <p>Aucune prime</p>
+<% else%>
+  <table>
+      <tr>
+        <th>Montant</th>
+        <th>Commentaire</th>
+        <th>Date</th>
+      </tr>
+      <% for premium in @premia%>
+      <tr>
+        <td><%=h premium.amount %></td>
+        <td><%=h premium.remark %></td>
+        <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil? %></td>
+      </tr> 
+      <%end%>
+  </table>  
+<% end %>
 </div>

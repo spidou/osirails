@@ -6,17 +6,20 @@ class EmployeeTest < ActiveSupport::TestCase
   def setup
     @good_employee = employees(:james_doe)
     @employee_with_job = employees(:johnny)
-    @employee_with_job.jobs << jobs(:responsible_job)
     #@leave_days_credit_per_month = ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month
-    @default_leave = Leave.new(:start_date => (Date.today - 11.month) + 3.month,
-                                 :end_date => (Date.today - 11.month) + 3.month + 6.days,
-                                 :duration => 7.0,
-                                 :leave_type_id => LeaveType.first.id,
-                                 :leave_request_id => LeaveRequest.first.id)
-    @default_leave.save 
+#    @default_leave = Leave.new(:start_date => (Date.today - 11.month) + 3.month,
+#                                 :end_date => (Date.today - 11.month) + 3.month + 6.days,
+#                                 :duration => 7.0,
+#                                 :leave_type_id => LeaveType.first.id)
+#    @default_leave.save 
     @employee = Employee.new
   end
-
+  
+  def teardown
+    @good_employee = nil
+    @employee = nil
+  end
+  
   def test_read
     assert_nothing_raised "An Employee should be read" do
       Employee.find(@good_employee.id)
@@ -116,60 +119,74 @@ class EmployeeTest < ActiveSupport::TestCase
   #FIXME if today.month == December it may not work because the start cannot be past year (1.year = 12.months and december == 12e month)
   def test_get_leave_year_method_for_past_year
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{Date.today.month + 1}/#{Date.today.day}"
-    assert_equal Date.today.year-1, Employee.get_leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year-1}"
+    assert_equal Date.today.year-1, Employee.leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year-1}"
   end
   
   def test_get_leave_year_method_for_current_year
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{Date.today.month}/#{Date.today.day}"
-    assert_equal Date.today.year, Employee.get_leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year}"
+    assert_equal Date.today.year, Employee.leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year}"
   end
   
   def test_get_leaves_for_choosen_year_method
     leave_year_start = prepare_contextual_variables
     # add some leaves to good_employee different number of leaves for each leave year as (n-1 | n | n+1) where 'n' is current leave year
     
-    # 1 leave into past year
+    ## 1 leave into past year
     @good_employee.leaves.new(:start_date => leave_year_start - 1.year,
-                                  :end_date => leave_year_start - 1.year + 4.days,
-                                  :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id,
-                                  :leave_request_id => LeaveRequest.first.id).save
+                              :end_date => leave_year_start - 1.year + 4.days,
+                              :duration => 5.0,
+                              :leave_type_id => LeaveType.first.id).save
         
-    # 2 leaves into current year
-    2.times do
-      @good_employee.leaves.new(:start_date => leave_year_start,
-                                  :end_date => leave_year_start + 4.days,
-                                  :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id,
-                                  :leave_request_id => LeaveRequest.first.id).save
+    ## 2 leaves into current year
+    2.times do |i|
+      @good_employee.leaves.new(:start_date => leave_year_start + i.month,
+                                :end_date => leave_year_start + 4.days + i.month,
+                                :duration => 5.0,
+                                :leave_type_id => LeaveType.first.id).save
     end
     
-    # 3 leaves into next year
-    3.times do
-      @good_employee.leaves.new(:start_date => leave_year_start + 1.year,
-                                  :end_date => leave_year_start + 1.year + 4.days,
-                                  :duration => 5.0,
-                                  :leave_type_id => LeaveType.first.id,
-                                  :leave_request_id => LeaveRequest.first.id).save
+    ## 3 leaves into next year
+    3.times do |i|
+      @good_employee.leaves.new(:start_date => leave_year_start + 1.year + i.month,
+                                :end_date => leave_year_start + 1.year + 4.days + i.month,
+                                :duration => 5.0,
+                                :leave_type_id => LeaveType.first.id).save
     end
     flunk "error with leaves" if @good_employee.leaves.empty?
-    assert_equal 1, @good_employee.get_leaves_for_choosen_year(-1).size, "it should have 1 leave for past year"
-    assert_equal 2, @good_employee.get_leaves_for_choosen_year(0).size, "it should have 2 leaves for current year"
-    assert_equal 3, @good_employee.get_leaves_for_choosen_year(1).size, "it should have 3 leaves for next year"
+    assert_equal 1, @good_employee.get_leaves_for_choosen_year(leave_year_start.last_year.year).size, "it should have 1 leave for past year"
+    assert_equal 2, @good_employee.get_leaves_for_choosen_year(leave_year_start.year).size, "it should have 2 leaves for current year"
+    assert_equal 3, @good_employee.get_leaves_for_choosen_year(leave_year_start.next_year.year).size, "it should have 3 leaves for next year"
   end
   
   def test_services_under_responsibility
     assert @good_employee.services_under_responsibility.empty?, "good_employee should NOT have service under his responsibility"
     
+    @employee_with_job.jobs << jobs(:direction_responsible_job)
     assert_equal 1, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 1 service under his responsibility"
     
-    @employee_with_job.jobs << jobs(:responsible_job)
+    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    assert_equal 1, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 1 service under his responsibility even if there's two jobs"
+    
+    @employee_with_job.jobs << jobs(:administration_responsible_job)
     assert_equal 2, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 2 services under his responsibility"
   end
   
   def test_subordinates
     assert @good_employee.subordinates.empty?, "good_employee should NOT have subordinates"
-    assert_equal 1, @employee_with_job.subordinates.size, "employee_with_job should have 1 subordinate because james_doe belongs to direction_general that is a service under his responsability"
+    
+    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    assert_equal 2, @employee_with_job.subordinates.size, "employee_with_job should have 1 subordinate because james_doe and trish_doe belongs to direction_general"
+    
+    # all sub_employees belongs to administration service
+    @sub_employee_1 = employees(:franck_doe)
+    @sub_employee_1.jobs << jobs(:administration_responsible_job)
+    assert_equal 1, @sub_employee_1.subordinates.size, "sub_employee_1 should have 1"
+    
+    @sub_employee_3 = employees(:trish_doe)
+    assert_equal 0, @sub_employee_3.subordinates.size, "sub_employee_1 should have 0"
+
+    @employee_with_job.jobs << jobs(:administration_responsible_job) # employee_with_job is now configured as responsible of all sub employees below
+    assert_equal 4, @employee_with_job.subordinates.size, "employee_with_job should have 4 subordinates 2 into direction_general and 2 in administration"
   end
   
   private 

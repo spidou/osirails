@@ -3,7 +3,9 @@ class Employee < ActiveRecord::Base
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
-
+  
+  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
+  
   # Accessors
   cattr_accessor :pattern_error,:form_labels
   @@pattern_error = false
@@ -93,13 +95,13 @@ class Employee < ActiveRecord::Base
 #  #   #=> positive value represente shift to the future
 #  #
 #  def leaves_days_left(n = 0)   
-#    leave_year_start_date = get_leave_year_start_date + n.year                                                               
-#    leave_year_end_date =  leave_year_start_date + 1.year - 1.day
+#    l_year_start_date = leave_year_start_date + n.year                                                               
+#    l_year_end_date =  leave_year_start_date + 1.year - 1.day
 #    total = get_total_leave_days(n)
 #    get_leaves_for_choosen_year(n).each do |l|
 #      total -= l.duration
-#      total += l.duration(leave_year_end_date, l.end_date) - 1 if l.end_date > leave_year_end_date
-#      total += l.duration(l.start_date, leave_year_start_date) - 1 if l.start_date < leave_year_start_date
+#      total += l.duration(l_year_end_date, l.end_date) - 1 if l.end_date > l_year_end_date
+#      total += l.duration(l.start_date, l_year_start_date) - 1 if l.start_date < l_year_start_date
 #    end
 #    return total
 #  end
@@ -111,67 +113,70 @@ class Employee < ActiveRecord::Base
 
 #  # method to get the current total of leave days available
 #  def get_total_leave_days(n = 0)
-#    leave_year_start_date = get_leave_year_start_date + n
-#    positive_difference = (leave_year_start_date.month > Date.today.month)? 12 : 0
-#    months = Date.today.month - leave_year_start_date.month + positive_difference + 1
+#    l_year_start_date = self.class.leave_year_start_date + n
+#    positive_difference = (l_year_start_date.month > Date.today.month)? 12 : 0
+#    months = Date.today.month - l_year_start_date.month + positive_difference + 1
 #    months = 12 if n < 0 # all days are already acquired if it's about past year
 #    months = 0 if n > 0 # no days are acquired if it's about next year
 #    ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month * months
 #  end
  
-  # method to get leaves for choosen leave year
-  # n => permit to target a leave year .
-  #   #=> default is 0 and represent current leave year
-  #   #=> negative value represente shift to the past
-  #   #=> positive value represente shift to the future
+  # Method to get leaves for choosen leave year
   # all to true permit to get leaves including cancelled ones
   #
-  def get_leaves_for_choosen_year(n, all = false)
-    leave_year_start_date = self.class.get_leave_year_start_date + n.year                                                               
-    leave_year_end_date = leave_year_start_date + 1.year - 1.day
+  def get_leaves_for_choosen_year(year, all = false)
+    year_start = self.class.leave_year_start_date.change(:year => year.to_i)                                                               
+    year_end = year_start + 1.year - 1.day
+    
     collection = all ? leaves : leaves.actives
-    collection.select {|n| n.end_date > leave_year_start_date and n.start_date < leave_year_end_date }
+    collection.select {|n| n.end_date >= year_start and n.start_date <= year_end }
   end
   
   # Method to get all services that he is responsible of
   #
   def services_under_responsibility
-    jobs.select{ |job| job.responsible }.collect{ |job| job.service }
+    jobs.select {|job| job.responsible and !job.service.nil?}.collect {|job| job.service}.uniq
   end
   
   # Method to get all subordinates of the employee according to the services that he is responsible of
   #
   def subordinates
-    result = []
-    services_under_responsibility.each {|service| result += service.members }
-    result.uniq.reject {|n| n.id == id}
+    self_and_subordinates.reject {|n| n.id == id}
   end
   
   # Method to get all subordinates of the employee according to the services that he is responsible of, and himself
   #
-  def subordinates_and_himself
+  def self_and_subordinates
     result = []
     services_under_responsibility.each {|service| result += service.members }
-    result
+    result.uniq
+  end
+  
+  # Method that return the employee's responsibles according to his service
+  #
+  def responsibles
+    service.responsibles unless service.nil?
   end
   
   # Method that get the leave start date year to know if it's the current year or it's the past year
-  def self.get_leave_year_start_date
-    leave_year_start_date = ConfigurationManager.admin_society_identity_configuration_leave_year_start_date
-    year = (Date.today.month >= leave_year_start_date.split("/").first.to_i )? Date.today.year.to_s : (Date.today.year - 1).to_s
-    (leave_year_start_date + "/#{year}").to_date
+  #
+  def self.leave_year_start_date
+    start_date = ConfigurationManager.admin_society_identity_configuration_leave_year_start_date
+    year = (Date.today.month >= start_date.split("/").first.to_i)? Date.today.year.to_s : (Date.today.year - 1).to_s
+    (start_date + "/#{year}").to_date
+  end
+  
+  # Method that return the leave end date according to the leave year start date
+  #
+  def self.leave_year_end_date
+    self.leave_year_start_date + 1.year - 1.day
   end
   
   # Method to change the case of the first_name and the last_name at the employee's creation
+  #
   def case_managment
     self.first_name.capitalize!
     self.last_name.upcase!
-  end
-  
-  #OPTIMIZE why don't put this method in a named_scope?
-  # Method to find active employees
-  def self.active_employees
-    Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.departure is null', Time.now])
   end
   
   # Method to generate the intranet email
@@ -298,26 +303,8 @@ class Employee < ActiveRecord::Base
       return retour.to_s
   end
   
-  #FIXME this method should not work properly!
-  def manager(service_id)
-    EmployeesService.find(:all,:conditions => ["service_id=? ,responsable=?", service_id, true])
-    manager = Employee.find(tmp.employee_id)
-    return manager
-  end
-  
   def fullname
     "#{self.first_name} #{self.last_name}"
-  end
-  
-  #OPTIMIZE this method return an array of numbers. why not return objects instead of numbers? and why don't put this method in the Service model???!
-  def responsable?(service_id)
-    tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
-    manager = []
-    tmp.each do |t|
-      e = Employee.find(t.employee_id)
-      manager << e.id
-    end
-    return manager
   end
   
   #OPTIMIZE what this method is doing here ?!!?

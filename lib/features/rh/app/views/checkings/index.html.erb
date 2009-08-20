@@ -1,65 +1,55 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_checking_link unless @employees.empty?%>
+  <%= new_checking_link unless @subordinates.empty?%>
 <% end %>
 
-<h1>Liste des pointages</h1>
-  
+<% contextual_menu USEFUL_LINKS do %>
+  <%= display_checkings_link %>
+<% end %>
+
+<h1>Liste des pointages</h1> 
 <div class="presentation-medium">
 
-<% if @employees.empty? %>
-
-  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p>
-  
+<% if @subordinates.empty? %>
+  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p> 
 <% else %>
 
-  <h2>
-    Semaine <%= params[:date].to_date.monday.cweek %>
-    (du <%= params[:date].to_date.monday.strftime("%A %d %B %Y") %> au <%= params[:date].to_date.next_week.yesterday.strftime("%A %d %B %Y") %>)
-  </h2>
+  <h2>Semaine <%= @date.monday.cweek %> (du <%= @date.monday.strftime("%A %d %B %Y") %> au <%= @date.next_week.yesterday.strftime("%A %d %B %Y") %>)</h2>
   
   <p>
-    <%= previous_week(params) %>
-    <select onchange="window.location.href='checkings?employee_id='+ this.options[this.selectedIndex].value +'&amp;date=<%=params[:date]%>'">
-      <%= employee_options(@employees, params)%>
+    <%= previous_week(@employee_id, @date, @view_cancelled) %>
+    <select onchange="<%= javascript_location_url(@date, @view_cancelled)%>" >
+      <%= employee_options(@subordinates, @employee_id)%>
     </select>
-    <%= next_week(params) %>
-  </p>
+    <%= next_week(@employee_id, @date, @view_cancelled) %>
+  </p> 
   
-  <% if @checkings.empty? %>
-  
-    <p>Aucun pointage pour cette p&eacute;riode</p>
-    
-  <% else %>
-  
+  <% if @checkings.empty? %> 
+    <p>Aucun pointage pour cette p&eacute;riode</p>  
+  <% else %> 
     <table>
       <tr>
-        <th rowspan="2">Date</th>
-        <th rowspan="2">Absence</th>
-        <th colspan="2">Retards</th>
-        <th colspan="2">Heures suppl&eacute;mentaires</th>
-        <th rowspan="2">Actions</th>
+        <th>Date</th>
+        <th>Absence</th>
+        <th>Heures suppl&eacute;mentaires</th>
+        <th>Actions</th>
       </tr>
-      <tr>
-        <th>matinée</th>
-        <th>apr&egrave;s-midi</th>
-        <th>matinée</th>
-        <th>apr&egrave;s-midi</th>
-      </tr>
-      
-      <% for checking in @checkings %>
-      
-        <tr>
+      <% for checking in @checkings %>  
+         
+        <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
           <td><%= checking.date.strftime("%A %d %B %Y") %></td>
-          <td><%= absence_meaning(checking.absence) %></td>
-          <%= generate_delay_and_overtime_td(checking) %>
-          <td><%= edit_checking_link(checking, :link_text=>"")%></td>
-        </tr>
-        
-      <% end %>
-      
-    </table>
-    
-  <% end %>
-  
+          <%= generate_absence_and_overtime_td(checking) %>
+          <td>         
+            <% unless checking.cancelled %>
+              <%= edit_checking_link(checking, :link_text => "") unless checking.can_be_overrided? %>
+              <%= link_to image_tag("/images/delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage"), cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?" %>
+              <%= link_to image_tag("/images/edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage"), override_form_checking_path(checking) if checking.can_be_overrided? %>
+            <% end %>
+            <%= delete_checking_link(checking, :link_text => "")%>           
+          </td>        
+        </tr>  
+             
+      <% end %>     
+    </table>  
+  <% end %> 
 <% end %>
 </div>
