@@ -40,9 +40,8 @@
           <%= generate_absence_and_overtime_td(checking) %>
           <td>         
             <% unless checking.cancelled %>
-              <%= edit_checking_link(checking, :link_text => "") unless checking.can_be_overrided? %>
-              <%= link_to image_tag("/images/delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage"), cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?" %>
-              <%= link_to image_tag("/images/edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage"), override_form_checking_path(checking) if checking.can_be_overrided? %>
+              <%= checking.can_be_overrided? ? edit_checking_link(checking, :link_text => "") : override_checking_link %>
+              <%= cancel_checking_link %>
             <% end %>
             <%= delete_checking_link(checking, :link_text => "")%>           
           </td>        

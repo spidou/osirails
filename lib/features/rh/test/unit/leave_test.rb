@@ -21,16 +21,20 @@ class LeaveTest < ActiveSupport::TestCase
     @leave = nil
   end
   
-  def test_validate_is_new_record
-    @test_leave = Leave.new(:start_date => "2009-10-15".to_date,
-                             :end_date => "2009-10-20".to_date,
-                             :duration => 5.0,
-                             :employee_id => Employee.first.id,
-                             :leave_type_id => LeaveType.first.id)
-    assert @test_leave.errors.empty?, "leave should be valid because it's a new record"
-    @test_leave.save
-    @test_leave.valid?
-    assert !@test_leave.errors.empty?, "leave should NOT be valid because it's not a new record"
+  def test_persistence_of_cancelled
+    assert !@good_leave.errors.invalid?(:cancelled), "cancelled should be valid because is not modified"
+    
+    @good_leave.cancelled = true
+    @good_leave.valid?
+    assert @good_leave.errors.invalid?(:cancelled), "cancelled should NOT be valid because is it can't be modified while a normal edit"
+  end
+  
+  def test_persistence_of_employee_id
+    assert !@good_leave.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
+    
+    @good_leave.employee_id = employees(:james_doe).id
+    @good_leave.valid?
+    assert @good_leave.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
   end
   
   def test_presence_of_start_date
@@ -81,7 +85,7 @@ class LeaveTest < ActiveSupport::TestCase
     
     @leave.cancelled = true
     @leave.valid?
-    assert @leave.errors.invalid?(:cancelled), "cancelled should be NOT valid because it's already true"   
+    assert @leave.errors.invalid?(:cancelled), "cancelled should be NOT valid because it's cancelled is true for a new record"   
     @leave.cancelled = false
     @leave.valid?
     assert !@leave.errors.invalid?(:cancelled), "cancelled should be valid"
@@ -112,13 +116,28 @@ class LeaveTest < ActiveSupport::TestCase
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
     assert !@leave.errors.invalid?(:end_date), "start_date should be valid because leave period don't overlay good_leave one"
     
+    # start date si in another leave period
     @leave.start_date = @good_leave.end_date - 2.day
     @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should be valid because leave period overlay good_leave one"
+    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
+    
+    # start date is the same day that the end date of another leave, but not the same day half
+    @leave.start_date = @good_leave.end_date
+    @leave.start_half = @good_leave.end_half = true
+    @leave.valid?
+    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
+    
+    # end date is in another leave period
     @leave.start_date = @good_leave.start_date - 2.day
     @leave.end_date = @leave.start_date + 4.day
     @leave.valid?
-    assert @leave.errors.invalid?(:end_date), "start_date should be valid because leave period overlay good_leave one"
+    assert @leave.errors.invalid?(:end_date), "start_date should NOT be valid because leave period overlay good_leave one"
+    
+    # end date is the same day that the start date of another leave, but not the same day half
+    @leave.end_date = @good_leave.start_date
+    @leave.end_half = @good_leave.start_half = true
+    @leave.valid?
+    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
   end
   
   def test_total_estimate_duration_without_in_parameters
@@ -219,28 +238,6 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
   end
   
-#  def test_is_for_current_year
-#    # the leave start and finish into the current year
-#    @leave.start_date = Employee.leave_year_start_date + 2
-#    @leave.end_date = @leave.start_date + 4
-#    assert_equal true, @leave.is_for_current_year?, "it should be true because the leave start and finish into the current year"
-#    
-#    # the leave start in the last year and finish in the current one
-#    @leave.start_date = Employee.leave_year_start_date - 2
-#    @leave.end_date = @leave.start_date + 4
-#    assert_equal true, @leave.is_for_current_year?, "it should be true because the leave start in the last year but finish in the current one"
-#    
-#    # the leave start in the current year and finish in the next one
-#    @leave.end_date = Employee.leave_year_end_date + 2
-#    @leave.start_date = @leave.end_date - 4
-#    assert_equal true, @leave.is_for_current_year?, "it should be true because the leave start in the current year and finish in the next one"
-#    
-#    # the leave start and finish in the next year
-#    @leave.end_date = Employee.leave_year_end_date + 10
-#    @leave.start_date = @leave.end_date - 4
-#    assert_equal false, @leave.is_for_current_year?, "it should be false because the leave start and finish in another year that the current one"
-#  end
-  
   def test_start_datetime
     @leave.start_date = Date.today
     @leave.start_half = true
@@ -253,30 +250,12 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal Date.today.to_datetime - 12.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime - 12.hours} if end_half is true"
   end
   
-  def test_only_cancel
+  def test_cancel
     assert_equal true, @good_leave.cancel, "@good_leave should be valid "
     
-    @good_leave.reload.start_date = Date.today + 32.day
-    assert_equal false, @good_leave.cancel, "@good_leave should NOT be valid because only 'cancelled' can be modified" 
+    @good_leave.reload.start_date = nil
+    assert_equal false, @good_leave.cancel, "@good_leave should NOT be valid because of a validation error" 
   end
-  
-#  def test_not_extend_on_two_years_method_with_wrong_start_date
-#    @leave.start_date = @leave.end_date = Date.today - 11.month - 2.days
-#    @leave.valid?
-#    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave_year_start_date < start_date = end_date"
-#    @leave.end_date = @leave.start_date + 4.day
-#    @leave.valid?
-#    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because start_date  < leave_year_start_date < end_date"
-#  end
-  
-#  def test_not_extend_on_two_years_method_with_wrong_end_date
-#    @leave.start_date = @leave.end_date = Date.today + 1.month + 4.days
-#    @leave.valid?
-#    assert !@leave.errors.invalid?(:start_date), "end_date should be valid because leave year end date < start_date = end_date"
-#    @leave.start_date = @leave.end_date - 14.days
-#    @leave.valid?
-#    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because start_date < leave_year_end_date < end_date"
-#  end
   
   private
     

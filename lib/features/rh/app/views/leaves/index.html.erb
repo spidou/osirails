@@ -1,3 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= new_employee_leave_link @employee %>
+<% end %>
+
 <% contextual_menu USEFUL_LINKS do %>
   <%= leaves_link(@employee, !@view_cancelled)%>
   <%= employee_link(@employee) %>

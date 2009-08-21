@@ -45,4 +45,20 @@ module CheckingsHelper
     html += "&amp;" + "cancelled=" + "#{cancelled}" unless cancelled.nil?
     html += "'"
   end
+  
+  def cancel_image
+    image_tag("/images/delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
+  end
+  
+  def override_image
+    image_tag("/images/edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage")
+  end
+  
+  def cancel_checking_link
+    link_to cancel_image, cancel_checking_path(checking), :confirm => "Êtes-vous sûr ?" if Checking.can_cancel?(current_user)
+  end
+  
+  def override_checking_link
+    link_to override_image, override_form_checking_path(checking) if Checking.can_override?(current_user)
+  end
 end

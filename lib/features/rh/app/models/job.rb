@@ -7,6 +7,8 @@ class Job < ActiveRecord::Base
   
   belongs_to :service
   
+  named_scope :with_responsibility, :conditions => ["responsible=true"]
+  
   # validates
   validates_uniqueness_of :name
   

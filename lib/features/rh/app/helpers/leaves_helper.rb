@@ -1,14 +1,12 @@
 module LeavesHelper
   
-  def get_leave_years_select(employee, after, current_year = nil)
+  def get_leave_years_select(employee, current_year = nil)
     return if employee.job_contract.nil? or employee.job_contract.start_date.nil?
     
     current_year ||= Employee.leave_year_start_date.year
-    after = nil if after < 0   
-    last_year = Employee.leave_year_start_date.year + (after || 0)
-    
+
     html = "<select name='leave_year' onchange='submit();' >"   
-    (employee.job_contract.start_date.year..last_year).each do |year|
+    (employee.job_contract.start_date.year..employee.last_leave.end_date.year).each do |year|
       selected = (year == current_year.to_i)? "selected='selected'" : ""
       html += "<option #{ selected } value='#{ year }'>#{ year }</option>"
     end  
@@ -25,14 +23,22 @@ module LeavesHelper
   end
   
   def leaves_link(employee, cancelled = true)
-  if cancelled
-    message = "voir les cong&eacute;s annul&eacute;s"
-    txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
-  else
-    message = "cacher les cong&eacute;s annul&eacute;s"
-    txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+    if cancelled
+      message = "voir les cong&eacute;s annul&eacute;s"
+      txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+    else
+      message = "cacher les cong&eacute;s annul&eacute;s"
+      txt = "#{image_tag( "/images/list_16x16.png",:alt => '', :title => "#{message}")} #{message}"
+    end
+    link_to txt, employee_leaves_path({:cancelled => cancelled}) 
   end
-  link_to txt, employee_leaves_path({:cancelled => cancelled}) 
+  
+  def cancel_image
+    image_tag("/images/delete_16x16.png", :alt => "Annuler ce congé", :title => "Annuler ce congé")
+  end
+  
+  def cancel_employee_leave_link(employee, leave)
+    link_to( cancel_image, cancel_employee_leave_path(employee, leave))
   end
   
 end

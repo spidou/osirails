@@ -15,12 +15,17 @@
     <div id="jobs_choice">
       <div id='jobs_list'>
         <table>
-          <tr><th colspan="2">Fonctions</th></tr>
-        <% for associated_job in jobs %>
-          <tr>
-            <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids', @employee.numbers.nil? ? nil : @employee)%></td>
-            <td><%= associated_job.name %></td>
-          </tr>
+          <tr><th colspan="3">Fonctions</th></tr>
+        <% jobs.group_by(&:service).to_hash.each_pair do |service, jobs_collection| %>
+          
+          <% for associated_job in jobs_collection %>
+              <tr>
+                <%= "<td rowspan='#{jobs_collection.size}'>#{ service.name }</td>" if associated_job == jobs_collection.first %>
+                <td><%= associated_job.name %></td>
+                <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids', @employee.numbers.nil? ? nil : @employee)%></td>
+              </tr>
+          <% end %>
+     
         <% end %>
         </table>
       </div> <!--end jobs_list -->

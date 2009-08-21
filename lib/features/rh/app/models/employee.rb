@@ -45,17 +45,17 @@ class Employee < ActiveRecord::Base
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
-  validates_presence_of :family_situation, :if => :family_situation_id
-  validates_presence_of :civility, :if => :civility_id
-  validates_presence_of :service, :if => :service_id
+  validates_presence_of :family_situation,     :if => :family_situation_id
+  validates_presence_of :civility,             :if => :civility_id
+  validates_presence_of :service,              :if => :service_id
   
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
-  validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   
   validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings #, :services, :jobs
   
-  validate :responsible_job_limit, :if => :service
+  validate :validates_responsible_job_limit
   
   # Callbacks
   before_validation_on_create :build_associated_resources
@@ -63,9 +63,14 @@ class Employee < ActiveRecord::Base
   after_update :save_iban, :save_numbers, :save_address
   
   # Method to manage that there's no more than 2 responsible jobs by service
-  def responsible_job_limit
-    unless self.service.nil?
-      errors.add_to_base("Too much responsibles for #{'self.service.name'}") if self.service.responsibles.size > 2
+  def validates_responsible_job_limit
+    unless jobs.empty?
+      jobs.with_responsibility.group_by(&:service).to_hash.each_pair do |service, jobs_collection|
+        max_responsible_jobs = (2 - service.responsibles.reject {|n| id==n.id}.size)
+        jobs_names = jobs_collection.collect(&:name).join("<br/>- ")
+        p = "poste#{"s" if max_responsible_jobs>1}"
+        errors.add(:jobs, "Vous devez choisir #{max_responsible_jobs} #{p} parmi les postes suivants :<br/>- #{jobs_names}") if jobs_collection.size > max_responsible_jobs
+      end
     end
   end
   
@@ -148,6 +153,12 @@ class Employee < ActiveRecord::Base
   #
   def self.leave_year_end_date
     self.leave_year_start_date + 1.year - 1.day
+  end
+  
+  # Method that return the most recent leave according to the end_date
+  #
+  def last_leave
+    leaves.max_by(&:end_date)
   end
   
   # Method to change the case of the first_name and the last_name at the employee's creation
@@ -284,20 +295,6 @@ class Employee < ActiveRecord::Base
   def fullname
     "#{self.first_name} #{self.last_name}"
   end
-  
-  #OPTIMIZE what this method is doing here ?!!?
-  def format_text(line_length,text)
-    t_end = text.size
-    line_end = 0
-    formated_text=""
-      while line_end < t_end
-        formated_text+=text[line_end..line_end + line_length]+ "\n"
-        
-        line_end += line_length
-      end
-    formated_text  
-  end
-  
 
   # this method permit to save the iban of the employee when it is passed with the employee form
   def iban_attributes=(iban_attributes)

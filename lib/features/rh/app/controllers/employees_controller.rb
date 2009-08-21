@@ -26,10 +26,10 @@ class EmployeesController < ApplicationController
   end
 
   # POST /employees
-  def create    
+  def create
     # regroupe the two parts of social security number
     params[:employee][:social_security_number] = params['social_security_number'].values.join " "
-    params[:employee].delete('social_security_number')
+    params.delete('social_security_number')
     
     @employee = Employee.new params[:employee]
 
@@ -37,8 +37,8 @@ class EmployeesController < ApplicationController
       flash[:notice] = 'L&apos;employée a été crée avec succés.'
       redirect_to @employee
     else
-      render :action => "new" 
-    end  
+      render :action => "new"
+    end
   end
 
   # PUT /employees/:id
@@ -64,7 +64,7 @@ class EmployeesController < ApplicationController
   # DELETE /employees/:id
   def destroy
     @employee = Employee.find params[:id]
-    @employee.destroy   
+    @employee.destroy
     redirect_to employees_path
   end
 

@@ -14,10 +14,45 @@ class CheckingTest < ActiveSupport::TestCase
     @checking = nil
   end
   
+  
+  def test_persistence_of_user_id
+    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+    
+    @good_checking.user_id = users(:admin_user).id
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+  end
+  
+  def test_persistence_of_employee_id
+    assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
+    
+    @good_checking.employee_id = employees(:james_doe).id
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
+  end
+  
+  def test_persistence_of_date
+    assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
+    
+    @good_checking.date -= 1.day
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:date), "date should NOT be valid because is modified"
+  end
+    
+  def test_persistence_of_cancelled
+    assert !@good_checking.errors.invalid?(:cancelled), "cancelled should be valid because is not modified"
+    
+    @good_checking.cancelled = true
+    @good_checking.valid?
+    assert @good_checking.errors.invalid?(:cancelled), "cancelled should NOT be valid because is it can't be modified while a normal edit"
+  end
+  
   # overtime
   
   def test_numericality_of_overtime_hours
-    #assert !@checking.errors.invalid?(:overtime_hours), "overtime_hours should NOT be valid because nil is allowed"
+    @good_checking.overtime_hours = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:overtime_hours), "overtime_hours should be valid because nil is allowed"
     
     @checking.overtime_hours = "string"
     @checking.valid?
@@ -26,7 +61,9 @@ class CheckingTest < ActiveSupport::TestCase
   end
   
   def test_numericality_of_overtime_minutes
-    assert !@checking.errors.invalid?(:overtime_minutes), "overtime_minutes should NOT be valid because nil is allowed"
+    @good_checking.overtime_minutes = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:overtime_minutes), "overtime_minutes should be valid because nil is allowed"
     
     @checking.overtime_minutes = "string"
     @checking.valid?
@@ -45,13 +82,15 @@ class CheckingTest < ActiveSupport::TestCase
     @good_checking.overtime_hours = nil
     @good_checking.overtime_minutes = nil
     @good_checking.valid?
-    assert !@good_checking.errors.invalid?(:overtime_comment), "overtime_comment should be valid because it still not mandatory"
+    assert !@good_checking.errors.invalid?(:overtime_comment), "overtime_comment should be valid because it's no longer mandatory"
   end
   
   # absence
   
   def test_numericality_of_absence_hours
-    #assert !@checking.errors.invalid?(:absence_hours), "absence_hours should NOT be valid because nil is allowed"
+    @good_checking.absence_hours = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:absence_hours), "absence_hours should be valid because nil is allowed"
     
     @checking.absence_hours = "string"
     @checking.valid?
@@ -60,7 +99,9 @@ class CheckingTest < ActiveSupport::TestCase
   end
   
   def test_numericality_of_absence_minutes
-    assert !@checking.errors.invalid?(:absence_minutes), "absence_minutes should NOT be valid because nil is allowed"
+    @good_checking.overtime_minutes = nil
+    @good_checking.valid?
+    assert !@good_checking.errors.invalid?(:absence_minutes), "absence_minutes should be valid because nil is allowed"
     
     @checking.absence_minutes = "string"
     @checking.valid?
@@ -79,14 +120,14 @@ class CheckingTest < ActiveSupport::TestCase
     @good_checking.absence_hours = nil
     @good_checking.absence_minutes = nil
     @good_checking.valid?
-    assert !@good_checking.errors.invalid?(:absence_comment), "absence_comment should be valid because it still not mandatory"
+    assert !@good_checking.errors.invalid?(:absence_comment), "absence_comment should be valid because it's no longer mandatory"
   end
-  
+
   ####
     
   def test_presence_of_date
-    assert @checking.errors.invalid?(:date), "employee_id should NOT be valid because it's nil"
-    assert !@good_checking.errors.invalid?(:date), "employee_id should be valid"
+    assert @checking.errors.invalid?(:date), "date should NOT be valid because it's nil"
+    assert !@good_checking.errors.invalid?(:date), "date should be valid"
   end
   
   def test_presence_of_employee
@@ -119,7 +160,7 @@ class CheckingTest < ActiveSupport::TestCase
     assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid"
      
     # same employee and same date
-    @checking = Checking.new(checkings(:good_checking).attributes)
+    @checking.attributes = checkings(:good_checking).attributes
     @checking.valid?
     assert @checking.errors.invalid?(:date), "date should NOT be valid because the couple (date, employee_id) already exists"
     assert @checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because the couple (date, employee_id) already exists"
@@ -131,7 +172,7 @@ class CheckingTest < ActiveSupport::TestCase
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
     
     # same date but change the employee
-    @checking = Checking.new(checkings(:good_checking).attributes)
+    @checking.attributes = checkings(:good_checking).attributes
     @checking.employee = employees(:another_employee)
     @checking.valid?
     assert !@checking.errors.invalid?(:date), "date should be valid"
@@ -148,72 +189,48 @@ class CheckingTest < ActiveSupport::TestCase
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
   end
   
-  def test_modification_period_limit
-    # 6 day ago -> less than 1 week (use new record because it is forbidden to modify the date)
-    @good_checking.absence_comment = "modification limit test"
-    assert_equal true, @good_checking.valid?, "good_checking should be valid because checking isn't too late"
+  def test_normal_edit
+    # before the edit period limit
+    assert @good_checking.can_be_edited?, "can_be_edited should be true because today is before the edit period limit"
+    assert @good_checking.valid?, "good_checking should be valid because can be edited an"
     
-    # 2 weeks ago -> more than 1 week (use new record because it is forbidden to modify the date)
-    @good_checking.created_at = (Date.today - 2.week).to_datetime
-    @good_checking.absence_comment = "modification limit test"
-    assert_equal false, @good_checking.valid?, "good_checking should NOT be valid because checking isn't too late"
+    # after the edition period limit (use new record because it is invalid to modify the date)
+    @good_checking.date -= 2.week
+    @checking.attributes = @good_checking.attributes
+    flunk "Error with a valid record save" unless @checking.save   
+    assert !@checking.can_be_edited?, "can_be_edited should be false because today is after the edit period limit"
+    assert !@checking.valid?, "checking should NOT be valid because checking isn't too late"
   end
   
   def test_override
-    assert_equal false, @good_checking.override, "good_checking should NOT be valid because the cweek is equal to the created_at one"
-    @good_checking.created_at = Date.today.last_week.to_datetime
-    assert_equal true, @good_checking.override, "good_checking should be valid"
+    # before the edit period limit
+    assert !@good_checking.can_be_overrided?, "can_be_overrided should be false because today is before edit period limit"
+    assert !@good_checking.override, "good_checking should NOT be valid because can be overrided"
+          
+    # after the edition period limit (use new record because it is invalid to modify the date)
+    @good_checking.date -= 2.week
+    @checking.attributes = @good_checking.attributes
+    flunk "Error with a valid record save" unless @checking.save 
+    assert @checking.can_be_overrided?, "can_be_overrided should be true"
+    
+    # valid object
+    assert @checking.override, "good_checking should be valid"
+    
+    # invalid object
+    @good_checking.employee_id = employees(:james_doe)
+    assert !@good_checking.override, "override should return false because of a validation error"
   end
   
-  def test_restricted_edit
-    assert_equal true, @good_checking.valid?, "good_checking should NOT be valid"
-    @good_checking.created_at = Date.today.last_week.to_datetime
-    assert_equal false, @good_checking.valid?, "good_checking should NOT be valid because the cweek is not equal to the created_at one"
-  end
-  
-  def test_verify_fixed_attributes
-    @good_checking.absence_comment = "another comment"
-    @good_checking.valid?
-    assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
-    assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
-    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+  def test_cancel
+    assert @good_checking.cancel, "cancel should return true because is modified while a cancel"
     
-    # try to modify the date
-    @good_checking.reload
-    @good_checking.date -= 1.day
-    @good_checking.valid?
-    assert @good_checking.errors.invalid?(:date), "date should NOT be valid because is modified"
-    assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
-    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
-    
-    # try to modify the employee_id
-    @good_checking.reload
-    @good_checking.employee_id = employees(:james_doe).id
-    @good_checking.valid?
-    assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
-    assert @good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
-    assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
-    
-    # try to modify the user_id
-    @good_checking.reload
-    @good_checking.user_id = users(:admin_user).id
-    @good_checking.valid?
-    assert !@good_checking.errors.invalid?(:date), "date should be valid because is not modified"
-    assert !@good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
-    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
-  end
-    
-  def test_validate_cancel_flag
-    @good_checking.cancelled = true
-    @good_checking.valid?
-    assert @good_checking.errors.invalid?(:cancelled), "cancelled should NOT be valid because is modified while a normal edit"
-    
-    @good_checking.reload
-    assert_equal true, @good_checking.cancel, "cancelled should be valid because is modified while a cancel"
+    # invalid object
+    @good_checking.reload.employee_id = employees(:james_doe)
+    assert !@good_checking.cancel, "cancel should return false because of a validation error"
   end
   
   def test_verify_time
-    @checking = Checking.new(checkings(:good_checking).attributes)
+    @checking.attributes = checkings(:good_checking).attributes
     @checking.overtime_hours = 25
     @checking.absence_hours = 25
     @checking.overtime_minutes = 70
@@ -232,36 +249,41 @@ class CheckingTest < ActiveSupport::TestCase
   end
   
   def test_mandatory_comment
-    assert_equal true, @good_checking.mandatory_comment?(1,1), "mandatory_comment should return true, hours:1 ,minutes:1"
-    assert_equal true, @good_checking.mandatory_comment?(1,0), "mandatory_comment should return true, hours:1 ,minutes:0"
-    assert_equal true, @good_checking.mandatory_comment?(1,nil), "mandatory_comment should return true, hours:1 ,minutes:nil"
-    assert_equal false, @good_checking.mandatory_comment?(nil,nil), "mandatory_comment should return false, hours:nil ,minutes:nil"
-    assert_equal false, @good_checking.mandatory_comment?(0,nil), "mandatory_comment should return false, hours:0 ,minutes:nil"
-    assert_equal false, @good_checking.mandatory_comment?(0,0), "mandatory_comment should return false, hours:0 ,minutes:0"
+    assert @good_checking.mandatory_comment?(1,1), "mandatory_comment should return true, hours:1 ,minutes:1"
+    assert @good_checking.mandatory_comment?(1,0), "mandatory_comment should return true, hours:1 ,minutes:0"
+    assert @good_checking.mandatory_comment?(1,nil), "mandatory_comment should return true, hours:1 ,minutes:nil"
+    assert !@good_checking.mandatory_comment?(nil,nil), "mandatory_comment should return false, hours:nil ,minutes:nil"
+    assert !@good_checking.mandatory_comment?(0,nil), "mandatory_comment should return false, hours:0 ,minutes:nil"
+    assert !@good_checking.mandatory_comment?(0,0), "mandatory_comment should return false, hours:0 ,minutes:0"
   end
   
-  def test_not_empty_checking
-    @empty_checking = checkings(:empty_checking)
-    # no fields
-    assert_equal false, @empty_checking.valid?, "empty_checking should NOT be valid"
-    
-    # many fields
-    assert_equal true, @good_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
-    
-    # only one field => hours
-    @empty_checking.absence_hours = 1
-    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
-    
-    # only one field => minutes
-    @empty_checking.absence_hours = nil
-    @empty_checking.overtime_minutes = 3
-    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
-    
-    # only one field => minutes
-    @empty_checking.overtime_hours = nil
-    @empty_checking.overtime_minutes = 3
-    assert_equal true, @empty_checking.valid?, "empty_checking should be valid #{@empty_checking.errors.inspect}"
+  def test_not_empty_checking_with_no_fields
+    [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each do |attribute|
+      assert @checking.errors.invalid?(attribute), "#{attribute} should NOT be valid"
+    end 
   end
+  
+  def test_not_empty_checking_with_many_fields 
+    [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each do |attribute|
+      assert !@good_checking.errors.invalid?(attribute), "#{attribute} should be valid"
+    end
+  end
+  
+  def test_not_empty_checking_with_hour_field
+    @checking.absence_hours = 1
+    @checking.valid?
+    [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each do |attribute|
+      assert !@checking.errors.invalid?(attribute), "#{attribute} should be valid"
+    end
+  end
+  
+  def test_not_empty_checking_with_minutes_field  
+    @checking.overtime_minutes = 3
+    @checking.valid?
+    [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each do |attribute|
+      assert !@checking.errors.invalid?(attribute), "#{attribute} should be valid"
+    end
+  end  
 
   def test_date_not_too_far_away
     @checking.date = Date.today
