@@ -69,15 +69,38 @@ module LeaveRequestsHelper
   end
   
   def accepted_leave_requests_link
-    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes acceptées", accepted_leave_requests_path)
+    text = "Voir toutes mes demandes acceptées"
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, accepted_leave_requests_path)
   end
   
   def refused_leave_requests_link
-    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes refusées", refused_leave_requests_path)
+    text = "Voir toutes mes demandes refusées"
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, refused_leave_requests_path)
   end
   
   def cancelled_leave_requests_link
-    link_to(image_tag("view_16x16.png") + " Voir toutes mes demandes annulées", cancelled_leave_requests_path)
+    text = "Voir toutes mes demandes annulées"
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, cancelled_leave_requests_path)
+  end
+  
+  def leave_request_check_form_link(leave_request)
+    text = "Agir sur la demande"
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_check_form_path(leave_request))
+  end
+  
+  def leave_request_notice_form_link(leave_request)
+    text = "Agir sur la demande"
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_notice_form_path(leave_request))
+  end
+  
+  def leave_request_close_form_link(leave_request)
+    text = "Agir sur la demande"
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_close_form_path(leave_request))
+  end  
+  
+  def cancel_leave_request_link(leave_request,button) 
+    text = button ? "" : " Annuler la demande"
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
   end
   
 end

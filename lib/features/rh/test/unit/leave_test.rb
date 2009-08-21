@@ -26,8 +26,7 @@ class LeaveTest < ActiveSupport::TestCase
                              :end_date => "2009-10-20".to_date,
                              :duration => 5.0,
                              :employee_id => Employee.first.id,
-                             :leave_type_id => LeaveType.first.id,
-                             :leave_request_id => LeaveRequest.first.id)
+                             :leave_type_id => LeaveType.first.id)
     assert @test_leave.errors.empty?, "leave should be valid because it's a new record"
     @test_leave.save
     @test_leave.valid?

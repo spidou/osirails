@@ -1,13 +1,13 @@
-<h2>Mes demandes refusées</h2>
+<h2>Mes demandes refus&eacute;es</h2>
 
 <% if refused_leave_requests.size > 0 %>
 
   <div>
     <table>
       <tr>
-        <th>Date de début</th>
+        <th>Date de d&eacute;but</th>
         <th>Date de fin</th>
-        <th>Créée le</th>
+        <th>Soumise le</th>
         <th>Statut</th>
         <th>Actions</th>
       </tr>
@@ -16,7 +16,7 @@
         <tr>
           <td><%=h leave_request.start_date.strftime("%A %d %B %Y") %></td>
           <td><%=h leave_request.end_date.strftime("%A %d %B %Y") %></td>
-          <td><%=h leave_request.created_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+          <td><%=h leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
           <td><%=h view_status(leave_request) %></td>
           <td>
             <%= leave_request_link(leave_request, :link_text => "") %>
@@ -25,13 +25,13 @@
       <% end %>
       
     </table>
-    <%= will_paginate refused_leave_requests, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" if !@index %>
+    <%= will_paginate refused_leave_requests, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" if params[:action] != "index" %>
   </div>
 
 <% else %>
 
   <div>
-    <p>Aucune demande refusée</p>
+    <p>Aucune demande refus&eacute;e</p>
   </div>
 
 <% end %>

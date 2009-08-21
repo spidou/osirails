@@ -1,13 +1,13 @@
-<h2>Mes demandes annulées</h2>
+<h2>Mes demandes annul&eacute;es</h2>
 
 <% if cancelled_leave_requests.size > 0 %>
 
   <div>
     <table>
       <tr>
-        <th>Date de début</th>
+        <th>Date de d&eacute;but</th>
         <th>Date de fin</th>
-        <th>Créée le</th>
+        <th>Soumise le</th>
         <th>Statut</th>
         <th>Actions</th>
       </tr>
@@ -16,7 +16,7 @@
         <tr>
           <td><%= leave_request.start_date.strftime("%A %d %B %Y") %></td>
           <td><%= leave_request.end_date.strftime("%A %d %B %Y") %></td>
-          <td><%= leave_request.created_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+          <td><%= leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
           <td><%= view_status(leave_request) %></td>
           <td>
             <%= leave_request_link(leave_request, :link_text => "") %>
@@ -31,7 +31,7 @@
 <% else %>
 
   <div>
-    <p>Aucune demande annulée</p>
+    <p>Aucune demande annul&eacute;e</p>
   </div>
 
 <% end %>

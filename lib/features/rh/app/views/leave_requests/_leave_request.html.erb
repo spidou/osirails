@@ -1,245 +1,154 @@
 <div class="presentation_medium">
-<% form_for(leave_request, :html => {:multipart => true}) do |f| %>
+  <% form_for(leave_request, :html => {:multipart => true}) do |f| %>
+    
+    <!--############## SHOW : Leave informations / FORM : Leave period ##############-->
   
-  <!--############## SHOW : Leave informations / FORM : Leave period ##############-->
-  
-  <% if !is_form_view? or leave_request.was_higher_than_step_unstarted? %>
- 
-    <%= "<h2>Informations</h2>" %>
-    <p>
-      <%= f.label :status %>
-      <%= f.strong view_status(leave_request) %>
-    </p>
-    <% if leave_request.was_cancelled? %>
+    <% if !is_form_view? or leave_request.was_higher_than_step_unstarted? %>
+   
+      <%= "<h2>Informations</h2>" %>
       <p>
-        <%= f.label :cancelled_at %>
-        <%= f.strong leave_request.cancelled_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        <%= f.label :status %>
+        <%= f.strong view_status(leave_request) %>
+      </p>
+      <% if leave_request.was_cancelled? %>
+        <p>
+          <%= f.label :cancelled_at %>
+          <%= f.strong leave_request.cancelled_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+        </p>
+      <% end %>
+      <p>
+        <%= f.label :employee %>
+        <%= link_to leave_request.employee.fullname, employee_path(leave_request.employee) %>
+        <%= f.label("Service")%>
+        <%= link_to leave_request.employee.service.name, service_path(leave_request.employee.service.id) %>    
+      </p>
+      <p>
+        <%= f.label :submitted_at %>
+        <%= f.strong leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+      </p>
+      <p>
+        <%= f.label :period %>
+        <%= f.strong view_dates(leave_request) %>
+      </p>
+      
+      <p>
+        <%= f.label :leave_type %>
+        <%= f.strong leave_request.leave_type.name %>
+      </p>
+      <p>
+        <%= f.label :comment%>
+        <% if leave_request.comment.nil? or leave_request.comment == ""  %>
+          <%= f.strong "aucun" %>
+        <% else %>
+          <%= f.strong leave_request.comment %>
+        <% end %>
       </p>
     <% end %>
-    <p>
-      <%= f.label :employee %>
-      <%= link_to leave_request.employee.fullname, employee_path(leave_request.employee) %>
-      <%= f.label("Service")%>
-      <%= link_to leave_request.employee.service.name, service_path(leave_request.employee.service.id) %>    
-    </p>
-    <p>
-      <%= f.label :created_at %>
-      <%= f.strong leave_request.created_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-    </p>
-    <p>
-      <%= f.label :period %>
-      <%= f.strong view_dates(leave_request) %>
+    
     </p>
     
-    <p>
-      <%= f.label :leave_type %>
-      <%= f.strong leave_request.leave_type.name %>
-    </p>
-    <p>
-      <%= f.label :comment%>
-      <% if leave_request.comment.nil? or leave_request.comment == ""  %>
-        <%= f.strong "aucun" %>
-      <% else %>
-        <%= f.strong leave_request.comment %>
-      <% end %>
-    </p>
-  <% end %>
-  
-  </p>
-  
-  <% if is_form_view? and leave_request.was_unstarted? %>
+    <% if is_form_view? and leave_request.was_unstarted? %>
+      
+      <%= "<h2>P&eacute;riode du cong&eacute;</h2>" %>
+      <%= f.error_messages %> 
+      <p>
+        <%= f.label:start_date %>
+        <%= f.date_select( :start_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
+        <%= f.label :start_half %>
+        <%= f.check_box(:start_half) %>
+      </p>
+      <p>
+        <%= f.label :end_date %>
+        <%= f.date_select( :end_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
+        <%= f.label :end_half %>
+        <%= f.check_box(:end_half) %>
+      </p>
+    <% end %>
     
-    <%= "<h2>Période du congé</h2>" %>
-    <%= f.error_messages %> 
-    <p>
-      <%= f.label:start_date %>
-      <%= f.date_select( :start_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
-      <%= f.label :start_half %>
-      <%= f.check_box(:start_half) %>
-    </p>
-    <p>
-      <%= f.label :end_date %>
-      <%= f.date_select( :end_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
-      <%= f.label :end_half %>
-      <%= f.check_box(:end_half) %>
-    </p>
-  <% end %>
-  
-  <!--############## SHOW : Responsible check / FORM : Leave type ##############-->
-  
-  <% if leave_request.was_higher_than_step_submit? %>
-    <%= "<h2>Réponse du responsable</h2>" %>
-    <p>  
-      <%= f.label :responsible_agreement %>
-      <%= f.strong view_responsible_agreement(leave_request) %>   
-      <%= f.label :responsible %>
-      <%= link_to "#{leave_request.responsible.first_name} #{leave_request.responsible.last_name}", employee_path(leave_request.responsible) %>
-    </p>
-    <p> 
-      <%= f.label :checked_at %>
-      <%= f.strong leave_request.checked_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-    </p>
-    <p>
-      <%= f.label :responsible_remarks %>
-      <%= f.strong(leave_request.responsible_remarks.blank? ? "aucun" : leave_request.responsible_remarks) %>
-    </p>
-  <% end %>
-  
-  <% if is_form_view? and leave_request.was_unstarted? %>
-    <%= "<h2>Type du congé</h2>" %>
-    <p>  
-      <%= f.label :leave_type_id %>
-      <%= collection_select(:leave_request, :leave_type_id, LeaveType.find(:all), :id, :name, {:prompt => "Sélectionnez le type du congé"}) %>
-    </p>  
-    <p>
-      <%= f.label :comment %>
-      <%= f.text_area(:comment, :rows => 2) %> 
+    <!--############## SHOW : Responsible check / FORM : Leave type ##############-->
     
-    <p>
-      <%= f.reset "Réinitialiser" %>
-      <%= f.submit button_name %>
-    </p>
+    <% if leave_request.was_higher_than_step_submit? %>
+      <%= "<h2>R&eacute;ponse du responsable</h2>" %>
+      <p>  
+        <%= f.label :responsible_agreement %>
+        <%= f.strong view_responsible_agreement(leave_request) %>   
+        <%= f.label :responsible %>
+        <%= link_to "#{leave_request.responsible.first_name} #{leave_request.responsible.last_name}", employee_path(leave_request.responsible) %>
+      </p>
+      <p> 
+        <%= f.label :checked_at %>
+        <%= f.strong leave_request.checked_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+      </p>
+      <p>
+        <%= f.label :responsible_remarks %>
+        <%= f.strong(leave_request.responsible_remarks.blank? ? "aucun" : leave_request.responsible_remarks) %>
+      </p>
+    <% end %>
+    
+    <% if is_form_view? and leave_request.was_unstarted? %>
+      <%= "<h2>Type du cong&eacute;</h2>" %>
+      <p>  
+        <%= f.label :leave_type_id %>
+        <%= collection_select(:leave_request, :leave_type_id, LeaveType.find(:all), :id, :name, {:prompt => "Sélectionnez le type du congé"}) %>
+      </p>  
+      <p>
+        <%= f.label :comment %>
+        <%= f.text_area(:comment, :rows => 5) %> 
+        <!--## f.text_area_autoresize(:comment, :rows => 2) ##-->
+      <p>
+        <%= f.reset "Réinitialiser" %>
+        <%= f.submit button_name %>
+      </p>
+    <% end %>
+   
+    
+    <!--############## Observer notification ##############-->
+    
+    <% if leave_request.was_higher_than_step_check? %>
+      <%= "<h2>Observation des ressources humaines</h2>" %>
+      <p>  
+        <%= f.label :acquired_leaves_days %>
+        <%= f.strong "#{leave_request.acquired_leaves_days} jours" %>   
+        <%= f.label :observer %>
+        <%= link_to "#{leave_request.observer.first_name} #{leave_request.observer.last_name}", employee_path(leave_request.observer) %>  
+      </p> 
+      <p>  
+        <%= f.label :duration %>
+        <%= f.strong "#{leave_request.duration} jours" %> 
+      </p> 
+      <p>
+        <%= f.label :noticed_at %>
+        <%= f.strong leave_request.noticed_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+      </p>  
+      <p>
+        <%= f.label :observer_remarks %>
+        <%= f.strong leave_request.observer_remarks %> 
+      </p>   
+    <% end %>
+    
+    <!--############## Director close ##############-->
+    
+    <% if leave_request.was_higher_than_step_notice? %>
+      <%= "<h2>R&eacute;ponse de la direction</h2>" %>
+      <p>  
+        <%= f.label :director_agreement %>
+        <%= f.strong view_director_agreement(leave_request) %>   
+        <%= f.label :director %>
+        <%= link_to "#{leave_request.director.first_name} #{leave_request.director.last_name}", employee_path(leave_request.director) %>
+      </p>
+      <p> 
+        <%= f.label :ended_at %>
+        <%= f.strong leave_request.ended_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
+      </p>
+      <p>
+        <%= f.label :director_remarks%>
+        <% if leave_request.director_remarks.nil? or leave_request.director_remarks == ""  %>
+          <%= f.strong "aucun" %>
+        <% else %>
+          <%= f.strong leave_request.director_remarks %>
+        <% end %>
+      </p>
+    <% end %>
+      
   <% end %>
-  
-<% end %>
-  
-<% form_for(leave_request, :html => {:multipart => true}, :url => check_leave_request_path(leave_request)) do |f| %> 
-  
-  <!--############## SHOW : Observer notification / FORM : Responsible check ##############-->
-  
-  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_check? %>
-    <%= "<h2>Observation des ressources humaines</h2>" %>
-    <p>  
-      <%= f.label :acquired_leaves_days %>
-      <%= f.strong "#{leave_request.acquired_leaves_days} jours" %>   
-      <%= f.label :observer %>
-      <%= link_to "#{leave_request.observer.first_name} #{leave_request.observer.last_name}", employee_path(leave_request.observer) %>  
-    </p> 
-    <p>  
-      <%= f.label :retrieval %>
-      <% if !leave_request.retrieval.nil? %> 
-        <%= f.strong "#{leave_request.retrieval} jours" %>
-      <% else %>
-        <%= f.strong "aucun" %>
-      <% end %>
-      <%= f.label :duration %>
-      <%= f.strong "#{leave_request.duration} jours" %> 
-    </p> 
-    <p>
-      <%= f.label :noticed_at %>
-      <%= f.strong leave_request.noticed_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-    </p>  
-    <p>
-      <%= f.label :observer_remarks %>
-      <%= f.strong leave_request.observer_remarks %> 
-    </p>   
-  <% end %>
-  
-  <% if is_form_view? and leave_request.was_submitted_or_refused_by_responsible?  %>
-    <%= f.hidden_field(:responsible_id, :value => current_user.employee.id) %>   
-    <%= f.hidden_field(:checked_at, :value => Time.now) %> 
-  
-    <%= "<h2>Réponse du responsable</h2>"%>
-    <%= f.error_messages %>
-    <p>  
-      <%= f.label :agreement_true %>
-      <%= f.radio_button(:responsible_agreement, "true") %>
-      <%= f.label :agreement_false %>
-      <%= f.radio_button(:responsible_agreement, "false") %>     
-    </p>  
-    <p>
-      <%= f.label :responsible_remarks %>
-      <%= f.text_area(:responsible_remarks, :rows => 2) %> 
-    </p>
-    <p>
-      <%= f.reset "Réinitialiser" %>  
-      <%= f.submit button_name %>
-    </p>
-  <% end %>
-  
-<% end %>
-
-<% form_for(leave_request, :html => {:multipart => true}, :url => notice_leave_request_path(leave_request)) do |f| %> 
-  
-  <!--############## SHOW : Director close / FORM : Observer notification ##############-->
-  
-  <% if (!is_form_view? or is_form_view?) and leave_request.was_higher_than_step_notice? %>
-    <%= "<h2>Réponse de la direction</h2>" %>
-    <p>  
-      <%= f.label :director_agreement %>
-      <%= f.strong view_director_agreement(leave_request) %>   
-      <%= f.label :director %>
-      <%= link_to "#{leave_request.director.first_name} #{leave_request.director.last_name}", employee_path(leave_request.director) %>
-    </p>
-    <p> 
-      <%= f.label :ended_at %>
-      <%= f.strong leave_request.ended_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-    </p>
-    <p>
-      <%= f.label :director_remarks%>
-      <% if leave_request.director_remarks.nil? or leave_request.director_remarks == ""  %>
-        <%= f.strong "aucun" %>
-      <% else %>
-        <%= f.strong leave_request.director_remarks %>
-      <% end %>
-    </p>
-  <% end %>
-  
-  <% if is_form_view? and leave_request.was_checked? %>
-    <%= f.hidden_field(:observer_id, :value => current_user.employee.id) %>   
-    <%= f.hidden_field(:noticed_at, :value => Time.now) %> 
-  
-    <%= "<h2>Observation des ressources humaines</h2>"%>
-    <%= f.error_messages %>
-    <p>  
-      <%= f.label :acquired_leaves_days %>
-      <%= f.text_field(:acquired_leaves_days, :size => 1) %> jours  
-    </p> 
-    <p> 
-      <%= f.label :retrieval %>
-      <%= f.text_field(:retrieval, :size => 1) %> jours
-    </p>
-    <p>
-      <%= f.label :duration %>
-      <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration(leave_request.start_date, leave_request.end_date)) %> jours 
-    </p>    
-    <p>
-      <%= f.label :observer_remarks %>
-      <%= f.text_area(:observer_remarks, :rows => 2) %>  
-    </p>
-    <p>
-      <%= f.reset "Réinitialiser" %>
-      <%= f.submit button_name %>
-    </p>
-  <% end %>
-  
-<% end %>
-
-<% form_for(leave_request, :html => {:multipart => true}, :url => close_leave_request_path(leave_request)) do |f| %> 
-  
-  <!--############## FORM : Director close ##############-->
-  
-  <% if is_form_view? and leave_request.was_noticed_or_refused_by_director? %>
-    <%= f.hidden_field(:director_id, :value => current_user.employee.id) %>   
-    <%= f.hidden_field(:ended_at, :value => Time.now) %> 
-  
-    <%= "<h2>Réponse de la direction</h2>"%>
-    <%= f.error_messages %>
-    <p>  
-      <%= f.label :agreement_true %>
-      <%= f.radio_button(:director_agreement, "true") %>
-      <%= f.label :agreement_false %>
-      <%= f.radio_button(:director_agreement, "false") %>     
-    </p>  
-    <p>
-      <%= f.label :director_remarks %>
-      <%= f.text_area(:director_remarks, :rows => 2) %> 
-    </p>
-    <p>
-      <%= f.reset "Réinitialiser" %>
-      <%= f.submit button_name %>
-    </p>
-  <% end %>
-  
-<% end %>
 </div>

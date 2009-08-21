@@ -6,21 +6,20 @@ class LeaveRequestsController < ApplicationController
     @employee = current_user.employee
     
     if !@employee.nil?
-      @index = true
       
-      @leave_requests_to_check = LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)", LeaveRequest::STATUS_SUBMITTED, @employee.subordinates_and_himself], :order => "start_date DESC" )
+      @leave_requests_to_check = @employee.get_leave_requests_to_check
       
-      @leave_requests_to_notice = LeaveRequest.find(:all, :conditions => ["status = ?", LeaveRequest::STATUS_CHECKED], :order => "start_date DESC")
+      @leave_requests_to_notice = LeaveRequest.leave_requests_to_notice
       
-      @leave_requests_to_close = LeaveRequest.find(:all, :conditions => ["status = ?", LeaveRequest::STATUS_NOTICED], :order => "start_date DESC")
+      @leave_requests_to_close = LeaveRequest.leave_requests_to_close
       
-      @active_leave_requests = @employee.active_leave_requests.find(:all, :limit => 5)
+      @active_leave_requests = @employee.active_leave_requests
       
       @accepted_leave_requests = @employee.accepted_leave_requests.find(:all, :limit => 5)
       
       @refused_leave_requests = @employee.refused_leave_requests.find(:all, :limit => 5)
       
-      @refused_by_me_leave_requests = LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?", LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, @employee.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, @employee.id, Date.today], :order => "start_date DESC" )        
+      @refused_by_me_leave_requests = @employee.get_leave_requests_refused_by_me  
       
       @leave_requests_to_treat = ( (@leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user)) or
                                    (@leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user)) or
@@ -41,6 +40,21 @@ class LeaveRequestsController < ApplicationController
   
   # GET /leave_requests/:id/edit
   def edit
+    @leave_request = LeaveRequest.find(params[:id])
+  end
+  
+  # GET /leave_requests/:id/check_form
+  def check_form
+    @leave_request = LeaveRequest.find(params[:id])
+  end
+  
+  # GET /leave_requests/:id/notice_form
+  def notice_form
+    @leave_request = LeaveRequest.find(params[:id])
+  end
+  
+  # GET /leave_requests/:id/close_form
+  def close_form
     @leave_request = LeaveRequest.find(params[:id])
   end
   
@@ -74,6 +88,7 @@ class LeaveRequestsController < ApplicationController
     @leave_request = LeaveRequest.find(params[:id])
     
     @leave_request.attributes = params[:leave_request]
+    @leave_request.responsible = current_user.employee
     if @leave_request.check
       flash[:notice] = "La réponse a été envoyée avec succès"
       redirect_to(leave_requests_url)
@@ -87,6 +102,7 @@ class LeaveRequestsController < ApplicationController
     @leave_request = LeaveRequest.find(params[:id])
     
     @leave_request.attributes = params[:leave_request]
+    @leave_request.observer = current_user.employee
     if @leave_request.notice
       flash[:notice] = "La réponse a été envoyée avec succès"
       redirect_to(leave_requests_url)
@@ -100,6 +116,7 @@ class LeaveRequestsController < ApplicationController
     @leave_request = LeaveRequest.find(params[:id])
     
     @leave_request.attributes = params[:leave_request]
+    @leave_request.director = current_user.employee
     if @leave_request.close 
       flash[:notice] = "La réponse a été envoyée avec succès et un congé a été généré"
       redirect_to(leave_requests_url)
@@ -108,8 +125,8 @@ class LeaveRequestsController < ApplicationController
     end
   end
   
-  # DELETE /leave_requests/:id
-  def destroy
+  # GET /leave_requests/:id/cancel
+  def cancel
     @employee = current_user.employee
     @leave_request = LeaveRequest.find(params[:id])
     
@@ -124,6 +141,14 @@ class LeaveRequestsController < ApplicationController
     @leave_request.cancelled_by = @employee.id
     @leave_request.cancel
     
+    redirect_to(leave_requests_url)
+  end
+  
+  # DELETE /leave_requests/:id
+  def destroy
+    @leave_request = LeaveRequest.find(params[:id])
+    @leave_request.destroy
+
     redirect_to(leave_requests_url)
   end
   

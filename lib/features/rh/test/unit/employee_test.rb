@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class EmployeeTest < ActiveSupport::TestCase
   fixtures :employees, :civilities
@@ -175,7 +175,7 @@ class EmployeeTest < ActiveSupport::TestCase
     assert @good_employee.subordinates.empty?, "good_employee should NOT have subordinates"
     
     @employee_with_job.jobs << jobs(:direction_responsible_job)
-    assert_equal 2, @employee_with_job.subordinates.size, "employee_with_job should have 1 subordinate because james_doe and trish_doe belongs to direction_general"
+    assert_equal 2, @employee_with_job.subordinates.size, "employee_with_job should have 2 subordinates because james_doe and trish_doe belongs to direction_general"
     
     # all sub_employees belongs to administration service
     @sub_employee_1 = employees(:franck_doe)
@@ -183,10 +183,28 @@ class EmployeeTest < ActiveSupport::TestCase
     assert_equal 1, @sub_employee_1.subordinates.size, "sub_employee_1 should have 1"
     
     @sub_employee_3 = employees(:trish_doe)
-    assert_equal 0, @sub_employee_3.subordinates.size, "sub_employee_1 should have 0"
+    assert_equal 0, @sub_employee_3.subordinates.size, "sub_employee_3 should have 0"
 
     @employee_with_job.jobs << jobs(:administration_responsible_job) # employee_with_job is now configured as responsible of all sub employees below
     assert_equal 4, @employee_with_job.subordinates.size, "employee_with_job should have 4 subordinates 2 into direction_general and 2 in administration"
+  end
+  
+  def test_self_and_subordinates
+    assert @good_employee.self_and_subordinates.empty?, "good_employee should NOT have subordinates"
+    
+    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    assert_equal 3, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 3 people in self_and_subordinates because james_doe and trish_doe belongs to direction_general"
+    
+    # all sub_employees belongs to administration service
+    @sub_employee_1 = employees(:franck_doe)
+    @sub_employee_1.jobs << jobs(:administration_responsible_job)
+    assert_equal 2, @sub_employee_1.self_and_subordinates.size, "sub_employee_1 should have 2"
+    
+    @sub_employee_3 = employees(:trish_doe)
+    assert_equal 0, @sub_employee_3.self_and_subordinates.size, "sub_employee_3 should have 0"
+
+    @employee_with_job.jobs << jobs(:administration_responsible_job) # employee_with_job is now configured as responsible of all sub employees below
+    assert_equal 5, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 5 people in self_and_subordinates 2 into direction_general and 2 in administration"
   end
   
   private 

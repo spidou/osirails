@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090812094807) do
+ActiveRecord::Schema.define(:version => 20090821070756) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -493,7 +493,6 @@ ActiveRecord::Schema.define(:version => 20090812094807) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "duration"
-    t.float    "retrieval"
   end
 
   create_table "leave_types", :force => true do |t|

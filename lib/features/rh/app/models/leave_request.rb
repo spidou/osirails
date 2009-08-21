@@ -3,13 +3,15 @@ require 'estimate_duration'
 class LeaveRequest < ActiveRecord::Base
   include EstimateDuration
   
-  has_permissions :as_business_object, :additional_methods => [:submit, :check, :notice, :close, :cancel]
+  has_permissions :as_business_object, :methods => [:list, :view, :add, :delete, :submit, :check, :notice, :close, :cancel]
+  
+  alias_attribute :submitted_at, :created_at
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:status]                = "STATUT :"
   @@form_labels[:employee]              = "Employé :"
-  @@form_labels[:created_at]            = "Date de la demande :"
+  @@form_labels[:submitted_at]          = "Date de la demande :"
   @@form_labels[:period]                = "Période demandée :"
   @@form_labels[:start_date]            = "Du :"
   @@form_labels[:end_date]              = "Au :"
@@ -22,7 +24,6 @@ class LeaveRequest < ActiveRecord::Base
   @@form_labels[:responsible]           = "Nom du responsable :"
   @@form_labels[:responsible_remarks]   = "Commentaire :"
   @@form_labels[:acquired_leaves_days]  = "Etat des congés payés acquis :"
-  @@form_labels[:retrieval]             = "Report sur l'année N-1:" #TODO that should not be removed ?
   @@form_labels[:duration]              = "Durée effective totale :"
   @@form_labels[:observer_remarks]      = "Observations :"
   @@form_labels[:observer]              = "Notifié par :"
@@ -44,6 +45,11 @@ class LeaveRequest < ActiveRecord::Base
   STATUS_NOTICED = 3
   STATUS_CLOSED = 4
   STATUS_REFUSED_BY_DIRECTOR = -4
+  
+  named_scope :leave_requests_to_notice,  :conditions => ["status = ?", LeaveRequest::STATUS_CHECKED],
+                                          :order => "start_date DESC"
+  named_scope :leave_requests_to_close,   :conditions => ["status = ?", LeaveRequest::STATUS_NOTICED],
+                                          :order => "start_date DESC"
   
   has_one :leave
 
@@ -78,7 +84,6 @@ class LeaveRequest < ActiveRecord::Base
     t.validates_presence_of :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :duration
     t.validates_presence_of :observer, :if => :observer_id
     t.validate :validates_dates_validity
-    t.validate :validates_retrieval_is_correct
   end 
 
   with_options :if => :was_noticed_or_refused_by_director? do |t|
@@ -92,7 +97,7 @@ class LeaveRequest < ActiveRecord::Base
   
   validates_persistence_of :employee, :employee_id, :start_date, :end_date, :leave_type_id, :start_half, :end_half, :comment, :if => :higher_than_step_submit?
   validates_persistence_of :responsible, :responsible_id, :checked_at, :responsible_agreement, :responsible_remarks, :if => :higher_than_step_check?
-  validates_persistence_of :observer, :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :retrieval, :duration, :if => :higher_than_step_notice?
+  validates_persistence_of :observer, :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :duration, :if => :higher_than_step_notice?
   
   validates_associated :leave, :if => :closed?
 
@@ -120,12 +125,6 @@ class LeaveRequest < ActiveRecord::Base
     end
   end
   
-  def validates_retrieval_is_correct
-    unless (self.retrieval.nil? or self.duration.nil?)
-      errors.add(:retrieval, "doit être inférieur ou égal à #{duration} jours") if self.retrieval > self.duration
-    end
-  end
-  
   def validates_unique_dates
     
     @self_start_datetime = start_or_end_datetime(self.start_date,self.start_half,true)
@@ -134,7 +133,7 @@ class LeaveRequest < ActiveRecord::Base
     in_progress_leave_requests_conflicts = []
     leaves_conflicts = []
     
-    if (!self.start_date.nil? and !self.end_date.nil?) 
+    if (!self.start_date.nil? and !self.end_date.nil? and !self.employee_id.nil?) 
       for element in self.employee.in_progress_leave_requests  
         if (start_or_end_datetime(element.start_date,element.start_half,true).between?(@self_start_datetime,@self_end_datetime) or start_or_end_datetime(element.end_date,element.end_half,false).between?(@self_start_datetime,@self_end_datetime))
           in_progress_leave_requests_conflicts << element
@@ -186,7 +185,6 @@ class LeaveRequest < ActiveRecord::Base
                                :end_date          => self.end_date,
                                :start_half        => self.start_half,
                                :end_half          => self.end_half,
-                               :retrieval         => self.retrieval,
                                :leave_type_id     => self.leave_type_id, 
                                :duration          => self.duration)
     end  
@@ -248,6 +246,7 @@ class LeaveRequest < ActiveRecord::Base
       else
         self.status = STATUS_REFUSED_BY_RESPONSIBLE
       end
+      self.checked_at = Time.now
       self.save
     end
   end
@@ -255,6 +254,7 @@ class LeaveRequest < ActiveRecord::Base
   def notice
     if can_be_noticed?
       self.status = STATUS_NOTICED 
+      self.noticed_at = Time.now
       self.save 
     end
   end
@@ -266,6 +266,7 @@ class LeaveRequest < ActiveRecord::Base
       else
         self.status = STATUS_REFUSED_BY_DIRECTOR
       end
+      self.ended_at = Time.now
       self.save
     end
   end

@@ -132,6 +132,16 @@ class Employee < ActiveRecord::Base
     collection.select {|n| n.end_date >= year_start and n.start_date <= year_end }
   end
   
+  # Method to get leave requests that he has to check, as responsible
+  def get_leave_requests_to_check
+    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)", LeaveRequest::STATUS_SUBMITTED, self.self_and_subordinates], :order => "start_date DESC" )
+  end
+  
+  # Method to get leave requests that he refused, as responsible or director
+  def get_leave_requests_refused_by_me
+    LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?", LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, self.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, self.id, Date.today], :order => "start_date DESC" )    
+  end
+  
   # Method to get all services that he is responsible of
   #
   def services_under_responsibility

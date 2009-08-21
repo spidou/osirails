@@ -1,66 +1,9 @@
-step_submit:
-  employee: normal
-  start_date: <%= Date.today + 1 %>
-  end_date: <%= Date.today + 5 %>
-  leave_type: good_leave_type
-  start_half: true
-  end_half: true
-  comment: "congé de formation"
-
-step_check:
-  status: 1
-  employee: normal
-  start_date: <%= Date.today + 6 %>
-  end_date: <%= Date.today + 10 %>
-  leave_type: good_leave_type
-  start_half: true
-  end_half: true
-  comment: "congé au mérite"
-  responsible: normal
-  checked_at: "2009-08-05 04:23:17"
-  responsible_agreement: true
-  responsible_remarks: "ok"
-
-step_notice:
-  status: 2
-  employee: normal
-  start_date: <%= Date.today + 11 %>
-  end_date: <%= Date.today + 15 %>
-  leave_type: good_leave_type
-  start_half: true
-  end_half: true
-  comment: "congé au mérite"
-  responsible: normal
-  checked_at: "2009-08-05 04:23:17"
-  responsible_agreement: true
-  responsible_remarks: "ok"
-  observer: normal
-  noticed_at: "2009-08-05 04:23:17"
-  observer_remarks: "4 hours acquired"
-  acquired_leaves_days: 15
-  retrieval: 1.0
-  duration: 6.0
-
-step_close:
-  status: 3
-  employee: normal
+leave_request_submitted:
+  status: <%= LeaveRequest::STATUS_SUBMITTED %>
+  employee: trish_doe
   start_date: <%= Date.today + 16 %>
   end_date: <%= Date.today + 18 %>
   leave_type: good_leave_type
   start_half: true
   end_half: true
-  comment: "congé au mérite"
-  responsible: normal
-  checked_at: "2009-08-05 04:23:17"
-  responsible_agreement: true
-  responsible_remarks: "ok"
-  observer: normal
-  noticed_at: "2009-08-05 04:23:17"
-  observer_remarks: "4 hours acquired"
-  acquired_leaves_days: 15
-  retrieval: 1.0
-  duration: 6.0
-  director: normal
-  ended_at: "2009-08-05 04:23:17"
-  director_agreement: true
-  director_remarks: "ok"
+  comment: "congé de formation"

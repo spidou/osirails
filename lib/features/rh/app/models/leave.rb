@@ -20,8 +20,6 @@ class Leave < ActiveRecord::Base
   validates_presence_of :leave_type,    :if => :leave_type_id
   validates_presence_of :employee_id
   validates_presence_of :employee,      :if => :employee_id
-  validates_presence_of :leave_request_id
-  validates_presence_of :leave_request, :if => :leave_request_id
   
   validates_numericality_of :duration
   

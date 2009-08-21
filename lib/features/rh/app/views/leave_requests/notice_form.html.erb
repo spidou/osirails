@@ -1,0 +1,11 @@
+<% contextual_menu POSSIBLE_ACTIONS do%>
+	<%= cancel_leave_request_link(@leave_request,false) %>
+	<%= delete_leave_request_link %>
+<% end %>
+<% contextual_menu USEFUL_LINKS do%>
+	<%= leave_requests_link %>
+	<%= cancelled_leave_requests_link %>
+<% end %>
+
+<h1>Traitement d'une demande de cong&eacute;s</h1>
+<%= render :partial => "notice_form", :object => @leave_request, :locals => {:button_name=> "Envoyer"} %>
