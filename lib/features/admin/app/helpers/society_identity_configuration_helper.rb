@@ -37,17 +37,11 @@ module SocietyIdentityConfigurationHelper
   end
   
   def display_time_zone(name, value)
-    disabled = (params[:action] != 'edit' ? "disabled " : "")
-    
+    disabled = is_form_view? ? "" : "disabled='disabled' "
     html = ""
     html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
-    
-    (-12..13).each do |f|
-      selected = (f == value ? "selected='selected' " : "" )
-      html << "<option #{selected}value='#{f}'>#{'+' if f > 0}#{f}</option>\n" 
-    end
+    html << time_zone_options_for_select(value)
     html << "</select>\n"
-    html 
   end
 
 	# This method permit to test permission for edit_button (overide dynamic method because there's not model)

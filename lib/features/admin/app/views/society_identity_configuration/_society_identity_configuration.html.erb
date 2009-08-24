@@ -3,67 +3,67 @@
 
 <% form_tag society_identity_configuration_path, :method => :put do %>
 <p>
-  <%= label_tag "admin_society_identity_configuration_name", "Entreprise : " %>
+  <%= label_tag "admin_society_identity_configuration_name", @descriptions["admin_society_identity_configuration_name"] %>
   <%= display_markup("admin_society_identity_configuration_name", @parameters["admin_society_identity_configuration_name"]) %>
 </p>
 
 <p>
-  <%= label_tag "admin_society_identity_configuration_siret", "Numéro SIRET : " %>
+  <%= label_tag "admin_society_identity_configuration_siret", @descriptions["admin_society_identity_configuration_siret"] %>
   <%= display_markup("admin_society_identity_configuration_siret", @parameters["admin_society_identity_configuration_siret"]) %>
 </p>
 
 <p>
-  <%= label_tag "admin_society_identity_configuration_phone", "Numéro de téléphone : " %>
+  <%= label_tag "admin_society_identity_configuration_phone", @descriptions["admin_society_identity_configuration_phone"] %>
   <%= display_markup("admin_society_identity_configuration_phone", @parameters["admin_society_identity_configuration_phone"]) %>
 </p>
 
 <p>
-  <%= label_tag "admin_society_identity_configuration_fax", "Numéro de fax : " %>
+  <%= label_tag "admin_society_identity_configuration_fax", @descriptions["admin_society_identity_configuration_fax"] %>
   <%= display_markup("admin_society_identity_configuration_fax", @parameters["admin_society_identity_configuration_fax"]) %>
 </p>
 
 <h2>Coordonn&eacute;es</h2>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_address_first_line', "Adresse :"%>
+  <%= label_tag 'admin_society_identity_configuration_address_first_line', @descriptions["admin_society_identity_configuration_address_first_line"] %>
   <%= display_markup("admin_society_identity_configuration_address_first_line", @parameters["admin_society_identity_configuration_address_first_line"]) %>
   <%= "-" if is_form_view? or @parameters["admin_society_identity_configuration_address_second_line"] != 0 %> 
   <%= display_markup("admin_society_identity_configuration_address_second_line", @parameters["admin_society_identity_configuration_address_second_line"] || '') %>
 </p>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_address_zip', "Code Postal :"%>
+  <%= label_tag 'admin_society_identity_configuration_address_zip', @descriptions["admin_society_identity_configuration_address_zip"] %>
   <%= display_markup("admin_society_identity_configuration_address_zip", @parameters["admin_society_identity_configuration_address_zip"]) %>
 </p>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_address_town', "Ville :"%>
+  <%= label_tag 'admin_society_identity_configuration_address_town', @descriptions["admin_society_identity_configuration_address_town"] %>
   <%= display_markup("admin_society_identity_configuration_address_town", @parameters["admin_society_identity_configuration_address_town"]) %>
 </p>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_address_country', "Pays :"%>
+  <%= label_tag 'admin_society_identity_configuration_address_country', @descriptions["admin_society_identity_configuration_address_country"] %>
   <%= display_markup("admin_society_identity_configuration_address_country", @parameters["admin_society_identity_configuration_address_country"]) %>
 </p>
 <h2>Informations complémentaires</h2>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_domain', "Nom de domaine :" %>
+  <%= label_tag 'admin_society_identity_configuration_domain', @descriptions["admin_society_identity_configuration_domain"] %>
   <%= display_markup("admin_society_identity_configuration_domain", @parameters["admin_society_identity_configuration_domain"]) %>
 </p>
 <h2>Calendrier</h2>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_working_day', 'Jours ouvrables :' %>
+  <%= label_tag 'admin_society_identity_configuration_working_day', @descriptions["admin_society_identity_configuration_working_day"] %>
   <%= working_day(@parameters["admin_society_identity_configuration_working_day"]) %>
 </p>
 <h2>Fuseau horaire</h2>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_time_zone', "GMT :" %>
+  <%= label_tag 'admin_society_identity_configuration_time_zone', @descriptions["admin_society_identity_configuration_time_zone"] %>
   <%= display_time_zone("admin_society_identity_configuration_time_zone", @parameters["admin_society_identity_configuration_time_zone"]) %>
 </p>
 <h2>Style</h2>
 <p>
-  <%= label_tag 'admin_society_identity_configuration_choosen_theme', 'Choisir le thème de l\'Intranet :' %>
+  <%= label_tag 'admin_society_identity_configuration_choosen_theme', @descriptions["admin_society_identity_configuration_choosen_theme"] %>
   <%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %>
 </p>
 <p>
   <% if is_form_view? %>
-  <%= submit_tag 'Mettre &agrave; jour' %>
+  <%= submit_tag "Mettre à jour" %>
   <% end %>
 </p>
 <% end %>
