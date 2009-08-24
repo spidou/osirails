@@ -1,8 +1,8 @@
 silence_warnings do
   Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
   Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
-  Date::DAYNAMES = %w( Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi )
-  Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
+  Date::DAYNAMES = %w( dimanche lundi mardi mercredi jeudi vendredi samedi )
+  Date::ABBR_DAYNAMES = %w( dim lun mar mer jeu ven sam )
 end
 
 class Time
@@ -122,7 +122,7 @@ module ActiveSupport
     end
 
     def to_humanized_datetime
-      self.strftime("%d %B %Y à %I:%M")
+      self.strftime("%d %B %Y à %H:%M")
     end
   end
 end

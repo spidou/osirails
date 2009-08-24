@@ -1,0 +1,8 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+	<%= link_to( image_tag("view_16x16.png", :alt => "Voir la configuration",
+	                                         :title => "Voir la configuration") + " Voir la configuration",
+               password_policies_path) %>
+<% end %>
+
+<h1>Politique de s&eacute;curit&eacute;</h1>
+<%= render :partial => 'password_policies' %>

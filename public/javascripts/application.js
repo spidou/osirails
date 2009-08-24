@@ -169,12 +169,12 @@ function nav_more_links_handler() {
 
 // Load the initial attributes of the document forms for
 // the function preventClose, active the autoresize for the
-// targeted textarea with class "text_area_autoresize" and
+// targeted textarea with class "autoresize_text_area" and
 // intialize the javascript time function
 Event.observe(window, 'load', function() {
   initializeAttributes();
   
-  $$('.text_area-autoresize').each(function(textarea) {
+  $$('.autoresize_text_area').each(function(textarea) {
     new Widget.Textarea(textarea);
   });
   

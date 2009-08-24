@@ -71,7 +71,7 @@ module ApplicationHelper
       html = "<script>"
       html << "var dayNames = new Array();"
       0.upto(6){|day|
-        html << "dayNames["+day.to_s+"] = \""+Date::DAYNAMES[day].downcase+"\";"
+        html << "dayNames["+day.to_s+"] = \""+Date::DAYNAMES[day]+"\";"
       }
       html << "</script>"
       
@@ -84,8 +84,15 @@ module ApplicationHelper
   end
   
   def display_date_time
-    day = DateTime.now.strftime("%A").downcase
-    DateTime.now.strftime("Nous sommes le #{day} %d %B %Y, il est %H:%M")
+    now = Time.zone.now
+    html =  "Nous sommes le "
+    html << "<span id='banner_date'>"
+    html << now.to_date.strftime("%A %d %B %Y")
+    html << "</span>"
+    html << ", il est "
+    html << "<span id='banner_time'>"
+    html << now.strftime("%H:%M")
+    html << "</span>"
   end
   
   def display_footer
