@@ -8,7 +8,7 @@ else if (document.addEventListener)
 {
   document.addEventListener('load', initEventListeners, false);
 }
-    
+
 function initEventListeners()
 {
   nav_more_links_handler();
@@ -16,6 +16,7 @@ function initEventListeners()
 
   contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
   click_next(0);
+  
 }
 
 function toggle_contextual_menu(item)
@@ -24,20 +25,21 @@ function toggle_contextual_menu(item)
   class_hidden = "hidden_contextual_menu";
   text_shown = "Cacher le menu";
   text_hidden = "Afficher le menu";
-
   if (item.className == class_shown)
   {
+    container_width = $('contextual_menu_container').offsetWidth;
     document.body.style.overflowX = 'hidden';
     new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginLeft: $('contextual_menu_container').offsetWidth+14+"px"
+        marginRight: "-"+container_width-13+"px"
       },
       duration: 1,
-      afterFinish: function(){    
-        $('status_background_contextual_menu').setAttribute('style','position:absolute;right:0px');
-        item.setAttribute('style','position:relative;left:1px');
+      afterFinish: function(){   
+        $('status_background_contextual_menu').setAttribute('style','witdh:0px;position:relative;right:0px');
+        $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');     
+        $('contextual_menu').setAttribute('style','display:none');
+        item.setAttribute('style','position:relative;right:0px');   
         document.body.style.overflowX = 'auto';
-        $('contextual_menu').style.display = 'none';
         item.className = class_hidden;
         document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
       }
@@ -45,15 +47,17 @@ function toggle_contextual_menu(item)
   }
   else if (item.className == class_hidden)
   {
-    $('status_background_contextual_menu').setAttribute('style','position:relative');
+    $('status_background_contextual_menu').setAttribute('style','witdh:0px;position:relative');
+    $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
+    $('contextual_menu').setAttribute('style','display:block;position:relative;right:0px');
     document.body.style.overflowX = 'hidden';
-    $('contextual_menu').style.display = 'block';
     new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginLeft: "0px"
+        marginRight: container_width+13+"px"
       },
       duration: 0.8,
       afterFinish: function(){
+        $('contextual_menu_container').setAttribute('style','right:15px');
         document.body.style.overflowX = 'auto';
         item.className = class_shown;
         document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
