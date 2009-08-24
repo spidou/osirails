@@ -9,7 +9,7 @@ module SearchIndexesHelper
     # direct attributes
     rowspan = (nested_attributes.empty?)? "" : "rowspan='2'"
     direct_attributes.each do |attribute|    
-      html << "<th #{rowspan} >#{attribute.humanize.titleize}</th>"
+      html << "<th #{rowspan} >#{attribute.to_s.humanize.titleize}</th>"
     end
     if nested_attributes.empty?
       html += "<th>Actions</th></tr>"
@@ -30,8 +30,9 @@ module SearchIndexesHelper
   end
   
   # Method that return a nested_columns_hash from attributes array
-  # attributes that return collections are discarded to avoid problems
-  # with data formating
+  # attributes that return nested atributes into a formated hash
+  # -Collections are discarded to avoid problems
+  #  with data formating
   #
   def generate_nested_resources_hash(nested_attributes)
     criteria_hash = {}
@@ -41,14 +42,14 @@ module SearchIndexesHelper
       if criteria_hash.keys.include?(attribute_prefix)
         criteria_hash[attribute_prefix] << attribute  unless criteria_hash[attribute_prefix].include?(attribute)
       else       
-        contain_collections = !attribute_prefix.reject {|n| !n.plural?}.empty?
+        contain_collections = !attribute_prefix.split(".").select(&:plural?).empty?
         criteria_hash = criteria_hash.merge( attribute_prefix => [ attribute ] ) unless contain_collections
       end
     end
     return criteria_hash
   end
   
-  # Method that generate table_cells cantaining values according to table headers
+  # Method that generate table_cells containing values according to table headers
   # collection => objects returned by the search engine
   #
   def generate_results_table_cells(collection, direct_attributes, nested_attributes=[])
@@ -58,7 +59,7 @@ module SearchIndexesHelper
       # direct attributes
       direct_attributes.each do |attribute|
         data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html += "<td>#{data||="-"}</td>" 
+        html += "<td>#{data || "-"}</td>" 
       end
       # nested_attributes
       nested_attributes.sort.each do |attribute|
@@ -70,7 +71,7 @@ module SearchIndexesHelper
             nested_data = "-"
           end
         end
-        html += "<td>#{nested_data||='-'}</td>"
+        html += "<td>#{nested_data || '-'}</td>"
       end
       html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
       html += "</tr>"

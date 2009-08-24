@@ -26,7 +26,8 @@ class User < ActiveRecord::Base
     user.validates_confirmation_of :password
     # manage the error that occure when reset database with admin_actual_password_policy that is empty
     # find the index of the actual selected regex to choose the good one into the db
-    raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_actual_password_policy)
+    raise NameError, "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_actual_password_policy)
+    #FIXME Add a custom ERROR_CLASS for ConfigurationManager, to catch the error below more precisely 
     
     actual = ConfigurationManager.admin_actual_password_policy
     reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
