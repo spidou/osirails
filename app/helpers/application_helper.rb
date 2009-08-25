@@ -69,17 +69,21 @@ module ApplicationHelper
   
   def daynames_and_monthnames_retrieval
       html = "<script>"
-      html << "var dayNames = new Array();"
+      html << "var rubyDayNames = new Array();"
       0.upto(6){|day|
-        html << "dayNames["+day.to_s+"] = \""+Date::DAYNAMES[day]+"\";"
+        html << "rubyDayNames["+day.to_s+"] = \""+Date::DAYNAMES[day]+"\";"
       }
       html << "</script>"
       
       html << "<script>"
-      html << "var monthNames = new Array();"
+      html << "var rubyMonthNames = new Array();"
       0.upto(11){|month|
-        html << "monthNames["+month.to_s+"] = \""+Date::MONTHNAMES[month+1]+"\";"
+        html << "rubyMonthNames["+month.to_s+"] = \""+Date::MONTHNAMES[month+1]+"\";"
       }
+      html << "</script>"
+      
+      html << "<script>"
+      html << "var rubyTime = \""+Time.zone.now.strftime("%Y %m %d %H:%M:%S")+"\" ;"
       html << "</script>"
   end
   
