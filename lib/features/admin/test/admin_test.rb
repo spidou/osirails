@@ -25,17 +25,10 @@ class Test::Unit::TestCase
       user.save
     end
 
-    BusinessObjectPermission.all.each do |bop|
-      bop.update_attributes :list => true, :view => true, :add => true, :edit => true, :delete => true
-    end
-    MenuPermission.all.each do |mp|
-      mp.update_attributes :list => true, :view => true, :add => true, :edit => true, :delete => true
-    end
-    DocumentTypePermission.all.each do |dtp|
-      dtp.update_attributes :list => true, :view => true, :add => true, :edit => true, :delete => true
-    end
-    CalendarPermission.all.each do |cp|
-      cp.update_attributes :list => true, :view => true, :add => true, :edit => true, :delete => true
+    Permission.all.each do |permission|
+      permission.permissions_permission_methods.each do |object_permission|
+        object_permission.update_attribute(:active, true)
+      end
     end
 
     true

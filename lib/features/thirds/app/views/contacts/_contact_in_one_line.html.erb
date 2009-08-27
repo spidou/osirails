@@ -7,11 +7,11 @@
 
     <%= "#{contact.fullname_number_job_and_contact_type}" %>
 
-    <%= link_to_function "Fiche complète", "this.up('.contact_general_infos').down('.resource_form').show()" if !is_form_view? %>
+    <%= link_to_function "Fiche complète", "this.up('.contact_general_infos').down('.resource_form').show()" if ( !is_form_view? and Contact.can_view?(current_user) ) or ( is_form_view? and Contact.can_view?(current_user) and !Contact.can_edit?(current_user) ) %>
 
-    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.contact_general_infos'))" if is_form_view? and menu_contacts.can_edit?(current_user) %>
+    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.contact_general_infos'))" if is_form_view? and Contact.can_edit?(current_user) %>
 
-    <% if is_form_view? and menu_contacts.can_delete?(current_user) %>
+    <% if is_form_view? and Contact.can_delete?(current_user) %>
       <% if contact.new_record? %>
         <%= link_to_function "Supprimer", "this.up('.contact_general_infos').remove()" %>
       <% else %>
@@ -19,7 +19,7 @@
       <% end %>
     <% end %>
 
-    <%= render :partial => 'contacts/contact_form', :object => contact || Contact.new, :locals => { :contacts_owner => contacts_owner } %>
+    <%= render :partial => 'contacts/contact_form', :object => (contact || Contact.new), :locals => { :contacts_owner => contacts_owner } if Contact.can_view?(current_user) or Contact.can_edit?(current_user) %>
   </p>
 <% end  %>
 </div>

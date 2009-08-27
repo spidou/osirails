@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class AddressTest < ActiveSupport::TestCase
   def test_presence_of_address1
