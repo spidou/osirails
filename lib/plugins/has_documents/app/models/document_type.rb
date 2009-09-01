@@ -1,5 +1,5 @@
 class DocumentType < ActiveRecord::Base
-  has_permissions
+  has_permissions :as_instance
   setup_has_permissions_model
   
   has_and_belongs_to_many :mime_types
