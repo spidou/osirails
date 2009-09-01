@@ -38,47 +38,53 @@ module HasPermissions
     # ==== Custom permission methods ====
     # TODO
     #
-    def has_permissions *options
+    def has_permissions type, options = {}
       cattr_accessor :permissions_definitions
       
-      self.permissions_definitions ||= { :class_permission_methods    => DEFAULT_CLASS_METHODS,
-                                         :instance_permission_methods => DEFAULT_INSTANCE_METHODS }
+      self.permissions_definitions ||= {}
       
       class_eval do
+        def self.class_permission_methods
+          self.permissions_definitions[:class_permission_methods] || []
+        end
+        
+        def self.instance_permission_methods
+          self.permissions_definitions[:instance_permission_methods] || []
+        end
+        
         def self.all_permission_methods
-          (self.permissions_definitions[:class_permission_methods] + self.permissions_definitions[:instance_permission_methods]).uniq
+          (self.class_permission_methods + self.instance_permission_methods).uniq
         end
       end
       
-      params = options.last.is_a?(Hash) ? options.pop : {}
-      
-      if options.empty?
+      if type == :as_instance
         
-        if params[:additional_instance_methods]
-          raise "[has_permissions] :additional_instance_methods expected to be an array" unless params[:additional_instance_methods].is_a?(Array)
-          self.permissions_definitions.merge!(:instance_permission_methods => DEFAULT_INSTANCE_METHODS + params[:additional_instance_methods])
-        elsif params[:instance_methods]
-          raise "[has_permissions] :instance_methods expected to be an array" unless params[:instance_methods].is_a?(Array)
-          self.permissions_definitions.merge!(:instance_permission_methods => params[:instance_methods])
+        if options[:additional_instance_methods]
+          raise "[has_permissions] :additional_instance_methods expected to be an array" unless options[:additional_instance_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:instance_permission_methods => DEFAULT_INSTANCE_METHODS + options[:additional_instance_methods])
+        elsif options[:instance_methods]
+          raise "[has_permissions] :instance_methods expected to be an array" unless options[:instance_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:instance_permission_methods => options[:instance_methods])
+        else
+          self.permissions_definitions.merge!(:instance_permission_methods => DEFAULT_INSTANCE_METHODS)
         end
         
         add_instance_permission_methods
-        
-      else
-        options.each do |option|
-          if option == :as_business_object
-            
-            if params[:additional_class_methods]
-              raise "[has_permissions] :additional_class_methods expected to be an array" unless params[:additional_class_methods].is_a?(Array)
-              self.permissions_definitions.merge!(:class_permission_methods => DEFAULT_CLASS_METHODS + params[:additional_class_methods])
-            elsif params[:class_methods]
-              raise "[has_permissions] :class_methods expected to be an array" unless params[:class_methods].is_a?(Array)
-              self.permissions_definitions.merge!(:class_permission_methods => params[:class_methods])
-            end
-            
-            add_business_object_permission_methods
-          end
+      
+      elsif type == :as_business_object
+          
+        if options[:additional_class_methods]
+          raise "[has_permissions] :additional_class_methods expected to be an array" unless options[:additional_class_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:class_permission_methods => DEFAULT_CLASS_METHODS + options[:additional_class_methods])
+        elsif options[:class_methods]
+          raise "[has_permissions] :class_methods expected to be an array" unless options[:class_methods].is_a?(Array)
+          self.permissions_definitions.merge!(:class_permission_methods => options[:class_methods])
+        else
+          self.permissions_definitions.merge!(:class_permission_methods => DEFAULT_CLASS_METHODS)
         end
+        
+        add_business_object_permission_methods
+        
       end
       
       self.all_permission_methods.each do |method|
@@ -109,15 +115,20 @@ module HasPermissions
       class_eval do
         after_create :create_permissions
         
-        private 
+        private
           def create_permissions
             Role.all.each do |role|
-              permission = Permission.create!(:has_permissions_id   => self.id,
-                                              :has_permissions_type => self.class.class_name,
-                                              :role_id              => role.id)
+              permission = Permission.create!(:role_id              => role.id,
+                                              :has_permissions_id   => self.id,
+                                              :has_permissions_type => self.class.class_name)
               
-              klass = self.is_a?(BusinessObject) ? self.name.constantize : self.class
-              klass.all_permission_methods.each do |method|
+              if self.is_a?(BusinessObject)
+                perm_methods = self.name.constantize.class_permission_methods
+              else
+                perm_methods = self.class.instance_permission_methods
+              end
+              
+              perm_methods.each do |method|
                 PermissionsPermissionMethod.create!(:permission_id        => permission.id,
                                                     :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
               end
@@ -127,7 +138,7 @@ module HasPermissions
     end
     
     def add_instance_permission_methods
-      self.permissions_definitions[:instance_permission_methods].each do |method|
+      self.instance_permission_methods.each do |method|
         class_eval <<-EOL
           def can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
@@ -136,7 +147,7 @@ module HasPermissions
       end
     end
     
-    def add_business_object_permission_methods
+    def add_business_object_permission_methods # add_class_permission_methods
       bo = BusinessObject.find_or_create_by_name(self.name)
           
       write_inheritable_attribute(:business_object_id, bo.id)
@@ -156,7 +167,7 @@ module HasPermissions
         end
       end
       
-      self.permissions_definitions[:class_permission_methods].each do |method|
+      self.class_permission_methods.each do |method|
         class_eval <<-EOL
           def self.can_#{method}?(user_or_role = nil)
             can_do?("#{method}", user_or_role)
