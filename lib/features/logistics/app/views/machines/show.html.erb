@@ -1,0 +1,9 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= machines_link %>
+  <%= edit_machine_link(@machine) %>
+  <%= new_machine_tool_event_link(@machine)%>
+  <%= machine_tool_events_link(@machine) %>
+<% end %>
+
+<h1>Voir la machine</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @machine} %>

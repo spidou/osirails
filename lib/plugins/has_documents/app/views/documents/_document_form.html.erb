@@ -1,4 +1,4 @@
-<% owner_type = documents_owner.class.name.downcase %>
+<% owner_type = documents_owner.class.name.tableize.singularize %>
 
 <% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
 

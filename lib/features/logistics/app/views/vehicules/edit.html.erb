@@ -1,0 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= vehicules_link %>
+  <%= vehicule_link(@vehicule)%>
+<% end %>
+
+<h1>Modifier un v&eacute;hicule</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @vehicule, :button_name => "Modifier"} %>

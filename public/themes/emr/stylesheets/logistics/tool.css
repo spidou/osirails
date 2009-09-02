@@ -1,0 +1,51 @@
+/* css for tool events displaying */
+
+.events {
+  text-align: left;
+}
+
+.events a {
+  text-decoration: none;
+}
+
+.event {
+  -moz-border-radius: 0px 0px 10px 10px;
+  vertical-align: top;
+  border: 1px solid gray;
+  background-color: #eaeaea;
+  display: inline-block;
+  width: 390px;
+  padding: 1px;
+  min-height: 170px;
+  margin: 10px;
+}
+
+.type_intervention h3{
+  background-color: #E99727;
+}
+
+.type_incident h3{
+  background-color: #A2B3D7;
+}
+
+.informations {
+  margin-right: 75px;
+}
+
+.event h3 {
+  -moz-border-radius: 0px 0px 10px 0px;
+  border-right: 1px solid gray;
+  border-bottom: 1px solid gray;
+  position: relative;
+  color: black;
+  right: 1px;
+}
+
+
+.actions {
+  float: right;
+  position: relative ;
+  left: 10px;
+  top: 2px;
+  width: 75px;
+}

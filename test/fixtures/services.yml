@@ -2,4 +2,6 @@ parent:
   name: Parent Service
 child:
   name: Child Service
+good_service:
+  name: good_service
   

@@ -278,6 +278,24 @@ namespace :osirails do
       d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
       
+      # default documents for equipments and equipment_interventions
+      d = DocumentType.find_or_create_by_name("legal_paper")
+      d.update_attribute(:title, "Document légal")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("invoice")
+      d.update_attribute(:title, "facture")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("expence_account")
+      d.update_attribute(:title, "Note de frais")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("manual")
+      d.update_attribute(:title, "Manuel")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("other")
+      d.update_attribute(:title, "Autre")
+      d.mime_types << [ pdf, jpg, png ]
+
+      
       ## default file types
       # for feature
 #      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"

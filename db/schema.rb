@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090807095058) do
+ActiveRecord::Schema.define(:version => 20090826054708) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -799,6 +799,37 @@ ActiveRecord::Schema.define(:version => 20090807095058) do
     t.integer  "payment_method_id",     :limit => 11
     t.integer  "payment_time_limit_id", :limit => 11
     t.boolean  "activated",                           :default => true
+  end
+
+  create_table "tool_events", :force => true do |t|
+    t.integer  "status",            :limit => 11
+    t.integer  "event_type",        :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.text     "comment"
+    t.string   "name"
+    t.string   "provider_society"
+    t.string   "provider_actor"
+    t.integer  "tool_id",           :limit => 11
+    t.integer  "internal_actor_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tools", :force => true do |t|
+    t.string   "reference"
+    t.string   "name"
+    t.string   "serial_number"
+    t.string   "type"
+    t.text     "description"
+    t.date     "purchase_date"
+    t.float    "purchase_price"
+    t.integer  "service_id",     :limit => 11
+    t.integer  "job_id",         :limit => 11
+    t.integer  "employee_id",    :limit => 11
+    t.integer  "supplier_id",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unit_measures", :force => true do |t|

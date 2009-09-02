@@ -4,6 +4,7 @@ class Supplier < Third
 
   # Relationships
   has_one :iban, :as => :has_iban
+  has_many :tools
 
   # Validations
   validates_uniqueness_of :name, :siret_number

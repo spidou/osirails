@@ -1,0 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= other_tools_link %>
+  <%= other_tool_link(@other_tool)%>
+<% end %>
+
+<h1>Modifier un &eacute;quipement non r&eacute;f&eacute;renc&eacute;</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @other_tool, :button_name => "Modifier"} %>

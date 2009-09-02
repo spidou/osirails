@@ -1,0 +1,9 @@
+<h1>Types d&apos;&eacute;quipements</h1>
+
+<div class='presentaion_medium'> 
+  <ul>
+  <% for menu in @menus %>
+    <%= content_tag :li, link_to(menu.title, url_for_menu(menu), :title => menu.description)%>
+  <% end %>
+  </ul>
+</div>

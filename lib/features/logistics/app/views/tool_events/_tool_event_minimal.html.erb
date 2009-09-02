@@ -1,0 +1,23 @@
+<div class="event type_<%= tool_event_minimal.event_type_name %>">
+  <div class="actions">
+    <%= links_for_tool_event(tool, tool_event_minimal)%>
+  </div>
+  <div class="informations">
+    <h3><%= get_event_type_text(tool_event_minimal.event_type)%></h3>
+    <p>
+      <label>D&eacute;signation :</label>
+      <%=strong tool_event_minimal.name %>
+    </p>
+    <p>
+      <label>Status :</label>
+      <%=strong get_status_text(tool_event_minimal.status) %>
+      <%= get_status_image(tool_event_minimal.status)%>
+    </p>
+    <p>
+      <label><%= tool_event_minimal.event_type_name == 'event' ? 'Le' : 'Du' %> :</label>
+      <%=strong tool_event_minimal.start_date.strftime("%A %d %B %Y")%>
+    </p>
+    <%="<p><label>Au :</label> #{strong get_end_date(tool_event_minimal)}</p>" unless tool_event_minimal.event_type_name == 'incident'%>
+  </div>
+</div>
+

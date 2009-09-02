@@ -1,0 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= devices_link %>
+  <%= device_link(@device)%>
+<% end %>
+
+<h1>Modifier un p&eacute;riph&eacute;rique</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @device, :button_name => "Modifier"} %>

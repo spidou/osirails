@@ -4,6 +4,7 @@ class Service < ActiveRecord::Base
   # Relationship
   belongs_to :parent_service, :class_name =>"Service", :foreign_key => "service_parent_id"
   has_many :schedules
+  has_many :tools
   
   # Plugin
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"

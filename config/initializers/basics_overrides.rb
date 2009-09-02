@@ -59,7 +59,12 @@ class String
     end
     return formated
   end
-
+  
+  # Method to truncate the begining of the current string according to the param
+  def rchomp(charactere = nil)
+    chars.reverse.chomp(charactere.chars.reverse).reverse.to_s
+  end
+  
   # method to view if a word is or not is plural
   def plural?
     self.singularize == self ? false : true

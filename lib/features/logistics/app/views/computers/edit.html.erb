@@ -1,0 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= computers_link %>
+  <%= computer_link(@computer)%>
+<% end %>
+
+<h1>Modifier un odinateur</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @computer, :button_name => "Modifier"} %>

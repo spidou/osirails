@@ -1,42 +1,55 @@
-name: logistics
-title: Gestion de la logistique
+name: "logistics"
+title: "Gestion de la logistique"
 version: 0.1
 dependencies:
 conflicts:
   admin:
     - 0.1
-search:
-  CommodityCategory:
-    base:
-      name: string
-    other:
-      commodities:
-        Commodity:
-          name: string
-          enable: boolean
-          unit_mass: number
-          measure: number
 menus:
   logistics:
-    title: Logistique
-    description: Gestion de la logistique
+    title: "Logistique"
+    description: "Gestion de la logistique"
     children:
       inventories:
-       title: Gestion des inventaires
-       description: Permet la gestion des stocks
+       title: "Gestion des inventaires"
+       description: "Permet la gestion des stocks"
        position: 2
        children:
         commodities_inventories:
-          title: Gestion des matières premières des inventaires
-          description: Permet la gestion des stocks au niveau des matières premières
+          title: "Gestion des matières premières des inventaires"
+          description: "Permet la gestion des stocks au niveau des matières premières"
       commodities_manager:
-        title: Gestion des matières premières
-        description: Permet la gestion des familles et des matières premières
+        title: "Gestion des matières premières"
+        description: "Permet la gestion des familles et des matières premières"
         position: 1
         children:
           commodity_categories:
-            title: Catégories de matières premières
-            description: Permet la gestion des categories de matières premières
+            title: "Catégories de matières premières"
+            description: "Permet la gestion des categories de matières premières"
           commodities:
-            title: Matières premières
-            description: Permet la gestion des matières premières
+            title: "Matières premières"
+            description: "Permet la gestion des matières premières"
+      tools:
+        title: "Équipements"
+        description: "Permet la gestion des équipements"
+        children:
+          # a menu can't belongs_to many menu, but a controller must have a menu that why we put a hidden menu
+          tool_events:
+            title: "Evènements"
+            description: "Permet la gestion des évènements sur les équipements"
+            hidden: true
+          other_tools:
+            title: "Autre Equipements"
+            description: "Permet la gestion des équipements ne faisant pas partie des types d'équipements référencés"
+          computers:
+            title: "Ordinateurs"
+            description: "Permet la gestion des ordinateurs"
+          devices:
+            title: "Périphériques"
+            description: "Permet la gestion des périphériques"
+          vehicules:
+            title: "Vehicules"
+            description: "Permet la gestion des véhicules"
+          machines:
+            title: "Machines"
+            description: "Permet la gestion des machines"

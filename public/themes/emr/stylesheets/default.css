@@ -140,6 +140,7 @@ h3 {
 	color: rgb(70,94,142);
 	padding-top:0px;
 	margin-top:-1px;
+	margin-bottom:0px;
 	font-size:1.05em;
 }
 
@@ -1080,15 +1081,15 @@ width: 50px ! important;
 
 /*LAYOUTS' FORM*/
 
-#content_page > div.presentation_large label {
+div.presentation_large label {
 	width:350px;
 }
 
-#content_page > div.presentation_medium label {
+div.presentation_medium label {
 	width:200px;
 }
 
-#content_page > div.presentation_small label {
+div.presentation_small label {
 	width:100px;
 }
 

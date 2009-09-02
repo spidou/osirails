@@ -1,0 +1,11 @@
+good_tool:
+  reference: "ford mustang"
+  name: "ma caisse"
+  description: "vehicule de fonction avec kit carroserie complet"
+  purchase_date: <%= Date.today %>
+  purchase_price: 249999.99
+  serial_number: "234ABQ" 
+  service: good_service
+  job: developer
+  employee: normal
+  supplier: supplier_normal

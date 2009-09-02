@@ -1,0 +1,7 @@
+good_tool_event:
+  start_date: <%= Date.today %>
+  end_date: <%= Date.tomorrow %>
+  comment: "commentary"
+  status: 1
+  event_type: 1
+  tool: good_tool

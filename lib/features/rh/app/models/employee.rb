@@ -38,6 +38,7 @@ class Employee < ActiveRecord::Base
   has_many :employees_services
   has_many :services, :through => :employees_services
   has_and_belongs_to_many :jobs
+  has_many :tools
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name

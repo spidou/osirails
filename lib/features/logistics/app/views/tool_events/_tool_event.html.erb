@@ -1,0 +1,84 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "logistics/tool_events" %>
+<% end %>
+
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <% tool_class = tool.class.to_s.tableize.singularize %>
+  <%= send("new_#{tool_class}_tool_event_link", tool) %>
+  <%= send("edit_#{tool_class}_tool_event_link", tool, event) %>
+  <%= send("#{tool_class}_link", tool) %>
+  <%= send("#{tool_class}s_link") %>
+<% end %>
+
+<div class='presentation_medium'>
+  <% form_for [tool, event] ,:html => {:multipart => true} do |f| %>
+    <%= f.error_messages %>
+    
+    <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
+    <p>
+      <%= f.label :name %>
+      <%= f.form_or_view f.text_field(:name), :name%>
+    </p>
+    <p>
+      <%= f.label :event_type %>
+      <% if is_form_view? %>
+        <%= f.select :event_type, ToolEvent::TYPE_TEXT.invert.sort , {}, {:onchange => "check_type(this); $('tool_event_status').selectedIndex = 0;"} %>
+      <% else %>
+        <%= strong get_event_type_text(event.event_type)%>
+      <% end %>
+    </p>
+   
+    <p>
+      <%= f.label :status %>
+      <% if is_form_view? %>
+        <%= f.select :status, ToolEvent::STATUS_TEXT.invert.sort %>
+      <% else %>
+        <%= strong get_status_text(event.status) %>
+      <% end %>
+    </p>
+    <p>
+      <%= f.label :internal_actor_id %>
+      <%= f.form_or_view f.collection_select(:internal_actor_id, Employee.all, :id, :fullname, {:prompt => "Aucun"}), :internal_actor, :fullname %>
+    </p>
+    
+    <p>
+      <%= f.label :provider_society %>
+      <%= f.form_or_view f.text_field(:provider_society), :provider_society %>
+    </p>
+    
+    <p>
+      <%= f.label :provider_actor %>
+      <%= f.form_or_view f.text_field(:provider_actor), :provider_actor %>
+    </p>
+    
+    <p>
+      <%= f.label :start_date %>
+      <%= f.form_or_view f.date_select(:start_date, {:order => [:day, :month, :year]}), :start_date %>
+    </p>
+    
+    <p>
+      <%= f.label :end_date %>
+      <%= f.form_or_view f.date_select(:end_date, {:order => [:day, :month, :year]}), :end_date %>
+    </p>
+    
+    <p>
+      <%= f.label :comment %>
+      <%= f.form_or_view f.text_area(:comment, {:rows => 5}), :comment %>
+    </p>
+    
+    <h2>Documents</h2>
+    <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
+    <% unless event.new_record? %>
+      <%= display_documents_list(event) %>
+      <%= display_document_add_button(event) if is_form_view? %>
+    <% end %>
+    <p>
+      <%= f.submit(button_name) if is_form_view? %>
+    </p>
+    
+  <% end %>
+</div>
+
+<% if is_form_view? %>
+  <% javascript_tag do %> document.onLoad = check_type($('tool_event_event_type')); <% end %>
+<% end %>

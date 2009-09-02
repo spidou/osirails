@@ -1,0 +1,7 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= tools_link %>
+  <%= send "edit_#{@tool.class.to_s.tabelize.singularize}_link", @tool %>
+<% end %>
+
+<h1>Voir un &eacute;quipement</h1>
+<%= render :partial => "tool" %>
