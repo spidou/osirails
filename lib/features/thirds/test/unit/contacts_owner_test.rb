@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class ContactsOwnerTest < ActiveSupport::TestCase
   def test_presence_of_contact_id

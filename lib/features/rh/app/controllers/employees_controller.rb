@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :job_contracts
+  helper :salaries, :job_contract
   before_filter :load_collections, :only => [:new, :create, :edit, :update, :show]  
   method_permission :list => ["show"]
   
@@ -26,19 +26,19 @@ class EmployeesController < ApplicationController
   end
 
   # POST /employees
-  def create    
+  def create
     # regroupe the two parts of social security number
     params[:employee][:social_security_number] = params['social_security_number'].values.join " "
-    params[:employee].delete('social_security_number')
+    params.delete('social_security_number')
     
     @employee = Employee.new params[:employee]
 
     if @employee.save
-      flash[:notice] = 'L&apos;employée a été crée avec succés.'
+      flash[:notice] = "L'employé(e) a été créé(e) avec succés."
       redirect_to @employee
     else
-      render :action => "new" 
-    end  
+      render :action => "new"
+    end
   end
 
   # PUT /employees/:id
@@ -54,7 +54,7 @@ class EmployeesController < ApplicationController
     params[:employee]['job_ids']||= []
 
     if @employee.update_attributes params[:employee]
-      flash[:notice] = ' L&apos;employée a été modifié avec succés.'
+      flash[:notice] = "L'employé(e) a été modifié(e) avec succés."
       redirect_to @employee
     else
       render :action => "edit"
@@ -64,7 +64,9 @@ class EmployeesController < ApplicationController
   # DELETE /employees/:id
   def destroy
     @employee = Employee.find params[:id]
-    @employee.destroy   
+    unless @employee.destroy
+      flash[:error] = "Une erreur est survenue à la suppression de l'employé(e)"
+    end
     redirect_to employees_path
   end
 

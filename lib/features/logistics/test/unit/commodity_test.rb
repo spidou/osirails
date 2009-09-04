@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class CommodityTest < ActiveSupport::TestCase
   fixtures :commodity_categories, :commodities

@@ -29,14 +29,14 @@
 
 <!--############## Address ##############-->
   <h2>Coordonn&eacute;es</h2>
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
+  <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %>
     <h3>Adresse postale</h3>
     <%= render :partial => "addresses/address_form", :object => @employee.address || @employee.build_address , :locals => { :address_owner => @employee}%>
   <% end %>
 
 <!--############## Emails ##############-->
   <h3>Adresses &eacute;lectroniques</h3>
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%> 
+  <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %> 
     <p>
       <%= f.label :email %>
       <%= f.form_or_view(f.text_field( :email ), :email)%>
@@ -60,14 +60,14 @@
   <%= render :partial => 'jobs/jobs' , :locals => {:form => f, :job => Job.new, :jobs => @jobs,:service => @employee.service} %>
 
 <!--########### Iban ####################-->
-  <%if (controller.can_view?(current_user) and Employee.can_view?(current_user)) or @employee.user.id == current_user.id%>
+  <% if Iban.can_view?(current_user) or @employee.user.id == current_user.id %>
     <h2>Identité Bancaire</h2>
-    <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals =>{ :iban_owner => @employee } %>
+    <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals => { :iban_owner => @employee } %>
   <% end %>  
 
 <!--########### JobContract #############-->
-  <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id%>
-    <%= render(:partial => @employee.job_contract) unless is_form_view? %> 
+  <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id %>
+    <%= render(:partial => 'job_contract/job_contract', :object => @employee.job_contract) unless is_form_view? %> 
   <% end %>
 
 <!--############## Premia ##############-->

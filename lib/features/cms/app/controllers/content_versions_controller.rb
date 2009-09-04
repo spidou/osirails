@@ -1,4 +1,6 @@
 class ContentVersionsController < ApplicationController
+  model "Content"
+  
   # GET /content_versions/show?content_id=&version=
   def show
     @content = Content.find(params[:content_id])

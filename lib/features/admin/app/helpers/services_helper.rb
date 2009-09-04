@@ -2,7 +2,7 @@ module ServicesHelper
   
   # This method permit to verify if a service have got children or employees
   def show_service_delete_button(service,txt="Delete current service")
-    if controller.can_delete?(current_user)
+    if Service.can_delete?(current_user)
       if service.can_be_destroyed?
         link_to(image_tag("/images/delete_16x16.png", :title => "Delete", :alt => "Delete")+" #{txt}", service , { :method => :delete, :confirm => 'Are you s&ucirc;r?' }) 
       else
@@ -13,7 +13,7 @@ module ServicesHelper
   
   # This method test permission for add_button
   def new_service_link_with_parent(service,txt="")
-    if controller.can_add?(current_user)
+    if Service.can_add?(current_user)
 			link_to(image_tag("/images/add_16x16.png", :title => "Add", :alt => "Add")+" #{txt}", new_service_path(:service_id => service.id))
     end
   end

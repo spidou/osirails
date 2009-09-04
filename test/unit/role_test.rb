@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class RoleTest < ActiveSupport::TestCase
   fixtures :roles, :users

@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class BusinessObjectTest < ActiveSupport::TestCase
   # Replace this with your real tests.

@@ -1,2 +1,6 @@
-normal:
-  name: Foobar
+feature:
+  name: Feature
+menu:
+  name: Menu
+service:
+  name: Service

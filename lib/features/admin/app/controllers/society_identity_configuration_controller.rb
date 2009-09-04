@@ -6,8 +6,6 @@ class SocietyIdentityConfigurationController < ApplicationController
     for parameter in search_methods(__FILE__) do
       @parameters[parameter] = ConfigurationManager.send(parameter)
     end
-    # Permissions
-    @edit = self.can_edit?(current_user)
   end
   
   # GET /society_identity_configuration/edit
@@ -20,11 +18,18 @@ class SocietyIdentityConfigurationController < ApplicationController
   
   # PUT /society_identity_configuration
   def update
+    error = false
     for parameter in search_methods(__FILE__)
-      ConfigurationManager.send(parameter+"=", params[parameter])
+      error = true unless ConfigurationManager.send(parameter+"=", params[parameter])
     end
-    flash[:notice] = "Les modifications ont &eacute;t&eacute; prises en compte"
-    redirect_to :action => :show
+    
+    unless error
+      flash[:notice] = 'Les modifications ont été prises en compte'
+      redirect_to :action => :show
+    else
+      flash[:error] = 'Les modifications ont échouées'
+      redirect_to :action => :edit
+    end
   end
   
 end

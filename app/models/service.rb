@@ -1,4 +1,5 @@
 class Service < ActiveRecord::Base
+  has_permissions :as_business_object
   
   # Relationship
   has_many :employees

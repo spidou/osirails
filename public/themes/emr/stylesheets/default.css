@@ -99,8 +99,8 @@ tr:hover > td > a {
 }
 
 table tr.disabled > td {
-	font-style:italic;
-	background-color:#CCC;
+	background-color: #e5e5e5;
+	text-decoration: line-through;
 }
 
 /*/////////////////////////////

@@ -37,9 +37,11 @@ module EmployeesHelper
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
   
   # This method permit to show or hide content of secondary menu
-  def actives_employees_link(view_inactives)   
-    message = view_inactives ? "Voir" : "Cacher"
-    link_to("#{display_image("/images/view_16x16.png","#{message}")} #{message} les employ&eacute; inactifs", employees_path(:all_employees => !view_inactives))
+  def actives_employees_link(view_inactives)
+    return unless Employee.can_view?(current_user)
+    message = view_inactives ? "Cacher" : "Voir"
+    message += " les employés inactifs"
+    link_to(image_tag("/images/view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
   end
   
   #########################################################################################
@@ -89,7 +91,7 @@ module EmployeesHelper
   
   # Method to pluralize or not the number's <h3></h3>
   def numbers_h3(numbers)
-    unless controller.can_view?(current_user) and Employee.can_view?(current_user)
+    unless Employee.can_view?(current_user)
       visibles = visibles_numbers(numbers)
       return "" if visibles.size == 0 
       return "<h3>Numéro de telephone</h3>" if visibles.size == 1

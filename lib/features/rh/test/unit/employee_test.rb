@@ -4,14 +4,9 @@ class EmployeeTest < ActiveSupport::TestCase
   fixtures :employees, :civilities
 
   def setup
-    @good_employee = employees(:james_doe)
+    @good_employee = employees(:james_doe)    
     @employee_with_job = employees(:johnny)
-    #@leave_days_credit_per_month = ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month
-#    @default_leave = Leave.new(:start_date => (Date.today - 11.month) + 3.month,
-#                                 :end_date => (Date.today - 11.month) + 3.month + 6.days,
-#                                 :duration => 7.0,
-#                                 :leave_type_id => LeaveType.first.id)
-#    @default_leave.save 
+
     @employee = Employee.new
   end
   
@@ -159,34 +154,59 @@ class EmployeeTest < ActiveSupport::TestCase
   end
   
   def test_services_under_responsibility
-    assert @good_employee.services_under_responsibility.empty?, "good_employee should NOT have service under his responsibility"
+    job_direction_responsible      = create_job_responsible("r1", services(:direction_general))
+    job_administration_responsible = create_job_responsible("r2", services(:administration))
     
-    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    assert @good_employee.services_under_responsibility.empty?, "good_employee should NOT have service under his responsibility"
+      
+    @employee_with_job.jobs << job_direction_responsible 
     assert_equal 1, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 1 service under his responsibility"
     
-    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    @employee_with_job.jobs << job_direction_responsible
     assert_equal 1, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 1 service under his responsibility even if there's two jobs"
     
-    @employee_with_job.jobs << jobs(:administration_responsible_job)
+    @employee_with_job.jobs << job_administration_responsible
     assert_equal 2, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 2 services under his responsibility"
   end
   
   def test_subordinates
+    job_direction_responsible      = create_job_responsible("r1", services(:direction_general))
+    job_administration_responsible = create_job_responsible("r2", services(:administration))
+    
     assert @good_employee.subordinates.empty?, "good_employee should NOT have subordinates"
     
-    @employee_with_job.jobs << jobs(:direction_responsible_job)
+    @employee_with_job.jobs << job_direction_responsible
     assert_equal 2, @employee_with_job.subordinates.size, "employee_with_job should have 2 subordinates because james_doe and trish_doe belongs to direction_general"
     
     # all sub_employees belongs to administration service
     @sub_employee_1 = employees(:franck_doe)
-    @sub_employee_1.jobs << jobs(:administration_responsible_job)
-    assert_equal 1, @sub_employee_1.subordinates.size, "sub_employee_1 should have 1"
+    @sub_employee_1.jobs << job_administration_responsible
+    assert_equal 1, @sub_employee_1.subordinates.size, "sub_employee_1 should have 1 subordinate"
     
     @sub_employee_3 = employees(:trish_doe)
-    assert_equal 0, @sub_employee_3.subordinates.size, "sub_employee_3 should have 0"
+    assert_equal 0, @sub_employee_3.subordinates.size, "sub_employee_3 should have 0 subordinate"
 
-    @employee_with_job.jobs << jobs(:administration_responsible_job) # employee_with_job is now configured as responsible of all sub employees below
-    assert_equal 4, @employee_with_job.subordinates.size, "employee_with_job should have 4 subordinates 2 into direction_general and 2 in administration"
+    @employee_with_job.jobs << job_administration_responsible # employee_with_job is now configured as responsible of all sub employees below
+    assert_equal 4, @employee_with_job.subordinates.size, "employee_with_job should have 4 subordinates (2 into direction_general and 2 in administration)"
+  end
+  
+  def test_responsible_job_limit
+    job1 = create_job_responsible("responsible_job", services(:direction_general))
+    
+    # add a responsible for direction general service
+    @employee_with_job.jobs << job1
+    
+    @good_employee.attributes = {:job_ids => [job1.id]}
+    @good_employee.valid?
+    assert !@good_employee.errors.invalid?(:jobs), "jobs should be valid because there's only 1 responsible for 'direction general' service"
+    
+    # add another responsible for direction general service
+    @employee = employees(:franck_doe)
+    @employee.jobs << job1
+
+    @good_employee.valid?
+    @good_employee.jobs.group_by(&:service).to_hash.values.first.size
+    assert @good_employee.errors.invalid?(:jobs), "jobs should NOT be valid because there's too many responsibles for 'direction general' service"
   end
   
   def test_self_and_subordinates
@@ -214,6 +234,12 @@ class EmployeeTest < ActiveSupport::TestCase
 #      wanted_leaves_days_left = @leave_days_credit_per_month*12 - leave_duration
 #      assert_equal @good_employee.leaves_days_left, wanted_leaves_days_left, "should be equal to #{wanted_leaves_days_left} for one year and with 1 leave of #{duration} days #{@good_employee.leaves.first.duration}"
 #    end
+
+    def create_job_responsible(name, service)
+      job = Job.new(:name => name, :service_id => service.id, :responsible => true)
+      flunk "job should be saved" unless job.save
+      job
+    end
     
     def prepare_contextual_variables
       ConfigurationManager.admin_society_identity_configuration_workable_days = "1234560".split("")

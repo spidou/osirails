@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class JobContractTypeTest < ActiveSupport::TestCase
   fixtures :job_contract_types

@@ -376,7 +376,7 @@ namespace :osirails do
       john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
       john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
       john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
-      john.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
+      john.build_iban(:bank_name => "Bred", :account_name => "John DOE" , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
       john.save!
       john.user.roles << role_admin
       john.user.enabled = true
@@ -385,6 +385,14 @@ namespace :osirails do
 #      john.job_contract = job_contract
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"
       Event.create :calendar_id => calendar_john_doe.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
+      
+      # default leave types
+      LeaveType.create :name => "Congés payés"
+      LeaveType.create :name => "Congés maternité"
+      LeaveType.create :name => "Congés paternité"
+      LeaveType.create :name => "Congés maladie"
+      LeaveType.create :name => "Congés spéciaux"
+      LeaveType.create :name => "Récupération"
       
       # defauts memorandums
       m1 = Memorandum.create :title => 'Note de service 1', :subject => 'Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs', :text => 'Ici il y a du texte', :signature => 'EMR Developper', :user_id => 3, :published_at => Time.now - 3.months
@@ -436,22 +444,15 @@ namespace :osirails do
       Order.create :title => "VISUEL NUMERIQUE GRAND FORMAT", :description => "1 visuel 10000 x 4000", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       Order.create :title => "DRAPEAUX", :description => "4 drapeaux 400 x 700", :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :activity_sector_id => ActivitySector.first.id, :order_type_id => OrderType.first.id, :previsional_start => DateTime.now + 1.day, :previsional_delivery => DateTime.now + 2.days
       
-      # set up all permissions for default roles (admin and guest)
-      %W{ Menu DocumentType Calendar }.each do |klass|
-        klass.constantize.send(:all).each do |object|
-          object.permissions.find_by_role_id(role_admin.id).update_attributes(:list => true, :view => true, :add => true, :edit => true, :delete => true)
-          object.permissions.find_by_role_id(role_guest.id).update_attributes(:list => true, :view => true, :add => false, :edit => false, :delete => false)
-        end
-      end
-      
-      # set up business objects permissions
-      BusinessObject.all.each do |bo|
-        bo.permissions.each do |perm|
-          perm.business_object_permissions_permission_methods.each do |bo_perm|
-            if perm.role == role_guest and ( bo_perm.permission_method.name != "list" and bo_perm.permission_method.name != "view" )
-              bo_perm.update_attribute(:active, false)
-            else
-              bo_perm.update_attribute(:active, true)
+      %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
+        klass.constantize.all.each do |object|
+          object.permissions.each do |permission|
+            permission.permissions_permission_methods.each do |object_permission|
+              if permission.role == role_guest and ( object_permission.permission_method.name != "list" and object_permission.permission_method.name != "view" )
+                object_permission.update_attribute(:active, false)
+              else
+                object_permission.update_attribute(:active, true)
+              end
             end
           end
         end

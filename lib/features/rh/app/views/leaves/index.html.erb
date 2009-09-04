@@ -1,6 +1,10 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= new_employee_leave_link(@employee) %>
+  <%= employee_link(@employee) %>
+<% end %>
+
 <% contextual_menu USEFUL_LINKS do %>
   <%= leaves_link(@employee, !@view_cancelled)%>
-  <%= employee_link(@employee) %>
   <%= employees_link %>
 <% end %>
 
@@ -12,7 +16,7 @@
   <p>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</p>
 <% else %>
   <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
-    <p>Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, 1, @year) %></p>
+    <p>Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, @year) %></p>
   </form> 
   <% end %>   
   <div id='leaves_list'><%= render :partial => "leaves"%></div>

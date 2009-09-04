@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class MemorandumTest < ActiveSupport::TestCase
   fixtures :memorandums, :memorandums_services, :services, :users
