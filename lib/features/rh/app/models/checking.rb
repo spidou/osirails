@@ -1,5 +1,5 @@
 class Checking < ActiveRecord::Base
-  has_permissions :as_business_object, :additional_methods => [:override, :cancel]
+  has_permissions :as_business_object, :additional_class_methods => [ :override, :cancel ]
   
   belongs_to :employee
   belongs_to :user
@@ -22,14 +22,14 @@ class Checking < ActiveRecord::Base
   validates_presence_of :employee,                            :if => :employee_id
   
   validate :validates_one_checking_per_day_and_per_employee
-  validate :validates_edit_period_limit,                      :unless => :while_override
+  validate :validates_edit_period_limit
   validate :validates_good_hours, :validates_good_minutes
   validate :validates_not_empty_checking
   validate :validates_date_not_too_far_away,                  :if => :date
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:employee]                    = "Employ&eacute; :"
+  @@form_labels[:employee]                    = "Employé :"
   @@form_labels[:date]                        = "Date :"
   @@form_labels[:absence_hours]               = "Absence :"
   @@form_labels[:absence_comment]             = "Commentaire :"
@@ -55,11 +55,17 @@ class Checking < ActiveRecord::Base
   end
   
   def can_be_edited?
-    !can_be_overrided?
+    return false if date.nil? or cancelled
+    Date.today.cweek <= date.cweek
   end
   
   def can_be_overrided?
-     date.nil? ? false : Date.today.cweek > date.next_week.cweek
+    return false if date.nil? or cancelled
+    Date.today.cweek > date.cweek
+  end
+  
+  def can_be_cancelled?
+    !cancelled_was
   end
   
   # Method that permit to override a record
@@ -80,10 +86,15 @@ class Checking < ActiveRecord::Base
   # thank's to validate_cancel flag
   #
   def cancel
-    self.while_cancel = true
-    result = update_attributes(:cancelled => true)
-    self.while_cancel = false
-    result
+    if can_be_cancelled?
+      self.while_cancel = true
+      result = update_attributes(:cancelled => true)
+      self.while_cancel = false
+      result
+    else
+      errors.add_to_base("Ce pointage ne peut pas être annulé")
+    end
+    return result || false
   end
   
   private
@@ -100,7 +111,7 @@ class Checking < ActiveRecord::Base
     end
     
     def validates_edit_period_limit
-      errors.add_to_base("le pointage ne peut plus etre modifié") unless new_record? or can_be_edited?
+      errors.add_to_base("Le pointage ne peut plus être modifié") unless new_record? or can_be_edited? or while_override or while_cancel
     end
 
     def validates_good_hours
@@ -123,7 +134,7 @@ class Checking < ActiveRecord::Base
       at_least_one = ![ absence_hours, absence_minutes, overtime_hours, overtime_minutes ].reject{ |n| n.nil? or n == 0 }.empty?
       unless at_least_one
         errors.add_to_base "Vous devez au moins signaler une absence ou des heures supplémentaires"
-        [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each { |e| errors.add(e)} 
+        [:absence_hours, :overtime_hours, :absence_minutes, :overtime_minutes].each { |e| errors.add(e) }
 			end
     end
     

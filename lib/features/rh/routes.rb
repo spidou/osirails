@@ -2,7 +2,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :employees do |employee|
     employee.resources :salaries
     employee.resources :premia
-    employee.resource :job_contract
+    employee.resource  :job_contract, :controller => 'job_contract'
     employee.resources :leaves
   end
   

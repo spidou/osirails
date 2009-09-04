@@ -271,7 +271,9 @@ module ApplicationHelper
         
         options[:html_options] = options[:html_options].merge({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
         
-        link_to( link_content, link_url, options[:html_options] )
+        return link_to( link_content, link_url, options[:html_options] )
+      else
+        return nil
       end
     end
     
@@ -375,18 +377,29 @@ module ApplicationHelper
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code
       if menu.name
-        path = menu.name + "_path"
-        if self.respond_to?(path)
-          self.send(path)
-        else
-          url_for(:controller => menu.name)
-        end
+        build_menu_path(menu) || url_for(:controller => menu.name)
       else
         unless menu.content.nil?
           url_for(:controller => "contents", :action => "show", :id => menu.content.id)
         else
           ""
         end
+      end
+    end
+    
+    def build_menu_path(menu, child_path = nil)
+      if child_path
+        path = menu.name.singularize + "_#{child_path}"
+      else
+        path = menu.name
+      end
+      
+      if self.respond_to?("#{path}_path")
+        self.send("#{path}_path")
+      elsif menu.parent
+        build_menu_path(menu.parent, path)
+      else
+        false
       end
     end
     

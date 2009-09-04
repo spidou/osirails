@@ -1,5 +1,5 @@
 class Leave < ActiveRecord::Base
-  has_permissions :as_business_object, :additional_methods => [:cancel]
+  has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
   named_scope :actives, :conditions => ['cancelled =? or cancelled is null', false]
   named_scope :cancelled_leaves, :conditions => ['cancelled =?', true]
@@ -10,9 +10,6 @@ class Leave < ActiveRecord::Base
   belongs_to :employee
   belongs_to :leave_type
   
-  validates_persistence_of :cancelled,              :unless => :while_cancel
-  validates_persistence_of :employee_id
-  
   validates_presence_of :start_date
   validates_presence_of :end_date
   validates_presence_of :leave_type_id
@@ -21,16 +18,20 @@ class Leave < ActiveRecord::Base
   validates_presence_of :employee,                  :if => :employee_id
   
   validates_numericality_of :duration
-
+  
+  validates_persistence_of :cancelled,              :unless => :while_cancel
+  validates_persistence_of :employee_id
+  validates_persistence_of :start_date, :end_date, :start_half, :end_half, :leave_type_id, :duration, :if => :cancelled
+  
   validate :validates_not_cancelled_at_creation
   validate :validates_date_is_correct,              :if => :start_date and :end_date
   validate :validates_not_overlay_with_other_leave, :if => :employee
   
   cattr_accessor :form_labels
   @@form_labels = {}
-  @@form_labels[:start_date] = "Date de d&eacute;but :"
+  @@form_labels[:start_date] = "Date de début :"
   @@form_labels[:end_date]   = "Date de fin :"
-  @@form_labels[:duration]   = "Dur&eacute;e :"
+  @@form_labels[:duration]   = "Durée :"
   @@form_labels[:leave_type] = "Type :"
   
   # Method that permit to cancel a record
@@ -83,6 +84,14 @@ class Leave < ActiveRecord::Base
     result = end_date.to_datetime
     result -= 12.hours if end_half
     result
+  end
+  
+  def can_be_edited?
+    !cancelled_was
+  end
+  
+  def can_be_cancelled?
+    !cancelled_was
   end
   
   private

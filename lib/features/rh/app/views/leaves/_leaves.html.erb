@@ -5,8 +5,8 @@
     <tr>
       <th>P&eacute;riode</th>
       <th>Nb. jours<br/>calendaires</th>
-      <th>Nb. jours pris<br/>au total</th>
-      <th>Type</th>
+      <th>Nb. jours pris</th>
+      <th>Type de congé</th>
       <th>Action</th>
     </tr>
     <% @leaves.each do |leave| %>
@@ -16,11 +16,9 @@
         <td><%= leave.duration %></td>
         <td><%= leave.leave_type.name %></td>
         <td>
-        <% unless leave.cancelled %>
-          <%= edit_employee_leave_link(@employee, leave, :link_text => nil) %>
-          <%= cancel_employee_leave_link(@employee, leave) %>
-          <%= delete_employee_leave_link(@employee, leave, :link_text => nil)%>
-        <% end %>
+          <%= edit_employee_leave_link(@employee, leave, :link_text => nil) if leave.can_be_edited? %>
+          <%= cancel_employee_leave_link(@employee, leave) if leave.can_be_cancelled? and Leave.can_cancel?(current_user) %>
+          <%= delete_employee_leave_link(@employee, leave, :link_text => nil) %>
         </td>
       </tr>
     <% end %>

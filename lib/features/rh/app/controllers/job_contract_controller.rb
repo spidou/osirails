@@ -1,12 +1,17 @@
-class JobContractsController < ApplicationController
-
-# GET /employees/:employee_id/job_contract/edit
+class JobContractController < ApplicationController
+  
+  # GET /employees/:employee_id/job_contract
+  def show
+    redirect_to :action => :edit
+  end
+  
+  # GET /employees/:employee_id/job_contract/edit
   def edit
     @employee =  Employee.find(params[:employee_id])
     @job_contract = @employee.job_contract
   end
 
-# PUT /employees/:employee_id/job_contract/update  
+  # PUT /employees/:employee_id/job_contract/update  
   def update
 
     @employee =  Employee.find(params[:employee_id])

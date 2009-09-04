@@ -1,7 +1,10 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= employee_link @employee %>
+<% end %>
+
 <% contextual_menu USEFUL_LINKS do %>
   <%= employee_leaves_link @employee, :link_text => "Historique des congés" %>
   <%= employees_link %>
-  <%= employee_link @employee %>
 <% end %>
 
 <h1>Ajouter un cong&eacute;</h1>

@@ -13,7 +13,7 @@ class CheckingsController < ApplicationController
         options = {:conditions => ["date >= ? and date <= ?", @date, @date.next_week.yesterday], :order => :date}
         if @view_cancelled
           @checkings = @employee.checkings.all(options)
-          flash.now[:warning] = "Les pointages annulés sont également visible"
+          flash.now[:warning] = "Les pointages annulés sont également visible sur cette page"
         else
           @checkings = @employee.checkings.actives.all(options)
         end
@@ -27,6 +27,7 @@ class CheckingsController < ApplicationController
   def new
     if !current_user.employee.nil?
       @checking = Checking.new
+      @checking.employee_id = params[:employee_id] || nil
     else
       error_access_page(403)
     end

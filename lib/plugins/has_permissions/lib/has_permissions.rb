@@ -72,7 +72,7 @@ module HasPermissions
         add_instance_permission_methods
       
       elsif type == :as_business_object
-          
+        
         if options[:additional_class_methods]
           raise "[has_permissions] :additional_class_methods expected to be an array" unless options[:additional_class_methods].is_a?(Array)
           self.permissions_definitions.merge!(:class_permission_methods => DEFAULT_CLASS_METHODS + options[:additional_class_methods])

@@ -156,7 +156,6 @@ class EmployeeTest < ActiveSupport::TestCase
   def test_services_under_responsibility
     job_direction_responsible      = create_job_responsible("r1", services(:direction_general))
     job_administration_responsible = create_job_responsible("r2", services(:administration))
-    flunk "job creation error" if job_administration_responsible.nil? or job_direction_responsible.nil?
     
     assert @good_employee.services_under_responsibility.empty?, "good_employee should NOT have service under his responsibility"
       
@@ -173,7 +172,6 @@ class EmployeeTest < ActiveSupport::TestCase
   def test_subordinates
     job_direction_responsible      = create_job_responsible("r1", services(:direction_general))
     job_administration_responsible = create_job_responsible("r2", services(:administration))
-    flunk "job creation error" if job_administration_responsible.nil? or job_direction_responsible.nil?
     
     assert @good_employee.subordinates.empty?, "good_employee should NOT have subordinates"
     
@@ -194,7 +192,6 @@ class EmployeeTest < ActiveSupport::TestCase
   
   def test_responsible_job_limit
     job1 = create_job_responsible("responsible_job", services(:direction_general))
-    flunk "job creation error #{job1}" if job1.nil?
     
     # add a responsible for direction general service
     @employee_with_job.jobs << job1
@@ -222,7 +219,8 @@ class EmployeeTest < ActiveSupport::TestCase
 
     def create_job_responsible(name, service)
       job = Job.new(:name => name, :service_id => service.id, :responsible => true)
-      job if job.save
+      flunk "job should be saved" unless job.save
+      job
     end
     
     def prepare_contextual_variables

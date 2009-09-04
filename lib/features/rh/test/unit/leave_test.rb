@@ -3,11 +3,11 @@ require 'test/test_helper'
 class LeaveTest < ActiveSupport::TestCase
   
   def setup
-    @good_leave = Leave.new(:start_date => "2009-10-12".to_date,
-                              :end_date => "2009-10-18".to_date,
-                              :duration => 7.0,
-                              :employee_id => Employee.first.id,
-                              :leave_type_id => LeaveType.first.id)
+    @good_leave = Leave.new(:start_date     => "2009-10-12".to_date,
+                            :end_date       => "2009-10-18".to_date,
+                            :duration       => 7.0,
+                            :employee_id    => Employee.first.id,
+                            :leave_type_id  => LeaveType.first.id)
     flunk "good_leave is not valid #{@good_leave.errors.inspect}" unless @good_leave.save
     
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.month).strftime("%m/%d")
@@ -255,6 +255,30 @@ class LeaveTest < ActiveSupport::TestCase
     
     @good_leave.reload.start_date = nil
     assert_equal false, @good_leave.cancel, "@good_leave should NOT be valid because of a validation error" 
+  end
+  
+  def test_can_be_edited
+    flunk "@good_leave should NOT be cancelled to perform the following" if @good_leave.cancelled
+    
+    assert @good_leave.can_be_edited?, "@good_leave should be editable"
+    
+    flunk "@good_leave shoud be cancelled" unless @good_leave.cancel
+    
+    assert !@good_leave.can_be_edited?, "@good_leave should NOT be editable"
+  end
+  
+  def test_can_be_cancelled
+    flunk "@good_leave should NOT be cancelled to perform the following" if @good_leave.cancelled
+    
+    assert @good_leave.can_be_cancelled?, "@good_leave should be cancellable"
+    
+    flunk "@good_leave shoud be cancelled" unless @good_leave.cancel
+    
+    assert !@good_leave.can_be_cancelled?, "@good_leave should NOT be cancellable"
+  end
+  
+  def test_persistance_of_attributes_when_leave_is_cancelled
+    #TODO
   end
   
   private

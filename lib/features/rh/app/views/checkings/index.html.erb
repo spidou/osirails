@@ -1,31 +1,31 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_checking_link unless @subordinates.empty?%>
+  <%= new_checking_link(:options => { :employee_id => @employee.id }) unless @subordinates.empty? %>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
-  <%= display_checkings_link %>
+  <%= display_checkings_link(@employee.id) %>
 <% end %>
 
-<h1>Liste des pointages</h1> 
+<h1>Liste des pointages</h1>
 <div class="presentation-medium">
 
 <% if @subordinates.empty? %>
-  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p> 
+  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p>
 <% else %>
-
+  
   <h2>Semaine <%= @date.monday.cweek %> (du <%= @date.monday.strftime("%A %d %B %Y") %> au <%= @date.next_week.yesterday.strftime("%A %d %B %Y") %>)</h2>
   
   <p>
-    <%= previous_week(@employee_id, @date, @view_cancelled) %>
-    <select onchange="<%= javascript_location_url(@date, @view_cancelled)%>" >
-      <%= employee_options(@subordinates, @employee_id)%>
+    <%= previous_week(@employee.id, @date, @view_cancelled) %>
+    <select onchange="<%= javascript_location_url(@employee.id, @date, @view_cancelled)%>" >
+      <%= employee_options(@subordinates, @employee.id)%>
     </select>
-    <%= next_week(@employee_id, @date, @view_cancelled) %>
-  </p> 
+    <%= next_week(@employee.id, @date, @view_cancelled) %>
+  </p>
   
-  <% if @checkings.empty? %> 
-    <p>Aucun pointage pour cette p&eacute;riode</p>  
-  <% else %> 
+  <% if @checkings.empty? %>
+    <p>Aucun pointage pour cette p&eacute;riode et pour <%= @employee.fullname %></p>
+  <% else %>
     <table>
       <tr>
         <th>Date</th>
@@ -33,22 +33,22 @@
         <th>Heures suppl&eacute;mentaires</th>
         <th>Actions</th>
       </tr>
-      <% for checking in @checkings %>  
+      <% for checking in @checkings %>
          
         <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
           <td><%= checking.date.strftime("%A %d %B %Y") %></td>
           <%= generate_absence_and_overtime_td(checking) %>
-          <td>         
-            <% unless checking.cancelled %>
-              <%= checking.can_be_overrided? ? edit_checking_link(checking, :link_text => "") : override_checking_link %>
-              <%= cancel_checking_link %>
-            <% end %>
-            <%= delete_checking_link(checking, :link_text => "")%>           
+          <td>
+            <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
+            <%= override_checking_link(checking) %>
+            <%= cancel_checking_link(checking) %>
+            <%= delete_checking_link(checking, :link_text => "") %>
           </td>        
         </tr>  
              
       <% end %>     
     </table>  
-  <% end %> 
+  <% end %>
+  
 <% end %>
 </div>

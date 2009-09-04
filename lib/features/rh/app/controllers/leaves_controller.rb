@@ -28,7 +28,7 @@ class LeavesController < ApplicationController
     @leave.employee = @employee
     
     if @leave.save
-      flash[:notice] = "Cong&eacute; ajout&eacute;e avec succ&eacute;"
+      flash[:notice] = "Le congé a été ajouté avec succès"
       redirect_to employee_leaves_path(@employee)
     else
       render :action => :new 
@@ -48,7 +48,7 @@ class LeavesController < ApplicationController
     @employee = @leave.employee
     
     if @leave.update_attributes params[:leave] 
-      flash[:notice] = "Cong&eacute modifi&eacute; avec succ&eacute"
+      flash[:notice] = "La congé a été modifié avec succès"
       redirect_to employee_leaves_path(@employee)
     else
       render :action => :edit
@@ -58,14 +58,18 @@ class LeavesController < ApplicationController
   # GET /employees/:employee_id/leaves/:id/cancel
   def cancel
     @leave = Leave.find params[:id]
-    @leave.cancel
+    unless @leave.cancel
+      flash[:error] = "Une erreur est survenue à l'annulation du congé"
+    end
     redirect_to employee_leaves_path
   end
   
   # DELETE /employees/:employee_id/leaves/:id
   def destroy
     @leave = Leave.find params[:id]
-    @leave.destroy
+    unless @leave.destroy
+      flash[:error] = "Une erreur est survenue à la suppression du congé"
+    end
     redirect_to employee_leaves_path
   end
   

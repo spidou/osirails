@@ -1,11 +1,12 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
   <%= new_employee_leave_link @employee %>
+  <%= employee_link @employee %>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
   <%= employee_leaves_link @employee, :link_text => "Historique des congés" %>
   <%= employees_link %>
-  <%= employee_link @employee %>
 <% end %>
-<h1>Mofidifer un cong&eactue;</h1>
+
+<h1>Mofidifer un cong&eacute;</h1>
 <%= render :partial => "leave" ,:locals => {:button_name => "Modifier"} %>

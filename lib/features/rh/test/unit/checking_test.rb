@@ -5,6 +5,8 @@ class CheckingTest < ActiveSupport::TestCase
   def setup
     @good_checking = checkings(:good_checking)
     flunk "good cheking is not valid #{@good_checking.errors.inspect}" unless @good_checking.valid?
+    flunk "@good_checking.date should be in the same week than today to perform the following" unless @good_checking.date.cweek == Date.today.cweek
+    
     @checking = Checking.new
     @checking.valid?
   end
@@ -14,13 +16,12 @@ class CheckingTest < ActiveSupport::TestCase
     @checking = nil
   end
   
-  
   def test_persistence_of_user_id
     assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
     
     @good_checking.user_id = users(:admin_user).id
     @good_checking.valid?
-    assert @good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
+    assert @good_checking.errors.invalid?(:user_id), "user_id should NOT be valid because is modified"
   end
   
   def test_persistence_of_employee_id
@@ -189,44 +190,67 @@ class CheckingTest < ActiveSupport::TestCase
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"
   end
   
-  def test_normal_edit
-    # before the edit period limit
-    assert @good_checking.can_be_edited?, "can_be_edited should be true because today is before the edit period limit"
-    assert @good_checking.valid?, "good_checking should be valid because can be edited an"
+  def test_can_be_edited
+    # when we are on the same week of the checking date (it's 
+    assert @good_checking.can_be_edited?, "@good_checking should be editable because we are on the same week of the checking date"
     
-    # after the edition period limit (use new record because it is invalid to modify the date)
-    @good_checking.date -= 2.week
-    @checking.attributes = @good_checking.attributes
-    flunk "Error with a valid record save" unless @checking.save   
-    assert !@checking.can_be_edited?, "can_be_edited should be false because today is after the edit period limit"
-    assert !@checking.valid?, "checking should NOT be valid because checking isn't too late"
+    # when we are before the week of the checking date (it's still ok)
+    @checking = Checking.new(@good_checking.attributes)
+    @checking.date = Date.today.next_week
+    flunk "@checking should be save to perform the following" unless @checking.save
+    assert @checking.can_be_edited?, "@good_checking should be editable because we are before the week of the checking date"
+    
+    # when we are after the week of the checking date (it's too late)
+    @checking = Checking.new(@good_checking.attributes)
+    @checking.date = Date.today.last_week
+    flunk "@checking should be save to perform the following" unless @checking.save
+    assert !@checking.can_be_edited?, "@good_checking should NOT be editable because we are after the week of the checking date"
+  end
+  
+  def test_update
+    #TODO
+  end
+  
+  def test_can_be_overrided
+    # when we are on the same week of the checking date (it's NOT ok)
+    assert !@good_checking.can_be_overrided?, "@good_checking should NOT be overridable because we are on the same week of the checking date"
+    
+    # when we are before the week of the checking date (it's still NOT ok)
+    @checking = Checking.new(@good_checking.attributes)
+    @checking.date = Date.today.next_week
+    flunk "@checking should be save to perform the following" unless @checking.save
+    assert !@checking.can_be_overrided?, "@good_checking should NOT be overridable because we are before the week of the checking date"
+    
+    # when we are after the week of the checking date (it's ok)
+    @checking = Checking.new(@good_checking.attributes)
+    @checking.date = Date.today.last_week
+    flunk "@checking should be save to perform the following" unless @checking.save
+    assert @checking.can_be_overrided?, "@good_checking should be overridabled because we are after the week of the checking date"
   end
   
   def test_override
-    # before the edit period limit
-    assert !@good_checking.can_be_overrided?, "can_be_overrided should be false because today is before edit period limit"
-    assert !@good_checking.override, "good_checking should NOT be valid because can be overrided"
-          
-    # after the edition period limit (use new record because it is invalid to modify the date)
-    @good_checking.date -= 2.week
+    # when we are on the same week of (or before) the checking date (it's NOT ok)
+    assert !@good_checking.override, "good_checking should NOT be overrided"
+    
+    # when we are after the week of the checking date (it's ok)
     @checking.attributes = @good_checking.attributes
-    flunk "Error with a valid record save" unless @checking.save 
-    assert @checking.can_be_overrided?, "can_be_overrided should be true"
+    @checking.date = Date.today.last_week
+    flunk "@checking should be saved to perform the following" unless @checking.save
+    assert @checking.override, "checking should be overrided successfully"
+  end
+  
+  def test_can_be_cancelled
+    # when the checking is not already cancelled
+    assert @good_checking.can_be_cancelled?, "@good_checking should be cancellable"
     
-    # valid object
-    assert @checking.override, "good_checking should be valid"
+    flunk "@good_checking should be cancelled successfully" unless @good_checking.cancel
     
-    # invalid object
-    @good_checking.employee_id = employees(:james_doe)
-    assert !@good_checking.override, "override should return false because of a validation error"
+    assert !@good_checking.can_be_cancelled?, "@good_checking should NOT be cancellable"
   end
   
   def test_cancel
-    assert @good_checking.cancel, "cancel should return true because is modified while a cancel"
-    
-    # invalid object
-    @good_checking.reload.employee_id = employees(:james_doe)
-    assert !@good_checking.cancel, "cancel should return false because of a validation error"
+    assert @good_checking.cancel, "@good_checking should be cancelled"
+    assert !@good_checking.cancel, "@good_checking should NOT be cancelled"
   end
   
   def test_verify_time

@@ -67,7 +67,7 @@
 
 <!--########### JobContract #############-->
   <% if JobContract.can_view?(current_user) or @employee.user.id == current_user.id %>
-    <%= render(:partial => @employee.job_contract) unless is_form_view? %> 
+    <%= render(:partial => 'job_contract/job_contract', :object => @employee.job_contract) unless is_form_view? %> 
   <% end %>
 
 <!--############## Premia ##############-->

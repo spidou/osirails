@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090814045511) do
+ActiveRecord::Schema.define(:version => 20090812094807) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -56,11 +56,9 @@ ActiveRecord::Schema.define(:version => 20090814045511) do
   end
 
   create_table "checkings", :force => true do |t|
-    t.date     "date"
     t.integer  "user_id",          :limit => 11
     t.integer  "employee_id",      :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.date     "date"
     t.integer  "absence_hours",    :limit => 11
     t.integer  "absence_minutes",  :limit => 11
     t.text     "absence_comment"
@@ -68,9 +66,9 @@ ActiveRecord::Schema.define(:version => 20090814045511) do
     t.integer  "overtime_minutes", :limit => 11
     t.text     "overtime_comment"
     t.boolean  "cancelled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
-
-  add_index "checkings", ["date", "employee_id"], :name => "date_employee_id_key", :unique => true
 
   create_table "checklist_options", :force => true do |t|
     t.string   "name"
