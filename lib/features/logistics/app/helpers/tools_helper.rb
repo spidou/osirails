@@ -27,11 +27,11 @@ module ToolsHelper
     html
   end
   
-  def links_for_tool_event(tool, event)
+  def links_for_tool_event(tool, tool_event)
     tool_class = tool.class.to_s.tableize.singularize
-    html = send("#{tool_class}_tool_event_link", tool, event, :link_text => nil)
-    html += send("edit_#{tool_class}_tool_event_link", tool, event, :link_text => nil)
-    html += send("delete_#{tool_class}_tool_event_link", tool, event, :link_text => nil)
+    html = send("#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
+    html += send("edit_#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
+    html += send("delete_#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
     html
   end
   
@@ -45,47 +45,40 @@ module ToolsHelper
     ToolEvent::STATUS_TEXT[status.to_i]
   end
   
-  def get_event_type_text(event_type)
-    ToolEvent::TYPE_TEXT[event_type.to_i]
+  def get_event_type_text(tool_event_type)
+    ToolEvent::TYPE_TEXT[tool_event_type.to_i]
   end
   
-  def display_events(header, events, tool, link = nil)
-    return '' if events.empty?
+  def display_events(header, tool_events, tool, link = nil)
+    return '' if tool_events.empty?
     html = "#{header}"
     html += "<div class='presentation_small events'>"
-    html += render :partial => 'tool_events/tool_event_minimal', :collection => events , :locals => {:tool => tool}
+    html += render :partial => 'tool_events/tool_event_minimal', :collection => tool_events , :locals => {:tool => tool}
     html += "<p>#{link}</p>" unless link.nil?
     html += "</div>"
     html
   end
   
-  def get_internal_actor(event)
-    return '-' if event.internal_actor.nil?
-    link = employee_link(event.internal_actor, :image_tag => nil, :link_text => event.internal_actor.fullname)
-    link || event.internal_actor.fullname 
+  def get_internal_actor(tool_event)
+    return '-' if tool_event.internal_actor.nil?
+    link = employee_link(tool_event.internal_actor, :image_tag => nil, :link_text => tool_event.internal_actor.fullname)
+    link || tool_event.internal_actor.fullname 
   end
   
-  def get_end_date(event)
-    return event.end_date.strftime('%A %d %B %Y') unless event.end_date.nil?
+  def get_end_date(tool_event)
+    return tool_event.end_date.strftime('%A %d %B %Y') unless tool_event.end_date.nil?
   end
   
-  def effectives_image(event, is_effective)
-    if is_effective
-      if event.event_type_name == 'intervention'
-        is_current_event = (event.start_date..event.end_date).include?(Date.today)
-      else
-        is_current_event = event.start_date == Date.today
-      end      
-      if is_current_event
-        image = 'warning'
-        message = 'évènement en cours'
-      else
-        image = 'tick2'
-        message = 'évènement passé'
-      end
+  def effectives_image(tool_event, currents_tools, effectives_tools)
+    if !effectives_tools.include?(tool_event)
+      image   = 'clock'
+      message = 'évènement future' 
+    elsif currents_tools.include?(tool_event)
+      image   = 'warning'
+      message = 'évènement en cours'
     else
-      image = 'clock'
-      message = 'évènement future'
+      image   = 'tick2'
+      message = 'évènement passé'
     end
     image_tag("#{image}_16x16.png", :alt => message, :title => message)
   end

@@ -9,8 +9,8 @@ class VehiculesController < ApplicationController
   # GET /vehicules/:id
   def show
     @vehicule                 = Vehicule.find params[:id]
-    @effectives_events = @vehicule.tool_events.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @vehicule.tool_events.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @effectives_events = @vehicule.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
+    @scheduled_events  = @vehicule.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
   end
   
   # GET /vehicules/new
@@ -50,8 +50,11 @@ class VehiculesController < ApplicationController
   # DELETE /vehicules/:id
   def destroy
     @vehicule = Vehicule.find params[:id]
-    @vehicule.destroy
-    redirect_to vehicules_path
+    if @vehicule.destroy
+      redirect_to vehicules_path
+    else
+      flash[:error] = "Erreur lors de la suppression de l'équipment"
+    end
   end
    
 end

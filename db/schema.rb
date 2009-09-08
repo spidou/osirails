@@ -812,12 +812,12 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
     t.string   "provider_actor"
     t.integer  "tool_id",           :limit => 11
     t.integer  "internal_actor_id", :limit => 11
+    t.integer  "event_id",          :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "tools", :force => true do |t|
-    t.string   "reference"
     t.string   "name"
     t.string   "serial_number"
     t.string   "type"

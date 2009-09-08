@@ -9,7 +9,7 @@
 
 <h1>Liste des &eacute;v&egrave;nements</h1>
 <div class="presentation_small events">
-  <% if @paginate_events.empty? %>
+  <% if @paginate_tool_events.empty? %>
     <p>Aucun &eacute;v&egrave;nement</p>
   <% else %>
     <table>
@@ -23,22 +23,22 @@
         <th>Actions</th>
       </tr>
       
-      <% for event in @paginate_events %>
+      <% for tool_event in @paginate_tool_events %>
       <tr>
-        <td><%= effectives_image(event, @effectives_events.include?(event)) %></td>
-        <td><%= event.name %></td>
-        <td><%= get_status_image(event.status) %></td>
-        <td><%= get_event_type_text(event.event_type)%></td>
+        <td><%= effectives_image(tool_event, @currents_tool_events, @effectives_tool_events) %></td>
+        <td><%= tool_event.name %></td>
+        <td><%= get_status_image(tool_event.status) %></td>
+        <td><%= get_event_type_text(tool_event.event_type)%></td>
         <td>
-          <%= event.start_date.strftime('%A %d %B %Y') %>
-          <%= " - #{get_end_date(event)}" unless event.event_type_name == 'incident' %>
+          <%= tool_event.start_date.strftime('%A %d %B %Y') %>
+          <%= " - #{get_end_date(tool_event)}" unless tool_event.event_type_name == 'incident' %>
         </td>
-        <td><%= get_internal_actor(event) %></td>
-        <td><%= links_for_tool_event(@tool, event)%></td>
+        <td><%= get_internal_actor(tool_event) %></td>
+        <td><%= links_for_tool_event(@tool, tool_event)%></td>
       </tr> 
       <% end %>
       
     </table>
-    <%= will_paginate @paginate_events,  :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+    <%= will_paginate @paginate_tool_events,  :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
   <% end %>
 </div>

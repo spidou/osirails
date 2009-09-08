@@ -1,5 +1,4 @@
 good_tool:
-  reference: "ford mustang"
   name: "ma caisse"
   description: "vehicule de fonction avec kit carroserie complet"
   purchase_date: <%= Date.today %>

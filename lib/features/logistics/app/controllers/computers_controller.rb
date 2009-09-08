@@ -9,8 +9,8 @@ class ComputersController < ApplicationController
   # GET /computers/:id
   def show
     @computer          = Computer.find params[:id]
-    @effectives_events = @computer.tool_events.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @computer.tool_events.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @effectives_events = @computer.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
+    @scheduled_events  = @computer.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
   end
   
   # GET /computers/new
@@ -50,8 +50,11 @@ class ComputersController < ApplicationController
   # DELETE /computers/:id
   def destroy
     @computer = Computer.find params[:id]
-    @computer.destroy
-    redirect_to computers_path
+    if @computer.destroy
+      redirect_to computers_path
+    else
+      flash[:error] = "Erreur lors de la suppression de l'équipment"
+    end
   end
    
 end

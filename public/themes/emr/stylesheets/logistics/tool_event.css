@@ -1,0 +1,13 @@
+#alarms {
+  text-align:left;
+}
+
+.alarm {
+  -moz-border-radius: 10px 10px 10px 10px;
+  border: 1px solid gray;
+  background-color: #eaeaea;
+  display: inline-block;
+  width: 350px;
+  padding: 1px;
+  margin: 10px;
+}

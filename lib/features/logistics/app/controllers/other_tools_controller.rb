@@ -9,8 +9,8 @@ class OtherToolsController < ApplicationController
   # GET /other_tools/:id
   def show
     @other_tool               = OtherTool.find params[:id]
-    @effectives_events = @other_tool.tool_events.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @other_tool.tool_events.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @effectives_events = @other_tool.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
+    @scheduled_events  = @other_tool.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
   end
   
   # GET /other_tools/new
@@ -50,8 +50,11 @@ class OtherToolsController < ApplicationController
   # DELETE /other_tools/:id
   def destroy
     @other_tool = OtherTool.find params[:id]
-    @other_tool.destroy
-    redirect_to other_tools_path
+    if @other_tool.destroy
+      redirect_to other_tools_path
+    else
+      flash[:error] = "Erreur lors de la suppression de l'équipment"
+    end
   end
    
 end

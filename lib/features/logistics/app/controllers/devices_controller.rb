@@ -9,8 +9,8 @@ class DevicesController < ApplicationController
   # GET /devices/:id
   def show
     @device                   = Device.find params[:id]
-    @effectives_events = @device.tool_events.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @device.tool_events.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @effectives_events = @device.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
+    @scheduled_events  = @device.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
   end
   
   # GET /devices/new
@@ -50,8 +50,11 @@ class DevicesController < ApplicationController
   # DELETE /devices/:id
   def destroy
     @device = Device.find params[:id]
-    @device.destroy
-    redirect_to devices_path
+    if @device.destroy
+      redirect_to devices_path
+    else
+      flash[:error] = "Erreur lors de la suppression de l'équipment"
+    end
   end
    
 end

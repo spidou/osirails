@@ -5,7 +5,7 @@ class CreateTableToolEvents < ActiveRecord::Migration
       t.date :start_date, :end_date
       t.text :comment
       t.string :name, :provider_society, :provider_actor
-      t.references :tool, :internal_actor
+      t.references :tool, :internal_actor, :event
 
       t.timestamps
     end

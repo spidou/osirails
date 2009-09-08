@@ -78,6 +78,11 @@ class ToolEventTest < ActiveSupport::TestCase
     assert !@good_tool_event.errors.invalid?(:comment), "comment should be valid"
   end
   
+  def test_presence_of_name
+    assert @tool_event.errors.invalid?(:name), "name should NOT be valid because it's nil"
+    assert !@good_tool_event.errors.invalid?(:name), "name should be valid"
+  end
+  
   def test_presence_of_tool
     assert @tool_event.errors.invalid?(:tool_id), "tool_id should NOT be valid because it's nil"
     
@@ -90,8 +95,20 @@ class ToolEventTest < ActiveSupport::TestCase
     assert !@good_tool_event.errors.invalid?(:tool), "tool should be valid"
   end
   
+  def test_presence_of_event
+    assert !@tool_event.errors.invalid?(:event_id), "event_id should be valid because nil is allowed to permit 'event' creation while 'tool_event' create"
+    
+    @tool_event.event_id = 0
+    @tool_event.valid?
+    assert !@tool_event.errors.invalid?(:event_id), "event_id should be valid"
+    assert @tool_event.errors.invalid?(:event), "event should NOT be valid because event_id is wrong"
+    
+    assert !@good_tool_event.errors.invalid?(:event_id), "event_id should be valid"
+    assert !@good_tool_event.errors.invalid?(:event), "event should be valid"
+  end
+  
   def test_presence_of_internal_actor
-    assert !@tool_event.errors.invalid?(:internal_actor_id), "internal_actor_id should be valid because internal_actor_id is'nt mandatory"
+    assert !@tool_event.errors.invalid?(:internal_actor_id), "internal_actor_id should be valid because nil is allowed"
     
     @tool_event.internal_actor_id = 0
     @tool_event.valid?
@@ -100,6 +117,18 @@ class ToolEventTest < ActiveSupport::TestCase
     
     assert !@good_tool_event.errors.invalid?(:internal_actor_id), "internal_actor_id should be valid"
     assert !@good_tool_event.errors.invalid?(:internal_actor), "internal_actor should be valid"
+  end
+  
+  def test_persistence_of_event_type
+    assert !@good_tool_event.errors.invalid?(:event_type), "event_type should be valid because event_type still the same"
+    
+    @tool_event.event_type = ToolEvent::INCIDENT
+    @tool_event.valid?
+    assert !@tool_event.errors.invalid?(:event_type), "event_type should be valid because tool_event is a new record"
+    
+    @good_tool_event.event_type = ToolEvent::INCIDENT
+    @good_tool_event.valid?
+    assert @good_tool_event.errors.invalid?(:event_type), "event_type should NOT be valid because the tool_event is not a new record and event_type has changed"
   end
   
   def test_validates_date_is_correct
@@ -166,11 +195,39 @@ class ToolEventTest < ActiveSupport::TestCase
   def test_validates_tool_is_not_scrapped
     assert !@good_tool_event.errors.invalid?(:tool_id), "tool_id should be valid because there's no event with SCRAPPED status"
     
-    @good_tool_event.attributes = {:event_type => ToolEvent::INCIDENT, :status => ToolEvent::SCRAPPED}
-    flunk "event shoul be valid #{@good_tool_event.errors.inspect}" unless @good_tool_event.save
+    @tool_event = ToolEvent.new(@good_tool_event.attributes)
+    @tool_event.attributes = {:event_type => ToolEvent::INCIDENT, :status => ToolEvent::SCRAPPED}
+    flunk "tool_event shoul be valid #{@tool_event.errors.inspect}" unless @tool_event.save
     
-    @good_tool_event.valid?
-    assert @good_tool_event.errors.invalid?(:tool_id), "tool_id should NOT be valid because there's an event with SCRAPPED status"
+    @tool_event.valid?
+    assert @tool_event.errors.invalid?(:tool_id), "tool_id should NOT be valid because there's an event with SCRAPPED status"
   end
   
+  def test_event
+    @tool_event.attributes = @good_tool_event.attributes
+    flunk "tool_event shoul be valid #{@tool_event.errors.inspect}" unless @tool_event.save
+    event_for_test_id = @tool_event.event.id # event is generated when tool_event is saved thank's to a callback
+    
+    # test event create with callback
+    assert_nothing_raised( ActiveRecord::RecordNotFound ) { Event.find event_for_test_id }
+    
+    # test dependent delete
+    @tool_event.destroy
+    assert_raise( ActiveRecord::RecordNotFound ) { Event.find event_for_test_id }
+  end
+  
+  # TODO uncomment the two commented lines when the method prepare_event will affect 'end_date' to 'end_at'
+  def test_update_event
+    assert_equal @good_tool_event.start_date.to_datetime, @good_tool_event.event.start_at, "tool_event's start_date should be equal with event's start_at"
+#    assert_equal @good_tool_event.end_date.to_datetime, @good_tool_event.event.end_at, "tool_event's end_date should be equal with event's end_at"
+    assert_equal @good_tool_event.name, @good_tool_event.event.title, "tool_event's start_date should be equal with event's title"
+    
+    @tool_event = ToolEvent.new(@good_tool_event.attributes)
+    @tool_event.attributes = {:start_date => Date.yesterday, :end_date => Date.tomorrow.next, :name => 'new name'}
+    flunk "tool_event should be valid  #{@tool_event.errors.inspect}" unless @tool_event.save
+    
+    assert_equal @tool_event.start_date.to_datetime, @tool_event.event.start_at, "tool_event's start_date should be equal with event's start_at"
+#    assert_equal @tool_event.end_date.to_datetime, @tool_event.event.end_at, "tool_event's end_date should be equal with event's end_at"
+    assert_equal @tool_event.name, @tool_event.event.title, "tool_event's name should be equal with event's title"
+  end
 end

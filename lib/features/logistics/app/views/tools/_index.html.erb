@@ -5,18 +5,13 @@
 <% else %>
   <table>
     <tr>
-      <th>Nom</th><th>Description</th><th>N&deg; de s&eacute;rie</th>
-      <th>Date d&apos;achat</th><th>Prix d&apos;achat</th><th>Service</th>
-      <th>Employé</th><th>Poste</th><th>Fournisseur</th>
-      <th>Actions</th>
+      <th>Nom</th><th>Service</th>
+      <th>Employé</th><th>Poste</th>
+      <th>Fournisseur</th><th>Actions</th>
     <tr>
   <% for tool in tools %>
     <tr>
       <td><%= tool.name %></td>
-      <td><%= tool.description %></td>
-      <td><%= tool.serial_number %></td>
-      <td><%= tool.purchase_date %></td>
-      <td><%= tool.purchase_price %></td>
       <td><%= link_to_service(tool.service)%></td>
       <td><%= link_to_employee(tool.employee)%></td>
       <td><%= link_to_job(tool.job)%></td> 

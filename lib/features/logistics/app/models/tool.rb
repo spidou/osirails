@@ -33,24 +33,16 @@ class Tool < ActiveRecord::Base
   @@form_labels[:supplier]       = "Fournisseur :"
   
   def status
-    status = {:scrapped => ToolEvent::SCRAPPED, :available => ToolEvent::AVAILABLE, :unavailable => ToolEvent::UNAVAILABLE}
-    type   = {:intervention => ToolEvent::INTERVENTION, :incident => ToolEvent::INCIDENT}
+    all_current_status = tool_events.currents.collect(&:status)
+    status             = {:scrapped => ToolEvent::SCRAPPED, :available => ToolEvent::AVAILABLE, :unavailable => ToolEvent::UNAVAILABLE}
     
-    last_event = tool_events.effectives.last
-    
-    return status[:available] if tool_events.empty? or last_event.nil?
-    return status[:scrapped] if has_one_scrapped?
-
-    case last_event.event_type
-      when type[:incident]
-        return last_event.start_date == Date.today ? last_event.status : status[:available]
-      when type[:intervention]
-        return last_event.end_date >= Date.today ? last_event.status : status[:available]
-    end
+    return status[:available] if tool_events.empty?
+    return status[:scrapped]  if has_one_scrapped?   
+    return all_current_status.include?(status[:unavailable])? status[:unavailable] : status[:available]   
   end
   
   def has_one_scrapped?
-    !tool_events.all(:conditions => ["status=?", 2], :limit => 1).empty?
+    !tool_events.all(:conditions => ["status=? and start_date<=?", ToolEvent::SCRAPPED, Date.today], :limit => 1).empty?
   end
   
   def can_be_edited?
