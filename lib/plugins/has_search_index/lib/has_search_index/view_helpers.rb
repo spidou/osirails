@@ -59,7 +59,7 @@ module HasSearchIndex
             attribute.split(".").each do |element|
               break if element == "*"  # go to the next attribute if '*' is reached
               if object.search_index[:attributes].merge(object.search_index[:additional_attributes]).include?(element) or object.search_index[:relationships].include?(element.to_sym)
-                object = element.classify.constantize.new unless element == attribute.split(".").last
+                object = object.association_list[element.to_sym][:class_name].constantize.new unless element == attribute.split(".").last
               else
                 result[:wrong_attributes] << attribute
                 type       = (element == attribute.split(".").last)? "attribute" : "relationship"

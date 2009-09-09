@@ -577,12 +577,12 @@ module HasSearchIndex
       #
       def generate_attribute_prefix(parent_model, attribute_prefix)
 
-        model        = relationship_class_name(attribute_prefix, attribute_prefix.split(".")[-2]).downcase
-        sub_model    = attribute_prefix.split(".")[-1]
-        prefix_table = get_prefix_order(parent_model.table_name, parent_model.get_include_array, sub_model, model)
+        relationship     = attribute_prefix.split(".")[-2]
+        sub_relationship = attribute_prefix.split(".")[-1]
+        prefix_table     = get_prefix_order(parent_model.table_name, parent_model.get_include_array, sub_relationship, relationship)
         
         # filter the prefix table to get only the redundant prefixes according to the current prefix
-        redundant_prefixes = prefix_table.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == prefix_table.first}        
+        redundant_prefixes = prefix_table.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == prefix_table.first}
         prefix_index       = redundant_prefixes.index(attribute_prefix)
         
         # OPTIMIZE maybe remove that comment if it's not necessary
@@ -598,13 +598,18 @@ module HasSearchIndex
         #   # => Service.all(:include => [:children], :conditions => ["childrens_services.id =?",0])
         #        children is a service belonging to another service that's why there is a redundancy but the fact is that we need to add one 's'
         #        to 'chidren' to make it work properly.
-              
-        if relationship_class_name(attribute_prefix, model) == relationship_class_name(attribute_prefix, sub_model)    # manage the self reference
-          return "#{sub_model.pluralize}_#{model.pluralize}"
+        
+        # manage the custom relationships name
+        model     = relationship_class_name(attribute_prefix, relationship).tableize.singularize
+        sub_model = relationship_class_name(attribute_prefix, sub_relationship).tableize.singularize
+        
+        if relationship_class_name(attribute_prefix, relationship) == relationship_class_name(attribute_prefix, sub_relationship)    # manage the self reference
+          return "#{sub_relationship.pluralize}_#{relationship.pluralize}"
         end
                
-        model     = model.pluralize unless sub_model.plural?
+        model     = model.pluralize unless model.plural?
         sub_model = sub_model.pluralize unless sub_model.plural?
+        
         return "#{sub_model}" if prefix_table.first == attribute_prefix
         case prefix_index
           when nil
