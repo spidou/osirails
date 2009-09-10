@@ -1,11 +1,15 @@
 <% contextual_menu POSSIBLE_ACTIONS do%>
   <%= new_leave_request_link %>
-	<%= cancel_leave_request_link(@leave_request,false) if @leave_request.can_be_cancelled? %> 
+	<%= cancel_leave_request_link(@leave_request, false) if @leave_request.can_be_cancelled? %> 
 	<%= delete_leave_request_link %>
 <% end %>
+
 <% contextual_menu USEFUL_LINKS do%>
 	<%= leave_requests_link %>
-	<%= cancelled_leave_requests_link %>
+	<% if current_user.employee %>
+	  <% text = ( current_user.employee == @leave_request.employee ? "Voir mes congés" : "Voir les congés de cet employé" ) %>
+	  <%= employee_leaves_link(@leave_request.employee, :link_text => text) %>
+  <% end %>
 <% end %>
 
 <h1>Informations d'une demande de cong&eacute;s</h1>

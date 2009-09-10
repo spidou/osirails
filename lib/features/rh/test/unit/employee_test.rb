@@ -169,6 +169,46 @@ class EmployeeTest < ActiveSupport::TestCase
     assert_equal 2, @employee_with_job.services_under_responsibility.size, "employee_with_job should have 2 services under his responsibility"
   end
   
+  def test_responsible_job_limit
+    job1 = create_job_responsible("responsible_job", services(:direction_general))
+    
+    # add a responsible for direction general service
+    @employee_with_job.jobs << job1
+    
+    @good_employee.attributes = {:job_ids => [job1.id]}
+    @good_employee.valid?
+    assert !@good_employee.errors.invalid?(:jobs), "jobs should be valid because there's only 1 responsible for 'direction general' service"
+    
+    # add another responsible for direction general service
+    @employee = employees(:franck_doe)
+    @employee.jobs << job1
+
+    @good_employee.valid?
+    @good_employee.jobs.group_by(&:service).to_hash.values.first.size
+    assert @good_employee.errors.invalid?(:jobs), "jobs should NOT be valid because there's too many responsibles for 'direction general' service"
+  end
+  
+  def test_self_and_subordinates
+    job_direction_responsible       = create_job_responsible("job_direction_responsible", services(:direction_general))
+    job_administration_responsible  = create_job_responsible("job_administration_responsible", services(:administration))
+    
+    assert @good_employee.self_and_subordinates.empty?, "good_employee should NOT have subordinates"
+    
+    @employee_with_job.jobs << job_direction_responsible
+    assert_equal 3, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 3 people in self_and_subordinates because james_doe and trish_doe belongs to direction_general"
+    
+    # all sub_employees belongs to administration service
+    @sub_employee_1 = employees(:franck_doe)
+    @sub_employee_1.jobs << job_administration_responsible
+    assert_equal 2, @sub_employee_1.self_and_subordinates.size, "sub_employee_1 should have 2"
+    
+    @sub_employee_3 = employees(:trish_doe)
+    assert_equal 0, @sub_employee_3.self_and_subordinates.size, "sub_employee_3 should have 0"
+
+    @employee_with_job.jobs << job_administration_responsible # employee_with_job is now configured as responsible of all sub employees below
+    assert_equal 5, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 5 people in self_and_subordinates 2 into direction_general and 2 in administration"
+  end
+  
   def test_subordinates
     job_direction_responsible      = create_job_responsible("r1", services(:direction_general))
     job_administration_responsible = create_job_responsible("r2", services(:administration))
@@ -190,41 +230,24 @@ class EmployeeTest < ActiveSupport::TestCase
     assert_equal 4, @employee_with_job.subordinates.size, "employee_with_job should have 4 subordinates (2 into direction_general and 2 in administration)"
   end
   
-  def test_responsible_job_limit
-    job1 = create_job_responsible("responsible_job", services(:direction_general))
-    
-    # add a responsible for direction general service
-    @employee_with_job.jobs << job1
-    
-    @good_employee.attributes = {:job_ids => [job1.id]}
-    @good_employee.valid?
-    assert !@good_employee.errors.invalid?(:jobs), "jobs should be valid because there's only 1 responsible for 'direction general' service"
-    
-    # add another responsible for direction general service
-    @employee = employees(:franck_doe)
-    @employee.jobs << job1
-
-    @good_employee.valid?
-    @good_employee.jobs.group_by(&:service).to_hash.values.first.size
-    assert @good_employee.errors.invalid?(:jobs), "jobs should NOT be valid because there's too many responsibles for 'direction general' service"
+  def test_future_leaves
+    #TODO
   end
   
-  def test_self_and_subordinates
-    assert @good_employee.self_and_subordinates.empty?, "good_employee should NOT have subordinates"
-    
-    @employee_with_job.jobs << jobs(:direction_responsible_job)
-    assert_equal 3, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 3 people in self_and_subordinates because james_doe and trish_doe belongs to direction_general"
-    
-    # all sub_employees belongs to administration service
-    @sub_employee_1 = employees(:franck_doe)
-    @sub_employee_1.jobs << jobs(:administration_responsible_job)
-    assert_equal 2, @sub_employee_1.self_and_subordinates.size, "sub_employee_1 should have 2"
-    
-    @sub_employee_3 = employees(:trish_doe)
-    assert_equal 0, @sub_employee_3.self_and_subordinates.size, "sub_employee_3 should have 0"
-
-    @employee_with_job.jobs << jobs(:administration_responsible_job) # employee_with_job is now configured as responsible of all sub employees below
-    assert_equal 5, @employee_with_job.self_and_subordinates.size, "employee_with_job should have 5 people in self_and_subordinates 2 into direction_general and 2 in administration"
+  def test_in_progress_leave_requests
+    #TODO
+  end
+  
+  def test_accepted_leave_requests
+    #TODO
+  end
+  
+  def test_refused_leave_requests
+    #TODO
+  end
+  
+  def test_cancelled_leave_requests
+    #TODO
   end
   
   private 

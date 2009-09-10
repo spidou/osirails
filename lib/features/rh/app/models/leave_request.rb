@@ -1,9 +1,7 @@
-require 'estimate_duration'
-
 class LeaveRequest < ActiveRecord::Base
-  include EstimateDuration
+  include LeaveAndLeaveRequest
   
-  has_permissions :as_business_object, :methods => [:list, :view, :add, :delete, :submit, :check, :notice, :close, :cancel]
+  has_permissions :as_business_object, :class_methods => [:list, :view, :add, :delete, :submit, :check, :notice, :close, :cancel]
   
   alias_attribute :submitted_at, :created_at
   
@@ -12,11 +10,11 @@ class LeaveRequest < ActiveRecord::Base
   @@form_labels[:status]                = "STATUT :"
   @@form_labels[:employee]              = "Employé :"
   @@form_labels[:submitted_at]          = "Date de la demande :"
-  @@form_labels[:period]                = "Période demandée :"
+  @@form_labels[:period]                = "Date/Période demandée :"
   @@form_labels[:start_date]            = "Du :"
   @@form_labels[:end_date]              = "Au :"
-  @@form_labels[:start_half]            = "Après-midi (inclus) :"
-  @@form_labels[:end_half]              = "Matin (inclus) :"
+  @@form_labels[:start_half]            = "depuis la mi-journée ?"
+  @@form_labels[:end_half]              = "jusqu'à la mi-journée ?"
   @@form_labels[:leave_type]            = "Type du congé :"
   @@form_labels[:comment]               = "Commentaire :"
   @@form_labels[:responsible_agreement] = "Réponse du responsable :"
@@ -52,7 +50,7 @@ class LeaveRequest < ActiveRecord::Base
                                           :order => "start_date DESC"
   
   has_one :leave
-
+  
   belongs_to :employee
   belongs_to :responsible, :class_name => "Employee", :foreign_key => "responsible_id"
   belongs_to :observer, :class_name => "Employee", :foreign_key => "observer_id"
@@ -65,326 +63,254 @@ class LeaveRequest < ActiveRecord::Base
   ##TODO Dates validations
   
   with_options :if => :was_unstarted? do |t|
-    t.validates_presence_of :employee_id, :start_date, :end_date, :leave_type_id
-    t.validates_presence_of :employee, :if => :employee_id
+    t.validates_presence_of :start_date, :end_date
+    t.validates_presence_of :employee_id, :leave_type_id
+    t.validates_presence_of :employee,   :if => :employee_id
     t.validates_presence_of :leave_type, :if => :leave_type_id
-    t.validate :validates_dates_coherence_order
-    t.validate :validates_dates_coherence_validity
-    t.validate :validates_same_dates_and_a_half_max
+    
     t.validate :validates_unique_dates
   end
-
+  
   with_options :if => :was_submitted_or_refused_by_responsible? do |t|
     t.validates_presence_of :responsible_id, :checked_at
     t.validates_presence_of :responsible, :if => :responsible_id
-    t.validate :validates_dates_validity
   end
-
+  
   with_options :if => :was_checked? do |t|
     t.validates_presence_of :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :duration
     t.validates_presence_of :observer, :if => :observer_id
-    t.validate :validates_dates_validity
   end 
-
+  
   with_options :if => :was_noticed_or_refused_by_director? do |t|
     t.validates_presence_of :director_id, :ended_at
     t.validates_presence_of :director, :if => :director_id
-    t.validate :validates_dates_validity
   end
+  
+  validate :validates_start_date_validity,  :if => :start_date
+  validate :validates_dates_consistency,    :if => :start_date_and_end_date
   
   validates_presence_of :responsible_remarks, :if => :validates_responsible_remarks
-  validates_presence_of :director_remarks, :if => :validates_director_remarks
+  validates_presence_of :director_remarks,    :if => :validates_director_remarks
   
   validates_persistence_of :employee, :employee_id, :start_date, :end_date, :leave_type_id, :start_half, :end_half, :comment, :if => :higher_than_step_submit?
-  validates_persistence_of :responsible, :responsible_id, :checked_at, :responsible_agreement, :responsible_remarks, :if => :higher_than_step_check?
-  validates_persistence_of :observer, :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :duration, :if => :higher_than_step_notice?
+  validates_persistence_of :responsible, :responsible_id, :checked_at, :responsible_agreement, :responsible_remarks,          :if => :higher_than_step_check?
+  validates_persistence_of :observer, :observer_id, :noticed_at, :observer_remarks, :acquired_leaves_days, :duration,         :if => :higher_than_step_notice?
   
   validates_associated :leave, :if => :closed?
-
-  def validates_dates_coherence_order
-    if self.start_date != nil and self.end_date != nil
-      errors.add(:end_date, "ne peut être antérieure à la date de début !") if self.start_date > self.end_date
-    end
-  end
   
-  def validates_dates_coherence_validity
-    if self.start_date != nil
-      errors.add(:start_date, "ne peut être antérieure à aujourd'hui !") if self.start_date < Date.today
-    end
-  end
-  
-  def validates_same_dates_and_a_half_max
-    if self.start_date != nil and self.end_date != nil
-      errors.add(:end_half, "ne peut être sélectionné en même temps que start half pour deux dates semblables !") if (self.start_date == self.end_date and self.start_half and self.end_half)
-    end
-  end
-
-  def validates_dates_validity
-    if self.start_date != nil
-      errors.add(:start_date, "a expiré, veuillez annuler la demande") if self.start_date < Date.today
+  def validates_start_date_validity
+    if start_date < Date.today
+      if was_unstarted?
+        error = "est antérieure à aujourd'hui"
+      else
+        error = "La demande a expiré, vous devez annuler ou supprimer la demande actuelle et en créer une nouvelle"
+      end
+      errors.add(:start_date, error)
     end
   end
   
   def validates_unique_dates
-    
-    @self_start_datetime = start_or_end_datetime(self.start_date,self.start_half,true)
-    @self_end_datetime = start_or_end_datetime(self.end_date,self.end_half,false)
-  
-    in_progress_leave_requests_conflicts = []
-    leaves_conflicts = []
-    
-    if (!self.start_date.nil? and !self.end_date.nil? and !self.employee_id.nil?) 
-      for element in self.employee.in_progress_leave_requests  
-        if (start_or_end_datetime(element.start_date,element.start_half,true).between?(@self_start_datetime,@self_end_datetime) or start_or_end_datetime(element.end_date,element.end_half,false).between?(@self_start_datetime,@self_end_datetime))
-          in_progress_leave_requests_conflicts << element
-        end
-      end
-      
-      for element in self.employee.future_leaves
-        if (start_or_end_datetime(element.start_date,element.start_half,true).between?(@self_start_datetime,@self_end_datetime) or start_or_end_datetime(element.end_date,element.end_half,false).between?(@self_start_datetime,@self_end_datetime))
-          leaves_conflicts << element
-        end
-      end
-    end
-
-    if (!in_progress_leave_requests_conflicts.nil? and !leaves_conflicts.nil?)
-      if (in_progress_leave_requests_conflicts.size > 0 or leaves_conflicts.size > 0)
-        error_message = "et/ou end date demandé(s) invalide(s) !<br />"
-        if in_progress_leave_requests_conflicts.size > 0
-          error_message += "Congés en cours de demande pour la période : <br />"
-          for element in in_progress_leave_requests_conflicts
-             error_message += ("- Du #{element.start_date.strftime("%d %B %Y")} au #{element.end_date.strftime("%d %B %Y")}<br />")    
-          end
-        end
-        if leaves_conflicts.size > 0  
-          error_message += "Congés déjà acceptés pour la période :<br />"
-          for element in leaves_conflicts
-             error_message += "- Du #{element.start_date.strftime("%d %B %Y")} au #{element.end_date.strftime("%d %B %Y")}<br />"
-          end
-        end
-        errors.add(:start_date, error_message)
-      end
-    end
-    
+    check_unique_dates(conflicting_leaves(employee.future_leaves + employee.in_progress_leave_requests)) if employee
   end
   
   def validates_responsible_remarks
-    !self.responsible_agreement and self.was_submitted_or_refused_by_responsible?
+    !responsible_agreement and was_submitted_or_refused_by_responsible?
   end
-
+  
   def validates_director_remarks
-    !self.director_agreement and self.was_noticed_or_refused_by_director?
+    !director_agreement and was_noticed_or_refused_by_director?
   end
-
-
+  
   def build_associated_leave
     if leave_can_be_created?
-      self.leave = build_leave(:leave_request_id  => self.id,
-                               :employee_id       => self.employee_id,
-                               :start_date        => self.start_date,
-                               :end_date          => self.end_date,
-                               :start_half        => self.start_half,
-                               :end_half          => self.end_half,
-                               :leave_type_id     => self.leave_type_id, 
-                               :duration          => self.duration)
+      leave = build_leave(:leave_request_id  => id,
+                          :employee_id       => employee_id,
+                          :start_date        => start_date,
+                          :end_date          => end_date,
+                          :start_half        => start_half,
+                          :end_half          => end_half,
+                          :leave_type_id     => leave_type_id, 
+                          :duration          => duration)
     end  
   end
   
-  def start_or_end_datetime(date, half, is_start)
-    unless date.nil?
-      if half
-        if is_start
-          date.to_datetime + 13.hours
-        else
-          date.to_datetime + 12.hours
-        end
-      else
-        if is_start
-          date.to_datetime + 8.hours
-        else
-          date.to_datetime + 17.hours
-        end
-      end
-    end
-  end
-
   def can_be_submitted?
-    self.was_unstarted?
+    was_unstarted?
   end
-
+  
   def can_be_checked?
-    self.was_submitted_or_refused_by_responsible?
+    was_submitted_or_refused_by_responsible?
   end
-
+  
   def can_be_noticed?
-    self.was_checked?
+    was_checked?
   end
-
+  
   def can_be_closed?
-    self.was_noticed_or_refused_by_director?
+    was_noticed_or_refused_by_director?
   end
   
   def leave_can_be_created?
-    self.closed?
+    closed?
   end
-
+  
   def can_be_cancelled?
-    ![nil,STATUS_CANCELLED,STATUS_CLOSED].include?(self.status)
+    ![nil,STATUS_CANCELLED,STATUS_CLOSED].include?(status)
   end
   
   def submit
     if can_be_submitted?
       self.status = STATUS_SUBMITTED
-      self.save
+      save
     end
   end
   
   def check
     if can_be_checked?
-      if self.responsible_agreement
+      if responsible_agreement
         self.status = STATUS_CHECKED 
       else
         self.status = STATUS_REFUSED_BY_RESPONSIBLE
       end
       self.checked_at = Time.now
-      self.save
+      save
     end
   end
-
+  
   def notice
     if can_be_noticed?
       self.status = STATUS_NOTICED 
       self.noticed_at = Time.now
-      self.save 
+      save 
     end
   end
   
   def close 
     if can_be_closed?
-      if self.director_agreement
+      if director_agreement
         self.status = STATUS_CLOSED   
       else
         self.status = STATUS_REFUSED_BY_DIRECTOR
       end
       self.ended_at = Time.now
-      self.save
+      save
     end
   end
-
+  
   def cancel
     if can_be_cancelled?
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED  
-      self.save
+      save
     end
   end
   
   def unstarted?
-    self.status.nil?
+    status.nil?
   end
   
   def cancelled?
-    self.status == STATUS_CANCELLED
+    status == STATUS_CANCELLED
   end
   
   def submitted?
-    self.status == STATUS_SUBMITTED
+    status == STATUS_SUBMITTED
   end
   
   def checked?
-    self.status == STATUS_CHECKED
+    status == STATUS_CHECKED
   end
   
   def refused_by_responsible?
-    self.status == STATUS_REFUSED_BY_RESPONSIBLE
+    status == STATUS_REFUSED_BY_RESPONSIBLE
   end
   
   def noticed?
-    self.status == STATUS_NOTICED
+    status == STATUS_NOTICED
   end
   
   def closed?
-    self.status == STATUS_CLOSED
+    status == STATUS_CLOSED
   end
   
   def refused_by_director?
-    self.status == STATUS_REFUSED_BY_DIRECTOR
+    status == STATUS_REFUSED_BY_DIRECTOR
   end
   
   def submitted_or_refused_by_responsible?
-    self.submitted? or self.refused_by_responsible?
+    submitted? or refused_by_responsible?
   end
   
   def noticed_or_refused_by_director?
-    self.noticed? or self.refused_by_director?
+    noticed? or refused_by_director?
   end
   
   def was_unstarted?
-    self.status_was.nil?
+    status_was.nil?
   end
   
   def was_cancelled?
-    self.status_was == STATUS_CANCELLED
+    status_was == STATUS_CANCELLED
   end
   
   def was_submitted?
-    self.status_was == STATUS_SUBMITTED and !self.cancelled?
+    status_was == STATUS_SUBMITTED and !cancelled?
   end
   
   def was_checked?
-    self.status_was == STATUS_CHECKED and !self.cancelled?
+    status_was == STATUS_CHECKED and !cancelled?
   end
   
   def was_refused_by_responsible?
-    self.status_was == STATUS_REFUSED_BY_RESPONSIBLE and !self.cancelled?
+    status_was == STATUS_REFUSED_BY_RESPONSIBLE and !cancelled?
   end
   
   def was_noticed?
-    self.status_was == STATUS_NOTICED and !self.cancelled?
+    status_was == STATUS_NOTICED and !cancelled?
   end
   
   def was_closed?
-    self.status_was == STATUS_CLOSED and !self.cancelled?
+    status_was == STATUS_CLOSED and !cancelled?
   end
   
   def was_refused_by_director?
-    self.status_was == STATUS_REFUSED_BY_DIRECTOR and !self.cancelled?
+    status_was == STATUS_REFUSED_BY_DIRECTOR and !cancelled?
   end
   
   def was_submitted_or_refused_by_responsible?
-    self.was_submitted? or self.was_refused_by_responsible?
+    was_submitted? or was_refused_by_responsible?
   end
   
   def was_noticed_or_refused_by_director?
-    self.was_noticed? or self.was_refused_by_director?
+    was_noticed? or was_refused_by_director?
   end
   
   def higher_than_step_submit?
-    self.checked? or self.refused_by_responsible? or self.higher_than_step_check?
+    checked? or refused_by_responsible? or higher_than_step_check?
   end
-
+  
   def higher_than_step_check?
-    self.noticed? or self.higher_than_step_notice?
+    noticed? or higher_than_step_notice?
   end
-
+  
   def higher_than_step_notice?
-    self.closed? or self.refused_by_director?
+    closed? or refused_by_director?
   end
   
   def was_higher_than_step_unstarted?
-    self.was_submitted? or self.was_higher_than_step_submit?
+    was_submitted? or was_higher_than_step_submit?
   end
   
   def was_higher_than_step_submit?
-    self.was_checked? or self.was_refused_by_responsible? or self.was_higher_than_step_check?
+    was_checked? or was_refused_by_responsible? or was_higher_than_step_check?
   end
-
+  
   def was_higher_than_step_check?
-    self.was_noticed? or self.was_higher_than_step_notice?
+    was_noticed? or was_higher_than_step_notice?
   end
-
+  
   def was_higher_than_step_notice?
-    self.was_closed? or self.was_refused_by_director?
+    was_closed? or was_refused_by_director?
   end
   
 end

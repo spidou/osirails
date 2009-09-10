@@ -10,5 +10,5 @@
 # end
 
 Inflector.inflections do |inflect|
-  inflect.singular "leaves", "leave"
+  inflect.irregular 'leave', 'leaves'
 end

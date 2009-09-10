@@ -5,26 +5,17 @@ class LeaveRequestsController < ApplicationController
     
     @employee = current_user.employee
     
-    if !@employee.nil?
+    if @employee
+      @in_progress_leave_requests = @employee.in_progress_leave_requests
+      @accepted_leave_requests    = @employee.accepted_leave_requests.find(:all, :limit => 5)
+      @refused_leave_requests     = @employee.refused_leave_requests.find(:all, :limit => 5)
       
-      @leave_requests_to_check = @employee.get_leave_requests_to_check
-      
-      @leave_requests_to_notice = LeaveRequest.leave_requests_to_notice
-      
-      @leave_requests_to_close = LeaveRequest.leave_requests_to_close
-      
-      @active_leave_requests = @employee.active_leave_requests
-      
-      @accepted_leave_requests = @employee.accepted_leave_requests.find(:all, :limit => 5)
-      
-      @refused_leave_requests = @employee.refused_leave_requests.find(:all, :limit => 5)
-      
-      @refused_by_me_leave_requests = @employee.get_leave_requests_refused_by_me  
-      
-      @leave_requests_to_treat = ( (@leave_requests_to_check.size > 0 and LeaveRequest.can_check?(current_user)) or
-                                   (@leave_requests_to_notice.size > 0 and LeaveRequest.can_notice?(current_user)) or
-                                   (@leave_requests_to_close.size > 0 and LeaveRequest.can_close?(current_user)) or
-                                   @refused_by_me_leave_requests.size > 0 )
+      @pending_leave_requests = []
+      @pending_leave_requests += @employee.get_leave_requests_to_check  if LeaveRequest.can_check?(current_user)
+      @pending_leave_requests += LeaveRequest.leave_requests_to_notice  if LeaveRequest.can_notice?(current_user)
+      @pending_leave_requests += LeaveRequest.leave_requests_to_close   if LeaveRequest.can_close?(current_user)
+      @pending_leave_requests += @employee.get_leave_requests_refused_by_me
+      @pending_leave_requests = @pending_leave_requests.sort_by(&:start_date).reverse
     end
   end
   
@@ -38,24 +29,22 @@ class LeaveRequestsController < ApplicationController
     @leave_request = LeaveRequest.new
   end
   
-  # GET /leave_requests/:id/edit
-  def edit
-    @leave_request = LeaveRequest.find(params[:id])
-  end
-  
   # GET /leave_requests/:id/check_form
   def check_form
     @leave_request = LeaveRequest.find(params[:id])
+    error_access_page(403) unless @leave_request.can_be_checked?
   end
   
   # GET /leave_requests/:id/notice_form
   def notice_form
     @leave_request = LeaveRequest.find(params[:id])
+    error_access_page(403) unless @leave_request.can_be_noticed?
   end
   
   # GET /leave_requests/:id/close_form
   def close_form
     @leave_request = LeaveRequest.find(params[:id])
+    error_access_page(403) unless @leave_request.can_be_closed?
   end
   
   # POST /leave_requests
@@ -64,91 +53,90 @@ class LeaveRequestsController < ApplicationController
     @leave_request.employee = current_user.employee
     
     if @leave_request.submit
-      flash[:notice] = 'La demande de congée a été créée avec succès et transférée à votre reponsable.'
+      flash[:notice] = "Votre demande de congés a été créée avec succès et transférée à votre reponsable"
       redirect_to(@leave_request)
     else
       render :action => "new"
     end    
   end
   
-  # PUT /leave_requests/:id
-  def update
-    @leave_request = LeaveRequest.find(params[:id])
-    
-    if @leave_request.update_attributes(params[:leave_request])
-      flash[:notice] = "La réponse a été envoyée avec succès"
-      redirect_to(leave_requests_url)
-    else
-      render :action => "edit"
-    end     
-  end
-  
   # PUT /leave_requests/:id/check
   def check
     @leave_request = LeaveRequest.find(params[:id])
     
-    @leave_request.attributes = params[:leave_request]
-    @leave_request.responsible = current_user.employee
-    if @leave_request.check
-      flash[:notice] = "La réponse a été envoyée avec succès"
-      redirect_to(leave_requests_url)
+    if @leave_request.can_be_checked?
+      @leave_request.attributes = params[:leave_request]
+      @leave_request.responsible = current_user.employee
+      if @leave_request.check
+        flash[:notice] = "La demande de congés a été traitée avec succès"
+        redirect_to(leave_requests_url)
+      else
+        render :action => :check_form
+      end
     else
-      render :action => "edit"
-    end  
+      error_access_page(422)
+    end
   end
   
   # PUT /leave_requests/:id/notice
   def notice
     @leave_request = LeaveRequest.find(params[:id])
     
-    @leave_request.attributes = params[:leave_request]
-    @leave_request.observer = current_user.employee
-    if @leave_request.notice
-      flash[:notice] = "La réponse a été envoyée avec succès"
-      redirect_to(leave_requests_url)
+    if @leave_request.can_be_noticed?
+      @leave_request.attributes = params[:leave_request]
+      @leave_request.observer = current_user.employee
+      if @leave_request.notice
+        flash[:notice] = "La demande de congés a été traitée avec succès"
+        redirect_to(leave_requests_url)
+      else
+        render :action => :notice_form
+      end
     else
-      render :action => "edit"
-    end  
+      error_access_page(422)
+    end
   end
   
   # PUT /leave_requests/:id/close
   def close
     @leave_request = LeaveRequest.find(params[:id])
     
-    @leave_request.attributes = params[:leave_request]
-    @leave_request.director = current_user.employee
-    if @leave_request.close 
-      flash[:notice] = "La réponse a été envoyée avec succès et un congé a été généré"
-      redirect_to(leave_requests_url)
+    if @leave_request.can_be_closed?
+      @leave_request.attributes = params[:leave_request]
+      @leave_request.director = current_user.employee
+      if @leave_request.close 
+        flash[:notice] = "La demande de congés a été traitée avec succès"
+        flash[:notice] << " et le congé a été créé" if @leave_request.was_closed?
+        redirect_to(leave_requests_url)
+      else
+        render :action => :close_form
+      end
     else
-      render :action => "edit"
+      error_access_page(422)
     end
   end
   
   # GET /leave_requests/:id/cancel
   def cancel
-    @employee = current_user.employee
     @leave_request = LeaveRequest.find(params[:id])
     
-    case @leave_request.status_was
-      when LeaveRequest::STATUS_SUBMITTED, LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE
-        @leave_request.responsible_id = @employee.id
-      when LeaveRequest::STATUS_CHECKED
-        @leave_request.observer_id = @employee.id
-      when LeaveRequest::STATUS_NOTICED, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR
-        @leave_request.director_id = @employee.id
+    if @leave_request.can_be_cancelled?
+      @employee = current_user.employee
+      @leave_request.cancelled_by = @employee.id
+      unless @leave_request.cancel
+        flash[:error] = "Une erreur est survenue à l'annulation de la demande de congés"
+      end
+      redirect_to(leave_requests_url)
+    else
+      error_access_page(422)
     end
-    @leave_request.cancelled_by = @employee.id
-    @leave_request.cancel
-    
-    redirect_to(leave_requests_url)
   end
   
   # DELETE /leave_requests/:id
   def destroy
     @leave_request = LeaveRequest.find(params[:id])
-    @leave_request.destroy
-
+    unless @leave_request.destroy
+      flash[:error] = "Une erreur est survenue à la suppression de la demande de congés"
+    end
     redirect_to(leave_requests_url)
   end
   

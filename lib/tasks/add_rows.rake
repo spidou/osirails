@@ -32,10 +32,11 @@ namespace :osirails do
       JobContractType.create :name => "CDD", :limited => 1
       
       # default leave types
-      LeaveType.create :name => "Congé payé"
+      LeaveType.create :name => "Congés payés"
+      LeaveType.create :name => "Congé maladie"
       LeaveType.create :name => "Congé maternité"
       LeaveType.create :name => "Congé paternité"
-      LeaveType.create :name => "Congé spéciaux"
+      LeaveType.create :name => "Congés spéciaux"
       LeaveType.create :name => "Récupération"
       
       # default countries
@@ -386,14 +387,6 @@ namespace :osirails do
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"
       Event.create :calendar_id => calendar_john_doe.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
-      # default leave types
-      LeaveType.create :name => "Congés payés"
-      LeaveType.create :name => "Congés maternité"
-      LeaveType.create :name => "Congés paternité"
-      LeaveType.create :name => "Congés maladie"
-      LeaveType.create :name => "Congés spéciaux"
-      LeaveType.create :name => "Récupération"
-      
       # defauts memorandums
       m1 = Memorandum.create :title => 'Note de service 1', :subject => 'Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs', :text => 'Ici il y a du texte', :signature => 'EMR Developper', :user_id => 3, :published_at => Time.now - 3.months
       m2 = Memorandum.create :title => 'Note de service 2', :subject => 'Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs, Courage les mecs', :text => 'Ici il y a du texte', :signature => 'EMR Developper', :user_id => 3, :published_at => Time.now - 2.months
@@ -448,7 +441,7 @@ namespace :osirails do
         klass.constantize.all.each do |object|
           object.permissions.each do |permission|
             permission.permissions_permission_methods.each do |object_permission|
-              if permission.role == role_guest and ( object_permission.permission_method.name != "list" and object_permission.permission_method.name != "view" )
+              if permission.role == role_guest and ( object_permission.permission_method.name != "list" and object_permission.permission_method.name != "view" and object_permission.permission_method.name != "access" )
                 object_permission.update_attribute(:active, false)
               else
                 object_permission.update_attribute(:active, true)

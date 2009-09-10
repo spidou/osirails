@@ -1,7 +1,7 @@
-<h1>Toutes les demandes de cong&eacute;s</h1>
+<h1>Liste des demandes de cong&eacute;s</h1>
 
+<div>
 <% if @employee %>
-
   <% contextual_menu POSSIBLE_ACTIONS do %>
     <%= new_leave_request_link %>
   <% end %>
@@ -10,40 +10,16 @@
     <%= accepted_leave_requests_link %>
     <%= refused_leave_requests_link %>
     <%= cancelled_leave_requests_link %>
+    <%= employee_leaves_link(current_user.employee, :link_text => "Voir mes congés") if current_user.employee %>
   <% end %>
   
-  <% if @leave_requests_to_treat %>
-  
-    <h2 class="warning" >Demandes d'employ&eacute;s &agrave; traiter</h2>
-
-      <div>
-        <table>
-          <tr>
-            <th>Employ&eacute;</th>
-            <th>Date de d&eacute;but</th>
-            <th>Date de fin</th>
-            <th>Soumise le</th>
-            <th>Statut</th>
-            <th>Actions</th>
-          </tr>
-    
-          <%= render :partial => "leave_requests_to_check" if @leave_requests_to_check.size > 0 %>
-          <%= render :partial => "leave_requests_to_notice" if @leave_requests_to_notice.size > 0 %>
-          <%= render :partial => "leave_requests_to_close" if @leave_requests_to_close.size > 0 %>
-          <%= render :partial => "refused_by_me_leave_requests" if @refused_by_me_leave_requests.size > 0 %>          
-            
-        </table>
-      </div>
-  <% end %>
-    
-  <%= render :partial => "active_leave_requests" %>
-  <%= render :partial => "accepted_leave_requests" %>
-  <%= render :partial => "refused_leave_requests" %>
+  <%= render :partial => 'pending_leave_requests', :object => @pending_leave_requests unless @pending_leave_requests.empty? %>
+  <%= render :partial => 'in_progress_leave_requests' %>
+  <%= render :partial => 'accepted_leave_requests' %>
+  <%= render :partial => 'refused_leave_requests' %>
   
 <% else %>
-
-  <div>
-    <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
-  </div>
-
+  <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
 <% end %>
+
+</div>

@@ -5,7 +5,9 @@ class LeaveTest < ActiveSupport::TestCase
   def setup
     @good_leave = Leave.new(:start_date     => "2009-10-12".to_date,
                             :end_date       => "2009-10-18".to_date,
-                            :duration       => 7.0,
+                            :start_half     => true,
+                            :end_half       => true,
+                            :duration       => 6,
                             :employee_id    => Employee.first.id,
                             :leave_type_id  => LeaveType.first.id)
     flunk "good_leave is not valid #{@good_leave.errors.inspect}" unless @good_leave.save
@@ -26,7 +28,7 @@ class LeaveTest < ActiveSupport::TestCase
     
     @good_leave.cancelled = true
     @good_leave.valid?
-    assert @good_leave.errors.invalid?(:cancelled), "cancelled should NOT be valid because is it can't be modified while a normal edit"
+    assert @good_leave.errors.invalid?(:cancelled), "cancelled should NOT be valid because it can't be modified while a normal edit"
   end
   
   def test_persistence_of_employee_id
@@ -62,10 +64,10 @@ class LeaveTest < ActiveSupport::TestCase
     @leave.leave_type_id = 0
     @leave.valid?
     assert !@leave.errors.invalid?(:leave_type_id), "leave_type_id should be valid"
-    assert @leave.errors.invalid?(:leave_type), "leave_type_id should NOT be valid because employee_id is wrong"
+    assert @leave.errors.invalid?(:leave_type), "leave_type should NOT be valid because employee_id is wrong"
     
     assert !@good_leave.errors.invalid?(:leave_type_id), "leave_type_id should be valid"
-    assert !@good_leave.errors.invalid?(:leave_type), "leave_type_id should be valid"  
+    assert !@good_leave.errors.invalid?(:leave_type), "leave_type should be valid"  
   end
   
   def test_presence_of_employee
@@ -74,10 +76,10 @@ class LeaveTest < ActiveSupport::TestCase
     @leave.employee_id = 0
     @leave.valid?
     assert !@leave.errors.invalid?(:employee_id), "employee_id should be valid"
-    assert @leave.errors.invalid?(:employee), "employee_id should NOT be valid because employee_id is wrong"
+    assert @leave.errors.invalid?(:employee), "employee should NOT be valid because employee_id is wrong"
     
     assert !@good_leave.errors.invalid?(:employee_id), "employee_id should be valid"
-    assert !@good_leave.errors.invalid?(:employee), "employee_id should be valid"  
+    assert !@good_leave.errors.invalid?(:employee), "employee should be valid"  
   end
   
   def test_not_cancelled_at_creation
@@ -85,7 +87,7 @@ class LeaveTest < ActiveSupport::TestCase
     
     @leave.cancelled = true
     @leave.valid?
-    assert @leave.errors.invalid?(:cancelled), "cancelled should be NOT valid because it's cancelled is true for a new record"   
+    assert @leave.errors.invalid?(:cancelled), "cancelled should NOT be valid because cancelled is true for a new record"   
     @leave.cancelled = false
     @leave.valid?
     assert !@leave.errors.invalid?(:cancelled), "cancelled should be valid"
@@ -95,48 +97,53 @@ class LeaveTest < ActiveSupport::TestCase
     assert !@good_leave.errors.invalid?(:start_date), "start_date should be valid"
     assert !@good_leave.errors.invalid?(:end_date), "end_date should be valid"
     
-    @leave.start_date = @good_leave.end_date
-    @leave.end_date = @good_leave.start_date
+    @leave.start_date = Date.today
+    @leave.end_date = Date.yesterday
     @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid"
-    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid"
+    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because start_date > end_date"
+    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because start_date > end_date"
     
     @leave.end_date = @leave.start_date
     @leave.start_half = @leave.end_half = true
     @leave.valid?
-    assert @leave.errors.invalid?(:start_half), "date should NOT be valid"
-    assert @leave.errors.invalid?(:end_half), "date should NOT be valid"   
+    assert @leave.errors.invalid?(:start_half), "start_half should NOT be valid because start_half and end_half cannot be choosen at the same time for a leave on one day"
+    assert @leave.errors.invalid?(:end_half), "end_half should NOT be valid because start_half and end_half cannot be choosen at the same time for a leave on one day"
   end
   
   def test_not_overlay_with_other_leave
     @leave = Leave.new(@good_leave.attributes)
-    @leave.start_date = @good_leave.end_date + 4.day
-    @leave.end_date = @leave.start_date + 4.day
+    @leave.start_date = @good_leave.end_date + 4.days
+    @leave.end_date = @leave.start_date + 4.days
+    @leave.start_half = @leave.end_half = false
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
-    assert !@leave.errors.invalid?(:end_date), "start_date should be valid because leave period don't overlay good_leave one"
+    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
     
-    # start date si in another leave period
-    @leave.start_date = @good_leave.end_date - 2.day
+    # start date is in another leave period
+    @leave.start_date = @good_leave.end_date - 2.days
     @leave.valid?
     assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
+    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
     
     # start date is the same day that the end date of another leave, but not the same day half
     @leave.start_date = @good_leave.end_date
-    @leave.start_half = @good_leave.end_half = true
+    @leave.start_half = true
     @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
+    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one > #{@leave.formatted} > #{@leave.errors.inspect}"
+    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
     
     # end date is in another leave period
-    @leave.start_date = @good_leave.start_date - 2.day
-    @leave.end_date = @leave.start_date + 4.day
+    @leave.start_date = @good_leave.start_date - 2.days
+    @leave.end_date = @leave.start_date + 4.days
     @leave.valid?
-    assert @leave.errors.invalid?(:end_date), "start_date should NOT be valid because leave period overlay good_leave one"
+    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
+    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
     
     # end date is the same day that the start date of another leave, but not the same day half
     @leave.end_date = @good_leave.start_date
-    @leave.end_half = @good_leave.start_half = true
+    @leave.end_half = true
     @leave.valid?
+    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
     assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
   end
   
@@ -153,13 +160,18 @@ class LeaveTest < ActiveSupport::TestCase
     # this duration are based onto 2 weeks starting on "2009-10-12" and ending on "2009-10-25"
   
     workable_days = ConfigurationManager.admin_society_identity_configuration_workable_days = "123456".split("")
-    # bad date (periode)
-    @leave = @good_leave
-    @leave.end_date -= 20.days
-    assert_equal 0, @leave.total_estimate_duration, "total_estimate_duration should be 0 because end_date < start_date,  workable_days: #{workable_days.inspect}"
-    # one day
+    # when start_date > end_date
+    @leave.start_date = @good_leave.start_date
+    @leave.end_date = @leave.start_date - 2.days
+    assert_equal 0, @leave.total_estimate_duration, "total_estimate_duration should be 0 because end_date < start_date, workable_days: #{workable_days.inspect}"
+    
+    # when start_date == end_date
     @leave.end_date = @leave.start_date
-    assert_equal 1, @leave.total_estimate_duration, "total_estimate_duration Should be 1 because end_date == start_date,  workable_days: #{workable_days.inspect}"
+    assert_equal 1, @leave.total_estimate_duration, "total_estimate_duration should be 1 because end_date == start_date, workable_days: #{workable_days.inspect}"
+    
+    # when start_date < end_date
+    @leave.end_date = @leave.start_date + 1.days
+    assert_equal 2, @leave.total_estimate_duration, "total_estimate_duration should be 2 because start_date < end_date, workable_days: #{workable_days.inspect}"
   end
        
   def test_total_estimate_duration_with_3_successives_workable_days
@@ -190,7 +202,7 @@ class LeaveTest < ActiveSupport::TestCase
     @leave.start_date = "2009-4-13".to_date
     @leave.end_date = "2009-4-14".to_date
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
-    mess = " #{@leave.start_date} to #{@leave.end_date},start_half: #{@leave.start_half},end_half: #{@leave.end_half}"
+    mess = " #{@leave.start_date} to #{@leave.end_date}, start_half: #{@leave.start_half}, end_half: #{@leave.end_half}"
     wanted_duration = 2
     assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} :#{mess}"
     
@@ -204,9 +216,13 @@ class LeaveTest < ActiveSupport::TestCase
   end
   
   def test_total_estimate_duration_with_legal_holidays
+    # when there is no legal_holidays in the period
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
+    assert_equal 6, @good_leave.total_estimate_duration, "total_estimate_duration should be equal to 6 without legal_holidays"
+    
+    # when there are legal_holidays in the period
     ConfigurationManager.admin_society_identity_configuration_legal_holidays = ["10/14","10/17"]
-    assert_equal 5, @good_leave.total_estimate_duration, "total_estimate_duration should be 5 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
+    assert_equal 4, @good_leave.total_estimate_duration, "total_estimate_duration should be 4 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
   end
   
   def test_calendar_duration
@@ -240,14 +256,20 @@ class LeaveTest < ActiveSupport::TestCase
   
   def test_start_datetime
     @leave.start_date = Date.today
+    @leave.start_half = false
+    assert_equal Date.today.to_datetime, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime} if start_half is false"
+    
     @leave.start_half = true
-    assert_equal Date.today.to_datetime + 12.hours, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime + 12.hours} if start_half is true"
+    assert_equal Date.today.to_datetime + (12.hours + 1.minute), @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime + (12.hours + 1.minute)} if start_half is true"
   end
   
   def test_end_datetime
     @leave.end_date = Date.today
+    @leave.end_half = false
+    assert_equal Date.today.to_datetime + (23.hours + 59.minutes), @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + (23.hours + 59.minutes)} if end_half is false"
+    
     @leave.end_half = true
-    assert_equal Date.today.to_datetime - 12.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime - 12.hours} if end_half is true"
+    assert_equal Date.today.to_datetime + 12.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + 12.hours} if end_half is true"
   end
   
   def test_cancel
@@ -288,6 +310,6 @@ class LeaveTest < ActiveSupport::TestCase
       @leave.end_date = "2009-4-26".to_date      
       ConfigurationManager.admin_society_identity_configuration_workable_days = workable_days
       wanted_duration = workable_days.size*2
-      assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration Should be #{wanted_duration} : #{@leave.start_date} to #{@leave.end_date}, workable_days: #{workable_days.inspect} #{ConfigurationManager.admin_society_identity_configuration_workable_days.inspect}"
+      assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} : #{@leave.start_date} to #{@leave.end_date}, workable_days: #{workable_days.inspect} #{ConfigurationManager.admin_society_identity_configuration_workable_days.inspect}"
     end
 end

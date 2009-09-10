@@ -32,26 +32,6 @@ module LeaveRequestsHelper
     end
   end
   
-  def view_start_half(leave_request)
-    if leave_request.start_half
-      "après-midi" 
-    else
-      "matin"
-    end 
-  end
-  
-  def view_end_half(leave_request)
-    if leave_request.end_half
-      "matin" 
-    else
-      "après-midi"
-    end 
-  end
-  
-  def view_dates(leave_request)
-    "Du #{leave_request.start_date.strftime("%A %d %B %Y")} (#{view_start_half(leave_request)}) au #{leave_request.end_date.strftime("%A %d %B %Y")} (#{view_end_half(leave_request)})"
-  end
-  
   def view_responsible_agreement(leave_request)
     if leave_request.responsible_agreement
       "ACCORDÉ"
@@ -84,23 +64,34 @@ module LeaveRequestsHelper
   end
   
   def leave_request_check_form_link(leave_request)
-    text = "Agir sur la demande"
+    text = "Traiter la demande"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_check_form_path(leave_request))
   end
   
   def leave_request_notice_form_link(leave_request)
-    text = "Agir sur la demande"
+    text = "Traiter la demande"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_notice_form_path(leave_request))
   end
   
   def leave_request_close_form_link(leave_request)
-    text = "Agir sur la demande"
+    text = "Traiter la demande"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_close_form_path(leave_request))
   end  
   
-  def cancel_leave_request_link(leave_request,button) 
-    text = button ? "" : " Annuler la demande"
-    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
+  def cancel_leave_request_link(leave_request, button) 
+    text = "Annuler la demande"
+    link_text = button ? "" : " #{text}"
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
+  end
+  
+  def determine_action_for_pending_leave_request(leave_request)
+    if leave_request.submitted_or_refused_by_responsible?
+      leave_request_check_form_link(leave_request)
+    elsif leave_request.checked?
+      leave_request_notice_form_link(leave_request)
+    elsif leave_request.noticed_or_refused_by_director?
+      leave_request_close_form_link(leave_request)
+    end
   end
   
 end

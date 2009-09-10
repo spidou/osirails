@@ -11,8 +11,8 @@ class LeaveRequestTest < ActiveSupport::TestCase
     flunk "@superior should be valid to perform the following tests" unless @superior.valid?
     flunk "@leave_type should be valid to perform the following tests" unless @leave_type.valid?
     
-    @leave_request = LeaveRequest.new  
-    flunk "@leave_request should NOT be valid to perform the following tests" if @leave_request.valid?
+    @leave_request = LeaveRequest.new
+    @leave_request.valid?
   end
   
   def teardown
@@ -22,43 +22,54 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @superior = nil
     @leave_type = nil
   end
-
-  def test_dates_validity_when_step_check
-    prepare_to_check(@leave_request,true)
-    @leave_request.start_date = Date.today - 1
+  
+  def test_start_date_validity_at_creation
+    @leave_request.start_date = Date.today
+    @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    
+    @leave_request.start_date = Date.yesterday
     @leave_request.valid?
     assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
+  end
+
+  def test_start_date_validity_when_step_check
+    prepare_to_check(@leave_request,true)
     
     @leave_request.start_date = Date.today
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    
+    @leave_request.start_date = Date.yesterday
+    @leave_request.valid?
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
   end 
   
-  def test_dates_validity_when_step_notice
+  def test_start_date_validity_when_step_notice
     prepare_to_check(@leave_request,true)
     prepare_to_notice(@leave_request)
-    @leave_request.start_date = Date.today - 1
-    
-    @leave_request.valid?
-    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
     
     @leave_request.start_date = Date.today
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    
+    @leave_request.start_date = Date.yesterday
+    @leave_request.valid?
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
   end 
   
-  def test_dates_validity_when_step_close
+  def test_start_date_validity_when_step_close
     prepare_to_check(@leave_request,true)
     prepare_to_notice(@leave_request)
     prepare_to_close(@leave_request,true)
-    @leave_request.start_date = Date.today - 1
-    
-    @leave_request.valid?
-    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
     
     @leave_request.start_date = Date.today
     @leave_request.valid?
     assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    
+    @leave_request.start_date = Date.yesterday
+    @leave_request.valid?
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
   end 
   
   def test_presence_of_employee
@@ -115,72 +126,83 @@ class LeaveRequestTest < ActiveSupport::TestCase
   end
   
   def test_dates_coherence_order
+    # when start_date > end_date
     @leave_request.start_date = Date.today + 10
     @leave_request.end_date = @leave_request.start_date - 1
     @leave_request.valid?
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it's after end_date"
     assert @leave_request.errors.invalid?(:end_date), "end_date should NOT be valid because it's before start_date"
     
+    # when start_date == end_date
     @leave_request.end_date = @leave_request.start_date
     @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    assert !@leave_request.errors.invalid?(:end_date), "end_date should be valid"
+    
+    # when start_date < end_date
+    @leave_request.end_date = @leave_request.start_date + 1
+    @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
     assert !@leave_request.errors.invalid?(:end_date), "end_date should be valid"
   end
   
-  def test_dates_coherence_validity
-    @leave_request.start_date = Date.today
+  def test_same_dates_and_one_half_max
+    @leave_request.start_date = @leave_request.end_date = Date.today
+    @leave_request.start_half = @leave_request.end_half = true
     @leave_request.valid?
-    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
-    
-    @leave_request.start_date = Date.yesterday
-    @leave_request.valid?
-    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because it is before today"
-  end
-  
-  def test_same_dates_and_a_half_max
-    @leave_request.start_date = Date.today
-    @leave_request.start_half  = true
-    @leave_request.end_date = @leave_request.start_date
-    @leave_request.end_half = @leave_request.start_half
-    @leave_request.valid?
+    assert @leave_request.errors.invalid?(:start_half), "start_half should NOT be valid"
     assert @leave_request.errors.invalid?(:end_half), "end_half should NOT be valid"
     
     @leave_request.end_half = false
     @leave_request.valid?
+    assert !@leave_request.errors.invalid?(:start_half), "start_half should be valid"
     assert !@leave_request.errors.invalid?(:end_half), "end_half should be valid"
   end
   
   def test_unique_dates
+    # when leave_request overlays neither leave nor leave_request
     prepare_to_submit(@leave_request)
     @leave_request.valid?
-    assert !@leave_request.errors.invalid?(:start_date), "period should be valid"
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    assert !@leave_request.errors.invalid?(:end_date), "end_date should be valid"
     
-    @leave_request.start_date = Date.today + 16
-    @leave_request.end_date = Date.today + 16
-    @leave_request.start_half = false
-    @leave_request.end_half = false
+    # when leave_request overlays another existing leave_request
+    flunk "a leave_request should already exists at the given date to perform the following" unless LeaveRequest.first(:conditions => ["start_date = ?", Date.today + 16])
+    @leave_request.start_date = @leave_request.end_date = Date.today + 16
+    @leave_request.start_half = @leave_request.end_half = false
     @leave_request.valid?
-
-    assert @leave_request.errors.invalid?(:start_date), "period should NOT be valid"
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because another leave_request exists at the given date"
+    assert @leave_request.errors.invalid?(:end_date), "end_date should NOT be valid because another leave_request exists at the given date"
     
-    @leave_request.start_date = Date.today + 1
+    # when leave_request overlays an existing leave
+    flunk "a leave should already exists at the given date to perform the following" unless Leave.first(:conditions => ["start_date = ?", Date.today + 40])
+    @leave_request.start_date = Date.today + 40
     @leave_request.end_date = Date.today + 40
     @leave_request.start_half = false
     @leave_request.end_half = false
     @leave_request.valid?
-    assert @leave_request.errors.invalid?(:start_date), "period should NOT be valid"
+    assert @leave_request.errors.invalid?(:start_date), "start_date should NOT be valid because another leave exists at the given date"
+    assert @leave_request.errors.invalid?(:end_date), "end_date should NOT be valid because another leave exists at the given date"
     
+    # when leave_request overlays an existing leave_request, but not about half
+    flunk "a leave_request (with start_half = true) should already exists at the given date" unless LeaveRequest.first(:conditions => ["start_date = ? AND start_half = ?", Date.today + 16, true])
     @leave_request.start_date = Date.today + 16
     @leave_request.end_date = Date.today + 16
-    @leave_request.start_half = true
+    @leave_request.start_half = false
     @leave_request.end_half = true
     @leave_request.valid?
-    assert !@leave_request.errors.invalid?(:start_date), "period should be valid"
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    assert !@leave_request.errors.invalid?(:start_date), "end_date should be valid"
     
+    # when leave_request overlays an existing leave, but not about half
+    flunk "a leave (with start_half = true) should already exists at the given date" unless Leave.first(:conditions => ["start_date = ? AND end_half = ?", Date.today + 40, true])
     @leave_request.start_date = Date.today + 40
     @leave_request.end_date = Date.today + 40
     @leave_request.start_half = true
     @leave_request.end_half = false
     @leave_request.valid?
-    assert !@leave_request.errors.invalid?(:start_date), "period should be valid"    
+    assert !@leave_request.errors.invalid?(:start_date), "start_date should be valid"
+    assert !@leave_request.errors.invalid?(:end_date), "end_date should be valid"
   end
   
   def test_submit_leave_request
@@ -592,6 +614,14 @@ class LeaveRequestTest < ActiveSupport::TestCase
     assert @leave_request.cancelled?, "leave_request should be cancelled"
   end
   
+  def test_leave_requests_to_notice #named_scope
+    #TODO
+  end
+  
+  def test_leave_requests_to_close #named_scope
+    #TODO
+  end
+  
   private
   
     def prepare_to_submit(leave_request)
@@ -608,14 +638,14 @@ class LeaveRequestTest < ActiveSupport::TestCase
       leave_request.status = LeaveRequest::STATUS_SUBMITTED
       leave_request.responsible = @superior
       leave_request.responsible_agreement = true if agreement
-      leave_request.responsible_remarks = agreement ? "ok" : "Manque d'effectif"
+      leave_request.responsible_remarks = agreement ? "RAS" : "Manque d'effectif"
     end
     
     def prepare_to_notice(leave_request)
       leave_request.status = LeaveRequest::STATUS_CHECKED
       leave_request.observer = @superior
       leave_request.acquired_leaves_days = 15
-      leave_request.observer_remarks = "ok"
+      leave_request.observer_remarks = "RAS"
       leave_request.duration = 1
     end
     

@@ -15,15 +15,6 @@ module LeavesHelper
     html += "</select>"
   end
   
-  def get_effective_leave_periode(leave)
-    html = "du <strong>#{leave.start_date.strftime("%d %B %Y")}"
-    html += leave.start_half ? " (après-midi) " : " "
-    html += "</strong>"
-    html += "au <strong>#{leave.end_date.strftime("%d %B %Y")}"
-    html += leave.end_half ? " (matinée)" : " "
-    html += "</strong>"
-  end
-  
   def leaves_link(employee, cancelled = true)
     text = cancelled ? "Voir les congés annulés" : "Cacher les congés annulés"
     link_to(image_tag("/images/list_16x16.png", :alt => text, :title => text) + " #{text}", employee_leaves_path({:cancelled => cancelled}))

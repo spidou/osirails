@@ -40,24 +40,21 @@ class Employee < ActiveRecord::Base
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
-  has_many :leaves, :class_name => "Leave"
+  has_many :leaves, :order => "start_date DESC"
   has_many :future_leaves, :class_name => "Leave", :conditions => ["end_date >= ?", Date.today]
   has_many :checkings
-  has_many :active_leave_requests,      :class_name => "LeaveRequest",
-                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED,LeaveRequest::STATUS_CHECKED,LeaveRequest::STATUS_NOTICED]],
-                                        :order      => "start_date DESC"
-  has_many :accepted_leave_requests,    :class_name => "LeaveRequest",
-                                        :conditions => ["status = ?", LeaveRequest::STATUS_CLOSED],
-                                        :order      => "start_date DESC"
-  has_many :refused_leave_requests,     :class_name => "LeaveRequest",
-                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE,LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]],
-                                        :order      => "start_date DESC"
-  has_many :cancelled_leave_requests,   :class_name => "LeaveRequest",
-                                        :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
-                                        :order      => "start_date DESC"
   has_many :in_progress_leave_requests, :class_name => "LeaveRequest",
                                         :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED,LeaveRequest::STATUS_CHECKED,LeaveRequest::STATUS_NOTICED]],
-                                        :order      => "start_date DESC"
+                                        :order      => "noticed_at DESC, checked_at DESC, created_at DESC, start_date DESC"
+  has_many :accepted_leave_requests,    :class_name => "LeaveRequest",
+                                        :conditions => ["status = ?", LeaveRequest::STATUS_CLOSED],
+                                        :order      => "updated_at DESC, start_date DESC"
+  has_many :refused_leave_requests,     :class_name => "LeaveRequest",
+                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE,LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]],
+                                        :order      => "updated_at DESC, start_date DESC"
+  has_many :cancelled_leave_requests,   :class_name => "LeaveRequest",
+                                        :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
+                                        :order      => "cancelled_at DESC, start_date DESC"
   
   # Validates
   validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name

@@ -1,53 +1,10 @@
+<% leave_request = check_form %>
+
 <div class="presentation_medium">
-
-  <% leave_request = check_form %>
-
-  <% form_for(leave_request, :url => check_leave_request_path(leave_request)) do |f| %>
-    
-    <!--############## Leave informations  ##############-->
-   
-    <%= "<h2>Informations</h2>" %>
-    <p>
-      <%= f.label :status %>
-      <%= f.strong view_status(leave_request) %>
-    </p>
-    <% if leave_request.was_cancelled? %>
-      <p>
-        <%= f.label :cancelled_at %>
-        <%= f.strong leave_request.cancelled_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-      </p>
-    <% end %>
-    <p>
-      <%= f.label :employee %>
-      <%= link_to leave_request.employee.fullname, employee_path(leave_request.employee) %>
-      <%= f.label("Service")%>
-      <%= link_to leave_request.employee.service.name, service_path(leave_request.employee.service.id) %>    
-    </p>
-    <p>
-      <%= f.label :submitted_at %>
-      <%= f.strong leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %>
-    </p>
-    <p>
-      <%= f.label :period %>
-      <%= f.strong view_dates(leave_request) %>
-    </p>
-    
-    <p>
-      <%= f.label :leave_type %>
-      <%= f.strong leave_request.leave_type.name %>
-    </p>
-    <p>
-      <%= f.label :comment%>
-      <% if leave_request.comment.nil? or leave_request.comment == ""  %>
-        <%= f.strong "aucun" %>
-      <% else %>
-        <%= f.strong leave_request.comment %>
-      <% end %>
-    </p>
-     
-    <!--############## Responsible check ##############-->
+  <%= render :partial => leave_request %>
   
-    <%= "<h2>R&eacute;ponse du responsable</h2>"%>
+  <% form_for(leave_request, :url => check_leave_request_path(leave_request)) do |f| %>
+    <h2>R&eacute;ponse du responsable</h2>
     <%= f.error_messages %>
     <p>  
       <%= f.label :agreement_true %>
@@ -58,13 +15,10 @@
     <p>
       <%= f.label :responsible_remarks %>
       <%= f.text_area(:responsible_remarks, :rows => 5) %>
-      <!--## f.text_area_autoresize(:responsible_remarks, :rows => 2) ##--> 
     </p>
     <p>
-      <%= f.reset "Réinitialiser" %>  
+      <%= f.reset %>  
       <%= f.submit button_name %>
     </p>
-    
   <% end %>
-      
 </div>

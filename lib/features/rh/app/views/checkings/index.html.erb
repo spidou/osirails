@@ -1,9 +1,9 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_checking_link(:options => { :employee_id => @employee.id }) unless @subordinates.empty? %>
+  <%= new_checking_link(:link_text => "Nouveau pointage pour cet employé", :options => { :employee_id => @employee.id }) if @employee and !@subordinates.empty? %>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
-  <%= display_checkings_link(@employee.id) %>
+  <%= display_checkings_link(@employee.id) if @employee %>
 <% end %>
 
 <h1>Liste des pointages</h1>
