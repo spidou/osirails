@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :job_contract
+  helper :salaries, :job_contract, :documents
   before_filter :load_collections, :only => [:new, :create, :edit, :update, :show]  
   method_permission :list => ["show"]
   
@@ -11,6 +11,15 @@ class EmployeesController < ApplicationController
   # GET /employees/:id
   def show
     @employee = Employee.find params[:id]
+
+    url     = @employee.avatar.path(:thumb)
+    options = {:filename => @employee.avatar_file_name, :type => @employee.avatar_content_type, :disposition => 'inline'}
+    
+    respond_to do |format|
+      format.html
+      format.jpg { send_data(File.read(url), options) }
+      format.png { send_data(File.read(url), options) }
+    end
   end
 
   # GET /employees/new

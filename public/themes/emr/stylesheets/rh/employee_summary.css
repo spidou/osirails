@@ -1,0 +1,12 @@
+div #employee_avatar img {
+ border-style:dashed;
+ border-color:#989898;
+}
+
+#employee_avatar img {
+  border-top:1px;
+  border-left:1px;
+  border-bottom:1px;
+  border-right:1px;
+  padding:2px;
+}

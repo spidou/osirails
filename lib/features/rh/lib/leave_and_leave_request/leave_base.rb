@@ -29,11 +29,11 @@ module LeaveBase
   end
   
   def start_datetime
-    start_half ? start_date.to_datetime + (12.hours + 1.minute) : start_date.to_datetime
+    start_date.to_datetime + (start_half ? 12 : 0 ).hours
   end
   
   def end_datetime
-    end_half ? end_date.to_datetime + 12.hours : end_date.to_datetime + (23.hours + 59.minutes)
+    end_date.to_datetime + (end_half ? 12 : 24).hours
   end
   
   def two_half_for_same_date?
@@ -49,10 +49,14 @@ module LeaveBase
     end
   end
   
+  def strictly_include_in(start_period, end_period, period)
+    period > start_period and period < end_period
+  end
+  
   def conflicting_leaves(collection)
     if start_date_and_end_date and employee
-      collection.select{ |l| l.start_datetime.between?(self.start_datetime, self.end_datetime) or
-                             l.end_datetime.between?(self.start_datetime, self.end_datetime) }
+      collection.select{ |l| strictly_include_in(start_datetime, end_datetime, l.start_datetime) or
+                             strictly_include_in(start_datetime, end_datetime, l.end_datetime) }
     else
       return []
     end

@@ -112,15 +112,17 @@ class LeaveTest < ActiveSupport::TestCase
   
   def test_not_overlay_with_other_leave
     @leave = Leave.new(@good_leave.attributes)
-    @leave.start_date = @good_leave.end_date + 4.days
-    @leave.end_date = @leave.start_date + 4.days
+    @leave.start_date = @good_leave.end_date + 4.day
+    @leave.end_date = @leave.start_date + 4.day
     @leave.start_half = @leave.end_half = false
+    flunk 'good_leave should be valid' unless @good_leave.save
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
     assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
     
-    # start date is in another leave period
-    @leave.start_date = @good_leave.end_date - 2.days
+    # start date si in another leave period
+    @leave.start_date = @good_leave.end_date - 2.day
+    flunk 'good_leave should be valid' unless @good_leave.save
     @leave.valid?
     assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
     assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
@@ -128,6 +130,7 @@ class LeaveTest < ActiveSupport::TestCase
     # start date is the same day that the end date of another leave, but not the same day half
     @leave.start_date = @good_leave.end_date
     @leave.start_half = true
+    flunk 'good_leave should be valid' unless @good_leave.save
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one > #{@leave.formatted} > #{@leave.errors.inspect}"
     assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
@@ -135,6 +138,7 @@ class LeaveTest < ActiveSupport::TestCase
     # end date is in another leave period
     @leave.start_date = @good_leave.start_date - 2.days
     @leave.end_date = @leave.start_date + 4.days
+    flunk 'good_leave should be valid' unless @good_leave.save
     @leave.valid?
     assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
     assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
@@ -142,6 +146,7 @@ class LeaveTest < ActiveSupport::TestCase
     # end date is the same day that the start date of another leave, but not the same day half
     @leave.end_date = @good_leave.start_date
     @leave.end_half = true
+     flunk 'good_leave should be valid' unless @good_leave.save
     @leave.valid?
     assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
     assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
@@ -260,13 +265,13 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal Date.today.to_datetime, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime} if start_half is false"
     
     @leave.start_half = true
-    assert_equal Date.today.to_datetime + (12.hours + 1.minute), @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime + (12.hours + 1.minute)} if start_half is true"
+    assert_equal Date.today.to_datetime + 12.hours, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime + 12.hours} if start_half is true"
   end
   
   def test_end_datetime
     @leave.end_date = Date.today
     @leave.end_half = false
-    assert_equal Date.today.to_datetime + (23.hours + 59.minutes), @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + (23.hours + 59.minutes)} if end_half is false"
+    assert_equal Date.today.to_datetime + 24.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + 24.hours} if end_half is false"
     
     @leave.end_half = true
     assert_equal Date.today.to_datetime + 12.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + 12.hours} if end_half is true"
@@ -299,8 +304,34 @@ class LeaveTest < ActiveSupport::TestCase
     assert !@good_leave.can_be_cancelled?, "@good_leave should NOT be cancellable"
   end
   
-  def test_persistance_of_attributes_when_leave_is_cancelled
-    #TODO
+  def test_persistence_of_attributes_when_leave_is_cancelled
+    hash = {:start_date    => @good_leave.start_date - 1,
+            :end_date      => @good_leave.end_date + 1,
+            :start_half    => !@good_leave.start_half,
+            :end_half      => !@good_leave.end_half,
+            :leave_type_id => leave_types(:leave_type_to_test_edit).id,
+            :duration      => @good_leave.duration + 2}
+            
+    # good_leave is not cancelled
+    hash.each do |attribute, new_value|
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because is not modified"
+      
+      @good_leave.send("#{attribute.to_s}=", new_value)
+      @good_leave.valid?
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it can't be modified while a normal edit #{@good_leave.errors.inspect}"
+    end
+    
+    @good_leave.reload.cancel
+    # good_leave is cancelled
+    hash.each do |attribute, new_value|
+      @good_leave.reload.cancel
+      @good_leave.valid?
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because is not modified"
+      
+      @good_leave.send("#{attribute.to_s}=", new_value)
+      @good_leave.valid?
+      assert @good_leave.errors.invalid?(attribute), "#{attribute.to_s} should NOT be valid because it can't be modified if @good_leave is cancelled"
+    end
   end
   
   private

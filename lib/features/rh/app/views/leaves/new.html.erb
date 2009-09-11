@@ -8,4 +8,6 @@
 <% end %>
 
 <h1>Ajouter un cong&eacute;</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 <%= render :partial => "leave", :locals => {:button_name => "Ajouter"}%>

@@ -316,6 +316,27 @@ namespace :osirails do
       d = DocumentType.find_or_create_by_name("logo")
       d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("driving_licence")
+      d.update_attribute(:title, "Permis de conduire")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("identity_card")
+      d.update_attribute(:title, "Pièce d'indentitée")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("other")
+      d.update_attribute(:title, "Autre")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("job_contract")
+      d.update_attribute(:title, "Contrat de travail")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("job_contract_endorsement")
+      d.update_attribute(:title, "Avenant au contrat de travail")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("resignation_letter")
+      d.update_attribute(:title, "lettre de licenciement")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("demission_letter")
+      d.update_attribute(:title, "lettre de démission")
+      d.mime_types << [ pdf, jpg, png ]
       
       ## default file types
       # for feature

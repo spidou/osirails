@@ -1,6 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
-  
+  has_documents :driving_licence, :identity_card, :other
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
@@ -20,8 +20,13 @@ class Employee < ActiveRecord::Base
   @@form_labels[:email]                   = "Email personnel :"
   @@form_labels[:society_email]           = "Email professionnel :"
   @@form_labels[:service]                 = "Service :"
+  @@form_labels[:avatar]                  = "Photo :"
   
-  
+  has_attached_file :avatar, 
+                    :styles => { :thumb => "100x100#" },
+                    :path => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :url => "/employees/:id.:extension",
+                    :default_url => "#{$CURRENT_THEME_PATH}/images/default_avatar.png"
   # Relationships
 # TODO Add a role to the user when create an employee => for permissions 
 
@@ -70,6 +75,12 @@ class Employee < ActiveRecord::Base
   
   validate :validates_responsible_job_limit
   
+  # papercilp plugin validations
+  with_options :if => :avatar do |v|
+    v.validates_attachment_content_type :avatar, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
+    v.validates_attachment_size         :avatar, :less_than => 2.megabytes
+  end
+   
   # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment

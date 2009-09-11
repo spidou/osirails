@@ -1,4 +1,5 @@
 class JobContractController < ApplicationController
+  helper :employees, :documents
   
   # GET /employees/:employee_id/job_contract
   def show

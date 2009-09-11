@@ -1,32 +1,53 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
+<% end %>
+
 <div class="presentation_medium">
 <% form_for(@employee, :html => {:multipart => true}) do |f| %>
   <%= f.error_messages %> 
   <h2>Fiche d&apos;identité</h2>
-  <p>
-    <%= f.label :civility %>
-    <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
-  </p>
-  <p>
-    <%= f.label :first_name %>
-    <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
-  </p>
-  <p>
-    <%= f.label :last_name %>
-    <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
-  </p>
-  <p>
-    <%= f.label :birth_date %>
-    <%= f.form_or_view(f.date_select( :birth_date,{ :start_year => 1900, :order => [:day,:month,:year] }),:birth_date)%>
-  </p>
-  <p>
-    <%= f.label :family_situation %>
-    <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
-  </p>
-  <p>
-    <%= f.label 'social_security_number' %>
-    <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
-  </p>
+  <div class="presentation_in_columns">
+    <% if !is_form_view? %>
+      <div id="employee_avatar">
+        <%= image_tag @employee.avatar.url %>
+      </div>
+    <% end %>
 
+    <div>
+      <p>
+        <%= f.label :civility %>
+        <%= f.form_or_view(collection_select(:employee, :civility_id, Civility.find(:all), :id, :name), :civility, :name)%>  
+      </p>
+      <p>
+        <%= f.label :first_name %>
+        <%= f.form_or_view(f.text_field( :first_name), :first_name) %>
+      </p>
+      <p>
+        <%= f.label :last_name %>
+        <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
+      </p>
+    </div>
+    <div>
+      <p>
+        <%= f.label :birth_date %>
+        <%= f.form_or_view(f.date_select( :birth_date,{ :start_year => 1900, :order => [:day,:month,:year] }),:birth_date)%>
+      </p>
+      <p>
+        <%= f.label :family_situation %>
+        <%= f.form_or_view(collection_select(:employee, :family_situation_id, FamilySituation.find(:all), :id, :name), :family_situation, :name)%>
+      </p>
+      <p>
+        <%= f.label 'social_security_number' %>
+        <%= f.form_or_view( display_social_security(@employee.nil? ? nil : @employee[:social_security_number]),:social_security_number) %>
+      </p>
+      <p>
+        <% if is_form_view? %>
+          <%= f.label :avatar%>
+          <%= f.file_field(:avatar)%>
+        <% end %>
+      </p>
+    </div>
+  </div>
 <!--############## Address ##############-->
   <h2>Coordonn&eacute;es</h2>
   <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %>
@@ -48,7 +69,7 @@
   <% end %>
   <%="<p>#{label_tag( "Entreprise :" )} #{strong(@employee.intranet_email)}</p>" if !is_form_view?%>
 
-<!--############## Numbers #############-->
+<!--########### Numbers #################-->
   <h3>Num&eacute;ro de t&eacute;l&eacute;phone</h3>
   <div id="numbers">    
     <%= render :partial => 'numbers/number', :collection => @employee.numbers , :locals => { :number_owner => @employee }%>
@@ -70,7 +91,7 @@
     <%= render(:partial => 'job_contract/job_contract', :object => @employee.job_contract) unless is_form_view? %> 
   <% end %>
 
-<!--############## Premia ##############-->
+<!--########## Premia ##################-->
   <%= display %>
   <% if Premium.can_view?(current_user) or @employee.user.id == current_user.id %>
     <% if !is_form_view? %>    
@@ -81,6 +102,13 @@
   <% end %>
 
 <!--###### Documents div #######-->
+  <h2>Documents</h2>
+  <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
+  <% unless @employee.new_record? %>
+    <%= display_documents_list(@employee) %>
+    <%= display_document_add_button(@employee) if is_form_view? %>
+  <% end %>
+  
   <% if is_form_view? %>
     <p><%= f.submit button_name  %></p>
   <% end %>

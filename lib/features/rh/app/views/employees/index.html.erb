@@ -20,7 +20,7 @@
   </tr>
 
 <% for employee in @employees %>
-  <tr>
+  <tr class="<%= Employee.actives.include?(employee) ? '' : 'disabled' %>">
     <td><%=h employee.first_name %></td>
     <td><%=h employee.last_name %></td>
     <td><%= link_to employee.service.name, service_path(employee.service)%></td>

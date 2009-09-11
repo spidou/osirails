@@ -21,7 +21,7 @@ module LeavesHelper
   end
   
   def cancel_image
-    image_tag("/images/delete_16x16.png", :alt => "Annuler ce congé", :title => "Annuler ce congé")
+    image_tag("/themes/emr/images/cancel_16x16.png", :alt => "Annuler ce congé", :title => "Annuler ce congé")
   end
   
   def cancel_employee_leave_link(employee, leave)

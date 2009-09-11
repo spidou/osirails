@@ -10,6 +10,9 @@
 <% end %>
 
 <h1>Modifier un contrat de travail</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
 <div class="presentation_medium">
   <%= render :partial => 'job_contract/job_contract', :object => @job_contract%>
 </div>

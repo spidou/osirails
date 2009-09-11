@@ -1,24 +1,6 @@
 <% form_for(job_contract, :url => employee_job_contract_path(@employee), :html => {:multipart => true}) do |form| %>
   <%= form.error_messages %>
 
-  <% if is_form_view?%>
-    <h2>Informations de l&apos;employé</h2>
-    <% fields_for "employee", job_contract.employee do |f| %>
-      <p>
-        <%= f.label :civility %>
-        <%= f.strong :civility, :name %>
-      </p>
-      <p>
-        <%= f.label :first_name %>
-        <%= f.strong :first_name %>
-      </p>
-      <p>
-        <%= f.label :last_name %>
-        <%= f.strong :last_name %>
-      </p>
-    <% end %>
-  <% end %>
-
   <h2>Informations du contrat de travail</h2>
   
   <p>
@@ -27,11 +9,11 @@
   </p>
   <p>
     <%= form.label :start_date %>
-    <%= form.form_or_view(form.date_select( :start_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => is_gone?(job_contract)), :start_date) %>
+    <%= form.form_or_view(form.date_select( :start_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => is_gone?(job_contract)), :start_date) %>
   </p>
   <p>
     <%= form.label :end_date %>
-    <%= form.form_or_view(form.date_select( :end_date, :start_year => 1950, :order => [:day,:month,:year], :disabled => (job_contract.end_date.nil? or is_gone?(job_contract) or job_contract.job_contract_type.limited==false)), :end_date) %> 
+    <%= form.form_or_view(form.date_select( :end_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => (job_contract.end_date.nil? or is_gone?(job_contract) or job_contract.job_contract_type.limited==false)), :end_date) %> 
   </p>
   <p>
     <%= form.label :employee_state_id %>
@@ -59,6 +41,12 @@
     </p>
   </div>
 
+  <h2>Documents du contrat de travail</h2>
+  <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
+  <% unless job_contract.new_record? %>
+    <%= display_documents_list(job_contract) %>
+    <%= display_document_add_button(job_contract) if is_form_view? %>
+  <% end %>
   
   <% if is_form_view? %>
     <p><%= form.submit "Modifier" %></p>

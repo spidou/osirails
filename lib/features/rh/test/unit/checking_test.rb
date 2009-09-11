@@ -174,7 +174,7 @@ class CheckingTest < ActiveSupport::TestCase
     
     # same date but change the employee
     @checking.attributes = checkings(:good_checking).attributes
-    @checking.employee = employees(:another_employee)
+    @checking.employee = employees(:james_doe)
     @checking.valid?
     assert !@checking.errors.invalid?(:date), "date should be valid"
     assert !@checking.errors.invalid?(:employee_id), "employee_id should be valid"

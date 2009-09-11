@@ -69,6 +69,6 @@ class Leave < ActiveRecord::Base
     end
     
     def validates_unique_dates
-      check_unique_dates(conflicting_leaves(employee.future_leaves)) if employee
+      check_unique_dates(conflicting_leaves(employee.leaves.reject{|n| n.id == id or n.end_date <= start_date})) if employee
     end
 end

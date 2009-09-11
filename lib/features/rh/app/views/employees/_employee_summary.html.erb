@@ -1,0 +1,38 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
+<% end %>
+
+<div class="presentation_in_columns">
+
+  <div id="employee_avatar">
+    <%= image_tag employee.avatar.url %>
+  </div>
+  
+  <div>
+    <p>
+      <label>Identit&eacute; :</label>
+      <%=strong "#{employee.civility.name.capitalize} #{employee.fullname}"%>
+    </p>
+    <p>
+      <label>Service :</label>
+      <%=strong employee.service.name.capitalize%>
+    </p>
+    <p>
+      <label>Anciennet&eacute; :</label>
+      <%=strong display_employee_seniority(employee.job_contract.start_date)%>
+    </p>
+  </div>
+  
+  <div>
+    <p>
+      <label>Email :</label>
+      <%=strong employee.intranet_email%>
+    </p>
+    <p>
+      <label>T&eacute;l&eacute;phone :</label>
+      <%= display_full_phone_number(employee.numbers.visibles.first)%>
+    </p>
+  </div>
+  
+  
+</div>

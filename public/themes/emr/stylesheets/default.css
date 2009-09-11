@@ -952,6 +952,22 @@ table.presentation tr:hover > td{
 	background: none;
 }
 
+/*::::::::::Presentation in columns::::::::::::*/
+
+.presentation_in_columns {
+  padding:15px;
+}
+
+.presentation_in_columns > div {
+  display:inline-block;
+  max-width:800px;
+  min-width:100px;
+  vertical-align: top;
+}
+.presentation_in_columns > div label {
+	width:150px;
+}
+
 /*::::::::::::TABLE "COMMODITY"::::::::::::*/
 table.commodity {
 	font-weight:lighter;

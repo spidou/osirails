@@ -1,5 +1,6 @@
 class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
+  has_documents :job_contract, :job_contract_endorsement, :resignation_letter, :demission_letter, :other
   
   # Relationships
   belongs_to :employee

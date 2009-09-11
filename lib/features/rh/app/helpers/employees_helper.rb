@@ -30,8 +30,6 @@ module EmployeesHelper
   def remove_old_number_link()
     link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
   end
-
-
  
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
@@ -45,6 +43,40 @@ module EmployeesHelper
   end
   
   #########################################################################################
+  
+  # Methode to get a number without images but with all informations
+  def display_full_phone_number(number)
+#   "(+#{number.indicative.country.code}) #{number.indicative.indicative} #{number.number}"
+    html = display_image(flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name)
+	  html += display_image(number_type_path( number.number_type.name ), number.number_type.name)
+	  html += strong("#{number.indicative.indicative} #{number.formatted}")
+	  html
+  end
+  
+  def display_employee_seniority(hire_date)
+    return "contrat de travail non établis" if hire_date.nil?
+    day    = (Date.today - hire_date).to_i
+    year   = day/365.25                # 1.year/60/60/24 == 365.25
+    month  = day/30                    # 1.month/60/60/24 == 30
+    result = ''
+    
+    if year > 1
+      month  = (year - year.floor)*12
+      year   = year.floor
+      ytext  = year>1? 'ans' : 'an'
+      result += "#{year} #{ytext} " unless year == 0
+    end
+    result += "et " if result != ''
+    if month > 1
+      month = month.floor
+      result += "#{month} mois " unless month == 0
+    end
+    
+#    day = day - year*365.25 - month*30
+    
+    result += "moins d'un mois" if result == ''
+    result
+  end
   
   # Method to verify if the params[:employee] and his attributes are null #OPTIMIZE the name and the method (services don't use it anymore)
   def is_in?(object, collection, attribute = nil, employee = nil)
@@ -76,7 +108,7 @@ module EmployeesHelper
   
   # Method that return an array of visible numbers
   def visibles_numbers(numbers)
-    numbers.select {|number|  number.visible}
+    numbers.visibles
   end
   
   # Method that add the title to the phone number td
