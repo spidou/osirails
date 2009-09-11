@@ -42,11 +42,8 @@
   </div>
 
   <h2>Documents du contrat de travail</h2>
-  <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
-  <% unless job_contract.new_record? %>
     <%= display_documents_list(job_contract) %>
     <%= display_document_add_button(job_contract) if is_form_view? %>
-  <% end %>
   
   <% if is_form_view? %>
     <p><%= form.submit "Modifier" %></p>

@@ -103,11 +103,8 @@
 
 <!--###### Documents div #######-->
   <h2>Documents</h2>
-  <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
-  <% unless @employee.new_record? %>
     <%= display_documents_list(@employee) %>
     <%= display_document_add_button(@employee) if is_form_view? %>
-  <% end %>
   
   <% if is_form_view? %>
     <p><%= f.submit button_name  %></p>
