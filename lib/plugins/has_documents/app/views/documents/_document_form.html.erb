@@ -1,7 +1,5 @@
 <% require_locals documents_owner %>
-
-<% documents_owner = documents_owner.constantize %>
-<% owner_type = documents_owner.name.tableize.singularize #TODO use singularized_table_name %>
+<% owner_type = documents_owner.class.name.underscore %>
 
 <% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
 
