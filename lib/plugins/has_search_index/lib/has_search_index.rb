@@ -454,7 +454,7 @@ module HasSearchIndex
         when 'integer'
           return params['value'].to_i
         else
-          return params['value'] unless params['value'].nil?
+          return params['value'].strip unless params['value'].nil?
       end
     end
 
@@ -648,8 +648,8 @@ module HasSearchIndex
         model = self
         return self.to_s if relationship == self.table_name
         path.gsub("#{self.table_name}.","").split(".").each do |e|
-            return model.association_list[e.to_sym][:class_name] if e == relationship
-            model = model.association_list[e.to_sym][:class_name].constantize
+          return model.association_list[e.to_sym][:class_name] if e == relationship
+          model = model.association_list[e.to_sym][:class_name].constantize
         end
       end
   end

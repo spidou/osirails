@@ -58,8 +58,9 @@ module SearchIndexesHelper
       html += "<tr>"
       # direct attributes
       direct_attributes.each do |attribute|
+        keywords = retrieve_matching_keywords(params, attribute)
         data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html += "<td>#{data || "-"}</td>" 
+        html += "<td>" + ( highlight(data.to_s, keywords) || '-' ) + "</td>"
       end
       # nested_attributes
       nested_attributes.sort.each do |attribute|
@@ -71,7 +72,8 @@ module SearchIndexesHelper
             nested_data = "-"
           end
         end
-        html += "<td>#{nested_data || '-'}</td>"
+        keywords = retrieve_matching_keywords(params, attribute.join("."))
+        html += "<td>" + ( highlight(nested_data.to_s, keywords) || '-' ) + "</td>"
       end
       html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
       html += "</tr>"
@@ -79,13 +81,22 @@ module SearchIndexesHelper
     return html
   end
   
+  # get values for each criterion for the given attribute
+  def retrieve_matching_keywords(options, attribute = nil)
+    if options[:contextual_search]
+      options[:contextual_search][:value].to_s
+    else
+      options[:criteria].select{ |k,v| v['attribute'].downcase == attribute.to_s.downcase }.collect{ |k,v| v['value'] }.compact
+    end
+  end
+  
   def format_date(result)
     if result.class == ActiveSupport::TimeWithZone
-      return result.strftime("%d %b %Y at %H:%M")
+      return result.strftime("%d %B %Y at %H:%M")
     elsif result.class == Date
-      return result.strftime("%d %b %Y")
+      return result.strftime("%d %B %Y")
     elsif result.class == DateTime
-      return result.strftime("%d %b %Y at %H:%M")
+      return result.strftime("%d %B %Y at %H:%M")
     elsif result.class == Time
       return result.strftime("%H:%M")
     else

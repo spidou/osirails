@@ -34,9 +34,8 @@ class Employee < ActiveRecord::Base
   has_many :numbers, :as => :has_number
   has_many :premia, :order => "created_at DESC"
   
-#  has_many :employees_services
-#  has_many :services, :through => :employees_services
-  has_and_belongs_to_many :services
+  has_many :employees_services
+  has_many :services, :through => :employees_services
   
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
@@ -59,7 +58,7 @@ class Employee < ActiveRecord::Base
   # Search Plugin 
   has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
                     :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
-#                    :except_relationships => [:services],
+                    :except_relationships => [:employees_services],
                     :main_model           => true
   
   # Method to change the case of the first_name and the last_name at the employee's creation

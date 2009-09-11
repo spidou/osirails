@@ -1,20 +1,19 @@
 <%= display_flash %>
 <%# "<fieldset>Command : <strong>#{@query}</strong></fieldset> " %>
-<% unless @collection.empty? %>
+
+<% unless @items.empty? %>
   <% nested_columns = generate_nested_resources_hash(@nested_attributes)%>
-  <h3>R&eacute;sultats <%= @collection.index(@paginate_collection.first)+1%>-<%= @collection.index(@paginate_collection.last)+1%> sur <%=@collection.size%></h3>
+  <h3><%= page_entries_info @items %></h3>
   <table>
     <%= generate_table_headers(@direct_attributes, nested_columns) %>
-    <%= generate_results_table_cells(@paginate_collection, @direct_attributes, nested_columns) %>
+    <%= generate_results_table_cells(@items, @direct_attributes, nested_columns) %>
   </table>
   <p>
-  <%= will_paginate @paginate_collection ,
+  <%= will_paginate @items ,
                     :renderer               => 'RemoteLinkRenderer',
                     :method_for_remote_link => :post,
                     :params                 => @params,
-                    :remote                 => {:update => @class_to_update},
-                    :prev_label             => " << pr&eacute;c&eacute;dent",
-                    :next_label             => "suivant >>" %>
+                    :remote                 => { :update => @class_to_update } %>
   </p>
 <% else %>
   <p><strong>Aucun résultat </strong></p>

@@ -15,7 +15,7 @@
         <p><strong>Auteur :</strong> <%=@author.employee.nil? ? @author.username : @author.employee.fullname unless @author.nil?%></p>
         <p><strong>Contributeur :</strong> <%= contributor_full_name(content_version) unless content_version.contributor.nil? or content_version.contributor == "" %></p>
       </fieldset>
-      <%= will_paginate @content_versions, :param_name => :version, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+      <%= will_paginate @content_versions, :param_name => :version %>
     </div>
   </div>
 <%end%>

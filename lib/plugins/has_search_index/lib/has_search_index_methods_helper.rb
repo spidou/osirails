@@ -11,7 +11,7 @@ module HasSearchIndexMethodsHelper
   # == Return    : Hash (criteria) like {"name" => {:value => "toto", :action => "like"}, :search_type => 'or'}
   #
   def prepare_criteria_for_contextual_search(params)
-    searched_value = params[:contextual_search][:value]
+    searched_value = params[:contextual_search][:value].strip
     errors         = manage_contextual_search_errors(params)
     criteria       = {:search_type => 'or'}
     
@@ -94,6 +94,7 @@ module HasSearchIndexMethodsHelper
   # Method to call the search plugin
   #
   def search(model, criteria)
+    # criteria.each{ |key,value| criteria[key] = value.split(" ") }
     unless model.nil?
       return model.search_with(criteria)  # if criteria is nil search_with return all records like model.all
     else

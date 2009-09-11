@@ -833,13 +833,13 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 .flash_container div.flash_error {
 	background-image: url("/images/cross_16x16.png");
 	color: red;
-	-moz-box-shadow: inset 0 0 8px rgba(255,0,0,0.8);
+	-moz-box-shadow: inset 0 0 4px rgba(255,0,0,0.8);
 }
 
 .flash_container div.flash_notice {
 	background-image: url("/images/tick_16x16.png");
 	color: green;
-	-moz-box-shadow: inset 0 0 8px rgba(0,255,0,0.8);
+	-moz-box-shadow: inset 0 0 4px rgba(0,255,0,0.8);
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\

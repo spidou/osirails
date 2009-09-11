@@ -38,11 +38,9 @@ class SearchIndexesController < ApplicationController
       @class_to_update = 'search_result'
       criteria = prepare_criteria_for_search(params)
     end
-     
-#    @query = "#{@model.to_s}.search_with(#{criteria.inspect})" 
-    @collection = search(model, criteria)
     
-    @paginate_collection = @collection.paginate :page => params[:page], :per_page => 15
+#    @query = "#{@model.to_s}.search_with(#{criteria.inspect})"
+    @items = search(model, criteria).paginate(:page => params[:page], :per_page => 10)
     
     respond_to do |format|
       format.js   {render :action => "result", :layout => false}
