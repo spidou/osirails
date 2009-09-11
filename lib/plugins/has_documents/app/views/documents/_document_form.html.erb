@@ -1,5 +1,5 @@
 <% require_locals documents_owner %>
-<% owner_type = documents_owner.downcase %>
+<% owner_type = documents_owner.underscore %>
 
 <% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
 
