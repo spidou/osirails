@@ -9,30 +9,34 @@
 <h1>Tous les employ&eacute;es</h1>
 
 <div class="presentation_medium">
-<table>
-  <tr>
-    <th>Pr&eacute;nom</th>
-    <th>Nom</th>
-    <th>Service</th>
-    <th>T&eacute;l&eacute;phone</th>
-    <th>Fonction</th>
-    <th>Actions</th>
-  </tr>
+<% if @employees.empty?%>
+  <p>Aucun employé</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Pr&eacute;nom</th>
+      <th>Nom</th>
+      <th>Service</th>
+      <th>T&eacute;l&eacute;phone</th>
+      <th>Fonction</th>
+      <th>Actions</th>
+    </tr>
 
-<% for employee in @employees %>
-  <tr class="<%= Employee.actives.include?(employee) ? '' : 'disabled' %>">
-    <td><%=h employee.first_name %></td>
-    <td><%=h employee.last_name %></td>
-    <td><%= link_to employee.service.name, service_path(employee.service)%></td>
-    <%= number_td(employee.numbers)%>
-      <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
-    </td>
-    <td><%=h employee.intranet_email %></td>
-    <td>
-      <%= employee_link(employee, :link_text => "") %>
-      <%= edit_employee_link(employee,:link_text => "") %>
-    </td>
-  </tr>
+  <% for employee in @employees %>
+    <tr class="<%= Employee.actives.include?(employee) ? '' : 'disabled' %>">
+      <td><%=h employee.first_name %></td>
+      <td><%=h employee.last_name %></td>
+      <td><%= link_to employee.service.name, service_path(employee.service)%></td>
+      <%= number_td(employee.numbers)%>
+        <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
+      </td>
+      <td><%=h employee.intranet_email %></td>
+      <td>
+        <%= employee_link(employee, :link_text => "") %>
+        <%= edit_employee_link(employee,:link_text => "") %>
+      </td>
+    </tr>
+  <% end %>
+  </table>
 <% end %>
-</table>
 </div>

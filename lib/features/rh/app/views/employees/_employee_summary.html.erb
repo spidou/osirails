@@ -11,11 +11,11 @@
   <div>
     <p>
       <label>Identit&eacute; :</label>
-      <%=strong "#{employee.civility.name.capitalize} #{employee.fullname}"%>
+      <%= employee_link(employee, :link_text => strong("#{employee.civility.name.capitalize} #{employee.fullname}"), :image_tag => nil) %>
     </p>
     <p>
       <label>Service :</label>
-      <%=strong employee.service.name.capitalize%>
+      <%= service_link(employee.service, :link_text => strong(employee.service.name.capitalize), :image_tag => nil) %>
     </p>
     <p>
       <label>Anciennet&eacute; :</label>
