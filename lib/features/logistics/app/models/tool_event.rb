@@ -28,9 +28,9 @@ class ToolEvent < ActiveRecord::Base
   validates_inclusion_of :status,            :in => [AVAILABLE, UNAVAILABLE, SCRAPPED], :if => Proc.new {|n| n.event_type == INCIDENT}
   validates_inclusion_of :status,            :in => [AVAILABLE, UNAVAILABLE],           :if => Proc.new {|n| n.event_type == INTERVENTION}
  
-  validates_presence_of :start_date, :name, :comment, :tool_id
+  validates_presence_of :start_date, :name, :comment, :tool_id, :internal_actor_id
   validates_presence_of :tool,               :if => :tool_id
-  validates_presence_of :internal_actor,     :if => :internal_actor_id,                 :message => "doit être un employé valide"
+  validates_presence_of :internal_actor,     :if => :internal_actor_id
   validates_presence_of :end_date,           :if => Proc.new {|n| n.event_type == INTERVENTION}
   
   validates_persistence_of :event_type,      :unless => Proc.new {|n| n.new_record?}

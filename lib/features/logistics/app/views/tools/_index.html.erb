@@ -5,17 +5,17 @@
 <% else %>
   <table>
     <tr>
-      <th>Nom</th><th>Service</th>
-      <th>Employé</th><th>Poste</th>
-      <th>Fournisseur</th><th>Actions</th>
+      <th>Status</th><th>Nom</th>
+      <th>Service</th><th>Poste</th>
+      <th>Employé</th><th>Actions</th>
     <tr>
   <% for tool in tools %>
     <tr>
+      <td><%= get_status_image(tool.status)%></td>
       <td><%= tool.name %></td>
       <td><%= link_to_service(tool.service)%></td>
-      <td><%= link_to_employee(tool.employee)%></td>
       <td><%= link_to_job(tool.job)%></td> 
-      <td><%= link_to_supplier(tool.supplier)%></td>
+      <td><%= link_to_employee(tool.employee)%></td>    
       <td><%= links_to_actions(tool) %></td>
     </tr>
   <% end %>

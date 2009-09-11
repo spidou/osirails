@@ -7,6 +7,7 @@
   <% tool_class = tool.class.to_s.tableize.singularize %>
   <%= send("new_#{tool_class}_tool_event_link", tool) %>
   <%= send("edit_#{tool_class}_tool_event_link", tool, tool_event) %>
+  <%= send("#{tool_class}_tool_events_link", tool)%>
   <%= send("#{tool_class}_link", tool) %>
   <%= send("#{tool_class}s_link") %>
 <% end %>
@@ -33,14 +34,14 @@
     <p>
       <%= f.label :status %>
       <% if is_form_view? %>
-        <%= f.select :status, ToolEvent::STATUS_TEXT.invert.sort %>
+        <%= f.select :status, ToolEvent::STATUS_TEXT.invert.sort , {:prompt => 'Aucun'}%>
       <% else %>
         <%= strong get_status_text(tool_event.status) %>
       <% end %>
     </p>
     <p>
       <%= f.label :internal_actor_id %>
-      <%= f.form_or_view f.collection_select(:internal_actor_id, Employee.all, :id, :fullname, {:prompt => "Aucun"}), :internal_actor, :fullname %>
+      <%= f.form_or_view f.collection_select(:internal_actor_id, Employee.all, :id, :fullname, {:prompt => 'Aucun'}), :internal_actor, :fullname %>
     </p>
     
     <p>
@@ -77,11 +78,9 @@
     </div>
     
     <h2>Documents</h2>
-    <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
-    <% unless tool_event.new_record? %>
       <%= display_documents_list(tool_event) %>
       <%= display_document_add_button(tool_event) if is_form_view? %>
-    <% end %>
+
     <p>
       <%= f.submit(button_name) if is_form_view? %>
     </p>

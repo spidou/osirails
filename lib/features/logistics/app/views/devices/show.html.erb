@@ -1,6 +1,7 @@
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= devices_link %>
+  <%= new_device_link %>
   <%= edit_device_link @device %>
+  <%= devices_link %>
   <%= new_device_tool_event_link(@device)%>
   <%= device_tool_events_link(@device) %>
 <% end %>

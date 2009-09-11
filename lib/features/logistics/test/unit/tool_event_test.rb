@@ -108,7 +108,7 @@ class ToolEventTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_internal_actor
-    assert !@tool_event.errors.invalid?(:internal_actor_id), "internal_actor_id should be valid because nil is allowed"
+    assert @tool_event.errors.invalid?(:internal_actor_id), "internal_actor_id should NOT be valid because it's nil"
     
     @tool_event.internal_actor_id = 0
     @tool_event.valid?

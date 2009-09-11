@@ -42,32 +42,28 @@
     
     <p>
       <%= f.label :service_id %>
-      <%= f.form_or_view f.collection_select(:service_id, Service.all, :id, :name, {:prompt => 'Aucun'}), :service, :name %>
+      <%= is_form_view? ?  f.collection_select(:service_id, Service.all, :id, :name, {:prompt => 'Aucun'}) : link_to_service(tool.service) %>
     </p>
     
     <p>
       <%= f.label :job_id %>
-      <%= f.form_or_view f.collection_select(:job_id, Job.all, :id, :name, {:prompt => 'Aucun'}), :job, :name %>
+      <%= is_form_view? ? f.collection_select(:job_id, Job.all, :id, :name, {:prompt => 'Aucun'}) :  link_to_job(tool.job)%>
     </p>
     
     <p>
       <%= f.label :employee_id %>
-      <%= f.form_or_view f.collection_select(:employee_id, Employee.all, :id, :fullname, {:prompt => 'Aucun'}), :employee, :fullname%>
+      <%= is_form_view? ?  f.collection_select(:employee_id, Employee.all, :id, :fullname, {:prompt => 'Aucun'}) : link_to_employee(tool.employee)%>
     </p>
     
     <p>
       <%= f.label :supplier_id %>
-      <%= f.form_or_view f.collection_select(:supplier_id, Supplier.all, :id, :name, {:prompt => 'Aucun'}), :supplier, :name %>
+      <%= is_form_view? ?  f.collection_select(:supplier_id, Supplier.all, :id, :name, {:prompt => 'Aucun'}) : link_to_supplier(tool.supplier)%>
     </p>
     
     <h2>Documents</h2>
-    <!-FIXME enlever le blocage des documents pour le new quand le bug sera réglé ->
-    <% unless tool.new_record? %>
       <%= display_documents_list(tool) %>
       <%= display_document_add_button(tool) if is_form_view? %>
-    <% end %>
-
-    
+ 
     <p>
       <%= f.submit button_name if is_form_view? %>
     </p>
@@ -75,10 +71,15 @@
 
   
   <% unless is_form_view? %>
-    <%= "<h2>Les &eacute;v&egrave;nements</h2>" unless @effectives_events.empty? and @scheduled_events.empty? %>
-    <% link = send("#{tool.class.to_s.tableize.singularize}_tool_events_link", tool) %>
-       
-    <%= display_events('<h3>Les 3 derni&egrave;res</h3>', @effectives_events, tool, link) %>
-    <%= display_events('<h3>Les 3 prochaines</h3>', @scheduled_events, tool, link) %>
+    <h2>Les &eacute;v&egrave;nements</h2>
+    
+    <% if @effectives_events.empty? and @scheduled_events.empty? %>
+      <p>Aucun &eacute;v&egrave;nement</p>
+    <% else%>
+      <% link = send("#{tool.class.to_s.tableize.singularize}_tool_events_link", tool) %>
+         
+      <%= display_events('<h3>Les 3 derni&egrave;rs</h3>', @effectives_events, tool, link) %>
+      <%= display_events('<h3>Les 3 prochains</h3>', @scheduled_events, tool, link) %>
+    <% end %>
   <% end %>
 </div>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090826054708) do
+ActiveRecord::Schema.define(:version => 20090910052321) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -42,8 +42,33 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
     t.datetime "updated_at"
   end
 
+  create_table "business_object_permissions", :force => true do |t|
+    t.integer  "role_id",            :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "business_object_id", :limit => 11
+  end
+
+  create_table "business_object_permissions_permission_methods", :force => true do |t|
+    t.integer "business_object_permission_id", :limit => 11
+    t.integer "permission_method_id",          :limit => 11
+    t.boolean "active"
+  end
+
   create_table "business_objects", :force => true do |t|
     t.string "name"
+  end
+
+  create_table "calendar_permissions", :force => true do |t|
+    t.boolean  "list"
+    t.boolean  "view"
+    t.boolean  "add"
+    t.boolean  "edit"
+    t.boolean  "delete"
+    t.integer  "role_id",     :limit => 11
+    t.integer  "calendar_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "calendars", :force => true do |t|
@@ -51,6 +76,21 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
     t.string   "name"
     t.string   "color"
     t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "checkings", :force => true do |t|
+    t.integer  "user_id",          :limit => 11
+    t.integer  "employee_id",      :limit => 11
+    t.date     "date"
+    t.integer  "absence_hours",    :limit => 11
+    t.integer  "absence_minutes",  :limit => 11
+    t.text     "absence_comment"
+    t.integer  "overtime_hours",   :limit => 11
+    t.integer  "overtime_minutes", :limit => 11
+    t.text     "overtime_comment"
+    t.boolean  "cancelled"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -202,6 +242,18 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
   create_table "countries", :force => true do |t|
     t.string "name"
     t.string "code"
+  end
+
+  create_table "document_type_permissions", :force => true do |t|
+    t.boolean  "list"
+    t.boolean  "view"
+    t.boolean  "add"
+    t.boolean  "edit"
+    t.boolean  "delete"
+    t.integer  "role_id",          :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "document_type_id", :limit => 11
   end
 
   create_table "document_types", :force => true do |t|
@@ -420,6 +472,54 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
     t.text     "goal"
   end
 
+  create_table "leave_requests", :force => true do |t|
+    t.integer  "status",                :limit => 11
+    t.integer  "leave_type_id",         :limit => 11
+    t.integer  "cancelled_by",          :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "checked_at"
+    t.datetime "noticed_at"
+    t.datetime "ended_at"
+    t.datetime "cancelled_at"
+    t.boolean  "start_half"
+    t.boolean  "end_half"
+    t.boolean  "responsible_agreement"
+    t.boolean  "director_agreement"
+    t.text     "comment"
+    t.text     "responsible_remarks"
+    t.text     "observer_remarks"
+    t.text     "director_remarks"
+    t.float    "acquired_leaves_days"
+    t.integer  "employee_id",           :limit => 11
+    t.integer  "responsible_id",        :limit => 11
+    t.integer  "observer_id",           :limit => 11
+    t.integer  "director_id",           :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "duration"
+  end
+
+  create_table "leave_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "leaves", :force => true do |t|
+    t.integer  "employee_id",      :limit => 11
+    t.date     "start_date"
+    t.date     "end_date"
+    t.boolean  "start_half"
+    t.boolean  "end_half"
+    t.boolean  "cancelled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "leave_type_id",    :limit => 11
+    t.float    "duration"
+    t.integer  "leave_request_id", :limit => 11
+  end
+
   create_table "legal_forms", :force => true do |t|
     t.string   "name"
     t.integer  "third_type_id", :limit => 11
@@ -441,6 +541,18 @@ ActiveRecord::Schema.define(:version => 20090826054708) do
     t.integer  "service_id",    :limit => 11
     t.integer  "memorandum_id", :limit => 11
     t.boolean  "recursive",                   :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "menu_permissions", :force => true do |t|
+    t.boolean  "list"
+    t.boolean  "view"
+    t.boolean  "add"
+    t.boolean  "edit"
+    t.boolean  "delete"
+    t.integer  "role_id",    :limit => 11
+    t.integer  "menu_id",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

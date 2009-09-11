@@ -3,11 +3,21 @@ require 'test/test_helper'
 class AlarmTest < ActiveSupport::TestCase
   fixtures :alarms, :events
 
-  def test_presence_of_event_id
-    assert_no_difference 'Alarm.count' do
-      alarm = Alarm.create
-      assert_not_nil alarm.errors.on(:event_id), "An Alarm should have an event id"
-    end
+  def setup
+    @alarm = Alarm.new
+    @alarm.valid?
+  end
+  
+  def teardown
+    @alarm = nil
+  end
+  
+  def test_presence_of_event
+    assert @alarm.errors.invalid?(:event), "event should NOT be valid because it's nil"
+    
+    @alarm.event = events(:normal)
+    @alarm.valid?
+     assert !@alarm.errors.invalid?(:event), "event should be valid"
   end
 
   def test_belongs_to_event
@@ -28,7 +38,7 @@ class AlarmTest < ActiveSupport::TestCase
     assert_equal alarm.humanize_delay[:unit], 'hour', "with 720 unit should be 'hour'"
     
     alarm.do_alarm_before = 1.5*60*60 # 1h30min
-    assert_equal alarm.humanize_delay[:value], 1, "with #{1.5*60*60}s value should be 90"
+    assert_equal alarm.humanize_delay[:value], 90, "with #{1.5*60*60}s value should be 90"
     assert_equal alarm.humanize_delay[:unit], 'minute', "with 720 unit should be 'minute'"
     
     alarm.do_alarm_before = 2*60*60*24 # 2j
