@@ -19,7 +19,7 @@
   
   <% if is_form_view? -%>
     <div class="form">
-      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => document.has_document } %>
+      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => document.has_document_type } %>
     </div>
   <% end -%>
 </div>

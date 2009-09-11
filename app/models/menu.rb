@@ -1,5 +1,5 @@
 class Menu < ActiveRecord::Base
-  has_permissions :instance_methods => [ :access ]
+  has_permissions :as_instance, :instance_methods => [ :access ]
   has_permissions :as_business_object
   setup_has_permissions_model
   
