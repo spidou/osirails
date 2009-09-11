@@ -1,4 +1,5 @@
-<% owner_type = documents_owner.class.name.downcase %>
+<% require_locals documents_owner %>
+<% owner_type = documents_owner.downcase %>
 
 <% fields_for "#{owner_type}[document_attributes][]", document = document_form do |form| %>
 
@@ -22,7 +23,7 @@
     </p>
     <p>
       <%= form.label :document_type_id, :index => nil %>
-      <%= form.form_or_view(form.collection_select(:document_type_id, documents_owner.class.available_document_types, :id, :title, {}, :index => nil), :file_type, :name ) %>
+      <%= form.form_or_view(form.collection_select(:document_type_id, documents_owner.constantize.available_document_types, :id, :title, {}, :index => nil), :file_type, :name ) %>
     </p>
     <p>
       <%= form.label :attachment, :index => nil %>
