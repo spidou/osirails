@@ -41,8 +41,6 @@ module SocietyIdentityConfigurationHelper
   end
   
   def society_identity_configuration_link(text="")
-    if controller.can_view?(current_user)
-      link_to( image_tag("/images/view_16x16.png", :alt => "Voir", :title => "Voir") + " #{text}", society_identity_configuration_path )
-    end
+    link_to( image_tag("/images/view_16x16.png", :alt => "Voir", :title => "Voir") + " #{text}", society_identity_configuration_path )
   end
 end
