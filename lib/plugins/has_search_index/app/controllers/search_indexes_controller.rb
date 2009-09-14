@@ -1,6 +1,5 @@
 class SearchIndexesController < ApplicationController
   include HasSearchIndexMethodsHelper
-  has_permissions
   
   # GET /index
   def index
