@@ -6,7 +6,7 @@ end
 
 Document.documents_owners.each do |owner|
   ActionController::Routing::Routes.add_routes do |map|
-    owner_name = owner.name.tableize.singularize
-    map.resources "#{owner_name}_documents".to_sym
+    owner_name = owner.name.underscore
+    map.resources "#{owner_name}_documents".to_sym, :controller => "documents"
   end
 end

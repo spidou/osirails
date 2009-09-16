@@ -1,3 +1,5 @@
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :calendar => "Calendrier" })
+
 require_dependency 'user'
 require_dependency 'role'
 

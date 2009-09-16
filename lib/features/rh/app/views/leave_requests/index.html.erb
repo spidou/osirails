@@ -2,11 +2,11 @@
 
 <div>
 <% if @employee %>
-  <% contextual_menu POSSIBLE_ACTIONS do %>
+  <% add_contextual_menu_item :possible_actions do %>
     <%= new_leave_request_link %>
   <% end %>
   
-  <% contextual_menu USEFUL_LINKS do %>
+  <% add_contextual_menu_item :useful_links do %>
     <%= accepted_leave_requests_link %>
     <%= refused_leave_requests_link %>
     <%= cancelled_leave_requests_link %>

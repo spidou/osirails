@@ -2,11 +2,7 @@ parent:
   name: Parent Service
 child:
   name: Child Service
-
 direction_general:
-  name: direction
-
+  name: Direction Générale
 administration:
-  name: administration
-  
-  
+  name: Administration

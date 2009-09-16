@@ -24,20 +24,12 @@ module LeaveBase
     total
   end
   
-  def start_date_and_end_date
-    start_date and end_date
-  end
-  
   def start_datetime
     start_date.to_datetime + (start_half ? 12 : 0 ).hours
   end
   
   def end_datetime
     end_date.to_datetime + (end_half ? 12 : 24).hours
-  end
-  
-  def two_half_for_same_date?
-    start_half and end_half and start_date == end_date
   end
   
   def formatted
@@ -49,20 +41,30 @@ module LeaveBase
     end
   end
   
-  def strictly_include_in(start_period, end_period, period)
-    period > start_period and period < end_period
+  def conflicting_leaves(collection)
+    return [] unless start_date_and_end_date and employee
+    collection.select{ |l| start_datetime == l.start_datetime or  end_datetime == l.end_datetime or
+                           (start_datetime < l.start_datetime and end_datetime > l.start_datetime) or
+                           (start_datetime < l.end_datetime   and end_datetime > l.end_datetime) or
+                           (start_datetime > l.start_datetime and end_datetime < l.end_datetime) or
+                           (start_datetime < l.start_datetime and end_datetime > l.end_datetime) }
   end
   
-  def conflicting_leaves(collection)
-    if start_date_and_end_date and employee
-      collection.select{ |l| strictly_include_in(start_datetime, end_datetime, l.start_datetime) or
-                             strictly_include_in(start_datetime, end_datetime, l.end_datetime) }
-    else
-      return []
-    end
+  def future_leaves
+    return [] unless start_date and employee
+    employee.leaves.reject{ |n| n.id == id or n.end_date < start_date }
   end
   
   private
+    
+    def start_date_and_end_date
+      start_date and end_date
+    end
+    
+    def two_half_for_same_date?
+      start_half and end_half and start_date == end_date
+    end
+    
     def formatted_start_half
       start_half ? " (après-midi)" : ""
     end

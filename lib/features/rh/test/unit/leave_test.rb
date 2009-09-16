@@ -1,21 +1,30 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/leave_base_test'
+require File.dirname(__FILE__) + '/leave_validations_test'
 
 class LeaveTest < ActiveSupport::TestCase
+  include LeaveBaseTest
+  include LeaveValidationsTest
   
   def setup
+    @employee = employees(:trish_doe)
+    @leave_type = leave_types(:good_leave_type)
+    
     @good_leave = Leave.new(:start_date     => "2009-10-12".to_date,
                             :end_date       => "2009-10-18".to_date,
                             :start_half     => true,
                             :end_half       => true,
                             :duration       => 6,
-                            :employee_id    => Employee.first.id,
-                            :leave_type_id  => LeaveType.first.id)
+                            :employee_id    => @employee.id,
+                            :leave_type_id  => @leave_type.id)
     flunk "good_leave is not valid #{@good_leave.errors.inspect}" unless @good_leave.save
     
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.month).strftime("%m/%d")
     
     @leave = Leave.new
     @leave.valid?
+    
+    setup_leaves
   end
   
   def teardown
@@ -91,65 +100,6 @@ class LeaveTest < ActiveSupport::TestCase
     @leave.cancelled = false
     @leave.valid?
     assert !@leave.errors.invalid?(:cancelled), "cancelled should be valid"
-  end
-
-  def test_date_is_correct
-    assert !@good_leave.errors.invalid?(:start_date), "start_date should be valid"
-    assert !@good_leave.errors.invalid?(:end_date), "end_date should be valid"
-    
-    @leave.start_date = Date.today
-    @leave.end_date = Date.yesterday
-    @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because start_date > end_date"
-    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because start_date > end_date"
-    
-    @leave.end_date = @leave.start_date
-    @leave.start_half = @leave.end_half = true
-    @leave.valid?
-    assert @leave.errors.invalid?(:start_half), "start_half should NOT be valid because start_half and end_half cannot be choosen at the same time for a leave on one day"
-    assert @leave.errors.invalid?(:end_half), "end_half should NOT be valid because start_half and end_half cannot be choosen at the same time for a leave on one day"
-  end
-  
-  def test_not_overlay_with_other_leave
-    @leave = Leave.new(@good_leave.attributes)
-    @leave.start_date = @good_leave.end_date + 4.day
-    @leave.end_date = @leave.start_date + 4.day
-    @leave.start_half = @leave.end_half = false
-    flunk 'good_leave should be valid' unless @good_leave.save
-    @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
-    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
-    
-    # start date si in another leave period
-    @leave.start_date = @good_leave.end_date - 2.day
-    flunk 'good_leave should be valid' unless @good_leave.save
-    @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
-    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
-    
-    # start date is the same day that the end date of another leave, but not the same day half
-    @leave.start_date = @good_leave.end_date
-    @leave.start_half = true
-    flunk 'good_leave should be valid' unless @good_leave.save
-    @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one > #{@leave.formatted} > #{@leave.errors.inspect}"
-    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
-    
-    # end date is in another leave period
-    @leave.start_date = @good_leave.start_date - 2.days
-    @leave.end_date = @leave.start_date + 4.days
-    flunk 'good_leave should be valid' unless @good_leave.save
-    @leave.valid?
-    assert @leave.errors.invalid?(:start_date), "start_date should NOT be valid because leave period overlay good_leave one"
-    assert @leave.errors.invalid?(:end_date), "end_date should NOT be valid because leave period overlay good_leave one"
-    
-    # end date is the same day that the start date of another leave, but not the same day half
-    @leave.end_date = @good_leave.start_date
-    @leave.end_half = true
-     flunk 'good_leave should be valid' unless @good_leave.save
-    @leave.valid?
-    assert !@leave.errors.invalid?(:start_date), "start_date should be valid because leave period don't overlay good_leave one"
-    assert !@leave.errors.invalid?(:end_date), "end_date should be valid because leave period don't overlay good_leave one"
   end
   
   def test_total_estimate_duration_without_in_parameters
@@ -230,53 +180,6 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal 4, @good_leave.total_estimate_duration, "total_estimate_duration should be 4 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
   end
   
-  def test_calendar_duration
-    # when start_date == nil and end_date == nil
-    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
-    
-    # when start_date or end_date == nil
-    @leave.start_date = Date.today
-    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
-    
-    # when start_date == end_date
-    @leave.end_date = @leave.start_date
-    assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
-    
-    # when start_date > end_date
-    @leave.end_date = Date.today - 1.day
-    assert_equal 0, @leave.calendar_duration, "calendar_duration should be equal to 0"
-    
-    # when start_date < end_date
-    @leave.end_date = Date.today + 1.day
-    assert_equal 2, @leave.calendar_duration, "calendar_duration should be equal to 2"
-    
-    # with start_half
-    @leave.start_half = true
-    assert_equal 1.5, @leave.calendar_duration, "calendar_duration should be equal to 1.5"
-    
-    # with end_half
-    @leave.end_half = true
-    assert_equal 1, @leave.calendar_duration, "calendar_duration should be equal to 1"
-  end
-  
-  def test_start_datetime
-    @leave.start_date = Date.today
-    @leave.start_half = false
-    assert_equal Date.today.to_datetime, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime} if start_half is false"
-    
-    @leave.start_half = true
-    assert_equal Date.today.to_datetime + 12.hours, @leave.start_datetime, "start_datetime should be equal to #{Date.today.to_datetime + 12.hours} if start_half is true"
-  end
-  
-  def test_end_datetime
-    @leave.end_date = Date.today
-    @leave.end_half = false
-    assert_equal Date.today.to_datetime + 24.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + 24.hours} if end_half is false"
-    
-    @leave.end_half = true
-    assert_equal Date.today.to_datetime + 12.hours, @leave.end_datetime, "end_datetime should be equal to #{Date.today.to_datetime + 12.hours} if end_half is true"
-  end
-  
   def test_cancel
     assert_equal true, @good_leave.cancel, "@good_leave should be valid "
     
@@ -304,33 +207,35 @@ class LeaveTest < ActiveSupport::TestCase
     assert !@good_leave.can_be_cancelled?, "@good_leave should NOT be cancellable"
   end
   
-  def test_persistence_of_attributes_when_leave_is_cancelled
-    hash = {:start_date    => @good_leave.start_date - 1,
-            :end_date      => @good_leave.end_date + 1,
+  def test_persistence_of_attributes
+    hash = {:start_date    => @good_leave.start_date + 1,
+            :end_date      => @good_leave.end_date + 2,
             :start_half    => !@good_leave.start_half,
             :end_half      => !@good_leave.end_half,
             :leave_type_id => leave_types(:leave_type_to_test_edit).id,
-            :duration      => @good_leave.duration + 2}
+            :duration      => @good_leave.duration + 1}
             
-    # good_leave is not cancelled
+    # when leave IS NOT cancelled
     hash.each do |attribute, new_value|
-      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because is not modified"
+      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}' to perform the following" if @good_leave.send(attribute) == new_value
+      
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it's not modified"
       
       @good_leave.send("#{attribute.to_s}=", new_value)
       @good_leave.valid?
-      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it can't be modified while a normal edit #{@good_leave.errors.inspect}"
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because a leave can be modified if it's not cancelled"
     end
     
-    @good_leave.reload.cancel
-    # good_leave is cancelled
+    # when leave IS cancelled
+    flunk "@good_leave should be cancelled to perform the following" unless @good_leave.reload.cancel
     hash.each do |attribute, new_value|
-      @good_leave.reload.cancel
-      @good_leave.valid?
-      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because is not modified"
+      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}' to perform the following" if @good_leave.send(attribute) == new_value
+      
+      assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it's not modified"
       
       @good_leave.send("#{attribute.to_s}=", new_value)
       @good_leave.valid?
-      assert @good_leave.errors.invalid?(attribute), "#{attribute.to_s} should NOT be valid because it can't be modified if @good_leave is cancelled"
+      assert @good_leave.errors.invalid?(attribute), "#{attribute.to_s} should NOT be valid because a leave can't modified if it's cancelled"
     end
   end
   

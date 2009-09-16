@@ -1,9 +1,9 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
 	<%= new_memorandum_link %>
 	<%= edit_memorandum_link(@sended_memorandum) unless @sended_memorandum.published? %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
 	<%= memorandums_link(:link_text => "List all sended memorandums") %> 
 <% end %>
 

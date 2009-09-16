@@ -1,10 +1,10 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_employee_leave_link(@employee) %>
   <%= new_leave_request_link %>
   <%= employee_link(@employee) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= leave_requests_link(:link_text => "Voir mes demandes de congés") if @employee == current_user.employee %>
   <%= leaves_link(@employee, !@view_cancelled)%>
   <%= employees_link %>

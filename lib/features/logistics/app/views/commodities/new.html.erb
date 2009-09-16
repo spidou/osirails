@@ -1,9 +1,9 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_commodity_category_link%>
   <%= new_commodity_link %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= commodity_categories_link %>
   <%= inventories_link %>
   <%= inventory_link(@inventory) unless @inventory.nil? %>

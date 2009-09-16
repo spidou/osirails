@@ -1,8 +1,8 @@
 <% leave_request = close_form %>
 
+<%= render :partial => leave_request %>
+
 <div class="presentation_medium">
-  <%= render :partial => leave_request %>
-  
   <% form_for(leave_request, :url => close_leave_request_path(leave_request)) do |f| %>
     <h2>R&eacute;ponse de la direction</h2>
     <%= f.error_messages %>

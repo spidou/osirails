@@ -1,4 +1,4 @@
-<% contextual_menu USEFUL_LINKS do%>
+<% add_contextual_menu_item :useful_links do %>
 	<%= leave_requests_link %>
 	<%= employee_leaves_link(current_user.employee, :link_text => "Voir mes congés") if current_user.employee %>
 <% end %>

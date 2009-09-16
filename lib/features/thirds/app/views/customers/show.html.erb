@@ -1,10 +1,12 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% contextual_search_for_customer %>
+
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_customer_link %>
   <%= edit_customer_link(@customer)%>
   <%= delete_customer_link(@customer)%>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= customers_link %>
 <% end %>
 

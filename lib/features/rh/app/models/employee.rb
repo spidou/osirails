@@ -1,22 +1,24 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
-  has_documents :driving_licence, :identity_card, :other
+  
+  has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
+  
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
   # Accessors
-  cattr_accessor :pattern_error,:form_labels
+  cattr_accessor :pattern_error, :form_labels
   @@pattern_error = false
-
+  
   @@form_labels = Hash.new
-  @@form_labels[:civility]                = "Civilit&eacute; :"
+  @@form_labels[:civility]                = "Civilité :"
   @@form_labels[:last_name]               = "Nom :"
-  @@form_labels[:first_name]              = "Pr&eacute;nom :"
+  @@form_labels[:first_name]              = "Prénom :"
   @@form_labels[:birth_date]              = "Date de naissance :"
   @@form_labels[:family_situation]        = "Situation familiale :"
-  @@form_labels[:social_security_number]  = "N&deg; s&eacute;curit&eacute; sociale :"
+  @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
   @@form_labels[:email]                   = "Email personnel :"
   @@form_labels[:society_email]           = "Email professionnel :"
   @@form_labels[:service]                 = "Service :"
@@ -27,9 +29,8 @@ class Employee < ActiveRecord::Base
                     :path => ":rails_root/assets/employees/:id/avatar/:style.:extension",
                     :url => "/employees/:id.:extension",
                     :default_url => "#{$CURRENT_THEME_PATH}/images/default_avatar.png"
+  
   # Relationships
-# TODO Add a role to the user when create an employee => for permissions 
-
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
@@ -38,31 +39,31 @@ class Employee < ActiveRecord::Base
   has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
-
+  
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
   has_many :numbers, :as => :has_number
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
-  has_many :leaves, :order => "start_date DESC"
-  has_many :future_leaves, :class_name => "Leave", :conditions => ["end_date >= ?", Date.today]
   has_many :checkings
+  has_many :leaves, :class_name => "Leave", :order => "start_date DESC"
+  has_many :leave_requests
   has_many :in_progress_leave_requests, :class_name => "LeaveRequest",
-                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED,LeaveRequest::STATUS_CHECKED,LeaveRequest::STATUS_NOTICED]],
+                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED, LeaveRequest::STATUS_CHECKED, LeaveRequest::STATUS_NOTICED]],
                                         :order      => "noticed_at DESC, checked_at DESC, created_at DESC, start_date DESC"
   has_many :accepted_leave_requests,    :class_name => "LeaveRequest",
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CLOSED],
                                         :order      => "updated_at DESC, start_date DESC"
   has_many :refused_leave_requests,     :class_name => "LeaveRequest",
-                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE,LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]],
+                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]],
                                         :order      => "updated_at DESC, start_date DESC"
   has_many :cancelled_leave_requests,   :class_name => "LeaveRequest",
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
                                         :order      => "cancelled_at DESC, start_date DESC"
   
-  # Validates
-  validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
+  validates_presence_of :last_name, :first_name
+  validates_presence_of :family_situation_id, :civility_id, :service_id
   validates_presence_of :family_situation,     :if => :family_situation_id
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
@@ -71,16 +72,20 @@ class Employee < ActiveRecord::Base
   validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings #, :services, :jobs
+  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings
   
   validate :validates_responsible_job_limit
+  
+  has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
+                    :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
+                    :main_model           => true
   
   # papercilp plugin validations
   with_options :if => :avatar do |v|
     v.validates_attachment_content_type :avatar, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
-   
+  
   # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment
@@ -147,12 +152,16 @@ class Employee < ActiveRecord::Base
   
   # Method to get leave requests that he has to check, as responsible
   def get_leave_requests_to_check
-    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)", LeaveRequest::STATUS_SUBMITTED, self.self_and_subordinates], :order => "start_date DESC" )
+    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)",
+                                            LeaveRequest::STATUS_SUBMITTED, self.subordinates],
+                            :order      => "start_date DESC")
   end
   
   # Method to get leave requests that he refused, as responsible or director
   def get_leave_requests_refused_by_me
-    LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?", LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, self.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, self.id, Date.today], :order => "start_date DESC" )    
+    LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?",
+                                            LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, self.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, self.id, Date.today],
+                            :order      => "start_date DESC")
   end
   
   # Method to get all services that he is responsible of
@@ -170,6 +179,7 @@ class Employee < ActiveRecord::Base
   # Method to get all subordinates of the employee according to the services that he is responsible of, and himself
   #
   def self_and_subordinates
+    #OPTIMIZE that method using collect
     result = []
     services_under_responsibility.each {|service| result += service.members }
     result.uniq
@@ -178,7 +188,7 @@ class Employee < ActiveRecord::Base
   # Method that return the employee's responsibles according to his service
   #
   def responsibles
-    service.responsibles unless service.nil?
+    service.nil? ? [] : service.responsibles
   end
   
   # Method that get the leave start date year to know if it's the current year or it's the past year
@@ -254,7 +264,7 @@ class Employee < ActiveRecord::Base
     # prepare val to be split with "|"
     val = val.gsub(/\[/,"|")
     val = val.gsub(/\]/,"|")
-    # split val to can separate each part of val into a tab
+    # split val to be able to separate each part of val into a tab
     val = val.split("|")
     
     for i in (1...val.size) do

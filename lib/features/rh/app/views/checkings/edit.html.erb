@@ -1,8 +1,8 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_checking_link unless @subordinates.empty?%>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= display_checkings_link(true) %>
   <%= employees_link %>
 <% end %>

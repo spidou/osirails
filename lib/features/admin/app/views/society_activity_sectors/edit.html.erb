@@ -1,9 +1,9 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_society_activity_sector_link %>
 	<%= delete_society_activity_sector_link(@society_activity_sector)%>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
 	<%= society_activity_sectors_link %>
 <% end %>
 

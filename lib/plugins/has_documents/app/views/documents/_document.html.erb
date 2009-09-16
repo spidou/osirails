@@ -1,5 +1,6 @@
 <% id_attr = "id=\"document_#{document.id}\"" unless document.new_record? %>
-<% style_attr = 'style="display:none"' if document.new_record? and document.errors.empty? %>
+<%# style_attr = 'style="display:none"' if document.new_record? and document.errors.empty? %>
+<% style_attr = '' %>
 
 <div class="document" <%= id_attr %> <%= style_attr %> >
   <% unless document.new_record? -%>
@@ -19,7 +20,7 @@
   
   <% if is_form_view? -%>
     <div class="form">
-      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => document.has_document_type } %>
+      <%= render :partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner } %>
     </div>
   <% end -%>
 </div>

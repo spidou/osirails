@@ -36,13 +36,13 @@ class LeaveRequest < ActiveRecord::Base
   
   LEAVE_REQUESTS_PER_PAGE = 15
   
-  STATUS_CANCELLED = 0
-  STATUS_SUBMITTED = 1
-  STATUS_CHECKED = 2
+  STATUS_CANCELLED              = 0
+  STATUS_SUBMITTED              = 1
+  STATUS_CHECKED                = 2
   STATUS_REFUSED_BY_RESPONSIBLE = -2
-  STATUS_NOTICED = 3
-  STATUS_CLOSED = 4
-  STATUS_REFUSED_BY_DIRECTOR = -4
+  STATUS_NOTICED                = 3
+  STATUS_CLOSED                 = 4
+  STATUS_REFUSED_BY_DIRECTOR    = -4
   
   named_scope :leave_requests_to_notice,  :conditions => ["status = ?", LeaveRequest::STATUS_CHECKED],
                                           :order => "start_date DESC"
@@ -91,6 +91,11 @@ class LeaveRequest < ActiveRecord::Base
   
   validates_presence_of :responsible_remarks, :if => :validates_responsible_remarks
   validates_presence_of :director_remarks,    :if => :validates_director_remarks
+  validates_presence_of :status
+  
+  validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_SUBMITTED, STATUS_CHECKED,
+                                           STATUS_REFUSED_BY_RESPONSIBLE, STATUS_NOTICED,
+                                           STATUS_CLOSED, STATUS_REFUSED_BY_DIRECTOR ], :if => :status
   
   validates_persistence_of :employee, :employee_id, :start_date, :end_date, :leave_type_id, :start_half, :end_half, :comment, :if => :higher_than_step_submit?
   validates_persistence_of :responsible, :responsible_id, :checked_at, :responsible_agreement, :responsible_remarks,          :if => :higher_than_step_check?
@@ -110,7 +115,7 @@ class LeaveRequest < ActiveRecord::Base
   end
   
   def validates_unique_dates
-    check_unique_dates(conflicting_leaves(employee.future_leaves + employee.in_progress_leave_requests)) if employee
+    check_unique_dates(conflicting_leaves(future_leaves + employee.in_progress_leave_requests)) if employee
   end
   
   def validates_responsible_remarks

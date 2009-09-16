@@ -83,12 +83,10 @@ class AccountController < ApplicationController
     flash.now[:error] = "Votre mot de passe est expir&eacute;. Merci d'en choisir un autre."
     return unless request.post?
     user = current_user
-    user.updating_password = true
     if user.update_attributes(params[:user])
       redirect_to session[:initial_uri]
       flash[:notice] = "Votre mot de passe a &eacute;t&eacute; mis &agrave; jour avec succ&egrave;s"
     end
-    user.updating_password = false
     session[:user_expired] = false if user.save
   end
   

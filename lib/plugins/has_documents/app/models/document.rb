@@ -1,5 +1,5 @@
 class Document < ActiveRecord::Base
-  # has_permissions :as_instance
+  has_permissions :as_instance
   
   ## Plugins
   acts_as_taggable

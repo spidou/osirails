@@ -1,6 +1,7 @@
 <%  if !is_form_view? or leave_request.was_higher_than_step_unstarted?  %>
-<%= render :partial => 'employees/employee_summary', :locals => {:employee => leave_request.employee}%>
+  <%= render :partial => 'employees/employee_summary', :locals => {:employee => leave_request.employee}%>
 <% end %>
+
 <div class="presentation_medium">
   <% form_for(leave_request) do |f| %>
     

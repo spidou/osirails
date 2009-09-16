@@ -46,7 +46,7 @@ module EmployeesHelper
   
   # Methode to get a number without images but with all informations
   def display_full_phone_number(number)
-#   "(+#{number.indicative.country.code}) #{number.indicative.indicative} #{number.number}"
+    return "" unless number
     html = display_image(flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name)
 	  html += display_image(number_type_path( number.number_type.name ), number.number_type.name)
 	  html += strong("#{number.indicative.indicative} #{number.formatted}")
@@ -149,6 +149,10 @@ module EmployeesHelper
   # method that permit the showing of img balise with otions passed as arguments  
   def display_image(path,alt,title=alt)
     image_tag(path, :alt => alt, :title => title)
+  end
+  
+  def contextual_search_for_employee
+    contextual_search("Employee", ["*", "user.*", "service.name", "jobs.name"])
   end
 
 end

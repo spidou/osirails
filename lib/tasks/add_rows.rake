@@ -216,18 +216,18 @@ namespace :osirails do
       supplier.save
       
       # default customers and establishements
-      customer = Customer.create :name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
-        :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true
-      customer.establishments << establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
-      customer.establishments << establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
-      customer.establishments << establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
-      establishment1.address = Address.create(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
-      establishment2.address = Address.create(:address1 => "2 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
-      establishment3.address = Address.create(:address1 => "3 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
+      customer = Customer.new(:name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
+        :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true)
       
-      establishment1.save
-      establishment2.save
-      establishment3.save
+      establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
+      establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
+      establishment1.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
+      establishment2.build_address(:address1 => "2 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Suzanne", :zip_code => "97441")
+      establishment3.build_address(:address1 => "3 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Marie", :zip_code => "97438")
+      
+      customer.establishments << [ establishment1, establishment2, establishment3 ]
+      customer.save!
       
       # default contacts
       contact1 = Contact.create :first_name => "Jean-Jacques", :last_name => "Dupont", :contact_type_id => contact_customer1.id, :email => "jean-jacques@dupont.fr", :job => "Commercial"
@@ -316,15 +316,22 @@ namespace :osirails do
       d = DocumentType.find_or_create_by_name("logo")
       d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
+      
+      # for employees
+      d = DocumentType.find_or_create_by_name("curriculum_vitae")
+      d.update_attribute(:title, "Curriculum Vitae (CV)")
+      d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("driving_licence")
       d.update_attribute(:title, "Permis de conduire")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("identity_card")
-      d.update_attribute(:title, "Pièce d'indentitée")
+      d.update_attribute(:title, "Pièce d'identité")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("other")
       d.update_attribute(:title, "Autre")
       d.mime_types << [ pdf, jpg, png ]
+      
+      # for job contract
       d = DocumentType.find_or_create_by_name("job_contract")
       d.update_attribute(:title, "Contrat de travail")
       d.mime_types << [ pdf, jpg, png ]
@@ -332,10 +339,10 @@ namespace :osirails do
       d.update_attribute(:title, "Avenant au contrat de travail")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("resignation_letter")
-      d.update_attribute(:title, "lettre de licenciement")
+      d.update_attribute(:title, "Lettre de licenciement")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("demission_letter")
-      d.update_attribute(:title, "lettre de démission")
+      d.update_attribute(:title, "Lettre de démission")
       d.mime_types << [ pdf, jpg, png ]
       
       ## default file types
@@ -394,17 +401,44 @@ namespace :osirails do
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
       # default employees
-      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :society_email => "john.doe@society.com", :social_security_number => "1234567891234 45", :service_id => dg.id, :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
+      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :social_security_number => "1234567891234 45", :service_id => dg.id, :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
       john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
       john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       john.build_iban(:bank_name => "Bred", :account_name => "John DOE" , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
       john.save!
+      john.jobs << Job.first
       john.user.roles << role_admin
       john.user.enabled = true
       john.user.save!
       john.job_contract.update_attributes(:start_date => Date.today, :end_date => Date.today + 1.years, :job_contract_type_id => cdi.id, :employee_state_id => titulaire.id, :salary => "2000")
-#      john.job_contract = job_contract
+      
+      ###########
+      first_names = %W( pierre paul jacques jean fabrice patricia marie julie isabelle )
+      last_names  = %W( dupont hoarau turpin payet grondin boyer)
+      numbers     = %W( 18 20 22 23 30 35 40 45 )
+      addresses   = %W( rosiers palmiers lauriers Champs-Elizées cocotiers )
+      countries   = %W( Reunion France Espagne Italie EtatsUnis )
+      cities      = %W( SaintDenis Paris Madrid Rome NewYork )
+      banks       = %W( Bred BR CreditAgricole BFC )
+      ###########
+      20.times do |i|
+        employee = john.clone
+        employee.first_name = first_names.rand
+        employee.last_name = last_names.rand
+        employee.email = "#{employee.first_name}@#{employee.last_name}.com"
+        employee.birth_date = Date.today - numbers.rand.to_i.years - numbers.rand.to_i.days
+        employee.build_address(:address1 => "#{numbers.rand} rue des #{addresses.rand}", :address2 => "", :country_name => "#{countries.rand}", :city_name => "#{cities.rand}", :zip_code => rand(99999).to_s)
+        employee.build_iban(:bank_name => banks.rand, :account_name => employee.fullname , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
+        employee.service = Service.all.rand
+        employee.save!
+        [1,1,1,1,1,1,1,2,2,3].rand.times do |j|
+          job = Job.all.rand
+          ( employee.jobs << job ) unless employee.jobs.include?(job)
+        end
+      end
+
+      # default calendar
       calendar_john_doe = Calendar.create :user_id => john.user.id, :name => "Calendrier de John doe", :color => "blue", :title => "Calendrier de John Doe"
       Event.create :calendar_id => calendar_john_doe.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
@@ -475,15 +509,15 @@ namespace :osirails do
 
     desc "Depopulate the database"
     task :depopulate => :environment do
-      [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
-        JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
-        OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
-        
-        puts "destroying all rows for model '#{model.name}'"
-        model.destroy_all
-      end
+      #[Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
+      #  JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
+      #  UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
+      #  SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
+      #  OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
+      #  
+      #  puts "destroying all rows for model '#{model.name}'"
+      #  model.destroy_all
+      #end
     end
 
     desc "Reset the database"

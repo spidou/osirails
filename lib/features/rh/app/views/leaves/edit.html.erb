@@ -1,9 +1,9 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_employee_leave_link @employee %>
   <%= employee_link @employee %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= employee_leaves_link @employee, :link_text => "Historique des congés" %>
   <%= employees_link %>
 <% end %>

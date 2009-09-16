@@ -1,7 +1,7 @@
 module DocumentsHelper
 
   def display_documents_list(documents_owner)
-    html = '<div id="documents">'
+    html = "<div id=\"#{documents_owner.class.name.underscore}_documents\">"
     html << render_documents_list(documents_owner, :group_by => "date", :order_by => "asc")
     html << '</div>'
   end
@@ -19,15 +19,20 @@ module DocumentsHelper
       order_by = "asc"
       order_symbol = "^"
     end
-    link_to_remote "#{method.capitalize} #{order_symbol}", :update => :documents,
-                                                           :url => documents_path(documents_owner, :group_by => method, :order_by => order_by),
-                                                           :method => :get
+    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => "#{documents_owner.class.name.underscore}_documents",
+                                                           :url     => documents_path( documents_owner,
+                                                                                       :group_by => method,
+                                                                                       :order_by => order_by,
+                                                                                       :owner    => documents_owner.class.name,
+                                                                                       :owner_id => documents_owner.id ),
+                                                           :method  => :get
   end
 
   def display_document_add_button(documents_owner)
     link_to_function "Ajouter un document" do |page|
-      page.insert_html :bottom, :new_documents, :partial => 'documents/document',
-                                                :object => documents_owner.build_document
+      page.insert_html :bottom, :new_documents, :partial  => 'documents/document',
+                                                :object   => documents_owner.build_document,
+                                                :locals   => { :documents_owner => documents_owner }
       page['new_documents'].show if page['new_documents'].visible
       page['new_documents'].select('.document').last.show
       page['new_documents'].select('.document').last.visual_effect :highlight

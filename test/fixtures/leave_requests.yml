@@ -1,9 +1,9 @@
-leave_request_submitted:
-  status: <%= LeaveRequest::STATUS_SUBMITTED %>
-  employee: trish_doe
-  start_date: <%= Date.today + 16 %>
-  end_date: <%= Date.today + 18 %>
-  leave_type: good_leave_type
-  start_half: true
-  end_half: true
-  comment: "congé de formation"
+# leave_request_submitted:
+#   status: <%= LeaveRequest::STATUS_SUBMITTED %>
+#   employee: trish_doe
+#   start_date: <%= Date.today + 16 %>
+#   end_date: <%= Date.today + 18 %>
+#   leave_type: good_leave_type
+#   start_half: true
+#   end_half: true
+#   comment: "congé de formation"

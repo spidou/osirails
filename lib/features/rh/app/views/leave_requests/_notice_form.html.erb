@@ -1,8 +1,8 @@
 <% leave_request = notice_form %>
 
+<%= render :partial => leave_request %>
+
 <div class="presentation_medium">
-  <%= render :partial => leave_request %>
-  
   <% form_for(leave_request, :url => notice_leave_request_path(leave_request)) do |f| %>
     <h2>Observation des ressources humaines</h2>
     <%= f.error_messages %>
@@ -12,7 +12,7 @@
     </p> 
     <p>
       <%= f.label :duration %>
-      <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration(leave_request.start_date, leave_request.end_date)) %> jours 
+      <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration) %> jours 
     </p>    
     <p>
       <%= f.label :observer_remarks %>

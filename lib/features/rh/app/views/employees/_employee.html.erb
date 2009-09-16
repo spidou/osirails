@@ -5,14 +5,11 @@
 <div class="presentation_medium">
 <% form_for(@employee, :html => {:multipart => true}) do |f| %>
   <%= f.error_messages %> 
-  <h2>Fiche d&apos;identité</h2>
+  
+  <h2>Fiche d&apos;identit&eacute;</h2>
+  
   <div class="presentation_in_columns">
-    <% if !is_form_view? %>
-      <div id="employee_avatar">
-        <%= image_tag @employee.avatar.url %>
-      </div>
-    <% end %>
-
+    
     <div>
       <p>
         <%= f.label :civility %>
@@ -27,6 +24,7 @@
         <%= f.form_or_view(f.text_field( :last_name), :last_name)%>
       </p>
     </div>
+    
     <div>
       <p>
         <%= f.label :birth_date %>
@@ -42,11 +40,16 @@
       </p>
       <p>
         <% if is_form_view? %>
-          <%= f.label :avatar%>
-          <%= f.file_field(:avatar)%>
+          <%= f.label :avatar %>
+          <%= f.file_field(:avatar) %>
         <% end %>
       </p>
     </div>
+    
+    <div id="employee_avatar_container">
+      <%= image_tag @employee.avatar.url, :title => "Photo d'identité", :alt => "Photo d'identité" %>
+    </div>
+    
   </div>
 <!--############## Address ##############-->
   <h2>Coordonn&eacute;es</h2>
@@ -82,8 +85,13 @@
 
 <!--########### Iban ####################-->
   <% if Iban.can_view?(current_user) or @employee.user.id == current_user.id %>
-    <h2>Identité Bancaire</h2>
-    <%= render :partial => 'shared/iban', :object => @employee.iban || @employee.build_iban , :locals => { :iban_owner => @employee } %>
+    <% iban = is_form_view? ? ( @employee.iban || @employee.build_iban ) : @employee.iban %>
+    <h2>Relev&eacute; d'identit&eacute; bancaire (RIB)</h2>
+    <% if iban %>
+      <%= render(:partial => 'shared/iban', :object => iban , :locals => { :iban_owner => @employee }) %>
+    <% else %>
+      <p>Aucun RIB enregistré<p>
+    <% end %>
   <% end %>  
 
 <!--########### JobContract #############-->

@@ -14,11 +14,13 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ContextualMenuManager
+  
   helper :all # include all helpers, all the time
   layout "default"
   
   # Filters
-  before_filter :configure_model, :authenticate, :select_theme
+  before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu
   before_filter :load_features_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
@@ -187,5 +189,9 @@ class ApplicationController < ActionController::Base
       else
         raise "global variable $activated_features_path is not instanciated"
       end
+    end
+    
+    def initialize_contextual_menu
+      @contextual_menu = ContextualMenu.new
     end
 end # class

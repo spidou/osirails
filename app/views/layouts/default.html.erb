@@ -41,33 +41,25 @@
         <%= display_menu %>
       </div>
       <div id="page">	<!-- CONTENT OF THE PAGE -->
-        <div id="contextual_menu"> <!-- CONTEXTUAL MENU -->
-          <div class="shown_contextual_menu" id="contextual_menu_toggle_button">
-            <span id="status_background_contextual_menu">
-              <span id="status_text_contextual_menu">Cacher le menu</span>
-            </span>
-          </div>
-          <div id="shadow_contextual_menu">
-            <div id="content_contextual_menu">
-              <h1><span class="gray_color">Recherche</span> <span class="blue_color">contextuelle</span></h1>
-              <!--contetual search formulary -->
-              <% form_tag(search_path, :method => 'put', :id => "contextual_search_form" ) do %>
-                <%= contextual_search %>
-              <% end %> 
-
-              <%= yield :contextual_menu %>
-              <div id="footer_contextual_menu">&nbsp;</div>
-            </div>
-          </div>
-        </div>
         <div id="content_page">
           <%= display_flash %>
+          
+          <div id="ajax_holder" style="display:none">
+            <div id="ajax_holder_waiting">
+              <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>
+            </div>
+            <div id="ajax_holder_content"></div>
+            <div id="ajax_holder_command">
+              <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
+            </div>
+          </div>
           
           <%= yield %>
           
           <p><%= link_to 'Retour', :back %></p>
         </div> <!-- content_page : FIN -->
-      </div> <!-- PAGE : FIN -->
+        <%= display_contextual_menu %>
+      </div> <!-- page : FIN -->
       <div id="footer">
         <p>
           <%= display_footer %>
