@@ -25,7 +25,7 @@
     </tr>
     <% end %>
   </table>
-  <%= will_paginate @features, :prev_label => "<<", :next_label => ">>" %>
+  <%= will_paginate @features %>
 
   <% if Feature.can_add?(current_user) %>
   <h2>Ajout d'un module</h2>

@@ -22,7 +22,7 @@
   <% end %>
   
 </table>
-<%= will_paginate refused_leave_requests, :previous_label => " << précédent", :next_label => "suivant >>" if params[:action] != "index" %>
+<%= will_paginate refused_leave_requests if params[:action] != "index" %>
 
 <% else %>
   <p>Aucune demande refus&eacute;e</p>

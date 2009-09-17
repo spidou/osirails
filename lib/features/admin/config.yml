@@ -139,22 +139,22 @@ configurations:
     description: Nom de domaine
     value: emr-oi.com    
   society_identity_configuration_working_day:
-    description: Jours ouvrés
+    description: Jours ouvrés # monday = 0
     value:
+      - "0"
       - "1"
       - "2"
       - "3"
       - "4"
-      - "5"
   society_identity_configuration_workable_days:
-    description: Jours ouvrables
+    description: Jours ouvrables # monday = 0
     value:
+      - "0"
       - "1"
       - "2"
       - "3"
       - "4"
       - "5"
-      - "6"
   society_identity_configuration_legal_holidays:
     description: Jours fériés
     value:

@@ -569,7 +569,7 @@ a.button_banner:hover span {
 	font-size:1.1em;
 	font-weight: bold;
 	color: black;
-	-moz-box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
 	border: none;
 	height: auto;
 	line-height: 2.4em;
@@ -579,6 +579,7 @@ a.button_banner:hover span {
 
 #contextual_menu_content h1:first-child {
 	-moz-border-radius: 10px 0 0 0;
+	-moz-box-shadow: 0px 3px 4px rgba(0,0,0,0.2) !important;
 }
 
 #contextual_menu_content ul {
@@ -799,7 +800,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
   left: 18px;
   min-height: 100px;
   width: 80%;
-  -moz-box-shadow: 2px 3px 4px rgba(0,0,0,0.3);
+  -moz-box-shadow: 6px 4px 8px rgba(0,0,0,0.3) !important;
 }
 
 #ajax_holder_waiting {
@@ -809,6 +810,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 }
 
 #ajax_holder_content {
+  padding: 2px 1px 2px 1px;
 }
 
 #ajax_holder_command {

@@ -17,7 +17,7 @@
       <%= show_contents(@contents) %>
 
   </table>
-  <%= will_paginate @contents, :prev_label => "<<", :next_label => ">>" %>
+  <%= will_paginate @contents %>
 <% else %>
 <p>Aucun contenu</p>
 <% end %>
