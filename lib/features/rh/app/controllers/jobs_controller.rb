@@ -1,15 +1,17 @@
 class JobsController < ApplicationController
   
   def index
-    @jobs = Job.find(:all).paginate(:page => params[:page], :per_page => Job::JOBS_PER_PAGE)
+    @jobs = Job.find(:all, :include => :service, :order => "services.service_parent_id, services.name, jobs.name, jobs.responsible DESC").paginate(:page => params[:page], :per_page => Job::JOBS_PER_PAGE)
   end
   
   def new
-    @job= Job.new 
+    @job= Job.new
+    @services = Service.all
   end
   
   def edit
     @job= Job.find(params[:id])
+    @services = Service.all
   end
   
   def show
@@ -51,7 +53,7 @@ class JobsController < ApplicationController
   
   def destroy
     @job = Job.find(params[:id])
-    @job.destroy 
+    @job.destroy
 
     respond_to do |format|
       format.html { redirect_to(jobs_url) }

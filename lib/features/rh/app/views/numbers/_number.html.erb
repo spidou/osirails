@@ -9,9 +9,10 @@
 	<%= form.error_messages%>
 	<p>
 		<% if !is_form_view?%>
-			<%= display_image( flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name) %>
-			<%= display_image( number_type_path( number.number_type.name ), number.number_type.name ) %>
-			<%= strong("#{number.indicative.indicative} #{number.number}") %>
+		  <%= display_full_phone_number(number)%>
+			<%# display_image( flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name) %>
+			<%# display_image( number_type_path( number.number_type.name ), number.number_type.name ) %>
+			<%# strong("#{number.indicative.indicative} #{number.number}") %>
 		<% else %>
 			<%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
 			<%= form.text_field(:number, { :index => nil, :size => 9, :maxlength => 9 }) %>

@@ -1,4 +1,6 @@
 class Feature < ActiveRecord::Base
+  has_permissions :as_business_object
+  
   serialize :dependencies
   serialize :conflicts
   serialize :business_objects

@@ -160,4 +160,37 @@ class FeatureManager
       override_path = File.join(@path, 'overrides.rb')
       require override_path if File.exist?(override_path)
     end
+
+    def verify_attribute_type(attr_class, type)
+      case attr_class
+        when String
+          return 1 unless type=="string"
+        when Date
+          return 1 unless type=="date"
+        when DateTime
+          return 1 unless type=="date"
+        when Time
+          return 1 unless type=="date"
+        else
+          return 1 unless type=="number"
+      end
+      return 0
+    end
+
+    def verify_sub_resources(hash,error_message)
+      hash.each_pair do |sub_attribute,value|
+        if value.instance_of?(Hash)
+          value.each_pair do |sub_attribute2,value2|
+            if value2.instance_of?(Hash)
+              return verify_sub_resources(value2,error_message) unless verify_sub_resources(value2,error_message).blank?
+            else
+              return "#{ error_message } the attribute '#{ sub_attribute2 }' is incorrect for '#{ sub_attribute }'!" unless sub_attribute.constantize.new.respond_to?(sub_attribute2)
+            end
+          end
+        else
+          return "#{ error_message } missing attribute type or sub attributes hash for  '#{ sub_attribute }' "
+        end
+      end
+      return ""
+    end
 end

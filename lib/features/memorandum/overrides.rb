@@ -29,7 +29,7 @@ module ApplicationHelper
   # This method permit to recover last 10 memorandums
   def last_memorandums
     unless current_user.employee.nil?
-      memorandums = Memorandum.find_by_services(current_user.employee.services)
+      memorandums = Memorandum.find_by_services([current_user.employee.service])
       last_memorandum = []
       max_memorandums = 0
       memorandums.each do |memorandum|

@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class ProductReferenceCategoryTest < ActiveSupport::TestCase
   fixtures :product_reference_categories

@@ -1,15 +1,15 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
 	<%= new_content_link %>
 	<%= edit_content_link(@content) %>
 	<%= delete_content_link(@content) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
 	<%= contents_link %>
 <% end %>
 
 <% unless @content.versions.empty? %>
-  <% contextual_menu "Historique" do %>
+  <% add_contextual_menu_item :content_history do %>
     <%= show_contents_versions(@content_versions) %>
   <% end %>
 <% end %>

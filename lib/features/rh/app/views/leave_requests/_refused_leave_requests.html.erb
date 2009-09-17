@@ -1,0 +1,29 @@
+<h2>Mes demandes refus&eacute;es</h2>
+
+<% if refused_leave_requests.size > 0 %>
+
+<table>
+  <tr>
+    <th>Date / P&eacute;riode demand&eacute;e</th>
+    <th>Soumise le</th>
+    <th>Statut</th>
+    <th>Refus&eacute;e le</th>
+    <th>Actions</th>
+  </tr>
+  
+  <% for leave_request in refused_leave_requests %>
+    <tr>
+      <td><%=h leave_request.formatted %></td>
+      <td><%=h leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+      <td><%=h view_status(leave_request) %></td>
+      <td><%=h leave_request.updated_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+      <td><%= leave_request_link(leave_request, :link_text => "") %></td>
+    </tr>
+  <% end %>
+  
+</table>
+<%= will_paginate refused_leave_requests, :previous_label => " << précédent", :next_label => "suivant >>" if params[:action] != "index" %>
+
+<% else %>
+  <p>Aucune demande refus&eacute;e</p>
+<% end %>

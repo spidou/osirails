@@ -1,4 +1,4 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= link_to 'Afficher le devis (PDF)', order_estimate_path(@order, @estimate) if params[:action] == 'edit' or params[:action] == 'update' %>
   <%= link_to 'Créer un nouveau devis', new_order_estimate_path(@order) %>
 <% end %>

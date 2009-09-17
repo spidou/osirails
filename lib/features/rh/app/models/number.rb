@@ -1,5 +1,5 @@
 class Number < ActiveRecord::Base
-  # Relationships
+
   belongs_to :indicative
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true
@@ -12,8 +12,14 @@ class Number < ActiveRecord::Base
   validates_length_of :number, :is => 9
   
   attr_accessor :should_destroy 
-
+  
+  named_scope :visibles, :conditions => ['visible=?',true]
+  
   VISIBLE_STATES = { "Privé" => false, "Public" => true } 
+  
+  # Search Plugin
+  has_search_index  :only_attributes    => [:number],
+                    :only_relationships => [:number_type, :indicative]
   
   def formatted
     # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number

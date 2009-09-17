@@ -4,23 +4,31 @@
     <%= j.error_messages %>
     <p style="display:none">
       <%= hidden_field_tag 'employee_id',params[:id].nil? ? nil : params[:id]%>
-    </p>  
+    </p>
     <p>
-      <%= j.label :name, "Nom :"%>
+      <%= j.label :service %>
+      <%= j.collection_select(:service_id, Service.all, :id, :name, {:prompt => "Veuillez choisir un service"})%>
+    </p>
+    <p>
+      <%= j.label :responsible %>
+      <%= j.check_box :responsible , {}, '1', '0'%>
+    </p> 
+    <p>
+      <%= j.label :name %>
       <%= j.text_field :name%>
     </p>
     <p>
-      <%= j.label :mission, "Mission :"%>
+      <%= j.label :mission %>
       <%= j.text_area :mission, {:rows => 5} %>
     </p>
     <p>
-      <%= j.label :activity, "Activités :"%>
+      <%= j.label :activity %>
       <%= j.text_area :activity, {:rows => 5}%>
     </p>
     <p>
-      <%= j.label :goal, "Objectifs :"%>
+      <%= j.label :goal %>
       <%= j.text_area :goal, {:rows => 5}%>
     </p>
-    <p><%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close()'%></p>
+    <p><%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close();'%></p>
   <%end%>
 </div>

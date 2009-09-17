@@ -10,6 +10,6 @@
       <%= show_received_memorandums(@received_memorandums) %>
     </tbody>
   </table>
-  <%= will_paginate @received_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+  <%= will_paginate @received_memorandums, :param_name => :memorandum %>
 </div>
 <% end %>

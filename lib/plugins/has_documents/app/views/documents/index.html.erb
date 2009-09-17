@@ -1,1 +1,2 @@
-<%= render_documents_list(@documents_owner, :group_by => @group_by, :order_by => @order_by) %>
+<%= display_flash %>
+<%= render_documents_list(@documents_owner, :group_by => @group_by, :order_by => @order_by) if @documents_owner %>

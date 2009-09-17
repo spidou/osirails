@@ -1,0 +1,76 @@
+#criteria_div {
+  padding-left: 10px;
+}
+
+.criterion_label {
+  padding-right: 5px;
+}
+
+/*main desing of the attribute chooser drop down menu*/
+.attr_chooser {
+  list-style: none;
+  padding: 0;
+	margin: 0;
+}
+
+.attr_chooser a {
+	display: block;
+	width: 15em;
+	text-decoration: none;
+  color: #E0E0E0;
+}
+
+.attr_chooser a.selected{
+  background: #4773C9 ;
+}
+
+.attr_chooser a:hover{
+  color: #303030;
+}
+
+.attr_chooser ul {
+  list-style: none;
+	padding: 5px;
+	margin: 0;
+	background-color: #7e98cb;
+	-moz-border-radius:0px 7px 0px 7px;
+	-moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+}
+
+/* the attribute */
+.attr_chooser li {
+	float: left;
+	width: auto;
+}
+
+.attr_chooser li ul li:hover {
+  background-color: orange;
+}
+
+/* the menu start hidden */
+.attr_chooser li ul {
+	position: absolute;
+	width: 15em;
+	left: -999em;
+}
+
+/* show or hide the attribute */
+.attr_chooser li ul li.sub_menu ul.visible_menu{
+  position: absolute;
+  left: 15em;
+  background: #7e98cb;
+}
+
+.attr_chooser li ul li.sub_menu ul.hidden_menu{
+  position: absolute;
+  left: -999em;
+}
+/*---------------------------------------------------*/
+.attr_chooser li.sub_menu{
+  background: url('/themes/emr/images/search/arrow.png') no-repeat 95%;  
+}
+
+/* show the drop down menu when the attribute name his pointed by the mouse*/
+.attr_chooser li.clicked:hover ul{
+	left: auto;
+}

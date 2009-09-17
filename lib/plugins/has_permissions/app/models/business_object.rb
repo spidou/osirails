@@ -1,21 +1,19 @@
 class BusinessObject < ActiveRecord::Base
-  setup_has_permissions_model :association_options => { :name => :permissions }
+  setup_has_permissions_model
   
   validates_uniqueness_of :name
+  validate :validates_name_is_a_constant
   
-  after_create :create_permissions_methods_associations
-  
-  def permissions_definitions
-    name.constantize.permissions_definitions
+  def validates_name_is_a_constant
+    begin
+      name.constantize
+    rescue NameError => e
+      errors.add(:name, "ne correspond pas à un modèle valide")
+    end
   end
   
-  private
-    def create_permissions_methods_associations
-      permissions_definitions[:permission_methods].each do |method|
-        permissions.each do |bo_permission|
-          BusinessObjectPermissionsPermissionMethod.create(:business_object_permission_id => bo_permission.id,
-                                                           :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
-        end
-      end
-    end
+  def title
+    name.titleize
+  end
+  
 end

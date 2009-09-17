@@ -1,0 +1,13 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= employee_link @employee %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= employee_leaves_link @employee, :link_text => "Historique des congés" %>
+  <%= employees_link %>
+<% end %>
+
+<h1>Ajouter un cong&eacute;</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<%= render :partial => "leave", :locals => {:button_name => "Ajouter"}%>

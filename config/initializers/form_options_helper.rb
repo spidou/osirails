@@ -115,6 +115,7 @@ module ActionView
       end
       
       def reset(object, text)
+        text ||= "Reset"
         "<input type='reset' value='#{text}' name='reset' id='#{object}_reset'/>"
       end
       
@@ -235,7 +236,7 @@ module ActionView
         @template.strong(text, options)
       end
       
-      def reset(text)
+      def reset(text = nil)
         @template.reset(@object_name, text)
       end
       

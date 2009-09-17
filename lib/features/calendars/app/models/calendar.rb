@@ -20,8 +20,8 @@ end
 # color       Hexa color (optinal)
 # title       :string
 class Calendar < ActiveRecord::Base
-  has_permissions
-  setup_has_permissions_model :association_options => { :name => :permissions }
+  has_permissions :as_instance
+  setup_has_permissions_model
   
   require 'rubygems'
   require 'icalendar'

@@ -7,17 +7,29 @@
     <%= form.form_or_view(form.text_field(:name),:name)%>
   </p>
   <p>
+    <%= form.label :service %>
+    <%= form.form_or_view(form.collection_select(:service_id, Service.all, :id, :name), :service, :name) %>
+  </p>
+  <p>
+    <%= form.label :responsible %>
+    <% if is_form_view? %>
+      <%= form.check_box(:responsible , {}, '1', '0') %>
+    <% else %>
+      <%= strong( job.responsible? ? "Oui" : "Non" ) %>
+    <% end %>
+  </p> 
+  <p>
     <%= form.label :mission %>
     <%= form.form_or_view(form.text_area( :mission, {:rows => 5}),:mission) %>
   </p>
   <p>
     <%= form.label :activity %>
-    <%= form.form_or_view(form.text_area( :activity,  {:rows => 5}),:activity)%>
+    <%= form.form_or_view(form.text_area( :activity, {:rows => 5}),:activity) %>
   </p>
   <p>
-    <%= form.label :goal%>
-    <%= form.form_or_view(form.text_area( :goal,  {:rows => 5}),:goal)%>
+    <%= form.label :goal %>
+    <%= form.form_or_view(form.text_area( :goal, {:rows => 5}),:goal) %>
   </p>
-  <p><%= form.submit( submit_button_name ) if is_form_view?%></p>
+  <p><%= form.submit( submit_button_name ) if is_form_view? %></p>
 <% end %>
 </div>

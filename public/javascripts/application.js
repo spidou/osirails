@@ -13,10 +13,11 @@ function initEventListeners()
 {
   nav_more_links_handler();
   contextual_menu_toggle_button = $('contextual_menu_toggle_button');
-
-  contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
-  click_next(0);
   
+  if (contextual_menu_toggle_button){
+    contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
+    click_next(0);
+  }
 }
 
 function toggle_contextual_menu(item)
@@ -27,40 +28,47 @@ function toggle_contextual_menu(item)
   text_hidden = "Afficher le menu";
   if (item.className == class_shown)
   {
-    container_width = $('contextual_menu_container').offsetWidth;
+    container_width = parseInt( $('contextual_menu_container').getStyle('width') )
+    container_right = parseInt( $('contextual_menu_container').getStyle('right') )
+    status_position = $('status_background_contextual_menu').getStyle('position')
+    menu_display    = $('contextual_menu').getStyle('display')
+    menu_position   = $('contextual_menu').getStyle('position')
+    menu_right      = $('contextual_menu').getStyle('right')
+    
     document.body.style.overflowX = 'hidden';
     new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: "-"+container_width-13+"px"
+        marginRight: "-"+(container_width+container_right)+"px"
       },
-      duration: 1,
-      afterFinish: function(){   
-        $('status_background_contextual_menu').setAttribute('style','witdh:0px;position:relative;right:0px');
-        $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');     
-        $('contextual_menu').setAttribute('style','display:none');
+      duration: 0.6,
+      afterFinish: function(){
+        $('status_background_contextual_menu').setAttribute('style','position:relative;right:0px');
+        $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');
+        $('contextual_menu').setStyle({display: 'none'})
         item.setAttribute('style','position:relative;right:0px');   
-        document.body.style.overflowX = 'auto';
         item.className = class_hidden;
         document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
+        document.body.style.overflowX = 'auto';
       }
     });
   }
   else if (item.className == class_hidden)
   {
-    $('status_background_contextual_menu').setAttribute('style','witdh:0px;position:relative');
+    $('status_background_contextual_menu').setAttribute('style','position:'+status_position);
     $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
-    $('contextual_menu').setAttribute('style','display:block;position:relative;right:0px');
+    $('contextual_menu').setAttribute('style','display:'+menu_display+';position:'+menu_position+';right:'+menu_right);
+    
     document.body.style.overflowX = 'hidden';
     new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: container_width+13+"px"
+        marginRight: (container_width+container_right)+"px"
       },
-      duration: 0.8,
+      duration: 0.4,
       afterFinish: function(){
-        $('contextual_menu_container').setAttribute('style','right:15px');
-        document.body.style.overflowX = 'auto';
+        $('contextual_menu_container').setAttribute('style','right:'+container_right+'px');
         item.className = class_shown;
         document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
+        document.body.style.overflowX = 'auto';
       }
     });
   }
@@ -169,6 +177,39 @@ function nav_more_links_handler() {
       });
     });
   })
+}
+
+function prepare_ajax_holder() {
+  clean_ajax_holder_content()
+  
+  holder = $('ajax_holder')
+  holder.show()
+  
+  ajax_holder_loading()
+}
+
+function ajax_holder_loading() {
+  loader = $('ajax_holder_waiting')
+  loader.show()
+}
+
+function ajax_holder_loaded() {
+  loader = $('ajax_holder_waiting')
+  loader.hide()
+  
+  display_ajax_holder_content()
+}
+
+function clean_ajax_holder_content() {
+  $('ajax_holder_content').hide()
+}
+
+function display_ajax_holder_content() {
+  new Effect.Appear('ajax_holder_content')
+}
+
+function close_ajax_holder() {
+  new Effect.Fade('ajax_holder', { duration:'0.3', afterFinish:function(){ clean_ajax_holder_content()} })
 }
 
 // Load the initial attributes of the document forms for

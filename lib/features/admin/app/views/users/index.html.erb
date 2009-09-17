@@ -1,4 +1,6 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% contextual_search_for_user %>
+
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_user_link %>
 <% end %>
 
@@ -16,7 +18,7 @@
 
     <% for user in @users %>
       <tr>
-        <td><%=  user.employee.nil? ? "" : user.employee.fullname  %></td>
+        <td><%= user.employee.nil? ? "" : user.employee.fullname  %></td>
         <td><%= link_to user.username, user %></td>
         <td><%= user.enabled ? "Oui" : "Non" %></td>
         <td><%= user.last_connection.nil? ? "Jamais connect&eacute;" :user.last_connection.to_humanized_datetime %></td>

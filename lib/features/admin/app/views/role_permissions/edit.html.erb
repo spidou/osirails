@@ -2,119 +2,41 @@
 
 <div>
   <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do %>
-    <h2>pour chaque page</h2>
-    <table>
-      <tr>
-        <th rowspan="2">Pages</th>
-        <th colspan="6">Permissions</th>
-      </tr>
-      <tr>
-        <th>Lister</th>
-        <th>Voir</th>
-        <th>Ajouter</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
-			  <th>Tout cocher</th>
-      </tr>
-      <% for menu_permission in @menu_permissions %> 
+    <% for permission_type, permissions in @permissions %>
+      <h2>pour chaque <%= permission_type.titleize %></h2>
+      <table>
+        <% max_size = permissions.collect{|p|p.permission_methods.size}.max %>
         <tr>
-          <td><%= link_to menu_permission.menu.title, edit_menu_permission_path(menu_permission.menu)%></td>
-          <td><%= check_box_tag "menu[list][]", menu_permission.id, menu_permission.list %></td>
-          <td><%= check_box_tag "menu[view][]", menu_permission.id, menu_permission.view %></td>
-          <td><%= check_box_tag "menu[add][]", menu_permission.id, menu_permission.add %></td>
-          <td><%= check_box_tag "menu[edit][]", menu_permission.id, menu_permission.edit %></td>
-          <td><%= check_box_tag "menu[delete][]", menu_permission.id, menu_permission.delete %></td>
-				  <td><input type="checkbox" class="checkbox_permission"></td>
+          <th><%= permission_type.titleize %></th>
+          <th colspan="<%= max_size %>">Permissions</th>
+          <th>Tout cocher</th>
         </tr>
-      <% end %>
-    </table>
-      
-    <h2>pour chaque objets m&eacute;tiers</h2>
-    <table>
-      <% max_size = @business_object_permissions.collect{|p|p.permission_methods.size}.max %>
-      <tr>
-        <th>Objets métiers</th>
-        <th colspan="<%= max_size + 1 %>">Permissions</th>
-      </tr>
-      <% for business_object_permission in @business_object_permissions %>
-        <tr>
-          <td rowspan="2"><%= link_to business_object_permission.business_object.name, edit_business_object_permission_path(business_object_permission.business_object_id) %></td>
-          <% for method in business_object_permission.permission_methods %>
-            <%= "<th>#{method.name.titleize}</th>"%>
-          <% end %>
-          <% (max_size - business_object_permission.permission_methods.size).times do %>
-            <th>&nbsp;</th>
-          <% end %>
-		      <th>Tout cocher</th>
-        </tr>
-        <tr>
-          <% fields_for "business_object_permissions[]", business_object_permission do |form| %>
-            <% for method in business_object_permission.permission_methods %>
-              <td><%= form.check_box method.name %></td>
+        <% for permission in permissions %>
+          <tr>
+            <td rowspan="2" style="width: 350px"><%= link_to permission.has_permissions.title, "#" %></td>
+            <% for method in permission.permission_methods %>
+              <%= "<th>#{method.name.titleize}</th>"%>
             <% end %>
-            <% (max_size - business_object_permission.permission_methods.size).times do %>
-              <td>&nbsp;</td>
+            <% (max_size - permission.permission_methods.size).times do %>
+              <th>&nbsp;</th>
             <% end %>
-          <% end %>
-				  <td><input type="checkbox" class="checkbox_permission"></td>
-        </tr>
-      <% end %>
-    </table>
+              <th>&nbsp;</th>
+          </tr>
+          <tr>
+            <% fields_for "permissions[]", permission do |form| %>
+              <% for method in permission.permission_methods %>
+                <td><%= form.check_box method.name %></td>
+              <% end %>
+              <% (max_size - permission.permission_methods.size).times do %>
+                <td>&nbsp;</td>
+              <% end %>
+            <% end %>
+				    <td style="width:100px"><input type="checkbox" class="checkbox_permission"></td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
     
-		<h2>pour chaque type de document</h2>
-    <table>
-      <tr>
-        <th rowspan="2">Type de document</th>
-        <th colspan="6">Permissions</th>
-      </tr>
-      <tr>
-        <th>Lister</th>
-        <th>Voir</th>
-        <th>Ajouter</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
-				<th>Tout cocher</th>
-      </tr>
-      <% for document_type_permission in @document_type_permissions %>
-        <tr>
-          <td><%= link_to document_type_permission.document_type.title, edit_document_type_permission_path(document_type_permission.document_type_id) %></td>
-          <td><%= check_box_tag "document[list][]", document_type_permission.id, document_type_permission.list %></td>
-          <td><%= check_box_tag "document[view][]", document_type_permission.id, document_type_permission.view %></td>
-          <td><%= check_box_tag "document[add][]", document_type_permission.id, document_type_permission.add %></td>
-          <td><%= check_box_tag "document[edit][]", document_type_permission.id, document_type_permission.edit %></td>
-          <td><%= check_box_tag "document[delete][]", document_type_permission.id, document_type_permission.delete %></td>
-					<td><input type="checkbox" class="checkbox_permission"></td>
-        </tr>
-      <% end %>
-    </table>
-
-		<h2>pour chaque planning</h2>
-    <table>
-      <tr>
-        <th rowspan="2">Planning</th>
-        <th colspan="6">Permissions</th>
-      </tr>
-      <tr>
-        <th>Lister</th>
-        <th>Voir</th>
-        <th>Ajouter</th>
-        <th>Modifier</th>
-        <th>Supprimer</th>
-				<th>Tout cocher</th>
-      </tr>
-      <% for calendar_permission in @calendar_permissions %>
-        <tr>
-          <td><%= link_to calendar_permission.calendar.name, edit_calendar_permission_path(calendar_permission.calendar) %></td>
-          <td><%= check_box_tag "calendar[list][]", calendar_permission.id, calendar_permission.list %></td>
-          <td><%= check_box_tag "calendar[view][]", calendar_permission.id, calendar_permission.view %></td>
-          <td><%= check_box_tag "calendar[add][]", calendar_permission.id, calendar_permission.add %></td>
-          <td><%= check_box_tag "calendar[edit][]", calendar_permission.id, calendar_permission.edit %></td>
-          <td><%= check_box_tag "calendar[delete][]", calendar_permission.id, calendar_permission.delete %></td>
-					<td><input type="checkbox" class="checkbox_permission"></td>
-        </tr>
-      <% end %>
-    </table>
-
     <p> 
       <%= submit_tag "Mettre à jour" %>  
     </p>

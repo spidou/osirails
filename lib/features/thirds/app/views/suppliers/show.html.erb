@@ -1,10 +1,12 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% contextual_search_for_supplier %>
+
+<% add_contextual_menu_item :possible_actions do %>
 	<%= new_supplier_link %>
   <%= edit_supplier_link(@supplier) %>
 	<%= delete_supplier_link(@supplier) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do%>
+<% add_contextual_menu_item :useful_links do %>
 	<%= suppliers_link %>
 <% end %>
 
