@@ -301,6 +301,11 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "civility_id",            :limit => 11
     t.integer  "family_situation_id",    :limit => 11
     t.integer  "user_id",                :limit => 11
+    t.integer  "service_id",             :limit => 11
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size",       :limit => 11
+    t.datetime "avatar_updated_at"
   end
 
   create_table "employees_jobs", :id => false, :force => true do |t|
@@ -470,6 +475,8 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.text     "mission"
     t.text     "activity"
     t.text     "goal"
+    t.integer  "service_id",  :limit => 11
+    t.boolean  "responsible"
   end
 
   create_table "leave_requests", :force => true do |t|
@@ -802,7 +809,7 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   end
 
   create_table "sessions", :force => true do |t|
-    t.string   "session_id", :null => false
+    t.string   "session_id", :default => "", :null => false
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"

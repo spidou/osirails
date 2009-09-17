@@ -1,0 +1,37 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
+<% end %>
+
+<div class="presentation_in_columns medium">
+  
+  <div>
+    <p>
+      <label>Identit&eacute; :</label>
+      <strong><%= employee_link(employee, :link_text => "#{employee.civility.name.capitalize} #{employee.fullname}", :image_tag => nil) %></strong>
+    </p>
+    <p>
+      <label>Service :</label>
+      <strong><%= service_link(employee.service, :link_text => employee.service.name, :image_tag => nil) %></strong>
+    </p>
+    <p>
+      <label>Anciennet&eacute; :</label>
+      <strong><%= display_employee_seniority(employee.job_contract.start_date) %></strong>
+    </p>
+  </div>
+  
+  <div>
+    <p>
+      <label>Email :</label>
+      <%=strong employee.intranet_email %>
+    </p>
+    <p>
+      <label>T&eacute;l&eacute;phone :</label>
+      <%= display_full_phone_number(employee.numbers.visibles.first) %>
+    </p>
+  </div>
+  
+  <div id="employee_avatar_container">
+    <%= image_tag employee.avatar.url, :title => "Photo d'identité", :alt => "Photo d'identité" %>
+  </div>
+  
+</div>

@@ -1,23 +1,25 @@
 class Customer < Third
   has_permissions :as_business_object
+  has_documents :graphic_charter, :logo
   
   belongs_to :payment_method
   belongs_to :payment_time_limit
   has_many :establishments
-
-  ## Validations
-  validates_uniqueness_of :name, :siret_number
+  
+  validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
   validates_associated :establishments, :contacts
-
-  # Name Scope
+  
+  # for pagination : number of instances by index page
+  CUSTOMERS_PER_PAGE = 15
+  
   named_scope :activates, :conditions => {:activated => true}
-
-  ## Plugins
-  has_documents :graphic_charter, :logo
-
-  ## Callbacks
+  
   after_update :save_establishments
-
+  
+  has_search_index :only_attributes    => [:name, :siret_number],
+                   :only_relationships => [:activity_sector, :legal_form, :contacts, :establishments],
+                   :main_model         => true
+  
   def activated_establishments
     establishment_array = []
     self.establishments.each {|establishment| establishment_array << establishment if establishment.activated}

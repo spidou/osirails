@@ -1,3 +1,5 @@
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :content_history => "Historique" })
+
 require_dependency 'menu'
 
 class Menu

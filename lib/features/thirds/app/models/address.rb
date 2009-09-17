@@ -1,4 +1,5 @@
 class Address < ActiveRecord::Base
+
   belongs_to :has_address, :polymorphic => true
   has_one :city
   
@@ -14,6 +15,9 @@ class Address < ActiveRecord::Base
   @@form_labels[:country_name] = "Pays :"
   @@form_labels[:city_name] = "Ville :"
   @@form_labels[:zip_code] = "Code postal :"
+  
+  # Search Plugin
+  has_search_index :only_attributes => [:zip_code, :city_name, :country_name]
   
   def address1and2
     address = address1

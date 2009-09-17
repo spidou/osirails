@@ -1,8 +1,8 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
  <%= new_memorandum_link %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>  
+<% add_contextual_menu_item :useful_links do %>
  <%= received_memorandums_link %>
 <% end %>
 
@@ -10,6 +10,6 @@
 <h1>Notes de services envoy&eacute;s</h1>
   <div>
     <%= show_sended_memorandums(@sended_memorandums) %>
-    <%= will_paginate @sended_memorandums, :param_name => :memorandum, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+    <%= will_paginate @sended_memorandums, :param_name => :memorandum %>
   </div>
 <% end %>

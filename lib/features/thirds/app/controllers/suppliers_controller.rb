@@ -4,7 +4,7 @@ class SuppliersController < ApplicationController
 
   # GET /suppliers
   def index
-    @suppliers = Supplier.activates
+    @suppliers = Supplier.activates.paginate(:page => params[:page], :per_page => Supplier::SUPPLIERS_PER_PAGE)
   end
 
   # GET /suppliers/:id

@@ -2,7 +2,7 @@ class RolesController < ApplicationController
 
   # GET /roles
   def index
-    @roles = Role.find(:all)
+    @roles = Role.find(:all).paginate(:page => params[:page], :per_page => Role::ROLES_PER_PAGE)
   end
 
   # GET /roles/1

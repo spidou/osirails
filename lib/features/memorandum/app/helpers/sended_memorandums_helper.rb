@@ -15,9 +15,9 @@ module SendedMemorandumsHelper
   
   # This method permit to initialize signature
   def initialize_signature
-    services = current_user.employee.services
+    service = current_user.employee.service
     signature = []
-    signature << "<input  type=\"text\" size=\"30\" name=\"memorandum[signature]\" value=\"#{services.first.name}\"/>"
+    signature << "<input  type=\"text\" size=\"30\" name=\"memorandum[signature]\" value=\"#{service.name}\"/>"
   end
   
   # This method permit to have a services on <ul> type.

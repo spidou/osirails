@@ -22,5 +22,5 @@
       <% end %>
       </tbody>
     </table>
-  <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :remote => {:update => 'products_list'}, :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+  <%= will_paginate @products, :renderer => 'RemoteLinkRenderer' , :remote => { :update => 'products_list' } %>
 <% end %>

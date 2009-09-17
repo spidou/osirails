@@ -8,54 +8,67 @@ else if (document.addEventListener)
 {
   document.addEventListener('load', initEventListeners, false);
 }
-    
+
 function initEventListeners()
 {
   nav_more_links_handler();
-  
   contextual_menu_toggle_button = $('contextual_menu_toggle_button');
-
-  contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
-  click_next(0);
+  
+  if (contextual_menu_toggle_button){
+    contextual_menu_toggle_button.addEventListener("click", function(){toggle_contextual_menu(contextual_menu_toggle_button)}, false);
+    click_next(0);
+  }
 }
 
 function toggle_contextual_menu(item)
 {
-  position_hidden = "-210px";
-  position_shown = "6px";
-  width_shown = "200px";
-  width_hidden = "0px";
   class_shown = "shown_contextual_menu";
   class_hidden = "hidden_contextual_menu";
   text_shown = "Cacher le menu";
   text_hidden = "Afficher le menu";
-
   if (item.className == class_shown)
   {
+    container_width = parseInt( $('contextual_menu_container').getStyle('width') )
+    container_right = parseInt( $('contextual_menu_container').getStyle('right') )
+    status_position = $('status_background_contextual_menu').getStyle('position')
+    menu_display    = $('contextual_menu').getStyle('display')
+    menu_position   = $('contextual_menu').getStyle('position')
+    menu_right      = $('contextual_menu').getStyle('right')
+    
     document.body.style.overflowX = 'hidden';
-    new Effect.Morph(item.parentNode, {
+    new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: position_hidden
+        marginRight: "-"+(container_width+container_right)+"px"
       },
-      duration: 1.5,
+      duration: 0.6,
       afterFinish: function(){
+        $('status_background_contextual_menu').setAttribute('style','position:relative;right:0px');
+        $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');
+        $('contextual_menu').setStyle({display: 'none'})
+        item.setAttribute('style','position:relative;right:0px');   
         item.className = class_hidden;
         document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
+        document.body.style.overflowX = 'auto';
       }
     });
   }
   else if (item.className == class_hidden)
   {
-    document.body.style.overflowX = 'none';
-    item.parentNode.style.width = width_shown;
-    new Effect.Morph(item.parentNode, {
+    $('status_background_contextual_menu').setAttribute('style','position:'+status_position);
+    $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
+    $('contextual_menu').setAttribute('style','display:'+menu_display+';position:'+menu_position+';right:'+menu_right);
+    
+    document.body.style.overflowX = 'hidden';
+    new Effect.Morph($('contextual_menu_container'), {
       style: {
-        marginRight: position_shown
+        marginRight: (container_width+container_right)+"px"
       },
-      duration: 0.8,
+      duration: 0.4,
       afterFinish: function(){
+        $('contextual_menu_container').setAttribute('style','right:'+container_right+'px');
         item.className = class_shown;
         document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
+        document.body.style.overflowX = 'auto';
       }
     });
   }
@@ -166,12 +179,58 @@ function nav_more_links_handler() {
   })
 }
 
+function prepare_ajax_holder() {
+  clean_ajax_holder_content()
+  
+  holder = $('ajax_holder')
+  holder.show()
+  
+  ajax_holder_loading()
+}
 
+function ajax_holder_loading() {
+  loader = $('ajax_holder_waiting')
+  loader.show()
+}
 
+function ajax_holder_loaded() {
+  loader = $('ajax_holder_waiting')
+  loader.hide()
+  
+  display_ajax_holder_content()
+}
 
+function clean_ajax_holder_content() {
+  $('ajax_holder_content').hide()
+}
 
+function display_ajax_holder_content() {
+  new Effect.Appear('ajax_holder_content')
+}
 
+function close_ajax_holder() {
+  new Effect.Fade('ajax_holder', { duration:'0.3', afterFinish:function(){ clean_ajax_holder_content()} })
+}
 
+// Load the initial attributes of the document forms for
+// the function preventClose, active the autoresize for the
+// targeted textarea with class "autoresize_text_area" and
+// initialize javascript time functions
+Event.observe(window, 'load', function() {
+  initializeAttributes();
+  
+  $$('.autoresize_text_area').each(function(textarea) {
+    new Widget.Textarea(textarea);
+  });
+  initialize_time();
+  display_time();
+});  
 
+// Avoid the prevent close message if the action is called
+// by a submit button
 
+Event.observe(window, 'submit', function(ev) {
+  window.onbeforeunload = null; 
+});
 
+window.onbeforeunload = preventClose;

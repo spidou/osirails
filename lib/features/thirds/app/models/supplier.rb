@@ -1,18 +1,20 @@
 class Supplier < Third
-  # Permissions
   has_permissions :as_business_object
-
-  # Relationships
+  
   has_one :iban, :as => :has_iban
-  has_many :tools
-
-  # Validations
-  validates_uniqueness_of :name, :siret_number
-
-  # Name Scope
+  
+  # for pagination : number of instances by index page
+  SUPPLIERS_PER_PAGE = 15
+  
   named_scope :activates, :conditions => {:activated => true}
+  
+  validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
 
   after_update :save_iban
+  
+  has_search_index :only_attributes    => [:name, :siret_number],
+                   :only_relationships => [:activity_sector, :legal_form, :iban, :contacts],
+                   :main_model         => true
 
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

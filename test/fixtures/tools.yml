@@ -4,7 +4,7 @@ good_tool:
   purchase_date: <%= Date.today %>
   purchase_price: 249999.99
   serial_number: "234ABQ" 
-  service: good_service
+  service: direction_general
   job: developer
   employee: normal
   supplier: supplier_normal

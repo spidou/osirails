@@ -1,13 +1,13 @@
-<% contextual_menu "Statistiques" do %>
+<% add_contextual_menu_item :commodities_stats do %>
 	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>" %>
 	<%= @inventory_closed.size == 0 ? "<span class='contextual_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='contextual_menu_statistic'>Il y a 1 inventaire en cours</span>" %>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_inventory_link %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= commodity_categories_link %>
 <% end %>
   

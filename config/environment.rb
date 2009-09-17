@@ -32,7 +32,7 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :paperclip, :has_permissions, :has_documents, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :validates_persistence_of, :paperclip, :has_permissions, :has_search_index, :has_documents, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -104,6 +104,8 @@ Rails::Initializer.run do |config|
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
 end
+
+require 'contextual_menu_manager'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)

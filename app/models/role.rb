@@ -1,4 +1,5 @@
 class Role < ActiveRecord::Base
+
   # Relationships
   has_and_belongs_to_many :users
   
@@ -16,6 +17,9 @@ class Role < ActiveRecord::Base
                                        :include    => :document_type,
                                        :conditions => [ "has_permissions_type = ?", "DocumentType" ]
   
+  # for pagination : number of instances by index page
+  ROLES_PER_PAGE = 15
+  
   # Validations
   validates_uniqueness_of :name
   validates_presence_of :name
@@ -29,6 +33,8 @@ class Role < ActiveRecord::Base
   @@form_labels[:description] = "Description du rôle :"
   @@form_labels[:user] = "Membres :"
   
+  has_search_index :only_attributes => [:name, :description] if Object.const_defined?("HasSearchIndex")
+                    
   private
     def create_bo_permissions
       BusinessObject.all.each do |bo|

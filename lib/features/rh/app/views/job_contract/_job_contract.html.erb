@@ -1,0 +1,52 @@
+<% form_for(job_contract, :url => employee_job_contract_path(@employee), :html => {:multipart => true}) do |form| %>
+  <%= form.error_messages %>
+
+  <h2>Informations du contrat de travail</h2>
+  
+  <p>
+    <%= form.label :job_contract_type_id %>
+    <%= form.form_or_view(job_contract_type_select(job_contract),:job_contract_type, :name) %>
+  </p>
+  <p>
+    <%= form.label :start_date %>
+    <%= form.form_or_view(form.date_select( :start_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => is_gone?(job_contract)), :start_date) %>
+  </p>
+  <p>
+    <%= form.label :end_date %>
+    <%= form.form_or_view(form.date_select( :end_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => (job_contract.end_date.nil? or is_gone?(job_contract) or job_contract.job_contract_type.limited==false)), :end_date) %> 
+  </p>
+  <p>
+    <%= form.label :employee_state_id %>
+    <%= form.form_or_view(form.collection_select( :employee_state_id, EmployeeState.all(:conditions => ["active=1"]), :id, :name, {}, {:disabled => is_gone?(job_contract)}), :employee_state, :name)%>
+  </p>
+  <p>
+    <%= form.label :salary %>
+    <% if is_form_view? %>
+      <%= form.text_field(:salary, :size => 8, :maxlength => 10, :disabled => is_gone?(job_contract)) %>
+    <% else %>
+      <%= strong(display_formatted_salary(job_contract.actual_salary)) %>
+      <%= employee_salaries_link(@employee, :image_tag => "") %>
+    <% end %>
+  </p>
+
+  <div id="employee_departure_form" <%= "style='display:none'" unless is_gone?(job_contract) and is_form_view? %> >
+    <h2>D&eacute;part de l&apos;employ&eacute;e</h2>
+    <p>
+      <%= form.label :employee_state_id, "Status :"%>
+      <%= employee_state_inactive(job_contract)%>
+    </p>
+    <p>
+      <%= label :departure, "Date de d&eacute;part"%>
+      <%= form.date_select :departure,{ :start_year => 1950, :order => [:day,:month,:year], :disabled => !is_gone?(job_contract)}%>
+    </p>
+  </div>
+
+  <h2>Documents du contrat de travail</h2>
+    <%= display_documents_list(job_contract) %>
+    <%= display_document_add_button(job_contract) if is_form_view? %>
+  
+  <% if is_form_view? %>
+    <p><%= form.submit "Modifier" %></p>
+  <% end%>
+
+<% end %>

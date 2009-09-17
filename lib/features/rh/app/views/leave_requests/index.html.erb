@@ -1,0 +1,25 @@
+<h1>Liste des demandes de cong&eacute;s</h1>
+
+<div>
+<% if @employee %>
+  <% add_contextual_menu_item :possible_actions do %>
+    <%= new_leave_request_link %>
+  <% end %>
+  
+  <% add_contextual_menu_item :useful_links do %>
+    <%= accepted_leave_requests_link %>
+    <%= refused_leave_requests_link %>
+    <%= cancelled_leave_requests_link %>
+    <%= employee_leaves_link(current_user.employee, :link_text => "Voir mes congés") if current_user.employee %>
+  <% end %>
+  
+  <%= render :partial => 'pending_leave_requests', :object => @pending_leave_requests unless @pending_leave_requests.empty? %>
+  <%= render :partial => 'in_progress_leave_requests' %>
+  <%= render :partial => 'accepted_leave_requests' %>
+  <%= render :partial => 'refused_leave_requests' %>
+  
+<% else %>
+  <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+<% end %>
+
+</div>

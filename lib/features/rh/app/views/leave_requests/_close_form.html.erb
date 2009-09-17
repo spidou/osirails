@@ -1,0 +1,24 @@
+<% leave_request = close_form %>
+
+<%= render :partial => leave_request %>
+
+<div class="presentation_medium">
+  <% form_for(leave_request, :url => close_leave_request_path(leave_request)) do |f| %>
+    <h2>R&eacute;ponse de la direction</h2>
+    <%= f.error_messages %>
+    <p>  
+      <%= f.label :agreement_true %>
+      <%= f.radio_button(:director_agreement, "true") %>
+      <%= f.label :agreement_false %>
+      <%= f.radio_button(:director_agreement, "false") %>     
+    </p>  
+    <p>
+      <%= f.label :director_remarks %>
+      <%= f.text_area(:director_remarks, :rows => 5) %>
+    </p>
+    <p>
+      <%= f.reset %>
+      <%= f.submit button_name %>
+    </p>
+  <% end %>
+</div>
