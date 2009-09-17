@@ -8,7 +8,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :commodities_inventories
   map.resources :tools
 
-  [:computers, :devices, :machines, :vehicules, :other_tools].each do |tool_type|
+  [:computers, :devices, :machines, :vehicles, :other_tools].each do |tool_type|
     map.resources tool_type do |tool|
       tool.resources :tool_events
     end

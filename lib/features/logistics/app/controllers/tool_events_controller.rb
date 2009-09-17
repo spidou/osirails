@@ -63,7 +63,7 @@ class ToolEventsController < ApplicationController
     
     # OPTIMIZE The subclasses should be retrieved in a dynamic way
     def retrieve_tool
-      foreign_keys = ['computer_id','device_id','other_tool_id','machine_id','vehicule_id']
+      foreign_keys = ['computer_id','device_id','other_tool_id','machine_id','vehicle_id']
       key          = params.keys.select{|e| foreign_keys.include?(e)}.last.to_sym
       @tool        = Tool.find params[key]
     end

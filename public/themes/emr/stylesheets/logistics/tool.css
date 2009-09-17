@@ -1,3 +1,26 @@
+ul#tool_types {
+  list-style-type: none;
+  text-align: center;
+}
+
+ul#tool_types li {
+  display: inline-block;
+  text-align: center;
+  margin-right: 30px;
+}
+
+ul#tool_types li a {
+  display: block;
+}
+
+ul#tool_types li a img {
+  display: block;
+  padding: 2px;
+  border: 1px dashed #CCC;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 /* css for tool events displaying */
 
 .events {

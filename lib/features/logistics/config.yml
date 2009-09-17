@@ -20,36 +20,41 @@ menus:
           description: "Permet la gestion des stocks au niveau des matières premières"
       commodities_manager:
         title: "Gestion des matières premières"
-        description: "Permet la gestion des familles et des matières premières"
+        description: "Gestion des matières premières et des catégories de matière première"
         position: 1
         children:
           commodity_categories:
             title: "Catégories de matières premières"
-            description: "Permet la gestion des categories de matières premières"
+            description: "Gestion des categories de matière première"
           commodities:
             title: "Matières premières"
-            description: "Permet la gestion des matières premières"
+            description: "Gestion des matières premières"
       tools:
         title: "Équipements"
-        description: "Permet la gestion des équipements"
+        description: "Gestion des équipements"
         children:
-          # a menu can't belongs_to many menu, but a controller must have a menu that why we put a hidden menu
-          tool_events:
-            title: "Evènements"
-            description: "Permet la gestion des évènements sur les équipements"
-            hidden: true
-          other_tools:
-            title: "Autre Equipements"
-            description: "Permet la gestion des équipements ne faisant pas partie des types d'équipements référencés"
-          computers:
-            title: "Ordinateurs"
-            description: "Permet la gestion des ordinateurs"
-          devices:
-            title: "Périphériques"
-            description: "Permet la gestion des périphériques"
-          vehicules:
-            title: "Vehicules"
-            description: "Permet la gestion des véhicules"
           machines:
             title: "Machines"
-            description: "Permet la gestion des machines"
+            description: "Gestion des machines"
+            position: 1
+          vehicles:
+            title: "Vehicules"
+            description: "Gestion des véhicules"
+            position: 2
+          computers:
+            title: "Ordinateurs"
+            description: "Gestion des ordinateurs"
+            position: 3
+          devices:
+            title: "Périphériques"
+            description: "Gestion des périphériques"
+            position: 4
+          other_tools:
+            title: "Autres"
+            description: "Gestion des autres équipements"
+            position: 5
+          tool_events:
+            title: "Evènements"
+            description: "Gestion des évènements sur les équipements"
+            hidden: true
+            position: 6

@@ -283,7 +283,7 @@ namespace :osirails do
       d.update_attribute(:title, "Document légal")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("invoice")
-      d.update_attribute(:title, "facture")
+      d.update_attribute(:title, "Facture")
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("expence_account")
       d.update_attribute(:title, "Note de frais")
