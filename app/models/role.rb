@@ -17,6 +17,9 @@ class Role < ActiveRecord::Base
                                        :include    => :document_type,
                                        :conditions => [ "has_permissions_type = ?", "DocumentType" ]
   
+  # for pagination : number of instances by index page
+  ROLES_PER_PAGE = 15
+  
   # Validations
   validates_uniqueness_of :name
   validates_presence_of :name

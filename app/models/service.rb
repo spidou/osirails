@@ -1,20 +1,16 @@
 class Service < ActiveRecord::Base
   has_permissions :as_business_object
   
-  # Relationship
-  has_many :schedules
-  has_many :employees_services
-  has_many :employees, :through => :employees_services
-  
-  # Plugin
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"
   
-  # Named Scopes
+  has_many :employees
+  has_many :schedules
+  has_many :jobs
+  
   named_scope :mains,:conditions => {:service_parent_id => nil}
   
-  # Validation Macros
-  validates_presence_of :name, :message => "ne peut être vide"
-
+  validates_presence_of :name
+  
   # Store the ancient services_parent_id before update_service_parent
   attr_accessor :old_service_parent_id, :update_service_parent
   cattr_accessor :form_labels
@@ -30,9 +26,23 @@ class Service < ActiveRecord::Base
                    :except_relationships  => [:schedules, :parent, :children, :employees_services, :employees]
 
   @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom :"
+  @@form_labels[:name]           = "Nom :"
   @@form_labels[:service_parent] = "Service parent :"
 
+  # Method to get all responsibles for the service (it return employees)
+  def responsibles
+    responsibles_employees = []
+    self.jobs.reject {|n| n.responsible == false}.each do |job|
+      responsibles_employees += job.employees
+    end
+    return responsibles_employees.uniq
+  end
+  
+  # Method that return all employees that belongs to current service according to the belonging jobs or the belonging employees
+  def members
+    Employee.all(:include => [:service, {:jobs => [:service] }], :conditions => ["services.id =? or services_jobs.id =?", id, id])
+  end
+  
   # This method permit to check if a service can be a parent
   def before_update
     if self.update_service_parent

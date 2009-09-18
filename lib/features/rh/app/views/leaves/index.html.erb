@@ -1,0 +1,29 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_employee_leave_link(@employee) %>
+  <%= new_leave_request_link %>
+  <%= employee_link(@employee) %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= leave_requests_link(:link_text => "Voir mes demandes de congés") if @employee == current_user.employee %>
+  <%= leaves_link(@employee, !@view_cancelled)%>
+  <%= employees_link %>
+<% end %>
+
+<h1>Historique des cong&eacute;s</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+
+<div class='presentation_medium'>
+
+<% if @employee.job_contract.start_date.nil?%>
+  <p>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</p>
+<% else %>
+  <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
+    <p>Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, @year) %></p>
+  </form> 
+  <% end %>   
+  <div id='leaves_list'><%= render :partial => "leaves"%></div>
+<% end %>
+
+</div>

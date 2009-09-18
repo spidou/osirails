@@ -1,7 +1,7 @@
 class ContentsController < ApplicationController
   # GET /contents
   def index
-    @contents = Content.find(:all)
+    @contents = Content.find(:all).paginate(:page => params[:page], :per_page => Content::CONTENTS_PER_PAGE)
   end
   
   # GET /contents/1

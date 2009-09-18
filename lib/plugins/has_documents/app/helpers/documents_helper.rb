@@ -1,7 +1,7 @@
 module DocumentsHelper
 
   def display_documents_list(documents_owner)
-    html = '<div id="documents">'
+    html = "<div id=\"#{documents_owner.class.name.underscore}_documents\">"
     html << render_documents_list(documents_owner, :group_by => "date", :order_by => "asc")
     html << '</div>'
   end
@@ -19,8 +19,12 @@ module DocumentsHelper
       order_by = "asc"
       order_symbol = "^"
     end
-    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => :documents,
-                                                           :url     => documents_path(documents_owner, :group_by => method, :order_by => order_by),
+    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => "#{documents_owner.class.name.underscore}_documents",
+                                                           :url     => documents_path( documents_owner,
+                                                                                       :group_by => method,
+                                                                                       :order_by => order_by,
+                                                                                       :owner    => documents_owner.class.name,
+                                                                                       :owner_id => documents_owner.id ),
                                                            :method  => :get
   end
 
@@ -63,11 +67,11 @@ module DocumentsHelper
   end
 
   def documents_path(documents_owner, options = {})
-    send("#{documents_owner.class.name.tableize.singularize}_documents_path", documents_owner.id, options)
+    send("#{documents_owner.class.name.tableize.singularize}_documents_path", options)
   end
 
   def document_path(documents_owner, document, options = {})
-    send("#{documents_owner.class.name.tableize.singularize}_document_path", documents_owner.id, document.id, options)
+    send("#{documents_owner.class.name.tableize.singularize}_document_path", document.id, options)
   end
 
 end

@@ -1,6 +1,6 @@
 <div class="presentation_large">
-<% form_for @reference do |form| %>
-<%= form.error_messages %>
+<% form_for @product_reference do |form| %>
+  <%= form.error_messages %>
   <h2>Rérérence</h2>
   <p>
     <%= form.label :reference %>
@@ -12,7 +12,7 @@
   </p>
   <p>
     <%= form.label :description %>
-    <%= form.form_or_view(form.text_area(:description, :rows => "5", :cols => "50"), :description) %>
+    <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
   </p>
   <p>
     <%= form.label :information %>

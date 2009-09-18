@@ -5,7 +5,12 @@
 
 <h1>Historique des salaires</h1>
 
-<div>
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<div class="presentation-medium">
+
+<% if @salaries.empty? %>
+  <p>Aucun salaire</p>  
+<% else %>
   <table>
       <tr>
         <th>Montant brut</th>
@@ -19,5 +24,6 @@
         <td><%=h salary.created_at.strftime("%d/%m/%Y")%></td>
       </tr> 
       <%end%>
-  </table>
+  </table>  
+<% end %>
 </div>

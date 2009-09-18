@@ -1,0 +1,26 @@
+<% leave_request = notice_form %>
+
+<%= render :partial => leave_request %>
+
+<div class="presentation_medium">
+  <% form_for(leave_request, :url => notice_leave_request_path(leave_request)) do |f| %>
+    <h2>Observation des ressources humaines</h2>
+    <%= f.error_messages %>
+    <p>  
+      <%= f.label :acquired_leaves_days %>
+      <%= f.text_field(:acquired_leaves_days, :size => 1) %> jours  
+    </p> 
+    <p>
+      <%= f.label :duration %>
+      <%= f.text_field(:duration, :size => 1, :value => leave_request.total_estimate_duration) %> jours 
+    </p>    
+    <p>
+      <%= f.label :observer_remarks %>
+      <%= f.text_area(:observer_remarks, :rows => 5) %>
+    </p>
+    <p>
+      <%= f.reset %>
+      <%= f.submit button_name %>
+    </p>
+  <% end %>
+</div>

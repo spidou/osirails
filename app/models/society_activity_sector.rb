@@ -6,4 +6,7 @@ class SocietyActivitySector < ActiveRecord::Base
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"
+  
+  # for pagination : number of instances by index page
+  SOCIETY_ACTIVITY_SECTORS_PER_PAGE = 15
 end

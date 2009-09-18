@@ -7,18 +7,24 @@ class DocumentsController < ApplicationController
   #   GET /employees/1/documents
   #
   def index
-    hash = params.select{ |key, value| key.end_with?("_id") }
-    raise "An error has occured. The DocumentsController should receive at least 1 param which ends with '_id'" if hash.size < 1
-    raise "An error has occured. The DocumentsController shouldn't receive more than 1 params which ends with '_id'" if hash.size > 1
+    raise "An error has occured, params[:owner] is expected" unless params[:owner]
+    raise "An error has occured, params[:owner_id] is expected" unless params[:owner_id]
     
-    owner_class = hash.first.first.chomp("_id").camelize.constantize
-    owner_id = hash.first.last
-    @documents_owner = owner_class.send(:find, owner_id)
-
-    @group_by = params[:group_by] || "date"
-    @order_by = params[:order_by] || "asc" # ascendent
-
+    begin
+      owner_class = params[:owner].constantize
+      @documents_owner = owner_class.send(:find, params[:owner_id])
+      @group_by = params[:group_by] || "date"
+      @order_by = params[:order_by] || "asc" # ascendent
+    rescue Exception => e
+      if RAILS_ENV == "production"
+        logger.error("[#{DateTime.now}] (#{File.basename(__FILE__)}) > #{e.message}")
+        flash.now[:error] = "Une erreur est critique est survenue. Merci de signaler le problème à votre administrateur."
+      else
+        raise e
+      end
+    end
+    
     render :layout => false
   end
-
+  
 end

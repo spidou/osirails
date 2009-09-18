@@ -8,6 +8,9 @@ class Content < ActiveRecord::Base
   belongs_to :menu
   belongs_to :author, :class_name => "User"
   has_many :versions, :class_name => "ContentVersion", :dependent => :destroy
+  
+  # for pagination : number of instances by index page
+  CONTENTS_PER_PAGE = 15
 
   # Validation Macros
   validates_presence_of :title, :message => "ne peut être vide"

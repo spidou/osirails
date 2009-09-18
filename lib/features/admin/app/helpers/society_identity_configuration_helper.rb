@@ -35,6 +35,14 @@ module SocietyIdentityConfigurationHelper
     html << "</select>\n"
     html
   end
+  
+  def display_time_zone(name, value)
+    disabled = is_form_view? ? "" : "disabled='disabled' "
+    html = ""
+    html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
+    html << time_zone_options_for_select(value)
+    html << "</select>\n"
+  end
 
   def edit_society_identity_configuration_link(text="")
     link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )

@@ -55,9 +55,9 @@ namespace :osirails do
   namespace :test do
     Rake::TestTask.new(:recent => "db:test:prepare") do |t|
       since = TEST_CHANGES_SINCE
-      touched = FileList['**/features/**/test/**/*_test.rb'].select { |path| File.mtime(path) > since } +
-        recent_tests('**/features/**/app/models/**/*.rb', 'test/unit', since) +
-        recent_tests('**/features/**/app/controllers/**/*.rb', 'test/functional', since)
+      touched = FileList['**/**/**/test/**/*_test.rb'].select { |path| File.mtime(path) > since } +
+        recent_tests('**/**/**/app/models/**/*.rb', 'test/unit', since) +
+        recent_tests('**/**/**/app/controllers/**/*.rb', 'test/functional', since)
 
       t.libs << 'test'
       t.verbose = true
@@ -85,21 +85,33 @@ namespace :osirails do
 
     Rake::TestTask.new(:units => "db:test:prepare") do |t|
       t.libs << "test"
-      t.pattern = '**/features/**/test/unit/**/*_test.rb'
+      if ENV['FEATURE']
+        t.pattern = "**/**/#{ENV['FEATURE']}/test/unit/**/*_test.rb"
+      else
+        t.pattern = "**/**/**/test/unit/**/*_test.rb"
+      end
       t.verbose = true
     end
     Rake::Task['test:units'].comment = "Run the unit tests in test/unit"
 
     Rake::TestTask.new(:functionals => "db:test:prepare") do |t|
       t.libs << "test"
-      t.pattern = '**/features/**/test/functional/**/*_test.rb'
+      if ENV['FEATURE']
+        t.pattern = "**/**/#{ENV['FEATURE']}/test/functional/**/*_test.rb"
+      else
+        t.pattern = "**/**/**/test/functional/**/*_test.rb"
+      end
       t.verbose = true
     end
     Rake::Task['test:functionals'].comment = "Run the functional tests in test/functional"
 
     Rake::TestTask.new(:integration => "db:test:prepare") do |t|
       t.libs << "test"
-      t.pattern = '**/features/**/test/integration/**/*_test.rb'
+      if ENV['FEATURE']
+        t.pattern = "**/**/#{ENV['FEATURE']}/test/integration/**/*_test.rb"
+      else
+        t.pattern = "**/**/**/test/integration/**/*_test.rb"
+      end
       t.verbose = true
     end
     Rake::Task['test:integration'].comment = "Run the integration tests in test/integration"

@@ -31,6 +31,14 @@ namespace :osirails do
       cdi = JobContractType.create :name => "CDI", :limited => 0
       JobContractType.create :name => "CDD", :limited => 1
       
+      # default leave types
+      LeaveType.create :name => "Congés payés"
+      LeaveType.create :name => "Congé maladie"
+      LeaveType.create :name => "Congé maternité"
+      LeaveType.create :name => "Congé paternité"
+      LeaveType.create :name => "Congés spéciaux"
+      LeaveType.create :name => "Récupération"
+      
       # default countries
       france = Country.create :name => "FRANCE", :code => "fr"
       reunion = Country.create :name => "REUNION", :code => "fr"
@@ -94,12 +102,43 @@ namespace :osirails do
       
       # default services
       dg = Service.create :name => "Direction Générale"
-      Service.create :name => "Service Administratif", :service_parent_id => dg.id
-      Service.create :name => "Service Commercial", :service_parent_id => dg.id
+      af = Service.create :name => "Administratif et Financier", :service_parent_id => dg.id
+      com = Service.create :name => "Commercial", :service_parent_id => dg.id
+      av = Service.create :name => "Achats/Ventes", :service_parent_id => dg.id
+      si = Service.create :name => "Informatique", :service_parent_id => dg.id
+      cg = Service.create :name => "Conception Graphique", :service_parent_id => dg.id
       prod = Service.create :name => "Production", :service_parent_id => dg.id
-      Service.create :name => "Atelier Décor", :service_parent_id => prod.id
-      Service.create :name => "Atelier Découpe", :service_parent_id => prod.id
-      Service.create :name => "Atelier Fraisage", :service_parent_id => prod.id 
+      pose = Service.create :name => "Pose", :service_parent_id => dg.id
+      
+      # default jobs
+      Job.create :name => "Directeur Général", :responsible => true, :service_id => dg.id
+      Job.create :name => "Directeur Commercial", :responsible => true, :service_id => com.id
+      Job.create :name => "Commercial", :responsible => false, :service_id => com.id
+      Job.create :name => "Chargé d'affaires", :responsible => false, :service_id => com.id
+      Job.create :name => "Directeur Administratif et Financier", :responsible => true, :service_id => af.id
+      Job.create :name => "Secrétaire", :responsible => false, :service_id => af.id
+      Job.create :name => "Assistante de Direction", :responsible => false, :service_id => af.id
+      Job.create :name => "Comptable", :responsible => false, :service_id => af.id
+      Job.create :name => "Assistante des Ressources Humaines", :responsible => false, :service_id => af.id
+      Job.create :name => "Responsable des Achats/Ventes", :responsible => true, :service_id => av.id
+      Job.create :name => "Assistante des Achats/Ventes", :responsible => false, :service_id => av.id
+      Job.create :name => "Ingénieur Informaticien", :responsible => true, :service_id => si.id
+      Job.create :name => "Responsable Conception Graphique", :responsible => true, :service_id => cg.id
+      Job.create :name => "Graphiste Sénior", :responsible => false, :service_id => cg.id
+      Job.create :name => "Graphiste", :responsible => false, :service_id => cg.id
+      Job.create :name => "Poseur de film", :responsible => false, :service_id => cg.id
+      Job.create :name => "Responsable de Production", :responsible => true, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Plasturgie", :responsible => false, :service_id => prod.id
+      Job.create :name => "Monteur Câbleur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Plasticien Monteur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Métallier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Métallier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chaudronnier", :responsible => false, :service_id => prod.id
+      Job.create :name => "Dessinateur Fraiseur", :responsible => false, :service_id => prod.id
+      Job.create :name => "Peintre", :responsible => false, :service_id => prod.id
+      Job.create :name => "Chef d'équipe Pose", :responsible => false, :service_id => pose.id
+      Job.create :name => "Poseur d'enseignes", :responsible => false, :service_id => pose.id
+      Job.create :name => "Poseur", :responsible => false, :service_id => pose.id
       
       # default contact types
       contact_customer1 = ContactType.create :name => "Normal", :owner => "Customer"
@@ -278,6 +317,34 @@ namespace :osirails do
       d.update_attribute(:title, "Logo")
       d.mime_types << [ pdf, jpg, png ]
       
+      # for employees
+      d = DocumentType.find_or_create_by_name("curriculum_vitae")
+      d.update_attribute(:title, "Curriculum Vitae (CV)")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("driving_licence")
+      d.update_attribute(:title, "Permis de conduire")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("identity_card")
+      d.update_attribute(:title, "Pièce d'identité")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("other")
+      d.update_attribute(:title, "Autre")
+      d.mime_types << [ pdf, jpg, png ]
+      
+      # for job contract
+      d = DocumentType.find_or_create_by_name("job_contract")
+      d.update_attribute(:title, "Contrat de travail")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("job_contract_endorsement")
+      d.update_attribute(:title, "Avenant au contrat de travail")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("resignation_letter")
+      d.update_attribute(:title, "Lettre de licenciement")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("demission_letter")
+      d.update_attribute(:title, "Lettre de démission")
+      d.mime_types << [ pdf, jpg, png ]
+      
       ## default file types
       # for feature
 #      f = FileType.create :name => "Archive de feature", :model_owner => "Feature"
@@ -334,13 +401,13 @@ namespace :osirails do
       Event.create :calendar_id => calendar2.id, :title => "Titre de l'evenement", :description => "Description de l'evenement", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours
       
       # default employees
-      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :social_security_number => "1234567891234 45", :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
+      john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :social_security_number => "1234567891234 45", :service_id => dg.id, :civility_id => mr.id, :family_situation_id => celib.id, :qualification => "Inconnu"
       john.numbers.build(:number => "692123456", :indicative_id => indicative.id, :number_type_id => mobile.id)
       john.numbers.build(:number => "262987654", :indicative_id => indicative.id, :number_type_id => fixe.id)
       john.build_address(:address1 => "1 rue des rosiers", :address2 => "", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
-      john.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
+      john.build_iban(:bank_name => "Bred", :account_name => "John DOE" , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
       john.save!
-      john.services << Service.first
+      john.jobs << Job.first
       john.user.roles << role_admin
       john.user.enabled = true
       john.user.save!
@@ -350,19 +417,25 @@ namespace :osirails do
       first_names = %W( pierre paul jacques jean fabrice patricia marie julie isabelle )
       last_names  = %W( dupont hoarau turpin payet grondin boyer)
       numbers     = %W( 18 20 22 23 30 35 40 45 )
-      addresses   = %W( rosiers palmiers lauriers champs-elizées cocotiers )
+      addresses   = %W( rosiers palmiers lauriers Champs-Elizées cocotiers )
       countries   = %W( Reunion France Espagne Italie EtatsUnis )
       cities      = %W( SaintDenis Paris Madrid Rome NewYork )
       banks       = %W( Bred BR CreditAgricole BFC )
       ###########
       20.times do |i|
-        person = john.clone
-        person.first_name = first_names.rand
-        person.last_name = last_names.rand
-        person.email = "#{person.first_name}@#{person.last_name}.com"
-        person.birth_date = Date.today - numbers.rand.to_i.years - numbers.rand.to_i.days
-        person.build_address(:address1 => "#{numbers.rand} rue des #{addresses.rand}", :address2 => "", :country_name => "#{countries.rand}", :city_name => "#{cities.rand}", :zip_code => rand(99999).to_s)
-        person.save!
+        employee = john.clone
+        employee.first_name = first_names.rand
+        employee.last_name = last_names.rand
+        employee.email = "#{employee.first_name}@#{employee.last_name}.com"
+        employee.birth_date = Date.today - numbers.rand.to_i.years - numbers.rand.to_i.days
+        employee.build_address(:address1 => "#{numbers.rand} rue des #{addresses.rand}", :address2 => "", :country_name => "#{countries.rand}", :city_name => "#{cities.rand}", :zip_code => rand(99999).to_s)
+        employee.build_iban(:bank_name => banks.rand, :account_name => employee.fullname , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
+        employee.service = Service.all.rand
+        employee.save!
+        [1,1,1,1,1,1,1,2,2,3].rand.times do |j|
+          job = Job.all.rand
+          ( employee.jobs << job ) unless employee.jobs.include?(job)
+        end
       end
 
       # default calendar
@@ -423,7 +496,7 @@ namespace :osirails do
         klass.constantize.all.each do |object|
           object.permissions.each do |permission|
             permission.permissions_permission_methods.each do |object_permission|
-              if permission.role == role_guest and ( object_permission.permission_method.name != "list" and object_permission.permission_method.name != "view" )
+              if permission.role == role_guest and ( object_permission.permission_method.name != "list" and object_permission.permission_method.name != "view" and object_permission.permission_method.name != "access" )
                 object_permission.update_attribute(:active, false)
               else
                 object_permission.update_attribute(:active, true)
@@ -436,15 +509,15 @@ namespace :osirails do
 
     desc "Depopulate the database"
     task :depopulate => :environment do
-      [Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
-        JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
-        UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
-        SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,EmployeesService,Number,Address,Contact,OrderType,Order,
-        OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
-        
-        puts "destroying all rows for model '#{model.name}'"
-        model.destroy_all
-      end
+      #[Role,User,Civility,FamilySituation,BusinessObjectPermission,MenuPermission,DocumentTypePermission,CalendarPermission,NumberType,Indicative,Job,JobContractType,
+      #  JobContract,Service,EmployeeState,ThirdType,Employee,ContactType,Salary,Premium,Country,LegalForm,PaymentMethod,PaymentTimeLimit,
+      #  UnitMeasure,EstablishmentType,Establishment,Supplier,Iban,Customer,Commodity,CommodityCategory,Product,ProductReference,ProductReferenceCategory,
+      #  SocietyActivitySector,ActivitySector,DocumentType,FileType,MimeType,MimeTypeExtension,Calendar,Event,Employee,Number,Address,Contact,OrderType,Order,
+      #  OrderTypesSocietyActivitySectors,SalesProcess,MemorandumsService,Memorandum, Checklist, ChecklistOption, Estimate, EstimatesProductReference, StepCommercial, StepSurvey, StepGraphicConception, StepEstimate, StepInvoicing].each do |model|
+      #  
+      #  puts "destroying all rows for model '#{model.name}'"
+      #  model.destroy_all
+      #end
     end
 
     desc "Reset the database"

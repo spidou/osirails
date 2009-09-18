@@ -67,9 +67,36 @@ module ApplicationHelper
     "Bienvenue, " + current_user.username
   end
   
+  def daynames_and_monthnames_retrieval
+      html = "<script>"
+      html << "var rubyDayNames = new Array();"
+      0.upto(6){|day|
+        html << "rubyDayNames["+day.to_s+"] = \""+Date::DAYNAMES[day]+"\";"
+      }
+      html << "</script>"
+      
+      html << "<script>"
+      html << "var rubyMonthNames = new Array();"
+      0.upto(11){|month|
+        html << "rubyMonthNames["+month.to_s+"] = \""+Date::MONTHNAMES[month+1]+"\";"
+      }
+      html << "</script>"
+      
+      html << "<script>"
+      html << "var rubyTime = \""+Time.zone.now.strftime("%Y %m %d %H:%M:%S")+"\" ;"
+      html << "</script>"
+  end
+  
   def display_date_time
-    day = DateTime.now.strftime("%A").downcase
-    DateTime.now.strftime("Nous sommes le #{day} %d %B %Y, il est %H:%M")
+    now = Time.zone.now
+    html =  "Nous sommes le "
+    html << "<span id='banner_date'>"
+    html << now.to_date.strftime("%A %d %B %Y")
+    html << "</span>"
+    html << ", il est "
+    html << "<span id='banner_time'>"
+    html << now.strftime("%H:%M")
+    html << "</span>"
   end
   
   def display_footer
@@ -123,7 +150,7 @@ module ApplicationHelper
   end
   
   def is_edit_view?
-    params[:action] == "edit" or request.put?
+    params[:action] == "edit" or params[:action].ends_with?("_form") or request.put?
   end
   
   #begin
@@ -311,7 +338,9 @@ module ApplicationHelper
         
         options[:html_options] = options[:html_options].merge({ :method => :delete, :confirm => "Are you sure?" }) if permission_name == :delete
         
-        link_to( link_content, link_url, options[:html_options] )
+        return link_to( link_content, link_url, options[:html_options] )
+      else
+        return nil
       end
     end
     
@@ -415,18 +444,29 @@ module ApplicationHelper
     def url_for_menu(menu)
       # OPTIMIZE optimize this IF block code
       if menu.name
-        path = menu.name + "_path"
-        if self.respond_to?(path)
-          self.send(path)
-        else
-          url_for(:controller => menu.name)
-        end
+        build_menu_path(menu) || url_for(:controller => menu.name)
       else
         unless menu.content.nil?
           url_for(:controller => "contents", :action => "show", :id => menu.content.id)
         else
           ""
         end
+      end
+    end
+    
+    def build_menu_path(menu, child_path = nil)
+      if child_path
+        path = menu.name.singularize + "_#{child_path}"
+      else
+        path = menu.name
+      end
+      
+      if self.respond_to?("#{path}_path")
+        self.send("#{path}_path")
+      elsif menu.parent
+        build_menu_path(menu.parent, path)
+      else
+        false
       end
     end
     

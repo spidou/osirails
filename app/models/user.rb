@@ -4,6 +4,9 @@ class User < ActiveRecord::Base
   
   # Requires
   require "digest/sha1"
+  
+  # for pagination : number of instances by index page
+  USERS_PER_PAGE = 15
 
   # Relationships
   has_and_belongs_to_many :roles
@@ -41,18 +44,18 @@ class User < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:username] = "Nom du compte utilisateur :"
-  @@form_labels[:password] = "Mot de passe :"
-  @@form_labels[:password_confirmation] = "Confirmation du mot de passe :"
-  @@form_labels[:enabled] = "Activ&eacute; :"
-  @@form_labels[:last_connection] = "dernière connection :"
-  @@form_labels[:roles] = "R&ocirc;les :"
-  @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
+  @@form_labels[:username]                  = "Nom du compte utilisateur :"
+  @@form_labels[:password]                  = "Mot de passe :"
+  @@form_labels[:password_confirmation]     = "Confirmation du mot de passe :"
+  @@form_labels[:enabled]                   = "Compte activé ? :"
+  @@form_labels[:last_connection]           = "Dernière connexion :"
+  @@form_labels[:roles]                     = "Rôles :"
+  @@form_labels[:force_password_expiration] = "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion :"
  
   # Search Plugin
   has_search_index  :additional_attributes => { :expired? => :boolean },
-                    :only_attributes       => [:username, :enabled, :last_connection, :last_activity],
-                    :displayed_attributes  => [:id, :username, :enabled, :expired?, :last_activity],
+                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ],
+                    :displayed_attributes  => [ :id, :username, :enabled, :expired?, :last_activity ],
                     :main_model            => true
   
   # Method to verify if the password pass by argument is the same as the password in the database

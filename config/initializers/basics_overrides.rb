@@ -1,8 +1,16 @@
 silence_warnings do
   Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
   Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
-  Date::DAYNAMES = %w( Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi )
-  Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
+  Date::DAYNAMES = %w( dimanche lundi mardi mercredi jeudi vendredi samedi )
+  Date::ABBR_DAYNAMES = %w( dim lun mar mer jeu ven sam )
+end
+
+class Date
+  
+  def last_week
+    monday - 1.week
+  end
+  
 end
 
 class Time
@@ -124,7 +132,7 @@ module ActiveRecord
       :too_long => "est trop long (%d caractères maximum)",
       :too_short => "est trop court(%d caractères minimum)",
       :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
-      :taken => "est déjà  prit",
+      :taken => "est déjà prit",
       :not_a_number => "n'est pas un nombre",
     })
   end
@@ -137,7 +145,7 @@ module ActiveSupport
     end
 
     def to_humanized_datetime
-      self.strftime("%d %B %Y à %I:%M")
+      self.strftime("%d %B %Y à %H:%M")
     end
   end
 end

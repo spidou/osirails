@@ -1,0 +1,29 @@
+<div class='presentation_medium'>
+  <h2>Informations du cong&eacute;</h2>
+  
+  <% form_for [@employee, @leave] do |form| %>
+  <%= form.error_messages %>
+  <p>
+    <%= form.label :start_date %>
+    <%= form.date_select(:start_date, {:order => [:day,:month,:year]}) %>
+    <%= form.label :start_half %>
+    <%= form.check_box(:start_half, {}, '1', '0')%>
+  </p>
+  <p>
+    <%= form.label :end_date %>
+    <%= form.date_select(:end_date, {:order => [:day,:month,:year]}) %>
+    <%= form.label :end_half %>
+    <%= form.check_box(:end_half, {}, '1', '0') %>
+  </p>
+  <p>
+    <%= form.label :duration %>
+    <%= form.text_field(:duration, {:maxlength => 3,:size => 1}) %>
+  </p>
+  <p>
+    <%= form.label :leave_type_id %>
+    <%= form.collection_select :leave_type_id, @leave_types, :id, :name, { :prompt => "Sélectionnez le type du congé" } %>
+  </p>
+  <p><%= form.submit button_name%></p>
+  
+  <% end %>
+</div>

@@ -12,7 +12,9 @@ class Number < ActiveRecord::Base
   validates_length_of :number, :is => 9
   
   attr_accessor :should_destroy 
-
+  
+  named_scope :visibles, :conditions => ['visible=?',true]
+  
   VISIBLE_STATES = { "Privé" => false, "Public" => true } 
   
   # Search Plugin

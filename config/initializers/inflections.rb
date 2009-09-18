@@ -8,3 +8,7 @@
 #   inflect.irregular 'person', 'people'
 #   inflect.uncountable %w( fish sheep )
 # end
+
+Inflector.inflections do |inflect|
+  inflect.irregular 'leave', 'leaves'
+end

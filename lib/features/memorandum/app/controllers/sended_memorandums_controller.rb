@@ -3,13 +3,12 @@ class SendedMemorandumsController < ApplicationController
   
   # GET /sended_memorandums
   def index
-    if current_user.employee.nil?
-      flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'&ecirc;tes pas associ&eacute;s &agrave; un employ&eacute;"
+    unless current_user.employee
+      flash.now[:error] = "Vous ne pouvez pas envoyer de notes de service si vous n'êtes pas associés à un employé"
     end
-    memorandum = []
-    memorandum += Memorandum.not_published(current_user).sort_by(&:updated_at)
-    memorandum += Memorandum.published(current_user).sort_by(&:published_at).reverse
-    @sended_memorandums = memorandum.paginate :page => params[:memorandum],:per_page => 10
+    memorandums  = Memorandum.not_published(current_user).sort_by(&:updated_at)
+    memorandums += Memorandum.published(current_user).sort_by(&:published_at).reverse
+    @sended_memorandums = memorandums.paginate(:page => params[:memorandum],:per_page => 10)
   end
 
   # GET /sended_memorandums/show

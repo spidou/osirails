@@ -29,14 +29,14 @@ module HasSearchIndex
       errors = check_arguments(model, attributes)
       attributes.delete_if {|attribute| errors[:wrong_attributes].include?(attribute) or errors[:wrong_model]}        # filter attributes according to errors
       
-      html =  form_remote_tag( :url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()" )
+      html =  form_remote_tag(:url => '/search_index/update', :update => "ajax_holder_content", :before => "javascript:prepare_ajax_holder()", :loaded => "javascript:ajax_holder_loaded()", :html => { :class => "skip_prevent_close" })
       html << "<p>"
       html << "<input type='hidden' name='contextual_search[errors]' value='#{errors.to_yaml}'/>" # errors_hash
       html << "<input type='hidden' name='contextual_search[model]' value='#{model}'/>"
       html << "<input type='hidden' name='contextual_search[options]' value='#{attributes.to_yaml}'/>"
       focus = "if(this.value=='Rechercher'){this.value='';}"
       blur  = "if(this.value==''){this.value='Rechercher'}"
-      html << text_field_tag("contextual_search[value]",'Rechercher',:id => 'contextual_search', :onfocus => focus, :onblur => blur)
+      html << text_field_tag("contextual_search[value]", 'Rechercher', :id => 'contextual_search' ,:onfocus => focus, :onblur => blur)
       html << "<button type=\"submit\" class=\"contextual_search_button\"></button>"
       html << "</p>"
       html << "</form>"

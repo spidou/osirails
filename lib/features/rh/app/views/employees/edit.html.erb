@@ -4,13 +4,17 @@
   <%= new_employee_link %>
 	<%= employee_link(@employee) %>
 	<%= edit_employee_job_contract_link(@employee) %>
+	<%= new_employee_premium_link(@employee) %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
 	<%= employees_link %>
+	<%= employee_premia_link(@employee, :link_text => "Historique des primes") %>
+  <%= employee_salaries_link(@employee, :link_text => "Historique du salaire") %>
+  <%= employee_leaves_link(@employee, :link_text => "Historique des congés") %>
 <% end %>
 
-<h1>Modifier un employ&eacute;e</h1>
+<h1>Modifier un employ&eacute;</h1>
 
 <%= render :partial => @employee, :locals => {:button_name=> "Modifier"}%>
 
