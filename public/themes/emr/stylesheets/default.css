@@ -83,6 +83,14 @@ table td{
 	border:solid 1px rgb(64,68,93);
 }
 
+table tr.insufficient_stock{
+	color: #B0383E;
+}
+
+table tr.warning_stock{
+	color: #E99727;
+}
+
 /*
 table img {
   position: relative;

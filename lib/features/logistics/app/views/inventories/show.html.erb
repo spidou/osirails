@@ -1,44 +1,43 @@
 <% content_for :header do %>
-  <% javascript_include_tag 'logistics/commodities' %>
-  <%= javascript_include_tag 'logistics/inventories' %>
-<% end %>
-
-<% contextual_menu "Totaux" do %>
-  <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span>
-  <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%>
+  <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
 
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_inventory_link %>
-  <%= show_closed_button(@inventory)%>
+  <%= new_inventory_link(Commodity.new)%>
+  <%= new_inventory_link(Consumable.new)%>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
-  <%= commodity_categories_link %>
   <%= inventories_link %>
+  <%= commodity_categories_link %>
+  <%= consumable_categories_link %>
 <% end %>
 
-  <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>
-  <div>
-    <table class='commodity'>
+<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
+
+<div>
+
+  <% form_for(:inventory, :url => {:action => :create}) do |form| %>
+    <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
-        <th rowspan='2'>Sous Cat&eacute;gorie</th>
-        <th rowspan='2'>Fournisseur</th>
-        <th rowspan='2'>Désignation</th>
-        <th rowspan='2'>Unit&eacute;e de mesure / U</th>
-        <th rowspan='2'>Masse / U</th>
-        <th colspan='3'>Prix / U (&euro;)</th>
-        <th rowspan='2'>Quantit&eacute;</th>
-        <th rowspan='2'>Unit&eacute;e de mesure total</th>
-        <th rowspan='2'>Masse total</th>
-        <th rowspan='2'>Prix total</th>
-        <tr>
-          <th>FOB</th>
-          <th>Coef Taxe</th>
-          <th>Prix</th>
+        <th rowspan='2'>Sous cat&eacute;gorie</th>
+        <th rowspan='2'>R&eacute;f.</th>
+        <th rowspan='2'>D&eacute;signation</th>
+        <th rowspan='2'>Fournisseurs</th>
+        <th colspan='4'>Stock/fournisseur</th>
+        <th colspan='4'>Stock total</th>
+        <tr>          <th>Quantité</th>                <th>Grandeur</th>
+          <th>Masse</th>   
+          <th>Valeur</th>   
+          <th>Quantité</th>                <th>Grandeur</th>
+          <th>Masse</th>   
+          <th>Valeur</th>     
         </tr>
       </tr>
-      <%= show_structured_commodities(@inventory) %>
+      
+    <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>
+      
     </table>
-  </div>
+  <% end%>
+</div>

@@ -1,0 +1,8 @@
+<%= "<tr #{supply_to_restock.stock_quantity < supply_to_restock.threshold ? "class = 'insufficient_stock'" : "class = 'warning_stock'"}>" %>
+<%= "<td>#{supply_to_restock.reference}</td>" %>
+<%= "<td>#{supply_to_restock.name}</td>" %>
+<%= "<td>#{supply_to_restock.threshold}</td>" %>
+<%= "<td>#{supply_to_restock.stock_quantity.nil? ? "0" : supply_to_restock.stock_quantity}</td>" %>
+<%= "<td>#{self.send(supply_to_restock.class.name.downcase+"_link",supply_to_restock)}</td>" %>
+</tr>
+

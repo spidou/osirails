@@ -1,0 +1,78 @@
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= self.send("new_#{@supply.class.name.tableize.singularize}_category_link") %>
+  <%= new_supply_link(@supply.class.new) %>
+  <%= edit_supply_link(@supply,true) unless is_form_view? %>
+  <%= delete_supply_link(@supply,true) unless is_form_view? %>
+<% end %>
+
+<% contextual_menu USEFUL_LINKS do %>
+  <%= supply_categories_link(@category.class.new) %>
+<% end %>
+
+<div class="presentation_medium">
+
+  <h2>Caractéristiques</h2>
+
+  <% form_for(@supply) do |form| %>
+    <p>
+      <%= form.error_messages %>
+    </p>
+    <p>
+      <%= form.label :reference %>
+      <%= form.form_or_view(form.text_field(:reference), :reference) %>
+    </p>
+    <p>
+      <%= form.label :name %>
+      <%= form.form_or_view(form.text_field(:name), :name) %>
+    </p>
+    <p>
+      <%= form.label (@category.class.name.tableize.singularize+"_id").to_sym %>
+      <%= form.collection_select((@category.class.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , {}) if is_form_view? %>
+      <%= form.strong(@supply.send("#{@supply.class.name.tableize.singularize}_category").name) unless is_form_view? %>
+      <%= observe_field("#{@supply.class.name.tableize.singularize}_#{@supply.class.name.tableize.singularize}_category_id", :url => self.send("refresh_measure_#{@supply.class.name.tableize.singularize}_path"), :with => 'parameter') if is_form_view?%>
+    </p>
+    <p>
+      <%= "<label id='#{@supply.class.name.tableize.singularize}_unit_measure'>Grandeur/U (#{@unit_measure.symbol}) :</label>"%>
+      <%= form.form_or_view(form.text_field(:measure, :size => 20), :measure) %>
+    </p>
+    <p>
+      <%= form.label :unit_mass %>
+      <%= form.form_or_view(form.text_field(:unit_mass, :size => 20), :unit_mass) %>
+    </p>
+    <% if !is_form_view? %>
+      <p>
+        <%= form.label :average_unit_price %>
+        <%= form.strong(display_average_unit_price(supply)) %>
+      </p>
+    <% end %>
+    <p>
+      <%= form.label :threshold %>
+      <%= form.form_or_view(form.text_field(:threshold, :size => 20), :threshold) %>
+    </p>
+    <% if !is_form_view? %>
+      <p>
+        <%= form.label :stock_quantity %>
+        <%= form.strong(:stock_quantity) %>
+      </p>
+      <p>
+        <%= form.label :stock_measure %>
+        <%= form.strong(display_total_measure(supply)) %>
+      </p>
+      <p>
+        <%= form.label :stock_mass %>
+        <%= form.strong(display_total_mass(supply)) %>
+      </p>
+      <p>
+        <%= form.label :stock_value %>
+        <%= form.strong(number_with_precision(supply.stock_value,2) + " €") %>
+      </p>
+    <% end %>
+
+    <%= display_supplier_supply_list(@supply)  %>
+    <%= display_supplier_supply_add_button(@supply) if is_form_view? %>
+
+    <p><%= form.submit(button_name) if is_form_view? %></p>
+  <% end %>
+
+</div>
+

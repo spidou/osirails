@@ -1,76 +1,50 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/create_supplies'
+require File.dirname(__FILE__) + '/supply_category_test'
 
 class CommodityCategoryTest < ActiveSupport::TestCase
-  fixtures :commodity_categories, :commodities
-
+  include CreateSupplies
+  include SupplyCategoryTest
+  
   def setup
-    @commodity_category = commodity_categories(:parent)
-    @commodity_category_with_parent = commodity_categories(:child)
-  end
-
-  def test_read
-    assert_nothing_raised "A CommodityCategory should be read" do
-      CommodityCategory.find_by_name(@commodity_category.name)
-    end
-  end
-
-  def test_update
-    assert @commodity_category.update_attributes(:name => 'new name'),
-      "A CommodityCategory should be update"
-  end
-
-  def test_delete
-    assert_difference 'CommodityCategory.count', -1 do
-      @commodity_category_with_parent.destroy
-    end
-  end
-
-  def test_recursiv_delete
-    assert_difference 'CommodityCategory.count', -2 do
-      @commodity_category.destroy
-    end
-  end
-
-  def test_presence_of_name
-    assert_no_difference 'CommodityCategory.count' do
-      commodity_category = CommodityCategory.create
-      assert_not_nil commodity_category.errors.on(:name),
-        "A CommodityCategory should have a name"
-    end
-  end
-
-  def test_ability_to_delete
-    assert @commodity_category_with_parent.can_be_destroyed?,
-      "This CommodityCategory should be deletable"
-  end
-
-  def test_unability_to_delete
-    assert !@commodity_category.can_be_destroyed?,
-      "This CommodityCategory should not be deletable"
-  end
-
-  def test_disabled_children
-    assert !@commodity_category.has_children_disable?,
-      "This CommodityCategory should not have disabled children"
-
-    @commodity_category_with_parent.update_attributes(:enable => false)
-    assert @commodity_category.has_children_disable?,
-    "This CommodityCategory should have disabled children"
+    @um = UnitMeasure.new({:name => "Millimètre", :symbol => "mm"})
+    flunk "@um should be valid to perform the next tests" unless @um.save
+    
+    @supply_category = CommodityCategory.new({:name => "root"})
+    @supply_category_with_parent = CommodityCategory.new({:name => "child", :commodity_category => @supply_category, :unit_measure_id => @um.id})
+    
+    flunk "@supply_category should be valid to perform the next tests" unless @supply_category.save
+    flunk "@supply_category_with_parent should be valid to perform the next tests" unless @supply_category_with_parent.save
   end
 
   def test_has_many_commodity_categories
-    assert_equal @commodity_category.commodity_categories,
-      [@commodity_category_with_parent],
-      "This CommodityCategory should have a child commodity category"
-  end
-
-  def test_belongs_to_commodity_category
-    assert_equal @commodity_category_with_parent.commodity_category,
-      @commodity_category, "This CommodityCategory should have this parent"
+    assert_equal @supply_category.commodity_categories, [@supply_category_with_parent],
+      "@supply_category should have a child commodity category"
   end
 
   def test_has_many_commodities
-    assert_equal commodity_categories(:child).commodities,
-      [commodities(:normal)], "This CommodityCategory should have this Commodity"
+    create_commodities
+    assert_equal commodity_categories(:child).commodities, [@galva,@acier], "This CommodityCategory should have these commodities"
+  end
+
+  def test_belongs_to_commodity_category
+    assert_equal @supply_category_with_parent.commodity_category, @supply_category, "@supply_category_with_parent should have a parent"
+  end  
+  
+  def test_stock_value
+    @cc = CommodityCategory.new
+    assert_equal 0.0, @cc.stock_value, "these two should be equal as this category does not own any stock"
+    
+    total = 0.0
+    for category in commodity_categories(:child).commodity_category.children
+      total += category.stock_value
+    end    
+    assert_equal total, commodity_categories(:child).commodity_category.stock_value, "its stock value should be equal to the total of its categories stock value"
+    
+    total = 0.0
+    for commodity in commodity_categories(:child).commodities
+      total += commodity.stock_value
+    end    
+    assert_equal total, commodity_categories(:child).stock_value, "its stock value should be equal to the total of its commodities stock value"
   end
 end

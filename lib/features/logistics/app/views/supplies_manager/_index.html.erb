@@ -1,0 +1,40 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'logistics/supplies' %>
+<% end %>
+
+<% contextual_menu "Statistiques" do %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@supplies_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@supplies_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@supplies.size, "fournitures")}</span>"%>
+<% end %>
+
+<% contextual_menu POSSIBLE_ACTIONS do %>
+  <%= self.send("new_#{@supply.class.name.tableize.singularize}_category_link") %>
+  <%= new_supply_link(@supply.class.new) %>
+  <% #TODO display all OR display only activated ones %>
+<% end %>
+
+<div>
+  <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
+    <tr>
+      <th rowspan='2'>Cat&eacute;gorie</th>
+      <th rowspan='2'>Sous cat&eacute;gorie</th>
+      <th rowspan='2'>Fournisseurs</th>
+      <th rowspan='2'>R&eacute;f.</th>
+      <th rowspan='2'>D&eacute;signation</th>
+      <th rowspan='2'>Grandeur/U</th>
+      <th rowspan='2'>Masse/U</th>
+      <th rowspan='2'>Prix/Grandeur/U</th>
+      <th colspan='4'>Stock</th>
+      <th rowspan='2'>Actions</th>
+      <tr>        <th>Quantit&eacute;</th>
+        <th>Grandeur</th>
+        <th>Masse</th>
+        <th>Valeur</th>
+      </tr>
+    </tr>
+    
+    <%= render(:partial => "supplies_manager/supply_category", :collection => @supplies_categories_root) %>
+    
+  </table>
+</div>

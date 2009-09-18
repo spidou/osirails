@@ -1,46 +1,71 @@
 class CommoditiesController < ApplicationController
-helper :commodities_manager
-    
+  helper :supplies_manager, :supplies, :supplier_supplies
+
+  # GET /commodities/index
+  def index
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end
+
   # GET /commodities/new
   def new
-    @commodity = Commodity.new(:commodity_category_id => params[:id]) unless params[:id] == -1
+    @category = CommodityCategory.new
     @categories = CommodityCategory.root_child
+    @supply = Commodity.new(:commodity_category_id => params[:id] == -1 ? @categories.first.id : params[:id])
     @suppliers = Supplier.find(:all)
-    commodity_category = CommodityCategory.find(params[:id]) unless params[:id].to_i == -1
-    @unit_measure = UnitMeasure.find(:first)
-    @unit_measure = UnitMeasure.find(commodity_category.unit_measure_id) unless params[:id].to_i == -1
+    @unit_measure = UnitMeasure.find(params[:id] == '-1' ? @categories.first.unit_measure_id : CommodityCategory.find(params[:id]).unit_measure_id)
   end
-  
+
+  # GET /commodities/1
+  def show
+    @supply = Supply.find(params[:id])
+    @category = CommodityCategory.new
+    @categories = CommodityCategory.root_child
+    @unit_measure = UnitMeasure.find(@supply.commodity_category.unit_measure_id)
+    @supply_category_id = @supply.commodity_category_id
+  end
+
   # POST /commodities
   def create
-    @commodity = Commodity.new(params[:commodity])
-    if @commodity.save
+    @supply = Commodity.new(params[:commodity])
+    if @supply.save
       flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
       @categories = CommodityCategory.root_child
       @suppliers = Supplier.find(:all)
-      @commodity_category_id = params[:commodity][:commodity_category_id]
+      @category = CommodityCategory.new
+      @unit_measure = UnitMeasure.find(CommodityCategory.find(params[:commodity][:commodity_category_id]).unit_measure_id)
       render :action => 'new'
     end
   end
-  
+
+  # GET /commodities/1/edit
+  def edit
+    @supply = Supply.find(params[:id])
+    @category = CommodityCategory.new
+    @categories = CommodityCategory.root_child
+    @unit_measure = UnitMeasure.find(@supply.commodity_category.unit_measure_id)
+    @supply_category_id = @supply.commodity_category_id
+  end
+
   # PUT /commodities/1
   def update
-    @commodity = Commodity.find(params[:id])
+    @supply = Commodity.find(params[:id])
     respond_to do |format|
-      if params[:commodity].values[0] != "" and @commodity.update_attributes(params[:commodity])
+      if params[:commodity].values[0] != "" and @supply.update_attributes(params[:commodity])
         format.html { redirect_to(:action => "index") }
-        format.json { render :json => @commodity }
+        format.json { render :json => @supply }
       else
+        @category = CommodityCategory.new
+        @categories = CommodityCategory.root_child
+        @unit_measure = UnitMeasure.find(@supply.commodity_category.unit_measure_id)
         key = params[:commodity].keys[0]
         format.html { render :action => "edit" }
-        format.json { render :json => @commodity["#{key}"] }
+        format.json { render :json => @supply["#{key}"] }
       end
     end
   end
 
-  
   # DELETE /commodities/1
   def destroy
     @commodity = Commodity.find(params[:id])
@@ -61,5 +86,6 @@ helper :commodities_manager
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
-  
+
 end
+

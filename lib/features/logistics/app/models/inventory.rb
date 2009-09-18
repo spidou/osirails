@@ -1,33 +1,48 @@
 class Inventory < ActiveRecord::Base
   has_permissions :as_business_object
-    
-  # Relationship
-  has_many :commodities_inventories
-  has_many :commodities, :through => :commodities_inventories
   
-  # This methods permit to create a inventory with current commodities
-  def create_inventory(commodities)
-    commodities.each do |commodity|
-      commodity_category = commodity.commodity_category
-      parent_commodity_category = commodity_category.commodity_category
-      self.commodities_inventories.create({
-          :name => commodity.name,
-          :fob_unit_price => commodity.fob_unit_price,
-          :taxe_coefficient => commodity.taxe_coefficient,
-          :measure => commodity.measure,
-          :unit_mass => commodity.unit_mass,
-          :unit_measure_id => commodity_category.unit_measure_id,
-          :supplier_id => commodity.supplier_id,
-          :commodity_category_id => commodity_category.id,
-          :commodity_category_name => commodity_category.name,
-          :parent_commodity_category_id => parent_commodity_category.id,
-          :parent_commodity_category_name => parent_commodity_category.name})
-    end  
+  def self.dates
+    dates = []
+    sql = ActiveRecord::Base.connection();
+    result = sql.execute "SELECT DISTINCT DATE_FORMAT(created_at,'%d-%m-%Y') FROM stock_flows WHERE adjustment IS NOT NULL ORDER BY created_at DESC"
+    for date in result
+      dates << date
+    end
+    dates
   end
   
-  # This method permit to check if a inventory is closed
-  def inventory_closed?
-    self.closed
+  def self.create_stock_flows(params)
+    changes = 0
+      for supply in params[:type].constantize.activates
+        for ss in supply.supplier_supplies
+          param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          param_tax_coefficient = params[("tax_coefficient_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          new_quantity = param_quantity.to_f
+          if ((/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_quantity or param_quantity.to_f < 0) or (((/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_fob or param_fob.to_f < 0) or (/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_tax_coefficient or param_tax_coefficient.to_f < 0)) and new_quantity-ss.stock_quantity > 0))
+            return false
+          end
+        end
+      end
+      for supply in params[:type].constantize.activates
+        for ss in supply.supplier_supplies
+          param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          param_tax_coefficient = params[("tax_coefficient_for_supplier_supply_"+(ss.id.to_s)).to_sym]
+          new_quantity = param_quantity.to_f
+          new_fob = param_fob.to_f
+          new_tax_coefficient = param_tax_coefficient.to_f
+          if new_quantity-ss.stock_quantity > 0
+            StockInput.create({:adjustment => true, :quantity => new_quantity-ss.stock_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})     
+            changes += 1   
+          elsif new_quantity-ss.stock_quantity < 0
+            StockOutput.create({:adjustment => true, :quantity => ss.stock_quantity-new_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})
+            changes += 1
+          end
+        end
+      end
+    changes
   end
   
 end
+

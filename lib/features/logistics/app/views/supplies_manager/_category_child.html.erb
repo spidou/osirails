@@ -1,0 +1,18 @@
+<% if category_child.enable %>
+
+  <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.send(category_child.class.name.tableize.singularize).id} #{category_child.enable ? "enable" : "disable"}'>" %>
+  <%= "<td></td>" %>
+  <%= "<td>" %>
+  <%= "<img id='#{category_child.class.name.tableize.singularize}_#{category_child.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> " unless show_counter_category(category_child) == 0 %>
+  <%= "<img id='#{category_child.class.name.tableize.singularize}_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' title='D&eacute;rouler' onclick='reduce(this.ancestors()[1])' /> " %>
+  <%= in_place_editor(category_child,'name')+"(#{show_counter_category(category_child)})</td>" %>
+  <%= "<td colspan='9'></td>" %>
+  <%= "<td>#{display_category_stock_value(category_child)}</td>" %>
+  <%= "<td>#{add_category_or_supply(category_child)} #{delete_category_link(category_child)}</td>" unless category_child.enable == false %>
+  <%= "</tr>" %>
+
+  <% unless category_child.send("#{category_child.class.name.tableize.gsub("_categories","").pluralize}").nil? %>
+    <%= render(:partial => "/supplies_manager/supply", :collection => category_child.send("#{category_child.class.name.tableize.gsub("_categories","").pluralize}")) %>  
+  <% end %>
+
+<% end %>

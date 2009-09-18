@@ -1,38 +1,33 @@
-<% contextual_menu "Statistiques" do %>
-	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@inventories.size, "inventaire", "inventaires")}</span>" %>
-	<%= @inventory_closed.size == 0 ? "<span class='contextual_menu_statistic'>Il n'y a pas d'inventaire en cours</strong>" : "<span class='contextual_menu_statistic'>Il y a 1 inventaire en cours</span>" %>
-<% end %>
-
 <% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_inventory_link %>
+  <%= new_inventory_link(Commodity.new) %>
+  <%= new_inventory_link(Consumable.new) %>
 <% end %>
 
 <% contextual_menu USEFUL_LINKS do %>
   <%= commodity_categories_link %>
+  <%= consumable_categories_link %>
 <% end %>
-  
-  <h1>Liste des inventaires</h1>
-  <div>
-  <% if @inventories.size > 0 %>
+
+<h1>&Eacute;tats du stock </h1>
+<div>
+  <% if @dates.size > 0 %>  
     <table>
       <tr>
-        <th>Inventaire</th>
-        <th>Date de cr&eacute;ation</th>
-        <th>Derni&egrave;re modification</th>
-        <th>Status</th>
-        <th>Action</th>
+        <th>Date</th>
+        <th>&Eacute;tat des mati&egrave;res premi&egrave;res</th>
+        <th>&Eacute;tat des consommables</th>
       </tr>
-      <% for inventory in @inventories %>
-        <%= inventory.closed ? "<tr>" : "<tr class='current_inventory'>" %>
-        <td><%= inventory.id %></td>
-        <td><%= get_structured_date(inventory) %></td>
-        <td><%= show_last_update(inventory) %></td>
-        <td><%= inventory.closed ? "Terminé" : "En cours" %>
-        <td><%= inventory_link(inventory, :link_text => "") %></td>
-          <%= "</tr>"%>
+      <% for date in @dates %>
+        <tr>
+          <%= "<td>#{date}</td>" %>
+          <%= "<td>#{inventory_link(Commodity.new,date)}</td>" %>
+          <%= "<td>#{inventory_link(Consumable.new,date)}</td>"  %>
+        </tr>
       <% end %>
-      </table>
-    <% else %>
-      Il n'y a aucun inventaire actuellement
-    <% end %>    
-    </div>
+    </table>
+  <% else %>
+    <p>Aucun inventaire n'a &eacute;t&eacute; trouv&eacute;</p>
+  <% end %>  
+</div>
+
+

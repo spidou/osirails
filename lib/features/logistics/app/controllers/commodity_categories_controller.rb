@@ -1,8 +1,14 @@
 class CommodityCategoriesController < ApplicationController
-helper :commodities_manager
+  helper :supplies_manager, :supply_categories
+
+  # GET /commodity_categories/index
+  def index
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end
   
   # GET /commodity_categories/new
   def new
+    @supply = Commodity.new
     @category = CommodityCategory.new(:commodity_category_id => params[:id])
     @categories = CommodityCategory.root
     @type = params[:type]
@@ -10,13 +16,14 @@ helper :commodities_manager
   
   # POST /commodity_categories
   def create
+    @supply = Commodity.new
     @category = CommodityCategory.new(params[:commodity_category])
     if @category.save
       flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
       unless params[:commodity_category][:commodity_category_id].to_i == 0
-        @root_commodity_category = params[:commodity_category][:commodity_category_id].to_i
+        @root_supply_category = params[:commodity_category][:commodity_category_id].to_i
       end
       @categories = CommodityCategory.root
       render :action => 'new'

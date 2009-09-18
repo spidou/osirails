@@ -1,0 +1,21 @@
+<% if supply.enable %>
+
+  <% unit_measure = UnitMeasure.find(supply.send("#{supply.class.name.downcase}_category").unit_measure_id) %>
+                     
+  <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category').send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
+  <%= "<td colspan='2'></td>" %>
+  <%= "<td>#{supply.suppliers.size == 0 ? 'Aucun' : display_suppliers(supply)}</td>" %>
+  <%= "<td>#{in_place_editor(supply,'reference')}</td>" %>
+  <%= "<td>#{in_place_editor(supply,'name')}</td>" %>
+  <%= "<td>#{in_place_editor(supply,'measure')} #{unit_measure.symbol}</td>" %>
+  <%= "<td>#{in_place_editor(supply,'unit_mass')}kg</td>" %>
+  <%= "<td>#{display_average_unit_price(supply)}</td>" %>
+  <%= "<td>#{number_with_precision(supply.stock_quantity,1)}</td>" %>
+  <%= "<td>#{display_total_measure(supply)}</td>" %>
+  <%= "<td>#{display_total_mass(supply)}</td>" %>
+  <%= "<td>#{number_with_precision(supply.stock_value,2)}&nbsp;&euro;</td>" %>
+  <%= "<td>#{supply_link(supply)}#{edit_supply_link(supply)}#{delete_supply_link(supply)}</td>" %>
+  <%= "</tr>" %>
+
+<% end %>
+ 

@@ -1,0 +1,11 @@
+<%= "<h2> #{supplies.first.class.name == "Commodity" ? "Mati&egrave;res premi&egrave;res" : "Consommables"}</h2>" %> 
+<table>
+<tr>
+  <th>R&eacute;f&eacute;rence</th>
+  <th>D&eacute;signation</th>
+  <th>Stock minimum</th>
+  <th>Stock actuel</th>
+  <th>Action</th>
+</tr>
+<%= render(:partial => "supply_to_restock", :collection => supplies) %>
+</table>
