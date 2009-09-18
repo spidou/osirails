@@ -1,8 +1,13 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_vehicle_link %>
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_vehicle_link %>  
+  <%= vehicle_link(@vehicle) %>
+  <%= delete_vehicle_link(@vehicle) %>
+  <%= new_vehicle_tool_event_link(@vehicle) if @vehicle.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
   <%= vehicles_link %>
-  <%= new_vehicle_tool_event_link(@vehicle)%>
-  <%= vehicle_link(@vehicle)%>
+  <%= vehicle_tool_events_link(@vehicle) %>
 <% end %>
 
 <h1>Modifier un v&eacute;hicule</h1>

@@ -1,4 +1,4 @@
 <%= render :partial => 'tools/header', :locals => {:tool => @tool}%>
 
 <h1>Voir un &eacute;v&egrave;nement</h1>
-<%= render :partial => "tool_event" , :locals => {:tool => @tool, :tool_event => @event} %>
+<%= render :partial => @tool_event , :locals => {:tool => @tool} %>

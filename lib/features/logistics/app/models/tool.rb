@@ -1,7 +1,6 @@
 class Tool < ActiveRecord::Base
-  has_permissions :as_business_object
+  has_many :tool_events, :order => "end_date DESC, start_date DESC, id DESC"
   
-  has_many :tool_events
   belongs_to :service
   belongs_to :job
   belongs_to :employee
@@ -27,9 +26,9 @@ class Tool < ActiveRecord::Base
   @@form_labels[:serial_number]  = "Numéro de série :"
   @@form_labels[:purchase_date]  = "Date d'achat :"
   @@form_labels[:purchase_price] = "Prix d'achat :"
-  @@form_labels[:service]        = "Service :"
-  @@form_labels[:job]            = "Poste :"
-  @@form_labels[:employee]       = "Employé :"
+  @@form_labels[:service]        = "Affecté au service :"
+  @@form_labels[:job]            = "Affecté à la fonction :"
+  @@form_labels[:employee]       = "Affecté à l'employé :"
   @@form_labels[:supplier]       = "Fournisseur :"
   
   def status

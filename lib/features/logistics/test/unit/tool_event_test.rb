@@ -218,16 +218,16 @@ class ToolEventTest < ActiveSupport::TestCase
   
   # TODO uncomment the two commented lines when the method prepare_event will affect 'end_date' to 'end_at'
   def test_update_event
-    assert_equal @good_tool_event.start_date.to_datetime, @good_tool_event.event.start_at, "tool_event's start_date should be equal with event's start_at"
-#    assert_equal @good_tool_event.end_date.to_datetime, @good_tool_event.event.end_at, "tool_event's end_date should be equal with event's end_at"
-    assert_equal @good_tool_event.name, @good_tool_event.event.title, "tool_event's start_date should be equal with event's title"
+    assert_equal @good_tool_event.start_date.to_datetime, @good_tool_event.event.start_at, "tool_event's start_date should be equal to event's start_at"
+#    assert_equal @good_tool_event.end_date.to_datetime, @good_tool_event.event.end_at, "tool_event's end_date should be equal to event's end_at"
+    assert_equal @good_tool_event.title, @good_tool_event.event.title, "tool_event's title should be equal to event's title"
     
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
     @tool_event.attributes = {:start_date => Date.yesterday, :end_date => Date.tomorrow.next, :name => 'new name'}
-    flunk "tool_event should be valid  #{@tool_event.errors.inspect}" unless @tool_event.save
+    flunk "tool_event should be valid #{@tool_event.errors.inspect}" unless @tool_event.save
     
-    assert_equal @tool_event.start_date.to_datetime, @tool_event.event.start_at, "tool_event's start_date should be equal with event's start_at"
-#    assert_equal @tool_event.end_date.to_datetime, @tool_event.event.end_at, "tool_event's end_date should be equal with event's end_at"
-    assert_equal @tool_event.name, @tool_event.event.title, "tool_event's name should be equal with event's title"
+    assert_equal @tool_event.start_date.to_datetime, @tool_event.event.start_at, "tool_event's start_date should be equal to event's start_at"
+#    assert_equal @tool_event.end_date.to_datetime, @tool_event.event.end_at, "tool_event's end_date should be equal to event's end_at"
+    assert_equal @tool_event.title, @tool_event.event.title, "tool_event's title should be equal to event's title"
   end
 end

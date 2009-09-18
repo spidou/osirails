@@ -1,7 +1,6 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_other_tool_link%>
 <% end %>
-
 
 <h1>Liste des &eacute;quipements non r&eacute;f&eacute;renc&eacute;s</h1>
 <%= render :partial => 'tools/index', :locals => {:tools => @other_tools}%>

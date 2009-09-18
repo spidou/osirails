@@ -3,11 +3,11 @@
 <% end %>
 
 <div class='alarm'>
-
   <% if is_form_view? %>
-    <% fields_for tool_alarm, :index => nil do |form|%>
+    <% fields_for tool_alarm, :index => nil do |form| %>
+      <%= form.error_messages %>
       <p>
-        D&eacute;finir
+        D&eacute;finir :
         <select name='delay_type'>
           <option value='0' disabled='disabled'>Une date</option>
           <option value='1'>Un d&eacute;lais</option>

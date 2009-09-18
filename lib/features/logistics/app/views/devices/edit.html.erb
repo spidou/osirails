@@ -1,8 +1,13 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_device_link %>
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_device_link %>  
+  <%= device_link(@device) %>
+  <%= delete_device_link(@device) %>
+  <%= new_device_tool_event_link(@device) if @device.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
   <%= devices_link %>
-  <%= new_device_tool_event_link(@device)%>
-  <%= device_link(@device)%>
+  <%= device_tool_events_link(@device) %>
 <% end %>
 
 <h1>Modifier un p&eacute;riph&eacute;rique</h1>

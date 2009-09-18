@@ -8,9 +8,9 @@ class DevicesController < ApplicationController
   
   # GET /devices/:id
   def show
-    @device                   = Device.find params[:id]
-    @effectives_events = @device.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @device.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @device            = Device.find(params[:id])
+    @effectives_events = @device.tool_events.effectives.last_three
+    @scheduled_events  = @device.tool_events.scheduled.last_three
   end
   
   # GET /devices/new
@@ -20,7 +20,7 @@ class DevicesController < ApplicationController
   
   # POST /devices
   def create
-    @device = Device.new params[:device]
+    @device = Device.new(params[:device])
     
     if @device.save
       flash[:notice] = "Equipement ajouté avec succés"
@@ -32,14 +32,14 @@ class DevicesController < ApplicationController
   
   # GET /devices/:id/edit
   def edit
-    @device = Device.find params[:id]
+    @device = Device.find(params[:id])
   end
   
   # PUT /devices/:id
   def update
-    @device = Device.find params[:id]
+    @device = Device.find(params[:id])
     
-    if @device.update_attributes params[:device]
+    if @device.update_attributes(params[:device])
       flash[:notice] = "Equipement modifié avec succés"
       redirect_to device_path(@device)
     else
@@ -49,7 +49,7 @@ class DevicesController < ApplicationController
   
   # DELETE /devices/:id
   def destroy
-    @device = Device.find params[:id]
+    @device = Device.find(params[:id])
     if @device.destroy
       redirect_to devices_path
     else

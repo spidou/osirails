@@ -58,3 +58,6 @@ menus:
             description: "Gestion des évènements sur les équipements"
             hidden: true
             position: 6
+          equipments_calendar:
+            title: "Planning des équipements"
+            description: "Planning des événements sur les équipements"

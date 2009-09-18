@@ -8,9 +8,9 @@ class MachinesController < ApplicationController
   
   # GET /machines/:id
   def show
-    @machine                  = Machine.find params[:id]
-    @effectives_events = @machine.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @machine.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @machine           = Machine.find(params[:id])
+    @effectives_events = @machine.tool_events.effectives.last_three
+    @scheduled_events  = @machine.tool_events.scheduled.last_three
   end
   
   # GET /machines/new
@@ -20,7 +20,7 @@ class MachinesController < ApplicationController
   
   # POST /machines
   def create
-    @machine = Machine.new params[:machine]
+    @machine = Machine.new(params[:machine])
     
     if @machine.save
       flash[:notice] = "Equipement ajouté avec succés"
@@ -32,14 +32,14 @@ class MachinesController < ApplicationController
   
   # GET /machines/:id/edit
   def edit
-    @machine = Machine.find params[:id]
+    @machine = Machine.find(params[:id])
   end
   
   # PUT /machines/:id
   def update
-    @machine = Machine.find params[:id]
+    @machine = Machine.find(params[:id])
     
-    if @machine.update_attributes params[:machine]
+    if @machine.update_attributes(params[:machine])
       flash[:notice] = "Equipement modifié avec succés"
       redirect_to machine_path(@machine)
     else
@@ -49,7 +49,7 @@ class MachinesController < ApplicationController
   
   # DELETE /machines/:id
   def destroy
-    @machine = Machine.find params[:id]
+    @machine = Machine.find(params[:id])
     if @machine.destroy
       redirect_to machines_path
     else

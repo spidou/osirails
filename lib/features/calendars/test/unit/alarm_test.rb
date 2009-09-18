@@ -17,7 +17,7 @@ class AlarmTest < ActiveSupport::TestCase
     
     @alarm.event = events(:normal)
     @alarm.valid?
-     assert !@alarm.errors.invalid?(:event), "event should be valid"
+    assert !@alarm.errors.invalid?(:event), "event should be valid"
   end
 
   def test_belongs_to_event

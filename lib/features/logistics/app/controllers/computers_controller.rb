@@ -8,9 +8,9 @@ class ComputersController < ApplicationController
   
   # GET /computers/:id
   def show
-    @computer          = Computer.find params[:id]
-    @effectives_events = @computer.tool_events.desc.effectives.all(:limit => 3, :order => "start_date DESC") 
-    @scheduled_events  = @computer.tool_events.desc.scheduled.all(:limit => 3, :order => "start_date DESC")
+    @computer          = Computer.find(params[:id])
+    @effectives_events = @computer.tool_events.effectives.last_three
+    @scheduled_events  = @computer.tool_events.scheduled.last_three
   end
   
   # GET /computers/new
@@ -20,7 +20,7 @@ class ComputersController < ApplicationController
   
   # POST /computers
   def create
-    @computer = Computer.new params[:computer]
+    @computer = Computer.new(params[:computer])
     
     if @computer.save
       flash[:notice] = "Equipement ajouté avec succés"
@@ -32,14 +32,14 @@ class ComputersController < ApplicationController
   
   # GET /computers/:id/edit
   def edit
-    @computer = Computer.find params[:id]
+    @computer = Computer.find(params[:id])
   end
   
   # PUT /computers/:id
   def update
-    @computer = Computer.find params[:id]
+    @computer = Computer.find(params[:id])
     
-    if @computer.update_attributes params[:computer]
+    if @computer.update_attributes(params[:computer])
       flash[:notice] = "Equipement modifié avec succés"
       redirect_to computer_path(@computer)
     else
@@ -49,7 +49,7 @@ class ComputersController < ApplicationController
   
   # DELETE /computers/:id
   def destroy
-    @computer = Computer.find params[:id]
+    @computer = Computer.find(params[:id])
     if @computer.destroy
       redirect_to computers_path
     else

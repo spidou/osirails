@@ -1,8 +1,13 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= new_computer_link %>
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_computer_link %>  
+  <%= computer_link(@computer) %>
+  <%= delete_computer_link(@computer) %>
+  <%= new_computer_tool_event_link(@computer) if @computer.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
   <%= computers_link %>
-  <%= new_computer_tool_event_link(@computer)%>
-  <%= computer_link(@computer)%>
+  <%= computer_tool_events_link(@computer) %>
 <% end %>
 
 <h1>Modifier un odinateur</h1>

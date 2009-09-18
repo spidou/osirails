@@ -406,6 +406,9 @@ namespace :osirails do
 #      f.mime_types << MimeType.find_by_name("application/pdf")
 #      f.mime_types << MimeType.find_by_name("image/png")
       
+      # create calendar for equipments
+      Calendar.create! :name => "equipments_calendar", :title => "Planning des équipements"
+      
       # default calendars and events
       calendar1 = Calendar.create :user_id => user_admin.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
       Event.create :calendar_id => calendar1.id, :title => "Titre de l'evenement 1", :description => "Description de l'evenement 1", :start_at => DateTime.now, :end_at => DateTime.now + 4.hours

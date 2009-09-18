@@ -30,7 +30,7 @@ module ToolsHelper
   def links_for_tool_event(tool, tool_event)
     tool_class = tool.class.to_s.tableize.singularize
     html = send("#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
-    html += send("edit_#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
+    html += send("edit_#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil) if tool.can_be_edited?
     html += send("delete_#{tool_class}_tool_event_link", tool, tool_event, :link_text => nil)
     html
   end
@@ -72,13 +72,13 @@ module ToolsHelper
   def effectives_image(tool_event, currents_tools, effectives_tools)
     if !effectives_tools.include?(tool_event)
       image   = 'clock'
-      message = 'évènement future' 
+      message = 'Évènement future' 
     elsif currents_tools.include?(tool_event)
       image   = 'warning'
-      message = 'évènement en cours'
+      message = 'Évènement en cours'
     else
       image   = 'tick2'
-      message = 'évènement passé'
+      message = 'Évènement passé'
     end
     image_tag("#{image}_16x16.png", :alt => message, :title => message)
   end

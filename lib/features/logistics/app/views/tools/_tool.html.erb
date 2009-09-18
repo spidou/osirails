@@ -78,7 +78,7 @@
     <% else%>
       <% link = send("#{tool.class.to_s.tableize.singularize}_tool_events_link", tool) %>
          
-      <%= display_events('<h3>Les 3 derni&egrave;rs</h3>', @effectives_events, tool, link) %>
+      <%= display_events('<h3>Les 3 derniers</h3>', @effectives_events, tool, link) %>
       <%= display_events('<h3>Les 3 prochains</h3>', @scheduled_events, tool, link) %>
     <% end %>
   <% end %>

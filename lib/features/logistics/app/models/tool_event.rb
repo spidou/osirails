@@ -13,10 +13,12 @@ class ToolEvent < ActiveRecord::Base
   SCRAPPED    = 2
   STATUS_TEXT = {AVAILABLE => 'Disponible', UNAVAILABLE => 'Indisponible', SCRAPPED => 'Mis au rebut'}
   
-  named_scope :effectives, :conditions => ["start_date<=?", Date.today]
-  named_scope :scheduled,  :conditions => ["start_date>?", Date.today]
-  named_scope :desc,       :order => 'id DESC'
-  named_scope :currents,   :conditions => ['(start_date<=? and end_date>=? and event_type=?) or (start_date=?)', Date.today, Date.today, INTERVENTION, Date.today]
+  TOOL_EVENTS_PER_PAGE = 15
+  
+  named_scope :effectives, :conditions => ["start_date<=?", Date.today], :order => 'start_date DESC, id DESC'
+  named_scope :scheduled,  :conditions => ["start_date>?", Date.today], :order => 'start_date DESC, id DESC'
+  named_scope :currents,   :conditions => ['(start_date<=? and end_date>=? and event_type=?) or (start_date=?)', Date.today, Date.today, INTERVENTION, Date.today], :order => 'start_date DESC, id DESC'
+  named_scope :last_three, :limit => 3, :order => 'start_date DESC, id DESC'
   
   # relationships
   belongs_to :tool
@@ -71,7 +73,8 @@ class ToolEvent < ActiveRecord::Base
     prepare_event                 # call here prepare event because 'before_validation' call_back is called after 'attributes=' then after 'alarm_attributes='
     alarm_attributes.each do |attributes|
       if attributes[:id].blank?
-        event.alarms.build(attributes)
+        alarm = event.alarms.build(attributes)
+        alarm.event = event
       else
         alarm = event.alarms.detect {|t| t.id == attributes[:id].to_i} 
         alarm.attributes = attributes
@@ -79,17 +82,21 @@ class ToolEvent < ActiveRecord::Base
     end
   end
   
+  def title
+    ( tool ? tool.name.to_s + " : " : "" ) + name.to_s
+  end
+  
   private
     
     def validates_date_is_correct
       if start_date > end_date
-        errors.add :start_date, "ne dois pas être plus grand que end_date"
-        errors.add :end_date, "ne dois pas être plus petit que start_date"
+        errors.add(:start_date, "est postérieure à la date de fin")
+        errors.add(:end_date, "est antérieure à la date de début")
       end
     end
     
     def validates_tool_is_not_scrapped
-      errors.add(:tool_id, "L'évènement ne peut être ajouté ou édité car l'équipement a été mis au rebut") unless Tool.find(tool_id).can_be_edited?
+      errors.add(:tool_id, "L'ajout ou la modification d'un évènement pour cet équipement est impossible car celui-ci a été mis au rebut") unless tool.can_be_edited?
     end
     
     def save_event
@@ -99,14 +106,20 @@ class ToolEvent < ActiveRecord::Base
     # TODO when the calendar will handle event on many days modify the event preparation, to put 'end_date' into 'end_at'
     # the commented line assume that when it's an 'incident' the 'end_date' is nil, but if not into validations a test may be done to be sure 
     def prepare_event
-      event_attributes            = {}
-      event_attributes[:start_at] = start_date.to_datetime unless start_date.nil?
-      event_attributes[:end_at]   = start_date.to_datetime unless start_date.nil? # (end_date || start_date).to_datetime unless [start_date, end_ate].include?(nil)
-      event_attributes[:title]    = name
+      calendar = Calendar.find_or_create_by_name("equipments_calendar")
+      event_attributes                = {}
+      event_attributes[:calendar_id]  = calendar.id
+      event_attributes[:full_day]     = true
+      event_attributes[:start_at]     = start_date.to_datetime unless start_date.nil?
+      event_attributes[:end_at]       = start_date.to_datetime unless start_date.nil? # (end_date || start_date).to_datetime unless [start_date, end_ate].include?(nil)
+      event_attributes[:title]        = title
+      event_attributes[:description]  = comment
+      event_attributes[:organizer_id] = internal_actor_id
+      
       if event.nil?
         build_event(event_attributes)
       else
         event.attributes = event_attributes
-      end 
+      end
     end
 end

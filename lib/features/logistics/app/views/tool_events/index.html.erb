@@ -1,13 +1,18 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
-  <% tool_class = @tool.class.to_s.tableize.singularize %>
-  <%= send("new_#{tool_class}_tool_event_link", @tool) %>
+<% tool_class = @tool.class.name.underscore %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= send("new_#{tool_class}_tool_event_link", @tool) if @tool.can_be_edited? %>
   <%= send("#{tool_class}_link", @tool) %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
   <%= send("#{tool_class}s_link") %>
 <% end %>
 
-<%= render :partial => 'tools/header', :locals => {:tool => @tool}%>
+<%= render :partial => 'tools/header', :locals => {:tool => @tool} %>
 
 <h1>Liste des &eacute;v&egrave;nements</h1>
+
 <div class="presentation_small events">
   <% if @paginate_tool_events.empty? %>
     <p>Aucun &eacute;v&egrave;nement</p>
@@ -34,11 +39,11 @@
           <%= " - #{get_end_date(tool_event)}" unless tool_event.event_type_name == 'incident' %>
         </td>
         <td><%= get_internal_actor(tool_event) %></td>
-        <td><%= links_for_tool_event(@tool, tool_event)%></td>
+        <td><%= links_for_tool_event(@tool, tool_event) %></td>
       </tr> 
       <% end %>
       
     </table>
-    <%= will_paginate @paginate_tool_events,  :prev_label => " << pr&eacute;c&eacute;dent", :next_label => "suivant >>" %>
+    <%= will_paginate @paginate_tool_events %>
   <% end %>
 </div>

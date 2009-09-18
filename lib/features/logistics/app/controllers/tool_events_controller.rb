@@ -1,61 +1,84 @@
 class ToolEventsController < ApplicationController
   helper :tools, :documents
+  
   before_filter :retrieve_tool
   before_filter :prepare_params, :only => [:update,:create]
   
   # GET /tools/:tool_id/tool_events
   def index
-    @paginate_tool_events   = @tool.tool_events.desc.all(:order => 'start_date DESC').paginate(:page => params[:page], :per_page => 5)
+    @paginate_tool_events   = @tool.tool_events.paginate(:page => params[:page], :per_page => ToolEvent::TOOL_EVENTS_PER_PAGE)
     @effectives_tool_events = @tool.tool_events.effectives
     @currents_tool_events   = @tool.tool_events.currents
   end
   
   # GET /tools/:tool_id/tool_events/:id
   def show
-    @event = ToolEvent.find params[:id]
+    @tool_event = ToolEvent.find(params[:id])
   end
   
   # GET /tools/:tool_id/tool_events/new
   def new
-    @event = @tool.tool_events.build
-    @event.build_event
+    if @tool.can_be_edited?
+      @tool_event = @tool.tool_events.build
+      @tool_event.build_event
+    else
+      error_access_page(403)
+    end
   end
   
   # POST /tools/:tool_id/tool_events
   def create
-    @event = @tool.tool_events.build(@prepared_params[:tool_event])
-  
-    if @event.save
-      flash[:notice] = "Évènement Ajoutée avec succés"
-      redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+    if @tool.can_be_edited?
+      @tool_event = @tool.tool_events.build(@prepared_params[:tool_event])
+    
+      if @tool_event.save
+        flash[:notice] = "Évènement ajouté avec succès"
+        redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+      else
+        render :action => :new
+      end
     else
-      render :action => :new
+      error_access_page(422)
     end
   end
   
   # GET /tools/:tool_id/tool_events/:id/edit
   def edit
-    @event = ToolEvent.find params[:id]
+    if @tool.can_be_edited?
+      @tool_event = ToolEvent.find(params[:id])
+    else
+      error_access_page(403)
+    end
   end
   
   # PUT /tools/:tool_id/tool_events/:id
   def update
-    @event = ToolEvent.find params[:id]
+    if @tool.can_be_edited?
+      @tool_event = ToolEvent.find(params[:id])
 
-    if @event.update_attributes(@prepared_params[:tool_event])
-      flash[:notice] = "Évènement modifiée avec succés"
-      redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+      if @tool_event.update_attributes(@prepared_params[:tool_event])
+        flash[:notice] = "Évènement modifiée avec succès"
+        redirect_to send("#{@tool.class.to_s.tableize.singularize}_path", @tool)
+      else
+        render :action => :edit
+      end
     else
-      render :action => :edit
+      error_access_page(422)
     end
   end
   
   # DELETE /tools/:tool_id/tool_events/:id
   def destroy
-    if ToolEvent.find(params[:id]).destroy
+    if @tool.can_be_edited?
+      @tool_event = ToolEvent.find(params[:id])
+      
+      unless @tool_event.destroy
+        flash[:error] = "Une erreur est survenue lors de la suppression de l'évènement"
+      end
+      
       redirect_to :back
     else
-      flash[:error] = "Erreur lors de la suppression de l'évènement"
+      error_access_page(422)
     end
   end
   
@@ -65,7 +88,7 @@ class ToolEventsController < ApplicationController
     def retrieve_tool
       foreign_keys = ['computer_id','device_id','other_tool_id','machine_id','vehicle_id']
       key          = params.keys.select{|e| foreign_keys.include?(e)}.last.to_sym
-      @tool        = Tool.find params[key]
+      @tool        = Tool.find(params[key])
     end
     
     # TODO manage the delay_type to convert correctly the duration 
