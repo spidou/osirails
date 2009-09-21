@@ -5,3 +5,5 @@ class Supplier
   has_many :supplies, :through => :supplier_supplies
   has_many :stock_flows
 end
+
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :statistics => "Statistiques" })
