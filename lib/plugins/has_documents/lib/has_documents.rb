@@ -64,8 +64,8 @@ module HasDocuments
   
   module InstanceMethods
     
-    def build_document
-      Document.new(:has_document_id => self.id, :has_document_type => self.class.name)
+    def build_document(attributes = {})
+      Document.new( attributes.merge({ :has_document_id => self.id, :has_document_type => self.class.name }) )
     end
     
   end

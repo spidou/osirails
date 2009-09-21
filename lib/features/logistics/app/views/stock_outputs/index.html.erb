@@ -1,9 +1,9 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_stock_flow_link(false,Commodity.new) %>
   <%= new_stock_flow_link(false,Consumable.new) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= stock_outputs_link unless params[:type].nil? %>
   <%= stock_flows_link(false,Commodity.new) if [nil,"Consumable"].include?(params[:type]) %>
   <%= stock_flows_link(false,Consumable.new) if [nil,"Commodity"].include?(params[:type]) %>

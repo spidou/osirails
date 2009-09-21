@@ -1,8 +1,16 @@
 silence_warnings do
   Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
   Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
-  Date::DAYNAMES = %w( Dimanche Lundi Mardi Mercredi Jeudi Vendredi Samedi )
-  Date::ABBR_DAYNAMES = %w( Dim Lun Mar Mer Jeu Ven Sam )
+  Date::DAYNAMES = %w( dimanche lundi mardi mercredi jeudi vendredi samedi )
+  Date::ABBR_DAYNAMES = %w( dim lun mar mer jeu ven sam )
+end
+
+class Date
+  
+  def last_week
+    monday - 1.week
+  end
+  
 end
 
 class Time
@@ -60,9 +68,13 @@ class String
     return formated
   end
 
-  # method to view if a word is or not is plural
+  # FIXME you may base on inflector class
+  # method to view if a word is or not plural
   def plural?
-    self.singularize == self ? false : true
+    return false if self.last == "s" and self.pluralize != self
+    return true if self.last == "s" and self.pluralize == self
+    return true if self.last != "s" and self.singularize != self
+    return false if self.last != "s" and self.singularize == self
   end
   
   # return if the string is between the first and the second argument (without taking case into account)
@@ -77,6 +89,17 @@ class String
   def between_exact(first, second)
     raise TypeError, "Both parameters must be #{self.class}. #{first}:#{first.class}, #{second}:#{second.class}" unless first.class.equal?(self.class) and second.class.equal?(self.class)
     self >= first and self <= second
+  end
+  
+  # return the boolean value according to the string
+  #
+  def to_b
+    case self.strip             # avoid spaces
+      when "true", "1"
+        return  true
+      else
+        return false 
+    end 
   end
 end
 
@@ -109,7 +132,7 @@ module ActiveRecord
       :too_long => "est trop long (%d caractères maximum)",
       :too_short => "est trop court(%d caractères minimum)",
       :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
-      :taken => "est déjà  prit",
+      :taken => "est déjà prit",
       :not_a_number => "n'est pas un nombre",
     })
   end
@@ -122,7 +145,7 @@ module ActiveSupport
     end
 
     def to_humanized_datetime
-      self.strftime("%d %B %Y à %I:%M")
+      self.strftime("%d %B %Y à %H:%M")
     end
   end
 end

@@ -1,68 +1,224 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
   
+  has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
+  
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
-
-  # Accessors
-  cattr_accessor :pattern_error,:form_labels
-  @@pattern_error = false
-
-  @@form_labels = Hash.new
-  @@form_labels[:civility] = "Civilit&eacute; :"
-  @@form_labels[:last_name] = "Nom :"
-  @@form_labels[:first_name] = "Pr&eacute;nom :"
-  @@form_labels[:birth_date] = "Date de naissance :"
-  @@form_labels[:family_situation] = "Situation familiale :"
-  @@form_labels[:social_security_number] = "N&deg; s&eacute;curit&eacute; sociale :"
-  @@form_labels[:email] = "Email personnel :"
-  @@form_labels[:society_email] = "Email professionnel :"
   
+  # for pagination : number of instances by index page
+  EMPLOYEES_PER_PAGE = 15
+  
+  named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
+  
+  # Accessors
+  cattr_accessor :pattern_error, :form_labels
+  @@pattern_error = false
+  
+  @@form_labels = Hash.new
+  @@form_labels[:civility]                = "Civilité :"
+  @@form_labels[:last_name]               = "Nom :"
+  @@form_labels[:first_name]              = "Prénom :"
+  @@form_labels[:birth_date]              = "Date de naissance :"
+  @@form_labels[:family_situation]        = "Situation familiale :"
+  @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
+  @@form_labels[:email]                   = "Email personnel :"
+  @@form_labels[:society_email]           = "Email professionnel :"
+  @@form_labels[:service]                 = "Service :"
+  @@form_labels[:avatar]                  = "Photo :"
+  
+  has_attached_file :avatar, 
+                    :styles => { :thumb => "100x100#" },
+                    :path => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :url => "/employees/:id.:extension",
+                    :default_url => "#{$CURRENT_THEME_PATH}/images/default_avatar.png"
   
   # Relationships
-# TODO Add a role to the user when create an employee => for permissions 
-
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
+  belongs_to :service
+  
   has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
-  # has_many_polymorphic
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
-  
   has_many :numbers, :as => :has_number
   has_many :premia, :order => "created_at DESC"
-  has_many :employees_services
-  has_many :services, :through => :employees_services
-  has_and_belongs_to_many :jobs
+  has_many :employees_jobs
+  has_many :jobs, :through => :employees_jobs
+  has_many :checkings
+  has_many :leaves, :class_name => "Leave", :order => "start_date DESC"
+  has_many :leave_requests
+  has_many :in_progress_leave_requests, :class_name => "LeaveRequest",
+                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_SUBMITTED, LeaveRequest::STATUS_CHECKED, LeaveRequest::STATUS_NOTICED]],
+                                        :order      => "noticed_at DESC, checked_at DESC, created_at DESC, start_date DESC"
+  has_many :accepted_leave_requests,    :class_name => "LeaveRequest",
+                                        :conditions => ["status = ?", LeaveRequest::STATUS_CLOSED],
+                                        :order      => "updated_at DESC, start_date DESC"
+  has_many :refused_leave_requests,     :class_name => "LeaveRequest",
+                                        :conditions => ["status IN (?)", [LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR]],
+                                        :order      => "updated_at DESC, start_date DESC"
+  has_many :cancelled_leave_requests,   :class_name => "LeaveRequest",
+                                        :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
+                                        :order      => "cancelled_at DESC, start_date DESC"
   
-  # Validates
-  validates_presence_of :family_situation_id, :civility_id, :last_name, :first_name
-  validates_presence_of :family_situation, :if => :family_situation_id
-  validates_presence_of :civility, :if => :civility_id
+  validates_presence_of :last_name, :first_name
+  validates_presence_of :family_situation_id, :civility_id, :service_id
+  validates_presence_of :family_situation,     :if => :family_situation_id
+  validates_presence_of :civility,             :if => :civility_id
+  validates_presence_of :service,              :if => :service_id
+  
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
-  validates_format_of :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_format_of :society_email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia #, :services, :jobs
+  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  
+  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings
+  
+  validate :validates_responsible_job_limit
+  
+  has_search_index  :only_attributes      => [:first_name, :last_name, :email, :society_email, :birth_date, :social_security_number],
+                    :displayed_attributes => [:id, :first_name, :last_name, :email, :society_email],
+                    :main_model           => true
+  
+  # papercilp plugin validations
+  with_options :if => :avatar do |v|
+    v.validates_attachment_content_type :avatar, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
+    v.validates_attachment_size         :avatar, :less_than => 2.megabytes
+  end
   
   # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment
   after_update :save_iban, :save_numbers, :save_address
   
+  # Method to manage that there's no more than 2 responsible jobs by service
+  def validates_responsible_job_limit
+    unless jobs.empty?
+      jobs.with_responsibility.group_by(&:service).to_hash.each_pair do |service, jobs_collection|
+        max_responsible_jobs = (2 - service.responsibles.reject {|n| id==n.id}.size)
+        jobs_names = jobs_collection.collect(&:name).join("<br/>- ")
+        p = "poste#{"s" if max_responsible_jobs>1}"
+        errors.add(:jobs, "Vous devez choisir #{max_responsible_jobs} #{p} parmi les postes suivants :<br/>- #{jobs_names}") if jobs_collection.size > max_responsible_jobs
+      end
+    end
+  end
+  
+#  # method to get the employee's leaves days left
+#  # ps : the argument is here just to permit another use by another method,
+#  #      but to get the leaves days left for the employee and for the current year
+#  #      no arguments are needed 
+#  # n => permit to target a leave year .
+#  #   #=> default is 0 and represent current leave year
+#  #   #=> negative value represente shift to the past
+#  #   #=> positive value represente shift to the future
+#  #
+#  def leaves_days_left(n = 0)   
+#    l_year_start_date = leave_year_start_date + n.year                                                               
+#    l_year_end_date =  leave_year_start_date + 1.year - 1.day
+#    total = get_total_leave_days(n)
+#    get_leaves_for_choosen_year(n).each do |l|
+#      total -= l.duration
+#      total += l.duration(l_year_end_date, l.end_date) - 1 if l.end_date > l_year_end_date
+#      total += l.duration(l.start_date, l_year_start_date) - 1 if l.start_date < l_year_start_date
+#    end
+#    return total
+#  end
+  
+#  # just rename a method to make the call, more human readable
+#  def leaves_days_left_for_past_year
+#    leaves_days_left -1
+#  end
+
+#  # method to get the current total of leave days available
+#  def get_total_leave_days(n = 0)
+#    l_year_start_date = self.class.leave_year_start_date + n
+#    positive_difference = (l_year_start_date.month > Date.today.month)? 12 : 0
+#    months = Date.today.month - l_year_start_date.month + positive_difference + 1
+#    months = 12 if n < 0 # all days are already acquired if it's about past year
+#    months = 0 if n > 0 # no days are acquired if it's about next year
+#    ConfigurationManager.admin_society_identity_configuration_leave_days_credit_per_month * months
+#  end
+ 
+  # Method to get leaves for choosen leave year
+  # all to true permit to get leaves including cancelled ones
+  #
+  def get_leaves_for_choosen_year(year, all = false)
+    year_start = self.class.leave_year_start_date.change(:year => year.to_i)                                                               
+    year_end = year_start + 1.year - 1.day
+    
+    collection = all ? leaves : leaves.actives
+    collection.select {|n| n.end_date >= year_start and n.start_date <= year_end }
+  end
+  
+  # Method to get leave requests that he has to check, as responsible
+  def get_leave_requests_to_check
+    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)",
+                                            LeaveRequest::STATUS_SUBMITTED, self.subordinates],
+                            :order      => "start_date DESC")
+  end
+  
+  # Method to get leave requests that he refused, as responsible or director
+  def get_leave_requests_refused_by_me
+    LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?",
+                                            LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, self.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, self.id, Date.today],
+                            :order      => "start_date DESC")
+  end
+  
+  # Method to get all services that he is responsible of
+  #
+  def services_under_responsibility
+    jobs.select {|job| job.responsible and !job.service.nil?}.collect {|job| job.service}.uniq
+  end
+  
+  # Method to get all subordinates of the employee according to the services that he is responsible of
+  #
+  def subordinates
+    self_and_subordinates.reject {|n| n.id == id}
+  end
+  
+  # Method to get all subordinates of the employee according to the services that he is responsible of, and himself
+  #
+  def self_and_subordinates
+    #OPTIMIZE that method using collect
+    result = []
+    services_under_responsibility.each {|service| result += service.members }
+    result.uniq
+  end
+  
+  # Method that return the employee's responsibles according to his service
+  #
+  def responsibles
+    service.nil? ? [] : service.responsibles
+  end
+  
+  # Method that get the leave start date year to know if it's the current year or it's the past year
+  #
+  def self.leave_year_start_date
+    start_date = ConfigurationManager.admin_society_identity_configuration_leave_year_start_date
+    year = (Date.today.month >= start_date.split("/").first.to_i)? Date.today.year.to_s : (Date.today.year - 1).to_s
+    (start_date + "/#{year}").to_date
+  end
+  
+  # Method that return the leave end date according to the leave year start date
+  #
+  def self.leave_year_end_date
+    self.leave_year_start_date + 1.year - 1.day
+  end
+  
+  # Method that return the most recent leave according to the end_date
+  #
+  def last_leave
+    leaves.max_by(&:end_date)
+  end
+  
   # Method to change the case of the first_name and the last_name at the employee's creation
+  #
   def case_managment
     self.first_name.capitalize!
     self.last_name.upcase!
-  end
-  
-  #OPTIMIZE why don't put this method in a named_scope?
-  # Method to find active employees
-  def self.active_employees
-    Employee.find(:all,:include => [:job_contract] , :conditions => ['job_contracts.departure is null', Time.now])
   end
   
   # Method to generate the intranet email
@@ -111,7 +267,7 @@ class Employee < ActiveRecord::Base
     # prepare val to be split with "|"
     val = val.gsub(/\[/,"|")
     val = val.gsub(/\]/,"|")
-    # split val to can separate each part of val into a tab
+    # split val to be able to separate each part of val into a tab
     val = val.split("|")
     
     for i in (1...val.size) do
@@ -189,41 +345,9 @@ class Employee < ActiveRecord::Base
       return retour.to_s
   end
   
-  #FIXME this method should not work properly!
-  def manager(service_id)
-    EmployeesService.find(:all,:conditions => ["service_id=? ,responsable=?", service_id, true])
-    manager = Employee.find(tmp.employee_id)
-    return manager
-  end
-  
   def fullname
     "#{self.first_name} #{self.last_name}"
   end
-  
-  #OPTIMIZE this method return an array of numbers. why not return objects instead of numbers? and why don't put this method in the Service model???!
-  def responsable?(service_id)
-    tmp = EmployeesService.find(:all,:conditions => ["service_id=? and responsable=?",service_id,1 ])
-    manager = []
-    tmp.each do |t|
-      e = Employee.find(t.employee_id)
-      manager << e.id
-    end
-    return manager
-  end
-  
-  #OPTIMIZE what this method is doing here ?!!?
-  def format_text(line_length,text)
-    t_end = text.size
-    line_end = 0
-    formated_text=""
-      while line_end < t_end
-        formated_text+=text[line_end..line_end + line_length]+ "\n"
-        
-        line_end += line_length
-      end
-    formated_text  
-  end
-  
 
   # this method permit to save the iban of the employee when it is passed with the employee form
   def iban_attributes=(iban_attributes)
@@ -235,7 +359,8 @@ class Employee < ActiveRecord::Base
   end
 
   # this method permit to save the address of the employee when it is passed with the employee form
-  # we use address_attributes.first because the partial he also use to define mutiple addresses but for the employee there is only one that's why we use the only one address in the array
+  # we use address_attributes.first because the partial he also use to define mutiple addresses but for the employee there is only 
+  # one that's why we use the only one address in the array
   def address_attributes=(address_attributes)
     if address_attributes.first[:id].blank?
       self.address = self.build_address(address_attributes.first)

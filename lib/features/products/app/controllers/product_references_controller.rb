@@ -15,31 +15,31 @@ class ProductReferencesController < ApplicationController
   # GET /product_references/new
   # GET /product_references/new?category_id=:category_id
   def new
-    @reference = ProductReference.new(:product_reference_category_id => params[:category_id])
+    @product_reference = ProductReference.new(:product_reference_category_id => params[:category_id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
   # GET /product_reference/:id
   def show
-    @reference = ProductReference.find(params[:id])
+    @product_reference = ProductReference.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
     respond_to do |format|
       format.html
       format.js { render :layout => false}
-      format.json { render :json => @reference }
+      format.json { render :json => @product_reference }
     end
   end
   
   # GET /product_references/:id/edit
   def edit
-    @reference = ProductReference.find(params[:id])
+    @product_reference = ProductReference.find(params[:id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
   # POST /product_references
   def create
-    @reference = ProductReference.new(params[:product_reference])
-    if @reference.save
+    @product_reference = ProductReference.new(params[:product_reference])
+    if @product_reference.save
       flash[:notice] = "La r&eacute;f&eacute;rence a &eacute;t&eacute; cr&eacute;&eacute;e avec succ&egrave;s"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
@@ -50,10 +50,10 @@ class ProductReferencesController < ApplicationController
   
   # PUT /product_references/:id
   def update
-    @reference = ProductReference.find(params[:id])
-    @reference.counter_update("disable_or_before_update")
-    if @reference.update_attributes(params[:product_reference])
-      @reference.counter_update("after_update")
+    @product_reference = ProductReference.find(params[:id])
+    @product_reference.counter_update("disable_or_before_update")
+    if @product_reference.update_attributes(params[:product_reference])
+      @product_reference.counter_update("after_update")
       flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; mise &agrave; jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
@@ -65,13 +65,13 @@ class ProductReferencesController < ApplicationController
   
   # DELETE /product_references/:id
   def destroy
-    @reference = ProductReference.find(params[:id])
-    if @reference.can_be_destroyed?
-      @reference.destroy
+    @product_reference = ProductReference.find(params[:id])
+    if @product_reference.can_be_destroyed?
+      @product_reference.destroy
     else
-      @reference.enable = false
-      @reference.counter_update("disable_or_before_update")
-      @reference.save
+      @product_reference.enable = false
+      @product_reference.counter_update("disable_or_before_update")
+      @product_reference.save
     end
     
     flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;e' 

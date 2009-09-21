@@ -1,4 +1,5 @@
-class SalariesController < ApplicationController
+class SalariesController < ApplicationController  
+  helper :employees
   
   # GET /employees/:employee_id/index
   def index

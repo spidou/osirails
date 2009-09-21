@@ -5,7 +5,6 @@ module ContentsHelper
     link_to("Actualiser la page", :action =>:edit) if @affiche == true
   end
   
-  
   # This method permit to show contents
   def show_contents(contents)
     contents_list = []

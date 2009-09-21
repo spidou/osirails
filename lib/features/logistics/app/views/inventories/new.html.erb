@@ -3,12 +3,12 @@
   <%= javascript_include_tag 'logistics/inventories' %>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_inventory_link(Commodity.new) if params[:type] == "Consumable" %>
   <%= new_inventory_link(Consumable.new) if params[:type] == "Commodity" %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= inventories_link %>
   <%= commodity_categories_link %>
   <%= consumable_categories_link %>

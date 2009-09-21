@@ -1,4 +1,6 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% contextual_search_for_user %>
+
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_user_link %>
 <% end %>
 
@@ -28,4 +30,5 @@
       </tr>
     <% end %>
   </table>
+  <%= will_paginate @users %>
 </div>

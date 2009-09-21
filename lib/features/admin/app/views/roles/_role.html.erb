@@ -8,7 +8,7 @@
   </p>
   <p>
     <%= form.label :description %>
-    <%= form.form_or_view(form.text_area(:description), :description) %>
+    <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
   </p>
   <div class="form_multiple_entries">
     <%= form.label :user_ids %>
@@ -21,5 +21,9 @@
       <% end %>
     </div>
   </div>
+  <p>
+    <%= form.reset %>
+    <%= form.submit submit_button_name %>
+  <p>
 <% end %>
 </div>

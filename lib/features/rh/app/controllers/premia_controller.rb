@@ -1,4 +1,5 @@
 class PremiaController < ApplicationController
+  helper :employees
 
   # GET /employees/:employee_id/premia
   def index

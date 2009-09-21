@@ -1,8 +1,12 @@
 class User < ActiveRecord::Base
+
   before_save :username_unicity
   
   # Requires
   require "digest/sha1"
+  
+  # for pagination : number of instances by index page
+  USERS_PER_PAGE = 15
 
   # Relationships
   has_and_belongs_to_many :roles
@@ -16,13 +20,17 @@ class User < ActiveRecord::Base
   
   validates_presence_of :username
   
+  before_save    :change_password_updated_at # that callback must be before 'before_save :password_encryption'
+  before_destroy :can_be_destroyed?
+  
   with_options :if => :should_update_password? do |user|
     user.before_save :password_encryption
     user.validates_presence_of :password
     user.validates_confirmation_of :password
     # manage the error that occure when reset database with admin_actual_password_policy that is empty
     # find the index of the actual selected regex to choose the good one into the db
-    raise "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_actual_password_policy)
+    raise NameError, "ConfigurationManager seems to be not yet initialized in #{self}:#{self.class}" unless ConfigurationManager.respond_to?(:admin_actual_password_policy)
+    #FIXME Add a custom ERROR_CLASS for ConfigurationManager, to catch the error below more precisely 
     
     actual = ConfigurationManager.admin_actual_password_policy
     reg = Regexp.new(ConfigurationManager.admin_password_policy[actual])
@@ -31,34 +39,24 @@ class User < ActiveRecord::Base
     user.validates_format_of :password, :with => reg, :message => message
   end
   
-  # CallBacks
-  before_save    :change_password_updated_at
-  before_destroy :can_be_destroyed?
-
-  # Accessors
-  # set up this variable to 'true' if you want to update password
-  attr_accessor :updating_password
-  
-  # after_find store the password after each find request in that variable
-  attr_accessor :old_encrypted_password
-  
   # this variable must be set at "1" if we want to force password expiration (by setting at nil 'password_updated_at')
   attr_accessor :force_password_expiration
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:username] = "Nom du compte utilisateur :"
-  @@form_labels[:password] = "Mot de passe :"
-  @@form_labels[:password_confirmation] = "Confirmation du mot de passe :"
-  @@form_labels[:enabled] = "Activ&eacute; :"
-  @@form_labels[:last_connection] = "dernière connection :"
-  @@form_labels[:roles] = "R&ocirc;les :"
-  @@form_labels[:force_password_expiration] = "Demander &agrave; l&apos;utilisateur un nouveau mot de passe à sa prochaine connexion :"
-  
-  # store old encrypted password to be aware if a new password is given
-  def after_find
-    self.old_encrypted_password = self.password
-  end
+  @@form_labels[:username]                  = "Nom du compte utilisateur :"
+  @@form_labels[:password]                  = "Mot de passe :"
+  @@form_labels[:password_confirmation]     = "Confirmation du mot de passe :"
+  @@form_labels[:enabled]                   = "Compte activé ? :"
+  @@form_labels[:last_connection]           = "Dernière connexion :"
+  @@form_labels[:roles]                     = "Rôles :"
+  @@form_labels[:force_password_expiration] = "Demander à l'utilisateur un nouveau mot de passe à sa prochaine connexion :"
+ 
+  # Search Plugin
+  has_search_index  :additional_attributes => { :expired? => :boolean },
+                    :only_attributes       => [ :username, :enabled, :last_connection, :last_activity ],
+                    :displayed_attributes  => [ :id, :username, :enabled, :expired?, :last_activity ],
+                    :main_model            => true
   
   # Method to verify if the password pass by argument is the same as the password in the database
   def compare_password(password)
@@ -67,7 +65,7 @@ class User < ActiveRecord::Base
   
   # Method to check is the password should be updated or not
   def should_update_password?
-    updating_password || new_record?
+    updating_password? || new_record?
   end
   
   def force_password_expiration?
@@ -129,18 +127,10 @@ class User < ActiveRecord::Base
       end
     end
     
-    ## determine if we want to update password or not
-    #def updating_password?
-    #  puts "> #{self.password.blank?.inspect} > #{self.password} > #{self.old_encrypted_password}"
-    #  return false if self.password.blank?
-    #  return false if self.password == self.old_encrypted_password
-    #  return true
-    #  #raise (!self.password.blank? and self.password != self.old_encrypted_password).inspect
-    #  ##if !self.password.blank? and encrypt(self.password) != self.old_encrypted_password
-    #  ##  raise (!self.password.blank? and encrypt(self.password) != self.old_encrypted_password).inspect
-    #  ##end
-    #  #!self.password.blank? and self.password != self.old_encrypted_password
-    #end
+    # determine if we want to update password or not
+    def updating_password?
+      password != password_was
+    end
     
     # Method to encrypt a string
     def encrypt(string)

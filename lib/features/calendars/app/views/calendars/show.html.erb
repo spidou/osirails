@@ -10,8 +10,8 @@
 <link href="/stylesheets/mini-calendar-skins/calendar-blue.css" rel="stylesheet" type="text/css"/>
 <link href="/stylesheets/calendar.css" rel="stylesheet" type="text/css"/>
 <% end %>
-<% content_for :contextual_menu do %>
-<h1><span class="gray_color">Calendrier</span></h1>
+
+<% add_contextual_menu_item :calendar, true do %>
 <div id="mini_calendar"></div>
 <script type="text/javascript">
 Calendar.setup({
@@ -25,6 +25,7 @@ Calendar.setup({
 });
 </script>
 <% end %>
+
 <h1><%= h(@calendar.title) %></h1>
 <div id="calendar" class="presentation_calendar">
 	<div id="top"></div>

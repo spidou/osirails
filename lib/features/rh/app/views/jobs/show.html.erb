@@ -1,10 +1,10 @@
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_job_link %>
   <%= edit_job_link(@job) %>
   <%= delete_job_link(@job) %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= jobs_link %>
 <% end %>
 

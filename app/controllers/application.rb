@@ -14,11 +14,13 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include ContextualMenuManager
+  
   helper :all # include all helpers, all the time
   layout "default"
   
   # Filters
-  before_filter :configure_model, :authenticate, :select_theme
+  before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu, :select_time_zone
   before_filter :load_features_overrides if RAILS_ENV == "development"
   
   # Password will not displayed in log files
@@ -176,6 +178,11 @@ class ApplicationController < ActionController::Base
       end
     end
     
+    def select_time_zone
+      #OPTIMIZE this code is called at each page loading! can't we avoid to check in the database everytime ?! can't we avoid to check in the filesystem everytime (to limit read acces in HDD)
+      Time.zone = ConfigurationManager.admin_society_identity_configuration_time_zone
+    end
+    
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.
     # that is necessary only on development environment, because the classes cache is cleaned every time in this environment.
     def load_features_overrides
@@ -187,5 +194,9 @@ class ApplicationController < ActionController::Base
       else
         raise "global variable $activated_features_path is not instanciated"
       end
+    end
+    
+    def initialize_contextual_menu
+      @contextual_menu = ContextualMenu.new
     end
 end # class

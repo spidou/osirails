@@ -1,15 +1,15 @@
 class Contact < ActiveRecord::Base
   has_permissions :as_business_object
-  
+
   has_many :numbers, :as => :has_number
   belongs_to :contact_type
   # Declaration for has_many_polymorph association
   has_many :contacts_owners, :foreign_key => "contact_id"
   #TODO are those lines really useful? 'has_many :contacts_owners' is not necessary alone?
-  has_many :thirds, :source => :has_contact, :through => :contacts_owners, :source_type => "Third", :class_name => "Third"
-  has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
-  has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
-  has_many :orders, :source => :has_contact, :through => :contacts_owners, :source_type => "Order", :class_name => "Order"
+#  has_many :thirds, :source => :has_contact, :through => :contacts_owners, :source_type => "Third", :class_name => "Third"
+#  has_many :establishments, :source => :has_contact, :through => :contacts_owners, :source_type => "Establishment", :class_name => "Establishment"
+#  has_many :employees, :source => :has_contact, :through => :contacts_owners, :source_type => "Employee", :class_name => "Employee"
+#  has_many :orders, :source => :has_contact, :through => :contacts_owners, :source_type => "Order", :class_name => "Order"
   #####
   
   validates_presence_of :first_name
@@ -32,21 +32,10 @@ class Contact < ActiveRecord::Base
   @@form_labels[:job] = "Fonction :"
   @@form_labels[:contact_type] = "Type de contact :"
   
-#  def self.new(contact = nil)
-#    
-#    unless contact.nil? or contact[:id].nil?
-#      if contact[:id].blank?
-#        contact.delete("id")
-#        contact.delete("selected")
-#        contact.delete("valid")
-#        return super(contact)
-#      else
-#        return Contact.find(contact[:id])
-#      end           
-#    end
-#    super(contact)
-#  end
-
+  # Search Plugin
+  has_search_index  :only_attributes      => [:first_name, :last_name],
+                    :except_relationships => [:contacts]
+  
   def should_destroy?
     should_destroy.to_i == 1
   end

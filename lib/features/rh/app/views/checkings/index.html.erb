@@ -1,0 +1,54 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_checking_link(:link_text => "Nouveau pointage pour cet employé", :options => { :employee_id => @employee.id }) if @employee and !@subordinates.empty? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= display_checkings_link(@employee.id) if @employee %>
+<% end %>
+
+<h1>Liste des pointages</h1>
+<div class="presentation-medium">
+
+<% if @subordinates.empty? %>
+  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p>
+<% else %>
+  
+  <h2>Semaine <%= @date.monday.cweek %> (du <%= @date.monday.strftime("%A %d %B %Y") %> au <%= @date.next_week.yesterday.strftime("%A %d %B %Y") %>)</h2>
+  
+  <p>
+    <%= previous_week(@employee.id, @date, @view_cancelled) %>
+    <select onchange="<%= javascript_location_url(@employee.id, @date, @view_cancelled)%>" >
+      <%= employee_options(@subordinates, @employee.id)%>
+    </select>
+    <%= next_week(@employee.id, @date, @view_cancelled) %>
+  </p>
+  
+  <% if @checkings.empty? %>
+    <p>Aucun pointage pour cette p&eacute;riode et pour <%= @employee.fullname %></p>
+  <% else %>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Absence</th>
+        <th>Heures suppl&eacute;mentaires</th>
+        <th>Actions</th>
+      </tr>
+      <% for checking in @checkings %>
+         
+        <%="<tr #{"class='disabled'" if checking.cancelled} >" %>
+          <td><%= checking.date.strftime("%A %d %B %Y") %></td>
+          <%= generate_absence_and_overtime_td(checking) %>
+          <td>
+            <%= edit_checking_link(checking, :link_text => "") if checking.can_be_edited? %>
+            <%= override_checking_link(checking) %>
+            <%= cancel_checking_link(checking) %>
+            <%= delete_checking_link(checking, :link_text => "") %>
+          </td>        
+        </tr>  
+             
+      <% end %>     
+    </table>  
+  <% end %>
+  
+<% end %>
+</div>
