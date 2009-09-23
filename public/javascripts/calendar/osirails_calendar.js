@@ -82,7 +82,7 @@ function add_event (id, title, top, height, color, week_day, full_day) {
     var li_elm = document.createElement('li');
     li_elm.setAttribute('id', elm_id);
     li_elm.setAttribute('class', 'event e_month');
-    li_elm.style.color = color;
+    li_elm.style.backgroundColor = color;
     li_elm.innerHTML = title;
     li_elm.setAttribute('ondblclick', 'display_event_box(\'show\', \''+ elm_id +'\', event);');
     ul_elm.appendChild(li_elm);

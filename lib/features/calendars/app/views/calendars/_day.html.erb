@@ -1,19 +1,15 @@
 <h4><%= @date.day %> <%= $month_fr[@date.month - 1] %> <%= @date.year %></h4>
 <div id="calendar_content">
-	<div id="<%= @date.to_s.gsub('-','') %>fullday" class="day day_fullday"><%= @date.strftime("%A") %><ul></ul></div>
-<div id="scroll">
-	<div id="hour_column">
-		<% 24.times do |i| %>
-		<%= "<div class=\"hour\">#{i}h00</div>" %>
-		<% end %>
-	</div>
-	<div id="grid_day">
-		<div id="<%= @date.to_s.gsub("-","") %>" class="day_grid">
-			<div class="day_grid_border"><ul></ul></div>
-		</div>
-	</div>
-</div>
+	<div id="group_day" class="fullday"><%= group_day_for_one_day(@date) %></div>
+  <div id="scroll">
+	  <%= display_hours_column %>
+	  <div id="grid_day">
+		  <div id="<%= @date.to_s.gsub('-', '') %>" class="day_grid">
+			  <div class="day_grid_border"><ul></ul></div>
+		  </div>
+	  </div>
+  </div>
 </div>
 <script type="text/javascript">
-calendar_init(<%= params[:id] %>, 'day', <%= @calendar.can_list?(current_user) %>, <%= @calendar.can_view?(current_user) %>, <%= @calendar.can_add?(current_user) %>, <%= @calendar.can_edit?(current_user) %>, <%= @calendar.can_delete?(current_user) %>, "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('week') %>", "<%= navigation('month') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>", "<%= form_authenticity_token %>");
+calendar_init(<%= params[:id_or_name] %>, 'day', <%= @calendar.can_list?(current_user) %>, <%= @calendar.can_view?(current_user) %>, <%= @calendar.can_add?(current_user) %>, <%= @calendar.can_edit?(current_user) %>, <%= @calendar.can_delete?(current_user) %>, "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('week') %>", "<%= navigation('month') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>", "<%= form_authenticity_token %>");
 </script>
