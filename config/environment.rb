@@ -33,9 +33,10 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :tiny_mce,
-                    :acts_as_versioned, :auto_complete, :paperclip, :has_permissions,
-                    :has_documents, :has_address, :has_contacts, :acts_as_step, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
+                    :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete,
+                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
+                    :acts_as_step, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -114,6 +115,8 @@ Rails::Initializer.run do |config|
   config.gem 'RedCloth'
   config.gem 'htmlentities' #TODO freeze all gem dependencies
 end
+
+require 'contextual_menu_manager'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)

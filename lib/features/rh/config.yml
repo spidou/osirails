@@ -15,61 +15,22 @@ menus:
         children:
           salaries:
             title: Salaires
-            description: Historique des salaires
-          job_contracts:
+            description: "Historique des salaires de l'employé"
+          job_contract:
             title: Contrat de travail
-            description: Gestion du contrat de travail avec avenant au contrat
+            description: "Gestion du contrat de travail de l'employé"
           premia:
             title: Primes
-            description: Gestion des primes
+            description: "Gestion des primes de l'employé"
+          leaves:
+            title: Congés payés
+            descriptions: "Gestion des congés payés de l'employée"
       jobs:
-          title: Fiches de poste
-          description: Gestions des fiches de poste
-search:
-  Employee:
-    base:
-      last_name: string
-      first_name: string
-    other:  
-      created_at: date
-      updated_at: date
-      qualification: string
-      birth_date: date
-      email: string
-      social_security_number: string
-      society_email: string
-      jobs:
-        Job:
-          name: string
-          mission: string
-          activity: string
-          goal: string
-      premia:
-        Premium:
-          date: date
-          created_at: date
-          updated_at: date
-          amount: number
-      numbers:
-        Number:
-          number: number
-          visible: boolean
-          number_type:
-            NumberType:
-              name: string
-          indicative:
-            Indicative:
-              indicative: string
-      job_contract:    
-        JobContract:
-          start_date: date
-          end_date: date
-          created_at: date
-          updated_at: date
-          salaries:
-            Salary:
-              gross_amount: number
-          created_at: date
-          job_contract_type:
-            JobContractType:
-              name: string
+        title: Fiches de poste
+        description: Gestion des fiches de poste          
+      leave_requests:
+        title: Demandes de congés
+        description: Gestion des demandes de congés
+      checkings:
+        title: Pointage
+        description: Signaler une absence, un retard ou des heures supplémentaires pour un employé

@@ -1,0 +1,12 @@
+<% leave_request = pending_leave_request %>
+<tr>
+  <td><%=h leave_request.employee.fullname %></td>
+  <td><%=h leave_request.formatted %></td>
+  <td><%=h leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+  <td><%=h view_status(leave_request) %></td>
+  <td>
+    <%= determine_action_for_pending_leave_request(leave_request) %>
+    <%= cancel_leave_request_link(leave_request,true) %>
+    <%= delete_leave_request_link(leave_request,:link_text => "") %>
+  </td>
+</tr>

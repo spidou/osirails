@@ -1,7 +1,5 @@
-<%
-require_locals documents_owner
-id_attr = "id=\"resource_document_#{document.id}\"" unless document.new_record?
-%>
+<% require_locals documents_owner %>
+<% id_attr = "id=\"document_#{document.id}\"" unless document.new_record? %>
 
 <div class="resource document" <%= id_attr %> >
   <% unless document.new_record? -%>

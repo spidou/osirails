@@ -2,19 +2,19 @@
   <%= javascript_include_tag 'logistics/commodities' %>
 <% end %>
 
-<% contextual_menu "Statistiques" do %>
+<% add_contextual_menu_item :commodities_stats do %>
 	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
 	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
 	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_commodity_category_link %>
   <%= new_commodity_link %>
   <% #TODO display all OR display only activated ones %>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= inventories_link %>
   <%= inventory_link(@last_inventory, :link_text => "View last inventory") unless @last_inventory.nil? %>
   <%= new_inventory_link %>

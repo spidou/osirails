@@ -34,7 +34,7 @@ else # group by 'date' by default
   @groups = @documents.sort_by{ |d| d.new_record? ? Time.now : d.created_at }.group_by{ |d| d.new_record? ? time_ago_in_words(Time.now) : time_ago_in_words(d.created_at) }.reverse # reverse because by default we want to display the earlier to the later
 end
 
-# @groups.push(["Nouveau(x) document(s) avec erreurs", @new_documents]) unless @new_documents.empty?
+@groups.push(["Nouveaux documents", @new_documents]) unless @new_documents.empty?
 @groups.reverse! if @order_by == "desc"
 %>
 

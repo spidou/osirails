@@ -25,8 +25,9 @@
     </tr>
     <% end %>
   </table>
+  <%= will_paginate @features %>
 
-  <% if controller.can_add?(current_user) %>
+  <% if Feature.can_add?(current_user) %>
   <h2>Ajout d'un module</h2>
   <p>Format accepté: .tar.gz
     <%= form_tag({:action => 'create'}, :multipart => true) %>

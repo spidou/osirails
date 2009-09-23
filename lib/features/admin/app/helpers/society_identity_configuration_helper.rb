@@ -35,11 +35,20 @@ module SocietyIdentityConfigurationHelper
     html << "</select>\n"
     html
   end
+  
+  def display_time_zone(name, value)
+    disabled = is_form_view? ? "" : "disabled='disabled' "
+    html = ""
+    html << "<select #{disabled}id='#{name}' name='#{name}'>\n"
+    html << time_zone_options_for_select(value)
+    html << "</select>\n"
+  end
 
-	# This method permit to test permission for edit_button (overide dynamic method because there's not model)
   def edit_society_identity_configuration_link(text="")
-    if controller.can_edit?(current_user)
-      link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
-    end
+    link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
+  end
+  
+  def society_identity_configuration_link(text="")
+    link_to( image_tag("/images/view_16x16.png", :alt => "Voir", :title => "Voir") + " #{text}", society_identity_configuration_path )
   end
 end

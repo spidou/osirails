@@ -1,23 +1,29 @@
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= employee_link(@employee) %>
   <%= employees_link %>
 <% end %>
 
-<h1>Historique des primes de <%=@employee.fullname%></h1>
+<h1>Historique des primes</h1>
 
-<div>
-<table>
-    <tr>
-      <th>Montant</th>
-      <th>Commentaire</th>
-      <th>Date</th>
-    </tr>
-    <% for premium in @premia%>
-    <tr>
-      <td><%=h premium.amount %></td>
-      <td><%=h premium.remark %></td>
-      <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil? %></td>
-    </tr> 
-    <%end%>
-</table>
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
+<div class="presentation-medium">
+
+<% if @premia.empty? %>
+  <p>Aucune prime</p>
+<% else%>
+  <table>
+      <tr>
+        <th>Montant</th>
+        <th>Commentaire</th>
+        <th>Date</th>
+      </tr>
+      <% for premium in @premia%>
+      <tr>
+        <td><%=h premium.amount %></td>
+        <td><%=h premium.remark %></td>
+        <td><%=h premium.date.strftime("%d/%m/%Y") unless premium.date.nil? %></td>
+      </tr> 
+      <%end%>
+  </table>  
+<% end %>
 </div>

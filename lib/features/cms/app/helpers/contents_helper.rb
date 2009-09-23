@@ -5,7 +5,6 @@ module ContentsHelper
     link_to("Actualiser la page", :action =>:edit) if @affiche == true
   end
   
-  
   # This method permit to show contents
   def show_contents(contents)
     contents_list = []
@@ -28,7 +27,7 @@ module ContentsHelper
   
   # This method permit to show content versions
   def show_contents_versions(content_versions)
-    if controller.can_view?(current_user) and Content.can_view?(current_user)
+    if Content.can_view?(current_user)
       contents_versions_list = []
       contents_versions_list << "<p><ul>"
       content_versions.each_with_index do |content_version, index|

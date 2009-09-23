@@ -14,7 +14,7 @@ ActionController::Routing::Routes.add_routes do |map|
   map.society_configurations "society_configurations", :controller => "society_identity_configuration", :action => "show"
   
   # security
-  map.password_policies 'password_policies', :controller => 'password_policies'
+  map.resource :password_policies, :controller => 'password_policies'
   
   # menus
   map.resources :menus

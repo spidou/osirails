@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class EventTest < ActiveSupport::TestCase
   fixtures :events, :calendars, :alarms, :participants, :exception_dates

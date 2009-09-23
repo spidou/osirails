@@ -1,9 +1,8 @@
-require 'test_helper'
+require 'test/test_helper'
 require File.dirname(__FILE__) + '/../admin_test'
 
 require 'features_controller'
 
-# re-raise errors caught by the controller.
 class FeaturesController; def rescue_action(e) raise e end; end
 
 class FeaturesControllerTest < ActionController::TestCase

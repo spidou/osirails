@@ -4,7 +4,8 @@ ActionController::Routing::Routes.draw do |map|
   ### ROOT
   map.root :controller => 'account', :action => 'index'
   map.home '', :controller => 'account'
-  map.search "search" , :controller => "searches"
+  map.search 'search' , :controller => 'search_indexes'
+  map.connect 'search_index/update', :controller => 'search_indexes', :action => 'update', :conditions => { :method => :post }
   ### END ROOT
 
   map.login 'account/login', :controller => 'account', :action => 'login'

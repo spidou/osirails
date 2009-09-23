@@ -2,13 +2,13 @@
      <%= javascript_include_tag 'shedules' %>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_service_link_with_parent(@service,"New service") %>
   <%= service_link(@service)%>
 	<%= delete_service_link(@service)%>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= services_link %>
 <% end %>
 

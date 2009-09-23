@@ -1,0 +1,53 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'rh/checkings' %> 
+<% end %>
+
+<div class="presentation_large">
+  <% form_for @checking, :url => { :action => action } do |f| %>
+    <%= f.error_messages%>
+    
+    <h2>Qui? et Quand?</h2>
+    <p>
+      <%= f.label :employee_id %>
+      <% if is_edit_view?%>
+        <%= strong(@checking.employee.fullname) %>
+      <% else %>
+        <%= f.form_or_view(f.collection_select(:employee_id, @subordinates, :id, :fullname, { :prompt => "Veuillez choisir un employé" }), :employee, :fullname)%>
+      <% end %>
+    </p>
+    <p>
+      <%= f.label :date %>
+      <% if is_edit_view? %>
+        <%= strong(@checking.date.strftime("%d %B %Y")) %>
+      <% else %>
+        <%= f.form_or_view(f.date_select(:date, {:start_year => Date.today.year-1, :end_year => Date.today.year+1, :order => [:day, :month, :year]}), :date)%>
+      <% end %>
+    </p>
+    
+    <h2>Signaler une absence</h2>
+    <p>
+      <%= f.label :absence_hours %>
+      <%= f.form_or_view(f.select(:absence_hours, (0..23).to_a), :absence_hours)%> heures et
+      <%= f.form_or_view(f.select(:absence_minutes, (0..59).to_a), :absence_minutes)%> minutes
+    </p>
+    <p>
+      <%= f.label :absence_comment %>
+      <%= f.form_or_view(f.text_area(:absence_comment,{:rows => 5}),:absence_comment)%>
+    </p>
+    
+    <h2>Signaler des heures suppl&eacute;mentaires</h2>
+    <p>
+      <%= f.label :overtime_hours %>
+      <%= f.form_or_view(f.select(:overtime_hours,(0..23).to_a), :overtime_hours)%> heures et
+      <%= f.form_or_view(f.select(:overtime_minutes, (0..59).to_a), :overtime_minutes)%> minutes
+    </p>
+    <p>
+      <%= f.label :overtime_comment %>
+      <%= f.form_or_view(f.text_area(:overtime_comment,{:rows => 5}),:overtime_comment)%>
+    </p>
+    
+    <p>
+      <%= f.submit button_name %>
+    </p>
+  <% end %>
+</div>

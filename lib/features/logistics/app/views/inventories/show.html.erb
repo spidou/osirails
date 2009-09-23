@@ -3,17 +3,17 @@
   <%= javascript_include_tag 'logistics/inventories' %>
 <% end %>
 
-<% contextual_menu "Totaux" do %>
+<% add_contextual_menu_item :commodities_total do %>
   <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span>
   <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
+<% add_contextual_menu_item :possible_actions do %>
   <%= new_inventory_link %>
   <%= show_closed_button(@inventory)%>
 <% end %>
 
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= commodity_categories_link %>
   <%= inventories_link %>
 <% end %>

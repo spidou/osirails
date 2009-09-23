@@ -1,0 +1,27 @@
+<h2>Mes demandes accept&eacute;es</h2>
+
+<% if accepted_leave_requests.size > 0 %>
+
+<table>
+  <tr>
+    <th>Date / P&eacute;riode demand&eacute;e</th>
+    <th>Soumise le</th>
+    <th>Accept&eacute;e le</th>
+    <th>Actions</th>
+  </tr>
+  
+  <% for leave_request in accepted_leave_requests %>
+    <tr>
+      <td><%= leave_request.formatted %></td>
+      <td><%= leave_request.submitted_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+      <td><%= leave_request.updated_at.to_datetime.strftime("%A %d %B %Y à %Hh%M") %></td>
+      <td><%= leave_request_link(leave_request, :link_text => "") %></td>
+    </tr>
+  <% end %>
+  
+</table>
+<%= will_paginate accepted_leave_requests if params[:action] != "index" %>
+
+<% else %>
+  <p>Aucune demande accept&eacute;e</p>
+<% end %>

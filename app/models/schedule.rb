@@ -1,6 +1,6 @@
 class Schedule < ActiveRecord::Base
   belongs_to :service
 
-  def get_day
-  end
+  # Search Plugin
+  has_search_index :except_attributes => [:created_at, :updated_at, :service_id, :id]
 end

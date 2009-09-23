@@ -110,11 +110,12 @@ module ActionView
       #   <%= strong "<span>Your text</span>" %>
       #   # => <strong>&lt;span&gt;Your text&lt;span&gt;</strong>
       #
-      def strong(text)
-        content_tag :strong, h(text)
+      def strong(text, options = {})
+        content_tag :strong, h(text), options
       end
       
       def reset(object, text)
+        text ||= "Reset"
         "<input type='reset' value='#{text}' name='reset' id='#{object}_reset'/>"
       end
       
@@ -169,6 +170,13 @@ module ActionView
         end
         content_tag('ul', items.uniq)
       end
+      
+      def autoresize_text_area(object_name, method, options = {})
+        options = { "style" => "overflow-y: hidden", "class" => "autoresize_text_area", "rows" => options["rows"] }.freeze.merge(options.stringify_keys)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
+      end
+      
+      alias_method :text_area_autoresize, :autoresize_text_area
     end
     
     class InstanceTag #:nodoc:
@@ -270,6 +278,8 @@ module ActionView
       #   <% end %>
       #
       def strong(*text_methods)
+        options = text_methods.pop if text_methods.last.is_a?(Hash)
+        
         if text_methods.first.class.equal?(Symbol)
           text = @object
           text_methods.each { |method| text = text.send(method) if text.respond_to?(method) } #OPTIMIZE this is not DRY > put it in a method instead of repeat it!
@@ -277,16 +287,22 @@ module ActionView
         else
           text = text_methods.join(" ")
         end
-        @template.strong(text)
+        @template.strong(text, options)
       end
       
-      def reset(text)
+      def reset(text = nil)
         @template.reset(@object_name, text)
       end
       
       def force_show_view?
         @force_show_view == true
       end
+      
+      def autoresize_text_area(method, options = {})
+        @template.autoresize_text_area(@object_name, method, options)
+      end
+      
+      alias_method :text_area_autoresize, :autoresize_text_area
     end
     
   end

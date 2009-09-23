@@ -1,13 +1,15 @@
-<% contextual_menu USEFUL_LINKS do %>
+<% add_contextual_menu_item :useful_links do %>
   <%= employee_link(@employee) %>
   <%= employees_link %>
 <% end %>
 
-<h1>Ajouter une Prime à <%=@employee.fullname%> </h1>
-
 <% content_for :header do %>
      <%= javascript_include_tag 'rh/premium' %>
 <% end %>
+
+<h1>Ajouter une Prime</h1>
+
+<%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 
 <div class="presentation_small">
 

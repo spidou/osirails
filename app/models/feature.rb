@@ -1,4 +1,6 @@
 class Feature < ActiveRecord::Base
+  has_permissions :as_business_object
+  
   serialize :dependencies
   serialize :conflicts
   serialize :business_objects
@@ -9,6 +11,8 @@ class Feature < ActiveRecord::Base
   DIR_VENDOR_FEATURES = "vendor/features/"
   KERNEL_FEATURES = ["admin"]
   FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "products", "rh", "sales", "thirds"]
+  # for pagination : number of instances by index page
+  FEATURES_PER_PAGE = 15
 
   validates_presence_of :name, :version
   validates_uniqueness_of :name

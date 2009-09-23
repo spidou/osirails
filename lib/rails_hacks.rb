@@ -5,7 +5,7 @@
 module ActiveRecord
   class Base
     def self.singularized_table_name
-      name.tableize.singularize # 'table_name.singularize' return a wrong result when we use single table inheritance
+      name.underscore # 'table_name.singularize' return a wrong result when we use single table inheritance
     end
   end
 end

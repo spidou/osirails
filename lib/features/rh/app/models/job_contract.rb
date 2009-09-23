@@ -1,5 +1,6 @@
 class JobContract < ActiveRecord::Base
   has_permissions :as_business_object
+  has_documents :job_contract, :job_contract_endorsement, :resignation_letter, :demission_letter, :other
   
   # Relationships
   belongs_to :employee
@@ -29,9 +30,14 @@ class JobContract < ActiveRecord::Base
   @@form_labels[:employee_state] = "Statut :"
   @@form_labels[:salary] = "Salaire brut :"
   
+  # Search Plugin
+  has_search_index  :only_attributes    => [:start_date],
+                    :only_relationships => [:job_contract_type]
+  
   #return the actual salary
+  #OPTIMIZE use 'has_one :current_salary' instead!
   def actual_salary
-    salaries.last
+    salaries.first
   end
   
   def salary
@@ -43,6 +49,6 @@ class JobContract < ActiveRecord::Base
   end
   
   def save_salary
-    salaries.last.save(false) if !salaries.last.nil? and salaries.last.new_record?
+    actual_salary.save(false) if !actual_salary.nil? and actual_salary.new_record?
   end
 end

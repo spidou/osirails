@@ -1,7 +1,7 @@
 module DocumentsHelper
 
   def display_documents_list(documents_owner)
-    html = '<div id="documents" class="resources">'
+    html = "<div id=\"#{documents_owner.class.name.underscore}_documents\">"
     html << render_documents_list(documents_owner, :group_by => "date", :order_by => "asc")
     html << '</div>'
     html << render_new_documents_list(documents_owner)
@@ -31,23 +31,25 @@ module DocumentsHelper
       order_by = "asc"
       order_symbol = "^"
     end
-    link_to_remote "#{method.humanize} #{order_symbol}", :update => :documents_list,
-                                                         :url => documents_path(documents_owner, :group_by => method, :order_by => order_by),
-                                                         :method => :get
+    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => "#{documents_owner.class.name.underscore}_documents",
+                                                           :url     => documents_path( documents_owner,
+                                                                                       :group_by => method,
+                                                                                       :order_by => order_by,
+                                                                                       :owner    => documents_owner.class.name,
+                                                                                       :owner_id => documents_owner.id ),
+                                                           :method  => :get
   end
 
   def display_document_add_button(documents_owner)
-    html = "<p>"
-    html << link_to_function("Ajouter un document") do |page|
-      page.insert_html :bottom, :new_documents, :partial => 'documents/document',
-                                                :object => documents_owner.build_document,
-                                                :locals => { :documents_owner => documents_owner }
+    content_tag( :p, link_to_function "Ajouter un document" do |page|
+      page.insert_html :bottom, :new_documents, :partial  => 'documents/document',
+                                                :object   => documents_owner.build_document,
+                                                :locals   => { :documents_owner => documents_owner }
       page['new_documents'].show if page['new_documents'].visible
       last_document = page['new_documents'].select('.document').last
       last_document.show
       last_document.visual_effect :highlight
-    end
-    html << "</p>"
+    end )
   end
 
   def display_document_edit_button(document)
@@ -77,7 +79,7 @@ module DocumentsHelper
   end
   
   private
-
+  
     def documents_path(documents_owner, options = {})
       send("#{documents_owner.class.singularized_table_name}_documents_path", documents_owner.id, options)
     end
@@ -85,5 +87,5 @@ module DocumentsHelper
     def document_path(documents_owner, document, options = {})
       send("#{documents_owner.class.singularized_table_name}_document_path", documents_owner.id, document.id, options)
     end
-
+    
 end

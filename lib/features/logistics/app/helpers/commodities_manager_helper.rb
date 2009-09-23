@@ -2,21 +2,25 @@ module CommoditiesManagerHelper
   
   # This method permit to add a button for add a sub category
   def add_category_or_commodity(commodity_category)
-    if controller.can_add?(current_user) and CommodityCategory.can_add?(current_user)
-      commodity_category.commodity_category_id.nil? ? link_to("Ajouter une sous cat&eacute;gorie", new_commodity_category_path(:id => commodity_category.id, :type => "child")) : link_to("Ajouter une mati&egrave;re premi&egrave;re", new_commodity_path(:id => commodity_category.id))
+    if CommodityCategory.can_add?(current_user)
+      if commodity_category.commodity_category_id.nil?
+        link_to("Ajouter une sous catégorie", new_commodity_category_path(:id => commodity_category.id, :type => "child"))
+      else
+        link_to("Ajouter une matière première", new_commodity_path(:id => commodity_category.id))
+      end
     end
   end
   
   # This method permit to show or hide delete button for categories
   def delete_category_link(commodity_category)
-    if controller.can_delete?(current_user) and CommodityCategory.can_delete?(current_user)
+    if CommodityCategory.can_delete?(current_user)
       link_to(image_tag("url", :alt => "Supprimer"), commodity_category, { :method => :delete, :confirm => 'Etes vous sûr  ?'}) if commodity_category.can_be_destroyed?
     end
   end
   
   # This method permit to show or hide delete button for commodities
   def delete_commodity_link(commodity,show)
-    if controller.can_delete?(current_user) and Commodity.can_delete?(current_user)
+    if Commodity.can_delete?(current_user)
       link_to(image_tag("url", :alt => "Supprimer"), commodity,  { :controller => 'commodities', :action => 'destroy', :method => :delete, :confirm => 'Etes vous sûr  ?'}) unless show == nil and commodity.enable == false
     end
   end
@@ -31,14 +35,15 @@ module CommoditiesManagerHelper
 
   # method that permit to access to commodities categories list using /commodities_manager route  
   def commodity_categories_link(txt = "List all commodities categories")
-    if controller.can_list?(current_user) and CommodityCategory.can_list?(current_user)
+    if CommodityCategory.can_list?(current_user)
       link_to(image_tag( "/images/list_16x16.png", :alt => "List", :title => "List" )+" #{txt}", "/commodities_manager")
     end 
   end
   
   # This method permit to display the good link if the commodities categories or commodities, are enabled or not
   def show_commodities_view_button(type)
-    if ( CommodityCategory.find(:all).size != CommodityCategory.find_all_by_enable(true).size ) or ( Commodity.find(:all).size != Commodity.find_all_by_enable(true).size )
+    #FIXME this condition is not right when there is no disabled commodity or commodity_category
+    if ( CommodityCategory.count != CommodityCategory.find_all_by_enable(true).size ) or ( Commodity.count != Commodity.find_all_by_enable(true).size )
       if type != "show_all" 
         html_opt = { :alt => "View all commodities", :title => "View all commodities including destroyed"}
         hash = { :action => "index", :type => "show_all"}
@@ -54,10 +59,10 @@ module CommoditiesManagerHelper
 
   # This method permit to make in table editor
   def in_place_editor(object,attribute,value = 0)
-    if value == 1 and (controller.can_edit?(current_user) and CommodityCategory.can_edit?(current_user))
+    if value == 1 and CommodityCategory.can_edit?(current_user)
       return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
-    if value == 0 and (controller.can_edit?(current_user) and Commodity.can_edit?(current_user))
+    if value == 0 and Commodity.can_edit?(current_user)
       return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
     "<span>#{object.send(attribute)}</span>"

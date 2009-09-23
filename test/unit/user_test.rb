@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class UserTest < ActiveSupport::TestCase
   fixtures :users
@@ -94,21 +94,11 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_encryption_of_password_for_existing_record
-    @admin_user.updating_password = true
     @admin_user.password = 'new_password'
-    
     assert_equal @admin_user.password, 'new_password', "Password should NOT be encrypted before save"
     
     @admin_user.save!
     assert_equal @admin_user.password, encrypt('new_password'), "Password should be encrypted after save"
-  end
-  
-  def test_non_encryption_of_password_for_existing_record
-    @admin_user.password = 'new_password'
-    assert_equal @admin_user.password, 'new_password', "Password should NOT be encrypted before save"
-    
-    @admin_user.save!
-    assert_equal @admin_user.password, 'new_password', "Password should NOT be encrypted after save if 'updating_password' is not 'true'"
   end
   
   def test_unability_to_give_same_password_after_expiration
@@ -121,7 +111,6 @@ class UserTest < ActiveSupport::TestCase
   def test_password_updated_at
     ConfigurationManager.admin_password_validity = 30 # assuming password expire 30 days after updating password
     
-    @admin_user.updating_password = true
     @admin_user.password = "new_password"
     
     assert @admin_user.save!, "The password should be updated without validation error"

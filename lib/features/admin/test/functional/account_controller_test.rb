@@ -1,9 +1,8 @@
-require 'test_helper'
+require 'test/test_helper'
 # require File.dirname(__FILE__) + '/../admin_test'
 
 require 'account_controller'
 
-# re-raise errors caught by the controller.
 class AccountController; def rescue_action(e) raise e end; end
 
 class AccountControllerTest < ActionController::TestCase

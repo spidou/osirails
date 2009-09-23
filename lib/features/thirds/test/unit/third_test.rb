@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class ThirdTest < ActiveSupport::TestCase
   def test_presence_of_name

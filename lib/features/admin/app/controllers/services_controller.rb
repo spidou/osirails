@@ -19,11 +19,8 @@ class ServicesController < ApplicationController
     @schedules_service = @service.schedule_find.name
     @responsables = []
     @days = {:day => "", :morning_start => "" , :morning_end => "" , :afternoon_start => "", :afternoon_start => ""}
-    @members = []
-    @service.employees_services.each do |f|
-      @responsables << f.employee_id if f.responsable==true
-      @members << Employee.find(f.employee_id)
-    end
+    @members = @service.members
+    @responsables = @service.responsibles
   end
 
   # GET /servicess.employees_services.each do |f|

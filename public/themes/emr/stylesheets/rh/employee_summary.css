@@ -1,0 +1,9 @@
+#employee_avatar_container {
+  margin-left: 50px;
+  padding: 10px 0 10px 0;
+}
+
+#employee_avatar_container img {
+  padding:2px;
+  border: 1px dashed #989898;
+}

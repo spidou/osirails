@@ -14,13 +14,13 @@ class Third < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom :"
-  @@form_labels[:legal_form] = "Forme juridique :"
-  @@form_labels[:siret_number] = "Numéro SIRET :"
-  @@form_labels[:activity_sector] = "Secteur d'activit&eacute; :"
-  @@form_labels[:activities] = "Activités :"
-  @@form_labels[:note] = "Note :"
-  @@form_labels[:payment_method] = "Moyen de paiement préféré :"
-  @@form_labels[:payment_time_limit] = "Délai de paiement préféré :"
+  @@form_labels[:name]                = "Nom :"
+  @@form_labels[:legal_form]          = "Forme juridique :"
+  @@form_labels[:siret_number]        = "Numéro SIRET :"
+  @@form_labels[:activity_sector]     = "Secteur d'activité :"
+  @@form_labels[:activities]          = "Activités :"
+  @@form_labels[:note]                = "Note :"
+  @@form_labels[:payment_method]      = "Moyen de paiement préféré :"
+  @@form_labels[:payment_time_limit]  = "Délai de paiement préféré :"
   
 end
