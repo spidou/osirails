@@ -24,9 +24,9 @@ ActionController::Routing::Routes.add_routes do |map|
                           :day          => nil,
                           :requirements => {
                             :period => /(day|week|month)/,
-                            :year => /(19|20)\d\d/,
-                            :month => /([1-9]|1[012])/,
-                            :day => /([1-9]|[1|2]\d|3[01])/
+                            :year   => /(19|20)\d\d/,
+                            :month  => /(0?[1-9]|1[012])/,
+                            :day    => /(0?[1-9]|[1|2]\d|3[01])/
                           }
-
+  
 end
