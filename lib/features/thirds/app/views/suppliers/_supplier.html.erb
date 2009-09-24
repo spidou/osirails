@@ -8,13 +8,15 @@
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 
-  <p>
-    <%= form.reset 'Annuler' %>
-    <%= form.submit submit_button_name %>
-  </p>
+    <p>
+      <%= form.reset %>
+      <%= form.submit submit_button_name %>
+    </p>
   <% end %>
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>
+  
+  <h2>Contacts</h2>
   <%= display_contacts_list(@supplier) %>
 <% end %>
 
