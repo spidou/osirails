@@ -2,8 +2,8 @@ class Contact < ActiveRecord::Base
   has_permissions :as_business_object
   
   belongs_to :contact_type
-  has_many :contacts_owners, :foreign_key => "contact_id", :dependent => :destroy
   
+  has_many :contacts_owners, :foreign_key => "contact_id", :dependent => :destroy
   has_many :numbers, :as => :has_number
   
   validates_presence_of   :first_name, :last_name, :contact_type, :gender

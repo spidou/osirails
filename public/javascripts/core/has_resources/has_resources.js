@@ -5,7 +5,9 @@ function mark_resource_for_destroy(element) {
   resource.down('.should_destroy').value = 1
   Effect.toggle(resource, 'appear')
   
-  hide_resource_group(resource.up('.resource_group'))
+  if (resource.up('.resource_group')) {
+    hide_resource_group(resource.up('.resource_group'))
+  }
 }
 
 function mark_resource_for_update(element) {

@@ -4,7 +4,7 @@ class CustomerTest < ActiveSupport::TestCase
   fixtures :thirds
 
   def setup
-    @customer = thirds(:customer_normal)
+    @customer = thirds(:first_customer)
   end
 
   def test_uniqness_of_name

@@ -1,7 +1,7 @@
 product_reference1:
   name: Product reference 1
   reference: XG59I0
-  product_reference_category: parent
+  product_reference_category: child
 product_reference2:
   name: Product reference 2
   reference: XF68AZ

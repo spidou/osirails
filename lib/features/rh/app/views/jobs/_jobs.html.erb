@@ -1,9 +1,9 @@
     <h3>Service</h3>
     <p>
-      <%= form.label :name , "Nom :"%>
+      <%= form.label :service %>
       <%= form.form_or_view(form.collection_select(:service_id, @services, :id, :name), :service, :name) %>
     </p>
-    <%= "<p> #{form.label :responsable, "Responsable(s) :"} #{get_responsibles} </p>" unless is_form_view? %>
+    <%= "<p> #{form.label "Responsable(s) "} #{get_responsibles} </p>" unless is_form_view? %>
     
     <h3>Fonctions dans l'entreprise</h3>
     
@@ -24,31 +24,33 @@
             <% end %>
           </table>
         </div> <!--end jobs_list -->
-        <p><a onclick="osibox_open();" style="text-decoration:underline;">new job</a></p>
+        <p><a onclick="osibox_open();" style="text-decoration:underline;">New job</a></p>
       </div> <!--end jobs_choice -->
 
     <% else %>
       
-      <%= "<p>aucune</p>" if @employee.jobs.empty? %>
-      <% for job in @employee.jobs%>
-        <p>
-          <strong><%= job.name + " :" %></strong>
-          <table class="presentation">
-            <tr class="left_cell">
-              <td class="left_cell">- Missions :</td>
-              <td class="right_cell"> <%= job.mission %></td>
-            </tr>
-            <tr>
-              <td class="left_cell">- Activités :</td>
-              <td class="right_cell"><%= job.activity %></td>
-            </tr>
-            <tr>
-              <td class="left_cell">- Objectifs :</td>
-              <td class="right_cell"> <%= job.goal %></td>
-            </tr>
-          </table>
-        </p>
+      <% if @employee.jobs.empty? %>
+        <p>Aucune fonction attribuée.</p>
+      <% else %>
+        <% for job in @employee.jobs%>
+          <p>
+            <strong><%= job.name + " :" %></strong>
+            <table class="presentation">
+              <tr class="left_cell">
+                <td class="left_cell">- Missions :</td>
+                <td class="right_cell"> <%= job.mission %></td>
+              </tr>
+              <tr>
+                <td class="left_cell">- Activités :</td>
+                <td class="right_cell"><%= job.activity %></td>
+              </tr>
+              <tr>
+                <td class="left_cell">- Objectifs :</td>
+                <td class="right_cell"> <%= job.goal %></td>
+              </tr>
+            </table>
+          </p>
+        <% end %>
       <% end %>
-      <p><a onclick="osibox_open();" style="text-decoration:underline;">New job</a></p>
       
     <% end %>

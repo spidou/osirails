@@ -1,22 +1,22 @@
 <% require_locals establishment_owner %>
 <% owner_type = establishment_owner.class.name.downcase %>
 
-<div class="establishment_general_infos" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
+<div class="establishment resource" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_in_one_line do %>
-  <p id="establishment_<%= establishment.id  %>">
+  <p id="establishment_<%= establishment.id %>">
     <%= image_tag 'warning_14x14.png' if establishment.new_record? or !establishment.errors.empty? %>
     
     <%= "#{establishment.name} (#{establishment.address.country_name}, #{establishment.address.city_name})" %>
     
-    <%= link_to_function "Fiche complète", "this.up('.establishment_general_infos').down('.resource_form').toggle()" if ( !is_form_view? and Establishment.can_view?(current_user) ) or ( is_form_view? and Establishment.can_view?(current_user) and !Establishment.can_edit?(current_user) ) %>
+    <%= link_to_function "Fiche complète", "this.up('.resource').down('.resource_form').toggle()" if ( !is_form_view? and Establishment.can_view?(current_user) ) or ( is_form_view? and Establishment.can_view?(current_user) and !Establishment.can_edit?(current_user) ) %>
     
-    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.establishment_general_infos'))" if is_form_view? and Establishment.can_edit?(current_user) %>
+    <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Establishment.can_edit?(current_user) %>
     
     <% if is_form_view? and Establishment.can_delete?(current_user) %>
       <% if establishment.new_record? %>
-        <%= link_to_function "Supprimer", "this.up('.establishment_general_infos').remove()" %>
+        <%= link_to_function "Supprimer", "this.up('.resource').remove()" %>
       <% else %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.establishment_general_infos'))" %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this)" %>
       <% end %>
     <% end %>
     

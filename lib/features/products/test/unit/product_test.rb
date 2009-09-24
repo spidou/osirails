@@ -18,8 +18,8 @@ class ProductTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_product_reference
-    assert_equal products(:normal).product_reference,
-      product_references(:normal),
+    assert_equal products(:product1).product_reference,
+      product_references(:product_reference1),
       "This Product should belongs to this ProductReference"
   end
 end

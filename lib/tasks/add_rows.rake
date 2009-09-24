@@ -212,7 +212,7 @@ namespace :osirails do
       # default suppliers
       iban = Iban.create :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
       supplier = Supplier.create :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :activated => true
-      supplier.create_address(:street_name => "1 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")#, :has_address_type => "Third")
+      supplier.create_address(:street_name => "1 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       supplier.iban = iban
       supplier.save
       
@@ -220,6 +220,7 @@ namespace :osirails do
       customer = Customer.new(:name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
         :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true)
       
+      customer.build_address(:street_name => "2 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       establishment1 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       establishment2 = Establishment.new(:name => "Mon Etablissement", :establishment_type_id => magasin.id)
       establishment3 = Establishment.new(:name => "Super Etablissement", :establishment_type_id => station.id)
@@ -438,7 +439,7 @@ namespace :osirails do
         employee.last_name = last_names.rand
         employee.email = "#{employee.first_name}@#{employee.last_name}.com"
         employee.birth_date = Date.today - numbers.rand.to_i.years - numbers.rand.to_i.days
-        employee.build_address(:address1 => "#{numbers.rand} rue des #{addresses.rand}", :address2 => "", :country_name => "#{countries.rand}", :city_name => "#{cities.rand}", :zip_code => rand(99999).to_s)
+        employee.build_address(:street_name => "#{numbers.rand} rue des #{addresses.rand}", :country_name => "#{countries.rand}", :city_name => "#{cities.rand}", :zip_code => rand(99999).to_s)
         employee.build_iban(:bank_name => banks.rand, :account_name => employee.fullname , :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
         employee.service = Service.all.rand
         employee.save!

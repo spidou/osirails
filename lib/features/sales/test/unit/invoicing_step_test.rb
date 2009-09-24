@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class InvoicingStepTest < ActiveSupport::TestCase
   def test_truth

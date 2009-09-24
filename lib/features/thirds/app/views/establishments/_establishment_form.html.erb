@@ -20,9 +20,9 @@
     <% if establishment.new_record? %>
       <%= link_to_function "Annuler la création de l'établissement", "this.up('.resource_form').remove()" %>
     <% elsif is_form_view? %>
-      <%= link_to_function "Annuler la modification de l'établissement", "mark_resource_for_dont_update(this.up('.establishment_general_infos'))" %>
+      <%= link_to_function "Annuler la modification de l'établissement", "mark_resource_for_dont_update(this)" %>
     <% else %>
-      <%= link_to_function "Fermer", "this.up('.establishment_general_infos').down('.resource_form').hide()" %>
+      <%= link_to_function "Fermer", "this.up('.resource_form').hide()" %>
     <% end %>
 
     <% if !establishment.new_record? and is_form_view? %>

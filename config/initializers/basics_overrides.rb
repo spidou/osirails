@@ -150,6 +150,14 @@ class DateTime
   end
 end
 
+module ActiveSupport
+  class TimeWithZone
+    def humanize
+      self.to_datetime.humanize
+    end
+  end
+end
+
 class Numeric
   def round_to(precision = 0)
     if self.kind_of?(Float)

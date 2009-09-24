@@ -35,7 +35,7 @@ module HasAddress
       # and here : http://benanne.net/code/?p=108
       define_method "build_#{name}" do |attributes|
         attributes ||= {}
-        Address.new({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}.merge(attributes))
+        send( "#{name}=" , Address.new({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}.merge(attributes)) )
       end
       
       # FIXME call this method with no argument works but raise a warning

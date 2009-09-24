@@ -81,11 +81,11 @@ module DocumentsHelper
   private
   
     def documents_path(documents_owner, options = {})
-      send("#{documents_owner.class.singularized_table_name}_documents_path", documents_owner.id, options)
+      send("#{documents_owner.class.singularized_table_name}_documents_path", options)
     end
 
     def document_path(documents_owner, document, options = {})
-      send("#{documents_owner.class.singularized_table_name}_document_path", documents_owner.id, document.id, options)
+      send("#{documents_owner.class.singularized_table_name}_document_path", document.id, options)
     end
     
 end

@@ -3,13 +3,13 @@
   <%= javascript_include_tag 'sales/order' %>
 <% end -%>
 
-<% contextual_menu "Avancement du projet" do %>
+<% add_contextual_menu_item :order_progress do %>
   <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object>
   <%= remaining_time_before_delivery(@order) %>
 <% end %>
 
-<% contextual_menu POSSIBLE_ACTIONS do %>
-  <%= link_to 'Modifier le dossier', edit_order_path(@order) if menu_orders.can_edit?(current_user) %>
+<% add_contextual_menu_item :possible_actions do %>
+  <%= link_to 'Modifier le dossier', edit_order_path(@order) if Order.can_edit?(current_user) %>
 <% end %>
 
 <div>
@@ -62,9 +62,7 @@
   </div>
 
   <p>
-  <% if menu_orders.can_edit?(current_user) %>
-    <%= link_to 'Modifier', edit_order_path(@order) %>
-  <% end %>
+    <%= link_to 'Modifier', edit_order_path(@order) if Order.can_edit?(current_user) %>
   </p>
 </div>
  

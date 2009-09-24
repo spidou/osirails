@@ -777,15 +777,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.string "title"
   end
 
-  create_table "pre_invoicing_steps", :force => true do |t|
-    t.integer  "order_id",    :limit => 11
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-  
   create_table "permissions", :force => true do |t|
     t.integer  "role_id",              :limit => 11
     t.string   "has_permissions_type"
@@ -798,6 +789,15 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "permission_id",        :limit => 11
     t.integer  "permission_method_id", :limit => 11
     t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pre_invoicing_steps", :force => true do |t|
+    t.integer  "order_id",    :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

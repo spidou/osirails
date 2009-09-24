@@ -4,7 +4,7 @@ class EstablishmentTest < ActiveSupport::TestCase
   fixtures :establishments
 
   def setup
-    @establishment = establishments(:normal)
+    @establishment = establishments(:first_establishment)
   end
 
   def test_presence_of_name
@@ -24,13 +24,11 @@ class EstablishmentTest < ActiveSupport::TestCase
   end
 
   def test_save_address
-    address = Address.new(:address1 => "1 rue des rosiers",
-                          :address2 => "",
-                          :country_name => "Réunion",
-                          :city_name => "Saint-Denis",
-                          :zip_code => "97400")
-    @establishment.update_attributes(:address => address)
-    assert Establishment.find_by_name(@establishment.name).address,
-      "This Establishment should have an address"
+    @establishment.build_address(:street_name => "1 rue des rosiers",
+                                 :country_name => "Réunion",
+                                 :city_name => "Saint-Denis",
+                                 :zip_code => "97400")
+    @establishment.save!
+    assert @establishment.reload.address, "This Establishment should have an address"
   end
 end

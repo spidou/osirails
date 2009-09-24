@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+  has_permissions :as_business_object
   has_contacts :accept_from => :customer_contacts
   validates_contact_length :minimum => 1, :too_short => "est trop court (%s contact minimum)"
   

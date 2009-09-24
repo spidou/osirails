@@ -5,7 +5,7 @@ class ProductReferenceTest < ActiveSupport::TestCase
 
   def setup
     @product_reference_category = product_reference_categories(:child)
-    @product_reference = product_references(:normal)
+    @product_reference = product_references(:product_reference1)
   end
 
   def test_read
@@ -50,6 +50,6 @@ class ProductReferenceTest < ActiveSupport::TestCase
   end
 
   def test_product_reference_category
-    assert_equal @product_reference.product_reference_category, @product_reference_category, "This ProductReference should have a ProductReferenceCategory"
+    assert_equal @product_reference_category, @product_reference.product_reference_category, "This ProductReference should have a ProductReferenceCategory"
   end
 end

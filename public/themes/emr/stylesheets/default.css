@@ -1,4 +1,4 @@
-r/*	default.css------------------------------------------------------
+/*	default.css------------------------------------------------------
 	----------	..::Par Oxydium::.
 
 Création : Juillet/Octobre 2008
@@ -133,59 +133,43 @@ object {
 ////////////////////////////////////////////////////*/
 
 #block_button_banner {
-	float:right;
-	margin-top:-4px;
-	height:20px;
+	text-align: right;
+	margin: 0 11px 0 0;
+	height: 20px;
+	padding-top: 5px;
+}
+
+#block_button_banner a.button_banner {
+  background-color: #434e6d;
+  padding: 2px 8px 2px 8px;
+  margin-left: 6px;
+  font-family: arial, verdana, sans-serif;
+	font-size: 85%;
+	line-height: 12px;
+	text-decoration: none;
+  color: white;
+  border: 1px solid gray;
+  -moz-border-radius: 8px;
+  //-moz-box-shadow: 1px 1px 1px rgba(255,255,255,0.4), inset -1px -1px 1px rgba(0,0,0,0.3), inset 1px 1px 1px rgba(255,255,255,0.7), inset 0px 4px 25px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset -2px -1.6px 1px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(0,0,0,0.3);
+}
+
+#block_button_banner a.button_banner:hover {
+  background-color: #4f4f50;
+  color: #c3d1ea;
+}
+
+#block_button_banner a.button_banner:active {
+  -moz-box-shadow: inset -1px -1px 1px rgba(0,0,0,0.3), inset 0px 4px 20px rgba(0,0,0,0.5);
 }
 
 #banner_datetime {
-	float:right;
-	line-height:0px;
-	margin:0 11px -7px 0;
-	font-size:0.9em;
-	color:#EA972D;
-	text-align:right;
-}
-
-a.button_banner {
-	background: transparent url("/themes/emr/images/button_banner_left_side.png") no-repeat top left;
-	display: block;
-	float: left;
-	font-family: arial, verdana, sans-serif;
-	font-size:85%;
-	line-height: 12px;
-	height: 20px;
-	padding-left: 8px;
-	text-decoration: none; 
-	text-indent:0;
-	margin-right:10px;
-	margin-top:11px;
-}
-
-a:link.button_banner,
-a:visited.button_banner,
-a:active.button_banner {
-	color: white;
-}
-
-a.button_banner span {
-	background: transparent url("/themes/emr/images/button_banner_right_side.png") no-repeat top right;
-	display: block;
-	padding: 4px 8px 4px 0;
-}
-
-a.button_banner:hover {
-	background-position: bottom left;
-	color: #c3d1ea;
-}
-
-a.button_banner:hover span {
-	background-position: bottom right;
-}
-
-#button_on_banner {
-	overflow: hidden;
-	width: 100%;
+  text-align: right;
+	line-height: 0px;
+	padding-top: 5px;
+	margin: 0 11px 0 0;
+	font-size: 0.9em;
+	color: #EA972D;
 }
 
 /*/////////////////////////////////////////////////////
@@ -291,11 +275,11 @@ a.button_banner:hover span {
   display: inline-block;
   background-color: #a2b3d7;
   padding: 6px 29px 6px 17px;
-  margin: 4px 4px 0 0;
+  margin: 4px 7px 0 0;
   border-top: 1px solid #737373;
   border-right: 1px solid #737373;
   border-left: 1px solid #737373;
-  -moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+  -moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3), inset 0px -2px 8px rgba(0,0,0,0.3);
 }
 
 #nav h4.nav_current {
@@ -396,6 +380,7 @@ a.button_banner:hover span {
   left: 15px;
   padding: 0;
   margin: 0;
+  -moz-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
 }
 
 #nav ul.nav_top li {
@@ -432,9 +417,7 @@ a.button_banner:hover span {
 			BODY OF THE WEBSITE > PAGE OF WEBSITE
 ////////////////////////////////////////////////////*/
 #page {
-	//background: url("/themes/emr/images/background_content_page.jpg") repeat;
   position: relative;
-	border: solid 1px #cecece;
 }
 
 /*/////////////////////////////////////////////////////////
@@ -511,6 +494,7 @@ a.button_banner:hover span {
 	font-family: verdana, sans-serif;
 	font-size:1.1em;
 	font-weight: bold;
+	text-align: center;
 	color: black;
 	-moz-box-shadow: 0px 3px 4px rgba(0,0,0,0.2), 0px -3px 4px rgba(0,0,0,0.2);
 	border: none;
@@ -726,9 +710,9 @@ a.previous-button:hover span {
 BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
 #content_page {
-	//padding: 5px 5px 8px 5px;
-	padding: 10px 8px 5px 8px;
-	margin: 2px 0 2px 0;
+  background: url("/themes/emr/images/background_content_page.jpg") repeat;
+	padding: 5px 5px 8px 5px;
+	margin: 4px 0px 2px 0px;
 	text-align: justify;
 	color: #343434;
 	font-size:0.87em;
@@ -760,11 +744,11 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	color:white;
 	margin-top:-1px;
 	margin-bottom:0px;
+	padding-top:1px;
 	height:29px;
 	line-height:29px;
 	font-weight:lighter;
 	letter-spacing:2px;
-	padding-top:1px;
 }
 
 #content_page h2.warning {
@@ -781,11 +765,9 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	height:20px;
 	line-height:20px;
 	color: rgb(70,94,142);
-	padding-top:-1px;
+	padding-top:0px;
 	margin-top:0px;
 	margin-bottom:0px;
-	//padding-top:0px;
-	//margin-top:-1px;
 	font-size:1.05em;
 }
 
@@ -798,6 +780,12 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
   background-color: white;
   padding: 3px 10px 3px 10px;
   border: solid 1px #989898;
+  -moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+  font-size:80%;
+}
+
+.link_back a {
+  text-decoration: none;
 }
 
 #ajax_holder {
@@ -833,6 +821,12 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	text-align:center;
 	font-family: "courier new", sans-serif;
 	padding: 5px 5px 0 5px;
+	
+	margin-top: inherit !important;
+	//margin-bottom: inherit !important;
+	//background: inherit !important;
+	//border: inherit !important;
+	//-moz-box-shadow: inherit !important;
 }
 
 .flash_container ul {
@@ -851,16 +845,10 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	line-height:20px;
 }
 
-/* .flash_container span span strong {
+.flash_container strong {
   color: red;
-	font-weight: bold;
 	text-decoration: underline;
 }
-
-.flash_error {
-	background: url("/images/cross_16x16.png") no-repeat;
-	color: red; 
-} */
 
 .flash_container div {
   display: inline-block;
@@ -1089,7 +1077,7 @@ width: 50px ! important;
 	margin-bottom:10px;
 	background: #ffffff;
 	border: solid 1px #989898;
-	-moz-box-shadow: 0px 0px 2px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 }
 
 #content_page > div p {
@@ -1162,6 +1150,13 @@ width: 50px ! important;
 #content_page > div strong {
 	margin-bottom:10px;
 	vertical-align:top;
+}
+
+#content_page > div form p.form_buttons {
+  background: #e99727;
+  border: 1px solid #737373;
+  padding: 8px 10px 8px 10px;
+  margin: 25px -1px -1px -1px;
 }
 
 /* #content_page > div .resource {

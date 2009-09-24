@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class InterventionTest < ActiveSupport::TestCase

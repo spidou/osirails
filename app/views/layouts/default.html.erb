@@ -25,14 +25,12 @@
       </div>	
       <div id="background_banner">
         <div id="block_button_banner">
-          <div id="button_on_banner">
-            <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
-            <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
-            <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
-          </div>
-          <div id="banner_datetime">
-            <p><%= display_date_time %></p>
-          </div>
+          <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
+          <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
+          <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
+        </div>
+        <div id="banner_datetime">
+          <p><%= display_date_time %></p>
         </div>
       </div>
     </div>
@@ -61,7 +59,7 @@
           
           <%= yield %>
           
-          <p class="link_back"><%= link_to 'Retour', :back %></p>
+          <p class="link_back"><%= link_to '<< Page précédente', :back %></p>
           
         </div> <!-- content_page : FIN -->
         <%= display_contextual_menu %>

@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class QuoteTest < ActiveSupport::TestCase
   def test_numericality_of_reduction
