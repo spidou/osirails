@@ -19,7 +19,7 @@ class CommodityCategoriesController < ApplicationController
     @supply = Commodity.new
     @category = CommodityCategory.new(params[:commodity_category])
     if @category.save
-      flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "La catégorie a été créée"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
       unless params[:commodity_category][:commodity_category_id].to_i == 0
@@ -46,20 +46,34 @@ class CommodityCategoriesController < ApplicationController
   
   # DELETE /commodity_categories/1
   def destroy
-    @category = CommodityCategory.find(params[:id])
-    if @category.can_be_destroyed?
-      if @category.has_children_disable?
-        @category.enable = false
-        @category.save
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
-      else
-        @category.destroy
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
-      end
+    @commodity_category = CommodityCategory.find(params[:id])
+    if @commodity_category.destroy
+      flash[:notice] = "La catégorie a été supprimée"
     else
-      flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e."
+      flash[:error] = "La catégorie ne peut être supprimée"
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
-   
+  
+  # GET /commodity_categories/1/disable
+  def disable
+    @commodity_category = CommodityCategory.find(params[:id])
+    if @commodity_category.disable
+      flash[:notice] = "La catégorie a été désactivée"
+    else
+      flash[:error] = "La catégorie ne peut être désactivée"
+    end
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end
+  
+  # GET /commodity_categories/1/reactivate
+  def reactivate
+    @commodity_category = CommodityCategory.find(params[:id])
+    if @commodity_category.reactivate
+      flash[:notice] = "La catégorie a été réactivée"
+    else
+      flash[:error] = "La catégorie ne peut être réactivée"
+    end
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end   
 end

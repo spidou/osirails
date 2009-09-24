@@ -2,6 +2,8 @@
   <%= self.send("new_#{@supply.class.name.tableize.singularize}_category_link") %>
   <%= new_supply_link(@supply.class.new) %>
   <%= edit_supply_link(@supply,true) unless is_form_view? %>
+  <%= reactivate_supply_link(@supply,true) unless is_form_view? %>
+  <%= disable_supply_link(@supply,true) unless is_form_view? %>
   <%= delete_supply_link(@supply,true) unless is_form_view? %>
 <% end %>
 
@@ -17,28 +19,30 @@
     <p>
       <%= form.error_messages %>
     </p>
-    <p>
-      <%= form.label :reference %>
-      <%= form.form_or_view(form.text_field(:reference), :reference) %>
-    </p>
-    <p>
-      <%= form.label :name %>
-      <%= form.form_or_view(form.text_field(:name), :name) %>
-    </p>
-    <p>
-      <%= form.label (@category.class.name.tableize.singularize+"_id").to_sym %>
-      <%= form.collection_select((@category.class.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , {}) if is_form_view? %>
-      <%= form.strong(@supply.send("#{@supply.class.name.tableize.singularize}_category").name) unless is_form_view? %>
-      <%= observe_field("#{@supply.class.name.tableize.singularize}_#{@supply.class.name.tableize.singularize}_category_id", :url => self.send("refresh_measure_#{@supply.class.name.tableize.singularize}_path"), :with => 'parameter') if is_form_view?%>
-    </p>
-    <p>
-      <%= "<label id='#{@supply.class.name.tableize.singularize}_unit_measure'>Grandeur/U (#{@unit_measure.symbol}) :</label>"%>
-      <%= form.form_or_view(form.text_field(:measure, :size => 20), :measure) %>
-    </p>
-    <p>
-      <%= form.label :unit_mass %>
-      <%= form.form_or_view(form.text_field(:unit_mass, :size => 20), :unit_mass) %>
-    </p>
+    <% unless @supply.has_been_used? %>
+      <p>
+        <%= form.label :reference %>
+        <%= form.form_or_view(form.text_field(:reference), :reference) %>
+      </p>
+      <p>
+        <%= form.label :name %>
+        <%= form.form_or_view(form.text_field(:name), :name) %>
+      </p>
+      <p>
+        <%= form.label (@category.class.name.tableize.singularize+"_id").to_sym %>
+        <%= form.collection_select((@category.class.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , {}) if is_form_view? %>
+        <%= form.strong(@supply.send("#{@supply.class.name.tableize.singularize}_category").name) unless is_form_view? %>
+        <%= observe_field("#{@supply.class.name.tableize.singularize}_#{@supply.class.name.tableize.singularize}_category_id", :url => self.send("refresh_measure_#{@supply.class.name.tableize.singularize}_path"), :with => 'parameter') if is_form_view?%>
+      </p>
+      <p>
+        <%= "<label id='#{@supply.class.name.tableize.singularize}_unit_measure'>Grandeur/U (#{@unit_measure.symbol}) :</label>"%>
+        <%= form.form_or_view(form.text_field(:measure, :size => 20, :value => supply.measure), :measure) %>
+      </p>
+      <p>
+        <%= form.label :unit_mass %>
+        <%= form.form_or_view(form.text_field(:unit_mass, :size => 20, :value => supply.unit_mass), :unit_mass) %>
+      </p>
+    <% end %>
     <% if !is_form_view? %>
       <p>
         <%= form.label :average_unit_price %>
@@ -47,7 +51,7 @@
     <% end %>
     <p>
       <%= form.label :threshold %>
-      <%= form.form_or_view(form.text_field(:threshold, :size => 20), :threshold) %>
+      <%= form.form_or_view(form.text_field(:threshold, :size => 20, :value => supply.threshold), :threshold) %>
     </p>
     <% if !is_form_view? %>
       <p>

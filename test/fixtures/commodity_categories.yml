@@ -5,3 +5,4 @@ parent:
 child:
   name: Child
   commodity_category: parent
+  unit_measure_id: unit_measures(:normal)

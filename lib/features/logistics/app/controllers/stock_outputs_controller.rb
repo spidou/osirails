@@ -3,15 +3,15 @@ class StockOutputsController < ApplicationController
 
   # GET /stock_outputs/index
   def index
-    @commodities_stock_flows = StockOutput.commodities_stock_outputs
-    @consumables_stock_flows = StockOutput.consumables_stock_outputs
+    @commodities_stock_flows = StockOutput.commodities_stock_outputs.paginate(:page => params[:page], :order => "created_at DESC", :per_page => StockFlow::STOCK_FLOWS_PER_PAGE)
+    @consumables_stock_flows = StockOutput.consumables_stock_outputs.paginate(:page => params[:page], :order => "created_at DESC", :per_page => StockFlow::STOCK_FLOWS_PER_PAGE)
   end
 
   # GET /stock_outputs/new
   def new
     @supply = params[:supply_id].nil? ? params[:type].constantize.find(:first) : Supply.find(params[:supply_id])
     @supplier = params[:supplier_id].nil? ? @supply.suppliers.first : Supplier.find(params[:supplier_id])
-    @supplies = params[:type].nil? ? @supply[:type].constantize.find(:all) : params[:type].constantize.find(:all)
+    @supplies = params[:type].nil? ? @supply[:type].constantize.was_enabled_at : params[:type].constantize.was_enabled_at
     @suppliers = @supply.suppliers
     @supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(@supply.id,@supplier.id)
     @stock_flow = StockOutput.new
@@ -33,11 +33,6 @@ class StockOutputsController < ApplicationController
       @suppliers = @supply.suppliers
       render :action => 'new'
     end
-  end
-
-  # DELETE /stock_outputs/1
-  def destroy
-
   end
 end
 

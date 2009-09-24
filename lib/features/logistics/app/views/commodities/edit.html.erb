@@ -1,5 +1,5 @@
 <% content_for :header do %>
   <%= javascript_include_tag "logistics/supplier_supplies" %>
 <% end %>
-<h1>Mise à jour de la matière première</h1>
+<h1>Mise à jour de <%= @supply.name %></h1>
 <%= render(:partial => "supplies/supply", :locals => {:button_name => "Mettre à jour"}) %>

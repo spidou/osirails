@@ -6,9 +6,9 @@
 <%= in_place_editor(supply_category,'name')+" (#{show_counter_category(supply_category)})</td>" %>
 <%= "<td colspan='10'></td>" %>
 <%= "<td>#{display_category_stock_value(supply_category)}</td>" %>
-<%= "<td>#{add_category_or_supply(supply_category)} #{delete_category_link(supply_category)}</td>" unless supply_category.enable == false %>
+<%= "<td>#{add_category_or_supply(supply_category)}#{reactivate_category_link(supply_category)}#{disable_category_link(supply_category)}#{delete_category_link(supply_category)}</td>"%>
 <%= "</tr>" %>
-<%# Get Structur for children consumables categories%>
+
 <% unless supply_category.children.size == 0 %>
   <%= render(:partial => "supplies_manager/category_child", :collection => supply_category.children) %>
 <% end %>

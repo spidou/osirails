@@ -28,11 +28,6 @@ class StockInputTest < ActiveSupport::TestCase
   def test_numericality_of_fob_unit_price
     assert @sf.errors.on(:fob_unit_price), "fob_unit_price should NOT be valid because it is nil"
 
-    @sf.adjustment = true
-    @sf.valid?
-    assert !@sf.errors.on(:fob_unit_price), "purchase_number should be valid"
-
-    @sf.adjustment = false
     @sf.fob_unit_price = "x"
     @sf.valid?
     assert @sf.errors.on(:fob_unit_price), "fob_unit_price should NOT be valid because it is not a number"
@@ -45,11 +40,6 @@ class StockInputTest < ActiveSupport::TestCase
   def test_numericality_of_tax_coefficient
     assert @sf.errors.on(:tax_coefficient), "tax_coefficient should NOT be valid because it is nil"
 
-    @sf.adjustment = true
-    @sf.valid?
-    assert !@sf.errors.on(:tax_coefficient), "tax_coefficient should be valid"
-
-    @sf.adjustment = false
     @sf.tax_coefficient = "x"
     @sf.valid?
     assert @sf.errors.on(:tax_coefficient), "tax_coefficient should NOT be valid because it is not a number"

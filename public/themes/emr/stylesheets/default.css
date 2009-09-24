@@ -111,6 +111,16 @@ table tr.disabled > td {
 	text-decoration: line-through;
 }
 
+table.commodity tr[class~=disable]{
+  color:#aeaeae !important;
+	font-style: italic !important;
+}
+
+table.consumable tr[class~=disable]{
+  color:#aeaeae !important;
+	font-style: italic !important;
+}
+
 /*/////////////////////////////
 			TITLE
 /////////////////////////////*/

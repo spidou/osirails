@@ -8,14 +8,4 @@ module SupplyCategoriesHelper
     end
     unit_measures
   end
-  
-  # This method permit to concat supplier name and cities
-  #FIXME Finishe this when OK
-  def format_supplier
-    suppliers = Supplier.find(:all)
-    suppliers.each do |supplier|
-      supplier.name += " (#{supplier})"
-    end
-  end
-  
 end

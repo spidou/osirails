@@ -19,7 +19,7 @@ class ConsumableCategoriesController < ApplicationController
     @supply = Consumable.new
     @category = ConsumableCategory.new(params[:consumable_category])
     if @category.save
-      flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "La catégorie a été créée"
       redirect_to :controller => 'consumables_manager', :action => 'index'
     else
       unless params[:consumable_category][:consumable_category_id].to_i == 0
@@ -46,20 +46,34 @@ class ConsumableCategoriesController < ApplicationController
   
   # DELETE /consumable_categories/1
   def destroy
-    @category = ConsumableCategory.find(params[:id])
-    if @category.can_be_destroyed?
-      if @category.has_children_disable?
-        @category.enable = false
-        @category.save
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
-      else
-        @category.destroy
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e.'
-      end
+    @consumable_category = ConsumableCategory.find(params[:id])
+    if @consumable_category.destroy
+      flash[:notice] = "La catégorie a été supprimée"
     else
-      flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e."
+      flash[:error] = "La catégorie ne peut être supprimée"
     end
     redirect_to :controller => 'consumables_manager', :action => 'index'
   end
-   
+  
+  # GET /consumable_categories/1/disable
+  def disable
+    @consumable_category = ConsumableCategory.find(params[:id])
+    if @consumable_category.disable
+      flash[:notice] = "La catégorie a été désactivée"
+    else
+      flash[:error] = "La catégorie ne peut être désactivée"
+    end
+    redirect_to :controller => 'consumables_manager', :action => 'index'
+  end
+  
+  # GET /consumable_categories/1/reactivate
+  def reactivate
+    @consumable_category = ConsumableCategory.find(params[:id])
+    if @consumable_category.reactivate
+      flash[:notice] = "La catégorie a été réactivée"
+    else
+      flash[:error] = "La catégorie ne peut être réactivée"
+    end
+    redirect_to :controller => 'consumables_manager', :action => 'index'
+  end   
 end

@@ -10,9 +10,9 @@ class CommoditiesController < ApplicationController
   def new
     @category = CommodityCategory.new
     @categories = CommodityCategory.root_child
-    @supply = Commodity.new(:commodity_category_id => params[:id] == -1 ? @categories.first.id : params[:id])
+    @supply = Commodity.new(:commodity_category_id => params[:id])
     @suppliers = Supplier.find(:all)
-    @unit_measure = UnitMeasure.find(params[:id] == '-1' ? @categories.first.unit_measure_id : CommodityCategory.find(params[:id]).unit_measure_id)
+    @unit_measure = UnitMeasure.find(CommodityCategory.find(params[:id]).unit_measure_id)
   end
 
   # GET /commodities/1
@@ -28,7 +28,7 @@ class CommoditiesController < ApplicationController
   def create
     @supply = Commodity.new(params[:commodity])
     if @supply.save
-      flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "La matière première a été créée avec succès"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
       @categories = CommodityCategory.root_child
@@ -69,23 +69,33 @@ class CommoditiesController < ApplicationController
   # DELETE /commodities/1
   def destroy
     @commodity = Commodity.find(params[:id])
-    if @commodity.can_be_destroyed?
-      if @commodity.destroy
-        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
-      else
-        flash[:error] = 'Erreur lors de la suppression'
-      end
+    if @commodity.destroy
+      flash[:notice] = "La matière première a été supprimée"
     else
-      @commodity.enable = false
-      @commodity.counter_update
-      if @commodity.save
-        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
-      else
-        flash[:error] = 'Erreur lors de la suppression'
-      end
+      flash[:error] = "La matière première ne peut être supprimée"
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
-
+  
+  # GET /commodities/1/disable
+  def disable
+    @commodity = Commodity.find(params[:id])
+    if @commodity.disable
+      flash[:notice] = "La matière première a été désactivée"
+    else
+      flash[:error] = "La matière première ne peut être désactivée"
+    end
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end
+  
+  # GET /commodities/1/reactivate
+  def reactivate
+    @commodity = Commodity.find(params[:id])
+    if @commodity.reactivate
+      flash[:notice] = "La matière première a été réactivée"
+    else
+      flash[:error] = "La matière première ne peut être réactivée"
+    end
+    redirect_to :controller => 'commodities_manager', :action => 'index'
+  end
 end
-

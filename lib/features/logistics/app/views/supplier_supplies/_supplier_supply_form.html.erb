@@ -4,10 +4,12 @@
 <div class="resource_form" id="supplier_supply_form_<%=supplier_supply.id%>" <%= "style=\"display:none\"" unless supplier_supply.new_record? or !supplier_supply.errors.empty? %> >
   <div style="border: 1px solid red; padding: 5px; margin: 5px">
     <%= form.error_messages %>
-    <p>
-      <%= form.label :supplier_id, :index => nil%>
-      <%= form.collection_select( :supplier_id, Supplier.find(:all, :conditions => ["NOT id = ?", owner.id]), :id, :name, {}, :index => nil) %>
-    </p>
+    <% if supplier_supply.new_record? %>
+      <p>
+        <%= form.label :supplier_id, :index => nil%>
+        <%= form.collection_select( :supplier_id, Supplier.find(:all, :conditions => ["NOT id = ?", owner.id]), :id, :name, {}, :index => nil) %>
+      </p>
+    <% end %>
     <p>
       <%= form.label :reference, :index => nil %>
       <%= form.text_field(:reference, :index => nil) %>
@@ -18,11 +20,11 @@
     </p>
     <p>
       <%= form.label :fob_unit_price, :index => nil %>
-      <%= form.text_field(:fob_unit_price, :index => nil) + " €"%>
+      <%= form.text_field(:fob_unit_price, :index => nil, :value => supplier_supply.fob_unit_price) + " €"%>
     </p>
     <p>
       <%= form.label :tax_coefficient, :index => nil %>
-      <%= form.text_field(:tax_coefficient, :index => nil, :size => 2) + " %"%>
+      <%= form.text_field(:tax_coefficient, :index => nil, :size => 2, :value => supplier_supply.tax_coefficient) + " %"%>
     </p>
     <p>
       <%= form.label :lead_time, :index => nil %>

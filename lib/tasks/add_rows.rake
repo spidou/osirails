@@ -319,11 +319,11 @@ namespace :osirails do
       child_two = ConsumableCategory.create :name => "Léger", :consumable_category_id => root.id, :unit_measure_id => metre_carre.id
 
       # default consumables and their supplier_supplies
-      pvc = Consumable.create :name => "PVC 1500x3000x2", :reference => "pvc2", :measure => "4.50", :unit_mass => "70.65",
+      pvc = Consumable.create :name => "PVC 1500x3000x2", :reference => "pvc2", :measure => "6.50", :unit_mass => "10.65",
         :consumable_category_id => toles.id, :threshold => 2
-      pvcbis = Consumable.create :name => "PVC 1500x3000x3", :reference => "pvc3", :measure => "4.50", :unit_mass => "105.98",
+      pvcbis = Consumable.create :name => "PVC 1500x3000x3", :reference => "pvc3", :measure => "6.50", :unit_mass => "10.98",
         :consumable_category_id => toles.id, :threshold => 10
-      vis = Consumable.create :name => "Vis Ø20x2 Lg 6m", :reference => "vis6", :measure => "6", :unit_mass => "5.32",
+      vis = Consumable.create :name => "Vis Ø20x2 Lg 6m", :reference => "vis6", :measure => "0.5", :unit_mass => "0.8",
         :consumable_category_id => tubes.id, :threshold => 40
 
       SupplierSupply.create({:supply_id => pvc.id,
@@ -373,6 +373,103 @@ namespace :osirails do
                              :fob_unit_price => 14,
                              :tax_coefficient => 0,
                              :lead_time => 11})
+                             
+      # default stock_flows
+      StockInput.create({:supply_id => galva.id,
+                         :supplier_id => supplier.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+                         
+      StockInput.create({:supply_id => galva.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => galvabis.id,
+                         :supplier_id => supplier.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => galvabis.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => galvater.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => galvater.id,
+                         :supplier_id => supplier.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+      
+      StockInput.create({:supply_id => pvc.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => pvc.id,
+                         :supplier_id => supplier,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => pvcbis.id,
+                         :supplier_id => supplier.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => pvcbis.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => vis.id,
+                         :supplier_id => supplier.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
+
+      StockInput.create({:supply_id => vis.id,
+                         :supplier_id => supplierbis.id,
+                         :adjustment => true,
+                         :fob_unit_price => 10,
+                         :tax_coefficient => 0,
+                         :quantity => 15,
+                         :created_at => Date.yesterday.to_datetime})
 
       # default product reference categories
       famille1 = ProductReferenceCategory.create :name => "Famille 1"

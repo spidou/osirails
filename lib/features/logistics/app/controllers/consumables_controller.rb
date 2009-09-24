@@ -10,9 +10,9 @@ class ConsumablesController < ApplicationController
   def new
     @category = ConsumableCategory.new
     @categories = ConsumableCategory.root_child
-    @supply = Consumable.new(:consumable_category_id => params[:id] == -1 ? @categories.first.id : params[:id])
+    @supply = Consumable.new(:consumable_category_id => params[:id])
     @suppliers = Supplier.find(:all)
-    @unit_measure = UnitMeasure.find(params[:id] == '-1' ? @categories.first.unit_measure_id : ConsumableCategory.find(params[:id]).unit_measure_id)
+    @unit_measure = UnitMeasure.find(ConsumableCategory.find(params[:id]).unit_measure_id)
   end
 
   # GET /consumables/1
@@ -28,7 +28,7 @@ class ConsumablesController < ApplicationController
   def create
     @supply = Consumable.new(params[:consumable])
     if @supply.save
-      flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "Le consommable a été créé avec succès"
       redirect_to :controller => 'consumables_manager', :action => 'index'
     else
       @categories = ConsumableCategory.root_child
@@ -66,23 +66,34 @@ class ConsumablesController < ApplicationController
   # DELETE /consumables/1
   def destroy
     @consumable = Consumable.find(params[:id])
-    if @consumable.can_be_destroyed?
-      if @consumable.destroy
-        flash[:notice] = 'Le consommable a été supprimé'
-      else
-        flash[:error] = 'Erreur lors de la suppression'
-      end
+    if @consumable.destroy
+      flash[:notice] = "Le consommable a été supprimé"
     else
-      @consumable.enable = false
-      @consumable.counter_update
-      if @consumable.save
-        flash[:notice] = 'Le consommable a été supprimé'
-      else
-        flash[:error] = 'Erreur lors de la suppression'
-      end
+      flash[:error] = "Le consommable ne peut être supprimé"
     end
     redirect_to :controller => 'consumables_manager', :action => 'index'
   end
-
+  
+  # GET /consumables/1/disable
+  def disable
+    @consumable = Consumable.find(params[:id])
+    if @consumable.disable
+      flash[:notice] = "Le consommable a été désactivé"
+    else
+      flash[:error] = "Le consommable ne peut être désactivé"
+    end
+    redirect_to :controller => 'consumables_manager', :action => 'index'
+  end
+  
+  # GET /consumables/1/reactivate
+  def reactivate
+    @consumable = Consumable.find(params[:id])
+    if @consumable.reactivate
+      flash[:notice] = "Le consommable a été réactivé"
+    else
+      flash[:error] = "Le consommable ne peut être réactivé"
+    end
+    redirect_to :controller => 'consumables_manager', :action => 'index'
+  end
 end
 

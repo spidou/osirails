@@ -17,28 +17,29 @@
 <h1>Nouvel inventaire de <%= params[:type]=="Commodity" ? "matières premières" : "consommables" %></h1>
 
 <div>
-
-  <% form_for(:inventory, :url => {:action => :create}) do |form| %>
-    <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
-      <tr>
-        <th rowspan='2'>Cat&eacute;gorie</th>
-        <th rowspan='2'>Sous cat&eacute;gorie</th>
-        <th rowspan='2'>R&eacute;f.</th>
-        <th rowspan='2'>D&eacute;signation</th>
-        <th rowspan='2'>Fournisseurs</th>
-        <th rowspan='2'>FOB/U (€)</th>
-        <th rowspan='2'>Coeff. Taxe (%)</th>
-        <th colspan='2'>Stock</th>
-        <th rowspan='2'>&Eacute;volution</th>
-        <tr>          <th>Actuel</th>
-          <th>Réel</th>        
-        </tr>
-      </tr>
-      
-    <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>
-      
-    </table>
-    <%= hidden_field_tag 'type', params[:type] %>
-  <p><%= submit_tag "Valider" %></p>  
-  <% end%>
+  <% unless @supplies.empty? %>  
+    <% form_for(:inventory, :url => {:action => :create}) do |form| %>
+      <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
+        <tr>
+          <th rowspan='2'>Cat&eacute;gorie</th>
+          <th rowspan='2'>Sous cat&eacute;gorie</th>
+          <th rowspan='2'>R&eacute;f.</th>
+          <th rowspan='2'>D&eacute;signation</th>
+          <th rowspan='2'>Fournisseurs</th>
+          <th rowspan='2'>FOB/U (€)</th>
+          <th rowspan='2'>Coeff. Taxe (%)</th>
+          <th colspan='2'>Stock</th>
+          <th rowspan='2'>&Eacute;volution</th>
+          <tr>            <th>Actuel</th>
+            <th>Réel</th>        
+          </tr>
+        </tr>      
+      <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>      
+      </table>
+      <%= hidden_field_tag 'type', params[:type] %>
+      <p><%= submit_tag "Valider" %></p>  
+    <% end %>
+  <% else %>
+    <p>Aucune fourniture disponible pour effectuer un nouvel inventaire</p>
+  <% end %>
 </div>

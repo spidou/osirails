@@ -6,5 +6,4 @@ module SuppliesHelper
     unit_measure = UnitMeasure.find(supply_category.unit_measure_id)
     unit_measure.symbol+"/U :"
   end
-
 end

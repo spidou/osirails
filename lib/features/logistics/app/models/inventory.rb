@@ -1,6 +1,11 @@
 class Inventory < ActiveRecord::Base
   has_permissions :as_business_object
   
+  # For will_paginate
+  DATES_PER_PAGE = 15
+  
+  # This method returns the result of a SQL instruction
+  # which role is to retrieve all distinct inventories dates
   def self.dates
     dates = []
     sql = ActiveRecord::Base.connection();
@@ -11,9 +16,11 @@ class Inventory < ActiveRecord::Base
     dates
   end
   
+  # This method permit to generate automatically stock flows
+  # with adjustment for inventories from params of views
   def self.create_stock_flows(params)
     changes = 0
-      for supply in params[:type].constantize.activates
+      for supply in params[:type].constantize.was_enabled_at
         for ss in supply.supplier_supplies
           param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
           param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
@@ -24,7 +31,8 @@ class Inventory < ActiveRecord::Base
           end
         end
       end
-      for supply in params[:type].constantize.activates
+      for supply in params[:type].constantize.was_enabled_at
+      
         for ss in supply.supplier_supplies
           param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
           param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
@@ -42,7 +50,6 @@ class Inventory < ActiveRecord::Base
         end
       end
     changes
-  end
-  
+  end  
 end
 

@@ -151,5 +151,123 @@ module SupplyTest
     end
     assert_equal total, @supply.stock_quantity, "@supply.stock_quantity should be the total of its supplier_supplies' stock_quantity"
   end
+  
+  def test_has_been_used
+    create_supplier_supplies
+    @supply = Supply.last
+    
+    assert !@supply.has_been_used?, "@supply should NOT have been used because there is no stock flow"
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
+    assert @supply.has_been_used?, "@supply should have been used"
+  end
+  
+  def test_persistent_attributes_when_already_used_supply
+    create_supplier_supplies
+    @supply = Supply.last
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
+    
+    persistent_attributes = ["name", "reference", "measure", "unit_mass", "commodity_category_id", "consumable_category_id"]
+    
+    for element in persistent_attributes
+      @supply.send("#{element}=",99999)
+    end
+    
+    assert @supply.persistence_case?, "@supply should be in a persistent case because it has been used"
+    assert !@supply.valid?, "@supply should NOT be valid because its attributes should be persistent"
+    
+    for element in persistent_attributes
+      assert @supply.errors.invalid?(element), "#{element} should NOT be valid because it should be persistent"
+    end
+  end  
+  
+  def test_persistent_attributes_when_disabled_supply
+    create_supplier_supplies
+    @supply = Supply.last
+    flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    
+    persistent_attributes = ["name", "reference", "measure", "unit_mass", "commodity_category_id", "consumable_category_id"]
+    
+    for element in persistent_attributes
+      @supply.send("#{element}=",99999)
+    end
+    
+    assert @supply.persistence_case?, "@supply should be in a persistent case because it is disabled"
+    assert !@supply.valid?, "@supply should NOT be valid because its attributes should be persistent"
+    
+    for element in persistent_attributes
+      assert @supply.errors.invalid?(element), "#{element} should NOT be valid because it should be persistent"
+    end
+  end
+  
+  def test_disable_and_was_enabled_at
+    create_supplier_supplies
+    @supply = Supply.last
+    
+    assert @supply.can_be_disabled?, "@supply should be able to be disabled"
+    flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    assert_equal false, @supply.enable, "these two should be equal because @supply has been disabled"
+    assert !@supply.class.name.constantize.was_enabled_at.include?(@supply), "@supply should not be included in was_enabled_at because it's not enabled"
+    assert @supply.class.name.constantize.was_enabled_at(Date.yesterday).include?(@supply), "@supply should be included in was_enabled_at(Date.yesterday) because it was enabled"
+  
+    assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because it is still disabled"
+    assert !@supply.disable, "@supply should fail at disable because it cannot be disabled"
+  end
+  
+  def test_disable_when_supply_not_been_used
+    create_supplier_supplies
+    @supply = Supply.first
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because stock_quantity > 0"
+    assert !@supply.disable, "@supply should fail at disable because it cannot be disabled"
+    sleep(1)
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
+    assert @supply.can_be_disabled?, "@supply should be able to be disabled"
+    assert @supply.disable, "@supply should be disabled now its stock is 0"
+  end
+  
+  def test_destroy
+    create_supplier_supplies
+    @supply = Supply.last
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
+    assert !@supply.can_be_destroyed?, "@supply should NOT be able to be destroyed because it has been used"
+    assert !@supply.destroy, "@supply should NOT be destroyed because it cannot be destroyed"
+    
+    @supply = Supply.first
+    
+    assert @supply.can_be_destroyed?, "@supply should be able to be destroyed"
+    assert @supply.destroy,"@supply should destroy with success"
+  end
+  
+  def test_reactivate
+    create_supplier_supplies
+    @supply = Supply.last
+    
+    assert !@supply.can_be_reactivated?, "@supply should NOT be able to be reactivated because it is still enabled"
+    assert !@supply.reactivate, "@supply should fail at reactivate because it cannot be reactivated"
+    
+    flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    assert @supply.can_be_reactivated?, "@supply should be able to be reactivated because it is disabled, and its category is still enabled"
+   
+    flunk "@supply must be reactivated with success to perform this test method" unless @supply.reactivate
+    assert_equal true, @supply.enable, "these two should be equal because @supply has been ractivated"
+    assert_equal nil, @supply.disabled_at, "these two should be equal because @supply has been ractivated"
+  end
+  
+  def test_reactivate_when_category_disabled
+    create_supplier_supplies
+    flunk "Supply.last must destroy with success to perform this test method" unless Supply.last.destroy # To keep only one supply in the category
+    @supply = Supply.last
+    
+    flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    category = @supply.send((@supply.class.name+"Category").underscore)
+    flunk "@supply.category must be disabled with success to perform this test method" unless category.disable
+    
+    assert !@supply.can_be_reactivated?, "@supply should NOT be able to be reactivated because and its category is disabled"
+    assert !@supply.reactivate, "@supply should fail at reactivate because it cannot be reactivated"
+  end
 end
 

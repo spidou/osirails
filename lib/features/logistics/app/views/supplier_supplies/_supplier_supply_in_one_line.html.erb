@@ -13,7 +13,7 @@
       <% if supplier_supply.new_record? %>
         <%= link_to_function "Supprimer", "this.up('.supplier_supply_infos').remove()" %>
       <% else %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.supplier_supply_infos'))" %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.supplier_supply_infos'))" unless supplier_supply.supply.has_been_used? %>
       <% end %>
     <% end %>
 

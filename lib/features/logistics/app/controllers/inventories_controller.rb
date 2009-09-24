@@ -3,15 +3,15 @@ class InventoriesController < ApplicationController
   
   # GET /inventories
   def index        
-    @dates = Inventory.dates
+    @dates = Inventory.dates.paginate(:page => params[:page], :per_page => Inventory::DATES_PER_PAGE)
   end
   
   # GET /inventories/new?type=''
   def new
     @supply = params[:type].constantize.new
     @supplies_categories_root = (params[:type]+"Category").constantize.root
-    @supplies_categories_root_child = (params[:type]+"Category").constantize.root_child
-    @supplies = params[:type].constantize.activates
+    @categories = (params[:type]+"Category").constantize.was_enabled_at
+    @supplies = params[:type].constantize.was_enabled_at
   end
   
   # POST /inventories
@@ -20,8 +20,7 @@ class InventoriesController < ApplicationController
     if result == false
       @supply = params[:type].constantize.new
       @supplies_categories_root = (params[:type]+"Category").constantize.root
-      @supplies_categories_root_child = (params[:type]+"Category").constantize.root_child
-      @supplies = params[:type].constantize.activates
+      @supplies = params[:type].constantize.was_enabled_at
       flash[:error] = "Les données rentrées sont invalides"
       render :action => 'new'
     else
@@ -35,9 +34,9 @@ class InventoriesController < ApplicationController
   # GET /inventories/show?date=''&type=''
   def show
     @supply = params[:type].constantize.new
-    @supplies_categories_root = (params[:type]+"Category").constantize.root
-    @supplies_categories_root_child = (params[:type]+"Category").constantize.root_child
-    @supplies = params[:type].constantize.activates
+    @supplies_categories_root = (params[:type]+"Category").constantize.root_including_inactives    
+    @categories = (params[:type]+"Category").constantize.was_enabled_at(params[:date].to_date)
+    @supplies = params[:type].constantize.was_enabled_at(params[:date].to_date)
     @date = params[:date].to_date
   end
 

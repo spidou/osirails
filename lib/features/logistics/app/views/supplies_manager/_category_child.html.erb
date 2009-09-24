@@ -1,4 +1,4 @@
-<% if category_child.enable %>
+<% if @categories.include?(category_child) %>
 
   <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.send(category_child.class.name.tableize.singularize).id} #{category_child.enable ? "enable" : "disable"}'>" %>
   <%= "<td></td>" %>
@@ -8,7 +8,7 @@
   <%= in_place_editor(category_child,'name')+"(#{show_counter_category(category_child)})</td>" %>
   <%= "<td colspan='9'></td>" %>
   <%= "<td>#{display_category_stock_value(category_child)}</td>" %>
-  <%= "<td>#{add_category_or_supply(category_child)} #{delete_category_link(category_child)}</td>" unless category_child.enable == false %>
+  <%= "<td>#{add_category_or_supply(category_child)}#{reactivate_category_link(category_child)}#{disable_category_link(category_child)}#{delete_category_link(category_child)}</td>"%>
   <%= "</tr>" %>
 
   <% unless category_child.send("#{category_child.class.name.tableize.gsub("_categories","").pluralize}").nil? %>

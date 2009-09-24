@@ -11,6 +11,6 @@
   <td><%= number_with_precision(supplier_supply.stock_value,2) %> &euro;</td>
   <td><%= number_with_precision(supplier_supply.average_unit_price.round(2),2) %> &euro;</td>
   <td><%= pluralize(supplier_supply.lead_time,"jour") %></td>
-  <td><%= new_stock_flow_link(true,supplier_supply) %> <%= new_stock_flow_link(false,supplier_supply) %></td>  
+  <%= "<td>" + new_stock_flow_link(true,supplier_supply) + new_stock_flow_link(false,supplier_supply) + "</td>" if supplier_supply.supply.enable %>
 </tr>
 

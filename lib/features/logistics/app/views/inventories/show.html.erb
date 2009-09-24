@@ -2,6 +2,10 @@
   <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
 
+<% add_contextual_menu_item :statistics do %>
+  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply.class.stock_value(@date),2) + " €" %></span>
+<% end %>
+
 <% add_contextual_menu_item :possible_actions do %>
   <%= new_inventory_link(Commodity.new)%>
   <%= new_inventory_link(Consumable.new)%>
@@ -16,8 +20,7 @@
 <h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
 
 <div>
-
-  <% form_for(:inventory, :url => {:action => :create}) do |form| %>
+  <% unless @categories.empty? %>
     <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
@@ -34,10 +37,10 @@
           <th>Masse</th>   
           <th>Valeur</th>     
         </tr>
-      </tr>
-      
-    <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>
-      
+      </tr>      
+    <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>      
     </table>
-  <% end%>
+  <% else %>
+    <p>Aucune cat&eacute;gorie existante</p>
+  <% end %>
 </div>

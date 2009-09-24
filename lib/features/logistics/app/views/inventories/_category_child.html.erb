@@ -1,4 +1,4 @@
-<% if category_child.enable %>
+<% if @categories.include?(category_child) %>
 
   <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.send(category_child.class.name.tableize.singularize).id} #{category_child.enable ? "enable" : "disable"}'>" %>
   <%= "<td></td>" %>

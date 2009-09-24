@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090910052321) do
+ActiveRecord::Schema.define(:version => 20090923131534) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -138,13 +138,13 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
 
   create_table "commodity_categories", :force => true do |t|
     t.string   "name"
-    t.string   "type"
     t.integer  "commodity_category_id", :limit => 11
     t.integer  "unit_measure_id",       :limit => 11
     t.integer  "commodities_count",     :limit => 11, :default => 0
     t.boolean  "enable",                              :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "disabled_at"
   end
 
   create_table "configurations", :force => true do |t|
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.boolean  "enable",                               :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "disabled_at"
   end
 
   create_table "contact_numbers", :force => true do |t|
@@ -898,6 +899,7 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.boolean  "enable",                                                               :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "disabled_at"
   end
 
   create_table "taggings", :force => true do |t|

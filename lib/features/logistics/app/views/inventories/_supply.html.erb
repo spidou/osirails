@@ -1,4 +1,4 @@
-<% if !supply.supplier_supplies.empty? and supply.enable %>
+<% if !supply.supplier_supplies.empty? and @supplies.include?(supply) %>
 
   <% unit_measure = UnitMeasure.find(supply.send("#{supply.class.name.downcase}_category").unit_measure_id) %>
                      
@@ -7,17 +7,18 @@
   <%= "<td rowspan='#{supply.suppliers.size}'>#{supply.reference}</td>" %>
   <%= "<td rowspan='#{supply.suppliers.size}'>#{supply.name}</td>" %>
   <%= "<td>#{supply.suppliers.first.name}</td>" %>
-  <% if is_form_view? %>
-    <td><%= text_field_tag ("fob_for_supplier_supply_"+supplier_supply(supply.suppliers.first,supply).id.to_s).to_sym, params["fob_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id}".to_sym] || number_with_precision(supplier_supply(supply.suppliers.first,supply).fob_unit_price,2), :size => 5%></td>
-    <td><%= text_field_tag ("tax_coefficient_for_supplier_supply_"+supplier_supply(supply.suppliers.first,supply).id.to_s).to_sym, params["tax_coefficient_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id}".to_sym] || number_with_precision(supplier_supply(supply.suppliers.first,supply).tax_coefficient,2), :size => 5%></td>
-    <%= "<td id='actual_stock_quantity_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'>#{supplier_supply(supply.suppliers.first,supply).stock_quantity}" %></td>
-    <td><%= text_field_tag ("real_stock_quantity_for_supplier_supply_"+supplier_supply(supply.suppliers.first,supply).id.to_s).to_sym, params["real_stock_quantity_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id}".to_sym] || supplier_supply(supply.suppliers.first,supply).stock_quantity, :size => 5, :onchange => "quantity_difference(#{supplier_supply(supply.suppliers.first,supply).id})"%></td>
-    <%= "<td id='difference_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'></td>" %>
+  <% first_supplier_supply = supplier_supply(supply.suppliers.first,supply) %>
+  <% if is_form_view? %>    
+    <td><%= text_field_tag ("fob_for_supplier_supply_"+first_supplier_supply.id.to_s).to_sym, params["fob_for_supplier_supply_#{first_supplier_supply.id}".to_sym] || number_with_precision(first_supplier_supply.fob_unit_price,2), :size => 5%></td>
+    <td><%= text_field_tag ("tax_coefficient_for_supplier_supply_"+first_supplier_supply.id.to_s).to_sym, params["tax_coefficient_for_supplier_supply_#{first_supplier_supply.id}".to_sym] || number_with_precision(first_supplier_supply.tax_coefficient,2), :size => 5%></td>
+    <%= "<td id='actual_stock_quantity_for_supplier_supply_#{first_supplier_supply.id.to_s}'>#{first_supplier_supply.stock_quantity}" %></td>
+    <td><%= text_field_tag ("real_stock_quantity_for_supplier_supply_"+first_supplier_supply.id.to_s).to_sym, params["real_stock_quantity_for_supplier_supply_#{first_supplier_supply.id}".to_sym] || first_supplier_supply.stock_quantity, :size => 5, :onkeyup => "quantity_difference(#{first_supplier_supply.id})"%></td>
+    <%= "<td id='difference_for_supplier_supply_#{first_supplier_supply.id.to_s}'></td>" %>
   <% else %>
-    <%= "<td id='stock_quantity_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'>#{supplier_supply(supply.suppliers.first,supply).stock_quantity(@date)}" %></td>
-    <%= "<td id='stock_unit_measure_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'>#{display_supply_supplier_total_measure(supplier_supply(supply.suppliers.first,supply),@date)}" %></td>
-    <%= "<td id='stock_mass_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'>#{supply.unit_mass*supplier_supply(supply.suppliers.first,supply).stock_quantity(@date)} kg" %></td>
-    <%= "<td id='stock_value_for_supplier_supply_#{supplier_supply(supply.suppliers.first,supply).id.to_s}'>#{number_with_precision(supplier_supply(supply.suppliers.first,supply).stock_value(@date),2)} €" %></td>
+    <%= "<td id='stock_quantity_for_supplier_supply_#{first_supplier_supply.id.to_s}'>#{first_supplier_supply.stock_quantity(@date)}" %></td>
+    <%= "<td id='stock_unit_measure_for_supplier_supply_#{first_supplier_supply.id.to_s}'>#{display_supply_supplier_total_measure(first_supplier_supply,@date)}" %></td>
+    <%= "<td id='stock_mass_for_supplier_supply_#{first_supplier_supply.id.to_s}'>#{supply.unit_mass*first_supplier_supply.stock_quantity(@date)} kg" %></td>
+    <%= "<td id='stock_value_for_supplier_supply_#{first_supplier_supply.id.to_s}'>#{number_with_precision(first_supplier_supply.stock_value(@date),2)} €" %></td>
   <% end %>
   <% unless is_form_view? %>
     <%= "<td rowspan='#{supply.suppliers.size}'>#{supply.stock_quantity(@date)}</td>"%>
@@ -31,17 +32,18 @@
       <% unless supplier == supply.suppliers.first %>
          <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}_#{supplier.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category').send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
           <td><%= supplier.name %></td>
+          <% supplier_supply = supplier_supply(supplier,supply) %>
           <% if is_form_view? %>
-            <td><%= text_field_tag ("fob_for_supplier_supply_"+supplier_supply(supplier,supply).id.to_s).to_sym, params["fob_for_supplier_supply_#{supplier_supply(supplier,supply).id}".to_sym] || number_with_precision(supplier_supply(supplier,supply).fob_unit_price,2), :size => 5%></td>
-            <td><%= text_field_tag ("tax_coefficient_for_supplier_supply_"+supplier_supply(supplier,supply).id.to_s).to_sym, params["tax_coefficient_for_supplier_supply_#{supplier_supply(supplier,supply).id}".to_sym] || number_with_precision(supplier_supply(supplier,supply).tax_coefficient,2), :size => 5%></td>
-            <%="<td id='actual_stock_quantity_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'>#{supplier_supply(supplier,supply).stock_quantity}</td>"%>
-            <td><%= text_field_tag ("real_stock_quantity_for_supplier_supply_"+supplier_supply(supplier,supply).id.to_s).to_sym, params["real_stock_quantity_for_supplier_supply_#{supplier_supply(supplier,supply).id}".to_sym] || supplier_supply(supplier,supply).stock_quantity, :size => 5, :onchange => "quantity_difference(#{supplier_supply(supplier,supply).id})"%></td>
-            <%="<td id='difference_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'></td>"%>
+            <td><%= text_field_tag ("fob_for_supplier_supply_"+supplier_supply.id.to_s).to_sym, params["fob_for_supplier_supply_#{supplier_supply.id}".to_sym] || number_with_precision(supplier_supply.fob_unit_price,2), :size => 5%></td>
+            <td><%= text_field_tag ("tax_coefficient_for_supplier_supply_"+supplier_supply.id.to_s).to_sym, params["tax_coefficient_for_supplier_supply_#{supplier_supply.id}".to_sym] || number_with_precision(supplier_supply.tax_coefficient,2), :size => 5%></td>
+            <%="<td id='actual_stock_quantity_for_supplier_supply_#{supplier_supply.id.to_s}'>#{supplier_supply.stock_quantity}</td>"%>
+            <td><%= text_field_tag ("real_stock_quantity_for_supplier_supply_"+supplier_supply.id.to_s).to_sym, params["real_stock_quantity_for_supplier_supply_#{supplier_supply.id}".to_sym] || supplier_supply.stock_quantity, :size => 5, :onkeyup => "quantity_difference(#{supplier_supply.id})"%></td>
+            <%="<td id='difference_for_supplier_supply_#{supplier_supply.id.to_s}'></td>"%>
           <% else %>
-            <%= "<td id='stock_quantity_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'>#{supplier_supply(supplier,supply).stock_quantity(@date)}" %></td>
-            <%= "<td id='stock_unit_measure_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'>#{display_supply_supplier_total_measure(supplier_supply(supplier,supply),@date)}" %></td>
-            <%= "<td id='stock_mass_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'>#{supply.unit_mass*supplier_supply(supplier,supply).stock_quantity(@date)} kg" %></td>
-            <%= "<td id='stock_value_for_supplier_supply_#{supplier_supply(supplier,supply).id.to_s}'>#{number_with_precision(supplier_supply(supplier,supply).stock_value(@date),2)} €" %></td>
+            <%= "<td id='stock_quantity_for_supplier_supply_#{supplier_supply.id.to_s}'>#{supplier_supply.stock_quantity(@date)}" %></td>
+            <%= "<td id='stock_unit_measure_for_supplier_supply_#{supplier_supply.id.to_s}'>#{display_supply_supplier_total_measure(supplier_supply,@date)}" %></td>
+            <%= "<td id='stock_mass_for_supplier_supply_#{supplier_supply.id.to_s}'>#{supply.unit_mass*supplier_supply.stock_quantity(@date)} kg" %></td>
+            <%= "<td id='stock_value_for_supplier_supply_#{supplier_supply.id.to_s}'>#{number_with_precision(supplier_supply.stock_value(@date),2)} €" %></td>
           <% end %>
         </tr>
       <% end %>

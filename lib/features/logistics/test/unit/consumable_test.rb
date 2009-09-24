@@ -36,18 +36,30 @@ class ConsumableTest < ActiveSupport::TestCase
   
   def test_uniqueness_of_name
     create_consumables
+    create_commodities
     @supply.name = "PVC"
     @supply.valid?
     
     assert @supply.errors.on(:name), "@supply should NOT be valid because name is already taken"
+    
+    @supply.name = "Galva"
+    @supply.valid?
+    
+    assert !@supply.errors.on(:name), "@supply should be valid"
   end
   
   def test_uniqueness_of_reference
     create_consumables
+    create_commodities
     @supply.reference = "pvc1234"
     @supply.valid?
     
     assert @supply.errors.on(:reference), "@supply should NOT be valid because reference is already taken"
+    
+    @supply.reference = "glv1234"
+    @supply.valid?
+    
+    assert !@supply.errors.on(:reference), "@supply should be valid"
   end
   
   def test_has_supplier_supplies

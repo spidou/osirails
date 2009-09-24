@@ -16,8 +16,8 @@
   <% commodities = (@commodities_stock_flows.size > 0 and [nil,"Commodity"].include?(params[:type]))%>
   <% consumables = (@consumables_stock_flows.size > 0 and [nil,"Consumable"].include?(params[:type]))%>
   <% if commodities or consumables %>
-    <%= render(:partial => "stock_flows/stock_flows", :locals => {:supplies => @commodities_stock_flows, :input => true}) if commodities %>
-    <%= render(:partial => "stock_flows/stock_flows", :locals => {:supplies => @consumables_stock_flows, :input => true}) if consumables %>
+    <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @commodities_stock_flows, :input => true}) if commodities %>
+    <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @consumables_stock_flows, :input => true}) if consumables %>
   <% else %>
     <p>Aucune entrée de stock n'a été trouvée</p>
   <% end %>

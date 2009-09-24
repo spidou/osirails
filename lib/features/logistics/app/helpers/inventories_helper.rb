@@ -9,8 +9,8 @@ module InventoriesHelper
 
   def new_inventory_link(supply)
     if Inventory.can_add?(current_user)
-      text = " New #{supply.class.name.tableize} inventory"
-      link_to(image_tag( "/images/add_16x16.png", :alt => text, :title => text )+text, "/inventories/new?type="+supply.class.name)
+      text = "New #{supply.class.name.tableize} inventory"
+      link_to(image_tag( "/images/add_16x16.png", :alt => text, :title => text )+ " " + text, "/inventories/new?type="+supply.class.name)
     end
   end
 
