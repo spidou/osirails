@@ -1,5 +1,3 @@
-require 'calendar_permission' # this is necessary, otherwise the plugin 'has_permissions' can't find the CalendarPermission class.
-
 # To resolve a bug time
 # refer to: http://dev.rubyonrails.org/ticket/7975
 class Date
