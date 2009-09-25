@@ -22,13 +22,6 @@ class StepTest < ActiveSupport::TestCase
     end
   end
 
-  def test_presence_of_description
-    assert_no_difference 'Step.count' do
-      step = Step.create
-      assert_not_nil step.errors.on(:description), "A Step should have a description"
-    end
-  end
-
   def test_first_parent
     # TODO Test the method first_parent of Step
   end

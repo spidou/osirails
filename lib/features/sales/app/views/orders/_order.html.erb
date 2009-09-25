@@ -45,7 +45,7 @@
   <% if is_edit_view? %>
     <p>
       <%= form.label :created_at %>
-      <%= form.strong order.created_at.to_datetime.humanize  %>
+      <%= form.strong order.created_at.humanize  %>
     </p>
   <% end %>
   <p>

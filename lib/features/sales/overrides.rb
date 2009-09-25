@@ -1,3 +1,5 @@
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :order_progress => "Avancement du projet" })
+
 require_dependency 'society_activity_sector'
 require_dependency 'customer'
 require_dependency 'establishment'
@@ -24,12 +26,6 @@ end
 
 module ApplicationHelper
   private
-    #def current_menu # override the original current_menu method in ApplicationHelper
-    #  step_menu = "#{controller.class.current_order_path}_orders" if controller.class.respond_to?("current_order_path")
-    #  menu = step_menu || controller.controller_name
-    #  Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
-    #end
-    
     # permits to display only steps which are activated for the current order
     def display_menu_entry_with_sales_support(menu, li_options)
       return if menu.name and menu.name.start_with?("step_") and !@order.steps.collect{ |s| s.name }.include?(menu.name)
@@ -37,38 +33,6 @@ module ApplicationHelper
     end
     
     alias_method_chain :display_menu_entry, :sales_support
-    
-    def url_for_menu(menu) # override the original url_for_menu method in ApplicationHelper
-      if menu.name
-        path = "#{menu.name}_path"
-        
-        controller_name = "#{menu.name.camelize}Controller"
-        # return if controller_name == "OrdersController"
-        begin
-          controller_class = controller_name.constantize
-          if controller_name == "OrdersController"
-            path = "order_path(@order)"
-          elsif controller_class.respond_to?(:current_order_step) # so it is a controller with acts_as_step support
-            path = "order_#{path}"
-          end
-        rescue NameError => e
-          # do nothing if the controller doesn't exist, just stay the basic path pattern
-          logger.warn "[url_for_menu] the controller '#{controller_name}' doesn't exist, but I will try if ActionView responds to '#{path}'?"
-        end
-        
-        if self.respond_to?(path)
-          self.send(path)
-        else
-          url_for(:controller => menu.name)
-        end
-      else
-        unless menu.content.nil?
-          url_for(:controller => "contents", :action => "show", :id => menu.content.id)
-        else
-          ""
-        end
-      end
-    end
 end
 
 require 'application'

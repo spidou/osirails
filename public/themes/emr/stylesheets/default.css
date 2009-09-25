@@ -425,7 +425,7 @@ object {
 /////////////////////////////////////////////////////////*/
 #contextual_menu_container{
   position: absolute;
-  top: 32px;
+  top: 6px;
   right: 17px;
 }
 
@@ -711,7 +711,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
 #content_page {
   background: url("/themes/emr/images/background_content_page.jpg") repeat;
-	padding: 5px 5px 8px 5px;
+	padding: 11px 5px 8px 5px;
 	margin: 4px 0px 2px 0px;
 	text-align: justify;
 	color: #343434;
@@ -728,7 +728,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	line-height:23px;
 	font-weight:lighter;
 	font-variant: small-caps;
-	margin: 3px 0 8px 0;
+	margin: 0px 0 8px 0;
 	padding: 3px 5px 8px 5px;
 }
 

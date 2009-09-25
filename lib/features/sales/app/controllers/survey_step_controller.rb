@@ -5,7 +5,7 @@ class SurveyStepController < ApplicationController
   
   def update
     if @step.update_attributes(params[:survey_step])
-      flash[:notice] = "L'étape a été modifié avec succès"
+      flash[:notice] = "Les modifications ont été enregistrées avec succès"
     end
     render :action => :edit
   end

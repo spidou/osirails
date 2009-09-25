@@ -7,6 +7,7 @@ john_doe:
   social_security_number: 1234567891234 41
   family_situation: single
   civility: mister
+  service: direction_general
 
 # good_employee
 james_doe:
@@ -18,7 +19,7 @@ james_doe:
   social_security_number: 1234567591234 42
   family_situation: single
   civility: mister
-  service: direction_general
+  service: parent
   
 ##### this employees are used to test the number of members into the service under responsability for example ###
 trish_doe:

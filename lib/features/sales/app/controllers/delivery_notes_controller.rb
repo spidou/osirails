@@ -34,7 +34,7 @@ class DeliveryNotesController < ApplicationController
         @delivery_note.contacts << @order.contacts.last unless @order.contacts.empty?
       else
         flash[:error] = "Il est nécessaire d'avoir un devis <strong>signé</strong> pour créer un bon de livraison"
-        redirect_to edit_order_delivery_step_path(@order)
+        redirect_to send(@step.original_step.path)
       end
     else
       error_access_page(403)
@@ -48,7 +48,7 @@ class DeliveryNotesController < ApplicationController
       @delivery_note.creator = current_user
       if @delivery_note.save
         flash[:notice] = "Le bon de livraison a été ajouté avec succès"
-        redirect_to order_delivery_step_delivery_note_path(@order, @delivery_note)
+        redirect_to send(@step.original_step.path)
       else
         render :action => 'new'
       end

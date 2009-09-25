@@ -5,7 +5,7 @@ module ActsAsStepController
       base.extend ClassMethods
     end
   end
-      
+  
   module ClassMethods
     def acts_as_step_controller options = {}
       default_step_controller_methods(options)
@@ -22,24 +22,6 @@ module ActsAsStepController
         before_filter :lookup_order_environment
         
         class_eval do
-          # permits to define in which level of the sales process the order is
-          def self.current_order_step
-            read_inheritable_attribute(:current_order_step)
-          end
-          
-          def self.current_order_step=(step)
-            write_inheritable_attribute(:current_order_step, step)
-          end
-          
-#          # return the first level step in which the order is currently
-#          def self.current_order_path
-#            unless current_order_step.nil?
-#              current_order_step.first_parent.path
-#            else
-#              "closed"
-#            end
-#          end
-          
           private
             def lookup_order_environment
               if params[:order_id]  # so we are in an order's sub resource
@@ -49,9 +31,6 @@ module ActsAsStepController
               else                  # so I guess we want to display '/orders/new'
                 @order = Order.new
               end
-              
-              # define the current order step
-              self.class.current_order_step = @order.current_step.original_step rescue nil #TODO test if "rescue nil" does not raise collateral damages!
               
               # manage logs
               OrderLog.set(@order, current_user, params)
@@ -110,7 +89,7 @@ module ActsAsStepController
             
             def should_display_edit
               unless @step.terminated?
-                if (params[:action] == "index" or params[:action] == "show") and can_edit?(current_user)
+                if (params[:action] == "index" or params[:action] == "show")# and can_edit?(current_user) #FIXME find a solution to determine if use has permissions to go to edit view!!!
                   flash.keep
                   redirect_to params.merge(:action => "edit")
                 end
@@ -124,7 +103,7 @@ module ActsAsStepController
                   path = send("order_path", @order)
                 else
                   @step.in_progress! unless @step.terminated?
-                  path = send("order_#{self.class.step_name[0..self.class.step_name.size]}_path", @order)
+                  path = send(@step.original_step.path, @order)
                 end
                 
                 #flash.keep

@@ -49,7 +49,7 @@ class QuotesController < ApplicationController
       @quote.creator = current_user
       if @quote.save
         flash[:notice] = "Le devis a été créé avec succès"
-        redirect_to order_estimate_step_quote_path(@order, @quote)
+        redirect_to send(@step.original_step.path)
       else
         render :action => 'new'
       end
@@ -70,7 +70,7 @@ class QuotesController < ApplicationController
     if Quote.can_edit?(current_user) and (@quote = Quote.find(params[:id])).can_be_edited?
       if @quote.update_attributes(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
-        redirect_to order_estimate_step_quote_path(@order, @quote)
+        redirect_to send(@step.original_step.path)
       else
         render :controller => 'quotes', :action => 'edit'
       end
@@ -85,7 +85,7 @@ class QuotesController < ApplicationController
       unless @quote.destroy
         flash[:notice] = 'Une erreur est survenue à la suppression du devis'
       end
-      redirect_to(order_estimate_step_path(@order))
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(422)
     end
@@ -98,7 +98,7 @@ class QuotesController < ApplicationController
       unless @quote.validate_quote
         flash[:error] = "Une erreur est survenue à la validation du devis"
       end
-      redirect_to order_estimate_step_path(@order)
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
     end
@@ -111,7 +111,7 @@ class QuotesController < ApplicationController
       unless @quote.invalidate_quote
         flash[:error] = "Une erreur est survenue à l'invalidation du devis"
       end
-      redirect_to order_estimate_step_path(@order)
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
     end
@@ -135,7 +135,7 @@ class QuotesController < ApplicationController
       #end
       if @quote.send_quote(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
-        redirect_to order_estimate_step_path(@order)
+        redirect_to send(@step.original_step.path)
       else
         render :action => :send_form
       end
@@ -156,7 +156,7 @@ class QuotesController < ApplicationController
     if Quote.can_edit?(current_user) and (@quote = Quote.find(params[:quote_id])).can_be_signed?
       if @quote.sign_quote(params[:quote])
         flash[:notice] = 'Le devis a été modifié avec succès'
-        redirect_to order_estimate_step_path(@order)
+        redirect_to send(@step.original_step.path)
       else
         render :action => :sign_form
       end

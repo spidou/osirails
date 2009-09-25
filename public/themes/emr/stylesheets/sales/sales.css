@@ -2,6 +2,10 @@
   margin: 7px 10px 7px 10px;
 }
 
+#order_progress {
+  text-align: center;
+}
+
 /* ORDER HEADER */
 #order_header {
   text-align: left;

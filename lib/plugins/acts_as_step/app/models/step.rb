@@ -1,15 +1,15 @@
 class Step < ActiveRecord::Base
-  # Relationships
-  belongs_to :parent, :class_name =>'Step', :foreign_key => 'parent_id'
-  has_many :children, :class_name => 'Step', :foreign_key => 'parent_id'
+  # belongs_to :parent, :class_name =>'Step', :foreign_key => 'parent_id'
+  # has_many :children, :class_name => 'Step', :foreign_key => 'parent_id'
+  acts_as_tree :foreign_key => 'parent_id', :order => :position
+  acts_as_list :scope => :parent
+  
   has_and_belongs_to_many :sales_processes
   has_and_belongs_to_many :dependencies, :class_name => "Step", :join_table => 'step_dependencies', :foreign_key => 'step_id', :association_foreign_key => 'step_dependent'
   
   has_many :checklists
   
-  # Plugins
-  acts_as_list :scope => :parent_id
-  acts_as_tree :order => :position
+  validates_presence_of :name
   
   ## Return a tree which represent step architecture
 #  def self.tree
@@ -23,7 +23,8 @@ class Step < ActiveRecord::Base
   
   def path
     # name[0..-6].downcase
-    "order_#{name}_path"
+    parent_path = ancestors.collect(&:name).reverse.join("_")
+    "order_#{parent_path}_#{name}_path"
   end
   
   # Return his parent or himself

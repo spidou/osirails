@@ -12,7 +12,7 @@
   <% end -%>
 <% elsif !remark.new_record? -%>
   <p class="remark_header">
-    <span class="remark_counter"><%= remark_counter %></span> Ajouté le <strong><%= remark.created_at.to_datetime.humanize %></strong> par <%= link_to_unless(remark.user.employee_id.nil?, remark.user.employee_name, employee_path(remark.user.employee_id)) %> :
+    <span class="remark_counter"><%= remark_counter %></span> Ajouté le <strong><%= remark.created_at.humanize %></strong> par <%= link_to_unless(remark.user.employee.nil?, remark.user.employee.fullname, employee_path(remark.user.employee.id)) %> :
   </p>
   <div class="remark_body">
     <%=textilize h(remark.text) %>

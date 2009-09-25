@@ -76,7 +76,7 @@ class Test::Unit::TestCase
                                                         :quantity => ref.quantity)
     end
     
-    flunk "delivery_note should be saved" unless dn.save!
+    dn.save!
     return dn
   end
   
@@ -88,7 +88,7 @@ class Test::Unit::TestCase
                                                      :scheduled_delivery_at => Time.now + 10.hours)
     intervention.deliverers << Employee.first
     
-    flunk "intervention should be saved" unless intervention.save
+    intervention.save!
     return intervention
   end
 end

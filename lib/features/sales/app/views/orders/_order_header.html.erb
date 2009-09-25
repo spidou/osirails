@@ -4,7 +4,7 @@
 <% end -%>
 
 <% add_contextual_menu_item :order_progress do %>
-  <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object>
+  <div id="order_progress"><object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div>
   <%= remaining_time_before_delivery(@order) %>
 <% end %>
 

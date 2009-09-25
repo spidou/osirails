@@ -1,14 +1,14 @@
 <% order = order_timeline %>
 <div id="timeline">
 	<div id="timeline_head" class="good">
-    <span class="timeline_date" title="<%= order.created_at.to_datetime.humanize %>"><%= order.created_at.to_date.humanize %></span>
+    <span class="timeline_date" title="<%= order.created_at.humanize %>"><%= order.created_at.to_date.humanize %></span>
     <span class="timeline_notice">Création de dossier</span>
   </div>
   
 <% order.all_steps.each do |child| %>
 	<% if child.started_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%=child.started_at.to_datetime.humanize %>"><%= child.started_at.to_date.humanize %></span>
+    <span class="timeline_date" title="<%=child.started_at.humanize %>"><%= child.started_at.to_date.humanize %></span>
     <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
   <% else %>
@@ -20,7 +20,7 @@
 
 	<% if child.finished_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%= child.finished_at.to_datetime.humanize %>"><%= child.finished_at.to_date.humanize %></span>
+    <span class="timeline_date" title="<%= child.finished_at.humanize %>"><%= child.finished_at.to_date.humanize %></span>
     <span class="timeline_notice">Fin de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>
@@ -28,7 +28,7 @@
 
 <% if order.closed_date %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%= order.closed_date.to_datetime.humanize %>"><%= order.closed_date.to_date.humanize %></span>
+    <span class="timeline_date" title="<%= order.closed_date.humanize %>"><%= order.closed_date.to_date.humanize %></span>
     <span class="timeline_notice">Cl&ocirc;ture du dossier</span>
   </div>
 <% end %>
