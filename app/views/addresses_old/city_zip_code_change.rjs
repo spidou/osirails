@@ -1,9 +1,0 @@
-country = Country.find_by_name(params[:country_name])
-unless country.nil?
-  city =City.find_by_zip_code_and_country_id(params[:city_zip_code], country.id)
-  if !(city.nil?)
-    page["#{params[:address_name]}_address_city_name"].value = city.name
-    page["#{params[:address_name]}_address_country_name"].value = country.name
-  end
-end
-

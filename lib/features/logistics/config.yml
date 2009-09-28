@@ -2,7 +2,6 @@ name: logistics
 title: Gestion de la logistique
 version: 0.1
 dependencies:
-conflicts:
   admin:
     - 0.1
 search:

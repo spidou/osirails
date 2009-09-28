@@ -1,7 +1,0 @@
-unless params[:country_name].blank?
-  page << "document.getElementById('#{params[:address_name]}_address_city_name').disabled=false" 
-  page << "document.getElementById('#{params[:address_name]}_address_city_zip_code').disabled=false"
-else
-  page << "document.getElementById('#{params[:address_name]}_address_city_name').disabled=true" 
-  page << "document.getElementById('#{params[:address_name]}_address_city_zip_code').disabled=true"
-end
