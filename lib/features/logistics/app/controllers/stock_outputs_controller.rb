@@ -9,9 +9,12 @@ class StockOutputsController < ApplicationController
 
   # GET /stock_outputs/new
   def new
-    @supply = params[:supply_id].nil? ? params[:type].constantize.find(:first) : Supply.find(params[:supply_id])
+    return error_access_page(500) unless ["Commodity","Consumable",nil].include?(params[:type])
+    @supply_type = params[:type].constantize unless params[:type].nil?
+    
+    @supply = params[:supply_id].nil? ? @supply_type.find(:first) : Supply.find(params[:supply_id])
     @supplier = params[:supplier_id].nil? ? @supply.suppliers.first : Supplier.find(params[:supplier_id])
-    @supplies = params[:type].nil? ? @supply[:type].constantize.was_enabled_at : params[:type].constantize.was_enabled_at
+    @supplies = params[:type].nil? ? @supply[:type].constantize.was_enabled_at : @supply_type.was_enabled_at
     @suppliers = @supply.suppliers
     @supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(@supply.id,@supplier.id)
     @stock_flow = StockOutput.new

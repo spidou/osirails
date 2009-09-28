@@ -320,11 +320,11 @@ namespace :osirails do
 
       # default consumables and their supplier_supplies
       pvc = Consumable.create :name => "PVC 1500x3000x2", :reference => "pvc2", :measure => "6.50", :unit_mass => "10.65",
-        :consumable_category_id => toles.id, :threshold => 2
+        :consumable_category_id => child_one.id, :threshold => 2
       pvcbis = Consumable.create :name => "PVC 1500x3000x3", :reference => "pvc3", :measure => "6.50", :unit_mass => "10.98",
-        :consumable_category_id => toles.id, :threshold => 10
+        :consumable_category_id => child_one.id, :threshold => 10
       vis = Consumable.create :name => "Vis Ø20x2 Lg 6m", :reference => "vis6", :measure => "0.5", :unit_mass => "0.8",
-        :consumable_category_id => tubes.id, :threshold => 40
+        :consumable_category_id => child_two.id, :threshold => 40
 
       SupplierSupply.create({:supply_id => pvc.id,
                              :supplier_id => supplierbis.id,

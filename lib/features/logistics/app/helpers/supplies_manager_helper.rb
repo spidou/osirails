@@ -1,5 +1,4 @@
 module SuppliesManagerHelper
-
   # This method permit to add a button for add a sub category
   def add_category_or_supply(supply_category)
     if supply_category.class.can_add?(current_user) and supply_category.enable
@@ -86,17 +85,17 @@ module SuppliesManagerHelper
   end
 
   # method that permit to access to commodities categories list using /supplies_manager route
-  def supply_categories_link(supply_category)
-    if supply_category.class.can_list?(current_user)
-      text = "List all #{supply_category.class.name.tableize.humanize.downcase}"
-      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_category.class.name.tableize.singularize.gsub("_category","").pluralize}_manager")
+  def supply_categories_link(supply_type)
+    if supply_type.can_list?(current_user)
+      text = "List all #{supply_type.name.tableize.humanize.downcase}"
+      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager")
     end
   end
   
-  def supply_categories_link_with_inactives(supply_category)
-    if supply_category.class.can_list?(current_user)
-      text = "List all #{supply_category.class.name.tableize.humanize.downcase} (including inactives)"
-      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_category.class.name.tableize.singularize.gsub("_category","").pluralize}_manager?inactives=true")
+  def supply_categories_link_with_inactives(supply_type)
+    if supply_type.can_list?(current_user)
+      text = "List all #{supply_type.name.tableize.humanize.downcase} (including inactives)"
+      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager?inactives=true")
     end
   end
 
@@ -140,12 +139,12 @@ module SuppliesManagerHelper
   
   # This method permit to display the total measure of a supply stock
   def display_total_measure(supply,date=Date.today)
-    supply.stock_quantity.nil? ? '//' : number_with_precision(supply.stock_quantity(date)*supply.measure,1) + " " + UnitMeasure.find(supply.send("#{supply.class.name.underscore}_category").unit_measure_id).symbol
+    supply.stock_quantity.nil? ? '//' : number_with_precision(supply.stock_quantity(date)*supply.measure,1) + " " + UnitMeasure.find(supply.supply_category.unit_measure_id).symbol
   end
   
   # This method permit to display the total measure of a supply_supplier stock
   def display_supply_supplier_total_measure(supply_supplier,date=Date.today)
-    supply_supplier.stock_quantity.nil? ? '//' : number_with_precision(supply_supplier.stock_quantity(date)*supply_supplier.supply.measure,1) + " " + UnitMeasure.find(supply_supplier.supply.send("#{supply_supplier.supply.class.name.underscore}_category").unit_measure_id).symbol
+    supply_supplier.stock_quantity.nil? ? '//' : number_with_precision(supply_supplier.stock_quantity(date)*supply_supplier.supply.measure,1) + " " + UnitMeasure.find(supply_supplier.supply.supply_category.unit_measure_id).symbol
   end
   
   # This method permit to display the total mass of a supply stock
@@ -157,4 +156,3 @@ module SuppliesManagerHelper
     number_with_precision(category.stock_value(date),2) + " €"
   end
 end
-

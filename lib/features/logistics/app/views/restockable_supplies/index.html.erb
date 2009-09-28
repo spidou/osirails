@@ -1,4 +1,4 @@
-<% if Supply.restockables.size > 0 %>
+<% if @commodities_to_restock.size > 0 or @consumables_to_restock.size > 0 %>
   <% add_contextual_menu_item :statistics do %>
     <span class='contextual_menu_statistic'>A renouveler :</span>
 	  <%= "<span class='contextual_menu_statistic'>- #{pluralize(@commodities_to_restock.size, "matière première", "matières premières")}</span><br/>" if @commodities_to_restock.size > 0 %>    <%= "<span class='contextual_menu_statistic'>- #{pluralize(@consumables_to_restock.size, "consommable", "consommables")}</span>" if @consumables_to_restock.size > 0 %>
@@ -7,7 +7,7 @@
   
 <h1>Liste des fournitures &agrave; r&eacute;approvisionner</h1>
 <div>
-  <% if Supply.restockables.size > 0 %>  
+  <% if @commodities_to_restock.size > 0 or @consumables_to_restock.size > 0 %>  
     <%= render(:partial => "supplies_to_restock", :locals => {:supplies => @commodities_to_restock}) if @commodities_to_restock.size > 0 %>
     <%= render(:partial => "supplies_to_restock", :locals => {:supplies => @consumables_to_restock}) if @consumables_to_restock.size > 0 %>
   <% else %>

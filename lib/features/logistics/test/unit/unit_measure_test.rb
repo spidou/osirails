@@ -1,7 +1,6 @@
 require 'test/test_helper'
 
 class UnitMeasureTest < ActiveSupport::TestCase
-
   def setup
     @um = UnitMeasure.new
     @um.valid?

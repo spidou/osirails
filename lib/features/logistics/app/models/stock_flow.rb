@@ -1,5 +1,4 @@
 class StockFlow < ActiveRecord::Base
-
   # Relationships
   belongs_to :supply
   belongs_to :supplier
@@ -40,7 +39,7 @@ class StockFlow < ActiveRecord::Base
     end
   end
 
-  # This method prevent the modification of the stock flow, update forgiven
+  # This method prevent the modification of the stock flow, update is forgiven
   def before_update
     return false
   end  
@@ -58,4 +57,3 @@ class StockFlow < ActiveRecord::Base
     end
   end
 end
-

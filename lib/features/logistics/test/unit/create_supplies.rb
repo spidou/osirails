@@ -5,7 +5,7 @@ module CreateSupplies
                             :reference => "glv1234",
                             :measure => 1,
                             :unit_mass => 2,
-                            :commodity_category => commodity_categories(:child),
+                            :supply_category => supply_categories(:child_commodity),
                             :threshold => 20
                            })
     flunk "@galva should be valid to perform the next tests" unless @galva.save
@@ -15,7 +15,7 @@ module CreateSupplies
                             :reference => "aci1234",
                             :measure => 1,
                             :unit_mass => 2,
-                            :commodity_category => commodity_categories(:child),
+                            :supply_category => supply_categories(:child_commodity),
                             :threshold => 20
                            })
     flunk "@acier should be valid to perform the next tests" unless @acier.save
@@ -27,7 +27,7 @@ module CreateSupplies
                            :reference => "pvc1234",
                            :measure => 1,
                            :unit_mass => 2,
-                           :consumable_category => consumable_categories(:child),
+                           :supply_category => supply_categories(:child_consumable),
                            :threshold => 20
                           })
     flunk "@pvc should be valid to perform the next tests" unless @pvc.save
@@ -37,7 +37,7 @@ module CreateSupplies
                            :reference => "vis1234",
                            :measure => 1,
                            :unit_mass => 2,
-                           :consumable_category => consumable_categories(:child),
+                           :supply_category => supply_categories(:child_consumable),
                            :threshold => 20
                           })
     flunk "@vis should be valid to perform the next tests" unless @vis.save

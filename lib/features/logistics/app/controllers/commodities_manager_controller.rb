@@ -1,7 +1,10 @@
-require File.dirname(__FILE__) + '/supplies_manager_controller'
-
 class CommoditiesManagerController < ApplicationController
   helper :supplies_manager
-  include SuppliesManagerController
+  
+  # GET /commodities_manager
+  def index
+    @supply_type = Commodity
+    @supply_categories_root = (params[:inactives]=="true" ? CommodityCategory.roots : CommodityCategory.enabled_roots)
+  end
 end
 

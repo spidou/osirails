@@ -1,5 +1,4 @@
 module InventoriesHelper
-
   def inventory_link(supply,date)
     if Inventory.can_add?(current_user)
       text = "Show #{supply.class.name.tableize}"

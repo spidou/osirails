@@ -43,8 +43,7 @@ class SupplierSupply < ActiveRecord::Base
     stock_flows.empty? ? 0.0 : stock_flow.previous_stock_quantity
   end
   
-  def previous_stock_value(date=Date.today)23
-  
+  def previous_stock_value(date=Date.today)  
     stock_flows = StockFlow.find(:all, :conditions => ["supply_id = ? AND supplier_id = ? AND created_at < ?", self.supply_id, self.supplier_id, date+1], :order => "YEAR(created_at) DESC, MONTH(created_at) DESC, DAY(created_at) DESC, HOUR(created_at) ASC, MINUTE(created_at) ASC, SECOND(created_at)", :limit => 1)
     stock_flow = stock_flows.first unless stock_flows.empty?
     stock_flows.empty? ? 0.0 : stock_flow.previous_stock_value
@@ -78,4 +77,3 @@ class SupplierSupply < ActiveRecord::Base
     should_update.to_i == 1
   end
 end
-

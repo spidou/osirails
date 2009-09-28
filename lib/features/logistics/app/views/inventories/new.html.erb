@@ -31,10 +31,10 @@
           <th colspan='2'>Stock</th>
           <th rowspan='2'>&Eacute;volution</th>
           <tr>            <th>Actuel</th>
-            <th>Réel</th>        
+            <th>R&eacute;el</th>        
           </tr>
         </tr>      
-      <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>      
+      <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
       </table>
       <%= hidden_field_tag 'type', params[:type] %>
       <p><%= submit_tag "Valider" %></p>  

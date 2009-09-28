@@ -1,14 +1,9 @@
 <div class="presentation_medium">
-
-  <h1>Effectuer une <%= input ? "entrée" : "sortie" %> de stock</h1>
-
   <% unless @supplies.empty? %>    
-
     <% form_for(@stock_flow) do |form| %>
       <p>
         <%= form.error_messages %>
       </p>
-
       <p>
         <%= form.label :supply %>
         <%= form.collection_select(:supply_id, @supplies, :id, :name , {}) %>
@@ -19,7 +14,6 @@
         <%= form.collection_select(:supplier_id, @suppliers, :id, :name , {}) %>
         <%= observe_field("stock_#{flow}_supplier_id", :url => "/stock_#{flow}s/refresh_infos", :with => "'supplier_id='+value+'&supply_id='+$('stock_#{flow}>_supply_id').getValue()")%>
       </p>
-
       <p>
         <% if input %>
           <%= form.label :purchase_number %>
@@ -29,30 +23,23 @@
           <%= form.text_field :file_number %>
         <% end %>
       </p>
-
       <p>
         <%= form.label :quantity %>
         <%= form.text_field :quantity, :size => 20 %>
-      </p>
-      
+      </p>      
       <% if input %>
         <p>
           <%= form.label :fob_unit_price %>
           <%= form.text_field(:fob_unit_price, :value => number_with_precision(@stock_flow.fob_unit_price,2), :size => 20) + " &euro;" %>
         </p>
-
         <p>
           <%= form.label :tax_coefficient %>
           <%= form.text_field(:tax_coefficient, :value => number_with_precision(@stock_flow.tax_coefficient,2), :size => 5) + " &#37;"%>
         </p>
       <% end %>
-
       <p><%= form.submit("Envoyer") %></p>
-    <% end %>
-    
+    <% end %>    
   <% else %>
     <p>Aucune fourniture disponible pour effectuer un mouvement de stock</p>
   <% end %> 
-
 </div>
-

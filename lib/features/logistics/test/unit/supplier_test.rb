@@ -27,6 +27,5 @@ class SupplierTest < ActiveSupport::TestCase
   def test_stock_flows
     assert_equal @supplier.stock_flows, StockFlow.find(:all, :conditions => ["supplier_id", @supplier.id]), "these should be @supplier.stock_flows"
   end
-
 end
 

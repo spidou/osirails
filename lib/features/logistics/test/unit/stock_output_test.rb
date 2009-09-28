@@ -57,4 +57,3 @@ class StockOutputTest < ActiveSupport::TestCase
     assert_equal @last_sf.tax_coefficient, 0, "these two should be equal"
   end
 end
-

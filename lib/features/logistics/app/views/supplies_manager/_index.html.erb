@@ -1,22 +1,18 @@
 <% content_for :header do %>
   <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
-
 <% add_contextual_menu_item :statistics do %>
-  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply.class.stock_value,2) + " €" %></span>
+  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value,2) + " €" %></span>
 <% end %>
-
 <% add_contextual_menu_item :possible_actions do %>
-  <%= self.send("new_#{@supply.class.name.tableize.singularize}_category_link") %>
+  <%= self.send("new_#{@supply_type.name.tableize.singularize}_category_link") %>
 <% end %>
-
 <% add_contextual_menu_item :useful_links do %>
-  <%= params[:inactives]=="true" ? supply_categories_link(@supply.class.new) : supply_categories_link_with_inactives(@supply.class.new) %>
+  <%= params[:inactives]=="true" ? supply_categories_link(@supply_type) : supply_categories_link_with_inactives(@supply_type) %>
 <% end %>
-
 <div>
-  <% unless @supplies_categories_root.empty? %>
-    <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
+  <% unless @supply_categories_root.empty? %>
+    <%= "<table class='#{@supply_type.name.tableize.singularize}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
         <th rowspan='2'>Sous cat&eacute;gorie</th>
@@ -33,10 +29,8 @@
           <th>Masse</th>
           <th>Valeur</th>
         </tr>
-      </tr>
-      
-      <%= render(:partial => "supplies_manager/supply_category", :collection => @supplies_categories_root) %>
-      
+      </tr>      
+      <%= render(:partial => "supplies_manager/supply_category", :collection => @supply_categories_root) %>
     </table>
   <% else %>
     <p>Aucune cat&eacute;gorie existante</p>

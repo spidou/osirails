@@ -1,5 +1,4 @@
-<% if @categories.include?(supply_category) %>
-
+<% if supply_category.was_enabled_at(@date) %>
   <% supply_category_enable = supply_category.enable ? "enable" : "disable" %>
         
   <%= "<tr id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}' class='#{supply_category_enable}'>" %>
@@ -13,5 +12,4 @@
   <% unless supply_category.children.size == 0 %>
     <%= render(:partial => "category_child", :collection => supply_category.children) %>
   <% end %>
-
 <% end %>

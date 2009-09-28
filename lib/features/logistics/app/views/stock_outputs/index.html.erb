@@ -2,7 +2,6 @@
   <%= new_stock_flow_link(false,Commodity.new) %>
   <%= new_stock_flow_link(false,Consumable.new) %>
 <% end %>
-
 <% add_contextual_menu_item :useful_links do %>
   <%= stock_outputs_link unless params[:type].nil? %>
   <%= stock_flows_link(false,Commodity.new) if [nil,"Consumable"].include?(params[:type]) %>
@@ -10,7 +9,6 @@
   <%= commodity_categories_link %>
   <%= consumable_categories_link %>
 <% end %>
-
 <h1>Liste des sorties de stock</h1>
 <div>
   <% commodities = (@commodities_stock_flows.size > 0 and [nil,"Commodity"].include?(params[:type]))%>
@@ -19,7 +17,7 @@
     <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @commodities_stock_flows, :input => false}) if commodities %>
     <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @consumables_stock_flows, :input => false}) if consumables %>
   <% else %>
-    <p>Aucune sortie de stock n'a été trouvée</p>
+    <p>Aucune sortie de stock n'a &eacute;t&eacute; trouv&eacute;e</p>
   <% end %>
 </div>
 

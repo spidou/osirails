@@ -102,4 +102,3 @@ module StockFlowTest
     assert_equal StockFlow.last.unit_price, StockFlow.last.fob_unit_price * (1+StockFlow.last.tax_coefficient/100), "these two should be equal"
   end
 end
-

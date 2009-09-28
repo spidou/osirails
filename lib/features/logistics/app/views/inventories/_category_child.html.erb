@@ -1,6 +1,5 @@
-<% if @categories.include?(category_child) %>
-
-  <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.send(category_child.class.name.tableize.singularize).id} #{category_child.enable ? "enable" : "disable"}'>" %>
+<% if category_child.was_enabled_at(@date) %>
+  <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.parent.id} #{category_child.enable ? "enable" : "disable"}'>" %>
   <%= "<td></td>" %>
   <%= "<td>" %>
   <%= "<img id='#{category_child.class.name.tableize.singularize}_#{category_child.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> " if category_child.children.size == 0 %>
@@ -9,10 +8,8 @@
   <%= "<td colspan='10'></td>" %>
   <%= "<td>#{display_category_stock_value(category_child,@date)}</td>" unless is_form_view? %>
   <%= "</tr>" %>
-
-  <% unless category_child.send("#{category_child.class.name.tableize.gsub("_categories","").pluralize}").nil? %>
-    <%= render(:partial => "supply", :collection => category_child.send("#{category_child.class.name.tableize.gsub("_categories","").pluralize}")) %>  
+  <% unless category_child.supplies.nil? %>
+    <%= render(:partial => "supply", :collection => category_child.supplies) %>  
   <% end %>
-
 <% end %>
 

@@ -68,4 +68,3 @@ class StockInputTest < ActiveSupport::TestCase
     assert_equal @last_sf.previous_stock_value, @stock_value, "these two should be equal"
   end
 end
-

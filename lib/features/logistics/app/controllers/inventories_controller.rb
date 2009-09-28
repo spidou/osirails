@@ -1,5 +1,7 @@
 class InventoriesController < ApplicationController
   helper :supplies_manager
+  before_filter :supply_type, :except => [:index]
+  before_filter :supply_category_type, :except => [:index]
   
   # GET /inventories
   def index        
@@ -8,19 +10,17 @@ class InventoriesController < ApplicationController
   
   # GET /inventories/new?type=''
   def new
-    @supply = params[:type].constantize.new
-    @supplies_categories_root = (params[:type]+"Category").constantize.root
-    @categories = (params[:type]+"Category").constantize.was_enabled_at
-    @supplies = params[:type].constantize.was_enabled_at
+    @date = Date.today
+    @supply_categories_root = @supply_category_type.enabled_roots
+    @supplies = @supply_type.was_enabled_at
   end
   
   # POST /inventories
   def create
     result = Inventory.create_stock_flows(params)
     if result == false
-      @supply = params[:type].constantize.new
-      @supplies_categories_root = (params[:type]+"Category").constantize.root
-      @supplies = params[:type].constantize.was_enabled_at
+      @supply_categories_root = @supply_category_type.enabled_roots
+      @supplies = @supply_type.was_enabled_at
       flash[:error] = "Les données rentrées sont invalides"
       render :action => 'new'
     else
@@ -33,11 +33,29 @@ class InventoriesController < ApplicationController
   
   # GET /inventories/show?date=''&type=''
   def show
-    @supply = params[:type].constantize.new
-    @supplies_categories_root = (params[:type]+"Category").constantize.root_including_inactives    
-    @categories = (params[:type]+"Category").constantize.was_enabled_at(params[:date].to_date)
-    @supplies = params[:type].constantize.was_enabled_at(params[:date].to_date)
-    @date = params[:date].to_date
+    begin
+      @date = params[:date].to_date
+      @supply_categories_root = @supply_category_type.roots  
+      @supplies = @supply_type.was_enabled_at(@date)
+    rescue ArgumentError => e
+      error_access_page(500)
+    end
   end
 
+  private
+    def supply_type
+      if ["Commodity","Consumable"].include?(params[:type])
+        @supply_type = params[:type].constantize
+      else
+        error_access_page(500)
+      end
+    end
+    
+    def supply_category_type
+      if ["Commodity","Consumable"].include?(params[:type])
+        @supply_category_type = (params[:type]+"Category").constantize
+      else
+        error_access_page(500)
+      end
+    end
 end

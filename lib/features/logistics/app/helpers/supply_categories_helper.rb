@@ -1,5 +1,4 @@
-module SupplyCategoriesHelper
-  
+module SupplyCategoriesHelper  
   # This method permit to concat unit_measure name and symbol
   def format_unit_measure
     unit_measures = UnitMeasure.find(:all)

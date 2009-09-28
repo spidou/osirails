@@ -1,7 +1,10 @@
-require File.dirname(__FILE__) + '/supplies_manager_controller'
-
 class ConsumablesManagerController < ApplicationController
   helper :supplies_manager
-  include SuppliesManagerController
+  
+  # GET /consumables_manager
+  def index
+    @supply_type = Consumable
+    @supply_categories_root = (params[:inactives]=="true" ? ConsumableCategory.roots : ConsumableCategory.enabled_roots)
+  end
 end
 

@@ -1,8 +1,7 @@
-<% if !supply.supplier_supplies.empty? and @supplies.include?(supply) %>
-
-  <% unit_measure = UnitMeasure.find(supply.send("#{supply.class.name.downcase}_category").unit_measure_id) %>
+<% if !supply.supplier_supplies.empty? and supply.was_enabled_at(@date) %>
+  <% unit_measure = UnitMeasure.find(supply.supply_category.unit_measure_id) %>
                      
-  <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category').send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
+  <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.supply_category.send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
   <%= "<td rowspan='#{supply.suppliers.size}' colspan='2'></td>" %>
   <%= "<td rowspan='#{supply.suppliers.size}'>#{supply.reference}</td>" %>
   <%= "<td rowspan='#{supply.suppliers.size}'>#{supply.name}</td>" %>
@@ -30,7 +29,7 @@
   <% if supply.suppliers.size > 1 %>
     <% for supplier in supply.suppliers %>
       <% unless supplier == supply.suppliers.first %>
-         <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}_#{supplier.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category').send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
+         <%= "<tr id='#{supply.class.name.downcase}_#{supply.id}_#{supplier.id}' class='#{supply.class.name.downcase}_category_#{supply.send(supply.class.name.downcase+'_category_id')} #{supply.class.name.downcase}_category_#{supply.supply_category.send(supply.class.name.downcase+'_category_id')} #{supply.enable ? "enable" : "disable"}'>" %>
           <td><%= supplier.name %></td>
           <% supplier_supply = supplier_supply(supplier,supply) %>
           <% if is_form_view? %>

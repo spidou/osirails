@@ -57,22 +57,6 @@ module SupplyTest
     assert_equal @vis.stock_flows, StockFlow.find(:all, :conditions => ["supply_id = ? AND supplier_id = ?", @vis.id, @vis_ss.supplier.id]), "this should be @vis.stock_flows"
   end
 
-  def test_restockables
-    create_supplier_supplies
-    assert_equal Supply.restockables, Supply.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
-
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,10)
-    sleep(1)
-    assert_equal Supply.restockables, Supply.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
-    sleep(1)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,3)
-    sleep(1)
-    assert_equal Supply.restockables, Supply.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,12)
-    assert Supply.restockables != Supply.find(:all), "restockables are NOT all supplies as @galva is not a restockable anymore"
-    assert !Supply.restockables.include?(Supply.find(@galva.id)), "@galva should NOT be included in restockables as its stock is 25 (above threshold*1.1)"
-  end
-
   def test_average_unit_price
     assert_equal nil, @supply.average_unit_price, "@supply.average_unit_price should be nil as he does not own any stock"
     
@@ -142,12 +126,7 @@ module SupplyTest
     
     total = 0.0
     for f in @supply.supplier_supplies
-      total += f.stock_quantityflunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
-
-    total = 0.0
-    for f in @supply.supplier_supplies
-      total += f.stock_quantity * f.average_unit_price
-    end
+      total += f.stock_quantity
     end
     assert_equal total, @supply.stock_quantity, "@supply.stock_quantity should be the total of its supplier_supplies' stock_quantity"
   end
@@ -159,6 +138,7 @@ module SupplyTest
     assert !@supply.has_been_used?, "@supply should NOT have been used because there is no stock flow"
     
     flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
+   
     assert @supply.has_been_used?, "@supply should have been used"
   end
   
@@ -185,6 +165,10 @@ module SupplyTest
   def test_persistent_attributes_when_disabled_supply
     create_supplier_supplies
     @supply = Supply.last
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    sleep(1)
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
     flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
     
     persistent_attributes = ["name", "reference", "measure", "unit_mass", "commodity_category_id", "consumable_category_id"]
@@ -201,29 +185,45 @@ module SupplyTest
     end
   end
   
-  def test_disable_and_was_enabled_at
+  def test_disable_and_was_enabled_at_and_update_category_counter
     create_supplier_supplies
     @supply = Supply.last
     
+    assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because it has not been used"
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    sleep(1)
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
+    
     assert @supply.can_be_disabled?, "@supply should be able to be disabled"
+    
+    @counter = @supply.supply_category.send(@supply.class.name.tableize+"_count")
     flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    @supply.reload
+    
+    assert_equal @supply.supply_category.send(@supply.class.name.tableize+"_count"), @counter - 1, "counter should have been decremented"
     assert_equal false, @supply.enable, "these two should be equal because @supply has been disabled"
-    assert !@supply.class.name.constantize.was_enabled_at.include?(@supply), "@supply should not be included in was_enabled_at because it's not enabled"
-    assert @supply.class.name.constantize.was_enabled_at(Date.yesterday).include?(@supply), "@supply should be included in was_enabled_at(Date.yesterday) because it was enabled"
-  
+    assert !@supply.was_enabled_at, "@supply should NOT be enabled because it has been disabled today"
+    assert @supply.was_enabled_at(Date.yesterday), "@supply should be enabled yesterday"  
     assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because it is still disabled"
     assert !@supply.disable, "@supply should fail at disable because it cannot be disabled"
   end
   
-  def test_disable_when_supply_not_been_used
+  def test_disable_when_supply_been_used
     create_supplier_supplies
     @supply = Supply.first
     
+    assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because it has not been used"
+    assert !@supply.disable, "@supply should fail at disable because it cannot be disabled"
+    
     flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    
     assert !@supply.can_be_disabled?, "@supply should NOT be able to be disabled because stock_quantity > 0"
     assert !@supply.disable, "@supply should fail at disable because it cannot be disabled"
+    
     sleep(1)
     flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
+    
     assert @supply.can_be_disabled?, "@supply should be able to be disabled"
     assert @supply.disable, "@supply should be disabled now its stock is 0"
   end
@@ -233,6 +233,7 @@ module SupplyTest
     @supply = Supply.last
     
     flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,Supplier.last,true,5)
+    
     assert !@supply.can_be_destroyed?, "@supply should NOT be able to be destroyed because it has been used"
     assert !@supply.destroy, "@supply should NOT be destroyed because it cannot be destroyed"
     
@@ -242,17 +243,25 @@ module SupplyTest
     assert @supply.destroy,"@supply should destroy with success"
   end
   
-  def test_reactivate
+  def test_reactivate_and_update_category_counter
     create_supplier_supplies
     @supply = Supply.last
     
     assert !@supply.can_be_reactivated?, "@supply should NOT be able to be reactivated because it is still enabled"
     assert !@supply.reactivate, "@supply should fail at reactivate because it cannot be reactivated"
     
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    sleep(1)
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
     flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
+    
     assert @supply.can_be_reactivated?, "@supply should be able to be reactivated because it is disabled, and its category is still enabled"
-   
+    @supply.reload
+    @counter = @supply.supply_category.send(@supply.class.name.tableize+"_count")
     flunk "@supply must be reactivated with success to perform this test method" unless @supply.reactivate
+    @supply.reload
+    
+    assert_equal @supply.supply_category.send(@supply.class.name.tableize+"_count"), @counter + 1, "counter should have been incremented"
     assert_equal true, @supply.enable, "these two should be equal because @supply has been ractivated"
     assert_equal nil, @supply.disabled_at, "these two should be equal because @supply has been ractivated"
   end
@@ -260,14 +269,15 @@ module SupplyTest
   def test_reactivate_when_category_disabled
     create_supplier_supplies
     flunk "Supply.last must destroy with success to perform this test method" unless Supply.last.destroy # To keep only one supply in the category
-    @supply = Supply.last
-    
+    @supply = Supply.last 
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,true,5)
+    sleep(1)
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@supply,@supply.suppliers.first,false,5)
     flunk "@supply must be disabled with success to perform this test method" unless @supply.disable
-    category = @supply.send((@supply.class.name+"Category").underscore)
-    flunk "@supply.category must be disabled with success to perform this test method" unless category.disable
+    supply_category = @supply.supply_category
+    flunk "@supply.category must be disabled with success to perform this test method" unless supply_category.disable
     
     assert !@supply.can_be_reactivated?, "@supply should NOT be able to be reactivated because and its category is disabled"
     assert !@supply.reactivate, "@supply should fail at reactivate because it cannot be reactivated"
   end
 end
-

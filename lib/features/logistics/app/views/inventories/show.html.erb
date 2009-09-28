@@ -3,7 +3,7 @@
 <% end %>
 
 <% add_contextual_menu_item :statistics do %>
-  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply.class.stock_value(@date),2) + " €" %></span>
+  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value(@date),2) + " €" %></span>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
@@ -20,8 +20,8 @@
 <h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
 
 <div>
-  <% unless @categories.empty? %>
-    <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
+  <% unless @supplies.empty? %>
+    <%= "<table class='#{@supply_type.name.tableize.singularize}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
         <th rowspan='2'>Sous cat&eacute;gorie</th>
@@ -30,17 +30,17 @@
         <th rowspan='2'>Fournisseurs</th>
         <th colspan='4'>Stock/fournisseur</th>
         <th colspan='4'>Stock total</th>
-        <tr>          <th>Quantité</th>                <th>Grandeur</th>
+        <tr>          <th>Quantit&eacute;</th>                <th>Grandeur</th>
           <th>Masse</th>   
           <th>Valeur</th>   
-          <th>Quantité</th>                <th>Grandeur</th>
+          <th>Quantit&eacute;</th>                <th>Grandeur</th>
           <th>Masse</th>   
           <th>Valeur</th>     
         </tr>
       </tr>      
-    <%= render(:partial => "supply_category", :collection => @supplies_categories_root) %>      
+    <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
     </table>
   <% else %>
-    <p>Aucune cat&eacute;gorie existante</p>
+    <p>Aucune fourniture disponible &agrave; cette date</p>
   <% end %>
 </div>

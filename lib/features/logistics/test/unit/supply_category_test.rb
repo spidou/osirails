@@ -41,44 +41,49 @@ module SupplyCategoryTest
     end
   end
   
-  def test_root
-    assert @supply_category.class.name.constantize.root.include?(@supply_category), "@supply_category should be included in Category.root"
+  def test_enabled_roots
+    assert @supply_category.class.name.constantize.enabled_roots.include?(@supply_category), "@supply_category should be included in Category.root"
     flunk "@supply_category_with_parent must be disabled with success to perform this test method" unless @supply_category_with_parent.disable
     flunk "@supply_category must be disabled with success to perform this test method" unless @supply_category.disable
     
-    assert !@supply_category.class.name.constantize.root.include?(@supply_category), "@supply_category should NOT be included in Category.root because it is disabled"
+    assert !@supply_category.class.name.constantize.enabled_roots.include?(@supply_category), "@supply_category should NOT be included in Category.root because it is disabled"
   end
   
-  def test_root_including_inactives
+  def test_roots
     flunk "@supply_category_with_parent must be disabled with success to perform this test method" unless @supply_category_with_parent.disable
     flunk "@supply_category must be disabled with success to perform this test method" unless @supply_category.disable
     
-    assert @supply_category.class.name.constantize.root_including_inactives.include?(@supply_category), "@supply_category should be included in Category.root_including_inactives"
+    assert @supply_category.class.name.constantize.roots.include?(@supply_category), "@supply_category should be included in Category.roots"
   end
   
   def test_root_child
-    assert @supply_category_with_parent.class.name.constantize.root_child.include?(@supply_category_with_parent), "@supply_category_with_parent should be included in Category.root_child"
+    assert @supply_category_with_parent.class.name.constantize.roots_children.include?(@supply_category_with_parent), "@supply_category_with_parent should be included in Category.root_child"
     flunk "@supply_category_with_parent must be disabled with success to perform this test method" unless @supply_category_with_parent.disable
   
-    assert !@supply_category_with_parent.class.name.constantize.root_child.include?(@supply_category_with_parent), "@supply_category_with_parent should NOT be included in Category.root_child because it is disabled"
+    assert !@supply_category_with_parent.class.name.constantize.roots_children.include?(@supply_category_with_parent), "@supply_category_with_parent should NOT be included in Category.root_child because it is disabled"
   end
   
   def test_disable_root_child
     assert @supply_category_with_parent.can_be_disabled?, "it should be able to be disabled"
     flunk "@supply_category_with_parent must be disabled with success to perform this test method" unless @supply_category_with_parent.disable
+    @supply_category_with_parent.reload
+    
     assert_equal false, @supply_category_with_parent.enable, "these two should be equal because @supply_category_with_parent has been disabled"
-    assert !@supply_category_with_parent.class.name.constantize.was_enabled_at.include?(@supply_category_with_parent), "@supply_category_with_parent should not be included in was_enabled_at because it's not enabled"
-    assert @supply_category_with_parent.class.name.constantize.was_enabled_at(Date.yesterday).include?(@supply_category_with_parent), "@supply_category_with_parent should be included in was_enabled_at(Date.yesterday) because it was enabled"
+    assert !@supply_category_with_parent.was_enabled_at, "@supply_category_with_parent should NOT be enabled today because it has been disabled"
+    assert @supply_category_with_parent.was_enabled_at(Date.yesterday), "@supply_category_with_parent should be enabled yesterday"
   end
   
   def test_disable_root_child_when_supplies_in
-    self.send("create_"+@supply.class.name.tableize)
-    @supply_category_root_child = @supply.class.last.send(@supply_category.class.name.underscore)
+    create_supplier_supplies
+    @supply_category_root_child = @supply.class.last.supply_category
     
     assert !@supply_category_root_child.can_be_disabled?, "it should NOT be able to be disabled because it has supplies"
     assert !@supply_category_root_child.disable, "it should fail at disable because it cannot be disabled"
     
-    for supply in @supply_category_root_child.send(@supply.class.name.tableize)
+    for supply in @supply_category_root_child.supplies
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,true,5)
+      sleep(1)
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,false,5)
       flunk "supply should disable with success to perform this test" unless supply.disable
     end
     
@@ -102,12 +107,12 @@ module SupplyCategoryTest
   
   def test_destroy_root_child_when_supplies_in
     self.send("create_"+@supply.class.name.tableize)
-    @supply_category_root_child = @supply.class.last.send(@supply_category.class.name.underscore)
+    @supply_category_root_child = @supply.class.last.supply_category
     
     assert !@supply_category_root_child.can_be_destroyed?, "it should NOT be able to be destroyed because it has supplies"
     assert !@supply_category_root_child.destroy, "it should fail at disable because it cannot be destroyed"
     
-    for supply in @supply_category_root_child.send(@supply.class.name.tableize)
+    for supply in @supply_category_root_child.supplies
       flunk "supply should destroy with success to perform this test" unless supply.destroy
     end
     @supply_category_root_child.reload
@@ -157,12 +162,15 @@ module SupplyCategoryTest
   end  
   
   def test_has_children_disable
-    self.send("create_"+@supply.class.name.tableize)
-    @supply_category_root_child = @supply.class.last.send(@supply_category.class.name.underscore)
+    create_supplier_supplies
+    @supply_category_root_child = @supply.class.last.supply_category
     
     assert !@supply_category_root_child.has_children_disabled?, "all its children must be enabled"
     
-    for supply in @supply_category_root_child.send(@supply.class.name.tableize)
+    for supply in @supply_category_root_child.supplies
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,true,5)
+      sleep(1)
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,false,5)
       flunk "supply should destroy with success to perform this test" unless supply.disable
     end
     @supply_category_root_child.reload
@@ -170,12 +178,15 @@ module SupplyCategoryTest
   end
   
   def test_has_children_enable
-    self.send("create_"+@supply.class.name.tableize)
-    @supply_category_root_child = @supply.class.last.send(@supply_category.class.name.underscore)
+    create_supplier_supplies
+    @supply_category_root_child = @supply.class.last.supply_category
     
     assert @supply_category_root_child.has_children_enabled?, "all its children must be enabled"
     
-    for supply in @supply_category_root_child.send(@supply.class.name.tableize)
+    for supply in @supply_category_root_child.supplies
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,true,5)
+      sleep(1)
+      flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(supply,supply.suppliers.first,false,5)
       flunk "supply should destroy with success to perform this test" unless supply.disable
     end
     @supply_category_root_child.reload
@@ -183,12 +194,12 @@ module SupplyCategoryTest
   end
   
   def test_has_many_supply_categories
-    assert_equal @supply_category.send(@supply.class.name.underscore+"_categories"), [@supply_category_with_parent],
+    assert_equal @supply_category.children, [@supply_category_with_parent],
       "@supply_category should have a child supply category"
   end
 
   def test_belongs_to_supply_category
-    assert_equal @supply_category_with_parent.send(@supply.class.name.underscore+"_category"), @supply_category, "@supply_category_with_parent should have a parent"
+    assert_equal @supply_category_with_parent.parent, @supply_category, "@supply_category_with_parent should have a parent"
   end  
   
   def test_stock_value
@@ -196,15 +207,15 @@ module SupplyCategoryTest
     assert_equal 0.0, @supply_category.stock_value, "these two should be equal as this category does not own any stock"
     
     total = 0.0
-    for category in self.send(@supply.class.name.underscore+"_categories",:child).send(@supply.class.name.underscore+"_category").children
+    for category in supply_categories(("child_" + @supply.class.name.underscore).to_sym).self_and_siblings
       total += category.stock_value
     end    
-    assert_equal total, self.send(@supply.class.name.underscore+"_categories",:child).send(@supply.class.name.underscore+"_category").stock_value, "its stock value should be equal to the total of its categories stock value"
+    assert_equal total, supply_categories(("child_" + @supply.class.name.underscore).to_sym).parent.stock_value, "its stock value should be equal to the total of its categories stock value"
     
     total = 0.0
-    for supply in self.send(@supply.class.name.underscore+"_categories",:child).send(@supply.class.name.tableize)
+    for supply in supply_categories(("child_" + @supply.class.name.underscore).to_sym).supplies
       total += supply.stock_value
     end    
-    assert_equal total, self.send(@supply.class.name.underscore+"_categories",:child).stock_value, "its stock value should be equal to the total of its supplies stock value"
+    assert_equal total, supply_categories(("child_" + @supply.class.name.underscore).to_sym).stock_value, "its stock value should be equal to the total of its supplies stock value"
   end
 end

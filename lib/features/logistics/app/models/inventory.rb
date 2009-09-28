@@ -48,8 +48,8 @@ class Inventory < ActiveRecord::Base
             changes += 1
           end
         end
+        
       end
     changes
   end  
 end
-
