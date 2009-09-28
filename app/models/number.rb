@@ -1,23 +1,21 @@
 class Number < ActiveRecord::Base
-
+  
   belongs_to :indicative
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true
-
-  # Validations
+  
   validates_presence_of :has_number_type, :indicative_id, :number_type_id
   validates_presence_of :indicative,  :if => :indicative_id
   validates_presence_of :number_type, :if => :number_type_id
   
   validates_length_of :number, :is => 9
   
-  attr_accessor :should_destroy 
+  attr_accessor :should_destroy
   
   named_scope :visibles, :conditions => ['visible=?',true]
   
-  VISIBLE_STATES = { "Privé" => false, "Public" => true } 
+  VISIBLE_STATES = { "Privé" => false, "Public" => true }
   
-  # Search Plugin
   has_search_index  :only_attributes    => [:number],
                     :only_relationships => [:number_type, :indicative]
   
@@ -31,8 +29,7 @@ class Number < ActiveRecord::Base
   end
   
   def should_destroy?
-    should_destroy.to_i == 1  
+    should_destroy.to_i == 1
   end
-
+  
 end
- 

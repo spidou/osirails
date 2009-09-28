@@ -12,11 +12,6 @@ class CustomersController < ApplicationController
   # GET /customers/1.xml
   def show
     @customer = Customer.find(params[:id])
-    
-    # needed collections
-    @contacts = @customer.contacts
-    #@establishments = @customer.activated_establishments
-    #@documents = @customer.documents
   end
   
   # GET /customers/new
