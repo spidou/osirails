@@ -4,6 +4,6 @@ class AddLeaveRequestIdToLeaves < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :leaves, :leave_request_id, :integer
+    remove_column :leaves, :leave_request_id
   end
 end

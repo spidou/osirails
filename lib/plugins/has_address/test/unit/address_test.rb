@@ -1,10 +1,10 @@
 require 'test/test_helper'
 
 class AddressTest < ActiveSupport::TestCase
-  def test_presence_of_address1
+  def test_presence_of_street_name
     assert_no_difference 'Address.count' do
       address = Address.create
-      assert_not_nil address.errors.on(:address1), "An Address should have an address1"
+      assert_not_nil address.errors.on(:street_name), "An Address should have a street_name"
     end
   end
 

@@ -16,10 +16,10 @@
     <%= display_documents_list(@customer) %>
     <%= display_document_add_button(@customer) %>
     
-  <p>
-    <%= form.reset 'Annuler' %>
-    <%= form.submit submit_button_name %>
-  </p>
+    <p class="form_buttons">
+      <%= form.reset %>
+      <%= form.submit submit_button_name %>
+    </p>
   <% end %>  
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>

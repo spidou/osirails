@@ -10,7 +10,6 @@ class SuppliersController < ApplicationController
   # GET /suppliers/:id
   def show
     @supplier = Supplier.find(params[:id])
-    @contacts = @supplier.contacts
   end
 
   # GET /suppliers/new
