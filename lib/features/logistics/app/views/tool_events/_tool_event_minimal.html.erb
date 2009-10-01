@@ -3,7 +3,11 @@
     <%= links_for_tool_event(tool, tool_event_minimal)%>
   </div>
   <div class="informations">
-    <h3><%= get_event_type_text(tool_event_minimal.event_type)%></h3>
+    <% message = "Cette &eacute;v&egrave;nement poss&egrave;de au moins une alarme"%>
+    <h3>
+      <%= image_tag("logistics/tools/alarm_bell.png", :alt => message,:title => message, :id => 'bell_image') unless tool_event_minimal.event.alarms.empty?%>
+      <%= get_event_type_text(tool_event_minimal.event_type)%>
+    </h3>
     <p>
       <label>D&eacute;signation :</label>
       <%=strong tool_event_minimal.name %>
@@ -14,7 +18,7 @@
       <%= get_status_image(tool_event_minimal.status)%>
     </p>
     <p>
-      <label><%= tool_event_minimal.event_type_name == 'event' ? 'Le' : 'Du' %> :</label>
+      <label><%= tool_event_minimal.event_type_name == 'incident' ? 'Le' : 'Du' %> :</label>
       <%=strong tool_event_minimal.start_date.strftime("%A %d %B %Y")%>
     </p>
     <%="<p><label>Au :</label> #{strong get_end_date(tool_event_minimal)}</p>" unless tool_event_minimal.event_type_name == 'incident'%>

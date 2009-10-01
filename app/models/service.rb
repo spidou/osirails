@@ -6,7 +6,6 @@ class Service < ActiveRecord::Base
   has_many :employees
   has_many :schedules
   has_many :jobs
-  has_many :tools
   
   named_scope :mains,:conditions => {:service_parent_id => nil}
   

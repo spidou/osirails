@@ -43,6 +43,12 @@ ul#tool_types li a img {
   margin: 10px;
 }
 
+.event #bell_image {
+  position: absolute;
+  left: 5px;
+  top: 2px
+}
+
 .type_intervention h3{
   background-color: #E99727;
 }

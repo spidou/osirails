@@ -47,7 +47,7 @@
     
     <p>
       <%= f.label :job_id %>
-      <%= is_form_view? ? f.collection_select(:job_id, Job.all, :id, :name, {:prompt => 'Aucun'}) :  link_to_job(tool.job)%>
+      <%= is_form_view? ? f.collection_select(:job_id, Job.all(:order => :name), :id, :name, {:prompt => 'Aucun'}) :  link_to_job(tool.job)%>
     </p>
     
     <p>

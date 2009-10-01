@@ -101,9 +101,12 @@ class ToolEventsController < ApplicationController
         params[:tool_event][:alarm_attributes] = []
         params[:alarm].each do |alarm|
           raise 'wrong argument #{alarm[:duration_unit]}' unless Alarm::DELAY_UNIT.include?(alarm[:duration_unit])
-          
-          alarm_param = alarm.reject {|key,v| key == 'duration_unit'}        
-          alarm_param[:do_alarm_before] = alarm[:do_alarm_before].to_i.send(alarm[:duration_unit]).to_i
+          alarm_param = alarm.reject {|key,v| key == 'duration_unit'}
+          if alarm[:do_alarm_before].match(/^\d*(.\d)?$/)                                                 # filter floats or integers
+            alarm_param[:do_alarm_before] = alarm[:do_alarm_before].to_f.send(alarm[:duration_unit]).to_i
+          else
+            alarm_param[:do_alarm_before] = alarm[:do_alarm_before]                                       # permit to manage the wrong value into the validations
+          end      
           params[:tool_event][:alarm_attributes] << alarm_param
         end
         @prepared_params = params

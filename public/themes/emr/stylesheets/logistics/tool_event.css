@@ -1,5 +1,5 @@
 #alarms {
-  text-align:left;
+  text-align: left;
 }
 
 .alarm {
@@ -7,7 +7,7 @@
   border: 1px solid gray;
   background-color: #eaeaea;
   display: inline-block;
-  width: 350px;
   padding: 1px;
   margin: 10px;
+  vertical-align: top;
 }

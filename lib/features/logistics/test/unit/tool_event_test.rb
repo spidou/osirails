@@ -230,4 +230,47 @@ class ToolEventTest < ActiveSupport::TestCase
 #    assert_equal @tool_event.end_date.to_datetime, @tool_event.event.end_at, "tool_event's end_date should be equal to event's end_at"
     assert_equal @tool_event.title, @tool_event.event.title, "tool_event's title should be equal to event's title"
   end
+  
+  def test_callbacks_prepare_event_and_save_event
+    params = {:alarm_attributes => [{:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }]}
+    
+    # prepare_event
+    tool_event = ToolEvent.new(params)
+    tool_event.valid?
+    
+    assert_not_nil tool_event.event, "tool_event should have an event because of the callback 'prepare_event'"
+    assert_equal 1, tool_event.event.alarms.size, "tool_event should have an alarm because of the callback 'prepare_event'"
+    
+    {:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }.each do |attribute, value|
+      assert_equal value, tool_event.event.alarms.first.send(attribute), "#{attribute}'s value should be equal to '#{value}'"
+    end
+    
+    # save_event
+    @tool_event.update_attributes(@tool_event.attributes.merge(params))
+    
+    assert_not_nil @tool_event.event, "saved @tool_event should have an event because of the callback 'save_event'"
+    assert_equal 1, @tool_event.event.alarms.size, "saved @tool_event should have an alarm because of the callback 'save_event'"
+    
+    {:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }.each do |attribute, value|
+      assert_equal value, @tool_event.event.alarms.first.send(attribute), "#{attribute}'s value should be equal to '#{value}'"
+    end
+  end
+
+  def test_callback_modify_end_date
+    tool_event            = ToolEvent.new(@good_tool_event.attributes)
+    
+    # Without predefined end_date
+    tool_event.end_date   = nil
+    tool_event.event_type = ToolEvent::INCIDENT
+    tool_event.valid?
+    
+    assert_equal tool_event.start_date, tool_event.end_date, "end_date should be equal to start_date"
+    
+    # With predefined end_date
+    tool_event.end_date   = tool_event.start_date + 1 
+    tool_event.event_type = ToolEvent::INCIDENT
+    tool_event.valid?
+    
+    assert_equal tool_event.start_date, tool_event.end_date, "end_date should be equal to start_date"
+  end
 end

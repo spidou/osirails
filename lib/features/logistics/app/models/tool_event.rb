@@ -44,7 +44,7 @@ class ToolEvent < ActiveRecord::Base
   
   # callbacks
   after_update :save_event
-  before_validation :prepare_event
+  before_validation :prepare_event, :modify_end_date
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -99,6 +99,10 @@ class ToolEvent < ActiveRecord::Base
       errors.add(:tool_id, "L'ajout ou la modification d'un évènement pour cet équipement est impossible car celui-ci a été mis au rebut") unless tool.can_be_edited?
     end
     
+    def modify_end_date
+      self.end_date = self.start_date if self.event_type == INCIDENT
+    end
+    
     def save_event
       event.save(false)
     end
@@ -111,7 +115,7 @@ class ToolEvent < ActiveRecord::Base
       event_attributes[:calendar_id]  = calendar.id
       event_attributes[:full_day]     = true
       event_attributes[:start_at]     = start_date.to_datetime unless start_date.nil?
-      event_attributes[:end_at]       = start_date.to_datetime unless start_date.nil? # (end_date || start_date).to_datetime unless [start_date, end_ate].include?(nil)
+      event_attributes[:end_at]       = start_date.to_datetime unless start_date.nil? # (end_date || start_date).to_datetime unless start_date.nil?
       event_attributes[:title]        = title
       event_attributes[:description]  = comment
       event_attributes[:organizer_id] = internal_actor_id

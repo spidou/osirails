@@ -28,10 +28,10 @@ module ToolEventsHelper
   end
   
   def get_delay_value(alarm)
-    alarm.new_record? ? '' : alarm.humanize_delay[:value]
+    alarm.humanize_delay[:value]
   end
   
   def get_delay_unit(alarm)
-    alarm.new_record? ? '' : alarm.humanize_delay[:unit]
+    alarm.humanize_delay[:unit]
   end
 end
