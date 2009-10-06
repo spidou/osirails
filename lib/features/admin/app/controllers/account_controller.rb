@@ -24,21 +24,21 @@ class AccountController < ApplicationController
           session[:initial_uri] ||= user_home
           session[:user_expired] = @user.expired?
           redirect_to session[:initial_uri]
-          flash[:notice] = "Connexion r&eacute;ussie"
+          flash[:notice] = "Connexion réussie"
         else
-          flash[:error] = "Votre compte est d&eacute;sactiv&eacute;"
+          flash[:error] = "Votre compte est désactivé"
         end
         session[:tentative] = 0
         return
       end
     end
     redirect_to login_path
-    flash[:error] = "Le nom d'utilisateur et le mot de passe ne correspondent pas. Veuillez r&eacute;essayer."
+    flash[:error] = "Le nom d'utilisateur et le mot de passe ne correspondent pas. Veuillez réessayer."
     
     # Anti-flood system
     session[:tentative] ||= 0
     if session[:tentative] >= TENTATIVE_LOGIN - 1
-      flash[:error] = "Trois tentatives de connexion detect&eacute;es, veuillez patienter quelques instants avant de r&eacute;essayer ..."
+      flash[:error] = "Trois tentatives de connexion detectées, veuillez patienter quelques instants avant de réessayer ..."
       if (session[:tentative_time] + 10.seconds) < Time.now
         session[:tentative] = 0 
       end
@@ -80,14 +80,21 @@ class AccountController < ApplicationController
       flash[:error] = 'Votre session a expir&eacute;e'
       return
     end
-    flash.now[:error] = "Votre mot de passe est expir&eacute;. Merci d'en choisir un autre."
+    flash.now[:error] = "Votre mot de passe est expiré. Merci d'en choisir un autre."
     return unless request.post?
     user = current_user
     if user.update_attributes(params[:user])
       redirect_to session[:initial_uri]
-      flash[:notice] = "Votre mot de passe a &eacute;t&eacute; mis &agrave; jour avec succ&egrave;s"
+      flash[:notice] = "Votre mot de passe a été mis à jour avec succés"
     end
-    session[:user_expired] = false if user.save
+    if user.save
+      session[:user_expired] = false
+    else
+      different_password = "Vous devez choisir un nouveau mot de passe, différent de votre ancien mot de passe."
+      match_confirmation = "Vous devez entrer deux fois votre mot de passe pour le valider."
+      message = (params[:user][:password] == params[:user][:password_confirmation])? different_password : match_confirmation
+      flash[:error] = message
+    end
   end
   
   private

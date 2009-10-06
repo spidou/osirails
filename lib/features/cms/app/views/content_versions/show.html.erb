@@ -1,7 +1,7 @@
 <% for content_version in @content_versions.reverse %>
 
   <% add_contextual_menu_item :useful_links do %>
-    <%= link_to("Document r&eacute;f&eacute;rent", :controller => :contents, :action => :show, :id => @content.id) %>
+    <%= link_to("Document référent", :controller => :contents, :action => :show, :id => @content.id) %>
   <% end %>
 
   <h1><%= content_version.title %> (<%= content_version.versioned_at.strftime('0%w/%m/%Y %H:%M') %>)</h1>

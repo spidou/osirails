@@ -1,6 +1,6 @@
 // Method to get the attribute html link between <li></li>
 //
-function get_atribute_link(parent_div_id, pair)
+function get_attribute_link(parent_div_id, pair)
 {
   return "<li><a href='#"+ parent_div_id +"_attribute_chooser' onclick=\"save_path(this, '"+ parent_div_id +"','"+ pair.value +"');\">"+ pair.key +"</a></li>";
 }
@@ -19,7 +19,7 @@ function get_models_hierarchy(relationships, parent_div_id, current_relationship
     result += "<li class='sub_menu' onmouseover='show_menu(this);' onmouseout='hide_menu(this);'><ul class='hidden_menu'>"; 
     
     attributes.each(function(pair){
-      result += get_atribute_link(parent_div_id, pair);
+      result += get_attribute_link(parent_div_id, pair);
     })
     
     if(relationships.keys().indexOf(relationship)!=-1){
@@ -64,7 +64,7 @@ function get_attributes_select(add)
   
   //direct attributes
   model_attributes.each(function(pair){
-    criterion += get_atribute_link(parent_div.id, pair);
+    criterion += get_attribute_link(parent_div.id, pair);
   })
   
   //attributes comming from sub models

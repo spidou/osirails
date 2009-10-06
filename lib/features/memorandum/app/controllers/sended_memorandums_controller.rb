@@ -47,7 +47,7 @@ class SendedMemorandumsController < ApplicationController
         service = Service.find_by_service_parent_id(nil)
         MemorandumsService.create(:service_id => service.id, :memorandum_id => @sended_memorandum.id, :recursive => true)
       end
-      flash[:notice] = "La note de service est bien cr&eacute;&eacute;e"
+      flash[:notice] = "La note de service est bien créée"
       redirect_to :action => 'index'
     else
       @sended_memorandum.errors.add("Destinataire") unless params.has_key?(:memorandums_services)
@@ -59,7 +59,7 @@ class SendedMemorandumsController < ApplicationController
   def edit
     @sended_memorandum = Memorandum.find(params[:id])
     if @sended_memorandum.published_at?
-      flash[:error] = "Vous ne pouvez pas modifier une note de service d&eacute;j&agrave; publi&eacute;"
+      flash[:error] = "Vous ne pouvez pas modifier une note de service déjà publiée"
       redirect_to :action => 'index'
     end
   end
@@ -113,10 +113,10 @@ class SendedMemorandumsController < ApplicationController
         service = Service.find_by_service_parent_id(nil)
         MemorandumsService.create(:service_id => service.id, :memorandum_id => params[:id], :recursive => true)
       end
-      flash[:notice] = "La note de service est mise &agrave; jour"
+      flash[:notice] = "La note de service est mise à jour"
       redirect_to :action => 'index'
     else
-      flash[:error] = "Erreur de mise &agrave; jour. V&eacute;rifier que la note de service est associ&eacute;e &agrave; un service."
+      flash[:error] = "Erreur de mise à jour. Vérifier que la note de service est associée à un service."
       render :action => 'edit'
     end
   end

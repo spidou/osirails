@@ -15,7 +15,7 @@ helper :commodities_manager
   def create
     @commodity = Commodity.new(params[:commodity])
     if @commodity.save
-      flash[:notice] = "La mati&egrave;re premi&egrave;re a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "La matière première a été créée"
       redirect_to :controller => 'commodities_manager', :action => 'index'
     else
       @categories = CommodityCategory.root_child
@@ -46,7 +46,7 @@ helper :commodities_manager
     @commodity = Commodity.find(params[:id])
     if @commodity.can_be_destroyed?
       if @commodity.destroy
-        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+        flash[:notice] = 'La matière première a été supprimée'
       else
         flash[:error] = 'Erreur lors de la suppression'
       end
@@ -54,7 +54,7 @@ helper :commodities_manager
       @commodity.enable = false
       @commodity.counter_update
       if @commodity.save
-        flash[:notice] = 'La mati&egrave;re premi&egrave;re a &eacute;t&eacute; supprim&eacute;e'
+        flash[:notice] = 'La matière première a été supprimée'
       else
         flash[:error] = 'Erreur lors de la suppression'
       end

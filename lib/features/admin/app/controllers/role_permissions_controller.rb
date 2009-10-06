@@ -1,5 +1,5 @@
 class RolePermissionsController < ApplicationController
-  
+  helper :menus
   def index
     @roles = Role.find(:all)
   end

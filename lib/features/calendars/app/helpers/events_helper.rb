@@ -102,7 +102,7 @@ module EventsHelper
     when "DISPLAY"
       action = "afficher un message"
     when "EMAIL"
-      action = "envoyer un courrier &eacutelectronique à #{alarm.email_to}"      
+      action = "envoyer un courrier électronique à #{alarm.email_to}"      
     end
     action + " #{alarm.do_alarm_before} minutes avant"
   end

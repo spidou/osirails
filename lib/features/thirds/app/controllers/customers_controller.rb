@@ -39,7 +39,7 @@ class CustomersController < ApplicationController
     
     @customer = Customer.new(params[:customer])
     if @customer.save
-      flash[:notice] = "Client ajout&eacute; avec succ&egrave;s"
+      flash[:notice] = "Client ajouté avec succès"
       @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to(customer_path(@customer))
     else
       render :action => 'new'

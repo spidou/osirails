@@ -4,5 +4,9 @@
 	<%= suppliers_link %>
 <% end %>
 
+<% content_for :header do %>
+     <%= javascript_include_tag 'thirds/thirds' %>
+<% end %>
+
 <h1>Nouveau fournisseur</h1>
 <%= render :partial => @supplier, :locals => { :submit_button_name => "Ajouter"} %>

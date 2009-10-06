@@ -349,6 +349,7 @@ a.button_banner:hover span {
 /*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
 					OF BANNERS							*/
 #block_body {
+  clear:both;
 	width:auto;
 	height:auto;
 	margin: -16px 0 5px 0;

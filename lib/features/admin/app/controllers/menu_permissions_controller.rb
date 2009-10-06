@@ -1,8 +1,8 @@
 class MenuPermissionsController < ApplicationController
+  helper :menus
   
   # GET /menu_permissions
   def index
-    @menus = Menu.get_structured_menus
   end
   
   # GET /menu_permissions/:id/edit
@@ -24,7 +24,7 @@ class MenuPermissionsController < ApplicationController
     if error
       flash[:error] = "Erreur lors de la mise à jour des permissions"
     else
-      flash[:notice] = "Les permissions ont été modifié avec succés"
+      flash[:notice] = "Les permissions ont été modifiées avec succés"
     end
     redirect_to(edit_menu_permission_path)
   end

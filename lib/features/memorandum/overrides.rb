@@ -9,20 +9,13 @@ end
 module ApplicationHelper
   # This method permit to make diplay memorandums under banner
   def display_memorandums
-    under_banner = []
-    unless current_user.employee.nil?
-      size = last_memorandums.size
+    unless current_user.employee.nil? 
+      size              = last_memorandums.size
       memorandum_number = ( size == 0 ? "0" : "1" )
-      under_banner << "<div id='text_under_banner' style='overflow: hidden;' onclick='show_memorandum(this, 0)'>"
-      under_banner << last_memorandums
-      under_banner << "</div>"
-      under_banner <<	"<div id='block_button_under_banner'>"
-      under_banner << "<input type='button' id='previous' class='previous_memorandum_#{size}' alt='bouton précédent' title='Information précédente' onclick='change_memorandum(this, #{size}, event)'  />"
-      under_banner << "<span class='number'> #{memorandum_number} </span>|<span class='number'> #{size} </span>"
-      under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='change_memorandum(this, #{size}, event)'  />"
-      under_banner << "</div>"
-    else
-      under_banner << "<span id='not_employee_reference'>Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</span>"
+      render :partial => 'share/memorandums', :locals => {:last_memorandums  => last_memorandums,
+                                                          :size              => size,
+                                                          :memorandum_number => memorandum_number,
+                                                          :current_user      => current_user }
     end
   end
    

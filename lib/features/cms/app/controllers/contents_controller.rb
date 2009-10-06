@@ -64,10 +64,10 @@ class ContentsController < ApplicationController
     if @content.update_attributes(content_attributes)
       ContentVersion.create_from_content(@content)
       
-      flash[:notice] = "Contenu modifi&eacute; avec succ&egrave;s"
+      flash[:notice] = "Contenu modifié avec succès"
       redirect_to contents_path
     else
-      flash[:error] = "Un probl&egrave;me est survenu lors de la modification du contenu"
+      flash[:error] = "Un problème est survenu lors de la modification du contenu"
       render :action => "edit"
     end
 
