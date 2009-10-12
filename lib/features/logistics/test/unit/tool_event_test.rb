@@ -178,6 +178,10 @@ class ToolEventTest < ActiveSupport::TestCase
     assert_equal 2, @tool_event.calendar_duration, "calendar_duration should be equal to 2"
   end
   
+  def test_named_scope_ordered
+    #TODO test_named_scope_ordered
+  end
+  
   def test_named_scope_effectives
     base = ToolEvent.count
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
@@ -190,6 +194,18 @@ class ToolEventTest < ActiveSupport::TestCase
     flunk "tool should be valid" unless @tool_event.save
     assert_equal base + 2, ToolEvent.count, "the number of events should be equal to #{base + 2}"
     assert_equal base + 1, ToolEvent.effectives.count, "the number of effectives events should be equal to #{base + 1}, because the last event added is future"
+  end
+  
+  def test_named_scope_scheduled
+    #TODO test_named_scope_scheduled
+  end
+  
+  def test_named_scope_currents
+    #TODO test_named_scope_currents
+  end
+  
+  def test_named_scope_last_three
+    #TODO test_named_scope_last_three
   end
   
   def test_validates_tool_is_not_scrapped
@@ -231,32 +247,48 @@ class ToolEventTest < ActiveSupport::TestCase
     assert_equal @tool_event.title, @tool_event.event.title, "tool_event's title should be equal to event's title"
   end
   
-  def test_callbacks_prepare_event_and_save_event
-    params = {:alarm_attributes => [{:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }]}
+  def test_prepare_event_callback
+    tool_event = ToolEvent.new(@good_tool_event.attributes)
+    assert_nil tool_event.event, "event should NOT exist yet"
     
-    # prepare_event
-    tool_event = ToolEvent.new(params)
     tool_event.valid?
+    assert_not_nil tool_event.event, "event should exist after validation"
+    assert tool_event.event.new_record?, "event should NOT be saved in database"
     
-    assert_not_nil tool_event.event, "tool_event should have an event because of the callback 'prepare_event'"
-    assert_equal 1, tool_event.event.alarms.size, "tool_event should have an alarm because of the callback 'prepare_event'"
+    assert_event_values_matches_with_tool_event(tool_event)
+  end
+  
+  def test_prepare_event_callback_with_alarm
+    tool_event = ToolEvent.new(@good_tool_event.attributes.merge({:alarm_attributes => [{:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }]}))
+    # alarm_attributes= call prepare_event
+    assert_not_nil tool_event.event, "event should exist because 'prepare_event' is called by alarm_attributes="
     
-    {:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }.each do |attribute, value|
-      assert_equal value, tool_event.event.alarms.first.send(attribute), "#{attribute}'s value should be equal to '#{value}'"
-    end
+    tool_event.valid?
+    assert_not_nil tool_event.event, "event should exist after validation"
+    assert tool_event.event.new_record?, "event should NOT be saved in database"
     
-    # save_event
-    @tool_event.update_attributes(@tool_event.attributes.merge(params))
+    assert_equal 1, tool_event.event.alarms.size, "event should have 1 alarm"
+    assert tool_event.event.alarms.first.new_record?, "alarm should NOT be saved in database"
+  end
+  
+  def test_save_event_callback
+    tool_event = prepare_tool_event
     
-    assert_not_nil @tool_event.event, "saved @tool_event should have an event because of the callback 'save_event'"
-    assert_equal 1, @tool_event.event.alarms.size, "saved @tool_event should have an alarm because of the callback 'save_event'"
+    assert tool_event.save, "tool_event should be saved > #{tool_event.errors.inspect}"
+    assert !tool_event.event.new_record?, "event should be saved"
     
-    {:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }.each do |attribute, value|
-      assert_equal value, @tool_event.event.alarms.first.send(attribute), "#{attribute}'s value should be equal to '#{value}'"
-    end
+    assert_event_values_matches_with_tool_event(tool_event)
+  end
+  
+  def test_save_event_callback_with_alarm
+    tool_event = prepare_tool_event(:alarm_attributes => [{:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }])
+    flunk "event should have 1 alarm to perform the following" unless tool_event.event.alarms.size == 1
+    
+    assert tool_event.save, "tool_event should be saved > #{tool_event.errors.inspect}"
+    assert !tool_event.event.alarms.first.new_record?, "alarm should be saved"
   end
 
-  def test_callback_modify_end_date
+  def test_modify_end_date_callback_for_incident
     tool_event            = ToolEvent.new(@good_tool_event.attributes)
     
     # Without predefined end_date
@@ -266,11 +298,34 @@ class ToolEventTest < ActiveSupport::TestCase
     
     assert_equal tool_event.start_date, tool_event.end_date, "end_date should be equal to start_date"
     
-    # With predefined end_date
+    # With wrong predefined end_date
     tool_event.end_date   = tool_event.start_date + 1 
     tool_event.event_type = ToolEvent::INCIDENT
     tool_event.valid?
     
     assert_equal tool_event.start_date, tool_event.end_date, "end_date should be equal to start_date"
   end
+  
+  private
+    def prepare_tool_event(attributes = {})
+      tool_event = ToolEvent.new(@good_tool_event.attributes.merge(attributes))
+      tool_event.valid?
+      flunk "tool_event should have 1 unsaved event to perform the following" unless tool_event.event and tool_event.event.new_record?
+      return tool_event
+    end
+    
+    def assert_event_values_matches_with_tool_event(tool_event)
+      calendar = Calendar.find_or_create_by_name("equipments_calendar")
+      values = { :calendar_id   => calendar.id,
+                 :full_day      => true,
+                 :start_at      => tool_event.start_date.to_datetime,
+                 :end_at        => tool_event.start_date.to_datetime,
+                 :title         => tool_event.title,
+                 :description   => tool_event.comment,
+                 :organizer_id  => tool_event.internal_actor_id }
+      
+      values.each do |attribute, value|
+        assert_equal value, tool_event.event.send(attribute), "event attribute '#{attribute}' should be equal to '#{value}'"
+      end
+    end
 end

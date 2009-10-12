@@ -2,59 +2,53 @@
   <%= javascript_include_tag 'logistics/tool_event' %> 
 <% end %>
 
-<div class='alarm'>
-  <% if is_form_view? %>
-    <% fields_for tool_alarm, :index => nil do |form| %>
-      <%= form.error_messages %>
+<div class="alarm resource">
+  <% fields_for tool_alarm, :index => nil do |form| %>
+    <%= form.error_messages %>
+    <% if is_form_view? %>
       <p>
-        D&eacute;finir :
-        <select name='delay_type'>
+        <%= form.label :delay_type, "Définir :" %>
+        <select name='delay_type' id='delay_type'>
           <option value='0' disabled='disabled'>Une date</option>
           <option value='1'>Un d&eacute;lais</option>
         </select>
       </p>
-
-      <p class='duration'>
-        Alerter <%= form.text_field :do_alarm_before, {:size => 5 , :value => get_delay_value(tool_alarm)}%>      
-       <select name='alarm[][duration_unit]'><%= options_for_select(Alarm::DELAY_UNIT, get_delay_unit(tool_alarm)) %></select>       
-        &nbsp;avant
-      </p>
-      
-      <p class='date' style='display:none;'>
-        Alerter le <%# form.date_select 'do_alarm_before', {:order => [:day, :month, :year]}
-        %><!-- Bug entre le fields_for et le date_select voir ticket http://dev.rubyonrails.org/ticket/10143-->
-      </p>
-      
-      <p>
-        Par email &agrave; <%= form.text_field :email_to, {:size => 20}%>
-      </p>
-      
-      <p>
-        Commentaire<br/><%= form.text_area :description, {:rows => 5} %>
-      </p>
-      
-      <% if tool_alarm.new_record? %>
-			  <%= remove_alarm_link() if is_form_view? %>
-		  <% else %>
-			  <%= remove_old_alarm_link() if is_form_view? %>
-			  <%= form.hidden_field :id, :index => nil %>
-			  <%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
-		  <% end %>
-		
     <% end %>
     
-  <% else %>
-    <p>
-      Alerter <%= get_delay(tool_alarm)%> avant
+    <p class='duration'>
+      <%= form.label :do_alarm_before %>
+      <% if is_form_view? %>
+        <%= form.text_field :do_alarm_before, :size => 5 , :value => get_delay_value(tool_alarm) %>      
+        <select name='alarm[][duration_unit]'><%= options_for_select(Alarm::DELAY_UNIT, get_delay_unit(tool_alarm)) %></select>
+      <% else %>
+        <%= strong(get_delay(tool_alarm)) %>
+      <% end %>&nbsp;avant
     </p>
+    
+    <!-- Bug entre le fields_for et le date_select voir ticket http://dev.rubyonrails.org/ticket/10143
+    <p class='date' style='display:none;'>
+      Alerter le <%# form.date_select 'do_alarm_before', {:order => [:day, :month, :year]}
+      %>
+    </p> -->
+    
     <p>
-      Par email &agrave; <%=strong tool_alarm.email_to%>
+      <%= form.label :email_to %>
+      <%= form.form_or_view(form.text_field(:email_to, :size => 20), :email_to) %>
     </p>
+    
     <p>
-      Commentaire: <%=strong tool_alarm.description%>
+      <%= form.label :description %>
+      <%= form.form_or_view(form.text_area_autoresize(:description, :index => nil, :rows => 2), :description) %>
     </p>
+    
+    <p style="display:none">
+      <%= form.hidden_field :id %>
+      <%= form.hidden_field :should_destroy, :class => 'should_destroy' %>
+	  </p>
+	  
+	  <p><%= remove_alarm_link(tool_alarm) %></p>
+	
   <% end %>
-
 </div>
 
 

@@ -15,10 +15,11 @@ class ToolEvent < ActiveRecord::Base
   
   TOOL_EVENTS_PER_PAGE = 15
   
-  named_scope :effectives, :conditions => ["start_date<=?", Date.today], :order => 'start_date DESC, id DESC'
-  named_scope :scheduled,  :conditions => ["start_date>?", Date.today], :order => 'start_date DESC, id DESC'
-  named_scope :currents,   :conditions => ['(start_date<=? and end_date>=? and event_type=?) or (start_date=?)', Date.today, Date.today, INTERVENTION, Date.today], :order => 'start_date DESC, id DESC'
-  named_scope :last_three, :limit => 3, :order => 'start_date DESC, id DESC'
+  named_scope :ordered,    :order => 'start_date DESC, end_date DESC'
+  named_scope :effectives, :conditions => ["start_date<=?", Date.today], :order => 'start_date DESC, end_date DESC'
+  named_scope :scheduled,  :conditions => ["start_date>?", Date.today], :order => 'start_date ASC, end_date ASC'
+  named_scope :currents,   :conditions => ['(start_date<=? and end_date>=? and event_type=?) or (start_date=?)', Date.today, Date.today, INTERVENTION, Date.today], :order => 'start_date DESC, end_date DESC'
+  named_scope :last_three, :limit => 3
   
   # relationships
   belongs_to :tool

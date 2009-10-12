@@ -36,7 +36,13 @@ class Alarm < ActiveRecord::Base
   validates_numericality_of :duration,    :allow_nil => true
   validates_format_of :email_to,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   
-  attr_accessor :should_destroy 
+  attr_accessor :should_destroy
+  
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:do_alarm_before] = "Alerter :"
+  @@form_labels[:email_to]        = "Par email à :"
+  @@form_labels[:description]     = "Commentaire :"
   
   # Requires
   require 'rubygems'
@@ -66,7 +72,7 @@ class Alarm < ActiveRecord::Base
   # #=> 2 minutes    -> 2 minutes
   # #=> 7 days       -> 1 week
   #
-  # return a hash like : {:unit => 'minute', value => 12} for 'do_alarm_before == 720' for example
+  # return a hash like : {:unit => 'minute', :value => 12} for 'do_alarm_before == 720' for example
   #
   def humanize_delay
     units  = Alarm::DELAY_UNIT

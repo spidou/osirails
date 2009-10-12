@@ -1,5 +1,5 @@
 class Tool < ActiveRecord::Base
-  has_many :tool_events, :order => "end_date DESC, start_date DESC, id DESC"
+  has_many :tool_events
   
   belongs_to :service
   belongs_to :job

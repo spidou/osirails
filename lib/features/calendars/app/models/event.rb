@@ -61,7 +61,7 @@ class Event < ActiveRecord::Base
   
   # Relationships
   belongs_to :calendar
-  has_many :alarms
+  has_many :alarms,         :order => "do_alarm_before ASC"
   has_many :participants
   has_many :exception_dates
 

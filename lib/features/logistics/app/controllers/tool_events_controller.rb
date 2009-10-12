@@ -6,7 +6,7 @@ class ToolEventsController < ApplicationController
   
   # GET /tools/:tool_id/tool_events
   def index
-    @paginate_tool_events   = @tool.tool_events.paginate(:page => params[:page], :per_page => ToolEvent::TOOL_EVENTS_PER_PAGE)
+    @paginate_tool_events   = @tool.tool_events.ordered.paginate(:page => params[:page], :per_page => ToolEvent::TOOL_EVENTS_PER_PAGE)
     @effectives_tool_events = @tool.tool_events.effectives
     @currents_tool_events   = @tool.tool_events.currents
   end

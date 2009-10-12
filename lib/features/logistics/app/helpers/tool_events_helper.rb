@@ -11,20 +11,21 @@ module ToolEventsHelper
   end 
   
   # method that permit to remove with javascript a new record of alarm
-  def remove_alarm_link()
-    link_to_function( "Supprimer", "$(this).up('.alarm').remove()")
-  end 
-  
-  # method that permit to remove with javascript an existing alarm
-  def remove_old_alarm_link()
-    link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
+  def remove_alarm_link(alarm)
+    if is_form_view?
+      if alarm.new_record?
+        link_to_function( "Supprimer", "$(this).up('.alarm').remove()")
+      else
+        link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
+      end
+    end
   end
   
   def get_delay(alarm)
     value = alarm.humanize_delay[:value]
     unit  = alarm.humanize_delay[:unit]
     unit  = unit.pluralize if value > 1
-    "#{strong(value)} #{unit}"
+    "#{value} #{unit}"
   end
   
   def get_delay_value(alarm)

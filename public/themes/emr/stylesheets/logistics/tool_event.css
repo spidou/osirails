@@ -11,3 +11,7 @@
   margin: 10px;
   vertical-align: top;
 }
+
+.alarm label {
+  width: 100px !important;
+}

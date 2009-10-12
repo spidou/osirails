@@ -53,6 +53,6 @@ function check_duration_unit()
 
 function mark_resource_for_destroy(id)
 {
-  $(id).next('.should_destroy').value = 1;
-  $(id).up('.alarm').hide();
+  $(id).up('.resource').down('.should_destroy').value = 1;
+  $(id).up('.resource').fade();
 }

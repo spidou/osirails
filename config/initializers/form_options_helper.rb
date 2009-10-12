@@ -121,7 +121,7 @@ module ActionView
       
       def autoresize_text_area(object_name, method, options = {})
         options = { "style" => "overflow-y: hidden", "class" => "autoresize_text_area", "rows" => options["rows"] }.freeze.merge(options.stringify_keys)
-        InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
+        InstanceTag.new(object_name, method, self, nil, options.delete('object')).to_text_area_tag(options)
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
@@ -241,7 +241,7 @@ module ActionView
       end
       
       def autoresize_text_area(method, options = {})
-        @template.autoresize_text_area(@object_name, method, options)
+        @template.autoresize_text_area(@object_name, method, options.merge(:object => @object))
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
