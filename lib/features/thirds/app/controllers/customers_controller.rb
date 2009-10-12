@@ -16,6 +16,7 @@ class CustomersController < ApplicationController
   # GET /customers/new
   def new
     @customer = Customer.new
+    @customer.build_establishment(:establishment_type => EstablishmentType.first).build_address
   end
 
   # POST /customers
@@ -23,6 +24,7 @@ class CustomersController < ApplicationController
     @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
     
     @customer = Customer.new(params[:customer])
+    @customer.establishments.select{|e| e.name.blank? }.map{|e| e.name = @customer.name } unless @customer.name.blank?
     if @customer.save
       flash[:notice] = "Client ajouté avec succès"
       @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to(customer_path(@customer))

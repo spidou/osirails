@@ -31,8 +31,3 @@ function initialize_toggle_order_header() {
     link.innerHTML = new_text;
   });
 }
-
-function initialize_select_contact() {
-  select = $('order_contact_ids')
-  alert(select)
-}

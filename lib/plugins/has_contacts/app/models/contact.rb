@@ -38,7 +38,7 @@ class Contact < ActiveRecord::Base
                     :url => "/contacts/:id/avatar",
                     :default_url => ":current_theme_path/images/avatars/:gender.png"
   
-  has_search_index  :only_attributes => [ :first_name, :last_name ]
+  has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
   
   before_save :case_management
 

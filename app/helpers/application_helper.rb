@@ -262,7 +262,7 @@ module ApplicationHelper
     # 
     def method_missing(method, *args)
       # did somebody tried to use a dynamic link helper?
-      super(method, *args) unless method.to_s.match(/_link$/)
+      return super(method, *args) unless method.to_s.match(/_link$/)
       
       # retrieve objects and options hash into args array
 			args_objects = []

@@ -11,7 +11,9 @@ class DeliveryNotesQuotesProductReference < ActiveRecord::Base
   
   validates_associated :discard
   
-  def validate
+  validate :validates_quantity_range
+  
+  def validates_quantity_range
     return unless quotes_product_reference
     min = 0
     max = quotes_product_reference.quantity || 0

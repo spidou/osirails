@@ -1,7 +1,7 @@
 module DocumentsHelper
 
   def display_documents_list(documents_owner)
-    html = "<div id=\"#{documents_owner.class.name.underscore}_documents\">"
+    html = "<div id=\"#{documents_owner.class.singularized_table_name}_documents\" class=\"resources\">"
     html << render_documents_list(documents_owner, :group_by => "date", :order_by => "asc")
     html << '</div>'
     html << render_new_documents_list(documents_owner)
@@ -31,7 +31,7 @@ module DocumentsHelper
       order_by = "asc"
       order_symbol = "^"
     end
-    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => "#{documents_owner.class.name.underscore}_documents",
+    link_to_remote "#{method.capitalize} #{order_symbol}", :update  => "#{documents_owner.class.singularized_table_name}_documents",
                                                            :url     => documents_path( documents_owner,
                                                                                        :group_by => method,
                                                                                        :order_by => order_by,

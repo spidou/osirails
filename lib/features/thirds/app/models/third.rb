@@ -1,6 +1,4 @@
 class Third < ActiveRecord::Base
-  has_address :address
-  
   belongs_to :activity_sector
   belongs_to :third_type
   belongs_to :legal_form

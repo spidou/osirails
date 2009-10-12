@@ -133,7 +133,7 @@ module ActiveRecord
       :too_short => "est trop court (%d caractères minimum)",
       :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
       :taken => "est déjà prit",
-      :not_a_number => "n'est pas un nombre",
+      :not_a_number => "n'est pas un nombre"
     })
   end
 end

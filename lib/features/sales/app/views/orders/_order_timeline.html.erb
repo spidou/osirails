@@ -26,9 +26,9 @@
 	<% end %>
 <% end %>
 
-<% if order.closed_date %>
+<% if order.closed_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date" title="<%= order.closed_date.humanize %>"><%= order.closed_date.to_date.humanize %></span>
+    <span class="timeline_date" title="<%= order.closed_at.humanize %>"><%= order.closed_at.to_date.humanize %></span>
     <span class="timeline_notice">Cl&ocirc;ture du dossier</span>
   </div>
 <% end %>

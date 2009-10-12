@@ -4,13 +4,13 @@
 <% if is_form_view? %>
   <% form_for @customer, :html => { :multipart => true } do |form| %>
     <%= render :partial => 'thirds/third', :object => @customer %>
-
+    
+    <h3>Adresse de facturation</h3>
+    <%= render :partial => 'addresses/address_form', :object => @customer.bill_to_address || @customer.build_bill_to_address , :locals => { :address_owner => @customer } %>
+    
+    <h2>Établissements</h2>
     <%= display_establishments_list(@customer) %>
     <%= display_establishment_add_button(@customer) %>
-    
-    <h2>Contacts</h2>
-    <%= display_contacts_list(@customer) %>
-    <%= display_contact_add_button(@customer) %>
     
     <h2>Documents</h2>
     <%= display_documents_list(@customer) %>
@@ -23,10 +23,12 @@
   <% end %>  
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>
-  <%= display_establishments_list(@customer) %>
   
-  <h2>Contacts</h2>
-  <%= display_contacts_list(@customer) %>
+  <h3>Adresse de facturation</h3>
+  <%= render :partial => 'addresses/address_form', :object => @customer.bill_to_address || @customer.build_bill_to_address , :locals => { :address_owner => @customer } %>
+  
+  <h2>Établissements</h2>
+  <%= display_establishments_list(@customer) %>
   
   <h2>Documents</h2>
   <%= display_documents_list(@customer) %>

@@ -3,9 +3,8 @@ module ThirdsHelper
     contextual_search("Customer", [ "*",
                                     "activity_sector.name",
                                     "legal_form.name",
-                                    "contacts.first_name", 
-                                    "contacts.last_name",
-                                    "establishments.name"] )
+                                    "establishments.name",
+                                    "establishments.contacts.*"] )
   end
   
   def contextual_search_for_supplier

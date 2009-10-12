@@ -218,16 +218,19 @@ function close_ajax_holder() {
   new Effect.Fade('ajax_holder', { duration:'0.3', afterFinish:function(){ clean_ajax_holder_content()} })
 }
 
+function initialize_autoresize_text_areas() {
+  $$('.autoresize_text_area').each(function(textarea) {
+    new Widget.Textarea(textarea);
+  });
+}
+
 // Load the initial attributes of the document forms for
 // the function preventClose, active the autoresize for the
 // targeted textarea with class "autoresize_text_area" and
 // initialize javascript time functions
 Event.observe(window, 'load', function() {
   initializeAttributes();
-  
-  $$('.autoresize_text_area').each(function(textarea) {
-    new Widget.Textarea(textarea);
-  });
+  initialize_autoresize_text_areas();
   initialize_time();
   display_time();
 });  

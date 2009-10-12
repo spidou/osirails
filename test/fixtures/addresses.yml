@@ -17,6 +17,6 @@ establishment_address:
   country_name: Réunion
   city_name: Saint-Denis
   zip_code: 97400
-  has_address: first_establishment
+  has_address: customer_establishment
   has_address_type: Establishment
   has_address_key: address

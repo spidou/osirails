@@ -276,13 +276,12 @@ table#quotes_product_references tr.aggregates.global {
 
 /* REMARKS */
 #remarks {
-  padding: 10px;
 }
 
 #remarks .remark {
   border: 1px solid grey;
   -moz-border-radius: 0 5px 0 5px;
-  margin-bottom: 7px;
+  margin: 10px 10px 7px 10px;
 }
 
 #remarks .remark .remark_counter {
@@ -314,4 +313,14 @@ table#quotes_product_references tr.aggregates.global {
 #remarks .remark .remark_body strong {
   color: black;
   font-weight: bold;
+}
+
+/* SHIP TO ADDRESSES */
+#preview_establishments .resource {
+  padding-right: 25px;
+}
+
+#preview_establishments .resources .establishment_actions {
+  margin: 0px !important;
+  padding: 0px !important;
 }

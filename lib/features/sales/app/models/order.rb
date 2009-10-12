@@ -1,43 +1,42 @@
 class Order < ActiveRecord::Base
   has_permissions :as_business_object
-  has_contacts :accept_from => :customer_contacts
-  validates_contact_length :minimum => 1, :too_short => "est trop court (%s contact minimum)"
+  has_address     :bill_to_address
+  has_contacts    :accept_from => :customer_contacts
   
-  # Relationships
   belongs_to :society_activity_sector
   belongs_to :order_type
   belongs_to :customer
-  belongs_to :establishment
   belongs_to :commercial, :class_name => 'Employee'
-  belongs_to :creator, :class_name => 'User', :foreign_key => 'user_id'
+  belongs_to :creator,    :class_name => 'User', :foreign_key => 'user_id'
+  belongs_to :approaching
   
   has_one :commercial_step,    :dependent => :nullify
   has_one :pre_invoicing_step, :dependent => :nullify
   has_one :invoicing_step,     :dependent => :nullify
   
+  has_many :ship_to_addresses
   has_many :order_logs
 
-  # Validations
-  validates_presence_of :title, :previsional_delivery
-  validates_presence_of :customer_id, :order_type_id, :commercial_id, :establishment_id, :user_id#, :society_activity_sector_id
+  validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
+  validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
-  validates_presence_of :order_type,              :if => :order_type_id
+  validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
   validates_presence_of :commercial,              :if => :commercial_id
-  validates_presence_of :establishment,           :if => :establishment_id
   validates_presence_of :creator,                 :if => :user_id
-  #validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
+  validates_presence_of :approaching,             :if => :approaching_id
+  validates_presence_of :order_type_id,           :if => :society_activity_sector
+  validates_presence_of :order_type,              :if => :order_type_id
+  
+  validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
+  
+  validates_associated :customer, :ship_to_addresses
+  
+  validate :validates_length_of_ship_to_addresses
+  validate :validates_order_type_validity
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:title] = 'Nom du projet :'
-  @@form_labels[:order_type] = 'Type de dossier :'
-  @@form_labels[:commercial] = 'Commercial :'
-  @@form_labels[:establishment] = 'Etablissement concerné :'
-  @@form_labels[:contacts] =  'Contact(s) concerné(s) :'
-  @@form_labels[:created_at] = 'Date de cr&eacute;ation :'
-  @@form_labels[:previsional_delivery] = 'Date pr&eacute;visionnelle de livraison :'
-  @@form_labels[:quotation_deadline] = "Date butoire d'envoi du devis :"
+  after_save   :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
+  after_create :create_steps
   
   # level constants
   CRITICAL  = 'critical'
@@ -46,7 +45,19 @@ class Order < ActiveRecord::Base
   SOON      = 'soon'
   FAR       = 'far'
   
-  after_create :create_steps
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:title]                   = "Nom du projet :"
+  @@form_labels[:customer_needs]          = "Besoins du client :"
+  @@form_labels[:society_activity_sector] = "Secteur d'activité :"
+  @@form_labels[:order_type]              = "Type de dossier :"
+  @@form_labels[:commercial]              = "Commercial :"
+  @@form_labels[:ship_to_address]         = "Adresse(s) de livraison :"
+  @@form_labels[:approaching]             = "Type d'approche :"
+  @@form_labels[:contact]                 = "Contact commercial :"
+  @@form_labels[:created_at]              = "Date de création :"
+  @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
+  @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
   
   # Return all steps of the order according to the choosen order type
   def steps
@@ -133,7 +144,7 @@ class Order < ActiveRecord::Base
   end
   
   def terminated?
-    return false unless closed_date?
+    return false unless closed_at?
     children_steps.each do |child|
       return false unless child.terminated?
     end
@@ -166,11 +177,80 @@ class Order < ActiveRecord::Base
     customer ? customer.contacts : []
   end
   
+  def customer_establishments
+    customer ? customer.establishments : []
+  end
+  
+  def build_ship_to_address(establishment)
+    raise "establishment expected to be already saved" if establishment.new_record?
+    
+    ship_to_addresses.build(:establishment_name => establishment.name,
+                            :should_create      => 1).build_address(establishment.address.attributes)
+  end
+  
+  def establishment_attributes=(establishment_attributes)
+    raise "customer expected to be not nil" unless customer
+    establishment_attributes.each do |attributes|
+      establishment = customer.build_establishment(attributes)
+      establishment.ship_to_addresses.build(:establishment_name => attributes[:name],
+                                            :parallel_creation  => true,
+                                            :should_create      => 1).build_address(attributes[:address_attributes])
+    end
+  end
+  
+  def ship_to_address_attributes=(ship_to_address_attributes)
+    ship_to_address_attributes.each do |attributes|
+      raise "attributes hash expected to have :establishment_id key" unless attributes[:establishment_id]
+      establishment = Establishment.find(attributes[:establishment_id])
+      if attributes[:id].blank?
+        if attributes[:should_create].to_i == 1
+          ship_to_addresses.build({ :establishment_name => establishment.name }.merge(attributes)).build_address(establishment.address.attributes)
+        end
+      else
+        ship_to_address = ship_to_addresses.detect { |t| t.id == attributes[:id].to_i }
+        ship_to_address.attributes = attributes
+      end
+    end
+  end
+  
+  def save_ship_to_addresses
+    ship_to_addresses.each do |s|
+      if s.should_create?
+        s.save(false)
+      elsif s.should_destroy?
+        s.destroy
+      end
+    end
+  end
+  
+  def save_ship_to_addresses_from_new_establishments
+    raise "customer expected to be not nil" unless customer
+    customer.establishments.select{|e|e.new_record?}.each do |establishment|
+      establishment.save(false)
+      establishment.ship_to_addresses.each do |s|
+        s.order_id = self.id
+        s.save(false)
+      end
+    end
+  end
+  
+  def validates_length_of_ship_to_addresses
+    if ship_to_addresses.select{|s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?)}.empty?
+      errors.add(:ship_to_address_ids, "Vous devez choisir au moins 1 adresse de livraison")
+    end
+  end
+  
   private
 #    def default_step
 #      Step.find_by_name("commercial_step")
 #    end
   # Create all orders_steps after create order
+    
+    def validates_order_type_validity
+      if order_type and society_activity_sector
+        errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)
+      end
+    end
     
     def create_steps
       steps.each do |step|
@@ -182,12 +262,12 @@ class Order < ActiveRecord::Base
           
           s = step_model.create(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
           
-          ## TODO create another method called "create_checklist_responses" to generate checklist responses
-          step.checklists.each do |checklist|
-            checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
-            s.checklist_responses << checklist_response
-          end
-          ##########
+          ### TODO create another method called "create_checklist_responses" to generate checklist responses
+          #step.checklists.each do |checklist|
+          #  checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
+          #  s.checklist_responses << checklist_response
+          #end
+          ###########
         end
       end
       
@@ -199,16 +279,15 @@ class Order < ActiveRecord::Base
     end
     
     # that method permits to bound the new contact with the customer of the order.
-    # after that, the contact which is first created for the order, is also associated to the customer (of the order)
+    # after that, the contact which is first created for the customer, is associated to the order in a second time
     def save_contacts_with_order_support
-      save_contacts_without_order_support
-      
-      all_contacts = customer.all_contacts
       contacts.each do |contact|
-        unless all_contacts.include?(contact)
+        unless customer.contacts.include?(contact)
           customer.contacts << contact
         end
       end
+      
+      save_contacts_without_order_support
     end
     
     alias_method_chain :save_contacts, :order_support

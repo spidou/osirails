@@ -59,22 +59,22 @@ menus:
                 title: Visite commerciale
                 description: Étape de la visite commercial
                 position: 1
-              graphic_conception_step:
-                title: Conception graphique
-                description: Étape de conception graphique
-                position: 2
               estimate_step:
-                title: Chiffrage
-                description: Étape du devis
-                position: 3
+                title: Devis
+                description: "Étape de l'établissement du devis"
+                position: 2
                 children:
                   quotes:
-                    title: Devis
+                    title: Devis (Pièce)
                     description: Élaboration des devis
                     children:
                       order_forms:
                         title: Bon de commande
                         description: Bon de commande associé au devis
+              graphic_conception_step:
+                title: Conception graphique
+                description: Étape de la conception graphique
+                position: 3
           pre_invoicing_step:
             title: SAS de Facturation
             description: Phase du SAS de Facturation

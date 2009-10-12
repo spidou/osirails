@@ -61,9 +61,9 @@ module ActsAsStep
       end
       
       if options[:checklists]
-        has_many              :checklist_responses,     :as => :has_checklist_response
-        validates_associated  :checklist_responses
-        after_update          :save_checklist_responses
+        #has_many              :checklist_responses,     :as => :has_checklist_response
+        #validates_associated  :checklist_responses
+        #after_update          :save_checklist_responses
       end
       
       if options[:missing_elements]
@@ -138,18 +138,18 @@ module ActsAsStep
       end
     end
     
-    def checklist_response_attributes=(checklist_response_attributes)
-      checklist_response_attributes.each do |id, attributes|
-        checklist_response = checklist_responses.detect { |c| c.id == id.to_i }
-        checklist_response.attributes = attributes
-      end
-    end
-    
-    def save_checklist_responses
-      checklist_responses.each do |c|
-        c.save(false) if c.changed?
-      end
-    end
+    #def checklist_response_attributes=(checklist_response_attributes)
+    #  checklist_response_attributes.each do |id, attributes|
+    #    checklist_response = checklist_responses.detect { |c| c.id == id.to_i }
+    #    checklist_response.attributes = attributes
+    #  end
+    #end
+    #
+    #def save_checklist_responses
+    #  checklist_responses.each do |c|
+    #    c.save(false) if c.changed?
+    #  end
+    #end
     
     def siblings_steps
       self_and_siblings_steps - [self]

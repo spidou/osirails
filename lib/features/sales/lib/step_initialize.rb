@@ -1,5 +1,5 @@
 def step_initialize(path)
-  puts "step_initialize is now deprecated!"
+  puts "step_initialize is now deprecated! See step_manager in acts_as_step plugin"
 #  begin
 #    require 'yaml'
 #    yaml = YAML.load(File.open(path + '/config.yml'))

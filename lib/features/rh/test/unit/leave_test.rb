@@ -10,8 +10,8 @@ class LeaveTest < ActiveSupport::TestCase
     @employee = employees(:trish_doe)
     @leave_type = leave_types(:good_leave_type)
     
-    @good_leave = Leave.new(:start_date     => "2009-10-12".to_date,
-                            :end_date       => "2009-10-18".to_date,
+    @good_leave = Leave.new(:start_date     => Date.today.next_month.monday,
+                            :end_date       => Date.today.next_month.monday + 6.days,
                             :start_half     => true,
                             :end_half       => true,
                             :duration       => 6,
@@ -19,7 +19,7 @@ class LeaveTest < ActiveSupport::TestCase
                             :leave_type_id  => @leave_type.id)
     flunk "good_leave is not valid #{@good_leave.errors.inspect}" unless @good_leave.save
     
-    ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.month).strftime("%m/%d")
+    ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.months).strftime("%m/%d")
     
     @leave = Leave.new
     @leave.valid?
@@ -170,13 +170,19 @@ class LeaveTest < ActiveSupport::TestCase
     assert_equal wanted_duration, @leave.total_estimate_duration, "total_estimate_duration should be #{wanted_duration} :#{mess}"
   end
   
-  def test_total_estimate_duration_with_legal_holidays
-    # when there is no legal_holidays in the period
+  def test_total_estimate_duration_without_legal_holidays
     ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
-    assert_equal 6, @good_leave.total_estimate_duration, "total_estimate_duration should be equal to 6 without legal_holidays"
+    ConfigurationManager.admin_society_identity_configuration_legal_holidays = []
     
-    # when there are legal_holidays in the period
-    ConfigurationManager.admin_society_identity_configuration_legal_holidays = ["10/14","10/17"]
+    assert_equal 6, @good_leave.total_estimate_duration, "total_estimate_duration should be equal to 6 without legal_holidays"
+  end
+  
+  def test_total_estimate_duration_with_legal_holidays
+    first_holiday  = (@good_leave.start_date + 1.day).strftime("%m/%d")
+    second_holiday = (@good_leave.start_date + 2.days).strftime("%m/%d")
+    ConfigurationManager.admin_society_identity_configuration_workable_days = "0123456".split("")
+    ConfigurationManager.admin_society_identity_configuration_legal_holidays = [first_holiday, second_holiday]
+    
     assert_equal 4, @good_leave.total_estimate_duration, "total_estimate_duration should be 4 because there's 2 legal_holidays within the leave period #{ConfigurationManager.admin_society_identity_configuration_legal_holidays.inspect}"
   end
   

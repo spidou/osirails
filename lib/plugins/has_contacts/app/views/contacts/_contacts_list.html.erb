@@ -26,7 +26,7 @@ when "first_name", "last_name", "email"
                                                            elsif letter.between("U", "Z")
                                                              "U-Z"
                                                            end }
-else # group by 'type' by default
+when "type"
   @groups = @contacts.sort_by{ |c| c.contact_type.name }.group_by{ |c| c.contact_type.name }
 end
 

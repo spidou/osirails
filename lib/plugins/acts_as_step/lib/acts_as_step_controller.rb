@@ -106,9 +106,9 @@ module ActsAsStepController
                   path = send(@step.original_step.path, @order)
                 end
                 
-                #flash.keep
-                #erase_render_results
-                #redirect_to path
+                flash.keep
+                erase_render_results
+                redirect_to path
               end
             end
         end

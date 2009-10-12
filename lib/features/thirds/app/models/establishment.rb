@@ -6,7 +6,7 @@ class Establishment  < ActiveRecord::Base
   belongs_to :customer
   belongs_to :establishment_type
   
-  validates_presence_of :name, :address
+  validates_presence_of :name, :address, :establishment_type
   validates_associated :address
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
@@ -23,8 +23,8 @@ class Establishment  < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom de l'enseigne :"
-  @@form_labels[:establishment_type] = "Type d'établissement :"
+  @@form_labels[:name]                = "Nom de l'enseigne :"
+  @@form_labels[:establishment_type]  = "Type d'établissement :"
   
   def name_and_full_address
     "#{self.name} (#{self.full_address})"

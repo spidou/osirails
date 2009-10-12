@@ -15,24 +15,24 @@ end
   <% form.force_show_view = force_show_view %>
   <%= form.error_messages %>
   <p>
-    <%= form.label :street_name, options %>
+    <%= form.label :street_name, {}, options %>
     <%= form.form_or_view(form.text_area(:street_name, options.merge(:rows => 2, :cols => 35)), :street_name) %>
   </p>
   <p>
-    <%= form.label :zip_code, options %>
+    <%= form.label :zip_code, {}, options %>
     <%= form.form_or_view(form.text_field(:zip_code, options.merge(:size => 6)), :zip_code) %>
   </p>
   <p>
-    <%= form.label :city_name, options %>
+    <%= form.label :city_name, {}, options %>
     <%= form.form_or_view(form.text_field(:city_name, options), :city_name) %>
   </p>
   <p>
-    <%= form.label :country_name, options %>
+    <%= form.label :country_name, {}, options %>
     <%= form.form_or_view(form.text_field(:country_name, options), :country_name) %>
   </p>
   <div style="display:none;">
     <% #OPTIMIZE the herein hidden fields would not be exists if the fields_for command accept argument like 'customer[establishment_attributes][][address_attributes]' %>
-    <% if is_form_view? %>
+    <% if is_form_view? and !force_show_view %>
       <%= form.hidden_field :id, options %>
       <%= form.hidden_field :has_address_id, options %>
       <%= form.hidden_field :has_address_type, options %>

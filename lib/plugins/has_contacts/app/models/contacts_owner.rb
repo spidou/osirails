@@ -1,8 +1,6 @@
 class ContactsOwner < ActiveRecord::Base
-  # Relationhips
   belongs_to :contact
   belongs_to :has_contact, :polymorphic => true
-
-  # Validations
-  validates_presence_of :contact_id
+  
+  validates_presence_of :contact_id, :has_contact_type
 end

@@ -1,27 +1,37 @@
+require 'lib/features/thirds/test/thirds_test'
+
 class Test::Unit::TestCase
   
+  def prepare_sales_processes
+    OrderType.all.each do |order_type|
+      Step.all.each do |step|
+        order_type.sales_processes.create(:step_id => step.id, :activated => true, :depending_previous => false, :required => true)
+      end
+    end
+  end
+  
   def create_default_order
-    create_default_order_types
+    prepare_sales_processes
     
-    customer = thirds(:first_customer)
-    customer.contacts << contacts(:pierre_paul_jacques)
-    customer.save!
+    ## prepare customer
+    customer = create_default_customer
     
-    order = Order.new(:title => "Titre", :previsional_delivery => Time.now + 10.days)
+    ## prepare society_activity_sector
+    society_activity_sector = SocietyActivitySector.first
+    society_activity_sector.order_types << OrderType.all
+    
+    order = Order.new(:title => "Titre", :customer_needs => "Customer Needs", :previsional_delivery => Time.now + 10.days)
     order.commercial = employees(:john_doe)
     order.creator = users(:powerful_user)
     order.customer = customer
-    order.establishment = establishments(:first_establishment)
     order.contacts << customer.contacts.first
-    order.order_type = OrderType.first
-    
-    flunk "Order should be created" unless order.save
+    order.society_activity_sector = society_activity_sector
+    order.order_type = society_activity_sector.order_types.first
+    order.build_bill_to_address(order.customer.bill_to_address.attributes)
+    order.build_ship_to_address(order.customer.establishments.first)
+    order.approaching = approachings(:email)
+    flunk "Order should be saved > #{order.errors.full_messages.join(', ')}" unless order.save
     return order
-  end
-  
-  def create_default_order_types
-    OrderType.create(:title => "Normal")
-    OrderType.create(:title => "SAV")
   end
   
   def create_signed_quote_for(order)
@@ -29,18 +39,24 @@ class Test::Unit::TestCase
                                                              :validity_delay_unit => 'days')
     quote.creator = users(:powerful_user)
     quote.contacts << contacts(:pierre_paul_jacques)
-    quote.quotes_product_references.build(:name => 'name',
-                                          :description => 'description',
+    quote.quotes_product_references.build(:name => 'first reference',
+                                          :description => 'first reference description',
                                           :quantity => '20',
                                           :unit_price => '1430.00',
                                           :vat => '8.5',
                                           :product_reference_id => product_references(:product_reference1).id)
-    quote.quotes_product_references.build(:name => 'name',
-                                          :description => 'description',
+    quote.quotes_product_references.build(:name => 'second reference',
+                                          :description => 'second reference description',
                                           :quantity => '30',
                                           :unit_price => '2540.00',
                                           :vat => '19.6',
                                           :product_reference_id => product_references(:product_reference2).id)
+    quote.quotes_product_references.build(:name => 'third reference',
+                                          :description => 'third reference description',
+                                          :quantity => '10',
+                                          :unit_price => '4000.00',
+                                          :vat => '19.6',
+                                          :product_reference_id => product_references(:product_reference3).id)
     
     flunk "Quote should be created"   unless quote.save
     flunk "Quote should be validated" unless quote.validate_quote
@@ -57,7 +73,7 @@ class Test::Unit::TestCase
   def create_valid_delivery_note_for(order)
     # prepare order
     order.contacts = [ contacts(:pierre_paul_jacques) ]
-    order.save
+    order.save!
     
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
@@ -71,9 +87,12 @@ class Test::Unit::TestCase
     dn.creator = users(:powerful_user)
     dn.ship_to_address = address
     dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    count = 0
     dn.associated_quote.quotes_product_references.each do |ref|
+      break if count == 2
       dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => ref.id,
                                                         :quantity => ref.quantity)
+      count += 1
     end
     
     dn.save!
@@ -90,5 +109,21 @@ class Test::Unit::TestCase
     
     intervention.save!
     return intervention
+  end
+  
+  def create_valid_discard_for(delivery_note)
+    intervention = create_valid_intervention_for(delivery_note)
+    intervention.delivered = true
+    intervention.comments = "my special comment"
+    
+    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+    
+    reference = delivery_note.delivery_notes_quotes_product_references.first
+    discard = reference.build_discard(:comments => "my special comment",
+                                      :quantity => reference.quantity,
+                                      :discard_type_id => discard_types(:low_quality).id)
+    
+    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
+    return discard
   end
 end

@@ -6,17 +6,16 @@ contacts = contacts_picker
 
 <% if is_form_view? %>
   <select id="select_contacts" name="select[contacts]">
-    <option value="0">Choisissez un contact</option>
+    <option value="0">Veuillez choisir un contact</option>
     <% for contact in contacts %>
       <% selected_contact = contacts_owner.contacts.include?(contact) %>
       <% disabled = selected_contact ? 'disabled="disabled"' : '' %>
-      
       <%= "<option value=\"#{contact.id}\" #{disabled}>#{contact.fullname}</option>" %>
     <% end %>
   </select>
 <% end %>
 
-<div id="preview_contacts">
+<div id="preview_contacts" class="resources">
 <% for contact in contacts %>
   <% selected_contact = contacts_owner.contacts.include?(contact) %>
   
@@ -25,7 +24,7 @@ contacts = contacts_picker
     
     <% if contacts_owner.class.has_many_contacts? %>
       <%= check_box_tag("#{owner_type}[contact_ids][]", contact.id, selected_contact, :class => 'contact_input') if is_form_view? %>
-      <%= link_to_function( image_tag('delete_16x16.png', :title => 'Retirer ce contact de la liste', :alt => 'Retirer ce contact de la liste'), "contacts_picker.remove_contact_from_list(this)", :class => 'contact_actions' ) %>
+      <%= link_to_function( image_tag('delete_16x16.png', :title => 'Retirer ce contact de la liste', :alt => 'Retirer ce contact de la liste'), "contacts_picker.remove_resource_from_list(this)", :class => 'contact_actions' ) %>
     <% else %>
       <%= radio_button_tag("#{owner_type}[contact_ids]", contact.id, selected_contact, :class => 'contact_input') if is_form_view? %>
     <% end %>
@@ -35,11 +34,11 @@ contacts = contacts_picker
 
 <% if is_form_view? %>
   <script type="text/javascript">
-    var contacts_picker = new ContactsPicker({select: 'select_contacts',
-                                              mode: '<%= contacts_owner.class.has_many_contacts? ? "many" : "one" %>',
-                                              hidden_element_prefix: 'preview_contact',
-                                              input_class: 'contact_input',
-                                              removable_element_class: 'preview_contact',
-                                              element_actions_class: 'contact_actions'})
+    var contacts_picker = new ResourcesPicker({select:                  'select_contacts',
+                                               mode:                    '<%= contacts_owner.class.has_many_contacts? ? "many" : "one" %>',
+                                               hidden_element_prefix:   'preview_contact',
+                                               input_class:             'contact_input',
+                                               removable_element_class: 'preview_contact',
+                                               element_actions_class:   'contact_actions'})
   </script>
 <% end %>

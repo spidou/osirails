@@ -13,12 +13,11 @@
 }
 
 form .resource.contact label {
-  width: 120px !important;
+  width: 140px !important;
 }
 
 /* CONTACTS PICKER */
 #preview_contacts {
-  //margin-left: 200px;
   text-align: left;
 }
 

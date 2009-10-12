@@ -31,9 +31,6 @@ force_show_view ||= false
     <%= form.form_or_view(form.select(:note, Third::RATINGS), :note) %>
   </p>
   
-  <h3>Adresse de facturation</h3>
-  <%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third, :force_show_view => force_show_view } %>
-  
   <h3>Informations bancaires</h3>
     <% if third.class.equal?(Customer) %>
     <p>

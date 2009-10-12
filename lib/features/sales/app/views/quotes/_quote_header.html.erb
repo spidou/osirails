@@ -1,7 +1,7 @@
 <% content_for :header do -%>
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_contacts/contacts_picker' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
 <% end -%>
 
 <%
@@ -9,8 +9,8 @@ require_locals form
 
 quote = quote_header
 order = quote.estimate_step.order
-default_bill_to_address = order.customer.address
-default_ship_to_address = order.establishment ? order.establishment.address : order.customer.address
+default_bill_to_address = order.customer.bill_to_address
+default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
 %>
 <div id="quote_header">
   <div>

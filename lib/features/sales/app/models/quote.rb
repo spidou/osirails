@@ -13,8 +13,7 @@ class Quote < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
   has_address     :ship_to_address
-  has_contacts    :many => false
-  validates_contact_length :is => 1, :message => "doit contenir exactement %s contact"
+  has_contact     :accept_from => :order_contacts
   
   belongs_to :creator,          :class_name  => 'User', :foreign_key => 'user_id'
   belongs_to :estimate_step
@@ -28,13 +27,17 @@ class Quote < ActiveRecord::Base
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
                     :url => '/quotes/:quote_id/order_form'
   
-  validates_presence_of     :estimate_step_id, :user_id, :reduction, :carriage_costs, :account, :quotes_product_references
+  validates_contact_presence
+  
+  validates_presence_of     :estimate_step_id, :user_id, :quotes_product_references
   validates_presence_of     :estimate_step, :if => :estimate_step
   validates_presence_of     :creator,       :if => :user_id
   
-  validates_numericality_of [:reduction, :carriage_costs, :account, :validity_delay], :allow_nil => false
+  validates_numericality_of :reduction, :carriage_costs, :account, :validity_delay
+  
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
   validates_inclusion_of    :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
+  
   validates_associated      :quotes_product_references, :product_references
   
   ## VALIDATIONS ON VALIDATING QUOTE
@@ -61,23 +64,20 @@ class Quote < ActiveRecord::Base
     quote.validates_date  :signed_on,
                           :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
                           :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    
+    quote.validate :validates_presence_of_order_form
   end
   
-  def validate # the method validates_attachment_presence of paperclip seems to be broken if we want to use conditions
-    if signed?
-      if order_form.nil? or order_form.instance.order_form_file_name.blank? or order_form.instance.order_form_file_size.blank? or order_form.instance.order_form_content_type.blank?
-        errors.add(:order_form, "est requis")
-      end
+  def validates_presence_of_order_form # the method validates_attachment_presence of paperclip seems to be broken when using conditions
+    if order_form.nil? or order_form.instance.order_form_file_name.blank? or order_form.instance.order_form_file_size.blank? or order_form.instance.order_form_content_type.blank?
+      errors.add(:order_form, "est requis")
     end
   end
   
-  after_update :save_quotes_product_references
-  after_update :update_estimate_step_status #TODO enable that callback to update status step
+  after_update :save_quotes_product_references, :update_estimate_step_status
   
   attr_protected :status, :public_number, :validated_on, :invalidated_on, :sended_on, :send_quote_method_id,
                  :signed_on, :order_form_type_id, :order_form
-  
-#  PROTECTED_ATTRIBUTES = %W( :validated_on :invalidated_on :sended_on :send_quote_method_id :signed_on )
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -226,33 +226,59 @@ class Quote < ActiveRecord::Base
     status == STATUS_SIGNED
   end
   
+  def was_uncomplete?
+    status_was.nil?
+  end
+  
+  def was_validated?
+    status_was == STATUS_VALIDATED
+  end
+  
+  def was_invalidated?
+    status_was == STATUS_INVALIDATED
+  end
+  
+  def was_sended?
+    status_was == STATUS_SENDED
+  end
+  
+  def was_signed?
+    status_was == STATUS_SIGNED
+  end
+  
   def validity_date
     return unless validated_on and validity_delay_unit and validity_delay
     validated_on + validity_delay.send(validity_delay_unit)
   end
   
   def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
-    uncomplete?
+    was_uncomplete?
   end
   
   def can_be_deleted?
-    uncomplete?
+    was_uncomplete?
   end
   
   def can_be_validated?
-    uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
+    was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
   end
   
   def can_be_invalidated?
-    validated? or sended?
+    was_validated? or was_sended?
   end
   
   def can_be_sended?
-    validated?
+    was_validated?
   end
   
   def can_be_signed?
-    sended?
+    was_sended?
+  end
+  
+  def order_contacts
+    # use EstimateStep.find() permits to get a complete list of contacts (if order contacts
+    # list has changed from the initial 'find' of the current instance of Quote)
+    estimate_step ? EstimateStep.find(estimate_step_id).order.contacts : []
   end
   
   private

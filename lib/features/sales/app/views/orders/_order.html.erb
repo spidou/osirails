@@ -2,24 +2,30 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
-  <%= javascript_include_tag 'core/has_contacts/contacts_picker' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+  <%= javascript_include_tag 'sales/ship_to_addresses_picker' %>
 <% end -%>
 
 <%= display_customer_overview %>
 
 <div class="presentation_medium">
-  <h2>Dossier</h2>
+  <h2 id="order_anchor">Dossier</h2>
   <% form_for order do |form| %>
     <%= form.error_messages %>
   
-  <h3>Informations</h3>
+  <h3>Informations générales</h3>
   <p>
     <%= form.label :title %>
     <%= form.text_field :title %>
   </p>
   <p>
+    <%= form.label :society_activity_sector_id %>
+    <%= order.new_record? ? form.collection_select(:society_activity_sector_id, @society_activity_sectors, :id, :name, :include_blank => true) : strong(order.society_activity_sector.name) %>
+  </p>
+  <p>
     <%= form.label :order_type_id %>
-    <%= order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title) : strong(order.order_type.title) %>
+    <%= order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title, :include_blank => true) : strong(order.order_type.title) %>
   </p>
   <p>
     <%= form.label :commercial_id %>
@@ -28,18 +34,32 @@
 
   <h3>Client</h3>
   <p>
-    <%= form.label :establishment_id %>
-    <%= form.collection_select(:establishment_id, order.customer.establishments, :id, :name_and_full_address, :include_blank => true) %>
-    <%= link_to( "(+) Ajouter un établissement", new_customer_establishment_path(order.customer) ) %>
+    <%= form.label :contact_ids %>
+    <%= display_contacts_picker(order, order.customer.contacts) %>
+    <%= display_new_contacts_list(order) %>
+    <%= display_contact_add_button(order) %>
   </p>
   
-  <h3>Contacts</h3>
   <p>
-    <%= form.label :contacts %>
-    <%= display_contacts_picker(order, order.customer.contacts) %>
+    <%= form.label :approaching_id %>
+    <%= form.collection_select(:approaching_id, Approaching.all, :id, :name, :include_blank => order.new_record?) %>
   </p>
-  <%= render_new_contacts_list(order) %>
-  <%= display_contact_add_button(order) %>
+  <p>
+    <%= form.label :customer_needs %>
+    <%= form.text_area_autoresize :customer_needs %>
+  </p>
+  
+  <h3>Livraison</h3>
+  <p>
+    <%= form.label :ship_to_address_ids %>
+    <%= display_ship_to_addresses_picker(order, order.customer.establishments) %>
+    <%= display_new_establishments_list(order) %>
+    <%# display_ship_to_addresses_list(order) %>
+    <%= display_establishment_add_button(order) %>
+  </p>
+  
+  <h3>Facturation</h3>
+  <%= render :partial => 'addresses/address_form', :object => order.bill_to_address || order.build_bill_to_address , :locals => { :address_owner => order } %>
   
   <h3>Dates</h3>
   <% if is_edit_view? %>
@@ -63,3 +83,5 @@
   </p>
   <% end %>
 </div>
+
+<%= javascript_tag "new Element.scrollTo('order_anchor')" unless order.errors.empty? %>

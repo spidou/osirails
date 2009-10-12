@@ -14,6 +14,7 @@
 
 .resource_group.new_records {
   display: block;
+  margin: 0 15px 0 15px;
 }
 
 .resource_group h1 {
@@ -86,10 +87,6 @@ form .resource p {
   margin: 0;
   padding: 2px 0 2px 0;
   text-indent: 0;
-}
-
-form .resource label {
-   width: 130px !important;
 }
 
 form .resource p input[type=text],

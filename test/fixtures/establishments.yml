@@ -1,5 +1,5 @@
-first_establishment:
-  name: First Establishment
+customer_establishment:
+  name: Customer Establishment
   establishment_type: store
-  customer: first_customer
   activated: true
+  customer: first_customer

@@ -2,8 +2,7 @@ module RemarksHelper
   
   def display_remarks_list(remarks_owner)
     remarks = remarks_owner.remarks
-    html = content_tag :h2, "Commentaires"
-    html << '<div id="remarks">'
+    html = '<div id="remarks">'
     unless remarks.empty?
       html << render(:partial => 'remarks/remark', :collection => remarks, :locals => { :remarks_owner => remarks_owner  })
     else
@@ -12,22 +11,20 @@ module RemarksHelper
     html << '</div>'
   end
   
-  def display_remark_add_button(remarks_owner)
-    html = "<p>"
-    html << link_to_function("Ajouter un commentaire") do |page|
-      page.insert_html :bottom, :remarks, :partial => 'remarks/remark',
-                                          :object => Remark.new,
-                                          :locals => { :remarks_owner => remarks_owner }
-      remark = page['remarks'].select('.remark').last
+  def display_remark_add_button(remarks_owner, position = :bottom)
+    return "" unless Remark.can_add?(current_user) and remarks_owner.class.can_edit?(current_user)
+    content_tag(:p, link_to_function("Ajouter un commentaire") do |page|
+      page.insert_html position, :remarks, :partial => 'remarks/remark',
+                                           :object => Remark.new,
+                                           :locals => { :remarks_owner => remarks_owner }
+      if position == :bottom
+        remark = page['remarks'].select('.remark').last
+      elsif position == :top
+        remark = page['remarks'].select('.remark').first
+      end
       remark.visual_effect :highlight
-      #remark.expandable_textarea 
-      # TODO create or found a javascript tools to implement auto growing textarea !
-      # => http://www.unwrongest.com/projects/expandable-textarea-facebook-style-using-prototype/  I try it but it sucks a bit
-      # => http://devkick.com/components/jquery/auto-growing-textarea/ seems to be cool, but use JQuery
-      # => create a helper like "insert_html" in ActionView::Helpers::PrototypeHelper::JavaScriptGenerator::GeneratorMethods 
-      #    to initialize auto-growing textarea called "expandable_textarea" or "autogrow"
-    end
-    html << "</p>"
+      page.call 'initialize_autoresize_text_areas'
+    end )
   end
   
 end

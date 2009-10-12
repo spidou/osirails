@@ -7,49 +7,82 @@ class DeliveryNote < ActiveRecord::Base
   
   has_permissions :as_business_object
   has_address     :ship_to_address
-  has_contacts    :many => false, :accept_from => :order_contacts
-  validates_contact_length :is => 1, :message => "doit contenir exactement %s contact"
+  has_contact     :accept_from => :order_contacts
   
-  belongs_to :creator, :class_name  => 'User', :foreign_key => 'user_id'
+  has_attached_file :attachment,
+                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
+                    :url  => '/delivery_notes/:delivery_note_id/attachment'
+  
+  belongs_to :creator, :class_name  => 'User'
   belongs_to :delivery_step
   
   has_many :delivery_notes_quotes_product_references, :dependent => :destroy
   has_many :quotes_product_references,                :through   => :delivery_notes_quotes_product_references
   has_many :interventions
   
-#  has_one :pending_intervention,    :class_name => 'Intervention', :conditions => [ "delivered IS NULL" ]
-#  has_one :successful_intervention, :class_name => 'Intervention', :conditions => [ "delivered = ?", true ]
-  def pending_intervention
-    collection = interventions.select{ |i| !i.new_record? and i.delivered.nil? }
-    raise "pending_intervention should not return more than 1 result. You need to contact your administrator to solve the problem." if collection.size > 1
-    return collection.first
-  end
-  
-  def successful_intervention
-    collection = interventions.select{ |i| !i.new_record? and i.delivered? }
-    raise "successful_intervention should not return more than 1 result. You need to contact your administrator to solve the problem." if collection.size > 1
-    return collection.first
-  end
+  validates_contact_presence
   
   validates_presence_of :delivery_notes_quotes_product_references, :ship_to_address
-  validates_presence_of :delivery_step_id, :user_id
+  validates_presence_of :delivery_step_id, :creator_id
   validates_presence_of :delivery_step, :if => :delivery_step_id
-  validates_presence_of :creator,       :if => :user_id
+  validates_presence_of :creator,       :if => :creator_id
+  
+  with_options :if => :validated? do |dn|
+    dn.validates_presence_of :validated_on
+    dn.validates_presence_of :public_number
+  end
+  
+  validates_presence_of :invalidated_on,  :if => :invalidated?
+  
+  with_options :if => :signed? do |dn|
+    dn.validates_presence_of :signed_on
+    dn.validates_presence_of :successful_intervention
+    dn.validate :validates_presence_of_attachment
+  end
+  
+  validates_persistence_of :creator_id, :creator,
+                           :delivery_step_id, :delivery_step
+  
+  validates_persistence_of :ship_to_address,
+                           :contacts,
+                           :delivery_notes_quotes_product_references, 
+                           :validated_on,
+                           :public_number, :unless => :was_uncomplete?
+  
+  validates_persistence_of :invalidated_on, :interventions, :status, :if => :was_invalidated?
+  
+  validates_persistence_of :signed_on, :attachment, :interventions, :status, :if => :was_signed?
   
   validates_inclusion_of :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SIGNED ], :allow_nil => true
   
   validates_associated  :delivery_notes_quotes_product_references, :quotes_product_references, :interventions
   
+  validate :validates_interventions
+  
   before_update :save_delivery_notes_quotes_product_references
   after_save :save_interventions
   
-  has_attached_file :attachment,
-                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
-                    :url => '/delivery_notes/:delivery_note_id/attachment'
-  
   attr_protected :status, :validated_on, :invalidated_on, :signed_on, :public_number
   
-  def validate
+  def validates_presence_of_attachment # the method validates_attachment_presence of paperclip seems to be broken when using conditions
+    if attachment.nil? or attachment.instance.attachment_file_name.blank? or attachment.instance.attachment_file_size.blank? or attachment.instance.attachment_content_type.blank?
+      errors.add(:attachment, "est requis")
+    end
+  end
+  
+  def pending_intervention
+    collection = interventions.select{ |i| !i.new_record? and i.delivered.nil? }
+    raise "pending_intervention should not return more than 1 result. Please contact your administrator to solve the problem." if collection.size > 1
+    return collection.first
+  end
+  
+  def successful_intervention
+    collection = interventions.select{ |i| !i.new_record? and i.delivered? }
+    raise "successful_intervention should not return more than 1 result. Please contact your administrator to solve the problem." if collection.size > 1
+    return collection.first
+  end
+  
+  def validates_interventions
     if has_new_interventions?
       errors.add(:interventions, "est invalide, impossible de créer une nouvelle intervention pour l'instant") if pending_intervention
       errors.add(:interventions, "est invalide, il n'est plus possible de créer d'intervention pour ce Bon de Livraison") if successful_intervention
@@ -84,7 +117,7 @@ class DeliveryNote < ActiveRecord::Base
   
   def save_interventions
     interventions.each do |i|
-      i.save(false) if i.new_record? or i.changed?
+      i.save(false)# if i.new_record? or i.changed?
     end
   end
   
@@ -105,20 +138,36 @@ class DeliveryNote < ActiveRecord::Base
     status == STATUS_SIGNED
   end
   
+  def was_uncomplete?
+    status_was.nil?
+  end
+  
+  def was_validated?
+    status_was === STATUS_VALIDATED
+  end
+  
+  def was_invalidated?
+    status_was === STATUS_INVALIDATED
+  end
+  
+  def was_signed?
+    status_was === STATUS_SIGNED
+  end
+  
   def can_be_edited?
-    uncomplete?
+    was_uncomplete?
   end
   
   def can_be_deleted?
-    uncomplete?
+    was_uncomplete?
   end
   
   def can_be_validated?
-    uncomplete?
+    was_uncomplete?
   end
   
   def can_be_invalidated?
-    validated? and !signed?
+    was_validated?# and !signed?
   end
   
   # return true if the delivery_note can be signed
@@ -127,10 +176,12 @@ class DeliveryNote < ActiveRecord::Base
   #   (successful_intervention => intervention with delivered? = true
   #    if previous value of delivered is false, so we know the record has just changed but not saved yet)
   def can_be_signed?
-    return false if successful_intervention.nil?
-    original_record = Intervention.find(successful_intervention.id)
-    
-    validated? and !original_record.delivered?
+    #return false if successful_intervention.nil?
+    ##original_record = Intervention.find(successful_intervention.id)
+    #
+    ##validated? and !original_record.delivered?
+    #validated? and !successful_intervention.delivered_was
+    was_validated?
   end
   
   def validate_delivery_note
@@ -156,17 +207,17 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
-  def sign_delivery_note(attributes)
+  def sign_delivery_note#(attributes)
     if can_be_signed?
-      self.attributes = attributes
-      if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
-        self.signed_on = attributes[:signed_on]
-      else
-        self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
-                                     attributes["signed_on(2i)"].to_i,
-                                     attributes["signed_on(3i)"].to_i ) rescue nil
-      end
-      self.attachment = attributes[:attachment]
+      #self.attributes = attributes
+      #if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
+      #  self.signed_on = attributes[:signed_on]
+      #else
+      #  self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
+      #                               attributes["signed_on(2i)"].to_i,
+      #                               attributes["signed_on(3i)"].to_i ) rescue nil
+      #end
+      #self.attachment = attributes[:attachment]
       self.status = STATUS_SIGNED
       self.save
     else
@@ -176,7 +227,9 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def order_contacts
-    delivery_step ? delivery_step.order.contacts : []
+    # use DeliveryStep.find() permits to get a complete list of contacts (if order contacts
+    # list has changed from the initial 'find' of the current instance of DeliveryNote)
+    delivery_step ? DeliveryStep.find(delivery_step_id).order.contacts : []
   end
   
   def discards

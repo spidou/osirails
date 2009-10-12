@@ -17,7 +17,7 @@ class Customer
 end
 
 class Establishment
-  has_many :orders
+  has_many :ship_to_addresses
 end
 
 class SocietyActivitySector

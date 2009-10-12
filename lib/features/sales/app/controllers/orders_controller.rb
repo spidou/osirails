@@ -1,7 +1,8 @@
 class OrdersController < ApplicationController
-  helper :contacts
+  helper :contacts, :ship_to_addresses
   
   before_filter :load_collections
+  before_filter :hack_params_for_ship_to_address_addresses, :only => [ :create, :update ]
 
   acts_as_step_controller :sham => true, :step_name => :commercial_step
   
@@ -36,14 +37,20 @@ class OrdersController < ApplicationController
     if params[:customer_id] # this is the second step of the order creation
       begin
         @order.customer = Customer.find(params[:customer_id])
-      rescue Exception => e
-        flash.now[:error] = "Le client n'a pas été trouvé. Veuillez réessayer. Erreur : #{e.message}"
+        @order.build_bill_to_address(@order.customer.bill_to_address.attributes)
+        
+        establishment = @order.customer.establishments.first
+        @order.ship_to_addresses.build(:establishment_id    => establishment.id,
+                                       :establishment_name  => establishment.name).build_address(establishment.address.attributes)
+      rescue ActiveRecord::RecordNotFound => e
+        flash.now[:error] = "Le client n'a pas été trouvé, merci de réessayer."
       end
     end
   end
   
   def create
-    @order = Order.new(params[:order])
+    @order = Order.new(:customer_id => params[:order][:customer_id]) # establishment_attributes needs customer_id is set before all other attributes
+    @order.attributes = params[:order]
     @order.creator = current_user
     if @order.save
       flash[:notice] = "Dossier créé avec succès"
@@ -68,7 +75,21 @@ class OrdersController < ApplicationController
   
   private
     def load_collections
-      @commercials = Employee.find(:all)
-      @order_types = OrderType.find(:all)
+      @commercials = Employee.all
+      @society_activity_sectors = SocietyActivitySector.all
+      @order_types = OrderType.all
+    end
+    
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_ship_to_address_addresses
+      # raise params.inspect
+      if params[:order] and params[:order][:establishment_attributes] and params[:establishment] and params[:establishment][:address_attributes]
+        params[:order][:establishment_attributes].each_with_index do |establishment_attributes, index|
+          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+        end
+        params.delete(:establishment)
+      end
     end
 end

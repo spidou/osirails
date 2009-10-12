@@ -108,14 +108,7 @@ module LeaveValidationsTest
     ## test when there are no conflicting leave
     #
     #        |               |
-    #   start_date        end_date                             (new leave)
-    #
-    # OR
-    #
-    #   START_DATE        END_DATE                             (existing leave)
-    #        |               |
-    #                                  |               |
-    #                             start_date        end_date   (new leave)
+    #   start_date        end_date              (new leave)
     #
     def check_unique_dates_when_there_are_no_conflicting_leave(leave, conflicting_leave)
       flunk "conflicting_leave should NOT be saved to perform the following" unless conflicting_leave.new_record?

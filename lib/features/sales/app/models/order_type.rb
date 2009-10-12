@@ -1,10 +1,11 @@
 class OrderType < ActiveRecord::Base
-  # Relationships
   has_and_belongs_to_many :society_activity_sectors
+  
   has_many :sales_processes
   has_many :orders
+  has_many :checklist_options_order_types
+  has_many :checklist_options, :through => :checklist_options_order_types
 
-  # Validations
   validates_presence_of :title
   
   def activated?

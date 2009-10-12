@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090910052321) do
+ActiveRecord::Schema.define(:version => 20091007110542) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -38,6 +38,12 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "duration",        :limit => 11
     t.string   "title"
     t.string   "email_to"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "approachings", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -71,32 +77,35 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   end
 
   create_table "checklist_options", :force => true do |t|
-    t.string   "name"
     t.integer  "checklist_id", :limit => 11
+    t.integer  "parent_id",    :limit => 11
+    t.integer  "position",     :limit => 11
+    t.string   "title"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "checklist_options_order_types", :force => true do |t|
+    t.integer  "checklist_option_id", :limit => 11
+    t.integer  "order_type_id",       :limit => 11
+    t.boolean  "activated"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "checklist_responses", :force => true do |t|
-    t.integer  "checklist_id",                :limit => 11
-    t.integer  "has_checklist_response_id",   :limit => 11
-    t.string   "has_checklist_response_type"
-    t.string   "answer"
+    t.integer  "checklist_option_id", :limit => 11
+    t.integer  "order_id",            :limit => 11
+    t.text     "answer"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "checklists", :force => true do |t|
     t.string   "name"
-    t.integer  "step_id",    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "checklists_order_types", :force => true do |t|
-    t.integer  "checklist_id",  :limit => 11
-    t.integer  "order_type_id", :limit => 11
-    t.boolean  "activated",                   :default => true
+    t.string   "title"
+    t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -239,7 +248,7 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
 
   create_table "delivery_notes", :force => true do |t|
     t.integer  "delivery_step_id",        :limit => 11
-    t.integer  "user_id",                 :limit => 11
+    t.integer  "creator_id",              :limit => 11
     t.string   "status"
     t.date     "validated_on"
     t.date     "invalidated_on"
@@ -281,18 +290,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "quantity",                                   :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "document_type_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",          :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "document_type_id", :limit => 11
   end
 
   create_table "document_types", :force => true do |t|
@@ -361,12 +358,12 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   end
 
   create_table "establishments", :force => true do |t|
-    t.string   "name"
     t.integer  "establishment_type_id", :limit => 11
+    t.integer  "customer_id",           :limit => 11
+    t.string   "name"
+    t.boolean  "activated",                           :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "customer_id",           :limit => 11
-    t.boolean  "activated",                           :default => true
   end
 
   create_table "estimate_steps", :force => true do |t|
@@ -681,20 +678,34 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   end
 
   create_table "orders", :force => true do |t|
-    t.string   "title"
-    t.string   "description"
     t.integer  "commercial_id",              :limit => 11
     t.integer  "user_id",                    :limit => 11
     t.integer  "customer_id",                :limit => 11
     t.integer  "establishment_id",           :limit => 11
     t.integer  "society_activity_sector_id", :limit => 11
     t.integer  "order_type_id",              :limit => 11
-    t.datetime "closed_date"
+    t.integer  "approaching_id",             :limit => 11
+    t.string   "title"
+    t.text     "customer_needs"
+    t.datetime "closed_at"
     t.date     "previsional_delivery"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.date     "quotation_deadline"
     t.integer  "delivery_time",              :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "orders_items", :force => true do |t|
+    t.integer  "order_id",             :limit => 11
+    t.integer  "product_reference_id", :limit => 11
+    t.string   "name"
+    t.string   "original_name"
+    t.string   "description"
+    t.string   "original_description"
+    t.string   "dimensions"
+    t.float    "quantity"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "participants", :force => true do |t|
@@ -931,6 +942,14 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
+  create_table "ship_to_addresses", :force => true do |t|
+    t.integer  "order_id",           :limit => 11
+    t.integer  "establishment_id",   :limit => 11
+    t.string   "establishment_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "society_activity_sectors", :force => true do |t|
     t.string   "name"
     t.boolean  "activated",  :default => true
@@ -951,6 +970,15 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "parent_id",   :limit => 11
     t.string   "description"
     t.integer  "position",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "survey_interventions", :force => true do |t|
+    t.integer  "internal_actor_id", :limit => 11
+    t.datetime "start_date"
+    t.integer  "duration_hours",    :limit => 11
+    t.integer  "duration_minutes",  :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

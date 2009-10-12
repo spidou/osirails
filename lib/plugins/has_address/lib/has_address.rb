@@ -9,8 +9,6 @@ module HasAddress
   module ClassMethods
     
     def has_address name, params = {}
-      include InstanceMethods
-      
       # default params
       params = { :one_or_many => :one }.merge(params)
       raise ArgumentError, "has_address should have a symbol as 'one_or_many' parameter" unless params[:one_or_many].instance_of?(Symbol)
@@ -23,10 +21,10 @@ module HasAddress
       validates_associated name
       
       define_method "#{name}_attributes=" do |attributes|
-        if attributes[:id].blank?
+        if self.send(name).nil?
           self.send("#{name}=", self.send("build_#{name}", attributes))
         else
-          self.send("#{name}").attributes = attributes
+          self.send(name).attributes = attributes
         end
       end
       
@@ -35,29 +33,26 @@ module HasAddress
       # and here : http://benanne.net/code/?p=108
       define_method "build_#{name}" do |attributes|
         attributes ||= {}
-        send( "#{name}=" , Address.new({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}.merge(attributes)) )
+        send( "#{name}=" , Address.new(attributes.merge({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s})) )
       end
       
       # FIXME call this method with no argument works but raise a warning
       define_method "create_#{name}" do |attributes|
         attributes ||= {}
-        Address.create({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}.merge(attributes))
+        Address.create(attributes.merge({:has_address_id => self.id, :has_address_type => self.class.class_name, :has_address_key => name.to_s}))
       end
       
-      after_update "save_#{name}"
+      after_save "save_#{name}"
       
       define_method "save_#{name}" do
-        self.send("#{name}").save unless self.send("#{name}").nil?
+        self.send(name).save unless self.send(name).nil?
       end
-    end
-    
-  end
-  
-  module InstanceMethods
-    
-    # Return full address's establishment
-    def full_address
-      address.formatted unless address.nil?
+      
+      class_eval do
+        def full_address
+          address.formatted unless address.nil?
+        end
+      end
     end
     
   end

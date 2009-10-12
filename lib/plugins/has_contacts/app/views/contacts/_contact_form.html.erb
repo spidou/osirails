@@ -2,6 +2,7 @@
 require_locals contacts_owner
 owner_type = contacts_owner.class.singularized_table_name
 contact = contact_form
+contact_types = ContactType.all(:conditions => [ "owner = ?", contacts_owner.class.name ])
 id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_record?
 style_attr = 'style="display:none"' unless contact.new_record? or !contact.errors.empty? or contact.should_update?
 %>
@@ -26,7 +27,7 @@ style_attr = 'style="display:none"' unless contact.new_record? or !contact.error
       </p>
       <p>
         <%= form.label :contact_type_id, :index => nil %>
-        <%= form.form_or_view(form.collection_select(:contact_type_id, ContactType.all, :id, :name, {}, :index => nil), :file_type, :name ) %>
+        <%= form.form_or_view(form.collection_select(:contact_type_id, contact_types, :id, :name, {}, :index => nil), :file_type, :name ) %>
       </p>
       <p>
         <%= form.label :job, :index => nil %>

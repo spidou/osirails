@@ -1,18 +1,20 @@
 <%= order_header %>
 
-<h1>Visite technique</h1>
+<h1>Visite commerciale</h1>
 
 <div>
 <% if is_form_view? %>
   <% form_for(@step, :url => { :controller => "survey_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
-    <%= display_checklists_list(@step)%>
+    <%# display_checklists_list(@step)%>
     
     <h2>Documents</h2>
     <%= display_documents_list(@step) %>
     <%= display_document_add_button(@step) %>
     
+    <h2>Commentaires</h2>
+    <%= display_remark_add_button(@step, :top) if @step.remarks.size > 1 %>
     <%= display_remarks_list(@step) %>
     <%= display_remark_add_button(@step) %>
     
@@ -22,11 +24,12 @@
     </p>
   <% end %>
 <% else %>
-  <%= display_checklists_list(@step)%>
+  <%# display_checklists_list(@step)%>
   
   <h2>Documents</h2>
   <%= display_documents_list(@step) %>
   
+  <h2>Commentaires</h2>
   <%= display_remarks_list(@step) %>
 <% end %>
 </div>

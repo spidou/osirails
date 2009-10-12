@@ -5,7 +5,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   
   def setup
     @order = create_default_order
-    create_signed_quote_for(@order)
+    @signed_quote = create_signed_quote_for(@order)
     
     @dn = DeliveryNote.new # the object must be clear to perform the test, so don't add any attributes on that object
     @dn.valid?
@@ -35,7 +35,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   end
   
   def teardown
-    @order = @dn = @attachment = nil
+    @order = @signed_quote = @dn = @attachment = nil
     @invalid_address = @valid_address = nil
     @invalid_contact = @valid_contact = nil
   end
@@ -60,21 +60,21 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_creator
-    assert @dn.errors.invalid?(:user_id), "user_id should NOT be a valid because it's nil"
+    assert @dn.errors.invalid?(:creator_id), "creator_id should NOT be a valid because it's nil"
     
-    @dn.user_id = 0
+    @dn.creator_id = 0
     @dn.valid?
-    assert !@dn.errors.invalid?(:user_id), "user_id should be valid"
-    assert @dn.errors.invalid?(:creator), "creator should NOT be valid because user_id is wrong"
+    assert !@dn.errors.invalid?(:creator_id), "creator_id should be valid"
+    assert @dn.errors.invalid?(:creator), "creator should NOT be valid because creator_id is wrong"
     
-    @dn.user_id = users(:powerful_user).id
+    @dn.creator_id = users(:powerful_user).id
     @dn.valid?
-    assert !@dn.errors.invalid?(:user_id), "user_id should be valid"
+    assert !@dn.errors.invalid?(:creator_id), "creator_id should be valid"
     assert !@dn.errors.invalid?(:creator), "creator should be valid"
     
     @dn.creator = users(:powerful_user)
     @dn.valid?
-    assert !@dn.errors.invalid?(:user_id), "user_id should be valid"
+    assert !@dn.errors.invalid?(:creator_id), "creator_id should be valid"
     assert !@dn.errors.invalid?(:creator), "creator should be valid"
   end
   
@@ -91,9 +91,9 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_contacts
-    @dn.delivery_step = @order.pre_invoicing_step.delivery_step
-    @order.contacts = [ @valid_contact ]
-    @order.save
+    @dn.delivery_step = @order.pre_invoicing_step.delivery_step #
+    @order.contacts = [ @valid_contact ]                        # prepare delivery note to accept @valid_contact
+    @order.save                                                 #
     
     assert @dn.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it's empty"
     
@@ -191,27 +191,51 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
   end
   
-  def test_status
+  def test_status_when_nil
+    @dn = create_valid_delivery_note_for(@order)
+    
     assert_nil @dn.status, "@dn.status should be nil"
     assert @dn.uncomplete?, "delivery_note should be uncomplete"
+    @dn.valid?
     assert !@dn.errors.invalid?(:status), "status should be valid"
+  end
+  
+  def test_status_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
     
-    @dn.status = DeliveryNote::STATUS_VALIDATED
     assert @dn.validated?, "delivery_note should be validated"
+    assert_equal DeliveryNote::STATUS_VALIDATED, @dn.status, "status should be equal to #{DeliveryNote::STATUS_VALIDATED}"
     @dn.valid?
     assert !@dn.errors.invalid?(:status), "status should be valid"
+  end
+  
+  def test_status_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
     
-    @dn.status = DeliveryNote::STATUS_INVALIDATED
     assert @dn.invalidated?, "delivery_note should be invalidated"
+    assert_equal DeliveryNote::STATUS_INVALIDATED, @dn.status, "status should be equal to #{DeliveryNote::STATUS_INVALIDATED}"
     @dn.valid?
     assert !@dn.errors.invalid?(:status), "status should be valid"
+  end
+  
+  def test_status_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
     
-    @dn.status = DeliveryNote::STATUS_SIGNED
     assert @dn.signed?, "delivery_note should be signed"
+    assert_equal DeliveryNote::STATUS_SIGNED, @dn.status, "status should be equal to #{DeliveryNote::STATUS_SIGNED}"
     @dn.valid?
     assert !@dn.errors.invalid?(:status), "status should be valid"
+  end
+  
+  def test_status_with_invalid_value
+    @dn = create_valid_delivery_note_for(@order)
     
-    @dn.status = "anything else"
+    @dn.status = "invalid value"
     @dn.valid?
     assert @dn.errors.invalid?(:status), "status should NOT be valid because it's not in the list"
   end
@@ -315,7 +339,10 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert @dn.uncomplete?, "delivery_note should be uncomplete"
     
     prepare_new_intervention_for(@dn)
-    assert !@dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment),
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note,
       "@dn.sign_delivery_note should failed because it's uncomplete"
   end
   
@@ -326,7 +353,10 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert @dn.validated?, "delivery_note should be validated"
     
     create_and_prepare_intervention_for_sign_delivery_note(@dn)
-    assert @dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment),
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert @dn.sign_delivery_note,
       "@dn.sign_delivery_note should success"
   end
   
@@ -337,7 +367,10 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert @dn.invalidated?, "delivery_note should be invalidated"
     
     prepare_new_intervention_for(@dn)
-    assert !@dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment),
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note,
       "@dn.sign_delivery_note should failed because it's invalidated"
   end
   
@@ -348,59 +381,156 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert @dn.signed?, "delivery_note should be signed"
     
     prepare_new_intervention_for(@dn)
-    assert !@dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment),
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note,
       "@dn.sign_delivery_note should failed because it's already signed"
   end
   
-  def test_can_be_edited
+  def test_can_be_edited_when_uncomplete
     @dn = create_valid_delivery_note_for(@order)
     
     assert @dn.can_be_edited?, "delivery_note should be editable"
-    
-    flunk "validation should work to continue" unless @dn.validate_delivery_note
-    
-    assert !@dn.can_be_edited?, "delivery_note should NOT be editable"
   end
   
-  def test_can_be_deleted
+  def test_can_be_edited_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
+    assert !@dn.can_be_edited?, "delivery_note should NOT be editable because it's validated"
+  end
+  
+  def test_can_be_edited_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
+    
+    assert !@dn.can_be_edited?, "delivery_note should NOT be editable because it's invalidated"
+  end
+  
+  def test_can_be_edited_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert !@dn.can_be_edited?, "delivery_note should NOT be editable because it's signed"
+  end
+  
+  def test_can_be_deleted_when_uncomplete
     @dn = create_valid_delivery_note_for(@order)
     
     assert @dn.can_be_deleted?, "delivery_note should be deletable"
-    
-    flunk "validation should work to continue" unless @dn.validate_delivery_note
-    
-    assert !@dn.can_be_deleted?, "delivery_note should NOT be deletable"
   end
   
-  def test_can_be_validated
+  def test_can_be_deleted_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
+    assert !@dn.can_be_deleted?, "delivery_note should NOT be deletable because it's validated"
+  end
+  
+  def test_can_be_deleted_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
+    
+    assert !@dn.can_be_deleted?, "delivery_note should NOT be deletable because it's invalidated"
+  end
+  
+  def test_can_be_deleted_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert !@dn.can_be_deleted?, "delivery_note should NOT be deletable because it's signed"
+  end
+  
+  def test_can_be_validated_when_uncomplete
     @dn = create_valid_delivery_note_for(@order)
     
     assert @dn.can_be_validated?, "delivery_note should be validatable"
-    
-    flunk "validation should work to continue" unless @dn.validate_delivery_note
-    
-    assert !@dn.can_be_validated?, "delivery_note should NOT be validatable"
   end
   
-  def test_can_be_invalidated
+  def test_can_be_validated_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
+    assert !@dn.can_be_validated?, "delivery_note should NOT be validatable because it's validated"
+  end
+  
+  def test_can_be_validated_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
+    
+    assert !@dn.can_be_validated?, "delivery_note should NOT be validatable because it's invalidated"
+  end
+  
+  def test_can_be_validated_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert !@dn.can_be_validated?, "delivery_note should NOT be validatable because it's signed"
+  end
+  
+  def test_can_be_invalidated_when_uncomplete
     @dn = create_valid_delivery_note_for(@order)
     
-    assert !@dn.can_be_invalidated?, "delivery_note should NOT be invalidatable"
-    
-    flunk "validation should work to continue" unless @dn.validate_delivery_note
+    assert !@dn.can_be_invalidated?, "delivery_note should NOT be invalidatable because it's uncomplete"
+  end
+  
+  def test_can_be_invalidated_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
     
     assert @dn.can_be_invalidated?, "delivery_note should be invalidatable"
   end
   
-  def test_can_be_signed
+  def test_can_be_invalidated_when_invalidated
     @dn = create_valid_delivery_note_for(@order)
-    assert !@dn.can_be_signed?, "delivery_note should NOT be signable because it's not validated"
-    
     validate_delivery_note(@dn)
-    assert !@dn.can_be_signed?, "delivery_note should NOT be signable because a valid intervention is missing"
+    invalidate_delivery_note(@dn)
     
-    create_and_prepare_intervention_for_sign_delivery_note(@dn)
+    assert !@dn.can_be_invalidated?, "delivery_note should NOT be invalidatable because it's invalidated"
+  end
+  
+  def test_can_be_invalidated_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert !@dn.can_be_invalidated?, "delivery_note should NOT be invalidatable because it's signed"
+  end
+  
+  def test_can_be_signed_when_uncomplete
+    @dn = create_valid_delivery_note_for(@order)
+    
+    assert !@dn.can_be_signed?, "delivery_note should NOT be signable because it's uncomplete"
+  end
+  
+  def test_can_be_signed_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
     assert @dn.can_be_signed?, "delivery_note should be signable"
+  end
+  
+  def test_can_be_signed_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
+    
+    assert !@dn.can_be_signed?, "delivery_note should NOT be signable because it's invalidated"
+  end
+  
+  def test_can_be_signed_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert !@dn.can_be_signed?, "delivery_note should NOT be signable because it's signed"
   end
   
   def test_create_intervention_on_uncomplete_delivery_note
@@ -449,8 +579,9 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     @intervention.delivered = true
     @intervention.comments = "my comments"
     
-    flunk "delivery_note should be signed to continue" unless @dn.sign_delivery_note(:signed_on => Date.today,
-                                                                                     :attachment => @attachment)
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    flunk "delivery_note should be signed to continue" unless @dn.sign_delivery_note
     
     @second_intervention = @dn.interventions.build(:on_site => true, :scheduled_delivery_at => Time.now + 12.hours)
     @second_intervention.deliverers << Employee.first
@@ -531,16 +662,28 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert !@dn.successful_intervention.new_record?, "successful_intervention should NOT be a new_record"
   end
   
+  def test_sign_delivery_note_without_intervention
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note, "sign_delivery_note should NOT success because a successful_intervention missing"
+    assert @dn.errors.invalid?(:successful_intervention), "successful_intervention should NOT be valid because it's nil"
+    #TODO
+  end
+  
   def test_sign_delivery_note_with_one_pending_intervention_and_without_changes_on_intervention
     @dn = create_valid_delivery_note_for(@order)
     @intervention = create_valid_intervention_for(@dn)
     
     flunk "delivery_note should have a pending intervention to continue" if @dn.pending_intervention.nil?
     
-    @dn.valid?
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note, "sign_delivery_note should NOT success because pending_intervention is not valid"
     assert @dn.errors.invalid?(:interventions), "interventions should NOT be valid because pending_intervention is not valid"
     assert @intervention.errors.invalid?(:delivered), "delivered should NOT be valid because it's nil"
-    assert !@dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment), "sign_delivery_note should NOT success because pending_intervention is not valid"
   end
   
   def test_sign_delivery_note_with_one_pending_intervention_and_with_undelivered_intervention
@@ -551,9 +694,15 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     @intervention.delivered = false
     @intervention.comments = "my comments"
+    assert @intervention.changed?, "@intervention.changed? should return true" 
     
     assert @dn.valid?, "delivery_note should be valid"
-    assert !@dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment), "sign_delivery_note should NOT success because pending_intervention should be delivered to sign delivery_note"
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert !@dn.sign_delivery_note, "sign_delivery_note should NOT success because pending_intervention should be delivered to sign delivery_note"
+    
+    assert @intervention.changed?, "@intervention.changed? should return true because it should NOT have been saved"
   end
   
   def test_sign_delivery_note_with_one_pending_intervention_and_with_delivered_intervention
@@ -564,12 +713,76 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     @intervention.delivered = true
     @intervention.comments = "my comments"
+    assert @intervention.changed?, "@intervention.changed? should return true"
     
     assert @dn.valid?, "delivery_note should be valid"
-    assert @dn.sign_delivery_note(:signed_on => Date.today, :attachment => @attachment), "sign_delivery_note should success"
+    
+    @dn.signed_on = Date.today
+    @dn.attachment = @attachment
+    assert @dn.sign_delivery_note, "sign_delivery_note should success"
+    
+    assert !@intervention.changed?, "@intervention.changed? should return false because it should have been saved"
   end 
   
+  def test_update_delivery_note_when_not_validated
+    @dn = create_valid_delivery_note_for(@order)
+    
+    assert_creator_id_cannot_be_updated
+    
+    assert_ship_to_address_can_be_updated
+    
+    assert_contact_can_be_updated
+    
+    assert_delivery_notes_quotes_product_references_can_be_updated
+  end
+  
+  def test_update_delivery_note_when_validated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    
+    assert_creator_id_cannot_be_updated
+    
+    assert_ship_to_address_cannot_be_updated
+    
+    assert_contact_cannot_be_updated
+    
+    assert_delivery_notes_quotes_product_references_cannot_be_updated
+  end
+  
+  def test_update_delivery_note_when_invalidated
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    invalidate_delivery_note(@dn)
+    
+    assert_creator_id_cannot_be_updated
+    
+    assert_ship_to_address_cannot_be_updated
+    
+    assert_contact_cannot_be_updated
+    
+    assert_delivery_notes_quotes_product_references_cannot_be_updated
+  end
+  
+  def test_update_delivery_note_when_signed
+    @dn = create_valid_delivery_note_for(@order)
+    validate_delivery_note(@dn)
+    sign_delivery_note(@dn)
+    
+    assert_creator_id_cannot_be_updated
+    
+    assert_ship_to_address_cannot_be_updated
+    
+    assert_contact_cannot_be_updated
+    
+    assert_delivery_notes_quotes_product_references_cannot_be_updated
+  end
+  
+  def test_update_delivery_note_with_one_pending_intervention
+    #TODO
+  end
+  
   def test_update_delivery_note_with_one_successful_intervention
+    #TODO
   end
   
   def test_create_second_intervention_before_close_first
@@ -632,6 +845,10 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     assert_nil @dn.successful_intervention, "delivery_note should NOT have a successful_intervention"
   end
   
+  def test_discards
+    #TODO
+  end
+  
   private
     def validate_delivery_note(delivery_note)
       flunk "delivery_note should be validated to continue" unless delivery_note.validate_delivery_note
@@ -658,7 +875,98 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     def sign_delivery_note(delivery_note)
       create_and_prepare_intervention_for_sign_delivery_note(delivery_note)
-      flunk "delivery_note should be signed to continue" unless delivery_note.sign_delivery_note(:signed_on => Date.today + 6.days,
-                                                                                                 :attachment => @attachment)
+      delivery_note.signed_on = Date.today + 6.days
+      delivery_note.attachment = @attachment
+      flunk "delivery_note should be signed to continue" unless delivery_note.sign_delivery_note
     end
+    
+    def assert_creator_id_cannot_be_updated
+      @dn.creator = users(:admin_user)
+      @dn.valid?
+      assert @dn.errors.invalid?(:creator_id), "creator_id should NOT be valid because it's NOT allowed to be updated"
+    end
+    
+    def assert_ship_to_address_can_be_updated
+      update_ship_to_address
+      assert !@dn.errors.invalid?(:ship_to_address), "ship_to_address should be valid"
+    end
+    
+    def assert_ship_to_address_cannot_be_updated
+      update_ship_to_address
+      assert @dn.errors.invalid?(:ship_to_address), "ship_to_address should NOT be valid because it's NOT allowed to be updated"
+    end
+    
+    def update_ship_to_address
+      @dn.ship_to_address.street_name = "new street name"
+      @dn.valid?
+    end
+    
+    def assert_contact_can_be_updated
+      update_contact_by_editing_item
+      assert !@dn.errors.invalid?(:contacts), "contacts should be valid"
+      
+      #TODO update_contact_by_replacing_item
+    end
+    
+    def assert_contact_cannot_be_updated
+      update_contact_by_editing_item
+      assert @dn.errors.invalid?(:contacts), "contacts should NOT be valid because it's not allowed to be updated"
+      
+      #TODO update_contact_by_replacing_item
+    end
+    
+    def update_contact_by_editing_item
+      @dn.contact.first_name = "new first name"
+      @dn.valid?
+    end
+    
+    def update_contact_by_replacing_item
+      #TODO
+    end
+    
+    def assert_delivery_notes_quotes_product_references_can_be_updated
+      update_delivery_notes_quotes_product_references_by_editing_item
+      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+      
+      update_delivery_notes_quotes_product_references_by_adding_item
+      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+      
+      update_delivery_notes_quotes_product_references_by_removing_item
+      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+    end
+    
+    def assert_delivery_notes_quotes_product_references_cannot_be_updated
+      update_delivery_notes_quotes_product_references_by_editing_item
+      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+      
+      update_delivery_notes_quotes_product_references_by_adding_item
+      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+      
+      update_delivery_notes_quotes_product_references_by_removing_item
+      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+    end
+    
+    def update_delivery_notes_quotes_product_references_by_editing_item
+      @dn.delivery_notes_quotes_product_references.reload
+      
+      @dn.delivery_notes_quotes_product_references.first.quantity = 0
+      @dn.valid?
+    end
+    
+    def update_delivery_notes_quotes_product_references_by_adding_item
+      @dn.delivery_notes_quotes_product_references.reload
+      
+      ref = @signed_quote.quotes_product_references.last
+      @dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => ref.id,
+                                                         :quantity => ref.quantity)
+      @dn.valid?
+    end
+    
+    def update_delivery_notes_quotes_product_references_by_removing_item
+      @dn.delivery_notes_quotes_product_references.reload
+
+      @dn.delivery_notes_quotes_product_references.pop
+      @dn.valid?
+    end
+    
 end

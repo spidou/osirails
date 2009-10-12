@@ -1,4 +1,5 @@
 class EstimateStep < ActiveRecord::Base
+  has_permissions :as_business_object
   acts_as_step :remarks => false, :checklists => false
   
   has_many :quotes, :order => 'created_at DESC'

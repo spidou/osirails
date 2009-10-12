@@ -6,11 +6,11 @@ steps:
       survey:
         title: Visite commerciale
         position: 1
+      estimate:
+        title: Devis
+        position: 2
       graphic_conception:
         title: Conception Graphique
-        position: 2
-      estimate:
-        title: Chiffrage
         position: 3
   pre_invoicing:
     title: SAS de facturation
