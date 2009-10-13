@@ -23,7 +23,7 @@ class Commodity < Supply
   end
   
   # This method returns the entire stock values
-  def self.stock_value(date=Date.today)
+  def self.stock_value(date = Date.today)
     total = 0.0
     for commodity in Commodity.find(:all)
       total += commodity.stock_value(date) if commodity.was_enabled_at(date)
@@ -32,7 +32,7 @@ class Commodity < Supply
   end  
   
   # This method returns all enabled supplies at a given date
-  def self.was_enabled_at(date=Date.today)
+  def self.was_enabled_at(date = Date.today)
     @enabled_supplies = []
     for commodity in Commodity.find(:all)
       @enabled_supplies << commodity if commodity.was_enabled_at(date)

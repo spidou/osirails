@@ -43,7 +43,7 @@ class Supply < ActiveRecord::Base
   
   # This method defines when it can be destroyed
   def can_be_destroyed?
-    !self.has_been_used? and self.enable
+    self.enable and !self.has_been_used?
   end
   
   # This method defines when it can be disabled

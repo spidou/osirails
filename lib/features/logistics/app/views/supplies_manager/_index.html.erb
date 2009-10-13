@@ -1,18 +1,22 @@
 <% content_for :header do %>
   <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
+
 <% add_contextual_menu_item :statistics do %>
   <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value,2) + " €" %></span>
 <% end %>
+
 <% add_contextual_menu_item :possible_actions do %>
   <%= self.send("new_#{@supply_type.name.tableize.singularize}_category_link") %>
 <% end %>
+
 <% add_contextual_menu_item :useful_links do %>
   <%= params[:inactives]=="true" ? supply_categories_link(@supply_type) : supply_categories_link_with_inactives(@supply_type) %>
 <% end %>
+
 <div>
   <% unless @supply_categories_root.empty? %>
-    <%= "<table class='#{@supply_type.name.tableize.singularize}'>" %>
+    <%= "<table class='#{@supply_type.name.underscore}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
         <th rowspan='2'>Sous cat&eacute;gorie</th>

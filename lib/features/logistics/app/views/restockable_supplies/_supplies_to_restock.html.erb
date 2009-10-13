@@ -1,4 +1,4 @@
-<%= "<h2> #{supplies.first.class.name == "Commodity" ? "Mati&egrave;res premi&egrave;res" : "Consommables"}</h2>" %> 
+<%= "<h2>#{supplies_to_restock.first.class.name == "Commodity" ? "Matières premières" : "Consommables"}</h2>" %> 
 <table>
 <tr>
   <th>R&eacute;f&eacute;rence</th>
@@ -7,6 +7,6 @@
   <th>Stock actuel</th>
   <th>Action</th>
 </tr>
-<%= render(:partial => "supply_to_restock", :collection => supplies) %>
+<%= render(:partial => "supply_to_restock", :collection => supplies_to_restock) %>
 </table>
-<%= will_paginate supplies %>
+<%= will_paginate supplies_to_restock %>

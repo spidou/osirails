@@ -1,54 +1,50 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= self.send("new_#{@supply.class.name.tableize.singularize}_category_link") %>
-  <%= edit_supply_link(@supply,true) unless is_form_view? %>
-  <%= reactivate_supply_link(@supply,true) unless is_form_view? %>
-  <%= disable_supply_link(@supply,true) unless is_form_view? %>
-  <%= delete_supply_link(@supply,true) unless is_form_view? %>
+  <%= self.send("new_#{supply.class.name.tableize.singularize}_category_link") %>
+  <%= edit_supply_link(supply,true) unless is_form_view? %>
+  <%= reactivate_supply_link(supply,true) unless is_form_view? %>
+  <%= disable_supply_link(supply,true) unless is_form_view? %>
+  <%= delete_supply_link(supply,true) unless is_form_view? %>
 <% end %>
 <% add_contextual_menu_item :useful_links do %>
   <%= supply_categories_link(@category) %>
 <% end %>
 <div class="presentation_medium">
   <h2>Caractéristiques</h2>
-  <% form_for(@supply) do |form| %>
+  <% form_for(supply) do |form| %>
+    <%= form.error_messages %>
+    
     <p>
-      <%= form.error_messages %>
+      <%= form.label :reference %>
+      <%= form.form_or_view(form.text_field(:reference, :disabled => supply.has_been_used?), :reference) %>
     </p>
-    <% if (!is_form_view?) or (!@supply.has_been_used? and is_form_view?) %>
-      <p>
-        <%= form.label :reference %>
-        <%= form.form_or_view(form.text_field(:reference), :reference) %>
-      </p>
-      <p>
-        <%= form.label :name %>
-        <%= form.form_or_view(form.text_field(:name), :name) %>
-      </p>
-      <p>
-        <%= form.label (@category.name.tableize.singularize+"_id").to_sym %>
-        <%= form.collection_select((@category.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , {}) if is_form_view? %>
-        <%= form.strong(@supply.supply_category.name) unless is_form_view? %>
-        <%= observe_field("#{@supply.class.name.tableize.singularize}_#{@supply.class.name.tableize.singularize}_category_id", :url => self.send("refresh_measure_#{@supply.class.name.tableize.singularize}_path"), :with => 'parameter') if is_form_view?%>
-      </p>
-      <p>
-        <%= "<label id='#{@supply.class.name.tableize.singularize}_unit_measure'>Grandeur/U (#{@unit_measure.symbol}) :</label>"%>
-        <%= form.form_or_view(form.text_field(:measure, :size => 20, :value => supply.measure), :measure) %>
-      </p>
-      <p>
-        <%= form.label :unit_mass %>
-        <%= form.form_or_view(form.text_field(:unit_mass, :size => 20, :value => supply.unit_mass), :unit_mass) %>
-      </p>
-    <% end %>
-    <% if !is_form_view? %>
-      <p>
-        <%= form.label :average_unit_price %>
-        <%= form.strong(display_average_unit_price(supply)) %>
-      </p>
-    <% end %>
+    <p>
+      <%= form.label :name %>
+      <%= form.form_or_view(form.text_field(:name, :disabled => supply.has_been_used?), :name) %>
+    </p>
+    <p>
+      <%= form.label (@category.name.tableize.singularize+"_id").to_sym %>
+      <%= form.form_or_view(form.collection_select((@category.name.tableize.singularize+"_id").to_sym, @categories, :id, :name, {}, :disabled => supply.has_been_used?), :supply_category, :name) %>
+      <%= observe_field("#{supply.class.name.underscore}_#{supply.class.name.underscore}_category_id", :url => self.send("refresh_measure_#{supply.class.name.underscore}_path"), :with => 'parameter') if is_form_view? %>
+    </p>
+    <p>
+      <%= "<label id='#{supply.class.name.underscore}_unit_measure'>Grandeur/U (#{@unit_measure.symbol}) :</label>"%>
+      <%= form.form_or_view(form.text_field(:measure, :size => 20, :value => supply.measure, :disabled => supply.has_been_used?), :measure) %>
+    </p>
+    <p>
+      <%= form.label :unit_mass %>
+      <%= form.form_or_view(form.text_field(:unit_mass, :size => 20, :value => supply.unit_mass, :disabled => supply.has_been_used?), :unit_mass) %>
+    </p>
     <p>
       <%= form.label :threshold %>
       <%= form.form_or_view(form.text_field(:threshold, :size => 20, :value => supply.threshold), :threshold) %>
     </p>
-    <% if !is_form_view? %>
+    
+    <% unless supply.new_record? %>
+      <h2>Statistiques</h2>
+      <p>
+        <%= form.label :average_unit_price %>
+        <%= form.strong(display_average_unit_price(supply)) %>
+      </p>
       <p>
         <%= form.label :stock_quantity %>
         <%= form.strong(:stock_quantity) %>
@@ -67,8 +63,8 @@
       </p>
     <% end %>
 
-    <%= display_supplier_supply_list(@supply)  %>
-    <%= display_supplier_supply_add_button(@supply) if is_form_view? %>
+    <%= display_supplier_supply_list(supply)  %>
+    <%= display_supplier_supply_add_button(supply) if is_form_view? %>
 
     <p><%= form.submit(button_name) if is_form_view? %></p>
   <% end %>

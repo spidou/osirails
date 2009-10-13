@@ -41,38 +41,44 @@ module SuppliesManagerHelper
   end
 
   # This method permit to edit a supply
-  def edit_supply_link(supply,button=false)
+  def edit_supply_link(supply, button = false)
     if supply.class.can_edit?(current_user)
       text = ""
       text = " Edit this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/edit_16x16.png", :alt => "Éditer", :title => "Éditer")+text, send("edit_#{supply.class.name.tableize.singularize}_path",supply)) unless !supply.enable
+      link_to(image_tag("/images/edit_16x16.png", :alt => "Éditer", :title => "Éditer") + text, send("edit_#{supply.class.name.tableize.singularize}_path",supply)) unless !supply.enable
     end
   end
   
   # This method permit to show or hide disable button for supplies
-  def disable_supply_link(supply,button=false)
+  def disable_supply_link(supply, button = false)
     if supply.class.can_disable?(current_user)
       text = ""
       text = " Disable this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/delete_disable_16x16.png", :alt => "Désactiver", :title => "Désactiver")+text, self.send("disable_#{supply.class.name.underscore}_path",supply), :confirm => "Êtes-vous sûr ?") if supply.can_be_disabled?
+      if supply.can_be_disabled?
+        title = "Désactiver"
+        link_to(image_tag("/images/delete_16x16.png", :alt => title, :title => title) + text, self.send("disable_#{supply.class.name.underscore}_path",supply), :confirm => "Êtes-vous sûr ?")
+      elsif supply.stock_quantity.to_i > 0
+        title = "Impossible de désactiver tant que la quantité n'est pas à 0"
+        image_tag("/images/delete_disable_16x16.png", :alt => title, :title => title) + text
+      end
     end
   end
 
   # This method permit to show or hide delete button for supplies
-  def delete_supply_link(supply,button=false)
+  def delete_supply_link(supply, button = false)
     if supply.class.can_delete?(current_user)
       text = ""
       text = " Delete this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/delete_16x16.png", :alt => "Supprimer", :title => "Supprimer")+text, supply,  { :controller => "#{supply.class.name.tableize}", :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'}) if supply.can_be_destroyed?
+      link_to(image_tag("/images/delete_16x16.png", :alt => "Supprimer", :title => "Supprimer") + text, supply,  { :controller => "#{supply.class.name.tableize}", :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'}) if supply.can_be_destroyed?
     end
   end
   
   # This method permit to show or hide reactivate button for supplies
-  def reactivate_supply_link(supply,button=false)
+  def reactivate_supply_link(supply, button = false)
     if supply.class.can_reactivate?(current_user)
       text = ""
       text = " Reactivate this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/tick_16x16.png", :alt => "Résactiver", :title => "Réactiver")+text, self.send("reactivate_#{supply.class.name.underscore}_path",supply)) if supply.can_be_reactivated?
+      link_to(image_tag("/images/tick_16x16.png", :alt => "Résactiver", :title => "Réactiver") + text, self.send("reactivate_#{supply.class.name.underscore}_path",supply)) if supply.can_be_reactivated?
     end
   end
 
@@ -100,7 +106,7 @@ module SuppliesManagerHelper
   end
 
   # This method permit to make in table editor
-  def in_place_editor(object,attribute,is_supply=false) 
+  def in_place_editor(object, attribute, is_supply = false) 
     if object.class.can_edit?(current_user) and (!is_supply or (is_supply and !object.has_been_used?))
       return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
@@ -133,26 +139,29 @@ module SuppliesManagerHelper
 
   # This method permit to display the average unit price according to
   # all supplier_supplies price
-  def display_average_unit_price(supply,date=Date.today)
+  def display_average_unit_price(supply, date = Date.today)
     supply.average_unit_price.nil? ? '//' : number_with_precision(supply.average_unit_price(date).round(2).to_s,2) + ' €'
   end
   
   # This method permit to display the total measure of a supply stock
-  def display_total_measure(supply,date=Date.today)
-    supply.stock_quantity.nil? ? '//' : number_with_precision(supply.stock_quantity(date)*supply.measure,1) + " " + UnitMeasure.find(supply.supply_category.unit_measure_id).symbol
+  def display_total_measure(supply, date = Date.today)
+    return "//" if supply.stock_quantity.nil? or supply.measure.nil?
+    number_with_precision(supply.stock_quantity(date)*supply.measure,1) + " " + UnitMeasure.find(supply.supply_category.unit_measure_id).symbol
   end
   
   # This method permit to display the total measure of a supply_supplier stock
-  def display_supply_supplier_total_measure(supply_supplier,date=Date.today)
-    supply_supplier.stock_quantity.nil? ? '//' : number_with_precision(supply_supplier.stock_quantity(date)*supply_supplier.supply.measure,1) + " " + UnitMeasure.find(supply_supplier.supply.supply_category.unit_measure_id).symbol
+  def display_supply_supplier_total_measure(supply_supplier, date = Date.today)
+    return "//" if supply_supplier.stock_quantity.nil? or supply_supplier.supply.measure.nil?
+    number_with_precision(supply_supplier.stock_quantity(date)*supply_supplier.supply.measure,1) + " " + UnitMeasure.find(supply_supplier.supply.supply_category.unit_measure_id).symbol
   end
   
   # This method permit to display the total mass of a supply stock
-  def display_total_mass(supply,date=Date.today)
-    supply.stock_quantity.nil? ? '//' : number_with_precision(supply.stock_quantity(date)*supply.unit_mass,1) + " kg"
+  def display_total_mass(supply, date = Date.today)
+    return "//" if supply.stock_quantity.nil? or supply.unit_mass.nil?
+    number_with_precision(supply.stock_quantity(date)*supply.unit_mass,1) + " kg"
   end
 
-  def display_category_stock_value(category,date=Date.today)
+  def display_category_stock_value(category, date = Date.today)
     number_with_precision(category.stock_value(date),2) + " €"
   end
 end

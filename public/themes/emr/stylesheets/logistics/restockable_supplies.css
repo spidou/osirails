@@ -1,0 +1,9 @@
+table tr.insufficient_stock{
+	color: white;
+	background-color: #B0383E;
+}
+
+table tr.warning_stock{
+  color: white;
+	background-color: #E99727;
+}

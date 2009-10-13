@@ -2,4 +2,4 @@
   <%= javascript_include_tag "logistics/supplier_supplies" %>
 <% end %>
 <h1>Mise &agrave; jour de <%= @supply.name %></h1>
-<%= render(:partial => "supplies/supply", :locals => {:button_name => "Mettre à jour"}) %>
+<%= render(:partial => "supplies/supply", :object => @supply, :locals => {:button_name => "Mettre à jour"}) %>

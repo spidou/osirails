@@ -83,14 +83,6 @@ table td{
 	border:solid 1px rgb(64,68,93);
 }
 
-table tr.insufficient_stock{
-	color: #B0383E;
-}
-
-table tr.warning_stock{
-	color: #E99727;
-}
-
 /*
 table img {
   position: relative;
@@ -100,6 +92,7 @@ table img {
 
 tr:hover > td{
 	background: #f5c384;
+	color:white !important;
 }
 
 tr:hover > td > a {
@@ -109,16 +102,6 @@ tr:hover > td > a {
 table tr.disabled > td {
 	background-color: #e5e5e5;
 	text-decoration: line-through;
-}
-
-table.commodity tr[class~=disable]{
-  color:#aeaeae !important;
-	font-style: italic !important;
-}
-
-table.consumable tr[class~=disable]{
-  color:#aeaeae !important;
-	font-style: italic !important;
 }
 
 /*/////////////////////////////

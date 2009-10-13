@@ -1,22 +1,23 @@
 class CommoditiesController < ApplicationController
   helper :supplies_manager, :supplies, :supplier_supplies
-  before_filter :supply, :except => [:index, :new, :create]
-  before_filter :supply_category_type, :except => [:index, :destroy, :disable, :reactivate]
-  before_filter :categories_and_suppliers, :only => [:new, :create]
-  before_filter :categories_and_unit_measure, :only => [:show, :edit, :update]
+  before_filter :supply,                      :except => [:index, :new, :create]
+  before_filter :supply_category_type,        :except => [:index, :destroy, :disable, :reactivate]
+  before_filter :categories_and_suppliers,    :only   => [:new, :create]
+  before_filter :categories_and_unit_measure, :only   => [:show, :edit, :update]
 
-  # GET /commodities/index
+  # GET /commodities
   def index
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
 
   # GET /commodities/new
+  # GET /commodities/new?id=:id # :id corresponds to a commodity category id
   def new
     @supply = Commodity.new(:commodity_category_id => params[:id])
     @unit_measure = UnitMeasure.find(CommodityCategory.find(params[:id]).unit_measure_id)
   end
 
-  # GET /commodities/1
+  # GET /commodities/:id
   def show
     @categories = CommodityCategory.roots_children
     @unit_measure = UnitMeasure.find(@supply.supply_category.unit_measure_id)
@@ -35,12 +36,12 @@ class CommoditiesController < ApplicationController
     end
   end
 
-  # GET /commodities/1/edit
+  # GET /commodities/:id/edit
   def edit
     @supply_category_id = @supply.commodity_category_id
   end
 
-  # PUT /commodities/1
+  # PUT /commodities/:id
   def update
     respond_to do |format|
       if params[:commodity].values[0] != "" and @supply.update_attributes(params[:commodity])
@@ -54,7 +55,7 @@ class CommoditiesController < ApplicationController
     end
   end
 
-  # DELETE /commodities/1
+  # DELETE /commodities/:id
   def destroy
     if @supply.destroy
       flash[:notice] = "La matière première a été supprimée"
@@ -64,7 +65,7 @@ class CommoditiesController < ApplicationController
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
   
-  # GET /commodities/1/disable
+  # GET /commodities/:id/disable
   def disable
     if @supply.disable
       flash[:notice] = "La matière première a été désactivée"
@@ -74,7 +75,7 @@ class CommoditiesController < ApplicationController
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end
   
-  # GET /commodities/1/reactivate
+  # GET /commodities/:id/reactivate
   def reactivate
     if @supply.reactivate
       flash[:notice] = "La matière première a été réactivée"
