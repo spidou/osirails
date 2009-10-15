@@ -1,10 +1,10 @@
 class CreateSalaries < ActiveRecord::Migration
   def self.up
-    create_table :salaries do |t|     
-      t.integer :salary
+    create_table :salaries do |t|
       t.references :job_contract
+      t.float :gross_amount
       
-      t.timestamp :created_at
+      t.datetime :created_at
     end
   end
 

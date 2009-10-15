@@ -1,10 +1,11 @@
 class CreateContents < ActiveRecord::Migration
   def self.up
     create_table :contents do |t|
-      t.string :title, :description
-      t.text :text
-      t.integer :menu_id 
-      t.string :author, :contributors
+      t.references :menu, :author
+      t.string  :title, :description
+      t.text    :text
+      t.string  :contributors
+      t.integer :lock_version, :default => 0, :null => false
       
       t.timestamps
     end

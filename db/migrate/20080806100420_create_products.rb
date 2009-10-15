@@ -1,10 +1,15 @@
 class CreateProducts < ActiveRecord::Migration
   def self.up
     create_table :products do |t|
-      t.string :name, :description, :production_cost_manpower, :production_time, :delivery_cost_manpower, :delivery_time, :information
-      t.integer :product_reference_id
+      t.references :product_reference, :order
+      t.string  :reference, :name, :dimensions
+      t.text    :description
+      t.float   :quantity
+      
       t.timestamps
     end
+    
+    add_index :products, :reference, :unique => true
   end
 
   def self.down

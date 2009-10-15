@@ -2,9 +2,7 @@ class CreateCalendars < ActiveRecord::Migration
   def self.up
     create_table :calendars do |t|
       t.references :user
-      t.string :name
-      t.string :color
-      t.string :title
+      t.string :name, :title, :color
 
       t.timestamps
     end

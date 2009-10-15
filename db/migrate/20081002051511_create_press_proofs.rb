@@ -1,11 +1,11 @@
 class CreatePressProofs < ActiveRecord::Migration
   def self.up
     create_table :press_proofs do |t|
+      t.references :graphic_conception_step
       t.string :status
       t.string :transmission_mode
-      t.references :step_graphic_conception
       
-      t.datetime :created_at
+      t.timestamps
     end
   end
 

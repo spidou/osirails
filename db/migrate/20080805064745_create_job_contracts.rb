@@ -1,10 +1,8 @@
 class CreateJobContracts < ActiveRecord::Migration
   def self.up
     create_table :job_contracts do |t|
-      t.date :start_date,:end_date         
-      t.references :employee
-      t.references :employee_state
-      t.references :job_contract_type
+      t.references :employee, :employee_state, :job_contract_type
+      t.date :start_date, :end_date, :departure
       
       t.timestamps
     end
