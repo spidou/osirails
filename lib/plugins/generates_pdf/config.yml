@@ -1,0 +1,4 @@
+menus:
+  generates_pdf_examples:
+    title: Exemple de génération de pdf
+    description: Exemple de génération de pdf

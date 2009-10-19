@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<Root>
+  <Document>
+    <Type>Devis</Type>
+    <Prefix>DV</Prefix>
+    <Number>03</Number>
+    <Date><%= Date.today.strftime("%d %B %Y")%></Date>
+    <Currency>EUROS (€)</Currency>  
+    <FileNumber>091006</FileNumber>
+    <FileName>Stand salon de la maison 2004</FileName>
+    <Supplier>
+      <CorporateName>Enseignes Maintenance Réunion</CorporateName>
+      <CorporateName2>EMR</CorporateName2>
+      <Address1>Îlôt 7 n°48</Address1>
+      <Address2>P.A.E. de La Mare</Address2>
+      <ZipCode>97438</ZipCode>
+      <City>Sainte Marie</City>
+      <Country>Réunion (FRANCE)</Country>
+      <Status>SARL au CAPITAL de 125000€/RCS Saint-Denis, Membre du SYNAFEL (Syndicat des enseignistes européens)</Status>
+      <Siret>408.617.348.000.29</Siret>
+      <APECode>315C</APECode>
+      <Email>emr@emr-oi.com</Email>
+      <Phone>+262 (0)262 53 12 89</Phone>
+      <Fax>+262 (0)262 53 16 42</Fax>
+      <Representative>
+        <Function><%= @representative.jobs.first.name %></Function>
+        <LastName><%= @representative.last_name %></LastName>
+        <FirstName><%= @representative.first_name %></FirstName>
+        <Email><%= @representative.email %></Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+      <LogoURL>logo.png</LogoURL>
+    </Supplier>  
+    <Customer>
+      <CorporateName>Société Réunionnaise des Produits Pétroliers</CorporateName>
+      <CorporateName2>SRPP</CorporateName2>
+      <Address1>37, rue du Soleil</Address1>
+      <Address2>BP 042</Address2>
+      <ZipCode>97424</ZipCode>
+      <City>Le Port CEDEX</City>
+      <Country>Réunion (FRANCE)</Country>
+      <Status/>
+      <Siret/>
+      <APECode/>
+      <Email/>
+      <Phone/>
+      <Fax/>
+      <Representative>
+        <Function/>
+        <LastName>Payet</LastName>
+        <FirstName>Jean</FirstName>
+        <Email>j.payet@srpp.re</Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+    </Customer>
+    <Lines>
+      <Line n="0">
+        <Reference>03008</Reference>
+        <Description>Caisson 5300 x 4200</Description>
+        <Quantity>2</Quantity>
+        <UnitPrice>3400.00</UnitPrice>
+        <Prizegiving/>
+        <TotalPrice>6800.00</TotalPrice>
+        <VAT>1</VAT>
+      </Line>
+      <Line n="1">
+        <Reference>00012</Reference>
+        <Description>Frais de Pose forfait 1</Description>
+        <Quantity>1</Quantity>
+        <UnitPrice>850.00</UnitPrice>
+        <Prizegiving/>
+        <TotalPrice>850.00</TotalPrice>
+        <VAT>1</VAT>
+      </Line>
+      <Line n="2">
+        <Reference>01207</Reference>
+        <Description>Enseigne 8000x2320</Description>
+        <Quantity>2</Quantity>
+        <UnitPrice>2550.00</UnitPrice>
+        <Prizegiving>153.00</Prizegiving>
+        <TotalPrice>4947.00</TotalPrice>
+        <VAT>1</VAT>
+      </Line>
+      <Line n="3">
+        <Reference>00017</Reference>
+        <Description>Frais de déplacement zone 2</Description>
+        <Quantity>1</Quantity>
+        <UnitPrice>70.00</UnitPrice>
+        <Prizegiving/>
+        <TotalPrice>70.00</TotalPrice>
+        <VAT>1</VAT>
+      </Line>
+      <Line n="4">
+        <Reference/>
+        <Description>Travail effectué:
+          Contrôle étanchéité sur toiture
+          Démontage ancienne structure
+          Ancrage
+          Boulonnage
+        </Description>
+        <Quantity>1</Quantity>
+        <UnitPrice>1000.00</UnitPrice>
+        <Prizegiving/>
+        <TotalPrice>1000.00</TotalPrice>
+        <VAT>1</VAT>
+      </Line>      
+    </Lines>
+    <Taxes>
+      <VAT n="0">
+        <Code>1</Code>
+        <Coefficient>8.50</Coefficient>
+        <TotalDutyFreePrice>13994.00</TotalDutyFreePrice> 
+        <TotalInclusiveOfTaxPrice>1138.50</TotalInclusiveOfTaxPrice> 
+      </VAT>
+    </Taxes>  
+    <TotalDutyFreeGrossPrice>13667.00</TotalDutyFreeGrossPrice>
+    <Prizegiving>273.00</Prizegiving>
+    <TotalDutyFreeNetPrice>13994.00</TotalDutyFreeNetPrice>
+    <Postage></Postage>
+    <Discount></Discount>
+    <TotalTaxes>1138.50</TotalTaxes> 
+    <MiscInclusiveOfTax/>
+    <TotalInclusiveOfTaxNetPrice>14532.50</TotalInclusiveOfTaxNetPrice>
+    <PurchaseSaleContract>
+      <Description>30% d'acompte par chèque ou virement, solde à 30 jours pour date de réception des travaux</Description>
+      <DutyFreeDeposit>4018.20</DutyFreeDeposit>
+      <InclusiveOfTaxDeposit>4359.80</InclusiveOfTaxDeposit>
+    </PurchaseSaleContract>
+  </Document>
+  <Labels>
+    <Siret>SIRET :</Siret>
+    <APECode>Code APE :</APECode>
+    <Email>e-mail :</Email>
+    <Phone>tél :</Phone>
+    <Fax>fax :</Fax>
+    <Date>Date :</Date>
+    <Prefix>N°</Prefix>
+    <FileName></FileName>
+    <SupplierPrefix>Suivi commercial</SupplierPrefix>
+    <CustomerPrefix>A l'attention de</CustomerPrefix>
+    <Amount>MONTANTS EN</Amount>
+    <Reference>Réf.</Reference>
+    <Description>Désignation produit</Description>
+    <Quantity>Qté</Quantity>
+    <UnitPrice>P.U. HT</UnitPrice>
+    <Prizegiving>Remise</Prizegiving>
+    <GlobalPrizegiving>Remise :</GlobalPrizegiving>
+    <TotalPrice>Montant HT</TotalPrice>
+    <VAT>TVA</VAT>
+    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice> 
+    <Coefficient>Taux</Coefficient>
+    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice> 
+    <TotalDutyFreeGrossPrice>Total Brut HT :</TotalDutyFreeGrossPrice>
+    <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
+    <Postage>Frais de port :</Postage>
+    <Discount>Escompte :</Discount>
+    <TotalTaxes>Total taxes :</TotalTaxes> 
+    <InclusiveOfTaxMisc>Divers TTC :</InclusiveOfTaxMisc>
+    <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
+    <PurchaseSaleContract>Conditions commerciales (Facilités/Moyen/Délai de paiement/Acompte)</PurchaseSaleContract>
+    <DutyFreeDeposit>Acompte HT</DutyFreeDeposit>
+    <InclusiveOfTaxDeposit>Acompte TTC</InclusiveOfTaxDeposit>
+    <DeliveryDelay>Délai de livraison :</DeliveryDelay>
+    <Agreement>Bon pour accord, dater et signer :</Agreement>
+    <BillingAddress>Adresse de facturation :</BillingAddress>
+    <Subtotal>Report :</Subtotal>
+    <Page>Page</Page>  
+  </Labels>
+</Root>
