@@ -105,9 +105,9 @@ menus:
             description: Historiques des actions effectués sur le dossier de commmande
             position: 4
 configurations:
-  taxes_vat:
-    description: TVA
-    value: 8.5 
+  account_tax_coefficient:
+    description: TVA appliquée aux acomptes HT
+    value: 8.5
   quote_validity_delay:
     description: Délai de validité du devis
     value: 15

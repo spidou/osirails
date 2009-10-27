@@ -24,7 +24,7 @@ class Test::Unit::TestCase
     order.commercial = employees(:john_doe)
     order.creator = users(:powerful_user)
     order.customer = customer
-    order.contacts << customer.contacts.first
+    order.contacts << customer.establishments.first.contacts.first
     order.society_activity_sector = society_activity_sector
     order.order_type = society_activity_sector.order_types.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)

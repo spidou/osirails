@@ -10,7 +10,7 @@ module GeneratesPdfHelper
   def render_with_fop(options = nil, *args, &block)
     if options.is_a?(Hash) && options.has_key?(:pdf)
       begin
-        make_and_send_pdf(options.delete(:pdf), options)
+        make_and_send_pdf(options)
       rescue
         error_access_page(404)
       end
@@ -22,16 +22,16 @@ module GeneratesPdfHelper
   private
     def make_pdf(options = {})
       f = FOP.new
-      f.pdf_from_xml_and_xsl(render_to_string(:template => options[:template], :layout => false), options[:xsl])
+      f.pdf_from_xml_and_xsl(render_to_string(:template => options[:template], :layout => false), options[:xsl], options[:pdf], options[:path])
     end
 
-    def make_and_send_pdf(pdf_name, options = {})
-      file = make_pdf(options)
+    def make_and_send_pdf(options = {})
+      result = make_pdf(options)
       send_data(
-        File.read(file),
-        :filename => pdf_name + '.pdf',
+        File.read(result[:pdf_path]),
+        :filename => options[:pdf] + '.pdf',
         :type => 'application/pdf'
       )
-      File.delete(file)
+      File.delete(result[:pdf_path]) if result[:is_temporary_pdf]
     end
 end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091007110542) do
+ActiveRecord::Schema.define(:version => 20091021080237) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -844,6 +844,8 @@ ActiveRecord::Schema.define(:version => 20091007110542) do
     t.string   "order_form_content_type"
     t.integer  "order_form_file_size",    :limit => 11
     t.integer  "order_form_type_id",      :limit => 11
+    t.float    "discount",                              :default => 0.0
+    t.text     "sales_terms"
   end
 
   add_index "quotes", ["public_number"], :name => "index_quotes_on_public_number", :unique => true

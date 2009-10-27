@@ -8,7 +8,7 @@
   <td><%= quote.creator.employee_name %></td>
   <td><%= quote.contact.fullname %></td>
   <td><%= quote.number_of_pieces %></td>
-  <td><%= quote.total_with_taxes.round_to(2).to_s(2) %></td>
+  <td><%= quote.net_to_paid.round_to(2).to_s(2) %></td>
   <td><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
   <td><%= quote.signed_on.humanize if quote.signed_on %></td>
   <td class="actions">

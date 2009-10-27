@@ -33,7 +33,7 @@ class Quote < ActiveRecord::Base
   validates_presence_of     :estimate_step, :if => :estimate_step
   validates_presence_of     :creator,       :if => :user_id
   
-  validates_numericality_of :reduction, :carriage_costs, :account, :validity_delay
+  validates_numericality_of :reduction, :carriage_costs, :discount, :account, :validity_delay
   
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
   validates_inclusion_of    :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
@@ -87,6 +87,7 @@ class Quote < ActiveRecord::Base
   @@form_labels[:signed_on] = 'Devis signé par client le :'
   @@form_labels[:order_form_type] = 'Type de document :'
   @@form_labels[:order_form] = 'Fichier :'
+  @@form_labels[:sales_terms] = 'Conditions commerciales :'
   
   def quotes_product_reference_attributes=(quotes_product_reference_attributes)
     quotes_product_reference_attributes.each do |attributes|
@@ -129,7 +130,7 @@ class Quote < ActiveRecord::Base
   end
   
   def net
-    total - reduction + carriage_costs
+    total*(1-(reduction/100))
   end
   
   def total_with_taxes
@@ -141,7 +142,19 @@ class Quote < ActiveRecord::Base
   end
   
   def net_to_paid
-    total_with_taxes - account
+    net + carriage_costs + summon_of_taxes - discount
+  end
+  
+  def account_with_taxes
+    account*(1+(ConfigurationManager.sales_account_tax_coefficient/100))
+  end
+  
+  def tax_coefficients
+    self.quotes_product_references.collect{ |qpr| qpr.vat }.uniq
+  end
+  
+  def total_for_tax(coefficient)
+    self.quotes_product_references.collect{ |qpr| qpr.total if qpr.vat == coefficient}.compact.sum
   end
   
   def number_of_pieces

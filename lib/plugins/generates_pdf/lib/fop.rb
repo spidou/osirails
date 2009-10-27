@@ -13,14 +13,21 @@ class FOP
     @logger   = RAILS_DEFAULT_LOGGER
   end
 
-  def pdf_from_xml_and_xsl(xml_rendering,xsl)    
-    xsl_path = "#{RAILS_ROOT}/public/fo/style/#{xsl}.xsl"
+  def pdf_from_xml_and_xsl(xml_rendering,xsl,file_name,pdf_path=nil)
+    if pdf_path.nil?
+      is_temporary_pdf = true
+      pdf_path = "tmp/#{Digest::MD5.hexdigest(Time.now.to_i.to_s)}.pdf"
+    end
+    
+    return {:pdf_path => pdf_path, :is_temporary_pdf => is_temporary_pdf} if File.exist?(pdf_path)
+    
+    xsl_path = "public/fo/style/#{xsl}.xsl"
   
     path = @exe_path
     
     logger.info "\n\n-- FO generation --"    
     
-    tmp_xml = "#{RAILS_ROOT}/public/fo/tmp/#{Digest::MD5.hexdigest(Time.now.to_i.to_s)}.xml"
+    tmp_xml = "public/fo/tmp/#{Digest::MD5.hexdigest(Time.now.to_i.to_s)}.xml"
     
     File.new(tmp_xml,'w')
     f = File.open(tmp_xml,'w')
@@ -31,14 +38,14 @@ class FOP
     logger.info tmp_xml
     logger.info "\n\n-- FOP command --"
     
-    tmp_pdf = "tmp/#{Digest::MD5.hexdigest(Time.now.to_i.to_s)}.pdf"
-    path = "#{path} -xml #{tmp_xml} -xsl #{xsl_path} -pdf #{tmp_pdf}"
+    `mkdir #{RAILS_ROOT}/#{File.dirname(pdf_path)} -p` unless File.directory?("#{RAILS_ROOT}/#{File.dirname(pdf_path)}")
+    path = "#{path} -q -xml #{tmp_xml} -xsl #{xsl_path} -pdf #{pdf_path}"
 
     logger.info path
     logger.info ''
     
     `#{path}`
     File.delete(tmp_xml)
-    tmp_pdf
+    {:pdf_path => pdf_path, :is_temporary_pdf => is_temporary_pdf}
   end
 end

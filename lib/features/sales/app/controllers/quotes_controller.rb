@@ -12,14 +12,12 @@ class QuotesController < ApplicationController
       @quote = Quote.find(params[:id])
       
       respond_to do |format|
+        format.xml {
+          render :layout => false
+        }
         format.pdf {
           unless @quote.uncomplete?
-            pdf = render_pdf
-            if pdf
-              send_data pdf, :filename => "devis_#{@quote.public_number}.pdf", :type => 'application/pdf', :disposition => 'attachment'
-            else
-              error_access_page(500)
-            end
+            render :pdf => "devis_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "devis", :path => "assets/pdf/quotes/devis_#{@quote.public_number}.pdf"
           else
             error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
           end

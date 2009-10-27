@@ -123,6 +123,5 @@ require 'contextual_menu_manager'
 load 'application_helper.rb'
 
 require 'json'
-require 'htmldoc'
 require 'htmlentities'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y
