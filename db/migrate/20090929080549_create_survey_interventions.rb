@@ -1,9 +1,10 @@
 class CreateSurveyInterventions < ActiveRecord::Migration
   def self.up
     create_table :survey_interventions do |t|
-      t.references :internal_actor
+      t.references :survey_step, :internal_actor
       t.datetime :start_date
       t.integer  :duration_hours, :duration_minutes
+      t.text     :comment
       
       t.timestamps
     end

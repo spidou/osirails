@@ -156,7 +156,7 @@ configurations:
       - "4"
       - "5"
   society_identity_configuration_legal_holidays:
-    description: Jours fériés
+    description: Jours fériés # you have to put day and month using 2 numbers ('08' instead of '8')
     value:
       - "01/01"
       - "05/01"

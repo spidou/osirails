@@ -1,0 +1,34 @@
+<%# contextual_search_for_supplier %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_subcontractor_link %>
+<% end %>
+
+<h1> Liste des sous-traitants </h1>
+
+<div>
+  <% unless @subcontractors.empty?%>
+    <table>
+      <tr>
+        <th>Nom</th> 
+        <th>Secteurs d'activités</th>
+        <th>Note</th>
+        <th>Actions</th>
+      </tr>
+    
+      <%for subcontractor in @subcontractors%>
+        <tr>
+          <td><%= subcontractor.name %></td>
+          <td><%= subcontractor.activity_sector.name unless subcontractor.activity_sector.nil?%></td>
+          <td><%= subcontractor.note %></td>
+          <td>
+            <%= subcontractor_link(subcontractor, :link_text => "") %> 
+            <%= edit_subcontractor_link(subcontractor, :link_text => "") %>
+            <%= delete_subcontractor_link(subcontractor, :link_text => "") %>
+            </td>
+        </tr>
+    <%end%>
+  <%end%>
+  </table>
+  <%= will_paginate @subcontractors %>
+</div>

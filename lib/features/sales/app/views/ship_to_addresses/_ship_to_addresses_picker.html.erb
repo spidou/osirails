@@ -27,7 +27,7 @@ ship_to_addresses = ship_to_addresses_picker
       end
       %>
       
-      <div id="preview_establishment_<%=establishment.id%>" class="preview_establishment" <%= "style=\"display:none\"" unless selected_establishment %>>
+      <div id="preview_establishment_<%=establishment.id%>" class="preview_establishment resource" <%= "style=\"display:none\"" unless selected_establishment %>>
         <%= render :partial => 'ship_to_addresses/ship_to_address', :object => ship_to_address, :locals => { :establishments => establishments, :force_show_view => true } %>
         
         <%= link_to_function( image_tag('delete_16x16.png', :title => 'Retirer cette adresse de la liste', :alt => 'Retirer cette adresse de la liste'), "ship_to_addresses_picker.remove_resource_from_list(this)", :class => 'establishment_actions' ) %>

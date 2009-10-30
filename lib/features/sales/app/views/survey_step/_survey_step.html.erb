@@ -1,22 +1,79 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'sales/survey_step' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+<% end -%>
+
 <%= order_header %>
 
-<h1>Visite commerciale</h1>
+<%
+survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.count})",
+                   :survey_step_products        => "Produits (#{survey_step.order.products.count})",
+                   :survey_step_documents       => "Documents / Photos (#{survey_step.documents.count})",
+                   :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractors.count})",
+                   :survey_step_consultants     => "Intervenants externes (x)",
+                   :survey_step_remarks         => "Commentaires (#{survey_step.remarks.count})" }
 
-<div>
+survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
+                   :survey_step_products        => survey_step.order.errors.on(:products) ? ' errors' : '',
+                   :survey_step_documents       => survey_step.errors.on(:documents) ? ' errors' : '',
+                   :survey_step_subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
+                   :survey_step_consultants     => '',
+                   :survey_step_remarks         => survey_step.errors.on(:remarks) ? ' errors' : '' }
+%>
+
+<h1 id="survey_step">Visite commerciale</h1>
+<div class="presentation_medium survey_step root_nav">
 <% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "survey_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+  <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update },  :html => { :multipart => true }) do |form| %>
     <%= form.error_messages %>
     
-    <%# display_checklists_list(@step)%>
+    <ul class="survey_step_nav tab_nav">
+      <li class="survey_step_interventions<%= survey_errors[:survey_step_interventions] %> selected"><%= survey_headers[:survey_step_interventions] %></li>
+      <li class="survey_step_products<%= survey_errors[:survey_step_products] %>"><%= survey_headers[:survey_step_products] %></li>
+      <li class="survey_step_documents<%= survey_errors[:survey_step_documents] %>"><%= survey_headers[:survey_step_documents] %></li>
+      <li class="survey_step_subcontractors<%= survey_errors[:survey_step_subcontractors] %>"><%= survey_headers[:survey_step_subcontractors] %></li>
+      <!-- <li class="survey_step_consultants<%= survey_errors[:survey_step_consultants] %>"><%= survey_headers[:survey_step_consultants] %></li> -->
+      <li class="survey_step_remarks<%= survey_errors[:survey_step_remarks] %>"><%= survey_headers[:survey_step_remarks] %></li>
+    </ul>
     
-    <h2>Documents</h2>
-    <%= display_documents_list(@step) %>
-    <%= display_document_add_button(@step) %>
+    <h2 class="survey_step_interventions"><%= survey_headers[:survey_step_interventions] %></h2>
+    <div class="survey_step_interventions section_nav selected">
+      <%= display_survey_interventions(survey_step) %>
+      <%= display_survey_intervention_add_button %>
+    </div>
     
-    <h2>Commentaires</h2>
-    <%= display_remark_add_button(@step, :top) if @step.remarks.size > 1 %>
-    <%= display_remarks_list(@step) %>
-    <%= display_remark_add_button(@step) %>
+    <h2 class="survey_step_products"><%= survey_headers[:survey_step_products] %></h2>
+    <div class="survey_step_products section_nav">
+      <%= display_autocomplete_field_to_add_product_in_survey_step(survey_step.order) %>
+      <%= display_products_list_in_survey_step(survey_step.order) %>
+      <%= display_anchor_to_autocomplete_field_to_add_product_in_survey_step %>
+    </div>
+    
+    <h2 class="survey_step_documents"><%= survey_headers[:survey_step_documents] %></h2>
+    <div class="survey_step_documents section_nav">
+      <%= display_documents_list(survey_step) %>
+      <%= display_document_add_button(survey_step) %>
+    </div>
+    
+    <h2 class="survey_step_subcontractors"><%= survey_headers[:survey_step_subcontractors] %></h2>
+    <div class="survey_step_subcontractors section_nav">
+      <%= display_subcontractor_requests(survey_step) %>
+      <%= display_subcontractor_request_add_button(survey_step) %>
+    </div>
+    
+    <!-- <h2 class="survey_step_consultants"><%= survey_headers[:survey_step_consultants] %></h2>
+    <div class="survey_step_consultants section_nav">
+      coming soon
+    </div> -->
+    
+    <h2 class="survey_step_remarks"><%= survey_headers[:survey_step_remarks] %></h2>
+    <div class="survey_step_remarks section_nav">
+      <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 %>
+      <%= display_remarks_list(survey_step) %>
+      <%= display_remark_add_button(survey_step) %>
+    </div>
     
     <p>
       <%= form.submit 'Enregistrer' %>
@@ -24,15 +81,15 @@
     </p>
   <% end %>
 <% else %>
-  <%# display_checklists_list(@step)%>
+  <h2>Interventions</h2>
+    
+  <h2>Produits</h2>
   
-  <h2>Documents</h2>
-  <%= display_documents_list(@step) %>
+  <h2>Sous-traitance</h2>
+  
+  <h2>Intervenants</h2>
   
   <h2>Commentaires</h2>
-  <%= display_remarks_list(@step) %>
+  <%= display_remarks_list(survey_step) %>
 <% end %>
 </div>
-
-<!-- Osibox initialisation -->
-<% #osibox_initialisation(@step, "/orders/#{@order.id}/survey/documents/") %>

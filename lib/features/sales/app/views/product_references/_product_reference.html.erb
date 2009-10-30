@@ -1,5 +1,5 @@
 <div class="presentation_large">
-<% form_for @product_reference do |form| %>
+<% form_for product_reference do |form| %>
   <%= form.error_messages %>
   <h2>Rérérence</h2>
   <p>
@@ -13,10 +13,6 @@
   <p>
     <%= form.label :description %>
     <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
-  </p>
-  <p>
-    <%= form.label :information %>
-    <%= form.form_or_view(form.text_field(:information), :information) %>
   </p>
   <p>
     <%= form.label :product_reference_category_id %>
@@ -46,7 +42,9 @@
     <%= form.label :delivery_time %>
     <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
   </p>
-
-  <p><%= form.submit(submit_button_name) if defined?(submit_button_name) %></p>
+  
+  <% if is_form_view? %>
+    <p><%= form.submit(submit_button_name) %></p>
+  <% end %>
 <% end %>
 </div>

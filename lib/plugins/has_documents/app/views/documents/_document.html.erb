@@ -1,14 +1,17 @@
-<% require_locals documents_owner %>
-<% id_attr = "id=\"document_#{document.id}\"" unless document.new_record? %>
+<%
+require_locals documents_owner
+should_use_id ||= false # set should_use_id at true if there a many instances of documents_owner in the same page, and documents_owner ID should be used to separate them
+id_attr = "id=\"document_#{document.id}\"" unless document.new_record?
+%>
 
 <div class="resource document" <%= id_attr %> >
   <% unless document.new_record? -%>
     <%= content_tag :div, nil, :class => :preview, :id => "document_preview_#{@document_id}" %>
     <%= content_tag(:div, image_tag(document.attachment.url(:thumb)), :class => :thumb) %>
     <% content_tag :div, :class => :details do -%>
-      <%= content_tag(:h1, h(document.name)) unless document.name.nil? or document.name.empty? %>
+      <%= content_tag(:h1, h(document.name_was)) unless document.name_was.blank? %>
       <%= content_tag(:span, h(document.tag_list.join(", "))) + content_tag(:br) unless document.tag_list.empty? %>
-      <%= content_tag(:span, h(document.description)) + content_tag(:br) unless document.description.nil? or document.description.empty? %>
+      <%= content_tag(:span, h(document.description_was)) + content_tag(:br) unless document.description_was.blank? %>
       <%= content_tag(:span, document.created_at.humanize) + content_tag(:br) unless document.created_at.nil? %>
       <%= display_document_preview_button(document) %>
       <%= display_document_download_button(document) %>
@@ -17,5 +20,5 @@
     <% end -%>
   <% end -%>
   
-  <%= render(:partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner }) if is_form_view? %>
+  <%= render(:partial => "documents/document_form", :object => document, :locals => { :documents_owner => documents_owner, :should_use_id => should_use_id }) if is_form_view? %>
 </div>

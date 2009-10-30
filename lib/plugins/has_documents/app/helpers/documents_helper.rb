@@ -1,10 +1,12 @@
 module DocumentsHelper
 
-  def display_documents_list(documents_owner)
-    html = "<div id=\"#{documents_owner.class.singularized_table_name}_documents\" class=\"resources\">"
-    html << render_documents_list(documents_owner, :group_by => "date", :order_by => "asc")
+  def display_documents_list(documents_owner, options = {})
+    options[:div_id] ||= "#{documents_owner.class.singularized_table_name}_documents"
+    
+    html = "<div id=\"#{options[:div_id]}\" class=\"resources\">"
+    html << render_documents_list(documents_owner, {:group_by => "date", :order_by => "asc"}.merge(options))
     html << '</div>'
-    html << render_new_documents_list(documents_owner)
+    html << render_new_documents_list(documents_owner, options)
   end
 
   def render_documents_list(documents_owner, options = {})
@@ -15,11 +17,13 @@ module DocumentsHelper
     html << "</div>"
   end
   
-  def render_new_documents_list(documents_owner)
+  def render_new_documents_list(documents_owner, options = {})
+    options[:new_div_id] ||= "new_#{documents_owner.class.singularized_table_name}_documents"
+    
     new_documents = documents_owner.documents.select{ |document| document.new_record? }
-    html =  "<div class=\"resource_group document_group new_records\" id=\"new_documents\" #{"style=\"display:none\"" if new_documents.empty?}>"
+    html =  "<div class=\"resource_group document_group new_records\" id=\"#{options[:new_div_id]}\" #{"style=\"display:none\"" if new_documents.empty?}>"
     html << "  <h1>Nouveaux documents</h1>"
-    html << render(:partial => 'documents/document', :collection => new_documents, :locals => { :documents_owner => documents_owner })
+    html << render(:partial => 'documents/document', :collection => new_documents, :locals => {:documents_owner => documents_owner}.merge(options))
     html << "</div>"
   end
 
@@ -40,13 +44,15 @@ module DocumentsHelper
                                                            :method  => :get
   end
 
-  def display_document_add_button(documents_owner)
+  def display_document_add_button(documents_owner, options = {})
+    options[:new_div_id] ||= "new_#{documents_owner.class.singularized_table_name}_documents"
+    
     content_tag( :p, link_to_function "Ajouter un document" do |page|
-      page.insert_html :bottom, :new_documents, :partial  => 'documents/document',
-                                                :object   => documents_owner.build_document,
-                                                :locals   => { :documents_owner => documents_owner }
-      page['new_documents'].show if page['new_documents'].visible
-      last_document = page['new_documents'].select('.document').last
+      page.insert_html :bottom, options[:new_div_id], :partial  => 'documents/document',
+                                                      :object   => documents_owner.build_document,
+                                                      :locals   => {:documents_owner => documents_owner}.merge(options)
+      page[options[:new_div_id]].show if page[options[:new_div_id]].visible
+      last_document = page[options[:new_div_id]].select('.document').last
       last_document.show
       last_document.visual_effect :highlight
     end )

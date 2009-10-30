@@ -27,12 +27,16 @@ force_show_view ||= false
     <%= form.form_or_view(form.text_field(:activities), :activities) %>
   </p>
   <p>
+    <%= form.label :website %>
+    <%= form.form_or_view(form.text_field(:website) + " (http://site.client.com)", :website) %> <%= link_to("Visiter", third.website, :popup => true) unless is_form_view? or third.website.blank? %>
+  </p>
+  <p>
     <%= form.label :note %>
     <%= form.form_or_view(form.select(:note, Third::RATINGS), :note) %>
   </p>
   
   <h3>Informations bancaires</h3>
-    <% if third.class.equal?(Customer) %>
+  <% if third.class.equal?(Customer) %>
     <p>
       <%= form.label :payment_method_id %>
       <%= form.form_or_view(form.collection_select(:payment_method_id, PaymentMethod.find(:all), :id, :name), :payment_method, :name ) %>
@@ -41,7 +45,7 @@ force_show_view ||= false
       <%= form.label :payment_time_limit_id %>
       <%= form.form_or_view(form.collection_select(:payment_time_limit_id, PaymentTimeLimit.find(:all), :id, :name), :payment_time_limit, :name) %>
     </p>
-    <% elsif third.class.equal?(Supplier) %>
-      <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
-    <%  end %>
+  <% else %>
+    <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
+  <%  end %>
 <% end %>

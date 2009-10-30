@@ -6,6 +6,8 @@
 <%
 @documents = documents_list
 
+should_use_id ||= false # set should_use_id at true if there a many instances of documents_owner in the same page, and documents_owner ID should be used to separate them
+
 @group_by ||= "date"
 @order_by ||= "asc" # ascendent
 
@@ -42,7 +44,7 @@ end
   <% @groups.each do |group, collection| %>
     <div class="resource_group document_group">
       <%= content_tag(:h1, group.blank? ? "\"Aucun\"" : group) %>
-      <%= render :partial => 'documents/document', :collection => collection, :locals => { :documents_owner => @documents_owner }  %>
+      <%= render :partial => 'documents/document', :collection => collection, :locals => { :documents_owner => @documents_owner, :should_use_id => should_use_id }  %>
     </div>
   <% end %>
 <% else %>

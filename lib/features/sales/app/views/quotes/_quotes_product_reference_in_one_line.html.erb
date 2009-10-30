@@ -26,9 +26,10 @@
       <td colspan="10">
         <%= hidden_field_tag 'add_this_product_reference_id' %>
         <%= custom_text_field_with_auto_complete( :product_reference, :reference,
-                                                  { :value => "Référence produit dans la base",
-                                                    :onkeydown => "if (event.keyCode == 13) { return false; }" },
-                                                  { :update_id => 'add_this_product_reference_id' } ) %>
+                                                  { :value      => "Cherchez un produit référence dans la base",
+                                                    :size       => 50,
+                                                    :onkeydown  => "if (event.keyCode == 13) { return false; }" },
+                                                  { :update_id  => 'add_this_product_reference_id' } ) %>
         <%= button_to_function "Ajouter", "add_product_reference_to_quote()" %>
       </td>
     </tr>

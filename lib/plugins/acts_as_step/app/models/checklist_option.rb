@@ -3,7 +3,7 @@ class ChecklistOption < ActiveRecord::Base
   #
   #validates_presence_of :checklist_id, :name
   acts_as_tree :order => :position
-  acts_as_list
+  acts_as_list :scope => :parent
   
   belongs_to :checklist
   

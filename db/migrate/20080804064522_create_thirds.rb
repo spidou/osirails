@@ -3,7 +3,7 @@ class CreateThirds < ActiveRecord::Migration
     create_table :thirds do |t|
       # common attributes
       t.references :legal_form, :activity_sector
-      t.string  :type, :name, :siret_number, :activities
+      t.string  :type, :name, :siret_number, :activities, :website
       t.integer :note, :default => 0
       t.boolean :activated, :default => true
       

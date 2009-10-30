@@ -4,8 +4,6 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-  products:
-    - 0.1
   rh:
     - 0.1
   thirds:
@@ -59,6 +57,10 @@ menus:
                 title: Visite commerciale
                 description: Étape de la visite commercial
                 position: 1
+                children:
+                  subcontractor_requests:
+                    title: Demande de sous-traitance
+                    description: "Demande de prestatation auprès d'un sous-traitant"
               estimate_step:
                 title: Devis
                 description: "Étape de l'établissement du devis"
@@ -104,6 +106,36 @@ menus:
             title: Historiques
             description: Historiques des actions effectués sur le dossier de commmande
             position: 4
+  goods:
+    title: Produits
+    description: Gestion des produits
+    children:
+      product_reference_manager:
+        title: Gestion des références produits
+        description: Permet la gestion des familles et des références produits
+        children:
+          product_reference_categories:
+            title: Gestion des catégories
+            description: Permet la gestion des categories
+            hidden: true
+          product_references:
+            title: Gestion des références
+            description: Permet la gestion des références
+            hidden: true
+            children:
+              products:
+                title: Gestion des produits
+                description: Permet la gestion de produits
+                hidden: true
+      products_catalog:
+          title: Catalogue des produits et références
+          description: "Permet l'affichage du catalogue de produit"
+  thirds:
+    title: Tiers
+    children:
+      subcontractors:
+        title: Sous-traitants
+        description: Gestion des sous-traitants
 configurations:
   taxes_vat:
     description: TVA

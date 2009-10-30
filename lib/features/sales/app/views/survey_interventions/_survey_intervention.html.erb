@@ -1,0 +1,38 @@
+<%
+intervention = survey_intervention
+id_attr = "id=\"intervention_#{intervention.id}\"" unless intervention.new_record?
+%>
+
+<div class="survey_intervention resource" <%= id_attr %>>
+  <% unless intervention.new_record? %>
+    <% fields_for intervention, :index => nil do |form| %>
+      <p>
+        <%= form.label :start_date %>
+        <%= strong intervention.start_date_was.to_datetime.humanize %>
+      </p>
+      <p>
+        <%= form.label :duration_hours %>
+        <%= strong intervention.duration_humanized %>
+      </p>
+      <p>
+        <%= form.label :internal_actor_id %>
+        <%= link_to(intervention.internal_actor.fullname, intervention.internal_actor) %>
+      </p>
+      <p>
+        <%= form.label :contact_ids %>
+        <%= display_contact(intervention.contact, :contacts_owner => intervention, :force_show_view => true) if intervention.contact %>
+      </p>
+      <p>
+        <%= form.label :comment %>
+        <%= strong intervention.comment %>
+      </p>
+      <p>
+        <%= display_survey_intervention_edit_button(intervention) %>
+        <%= display_survey_intervention_delete_button(intervention) %>
+      </p>
+      
+    <% end -%>
+  <% end %>
+  
+  <%= render :partial => 'survey_interventions/survey_intervention_form', :object => intervention %>
+</div>

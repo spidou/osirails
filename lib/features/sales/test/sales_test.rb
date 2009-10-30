@@ -34,6 +34,17 @@ class Test::Unit::TestCase
     return order
   end
   
+  def create_valid_product_for(order)
+    product = order.products.build
+    product.product_reference_id = product_references(:product_reference1).id
+    product.name        = product_references(:product_reference1).name
+    product.description = "My description"
+    product.dimensions  = "1000x500"
+    product.quantity    = 3
+    product.save!
+    return product
+  end
+  
   def create_signed_quote_for(order)
     quote = order.commercial_step.estimate_step.quotes.build(:validity_delay => 30,
                                                              :validity_delay_unit => 'days')

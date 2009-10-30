@@ -14,7 +14,6 @@ module HasContacts
     
     def has_contacts options = {}
       raise "has_contacts must be called only once" if Contact.contacts_owners_models.include?(self) # multiple calls are forbidden
-      include InstanceMethods
       
       Contact.contacts_owners_models << self
       
@@ -32,7 +31,7 @@ module HasContacts
       
       after_save :save_contacts
       
-      validates_contact_length :is => 1, :message => "doit contenir exactement %s contact", :if => :contacts unless options[:many]
+      validates_contact_length :maximum => 1, :message => "Vous ne pouvez pas choisir plus d'un contact", :if => :contacts unless options[:many]
       
       validates_associated :contacts
       
@@ -110,9 +109,6 @@ module HasContacts
       end
     end
     
-  end
-  
-  module InstanceMethods
   end
   
 end

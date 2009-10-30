@@ -320,7 +320,243 @@ table#quotes_product_references tr.aggregates.global {
   padding-right: 25px;
 }
 
-#preview_establishments .resources .establishment_actions {
-  margin: 0px !important;
-  padding: 0px !important;
+#preview_establishments .resources a.establishment_actions {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+/* TABULATION FOR SURVEY STEP */
+.survey_step {
+  position: relative;
+  margin-top: 34px !important;
+}
+
+.survey_step ul.survey_step_nav {
+  position: absolute;
+  top: -46px;
+  left: -1px;
+  list-style: none;
+  padding: 0;
+}
+
+.survey_step ul.survey_step_nav li {
+  display: inline-block;
+  background-color: #fffcd6;
+  border: 1px solid #737373;
+  -moz-border-radius: 10px 10px 0 0;
+  padding: 4px 11px 4px 11px;
+  margin-top: 5px;
+  margin-right: -6px;
+  cursor: pointer;
+  z-index: -1;
+}
+
+.survey_step ul.survey_step_nav li:first-child {
+  -moz-border-radius: 0px 10px 0 0;
+}
+
+.survey_step ul.survey_step_nav li:hover {
+  background-color: white;
+}
+
+.survey_step ul.survey_step_nav li.selected {
+  background-color: white;
+  padding: 8px 14px 4px 14px;
+  border-bottom: 1px solid white;
+  -moz-border-radius: 10px 10px 0 0;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+.survey_step ul.survey_step_nav li.errors {
+  color: red;
+  background-image: url('/themes/emr/images/warning_14x14.png');
+  background-repeat: no-repeat;
+  background-position: 7px 50%;
+  padding-left: 28px;
+}
+
+.survey_step div.section_nav {
+  display: none;
+  padding: 8px;
+  text-align: left;
+}
+
+.survey_step div.section_nav.selected {
+  display: block;
+}
+
+.survey_step h2 {
+  display: none;
+}
+
+/* TABULATION FOR PRODUCTS IN SURVEY STEP */
+.product.resource {
+  display: block;
+  position: relative;
+  border: 1px solid #737373 !important;
+  margin: 38px 7px 7px 7px !important;
+  padding: 0;
+  vertical-align: inherit;
+}
+
+.product.resource .product_details > p {
+  margin: inherit;
+  padding: 5px 0 5px 0;
+  text-indent: inherit;
+}
+
+.product.resource .product_details > p input[type=text],
+.product.resource .product_details > p input[type=password],
+.product.resource .product_details > p input[type=checkbox],
+.product.resource .product_details > p textarea,
+.product.resource .product_details > p select {
+  vertical-align: inherit;
+  width: inherit;
+}
+
+.product > ul {
+  position: absolute;
+  top: -44px;
+  left: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.product > ul li {
+  display: inline-block;
+  background-color: #fffcd6;
+  border: 1px solid #737373;
+  -moz-border-radius: 10px 10px 0 0;
+  padding: 3px 9px 3px 9px;
+  margin-top: 5px;
+  margin-right: -6px;
+  cursor: pointer;
+}
+
+.product > ul li:first-child {
+  -moz-border-radius: 0px 10px 0 0;
+}
+
+.product > ul li:hover {
+  background-color: #ffdd60;
+}
+
+.product > ul li.selected {
+  background-color: #ffdd60;
+  padding: 8px 8px 3px 8px;
+  border-bottom: 1px solid #ffdd60;
+  -moz-border-radius: 10px 10px 0 0;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+.product > ul li.disabled {
+  background-color: #CCC;
+  color: #777;
+  font-style: italic;
+  cursor: inherit;
+}
+
+.product > ul li.errors {
+  color: red;
+  background-image: url('/themes/emr/images/warning_14x14.png');
+  background-repeat: no-repeat;
+  background-position: 5px 50%;
+  padding-left: 24px;
+}
+
+.product .product_summary {
+  background-color: #ffdd60; //#fff8a4;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  border-bottom: 1px solid #737373;
+  margin-bottom: -1px;
+}
+
+.product .product_summary > span {
+  display: inline-block;
+  vertical-align: top;
+  font-weight: bold;
+  padding: 5px 7px 5px 0;
+}
+
+.product .product_summary > span.product_label {
+  font-weight: inherit;
+  text-decoration: underline;
+}
+
+.product .product_summary .product_position {
+  margin: 3px 5px 3px -5px;
+  padding: 4px 6px 4px 6px;
+  border: 1px solid #737373;
+  -moz-border-radius: 20px;
+}
+
+.product .product_summary .product_name {
+  width: 450px;
+}
+
+.product .product_summary .product_dimensions {
+  min-width: 200px;
+}
+
+.product .product_summary .product_quantity {
+  min-width: 50px;
+}
+
+.product .product_summary .product_new {
+  color: red;
+  font-style: italic;
+}
+
+.product > h3 {
+  display: none;
+}
+
+.product > div {
+  display: none;
+}
+
+.product > div.selected {
+  display: block;
+}
+
+.product table thead tr {
+  font-weight: bold;
+  background-color: #CECECE;
+}
+
+.product table tbody tr {
+  vertical-align: top;
+}
+
+.survey_step_search_product_reference {
+  padding: 7px;
+}
+
+.survey_step_search_product_reference label {
+  width: auto !important;
+}
+
+.survey_step_search_product_reference input {
+  margin-left: 5px;
+  padding-right: 20px;
+}
+
+/* SURVEY INTERVENTION IN SURVEY STEP */
+div.resource.survey_intervention input,
+div.resource.survey_intervention select,
+div.resource.survey_intervention textarea {
+  width: inherit !important;
+}
+
+/* SUBCONTRACTORS REQUESTS IN SURVEY STEP */
+div.resource.subcontractor_request input,
+div.resource.subcontractor_request select,
+div.resource.subcontractor_request textarea {
+  width: inherit !important;
 }

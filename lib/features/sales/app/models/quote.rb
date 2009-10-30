@@ -81,12 +81,12 @@ class Quote < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = {}
-  @@form_labels[:validity_delay] = 'Période de validité :'
-  @@form_labels[:sended_on] = 'Devis envoyé au client le :'
+  @@form_labels[:validity_delay]    = 'Période de validité :'
+  @@form_labels[:sended_on]         = 'Devis envoyé au client le :'
   @@form_labels[:send_quote_method] = 'Par :'
-  @@form_labels[:signed_on] = 'Devis signé par client le :'
-  @@form_labels[:order_form_type] = 'Type de document :'
-  @@form_labels[:order_form] = 'Fichier :'
+  @@form_labels[:signed_on]         = 'Devis signé par client le :'
+  @@form_labels[:order_form_type]   = 'Type de document :'
+  @@form_labels[:order_form]        = 'Fichier :'
   
   def quotes_product_reference_attributes=(quotes_product_reference_attributes)
     quotes_product_reference_attributes.each do |attributes|

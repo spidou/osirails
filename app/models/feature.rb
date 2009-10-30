@@ -10,7 +10,7 @@ class Feature < ActiveRecord::Base
   DIR_BASE_FEATURES = "lib/features/"
   DIR_VENDOR_FEATURES = "vendor/features/"
   KERNEL_FEATURES = ["admin"]
-  FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "products", "rh", "sales", "thirds"]
+  FEATURES_TO_ACTIVATE_BY_DEFAULT = ["admin", "calendars", "cms", "logistics", "memorandum", "rh", "sales", "thirds"]
   # for pagination : number of instances by index page
   FEATURES_PER_PAGE = 15
 

@@ -39,7 +39,7 @@ module HasDocuments
           end
         end
         
-        after_update :save_documents
+        after_save :save_documents
         
         def save_documents
           documents.each do |d|

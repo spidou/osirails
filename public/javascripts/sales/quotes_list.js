@@ -24,6 +24,6 @@ function initialize_toggle_quotes_list_more_infos() {
       new_text = original_title_link;
     }
     
-    Effect.toggle(element, 'blind', { afterFinish: function(){ link.innerHTML = new_text } })
+    Effect.toggle(element, 'blind', { duration: 0.4, afterFinish: function(){ link.innerHTML = new_text } })
   });
 }

@@ -32,7 +32,6 @@ form .resource.contact label {
 
 a.contact_actions {
   display: none;
-  float: right;
   position: absolute;
   top: 13px;
   right: 13px;

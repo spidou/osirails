@@ -149,6 +149,8 @@ namespace :osirails do
       
       contact_type2 = ContactType.create! :name => "Normal",  :owner => "Supplier"
       
+      ContactType.create! :name => "Normal",                  :owner => "Subcontractor"
+      
       ContactType.create! :name => "Contact commercial",      :owner => "Order"
       ContactType.create! :name => "Contact sur site",        :owner => "Order"
       ContactType.create! :name => "Contact de facturation",  :owner => "Order"
@@ -243,7 +245,7 @@ namespace :osirails do
       
       # default suppliers
       #iban = Iban.create! :bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12"
-      supplier = Supplier.create! :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, :activated => true
+      supplier = Supplier.create! :name => "Fournisseur par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id
       supplier.create_address(:street_name => "1 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       #supplier.iban = iban
       supplier.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")
@@ -253,6 +255,9 @@ namespace :osirails do
       establishment1.contacts << contact1
       establishment2.contacts << contact2
       supplier.contacts << contact3
+      
+      # default subcontractors
+      Subcontractor.create(:name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id)
       
       # default commodity categories
       metal = CommodityCategory.create! :name => "Metal"
@@ -289,23 +294,15 @@ namespace :osirails do
       ProductReferenceCategory.create! :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
       
       # default product references
-      reference111 = ProductReference.create! :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 10, :production_time => 2, :delivery_cost_manpower => 20, :delivery_time => 3, :information => 'Reference information', :reference => "XKTO89", :vat => vat1.rate
-      reference112 = ProductReference.create! :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 20, :production_time => 2, :delivery_cost_manpower => 10, :delivery_time => 1.5, :information => 'Reference information', :reference => "XKTO90", :vat => vat2.rate
-      reference113 = ProductReference.create! :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 30, :production_time => 3, :delivery_cost_manpower => 30, :delivery_time => 3, :information => 'Reference information', :reference => "XKTO91", :vat => vat3.rate
-      ProductReference.create! :name => "Reference 1.2.1", :description => "Description de la référence 1.2.1", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 10, :production_time => 2.7, :delivery_cost_manpower => 30, :delivery_time => 2, :information => 'Reference information', :reference => "XKTO92", :vat => vat4.rate
-      ProductReference.create! :name => "Reference 1.2.2", :description => "Description de la référence 1.2.2", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 20, :production_time => 4, :delivery_cost_manpower => 40, :delivery_time => 4, :information => 'Reference information', :reference => "XKTO93", :vat => vat1.rate
-      ProductReference.create! :name => "Reference 1.2.3", :description => "Description de la référence 1.2.3", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 30, :production_time => 4, :delivery_cost_manpower => 20, :delivery_time => 2, :information => 'Reference information', :reference => "XKTO94", :vat => vat2.rate
-      ProductReference.create! :name => "Reference 1.3.1", :description => "Description de la référence 1.3.1", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 10, :production_time => 1, :delivery_cost_manpower => 10, :delivery_time => 3.5, :information => 'Reference information', :reference => "XKTO95", :vat => vat2.rate
-      ProductReference.create! :name => "Reference 1.3.2", :description => "Description de la référence 1.3.2", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 20, :production_time => 5, :delivery_cost_manpower => 20, :delivery_time => 1, :information => 'Reference information', :reference => "XKTO96", :vat => vat3.rate
-      ProductReference.create! :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 30, :production_time => 2.9, :delivery_cost_manpower => 10, :delivery_time => 2.3, :information => 'Reference information', :reference => "XKTO97", :vat => vat4.rate
-      
-      # default products
-      Product.create! :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id
-      Product.create! :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id
-      Product.create! :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference112.id
-      Product.create! :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id
-      Product.create! :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference113.id
-      Product.create! :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id
+      reference111 = ProductReference.create! :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 10, :production_time => 2, :delivery_cost_manpower => 20, :delivery_time => 3,   :reference => "XKTO89", :vat => vat1.rate
+      reference112 = ProductReference.create! :name => "Reference 1.1.2", :description => "Description de la référence 1.1.2", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 20, :production_time => 2, :delivery_cost_manpower => 10, :delivery_time => 1.5, :reference => "XKTO90", :vat => vat2.rate
+      reference113 = ProductReference.create! :name => "Reference 1.1.3", :description => "Description de la référence 1.1.3", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 30, :production_time => 3, :delivery_cost_manpower => 30, :delivery_time => 3,   :reference => "XKTO91", :vat => vat3.rate
+      ProductReference.create! :name => "Reference 1.2.1", :description => "Description de la référence 1.2.1", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 10, :production_time => 2.7,  :delivery_cost_manpower => 30, :delivery_time => 2,   :reference => "XKTO92", :vat => vat4.rate
+      ProductReference.create! :name => "Reference 1.2.2", :description => "Description de la référence 1.2.2", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 20, :production_time => 4,    :delivery_cost_manpower => 40, :delivery_time => 4,   :reference => "XKTO93", :vat => vat1.rate
+      ProductReference.create! :name => "Reference 1.2.3", :description => "Description de la référence 1.2.3", :product_reference_category_id => sous_famille12.id, :production_cost_manpower => 30, :production_time => 4,    :delivery_cost_manpower => 20, :delivery_time => 2,   :reference => "XKTO94", :vat => vat2.rate
+      ProductReference.create! :name => "Reference 1.3.1", :description => "Description de la référence 1.3.1", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 10, :production_time => 1,    :delivery_cost_manpower => 10, :delivery_time => 3.5, :reference => "XKTO95", :vat => vat2.rate
+      ProductReference.create! :name => "Reference 1.3.2", :description => "Description de la référence 1.3.2", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 20, :production_time => 5,    :delivery_cost_manpower => 20, :delivery_time => 1,   :reference => "XKTO96", :vat => vat3.rate
+      ProductReference.create! :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 30, :production_time => 2.9,  :delivery_cost_manpower => 10, :delivery_time => 2.3, :reference => "XKTO97", :vat => vat4.rate
       
       # default society activity sectors
       SocietyActivitySector.create! :name => "Enseigne"
@@ -363,6 +360,19 @@ namespace :osirails do
       d.mime_types << [ pdf, jpg, png ]
       d = DocumentType.find_or_create_by_name("demission_letter")
       d.update_attribute(:title, "Lettre de démission")
+      d.mime_types << [ pdf, jpg, png ]
+      
+      # for product in survey_step
+      d = DocumentType.find_or_create_by_name("plan")
+      d.update_attribute(:title, "Plan")
+      d.mime_types << [ pdf, jpg, png ]
+      d = DocumentType.find_or_create_by_name("mockup")
+      d.update_attribute(:title, "Maquette")
+      d.mime_types << [ pdf, jpg, png ]
+      
+      # for subcontractor_requests in survey_step
+      d = DocumentType.find_or_create_by_name("quote")
+      d.update_attribute(:title, "Devis")
       d.mime_types << [ pdf, jpg, png ]
       
       ## default file types
@@ -496,7 +506,7 @@ namespace :osirails do
       OrderType.last.society_activity_sectors << SocietyActivitySector.first
       
       # default checklists
-      checklist1 = Checklist.create! :name => "survey_order_items", :title => "Checklist des contraintes de pose à la visite commerciale", :description => "Checklist à remplir pour chaque produit de la commande lors de la visite commerciale"
+      checklist1 = Checklist.create! :name => "environment_checklist_for_products_in_survey_step", :title => "Checklist des contraintes de pose à la visite commerciale", :description => "Checklist à remplir pour chaque produit de la commande lors de la visite commerciale"
       acces = ChecklistOption.create! :checklist_id => checklist1.id, :title => "1- Accès"
       ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => acces.id, :title => "Entrée"
       ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => acces.id, :title => "Voie d'arrivée des véhicules"
@@ -510,6 +520,29 @@ namespace :osirails do
       ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => nrj.id, :title => "Air comprimé"
       ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => nrj.id, :title => "Eau"
       ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => nrj.id, :title => "Autre..."
+      support = ChecklistOption.create! :checklist_id => checklist1.id, :title => "3- Support de pose"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Mur / Bloc"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Bardage"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Tôle"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Béton"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Bois"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Plâtre"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => support.id, :title => "Carrelage"
+      lieu = ChecklistOption.create! :checklist_id => checklist1.id, :title => "4- Lieu de pose"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => lieu.id, :title => "Abrité"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => lieu.id, :title => "Extérieur"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => lieu.id, :title => "Intérieur"
+      vehicule = ChecklistOption.create! :checklist_id => checklist1.id, :title => "5- Véhicule de pose"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.id, :title => "Voiture particulier"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.id, :title => "Voiture utilitaire"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.id, :title => "Camion utilitaire"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.id, :title => "Camion nacelle"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => vehicule.id, :title => "Camion 19 tonnes"
+      equipments = ChecklistOption.create! :checklist_id => checklist1.id, :title => "6- Équipements particuliers"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Groupe éléctrogène"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Rallonge"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Échaffaudage"
+      ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Locations"
       
       ## default checklist 
       #Checklist.create! :name => "Livraison sur site", :step_id => survey_step = Step.find_by_name("survey_step").id
@@ -526,29 +559,6 @@ namespace :osirails do
       #c.checklist_options << ChecklistOption.create!(:name => "Option 2")
       #c.checklist_options << ChecklistOption.create!(:name => "Option 3")
       
-      # default approachings
-      app_email = Approaching.create!(:name => "E-mail")
-      app_phone = Approaching.create!(:name => "Téléphone")
-      Approaching.create!(:name => "Fax")
-      Approaching.create!(:name => "Courrier")
-      Approaching.create!(:name => "Prospection")
-      Approaching.create!(:name => "Visite client")
-      
-      # default orders
-      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => app_email.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
-      order1.build_bill_to_address(order1.customer.bill_to_address.attributes)
-      order1.contacts << Customer.first.contacts.first
-      establishment = order1.customer.establishments.first
-      order1.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
-      order1.save!
-      
-      order2 = Order.new(:title => "DRAPEAUX", :customer_needs => "4 drapeaux 400 x 700", :approaching_id => app_phone.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
-      order2.build_bill_to_address(order2.customer.bill_to_address.attributes)
-      order2.contacts << Customer.first.contacts.first
-      establishment = order2.customer.establishments.first
-      order2.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
-      order2.save!
-      
       # default send quote methods
       SendQuoteMethod.create!(:name => "Courrier")
       SendQuoteMethod.create!(:name => "E-mail")
@@ -557,6 +567,37 @@ namespace :osirails do
       # default order form types
       OrderFormType.create!(:name => "Devis signé")
       OrderFormType.create!(:name => "Bon de commande")
+      
+      # default approachings
+      Approaching.create!(:name => "E-mail")
+      Approaching.create!(:name => "Téléphone")
+      Approaching.create!(:name => "Fax")
+      Approaching.create!(:name => "Courrier")
+      Approaching.create!(:name => "Prospection")
+      Approaching.create!(:name => "Visite client")
+      
+      # default orders
+      order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
+      order1.build_bill_to_address(order1.customer.bill_to_address.attributes)
+      order1.contacts << Customer.first.contacts.first
+      establishment = order1.customer.establishments.first
+      order1.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
+      order1.save!
+      
+      order2 = Order.new(:title => "DRAPEAUX", :customer_needs => "4 drapeaux 400 x 700", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
+      order2.build_bill_to_address(order2.customer.bill_to_address.attributes)
+      order2.contacts << Customer.first.contacts.first
+      establishment = order2.customer.establishments.first
+      order2.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
+      order2.save!
+      
+      # default products
+      Product.create! :reference => "01010101", :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id, :dimensions => "1000x2000", :quantity => 1, :order_id => order1.id
+      Product.create! :reference => "01010201", :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id, :dimensions => "1000x3000", :quantity => 2, :order_id => order1.id
+      Product.create! :reference => "01010301", :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id, :dimensions => "2000x4000", :quantity => 3, :order_id => order1.id
+      Product.create! :reference => "01010202", :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference111.id, :dimensions => "2000x2000", :quantity => 1, :order_id => order2.id
+      Product.create! :reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2, :order_id => order2.id
+      Product.create! :reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3, :order_id => order2.id
       
       %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
         klass.constantize.all.each do |object|

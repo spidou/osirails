@@ -37,7 +37,7 @@
     <%= form.label :contact_ids %>
     <%= display_contacts_picker(order, order.customer.contacts) %>
     <%= display_new_contacts_list(order) %>
-    <%= display_contact_add_button(order) %>
+    <%# display_contact_add_button(order) %>
   </p>
   
   <p>
@@ -46,7 +46,7 @@
   </p>
   <p>
     <%= form.label :customer_needs %>
-    <%= form.text_area_autoresize :customer_needs %>
+    <%= form.text_area_autoresize :customer_needs, :cols => 80 %>
   </p>
   
   <h3>Livraison</h3>

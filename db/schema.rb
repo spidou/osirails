@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091014123705) do
+ActiveRecord::Schema.define(:version => 20091026081226) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -815,6 +815,7 @@ ActiveRecord::Schema.define(:version => 20091014123705) do
     t.string   "dimensions"
     t.text     "description"
     t.float    "quantity"
+    t.integer  "position",             :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -972,11 +973,23 @@ ActiveRecord::Schema.define(:version => 20091014123705) do
     t.datetime "updated_at"
   end
 
+  create_table "subcontractor_requests", :force => true do |t|
+    t.integer "subcontractor_id",        :limit => 11
+    t.integer "survey_step_id",          :limit => 11
+    t.text    "job_needed"
+    t.float   "price"
+    t.string  "attachment_file_name"
+    t.string  "attachment_content_type"
+    t.integer "attachment_file_size",    :limit => 11
+  end
+
   create_table "survey_interventions", :force => true do |t|
+    t.integer  "survey_step_id",    :limit => 11
     t.integer  "internal_actor_id", :limit => 11
     t.datetime "start_date"
     t.integer  "duration_hours",    :limit => 11
     t.integer  "duration_minutes",  :limit => 11
+    t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1017,6 +1030,7 @@ ActiveRecord::Schema.define(:version => 20091014123705) do
     t.string   "name"
     t.string   "siret_number"
     t.string   "activities"
+    t.string   "website"
     t.integer  "note",                  :limit => 11, :default => 0
     t.boolean  "activated",                           :default => true
     t.integer  "payment_method_id",     :limit => 11

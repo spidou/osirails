@@ -13,16 +13,15 @@ class ProductReference < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:reference] = "R&eacute;f&eacute;rence :"
-  @@form_labels[:name] = "Nom :"
-  @@form_labels[:description] = "Description :"
-  @@form_labels[:information] = "Informations complémentaires :"
-  @@form_labels[:product_reference_category] = "Famille de produit :"
-  @@form_labels[:vat] = "TVA à appliquer (%) :"
-  @@form_labels[:production_cost_manpower] = "Coût horaire de main-d'oeuvre :"
-  @@form_labels[:production_time] = "Durée (en heures) :"
-  @@form_labels[:delivery_cost_manpower] = "Coût horaire de main-d'oeuvre :"
-  @@form_labels[:delivery_time] = "Durée (en heures) :"
+  @@form_labels[:reference]                   = "Référence :"
+  @@form_labels[:name]                        = "Nom :"
+  @@form_labels[:description]                 = "Description :"
+  @@form_labels[:product_reference_category]  = "Famille de produit :"
+  @@form_labels[:vat]                         = "TVA à appliquer (%) :"
+  @@form_labels[:production_cost_manpower]    = "Coût horaire de main-d'oeuvre :"
+  @@form_labels[:production_time]             = "Durée (en heures) :"
+  @@form_labels[:delivery_cost_manpower]      = "Coût horaire de main-d'oeuvre :"
+  @@form_labels[:delivery_time]               = "Durée (en heures) :"
   
   def after_create
     self.counter_update("create")

@@ -101,14 +101,14 @@ module ActsAsStepController
                 if params[:close_step]
                   @step.terminated!
                   path = send("order_path", @order)
+                  
+                  flash.keep
+                  erase_render_results
+                  redirect_to path
                 else
                   @step.in_progress! unless @step.terminated?
-                  path = send(@step.original_step.path, @order)
+                  #path = send(@step.original_step.path, @order)
                 end
-                
-                flash.keep
-                erase_render_results
-                redirect_to path
               end
             end
         end

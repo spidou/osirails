@@ -11,6 +11,7 @@ module HasAddress
     def has_address name, params = {}
       # default params
       params = { :one_or_many => :one }.merge(params)
+      raise ArgumentError, "has_address expected a symbol for its first parameter 'name'" unless name.instance_of?(Symbol)
       raise ArgumentError, "has_address should have a symbol as 'one_or_many' parameter" unless params[:one_or_many].instance_of?(Symbol)
       
       #FIXME remove this class accessor one_or_many when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"

@@ -16,7 +16,7 @@ end
   <%= form.error_messages %>
   <p>
     <%= form.label :street_name, {}, options %>
-    <%= form.form_or_view(form.text_area(:street_name, options.merge(:rows => 2, :cols => 35)), :street_name) %>
+    <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:rows => 2, :cols => 37)), :street_name) %>
   </p>
   <p>
     <%= form.label :zip_code, {}, options %>

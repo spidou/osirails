@@ -5,6 +5,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string  :reference, :name, :dimensions
       t.text    :description
       t.float   :quantity
+      t.integer :position
       
       t.timestamps
     end

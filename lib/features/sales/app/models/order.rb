@@ -15,6 +15,7 @@ class Order < ActiveRecord::Base
   has_one :invoicing_step,     :dependent => :nullify
   
   has_many :ship_to_addresses
+  has_many :products
   has_many :order_logs
 
   validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
@@ -29,7 +30,7 @@ class Order < ActiveRecord::Base
   
   validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
-  validates_associated :customer, :ship_to_addresses
+  validates_associated :customer, :ship_to_addresses, :products
   
   validate :validates_length_of_ship_to_addresses
   validate :validates_order_type_validity
@@ -257,17 +258,10 @@ class Order < ActiveRecord::Base
         if step.parent.nil?
           step.name.camelize.constantize.create(:order_id => self.id)
         else
-          step_model = step.name.camelize.constantize                # SurveyStep
-          parent_step_model = step.parent.name.camelize.constantize  # CommercialStep
+          step_model = step.name.camelize.constantize                # eg: SurveyStep
+          parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
           
-          s = step_model.create(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
-          
-          ### TODO create another method called "create_checklist_responses" to generate checklist responses
-          #step.checklists.each do |checklist|
-          #  checklist_response = ChecklistResponse.create(:checklist_id => checklist.id)
-          #  s.checklist_responses << checklist_response
-          #end
-          ###########
+          step_model.create!(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
         end
       end
       

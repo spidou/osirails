@@ -1,12 +1,14 @@
 <%
 require_locals documents_owner
+should_use_id ||= false # set should_use_id at true if there a many instances of documents_owner in the same page, and documents_owner ID should be used to separate them
 owner_type = documents_owner.class.singularized_table_name
+owner_id = should_use_id ? "[#{documents_owner.id}]" : ""
 document = document_form
 id_attr = "id=\"resource_form_document_#{document.id}\"" unless document.new_record?
 style_attr = 'style="display:none"' unless document.new_record? or !document.errors.empty? or document.should_update?
 %>
 
-<% fields_for "#{owner_type}[document_attributes][]", document do |form| %>
+<% fields_for "#{owner_type}#{owner_id}[document_attributes][]", document do |form| %>
   <div class="resource_form document_form" <%= id_attr %> <%= style_attr %> >
     <div>
       <%= form.error_messages %>

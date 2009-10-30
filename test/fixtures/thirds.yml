@@ -14,3 +14,10 @@ first_supplier:
   activity_sector: supermarket_retail
   legal_form: llc
   activated: true
+first_subcontractor:
+  type: Subcontractor
+  name: First Subcontractor
+  siret_number: 12345678912345
+  activity_sector: telephony
+  legal_form: llc
+  activated: true

@@ -25,19 +25,19 @@ class Document < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom :"
-  @@form_labels[:description] = "Description :"
+  @@form_labels[:name]          = "Nom :"
+  @@form_labels[:description]   = "Description :"
   @@form_labels[:document_type] = "Type de document :"
-  @@form_labels[:tag_list] = "Mots-clés :"
-  @@form_labels[:attachment] = "Fichier :"
+  @@form_labels[:tag_list]      = "Mots-clés :"
+  @@form_labels[:attachment]    = "Fichier :"
   
   has_attached_file :attachment, 
-                    :styles => { :thumb => "100x100#",
-                                 :medium => "640x480>",
-                                 :large => "1024x768>" },
-                    :path => ":rails_root/assets/:class/:owner_class/:owner_id/:id/:style.:extension",
-                    :url => "/attachments/:id/:style",
-                    :default_url => "#{$CURRENT_THEME_PATH}/images/documents/missings/:mimetype_:style.png"
+                    :styles => { :thumb   => "100x100#",
+                                 :medium  => "640x480>",
+                                 :large   => "1024x768>" },
+                    :path         => ":rails_root/assets/:class/:owner_class/:owner_id/:id/:style.:extension",
+                    :url          => "/attachments/:id/:style",
+                    :default_url  => "#{$CURRENT_THEME_PATH}/images/documents/missings/:mimetype_:style.png"
   
   validates_attachment_presence :attachment
   

@@ -1,5 +1,9 @@
 module ContactsHelper
   
+  def display_contact(contact, options = {})
+    render :partial => contact, :locals => options
+  end
+  
   def display_contacts_list(contacts_owner)
     html = '<div id="contacts" class="resources">'
     html << render_contacts_list(contacts_owner, :group_by => "type", :order_by => "asc")
@@ -11,8 +15,8 @@ module ContactsHelper
     render_new_contacts_list(contacts_owner)
   end
   
-  def display_contacts_picker(contacts_owner, contacts)
-    render :partial => 'contacts/contacts_picker', :object => contacts, :locals => { :contacts_owner => contacts_owner }
+  def display_contacts_picker(contacts_owner, contacts, options = {})
+    render :partial => 'contacts/contacts_picker', :object => contacts, :locals => options.merge({ :contacts_owner => contacts_owner })
   end
 
   def display_contact_add_button(contacts_owner)

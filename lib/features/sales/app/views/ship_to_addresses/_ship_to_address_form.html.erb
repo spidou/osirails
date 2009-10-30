@@ -15,13 +15,13 @@ id_attr = "id=\"ship_to_address_#{ship_to_address.id}\"" unless ship_to_address.
   
   <%= render :partial => "addresses/address_form", :object => ship_to_address.address || ship_to_address.build_address , :locals => { :address_owner => ship_to_address, :force_show_view => true } %>
   
-  <p style="display:none">
-    <% if is_form_view? %>
+  <% if is_form_view? %>
+    <p style="display:none">
       <%= form.hidden_field :id, :index => nil %>
       <%= form.hidden_field :establishment_id, :index => nil %>
       <%= form.hidden_field :should_create, :index => nil, :class => 'should_create' %>
       <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-    <% end %>
-  </p>
+    </p>
+  <% end %>
 </div>
 <% end %>

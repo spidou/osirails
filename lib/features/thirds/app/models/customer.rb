@@ -24,6 +24,9 @@ class Customer < Third
                    :only_relationships => [:activity_sector, :legal_form, :establishments],
                    :main_model         => true
   
+  @@form_labels[:payment_method]      = "Moyen de paiement préféré :"
+  @@form_labels[:payment_time_limit]  = "Délai de paiement préféré :"
+  
   def contacts
     establishments.collect(&:contacts).flatten
   end

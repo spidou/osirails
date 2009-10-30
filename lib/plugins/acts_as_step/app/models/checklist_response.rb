@@ -1,5 +1,6 @@
 class ChecklistResponse < ActiveRecord::Base
-  #belongs_to :checklist
   belongs_to :checklist_option
-  belongs_to :order
+  belongs_to :product
+  
+  validates_presence_of :answer, :on => :create
 end

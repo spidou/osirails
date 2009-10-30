@@ -21,7 +21,7 @@ class ProductReferencesController < ApplicationController
   
   # GET /product_reference/:id
   def show
-    @reference = ProductReference.find(params[:id])
+    @product_reference = ProductReference.find(params[:id])
     respond_to do |format|
       format.html {
         @categories = ProductReferenceCategory.find(:all)
@@ -34,9 +34,9 @@ class ProductReferencesController < ApplicationController
       format.json {
         keys_to_delete = [ :products_count, :delivery_cost_manpower, :delivery_time, :production_cost_manpower, :production_time,
                            :product_reference_category_id, :information, :enable, :created_at, :updated_at ]
-        json = JSON.parse(@reference.to_json)
+        json = JSON.parse(@product_reference.to_json)
         keys_to_delete.each { |key| json['product_reference'].delete(key.to_s) } # remove unused keys to shorten the AJAX request
-        json['product_reference']['unit_price'] = @reference.unit_price
+        json['product_reference']['unit_price'] = @product_reference.unit_price
         render :json => json
       }
     end
