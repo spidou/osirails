@@ -73,11 +73,7 @@
   <%="<p>#{label_tag( "Entreprise :" )} #{strong(@employee.intranet_email)}</p>" if !is_form_view?%>
 
 <!--########### Numbers #################-->
-  <h3>Num&eacute;ro de t&eacute;l&eacute;phone</h3>
-  <div id="numbers">    
-    <%= render :partial => 'numbers/number', :collection => @employee.numbers , :locals => { :number_owner => @employee }%>
-  </div>
-  <p><%= add_number_link(@employee) if is_form_view? %></p>
+  <%= display_numbers(@employee)%>
 
 <!--########### Jobs ####################-->
   <h2>Fiche de poste</h2>

@@ -3,6 +3,8 @@ class Employee < ActiveRecord::Base
   
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
+  has_numbers
+  
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
   
@@ -45,7 +47,6 @@ class Employee < ActiveRecord::Base
   
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
-  has_many :numbers, :as => :has_number
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
@@ -75,7 +76,7 @@ class Employee < ActiveRecord::Base
   validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
   
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings
+  validates_associated :iban, :address, :job_contract, :user, :contacts, :premia, :checkings
   
   validate :validates_responsible_job_limit
   
@@ -92,7 +93,7 @@ class Employee < ActiveRecord::Base
   # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment
-  after_update :save_iban, :save_numbers, :save_address
+  after_update :save_iban, :save_address
   
   # Method to manage that there's no more than 2 responsible jobs by service
   def validates_responsible_job_limit
@@ -370,30 +371,8 @@ class Employee < ActiveRecord::Base
     end    
   end
   
-  # this method permit to save the numbers of the employee when it is passed with the employee form
-  def number_attributes=(number_attributes)
-    number_attributes.each do |attributes|
-      if attributes[:id].blank?
-        self.numbers.build(attributes)
-      else
-        number = self.numbers.detect { |t| t.id == attributes[:id].to_i} 
-        number.attributes = attributes
-      end
-    end
-  end
-  
   private
   
-    def save_numbers
-      self.numbers.each do |number|
-        if number.should_destroy?    
-          number.destroy    
-        else
-          number.save(false)
-        end
-      end 
-    end  
-    
     def save_iban
        self.iban.save(false)
     end

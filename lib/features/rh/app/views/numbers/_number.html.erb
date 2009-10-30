@@ -1,11 +1,11 @@
 <% content_for :header do %>
-  <%= javascript_include_tag 'rh/number' %> 
+  <%= javascript_include_tag 'has_number/number' %> 
 <% end %>
 
 <% require_locals number_owner %>
 
 <div class="number">
-<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]",number do |form| %>
+<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]", number do |form| %>
 	<%= form.error_messages%>
 	<p>
 		<% if !is_form_view?%>

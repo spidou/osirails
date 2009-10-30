@@ -1,7 +1,8 @@
 class Contact < ActiveRecord::Base
   has_permissions :as_business_object
 
-  has_many :numbers, :as => :has_number
+  has_numbers
+
   belongs_to :contact_type
   # Declaration for has_many_polymorph association
   has_many :contacts_owners, :foreign_key => "contact_id"

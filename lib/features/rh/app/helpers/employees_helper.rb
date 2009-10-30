@@ -10,26 +10,6 @@ module EmployeesHelper
     html = text_field_tag( 'social_security_number[0]', social_security.split(" ")[0], option[0]) + "\n"
     html += text_field_tag( 'social_security_number[1]', social_security.split(" ")[1], option[1])
   end
-  
-  ##################################################################
-  ########## NUMBERS METHODS #######################################
-  
-  # method that permit to add with javascript a new record of number
-  def add_number_link(employee)
-    link_to_function "Ajouter un numéro" do |page|
-      page.insert_html :bottom, :numbers, :partial => "numbers/number", :object => Number.new, :locals => { :number_owner => employee }
-    end  
-  end 
-  
-  # method that permit to remove with javascript a new record of number
-  def remove_number_link()
-    link_to_function "Supprimer", "$(this).up('.number').remove()"
-  end 
-  
-  # method that permit to remove with javascript an existing number
-  def remove_old_number_link()
-    link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
-  end
  
   #########################################################################################
   ##### Methods to show or not with permissions some stuff like buttons or link ###########
@@ -43,15 +23,6 @@ module EmployeesHelper
   end
   
   #########################################################################################
-  
-  # Methode to get a number without images but with all informations
-  def display_full_phone_number(number)
-    return "" unless number
-    html = display_image(flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name)
-	  html += display_image(number_type_path( number.number_type.name ), number.number_type.name)
-	  html += strong("#{number.indicative.indicative} #{number.formatted}")
-	  html
-  end
   
   def display_employee_seniority(hire_date)
     return "contrat de travail non établis" if hire_date.nil?
@@ -109,41 +80,6 @@ module EmployeesHelper
   # Method that return an array of visible numbers
   def visibles_numbers(numbers)
     numbers.visibles
-  end
-  
-  # Method that add the title to the phone number td
-  def number_td(numbers)
-    unless visibles_numbers(numbers).empty? or visibles_numbers(numbers).first.indicative.nil?
-      number = visibles_numbers(numbers).first
-      "<td title='#{number.indicative.indicative} #{number.formatted} (#{number.indicative.country.name})'>"
-    else
-      "<td>"
-    end
-  end
-  
-  # Method to pluralize or not the number's <h3></h3>
-  def numbers_h3(numbers)
-    unless Employee.can_view?(current_user)
-      visibles = visibles_numbers(numbers)
-      return "" if visibles.size == 0 
-      return "<h3>Numéro de telephone</h3>" if visibles.size == 1
-      return "<h3>Numéros de telephone</h3>"if visibles.size > 1
-    else
-      return "" if numbers.size == 0 
-      return "<h3>Numéro de telephone</h3>" if numbers.size == 1
-      return "<h3>Numéros de telephone</h3>"if numbers.size > 1
-    end
-  end
-  
-  def flag_path(country_code)
-    "/images/flag/"+country_code+".gif"
-  end
-  
-  def number_type_path(type)
-    type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
-    type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
-    type = "fax" if type == "Fax" or type== "Fax Professionnel"
-    "/images/"+type+"_16x16.png"
   end
   
   # method that permit the showing of img balise with otions passed as arguments  
