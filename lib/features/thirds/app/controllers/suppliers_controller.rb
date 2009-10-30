@@ -31,7 +31,6 @@ class SuppliersController < ApplicationController
   # GET /suppliers/:id/edit
   def edit
     @supplier = Supplier.find(params[:id])
-    @contacts = @supplier.contacts
   end
 
   # PUT /suppliers/:id
