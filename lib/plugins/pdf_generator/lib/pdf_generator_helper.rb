@@ -21,7 +21,7 @@ module PdfGeneratorHelper
 
   private
     def make_pdf(options = {})
-      f = FOP.new
+      f = Fop.new
       f.pdf_from_xml_and_xsl(render_to_string(:template => options[:template], :layout => false), options[:xsl], options[:pdf], options[:path])
     end
 

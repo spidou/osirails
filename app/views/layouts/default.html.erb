@@ -17,7 +17,7 @@
     <%= yield :header %>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
-	<body>  
+	<body>
     <!-- BANNIERE -->
     <div id="banner">
       <div id="logo"> 
@@ -39,40 +39,38 @@
       <!-- TODO disable this helper when feature memorandum are disable -->
       <%= display_memorandums %>
     </div>
+    <div id="nav">
+      <%= display_menu %>
+    </div>
     <div id="page">	<!-- CONTENT OF THE PAGE -->
-      <div id="nav">
-        <%= display_menu %>
-      </div>
-      <div id="page">	<!-- CONTENT OF THE PAGE -->
-        <div id="content_page">
-          <%= display_flash %>
-          
-          <div id="ajax_holder" style="display:none">
-            <div id="ajax_holder_waiting">
-              <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>
-            </div>
-            <div id="ajax_holder_content"></div>
-            <div id="ajax_holder_command">
-              <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
-            </div>
+      <div id="content_page">
+        <%= display_flash %>
+        
+        <div id="ajax_holder" style="display:none">
+          <div id="ajax_holder_waiting">
+            <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>
           </div>
-          
-          <%= yield %>
-          
-          <p class="link_back"><%= link_to '<< Page précédente', :back %></p>
-          
-        </div> <!-- content_page : FIN -->
-        <%= display_contextual_menu %>
-      </div> <!-- page : FIN -->
-      <div id="footer">
-        <p>
-          <%= display_footer %>
-          <br/>
-          <a href="http://validator.w3.org/check?uri=referer">
-            <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
-          </a>
-        </p>
-      </div><!-- FOOTER : FIN-->
-    </div> <!-- CORPS : FIN -->
+          <div id="ajax_holder_content"></div>
+          <div id="ajax_holder_command">
+            <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
+          </div>
+        </div>
+        
+        <%= yield %>
+        
+        <p class="link_back"><%= link_to '&lt;&lt; Page précédente', :back %></p>
+        
+      </div> <!-- content_page : FIN -->
+      <%= display_contextual_menu %>
+    </div> <!-- page : FIN -->
+    <div id="footer">
+      <p>
+        <%= display_footer %>
+        <br/>
+        <a href="http://validator.w3.org/check?uri=referer">
+          <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
+        </a>
+      </p>
+    </div><!-- FOOTER : FIN-->
 	</body>
 </html>

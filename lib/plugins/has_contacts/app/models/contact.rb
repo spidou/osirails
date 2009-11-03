@@ -7,7 +7,7 @@ class Contact < ActiveRecord::Base
   has_many :numbers, :as => :has_number
   
   validates_presence_of   :first_name, :last_name, :contact_type, :gender
-  validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/ #,:message => "format adresse email incorrect"
+  validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_inclusion_of  :gender, :in => %w( M F )
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit

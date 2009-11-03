@@ -11,7 +11,6 @@ class FeatureManager
     @dependencies   = yaml_config['dependencies']   || {}
     @conflicts      = yaml_config['conflicts']      || {}
     @menus          = yaml_config['menus']          || {}
-    @searches       = yaml_config['search']         || {}
     @configurations = yaml_config['configurations'] || {}
     
     @config         = config

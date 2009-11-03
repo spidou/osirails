@@ -7,6 +7,8 @@ class QuotesController < ApplicationController
   acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
   
   # GET /orders/:order_id/:step/quotes/:quote_id
+  # GET /orders/:order_id/:step/quotes/:quote_id.xml
+  # GET /orders/:order_id/:step/quotes/:quote_id.pdf
   def show
     if Quote.can_view?(current_user)
       @quote = Quote.find(params[:id])
@@ -17,7 +19,7 @@ class QuotesController < ApplicationController
         }
         format.pdf {
           unless @quote.uncomplete?
-            render :pdf => "devis_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "devis", :path => "assets/pdf/quotes/devis_#{@quote.public_number}.pdf"
+            render :pdf => "quote_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/pdf/quotes/quote_#{@quote.public_number}.pdf"
           else
             error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
           end

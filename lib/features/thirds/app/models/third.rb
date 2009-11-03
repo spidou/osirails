@@ -3,9 +3,8 @@ class Third < ActiveRecord::Base
   belongs_to :legal_form
   
   validates_presence_of :name, :legal_form, :activity_sector
-  validates_format_of :siret_number, :with        => /^[0-9]{14}/,
-                                     :allow_blank => false,
-                                     :message     => "Le numéro SIRET doit comporter 14 caractères décimaux"
+  
+  validates_format_of :siret_number, :with => /^[0-9]{14}/, :message => "Le numéro SIRET doit comporter 14 chiffres"
   validates_format_of :website, :with         => /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$/ix,
                                 :allow_blank  => true,
                                 :message      => "L'adresse du site web ne respecte pas le format demandé"
@@ -14,11 +13,11 @@ class Third < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name]                = "Nom :"
-  @@form_labels[:legal_form]          = "Forme juridique :"
-  @@form_labels[:siret_number]        = "Numéro SIRET :"
-  @@form_labels[:activity_sector]     = "Secteur d'activité :"
-  @@form_labels[:activities]          = "Activités :"
-  @@form_labels[:website]             = "Site Internet :"
-  @@form_labels[:note]                = "Note :"
+  @@form_labels[:name]            = "Nom :"
+  @@form_labels[:legal_form]      = "Forme juridique :"
+  @@form_labels[:siret_number]    = "Numéro SIRET :"
+  @@form_labels[:activity_sector] = "Secteur d'activité :"
+  @@form_labels[:activities]      = "Activités :"
+  @@form_labels[:website]         = "Site Internet :"
+  @@form_labels[:note]            = "Note :"
 end
