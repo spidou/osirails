@@ -36,7 +36,7 @@ Rails::Initializer.run do |config|
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
                     :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete,
                     :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
-                    :acts_as_step, :all]
+                    :acts_as_step, :pdf_generator, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -123,6 +123,5 @@ require 'contextual_menu_manager'
 load 'application_helper.rb'
 
 require 'json'
-require 'htmldoc'
 require 'htmlentities'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y

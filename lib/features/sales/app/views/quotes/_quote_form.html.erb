@@ -34,24 +34,60 @@
   </tr>
   <%= render :partial => 'quotes_product_reference_in_one_line', :collection => quote.quotes_product_references %>
   <%= render :partial => 'quotes_product_reference_in_one_line', :locals => { :quote => quote } %>
+  
+  <tr class="aggregates">
+    <td colspan="6" rowspan="7"></td>
+    <td colspan="2" class="aggregate_label">Total brut HT :</td>
+    <td class="aggregate_amount aggregate_without_taxes"><%= quote.total.round_to(2).to_s(2) %></td>
+    <% if is_form_view? %>
+      <td rowspan="3"></td>
+    <% end %>
+  </tr>
+  <tr class="aggregates">
+    <td colspan="2"class="aggregate_label">Remise (%) :</td>
+    <td class="aggregate_amount aggregate_reduction"><%= form.form_or_view(form.text_field(:reduction, :value => quote.reduction.round_to(2).to_s(2), :onkeyup => "update_aggregates()", :size => 5), quote.reduction.round_to(2).to_s(2)) %></td>
+  </tr>
+  <tr class="aggregates">
+    <td colspan="2"class="aggregate_label">Net HT :</td>
+    <td class="aggregate_amount aggregate_net"><%= quote.net.round_to(2).to_s(2) %></td>
+  </tr>
+  <tr class="aggregates">
+    <td colspan="2"class="aggregate_label">Frais de port :</td>
+    <td class="aggregate_amount aggregate_carriage_costs"><%= form.form_or_view(form.text_field(:carriage_costs, :value => quote.carriage_costs.round_to(2).to_s(2), :onkeyup => "update_aggregates()", :size => 5), quote.carriage_costs.round_to(2).to_s(2)) %></td>
+  </tr>
+  <tr class="aggregates">
+    <td colspan="2"class="aggregate_label">Escompte :</td>
+    <td class="aggregate_amount aggregate_discount"><%= form.form_or_view(form.text_field(:discount, :value => quote.discount.round_to(2).to_s(2), :onkeyup => "update_aggregates()", :size => 5), quote.discount.round_to(2).to_s(2)) %></td>
+  </tr>
+  <tr class="aggregates">
+    <td colspan="2"class="aggregate_label">Total taxes :</td>
+    <td class="aggregate_amount aggregate_all_taxes"><%= quote.summon_of_taxes.round_to(2).to_s(2) %></td>
+  </tr>
+  <tr class="aggregates global">
+    <td colspan="2" class="aggregate_label">NET À PAYER</td>
+    <td class="aggregate_amount aggregate_net_to_paid"><%= quote.net_to_paid.round_to(2).to_s(2) %>&#160;&euro;</td>
+  </tr>
 </table>
 
 <h2>Pied</h2>
 <p>
+  <%= form.label :sales_terms %>
+  <%= form.form_or_view(form.text_field(:sales_terms, :size => 100), :sales_terms) %>
+</p>
+
+<p>
   <%= form.label :validity_delay %>
   <%= form.form_or_view(form.text_field(:validity_delay, :size => 2), :validity_delay) %> <%= form.form_or_view(form.select(:validity_delay_unit, Quote::VALIDITY_DELAY_UNITS), :validity_delay_unit) %>
 </p>
+
 <p>
-  <%= form.label :carriage_costs, 'Frais de port :' %>
-  <%= form.form_or_view(form.text_field(:carriage_costs, :size => 5), :carriage_costs) %>
-</p>
-<p>
-  <%= form.label :reduction, 'Remise (%) :' %>
-  <%= form.form_or_view(form.text_field(:reduction, :size => 5), :reduction) %>
-</p>
-<p>
-  <%= form.label :account, 'Acompte :' %>
-  <%= form.form_or_view(form.text_field(:account, :size => 5), :account) %>
+  <%= form.label :account, 'Acompte HT :' %>
+  <%= form.form_or_view(form.text_field(:account, :value => quote.account.round_to(2).to_s(2), :size => 5, :onkeyup => "update_account(#{ConfigurationManager.sales_account_tax_coefficient})"), strong(quote.account.round_to(2).to_s(2))) %>
+  
+  <%= form.label :account_with_taxes, 'Acompte TTC :' %>
+  <span id="quote_account_with_taxes">
+    <%= form.form_or_view(quote.account_with_taxes.round_to(2).to_s(2),strong(quote.account_with_taxes.round_to(2).to_s(2)))%>
+  </span>
 </p>
 
 <% if params[:action] == 'new' %>

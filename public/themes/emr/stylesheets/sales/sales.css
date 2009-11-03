@@ -200,6 +200,10 @@ table#quotes_product_references tr.aggregates td.aggregate_amount {
   text-align: right;
 }
 
+table#quotes_product_references tr.aggregates td.aggregate_amount input {
+  text-align: right;
+}
+
 table#quotes_product_references tr.aggregates.global {
   font-weight: bold;
   background-color: #CCC;

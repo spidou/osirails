@@ -832,6 +832,8 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
     t.float    "carriage_costs",                        :default => 0.0
     t.float    "reduction",                             :default => 0.0
     t.float    "account",                               :default => 0.0
+    t.float    "discount",                              :default => 0.0
+    t.text     "sales_terms"
     t.string   "validity_delay_unit"
     t.integer  "validity_delay",          :limit => 11
     t.string   "order_form_file_name"

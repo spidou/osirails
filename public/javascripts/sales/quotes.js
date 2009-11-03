@@ -139,9 +139,12 @@ function calculate(tr) {
 
 function update_aggregates() {
   var td_aggregate_without_taxes = $('quotes_product_references').down('.aggregate_without_taxes')
-  var td_aggregate_with_taxes = $('quotes_product_references').down('.aggregate_with_taxes')
+  var td_reduction = $('quote_reduction')
+  var td_aggregate_net = $('quotes_product_references').down('.aggregate_net')
+  var td_carriage_costs = $('quote_carriage_costs')
+  var td_discount = $('quote_discount')
+  var td_aggregate_net_to_paid = $('quotes_product_references').down('.aggregate_net_to_paid')
   var td_aggregate_all_taxes = $('quotes_product_references').down('.aggregate_all_taxes')
-  
   // aggregates
   var product_references = $('quotes_product_references').select('tr.quotes_product_reference')
   var totals_without_taxes = new Array()
@@ -161,15 +164,29 @@ function update_aggregates() {
   });
   td_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
   
+  // aggregate net
+  var aggregate_net = aggregate_without_taxes*(1-(parseFloat(td_reduction.value)/100));
+  td_aggregate_net.update( roundNumber(aggregate_net, 2) + "&#160;&euro;" )
+  
   // aggregate with taxes
   var aggregate_with_taxes = parseFloat(0)
   totals_with_taxes.each(function(item){
     aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim())
   });
-  td_aggregate_with_taxes.update( roundNumber(aggregate_with_taxes, 2) + "&#160;&euro;" )
+  
+  // aggregate net to paid
+  var aggregate_net_to_paid = aggregate_net + parseFloat(td_carriage_costs.value) + aggregate_with_taxes + -(aggregate_without_taxes) - parseFloat(td_discount.value);
+  td_aggregate_net_to_paid.update( roundNumber(aggregate_net_to_paid, 2) + "&#160;&euro;" )
   
   // aggregate all taxes
   td_aggregate_all_taxes.update( roundNumber(aggregate_with_taxes - aggregate_without_taxes, 2) )
+}
+
+function update_account(tax){
+  var account = $('quote_account')
+  var account_with_taxes = $('quote_account_with_taxes')
+  
+  account_with_taxes.update(roundNumber(account.value *(1+tax/100), 2))
 }
 
 // return the string of the float rounded with the specified precision, keeping zeros according to the precision

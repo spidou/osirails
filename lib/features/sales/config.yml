@@ -137,9 +137,9 @@ menus:
         title: Sous-traitants
         description: Gestion des sous-traitants
 configurations:
-  taxes_vat:
-    description: TVA
-    value: 8.5 
+  account_tax_coefficient:
+    description: TVA appliquée aux acomptes HT
+    value: 8.5
   quote_validity_delay:
     description: Délai de validité du devis
     value: 15

@@ -5,22 +5,6 @@
   <% require_locals quote %>
   
   <%= render :partial => 'quotes_product_reference_in_one_line', :object => QuotesProductReference.new, :locals => { :this_is_default_row_and_should_be_hidden => true } %>
-  <tr class="aggregates">
-    <td colspan="6" rowspan="3"></td>
-    <td colspan="2" class="aggregate_label">Net HT :</td>
-    <td class="aggregate_amount aggregate_without_taxes"><%= quote.total.round_to(2).to_s(2) %></td>
-    <% if is_form_view? %>
-      <td rowspan="3"></td>
-    <% end %>
-  </tr>
-  <tr class="aggregates">
-    <td colspan="2"class="aggregate_label">Total taxes :</td>
-    <td class="aggregate_amount aggregate_all_taxes"><%= quote.summon_of_taxes.round_to(2).to_s(2) %></td>
-  </tr>
-  <tr class="aggregates global">
-    <td colspan="2" class="aggregate_label">NET À PAYER</td>
-    <td class="aggregate_amount aggregate_with_taxes"><%= quote.total_with_taxes.round_to(2).to_s(2) %>&#160;&euro;</td>
-  </tr>
   <% if is_form_view? %>
     <tr class="new_quotes_product_reference">
       <td colspan="10">
