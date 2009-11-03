@@ -71,9 +71,9 @@ class Employee < ActiveRecord::Base
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
   
-  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
-  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/,                       :message => "Le numéro de sécurité sociale doit comporter 15 chiffres"
+  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
+  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail professionelle est incorrecte"
   
   validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings
   
