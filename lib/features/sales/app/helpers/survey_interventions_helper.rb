@@ -1,15 +1,22 @@
 module SurveyInterventionsHelper
   
   def display_survey_interventions(survey_step)
-    html = render(:partial => 'survey_interventions/survey_intervention', :collection => survey_step.survey_interventions.select{ |s| !s.new_record? })
+    collection = survey_step.survey_interventions.select{ |s| !s.new_record? }
+    html = '<div id="survey_interventions">'
+    unless collection.empty?
+      html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
+    else
+      html << content_tag(:p, "Aucune intervention n'a été trouvé")
+    end
     html << render_new_survey_interventions_list(survey_step)
+    html << '</div>'
   end
   
   def render_new_survey_interventions_list(survey_step)
-    new_survey_interventions = survey_step.survey_interventions.select(&:new_record?)
-    new_survey_interventions_with_errors = new_survey_interventions.select{|s|!s.errors.empty?}
-    html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if new_survey_interventions_with_errors.empty?}"# if new_survey_interventions.empty?}>"
-    html << render(:partial => 'survey_interventions/survey_intervention', :collection => new_survey_interventions)
+    collection = survey_step.survey_interventions.select(&:new_record?)
+    collection_with_errors = collection.select{|s|!s.errors.empty?}
+    html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if collection_with_errors.empty?}"# if collection.empty?}>"
+    html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
     html << "</div>"
   end
   

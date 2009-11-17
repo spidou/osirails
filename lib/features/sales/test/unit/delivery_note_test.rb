@@ -1,7 +1,7 @@
 require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
-class DevlieryNoteTest < ActiveSupport::TestCase
+class DeliveryNoteTest < ActiveSupport::TestCase
   
   def setup
     @order = create_default_order
@@ -40,23 +40,23 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     @invalid_contact = @valid_contact = nil
   end
   
-  def test_presence_of_delivery_step
-    assert @dn.errors.invalid?(:delivery_step_id), "delivery_step_id should NOT be valid because it's nil"
+  def test_presence_of_order
+    assert @dn.errors.invalid?(:order_id), "order_id should NOT be valid because it's nil"
     
-    @dn.delivery_step_id = 0
+    @dn.order_id = 0
     @dn.valid?
-    assert !@dn.errors.invalid?(:delivery_step_id), "delivery_step_id should be valid"
-    assert @dn.errors.invalid?(:delivery_step), "delivery_step should NOT be valid because delivery_step_id is wrong"
+    assert !@dn.errors.invalid?(:order_id), "order_id should be valid"
+    assert @dn.errors.invalid?(:order), "order should NOT be valid because order_id is wrong"
     
-    @dn.delivery_step_id = @order.pre_invoicing_step.delivery_step.id
+    @dn.order_id = @order.pre_invoicing_step.order.id
     @dn.valid?
-    assert !@dn.errors.invalid?(:delivery_step_id), "delivery_step_id should be valid"
-    assert !@dn.errors.invalid?(:delivery_step), "delivery_step should be valid"
+    assert !@dn.errors.invalid?(:order_id), "order_id should be valid"
+    assert !@dn.errors.invalid?(:order), "order should be valid"
     
-    @dn.delivery_step = @order.pre_invoicing_step.delivery_step
+    @dn.order = @order.pre_invoicing_step.order
     @dn.valid?
-    assert !@dn.errors.invalid?(:delivery_step_id), "delivery_step_id should be valid"
-    assert !@dn.errors.invalid?(:delivery_step), "delivery_step should be valid"
+    assert !@dn.errors.invalid?(:order_id), "order_id should be valid"
+    assert !@dn.errors.invalid?(:order), "order should be valid"
   end
   
   def test_presence_of_creator
@@ -91,7 +91,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_contacts
-    @dn.delivery_step = @order.pre_invoicing_step.delivery_step #
+    @dn.order = @order                                          #
     @order.contacts = [ @valid_contact ]                        # prepare delivery note to accept @valid_contact
     @order.save                                                 #
     
@@ -130,65 +130,65 @@ class DevlieryNoteTest < ActiveSupport::TestCase
   end
   
   def test_presence_of_associated_quote
-    @dn.delivery_step = @order.pre_invoicing_step.delivery_step
+    @dn.order = @order
     
     assert_not_nil @dn.associated_quote, "delivery_note should have an associated_quote"
     assert @dn.associated_quote.instance_of?(Quote), "associated_quote should be an instance of Quote"
   end
   
-  def test_delivery_notes_quotes_product_references
-    @dn.delivery_step = @order.pre_invoicing_step.delivery_step
+  def test_delivery_note_items
+    @dn.order = @order
     
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's empty"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's empty"
     
-    # when a quotes_product_reference_id is wrong
-    @dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => 0)
+    # when a quote_item_id is wrong
+    @dn.delivery_note_items.build(:quote_item_id => 0)
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quotes_product_reference_id is wrong"
-    assert !@dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quotes_product_reference_id), "quotes_product_reference_id should be valid"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quotes_product_reference), "quotes_product_reference should NOT be valid because quotes_product_reference_id is wrong"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quote_item_id is wrong"
+    assert !@dn.delivery_note_items.first.errors.invalid?(:quote_item_id), "quote_item_id should be valid"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quote_item), "quote_item should NOT be valid because quote_item_id is wrong"
     
-    # when a quotes_product_reference is invalid
-    @dn.delivery_notes_quotes_product_references = []
-    @dn.delivery_notes_quotes_product_references.build.quotes_product_reference = QuotesProductReference.new # assuming QuotesProductReference.new returns an invalid record
+    # when a quote_item is invalid
+    @dn.delivery_note_items = []
+    @dn.delivery_note_items.build.quote_item = QuoteItem.new # assuming QuoteItem.new returns an invalid record
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quotes_product_reference is invalid"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quotes_product_reference_id), "quotes_product_reference_id should NOT be valid because it's an invalid record"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quote_item is invalid"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quote_item_id), "quote_item_id should NOT be valid because it's an invalid record"
     
     # when a quantity is nil
-    @dn.delivery_notes_quotes_product_references = []
-    @dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => @dn.associated_quote.quotes_product_references.first.id)
+    @dn.delivery_note_items = []
+    @dn.delivery_note_items.build(:quote_item_id => @dn.associated_quote.quote_items.first.id)
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quantity is nil"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's nil"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is nil"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's nil"
     
     # when a quantity is not in range
-    @dn.delivery_notes_quotes_product_references.first.quantity = @dn.associated_quote.quotes_product_references.first.quantity + 1
+    @dn.delivery_note_items.first.quantity = @dn.associated_quote.quote_items.first.quantity + 1
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quantity is out of range (too big)"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too big)"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is out of range (too big)"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too big)"
     
-    @dn.delivery_notes_quotes_product_references.first.quantity = -1
+    @dn.delivery_note_items.first.quantity = -1
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quantity is out of range (too small)"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too small)"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is out of range (too small)"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's out of range (too small)"
     
     # when a quantity is not a number
-    @dn.delivery_notes_quotes_product_references.first.quantity = "not a number"
+    @dn.delivery_note_items.first.quantity = "not a number"
     @dn.valid?
-    assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because quantity is not a number"
-    assert @dn.delivery_notes_quotes_product_references.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's not a number"
+    assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is not a number"
+    assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's not a number"
     
     # when all is ok
-    @dn.delivery_notes_quotes_product_references = []
-    @dn.associated_quote.quotes_product_references.each do |ref|
-      @dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => ref.id,
+    @dn.delivery_note_items = []
+    @dn.associated_quote.quote_items.each do |ref|
+      @dn.delivery_note_items.build(:quote_item_id => ref.id,
                                                          :quantity => ref.quantity)
     end
-    assert_equal @dn.associated_quote.quotes_product_references.size,
-                 @dn.delivery_notes_quotes_product_references.size, "delivery_notes_quotes_product_references should be at the good size"
+    assert_equal @dn.associated_quote.quote_items.size,
+                 @dn.delivery_note_items.size, "delivery_note_items should be at the good size"
     @dn.valid?
-    assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+    assert !@dn.errors.invalid?(:delivery_note_items), "delivery_note_items should be valid"
   end
   
   def test_status_when_nil
@@ -733,7 +733,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     assert_contact_can_be_updated
     
-    assert_delivery_notes_quotes_product_references_can_be_updated
+    assert_delivery_note_items_can_be_updated
   end
   
   def test_update_delivery_note_when_validated
@@ -746,7 +746,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     assert_contact_cannot_be_updated
     
-    assert_delivery_notes_quotes_product_references_cannot_be_updated
+    assert_delivery_note_items_cannot_be_updated
   end
   
   def test_update_delivery_note_when_invalidated
@@ -760,7 +760,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     assert_contact_cannot_be_updated
     
-    assert_delivery_notes_quotes_product_references_cannot_be_updated
+    assert_delivery_note_items_cannot_be_updated
   end
   
   def test_update_delivery_note_when_signed
@@ -774,7 +774,7 @@ class DevlieryNoteTest < ActiveSupport::TestCase
     
     assert_contact_cannot_be_updated
     
-    assert_delivery_notes_quotes_product_references_cannot_be_updated
+    assert_delivery_note_items_cannot_be_updated
   end
   
   def test_update_delivery_note_with_one_pending_intervention
@@ -924,48 +924,48 @@ class DevlieryNoteTest < ActiveSupport::TestCase
       #TODO
     end
     
-    def assert_delivery_notes_quotes_product_references_can_be_updated
-      update_delivery_notes_quotes_product_references_by_editing_item
-      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+    def assert_delivery_note_items_can_be_updated
+      update_delivery_note_items_by_editing_item
+      assert !@dn.errors.invalid?(:delivery_note_items), "delivery_note_items should be valid"
       
-      update_delivery_notes_quotes_product_references_by_adding_item
-      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+      update_delivery_note_items_by_adding_item
+      assert !@dn.errors.invalid?(:delivery_note_items), "delivery_note_items should be valid"
       
-      update_delivery_notes_quotes_product_references_by_removing_item
-      assert !@dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should be valid"
+      update_delivery_note_items_by_removing_item
+      assert !@dn.errors.invalid?(:delivery_note_items), "delivery_note_items should be valid"
     end
     
-    def assert_delivery_notes_quotes_product_references_cannot_be_updated
-      update_delivery_notes_quotes_product_references_by_editing_item
-      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+    def assert_delivery_note_items_cannot_be_updated
+      update_delivery_note_items_by_editing_item
+      assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's NOT allowed to be updated"
       
-      update_delivery_notes_quotes_product_references_by_adding_item
-      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+      update_delivery_note_items_by_adding_item
+      assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's NOT allowed to be updated"
       
-      update_delivery_notes_quotes_product_references_by_removing_item
-      assert @dn.errors.invalid?(:delivery_notes_quotes_product_references), "delivery_notes_quotes_product_references should NOT be valid because it's NOT allowed to be updated"
+      update_delivery_note_items_by_removing_item
+      assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's NOT allowed to be updated"
     end
     
-    def update_delivery_notes_quotes_product_references_by_editing_item
-      @dn.delivery_notes_quotes_product_references.reload
+    def update_delivery_note_items_by_editing_item
+      @dn.delivery_note_items.reload
       
-      @dn.delivery_notes_quotes_product_references.first.quantity = 0
+      @dn.delivery_note_items.first.quantity = 0
       @dn.valid?
     end
     
-    def update_delivery_notes_quotes_product_references_by_adding_item
-      @dn.delivery_notes_quotes_product_references.reload
+    def update_delivery_note_items_by_adding_item
+      @dn.delivery_note_items.reload
       
-      ref = @signed_quote.quotes_product_references.last
-      @dn.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => ref.id,
+      ref = @signed_quote.quote_items.last
+      @dn.delivery_note_items.build(:quote_item_id => ref.id,
                                                          :quantity => ref.quantity)
       @dn.valid?
     end
     
-    def update_delivery_notes_quotes_product_references_by_removing_item
-      @dn.delivery_notes_quotes_product_references.reload
+    def update_delivery_note_items_by_removing_item
+      @dn.delivery_note_items.reload
 
-      @dn.delivery_notes_quotes_product_references.pop
+      @dn.delivery_note_items.pop
       @dn.valid?
     end
     

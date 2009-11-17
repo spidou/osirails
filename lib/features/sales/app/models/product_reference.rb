@@ -4,8 +4,6 @@ class ProductReference < ActiveRecord::Base
   # Relationship
   has_many :products
   belongs_to :product_reference_category, :counter_cache => true
-#  has_many :quotes_product_references, :dependent => :nullify
-#  has_many :quotes, :through => :quotes_product_references
   
   # Validation Macros
   validates_presence_of :name, :reference
@@ -61,17 +59,18 @@ class ProductReference < ActiveRecord::Base
     self.products.empty?
   end
   
-  # calculate unit price of the product reference according to production and delivery costs
-  def unit_price
-    price = 0
-    if production_cost_manpower and production_time
-      price = production_cost_manpower * production_time
-    end
-    
-    if delivery_cost_manpower and delivery_time
-      price += delivery_cost_manpower * delivery_time
-    end
-    
-    price
-  end
+  #FIXME DELETEME? Is this method really logical ?
+  ## calculate unit price of the product reference according to production and delivery costs
+  #def unit_price
+  #  price = 0
+  #  if production_cost_manpower and production_time
+  #    price = production_cost_manpower * production_time
+  #  end
+  #  
+  #  if delivery_cost_manpower and delivery_time
+  #    price += delivery_cost_manpower * delivery_time
+  #  end
+  #  
+  #  price
+  #end
 end

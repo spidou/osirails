@@ -40,32 +40,32 @@ class DiscardTest < ActiveSupport::TestCase
     assert !@discard.errors.invalid?(:discard_type), "discard_type should be valid"
   end
   
-  def test_presence_of_delivery_notes_quotes_product_reference
-    assert @discard.errors.invalid?(:delivery_notes_quotes_product_reference_id), "delivery_notes_quotes_product_reference_id should NOT be valid because it's nil"
+  def test_presence_of_delivery_note_item
+    assert @discard.errors.invalid?(:delivery_note_item_id), "delivery_note_item_id should NOT be valid because it's nil"
     
-    @discard.delivery_notes_quotes_product_reference_id = 0
+    @discard.delivery_note_item_id = 0
     @discard.valid?
-    assert !@discard.errors.invalid?(:delivery_notes_quotes_product_reference_id), "delivery_notes_quotes_product_reference_id should be valid"
-    assert @discard.errors.invalid?(:delivery_notes_quotes_product_reference), "delivery_notes_quotes_product_reference should NOT be valid because delivery_notes_quotes_product_reference_id is wrong"
+    assert !@discard.errors.invalid?(:delivery_note_item_id), "delivery_note_item_id should be valid"
+    assert @discard.errors.invalid?(:delivery_note_item), "delivery_note_item should NOT be valid because delivery_note_item_id is wrong"
     
-    @discard.delivery_notes_quotes_product_reference_id = @delivery_note.delivery_notes_quotes_product_references.first.id
+    @discard.delivery_note_item_id = @delivery_note.delivery_note_items.first.id
     @discard.valid?
-    assert !@discard.errors.invalid?(:delivery_notes_quotes_product_reference_id), "delivery_notes_quotes_product_reference_id should be valid"
-    assert !@discard.errors.invalid?(:delivery_notes_quotes_product_reference), "delivery_notes_quotes_product_reference should be valid"
+    assert !@discard.errors.invalid?(:delivery_note_item_id), "delivery_note_item_id should be valid"
+    assert !@discard.errors.invalid?(:delivery_note_item), "delivery_note_item should be valid"
     
-    @discard.delivery_notes_quotes_product_reference = @delivery_note.delivery_notes_quotes_product_references.first
+    @discard.delivery_note_item = @delivery_note.delivery_note_items.first
     @discard.valid?
-    assert !@discard.errors.invalid?(:delivery_notes_quotes_product_reference_id), "delivery_notes_quotes_product_reference_id should be valid"
-    assert !@discard.errors.invalid?(:delivery_notes_quotes_product_reference), "delivery_notes_quotes_product_reference should be valid"
+    assert !@discard.errors.invalid?(:delivery_note_item_id), "delivery_note_item_id should be valid"
+    assert !@discard.errors.invalid?(:delivery_note_item), "delivery_note_item should be valid"
   end
   
   def test_presence_and_validity_of_quantity
-    assert !@discard.errors.invalid?(:quantity), "quantity should NOT be INVALID because quantity is not validated unless delivery_notes_quotes_product_reference is nil"
+    assert !@discard.errors.invalid?(:quantity), "quantity should NOT be INVALID because quantity is not validated unless delivery_note_item is nil"
     
-    @discard.delivery_notes_quotes_product_reference = @delivery_note.delivery_notes_quotes_product_references.first
-    flunk "@discard should have a delivery_notes_quotes_product_reference to perform the following" unless @discard.delivery_notes_quotes_product_reference
+    @discard.delivery_note_item = @delivery_note.delivery_note_items.first
+    flunk "@discard should have a delivery_note_item to perform the following" unless @discard.delivery_note_item
     
-    @reference_quantity = @discard.delivery_notes_quotes_product_reference.quantity
+    @reference_quantity = @discard.delivery_note_item.quantity
     flunk "@reference_quantity should be greater than 0" unless @reference_quantity > 0
     
     @discard.valid?

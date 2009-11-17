@@ -33,8 +33,8 @@ class SurveyStep < ActiveRecord::Base
     end
   end
   
-  def survey_intervention_attributes=(survey_interventions_attributes)
-    survey_interventions_attributes.each do |attributes|
+  def survey_intervention_attributes=(survey_intervention_attributes)
+    survey_intervention_attributes.each do |attributes|
       if attributes[:id].blank?
         survey_interventions.build(attributes) if attributes[:should_create].to_i == 1
       else

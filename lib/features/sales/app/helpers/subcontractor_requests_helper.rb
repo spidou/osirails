@@ -1,14 +1,21 @@
 module SubcontractorRequestsHelper
   
   def display_subcontractor_requests(survey_step)
-    html = render(:partial => 'subcontractor_requests/subcontractor_request', :collection => survey_step.subcontractor_requests.select{ |s| !s.new_record? })
+    collection = survey_step.subcontractor_requests.select{ |s| !s.new_record? }
+    html = '<div id="subcontractor_requests">'
+    unless collection.empty?
+      html << render(:partial => 'subcontractor_requests/subcontractor_request', :collection => collection)
+    else
+      html << content_tag(:p, "Aucun travail de sous-traitance n'a été trouvé")
+    end
     html << render_new_subcontractor_requests_list(survey_step)
+    html << '</div>'
   end
   
   def render_new_subcontractor_requests_list(survey_step)
-    new_subcontractor_requests = survey_step.subcontractor_requests.select(&:new_record?)
+    collection = survey_step.subcontractor_requests.select(&:new_record?)
     html =  "<div class=\"new_records\" id=\"new_subcontractor_requests\">"
-    html << render(:partial => 'subcontractor_requests/subcontractor_request', :collection => new_subcontractor_requests)
+    html << render(:partial => 'subcontractor_requests/subcontractor_request', :collection => collection)
     html << "</div>"
   end
   

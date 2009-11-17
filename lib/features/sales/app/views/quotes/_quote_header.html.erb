@@ -5,10 +5,8 @@
 <% end -%>
 
 <%
-require_locals form
-
 quote = quote_header
-order = quote.estimate_step.order
+order = quote.order
 default_bill_to_address = order.customer.bill_to_address
 default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
 %>

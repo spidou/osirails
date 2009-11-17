@@ -4,11 +4,11 @@ class EstimateStepController < ApplicationController
   acts_as_step_controller
 
   def show
-    @quotes = @order.commercial_step.estimate_step.quotes
+    @quotes = @order.quotes
   end
   
   def edit
-    @quotes = @order.commercial_step.estimate_step.quotes
+    @quotes = @order.quotes
   end
   
   def update

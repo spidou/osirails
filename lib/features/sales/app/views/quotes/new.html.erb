@@ -1,9 +1,4 @@
 <%= order_header %>
 
 <h1>Création d'un nouveau devis</h1>
-
-<div class="presentation_medium">
-	<% form_for @quote, :url => { :controller => "quotes", :action => "create", :order_id => @order.id }, :method => :post do |form| %>
-	  <%= render :partial => 'quote_form', :object => @quote, :locals => { :form => form } %>
-  <% end %>
-</div>
+<%= render :partial => @quote %>

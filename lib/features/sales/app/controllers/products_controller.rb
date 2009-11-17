@@ -17,8 +17,8 @@ class ProductsController < ApplicationController
   def show
     @product = Product.find(params[:id])
     respond_to do |format|
-      format.js { render :layout => false }
       format.html { error_access_page(400) }
+      format.js { render :layout => false }
     end
   end
 end

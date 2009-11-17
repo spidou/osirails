@@ -1,4 +1,5 @@
 require 'action_view/helpers/form_helper'
+require 'digest/sha1'
 
 module ActionView
   module Helpers
@@ -120,28 +121,35 @@ module ActionView
       end
       
       def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+        random_id_for_indicator = Digest::SHA1.hexdigest(rand(1000000).to_s)
+        #OPTIMIZE use class instead of style attribute
+        tag_options = { :style => "color: grey; font-style: italic" }.merge(tag_options)
+        
+        completion_options =  { :update_id => "#{object}_#{method}_id" }.merge(completion_options)
+        completion_options =  { :skip_style           => true,
+                                :url                  => send("auto_complete_for_#{object}_#{method}_path"),
+                                :indicator            => "auto_complete_#{random_id_for_indicator}",
+                                :update_element       => "function(li){
+                                                            this.element = $('#{object}_#{method}')
+                                                            this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                            if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
+                                                          }",
+                                :after_update_element => "function(input,li){
+                                                            $('#{completion_options[:update_id]}').value = li.down('.#{object}_#{method}_id').innerHTML;
+                                                          }"
+                              }.merge(completion_options)
+        
         if tag_options[:value]
           #OPTIMIZE use class instead of style attribute
-          tag_options = { :style => "color: grey; font-style: italic",
-                          :onfocus => "if (this.value == '#{tag_options[:value]}') { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
-                          :onblur => "if (this.value == '' || this.value == '#{tag_options[:value]}') { this.value = '#{tag_options[:value]}'; this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
+          tag_options = { :onfocus   => "if (this.value == '#{tag_options[:value]}') { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
+                          :onblur    => "if (this.value == '' || this.value == '#{tag_options[:value]}') { this.value = '#{tag_options[:value]}'; this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
                         }.merge(tag_options)
         end
         
-        completion_options =  { :update_id => "#{object}_#{method}_id" }.merge(completion_options)
-        
-        completion_options =  { :skip_style => true,
-                                :url => send("auto_complete_for_#{object}_#{method}_path"),
-                                :update_element => "function(li){
-                                                      this.element = $('#{object}_#{method}')
-                                                      this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
-                                                      if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
-                                                    }",
-                                :after_update_element => "function(input,li){
-                                                            $('#{completion_options[:update_id]}').value = li.down('.#{object}_#{method}_id').innerHTML 
-                                                          }"
-                              }.merge(completion_options)
-        text_field_with_auto_complete(object, method, tag_options, completion_options)
+        html =  "<div class=\"auto_complete_container\""
+        html << text_field_with_auto_complete(object, method, tag_options, completion_options)
+        html << content_tag(:div, nil, :id => "auto_complete_#{random_id_for_indicator}", :class => "auto_complete_indicator", :style => "display:none")
+        html << "</div>"
       end
       
       # Use this method in your view to generate a return for the AJAX autocomplete requests.
@@ -165,7 +173,7 @@ module ActionView
           #OPTIMIZE return less data to save bandwith, like => { "1" => "reference 1", "2" => "reference 2" }.to_json
           # and make all the treatment by the client (in javascript)
           content_tag 'li', content_tag( 'div', phrase ? highlight(text, phrase) : h(text) ) +
-                            content_tag( 'div', h(text), :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_value" ) +
+                            content_tag( 'div', h(text),  :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_value" ) +
                             content_tag( 'div', entry.id, :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_id" )
         end
         content_tag('ul', items.uniq)
@@ -174,7 +182,8 @@ module ActionView
       def autoresize_text_area(object_name, method, options = {})
         options[:rows] ||= 2
         options[:cols] ||= 60
-        options = options.merge({:style => "overflow: hidden", :class => "autoresize_text_area"})
+        options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
+        options[:style] = "#{options[:style]}#{options[:style].blank? ? '' : ';'}overflow: hidden";
         InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_text_area_tag(options)
       end
       

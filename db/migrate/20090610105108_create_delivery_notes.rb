@@ -1,7 +1,7 @@
 class CreateDeliveryNotes < ActiveRecord::Migration
   def self.up
     create_table :delivery_notes do |t|
-      t.references :delivery_step, :creator
+      t.references :order, :creator
       t.string     :status
       t.date       :validated_on
       t.date       :invalidated_on
@@ -13,17 +13,9 @@ class CreateDeliveryNotes < ActiveRecord::Migration
       
       t.timestamps
     end
-    
-    create_table :delivery_notes_quotes_product_references do |t|
-      t.references :delivery_note, :quotes_product_reference, :report_type
-      t.integer    :quantity
-      
-      t.timestamps
-    end
   end
 
   def self.down
     drop_table :delivery_notes
-    drop_table :delivery_notes_quotes_product_references
   end
 end

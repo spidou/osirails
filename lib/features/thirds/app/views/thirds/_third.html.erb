@@ -20,7 +20,7 @@ force_show_view ||= false
   </p>
   <p>
     <%= form.label :activity_sector_id %>
-    <%= form.form_or_view(form.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name), :activity_sector, :name)%>
+    <%= form.form_or_view(form.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name, :include_blank => third.new_record? ? "Veuillez choisir un secteur d'activité" : false), :activity_sector, :name)%>
   </p>
   <p>
     <%= form.label :activities %>

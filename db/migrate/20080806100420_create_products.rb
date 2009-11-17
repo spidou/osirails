@@ -2,9 +2,10 @@ class CreateProducts < ActiveRecord::Migration
   def self.up
     create_table :products do |t|
       t.references :product_reference, :order
-      t.string  :reference, :name, :dimensions
+      t.string  :reference, :name
       t.text    :description
-      t.float   :quantity
+      t.string  :dimensions
+      t.float   :unit_price, :quantity, :discount, :vat
       t.integer :position
       
       t.timestamps

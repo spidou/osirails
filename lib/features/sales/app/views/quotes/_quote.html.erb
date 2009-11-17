@@ -1,0 +1,102 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'sales/quotes' %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+<% end %>
+
+<%
+quote_headers = { :quote_header => "Entête",
+                  :quote_body   => "Corps",
+                  :quote_footer => "Conditions commerciales" }
+
+#TODO
+quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
+                  :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:reduction) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount)? ' errors' : '',
+                  :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:account) ? ' errors' : '' }
+%>
+
+<div class="presentation_medium root_nav">
+  <script type="text/javascript">
+    //taxes_vat = <%# ConfigurationManager.sales_taxes_vat %>;
+    //add_buttons_in_catalog();
+  </script>
+  
+  <ul class="quote_nav tab_nav">
+    <li class="quote_header<%= quote_errors[:quote_header] %> selected"><%= quote_headers[:quote_header] %></li>
+    <li class="quote_body<%= quote_errors[:quote_body] %>"><%= quote_headers[:quote_body] %></li>
+    <li class="quote_footer<%= quote_errors[:quote_footer] %>"><%= quote_headers[:quote_footer] %></li>
+  </ul>
+  
+  <% action = quote.new_record? ? :create : :update %>
+  <% method = quote.new_record? ? :put : :post %>
+  <% form_for quote, :url => { :controller => 'quotes', :action => action, :order_id => @order.id }, :method => method do |form| %>
+    
+    <h2 class="quote_header"><%= quote_headers[:quote_header] %></h2>
+    <div class="quote_header section_nav selected">
+      <%= form.error_messages unless quote_errors[:quote_header].blank? %>
+      <%= render :partial => 'quote_header', :object => quote %>
+    </div>
+    
+    <h2 class="quote_body"><%= quote_headers[:quote_body] %></h2>
+    <div class="quote_body section_nav">
+      <%= form.error_messages unless quote_errors[:quote_body].blank? %>
+      <table id="quote_items">
+        <tr>
+          <th>Réf.</th>
+          <th>Désignation</th>
+          <th>Côtes</th>
+          <th>P.U.<br/>Brut HT</th>
+          <th>Rem.<br/>(%)</th>
+          <th>P.U.<br/>Net HT</th>
+          <th>Qté</th>
+          <th>Total<br/>HT</th>
+          <th>TVA</th>
+          <th>Total<br/>TTC</th>
+          <% if is_form_view? %>
+            <th>Actions</th>
+          <% end %>
+        </tr>
+        <%= render :partial => 'quote_items/quote_item', :collection => quote.quote_items %>
+        <%= render :partial => 'quote_items/quote_item', :object => nil, :locals => { :quote => quote } %>
+        
+        <%= render :partial => 'quotes/quote_aggregates', :object => quote, :locals => { :form => form } %>
+      </table>
+    </div>
+    
+    <h2 class="quote_footer"><%= quote_headers[:quote_footer] %></h2>
+    <div class="quote_footer section_nav">
+      <%= form.error_messages unless quote_errors[:quote_footer].blank? %>
+      <p>
+        <%= form.label :sales_terms %>
+        <%= form.form_or_view(form.text_field(:sales_terms, :size => 100), :sales_terms) %>
+      </p>
+
+      <p>
+        <%= form.label :validity_delay %>
+        <%= form.form_or_view(form.text_field(:validity_delay, :size => 2), :validity_delay) %> <%= form.form_or_view(form.select(:validity_delay_unit, Quote::VALIDITY_DELAY_UNITS), :validity_delay_unit) %>
+      </p>
+
+      <p>
+        <%= form.label :account, 'Acompte HT :' %>
+        <%= form.form_or_view(form.text_field(:account, :value => quote.account.to_f.round_to(2).to_s(2), :size => 5, :onkeyup => "update_account(#{ConfigurationManager.sales_account_tax_coefficient})"), strong(quote.account.to_f.round_to(2).to_s(2))) %>
+        
+        <%= form.label :account_with_taxes, 'Acompte TTC :' %>
+        <span id="quote_account_with_taxes">
+          <%= quote.account_with_taxes.round_to(2).to_s(2) %>
+        </span>
+      </p>
+      <p style="display:none">
+        <%= form.hidden_field :order_id %>
+      </p>
+    </div>
+    
+    <% if params[:action] == 'new' %>
+      <p>
+        <%= form.submit 'Créer' %>
+      </p>
+    <% elsif is_form_view? %>
+      <p>
+        <%= form.submit 'Enregistrer' %>
+      </p>
+    <% end %>
+  <% end %>
+</div>

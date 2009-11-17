@@ -1,8 +1,8 @@
 class Quote < ActiveRecord::Base
-  STATUS_VALIDATED    = 'validated'
-  STATUS_INVALIDATED  = 'invalidated'
-  STATUS_SENDED       = 'sended'
-  STATUS_SIGNED       = 'signed'
+  STATUS_CONFIRMED  = 'confirmed'
+  STATUS_CANCELLED  = 'cancelled'
+  STATUS_SENDED     = 'sended'
+  STATUS_SIGNED     = 'signed'
   
   PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
   
@@ -10,18 +10,18 @@ class Quote < ActiveRecord::Base
                            'jours'  => 'days',
                            'mois'   => 'months' }
   
-  has_permissions :as_business_object
+  has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel, :send_to_customer, :sign]
   has_address     :bill_to_address
   has_address     :ship_to_address
   has_contact     :accept_from => :order_contacts
   
-  belongs_to :creator,          :class_name  => 'User', :foreign_key => 'user_id'
-  belongs_to :estimate_step
+  belongs_to :creator, :class_name => 'User'
+  belongs_to :order
   belongs_to :send_quote_method
   belongs_to :order_form_type
   
-  has_many :quotes_product_references, :dependent => :destroy
-  has_many :product_references,        :through   => :quotes_product_references
+  has_many :quote_items, :dependent => :delete_all # not :destroy to avoid after_destroy is called in quote_item.rb
+  has_many :products, :through => :quote_items
   
   has_attached_file :order_form,
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
@@ -29,22 +29,24 @@ class Quote < ActiveRecord::Base
   
   validates_contact_presence
   
-  validates_presence_of     :estimate_step_id, :user_id, :quotes_product_references
-  validates_presence_of     :estimate_step, :if => :estimate_step
-  validates_presence_of     :creator,       :if => :user_id
+  validates_presence_of     :order_id, :creator_id
+  validates_presence_of     :order,   :if => :order_id
+  validates_presence_of     :creator, :if => :creator_id
   
   validates_numericality_of :reduction, :carriage_costs, :discount, :account, :validity_delay
   
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
-  validates_inclusion_of    :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
+  validates_inclusion_of    :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
   
-  validates_associated      :quotes_product_references, :product_references
+  validates_associated      :quote_items, :products
+  
+  validate :validates_length_of_quote_items
   
   ## VALIDATIONS ON VALIDATING QUOTE
-  validates_date :validated_on, :equal_to => Proc.new { Date.today }, :if => :validated?
+  validates_date :confirmed_on, :equal_to => Proc.new { Date.today }, :if => :confirmed?
   
   ## VALIDATIONS ON INVALIDATING QUOTE
-  validates_date :invalidated_on, :equal_to => Proc.new { Date.today }, :if => :invalidated?
+  validates_date :cancelled_on, :equal_to => Proc.new { Date.today }, :if => :cancelled?
   
   ## VALIDATIONS ON SENDING QUOTE
   with_options :if => :sended? do |quote|
@@ -68,16 +70,13 @@ class Quote < ActiveRecord::Base
     quote.validate :validates_presence_of_order_form
   end
   
-  def validates_presence_of_order_form # the method validates_attachment_presence of paperclip seems to be broken when using conditions
-    if order_form.nil? or order_form.instance.order_form_file_name.blank? or order_form.instance.order_form_file_size.blank? or order_form.instance.order_form_content_type.blank?
-      errors.add(:order_form, "est requis")
-    end
-  end
+  after_save    :save_quote_items, :remove_order_products
+  after_update  :update_estimate_step_status
   
-  after_update :save_quotes_product_references, :update_estimate_step_status
-  
-  attr_protected :status, :public_number, :validated_on, :invalidated_on, :sended_on, :send_quote_method_id,
+  attr_protected :status, :public_number, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
                  :signed_on, :order_form_type_id, :order_form
+  
+  attr_accessor :order_products_to_remove
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -89,28 +88,64 @@ class Quote < ActiveRecord::Base
   @@form_labels[:order_form]        = 'Fichier :'
   @@form_labels[:sales_terms]       = 'Conditions commerciales :'
   
-  def quotes_product_reference_attributes=(quotes_product_reference_attributes)
-    quotes_product_reference_attributes.each do |attributes|
-      unless attributes[:product_reference_id].blank?
-        if attributes[:id].blank?
-          product_reference = ProductReference.find(attributes[:product_reference_id])
-          
-          quotes_product_reference = quotes_product_references.build(attributes)
-          
-          # original_name, original_description and original_unit_price are protected form mass-assignment !
-          quotes_product_reference.original_name        = product_reference.name
-          quotes_product_reference.original_description = product_reference.description
-          quotes_product_reference.original_unit_price  = product_reference.unit_price
-        else
-          quotes_product_reference = quotes_product_references.detect { |x| x.id == attributes[:id].to_i }
-          quotes_product_reference.attributes = attributes
-        end
-      end
+  def initialize(*params)
+    super(*params)
+    @order_products_to_remove ||= []
+  end
+  
+  def after_find
+    @order_products_to_remove ||= []
+  end
+  
+  def validates_presence_of_order_form # the method validates_attachment_presence of paperclip seems to be broken when using conditions
+    if order_form.nil? or order_form.instance.order_form_file_name.blank? or order_form.instance.order_form_file_size.blank? or order_form.instance.order_form_content_type.blank?
+      errors.add(:order_form, "est requis")
     end
   end
   
-  def save_quotes_product_references
-    quotes_product_references.each do |x|
+  def validates_length_of_quote_items
+    if quote_items.reject{ |q| q.should_destroy? }.empty?
+      errors.add(:quote_item_ids, "Vous devez entrer au moins 1 produit")
+    end
+  end
+  
+  def build_quote_item(quote_item_attributes)
+    raise ArgumentError, "build_quote_item expected to receive :product_id or :product_reference_id in parameter" if quote_item_attributes[:product_id].blank? and quote_item_attributes[:product_reference_id].blank?
+    
+    product = Product.find_by_id(quote_item_attributes[:product_id])
+    product ||= ProductReference.find_by_id(quote_item_attributes[:product_reference_id])
+    
+    name        = product.name
+    description = product.description
+    dimensions  = product.dimensions rescue nil # ProductReference do not have dimensions
+    quantity    = product.quantity rescue nil   # ProductReference do not have quantity
+    unit_price  = product.unit_price
+    vat         = product.vat || ( product.product_reference.vat rescue nil )
+    
+    quote_item_attributes = { :name         => name,
+                              :description  => description,
+                              :dimensions   => dimensions,
+                              :quantity     => quantity,
+                              :unit_price   => unit_price,
+                              :vat          => vat
+                            }.merge(quote_item_attributes)
+    
+    _build_quote_item(quote_item_attributes)
+  end
+  
+  def quote_item_attributes=(quote_item_attributes)
+    quote_item_attributes.each do |attributes|
+      _build_quote_item(attributes)
+    end
+    
+    # automatically remove a product from order if quote_items do not include this product
+    order.products.reject(&:new_record?).each do |p|
+      @order_products_to_remove << p unless quote_items.collect(&:product_id).include?(p.id)
+    end
+  end
+  
+  def save_quote_items
+    quote_items.each do |x|
       if x.should_destroy?
         x.destroy
       else
@@ -119,22 +154,21 @@ class Quote < ActiveRecord::Base
     end
   end
   
-  def update_estimate_step_status
-    if signed?
-      estimate_step.terminated!
-    end
+  def remove_order_products
+    @order_products_to_remove.each(&:destroy)
   end
   
   def total
-    quotes_product_references.collect{ |qpr| qpr.total }.sum
+    quote_items.collect(&:total).sum
   end
   
   def net
+    reduction = self.reduction || 0.0
     total*(1-(reduction/100))
   end
   
   def total_with_taxes
-    quotes_product_references.collect{ |qpr| qpr.total_with_taxes }.sum
+    quote_items.collect(&:total_with_taxes).sum
   end
   
   def summon_of_taxes
@@ -142,47 +176,50 @@ class Quote < ActiveRecord::Base
   end
   
   def net_to_paid
+    carriage_costs = self.carriage_costs || 0.0
+    discount = self.discount || 0.0
     net + carriage_costs + summon_of_taxes - discount
   end
   
   def account_with_taxes
+    account = self.account || 0.0
     account*(1+(ConfigurationManager.sales_account_tax_coefficient/100))
   end
   
   def tax_coefficients
-    self.quotes_product_references.collect{ |qpr| qpr.vat }.uniq
+    quote_items.collect(&:vat).uniq
   end
   
-  def total_for_tax(coefficient)
-    self.quotes_product_references.collect{ |qpr| qpr.total if qpr.vat == coefficient}.compact.sum
+  def total_taxes_for(coefficient)
+    quote_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
   end
   
   def number_of_pieces
-    quotes_product_references.collect{ |qpr| qpr.quantity }.sum
+    quote_items.collect(&:quantity).sum
   end
   
-  def validate_quote
-    if can_be_validated?
-      self.validated_on = Date.today
+  def confirm
+    if can_be_confirmed?
+      self.confirmed_on = Date.today
       self.public_number = generate_public_number
-      self.status = STATUS_VALIDATED
+      self.status = STATUS_CONFIRMED
       self.save
     else
       false
     end
   end
   
-  def invalidate_quote
-    if can_be_invalidated?
-      self.invalidated_on = Date.today
-      self.status = STATUS_INVALIDATED
+  def cancel
+    if can_be_cancelled?
+      self.cancelled_on = Date.today
+      self.status = STATUS_CANCELLED
       self.save
     else
       false
     end
   end
   
-  def send_quote(attributes)
+  def send_to_customer(attributes)
     if can_be_sended?
       if attributes[:sended_on] and attributes[:sended_on].kind_of?(Date)
         self.sended_on = attributes[:sended_on]
@@ -199,7 +236,7 @@ class Quote < ActiveRecord::Base
     end
   end
   
-  def sign_quote(attributes)
+  def sign(attributes)
     if can_be_signed?
       self.attributes = attributes
       if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
@@ -223,12 +260,12 @@ class Quote < ActiveRecord::Base
     status.nil?
   end
   
-  def validated?
-    status == STATUS_VALIDATED
+  def confirmed?
+    status == STATUS_CONFIRMED
   end
   
-  def invalidated?
-    status == STATUS_INVALIDATED
+  def cancelled?
+    status == STATUS_CANCELLED
   end
   
   def sended?
@@ -243,12 +280,12 @@ class Quote < ActiveRecord::Base
     status_was.nil?
   end
   
-  def was_validated?
-    status_was == STATUS_VALIDATED
+  def was_confirmed?
+    status_was == STATUS_CONFIRMED
   end
   
-  def was_invalidated?
-    status_was == STATUS_INVALIDATED
+  def was_cancelled?
+    status_was == STATUS_CANCELLED
   end
   
   def was_sended?
@@ -260,8 +297,12 @@ class Quote < ActiveRecord::Base
   end
   
   def validity_date
-    return unless validated_on and validity_delay_unit and validity_delay
-    validated_on + validity_delay.send(validity_delay_unit)
+    return unless confirmed_on and validity_delay_unit and validity_delay
+    confirmed_on + validity_delay.send(validity_delay_unit)
+  end
+  
+  def can_be_added?
+    order.draft_quote.nil? and order.pending_quote.nil? and order.signed_quote.nil?
   end
   
   def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
@@ -272,16 +313,17 @@ class Quote < ActiveRecord::Base
     was_uncomplete?
   end
   
-  def can_be_validated?
-    was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
+  def can_be_confirmed?
+    #was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
+    was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
   end
   
-  def can_be_invalidated?
-    was_validated? or was_sended?
+  def can_be_cancelled?
+    was_uncomplete? or was_confirmed? or was_sended?
   end
   
   def can_be_sended?
-    was_validated?
+    was_confirmed?
   end
   
   def can_be_signed?
@@ -291,7 +333,9 @@ class Quote < ActiveRecord::Base
   def order_contacts
     # use EstimateStep.find() permits to get a complete list of contacts (if order contacts
     # list has changed from the initial 'find' of the current instance of Quote)
-    estimate_step ? EstimateStep.find(estimate_step_id).order.contacts : []
+    
+    #estimate_step ? EstimateStep.find(estimate_step_id).order.contacts : []
+    order ? order.contacts : []
   end
   
   private
@@ -300,5 +344,30 @@ class Quote < ActiveRecord::Base
       prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
       quantity = Quote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
       "#{prefix}#{quantity.to_s.rjust(3,'0')}"
+    end
+    
+    def update_estimate_step_status
+      if signed?
+        #estimate_step.terminated!
+        order.commercial_step.estimate_step.terminated!
+      end
+    end
+    
+    def _build_quote_item(quote_item_attributes)
+      return nil if quote_item_attributes[:product_reference_id].blank?
+      
+      quote_item_attributes[:product_attributes] = quote_item_attributes.reject{ |k,v| [:product_id, :order_id].include?(k.to_sym) }
+      quote_item_attributes[:product_attributes][:id] = quote_item_attributes[:product_id]
+      quote_item_attributes.delete(:product_reference_id)
+      quote_item_attributes[:order_id] = self.order_id
+      
+      if quote_item_attributes[:id].blank?
+        quote_item = quote_items.build(quote_item_attributes)
+      else
+        quote_item = quote_items.detect { |x| x.id == quote_item_attributes[:id].to_i }
+        quote_item.attributes = quote_item_attributes
+      end
+      
+      return quote_item
     end
 end

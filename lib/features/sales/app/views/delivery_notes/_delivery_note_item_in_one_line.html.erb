@@ -1,6 +1,6 @@
-<% delivery_notes_quotes_product_reference = delivery_notes_quotes_product_reference_in_one_line %>
+<% delivery_note_item = delivery_note_item_in_one_line %>
 
-<% if delivery_notes_quotes_product_reference.nil? %>
+<% if delivery_note_item.nil? %>
   <% require_locals delivery_note %>
   
   <tr class="aggregates">
@@ -20,45 +20,45 @@
     <td class="aggregate_amount aggregate_with_taxes"><%= delivery_note.associated_quote.total_with_taxes.round_to(2).to_s(2) %>&#160;&euro;</td>
   </tr>
 <% else %>
-  <% quotes_product_reference = delivery_notes_quotes_product_reference.quotes_product_reference %>
+  <% quote_item = delivery_note_item.quote_item %>
   
-  <% fields_for "delivery_note[delivery_notes_quotes_product_reference_attributes][]", delivery_notes_quotes_product_reference do |form| %>
+  <% fields_for "delivery_note[delivery_note_item_attributes][]", delivery_note_item do |form| %>
     <%= form.error_messages %>
-    <tr class="delivery_notes_quotes_product_reference">
+    <tr class="delivery_note_item">
       <td class="reference">
-        <%= quotes_product_reference.product_reference.reference %>
+        <%= quote_item.product_reference.reference %>
       </td>
       <td class="description">
-        <%= h(quotes_product_reference.name) %>
+        <%= h(quote_item.name) %>
         <br/>
-        <%= textilize(h(quotes_product_reference.description)) %>
+        <%= textilize(h(quote_item.description)) %>
       </td>
       <td class="quantity">
-        <%= quotes_product_reference.quantity %>
+        <%= quote_item.quantity %>
       </td>
       <td class="unit_price">
-        <%= quotes_product_reference.unit_price.to_f.to_s(2) %>
+        <%= quote_item.unit_price.to_f.to_s(2) %>
       </td>
       <td class="discount">
-        <%= quotes_product_reference.discount.to_f.to_s(2) %>
+        <%= quote_item.discount.to_f.to_s(2) %>
       </td>
       <td class="unit_price_with_discount">
-        <%= quotes_product_reference.unit_price_with_discount.round_to(2).to_s(2) %>
+        <%= quote_item.unit_price_with_discount.round_to(2).to_s(2) %>
       </td>
       <td class="total">
-        <%= quotes_product_reference.total.round_to(2).to_s(2) %>
+        <%= quote_item.total.round_to(2).to_s(2) %>
       </td>
       <td class="vat">
-        <%= quotes_product_reference.vat %>
+        <%= quote_item.vat %>
       </td>
       <td class="total_with_taxes">
-        <%= quotes_product_reference.total_with_taxes.round_to(2).to_s(2) %>
+        <%= quote_item.total_with_taxes.round_to(2).to_s(2) %>
       </td>
       <td class="quantity_for_delivery">
-        <%= form.form_or_view(form.select(:quantity, (0..quotes_product_reference.quantity)), :quantity) %>
+        <%= form.form_or_view(form.select(:quantity, (0..quote_item.quantity)), :quantity) %>
         
         <%= form.hidden_field :id %>
-        <%= form.hidden_field :quotes_product_reference_id %>
+        <%= form.hidden_field :quote_item_id %>
       </td>
     </tr>
   <% end %>

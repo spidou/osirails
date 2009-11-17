@@ -13,19 +13,19 @@ class DeliveryNote < ActiveRecord::Base
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
                     :url  => '/delivery_notes/:delivery_note_id/attachment'
   
+  belongs_to :order
   belongs_to :creator, :class_name  => 'User'
-  belongs_to :delivery_step
   
-  has_many :delivery_notes_quotes_product_references, :dependent => :destroy
-  has_many :quotes_product_references,                :through   => :delivery_notes_quotes_product_references
+  has_many :delivery_note_items, :dependent => :destroy
+  has_many :quote_items,         :through   => :delivery_note_items
   has_many :interventions
   
   validates_contact_presence
   
-  validates_presence_of :delivery_notes_quotes_product_references, :ship_to_address
-  validates_presence_of :delivery_step_id, :creator_id
-  validates_presence_of :delivery_step, :if => :delivery_step_id
-  validates_presence_of :creator,       :if => :creator_id
+  validates_presence_of :delivery_note_items, :ship_to_address
+  validates_presence_of :order_id, :creator_id
+  validates_presence_of :order,   :if => :order_id
+  validates_presence_of :creator, :if => :creator_id
   
   with_options :if => :validated? do |dn|
     dn.validates_presence_of :validated_on
@@ -40,12 +40,11 @@ class DeliveryNote < ActiveRecord::Base
     dn.validate :validates_presence_of_attachment
   end
   
-  validates_persistence_of :creator_id, :creator,
-                           :delivery_step_id, :delivery_step
+  validates_persistence_of :creator_id, :order_id
   
   validates_persistence_of :ship_to_address,
                            :contacts,
-                           :delivery_notes_quotes_product_references, 
+                           :delivery_note_items, 
                            :validated_on,
                            :public_number, :unless => :was_uncomplete?
   
@@ -55,11 +54,11 @@ class DeliveryNote < ActiveRecord::Base
   
   validates_inclusion_of :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SIGNED ], :allow_nil => true
   
-  validates_associated  :delivery_notes_quotes_product_references, :quotes_product_references, :interventions
+  validates_associated  :delivery_note_items, :quote_items, :interventions
   
   validate :validates_interventions
   
-  before_update :save_delivery_notes_quotes_product_references
+  before_update :save_delivery_note_items
   after_save :save_interventions
   
   attr_protected :status, :validated_on, :invalidated_on, :signed_on, :public_number
@@ -95,22 +94,22 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def associated_quote
-    delivery_step ? delivery_step.order.commercial_step.estimate_step.signed_quote : nil
+    order ? order.signed_quote : nil
   end
   
-  def delivery_notes_quotes_product_reference_attributes=(delivery_notes_quotes_product_reference_attributes)
-    delivery_notes_quotes_product_reference_attributes.each do |attributes|
+  def delivery_note_item_attributes=(delivery_note_item_attributes)
+    delivery_note_item_attributes.each do |attributes|
       if attributes[:id].blank?
-        delivery_notes_quotes_product_references.build(attributes)
+        delivery_note_items.build(attributes)
       else
-        delivery_notes_quotes_product_reference = delivery_notes_quotes_product_reference.detect { |x| x.id == attributes[:id].to_i }
-        delivery_notes_quotes_product_reference.attributes = attributes
+        delivery_note_item = delivery_note_item.detect { |x| x.id == attributes[:id].to_i }
+        delivery_note_item.attributes = attributes
       end
     end
   end
   
-  def save_delivery_notes_quotes_product_references
-    delivery_notes_quotes_product_references.each do |x|
+  def save_delivery_note_items
+    delivery_note_items.each do |x|
       x.save(false)
     end
   end
@@ -227,13 +226,11 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def order_contacts
-    # use DeliveryStep.find() permits to get a complete list of contacts (if order contacts
-    # list has changed from the initial 'find' of the current instance of DeliveryNote)
-    delivery_step ? DeliveryStep.find(delivery_step_id).order.contacts : []
+    order ? order.contacts : []
   end
   
   def discards
-    delivery_notes_quotes_product_references.select(&:discard).collect(&:discard)
+    delivery_note_items.select(&:discard).collect(&:discard)
   end
   
   def has_discards?

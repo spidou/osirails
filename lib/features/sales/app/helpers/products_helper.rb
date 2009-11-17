@@ -50,7 +50,8 @@ module ProductsHelper
   end
   
   def display_product_delete_button_in_survey_step(product)
-    link_to_function "Supprimer", "mark_resource_for_destroy(this)"
+    confirm = "Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du forumulaire."
+    link_to_function "Supprimer", "if (confirm(\"#{confirm}\")) mark_resource_for_destroy(this)"
   end
   
 end

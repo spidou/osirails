@@ -10,9 +10,22 @@ class Order < ActiveRecord::Base
   belongs_to :creator,    :class_name => 'User', :foreign_key => 'user_id'
   belongs_to :approaching
   
+  # steps
   has_one :commercial_step,    :dependent => :nullify
   has_one :pre_invoicing_step, :dependent => :nullify
   has_one :invoicing_step,     :dependent => :nullify
+  
+  # quotes
+  has_many :quotes, :order => 'created_at DESC'
+  has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS ?', nil ]
+  has_one  :pending_quote, :class_name => 'Quote', :conditions => [ 'status IN (?)', [ Quote::STATUS_CONFIRMED, Quote::STATUS_SENDED ] ]
+  has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ "status = ?", Quote::STATUS_SIGNED ]
+  #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
+  
+  # delivery notes
+  has_many :delivery_notes
+  has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
+  has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ]
   
   has_many :ship_to_addresses
   has_many :products
@@ -30,7 +43,7 @@ class Order < ActiveRecord::Base
   
   validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
-  validates_associated :customer, :ship_to_addresses, :products
+  validates_associated :customer, :ship_to_addresses, :products, :quotes #TODO quotes is really necessary ?
   
   validate :validates_length_of_ship_to_addresses
   validate :validates_order_type_validity
@@ -169,9 +182,9 @@ class Order < ActiveRecord::Base
     end
   end
   
-  def signed_quote
-    commercial_step.estimate_step.signed_quote
-  end
+  #def signed_quote
+  #  commercial_step.estimate_step.signed_quote
+  #end
   
   def customer_contacts
     # customer.all_contacts #TODO also take in account contacts in customer's establishments
@@ -236,7 +249,7 @@ class Order < ActiveRecord::Base
   end
   
   def validates_length_of_ship_to_addresses
-    if ship_to_addresses.select{|s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?)}.empty?
+    if ship_to_addresses.select{ |s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?) }.empty?
       errors.add(:ship_to_address_ids, "Vous devez choisir au moins 1 adresse de livraison")
     end
   end

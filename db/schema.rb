@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091026081226) do
+ActiveRecord::Schema.define(:version => 20091112122118) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -250,8 +250,17 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
     t.integer "intervention_id", :limit => 11
   end
 
+  create_table "delivery_note_items", :force => true do |t|
+    t.integer  "delivery_note_id", :limit => 11
+    t.integer  "quote_item_id",    :limit => 11
+    t.integer  "report_type_id",   :limit => 11
+    t.integer  "quantity",         :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "delivery_notes", :force => true do |t|
-    t.integer  "delivery_step_id",        :limit => 11
+    t.integer  "order_id",                :limit => 11
     t.integer  "creator_id",              :limit => 11
     t.string   "status"
     t.date     "validated_on"
@@ -261,15 +270,6 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size",    :limit => 11
     t.string   "public_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "delivery_notes_quotes_product_references", :force => true do |t|
-    t.integer  "delivery_note_id",            :limit => 11
-    t.integer  "quotes_product_reference_id", :limit => 11
-    t.integer  "report_type_id",              :limit => 11
-    t.integer  "quantity",                    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -288,10 +288,10 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
   end
 
   create_table "discards", :force => true do |t|
-    t.integer  "delivery_notes_quotes_product_reference_id", :limit => 11
-    t.integer  "discard_type_id",                            :limit => 11
+    t.integer  "delivery_note_item_id", :limit => 11
+    t.integer  "discard_type_id",       :limit => 11
     t.text     "comments"
-    t.integer  "quantity",                                   :limit => 11
+    t.integer  "quantity",              :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -812,9 +812,12 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
     t.integer  "order_id",             :limit => 11
     t.string   "reference"
     t.string   "name"
-    t.string   "dimensions"
     t.text     "description"
+    t.string   "dimensions"
+    t.float    "unit_price"
     t.float    "quantity"
+    t.float    "discount"
+    t.float    "vat"
     t.integer  "position",             :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -822,9 +825,24 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
 
   add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
 
+  create_table "quote_items", :force => true do |t|
+    t.integer  "quote_id",    :limit => 11
+    t.integer  "product_id",  :limit => 11
+    t.string   "name"
+    t.text     "description"
+    t.string   "dimensions"
+    t.float    "unit_price"
+    t.float    "quantity"
+    t.float    "discount"
+    t.float    "vat"
+    t.integer  "position",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "quotes", :force => true do |t|
-    t.integer  "estimate_step_id",        :limit => 11
-    t.integer  "user_id",                 :limit => 11
+    t.integer  "order_id",                :limit => 11
+    t.integer  "creator_id",              :limit => 11
     t.integer  "send_quote_method_id",    :limit => 11
     t.integer  "order_form_type_id",      :limit => 11
     t.string   "status"
@@ -839,8 +857,8 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
     t.string   "order_form_file_name"
     t.string   "order_form_content_type"
     t.integer  "order_form_file_size",    :limit => 11
-    t.date     "validated_on"
-    t.date     "invalidated_on"
+    t.date     "confirmed_on"
+    t.date     "cancelled_on"
     t.date     "sended_on"
     t.date     "signed_on"
     t.datetime "created_at"
@@ -848,23 +866,6 @@ ActiveRecord::Schema.define(:version => 20091026081226) do
   end
 
   add_index "quotes", ["public_number"], :name => "index_quotes_on_public_number", :unique => true
-
-  create_table "quotes_product_references", :force => true do |t|
-    t.integer  "quote_id",             :limit => 11
-    t.integer  "product_reference_id", :limit => 11
-    t.string   "name"
-    t.string   "original_name"
-    t.text     "description"
-    t.text     "original_description"
-    t.float    "unit_price"
-    t.float    "original_unit_price"
-    t.float    "vat"
-    t.float    "discount"
-    t.integer  "quantity",             :limit => 11
-    t.integer  "position",             :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "remarks", :force => true do |t|
     t.integer  "has_remark_id",   :limit => 11

@@ -16,13 +16,13 @@
   <div class="presentation_in_columns" id="quotes_list_more_infos" style="display:none">
     <div>
       <p>
-        Après avoir été validé <%= image_tag("/images/#{Quote::STATUS_VALIDATED}_16x16.png", :alt => "Valider", :title => "Valider") %>, un devis peut être signalé comme :
+        Après avoir été validé <%= image_tag("/images/confirm_16x16.png", :alt => "Validé", :title => "Validé") %>, un devis peut être signalé comme :
       </p>
       
       <ul class="quote_caption">
-        <li><%= image_tag("/images/#{Quote::STATUS_INVALIDATED}_16x16.png", :alt => "Invalider", :title => "Invalider") %> <strong>invalidé</strong>, car le devis est incorrect et doit être modifié</li>
-        <li><%= image_tag("/images/#{Quote::STATUS_SENDED}_16x16.png", :alt => "Envoyer", :title => "Envoyer") %> <strong>envoyé</strong>, car le devis a été envoyé au client</li>
-        <li><%= image_tag("/images/#{Quote::STATUS_SIGNED}_16x16.png", :alt => "Signer", :title => "Signer") %> <strong>signé</strong>, car le devis (ou un bon de commande) a été signé par le client</li>
+        <li><%= image_tag("/images/cancel_16x16.png", :alt => "Annulé", :title => "Annulé") %> <strong>annulé</strong>, car le devis est incorrect et doit être modifié</li>
+        <li><%= image_tag("/images/send_to_customer_16x16.png", :alt => "Envoyé", :title => "Envoyé") %> <strong>envoyé</strong>, car le devis a été envoyé au client</li>
+        <li><%= image_tag("/images/sign_16x16.png", :alt => "Signé", :title => "Signé") %> <strong>signé</strong>, car le devis (ou un bon de commande) a été signé par le client</li>
       </ul>
       
       <p>Vous pouvez voir ci-contre la légende utilisée :</p>
@@ -33,10 +33,10 @@
         <tr class="quote">
           <td>Devis incomplet</td>
         </tr>
-        <tr class="quote <%= Quote::STATUS_INVALIDATED %>_quote">
-          <td>Devis invalidé</td>
+        <tr class="quote <%= Quote::STATUS_CANCELLED %>_quote">
+          <td>Devis annulé</td>
         </tr>
-        <tr class="quote <%= Quote::STATUS_VALIDATED %>_quote">
+        <tr class="quote <%= Quote::STATUS_CONFIRMED %>_quote">
           <td>Devis validé</td>
         </tr>
         <tr class="quote <%= Quote::STATUS_SENDED %>_quote">
@@ -54,8 +54,8 @@
   </p>
   
   <h2>Devis</h2>
-  <%= render :partial => 'quotes/quotes_list', :object => @step.quotes %>
-  <%= display_quote_add_button if is_form_view? %>
+  <%= render :partial => 'quotes/quotes_list', :object => @step.order.quotes %>
+  <%= display_quote_add_button(@step.order) if is_form_view? %>
 </div>
 
 <!-- Osibox initialisation -->

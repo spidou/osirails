@@ -1,11 +1,11 @@
 function add_product_reference_to_quote() {
   var product_reference_id = $('add_this_product_reference_id').value
   
-  var product_references = $('quotes_product_references').select('tr.quotes_product_reference')
+  var quote_items = $('quote_items').select('tr.quote_item')
   var reference_already_chosen = false
   var line_reference = null
   
-  product_references.each(function(item) {
+  quote_items.each(function(item) {
     item_id = item.down('.product_reference_id').value
     if (product_reference_id == item_id) {
       reference_already_chosen = true
@@ -14,22 +14,31 @@ function add_product_reference_to_quote() {
     }
   })
   
-  if (reference_already_chosen && line_reference != null && line_reference.getStyle('display') != 'none') {
-    old_quantity = parseInt(line_reference.down('.input_quantity').value)
-    if ( isNaN(old_quantity) ) { old_quantity = 0 }
-    line_reference.down('.input_quantity').value = old_quantity + 1
-    calculate(line_reference)
-    new Effect.Highlight(line_reference)
-  } else {
-    if (parseInt(product_reference_id) > 0) {
-      new Ajax.Request('/product_references/' + product_reference_id + '.json', {
-	      method: 'get',
-	      onSuccess: function(transport) {
-		      var ref_obj = transport.responseText.evalJSON()["product_reference"];
-		      append_reference(ref_obj);
-	      }
-      });
-    }
+//  if (reference_already_chosen && line_reference != null && line_reference.getStyle('display') != 'none') {
+//    old_quantity = parseInt(line_reference.down('.input_quantity').value)
+//    if ( isNaN(old_quantity) ) { old_quantity = 0 }
+//    line_reference.down('.input_quantity').value = old_quantity + 1
+//    calculate(line_reference)
+//    new Effect.Highlight(line_reference)
+//  } else {
+//    if (parseInt(product_reference_id) > 0) {
+//      new Ajax.Request('/product_references/' + product_reference_id + '.json', {
+//	      method: 'get',
+//	      onSuccess: function(transport) {
+//		      var ref_obj = transport.responseText.evalJSON()["product_reference"];
+//		      append_reference(ref_obj);
+//	      }
+//      });
+//    }
+//  }
+  if ( parseInt(product_reference_id) > 0 && ( !reference_already_chosen || ( reference_already_chosen && confirm("Cette référence existe déjà pour ce devis. Êtes-vous sûr de vouloir ajouter une nouvelle ligne avec cette référence ?") ) ) ) {
+    new Ajax.Request('/product_references/' + product_reference_id + '.json', {
+      method: 'get',
+      onSuccess: function(transport) {
+	      var ref_obj = transport.responseText.evalJSON()["product_reference"];
+	      append_reference(ref_obj);
+      }
+    });
   }
 }
 
@@ -65,31 +74,26 @@ function append_reference(json_object) {
   var name = json_object['name']
   var description = json_object['description']
   var quantity = 1
-  var unit_price = roundNumber(json_object['unit_price'], 2)
-  var discount = roundNumber(0, 2)
-  var vat = parseFloat(json_object['vat']); if (vat == 0.0) { vat = 0 };
+  var vat = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
   var product_reference_id = parseInt(json_object['id'])
   
-  var product_references = $('quotes_product_references').select('tr.quotes_product_reference')
+  var quote_items = $('quote_items').select('tr.quote_item')
   var line_reference = null
   
-  line_reference = product_references.last().cloneNode(true);
+  line_reference = quote_items.last().cloneNode(true);
+  quote_items.last().insert({before: line_reference}); 
+  
+  line_reference.down('.reference').update( reference )
+  line_reference.down('.input_name').value = name
+  line_reference.down('.input_original_name').value = name
+  line_reference.down('.input_description').value = description
+  line_reference.down('.input_original_description').value = description
+  line_reference.down('.input_quantity').value = quantity
+  line_reference.down('.input_vat').value = vat
+  line_reference.down('.input_original_vat').value = vat
+  line_reference.select('td').last().down('.product_reference_id').value = product_reference_id
   
   line_reference.setStyle({display:'table-row'})
-  line_reference.select('[class="reference"]').first().update( reference )
-  line_reference.select('[class="input_name"]').first().value = name
-  line_reference.select('[class="input_original_name"]').first().value = name
-  line_reference.select('[class="input_description"]').first().value = description
-  line_reference.select('[class="input_original_description"]').first().value = description
-  line_reference.select('[class="input_quantity"]').first().value = quantity
-  line_reference.select('[class="input_unit_price"]').first().value = unit_price
-  line_reference.select('[class="input_original_unit_price"]').first().value = unit_price
-  line_reference.select('[class="input_discount"]').first().value = discount
-  line_reference.select('[class="input_vat"]').first().value = vat
-  
-  line_reference.select('td').last().select('input.product_reference_id').first().value = product_reference_id
-  
-  product_references.last().insert({before: line_reference}); 
   new Effect.Highlight(line_reference)
   
   calculate(line_reference)
@@ -97,8 +101,8 @@ function append_reference(json_object) {
 }
 
 function remove_reference(obj) {
-  var tr = obj.up('.quotes_product_reference')
-  if ( parseInt(tr.down('.product_reference_id').value) > 0 ) {
+  var tr = obj.up('.quote_item')
+  if ( parseInt(tr.down('.quote_item_id').value) > 0 ) {
     tr.down('.should_destroy').value = 1
     tr.hide();
   } else {
@@ -138,19 +142,21 @@ function calculate(tr) {
 }
 
 function update_aggregates() {
-  var td_aggregate_without_taxes = $('quotes_product_references').down('.aggregate_without_taxes')
+  var quote_items_container = $('quote_items')
+  
+  var td_aggregate_without_taxes = quote_items_container.down('.aggregate_without_taxes')
+  var td_aggregate_net = quote_items_container.down('.aggregate_net')
+  var td_aggregate_net_to_paid = quote_items_container.down('.aggregate_net_to_paid')
+  var td_aggregate_all_taxes = quote_items_container.down('.aggregate_all_taxes')
   var td_reduction = $('quote_reduction')
-  var td_aggregate_net = $('quotes_product_references').down('.aggregate_net')
   var td_carriage_costs = $('quote_carriage_costs')
   var td_discount = $('quote_discount')
-  var td_aggregate_net_to_paid = $('quotes_product_references').down('.aggregate_net_to_paid')
-  var td_aggregate_all_taxes = $('quotes_product_references').down('.aggregate_all_taxes')
   // aggregates
-  var product_references = $('quotes_product_references').select('tr.quotes_product_reference')
+  var quote_items = quote_items_container.select('tr.quote_item')
   var totals_without_taxes = new Array()
   var totals_with_taxes = new Array()
   
-  product_references.each(function(item){
+  quote_items.each(function(item){
     if (item.getStyle('display') != 'none') {
       totals_without_taxes.push(item.down('.total'))
       totals_with_taxes.push(item.down('.total_with_taxes'))

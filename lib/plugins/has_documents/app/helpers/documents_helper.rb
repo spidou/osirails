@@ -11,19 +11,24 @@ module DocumentsHelper
 
   def render_documents_list(documents_owner, options = {})
     @documents_owner = documents_owner
-    documents = documents_owner.documents.select{ |document| !document.new_record? }
-    html =  "<div class=\"resources_list documents_list\" id=\"documents_list\">"
-    html << render(:partial => "documents/documents_list", :object => documents, :locals => options)
-    html << "</div>"
+    collection = documents_owner.documents.select{ |document| !document.new_record? }
+    html = ''
+    unless collection.empty?
+      html << "<div class=\"resources_list documents_list\" id=\"documents_list\">"
+      html << render(:partial => "documents/documents_list", :object => collection, :locals => options)
+      html << "</div>"
+    else
+      html << "<p>Aucun document n'a été trouvé.</p>"
+    end
   end
   
   def render_new_documents_list(documents_owner, options = {})
     options[:new_div_id] ||= "new_#{documents_owner.class.singularized_table_name}_documents"
     
-    new_documents = documents_owner.documents.select{ |document| document.new_record? }
-    html =  "<div class=\"resource_group document_group new_records\" id=\"#{options[:new_div_id]}\" #{"style=\"display:none\"" if new_documents.empty?}>"
+    collection = documents_owner.documents.select{ |document| document.new_record? }
+    html =  "<div class=\"resource_group document_group new_records\" id=\"#{options[:new_div_id]}\" #{"style=\"display:none\"" if collection.empty?}>"
     html << "  <h1>Nouveaux documents</h1>"
-    html << render(:partial => 'documents/document', :collection => new_documents, :locals => {:documents_owner => documents_owner}.merge(options))
+    html << render(:partial => 'documents/document', :collection => collection, :locals => {:documents_owner => documents_owner}.merge(options))
     html << "</div>"
   end
 

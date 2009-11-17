@@ -112,33 +112,32 @@ class ApplicationController < ActionController::Base
           
           if model and model.respond_to?(:business_object)
             $permission[controller_path] ||= {}
-            code = request.get? ? 403 : 422
             
             case params[:action]
             # LIST
             when *['index'] + ($permission[controller_path][:list] || [])
-              return error_access_page(code) unless model.can_list?(current_user)
+              return error_access_page(403) unless model.can_list?(current_user)
             
             # VIEW
             when *['show'] + ($permission[controller_path][:view] || [])
-              return error_access_page(code) unless model.can_view?(current_user)
+              return error_access_page(403) unless model.can_view?(current_user)
             
             # ADD
             when *['new', 'create'] + ($permission[controller_path][:add] || [])
-              return error_access_page(code) unless model.can_add?(current_user)
+              return error_access_page(403) unless model.can_add?(current_user)
             
             # EDIT
             when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-              return error_access_page(code) unless model.can_edit?(current_user)
+              return error_access_page(403) unless model.can_edit?(current_user)
             
             # DELETE
             when *['destroy'] + ($permission[controller_path][:delete] || [])
-              return error_access_page(code) unless model.can_delete?(current_user)
+              return error_access_page(403) unless model.can_delete?(current_user)
             
             # OTHER METHODS
             else
               if model.respond_to?("can_#{params[:action]}?")
-                return error_access_page(code) unless model.send("can_#{params[:action]}?", current_user)
+                return error_access_page(403) unless model.send("can_#{params[:action]}?", current_user)
               end
             end
           end

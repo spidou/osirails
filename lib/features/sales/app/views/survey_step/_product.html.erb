@@ -36,7 +36,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
       <p>
         <%= form.label :product_reference_id, :index => nil %>
         <%= form.hidden_field :product_reference_id, :index => nil %>
-        <%= strong("#{product.product_reference.name} (#{product.product_reference.reference})") %> <%= product_reference_link(product.product_reference, :link_text => "Voir la fiche de cette référence") %>
+        <%= strong("#{product.product_reference.name} (#{product.product_reference.reference})") %> <%= product_reference_link(product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
       </p>
       <p>
         <%= form.label :name, :index => nil %>

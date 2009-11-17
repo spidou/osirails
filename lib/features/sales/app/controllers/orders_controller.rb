@@ -38,10 +38,6 @@ class OrdersController < ApplicationController
       begin
         @order.customer = Customer.find(params[:customer_id])
         @order.build_bill_to_address(@order.customer.bill_to_address.attributes)
-        
-        establishment = @order.customer.establishments.first
-        @order.ship_to_addresses.build(:establishment_id    => establishment.id,
-                                       :establishment_name  => establishment.name).build_address(establishment.address.attributes)
       rescue ActiveRecord::RecordNotFound => e
         flash.now[:error] = "Le client n'a pas été trouvé, merci de réessayer."
       end
@@ -84,7 +80,6 @@ class OrdersController < ApplicationController
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
     def hack_params_for_ship_to_address_addresses
-      # raise params.inspect
       if params[:order] and params[:order][:establishment_attributes] and params[:establishment] and params[:establishment][:address_attributes]
         params[:order][:establishment_attributes].each_with_index do |establishment_attributes, index|
           establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]

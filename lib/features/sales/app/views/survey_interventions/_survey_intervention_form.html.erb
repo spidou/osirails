@@ -5,7 +5,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
 %>
 
 <div class="survey_intervention_form resource_form" <%= style_attr %>>
-  <% fields_for "survey_step[survey_interventions_attributes][]", intervention, :index => nil do |form| %>
+  <% fields_for "survey_step[survey_intervention_attributes][]", intervention, :index => nil do |form| %>
     <%= form.error_messages %>
     <p>
       <%= form.label :start_date %>
@@ -22,7 +22,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
     </p>
     <p>
       <%= form.label :contact_ids %>
-      <%= display_contacts_picker(intervention, intervention.order_contacts, :owner_type => "survey_step[survey_interventions_attributes][]") %>
+      <%= display_contacts_picker(intervention, intervention.order_contacts, :owner_type => "survey_step[survey_intervention_attributes][]") %>
     </p>
     <p>
       <%= form.label :comment %>

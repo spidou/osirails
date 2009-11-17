@@ -1,10 +1,13 @@
 class Product < ActiveRecord::Base
+  include ProductBase
+  
   has_permissions :as_business_object
   
   belongs_to :product_reference, :counter_cache => true
   belongs_to :order
   
-  has_many :checklist_responses, :dependent => :destroy
+  has_many :checklist_responses,  :dependent => :destroy
+  has_many :quote_items,          :dependent => :destroy
   
   acts_as_list :scope => :order
   
@@ -17,6 +20,7 @@ class Product < ActiveRecord::Base
   #validates_uniqueness_of :reference #TODO when quote is signed
   
   validates_numericality_of :quantity
+  validates_numericality_of :unit_price, :discount, :vat, :allow_blank => true
   
   validates_persistence_of :product_reference_id, :order_id
   
@@ -26,7 +30,7 @@ class Product < ActiveRecord::Base
   
   PRODUCTS_PER_PAGE = 5
   
-  attr_accessor :should_destroy#, :should_update
+  attr_accessor :should_destroy
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -40,10 +44,6 @@ class Product < ActiveRecord::Base
     should_destroy.to_i == 1
   end
   
-  #def should_update?
-  #  should_update.to_i == 1 or should_update == true
-  #end
-  
   def checklist_responses_attributes=(checklist_responses_attributes)
     checklist_responses_attributes.each do |attributes|
       if attributes[:id].blank?
@@ -56,7 +56,6 @@ class Product < ActiveRecord::Base
   end
   
   def save_checklist_responses
-    #raise checklist_responses.inspect
     checklist_responses.each do |r|
       if r.answer.blank?
         r.destroy

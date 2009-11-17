@@ -7,7 +7,7 @@
   <% form_for(@step, :url => { :controller => "graphic_conception_step", :action => :update },  :html => { :multipart => true }) do |form| %>
     <%= form.error_messages %>
     
-    <%= display_checklists_list(@step)%>
+    <%# display_checklists_list(@step)%>
     
     <h2>Documents</h2>
     <%= display_documents_list(@step) %>
@@ -28,7 +28,7 @@
     </p>
   <% end %>
 <% else %>
-  <%= display_checklists_list(@step)%>
+  <%# display_checklists_list(@step)%>
   
   <h2>Documents</h2>
   <%= display_documents_list(@step) %>
@@ -65,9 +65,9 @@
 //	obj.ancestors()[1].remove();
 //}
 //
-//<% @documents.each do |document| %>
-//add_document_draggable('<%= document.id %>');
-//<% end %>
+//<%# @documents.each do |document| %>
+//add_document_draggable('<%# document.id %>');
+//<%# end %>
 //
 //Droppables.add('press_proofs', {
 //	accept: 'document',

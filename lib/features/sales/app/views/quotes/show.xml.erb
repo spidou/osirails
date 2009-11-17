@@ -6,8 +6,8 @@
     <Number><%= @quote.public_number %></Number>
     <Date><%= Date.today.strftime("%d %B %Y")%></Date>
     <Currency>EUROS (€)</Currency>  
-    <FileNumber><%= @quote.estimate_step.order.id %></FileNumber>
-    <FileName><%= @quote.estimate_step.order.title%></FileName>
+    <FileNumber><%= @quote.order.id %></FileNumber>
+    <FileName><%= @quote.order.title%></FileName>
     <Supplier>
       <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
       <CorporateName2><%= ConfigurationManager.admin_society_identity_configuration_acronym %></CorporateName2>
@@ -23,18 +23,18 @@
       <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
       <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
       <Representative>
-        <Function><%= @quote.estimate_step.order.commercial.jobs.first.name %></Function>
-        <LastName><%= @quote.estimate_step.order.commercial.last_name %></LastName>
-        <FirstName><%= @quote.estimate_step.order.commercial.first_name %></FirstName>
-        <Email><%= @quote.estimate_step.order.commercial.email %></Email>
+        <Function><%= @quote.order.commercial.jobs.first.name %></Function>
+        <LastName><%= @quote.order.commercial.last_name %></LastName>
+        <FirstName><%= @quote.order.commercial.first_name %></FirstName>
+        <Email><%= @quote.order.commercial.email %></Email>
         <Phone/>
         <Fax/>      
       </Representative>
       <LogoURL/>
     </Supplier>  
     <Customer>
-      <CorporateName><%= @quote.estimate_step.order.customer.name %></CorporateName>
-      <CorporateName2><%= @quote.estimate_step.order.customer.name %></CorporateName2>
+      <CorporateName><%= @quote.order.customer.name %></CorporateName>
+      <CorporateName2><%= @quote.order.customer.name %></CorporateName2>
       <Address1><%= @quote.bill_to_address.street_name %></Address1>
       <Address2></Address2>
       <ZipCode><%= @quote.bill_to_address.zip_code %></ZipCode>
@@ -53,16 +53,16 @@
       </Representative>
     </Customer>
     <Lines>
-      <% @quote.quotes_product_references.each do |qpr| %>
+      <% @quote.quote_items.each do |item| %>
         <Line>
-          <Reference><%= qpr.product_reference.reference %></Reference>
-          <Name><%= qpr.product_reference.name %></Name>
-          <Description><%= qpr.description %></Description>
-          <Quantity><%= qpr.quantity %></Quantity>
-          <UnitPrice><%= qpr.unit_price %></UnitPrice>
-          <Prizegiving><%= qpr.discount %></Prizegiving>
-          <TotalPrice><%= qpr.total %></TotalPrice>
-          <VAT><%= @quote.tax_coefficients.index(qpr.vat)+1 %></VAT>
+          <Reference><%= item.product.product_reference.reference %></Reference>
+          <Name><%= item.name %></Name>
+          <Description><%= item.description %></Description>
+          <Quantity><%= item.quantity %></Quantity>
+          <UnitPrice><%= item.unit_price %></UnitPrice>
+          <Prizegiving><%= item.discount %></Prizegiving>
+          <TotalPrice><%= item.total %></TotalPrice>
+          <VAT><%= @quote.tax_coefficients.index(item.vat)+1 %></VAT>
         </Line> 
       <% end %>
     </Lines>
@@ -71,8 +71,8 @@
         <VAT>
           <Code><%= index+1 %></Code>
           <Coefficient><%= tc %></Coefficient>
-          <TotalDutyFreePrice><%= @quote.total_for_tax(tc) %></TotalDutyFreePrice> 
-          <TotalInclusiveOfTaxPrice><%= @quote.total_for_tax(tc)*tc/100 %></TotalInclusiveOfTaxPrice> 
+          <TotalDutyFreePrice><%= @quote.total_taxes_for(tc) %></TotalDutyFreePrice> 
+          <TotalInclusiveOfTaxPrice><%= @quote.total_taxes_for(tc)*tc/100 %></TotalInclusiveOfTaxPrice> 
         </VAT>
       <% end %>
     </Taxes>  

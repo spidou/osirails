@@ -20,10 +20,8 @@ class SurveyStepController < ApplicationController
   def update
     if @step.update_attributes(params[:survey_step])
       flash[:notice] = "Les modifications ont été enregistrées avec succès"
-      redirect_to send(@step.original_step.path)
-    else
-      render :action => :edit
     end
+    render :action => :edit
   end
   
   private

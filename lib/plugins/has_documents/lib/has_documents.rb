@@ -55,9 +55,11 @@ module HasDocuments
     end
     
     def validates_documents_presence
+      #TODO validate_documents_presence
     end
     
-    def validates_documents_number options = {}
+    def validates_documents_length options = {}
+      #TODO validate_documents_length
     end
     
   end

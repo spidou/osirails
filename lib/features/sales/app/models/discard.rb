@@ -1,21 +1,21 @@
 class Discard < ActiveRecord::Base
   has_permissions :as_business_object
   
-  belongs_to :delivery_notes_quotes_product_reference
+  belongs_to :delivery_note_item
   belongs_to :discard_type
   
-  validates_presence_of :discard_type_id, :delivery_notes_quotes_product_reference_id
-  validates_presence_of :discard_type,                            :if => :discard_type_id
-  validates_presence_of :delivery_notes_quotes_product_reference, :if => :delivery_notes_quotes_product_reference_id
+  validates_presence_of :discard_type_id, :delivery_note_item_id
+  validates_presence_of :discard_type,        :if => :discard_type_id
+  validates_presence_of :delivery_note_item,  :if => :delivery_note_item_id
   validates_presence_of :comments
   
-  validates_numericality_of :quantity, :if => :delivery_notes_quotes_product_reference
+  validates_numericality_of :quantity, :if => :delivery_note_item
   validate :validates_quantity_range
   
   def validates_quantity_range
-    if delivery_notes_quotes_product_reference
+    if delivery_note_item
       min = 1
-      max = delivery_notes_quotes_product_reference.quantity
+      max = delivery_note_item.quantity
       if quantity and !(min..max).include?(quantity)
         errors.add(:quantity, "doit être compris entre #{min} et #{max}")
       end

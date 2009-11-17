@@ -13,12 +13,12 @@ ActionController::Routing::Routes.add_routes do |map|
       commercial.resource :estimate_step,           :as          => 'estimate',
                                                     :controller  => 'estimate_step' do |estimate_step|
         estimate_step.resources :quotes do |quote|
-          quote.validate   'validate',    :controller => 'quotes',
-                                          :action     => 'validate',
+          quote.confirm   'confirm',      :controller => 'quotes',
+                                          :action     => 'confirm',
                                           :conditions => { :method => :get }
           
-          quote.invalidate 'invalidate',  :controller => 'quotes',
-                                          :action     => 'invalidate',
+          quote.cancel 'cancel',          :controller => 'quotes',
+                                          :action     => 'cancel',
                                           :conditions => { :method => :get }
           
           quote.send_form  'send_form',   :controller => 'quotes',

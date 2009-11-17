@@ -10,7 +10,7 @@
   <%= render :partial => 'delivery_note_header', :object => delivery_note, :locals => { :form => form } %>
 
 <h2>Corps</h2>
-<table id="delivery_notes_quotes_product_references">
+<table id="delivery_note_items">
   <tr>
 	  <th>Réf.</th>
 	  <th>Désignation</th>
@@ -23,10 +23,10 @@
 	  <th>Total<br/>TTC</th>
     <th>Qté<br/>à livrer</th>
   </tr>
-  <%= render :partial    => 'delivery_notes_quotes_product_reference_in_one_line',
-             :collection => !delivery_note.delivery_notes_quotes_product_references.empty? ? delivery_note.delivery_notes_quotes_product_references : signed_quote.quotes_product_references.collect{ |x| delivery_note.delivery_notes_quotes_product_references.build(:quotes_product_reference_id => x.id, :quantity => x.quantity) } %>
+  <%= render :partial    => 'delivery_note_item_in_one_line',
+             :collection => !delivery_note.delivery_note_items.empty? ? delivery_note.delivery_note_items : signed_quote.quote_items.collect{ |x| delivery_note.delivery_note_items.build(:quote_item_id => x.id, :quantity => x.quantity) } %>
   
-  <%= render :partial => 'delivery_notes_quotes_product_reference_in_one_line', :locals => { :delivery_note => delivery_note } %>
+  <%= render :partial => 'delivery_note_item_in_one_line', :locals => { :delivery_note => delivery_note } %>
 </table>
 
 <% if is_new_view? %>

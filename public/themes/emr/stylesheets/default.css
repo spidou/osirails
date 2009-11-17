@@ -895,10 +895,17 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 }
 
 #errorExplanation {
+  position: relative;
 	border:solid 1px #F1BD73;
 	background:#F6E8CF;
 	margin:10px;
 	width:530px;
+}
+
+#errorExplanation ul,
+.errorExplanation ul {
+  position: relative;
+  padding-left: 30px;
 }
 
 #errorExplanation ul li,
@@ -908,11 +915,6 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	text-indent:21px;
 	margin:3px 3px 7px 0px;
 	color:#EA7805;
-}
-
-#errorExplanation ul,
-.errorExplanation ul {
-  padding-left: 30px;
 }
 
 
@@ -1315,10 +1317,13 @@ fieldset.no-style legend {
 	background:none;
 }
 
-/* /// auto-complete input text /// */
+/*/////////////////////////////////////////////////////
+					AUTOCOMPLETE FIELD
+////////////////////////////////////////////////////*/
 div.auto_complete {
   width: 350px;
   background: #fff;
+  z-index: 100;
 }
 
 div.auto_complete ul {
@@ -1332,6 +1337,7 @@ div.auto_complete ul {
 div.auto_complete ul li {
   margin:0;
   padding:3px;
+  cursor: pointer;
 }
 
 div.auto_complete ul li.selected {
@@ -1343,6 +1349,23 @@ div.auto_complete ul strong.highlight {
   padding:0;
   background-color: inherit;
   font-weight: bold;
+}
+
+div.auto_complete_container {
+  position: relative;
+  display: inline;
+}
+
+div.auto_complete_container div.auto_complete_indicator {
+  position: absolute;
+  float: left;
+  top: 1px;
+  right: 5px;
+  //left: 557px;
+  //bottom: 21px;
+  width: 16px;
+  height: 16px;
+  background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
 }
 
 /*/////////////////LIST:HIERARCHICAL/////////////////*/

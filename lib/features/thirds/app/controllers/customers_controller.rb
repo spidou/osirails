@@ -57,7 +57,7 @@ class CustomersController < ApplicationController
       redirect_to(customers_path)
     else
       flash[:error] = "Une erreur est survenu lors de la suppression du client"
-      redirect_to :back 
+      redirect_to :back
     end
   end
   
