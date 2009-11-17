@@ -13,7 +13,7 @@ class SocietyIdentityConfigurationController < ApplicationController
   def update
     transaction_success = Configuration.transaction do
       for parameter in search_methods(__FILE__)
-        ConfigurationManager.send(parameter+"=", params[parameter])
+        ConfigurationManager.send(parameter+"=", params[parameter]) if params[parameter]
       end
     end
     

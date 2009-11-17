@@ -43,7 +43,7 @@ class EmployeesController < ApplicationController
     @employee = Employee.new(params[:employee])
 
     if @employee.save
-      flash[:notice] = "L'employé(e) a été créé(e) avec succés."
+      flash[:notice] = "L'employé(e) a été créé(e) avec succès."
       redirect_to @employee
     else
       render :action => "new"
@@ -63,7 +63,7 @@ class EmployeesController < ApplicationController
     params[:employee]['job_ids'] ||= []
 
     if @employee.update_attributes params[:employee]
-      flash[:notice] = "L'employé(e) a été modifié(e) avec succés."
+      flash[:notice] = "L'employé(e) a été modifié(e) avec succès."
       redirect_to @employee
     else
       render :action => "edit"

@@ -27,7 +27,7 @@ class JobsController < ApplicationController
           @employee = Employee.find(params['employee_id'])
           @numbers = @employee.numbers
         end
-        flash[:notice] = 'La fonction a été crée avec succés.'
+        flash[:notice] = 'La fonction a été crée avec succès.'
         format.html { redirect_to(jobs_path) }  
         format.js  
       else
@@ -43,7 +43,7 @@ class JobsController < ApplicationController
     
     respond_to do |format|
       if @job.update_attributes(params[:job])
-        flash[:notice] = 'La fonction  a été modifié avec succés.'
+        flash[:notice] = 'La fonction  a été modifié avec succès.'
         format.html { redirect_to(@job) }
       else
         format.html { render :action => "edit" }

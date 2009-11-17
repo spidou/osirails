@@ -35,7 +35,7 @@ class IbansController < ApplicationController
     params[:iban] ||= []
     @iban = Iban.find(params[:id]) 
     if @iban.update_attributes(params[:iban])
-      flash[:notice] = 'Le RIB a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
+      flash[:notice] = 'Le RIB a été mis-à-jour avec succès.'
       redirect_to(@iban) 
     else
       render :action => "edit"

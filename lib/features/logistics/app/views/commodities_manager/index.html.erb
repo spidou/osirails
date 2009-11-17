@@ -3,9 +3,9 @@
 <% end %>
 
 <% add_contextual_menu_item :commodities_stats do %>
-	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "cat&eacute;gorie", "cat&eacute;gories")}</span>" %>
-	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous cat&eacute;gorie", "sous cat&eacute;gories")}</span>" %>
-	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities.size, "mati&egrave;re premi&egrave;re","mati&egrave;res premi&egrave;res")}</span>"%>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root.size, "catégorie", "catégories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities_categories_root_child.size, "sous catégorie", "sous catégories")}</span>" %>
+	<%= "<span class='contextual_menu_statistic'>Il y a #{pluralize(@commodities.size, "matière première","matières premières")}</span>"%>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>

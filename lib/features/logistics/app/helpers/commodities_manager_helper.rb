@@ -60,10 +60,10 @@ module CommoditiesManagerHelper
   # This method permit to make in table editor
   def in_place_editor(object,attribute,value = 0)
     if value == 1 and CommodityCategory.can_edit?(current_user)
-      return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
+      return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise à jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
     if value == 0 and Commodity.can_edit?(current_user)
-      return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
+      return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise à jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
     end
     "<span>#{object.send(attribute)}</span>"
   end
@@ -115,7 +115,7 @@ module CommoditiesManagerHelper
       status = commodity_category.enable ? "enable" : "disable"
       
       table << "<tr id='commodity_category_#{commodity_category.id}' class='#{status}'>"
-      table << "<td><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
+      table << "<td><img id='commodity_category_#{commodity_category.id}_develop' src='/images/add_10x10.png' alt='Dérouler' title='Dérouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> "
       table << "<img id='commodity_category_#{commodity_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])'/> " unless commodity_category.children.size == 0
       table << in_place_editor(commodity_category,'name',1)+" (#{show_counter_category(commodity_category,show)})</td>"
       table << "<td colspan='5'></td>"
@@ -133,11 +133,11 @@ module CommoditiesManagerHelper
             table << "<tr id='commodity_category_#{category_child.id}' class='commodity_category_#{commodity_category.id} #{status}'>"
             table << "<td></td>"
             table << "<td>"
-            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> " unless show_counter_category(category_child, show) == 0
-            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' title='D&eacute;rouler' onclick='reduce(this.ancestors()[1])' /> "
+            table << "<img id='commodity_category_#{category_child.id}_develop' src='/images/add_10x10.png' alt='Dérouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> " unless show_counter_category(category_child, show) == 0
+            table << "<img id='commodity_category_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' title='Dérouler' onclick='reduce(this.ancestors()[1])' /> "
             table << in_place_editor(category_child,'name',1)+"(#{show_counter_category(category_child,show)})</td>"
             table << "<td colspan='4'></td>"
-            table << "<td colspan='3' class='sub_commodity_category'><span class='sub_commodity_category_#{category_child.id}_total'>#{show_categories_totals(category_child, show)}</span> &euro;</td>"
+            table << "<td colspan='3' class='sub_commodity_category'><span class='sub_commodity_category_#{category_child.id}_total'>#{show_categories_totals(category_child, show)}</span> €</td>"
             table << "<td>#{add_button} #{delete_button}</td>" unless show == nil and category_child.enable == false
             table << "</tr>"
 

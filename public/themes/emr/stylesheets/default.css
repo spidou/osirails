@@ -179,6 +179,7 @@ object {
 #under_banner {
 	clear:both;
 	background: url("/themes/emr/images/background_under_banner_repeat-x.jpg") repeat;
+	//border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
 	color:#444444;
@@ -260,6 +261,19 @@ object {
 	position:relative;
 	top:10px;
 	margin:0 0 0 27%;
+}
+
+/*////////////////////////////////////////////////////////
+					BODY OF THE WEBSITE
+////////////////////////////////////////////////////////*/
+/*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
+					OF BANNERS							*/
+#block_body {
+  clear: both;
+	width: auto;
+	height: auto;
+	margin: -16px 0 5px 0;
+	padding: 5px 0 0 0;
 }
 
 /*/////////////////////////////////////////////////////
@@ -1450,6 +1464,10 @@ ul.parent>li {
 .hierarchic img {
 	margin-left:3px;
 	margin-right:3px;
+}
+
+.hierarchic ul li label.unchecked {
+  color: grey;
 }
 
 #catalog {

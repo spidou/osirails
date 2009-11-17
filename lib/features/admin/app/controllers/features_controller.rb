@@ -14,7 +14,7 @@ class FeaturesController < ApplicationController
     file_to_upload = {:file => params[:upload]}
 
     if Feature.add(file_to_upload)
-      flash[:notice] = "Fichier envoy&eacute; et ajout&eacute; avec succ&egrave;s."
+      flash[:notice] = "Fichier envoyé et ajouté avec succès."
     else
       flash[:error] = "Erreur lors de l'envoi du fichier"
     end
@@ -26,11 +26,11 @@ class FeaturesController < ApplicationController
   def update
     @feature = Feature.find(params[:id])
 
-    flash[:notice] = "Le module '#{@feature.title}' a &eacute;t&eacute; "
+    flash[:notice] = "Le module '#{@feature.title}' a été "
     case params[:state]
     when 'enable'
       if @feature.enable
-        flash[:notice] << "activ&eacute;"
+        flash[:notice] << "activé"
       else
         flash[:error] = "Une erreur est survenue lors de l'activation du module '#{@feature.title}'. "
         unless @feature.activate_dependencies.empty?
@@ -44,7 +44,7 @@ class FeaturesController < ApplicationController
       end
     when 'disable'
       if @feature.disable
-        flash[:notice] << "d&eacute;sactiv&eacute;"
+        flash[:notice] << "désactivé"
       else
         flash[:error] = "Une erreur est survenue lors de la désactivation du module '#{@feature.title}'. "
         unless @feature.deactivate_children.empty?
@@ -58,7 +58,7 @@ class FeaturesController < ApplicationController
       end
     when 'install'
       if @feature.install
-        flash[:notice] << "install&eacute;"
+        flash[:notice] << "installé"
       else
         flash[:error] = "Une erreur est survenue lors de l'installaton du module '#{@feature.title}'. "
         unless @feature.able_to_install_dependencies.empty?
@@ -85,7 +85,7 @@ class FeaturesController < ApplicationController
       end
     when 'uninstall'
       if @feature.uninstall
-        flash[:notice] << "d&eacute;sinstall&eacute;"
+        flash[:notice] << "désinstallé"
       else
         flash[:error] = "Une erreur est survenue lors de la désinstallation du module '#{@feature.title}'. "
         unless @feature.able_to_uninstall_children.empty?
@@ -114,7 +114,7 @@ class FeaturesController < ApplicationController
     @feature = Feature.find(params[:id])
 
     if @feature.remove
-      flash[:notice] = "Le module '#{@feature.title}' a &eacute;t&eacute; supprim&eacute;"
+      flash[:notice] = "Le module '#{@feature.title}' a été supprimé"
     else
       flash[:error] = "Une erreur est survenue lors de la suppression du module '#{@feature.title}'."
     end

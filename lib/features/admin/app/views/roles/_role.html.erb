@@ -21,9 +21,11 @@
       <% end %>
     </div>
   </div>
-  <p>
-    <%= form.reset %>
-    <%= form.submit submit_button_name %>
-  <p>
+  <% if is_form_view? %>
+    <p>
+      <%= form.reset %>
+      <%= form.submit submit_button_name %>
+    <p>
+  <% end%>
 <% end %>
 </div>

@@ -4,7 +4,7 @@ module ServicesHelper
   def show_service_delete_button(service,txt="Delete current service")
     if Service.can_delete?(current_user)
       if service.can_be_destroyed?
-        link_to(image_tag("/images/delete_16x16.png", :title => "Delete", :alt => "Delete")+" #{txt}", service , { :method => :delete, :confirm => 'Are you s&ucirc;r?' }) 
+        link_to(image_tag("/images/delete_16x16.png", :title => "Delete", :alt => "Delete")+" #{txt}", service , { :method => :delete, :confirm => 'Êtes vous sûr?' }) 
       else
         image_tag("/images/delete_disable_16x16.png", :alt => "Delete", :title => "Delete")+" #{txt}"
       end
