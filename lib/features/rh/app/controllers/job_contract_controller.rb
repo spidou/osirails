@@ -22,7 +22,7 @@ class JobContractController < ApplicationController
     params[:job_contract].delete('employee_state_inactive')
 
     if @job_contract.update_attributes(params[:job_contract])      
-      flash[:notice] = ' Le contrat de travail de ' + @employee.fullname + ' a été modifié avec succés.'
+      flash[:notice] = 'Le contrat de travail a été modifié avec succès.'
       redirect_to(@employee) 
     else
       render :action => "edit" 

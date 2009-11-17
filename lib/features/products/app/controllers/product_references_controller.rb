@@ -40,7 +40,7 @@ class ProductReferencesController < ApplicationController
   def create
     @product_reference = ProductReference.new(params[:product_reference])
     if @product_reference.save
-      flash[:notice] = "La r&eacute;f&eacute;rence a &eacute;t&eacute; cr&eacute;&eacute;e avec succ&egrave;s"
+      flash[:notice] = "La référence a été créée avec succès"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
       @categories = ProductReferenceCategory.find(:all)
@@ -54,10 +54,10 @@ class ProductReferencesController < ApplicationController
     @product_reference.counter_update("disable_or_before_update")
     if @product_reference.update_attributes(params[:product_reference])
       @product_reference.counter_update("after_update")
-      flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; mise &agrave; jour'
+      flash[:notice] = 'La référence a été mise à jour'
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
-      flash[:error] = 'Une erreur est survenue lors de la mise &agrave; jour'
+      flash[:error] = 'Une erreur est survenue lors de la mise à jour'
       @categories = ProductReferenceCategory.find(:all)
       render :action => 'edit'
     end
@@ -74,7 +74,7 @@ class ProductReferencesController < ApplicationController
       @product_reference.save
     end
     
-    flash[:notice] = 'La r&eacute;f&eacute;rence a &eacute;t&eacute; supprim&eacute;e' 
+    flash[:notice] = 'La référence a été supprimée' 
     redirect_to :controller => 'product_reference_manager', :action => 'index'
   end
   

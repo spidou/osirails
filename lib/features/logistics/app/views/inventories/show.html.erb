@@ -4,8 +4,8 @@
 <% end %>
 
 <% add_contextual_menu_item :commodities_total do %>
-  <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span>
-  <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%>
+  <span style='color: green;'><%= "TOTAL HT   : <span class='total'>#{show_total(@inventory, '', 2)}</span> €" %></span>
+  <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> € TODO"%>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>

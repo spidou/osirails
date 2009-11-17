@@ -1,8 +1,9 @@
 class FeatureManager
   attr_accessor :feature
   
-  cattr_accessor :all_menus
-  @@all_menus ||= []
+  cattr_accessor :all_menus, :menus_to_check
+  @@all_menus      ||= []
+  @@menus_to_check ||= []
   
   def initialize yaml_config, plugin, config, path
     @name           = yaml_config['name']           || plugin
@@ -110,10 +111,10 @@ class FeatureManager
           unless (m = Menu.create(:title => menu_array[:title], :description => menu_array[:description], :name => menu_array[:name], :parent_id => parent_menu_id, :feature_id => feature_id, :hidden => menu_array[:hidden]))
             puts "The feature #{name} wants to instanciate the menu #{m.name}, but it exists already. You can change the order in which features are loaded in environment.rb file by changing the 'config.plugins' array"
           else
-            unless menu_array[:position].nil?
-              m.insert_at(menu_array[:position])
-              m.save
-            end
+            # if a position is defined into the yaml use it else put 0 (to identify later menus without position)
+            m.position = menu_array[:position].nil? ? 0 : menu_array[:position]
+            m.save
+            @@menus_to_check << m.id  # add the menu with position into menus_to_check to check his position with all his siblings'one
           end
         else
           # this block test if a menu isn't define with two different parent in many config file
@@ -123,7 +124,7 @@ class FeatureManager
                 puts "A Position conflict occured with menu '#{menu_array[:name]}'"
               end
               if menu_test[:parent] != menu_array[:parent]
-                raise("Double Declaration menu : a parent conflict occured with menu '#{menu_array[:name]}' in file '#{path}/config.yml'")
+                raise "Double Declaration menu : a parent conflict occured with menu '#{menu_array[:name]}' in file '#{path}/config.yml'"
               end
             end
           end

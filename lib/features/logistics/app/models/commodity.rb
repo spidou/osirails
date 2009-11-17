@@ -14,8 +14,8 @@ class Commodity < ActiveRecord::Base
 
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name] = "D&eacute;signation :"
-  @@form_labels[:commodity_category] = "Appartient &agrave; :"
+  @@form_labels[:name] = "Désignation :"
+  @@form_labels[:commodity_category] = "Appartient à :"
   @@form_labels[:supplier] = "Fournisseur :"
   @@form_labels[:unit_mass] = "kg / U :"
   @@form_labels[:fob_unit_price] = "fob :"

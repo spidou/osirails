@@ -112,7 +112,7 @@ class GraphicConceptionController < ApplicationController
         @step.terminated!
         redirect_to :action => 'show'
       else
-        flash[:notice] = "Dossier modifi&eacute avec succ&egrave;s"
+        flash[:notice] = "Dossier modifié avec succès"
         redirect_to :action => 'edit'
       end
       

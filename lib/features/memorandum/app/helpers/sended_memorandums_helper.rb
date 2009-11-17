@@ -10,7 +10,7 @@ module SendedMemorandumsHelper
     view << memorandum.text
     view << "<hr/>"
     view << "<p><strong>De : </strong> #{memorandum.signature}</p>"
-    view << "<p><strong>Publi&eacute; par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
+    view << "<p><strong>Publié par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
   end
   
   # This method permit to initialize signature
@@ -114,7 +114,7 @@ module SendedMemorandumsHelper
     
     memorandums.each do |memorandum|
       
-      published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publi&eacute;" : "#{Memorandum.get_structured_date(memorandum)}")
+      published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publiée" : "#{Memorandum.get_structured_date(memorandum)}")
       show_button = memorandum_link(memorandum, :link_text => "")
       edit_button = edit_memorandum_link(memorandum, :link_text => "") unless memorandum.published?
       period_memorandum = Memorandum.color_memorandums(memorandum)

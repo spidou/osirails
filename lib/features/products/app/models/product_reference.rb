@@ -11,7 +11,7 @@ class ProductReference < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:reference] = "R&eacute;f&eacute;rence :"
+  @@form_labels[:reference] = "Référence :"
   @@form_labels[:name] = "Nom :"
   @@form_labels[:description] = "Description :"
   @@form_labels[:information] = "Informations complémentaires :"

@@ -20,8 +20,8 @@ class CommodityCategory < ActiveRecord::Base
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"
-  @@form_labels[:commodity_category] = "Appartient &agrave; :"
-  @@form_labels[:unit_measure] = "Unit&eacute;e de mesure :"
+  @@form_labels[:commodity_category] = "Appartient à :"
+  @@form_labels[:unit_measure] = "Unité de mesure :"
 
   # Check if a resource should be destroyed or disabled
   def can_be_destroyed?
