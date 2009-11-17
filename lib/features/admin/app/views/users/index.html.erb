@@ -10,14 +10,14 @@
   <table>
     <tr>
       <% for column in get_headers %>
-        <th><%= column%></th>
+        <th><%= column %></th>
       <% end%>
     </tr>
 
     <% for user in @users %>
       <tr>
-        <% for column in  get_rows user%>
-          <td><%= column%></td>
+        <% for column in get_rows(user) %>
+          <td><%= column %></td>
         <% end %>
       </tr>
     <% end %>

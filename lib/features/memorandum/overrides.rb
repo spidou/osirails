@@ -7,19 +7,12 @@ class Service
 end
 
 module ApplicationHelper
-  # This method permit to make diplay memorandums under banner
+  # This method permit to diplay memorandums under banner
   def display_memorandums
-    unless current_user.employee.nil? 
-      size              = last_memorandums.size
-      memorandum_number = ( size == 0 ? "0" : "1" )
-      render :partial => 'share/memorandums', :locals => {:last_memorandums  => last_memorandums,
-                                                          :size              => size,
-                                                          :memorandum_number => memorandum_number,
-                                                          :current_user      => current_user }
-    end
+    render :partial => 'share/memorandums', :object => :last_memorandums unless current_user.employee.nil? 
   end
    
-  # This method permit to recover last 10 memorandums
+  # This method permit to get the last 10 memorandums
   def last_memorandums
     unless current_user.employee.nil?
       memorandums = Memorandum.find_by_services([current_user.employee.service])

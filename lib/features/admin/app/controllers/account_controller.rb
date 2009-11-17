@@ -58,7 +58,7 @@ class AccountController < ApplicationController
       if !params[:username].empty? and (user = User.find_by_username(params[:username])) and user.username != "admin"
         AdminMailer.deliver_notice_admin_lost_password(params[:username])
         AdminMailer.deliver_notice_user_lost_password(params[:username])
-        flash[:notice] = "L'administrateur a &eacute;t&eacute; pr&eacute;venu que vous voulez modifier votre mot de passe. Merci de patienter."
+        flash[:notice] = "L'administrateur a été prévenu que vous voulez modifier votre mot de passe. Merci de patienter."
         redirect_to login_path
       else
         flash.now[:error] = "Nom d'utilisateur inconnu."
@@ -71,13 +71,13 @@ class AccountController < ApplicationController
   def logout
     reset_session
     redirect_to login_path
-    flash[:notice] = "Vous &ecirc;tes maintenant d&eacute;connect&eacute;"
+    flash[:notice] = "Vous êtes maintenant déconnecté"
   end
   
   def expired_password
     if (Time.now - current_user.last_activity) > 5.minutes
       redirect_to :action => 'logout'
-      flash[:error] = 'Votre session a expir&eacute;e'
+      flash[:error] = 'Votre session a expiré'
       return
     end
     flash.now[:error] = "Votre mot de passe est expiré. Merci d'en choisir un autre."
@@ -85,12 +85,14 @@ class AccountController < ApplicationController
     user = current_user
     if user.update_attributes(params[:user])
       redirect_to session[:initial_uri]
-      flash[:notice] = "Votre mot de passe a été mis à jour avec succés"
+      flash[:notice] = "Votre mot de passe a été mis à jour avec succès"
     end
     if user.save
       session[:user_expired] = false
     else
-      different_password = "Vous devez choisir un nouveau mot de passe, différent de votre ancien mot de passe."
+      level = ConfigurationManager.admin_actual_password_policy.gsub("l", "d")
+      level_message = ConfigurationManager.admin_password_policy[level]
+      different_password = "Vous devez choisir un nouveau mot de passe différent de votre ancien mot de passe, en respectant les règles suivantes :<br/>#{level_message}"
       match_confirmation = "Vous devez entrer deux fois votre mot de passe pour le valider."
       message = (params[:user][:password] == params[:user][:password_confirmation])? different_password : match_confirmation
       flash[:error] = message

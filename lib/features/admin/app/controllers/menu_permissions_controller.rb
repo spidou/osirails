@@ -24,7 +24,7 @@ class MenuPermissionsController < ApplicationController
     if error
       flash[:error] = "Erreur lors de la mise à jour des permissions"
     else
-      flash[:notice] = "Les permissions ont été modifiées avec succés"
+      flash[:notice] = "Les permissions ont été modifiées avec succès"
     end
     redirect_to(edit_menu_permission_path)
   end
