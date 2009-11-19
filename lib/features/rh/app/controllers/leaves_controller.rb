@@ -1,6 +1,6 @@
 class LeavesController < ApplicationController
   before_filter :load_collections, :only => [:new, :create, :edit, :update]
-  helper :employees
+  helper :employees, :numbers
 
   # GET /employees/:employee_id/leaves
   def index
