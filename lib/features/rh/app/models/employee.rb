@@ -199,7 +199,7 @@ class Employee < ActiveRecord::Base
   def self.leave_year_start_date
     start_date = ConfigurationManager.admin_society_identity_configuration_leave_year_start_date
     year = (Date.today.month >= start_date.split("/").first.to_i)? Date.today.year.to_s : (Date.today.year - 1).to_s
-    (start_date + "/#{year}").to_date
+    ("#{year}/#{start_date}").to_date
   end
   
   # Method that return the leave end date according to the leave year start date

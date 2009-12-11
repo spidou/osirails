@@ -1,0 +1,6 @@
+deposit_invoice:
+  name: Deposit Invoice
+status_invoice:
+  name: Status Invoice
+balance_invoice:
+  name: Balance Invoice

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091112122118) do
+ActiveRecord::Schema.define(:version => 20091211052854) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -262,6 +262,7 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
   create_table "delivery_notes", :force => true do |t|
     t.integer  "order_id",                :limit => 11
     t.integer  "creator_id",              :limit => 11
+    t.integer  "invoice_id",              :limit => 11
     t.string   "status"
     t.date     "validated_on"
     t.date     "invalidated_on"
@@ -319,6 +320,33 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "due_dates", :force => true do |t|
+    t.integer  "invoice_id",  :limit => 11
+    t.date     "date"
+    t.float    "net_to_paid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dunning_methods", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dunnings", :force => true do |t|
+    t.integer  "invoice_id",        :limit => 11
+    t.integer  "dunning_method_id", :limit => 11
+    t.integer  "cancelled_by_id",   :limit => 11
+    t.integer  "has_dunning_id",    :limit => 11
+    t.string   "has_dunning_type"
+    t.date     "date"
+    t.text     "comment"
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -490,11 +518,50 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.datetime "updated_at"
   end
 
+  create_table "invoice_items", :force => true do |t|
+    t.integer  "invoice_id",  :limit => 11
+    t.integer  "product_id",  :limit => 11
+    t.float    "quantity"
+    t.float    "discount"
+    t.integer  "position",    :limit => 11
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "invoice_steps", :force => true do |t|
     t.integer  "invoicing_step_id", :limit => 11
     t.string   "status"
     t.datetime "started_at"
     t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoice_types", :force => true do |t|
+    t.string   "name"
+    t.boolean  "factorisable"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoices", :force => true do |t|
+    t.integer  "order_id",               :limit => 11
+    t.integer  "invoice_type_id",        :limit => 11
+    t.integer  "send_invoice_method_id", :limit => 11
+    t.integer  "cancelled_by_id",        :limit => 11
+    t.integer  "abandoned_by_id",        :limit => 11
+    t.string   "reference"
+    t.string   "status"
+    t.boolean  "factorised"
+    t.text     "cancelled_comment"
+    t.text     "abandoned_comment"
+    t.date     "sended_on"
+    t.date     "abandoned_on"
+    t.date     "factoring_recovered_on"
+    t.datetime "confirmed_at"
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -733,6 +800,19 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.datetime "updated_at"
   end
 
+  create_table "payments", :force => true do |t|
+    t.integer  "due_date_id",             :limit => 11
+    t.integer  "payment_method_id",       :limit => 11
+    t.float    "amount"
+    t.date     "paid_on"
+    t.boolean  "paid_by_factor"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "permission_methods", :force => true do |t|
     t.string "name"
     t.string "title"
@@ -921,6 +1001,10 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.string   "day"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "send_invoice_methods", :force => true do |t|
+    t.string "name"
   end
 
   create_table "send_quote_methods", :force => true do |t|

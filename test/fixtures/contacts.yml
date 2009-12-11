@@ -1,7 +1,14 @@
 pierre_paul_jacques:
   first_name: Pierre Paul
   last_name: Jacques
-  contact_type: customer_delivery_type
+  contact_type: establishment_delivery_type
   job: Commercial
   email: pierre_paul@jacques.com
+  gender: M
+jean_dupond:
+  first_name: Jean
+  last_name: Dupond
+  contact_type: establishment_invoicing_type
+  job: Comptable
+  email: jean@dupond.com
   gender: M

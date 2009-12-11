@@ -2,7 +2,7 @@ class Test::Unit::TestCase
   
   def create_default_customer
     customer = thirds(:first_customer)
-    customer.establishments.first.contacts << contacts(:pierre_paul_jacques)
+    customer.establishments.first.contacts = [ contacts(:pierre_paul_jacques), contacts(:jean_dupond) ]
     customer.build_bill_to_address( :street_name  => "Street Name",
                                     :country_name => "Country",
                                     :city_name    => "City",

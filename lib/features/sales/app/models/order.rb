@@ -27,6 +27,9 @@ class Order < ActiveRecord::Base
   has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
   has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ]
   
+  # invoices
+  has_many :invoices
+  
   has_many :ship_to_addresses
   has_many :products
   has_many :order_logs

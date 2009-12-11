@@ -25,7 +25,7 @@ class Quote < ActiveRecord::Base
   
   has_attached_file :order_form,
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
-                    :url => '/quotes/:quote_id/order_form'
+                    :url  => '/quotes/:quote_id/order_form'
   
   validates_contact_presence
   
@@ -115,27 +115,29 @@ class Quote < ActiveRecord::Base
     product = Product.find_by_id(quote_item_attributes[:product_id])
     product ||= ProductReference.find_by_id(quote_item_attributes[:product_reference_id])
     
-    name        = product.name
-    description = product.description
-    dimensions  = product.dimensions rescue nil # ProductReference do not have dimensions
-    quantity    = product.quantity rescue nil   # ProductReference do not have quantity
-    unit_price  = product.unit_price
-    vat         = product.vat || ( product.product_reference.vat rescue nil )
+    name                 = product.name
+    description          = product.description
+    dimensions           = product.dimensions rescue nil # ProductReference do not have dimensions
+    quantity             = product.quantity rescue nil   # ProductReference do not have quantity
+    unit_price           = product.unit_price
+    vat                  = product.vat || ( product.product_reference.vat rescue nil )
+    product_reference_id = quote_item_attributes[:product_reference_id] || product.product_reference.id
     
-    quote_item_attributes = { :name         => name,
-                              :description  => description,
-                              :dimensions   => dimensions,
-                              :quantity     => quantity,
-                              :unit_price   => unit_price,
-                              :vat          => vat
+    quote_item_attributes = { :product_reference_id => product_reference_id,
+                              :name                 => name,
+                              :description          => description,
+                              :dimensions           => dimensions,
+                              :quantity             => quantity,
+                              :unit_price           => unit_price,
+                              :vat                  => vat
                             }.merge(quote_item_attributes)
     
-    _build_quote_item(quote_item_attributes)
+    build_or_update_quote_item(quote_item_attributes)
   end
   
   def quote_item_attributes=(quote_item_attributes)
     quote_item_attributes.each do |attributes|
-      _build_quote_item(attributes)
+      build_or_update_quote_item(attributes)
     end
     
     # automatically remove a product from order if quote_items do not include this product
@@ -238,7 +240,7 @@ class Quote < ActiveRecord::Base
   
   def sign(attributes)
     if can_be_signed?
-      self.attributes = attributes
+      self.attributes = attributes #FIXME this line is really used ? see how it works in invoice.rb
       if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
         self.signed_on = attributes[:signed_on]
       else
@@ -331,16 +333,12 @@ class Quote < ActiveRecord::Base
   end
   
   def order_contacts
-    # use EstimateStep.find() permits to get a complete list of contacts (if order contacts
-    # list has changed from the initial 'find' of the current instance of Quote)
-    
-    #estimate_step ? EstimateStep.find(estimate_step_id).order.contacts : []
     order ? order.contacts : []
   end
   
   private
     def generate_public_number
-      return public_number if !public_number.blank?
+      return public_number unless public_number.blank?
       prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
       quantity = Quote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
       "#{prefix}#{quantity.to_s.rjust(3,'0')}"
@@ -348,12 +346,11 @@ class Quote < ActiveRecord::Base
     
     def update_estimate_step_status
       if signed?
-        #estimate_step.terminated!
         order.commercial_step.estimate_step.terminated!
       end
     end
     
-    def _build_quote_item(quote_item_attributes)
+    def build_or_update_quote_item(quote_item_attributes)
       return nil if quote_item_attributes[:product_reference_id].blank?
       
       quote_item_attributes[:product_attributes] = quote_item_attributes.reject{ |k,v| [:product_id, :order_id].include?(k.to_sym) }

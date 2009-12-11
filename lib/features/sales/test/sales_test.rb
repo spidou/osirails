@@ -25,7 +25,7 @@ class Test::Unit::TestCase
     order.commercial = employees(:john_doe)
     order.creator = users(:powerful_user)
     order.customer = customer
-    order.contacts << customer.establishments.first.contacts.first
+    order.contacts = [ customer.contacts.first, customer.contacts.last ]
     order.society_activity_sector = society_activity_sector
     order.order_type = society_activity_sector.order_types.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)
@@ -57,15 +57,15 @@ class Test::Unit::TestCase
     quote.contacts << contacts(:pierre_paul_jacques)
     
     order.products.each do |product|
-      quote.quote_items.build(:product_id   => product.id,
-                              :order_id     => order.id,
-                              :name         => "Product Name",
-                              :description  => "Product description",
-                              :dimensions   => "1000x2000",
-                              :quantity     => 2,
-                              :unit_price   => 20000,
-                              :discount     => 0.0,
-                              :vat          => 19.6)
+      quote.build_quote_item(:product_id  => product.id,
+                             :order_id    => order.id,
+                             :name        => "Product Name",
+                             :description => "Product description",
+                             :dimensions  => "1000x2000",
+                             :quantity    => 2,
+                             :unit_price  => 20000,
+                             :discount    => 0.0,
+                             :vat         => 19.6)
     end
     
     flunk "Quote should be created" unless quote.save
@@ -88,8 +88,8 @@ class Test::Unit::TestCase
   
   def create_valid_delivery_note_for(order)
     # prepare order
-    order.contacts = [ contacts(:pierre_paul_jacques) ]
-    order.save!
+    #order.contacts = [ contacts(:pierre_paul_jacques) ]
+    #order.save!
     
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
@@ -141,5 +141,17 @@ class Test::Unit::TestCase
     
     flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
     return discard
+  end
+  
+  def create_signed_delivery_note_for(order)
+    delivery_note = create_valid_delivery_note_for(order)
+    intervention = create_valid_intervention_for(delivery_note)
+    intervention.delivered = true
+    intervention.comments = "my comments"
+    delivery_note.signed_on = Date.today + 6.days
+    delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+    
+    flunk "delivery_note should be signed to continue" unless delivery_note.sign_delivery_note
+    return delivery_note
   end
 end

@@ -1,10 +1,10 @@
 class QuoteItem < ActiveRecord::Base
   include ProductBase
   
-  acts_as_list
-  
   belongs_to :quote
   belongs_to :product
+  
+  acts_as_list :scope => :quote
   
   validates_presence_of :name, :description, :dimensions
   
