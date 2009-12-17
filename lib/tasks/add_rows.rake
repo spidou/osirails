@@ -564,6 +564,10 @@ namespace :osirails do
       SendQuoteMethod.create!(:name => "E-mail")
       SendQuoteMethod.create!(:name => "Fax")
       
+       # default document's sending methods
+      DocumentSendingMethod.create!(:name => "Courrier")
+      DocumentSendingMethod.create!(:name => "E-mail")
+      DocumentSendingMethod.create!(:name => "Fax")
       # default order form types
       OrderFormType.create!(:name => "Devis signé")
       OrderFormType.create!(:name => "Bon de commande")

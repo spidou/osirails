@@ -22,6 +22,10 @@ class Order < ActiveRecord::Base
   has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ "status = ?", Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
   
+  # press_proofs
+  has_many :press_proofs
+  # TODO had the corresponding test
+  
   # delivery notes
   has_many :delivery_notes
   has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
