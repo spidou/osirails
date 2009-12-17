@@ -142,4 +142,33 @@ class Test::Unit::TestCase
     flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
     return discard
   end
+  
+  def create_default_mockup
+    order = create_default_order
+    mockup = order.mockups.build(:name => "Sample",
+                                 :description => "Sample de maquette destiné aux tests unitaires",
+                                 :graphic_unit_measure => graphic_unit_measures(:normal), 
+                                 :creator => employees(:john_doe),
+                                 :mockup_type => mockup_types(:normal),
+                                 :product => create_valid_product_for(order),
+                                 :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
+                                )                             
+
+    flunk "mockup should be saved > #{mockup.errors.full_messages.join(', ')}" unless mockup.save
+    return mockup
+  end
+  
+  def create_default_graphic_document
+    order = create_default_order
+    gd = order.graphic_documents.build(:name => "Sample", 
+                                       :description => "Sample de document graphique destiné aux tests unitaires", 
+                                       :graphic_unit_measure => graphic_unit_measures(:normal), 
+                                       :creator => employees(:john_doe), 
+                                       :graphic_document_type => graphic_document_types(:normal),
+                                       :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
+                                      )
+                                      
+    flunk "gd should be saved > #{gd.errors.full_messages.join(', ')}" unless gd.save
+    return gd
+  end
 end

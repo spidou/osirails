@@ -599,6 +599,39 @@ namespace :osirails do
       Product.create! :reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2, :order_id => order2.id
       Product.create! :reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3, :order_id => order2.id
       
+      # default graphic unit measures
+      GraphicUnitMeasure.create! :name => "Millimètre", :symbol => "mm"
+      GraphicUnitMeasure.create! :name => "Centimètre", :symbol => "cm"
+      GraphicUnitMeasure.create! :name => "Mètre", :symbol => "m"
+      
+      # default mockup types
+      MockupType.create! :name => "Vue d'ensemble"
+      MockupType.create! :name => "Vue de face"
+      MockupType.create! :name => "Vue de côté"
+      MockupType.create! :name => "Vue de dessus"
+      MockupType.create! :name => "Vue détaillée"
+      
+      # default graphic document types
+      GraphicDocumentType.create! :name => "Vue d'ensemble"
+      GraphicDocumentType.create! :name => "Vue de face"
+      GraphicDocumentType.create! :name => "Vue de côté"
+      GraphicDocumentType.create! :name => "Vue de dessus"
+      GraphicDocumentType.create! :name => "Vue détaillée" 
+      GraphicDocumentType.create! :name => "Récapitulatif de produits" 
+      GraphicDocumentType.create! :name => "Fiche technique" 
+      GraphicDocumentType.create! :name => "Ébauche commerciale"   
+      
+      # default mockup
+      mockup = Order.first.mockups.build(:name => "Sample", 
+                                         :description => "Sample de maquette par défaut", 
+                                         :graphic_unit_measure => GraphicUnitMeasure.first, 
+                                         :creator => Employee.first, 
+                                         :mockup_type => MockupType.first, 
+                                         :product => Order.first.products.first,
+                                         :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} ) 
+                                       )      
+      mockup.save!
+      
       %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
         klass.constantize.all.each do |object|
           object.permissions.each do |permission|

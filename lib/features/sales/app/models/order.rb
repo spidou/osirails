@@ -30,6 +30,8 @@ class Order < ActiveRecord::Base
   has_many :ship_to_addresses
   has_many :products
   has_many :order_logs
+  has_many :mockups
+  has_many :graphic_documents
 
   validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id

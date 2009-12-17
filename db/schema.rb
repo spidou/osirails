@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091112122118) do
+ActiveRecord::Schema.define(:version => 20091127105044) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -454,6 +454,49 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.datetime "updated_at"
   end
 
+  create_table "graphic_document_types", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "graphic_item_versions", :force => true do |t|
+    t.integer  "graphic_item_id",     :limit => 11
+    t.string   "source_file_name"
+    t.string   "source_content_type"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "source_file_size",    :limit => 11
+    t.integer  "image_file_size",     :limit => 11
+    t.boolean  "is_current_version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "graphic_items", :force => true do |t|
+    t.integer  "creator_id",               :limit => 11
+    t.integer  "graphic_unit_measure_id",  :limit => 11
+    t.integer  "graphic_document_type_id", :limit => 11
+    t.integer  "mockup_type_id",           :limit => 11
+    t.integer  "order_id",                 :limit => 11
+    t.integer  "press_proof_id",           :limit => 11
+    t.integer  "product_id",               :limit => 11
+    t.string   "type"
+    t.string   "name"
+    t.string   "reference"
+    t.text     "description"
+    t.boolean  "cancelled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "graphic_unit_measures", :force => true do |t|
+    t.string   "name"
+    t.string   "symbol"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "ibans", :force => true do |t|
     t.integer  "has_iban_id",    :limit => 11
     t.string   "has_iban_type"
@@ -639,6 +682,12 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.string   "name"
     t.string   "description"
     t.integer  "orders_steps_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "mockup_types", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
