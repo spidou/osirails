@@ -142,4 +142,19 @@ class Test::Unit::TestCase
     flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
     return discard
   end
+  
+  def create_default_press_proof
+    order   = create_default_order
+    john    = employees(:john_doe)
+    admin   = users(:admin_user)
+    measure = unit_measures(:normal)
+    product = products(:product1)
+    press_proof = PressProof.new( :order_id          => order.id,
+                                  :product_id        => product.id,
+                                  :creator_id        => admin.id,
+                                  :internal_actor_id => john.id,
+                                  :unit_measure_id   => measure.id)
+    flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')} #{press_proof.errors.inspect}" unless press_proof.save
+    return press_proof
+  end
 end
