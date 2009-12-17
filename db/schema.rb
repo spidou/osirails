@@ -832,15 +832,6 @@ ActiveRecord::Schema.define(:version => 20091211050133) do
     t.datetime "updated_at"
   end
 
-  create_table "press_proof_steps", :force => true do |t|
-    t.integer  "commercial_step_id", :limit => 11
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "press_proofs", :force => true do |t|
     t.integer  "order_id",                        :limit => 11
     t.integer  "unit_measure_id",                 :limit => 11
