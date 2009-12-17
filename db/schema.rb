@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091211052854) do
+ActiveRecord::Schema.define(:version => 20091214075010) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -250,6 +250,13 @@ ActiveRecord::Schema.define(:version => 20091211052854) do
     t.integer "intervention_id", :limit => 11
   end
 
+  create_table "delivery_note_invoices", :force => true do |t|
+    t.integer  "delivery_note_id", :limit => 11
+    t.integer  "invoice_id",       :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "delivery_note_items", :force => true do |t|
     t.integer  "delivery_note_id", :limit => 11
     t.integer  "quote_item_id",    :limit => 11
@@ -262,7 +269,6 @@ ActiveRecord::Schema.define(:version => 20091211052854) do
   create_table "delivery_notes", :force => true do |t|
     t.integer  "order_id",                :limit => 11
     t.integer  "creator_id",              :limit => 11
-    t.integer  "invoice_id",              :limit => 11
     t.string   "status"
     t.date     "validated_on"
     t.date     "invalidated_on"
@@ -526,6 +532,8 @@ ActiveRecord::Schema.define(:version => 20091211052854) do
     t.integer  "position",    :limit => 11
     t.string   "name"
     t.text     "description"
+    t.float    "unit_price"
+    t.float    "vat"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -541,6 +549,7 @@ ActiveRecord::Schema.define(:version => 20091211052854) do
 
   create_table "invoice_types", :force => true do |t|
     t.string   "name"
+    t.string   "title"
     t.boolean  "factorisable"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -20,6 +20,12 @@ class DeliveryNote < ActiveRecord::Base
   has_many :quote_items,         :through   => :delivery_note_items
   has_many :interventions
   
+  has_many :delivery_note_invoices
+  has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
+  has_one  :invoice, :through => :delivery_note_invoices, :conditions => [ "status IS NULL OR status != ?", Invoice::STATUS_CANCELLED ]
+  
+  named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_INVALIDATED ]
+  
   validates_contact_presence
   
   validates_presence_of :delivery_note_items, :ship_to_address
@@ -89,8 +95,17 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
+  def number_of_pieces
+    delivery_note_items.collect(&:quantity).sum
+  end
+  
   def has_new_interventions?
     !interventions.select(&:new_record?).empty?
+  end
+  
+  # return if the delivery_note is associated to an active invoice (where status != cancelled)
+  def billed?
+    invoice.is_a?(Array) ? !invoice.empty? : !invoice.nil?
   end
   
   def associated_quote

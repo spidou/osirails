@@ -1,7 +1,7 @@
 class CreateDeliveryNotes < ActiveRecord::Migration
   def self.up
     create_table :delivery_notes do |t|
-      t.references :order, :creator, :invoice
+      t.references :order, :creator
       t.string     :status
       t.date       :validated_on
       t.date       :invalidated_on

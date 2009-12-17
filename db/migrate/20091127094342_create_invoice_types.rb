@@ -1,7 +1,7 @@
 class CreateInvoiceTypes < ActiveRecord::Migration
   def self.up
     create_table :invoice_types do |t|
-      t.string  :name
+      t.string  :name, :title
       t.boolean :factorisable
       
       t.timestamps

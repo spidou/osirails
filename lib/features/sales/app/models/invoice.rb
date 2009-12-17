@@ -1,4 +1,5 @@
 class Invoice < ActiveRecord::Base
+  # status
   STATUS_CONFIRMED            = 'confirmed'
   STATUS_CANCELLED            = 'cancelled'
   STATUS_SENDED               = 'sended'
@@ -6,6 +7,12 @@ class Invoice < ActiveRecord::Base
   STATUS_FACTORING_PAID       = 'factoring_paid'
   STATUS_FACTORING_RECOVERED  = 'factoring_recovered'
   STATUS_TOTALLY_PAID         = 'totally_paid'
+  
+  # invoice types
+  DEPOSITE_INVOICE  = 'deposit_invoice'
+  STATUS_INVOICE    = 'status_invoice'
+  BALANCE_INVOICE   = 'balance_invoice'
+  ASSET_INVOICE     = 'asset_invoice'
   
   REFERENCE_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
   
@@ -19,12 +26,12 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => "Employee"
   belongs_to :abandoned_by, :class_name => "Employee"
   
-  has_many :invoice_items, :dependent => :destroy
+  has_many :invoice_items,  :dependent => :destroy
   has_many :products,       :through => :invoice_items
-  has_many :product_items,  :class_name => "InvoiceItem", :conditions => [ "product_id IS NOT NULL"]
-  has_many :free_items,     :class_name => "InvoiceItem", :conditions => [ "product_id IS NULL"]
   
-  has_many :delivery_notes
+  has_many :delivery_note_invoices, :dependent => :destroy
+  has_many :delivery_notes, :through => :delivery_note_invoices
+  
   has_many :dunnings,   :dependent => :destroy
   has_many :due_dates,  :dependent => :destroy
   
@@ -34,6 +41,8 @@ class Invoice < ActiveRecord::Base
   
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   
+  validates_associated :invoice_items, :products, :delivery_note_invoices, :delivery_notes, :dunnings, :due_dates
+  
   # when invoice is UNSAVED
   with_options :if => :new_record? do |x|
     x.validates_inclusion_of :status, :in => [ nil ]
@@ -42,7 +51,7 @@ class Invoice < ActiveRecord::Base
   # when invoice is UNCOMPLETE
   with_options :if => :was_uncomplete? do |x|
     x.validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED ]
-    x.validates_persistence_of :order_id, :invoice_type_id, :factorised
+    x.validates_persistence_of :order_id, :invoice_type_id
   end
   
   # when invoice is UNSAVED or UNCOMPLETE
@@ -51,6 +60,8 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :invoice_type, :if => :invoice_type_id
     
     x.validates_length_of :invoice_item_ids, :due_date_ids, :contact_ids, :minimum => 1
+    
+    x.validate :validates_invoice_type
   end
   
   # when invoice is UNCOMPLETE and above
@@ -73,7 +84,7 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is CONFIRMED and above
   with_options :if => :confirmed_at_was do |x|
-    x.validates_persistence_of :confirmed_at, :reference, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
+    x.validates_persistence_of :confirmed_at, :reference, :factorised, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
   end
   
   ### while invoice CANCELLATION
@@ -214,16 +225,25 @@ class Invoice < ActiveRecord::Base
     x.validates_persistence_of :status
   end
   
-  validates_associated :invoice_items, :products, :due_dates
-  
+  validate :validates_presence_of_associated_quote
   validate :validates_uniqueness_of_due_dates_with_factorised_invoice
   validate :validates_due_dates_amount, :if => :new_record?
+  
+  validate :validates_factorised_according_to_invoice_type
+  validate :validates_product_items_according_to_invoice_type
+  validate :validates_free_items_according_to_invoice_type
+  validate :validates_invoice_items_according_to_invoice_type
+  validate :validates_delivery_note_invoices_according_to_invoice_type
   
   attr_protected :status, :reference, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
   
   after_save :save_invoice_items, :save_due_dates, :save_due_date_to_pay
   
   before_destroy :check_if_can_be_destroyed
+  
+  def validates_presence_of_associated_quote
+    errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
+  end
   
   def validates_uniqueness_of_due_dates_with_factorised_invoice
     errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.size > 1
@@ -234,13 +254,72 @@ class Invoice < ActiveRecord::Base
   end
   
   def validates_due_dates_amount
-    unless ( total_of_due_dates = due_dates.collect{ |d| d.net_to_paid.to_f }.sum.to_f ) == net_to_paid.to_f
+    unless total_of_due_dates == net_to_paid.to_f
       errors.add(:due_dates, "La somme des montants des échéances ne correspond pas au montant total de la facture (#{total_of_due_dates} <> #{net_to_paid.to_f}")
     end
   end
   
   def validates_due_dates_payments_before_totally_pay
     errors.add(:due_dates, "La somme des réglements des échéances ne correspond pas au montant total de la facture") unless really_totally_paid?
+  end
+  
+  def validates_factorised_according_to_invoice_type
+    errors.add(:factorised, "Cette facture ne peut pas être factorisée car cela est incompatible avec le type de facture choisi") if factorised and !can_be_factorised?
+  end
+  
+  def validates_product_items_according_to_invoice_type
+    if deposit_invoice?
+      errors.add(:product_items, "Les lignes de produits de sont pas autorisées pour une facture d'acompte") unless product_items.empty?
+    elsif status_invoice? or balance_invoice?
+      invoice_type_text = status_invoice? ? 'situation' : 'solde'
+      errors.add(:product_items, "Les lignes de produits sont obligatoires pour une facture de #{invoice_type_text}") if product_items.empty?
+    end
+  end
+  
+  def validates_free_items_according_to_invoice_type
+    if deposit_invoice?
+      errors.add(:free_items, "La facture doit contenir au moins une ligne") if free_items.empty?
+    end
+  end
+  
+  def validates_invoice_items_according_to_invoice_type
+    if asset_invoice?
+      errors.add(:invoice_items, "La facture doit contenir au moins une ligne") if invoice_items.empty?
+    end
+  end
+  
+  def validates_delivery_note_invoices_according_to_invoice_type
+    if deposit_invoice? or asset_invoice?
+      invoice_type_text = deposit_invoice? ? 'acompte' : 'avoir'
+      errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} ne peut pas être associée à un Bon de Livraison") unless delivery_note_invoices.empty?
+    elsif status_invoice? or balance_invoice?
+      invoice_type_text = status_invoice? ? 'situation' : 'solde'
+      errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} doit être associée à au moins 1 Bon de Livraison") if delivery_note_invoices.empty?
+    end
+  end
+  
+  def validates_invoice_type
+    return unless self.new_record?
+    errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture d'acompte pour cette commande") if deposit_invoice? and !can_create_deposit_invoice?
+    errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture de situation pour cette commande") if status_invoice? and !can_create_status_invoice?
+    errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture de solde pour cette commande") if balance_invoice? and !can_create_balance_invoice?
+    errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture d'avoir pour cette commande") if asset_invoice? and !can_create_asset_invoice?
+  end
+  
+  def total_of_due_dates
+    due_dates.collect{ |d| d.net_to_paid.to_f }.sum.to_f
+  end
+  
+  def product_items
+    invoice_items.select(&:product_id)
+  end
+  
+  def free_items
+    invoice_items.reject(&:product_id)
+  end
+  
+  def can_be_factorised?
+    invoice_type ? invoice_type.factorisable : false
   end
   
   def associated_quote
@@ -266,7 +345,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def net_to_paid
-    return unless associated_quote
+    return 0.0 unless associated_quote
     carriage_costs = associated_quote.carriage_costs || 0.0
     discount = associated_quote.discount || 0.0
     net + carriage_costs + summon_of_taxes - discount
@@ -292,19 +371,23 @@ class Invoice < ActiveRecord::Base
     balance_to_be_paid == 0
   end
   
-  def build_invoice_item_from(product)
-    return if product.nil? or product.new_record?
-    invoice_items.build( :product_id  => product.id,
-                         :quantity    => product.quantity,
-                         :discount    => product.discount,
-                         :name        => product.name,
-                         :description => product.description )
+  def build_invoice_items_from(delivery_note)
+    return if delivery_note.nil? or delivery_note.new_record?
+    
+    delivery_note.delivery_note_items.each do |item|
+      product = item.quote_item.product
+      invoice_items.build( :product_id  => product.id,
+                           :quantity    => item.quantity,
+                           :discount    => product.discount,
+                           :name        => product.name,
+                           :description => product.description )
+    end
   end
   
-  def build_invoice_items_from_products
+  def build_invoice_items_from_associated_delivery_notes
     return unless order
-    order.products.each do |p|
-      build_invoice_item_from(p)
+    delivery_note_invoices.collect(&:delivery_note).each do |delivery_note|
+      build_invoice_items_from(delivery_note)
     end
     return invoice_items
   end
@@ -444,6 +527,39 @@ class Invoice < ActiveRecord::Base
   
   def was_factorised?
     factorised_was == true
+  end
+  
+  def deposit_invoice?
+    invoice_type.name == DEPOSITE_INVOICE if invoice_type
+  end
+  
+  def status_invoice?
+    invoice_type.name == STATUS_INVOICE if invoice_type
+  end
+  
+  def balance_invoice?
+    invoice_type.name == BALANCE_INVOICE if invoice_type
+  end
+  
+  def asset_invoice?
+    invoice_type.name == ASSET_INVOICE if invoice_type
+  end
+  
+  def can_create_deposit_invoice?
+    order and !order.deposit_invoice
+  end
+  
+  def can_create_status_invoice?
+    unbilled_delivery_notes = order.unbilled_delivery_notes.count
+    order and ( unbilled_delivery_notes > 1 or ( unbilled_delivery_notes == 1 and !order.all_is_delivered_or_scheduled? ) )
+  end
+  
+  def can_create_balance_invoice?
+    order and !order.balance_invoice and order.all_is_delivered_or_scheduled?
+  end
+  
+  def can_create_asset_invoice?
+    associated_quote
   end
   
   def uncomplete?

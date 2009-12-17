@@ -27,6 +27,8 @@ class Quote < ActiveRecord::Base
                     :path => ':rails_root/assets/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
   
+  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
+  
   validates_contact_presence
   
   validates_presence_of     :order_id, :creator_id

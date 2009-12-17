@@ -19,13 +19,13 @@ class Order < ActiveRecord::Base
   has_many :quotes, :order => 'created_at DESC'
   has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS ?', nil ]
   has_one  :pending_quote, :class_name => 'Quote', :conditions => [ 'status IN (?)', [ Quote::STATUS_CONFIRMED, Quote::STATUS_SENDED ] ]
-  has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ "status = ?", Quote::STATUS_SIGNED ]
+  has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ 'status = ?', Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
   
   # delivery notes
   has_many :delivery_notes
   has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
-  has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ]
+  has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ 'status = ?', DeliveryNote::STATUS_SIGNED ]
   
   # invoices
   has_many :invoices
@@ -75,6 +75,49 @@ class Order < ActiveRecord::Base
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
   @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
+  
+  def billed_delivery_notes
+    #OPTIMIZE use relationship with custom sql request to replace that
+    signed_delivery_notes.select{ |dn| dn.billed? }
+  end
+  
+  def unbilled_delivery_notes
+    #OPTIMIZE use relationship with custom sql request to replace that
+    signed_delivery_notes.select{ |dn| !dn.billed? }
+  end
+  
+  def deposit_invoice
+    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
+  end
+  
+  def status_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
+  end
+  
+  def balance_invoice
+    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  end
+  
+  def asset_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+  end
+  
+  def all_is_delivered_or_scheduled?
+    return false if delivery_notes.actives.empty? or signed_quote.nil?
+    delivery_notes.actives.collect{ |dn| dn.number_of_pieces }.sum == signed_quote.number_of_pieces
+  end
+  
+  def build_delivery_note_with_remaining_products_to_deliver
+    return if all_is_delivered_or_scheduled?
+    
+    dn = delivery_notes.build
+    signed_quote.quote_items.each do |quote_item|
+      next unless quote_item.remaining_quantity_to_deliver > 0
+      dn.delivery_note_items.build( :quote_item_id => quote_item.id, :quantity => quote_item.remaining_quantity_to_deliver )
+    end
+    
+    return dn
+  end
   
   # Return all steps of the order according to the choosen order type
   def steps

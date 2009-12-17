@@ -6,6 +6,9 @@ class QuoteItem < ActiveRecord::Base
   
   acts_as_list :scope => :quote
   
+  has_many :delivery_note_items, :dependent => :nullify
+  has_many :delivery_notes,      :through   => :delivery_note_items
+  
   validates_presence_of :name, :description, :dimensions
   
   validates_numericality_of :unit_price, :vat, :quantity
@@ -43,6 +46,18 @@ class QuoteItem < ActiveRecord::Base
   
   def save_product
     product.save(false)
+  end
+  
+  def already_delivered_or_scheduled_quantity
+    return 0 if self.new_record?
+    delivery_note_items.find( :all,
+                              :include    => :delivery_note,
+                              :conditions => [ "delivery_notes.status IS NULL or delivery_notes.status != ?", DeliveryNote::STATUS_INVALIDATED ]
+                             ).collect(&:quantity).sum
+  end
+  
+  def remaining_quantity_to_deliver
+    quantity - already_delivered_or_scheduled_quantity
   end
   
   # destroy associated product unless quote is already destroyed

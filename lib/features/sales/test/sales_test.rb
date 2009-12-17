@@ -87,10 +87,29 @@ class Test::Unit::TestCase
   end
   
   def create_valid_delivery_note_for(order)
-    # prepare order
-    #order.contacts = [ contacts(:pierre_paul_jacques) ]
-    #order.save!
+    address = Address.create( :street_name       => "Street Name",
+                              :country_name      => "Country",
+                              :city_name         => "City",
+                              :zip_code          => "01234",
+                              :has_address_type  => "DeliveryNote",
+                              :has_address_key   => "ship_to_address" )
     
+    # prepare delivery note
+    dn = order.delivery_notes.build
+    dn.creator = users(:powerful_user)
+    dn.ship_to_address = address
+    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.associated_quote.quote_items.each do |ref|
+      dn.delivery_note_items.build(:quote_item_id => ref.id,
+                                   :quantity      => ref.quantity)
+    end
+    dn.save!
+    
+    flunk "order should have all its products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
+    return dn
+  end
+  
+  def create_valid_partial_delivery_note_for(order)
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -110,8 +129,27 @@ class Test::Unit::TestCase
                                    :quantity      => ref.quantity)
       count += 1
     end
-    
     dn.save!
+    
+    flunk "order should NOT have all its products delivered or scheduled" if order.all_is_delivered_or_scheduled?
+    return dn
+  end
+  
+  def create_valid_complementary_delivery_note_for(order)
+    address = Address.create( :street_name       => "Street Name",
+                              :country_name      => "Country",
+                              :city_name         => "City",
+                              :zip_code          => "01234",
+                              :has_address_type  => "DeliveryNote",
+                              :has_address_key   => "ship_to_address" )
+    
+    dn = order.build_delivery_note_with_remaining_products_to_deliver
+    dn.creator = users(:powerful_user)
+    dn.ship_to_address = address
+    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.save!
+    
+    flunk "order should have all its products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
     return dn
   end
   
@@ -143,8 +181,7 @@ class Test::Unit::TestCase
     return discard
   end
   
-  def create_signed_delivery_note_for(order)
-    delivery_note = create_valid_delivery_note_for(order)
+  def sign_delivery_note(delivery_note)
     intervention = create_valid_intervention_for(delivery_note)
     intervention.delivered = true
     intervention.comments = "my comments"
@@ -152,6 +189,24 @@ class Test::Unit::TestCase
     delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
     
     flunk "delivery_note should be signed to continue" unless delivery_note.sign_delivery_note
+    return delivery_note
+  end
+  
+  def create_signed_delivery_note_for(order)
+    delivery_note = create_valid_delivery_note_for(order)
+    delivery_note = sign_delivery_note(delivery_note)
+    return delivery_note
+  end
+  
+  def create_signed_partial_delivery_note_for(order)
+    delivery_note = create_valid_partial_delivery_note_for(order)
+    delivery_note = sign_delivery_note(delivery_note)
+    return delivery_note
+  end
+  
+  def create_signed_complementary_delivery_note_for(order)
+    delivery_note = create_valid_complementary_delivery_note_for(order)
+    delivery_note = sign_delivery_note(delivery_note)
     return delivery_note
   end
 end

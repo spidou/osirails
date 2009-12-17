@@ -8,6 +8,7 @@ class CreateInvoiceItems < ActiveRecord::Migration
       # only for free_items (with no product)
       t.string :name
       t.text   :description
+      t.float  :unit_price, :vat
       
       t.timestamps
     end
