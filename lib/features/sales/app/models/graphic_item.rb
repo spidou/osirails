@@ -67,14 +67,24 @@ class GraphicItem < ActiveRecord::Base
     self.graphic_item_versions.detect {|giv| giv.is_current_version_was}
   end
   
+  def current_version_id
+    self.current_version.id
+  end
+  
   def current_version=(giv_id)
     unless self.new_record?
-      self.should_change_version = true
-      self.old_graphic_item_version = self.current_version
-      self.old_graphic_item_version.is_current_version = false
-      self.new_graphic_item_version = self.graphic_item_versions.detect {|giv| giv.id == giv_id}
-      self.new_graphic_item_version.is_current_version = true
+      unless self.current_version_id.to_s == giv_id.to_s
+        self.should_change_version = true
+        self.old_graphic_item_version = self.current_version
+        self.old_graphic_item_version.is_current_version = false
+        self.new_graphic_item_version = self.graphic_item_versions.detect {|giv| giv.id == giv_id.to_i}
+        self.new_graphic_item_version.is_current_version = true
+      end
     end
+  end
+  
+  def current_version_id=(giv_id)
+    self.current_version=(giv_id)
   end
   
   def current_source
@@ -90,7 +100,7 @@ class GraphicItem < ActiveRecord::Base
   end
   
   def graphic_item_version_attributes=(attributes) 
-    unless (attributes[:image].nil? and attributes[:source].nil?)
+    unless (attributes[:image].blank? and attributes[:source].blank?)
       self.should_add_version = true
       self.old_graphic_item_version = self.current_version
       self.old_graphic_item_version.is_current_version = false unless self.old_graphic_item_version.nil?

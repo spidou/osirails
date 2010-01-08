@@ -1,0 +1,169 @@
+<% content_for :header do -%>
+  <%= javascript_include_tag "sales/tab_navigation" %>
+  <%= javascript_include_tag "sales/#{graphic_item.class.name.underscore}" %>
+<% end -%>
+
+<%
+  graphic_item_headers = { :graphic_item_informations          => "Informations principales",
+                           :graphic_item_graphic_item_versions => "Versions (#{graphic_item.graphic_item_versions.count})",
+                           :graphic_item_miscellaneous         => "Divers" }
+
+  graphic_item_errors  = { :graphic_item_informations          => graphic_item.errors.on(:graphic_item) ? ' errors' : ''}
+  
+  disabled = graphic_item.new_record? ? "disabled" : ""
+%>
+
+<div class="presentation_medium graphic_item root_nav">
+  <ul class="graphic_item_nav tab_nav">
+    <li class="graphic_item_informations<%= graphic_item_errors[:graphic_item] %> selected"><%= graphic_item_headers[:graphic_item_informations] %></li>
+    <li class="graphic_item_graphic_item_versions <%= disabled %>"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></li>
+    <li class="graphic_item_miscellaneous <%= disabled %>"><%= graphic_item_headers[:graphic_item_miscellaneous] %></li>
+  </ul>
+  <% action = graphic_item.new_record? ? :create : :update %>
+  <% form_for(graphic_item, :url => { :controller => "#{graphic_item.class.name.tableize}", :action => action}, :html => { :multipart => true, :class => is_form_view? ? (graphic_item.new_record? ? "new_#{graphic_item.class.name.underscore}" : "edit_#{graphic_item.class.name.underscore}") : "skip_prevent_close" }) do |f| %>
+    <%= f.error_messages(:skip_links => true) %>
+
+    <h2 class="graphic_item_informations"><%= graphic_item_headers[:graphic_item_informations] %></h2>
+    <div class="graphic_item_informations section_nav selected">
+      <% if graphic_item.class.name == "Mockup" %>
+        <p>
+          <%= f.label :product %>
+          <% if graphic_item.new_record? %>
+            <%= f.collection_select(:product_id, @products, :id, :name, { :prompt => "---" }) %>
+          <% else %>
+            <%= f.strong(graphic_item.product.name) %>
+          <% end %>
+        </p>
+      <% end %>
+      <p>
+        <%= f.label :name %>
+        <%= f.form_or_view(f.text_field(:name),:name) %>
+      </p>
+      <p>
+        <%= f.label :description %>
+        <%= f.form_or_view(f.autoresize_text_area(:description),:description) %>
+      </p>
+      <p>
+        <%= f.label "#{graphic_item.class.name.underscore}_type".to_sym %>
+        <% if graphic_item.new_record? %>
+          <%= f.collection_select("#{graphic_item.class.name.underscore}_type_id".to_sym, @graphic_item_types, :id, :name, { :prompt => "---" }) %>
+        <% else %>
+          <%= f.strong(graphic_item.send("#{graphic_item.class.name.underscore}_type").name) %>
+        <% end %>
+      </p>
+      <% unless graphic_item.new_record? %>
+        <p>
+          <%= f.label :version %>
+          <%= f.strong graphic_item.current_version.created_at.humanize %>
+        </p>
+        <table id="thumb_and_links">
+          <tr>
+            <td class="thumb">
+              <%= image_tag graphic_item.current_image.url(:thumb) %>
+            </td>
+            <td class="links">
+              <p>
+                <%= f.label :image %>
+                <%= link_to f.strong("télécharger"), graphic_item.current_image.url %>
+              </p>
+              <p>
+                <%= f.label :source %>
+                <% if graphic_item.current_version.source_file_name %>
+                  <%= link_to f.strong("télécharger"), graphic_item.current_source.url %>
+                <% else %>
+                  <%= f.strong("aucun") %>
+                <% end %>
+              </p>
+            </td>
+          </tr>
+        </table>
+      <% end %>
+      <% if is_form_view? and !graphic_item.new_record? %>
+        <p>
+          <%= f.label :should_add_version %>
+          <%= radio_button_tag "action", "should_add_version", true, {:onclick => 'addOrChangeVersion("add",' + graphic_item.current_version_id.to_s + ' )'} %>
+          <%= f.label :should_change_version %>
+          <%= radio_button_tag "action", "should_change_version", false, {:onclick => 'addOrChangeVersion("change",' + graphic_item.current_version_id.to_s + ' )'} %>
+        </p>
+      <% end %>
+      <% if is_form_view? and graphic_item.new_record? %>
+        <p>
+          <%= f.label :graphic_unit_measure %>
+          <%= f.collection_select(:graphic_unit_measure_id, @graphic_unit_measures, :id, :name, { :prompt => "---" }) %>
+        </p>
+      <% end %>
+      <% if is_form_view? %>  
+        <p id="new_image_paragraph">
+          <%= f.label :image %>
+          <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
+        </p>
+        <p id="new_source_paragraph">
+          <%= f.label :source %>
+          <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
+        </p>  
+        <% unless graphic_item.new_record? %>
+          <p id="change_version_paragraph" style="display:none">
+            <%= f.label :change_version %>
+            <%= f.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at) %>
+          </p>
+        <% end %>        
+      <% end %>
+    </div>
+    
+    <h2 class="graphic_item_graphic_item_versions"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></h2>
+    <div class="graphic_item_graphic_item_versions section_nav">
+      <% if graphic_item.new_record? %>
+        <p>Onglet indisponible pendant la cr&eacute;ation</p>
+      <% else %>
+        <p>
+          <%= f.label :graphic_unit_measure %>
+          <%= f.strong graphic_item.graphic_unit_measure.name %>
+        </p>
+        <table id="graphic_item_versions_preview">
+          <tr>
+            <td id="graphic_item_medium_image">
+              <%= image_tag graphic_item.current_image.url(:medium), {:id => "image_tag"} %>
+            </td>
+            <td>
+              <%= f.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at, {}, {:multiple => "multiple", :id => "#{graphic_item.class.name.underscore}_versions"}) %>
+              <%= observe_field("#{graphic_item.class.name.underscore}_versions", :url => send("order_#{graphic_item.class.name.underscore}_refresh_links_path",@order.id,graphic_item.id), :with => 'current_version_id')%>
+            </td>
+          </tr>
+        </table>
+        <p>
+          <%= f.label :image %>
+          <%= link_to f.strong("télécharger"), graphic_item.current_image.url, {:id => "image_download_link"}%>
+        </p>
+        <p id="source_download_link">
+          <%= f.label :source %>
+          <% if graphic_item.current_version.source_file_name %>
+            <%= link_to f.strong("télécharger"), graphic_item.current_source.url %>
+          <% else %>
+            <%= f.strong("aucun") %>
+          <% end %>
+        </p>
+      <% end %>
+    </div>
+    
+    <h2 class="graphic_item_miscellaneous"><%= graphic_item_headers[:graphic_item_miscellaneous] %></h2>
+    <div class="graphic_item_miscellaneous section_nav">
+      <% if graphic_item.new_record? %>
+        <p>Aucune information diverse disponible</p>
+      <% else %>
+        <p>
+          <%= f.label :created_at %>
+          <%= f.strong graphic_item.created_at.humanize %>
+        </p>
+        <p>
+          <%= f.label :creator %>
+          <%= link_to "#{graphic_item.creator.first_name} #{graphic_item.creator.last_name}", employee_path(graphic_item.creator) %>
+        </p>
+      <% end %>
+    </div>
+    <% if is_form_view? %>
+      <p>
+        <%= f.reset 'Réinitialiser' %><%= f.submit button_name %>
+      </p>
+    <% end %>     
+  <% end %>
+</div>

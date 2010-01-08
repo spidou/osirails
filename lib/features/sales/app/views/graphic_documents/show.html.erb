@@ -1,0 +1,19 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :useful_links do %>	
+  <%= graphic_items_link(GraphicDocument) %>
+<% end %>
+
+<h1>Informations sur le document graphique</h1>
+<% if @employee %>
+  <% add_contextual_menu_item :possible_actions do %>
+	  <%= edit_graphic_item_link(@graphic_document) %>
+	  <%= delete_graphic_item_link(@graphic_document) %>
+	  <%= cancel_graphic_item_link(@graphic_document) %>
+  <% end %>
+  
+  <%= render :partial => "graphic_items/graphic_item", :object => @graphic_document %>
+
+<% else %>
+  <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+<% end %>

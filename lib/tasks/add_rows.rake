@@ -625,16 +625,33 @@ namespace :osirails do
       GraphicDocumentType.create! :name => "Fiche technique" 
       GraphicDocumentType.create! :name => "Ébauche commerciale"   
       
-      # default mockup
+      # default mockups
       mockup = Order.first.mockups.build(:name => "Sample", 
                                          :description => "Sample de maquette par défaut", 
                                          :graphic_unit_measure => GraphicUnitMeasure.first, 
                                          :creator => Employee.first, 
                                          :mockup_type => MockupType.first, 
                                          :product => Order.first.products.first,
-                                         :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} ) 
-                                       )      
+                                         :graphic_item_version_attributes => {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )}
+                                        )      
       mockup.save!
+      
+      mockup.graphic_item_version_attributes = {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg") ),
+                                                :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf") )}      
+      mockup.save!
+      
+      other_mockup = Order.first.mockups.build(:name => "Sample 2", 
+                                               :description => "Sample 2 de maquette par défaut", 
+                                               :graphic_unit_measure => GraphicUnitMeasure.last, 
+                                               :creator => Employee.last, 
+                                               :mockup_type => MockupType.last, 
+                                               :product => Order.first.products.last,
+                                               :graphic_item_version_attributes => {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg") ),
+                                                                                    :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf") )} )      
+      other_mockup.save!
+      
+      other_mockup.graphic_item_version_attributes = {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )}    
+      other_mockup.save!
       
       %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
         klass.constantize.all.each do |object|

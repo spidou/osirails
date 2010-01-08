@@ -148,7 +148,7 @@ end
 
 class DateTime
   def humanize
-    self.strftime("%d %B %Y à %I:%M")
+    self.strftime("%d %B %Y à %H:%M")
   end
 end
 

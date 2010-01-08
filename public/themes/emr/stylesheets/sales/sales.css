@@ -374,6 +374,11 @@ table#quote_items tr.aggregates.global {
   margin-top: 0;
 }
 
+.root_nav ul.tab_nav li.disabled {
+  font-style: italic;
+  color: #AAA;
+}
+
 .root_nav ul.tab_nav li.errors {
   color: red;
   background-image: url('/themes/emr/images/warning_14x14.png');
@@ -627,4 +632,40 @@ div.resource.subcontractor_request input,
 div.resource.subcontractor_request select,
 div.resource.subcontractor_request textarea {
   width: inherit !important;
+}
+
+/* GRAPHIC ITEMS */
+table#thumb_and_links,
+table#thumb_and_links tr,
+table#thumb_and_links th,
+table#thumb_and_links td {
+  border:0;
+}
+
+table#thumb_and_links td.thumb {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #E99727;
+}
+
+table#thumb_and_links td.links {
+  text-align: left;
+}
+
+table#graphic_item_versions_preview,
+table#graphic_item_versions_preview tr,
+table#graphic_item_versions_preview th,
+table#graphic_item_versions_preview td {
+  border: 0;
+}
+
+table td#graphic_item_medium_image {
+  width: 640px;
+  height: 400px;
+  border: 1px solid #E99727;
+}
+
+table select#mockup_versions,
+table select#graphic_document_versions {
+  height:400px;
 }

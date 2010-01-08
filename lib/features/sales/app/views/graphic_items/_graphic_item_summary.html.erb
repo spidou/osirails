@@ -1,0 +1,25 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+<% end -%>
+
+<div class="resource document">
+  <div class="thumb">
+    <%= image_tag(graphic_item_summary.current_image.url(:thumb)) %>
+  </div>
+  <div class="details">
+    <%= content_tag(:h1, h(graphic_item_summary.name)) unless graphic_item_summary.name.blank? %>
+      <%= content_tag(:span, graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name) + content_tag(:br) unless graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name.blank? %>
+      <%= content_tag(:span, graphic_item_summary.created_at.humanize) + content_tag(:br) unless graphic_item_summary.created_at.nil? %>
+      <% if graphic_item_summary.class.name == "Mockup" %>
+        <%= content_tag(:span, graphic_item_summary.product.name) + content_tag(:br) unless graphic_item_summary.product.name.blank? %>
+      <% end %>
+      <% unless without_action||=false %>
+        <%= display_graphic_item_summary_view_button(graphic_item_summary) %>
+        <%= display_graphic_item_summary_edit_button(graphic_item_summary) %>
+        <%= display_graphic_item_summary_delete_button(graphic_item_summary) %>
+        <%= display_graphic_item_summary_cancel_button(graphic_item_summary) %>
+        <%= display_graphic_item_summary_image_download_button(graphic_item_summary) %>
+        <%= display_graphic_item_summary_source_download_button(graphic_item_summary) %>
+      <% end %>
+  </div>
+</div>

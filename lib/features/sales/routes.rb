@@ -7,9 +7,6 @@ ActionController::Routing::Routes.add_routes do |map|
       commercial.resource :survey_step,             :as          => 'survey',
                                                     :controller  => 'survey_step' # :only => [ :show, :edit, :update ]
       
-      commercial.resource :graphic_conception_step, :as          => 'graphic_conception',
-                                                    :controller  => 'graphic_conception_step'
-      
       commercial.resource :estimate_step,           :as          => 'estimate',
                                                     :controller  => 'estimate_step' do |estimate_step|
         estimate_step.resources :quotes do |quote|
@@ -61,11 +58,35 @@ ActionController::Routing::Routes.add_routes do |map|
       invoicing.resource :payment_step, :as => 'payment', :controller => 'payment_step'
     end
     
-    # other resources
+    # other resources    
+    order.resources :graphic_items    
+    order.resources :mockups    
+    order.resources :graphic_documents
+    
+    order.resources :mockups do |mockup|      
+      mockup.cancel 'cancel',     :controller => 'mockups',
+                                  :action     => 'cancel',
+                                  :conditions => { :method => :get }
+      
+      mockup.refresh_links 'refresh_links', :controller => 'mockups', :action => 'refresh_links'
+    end
+    
+    order.resources :graphic_documents do |graphic_document|      
+      graphic_document.cancel 'graphic_document',     :controller => 'graphic_documents',
+                                                      :action     => 'cancel',
+                                                      :conditions => { :method => :get }
+      
+      graphic_document.refresh_links 'refresh_links', :controller => 'graphic_documents', :action => 'refresh_links'
+    end
+    
     order.resources :logs
     order.informations 'informations',        :controller => 'informations'
-  end
+  end 
   
+  map.graphic_item_versions 'graphic_item_versions', :controller => 'graphic_item_versions'
+  map.graphic_item_version  'graphic_item_versions/:id/:name.:format', :controller => 'graphic_item_versions',
+                                                                       :action     => 'show'
+                                                                          
   map.closed_orders         'closed_orders',         :controller => 'closed_orders'
   map.archived_orders       'archived_orders',       :controller => 'archived_orders'
   map.in_progress_orders    'in_progress_orders',    :controller => 'in_progress_orders'

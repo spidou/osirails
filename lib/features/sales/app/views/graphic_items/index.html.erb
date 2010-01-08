@@ -1,0 +1,15 @@
+<%= order_header %>
+
+<div>
+  <h2>Ressources graphiques</h2>
+  <table id="graphic_items">    
+    <tr>  
+      <td><%= link_to "MAQUETTES", "/orders/#{@order.id}/mockups" %></td>
+      <td>Documents &agrave; caract&egrave;res contractuels associ&eacute;s &agrave; un produit et qui traduisent une solution graphique. Une maquette peut contenir une ou plusieurs vues diff&eacute;rentes du produit. Si elle est choisie, elle est ins&eacute;r&eacute;e dans le BAT, cr&eacute;ant ainsi une page relative &agrave; la solution graphique d&eacute;finie.</td>
+    </tr>      
+    <tr>   
+      <td><%= link_to "DOCUMENTS GRAPHIQUES", "/orders/#{@order.id}/graphic_documents" %></td>
+      <td>Documents non contractuels associ&eacute;s &agrave; un ou plusieurs produits et &agrave; une ou plusieurs vues, pouvant être joints au BAT, permettant ainsi au client de choisir une solution graphique et de signer le BAT correspondant. Ces documents peuvent aussi permettre &agrave; l'entreprise d'apporter des informations et des &eacute;l&eacute;ments techniques &agrave; ses autres services, pour fabriquer les produits. Par exemple le r&eacute;capitulatif produit, la fiche technique produit, l'avant projet commercial, ou tout simplement tout &eacute;l&eacute;ment graphique apportant des informations pour la fabrication des produits.</td>
+    </tr>
+  </table>
+</div>

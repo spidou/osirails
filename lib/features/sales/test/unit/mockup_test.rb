@@ -2,15 +2,14 @@ require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class MockupTest < ActiveSupport::TestCase
-  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :product #TODO add the press proof when it will be implemented
+  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :product, :press_proof
   
   should_have_many :graphic_item_versions
   
   should_validate_presence_of :name, :description
   should_validate_presence_of :order, :mockup_type, :product, :graphic_unit_measure, :creator, :with_foreign_key => :default 
-                              #TODO add the press proof when it will be implemented
   
-  # FIXME there is no should_validate_persistence_of :graphic_unit_measure, :reference, :mockup_type, :product, :order, :press_proof
+  # FIXME there is no should_validate_persistence_of :graphic_unit_measure, :reference, :mockup_type, :product, :order
   # For the moment, persistent attributes are tested manually, before an eventually future validates_persistence_of shoulda macro
   
   context "A new mockup" do

@@ -9,6 +9,7 @@ class Product < ActiveRecord::Base
   has_many :checklist_responses,  :dependent => :destroy
   has_many :quote_items,          :dependent => :destroy
   has_many :press_proofs
+  has_many :mockups
   acts_as_list :scope => :order
   
   validates_presence_of :name, :description, :dimensions
