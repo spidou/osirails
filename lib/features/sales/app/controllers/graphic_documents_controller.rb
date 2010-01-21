@@ -5,7 +5,7 @@ class GraphicDocumentsController < ApplicationController
   # GET /orders/[:order_id]/graphic_documents
   def index
     @employee = current_user.employee
-    @enabled_graphic_documents = @order.mockups.find(:all,:conditions => {:cancelled => false})
+    @enabled_graphic_documents = @order.mockups.find(:all, :conditions => ["cancelled is NULL or cancelled=false"])
   end  
   
   # GET /orders/[:order_id]/graphic_documents/:id

@@ -1,0 +1,112 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/press_proof' %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'sales/press_proof' %>
+<% end -%>
+
+<%
+press_proof_headers = {:press_proof_informations            => "Informations",
+                       :press_proof_additional_informations => "Informations Supplémentaires",
+                       :press_proof_mockups                 => "Maquettes"}# (#{press_proof.mockups.count})"}
+                       # do not foget to add a pane for 'relances'
+
+press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:product_id) || press_proof.errors.on(:product) || 
+                                                    press_proof.errors.on(:internal_actor_id) || press_proof.errors.on(:internal_actor) ||
+                                                    press_proof.errors.on(:unit_measure_id) || press_proof.errors.on(:unit_measure) ? ' errors' : '',
+                       :press_proof_mockups      => press_proof.errors.on(:mockups) ? ' errors' : ''}
+%>
+
+<div class="presentation_medium root_nav">
+<% form_for(press_proof,:url => {:action => action}, :html => { :multipart => true }) do |f| %>
+  <%= f.error_messages %>
+
+  <ul class="press_proof_nav tab_nav">
+    <li class="press_proof_informations<%= press_proof_errors[:press_proof_informations] %> selected">
+      <%= press_proof_headers[:press_proof_informations ] %>
+    </li>
+    <% unless is_form_view? %>
+      <li class="press_proof_additional_informations<%= press_proof_errors[:press_proof_additional_information] %>">
+        <%= press_proof_headers[:press_proof_additional_informations ] %>
+      </li>
+    <% end %>
+    <li class="press_proof_mockups<%= press_proof[:press_proof_mockups] %>">
+      <%= press_proof_headers[:press_proof_mockups ] %>
+    </li>
+  </ul>
+  
+  <h2 class="press_proof_informations"><%= press_proof_headers[:press_proof_informations] %></h2>
+    <div class="press_proof_informations section_nav selected">
+      <p>
+        <%= f.label :internal_actor %>
+        <%= f.form_or_view(f.collection_select( :internal_actor_id, Employee.all, :id, :first_name), :internal_actor, :fullname) %>
+      </p>
+      <p> 
+        <%= f.label :product %>
+        <%= f.form_or_view(f.collection_select( :product_id, @order.products, :id, :name,{},
+                                                {:onChange => "select_product(this);", :disabled => action == :update}), :product, :name) %>
+      </p>
+    </div>
+  
+  <% unless is_form_view? %>
+  <h2 class="press_proof_additional_informations"><%= press_proof_errors[:press_proof_additional_information] %> </h2>  
+    <div class="press_proof_additional_informations section_nav">
+      <p>
+        <%= f.label :creator %>
+        <%= link_to press_proof.creator.username, user_path(press_proof.creator.id) %>
+      </p>
+      <p>
+        <%= f.label :created_at %>
+        <strong><%= press_proof.created_at.humanize %></strong>
+      </p>
+      <p>
+        <%= f.label :status %>
+        <strong><%= press_proof.status %></strong>
+      </p>
+    </div>
+  <% end %>
+  
+  <h2 class="press_proof_mockups"><%= press_proof_headers[:press_proof_mockups] %></h2>
+    <div class="press_proof_mockups section_nav">
+    
+      <div id="mockups_list"> <%= render :partial => "minimal_mockup", :collection => mockups%> </div>
+      
+      <% if is_form_view? %>
+      
+        <strong>Glissez ICI les Maquettes que vous voulez ajouter au BAT.</strong>
+        <div id="droppable_div">
+          <% if action == :update %>
+            <%= render :partial => "selected_graphic_item_version", :collection => press_proof.graphic_item_versions %>
+          <% end %>
+        </div>
+        
+        <script type="text/javascript">
+          Droppables.add('droppable_div', { 
+            accept: 'draggable',
+            hoverclass: 'hover',
+            onDrop: function(element)
+            {
+              if(show_selected_mockup(element) == false){
+                var path = '<%= order_commercial_step_press_proof_step_add_mockup_path(@order) %>';
+                new Ajax.Request(path, { method: 'get', parameters: 'mockup_version_id='+ $(element).down('.version_id').value })
+              }
+              $(element).hide();
+            }
+          });
+          //filter mockups for the first time, based on the first product of the current order that correspond to the default selected product
+          reset_all_draggable(<%= press_proof.new_record? ? @order.products.first.id : press_proof.product_id %>, false);
+          
+          <% if action == :update %>
+            hide_selected_mockups(<%= press_proof.graphic_item_versions.collect{|n| n.graphic_item.id}.to_json.to_s %>);
+          <% end %>
+        </script>
+        
+      <% end %>
+
+    </div>
+    
+  <% if is_form_view? %>
+    <p><%= f.submit(button_name)%></p>
+  <% end %>
+<% end %>      
+</div>

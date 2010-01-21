@@ -1,0 +1,16 @@
+<% press_proof = product_with_press_proof 
+   rows_value  = press_proof.graphic_item_versions.size + 1 %>
+<table>
+  <tr>
+    <th>Désignation</th> <th>Qté</th> <th>Date émission</th> <th>N° maquette</th> <th>Type</th>
+    <th>Description</th> <th>Contact graphique</th> <th>BAT envoyé le</th>
+    <th>BAT signé le</th> <th>état relance</th>
+  </tr>
+  
+  <tr> <!-- rowspan : permit to merge the row from the partial 'press_proofs/press_proof_in_one_line' into that one -->
+    <td rowspan="<%= rows_value %>"><%= press_proof.product.description %></td>
+    <td rowspan="<%= rows_value %>"><%= press_proof.product.quantity %></td>
+  </tr>
+  
+  <%= render :partial => 'press_proofs/press_proof_in_one_line', :object => press_proof, :locals => {:order => @order, :without_action => true} %>
+</table>

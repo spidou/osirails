@@ -1,0 +1,10 @@
+<div id="mockup_<%= minimal_mockup.id %>" class="draggable minimal_mockup product_<%= minimal_mockup.product.id %>">
+  <%= render :partial => 'graphic_items/graphic_item_summary', :object => minimal_mockup ,:locals => {:without_action => true}%>
+  <input type='hidden' value="<%= minimal_mockup.current_version.id %>" class="version_id">
+</div>
+
+<script type="text/javascript">
+  new Draggable("mockup_<%= minimal_mockup.id %>", { 
+    revert: true,
+  });
+</script>

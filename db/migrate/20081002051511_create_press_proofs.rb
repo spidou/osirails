@@ -1,8 +1,8 @@
 class CreatePressProofs < ActiveRecord::Migration
   def self.up
     create_table :press_proofs do |t|
-      t.references :order, :unit_measure, :product, :creator, :internal_actor, :revoked_by, :document_sending_method
-      t.integer    :revoked_by, :signed_press_proof_file_size
+      t.references :order, :product, :creator, :internal_actor, :revoked_by, :document_sending_method, :revoked_by
+      t.integer    :signed_press_proof_file_size
       t.string     :status, :reference, :signed_press_proof_file_name, :signed_press_proof_content_type
       t.datetime   :signed_press_proof_updated_at
       t.text       :revoked_comment

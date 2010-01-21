@@ -4,15 +4,15 @@ require File.dirname(__FILE__) + '/../sales_test'
 class PressProofTest < ActiveSupport::TestCase
   fixtures :all
 
-  should_belong_to :order, :product,  :unit_measure, :internal_actor, :creator, :document_sending_method, :revoked_by
+  should_belong_to :order, :product, :internal_actor, :creator, :document_sending_method, :revoked_by
   
-  should_have_named_scope :actives , :conditions => ["status NOT IN (?)", [PressProof::STATUS_CANCELLED, PressProof::STATUS_REVOKED]]
+  should_have_named_scope :actives, :conditions => ["status NOT IN (?)", [PressProof::STATUS_CANCELLED, PressProof::STATUS_REVOKED]]
+  should_have_named_scope :signed_list, :conditions => ["status =?",[PressProof::STATUS_SIGNED]]
   
   should_have_many :press_proof_items
-#  should_have_many :graphic_item_versions
-#  should_have_many :mockups
+  should_have_many :graphic_item_versions
 
-  should_validate_presence_of :order, :unit_measure, :internal_actor, :creator, :with_foreign_key => :default
+  should_validate_presence_of :order, :internal_actor, :creator, :with_foreign_key => :default
 
   context "A press proof with a status above or equal to 'confirmed'" do
     setup do
@@ -38,6 +38,15 @@ class PressProofTest < ActiveSupport::TestCase
       assert @press_proof.errors.invalid?(:creator_id)
     end
     
+    should "validate persistence of press_proof_items" do
+      assert !@press_proof.errors.invalid?(:press_proof_items)
+      
+      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
+    end
+    
     should "not be able to be edited" do
       assert !@press_proof.can_be_edited?
     end
@@ -61,6 +70,19 @@ class PressProofTest < ActiveSupport::TestCase
     
     should_allow_values_for     :status, PressProof::STATUS_CONFIRMED
     should_not_allow_values_for :status, PressProof::STATUS_SENDED, PressProof::STATUS_SIGNED, PressProof::STATUS_REVOKED, PressProof::STATUS_CANCELLED
+    
+    should "validates_presence_of_press_proof_items_custom" do
+      assert !@press_proof.errors.invalid?(:press_proof_items)
+      
+      @press_proof.press_proof_items = []
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
+      
+      @press_proof.press_proof_item_attributes = [{:graphic_item_version_id => create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version.id}]
+      @press_proof.press_proof_items.first.should_destroy = 1;
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
+    end
     
     should "be able to be confirmed" do
       assert @press_proof.can_be_confirmed?
@@ -104,13 +126,6 @@ class PressProofTest < ActiveSupport::TestCase
       assert @press_proof.errors.invalid?(:order_id)
     end
     
-    should "validate persistence of unit_measure_id" do
-      assert !@press_proof.errors.invalid?(:unit_measure_id)
-      @press_proof.unit_measure_id = nil
-      @press_proof.valid?
-      assert @press_proof.errors.invalid?(:unit_measure_id)
-    end
-    
     should "validate persistence of product_id" do
       assert !@press_proof.errors.invalid?(:product_id)
       @press_proof.product_id = nil
@@ -134,7 +149,8 @@ class PressProofTest < ActiveSupport::TestCase
     
     should_allow_values_for     :status, PressProof::STATUS_SENDED, PressProof::STATUS_CANCELLED
     should_not_allow_values_for :status, PressProof::STATUS_CONFIRMED, PressProof::STATUS_SIGNED, PressProof::STATUS_REVOKED
-    should_validate_presence_of :confirmed_on, :reference
+    should_validate_presence_of :reference
+#    TODO should_validate_date :confirmed_on, :equal_to => Proc.new { Date.today }
     
     should "be able to be sended" do
       assert @press_proof.can_be_sended?
@@ -167,6 +183,13 @@ class PressProofTest < ActiveSupport::TestCase
     setup do
       @press_proof = get_sended_press_proof
       flunk "@press_proof's status should be sended into the database" unless @press_proof.was_sended?
+      
+      @other_press_proof = PressProof.new(:order_id          => @press_proof.order_id,
+                                          :product_id        => @press_proof.product_id,
+                                          :creator_id        => @press_proof.creator_id,
+                                          :internal_actor_id => @press_proof.internal_actor_id,
+                                          :press_proof_item_attributes =>  [{ :graphic_item_version_id => @press_proof.graphic_item_versions.first.id }] )
+      flunk "press proof should be saved > #{@other_press_proof.errors.full_messages.join(', ')}" unless @other_press_proof.save
     end
     
     teardown do
@@ -177,7 +200,8 @@ class PressProofTest < ActiveSupport::TestCase
     
     should_allow_values_for     :status, PressProof::STATUS_SIGNED, PressProof::STATUS_CANCELLED
     should_not_allow_values_for :status, PressProof::STATUS_SENDED, PressProof::STATUS_CONFIRMED, PressProof::STATUS_REVOKED
-    should_validate_presence_of :sended_on
+#    TODO should_validate_date :sended_on, :on_or_after => :confirmed_on, :on_or_after_message => "ne doit pas être AVANT la date de validation du Bon à tirer&#160;(%s)",
+#                                          :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
     should_validate_presence_of :document_sending_method, :with_foreign_key => :default
     
     should "not be able to be confirmed" do
@@ -204,6 +228,13 @@ class PressProofTest < ActiveSupport::TestCase
       assert @press_proof.sended?
       assert_equal @press_proof.sended?, @press_proof.was_sended?
     end
+    
+    should "not be able to be signed, if referencing a product that is already part of another signed press proof" do
+      flunk "@press_proof's status should be signed into database" unless get_signed_press_proof(@other_press_proof).was_signed?
+      
+      assert !@press_proof.can_be_signed?
+      assert !sign_press_proof(@press_proof).was_signed?
+    end
   end
   
   
@@ -221,7 +252,8 @@ class PressProofTest < ActiveSupport::TestCase
     
     should_allow_values_for     :status, PressProof::STATUS_REVOKED
     should_not_allow_values_for :status, PressProof::STATUS_CONFIRMED, PressProof::STATUS_SENDED, PressProof::STATUS_SIGNED, PressProof::STATUS_CANCELLED
-    should_validate_presence_of :signed_on
+#    TODO should_validate_date :signed_on, :on_or_after => :confirmed_on, :on_or_after_message => "ne doit pas être AVANT la date de d'envoi du Bon à tirer&#160;(%s)",
+#                                     :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
     should_have_attached_file   :signed_press_proof
 #    should_validate_attachment_content_type :signed_press_proof, :content_type => [ application/pdf ]
 #    should_validate_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
@@ -294,7 +326,7 @@ class PressProofTest < ActiveSupport::TestCase
     
     subject { @press_proof }
     
-    should_validate_presence_of :cancelled_on
+#    TODO should_validate_date :cancelled_on, :equal_to => Proc.new { Date.today }, :if => :cancelled?
     
     should "not be able to be confirmed" do
       assert !@press_proof.can_be_confirmed?
@@ -322,7 +354,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     # OPTIMIZE use a macro to test should_validate_persistence_of
-    [:order_id, :unit_measure_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -349,6 +381,15 @@ class PressProofTest < ActiveSupport::TestCase
       end
     end
     
+    should "validate persistence of press_proof_items" do
+      assert !@press_proof.errors.invalid?(:press_proof_items)
+      
+      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
+    end
+    
 #    should_validate_persistence_of :revoked, :revoked_comment, :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on,
 #                                   :order_id, :unit_measure_id, :product_id, :internal_actor_id, :creator_id
     
@@ -367,7 +408,8 @@ class PressProofTest < ActiveSupport::TestCase
     
     subject { @press_proof }
     
-    should_validate_presence_of :revoked_on, :revoked_comment
+#    TODO should_validate_date, :revoked_on, :equal_to => Proc.new { Date.today }
+    should_validate_presence_of :revoked_comment
     should_validate_presence_of :revoked_by, :with_foreign_key => :default
     
     should "not be able to be confirmed" do
@@ -396,7 +438,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     # OPTIMIZE use a macro to test should_validate_persistence_of
-    [:order_id, :unit_measure_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -423,47 +465,56 @@ class PressProofTest < ActiveSupport::TestCase
       end
     end
     
+    should "validate persistence of press_proof_items" do
+      assert !@press_proof.errors.invalid?(:press_proof_items)
+      
+      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
+    end
   end
   
   context "create a press proof" do
     setup do
-      @press_proof = create_default_press_proof
-      @other_press_proof = PressProof.new( :order_id          => @press_proof.order_id,
-                                           :product_id        => @press_proof.product_id,
-                                           :creator_id        => @press_proof.creator_id,
-                                           :internal_actor_id => @press_proof.internal_actor_id,
-                                           :unit_measure_id   => @press_proof.unit_measure_id)
+      sample = create_default_press_proof
+      @press_proof = PressProof.new( :order_id          => sample.order_id,
+                                     :product_id        => sample.product_id,
+                                     :creator_id        => sample.creator_id,
+                                     :internal_actor_id => sample.internal_actor_id)
     end
     
     teardown do
-      @press_proof = @other_press_proof = nil
+      @press_proof = nil
     end
     
-    subject { @other_press_proof }
+    subject { @press_proof }
     
     should_allow_values_for     :status, nil
     should_not_allow_values_for :status, PressProof::STATUS_CONFIRMED, PressProof::STATUS_SENDED, PressProof::STATUS_SIGNED, PressProof::STATUS_REVOKED, PressProof::STATUS_CANCELLED
     
-    should "not be possible, if referencing a product that is already part of another signed press proof" do
-      flunk "@press_proof's status should be signed into database" unless get_signed_press_proof(@press_proof).was_signed?
+    should "save only with graphic_item_versions as mockups" do
+      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
+      @press_proof.valid?
+      assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      @other_press_proof.valid?
-      assert @other_press_proof.errors.invalid?(:product_id)
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => create_default_graphic_document.current_version.id)
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
     end
     
-    should "be possible, if referencing a product that is already part of another revoked press proof" do
-      flunk "@press_proof's status should be revoked into database" unless get_revoked_press_proof(@press_proof).was_revoked?
+    should "save only with graphic_item_versions linked to the same product as the press_proof" do
+      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
+      @press_proof.valid?
+      assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      @other_press_proof.valid?
-      assert !@other_press_proof.errors.invalid?(:product_id)
+      @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => create_default_mockup.current_version.id)
+      @press_proof.valid?
+      assert @press_proof.errors.invalid?(:press_proof_items)
     end
     
-    should "be possible, if referencing a product that is already part of another cancelled press proof" do
-      flunk "@press_proof's status should be cancelled into database" unless get_cancelled_press_proof(@press_proof).was_cancelled?
-      
-      @other_press_proof.valid?
-      assert !@other_press_proof.errors.invalid?(:product_id)
-    end
   end
   
   private
@@ -496,7 +547,7 @@ class PressProofTest < ActiveSupport::TestCase
     press_proof
   end
   
-  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = employees(:john_doe), comment = "comment", date = Date.today)
+  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = users(:admin_user), comment = "comment", date = Date.today)
     press_proof = get_signed_press_proof(press_proof) unless press_proof.can_be_revoked?
     options = {:revoked_by_id => actor.id, :revoked_on => date, :revoked_comment => comment}
                 
@@ -527,8 +578,7 @@ class PressProofTest < ActiveSupport::TestCase
   end
   
   def revoke_press_proof(p)
-    p.revoke(:revoked_by_id => employees(:john_doe).id, :revoked_on => Date.today, :revoked_comment => "comment")
+    p.revoke(:revoked_by_id => users(:admin_user).id, :revoked_on => Date.today, :revoked_comment => "comment")
     p
   end
-  # séparer les méthode de procédure et les tentatives d'appel...
-end
+end  

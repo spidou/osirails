@@ -4,9 +4,8 @@ class GraphicItemVersion < ActiveRecord::Base
   # Relationships
   belongs_to :graphic_item
 
-#  TODO when press proofs will be implemented  
-#  has_many :press_proof_items
-#  has_many :press_proofs, :through => :press_proof_items
+  has_many :press_proof_items
+  has_many :press_proofs, :through => :press_proof_items
   
   # paperclip plugin
   has_attached_file :image, 

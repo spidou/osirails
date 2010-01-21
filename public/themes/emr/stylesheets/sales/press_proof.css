@@ -1,0 +1,32 @@
+#mockups_list {
+  display: block;
+  border: 2;
+  border-style:solid;
+  border-color: grey;
+  width: auto;
+  height: 300px;
+  padding: 4px;
+  margin: 5px;
+}
+
+.minimal_mockup {
+  display: inline-block;
+}
+
+#droppable_div {
+  padding: 4px;
+  margin: 5px;
+  width: auto;
+  height: 300px;
+  border-color: black;
+  border-style: dashed;
+}
+
+.delete_link {
+  position:relative;
+  float:right;
+  bottom:110px;
+  right:30px;
+}
+
+

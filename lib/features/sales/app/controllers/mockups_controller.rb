@@ -5,7 +5,7 @@ class MockupsController < ApplicationController
   # GET /orders/[:order_id]/mockups
   def index
     @employee = current_user.employee
-    @enabled_mockups = @order.mockups.find(:all,:conditions => {:cancelled => false})
+    @enabled_mockups = @order.mockups.find(:all,:conditions => ["cancelled is NULL or cancelled=false"])
   end  
   
   # GET /orders/[:order_id]/mockups/:id

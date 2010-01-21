@@ -39,6 +39,26 @@ ActionController::Routing::Routes.add_routes do |map|
                                           :conditions => { :method => :get }
         end
       end
+      
+      commercial.resource :press_proof_step, :as => 'press_proof', :controller  => 'press_proof_step' do |press_proof_step|
+      
+        press_proof_step.resources :press_proofs do |press_proof|
+          press_proof.confirm          'confirm',     :controller => 'press_proofs', :action     => 'confirm',          :conditions => { :method => :get }
+          press_proof.cancel           'cancel',      :controller => 'press_proofs', :action     => 'cancel',           :conditions => { :method => :get }
+          
+          press_proof.send_form        'send_form',   :controller => 'press_proofs', :action     => 'send_form',        :conditions => { :method => :get }
+          press_proof.send_to_customer 'send',        :controller => 'press_proofs', :action     => 'send_to_customer', :conditions => { :method => :put }
+          
+          press_proof.sign_form        'sign_form',   :controller => 'press_proofs', :action     => 'sign_form',        :conditions => { :method => :get }
+          press_proof.sign             'sign',        :controller => 'press_proofs', :action     => 'sign',             :conditions => { :method => :put }
+          
+          press_proof.revoke_form      'revoke_form', :controller => 'press_proofs', :action     => 'revoke_form',      :conditions => { :method => :get }
+          press_proof.revoke           'revoke',      :controller => 'press_proofs', :action     => 'revoke',           :conditions => { :method => :put }
+          
+        end
+        press_proof_step.add_mockup    'add_mockup',  :controller => 'press_proofs', :action     => 'add_mockup',       :conditions => { :method => :get }
+      end
+      
     end
     
     # pre invoicing step
@@ -128,5 +148,4 @@ ActionController::Routing::Routes.add_routes do |map|
   map.connect 'subcontractor_requests/:id/quote', :controller => 'subcontractor_requests',
                                                   :action     => 'quote',
                                                   :conditions => { :method => :get }
-  
 end

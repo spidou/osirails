@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<h1>Signaler que le BAT a été signé par le client</h1>
+
+<div class="presentation_medium">
+  <table>
+    <%# render :partial => 'press_proofs', :object => @press_proof %>
+  </table>
+  
+	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "sign", :press_proof_id => @press_proof.id }, :html => { :multipart => true }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :signed_on %>
+      <%= form.date_select :signed_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :signed_press_proof %>
+      <%= form.file_field :signed_press_proof %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

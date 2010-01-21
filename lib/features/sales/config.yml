@@ -73,6 +73,14 @@ menus:
                       order_forms:
                         title: Bon de commande
                         description: Bon de commande associé au devis
+              press_proof_step:
+                title: BAT
+                description: "Étape de la création d'un ou plusieurs BAT"
+                position: 3
+                children:
+                  press_proofs:
+                    title: BAT (Pièce)
+                    description: Élaboration des BAT
           pre_invoicing_step:
             title: SAS de Facturation
             description: Phase du SAS de Facturation
