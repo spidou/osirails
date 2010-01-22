@@ -24,7 +24,7 @@ class Quote < ActiveRecord::Base
   has_many :products, :through => :quote_items
   
   has_attached_file :order_form,
-                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
+                    :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
@@ -35,7 +35,7 @@ class Quote < ActiveRecord::Base
   validates_presence_of     :order,   :if => :order_id
   validates_presence_of     :creator, :if => :creator_id
   
-  validates_numericality_of :reduction, :carriage_costs, :discount, :account, :validity_delay
+  validates_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
   validates_inclusion_of    :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
@@ -167,8 +167,8 @@ class Quote < ActiveRecord::Base
   end
   
   def net
-    reduction = self.reduction || 0.0
-    total*(1-(reduction/100))
+    prizegiving = self.prizegiving || 0.0
+    total * ( 1 - ( prizegiving / 100 ) )
   end
   
   def total_with_taxes
@@ -183,11 +183,6 @@ class Quote < ActiveRecord::Base
     carriage_costs = self.carriage_costs || 0.0
     discount = self.discount || 0.0
     net + carriage_costs + summon_of_taxes - discount
-  end
-  
-  def account_with_taxes
-    account = self.account || 0.0
-    account*(1+(ConfigurationManager.sales_account_tax_coefficient/100))
   end
   
   def tax_coefficients

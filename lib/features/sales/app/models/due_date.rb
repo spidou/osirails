@@ -1,8 +1,10 @@
 class DueDate < ActiveRecord::Base
-  has_permissions :as_business_object, :additional_class_methods => [ :pay ]
+  has_permissions :as_business_object
   
   belongs_to :invoice
-  has_many :payments
+  
+  has_many :payments, :order => "paid_on ASC", :dependent => :nullify
+  has_many :adjustments, :order => "created_at", :dependent => :nullify
   
   validates_presence_of :date
   
@@ -13,12 +15,9 @@ class DueDate < ActiveRecord::Base
   
   validates_associated :payments
   
-  validate :validates_no_payments_at_creation, :if => :new_record?
-  validate :validates_total_amounts_match_net_to_paid, :if => :while_paying
+  after_save :save_payments, :save_adjustments
   
-  after_save :save_payments
-  
-  attr_accessor :should_destroy, :while_paying
+  attr_accessor :should_destroy
   
   def should_destroy?
     should_destroy.to_i == 1
@@ -28,16 +27,8 @@ class DueDate < ActiveRecord::Base
     invoice ? invoice.can_be_edited? : false
   end
   
-  def validates_no_payments_at_creation
-    errors.add(:payments, "Les paiements ne sont pas autorisées à la création de la facture") unless payments.empty?
-  end
-  
-  def validates_total_amounts_match_net_to_paid
-    errors.add(:payments, "La somme des règlements ne correspond pas au montant de l'échéance") unless paid?
-  end
-  
   def total_amounts
-    payments.collect(&:amount).sum.to_f
+    (payments + adjustments).collect{ |x| x.amount || 0 }.sum
   end
   
   def paid?
@@ -57,6 +48,8 @@ class DueDate < ActiveRecord::Base
   end
   
   def payment_attributes=(payment_attributes)
+    return if was_paid?
+    
     payment_attributes.each do |attributes|
       if attributes[:id].blank?
         payments.build(attributes)
@@ -65,8 +58,28 @@ class DueDate < ActiveRecord::Base
   end
   
   def save_payments
+    return if was_paid?
+    
     payments.each do |p|
       p.save(false) if p.new_record?
+    end
+  end
+  
+  def adjustment_attributes=(adjustment_attributes)
+    return if was_paid?
+    
+    adjustment_attributes.each do |attributes|
+      if attributes[:id].blank?
+        adjustments.build(attributes)
+      end
+    end
+  end
+  
+  def save_adjustments
+    return if was_paid?
+    
+    adjustments.each do |a|
+      a.save(false) if a.new_record?
     end
   end
   

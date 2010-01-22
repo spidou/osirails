@@ -1,18 +1,18 @@
 <%= order_header %>
 
-<h1>Factures</h1>
+
+
+<h1>Liste des factures (tableau de gestion locale)</h1>
 
 <div>
-<% if is_form_view? %>
-  <% form_for(@step, :url => { :controller => "invoice_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
-    <%= form.error_messages %>
-    
-    <p>
-      <%= form.submit 'Enregistrer' %>
-      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
-    </p>
-  <% end %>
-<% else %>
-
-<% end %>
+  <%= display_transition_table_for_deposit_invoice(@order) %>
+  
+  <%= display_transition_table_for_other_invoices(@order) %>
+  
+  <h2>Factures</h2>
+  <%= display_invoices(@order) %>
 </div>
+
+<% add_contextual_menu_item :possible_actions do %>
+	<%= new_order_invoicing_step_invoice_step_invoice_link_overrided(@order) %>
+<% end %>

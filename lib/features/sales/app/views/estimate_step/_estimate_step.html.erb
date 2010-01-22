@@ -55,8 +55,5 @@
   
   <h2>Devis</h2>
   <%= render :partial => 'quotes/quotes_list', :object => @step.order.quotes %>
-  <%= display_quote_add_button(@step.order) if is_form_view? %>
+  <%= display_quote_add_link(@step.order) if is_form_view? %>
 </div>
-
-<!-- Osibox initialisation -->
-<% #osibox_initialisation(@step, "/orders/#{@order.id}/survey/documents/") %>

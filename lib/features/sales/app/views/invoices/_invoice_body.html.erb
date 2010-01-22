@@ -1,0 +1,61 @@
+<%
+require_locals form
+invoice = invoice_body
+%>
+
+<% if invoice.deposit_invoice? %>
+  <p>
+    <label>Montant total du devis :</label>
+    <strong><span id="signed_quote_total_with_taxes"><%= invoice.associated_quote.total_with_taxes.to_f.round_to(2).to_s(2) %></span></strong><span class="extra"> &euro; TTC (soit <%= invoice.associated_quote.total.round_to(2).to_s(2) %> &euro; HT)</span>
+  </p>
+  <p>
+    <label>Acompte demandé dans le devis:</label>
+    <strong><%= invoice.associated_quote.deposit %></strong><span class="extra"> %</span>
+  </p>
+  <p>
+    <label>Pourcentage d'acompte :</label>
+    <%= form.form_or_view(form.text_field(:deposit, :size => 3, :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span class="extra"> %</span>
+  </p>
+  <p>
+    <label>Montant d'acompte :</label>
+    <%= form.form_or_view(form.text_field(:deposit_amount, :value => invoice.deposit_amount.to_f.round_to(2).to_s(2), :size => 12, :onkeyup => "javascript:update_deposit_amount_without_taxes(this)"), :deposit_amount) %><span class="extra"> &euro; TTC</span>
+  </p>
+  <p>
+    <label>Taux de TVA apposé &agrave; l'acompte :</label>
+    <%= form.form_or_view(form.collection_select(:deposit_vat, Vat.all, :rate, :name, {}, :onchange => "javascript:update_deposit_amount_without_taxes($('invoice_deposit_amount'))"), :deposit_vat) %><span class="extra"> % (soit <span id="deposit_amount_without_taxes"><%= invoice.deposit_amount_without_taxes.to_f.round_to(2).to_s(2) %></span> &euro; HT)</span>
+  </p>
+  <p>
+    <label>Description :</label>
+    <%= form.form_or_view(form.text_area_autoresize(:deposit_comment), :deposit_comment) %>
+  </p>
+<% else %>
+  <table id="invoice_items">
+    <tr>
+      <th rowspan="2">Réf.</th>
+      <th rowspan="2">Désignation</th>
+      <th rowspan="2">PU Brut HT</th>
+      <th colspan="4">DEVIS</th>
+      <th colspan="6">&Agrave; FACTURER</th>
+      <% if is_form_view? %>
+        <th rowspan="2">Actions</th>
+      <% end %>
+    </tr>
+    <tr>
+      <th>Rem (%)</th>
+      <th>PU Net HT</th>
+      <th>Qté</th>
+      <th>Total HT</th>
+      
+      <th>Rem (%)</th>
+      <th>PU Net HT</th>
+      <th>Qté</th>
+      <th>Total HT</th>
+      <th>TVA</th>
+      <th>Total TTC</th>
+    </tr>
+    <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items %>
+    <%# render :partial => 'invoice_items/invoice_item', :object => nil, :locals => { :invoice => invoice } %>
+    
+    <%# render :partial => 'invoices/invoice_aggregates', :object => invoice, :locals => { :form => form } %>
+  </table>
+<% end %>

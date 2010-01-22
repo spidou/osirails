@@ -6,5 +6,5 @@ class QuoteItemTest < ActiveSupport::TestCase
   
   should_belong_to :quote, :product
   
-  should_validate_numericality_of :unit_price, :discount, :vat, :quantity
+  should_validate_numericality_of :unit_price, :prizegiving, :vat, :quantity
 end

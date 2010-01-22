@@ -115,23 +115,23 @@ function remove_reference(obj) {
 function calculate(tr) {
   var quantity = parseInt(tr.down('.input_quantity').value)
   var unit_price = parseFloat(tr.down('.input_unit_price').value)
-  var discount = parseFloat(tr.down('.input_discount').value)
+  var prizegiving = parseFloat(tr.down('.input_prizegiving').value)
   var vat = parseFloat(tr.down('.input_vat').value)
-  var td_unit_price_with_discount = tr.down('.unit_price_with_discount')
+  var td_unit_price_with_prizegiving = tr.down('.unit_price_with_prizegiving')
   var td_total = tr.down('.total')
   var td_total_with_taxes = tr.down('.total_with_taxes')
   
   if (isNaN(quantity)) { quantity = 0 }
   if (isNaN(unit_price)) { unit_price = 0 }
-  if (isNaN(discount)) { discount = 0 }
+  if (isNaN(prizegiving)) { prizegiving = 0 }
   if (isNaN(vat)) { vat = 0 }
   
-  // unit price with discount
-  var unit_price_with_discount = ( unit_price - ( unit_price * ( discount / 100 ) ) )
-  td_unit_price_with_discount.update( roundNumber(unit_price_with_discount, 2) )
+  // unit price with prizegiving
+  var unit_price_with_prizegiving = ( unit_price - ( unit_price * ( prizegiving / 100 ) ) )
+  td_unit_price_with_prizegiving.update( roundNumber(unit_price_with_prizegiving, 2) )
   
   // total
-  var total = ( unit_price_with_discount * quantity )
+  var total = ( unit_price_with_prizegiving * quantity )
   td_total.update( roundNumber(total, 2) )
   
   // total with taxes
@@ -148,9 +148,9 @@ function update_aggregates() {
   var td_aggregate_net = quote_items_container.down('.aggregate_net')
   var td_aggregate_net_to_paid = quote_items_container.down('.aggregate_net_to_paid')
   var td_aggregate_all_taxes = quote_items_container.down('.aggregate_all_taxes')
-  var td_reduction = $('quote_reduction')
+  var td_prizegiving = $('quote_prizegiving')
   var td_carriage_costs = $('quote_carriage_costs')
-  var td_discount = $('quote_discount')
+  var td_prizegiving = $('quote_prizegiving')
   // aggregates
   var quote_items = quote_items_container.select('tr.quote_item')
   var totals_without_taxes = new Array()
@@ -171,7 +171,7 @@ function update_aggregates() {
   td_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
   
   // aggregate net
-  var aggregate_net = aggregate_without_taxes*(1-(parseFloat(td_reduction.value)/100));
+  var aggregate_net = aggregate_without_taxes*(1-(parseFloat(td_prizegiving.value)/100));
   td_aggregate_net.update( roundNumber(aggregate_net, 2) + "&#160;&euro;" )
   
   // aggregate with taxes
@@ -181,18 +181,11 @@ function update_aggregates() {
   });
   
   // aggregate net to paid
-  var aggregate_net_to_paid = aggregate_net + parseFloat(td_carriage_costs.value) + aggregate_with_taxes + -(aggregate_without_taxes) - parseFloat(td_discount.value);
+  var aggregate_net_to_paid = aggregate_net + parseFloat(td_carriage_costs.value) + aggregate_with_taxes + -(aggregate_without_taxes) - parseFloat(td_prizegiving.value);
   td_aggregate_net_to_paid.update( roundNumber(aggregate_net_to_paid, 2) + "&#160;&euro;" )
   
   // aggregate all taxes
   td_aggregate_all_taxes.update( roundNumber(aggregate_with_taxes - aggregate_without_taxes, 2) )
-}
-
-function update_account(tax){
-  var account = $('quote_account')
-  var account_with_taxes = $('quote_account_with_taxes')
-  
-  account_with_taxes.update(roundNumber(account.value *(1+tax/100), 2))
 }
 
 // return the string of the float rounded with the specified precision, keeping zeros according to the precision

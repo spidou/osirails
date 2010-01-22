@@ -119,6 +119,20 @@ class Order < ActiveRecord::Base
     return dn
   end
   
+  def build_deposit_invoice_from_signed_quote
+    return unless signed_quote
+    
+    invoice = invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::DEPOSITE_INVOICE).id)
+    
+    invoice.deposit         = signed_quote.deposit
+    invoice.deposit_amount  = invoice.calculate_deposit_amount_according_to_quote_and_deposit
+    invoice.deposit_vat     = ConfigurationManager.sales_deposit_tax_coefficient.to_f
+    
+    invoice.build_or_update_free_item_for_deposit_invoice
+    
+    return invoice
+  end
+  
   # Return all steps of the order according to the choosen order type
   def steps
     raise "You must configure an order type for the current order before trying to retrieve its steps. Perhaps the order is a new record and has not been created yet?" if order_type.nil?

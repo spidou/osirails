@@ -13,8 +13,8 @@ class ProductTest < ActiveSupport::TestCase
   should_validate_presence_of :name, :description, :dimensions
   should_validate_presence_of :order, :product_reference, :with_foreign_key => :default
   
-  should_validate_numericality_of :unit_price, :discount, :vat, :quantity
-  [:unit_price, :discount, :vat].each do |attribute|
+  should_validate_numericality_of :unit_price, :prizegiving, :vat, :quantity
+  [:unit_price, :prizegiving, :vat].each do |attribute|
     should_allow_values_for     attribute, nil, "", 1, 1.0
     should_not_allow_values_for attribute, "any string"
   end

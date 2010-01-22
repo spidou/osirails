@@ -1,0 +1,43 @@
+<%
+deposit_disabled = @order.invoices.build.can_create_deposit_invoice? ? '' : "disabled='disabled'"
+status_disabled = @order.invoices.build.can_create_status_invoice? ? '' : "disabled='disabled'"
+balance_disabled = @order.invoices.build.can_create_balance_invoice? ? '' : "disabled='disabled'"
+asset_disabled = @order.invoices.build.can_create_asset_invoice? ? '' : "disabled='disabled'"
+%>
+<div>
+  <p>Choisissez le type de facture que vous souhaitez créer :</p>
+  <ul id="invoice_types">
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'deposit')%>">
+        <button <%= deposit_disabled %>>
+          <h1>Facture d'acompte</h1>
+          <p>Facture &eacute;tablie pour s'assurer que le client accorde de l'importance et s'engage dans son projet avec EMR. Le paiement de cette facture par le client constitue un apport de tr&eacute;sorerie (sans contrepartie) &agrave; EMR appr&eacute;ciable surtout quand le lancement du projet r&eacute;clame la mise en &oelig;uvre de ressources de fabrications importantes. La facture est caract&eacute;ris&eacute;e par un taux d'acompte (20-40%) fix&eacute; en g&eacute;n&eacute;ral par le commercial en fonction de la solvabilit&eacute; du client et du type de relation entre EMR et le client.</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'status')%>">
+        <button <%= status_disabled %>>
+          <h1>Facture de situation</h1>
+          <p>Facture servant (en g&eacute;n&eacute;ral lors des chantiers importants, co&ucirc;teux et longs) &agrave; facturer un chantier &agrave; partir de bon de livraison, par situation &agrave; un instant t, correspondant &agrave; une partie des livraisons d&eacute;j&agrave; effectu&eacute;es sur le chantier. Ces factures permettent &agrave; EMR d'avoir un apport de tr&eacute;sorerie, et de continuer le traitement du dossier (conception, fabrication, livraison et pose) sans attendre le paiement final de la facture de solde par le client.</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'balance')%>">
+        <button <%= balance_disabled %>>
+          <h1>Facture de solde</h1>
+          <p>Facture servant &agrave; conclure la facturation d'un chantier. Cette facture r&eacute;capitule tous les acomptes d&eacute;j&agrave; pay&eacute;s par le client(avance sur projet, avance sur chantier) et les derniers produits ou « prestations » livr&eacute;s r&eacute;f&eacute;rence &agrave; un Bon de livraison). Le montant de la facture de solde est la diff&eacute;rence entre le montant des derni&egrave;res livraison prise en compte et les &eacute;l&eacute;ments d'acompte d&eacute;j&agrave; pay&eacute;s par le client.</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'asset')%>">
+        <button <%= asset_disabled %>>
+          <h1>Facture d'avoir</h1>
+          <p>Cette facture est &eacute;tablie quand EMR rembourse une partie du montant d'un devis &agrave; un de ses clients (en raison d'un d&eacute;faut de fabrication, d'une erreur de maintenance sur un produit, d'un d&ucirc; de EMR envers un client...). La facture d'avoir se caract&eacute;rise par un remboursement indirect et prenant effet sur une facture suivante du client avec EMR.</p>
+        </button>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -3,7 +3,7 @@ class CreatePremia < ActiveRecord::Migration
     create_table :premia do |t|     
       t.references :employee
       t.date    :date
-      t.decimal :amount, :precision => 65, :scale => 30
+      t.decimal :amount, :precision => 65, :scale => 20
       t.text    :remark
       
       t.timestamps

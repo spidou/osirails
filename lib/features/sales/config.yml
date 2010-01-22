@@ -68,7 +68,7 @@ menus:
                 children:
                   quotes:
                     title: Devis (Pièce)
-                    description: Élaboration des devis
+                    description: "Élaboration d'un devis"
                     children:
                       order_forms:
                         title: Bon de commande
@@ -98,6 +98,17 @@ menus:
                 title: Factures
                 description: "Étape de l'élaboration des factures"
                 position: 1
+                children:
+                  invoices:
+                    title: Facture (Pièce)
+                    description: "Élaboration d'une facture"
+                    children:
+                      payment_attachments:
+                        title: Pièce jointe du règlement
+                        description: Pièce jointe du règlement
+                      adjustment_attachments:
+                        title: "Pièce jointe de l'ajustement"
+                        description: "Pièce jointe de l'ajustement"
               payment_step:
                 title: Paiements
                 description: "Étape de l'enregistrement des paiments"
@@ -136,13 +147,14 @@ menus:
       subcontractors:
         title: Sous-traitants
         description: Gestion des sous-traitants
+        position: 4
 configurations:
-  account_tax_coefficient:
-    description: TVA appliquée aux acomptes HT
+  deposit_tax_coefficient:
+    description: TVA appliquée par défaut aux acomptes HT
     value: 8.5
   quote_validity_delay:
-    description: Délai de validité du devis
+    description: Délai de validité par défaut du devis
     value: 15
   quote_validity_delay_unit:
-    description: Unité de temps pour la validité du devis
+    description: Unité de temps par défaut pour la validité du devis
     value: days

@@ -1,0 +1,14 @@
+<%
+due_date = factoring_balance_payment
+invoice = due_date.invoice
+invoice.factoring_balance_paid_on ||= Date.today
+%>
+
+<%= render :partial => 'factoring_payment', :object => due_date %>
+
+<% fields_for invoice do |form| %>
+  <p>
+    <%= form.label :factoring_balance_paid_on %>
+    <%= form.text_field :factoring_balance_paid_on %>
+  </p>
+<% end %>

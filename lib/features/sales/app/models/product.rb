@@ -20,7 +20,7 @@ class Product < ActiveRecord::Base
   #validates_uniqueness_of :reference #TODO when quote is signed
   
   validates_numericality_of :quantity
-  validates_numericality_of :unit_price, :discount, :vat, :allow_blank => true
+  validates_numericality_of :unit_price, :prizegiving, :vat, :allow_blank => true
   
   validates_persistence_of :product_reference_id, :order_id
   

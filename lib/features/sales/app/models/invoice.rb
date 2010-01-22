@@ -1,12 +1,14 @@
 class Invoice < ActiveRecord::Base
   # status
-  STATUS_CONFIRMED            = 'confirmed'
-  STATUS_CANCELLED            = 'cancelled'
-  STATUS_SENDED               = 'sended'
-  STATUS_ABANDONED            = 'abandoned'
-  STATUS_FACTORING_PAID       = 'factoring_paid'
-  STATUS_FACTORING_RECOVERED  = 'factoring_recovered'
-  STATUS_TOTALLY_PAID         = 'totally_paid'
+  STATUS_CONFIRMED              = 'confirmed'
+  STATUS_CANCELLED              = 'cancelled'
+  STATUS_SENDED                 = 'sended'
+  STATUS_ABANDONED              = 'abandoned'
+  STATUS_DUE_DATE_PAID          = 'due_date_paid'
+  STATUS_TOTALLY_PAID           = 'totally_paid'
+  STATUS_FACTORING_PAID         = 'factoring_paid'
+  STATUS_FACTORING_RECOVERED    = 'factoring_recovered'
+  STATUS_FACTORING_BALANCE_PAID = 'factoring_balance_paid'
   
   # invoice types
   DEPOSITE_INVOICE  = 'deposit_invoice'
@@ -14,17 +16,23 @@ class Invoice < ActiveRecord::Base
   BALANCE_INVOICE   = 'balance_invoice'
   ASSET_INVOICE     = 'asset_invoice'
   
+  # range for due_dates number for 1 invoice
+  MIN_DUE_DATES = 1
+  MAX_DUE_DATES = 5
+  
   REFERENCE_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
   
-  has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :due_date_pay ]
+  has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :factoring_recover, :factoring_balance_pay, :due_date_pay, :totally_pay ]
   has_contact :accept_from => :order_contacts
   has_address :bill_to_address
   
   belongs_to :order
+  belongs_to :factor
   belongs_to :invoice_type
   belongs_to :send_invoice_method
-  belongs_to :cancelled_by, :class_name => "Employee"
-  belongs_to :abandoned_by, :class_name => "Employee"
+  belongs_to :creator,      :class_name => 'User'
+  belongs_to :cancelled_by, :class_name => "User"
+  belongs_to :abandoned_by, :class_name => "User"
   
   has_many :invoice_items,  :dependent => :destroy
   has_many :products,       :through => :invoice_items
@@ -32,12 +40,8 @@ class Invoice < ActiveRecord::Base
   has_many :delivery_note_invoices, :dependent => :destroy
   has_many :delivery_notes, :through => :delivery_note_invoices
   
-  has_many :dunnings,   :dependent => :destroy
-  has_many :due_dates,  :dependent => :destroy
-  
-  has_one :upcoming_due_date, :class_name => 'DueDate', :conditions => [ "paid_at IS NULL" ], :order => "date ASC"
-  
-  #named_scope :unpaid_by_factor, :include => [:due_dates], :conditions => [ "factorised = ?", true ] # facture factorisée non payées par le factor après le délai factor (48h par exemple)
+  has_many :dunnings,                         :dependent => :destroy
+  has_many :due_dates, :order => "date ASC",  :dependent => :destroy
   
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   
@@ -51,16 +55,19 @@ class Invoice < ActiveRecord::Base
   # when invoice is UNCOMPLETE
   with_options :if => :was_uncomplete? do |x|
     x.validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED ]
-    x.validates_persistence_of :order_id, :invoice_type_id
+    x.validates_persistence_of :order_id, :invoice_type_id, :creator_id
   end
   
   # when invoice is UNSAVED or UNCOMPLETE
   with_options :if => Proc.new{ |invoice| invoice.new_record? or invoice.was_uncomplete? } do |x|
-    x.validates_presence_of :bill_to_address, :invoice_type_id
-    x.validates_presence_of :invoice_type, :if => :invoice_type_id
+    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id
+    x.validates_presence_of :invoice_type,  :if => :invoice_type_id
+    x.validates_presence_of :creator,       :if => :creator_id
     
-    x.validates_length_of :invoice_item_ids, :due_date_ids, :contact_ids, :minimum => 1
+    x.validates_length_of :contact_ids, :minimum => 1
     
+    x.validate :validates_presence_of_at_least_one_due_date
+    x.validate :validates_presence_of_deposit_attributes
     x.validate :validates_invoice_type
   end
   
@@ -71,10 +78,12 @@ class Invoice < ActiveRecord::Base
 
   ### while invoice CONFIRMATION
   with_options :if => Proc.new{ |i| i.created_at_was and i.confirmed? } do |x|
-    x.validates_presence_of :confirmed_at, :reference
+    x.validates_presence_of :confirmed_at, :published_on, :reference
     
     x.validates_date :confirmed_at, :on_or_after         => :created_at,
                                     :on_or_after_message => "ne doit pas être AVANT la date de création de la facture&#160;(%s)"
+    x.validates_date :published_on, :on_or_after         => Proc.new{ |i| i.associated_quote.signed_on },
+                                    :on_or_after_message => "ne doit pas être AVANT la date de signature du devis&#160;(%s)"
   end
   
   # when invoice is CONFIRMED
@@ -84,7 +93,7 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is CONFIRMED and above
   with_options :if => :confirmed_at_was do |x|
-    x.validates_persistence_of :confirmed_at, :reference, :factorised, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
+    x.validates_persistence_of :confirmed_at, :published_on, :reference, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
   end
   
   ### while invoice CANCELLATION
@@ -92,7 +101,7 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :cancelled_at, :cancelled_comment, :cancelled_by_id
     x.validates_presence_of :cancelled_by, :if => :cancelled_by_id
     
-    x.validates_date :cancelled_at, :on_or_after         => :confirmed_at,
+    x.validates_date :cancelled_at, :on_or_after         => :published_on,
                                     :on_or_after_message => "ne doit pas être AVANT la date d'émission de la facture&#160;(%s)"
   end
   
@@ -101,8 +110,10 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :sended_on, :send_invoice_method_id
     x.validates_presence_of :send_invoice_method, :if => :send_invoice_method_id
     
-    x.validates_date :sended_on,  :on_or_after         => :confirmed_at,
+    x.validates_date :sended_on,  :on_or_after         => :published_on,
                                   :on_or_after_message => "ne doit pas être AVANT la date d'émission de la facture&#160;(%s)"
+    x.validates_date :sended_on,  :on_or_before        => Date.today,
+                                  :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
   end
   
   # when invoice is CANCELLED
@@ -115,14 +126,19 @@ class Invoice < ActiveRecord::Base
     # nothing...
   end
   
-  # when invoice is SENDED and factorised
+  # when invoice is SENDED and FACTORISED
   with_options :if => Proc.new{ |i| i.was_sended? and i.was_factorised? } do |x|
-    x.validates_inclusion_of :status, :in => [ STATUS_SENDED, STATUS_CANCELLED, STATUS_FACTORING_PAID ]
+    x.validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_FACTORING_PAID ]
   end
   
-  # when invoice is SENDED and normal
-  with_options :if => Proc.new{ |i| i.was_sended? and !i.was_factorised? } do |x|
-    x.validates_inclusion_of :status, :in => [ STATUS_SENDED, STATUS_CANCELLED, STATUS_ABANDONED, STATUS_TOTALLY_PAID ]
+  # when invoice is SENDED and NORMAL (with 1 unpaid due_date)
+  with_options :if => Proc.new{ |i| i.was_sended? and !i.was_factorised? and i.unpaid_due_dates.count == 1 } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_ABANDONED, STATUS_TOTALLY_PAID ]
+  end
+  
+  # when invoice is SENDED and NORMAL (with more than 1 unpaid due_date)
+  with_options :if => Proc.new{ |i| i.was_sended? and !i.was_factorised? and i.unpaid_due_dates.count > 1 } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_ABANDONED, STATUS_DUE_DATE_PAID ]
   end
   
   # when invoice is SENDED and above
@@ -153,14 +169,24 @@ class Invoice < ActiveRecord::Base
     x.validate :validates_presence_of_factoring_payment
   end
   
+  ### while invoice DUE_DATE_PAYING
+  with_options :if => Proc.new{ |i| i.sended_on_was and i.due_date_paid? } do |x|
+    x.validate :validates_upcoming_due_date_payments_before_due_date_pay
+  end
+  
   ### while invoice TOTALLY_PAYING
   with_options :if => Proc.new{ |i| i.sended_on_was and i.totally_paid? } do |x|
     x.validate :validates_due_dates_payments_before_totally_pay
   end
   
-  # when invoice is ABANDONED
-  with_options :if => :was_abandoned? do |x|
-    x.validates_inclusion_of :status, :in => [ STATUS_TOTALLY_PAID ]
+  # when invoice is ABANDONED and NORMAL
+  with_options :if => Proc.new{ |i| i.was_abandoned? and !i.factorised? } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_DUE_DATE_PAID, STATUS_TOTALLY_PAID ]
+  end
+  
+  # when invoice is ABANDONED and FACTORISED
+  with_options :if => Proc.new{ |i| i.was_abandoned? and i.factorised? } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_FACTORING_BALANCE_PAID ]
   end
   
   # when invoice is ABANDONED and above
@@ -168,14 +194,27 @@ class Invoice < ActiveRecord::Base
     x.validates_persistence_of :abandoned_on, :abandoned_comment, :abandoned_by_id
   end
   
+  ### while invoice DUE_DATE_PAYING
+  with_options :if => Proc.new{ |i| i.abandoned_on_was and i.due_date_paid? } do |x|
+    x.validate :validates_upcoming_due_date_payments_before_due_date_pay
+  end
+  
   ### while invoice TOTALLY_PAYING
   with_options :if => Proc.new{ |i| i.abandoned_on_was and i.totally_paid? } do |x|
     x.validate :validates_due_dates_payments_before_totally_pay
   end
   
+  ### while invoice FACTORING_BALANCE_PAYING
+  with_options :if => Proc.new{ |i| i.abandoned_on_was and i.factoring_balance_paid? } do |x|
+    x.validates_presence_of :factoring_balance_paid_on
+    
+    x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_recovered_on,
+                                                 :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+  end
+  
   # when invoice is FACTORING_PAID
   with_options :if => :was_factoring_paid? do |x|
-    x.validates_inclusion_of :status, :in => [ STATUS_FACTORING_RECOVERED, STATUS_TOTALLY_PAID ]
+    x.validates_inclusion_of :status, :in => [ STATUS_FACTORING_RECOVERED, STATUS_FACTORING_BALANCE_PAID ]
   end
   
   # when invoice is FACTORING_PAID and above
@@ -185,25 +224,28 @@ class Invoice < ActiveRecord::Base
   
   ### while invoice FACTORING_RECOVERED
   with_options :if => Proc.new{ |i| i.factoring_paid_on_was and i.factoring_recovered? } do |x|
-    x.validates_presence_of :factoring_recovered_on
+    x.validates_presence_of :factoring_recovered_on, :factoring_recovered_comment
     
     x.validates_date :factoring_recovered_on, :on_or_after         => :factoring_paid_on,
                                               :on_or_after_message => "ne doit pas être AVANT la date de réglement par le factor de la facture&#160;(%s)"
   end
   
-  ### while invoice TOTALLY_PAYING
-  with_options :if => Proc.new{ |i| i.factoring_paid_on_was and i.totally_paid? } do |x|
-    x.validate :validates_due_dates_payments_before_totally_pay
+  ### while invoice FACTORING_BALANCE_PAYING
+  with_options :if => Proc.new{ |i| i.factoring_paid_on_was and i.factoring_balance_paid? } do |x|
+    x.validates_presence_of :factoring_balance_paid_on
+    
+    x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_paid_on,
+                                                 :on_or_after_message => "ne doit pas être AVANT la date de règlement par le factor de la facture&#160;(%s)"
   end
   
   # when invoice is FACTORING_RECOVERED
   with_options :if => :was_factoring_recovered? do |x|
-    x.validates_inclusion_of :status, :in => [ STATUS_ABANDONED, STATUS_TOTALLY_PAID ]
+    x.validates_inclusion_of :status, :in => [ STATUS_ABANDONED, STATUS_FACTORING_BALANCE_PAID ]
   end
   
   # when invoice is FACTORING_RECOVERED and above
   with_options :if => :factoring_recovered_on_was do |x|
-    x.validates_persistence_of :factoring_recovered_on
+    x.validates_persistence_of :factoring_recovered_on,  :factoring_recovered_comment
   end
   
   ### while invoice ABANDONNING
@@ -212,11 +254,44 @@ class Invoice < ActiveRecord::Base
     x.validates_presence_of :abandoned_by, :if => :abandoned_by_id
     
     x.validates_date :abandoned_on, :on_or_after         => :factoring_recovered_on,
-                                    :on_or_after_message => "ne doit pas être AVANT la date de définancement par le factor de la facture&#160;(%s)"
+                                    :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+  end
+  
+  ### while invoice FACTORING_BALANCE_PAYING
+  with_options :if => Proc.new{ |i| i.factoring_recovered_on_was and i.factoring_balance_paid? } do |x|
+    x.validates_presence_of :factoring_balance_paid_on
+    
+    x.validates_date :factoring_balance_paid_on, :on_or_after         => :factoring_recovered_on,
+                                                 :on_or_after_message => "ne doit pas être AVANT la date de définancement de la facture&#160;(%s)"
+  end
+  
+  # when invoice is FACTORING_BALANCE_PAID
+  with_options :if => :was_factoring_balance_paid? do |x|
+    x.validates_persistence_of :status
+  end
+  
+  # when invoice is DUE_DATE_PAID (with 1 unpaid due_date)
+  with_options :if => Proc.new{ |i| i.was_due_date_paid? and i.unpaid_due_dates.count == 1 } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_ABANDONED, STATUS_TOTALLY_PAID ]
+  end
+  
+  # when invoice is DUE_DATE_PAID (with more than 1 unpaid due_date)
+  with_options :if => Proc.new{ |i| i.was_due_date_paid? and i.unpaid_due_dates.count > 1 } do |x|
+    x.validates_inclusion_of :status, :in => [ STATUS_ABANDONED, STATUS_DUE_DATE_PAID ]
+  end
+  
+  # when invoice is DUE_DATE_PAID and above
+  with_options :if => :factoring_recovered_on_was do |x|
+    # nothing...
+  end
+  
+  ### while invoice DUE_DATE_PAYING
+  with_options :if => :due_date_paid? do |x|
+    x.validate :validates_upcoming_due_date_payments_before_due_date_pay
   end
   
   ### while invoice TOTALLY_PAYING
-  with_options :if => Proc.new{ |i| i.factoring_recovered_on_was and i.totally_paid? } do |x|
+  with_options :if => :totally_paid? do |x|
     x.validate :validates_due_dates_payments_before_totally_pay
   end
   
@@ -226,8 +301,6 @@ class Invoice < ActiveRecord::Base
   end
   
   validate :validates_presence_of_associated_quote
-  validate :validates_uniqueness_of_due_dates_with_factorised_invoice
-  validate :validates_due_dates_amount, :if => :new_record?
   
   validate :validates_factorised_according_to_invoice_type
   validate :validates_product_items_according_to_invoice_type
@@ -235,36 +308,55 @@ class Invoice < ActiveRecord::Base
   validate :validates_invoice_items_according_to_invoice_type
   validate :validates_delivery_note_invoices_according_to_invoice_type
   
+  validate :validates_uniqueness_of_due_dates_with_factorised_invoice
+  validate :validates_due_date_amounts
+  validate :validates_due_date_dates
+  validate :validates_payment_dates
+  validate :validates_payment_payment_methods
+  validate :validates_due_date_payment_amounts_equal_to_net_to_paid
+  
+  validate :validates_no_new_payments_unless_when_factoring_pay_or_totally_pay
+  
   attr_protected :status, :reference, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
+  
+  before_validation :build_or_update_free_item_for_deposit_invoice
   
   after_save :save_invoice_items, :save_due_dates, :save_due_date_to_pay
   
-  before_destroy :check_if_can_be_destroyed
+  before_destroy :can_be_deleted?
+  
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:created_at]                  = 'Créée le :'
+  @@form_labels[:creator]                     = 'Par :'
+  @@form_labels[:status]                      = 'État actuel :'
+  @@form_labels[:invoice_type]                = 'Type de facture :'
+  @@form_labels[:published_on]                = "Date d'émission :"
+  @@form_labels[:factor]                      = 'Factor :'
+  @@form_labels[:sended_on]                   = 'Envoyée au client le :'
+  @@form_labels[:send_invoice_method]         = 'Par :'
+  @@form_labels[:cancelled_at]                = 'Annulée le :'
+  @@form_labels[:cancelled_by]                = 'Par :'
+  @@form_labels[:cancelled_comment]           = 'Indiquer la raison de cette annulation :'
+  @@form_labels[:abandoned_on]                = 'Abandonée le :'
+  @@form_labels[:abandoned_by]                = 'Par :'
+  @@form_labels[:abandoned_comment]           = "Indiquer la raison de l'abandon :"
+  @@form_labels[:net_to_paid]                 = 'Montant total de la facture :'
+  @@form_labels[:factoring_paid_on]           = 'Financement du Factor le :'
+  @@form_labels[:factoring_recovered_on]      = 'Définancement du Factor le :'
+  @@form_labels[:factoring_recovered_comment] = 'Indiquer la raison du définancement :'
+  @@form_labels[:factoring_balance_paid_on]   = 'Solde Factor reçu le :'
   
   def validates_presence_of_associated_quote
     errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
-  end
-  
-  def validates_uniqueness_of_due_dates_with_factorised_invoice
-    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.size > 1
   end
   
   def validates_presence_of_factoring_payment
     errors.add(:factoring_payment, "Le réglement du factor est nécessaire pour continuer") unless factoring_payment
   end
   
-  def validates_due_dates_amount
-    unless total_of_due_dates == net_to_paid.to_f
-      errors.add(:due_dates, "La somme des montants des échéances ne correspond pas au montant total de la facture (#{total_of_due_dates} <> #{net_to_paid.to_f}")
-    end
-  end
-  
-  def validates_due_dates_payments_before_totally_pay
-    errors.add(:due_dates, "La somme des réglements des échéances ne correspond pas au montant total de la facture") unless really_totally_paid?
-  end
-  
   def validates_factorised_according_to_invoice_type
-    errors.add(:factorised, "Cette facture ne peut pas être factorisée car cela est incompatible avec le type de facture choisi") if factorised and !can_be_factorised?
+    errors.add(:factor_id, "Cette facture ne peut pas être factorisée car cela est incompatible avec le type de facture choisi ou parce que le client n'est pas factorisé") if factorised? and !can_be_factorised?
   end
   
   def validates_product_items_according_to_invoice_type
@@ -278,13 +370,13 @@ class Invoice < ActiveRecord::Base
   
   def validates_free_items_according_to_invoice_type
     if deposit_invoice?
-      errors.add(:free_items, "La facture doit contenir au moins une ligne") if free_items.empty?
+      errors.add(:free_items, "Une facture d'acompte doit contenir au moins une ligne (libre)") if free_items.empty?
     end
   end
   
   def validates_invoice_items_according_to_invoice_type
     if asset_invoice?
-      errors.add(:invoice_items, "La facture doit contenir au moins une ligne") if invoice_items.empty?
+      errors.add(:invoice_items, "Une facture d'avoir doit contenir au moins une ligne (libre)") if invoice_items.empty?
     end
   end
   
@@ -298,6 +390,13 @@ class Invoice < ActiveRecord::Base
     end
   end
   
+  def validates_presence_of_deposit_attributes
+    return true unless deposit_invoice?
+    errors.add(:deposit, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit and deposit > 0
+    errors.add(:deposit_amount, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_amount and deposit_amount > 0
+    errors.add(:deposit_vat, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_vat and deposit_vat > 0
+  end
+  
   def validates_invoice_type
     return unless self.new_record?
     errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture d'acompte pour cette commande") if deposit_invoice? and !can_create_deposit_invoice?
@@ -306,8 +405,121 @@ class Invoice < ActiveRecord::Base
     errors.add(:invoice_type, "Vous ne pouvez pas/plus créer de facture d'avoir pour cette commande") if asset_invoice? and !can_create_asset_invoice?
   end
   
+  def validates_presence_of_at_least_one_due_date
+    errors.add(:due_dates, "Une facture doit avoir au moins une échéance") if due_dates.empty?
+  end
+  
+  def validates_due_dates_payments_before_totally_pay
+    errors.add(:due_dates, "La somme des règlements des échéances ne correspond pas au montant total de la facture (#{net_to_paid.round_to(2)} - #{already_paid_amount.round_to(2)} = #{net_to_paid.round_to(2) - already_paid_amount.round_to(2)})") unless really_totally_paid?
+  end
+  
+  def validates_uniqueness_of_due_dates_with_factorised_invoice
+    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.reject(&:should_destroy?).size > 1 #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method to take it in account
+  end
+  
+  #TODO write tests
+  def validates_due_date_amounts
+    unless total_of_due_dates_equal_to_net_to_paid?
+      errors.add(:due_dates, "La somme des montants des échéances ne correspond pas au montant total de la facture (#{total_of_due_dates} ≠ #{net_to_paid})")
+    end
+  end
+  
+  # write tests
+  def validates_upcoming_due_date_payments_before_due_date_pay
+    return unless due_date = upcoming_due_date
+    due_date.errors.add(:payments, "Vous devez ajouter au moins un règlement à la prochaine échéance pour continuer") if due_date.payments.empty?
+  end
+  
+  # write tests
+  def validates_due_date_payment_amounts_equal_to_net_to_paid
+    return if factorised?
+    
+    for due_date in due_dates
+      next if due_date.payments.empty?
+      
+      error_adjustement_text = due_date.adjustments.empty? ? "" : " et des ajustements"
+      error_adjustement_calculation = due_date.adjustments.empty? ? "" : " + " + due_date.adjustments.collect{|a|a.amount||0}.join(' + ')
+      
+      due_date.errors.add(:payments, "La somme des règlements#{error_adjustement_text} ne correspond pas au montant de l'échéance (#{due_date.payments.collect{|p|p.amount||0}.join(' + ')}#{error_adjustement_calculation} = #{due_date.total_amounts} ≠ #{due_date.net_to_paid})") if due_date.total_amounts.round_to(2) != due_date.net_to_paid.round_to(2)
+    end
+    
+    errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
+  end
+  
+  #TODO write tests
+  def validates_due_date_dates
+    return unless published_on
+    
+    for due_date in due_dates
+      due_date.errors.add(:date, "ne doit pas être AVANT la date d'émission de la facture (#{self.published_on.humanize})") if due_date.date and due_date.date < published_on
+    end
+    
+    errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
+  end
+  
+  #TODO write tests
+  def validates_payment_dates
+    return unless published_on_was
+    
+    for due_date in due_dates
+      for payment in due_date.payments
+        if payment.paid_on
+          payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{self.published_on.humanize})") if payment.paid_on < published_on
+          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on > Date.today
+        end
+      end
+      
+      due_date.errors.add(:payments) unless due_date.payments.reject{ |p| p.errors.empty? }.empty?
+    end
+    
+    errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
+  end
+  
+  #TODO Write tests
+  def validates_payment_payment_methods
+    return unless !factorised? and published_on_was
+    
+    for due_date in due_dates
+      for payment in due_date.payments
+        unless payment.payment_method_id
+          payment.errors.add(:payment_method_id, ActiveRecord::Errors::default_error_messages[:blank])
+        else
+          payment.errors.add(:payment_method, ActiveRecord::Errors::default_error_messages[:blank]) unless payment.payment_method
+        end
+      end
+      
+      due_date.errors.add(:payments) unless due_date.payments.reject{ |p| p.errors.empty? }.empty?
+    end
+    
+    errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
+  end
+  
+  #TODO write tests
+  def validates_no_new_payments_unless_when_factoring_pay_or_totally_pay
+    return if factoring_paid? or due_date_paid? or totally_paid?
+    
+    for due_date in due_dates
+      due_date.errors.add(:payments, "L'ajout de nouveaux règlements n'est pas autorisé dans l'état dans lequel se trouve la facture actuellement (#{status})") unless due_date.payments.select(&:new_record?).empty?
+    end
+    
+    errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
+  end
+  
+  def unpaid_due_dates
+    due_dates.reject(&:was_paid?)
+  end
+  
+  def upcoming_due_date
+    unpaid_due_dates.first
+  end
+  
+  #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method and for the validation method 'validates_due_date_amounts' to take it in account
   def total_of_due_dates
-    due_dates.collect{ |d| d.net_to_paid.to_f }.sum.to_f
+    due_dates.reject(&:should_destroy?).collect{ |d| d.net_to_paid }.sum
+  end
+  
+  def total_of_due_dates_equal_to_net_to_paid?
+    total_of_due_dates.round_to(2) == net_to_paid.round_to(2) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
   end
   
   def product_items
@@ -319,7 +531,9 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_be_factorised?
-    invoice_type ? invoice_type.factorisable : false
+    customer = order ? order.customer : nil
+    return false unless customer and invoice_type
+    return customer.factorised? && invoice_type.factorisable
   end
   
   def associated_quote
@@ -330,25 +544,14 @@ class Invoice < ActiveRecord::Base
     invoice_items.collect(&:total).sum
   end
   
-  def net
-    return 0.0 unless associated_quote
-    reduction = associated_quote.reduction || 0.0
-    total*(1-(reduction/100))
-  end
-  
   def total_with_taxes
     invoice_items.collect(&:total_with_taxes).sum
   end
   
+  alias_method :net_to_paid, :total_with_taxes
+  
   def summon_of_taxes
     total_with_taxes - total
-  end
-  
-  def net_to_paid
-    return 0.0 unless associated_quote
-    carriage_costs = associated_quote.carriage_costs || 0.0
-    discount = associated_quote.discount || 0.0
-    net + carriage_costs + summon_of_taxes - discount
   end
   
   def total_taxes_for(coefficient)
@@ -360,15 +563,29 @@ class Invoice < ActiveRecord::Base
   end
   
   def already_paid_amount
-    due_dates.collect{ |d| d.total_amounts.to_f }.sum
+    due_dates.collect{ |d| d.total_amounts }.sum
   end
   
   def balance_to_be_paid
-    net_to_paid - already_paid_amount
+    ( net_to_paid.round_to(2) - already_paid_amount.round_to(2) ) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
   end
   
   def really_totally_paid?
     balance_to_be_paid == 0
+  end
+  
+  def build_or_update_free_item_for_deposit_invoice
+    return nil unless deposit and deposit_amount and deposit_vat
+    new_attributes = {  :product_id   => nil,
+                        :quantity     => 1,
+                        :prizegiving  => 0,
+                        :unit_price   => deposit_amount_without_taxes,
+                        :vat          => deposit_vat,
+                        :name         => "Acompte de #{deposit}% pour avance sur chantier",
+                        :description  => deposit_comment }
+    
+    free_item = free_items.first || invoice_items.build
+    free_item.attributes = new_attributes
   end
   
   def build_invoice_items_from(delivery_note)
@@ -378,7 +595,7 @@ class Invoice < ActiveRecord::Base
       product = item.quote_item.product
       invoice_items.build( :product_id  => product.id,
                            :quantity    => item.quantity,
-                           :discount    => product.discount,
+                           :prizegiving => product.prizegiving,
                            :name        => product.name,
                            :description => product.description )
     end
@@ -422,7 +639,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def save_due_dates
-    return if confirmed_at_was
+    return if confirmed_at_was #protect due_dates from changes if invoice is confirmed #OPTIMIZE is this really used and right ?
     due_dates.each do |d|
       if d.should_destroy?
         d.destroy
@@ -441,8 +658,9 @@ class Invoice < ActiveRecord::Base
   end
   
   def save_due_date_to_pay
-    return unless factoring_paid? or totally_paid?
-    the_due_date_to_pay.save(false) if the_due_date_to_pay
+    if factoring_paid? or due_date_paid? or totally_paid?
+      the_due_date_to_pay.save(false) if the_due_date_to_pay
+    end
   end
   
   def confirm
@@ -458,10 +676,9 @@ class Invoice < ActiveRecord::Base
   
   def cancel(cancel_attributes)
     if can_be_cancelled?
-      self.cancelled_at       = Time.now
-      self.cancelled_by_id    = cancel_attributes[:cancelled_by_id].to_i
-      self.cancelled_comment  = cancel_attributes[:cancelled_comment]
-      self.status             = STATUS_CANCELLED
+      self.attributes   = cancel_attributes
+      self.cancelled_at = Time.now
+      self.status       = STATUS_CANCELLED
       self.save
     else
       false
@@ -470,9 +687,8 @@ class Invoice < ActiveRecord::Base
   
   def send_to_customer(send_attributes)
     if can_be_sended?
-      self.sended_on              = Date.today
-      self.send_invoice_method_id = send_attributes[:send_invoice_method_id].to_i
-      self.status                 = STATUS_SENDED
+      self.attributes = send_attributes
+      self.status     = STATUS_SENDED
       self.save
     else
       false
@@ -481,10 +697,9 @@ class Invoice < ActiveRecord::Base
   
   def abandon(abandon_attributes)
     if can_be_abandoned?
-      self.abandoned_on       = Time.now
-      self.abandoned_by_id    = abandon_attributes[:abandoned_by_id].to_i
-      self.abandoned_comment  = abandon_attributes[:abandoned_comment]
-      self.status             = STATUS_ABANDONED
+      self.attributes   = abandon_attributes
+      self.abandoned_on = Date.today
+      self.status       = STATUS_ABANDONED
       self.save
     else
       false
@@ -501,10 +716,30 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def factoring_recover
+  def factoring_recover(factoring_recover_attributes)
     if can_be_factoring_recovered?
-      self.factoring_recovered_on = Date.today
-      self.status                 = STATUS_FACTORING_RECOVERED
+      self.attributes = factoring_recover_attributes
+      self.status     = STATUS_FACTORING_RECOVERED
+      self.save
+    else
+      false
+    end
+  end
+  
+  def factoring_balance_pay(factoring_balance_pay_attributes)
+    if can_be_factoring_balance_paid?
+      self.attributes = factoring_balance_pay_attributes
+      self.status     = STATUS_FACTORING_BALANCE_PAID
+      self.save
+    else
+      false
+    end
+  end
+  
+  def due_date_pay(due_date_attributes)
+    if can_be_due_date_paid?
+      self.due_date_to_pay  = due_date_attributes[:due_date_to_pay]
+      self.status           = STATUS_DUE_DATE_PAID
       self.save
     else
       false
@@ -514,7 +749,7 @@ class Invoice < ActiveRecord::Base
   def totally_pay(totally_pay_attributes)
     if can_be_totally_paid?
       self.due_date_to_pay  = totally_pay_attributes[:due_date_to_pay]
-      self.status           = STATUS_TOTALLY_PAID if really_totally_paid?
+      self.status           = STATUS_TOTALLY_PAID
       self.save
     else
       false
@@ -522,11 +757,11 @@ class Invoice < ActiveRecord::Base
   end
   
   def factorised?
-    factorised == true
+    factor_id
   end
   
   def was_factorised?
-    factorised_was == true
+    factor_id_was
   end
   
   def deposit_invoice?
@@ -543,6 +778,16 @@ class Invoice < ActiveRecord::Base
   
   def asset_invoice?
     invoice_type.name == ASSET_INVOICE if invoice_type
+  end
+  
+  def calculate_deposit_amount_according_to_quote_and_deposit
+    return unless associated_quote and deposit
+    associated_quote.net_to_paid * deposit / 100
+  end
+  
+  def deposit_amount_without_taxes
+    return deposit_amount if deposit_amount.nil? or deposit_amount == 0 or deposit_vat.nil? or deposit_vat == 0
+    deposit_amount / ( 1 + ( deposit_vat / 100 ) )
   end
   
   def can_create_deposit_invoice?
@@ -590,13 +835,23 @@ class Invoice < ActiveRecord::Base
     status == STATUS_FACTORING_RECOVERED
   end
   
+  def factoring_balance_paid?
+    status == STATUS_FACTORING_BALANCE_PAID
+  end
+  
+  def due_date_paid?
+    status == STATUS_DUE_DATE_PAID
+  end
+  
   def totally_paid?
     status == STATUS_TOTALLY_PAID
   end
   
+  #TODO test and check if it's correct!!
   def factoring_payment
-    return unless factorised?
-    due_dates.collect{ |d| d.payments.detect(&:paid_by_factor?) }.first
+    return unless was_factorised?
+    #due_dates.collect{ |d| d.payments.detect(&:paid_by_factor?) }.first
+    due_dates.first.payments.first
   end
   
   def factoring_paid_on
@@ -643,15 +898,32 @@ class Invoice < ActiveRecord::Base
     status_was == STATUS_FACTORING_RECOVERED
   end
   
+  def was_factoring_balance_paid?
+    status_was == STATUS_FACTORING_BALANCE_PAID
+  end
+  
+  def was_due_date_paid?
+    status_was == STATUS_DUE_DATE_PAID
+  end
+  
   def was_totally_paid?
     status_was == STATUS_TOTALLY_PAID
+  end
+  
+  def was_totally_paid_on
+    due_dates.last.payments.reject(&:new_record?).last.paid_on if was_totally_paid?
+  end
+  
+  def can_be_added?
+    return false unless invoice_type
+    return send("can_create_#{invoice_type.name}?")
   end
   
   def can_be_edited?
     was_uncomplete?
   end
   
-  def can_be_destroyed?
+  def can_be_deleted?
     was_uncomplete?
   end
   
@@ -668,7 +940,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_be_abandoned?
-    ( was_factorised? and was_factoring_recovered? ) or ( !was_factorised? and was_sended? )
+    ( was_factorised? and was_factoring_recovered? ) or ( !was_factorised? and ( was_sended? or was_due_date_paid? ) )
   end
   
   def can_be_factoring_paid?
@@ -679,14 +951,24 @@ class Invoice < ActiveRecord::Base
     was_factoring_paid?
   end
   
+  def can_be_factoring_balance_paid?
+    was_factoring_paid? or was_factoring_recovered? or ( was_factorised? and was_abandoned? )
+  end
+  
+  def can_be_due_date_paid?
+    !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count > 1
+  end
+  
   def can_be_totally_paid?
-    ( was_factorised? and ( was_factoring_paid? or was_factoring_recovered? ) ) or ( !was_factorised? and was_sended? ) or was_abandoned?
+    !was_factorised? and ( was_sended? or was_due_date_paid? or was_abandoned? ) and unpaid_due_dates.count == 1
   end
   
   def dunning_level
+    #TODO
   end
   
   def unpaid_amount
+    #TODO
   end
   
   def order_contacts
@@ -700,9 +982,5 @@ class Invoice < ActiveRecord::Base
       last_invoice = Invoice.last(:conditions => [ "reference LIKE ?", "#{prefix}%" ])
       quantity = last_invoice ? last_invoice.reference.gsub(/^(#{prefix})/, '').to_i + 1 : 1
       "#{prefix}#{quantity.to_s.rjust(3,'0')}"
-    end
-    
-    def check_if_can_be_destroyed
-      can_be_destroyed?
     end
 end

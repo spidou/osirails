@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091214075010) do
+ActiveRecord::Schema.define(:version => 20100126093137) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,17 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.string   "country_name"
     t.string   "city_name"
     t.string   "zip_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "adjustments", :force => true do |t|
+    t.integer  "due_date_id",             :limit => 11
+    t.float    "amount"
+    t.text     "comment"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -449,6 +460,13 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.date    "date"
   end
 
+  create_table "factors", :force => true do |t|
+    t.string   "name"
+    t.string   "fullname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "family_situations", :force => true do |t|
     t.string "name"
   end
@@ -527,12 +545,12 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
   create_table "invoice_items", :force => true do |t|
     t.integer  "invoice_id",  :limit => 11
     t.integer  "product_id",  :limit => 11
-    t.float    "quantity"
-    t.float    "discount"
     t.integer  "position",    :limit => 11
+    t.float    "quantity"
+    t.decimal  "prizegiving",               :precision => 65, :scale => 20
     t.string   "name"
     t.text     "description"
-    t.float    "unit_price"
+    t.decimal  "unit_price",                :precision => 65, :scale => 20
     t.float    "vat"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -556,21 +574,29 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
   end
 
   create_table "invoices", :force => true do |t|
-    t.integer  "order_id",               :limit => 11
-    t.integer  "invoice_type_id",        :limit => 11
-    t.integer  "send_invoice_method_id", :limit => 11
-    t.integer  "cancelled_by_id",        :limit => 11
-    t.integer  "abandoned_by_id",        :limit => 11
+    t.integer  "order_id",                    :limit => 11
+    t.integer  "factor_id",                   :limit => 11
+    t.integer  "invoice_type_id",             :limit => 11
+    t.integer  "send_invoice_method_id",      :limit => 11
+    t.integer  "creator_id",                  :limit => 11
+    t.integer  "cancelled_by_id",             :limit => 11
+    t.integer  "abandoned_by_id",             :limit => 11
     t.string   "reference"
     t.string   "status"
-    t.boolean  "factorised"
     t.text     "cancelled_comment"
     t.text     "abandoned_comment"
+    t.text     "factoring_recovered_comment"
+    t.date     "published_on"
     t.date     "sended_on"
     t.date     "abandoned_on"
     t.date     "factoring_recovered_on"
+    t.date     "factoring_balance_paid_on"
     t.datetime "confirmed_at"
     t.datetime "cancelled_at"
+    t.float    "deposit"
+    t.float    "deposit_amount"
+    t.float    "deposit_vat"
+    t.text     "deposit_comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -812,9 +838,10 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
   create_table "payments", :force => true do |t|
     t.integer  "due_date_id",             :limit => 11
     t.integer  "payment_method_id",       :limit => 11
-    t.float    "amount"
     t.date     "paid_on"
-    t.boolean  "paid_by_factor"
+    t.float    "amount"
+    t.string   "bank_name"
+    t.string   "payment_identifier"
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size",    :limit => 11
@@ -855,7 +882,7 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
   create_table "premia", :force => true do |t|
     t.integer  "employee_id", :limit => 11
     t.date     "date"
-    t.decimal  "amount",                    :precision => 65, :scale => 30
+    t.decimal  "amount",                    :precision => 65, :scale => 20
     t.text     "remark"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -903,9 +930,9 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.float    "unit_price"
+    t.decimal  "unit_price",                         :precision => 65, :scale => 20
+    t.decimal  "prizegiving",                        :precision => 65, :scale => 20
     t.float    "quantity"
-    t.float    "discount"
     t.float    "vat"
     t.integer  "position",             :limit => 11
     t.datetime "created_at"
@@ -920,9 +947,9 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.float    "unit_price"
+    t.decimal  "unit_price",                :precision => 65, :scale => 20
+    t.decimal  "prizegiving",               :precision => 65, :scale => 20
     t.float    "quantity"
-    t.float    "discount"
     t.float    "vat"
     t.integer  "position",    :limit => 11
     t.datetime "created_at"
@@ -937,8 +964,8 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.string   "status"
     t.string   "public_number"
     t.float    "carriage_costs",                        :default => 0.0
-    t.float    "reduction",                             :default => 0.0
-    t.float    "account",                               :default => 0.0
+    t.float    "prizegiving",                           :default => 0.0
+    t.float    "deposit",                               :default => 0.0
     t.float    "discount",                              :default => 0.0
     t.text     "sales_terms"
     t.string   "validity_delay_unit"
@@ -1131,6 +1158,7 @@ ActiveRecord::Schema.define(:version => 20091214075010) do
     t.boolean  "activated",                           :default => true
     t.integer  "payment_method_id",     :limit => 11
     t.integer  "payment_time_limit_id", :limit => 11
+    t.integer  "factor_id",             :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

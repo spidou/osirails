@@ -60,7 +60,7 @@
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>
           <UnitPrice><%= item.unit_price %></UnitPrice>
-          <Prizegiving><%= item.discount %></Prizegiving>
+          <Prizegiving><%= item.prizegiving %></Prizegiving>
           <TotalPrice><%= item.total %></TotalPrice>
           <VAT><%= @quote.tax_coefficients.index(item.vat)+1 %></VAT>
         </Line> 
@@ -77,7 +77,7 @@
       <% end %>
     </Taxes>  
     <TotalDutyFreeGrossPrice><%= @quote.total %></TotalDutyFreeGrossPrice>
-    <Prizegiving><%= @quote.reduction %></Prizegiving>
+    <Prizegiving><%= @quote.prizegiving %></Prizegiving>
     <TotalDutyFreeNetPrice><%= @quote.net %></TotalDutyFreeNetPrice>
     <Postage><%= @quote.carriage_costs %></Postage>
     <Discount><%= @quote.discount %></Discount>
@@ -86,9 +86,7 @@
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
       <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
-      <DepositTaxCoefficient><%= ConfigurationManager.sales_account_tax_coefficient %></DepositTaxCoefficient>
-      <DutyFreeDeposit><%= @quote.account %></DutyFreeDeposit>
-      <InclusiveOfTaxDeposit><%= @quote.account_with_taxes %></InclusiveOfTaxDeposit>
+      <DutyFreeDeposit><%= @quote.deposit %></DutyFreeDeposit>
     </SalesTerms>
   </Document>
   <Labels>
@@ -124,9 +122,7 @@
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>
     <QuoteValidity>Durée de validité du devis</QuoteValidity>
-    <DepositTaxCoefficient>Taux TVA (%)</DepositTaxCoefficient>
-    <DutyFreeDeposit>Acompte HT</DutyFreeDeposit>
-    <InclusiveOfTaxDeposit>Acompte TTC</InclusiveOfTaxDeposit>
+    <Deposit>Acompte (%)</Deposit>
     <DeliveryDelay>Délai de livraison :</DeliveryDelay>
     <Agreement>SIGNATURE</Agreement>
     <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>

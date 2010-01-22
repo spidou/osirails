@@ -6,9 +6,9 @@ class QuotesController < ApplicationController
   
   acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
   
-  # GET /orders/:order_id/:step/quotes/:quote_id
-  # GET /orders/:order_id/:step/quotes/:quote_id.xml
-  # GET /orders/:order_id/:step/quotes/:quote_id.pdf
+  # GET /orders/:order_id/:step/quotes/:id
+  # GET /orders/:order_id/:step/quotes/:id.xml
+  # GET /orders/:order_id/:step/quotes/:id.pdf
   def show
     @quote = Quote.find(params[:id])
     
@@ -18,7 +18,7 @@ class QuotesController < ApplicationController
       }
       format.pdf {
         unless @quote.uncomplete?
-          render :pdf => "quote_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/pdf/quotes/quote_#{@quote.public_number}.pdf"
+          render :pdf => "devis_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/sales/quotes/pdf/#{@quote.id}.pdf"
         else
           error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
         end
@@ -27,7 +27,7 @@ class QuotesController < ApplicationController
     end
   end
   
-  # GET /orders/:order_id/:step/quotes/:quote_id/new
+  # GET /orders/:order_id/:step/quotes/new
   def new
     @quote = @order.quotes.build(:validity_delay      => ConfigurationManager.sales_quote_validity_delay,
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
@@ -44,7 +44,7 @@ class QuotesController < ApplicationController
     end
   end
   
-  # POST /orders/:order_id/:step/quotes/:quote_id
+  # POST /orders/:order_id/:step/quotes
   def create
     #@quote = @order.quotes.build(params[:quote])
     @quote = @order.quotes.build # so we can use @quote.order_id in quote.rb
@@ -63,12 +63,12 @@ class QuotesController < ApplicationController
     end
   end
   
-  # GET /orders/:order_id/:step/quotes/:quote_id/edit
+  # GET /orders/:order_id/:step/quotes/:id/edit
   def edit
     error_access_page(403) unless (@quote = Quote.find(params[:id])).can_be_edited?
   end
   
-  # PUT /orders/:order_id/:step/quotes/:quote_id
+  # PUT /orders/:order_id/:step/quotes/:id
   def update
     if (@quote = Quote.find(params[:id])).can_be_edited?
       if @quote.update_attributes(params[:quote])
@@ -82,7 +82,7 @@ class QuotesController < ApplicationController
     end
   end
   
-  # DELETE /orders/:order_id/:step/quotes/:quote_id
+  # DELETE /orders/:order_id/:step/quotes/:id
   def destroy
     if (@quote = Quote.find(params[:id])).can_be_deleted?
       unless @quote.destroy
@@ -99,8 +99,10 @@ class QuotesController < ApplicationController
     if (@quote = Quote.find(params[:quote_id])).can_be_confirmed?
       unless @quote.confirm
         flash[:error] = "Une erreur est survenue à la validation du devis"
+      else
+        flash[:notice] = "Le devis a été validé avec succès"
+        redirect_to send(@step.original_step.path)
       end
-      redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
     end

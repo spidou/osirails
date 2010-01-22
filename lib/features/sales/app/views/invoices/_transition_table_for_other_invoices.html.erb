@@ -1,0 +1,30 @@
+<% delivery_notes = transition_table_for_other_invoices %>
+
+<h2 class="warning">Facture de situation/solde en attente de création</h2>
+<p>Un ou plusieurs Bon de Livraison sont prêts à être facturés.</p>
+
+<table>
+  <tr>
+    <th>Réf.</th>
+    <th>Émis le</th>
+    <th>Ville</th>
+    <th>Livraison<br/>prévue/effectuée le</th>
+    <th>Signé le</th>
+    <th>Qté (à) livrer</th>
+    <th>Qté restante<br/>à livrer</th>
+    <th>Problèmes ?</th>
+    <th>Actions</th>
+  </tr>
+  <% for dn in delivery_notes %>
+    <tr>
+      <td><%= dn.public_number %></td>
+      <td><%= dn.confirmed_on.humanize %></td>
+      <td><%= dn.ship_to_address.city %></td>
+      <td><%= dn.successful_intervention || dn.pending_intervention || "Non prévue" %></td>
+      <td><%= dn.signed_on.humanize %></td>
+      <td><%= dn.delivery_note_items.count %></td>
+      <td><% %></td>
+      <td><% %></td>
+    </tr>
+  <% end %>
+</table>

@@ -39,11 +39,11 @@
       <td class="unit_price">
         <%= quote_item.unit_price.to_f.to_s(2) %>
       </td>
-      <td class="discount">
-        <%= quote_item.discount.to_f.to_s(2) %>
+      <td class="prizegiving">
+        <%= quote_item.prizegiving.to_f.to_s(2) %>
       </td>
-      <td class="unit_price_with_discount">
-        <%= quote_item.unit_price_with_discount.round_to(2).to_s(2) %>
+      <td class="unit_price_with_prizegiving">
+        <%= quote_item.unit_price_with_prizegiving.round_to(2).to_s(2) %>
       </td>
       <td class="total">
         <%= quote_item.total.round_to(2).to_s(2) %>

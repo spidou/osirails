@@ -10,7 +10,7 @@ class DeliveryNote < ActiveRecord::Base
   has_contact     :accept_from => :order_contacts
   
   has_attached_file :attachment,
-                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
+                    :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/delivery_notes/:delivery_note_id/attachment'
   
   belongs_to :order

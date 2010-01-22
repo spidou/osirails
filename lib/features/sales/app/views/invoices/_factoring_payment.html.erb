@@ -1,0 +1,35 @@
+<%
+due_date = factoring_payment
+invoice = due_date.invoice
+payment = due_date.payments.first || due_date.payments.build(:paid_on => Date.today)
+%>
+
+<% fields_for invoice do |form1| %>
+  <% fields_for 'invoice[due_date_to_pay]', due_date do |form2| %>
+    
+    <p style="display:none">
+      <%= form2.hidden_field :id %>
+    </p>
+    
+    <% fields_for 'invoice[due_date_to_pay][payment_attributes][]', payment, :index => nil do |form3| %>
+      <%= form3.error_messages %>
+      <% form3.force_show_view = !payment.new_record? %>
+      <p>
+        <%= form1.label :factor %>
+        <%= strong invoice.factor.name_and_fullname %>
+      </p>
+      <p>
+        <%= form1.label :net_to_paid %>
+        <%= strong invoice.net_to_paid %>
+      </p>
+      <p>
+        <%= form3.label :paid_on %>
+        <%= form3.form_or_view(form3.text_field(:paid_on), :paid_on, :humanize) %>
+      </p>
+      <p>
+        <%= form3.label :amount %>
+        <%= form3.form_or_view(form3.text_field(:amount), :amount) %>
+      </p>
+    <% end %>
+  <% end %>
+<% end %>

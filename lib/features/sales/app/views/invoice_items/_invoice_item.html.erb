@@ -1,0 +1,15 @@
+<tr>
+  <td>#</td>
+  <td><%= strong(invoice_item.name) %><br/><%= invoice_item.description %></td>
+  <td><%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.quantity %></td>
+  <td><%= invoice_item.total.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.quantity %></td>
+  <td><%= invoice_item.total.to_f.round_to(2).to_s(2) %></td>
+  <td><%= invoice_item.vat %></td>
+  <td><%= invoice_item.total_with_taxes.to_f.round_to(2).to_s(2) %></td>
+</tr>

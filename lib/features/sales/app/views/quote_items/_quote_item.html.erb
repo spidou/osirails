@@ -61,20 +61,20 @@
       </td>
       <td class="unit_price">
         <% if is_form_view? %>
-          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour cette référence", :index => nil %>
+          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.to_f.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour cette référence", :index => nil %>
         <% else %>
-          <%= quote_item.unit_price.to_f.to_s(2) %>
+          <%= quote_item.unit_price.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="discount">
+      <td class="prizegiving">
         <% if is_form_view? %>
-          <%= form.text_field :discount, :value => ( quote_item.discount.round_to(2).to_s(2) if quote_item.discount ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_discount, :title => "Entrer une remise pour cette référence", :index => nil %>
+          <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_prizegiving, :title => "Entrer une remise pour cette référence", :index => nil %>
         <% else %>
-          <%= quote_item.discount.to_f.to_s(2) %>
+          <%= quote_item.prizegiving.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="unit_price_with_discount">
-        <%= quote_item.unit_price_with_discount.round_to(2).to_s(2) %>
+      <td class="unit_price_with_prizegiving">
+        <%= quote_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %>
       </td>
       <td class="quantity">
         <% if is_form_view? %>

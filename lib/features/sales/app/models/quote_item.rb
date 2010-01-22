@@ -12,7 +12,7 @@ class QuoteItem < ActiveRecord::Base
   validates_presence_of :name, :description, :dimensions
   
   validates_numericality_of :unit_price, :vat, :quantity
-  validates_numericality_of :discount, :allow_blank => true
+  validates_numericality_of :prizegiving, :allow_blank => true
   
   validates_associated :product
   

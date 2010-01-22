@@ -218,9 +218,12 @@ namespace :osirails do
       magasin   = EstablishmentType.create! :name => "Magasin"
       station   = EstablishmentType.create! :name => "Station service"
       
+      # default factors
+      cga = Factor.create!(:name => "CGA", :fullname => "Compagnie Générale d'Affacturage")
+      
       # default customers and establishements
       customer = Customer.new(:name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id, 
-        :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :activated => true)
+        :payment_method_id => virement.id, :payment_time_limit_id => comptant.id, :factor_id => cga.id, :activated => true)
       
       customer.build_bill_to_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       establishment1 = customer.build_establishment(:name => "Mon Etablissement", :establishment_type_id => siege.id)
@@ -257,7 +260,7 @@ namespace :osirails do
       supplier.contacts << contact3
       
       # default subcontractors
-      Subcontractor.create(:name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id)
+      Subcontractor.create!(:name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_id => distribution.id, :legal_form_id => sarl.id)
       
       # default commodity categories
       metal = CommodityCategory.create! :name => "Metal"
@@ -276,7 +279,8 @@ namespace :osirails do
       vat1 = Vat.create!(:name => "19.6", :rate => "19.6")
       vat2 = Vat.create!(:name => "8.5", :rate => "8.5")
       vat3 = Vat.create!(:name => "5.5", :rate => "5.5")
-      vat4 = Vat.create!(:name => "Exo.", :rate => "0")
+      vat4 = Vat.create!(:name => "2.1", :rate => "2.1")
+      vat5 = Vat.create!(:name => "Exo.", :rate => "0")
       
       # default product reference categories
       famille1 = ProductReferenceCategory.create! :name => "Famille 1"
@@ -564,6 +568,11 @@ namespace :osirails do
       SendQuoteMethod.create!(:name => "E-mail")
       SendQuoteMethod.create!(:name => "Fax")
       
+      # default send invoice methods
+      SendInvoiceMethod.create!(:name => "Courrier")
+      SendInvoiceMethod.create!(:name => "E-mail")
+      SendInvoiceMethod.create!(:name => "Fax")
+      
       # default order form types
       OrderFormType.create!(:name => "Devis signé")
       OrderFormType.create!(:name => "Bon de commande")
@@ -612,6 +621,12 @@ namespace :osirails do
           end
         end
       end
+      
+      # default invoice_types
+      InvoiceType.create! :name => 'deposit_invoice', :title => "Acompte",    :factorisable => false
+      InvoiceType.create! :name => 'status_invoice',  :title => "Situation",  :factorisable => true
+      InvoiceType.create! :name => 'balance_invoice', :title => "Solde",      :factorisable => true
+      InvoiceType.create! :name => 'asset_invoice',   :title => "Avoir",      :factorisable => false
     end
     
     desc "Depopulate the database"

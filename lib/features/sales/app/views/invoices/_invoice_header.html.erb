@@ -1,0 +1,66 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+<% end -%>
+
+<%
+require_locals form
+
+invoice = invoice_header
+order = invoice.order
+default_bill_to_address = order.customer.bill_to_address
+quote = order.signed_quote
+delivery_notes = order.unbilled_delivery_notes
+%>
+
+<div id="invoice_header">
+  <h3>Informations générales</h3>
+  <p>
+    <%= form.label :invoice_type_id %>
+    <%= form.hidden_field :invoice_type_id if is_form_view? %>
+    <%= strong(invoice.invoice_type.title) if invoice.invoice_type %> <%= link_to( "Changer le type de facture ?", new_order_invoicing_step_invoice_step_invoice_path ) if invoice.new_record? %>
+  </p>
+  
+  <p>
+    <%= form.label :published_on %>
+    <%= form.form_or_view(form.date_select(:published_on, { :order => [ :day, :month, :year ] }), :published_on, :humanize) %>
+  </p>
+  
+  <p>
+    <%= form.label :factor_id %>
+    <% if is_form_view? %>
+      <%= form.collection_select :factor_id, [ order.customer.factor ], :id, :name_and_fullname, { :include_blank => "Aucun (facture non factorisée)" }, { :disabled => invoice.can_be_factorised? ? nil : Factor.all, :onchange => "javascript:toggle_disable_of_select_number_of_due_dates()" } %>
+    <% else %>
+      <%= strong( invoice.factor ? invoice.factor.name_and_fullname : "Aucun (facture non factorisée)") %>
+    <% end %>
+  </p>
+  
+  <div id="contact_container">
+    <h3>Contact de facturation</h3>
+    <p>
+      <%= label :select_contacts, "À l'attention de " %>
+      <%= display_contacts_picker(invoice, order.contacts) %>
+    </p>
+  </div>
+  
+  <div>
+    <h3>Adresse de facturation</h3>
+    <%= render :partial => 'addresses/address_form', :object => invoice.bill_to_address || invoice.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => invoice } %>
+  </div>
+  
+  <h3>Références</h3>
+  <p>
+    <label>Devis signé :</label>
+    <%= link_to(quote.public_number, order_commercial_step_estimate_step_quote_path(order, quote)) %>&nbsp;
+    <%= link_to(image_tag("/images/mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
+  </p>
+  
+  <p>
+    <label>Bons de livraison signés et non facturés :</label>
+    #TODO
+    <% for dn in delivery_notes %>
+      <%= form.check_box :delivery_note_invoices %>
+    <% end %>
+  </p>
+</div>

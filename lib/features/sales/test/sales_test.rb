@@ -11,11 +11,11 @@ class Test::Unit::TestCase
     end
   end
   
-  def create_default_order
+  def create_default_order(factorised_customer = true)
     prepare_sales_processes
     
     ## prepare customer
-    customer = create_default_customer
+    customer = create_default_customer(factorised_customer)
     
     ## prepare society_activity_sector
     society_activity_sector = SocietyActivitySector.first
@@ -64,7 +64,7 @@ class Test::Unit::TestCase
                              :dimensions  => "1000x2000",
                              :quantity    => 2,
                              :unit_price  => 20000,
-                             :discount    => 0.0,
+                             :prizegiving => 0.0,
                              :vat         => 19.6)
     end
     
@@ -208,5 +208,39 @@ class Test::Unit::TestCase
     delivery_note = create_valid_complementary_delivery_note_for(order)
     delivery_note = sign_delivery_note(delivery_note)
     return delivery_note
+  end
+  
+  def create_valid_deposit_invoice_for(order)
+    signed_quote = create_signed_quote_for(order)
+    
+    invoice = order.invoices.build
+    
+    invoice.invoice_type    = invoice_types(:deposit_invoice)
+    invoice.creator         = User.first
+    invoice.contact         = order.contacts.first
+    invoice.bill_to_address = order.bill_to_address
+    invoice.published_on    = Date.today
+    
+    invoice.deposit         = 40
+    invoice.deposit_amount  = invoice.associated_quote.net_to_paid * 0.4
+    invoice.deposit_vat     = 19.6
+    invoice.deposit_comment = "This is a deposit invoice."
+    invoice.build_or_update_free_item_for_deposit_invoice
+    
+    invoice.due_dates.build(:date => Date.today, :net_to_paid => ( invoice.net_to_paid ))
+    invoice.save!
+    
+    flunk "invoice should be saved to perform the following" if invoice.new_record?
+    return invoice
+  end
+  
+  def create_sended_deposit_invoice_for(order)
+    invoice = create_valid_deposit_invoice_for(order)
+    invoice.confirm
+    
+    invoice.send_to_customer(:sended_on => Date.today, :send_invoice_method_id => send_invoice_methods(:fax).id)
+    
+    flunk "invoice should be sended to perform the following > #{invoice.errors.inspect}" unless invoice.was_sended?
+    return invoice
   end
 end

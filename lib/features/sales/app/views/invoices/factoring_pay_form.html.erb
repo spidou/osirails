@@ -1,0 +1,19 @@
+<%= order_header %>
+
+<%= javascript_include_tag 'sales/invoice' %>
+
+<h1>Signaler le financement de la facture par le FACTOR</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>
+  
+	<% form_for @invoice, :url => { :controller => "invoices", :action => "factoring_pay", :order_id => @order.id }, :html => { :onsubmit => 'return confirm("Attention !! Les informations que vous avez entrés ne pourront plus être modifié. Merci de vérifier les informations avant de valider. Êtes-vous sûr de vouloir continuer ?")', :method => :put } do |form| %>
+    <div class="due_dates">
+      <%= render :partial => 'factoring_payment', :collection => @invoice.due_dates %>
+    </div>
+    
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

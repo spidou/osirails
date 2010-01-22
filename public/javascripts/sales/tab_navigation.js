@@ -59,9 +59,9 @@ function click_on_li_nav(event) {
     }
   } else {
     // remove selected class on clicked element
-    li.removeClassName('selected')
+    //li.removeClassName('selected')
     
     // remove selected class on selected section
-    section_div.removeClassName('selected')
+    //section_div.removeClassName('selected')
   }
 }

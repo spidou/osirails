@@ -11,6 +11,14 @@ class InvoiceItem < ActiveRecord::Base
   named_scope :product_items, :conditions => [ 'product_id IS NOT NULL' ]
   named_scope :free_items,    :conditions => [ 'product_id IS NULL' ]
   
+  def name
+    product ? product.name : super
+  end
+  
+  def description
+    product ? product.description : super
+  end
+  
   def unit_price
     product ? product.unit_price : super
   end

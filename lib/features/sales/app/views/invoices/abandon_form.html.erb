@@ -1,0 +1,18 @@
+<%= order_header %>
+
+<h1>Signaler que la facture a été abandonée (déclarée "sans suite")</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>
+  
+	<% form_for @invoice, :url => { :controller => "invoices", :action => "abandon", :order_id => @order.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :abandoned_comment %>
+      <%= form.text_area_autoresize :abandoned_comment %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

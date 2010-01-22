@@ -8,10 +8,9 @@ quote_headers = { :quote_header => "Entête",
                   :quote_body   => "Corps",
                   :quote_footer => "Conditions commerciales" }
 
-#TODO
 quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
-                  :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:reduction) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount)? ' errors' : '',
-                  :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:account) ? ' errors' : '' }
+                  :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
+                  :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:deposit) ? ' errors' : '' }
 %>
 
 <div class="presentation_medium root_nav">
@@ -76,13 +75,8 @@ quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.er
       </p>
 
       <p>
-        <%= form.label :account, 'Acompte HT :' %>
-        <%= form.form_or_view(form.text_field(:account, :value => quote.account.to_f.round_to(2).to_s(2), :size => 5, :onkeyup => "update_account(#{ConfigurationManager.sales_account_tax_coefficient})"), strong(quote.account.to_f.round_to(2).to_s(2))) %>
-        
-        <%= form.label :account_with_taxes, 'Acompte TTC :' %>
-        <span id="quote_account_with_taxes">
-          <%= quote.account_with_taxes.round_to(2).to_s(2) %>
-        </span>
+        <%= form.label :deposit, 'Acompte (%) :' %>
+        <%= form.form_or_view(form.text_field(:deposit, :value => quote.deposit.to_f.round_to(2).to_s(2), :size => 5), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
       </p>
       <p style="display:none">
         <%= form.hidden_field :order_id %>
