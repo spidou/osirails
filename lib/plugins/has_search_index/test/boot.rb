@@ -1,5 +1,5 @@
 plugin_root = File.join(File.dirname(__FILE__), '..')
-version = ENV['RAILS_VERSION']
+version = ENV['RAILS_VERSION'] || "2.1.0"
 version = nil if version and version == ""
 
 # first look for a symlink to a copy of the framework
