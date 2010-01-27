@@ -53,6 +53,15 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @leave_request.valid?
     @leave.valid?
     
+    # @good_leave is used in leave_base_test and leave_validations_test
+    @good_leave = LeaveRequest.new(:start_date     => Date.today.next_month.next_month.monday,
+                                   :end_date       => Date.today.next_month.next_month.monday + 6.days,
+                                   :start_half     => true,
+                                   :end_half       => true,
+                                   :employee_id    => @employee.id,
+                                   :leave_type_id  => @leave_type.id)
+    flunk "good_leave should be submitted to perform the following #{@good_leave.errors.inspect}" unless @good_leave.submit
+    
     setup_leaves
   end
   
@@ -61,6 +70,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @employee = nil
     @superior = nil
     @leave_type = nil
+    @good_leave = nil
   end
   
   def test_start_date_validity_at_creation

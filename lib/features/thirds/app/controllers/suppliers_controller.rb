@@ -10,7 +10,6 @@ class SuppliersController < ApplicationController
   # GET /suppliers/:id
   def show
     @supplier = Supplier.find(params[:id])
-    @contacts = @supplier.contacts
   end
 
   # GET /suppliers/new
@@ -32,7 +31,6 @@ class SuppliersController < ApplicationController
   # GET /suppliers/:id/edit
   def edit
     @supplier = Supplier.find(params[:id])
-    @contacts = @supplier.contacts
   end
 
   # PUT /suppliers/:id

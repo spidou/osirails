@@ -6,7 +6,6 @@ dependencies:
     - 0.1
   thirds:
     - 0.1
-conflicts:
 search:
   CommodityCategory:
     base:

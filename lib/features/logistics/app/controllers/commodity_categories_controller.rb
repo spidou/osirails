@@ -59,6 +59,7 @@ class CommodityCategoriesController < ApplicationController
       flash[:notice] = "La catégorie a été désactivée"
     else
       flash[:error] = "La catégorie ne peut être désactivée"
+
     end
     redirect_to :controller => 'commodities_manager', :action => 'index'
   end

@@ -1,11 +1,20 @@
 class CalendarsController < ApplicationController
-  before_filter :check_date
-  before_filter :check_permissions
+  before_filter :check_date, :check_permissions
   
   def index
     render :action => 'show' 
   end
   
+  # GET /calendars/:id_or_name/:period/:year/:month/:day
+  #
+  # ==== Examples :
+  # /calendars/1
+  # /calendars/1/month
+  # /calendars/1/month/2009/01/01
+  #
+  # /calendars/calendar_name
+  # /calendars/calendar_name/week
+  # /calendars/calendar_name/week/2009/01/01
   def show
     respond_to do |format|
       format.html
@@ -17,9 +26,9 @@ class CalendarsController < ApplicationController
     value = params[:participants][:text]
     @contacts = []
     if @calendar.id.nil?
-      all_contacts = Employee.find(:all) + Contacts.find(:all)
+      all_contacts = Employee.all + Contacts.find.all
     else
-      all_contacts = Employee.find(:all) + (@calendar.user.employee.nil? ? [] : @calendar.user.employee.contacts)
+      all_contacts = Employee.all + (@calendar.user.employee.nil? ? [] : @calendar.user.employee.contacts)
     end
 
     all_contacts.each do |contact|
@@ -41,7 +50,20 @@ class CalendarsController < ApplicationController
    
   protected
     def check_date
-      calendar_id = params[:id] || current_user.calendar
+      if params[:id_or_name]
+        begin
+          if params[:id_or_name].to_i > 0
+            @calendar = Calendar.find(params[:id_or_name])
+          else
+            @calendar = Calendar.find_by_name(params[:id_or_name])
+          end
+        rescue
+          error_access_page(404)
+        end
+      else
+        @calendar = current_user.calendar
+      end
+      
       params[:period] ||= "week"
       
       today = Date.today
@@ -49,7 +71,6 @@ class CalendarsController < ApplicationController
       params[:month] ||= today.month
       params[:day] ||= today.day
       
-      @calendar = Calendar.find(calendar_id)
       begin
         @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
       rescue ArgumentError => e
@@ -60,6 +81,10 @@ class CalendarsController < ApplicationController
     end
 
     def check_permissions
-      error_access_page(403) unless (@calendar.user.nil? || @calendar.user == current_user)
+      if @calendar.user
+        error_access_page(403) unless @calendar.user == current_user
+      else
+        error_access_page(403) unless @calendar.can_view?(current_user)
+      end
     end
 end

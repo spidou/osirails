@@ -42,33 +42,8 @@ ActiveRecord::Schema.define(:version => 20090924125729) do
     t.datetime "updated_at"
   end
 
-  create_table "business_object_permissions", :force => true do |t|
-    t.integer  "role_id",            :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "business_object_id", :limit => 11
-  end
-
-  create_table "business_object_permissions_permission_methods", :force => true do |t|
-    t.integer "business_object_permission_id", :limit => 11
-    t.integer "permission_method_id",          :limit => 11
-    t.boolean "active"
-  end
-
   create_table "business_objects", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "calendar_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",     :limit => 11
-    t.integer  "calendar_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "calendars", :force => true do |t|
@@ -202,18 +177,6 @@ ActiveRecord::Schema.define(:version => 20090924125729) do
     t.string "code"
   end
 
-  create_table "document_type_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",          :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "document_type_id", :limit => 11
-  end
-
   create_table "document_types", :force => true do |t|
     t.string   "name"
     t.string   "title"
@@ -269,14 +232,6 @@ ActiveRecord::Schema.define(:version => 20090924125729) do
   create_table "employees_jobs", :id => false, :force => true do |t|
     t.integer  "job_id",      :limit => 11
     t.integer  "employee_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "employees_services", :force => true do |t|
-    t.integer  "employee_id", :limit => 11
-    t.integer  "service_id",  :limit => 11
-    t.boolean  "responsable",               :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -500,18 +455,6 @@ ActiveRecord::Schema.define(:version => 20090924125729) do
     t.integer  "service_id",    :limit => 11
     t.integer  "memorandum_id", :limit => 11
     t.boolean  "recursive",                   :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "menu_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",    :limit => 11
-    t.integer  "menu_id",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -2,7 +2,7 @@
   <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
 
-<% add_contextual_menu_item :statistics do %>
+<% add_contextual_menu_item :commodities_stats do %>
   <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value(@date),2) + " €" %></span>
 <% end %>
 

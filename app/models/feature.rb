@@ -3,8 +3,6 @@ class Feature < ActiveRecord::Base
   
   serialize :dependencies
   serialize :conflicts
-  serialize :business_objects
-  serialize :search
   
   # Constants
   DIR_BASE_FEATURES = "lib/features/"
@@ -315,7 +313,7 @@ class Feature < ActiveRecord::Base
       if dir == yaml['name']
         FileUtils.rm_rf("#{options[:directory]}/#{feature_dir_name}")
         FileUtils.rm_rf("#{options[:directory]}/#{file_name}")
-        return "Le r&eacute;p&eacute;toire #{yaml['name']} existe d&eacute;j&agrave;. V&eacute;rifier le fichier config.yml du nouveau module."
+        return "Le répertoire #{yaml['name']} existe déjà. Vérifier le fichier config.yml du nouveau module."
       end
     end
     # Rename the feature with his real name and move it to lib/features/

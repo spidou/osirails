@@ -11,8 +11,8 @@ class Third < ActiveRecord::Base
   has_many :contacts_owners, :as => :has_contact
   has_many :contacts, :source => :contact, :through => :contacts_owners
   
-  validates_presence_of :name, :legal_form, :siret_number, :activity_sector
-  validates_format_of :siret_number, :with => /^[0-9]{14}/, :allow_blank => true #even if its presence is required, to avoid double error message #, :message => "doit comporter 14 chiffres"
+  validates_presence_of :name, :legal_form, :activity_sector
+  validates_format_of :siret_number, :with => /^[0-9]{14}/, :message => "Le numéro SIRET doit comporter 14 chiffres"
   
   after_update :save_contacts
   

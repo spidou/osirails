@@ -8,7 +8,7 @@ module LeaveBase
     legal_holidays = ConfigurationManager.admin_society_identity_configuration_legal_holidays
     current = start_date
     (end_date - start_date + 1).to_i.times do
-      total += 1 if workable_days.include?(current.wday.to_s) and !legal_holidays.include?("#{current.month}/#{current.day}")
+      total += 1 if workable_days.include?(current.wday.to_s) and !legal_holidays.include?("#{current.month.to_s.rjust(2,'0')}/#{current.day.to_s.rjust(2,'0')}")
       current = current.tomorrow 
     end
     total -= 0.5 if end_half and workable_days.include?(end_date.wday.to_s)

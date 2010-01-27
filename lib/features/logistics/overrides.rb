@@ -6,4 +6,5 @@ class Supplier
   has_many :stock_flows
 end
 
-ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :restockable_supplies_statistics => "Statistiques" })
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :commodities_stats => "Statistiques",
+                                                                  :restockable_supplies_statistics => "Statistiques" })

@@ -13,6 +13,6 @@
     <%= render(:partial => "supplies_to_restock", :object => @commodities_to_restock) if @commodities_to_restock.size > 0 %>
     <%= render(:partial => "supplies_to_restock", :object => @consumables_to_restock) if @consumables_to_restock.size > 0 %>
   <% else %>
-    <p>Votre stock est normalement approvisionn&eacute;</p>
+    <p>Les matières premières et les consommables sont normalement approvisionn&eacute;s.</p>
   <% end %>
 </div>

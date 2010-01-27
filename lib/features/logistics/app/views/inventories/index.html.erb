@@ -19,9 +19,9 @@
       </tr>
       <% for date in @dates %>
         <tr>
-          <%= "<td>#{date}</td>" %>
-          <%= "<td>#{inventory_link(Commodity.new,date)}</td>" %>
-          <%= "<td>#{inventory_link(Consumable.new,date)}</td>"  %>
+          <td><%= date %></td>
+          <td><%= inventory_link(Commodity.new, date) %></td>
+          <td><%= inventory_link(Consumable.new, date) %></td>
         </tr>
       <% end %>
     </table>

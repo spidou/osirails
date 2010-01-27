@@ -1,5 +1,5 @@
 class RolePermissionsController < ApplicationController
-  
+  helper :menus
   def index
     @roles = Role.find(:all)
   end
@@ -19,7 +19,7 @@ class RolePermissionsController < ApplicationController
     end
     
     unless error
-      flash[:notice] = "Les permissions ont été modifié avec succés"
+      flash[:notice] = "Les permissions ont été modifié avec succès"
     else
       flash[:error] = "Erreur lors de la mise à jour des permissions"
     end
