@@ -38,7 +38,7 @@ class ProductReferenceCategoriesController < ApplicationController
   def create
     @category = ProductReferenceCategory.new(params[:product_reference_category])
     if @category.save
-      flash[:notice] = "La cat&eacute;gorie a &eacute;t&eacute; cr&eacute;&eacute;e"
+      flash[:notice] = "La catégorie a été créée"
       redirect_to product_reference_manager_path
     else
       @categories = ProductReferenceCategory.find(:all)
@@ -54,15 +54,15 @@ class ProductReferenceCategoriesController < ApplicationController
       @category.counter_update("before_update", @category.product_references_count)
       if @category.update_attributes(params[:product_reference_category])
          @category.counter_update("after_update", @category.product_references_count)
-         flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; mise &agrave; jour'
+         flash[:notice] = 'La catégorie a été mise à jour'
          redirect_to product_reference_manager_path
       else
         @category.counter_update("after_update", @category.product_references_count)
-        flash[:error] = 'Erreur dans la mise &agrave; jour'
+        flash[:error] = 'Erreur dans la mise à jour'
         render :action => 'edit'
       end
     else
-      flash[:error] = 'Erreur dans le d&eacute;placement'
+      flash[:error] = 'Erreur dans le déplacement'
       @categories = ProductReferenceCategory.find(:all)
       render :action => 'edit'
     end
@@ -75,13 +75,13 @@ class ProductReferenceCategoriesController < ApplicationController
       if @category.has_children_disable?
         @category.enable = false
         @category.save
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+        flash[:notice] = 'La catégorie a été supprimée'
       else
         @category.destroy
-        flash[:notice] = 'La cat&eacute;gorie a &eacute;t&eacute; supprim&eacute;e'
+        flash[:notice] = 'La catégorie a été supprimée'
       end
     else
-      flash[:error] = "La cat&eacute;gorie ne peut &egrave;tre supprim&eacute;e. V&eacute;rifiez qu'elle ne poss&egrave;de aucune autre cat&eacute;gorie ou r&eacute;f&eacute;rence."
+      flash[:error] = "La catégorie ne peut être supprimée. Vérifiez qu'elle ne possède aucune autre catégorie ou référence."
     end
     redirect_to product_reference_manager_path
   end

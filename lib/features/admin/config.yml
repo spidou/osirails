@@ -94,10 +94,10 @@ configurations:
       d1: Vous devez utiliser un mot de passe comportant entre 6 et 40 caractères et devant comporter des chiffres ou des lettres.
       # level 2
       l2: '^(?=.*\d)(?=.*([a-z]|[A-Z]))(?=.*\W)([\x20-\x7E]){8,40}$'
-      d2: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, et des lettres et au moins un caractére spécial(ex:@~\"'(!:/.? etc...)."
+      d2: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, des lettres et au moins un caractère spécial (ex: @~\"'()!:/.?)."
       # level 3
       l3: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)([\x20-\x7E]){8,40}$'
-      d3: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres et des lettres(en majuscule et minuscule), et au moins un caractére spécial(ex:@~\"'(!:/.? etc...)."
+      d3: "Vous devez utiliser un mot de passe comportant entre 8 et 40 caractères et devant comporter des chiffres, des lettres (en majuscule ET minuscule), et au moins un caractère spécial (ex: @~\"'()!:/.?)."
   # current selected level
   actual_password_policy: 
     description: Configuration de sécuritée actuelle

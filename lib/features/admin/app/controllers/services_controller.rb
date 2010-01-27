@@ -43,7 +43,7 @@ class ServicesController < ApplicationController
     end
 
     if @service.save
-      flash[:notice] = 'Le service est bien cr&eacute;&eacute;.'
+      flash[:notice] = 'Le service est bien créé.'
       redirect_to( :action => "index" )
     else
       render :action => "new"
@@ -76,7 +76,7 @@ class ServicesController < ApplicationController
       flash[:notice] = 'Le service est bien mise à jour.'
       redirect_to services_path
     else
-      flash[:error] = 'Le service ne peut être d&eacute;plac&eacute;'
+      flash[:error] = 'Le service ne peut être déplacé'
       render :action => 'edit'
     end
   end
@@ -86,9 +86,9 @@ class ServicesController < ApplicationController
     @service = Service.find(params[:id])
     if @service.can_be_destroyed?
       @service.destroy
-      flash[:notice] = "Le service est bien supprim&eacute;"
+      flash[:notice] = "Le service est bien supprimé"
     else
-      flash[:error] = "Le service ne peut être supprim&eacute"
+      flash[:error] = "Le service ne peut être supprimé"
     end
     redirect_to services_path
   end

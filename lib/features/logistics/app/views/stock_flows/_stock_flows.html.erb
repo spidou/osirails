@@ -1,0 +1,17 @@
+<%= "<h2> #{stock_flows.first.supply.class.name == "Commodity" ? "Mati&egrave;res premi&egrave;res" : "Consommables"}</h2>" %>
+<table>
+<tr>
+  <th>Num&eacute;ro <%= input ? "d'achat" : "de dossier"%></th>
+  <th>Fourniture</th>
+  <th>Fournisseur</th>
+  <th>Quantit&eacute;</th>
+  <% if input %>
+    <th>FOB/U</th>
+    <th>Coeff. Taxe</th>
+  <% end %>
+  <th>Date</th>
+</tr>
+<%= render(:partial => "stock_flows/stock_flow", :collection => stock_flows, :locals => {:input => input ? true : false}) %>
+</table>
+<%= will_paginate stock_flows %>
+

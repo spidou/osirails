@@ -1,5 +1,27 @@
-# hack for customize error messages
 module ErrorsHelper
+  # That rewriting of the "error_messages_for" method was made to customize his behaviour 
+  #
+  # ==== Customize messages
+  # Messages are temporary put in french language. This feature will be removed when the project 
+  # will migrate to a greater Rails version which manages translations.
+  #
+  # ==== Put links on nested resource error messages
+  # By default, links are put on nested resource error messages to focus on the targetted nested
+  # resource section. The redirection works assuming that the nested resource section has a HTML id.
+  #
+  # Links can be skipped by passing the "skip_links" option:
+  #   error_messages_for(:skip_links => true)
+  #
+  # ==== Hide "is invalid" error messages on attributes
+  # By default, "is invalid" error messages on attributes are hidden. Commonly, this happens when
+  # an error is raised on an attribute and its error message is empty, but precised on the "base".
+  #
+  # "is invalid" error messages on attributes can be kept by passing the "keep_invalid_attributes" option:
+  #   error_messages_for(:keep_invalid_attributes => true)
+  #
+  # ==== Miscellaneous
+  # * Fixes an issue encountered on nested resource, error messages were repeated once more than necessary.
+  # * Uses a custom counter to display the correct number of errors when some of them are hidden.
   def error_messages_for(*params)
     options = params.extract_options!.symbolize_keys
     if object = options.delete(:object)
@@ -19,11 +41,34 @@ module ErrorsHelper
         end
       end
       options[:object_name] ||= params.first
-      options[:header_message] = "#{pluralize(count, 'erreur est survenue', 'erreurs sont survenues')} lors de la sauvegarde" unless options.include?(:header_message)
       unless options.include?(:message)
         options[:message] ||= count > 1 ? 'Les champs suivants ne sont pas valides :' : "Le champ suivant n'est pas valide :"
       end
-      error_messages = objects.map {|object| object.errors.full_messages.map {|msg| content_tag(:li, msg) } }
+    
+      errors_count = 0
+      error_messages = objects.map do |object|
+        object.errors.full_messages.uniq.map do |full_message| 
+          full_message_index = object.errors.full_messages.index(full_message)
+          error_attribute = object.errors.map[full_message_index][0]
+          error_message = object.errors.map[full_message_index][1]
+          if object.attributes.map{|attribute| attribute[0]}.include?(error_attribute) or error_attribute == "base"
+            unless (error_message == ActiveRecord::Errors.default_error_messages[:invalid] and !options[:keep_invalid_attributes])
+              errors_count +=1
+              content_tag(:li, full_message)
+            end
+          else
+            if options[:skip_links]
+              errors_count +=1
+              content_tag(:li, full_message)
+            else
+              errors_count +=1
+              content_tag(:li, content_tag(:a, full_message, :href => "##{error_attribute}"))
+            end
+          end
+        end
+      end
+      
+      options[:header_message] = "#{pluralize(errors_count, 'erreur est survenue', 'erreurs sont survenues')} lors de la sauvegarde" unless options.include?(:header_message)
 
       contents = ''
       contents << content_tag(options[:header_tag] || :h2, options[:header_message]) unless options[:header_message].blank?

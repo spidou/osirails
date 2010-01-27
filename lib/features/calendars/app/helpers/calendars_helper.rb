@@ -21,9 +21,9 @@ module CalendarsHelper
   $day_fr << "Vendredi"
   $day_fr << "Samedi"
   
-  def get_events_function
-    remote_function(:url => {:controller => "calendars", :action => "get_events", :id => params[:id], :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day]})
-  end
+#  def get_events_function
+#    remote_function(:url => {:controller => "calendars", :action => "get_events", :id => params[:id], :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day]})
+#  end
 
   def render_calendar(period)
     case period
@@ -68,13 +68,31 @@ module CalendarsHelper
     calendar_events_path(@calendar, :period => params[:period], :year => params[:year], :month => params[:month], :day => params[:day])
   end
   
-  def everyday_of_a_week(date)
+  def group_day_for_everyday_of_a_week(date)
     return_html = ""
     tmp_date = date.beginning_of_week
   	7.times do |i|
-      return_html += "<div id=\"" + tmp_date.to_s.gsub('-','') + "fullday\" class=\"day " + (i == 6 ? 'last_day' : '') + "\">" + $day_fr[tmp_date.wday] + " " + tmp_date.day.to_s + "<ul></ul></div>"
+  	  div_class = "day"
+  	  div_class += " today" if tmp_date == Date.today
+  	  div_class += " last_day_of_week" if i == 6
+  	  div_class += " first_day_of_week" if i == 0
+      return_html += "<div id=\"#{tmp_date.to_s.gsub('-','')}fullday\" class=\"#{div_class}\"><span>#{$day_fr[tmp_date.wday]} #{tmp_date.day.to_s}</span><ul></ul></div>"
   	tmp_date += 1.days
   	end
   	return_html
+  end
+  
+  def group_day_for_one_day(date)
+	  div_class = "day day_fullday"
+	  div_class += " today" if date == Date.today
+    "<div id=\"#{date.to_s.gsub('-','')}fullday\" class=\"#{div_class}\"><span>#{$day_fr[date.wday]} #{date.day.to_s}</span><ul></ul></div>"
+  end
+  
+  def display_hours_column
+	  html = '<div id="hour_column">'
+		  24.times do |i|
+		   html += "<div class=\"hour\">#{i.to_s.rjust(2,'0')}h00</div>"
+     end
+	  html += '</div>'
   end
 end

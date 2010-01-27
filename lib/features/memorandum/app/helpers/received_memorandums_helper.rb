@@ -28,7 +28,7 @@ module ReceivedMemorandumsHelper
     view << memorandum.text
     view << "<hr/>"
     view << "<p><strong>De : </strong> #{memorandum.signature}</p>"
-    view << "<p><strong>Publi&eacute; par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
+    view << "<p><strong>Publié par : </strong> #{Memorandum.get_employee(memorandum)}</p>"
   end
   
   def received_memorandums_link

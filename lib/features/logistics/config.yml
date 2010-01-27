@@ -2,8 +2,9 @@ name: logistics
 title: Gestion de la logistique
 version: 0.1
 dependencies:
-conflicts:
   admin:
+    - 0.1
+  thirds:
     - 0.1
 search:
   CommodityCategory:
@@ -21,14 +22,6 @@ menus:
     title: Logistique
     description: Gestion de la logistique
     children:
-      inventories:
-       title: Gestion des inventaires
-       description: Permet la gestion des stocks
-       position: 2
-       children:
-        commodities_inventories:
-          title: Gestion des matières premières des inventaires
-          description: Permet la gestion des stocks au niveau des matières premières
       commodities_manager:
         title: Gestion des matières premières
         description: Permet la gestion des familles et des matières premières
@@ -40,3 +33,36 @@ menus:
           commodities:
             title: Matières premières
             description: Permet la gestion des matières premières
+      consumables_manager:
+        title: Gestion des consommables
+        description: Permet la gestion des familles et des consommables
+        position: 2
+        children:
+          consumable_categories:
+            title: Catégories de consommables
+            description: Permet la gestion des categories de consommables
+          consumables:
+            title: Consommables
+            description: Permet la gestion des consommables
+      restockable_supplies:
+        title: Fournitures à réapprovisionner
+        description: Permet de signaler les dépassements du seuil d'alerte
+        position: 3
+      stock_manager:
+        title: Gestion du stock
+        description: Permet de gérer les entrées/sorties de stock et les inventaires
+        position: 4
+        children:
+          stock_inputs:
+            title: Entrées
+            description: Permet la gestion des entrées de stock
+            position : 1
+          stock_outputs:
+            title: Sorties
+            description: Permet la gestion des sorties de stock
+            position : 2
+          inventories:
+            title: Inventaires
+            description: Permet la gestion des inventaires
+            position : 3
+

@@ -7,26 +7,12 @@ class Service
 end
 
 module ApplicationHelper
-  # This method permit to make diplay memorandums under banner
+  # This method permit to diplay memorandums under banner
   def display_memorandums
-    under_banner = []
-    unless current_user.employee.nil?
-      size = last_memorandums.size
-      memorandum_number = ( size == 0 ? "0" : "1" )
-      under_banner << "<div id='text_under_banner' style='overflow: hidden;' onclick='show_memorandum(this, 0)'>"
-      under_banner << last_memorandums
-      under_banner << "</div>"
-      under_banner <<	"<div id='block_button_under_banner'>"
-      under_banner << "<input type='button' id='previous' class='previous_memorandum_#{size}' alt='bouton précédent' title='Information précédente' onclick='change_memorandum(this, #{size}, event)'  />"
-      under_banner << "<span class='number'> #{memorandum_number} </span>|<span class='number'> #{size} </span>"
-      under_banner << "<input type='button' id='next' class='next_memorandum_2' alt='bouton suivant' title='Information suivante' onclick='change_memorandum(this, #{size}, event)'  />"
-      under_banner << "</div>"
-    else
-      under_banner << "<span id='not_employee_reference'>Vous ne pouvez recevoir de notes de service car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</span>"
-    end
+    render :partial => 'share/memorandums', :object => :last_memorandums unless current_user.employee.nil? 
   end
    
-  # This method permit to recover last 10 memorandums
+  # This method permit to get the last 10 memorandums
   def last_memorandums
     unless current_user.employee.nil?
       memorandums = Memorandum.find_by_services([current_user.employee.service])

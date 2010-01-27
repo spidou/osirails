@@ -1,6 +1,4 @@
 class UnitMeasure < ActiveRecord::Base
-  #FIXME think to create new controller
-
-  # Validations
+  # Validates
   validates_presence_of :name, :symbol
 end

@@ -25,8 +25,8 @@ module ContextualMenuManager
   
   class ContextualSection
     SECTION_TITLES = { :contextual_search => "Recherche Contextuelle",
-                         :possible_actions  => "Actions Possibles",
-                         :useful_links      => "Liens Utiles" }
+                       :possible_actions  => "Actions Possibles",
+                       :useful_links      => "Liens Utiles" }
     
     attr_accessor :title, :items, :list_mode
     

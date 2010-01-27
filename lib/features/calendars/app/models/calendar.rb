@@ -1,5 +1,3 @@
-require 'calendar_permission' # this is necessary, otherwise the plugin 'has_permissions' can't find the CalendarPermission class.
-
 # To resolve a bug time
 # refer to: http://dev.rubyonrails.org/ticket/7975
 class Date
@@ -27,10 +25,15 @@ class Calendar < ActiveRecord::Base
   require 'icalendar'
   require 'date'
 
-  # Relationships
   belongs_to :user
+  
   has_many :events
   has_many :event_categories
+  
+  validates_presence_of :name
+  validates_presence_of :user, :if => :user_id
+  
+  validates_uniqueness_of :name
  
   # TODO Must be configurable
   # Constants

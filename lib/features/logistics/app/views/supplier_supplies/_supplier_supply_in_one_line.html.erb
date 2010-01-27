@@ -1,0 +1,23 @@
+<% owner = supplier_supplies_owner.class.name.downcase %>
+
+<div class="supplier_supply_infos" <%= "style=\"display:none\"" if supplier_supply_in_one_line.should_destroy? %> >
+<% fields_for "#{owner}[supplier_supply_attributes][]", supplier_supply = supplier_supply_in_one_line do %>
+  <p id="supplier_supply_<%= supplier_supply.id  %>">
+    <%= image_tag 'warning_14x14.png' if supplier_supply.new_record? or !supplier_supply.errors.empty? %>
+    
+    <span><%="- #{supplier_supply.supplier.name}" if is_form_view?%></span>
+
+    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.supplier_supply_infos'))" if is_form_view? and SupplierSupply.can_edit?(current_user) %>
+
+    <% if is_form_view? and SupplierSupply.can_delete?(current_user) %>
+      <% if supplier_supply.new_record? %>
+        <%= link_to_function "Supprimer", "this.up('.supplier_supply_infos').remove()" %>
+      <% else %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.supplier_supply_infos'))" unless supplier_supply.supply.has_been_used? %>
+      <% end %>
+    <% end %>
+
+    <%= render :partial => 'supplier_supplies/supplier_supply_form', :object => (supplier_supply || SupplierSupply.new), :locals => { :supplier_supplies_owner => supplier_supplies_owner } if SupplierSupply.can_view?(current_user) or SupplierSupply.can_edit?(current_user) %>
+  </p>
+<% end  %>
+</div>

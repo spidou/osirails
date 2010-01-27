@@ -1,44 +1,46 @@
 <% content_for :header do %>
-  <% javascript_include_tag 'logistics/commodities' %>
-  <%= javascript_include_tag 'logistics/inventories' %>
+  <%= javascript_include_tag 'logistics/supplies' %>
 <% end %>
 
-<% add_contextual_menu_item :commodities_total do %>
-  <span style='color: green;'><%= "TOTAL HT &nbsp;&nbsp;: <span class='total'>#{show_total(@inventory, '', 2)}</span> &euro;" %></span>
-  <span style='color: red;'><%= "TOTAL TTC : <span id='total_ttc'>#{show_total(@inventory, '',2)}</span> &euro; TODO"%>
+<% add_contextual_menu_item :commodities_stats do %>
+  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value(@date),2) + " €" %></span>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_inventory_link %>
-  <%= show_closed_button(@inventory)%>
+  <%= new_inventory_link(Commodity.new)%>
+  <%= new_inventory_link(Consumable.new)%>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= commodity_categories_link %>
   <%= inventories_link %>
+  <%= commodity_categories_link %>
+  <%= consumable_categories_link %>
 <% end %>
 
-  <h1><%= "Inventaire du #{get_structured_date(@inventory)}" %></h1>
-  <div>
-    <table class='commodity'>
+<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
+
+<div>
+  <% unless @supplies.empty? %>
+    <%= "<table class='#{@supply_type.name.tableize.singularize}'>" %>
       <tr>
         <th rowspan='2'>Cat&eacute;gorie</th>
-        <th rowspan='2'>Sous Cat&eacute;gorie</th>
-        <th rowspan='2'>Fournisseur</th>
-        <th rowspan='2'>Désignation</th>
-        <th rowspan='2'>Unit&eacute;e de mesure / U</th>
-        <th rowspan='2'>Masse / U</th>
-        <th colspan='3'>Prix / U (&euro;)</th>
-        <th rowspan='2'>Quantit&eacute;</th>
-        <th rowspan='2'>Unit&eacute;e de mesure total</th>
-        <th rowspan='2'>Masse total</th>
-        <th rowspan='2'>Prix total</th>
-        <tr>
-          <th>FOB</th>
-          <th>Coef Taxe</th>
-          <th>Prix</th>
+        <th rowspan='2'>Sous cat&eacute;gorie</th>
+        <th rowspan='2'>R&eacute;f.</th>
+        <th rowspan='2'>D&eacute;signation</th>
+        <th rowspan='2'>Fournisseurs</th>
+        <th colspan='4'>Stock/fournisseur</th>
+        <th colspan='4'>Stock total</th>
+        <tr>          <th>Quantit&eacute;</th>                <th>Grandeur</th>
+          <th>Masse</th>   
+          <th>Valeur</th>   
+          <th>Quantit&eacute;</th>                <th>Grandeur</th>
+          <th>Masse</th>   
+          <th>Valeur</th>     
         </tr>
-      </tr>
-      <%= show_structured_commodities(@inventory) %>
+      </tr>      
+    <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
     </table>
-  </div>
+  <% else %>
+    <p>Aucune fourniture disponible &agrave; cette date</p>
+  <% end %>
+</div>

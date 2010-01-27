@@ -36,12 +36,10 @@
         </div>
       </div>
     </div>
-    <!-- SOUS-BANNIERE -->
-    <div id="under_banner">
-      <!-- TODO disable this helper when feature memorandum are disable -->
-      <%= display_memorandums %>
-    </div>
-    <div id="block_body"><!-- REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION OF BANNERS -->
+    <!-- TODO disable this helper when feature memorandum are disable -->
+    <%= display_memorandums %>
+
+    <div id="block_body"><!-- REGROUPS THE WHOLE PAGE EXCEPTED BANNERS -->
       <div id="nav">
         <%= display_menu %>
       </div>
@@ -57,15 +55,15 @@
             <div id="ajax_holder_command">
               <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
             </div>
-          </div>
-          
+          </div> <!-- AJAX_HOLDER : END -->
+        
           <%= yield %>
           
           <p><%= link_to 'Retour', :back %></p>
           
-        </div> <!-- content_page : FIN -->
+        </div> <!-- CONTENT_PAGE : END -->
         <%= display_contextual_menu %>
-      </div> <!-- page : FIN -->
+      </div> <!-- PAGE : END -->
       <div id="footer">
         <p>
           <%= display_footer %>
@@ -74,7 +72,7 @@
             <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
           </a>
         </p>
-      </div><!-- FOOTER : FIN-->
-    </div> <!-- CORPS : FIN -->
+      </div> <!-- FOOTER : END -->
+    </div> <!-- BLOCK_BODY : FIN-->
 	</body>
 </html>

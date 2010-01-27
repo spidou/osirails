@@ -1,0 +1,32 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'rh/number' %> 
+<% end %>
+
+<% require_locals number_owner %>
+
+<div class="number">
+<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]",number do |form| %>
+	<%= form.error_messages%>
+	<p>
+		<% if !is_form_view?%>
+		  <%= display_full_phone_number(number)%>
+			<%# display_image( flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name) %>
+			<%# display_image( number_type_path( number.number_type.name ), number.number_type.name ) %>
+			<%# strong("#{number.indicative.indicative} #{number.number}") %>
+		<% else %>
+			<%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
+			<%= form.text_field(:number, { :index => nil, :size => 9, :maxlength => 9 }) %>
+    	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :index => nil, :selected => number[:number_type_id] }) %>
+    	<%= form.select(:visible, Number::VISIBLE_STATES , {}, { :index => nil }) %>
+		<% end %>
+
+		<% if number.new_record? %>
+			<%= remove_number_link() if is_form_view? %>
+		<% else %>
+			<%= remove_old_number_link() if is_form_view? %>
+			<%= form.hidden_field :id, :index => nil %>
+			<%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
+		<% end %>
+	</p>
+<% end %>
+</div>

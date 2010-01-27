@@ -10,7 +10,7 @@ class Supplier < Third
   
   validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
 
-  after_update :save_iban
+  after_save :save_iban
   
   has_search_index :only_attributes    => [:name, :siret_number],
                    :only_relationships => [:activity_sector, :legal_form, :iban, :contacts],
@@ -25,6 +25,6 @@ class Supplier < Third
   end
 
   def save_iban
-    iban.save
+    iban.save if iban
   end
 end
