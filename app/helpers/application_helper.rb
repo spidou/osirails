@@ -22,6 +22,13 @@ module ApplicationHelper
     end
   end
   
+  def display_version
+    version = `#{RAILS_ROOT}/current_version.sh`
+    if RAILS_ENV != 'production' or params[:debug]
+      "<span class=\"version\">#{version}<br/>in #{RAILS_ENV}</span>"
+    end
+  end
+  
   def display_menu
     menu = current_menu
     html = ""

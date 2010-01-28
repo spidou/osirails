@@ -1828,6 +1828,7 @@ table.mceEditor {
 ////////////////////////////////////////////////////*/
 
 #footer {
+  position: relative;
 	text-align:center;
 	background: url("/themes/emr/images/background_dark_stripe.jpg") repeat;
 	border: solid 1px #444;
@@ -1844,6 +1845,23 @@ table.mceEditor {
 	margin-top:5px;
 	margin-bottom:-5px;
 	border:none;
+}
+
+#footer span.version {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  background-color: white;
+  color: black;
+  padding: 4px;
+  font-size: 11px;
+  -moz-transform: rotate(-25deg);
+  -webkit-transform: rotate(-25deg);
+  -moz-box-shadow: 3px 4px 5px rgba(0,0,0,0.3), inset 0 0px 8px rgba(255,255,0,1);
+}
+
+#footer span.version:hover {
+  opacity: 0.4;
 }
 
 /*/////////////////////////////////////////////////////
