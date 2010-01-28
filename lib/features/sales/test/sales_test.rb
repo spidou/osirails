@@ -189,6 +189,8 @@ class Test::Unit::TestCase
   end
 
   # OPTIMIZE to respect DRY
+  # use here to give the possibility to create a valid mockup with the good order and a specified product
+  #
   def create_valid_mockup(order, product_id)
     mockup = order.mockups.build(:name => "Sample",
                                  :description => "Sample de maquette destiné aux tests unitaires",
@@ -201,5 +203,19 @@ class Test::Unit::TestCase
 
     flunk "mockup should be saved > #{mockup.errors.full_messages.join(', ')}" unless mockup.save
     return mockup
+  end
+  
+  def create_default_dunning
+    press_proof = create_default_press_proof
+    press_proof.confirm
+    press_proof.send_to_customer({:sended_on => Date.today, :document_sending_method_id => document_sending_methods(:fax).id})
+    
+    dunning = press_proof.dunnings.build(:date       => Date.today,
+                                         :comment    => "comment for tests",
+                                         :creator_id => users(:admin_user).id,
+                                         :dunning_sending_method_id => dunning_sending_methods(:telephone).id)
+
+    flunk "dunning should be saved > #{dunning.errors.full_messages.join(', ')} #{dunning.inspect} #{dunning.date} #{Date.today}" unless dunning.save
+    return dunning
   end
 end

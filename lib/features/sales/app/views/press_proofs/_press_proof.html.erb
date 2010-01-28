@@ -8,6 +8,7 @@
 <%
 press_proof_headers = {:press_proof_informations            => "Informations",
                        :press_proof_additional_informations => "Informations Supplémentaires",
+                       :press_proof_dunnings                => "Relances",
                        :press_proof_mockups                 => "Maquettes"}# (#{press_proof.mockups.count})"}
                        # do not foget to add a pane for 'relances'
 
@@ -25,13 +26,17 @@ press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:produ
     <li class="press_proof_informations<%= press_proof_errors[:press_proof_informations] %> selected">
       <%= press_proof_headers[:press_proof_informations ] %>
     </li>
-    <% unless is_form_view? %>
-      <li class="press_proof_additional_informations<%= press_proof_errors[:press_proof_additional_information] %>">
-        <%= press_proof_headers[:press_proof_additional_informations ] %>
-      </li>
-    <% end %>
+      
     <li class="press_proof_mockups<%= press_proof[:press_proof_mockups] %>">
       <%= press_proof_headers[:press_proof_mockups ] %>
+    </li>
+    
+    <li class="press_proof_dunnings<%= press_proof[:press_proof_dunnings] %>  <%= 'disabled' if is_form_view? %>">
+      <%= press_proof_headers[:press_proof_dunnings ] %>
+    </li>
+    
+    <li class="press_proof_additional_informations<%= press_proof_errors[:press_proof_additional_information] %> <%= 'disabled' if is_form_view? %>">
+      <%= press_proof_headers[:press_proof_additional_informations ] %>
     </li>
   </ul>
   
@@ -49,7 +54,6 @@ press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:produ
     </div>
   
   <% unless is_form_view? %>
-  <h2 class="press_proof_additional_informations"><%= press_proof_errors[:press_proof_additional_information] %> </h2>  
     <div class="press_proof_additional_informations section_nav">
       <p>
         <%= f.label :creator %>
@@ -61,12 +65,42 @@ press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:produ
       </p>
       <p>
         <%= f.label :status %>
-        <strong><%= press_proof.status %></strong>
+        <strong><%= status_text(press_proof) %></strong>
       </p>
+      
+      <% if press_proof.status == PressProof::STATUS_CANCELLED %>
+        <p>
+          <%= f.label :cancelled_at %>
+          <strong><%= press_proof.updated_at.humanize %></strong>
+        </p>
+      <% end %>
+      
+      <% if press_proof.status == PressProof::STATUS_REVOKED %>
+        <p>
+          <%= f.label :revoked_by %>
+          <strong><%= link_to press_proof.revoked_by.username, user_path(press_proof.creator.id) %></strong>
+        </p>
+        
+        <p>
+          <%= f.label :revoked_at %>
+          <strong><%= press_proof.updated_at.humanize %></strong>
+        </p>
+        
+        <p>
+          <%= f.label :revoked_comment %>
+          <strong><%= press_proof.revoked_comment %></strong>
+        </p>
+      <% end %>
     </div>
   <% end %>
   
-  <h2 class="press_proof_mockups"><%= press_proof_headers[:press_proof_mockups] %></h2>
+  <% unless is_form_view? %>
+   <div class="press_proof_dunnings section_nav">
+    <%= render :partial => "dunnings/dunnings", :object => press_proof.dunnings %>
+   </div>
+  <% end %>
+  
+  <h2 class="press_proof_mockups"><%= press_proof_errors[:press_proof_mockups] %></h2>
     <div class="press_proof_mockups section_nav">
     
       <div id="mockups_list"> <%= render :partial => "minimal_mockup", :collection => mockups%> </div>

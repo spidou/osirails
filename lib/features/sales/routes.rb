@@ -55,6 +55,10 @@ ActionController::Routing::Routes.add_routes do |map|
           press_proof.revoke_form      'revoke_form', :controller => 'press_proofs', :action     => 'revoke_form',      :conditions => { :method => :get }
           press_proof.revoke           'revoke',      :controller => 'press_proofs', :action     => 'revoke',           :conditions => { :method => :put }
           
+          press_proof.resources :dunnings do |dunning|
+            dunning.cancel             'cancel',      :controller => 'dunnings',     :action     => 'cancel',           :conditions => { :method => :get } 
+          end
+          
         end
         press_proof_step.add_mockup    'add_mockup',  :controller => 'press_proofs', :action     => 'add_mockup',       :conditions => { :method => :get }
       end

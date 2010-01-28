@@ -11,12 +11,13 @@ class PressProofTest < ActiveSupport::TestCase
   
   should_have_many :press_proof_items
   should_have_many :graphic_item_versions
+  should_have_many :dunnings
 
   should_validate_presence_of :order, :internal_actor, :creator, :with_foreign_key => :default
 
   context "A press proof with a status above or equal to 'confirmed'" do
     setup do
-      @press_proof              = create_default_press_proof
+      @press_proof = create_default_press_proof
       @press_proof.confirmed_on = Date.yesterday
     end
     

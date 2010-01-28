@@ -1,5 +1,9 @@
 <%= order_header %>
 
+<% add_contextual_menu_item :possible_actions do %>
+  <%= display_add_button(@order) %>
+<% end %>
+
 <% content_for :header do -%>
   <%= javascript_include_tag 'sales/quotes_list' %>
 <% end -%>

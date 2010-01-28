@@ -7,26 +7,10 @@ class PressProof < ActiveRecord::Base
   STATUS_SIGNED    = 'signed'
   STATUS_REVOKED   = 'revoked'
   
-  cattr_accessor :form_labels
-  
-  @@form_labels = {}
-  @@form_labels[:internal_actor]          = "Contact Graphique :"
-  @@form_labels[:creator]                 = "Créateur :"
-  @@form_labels[:product]                 = "Produit :"
-  @@form_labels[:unit_measure]            = "Unité de mesures :"
-  @@form_labels[:sended_on]               = "Date de validation :"
-  @@form_labels[:document_sending_method] = "Méthode d'envoi du document :"
-  @@form_labels[:signed_on]               = "Date de signature par le client :"
-  @@form_labels[:signed_press_proof]      = "Bon à tirer signé :"
-  @@form_labels[:revoked_comment]         = "Motif de l'annulation après signature :"
-  @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:status]                  = "État actuel :"
-  
   named_scope :actives, :conditions => ["status NOT IN (?)", [STATUS_CANCELLED, STATUS_REVOKED]]
   named_scope :signed_list, :conditions => ["status =?", [STATUS_SIGNED]]
   
   attr_protected :status, :cancelled_on, :confimed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment, :reference
-  
     
   has_attached_file :signed_press_proof, 
                     :path => ':rails_root/assets/:class/:attachment/:reference.:extension',
@@ -34,6 +18,7 @@ class PressProof < ActiveRecord::Base
   
   has_many :press_proof_items, :dependent => :destroy
   has_many :graphic_item_versions, :through => :press_proof_items
+  has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
   belongs_to :order
   belongs_to :product
@@ -83,7 +68,7 @@ class PressProof < ActiveRecord::Base
     v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date de d'envoi du Bon à tirer&#160;(%s)",
                                  :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
     v.validate :validates_presence_of_signed_press_proof, :validates_with_a_product_not_already_referenced
-#    v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf' ]
+    v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
   end
   
@@ -103,6 +88,25 @@ class PressProof < ActiveRecord::Base
   
   #callbacks
   after_save :save_press_proof_items
+  
+    
+  cattr_accessor :form_labels
+  
+  @@form_labels = {}
+  @@form_labels[:internal_actor]          = "Contact Graphique :"
+  @@form_labels[:creator]                 = "Créateur :"
+  @@form_labels[:product]                 = "Produit :"
+  @@form_labels[:unit_measure]            = "Unité de mesures :"
+  @@form_labels[:sended_on]               = "BAT envoyé au client le :"
+  @@form_labels[:document_sending_method] = "Par :"
+  @@form_labels[:signed_on]               = "BAT signé par le client le :"
+  @@form_labels[:signed_press_proof]      = "Bon à tirer signé :"
+  @@form_labels[:revoked_comment]         = "Motif de l'annulation après signature :"
+  @@form_labels[:revoked_by]              = "BAT annulé par :"
+  @@form_labels[:revoked_at]              = "BAT annulé le :"
+  @@form_labels[:cancelled_at]            = "BAT annulé le :"
+  @@form_labels[:created_at]              = "Date de création :"
+  @@form_labels[:status]                  = "État actuel :"
   
   def generate_reference
     # TODO will concat order.public_number + [pattern] + unique_number

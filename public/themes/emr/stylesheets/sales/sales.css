@@ -694,3 +694,7 @@ table tr.press_proof.signed_press_proof {
   color: white;
   font-weight: bold;
 }
+
+table tr.press_proof td.actions {
+  background-color: white;
+}

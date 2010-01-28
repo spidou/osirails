@@ -1,1 +1,15 @@
-<%= render :partial => 'press_proof', :object => @press_proof ,:locals => {:mockups => @press_proof.graphic_item_versions.collect(&:graphic_item)}%>
+<%= order_header %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= display_add_button(@order) %>
+  <%= display_edit_button(@order, @press_proof)%>
+  <%= display_list_button(@step) %>
+  <%= display_confirm_button(@order, @press_proof)%>
+  <%= display_send_button(@order, @press_proof)%>
+  <%= display_sign_button(@order, @press_proof)%>
+  <%= display_cancel_button(@order, @press_proof)%>
+  <%= display_revoke_button(@order, @press_proof)%>
+  <%= display_dunning_add_button(@order, @press_proof)%>
+<% end %>
+
+<%= render :partial => 'press_proof', :object => @press_proof ,:locals => {:action => :show, :mockups => @press_proof.graphic_item_versions.collect(&:graphic_item)}%>

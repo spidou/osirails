@@ -568,6 +568,18 @@ namespace :osirails do
       DocumentSendingMethod.create!(:name => "Courrier")
       DocumentSendingMethod.create!(:name => "E-mail")
       DocumentSendingMethod.create!(:name => "Fax")
+      
+      # default dunning's sending methods
+      DunningSendingMethod.create!(:name => "Téléphone")
+      DunningSendingMethod.create!(:name => "E-mail")
+      DunningSendingMethod.create!(:name => "Email + Téléphone")
+      DunningSendingMethod.create!(:name => "Fax")
+      DunningSendingMethod.create!(:name => "Téléphone + Fax")
+      DunningSendingMethod.create!(:name => "Téléphone + E-mai + Fax")
+      DunningSendingMethod.create!(:name => "Courrier")
+      DunningSendingMethod.create!(:name => "Courrier + Accusé de réception")
+      DunningSendingMethod.create!(:name => "Courrier + Accusé de réception + lettre de mise en demeurre")
+      
       # default order form types
       OrderFormType.create!(:name => "Devis signé")
       OrderFormType.create!(:name => "Bon de commande")

@@ -12,7 +12,7 @@
   <td rowspan="<%= mockup_quantity%>"><%= press_proof.signed_on.humanize unless press_proof.signed_on.nil? %></td>
   <td rowspan="<%= mockup_quantity%>"><%= "relance" %></td>
   <% unless without_action||=false %>
-    <td rowspan="<%= mockup_quantity%>"><%= display_actions_press_proof_button(order, press_proof) %></td>
+    <td class="actions" rowspan="<%= mockup_quantity%>"><%= display_actions_press_proof_button(order, press_proof) %></td>
   <% end%>
 </tr>
 <% press_proof.graphic_item_versions.last(mockup_quantity - 1).each do |version| %>

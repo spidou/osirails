@@ -81,6 +81,10 @@ menus:
                   press_proofs:
                     title: BAT (Pièce)
                     description: Élaboration des BAT
+                    children:
+                      dunnings:
+                        title: Relances
+                        description: Gestion des relances
           pre_invoicing_step:
             title: SAS de Facturation
             description: Phase du SAS de Facturation

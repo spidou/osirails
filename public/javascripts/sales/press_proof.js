@@ -78,6 +78,8 @@ function remove_selected_mockup_with_warning(element)
             
   if(confirm(text)){
     remove_selected_mockup(element);
-    $(element).parentNode.id.gsub('selected', 'deleted');  //mark element as a deleted out of date mockup; permit not show it aggain in place of the updated mockup
+    
+    var modified_id = $(element).parentNode.id.gsub('selected', 'deleted')  
+    $(element).parentNode.setAttribute('id', modified_id); //mark element as a deleted out of date mockup; permit not show it aggain in place of the updated mockup
   }
 }
