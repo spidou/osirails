@@ -19,7 +19,7 @@ class SocietyActivitySectorsController < ApplicationController
   def create
     @society_activity_sector = SocietyActivitySector.new(params[:society_activity_sector])
     if @society_activity_sector.save
-      flash[:notice] = "Le secteur d'activit&eacute; a &eacute;t&eacute; cr&eacute;&eacute; avec succ&egrave;s"
+      flash[:notice] = "Le secteur d'activité a été créé avec succès"
       redirect_to :action => 'index'
     else
       render :action => "new"
@@ -30,7 +30,7 @@ class SocietyActivitySectorsController < ApplicationController
   def update
     @society_activity_sector = SocietyActivitySector.find(params[:id])
     if @society_activity_sector.update_attributes(params[:society_activity_sector])
-      flash[:notice] = "Le secteur d'activit&eacute; est bien mise &agrave; jour"
+      flash[:notice] = "Le secteur d'activité est bien mise à jour"
       redirect_to :action => 'index'
     else
       render :action => "edit"
@@ -42,9 +42,9 @@ class SocietyActivitySectorsController < ApplicationController
     @society_activity_sector = SocietyActivitySector.find(params[:id])
     @society_activity_sector.activated = false
     if @society_activity_sector.save
-      flash[:notice] = "Le secteur d'activit&eacute; a bien &eacute;t&eacute; supprim&eacute;"
+      flash[:notice] = "Le secteur d'activité a bien été supprimé"
     else
-      flash[:error] = "Une erreur est survenue &agrave; la suppression du secteur d'activit&eacute;s"
+      flash[:error] = "Une erreur est survenue à la suppression du secteur d'activités"
     end
     
     redirect_to(society_activity_sectors_url)

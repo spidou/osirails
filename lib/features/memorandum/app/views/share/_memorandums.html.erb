@@ -1,0 +1,18 @@
+<% size = last_memorandums.size %>
+<% start_number = 1 %>
+
+<div id="under_banner">
+
+  <div id='text_under_banner' style="overflow: hidden;" onclick="show_memorandum(this, 0)">
+      <%= last_memorandums %>
+  </div>
+  <div id='block_button_under_banner'>
+    <input type='button' id='previous' class="previous_memorandum_<%= size %>" alt="bouton précédent"
+           title="Information précédente" onclick="change_memorandum(this, <%= size %>, event)"/>
+           
+    <span class='number'><%= start_number%></span>|<span class='number'><%= last_memorandums.size %></span>
+    <input type='button' id='next' class='next_memorandum_2' alt="bouton suivant"
+           title="Information suivante" onclick="change_memorandum(this, <%= size %>, event)"  />
+  </div>
+
+</div>

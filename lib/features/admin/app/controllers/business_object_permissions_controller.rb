@@ -24,7 +24,7 @@ class BusinessObjectPermissionsController < ApplicationController
     if error
       flash[:error] = "Erreur lors de la mise à jour des permissions"
     else
-      flash[:notice] = "Les permissions ont été modifié avec succés"
+      flash[:notice] = "Les permissions ont été modifié avec succès"
     end
     
     redirect_to(edit_business_object_permission_path)

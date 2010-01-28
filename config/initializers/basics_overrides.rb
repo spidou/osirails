@@ -100,7 +100,7 @@ class String
   def to_b
     case self.strip             # avoid spaces
       when "true", "1"
-        return  true
+        return true
       else
         return false 
     end 

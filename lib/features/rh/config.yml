@@ -4,35 +4,42 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-  thirds:
-    - 0.1
 menus:
   rh:
     title: Ressources Humaines
     description: Administration des Ressources Humaines
+    position: 2
     children:  
       employees:
         title: Personnel
         description: Gestion du personnel
+        position: 1
         children:
           salaries:
             title: Salaires
             description: "Historique des salaires de l'employé"
+            position: 2
           job_contract:
             title: Contrat de travail
             description: "Gestion du contrat de travail de l'employé"
+            position: 1
           premia:
             title: Primes
             description: "Gestion des primes de l'employé"
+            position: 4
           leaves:
             title: Congés payés
             descriptions: "Gestion des congés payés de l'employée"
+            position: 3
       jobs:
         title: Fiches de poste
-        description: Gestion des fiches de poste          
+        description: Gestion des fiches de poste
+        position: 2       
       leave_requests:
         title: Demandes de congés
         description: Gestion des demandes de congés
+        position: 3
       checkings:
         title: Pointage
         description: Signaler une absence, un retard ou des heures supplémentaires pour un employé
+        position: 4

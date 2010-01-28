@@ -147,7 +147,7 @@ class Menu < ActiveRecord::Base
     return false unless can_move_down?
     self.move_lower
   end
-    
+  
   # This method return an array with all menus
   # Current_menu_id permit to hide menu in select menu parent
   def self.get_structured_menus(current_menu_id = nil)
@@ -159,7 +159,7 @@ class Menu < ActiveRecord::Base
     parents = get_children(menus, current_menu_id, parents)
     parents
   end
-    
+  
   private
     # This method insert in the parents the menus   
     def self.get_children(menus, current_menu_id, parents)

@@ -17,7 +17,7 @@ class MenusController < ApplicationController
   def create
     @menu = Menu.new(params[:menu])
     if @menu.save
-      flash[:notice] = 'Le menu a &eacute;t&eacute; cr&eacute;&eacute; avec succ&egrave;s'
+      flash[:notice] = 'Le menu a été créé avec succès'
       redirect_to :action => 'index'
     else
       @menus = Menu.get_structured_menus
@@ -66,9 +66,9 @@ class MenusController < ApplicationController
     menu = Menu.find_by_id(params[:id])
     if menu.can_delete_menu?
       if menu.destroy
-        flash[:notice] = "Le menu a &eacute;t&eacute; supprim&eacute; avec succ&egrave;s"
+        flash[:notice] = "Le menu a été supprimé avec succès"
       else 
-        flash[:error] = "La suppression du menu a &eacute;chou&eacute;"
+        flash[:error] = "La suppression du menu a échoué"
       end
     else 
       flash[:error] = "Impossible de supprimer ce menu"

@@ -1,0 +1,22 @@
+normal_commodity:
+  name: Foo
+  type: CommodityCategory
+parent_commodity:
+  name: Parent
+  type: CommodityCategory
+child_commodity:
+  name: Child
+  type: CommodityCategory
+  parent: parent_commodity
+  unit_measure_id: unit_measures(:normal)
+normal_consumable:
+  name: Foo
+  type: ConsumableCategory
+parent_consumable:
+  name: Parent
+  type: ConsumableCategory
+child_consumable:
+  name: Child
+  type: ConsumableCategory
+  parent: parent_consumable
+  unit_measure_id: unit_measures(:normal)

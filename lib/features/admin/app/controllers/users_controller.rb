@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; ajout&eacute; avec succ&egrave;s.'
+      flash[:notice] = 'Le compte utilisateur a été ajouté avec succès.'
       redirect_to(@user) 
     else
       render :action => "new"
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     end
 
     if @user.update_attributes(params[:user])
-      flash[:notice] = 'Le compte utilisateur a &eacute;t&eacute; mis-&agrave;-jour avec succ&egrave;s.'
+      flash[:notice] = 'Le compte utilisateur a été mis-à-jour avec succès.'
       redirect_to(@user) 
     else
       render :action => "edit"
@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     unless @user.destroy
-      flash[:notice] = 'Impossible de supprimer l&apos;utilisateur'    
+      flash[:notice] = "Impossible de supprimer l'utilisateur"    
     end
     redirect_to(users_url) 
   end

@@ -1,6 +1,7 @@
 require_dependency 'user'
 require_dependency 'service'
 require_dependency 'application_helper'
+require_dependency 'users_helper'
 
 class User
   has_one :employee
@@ -17,6 +18,23 @@ class User
 
   def can_be_destroyed?
     self.employee.nil?
+  end
+end
+
+module UsersHelper
+
+  alias_method :get_headers_rh_override, :get_headers
+
+  def get_headers
+    result = ["Employ&eacute;"]
+    result += get_headers_rh_override
+  end
+  
+  alias_method :get_rows_rh_override, :get_rows
+
+  def get_rows(user)
+    result = [ (user.employee.nil? ? "" : user.employee.fullname) ]
+    result += get_rows_rh_override(user)
   end
 end
 

@@ -53,7 +53,7 @@ module HasSearchIndexMethodsHelper
     
     elements_array = path.split(".")
     elements_array.pop
-    elements_array.each {|relationship| model = model.association_list[relationship.to_sym][:class_name].constantize}   
+    elements_array.each {|relationship| model = model.association_list[relationship.to_sym].class_name.constantize}   
     model
   end
   
@@ -70,7 +70,7 @@ module HasSearchIndexMethodsHelper
       params[:criteria].each_value do |criterion|
         attribute = criterion['attribute']
         data_type = criterion['action'].split(",")[0]
-        opt_hash  = {:value => model.format_value(criterion, data_type), :action => criterion['action'].split(",")[1]}
+        opt_hash  = {:value => model.format_date(criterion, data_type), :action => criterion['action'].split(",")[1]}
         if criteria.keys.include?(attribute)
           criteria[attribute] << opt_hash
         else

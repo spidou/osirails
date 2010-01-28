@@ -1,6 +1,6 @@
 // Method to get the attribute html link between <li></li>
 //
-function get_atribute_link(parent_div_id, pair)
+function get_attribute_link(parent_div_id, pair)
 {
   return "<li><a href='#"+ parent_div_id +"_attribute_chooser' onclick=\"save_path(this, '"+ parent_div_id +"','"+ pair.value +"');\">"+ pair.key +"</a></li>";
 }
@@ -19,7 +19,7 @@ function get_models_hierarchy(relationships, parent_div_id, current_relationship
     result += "<li class='sub_menu' onmouseover='show_menu(this);' onmouseout='hide_menu(this);'><ul class='hidden_menu'>"; 
     
     attributes.each(function(pair){
-      result += get_atribute_link(parent_div_id, pair);
+      result += get_attribute_link(parent_div_id, pair);
     })
     
     if(relationships.keys().indexOf(relationship)!=-1){
@@ -60,11 +60,11 @@ function get_attributes_select(add)
   
   // use a small hack changing classname to permit to display the menu only when the li is clicked (cf. search.css)
   criterion =  "<ul name='criterion_"+ ID +"_attribute_chooser' class='attr_chooser'>"
-  criterion += "<li id='clicked' onclick=\"this.className='clicked';\"><span id='criterion_"+ ID +"_label' class='criterion_label'>Veuillez choisir un critère</span><ul>"
+  criterion += "<li id='clicked' onclick=\"this.className='clicked';\"><label id='criterion_"+ ID +"_label' class='criterion_label'>Veuillez choisir un critère</label><ul>"
   
   //direct attributes
   model_attributes.each(function(pair){
-    criterion += get_atribute_link(parent_div.id, pair);
+    criterion += get_attribute_link(parent_div.id, pair);
   })
   
   //attributes comming from sub models
@@ -75,7 +75,7 @@ function get_attributes_select(add)
   criterion += "</ul></li></ul>";
   // #######################################################
   
-  criterion += "</div><div id=\"criterion_"+ID+"_action\" >&nbsp;</div><br/></div>";// use 3 dot to avoid the floating content to go with non floating content
+  criterion += "</div><div class='criterion' id=\"criterion_"+ID+"_action\" >&nbsp;</div><br/></div>";// use 3 dot to avoid the floating content to go with non floating content
   parent_div.innerHTML += criterion ; // add the criterion to the parent div
   
 //  $('clicked').observe('click', function(window_event) {    //same as onclick clause
@@ -113,6 +113,7 @@ function get_action_select(type, parent_div_id)
   $(parent_div_id+"_action").innerHTML += criterion + input_type(type, parent_div_id) + delete_link;
 }
 
+// Add here all new data types not defined yet
 function input_type(type, parent_div_id)
 {
   var result="";
@@ -121,28 +122,30 @@ function input_type(type, parent_div_id)
   switch(type)
   {
     case "string" :
+    case "binary" :
     case "text" :
       result = "<input type='text' name='criteria["+ parent_div_id +"][value]' />";                                             
       break;
     case "boolean" :
       result = "<select name='criteria["+ parent_div_id +"][value]'>" 
-              + "<option value='1'>True</option>"
-              + "<option value='0'>False</option>"
-              + "</select>";                                            
+             + "<option value='1'>True</option>"
+             + "<option value='0'>False</option>"
+             + "</select>";                                            
       break;                                                  
     case "integer":
+    case "decimal":
     case "float" :
       result = "<input type='text' name='criteria["+ parent_div_id +"][value]' id='number_input' onkeyup='isNumber(this);' />";
       break;
     case "datetime" :
       result = "<select name='criteria["+ parent_div_id +"][date(3i)]'>"+ date_array[3] +"</select> : "
-              + "<select name='criteria["+ parent_div_id +"][date(4i)]'>"+ date_array[4] +"</select>";
+             + "<select name='criteria["+ parent_div_id +"][date(4i)]'>"+ date_array[4] +"</select>";
     case "date" :
 
       result = "<select name='criteria["+ parent_div_id +"][date(0i)]'>"+ date_array[0] +"</select>"
-              + "<select name='criteria["+ parent_div_id +"][date(1i)]'>"+ date_array[1] +"</select>" 
-              + "<select name='criteria["+ parent_div_id +"][date(2i)]'>"+ date_array[2] +"</select>"
-              + result ;
+             + "<select name='criteria["+ parent_div_id +"][date(1i)]'>"+ date_array[1] +"</select>" 
+             + "<select name='criteria["+ parent_div_id +"][date(2i)]'>"+ date_array[2] +"</select>"
+             + result ;
       break;
   } 
   return result;

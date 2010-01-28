@@ -97,7 +97,7 @@ class ContactsController < ApplicationController
           end
         end
         
-        flash[:notice] = "Contact modifi&eacute; avec succ&egrave;s"
+        flash[:notice] = "Contact modifié avec succès"
         redirect_to(eval("#{@owner.class.name.tableize.singularize}_contact_path(@owner, @contact, :owner_type => '#{params[:contact][:owner_type]}')"))
       end
     else
@@ -117,7 +117,7 @@ class ContactsController < ApplicationController
       eval "@owner =#{@owner_type.capitalize}.find(@owner_id)"
     
       @owner.contacts.delete(@contact)
-      flash[:notice] = "Contact supprim&eacute; avec succ&egrave;s"
+      flash[:notice] = "Contact supprimé avec succès"
       redirect_to :back 
     else
       error_access_page(403)

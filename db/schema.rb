@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090910052321) do
+ActiveRecord::Schema.define(:version => 20090924125729) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -42,33 +42,8 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.datetime "updated_at"
   end
 
-  create_table "business_object_permissions", :force => true do |t|
-    t.integer  "role_id",            :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "business_object_id", :limit => 11
-  end
-
-  create_table "business_object_permissions_permission_methods", :force => true do |t|
-    t.integer "business_object_permission_id", :limit => 11
-    t.integer "permission_method_id",          :limit => 11
-    t.boolean "active"
-  end
-
   create_table "business_objects", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "calendar_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",     :limit => 11
-    t.integer  "calendar_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "calendars", :force => true do |t|
@@ -134,48 +109,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
 
   create_table "civilities", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "commodities", :force => true do |t|
-    t.string   "name"
-    t.float    "fob_unit_price"
-    t.float    "taxe_coefficient"
-    t.float    "measure"
-    t.float    "unit_mass"
-    t.integer  "supplier_id",           :limit => 11
-    t.integer  "commodity_category_id", :limit => 11
-    t.boolean  "enable",                              :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "commodities_inventories", :force => true do |t|
-    t.string   "name"
-    t.float    "fob_unit_price"
-    t.float    "taxe_coefficient"
-    t.float    "measure"
-    t.float    "unit_mass"
-    t.integer  "commodity_id",                   :limit => 11
-    t.integer  "inventory_id",                   :limit => 11
-    t.integer  "unit_measure_id",                :limit => 11
-    t.integer  "supplier_id",                    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "parent_commodity_category_id",   :limit => 11
-    t.integer  "commodity_category_id",          :limit => 11
-    t.float    "quantity",                                     :default => 0.0
-    t.string   "commodity_category_name"
-    t.string   "parent_commodity_category_name"
-  end
-
-  create_table "commodity_categories", :force => true do |t|
-    t.string   "name"
-    t.integer  "commodity_category_id", :limit => 11
-    t.integer  "unit_measure_id",       :limit => 11
-    t.integer  "commodities_count",     :limit => 11, :default => 0
-    t.boolean  "enable",                              :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "configurations", :force => true do |t|
@@ -244,18 +177,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.string "code"
   end
 
-  create_table "document_type_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",          :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "document_type_id", :limit => 11
-  end
-
   create_table "document_types", :force => true do |t|
     t.string   "name"
     t.string   "title"
@@ -311,14 +232,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
   create_table "employees_jobs", :id => false, :force => true do |t|
     t.integer  "job_id",      :limit => 11
     t.integer  "employee_id", :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "employees_services", :force => true do |t|
-    t.integer  "employee_id", :limit => 11
-    t.integer  "service_id",  :limit => 11
-    t.boolean  "responsable",               :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -444,12 +357,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "country_id", :limit => 11
   end
 
-  create_table "inventories", :force => true do |t|
-    t.boolean  "closed",     :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "job_contract_types", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -548,18 +455,6 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "service_id",    :limit => 11
     t.integer  "memorandum_id", :limit => 11
     t.boolean  "recursive",                   :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "menu_permissions", :force => true do |t|
-    t.boolean  "list"
-    t.boolean  "view"
-    t.boolean  "add"
-    t.boolean  "edit"
-    t.boolean  "delete"
-    t.integer  "role_id",    :limit => 11
-    t.integer  "menu_id",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -881,6 +776,63 @@ ActiveRecord::Schema.define(:version => 20090910052321) do
     t.integer  "parent_id",   :limit => 11
     t.string   "description"
     t.integer  "position",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stock_flows", :force => true do |t|
+    t.string   "type"
+    t.string   "purchase_number"
+    t.string   "file_number"
+    t.integer  "supply_id",               :limit => 11
+    t.integer  "supplier_id",             :limit => 11
+    t.decimal  "fob_unit_price",                        :precision => 65, :scale => 18
+    t.decimal  "tax_coefficient",                       :precision => 65, :scale => 18
+    t.decimal  "quantity",                              :precision => 65, :scale => 18
+    t.decimal  "previous_stock_quantity",               :precision => 65, :scale => 18
+    t.decimal  "previous_stock_value",                  :precision => 65, :scale => 18
+    t.boolean  "adjustment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supplier_supplies", :force => true do |t|
+    t.string   "reference"
+    t.string   "name"
+    t.integer  "supply_id",       :limit => 11
+    t.integer  "supplier_id",     :limit => 11
+    t.integer  "lead_time",       :limit => 11
+    t.decimal  "fob_unit_price",                :precision => 65, :scale => 18
+    t.decimal  "tax_coefficient",               :precision => 65, :scale => 18
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supplies", :force => true do |t|
+    t.string   "name"
+    t.string   "reference"
+    t.string   "type"
+    t.decimal  "measure",                              :precision => 65, :scale => 18
+    t.decimal  "unit_mass",                            :precision => 65, :scale => 18
+    t.decimal  "threshold",                            :precision => 65, :scale => 18
+    t.integer  "commodity_category_id",  :limit => 11
+    t.integer  "consumable_category_id", :limit => 11
+    t.boolean  "enable",                                                               :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "disabled_at"
+  end
+
+  create_table "supply_categories", :force => true do |t|
+    t.string   "type"
+    t.string   "name"
+    t.integer  "commodity_category_id",  :limit => 11
+    t.integer  "consumable_category_id", :limit => 11
+    t.integer  "unit_measure_id",        :limit => 11
+    t.integer  "commodities_count",      :limit => 11, :default => 0
+    t.integer  "consumables_count",      :limit => 11, :default => 0
+    t.boolean  "enable",                               :default => true
+    t.date     "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

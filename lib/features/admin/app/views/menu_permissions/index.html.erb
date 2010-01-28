@@ -2,11 +2,6 @@
 
 <div>
   <h2>Les menus</h2>
-  <ul>
-    <% for menu in @menus %>
-      <li>
-        <%= link_to menu.title, edit_menu_permission_path(menu) %>
-      </li>	
-    <% end %>
-  </ul>
+
+  <div class='hierarchic'><%= get_structured_menus_links(get_all_menus_structured)%></div>
 </div>

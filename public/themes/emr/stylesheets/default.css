@@ -90,8 +90,8 @@ table img {
 }
 */
 
-tr:hover > td{
-	background: #f5c384;
+tr:hover > td {
+	background: #ffe6c6;
 }
 
 tr:hover > td > a {
@@ -260,7 +260,7 @@ a.button_banner:hover span {
 #under_banner {
 	clear:both;
 	background: url("/themes/emr/images/background_under_banner_repeat-x.jpg") repeat;
-	border-bottom:20px solid white;
+	//border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
 	color:#444444;
@@ -350,10 +350,11 @@ a.button_banner:hover span {
 /*REGROUPS THE WHOLE OF THE WEBSITE WITH THE EXCEPTION 
 					OF BANNERS							*/
 #block_body {
-	width:auto;
-	height:auto;
+  clear: both;
+	width: auto;
+	height: auto;
 	margin: -16px 0 5px 0;
-	padding:0;
+	padding: 5px 0 0 0;
 }
 
 /*/////////////////////////////////////////////////////
@@ -1391,6 +1392,10 @@ ul.parent>li {
 	margin-right:3px;
 }
 
+.hierarchic ul li label.unchecked {
+  color: grey;
+}
+
 #catalog {
 	margin:10px;
 	text-indent:-1px;
@@ -1824,6 +1829,7 @@ table.mceEditor {
 ////////////////////////////////////////////////////*/
 
 #footer {
+  position: relative;
 	text-align:center;
 	background: url("/themes/emr/images/background_dark_stripe.jpg") repeat;
 	border: solid 1px #444;
@@ -1840,6 +1846,23 @@ table.mceEditor {
 	margin-top:5px;
 	margin-bottom:-5px;
 	border:none;
+}
+
+#footer span.version {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  background-color: white;
+  color: black;
+  padding: 4px;
+  font-size: 11px;
+  -moz-transform: rotate(-25deg);
+  -webkit-transform: rotate(-25deg);
+  -moz-box-shadow: 3px 4px 5px rgba(0,0,0,0.3), inset 0 0px 8px rgba(255,255,0,1);
+}
+
+#footer span.version:hover {
+  opacity: 0.4;
 }
 
 /*/////////////////////////////////////////////////////

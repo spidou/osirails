@@ -67,7 +67,7 @@ function toggle_contextual_menu(item)
       afterFinish: function(){
         $('contextual_menu_container').setAttribute('style','right:'+container_right+'px');
         item.className = class_shown;
-        document.getElementById("status_text_contextual_menu").innerHTML = text_shown;
+        $("status_text_contextual_menu").innerHTML = text_shown;
         document.body.style.overflowX = 'auto';
       }
     });
@@ -101,33 +101,33 @@ function change_memorandum(element, memorandum_number, event) {
     element_id = element.id
     
     if ((parseInt(position) - 1) == 0 ) {
-      document.getElementById('previous').className = 'previous_memorandum_'+(parseInt(memorandum_number));
+      $('previous').className = 'previous_memorandum_'+(parseInt(memorandum_number));
       if (element_id == 'next') {
         new Effect.Fade(document.getElementsByClassName('position_'+memorandum_number)[0], {duration: 0.3});
       }
     }
     else {
-      document.getElementById('previous').className = 'previous_memorandum_'+(parseInt(position) - 1);
+      $('previous').className = 'previous_memorandum_'+(parseInt(position) - 1);
       if (element_id == 'next') {
         new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) -1))[0], {duration: 0.3});
       }
     }
     
     if (parseInt(position) < memorandum_number) {
-      document.getElementById('next').className = 'next_memorandum_'+(parseInt(position) + 1);
+      $('next').className = 'next_memorandum_'+(parseInt(position) + 1);
       if (element_id = 'previous') {
         new Effect.Fade(document.getElementsByClassName('position_'+(parseInt(position) +1))[0], {duration: 0.3});
       }
     }
     else {
-      document.getElementById('next').className = 'next_memorandum_1';
+      $('next').className = 'next_memorandum_1';
       if (element_id = 'previous') {
         new Effect.Fade(document.getElementsByClassName('position_1')[0], {duration: 0.3});
       }
     }
     
     
-    document.getElementById('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
+    $('text_under_banner').setAttribute('onclick', 'show_memorandum('+parseInt(position)+', 1)')
     new Effect.Appear(document.getElementsByClassName('position_'+position)[0], {duration: 2});
     refresh_timer()
     }
@@ -145,7 +145,7 @@ function click_next(value) {
 
       }
       else {
-        document.getElementById('next').click();
+        if( $('next') != null ) { $('next').click(); }
       }
     }
   }

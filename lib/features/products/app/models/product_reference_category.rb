@@ -15,7 +15,7 @@ class ProductReferenceCategory < ActiveRecord::Base
    cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name] = "Nom :"
-  @@form_labels[:product_reference_category] = "Cat&eacute;gorie parente :"
+  @@form_labels[:product_reference_category] = "Catégorie parente :"
   
   # This method permit to update counter of parents categories
   def counter_update(index,value)

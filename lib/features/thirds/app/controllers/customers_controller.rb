@@ -12,11 +12,6 @@ class CustomersController < ApplicationController
   # GET /customers/1.xml
   def show
     @customer = Customer.find(params[:id])
-    
-    # needed collections
-    @contacts = @customer.contacts
-    #@establishments = @customer.activated_establishments
-    #@documents = @customer.documents
   end
   
   # GET /customers/new
@@ -44,7 +39,7 @@ class CustomersController < ApplicationController
     
     @customer = Customer.new(params[:customer])
     if @customer.save
-      flash[:notice] = "Client ajout&eacute; avec succ&egrave;s"
+      flash[:notice] = "Client ajouté avec succès"
       @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to(customer_path(@customer))
     else
       render :action => 'new'
@@ -54,17 +49,6 @@ class CustomersController < ApplicationController
   # GET /customers/1/edit
   def edit
     @customer = Customer.find(params[:id])
-    #@establishments = @customer.activated_establishments
-    @contacts = @customer.contacts
-    @documents = @customer.documents
-    @activity_sector = @customer.activity_sector.name unless @customer.activity_sector.nil?
-    
-    respond_to do |format|
-      #params[:page] ||= 1
-      params[:type] == "popup" ? format.html {render :layout => 'popup'} : format.html
-      @javascript = "<script langage='javascript'> parent.document.getElementById('testpage').innerHTML = document.getElementById('testpage').innerHTML</script>"
-      format.js { render( :layout => false, :partial => 'documents/edit_partial', :locals => {:document => (Document.find(params[:document_id]) unless params[:document_id].nil?), :javascript => @javascript})}
-    end
   end
 
   # PUT /customers/1
@@ -258,7 +242,7 @@ class CustomersController < ApplicationController
     if @customer.save
       redirect_to(customers_path)
     else
-      flash[:error] = "Une erreur est survenu lors de la suppression du contact"
+      flash[:error] = "Une erreur est survenu lors de la suppression du client"
       redirect_to :back 
     end
   end
