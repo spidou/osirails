@@ -1,0 +1,24 @@
+<% press_proof     = press_proof_in_one_line
+   mockup_quantity = press_proof_in_one_line.graphic_item_versions.size
+   version         = press_proof.graphic_item_versions.first %>
+   
+<tr class="press_proof <%= press_proof.status %>_press_proof">
+  <td rowspan="<%= mockup_quantity%>" ><%= press_proof.confirmed_on.humanize unless press_proof.confirmed_on.nil? %></td>    
+  <td><%= version.graphic_item.id %></td>
+  <td><%= version.graphic_item.mockup_type.name %></td>
+  <td><%= version.graphic_item.description %></td>
+  <td rowspan="<%= mockup_quantity%>" ><%= press_proof.internal_actor.fullname %></td>
+  <td rowspan="<%= mockup_quantity%>"><%= press_proof.sended_on.humanize unless press_proof.sended_on.nil? %></td>
+  <td rowspan="<%= mockup_quantity%>"><%= press_proof.signed_on.humanize unless press_proof.signed_on.nil? %></td>
+  <td rowspan="<%= mockup_quantity%>"><%= "relance" %></td>
+  <% unless without_action||=false %>
+    <td class="actions" rowspan="<%= mockup_quantity%>"><%= display_actions_press_proof_button(order, press_proof) %></td>
+  <% end%>
+</tr>
+<% press_proof.graphic_item_versions.last(mockup_quantity - 1).each do |version| %>
+  <tr class="press_proof <%= press_proof.status %>_press_proof">
+    <td><%= version.graphic_item.id %></td>
+    <td><%= version.graphic_item.mockup_type.name %></td>
+    <td><%= version.graphic_item.description %></td>
+  </tr>
+<% end %>

@@ -175,17 +175,49 @@ class Test::Unit::TestCase
   end
   
   def create_default_press_proof
-    order   = create_default_order
-    john    = employees(:john_doe)
-    admin   = users(:admin_user)
-    measure = unit_measures(:normal)
-    product = products(:product1)
+    order      = create_default_order
+    john_id    = employees(:john_doe).id
+    admin_id   = users(:admin_user).id
+    product_id = create_valid_product_for(order).id
+    graphic_item_version = create_valid_mockup(order, product_id).current_version
+    
     press_proof = PressProof.new( :order_id          => order.id,
-                                  :product_id        => product.id,
-                                  :creator_id        => admin.id,
-                                  :internal_actor_id => john.id,
-                                  :unit_measure_id   => measure.id)
-    flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')} #{press_proof.errors.inspect}" unless press_proof.save
+                                  :product_id        => product_id,
+                                  :creator_id        => admin_id,
+                                  :internal_actor_id => john_id,
+                                  :press_proof_item_attributes =>[ {:graphic_item_version_id => graphic_item_version.id} ])
+    flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')}" unless press_proof.save
     return press_proof
+  end
+
+  # OPTIMIZE to respect DRY
+  # use here to give the possibility to create a valid mockup with the good order and a specified product
+  #
+  def create_valid_mockup(order, product_id)
+    mockup = order.mockups.build(:name => "Sample",
+                                 :description => "Sample de maquette destiné aux tests unitaires",
+                                 :graphic_unit_measure => graphic_unit_measures(:normal), 
+                                 :creator => users(:admin_user),
+                                 :mockup_type => mockup_types(:normal),
+                                 :product_id => product_id,
+                                 :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
+                                )                             
+
+    flunk "mockup should be saved > #{mockup.errors.full_messages.join(', ')}" unless mockup.save
+    return mockup
+  end
+  
+  def create_default_dunning
+    press_proof = create_default_press_proof
+    press_proof.confirm
+    press_proof.send_to_customer({:sended_on => Date.today, :document_sending_method_id => document_sending_methods(:fax).id})
+    
+    dunning = press_proof.dunnings.build(:date       => Date.today,
+                                         :comment    => "comment for tests",
+                                         :creator_id => users(:admin_user).id,
+                                         :dunning_sending_method_id => dunning_sending_methods(:telephone).id)
+
+    flunk "dunning should be saved > #{dunning.errors.full_messages.join(', ')} #{dunning.inspect} #{dunning.date} #{Date.today}" unless dunning.save
+    return dunning
   end
 end

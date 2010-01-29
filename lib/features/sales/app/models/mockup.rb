@@ -19,7 +19,6 @@ class Mockup < GraphicItem
   
   # Relationships
   belongs_to :mockup_type
-  belongs_to :press_proof
   belongs_to :product
 
   # Validations

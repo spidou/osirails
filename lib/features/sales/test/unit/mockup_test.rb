@@ -2,7 +2,7 @@ require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class MockupTest < ActiveSupport::TestCase
-  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :product, :press_proof
+  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :product
   
   should_have_many :graphic_item_versions
   

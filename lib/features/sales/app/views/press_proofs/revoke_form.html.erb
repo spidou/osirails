@@ -1,0 +1,19 @@
+<%= order_header %>
+
+<h1>Signaler que le BAT a été annulé aprés signature</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => "product_with_press_proof",:object => @press_proof  %>
+  
+	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "revoke", :press_proof_id => @press_proof.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+
+    <p>
+      <%= form.label :revoked_comment %>
+      <%= form.text_area_autoresize :revoked_comment, :cols => 50 %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

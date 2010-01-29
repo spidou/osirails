@@ -9,6 +9,9 @@ steps:
       estimate:
         title: Devis
         position: 2
+      press_proof:
+        title: BAT
+        position: 4
   pre_invoicing:
     title: SAS de facturation
     position: 2

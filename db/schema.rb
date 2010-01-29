@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100115061137) do
+ActiveRecord::Schema.define(:version => 20100121100208) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -323,6 +323,23 @@ ActiveRecord::Schema.define(:version => 20100115061137) do
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "dunning_sending_methods", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "dunnings", :force => true do |t|
+    t.date     "date"
+    t.text     "comment"
+    t.string   "has_dunning_type"
+    t.boolean  "cancelled"
+    t.integer  "creator_id",                :limit => 11
+    t.integer  "dunning_sending_method_id", :limit => 11
+    t.integer  "has_dunning_id",            :limit => 11
+    t.integer  "cancelled_by_id",           :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -832,15 +849,22 @@ ActiveRecord::Schema.define(:version => 20100115061137) do
     t.datetime "updated_at"
   end
 
+  create_table "press_proof_steps", :force => true do |t|
+    t.integer  "commercial_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "press_proofs", :force => true do |t|
     t.integer  "order_id",                        :limit => 11
-    t.integer  "unit_measure_id",                 :limit => 11
     t.integer  "product_id",                      :limit => 11
     t.integer  "creator_id",                      :limit => 11
     t.integer  "internal_actor_id",               :limit => 11
     t.integer  "revoked_by_id",                   :limit => 11
     t.integer  "document_sending_method_id",      :limit => 11
-    t.integer  "revoked_by",                      :limit => 11
     t.integer  "signed_press_proof_file_size",    :limit => 11
     t.string   "status"
     t.string   "reference"

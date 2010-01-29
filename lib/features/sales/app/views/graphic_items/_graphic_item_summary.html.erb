@@ -4,7 +4,11 @@
 
 <div class="resource document">
   <div class="thumb">
-    <%= image_tag(graphic_item_summary.current_image.url(:thumb)) %>
+    <% if image||= nil %>
+      <%= image_tag(image)%>
+    <% else %>
+      <%= image_tag(graphic_item_summary.current_image.url(:thumb)) %>
+    <% end %>
   </div>
   <div class="details">
     <%= content_tag(:h1, h(graphic_item_summary.name)) unless graphic_item_summary.name.blank? %>
