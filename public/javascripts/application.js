@@ -3,10 +3,12 @@
 if (window.addEventListener)
 {
   window.addEventListener('load', initEventListeners, false);
+  window.addEventListener('load', checkForCookies, false);
 }
 else if (document.addEventListener)
 {
   document.addEventListener('load', initEventListeners, false);
+  document.addEventListener('load', checkForCookies, false);
 }
 
 function initEventListeners()
@@ -20,12 +22,82 @@ function initEventListeners()
   }
 }
 
+// function to check for cookies
+//
+function checkForCookies()
+{
+  if($('contextual_menu_container') == null) return;
+  
+  var pin_status = GetCookieValue('pin_status');
+  if (pin_status == 'pinned'){
+    $('content_page').setAttribute('class','with_pinned_menu');
+    $('contextual_menu_toggle_button').hide();
+    $('reduce_button_link').hide()
+  }
+  else{
+    toggle_contextual_menu($('contextual_menu_toggle_button'));
+  }
+}
+
+
+// function to set a cookie
+//
+function setCookie(name, value, expires, path, domain, secure)
+{
+	document.cookie=name +"="+ escape(value) +
+		(expires ? ("; expires="+ expires.toGMTString()) : '') +
+		(path    ? ("; path="+ path) : '') +
+		(domain  ? ("; domain="+ domain) : '') +
+		(secure==true ? "; secure" : '');
+}
+
+
+// function to get a cookie's value
+// go to toutjavascript.com for more precision about ways to get a cookie
+//
+function GetCookieValue(name)
+{
+  var cookie = document.cookie.split(name+"=")[1]
+  if(cookie){
+    return cookie.split(';')[0]; // get the element between 'name=' and ';' because the cookie is like that "name=value; ..."
+  }
+  return null;
+}
+
+
+
+function toggle_pin_contextual_menu(item)
+{
+  var mess2 = 'épingler le menu';
+  var mess1 = 'détacher le menu';
+  var exp_date = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
+
+  if($('contextual_menu_container').className == 'not_pinned_menu')
+  {
+    $('contextual_menu_container').setAttribute('class', 'pinned_menu');
+    $('content_page').setAttribute('class','with_pinned_menu');
+    item.firstDescendant().setAttribute('src','/images/pinned_16x16.png');
+    item.firstDescendant().setAttribute('title', mess1);
+    item.firstDescendant().setAttribute('alt', mess1);
+    setCookie('pin_status', 'pinned', exp_date, '/');
+  }
+  else
+  {
+    $('contextual_menu_container').setAttribute('class', 'not_pinned_menu');
+    $('content_page').setAttribute('class','');
+    item.firstDescendant().setAttribute('src','/images/not_pinned_16x16.png');
+    item.firstDescendant().setAttribute('title', mess2);
+    item.firstDescendant().setAttribute('alt', mess2);
+    setCookie('pin_status', 'not_pinned', exp_date, '/');
+  }
+  $('reduce_button_link').toggle();
+}
+
 function toggle_contextual_menu(item)
 {
   class_shown = "shown_contextual_menu";
   class_hidden = "hidden_contextual_menu";
-  text_shown = "Cacher le menu";
-  text_hidden = "Afficher le menu";
+  
   if (item.className == class_shown)
   {
     container_width = parseInt( $('contextual_menu_container').getStyle('width') )
@@ -42,19 +114,16 @@ function toggle_contextual_menu(item)
       },
       duration: 0.6,
       afterFinish: function(){
-        $('status_background_contextual_menu').setAttribute('style','position:relative;right:0px');
         $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');
         $('contextual_menu').setStyle({display: 'none'})
         item.setAttribute('style','position:relative;right:0px');   
         item.className = class_hidden;
-        document.getElementById("status_text_contextual_menu").innerHTML = text_hidden;
         document.body.style.overflowX = 'auto';
       }
     });
   }
   else if (item.className == class_hidden)
   {
-    $('status_background_contextual_menu').setAttribute('style','position:'+status_position);
     $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
     $('contextual_menu').setAttribute('style','display:'+menu_display+';position:'+menu_position+';right:'+menu_right);
     
@@ -67,11 +136,12 @@ function toggle_contextual_menu(item)
       afterFinish: function(){
         $('contextual_menu_container').setAttribute('style','right:'+container_right+'px');
         item.className = class_shown;
-        $("status_text_contextual_menu").innerHTML = text_shown;
         document.body.style.overflowX = 'auto';
       }
     });
   }
+  $('contextual_menu_toggle_button').toggle();
+  $('contextual_menu_actions').toggle();
 }
 
 function show_memorandum(element_or_position, value) {
