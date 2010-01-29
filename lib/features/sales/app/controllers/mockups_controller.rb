@@ -4,15 +4,15 @@ class MockupsController < ApplicationController
   
   # GET /orders/[:order_id]/mockups
   def index
-    @employee = current_user.employee
-    @enabled_mockups = @order.mockups.find(:all,:conditions => {:cancelled => false})
+    @enabled_mockups = @order.mockups.find(:all,:conditions => ["cancelled is NULL or cancelled=false"])
+    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end  
   
   # GET /orders/[:order_id]/mockups/:id
   def show
-    @employee = current_user.employee
     @mockup = Mockup.find(params[:id])
     @graphic_item_versions = GraphicItemVersion.find(:all, :conditions => {:graphic_item_id => @mockup.id})
+    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end
   
   # GET /orders/[:order_id]/mockups/new
@@ -26,7 +26,7 @@ class MockupsController < ApplicationController
   # POST /orders/[:order_id]/mockups
   def create
     @mockup = @order.mockups.build(params[:mockup])
-    @mockup.creator = current_user.employee
+    @mockup.creator = current_user
     
     @products = @order.products
     @graphic_item_types = MockupType.find(:all)
@@ -83,5 +83,25 @@ class MockupsController < ApplicationController
       flash[:error] = "Une erreur est survenue à la suppression de la maquette"
     end
     redirect_to order_mockups_path
+  end
+  
+  # GET /orders/[:order_id]/mockups/:mockup_id/add_to_spool
+  def add_to_spool
+    mockup = Mockup.find(params[:mockup_id])
+    unless mockup.add_to_graphic_item_spool(params[:file_type],current_user)
+      flash[:error] = "Une erreur est survenue à l'ajout du fichier de la file d'attente"
+    end
+    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
+    redirect_to :action => :index unless request.xhr?
+  end
+  
+  # GET /orders/[:order_id]/mockups/:mockup_id/remove_from_spool
+  def remove_from_spool
+    mockup = Mockup.find(params[:mockup_id])
+    unless mockup.remove_from_graphic_item_spool(params[:file_type],current_user)
+      flash[:error] = "Une erreur est survenue au retrait du fichier de la file d'attente"
+    end
+    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
+    redirect_to :action => :index unless request.xhr?
   end
 end

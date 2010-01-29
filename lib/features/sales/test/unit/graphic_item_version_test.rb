@@ -8,7 +8,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
   should_have_attached_file :source
     
   should_validate_attachment_presence :image  
-  # FIXME  should_validate_attachment_content_type :image, :valid => [ 'image/jpg', 'image/png','image/jpeg'], :invalid => [ 'image/gif', 'image/ps','image/bmp']
+  
   should_validate_attachment_size :image, :less_than => 10.megabytes
   
   context "A valid created graphic item version" do
@@ -17,7 +17,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
       
       @giv = GraphicItemVersion.new(:graphic_item => Mockup.last,
                                     :image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
-                                    :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")))
+                                    :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf")))
                                     
       flunk "@giv should be created to continue" unless @giv.save
     end
@@ -30,6 +30,55 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
 
         assert @giv.errors.invalid?(element)
       end
+    end
+  end
+  
+  context "A new graphic item version" do
+    setup do
+      @giv = GraphicItemVersion.new
+    end
+    
+    # FIXME  should_validate_attachment_content_type :image, :valid => [ 'image/jpg', 'image/png','image/jpeg'], :invalid => [ 'image/gif', 'image/ps','image/bmp']
+    should "be able to add a jpg as image file" do
+      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+      @giv.valid?
+      
+      assert !@giv.errors.invalid?(:image)
+    end
+    
+    should "be able to add a png as image file" do
+      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+      @giv.valid?
+      
+      assert !@giv.errors.invalid?(:image)
+    end
+    
+    should "NOT be able to add a non jpg or png as image file" do
+      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      @giv.valid?
+      
+      assert @giv.errors.invalid?(:image)
+    end
+    
+    should "NOT be able to add a jpg as source file" do
+      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+      @giv.valid?
+      
+      assert @giv.errors.invalid?(:source)
+    end
+    
+    should "NOT be able to add a png as source file" do
+      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+      @giv.valid?
+      
+      assert @giv.errors.invalid?(:source)
+    end
+    
+    should "be able to add a non jpg or png as image file" do
+      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      @giv.valid?
+      
+      assert !@giv.errors.invalid?(:source)
     end
   end
 end

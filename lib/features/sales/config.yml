@@ -106,13 +106,20 @@ menus:
               mockups:
                 title: Maquettes
                 description: Gestion des maquettes
+                position: 1
               graphic_documents:
                 title: Documents graphiques
                 description: Gestion des documents graphiques  
+                position: 2
               graphic_item_versions:
                 title: Versions de ressources graphiques
                 description: Gestion des versions de ressources graphiques
-                hidden: true        
+                hidden: true   
+                position: 3
+              graphic_item_spool_items:
+                title: Mes travaux en attente
+                description: Fichiers mis en file d'attente de production de l'utilisateur courant
+                position: 4
           logs:
             title: Historiques
             description: Historiques des actions effectués sur le dossier de commmande

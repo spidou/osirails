@@ -1,6 +1,7 @@
 <% content_for :header do -%>
   <%= javascript_include_tag "sales/tab_navigation" %>
   <%= javascript_include_tag "sales/#{graphic_item.class.name.underscore}" %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
 <% end -%>
 
 <%
@@ -37,7 +38,22 @@
       <% end %>
       <p>
         <%= f.label :name %>
-        <%= f.form_or_view(f.text_field(:name),:name) %>
+        <% if graphic_item.new_record? %>
+          <%= f.text_field(:name) %>
+        <% else %>
+          <% unless graphic_item.is_in_spool("image") or graphic_item.is_in_spool("source")%>
+            <%= f.form_or_view(f.text_field(:name),:name) %>
+          <% else %>
+            <% if is_form_view? %>
+              <%= f.text_field(:name, {:disabled => "true"}) %>
+              <span class="help_text">
+                La modification du nom est impossible car la maquette est présente dans la file d'attente d'un ou plusieurs utilisateurs
+              </span>
+            <% else %>
+              <%= f.strong graphic_item.name %>
+            <% end %>
+          <% end %>
+        <% end %>
       </p>
       <p>
         <%= f.label :description %>
@@ -56,27 +72,27 @@
           <%= f.label :version %>
           <%= f.strong graphic_item.current_version.created_at.humanize %>
         </p>
-        <table id="thumb_and_links">
-          <tr>
-            <td class="thumb">
-              <%= image_tag graphic_item.current_image.url(:thumb) %>
-            </td>
-            <td class="links">
-              <p>
-                <%= f.label :image %>
-                <%= link_to f.strong("télécharger"), graphic_item.current_image.url %>
-              </p>
-              <p>
-                <%= f.label :source %>
-                <% if graphic_item.current_version.source_file_name %>
-                  <%= link_to f.strong("télécharger"), graphic_item.current_source.url %>
-                <% else %>
-                  <%= f.strong("aucun") %>
-                <% end %>
-              </p>
-            </td>
-          </tr>
-        </table>
+        <div class="resource document">
+          <div class="thumb">
+            <%= image_tag graphic_item.current_image.url(:thumb) %>
+          </div>
+          <div class="details">
+            <h1><%= graphic_item.class.form_labels[:image] %></h1>
+            <%= link_to f.strong("Télécharger"), graphic_item.current_image.url %>
+            <% unless is_form_view? %>
+              / <%= display_graphic_item_summary_image_spool_actions(graphic_item) %>
+            <% end %>
+            <h1><%= graphic_item.class.form_labels[:source] %></h1>
+            <% if graphic_item.current_version.source_file_name %>
+              <%= link_to f.strong("Télécharger"), graphic_item.current_source.url %>
+              <% unless is_form_view? %>
+                / <%= display_graphic_item_summary_source_spool_actions(graphic_item) %>
+              <% end %>
+            <% else %>
+              <%= f.strong("aucun") %>
+            <% end %>
+          </div>
+        </div>
       <% end %>
       <% if is_form_view? and !graphic_item.new_record? %>
         <p>
@@ -85,6 +101,11 @@
           <%= f.label :should_change_version %>
           <%= radio_button_tag "action", "should_change_version", false, {:onclick => 'addOrChangeVersion("change",' + graphic_item.current_version_id.to_s + ' )'} %>
         </p>
+        <% if graphic_item.is_in_spool("image") or graphic_item.is_in_spool("source")%>
+          <p class="spool_warning">
+            <%= "Attention, l'ajout ou le changement d'une version entraînera le retrait de la version actuelle dans la file d'attente de tous les utilisateurs" %>
+          </p>
+        <% end %>
       <% end %>
       <% if is_form_view? and graphic_item.new_record? %>
         <p>
@@ -93,19 +114,23 @@
         </p>
       <% end %>
       <% if is_form_view? %>  
-        <p id="new_image_paragraph">
-          <%= f.label :image %>
-          <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
-        </p>
-        <p id="new_source_paragraph">
-          <%= f.label :source %>
-          <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
-        </p>  
-        <% unless graphic_item.new_record? %>
-          <p id="change_version_paragraph" style="display:none">
-            <%= f.label :change_version %>
-            <%= f.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at) %>
+        <div id="add_version_div">
+          <p id="new_image_paragraph">
+            <%= f.label :image %>
+            <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
           </p>
+          <p id="new_source_paragraph">
+            <%= f.label :source %>
+            <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
+          </p>  
+        </div>
+        <% unless graphic_item.new_record? %>
+          <div id="change_version_div" style="display:none">
+            <p id="change_version_paragraph">
+              <%= f.label :change_version %>
+              <%= f.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at) %>
+            </p>
+          </div>
         <% end %>        
       <% end %>
     </div>
@@ -119,17 +144,15 @@
           <%= f.label :graphic_unit_measure %>
           <%= f.strong graphic_item.graphic_unit_measure.name %>
         </p>
-        <table id="graphic_item_versions_preview">
-          <tr>
-            <td id="graphic_item_medium_image">
-              <%= image_tag graphic_item.current_image.url(:medium), {:id => "image_tag"} %>
-            </td>
-            <td>
-              <%= collection_select(nil,:current_version_id, @graphic_item_versions, :id, :formatted_created_at, {}, {:multiple => "multiple", :id => "#{graphic_item.class.name.underscore}_versions", :name => "#{graphic_item.class.name.underscore}_versions"}) %>
-              <%= observe_field("#{graphic_item.class.name.underscore}_versions", :url => send("order_#{graphic_item.class.name.underscore}_refresh_links_path",@order.id,graphic_item.id), :with => 'current_version_id')%>
-            </td>
-          </tr>
-        </table>
+        <div id="graphic_item_versions_preview">
+          <div id="graphic_item_medium_image">
+            <%= image_tag graphic_item.current_image.url(:medium), {:id => "image_tag"} %>
+          </div>
+          <div id="graphic_item_choice">
+            <%= collection_select(nil,:current_version_id, @graphic_item_versions, :id, :formatted_created_at, {}, {:multiple => "multiple", :id => "#{graphic_item.class.name.underscore}_versions", :name => "#{graphic_item.class.name.underscore}_versions"}) %>
+            <%= observe_field("#{graphic_item.class.name.underscore}_versions", :url => send("order_#{graphic_item.class.name.underscore}_refresh_links_path",@order.id,graphic_item.id), :with => 'current_version_id')%>
+          </div>
+        </div>
         <p>
           <%= f.label :image %>
           <%= link_to f.strong("télécharger"), graphic_item.current_image.url, {:id => "image_download_link"}%>
@@ -156,7 +179,7 @@
         </p>
         <p>
           <%= f.label :creator %>
-          <%= link_to "#{graphic_item.creator.first_name} #{graphic_item.creator.last_name}", employee_path(graphic_item.creator) %>
+          <%= link_to "#{graphic_item.creator.employee_name}", graphic_item.creator.employee ? employee_path(graphic_item.creator.employee) : user_path(graphic_item.creator) %>
         </p>
       <% end %>
     </div>

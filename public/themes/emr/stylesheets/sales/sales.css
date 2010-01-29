@@ -635,37 +635,40 @@ div.resource.subcontractor_request textarea {
 }
 
 /* GRAPHIC ITEMS */
-table#thumb_and_links,
-table#thumb_and_links tr,
-table#thumb_and_links th,
-table#thumb_and_links td {
-  border:0;
+div#graphic_item_versions_preview{
+  display: inline-block;
+  position: relative;
 }
 
-table#thumb_and_links td.thumb {
-  width: 100px;
-  height: 100px;
-  border: 1px solid #E99727;
-}
-
-table#thumb_and_links td.links {
-  text-align: left;
-}
-
-table#graphic_item_versions_preview,
-table#graphic_item_versions_preview tr,
-table#graphic_item_versions_preview th,
-table#graphic_item_versions_preview td {
-  border: 0;
-}
-
-table td#graphic_item_medium_image {
+div#graphic_item_medium_image {
+  text-align: center;
+  vertical-align: top;
+  display: inline-block;
   width: 640px;
   height: 400px;
+  padding: 1px;
   border: 1px solid #E99727;
 }
 
-table select#mockup_versions,
-table select#graphic_document_versions {
-  height:400px;
+div#graphic_item_choice {
+  display: inline-block;
+}
+
+div select#mockup_versions,
+div select#graphic_document_versions {
+  height:405px;
+}
+
+.spool_warning{
+  position: relative;
+	border:solid 1px #F1BD73;
+	background:#F6E8CF;
+	margin:10px;
+	width:530px;
+	padding:10px;
+}
+
+.spool_item:hover{
+  cursor: pointer;
+  background-color: #ecc48b;
 }

@@ -2,18 +2,25 @@
 
 <h1>Tous les documents graphiques du dossier</h1>
 <div>  
-  <% if @employee %>
-    <% add_contextual_menu_item :possible_actions do %>
-      <%= new_graphic_item_link(GraphicDocument) %>
-    <% end %>
-    <% unless @enabled_graphic_documents.empty? %>
-      <% @order.graphic_documents.each do |graphic_document| %>
-        <%= render(:partial => 'graphic_items/graphic_item_summary', :object => graphic_document) unless graphic_document.cancelled %>
-      <% end %>
-    <% else %>
-      <p>Il n'y a aucun document graphique dans ce dossier<p>
+  <% add_contextual_menu_item :possible_actions do %>
+    <%= new_graphic_item_link(GraphicDocument) %>
+  <% end %>
+  <% add_contextual_menu_item("Travaux en attente",true) do %>
+    <p id="spool">
+      <%= render(:partial => "graphic_item_spool_items/spool") %>
+    </p> 
+    <ul>
+      <li>
+        <%= link_to(image_tag("view_16x16.png") + " Voir la file d'attente <br/> (total: <span id='spool_size'>#{@spool.size} fichiers</span>)", order_graphic_item_spool_items_path) %>
+      </li>
+    </ul>
+  <% end %>
+  <% unless @enabled_graphic_documents.empty? %>
+    <% @order.graphic_documents.each do |graphic_document| %>
+      <%= render(:partial => 'graphic_items/graphic_item_summary', :object => graphic_document) unless graphic_document.cancelled %>
+      <br/>
     <% end %>
   <% else %>
-    <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+    <p>Il n'y a aucun document graphique dans ce dossier<p>
   <% end %>
 </div>

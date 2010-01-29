@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091211050133) do
+ActiveRecord::Schema.define(:version => 20100115061137) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -451,6 +451,15 @@ ActiveRecord::Schema.define(:version => 20091211050133) do
 
   create_table "graphic_document_types", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "graphic_item_spool_items", :force => true do |t|
+    t.integer  "user_id",         :limit => 11
+    t.integer  "graphic_item_id", :limit => 11
+    t.string   "path"
+    t.string   "file_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,0 +1,12 @@
+<% unless @spool.empty? %>
+  <% @spool[0..2].each do |item| %>
+    <% if item.graphic_item.class.name == "Mockup" %>
+      <% remove_path = order_mockup_remove_from_spool_path({:mockup_id => item.graphic_item.id, :file_type => item.file_type, :item_id => item.id})%>
+    <% elsif item.graphic_item.class.name == "GraphicDocument"%>
+      <% remove_path = order_graphic_document_remove_from_spool_path({:graphic_document_id => item.graphic_item.id, :file_type => item.file_type, :item_id => item.id})%>
+    <% end %>
+
+    <%= content_tag(:span, image_tag("picture_#{item.file_type == 'image' ? 'file' : 'source'}_16x16.png") + " #{item.graphic_item.name.size > 22 ? item.graphic_item.name[0..21] + '…' : item.graphic_item.name}" + link_to_remote(image_tag("delete_16x16.png", :alt => "Retirer", :title => "Retirer"), :url => remove_path, :html => {:id => "spool_action_button_for_#{item.graphic_item.id}_#{item.file_type}"}), :id => "spool_item_#{item.id}", :class => "spool_item", :title => "#{File.basename(item.path)}") %>
+    <br/>
+  <% end %>
+<% end %>

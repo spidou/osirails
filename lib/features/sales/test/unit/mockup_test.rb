@@ -67,7 +67,7 @@ class MockupTest < ActiveSupport::TestCase
     context ", when adding an image and a source," do
       setup do
         flunk "The graphic item version attributes should be assigned to continue" unless @mockup.graphic_item_version_attributes=({ :image  => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")),
-                                                                                                                                     :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+                                                                                                                                     :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
                                                                                                                                    })
         @version = @mockup.graphic_item_versions.last
       end
@@ -95,7 +95,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding only a source," do
       setup do
-        flunk "The graphic item version attributes should NOT be assigned to continue" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))} )
+        flunk "The graphic item version attributes should NOT be assigned to continue" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
         @version = @mockup.graphic_item_versions.last
       end
       
@@ -168,17 +168,52 @@ class MockupTest < ActiveSupport::TestCase
         
         @mockup.valid?
 
-        assert @mockup.errors.invalid?(element)
+        assert @mockup.errors.invalid?(element.to_sym)
+      end
+    end
+    
+    context ", before an addition of its image or source in an user spool" do
+      should "be able to update its name" do
+        @mockup.name = "Can I change my name ?"
+        @mockup.valid?
+        
+        assert !@mockup.errors.invalid?(:name)
+      end
+    end
+    
+    context ", after an adddition of its image in an user spool" do
+      setup do
+        @mockup.add_to_graphic_item_spool("image", User.first)
+      end
+    
+      should "NOT be able to update its name" do
+        @mockup.name = "Can I change my name ?"
+        @mockup.valid?
+        
+        assert @mockup.errors.invalid?(:name)
+      end
+    end
+    
+    context ", after an adddition of its source in an user spool" do
+      setup do
+        @mockup.add_to_graphic_item_spool("source", User.first)
+      end
+    
+      should "NOT be able to update its name" do
+        @mockup.name = "Can I change my name ?"
+        @mockup.valid?
+        
+        assert @mockup.errors.invalid?(:name)
       end
     end
     
     context ", after having add a source without its image," do
       setup do
-        @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf"))} )
         @mockup.valid?
       end
       
-      should "not be valid and generate an error on the new_graphic_item_version" do
+      should "NOT be valid and generate an error on the new_graphic_item_version" do
         assert @mockup.errors.invalid?(:new_graphic_item_version)
       end
     end
@@ -210,12 +245,16 @@ class MockupTest < ActiveSupport::TestCase
       should "have changed its current source" do
         assert_equal @mockup.current_source, @mockup.current_version.source
       end
+      
+      should "have destroyed its items in users spool" do
+        assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @mockup.id]).empty?
+      end
     end
     
     context ", after having add both new image and new source," do
       setup do
         @old_version = @mockup.current_version
-        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")), :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
+        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")), :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf")) } )
         flunk "@mockup should be saved to continue > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save     
         flunk "@mockup.current_version should not be @old_version to continue" unless @mockup.current_version != @old_version
       end
@@ -238,6 +277,10 @@ class MockupTest < ActiveSupport::TestCase
       
       should "have changed its current source" do
         assert_equal @mockup.current_source, @mockup.current_version.source
+      end
+      
+      should "have destroyed its items in users spool" do
+        assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @mockup.id]).empty?
       end
     end
     
@@ -262,6 +305,10 @@ class MockupTest < ActiveSupport::TestCase
         
         should "have changed its current source" do
           assert_equal @mockup.current_source, @mockup.current_version.source
+        end
+        
+        should "have destroyed its items in users spool" do
+          assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @mockup.id]).empty?
         end
       end
       
@@ -292,6 +339,151 @@ class MockupTest < ActiveSupport::TestCase
       should "NOT be able to be cancelled" do
         assert !@mockup.can_be_cancelled?
         assert !@mockup.cancel
+      end
+    end
+    
+    should "NOT be able to remove its current image from an user graphic item spool" do
+      assert !@mockup.remove_from_graphic_item_spool("image",User.first)
+    end
+    
+    should "NOT be able to remove its current source from an user graphic item spool" do
+      assert !@mockup.remove_from_graphic_item_spool("source",User.first)
+    end
+    
+    should "NOT be able to add a non paperclip object to an user graphic item spool" do
+      assert !@mockup.add_to_graphic_item_spool("other",User.first)
+    end
+    
+    context ", after having add its current image to an user graphic item spool" do
+      setup do
+        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+      end
+      
+      should "have its current image in the user graphic item spool" do
+        assert @mockup.is_in_user_spool("image",User.first)
+      end
+      
+      should "have its current image in spool" do
+        assert @mockup.is_in_spool("image")
+      end
+      
+      should "be able to remove its current image from the user graphic item spool" do
+        flunk "@mockup.current_image should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("image",User.first)
+        assert !@mockup.is_in_user_spool("image",User.first)
+      end
+      
+      should "have a corresponding file in its assets spool directory" do
+        @gisi = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"image"])
+        assert File.exists?(@gisi.path)
+      end
+      
+      should "have a spool item corresponding to the id returned by the spool_item_id method" do
+        @gisi = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"image"])
+        assert_equal @gisi.id, @mockup.spool_item_id("image",User.first)
+      end
+    end
+    
+    context ", after having add its current source to an user graphic item spool" do
+      setup do
+        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+      end
+      
+      should "have its current source in the user graphic item spool" do
+        assert @mockup.is_in_user_spool("source",User.first)  
+      end
+      
+      should "have its current image in spool" do
+        assert @mockup.is_in_spool("source")
+      end
+      
+      should "be able to remove its current source from the user graphic item spool" do
+        flunk "@mockup.current_source should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("source",User.first)
+        assert !@mockup.is_in_user_spool("source",User.first)
+      end
+      
+      should "have a corresponding file in its assets spool directory" do
+        @gisi = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"source"])
+        assert File.exists?(@gisi.path)
+      end
+      
+      should "have a spool item corresponding to the id returned by the spool_item_id method" do
+        @gisi = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"source"])
+        assert_equal @gisi.id, @mockup.spool_item_id("source",User.first)
+      end
+    end
+    
+    context ", after having remove its current image to an user graphic item spool" do
+      setup do
+        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+        @gisi_path = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"image"]).path
+        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("image",User.first)
+      end
+      
+      should "NOT have its current image in the user graphic item spool" do
+        assert !@mockup.is_in_user_spool("image",User.first)
+      end
+      
+      should "NOT be able to remove its current image from the user graphic item spool" do
+        assert !@mockup.remove_from_graphic_item_spool("image",User.first)
+      end
+      
+      should "be able to add its current image from the user graphic item spool" do
+        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+        assert @mockup.is_in_user_spool("image",User.first)
+      end
+      
+      should "NOT have a corresponding file in its assets spool directory" do
+        assert !File.exists?(@gisi_path)
+      end
+      
+      should "NOT have any spool item for its image" do
+        assert_nil @mockup.spool_item_id("image",User.first)
+      end
+    end
+    
+    context ", after having remove its current source to an user graphic item spool" do
+      setup do
+        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+        @gisi_path = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"source"]).path
+        flunk "@mockup.current_source should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("source",User.first)
+      end
+      
+      should "NOT have its current source in the user graphic item spool" do
+        assert !@mockup.is_in_user_spool("source",User.first)
+      end
+      
+      should "NOT be able to remove its current source from the user graphic item spool" do
+        assert !@mockup.remove_from_graphic_item_spool("source",User.first)
+      end
+      
+      should "be able to add its current source from the user graphic item spool" do
+        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+        assert @mockup.is_in_user_spool("source",User.first)
+      end
+      
+      should "NOT have a corresponding file in its assets spool directory" do
+        assert !File.exists?(@gisi_path)
+      end
+      
+      should "NOT have any spool item for its source" do
+        assert_nil @mockup.spool_item_id("source",User.first)
+      end
+    end
+    
+    context "after being destroyed" do
+      setup do
+        @mockup.add_to_graphic_item_spool("image",User.first)
+        @mockup.add_to_graphic_item_spool("image",User.last)
+        @destroyed_mockup_id = @mockup.id
+        flunk "@mockup should be destroyed to continue" unless @mockup.destroy
+      end
+    
+      should "destroy all its versions at the same time" do
+        assert GraphicItemVersion.find(:all,:conditions => ["graphic_item_id = ?", @destroyed_mockup_id]).empty?
+      end
+      
+      should "destroy its image in users spool at the same time" do
+        assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @destroyed_mockup_id]).empty?
       end
     end
   end

@@ -68,7 +68,9 @@ ActionController::Routing::Routes.add_routes do |map|
                                   :action     => 'cancel',
                                   :conditions => { :method => :get }
       
-      mockup.refresh_links 'refresh_links', :controller => 'mockups', :action => 'refresh_links'
+      mockup.refresh_links     'refresh_links',     :controller => 'mockups', :action => 'refresh_links'
+      mockup.add_to_spool      'add_to_spool',      :controller => 'mockups', :action => 'add_to_spool'
+      mockup.remove_from_spool 'remove_from_spool', :controller => 'mockups', :action => 'remove_from_spool'
     end
     
     order.resources :graphic_documents do |graphic_document|      
@@ -76,8 +78,16 @@ ActionController::Routing::Routes.add_routes do |map|
                                                       :action     => 'cancel',
                                                       :conditions => { :method => :get }
       
-      graphic_document.refresh_links 'refresh_links', :controller => 'graphic_documents', :action => 'refresh_links'
+      graphic_document.refresh_links     'refresh_links',     :controller => 'graphic_documents', :action => 'refresh_links' 
+      graphic_document.add_to_spool      'add_to_spool',      :controller => 'graphic_documents', :action => 'add_to_spool'
+      graphic_document.remove_from_spool 'remove_from_spool', :controller => 'graphic_documents', :action => 'remove_from_spool'
     end
+    
+    order.resources :graphic_item_spool_items do |spool_item|
+      spool_item.remove_from_spool 'remove_from_spool', :controller => 'graphic_item_spool_items', :action => 'remove_from_spool'
+    end
+    
+    order.empty_graphic_item_spool_items 'empty_graphic_item_spool_items', :controller => 'graphic_item_spool_items', :action => 'empty_spool'
     
     order.resources :logs
     order.informations 'informations',        :controller => 'informations'

@@ -2,18 +2,18 @@
 
 <h1>Toutes les maquettes du dossier</h1>
 <div>  
-  <% if @employee %>
-    <% add_contextual_menu_item :possible_actions do %>
-      <%= new_graphic_item_link(Mockup) %>
-    <% end %>
-    <% unless @enabled_mockups.empty? %>
-      <% @order.mockups.each do |mockup| %>
-        <%= render(:partial => 'graphic_items/graphic_item_summary', :object => mockup) unless mockup.cancelled %>
-      <% end %>
-    <% else %>
-      <p>Il n'y a aucune maquette dans ce dossier<p>
+  <% add_contextual_menu_item :possible_actions do %>
+    <%= new_graphic_item_link(Mockup) %>
+  <% end %>
+  <% add_contextual_menu_item("Travaux en attente",true) do %>
+    <%= display_user_spool %>
+  <% end %>
+  <% unless @enabled_mockups.empty? %>
+    <% @order.mockups.each do |mockup| %>
+      <%= render(:partial => "graphic_items/graphic_item_summary", :object => mockup) unless mockup.cancelled %>
+      <br/>
     <% end %>
   <% else %>
-    <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+    <p>Il n'y a aucune maquette dans ce dossier<p>
   <% end %>
 </div>
