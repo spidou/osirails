@@ -1,6 +1,6 @@
 function select_product(select)
 {
-  if (confirm("Voulez-vous changer la référence produit,\ncela aura pour conséquence d'annuler\nvotre sélection de maquettes?")) { // Click sur OK
+  if ($('droppable_div').innerHTML.strip() == "" || confirm("Êtes-vous sûr de voiloir changer la référence produit ?\nCela aura pour conséquence de vider la liste de maquettes que vous avez sélectionné dans l'onglet 'Maquettes'")) {
     var selected = select.options[select.selectedIndex].value;
     reset_all_draggable(selected, true);
   }
@@ -61,9 +61,9 @@ function remove_selected_mockup(element)
   
   selected_mockup.down(".should_destroy").setAttribute('value','1');
   
-  $(selected_mockup).hide();  
+  Effect.Fade(selected_mockup)
   
-  $(mockup).setAttribute('style', "z-index: 1; left: 0px; top: 0px; position: relative;");
+  Effect.Appear(mockup)
 }
 
 // The same function as remove_selected_mockup but used to warn an user

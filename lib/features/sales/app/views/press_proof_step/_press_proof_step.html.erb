@@ -56,18 +56,7 @@
     <%= link_to "Plus de détails", '#quote_list_more', :id => 'quotes_list_more_infos_link' %>
   </p>
 
-  <% unless @all_press_proofs.empty? %>
-    <table>
-      <tr>
-        <th>Désignation</th> <th>Qté</th> <th>Date émission</th> <th>N° maquette</th> <th>Type</th>
-        <th>Description</th> <th>Contact graphique</th> <th>BAT envoyé le</th>
-        <th>BAT signé le</th> <th>État relance</th> <th>Actions</th>
-      </tr>
-      <%= render :partial => "product_with_press_proofs", :collection => @order.products %>
-    </table>
-  <% else %>
-    <p>Aucun Bon &agrave; Tirer n&apos;a &eacute;t&eacute; trouv&eacute;</p>
-  <% end %>
+  <%= render :partial => "press_proofs/press_proofs_list", :object => @order.press_proofs %>
   
   <p>
     <%= link_to "Nouveau Bon à tirer", new_order_commercial_step_press_proof_step_press_proof_path %>

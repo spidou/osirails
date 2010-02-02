@@ -1,11 +1,12 @@
 class CreateDunnings < ActiveRecord::Migration
   def self.up
     create_table :dunnings do |t|
+      t.references :has_dunning, :creator, :dunning_sending_method, :cancelled_by
+      t.string     :has_dunning_type
       t.date       :date
       t.text       :comment
-      t.string     :has_dunning_type
       t.boolean    :cancelled
-      t.references :creator, :dunning_sending_method, :has_dunning, :cancelled_by
+      
       t.timestamps
     end
   end

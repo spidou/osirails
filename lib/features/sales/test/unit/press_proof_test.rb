@@ -2,8 +2,6 @@ require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class PressProofTest < ActiveSupport::TestCase
-  fixtures :all
-
   should_belong_to :order, :product, :internal_actor, :creator, :document_sending_method, :revoked_by
   
   should_have_named_scope :actives, :conditions => ["status NOT IN (?)", [PressProof::STATUS_CANCELLED, PressProof::STATUS_REVOKED]]

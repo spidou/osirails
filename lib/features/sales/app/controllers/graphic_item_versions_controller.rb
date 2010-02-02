@@ -1,20 +1,18 @@
 class GraphicItemVersionsController < ApplicationController  
-  # GET /graphic_item_versions/:id/:style.:extension
-  #
+  
+  # GET /graphic_item_versions/:id/:type/:style
   def show
+    error_access_page(400) unless ['image', 'source'].include?(params[:type])
+    
     @graphic_item_version = GraphicItemVersion.find(params[:id])
-    is_image = params[:name] != "source" ? true : false
+    @graphic_item = @graphic_item_version.graphic_item
     
     if GraphicItemVersion.can_view?(current_user)
-      if params[:name] != "source"
-        ext = File.extname(@graphic_item_version.image.path)
-        dir = File.dirname(@graphic_item_version.image.path)
-        url = "#{dir}/#{params[:name]}#{ext}"
-      else
-        url = @graphic_item_version.source.path
-      end
+      url = @graphic_item_version.send(params[:type]).path(params[:style])
+      ext = File.extname(url)
       
-      send_file url
+      send_file url, :filename  => "#{@graphic_item.name.underscore}#{'_source' if params[:type] == 'source'}#{ext}",
+                     :type      => @graphic_item_version.send("#{params[:type]}_content_type")
     end
   end
   

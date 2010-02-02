@@ -3,7 +3,7 @@
 <h1>Signaler que le BAT a été envoyé au client</h1>
 
 <div class="presentation_medium">
-  <%= render :partial => "product_with_press_proof",:object => @press_proof  %>
+  <%= render :partial => "press_proofs_list", :object => [ PressProof.find(@press_proof.id) ] %>
   
 	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "send_to_customer", :press_proof_id => @press_proof.id }, :method => :put do |form| %>
     <%= form.error_messages %>

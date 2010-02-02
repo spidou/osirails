@@ -1,7 +1,5 @@
 require 'test/test_helper'
 
 class DunningSendingMethodTest < ActiveSupport::TestCase
-
-  should_have_many :dunning
-
+  # nothing to do here
 end

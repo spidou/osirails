@@ -1,8 +1,8 @@
 <% dunning = dunning_in_one_line%>
 <tr>
   <td><%= dunning_in_one_line_counter %></td>
-  <td><%= dunning.dunning_sending_method.name %></td>
   <td><%= dunning.date.humanize %></td>
+  <td><%= dunning.dunning_sending_method.name %></td>
   <td><%= dunning.creator.employee_name %></td>
   <td><%= dunning.comment %></td>
   <% unless without_action||=false %>

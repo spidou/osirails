@@ -24,7 +24,7 @@ class Order < ActiveRecord::Base
   
   # press_proofs
   has_many :press_proofs
-  # TODO had the corresponding test
+  # TODO add the corresponding test
   
   # delivery notes
   has_many :delivery_notes

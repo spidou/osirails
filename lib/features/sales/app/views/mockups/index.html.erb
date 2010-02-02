@@ -1,18 +1,19 @@
 <%= order_header %>
 
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_graphic_item_link(Mockup) %>
+<% end %>
+
 <h1>Toutes les maquettes du dossier</h1>
-<div>  
+<div class="resources">  
   <% if @employee %>
-    <% add_contextual_menu_item :possible_actions do %>
-      <%= new_graphic_item_link(Mockup) %>
-    <% end %>
+    
     <% unless @enabled_mockups.empty? %>
-      <% @order.mockups.each do |mockup| %>
-        <%= render(:partial => 'graphic_items/graphic_item_summary', :object => mockup) unless mockup.cancelled %>
-      <% end %>
+      <%= render :partial => 'graphic_items/graphic_item_summary', :collection => @enabled_mockups %>
     <% else %>
       <p>Il n'y a aucune maquette dans ce dossier<p>
     <% end %>
+    
   <% else %>
     <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
   <% end %>

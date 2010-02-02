@@ -1,5 +1,7 @@
 <div class='presentation_medium'>
 <% form_for(dunning,:url => {:action => :create}) do |f| %>
+  <%= render :partial => "press_proofs/press_proofs_list", :object => [ @owner_class.find(@owner.id) ] %>
+  
   <%= f.error_messages %>
   <p>
     <%= f.label :date %>

@@ -16,8 +16,9 @@ class PressProof < ActiveRecord::Base
                     :path => ':rails_root/assets/:class/:attachment/:reference.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
-  has_many :press_proof_items, :dependent => :destroy
-  has_many :graphic_item_versions, :through => :press_proof_items
+  has_many :press_proof_items, :order => "created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
+  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
+  
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
   belongs_to :order
@@ -32,7 +33,6 @@ class PressProof < ActiveRecord::Base
   validates_presence_of :creator,        :if => :creator_id
   validates_presence_of :internal_actor, :if => :internal_actor_id
   validates_presence_of :product,        :if => :product_id
-  validate :validates_presence_of_press_proof_items_custom # use this because the deletion of a resource is done after validation by using a flag, so we must validate the flag state
   
   validates_persistence_of :order_id, :product_id, :unless => :new_record?
   validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :unless => :can_be_edited?
@@ -84,24 +84,23 @@ class PressProof < ActiveRecord::Base
  
   validates_associated :press_proof_items
  
+  validate :validates_presence_of_press_proof_items_custom # use this because the deletion of a resource is done after validation by using a flag, so we must validate the flag state
   validate :validates_mockups
   
-  #callbacks
   after_save :save_press_proof_items
-  
     
   cattr_accessor :form_labels
-  
   @@form_labels = {}
   @@form_labels[:internal_actor]          = "Contact Graphique :"
   @@form_labels[:creator]                 = "Créateur :"
   @@form_labels[:product]                 = "Produit :"
+  @@form_labels[:product_description]     = "Description :"
   @@form_labels[:unit_measure]            = "Unité de mesures :"
   @@form_labels[:sended_on]               = "BAT envoyé au client le :"
   @@form_labels[:document_sending_method] = "Par :"
   @@form_labels[:signed_on]               = "BAT signé par le client le :"
-  @@form_labels[:signed_press_proof]      = "Bon à tirer signé :"
-  @@form_labels[:revoked_comment]         = "Motif de l'annulation après signature :"
+  @@form_labels[:signed_press_proof]      = "Fichier (BAT signé) :"
+  @@form_labels[:revoked_comment]         = "Motif de l'annulation :"
   @@form_labels[:revoked_by]              = "BAT annulé par :"
   @@form_labels[:revoked_at]              = "BAT annulé le :"
   @@form_labels[:cancelled_at]            = "BAT annulé le :"
@@ -243,6 +242,10 @@ class PressProof < ActiveRecord::Base
         record.attributes = attributes
       end
     end
+  end
+  
+  def product_description
+    product ? product.description : nil
   end
   
   private

@@ -5,16 +5,17 @@ class DunningTest < ActiveSupport::TestCase
 
   should_belong_to :has_dunning, :creator, :dunning_sending_method, :cancelled_by
   
-  should_validate_presence_of :date, :comment
-  should_validate_presence_of :dunning_sending_method, :creator, :has_dunning,  :with_foreign_key => :default
+  should_validate_presence_of :date, :comment, :has_dunning_type
+  should_validate_presence_of :dunning_sending_method, :creator, :has_dunning, :with_foreign_key => :default
   
   should_have_named_scope :actives, :conditions => ["cancelled is NULL or cancelled = ?", false]
   should_have_named_scope :cancelled, :conditions => ["cancelled =?", true]
   
-  #    should_validate_date :date, :on_or_after => Proc.new {|n| n.has_dunning.sended_on if n.has_dunning},
-  #                                :on_or_after_message => "ne doit pas être AVANT la date de création de la Relance&#160;(%s)",
-  #                                :on_or_before => Proc.new { Date.today },
-  #                                :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+  #TODO
+  #validates_date :date, :on_or_after          => Proc.new {|n| n.has_dunning.sended_on if n.has_dunning},
+  #                      :on_or_after_message  => "ne doit pas être AVANT la date d'envoi au client&#160;(%s)",
+  #                      :on_or_before         => Proc.new { Date.today },
+  #                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
   
   context "A new dunning with a sended has_dunning" do
   

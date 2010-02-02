@@ -85,7 +85,7 @@ class Quote < ActiveRecord::Base
   @@form_labels[:send_quote_method] = 'Par :'
   @@form_labels[:signed_on]         = 'Devis signé par le client le :'
   @@form_labels[:order_form_type]   = 'Type de document :'
-  @@form_labels[:order_form]        = 'Fichier :'
+  @@form_labels[:order_form]        = 'Fichier (document signé) :'
   @@form_labels[:sales_terms]       = 'Conditions commerciales :'
   
   def initialize(*params)

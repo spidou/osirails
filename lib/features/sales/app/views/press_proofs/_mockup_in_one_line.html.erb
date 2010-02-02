@@ -1,0 +1,8 @@
+<%
+require_locals index
+mockup = mockup_in_one_line # mockup is an instance of GraphicItemVersion
+%>
+
+<td><%= index %></td>
+<td><%= mockup.graphic_item.mockup_type.name %></td>
+<td><%= mockup.graphic_item.description %></td>

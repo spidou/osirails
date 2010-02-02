@@ -1,7 +1,9 @@
 class PressProofsController < ApplicationController
-  helper :orders, :graphic_items
+  helper :orders, :graphic_items, :dunnings
   
   acts_as_step_controller :step_name => :press_proof_step, :skip_edit_redirection => true
+  
+  before_filter :load_order_mockups, :only => [ :new, :create, :edit, :update ]
   
   # GET /orders/:order_id/:step/press_proofs
   def index
@@ -10,24 +12,23 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:id
   def show
-    @press_proof = PressProof.find params[:id]
+    @press_proof = PressProof.find(params[:id])
   end
   
   # GET /orders/:order_id/:step/press_proofs/new
   def new
-    @press_proof = PressProof.new
-    @mockups = @order.mockups
+    @press_proof = @order.press_proofs.build
+    @press_proof.creator = current_user
   end
   
   # POST /orders/:order_id/:step/press_proofs
   def create
-    @mockups = @order.mockups
-    @press_proof = PressProof.new(params[:press_proof])
+    @press_proof = @order.press_proofs.build(params[:press_proof])
     @press_proof.order   = @order
     @press_proof.creator = current_user
     
     if @press_proof.save
-      flash[:notice] = "Le Bon à Tirer a été créé avec succès"
+      flash[:notice] = "Le Bon à Tirer (BAT) a été créé avec succès"
       redirect_to send(@step.original_step.path)
     else
       render :action => :new
@@ -36,18 +37,16 @@ class PressProofsController < ApplicationController
   
   # GET /orders/:order_id/:step/press_proofs/:press_proof_id
   def edit
-      @press_proof = PressProof.find params[:id]
-      @mockups = @order.mockups
+      @press_proof = PressProof.find(params[:id])
       error_access_page(403) unless @press_proof.can_be_edited?
   end
   
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id
   def update
-    @press_proof = PressProof.find params[:id]
-    @mockups = @order.mockups
+    @press_proof = PressProof.find(params[:id])
     
-    if @press_proof.update_attributes params[:press_proof]
-      flash[:notice] = "Le Bon à Tirer a été modifié avec succès"
+    if @press_proof.update_attributes(params[:press_proof])
+      flash[:notice] = "Le Bon à Tirer (BAT) a été modifié avec succès"
       redirect_to send(@step.original_step.path)
     else
       render :action => :edit
@@ -58,7 +57,11 @@ class PressProofsController < ApplicationController
   def destroy
     @press_proof = PressProof.find(params[:id])
     if @press_proof.can_be_destroyed?
-      flash[:error] = "Une erreur est survenue à la suppression du Bon à Tirer" unless @press_proof.destroy
+      if @press_proof.destroy
+        flash[:notice] = "Le Bon à Tirer (BAT) a été supprimé avec succès"
+      else
+        flash[:error] = "Une erreur est survenue à la suppression du Bon à Tirer (BAT)"
+      end
       redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
@@ -69,8 +72,12 @@ class PressProofsController < ApplicationController
   def cancel
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_cancelled?
-     flash[:error] = "Une erreur est survenue à la désactivation du Bon à Tirer" unless @press_proof.cancel
-     redirect_to send(@step.original_step.path)
+      if @press_proof.cancel
+        flash[:notice] = "Le Bon à Tirer (BAT) a été annulé avec succès"
+      else
+        flash[:error] = "Une erreur est survenue à la désactivation du Bon à Tirer (BAT)"
+      end
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
     end
@@ -80,8 +87,12 @@ class PressProofsController < ApplicationController
   def confirm
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_confirmed?
-     flash[:error] = "Une erreur est survenue à la validation du Bon à Tirer" unless @press_proof.confirm
-     redirect_to send(@step.original_step.path)
+      if @press_proof.confirm
+        flash[:notice] = "Le Bon à Tirer (BAT) a été validé avec succès"
+      else
+        flash[:error] = "Une erreur est survenue à la validation du Bon à Tirer (BAT)"
+      end
+      redirect_to send(@step.original_step.path)
     else
       error_access_page(403)
     end
@@ -97,7 +108,7 @@ class PressProofsController < ApplicationController
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_sended?
       if @press_proof.send_to_customer(params[:press_proof])
-       flash[:notice] = "Le Bon à tirer a été modifié avec succés"
+       flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
        redirect_to send(@step.original_step.path)
       else
         render :action => :send_form
@@ -117,7 +128,7 @@ class PressProofsController < ApplicationController
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof.can_be_signed?
       if  @press_proof.sign(params[:press_proof])
-       flash[:notice] = "Le Bon à tirer a été modifié avec succés"
+       flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
        redirect_to send(@step.original_step.path)
       else
         render :action => :sign_form
@@ -140,7 +151,7 @@ class PressProofsController < ApplicationController
       params[:press_proof][:revoked_by_id] = current_user.id
       
       if @press_proof.revoke(params[:press_proof])
-       flash[:notice] = "Le Bon à tirer a été modifié avec succés"
+       flash[:notice] = "Le Bon à tirer (BAT) a été modifié avec succés"
        redirect_to send(@step.original_step.path)
       else
         render :action => :revoke_form
@@ -155,9 +166,9 @@ class PressProofsController < ApplicationController
     @press_proof = PressProof.find(params[:press_proof_id])
     if @press_proof and @press_proof.signed?
       url = @press_proof.signed_press_proof.path
-      url = File.exists?(url) ? url : @press_proof.signed_press_proof
+      ext = File.extname(url)
       
-      send_data File.read(url), :filename => "#{@press_proof.id}.pdf", :type => @quote.press_proof_content_type, :disposition => 'attachment'
+      send_data File.read(url), :filename => "BAT" + "_#{@press_proof.reference}_" + "signé" + ext, :type => @press_proof.signed_press_proof_content_type, :disposition => 'attachment'
     else
       error_access_page(404)
     end
@@ -167,9 +178,13 @@ class PressProofsController < ApplicationController
     graphic_item_version = GraphicItemVersion.find(params[:mockup_version_id])
     render :update do |page|
       page.insert_html :bottom, "droppable_div", :partial => 'press_proofs/selected_graphic_item_version',
-                                                 :object => graphic_item_version,
-                                                 :locals => {:without_action => true}
+                                                 :object  => graphic_item_version,
+                                                 :locals  => { :without_action => true }
     end
   end
   
+  private
+    def load_order_mockups
+      @mockups = @order.mockups
+    end
 end

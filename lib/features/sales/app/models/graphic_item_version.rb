@@ -9,14 +9,14 @@ class GraphicItemVersion < ActiveRecord::Base
   
   # paperclip plugin
   has_attached_file :image, 
-                    :styles => { :medium => "640x400>",
-                                 :thumb => "100x100#" },
-                    :path => ":rails_root/assets/graphic_item_versions/:id/image/:style.:extension",
-                    :url => "/graphic_item_versions/:id/:style.:extension"
+                    :styles => { :medium  => "640x400>",
+                                 :thumb   => "100x100#" }, # be careful !! don't name a style 'source' like the second attachment of GraphicItemVersion, because there are stored in the same directory
+                    :path   => ":rails_root/assets/sales/graphic_item_versions/:id/:style.:extension",
+                    :url    => "/graphic_item_versions/:id/image/:style"
                     
   has_attached_file :source, 
-                    :path => ":rails_root/assets/graphic_item_versions/:id/source/:basename.:extension",
-                    :url => "/graphic_item_versions/:id/source.:extension"                
+                    :path => ":rails_root/assets/sales/graphic_item_versions/:id/source.:extension",
+                    :url  => "/graphic_item_versions/:id/source"
   
   # paperclip plugin validations
   validates_attachment_presence     :image
@@ -30,4 +30,5 @@ class GraphicItemVersion < ActiveRecord::Base
   def formatted_created_at
     self.created_at.humanize
   end
+  
 end

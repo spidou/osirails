@@ -2,9 +2,9 @@ class GraphicItem < ActiveRecord::Base
   # Relationships
   belongs_to :order
   belongs_to :graphic_unit_measure
-  belongs_to :creator, :class_name => "Employee", :foreign_key => :creator_id
+  belongs_to :creator, :class_name => "Employee"
   
-  has_many :graphic_item_versions
+  has_many :graphic_item_versions, :dependent => :destroy
 
   # Validations
   validates_presence_of :name, :description, :order_id, :graphic_unit_measure_id, :creator_id

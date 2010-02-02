@@ -332,14 +332,14 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
   end
 
   create_table "dunnings", :force => true do |t|
-    t.date     "date"
-    t.text     "comment"
-    t.string   "has_dunning_type"
-    t.boolean  "cancelled"
+    t.integer  "has_dunning_id",            :limit => 11
     t.integer  "creator_id",                :limit => 11
     t.integer  "dunning_sending_method_id", :limit => 11
-    t.integer  "has_dunning_id",            :limit => 11
     t.integer  "cancelled_by_id",           :limit => 11
+    t.string   "has_dunning_type"
+    t.date     "date"
+    t.text     "comment"
+    t.boolean  "cancelled"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -475,8 +475,8 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
   create_table "graphic_item_versions", :force => true do |t|
     t.integer  "graphic_item_id",     :limit => 11
     t.string   "source_file_name"
-    t.string   "source_content_type"
     t.string   "image_file_name"
+    t.string   "source_content_type"
     t.string   "image_content_type"
     t.integer  "source_file_size",    :limit => 11
     t.integer  "image_file_size",     :limit => 11
@@ -856,12 +856,11 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
     t.integer  "internal_actor_id",               :limit => 11
     t.integer  "revoked_by_id",                   :limit => 11
     t.integer  "document_sending_method_id",      :limit => 11
-    t.integer  "signed_press_proof_file_size",    :limit => 11
     t.string   "status"
     t.string   "reference"
+    t.integer  "signed_press_proof_file_size",    :limit => 11
     t.string   "signed_press_proof_file_name"
     t.string   "signed_press_proof_content_type"
-    t.datetime "signed_press_proof_updated_at"
     t.text     "revoked_comment"
     t.date     "confirmed_on"
     t.date     "signed_on"

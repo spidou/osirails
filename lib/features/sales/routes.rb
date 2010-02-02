@@ -43,24 +43,45 @@ ActionController::Routing::Routes.add_routes do |map|
       commercial.resource :press_proof_step, :as => 'press_proof', :controller  => 'press_proof_step' do |press_proof_step|
       
         press_proof_step.resources :press_proofs do |press_proof|
-          press_proof.confirm          'confirm',     :controller => 'press_proofs', :action     => 'confirm',          :conditions => { :method => :get }
-          press_proof.cancel           'cancel',      :controller => 'press_proofs', :action     => 'cancel',           :conditions => { :method => :get }
+          press_proof.confirm             'confirm',            :controller => 'press_proofs',
+                                                                :action     => 'confirm',
+                                                                :conditions => { :method => :get }
           
-          press_proof.send_form        'send_form',   :controller => 'press_proofs', :action     => 'send_form',        :conditions => { :method => :get }
-          press_proof.send_to_customer 'send',        :controller => 'press_proofs', :action     => 'send_to_customer', :conditions => { :method => :put }
+          press_proof.cancel              'cancel',             :controller => 'press_proofs',
+                                                                :action     => 'cancel',
+                                                                :conditions => { :method => :get }
           
-          press_proof.sign_form        'sign_form',   :controller => 'press_proofs', :action     => 'sign_form',        :conditions => { :method => :get }
-          press_proof.sign             'sign',        :controller => 'press_proofs', :action     => 'sign',             :conditions => { :method => :put }
+          press_proof.send_form           'send_form',          :controller => 'press_proofs',
+                                                                :action     => 'send_form',
+                                                                :conditions => { :method => :get }
           
-          press_proof.revoke_form      'revoke_form', :controller => 'press_proofs', :action     => 'revoke_form',      :conditions => { :method => :get }
-          press_proof.revoke           'revoke',      :controller => 'press_proofs', :action     => 'revoke',           :conditions => { :method => :put }
+          press_proof.send_to_customer    'send',               :controller => 'press_proofs',
+                                                                :action     => 'send_to_customer',
+                                                                :conditions => { :method => :put }
           
-          press_proof.resources :dunnings do |dunning|
-            dunning.cancel             'cancel',      :controller => 'dunnings',     :action     => 'cancel',           :conditions => { :method => :get } 
-          end
+          press_proof.sign_form           'sign_form',          :controller => 'press_proofs',
+                                                                :action     => 'sign_form',        
+                                                                :conditions => { :method => :get }
           
+          press_proof.sign                'sign',               :controller => 'press_proofs',
+                                                                :action     => 'sign',             
+                                                                :conditions => { :method => :put }
+          
+          press_proof.signed_press_proof  'signed_press_proof', :controller => 'press_proofs',
+                                                                :action     => 'signed_press_proof',
+                                                                :conditions => { :method => :get }
+          
+          press_proof.revoke_form         'revoke_form',        :controller => 'press_proofs',
+                                                                :action     => 'revoke_form',      
+                                                                :conditions => { :method => :get }
+          
+          press_proof.revoke              'revoke',             :controller => 'press_proofs',
+                                                                :action     => 'revoke',           
+                                                                :conditions => { :method => :put }
         end
-        press_proof_step.add_mockup    'add_mockup',  :controller => 'press_proofs', :action     => 'add_mockup',       :conditions => { :method => :get }
+        press_proof_step.add_mockup       'add_mockup',         :controller => 'press_proofs',
+                                                                :action     => 'add_mockup',       
+                                                                :conditions => { :method => :get }
       end
       
     end
@@ -82,7 +103,7 @@ ActionController::Routing::Routes.add_routes do |map|
       invoicing.resource :payment_step, :as => 'payment', :controller => 'payment_step'
     end
     
-    # other resources    
+    # other resources
     order.resources :graphic_items    
     order.resources :mockups    
     order.resources :graphic_documents
@@ -103,13 +124,18 @@ ActionController::Routing::Routes.add_routes do |map|
       graphic_document.refresh_links 'refresh_links', :controller => 'graphic_documents', :action => 'refresh_links'
     end
     
+    order.resources :dunnings, :path_prefix => "orders/:order_id/:owner/:owner_id" do |dunning|
+      dunning.cancel 'cancel', :controller => 'dunnings', :action => 'cancel', :conditions => { :method => :get } 
+    end
+    
     order.resources :logs
     order.informations 'informations',        :controller => 'informations'
   end 
   
   map.graphic_item_versions 'graphic_item_versions', :controller => 'graphic_item_versions'
-  map.graphic_item_version  'graphic_item_versions/:id/:name.:format', :controller => 'graphic_item_versions',
-                                                                       :action     => 'show'
+  map.graphic_item_version  'graphic_item_versions/:id/:type/:style', :controller => 'graphic_item_versions',
+                                                                      :action     => 'show',
+                                                                      :style      => 'original'
                                                                           
   map.closed_orders         'closed_orders',         :controller => 'closed_orders'
   map.archived_orders       'archived_orders',       :controller => 'archived_orders'

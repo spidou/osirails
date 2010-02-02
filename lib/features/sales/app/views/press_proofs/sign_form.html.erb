@@ -3,9 +3,7 @@
 <h1>Signaler que le BAT a été signé par le client</h1>
 
 <div class="presentation_medium">
-  <table>
-    <%# render :partial => 'press_proofs', :object => @press_proof %>
-  </table>
+  <%= render :partial => "press_proofs_list", :object => [ PressProof.find(@press_proof.id) ] %>
   
 	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "sign", :press_proof_id => @press_proof.id }, :html => { :multipart => true }, :method => :put do |form| %>
     <%= form.error_messages %>

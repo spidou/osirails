@@ -96,10 +96,12 @@
         <p id="new_image_paragraph">
           <%= f.label :image %>
           <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
+          <span class="help_text">Fichier image consultable par tous (.jpg, .png, .bmp, .gif, etc)</span>
         </p>
         <p id="new_source_paragraph">
           <%= f.label :source %>
           <%= f.form_or_view(f.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
+          <span class="help_text">Fichier dans le format original du logiciel de retouche photo (.ai, .psd, .ps, .xcf, etc)</span>
         </p>  
         <% unless graphic_item.new_record? %>
           <p id="change_version_paragraph" style="display:none">
