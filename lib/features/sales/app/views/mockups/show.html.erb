@@ -5,15 +5,13 @@
 <% end %>
 
 <h1>Informations sur la maquette</h1>
-<% if @employee %>
-  <% add_contextual_menu_item :possible_actions do %>
-	  <%= edit_graphic_item_link(@mockup) %>
-	  <%= delete_graphic_item_link(@mockup) %>
-	  <%= cancel_graphic_item_link(@mockup) %>
-  <% end %>
-  
-  <%= render :partial => "graphic_items/graphic_item", :object => @mockup %>
-
-<% else %>
-  <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+<% add_contextual_menu_item :possible_actions do %>
+  <%= edit_graphic_item_link(@mockup) %>
+  <%= delete_graphic_item_link(@mockup) %>
+  <%= cancel_graphic_item_link(@mockup) %>
 <% end %>
+<% add_contextual_menu_item("Travaux en attente",true) do %>
+  <%= display_user_spool %>
+<% end %>
+
+<%= render :partial => "graphic_items/graphic_item", :object => @mockup %>

@@ -1,0 +1,19 @@
+<% graphic_item = GraphicItem.find(params[:mockup_id]||params[:graphic_document_id])%>
+
+<% if graphic_item.class.name == "Mockup" %>
+  
+  <% remove_path = order_mockup_remove_from_spool_path({:mockup_id => graphic_item.id, :file_type => params[:file_type], :item_id => graphic_item.spool_item_id(params[:file_type],current_user)})%>
+  <% add_path = order_mockup_add_to_spool_path({:mockup_id => graphic_item.id, :file_type => params[:file_type]})%>
+  
+<% elsif graphic_item.class.name == "GraphicDocument"%>
+  
+  <% remove_path = order_graphic_document_remove_from_spool_path({:graphic_document_id => graphic_item.id, :file_type => params[:file_type], :item_id => graphic_item.spool_item_id(params[:file_type],current_user)})%>
+  <% add_path = order_graphic_document_add_to_spool_path({:graphic_document_id => graphic_item.id, :file_type => params[:file_type]})%>
+  
+<% end %>
+
+<% if graphic_item.is_in_user_spool(params[:file_type],current_user) %>
+   <%= link_to_remote(strong("Retirer de la file d'attente"), :url => remove_path, :html => {:id => "spool_action_for_#{graphic_item.id}_#{params[:file_type]}"}) %>
+<% else %>          
+   <%= link_to_remote(strong("Ajouter à la file d'attente"), :url => add_path, :html => {:id => "spool_action_for_#{graphic_item.id}_#{params[:file_type]}"}) %>
+<% end %>

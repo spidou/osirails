@@ -5,6 +5,7 @@ require_dependency 'customer'
 require_dependency 'establishment'
 require_dependency 'society_activity_sector'
 require_dependency 'application_helper'
+require_dependency 'user'
 
 class Customer
   has_many :orders
@@ -22,6 +23,11 @@ end
 
 class SocietyActivitySector
   has_and_belongs_to_many :order_types
+end
+
+class User
+  has_many :graphic_items, :foreign_key => :creator_id
+  has_many :graphic_item_spool_items
 end
 
 module ApplicationHelper

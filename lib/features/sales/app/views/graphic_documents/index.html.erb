@@ -4,17 +4,15 @@
   <%= new_graphic_item_link(GraphicDocument) %>
 <% end %>
 
+<% add_contextual_menu_item("Travaux en attente",true) do %>
+  <%= display_user_spool %>
+<% end %>
+
 <h1>Tous les documents graphiques du dossier</h1>
-<div class="resources">  
-  <% if @employee %>
-  
-    <% unless @enabled_graphic_documents.empty? %>
-      <%= render :partial => 'graphic_items/graphic_item_summary', :collection => @enabled_graphic_documents %>
-    <% else %>
-      <p>Il n'y a aucun document graphique dans ce dossier<p>
-    <% end %>
-    
+<div class="resources">
+  <% unless @enabled_graphic_documents.empty? %>
+    <%= render :partial => 'graphic_items/graphic_item_summary', :collection => @enabled_graphic_documents %>
   <% else %>
-    <p>Vous ne pouvez acc&eacute;der &agrave; ce menu car vous n'&ecirc;tes pas associ&eacute; &agrave; un employ&eacute;</p>
+    <p>Il n'y a aucun document graphique dans ce dossier<p>
   <% end %>
 </div>

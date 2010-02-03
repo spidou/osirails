@@ -148,11 +148,12 @@ class Test::Unit::TestCase
     mockup = order.mockups.build(:name => "Sample",
                                  :description => "Sample de maquette destiné aux tests unitaires",
                                  :graphic_unit_measure => graphic_unit_measures(:normal), 
-                                 :creator => employees(:john_doe),
+                                 :creator => users(:admin_user),
                                  :mockup_type => mockup_types(:normal),
                                  :product => create_valid_product_for(order),
-                                 :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
-                                )                             
+                                 :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
+                                                                        :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+                                )
 
     flunk "mockup should be saved > #{mockup.errors.full_messages.join(', ')}" unless mockup.save
     return mockup
@@ -163,10 +164,11 @@ class Test::Unit::TestCase
     gd = order.graphic_documents.build(:name => "Sample", 
                                        :description => "Sample de document graphique destiné aux tests unitaires", 
                                        :graphic_unit_measure => graphic_unit_measures(:normal), 
-                                       :creator => employees(:john_doe), 
+                                       :creator => users(:admin_user), 
                                        :graphic_document_type => graphic_document_types(:normal),
-                                       :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
-                                      )
+                                       :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
+                                                                              :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+                                      )    
                                       
     flunk "gd should be saved > #{gd.errors.full_messages.join(', ')}" unless gd.save
     return gd
@@ -195,7 +197,7 @@ class Test::Unit::TestCase
     mockup = order.mockups.build(:name => "Sample",
                                  :description => "Sample de maquette destiné aux tests unitaires",
                                  :graphic_unit_measure => graphic_unit_measures(:normal), 
-                                 :creator => employees(:john_doe),
+                                 :creator => users(:admin_user),
                                  :mockup_type => mockup_types(:normal),
                                  :product_id => product_id,
                                  :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )

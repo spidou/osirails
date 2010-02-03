@@ -472,6 +472,15 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
     t.datetime "updated_at"
   end
 
+  create_table "graphic_item_spool_items", :force => true do |t|
+    t.integer  "user_id",         :limit => 11
+    t.integer  "graphic_item_id", :limit => 11
+    t.string   "path"
+    t.string   "file_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "graphic_item_versions", :force => true do |t|
     t.integer  "graphic_item_id",     :limit => 11
     t.string   "source_file_name"
