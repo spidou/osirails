@@ -4,7 +4,7 @@ class SupplierTest < ActiveSupport::TestCase
   fixtures :thirds, :ibans
 
   def setup
-    @supplier = thirds(:first_supplier)
+    @supplier = Supplier.first
   end
 
   def test_uniqness_of_name

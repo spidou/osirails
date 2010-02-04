@@ -1,0 +1,6 @@
+<% add_contextual_menu_item :useful_links do %>
+  <%= devices_link %>
+<% end %>
+
+<h1>Ajouter un p&eacute;riph&eacute;rique</h1>
+<%= render :partial => "tools/tool" , :locals => {:tool => @device, :button_name => "Ajouter"}%>

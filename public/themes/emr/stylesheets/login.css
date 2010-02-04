@@ -90,8 +90,8 @@ input[type=password] {
 	background: url("/themes/emr/images/login/input_text.png") no-repeat;
 	border: none;
 	width: 169px;/*171*/
-	height: 22px;
-	padding-top:5px;
+	height: 25px;
+	//padding-top:5px;
 	margin-left:auto;
 	margin-right:auto;
 	display:block;

@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
     def configure_model
       @@models[controller_path] ||= controller_name.singularize.camelize
     end
-
+      
   private
 
     # Do every verification before shows the page

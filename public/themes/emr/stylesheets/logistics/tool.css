@@ -1,0 +1,80 @@
+ul#tool_types {
+  list-style-type: none;
+  text-align: center;
+}
+
+ul#tool_types li {
+  display: inline-block;
+  text-align: center;
+  margin-right: 30px;
+}
+
+ul#tool_types li a {
+  display: block;
+}
+
+ul#tool_types li a img {
+  display: block;
+  padding: 2px;
+  border: 1px dashed #CCC;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* css for tool events displaying */
+
+.events {
+  text-align: left;
+}
+
+.events a {
+  text-decoration: none;
+}
+
+.event {
+  -moz-border-radius: 0px 0px 10px 10px;
+  vertical-align: top;
+  border: 1px solid gray;
+  background-color: #eaeaea;
+  display: inline-block;
+  width: 390px;
+  padding: 1px;
+  min-height: 170px;
+  margin: 10px;
+}
+
+.event #bell_image {
+  position: absolute;
+  left: 5px;
+  top: 2px
+}
+
+.type_intervention h3{
+  background-color: #E99727;
+}
+
+.type_incident h3{
+  background-color: #A2B3D7;
+}
+
+.informations {
+  margin-right: 75px;
+}
+
+.event h3 {
+  -moz-border-radius: 0px 0px 10px 0px;
+  border-right: 1px solid gray;
+  border-bottom: 1px solid gray;
+  position: relative;
+  color: black;
+  right: 1px;
+}
+
+
+.actions {
+  float: right;
+  position: relative ;
+  left: 10px;
+  top: 2px;
+  width: 75px;
+}
