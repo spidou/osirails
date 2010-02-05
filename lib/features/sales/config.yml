@@ -146,3 +146,9 @@ configurations:
   quote_validity_delay_unit:
     description: Unité de temps pour la validité du devis
     value: days
+  order_reference_pattern:
+    description: Pattern permettant la génération du numéro de référence unique 
+    value: "%y%m$number(2)"
+  quote_reference_pattern:
+    description: Pattern permettant la génération du numéro de référence unique
+    value: "$order.DV$number(2)"

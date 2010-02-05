@@ -285,4 +285,13 @@ class QuoteTest < ActiveSupport::TestCase
     end
   end
   
+  context "generate a reference" do
+    setup do
+      @reference_owner       = create_default_quote
+      @other_reference_owner = create_default_quote
+    end
+    
+    include HasReferenceTest
+  end
+  
 end

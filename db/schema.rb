@@ -694,6 +694,7 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.integer  "order_type_id",              :limit => 11
     t.integer  "approaching_id",             :limit => 11
     t.string   "title"
+    t.string   "reference"
     t.text     "customer_needs"
     t.datetime "closed_at"
     t.date     "previsional_delivery"
@@ -702,6 +703,8 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
   create_table "participants", :force => true do |t|
     t.integer  "event_id",    :limit => 11
@@ -846,7 +849,7 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.integer  "send_quote_method_id",    :limit => 11
     t.integer  "order_form_type_id",      :limit => 11
     t.string   "status"
-    t.string   "public_number"
+    t.string   "reference"
     t.float    "carriage_costs",                        :default => 0.0
     t.float    "reduction",                             :default => 0.0
     t.float    "account",                               :default => 0.0
@@ -865,7 +868,7 @@ ActiveRecord::Schema.define(:version => 20091112122118) do
     t.datetime "updated_at"
   end
 
-  add_index "quotes", ["public_number"], :name => "index_quotes_on_public_number", :unique => true
+  add_index "quotes", ["reference"], :name => "index_quotes_on_reference", :unique => true
 
   create_table "remarks", :force => true do |t|
     t.integer  "has_remark_id",   :limit => 11

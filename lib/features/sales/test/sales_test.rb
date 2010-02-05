@@ -73,6 +73,28 @@ class Test::Unit::TestCase
     return quote
   end
   
+  def create_default_quote
+    order   = create_default_order
+    product = create_valid_product_for(order)
+    
+    quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
+    quote.creator = users(:powerful_user)
+    quote.contacts << contacts(:pierre_paul_jacques)
+    
+    quote.quote_items.build(:product_id   => product.id,
+                            :order_id     => order.id,
+                            :name         => "Product Name",
+                            :description  => "Product description",
+                            :dimensions   => "1000x2000",
+                            :quantity     => 2,
+                            :unit_price   => 20000,
+                            :discount     => 0.0,
+                            :vat          => 19.6)
+    
+    flunk "Quote should be created" unless quote.save
+    return quote
+  end
+  
   def create_signed_quote_for(order)
     quote = create_quote_for(order)
     flunk "Quote should be confirmed"           unless quote.confirm

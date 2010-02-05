@@ -2,7 +2,7 @@ class CreateQuotes < ActiveRecord::Migration
   def self.up
     create_table :quotes do |t|
       t.references :order, :creator, :send_quote_method, :order_form_type
-      t.string  :status, :public_number
+      t.string  :status, :reference
       t.float   :carriage_costs, :reduction, :account, :discount, :default => 0
       t.text    :sales_terms
       t.string  :validity_delay_unit
@@ -14,7 +14,7 @@ class CreateQuotes < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index :quotes, :public_number, :unique => true
+    add_index :quotes, :reference, :unique => true
   end
 
   def self.down

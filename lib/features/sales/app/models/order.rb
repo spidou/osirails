@@ -2,6 +2,7 @@ class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
   has_contacts    :accept_from => :customer_contacts
+  has_reference   :prefix => :sales
   
   belongs_to :society_activity_sector
   belongs_to :order_type
@@ -40,6 +41,8 @@ class Order < ActiveRecord::Base
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
   validates_presence_of :order_type,              :if => :order_type_id
+  
+# validates_uniqueness_of :reference #TODO do not forget to implement that according to the reference generation
   
   validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   

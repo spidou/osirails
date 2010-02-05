@@ -4,8 +4,6 @@ class Quote < ActiveRecord::Base
   STATUS_SENDED     = 'sended'
   STATUS_SIGNED     = 'signed'
   
-  PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
-  
   VALIDITY_DELAY_UNITS = { 'heures' => 'hours',
                            'jours'  => 'days',
                            'mois'   => 'months' }
@@ -14,6 +12,7 @@ class Quote < ActiveRecord::Base
   has_address     :bill_to_address
   has_address     :ship_to_address
   has_contact     :accept_from => :order_contacts
+  has_reference   :symbols => [:order], :prefix => :sales
   
   belongs_to :creator, :class_name => 'User'
   belongs_to :order
@@ -43,7 +42,10 @@ class Quote < ActiveRecord::Base
   validate :validates_length_of_quote_items
   
   ## VALIDATIONS ON VALIDATING QUOTE
-  validates_date :confirmed_on, :equal_to => Proc.new { Date.today }, :if => :confirmed?
+  with_options :if => :confirmed? do |quote|
+    quote.validates_date :confirmed_on, :equal_to => Proc.new { Date.today }
+    quote.validates_uniqueness_of :reference
+  end
   
   ## VALIDATIONS ON INVALIDATING QUOTE
   validates_date :cancelled_on, :equal_to => Proc.new { Date.today }, :if => :cancelled?
@@ -73,7 +75,7 @@ class Quote < ActiveRecord::Base
   after_save    :save_quote_items, :remove_order_products
   after_update  :update_estimate_step_status
   
-  attr_protected :status, :public_number, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
+  attr_protected :status, :reference, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
                  :signed_on, :order_form_type_id, :order_form
   
   attr_accessor :order_products_to_remove
@@ -201,7 +203,7 @@ class Quote < ActiveRecord::Base
   def confirm
     if can_be_confirmed?
       self.confirmed_on = Date.today
-      self.public_number = generate_public_number
+      self.reference = generate_reference
       self.status = STATUS_CONFIRMED
       self.save
     else
@@ -339,13 +341,7 @@ class Quote < ActiveRecord::Base
   end
   
   private
-    def generate_public_number
-      return public_number if !public_number.blank?
-      prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
-      quantity = Quote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
-      "#{prefix}#{quantity.to_s.rjust(3,'0')}"
-    end
-    
+
     def update_estimate_step_status
       if signed?
         #estimate_step.terminated!

@@ -254,4 +254,13 @@ class OrderTest < ActiveSupport::TestCase
     assert @order.instance_of?(Order), "@order should be an instance of Order"
     assert !@order.new_record?, "@order should NOT be a new record"
   end
+  
+  context "generate a reference" do
+    setup do
+      @reference_owner       = create_default_order
+      @other_reference_owner = create_default_order
+    end
+    
+    include HasReferenceTest
+  end
 end
