@@ -1,0 +1,121 @@
+<%
+require_locals form
+graphic_item = graphic_item_infos
+%>
+
+<% if graphic_item.class == Mockup %>
+  <p>
+    <%= form.label :product_id %>
+    <% if graphic_item.new_record? %>
+      <%= form.collection_select(:product_id, @products, :id, :name, { :prompt => "Veuillez choisir un produit" }) %>
+    <% else %>
+      <%= form.strong(graphic_item.product.name) %>
+    <% end %>
+  </p>
+<% end %>
+
+<p>
+  <%= form.label :name %>
+  <% if graphic_item.new_record? %>
+    <%= form.text_field(:name) %>
+  <% else %>
+    <% unless graphic_item.is_in_spool("image") or graphic_item.is_in_spool("source")%>
+      <%= form.form_or_view(form.text_field(:name),:name) %>
+    <% else %>
+      <% if is_form_view? %>
+        <%= form.text_field(:name, {:disabled => "true"}) %>
+        <span class="spool_warning">
+          La modification du nom est impossible car la maquette est présente dans la file d'attente d'un ou plusieurs utilisateurs
+        </span>
+      <% else %>
+        <%= form.strong graphic_item.name %>
+      <% end %>
+    <% end %>
+  <% end %>
+</p>
+
+<p>
+  <%= form.label :description %>
+  <%= form.form_or_view(form.autoresize_text_area(:description),:description) %>
+</p>
+
+<p>
+  <%= form.label "#{graphic_item.class.name.underscore}_type_id".to_sym %>
+  <% if graphic_item.new_record? %>
+    <%= form.collection_select("#{graphic_item.class.name.underscore}_type_id".to_sym, @graphic_item_types, :id, :name, { :prompt => "Veuillez choisir un type" }) %>
+  <% else %>
+    <%= form.strong(graphic_item.send("#{graphic_item.class.name.underscore}_type").name) %>
+  <% end %>
+</p>
+
+<% unless graphic_item.new_record? %>
+  <p>
+    <%= form.label :version %>
+    <%= form.strong graphic_item.current_version.created_at.humanize %>
+  </p>
+  <div class="resource document">
+    <div class="thumb">
+      <%= image_tag graphic_item.current_image.url(:thumb) %>
+    </div>
+    <div class="details">
+      <h1><%= graphic_item.class.form_labels[:image] %></h1>
+      <%= link_to form.strong("Télécharger"), graphic_item.current_image.url %>
+      <% unless is_form_view? %>
+        / <%= display_graphic_item_summary_image_spool_actions(graphic_item) %>
+      <% end %>
+      <h1><%= graphic_item.class.form_labels[:source] %></h1>
+      <% if graphic_item.current_version.source_file_name %>
+        <%= link_to form.strong("Télécharger"), graphic_item.current_source.url %>
+        <% unless is_form_view? %>
+          / <%= display_graphic_item_summary_source_spool_actions(graphic_item) %>
+        <% end %>
+      <% else %>
+        <%= form.strong("aucun") %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if is_form_view? and !graphic_item.new_record? %>
+  <p>
+    <%= form.label :should_add_version %>
+    <%= radio_button_tag "action", "should_add_version", true, {:onclick => 'addOrChangeVersion("add",' + graphic_item.current_version_id.to_s + ' )'} %>
+    <%= form.label :should_change_version %>
+    <%= radio_button_tag "action", "should_change_version", false, {:onclick => 'addOrChangeVersion("change",' + graphic_item.current_version_id.to_s + ' )'} %>
+  </p>
+  <% if graphic_item.is_in_spool("image") or graphic_item.is_in_spool("source")%>
+    <p class="spool_warning">
+      <%= "Attention, l'ajout ou le changement d'une version entraînera le retrait de la version actuelle dans la file d'attente de tous les utilisateurs" %>
+    </p>
+  <% end %>
+<% end %>
+
+<% if is_form_view? and graphic_item.new_record? %>
+  <p>
+    <%= form.label :graphic_unit_measure_id %>
+    <%= form.collection_select(:graphic_unit_measure_id, @graphic_unit_measures, :id, :name, { :prompt => "Veuillez choisir une unité de mesure" }) %>
+  </p>
+<% end %>
+
+<% if is_form_view? %>  
+  <div id="add_version_div">
+    <p id="new_image_paragraph">
+      <%= form.label :image %>
+      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
+      <span class="help_text">Fichier image consultable par tous (.jpg, .png, .bmp, .gif, etc)</span>
+    </p>
+    <p id="new_source_paragraph">
+      <%= form.label :source %>
+      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
+      <span class="help_text">Fichier dans le format original du logiciel de retouche photo (.ai, .psd, .ps, .xcf, etc)</span>
+    </p>  
+  </div>
+  <% unless graphic_item.new_record? %>
+    <div id="change_version_div" style="display:none">
+      <p id="change_version_paragraph">
+        <%= form.label :change_version %>
+        <%= form.collection_select(:current_version_id, @graphic_item_versions, :id, :formatted_created_at) %>
+      </p>
+    </div>
+  <% end %>        
+<% end %>

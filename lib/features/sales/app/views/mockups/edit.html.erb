@@ -1,0 +1,8 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :useful_links do %>
+	<%= graphic_items_link(Mockup) %>
+<% end %>
+
+<h1>Modification d'une maquette</h1>
+<%= render :partial => "graphic_items/graphic_item", :object => @mockup, :locals => {:button_name => "Enregistrer"} %>

@@ -1,0 +1,28 @@
+<% content_for :header do %>
+  <script type="text/javascript" src="/javascripts/logistics/supplies.js"></script>
+<% end %>
+<% add_contextual_menu_item :useful_links do %>
+  <%= supply_categories_link(@category.class) %>
+<% end %>
+<div class="presentation_medium">
+  <% form_for(@category) do |form| %>
+  <p>
+    <%= form.error_messages %>
+  </p>
+  <p>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </p>
+  <p>
+    <%= form.label :unit_measure_id %>
+    <%= form.collection_select(:unit_measure_id, format_unit_measure, :id, :name, {}, (params[:type] == "child" or @root_supply_category != nil) ? {} : {:disabled => "true"}) %>
+  </p>
+  <p>
+    <%= form.label (@category.class.name.tableize.singularize+"_id").to_sym %>
+    <%= form.collection_select((@category.class.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , options = {:include_blank => '-- Racine --'}, {:onchange => "disableUnitMeasure('#{@supply_type.name.tableize.singularize}');"}) %>
+  </p>
+  <p>
+    <%= form.submit "Ajouter" %>
+  </p>
+  <% end %>
+</div>

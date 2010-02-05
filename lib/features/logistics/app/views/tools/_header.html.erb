@@ -1,0 +1,16 @@
+<div class='presentation_small'>
+<h2>Fiche de l&apos;&eacute;quipement</h2>
+  <p>
+    <label>Status :</label>
+    <%=strong get_status_text(tool.status) %>
+    <%= get_status_image(tool.status) %>
+  </p>
+  <p>
+    <label>D&eacute;signation :</label>
+    <%= strong tool.name %>
+  </p>
+  <p>
+    <label>Description :</label>
+    <%= strong tool.description %>
+  </p>
+</div>

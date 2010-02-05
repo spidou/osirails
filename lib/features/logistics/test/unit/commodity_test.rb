@@ -1,112 +1,94 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/supply_test'
+require File.dirname(__FILE__) + '/create_supplies'
+require File.dirname(__FILE__) + '/new_stock_flow'
 
 class CommodityTest < ActiveSupport::TestCase
-  fixtures :commodity_categories, :commodities
+  include SupplyTest
+  include NewStockFlow
 
-  def setup
-    @commodity_category = commodity_categories(:child)
-    @commodity = commodities(:normal)
-  end
-
-  def test_read
-    assert_nothing_raised "A Commodity should be read" do
-      Commodity.find_by_name(@commodity.name)
-    end
-  end
-
-  def test_update
-    assert @commodity.update_attribute(:name, 'update')
-      "A Commotidy should be update"
-  end
-
-  def test_delete
-    assert_difference 'Commodity.count', -1 do
-      @commodity.destroy
-    end
-  end
-
+  def setup   
+    @supply_category = CommodityCategory.new(:name => "root")
+    flunk "@supply_category should be valid to perform the next tests" unless @supply_category.save    
+    @supply = Commodity.new
+    @supply.valid? 
+  end  
+  
   def test_presence_of_commodity_category_id
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:commodity_category_id),
-        "A Commodity should have a commodity category id"
-    end
+    assert @supply.errors.on(:commodity_category_id), "@supply should NOT be valid because commodity_category_id is nil"
+    
+    @supply.commodity_category_id = 0
+    @supply.valid?
+    assert !@supply.errors.on(:commodity_category_id), "@supply should be valid"
+    assert @supply.errors.on(:supply_category), "@supply should be valid"
+    
+    @supply.commodity_category_id = @supply_category.id
+    @supply.valid?
+    assert !@supply.errors.on(:commodity_category_id), "@supply should be valid"
+    assert !@supply.errors.on(:supply_category), "@supply should be valid"
+    
+    @supply.supply_category = @supply_category
+    @supply.valid?
+    assert !@supply.errors.on(:commodity_category_id), "@supply should be valid"
+    assert !@supply.errors.on(:supply_category), "@supply should be valid"
+  end    
+  
+  include CreateSupplies 
+  
+  def test_uniqueness_of_name
+    create_commodities
+    create_consumables
+    @supply.name = "Galva"
+    @supply.valid?
+    
+    assert @supply.errors.on(:name), "@supply should NOT be valid because name is already taken"
+    
+    @supply.name = "PVC"
+    @supply.valid?
+    
+    assert !@supply.errors.on(:name), "@supply should be valid"
   end
+  
+  def test_uniqueness_of_reference
+    create_commodities
+    create_consumables
+    @supply.reference = "glv1234"
+    @supply.valid?
+    
+    assert @supply.errors.on(:reference), "@supply should NOT be valid because reference is already taken"
+    
+    @supply.reference = "pvc1234"
+    @supply.valid?
+    
+    assert !@supply.errors.on(:reference), "@supply should be valid"
+  end  
 
-  def test_presence_of_name
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:name),
-        "A Commodity should have a name"
-    end
+  def test_restockables
+    create_supplier_supplies
+    assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
+
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,10)
+    sleep(1)
+    
+    assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
+    
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,3)
+    sleep(1)
+    
+    assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
+   
+    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,12)
+    
+    assert Commodity.restockables != Commodity.find(:all), "restockables are NOT all supplies as @galva is not a restockable anymore"
+    assert !Commodity.restockables.include?(Commodity.find(@galva.id)), "@galva should NOT be included in restockables as its stock is 25 (above threshold*1.1)"
   end
-
-  def test_presence_of_fob_unit_price
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:fob_unit_price),
-        "A Commodity should have a fob unit price"
-    end
+  def test_has_supplier_supplies
+    create_supplier_commodities     
+    assert_equal @galva.supplier_supplies, [@galva_ss], "[@galva_ss] should be @galva.supplier_supplies"                                          
   end
-
-  def test_presence_of_unit_mass
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:unit_mass),
-        "A Commodity should have a unit mass"
-    end
-  end
-
-  def test_presence_of_measure
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:measure),
-        "A Commodity should have a measure"
-    end
-  end
-
-  def test_presence_of_taxe_coefficient
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create
-      assert_not_nil commodity.errors.on(:taxe_coefficient),
-        "A Commodity should have a taxe coefficient"
-    end
-  end
-
-  def test_numericality_of_fob_unit_price
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create(:fob_unit_price => 'a')
-      assert_not_nil commodity.errors.on(:fob_unit_price),
-        "A Commodity fob unit price should be numeric"
-    end
-  end
-
-  def test_numericality_of_unit_mass
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create(:unit_mass => 'a')
-      assert_not_nil commodity.errors.on(:unit_mass),
-        "A Commodity unit mass should be numeric"
-    end
-  end
-
-  def test_numericality_of_measure
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create(:measure => 'a')
-      assert_not_nil commodity.errors.on(:measure),
-        "A Commodity measure should be numeric"
-    end
-  end
-
-  def test_numericality_of_taxe_coefficient
-    assert_no_difference 'Commodity.count' do
-      commodity = Commodity.create(:taxe_coefficient => 'a')
-      assert_not_nil commodity.errors.on(:taxe_coefficient),
-        "A Commodity taxe coefficient should be numeric"
-    end
-  end
-
-  def test_belongs_to_commodity_category
-    assert_equal @commodity.commodity_category, @commodity_category,
-      "A Commodity should have a category"
+  
+  def test_has_supplies
+    create_supplier_commodities 
+    assert_equal [Supplier.last], @galva.suppliers, "[Supplier.last] should be @galva.suppliers"
   end
 end

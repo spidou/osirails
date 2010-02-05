@@ -1,0 +1,14 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_vehicle_link %>
+  <%= edit_vehicle_link @vehicle %>
+  <%= delete_vehicle_link(@vehicle) %>
+  <%= new_vehicle_tool_event_link(@vehicle) if @vehicle.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= vehicles_link %>
+  <%= vehicle_tool_events_link(@vehicle) %>
+<% end %>
+
+<h1>Voir le v&eacute;hicule</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @vehicle} %>

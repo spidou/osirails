@@ -1,0 +1,14 @@
+<%= stylesheet_link_tag_with_theme_support "logistics/tool.css" %>
+
+<h1>Types d&apos;&eacute;quipements</h1>
+
+<div>
+  <ul id="tool_types">
+  <% for menu in @menus %>
+    <li title="<%= menu.description %>">
+      <%= link_to( image_tag("logistics/tools/#{menu.name}.png", :alt => menu.title, :title => menu.description) + menu.title,
+                   url_for_menu(menu) ) %>
+    </li>
+  <% end %>
+  </ul>
+</div>

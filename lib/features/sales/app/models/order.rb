@@ -22,6 +22,10 @@ class Order < ActiveRecord::Base
   has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ 'status = ?', Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
   
+  # press_proofs
+  has_many :press_proofs
+  # TODO add the corresponding test
+  
   # delivery notes
   has_many :delivery_notes
   has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
@@ -33,6 +37,8 @@ class Order < ActiveRecord::Base
   has_many :ship_to_addresses
   has_many :products
   has_many :order_logs
+  has_many :mockups
+  has_many :graphic_documents
 
   validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id

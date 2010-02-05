@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= display_list_button(@step) %>
+<% end %>
+
+<%= render :partial => 'press_proof_step'%>
+
+<h2 class="press_proof_additional_informations"><%= press_proof_headers[:press_proof_additional_informations] %></h2>
+
+<div class="press_proof_additional_informations section_nav selected">
+  <p>
+    <%= f.label :creator %>
+    <%= press_proof.creator.name %>
+  </p>
+  <p>
+    <%= f.label :created_at %>
+    <%= press_proof.created_at %>
+  </p>
+  <p>
+    <%= f.label :status %>
+    <%= press_proof.status %>
+  </p>
+</div>

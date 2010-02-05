@@ -1,0 +1,103 @@
+<% content_for :header do %>
+  <%= javascript_include_tag "logistics/tool_events" %>
+  <%= stylesheet_link_tag_with_theme_support "logistics/tool_event" %>
+<% end %>
+
+<% tool_class = tool.class.name.underscore %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= send("#{tool_class}_link", tool) %>
+  <%= send("edit_#{tool_class}_link", tool) %>
+  
+  <%= send("new_#{tool_class}_tool_event_link", tool) unless tool_event.new_record? or !tool.can_be_edited? %>
+  <%= send("#{tool_class}_tool_event_link", tool, tool_event) unless tool_event.new_record? or !is_form_view? %>
+  <%= send("edit_#{tool_class}_tool_event_link", tool, tool_event) unless tool_event.new_record? or is_form_view? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= send("#{tool_class}s_link") %>
+  <%= send("#{tool_class}_tool_events_link", tool)%>
+<% end %>
+
+<div class='presentation_medium'>
+  
+  <% form_for [tool, tool_event] ,:html => {:multipart => true} do |f| %>
+    <%= f.error_messages %>
+    
+    <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
+    <p>
+      <%= f.label :name %>
+      <%= f.form_or_view f.text_field(:name), :name%>
+    </p>
+    <p>
+      <%= f.label :event_type %>
+      <% if is_form_view? %>
+        <%= f.select :event_type, ToolEvent::TYPE_TEXT.invert.sort , {}, {:onchange => "check_type(this); $('tool_event_status').selectedIndex = 0;",
+                                                                          :disabled => !tool_event.new_record?} %>
+      <% else %>
+        <%= strong get_event_type_text(tool_event.event_type)%>
+      <% end %>
+    </p>
+   
+    <p>
+      <%= f.label :status %>
+      <% if is_form_view? %>
+        <%= f.select :status, ToolEvent::STATUS_TEXT.invert.sort , {:include_blank => true} %>
+      <% else %>
+        <%= strong get_status_text(tool_event.status) %>
+      <% end %>
+    </p>
+    <p>
+      <%= f.label :internal_actor_id %>
+      <%= f.form_or_view f.collection_select(:internal_actor_id, Employee.all, :id, :fullname, {:include_blank => true}), :internal_actor, :fullname %>
+    </p>
+    
+    <p>
+      <%= f.label :provider_society %>
+      <%= f.form_or_view f.text_field(:provider_society), :provider_society %>
+    </p>
+    
+    <p>
+      <%= f.label :provider_actor %>
+      <%= f.form_or_view f.text_field(:provider_actor), :provider_actor %>
+    </p>
+    
+    <p>
+      <%= f.label :start_date %>
+      <%= f.form_or_view f.date_select(:start_date, {:order => [:day, :month, :year]}), :start_date %>
+    </p>
+    
+    <p>
+      <%= f.label :end_date %>
+      <%= f.form_or_view f.date_select(:end_date, {:order => [:day, :month, :year]}), :end_date %>
+    </p>
+    
+    <p>
+      <%= f.label :comment %>
+      <%= f.form_or_view f.text_area(:comment, {:rows => 5}), :comment %>
+    </p>
+    
+    <div id='alarms_for_intervention'><!-- div to show or hide the alarms according to the selected +even_type+ -->
+      <h2>Alertes</h2>
+      <div id='alarms'>
+        <%= render :partial => 'tool_alarm', :collection => tool_event.event.alarms %>     
+      </div>
+      <p><%= add_alarm_link if is_form_view? %></p>
+    </div>
+    
+    <h2>Documents</h2>
+      <%= display_documents_list(tool_event) %>
+      <%= display_document_add_button(tool_event) if is_form_view? %>
+
+    <p>
+      <%= f.submit(button_name) if is_form_view? %>
+    </p>
+    
+  <% end %>
+</div>
+
+<% if is_form_view? %>
+  <% javascript_tag do %> document.onLoad = check_type($('tool_event_event_type')); <% end %>
+<% elsif tool_event.event_type != ToolEvent::INTERVENTION %>
+  <% javascript_tag do %> document.onLoad = $('alarms_for_intervention').hide(); <% end %>
+<% end %>

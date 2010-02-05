@@ -55,14 +55,14 @@ class EventTest < ActiveSupport::TestCase
     assert events(:every_two_years).is_custom_yearly_frequence?,
       "This Event should have a custom yearly frequence"
   end
-
-  def test_create_alarm
-    assert_difference 'Alarm.count', +1, "This Event should create an Alarm after create" do
-      event = Event.create(:title => 'Foo',
-                           :start_at => Time.now - 1.hour,
-                           :end_at => Time.now)
-    end
-  end
+# the callback is no longer present
+#  def test_create_alarm
+#    assert_difference 'Alarm.count', +1, "This Event should create an Alarm after create" do
+#      event = Event.create(:title => 'Foo',
+#                           :start_at => Time.now - 1.hour,
+#                           :end_at => Time.now)
+#    end
+#  end
 
   def test_has_many_alarms
     assert_equal @event.alarms, [alarms(:normal)],

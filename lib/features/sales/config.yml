@@ -73,10 +73,18 @@ menus:
                       order_forms:
                         title: Bon de commande
                         description: Bon de commande associé au devis
-              graphic_conception_step:
-                title: Conception graphique
-                description: Étape de la conception graphique
+              press_proof_step:
+                title: BAT
+                description: "Étape de la création d'un ou plusieurs BAT"
                 position: 3
+                children:
+                  press_proofs:
+                    title: BAT (Pièce)
+                    description: Élaboration des BAT
+                    children:
+                      dunnings:
+                        title: Relances
+                        description: Gestion des relances
           pre_invoicing_step:
             title: SAS de Facturation
             description: Phase du SAS de Facturation
@@ -113,10 +121,32 @@ menus:
                 title: Paiements
                 description: "Étape de l'enregistrement des paiments"
                 position: 2
+          graphic_items:
+            title: Ressources graphiques
+            description: "Étape d'ajout des ressources graphiques"
+            position: 4
+            children:
+              mockups:
+                title: Maquettes
+                description: Gestion des maquettes
+                position: 1
+              graphic_documents:
+                title: Documents graphiques
+                description: Gestion des documents graphiques  
+                position: 2
+              graphic_item_versions:
+                title: Versions de ressources graphiques
+                description: Gestion des versions de ressources graphiques
+                hidden: true   
+                position: 3
+              graphic_item_spool_items:
+                title: Mes travaux en attente
+                description: Fichiers mis en file d'attente de production de l'utilisateur courant
+                position: 4
           logs:
             title: Historiques
             description: Historiques des actions effectués sur le dossier de commmande
-            position: 4
+            position: 5
   goods:
     title: Produits
     description: Gestion des produits

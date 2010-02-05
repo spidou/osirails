@@ -1,0 +1,65 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/press_proof' %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'sales/press_proof' %>
+<% end -%>
+
+<%
+press_proof_headers = {:press_proof_informations            => "Informations",
+                       :press_proof_mockups                 => "Maquettes (#{press_proof.graphic_item_versions.count})",
+                       :press_proof_dunnings                => "Relances (#{press_proof.dunnings.actives.count})",
+                       :press_proof_additional_informations => "Informations supplémentaires"}
+
+press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:product_id) || press_proof.errors.on(:product) || 
+                                                    press_proof.errors.on(:internal_actor_id) || press_proof.errors.on(:internal_actor) ? ' errors' : '',
+                       :press_proof_mockups      => press_proof.errors.on(:mockups) ? ' errors' : ''}
+%>
+
+<div class="presentation_medium root_nav">
+<% form_for(press_proof,:url => {:action => action}, :html => { :multipart => true }) do |f| %>
+  <%= f.error_messages %>
+
+  <ul class="press_proof_nav tab_nav">
+    <li class="press_proof_informations<%= press_proof_errors[:press_proof_informations] %> selected">
+      <%= press_proof_headers[:press_proof_informations ] %>
+    </li>
+      
+    <li class="press_proof_mockups<%= press_proof_errors[:press_proof_mockups] %>">
+      <%= press_proof_headers[:press_proof_mockups ] %>
+    </li>
+    
+    <li class="press_proof_dunnings<%= ' disabled' if press_proof.new_record? %>">
+      <%= press_proof_headers[:press_proof_dunnings ] %>
+    </li>
+    
+    <li class="press_proof_additional_informations">
+      <%= press_proof_headers[:press_proof_additional_informations ] %>
+    </li>
+  </ul>
+  
+  <h2 class="press_proof_informations"><%= press_proof_headers[:press_proof_informations] %></h2>
+  <div class="press_proof_informations section_nav selected">
+    <%= render :partial => 'press_proof_infos', :object => press_proof, :locals => { :f => f, :order => @order } %>
+  </div>
+  
+  <h2 class="press_proof_mockups"><%= press_proof_errors[:press_proof_mockups] %></h2>
+  <div class="press_proof_mockups section_nav">
+    <%= render :partial => 'press_proof_mockups', :object => press_proof, :locals => { :mockups => mockups } %>
+  </div>
+  
+  <h2 class="press_proof_dunnings"><%= press_proof_headers[:press_proof_dunnings] %></h2>
+  <div class="press_proof_dunnings section_nav">
+  <%= render :partial => "dunnings/dunnings", :object => press_proof.dunnings %>
+  </div>
+  
+  <h2 class="press_proof_additional_informations"><%= press_proof_headers[:press_proof_additional_informations] %></h2>
+  <div class="press_proof_additional_informations section_nav">
+    <%= render :partial => 'press_proof_additional_infos', :object => press_proof, :locals => { :f => f } %>
+  </div>
+    
+  <% if is_form_view? %>
+    <p><%= f.submit(button_name)%></p>
+  <% end %>
+<% end %>      
+</div>

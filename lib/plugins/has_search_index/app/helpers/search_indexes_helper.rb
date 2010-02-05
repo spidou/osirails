@@ -58,22 +58,25 @@ module SearchIndexesHelper
       html += "<tr>"
       # direct attributes
       direct_attributes.each do |attribute|
+        data     = ( format_date(object.send(attribute)) || '-' ) if object.respond_to?(attribute)
         keywords = retrieve_matching_keywords(params, attribute)
-        data = format_date(object.send(attribute)) if object.respond_to?(attribute)
-        html += "<td>" + ( highlight(data.to_s, keywords) || '-' ) + "</td>"
+        html    += "<td>#{ highlight(data.to_s, keywords) }</td>"
       end
       # nested_attributes
-      nested_attributes.sort.each do |attribute|
-        nested_data = object
-        attribute.join(".").split(".").each do |element|
-          if nested_data.respond_to?(element)
-            nested_data = nested_data.send(element)
+      nested_attributes.keys.sort.each do |model|                                        # +model+ can be a path like 'employee.user' or a simple model 'employee'
+        nested_object = object
+        model.split(".").each do |element|
+          if nested_object.respond_to?(element)
+            nested_object = nested_object.send(element)
           else
-            nested_data = "-"
+            nested_object = nil
           end
         end
-        keywords = retrieve_matching_keywords(params, attribute.join("."))
-        html += "<td>" + ( highlight(nested_data.to_s, keywords) || '-' ) + "</td>"
+        nested_attributes[model].each do |attribute|
+          nested_data = ( format_date(nested_object.send(attribute)) || '-' ) unless nested_object.nil?
+          keywords    = retrieve_matching_keywords(params, "#{model}.#{attribute}")
+          html       += "<td>#{ highlight(nested_data.to_s, keywords) }</td>"
+        end
       end
       html += "<td>#{send("#{object.class.to_s.downcase}_link", object, :link_text => '')}</td>" if respond_to?("#{object.class.to_s.downcase}_path")
       html += "</tr>"
@@ -82,11 +85,14 @@ module SearchIndexesHelper
   end
   
   # get values for each criterion for the given attribute
+  #
   def retrieve_matching_keywords(options, attribute = nil)
     if options[:contextual_search]
-      options[:contextual_search][:value].to_s
+      options[:contextual_search][:value].to_s.split(' ')
     else
-      options[:criteria].select{ |k,v| v['attribute'].downcase == attribute.to_s.downcase }.collect{ |k,v| v['value'] }.compact
+      return nil if options[:criteria].nil?
+      # at the end of the line i use a small hack to split the values into an array without arrays hierarchy 
+      options[:criteria].select{ |k,v| v['attribute'].downcase == attribute.to_s.downcase }.collect{ |k,v| v['value'] }.compact.join(' ').split(' ')
     end
   end
   
@@ -105,6 +111,7 @@ module SearchIndexesHelper
   end
   
   # method to generate an hash containing the direct attributes of a model
+  #
   def generate_attributes_hash(model)
     result = {}
     model.search_index[:attributes].merge(model.search_index[:additional_attributes]).each_pair do |key, value|
@@ -122,12 +129,12 @@ module SearchIndexesHelper
     include_array.each do |element|      
       if element.is_a?(Hash)
         element.each do |key, value|
-          model = parent_model.constantize.association_list[key][:class_name]        
+          model = parent_model.constantize.association_list[key].class_name        
           (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s.humanize}", model]       
           result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s.humanize}"))
         end
       else
-        model = parent_model.constantize.association_list[element][:class_name]
+        model = parent_model.constantize.association_list[element].class_name
         (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s.humanize}", model]
       end
     end

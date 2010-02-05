@@ -67,9 +67,13 @@ class String
     end
     return formated
   end
-
-  # FIXME you may base on inflector class
-  # method to view if a word is or not plural
+  
+  # Method to truncate the begining of the current string according to the param
+  def rchomp(separator = nil)
+    chars.reverse.chomp(separator.chars.reverse).reverse.to_s
+  end
+  
+  # method to view if a word is or not is plural #FIXME we may base on inflector class method to view if a word is or not plural
   def plural?
     return false if self.last == "s" and self.pluralize != self
     return true if self.last == "s" and self.pluralize == self
@@ -148,7 +152,7 @@ end
 
 class DateTime
   def humanize
-    self.strftime("%d %B %Y à %I:%M")
+    self.strftime("%d %B %Y à %H:%M")
   end
 end
 

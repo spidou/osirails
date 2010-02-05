@@ -8,5 +8,6 @@ class CreateFactors < ActiveRecord::Migration
   end
 
   def self.down
+    drop_table :factors
   end
 end

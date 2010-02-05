@@ -489,7 +489,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @leave_request.close
     assert @leave_request.was_closed?, "leave_request should be closed"
     assert @leave_request.leave.is_a?(Leave), "leave_request should genereate a valid leave"
-    assert !@leave_request.leave.new_record?, "the leave generated should be a new record"
+    assert !@leave_request.leave.new_record?, "the leave generated should NOT be a new record"
   end
   
   def test_close_leave_request_with_refusal

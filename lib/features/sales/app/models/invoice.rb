@@ -34,14 +34,15 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => "User"
   belongs_to :abandoned_by, :class_name => "User"
   
-  has_many :invoice_items,  :dependent => :destroy
-  has_many :products,       :through => :invoice_items
+  has_many :invoice_items,  :dependent  => :destroy
+  has_many :products,       :through    => :invoice_items
   
-  has_many :delivery_note_invoices, :dependent => :destroy
-  has_many :delivery_notes, :through => :delivery_note_invoices
+  has_many :delivery_note_invoices, :dependent  => :destroy
+  has_many :delivery_notes,         :through    => :delivery_note_invoices
   
-  has_many :dunnings,                         :dependent => :destroy
   has_many :due_dates, :order => "date ASC",  :dependent => :destroy
+  
+  has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   

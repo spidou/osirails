@@ -1,0 +1,25 @@
+<%
+require_locals f, order
+press_proof = press_proof_infos
+%>
+
+<p> 
+  <%= f.label :product %>
+  <% if is_form_view? and press_proof.new_record? %>
+    <%= f.collection_select( :product_id, order.products, :id, :name, {}, { :onChange => "select_product(this);" } ) %>
+  <% else %>
+    <%= strong(press_proof.product.name) %>
+  <% end %>
+</p>
+
+<% unless press_proof.new_record? %>
+<p> 
+  <%= f.label :product_description %>
+  <%= strong(press_proof.product_description) %>
+</p>
+<% end %>
+
+<p>
+  <%= f.label :internal_actor %>
+  <%= f.form_or_view(f.collection_select( :internal_actor_id, Employee.all, :id, :fullname), :internal_actor, :fullname) %>
+</p>

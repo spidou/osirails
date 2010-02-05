@@ -4,6 +4,7 @@ assets
 config/database.yml
 coverage
 db/*.sqlite3
+db/development_structure.sql
 log/*.log
 nbproject
 tmp/**/*
