@@ -1,12 +1,10 @@
 class CommoditiesManagerController < ApplicationController
-
+  helper :supplies_manager
+  
   # GET /commodities_manager
   def index
-    @type = params[:type]
-    @commodities_categories_root = CommodityCategory.root
-    @commodities_categories_root_child = CommodityCategory.root_child
-    @commodities = Commodity.activates
-    @last_inventory = Inventory.last
+    @supply_type = Commodity
+    @supply_categories_root = (params[:inactives]=="true" ? CommodityCategory.roots : CommodityCategory.enabled_roots)
   end
-
 end
+

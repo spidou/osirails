@@ -1,0 +1,41 @@
+#mockups_list {
+  border: 1px dashed grey;
+}
+
+#mockups_list .minimal_mockup {
+  cursor: move;
+}
+
+.minimal_mockup {
+  display: inline-block;
+  position: relative;
+}
+
+#mockups_list,
+.press_proof_mockups_container {
+  display: block;
+  padding: 3px;
+  margin: 5px;
+  width: auto;
+  height: 248px;
+  -moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.3), 0px -1px 2px rgba(0,0,0,0.3);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.press_proof_mockups_container {
+  border: 1px solid grey;
+  background-color: #fcfcfc;
+}
+
+.press_proof_mockups_container.hover {
+  background-color: #fffeb8;
+  border: 1px solid #ff9595;
+}
+
+.delete_link {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}

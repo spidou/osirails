@@ -2,6 +2,10 @@ require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class OrderTest < ActiveSupport::TestCase
+  should_have_many :mockups, :graphic_documents
+  
+  subject { @order }
+
   def setup
     @order = Order.new
     @order.valid?

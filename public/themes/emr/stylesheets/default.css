@@ -80,7 +80,18 @@ table th {
 
 table td {
 	border:solid 1px rgb(64,68,93);
-	padding: 4px 8px 4px 8px;
+	padding: 3px 7px 3px 7px;
+}
+
+/*
+table img {
+  position: relative;
+	top: 2px;
+}
+*/
+
+tr:hover > td {
+	background-color: #ffe6c6;
 }
 
 tr:hover > td > a {
@@ -95,6 +106,63 @@ table tr.disabled > td {
 object {
   margin: 0;
   padding: 0;
+}
+
+/*/////////////////////////////
+			TITLE
+/////////////////////////////*/
+
+h1 {
+	text-align:center;
+	background: #7E98CB;/*#EBA04E repeat*/
+	border:solid 1px #e5e5e5;
+	height:26px;
+	color: white;/*#444;*/
+	font-size:1.6em;
+	line-height:23px;
+	font-weight:lighter;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
+	font-variant: small-caps;
+	margin: 0 0 10px 0;
+}
+
+h2 {
+	text-indent: 10px;
+	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
+	border-bottom:solid 1px #e5e5e5;
+	font-size:1.4em;
+	color:white;
+	margin-top:-1px;
+	margin-bottom:0px;
+	height:29px;
+	line-height:26px;
+	font-weight:lighter;
+	letter-spacing:2px;
+	padding-top:1px;
+}
+
+h2.warning {
+  background: url("/themes/emr/images/warning_14x14.png") no-repeat 7px;
+	background-color: #e99727;
+	border: 1px solid #737373;
+	text-indent: 27px;
+}
+
+h3 {
+	text-indent:25px;
+	background: #afc2ea;
+	border:solid 1px #bbb;
+	height:20px;
+	line-height:20px;
+	color: rgb(70,94,142);
+	padding-top:0px;
+	margin-top:-1px;
+	margin-bottom:0px;
+	font-size:1.05em;
+}
+
+h6 {
+	text-decoration: underline;
 }
 
 /*/////////////END OF GENERICS TAGS////////////////////*/
@@ -1133,15 +1201,15 @@ width: 50px ! important;
 
 /*LAYOUTS' FORM*/
 
-#content_page > div.presentation_large label {
+div.presentation_large label {
 	width:350px;
 }
 
-#content_page > div.presentation_medium label {
+div.presentation_medium label {
 	width:200px;
 }
 
-#content_page > div.presentation_small label {
+div.presentation_small label {
 	width:100px;
 }
 
@@ -1719,6 +1787,7 @@ table.mceEditor {
 ////////////////////////////////////////////////////*/
 
 #footer {
+  position: relative;
 	text-align:center;
 	background: url("/themes/emr/images/background_dark_stripe.jpg") repeat;
 	border: solid 1px #444;
@@ -1735,6 +1804,23 @@ table.mceEditor {
 	margin-top:5px;
 	margin-bottom:-5px;
 	border:none;
+}
+
+#footer span.version {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+  background-color: white;
+  color: black;
+  padding: 4px;
+  font-size: 11px;
+  -moz-transform: rotate(-25deg);
+  -webkit-transform: rotate(-25deg);
+  -moz-box-shadow: 3px 4px 5px rgba(0,0,0,0.3), inset 0 0px 8px rgba(255,255,0,1);
+}
+
+#footer span.version:hover {
+  opacity: 0.4;
 }
 
 /*/////////////////////////////////////////////////////

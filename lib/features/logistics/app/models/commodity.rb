@@ -1,40 +1,42 @@
-class Commodity < ActiveRecord::Base
-  has_permissions :as_business_object
-  
-  # Relationship
-  belongs_to :commodity_category, :counter_cache => true
-  
-  # Name Scope
-  named_scope :activates, :conditions => {:enable => true}
+class Commodity < Supply
+  has_permissions :as_business_object, :class_methods => [:list, :view, :add, :edit, :delete, :disable, :reactivate]
   
   # Validates
-  validates_presence_of :name, :fob_unit_price, :unit_mass, :measure, :taxe_coefficient, :commodity_category_id
-  validates_presence_of :commodity_category, :if => :commodity_category_id
-  validates_numericality_of :fob_unit_price, :unit_mass, :measure, :taxe_coefficient
+  validates_uniqueness_of :name, :reference
+  validates_presence_of :commodity_category_id
+  validates_presence_of :supply_category, :if => :commodity_category_id
 
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name] = "Désignation :"
-  @@form_labels[:commodity_category] = "Appartient à :"
-  @@form_labels[:supplier] = "Fournisseur :"
-  @@form_labels[:unit_mass] = "kg / U :"
-  @@form_labels[:fob_unit_price] = "fob :"
-  @@form_labels[:taxe_coefficient] = "Coef Taxe (%) :"
+  # Relationship
+  belongs_to :supply_category, :class_name => "CommodityCategory", :foreign_key => "commodity_category_id", :counter_cache => true
 
-  def after_destroy
-    self.counter_update(1)
+  # This method returns all the restockables
+  # supplies. They are defined by a stock less than 10%
+  # above the given threshold
+  def self.restockables
+    @supplies_to_restock = []
+    for commodity in Commodity.find(:all)
+      if (commodity.was_enabled_at and commodity.stock_quantity < (commodity.threshold + commodity.threshold*0.1))
+        @supplies_to_restock << commodity
+      end
+    end
+    @supplies_to_restock
   end
   
-  # This method permit to actualize counter_cache if a commodity is disable
-  def counter_update(value = -1)
-    parent = CommodityCategory.find(self.commodity_category_id)
-    CommodityCategory.update_counters(parent.id, :commodities_count => value)
-  end
+  # This method returns the entire stock values
+  def self.stock_value(date = Date.today)
+    total = 0.0
+    for commodity in Commodity.find(:all)
+      total += commodity.stock_value(date) if commodity.was_enabled_at(date)
+    end
+    total
+  end  
   
-  # Check if a resource should be destroy or disable
-  def can_be_destroyed?
-    #TODO code the method can_be_destroyed? for commodity
-    false
+  # This method returns all enabled supplies at a given date
+  def self.was_enabled_at(date = Date.today)
+    @enabled_supplies = []
+    for commodity in Commodity.find(:all)
+      @enabled_supplies << commodity if commodity.was_enabled_at(date)
+    end
+    @enabled_supplies
   end
-  
 end

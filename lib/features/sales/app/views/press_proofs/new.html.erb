@@ -1,0 +1,12 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= display_list_button(@step) %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= graphic_items_link(Mockup) %>
+  <%= graphic_items_link(GraphicDocument) %>
+<% end %>
+
+<%= render :partial => 'press_proof', :object => @press_proof, :locals => {:button_name => "Ajouter", :action => :create, :mockups => @mockups} %>

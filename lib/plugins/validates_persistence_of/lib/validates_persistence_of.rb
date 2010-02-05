@@ -13,7 +13,7 @@ module ValidatesPersistenceOf
       validates_each(attr_names, configuration) do |record, attr_name, value|
         next if record.new_record?
         has_changed = record.changed.include?(attr_name.to_s) || ( record.send(attr_name).respond_to?(:changed?) && record.send(attr_name).send(:changed?) ) ||
-                                                                 ( record.send(attr_name).instance_of?(Array) && ( !record.send(attr_name).select{|r|r.changed?}.empty? ||
+                                                                 ( record.send(attr_name).instance_of?(Array) && ( !record.send(attr_name).select{|r|r.respond_to?(:changed?) && r.changed?}.empty? ||
                                                                                                                     record.send(attr_name) != record.class.find(record.id).send(attr_name) ) )
         record.errors.add(attr_name, configuration[:message]) if has_changed
       end

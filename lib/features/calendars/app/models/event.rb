@@ -47,7 +47,8 @@ class Event < ActiveRecord::Base
   # every other year".
   
   # Callbacks
-  after_create :create_alarm
+#  after_create :create_alarm
+  after_update :save_alarms
   before_save :clear_empty_attrs
   before_save :create_event_category_from_name
   
@@ -56,10 +57,11 @@ class Event < ActiveRecord::Base
   
   # Validates
   validates_presence_of :title, :start_at, :end_at
+  validates_associated :alarms
   
   # Relationships
   belongs_to :calendar
-  has_many :alarms
+  has_many :alarms,         :order => "do_alarm_before ASC"
   has_many :participants
   has_many :exception_dates
 
@@ -130,6 +132,18 @@ class Event < ActiveRecord::Base
     event
   end
   
+#  # this method permit to save the alarms of the event when it is passed with the event form
+#  def alarm_attributes=(alarm_attributes)
+#    alarm_attributes.each do |attributes|
+#      if attributes[:id].blank?
+#        self.alarms.build(attributes)
+#      else
+#        alarm = self.alarms.detect {|t| t.id == attributes[:id].to_i} 
+#        alarm.attributes = attributes
+#      end
+#    end
+#  end
+  
   protected
     def clear_empty_attrs
       @attributes.each do |key,value|
@@ -149,7 +163,16 @@ class Event < ActiveRecord::Base
       end
     end
 
-    def create_alarm
-      self.alarms << Alarm.create(:title => "Alarme")
+    def save_alarms
+      alarms.each do |alarm|
+        if alarm.should_destroy?    
+          alarm.destroy    
+        else
+          alarm.save(false)
+        end
+      end
     end
+#    def create_alarm
+#      self.alarms << Alarm.create(:title => "Alarme")
+#    end
 end

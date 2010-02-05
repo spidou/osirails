@@ -1,0 +1,13 @@
+<% supply_category_enable = supply_category.enable ? "enable" : "disable" %>
+      
+<%= "<tr id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}' class='#{supply_category_enable}'>" %>
+<%="<td><img id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler'  title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> " %>
+<%= "<img id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])'/>" unless supply_category.children.size == 0 %>
+<%= in_place_editor(supply_category,'name')+" (#{show_counter_category(supply_category)})</td>" %>
+<%= "<td colspan='10'></td>" %>
+<%= "<td>#{display_category_stock_value(supply_category)}</td>" %>
+<%= "<td>#{add_category_or_supply(supply_category)}#{reactivate_category_link(supply_category)}#{disable_category_link(supply_category)}#{delete_category_link(supply_category)}</td>"%>
+<%= "</tr>" %>
+<% unless supply_category.children.size == 0 %>
+  <%= render(:partial => "supplies_manager/category_child", :collection => supply_category.children) %>
+<% end %>

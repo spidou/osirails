@@ -1,0 +1,10 @@
+data_type_sample:
+  a_string: "good"
+  a_text: "lorem ipsum azerty toto"
+  a_integer: 1
+  a_float: 1.2
+  a_boolean: true
+  a_decimal: 2.345
+  a_binary: "0111 0001"
+  a_datetime: <%= Date.today %> # don't use a datetime because the time difference can make some issues into the tests
+  a_date: <%= Date.today %>

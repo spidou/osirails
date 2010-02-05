@@ -9,6 +9,8 @@ class ProductTest < ActiveSupport::TestCase
   
   should_have_many :checklist_responses
   should_have_many :quote_items
+  should_have_many :press_proofs
+  should_have_many :mockups
   
   should_validate_presence_of :name, :description, :dimensions
   should_validate_presence_of :order, :product_reference, :with_foreign_key => :default

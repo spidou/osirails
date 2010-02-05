@@ -1,0 +1,8 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :useful_links do %>
+	<%= graphic_items_link(GraphicDocument) %>
+<% end %>
+
+<h1>Ajouter un nouveau document graphique au dossier</h1>
+<%= render :partial => "graphic_items/graphic_item", :object => @graphic_document, :locals => {:button_name => "Créer"} %>

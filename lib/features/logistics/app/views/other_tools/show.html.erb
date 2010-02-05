@@ -1,0 +1,14 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_other_tool_link %>
+  <%= edit_other_tool_link @other_tool %>
+  <%= delete_other_tool_link(@other_tool) %>
+  <%= new_other_tool_tool_event_link(@other_tool) if @other_tool.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= other_tools_link %>
+  <%= other_tool_tool_events_link(@other_tool) %>
+<% end %>
+
+<h1>Voir l&apos;&eacute;quipement non r&eacute;f&eacute;renc&eacute;</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @other_tool} %>

@@ -374,6 +374,11 @@ table#quote_items tr.aggregates.global {
   margin-top: 0;
 }
 
+.root_nav ul.tab_nav li.disabled {
+  font-style: italic;
+  color: #AAA;
+}
+
 .root_nav ul.tab_nav li.errors {
   color: red;
   background-image: url('/themes/emr/images/warning_14x14.png');
@@ -627,4 +632,100 @@ div.resource.subcontractor_request input,
 div.resource.subcontractor_request select,
 div.resource.subcontractor_request textarea {
   width: inherit !important;
+}
+
+
+/* GRAPHIC ITEMS */
+div#graphic_item_versions_preview{
+  display: inline-block;
+  position: relative;
+}
+
+div#graphic_item_medium_image {
+  text-align: center;
+  vertical-align: top;
+  display: inline-block;
+  width: 640px;
+  height: 400px;
+  padding: 1px;
+  border: 1px solid #E99727;
+}
+
+div#graphic_item_choice {
+  display: inline-block;
+}
+
+div select#mockup_versions,
+div select#graphic_document_versions {
+  height:405px;
+}
+
+/* SPOOL */
+#spool {
+  display: block;
+  margin-top: 6px;
+  padding: 0;
+}
+
+#spool .spool_item {
+  display: block;
+  position: relative;
+  margin: 0;
+  padding: 3px 2px 3px 2px;
+}
+
+#spool .spool_item > img {
+  vertical-align: middle;
+}
+
+#spool .spool_item > a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+}
+
+#spool .spool_item:hover{
+  background-color: #ecc48b;
+}
+
+#spool .spool_item:hover > a {
+  display: block;
+}
+
+.spool_warning{
+  position: relative;
+	border:solid 1px #F1BD73;
+	background:#F6E8CF;
+	margin:10px;
+	width:530px;
+	padding:10px;
+}
+
+/* PRESSPROOF LIST */
+table tr.press_proof.confirmed_press_proof {
+  background-color: #e99727;
+  color: white;
+}
+
+table tr.press_proof.cancelled_press_proof,
+.revoked_press_proof {
+  background-color: #ff3528;
+  color: white;
+}
+
+table tr.press_proof.sended_press_proof {
+  background-color: #e99727;
+  color: white;
+  font-weight: bold;
+}
+
+table tr.press_proof.signed_press_proof {
+  background-color: #60bc00;
+  color: white;
+  font-weight: bold;
+}
+
+table tr.press_proof td.actions {
+  background-color: white;
 }

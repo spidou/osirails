@@ -1,0 +1,22 @@
+<%= order_header %>
+
+<h1>Signaler que le BAT a été envoyé au client</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => "press_proofs_list", :object => [ PressProof.find(@press_proof.id) ] %>
+  
+	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "send_to_customer", :press_proof_id => @press_proof.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :sended_on %>
+      <%= form.date_select :sended_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :document_sending_method_id %>
+      <%= form.collection_select :document_sending_method_id, DocumentSendingMethod.all, :id, :name, :include_blank => true %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>
