@@ -7,7 +7,7 @@
   <%= render :partial => "graphic_items/graphic_item_summary",
              :object  => version.graphic_item,
              :locals  => {:image => version.image.url(:thumb), :without_action => true} %>
-  <img class="delete_link" src="/images/delete_16x16.png" onClick="<%= method %>" alt='Supprimer' title='Supprimer'/>
+  <%= image_tag "delete_16x16.png", :alt => delete_text = "Supprimer", :title => delete_text, :onclick => method, :class => "delete_link" %>
   <input type='hidden' value="0" class='should_destroy'
                        name='press_proof[press_proof_item_attributes][][should_destroy]'
                        id='press_proof_press_proof_item_attributes__should_destroy'/>

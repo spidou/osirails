@@ -2,14 +2,26 @@
   <% supply_category_enable = supply_category.enable ? "enable" : "disable" %>
         
   <%= "<tr id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}' class='#{supply_category_enable}'>" %>
-  <%="<td><img id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler'  title='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;'/> " %>
-  <%= "<img id='#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' onclick='reduce(this.ancestors()[1])'/>" unless supply_category.children.size == 0 %>
-  <%= supply_category.name + "</td>" %>
-  <%= "<td colspan='11'></td>" %>
-  <%= "<td>#{display_category_stock_value(supply_category,@date)}</td>" unless is_form_view? %>
-  <%= "</tr>" %>
+    <td>
+      <%= image_tag("add_10x10.png",  :id       => "#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_develop",
+                                      :alt      => "Dérouler",
+                                      :title    => "Dérouler",
+                                      :onclick  => "develop(this.ancestors()[1])",
+                                      :style    => "display: none") %>
+      <%= image_tag("reduce_button_10x10.png",  :id       => "#{supply_category.class.name.tableize.singularize}_#{supply_category.id}_reduce",
+                                                :alt      => "Enrouler",
+                                                :title    => "Enrouler",
+                                                :onclick  => "reduce(this.ancestors()[1])") unless supply_category.children.empty? %>
+    
+      <%= supply_category.name %>
+    </td>
+    <td colspan='11'></td>
+    <% unless is_form_view? %>
+      <td><%= display_category_stock_value(supply_category,@date) %></td>
+    <% end %>
+  </tr>
 
-  <% unless supply_category.children.size == 0 %>
+  <% unless supply_category.children.empty? %>
     <%= render(:partial => "category_child", :collection => supply_category.children) %>
   <% end %>
 <% end %>

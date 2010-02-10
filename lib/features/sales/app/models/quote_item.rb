@@ -45,7 +45,7 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def save_product
-    product.save(false)
+    product.save(false) if product
   end
   
   def already_delivered_or_scheduled_quantity
@@ -60,7 +60,7 @@ class QuoteItem < ActiveRecord::Base
     quantity - already_delivered_or_scheduled_quantity
   end
   
-  # destroy associated product unless quote is already destroyed
+  # destroy associated product unless quote is already destroyed (to avoid to destroy all products when we destroying a quote)
   def destroy_product
     product.destroy if Quote.find_by_id(quote.id)
   end

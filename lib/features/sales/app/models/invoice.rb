@@ -792,7 +792,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_create_deposit_invoice?
-    order and !order.deposit_invoice
+    order and order.signed_quote and !order.deposit_invoice
   end
   
   def can_create_status_invoice?

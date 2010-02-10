@@ -24,7 +24,7 @@ module SupplierSuppliesHelper
   def new_stock_flow_link(input,supplier_supply)
     if "Stock#{input ? 'Input' : 'Output'}".constantize.can_add?(current_user)
       text = " New stock #{input ? 'input' : 'output'}"
-      link_to(image_tag( "/images/arrow_#{input ? 'up' : 'down'}_16x16.png", :alt => text, :title => text ), "/stock_#{input ? 'inputs' : 'outputs'}/new?supply_id=#{supplier_supply.supply.id}&supplier_id=#{supplier_supply.supplier.id}")
+      link_to(image_tag( "arrow_#{input ? 'up' : 'down'}_16x16.png", :alt => text, :title => text ), "/stock_#{input ? 'inputs' : 'outputs'}/new?supply_id=#{supplier_supply.supply.id}&supplier_id=#{supplier_supply.supplier.id}")
     end
   end  
 end

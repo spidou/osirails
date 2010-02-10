@@ -358,7 +358,7 @@ table#quote_items tr.aggregates.global {
 
 .root_nav > ul.tab_nav li.disabled {
   background-color: #CCC;
-  color: #777;
+  color: #fefefe;
   font-style: italic;
   cursor: inherit;
 }
@@ -390,11 +390,6 @@ table#quote_items tr.aggregates.global {
   -moz-border-radius: 10px 10px 0 0;
   font-weight: bold;
   margin-top: 0;
-}
-
-.root_nav ul.tab_nav li.disabled {
-  font-style: italic;
-  color: #AAA;
 }
 
 .root_nav ul.tab_nav li.errors {
@@ -639,16 +634,16 @@ ul#invoice_types li p {
 }
 
 /* INVOICE DUE_DATES */
-table#due_dates input {
+table#due_dates_list input {
   text-align: center;
 }
 
-table#due_dates #due_date_model {
+table#due_dates_list #due_date_model {
   display: none;
 }
 
 /* INVOICE DUE_DATE_PAYMENT */
-div#due_dates {
+div#due_dates_list {
   padding-top: 10px;
 }
 

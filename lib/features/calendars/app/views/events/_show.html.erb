@@ -35,7 +35,7 @@
   <p><%= label_tag 'fin' %><strong><%= event_freq_end(@event) %></strong></p>
 <% end %>
 
-<% if !@event.alarms.first.action.nil? %>
+<% if !@event.alarms.empty? and @event.alarms.first.action %>
   <p><%= label_tag 'alarme' %><strong><%= alarm_sentence(@event) %></strong></p>
 <% end %>
 

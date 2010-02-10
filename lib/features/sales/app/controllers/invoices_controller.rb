@@ -29,29 +29,31 @@ class InvoicesController < ApplicationController
   
   # GET /orders/:order_id/:step/invoices/new
   def new
-    case params[:invoice_type]
-    when 'deposit'
-      @invoice = @order.build_deposit_invoice_from_signed_quote
+    @invoice = @order.invoices.build
+    
+    if params[:invoice_type]
+      error_access_page(400) unless ['deposit', 'status', 'balance', 'asset'].include?(params[:invoice_type])
       
-      if @invoice and @invoice.can_create_deposit_invoice?
+      error_access_page(412) unless @invoice and @invoice.send("can_create_#{params[:invoice_type]}_invoice?")
+      
+      case params[:invoice_type]
+      when 'deposit'
+        @invoice = @order.build_deposit_invoice_from_signed_quote
+        
         @invoice.creator          = current_user
         @invoice.contacts        << @order.contacts.last unless @order.contacts.empty?
         @invoice.deposit        ||= @invoice.associated_quote.deposit
         @invoice.deposit_amount ||= @invoice.calculate_deposit_amount_according_to_quote_and_deposit
         @invoice.deposit_vat    ||= ConfigurationManager.sales_deposit_tax_coefficient.to_f
         @invoice.due_dates.build(:date => Date.today, :net_to_paid => @invoice.net_to_paid) #TODO remplacer 'Date.today' par la date d'émission de la facture
-      else
-        error_access_page(412)
+      when 'status'
+        #TODO
+      when 'balance'
+        #TODO
+      when 'asset'
+        #TODO
       end
-    when 'status'
-      #TODO
-    when 'balance'
-      #TODO
-    when 'invoice'
-      #TODO
     end
-    
-    @invoice ||= Invoice.new
   end
   
   # POST /orders/:order_id/:step/invoices

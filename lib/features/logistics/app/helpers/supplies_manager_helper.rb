@@ -4,10 +4,10 @@ module SuppliesManagerHelper
     if supply_category.class.can_add?(current_user) and supply_category.enable
       if supply_category.send("#{supply_category.class.name.tableize.singularize}_id").nil?
         text = "Ajouter une sous-catégorie"
-        link_to(image_tag("/images/arrow_up_16x16.png", :alt => text , :title => text), self.send("new_#{supply_category.class.name.tableize.singularize}_path",:id => supply_category.id, :type => "child"))
+        link_to(image_tag("arrow_up_16x16.png", :alt => text , :title => text), self.send("new_#{supply_category.class.name.tableize.singularize}_path",:id => supply_category.id, :type => "child"))
       else
         text = "Add a #{supply_category.class.name.underscore.gsub("_category","")}"
-        link_to(image_tag("/images/add_16x16.png", :alt => text, :title => text), self.send("new_#{supply_category.class.name.tableize.singularize.gsub("_category","")}_path",:id => supply_category.id))
+        link_to(image_tag("add_16x16.png", :alt => text, :title => text), self.send("new_#{supply_category.class.name.tableize.singularize.gsub("_category","")}_path",:id => supply_category.id))
       end
     end
   end
@@ -15,28 +15,28 @@ module SuppliesManagerHelper
   # This method permit to show or hide reactivate button for categories
   def reactivate_category_link(supply_category)
     if supply_category.class.can_reactivate?(current_user)
-      link_to(image_tag("/images/tick_16x16.png", :alt => "Résactiver", :title => "Réactiver"), self.send("reactivate_#{supply_category.class.name.underscore}_path",supply_category)) if supply_category.can_be_reactivated?
+      link_to(image_tag("tick_16x16.png", :alt => "Résactiver", :title => "Réactiver"), self.send("reactivate_#{supply_category.class.name.underscore}_path",supply_category)) if supply_category.can_be_reactivated?
     end
   end
   
   # This method permit to show or hide disable button for categories
   def disable_category_link(supply_category)
     if supply_category.class.can_disable?(current_user)
-      link_to(image_tag("/images/delete_disable_16x16.png", :alt => "Désactiver", :title => "Désactiver"), self.send("disable_#{supply_category.class.name.underscore}_path",supply_category), :confirm => "Êtes-vous sûr ?") if supply_category.can_be_disabled?
+      link_to(image_tag("delete_disable_16x16.png", :alt => "Désactiver", :title => "Désactiver"), self.send("disable_#{supply_category.class.name.underscore}_path",supply_category), :confirm => "Êtes-vous sûr ?") if supply_category.can_be_disabled?
     end
   end
 
   # This method permit to show or hide delete button for categories
   def delete_category_link(supply_category)
     if supply_category.class.can_delete?(current_user)
-      link_to(image_tag("/images/delete_16x16.png", :alt => "Supprimer", :title => "Supprimer"), supply_category, { :method => :delete, :confirm => 'Êtes vous sûr  ?'}) if supply_category.can_be_destroyed?
+      link_to(image_tag("delete_16x16.png", :alt => "Supprimer", :title => "Supprimer"), supply_category, { :method => :delete, :confirm => 'Êtes vous sûr  ?'}) if supply_category.can_be_destroyed?
     end
   end
 
   # This method permit to show a supply
   def supply_link(supply)
     if supply.class.can_view?(current_user)
-      link_to(image_tag("/images/view_16x16.png", :alt => "Voir", :title => "Voir"), supply,  { :controller => "#{supply.class.name.tableize}", :action => 'show'})
+      link_to(image_tag("view_16x16.png", :alt => "Voir", :title => "Voir"), supply,  { :controller => "#{supply.class.name.tableize}", :action => 'show'})
     end
   end
 
@@ -45,7 +45,7 @@ module SuppliesManagerHelper
     if supply.class.can_edit?(current_user)
       text = ""
       text = " Edit this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/edit_16x16.png", :alt => "Éditer", :title => "Éditer") + text, send("edit_#{supply.class.name.tableize.singularize}_path",supply)) unless !supply.enable
+      link_to(image_tag("edit_16x16.png", :alt => "Éditer", :title => "Éditer") + text, send("edit_#{supply.class.name.tableize.singularize}_path",supply)) unless !supply.enable
     end
   end
   
@@ -56,10 +56,10 @@ module SuppliesManagerHelper
       text = " Disable this #{supply.class.name.tableize.singularize}" if button
       if supply.can_be_disabled?
         title = "Désactiver"
-        link_to(image_tag("/images/delete_16x16.png", :alt => title, :title => title) + text, self.send("disable_#{supply.class.name.underscore}_path",supply), :confirm => "Êtes-vous sûr ?")
+        link_to(image_tag("delete_16x16.png", :alt => title, :title => title) + text, self.send("disable_#{supply.class.name.underscore}_path",supply), :confirm => "Êtes-vous sûr ?")
       elsif supply.stock_quantity.to_i > 0
         title = "Impossible de désactiver tant que la quantité n'est pas à 0"
-        image_tag("/images/delete_disable_16x16.png", :alt => title, :title => title) + text
+        image_tag("delete_disable_16x16.png", :alt => title, :title => title) + text
       end
     end
   end
@@ -69,7 +69,7 @@ module SuppliesManagerHelper
     if supply.class.can_delete?(current_user)
       text = ""
       text = " Delete this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/delete_16x16.png", :alt => "Supprimer", :title => "Supprimer") + text, supply,  { :controller => "#{supply.class.name.tableize}", :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'}) if supply.can_be_destroyed?
+      link_to(image_tag("delete_16x16.png", :alt => "Supprimer", :title => "Supprimer") + text, supply,  { :controller => "#{supply.class.name.tableize}", :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'}) if supply.can_be_destroyed?
     end
   end
   
@@ -78,7 +78,7 @@ module SuppliesManagerHelper
     if supply.class.can_reactivate?(current_user)
       text = ""
       text = " Reactivate this #{supply.class.name.tableize.singularize}" if button
-      link_to(image_tag("/images/tick_16x16.png", :alt => "Résactiver", :title => "Réactiver") + text, self.send("reactivate_#{supply.class.name.underscore}_path",supply)) if supply.can_be_reactivated?
+      link_to(image_tag("tick_16x16.png", :alt => "Résactiver", :title => "Réactiver") + text, self.send("reactivate_#{supply.class.name.underscore}_path",supply)) if supply.can_be_reactivated?
     end
   end
 
@@ -86,7 +86,7 @@ module SuppliesManagerHelper
   # we can't use the dynamic helper method 'generator' because of an unexpected argument passed to new_'supply'_path => ':id =>-1'
   def new_supply_link(supply)
     if supply.class.can_add?(current_user)
-      link_to(image_tag( "/images/add_16x16.png", :alt => "New", :title => "New" )+" New #{supply.class.name.tableize.singularize}", self.send("new_#{supply.class.name.tableize.singularize}_path",:id => -1) )
+      link_to(image_tag( "add_16x16.png", :alt => "New", :title => "New" )+" New #{supply.class.name.tableize.singularize}", self.send("new_#{supply.class.name.tableize.singularize}_path",:id => -1) )
     end
   end
 
@@ -94,14 +94,14 @@ module SuppliesManagerHelper
   def supply_categories_link(supply_type)
     if supply_type.can_list?(current_user)
       text = "List all #{supply_type.name.tableize.humanize.downcase}"
-      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager")
+      link_to(image_tag( "list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager")
     end
   end
   
   def supply_categories_link_with_inactives(supply_type)
     if supply_type.can_list?(current_user)
       text = "List all #{supply_type.name.tableize.humanize.downcase} (including inactives)"
-      link_to(image_tag( "/images/list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager?inactives=true")
+      link_to(image_tag( "list_16x16.png", :alt => text, :title => text )+ " " + text, "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager?inactives=true")
     end
   end
 

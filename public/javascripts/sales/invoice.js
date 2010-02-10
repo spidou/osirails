@@ -16,7 +16,7 @@ function update_deposit_amount_without_taxes(element) {
 
 function check_values_of_total_and_due_dates() {
   sum_net_to_paid = 0
-  $('due_dates').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
+  $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
     input = element.down('.due_date_net_to_paid_input')
     sum_net_to_paid += parseFloat(input.value)
   });
@@ -36,7 +36,7 @@ function refresh_due_dates() {
   total_invoice = parseFloat($('invoice_deposit_amount').value)
   
   sum_net_to_paid_without_balance = 0
-  $('due_dates').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
+  $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
     input = element.down('.due_date_net_to_paid_input')
     if (input.type != 'hidden') { sum_net_to_paid_without_balance += parseFloat(input.value) }
   });
@@ -62,7 +62,7 @@ due_date_label = null
 
 function update_due_dates(select_element) {
   new_quantity = select_element.value
-  old_quantity = $('due_dates').down('tbody').select('tr').length - 1
+  old_quantity = $('due_dates_list').down('tbody').select('tr').length - 1
   
   total_invoice = parseFloat($('invoice_deposit_amount').value)
   
@@ -95,7 +95,7 @@ function update_due_dates(select_element) {
   } else if (action == 'remove') {
     
     count = 1
-    $('due_dates').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
+    $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
       if (count >= new_quantity && count < old_quantity) {
         if (element.down('.due_date_id') && element.down('.due_date_id').value > 0) {
           element.down('.should_destroy').value = '1'
@@ -112,7 +112,7 @@ function update_due_dates(select_element) {
   date = new Date()
   due_date_net_to_paid = parseInt(total_invoice / new_quantity)
   
-  $('due_dates').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
+  $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
     if (element.down('.due_date_date_input').value == '') {
       //element.down('.due_date_date_input').value = date.strftime("%Y-%m-%d") // this is deactivated because we have to fix the bug in which the balance due_date have a 'wrong' date when we add 1 or more due_dates between the before-last and the last due_date
     }
@@ -132,7 +132,7 @@ function update_due_dates(select_element) {
   })
   
   refresh_due_dates()
-  new Effect.Highlight($('due_dates'), { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
+  new Effect.Highlight($('due_dates_list'), { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
 }
 
 original_value_for_toggle_payment_details = null

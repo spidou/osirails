@@ -23,7 +23,7 @@
 
 <% unless dunnings.select(&:was_cancelled?).empty? %>
 
-  <%= link_to "#{ image_tag('/images/view_16x16.png') } Voir les relances annulées", '#', { :onclick => "new Effect.toggle('cancelled_dunnings','blind');" } %>
+  <%= link_to( image_tag('view_16x16.png', :alt => view_text = "Voir les relances annulées", :title => view_text) + " #{view_text}", '#', :onclick => "new Effect.toggle('cancelled_dunnings','blind');" ) %>
   
   <div id='cancelled_dunnings' style='display:none;'>
     <table class="cancelled_dunnings_table disabled" >

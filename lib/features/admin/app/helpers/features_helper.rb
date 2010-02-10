@@ -2,15 +2,20 @@ module FeaturesHelper
   # Helper method to display the good link for the gestion of installation/uninstallation of a feature
   def display_install_link(feature)
     if Feature.can_edit?(current_user)
-      if feature.base_feature? 
-        button = "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous ne pouvez pas désinstaller le module "+feature.title+" car il appartient au noyau  !' Onclick=\"alert ('Vous ne devez pas désinstaller le module "+feature.title+" car il appartient au noyau  ! ');return false\" ><img src='/images/tick_16x16.png' atl='Activer' title='Cliquer pour déactiver' /></a>" if feature.installed?
+      activated_image                   = image_tag("tick_16x16.png", :alt => "Activer", :title => "Cliquer pour désactiver")
+      deactivated_image                 = image_tag("cross_16x16.png", :alt => "Désactiver", :title => "Cliquer pour activer")
+      unable_to_uninstall_core_feature = "Vous ne pouvez pas désinstaller le module \"#{feature.title}\" car il appartient au noyau"
+      unable_to_uninstall_feature      = "Vous devez d'abord désactiver le module \"#{feature.title}\""
+      
+      if feature.base_feature?
+        button = link_to(activated_image, "#", :class => "admin_features_activated-installed", :onclick => "alert('#{unable_to_uninstall_core_feature}'); return false") if feature.installed?
       elsif feature.activated?
-        button = "<a class=\"admin_features_activated-installed\" href=\" \" title='Vous devez d'abord désactiver le module "+feature.title+"!' OnClick=\"alert ('Vous devez d'abord désactiver le module "+feature.title+"'); return false\"><img src='/images/tick_16x16.png' atl='Activer' title='Activer' /></a>"
+        button = link_to(activated_image, "#", :class => "admin_features_activated-installed", :onclick => "alert('#{unable_to_uninstall_feature}'); return false") if feature.installed?
       else
         if feature.installed?
-          button = link_to("<img src='/images/tick_16x16.png' atl='Activer' title='Cliquer pour déactiver' />", feature_path(feature), :title=>'Cliquez ici pour désinstaller ['+feature.title+']',:class => 'admin_features_activated-installed', :method => :get)
+          button = link_to(activated_image, feature_path(feature), :class => "admin_features_activated-installed", :method => :get)
         else 
-          button = link_to("<img src='/images/cross_16x16.png' atl='Désactiver' title='Cliquer pour activer' />", feature_path(feature, :state => 'install'),:class => 'admin_features_non_activated-installed', :title=>'Cliquez ici pour installer ['+feature.title+']', :confirm => 'Voulez-vous installer le module ['+feature.title+'] ?', :method => :put) 
+          button = link_to(deactivated_image, feature_path(feature, :state => 'install'), :class => "admin_features_non_activated-installed", :method => :get, :confirm => "Voulez-vous installer le module \"#{feature.title}\" ?", :method => :put)
         end 
         button
       end
@@ -20,17 +25,22 @@ module FeaturesHelper
   # Helper method to display the good link for the gestion of activation/deactivation of a feature
   def display_activate_link(feature)
     if Feature.can_edit?(current_user)
+      activated_image   = image_tag("tick_16x16.png", :alt => "Activer", :title => "Cliquer pour désactiver")
+      deactivated_image = image_tag("cross_16x16.png", :alt => "Désactiver", :title => "Cliquer pour activer")
+      unable_to_deactivate_core_feature = "Vous ne pouvez pas désactiver le module \"#{feature.title}\" car il appartient au noyau"
+      unable_to_activate_feature = "Vous devez d'abord installer le module \"#{feature.title}\""
+      
       if feature.base_feature? and feature.kernel_feature? 
         if feature.activated?
-          button = "<a class=\"admin_features_activated-installed\" href=\" \" title=\"Vous ne pouvez pas désactiver le module "+feature.name+" car c'est un module critique du noyau!\" Onclick=\"alert ('Vous ne devez pas désactiver le module "+feature.title+" car il appartient au noyau!');return false\" ><img src='/images/tick_16x16.png' atl='Activer' title='Cliquer pour désactiver' /></a>"
+          button = link_to(activated_image, "#", :class => "admin_features_activated-installed", :onclick => "alert('#{unable_to_deactivate_core_feature}'); return false;")
         end
       elsif !feature.installed?
-        button = "<a class=\"admin_features_non_activated-installed\" href=\" \" title='Vous devez d'abord installer le module "+feature.title+"!' OnClick=\"alert ('Vous devez d&#146abord installer le module "+feature.title+"'); return false\"><img src='/images/cross_16x16.png' atl='Désactiver' title='Cliquer pour activer' /></a>"
+        button = link_to(activated_image, "#", :class => "admin_features_non_activated-installed", :onclick => "alert('#{unable_to_activate_feature}'); return false;")
       else
-       if feature.activated? 
-         button = link_to("<img src='/images/tick_16x16.png' atl='Activer' title='Cliquer pour désactiver' />", feature_path(feature, :state => 'disable'), :title => 'Cliquez ici pour désactiverle module ['+feature.title+']',:class => 'admin_features_activated-installed', :confirm => 'Voulez-vous desactiver le module ['+feature.title+'] ?', :method => :put) 
+        if feature.activated? 
+          button = link_to(activated_image, feature_path(feature, :state => 'disable'), :class => "admin_features_activated-installed", :confirm => "Voulez-vous desactiver le module \"#{feature.title}\" ?", :method => :put)
         else
-          button = link_to("<img src='/images/cross_16x16.png' atl='Désactiver' title='Cliquer pour activer' />", feature_path(feature, :state => 'enable'), :title => 'Cliquez ici pour activer le module ['+feature.title+']',:class => 'admin_features_non_activated-installed', :confirm => 'Voulez-vous activer le module ['+feature.title+'] ?', :method => :put)
+          button = link_to(deactivated_image, feature_path(feature, :state => 'enable'), :class => "admin_features_non_activated-installed", :confirm => "Voulez-vous activer le module \"#{feature.title}\" ?", :method => :put)
         end
       end
       button
@@ -42,7 +52,7 @@ module FeaturesHelper
     if Feature.can_delete?(current_user)
       if feature.able_to_remove? and !feature.base_feature?
         unless feature.installed?
-          return  link_to("<img src='/images/delete_16x16.png' atl='Supprimer' title='Supprimer' />", feature_path(feature), :confirm => 'Voulez-vous vraiment Supprimer ?', :method => :delete)
+          return link_to(image_tag("delete_16x16.png", :alt => delete_text = "Supprimer", :title => delete_text), feature_path(feature), :confirm => 'Voulez-vous vraiment supprimer ce module ?', :method => :delete)
         end
       end
     end

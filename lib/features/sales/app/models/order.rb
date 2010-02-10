@@ -35,7 +35,7 @@ class Order < ActiveRecord::Base
   has_many :invoices
   
   has_many :ship_to_addresses
-  has_many :products
+  has_many :products, :conditions => [ "cancelled_at IS NULL" ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents

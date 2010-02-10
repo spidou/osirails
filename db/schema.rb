@@ -968,6 +968,7 @@ ActiveRecord::Schema.define(:version => 20100126093137) do
     t.float    "quantity"
     t.float    "vat"
     t.integer  "position",             :limit => 11
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

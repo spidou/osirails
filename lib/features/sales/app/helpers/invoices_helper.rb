@@ -28,7 +28,7 @@ module InvoicesHelper
   def new_order_invoicing_step_invoice_step_invoice_link_overrided(order, options = {})
     return unless Invoice.can_add?(current_user)
     options = { :link_text => text = "Nouvelle facture",
-                :image_tag => image_tag("/images/add_16x16.png", :alt => text, :title => text)
+                :image_tag => image_tag("add_16x16.png", :alt => text, :title => text)
               }.merge(options)
     link_to "#{options[:image_tag]} #{options[:link_text]}", new_order_invoicing_step_invoice_step_invoice_path(order)
   end
@@ -36,7 +36,7 @@ module InvoicesHelper
   def order_invoicing_step_invoice_step_invoice_link_overrided(order, invoice, options = {})
     return unless Invoice.can_view?(current_user)
     default_text = "Voir la facture#{" (PDF)" if options[:options] and options[:options][:format] == :pdf}"
-    default_image_src = ( options[:options] and options[:options][:format] == :pdf ) ? "/images/mime_type_extensions/pdf_16x16.png" : "/images/view_16x16.png"
+    default_image_src = ( options[:options] and options[:options][:format] == :pdf ) ? "mime_type_extensions/pdf_16x16.png" : "view_16x16.png"
     
     options = { :link_text => default_text,
                 :image_tag => image_tag(default_image_src, :alt => default_text, :title => default_text)
@@ -47,7 +47,7 @@ module InvoicesHelper
   def edit_order_invoicing_step_invoice_step_invoice_link_overrided(order, invoice, options = {})
     return unless Invoice.can_edit?(current_user)
     options = { :link_text => text = "Modifier la facture",
-                :image_tag => image_tag("/images/edit_16x16.png", :alt => text, :title => text)
+                :image_tag => image_tag("edit_16x16.png", :alt => text, :title => text)
               }.merge(options)
     link_to "#{options[:image_tag]} #{options[:link_text]}", edit_order_invoicing_step_invoice_step_invoice_path(order, invoice)
   end
@@ -55,7 +55,7 @@ module InvoicesHelper
   def delete_order_invoicing_step_invoice_step_invoice_link_overrided(order, invoice, options = {})
     return unless Invoice.can_delete?(current_user)
     options = { :link_text => text = "Supprimer la facture",
-                :image_tag => image_tag("/images/delete_16x16.png", :alt => text, :title => text)
+                :image_tag => image_tag("delete_16x16.png", :alt => text, :title => text)
               }.merge(options)
     link_to "#{options[:image_tag]} #{options[:link_text]}", order_invoicing_step_invoice_step_invoice_path(order, invoice), :method => :delete, :confirm => "Are you sure?"
   end
@@ -101,7 +101,7 @@ module InvoicesHelper
   
   def display_invoice_confirm_button(order, invoice)
     return unless Invoice.can_confirm?(current_user) and invoice.can_be_confirmed?
-    link_to( image_tag( "/images/confirm_16x16.png",
+    link_to( image_tag( "confirm_16x16.png",
                         :alt    => text = "Valider cette facture",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_confirm_path(order, invoice),
@@ -110,7 +110,7 @@ module InvoicesHelper
   
   def display_invoice_cancel_button(order, invoice)
     return unless Invoice.can_cancel?(current_user) and invoice.can_be_cancelled?
-    link_to( image_tag( "/images/cancel_16x16.png",
+    link_to( image_tag( "cancel_16x16.png",
                         :alt    => text = "Annuler cette facture",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_cancel_form_path(order, invoice),
@@ -119,7 +119,7 @@ module InvoicesHelper
   
   def display_invoice_send_button(order, invoice)
     return unless Invoice.can_send_to_customer?(current_user) and invoice.can_be_sended?        
-    link_to( image_tag( "/images/send_to_customer_16x16.png",
+    link_to( image_tag( "send_to_customer_16x16.png",
                         :alt    => text = "Signaler que la facture a été envoyée au client",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_send_form_path(order, invoice) )
@@ -127,7 +127,7 @@ module InvoicesHelper
   
   def display_invoice_factoring_pay_button(order, invoice)
     return unless Invoice.can_factoring_pay?(current_user) and invoice.can_be_factoring_paid?
-    link_to( image_tag( "/images/factoring_pay_16x16.png",
+    link_to( image_tag( "factoring_pay_16x16.png",
                         :alt    => text = "Signaler le règlement de la facture par le FACTOR",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_factoring_pay_form_path(order, invoice) )
@@ -135,7 +135,7 @@ module InvoicesHelper
   
   def display_invoice_factoring_recover_button(order, invoice)
     return unless Invoice.can_factoring_recover?(current_user) and invoice.can_be_factoring_recovered?
-    link_to( image_tag( "/images/factoring_recover_16x16.png",
+    link_to( image_tag( "factoring_recover_16x16.png",
                         :alt    => text = "Signaler le définancement de la facture par le FACTOR",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_factoring_recover_form_path(order, invoice) )
@@ -143,7 +143,7 @@ module InvoicesHelper
   
   def display_invoice_factoring_balance_pay_button(order, invoice)
     return unless Invoice.can_factoring_balance_pay?(current_user) and invoice.can_be_factoring_balance_paid?
-    link_to( image_tag( "/images/factoring_balance_pay_16x16.png",
+    link_to( image_tag( "factoring_balance_pay_16x16.png",
                         :alt    => text = "Signaler le paiement du solde de la facture par le FACTOR",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_factoring_balance_pay_form_path(order, invoice) )
@@ -151,7 +151,7 @@ module InvoicesHelper
   
   def display_invoice_due_date_pay_button(order, invoice)
     return unless Invoice.can_due_date_pay?(current_user) and invoice.can_be_due_date_paid?
-    link_to( image_tag( "/images/due_date_pay_16x16.png",
+    link_to( image_tag( "due_date_pay_16x16.png",
                         :alt    => text = "Signaler le règlement partiel de la facture par le CLIENT",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_due_date_pay_form_path(order, invoice) )
@@ -159,7 +159,7 @@ module InvoicesHelper
   
   def display_invoice_totally_pay_button(order, invoice)
     return unless Invoice.can_totally_pay?(current_user) and invoice.can_be_totally_paid?
-    link_to( image_tag( "/images/totally_pay_16x16.png",
+    link_to( image_tag( "totally_pay_16x16.png",
                         :alt    => text = "Signaler le règlement total (ou solde) de la facture par le CLIENT",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_totally_pay_form_path(order, invoice) )
@@ -167,7 +167,7 @@ module InvoicesHelper
   
   def display_invoice_abandon_button(order, invoice)
     return unless Invoice.can_abandon?(current_user) and invoice.can_be_abandoned?        
-    link_to( image_tag( "/images/abandon_16x16.png",
+    link_to( image_tag( "abandon_16x16.png",
                         :alt    => text = "Signaler que la facture est \"sans suite\" (ou abandonée)",
                         :title  => text ),
              order_invoicing_step_invoice_step_invoice_abandon_form_path(order, invoice) )

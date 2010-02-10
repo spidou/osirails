@@ -13,7 +13,7 @@ class PressProof < ActiveRecord::Base
   attr_protected :status, :cancelled_on, :confimed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment, :reference
     
   has_attached_file :signed_press_proof, 
-                    :path => ':rails_root/assets/:class/:attachment/:reference.:extension',
+                    :path => ':rails_root/sales/assets/:class/:attachment/:id.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
   has_many :press_proof_items, :order => "created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
@@ -34,20 +34,22 @@ class PressProof < ActiveRecord::Base
   validates_presence_of :internal_actor, :if => :internal_actor_id
   validates_presence_of :product,        :if => :product_id
   
-  validates_persistence_of :order_id, :product_id, :unless => :new_record?
-  validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :unless => :can_be_edited?
+  validates_persistence_of :order_id, :product_id,                                              :if => :created_at_was
+  validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :confirmed_on,  :if => :confirmed_on_was
+  validates_persistence_of :sended_on,                                                          :if => :sended_on_was
+  validates_persistence_of :signed_on,                                                          :if => :signed_on_was
+  validates_persistence_of :revoked_on, :revoked_by_id, :revoked_comment,                       :if => :revoked_on_was
+  validates_persistence_of :cancelled_on,                                                       :if => :cancelled_on_was
   
-  with_options :if => Proc.new {|n| n.was_cancelled? or n.was_revoked? } do |v|
-    v.validates_persistence_of :order_id, :product_id, :internal_actor_id, :creator_id, :cancelled_on, :press_proof_items,
-                               :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by_id, :revoked_comment, :status
-  end
+  validates_persistence_of :status, :if => Proc.new { |p| p.was_cancelled? or p.was_revoked? }
   
   # Validations for status according to the procedure
-  validates_inclusion_of :status, :in => [nil],                                :if => :new_record?
-  validates_inclusion_of :status, :in => [nil, STATUS_CONFIRMED],              :if => :can_be_confirmed? and :can_be_destroyed? # TODO refactor test suite
-  validates_inclusion_of :status, :in => [STATUS_SENDED, STATUS_CANCELLED],    :if => :can_be_sended? and :can_be_cancelled?
-  validates_inclusion_of :status, :in => [STATUS_SIGNED, STATUS_CANCELLED],    :if => :can_be_signed? and :can_be_cancelled?
-  validates_inclusion_of :status, :in => [STATUS_REVOKED],                     :if => :can_be_revoked?
+  validates_inclusion_of :status, :in => [nil],                                     :if => :new_record?
+  validates_inclusion_of :status, :in => [nil, STATUS_CONFIRMED, STATUS_CANCELLED], :if => :was_uncomplete?
+  validates_inclusion_of :status, :in => [STATUS_SENDED, STATUS_CANCELLED],         :if => :was_confirmed?
+  validates_inclusion_of :status, :in => [STATUS_SIGNED, STATUS_CANCELLED],         :if => :was_sended?
+  validates_inclusion_of :status, :in => [STATUS_REVOKED],                          :if => :was_signed?
+  
   
   # Validations for confirm
   with_options :if => :confirmed? do |v|
@@ -88,6 +90,8 @@ class PressProof < ActiveRecord::Base
   validate :validates_mockups
   
   after_save :save_press_proof_items
+  
+  before_destroy :can_be_destroyed?
     
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -113,13 +117,11 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    return false if self.new_record?
     was_confirmed? or was_sended?
   end
   
   def can_be_confirmed?
-    return false if self.new_record?
-    status_was.nil?
+    was_uncomplete? and !self.new_record?
   end
   
   def can_be_sended?
@@ -127,7 +129,7 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_signed?
-    was_sended? and PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty?
+    was_sended? and PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty? #OPTIMIZE remplace by a method
   end
   
   def can_be_revoked?
@@ -135,11 +137,11 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_edited?
-    confirmed_on.nil?
+    was_uncomplete?
   end
   
   def can_be_destroyed?
-    confirmed_on.nil?
+    was_uncomplete?
   end
   
   
@@ -190,6 +192,10 @@ class PressProof < ActiveRecord::Base
     "#{y}/#{m}/#{d}".to_date
   end
   
+  def uncomplete?
+    status.nil?
+  end
+  
   def cancelled?
     status == STATUS_CANCELLED
   end
@@ -208,6 +214,10 @@ class PressProof < ActiveRecord::Base
   
   def revoked?
     status == STATUS_REVOKED
+  end
+  
+  def was_uncomplete?
+    status_was.nil?
   end
   
   def was_cancelled?
@@ -290,4 +300,4 @@ class PressProof < ActiveRecord::Base
     def validates_presence_of_press_proof_items_custom
       errors.add(:press_proof_items, "est requis") if self.press_proof_items.select {|n| !n.should_destroy?}.empty?
     end
-end    
+end

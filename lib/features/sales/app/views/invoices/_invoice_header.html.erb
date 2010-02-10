@@ -19,7 +19,7 @@ delivery_notes = order.unbilled_delivery_notes
   <p>
     <%= form.label :invoice_type_id %>
     <%= form.hidden_field :invoice_type_id if is_form_view? %>
-    <%= strong(invoice.invoice_type.title) if invoice.invoice_type %> <%= link_to( "Changer le type de facture ?", new_order_invoicing_step_invoice_step_invoice_path ) if invoice.new_record? %>
+    <%= strong(invoice.invoice_type.title) if invoice.invoice_type %> <%= link_to( "(Changer le type de facture ?)", new_order_invoicing_step_invoice_step_invoice_path ) if invoice.new_record? %>
   </p>
   
   <p>
@@ -30,7 +30,8 @@ delivery_notes = order.unbilled_delivery_notes
   <p>
     <%= form.label :factor_id %>
     <% if is_form_view? %>
-      <%= form.collection_select :factor_id, [ order.customer.factor ], :id, :name_and_fullname, { :include_blank => "Aucun (facture non factorisée)" }, { :disabled => invoice.can_be_factorised? ? nil : Factor.all, :onchange => "javascript:toggle_disable_of_select_number_of_due_dates()" } %>
+      <% factor = order.customer.factor ? [ order.customer.factor ] : [] %>
+      <%= form.collection_select :factor_id, factor, :id, :name_and_fullname, { :include_blank => "Aucun (facture non factorisée)" }, { :disabled => invoice.can_be_factorised? ? nil : Factor.all, :onchange => "javascript:toggle_disable_of_select_number_of_due_dates()" } %>
     <% else %>
       <%= strong( invoice.factor ? invoice.factor.name_and_fullname : "Aucun (facture non factorisée)") %>
     <% end %>
@@ -53,7 +54,7 @@ delivery_notes = order.unbilled_delivery_notes
   <p>
     <label>Devis signé :</label>
     <%= link_to(quote.public_number, order_commercial_step_estimate_step_quote_path(order, quote)) %>&nbsp;
-    <%= link_to(image_tag("/images/mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
+    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
   </p>
   
   <p>
