@@ -1,5 +1,6 @@
 class GraphicDocument < GraphicItem
   has_permissions :as_business_object, :class_methods => [:list, :view, :add, :edit, :delete, :cancel]
+  has_reference :symbols => [:order], :prefix => :sales
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new

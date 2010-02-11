@@ -182,3 +182,12 @@ configurations:
   quote_reference_pattern:
     description: Pattern permettant la génération du numéro de référence unique
     value: "$order.DV$number(2)"
+  press_proof_reference_pattern:
+    description: Pattern permettant la génération du numéro de référence unique
+    value: "$order.BT$number(3)"
+  mockup_reference_pattern:
+    description: Pattern permettant la génération du numéro de référence unique
+    value: "$order.MT$number(3)"
+  graphic_document_reference_pattern:
+    description: Pattern permettant la génération du numéro de référence unique
+    value: "$order.GD$number(3)"

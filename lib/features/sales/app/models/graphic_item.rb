@@ -13,7 +13,7 @@ class GraphicItem < ActiveRecord::Base
   validates_presence_of :graphic_unit_measure, :if => :graphic_unit_measure_id
   validates_presence_of :creator, :if => :creator_id  
   validates_persistence_of :graphic_unit_measure_id, :reference, :order_id
-  validates_uniqueness_of :reference  
+  validates_uniqueness_of :reference
   validates_associated :graphic_item_versions
   validate :validates_persistence_of_name
   validate :validates_simultaneous_actions
@@ -27,7 +27,7 @@ class GraphicItem < ActiveRecord::Base
   attr_accessor :new_graphic_item_version
   
   # Callbacks
-  before_create :generate_reference
+  before_create :add_reference
   after_save :save_graphic_item_versions
   before_save :destroy_spool_items_on_update
   before_destroy :destroy_spool_items_on_destroy, :destroy_graphic_item_versions
@@ -64,15 +64,6 @@ class GraphicItem < ActiveRecord::Base
   
   def validates_uniqueness_of_is_current_version_set_to_true
     errors.add(:graphic_item_versions,"Un seul graphic item version peut être sélectionné à la fois comme current version") unless graphic_item_versions.select {|giv| giv.is_current_version}.size <= 1
-  end
-  
-  def generate_reference
-    #TODO improve that method with pattern management
-    if GraphicItem.find(:all).empty?
-      self.reference = 1
-    else
-      self.reference = GraphicItem.last.reference.to_i + 1
-    end
   end
   
   def destroy_spool_items_on_update
@@ -224,4 +215,10 @@ class GraphicItem < ActiveRecord::Base
     
     gisi.id unless gisi.nil?
   end
+  
+  private
+  
+    def add_reference
+      self.reference = self.generate_reference
+    end
 end

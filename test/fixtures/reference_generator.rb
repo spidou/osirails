@@ -1,7 +1,3 @@
 class ReferenceGenerator
-  
-  def reference
-    "[TEST]"
-  end
-  
+  attr_accessor :reference
 end

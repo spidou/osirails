@@ -110,7 +110,6 @@ class GraphicDocumentTest < ActiveSupport::TestCase
   
   context "A valid created graphic_document" do
     setup do 
-      @previous_graphic_document = create_default_graphic_document
       @graphic_document = create_default_graphic_document
       @version = @graphic_document.current_version
     end
@@ -129,10 +128,6 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     
     should "have saved a valid graphic item version which is not a new record" do
       assert !@version.new_record?
-    end
-    
-    should "have a generated reference equal to previous graphic_document reference plus one" do
-      assert_equal @graphic_document.reference, @previous_graphic_document.reference + 1
     end
     
     should "be valid without adding any source or image" do
@@ -467,5 +462,14 @@ class GraphicDocumentTest < ActiveSupport::TestCase
         assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @destroyed_graphic_docuemnt_id]).empty?
       end
     end
+  end
+  
+  context "generate a reference" do
+    setup do
+      @reference_owner       = create_default_graphic_document
+      @other_reference_owner = create_default_graphic_document
+    end
+    
+    include HasReferenceTest
   end
 end

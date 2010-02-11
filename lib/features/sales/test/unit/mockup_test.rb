@@ -129,7 +129,6 @@ class MockupTest < ActiveSupport::TestCase
   
   context "A valid created mockup" do
     setup do 
-      @previous_mockup = create_default_mockup
       @mockup = create_default_mockup
       @version = @mockup.current_version
     end
@@ -148,10 +147,6 @@ class MockupTest < ActiveSupport::TestCase
     
     should "have saved a valid graphic item version which is not a new record" do
       assert !@version.new_record?
-    end
-    
-    should "have a generated reference equal to previous mockup reference plus one" do
-      assert_equal @mockup.reference, @previous_mockup.reference + 1
     end
     
     should "be valid without adding any source or image" do
@@ -486,5 +481,14 @@ class MockupTest < ActiveSupport::TestCase
         assert GraphicItemSpoolItem.find(:all,:conditions => ["graphic_item_id = ?", @destroyed_mockup_id]).empty?
       end
     end
+  end
+  
+  context "generate a reference" do
+    setup do
+      @reference_owner       = create_default_mockup
+      @other_reference_owner = create_default_mockup
+    end
+    
+    include HasReferenceTest
   end
 end

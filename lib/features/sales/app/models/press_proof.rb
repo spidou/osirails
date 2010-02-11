@@ -1,5 +1,6 @@
 class PressProof < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel, :send_to_customer, :sign, :revoke]
+  has_reference   :symbols => [:order], :prefix => :sales
   
   STATUS_CANCELLED = 'cancelled'
   STATUS_CONFIRMED = 'confirmed'
@@ -106,11 +107,6 @@ class PressProof < ActiveRecord::Base
   @@form_labels[:cancelled_at]            = "BAT annulé le :"
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:status]                  = "État actuel :"
-  
-  def generate_reference
-    # TODO will concat order.public_number + [pattern] + unique_number
-    self.id.to_s
-  end
   
   def can_be_cancelled?
     return false if self.new_record?

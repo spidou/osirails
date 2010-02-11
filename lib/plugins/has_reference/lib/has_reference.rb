@@ -22,20 +22,21 @@ module HasReference
         raise ArgumentError, "Unknown option :#{option.to_s}, option should be included in (#{AUTHORIZED_OPTIONS.join(', ')})" unless AUTHORIZED_OPTIONS.include?(option)
       end
       
+      options[:symbols] ||= []
+      
       # prepare instance variables
       class_eval do
         include InstanceMethods
         
         attr_accessor :sequence_number_limit
-        cattr_accessor :prefix
+        cattr_accessor :prefix_reference
         validate :validates_not_reached_sequence_number_limit
         
         const_set 'SYMBOLS', options[:symbols]
-        self.prefix = options[:prefix]
+        self.prefix_reference = options[:prefix]
         
         true
       end
-      
     end
   end
   
@@ -65,7 +66,7 @@ module HasReference
       
       number = objects.collect{|n| extract_option(n.reference, first_part, second_part) }.max || 0
       
-      if (number + 1).to_s.rjust(number_option, '0').size > number_option
+      if (number + 1).to_s.size > number_option
         self.sequence_number_limit = number
       else
         number += 1
@@ -91,25 +92,10 @@ module HasReference
     #  #=> 'DVO1TT.$number(3).$toto'
     #
     # return the modified pattern in two part
-    def match_all_symbols(pattern)
-      result = pattern
-      
-        pattern.split(/\x24/).each do |text|
-          next if text.match(/number\x28[0-9]*\x29/) or text.empty?
-          
-          (1...text.size).each do |i|
-            word = text[0..i]
-            if self.respond_to?(word) and self.send(word).respond_to?(:reference)
-              result = result.gsub(Regexp.new("\\x24#{word}"), self.send(word).reference || '')
-            end
-          end
-        end
-      
-      return result
-    end
-    
+    #
+        
     def match_symbols(pattern)
-      return pattern unless self.class.const_defined?("SYMBOLS")
+      return pattern if self.class::SYMBOLS.empty?
       
       result = pattern
       self.class::SYMBOLS.each do |symbol|
@@ -119,6 +105,28 @@ module HasReference
       end
       return result
     end
+    
+    # The same as 'match_symbols' but with dynamic +symbol+ retrievement
+    #
+    ## works but not used
+    #
+#    def match_all_symbols(pattern)
+#      result = pattern
+#      
+#        pattern.split(/\x24/).each do |text|
+#          next if text.match(/number\x28[0-9]*\x29/) or text.empty?
+#          
+#          (0...text.size).each do |i|
+#            word = text[0..i]
+#            if self.respond_to?(word) and self.send(word).respond_to?(:reference)
+#              result = result.gsub(Regexp.new("\\x24#{word}"), self.send(word).reference || '')
+#            end
+#          end
+#        end
+#      
+#      return result
+#    end
+
 
     # Method to generate unique reference according to the calling model
     # the calling model must have a configured patter into sales/config.yml
@@ -159,7 +167,7 @@ module HasReference
     #
     #  Description:
     #  - +MODEL+ must respond to :reference
-    #  - Calling model must have one +MODEL+
+    #  - Calling class must :have_one +MODEL+
     #  - Custom symbols that doesn't respect previous rules will be ignored
     #
     #   === example
@@ -171,7 +179,7 @@ module HasReference
     def generate_reference
       self.sequence_number_limit = nil
       
-      pattern = ConfigurationManager.send("#{self.prefix.to_s}_#{self.class.to_s.tableize.singularize}_reference_pattern")
+      pattern = ConfigurationManager.send("#{self.prefix_reference.to_s}_#{self.class.to_s.tableize.singularize}_reference_pattern")
       raise "pattern should be defined for #{self.class.to_s} into config.yml" if pattern.nil?
       
       pattern_with_strftime = DateTime.now.strftime(pattern)

@@ -516,6 +516,18 @@ class PressProofTest < ActiveSupport::TestCase
     
   end
   
+    
+  context "generate a reference" do
+    setup do
+      @reference_owner       = create_default_press_proof
+      @other_reference_owner = create_default_press_proof
+      
+#      flunk "nil!! for #{@reference_owner.class.to_s}" if @reference_owner.class::SYMBOLS.nil?
+    end
+    
+    include HasReferenceTest
+  end
+  
   private
   
   def get_confirmed_press_proof(press_proof = create_default_press_proof)
