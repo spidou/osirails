@@ -18,15 +18,16 @@ class PressProofsController < ApplicationController
   # GET /orders/:order_id/:step/press_proofs/new
   def new
     @press_proof = @order.press_proofs.build
+    @press_proof.product_id = @order.products.first 
     @press_proof.creator = current_user
+
   end
   
   # POST /orders/:order_id/:step/press_proofs
   def create
     @press_proof = @order.press_proofs.build(params[:press_proof])
-    @press_proof.order   = @order
     @press_proof.creator = current_user
-    
+
     if @press_proof.save
       flash[:notice] = "Le Bon à Tirer (BAT) a été créé avec succès"
       redirect_to send(@step.original_step.path)
@@ -44,7 +45,7 @@ class PressProofsController < ApplicationController
   # PUT /orders/:order_id/:step/press_proofs/:press_proof_id
   def update
     @press_proof = PressProof.find(params[:id])
-    
+
     if @press_proof.update_attributes(params[:press_proof])
       flash[:notice] = "Le Bon à Tirer (BAT) a été modifié avec succès"
       redirect_to send(@step.original_step.path)

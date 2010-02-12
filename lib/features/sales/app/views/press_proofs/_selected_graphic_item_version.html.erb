@@ -1,14 +1,16 @@
 <% version = selected_graphic_item_version 
    method  = (version.graphic_item.current_version.id == version.id)? "remove_selected_mockup(this);" : "remove_selected_mockup_with_warning(this);"
+   unselected_mockup = (unselected_mockups || []).include?(version.graphic_item.id) # when dropping a mockup unselected_mockups is nil
+   style  = "display:none;" if unselected_mockup
+   hidden = unselected_mockup ? '1' : '0'
 %>
-
-<div id="selected_mockup_<%= version.graphic_item.id %>" class="minimal_mockup">
+<div id="selected_mockup_<%= version.graphic_item.id %>" class="minimal_mockup" style="<%= style %>" >
   
   <%= render :partial => "graphic_items/graphic_item_summary",
              :object  => version.graphic_item,
              :locals  => {:image => version.image.url(:thumb), :without_action => true} %>
   <img class="delete_link" src="/images/delete_16x16.png" onClick="<%= method %>" alt='Supprimer' title='Supprimer'/>
-  <input type='hidden' value="0" class='should_destroy'
+  <input type='hidden' value="<%= hidden %>" class='should_destroy'
                        name='press_proof[press_proof_item_attributes][][should_destroy]'
                        id='press_proof_press_proof_item_attributes__should_destroy'/>
   

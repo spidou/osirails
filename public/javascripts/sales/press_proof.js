@@ -27,13 +27,15 @@ function reset_all_draggable(selected, empty_droppable_div)
   }
 }
 
-// method called to hide mockups that come from database into choices list 
+// method called to hide saved mockups contained in mockups list 
 // collection => mockup_id Array
 //
 function hide_selected_mockups(collection)
 {
   for(var i=0;i<collection.length;i++){
-    $("mockup_"+ collection[i]).hide();
+    if($("mockup_"+ collection[i]) != null){
+      $("mockup_"+ collection[i]).hide();
+    }
   }
 }
 

@@ -248,6 +248,48 @@ class PressProof < ActiveRecord::Base
     product ? product.description : nil
   end
   
+  # Method to get all press_proof's graphic_item including unsaved one
+  #
+  def get_all_graphic_item_versions
+    return graphic_item_versions + get_unsaved_graphic_item_versions
+  end
+  
+  # Method to get all press_proof's selected mockups
+  # used to manage "mockups" list
+  #
+  def get_selected_mockups
+    selected_graphic_item_versions = graphic_item_versions.reject do |graphic_item_version|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
+    end
+    selected_graphic_item_versions += get_unsaved_graphic_item_versions
+    
+    return selected_graphic_item_versions.collect{|n| n.graphic_item.id}
+  end
+  
+  # Method to get all press_proof's unselected mockups
+  # used to manage "press_proof_mockups" list
+  #
+  def get_unselected_mockups
+    unselected_graphic_item_versions = graphic_item_versions.select do |graphic_item_version|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
+    end
+    
+    return unselected_graphic_item_versions.collect{|n| n.graphic_item.id}
+  end
+  
+  # Method to get all graphic_item_versions that are selected but not saved yet
+  # Usefull, because we do not save 'graphic_item_version' but the join model 'press_proof_item'
+  # so until the press_proof is not successfully saved (passed validations) we cannot retrieve the new graphic_item_versions
+  # doing press_proof.graphic_item_versions, then we must pass through press_proof.press_proof_items to retrieve unsaved_graphic_item_versions.
+  #
+  def get_unsaved_graphic_item_versions
+    result = order.mockups.select do |graphic_item|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item.current_version.id and n.id.nil? and !n.should_destroy? }
+    end
+    
+    return result.collect(&:current_version)
+  end
+  
   private
   
     def save_press_proof_items
@@ -274,7 +316,7 @@ class PressProof < ActiveRecord::Base
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes")
       end
       
-      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup}.select{|n| n.graphic_item.product.id != self.product.id}.empty?
+      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.product.id != self.product.id}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes concernant le produit du BAT")
       end
     end

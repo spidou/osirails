@@ -1,17 +1,20 @@
 <%
 require_locals mockups
-press_proof = press_proof_mockups
+press_proof           = press_proof_mockups
+graphic_item_versions = press_proof.get_all_graphic_item_versions # permit to get also the unsaved graphic_item_versions
+selected_mockups      = press_proof.get_selected_mockups
+unselected_mockups    = press_proof.get_unselected_mockups
 %>
 
 <% if is_form_view? %>
   <p>Liste des maquettes disponibles pour le produit concerné</p>
   <div id="mockups_list">
-    <%= render :partial => "minimal_mockup", :collection => mockups %>
+    <%= render :partial => "minimal_mockup", :collection => mockups, :locals => { :product_id => press_proof.product_id, :selected_mockups => selected_mockups }%>
   </div>
   
   <p>Glissez ICI les Maquettes que vous voulez ajouter au BAT</p>
   <div id="droppable_div" class="press_proof_mockups_container">
-    <%= render :partial => "selected_graphic_item_version", :collection => press_proof.graphic_item_versions %>
+    <%= render :partial => "selected_graphic_item_version", :collection => graphic_item_versions, :locals => { :unselected_mockups => unselected_mockups } %>
   </div>
   
   <script type="text/javascript">
@@ -27,10 +30,6 @@ press_proof = press_proof_mockups
         $(element).hide();
       }
     });
-    //filter mockups for the first time, based on the first product of the current order that correspond to the default selected product
-    reset_all_draggable(<%= press_proof.new_record? ? @order.products.first.id : press_proof.product_id %>, false);
-    
-    hide_selected_mockups(<%= press_proof.graphic_item_versions.collect{|n| n.graphic_item.id}.to_json.to_s %>);
   </script>
 <% else %>
 

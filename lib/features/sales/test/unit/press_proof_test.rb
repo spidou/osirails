@@ -516,6 +516,47 @@ class PressProofTest < ActiveSupport::TestCase
     
   end
   
+  context "A press_proof" do
+    setup do
+      @press_proof = create_default_press_proof
+      
+      # select a saved mockup
+      @saved_graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_item_attributes = [ { :graphic_item_version_id => @saved_graphic_item_version.id } ]
+      flunk "@graphic_item_version should be saved #{@graphic_item_version.errors.inspect}" unless @press_proof.save
+      
+      # unselect a saved mockup
+      @press_proof.press_proof_items.detect {|n| n.graphic_item_version_id == @press_proof.graphic_item_versions.first.id}.should_destroy = '1'
+      
+      # select a mockup
+      @graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      @press_proof.press_proof_item_attributes = [ {:graphic_item_version_id => @graphic_item_version.id} ]
+    end
+    
+    teardown do
+      @press_proof = nil
+    end
+    
+    should "return the unsaved_graphic_item_versions" do
+      assert_equal [@graphic_item_version], @press_proof.get_unsaved_graphic_item_versions
+    end
+    
+    should "return all_graphic_item_versions" do
+      expected_array = ([@graphic_item_version] + @press_proof.graphic_item_versions).collect(&:id).sort
+      assert_equal expected_array, @press_proof.get_all_graphic_item_versions.collect(&:id).sort                    # sort because we don't test the order but the content
+    end
+    
+    should "return the selected_mockups" do
+      expected_array = [@graphic_item_version, @saved_graphic_item_version].collect {|n| n.graphic_item.id }.sort
+      assert_equal expected_array, @press_proof.get_selected_mockups.sort
+    end
+    
+    should "return the unselected_mockups" do
+      assert_equal [@press_proof.graphic_item_versions.first.graphic_item.id], @press_proof.get_unselected_mockups
+    end
+    
+  end
+  
   private
   
   def get_confirmed_press_proof(press_proof = create_default_press_proof)
