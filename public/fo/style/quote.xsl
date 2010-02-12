@@ -340,38 +340,39 @@
                
 <!-- FOOTER IS REQUIRED TO CLOSE THE TABLE ON PAGE BREAKS                  -->
               <fo:table-footer>
-                <fo:table-cell number-columns-spanned="10" border-top-color="black" border-top-style="solid" border-top-width="1.0px">
+                <fo:table-cell id="footline" number-columns-spanned="10" border-top-color="black" border-top-style="solid" border-top-width="1.0px">
                     <fo:block/> 
                 </fo:table-cell>
               </fo:table-footer>     
                
-              <fo:table-body>                 
-                <xsl:apply-templates select="Lines/Line"/>         
+              <fo:table-body height="5cm">                 
+                <fo:table-row font-size="9.0px" >
+                <fo:table-cell><xsl:apply-templates select="Lines/Line"/></fo:table-cell>
+                 </fo:table-row>            
                                  
-<!-- THESE EMPTY LINES ARE REQUIRED TO FILL THE TABLE UNTIL THE END OF PAGE. FIXME                    -->
-<!--                  <fo:table-row>-->
-<!--                    <fo:table-cell padding-top="10cm" number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="4" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                    <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">-->
-<!--                      <fo:block/>-->
-<!--                    </fo:table-cell>-->
-<!--                  </fo:table-row>-->
+                <fo:table-row>
+                  <fo:table-cell id="first-blank-cell" padding-top="0.1cm" number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="4" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="1" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                    <fo:block/>
+                  </fo:table-cell>
+                </fo:table-row>
                   
                 <fo:table-row>
                   <fo:table-cell number-columns-spanned="10" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px">
@@ -382,7 +383,7 @@
                 <fo:table-row keep-with-next="always">
                   <fo:table-cell padding-bottom="5mm" padding-right="2pt" number-columns-spanned="3">
                     
-                    <fo:table display-align="after" font-size="9.0px" border-color="black" border-width="1px" border-style="solid">
+                    <fo:table id="address-and-agreement-table" display-align="after" font-size="9.0px" border-color="black" border-width="1px" border-style="solid">
                       <fo:table-body>
                         <fo:table-row keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell height="1.5cm" padding="1pt" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" display-align="before" number-columns-spanned="4">
@@ -408,7 +409,7 @@
                   
                   <fo:table-cell number-columns-spanned="3">
                   
-                    <fo:table display-align="after" border-color="black" border-style="solid" border-width="1px">
+                    <fo:table id="vat-table" display-align="after" border-color="black" border-style="solid" border-width="1px">
                       <fo:table-column column-width="9mm"/>
                       <fo:table-column column-width="2.5cm"/>
                       <fo:table-column column-width="1cm"/>
@@ -444,7 +445,7 @@
                             
                   <fo:table-cell number-columns-spanned="4">
                   
-                    <fo:table display-align="after" border-color="black" border-style="solid" border-width="1px">
+                    <fo:table id="totals-table" display-align="after" border-color="black" border-style="solid" border-width="1px">
                       <fo:table-body>                          
                         <fo:table-row keep-with-next="always" font-size="10.0px" page-break-inside="avoid">
                           <fo:table-cell padding="1pt" display-align="before" number-columns-spanned="2">
@@ -550,6 +551,18 @@
   </xsl:template>
 
   <xsl:template match="Lines/Line">
+    <fo:table>
+    <fo:table-column column-width="2.8cm"/>
+              <fo:table-column column-width="2cm"/>
+              <fo:table-column column-width="2cm"/>
+              <fo:table-column column-width="2cm"/>
+              <fo:table-column column-width="3.6cm"/>
+              <fo:table-column column-width="1.4cm"/>
+              <fo:table-column column-width="2.1cm"/>
+              <fo:table-column column-width="1.2cm"/>
+              <fo:table-column column-width="2.1cm"/>
+              <fo:table-column column-width="8mm"/>
+    <fo:table-body>
     <fo:table-row page-break-inside="avoid" font-size="9.0px" >
       <fo:table-cell border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" padding-bottom="3mm" padding-left="2.0px" padding-right="2.0px" padding-top="1mm" text-align="left" display-align="before">
         <fo:block>
@@ -606,6 +619,8 @@
         </fo:block>
       </fo:table-cell>
     </fo:table-row>
+    </fo:table-body>
+    </fo:table>
   </xsl:template>
    
   <xsl:template match="Taxes/VAT">

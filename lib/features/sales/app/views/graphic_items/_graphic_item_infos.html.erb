@@ -24,9 +24,9 @@ graphic_item = graphic_item_infos
     <% else %>
       <% if is_form_view? %>
         <%= form.text_field(:name, {:disabled => "true"}) %>
-        <span class="spool_warning">
+        <p class="spool_warning">
           La modification du nom est impossible car la maquette est présente dans la file d'attente d'un ou plusieurs utilisateurs
-        </span>
+        </p>
       <% else %>
         <%= form.strong graphic_item.name %>
       <% end %>

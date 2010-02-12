@@ -18,7 +18,8 @@ class QuotesController < ApplicationController
       }
       format.pdf {
         unless @quote.uncomplete?
-          render :pdf => "quote_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/pdf/quotes/quote_#{@quote.public_number}.pdf"
+          pdf_filename = "quote_#{@quote.public_number}"
+          render_pdf(pdf_filename, "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/pdf/quotes/#{pdf_filename}.pdf")
         else
           error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
         end
@@ -176,4 +177,37 @@ class QuotesController < ApplicationController
       end
     end
     
+    def render_pdf(pdf_filename, template, xsl_path, pdf_path, is_temporary_pdf=false)
+      unless File.exist?(pdf_path)
+        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => template, :layout => false), xsl_path, "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")  
+        
+        total_pages = `xpath -e "count(//page)" #{area_tree_path}`.to_i
+        offset_value = `xpath -e "//block[@prod-id='footline']/@top-offset" #{area_tree_path}`.scan(/[0-9]+/).last.to_i
+
+        File.delete(area_tree_path)
+        
+        modified_xsl_path = "public/fo/tmp/modified_quote_for_#{File.basename(pdf_path,".pdf")}.xsl"
+        
+        `cp -f #{xsl_path} #{modified_xsl_path}`
+
+        if total_pages == 1
+          optimum_offset_value = 555000
+        else
+          optimum_offset_value = 715000
+        end
+        
+        if offset_value < optimum_offset_value
+          additionnal_offset_value = optimum_offset_value - offset_value
+          new_padding = (additionnal_offset_value * 0.0000325) + 0.1
+          
+          `replace 'id="first-blank-cell" padding-top="0.1cm"' 'padding-top="#{new_padding}cm"' -- #{modified_xsl_path}`
+        end
+        
+        render :pdf => pdf_filename, :template => template, :xsl => modified_xsl_path, :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
+     
+        File.delete(modified_xsl_path)
+      else
+        render :pdf => pdf_filename, :path => pdf_path
+      end
+    end    
 end
