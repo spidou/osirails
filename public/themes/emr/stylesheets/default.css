@@ -1152,16 +1152,20 @@ width: 50px ! important;
 
 /*LAYOUTS' FORM*/
 
-div.presentation_large label {
-	width:350px;
+div.presentation_small label {
+	width:100px;
 }
 
 div.presentation_medium label {
 	width:200px;
 }
 
-div.presentation_small label {
-	width:100px;
+div.presentation_large label {
+	width:350px;
+}
+
+div label.skip_presentation {
+  width: inherit !important;
 }
 
 #content_page > div label {
@@ -1304,6 +1308,20 @@ div.presentation_small label {
 
 #content_page > div p.notification.hidden {
   display: none;
+}
+
+#content_page > div span.warning {
+  border: 1px solid #F1BD73;
+  -moz-border-radius: 5px;
+  background: #F6E8CF url("/themes/emr/images/warning_14x14.png") no-repeat 5px center;
+  padding: 4px 8px 4px 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+ 
+#content_page > div span.warning strong {
+  color: inherit;
+  font-weight: bold;
 }
 
 /*::::::::::Presentation in columns::::::::::::*/

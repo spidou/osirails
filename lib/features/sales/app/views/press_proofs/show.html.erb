@@ -12,4 +12,6 @@
   <%= display_dunning_add_button(@order, @press_proof)%>
 <% end %>
 
+<h1>Informations concernant le BAT</h1>
+
 <%= render :partial => 'press_proof', :object => @press_proof ,:locals => {:action => :show, :mockups => @press_proof.graphic_item_versions.collect(&:graphic_item)}%>

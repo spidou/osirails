@@ -11,6 +11,7 @@ class Test::Unit::TestCase
     end
   end
   
+  ## ORDER METHODS
   def create_default_order(factorised_customer = true)
     prepare_sales_processes
     
@@ -46,6 +47,7 @@ class Test::Unit::TestCase
     return product
   end
   
+  ## QUOTE METHODS
   def create_quote_for(order)
     x = 4 # number of products and quote_items
     x.times do
@@ -86,7 +88,8 @@ class Test::Unit::TestCase
     return quote
   end
   
-  def create_valid_delivery_note_for(order)
+  ## DELIVERY_NOTE METHODS
+  def create_valid_delivery_note_for(order, delivery_note_type = nil)
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -96,9 +99,11 @@ class Test::Unit::TestCase
     
     # prepare delivery note
     dn = order.delivery_notes.build
-    dn.creator = users(:powerful_user)
-    dn.ship_to_address = address
-    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.creator          = users(:powerful_user)
+    dn.ship_to_address  = address
+    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    
     dn.associated_quote.quote_items.each do |ref|
       dn.delivery_note_items.build(:quote_item_id => ref.id,
                                    :quantity      => ref.quantity)
@@ -109,7 +114,7 @@ class Test::Unit::TestCase
     return dn
   end
   
-  def create_valid_partial_delivery_note_for(order)
+  def create_valid_partial_delivery_note_for(order, delivery_note_type = nil)
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -119,9 +124,11 @@ class Test::Unit::TestCase
     
     # prepare delivery note
     dn = order.delivery_notes.build
-    dn.creator = users(:powerful_user)
-    dn.ship_to_address = address
-    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.creator            = users(:powerful_user)
+    dn.ship_to_address    = address
+    dn.contacts           = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    
     count = 0
     dn.associated_quote.quote_items.each do |ref|
       break if count == 2
@@ -135,7 +142,7 @@ class Test::Unit::TestCase
     return dn
   end
   
-  def create_valid_complementary_delivery_note_for(order)
+  def create_valid_complementary_delivery_note_for(order, delivery_note_type = nil)
     address = Address.create( :street_name       => "Street Name",
                               :country_name      => "Country",
                               :city_name         => "City",
@@ -143,52 +150,88 @@ class Test::Unit::TestCase
                               :has_address_type  => "DeliveryNote",
                               :has_address_key   => "ship_to_address" )
     
+    # prepare delivery note
     dn = order.build_delivery_note_with_remaining_products_to_deliver
-    dn.creator = users(:powerful_user)
-    dn.ship_to_address = address
-    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.creator          = users(:powerful_user)
+    dn.ship_to_address  = address
+    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    
     dn.save!
     
     flunk "order should have all its products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
     return dn
   end
   
-  def create_valid_intervention_for(delivery_note)
-    flunk "delivery_note should NOT have interventions to continue > #{delivery_note.interventions.inspect}" unless delivery_note.interventions.empty?
-    flunk "delivery_note should be validated to continue" if !delivery_note.validated? and !delivery_note.validate_delivery_note
+  def build_valid_delivery_intervention_for(delivery_note)
+    intervention = delivery_note.delivery_interventions.build(:scheduled_delivery_at        => Time.now,
+                                                              :scheduled_internal_actor_id  => Employee.first.id,
+                                                              :scheduled_intervention_hours => 2)
     
-    intervention = delivery_note.interventions.build(:on_site => true,
-                                                     :scheduled_delivery_at => Time.now + 10.hours)
-    intervention.deliverers << Employee.first
+    intervention.scheduled_delivery_subcontractor_id      = Subcontractor.first.id if delivery_note.delivery?
+    intervention.scheduled_installation_subcontractor_id  = Subcontractor.first.id if delivery_note.installation?
+    
+    return intervention
+  end
+  
+  #def create_valid_delivery_intervention_for(delivery_note)
+  def create_scheduled_delivery_intervention_for(delivery_note)
+    flunk "delivery_note should NOT have a pending_delivery_intervention" if delivery_note.pending_delivery_intervention
+    
+    delivery_note.confirm unless delivery_note.was_confirmed?
+    flunk "delivery_note should be confirmed" unless delivery_note.was_confirmed?
+    
+    intervention = build_valid_delivery_intervention_for(delivery_note)
     
     intervention.save!
     return intervention
   end
   
-  def create_valid_discard_for(delivery_note)
-    intervention = create_valid_intervention_for(delivery_note)
-    intervention.delivered = true
-    intervention.comments = "my special comment"
+  def create_delivered_delivery_intervention_for(delivery_note)
+    create_scheduled_delivery_intervention_for(delivery_note)
+    delivery_note = DeliveryNote.find(delivery_note.id)
     
-    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+    flunk "delivery_note should have a pending_delivery_intervention" unless delivery_note.pending_delivery_intervention
     
-    reference = delivery_note.delivery_note_items.first
-    discard = reference.build_discard(:comments => "my special comment",
-                                      :quantity => reference.quantity,
-                                      :discard_type_id => discard_types(:low_quality).id)
+    intervention = delivery_note.pending_delivery_intervention
+    intervention.attributes = { :delivered          => true,
+                                :delivery_at        => intervention.scheduled_delivery_at,
+                                :internal_actor_id  => intervention.scheduled_internal_actor_id,
+                                :intervention_hours => intervention.scheduled_intervention_hours }
+    intervention.delivery_subcontractor_id      = intervention.scheduled_delivery_subcontractor_id      if delivery_note.delivery?
+    intervention.installation_subcontractor_id  = intervention.scheduled_installation_subcontractor_id  if delivery_note.installation?
     
-    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
-    return discard
+    intervention.save!
+    
+    flunk "delivery_note should have a delivered_delivery_intervention" unless delivery_note.delivered_delivery_intervention
+    
+    return intervention
   end
   
+#  def create_valid_discard_for(delivery_note)
+#    intervention = create_valid_delivery_intervention_for(delivery_note)
+#    intervention.delivered = true
+#    intervention.comments = "my special comment"
+#    
+#    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+#    
+#    reference = delivery_note.delivery_note_items.first
+#    discard = reference.build_discard(:comments => "my special comment",
+#                                      :quantity => reference.quantity,
+#                                      :discard_type_id => discard_types(:low_quality).id)
+#    
+#    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
+#    return discard
+#  end
+  
   def sign_delivery_note(delivery_note)
-    intervention = create_valid_intervention_for(delivery_note)
-    intervention.delivered = true
-    intervention.comments = "my comments"
-    delivery_note.signed_on = Date.today + 6.days
-    delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+    intervention = create_delivered_delivery_intervention_for(delivery_note)
     
-    flunk "delivery_note should be signed to continue" unless delivery_note.sign_delivery_note
+    delivery_note.signed_on = Date.today
+    delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+    delivery_note.sign
+    
+    flunk "delivery_note should be signed to continue" unless delivery_note.was_signed?
     return delivery_note
   end
   
@@ -210,6 +253,7 @@ class Test::Unit::TestCase
     return delivery_note
   end
   
+  ## INVOICE METHODS
   def create_valid_deposit_invoice_for(order)
     signed_quote = create_signed_quote_for(order)
     
@@ -243,15 +287,18 @@ class Test::Unit::TestCase
     flunk "invoice should be sended to perform the following > #{invoice.errors.inspect}" unless invoice.was_sended?
     return invoice
   end
+  
+  ## GRAPHIC_ITEM METHODS
+  def create_default_mockup(order = nil, product = nil)
+    order ||= create_default_order
+    product ||= create_valid_product_for(order)
     
-  def create_default_mockup
-    order = create_default_order
-    mockup = order.mockups.build(:name => "Sample",
-                                 :description => "Sample de maquette destiné aux tests unitaires",
-                                 :graphic_unit_measure => graphic_unit_measures(:normal), 
-                                 :creator => users(:admin_user),
-                                 :mockup_type => mockup_types(:normal),
-                                 :product => create_valid_product_for(order),
+    mockup = order.mockups.build(:name                  => "Sample",
+                                 :description           => "Sample de maquette destiné aux tests unitaires",
+                                 :graphic_unit_measure  => graphic_unit_measures(:normal), 
+                                 :creator               => users(:admin_user),
+                                 :mockup_type           => mockup_types(:normal),
+                                 :product               => product,
                                  :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
                                                                         :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
                                 )
@@ -262,10 +309,10 @@ class Test::Unit::TestCase
   
   def create_default_graphic_document
     order = create_default_order
-    gd = order.graphic_documents.build(:name => "Sample", 
-                                       :description => "Sample de document graphique destiné aux tests unitaires", 
-                                       :graphic_unit_measure => graphic_unit_measures(:normal), 
-                                       :creator => users(:admin_user), 
+    gd = order.graphic_documents.build(:name                  => "Sample", 
+                                       :description           => "Sample de document graphique destiné aux tests unitaires", 
+                                       :graphic_unit_measure  => graphic_unit_measures(:normal), 
+                                       :creator               => users(:admin_user), 
                                        :graphic_document_type => graphic_document_types(:normal),
                                        :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
                                                                               :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
@@ -275,11 +322,12 @@ class Test::Unit::TestCase
     return gd
   end
   
+  ## PRESS_PROOF METHODS
   def create_default_press_proof
     order   = create_default_order
     product = create_valid_product_for(order)
     
-    graphic_item_version = create_valid_mockup(order, product.id).current_version
+    graphic_item_version = create_default_mockup(order, product).current_version
     
     press_proof = order.press_proofs.build( :product_id        => product.id,
                                             :creator_id        => User.first.id,
@@ -288,24 +336,8 @@ class Test::Unit::TestCase
     flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')}" unless press_proof.save
     return press_proof
   end
-
-  # OPTIMIZE to respect DRY
-  # use here to give the possibility to create a valid mockup with the good order and a specified product
-  #
-  def create_valid_mockup(order, product_id)
-    mockup = order.mockups.build(:name                  => "Sample",
-                                 :description           => "Sample de maquette destiné aux tests unitaires",
-                                 :graphic_unit_measure  => graphic_unit_measures(:normal), 
-                                 :creator_id            => User.first.id,
-                                 :mockup_type_id        => MockupType.first.id,
-                                 :product_id            => product_id,
-                                 :graphic_item_version_attributes => ( {:image => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") )} )
-                                )
-    
-    flunk "mockup should be saved > #{mockup.errors.full_messages.join(', ')}" unless mockup.save
-    return mockup
-  end
   
+  ## DUNNING METHODS
   def create_default_dunning
     press_proof = create_default_press_proof
     press_proof.confirm

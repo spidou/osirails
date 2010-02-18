@@ -185,13 +185,17 @@ class ToolEventTest < ActiveSupport::TestCase
   def test_named_scope_effectives
     base = ToolEvent.count
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
-    flunk "tool should be valid" unless @tool_event.save
+    @tool_event.save!
+    flunk "tool should be saved" if @tool_event.new_record?
+    
     assert_equal base + 1, ToolEvent.count, "the number of events should be equal to #{base + 1}"
     assert_equal base + 1, ToolEvent.effectives.count, "the number of effectives events should be equal to #{base + 1}, because the last event added is effective"
     
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
     @tool_event.start_date = Date.tomorrow
-    flunk "tool should be valid" unless @tool_event.save
+    @tool_event.save!
+    flunk "tool should be saved" if @tool_event.new_record?
+    
     assert_equal base + 2, ToolEvent.count, "the number of events should be equal to #{base + 2}"
     assert_equal base + 1, ToolEvent.effectives.count, "the number of effectives events should be equal to #{base + 1}, because the last event added is future"
   end

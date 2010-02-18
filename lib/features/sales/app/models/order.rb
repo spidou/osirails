@@ -27,9 +27,9 @@ class Order < ActiveRecord::Base
   # TODO add the corresponding test
   
   # delivery notes
-  has_many :delivery_notes
-  has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
-  has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ 'status = ?', DeliveryNote::STATUS_SIGNED ]
+  has_many :delivery_notes, :order => "created_at DESC"
+  has_many :uncomplete_delivery_notes,  :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ], :order => "created_at DESC"
+  has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
   
   # invoices
   has_many :invoices

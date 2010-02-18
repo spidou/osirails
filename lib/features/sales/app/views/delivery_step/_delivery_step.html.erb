@@ -7,7 +7,8 @@
   <% form_for(@step, :url => { :controller => "delivery_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
-    <%= render :partial => 'delivery_notes/delivery_notes_list', :object => @step.delivery_notes %>
+    <h2>Bons de livraison</h2>
+    <%= render :partial => 'delivery_notes/delivery_notes', :object => @order.delivery_notes %>
     <%= display_delivery_note_add_button %>
     
     <p>

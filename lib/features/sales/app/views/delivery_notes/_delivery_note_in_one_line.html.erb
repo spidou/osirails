@@ -1,21 +1,50 @@
-<% delivery_note = delivery_note_in_one_line %>
-<%# status = quote.status ? " #{quote.status}_quote" : '' %>
-<%# title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''%>
+<%
+delivery_note = delivery_note_in_one_line
+order = delivery_note.order
 
-<tr class="quote<%# status %>"<%# title %>>
-  <td><%# delivery_note.public_number %></td>
-  <td><%= delivery_note.created_at.humanize %></td>
-  <td><%# delivery_note.creator.employee_name %></td>
-  <td><%= delivery_note.contact.fullname %></td>
-  <td><%# delivery_note.number_of_pieces %></td>
-  <td><%# delivery_note.total_with_taxes.round_to(2).to_s(2) %></td>
-  <td><%# "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
-  <td><%# quote.signed_on.humanize if quote.signed_on %></td>
-  <td class="actions">
-    <%# display_additional_actions_quote_button(@order, quote) %>
+status = delivery_note.status ? " #{delivery_note.status}_delivery_note" : ''
+title = delivery_note.status ? " title=\"#{delivery_note.status.titleize} delivery_note\"" : ''
+
+all_interventions = delivery_note.delivery_interventions.reject(&:new_record?)
+
+interventions_limit = 2 # set up the number of interventions we want to display into the delivery_note line (set 0 to display all)
+interventions = all_interventions[0..(interventions_limit-1)]
+
+rowspan_value = all_interventions.size > interventions.size ? interventions_limit + 1 : interventions.size
+rowspan = rowspan_value > 0 ? "rowspan=\"#{rowspan_value}\"" : ''
+%>
+
+<tr class="delivery_note<%# status %>"<%= title %>>
+  <td <%= rowspan %>><%= delivery_note.reference %></td>
+  <td <%= rowspan %>><%= delivery_note.created_at.humanize %></td>
+  <td <%= rowspan %>><%= "#{delivery_note.number_of_pieces} / #{delivery_note.associated_quote.number_of_pieces}" %></td>
+  <td <%= rowspan %>><%= delivery_note.delivery_note_type.title %></td>
+  <% if interventions.empty? %>
+    <td>-</td>
+    <td>-</td>
+  <% else %>
+    <% intervention = interventions.shift %>
+    <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line_in_delivery_note', :object => intervention %>
+  <% end %>
+  <td <%= rowspan %> ><%= "#{delivery_note.number_of_discarded_pieces} / #{delivery_note.number_of_pieces}" if delivery_note.delivered_delivery_intervention %></td>
+  <td <%= rowspan %> ><%= delivery_note.signed_on.humanize if delivery_note.signed_on %></td>
+  <td <%= rowspan %> class="actions">
+    <%= display_additional_actions_delivery_note_button(@order, delivery_note) %>
     <%# order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "", :options => { :format => :pdf }) if DeliveryNote.can_view?(current_user) and !quote.uncomplete? %>
-    <%= order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") if DeliveryNote.can_view?(current_user) %>
-    <%# edit_order_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_edit?(current_user) and quote.can_be_edited? %>
-    <%# delete_order_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_delete?(current_user) and quote.can_be_deleted? %>
+    <%= order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
+    <%= edit_order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
+    <%= delete_order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
   </td>
 </tr>
+
+<% for intervention in interventions %>
+  <tr>
+    <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line_in_delivery_note', :object => intervention %>
+  </tr>
+<% end %>
+
+<% if all_interventions.size > interventions.size + 1 %>
+  <tr>
+    <td colspan="2"><%= link_to "Voir toutes les interventions", order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, options = { :tab => 'interventions' }) %></td>
+  </tr>
+<% end %>

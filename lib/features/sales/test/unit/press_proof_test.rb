@@ -34,7 +34,7 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
       
-      @press_proof.press_proof_item_attributes = [{:graphic_item_version_id => create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version.id}]
+      @press_proof.press_proof_item_attributes = [{:graphic_item_version_id => create_default_mockup(@press_proof.order, @press_proof.product).current_version.id}]
       @press_proof.press_proof_items.first.should_destroy = 1;
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -212,7 +212,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -318,7 +318,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -482,7 +482,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -592,7 +592,7 @@ class PressProofTest < ActiveSupport::TestCase
     #should "validate persistence of press_proof_items" do
     #  assert !@press_proof.errors.invalid?(:press_proof_items)
     #  
-    #  graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+    #  graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
     #  @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
     #  @press_proof.valid?
     #  assert @press_proof.errors.invalid?(:press_proof_items)
@@ -704,7 +704,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -730,7 +730,7 @@ class PressProofTest < ActiveSupport::TestCase
     should_not_allow_values_for :status, PressProof::STATUS_CONFIRMED, PressProof::STATUS_SENDED, PressProof::STATUS_SIGNED, PressProof::STATUS_REVOKED, PressProof::STATUS_CANCELLED
     
     should "save only with graphic_item_versions as mockups" do
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert !@press_proof.errors.invalid?(:press_proof_items)
@@ -741,7 +741,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "save only with graphic_item_versions linked to the same product as the press_proof" do
-      graphic_item_version = create_valid_mockup(@press_proof.order, @press_proof.product_id).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert !@press_proof.errors.invalid?(:press_proof_items)

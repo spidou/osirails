@@ -1,4 +1,5 @@
 <% content_for :header do %>
+  <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/quotes' %>
   <%= javascript_include_tag 'sales/tab_navigation' %>
 <% end %>
@@ -17,9 +18,6 @@ excess_quote_items  = quote.quote_items.select{ |q| q.product.nil? }
 %>
 
 <div class="presentation_medium root_nav">
-  <script type="text/javascript">
-    //add_buttons_in_catalog();
-  </script>
   
   <% unless quote.new_record? or quote.was_signed? or quote.was_cancelled? %>
     <% unless missing_products.empty? %>
@@ -49,7 +47,7 @@ excess_quote_items  = quote.quote_items.select{ |q| q.product.nil? }
     <h2 class="quote_body"><%= quote_headers[:quote_body] %></h2>
     <div class="quote_body section_nav">
       <%= form.error_messages unless quote_errors[:quote_body].blank? %>
-      <table id="quote_items">
+      <table id="quote_items" class="sales_table">
         <tr>
           <th>Réf.</th>
           <th>Désignation</th>
@@ -103,5 +101,6 @@ excess_quote_items  = quote.quote_items.select{ |q| q.product.nil? }
         <%= form.submit 'Enregistrer' %>
       </p>
     <% end %>
+    
   <% end %>
 </div>

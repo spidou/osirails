@@ -50,10 +50,11 @@ class QuoteItem < ActiveRecord::Base
   
   def already_delivered_or_scheduled_quantity
     return 0 if self.new_record?
+    #OPTIMIZE how can I replace that find method by a call to the named_scope ':actives' in delivery_note.rb (conditions are the same)
     delivery_note_items.find( :all,
                               :include    => :delivery_note,
-                              :conditions => [ "delivery_notes.status IS NULL or delivery_notes.status != ?", DeliveryNote::STATUS_INVALIDATED ]
-                             ).collect(&:quantity).sum
+                              :conditions => [ "delivery_notes.status IS NULL or delivery_notes.status != ?", DeliveryNote::STATUS_CANCELLED ]
+                             ).collect(&:really_delivered_quantity).sum
   end
   
   def remaining_quantity_to_deliver

@@ -40,7 +40,7 @@ class QuotesController < ApplicationController
         @quote.build_quote_item(:product_reference_id => product.product_reference_id, :product_id => product.id, :order_id => @order.id)
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -59,13 +59,13 @@ class QuotesController < ApplicationController
         render :action => :new
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/quotes/:id/edit
   def edit
-    error_access_page(403) unless (@quote = Quote.find(params[:id])).can_be_edited?
+    error_access_page(412) unless (@quote = Quote.find(params[:id])).can_be_edited?
   end
   
   # PUT /orders/:order_id/:step/quotes/:id
@@ -78,7 +78,7 @@ class QuotesController < ApplicationController
         render :action => :edit
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -90,7 +90,7 @@ class QuotesController < ApplicationController
       end
       redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -104,7 +104,7 @@ class QuotesController < ApplicationController
         redirect_to send(@step.original_step.path)
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -116,13 +116,13 @@ class QuotesController < ApplicationController
       end
       redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/quotes/:quote_id/send_form
   def send_form
-    error_access_page(403) unless (@quote = Quote.find(params[:quote_id])).can_be_sended?
+    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_sended?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/send_to_customer
@@ -135,13 +135,13 @@ class QuotesController < ApplicationController
         render :action => :send_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/quotes/:quote_id/sign_form
   def sign_form
-    error_access_page(403) unless (@quote = Quote.find(params[:quote_id])).can_be_signed?
+    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_signed?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/sign
@@ -154,7 +154,7 @@ class QuotesController < ApplicationController
         render :action => :sign_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
