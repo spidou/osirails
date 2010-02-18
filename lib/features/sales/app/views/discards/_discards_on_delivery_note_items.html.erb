@@ -1,0 +1,20 @@
+<%
+require_locals delivery_intervention
+delivery_note_items = discards_on_delivery_note_items
+%>
+
+<% # very oddly, calling +empty?+ on an array somtimes empty it (when items are new_record), so I use +length.zero?+, but perhaps it can be restore today ? # for more info, see that page : http://dev.rubyonrails.org/ticket/10115 %>
+<% if delivery_note_items and !delivery_note_items.length.zero? %>
+  <table class="sales_table">
+    <tr>
+      <th>Réf.</th>
+      <th>Désignation</th>
+      <th>Qté à livrer</th>
+      <th>Qté concernée <br/>par la réserve</th>
+      <th>Réserves / Remarques / Avancement</th>
+    </tr>
+    <%= render :partial => 'discards/discard_on_delivery_note_item_in_one_line', :collection => delivery_note_items, :locals => { :delivery_intervention => delivery_intervention } %>
+  </table>
+<% else %>
+  <p>Aucune réserve n'a été émise sur ce Bon de Livraison</p>
+<% end %>

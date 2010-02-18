@@ -770,17 +770,39 @@ namespace :osirails do
       order2.save!
       
       # default products
-      Product.create! :reference => "01010101", :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id, :dimensions => "1000x2000", :quantity => 1, :order_id => order1.id
-      Product.create! :reference => "01010201", :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id, :dimensions => "1000x3000", :quantity => 2, :order_id => order1.id
-      Product.create! :reference => "01010301", :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id, :dimensions => "2000x4000", :quantity => 3, :order_id => order1.id
-      Product.create! :reference => "01010202", :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference111.id, :dimensions => "2000x2000", :quantity => 1, :order_id => order2.id
-      Product.create! :reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2, :order_id => order2.id
-      Product.create! :reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3, :order_id => order2.id
+      order1.products.build(:reference => "01010101", :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id, :dimensions => "1000x2000", :quantity => 1).save!
+      order1.products.build(:reference => "01010201", :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id, :dimensions => "1000x3000", :quantity => 2).save!
+      order1.products.build(:reference => "01010301", :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id, :dimensions => "2000x4000", :quantity => 3).save!
+      order2.products.build(:reference => "01010202", :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference111.id, :dimensions => "2000x2000", :quantity => 1).save!
+      order2.products.build(:reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2).save!
+      order2.products.build(:reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3).save!
+      
+      # default quote
+      quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :creator_id => User.first.id)
+      quote.contacts << order1.contacts.first
+      quote.build_ship_to_address(Address.first.attributes)
+      quote.build_bill_to_address(Address.last.attributes)
+      order1.products.each do |product|
+        quote.quote_items.build(:product_id   => product.id,
+                                :order_id     => order1.id,
+                                :name         => "Product Name",
+                                :description  => "Product description",
+                                :dimensions   => "1000x2000",
+                                :quantity     => 2,
+                                :unit_price   => 20000,
+                                :discount     => 0.0,
+                                :vat          => 19.6)
+      end
+      quote.save!
+      quote.confirm
+      quote.send_to_customer(:sended_on => Date.today, :send_quote_method_id => SendQuoteMethod.first.id)
+      attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      quote.sign(:signed_on => Date.today, :order_form_type_id => OrderFormType.first.id, :order_form => attachment)
       
       # default graphic unit measures
       GraphicUnitMeasure.create! :name => "Millimètre", :symbol => "mm"
       GraphicUnitMeasure.create! :name => "Centimètre", :symbol => "cm"
-      GraphicUnitMeasure.create! :name => "Mètre", :symbol => "m"
+      GraphicUnitMeasure.create! :name => "Mètre",      :symbol => "m"
       
       # default mockup types
       MockupType.create! :name => "Vue d'ensemble"
@@ -823,6 +845,14 @@ namespace :osirails do
       
       mockup2.graphic_item_version_attributes = { :image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") ) }
       mockup2.save!
+      
+      #default delivery_note_types
+      DeliveryNoteType.create! :title => "Livraison + Installation", :delivery => true,   :installation => true
+      DeliveryNoteType.create! :title => "Livraison",                :delivery => true,   :installation => false
+      DeliveryNoteType.create! :title => "Enlèvement Client",        :delivery => false,  :installation => false
+      
+      Vehicle.create! :service_id => prod.id, :job_id => Job.first.id, :employee_id => Employee.first.id, :supplier_id => Supplier.first.id, :name => "Ford Fiesta",    :serial_number => "123 ABC 974", :description => "Véhicule utilitaire",    :purchase_date => Date.today - 1.year, :purchase_price => "12000"
+      Vehicle.create! :service_id => pose.id, :job_id => Job.last.id,  :employee_id => Employee.last.id,  :supplier_id => Supplier.last.id,  :name => "Renault Magnum", :serial_number => "456 DEF 974", :description => "Camion longue distance", :purchase_date => Date.today - 6.months, :purchase_price => "130000"
       
       %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
         klass.constantize.all.each do |object|

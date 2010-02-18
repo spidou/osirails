@@ -86,7 +86,7 @@ class Test::Unit::TestCase
     return quote
   end
   
-  def create_valid_delivery_note_for(order)
+  def create_valid_delivery_note_for(order, delivery_note_type = nil)
     # prepare order
     order.contacts = [ contacts(:pierre_paul_jacques) ]
     order.save!
@@ -100,9 +100,11 @@ class Test::Unit::TestCase
     
     # prepare delivery note
     dn = order.delivery_notes.build
-    dn.creator = users(:powerful_user)
-    dn.ship_to_address = address
-    dn.contacts = [ contacts(:pierre_paul_jacques) ]
+    dn.creator            = users(:powerful_user)
+    dn.ship_to_address    = address
+    dn.contacts           = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
+    
     count = 0
     dn.associated_quote.quote_items.each do |ref|
       break if count == 2
@@ -115,33 +117,66 @@ class Test::Unit::TestCase
     return dn
   end
   
-  def create_valid_intervention_for(delivery_note)
-    flunk "delivery_note should NOT have interventions to continue > #{delivery_note.interventions.inspect}" unless delivery_note.interventions.empty?
-    flunk "delivery_note should be validated to continue" if !delivery_note.validated? and !delivery_note.validate_delivery_note
+  def build_valid_delivery_intervention_for(delivery_note)
+    intervention = delivery_note.delivery_interventions.build(:scheduled_delivery_at        => Time.now,
+                                                              :scheduled_internal_actor_id  => Employee.first.id,
+                                                              :scheduled_intervention_hours => 2)
     
-    intervention = delivery_note.interventions.build(:on_site => true,
-                                                     :scheduled_delivery_at => Time.now + 10.hours)
-    intervention.deliverers << Employee.first
+    intervention.scheduled_delivery_subcontractor_id      = Subcontractor.first.id if delivery_note.delivery?
+    intervention.scheduled_installation_subcontractor_id  = Subcontractor.first.id if delivery_note.installation?
+    
+    return intervention
+  end
+  
+  #def create_valid_delivery_intervention_for(delivery_note)
+  def create_scheduled_delivery_intervention_for(delivery_note)
+    flunk "delivery_note should NOT have a pending_delivery_intervention" if delivery_note.pending_delivery_intervention
+    
+    delivery_note.confirm unless delivery_note.was_confirmed?
+    flunk "delivery_note should be confirmed" unless delivery_note.was_confirmed?
+    
+    intervention = build_valid_delivery_intervention_for(delivery_note)
     
     intervention.save!
     return intervention
   end
   
-  def create_valid_discard_for(delivery_note)
-    intervention = create_valid_intervention_for(delivery_note)
-    intervention.delivered = true
-    intervention.comments = "my special comment"
+  def create_delivered_delivery_intervention_for(delivery_note)
+    create_scheduled_delivery_intervention_for(delivery_note)
+    delivery_note = DeliveryNote.find(delivery_note.id)
     
-    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+    flunk "delivery_note should have a pending_delivery_intervention" unless delivery_note.pending_delivery_intervention
     
-    reference = delivery_note.delivery_note_items.first
-    discard = reference.build_discard(:comments => "my special comment",
-                                      :quantity => reference.quantity,
-                                      :discard_type_id => discard_types(:low_quality).id)
+    intervention = delivery_note.pending_delivery_intervention
+    intervention.attributes = { :delivered          => true,
+                                :delivery_at        => intervention.scheduled_delivery_at,
+                                :internal_actor_id  => intervention.scheduled_internal_actor_id,
+                                :intervention_hours => intervention.scheduled_intervention_hours }
+    intervention.delivery_subcontractor_id      = intervention.scheduled_delivery_subcontractor_id      if delivery_note.delivery?
+    intervention.installation_subcontractor_id  = intervention.scheduled_installation_subcontractor_id  if delivery_note.installation?
     
-    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
-    return discard
+    intervention.save!
+    
+    flunk "delivery_note should have a delivered_delivery_intervention" unless delivery_note.delivered_delivery_intervention
+    
+    return intervention
   end
+  
+#  def create_valid_discard_for(delivery_note)
+#    intervention = create_valid_delivery_intervention_for(delivery_note)
+#    intervention.delivered = true
+#    intervention.comments = "my special comment"
+#    
+#    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+#    
+#    reference = delivery_note.delivery_note_items.first
+#    discard = reference.build_discard(:comments => "my special comment",
+#                                      :quantity => reference.quantity,
+#                                      :discard_type_id => discard_types(:low_quality).id)
+#    
+#    flunk "delivery_note should be saved > #{delivery_note.errors.full_messages.join(', ')}" unless delivery_note.save
+#    return discard
+#  end
   
   def create_default_mockup
     order = create_default_order

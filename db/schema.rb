@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100121100208) do
+ActiveRecord::Schema.define(:version => 20100211121643) do
 
   create_table "activity_sectors", :force => true do |t|
     t.string   "name"
@@ -203,16 +203,106 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
     t.string "code"
   end
 
-  create_table "deliverers_interventions", :force => true do |t|
-    t.integer "deliverer_id",    :limit => 11
-    t.integer "intervention_id", :limit => 11
+  create_table "delivery_interventions", :force => true do |t|
+    t.integer  "delivery_note_id",                         :limit => 11
+    t.integer  "scheduled_internal_actor_id",              :limit => 11
+    t.integer  "scheduled_delivery_subcontractor_id",      :limit => 11
+    t.integer  "scheduled_installation_subcontractor_id",  :limit => 11
+    t.integer  "scheduled_delivery_vehicle_id",            :limit => 11
+    t.datetime "scheduled_delivery_at"
+    t.integer  "scheduled_intervention_hours",             :limit => 11
+    t.integer  "scheduled_intervention_minutes",           :limit => 11
+    t.text     "scheduled_delivery_vehicles_rental"
+    t.text     "scheduled_installation_equipments_rental"
+    t.boolean  "delivered"
+    t.boolean  "postponed"
+    t.integer  "internal_actor_id",                        :limit => 11
+    t.integer  "delivery_subcontractor_id",                :limit => 11
+    t.integer  "installation_subcontractor_id",            :limit => 11
+    t.integer  "delivery_vehicle_id",                      :limit => 11
+    t.datetime "delivery_at"
+    t.integer  "intervention_hours",                       :limit => 11
+    t.integer  "intervention_minutes",                     :limit => 11
+    t.text     "delivery_vehicles_rental"
+    t.text     "installation_equipments_rental"
+    t.text     "comments"
+    t.string   "report_file_name"
+    t.string   "report_content_type"
+    t.integer  "report_file_size",                         :limit => 11
+    t.integer  "cancelled_by_id",                          :limit => 11
+    t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_deliverers", :force => true do |t|
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "deliverer_id",             :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_delivery_vehicles", :force => true do |t|
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "delivery_vehicle_id",      :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_installation_equipments", :force => true do |t|
+    t.integer  "delivery_intervention_id",  :limit => 11
+    t.integer  "installation_equipment_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_installers", :force => true do |t|
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "installer_id",             :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_scheduled_deliverers", :force => true do |t|
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "scheduled_deliverer_id",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_scheduled_delivery_vehicles", :force => true do |t|
+    t.integer  "delivery_intervention_id",      :limit => 11
+    t.integer  "scheduled_delivery_vehicle_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_scheduled_installation_equipments", :force => true do |t|
+    t.integer  "delivery_intervention_id",            :limit => 11
+    t.integer  "scheduled_installation_equipment_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_interventions_scheduled_installers", :force => true do |t|
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "scheduled_installer_id",   :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "delivery_note_items", :force => true do |t|
     t.integer  "delivery_note_id", :limit => 11
     t.integer  "quote_item_id",    :limit => 11
-    t.integer  "report_type_id",   :limit => 11
     t.integer  "quantity",         :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "delivery_note_types", :force => true do |t|
+    t.string   "title"
+    t.boolean  "delivery"
+    t.boolean  "installation"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -220,14 +310,16 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
   create_table "delivery_notes", :force => true do |t|
     t.integer  "order_id",                :limit => 11
     t.integer  "creator_id",              :limit => 11
+    t.integer  "delivery_note_type_id",   :limit => 11
     t.string   "status"
-    t.date     "validated_on"
-    t.date     "invalidated_on"
-    t.date     "signed_on"
+    t.string   "reference"
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
     t.integer  "attachment_file_size",    :limit => 11
-    t.string   "public_number"
+    t.date     "published_on"
+    t.date     "signed_on"
+    t.datetime "confirmed_at"
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -241,18 +333,16 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
     t.datetime "updated_at"
   end
 
-  create_table "discard_types", :force => true do |t|
-    t.string "name"
-  end
-
   create_table "discards", :force => true do |t|
-    t.integer  "delivery_note_item_id", :limit => 11
-    t.integer  "discard_type_id",       :limit => 11
+    t.integer  "delivery_note_item_id",    :limit => 11
+    t.integer  "delivery_intervention_id", :limit => 11
+    t.integer  "quantity",                 :limit => 11
     t.text     "comments"
-    t.integer  "quantity",              :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "discards", ["delivery_note_item_id", "delivery_intervention_id"], :name => "index_discards_on_delivery_note_item_and_delivery_intervention", :unique => true
 
   create_table "document_sending_methods", :force => true do |t|
     t.string "name"
@@ -492,16 +582,6 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
   create_table "indicatives", :force => true do |t|
     t.integer  "country_id", :limit => 11
     t.string   "indicative"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "interventions", :force => true do |t|
-    t.integer  "delivery_note_id",      :limit => 11
-    t.boolean  "on_site"
-    t.datetime "scheduled_delivery_at"
-    t.boolean  "delivered"
-    t.text     "comments"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

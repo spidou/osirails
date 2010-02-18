@@ -1,0 +1,57 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'sales/round_number' %>
+  <%= javascript_include_tag 'sales/delivery_notes' %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+<% end %>
+
+<%
+delivery_note_headers = { :delivery_note_header                   => "Entête",
+                          :delivery_note_body                     => "Corps",
+                          :delivery_note_interventions            => "Interventions (#{delivery_note.delivery_interventions.count})",
+                          :delivery_note_additional_informations  => "Informations supplémentaires" }
+
+delivery_note_errors  = { :delivery_note_header         => delivery_note.errors.on(:published_on) || delivery_note.errors.on(:ship_to_address) || delivery_note.errors.on(:contacts) ? ' errors' : '',
+                          :delivery_note_body           => delivery_note.errors.on(:delivery_note_items) ? ' errors' : ''}
+%>
+
+<div class="presentation_medium root_nav">
+  
+  <ul class="delivery_note_nav tab_nav">
+    <li class="delivery_note_header<%= delivery_note_errors[:delivery_note_header] %> selected"><%= delivery_note_headers[:delivery_note_header] %></li>
+    <li class="delivery_note_body<%= delivery_note_errors[:delivery_note_body] %>"><%= delivery_note_headers[:delivery_note_body] %></li>
+    <li class="delivery_note_interventions"><%= delivery_note_headers[:delivery_note_interventions] %></li>
+    <li class="delivery_note_additional_informations"><%= delivery_note_headers[:delivery_note_additional_informations] %></li>
+  </ul>
+  
+  <% action = delivery_note.new_record? ? :create : :update %>
+  <% method = delivery_note.new_record? ? :put : :post %>
+  <% form_for delivery_note, :url => { :controller => 'delivery_notes', :action => action, :order_id => @order.id }, :method => method do |form| %>
+  
+    <h2 class="delivery_note_header"><%= delivery_note_headers[:delivery_note_header] %></h2>
+    <div class="delivery_note_header section_nav selected">
+      <%= form.error_messages unless delivery_note_errors[:delivery_note_header].blank? %>
+      <%= render :partial => 'delivery_note_header', :object => delivery_note, :locals => { :form => form } %>
+    </div>
+    
+    <h2 class="delivery_note_body"><%= delivery_note_headers[:delivery_note_body] %></h2>
+    <div class="delivery_note_body section_nav">
+      <%= form.error_messages unless delivery_note_errors[:delivery_note_body].blank? %>
+      <%= render :partial => 'delivery_note_body', :object => delivery_note %>
+    </div>
+    
+    <h2 class="delivery_note_interventions"><%= delivery_note_headers[:delivery_note_interventions] %></h2>
+    <div class="delivery_note_interventions section_nav">
+      <%= render :partial => 'delivery_note_interventions', :object => delivery_note %>
+    </div>
+    
+    <h2 class="delivery_note_additional_informations"><%= delivery_note_headers[:delivery_note_additional_informations] %></h2>
+    <div class="delivery_note_additional_informations section_nav">
+      <%= render :partial => 'delivery_note_additional_infos', :object => delivery_note, :locals => { :form => form } %>
+    </div>
+    
+    <p>
+      <%= form.submit 'Enregistrer' %>
+    </p>
+    
+  <% end %>
+</div>

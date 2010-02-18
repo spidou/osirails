@@ -9,4 +9,6 @@
   <%= graphic_items_link(GraphicDocument) %>
 <% end %>
 
-<%= render :partial => 'press_proof', :object => @press_proof, :locals => {:button_name => "Ajouter", :action => :create, :mockups => @mockups} %>
+<h1>Création d'un nouveau BAT</h1>
+
+<%= render :partial => 'press_proof', :object => @press_proof, :locals => {:action => :create, :mockups => @mockups} %>

@@ -36,7 +36,7 @@
                          :onclick => "restore_original_value(this.up('.quote_item'), 'name')" ) %>
           </span>
         <% else %>
-          <%= h(quote_item.name) %>
+          <%= strong h(quote_item.name) %>
         <% end %>
         
         <br/>
@@ -49,7 +49,7 @@
                          :onclick => "restore_original_value(this.up('.quote_item'), 'description')" ) %>
           </span>
         <% else %>
-          <%= textilize(h(quote_item.description)) %>
+          <%= h(quote_item.description) %>
         <% end %>
       </td>
       <td class="dimensions">

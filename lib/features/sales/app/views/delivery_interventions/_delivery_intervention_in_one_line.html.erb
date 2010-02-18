@@ -1,0 +1,26 @@
+<%
+delivery_intervention = delivery_intervention_in_one_line
+delivery_note = delivery_intervention.delivery_note
+%>
+
+<tr class="delivery_intervention">
+  <td><%= delivery_intervention.scheduled_delivery_at.humanize %></td>
+  <td><%= delivery_intervention.scheduled_intervention_duration %></td>
+  <td><%= delivery_intervention.scheduled_internal_actor.fullname %></td>
+  
+  <% if delivery_intervention.realized? and delivery_intervention.delivered? %>
+    <td><%= delivery_intervention.delivery_at.humanize %></td>
+    <td><%= delivery_intervention.intervention_duration %></td>
+    <td><%= delivery_intervention.internal_actor.fullname if delivery_intervention.internal_actor %></td>
+  <% elsif delivery_intervention.realized? and delivery_intervention.undelivered? %>
+    <td colspan="3">Non effectuée (<%= delivery_intervention.comments %>)</td>
+  <% elsif delivery_intervention.postponed? %>
+    <td colspan="3">REPORTÉ</td>
+  <% else %>
+    <td colspan="3">En attente...</td>
+  <% end %>
+  
+  <td><%= "#{delivery_note.number_of_discarded_pieces} / #{delivery_note.number_of_pieces}" if delivery_intervention.delivered? %></td>
+  
+  <td><%= display_actions_for_delivery_intervention(delivery_intervention) %></td>
+</tr>

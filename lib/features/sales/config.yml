@@ -97,6 +97,10 @@ menus:
                   delivery_notes:
                     title: Bon de livraison
                     description: Élaboration des bons de livraison
+                    children:
+                      delivery_interventions:
+                        title: "Intervention de livraison / installation"
+                        description: "Gestion des intervention de livraison / installation"
           invoicing_step:
             title: Facturation
             description: Phase de la Facturation

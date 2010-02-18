@@ -146,65 +146,65 @@ ul.quote_caption {
   text-align: left;
 }
 
-table#quote_items td,
-table#quote_items span {
+table.sales_table td,
+table.sales_table span {
   vertical-align: top;
 }
 
-table#quote_items td.description {
+table.sales_table td.description {
   text-align: left;
 }
 
-table#quote_items td.description p {
+table.sales_table td.description p {
   margin: 0;
   padding: 0;
 }
 
-table#quote_items td.description strong {
+table.sales_table td.description strong {
   color: inherit;
   font-weight: bold;
 }
 
-table#quote_items td.description img,
-table#quote_items td.unit_price img {
+table.sales_table td.description img,
+table.sales_table td.unit_price img {
   vertical-align: middle;
 }
 
-table#quote_items td.description input,
-table#quote_items td.description textarea {
+table.sales_table td.description input,
+table.sales_table td.description textarea {
   width: 400px;
 }
 
-table#quote_items span.fieldWithErrors {
+table.sales_table span.fieldWithErrors {
   display: inline-block;
 }
 
-table#quote_items span.fieldWithErrors:after {
+table.sales_table span.fieldWithErrors:after {
   color: red;
   vertical-align: top;
   content: " *"
 }
 
-table#quote_items tr.aggregates td {
+table.sales_table tr.aggregates td {
   text-align: left;
   border-top: none;
   border-bottom: none;
 }
 
-table#quote_items tr.aggregates td.aggregate_label {
+table.sales_table tr.aggregates td.aggregate_label {
   border-right: none;
 }
 
-table#quote_items tr.aggregates td.aggregate_amount {
+table.sales_table tr.aggregates td.aggregate_amount {
   border-left: none;
   text-align: right;
 }
 
-table#quote_items tr.aggregates td.aggregate_amount input {
+table.sales_table tr.aggregates td.aggregate_amount input {
   text-align: right;
 }
 
-table#quote_items tr.aggregates.global {
+table.sales_table tr.aggregates.global {
   font-weight: bold;
   background-color: #CCC;
   border-top: 1px solid black;
@@ -270,12 +270,22 @@ table#quote_items tr.aggregates.global {
   vertical-align: top;
 }
 
-#delivery_note_header > div h3 {
+#delivery_note_header > div h4 {
   text-align: center;
+  margin: 0px;
+  padding: 2px;
+  background-color: #DDD;
+  border: 1px solid #A7A7A7;
 }
 
 #delivery_note_header #contact_container label {
   width: auto !important;
+}
+
+#delivery_note_items tr.empty_line {
+  background-color: #EAEAEA;
+  font-style: italic;
+  color: #898989;
 }
 
 /* REMARKS */
@@ -375,8 +385,10 @@ table#quote_items tr.aggregates.global {
 }
 
 .root_nav ul.tab_nav li.disabled {
+  background-color: #DDD;
+  color: #777;
   font-style: italic;
-  color: #AAA;
+  cursor: inherit;
 }
 
 .root_nav ul.tab_nav li.errors {

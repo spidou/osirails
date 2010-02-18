@@ -1,4 +1,5 @@
 <% content_for :header do %>
+  <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/quotes' %>
   <%= javascript_include_tag 'sales/tab_navigation' %>
 <% end %>
@@ -8,17 +9,12 @@ quote_headers = { :quote_header => "Entête",
                   :quote_body   => "Corps",
                   :quote_footer => "Conditions commerciales" }
 
-#TODO
 quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
-                  :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:reduction) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount)? ' errors' : '',
+                  :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:reduction) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
                   :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:account) ? ' errors' : '' }
 %>
 
 <div class="presentation_medium root_nav">
-  <script type="text/javascript">
-    //taxes_vat = <%# ConfigurationManager.sales_taxes_vat %>;
-    //add_buttons_in_catalog();
-  </script>
   
   <ul class="quote_nav tab_nav">
     <li class="quote_header<%= quote_errors[:quote_header] %> selected"><%= quote_headers[:quote_header] %></li>
@@ -39,7 +35,7 @@ quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.er
     <h2 class="quote_body"><%= quote_headers[:quote_body] %></h2>
     <div class="quote_body section_nav">
       <%= form.error_messages unless quote_errors[:quote_body].blank? %>
-      <table id="quote_items">
+      <table id="quote_items" class="sales_table">
         <tr>
           <th>Réf.</th>
           <th>Désignation</th>
@@ -98,5 +94,6 @@ quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.er
         <%= form.submit 'Enregistrer' %>
       </p>
     <% end %>
+    
   <% end %>
 </div>
