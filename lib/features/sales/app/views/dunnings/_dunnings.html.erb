@@ -2,7 +2,7 @@
   <%= javascript_include_tag 'sales/dunning' %>
 <% end %>
 
-<% without_action = !Dunning.can_cancel?(current_user) %>
+<% without_action ||= !Dunning.can_cancel?(current_user) %>
 
 <% if dunnings.reject(&:cancelled).empty? %>
   <p>Aucune relance n'a été effectuée</p>
@@ -10,7 +10,7 @@
   <table>
     <tr>
       <th>N&deg;</th>
-      <th>Effectuée le</th>
+      <th>Effectu&eacute;e le</th>
       <th>Par</th>
       <th>Auteur</th>
       <th>Commentaires</th>
@@ -22,19 +22,21 @@
 <% end %>
 
 <% unless dunnings.select(&:cancelled).empty? %>
-
-  <%= link_to "#{ image_tag('/images/view_16x16.png') } Voir les relances annulées", '#', { :onclick => "new Effect.toggle('cancelled_dunnings','blind');" } %>
+  
+  <p>
+    <%= link_to_function('Voir les relances annulées', "toggle_blind(this, 'cancelled_dunnings');") %> 
+  </p>
   
   <div id='cancelled_dunnings' style='display:none;'>
     <table class="cancelled_dunnings_table disabled" >
       <tr>
         <th>N&deg;</th>
-        <th>Effectuée le</th>
+        <th>Effectu&eacute;e le</th>
         <th>Par</th>
         <th>Auteur</th>
         <th>Commentaires</th>
-        <th>Annulé par</th>
-        <th>Annulé le</th>
+        <th>Annul&eacute; par</th>
+        <th>Annul&eacute; le</th>
       </tr>
       
       <%= render :partial => "dunnings/cancelled_dunning_in_one_line", :collection => dunnings.select(&:cancelled) %>

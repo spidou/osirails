@@ -10,14 +10,14 @@ class PressProof < ActiveRecord::Base
   named_scope :actives, :conditions => ["status NOT IN (?)", [STATUS_CANCELLED, STATUS_REVOKED]]
   named_scope :signed_list, :conditions => ["status =?", [STATUS_SIGNED]]
   
-  attr_protected :status, :cancelled_on, :confimed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment, :reference
+  attr_protected :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment, :reference
     
   has_attached_file :signed_press_proof, 
                     :path => ':rails_root/assets/:class/:attachment/:reference.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
-  has_many :press_proof_items, :order => "created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
-  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
+  has_many :press_proof_items, :order => "position, created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
+  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position, press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
@@ -87,7 +87,9 @@ class PressProof < ActiveRecord::Base
   validate :validates_presence_of_press_proof_items_custom # use this because the deletion of a resource is done after validation by using a flag, so we must validate the flag state
   validate :validates_mockups
   
+  # Callbacks
   after_save :save_press_proof_items
+  before_create :can_be_created?
     
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -119,15 +121,15 @@ class PressProof < ActiveRecord::Base
   
   def can_be_confirmed?
     return false if self.new_record?
-    status_was.nil?
+    status_was.nil? and product_without_signed_press_proof?
   end
   
   def can_be_sended?
-    was_confirmed?
+    was_confirmed? and product_without_signed_press_proof?
   end
   
   def can_be_signed?
-    was_sended? and PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty?
+    was_sended? and product_without_signed_press_proof?
   end
   
   def can_be_revoked?
@@ -135,13 +137,20 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_edited?
-    confirmed_on.nil?
+    confirmed_on.nil? and product_without_signed_press_proof?
   end
   
   def can_be_destroyed?
     confirmed_on.nil?
   end
   
+  def can_be_created?
+    product_without_signed_press_proof?
+  end
+  
+  def product_without_signed_press_proof?
+    PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty?
+  end
   
   def cancel
     return false unless can_be_cancelled?

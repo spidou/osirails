@@ -174,22 +174,63 @@ class Test::Unit::TestCase
     return gd
   end
   
-  def create_default_press_proof
-    order      = create_default_order
-    john_id    = employees(:john_doe).id
-    admin_id   = users(:admin_user).id
-    product_id = create_valid_product_for(order).id
-    graphic_item_version = create_valid_mockup(order, product_id).current_version
+  def build_default_press_proof(order = nil, product = nil, creator = nil, internal_actor = nil)
+    order          ||= create_default_order
+    internal_actor ||= employees(:john_doe)
+    creator        ||= users(:admin_user)
+    product        ||= create_valid_product_for(order)
+    graphic_item_version = create_valid_mockup(order, product.id).current_version
     
     press_proof = PressProof.new( :order_id          => order.id,
-                                  :product_id        => product_id,
-                                  :creator_id        => admin_id,
-                                  :internal_actor_id => john_id,
+                                  :product_id        => product.id,
+                                  :creator_id        => creator.id,
+                                  :internal_actor_id => internal_actor.id,
                                   :press_proof_item_attributes =>[ {:graphic_item_version_id => graphic_item_version.id} ])
+  end
+  
+  def create_default_press_proof(order = nil, product = nil, creator = nil, internal_actor = nil)
+    press_proof = build_default_press_proof(order, product, creator, internal_actor)
     flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')}" unless press_proof.save
     return press_proof
   end
 
+  def get_confirmed_press_proof(press_proof = create_default_press_proof)
+    press_proof.confirm
+    press_proof
+  end
+  
+  def get_sended_press_proof(press_proof = create_default_press_proof, date = Date.today)
+    press_proof = get_confirmed_press_proof(press_proof) unless press_proof.can_be_sended?
+    options     = {:sended_on => date, :document_sending_method_id => document_sending_methods(:courrier).id}
+                   
+    press_proof.send_to_customer(options)
+    press_proof
+  end
+  
+  def get_signed_press_proof(press_proof = create_default_press_proof, date = Date.today)
+    press_proof = get_sended_press_proof(press_proof) unless press_proof.can_be_signed?
+    options     = {:signed_on => date, :signed_press_proof => File.new(File.join(RAILS_ROOT, "test", "fixtures", "signed_press_proof.pdf"))}
+                   
+    press_proof.sign(options)
+    press_proof
+  end
+  
+  def get_cancelled_press_proof(press_proof = create_default_press_proof)
+    press_proof = get_confirmed_press_proof(press_proof) unless press_proof.can_be_cancelled?
+    
+    press_proof.cancel
+    press_proof
+  end
+  
+  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = users(:admin_user), comment = "comment", date = Date.today)
+    press_proof = get_signed_press_proof(press_proof) unless press_proof.can_be_revoked?
+    options = {:revoked_by_id => actor.id, :revoked_on => date, :revoked_comment => comment}
+                
+    press_proof.revoke(options)
+    press_proof
+  end  
+  
+  
   # OPTIMIZE to respect DRY
   # use here to give the possibility to create a valid mockup with the good order and a specified product
   #
@@ -209,15 +250,14 @@ class Test::Unit::TestCase
   
   def create_default_dunning
     press_proof = create_default_press_proof
-    press_proof.confirm
-    press_proof.send_to_customer({:sended_on => Date.today, :document_sending_method_id => document_sending_methods(:fax).id})
+    get_sended_press_proof(press_proof)
     
     dunning = press_proof.dunnings.build(:date       => Date.today,
                                          :comment    => "comment for tests",
                                          :creator_id => users(:admin_user).id,
                                          :dunning_sending_method_id => dunning_sending_methods(:telephone).id)
 
-    flunk "dunning should be saved > #{dunning.errors.full_messages.join(', ')} #{dunning.inspect} #{dunning.date} #{Date.today}" unless dunning.save
+    flunk "dunning should be saved > #{dunning.errors.full_messages.join(', ')}" unless dunning.save
     return dunning
   end
 end

@@ -1,7 +1,18 @@
 <div class='presentation_medium'>
-<% form_for(dunning,:url => {:action => :create}) do |f| %>
-  <%= render :partial => "press_proofs/press_proofs_list", :object => [ @owner_class.find(@owner.id) ] %>
-  
+  <h2>Bon &agrave; tirer</h2>
+  <%= render :partial => "press_proofs/press_proofs_list", :object => [ @owner_class.find(@owner.id) ], :locals => { :press_proofs => [ @owner_class.find(@owner.id) ]} %>
+</div>
+
+<h1>Signaler qu&apos;une relance a &eacute;t&eacute; effecut&eacute;e</h1>
+<div class='presentation_medium'>
+
+<% unless dunnings.empty? %>
+  <h3>Historique des relances</h3>
+  <%= render :partial => "dunnings", :object => dunnings, :locals => {:without_action => true } %>
+  <hr/>
+<% end %>
+
+<% form_for(dunning,:url => {:action => :create}) do |f| %>  
   <%= f.error_messages %>
   <p>
     <%= f.label :date %>
@@ -17,7 +28,7 @@
   
   <p>
     <%= f.label :dunning_sending_method %>
-    <%= f.form_or_view(collection_select(:dunning, :dunning_sending_method_id, DunningSendingMethod.find(:all), :id, :name),:dunning_method, :name) %>
+    <%= f.form_or_view(collection_select(:dunning, :dunning_sending_method_id, DunningSendingMethod.all, :id, :name),:dunning_method, :name) %>
   </p>
   
   <p>

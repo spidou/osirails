@@ -17,10 +17,12 @@
   padding: 3px;
   margin: 5px;
   width: auto;
-  height: 248px;
-  -moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.3), 0px -1px 2px rgba(0,0,0,0.3);
+  min-height: 124px;
+  max-height: 248px;
+  overflow: scroll;
   overflow-x: hidden;
   overflow-y: auto;
+  -moz-box-shadow: 0px 1px 2px rgba(0,0,0,0.3), 0px -1px 2px rgba(0,0,0,0.3);
 }
 
 .press_proof_mockups_container {
@@ -38,4 +40,31 @@
   top: 15px;
   right: 15px;
   cursor: pointer;
+}
+
+.number_label {
+  border: 1px solid black;
+  background-color: #FFFCD6;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  text-align: center;
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
+  -moz-border-radius: 30px;
+
+  margin-top: 2px;
+}
+
+.next_link {
+  position: absolute;
+  top: 95px;
+  right: 15px;
+}
+
+.previous_link {
+  position: absolute;
+  top: 95px;
+  right: 45px;
 }

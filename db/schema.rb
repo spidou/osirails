@@ -845,6 +845,7 @@ ActiveRecord::Schema.define(:version => 20100121100208) do
   create_table "press_proof_items", :force => true do |t|
     t.integer  "press_proof_id",          :limit => 11
     t.integer  "graphic_item_version_id", :limit => 11
+    t.integer  "position",                :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

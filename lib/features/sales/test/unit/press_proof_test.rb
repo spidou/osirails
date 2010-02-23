@@ -476,11 +476,7 @@ class PressProofTest < ActiveSupport::TestCase
   
   context "create a press proof" do
     setup do
-      sample = create_default_press_proof
-      @press_proof = PressProof.new( :order_id          => sample.order_id,
-                                     :product_id        => sample.product_id,
-                                     :creator_id        => sample.creator_id,
-                                     :internal_actor_id => sample.internal_actor_id)
+      @press_proof = build_press_proof
     end
     
     teardown do
@@ -557,45 +553,75 @@ class PressProofTest < ActiveSupport::TestCase
     
   end
   
+  context "with another signed press_proof for the same product, it" do
+    setup do
+      s = create_default_press_proof
+      
+      @new_press_proof       = build_default_press_proof(s.order, s.product, s.creator, s.internal_actor)
+      @press_proof           = create_default_press_proof(s.order, s.product, s.creator, s.internal_actor)
+      @confirmed_press_proof = confirm_press_proof(create_default_press_proof(s.order, s.product, s.creator, s.internal_actor))
+      @sended_press_proof    = send_press_proof(create_default_press_proof(s.order, s.product, s.creator, s.internal_actor))
+      
+      s = get_signed_press_proof(s)
+      
+    end
+    
+    teardown do
+      @new_press_proof = @press_proof = @confirmed_press_proof = @sended_press_proof = nil
+    end
+    
+    should "prevent a new press_proof from being able to be created" do
+      assert !@new_press_proof.can_be_created?
+    end
+    
+    should "prevent a new press_proof from being created" do
+      assert !@new_press_proof.save
+    end
+    
+    should "prevent a press_proof from being able to be confirmed" do
+      assert !@press_proof.can_be_confirmed?
+    end
+    
+    should "prevent a press_proof from becoming confirmed" do
+      assert !confirm_press_proof(@press_proof).was_confirmed?
+    end
+    
+    should "prevent a press_proof from being able to be edited" do
+      assert !@press_proof.can_be_edited?
+    end
+    
+    should "prevent a press_proof from being edited" do
+      @press_proof.creator = nil
+      assert !@press_proof.save
+    end
+    
+    should "prevent a confirmed press_proof from being able to be sended" do
+      assert !@confirmed_press_proof.can_be_sended?
+    end
+    
+    should "prevent a confirmed press_proof from becoming sended" do
+      assert !send_press_proof(@confirmed_press_proof).was_sended?
+    end
+    
+    should "prevent a sended press_proof from being able to be signed" do
+      assert !@sended_press_proof.can_be_sended?
+    end
+    
+    should "prevent a sended press_proof from becoming signed" do
+      assert !sign_press_proof(@sended_press_proof).was_signed?
+    end
+  end
+  
   private
   
-  def get_confirmed_press_proof(press_proof = create_default_press_proof)
-    press_proof.confirm
-    press_proof
-  end
-  
-  def get_sended_press_proof(press_proof = create_default_press_proof, date = Date.today)
-    press_proof = get_confirmed_press_proof(press_proof) unless press_proof.can_be_sended?
-    options     = {:sended_on => date, :document_sending_method_id => document_sending_methods(:courrier).id}
-                   
-    press_proof.send_to_customer(options)
-    press_proof
-  end
-  
-  def get_signed_press_proof(press_proof = create_default_press_proof, date = Date.today)
-    press_proof = get_sended_press_proof(press_proof) unless press_proof.can_be_signed?
-    options     = {:signed_on => date, :signed_press_proof => File.new(File.join(RAILS_ROOT, "test", "fixtures", "signed_press_proof.pdf"))}
-                   
-    press_proof.sign(options)
-    press_proof
-  end
-  
-  def get_cancelled_press_proof(press_proof = create_default_press_proof)
-    press_proof = get_confirmed_press_proof(press_proof) unless press_proof.can_be_cancelled?
+  def build_press_proof
+    press_proof = create_default_press_proof
     
-    press_proof.cancel
-    press_proof
+    PressProof.new( :order_id          => press_proof.order_id,
+                    :product_id        => press_proof.product_id,
+                    :creator_id        => press_proof.creator_id,
+                    :internal_actor_id => press_proof.internal_actor_id)
   end
-  
-  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = users(:admin_user), comment = "comment", date = Date.today)
-    press_proof = get_signed_press_proof(press_proof) unless press_proof.can_be_revoked?
-    options = {:revoked_by_id => actor.id, :revoked_on => date, :revoked_comment => comment}
-                
-    press_proof.revoke(options)
-    press_proof
-  end
-  
-  
   
   def confirm_press_proof(p)
     p.confirm

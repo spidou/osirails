@@ -27,4 +27,21 @@ class ProductTest < ActiveSupport::TestCase
   #should_validate_presence_of :reference   #TODO when quote is signed
   #should_validate_uniqueness_of :reference #TODO when quote is signed
   
+  context "A Product referenced into a signed press_proof" do
+    setup do
+      order       = create_default_order
+      @product    = create_valid_product_for(order)
+      press_proof = create_default_press_proof(order, @product)
+      get_signed_press_proof(press_proof)
+    end
+    
+    teardown do
+      @product = nil
+    end
+    
+    should "have a signed press_proof" do
+      assert @product.has_signed_press_proof?
+    end
+  end
+  
 end
