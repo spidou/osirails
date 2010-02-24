@@ -64,9 +64,7 @@
       <%= display_documents_list(tool) %>
       <%= display_document_add_button(tool) if is_form_view? %>
  
-    <p>
-      <%= f.submit button_name if is_form_view? %>
-    </p>
+    <%= f.form_buttons %>
   <% end %>
 
   

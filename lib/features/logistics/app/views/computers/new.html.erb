@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= computers_link %>
+  <%= computers_link(:link_text => "Voir tous les ordinateurs") %>
 <% end %>
 
-<h1>Ajouter un odinateur</h1>
-<%= render :partial => "tools/tool" , :locals => {:tool => @computer, :button_name => "Ajouter"}%>
+<h1>Nouvel ordinateur</h1>
+<%= render :partial => "tools/tool" , :locals => {:tool => @computer}%>

@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_vehicle_link %>
+  <%= new_vehicle_link(:link_text => "Nouveau véhicule") %>
 <% end %>
 
-<h1>Liste des v&eacute;hicules</h1>
+<h1>Les v&eacute;hicules</h1>
 <%= render :partial => 'tools/index', :locals => {:tools => @vehicles}%>

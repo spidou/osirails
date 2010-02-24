@@ -1,14 +1,14 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_employee_leave_link @employee %>
-  <%= employee_link @employee %>
+  <%= new_employee_leave_link(@employee, :link_text => "Nouveau congé") %>
+  <%= employee_link(@employee, :link_text => "Voir l'employé") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= employee_leaves_link @employee, :link_text => "Historique des congés" %>
-  <%= employees_link %>
+  <%= employee_leaves_link( @employee, :link_text => "Historique des congés") %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Mofidifer un cong&eactue;</h1>
+<h1>Mofidifer le cong&eactue;</h1>
 
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
-<%= render :partial => "leave" ,:locals => {:button_name => "Modifier"} %>
+<%= render :partial => "leave" %>

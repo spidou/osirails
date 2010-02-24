@@ -7,7 +7,7 @@
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= self.send("new_#{@supply_type.name.tableize.singularize}_category_link") %>
+  <%= self.send("new_#{@supply_type.name.tableize.singularize}_category_link", :link_text => "Nouvelle catégorie") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>

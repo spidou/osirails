@@ -9,6 +9,6 @@
     <%= form.label :product_reference_category_id %>
     <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name , options = {:indentation => 15, :include_blank => '-- Racine --'}) %>
   </p>
-  <p><%= form.submit submit_button_name %></p>
+  <%= form.form_buttons %>
 <% end %>
 </div>

@@ -1,5 +1,5 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= self.send("new_#{supply.class.name.tableize.singularize}_category_link") %>
+  <%= self.send("new_#{supply.class.name.tableize.singularize}_category_link", :link_text => "Nouvelle catégorie") %>
   <%= edit_supply_link(supply,true) unless is_form_view? %>
   <%= reactivate_supply_link(supply,true) unless is_form_view? %>
   <%= disable_supply_link(supply,true) unless is_form_view? %>
@@ -66,6 +66,6 @@
     <%= display_supplier_supply_list(supply)  %>
     <%= display_supplier_supply_add_button(supply) if is_form_view? %>
 
-    <p><%= form.submit(button_name) if is_form_view? %></p>
+    <%= form.form_buttons %>
   <% end %>
 </div>

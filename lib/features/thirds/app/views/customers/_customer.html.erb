@@ -15,10 +15,7 @@
     <%= display_documents_list(@customer) %>
     <%= display_document_add_button(@customer) %>
     
-    <p class="form_buttons">
-      <%= form.reset %>
-      <%= form.submit submit_button_name %>
-    </p>
+    <%= form.form_buttons %>
   <% end %>  
 <% else %>
   <%= render :partial => 'thirds/third', :object => @customer %>

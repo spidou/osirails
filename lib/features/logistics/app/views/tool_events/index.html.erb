@@ -1,17 +1,17 @@
 <% tool_class = @tool.class.name.underscore %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= send("new_#{tool_class}_tool_event_link", @tool) if @tool.can_be_edited? %>
-  <%= send("#{tool_class}_link", @tool) %>
+  <%= send("new_#{tool_class}_tool_event_link", @tool, :link_text => "Nouvel évènement") if @tool.can_be_edited? %>
+  <%= send("#{tool_class}_link", @tool, :link_text => "Voir l'équipement") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= send("#{tool_class}s_link") %>
+  <%= send("#{tool_class}s_link", :link_text => "Voir tous les équipements") %>
 <% end %>
 
 <%= render :partial => 'tools/header', :locals => {:tool => @tool} %>
 
-<h1>Liste des &eacute;v&egrave;nements</h1>
+<h1>Les &eacute;v&egrave;nements</h1>
 
 <div class="presentation_small events">
   <% if @paginate_tool_events.empty? %>

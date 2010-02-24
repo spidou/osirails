@@ -1,14 +1,14 @@
 <% contextual_search_for_supplier %>
 
 <% add_contextual_menu_item :possible_actions do %>
-	<%= new_supplier_link %>
-  <%= edit_supplier_link(@supplier) %>
-	<%= delete_supplier_link(@supplier) %>
+	<%= new_supplier_link(:link_text => "Nouveau fournisseur") %>
+  <%= edit_supplier_link(@supplier, :link_text => "Modifier le fournisseur") %>
+	<%= delete_supplier_link(@supplier, :link_text => "Supprimer le fournisseur") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-	<%= suppliers_link %>
+	<%= suppliers_link(:link_text => "Voir tous les fournisseurs") %>
 <% end %>
 
-<h1>Informations concernant le fournisseur </h1>
+<h1>Fiche d&eacute;taill&eacute;e du fournisseur </h1>
 <%= render :partial => @supplier %>

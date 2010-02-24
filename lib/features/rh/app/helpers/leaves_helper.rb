@@ -16,7 +16,7 @@ module LeavesHelper
   end
   
   def leaves_link(employee, cancelled = true)
-    text = cancelled ? "Voir les congés annulés" : "Cacher les congés annulés"
+    text = cancelled ? "Voir tous les congés annulés" : "Voit tous les congés"
     link_to(image_tag("/images/list_16x16.png", :alt => text, :title => text) + " #{text}", employee_leaves_path({:cancelled => cancelled}))
   end
   

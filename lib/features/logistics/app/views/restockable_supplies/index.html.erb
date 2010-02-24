@@ -7,7 +7,7 @@
   <% end %>
 <% end %>
   
-<h1>Liste des fournitures &agrave; r&eacute;approvisionner</h1>
+<h1>Les fournitures &agrave; r&eacute;approvisionner</h1>
 <div>
   <% if @commodities_to_restock.size > 0 or @consumables_to_restock.size > 0 %>  
     <%= render(:partial => "supplies_to_restock", :object => @commodities_to_restock) if @commodities_to_restock.size > 0 %>

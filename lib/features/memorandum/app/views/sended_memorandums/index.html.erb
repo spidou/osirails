@@ -1,5 +1,5 @@
 <% add_contextual_menu_item :possible_actions do %>
- <%= new_memorandum_link %>
+ <%= new_memorandum_link(:link_text => "Nouvelle note de service") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
@@ -7,7 +7,7 @@
 <% end %>
 
 <% if Memorandum.can_list?(current_user) and !@sended_memorandums.empty?%>
-<h1>Notes de services envoy&eacute;s</h1>
+<h1>Les notes de services envoy&eacute;s</h1>
   <div>
     <%= show_sended_memorandums(@sended_memorandums) %>
     <%= will_paginate @sended_memorandums, :param_name => :memorandum %>

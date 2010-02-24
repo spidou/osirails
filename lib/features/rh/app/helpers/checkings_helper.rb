@@ -33,9 +33,9 @@ module CheckingsHelper
     link_options = { :employee_id => employee_id, :date => params[:date] }
     
     if params[:cancelled] == "true" or cancelled
-      options = { :link_text => "Liste des pointages", :options => link_options }
+      options = { :link_text => "Voir tous les pointages", :options => link_options }
     else
-      options = { :link_text => "Voir les pointages annulés", :options => link_options.merge({ :cancelled => true }) }
+      options = { :link_text => "Voir tous les pointages annulés", :options => link_options.merge({ :cancelled => true }) }
     end
     
     checkings_link(options)
@@ -44,7 +44,7 @@ module CheckingsHelper
   def javascript_location_url(employee_id, date, cancelled)
     html = "window.location.href='checkings?"
     html += "employee_id="    + "'+ this.options[this.selectedIndex].value +'"
-    html += "&amp;date="      + date
+    html += "&amp;date="      + date.to_s
     html += "&amp;cancelled=" + cancelled if cancelled
     html += "'"
   end

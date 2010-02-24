@@ -1,5 +1,5 @@
 <div class="presentation_small">
-  <h2>Ajout de fonction</h2>
+  <h2>Nouvelle fonction</h2>
   <% form_remote_for(job,:html=>{:id=>'job_add_form'}) do |j| %>
     <%= j.error_messages %>
     <p style="display:none">
@@ -23,12 +23,12 @@
     </p>
     <p>
       <%= j.label :activity %>
-      <%= j.text_area :activity, {:rows => 5}%>
+      <%= j.text_area :activity, {:rows => 5} %>
     </p>
     <p>
       <%= j.label :goal %>
-      <%= j.text_area :goal, {:rows => 5}%>
+      <%= j.text_area :goal, {:rows => 5} %>
     </p>
-    <p><%= j.submit 'Ajouter une fonction',:onclick => 'osibox_close();'%></p>
+    <%= j.form_buttons(:onclick => 'osibox_close();')%>
   <%end%>
 </div>

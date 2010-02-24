@@ -247,6 +247,14 @@ module ActionView
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
+      
+      def form_buttons(options={})
+        submit_text = options.delete(:submit_text)|| (@object.new_record? ? 'Enregistrer' : 'Enregistrer')
+        reset_text  = options.delete(:reset_text) || 'Réinitialiser'
+        submit      = @template.submit_tag(submit_text, options)
+        reset       = @template.reset(@object_name, reset_text)
+        return "<p>#{reset} #{submit}</p>" if @template.is_form_view?
+      end
     end
     
   end

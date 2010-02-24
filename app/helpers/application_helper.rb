@@ -437,13 +437,13 @@ module ApplicationHelper
     #   # => "List all groups"
     # 
     def dynamic_link_catcher_default_link_text(method_name, model_name)
-      default_text = { :list    => "List all ",
-                       :view    => "View this ",
-										   :add     => "New ",
-										   :edit    => "Edit this ",
-										   :delete  => "Delete this " }
+      default_text = { :list    => "Voir tous",#"List all ",
+                       :view    => "Voir",#"View this ",
+										   :add     => "Nouveau",#"New ",
+										   :edit    => "Modifier",#"Edit this ",
+										   :delete  => "Supprimer" }#"Delete this " }
 
-      result = default_text[method_name] + model_name.gsub("_"," ")
+      result = default_text[method_name] #+ model_name.gsub("_"," ")
       result = result.singularize unless method_name == :list
       return result
     end

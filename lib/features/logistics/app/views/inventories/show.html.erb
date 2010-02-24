@@ -7,14 +7,14 @@
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_inventory_link(Commodity.new)%>
-  <%= new_inventory_link(Consumable.new)%>
+  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:type] == "Consumable" %>
+  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:type] == "Commodity" %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= inventories_link %>
-  <%= commodity_categories_link %>
-  <%= consumable_categories_link %>
+  <%= inventories_link(:link_text => "Voir tous les inventaires") %>
+  <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
+  <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
 <h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>

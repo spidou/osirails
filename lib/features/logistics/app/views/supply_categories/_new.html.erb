@@ -22,7 +22,7 @@
     <%= form.collection_select((@category.class.name.tableize.singularize+"_id").to_sym, @categories, :id, :name , options = {:include_blank => '-- Racine --'}, {:onchange => "disableUnitMeasure('#{@supply_type.name.tableize.singularize}');"}) %>
   </p>
   <p>
-    <%= form.submit "Ajouter" %>
+    <%= form.form_buttons %>
   </p>
   <% end %>
 </div>

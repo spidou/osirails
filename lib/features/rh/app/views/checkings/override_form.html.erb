@@ -1,5 +1,5 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_checking_link unless @subordinates.empty?%>
+  <%= new_checking_link(:link_text => "Nouveau pointage") unless @subordinates.empty?%>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
@@ -7,4 +7,4 @@
 <% end %>
 
 <h1>Correction d&apos;un pointage</h1>
-<%= render :partial => "checking", :locals => {:button_name => "Modifier", :action => "override"} %>
+<%= render :partial => "checking", :locals => {:action => "override"} %>

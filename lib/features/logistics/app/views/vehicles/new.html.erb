@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= vehicles_link %>
+  <%= vehicles_link(:link_text => "Voir tous les véhicules") %>
 <% end %>
 
-<h1>Ajouter un v&eacute;hicule</h1>
+<h1>Nouveau v&eacute;hicule</h1>
 <%= render :partial => "tools/tool" , :locals => {:tool => @vehicle, :button_name => "Ajouter"}%>

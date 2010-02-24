@@ -2,10 +2,10 @@ module ProductReferenceManagerHelper
   
   def display_show_link
     if params[:display] == "all"
-      text = "Display actives"
+      text = "Voir tous les produits références"#"Display actives"
       option = { :display => "active"}
     else
-      text = "Display all"
+      text = "Voir tous les produits références annulés"#"Display all"
       option = { :display => "all"}
     end
     
@@ -80,7 +80,7 @@ module ProductReferenceManagerHelper
   end
 
   def new_product_reference_category_link_overrided(options = {})
-    text = "New product reference category"
+    text = "Nouvelle catégorie de produit référence"#"New product reference category"
     options = { :link_text => text, :image_tag => image_tag("category_16x16.png",
                                                           :alt => text,
                                                           :title => text)
@@ -90,7 +90,7 @@ module ProductReferenceManagerHelper
   end
   
   def new_product_reference_link_overrided(options = {})
-    text = "New product reference"
+    text = "Nouveau produit référence"#"New product reference"
     options = { :link_text => text, :image_tag => image_tag("reference_16x16.png",
                                                           :alt => text,
                                                           :title => text)
@@ -102,7 +102,7 @@ module ProductReferenceManagerHelper
   
   # display (or not) the delete button for product reference category
   def delete_product_reference_category_link_overrided(category, options = {})
-    text = "Delete this product reference category"
+    text = "Supprimer cette catégorie de produit référence"#"Delete this product reference category"
     options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
                                                           :alt => text,
                                                           :title => text)
@@ -116,7 +116,7 @@ module ProductReferenceManagerHelper
   end
   
   def delete_product_reference_link_overrided(reference, options = {})
-    text = "Delete this product reference"
+    text = "Supprimer ce produit référence"#"Delete this product reference"
     options = { :link_text => text, :image_tag => image_tag("delete_16x16.png",
                                                           :alt => text,
                                                           :title => text)

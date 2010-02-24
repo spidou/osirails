@@ -37,8 +37,8 @@ module EmployeesHelper
   # This method permit to show or hide content of secondary menu
   def actives_employees_link(view_inactives)
     return unless Employee.can_view?(current_user)
-    message = view_inactives ? "Cacher" : "Voir"
-    message += " les employés inactifs"
+    message = "Voir tous les employés"
+    message += " annulés" if view_inactives
     link_to(image_tag("/images/view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
   end
   
@@ -78,7 +78,9 @@ module EmployeesHelper
     result
   end
   
-  # Method to verify if the params[:employee] and his attributes are null #OPTIMIZE the name and the method (services don't use it anymore)
+  # Method to verify if the params[:employee] and his attributes are null
+  # TODO the name and the method (services don't use it anymore)
+  #
   def is_in?(object, collection, attribute = nil, employee = nil)
     if employee.nil? and !attribute.nil? 
       return false if params[:employee].nil?
@@ -123,16 +125,10 @@ module EmployeesHelper
   
   # Method to pluralize or not the number's <h3></h3>
   def numbers_h3(numbers)
-    unless Employee.can_view?(current_user)
-      visibles = visibles_numbers(numbers)
-      return "" if visibles.size == 0 
-      return "<h3>Numéro de telephone</h3>" if visibles.size == 1
-      return "<h3>Numéros de telephone</h3>"if visibles.size > 1
-    else
-      return "" if numbers.size == 0 
-      return "<h3>Numéro de telephone</h3>" if numbers.size == 1
-      return "<h3>Numéros de telephone</h3>"if numbers.size > 1
-    end
+    quantity = (Employee.can_view?(current_user) ? visibles_numbers(numbers).size : number.size)
+    return "" if quantity == 0 
+    return "<h3>Numéro de telephone</h3>" if quantity == 1
+    return "<h3>Numéros de telephone</h3>"if quantity > 1
   end
   
   def flag_path(country_code)

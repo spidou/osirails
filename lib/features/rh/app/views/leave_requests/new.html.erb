@@ -1,7 +1,7 @@
 <% add_contextual_menu_item :useful_links do %>
-	<%= leave_requests_link %>
+	<%= leave_requests_link(:link_text => "Voir toutes mes demandes de congés") %>
 	<%= employee_leaves_link(current_user.employee, :link_text => "Voir mes congés") if current_user.employee %>
 <% end %>
 
-<h1>Demander un cong&eacute;</h1>
-<%= render :partial => @leave_request, :locals => { :button_name => "Ajouter" }%>
+<h1>Nouvelle demande de cong&eacute;</h1>
+<%= render :partial => @leave_request %>

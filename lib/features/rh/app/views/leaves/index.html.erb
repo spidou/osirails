@@ -1,13 +1,13 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_employee_leave_link(@employee) %>
-  <%= new_leave_request_link %>
-  <%= employee_link(@employee) %>
+  <%= new_employee_leave_link(@employee, :link_text => "Nouveau congé") %>
+  <%= new_leave_request_link(:link_text => "Nouvelle demande de congé") %>
+  <%= employee_link(@employee, :link_text => "Voir l'employé") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
   <%= leave_requests_link(:link_text => "Voir mes demandes de congés") if @employee == current_user.employee %>
   <%= leaves_link(@employee, !@view_cancelled)%>
-  <%= employees_link %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
 <h1>Historique des cong&eacute;s</h1>

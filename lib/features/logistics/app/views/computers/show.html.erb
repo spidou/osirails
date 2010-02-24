@@ -1,14 +1,14 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_computer_link %>
-  <%= edit_computer_link @computer %>
-  <%= delete_computer_link(@computer) %>
-  <%= new_computer_tool_event_link(@computer) if @computer.can_be_edited? %>
+  <%= new_computer_link(:link_text => "Nouvel ordinateur") %>
+  <%= edit_computer_link(@computer, :link_text => "Modifier l'ordinateur") %>
+  <%= delete_computer_link(@computer, :link_text => "Supprimer l'ordinateur") %>
+  <%= new_computer_tool_event_link(@computer, :link_text => "Nouvel évènement") if @computer.can_be_edited? %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= computers_link %>
-  <%= computer_tool_events_link(@computer) %>
+  <%= computers_link(:link_text => "Voir tous les ordinateurs") %>
+  <%= computer_tool_events_link(@computer, :link_text => "Voir tous les évènements de l'ordinateur") %>
 <% end %>
 
-<h1>Voir l&apos;ordinateur</h1>
+<h1>Fiche d&eacute;taill&eacute;e de l&apos;ordinateur</h1>
 <%= render :partial => "tools/tool", :locals => {:tool => @computer} %>

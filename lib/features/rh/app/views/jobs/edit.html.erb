@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_job_link %>
-  <%= job_link(@job) %>
+  <%= new_job_link(:link_text => "Nouvelle fiche de poste") %>
+  <%= job_link(@job, :link_text => "Voir la fiche de poste") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
@@ -8,4 +8,4 @@
 <% end %>
 
 <h1>Modification de la fiche de poste</h1>
-<%= render :partial => @job, :object => @job, :locals =>{:submit_button_name => "Modifier"}%>
+<%= render :partial => @job, :object => @job%>
