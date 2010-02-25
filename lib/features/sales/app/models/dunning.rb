@@ -22,9 +22,9 @@ class Dunning < ActiveRecord::Base
   
 
   
-  validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :can_be_edited?
+  validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :new_record?
   
-  validate :validates_has_dunning_was_sended, :if => :new_record?
+  validate :validates_has_dunning_was_sended
   
   before_destroy :can_be_destroyed?
   
@@ -36,7 +36,6 @@ class Dunning < ActiveRecord::Base
   @@form_labels[:dunning_sending_method] = "Par :"
   @@form_labels[:comment]                = "Commentaire :"
   
-  #TODO test that method
   def can_be_added?
     return false unless has_dunning
     has_dunning.was_sended?
@@ -46,11 +45,20 @@ class Dunning < ActiveRecord::Base
     false
   end
   
-  def can_be_edited?
-    new_record?
+  def can_be_cancelled?
+    !new_record?
+  end
+  
+  def was_cancelled?
+    cancelled_was
+  end
+  
+  def cancelled?
+    cancelled
   end
   
   def cancel(user)
+    return false unless can_be_cancelled?
     self.cancelled = true
     self.cancelled_by = user
     self.save

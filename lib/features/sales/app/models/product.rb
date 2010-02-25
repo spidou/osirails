@@ -65,4 +65,8 @@ class Product < ActiveRecord::Base
       end
     end
   end
+  
+  def has_signed_press_proof?
+    !press_proofs.select {|n| n.was_signed?}.empty?
+  end
 end

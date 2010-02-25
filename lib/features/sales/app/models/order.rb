@@ -2,7 +2,7 @@ class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
   has_contacts    :accept_from => :customer_contacts
-  
+
   belongs_to :society_activity_sector
   belongs_to :order_type
   belongs_to :customer
@@ -134,7 +134,11 @@ class Order < ActiveRecord::Base
     end
     return children_steps.last
   end
-
+  
+  def all_products_have_signed_press_proof?
+    products.reject{|p| p.has_signed_press_proof? }.empty?
+  end
+  
   # Return a hash for advance statistics
   def advance
     steps_obj = []

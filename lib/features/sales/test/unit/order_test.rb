@@ -258,4 +258,21 @@ class OrderTest < ActiveSupport::TestCase
     assert @order.instance_of?(Order), "@order should be an instance of Order"
     assert !@order.new_record?, "@order should NOT be a new record"
   end
+  
+  context "An Order with all products referenced into a signed press_proof" do
+    setup do
+      @order     = create_default_order
+      product    = create_valid_product_for(@order)
+      press_proof = create_default_press_proof(@order, product)
+      get_signed_press_proof(press_proof)
+    end
+    
+    teardown do
+      @order = nil
+    end
+    
+    should "have a all product with signed press_proof" do
+      assert @order.all_products_have_signed_press_proof?
+    end
+  end
 end

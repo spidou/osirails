@@ -1,9 +1,9 @@
 <%
-press_proofs = press_proofs_list
-products = press_proofs.collect(&:product).uniq
+press_proofs ||= nil
+products       = press_proofs_list.collect(&:product).uniq
 %>
 
-<% if press_proofs and !press_proofs.empty? %>
+<% if products and !products.empty? %>
   <table id="press_proofs_list">
     <tr>
       <th rowspan="2">Produit</th>
