@@ -1,5 +1,5 @@
 class PressProofStepController < ApplicationController
-  helper :press_proofs, :dunnings, :quotes
+  helper :press_proofs, :dunnings, :quotes, :graphic_items
   
   acts_as_step_controller
 

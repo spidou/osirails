@@ -1,30 +1,30 @@
 module GraphicItemsHelper
   def graphic_items_link(object_class)
     if object_class.name == "Mockup"
-      text = "Voir toutes les maquettes du dossier"
+      text = "Voir les maquettes du dossier"
       link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, order_mockups_path)
     elsif object_class.name == "GraphicDocument"
-      text = "Voir tous les documents graphiques du dossier"
+      text = "Voir les documents graphiques du dossier"
       link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, order_graphic_documents_path)
     end
   end
   
   def new_graphic_item_link(object_class)
     if object_class.name == "Mockup"
-      text = "Ajouter une nouvelle maquette au dossier"
+      text = "Nouvelle maquette"
       link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, new_order_mockup_path)
     elsif object_class.name == "GraphicDocument"
-      text = "Ajouter un nouveau document graphique au dossier"
+      text = "Nouveau document graphique"
       link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, new_order_graphic_document_path)
     end
   end
   
   def edit_graphic_item_link(object)
     if object.class.name == "Mockup"
-      text = "Éditer la maquette"
+      text = "Modifier la maquette"
       link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, edit_order_mockup_path(object.order,object))
     elsif object.class.name == "GraphicDocument"
-      text = "Éditer le document graphique"
+      text = "Modifier le document graphique"
       link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, edit_order_graphic_document_path(object.order,object))
     end
   end
@@ -61,10 +61,10 @@ module GraphicItemsHelper
   
   def display_graphic_item_summary_edit_button(object)
     if object.class.name == "Mockup" 
-      text = "Éditer cette maquette"
+      text = "Modifier cette maquette"
       link_to(image_tag("edit_16x16.png", :alt => text, :title => text), edit_order_mockup_path(object.order,object))
     elsif object.class.name == "GraphicDocument"
-      text = "Éditer ce document graphique"
+      text = "Modifier ce document graphique"
       link_to(image_tag("edit_16x16.png", :alt => text, :title => text), edit_order_graphic_document_path(object.order,object))
     end
   end

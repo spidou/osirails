@@ -12,3 +12,11 @@
   <%= display_press_proof_destroy_button(@order, @press_proof) %>
   <%= display_press_proof_list_button(@step) %>
 <% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= new_graphic_item_link(Mockup) %>
+  <%= graphic_items_link(Mockup) %>
+  
+  <%= new_graphic_item_link(GraphicDocument) %>
+  <%= graphic_items_link(GraphicDocument) %>
+<% end %>
