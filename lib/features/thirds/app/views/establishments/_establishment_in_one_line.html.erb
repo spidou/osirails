@@ -14,7 +14,7 @@
       <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Establishment.can_edit?(current_user) %>
       
       <% if is_form_view? and Establishment.can_delete?(current_user) %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du forumulaire.')) mark_resource_for_destroy(this)" %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')) mark_resource_for_destroy(this)" %>
       <% end %>
     <% end %>
     

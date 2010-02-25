@@ -1,0 +1,12 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_factor_link %>
+  <%= factor_link(@factor)%>
+  <%= delete_factor_link(@factor)%>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= factors_link%>
+<% end %>
+
+<h1>Modifier une société d'affacturage</h1>
+<%= render :partial => @factor, :locals => { :submit_button_name => "Mettre à jour"} %>

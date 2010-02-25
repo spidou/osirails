@@ -1,6 +1,8 @@
-<% quote = quote_in_one_line %>
-<% status = quote.status ? " #{quote.status}_quote" : '' %>
-<% title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''%>
+<%
+quote = quote_in_one_line
+status = quote.status ? " #{quote.status}_quote" : ''
+title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
+%>
 
 <tr class="quote<%= status %>"<%= title %>>
   <td><%= quote.public_number %></td>
@@ -9,13 +11,8 @@
   <td><%= quote.contact.fullname %></td>
   <td><%= quote.number_of_pieces %></td>
   <td><%= quote.net_to_paid.round_to(2).to_s(2) %></td>
+  <td><%= quote.deposit %></td>
   <td><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
   <td><%= quote.signed_on.humanize if quote.signed_on %></td>
-  <td class="actions">
-    <%= display_additional_actions_quote_button(@order, quote) %>
-    <%= order_commercial_step_estimate_step_quote_link_overrided(@order, quote, :link_text => "", :options => { :format => :pdf }) if Quote.can_view?(current_user) and !quote.uncomplete? %>
-    <%= order_commercial_step_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_view?(current_user) %>
-    <%= edit_order_commercial_step_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_edit?(current_user) and quote.can_be_edited? %>
-    <%= delete_order_commercial_step_estimate_step_quote_link_overrided(@order, quote, :link_text => "") if Quote.can_delete?(current_user) and quote.can_be_deleted? %>
-  </td>
+  <td class="actions"><%= display_quote_action_buttons(@order, quote) %></td>
 </tr>

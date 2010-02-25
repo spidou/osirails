@@ -1,0 +1,14 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_machine_link %>
+  <%= edit_machine_link @machine %>
+  <%= delete_machine_link(@machine) %>
+  <%= new_machine_tool_event_link(@machine) if @machine.can_be_edited? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= machines_link %>
+  <%= machine_tool_events_link(@machine) %>
+<% end %>
+
+<h1>Voir la machine</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @machine} %>

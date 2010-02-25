@@ -25,11 +25,24 @@ class Alarm < ActiveRecord::Base
   # the scheduled start of the event or the due date/time of the to-do it is
   # associated with and will repeat 2 more times at 15 minute intervals.
   
+  DELAY_UNIT = ['minute','hour','day','week']
+  
   # Relationships
   belongs_to :event
 
   # Validations
-  validates_presence_of :event_id
+  validates_presence_of :event, :description, :email_to
+  validates_numericality_of :do_alarm_before
+  validates_numericality_of :duration,    :allow_nil => true
+  validates_format_of :email_to,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  
+  attr_accessor :should_destroy
+  
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:do_alarm_before] = "Alerter :"
+  @@form_labels[:email_to]        = "Par email à :"
+  @@form_labels[:description]     = "Commentaire :"
   
   # Requires
   require 'rubygems'
@@ -47,5 +60,30 @@ class Alarm < ActiveRecord::Base
     alarm.summary       = repeat if repeat
     alarm.add_attendee("MAILTO:" + email_to) if email_to
     alarm
+  end
+  
+  def should_destroy?
+    should_destroy.to_i == 1  
+  end
+  
+  # method that return the delay (do_before_alarm) in the best human readable unit
+  # ==== examples
+  # #=> 720 secondes -> 12 minutes
+  # #=> 2 minutes    -> 2 minutes
+  # #=> 7 days       -> 1 week
+  #
+  # return a hash like : {:unit => 'minute', :value => 12} for 'do_alarm_before == 720' for example
+  #
+  def humanize_delay
+    units  = Alarm::DELAY_UNIT
+    ratios = [60,60,24,7]
+    value  = do_alarm_before.to_f
+    result = 0
+    
+    (0..3).each do |i|
+      value /= ratios[i]
+      result = {:unit => units[i], :value => value.to_i} if value.floor == value.ceil and value.floor >= 1
+    end
+    result
   end
 end

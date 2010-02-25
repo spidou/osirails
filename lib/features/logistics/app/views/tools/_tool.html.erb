@@ -1,0 +1,85 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "logistics/tool.css" %>
+<% end %>
+
+<div class='presentation_medium'>
+  <% form_for tool, :html => {:multipart => true} do |f| %>
+    <%= f.error_messages %>
+    <h2>D&eacute;tails de l&apos;&eacute;quipement</h2>
+    
+    <% unless is_form_view? %>
+    <p>
+      <%= f.label :status %>
+      <%=strong(get_status_text(tool.status))%>
+      <%= get_status_image(tool.status) %>
+    </p>
+    <% end %>
+    
+    <p>
+      <%= f.label :name %>
+      <%= f.form_or_view f.text_field(:name), :name %>
+    </p>
+    
+    <p>
+      <%= f.label :description %>
+      <%= f.form_or_view f.text_area(:description, {:rows => 5}), :description %>
+    </p>
+    
+    <p>
+      <%= f.label :serial_number %>
+      <%= f.form_or_view f.text_field(:serial_number), :serial_number %>
+    </p>
+    
+    <p>
+      <%= f.label :purchase_date %>
+      <%= f.form_or_view f.date_select(:purchase_date, {:order => [:day, :month, :year]}), :purchase_date %>
+    </p>
+    
+    <p>
+      <%= f.label :purchase_price %>
+      <%= f.form_or_view f.text_field(:purchase_price), :purchase_price %>
+    </p>
+    
+    <p>
+      <%= f.label :service_id %>
+      <%= is_form_view? ?  f.collection_select(:service_id, Service.all, :id, :name, {:prompt => 'Aucun'}) : link_to_service(tool.service) %>
+    </p>
+    
+    <p>
+      <%= f.label :job_id %>
+      <%= is_form_view? ? f.collection_select(:job_id, Job.all(:order => :name), :id, :name, {:prompt => 'Aucun'}) :  link_to_job(tool.job)%>
+    </p>
+    
+    <p>
+      <%= f.label :employee_id %>
+      <%= is_form_view? ?  f.collection_select(:employee_id, Employee.all, :id, :fullname, {:prompt => 'Aucun'}) : link_to_employee(tool.employee)%>
+    </p>
+    
+    <p>
+      <%= f.label :supplier_id %>
+      <%= is_form_view? ?  f.collection_select(:supplier_id, Supplier.all, :id, :name, {:prompt => 'Aucun'}) : link_to_supplier(tool.supplier)%>
+    </p>
+    
+    <h2>Documents</h2>
+      <%= display_documents_list(tool) %>
+      <%= display_document_add_button(tool) if is_form_view? %>
+ 
+    <p>
+      <%= f.submit button_name if is_form_view? %>
+    </p>
+  <% end %>
+
+  
+  <% unless is_form_view? %>
+    <h2>Les &eacute;v&egrave;nements</h2>
+    
+    <% if @effectives_events.empty? and @scheduled_events.empty? %>
+      <p>Aucun &eacute;v&egrave;nement</p>
+    <% else%>
+      <% link = send("#{tool.class.to_s.tableize.singularize}_tool_events_link", tool) %>
+         
+      <%= display_events('<h3>Les 3 derniers</h3>', @effectives_events, tool, link) %>
+      <%= display_events('<h3>Les 3 prochains</h3>', @scheduled_events, tool, link) %>
+    <% end %>
+  <% end %>
+</div>

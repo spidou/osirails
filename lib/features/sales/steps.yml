@@ -4,7 +4,7 @@ steps:
     position: 1
     children:
       survey:
-        title: Visite commerciale
+        title: Survey
         position: 1
       estimate:
         title: Devis

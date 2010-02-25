@@ -10,6 +10,7 @@ order = quote.order
 default_bill_to_address = order.customer.bill_to_address
 default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
 %>
+
 <div id="quote_header">
   <div>
     <% #FIXME see that page for english translation of 'adresse de facturation et livraison' : http://forum.wordreference.com/showthread.php?t=905254 -%>

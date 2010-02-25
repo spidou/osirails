@@ -4,7 +4,7 @@
 
 <% without_action ||= !Dunning.can_cancel?(current_user) %>
 
-<% if dunnings.reject(&:cancelled).empty? %>
+<% if dunnings.reject(&:was_cancelled?).empty? %>
   <p>Aucune relance n'a été effectuée</p>
 <% else %>
   <table>
@@ -17,15 +17,13 @@
       <%= "<th>Action</th>" unless without_action %>
     </tr>
     
-    <%= render :partial => "dunnings/dunning_in_one_line", :collection => dunnings.reject(&:cancelled), :locals => { :without_action => without_action } %>
+    <%= render :partial => "dunnings/dunning_in_one_line", :collection => dunnings.reject(&:was_cancelled?), :locals => { :without_action => without_action } %>
   </table>
 <% end %>
 
-<% unless dunnings.select(&:cancelled).empty? %>
-  
-  <p>
-    <%= link_to_function('Voir les relances annulées', "toggle_blind(this, 'cancelled_dunnings');") %> 
-  </p>
+<% unless dunnings.select(&:was_cancelled?).empty? %>
+
+  <%= link_to( image_tag('view_16x16.png', :alt => view_text = "Voir les relances annulées", :title => view_text) + " #{view_text}", '#', :onclick => "new Effect.toggle('cancelled_dunnings','blind');" ) %>
   
   <div id='cancelled_dunnings' style='display:none;'>
     <table class="cancelled_dunnings_table disabled" >
@@ -39,7 +37,7 @@
         <th>Annul&eacute; le</th>
       </tr>
       
-      <%= render :partial => "dunnings/cancelled_dunning_in_one_line", :collection => dunnings.select(&:cancelled) %>
+      <%= render :partial => "dunnings/cancelled_dunning_in_one_line", :collection => dunnings.select(&:was_cancelled?) %>
     </table>
   </div>
 <% end %>

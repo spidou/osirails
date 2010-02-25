@@ -1,8 +1,8 @@
 class Dunning < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
-  named_scope :actives, :conditions => ["cancelled is NULL or cancelled = ?", false]
-  named_scope :cancelled, :conditions => ["cancelled =?", true]
+  named_scope :actives, :conditions => ["cancelled_at is NULL"]
+  named_scope :cancelled, :conditions => ["cancelled_at IS NOT NULL"]
   
   belongs_to :has_dunning,  :polymorphic => true
   belongs_to :creator,      :class_name => 'User'
@@ -28,7 +28,7 @@ class Dunning < ActiveRecord::Base
   
   before_destroy :can_be_destroyed?
   
-  attr_protected :cancelled, :cancelled_by, :has_dunning_type, :has_dunning_id
+  attr_protected :cancelled_at, :cancelled_by, :has_dunning_type, :has_dunning_id
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -59,9 +59,17 @@ class Dunning < ActiveRecord::Base
   
   def cancel(user)
     return false unless can_be_cancelled?
-    self.cancelled = true
+    self.cancelled_at = Time.now
     self.cancelled_by = user
     self.save
+  end
+  
+  def cancelled?
+    cancelled_at
+  end
+  
+  def was_cancelled?
+    cancelled_at_was
   end
   
   private

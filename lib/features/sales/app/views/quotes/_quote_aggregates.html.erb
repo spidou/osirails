@@ -10,7 +10,7 @@
 </tr>
 <tr class="aggregates">
   <td colspan="2"class="aggregate_label">Remise (%) :</td>
-  <td class="aggregate_amount aggregate_reduction"><%= form.form_or_view(form.text_field(:reduction, :value => quote.reduction.to_f.round_to(2).to_s(2), :onkeyup => "update_aggregates()", :size => 5), quote.reduction.to_f.round_to(2).to_s(2)) %></td>
+  <td class="aggregate_amount aggregate_prizegiving"><%= form.form_or_view(form.text_field(:prizegiving, :value => quote.prizegiving.to_f.round_to(2).to_s(2), :onkeyup => "update_aggregates()", :size => 5), quote.prizegiving.to_f.round_to(2).to_s(2)) %></td>
 </tr>
 <tr class="aggregates">
   <td colspan="2"class="aggregate_label">Net HT :</td>

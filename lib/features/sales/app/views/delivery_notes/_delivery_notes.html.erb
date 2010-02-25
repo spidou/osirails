@@ -1,0 +1,17 @@
+<table>
+  <tr>
+    <th rowspan="2">N°</th>
+    <th rowspan="2">Émis le</th>
+    <th rowspan="2">Mode de livraison</th>
+    <th rowspan="2">Nb produits<br/>à livrer&#160;/&#160;total</th>
+    <th colspan="2">Intervention</th>
+    <th rowspan="2">Nb produits<br/>livrés&#160;/&#160;à livrer</th>
+    <th rowspan="2">BL signé le</th>
+    <th rowspan="2">Actions</th>
+  </tr>
+  <tr>
+    <th>planifiée le</th>
+    <th>réalisée le</th>
+  </tr>
+  <%= render :partial => 'delivery_notes/delivery_note_in_one_line', :collection => delivery_notes %>
+</table>

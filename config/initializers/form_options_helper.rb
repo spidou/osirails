@@ -202,7 +202,7 @@ module ActionView
     end
     
     class FormBuilder
-      attr_accessor :force_show_view
+      attr_accessor :force_show_view, :force_form_view
       
       def collection_select_with_indentation(method, collection, value_method, text_method, options = {}, html_options = {})
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
@@ -260,7 +260,7 @@ module ActionView
       # 
       def form_or_view(form_tag = nil, *view_methods)
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
-        return form_tag if view_methods.empty? # return first if second is nil
+        return form_tag if view_methods.empty? or force_form_view? # return first if second is nil or if we force form view
 #        if @template.is_form_view? and !form_tag.nil?
         if !force_show_view? and ( @object.new_record? or (!@object.new_record? and @template.is_form_view?) ) and !form_tag.nil?
           form_tag
@@ -307,6 +307,18 @@ module ActionView
       
       def force_show_view?
         @force_show_view == true
+      end
+      
+      def force_form_view?
+        @force_form_view == true
+      end
+      
+      def show_view?
+        ( !@template.is_form_view? and !force_form_view? ) or ( @template.is_form_view? and force_show_view? )
+      end
+      
+      def form_view?
+        ( @template.is_form_view? and !force_show_view? ) or ( !@template.is_form_view? and force_form_view? )
       end
       
       def autoresize_text_area(method, options = {})

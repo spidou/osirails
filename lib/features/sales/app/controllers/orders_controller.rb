@@ -10,6 +10,8 @@ class OrdersController < ApplicationController
     redirect_to :action => :new
   end
   
+  # GET /orders/1
+  # GET /orders/1.svg
   def show
     respond_to do |format|
       format.html {
@@ -31,6 +33,7 @@ class OrdersController < ApplicationController
     end
   end
   
+  # GET /orders/new
   def new
     @order = Order.new
     @order.creator = current_user
@@ -44,6 +47,7 @@ class OrdersController < ApplicationController
     end
   end
   
+  # POST /orders
   def create
     @order = Order.new(:customer_id => params[:order][:customer_id]) # establishment_attributes needs customer_id is set before all other attributes
     @order.attributes = params[:order]
@@ -56,9 +60,11 @@ class OrdersController < ApplicationController
     end
   end
   
+  # GET /orders/1/edit
   def edit
   end
   
+  # PUT /orders/1
   def update
     params[:order][:contact_ids] ||= []
     if @order.update_attributes(params[:order])

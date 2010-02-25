@@ -89,7 +89,7 @@ module ActsAsStepController
             
             def should_display_edit
               unless @step.terminated?
-                if (params[:action] == "index" or params[:action] == "show")# and can_edit?(current_user) #FIXME find a solution to determine if use has permissions to go to edit view!!!
+                if (params[:action] == "index" or params[:action] == "show") and @step.class.can_edit?(current_user)
                   flash.keep
                   redirect_to params.merge(:action => "edit")
                 end

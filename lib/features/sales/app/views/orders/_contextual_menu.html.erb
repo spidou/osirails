@@ -1,4 +1,7 @@
-<% add_contextual_menu_item :useful_links do %>
-  <%= link_to "Lister les dossiers commerciaux", commercial_orders_path %>
-  <%= link_to "Créer un nouveau dossier", new_order_path %>
+<% add_contextual_menu_item :order do %>
+  <%= edit_order_link(@order, :link_text => "Modifier le dossier" ) if @order and Order.can_edit?(current_user) %>
+  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir les infos du dossier", :title => list_text) + " " + list_text, order_informations_path(@order)) if Order.can_list?(current_user) %>
+  
+  <%= new_order_link(:link_text => "Nouveau dossier") if Order.can_add?(current_user) %>
+  <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir tous les dossiers", :title => list_text) + " " + list_text, in_progress_orders_path) if Order.can_list?(current_user) %>
 <% end %>

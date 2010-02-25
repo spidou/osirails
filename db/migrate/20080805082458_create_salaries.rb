@@ -2,7 +2,7 @@ class CreateSalaries < ActiveRecord::Migration
   def self.up
     create_table :salaries do |t|
       t.references :job_contract
-      t.float :gross_amount
+      t.decimal :gross_amount, :precision => 65, :scale => 20
       
       t.datetime :created_at
     end

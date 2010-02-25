@@ -19,7 +19,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
                                     :image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
                                     :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf")))
                                     
-      flunk "@giv should be created to continue" unless @giv.save
+      flunk "@giv should be created" unless @giv.save
     end
     
     for element in ["graphic_item_id", "source_file_name", "source_file_size", "source_content_type", "image_file_name", "image_file_size", "image_content_type"]   

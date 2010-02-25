@@ -1,0 +1,25 @@
+<div class='presentation_medium'>
+
+<% if tools.empty? %>
+  <p>Aucun &eacute;quipement r&eacute;f&eacute;renc&eacute;</p>
+<% else %>
+  <table>
+    <tr>
+      <th>Status</th><th>Nom</th>
+      <th>Service</th><th>Poste</th>
+      <th>Employé</th><th>Actions</th>
+    <tr>
+  <% for tool in tools %>
+    <tr>
+      <td><%= get_status_image(tool.status)%></td>
+      <td><%= tool.name %></td>
+      <td><%= link_to_service(tool.service)%></td>
+      <td><%= link_to_job(tool.job)%></td> 
+      <td><%= link_to_employee(tool.employee)%></td>    
+      <td><%= links_to_actions(tool) %></td>
+    </tr>
+  <% end %>
+  </table>
+<% end %>
+
+</div>

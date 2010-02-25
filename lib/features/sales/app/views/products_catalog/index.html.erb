@@ -7,7 +7,7 @@
 <div class="presentation_large">
 
   <div id='catalog'>
-    <p id='catalog_loading' style='visibility: hidden;'> <span>Veuillez patienter<img src='/images/loading_16x16.gif' alt='Chargement' title='Chargement' ></span> </p>
+    <p id='catalog_loading' style='visibility: hidden;'> <span>Veuillez patienter<%= image_tag("loading_16x16.gif", :alt => loading_text = "Chargement", :title => "Chargement")%></span> </p>
 
     <span id='show_categories'>
       <% (find_max_level + 1).times do |value|%>

@@ -4,7 +4,7 @@ selected_class = product.new_record? ? ' selected' : ''
 disabled_class = product.new_record? ? ' disabled' : ''
 
 product_headers = { :product_details    => "Produit",
-                    :product_checklist  => "Checklist (#{product.checklist_responses.count})" }
+                    :product_checklist  => "Checklist Environnement (#{product.checklist_responses.count})" }
 
 product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors',
                     :product_checklist  => product.errors.on(:checklists) ? ' errors' : '' }

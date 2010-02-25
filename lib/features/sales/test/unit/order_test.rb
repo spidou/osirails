@@ -69,7 +69,7 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_presence_and_validity_of_order_type
-    flunk "OrderType.count should be greater than 1 to perform the following, but was at #{OrderType.count}" unless OrderType.count > 1
+    flunk "OrderType.count should be greater than 1, but was at #{OrderType.count}" unless OrderType.count > 1
     
     # when society_activity_sector is not yet selected
     assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"
@@ -197,7 +197,8 @@ class OrderTest < ActiveSupport::TestCase
     assert @order.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
     
     customer = thirds(:first_customer)
-    customer.establishments.first.contacts << contacts(:pierre_paul_jacques)
+    establishment = build_establishment_for(customer)
+    establishment.contacts << contacts(:pierre_paul_jacques)
     customer.save
     @order.customer = customer
     @order.valid?

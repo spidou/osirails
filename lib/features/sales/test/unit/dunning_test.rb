@@ -8,8 +8,8 @@ class DunningTest < ActiveSupport::TestCase
   should_validate_presence_of :date, :comment, :has_dunning_type
   should_validate_presence_of :dunning_sending_method, :creator, :has_dunning, :with_foreign_key => :default
   
-  should_have_named_scope :actives, :conditions => ["cancelled is NULL or cancelled = ?", false]
-  should_have_named_scope :cancelled, :conditions => ["cancelled =?", true]
+  should_have_named_scope :actives, :conditions => ["cancelled_at is NULL"]
+  should_have_named_scope :cancelled, :conditions => ["cancelled_at IS NOT NULL"]
   
   #TODO
   #validates_date :date, :on_or_after          => Proc.new {|n| n.has_dunning.sended_on if n.has_dunning},

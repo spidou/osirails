@@ -1,0 +1,16 @@
+<%
+due_date = factoring_recover
+invoice = due_date.invoice
+invoice.factoring_recovered_on ||= Date.today
+%>
+
+<% fields_for invoice do |form| %>
+  <p>
+    <%= form.label :factoring_recovered_on %>
+    <%= form.text_field :factoring_recovered_on %>
+  </p>
+  <p>
+    <%= form.label :factoring_recovered_comment %>
+    <%= form.text_area_autoresize :factoring_recovered_comment %>
+  </p>
+<% end %>

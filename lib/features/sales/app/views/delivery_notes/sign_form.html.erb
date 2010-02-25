@@ -1,0 +1,26 @@
+<%= order_header %>
+
+<%= generate_delivery_note_contextual_menu_partial %>
+
+<h1>Signaler que le bon de livraison a été signé par le client</h1>
+
+<div class="presentation_medium">
+  <table>
+    <%= render :partial => 'delivery_notes', :object => [ DeliveryNote.find(@delivery_note.id) ] %>
+  </table>
+  
+	<% form_for @delivery_note, :url => { :controller => "delivery_notes", :action => "sign", :order_id => @order.id }, :html => { :multipart => true }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :signed_on %>
+      <%= form.date_select :signed_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :attachment %>
+      <%= form.file_field :attachment %>
+    </p>
+    <p>
+      <%= form.submit "Enregistrer" %>
+    </p>
+  <% end %>
+</div>

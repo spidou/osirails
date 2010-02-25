@@ -22,6 +22,13 @@ module ApplicationHelper
     end
   end
   
+  def display_version
+    version = `#{RAILS_ROOT}/current_version.sh`
+    if RAILS_ENV != 'production' or params[:debug]
+      "<span class=\"version\">#{version}<br/>in #{RAILS_ENV}</span>"
+    end
+  end
+  
   def display_menu
     menu = current_menu
     html = ""
@@ -255,7 +262,7 @@ module ApplicationHelper
 	  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
 	  # 
 	  # <tt>:image_tag</tt> permits to define a custom image tag for the link
-    #   <%= user_link(@user, :image_tag => image_tag("/images/view.png") ) %>
+    #   <%= user_link(@user, :image_tag => image_tag("view.png") ) %>
     # 
     # <tt>:link_text</tt> permits to define a custom value for the link label
     #   <%= new_user_link( :link_text => "Add a user" ) %>
@@ -315,7 +322,7 @@ module ApplicationHelper
       
       # default options
 		  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-		              :image_tag    => image_tag( "/images/#{permission_name}_16x16.png",
+		              :image_tag    => image_tag( "#{permission_name}_16x16.png",
 		                                          :title => default_title,
 		                                          :alt => default_title ),
                   :options      => {},

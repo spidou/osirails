@@ -1,5 +1,5 @@
 class EstimateStepController < ApplicationController
-  helper :quotes
+  helper :quotes, :press_proofs, :graphic_items
   
   acts_as_step_controller
 

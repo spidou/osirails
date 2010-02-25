@@ -6,29 +6,30 @@ class QuotesController < ApplicationController
   
   acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
   
-  # GET /orders/:order_id/:step/quotes/:quote_id
-  # GET /orders/:order_id/:step/quotes/:quote_id.xml
-  # GET /orders/:order_id/:step/quotes/:quote_id.pdf
+  # GET /orders/:order_id/:step/quotes/:id
+  # GET /orders/:order_id/:step/quotes/:id.xml
+  # GET /orders/:order_id/:step/quotes/:id.pdf
   def show
     @quote = Quote.find(params[:id])
+    
+    if @quote.uncomplete? and params[:format] == "pdf"
+      error_access_page(404)
+      return
+    end
     
     respond_to do |format|
       format.xml {
         render :layout => false
       }
       format.pdf {
-        unless @quote.uncomplete?
-          pdf_filename = "quote_#{@quote.public_number}"
-          render_pdf(pdf_filename, "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/pdf/quotes/#{pdf_filename}.pdf")
-        else
-          error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
-        end
+        pdf_filename = "quote_#{@quote.public_number}"
+        render_pdf(pdf_filename, "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/pdf/quotes/#{pdf_filename}.pdf")
       }
       format.html { }
     end
   end
   
-  # GET /orders/:order_id/:step/quotes/:quote_id/new
+  # GET /orders/:order_id/:step/quotes/new
   def new
     @quote = @order.quotes.build(:validity_delay      => ConfigurationManager.sales_quote_validity_delay,
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
@@ -37,15 +38,14 @@ class QuotesController < ApplicationController
       @quote.contacts << @order.contacts.last unless @order.contacts.empty?
       
       @order.products.each do |product|
-        #@quote.quote_items.build(:product_id => product.id, :order_id => @order.id)
-        @quote.build_quote_item(:product_reference_id => product.product_reference_id, :product_id => product.id, :order_id => @order.id)
+        @quote.build_quote_item(:product_id => product.id)
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
-  # POST /orders/:order_id/:step/quotes/:quote_id
+  # POST /orders/:order_id/:step/quotes
   def create
     #@quote = @order.quotes.build(params[:quote])
     @quote = @order.quotes.build # so we can use @quote.order_id in quote.rb
@@ -60,16 +60,16 @@ class QuotesController < ApplicationController
         render :action => :new
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
-  # GET /orders/:order_id/:step/quotes/:quote_id/edit
+  # GET /orders/:order_id/:step/quotes/:id/edit
   def edit
-    error_access_page(403) unless (@quote = Quote.find(params[:id])).can_be_edited?
+    error_access_page(412) unless (@quote = Quote.find(params[:id])).can_be_edited?
   end
   
-  # PUT /orders/:order_id/:step/quotes/:quote_id
+  # PUT /orders/:order_id/:step/quotes/:id
   def update
     if (@quote = Quote.find(params[:id])).can_be_edited?
       if @quote.update_attributes(params[:quote])
@@ -79,11 +79,11 @@ class QuotesController < ApplicationController
         render :action => :edit
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
-  # DELETE /orders/:order_id/:step/quotes/:quote_id
+  # DELETE /orders/:order_id/:step/quotes/:id
   def destroy
     if (@quote = Quote.find(params[:id])).can_be_deleted?
       unless @quote.destroy
@@ -91,7 +91,7 @@ class QuotesController < ApplicationController
       end
       redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -100,10 +100,12 @@ class QuotesController < ApplicationController
     if (@quote = Quote.find(params[:quote_id])).can_be_confirmed?
       unless @quote.confirm
         flash[:error] = "Une erreur est survenue à la validation du devis"
+      else
+        flash[:notice] = "Le devis a été validé avec succès"
+        redirect_to send(@step.original_step.path)
       end
-      redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
@@ -115,13 +117,13 @@ class QuotesController < ApplicationController
       end
       redirect_to send(@step.original_step.path)
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/quotes/:quote_id/send_form
   def send_form
-    error_access_page(403) unless (@quote = Quote.find(params[:quote_id])).can_be_sended?
+    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_sended?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/send_to_customer
@@ -134,13 +136,13 @@ class QuotesController < ApplicationController
         render :action => :send_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   
   # GET /orders/:order_id/:step/quotes/:quote_id/sign_form
   def sign_form
-    error_access_page(403) unless (@quote = Quote.find(params[:quote_id])).can_be_signed?
+    error_access_page(412) unless (@quote = Quote.find(params[:quote_id])).can_be_signed?
   end
   
   # PUT /orders/:order_id/:step/quotes/:quote_id/sign
@@ -153,7 +155,7 @@ class QuotesController < ApplicationController
         render :action => :sign_form
       end
     else
-      error_access_page(403)
+      error_access_page(412)
     end
   end
   

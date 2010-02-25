@@ -4,12 +4,8 @@
 <% end -%>
 
 <% add_contextual_menu_item :order_progress do %>
-  <div id="order_progress"><object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div>
+  <!-- <div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div> -->
   <%= remaining_time_before_delivery(@order) %>
-<% end %>
-
-<% add_contextual_menu_item :possible_actions do %>
-  <%= link_to 'Modifier le dossier', edit_order_path(@order) if Order.can_edit?(current_user) %>
 <% end %>
 
 <div>

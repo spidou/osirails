@@ -43,7 +43,7 @@ class JobContractTest < ActiveSupport::TestCase
   # similar to the actual salary, we don't create a new salary, otherwise we create a new salary entry.
   
 #  def test_affect_and_save_salary
-#    flunk "Fixture salary called 'normal' should have a gross_amount at 3000 to perform the following tests" if @job_contract.salary != 3000
+#    flunk "Fixture salary called 'normal' should have a gross_amount at 3000" if @job_contract.salary != 3000
 #    
 #    assert_no_difference 'Salary.count', 'Salary should not be saved because the previous value was already at 3000' do
 #      @job_contract.salary = 3000

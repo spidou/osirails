@@ -6,7 +6,7 @@ class SubcontractorRequest < ActiveRecord::Base
   belongs_to :subcontractor
   
   has_attached_file :attachment,
-                    :path => ":rails_root/assets/subcontractor_requests/:id/quote.:extension",
+                    :path => ":rails_root/assets/sales/:class/:attachment/:id.:extension",
                     :url  => "/subcontractor_requests/:id/quote"
   
   validates_presence_of :job_needed, :subcontractor_id

@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.add_routes do |map|
   map.attachment 'attachments/:id/:style', :controller => 'attachments', :action => 'show', 
-                                           :requirements => { :style => /(original|thumb|medium)/ },
+                                           :requirements => { :style => /(original|thumb|medium|large)/ },
                                            :style => nil
 end
 

@@ -43,18 +43,18 @@ module CheckingsHelper
   
   def javascript_location_url(employee_id, date, cancelled)
     html = "window.location.href='checkings?"
-    html += "employee_id=" + "'+ this.options[this.selectedIndex].value +'"
-    html += "&amp;" + "date=" + "#{date}"
-    html += "&amp;" + "cancelled=" + "#{cancelled}" if cancelled
+    html += "employee_id="    + "'+ this.options[this.selectedIndex].value +'"
+    html += "&amp;date="      + date
+    html += "&amp;cancelled=" + cancelled if cancelled
     html += "'"
   end
   
   def cancel_image
-    image_tag("/images/delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
+    image_tag("delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
   end
   
   def override_image
-    image_tag("/images/edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage")
+    image_tag("edit_16x16.png", :alt => "Corriger ce pointage",:title => "Corriger ce pointage")
   end
   
   def cancel_checking_link(checking)

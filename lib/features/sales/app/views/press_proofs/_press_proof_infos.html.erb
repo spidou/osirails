@@ -1,12 +1,14 @@
 <%
-require_locals f, order
 press_proof = press_proof_infos
+
+require_locals products if press_proof.new_record?
+require_locals form, order
 %>
 
 <p> 
-  <%= f.label :product %>
+  <%= form.label :product %>
   <% if is_form_view? and press_proof.new_record? %>
-    <%= f.collection_select( :product_id, products, :id, :name, {}, { :onChange => "select_product(this);" } )%>
+    <%= form.collection_select( :product_id, products, :id, :name, {}, { :onChange => "select_product(this);" } ) %>
   <% else %>
     <%= strong(press_proof.product.name) %>
   <% end %>
@@ -14,12 +16,12 @@ press_proof = press_proof_infos
 
 <% unless press_proof.new_record? %>
 <p> 
-  <%= f.label :product_description %>
+  <%= form.label :product_description %>
   <%= strong(press_proof.product_description) %>
 </p>
 <% end %>
 
 <p>
-  <%= f.label :internal_actor %>
-  <%= f.form_or_view(f.collection_select( :internal_actor_id, Employee.all, :id, :fullname), :internal_actor, :fullname) %>
+  <%= form.label :internal_actor %>
+  <%= form.form_or_view(form.collection_select( :internal_actor_id, Employee.all, :id, :fullname), :internal_actor, :fullname) %>
 </p>

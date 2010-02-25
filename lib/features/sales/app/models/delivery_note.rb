@@ -1,67 +1,90 @@
 class DeliveryNote < ActiveRecord::Base
-  STATUS_VALIDATED    = 'validated'
-  STATUS_INVALIDATED  = 'invalidated'
+  STATUS_CONFIRMED    = 'confirmed'
+  STATUS_CANCELLED    = 'cancelled'
   STATUS_SIGNED       = 'signed'
   
-  PUBLIC_NUMBER_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
+  REFERENCE_PATTERN = "%Y%m" # 1 Jan 2009 => 200901
   
-  has_permissions :as_business_object
+  has_permissions :as_business_object, :additional_class_methods => [ :confirm, :schedule, :realize, :sign, :cancel ]
   has_address     :ship_to_address
   has_contact     :accept_from => :order_contacts
   
   has_attached_file :attachment,
-                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
+                    :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/delivery_notes/:delivery_note_id/attachment'
   
   belongs_to :order
-  belongs_to :creator, :class_name  => 'User'
+  belongs_to :creator, :class_name => 'User'
+  belongs_to :delivery_note_type
   
   has_many :delivery_note_items, :dependent => :destroy
   has_many :quote_items,         :through   => :delivery_note_items
-  has_many :interventions
+  
+  has_many :delivery_interventions, :order => "created_at DESC"
+  has_one  :pending_delivery_intervention,    :class_name => "DeliveryIntervention", :conditions => [ 'delivered IS NULL AND cancelled_at IS NULL and postponed IS NULL' ], :order => "created_at DESC"
+  has_one  :delivered_delivery_intervention,  :class_name => "DeliveryIntervention", :conditions => [ 'delivered = ?', true ], :order => "created_at DESC"
+  
+  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
+  
+  has_many :delivery_note_invoices
+  has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
+  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "status IS NULL OR status != ?", Invoice::STATUS_CANCELLED ] #TODO test that method
+  
+  named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
   validates_contact_presence
   
   validates_presence_of :delivery_note_items, :ship_to_address
-  validates_presence_of :order_id, :creator_id
-  validates_presence_of :order,   :if => :order_id
-  validates_presence_of :creator, :if => :creator_id
+  validates_presence_of :order_id, :creator_id, :delivery_note_type_id
+  validates_presence_of :order,               :if => :order_id
+  validates_presence_of :creator,             :if => :creator_id
+  validates_presence_of :delivery_note_type,  :if => :delivery_note_type_id
   
-  with_options :if => :validated? do |dn|
-    dn.validates_presence_of :validated_on
-    dn.validates_presence_of :public_number
+  with_options :if => :confirmed? do |dn|
+    dn.validates_presence_of :published_on, :confirmed_at, :reference
   end
   
-  validates_presence_of :invalidated_on,  :if => :invalidated?
+  validates_presence_of :cancelled_at,  :if => :cancelled?
   
   with_options :if => :signed? do |dn|
     dn.validates_presence_of :signed_on
-    dn.validates_presence_of :successful_intervention
+    
+    dn.validates_date :signed_on, :on_or_before         => Date.today,
+                                  :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)",
+                                  :on_or_after          => :published_on,
+                                  :on_or_after_message  => "ne doit pas être AVANT la date d'émission du BL&#160;(%s)"
+    
     dn.validate :validates_presence_of_attachment
   end
   
   validates_persistence_of :creator_id, :order_id
+  validates_persistence_of :ship_to_address, :contacts, :delivery_note_items, 
+                           :published_on, :confirmed_at, :reference,                  :unless => :was_uncomplete?
+  validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if     => :was_cancelled?
+  validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if     => :was_signed?
   
-  validates_persistence_of :ship_to_address,
-                           :contacts,
-                           :delivery_note_items, 
-                           :validated_on,
-                           :public_number, :unless => :was_uncomplete?
+  validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SIGNED ]
   
-  validates_persistence_of :invalidated_on, :interventions, :status, :if => :was_invalidated?
+  validates_associated  :delivery_note_items, :quote_items, :delivery_interventions
   
-  validates_persistence_of :signed_on, :attachment, :interventions, :status, :if => :was_signed?
+  validate :validates_delivery_interventions, :validates_number_of_pieces
   
-  validates_inclusion_of :status, :in => [ STATUS_VALIDATED, STATUS_INVALIDATED, STATUS_SIGNED ], :allow_nil => true
+  before_update   :save_delivery_note_items
+  before_destroy  :can_be_destroyed?
   
-  validates_associated  :delivery_note_items, :quote_items, :interventions
+  attr_protected :status, :confirmed_at, :cancelled_at, :reference
   
-  validate :validates_interventions
-  
-  before_update :save_delivery_note_items
-  after_save :save_interventions
-  
-  attr_protected :status, :validated_on, :invalidated_on, :signed_on, :public_number
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:created_at]          = 'Créé le :'
+  @@form_labels[:creator]             = 'Par :'
+  @@form_labels[:delivery_note_type]  = 'Mode de livraison :'
+  @@form_labels[:status]              = 'État actuel :'
+  @@form_labels[:confirmed_at]        = "Validé le :"
+  @@form_labels[:published_on]        = "Date d'émission :"
+  @@form_labels[:signed_on]           = "Signé par le client le :"
+  @@form_labels[:attachment]          = "Fichier (document signé) :"
+  @@form_labels[:cancelled_at]        = 'Annulée le :'
   
   def validates_presence_of_attachment # the method validates_attachment_presence of paperclip seems to be broken when using conditions
     if attachment.nil? or attachment.instance.attachment_file_name.blank? or attachment.instance.attachment_file_size.blank? or attachment.instance.attachment_content_type.blank?
@@ -69,32 +92,43 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
-  def pending_intervention
-    collection = interventions.select{ |i| !i.new_record? and i.delivered.nil? }
-    raise "pending_intervention should not return more than 1 result. Please contact your administrator to solve the problem." if collection.size > 1
-    return collection.first
-  end
-  
-  def successful_intervention
-    collection = interventions.select{ |i| !i.new_record? and i.delivered? }
-    raise "successful_intervention should not return more than 1 result. Please contact your administrator to solve the problem." if collection.size > 1
-    return collection.first
-  end
-  
-  def validates_interventions
-    if has_new_interventions?
-      errors.add(:interventions, "est invalide, impossible de créer une nouvelle intervention pour l'instant") if pending_intervention
-      errors.add(:interventions, "est invalide, il n'est plus possible de créer d'intervention pour ce Bon de Livraison") if successful_intervention
-      errors.add(:interventions, "ne peut être créé à partir d'un Bon de Livraison non validé") unless validated?
+  def validates_delivery_interventions
+    if has_new_delivery_interventions?
+      errors.add(:delivery_interventions, "Il est impossible de créer une intervention à partir d'un Bon de Livraison non validé") unless confirmed?
+      errors.add(:delivery_interventions, "Il est impossible de créer une nouvelle intervention pour l'instant pour ce Bon de Livraison") if pending_delivery_intervention
+      errors.add(:delivery_interventions, "Il n'est plus possible de créer une intervention pour ce Bon de Livraison") if delivered_delivery_intervention
     end
   end
   
-  def has_new_interventions?
-    !interventions.select(&:new_record?).empty?
+  def validates_number_of_pieces
+    return if delivery_note_items.empty?
+    errors.add(:delivery_note_items, "Les produits à livrer doivent compter au moins une quantité supérieure à 0") unless number_of_pieces > 0
+  end
+  
+  def has_new_delivery_interventions?
+    !delivery_interventions.select(&:new_record?).empty?
+  end
+  
+  # return if the delivery_note is associated to an active invoice (where status != cancelled)
+  def billed?
+    invoice.is_a?(Array) ? !invoice.empty? : !invoice.nil?
+  end
+  
+  # return if the associated invoice is confirmed
+  def billed_and_confirmed?
+    billed? ? invoice.was_confirmed? : false
   end
   
   def associated_quote
     order ? order.signed_quote : nil
+  end
+  
+  def build_delivery_note_items_from_signed_quote
+    return unless associated_quote
+    associated_quote.quote_items.each do |quote_item|
+      item = self.delivery_note_items.build(:quote_item_id => quote_item.id, :order_id => self.order_id)
+      item.quantity = item.remaining_quantity_to_deliver
+    end
   end
   
   def delivery_note_item_attributes=(delivery_note_item_attributes)
@@ -102,7 +136,7 @@ class DeliveryNote < ActiveRecord::Base
       if attributes[:id].blank?
         delivery_note_items.build(attributes)
       else
-        delivery_note_item = delivery_note_item.detect { |x| x.id == attributes[:id].to_i }
+        delivery_note_item = delivery_note_items.detect { |x| x.id == attributes[:id].to_i }
         delivery_note_item.attributes = attributes
       end
     end
@@ -114,10 +148,12 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
-  def save_interventions
-    interventions.each do |i|
-      i.save(false)# if i.new_record? or i.changed?
-    end
+  def delivery?
+    delivery_note_type.delivery?
+  end
+  
+  def installation?
+    delivery_note_type.installation?
   end
   
   # delivery note is considered as 'uncomplete' if its status is nil
@@ -125,12 +161,12 @@ class DeliveryNote < ActiveRecord::Base
     status.nil?
   end
   
-  def validated?
-    status == STATUS_VALIDATED
+  def confirmed?
+    status == STATUS_CONFIRMED
   end
   
-  def invalidated?
-    status == STATUS_INVALIDATED
+  def cancelled?
+    status == STATUS_CANCELLED
   end
   
   def signed?
@@ -141,86 +177,80 @@ class DeliveryNote < ActiveRecord::Base
     status_was.nil?
   end
   
-  def was_validated?
-    status_was === STATUS_VALIDATED
+  def was_confirmed?
+    status_was == STATUS_CONFIRMED
   end
   
-  def was_invalidated?
-    status_was === STATUS_INVALIDATED
+  def was_cancelled?
+    status_was == STATUS_CANCELLED
   end
   
   def was_signed?
-    status_was === STATUS_SIGNED
+    status_was == STATUS_SIGNED
+  end
+  
+  def can_be_added?
+    order and order.signed_quote and !order.all_is_delivered_or_scheduled?
   end
   
   def can_be_edited?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
-  def can_be_deleted?
-    was_uncomplete?
+  def can_be_destroyed?
+    !new_record? and was_uncomplete?
   end
   
-  def can_be_validated?
-    was_uncomplete?
+  def can_be_confirmed?
+    !new_record? and was_uncomplete?
   end
   
-  def can_be_invalidated?
-    was_validated?# and !signed?
+  def can_be_cancelled?
+    !new_record? and !was_signed? and !was_cancelled? and !delivered_delivery_intervention
   end
   
-  # return true if the delivery_note can be signed
-  # * if it's validated
-  # * if successful_intervention is currently in change
-  #   (successful_intervention => intervention with delivered? = true
-  #    if previous value of delivered is false, so we know the record has just changed but not saved yet)
+  def can_be_scheduled?
+    !new_record? and !was_signed? and !was_cancelled? and !delivered_delivery_intervention
+  end
+  
+  def can_be_realized?
+    was_confirmed? and pending_delivery_intervention
+  end
+  
   def can_be_signed?
-    #return false if successful_intervention.nil?
-    ##original_record = Intervention.find(successful_intervention.id)
-    #
-    ##validated? and !original_record.delivered?
-    #validated? and !successful_intervention.delivered_was
-    was_validated?
+    was_confirmed? and delivered_delivery_intervention
   end
   
-  def validate_delivery_note
-    if can_be_validated?
-      self.validated_on = Date.today
-      self.public_number = generate_public_number
-      self.status = STATUS_VALIDATED
+  def confirm
+    if can_be_confirmed?
+      self.published_on ||= Date.today
+      self.confirmed_at = Time.now
+      self.reference = generate_reference
+      self.status = STATUS_CONFIRMED
       self.save
     else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt")
+      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être validé")
       false
     end
   end
   
-  def invalidate_delivery_note
-    if can_be_invalidated?
-      self.invalidated_on = Date.today
-      self.status = STATUS_INVALIDATED
+  def cancel
+    if can_be_cancelled?
+      self.cancelled_at = Time.now
+      self.status = STATUS_CANCELLED
       self.save
-    else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt")
+  else
+      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être annulé")
       false
     end
   end
   
-  def sign_delivery_note#(attributes)
+  def sign
     if can_be_signed?
-      #self.attributes = attributes
-      #if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
-      #  self.signed_on = attributes[:signed_on]
-      #else
-      #  self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
-      #                               attributes["signed_on(2i)"].to_i,
-      #                               attributes["signed_on(3i)"].to_i ) rescue nil
-      #end
-      #self.attachment = attributes[:attachment]
       self.status = STATUS_SIGNED
       self.save
     else
-      errors.add(:base, "Le Bon de Livraison n'est pas prêt")
+      errors.add(:base, "Le Bon de Livraison n'est pas prêt à être signé")
       false
     end
   end
@@ -230,18 +260,39 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def discards
-    delivery_note_items.select(&:discard).collect(&:discard)
+    return [] unless delivered_delivery_intervention
+    delivered_delivery_intervention.discards
   end
   
   def has_discards?
-    !discards.empty?
+    !discards.length.zero?
+  end
+  
+  def number_of_pieces
+    delivery_note_items.collect(&:quantity).sum || 0
+  end
+  
+  def number_of_delivered_pieces
+    number_of_pieces - number_of_discarded_pieces
+  end
+  
+  def number_of_discarded_pieces
+    discards.collect(&:quantity).sum
+  end
+  
+  def self_and_siblings
+    order.delivery_notes.actives
+  end
+  
+  def siblings
+    self_and_siblings - [ self ]
   end
   
   private
-    def generate_public_number
-      return public_number if !public_number.blank?
-      prefix = Date.today.strftime(PUBLIC_NUMBER_PATTERN)
-      quantity = DeliveryNote.find(:all, :conditions => [ "public_number LIKE ?", "#{prefix}%" ]).size + 1
+    def generate_reference
+      return reference if !reference.blank?
+      prefix = Date.today.strftime(REFERENCE_PATTERN)
+      quantity = DeliveryNote.find(:all, :conditions => [ "reference LIKE ?", "#{prefix}%" ]).size + 1
       "#{prefix}#{quantity.to_s.rjust(3,'0')}"
     end
 end

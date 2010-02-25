@@ -8,7 +8,7 @@ class GraphicDocumentTypeTest < ActiveSupport::TestCase
   context "A graphic document type" do
     setup do  
       @gdt = graphic_document_types(:normal)
-      flunk "@gdt should be valid to continue" unless @gdt.valid?
+      flunk "@gdt should be valid" unless @gdt.valid?
     end
     
     subject { @gdt }

@@ -1,0 +1,9 @@
+good_tool_event:
+  start_date: <%= Date.today %>
+  end_date: <%= Date.tomorrow %>
+  comment: "comment"
+  name: "good tool event"
+  status: 1
+  event_type: 1
+  tool: good_tool
+  internal_actor: john_doe

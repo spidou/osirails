@@ -1,0 +1,67 @@
+<% invoice = invoice_infos %>
+
+<% fields_for invoice do |form| %>
+  <p>
+    <%= form.label :created_at %>
+    <%= strong invoice.created_at.humanize %>
+  </p>
+  <p>
+    <%= form.label :creator %>
+    <%= strong invoice.creator.employee_name %>
+  </p>
+  <p>
+    <%= form.label :status %>
+    <%= strong "\"#{status_text(invoice)}\"" %>
+  </p>
+  <p>
+    <%= form.label :published_on %>
+    <%= strong invoice.published_on.humanize if invoice.published_on %>
+  </p>
+  <p>
+    <%= form.label :sended_on %>
+    <%= strong invoice.sended_on.humanize if invoice.sended_on %>
+    
+    <%= form.label :send_invoice_method_id %>
+    <%= strong invoice.send_invoice_method.name if invoice.send_invoice_method %>
+  </p>
+  
+  <% if invoice.factorised? %>
+    <hr/>
+    <p>
+      <%= form.label :factoring_paid_on %>
+      <%= strong invoice.factoring_paid_on.humanize if invoice.factoring_paid_on %>
+    </p>
+    <p>
+      <%= form.label :factoring_recovered_on %>
+      <%= strong "#{invoice.factoring_recovered_on.humanize} (\"#{invoice.factoring_recovered_comment}\")" if invoice.factoring_recovered_on %>
+    </p>
+    <p>
+      <%= form.label :factoring_balance_paid_on %>
+      <%= strong invoice.factoring_balance_paid_on.humanize if invoice.factoring_balance_paid_on %>
+    </p>
+  <% end %>
+  
+  <% if invoice.was_cancelled? %>
+    <hr/>
+    <p>
+      <%= form.label :cancelled_at %>
+      <%= strong "#{invoice.cancelled_at.humanize} (\"#{invoice.cancelled_comment}\")" %>
+    </p>
+    <p>
+      <%= form.label :cancelled_by %>
+      <%= strong invoice.cancelled_by.employee_name %>
+    </p>
+  <% end %>
+  
+  <% if invoice.abandoned_on_was %>
+    <hr/>
+    <p>
+      <%= form.label :abandoned_on %>
+      <%= strong "#{invoice.abandoned_on.humanize} (\"#{invoice.abandoned_comment}\")" %>
+    </p>
+    <p>
+      <%= form.label :abandoned_by %>
+      <%= strong invoice.abandoned_by.employee_name %>
+    </p>
+  <% end %>
+<% end %>

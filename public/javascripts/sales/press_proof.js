@@ -223,24 +223,42 @@ function update_all_action_links()
   }
 }
 
+
+move_to_left_image            = 'move_to_left_16x16.png'
+move_to_right_image           = 'move_to_right_16x16.png'
+disabled_move_to_left_image   = 'disabled_move_to_left_16x16.png'
+disabled_move_to_right_image  = 'disabled_move_to_right_16x16.png'
+
 // Method to reset action links that permit to change position
 //
 function reset_actions_labels(element)
 {
-  element.down('.previous_link').firstDescendant().setAttribute('src', '/images/move_to_left_16x16.png');
-  element.down('.next_link').firstDescendant().setAttribute('src', '/images/move_to_right_16x16.png');
+  previous_image = element.down('.previous_link').down('img')
+  next_image = element.down('.next_link').down('img')
+  
+  previous_image_prefix = previous_image.getAttribute('src').substring(0, previous_image.getAttribute('src').lastIndexOf('/') + 1)
+  next_image_prefix     = next_image.getAttribute('src').substring(0, next_image.getAttribute('src').lastIndexOf('/') + 1)
+  
+  previous_image.setAttribute('src', previous_image_prefix + move_to_left_image)
+  next_image.setAttribute('src', next_image_prefix + move_to_right_image)
 }
 
-// Method to mark  the previous link as disabled.
+// Method to mark the previous link as disabled.
 //
 function mark_first_element(element)
 {
-  element.down('.previous_link').firstDescendant().setAttribute('src', '/images/disabled_move_to_left_16x16.png');
+  previous_image        = element.down('.previous_link').down('img')
+  previous_image_prefix = previous_image.getAttribute('src').substring(0, previous_image.getAttribute('src').lastIndexOf('/') + 1)
+  
+  previous_image.setAttribute('src', previous_image_prefix + disabled_move_to_left_image)
 }
 
 // Method to mark the next link as disabled.
 //
 function mark_last_element(element)
 {
-  element.down('.next_link').firstDescendant().setAttribute('src', '/images/disabled_move_to_right_16x16.png');
+  next_image        = element.down('.next_link').down('img')
+  next_image_prefix = next_image.getAttribute('src').substring(0, next_image.getAttribute('src').lastIndexOf('/') + 1)
+  
+  next_image.setAttribute('src', next_image_prefix + disabled_move_to_right_image)
 }
