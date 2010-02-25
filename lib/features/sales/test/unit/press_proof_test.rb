@@ -54,6 +54,9 @@ class PressProofTest < ActiveSupport::TestCase
       assert !@press_proof.can_be_destroyed?
     end
     
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+    end
   end
   
   context "A press proof not confirmed yet" do
@@ -131,6 +134,10 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:product_id)
     end
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+    end
   end
   
   
@@ -174,6 +181,10 @@ class PressProofTest < ActiveSupport::TestCase
     should "be confirmed" do
       assert @press_proof.confirmed?
       assert_equal @press_proof.confirmed?, @press_proof.was_confirmed?
+    end
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
     end
   end
   
@@ -233,6 +244,10 @@ class PressProofTest < ActiveSupport::TestCase
       
       assert !@press_proof.can_be_signed?
       assert !sign_press_proof(@press_proof).was_signed?
+    end
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
     end
   end
   
@@ -309,6 +324,10 @@ class PressProofTest < ActiveSupport::TestCase
     should "be signed" do
       assert @press_proof.signed?
       assert @press_proof.signed?, @press_proof.was_signed?
+    end
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
     end
   end
   
@@ -392,6 +411,10 @@ class PressProofTest < ActiveSupport::TestCase
 #    should_validate_persistence_of :revoked, :revoked_comment, :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on,
 #                                   :order_id, :unit_measure_id, :product_id, :internal_actor_id, :creator_id
     
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
+    end
   end
   
   
@@ -471,6 +494,10 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
+    end
+    
+    should "have an associated quote corresponding to the order signed quote" do
+      assert_equal @press_proof.associated_quote, @press_proof.order.signed_quote
     end
   end
   

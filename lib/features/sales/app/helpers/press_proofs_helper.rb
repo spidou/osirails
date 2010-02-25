@@ -11,6 +11,7 @@ module PressProofsHelper
     html << display_revoke_button(order, press_proof, '')
     html << display_signed_press_proof_button(order, press_proof, '')
     html << display_show_button(order, press_proof, '')
+    html << display_show_pdf_button(order, press_proof, '')
     html << display_edit_button(order, press_proof, '')
     html << display_destroy_button(order, press_proof, '')
     html.compact.join("&nbsp;")
@@ -106,6 +107,16 @@ module PressProofsHelper
                         :alt => text,
                         :title => text ) + message,
              order_commercial_step_press_proof_step_press_proof_path(order, press_proof) )
+  end
+  
+  def display_show_pdf_button(order, press_proof, message=nil)
+    return unless PressProof.can_view?(current_user) and !press_proof.status.nil?
+      text = "Voir ce BAT (PDF)"
+      message ||= " #{text}"
+      link_to( image_tag( "/images/mime_type_extensions/pdf_16x16.png",
+                          :alt => text,
+                          :title => text ) + message,
+               order_commercial_step_press_proof_step_press_proof_path(order, press_proof, {:format => :pdf}) )
   end
   
   def display_destroy_button(order, press_proof, message=nil)

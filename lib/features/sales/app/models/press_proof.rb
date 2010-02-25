@@ -112,6 +112,10 @@ class PressProof < ActiveRecord::Base
     self.id.to_s
   end
   
+  def associated_quote
+    order.signed_quote if order
+  end
+  
   def can_be_cancelled?
     return false if self.new_record?
     was_confirmed? or was_sended?

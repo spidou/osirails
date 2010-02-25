@@ -13,6 +13,21 @@ class PressProofsController < ApplicationController
   # GET /orders/:order_id/:step/press_proofs/:id
   def show
     @press_proof = PressProof.find(params[:id])
+    
+    respond_to do |format|
+      format.xml  {
+        render :layout => false
+      }
+      format.pdf  {
+        unless @press_proof.status.nil?
+          pdf_filename = "press_proof_#{@press_proof.reference}"
+          render :pdf => pdf_filename, :template => "press_proofs/show.xml.erb", :xsl => "public/fo/style/press_proof.xsl", :path => "assets/pdf/press_proofs/#{pdf_filename}.pdf"
+        else
+          error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
+        end
+      }
+      format.html { }
+    end
   end
   
   # GET /orders/:order_id/:step/press_proofs/new
