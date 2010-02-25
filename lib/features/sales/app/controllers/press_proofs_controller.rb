@@ -33,7 +33,7 @@ class PressProofsController < ApplicationController
   # GET /orders/:order_id/:step/press_proofs/new
   def new
     @press_proof = @order.press_proofs.build
-    @products_without_signed_press_proof = @order.products.reject {|n| n.has_signed_press_proof }
+    @products_without_signed_press_proof = @order.products.reject {|n| n.has_signed_press_proof? }
     @press_proof.product = @products_without_signed_press_proof.first 
     @press_proof.creator = current_user
     error_access_page(412) if @order.all_products_have_signed_press_proof?

@@ -4,7 +4,7 @@ products       = press_proofs_list.collect(&:product).uniq
 %>
 
 <% if products and !products.empty? %>
-  <table id="press_proofs_list">
+  <table class="sales_table" id="press_proofs_list">
     <tr>
       <th rowspan="2">Produit</th>
       <th rowspan="2">Qté</th>
@@ -22,7 +22,7 @@ products       = press_proofs_list.collect(&:product).uniq
     <tr>
       <th>N°</th>
       <th>Type</th>
-      <th>Description</th>
+      <th>Nom</th>
     </tr>
     <%= render :partial => "press_proofs/product_in_one_line", :collection => products, :locals => { :press_proofs => press_proofs } %>
   </table>

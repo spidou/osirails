@@ -703,11 +703,6 @@ div select#graphic_document_versions {
 }
 
 /* PRESSPROOF LIST */
-table#press_proofs_list strong {
-  color: black;
-  font-weight: bold;
-}
-
 table tr.press_proof.confirmed_press_proof {
   background-color: #e99727;
   color: white;
