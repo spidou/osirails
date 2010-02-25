@@ -1,14 +1,12 @@
-<%= order_header %>
-
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_add_button(@order) %>
-<% end %>
-
 <% content_for :header do -%>
   <%= javascript_include_tag 'sales/quotes_list' %>
 <% end -%>
 
-<h1>Bon(s) à Tirer</h1>
+<%= order_header %>
+
+<%= generate_commercial_step_contextual_menu_partial %>
+
+<h1>BAT (bon à tirer)</h1>
 
 <div class='presentation-medium'>
   <p>
@@ -55,10 +53,9 @@
   <p>
     <%= link_to "Plus de détails", '#quote_list_more', :id => 'quotes_list_more_infos_link' %>
   </p>
-
-  <%= render :partial => "press_proofs/press_proofs_list", :object => @order.press_proofs %>
   
-  <p>
-    <%= link_to "Nouveau Bon à tirer", new_order_commercial_step_press_proof_step_press_proof_path %>
-  </p>
+  <h2>Devis</h2>
+  <%= display_press_proofs(@order) %>
+  
+  <%= content_tag(:p, display_press_proof_add_button(@order)) if is_form_view? %>
 </div>

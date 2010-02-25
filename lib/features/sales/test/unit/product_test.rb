@@ -15,14 +15,14 @@ class ProductTest < ActiveSupport::TestCase
   should_validate_presence_of :name, :description, :dimensions
   should_validate_presence_of :order, :product_reference, :with_foreign_key => :default
   
-  should_validate_numericality_of :unit_price, :prizegiving, :vat, :quantity
-  [:unit_price, :prizegiving, :vat].each do |attribute|
-    should_allow_values_for     attribute, nil, "", 1, 1.0
-    should_not_allow_values_for attribute, "any string"
-  end
+  should_validate_numericality_of :prizegiving, :quantity
   
-  should_allow_values_for     :quantity, 1, 1.0
-  should_not_allow_values_for :quantity, "", nil, "any string"
+  should_allow_values_for :prizegiving, nil
+  
+  should_allow_values_for     :quantity, 0, 1, 1.0
+  should_not_allow_values_for :quantity, nil, "", "any string"
+  
+  #TODO validates_numericality_of :unit_price, :vat, :unless => Proc.new{ |p| p.quote_items.reject{ |i| i.quote.cancelled? }.empty? }
   
   #should_validate_presence_of :reference   #TODO when quote is signed
   #should_validate_uniqueness_of :reference #TODO when quote is signed

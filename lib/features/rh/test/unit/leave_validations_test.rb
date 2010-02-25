@@ -111,7 +111,7 @@ module LeaveValidationsTest
     #   start_date        end_date              (new leave)
     #
     def check_unique_dates_when_there_are_no_conflicting_leave(leave, conflicting_leave)
-      flunk "conflicting_leave should NOT be saved to perform the following" unless conflicting_leave.new_record?
+      flunk "conflicting_leave should NOT be saved" unless conflicting_leave.new_record?
       # conflicting_leave is not saved in database !
       
       leave.employee    = conflicting_leave.employee
@@ -325,7 +325,7 @@ module LeaveValidationsTest
     #            start_date    end_date               (new leave)
     #
     def check_unique_dates_when_new_leave_start_date_and_end_date_are_within_an_existing_leave(leave, conflicting_leave)
-      flunk "conflicting_leave.calendar_duration should be greater or equal to 3 days to perform the following, but is actually equal to #{conflicting_leave.calendar_duration}" if conflicting_leave.calendar_duration < 3
+      flunk "conflicting_leave.calendar_duration should be greater or equal to 3 days, but is actually equal to #{conflicting_leave.calendar_duration}" if conflicting_leave.calendar_duration < 3
       save_leave(conflicting_leave)
       
       leave.employee    = conflicting_leave.employee
@@ -358,7 +358,7 @@ module LeaveValidationsTest
       elsif leave.is_a?(LeaveRequest)
         result = leave.submit
       end
-      flunk "conflicting_leave should be saved to perform the following" unless result
+      flunk "conflicting_leave should be saved" unless result
       leave.reload
     end
     

@@ -11,9 +11,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
     @superior = employees(:johnny)
     @leave_type = leave_types(:good_leave_type)
     
-    flunk "@employee should be valid to perform the following tests" unless @employee.valid?
-    flunk "@superior should be valid to perform the following tests" unless @superior.valid?
-    flunk "@leave_type should be valid to perform the following tests" unless @leave_type.valid?
+    flunk "@employee should be valid" unless @employee.valid?
+    flunk "@superior should be valid" unless @superior.valid?
+    flunk "@leave_type should be valid" unless @leave_type.valid?
     
     @leave_request_on_one_day = LeaveRequest.new(:start_date    => Date.tomorrow,
                                                  :end_date      => Date.tomorrow,
@@ -60,7 +60,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
                                    :end_half       => true,
                                    :employee_id    => @employee.id,
                                    :leave_type_id  => @leave_type.id)
-    flunk "good_leave should be submitted to perform the following #{@good_leave.errors.inspect}" unless @good_leave.submit
+    flunk "good_leave should be submitted > #{@good_leave.errors.inspect}" unless @good_leave.submit
     
     setup_leaves
   end
@@ -292,7 +292,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_presence_of_responsible_remarks
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     
     @leave_request.valid?
     assert @leave_request.errors.invalid?(:responsible_remarks), "responsible_remarks should NOT be valid because it's nil and the agreement is not true"
@@ -309,7 +309,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_check_leave_request_with_agreement
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
     @leave_request.check
     assert @leave_request.was_checked?, "leave_request should be checked"
@@ -317,7 +317,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_check_leave_request_with_refusal
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,false)
     @leave_request.check
     assert @leave_request.was_refused_by_responsible?, "leave_request should be refused by responsible"
@@ -406,9 +406,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_notice_leave_request
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
     @leave_request.notice
     assert @leave_request.was_noticed?, "leave_request should be noticed"
@@ -416,11 +416,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_presence_of_director_id
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     
     @leave_request.valid?
     assert @leave_request.errors.invalid?(:director_id), "director_id should NOT be valid because it's nil"
@@ -443,11 +443,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_presence_of_ended_at
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     
     @leave_request.valid?
     assert @leave_request.errors.invalid?(:ended_at), "ended_at should NOT be valid because it's nil"
@@ -459,11 +459,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_presence_of_director_remarks
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     
     @leave_request.valid?
     assert @leave_request.errors.invalid?(:director_remarks), "director_remarks should NOT be valid because it's nil and agreement is false"
@@ -480,11 +480,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
 
   def test_close_leave_request_with_agreement
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     prepare_to_close(@leave_request,true)
     @leave_request.close
     assert @leave_request.was_closed?, "leave_request should be closed"
@@ -494,11 +494,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_close_leave_request_with_refusal
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     prepare_to_close(@leave_request,false)
     @leave_request.close
     assert @leave_request.was_refused_by_director?, "leave_request should be refused by director"
@@ -506,7 +506,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_persistent_attributes_when_submitted
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     
     persistent_attributes = ["employee_id", "start_date", "end_date", "start_half", "end_half", "leave_type_id"]
     
@@ -523,9 +523,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_persistent_attributes_when_refused_by_responsible
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,false)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     
     persistent_attributes = ["employee_id", "start_date", "end_date", "start_half", "end_half", "leave_type_id"]
     
@@ -542,9 +542,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_persistent_attributes_when_checked
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     
     persistent_attributes = ["employee_id", "start_date", "end_date", "start_half", "end_half", "leave_type_id", "responsible_id","checked_at", "responsible_agreement", "responsible_remarks"]
     
@@ -562,11 +562,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_persistent_attributes_when_noticed
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     
     persistent_attributes = ["employee_id", "start_date", "end_date", "start_half", "end_half", "leave_type_id", "responsible_id","checked_at", "responsible_agreement", "responsible_remarks", "observer_id", "observer_remarks", "acquired_leaves_days", "duration"]
     
@@ -584,13 +584,13 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_persistent_attributes_when_refused_by_director
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     prepare_to_close(@leave_request,false)
-    flunk "@leave_request should close with success to perform the following test" unless @leave_request.close
+    flunk "@leave_request should close with success" unless @leave_request.close
     
     persistent_attributes = ["employee_id", "start_date", "end_date", "start_half", "end_half", "leave_type_id", "responsible_id","checked_at", "responsible_agreement", "responsible_remarks", "observer_id", "observer_remarks", "acquired_leaves_days", "duration"]
     
@@ -608,7 +608,7 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_cancel_when_submitted
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
   
     @leave_request.cancel
     assert @leave_request.cancelled?, "leave_request should be cancelled"
@@ -616,9 +616,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_cancel_when_refused_by_responsible
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,false)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     
     @leave_request.cancel
     assert @leave_request.cancelled?, "leave_request should be cancelled"
@@ -626,9 +626,9 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_cancel_when_checked
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     
     @leave_request.cancel
     assert @leave_request.cancelled?, "leave_request should be cancelled"
@@ -636,11 +636,11 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_cancel_when_closed
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
   
     @leave_request.cancel
     assert @leave_request.cancelled?, "leave_request should be cancelled"
@@ -648,13 +648,13 @@ class LeaveRequestTest < ActiveSupport::TestCase
   
   def test_cancel_when_refused_by_director
     prepare_to_submit(@leave_request)
-    flunk "@leave_request should submit with success to perform the following test" unless @leave_request.submit
+    flunk "@leave_request should submit with success" unless @leave_request.submit
     prepare_to_check(@leave_request,true)
-    flunk "@leave_request should check with success to perform the following test" unless @leave_request.check
+    flunk "@leave_request should check with success" unless @leave_request.check
     prepare_to_notice(@leave_request)
-    flunk "@leave_request should notice with success to perform the following test" unless @leave_request.notice
+    flunk "@leave_request should notice with success" unless @leave_request.notice
     prepare_to_close(@leave_request,false)
-    flunk "@leave_request should close with success to perform the following test" unless @leave_request.close
+    flunk "@leave_request should close with success" unless @leave_request.close
   
     @leave_request.cancel
     assert @leave_request.cancelled?, "leave_request should be cancelled"

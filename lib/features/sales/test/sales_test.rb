@@ -60,7 +60,6 @@ class Test::Unit::TestCase
     
     order.products.each do |product|
       quote.build_quote_item(:product_id  => product.id,
-                             :order_id    => order.id,
                              :name        => "Product Name",
                              :description => "Product description",
                              :dimensions  => "1000x2000",
@@ -213,7 +212,7 @@ class Test::Unit::TestCase
 #    intervention.delivered = true
 #    intervention.comments = "my special comment"
 #    
-#    flunk "delivery_note should be valid to perform the following" unless delivery_note.valid?
+#    flunk "delivery_note should be valid" unless delivery_note.valid?
 #    
 #    reference = delivery_note.delivery_note_items.first
 #    discard = reference.build_discard(:comments => "my special comment",
@@ -231,7 +230,7 @@ class Test::Unit::TestCase
     delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
     delivery_note.sign
     
-    flunk "delivery_note should be signed to continue" unless delivery_note.was_signed?
+    flunk "delivery_note should be signed" unless delivery_note.was_signed?
     return delivery_note
   end
   
@@ -274,7 +273,7 @@ class Test::Unit::TestCase
     invoice.due_dates.build(:date => Date.today, :net_to_paid => ( invoice.net_to_paid ))
     invoice.save!
     
-    flunk "invoice should be saved to perform the following" if invoice.new_record?
+    flunk "invoice should be saved" if invoice.new_record?
     return invoice
   end
   
@@ -284,7 +283,7 @@ class Test::Unit::TestCase
     
     invoice.send_to_customer(:sended_on => Date.today, :send_invoice_method_id => send_invoice_methods(:fax).id)
     
-    flunk "invoice should be sended to perform the following > #{invoice.errors.inspect}" unless invoice.was_sended?
+    flunk "invoice should be sended > #{invoice.errors.inspect}" unless invoice.was_sended?
     return invoice
   end
   

@@ -54,8 +54,8 @@ menus:
             position: 2
             children:
               survey_step:
-                title: Visite commerciale
-                description: Étape de la visite commercial
+                title: Survey
+                description: Étape de Survey
                 position: 1
                 children:
                   subcontractor_requests:
@@ -75,7 +75,7 @@ menus:
                         description: Bon de commande associé au devis
               press_proof_step:
                 title: BAT
-                description: "Étape de la création d'un ou plusieurs BAT"
+                description: "Étape de l'établissement du/des BAT"
                 position: 3
                 children:
                   press_proofs:

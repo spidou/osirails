@@ -4,6 +4,8 @@
   <%= javascript_include_tag 'sales/tab_navigation' %>
 <% end %>
 
+<%= generate_quote_contextual_menu_partial %>
+
 <%
 quote_headers = { :quote_header => "Entête",
                   :quote_body   => "Corps",
@@ -86,9 +88,6 @@ excess_quote_items  = quote.quote_items.select{ |q| q.product.nil? }
       <p>
         <%= form.label :deposit, 'Acompte (%) :' %>
         <%= form.form_or_view(form.text_field(:deposit, :value => quote.deposit.to_f.round_to(2).to_s(2), :size => 5), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
-      </p>
-      <p style="display:none">
-        <%= form.hidden_field :order_id %>
       </p>
     </div>
     

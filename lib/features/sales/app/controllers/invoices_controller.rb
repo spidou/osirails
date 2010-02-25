@@ -4,7 +4,7 @@ class InvoicesController < ApplicationController
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
   before_filter :detect_invoice
-  before_filter :check_invoice_belong_to_order, :except => [ :new, :create ]
+  before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
   
   after_filter :add_error_in_step_if_invoice_has_errors, :only => [ :create, :update ]
   
@@ -32,28 +32,50 @@ class InvoicesController < ApplicationController
     @invoice = @order.invoices.build
     
     if params[:invoice_type]
-      error_access_page(400) unless ['deposit', 'status', 'balance', 'asset'].include?(params[:invoice_type])
+      unless ['deposit', 'status', 'balance', 'asset'].include?(params[:invoice_type])
+        error_access_page(400)
+        return
+      end
       
-      error_access_page(412) unless @invoice and @invoice.send("can_create_#{params[:invoice_type]}_invoice?")
+      unless @invoice and @invoice.send("can_create_#{params[:invoice_type]}_invoice?")
+        error_access_page(412)
+        return
+      end
       
       case params[:invoice_type]
       when 'deposit'
         @invoice = @order.build_deposit_invoice_from_signed_quote
         
-        @invoice.creator          = current_user
-        @invoice.contacts        << @order.contacts.last unless @order.contacts.empty?
-        @invoice.deposit        ||= @invoice.associated_quote.deposit
-        @invoice.deposit_amount ||= @invoice.calculate_deposit_amount_according_to_quote_and_deposit
-        @invoice.deposit_vat    ||= ConfigurationManager.sales_deposit_tax_coefficient.to_f
-        @invoice.due_dates.build(:date => Date.today, :net_to_paid => @invoice.net_to_paid) #TODO remplacer 'Date.today' par la date d'émission de la facture
+        @invoice.due_dates.build(:date => Date.today, :net_to_paid => @invoice.net_to_paid)
       when 'status'
-        #TODO
+        delivery_notes = []
+        if params[:delivery_note_ids]
+          delivery_notes = params[:delivery_note_ids].split(",").collect{ |x| DeliveryNote.find_by_id(x) } #OPTIMIZE by using find_some ? (ou find_by_ids)
+         
+          # return a 404 error if one of the delivery_note_ids is not found, or if one of the delivery_note_ids is not a delivery_note of the order
+          unless delivery_notes.select{ |dn| dn.nil? }.empty? and delivery_notes.reject{ |dn| @order.unbilled_delivery_notes.include?(dn) }.empty?
+            error_access_page(404)
+            return
+          end
+        else
+          delivery_notes << @order.unbilled_delivery_notes.first
+        end
+          
+        @invoice = @order.build_invoice_from( delivery_notes, Invoice::STATUS_INVOICE )
       when 'balance'
-        #TODO
+        @invoice = @order.build_invoice_from( @order.unbilled_delivery_notes, Invoice::BALANCE_INVOICE )
       when 'asset'
-        #TODO
+        @invoice.invoice_type = InvoiceType.find_by_name(Invoice::ASSET_INVOICE)
+        
+        @invoice.invoice_items.build
+        
+        @invoice.due_dates.build(:date => Date.today + 1.year, :net_to_paid => @invoice.net_to_paid)
       end
     end
+    
+    @invoice.creator = current_user
+    @invoice.contacts << @order.contacts.last unless @order.contacts.empty?
+    @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end
   
   # POST /orders/:order_id/:step/invoices
@@ -271,6 +293,18 @@ class InvoicesController < ApplicationController
     else
       error_access_page(403)
     end
+  end
+  
+  # GET /orders/:order_id/:step/invoices/ajax_request_for_invoice_items/:delivery_note_ids
+  # GET /orders/:order_id/:step/invoices/:invoice_id/ajax_request_for_invoice_items/:delivery_note_ids
+  def ajax_request_for_invoice_items
+    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
+    
+    delivery_notes = params[:delivery_note_ids] ? params[:delivery_note_ids].split(",") : []
+    
+    @invoice.delivery_note_invoice_attributes=(delivery_notes)
+    
+    @invoice.build_or_update_invoice_items_from_associated_delivery_notes
   end
   
   private

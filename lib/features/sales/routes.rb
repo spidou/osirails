@@ -210,7 +210,19 @@ ActionController::Routing::Routes.add_routes do |map|
           invoice.totally_pay 'totally_pay',                                :controller => 'invoices',
                                                                             :action     => 'totally_pay',
                                                                             :conditions => { :method => :put }
+          
+          invoice.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
+                                                 :controller         => 'invoices',
+                                                 :action             => 'ajax_request_for_invoice_items',
+                                                 :method             => :get,
+                                                 :delivery_note_ids  => 0
         end
+        
+        invoice_step.ajax_request_for_invoice_items 'ajax_request_for_invoice_items/:delivery_note_ids',
+                                                    :controller         => 'invoices',
+                                                    :action             => 'ajax_request_for_invoice_items',
+                                                    :method             => :get,
+                                                    :delivery_note_ids  => 0
       end
       invoicing.resource :payment_step, :as => 'payment', :controller => 'payment_step'
     end
@@ -275,9 +287,9 @@ ActionController::Routing::Routes.add_routes do |map|
                                                                          :method      => :get
   
   map.auto_complete_for_product_reference_reference 'auto_complete_for_product_reference_reference',
-                                               :controller  => 'product_references',
-                                               :action      => 'auto_complete_for_product_reference_reference',
-                                               :method      => :get
+                                                    :controller  => 'product_references',
+                                                    :action      => 'auto_complete_for_product_reference_reference',
+                                                    :method      => :get
   
   map.resources :products
   map.resources :produts_catalog

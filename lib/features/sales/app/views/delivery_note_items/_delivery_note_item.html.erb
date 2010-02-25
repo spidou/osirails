@@ -20,7 +20,7 @@ empty_line_class = delivery_note_item.quantity > 0 ? '' : ' empty_line'
       <%= delivery_note_item.already_delivered_or_scheduled_quantity %>
     </td>
     <td class="quantity_for_delivery">
-      <%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.available_quantity), {}, :index => nil, :onchange => "check_quantity(this.up('.delivery_note_item'))", :class => :input_quantity), :quantity) %>
+      <%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.remaining_quantity_to_deliver), {}, :index => nil, :onchange => "check_quantity(this.up('.delivery_note_item'))", :class => :input_quantity), :quantity) %>
       <%= form.hidden_field :id, :index => nil %>
       <%= form.hidden_field :quote_item_id, :index => nil %>
     </td>

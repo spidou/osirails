@@ -12,7 +12,7 @@ class DiscardTest < ActiveSupport::TestCase
 #    #
 #    #@intervention.delivered = true
 #    #@intervention.comments = "my special comment"
-#    flunk "@delivery_note should be valid to perform the following" unless @delivery_note.valid?
+#    flunk "@delivery_note should be valid" unless @delivery_note.valid?
 #    
 #    @discard = Discard.new
 #    @discard.valid?
@@ -64,7 +64,7 @@ class DiscardTest < ActiveSupport::TestCase
 #    assert !@discard.errors.invalid?(:quantity), "quantity should NOT be INVALID because quantity is not validated unless delivery_note_item is nil"
 #    
 #    @discard.delivery_note_item = @delivery_note.delivery_note_items.first
-#    flunk "@discard should have a delivery_note_item to perform the following" unless @discard.delivery_note_item
+#    flunk "@discard should have a delivery_note_item" unless @discard.delivery_note_item
 #    
 #    @reference_quantity = @discard.delivery_note_item.quantity
 #    flunk "@reference_quantity should be greater than 0" unless @reference_quantity > 0

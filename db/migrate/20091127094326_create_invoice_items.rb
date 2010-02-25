@@ -4,7 +4,6 @@ class CreateInvoiceItems < ActiveRecord::Migration
       t.references :invoice, :product
       t.integer :position
       t.float   :quantity
-      t.decimal :prizegiving, :precision => 65, :scale => 20
       
       # only for free_items (with no product)
       t.string  :name

@@ -19,30 +19,32 @@ class DeliveryNoteItem < ActiveRecord::Base
     #return if quote_item.nil? or ( !new_record? and !quantity_changed? )
     return unless quote_item and ( new_record? or quantity_changed? )
     min = 0
-    max = available_quantity || 0
+    max = remaining_quantity_to_deliver || 0
     if quantity and !(min..max).include?(quantity)
       errors.add(:quantity, "doit être compris entre #{min} et #{max}")
     end
   end
   
-  # return discard's quantity of the delivered_delivery_intervention of th associated delivery_note
+  # return discard's quantity of the delivered_delivery_intervention of the associated delivery_note
   def discard_quantity
     return 0 unless delivery_note and delivery_note.delivered_delivery_intervention
+    
     discard = discards.detect{ |d| d.delivery_intervention_id == delivery_note.delivered_delivery_intervention.id }
     discard ? discard.quantity : 0
   end
   
   def really_delivered_quantity
-    quantity || 0 - discard_quantity
+    ( quantity || 0 ) - discard_quantity
   end
   
-  def available_quantity
-    quote_item.quantity || 0 - already_delivered_or_scheduled_quantity
+  # return remaining quantity for next delivery
+  def remaining_quantity_to_deliver
+    ( quote_item.quantity || 0 ) - already_delivered_or_scheduled_quantity
   end
-  
+
   def already_delivered_or_scheduled_quantity
     return 0 if delivery_note.nil? and order_id.nil?
-    
+
     siblings = delivery_note ? delivery_note.siblings : Order.find(order_id).delivery_notes.actives
     siblings.collect(&:delivery_note_items).flatten.select{ |x| x.quote_item_id == self.quote_item_id }.collect(&:really_delivered_quantity).sum
   end

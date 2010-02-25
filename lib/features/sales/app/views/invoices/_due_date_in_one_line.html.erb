@@ -25,11 +25,11 @@ due_date = due_date_in_one_line
   </td>
   <td class="due_date_net_to_paid">
     <% if is_last_due_date %>
-      <%= form.hidden_field :net_to_paid, :class => "due_date_net_to_paid_input" if is_form_view? %>
-      <span class="balance_due_date_net_to_paid"><%= due_date.net_to_paid.round_to(2).to_s(2) %></span>
+      <%= form.hidden_field :net_to_paid, :value => due_date.net_to_paid.to_f.round_to(2).to_s(2) , :class => "due_date_net_to_paid_input" if is_form_view? %>
+      <span class="balance_due_date_net_to_paid"><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></span>
     <% else %>
       <% if is_form_view? %>
-        <%= form.text_field :net_to_paid, :size => 9, :class => "due_date_net_to_paid_input", :onchange => "javascript:refresh_due_dates()", :disabled => disable_inputs %>
+        <%= form.text_field :net_to_paid, :value => due_date.net_to_paid.to_f.round_to(2).to_s(2) ,:size => 9, :class => "due_date_net_to_paid_input", :onchange => "javascript:refresh_due_dates()", :disabled => disable_inputs %>
       <% else %>
         <%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %>
       <% end %>

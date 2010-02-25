@@ -1,12 +1,5 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_add_button(@order) %>
-  <%= display_list_button(@step) %>
-  <%= display_show_button(@order, @press_proof)%>
-  <%= display_dunning_add_button(@order, @press_proof)%>
-<% end %>
-
 <h1>Modification du BAT</h1>
 
 <%= render :partial => 'press_proof', :object => @press_proof, :locals => {:action => :update, :mockups => @mockups} %>

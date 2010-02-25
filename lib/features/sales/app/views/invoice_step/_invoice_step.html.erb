@@ -1,6 +1,6 @@
 <%= order_header %>
 
-
+<%= generate_invoicing_step_contextual_menu_partial %>
 
 <h1>Liste des factures (tableau de gestion locale)</h1>
 
@@ -12,7 +12,3 @@
   <h2>Factures</h2>
   <%= display_invoices(@order) %>
 </div>
-
-<% add_contextual_menu_item :possible_actions do %>
-	<%= new_order_invoicing_step_invoice_step_invoice_link_overrided(@order) %>
-<% end %>

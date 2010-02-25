@@ -48,11 +48,7 @@ a>img {
 
 /*:::::::::TABLE:::::::::*/
 caption {
-	background: #afc2ea;
-	color: rgb(64,68,93);
 	font-weight:bold;
-	border: solid 1px rgb(64,68,93);
-	margin-left:-1px;
 	margin-top:10px;
 }
 
@@ -1306,10 +1302,6 @@ div label.skip_presentation {
   font-weight: bold;
 }
 
-#content_page > div p.notification.hidden {
-  display: none;
-}
-
 #content_page > div span.warning {
   border: 1px solid #F1BD73;
   -moz-border-radius: 5px;
@@ -1714,12 +1706,12 @@ td[title="Modifier"] img {
 	top:2px;
 }
 
-#content_page > div table + p a img {
-	margin-top:-10px;
-	margin-left:-20px;
-	position:relative;
-	top:4px;
-}
+//#content_page > div table + p a img {
+//	margin-top:-10px;
+//	margin-left:-20px;
+//	position:relative;
+//	top:4px;
+//}
 
 /*/////////////////OTHER/////////////////*/
 

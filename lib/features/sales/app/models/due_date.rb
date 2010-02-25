@@ -8,7 +8,7 @@ class DueDate < ActiveRecord::Base
   
   validates_presence_of :date
   
-  validates_numericality_of :net_to_paid, :greater_than => 0
+  validates_numericality_of :net_to_paid
   
   validates_persistence_of :date, :net_to_paid, :unless => :can_be_edited?
   validates_persistence_of :payments, :if => :was_paid?
@@ -32,7 +32,7 @@ class DueDate < ActiveRecord::Base
   end
   
   def paid?
-    total_amounts == net_to_paid
+    total_amounts.to_f.round_to(2) == net_to_paid.to_f.round_to(2)
   end
   
   def paid_on

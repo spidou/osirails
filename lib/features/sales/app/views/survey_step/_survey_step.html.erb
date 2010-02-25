@@ -8,6 +8,8 @@
 
 <%= order_header %>
 
+<%= generate_commercial_step_contextual_menu_partial %>
+
 <%
 survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.count})",
                    :survey_step_products        => "Produits (#{survey_step.order.products.count})",

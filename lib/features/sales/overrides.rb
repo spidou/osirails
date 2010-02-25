@@ -1,4 +1,14 @@
-ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :order_progress => "Avancement du projet" })
+ContextualMenuManager::ContextualSection::SECTION_TITLES.merge!({ :order_progress   => "Avancement du projet",
+                                                                  :order            => "Dossier",
+                                                                  :survey_step      => "Étape \"Survey\"",
+                                                                  :estimate_step    => "Étape \"Devis\"",
+                                                                  :press_proof_step => "Étape \"BAT\"",
+                                                                  :delivery_step    => "Étape \"Livraison\"",
+                                                                  :invoice_step     => "Étape \"Factures\"",
+                                                                  :quote            => "Devis",
+                                                                  :press_proof      => "BAT",
+                                                                  :delivery_note    => "Bon de livraison",
+                                                                  :invoice          => "Facture" })
 
 require_dependency 'society_activity_sector'
 require_dependency 'customer'
@@ -50,10 +60,10 @@ class CustomersController < ApplicationController
   after_filter :redirect_to_new_order, :only => :create
   
   def auto_complete_for_customer_name
-    find_options = { :include => :establishments,
-                     :conditions => [ "thirds.name like ? or establishments.name like ?", "%#{params[:customer][:name]}%", "%#{params[:customer][:name]}%"],
-                     :order => "thirds.name ASC",
-                     :limit => 15 }
+    find_options = { :include     => :establishments,
+                     :conditions  => [ "thirds.name like ? or establishments.name like ?", "%#{params[:customer][:name]}%", "%#{params[:customer][:name]}%"],
+                     :order       => "thirds.name ASC",
+                     :limit       => 15 }
     @items = Customer.find(:all, find_options)
     render :inline => "<%= custom_auto_complete_result(@items, 'name', params[:customer][:name]) %>"
   end

@@ -26,6 +26,14 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   
   should_not_allow_mass_assignment_of :status, :confirmed_at, :cancelled_at, :reference
   
+  context "In an order WITHOUT a signed quote" do
+    #TODO assert a new delivery_note cannot be added
+  end
+  
+  context "In an order with a signed quote and 1 'full' delivery_note" do
+    #TODO assert a new delivery_note cannot be added if delivery_note is uncomplete, confirmed or signed
+  end
+  
   context "In an order with a signed quote" do
     setup do
       @order = create_default_order
@@ -49,10 +57,10 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       
       @attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
       
-      flunk "@valid_address should be valid to perform the following tests"       unless @valid_address.valid?
-      flunk "@invalid_address should NOT be valid to perform the following tests" if @invalid_address.valid?
-      flunk "@valid_contact should be valid to perform the following tests"       unless @valid_contact.valid?
-      flunk "@invalid_contact should NOT be valid to perform the following tests" if @invalid_contact.valid?
+      flunk "@valid_address should be valid"       unless @valid_address.valid?
+      flunk "@invalid_address should NOT be valid" if @invalid_address.valid?
+      flunk "@valid_contact should be valid"       unless @valid_contact.valid?
+      flunk "@invalid_contact should NOT be valid" if @invalid_contact.valid?
     end
     
     teardown do
@@ -64,12 +72,16 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     #TODO this context have been adapted from old code, but it should be reviewed to be adapted for the real shoulda way to write test
     context "a new and empty delivery_note" do
       setup do
-        @dn = DeliveryNote.new # the object must be clear to perform the test, so don't add any attributes on that object
+        @dn = @order.delivery_notes.build # the object must be clear to perform the test, so don't add any attributes on that object
         @dn.valid?
       end
       
       teardown do
         @dn = nil
+      end
+      
+      should "be able to be added" do
+        assert @dn.can_be_added?, "@dn.order.all_is_delivered_or_scheduled? => #{@dn.order.all_is_delivered_or_scheduled?}"
       end
     
       should "have a ship_to_address" do
@@ -85,7 +97,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       should "have contacts" do
-        @dn.order = @order                                          #
         @order.contacts = [ @valid_contact ]                        # prepare delivery note to accept @valid_contact
         @order.save                                                 #
         
@@ -124,15 +135,11 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       should "have an associated quote" do
-        @dn.order = @order
-        
         assert_not_nil @dn.associated_quote, "delivery_note should have an associated_quote"
         assert @dn.associated_quote.instance_of?(Quote), "associated_quote should be an instance of Quote"
       end
       
       should "have valid delivery_note_items" do
-        @dn.order = @order
-        
         assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's empty"
         
         # when a quote_item_id is wrong
@@ -200,7 +207,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         @dn = create_valid_delivery_note_for(@order)
         
         @dn.valid?
-        flunk "@dn should be uncomplete to perform the following" unless @dn.was_uncomplete?
+        flunk "@dn should be uncomplete" unless @dn.was_uncomplete?
       end
       
       teardown do
@@ -319,8 +326,8 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         confirm_delivery_note(@dn)
         
         @dn.valid?
-        flunk "@dn should be confirmed to perform the following" unless @dn.was_confirmed?
-        flunk "delivery_note should NOT have a pending delivery_intervention to continue" unless @dn.pending_delivery_intervention.nil?
+        flunk "@dn should be confirmed" unless @dn.was_confirmed?
+        flunk "delivery_note should NOT have a pending delivery_intervention" unless @dn.pending_delivery_intervention.nil?
       end
       
       teardown do
@@ -483,7 +490,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         cancel_delivery_note(@dn)
         
         @dn.valid?
-        flunk "@dn should be cancelled to perform the following" unless @dn.was_cancelled?
+        flunk "@dn should be cancelled" unless @dn.was_cancelled?
       end
       
       teardown do
@@ -566,7 +573,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         sign_delivery_note(@dn)
         
         @dn.valid?
-        flunk "@dn should be signed to perform the following" unless @dn.was_signed?
+        flunk "@dn should be signed" unless @dn.was_signed?
       end
       
       teardown do
@@ -646,12 +653,12 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   private
     def confirm_delivery_note(delivery_note)
       delivery_note.confirm
-      flunk "delivery_note should be confirmed to continue" unless delivery_note.was_confirmed?
+      flunk "delivery_note should be confirmed" unless delivery_note.was_confirmed?
     end
     
     def cancel_delivery_note(delivery_note)
       delivery_note.cancel
-      flunk "delivery_note should be cancelled to continue" unless delivery_note.was_cancelled?
+      flunk "delivery_note should be cancelled" unless delivery_note.was_cancelled?
     end
     
     def sign_delivery_note(delivery_note)
@@ -659,7 +666,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       delivery_note.signed_on = Date.today
       delivery_note.attachment = @attachment
       delivery_note.sign
-      flunk "delivery_note should be signed to continue" unless delivery_note.was_signed?
+      flunk "delivery_note should be signed" unless delivery_note.was_signed?
     end
     
     def assert_creator_id_cannot_be_updated

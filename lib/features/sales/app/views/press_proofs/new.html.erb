@@ -1,14 +1,9 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_list_button(@step) %>
-<% end %>
+<h1>Création d'un nouveau BAT</h1>
+<%= render :partial => 'press_proof', :object => @press_proof, :locals => {:action => :create, :mockups => @mockups} %>
 
 <% add_contextual_menu_item :useful_links do %>
   <%= graphic_items_link(Mockup) %>
   <%= graphic_items_link(GraphicDocument) %>
 <% end %>
-
-<h1>Création d'un nouveau BAT</h1>
-
-<%= render :partial => 'press_proof', :object => @press_proof, :locals => {:action => :create, :mockups => @mockups} %>

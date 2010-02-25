@@ -69,7 +69,7 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_presence_and_validity_of_order_type
-    flunk "OrderType.count should be greater than 1 to perform the following, but was at #{OrderType.count}" unless OrderType.count > 1
+    flunk "OrderType.count should be greater than 1, but was at #{OrderType.count}" unless OrderType.count > 1
     
     # when society_activity_sector is not yet selected
     assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"

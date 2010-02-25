@@ -3,7 +3,7 @@ class CreatePayments < ActiveRecord::Migration
     create_table :payments do |t|
       t.references :due_date, :payment_method
       t.date    :paid_on
-      t.float   :amount
+      t.decimal :amount, :precision => 65, :scale => 20
       t.string  :bank_name
       t.string  :payment_identifier
       t.string  :attachment_file_name, :attachment_content_type

@@ -18,25 +18,25 @@ class DueDateTest < ActiveSupport::TestCase
     #TODO should be editable, etc...
   end
   
-  context "In an order with a 'non-factorised' and 'sended' invoice with 1 due_date, that due_date" do
+  context "In an order with a 'non-factorised' and 'sended' invoice with 1 due_date" do
     setup do
       @order = create_default_order
       @invoice = create_sended_deposit_invoice_for(@order)
       
-      flunk "@invoice should be 'non-factorised' to perform the following" if @invoice.factorised?
-      flunk "@invoice should be 'sended' to perform the following" unless @invoice.was_sended?
-      flunk "@invoice should have 1 due_date to perform the following" unless @invoice.due_dates.count == 1
+      flunk "@invoice should be 'non-factorised'" if @invoice.factorised?
+      flunk "@invoice should be 'sended'" unless @invoice.was_sended?
+      flunk "@invoice should have 1 due_date" unless @invoice.due_dates.count == 1
     end
     
     teardown do
       @order = @invoice = nil
     end
     
-    context "when this due_date is unpaid, it" do
+    context "which is unpaid, it" do
       setup do
         @due_date = @invoice.due_dates.first
         
-        flunk "@due_date should NOT be paid to perform the following" if @due_date.was_paid?
+        flunk "@due_date should NOT be paid" if @due_date.was_paid?
       end
       
       teardown do
@@ -90,14 +90,14 @@ class DueDateTest < ActiveSupport::TestCase
       end
     end
     
-    context "when this due_date is paid with payments only, it" do
+    context "which is paid with payments only, it" do
       setup do
         pay_invoice_with_payments_only(@invoice)
         @due_date = @invoice.due_dates.first
         
-        flunk "@due_date should be paid to perform the following" unless @due_date.was_paid?
-        flunk "@due_date should have 1 payment to perform the following" unless @due_date.payments.count == 1
-        flunk "@due_date should have 0 adjustment to perform the following" unless @due_date.adjustments.count == 0
+        flunk "@due_date should be paid" unless @due_date.was_paid?
+        flunk "@due_date should have 1 payment" unless @due_date.payments.count == 1
+        flunk "@due_date should have 0 adjustment" unless @due_date.adjustments.count == 0
       end
       
       teardown do
@@ -154,18 +154,18 @@ class DueDateTest < ActiveSupport::TestCase
       end
     end
     
-    context "when this due_date is paid with payments and adjustments, it" do
+    context "which is paid with payments and adjustments, it" do
       setup do
         pay_invoice_with_payments_and_adjustments(@invoice)
         @due_date = @invoice.due_dates.first
         
-        flunk "@due_date should be paid to perform the following" unless @due_date.was_paid?
-        flunk "@due_date should have 1 payment to perform the following" unless @due_date.payments.count == 1
-        flunk "@due_date should have 1 adjustment to perform the following" unless @due_date.adjustments.count == 1
+        flunk "@due_date should be paid" unless @due_date.was_paid?
+        flunk "@due_date should have 1 payment" unless @due_date.payments.count == 1
+        flunk "@due_date should have 1 adjustment" unless @due_date.adjustments.count == 1
       end
       
       teardown do
-        @due_date.payments.destroy_all
+        #@due_date.payments.destroy_all #TODO uncomment that line
         @due_date = nil
       end
       

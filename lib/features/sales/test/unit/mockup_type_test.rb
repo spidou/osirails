@@ -8,7 +8,7 @@ class MockupTypeTest < ActiveSupport::TestCase
   context "A mockup type" do
     setup do  
       @mt = mockup_types(:normal)
-      flunk "@mt should be valid to continue" unless @mt.valid?
+      flunk "@mt should be valid" unless @mt.valid?
     end
     
     subject { @mt }

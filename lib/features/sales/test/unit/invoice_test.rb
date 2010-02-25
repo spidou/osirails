@@ -23,7 +23,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @order = create_default_order(false)
       @signed_quote = create_signed_quote_for(@order)
       
-      flunk "@order should have an unfactorised customer to perform the following" if @order.customer.factorised?
+      flunk "@order should have an unfactorised customer" if @order.customer.factorised?
     end
     
     teardown do
@@ -82,7 +82,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @order = create_default_order
       @signed_quote = create_signed_quote_for(@order)
       
-      flunk "@order should have a factorised customer to perform the following" unless @order.customer.factorised?
+      flunk "@order should have a factorised customer" unless @order.customer.factorised?
     end
     
     teardown do
@@ -143,8 +143,6 @@ class InvoiceTest < ActiveSupport::TestCase
         create_valid_product_for(@order)
       end
       
-      #flunk "order should have at least 2 contacts to perform the following, but has #{@order.contacts.count}" unless @order.contacts.count >= 2
-      
       @invoice = @order.invoices.build
       @invoice.valid?
     end
@@ -185,7 +183,7 @@ class InvoiceTest < ActiveSupport::TestCase
     
     context "without an existing 'deposit' invoice, a 'deposit' invoice" do
       setup do
-        flunk "@order should NOT have a deposit_invoice to perform the following" if @order.deposit_invoice
+        flunk "@order should NOT have a deposit_invoice" if @order.deposit_invoice
         
         prepare_deposit_invoice_to_be_saved(@invoice)
       end
@@ -199,7 +197,7 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       
       should "be valid" do
-        assert @invoice.valid?, "#{@invoice.errors.inspect}"
+        assert @invoice.valid?, @invoice.errors.inspect
       end
       
       should "be saved successfully" do
@@ -217,7 +215,7 @@ class InvoiceTest < ActiveSupport::TestCase
       setup do
         @deposit_invoice = @order.invoices.build
         create_deposit_invoice(@deposit_invoice)
-        flunk "@order should have a deposit_invoice to perform the following" unless @order.deposit_invoice
+        flunk "@order should have a deposit_invoice" unless @order.deposit_invoice
         prepare_deposit_invoice_to_be_saved(@invoice)
       end
       
@@ -321,7 +319,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @signed_quote = create_signed_quote_for(@order)
       @delivery_note = create_signed_delivery_note_for(@order)
       
-      flunk "@order should have all products delivered or scheduled to perform the following" unless @order.all_is_delivered_or_scheduled?
+      flunk "@order should have all products delivered or scheduled" unless @order.all_is_delivered_or_scheduled?
     end
     
     teardown do
@@ -356,6 +354,8 @@ class InvoiceTest < ActiveSupport::TestCase
       setup do
         @invoice = @order.invoices.build
         prepare_balance_invoice_to_be_saved(@invoice)
+        
+        flunk "@order should have 0 balance_invoice" unless @order.balance_invoices.count == 0
       end
       
       teardown do
@@ -377,7 +377,23 @@ class InvoiceTest < ActiveSupport::TestCase
       
       should "add a balance_invoice on order" do
         @invoice.save!
-        assert @order.balance_invoice
+        assert @order.balance_invoices.count == 1
+      end
+      
+      context "with at least 1 missing delivery_note among order's unbilled_delivery_notes" do
+        setup do
+          flunk "@invoice should be valid" unless @invoice.valid?
+          
+          @invoice.delivery_note_invoices.first.should_destroy = true
+          @invoice.build_or_update_invoice_items_from_associated_delivery_notes
+          
+          flunk "@invoice should have at least 1 invoice_item with quantity = 0" if @invoice.invoice_items.select{ |i| i.quantity.zero? }.empty?
+          @invoice.valid?
+        end
+        
+        should "have invalid delivery_note_invoices" do
+          assert @invoice.errors.invalid?(:delivery_note_invoices)
+        end
       end
     end
     
@@ -385,29 +401,34 @@ class InvoiceTest < ActiveSupport::TestCase
       setup do
         @balance_invoice = @order.invoices.build
         create_balance_invoice(@balance_invoice)
-        flunk "@order should have a balance_invoice to perform the following" unless @order.balance_invoice
+        flunk "@order should have 1 balance_invoice" unless @order.balance_invoices.count == 1
         
         @invoice = @order.invoices.build
-        prepare_balance_invoice_to_be_saved(@invoice)
+        prepare_balance_invoice(@invoice)
       end
       
       teardown do
-        @order.balance_invoice.destroy
+        @balance_invoice.destroy
         @balance_invoice = @invoice = nil
+      end
+      
+      # TODO this assert should be is order_test
+      should "have a order with all signed delivery notes are billed" do
+        assert @invoice.order.all_signed_delivery_notes_are_billed?
       end
       
       should "NOT be able to be created" do
         assert !@invoice.can_create_balance_invoice?
       end
       
-      should "NOT be valid" do
-        assert !@invoice.valid?
-        assert @invoice.errors.invalid?(:invoice_type)
-      end
-      
-      should "NOT be saved" do
-        assert !@invoice.save
-      end
+      # those tests are useless because we know "prepare_balance_invoice" doesn't return a valid invoice
+      #should "NOT be valid" do
+      #  assert !@invoice.valid?
+      #end
+      #
+      #should "NOT be saved" do
+      #  assert !@invoice.save
+      #end
     end
   end
   
@@ -417,7 +438,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @signed_quote = create_signed_quote_for(@order)
       @delivery_note = create_signed_partial_delivery_note_for(@order)
       
-      flunk "@order should NOT have all products delivered or scheduled to perform the following" if @order.all_is_delivered_or_scheduled?
+      flunk "@order should NOT have all products delivered or scheduled" if @order.all_is_delivered_or_scheduled?
     end
     
     teardown do
@@ -439,7 +460,7 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       
       should "be valid" do
-        assert @invoice.valid?
+        assert @invoice.valid?, @invoice.errors.inspect
       end
       
       should "be saved" do
@@ -481,15 +502,18 @@ class InvoiceTest < ActiveSupport::TestCase
       setup do
         @status_invoice = @order.invoices.build
         prepare_status_invoice_to_be_saved(@status_invoice)
-        @status_invoice.save!
         
-        flunk "@order should have 1 status_invoice to perform the following" unless @order.status_invoices.count == 1
+        @status_invoice.save!
+        flunk "@order should have 1 status_invoice" unless @order.status_invoices.count == 1
+        
+        confirm_invoice(@status_invoice)
+        flunk "@status_invoice should be confirmed" unless @status_invoice.was_confirmed?
         
         @second_delivery_note = create_signed_complementary_delivery_note_for(@order)
       end
       
       teardown do
-        @status_invoice.destroy
+        #@status_invoice.destroy
         @status_invoice = @second_delivery_note = nil
       end
       
@@ -532,7 +556,7 @@ class InvoiceTest < ActiveSupport::TestCase
         end
         
         should "be valid" do
-          assert @invoice.valid?
+          assert @invoice.valid?, @invoice.errors.inspect
         end
         
         should "be saved" do
@@ -541,8 +565,177 @@ class InvoiceTest < ActiveSupport::TestCase
         end
       end
     end
+    
+    context "1 'complementary' 'non-signed' delivery_note," do
+      setup do
+        flunk "@order should have 0 invoices" unless @order.invoices.empty?
+        
+        @second_delivery_note = create_valid_complementary_delivery_note_for(@order)
+      end
+      
+      teardown do
+        @second_delivery_note = nil
+      end
+      
+      context "a 'status' invoice" do
+        setup do
+          @invoice = @order.invoices.build
+          prepare_status_invoice_to_be_saved(@invoice)
+        end
+        
+        teardown do
+          @invoice = nil
+        end
+        
+        should "be able to be created" do
+          assert @invoice.can_create_status_invoice?
+        end
+        
+        should "be valid" do
+          assert @invoice.valid?, @invoice.errors.inspect
+        end
+        
+        should "be saved" do
+          @invoice.save!
+          assert !@invoice.new_record?
+        end
+      end
+      
+      context "a 'balance' invoice" do
+        setup do
+          @invoice = @order.invoices.build
+          prepare_balance_invoice_to_be_saved(@invoice)
+        end
+        
+        teardown do
+          @invoice = nil
+        end
+        
+        should "NOT be able to be created" do
+          assert !@invoice.can_create_balance_invoice?
+        end
+        
+        should "NOT be valid" do
+          assert !@invoice.valid?
+          assert @invoice.errors.invalid?(:invoice_type)
+        end
+        
+        should "NOT be saved" do
+          assert !@invoice.save
+        end
+      end
+    end
   end
   
+  
+  context "In an order with a signed quote and 2 'partial' signed delivery_notes," do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      @delivery_note = create_signed_partial_delivery_note_for(@order)
+      @second_delivery_note = create_signed_complementary_delivery_note_for(@order)
+      
+      flunk "@order should have all products delivered" unless @order.all_is_delivered?
+    end
+    
+    teardown do
+      @order = @signed_quote = @delivery_note = @second_delivery_note = nil
+    end
+    
+    context "a 'status' invoice associated with 1 delivery_note" do
+      setup do
+        @invoice = @order.invoices.build
+        prepare_status_invoice_to_be_saved(@invoice)
+        @invoice.valid?
+      end
+      
+      teardown do
+        @invoice = nil
+      end
+      
+      should "have valid delivery_note_invoices" do
+        assert !@invoice.errors.invalid?(:delivery_note_invoices)
+      end
+      
+      should "be valid" do
+        assert @invoice.valid?
+      end
+      
+      should "be saved successfully" do
+        @invoice.save!
+        assert !@invoice.new_record?
+      end
+    end
+    
+    context "a 'status' invoice associated with 2 delivery_notes" do
+      setup do
+        @invoice = @order.invoices.build
+        prepare_status_invoice_to_be_saved(@invoice)
+        
+        # association between the invoice and the second_delivery_note
+        @invoice.delivery_note_invoice_attributes=( [ @delivery_note.id, @second_delivery_note.id ] )
+        @invoice.build_or_update_invoice_items_from_associated_delivery_notes
+        
+        flunk "@invoice should be associated with 2 delivery_notes" unless @invoice.delivery_note_invoices.reject(&:should_destroy?).size == 2
+        @invoice.valid?
+      end
+      
+      teardown do
+        @invoice = nil
+      end
+      
+      should "NOT have valid delivery_note_invoices" do
+        assert @invoice.errors.invalid?(:delivery_note_invoices), @invoice.errors.inspect
+      end
+    end
+    
+    context "a 'balance' invoice associated with 2 delivery_notes" do
+      setup do
+        @invoice = @order.invoices.build
+        prepare_balance_invoice_to_be_saved(@invoice)
+        @invoice.valid?
+      end
+      
+      teardown do
+        @invoice = nil
+      end
+      
+      should "have valid delivery_note_invoices" do
+        assert !@invoice.errors.invalid?(:delivery_note_invoices)
+      end
+      
+      should "be valid" do
+        assert @invoice.valid?
+      end
+      
+      should "be saved successfully" do
+        @invoice.save!
+        assert !@invoice.new_record?
+      end
+    end
+    
+    context "a 'balance' invoice associated with 1 delivery_note" do
+      setup do
+        @invoice = @order.invoices.build
+        prepare_balance_invoice_to_be_saved(@invoice)
+        
+        # association between the invoice and the second_delivery_note
+        @invoice.delivery_note_invoice_attributes=( [ @delivery_note.id ] )
+        @invoice.build_or_update_invoice_items_from_associated_delivery_notes
+        
+        flunk "@invoice should be associated with 1 delivery_note" unless @invoice.delivery_note_invoices.reject(&:should_destroy?).size == 1
+        @invoice.valid?
+      end
+      
+      teardown do
+        @invoice = nil
+      end
+      
+      should "NOT have valid delivery_note_invoices" do
+        assert @invoice.errors.invalid?(:delivery_note_invoices), @invoice.errors.inspect
+      end
+    end
+  end
   
   context "In an order with a signed quote and 1 signed delivery_note," do
     setup do
@@ -550,7 +743,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @signed_quote = create_signed_quote_for(@order)
       @delivery_note = create_signed_delivery_note_for(@order)
       
-      flunk "order should have at least 2 contacts to perform the following, but has #{@order.contacts.count}" if @order.contacts.count < 2
+      flunk "order should have at least 2 contacts, but has #{@order.contacts.count}" if @order.contacts.count < 2
       
       @invoice = @order.invoices.build
     end
@@ -590,17 +783,17 @@ class InvoiceTest < ActiveSupport::TestCase
         assert !@invoice.errors.invalid?(:due_dates), @invoice.due_dates.first.errors.inspect
       end
       
-      should "build invoice_items for each associated delivery_note's items when calling 'build_invoice_items_from_associated_delivery_notes'" do
+      should "build invoice_items for each associated delivery_note's items when calling 'build_or_update_invoice_items_from_associated_delivery_notes'" do
         @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
-        @invoice.build_invoice_items_from_associated_delivery_notes
+        @invoice.build_or_update_invoice_items_from_associated_delivery_notes
         expected_value = @delivery_note.delivery_note_items.size
         
         assert_equal expected_value, @invoice.invoice_items.size
       end
       
-      should "build invoice_item for a specific delivery_note when calling 'build_invoice_items_from(delivery_note)'" do
+      should "build invoice_item for a specific delivery_note when calling 'build_or_update_invoice_items_from(delivery_note)'" do
         expected_value = @order.signed_delivery_notes.first.delivery_note_items.size
-        @invoice.build_invoice_items_from(@order.signed_delivery_notes.first)
+        @invoice.build_or_update_invoice_items_from(@order.signed_delivery_notes.first)
         
         assert_equal expected_value, @invoice.invoice_items.size
       end
@@ -609,8 +802,7 @@ class InvoiceTest < ActiveSupport::TestCase
         attributes = []
         @order.products.each do |p|
           attributes << { :product_id   => p.id,
-                          :quantity     => p.quantity,
-                          :prizegiving  => p.prizegiving }
+                          :quantity     => p.quantity }
         end
         @invoice.invoice_item_attributes=(attributes)
         
@@ -668,24 +860,51 @@ class InvoiceTest < ActiveSupport::TestCase
       
       context "with an associated delivery_note" do
         setup do
-          @invoice.delivery_note_invoices.build(:delivery_note_id => @order.signed_delivery_notes.first.id)
+          @delivery_note = @order.signed_delivery_notes.first
+          @delivery_note_invoice = @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
           
-          flunk "@invoice should have 1 delivery_note_invoice to perform the following" unless @invoice.delivery_note_invoices.size == 1
-          flunk "@invoice should have 0 invoice_items to perform the following" unless @invoice.invoice_items.empty?
+          flunk "@invoice should have 1 delivery_note_invoice" unless @invoice.delivery_note_invoices.size == 1
+          flunk "@invoice should have 0 invoice_items" unless @invoice.invoice_items.empty?
           
           @expected_number = @invoice.delivery_note_invoices.first.delivery_note.delivery_note_items.size
         end
         
-        should "build invoice_items when calling 'build_invoice_items_from_associated_delivery_notes'" do
-          @invoice.build_invoice_items_from_associated_delivery_notes
+        teardown do
+          @delivery_note = @delivery_note_invoice = @expected_number = nil
+        end
+        
+        should "build valid invoice_items when calling 'build_or_update_invoice_items_from_associated_delivery_notes'" do
+          @invoice.build_or_update_invoice_items_from_associated_delivery_notes
           
-          assert_equal @expected_number, @invoice.invoice_items.size
+          assert_equal @expected_number, @invoice.invoice_items.reject{ |i| i.quantity.zero? }.size
+        end
+        
+        context "set up to be destroyed (with should_destroy = true)," do
+          setup do
+            @invoice.build_or_update_invoice_items_from_associated_delivery_notes
+            
+            flunk "@invoice should have at least 1 invoice_item" unless @invoice.invoice_items.size > 0
+            
+            @delivery_note_invoice.should_destroy = true
+          end
+          
+          should "mark for destroy its invoice_items when calling 'build_or_update_invoice_items_from(delivery_note, true)'" do
+            @invoice.build_or_update_invoice_items_from(@delivery_note, true)
+            
+            assert_equal 0, @invoice.invoice_items.reject{ |i| i.quantity.zero? }.size
+          end
+          
+          should "mark for destroy its invoice_items when calling 'build_or_update_invoice_items_from_associated_delivery_notes'" do
+            @invoice.build_or_update_invoice_items_from_associated_delivery_notes
+            
+            assert_equal 0, @invoice.invoice_items.reject{ |i| i.quantity.zero? }.size, @invoice.invoice_items.inspect
+          end
         end
       end
       
       context "without associated delivery_note" do
-        should "NOT build invoice_items when calling 'build_invoice_items_from_associated_delivery_notes'" do
-          @invoice.build_invoice_items_from_associated_delivery_notes
+        should "NOT build invoice_items when calling 'build_or_update_invoice_items_from_associated_delivery_notes'" do
+          @invoice.build_or_update_invoice_items_from_associated_delivery_notes
           
           assert_equal 0, @invoice.invoice_items.size
         end
@@ -693,46 +912,27 @@ class InvoiceTest < ActiveSupport::TestCase
       
     end
     
-    context "a 'deposit' invoice" do
+    
+    context "a new 'deposit' invoice" do
       setup do
         prepare_deposit_invoice(@invoice)
         @invoice.valid?
         
-        flunk "@invoice should have 0 product_items to perform the following" unless @invoice.product_items.empty?
-        flunk "@invoice should have 0 free_items to perform the following" unless @invoice.free_items.empty?
-        flunk "@invoice should have 0 delivery_note_invoices to perform the following" unless @invoice.delivery_note_invoices.empty?
+        flunk "@invoice should have 0 product_items" unless @invoice.product_items.empty?
+        flunk "@invoice should have 0 free_items" unless @invoice.free_items.empty?
+        flunk "@invoice should have 0 delivery_note_invoices" unless @invoice.delivery_note_invoices.empty?
       end
       
-      subject{ @invoice }
-      
-      should_validate_numericality_of :deposit, :deposit_amount, :deposit_vat
-      
-      should "NOT accept product_items" do
+      should "NOT require product_items" do
         assert !@invoice.errors.invalid?(:product_items)
-        
-        build_product_item_for(@invoice)
-        @invoice.valid?
-        
-        assert @invoice.errors.invalid?(:product_items)
       end
       
       should "require at least 1 free_item" do
         assert @invoice.errors.invalid?(:free_items)
-        
-        build_free_item_for(@invoice)
-        
-        @invoice.valid?
-        assert !@invoice.errors.invalid?(:free_items)
       end
       
-      should "NOT accept delivery_notes" do
+      should "NOT require delivery_notes" do
         assert !@invoice.errors.invalid?(:delivery_note_invoices)
-        
-        @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
-        flunk "@invoice should have 1 delivery_note_invoice to perform the following" unless @invoice.delivery_note_invoices.size == 1
-        @invoice.valid?
-        
-        assert @invoice.errors.invalid?(:delivery_note_invoices)
       end
       
       should "build a free_item with the correct values when calling 'build_or_update_free_item_for_deposit_invoice'" do
@@ -743,7 +943,6 @@ class InvoiceTest < ActiveSupport::TestCase
         
         assert free_item
         assert_equal 1,     free_item.quantity
-        assert_equal 0,     free_item.prizegiving
         assert_equal 19.6,  free_item.vat
         assert_equal @invoice.deposit_amount_without_taxes,                       free_item.unit_price
         assert_equal "Acompte de #{@invoice.deposit}% pour avance sur chantier",  free_item.name
@@ -752,13 +951,12 @@ class InvoiceTest < ActiveSupport::TestCase
       should "update the free_item with the correct values when calling 'build_or_update_free_item_for_deposit_invoice' if a free_item exists already" do
         add_default_deposit_attributes_on(@invoice)
         @invoice.valid?
-        flunk "@invoice should have 1 free_item to perform the following" unless @invoice.free_items.size == 1
+        flunk "@invoice should have 1 free_item" unless @invoice.free_items.size == 1
         
         free_item = @invoice.free_items.first
         
         # voluntary changes to see if the method properly change these attributes
         free_item.quantity = 10
-        free_item.prizegiving = 5
         
         @invoice.deposit += 10
         @invoice.deposit_amount = @invoice.calculate_deposit_amount_according_to_quote_and_deposit
@@ -768,7 +966,6 @@ class InvoiceTest < ActiveSupport::TestCase
         
         assert free_item
         assert_equal 1,     free_item.quantity
-        assert_equal 0,     free_item.prizegiving
         assert_equal 19.6,  free_item.vat
         assert_equal @invoice.deposit_amount_without_taxes,                       free_item.unit_price
         assert_equal "Acompte de #{@invoice.deposit}% pour avance sur chantier",  free_item.name
@@ -811,55 +1008,110 @@ class InvoiceTest < ActiveSupport::TestCase
       end
     end
     
-    [:status, :balance].each do |type|
-      context "a '#{type}' invoice" do
-        setup do
-          send("prepare_#{type}_invoice", @invoice) #prepare_stats_invoice, prepare_balance_invoice
-          @invoice.valid?
-          
-          flunk "@invoice should have 0 product_items to perform the following" unless @invoice.product_items.empty?
-          flunk "@invoice should have 0 free_items to perform the following" unless @invoice.free_items.empty?
-          flunk "@invoice should have 0 delivery_note_invoices to perform the following" unless @invoice.delivery_note_invoices.empty?
-        end
+    
+    context "a ready-to-be-saved 'deposit' invoice" do
+      setup do
+        prepare_deposit_invoice_to_be_saved(@invoice)
+        @invoice.valid?
         
-        should "require at least 1 product_item" do
-          assert @invoice.errors.invalid?(:product_items)
-          
-          build_product_item_for(@invoice)
-          @invoice.valid?
-          
-          assert !@invoice.errors.invalid?(:product_items)
-        end
+        flunk "@invoice should have 0 product_items" unless @invoice.product_items.empty?
+        flunk "@invoice should have at least 1 free_item" if @invoice.free_items.empty?
+        flunk "@invoice should have 0 delivery_note_invoices" unless @invoice.delivery_note_invoices.empty?
+      end
+      
+      subject{ @invoice }
+      
+      should_validate_numericality_of :deposit, :deposit_amount, :deposit_vat
+      
+      should "NOT accept product_items" do
+        build_product_item_for(@invoice)
+        @invoice.valid?
         
-        should "accept free_items" do
-          assert !@invoice.errors.invalid?(:free_items)
-          
-          build_free_item_for(@invoice)
-          
-          @invoice.valid?
-          assert !@invoice.errors.invalid?(:free_items)
-        end
+        assert @invoice.errors.invalid?(:product_items)
+      end
+      
+      should "have valid free_items" do
+        assert !@invoice.errors.invalid?(:free_items)
+      end
+      
+      should "NOT accept delivery_notes" do
+        @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
+        flunk "@invoice should have 1 delivery_note_invoice" unless @invoice.delivery_note_invoices.size == 1
+        @invoice.valid?
         
-        should "require at least 1 delivery_note" do
-          assert @invoice.errors.invalid?(:delivery_note_invoices)
-          
-          @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
-          flunk "@invoice should have 1 delivery_note_invoice to perform the following" unless @invoice.delivery_note_invoices.size == 1
-          @invoice.valid?
-          
-          assert !@invoice.errors.invalid?(:delivery_note_invoices)
-        end
+        assert @invoice.errors.invalid?(:delivery_note_invoices)
       end
     end
+    
+    
+    context "a 'status' invoice" do
+      # nothing to do here, status invoice cannot be created in this context
+    end
+    
+    
+    context "a new 'balance' invoice" do
+      setup do
+        prepare_balance_invoice(@invoice)
+        
+        flunk "@invoice should have 0 product_items" unless @invoice.product_items.empty?
+        flunk "@invoice should have 0 free_items" unless @invoice.free_items.empty?
+        flunk "@invoice should have 0 delivery_note_invoices" unless @invoice.delivery_note_invoices.empty?
+        
+        @invoice.valid?
+      end
+      
+      should "require at least 1 product_item" do
+        assert @invoice.errors.invalid?(:product_items)
+      end
+      
+      should "NOT require free_items" do
+        assert !@invoice.errors.invalid?(:free_items)
+      end
+      
+      should "require at least 1 delivery_note_invoice" do
+        assert @invoice.errors.invalid?(:delivery_note_invoices)
+      end
+    end
+    
+    context "a ready-to-be-saved 'balance' invoice" do
+      setup do
+        prepare_balance_invoice_to_be_saved(@invoice)
+        
+        flunk "@invoice should have at least 1 product_items" if @invoice.product_items.empty?
+        flunk "@invoice should have 0 free_items" unless @invoice.free_items.empty?
+        flunk "@invoice should have at least 1 delivery_note_invoices" if @invoice.delivery_note_invoices.empty?
+        
+        @invoice.valid?
+      end
+      
+      should "have valid product_items" do
+        assert !@invoice.errors.invalid?(:product_items)
+      end
+      
+      should "accept free_items" do
+        assert !@invoice.errors.invalid?(:free_items)
+        
+        build_free_item_for(@invoice)
+        flunk "@invoice should have at least 1 free_item" if @invoice.free_items.empty?
+        
+        @invoice.valid?
+        assert !@invoice.errors.invalid?(:free_items)
+      end
+      
+      should "have valid delivery_note_invoices" do
+        assert !@invoice.errors.invalid?(:delivery_note_invoices), @invoice.errors.inspect
+      end
+    end
+    
     
     context "an 'asset' invoice" do
       setup do
         prepare_asset_invoice(@invoice)
         @invoice.valid?
         
-        flunk "@invoice should have 0 product_items to perform the following" unless @invoice.product_items.empty?
-        flunk "@invoice should have 0 free_items to perform the following" unless @invoice.free_items.empty?
-        flunk "@invoice should have 0 delivery_note_invoices to perform the following" unless @invoice.delivery_note_invoices.empty?
+        flunk "@invoice should have 0 product_items" unless @invoice.product_items.empty?
+        flunk "@invoice should have 0 free_items" unless @invoice.free_items.empty?
+        flunk "@invoice should have 0 delivery_note_invoices" unless @invoice.delivery_note_invoices.empty?
       end
       
       should "accept product_items" do
@@ -902,7 +1154,7 @@ class InvoiceTest < ActiveSupport::TestCase
         assert !@invoice.errors.invalid?(:delivery_note_invoices)
         
         @invoice.delivery_note_invoices.build(:delivery_note_id => @delivery_note.id)
-        flunk "@invoice should have 1 delivery_note_invoice to perform the following" unless @invoice.delivery_note_invoices.size == 1
+        flunk "@invoice should have 1 delivery_note_invoice" unless @invoice.delivery_note_invoices.size == 1
         @invoice.valid?
         
         assert @invoice.errors.invalid?(:delivery_note_invoices)
@@ -915,7 +1167,7 @@ class InvoiceTest < ActiveSupport::TestCase
       setup do
         prepare_balance_invoice_to_be_saved(@invoice)
         
-        flunk "@invoice should be valid to perform the following > #{@invoice.errors.inspect}" unless @invoice.valid?
+        flunk "@invoice should be valid > #{@invoice.errors.inspect}" unless @invoice.valid?
       end
       
       teardown do
@@ -2390,7 +2642,7 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       invoice.due_date_attributes=(attributes)
       
-      flunk "invoice should have #{quantity} due_dates to perform the following" if invoice.due_dates.size != quantity
+      flunk "invoice should have #{quantity} due_dates" if invoice.due_dates.size != quantity
     end
     
     def build_free_item_for(invoice, unit_price = 0, vat = 0)
@@ -2400,12 +2652,11 @@ class InvoiceTest < ActiveSupport::TestCase
                       :name         => "This is a free line",
                       :description  => "And this is the description of the free line",
                       :quantity     => 1,
-                      :prizegiving  => 0,
                       :unit_price   => unit_price,
                       :vat          => vat }]
       invoice.invoice_item_attributes=(attributes)
       
-      flunk "invoice should have one more invoice_item to perform the following" if invoice.invoice_items.size == before
+      flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
     end
     
     def build_product_item_for(invoice)
@@ -2413,12 +2664,11 @@ class InvoiceTest < ActiveSupport::TestCase
       
       attributes = [{ :product_id   => invoice.order.products.first.id,
                       :quantity     => 1,
-                      :prizegiving  => 0,
                       :name         => "This is a product line",
                       :description  => "And this is the description of the product line" }]
       invoice.invoice_item_attributes=(attributes)
       
-      flunk "invoice should have one more invoice_item to perform the following" if invoice.invoice_items.size == before
+      flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
     end
     
     def prepare_invoice(invoice, factorised = :normal)
@@ -2461,12 +2711,12 @@ class InvoiceTest < ActiveSupport::TestCase
     
     def prepare_status_invoice_to_be_saved(invoice, factorised = :normal)
       prepare_status_invoice(invoice, factorised)
-      flunk "invoice.order should have at least 1 signed_delivery_note to perform the following" unless invoice.order.signed_delivery_notes.count > 0
+      flunk "invoice.order should have at least 1 signed_delivery_note" unless invoice.order.signed_delivery_notes.count > 0
       
       invoice.delivery_note_invoices.build(:delivery_note_id => invoice.order.signed_delivery_notes.first.id)
-      invoice.build_invoice_items_from_associated_delivery_notes
+      invoice.build_or_update_invoice_items_from_associated_delivery_notes
       
-      flunk "invoice should have invoice_items to perform the following" if invoice.invoice_items.empty?
+      flunk "invoice should have invoice_items" if invoice.invoice_items.empty?
       
       build_due_dates_for(invoice, 1)
       
@@ -2480,14 +2730,15 @@ class InvoiceTest < ActiveSupport::TestCase
     
     def prepare_balance_invoice_to_be_saved(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_balance_invoice(invoice, factorised)
-      flunk "invoice.order should have at least 1 signed_delivery_note to perform the following" unless invoice.order.signed_delivery_notes.count > 0
+      flunk "invoice.order should have at least 1 signed_delivery_note" unless invoice.order.signed_delivery_notes.count > 0
+      flunk "invoice.order should have at least 1 unbilled signed_delivery_note" if invoice.order.all_signed_delivery_notes_are_billed?
       
-      invoice.order.signed_delivery_notes.each do |dn|
+      invoice.order.signed_delivery_notes.reject(&:billed?).each do |dn|
         invoice.delivery_note_invoices.build(:delivery_note_id => dn.id)
       end
       
-      invoice.build_invoice_items_from_associated_delivery_notes
-      flunk "invoice should have invoice_items to perform the following" if invoice.invoice_items.empty?
+      invoice.build_or_update_invoice_items_from_associated_delivery_notes
+      flunk "invoice should have invoice_items" if invoice.invoice_items.empty?
       
       build_due_dates_for(invoice, number_of_due_dates)
       
@@ -2522,19 +2773,19 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_confirmed_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       create_invoice(invoice, factorised, number_of_due_dates)
       invoice = confirm_invoice(invoice)
-      flunk "invoice should be confirmed to perform the following > #{invoice.status} : #{invoice.status_was}" unless invoice.was_confirmed?
+      flunk "invoice should be confirmed > #{invoice.status} : #{invoice.status_was}" unless invoice.was_confirmed?
     end
     
     def prepare_cancelled_invoice(invoice)
       prepare_confirmed_invoice(invoice)
       invoice = cancel_invoice(invoice)
-      flunk "invoice should be cancelled to perform the following" unless invoice.was_cancelled?
+      flunk "invoice should be cancelled" unless invoice.was_cancelled?
     end
     
     def prepare_sended_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_confirmed_invoice(invoice, factorised, number_of_due_dates)
       invoice = send_invoice(invoice)
-      flunk "invoice should be sended to perform the following" unless invoice.was_sended?
+      flunk "invoice should be sended" unless invoice.was_sended?
     end
     
     def prepare_abandoned_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
@@ -2544,37 +2795,37 @@ class InvoiceTest < ActiveSupport::TestCase
         prepare_factoring_recovered_invoice(invoice)
       end
       invoice = abandon_invoice(invoice)
-      flunk "invoice should be abandoned to perform the following > #{invoice.errors.inspect}" unless invoice.was_abandoned?
+      flunk "invoice should be abandoned > #{invoice.errors.inspect}" unless invoice.was_abandoned?
     end
     
     def prepare_factoring_paid_invoice(invoice)
       prepare_sended_invoice(invoice, :factorised, 1)
       invoice = factoring_pay_invoice(invoice)
-      flunk "invoice should be factoring_paid to perform the following" unless invoice.was_factoring_paid?
+      flunk "invoice should be factoring_paid" unless invoice.was_factoring_paid?
     end
     
     def prepare_factoring_recovered_invoice(invoice)
       prepare_factoring_paid_invoice(invoice)
       invoice = factoring_recover_invoice(invoice)
-      flunk "invoice should be factoring_recovered to perform the following" unless invoice.was_factoring_recovered?
+      flunk "invoice should be factoring_recovered" unless invoice.was_factoring_recovered?
     end
     
     def prepare_factoring_balance_paid_invoice(invoice)
       prepare_factoring_paid_invoice(invoice)
       invoice = factoring_balance_pay_invoice(invoice)
-      flunk "invoice should be factoring_balance_paid to perform the following" unless invoice.was_factoring_balance_paid?
+      flunk "invoice should be factoring_balance_paid" unless invoice.was_factoring_balance_paid?
     end
     
     def prepare_due_date_paid_invoice(invoice, number_of_due_dates = 2)
       prepare_sended_invoice(invoice, :normal, number_of_due_dates)
       invoice = due_date_pay_invoice(invoice)
-      flunk "invoice should be due_date_paid to perform the following" unless invoice.was_due_date_paid?
+      flunk "invoice should be due_date_paid" unless invoice.was_due_date_paid?
     end
     
     def prepare_totally_paid_invoice(invoice)
       prepare_due_date_paid_invoice(invoice)
       invoice = totally_pay_invoice(invoice)
-      flunk "invoice should be totally_paid to perform the following" unless invoice.was_totally_paid?
+      flunk "invoice should be totally_paid" unless invoice.was_totally_paid?
     end
     
     def confirm_invoice(invoice)
@@ -2622,7 +2873,7 @@ class InvoiceTest < ActiveSupport::TestCase
     end
     
     def due_date_pay_invoice(invoice)
-      flunk "invoice should have at least 2 unpaid due_dates to perform the following, but has #{invoice.unpaid_due_dates.count}" unless invoice.unpaid_due_dates.count >= 2
+      flunk "invoice should have at least 2 unpaid due_dates, but has #{invoice.unpaid_due_dates.count}" unless invoice.unpaid_due_dates.count >= 2
       
       due_date = invoice.upcoming_due_date
       attributes = { :due_date_to_pay => { :id => due_date.id,
@@ -2634,7 +2885,7 @@ class InvoiceTest < ActiveSupport::TestCase
     end
     
     def totally_pay_invoice(invoice)
-      flunk "invoice should have only 1 unpaid due_date to perform the following, but has #{invoice.unpaid_due_dates.count}" unless invoice.unpaid_due_dates.count == 1
+      flunk "invoice should have only 1 unpaid due_date, but has #{invoice.unpaid_due_dates.count}" unless invoice.unpaid_due_dates.count == 1
       
       due_date = invoice.upcoming_due_date
       attributes = { :due_date_to_pay => { :id => due_date.id,

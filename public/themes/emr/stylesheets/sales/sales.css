@@ -65,23 +65,26 @@ p.order_deadline {
 }
 
 p.order_deadline span:first-child:after {
-  content: "\A";
-  white-space: pre;
+  //content: "\A";
+  //white-space: pre;
 }
 
 p.order_deadline.far {
   color: blue;
-  text-decoration: underline;
 }
 
-p.order_deadline.soon,
-p.order_deadline.today {
+p.order_deadline.soon {
+  font-weight: bold;
+  color: red;
+}
+
+p.order_deadline.today,
+p.order_deadline.late {
   font-weight: bold;
   color: red;
   text-decoration: underline;
 }
 
-p.order_deadline.late,
 p.order_deadline.critical {
   font-weight: bold;
   color: red;
@@ -402,6 +405,15 @@ table.sales_table tr.aggregates.global {
   padding-left: 28px;
 }
 
+.root_nav ul.tab_nav li.warning {
+  color: red;
+  -moz-box-shadow: inset 0px -1px 5px rgba(255,0,0,0.7);
+}
+
+.root_nav ul.tab_nav li.warning.selected {
+  -moz-box-shadow: none;
+}
+
 .root_nav div.section_nav {
   display: none;
   padding: 8px;
@@ -633,6 +645,91 @@ ul#invoice_types li h1 {
 
 ul#invoice_types li p {
   font-size: small;
+}
+
+/* INVOICE_ITEMS */
+
+#invoice_delivery_notes_picker {
+  position: relative;
+}
+
+#invoice_items_ajax_loading {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+}
+
+table#invoice_items td,
+table#invoice_items span {
+  vertical-align: top;
+}
+
+table#invoice_items td.description {
+  text-align: left;
+}
+
+table#invoice_items td.description p {
+  margin: 0;
+  padding: 0;
+}
+
+table#invoice_items td.description strong {
+  color: inherit;
+  font-weight: bold;
+}
+
+table#invoice_items td.description img,
+table#invoice_items td.unit_price img {
+  vertical-align: middle;
+}
+
+table#invoice_items td.description input,
+table#invoice_items td.description textarea {
+  width: 400px;
+}
+
+table#invoice_items span.fieldWithErrors {
+  display: inline-block;
+}
+
+table#invoice_items span.fieldWithErrors:after {
+  color: red;
+  vertical-align: top;
+  content: " *"
+}
+
+table#invoice_items tr.aggregates td {
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_label {
+  border-right: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount {
+  border-left: none;
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount input {
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates.global {
+  font-weight: bold;
+  background-color: #CCC;
+  border-top: 1px solid black;
+}
+
+table#invoice_items td.from_quote {
+  background-color: #e4e4e4;
+}
+
+table#invoice_items tr.new_invoice_item {
+  text-align: left;
+  background-color: #fbcb87;
 }
 
 /* INVOICE DUE_DATES */

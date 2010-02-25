@@ -12,16 +12,17 @@ class QuotesController < ApplicationController
   def show
     @quote = Quote.find(params[:id])
     
+    if @quote.uncomplete? and params[:format] == "pdf"
+      error_access_page(404)
+      return
+    end
+    
     respond_to do |format|
       format.xml {
         render :layout => false
       }
       format.pdf {
-        unless @quote.uncomplete?
-          render :pdf => "devis_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/sales/quotes/pdf/#{@quote.id}.pdf"
-        else
-          error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
-        end
+        render :pdf => "devis_#{@quote.public_number}", :template => "quotes/show.xml.erb", :xsl => "quote", :path => "assets/sales/quotes/pdf/#{@quote.id}.pdf"
       }
       format.html { }
     end
@@ -36,8 +37,7 @@ class QuotesController < ApplicationController
       @quote.contacts << @order.contacts.last unless @order.contacts.empty?
       
       @order.products.each do |product|
-        #@quote.quote_items.build(:product_id => product.id, :order_id => @order.id)
-        @quote.build_quote_item(:product_reference_id => product.product_reference_id, :product_id => product.id, :order_id => @order.id)
+        @quote.build_quote_item(:product_id => product.id)
       end
     else
       error_access_page(412)

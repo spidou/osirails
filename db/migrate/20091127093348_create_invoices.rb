@@ -8,7 +8,8 @@ class CreateInvoices < ActiveRecord::Migration
       t.datetime  :confirmed_at, :cancelled_at
       
       # only for deposit invoices
-      t.float     :deposit, :deposit_amount, :deposit_vat
+      t.float     :deposit, :deposit_vat
+      t.decimal   :deposit_amount, :precision => 65, :scale => 20
       t.text      :deposit_comment
       
       t.timestamps

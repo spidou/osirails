@@ -1,0 +1,14 @@
+<% add_contextual_menu_item :press_proof do %>
+  <%= display_press_proof_add_button(@order) unless is_new_view? %>
+  <%= display_press_proof_show_button(@order, @press_proof) %>
+  <%= display_press_proof_edit_button(@order, @press_proof) unless is_edit_view? %>
+  
+  <%= display_press_proof_confirm_button(@order, @press_proof) %>
+  <%= display_press_proof_send_button(@order, @press_proof) %>
+  <%= display_dunning_add_button(@order, @press_proof) %>
+  <%= display_press_proof_sign_button(@order, @press_proof) %>
+  <%= display_press_proof_cancel_button(@order, @press_proof) %>
+  <%= display_press_proof_revoke_button(@order, @press_proof) %>
+  <%= display_press_proof_destroy_button(@order, @press_proof) %>
+  <%= display_press_proof_list_button(@step) %>
+<% end %>

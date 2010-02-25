@@ -28,7 +28,7 @@ class DeliveryNote < ActiveRecord::Base
   
   has_many :delivery_note_invoices
   has_many :all_invoices, :through => :delivery_note_invoices, :source => :invoice
-  has_one  :invoice, :through => :delivery_note_invoices, :conditions => [ "status IS NULL OR status != ?", Invoice::STATUS_CANCELLED ]
+  has_one  :invoice,      :through => :delivery_note_invoices, :conditions => [ "status IS NULL OR status != ?", Invoice::STATUS_CANCELLED ] #TODO test that method
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
@@ -114,6 +114,11 @@ class DeliveryNote < ActiveRecord::Base
     invoice.is_a?(Array) ? !invoice.empty? : !invoice.nil?
   end
   
+  # return if the associated invoice is confirmed
+  def billed_and_confirmed?
+    billed? ? invoice.was_confirmed? : false
+  end
+  
   def associated_quote
     order ? order.signed_quote : nil
   end
@@ -122,7 +127,7 @@ class DeliveryNote < ActiveRecord::Base
     return unless associated_quote
     associated_quote.quote_items.each do |quote_item|
       item = self.delivery_note_items.build(:quote_item_id => quote_item.id, :order_id => self.order_id)
-      item.quantity = item.available_quantity
+      item.quantity = item.remaining_quantity_to_deliver
     end
   end
   
@@ -184,24 +189,28 @@ class DeliveryNote < ActiveRecord::Base
     status_was == STATUS_SIGNED
   end
   
+  def can_be_added?
+    order and order.signed_quote and !order.all_is_delivered_or_scheduled?
+  end
+  
   def can_be_edited?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_destroyed?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_confirmed?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_cancelled?
-    !was_signed? and !was_cancelled? and !delivered_delivery_intervention
+    !new_record? and !was_signed? and !was_cancelled? and !delivered_delivery_intervention
   end
   
   def can_be_scheduled?
-    !was_signed? and !was_cancelled? and !delivered_delivery_intervention
+    !new_record? and !was_signed? and !was_cancelled? and !delivered_delivery_intervention
   end
   
   def can_be_realized?
@@ -246,10 +255,6 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
-  def number_of_pieces
-    delivery_note_items.collect(&:quantity).sum || 0
-  end
-  
   def order_contacts
     order ? order.contacts : []
   end
@@ -261,6 +266,14 @@ class DeliveryNote < ActiveRecord::Base
   
   def has_discards?
     !discards.length.zero?
+  end
+  
+  def number_of_pieces
+    delivery_note_items.collect(&:quantity).sum || 0
+  end
+  
+  def number_of_delivered_pieces
+    number_of_pieces - number_of_discarded_pieces
   end
   
   def number_of_discarded_pieces

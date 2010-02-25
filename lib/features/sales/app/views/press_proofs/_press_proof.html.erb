@@ -5,6 +5,8 @@
   <%= javascript_include_tag 'sales/press_proof' %>
 <% end -%>
 
+<%= generate_press_proof_contextual_menu_partial %>
+
 <%
 press_proof_headers = {:press_proof_informations            => "Informations",
                        :press_proof_mockups                 => "Maquettes (#{press_proof.graphic_item_versions.count})",

@@ -8,23 +8,22 @@
     <th>Réf.</th>
     <th>Émis le</th>
     <th>Ville</th>
-    <th>Livraison<br/>prévue/effectuée le</th>
+    <th>Livraison effectuée le</th>
     <th>Signé le</th>
-    <th>Qté (à) livrer</th>
-    <th>Qté restante<br/>à livrer</th>
-    <th>Problèmes ?</th>
+    <th>Nb produits<br/>facturables&#160;/&#160;livrés</th>
+    <th>Nb produits<br/>total (devis)</th>
     <th>Actions</th>
   </tr>
   <% for dn in delivery_notes %>
     <tr>
-      <td><%= dn.public_number %></td>
-      <td><%= dn.confirmed_on.humanize %></td>
-      <td><%= dn.ship_to_address.city %></td>
-      <td><%= dn.successful_intervention || dn.pending_intervention || "Non prévue" %></td>
+      <td><%= dn.reference %></td>
+      <td><%= dn.published_on.humanize %></td>
+      <td><%= dn.ship_to_address.city_name %></td>
+      <td><%= dn.delivered_delivery_intervention.delivery_at.humanize %></td>
       <td><%= dn.signed_on.humanize %></td>
-      <td><%= dn.delivery_note_items.count %></td>
-      <td><% %></td>
-      <td><% %></td>
+      <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
+      <td><%= dn.associated_quote.number_of_pieces %></td>
+      <td><%= display_transform_delivery_note_in_invoice(dn) %></td>
     </tr>
   <% end %>
 </table>

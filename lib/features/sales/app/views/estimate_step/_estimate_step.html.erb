@@ -1,8 +1,10 @@
-<%= order_header %>
-
 <% content_for :header do -%>
   <%= javascript_include_tag 'sales/quotes_list' %>
 <% end -%>
+
+<%= order_header %>
+
+<%= generate_commercial_step_contextual_menu_partial %>
 
 <h1>Chiffrage</h1>
 
@@ -54,6 +56,7 @@
   </p>
   
   <h2>Devis</h2>
-  <%= render :partial => 'quotes/quotes_list', :object => @step.order.quotes %>
-  <%= display_quote_add_link(@step.order) if is_form_view? %>
+  <%= display_quotes(@step.order) %>
+  
+  <%= content_tag(:p, display_quote_add_button(@step.order)) if is_form_view? %>
 </div>

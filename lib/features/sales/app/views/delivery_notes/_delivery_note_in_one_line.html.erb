@@ -16,9 +16,9 @@ rowspan = rowspan_value > 0 ? "rowspan=\"#{rowspan_value}\"" : ''
 
 <tr class="delivery_note<%# status %>"<%= title %>>
   <td <%= rowspan %>><%= delivery_note.reference %></td>
-  <td <%= rowspan %>><%= delivery_note.created_at.humanize %></td>
-  <td <%= rowspan %>><%= "#{delivery_note.number_of_pieces} / #{delivery_note.associated_quote.number_of_pieces}" %></td>
+  <td <%= rowspan %>><%= delivery_note.published_on.humanize if delivery_note.published_on %></td>
   <td <%= rowspan %>><%= delivery_note.delivery_note_type.title %></td>
+  <td <%= rowspan %>><%= "#{delivery_note.number_of_pieces} / #{delivery_note.associated_quote.number_of_pieces}" %></td>
   <% if interventions.empty? %>
     <td>-</td>
     <td>-</td>
@@ -26,14 +26,10 @@ rowspan = rowspan_value > 0 ? "rowspan=\"#{rowspan_value}\"" : ''
     <% intervention = interventions.shift %>
     <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line_in_delivery_note', :object => intervention %>
   <% end %>
-  <td <%= rowspan %> ><%= "#{delivery_note.number_of_discarded_pieces} / #{delivery_note.number_of_pieces}" if delivery_note.delivered_delivery_intervention %></td>
+  <td <%= rowspan %> ><%= "#{delivery_note.number_of_delivered_pieces} / #{delivery_note.number_of_pieces}" if delivery_note.delivered_delivery_intervention %></td>
   <td <%= rowspan %> ><%= delivery_note.signed_on.humanize if delivery_note.signed_on %></td>
   <td <%= rowspan %> class="actions">
-    <%= display_additional_actions_delivery_note_button(@order, delivery_note) %>
-    <%# order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "", :options => { :format => :pdf }) if DeliveryNote.can_view?(current_user) and !quote.uncomplete? %>
-    <%= order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
-    <%= edit_order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
-    <%= delete_order_pre_invoicing_step_delivery_step_delivery_note_link_overrided(@order, delivery_note, :link_text => "") %>
+    <%= display_delivery_note_action_buttons(@order, delivery_note) %>
   </td>
 </tr>
 

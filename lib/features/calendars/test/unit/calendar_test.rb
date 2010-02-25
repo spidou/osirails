@@ -69,7 +69,7 @@ class CalendarTest < ActiveSupport::TestCase
     @calendar.valid?
     assert !@calendar.errors.invalid?(:name), "name should be valid"
     
-    flunk "@calendar should be saved to perform the following" unless @calendar.save!
+    flunk "@calendar should be saved" unless @calendar.save!
     
     @new_calendar = Calendar.new(:name => "string")
     @new_calendar.valid?

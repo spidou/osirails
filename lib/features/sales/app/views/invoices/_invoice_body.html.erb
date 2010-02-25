@@ -1,9 +1,17 @@
 <%
 require_locals form
 invoice = invoice_body
+order   = invoice.order
+
+if invoice.new_record?
+  url_prefix_for_ajax_request = order_invoicing_step_invoice_step_ajax_request_for_invoice_items_path(order)
+else
+  url_prefix_for_ajax_request = order_invoicing_step_invoice_step_invoice_ajax_request_for_invoice_items_path(order, invoice)
+end
 %>
 
 <% if invoice.deposit_invoice? %>
+  
   <p>
     <label>Montant total du devis :</label>
     <strong><span id="signed_quote_total_with_taxes"><%= invoice.associated_quote.total_with_taxes.to_f.round_to(2).to_s(2) %></span></strong><span class="extra"> &euro; TTC (soit <%= invoice.associated_quote.total.round_to(2).to_s(2) %> &euro; HT)</span>
@@ -28,34 +36,72 @@ invoice = invoice_body
     <label>Description :</label>
     <%= form.form_or_view(form.text_area_autoresize(:deposit_comment), :deposit_comment) %>
   </p>
+  
 <% else %>
-  <table id="invoice_items">
-    <tr>
-      <th rowspan="2">Réf.</th>
-      <th rowspan="2">Désignation</th>
-      <th rowspan="2">PU Brut HT</th>
-      <th colspan="4">DEVIS</th>
-      <th colspan="6">&Agrave; FACTURER</th>
-      <% if is_form_view? %>
-        <th rowspan="2">Actions</th>
-      <% end %>
-    </tr>
-    <tr>
-      <th>Rem (%)</th>
-      <th>PU Net HT</th>
-      <th>Qté</th>
-      <th>Total HT</th>
-      
-      <th>Rem (%)</th>
-      <th>PU Net HT</th>
-      <th>Qté</th>
-      <th>Total HT</th>
-      <th>TVA</th>
-      <th>Total TTC</th>
-    </tr>
-    <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items %>
-    <%# render :partial => 'invoice_items/invoice_item', :object => nil, :locals => { :invoice => invoice } %>
+  
+  <% if is_form_view? and ( invoice.status_invoice? or invoice.balance_invoice? ) %>
+    <p>
+      Le tableau ci-dessous représente les lignes de la facture. Sélectionner les "Bons de Livraison" que vous souhaitez rattacher à la facture et les lignes se mettront à jour automatiquement.
+    </p>
     
-    <%# render :partial => 'invoices/invoice_aggregates', :object => invoice, :locals => { :form => form } %>
+    <div id="invoice_delivery_notes_picker" class="form_multiple_entries">
+      <%= form.label :delivery_note_invoices %>
+      <div class="collection">
+        <% for delivery_note in (invoice.delivery_note_invoices.collect(&:delivery_note) + order.unbilled_delivery_notes).uniq %>
+          <div class="object">
+            <%= check_box_tag("invoice[delivery_note_invoice_attributes][]", delivery_note.id, invoice.delivery_note_invoices.reject(&:should_destroy?).collect(&:delivery_note).include?(delivery_note), :onchange => "update_invoice_items(this, '#{url_prefix_for_ajax_request}')") if is_form_view? %>
+            <label>
+              <%= link_to(delivery_note.reference, order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note)) %>
+              <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
+            </label>
+          </div>
+        <% end %>
+        
+      </div>
+      
+      <p id="invoice_items_ajax_loading" style="display:none">Chargement en cours <%= image_tag "loading_16x16.gif", :alt => "Chargement", :title => "Chargement" %></p>
+    </div>
+  <% end %>
+  
+  <table id="invoice_items">
+    <thead>
+      <tr>
+        <th rowspan="2">Réf.</th>
+        <th rowspan="2">Désignation</th>
+        <th rowspan="2">PU Brut HT</th>
+        
+        <th colspan="4" class="from_quote">DEVIS</th>
+        
+        <th colspan="4">À FACTURER (DÉJÀ LIVRÉS)</th>
+        
+        <% if is_form_view? %>
+          <th rowspan="2">Actions</th>
+        <% end %>
+      </tr>
+      <tr>
+        <th class="from_quote">Rem (%)</th>
+        <th class="from_quote">PU Net HT</th>
+        <th class="from_quote">Qté</th>
+        <th class="from_quote">Total HT</th>
+        
+        <th>Qté</th>
+        <th>Total HT</th>
+        <th>TVA</th>
+        <th>Total TTC</th>
+      </tr>
+    </thead>
+    
+    <tbody id="invoice_items_body">
+      <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items %>
+    </tbody>
+    
+    <tfoot id="invoice_items_foot">
+      <%= render :partial => 'invoices/invoice_footer', :object => invoice %>
+    </tfoot>
   </table>
+  
+  <table id="invoice_items_to_destroy">
+    
+  </table>
+  
 <% end %>

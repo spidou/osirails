@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
 
   create_table "adjustments", :force => true do |t|
     t.integer  "due_date_id",             :limit => 11
-    t.float    "amount"
+    t.decimal  "amount",                                :precision => 65, :scale => 20
     t.text     "comment"
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
@@ -219,7 +219,6 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.integer  "scheduled_internal_actor_id",              :limit => 11
     t.integer  "scheduled_delivery_subcontractor_id",      :limit => 11
     t.integer  "scheduled_installation_subcontractor_id",  :limit => 11
-    t.integer  "scheduled_delivery_vehicle_id",            :limit => 11
     t.datetime "scheduled_delivery_at"
     t.integer  "scheduled_intervention_hours",             :limit => 11
     t.integer  "scheduled_intervention_minutes",           :limit => 11
@@ -230,7 +229,6 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.integer  "internal_actor_id",                        :limit => 11
     t.integer  "delivery_subcontractor_id",                :limit => 11
     t.integer  "installation_subcontractor_id",            :limit => 11
-    t.integer  "delivery_vehicle_id",                      :limit => 11
     t.datetime "delivery_at"
     t.integer  "intervention_hours",                       :limit => 11
     t.integer  "intervention_minutes",                     :limit => 11
@@ -396,7 +394,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
   create_table "due_dates", :force => true do |t|
     t.integer  "invoice_id",  :limit => 11
     t.date     "date"
-    t.float    "net_to_paid"
+    t.decimal  "net_to_paid",               :precision => 65, :scale => 20
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -624,7 +622,6 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.integer  "product_id",  :limit => 11
     t.integer  "position",    :limit => 11
     t.float    "quantity"
-    t.decimal  "prizegiving",               :precision => 65, :scale => 20
     t.string   "name"
     t.text     "description"
     t.decimal  "unit_price",                :precision => 65, :scale => 20
@@ -671,8 +668,8 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.datetime "confirmed_at"
     t.datetime "cancelled_at"
     t.float    "deposit"
-    t.float    "deposit_amount"
     t.float    "deposit_vat"
+    t.decimal  "deposit_amount",                            :precision => 65, :scale => 20
     t.text     "deposit_comment"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -922,7 +919,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.integer  "due_date_id",             :limit => 11
     t.integer  "payment_method_id",       :limit => 11
     t.date     "paid_on"
-    t.float    "amount"
+    t.decimal  "amount",                                :precision => 65, :scale => 20
     t.string   "bank_name"
     t.string   "payment_identifier"
     t.string   "attachment_file_name"
@@ -1123,7 +1120,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
 
   create_table "salaries", :force => true do |t|
     t.integer  "job_contract_id", :limit => 11
-    t.float    "gross_amount"
+    t.decimal  "gross_amount",                  :precision => 65, :scale => 20
     t.datetime "created_at"
   end
 

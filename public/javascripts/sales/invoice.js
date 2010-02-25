@@ -14,6 +14,14 @@ function update_deposit_amount_without_taxes(element) {
   check_values_of_total_and_due_dates()
 }
 
+function get_invoice_net_to_paid() {
+  if ($('invoice_deposit_amount')) {
+    return parseFloat($('invoice_deposit_amount').value) // case of deposit invoice
+  } else {
+    return parseFloat($('invoice_net_to_paid').innerHTML.strip()) // case of other type of invoice
+  }
+}
+
 function check_values_of_total_and_due_dates() {
   sum_net_to_paid = 0
   $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
@@ -23,17 +31,19 @@ function check_values_of_total_and_due_dates() {
   
   sum_net_to_paid = Math.round(sum_net_to_paid*100)/100
   
-  total_invoice = parseFloat($('invoice_deposit_amount').value)
+  total_invoice = get_invoice_net_to_paid()
   
   if (sum_net_to_paid != total_invoice) {
-    $('due_date_amounts_notification').removeClassName('hidden')
+    $('due_date_amounts_notification').appear()
+    $('due_dates_list').up('.root_nav').down('.invoice_due_dates_payments').addClassName('warning')
   } else {
-    $('due_date_amounts_notification').addClassName('hidden')
+    $('due_date_amounts_notification').fade()
+    $('due_dates_list').up('.root_nav').down('.invoice_due_dates_payments').removeClassName('warning')
   }
 }
 
 function refresh_due_dates() {
-  total_invoice = parseFloat($('invoice_deposit_amount').value)
+  total_invoice = get_invoice_net_to_paid()
   
   sum_net_to_paid_without_balance = 0
   $('due_dates_list').down('tbody').select('tr:not([id="due_date_model"])').each(function(element) {
@@ -52,7 +62,7 @@ function refresh_due_dates() {
   span.update(balance)
   new Effect.Highlight(last_due_date, { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
   
-  if (balance < 0)
+  if (balance < 0 && sum_net_to_paid_without_balance > 0)
     alert("Attention !! Le montant des premières échéances sont supérieurs au montant total de la facture. C'est pourquoi vous obtenez un solde négatif.")
   
   check_values_of_total_and_due_dates()
@@ -64,7 +74,7 @@ function update_due_dates(select_element) {
   new_quantity = select_element.value
   old_quantity = $('due_dates_list').down('tbody').select('tr').length - 1
   
-  total_invoice = parseFloat($('invoice_deposit_amount').value)
+  total_invoice = get_invoice_net_to_paid()
   
   if (due_date_label == null) {
     due_date_label = $('due_date_model').down('td.due_date_label').innerHTML
@@ -157,4 +167,125 @@ function toggle_disable_of_select_number_of_due_dates() {
   } else if (select_number_due_dates.value == 1) { // else if we choose a factor, and if there is only 1 due_date presently selected
     select_number_due_dates.setAttribute('disabled', 'disabled')
   }
+}
+
+function update_invoice_items(checkbox, url_prefix) {
+  selected_items = checkbox.up('.collection').select('input[type=checkbox]').collect(function(input){
+    if (input.checked) { return input.value }
+  })
+  selected_items = selected_items.compact()
+  
+  form_buttons = checkbox.up('form').select('input[type=submit]')
+  
+  url = url_prefix + '/' + selected_items;
+  
+  new Ajax.Request(url, {
+    method: 'get',
+    onLoading: function() {
+      $('invoice_items_ajax_loading').appear();
+      form_buttons.each(function(button){
+        button.disable()
+      });
+    },
+    onLoaded: function() {
+      $('invoice_items_ajax_loading').fade();
+      form_buttons.each(function(button){
+        button.enable()
+      });
+    },
+    onFailure: function(error) {
+      alert('Oops, une erreur inattendue est survenue. Merci de contacter votre administrateur.')
+    },
+    onSuccess: function(transport) {
+      //nothing to do here, see in .rjs called file
+    }
+  });
+}
+
+function add_free_item() {
+  foot = $('invoice_items_foot')
+  body = $('invoice_items_body')
+  
+  new_line = foot.down('.invoice_item').cloneNode(true);
+  body.insert( {'bottom' : new_line } );
+  
+  last_line = body.childElements().last();
+  last_line.down('.should_destroy').value = 0;
+  last_line.removeAttribute('style');
+  last_line.highlight();
+}
+
+function remove_free_item(element) {
+  item = element.up('tr.invoice_item')
+  
+  if (parseInt(item.down('.invoice_item_id').value) > 0) {
+    item.down('.should_destroy').value = 1;
+    item.hide();
+  } else {
+    item.remove();
+  }
+  
+  update_aggregates();
+}
+
+function calculate(tr) {
+  var unit_price  = parseFloat(tr.down('.input_unit_price').value)
+  var quantity    = parseFloat(tr.down('.input_quantity').value)
+  var vat         = parseFloat(tr.down('.input_vat').value)
+  
+  var td_total            = tr.down('.total')
+  var td_total_with_taxes = tr.down('.total_with_taxes')
+  
+  if (isNaN(unit_price)) { unit_price = 0 }
+  if (isNaN(quantity)) { quantity = 0 }
+  if (isNaN(vat)) { vat = 0 }
+  
+  // total
+  var total = ( unit_price * quantity )
+  td_total.update( roundNumber(total, 2) )
+  
+  // total with taxes
+  var total_with_taxes = ( total + ( total * ( vat / 100 ) ) )
+  td_total_with_taxes.update( roundNumber(total_with_taxes, 2) )
+  
+  update_aggregates();
+  check_values_of_total_and_due_dates();
+}
+
+function update_aggregates() {
+  var items_container     = $('invoice_items_body')
+  var aggregate_container = $('invoice_items_foot')
+  
+  var span_aggregate_without_taxes  = aggregate_container.down('.aggregate_without_taxes').down('span')
+  var span_aggregate_all_taxes      = aggregate_container.down('.aggregate_all_taxes').down('span')
+  var span_aggregate_net_to_paid    = aggregate_container.down('.aggregate_net_to_paid').down('span')
+  
+  // aggregates
+  var items = items_container.select('tr.invoice_item')
+  var totals_without_taxes = new Array()
+  var totals_with_taxes = new Array()
+  
+  items.each(function(item){
+    if (item.getStyle('display') != 'none') {
+      totals_without_taxes.push(item.down('.total'))
+      totals_with_taxes.push(item.down('.total_with_taxes'))
+    }
+  });
+  
+  // aggregate without taxes
+  var aggregate_without_taxes = parseFloat(0)
+  totals_without_taxes.each(function(item){
+    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim())
+  });
+  span_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
+  
+  // aggregate with taxes
+  var aggregate_with_taxes = parseFloat(0)
+  totals_with_taxes.each(function(item){
+    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim())
+  });
+  span_aggregate_net_to_paid.update( roundNumber(aggregate_with_taxes, 2) )
+  
+  // aggregate all taxes
+  span_aggregate_all_taxes.update( roundNumber(aggregate_with_taxes - aggregate_without_taxes, 2) )
 }

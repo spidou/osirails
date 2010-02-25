@@ -17,7 +17,7 @@ class LeaveTest < ActiveSupport::TestCase
                             :duration       => 6,
                             :employee_id    => @employee.id,
                             :leave_type_id  => @leave_type.id)
-    flunk "good_leave should be saved to perform the following > #{@good_leave.errors.inspect}" unless @good_leave.save
+    flunk "good_leave should be saved > #{@good_leave.errors.inspect}" unless @good_leave.save
     
     ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = (Date.today - 11.months).strftime("%m/%d")
     
@@ -110,7 +110,7 @@ class LeaveTest < ActiveSupport::TestCase
   end
   
   def test_can_be_edited
-    flunk "@good_leave should NOT be cancelled to perform the following" if @good_leave.cancelled
+    flunk "@good_leave should NOT be cancelled" if @good_leave.cancelled
     
     assert @good_leave.can_be_edited?, "@good_leave should be editable"
     
@@ -120,7 +120,7 @@ class LeaveTest < ActiveSupport::TestCase
   end
   
   def test_can_be_cancelled
-    flunk "@good_leave should NOT be cancelled to perform the following" if @good_leave.cancelled
+    flunk "@good_leave should NOT be cancelled" if @good_leave.cancelled
     
     assert @good_leave.can_be_cancelled?, "@good_leave should be cancellable"
     
@@ -139,7 +139,7 @@ class LeaveTest < ActiveSupport::TestCase
             
     # when leave IS NOT cancelled
     hash.each do |attribute, new_value|
-      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}' to perform the following" if @good_leave.send(attribute) == new_value
+      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}'" if @good_leave.send(attribute) == new_value
       
       assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it's not modified"
       
@@ -149,9 +149,9 @@ class LeaveTest < ActiveSupport::TestCase
     end
     
     # when leave IS cancelled
-    flunk "@good_leave should be cancelled to perform the following" unless @good_leave.reload.cancel
+    flunk "@good_leave should be cancelled" unless @good_leave.reload.cancel
     hash.each do |attribute, new_value|
-      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}' to perform the following" if @good_leave.send(attribute) == new_value
+      flunk "new value of '#{attribute}' should NOT be equal to '#{new_value}'" if @good_leave.send(attribute) == new_value
       
       assert !@good_leave.errors.invalid?(attribute), "#{attribute.to_s} should be valid because it's not modified"
       

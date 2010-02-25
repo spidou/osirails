@@ -40,7 +40,7 @@ class GraphicItemSpoolItemTest < ActiveSupport::TestCase
     setup do
       create_default_mockup
       @gisi = GraphicItemSpoolItem.new({:user_id => User.first.id, :graphic_item_id => GraphicItem.first.id, :file_type => "image", :path => "/test/path"})
-      flunk "The graphic item spool item should be created with success to continue" unless @gisi.save
+      flunk "The graphic item spool item should be created with success" unless @gisi.save
     end
   
     should "NOT be able to be updated" do

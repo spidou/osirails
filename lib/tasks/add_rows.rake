@@ -793,14 +793,13 @@ namespace :osirails do
       quote.build_bill_to_address(Address.last.attributes)
       order1.products.each do |product|
         quote.quote_items.build(:product_id   => product.id,
-                                :order_id     => order1.id,
-                                :name         => "Product Name",
-                                :description  => "Product description",
-                                :dimensions   => "1000x2000",
-                                :quantity     => 2,
-                                :unit_price   => 20000,
-                                :prizegiving  => 0.0,
-                                :vat          => 19.6)
+                                :name         => product.name,
+                                :description  => product.description,
+                                :dimensions   => product.dimensions,
+                                :quantity     => product.quantity,
+                                :unit_price   => (product.quantity * rand * 10000).round,
+                                :prizegiving  => (rand * 10).round,
+                                :vat          => Vat.all.rand.rate)
       end
       quote.save!
       quote.confirm
@@ -878,10 +877,10 @@ namespace :osirails do
       end
       
       # default invoice_types
-      InvoiceType.create! :name => 'deposit_invoice', :title => "Acompte",    :factorisable => false
-      InvoiceType.create! :name => 'status_invoice',  :title => "Situation",  :factorisable => true
-      InvoiceType.create! :name => 'balance_invoice', :title => "Solde",      :factorisable => true
-      InvoiceType.create! :name => 'asset_invoice',   :title => "Avoir",      :factorisable => false
+      InvoiceType.create! :name => Invoice::DEPOSITE_INVOICE, :title => "Acompte",    :factorisable => false
+      InvoiceType.create! :name => Invoice::STATUS_INVOICE,   :title => "Situation",  :factorisable => true
+      InvoiceType.create! :name => Invoice::BALANCE_INVOICE,  :title => "Solde",      :factorisable => true
+      InvoiceType.create! :name => Invoice::ASSET_INVOICE,    :title => "Avoir",      :factorisable => false
     end
     
     desc "Depopulate the database"

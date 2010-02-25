@@ -318,11 +318,13 @@ class Invoice < ActiveRecord::Base
   
   validate :validates_no_new_payments_unless_when_factoring_pay_or_totally_pay
   
+  validate :validates_integrity_of_product_items
+  
   attr_protected :status, :reference, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
   
   before_validation :build_or_update_free_item_for_deposit_invoice
   
-  after_save :save_invoice_items, :save_due_dates, :save_due_date_to_pay
+  after_save :save_invoice_items, :save_due_dates, :save_due_date_to_pay, :save_delivery_note_invoices
   
   before_destroy :can_be_deleted?
   
@@ -347,6 +349,7 @@ class Invoice < ActiveRecord::Base
   @@form_labels[:factoring_recovered_on]      = 'Définancement du Factor le :'
   @@form_labels[:factoring_recovered_comment] = 'Indiquer la raison du définancement :'
   @@form_labels[:factoring_balance_paid_on]   = 'Solde Factor reçu le :'
+  @@form_labels[:delivery_note_invoices]      = 'Bons de livraison associés :'
   
   def validates_presence_of_associated_quote
     errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
@@ -385,9 +388,11 @@ class Invoice < ActiveRecord::Base
     if deposit_invoice? or asset_invoice?
       invoice_type_text = deposit_invoice? ? 'acompte' : 'avoir'
       errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} ne peut pas être associée à un Bon de Livraison") unless delivery_note_invoices.empty?
-    elsif status_invoice? or balance_invoice?
-      invoice_type_text = status_invoice? ? 'situation' : 'solde'
-      errors.add(:delivery_note_invoices, "Une facture d'#{invoice_type_text} doit être associée à au moins 1 Bon de Livraison") if delivery_note_invoices.empty?
+    elsif status_invoice?
+      errors.add(:delivery_note_invoices, "Une facture de situation doit être associée à au moins 1 Bon de Livraison") if delivery_note_invoices.empty?
+      errors.add(:delivery_note_invoices, "Une facture de situation ne doit PAS être associée à l'ensemble des Bons de Livraison restants à facturer. Vous devez changer le type de facture et choisir la facture de solde") if order.all_is_delivered? and associated_to_all_unbilled_delivery_notes?
+    elsif balance_invoice?
+      errors.add(:delivery_note_invoices, "Une facture de solde doit absolument être associée à l'ensemble des Bons de Livraison restants à facturer") unless associated_to_all_unbilled_delivery_notes?
     end
   end
   
@@ -420,9 +425,7 @@ class Invoice < ActiveRecord::Base
   
   #TODO write tests
   def validates_due_date_amounts
-    unless total_of_due_dates_equal_to_net_to_paid?
-      errors.add(:due_dates, "La somme des montants des échéances ne correspond pas au montant total de la facture (#{total_of_due_dates} ≠ #{net_to_paid})")
-    end
+    errors.add(:due_dates, "La somme des montants des échéances ne correspond pas au montant total de la facture (#{total_of_due_dates} ≠ #{net_to_paid})") unless total_of_due_dates_equal_to_net_to_paid?
   end
   
   # write tests
@@ -441,7 +444,7 @@ class Invoice < ActiveRecord::Base
       error_adjustement_text = due_date.adjustments.empty? ? "" : " et des ajustements"
       error_adjustement_calculation = due_date.adjustments.empty? ? "" : " + " + due_date.adjustments.collect{|a|a.amount||0}.join(' + ')
       
-      due_date.errors.add(:payments, "La somme des règlements#{error_adjustement_text} ne correspond pas au montant de l'échéance (#{due_date.payments.collect{|p|p.amount||0}.join(' + ')}#{error_adjustement_calculation} = #{due_date.total_amounts} ≠ #{due_date.net_to_paid})") if due_date.total_amounts.round_to(2) != due_date.net_to_paid.round_to(2)
+      due_date.errors.add(:payments, "La somme des règlements#{error_adjustement_text} ne correspond pas au montant de l'échéance (#{due_date.payments.collect{|p|p.amount||0}.join(' + ')}#{error_adjustement_calculation} = #{due_date.total_amounts.to_f.round_to(2)} ≠ #{due_date.net_to_paid.to_f.round_to(2)})") unless due_date.paid?
     end
     
     errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
@@ -506,6 +509,21 @@ class Invoice < ActiveRecord::Base
     errors.add(:due_dates) unless due_dates.reject{ |d| d.errors.empty? }.empty?
   end
   
+  def validates_integrity_of_product_items
+    return unless status_invoice? or balance_invoice?
+    
+    delivery_note_items_sum = {}
+    delivery_note_invoices.reject(&:should_destroy).collect(&:delivery_note).collect(&:delivery_note_items).flatten.each do |i|
+      p_id = i.quote_item.product_id
+      ( delivery_note_items_sum[p_id] = ( delivery_note_items_sum[p_id] || 0 ) + i.quantity ) if i.quantity > 0
+    end
+    
+    product_items_sum = {}
+    product_items.each{ |i| product_items_sum[i.product_id] = i.quantity if i.quantity > 0 }
+    
+    errors.add(:invoice_items, "La liste des produits qui composent la facture est incorrecte. Elle ne correspond pas aux produits livrés dans le(s) 'Bon de Livraison' associé(s) (#{product_items_sum.inspect} - #{delivery_note_items_sum.inspect} = #{product_items_sum.diff(delivery_note_items_sum).inspect})") if product_items_sum != delivery_note_items_sum
+  end
+  
   def unpaid_due_dates
     due_dates.reject(&:was_paid?)
   end
@@ -519,8 +537,8 @@ class Invoice < ActiveRecord::Base
     due_dates.reject(&:should_destroy?).collect{ |d| d.net_to_paid }.sum
   end
   
-  def total_of_due_dates_equal_to_net_to_paid?
-    total_of_due_dates.round_to(2) == net_to_paid.round_to(2) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
+  def total_of_due_dates_equal_to_net_to_paid? #TODO test if 'to_f' don't fail the calculation
+    total_of_due_dates.to_f.round_to(2) == net_to_paid.to_f.round_to(2) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
   end
   
   def product_items
@@ -535,6 +553,11 @@ class Invoice < ActiveRecord::Base
     customer = order ? order.customer : nil
     return false unless customer and invoice_type
     return customer.factorised? && invoice_type.factorisable
+  end
+  
+  # return if invoice is currently associated to all order's unbilled_delivery_notes
+  def associated_to_all_unbilled_delivery_notes?
+    ( order.unbilled_delivery_notes - delivery_note_invoices.reject(&:should_destroy?).collect(&:delivery_note) ).empty?
   end
   
   def associated_quote
@@ -567,8 +590,8 @@ class Invoice < ActiveRecord::Base
     due_dates.collect{ |d| d.total_amounts }.sum
   end
   
-  def balance_to_be_paid
-    ( net_to_paid.round_to(2) - already_paid_amount.round_to(2) ) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
+  def balance_to_be_paid #TODO test if 'to_f' don't fail the calculation
+    ( net_to_paid.to_f.round_to(2) - already_paid_amount.to_f.round_to(2) ) # without 'round_to', the 2 values can be different with very very small variation (eg: 7.27595761418343e-12)
   end
   
   def really_totally_paid?
@@ -579,7 +602,6 @@ class Invoice < ActiveRecord::Base
     return nil unless deposit and deposit_amount and deposit_vat
     new_attributes = {  :product_id   => nil,
                         :quantity     => 1,
-                        :prizegiving  => 0,
                         :unit_price   => deposit_amount_without_taxes,
                         :vat          => deposit_vat,
                         :name         => "Acompte de #{deposit}% pour avance sur chantier",
@@ -589,25 +611,64 @@ class Invoice < ActiveRecord::Base
     free_item.attributes = new_attributes
   end
   
-  def build_invoice_items_from(delivery_note)
+  def build_or_update_invoice_items_from(delivery_note, should_destroy = false)
     return if delivery_note.nil? or delivery_note.new_record?
     
     delivery_note.delivery_note_items.each do |item|
-      product = item.quote_item.product
-      invoice_items.build( :product_id  => product.id,
-                           :quantity    => item.quantity,
-                           :prizegiving => product.prizegiving,
-                           :name        => product.name,
-                           :description => product.description )
+      existing_invoice_item = invoice_items.detect{ |i| i.product_id == item.quote_item.product_id }
+      
+      if should_destroy
+        if existing_invoice_item
+          existing_invoice_item.quantity -= item.really_delivered_quantity
+        end
+    else
+        if existing_invoice_item
+          existing_invoice_item.quantity += item.really_delivered_quantity if existing_invoice_item.new_record?
+        elsif item.really_delivered_quantity > 0
+          invoice_items.build( :product_id  => item.quote_item.product_id,
+                               :quantity    => item.really_delivered_quantity )
+        end
+      end
     end
   end
   
-  def build_invoice_items_from_associated_delivery_notes
+  def build_or_update_invoice_items_from_associated_delivery_notes
     return unless order
-    delivery_note_invoices.collect(&:delivery_note).each do |delivery_note|
-      build_invoice_items_from(delivery_note)
+    
+    # build or update invoice_items
+    #delivery_note_invoices.reject(&:should_destroy?).select(&:new_record?).collect(&:delivery_note).each do |delivery_note|
+    delivery_note_invoices.reject(&:should_destroy?).collect(&:delivery_note).each do |delivery_note|
+      build_or_update_invoice_items_from(delivery_note)
     end
-    return invoice_items
+    
+    # mark for destroy invoice_items
+    delivery_note_invoices.select(&:should_destroy?).collect(&:delivery_note).each do |delivery_note|
+      build_or_update_invoice_items_from(delivery_note, true)
+    end
+  end
+  
+  # attributes = array of ids of delivery_notes to associate => ["1","2"]
+  def delivery_note_invoice_attributes=(ids)
+    # mark delivery_note_invoice for destroy if the element is not in the array
+    delivery_note_invoices.each do |i|
+      i.should_destroy = true unless ids.map(&:to_s).include?(i.delivery_note_id.to_s)
+    end
+    
+    # build delivery_note_invoice
+    for id in ids
+      id = id.to_i
+      delivery_note_invoices.build(:delivery_note_id => id) unless delivery_note_invoices.detect{ |x| x.delivery_note_id == id }
+    end
+  end
+  
+  def save_delivery_note_invoices
+    delivery_note_invoices.each do |i|
+      if i.new_record?
+        i.save(false)
+      elsif i.should_destroy?
+        i.destroy
+      end
+    end
   end
   
   def invoice_item_attributes=(invoice_item_attributes)
@@ -623,8 +684,13 @@ class Invoice < ActiveRecord::Base
   
   def save_invoice_items
     return if confirmed_at_was
+    
     invoice_items.each do |i|
-      i.save(false)
+      if i.should_destroy?
+        i.destroy
+      else
+        i.save(false)
+      end
     end
   end
   
@@ -792,16 +858,16 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_create_deposit_invoice?
-    order and order.signed_quote and !order.deposit_invoice
+    order and order.signed_quote and !order.deposit_invoice and ( !order.all_is_delivered? or ( order.all_is_delivered? and !order.all_signed_delivery_notes_are_billed? ) )
   end
   
   def can_create_status_invoice?
     unbilled_delivery_notes = order.unbilled_delivery_notes.count
-    order and ( unbilled_delivery_notes > 1 or ( unbilled_delivery_notes == 1 and !order.all_is_delivered_or_scheduled? ) )
+    order and ( unbilled_delivery_notes > 1 or ( unbilled_delivery_notes == 1 and !order.all_is_delivered? ) )
   end
   
   def can_create_balance_invoice?
-    order and !order.balance_invoice and order.all_is_delivered_or_scheduled?
+    order and order.all_is_delivered? and !order.all_signed_delivery_notes_are_billed?
   end
   
   def can_create_asset_invoice?
@@ -921,19 +987,19 @@ class Invoice < ActiveRecord::Base
   end
   
   def can_be_edited?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_deleted?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_confirmed?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_cancelled?
-    was_confirmed? or was_sended?
+    !new_record? and ( was_confirmed? or was_sended? )
   end
   
   def can_be_sended?

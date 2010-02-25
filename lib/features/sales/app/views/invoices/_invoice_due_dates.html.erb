@@ -7,10 +7,10 @@ due_dates_to_remove = invoice.due_dates.select(&:should_destroy?)
 range = (Invoice::MIN_DUE_DATES..Invoice::MAX_DUE_DATES)
 select_disabled = ( invoice.factorised? && invoice.due_dates.size == 1 ) ? true : false
 
-notification_hidden = invoice.total_of_due_dates_equal_to_net_to_paid? ? ' hidden' : ''
+notification_hidden = invoice.total_of_due_dates_equal_to_net_to_paid? ? 'display:none' : ''
 %>
 
-<p id="due_date_amounts_notification" class="notification<%= notification_hidden %>">Des modifications ont été apportées sur le montant total de la facture ou sur les montants des échéances.<br/><%= link_to_function "Cliquez-ici pour actualiser le montant de votre solde", 'javascript:refresh_due_dates()' %></p>
+<p id="due_date_amounts_notification" class="notification" style="<%= notification_hidden %>">Des modifications ont été apportées sur le montant total de la facture ou sur les montants des échéances.<br/><%= link_to_function "Cliquez-ici pour actualiser le montant de votre solde", 'javascript:refresh_due_dates()' %></p>
 
 <% if is_form_view? %>
 <p>

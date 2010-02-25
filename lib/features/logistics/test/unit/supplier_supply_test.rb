@@ -113,18 +113,18 @@ class SupplierSupplyTest < ActiveSupport::TestCase
 
   def test_stock_flows
     create_supplier_supplies
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10)
     assert_equal @vis_ss.stock_flows, StockFlow.find(:all, :conditions => ["supply_id = ? AND supplier_id = ?", @vis_ss.supply.id, @vis_ss.supplier.id]), "this should be @vis_ss.stock_flows"
   end
 
   def test_average_unit_price_and_stock_quantity_and_stock_value_over_time
     create_supplier_supplies
 
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10,false,Date.today-50)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10,false,Date.today-50)
     sleep(0.5)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10,true,Date.today-20) #with adjustment
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,10,true,Date.today-20) #with adjustment
     sleep(0.5)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,10)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,10)
     
     
     @ss = SupplierSupply.find(@vis_ss.id)
@@ -152,15 +152,15 @@ class SupplierSupplyTest < ActiveSupport::TestCase
   def test_empty_stock
     create_supplier_supplies
   
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,3900000,false,Date.today,1,0)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,3900000,false,Date.today,1,0)
     sleep(1)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,1000000,true,Date.today,5,0) #with adjustment
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,1000000,true,Date.today,5,0) #with adjustment
     sleep(1)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,3000000,false,Date.today)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,3000000,false,Date.today)
     sleep(1)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,2000000,true,Date.today,7,0) #with adjustment
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,true,2000000,true,Date.today,7,0) #with adjustment
     sleep(1)
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,3900000,false,Date.today)
+    flunk "stock flow must be saved" unless new_stock_flow(@vis_ss.supply,@vis_ss.supplier,false,3900000,false,Date.today)
     assert_equal 0.0, @vis_ss.stock_quantity.to_f, "these two should be equal as the stock has been emptied"
     assert_equal 0.0, @vis_ss.stock_value.to_f, "these two should be equal as the stock has been emptied"
     assert_equal 0.0, @vis_ss.average_unit_price.to_f, "these two should be equal as the stock has been emptied"

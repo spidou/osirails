@@ -67,7 +67,7 @@ class QuoteTest < ActiveSupport::TestCase
       @quote_items = @quote.quote_items.collect(&:id)
       @products = @order.products.collect(&:id)
       
-      flunk "@quote should be destroyed to perform the following" unless @quote.destroy
+      flunk "@quote should be destroyed" unless @quote.destroy
     end
     
     teardown do
@@ -115,7 +115,7 @@ class QuoteTest < ActiveSupport::TestCase
         x.times do
           create_valid_product_for(@order)
         end
-        flunk "@order should have #{x} products to perform the following" unless @order.products.count == x
+        flunk "@order should have #{x} products" unless @order.products.count == x
         
         @quote = @order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
         @quote.creator = users(:powerful_user)
@@ -125,7 +125,6 @@ class QuoteTest < ActiveSupport::TestCase
           @order.products.each_with_index do |product, index|
             break if index == y
             @quote.quote_items.build(:product_id            => product.id,
-                                     :order_id              => @order.id,
                                      :name                  => "Product name",
                                      :description           => "Product description",
                                      :dimensions            => "1000x2000",
@@ -135,9 +134,9 @@ class QuoteTest < ActiveSupport::TestCase
                                      :vat                   => 19.6 )
           end
           @quote.save!
-          flunk "@quote should have #{y} quote_items to perform the following, but has <#{@quote.quote_items.count}>" unless @quote.quote_items.count == y
+          flunk "@quote should have #{y} quote_items, but has <#{@quote.quote_items.count}>" unless @quote.quote_items.count == y
         else
-          flunk "@quote should be a new record without any quote_items to perform the following" unless @quote.new_record? and @quote.quote_items.empty?
+          flunk "@quote should be a new record without any quote_items" unless @quote.new_record? and @quote.quote_items.empty?
         end
       end
       
@@ -160,8 +159,8 @@ class QuoteTest < ActiveSupport::TestCase
             
             @params << { :id                    => id,
                          :product_reference_id  => product_reference_id,
-                         :product_id            => product_id,
                          :order_id              => @order.id,
+                         :product_id            => product_id,
                          :name                  => "Product name",
                          :description           => "Product description",
                          :dimensions            => "1000x2000",
@@ -171,8 +170,10 @@ class QuoteTest < ActiveSupport::TestCase
                          :vat                   => 19.6,
                          :should_destroy        => should_destroy }
           end
-          flunk "@params should have #{z} elements to perform the following, but has <#{@params.size}>" unless @params.size == z
-          flunk "quote_item_attributes= should success to perform the following" unless @quote.quote_item_attributes=(@params)
+          flunk "@params should have #{z} elements, but has <#{@params.size}>" unless @params.size == z
+          flunk "quote_item_attributes= should success" unless @quote.quote_item_attributes=(@params)
+          
+          @quote.valid?
         end
         
         teardown do

@@ -22,7 +22,8 @@ class Product < ActiveRecord::Base
   #validates_uniqueness_of :reference #TODO when quote is signed
   
   validates_numericality_of :quantity
-  validates_numericality_of :unit_price, :prizegiving, :vat, :allow_blank => true
+  validates_numericality_of :prizegiving, :allow_nil => true
+  validates_numericality_of :unit_price, :vat, :unless => Proc.new{ |p| p.quote_items.reject{ |i| i.quote.cancelled? }.empty? } # don't run validation if product is associated with at least 1 quote_item which provide from a non-cancelled quote
   
   validates_persistence_of :product_reference_id, :order_id
   

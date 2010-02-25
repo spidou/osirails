@@ -1,8 +1,4 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :possible_actions do %>
-  <%= display_list_button(@step) %>
-<% end %>
-
 <h1>Signaler qu'une relance a été effecutée</h1>
 <%= render :partial => "dunning", :object => @dunning ,:locals => {:submit_button_name => "Ajouter"}%>

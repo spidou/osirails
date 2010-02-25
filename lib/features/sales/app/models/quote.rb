@@ -128,6 +128,7 @@ class Quote < ActiveRecord::Base
     dimensions           = product.dimensions rescue nil # ProductReference do not have dimensions
     quantity             = product.quantity rescue nil   # ProductReference do not have quantity
     unit_price           = product.unit_price
+    prizegiving          = product.prizegiving
     vat                  = product.vat || ( product.product_reference.vat rescue nil )
     product_reference_id = quote_item_attributes[:product_reference_id] || product.product_reference.id
     
@@ -135,8 +136,9 @@ class Quote < ActiveRecord::Base
                               :name                 => name,
                               :description          => description,
                               :dimensions           => dimensions,
-                              :quantity             => quantity,
                               :unit_price           => unit_price,
+                              :prizegiving          => prizegiving,
+                              :quantity             => quantity,
                               :vat                  => vat
                             }.merge(quote_item_attributes)
     
@@ -145,7 +147,7 @@ class Quote < ActiveRecord::Base
   
   def quote_item_attributes=(quote_item_attributes)
     quote_item_attributes.each do |attributes|
-      build_or_update_quote_item(attributes)
+      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
     end
     
     # automatically remove a product from order if quote_items do not include this product
@@ -311,20 +313,20 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_deleted?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_confirmed?
     #was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
-    was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
+    !new_record? and was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
   end
   
   def can_be_cancelled?
-    was_uncomplete? or was_confirmed? or was_sended?
+    !new_record? and ( was_uncomplete? or was_confirmed? or was_sended? )
   end
   
   def can_be_sended?
@@ -354,12 +356,7 @@ class Quote < ActiveRecord::Base
     end
     
     def build_or_update_quote_item(quote_item_attributes)
-      return nil if quote_item_attributes[:product_reference_id].blank?
-      
-      quote_item_attributes[:product_attributes] = quote_item_attributes.reject{ |k,v| [:product_id, :order_id].include?(k.to_sym) }
-      quote_item_attributes[:product_attributes][:id] = quote_item_attributes[:product_id]
-      quote_item_attributes.delete(:product_reference_id)
-      quote_item_attributes[:order_id] = self.order_id
+      quote_item_attributes.merge(:order_id => order_id)
       
       if quote_item_attributes[:id].blank?
         quote_item = quote_items.build(quote_item_attributes)

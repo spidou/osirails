@@ -3,29 +3,25 @@ press_proofs = press_proofs_list
 products = press_proofs.collect(&:product).uniq
 %>
 
-<% if press_proofs and !press_proofs.empty? %>
-  <table id="press_proofs_list">
-    <tr>
-      <th rowspan="2">Produit</th>
-      <th rowspan="2">Qté</th>
-      <th rowspan="2">Réf.</th>
-      
-      <th colspan="3">Maquettes</th>
-      
-      <th rowspan="2">Contact graphique</th>
-      <th rowspan="2">Émis le</th>
-      <th rowspan="2">BAT envoyé le</th>
-      <th rowspan="2">BAT signé le</th>
-      <th rowspan="2">État relance</th>
-      <th rowspan="2">Actions</th>
-    </tr>
-    <tr>
-      <th>N°</th>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-    <%= render :partial => "press_proofs/product_in_one_line", :collection => products, :locals => { :press_proofs => press_proofs } %>
-  </table>
-<% else %>
-  <p>Aucun Bon &agrave; Tirer (BAT) n&apos;a &eacute;t&eacute; trouv&eacute;</p>
-<% end %>
+<table id="press_proofs_list">
+  <tr>
+    <th rowspan="2">Produit</th>
+    <th rowspan="2">Qté</th>
+    <th rowspan="2">Réf.</th>
+    
+    <th colspan="3">Maquettes</th>
+    
+    <th rowspan="2">Contact graphique</th>
+    <th rowspan="2">Émis le</th>
+    <th rowspan="2">BAT envoyé le</th>
+    <th rowspan="2">BAT signé le</th>
+    <th rowspan="2">État relance</th>
+    <th rowspan="2">Actions</th>
+  </tr>
+  <tr>
+    <th>N°</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <%= render :partial => "press_proofs/product_in_one_line", :collection => products, :locals => { :press_proofs => press_proofs } %>
+</table>

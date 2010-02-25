@@ -7,11 +7,11 @@
 <%
 require_locals form
 
-invoice = invoice_header
-order = invoice.order
+invoice                 = invoice_header
+order                   = invoice.order
 default_bill_to_address = order.customer.bill_to_address
-quote = order.signed_quote
-delivery_notes = order.unbilled_delivery_notes
+quote                   = invoice.associated_quote
+delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note)
 %>
 
 <div id="invoice_header">
@@ -53,15 +53,22 @@ delivery_notes = order.unbilled_delivery_notes
   <h3>Références</h3>
   <p>
     <label>Devis signé :</label>
-    <%= link_to(quote.public_number, order_commercial_step_estimate_step_quote_path(order, quote)) %>&nbsp;
+    <%= link_to(quote.public_number, order_commercial_step_estimate_step_quote_path(order, quote)) %>
     <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
   </p>
   
-  <p>
-    <label>Bons de livraison signés et non facturés :</label>
-    #TODO
-    <% for dn in delivery_notes %>
-      <%= form.check_box :delivery_note_invoices %>
-    <% end %>
-  </p>
+  <div class="form_multiple_entries">
+    <%= form.label :delivery_note_invoices %>
+    <div class="collection">
+      <% for delivery_note in delivery_notes %>
+        <div class="object">
+          <label>
+            <%= link_to(delivery_note.reference, order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note)) %>
+            <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf)) %>
+          </label>
+        </div>
+      <% end %>
+      
+    </div>
+  </div>
 </div>

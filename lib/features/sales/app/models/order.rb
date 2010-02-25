@@ -32,7 +32,8 @@ class Order < ActiveRecord::Base
   has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
   
   # invoices
-  has_many :invoices
+  has_many :invoices, :order => "invoices.created_at DESC"
+  has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses
   has_many :products, :conditions => [ "cancelled_at IS NULL" ]
@@ -82,14 +83,42 @@ class Order < ActiveRecord::Base
   @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
   @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
   
+  # return all delivery_notes with an active invoice
+  # delivery_notes_with_invoice
   def billed_delivery_notes
-    #OPTIMIZE use relationship with custom sql request to replace that
     signed_delivery_notes.select{ |dn| dn.billed? }
   end
   
+  # return all delivery_notes with an active and confirmed invoice
+  # delivery_notes_with_confirmed_invoice
+  def confirmed_billed_delivery_notes
+    signed_delivery_note.select{ |dn| dn.billed_and_confirmed? }
+  end
+  
+  # return all delivery_notes without active invoice, and with at least 1 delivered product
+  # delivery_notes_without_invoice
   def unbilled_delivery_notes
-    #OPTIMIZE use relationship with custom sql request to replace that
-    signed_delivery_notes.select{ |dn| !dn.billed? }
+    signed_delivery_notes.select{ |dn| !dn.billed? and dn.number_of_delivered_pieces > 0 }
+  end
+  
+  # return all delivery_notes without active and confirmed invoice, and with at least 1 delivered product
+  def delivery_notes_without_confirmed_invoice
+    signed_delivery_notes.select{ |dn| !dn.billed_and_confirmed? and dn.number_of_delivered_pieces > 0 }
+  end
+  
+  def all_is_delivered_or_scheduled?
+    return false if delivery_notes.actives.empty? or signed_quote.nil?
+    delivery_notes.actives.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
+  end
+  
+  def all_is_delivered?
+    return false if signed_delivery_notes.empty? or signed_quote.nil?
+    signed_delivery_notes.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
+  end
+  
+  def all_signed_delivery_notes_are_billed?
+    return false if signed_delivery_notes.empty?
+    unbilled_delivery_notes.empty?
   end
   
   def deposit_invoice
@@ -100,17 +129,12 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
   end
   
-  def balance_invoice
-    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  def balance_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
   end
   
   def asset_invoices
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
-  end
-  
-  def all_is_delivered_or_scheduled?
-    return false if delivery_notes.actives.empty? or signed_quote.nil?
-    delivery_notes.actives.collect{ |dn| dn.number_of_pieces }.sum == signed_quote.number_of_pieces
   end
   
   def build_delivery_note_with_remaining_products_to_deliver
@@ -135,6 +159,21 @@ class Order < ActiveRecord::Base
     invoice.deposit_vat     = ConfigurationManager.sales_deposit_tax_coefficient.to_f
     
     invoice.build_or_update_free_item_for_deposit_invoice
+    
+    return invoice
+  end
+  
+  # +invoice_type_name+ may be +Invoice::STATUS_INVOICE+ or +Invoice::BALANCE_INVOICE+
+  def build_invoice_from(delivery_notes, invoice_type_name)
+    return if delivery_notes.empty? or !delivery_notes.select(&:new_record?).empty?
+    
+    invoice = invoices.build(:invoice_type_id => InvoiceType.find_by_name(invoice_type_name).id)
+    
+    for delivery_note in delivery_notes
+      invoice.delivery_note_invoices.build(:delivery_note_id => delivery_note.id)
+    end
+    
+    invoice.build_or_update_invoice_items_from_associated_delivery_notes
     
     return invoice
   end
