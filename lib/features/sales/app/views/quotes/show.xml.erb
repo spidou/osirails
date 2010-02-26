@@ -85,7 +85,7 @@
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
       <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
-      <DutyFreeDeposit><%= @quote.deposit %></DutyFreeDeposit>
+      <Deposit><%= @quote.deposit %></Deposit>
     </SalesTerms>
   </Document>
   <Labels>
@@ -120,8 +120,8 @@
     <InclusiveOfTaxMisc>Divers TTC :</InclusiveOfTaxMisc>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>
-    <QuoteValidity>Durée de validité du devis</QuoteValidity>
-    <Deposit>Acompte (%)</Deposit>
+    <QuoteValidity>Durée de validité du devis :</QuoteValidity>
+    <Deposit>Acompte (%) :</Deposit>
     <DeliveryDelay>Délai de livraison :</DeliveryDelay>
     <Agreement>SIGNATURE</Agreement>
     <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>

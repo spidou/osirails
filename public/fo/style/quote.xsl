@@ -271,59 +271,27 @@
                   </fo:table-cell>
                 </fo:table-row>
                 <fo:table-row keep-with-next="always" font-size="8.0px" page-break-inside="avoid">
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" number-columns-spanned="3">
+                  <fo:table-cell text-align="center" display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" number-columns-spanned="5">
                     <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center" font-weight="bold">
-                       <xsl:value-of select="../Labels/QuoteValidity"/>
+                      <fo:block>  
+                        <fo:inline text-align="center" font-weight="bold">
+                         <xsl:value-of select="../Labels/QuoteValidity"/>
+                        </fo:inline>&#160;
+                        <fo:inline text-align="center">
+                          <xsl:value-of select="SalesTerms/QuoteValidity"/>
+                        </fo:inline>
                       </fo:block>
                     </fo:block-container>
                   </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                  <fo:table-cell text-align="center" display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" number-columns-spanned="5">
                     <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center">
-                        <xsl:value-of select="SalesTerms/QuoteValidity"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center" font-weight="bold">
-                        <xsl:value-of select="../Labels/DutyFreeDeposit"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center">
-                        <xsl:value-of select="SalesTerms/DutyFreeDeposit"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center" font-weight="bold">
-                        <xsl:value-of select="../Labels/DepositTaxCoefficient"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center">
-                        <xsl:value-of select="SalesTerms/DepositTaxCoefficient"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center" font-weight="bold">
-                        <xsl:value-of select="../Labels/InclusiveOfTaxDeposit"/>
-                      </fo:block>
-                    </fo:block-container>
-                  </fo:table-cell>
-                  <fo:table-cell display-align="center" padding="1pt" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
-                    <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                      <fo:block text-align="center">
-                        <xsl:value-of select="SalesTerms/InclusiveOfTaxDeposit"/>
+                      <fo:block>  
+                        <fo:inline text-align="center" font-weight="bold">
+                         <xsl:value-of select="../Labels/Deposit"/>
+                        </fo:inline>&#160;
+                        <fo:inline text-align="center">
+                          <xsl:value-of select="SalesTerms/Deposit"/>
+                        </fo:inline>
                       </fo:block>
                     </fo:block-container>
                   </fo:table-cell>
