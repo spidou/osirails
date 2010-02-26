@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <Root>
   <Document>
+    <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
     <Type>Devis</Type>
-    <Prefix></Prefix>
-    <Number><%= @quote.public_number %></Number>
-    <Date><%= Date.today.strftime("%d %B %Y")%></Date>
+    <Reference><%= @quote.public_number %></Reference>
+    <Date><%= Date.today.strftime("%d %B %Y") %></Date>
     <Currency>EUROS (€)</Currency>  
-    <FileNumber><%= @quote.order.id %></FileNumber>
     <FileName><%= @quote.order.title%></FileName>
     <Supplier>
       <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
@@ -30,7 +29,7 @@
         <Phone/>
         <Fax/>      
       </Representative>
-      <LogoURL/>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
     <Customer>
       <CorporateName><%= @quote.order.customer.name %></CorporateName>

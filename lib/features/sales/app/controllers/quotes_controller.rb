@@ -193,9 +193,9 @@ class QuotesController < ApplicationController
         `cp -f #{xsl_path} #{modified_xsl_path}`
 
         if total_pages == 1
-          optimum_offset_value = 555000
+          optimum_offset_value = 524700 # FIXME This value must change if the size of all elements before the table change
         else
-          optimum_offset_value = 715000
+          optimum_offset_value = 715000 # This value should normally be constant
         end
         
         if offset_value < optimum_offset_value
