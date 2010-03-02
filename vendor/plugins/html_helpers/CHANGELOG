@@ -1,0 +1,8 @@
+*1.1.1* 22 August 2006
+
+* module Leftbee::HTMLHelper renamed to Leftbee::HTMLHelpers to be consistent with the name of the plugin and the documentation!
+
+
+*1.1* 21 August 2006
+
+* Slight refactoring to allow the inclusion of the helpers in any class more easily.

@@ -1,0 +1,20 @@
+<%= order_header %>
+
+<%= generate_invoice_contextual_menu_partial %>
+
+<h1>Annuler cette facture</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>
+  
+	<% form_for @invoice, :url => { :controller => "invoices", :action => "cancel", :order_id => @order.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :cancelled_comment %>
+      <%= form.text_area_autoresize :cancelled_comment %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

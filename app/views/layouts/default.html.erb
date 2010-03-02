@@ -13,12 +13,14 @@
     <%= javascript_include_tag "display_time" %>
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag "text_area_autoresize" %>
+    <%= javascript_include_tag "strftime" %>
+    
     <%= daynames_and_monthnames_retrieval %>   
     
     <%= yield :header %>
 		<title>Page d'accueil - Intranet d'EMR [Enseigne, Maintenance Réunion]</title>
 	</head>
-	<body>  
+	<body>
     <!-- BANNIERE -->
     <div id="banner">
       <div id="logo"> 
@@ -26,14 +28,12 @@
       </div>	
       <div id="background_banner">
         <div id="block_button_banner">
-          <div id="button_on_banner">
-            <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
-            <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
-            <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
-          </div>
-          <div id="banner_datetime">
-            <p><%= display_date_time %></p>
-          </div>
+          <a class="button_banner" href="<%= root_path %>"><span>Ma page d'accueil</span></a>
+          <a class="button_banner" href="<%= search_path %>"><span>Rechercher</span></a>
+          <a class="button_banner" href="<%= logout_url %>"><span>Se déconnecter</span></a>
+        </div>
+        <div id="banner_datetime">
+          <p><%= display_date_time %></p>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
       <div id="nav">
         <%= display_menu %>
       </div>
-      <div id="page">	<!-- CONTENT OF THE PAGE -->
+      <div id="page">
         <div id="content_page">
           <%= display_flash %>
           
@@ -60,7 +60,7 @@
         
           <%= yield %>
           
-          <p><%= link_to 'Retour', :back %></p>
+          <p class="link_back"><%= link_to '&lt;&lt; Page précédente', :back %></p>
           
         </div> <!-- CONTENT_PAGE : END -->
         <%= display_contextual_menu %>
@@ -73,6 +73,7 @@
             <img class="bottom_icons" src="/images/valid-xhtml.png" alt="Valid XHTML 1.0 Strict" height="15" width="80" />
           </a>
         </p>
+        <%= display_version %>
       </div> <!-- FOOTER : END -->
     </div> <!-- BLOCK_BODY : FIN-->
 	</body>

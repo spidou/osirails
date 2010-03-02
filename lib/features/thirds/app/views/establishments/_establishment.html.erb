@@ -1,0 +1,21 @@
+<%
+require_locals establishments_owner
+force_show_view ||= false
+id_attr = "id=\"resource_establishment_#{establishment.id}\"" unless establishment.new_record?
+%>
+
+<div class="establishment resource" <%= id_attr %> >
+  <% unless establishment.new_record? -%>
+    <% content_tag :div, :class => :details do -%>
+      <%= content_tag(:h1, h(establishment.name)) unless establishment.name.blank? %>
+      <% if establishment.address %>
+        <%= content_tag(:span, h(establishment.address.street_name)) %><br/>
+        <%= content_tag(:span, h(establishment.address.zip_code)) %><br/>
+        <%= content_tag(:span, h(establishment.address.city_name)) %><br/>
+        <%= content_tag(:span, h(establishment.address.country_name)) %><br/>
+      <% end %>
+    <% end -%>
+  <% end -%>
+  
+  <%= render(:partial => "establishments/establishment_form", :object => establishment, :locals => { :establishments_owner => establishments_owner }) if is_form_view? and !force_show_view %>
+</div>

@@ -1,0 +1,49 @@
+<% tool_class = @tool.class.name.underscore %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= send("new_#{tool_class}_tool_event_link", @tool) if @tool.can_be_edited? %>
+  <%= send("#{tool_class}_link", @tool) %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= send("#{tool_class}s_link") %>
+<% end %>
+
+<%= render :partial => 'tools/header', :locals => {:tool => @tool} %>
+
+<h1>Liste des &eacute;v&egrave;nements</h1>
+
+<div class="presentation_small events">
+  <% if @paginate_tool_events.empty? %>
+    <p>Aucun &eacute;v&egrave;nement</p>
+  <% else %>
+    <table>
+      <tr>
+        <th></th>
+        <th>D&eacute;signation</th>
+        <th>Status</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Acteur interne</th>
+        <th>Actions</th>
+      </tr>
+      
+      <% for tool_event in @paginate_tool_events %>
+      <tr>
+        <td><%= effectives_image(tool_event, @currents_tool_events, @effectives_tool_events) %></td>
+        <td><%= tool_event.name %></td>
+        <td><%= get_status_image(tool_event.status) %></td>
+        <td><%= get_event_type_text(tool_event.event_type)%></td>
+        <td>
+          <%= tool_event.start_date.strftime('%A %d %B %Y') %>
+          <%= " - #{get_end_date(tool_event)}" unless tool_event.event_type_name == 'incident' %>
+        </td>
+        <td><%= get_internal_actor(tool_event) %></td>
+        <td><%= links_for_tool_event(@tool, tool_event) %></td>
+      </tr> 
+      <% end %>
+      
+    </table>
+    <%= will_paginate @paginate_tool_events %>
+  <% end %>
+</div>

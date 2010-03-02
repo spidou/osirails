@@ -1,38 +1,16 @@
 require 'test/test_helper'
 
 class ThirdTest < ActiveSupport::TestCase
-  def test_presence_of_name
-    assert_no_difference 'Third.count' do
-      third = Third.create
-      assert_not_nil third.errors.on(:name), "A Third should have a name"
-    end
-  end
-
-  def test_presence_of_legal_form
-    assert_no_difference 'Third.count' do
-      third = Third.create
-      assert_not_nil third.errors.on(:legal_form), "A Third should have a legal form"
-    end
-  end
-
-  def test_presence_of_siret_number
-    assert_no_difference 'Third.count' do
-      third = Third.create
-      assert_not_nil third.errors.on(:siret_number), "A Third should have a siret number"
-    end
-  end
-
-  def test_presence_of_activity_sector
-    assert_no_difference 'Third.count' do
-      third = Third.create
-      assert_not_nil third.errors.on(:activity_sector), "A Third should have a activity sector"
-    end
-  end
-
-  def test_format_of_siret_number
-    assert_no_difference 'Third.count' do
-      third = Third.create(:siret_number => 1)
-      assert_not_nil third.errors.on(:siret_number), "A Third should have a siret number with a good format"
-    end
-  end
+  
+  should_belong_to :activity_sector, :legal_form
+  
+  should_validate_presence_of :name
+  should_validate_presence_of :legal_form, :activity_sector, :with_foreign_key => :default
+  
+  should_allow_values_for :siret_number, "12345678901234", "09876543210987"
+  should_not_allow_values_for :siret_number, "azert", "azertyuiopqsdf", "1234567890123", "123456789012345", "1234567890123a", "", nil
+  
+  should_allow_values_for :website, "http://www.mywebsite.com", "https://website.fr", "", nil
+  should_not_allow_values_for :website, "www.website.com", "website", "http://website", "http://website."
+  
 end

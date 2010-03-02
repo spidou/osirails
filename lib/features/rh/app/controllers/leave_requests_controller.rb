@@ -74,7 +74,7 @@ class LeaveRequestsController < ApplicationController
         render :action => :check_form
       end
     else
-      error_access_page(422)
+      error_access_page(403)
     end
   end
   
@@ -92,7 +92,7 @@ class LeaveRequestsController < ApplicationController
         render :action => :notice_form
       end
     else
-      error_access_page(422)
+      error_access_page(403)
     end
   end
   
@@ -111,7 +111,7 @@ class LeaveRequestsController < ApplicationController
         render :action => :close_form
       end
     else
-      error_access_page(422)
+      error_access_page(403)
     end
   end
   
@@ -127,7 +127,7 @@ class LeaveRequestsController < ApplicationController
       end
       redirect_to(leave_requests_url)
     else
-      error_access_page(422)
+      error_access_page(403)
     end
   end
   

@@ -1,0 +1,55 @@
+<%
+require_locals mockups
+press_proof           = press_proof_mockups
+graphic_item_versions = press_proof.get_all_graphic_item_versions # permit to get also the unsaved graphic_item_versions
+selected_mockups      = press_proof.get_selected_mockups
+unselected_mockups    = press_proof.get_unselected_mockups
+%>
+
+<% if is_form_view? %>
+  <p>Liste des maquettes disponibles pour le produit concerné</p>
+  <div id="mockups_list">
+    <%= render :partial => "minimal_mockup", :collection => mockups, :locals => { :product_id => press_proof.product_id,
+                                                                                  :selected_mockups => selected_mockups }%>
+  </div>
+  
+  <p>Glissez ICI les Maquettes que vous voulez ajouter au BAT</p>
+  <div id="droppable_div" class="press_proof_mockups_container">
+    <%= render :partial => "selected_graphic_item_version", :collection => graphic_item_versions, :locals => { :unselected_mockups => unselected_mockups,
+                                                                                                               :press_proof => press_proof } %>
+  </div>
+  
+  <script type="text/javascript">
+    if ($('press_proof_product_id') != null ){
+      var selected_index = $('press_proof_product_id').selectedIndex; // save the selected_index to permit to cancel the selection
+    }
+    Droppables.add('droppable_div', { 
+      accept: 'draggable',
+      hoverclass: 'hover',
+      onDrop: function(element)
+      {
+        if(show_selected_mockup(element) == false){
+          var path = '<%= order_commercial_step_press_proof_step_add_mockup_path(@order) %>';
+          new Ajax.Request(path, {
+            method: 'get',
+            parameters: 'position='+ new_element_position() +
+                        '&mockup_version_id='+ $(element).down('.version_id').value
+                        <%= "+ '&press_proof_id=#{press_proof.id}'" unless press_proof.new_record? %>,
+            onComplete: function(element)
+            {
+              update_all_action_links();
+            }
+          })
+        }
+        $(element).hide();
+      }
+    });
+    
+  </script>
+<% else %>
+
+  <div class="press_proof_mockups_container">
+    <%= render :partial => "minimal_mockup", :collection => mockups %>
+  </div>
+
+<% end %>

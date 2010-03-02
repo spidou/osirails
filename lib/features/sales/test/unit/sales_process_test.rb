@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'test/test_helper'
 
 class SalesProcessTest < ActiveSupport::TestCase
   def test_presence_of_order_type_id

@@ -1,0 +1,46 @@
+<%
+delivery_note = delivery_note_in_one_line
+order = delivery_note.order
+
+status = delivery_note.status ? " #{delivery_note.status}_delivery_note" : ''
+title = delivery_note.status ? " title=\"#{delivery_note.status.titleize} delivery_note\"" : ''
+
+all_interventions = delivery_note.delivery_interventions.reject(&:new_record?)
+
+interventions_limit = 2 # set up the number of interventions we want to display into the delivery_note line (set 0 to display all)
+interventions = all_interventions[0..(interventions_limit-1)]
+
+rowspan_value = all_interventions.size > interventions.size ? interventions_limit + 1 : interventions.size
+rowspan = rowspan_value > 0 ? "rowspan=\"#{rowspan_value}\"" : ''
+%>
+
+<tr class="delivery_note<%# status %>"<%= title %>>
+  <td <%= rowspan %>><%= delivery_note.reference %></td>
+  <td <%= rowspan %>><%= delivery_note.published_on.humanize if delivery_note.published_on %></td>
+  <td <%= rowspan %>><%= delivery_note.delivery_note_type.title %></td>
+  <td <%= rowspan %>><%= "#{delivery_note.number_of_pieces} / #{delivery_note.associated_quote.number_of_pieces}" %></td>
+  <% if interventions.empty? %>
+    <td>-</td>
+    <td>-</td>
+  <% else %>
+    <% intervention = interventions.shift %>
+    <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line_in_delivery_note', :object => intervention %>
+  <% end %>
+  <td <%= rowspan %> ><%= "#{delivery_note.number_of_delivered_pieces} / #{delivery_note.number_of_pieces}" if delivery_note.delivered_delivery_intervention %></td>
+  <td <%= rowspan %> ><%= delivery_note.signed_on.humanize if delivery_note.signed_on %></td>
+  <td <%= rowspan %> class="actions">
+    <%= display_delivery_note_action_buttons(@order, delivery_note) %>
+  </td>
+</tr>
+
+<% for intervention in interventions %>
+  <tr>
+    <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line_in_delivery_note', :object => intervention %>
+  </tr>
+<% end %>
+
+<% if all_interventions.size > interventions.size + 1 %>
+  <tr>
+    <td colspan="2"><%= link_to "Voir toutes les interventions", order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, options = { :tab => 'interventions' }) %></td>
+  </tr>
+<% end %>

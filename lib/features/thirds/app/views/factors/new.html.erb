@@ -1,0 +1,6 @@
+<% add_contextual_menu_item :useful_links do %>
+  <%= factors_link %>
+<% end %>
+
+<h1>Nouvelle société d'affacturage</h1>
+<%= render :partial => @factor, :locals => { :submit_button_name => "Ajouter"} %>

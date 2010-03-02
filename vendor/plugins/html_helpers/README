@@ -1,0 +1,44 @@
+HtmlHelpers 1.1.1
+=================
+
+This plugin lets you encode and decode (UTF-8) strings using HTML entities.
+Two new methods will be automatically available in your views:
+
+* encode_entities: Encodes a string into a string with HTML entities:
+
+>> <%= encode_entities("Über geek") %>
+=> "&Uuml;ber geek"
+
+* decode_entities: Decodes a string with HTML entities into a string:
+
+>> <%= decode_entities("&Uuml;ber geek") %>
+=> "Über geek"
+
+
+What's new in 1.1
+=================
+
+Now it's possible to include the helpers in other classes easily by just including Leftbee::HTMLHelpers in your class.
+
+If you *really* need to to use the helpers in a model you can do it like this:
+
+class Person < ActiveRecord::Base
+  include Leftbee::HTMLHelpers
+end
+
+or a controller:
+
+class PersonController < ApplicationController
+  include Leftbee::HTMLHelpers
+end
+
+etc.
+
+
+Note: Don't feed the helpers with anything else but UTF-8. If you really need to, convert your string to UTF-8 first using Iconv (http://www.ruby-doc.org/stdlib/libdoc/iconv/rdoc/index.html)
+
+A basic test unit is included.
+
+
+HTMLHelpers is copyright (c) 2006 Ruben Nine (ruben.nine@gmail.com), released under the MIT license
+HTMLEntities is copyright (c) 2005-2006 Paul Battley, released under the MIT license

@@ -1,7 +1,7 @@
 class CreateEmployeesJobs < ActiveRecord::Migration
   def self.up
-    create_table :employees_jobs do |t|
-      t.integer :job_id, :employee_id
+    create_table :employees_jobs, :id => false do |t|
+      t.references :job, :employee
       t.timestamps
     end
   end

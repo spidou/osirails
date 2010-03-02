@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<Root>
+  <Document>
+    <Type>Devis</Type>
+    <Reference><%= @quote.reference %></Reference>
+    <Date><%= Date.today.strftime("%d %B %Y")%></Date>
+    <Currency>EUROS (€)</Currency>  
+    <FileName><%= @quote.order.title%></FileName>
+    <Supplier>
+      <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
+      <CorporateName2><%= ConfigurationManager.admin_society_identity_configuration_acronym %></CorporateName2>
+      <Address1><%= ConfigurationManager.admin_society_identity_configuration_address_first_line %></Address1>
+      <Address2><%= ConfigurationManager.admin_society_identity_configuration_address_second_line %></Address2>
+      <ZipCode><%= ConfigurationManager.admin_society_identity_configuration_address_zip %></ZipCode>
+      <City><%= ConfigurationManager.admin_society_identity_configuration_address_town %></City>
+      <Country><%= ConfigurationManager.admin_society_identity_configuration_address_country %></Country>
+      <Status><%= ConfigurationManager.admin_society_identity_configuration_status %></Status>
+      <Siret><%= ConfigurationManager.admin_society_identity_configuration_siret %></Siret>
+      <NAFCode><%= ConfigurationManager.admin_society_identity_configuration_naf_code %></NAFCode>
+      <Email><%= ConfigurationManager.admin_society_identity_configuration_email %></Email>
+      <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
+      <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
+      <Representative>
+        <Function><%= @quote.order.commercial.jobs.first.name %></Function>
+        <LastName><%= @quote.order.commercial.last_name %></LastName>
+        <FirstName><%= @quote.order.commercial.first_name %></FirstName>
+        <Email><%= @quote.order.commercial.email %></Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+      <LogoURL/>
+    </Supplier>  
+    <Customer>
+      <CorporateName><%= @quote.order.customer.name %></CorporateName>
+      <CorporateName2><%= @quote.order.customer.name %></CorporateName2>
+      <Address1><%= @quote.bill_to_address.street_name %></Address1>
+      <Address2></Address2>
+      <ZipCode><%= @quote.bill_to_address.zip_code %></ZipCode>
+      <City><%= @quote.bill_to_address.city_name %></City>
+      <Country><%= @quote.bill_to_address.country_name %></Country>
+      <Email/>
+      <Phone/>
+      <Fax/>
+      <Representative>
+        <Function/>
+        <LastName><%= @quote.contact.last_name %></LastName>
+        <FirstName><%= @quote.contact.first_name %></FirstName>
+        <Email><%= @quote.contact.email %></Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+    </Customer>
+    <Lines>
+      <% @quote.quote_items.each do |item| %>
+        <Line>
+          <Reference><%= item.product.product_reference.reference %></Reference>
+          <Name><%= item.name %></Name>
+          <Description><%= item.description %></Description>
+          <Quantity><%= item.quantity %></Quantity>
+          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
+          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
+          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
+          <VAT><%= @quote.tax_coefficients.index(item.vat)+1 %></VAT>
+        </Line> 
+      <% end %>
+    </Lines>
+    <Taxes>
+      <% @quote.tax_coefficients.each_with_index do |tc,index| %>
+        <VAT>
+          <Code><%= index+1 %></Code>
+          <Coefficient><%= tc %></Coefficient>
+          <TotalDutyFreePrice><%= @quote.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice> 
+          <TotalInclusiveOfTaxPrice><%= (@quote.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice> 
+        </VAT>
+      <% end %>
+    </Taxes>  
+    <TotalDutyFreeGrossPrice><%= @quote.total.to_f.round_to(2).to_s(2) %></TotalDutyFreeGrossPrice>
+    <Prizegiving><%= @quote.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
+    <TotalDutyFreeNetPrice><%= @quote.net.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
+    <Postage><%= @quote.carriage_costs.to_f.round_to(2).to_s(2) %></Postage>
+    <Discount><%= @quote.discount.to_f.round_to(2).to_s(2) %></Discount>
+    <TotalTaxes><%= @quote.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes> 
+    <TotalInclusiveOfTaxNetPrice><%= @quote.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
+    <SalesTerms>
+      <Description><%= @quote.sales_terms %></Description>
+      <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
+      <DutyFreeDeposit><%= @quote.deposit %></DutyFreeDeposit>
+    </SalesTerms>
+  </Document>
+  <Labels>
+    <Siret>SIRET :</Siret>
+    <NAFCode>Code NAF :</NAFCode>
+    <Email>e-mail :</Email>
+    <Phone>tél :</Phone>
+    <Fax>fax :</Fax>
+    <Date>Date :</Date>
+    <Prefix>N°</Prefix>
+    <FileName></FileName>
+    <SupplierPrefix>Suivi commercial</SupplierPrefix>
+    <CustomerPrefix>A l'attention de</CustomerPrefix>
+    <Amount>MONTANTS EN</Amount>
+    <Reference>Réf.</Reference>
+    <Description>Désignation produit</Description>
+    <Quantity>Qté</Quantity>
+    <UnitPrice>P.U. HT</UnitPrice>
+    <Prizegiving>Rem.</Prizegiving>
+    <GlobalPrizegiving>Remise :</GlobalPrizegiving>
+    <TotalPrice>Montant HT</TotalPrice>
+    <VAT>TVA</VAT>
+    <VATCode>Code</VATCode>
+    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice> 
+    <Coefficient>Taux</Coefficient>
+    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice> 
+    <TotalDutyFreeGrossPrice>Total Brut HT :</TotalDutyFreeGrossPrice>
+    <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
+    <Postage>Frais de port :</Postage>
+    <Discount>Escompte :</Discount>
+    <TotalTaxes>Total taxes :</TotalTaxes> 
+    <InclusiveOfTaxMisc>Divers TTC :</InclusiveOfTaxMisc>
+    <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
+    <SalesTerms>Conditions commerciales</SalesTerms>
+    <QuoteValidity>Durée de validité du devis</QuoteValidity>
+    <Deposit>Acompte (%)</Deposit>
+    <DeliveryDelay>Délai de livraison :</DeliveryDelay>
+    <Agreement>SIGNATURE</Agreement>
+    <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>
+    <BillingAddress>Adresse de facturation :</BillingAddress>
+    <Subtotal>Report :</Subtotal>
+    <Page>Page</Page>  
+  </Labels>
+</Root>

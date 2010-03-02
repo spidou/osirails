@@ -1,0 +1,24 @@
+<%= order_header %>
+
+<%= generate_invoice_contextual_menu_partial %>
+
+<h1>Signaler que la facture a été envoyée au client</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => 'invoices_list', :object => [ Invoice.find(@invoice.id) ] %>
+  
+	<% form_for @invoice, :url => { :controller => "invoices", :action => "send_to_customer", :order_id => @order.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :sended_on %>
+      <%= form.date_select :sended_on, :order => [ :day, :month, :year ] %>
+    </p>
+    <p>
+      <%= form.label :send_invoice_method_id %>
+      <%= form.collection_select :send_invoice_method_id, SendInvoiceMethod.all, :id, :name, :include_blank => true %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

@@ -1,0 +1,147 @@
+<%
+require_locals form
+delivery_intervention = delivery_intervention_realisation
+delivery_note = delivery_intervention.delivery_note
+
+toggle_javascript_function = "toggle_internal_and_subcontractor(this)"
+
+delivery_internal_style           = delivery_intervention.delivery_subcontracting? ? 'display:none' : ''
+delivery_subcontracting_style     = delivery_intervention.delivery_subcontracting? ? '' : 'display:none'
+installation_internal_style       = delivery_intervention.installation_subcontracting? ? 'display:none' : ''
+installation_subcontracting_style = delivery_intervention.installation_subcontracting? ? '' : 'display:none'
+
+delivered_true_style    = delivery_intervention.delivered? ? '' : 'display:none'
+delivered_false_style   = delivery_intervention.undelivered? ? '' : 'display:none'
+
+form.force_show_view = delivery_intervention.was_realized?
+%>
+
+<% if is_form_view? and !form.force_show_view %>
+  <p>
+    L'intervention a-t-elle été réalisée ? <%= form.radio_button :delivered, true, :onchange => "toggle_delivered_or_not(this)" %> <%= label_tag "delivery_intervention_delivered_true", "oui", :class => "skip_presentation" %> <%= form.radio_button :delivered, false, :onchange => "toggle_delivered_or_not(this)" %> <%= label_tag "delivery_intervention_delivered_false", "non", :class => "skip_presentation" %>
+  </p>
+<% end %>
+
+<div id="delivery_intervention_delivered_true_div" style="<%= delivered_true_style %>">
+  <h3>Informations générales</h3>
+  <p>
+    <%= form.label :delivery_type %>
+    <%= strong(delivery_note.delivery_note_type.title) %>
+  </p>
+  <p>
+    <%= form.label :delivery_at %>
+    <%= form.form_or_view(form.datetime_select(:delivery_at, { :order => [ :day, :month, :year ], :minute_step => 5, :include_blank => true }), :delivery_at, :humanize) %>
+  </p>
+  <p>
+    <%= form.label :intervention_hours %>
+    <% if is_form_view? and !form.force_show_view %>
+      <%= form.text_field :intervention_hours, :size => 2 %> h
+      <%= form.text_field :intervention_minutes, :size => 2 %> min
+    <% else %>
+      <%= strong delivery_intervention.intervention_duration %>
+    <% end %>
+    <span class="help_text">(durée de l'intervention)</span>
+  </p>
+  <p>
+    <%= form.label :internal_actor_id %>
+    <%= form.form_or_view(form.collection_select(:internal_actor_id, Employee.actives, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
+  </p>
+  
+  <% if delivery_intervention.delivery? %>
+    
+    <h3>Transport / Livraison</h3>
+    <% if is_form_view? and !form.force_show_view %>
+      <p>
+        Le transport est-il réalisé : <%= radio_button_tag "delivery", "internal", !delivery_intervention.delivery_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "delivery_internal", "en interne", :class => "skip_presentation" %> ou <%= radio_button_tag "delivery", "subcontracting", delivery_intervention.delivery_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "delivery_subcontracting", "en sous-traitance", :class => "skip_presentation" %>
+      </p>
+    <% end %>
+
+    <div id="delivery_internal_div" style="<%= delivery_internal_style %>">
+      <p>
+        <%= form.label :deliverer_ids %>
+        <% if is_form_view? and !form.force_show_view %>
+          <%= form.collection_select(:deliverer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+        <% else %>
+          <%= strong delivery_intervention.deliverers.collect(&:fullname).join(", ") %>
+        <% end %>
+      </p>
+      <p>
+        <%= form.label :delivery_vehicle_ids %>
+        <% if is_form_view? and !form.force_show_view %>
+          <%= form.collection_select(:delivery_vehicle_ids, Vehicle.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
+        <% else %>
+          <%= strong delivery_intervention.delivery_vehicles.collect(&:name_and_serial_number).join(", ") %>
+        <% end %>
+      </p>
+      <p>
+        <%= form.label :delivery_vehicles_rental %>
+        <%= form.form_or_view(form.text_area_autoresize(:delivery_vehicles_rental) + " <span class=\"help_text\">Mettre un véhicule par ligne</span>", :delivery_vehicles_rental) %>
+      </p>
+    </div>
+
+    <div id="delivery_subcontracting_div" style="<%= delivery_subcontracting_style %>">
+      <p>
+        <%= form.label :delivery_subcontractor_id %>
+        <%= form.form_or_view(form.collection_select(:delivery_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :delivery_subcontractor, :name) %>
+      </p>
+    </div>
+    
+  <% end%>
+  
+  <% if delivery_intervention.installation? %>
+  
+    <h3>Pose / Installation</h3>
+    <% if is_form_view? and !form.force_show_view %>
+      <p>
+        La pose est-elle réalisée : <%= radio_button_tag "installation", "internal", !delivery_intervention.installation_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "installation_internal", "en interne", :class => "skip_presentation" %> ou <%= radio_button_tag "installation", "subcontracting", delivery_intervention.installation_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "installation_subcontracting", "en sous-traitance", :class => "skip_presentation" %>
+      </p>
+    <% end %>
+
+    <div id="installation_internal_div" style="<%= installation_internal_style %>">
+      <p>
+        <%= form.label :installer_ids %>
+        <% if is_form_view? and !form.force_show_view %>
+          <%= form.collection_select(:installer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+        <% else %>
+          <%= strong delivery_intervention.installers.collect(&:fullname).join(", ") %>
+        <% end %>
+      </p>
+      <p>
+        <%= form.label :installation_equipment_ids %>
+        <% if is_form_view? and !form.force_show_view %>
+          <%= form.collection_select(:installation_equipment_ids, Tool.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
+        <% else %>
+          <%= strong delivery_intervention.installation_equipments.collect(&:name_and_serial_number).join(", ") %>
+        <% end %>
+      </p>
+      <p>
+        <%= form.label :installation_equipments_rental %>
+        <%= form.form_or_view(form.text_area_autoresize(:installation_equipments_rental) + " <span class=\"help_text\">Mettre un équipement par ligne</span>", :installation_equipments_rental) %>
+      </p>
+    </div>
+
+    <div id="installation_subcontracting_div" style="<%= installation_subcontracting_style %>">
+      <p>
+        <%= form.label :installation_subcontractor_id %>
+        <%= form.form_or_view(form.collection_select(:installation_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :installation_subcontractor, :name) %>
+      </p>
+    </div>
+    
+  <% end %>
+  
+  <h3>Réserves sur les produits</h3>
+  <%= render :partial => 'discards/discards_on_delivery_note_items', :object => delivery_note.delivery_note_items, :locals => { :delivery_intervention => delivery_intervention } %>
+  
+  <h3>Documents</h3>
+  <p>
+    <%= form.label :report %>
+    <%= form.file_field :report %>
+  </p>
+</div>
+
+<div id="delivery_intervention_delivered_false_div" class="presentation_large" style="<%= delivered_false_style %>">
+  <p>
+    <%= form.label :comments %>
+    <%= form.form_or_view(form.text_area_autoresize(:comments), :comments) %> <span class="help_text">(client absent, intempéries, etc)</span>
+  </p>
+</div>

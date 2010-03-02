@@ -7,7 +7,7 @@ class SupplierTest < ActiveSupport::TestCase
   include NewStockFlow
 
   def setup
-    @supplier = thirds(:supplier_normal)
+    @supplier = Supplier.first
     create_supplier_supplies
   end
 

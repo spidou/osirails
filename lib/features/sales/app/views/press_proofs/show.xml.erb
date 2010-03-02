@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<Root>
+  <Document>
+    <Type>BON À TIRER</Type>
+    <Date><%= Date.today.strftime("%d/%m/%Y")%></Date>
+    <Reference><%= @press_proof.reference %></Reference>
+    <FileName><%= @press_proof.order.title%></FileName>
+    <QuoteReference><%= @press_proof.associated_quote.reference if @press_proof.associated_quote %></QuoteReference>
+    <CustomerName><%= @press_proof.order.customer.name %></CustomerName>
+    <CustomerName2><%= @press_proof.order.customer.name %></CustomerName2>
+    <Supplier>
+      <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
+      <CorporateName2><%= ConfigurationManager.admin_society_identity_configuration_acronym %></CorporateName2>
+      <Email><%= ConfigurationManager.admin_society_identity_configuration_email %></Email>
+      <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
+      <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
+      <Representative>
+        <Function><%= @press_proof.internal_actor.jobs.first.name %></Function>
+        <LastName><%= @press_proof.internal_actor.last_name %></LastName>
+        <FirstName><%= @press_proof.internal_actor.first_name %></FirstName>
+        <Email><%= @press_proof.internal_actor.email %></Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png" %></LogoPath>
+    </Supplier>  
+    <ProductName><%= @press_proof.product.name %></ProductName>
+    <Mockups>
+      <% @press_proof.graphic_item_versions.each do |giv| %>
+        <% gi = giv.graphic_item %>
+        <Mockup>
+          <Reference><%= gi.reference %></Reference>
+          <Type><%= gi.mockup_type.name %></Type>
+          <Description><%= gi.description %></Description>
+          <UnitMeasure><%= gi.graphic_unit_measure.symbol %></UnitMeasure>
+          <Path><%= giv.formatted_image_for_press_proof_path %></Path>
+          <OriginalPath><%= giv.image.path %></OriginalPath>
+          <!-- 
+            The next lines send dimensions in centimeter for XSL transfomrations :
+               - The "identify" command (ImageMagick) returns a value in pixels;
+               - We obtain a value in inch unit dividing it by the FOP default source-resolution value (72 dpi, cf: http://xmlgraphics.apache.org/fop/trunk/configuration.html);
+               - Then we convert it to centimeter unit (1 inch = 2.54cm).
+               
+            -> value_in_inch = value_in_pixel/fop_default_source-resolution_value
+               value_in_centimeter =  value_in_inch * 2.54
+          -->
+          <Height><%= (`identify -format %h #{giv.formatted_image_for_press_proof_path}`.to_f/72.to_f)*2.54 %></Height>
+          <Width><%= (`identify -format %w #{giv.formatted_image_for_press_proof_path}`.to_f/72.to_f)*2.54 %></Width>
+          <OriginalHeight><%= (`identify -format %h #{giv.image.path}`.to_f/72.to_f)*2.54 %></OriginalHeight>
+          <OriginalWidth><%= (`identify -format %w #{giv.image.path}`.to_f/72.to_f)*2.54 %></OriginalWidth>
+        </Mockup> 
+      <% end %>
+    </Mockups>
+  </Document>
+  <Labels>
+    <Date>DATE :</Date>
+    <FileName>PROJET :</FileName>
+    <CustomerName>CLIENT :</CustomerName>
+    <QuoteReference>DEVIS (réf.) :</QuoteReference>
+    <ProductName>PRODUIT :</ProductName>
+    <SupplierRepresentative>CONTACT GRAPHIQUE :</SupplierRepresentative>
+    <MockupReference>Maquette n°</MockupReference>
+    <MockupType>Type</MockupType>
+    <MockupUnitMeasure>Côtes en</MockupUnitMeasure>
+    <NotaBene>Précautions : Merci de bien vouloir retourner ce document le plus rapidement possible avec la mention ''Bon pour Accord'' et votre signature.</NotaBene>
+    <NotaBene2>ATTENTION! Il s'agit d'un document contractuel. Merci de bien vérifier qu'il ne comporte pas d'erreurs.</NotaBene2>
+    <Agreement>Validation "bon pour accord" :</Agreement>
+    <Agreement2>Date et signature :</Agreement2>
+    <Email>e-mail :</Email>
+    <Phone>tél :</Phone>
+    <Fax>fax :</Fax>
+    <Page>Page</Page>
+  </Labels>
+</Root>

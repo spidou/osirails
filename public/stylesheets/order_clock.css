@@ -1,22 +1,69 @@
 line, circle, path {
-  stroke-width: 1;
+  stroke-width: 0.7;
   stroke: black;
 }
 
-/* Default background color for portions */
-.portions {
+/* default background color for portions */
+/* OUTSIDE */
+.outside {
   fill: white;
 }
 
-/* Background color for the external portion */
-.portions.step_commercial {
-  fill: #9CB5DC;
+.outside.unstarted {
+  fill: white;
 }
-.portions.step_invoicing {
+
+.outside.in_progress {
+  fill: #ffc96a;
+}
+
+.outside.terminated {
+  fill: #ffae24;
+}
+
+.outside:hover {
   fill: yellow;
 }
 
-/* Background color for the internal portion */
-.portions.terminated {
-  fill: #FFAE24;
+/* INSIDE */
+.inside {
+  fill: white;
 }
+
+.inside.unstarted {
+  fill: white;
+}
+
+.inside.in_progress {
+  fill: #a2c7ff;
+}
+
+.inside.terminated {
+  fill: #7ea0d4;
+}
+
+.inside:hover {
+  fill: yellow;
+}
+
+#deadline {
+  x: 10px;
+  y: 20px;
+  fill: yellow;
+}
+
+/* background color according to the current step */
+/* OUTSIDE */
+/*.outside.unstarted.step_commercial {
+  fill: white;
+}
+
+.outside.in_progress.step_commercial {
+  fill: #9CB5DC;
+}
+
+.outside.terminated.step_commercial {
+  fill: #9CB5DC;
+}
+*/
+/* INSIDE */

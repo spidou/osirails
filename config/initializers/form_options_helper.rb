@@ -1,4 +1,5 @@
 require 'action_view/helpers/form_helper'
+require 'digest/sha1'
 
 module ActionView
   module Helpers
@@ -119,10 +120,70 @@ module ActionView
         "<input type='reset' value='#{text}' name='reset' id='#{object}_reset'/>"
       end
       
+      def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
+        random_id_for_indicator = Digest::SHA1.hexdigest(rand(1000000).to_s)
+        #OPTIMIZE use class instead of style attribute
+        tag_options = { :style => "color: grey; font-style: italic" }.merge(tag_options)
+        
+        completion_options =  { :update_id => "#{object}_#{method}_id" }.merge(completion_options)
+        completion_options =  { :skip_style           => true,
+                                :url                  => send("auto_complete_for_#{object}_#{method}_path"),
+                                :indicator            => "auto_complete_#{random_id_for_indicator}",
+                                :update_element       => "function(li){
+                                                            this.element = $('#{object}_#{method}')
+                                                            this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                            if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
+                                                          }",
+                                :after_update_element => "function(input,li){
+                                                            $('#{completion_options[:update_id]}').value = li.down('.#{object}_#{method}_id').innerHTML;
+                                                          }"
+                              }.merge(completion_options)
+        
+        if tag_options[:value]
+          #OPTIMIZE use class instead of style attribute
+          tag_options = { :onfocus   => "if (this.value == '#{tag_options[:value]}') { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
+                          :onblur    => "if (this.value == '' || this.value == '#{tag_options[:value]}') { this.value = '#{tag_options[:value]}'; this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
+                        }.merge(tag_options)
+        end
+        
+        html =  "<div class=\"auto_complete_container\""
+        html << text_field_with_auto_complete(object, method, tag_options, completion_options)
+        html << content_tag(:div, nil, :id => "auto_complete_#{random_id_for_indicator}", :class => "auto_complete_indicator", :style => "display:none")
+        html << "</div>"
+      end
+      
+      # Use this method in your view to generate a return for the AJAX autocomplete requests.
+      #
+      # Example action:
+      #
+      #   def auto_complete_for_item_title
+      #     @items = Item.find(:all, 
+      #       :conditions => [ 'LOWER(description) LIKE ?', 
+      #       '%' + request.raw_post.downcase + '%' ])
+      #     render :inline => "<%= custom_auto_complete_result(@items, 'title description') %>"
+      #   end
+      #
+      # The auto_complete_result can of course also be called from a view belonging to the 
+      # auto_complete action if you need to decorate it further.
+      def custom_auto_complete_result(entries, fields, phrase = nil)
+        return unless entries
+        fields = fields.split(" ")
+        items = entries.map do |entry|
+          text = fields.map { |field| entry[field] }.join(" - ")
+          #OPTIMIZE return less data to save bandwith, like => { "1" => "reference 1", "2" => "reference 2" }.to_json
+          # and make all the treatment by the client (in javascript)
+          content_tag 'li', content_tag( 'div', phrase ? highlight(text, phrase) : h(text) ) +
+                            content_tag( 'div', h(text),  :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_value" ) +
+                            content_tag( 'div', entry.id, :style => 'display:none', :class => "#{entry.class.singularized_table_name}_#{fields.first}_id" )
+        end
+        content_tag('ul', items.uniq)
+      end
+      
       def autoresize_text_area(object_name, method, options = {})
         options[:rows] ||= 2
         options[:cols] ||= 60
-        options = options.merge({:style => "overflow: hidden", :class => "autoresize_text_area"})
+        options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
+        options[:style] = "#{options[:style]}#{options[:style].blank? ? '' : ';'}overflow: hidden";
         InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_text_area_tag(options)
       end
       
@@ -141,6 +202,8 @@ module ActionView
     end
     
     class FormBuilder
+      attr_accessor :force_show_view, :force_form_view
+      
       def collection_select_with_indentation(method, collection, value_method, text_method, options = {}, html_options = {})
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
       end
@@ -197,9 +260,9 @@ module ActionView
       # 
       def form_or_view(form_tag = nil, *view_methods)
         return if form_tag.nil? and view_methods.nil? # return nothing if both are nil
-        return form_tag if view_methods.empty? # return first if second is nil
+        return form_tag if view_methods.empty? or force_form_view? # return first if second is nil or if we force form view
 #        if @template.is_form_view? and !form_tag.nil?
-        if ( @object.new_record? or (!@object.new_record? and @template.is_edit_view?) ) and !form_tag.nil?
+        if !force_show_view? and ( @object.new_record? or (!@object.new_record? and @template.is_form_view?) ) and !form_tag.nil?
           form_tag
         else
           view_text = @object
@@ -242,8 +305,24 @@ module ActionView
         @template.reset(@object_name, text)
       end
       
+      def force_show_view?
+        @force_show_view == true
+      end
+      
+      def force_form_view?
+        @force_form_view == true
+      end
+      
+      def show_view?
+        ( !@template.is_form_view? and !force_form_view? ) or ( @template.is_form_view? and force_show_view? )
+      end
+      
+      def form_view?
+        ( @template.is_form_view? and !force_show_view? ) or ( !@template.is_form_view? and force_form_view? )
+      end
+      
       def autoresize_text_area(method, options = {})
-        @template.autoresize_text_area(@object_name, method, options)
+        @template.autoresize_text_area(@object_name, method, options.merge(:object => @object))
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area

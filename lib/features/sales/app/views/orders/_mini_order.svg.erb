@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <?xml-stylesheet type="text/css" href="/stylesheets/order_clock.css"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<%
+order = mini_order
+case params[:for]
+when 'step'
+  children_list = order.first_level_steps
+when 'understep'
+  children_list = order.current_first_level_step.children_steps
+end
+-%>
 <svg width="32px" height="32px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <g id="internal_portion">
@@ -8,10 +17,11 @@
     </g>
   </defs>
 
-  <% angle = 360 / children_list.size %>
-  <% children_list.sort_by {|s| s.status }.each_with_index do |c, index| %>
-  <g title="<%= c.step.title %>" class="portions<%= class_for_clock_progress(c) %>">
+<% angle = 360 / children_list.size %>
+<% children_list.each_with_index do |c, index| %>
+  <%= disposition = params[:for] == "step" ? "outside" : "inside" %>
+  <g title="<%= "#{c.original_step.title} [#{c.status.titleize}]" %>" class="<%= "#{disposition} #{c.status} #{@order.current_first_level_step.original_step_name}" %>">
     <use xlink:href="#internal_portion" x="16" y="16" transform="rotate(<%= index * angle %>,16,16)" />
   </g>
-  <% end %>
+<% end %>
 </svg>

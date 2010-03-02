@@ -1,0 +1,46 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources.js' %>
+<% end %>
+
+<%
+@contacts = contacts_list
+
+@group_by ||= "type"
+@order_by ||= "asc" # ascendent
+
+case @group_by
+when "first_name", "last_name", "email"
+  @groups = @contacts.sort_by{ |c| c.send(@group_by) }.group_by{ |d| letter = d.send(@group_by)[0..0]
+                                                           if letter.between("A", "D")
+                                                             "A-D"
+                                                           elsif letter.between("E", "H")
+                                                             "E-H"
+                                                           elsif letter.between("I", "L")
+                                                             "I-L"
+                                                           elsif letter.between("M", "P")
+                                                             "M-P"
+                                                           elsif letter.between("Q", "T")
+                                                             "Q-T"
+                                                           elsif letter.between("U", "Z")
+                                                             "U-Z"
+                                                           end }
+when "type"
+  @groups = @contacts.sort_by{ |c| c.contact_type.name }.group_by{ |c| c.contact_type.name }
+end
+
+@groups.reverse! if @order_by == "desc"
+%>
+
+<% unless @groups.empty? %>
+  <%= "<p>Classer par #{group_contacts_by_method("first_name", @contacts_owner)} | #{group_contacts_by_method("last_name", @contacts_owner)} | #{group_contacts_by_method("type", @contacts_owner)} | #{group_contacts_by_method("email", @contacts_owner)}</p>" %>
+  <% @groups.each do |group, collection| %>
+    <div class="resource_group contact_group">
+      <%= content_tag(:h1, group || "\"Aucun\"") %>
+      <%= render :partial => 'contacts/contact', :collection => collection, :locals => { :contacts_owner => @contacts_owner }  %>
+    </div>
+  <% end %>
+<% else %>
+  <%= content_tag :p, "Aucun contact n'a été trouvé." %>
+<% end %>

@@ -1,0 +1,14 @@
+<%# contextual_search_for_supplier %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_subcontractor_link %>
+	<%= subcontractor_link(@subcontractor)%>
+	<%= delete_subcontractor_link(@subcontractor)%>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+	<%= subcontractors_link %>
+<% end %>
+
+<h1>Modifier un fournisseur </h1>
+<%= render :partial => @subcontractor, :locals => { :submit_button_name => "Mettre à jour"} %>

@@ -22,6 +22,13 @@ module ApplicationHelper
     end
   end
   
+  def display_version
+    version = `#{RAILS_ROOT}/current_version.sh`
+    if RAILS_ENV != 'production' or params[:debug]
+      "<span class=\"version\">#{version}<br/>in #{RAILS_ENV}</span>"
+    end
+  end
+  
   def display_menu
     menu = current_menu
     html = ""
@@ -142,7 +149,7 @@ module ApplicationHelper
   #         - false if the current page is an view page (show)
   #
   def is_form_view?
-     is_edit_view? or is_new_view?
+    is_edit_view? or is_new_view?
   end
   
   def is_new_view?
@@ -255,14 +262,14 @@ module ApplicationHelper
 	  # The first parameter (for +list+ and +add+) and the second parameter (for +view+, +edit+ and +delete+) must be a Hash
 	  # 
 	  # <tt>:image_tag</tt> permits to define a custom image tag for the link
-    #   <%= user_link(@user, :image_tag => image_tag("/images/view.png") ) %>
+    #   <%= user_link(@user, :image_tag => image_tag("view.png") ) %>
     # 
     # <tt>:link_text</tt> permits to define a custom value for the link label
     #   <%= new_user_link( :link_text => "Add a user" ) %>
     # 
     def method_missing(method, *args)
       # did somebody tried to use a dynamic link helper?
-      super(method, *args) unless method.to_s.match(/_link$/)
+      return super(method, *args) unless method.to_s.match(/_link$/)
       
       # retrieve objects and options hash into args array
 			args_objects = []
@@ -315,7 +322,7 @@ module ApplicationHelper
       
       # default options
 		  options = { :link_text    => default_title = dynamic_link_catcher_default_link_text(permission_name, model_name.tableize),
-		              :image_tag    => image_tag( "/images/#{permission_name}_16x16.png",
+		              :image_tag    => image_tag( "#{permission_name}_16x16.png",
 		                                          :title => default_title,
 		                                          :alt => default_title ),
                   :options      => {},
@@ -449,7 +456,7 @@ module ApplicationHelper
         unless menu.content.nil?
           url_for(:controller => "contents", :action => "show", :id => menu.content.id)
         else
-          ""
+          return
         end
       end
     end
@@ -471,10 +478,45 @@ module ApplicationHelper
     end
     
     def current_menu
-      #OPTIMIZE remove the reference to step (which comes from sales feature) and override this method in the feature sales to add the step notion
-      step = controller.current_order_step if controller.respond_to?("current_order_step")
-      menu = step || controller.controller_name
-      Menu.find_by_name(menu) or raise "The controller '#{controller.controller_name}' should have a menu with the same name"
+      menu = controller.controller_name
+      Menu.find_by_name(menu) or raise "The controller '#{menu}' should have a menu with the same name"
     end
     
+    def display_menu_entries(current)
+      real_current_menu = current_menu
+      output = ""
+      
+      if current.parent
+        output << display_menu_entries(current.parent)
+        siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
+      else
+        siblings = Menu.mains.activated
+      end
+      
+      more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
+      
+      if real_current_menu.parent
+        unless current.parent
+          output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
+        else
+          h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
+          url = url_for_menu(current.parent)
+          output << content_tag(:h4, ( url.nil? ? current.parent.title : link_to(current.parent.title, url, :title => current.parent.description) ) + more_link, h4_options)
+        end
+      end
+      output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
+      siblings.each do |menu|
+        li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
+        output << display_menu_entry(menu, li_options)
+      end
+      output << "</ul>"
+    end
+    
+    def display_menu_entry(menu, li_options)
+      return "" if (url = url_for_menu(menu)).nil?
+      unless menu.separator.blank?
+        li_options.merge!({:class => "#{li_options[:class]} #{menu.separator}_separator"}) if ( menu.separator == 'before' and menu.can_move_up? ) or ( menu.separator == 'after' and menu.can_move_down? )
+      end
+      content_tag(:li, link_to(menu.title, url, :title => menu.description), li_options)
+    end
 end

@@ -1,17 +1,35 @@
-customer_normal:
+first_customer:
   type: Customer
-  name: Customer
+  name: First Customer
   siret_number: 12345678912345
-  activity_sector: normal
-  legal_form: normal
-  payment_method: normal
-  payment_time_limit: normal
+  activity_sector: telephony
+  legal_form: local_authority
+  payment_method: bank_transfer
+  payment_time_limit: cod
   activated: true
-supplier_normal:
+factorised_customer:
+  type: Customer
+  name: Factorised Customer
+  siret_number: 23456789123456
+  activity_sector: telephony
+  legal_form: local_authority
+  payment_method: bank_transfer
+  payment_time_limit: cod
+  factor: first_factor
+  activated: true
+
+first_supplier:
   type: Supplier
-  name: Supplier
+  name: First Supplier
   siret_number: 12345678912345
-  activity_sector: normal
-  legal_form: normal
+  activity_sector: supermarket_retail
+  legal_form: llc
   activated: true
-  
+
+first_subcontractor:
+  type: Subcontractor
+  name: First Subcontractor
+  siret_number: 12345678912345
+  activity_sector: telephony
+  legal_form: llc
+  activated: true

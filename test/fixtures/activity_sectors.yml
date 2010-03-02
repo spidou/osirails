@@ -1,2 +1,5 @@
-normal:
-  name: Foo
+supermarket_retail:
+  name: Supermarket Retail
+telephony:
+  name: Telephony
+  

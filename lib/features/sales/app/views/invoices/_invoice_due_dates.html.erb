@@ -1,0 +1,73 @@
+<%
+require_locals form
+invoice = invoice_due_dates
+due_dates = invoice.due_dates.reject(&:should_destroy?)
+due_dates_to_remove = invoice.due_dates.select(&:should_destroy?)
+
+range = (Invoice::MIN_DUE_DATES..Invoice::MAX_DUE_DATES)
+select_disabled = ( invoice.factorised? && invoice.due_dates.size == 1 ) ? true : false
+
+notification_hidden = invoice.total_of_due_dates_equal_to_net_to_paid? ? 'display:none' : ''
+%>
+
+<p id="due_date_amounts_notification" class="notification" style="<%= notification_hidden %>">Des modifications ont été apportées sur le montant total de la facture ou sur les montants des échéances.<br/><%= link_to_function "Cliquez-ici pour actualiser le montant de votre solde", 'javascript:refresh_due_dates()' %></p>
+
+<% if is_form_view? %>
+<p>
+  Nombre d'échéances :
+  <%= select_tag 'number_of_due_dates', options_for_select(range, due_dates.size), :onchange => "javascript:update_due_dates(this); toggle_disable_of_select_number_of_due_dates()", :disabled => select_disabled %>
+</p>
+<% end %>
+
+<table id="due_dates_list">
+  <thead>
+    <tr>
+      <th>n°</th>
+      <th>Échéance</th>
+      <th>Date</th>
+      <th>Montant TTC (&euro;)</th>
+      <% if invoice.errors.on(:due_dates) %>
+        <th>Erreurs</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% counter = 1 %>
+    
+    <% for due_date in due_dates %>
+      <%
+      is_last_due_date = ( counter == due_dates.size )
+      label = is_last_due_date ? "Solde" : "Échéance #{counter}"
+      %>
+      
+      <tr <%= is_last_due_date ? 'id="last_due_date"' : '' %>>
+        <%= render :partial => 'due_date_in_one_line', :object => due_date, :locals => { :invoice           => invoice,
+                                                                                         :counter           => counter, 
+                                                                                         :label             => label,
+                                                                                         :is_last_due_date  => is_last_due_date } %>
+      </tr>
+      
+      <% counter += 1 %>
+    <% end %>
+    
+    <% if is_form_view? %>
+      <!-- this table line is the model for the javascript updating due_date -->
+      <% fields_for 'invoice[due_date_attributes][]', invoice.due_dates.build do |form| %>
+        <tr id="due_date_model">
+          <%= render :partial => 'due_date_in_one_line', :object => invoice.due_dates.build, :locals => { :invoice => invoice, :label => "Échéance", :disable_inputs => true }%>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<% if is_form_view? %>
+  <table id="due_dates_to_remove" style="display:none">
+    <caption>A supprimer</caption>
+    <tr>
+      <%= render :partial => 'due_date_in_one_line', :collection      => due_dates_to_remove,
+                                                     :spacer_template => 'table_row_spacer_for_due_date_in_one_line',
+                                                     :locals          => { :invoice => invoice } %>
+    </tr>
+  </table>
+<% end %>

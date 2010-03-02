@@ -67,9 +67,13 @@ class String
     end
     return formated
   end
-
-  # FIXME you may base on inflector class
-  # method to view if a word is or not plural
+  
+  # Method to truncate the begining of the current string according to the param
+  def rchomp(separator = nil)
+    chars.reverse.chomp(separator.chars.reverse).reverse.to_s
+  end
+  
+  # method to view if a word is or not is plural #FIXME we may base on inflector class method to view if a word is or not plural
   def plural?
     return false if self.last == "s" and self.pluralize != self
     return true if self.last == "s" and self.pluralize == self
@@ -119,33 +123,68 @@ class Hash
   end
 end
 
-module ActiveRecord
-  class Errors
-    @@default_error_messages.update( {
-      :inclusion => "n'est pas inclut dans la liste",
-      :exclusion => "est réservé",
-      :invalid => "est invalide",
-      :confirmation => "ne correspond pas à la confirmation",
-      :accepted => "doit être accepté",
-      :empty => "ne peut pas être vide",
-      :blank => "est requis",
-      :too_long => "est trop long (%d caractères maximum)",
-      :too_short => "est trop court(%d caractères minimum)",
-      :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
-      :taken => "est déjà prit",
-      :not_a_number => "n'est pas un nombre",
-    })
+unless RAILS_ENV == "test"
+  module ActiveRecord
+    class Errors
+      @@default_error_messages.update( {
+        :inclusion    => "n'est pas inclut dans la liste",
+        :exclusion    => "est réservé",
+        :invalid      => "est invalide",
+        :confirmation => "ne correspond pas à la confirmation",
+        :accepted     => "doit être accepté",
+        :empty        => "ne peut pas être vide",
+        :blank        => "est requis",
+        :too_long     => "est trop long (%d caractères maximum)",
+        :too_short    => "est trop court (%d caractères minimum)",
+        :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
+        :taken        => "est déjà prit",
+        :not_a_number => "n'est pas un nombre"
+      })
+    end
+  end
+end
+
+class Date
+  def humanize
+    self.strftime("%d %B %Y")
+  end
+end
+
+class DateTime
+  def humanize
+    self.strftime("%d %B %Y à %H:%M")
   end
 end
 
 module ActiveSupport
   class TimeWithZone
-    def to_humanized_date
-      self.strftime("%d %B %Y")
-    end
-
-    def to_humanized_datetime
-      self.strftime("%d %B %Y à %H:%M")
+    def humanize
+      self.to_datetime.humanize
     end
   end
+end
+
+class Numeric
+  def round_to(precision = 0)
+    if self.kind_of?(Float)
+      (self * (10 ** precision)).round / (10 ** precision).to_f
+    else
+      self
+    end
+  end
+end
+
+class Float
+  def to_s_with_precision(precision = nil)
+    if precision.nil?
+      self.to_s_without_precision
+    elsif precision.instance_of?(Fixnum)
+      str = self.to_s_without_precision
+      integer = str.to(str.index(".") - 1)
+      decimals = str.from(str.index(".") + 1).ljust(precision, "0")
+      "#{integer}.#{decimals}"
+    end
+  end
+  
+  alias_method_chain :to_s, :precision
 end

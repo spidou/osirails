@@ -1,0 +1,39 @@
+.resource.contact .thumb {
+  border: 1px solid #CCC;
+  border-bottom: 2px solid #CCC;
+  border-right: 2px solid #CCC;
+}
+
+.resource.contact .details {
+  min-height: 78px; /* thumb height + 3px thumb borders */
+  min-width: none;
+  max-width: none;
+  width: 300px;
+  padding-right: 30px;
+}
+
+form .resource.contact label {
+  width: 140px !important;
+}
+
+/* CONTACTS PICKER */
+#preview_contacts {
+  text-align: left;
+}
+
+.preview_contact {
+  display:inline-block;
+  position: relative;
+}
+
+.contact_input {
+  display: none;
+}
+
+a.contact_actions {
+  display: none;
+  position: absolute;
+  top: 13px;
+  right: 13px;
+}
+/* END CONTACTS PICKER */

@@ -3,8 +3,8 @@
 <% end %>
 
 <div class="presentation_medium">
-<% form_for(@employee, :html => {:multipart => true}) do |f| %>
-  <%= f.error_messages %> 
+<% form_for(employee, :html => {:multipart => true}) do |f| %>
+  <%= f.error_messages %>
   
   <h2>Fiche d&apos;identit&eacute;</h2>
   
@@ -55,7 +55,7 @@
   <h2>Coordonn&eacute;es</h2>
   <% if Employee.can_view?(current_user) or @employee.user.id == current_user.id %>
     <h3>Adresse postale</h3>
-    <%= render :partial => "addresses/address_form", :object => @employee.address || @employee.build_address , :locals => { :address_owner => @employee}%>
+    <%= render :partial => "addresses/address_form", :object => employee.address || employee.build_address, :locals => { :address_owner => employee }%>
   <% end %>
 
 <!--############## Emails ##############-->
@@ -70,18 +70,18 @@
       <%= f.form_or_view(f.text_field( :society_email ), :society_email )%>
     </p>
   <% end %>
-  <%="<p>#{label_tag( "Entreprise :" )} #{strong(@employee.intranet_email)}</p>" if !is_form_view?%>
+  <%="<p>#{label_tag( "Entreprise :" )} #{strong(employee.intranet_email)}</p>" if !is_form_view?%>
 
 <!--########### Numbers #################-->
   <h3>Num&eacute;ro de t&eacute;l&eacute;phone</h3>
   <div id="numbers">    
-    <%= render :partial => 'numbers/number', :collection => @employee.numbers , :locals => { :number_owner => @employee }%>
+    <%= render :partial => 'numbers/number', :collection => employee.numbers , :locals => { :number_owner => employee }%>
   </div>
-  <p><%= add_number_link(@employee) if is_form_view? %></p>
+  <p><%= add_number_link(employee) if is_form_view? %></p>
 
 <!--########### Jobs ####################-->
   <h2>Fiche de poste</h2>
-  <%= render :partial => 'jobs/jobs' , :locals => {:form => f, :job => Job.new, :jobs => @jobs,:service => @employee.service} %>
+  <%= render :partial => 'jobs/jobs' , :locals => { :form => f, :job => Job.new, :jobs => @jobs, :service => @employee.service } %>
 
 <!--########### Iban ####################-->
   <% if Iban.can_view?(current_user) or @employee.user.id == current_user.id %>
@@ -101,11 +101,11 @@
 
 <!--########## Premia ##################-->
   <%= display %>
-  <% if Premium.can_view?(current_user) or @employee.user.id == current_user.id %>
+  <% if Premium.can_view?(current_user) or employee.user.id == current_user.id %>
     <% if !is_form_view? %>    
       <h2>Primes</h2>
-      <%= render :partial => 'premia/premium', :collection => @employee.premia[0..4] %>     
-      <p><%= employee_premia_link(@employee, :image_tag => "") %></p>
+      <%= render :partial => 'premia/premium', :collection => employee.premia[0..4] %>     
+      <p><%= employee_premia_link(employee, :image_tag => "") %></p>
     <% end %>
   <% end %>
 

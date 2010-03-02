@@ -1,0 +1,35 @@
+<%
+require_locals form
+graphic_item = graphic_item_versions
+%>
+
+<% unless graphic_item.new_record? %>
+  <p>
+    <%= form.label :graphic_unit_measure %>
+    <%= form.strong graphic_item.graphic_unit_measure.name %>
+  </p>
+  
+  <div id="graphic_item_versions_preview">
+    <div id="graphic_item_medium_image">
+      <%= image_tag graphic_item.current_image.url(:medium), { :id => "image_tag" } %>
+    </div>
+    <div id="graphic_item_choice">
+      <%= collection_select(nil,:current_version_id, @graphic_item_versions, :id, :formatted_created_at, {}, {:multiple => "multiple", :id => "#{graphic_item.class.name.underscore}_versions", :name => "#{graphic_item.class.name.underscore}_versions"}) %>
+      <%= observe_field("#{graphic_item.class.name.underscore}_versions", :url => send("order_#{graphic_item.class.name.underscore}_refresh_links_path",@order.id,graphic_item.id), :with => 'current_version_id')%>
+    </div>
+  </div>
+  
+  <p>
+    <%= form.label :image %>
+    <%= link_to "télécharger", graphic_item.current_image.url, { :id => "image_download_link" } %>
+  </p>
+  
+  <p id="source_download_link">
+    <%= form.label :source %>
+    <% if graphic_item.current_version.source_file_name %>
+      <%= link_to "télécharger", graphic_item.current_source.url %>
+    <% else %>
+      <%= form.strong("aucun") %>
+    <% end %>
+  </p>
+<% end %>

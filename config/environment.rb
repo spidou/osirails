@@ -12,6 +12,7 @@ RAKE_TASK = false unless defined? RAKE_TASK
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
+require 'rails_hacks'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -32,7 +33,10 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :validates_persistence_of, :paperclip, :has_permissions, :has_search_index, :has_documents, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
+                    :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete,
+                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
+                    :acts_as_step, :pdf_generator, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -67,6 +71,10 @@ Rails::Initializer.run do |config|
   
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
+  config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
+    File.directory?(lib = "#{dir}/lib") ? lib : dir
+  end
+  
   config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
 
   # this line permits to add controllers and helpers in plugins
@@ -103,6 +111,9 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
+  config.gem 'json'
+  config.gem 'RedCloth'
+  config.gem 'htmlentities' #TODO freeze all gem dependencies
 end
 
 require 'contextual_menu_manager'
@@ -111,4 +122,6 @@ require 'contextual_menu_manager'
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
 load 'application_helper.rb'
 
+require 'json'
+require 'htmlentities'
 ## RMagick installation : sudo apt-get install imagemagick librmagick-ruby1.8 librmagick-ruby-doc libfreetype6-dev xml-core -y

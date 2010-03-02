@@ -1,8 +1,7 @@
 class CreateFileTypes < ActiveRecord::Migration
   def self.up
     create_table :file_types do |t|
-      t.string :name
-      t.string :model_owner
+      t.string :name, :model_owner
       
       t.timestamps
     end

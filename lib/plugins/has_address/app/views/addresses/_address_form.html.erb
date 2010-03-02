@@ -1,0 +1,42 @@
+<%# fields_for "customer[establishment_attributes][][address_attributes]", address do |form| %>
+<%
+address = address_form
+owner_type = address_owner.class.singularized_table_name
+force_show_view ||= false
+
+#FIXME remove this test block accessor when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+if address_owner.class.one_or_many == :many
+  options = { :index => nil }
+else
+  options = {}
+end
+%>
+<% fields_for "#{owner_type}[#{address.has_address_key}_attributes]", address do |form| %>
+  <% form.force_show_view = force_show_view %>
+  <%= form.error_messages %>
+  <p>
+    <%= form.label :street_name, {}, options %>
+    <%= form.form_or_view(form.text_area_autoresize(:street_name, options.merge(:rows => 2, :cols => 37)), :street_name) %>
+  </p>
+  <p>
+    <%= form.label :zip_code, {}, options %>
+    <%= form.form_or_view(form.text_field(:zip_code, options.merge(:size => 6)), :zip_code) %>
+  </p>
+  <p>
+    <%= form.label :city_name, {}, options %>
+    <%= form.form_or_view(form.text_field(:city_name, options), :city_name) %>
+  </p>
+  <p>
+    <%= form.label :country_name, {}, options %>
+    <%= form.form_or_view(form.text_field(:country_name, options), :country_name) %>
+  </p>
+  <div style="display:none;">
+    <% #OPTIMIZE the herein hidden fields would not be exists if the fields_for command accept argument like 'customer[establishment_attributes][][address_attributes]' %>
+    <% if is_form_view? and !force_show_view %>
+      <%= form.hidden_field :id, options %>
+      <%= form.hidden_field :has_address_id, options %>
+      <%= form.hidden_field :has_address_type, options %>
+      <%= form.hidden_field :has_address_key, options %>
+    <% end %>
+  </div>
+<% end %>

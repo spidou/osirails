@@ -1,0 +1,52 @@
+<%
+due_date = due_date_payment
+can_be_paid = ( due_date.invoice.upcoming_due_date && due_date.invoice.upcoming_due_date.id == due_date.id ) && ["due_date_pay_form","due_date_pay","totally_pay_form","totally_pay"].include?(params[:action])
+
+due_date.payments.build(:paid_on => Date.today) if can_be_paid and due_date.payments.empty?
+payments = due_date.payments
+
+due_date_status = if due_date.paid?
+    "RÉGLÉ (PAR CLIENT)"
+  elsif due_date.invoice.factoring_payment
+    "RÉGLÉ (PAR FACTOR)"
+  elsif payments.select(&:new_record?).size > 0
+    "RÈGLEMENT EN COURS"
+  else
+    "EN ATTENTE DE RÈGLEMENT"
+  end
+%>
+
+<table class="due_date_header<%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">
+  <tr>
+    <td class="label">Échéance :</td>
+    <td class="value"><strong><%= ( due_date.id == due_date.invoice.due_dates.last.id ) ? "Solde" : "Échéance #{due_date_payment_counter}" %></strong></td>
+    <td class="label">Date :</td>
+    <td class="value"><strong><%= due_date.date.humanize %></strong></td>
+    <td class="label">Montant :</td>
+    <td class="value"><strong><%= due_date.net_to_paid %> &euro;</strong></td>
+    <td class="label">Status :</td>
+    <td class="value"><strong><%= due_date_status %></strong></td>
+  </tr>
+</table>
+<div class="due_date<%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">
+  <% if can_be_paid %>
+    <% fields_for 'invoice[due_date_to_pay]', due_date do |form| %>
+      <%= form.error_messages %>
+      <div style="display:none">
+        <%= form.hidden_field :id %>
+      </div>
+    <% end %>
+  <% end %>
+  
+  <%= display_payments_list_for(due_date) %>
+  <%= display_adjustments_list_for(due_date) %>
+  
+  <% if can_be_paid %>
+    <p>
+      <%= display_payment_add_link(due_date) %> <span class="help_text"> * dans le cas où le client utilise plusieurs moyen de règlement différent pour une seule échéance (une partie par chèque et l'autre partie en espèce par exemple)</span>
+    </p>
+    <p>
+      <%= display_adjustment_add_link(due_date) %> <span class="help_text"> * permet d'indiquer la raison de la différence entre le règlement reçu et le montant de la facture (dans le cas où des "pénalités de retard" ou des "intérêts moratoires" s'appliquent par exemple)</span>
+    </p>
+  <% end %>
+</div>

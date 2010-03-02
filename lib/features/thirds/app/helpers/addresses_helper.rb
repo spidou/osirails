@@ -1,3 +1,0 @@
-module AddressesHelper
-
-end

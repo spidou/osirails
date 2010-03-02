@@ -1,0 +1,28 @@
+<% require_locals due_date %>
+
+<div class="adjustment">
+  <p class="adjustment_header"><%= adjustment.new_record? ? "Nouvel ajustement" : "Ajustement n° #{adjustment_counter}" %></p>
+  
+  <% fields_for 'invoice[due_date_to_pay][adjustment_attributes][]', adjustment, :index => nil do |form| %>
+    <%= form.error_messages %>
+    <% form.force_show_view = !adjustment.new_record? %>
+    <p>
+      <%= form.label :amount %>
+      <%= form.form_or_view(form.text_field(:amount, :size => 8), :amount) %> <span class="help_text">(montant <strong>positif</strong> pour une sanctionner une pénalité, <strong>négatif</strong> pour un surplus)</span>
+    </p>
+    <p>
+      <%= form.label :comment %>
+      <%= form.form_or_view(form.text_area_autoresize(:comment, :cols => 45), :comment) %>
+    </p>
+    <p>
+      <%= form.label :attachment %>
+      <% if !is_form_view? or form.force_show_view %>
+        <%= adjustment.attachment_file_name ? link_to("Télécharger", adjustment.attachment.url) : "<strong>" + "Aucun fichier" + "</strong>" %>
+      <% else %>
+        <%= form.file_field :attachment %>
+      <% end %>
+    </p>
+  <% end %>
+
+  <%= display_adjustment_remove_link if adjustment.new_record? %>
+</div>

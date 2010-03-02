@@ -1,0 +1,55 @@
+<%
+require_locals contacts_owner
+owner_type = contacts_owner.class.singularized_table_name
+contact = contact_form
+contact_types = ContactType.all(:conditions => [ "owner = ?", contacts_owner.class.name ])
+id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_record?
+style_attr = 'style="display:none"' unless contact.new_record? or !contact.errors.empty? or contact.should_update?
+%>
+
+<% fields_for "#{owner_type}[contact_attributes][]", contact do |form| %>
+  <div class="resource_form contact_form" <%= id_attr %> <%= style_attr %> >
+    <div>
+      <%= form.error_messages %>
+      <% if is_form_view? %>
+        <p>
+          <%= form.label :gender, :index => nil %>
+          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }, {}, :index => nil ) %>
+        </p>
+      <% end %>
+      <p>
+        <%= form.label :first_name, :index => nil %>
+        <%= form.form_or_view(form.text_field(:first_name, :index => nil), :first_name ) %>
+      </p>
+      <p>
+        <%= form.label :last_name, :index => nil %>
+        <%= form.form_or_view(form.text_field(:last_name, :index => nil), :last_name ) %>
+      </p>
+      <p>
+        <%= form.label :contact_type_id, :index => nil %>
+        <%= form.form_or_view(form.collection_select(:contact_type_id, contact_types, :id, :name, {}, :index => nil), :file_type, :name ) %>
+      </p>
+      <p>
+        <%= form.label :job, :index => nil %>
+        <%= form.form_or_view(form.text_field(:job, :index => nil), :job ) %>
+      </p>
+      <p>
+        <%= form.label :email, :index => nil %>
+        <%= form.form_or_view(form.text_field(:email, :index => nil), :email ) %>
+      </p>
+      <p>
+        <%= form.label :avatar, :index => nil %>
+        <%= form.form_or_view(form.file_field(:avatar, :index => nil, :size => 14)) %>
+      </p>
+      <p>
+        <%= display_contact_close_form_button(contact) %>
+
+        <% if !contact.new_record? and is_form_view? %>
+          <%= form.hidden_field :id, :index => nil %>
+          <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+          <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+<% end %>

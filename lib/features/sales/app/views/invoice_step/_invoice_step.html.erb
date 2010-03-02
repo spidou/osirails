@@ -1,0 +1,14 @@
+<%= order_header %>
+
+<%= generate_invoicing_step_contextual_menu_partial %>
+
+<h1>Liste des factures (tableau de gestion locale)</h1>
+
+<div>
+  <%= display_transition_table_for_deposit_invoice(@order) %>
+  
+  <%= display_transition_table_for_other_invoices(@order) %>
+  
+  <h2>Factures</h2>
+  <%= display_invoices(@order) %>
+</div>

@@ -1,0 +1,21 @@
+<% owner_type = remarks_owner.class.singularized_table_name if is_form_view? %>
+
+<div class='remark <%= remark_counter%2 == 0 ? 'style2' : 'style1' %>'>
+<% if is_form_view? and remark.new_record? %>
+  <% fields_for "#{owner_type}[remark_attributes]", remark do |form| -%>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :text, :index => nil %>
+      <%= form.text_area_autoresize :text , :cols => 80, :rows => 2, :index => nil %>
+      <%= link_to_function "Annuler", "this.up('.remark').remove()"%>
+    </p>
+  <% end -%>
+<% elsif !remark.new_record? -%>
+  <p class="remark_header">
+    <span class="remark_counter"><%= remark_counter %></span> Ajouté le <strong><%= remark.created_at.humanize %></strong> par <%= link_to_unless(remark.user.employee.nil?, remark.user.employee.fullname, employee_path(remark.user.employee.id)) %> :
+  </p>
+  <div class="remark_body">
+    <%=textilize h(remark.text) %>
+  </div>
+<% end -%>
+</div>

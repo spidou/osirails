@@ -1,0 +1,14 @@
+<% add_contextual_menu_item :survey_step do %>
+  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Survey\"", :title => list_text) + " " + list_text, order_commercial_step_survey_step_path(@order)) if SurveyStep.can_view?(current_user) %>
+<% end %>
+
+<% add_contextual_menu_item :estimate_step do %>
+  <%= display_quote_add_button(@order) %>
+  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Devis\"", :title => list_text) + " " + list_text, order_commercial_step_estimate_step_path(@order)) if EstimateStep.can_view?(current_user) %>
+<% end %>
+
+<% add_contextual_menu_item :press_proof_step do %>
+  <%= display_press_proof_add_button(@order) %>
+  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"BAT\"", :title => list_text) + " " + list_text, order_commercial_step_press_proof_step_path(@order)) if PressProofStep.can_list?(current_user) %>
+  <%= new_graphic_item_link(Mockup) %>
+<% end %>

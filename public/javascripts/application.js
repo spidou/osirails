@@ -1,3 +1,8 @@
+// ADD PROTOTYPE METHODS
+String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
+String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
+String.prototype.trim = function() { return this.ltrim().rtrim(); };
+
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 if (window.addEventListener)
@@ -68,28 +73,36 @@ function GetCookieValue(name)
 
 function toggle_pin_contextual_menu(item)
 {
-  var mess2 = 'épingler le menu';
-  var mess1 = 'détacher le menu';
+  var message1 = 'Détacher le menu';
+  var message2 = 'Épingler le menu';
+  var image1 = 'pinned_16x16.png';
+  var image2 = 'not_pinned_16x16.png';
+  
   var exp_date = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
-
+  var image = item.down('img')
+  var image_prefix = image.getAttribute('src').substring(0, image.getAttribute('src').lastIndexOf('/') + 1)
+  
   if($('contextual_menu_container').className == 'not_pinned_menu')
   {
     $('contextual_menu_container').setAttribute('class', 'pinned_menu');
     $('content_page').setAttribute('class','with_pinned_menu');
-    item.firstDescendant().setAttribute('src','/images/pinned_16x16.png');
-    item.firstDescendant().setAttribute('title', mess1);
-    item.firstDescendant().setAttribute('alt', mess1);
+    image.setAttribute('src', image_prefix + image1)
+    image.setAttribute('title', message1)
+    image.setAttribute('alt', message1)
+    
     setCookie('pin_status', 'pinned', exp_date, '/');
   }
   else
   {
     $('contextual_menu_container').setAttribute('class', 'not_pinned_menu');
     $('content_page').setAttribute('class','');
-    item.firstDescendant().setAttribute('src','/images/not_pinned_16x16.png');
-    item.firstDescendant().setAttribute('title', mess2);
-    item.firstDescendant().setAttribute('alt', mess2);
+    image.setAttribute('src', image_prefix + image2)
+    image.setAttribute('title', message2)
+    image.setAttribute('alt', message2)
+    
     setCookie('pin_status', 'not_pinned', exp_date, '/');
   }
+  
   $('reduce_button_link').toggle();
 }
 
@@ -229,12 +242,13 @@ function refresh_timer() {
 // permits to display the hidden menu when we click on the link
 // and to hide it when we click elsewhere in the page.
 function nav_more_links_handler() {
-  more_links = $('nav').getElementsBySelector('a.nav_more')
+  more_links = $('nav').select('a.nav_more')
   more_links.each(function(link) {
     Event.observe(link, 'click', function(menu_event) {
-      menu = link.up('h4').nextSiblings().first()
+      h4 = link.up('h4')
+      menu = h4.nextSiblings().first()
       if (menu.getStyle('display') == 'none') {
-        menu.setStyle({display:'block'})
+        menu.setStyle({left: h4.offsetLeft+'px', display: 'block'})
       } else {
         Effect.toggle(menu, 'appear', {duration: 0.3})
       }
@@ -282,16 +296,19 @@ function close_ajax_holder() {
   new Effect.Fade('ajax_holder', { duration:'0.3', afterFinish:function(){ clean_ajax_holder_content()} })
 }
 
+function initialize_autoresize_text_areas() {
+  $$('.autoresize_text_area').each(function(textarea) {
+    new Widget.Textarea(textarea);
+  });
+}
+
 // Load the initial attributes of the document forms for
 // the function preventClose, active the autoresize for the
 // targeted textarea with class "autoresize_text_area" and
 // initialize javascript time functions
 Event.observe(window, 'load', function() {
   initializeAttributes();
-  
-  $$('.autoresize_text_area').each(function(textarea) {
-    new Widget.Textarea(textarea);
-  });
+  initialize_autoresize_text_areas();
   initialize_time();
   display_time();
 });  

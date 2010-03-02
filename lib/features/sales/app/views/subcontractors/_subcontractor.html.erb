@@ -1,0 +1,30 @@
+<div class="presentation_medium">
+
+<h2>Informations g&eacute;n&eacute;rales</h2>
+<% if is_form_view? %>
+  <% form_for @subcontractor do |form| %>
+    <%= render :partial => 'thirds/third', :object => @subcontractor %>
+    
+    <h3>Adresse</h3>
+    <%= render :partial => 'addresses/address_form', :object => @subcontractor.address || @subcontractor.build_address , :locals => { :address_owner => @subcontractor } %>
+    
+    <h2>Contacts</h2>
+    <%= display_contacts_list(@subcontractor) %>
+    <%= display_contact_add_button(@subcontractor) %>
+
+    <p>
+      <%= form.reset %>
+      <%= form.submit submit_button_name %>
+    </p>
+  <% end %>
+<% else %>
+  <%= render :partial => 'thirds/third', :object => @subcontractor %>
+  
+  <h3>Adresse</h3>
+  <%= render :partial => 'addresses/address_form', :object => @subcontractor.address || @subcontractor.build_address , :locals => { :address_owner => @subcontractor } %>
+    
+  <h2>Contacts</h2>
+  <%= display_contacts_list(@subcontractor) %>
+<% end %>
+
+</div>

@@ -1,0 +1,40 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+<% end -%>
+
+<%
+require_locals form
+
+delivery_note = delivery_note_header
+order = delivery_note.order
+default_ship_to_address = order.signed_quote.ship_to_address
+%>
+
+<div id="delivery_note_header">
+  <h3>Information générales</h3>
+  <p>
+    <%= form.label :delivery_note_type_id %>
+    <%= form.collection_select :delivery_note_type_id, DeliveryNoteType.all, :id, :title %>
+  </p>
+  <p>
+    <%= form.label :published_on %>
+    <%= form.date_select :published_on, :order => [ :day, :month, :year ], :default => nil, :include_blank => "" %> <% if delivery_note.was_uncomplete? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
+  </p>
+  
+  <div>
+    <h4>Adresse de livraison</h4>
+    <%= render :partial => 'addresses/address_form', :object => delivery_note.ship_to_address || delivery_note.build_ship_to_address(default_ship_to_address.attributes), :locals => { :address_owner => delivery_note } %>
+  </div>
+  
+  <div id="contact_container">
+    <h4>Contact</h4>
+    <p>
+      <%= label :select_contacts, "À l'attention de " %>
+      <%= display_contacts_picker(delivery_note, order.contacts) %>
+    </p>
+  </div>
+  
+  <h3>Références</h3>
+</div>

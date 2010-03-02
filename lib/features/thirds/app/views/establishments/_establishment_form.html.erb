@@ -1,37 +1,35 @@
-<% require_locals establishment_owner %>
-<% owner_type = establishment_owner.class.name.downcase %>
+<% require_locals establishments_owner %>
+<% owner_type = establishments_owner.class.singularized_table_name %>
 
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form do |form| %>
-<div class="resource_form" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? %> >
-  <div style="border: 1px solid red; padding: 5px; margin: 5px">
-    <%= form.error_messages %>
-    <p>
-      <%= form.label :name, :index => nil %>
-      <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
-    </p>
-    <p>
-      <%= form.label :establishment_type_id, :index => nil %>
-      <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
-    </p>
-    
-    <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment_owner } #{ :address_owner => establishment } # actually the address_owner is the establishment, but we have to get customer[address_attributes] indeed customer[establishment_attributes][][address_attributes] => FIXME once the bug fixed
-    %>
-    
-    <p>
-      <% if establishment.new_record? %>
-        <%= link_to_function "Annuler la création de l'établissement", "this.up('.resource_form').remove()" %>
-      <% elsif is_form_view? %>
-        <%= link_to_function "Annuler la modification de l'établissement", "mark_resource_for_dont_update(this.up('.establishment_general_infos'))" %>
-      <% else %>
-        <%= link_to_function "Fermer", "this.up('.establishment_general_infos').down('.resource_form').hide()" %>
-      <% end %>
+<div class="resource_form<%= ' new_record' if establishment.new_record? %>" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? or establishment.should_update? %> >
+  <%= form.error_messages %>
+  <p>
+    <%= form.label :name, {}, :index => nil %>
+    <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
+  </p>
+  <p>
+    <%= form.label :establishment_type_id, {}, :index => nil %>
+    <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
+  </p>
+  
+  <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment }
+  %>
+  
+  <p>
+    <% if establishment.new_record? %>
+      <%= link_to_function "Annuler la création de l'établissement", "this.up('.resource').remove()" %>
+    <% elsif is_form_view? %>
+      <%= link_to_function "Annuler la modification de l'établissement", "mark_resource_for_dont_update(this)" %>
+    <% else %>
+      <%= link_to_function "Fermer", "this.up('.resource_form').hide()" %>
+    <% end %>
 
-      <% if !establishment.new_record? and is_form_view? %>
-        <%= form.hidden_field :id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-        <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
-      <% end %>
-    </p>
-  </div>
+    <% if !establishment.new_record? and is_form_view? %>
+      <%= form.hidden_field :id, :index => nil %>
+      <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
+      <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+    <% end %>
+  </p>
 </div>
 <% end %>

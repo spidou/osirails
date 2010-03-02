@@ -1,0 +1,87 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+<% end -%>
+
+<%= order_header %>
+
+<%= generate_commercial_step_contextual_menu_partial %>
+
+<%
+survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.count})",
+                   :survey_step_products        => "Produits (#{survey_step.order.products.count})",
+                   :survey_step_documents       => "Documents / Photos (#{survey_step.documents.count})",
+                   :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractors.count})",
+                   :survey_step_consultants     => "Intervenants externes (x)",
+                   :survey_step_remarks         => "Commentaires (#{survey_step.remarks.count})" }
+
+survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
+                   :survey_step_products        => survey_step.order.errors.on(:products) ? ' errors' : '',
+                   :survey_step_documents       => survey_step.errors.on(:documents) ? ' errors' : '',
+                   :survey_step_subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
+                   :survey_step_consultants     => '',
+                   :survey_step_remarks         => survey_step.errors.on(:remarks) ? ' errors' : '' }
+%>
+
+<h1 id="survey_step">Survey</h1>
+
+<div class="presentation_medium survey_step root_nav">
+  <ul class="survey_step_nav tab_nav">
+    <li class="survey_step_interventions<%= survey_errors[:survey_step_interventions] %> selected"><%= survey_headers[:survey_step_interventions] %></li>
+    <li class="survey_step_products<%= survey_errors[:survey_step_products] %>"><%= survey_headers[:survey_step_products] %></li>
+    <li class="survey_step_documents<%= survey_errors[:survey_step_documents] %>"><%= survey_headers[:survey_step_documents] %></li>
+    <li class="survey_step_subcontractors<%= survey_errors[:survey_step_subcontractors] %>"><%= survey_headers[:survey_step_subcontractors] %></li>
+    <!-- <li class="survey_step_consultants<%= survey_errors[:survey_step_consultants] %>"><%= survey_headers[:survey_step_consultants] %></li> -->
+    <li class="survey_step_remarks<%= survey_errors[:survey_step_remarks] %>"><%= survey_headers[:survey_step_remarks] %></li>
+  </ul>
+  <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update },  :html => { :multipart => true }) do |form| %>
+    <%= form.error_messages %>
+    
+    <h2 class="survey_step_interventions"><%= survey_headers[:survey_step_interventions] %></h2>
+    <div class="survey_step_interventions section_nav selected">
+      <%= display_survey_interventions(survey_step) %>
+      <%= display_survey_intervention_add_button if is_form_view? %>
+    </div>
+    
+    <h2 class="survey_step_products"><%= survey_headers[:survey_step_products] %></h2>
+    <div class="survey_step_products section_nav">
+      <%= display_autocomplete_field_to_add_product_in_survey_step(survey_step.order) if is_form_view? %>
+      <%= display_products_list_in_survey_step(survey_step.order) %>
+      <%= display_anchor_to_autocomplete_field_to_add_product_in_survey_step if is_form_view? %>
+    </div>
+    
+    <h2 class="survey_step_documents"><%= survey_headers[:survey_step_documents] %></h2>
+    <div class="survey_step_documents section_nav">
+      <%= display_documents_list(survey_step) %>
+      <%= display_document_add_button(survey_step) if is_form_view? %>
+    </div>
+    
+    <h2 class="survey_step_subcontractors"><%= survey_headers[:survey_step_subcontractors] %></h2>
+    <div class="survey_step_subcontractors section_nav">
+      <%= display_subcontractor_requests(survey_step) %>
+      <%= display_subcontractor_request_add_button(survey_step) if is_form_view? %>
+    </div>
+    
+    <!-- <h2 class="survey_step_consultants"><%= survey_headers[:survey_step_consultants] %></h2>
+    <div class="survey_step_consultants section_nav">
+      coming soon
+    </div> -->
+    
+    <h2 class="survey_step_remarks"><%= survey_headers[:survey_step_remarks] %></h2>
+    <div class="survey_step_remarks section_nav">
+      <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 if is_form_view? %>
+      <%= display_remarks_list(survey_step) %>
+      <%= display_remark_add_button(survey_step) if is_form_view? %>
+    </div>
+    
+    <% if is_form_view? %>
+      <p>
+        <%= form.submit 'Enregistrer' %>
+        <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+      </p>
+    <% end %>
+  <% end %>
+</div>

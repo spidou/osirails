@@ -1,0 +1,36 @@
+<div class="subcontractor_request resource">
+  <% unless subcontractor_request.new_record? %>
+    <% fields_for subcontractor_request do |form| %>
+      <p>
+        <%= form.label :job_needed %>
+        <%= strong(subcontractor_request.job_needed_was) %>
+      </p>
+      <p>
+        <%= form.label :price %>
+        <%= strong(subcontractor_request.price_was) %>
+      </p>
+      <p>
+        <%= form.label :name %>
+        <%= strong(subcontractor_request.subcontractor.name_was) %>
+      </p>
+      <p>
+        <%= form.label :phone %>
+        <%# strong(subcontractor_request.subcontractor.numbers.first.formatted) %>
+      </p>
+      <p>
+        <%= form.label :email %>
+        <%# strong(subcontractor_request.subcontractor.email) %>
+      </p>
+      <p>
+        <%= form.label :attachment %>
+        <%= subcontractor_request.attachment_file_size ? link_to("Télécharger", subcontractor_request.attachment.url) : "Aucun" %>
+      </p>
+      <p>
+        <%= display_subcontractor_request_edit_button(subcontractor_request) %>
+        <%= display_subcontractor_request_delete_button(subcontractor_request) %>
+      </p>
+    <% end %>
+  <% end %>
+  
+  <%= render :partial => 'subcontractor_requests/subcontractor_request_form', :object => subcontractor_request %>
+</div>

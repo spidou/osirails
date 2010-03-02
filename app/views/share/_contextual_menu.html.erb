@@ -2,10 +2,10 @@
 
 <div id="contextual_menu_container" class="<%= pinned %>_menu">
   <div id="contextual_menu_actions">
-    <%= link_to_function image_tag( "/images/reduce_button2_16x16.png",:title => 'cacher le menu', :alt => 'cacher' ), 
+    <%= link_to_function image_tag( "reduce_button_16x16.png", :title => hide_menu = 'Cacher le menu', :alt => hide_menu ), 
                                     'toggle_contextual_menu($(contextual_menu_toggle_button));',
                                     :id => 'reduce_button_link' %>
-    <%= link_to_function image_tag( "/images/#{pinned}_16x16.png",:title => 'épingler le menu', :alt => 'épingler' ),
+    <%= link_to_function image_tag( "#{pinned}_16x16.png", :title => pin_menu = 'Épingler le menu', :alt => pin_menu ),
                                     'toggle_pin_contextual_menu(this);' %>
   </div>
   <div class="shown_contextual_menu" id="contextual_menu_toggle_button">

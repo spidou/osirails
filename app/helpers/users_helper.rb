@@ -15,7 +15,7 @@ module UsersHelper
     result = []
     result << link_to(user.username, user)
     result << (user.enabled ? "Oui" : "Non")
-    result << (user.last_connection.nil? ? "Jamais connecté" : user.last_connection.to_humanized_datetime)
+    result << (user.last_connection.nil? ? "Jamais connecté" : user.last_connection.humanize)
     result << "#{user_link(user, :link_text => "")} #{edit_user_link(user, :link_text => "")} #{delete_user_link(user, :link_text => "")}"
   end
 end

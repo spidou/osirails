@@ -1,0 +1,18 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_graphic_item_link(Mockup) %>
+<% end %>
+
+<% add_contextual_menu_item("Travaux en attente",true) do %>
+  <%= display_user_spool %>
+<% end %>
+
+<h1>Toutes les maquettes du dossier</h1>
+<div class="resources">
+  <% unless @enabled_mockups.empty? %>
+    <%= render :partial => 'graphic_items/graphic_item_summary', :collection => @enabled_mockups %>
+  <% else %>
+    <p>Il n'y a aucune maquette dans ce dossier<p>
+  <% end %>
+</div>

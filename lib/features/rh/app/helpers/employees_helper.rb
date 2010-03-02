@@ -39,7 +39,7 @@ module EmployeesHelper
     return unless Employee.can_view?(current_user)
     message = view_inactives ? "Cacher" : "Voir"
     message += " les employés inactifs"
-    link_to(image_tag("/images/view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
+    link_to(image_tag("view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
   end
   
   #########################################################################################
@@ -143,7 +143,7 @@ module EmployeesHelper
     type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
     type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
     type = "fax" if type == "Fax" or type== "Fax Professionnel"
-    "/images/"+type+"_16x16.png"
+    type+"_16x16.png"
   end
   
   # method that permit the showing of img balise with otions passed as arguments  

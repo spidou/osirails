@@ -1,0 +1,25 @@
+<%= order_header %>
+
+<%= generate_pre_invoicing_step_contextual_menu_partial %>
+
+<h1>Livraison</h1>
+
+<div>
+<% if is_form_view? %>
+  <% form_for(@step, :url => { :controller => "delivery_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
+    <%= form.error_messages %>
+    
+    <h2>Bons de livraison</h2>
+    <%= display_delivery_notes(@step.order) %>
+    
+    <%= content_tag(:p, display_delivery_note_add_button(@order)) if is_form_view? %>
+    
+    <p>
+      <%= form.submit 'Enregistrer' %>
+      <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+    </p>
+  <% end %>
+<% else %>
+  
+<% end %>
+</div>

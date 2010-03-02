@@ -1,0 +1,25 @@
+deposit_invoice:
+  name: deposit_invoice
+  title: Deposit Invoice
+  factorisable: false
+status_invoice:
+  name: status_invoice
+  title: Status Invoice
+  factorisable: true
+balance_invoice:
+  name: balance_invoice
+  title: Balance Invoice
+  factorisable: true
+asset_invoice:
+  name: asset_invoice
+  title: Asset Invoice
+  factorisable: false
+
+factorisable_invoice:
+  name: factorisable_invoice
+  title: Factorisable Invoice
+  factorisable: true
+nonfactorisable_invoice:
+  name: nonfactorisable_invoice
+  title: Nonfactorisable Invoice
+  factorisable: false

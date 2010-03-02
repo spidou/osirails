@@ -45,10 +45,10 @@ module SocietyIdentityConfigurationHelper
   end
 
   def edit_society_identity_configuration_link(text="")
-    link_to( image_tag("/images/edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
+    link_to( image_tag("edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", edit_society_identity_configuration_path )
   end
   
   def society_identity_configuration_link(text="")
-    link_to( image_tag("/images/view_16x16.png", :alt => "Voir", :title => "Voir") + " #{text}", society_identity_configuration_path )
+    link_to( image_tag("view_16x16.png", :alt => "Voir", :title => "Voir") + " #{text}", society_identity_configuration_path )
   end
 end

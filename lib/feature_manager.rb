@@ -93,10 +93,9 @@ class FeatureManager
     
     def load_menus(menus, parent_name = nil)
       menus.each_pair do |menu, options|
-        @@all_menus << { :name => menu, :title => options["title"], :description => options["description"], :parent => parent_name, :position => options["position"], :hidden => options["hidden"] }
-        unless options["children"].nil?
-          load_menus(options["children"], menu)
-        end
+        options ||= {}
+        @@all_menus << { :name => menu, :title => options["title"], :description => options["description"], :parent => parent_name, :position => options["position"], :hidden => options["hidden"], :separator => options["separator"] }
+        load_menus(options["children"], menu) unless options["children"].nil?
       end
     end
     

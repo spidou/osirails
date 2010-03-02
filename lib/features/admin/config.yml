@@ -110,7 +110,13 @@ configurations:
     value: 30
   society_identity_configuration_name:
     description: "Nom de l'entreprise"
-    value: EMR (Enseigne Maintenance Réunion)
+    value: Enseigne Maintenance Réunion
+  society_identity_configuration_acronym:
+    description: "Sigle de l'entreprise"
+    value: EMR
+  society_identity_configuration_status:
+    description: "Statut de l'entreprise"
+    value: SARL au CAPITAL de 125000€/RCS Saint-Denis
   society_identity_configuration_address_first_line:
     description: Adresse
     value: PAE La Mare
@@ -132,9 +138,15 @@ configurations:
   society_identity_configuration_fax:
       description: Numéro de fax
       value: +262 (0)2 62 53 16 42
+  society_identity_configuration_email:
+      description: Adresse e-mail
+      value: emr@emr-oi.com
   society_identity_configuration_siret:
       description: Numéro SIRET
       value: 408 617 348 00029
+  society_identity_configuration_naf_code:
+      description: Code NAF
+      value: 2740Z
   society_identity_configuration_domain: 
     description: Nom de domaine
     value: emr-oi.com    
@@ -156,7 +168,7 @@ configurations:
       - "4"
       - "5"
   society_identity_configuration_legal_holidays:
-    description: Jours fériés
+    description: Jours fériés # you have to put day and month using 2 numbers ('08' instead of '8')
     value:
       - "01/01"
       - "05/01"

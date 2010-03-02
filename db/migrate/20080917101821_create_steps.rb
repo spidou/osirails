@@ -1,10 +1,8 @@
 class CreateSteps < ActiveRecord::Migration
   def self.up
     create_table :steps do |t|
-      t.string :name
-      t.string :title
-      t.integer :parent_id
-      t.string :description
+      t.references :parent
+      t.string  :name, :title, :description
       t.integer :position
       
       t.timestamps

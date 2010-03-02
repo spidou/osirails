@@ -1,9 +1,8 @@
 class CreateCities < ActiveRecord::Migration
   def self.up
     create_table :cities do |t|
-      t.string :name
-      t.string :zip_code
       t.references :country
+      t.string :name, :zip_code
     end
   end
 

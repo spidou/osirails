@@ -4,9 +4,9 @@ module ServicesHelper
   def show_service_delete_button(service,txt="Delete current service")
     if Service.can_delete?(current_user)
       if service.can_be_destroyed?
-        link_to(image_tag("/images/delete_16x16.png", :title => "Delete", :alt => "Delete")+" #{txt}", service , { :method => :delete, :confirm => 'Êtes vous sûr?' }) 
+        link_to(image_tag("delete_16x16.png", :title => "Delete", :alt => "Delete")+" #{txt}", service , { :method => :delete, :confirm => 'Êtes vous sûr?' }) 
       else
-        image_tag("/images/delete_disable_16x16.png", :alt => "Delete", :title => "Delete")+" #{txt}"
+        image_tag("delete_disable_16x16.png", :alt => "Delete", :title => "Delete")+" #{txt}"
       end
     end
   end
@@ -14,7 +14,7 @@ module ServicesHelper
   # This method test permission for add_button
   def new_service_link_with_parent(service,txt="")
     if Service.can_add?(current_user)
-			link_to(image_tag("/images/add_16x16.png", :title => "Add", :alt => "Add")+" #{txt}", new_service_path(:service_id => service.id))
+			link_to(image_tag("add_16x16.png", :title => "Add", :alt => "Add")+" #{txt}", new_service_path(:service_id => service.id))
     end
   end
   

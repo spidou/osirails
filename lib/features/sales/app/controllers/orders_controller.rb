@@ -1,98 +1,96 @@
 class OrdersController < ApplicationController
-  # Callbacks
-  before_filter :load_collections, :only => [:new, :create, :edit, :update]
-  after_filter :check, :except => [:index, :new, :create, :auto_complete_for_employee_fullname]
+  helper :contacts, :ship_to_addresses
   
-  method_permission :add => ['auto_complete_for_employee_first_name'], :edit => ['auto_complete_for_employee_first_name']
+  before_filter :load_collections
+  before_filter :hack_params_for_ship_to_address_addresses, :only => [ :create, :update ]
+
+  acts_as_step_controller :sham => true, :step_name => :commercial_step
   
-#  def auto_complete_for_employee_fullname
-#    all_employees = Employee.find(:all)
-#    fullname = params[:employee][:fullname].downcase
-#    @employees = []
-#    all_employees.each do |e|
-#      @employees << e if !e.first_name.downcase.grep(/#{fullname}/).empty? || !e.last_name.downcase.grep(/#{fullname}/).empty?
-#    end
-#    render :partial => 'auto_complete_for_employee_fullname'
-#  end
+  def index
+    redirect_to :action => :new
+  end
   
+  # GET /orders/1
+  # GET /orders/1.svg
   def show
-    @order = Order.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to order_path(@order) + '/' + @order.step.name[5..-1].downcase }
-      format.svg {
-        case params[:for]
-        when 'step'
-          render :partial => 'mini_order', :locals => {:children_list => @order.children }
-        when 'understep'
-          render :partial => 'mini_order', :locals => {:children_list => @order.child.children}
+      format.html {
+        if @order.current_step
+          redirection = send(@order.current_step.original_step.path, @order)
         else
-          render :partial => 'order'
-        end }
+          redirection = order_informations_path(@order)
+        end
+        flash.keep
+        redirect_to redirection
+      }
+      format.svg {
+        if params[:for]
+          render :partial => 'mini_order', :object => @order
+        else
+          render :partial => 'order', :object => @order
+        end
+      }
     end
   end
   
+  # GET /orders/new
   def new
-    @current_order_step = "commercial"
     @order = Order.new
-    
-    if params[:customer_id] or params[:new_customer_id] # this is the second step of the order creation
-      customer_id = params[:customer_id] || params[:new_customer_id]
-      
+    @order.creator = current_user
+    if params[:customer_id] # this is the second step of the order creation
       begin
-        @order.customer = Customer.find(customer_id)
-        @contacts = @order.customer.contacts_all
-      rescue Exception => e
-        flash.now[:error] = "Le client n'a pas été trouvé. Veuillez réessayer. Erreur : #{e.message}"
+        @order.customer = Customer.find(params[:customer_id])
+        @order.build_bill_to_address(@order.customer.bill_to_address.attributes)
+      rescue ActiveRecord::RecordNotFound => e
+        flash.now[:error] = "Le client n'a pas été trouvé, merci de réessayer."
       end
     end
   end
   
+  # POST /orders
   def create
-    @order = Order.new(params[:order])
+    @order = Order.new(:customer_id => params[:order][:customer_id]) # establishment_attributes needs customer_id is set before all other attributes
+    @order.attributes = params[:order]
+    @order.creator = current_user
     if @order.save
-      flash[:notice] = "Dossier crée avec succès"
-      redirect_to order_path(@order)
-    else # error
-      @contacts = @order.customer.contacts_all
-      # render the new action
+      flash[:notice] = "Dossier créé avec succès"
+      redirect_to order_informations_path(@order)
+    else
       render :action => "new"
     end
   end
   
+  # GET /orders/1/edit
   def edit
-    @order = Order.find(params[:id])
-    @contacts = @order.customer.contacts_all
   end
   
+  # PUT /orders/1
   def update
     params[:order][:contact_ids] ||= []
-    @order = Order.find(params[:id])
     if @order.update_attributes(params[:order])
       flash[:notice] = "Dossier modifié avec succés"
-      redirect_to order_path(@order)
+      redirect_to order_informations_path(@order)
     else
-      flash[:error] = "Erreur lors de la mise à jour du dossier"
+      render :action => 'edit'
     end
   end
   
   private
-  
-    def check
-      OrderLog.set(@order, current_user, params) # Manage logs
-      @current_order_step = @order.step.first_parent.name[5..-1]
-#      @customer = @order.customer
-#
-#      if params[:order]
-#        @parameters = {}
-#        @parameters.update(params[:order])
-#        @parameters[:commercial] = Employee.find(params[:employee_id])
-#        @parameters[:order_type] = OrderType.find(params[:order][:order_type])
-#        @parameters[:customer] = Customer.find(params[:order][:customer])
-#      end
+    def load_collections
+      @commercials = Employee.all
+      @society_activity_sectors = SocietyActivitySector.all
+      @order_types = OrderType.all
     end
     
-    def load_collections
-      @commercials = Employee.find(:all)
-      @order_types = OrderType.find(:all)
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_ship_to_address_addresses
+      if params[:order] and params[:order][:establishment_attributes] and params[:establishment] and params[:establishment][:address_attributes]
+        params[:order][:establishment_attributes].each_with_index do |establishment_attributes, index|
+          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+        end
+        params.delete(:establishment)
+      end
     end
 end

@@ -171,6 +171,7 @@
 </select>
 </p>
 <fieldset id="alarm" style="display: none;">
+  <% alarm = @event.alarms.build %>
 	<%= text_field_tag 'alarm[do_alarm_before]', alarm.do_alarm_before, :size => 3 %> minutes avant<br />
 	<div id="alarm_display">
 		Afficher pendant <%= text_field_tag 'alarm[duration]', alarm.duration, :size => 3 %> minutes<br />
@@ -188,12 +189,12 @@
 <p>
 <%= label_tag 'Participants' %>
 <%= text_field_with_auto_complete('participants', 'text', {:size => 26, :onkeypress => "if(event.keyCode == 13) add_participant();"}, {:url => {:controller => 'calendars', :id => @calendar.id, :action => 'auto_complete_for_event_participants'}, :after_update_element => "function(){add_participant(true);}", :method => 'get'}) %>
-<img id="add_participant_icon" src="/images/add_16x16.png" onclick="add_participant();">
+<%= image_tag("add_16x16.png", :onclick => "add_participant()", :id => "add_participant_icon", :alt => "Ajouter un participant", :title => "Ajouter un participant")%>
 </p>
 <p class="participants_area">
 <div id="participants_list">
 	<% @event.participants.each do |p| %>
-		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <img src="/images/cross_12x12.png" onclick="delete_participant(this, false);"><input type="hidden" value="<%= p.id %>" /></span>
+		<span><%= ", " unless @event.participants.first == p %><%= (p.name || '') + (p.email || '') %> <%= image_tag("cross_12x12.png", :onclick => "delete_participant(this, false)", :alt => "Supprimer", :title => "Supprimer")%><input type="hidden" value="<%= p.id %>" /></span>
 	<% end %>
 </div>
 </p>

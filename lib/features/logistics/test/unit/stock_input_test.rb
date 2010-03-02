@@ -62,7 +62,7 @@ class StockInputTest < ActiveSupport::TestCase
     create_supplier_supplies
     @stock_quantity = Supply.last.stock_quantity
     @stock_value = Supply.last.stock_value
-    flunk "stock input must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     @last_sf = StockFlow.last
     assert_equal @last_sf.previous_stock_quantity, @stock_quantity, "these two should be equal"
     assert_equal @last_sf.previous_stock_value, @stock_value, "these two should be equal"

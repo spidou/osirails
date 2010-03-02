@@ -1,0 +1,41 @@
+<div class='presentation_medium'>
+  <h2>Bon &agrave; tirer</h2>
+  <%= render :partial => "press_proofs/press_proofs_list", :object => [ @owner_class.find(@owner.id) ], :locals => { :press_proofs => [ @owner_class.find(@owner.id) ]} %>
+</div>
+
+<h1>Signaler qu&apos;une relance a &eacute;t&eacute; effectu&eacute;e</h1>
+<div class='presentation_medium'>
+
+<% unless dunnings.empty? %>
+  <h3>Historique des relances</h3>
+  <%= render :partial => "dunnings", :object => dunnings, :locals => {:without_action => true } %>
+  <hr/>
+<% end %>
+
+<% form_for(dunning,:url => {:action => :create}) do |f| %>  
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :date %>
+    <%= f.form_or_view(f.date_select(:date,{ :start_year => 1900, :order => [:day,:month,:year] }), :date)%>
+  </p>
+  
+  <% unless is_form_view? %>
+  <p>
+    <%= f.label :creator %>
+    <strong><%= dunning.creator.employee_name %></strong>
+  </p>
+  <% end %>
+  
+  <p>
+    <%= f.label :dunning_sending_method %>
+    <%= f.form_or_view(collection_select(:dunning, :dunning_sending_method_id, DunningSendingMethod.all, :id, :name),:dunning_method, :name) %>
+  </p>
+  
+  <p>
+    <%= f.label :comment %>
+    <%= f.form_or_view(f.text_area_autoresize(:comment, :cols => 50), :comment)%>
+  </p>
+  
+  <p><%= f.submit submit_button_name if is_form_view? %></p>
+<% end %>
+</div>

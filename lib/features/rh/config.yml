@@ -9,7 +9,7 @@ menus:
     title: Ressources Humaines
     description: Administration des Ressources Humaines
     position: 2
-    children:  
+    children:
       employees:
         title: Personnel
         description: Gestion du personnel

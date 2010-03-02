@@ -1,0 +1,6 @@
+<% add_contextual_menu_item :useful_links do %>
+  <%= machines_link %>
+<% end %>
+
+<h1>Ajouter une machine</h1>
+<%= render :partial => "tools/tool" , :locals => {:tool => @machine, :button_name => "Ajouter"}%>

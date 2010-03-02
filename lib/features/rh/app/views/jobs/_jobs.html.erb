@@ -1,60 +1,56 @@
- <!--#####################################-->
- <!--### fiche de post ###################-->
-    
     <h3>Service</h3>
     <p>
-      <%= form.label :name , "Nom :"%>
+      <%= form.label :service %>
       <%= form.form_or_view(form.collection_select(:service_id, @services, :id, :name), :service, :name) %>
     </p>
-    <%= "<p> #{form.label :responsable, "Responsable(s) :"} #{get_responsibles} </p>" unless is_form_view?%>
-
+    <%= "<p> #{form.label "Responsable(s) "} #{get_responsibles} </p>" unless is_form_view? %>
+    
+    <h3>Fonctions dans l'entreprise</h3>
     
     <% if is_form_view? %>
     
-    <h3>Fonction(s) dans l'entreprise</h3>
-    <div id="jobs_choice">
-      <div id='jobs_list'>
-        <table>
-          <tr><th colspan="3">Fonctions</th></tr>
-        <% jobs.group_by(&:service).to_hash.each_pair do |service, jobs_collection| %>
-          
-          <% for associated_job in jobs_collection %>
-              <tr>
-                <%= "<td rowspan='#{jobs_collection.size}'>#{ service.name }</td>" if associated_job == jobs_collection.first %>
-                <td><%= associated_job.name %></td>
-                <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids', @employee.numbers.nil? ? nil : @employee)%></td>
-              </tr>
-          <% end %>
-     
-        <% end %>
-        </table>
-      </div> <!--end jobs_list -->
-      <p><a onclick="osibox_open();" style="text-decoration:underline;">new job</a></p>
-    </div> <!--end jobs_choice -->
+      <div id="jobs_choice">
+        <div id='jobs_list'>
+          <table>
+            <tr><th colspan="3">Fonctions</th></tr>
+            <% jobs.group_by(&:service).to_hash.each_pair do |service, jobs_collection| %>
+              <% for associated_job in jobs_collection %>
+                <tr>
+                  <%= "<td rowspan='#{jobs_collection.size}'>#{ service.name }</td>" if associated_job == jobs_collection.first %>
+                  <td><%= associated_job.name %></td>
+                  <td><%= check_box_tag "employee[job_ids][]", associated_job.id, is_in?(associated_job, 'jobs','job_ids', @employee.numbers.nil? ? nil : @employee)%></td>
+                </tr>
+              <% end %>
+            <% end %>
+          </table>
+        </div> <!--end jobs_list -->
+        <p><a onclick="osibox_open();" style="text-decoration:underline;">New job</a></p>
+      </div> <!--end jobs_choice -->
 
     <% else %>
       
-      <%= @employee.jobs.size<=1 ? "<h3>Fonction dans l'entreprise</h3>":"<h3>Fonctions dans l'entreprise</h3>"%>
-      <%= "<p>aucune</p>" if @employee.jobs.size==0  %>
-      <%for job in @employee.jobs%>
-      <p>
-        <strong><%=job.name + " :"%></strong>
-        <table class="presentation">
-          <tr class="left_cell">
-            <td class="left_cell">- les missions :</td>
-            <td class="right_cell"> <%=job.mission %></td>
-          </tr>
-          <tr>
-            <td class="left_cell">- les activitées :</td>
-            <td class="right_cell"><%=job.activity %></td>
-          </tr>
-          <tr>
-            <td class="left_cell">- les objectifs :</td> 
-            <td class="right_cell"> <%=job.goal %></td>
-          </tr>
-        </table>
-      </p>  
+      <% if @employee.jobs.empty? %>
+        <p>Aucune fonction attribuée.</p>
+      <% else %>
+        <% for job in @employee.jobs%>
+          <p>
+            <strong><%= job.name + " :" %></strong>
+            <table class="presentation">
+              <tr class="left_cell">
+                <td class="left_cell">- Missions :</td>
+                <td class="right_cell"> <%= job.mission %></td>
+              </tr>
+              <tr>
+                <td class="left_cell">- Activités :</td>
+                <td class="right_cell"><%= job.activity %></td>
+              </tr>
+              <tr>
+                <td class="left_cell">- Objectifs :</td>
+                <td class="right_cell"> <%= job.goal %></td>
+              </tr>
+            </table>
+          </p>
+        <% end %>
       <% end %>
-
+      
     <% end %>
-

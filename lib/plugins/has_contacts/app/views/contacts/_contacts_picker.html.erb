@@ -1,0 +1,46 @@
+<%
+require_locals contacts_owner
+owner_type ||= contacts_owner.class.singularized_table_name
+contacts = contacts_picker
+random_id = rand(1000000).to_s
+%>
+
+<% if is_form_view? %>
+  <select id="select_contacts_<%=random_id%>" name="select_<%=random_id%>[contacts]">
+    <option value="0">Veuillez choisir un contact</option>
+    <% for contact in contacts %>
+      <% selected_contact = contacts_owner.contacts.include?(contact) %>
+      <% disabled = selected_contact ? 'disabled="disabled"' : '' %>
+      <%= "<option value=\"#{contact.id}\" #{disabled}>#{contact.fullname}</option>" %>
+    <% end %>
+  </select>
+<% end %>
+
+<div id="preview_contacts" class="resources">
+<% for contact in contacts %>
+  <% selected_contact = contacts_owner.contacts.include?(contact) %>
+  
+  <div id="<%=random_id%>_preview_contact_<%=contact.id%>" class="preview_contact" <%= "style=\"display:none\"" unless selected_contact %>>
+    <%= render :partial => 'contacts/contact', :object => contact, :locals => { :contacts_owner => contacts_owner, :force_show_view => true } %>
+    
+    <% if contacts_owner.class.has_many_contacts? %>
+      <%= check_box_tag("#{owner_type}[contact_ids][]", contact.id, selected_contact, :class => 'contact_input') if is_form_view? %>
+      <%= link_to_function( image_tag('delete_16x16.png', :title => 'Retirer ce contact de la liste', :alt => 'Retirer ce contact de la liste'), "contacts_picker.remove_resource_from_list(this)", :class => 'contact_actions' ) %>
+    <% else %>
+      <%# radio_button_tag("#{owner_type}[contact_ids]", contact.id, selected_contact, :class => 'contact_input') if is_form_view? %>
+      <%= check_box_tag("#{owner_type}[contact_ids]", contact.id, selected_contact, :class => 'contact_input') if is_form_view? %>
+    <% end %>
+  </div>
+<% end %>
+</div>
+
+<% if is_form_view? %>
+  <script type="text/javascript">
+    var contacts_picker = new ResourcesPicker({select:                  'select_contacts_<%=random_id%>',
+                                               mode:                    '<%= contacts_owner.class.has_many_contacts? ? "many" : "one" %>',
+                                               hidden_element_prefix:   '<%=random_id%>_preview_contact',
+                                               input_class:             'contact_input',
+                                               removable_element_class: 'preview_contact',
+                                               element_actions_class:   'contact_actions'})
+  </script>
+<% end %>

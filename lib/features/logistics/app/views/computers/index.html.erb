@@ -1,0 +1,9 @@
+<% add_contextual_menu_item :possible_actions do %>
+  <%= new_computer_link %>
+<% end %>
+
+<h1>Liste des ordinateurs</h1>
+
+<div class='presentation_medium'>
+  <%= render :partial => 'tools/index', :locals => {:tools => @computers}%>
+</div>

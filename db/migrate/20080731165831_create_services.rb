@@ -1,9 +1,9 @@
 class CreateServices < ActiveRecord::Migration
   def self.up
     create_table :services do |t|
+      t.references :service_parent
       t.string :name
-      t.integer :service_parent_id
-
+      
       t.timestamps
     end
   end

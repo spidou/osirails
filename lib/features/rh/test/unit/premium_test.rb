@@ -8,7 +8,7 @@ class PremiumTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_employee
-    assert_equal @premium.employee, employees(:normal),
+    assert_equal employees(:john_doe), @premium.employee,
       "This Premium should belongs to this Employee"
   end
 

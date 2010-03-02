@@ -1,34 +1,34 @@
 <% order = order_timeline %>
 <div id="timeline">
 	<div id="timeline_head" class="good">
-    <span class="timeline_date"><%= order.created_at.to_humanized_date %></span>
+    <span class="timeline_date" title="<%= order.created_at.humanize %>"><%= order.created_at.to_date.humanize %></span>
     <span class="timeline_notice">Création de dossier</span>
   </div>
   
-<% order.all_children.each do |child| %>
-	<% if child.start_date %>
+<% order.all_steps.each do |child| %>
+	<% if child.started_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date"><%= child.start_date.strftime("%C %B %Y") %></span>
-    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.step.title.downcase %></span>
+    <span class="timeline_date" title="<%=child.started_at.humanize %>"><%= child.started_at.to_date.humanize %></span>
+    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
   <% else %>
   <div class="timeline_body bad">
-    <span class="timeline_date"><%= child.name %></span>
-    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.step.title.downcase %></span>
+    <span class="timeline_date"><%= child.original_step_name %></span>
+    <span class="timeline_notice">D&eacute;but de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>
 
-	<% if child.end_date %>
+	<% if child.finished_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date"><%= child.end_date.strftime("%C %B %Y") %></span>
-    <span class="timeline_notice">Fin de l'&eacute;tape <%= child.step.title.downcase %></span>
+    <span class="timeline_date" title="<%= child.finished_at.humanize %>"><%= child.finished_at.to_date.humanize %></span>
+    <span class="timeline_notice">Fin de l'&eacute;tape <%= child.original_step.title.downcase %></span>
   </div>
 	<% end %>
 <% end %>
 
-<% if order.closed_date %>
+<% if order.closed_at %>
 	<div class="timeline_body good">
-    <span class="timeline_date"><%= order.closed_date.strftime("%C %B %Y") %></span>
+    <span class="timeline_date" title="<%= order.closed_at.humanize %>"><%= order.closed_at.to_date.humanize %></span>
     <span class="timeline_notice">Cl&ocirc;ture du dossier</span>
   </div>
 <% end %>

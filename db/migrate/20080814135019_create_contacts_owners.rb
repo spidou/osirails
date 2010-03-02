@@ -1,9 +1,10 @@
 class CreateContactsOwners < ActiveRecord::Migration
   def self.up
-    create_table :contacts_owners, :id => false do |t|
-      t.integer :contact_id
+    create_table :contacts_owners do |t|
       t.references :has_contact, :polymorphic => true
-      t.integer :contact_type_id
+      t.references :contact, :contact_type
+      
+      t.timestamps
     end
   end
 

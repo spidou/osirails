@@ -1,0 +1,12 @@
+delivery_and_installation:
+  title: Delivery and Installation
+  delivery: true
+  installation: true
+delivery:
+  title: Delivery
+  delivery: true
+  installation: false
+none:
+  title: Customer retrieval
+  delivery: false
+  installation: false

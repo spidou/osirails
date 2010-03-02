@@ -90,8 +90,8 @@ input[type=password] {
 	background: url("/themes/emr/images/login/input_text.png") no-repeat;
 	border: none;
 	width: 169px;/*171*/
-	height: 22px;
-	padding-top:5px;
+	height: 25px;
+	//padding-top:5px;
 	margin-left:auto;
 	margin-right:auto;
 	display:block;
@@ -207,13 +207,13 @@ a { /*Pour le msg d'erreur*/
 }
 
 .flash_container div.flash_error {
-	background-image: url("/images/cross_16x16.png");
+	background-image: url("/themes/emr/images/cross_16x16.png");
 	color: red;
 	-moz-box-shadow: inset 0 0 8px rgba(255,0,0,0.8);
 }
 
 .flash_container div.flash_notice {
-	background-image: url("/images/tick_16x16.png");
+	background-image: url("/themes/emr/images/tick_16x16.png");
 	color: green;
 	-moz-box-shadow: inset 0 0 8px rgba(0,255,0,0.8);
 }
@@ -232,7 +232,7 @@ a { /*Pour le msg d'erreur*/
 .errorExplanation ul li {
 	position:relative;
 	bottom:15px;
-	background: url("/images/warning_14x14.png") no-repeat 0px 0;
+	background: url("/themes/emr/images/warning_14x14.png") no-repeat 0px 0;
 	list-style-type:none;
 	width:300px;
 	margin-left:30px;

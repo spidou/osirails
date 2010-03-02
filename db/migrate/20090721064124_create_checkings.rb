@@ -3,12 +3,8 @@ class CreateCheckings < ActiveRecord::Migration
     create_table :checkings do |t|
       t.references :user, :employee
       t.date    :date
-      t.integer :absence_hours
-      t.integer :absence_minutes
-      t.text    :absence_comment
-      t.integer :overtime_hours
-      t.integer :overtime_minutes
-      t.text    :overtime_comment
+      t.integer :absence_hours, :absence_minutes, :overtime_hours, :overtime_minutes
+      t.text    :absence_comment, :overtime_comment
       t.boolean :cancelled
       
       t.timestamps

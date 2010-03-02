@@ -1,0 +1,110 @@
+#documents {
+  padding: 0 10px 6px 10px;
+  text-align: left;
+}
+
+.document_group {
+  display: inline-block;
+  -moz-border-radius: 0 0 10px 10px;
+  border: 1px solid #7E98CB;
+  padding: 4px;
+  margin: 5px;
+  text-align: left;
+}
+
+.document_group.new_records {
+  display: block;
+}
+
+.document_group h1 {
+  background-color: #afc2ea;
+  color: rgb(70,94,142);
+	border:0;
+	margin: -4px -4px 0 -4px;
+  height: auto;
+	padding: 0;
+  font-size: smaller;
+  font-weight: bold;
+	font-variant: inherit;
+  text-align:left;
+  text-indent: 7px;
+}
+
+.document {
+  display: inline-block;
+  border: 1px dashed #ddd;
+  margin: 4px;
+  padding: 2px;
+  min-height: 100px; /* thumb height*/
+  width: 400px;
+  vertical-align: top;
+}
+
+.document:hover {
+  border: 1px dashed grey;
+}
+
+.document img.thumb {
+  float: left;
+  margin: 3px 0px 3px 3px;
+  padding: 0;
+}
+
+.document .details {
+  background-color: #eaeaea;
+  margin: 3px 3px 3px 110px; /* 110px => thumb width + 1Opx */
+  min-height: 100px; /* thumb height*/
+  padding: 0 5px 0 5px;
+}
+
+.document .details h1 {
+  background:inherit;
+	color:inherit;
+	border:0;
+	margin:0;
+	padding:0;
+  font-size: large;
+  font-weight: bold;
+	font-variant: inherit;
+  text-align:left; 
+  text-indent: 0;
+}
+
+.document div.preview {
+  position: absolute;
+}
+
+.document img.preview {
+  border: 1px solid red;
+  margin 0;
+  padding: 0;
+  left: 0;
+}
+
+form .document p {
+  margin: 0;
+  padding: 2px 0 2px 0;
+  text-indent: 0;
+}
+
+form .document label {
+   width: 100px !important;
+}
+
+form .document p input[type=text],
+form .document p input[type=password],
+form .document p input[type=checkbox],
+form .document p textarea,
+form .document p select {
+  vertical-align:top;
+  width: 220px;
+}
+
+.document #errorExplanation {
+	width: 370px;
+}
+
+.document #errorExplanation p {
+	margin: inherit;
+	padding: inherit;
+}

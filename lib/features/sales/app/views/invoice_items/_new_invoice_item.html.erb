@@ -1,0 +1,11 @@
+<tr class="new_invoice_item">
+  <td colspan="12">
+    <%= button_to_function "Insérer une nouvelle ligne vierge", "add_free_item()" %>
+  </td>
+</tr>
+
+<%
+new_invoice_item.should_destroy = 1 # should_destroy=1 to automatically hide the new line, and to not take it in account when saving invoice_items in invoice
+%>
+
+<%= render :partial => 'invoice_items/invoice_item', :object => new_invoice_item %>

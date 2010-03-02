@@ -134,7 +134,7 @@
 	width: 14.285714285714286%;
 	width: 13%;
 	height: 100%;
-	background: white url('/images/grid_repeat-x.gif') repeat;
+	background: white url('/images/calendar/grid_repeat-x.gif') repeat;
 }
 
 #calendar #scroll #grid_week .day_grid:hover {
@@ -162,7 +162,7 @@
 	width: 100%;
 	height: 100%;
 	z-index: -100;
-	background: url('/images/grid_repeat-x.gif') repeat;
+	background: url('/images/calendar/grid_repeat-x.gif') repeat;
 }
 
 #calendar #scroll #grid_day .day_grid .day_grid_border {
@@ -290,7 +290,7 @@
 	top: 0px;
 	border: 1px solid #D2D2D2;
 	-moz-border-radius: 8px;
-	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
+	background: #CFCFCF url("/images/calendar/event_box_gradient.png") repeat-x;
 	z-index: 1;
 	width:auto;
 }
@@ -341,7 +341,7 @@
 
 #event_box fieldset {
 	border:1px solid #AEAEAE;
-	background: #CFCFCF url("/images/event_box_gradient.png") repeat-x;
+	background: #CFCFCF url("/images/calendar/event_box_gradient.png") repeat-x;
 	margin:8px 0 8px 0;
 	padding:5px;
 }
@@ -359,7 +359,7 @@
 }
 
 #event_box h1 {
-	background:url("/images/background_event_box_title.png");
+	background:url("/images/calendar/background_event_box_title.png");
 	color:#333;
 	border:solid 1px #888;
 	height:20px;
