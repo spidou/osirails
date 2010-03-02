@@ -11,7 +11,7 @@ class PressProof < ActiveRecord::Base
   named_scope :actives, :conditions => ["status NOT IN (?)", [STATUS_CANCELLED, STATUS_REVOKED]]
     
   has_attached_file :signed_press_proof, 
-                    :path => ':rails_root/sales/assets/:class/:attachment/:id.:extension',
+                    :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
   has_many :press_proof_items, :order => "position, created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field

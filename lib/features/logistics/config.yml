@@ -10,6 +10,7 @@ menus:
   logistics:
     title: "Logistique"
     description: "Gestion de la logistique"
+    position: 4
     children:
       tools:
         title: "Équipements"
@@ -47,6 +48,7 @@ menus:
   stocks:
     title: "Stocks"
     description: "Gestion des stocks, des inventaires, des réapprovisionnements, etc."
+    position: 5
     children:
       commodities_manager:
         title: "Gestion des matières premières"

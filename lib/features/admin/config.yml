@@ -11,6 +11,10 @@ version: 0.1
 #    - 0.1
 #    - 0.2
 menus:
+  home:
+    title: Accueil
+    description: "Page d'accueil de l'intranet"
+    hidden: true
   account:
     title: Compte utilisateur
     description: Gestion des connexions

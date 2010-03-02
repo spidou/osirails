@@ -8,6 +8,7 @@ menus:
   thirds:
     title: Tiers
     description: Gestion des fournisseurs et des clients
+    position: 3
     children:
       customers:
         title: Clients

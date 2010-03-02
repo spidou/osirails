@@ -1,0 +1,12 @@
+<h1>Accueil</h1>
+
+<div>
+  <ul id="home_links">
+  <% for menu in @menus %>
+    <li title="<%= menu.description %>">
+      <%= link_to( image_tag("menus/#{menu.name}.png", :alt => menu.title, :title => menu.description) + menu.title,
+                   url_for_menu(menu) ) %>
+    </li>
+  <% end %>
+  </ul>
+</div>

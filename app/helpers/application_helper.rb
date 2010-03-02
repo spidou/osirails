@@ -36,35 +36,6 @@ module ApplicationHelper
     html
   end
   
-  def display_menu_entries(current)
-    real_current_menu = current_menu
-    output = ""
-    
-    if current.parent
-      output << display_menu_entries(current.parent)
-      siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated.select{|m|m.can_access?(current_user)}
-    else
-      siblings = Menu.mains.activated.select{|m|m.can_access?(current_user)}
-    end
-    
-    more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
-    
-    if real_current_menu.parent
-      unless current.parent
-        output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
-      else
-        h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
-        output << content_tag(:h4, link_to(current.parent.title, url_for_menu(current.parent), :title => current.parent.description), h4_options)
-      end
-    end
-    output << "<ul#{' class="nav_top"' unless real_current_menu == current}>"
-    siblings.each do |menu|
-      li_options = ( menu == current or menu.ancestors.include?(current) ) ? { :class => 'selected' } : {}
-      output << content_tag(:li, link_to(menu.title, url_for_menu(menu), :title => menu.description), li_options)
-    end
-    output << "</ul>"
-  end
-  
   #TODO remove that for good!
   def display_memorandums
     ""
@@ -488,16 +459,16 @@ module ApplicationHelper
       
       if current.parent
         output << display_menu_entries(current.parent)
-        siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated
+        siblings = Menu.find_by_parent_id(current.parent_id).self_and_siblings.activated.select{|m|m.can_access?(current_user)}
       else
-        siblings = Menu.mains.activated
+        siblings = Menu.mains.activated.select{|m|m.can_access?(current_user)}
       end
       
       more_link = real_current_menu == current ? '' : link_to(content_tag(:em, 'More'), '#more', :class => 'nav_more')
       
       if real_current_menu.parent
         unless current.parent
-          output << content_tag(:h4, link_to('Menu Principal', '/') + more_link, :title => "Menu Principal")
+          output << content_tag(:h4, link_to('Accueil', '/') + more_link, :title => "Accueil")
         else
           h4_options = real_current_menu == current ? { :class => 'nav_current' } : {}
           url = url_for_menu(current.parent)

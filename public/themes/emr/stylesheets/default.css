@@ -1597,6 +1597,31 @@ table.mceEditor {
 	cursor:text;
 }
 
+ul#home_links {
+  list-style-type: none;
+  text-align: center;
+}
+
+ul#home_links li {
+  display: inline-block;
+  text-align: center;
+  margin-right: 30px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+ul#home_links li a {
+  display: block;
+}
+
+ul#home_links li a img {
+  display: block;
+  padding: 2px;
+  border: 1px dashed #CCC;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 /*/////////////////////////////////////////////////////
 					FOOTER
 ////////////////////////////////////////////////////*/

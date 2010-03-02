@@ -80,7 +80,10 @@ module InvoicesHelper
   end
   
   def display_invoice_add_button(order, message = nil)
-    return unless Invoice.can_add?(current_user) and order.invoices.build.can_be_added?
+    return unless Invoice.can_add?(current_user) and ( order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::DEPOSITE_INVOICE).id).can_be_added? or
+                                                       order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::STATUS_INVOICE).id).can_be_added? or
+                                                       order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::BALANCE_INVOICE).id).can_be_added? or
+                                                       order.invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::ASSET_INVOICE).id).can_be_added? )
     text = "Nouvelle facture"
     message ||= " #{text}"
     link_to( image_tag( "add_16x16.png",

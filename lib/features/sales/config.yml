@@ -11,7 +11,7 @@ dependencies:
 menus:
   sales:
     title: Ventes
-    position: 9
+    position: 6
     children:
       in_progress_orders:
         title: Dossiers en cours
@@ -154,6 +154,7 @@ menus:
   goods:
     title: Produits
     description: Gestion des produits
+    position: 7
     children:
       product_reference_manager:
         title: Gestion des références produits
@@ -176,7 +177,6 @@ menus:
           title: Catalogue des produits et références
           description: "Permet l'affichage du catalogue de produit"
   thirds:
-    title: Tiers
     children:
       subcontractors:
         title: Sous-traitants

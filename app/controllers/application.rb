@@ -79,10 +79,6 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def user_home
-      permissions_path
-    end
-
     # Called when an user try to acces to an unauthorized page
     def error_access_page(status = nil)
       render_optional_error_file(status)
