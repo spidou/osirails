@@ -37,7 +37,7 @@ class Tool < ActiveRecord::Base
     
     return status[:available] if tool_events.empty?
     return status[:scrapped]  if has_one_scrapped?   
-    return all_current_status.include?(status[:unavailable])? status[:unavailable] : status[:available]   
+    return all_current_status.include?(status[:unavailable]) ? status[:unavailable] : status[:available]   
   end
   
   def has_one_scrapped?
@@ -46,6 +46,10 @@ class Tool < ActiveRecord::Base
   
   def can_be_edited?
     status != ToolEvent::SCRAPPED
+  end
+  
+  def name_and_serial_number
+    "#{name} (#{serial_number})"
   end
   
   private

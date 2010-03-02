@@ -7,7 +7,7 @@ rowspan = press_proofs.collect(&:graphic_item_versions).flatten.size + 1 # +1 be
 
 <% unless product.press_proofs.empty? %>
   <tr>
-    <td rowspan="<%= rowspan %>"><%= product.description %></td>
+    <td rowspan="<%= rowspan %>"><%= product.name %></td>
     <td rowspan="<%= rowspan %>"><%= product.quantity %></td>
   </tr>
 

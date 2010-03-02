@@ -15,24 +15,27 @@ module ProductBaseTest
             @order = @quote = @quote_item = nil
           end
           
-          should "have a 'unit_price_with_discount' value equal to '0' when unit_price is nil" do
+          should "have a 'unit_price_with_prizegiving' value equal to '0' when unit_price is nil" do
             @quote_item.unit_price = nil
-            assert_equal 0, @quote_item.unit_price_with_discount
+            assert_equal 0, @quote_item.unit_price_with_prizegiving
           end
           
-          [nil, 0].each do |discount|
-            should "have a correct 'unit_price_with_discount' value when discount is equal to '#{discount}'" do
-              @quote_item.discount = discount
+          [nil, 0].each do |prizegiving|
+            should "have a correct 'unit_price_with_prizegiving' value when prizegiving is equal to '#{prizegiving}'" do
+              @quote_item.prizegiving = prizegiving
               expected_value = @quote_item.unit_price
-              assert_equal expected_value, @quote_item.unit_price_with_discount
+              
+              assert_equal expected_value, @quote_item.unit_price_with_prizegiving
             end
           end
           
-          [1, 8.0, 15.5, 30.79].each do |discount|
-            should "have a correct 'unit_price_with_discount' value when discount is equal to '#{discount}'" do
-              @quote_item.discount = discount
-              expected_value = @quote_item.unit_price - ( @quote_item.unit_price * (discount.to_f / 100) )
-              assert_equal expected_value, @quote_item.unit_price_with_discount
+          [1, 8.0, 15.5, 30.79].each do |prizegiving|
+            should "have a correct 'unit_price_with_prizegiving' value when prizegiving is equal to '#{prizegiving}'" do
+              prizegiving = BigDecimal.new(prizegiving.to_s)
+              @quote_item.prizegiving = prizegiving
+              expected_value = BigDecimal.new(@quote_item.unit_price.to_s) / ( 1 + ( prizegiving / 100 ) )
+              
+              assert_equal expected_value, @quote_item.unit_price_with_prizegiving
             end
           end
           
@@ -44,7 +47,7 @@ module ProductBaseTest
           [1, 8.0, 15.5, 30.79].each do |quantity|
             should "have a correct 'total' value when quantity is equal to '#{quantity}'" do
               @quote_item.quantity = quantity
-              expected_value = @quote_item.unit_price_with_discount * quantity
+              expected_value = @quote_item.unit_price_with_prizegiving * quantity
               assert_equal expected_value, @quote_item.total
             end
           end

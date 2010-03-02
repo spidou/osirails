@@ -9,7 +9,7 @@ class CommodityTest < ActiveSupport::TestCase
 
   def setup   
     @supply_category = CommodityCategory.new(:name => "root")
-    flunk "@supply_category should be valid to perform the next tests" unless @supply_category.save    
+    flunk "@supply_category should be valid" unless @supply_category.save    
     @supply = Commodity.new
     @supply.valid? 
   end  
@@ -67,17 +67,17 @@ class CommodityTest < ActiveSupport::TestCase
     create_supplier_supplies
     assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
 
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(@galva,@galva_ss.supplier,true,10)
     sleep(1)
     
     assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
     
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,3)
+    flunk "stock flow must be saved" unless new_stock_flow(@galva,@galva_ss.supplier,true,3)
     sleep(1)
     
     assert_equal Commodity.restockables, Commodity.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
    
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@galva,@galva_ss.supplier,true,12)
+    flunk "stock flow must be saved" unless new_stock_flow(@galva,@galva_ss.supplier,true,12)
     
     assert Commodity.restockables != Commodity.find(:all), "restockables are NOT all supplies as @galva is not a restockable anymore"
     assert !Commodity.restockables.include?(Commodity.find(@galva.id)), "@galva should NOT be included in restockables as its stock is 25 (above threshold*1.1)"

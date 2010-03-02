@@ -8,7 +8,7 @@ module CreateSupplies
                             :supply_category => supply_categories(:child_commodity),
                             :threshold => 20
                            })
-    flunk "@galva should be valid to perform the next tests" unless @galva.save
+    flunk "@galva should be valid" unless @galva.save
 
     @acier = Commodity.new({
                             :name => "Acier",
@@ -18,7 +18,7 @@ module CreateSupplies
                             :supply_category => supply_categories(:child_commodity),
                             :threshold => 20
                            })
-    flunk "@acier should be valid to perform the next tests" unless @acier.save
+    flunk "@acier should be valid" unless @acier.save
   end
 
   def create_consumables
@@ -30,7 +30,7 @@ module CreateSupplies
                            :supply_category => supply_categories(:child_consumable),
                            :threshold => 20
                           })
-    flunk "@pvc should be valid to perform the next tests" unless @pvc.save
+    flunk "@pvc should be valid" unless @pvc.save
 
     @vis = Consumable.new({
                            :name => "Vis",
@@ -40,7 +40,7 @@ module CreateSupplies
                            :supply_category => supply_categories(:child_consumable),
                            :threshold => 20
                           })
-    flunk "@vis should be valid to perform the next tests" unless @vis.save
+    flunk "@vis should be valid" unless @vis.save
   end
 
   def create_supplier_commodities

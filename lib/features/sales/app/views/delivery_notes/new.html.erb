@@ -2,8 +2,4 @@
 
 <h1>Création d'un nouveau bon de livraison</h1>
 
-<div class="presentation_medium">
-	<% form_for @delivery_note, :url => { :controller => "delivery_notes", :action => "create", :order_id => @order.id }, :method => :post do |form| %>
-	  <%= render :partial => 'delivery_note_form', :object => @delivery_note, :locals => { :form => form, :signed_quote => @signed_quote } %>
-  <% end %>
-</div>
+<%= render :partial => @delivery_note, :locals => { :signed_quote => @signed_quote } %>

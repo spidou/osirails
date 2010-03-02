@@ -1,0 +1,18 @@
+<% add_contextual_menu_item :invoice do %>
+  <%= display_invoice_add_button(@order) unless is_new_view? %>
+  <%= display_invoice_show_button(@order, @invoice) %>
+  <%= display_invoice_show_pdf_button(@order, @invoice) %>
+  <%= display_invoice_edit_button(@order, @invoice) unless is_edit_view? %>
+  
+  <%= display_invoice_confirm_button(@order, @invoice) %>
+  <%= display_invoice_send_button(@order, @invoice) %>
+  <%= display_invoice_factoring_pay_button(@order, @invoice) %>
+  <%= display_invoice_factoring_recover_button(@order, @invoice) %>
+  <%= display_invoice_factoring_balance_pay_button(@order, @invoice) %>
+  <%= display_invoice_due_date_pay_button(@order, @invoice) %>
+  <%= display_invoice_totally_pay_button(@order, @invoice) %>
+  <%= display_invoice_cancel_button(@order, @invoice) %>
+  <%= display_invoice_abandon_button(@order, @invoice) %>
+  <%= display_invoice_delete_button(@order, @invoice) %>
+  <%= display_invoice_list_button(@step) %>
+<% end %>

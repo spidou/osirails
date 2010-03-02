@@ -5,9 +5,9 @@ module MenusHelper
     if Menu.can_edit?(current_user)
     
       if menu.can_move_up? and !first_menu
-        link_to(image_tag("/images/arrow_up_16x16.png", :alt => "Up", :title => "Up"), move_up_menu_path(menu))
+        link_to(image_tag("arrow_up_16x16.png", :alt => "Up", :title => "Up"), move_up_menu_path(menu))
       else
-        image_tag("/images/arrow_up_disable_16x16.png", :alt => "Up", :title => "Up")
+        image_tag("arrow_up_disable_16x16.png", :alt => "Up", :title => "Up")
       end
     end
   end
@@ -16,9 +16,9 @@ module MenusHelper
   def show_down_button(menu, last_menu)
     if Menu.can_edit?(current_user)
       if menu.can_move_down? and !last_menu
-        link_to(image_tag("/images/arrow_down_16x16.png", :alt => "Down", :title => "Down"), move_down_menu_path(menu))
+        link_to(image_tag("arrow_down_16x16.png", :alt => "Down", :title => "Down"), move_down_menu_path(menu))
       else
-        image_tag("/images/arrow_down_disable_16x16.png", :alt => "Down", :title => "Down")
+        image_tag("arrow_down_disable_16x16.png", :alt => "Down", :title => "Down")
       end
     end
   end
@@ -27,9 +27,9 @@ module MenusHelper
   def show_delete_button(menu)
     if Menu.can_delete?(current_user)
       unless menu.base_item?
-        link_to(image_tag("/images/delete_16x16.png", :alt =>"Delete", :title =>"Delete"), menu, {:method => :delete, :confirm => 'Etes vous sûr  ?' })
+        link_to(image_tag("delete_16x16.png", :alt =>"Delete", :title =>"Delete"), menu, {:method => :delete, :confirm => 'Etes vous sûr  ?' })
       else
-        image_tag("/images/delete_disable_16x16.png", :alt =>"Delete", :title =>"Delete")
+        image_tag("delete_disable_16x16.png", :alt =>"Delete", :title =>"Delete")
       end
     end
   end
@@ -37,7 +37,7 @@ module MenusHelper
   # This method permit to show or hide button for add menu
   def new_menu_link_with_parent(menu,txt="New menu")
     if Menu.can_add?(current_user)
-      link_to(image_tag("/images/add_16x16.png", :alt => txt, :title => txt)+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
+      link_to(image_tag("add_16x16.png", :alt => txt, :title => txt)+" #{txt}", new_menu_path(:parent_menu_id => menu.id))
     end
   end
   

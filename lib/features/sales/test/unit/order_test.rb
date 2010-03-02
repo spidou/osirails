@@ -69,7 +69,7 @@ class OrderTest < ActiveSupport::TestCase
   end
   
   def test_presence_and_validity_of_order_type
-    flunk "OrderType.count should be greater than 1 to perform the following, but was at #{OrderType.count}" unless OrderType.count > 1
+    flunk "OrderType.count should be greater than 1, but was at #{OrderType.count}" unless OrderType.count > 1
     
     # when society_activity_sector is not yet selected
     assert !@order.errors.invalid?(:order_type_id), "order_type_id should be valid"
@@ -171,7 +171,7 @@ class OrderTest < ActiveSupport::TestCase
     assert !@order.errors.invalid?(:customer_id), "customer_id should be valid"
     assert @order.errors.invalid?(:customer), "customer should NOT be valid because customer_id is wrong"
     
-    @order.customer = create_default_customer
+    @order.customer = get_customer
     @order.valid?
     assert !@order.errors.invalid?(:customer_id), "customer_id should be valid"
     assert !@order.errors.invalid?(:customer), "customer should be valid"
@@ -197,7 +197,8 @@ class OrderTest < ActiveSupport::TestCase
     assert @order.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
     
     customer = thirds(:first_customer)
-    customer.establishments.first.contacts << contacts(:pierre_paul_jacques)
+    establishment = build_establishment_for(customer)
+    establishment.contacts << contacts(:pierre_paul_jacques)
     customer.save
     @order.customer = customer
     @order.valid?
@@ -257,6 +258,23 @@ class OrderTest < ActiveSupport::TestCase
     @order = create_default_order
     assert @order.instance_of?(Order), "@order should be an instance of Order"
     assert !@order.new_record?, "@order should NOT be a new record"
+  end
+  
+  context "An Order with all products referenced into a signed press_proof" do
+    setup do
+      @order     = create_default_order
+      product    = create_valid_product_for(@order)
+      press_proof = create_default_press_proof(@order, product)
+      get_signed_press_proof(press_proof)
+    end
+    
+    teardown do
+      @order = nil
+    end
+    
+    should "have a all product with signed press_proof" do
+      assert @order.all_products_have_signed_press_proof?
+    end
   end
   
   context "generate a reference" do

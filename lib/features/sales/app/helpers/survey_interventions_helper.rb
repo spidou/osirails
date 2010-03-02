@@ -15,7 +15,7 @@ module SurveyInterventionsHelper
   def render_new_survey_interventions_list(survey_step)
     collection = survey_step.survey_interventions.select(&:new_record?)
     collection_with_errors = collection.select{|s|!s.errors.empty?}
-    html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if collection_with_errors.empty?}"# if collection.empty?}>"
+    html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if collection_with_errors.empty?}>"# if collection.empty?}>"
     html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
     html << "</div>"
   end

@@ -5,12 +5,16 @@ class Customer < Third
   
   belongs_to :payment_method
   belongs_to :payment_time_limit
+  belongs_to :factor
   
   has_many :establishments
   
   validates_presence_of   :bill_to_address
+  
   validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
+  
   validates_length_of     :establishment_ids, :minimum => 1, :too_short => "Vous devez créer au moins 1 établissement"
+  
   validates_associated    :establishments
   
   after_save :save_establishments
@@ -26,6 +30,15 @@ class Customer < Third
   
   @@form_labels[:payment_method]      = "Moyen de paiement préféré :"
   @@form_labels[:payment_time_limit]  = "Délai de paiement préféré :"
+  @@form_labels[:factor]              = "Compagnie d'affacturage :"
+  
+  def factorised?
+    factor_id
+  end
+  
+  def was_factorised?
+    factor_id_was
+  end
   
   def contacts
     establishments.collect(&:contacts).flatten

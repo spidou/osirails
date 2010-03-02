@@ -1,0 +1,120 @@
+<%
+require_locals form
+delivery_intervention = delivery_intervention_schedule
+delivery_note = delivery_intervention.delivery_note
+
+toggle_javascript_function = "toggle_internal_and_subcontractor(this)"
+
+scheduled_delivery_internal_style           = delivery_intervention.scheduled_delivery_subcontracting? ? 'display:none' : ''
+scheduled_delivery_subcontracting_style     = delivery_intervention.scheduled_delivery_subcontracting? ? '' : 'display:none'
+scheduled_installation_internal_style       = delivery_intervention.scheduled_installation_subcontracting? ? 'display:none' : ''
+scheduled_installation_subcontracting_style = delivery_intervention.scheduled_installation_subcontracting? ? '' : 'display:none'
+
+form.force_show_view = delivery_intervention.realized?
+%>
+
+<h3>Informations générales</h3>
+<p>
+  <%= form.label :delivery_type %>
+  <%= strong(delivery_note.delivery_note_type.title) %>
+</p>
+<p>
+  <%= form.label :scheduled_delivery_at %>
+  <%= form.form_or_view(form.datetime_select(:scheduled_delivery_at, { :order => [ :day, :month, :year ], :minute_step => 5, :include_blank => true }), :scheduled_delivery_at, :humanize) %>
+</p>
+<p>
+  <%= form.label :scheduled_intervention_hours %>
+  <% if is_form_view? and !form.force_show_view %>
+    <%= form.text_field :scheduled_intervention_hours, :size => 2 %> h
+    <%= form.text_field :scheduled_intervention_minutes, :size => 2 %> min
+  <% else %>
+    <%= strong delivery_intervention.scheduled_intervention_duration %>
+  <% end %>
+  <span class="help_text">(durée de l'intervention)</span>
+</p>
+<p>
+  <%= form.label :scheduled_internal_actor_id %>
+  <%= form.form_or_view(form.collection_select(:scheduled_internal_actor_id, Employee.actives, :id, :fullname, :include_blank => "Veuillez choisir un employé"), :scheduled_internal_actor, :fullname) %> <span class="help_text">(personne référente de l'intervention)</span>
+</p>
+
+<% if delivery_intervention.delivery? %>
+  
+  <h3>Transport / Livraison</h3>
+  <% if is_form_view? and !form.force_show_view %>
+    <p>
+      Le transport est-il réalisé : <%= radio_button_tag "schedule_delivery", "internal", !delivery_intervention.scheduled_delivery_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "schedule_delivery_internal", "en interne", :class => "skip_presentation" %> ou <%= radio_button_tag "schedule_delivery", "subcontracting", delivery_intervention.scheduled_delivery_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "schedule_delivery_subcontracting", "en sous-traitance", :class => "skip_presentation" %>
+    </p>
+  <% end %>
+
+  <div id="schedule_delivery_internal_div" style="<%= scheduled_delivery_internal_style %>">
+    <p>
+      <%= form.label :scheduled_deliverer_ids %>
+      <% if is_form_view? and !form.force_show_view %>
+        <%= form.collection_select(:scheduled_deliverer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+      <% else %>
+        <%= strong delivery_intervention.scheduled_deliverers.collect(&:fullname).join(", ") %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :scheduled_delivery_vehicle_ids %>
+      <% if is_form_view? and !form.force_show_view %>
+        <%= form.collection_select(:scheduled_delivery_vehicle_ids, Vehicle.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
+      <% else %>
+        <%= strong delivery_intervention.scheduled_delivery_vehicles.collect(&:name_and_serial_number).join(", ") %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :scheduled_delivery_vehicles_rental %>
+      <%= form.form_or_view(form.text_area_autoresize(:scheduled_delivery_vehicles_rental) + " <span class=\"help_text\">Mettre un véhicule par ligne</span>", :scheduled_delivery_vehicles_rental) %>
+    </p>
+  </div>
+
+  <div id="schedule_delivery_subcontracting_div" style="<%= scheduled_delivery_subcontracting_style %>">
+    <p>
+      <%= form.label :scheduled_delivery_subcontractor_id %>
+      <%= form.form_or_view(form.collection_select(:scheduled_delivery_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :scheduled_delivery_subcontractor, :name) %>
+    </p>
+  </div>
+  
+<% end %>
+
+<% if delivery_intervention.installation? %>
+  
+  <h3>Pose / Installation</h3>
+  <% if is_form_view? and !form.force_show_view %>
+    <p>
+      La pose est-elle réalisée : <%= radio_button_tag "schedule_installation", "internal", !delivery_intervention.scheduled_installation_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "schedule_installation_internal", "en interne", :class => "skip_presentation" %> ou <%= radio_button_tag "schedule_installation", "subcontracting", delivery_intervention.scheduled_installation_subcontracting?, :onchange => toggle_javascript_function %> <%= label_tag "schedule_installation_subcontracting", "en sous-traitance", :class => "skip_presentation" %>
+    </p>
+  <% end %>
+
+  <div id="schedule_installation_internal_div" style="<%= scheduled_installation_internal_style %>">
+    <p>
+      <%= form.label :scheduled_installer_ids %>
+      <% if is_form_view? and !form.force_show_view %>
+        <%= form.collection_select(:scheduled_installer_ids, Employee.actives, :id, :fullname, {}, { :multiple => true } ) %>
+      <% else %>
+        <%= strong delivery_intervention.scheduled_installers.collect(&:fullname).join(", ") %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :scheduled_installation_equipment_ids %>
+      <% if is_form_view? and !form.force_show_view %>
+        <%= form.collection_select(:scheduled_installation_equipment_ids, Tool.all, :id, :name_and_serial_number, {}, { :multiple => true } ) %>
+      <% else %>
+        <%= strong delivery_intervention.scheduled_installation_equipments.collect(&:name_and_serial_number).join(", ") %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :scheduled_installation_equipments_rental %>
+      <%= form.form_or_view(form.text_area_autoresize(:scheduled_installation_equipments_rental) + " <span class=\"help_text\">Mettre un équipement par ligne</span>", :scheduled_installation_equipments_rental) %>
+    </p>
+  </div>
+
+  <div id="schedule_installation_subcontracting_div" style="<%= scheduled_installation_subcontracting_style %>">
+    <p>
+      <%= form.label :scheduled_installation_subcontractor_id %>
+      <%= form.form_or_view(form.collection_select(:scheduled_installation_subcontractor_id, Subcontractor.all, :id, :name, :include_blank => "Veuillez choisir un sous-traitant"), :scheduled_installation_subcontractor, :name) %>
+    </p>
+  </div>
+  
+<% end %>

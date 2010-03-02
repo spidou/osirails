@@ -11,10 +11,13 @@ class GraphicItem < ActiveRecord::Base
   validates_presence_of :name, :description, :order_id, :graphic_unit_measure_id, :creator_id
   validates_presence_of :order, :if => :order_id
   validates_presence_of :graphic_unit_measure, :if => :graphic_unit_measure_id
-  validates_presence_of :creator, :if => :creator_id  
-  validates_persistence_of :graphic_unit_measure_id, :reference, :order_id
-  validates_uniqueness_of :reference
+  validates_presence_of :creator, :if => :creator_id
+  validates_presence_of :reference
+  
+  validates_persistence_of :graphic_unit_measure_id, :order_id
+  
   validates_associated :graphic_item_versions
+  
   validate :validates_persistence_of_name
   validate :validates_simultaneous_actions
   validate :validates_new_graphic_item_version
@@ -27,10 +30,12 @@ class GraphicItem < ActiveRecord::Base
   attr_accessor :new_graphic_item_version
   
   # Callbacks
-  before_create :add_reference
-  after_save :save_graphic_item_versions
-  before_save :destroy_spool_items_on_update
-  before_destroy :destroy_spool_items_on_destroy, :destroy_graphic_item_versions
+  before_validation_on_create :update_reference
+  
+  before_save     :destroy_spool_items_on_update
+  after_save      :save_graphic_item_versions
+  
+  before_destroy  :destroy_spool_items_on_destroy, :destroy_graphic_item_versions
 
   # Methods
   def validates_persistence_of_name
@@ -215,10 +220,4 @@ class GraphicItem < ActiveRecord::Base
     
     gisi.id unless gisi.nil?
   end
-  
-  private
-  
-    def add_reference
-      self.reference = self.generate_reference
-    end
 end

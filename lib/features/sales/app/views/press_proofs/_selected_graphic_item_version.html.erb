@@ -1,18 +1,36 @@
 <% version = selected_graphic_item_version 
    method  = (version.graphic_item.current_version.id == version.id)? "remove_selected_mockup(this);" : "remove_selected_mockup_with_warning(this);"
+   unselected_mockup = (unselected_mockups ||= []).include?(version.graphic_item.id) # when dropping a mockup unselected_mockups is nil
+   style  = "display:none;" if unselected_mockup
+   hidden = unselected_mockup ? '1' : '0'
+   if press_proof ||= nil # if press_proof is defined
+     position     ||= version.press_proof_items.detect {|n| n.press_proof_id == press_proof.id }.position
+     previous_image = "disabled_move_to_left_16x16.png"  if position == 1
+     next_image     = "disabled_move_to_right_16x16.png" if position == press_proof.press_proof_items.last.position
+   end
+   previous_image ||= "move_to_left_16x16.png"
+   next_image     ||= "move_to_right_16x16.png"
 %>
-
-<div id="selected_mockup_<%= version.graphic_item.id %>" class="minimal_mockup">
+<div id="selected_mockup_<%= version.graphic_item.id %>" class="minimal_mockup" style="<%= style %>" >
   
   <%= render :partial => "graphic_items/graphic_item_summary",
              :object  => version.graphic_item,
-             :locals  => {:image => version.image.url(:thumb), :without_action => true} %>
-  <img class="delete_link" src="/images/delete_16x16.png" onClick="<%= method %>" alt='Supprimer' title='Supprimer'/>
-  <input type='hidden' value="0" class='should_destroy'
+             :locals  => { :image => version.image.url(:thumb), :without_action => true } %>
+  <%= image_tag "delete_16x16.png", :alt => delete_text = "Supprimer", :title => delete_text, :onclick => method, :class => "delete_link" %>
+  
+  <span class="number_label"><%= position %></span>
+  <span class="previous_link" onCLick="move_to_left(this);" ><%= image_tag(previous_image)%></span>
+  <span class="next_link" onClick="move_to_right(this);" ><%= image_tag(next_image)%></span>
+  
+  <input type='hidden' value="<%= hidden %>" class='should_destroy'
                        name='press_proof[press_proof_item_attributes][][should_destroy]'
                        id='press_proof_press_proof_item_attributes__should_destroy'/>
   
   <input type='hidden' value="<%= version.id %>"
                        name='press_proof[press_proof_item_attributes][][graphic_item_version_id]'
                        id='press_proof_press_proof_item_attributes__graphic_item_version_id'/>
+                       
+  <input type='hidden' value="<%= position %>" class='position'
+                       name='press_proof[press_proof_item_attributes][][position]'
+                       id='press_proof_press_proof_item_attributes__position'/>
 </div>

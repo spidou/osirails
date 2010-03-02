@@ -20,7 +20,7 @@ class Order < ActiveRecord::Base
   has_many :quotes, :order => 'created_at DESC'
   has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS ?', nil ]
   has_one  :pending_quote, :class_name => 'Quote', :conditions => [ 'status IN (?)', [ Quote::STATUS_CONFIRMED, Quote::STATUS_SENDED ] ]
-  has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ "status = ?", Quote::STATUS_SIGNED ]
+  has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ 'status = ?', Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
   
   # press_proofs
@@ -28,12 +28,16 @@ class Order < ActiveRecord::Base
   # TODO add the corresponding test
   
   # delivery notes
-  has_many :delivery_notes
-  has_one  :uncomplete_delivery_note, :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ]
-  has_many :signed_delivery_notes,    :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ]
+  has_many :delivery_notes, :order => "created_at DESC"
+  has_many :uncomplete_delivery_notes,  :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ], :order => "created_at DESC"
+  has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
+  
+  # invoices
+  has_many :invoices, :order => "invoices.created_at DESC"
+  has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses
-  has_many :products
+  has_many :products, :conditions => [ "cancelled_at IS NULL" ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
@@ -47,8 +51,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
   validates_presence_of :order_type,              :if => :order_type_id
-  
-# validates_uniqueness_of :reference #TODO do not forget to implement that according to the reference generation
+  validates_presence_of :reference
   
   validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
@@ -58,8 +61,10 @@ class Order < ActiveRecord::Base
   validate :validates_order_type_validity
   #TODO validates_date :previsional_delivery (check if the date is correct, if it's after order creation date), etc. )
   
-  after_save   :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
-  after_create :create_steps
+  before_validation_on_create :update_reference
+  
+  after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
+  after_create  :create_steps
   
   # level constants
   CRITICAL  = 'critical'
@@ -81,6 +86,101 @@ class Order < ActiveRecord::Base
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
   @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
+  
+  # return all delivery_notes with an active invoice
+  # delivery_notes_with_invoice
+  def billed_delivery_notes
+    signed_delivery_notes.select{ |dn| dn.billed? }
+  end
+  
+  # return all delivery_notes with an active and confirmed invoice
+  # delivery_notes_with_confirmed_invoice
+  def confirmed_billed_delivery_notes
+    signed_delivery_note.select{ |dn| dn.billed_and_confirmed? }
+  end
+  
+  # return all delivery_notes without active invoice, and with at least 1 delivered product
+  # delivery_notes_without_invoice
+  def unbilled_delivery_notes
+    signed_delivery_notes.select{ |dn| !dn.billed? and dn.number_of_delivered_pieces > 0 }
+  end
+  
+  # return all delivery_notes without active and confirmed invoice, and with at least 1 delivered product
+  def delivery_notes_without_confirmed_invoice
+    signed_delivery_notes.select{ |dn| !dn.billed_and_confirmed? and dn.number_of_delivered_pieces > 0 }
+  end
+  
+  def all_is_delivered_or_scheduled?
+    return false if delivery_notes.actives.empty? or signed_quote.nil?
+    delivery_notes.actives.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
+  end
+  
+  def all_is_delivered?
+    return false if signed_delivery_notes.empty? or signed_quote.nil?
+    signed_delivery_notes.collect{ |dn| dn.number_of_delivered_pieces }.sum == signed_quote.number_of_pieces
+  end
+  
+  def all_signed_delivery_notes_are_billed?
+    return false if signed_delivery_notes.empty?
+    unbilled_delivery_notes.empty?
+  end
+  
+  def deposit_invoice
+    invoices.first(:include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::DEPOSITE_INVOICE ])
+  end
+  
+  def status_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::STATUS_INVOICE ])
+  end
+  
+  def balance_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::BALANCE_INVOICE ])
+  end
+  
+  def asset_invoices
+    invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
+  end
+  
+  def build_delivery_note_with_remaining_products_to_deliver
+    return if all_is_delivered_or_scheduled?
+    
+    dn = delivery_notes.build
+    signed_quote.quote_items.each do |quote_item|
+      next unless quote_item.remaining_quantity_to_deliver > 0
+      dn.delivery_note_items.build( :quote_item_id => quote_item.id, :quantity => quote_item.remaining_quantity_to_deliver )
+    end
+    
+    return dn
+  end
+  
+  def build_deposit_invoice_from_signed_quote
+    return unless signed_quote
+    
+    invoice = invoices.build(:invoice_type_id => InvoiceType.find_by_name(Invoice::DEPOSITE_INVOICE).id)
+    
+    invoice.deposit         = signed_quote.deposit
+    invoice.deposit_amount  = invoice.calculate_deposit_amount_according_to_quote_and_deposit
+    invoice.deposit_vat     = ConfigurationManager.sales_deposit_tax_coefficient.to_f
+    
+    invoice.build_or_update_free_item_for_deposit_invoice
+    
+    return invoice
+  end
+  
+  # +invoice_type_name+ may be +Invoice::STATUS_INVOICE+ or +Invoice::BALANCE_INVOICE+
+  def build_invoice_from(delivery_notes, invoice_type_name)
+    return if delivery_notes.empty? or !delivery_notes.select(&:new_record?).empty?
+    
+    invoice = invoices.build(:invoice_type_id => InvoiceType.find_by_name(invoice_type_name).id)
+    
+    for delivery_note in delivery_notes
+      invoice.delivery_note_invoices.build(:delivery_note_id => delivery_note.id)
+    end
+    
+    invoice.build_or_update_invoice_items_from_associated_delivery_notes
+    
+    return invoice
+  end
   
   # Return all steps of the order according to the choosen order type
   def steps
@@ -137,7 +237,15 @@ class Order < ActiveRecord::Base
     end
     return children_steps.last
   end
-
+  
+  def all_products_have_signed_press_proof?
+    products_without_signed_press_proof.empty?
+  end
+  
+  def products_without_signed_press_proof
+    products.reject{ |p| p.has_signed_press_proof? }
+  end
+  
   # Return a hash for advance statistics
   def advance
     steps_obj = []
@@ -268,7 +376,6 @@ class Order < ActiveRecord::Base
 #      Step.find_by_name("commercial_step")
 #    end
   # Create all orders_steps after create order
-    
     def validates_order_type_validity
       if order_type and society_activity_sector
         errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)

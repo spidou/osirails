@@ -1,8 +1,8 @@
 class Dunning < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
-  named_scope :actives, :conditions => ["cancelled is NULL or cancelled = ?", false]
-  named_scope :cancelled, :conditions => ["cancelled =?", true]
+  named_scope :actives, :conditions => ["cancelled_at is NULL"]
+  named_scope :cancelled, :conditions => ["cancelled_at IS NOT NULL"]
   
   belongs_to :has_dunning,  :polymorphic => true
   belongs_to :creator,      :class_name => 'User'
@@ -22,13 +22,13 @@ class Dunning < ActiveRecord::Base
   
 
   
-  validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :can_be_edited?
+  validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :new_record?
   
-  validate :validates_has_dunning_was_sended, :if => :new_record?
+  validate :validates_has_dunning_was_sended
   
   before_destroy :can_be_destroyed?
   
-  attr_protected :cancelled, :cancelled_by, :has_dunning_type, :has_dunning_id
+  attr_protected :cancelled_at, :cancelled_by, :has_dunning_type, :has_dunning_id
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -36,7 +36,6 @@ class Dunning < ActiveRecord::Base
   @@form_labels[:dunning_sending_method] = "Par :"
   @@form_labels[:comment]                = "Commentaire :"
   
-  #TODO test that method
   def can_be_added?
     return false unless has_dunning
     has_dunning.was_sended?
@@ -46,14 +45,31 @@ class Dunning < ActiveRecord::Base
     false
   end
   
-  def can_be_edited?
-    new_record?
+  def can_be_cancelled?
+    !new_record?
+  end
+  
+  def was_cancelled?
+    cancelled_was
+  end
+  
+  def cancelled?
+    cancelled
   end
   
   def cancel(user)
-    self.cancelled = true
+    return false unless can_be_cancelled?
+    self.cancelled_at = Time.now
     self.cancelled_by = user
     self.save
+  end
+  
+  def cancelled?
+    cancelled_at
+  end
+  
+  def was_cancelled?
+    cancelled_at_was
   end
   
   private

@@ -14,73 +14,78 @@
   <% form_for order do |form| %>
     <%= form.error_messages %>
   
-  <h3>Informations générales</h3>
-  <p>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </p>
-  <p>
-    <%= form.label :society_activity_sector_id %>
-    <%= order.new_record? ? form.collection_select(:society_activity_sector_id, @society_activity_sectors, :id, :name, :include_blank => true) : strong(order.society_activity_sector.name) %>
-  </p>
-  <p>
-    <%= form.label :order_type_id %>
-    <%= order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title, :include_blank => true) : strong(order.order_type.title) %>
-  </p>
-  <p>
-    <%= form.label :commercial_id %>
-    <%= form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => order.new_record?) %>
-  </p>
-
-  <h3>Client</h3>
-  <p>
-    <%= form.label :contact_ids %>
-    <%= display_contacts_picker(order, order.customer.contacts) %>
-    <%= display_new_contacts_list(order) %>
-    <%# display_contact_add_button(order) %>
-  </p>
-  
-  <p>
-    <%= form.label :approaching_id %>
-    <%= form.collection_select(:approaching_id, Approaching.all, :id, :name, :include_blank => order.new_record?) %>
-  </p>
-  <p>
-    <%= form.label :customer_needs %>
-    <%= form.text_area_autoresize :customer_needs, :cols => 80 %>
-  </p>
-  
-  <h3>Livraison</h3>
-  <p>
-    <%= form.label :ship_to_address_ids %>
-    <%= display_ship_to_addresses_picker(order, order.customer.establishments) %>
-    <%= display_new_establishments_list(order) %>
-    <%# display_ship_to_addresses_list(order) %>
-    <%= display_establishment_add_button(order) %>
-  </p>
-  
-  <h3>Facturation</h3>
-  <%= render :partial => 'addresses/address_form', :object => order.bill_to_address || order.build_bill_to_address , :locals => { :address_owner => order } %>
-  
-  <h3>Dates</h3>
-  <% if is_edit_view? %>
+    <h3>Informations générales</h3>
     <p>
-      <%= form.label :created_at %>
-      <%= form.strong order.created_at.humanize  %>
+      <%= form.label :title %>
+      <%= form.form_or_view(form.text_field(:title), :title) %>
     </p>
-  <% end %>
-  <p>
-    <%= form.label :previsional_delivery %>
-    <%= form.date_select :previsional_delivery, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true %>
-  </p>
-  <p>
-    <%= form.label :quotation_deadline %>
-    <%= form.date_select :quotation_deadline, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true %>
-  </p>
-  <p>
-    <%= form.hidden_field :customer_id, :value  => order.customer_id %>
-    <%= form.reset 'Annuler' %>
-    <%= form.submit submit_button_name %>
-  </p>
+    <p>
+      <%= form.label :society_activity_sector_id %>
+      <%= order.new_record? ? form.collection_select(:society_activity_sector_id, @society_activity_sectors, :id, :name, :include_blank => true) : strong(order.society_activity_sector.name) %>
+    </p>
+    <p>
+      <%= form.label :order_type_id %>
+      <%= order.new_record? ? form.collection_select(:order_type_id, @order_types, :id, :title, :include_blank => true) : strong(order.order_type.title) %>
+    </p>
+    <p>
+      <%= form.label :commercial_id %>
+      <%= form.form_or_view(form.collection_select(:commercial_id, @commercials, :id, :fullname, :include_blank => order.new_record?), :commercial, :fullname) %>
+    </p>
+
+    <h3>Client</h3>
+    <p>
+      <%= form.label :contact_ids %>
+      <%= display_contacts_picker(order, order.customer.contacts) %>
+      <%= display_new_contacts_list(order) %>
+      <%# display_contact_add_button(order) %>
+    </p>
+    
+    <p>
+      <%= form.label :approaching_id %>
+      <%= form.form_or_view(form.collection_select(:approaching_id, Approaching.all, :id, :name, :include_blank => order.new_record?), :approaching, :name) %>
+    </p>
+    <p>
+      <%= form.label :customer_needs %>
+      <%= form.form_or_view(form.text_area_autoresize(:customer_needs, :cols => 80), :customer_needs) %>
+    </p>
+    
+    <h3>Livraison</h3>
+    <p>
+      <%= form.label :ship_to_address_ids %>
+      <%= display_ship_to_addresses_picker(order, order.customer.establishments) %>
+      <%= display_new_establishments_list(order) %>
+      <%# display_ship_to_addresses_list(order) %>
+      <%= display_establishment_add_button(order) if is_form_view? %>
+    </p>
+    
+    <h3>Facturation</h3>
+    <%= render :partial => 'addresses/address_form', :object => order.bill_to_address || order.build_bill_to_address , :locals => { :address_owner => order } %>
+    
+    <h3>Dates</h3>
+    <% if is_edit_view? %>
+      <p>
+        <%= form.label :created_at %>
+        <%= form.strong order.created_at.humanize  %>
+      </p>
+    <% end %>
+    <p>
+      <%= form.label :previsional_delivery %>
+      <%= form.form_or_view(form.date_select(:previsional_delivery, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true), :previsional_delivery, :humanize) %>
+    </p>
+    <p>
+      <%= form.label :quotation_deadline %>
+      <%= form.form_or_view(form.date_select(:quotation_deadline, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true), :quotation_deadline, :humanize) %>
+    </p>
+    <p style="display:none">
+      <%= form.hidden_field :customer_id, :value  => order.customer_id if is_form_view? %>
+    </p>
+    
+    <% if is_form_view? %>
+      <p>
+        <%= form.reset 'Annuler' %>
+        <%= form.submit 'Enregistrer' %>
+      </p>
+    <% end %>
   <% end %>
 </div>
 

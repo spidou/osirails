@@ -108,9 +108,7 @@ namespace :osirails do
       av   = Service.create! :name => "Achats/Ventes",              :service_parent_id => dg.id
       si   = Service.create! :name => "Informatique",               :service_parent_id => dg.id
       prod = Service.create! :name => "Production",                 :service_parent_id => dg.id
-      deco = Service.create! :name => "Atelier Décor",              :service_parent_id => prod.id
-      dec  = Service.create! :name => "Atelier Découpe",            :service_parent_id => prod.id
-      fra  = Service.create! :name => "Atelier Fraisage",           :service_parent_id => prod.id
+      deco = Service.create! :name => "Décor",                      :service_parent_id => prod.id
       pose = Service.create! :name => "Pose",                       :service_parent_id => prod.id
       
       # default jobs
@@ -226,6 +224,9 @@ namespace :osirails do
       EstablishmentType.create! :name => "Magasin"
       EstablishmentType.create! :name => "Station service"
       
+      # default factors
+      cga = Factor.create!(:name => "CGA", :fullname => "Compagnie Générale d'Affacturage")
+      
       # default customers and establishements
       customer = Customer.new(:name => "Client par défaut", :siret_number => "12345678912345", :activity_sector_id => ActivitySector.first.id, :legal_form_id => LegalForm.first.id, 
         :payment_method_id => PaymentMethod.first.id, :payment_time_limit_id => PaymentTimeLimit.first.id, :activated => true)
@@ -279,7 +280,8 @@ namespace :osirails do
       vat1 = Vat.create! :name => "19.6", :rate => "19.6"
       vat2 = Vat.create! :name => "8.5",  :rate => "8.5"
       vat3 = Vat.create! :name => "5.5",  :rate => "5.5"
-      vat4 = Vat.create! :name => "Exo.", :rate => "0"
+      vat4 = Vat.create! :name => "2.1", :rate => "2.1"
+      vat5 = Vat.create! :name => "Exo.", :rate => "0"
       
       # default product reference categories
       famille1 = ProductReferenceCategory.create! :name => "Famille 1"
@@ -726,6 +728,11 @@ namespace :osirails do
       SendQuoteMethod.create!(:name => "E-mail")
       SendQuoteMethod.create!(:name => "Fax")
       
+      # default send invoice methods
+      SendInvoiceMethod.create!(:name => "Courrier")
+      SendInvoiceMethod.create!(:name => "E-mail")
+      SendInvoiceMethod.create!(:name => "Fax")
+      
        # default document's sending methods
       DocumentSendingMethod.create!(:name => "Courrier")
       DocumentSendingMethod.create!(:name => "E-mail")
@@ -770,17 +777,38 @@ namespace :osirails do
       order2.save!
       
       # default products
-      Product.create! :reference => "01010101", :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id, :dimensions => "1000x2000", :quantity => 1, :order_id => order1.id
-      Product.create! :reference => "01010201", :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id, :dimensions => "1000x3000", :quantity => 2, :order_id => order1.id
-      Product.create! :reference => "01010301", :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id, :dimensions => "2000x4000", :quantity => 3, :order_id => order1.id
-      Product.create! :reference => "01010202", :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference111.id, :dimensions => "2000x2000", :quantity => 1, :order_id => order2.id
-      Product.create! :reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2, :order_id => order2.id
-      Product.create! :reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3, :order_id => order2.id
+      order1.products.build(:reference => "01010101", :name => "Produit 1.1.1.1", :description => "Description du produit 1.1.1.1", :product_reference_id => reference111.id, :dimensions => "1000x2000", :quantity => 1).save!
+      order1.products.build(:reference => "01010201", :name => "Produit 1.1.2.1", :description => "Description du produit 1.1.2.1", :product_reference_id => reference112.id, :dimensions => "1000x3000", :quantity => 2).save!
+      order1.products.build(:reference => "01010301", :name => "Produit 1.1.3.1", :description => "Description du produit 1.1.3.1", :product_reference_id => reference113.id, :dimensions => "2000x4000", :quantity => 3).save!
+      order2.products.build(:reference => "01010202", :name => "Produit 1.1.2.2", :description => "Description du produit 1.1.2.2", :product_reference_id => reference111.id, :dimensions => "2000x2000", :quantity => 1).save!
+      order2.products.build(:reference => "01010302", :name => "Produit 1.1.3.2", :description => "Description du produit 1.1.3.2", :product_reference_id => reference112.id, :dimensions => "2000x5000", :quantity => 2).save!
+      order2.products.build(:reference => "01010303", :name => "Produit 1.1.3.3", :description => "Description du produit 1.1.3.3", :product_reference_id => reference113.id, :dimensions => "5000x1000", :quantity => 3).save!
+      
+      # default quote
+      quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :creator_id => User.first.id)
+      quote.contacts << order1.contacts.first
+      quote.build_ship_to_address(Address.first.attributes)
+      quote.build_bill_to_address(Address.last.attributes)
+      order1.products.each do |product|
+        quote.quote_items.build(:product_id   => product.id,
+                                :name         => product.name,
+                                :description  => product.description,
+                                :dimensions   => product.dimensions,
+                                :quantity     => product.quantity,
+                                :unit_price   => (product.quantity * rand * 10000).round,
+                                :prizegiving  => (rand * 10).round,
+                                :vat          => Vat.all.rand.rate)
+      end
+      quote.save!
+      quote.confirm
+      quote.send_to_customer(:sended_on => Date.today, :send_quote_method_id => SendQuoteMethod.first.id)
+      attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      quote.sign(:signed_on => Date.today, :order_form_type_id => OrderFormType.first.id, :order_form => attachment)
       
       # default graphic unit measures
       GraphicUnitMeasure.create! :name => "Millimètre", :symbol => "mm"
       GraphicUnitMeasure.create! :name => "Centimètre", :symbol => "cm"
-      GraphicUnitMeasure.create! :name => "Mètre", :symbol => "m"
+      GraphicUnitMeasure.create! :name => "Mètre",      :symbol => "m"
       
       # default mockup types
       MockupType.create! :name => "Vue d'ensemble"
@@ -824,6 +852,14 @@ namespace :osirails do
       mockup2.graphic_item_version_attributes = { :image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg") ) }
       mockup2.save!
       
+      #default delivery_note_types
+      DeliveryNoteType.create! :title => "Livraison + Installation", :delivery => true,   :installation => true
+      DeliveryNoteType.create! :title => "Livraison",                :delivery => true,   :installation => false
+      DeliveryNoteType.create! :title => "Enlèvement Client",        :delivery => false,  :installation => false
+      
+      Vehicle.create! :service_id => prod.id, :job_id => Job.first.id, :employee_id => Employee.first.id, :supplier_id => Supplier.first.id, :name => "Ford Fiesta",    :serial_number => "123 ABC 974", :description => "Véhicule utilitaire",    :purchase_date => Date.today - 1.year, :purchase_price => "12000"
+      Vehicle.create! :service_id => pose.id, :job_id => Job.last.id,  :employee_id => Employee.last.id,  :supplier_id => Supplier.last.id,  :name => "Renault Magnum", :serial_number => "456 DEF 974", :description => "Camion longue distance", :purchase_date => Date.today - 6.months, :purchase_price => "130000"
+      
       %W{ BusinessObject Menu DocumentType Calendar }.each do |klass|
         klass.constantize.all.each do |object|
           object.permissions.each do |permission|
@@ -837,6 +873,12 @@ namespace :osirails do
           end
         end
       end
+      
+      # default invoice_types
+      InvoiceType.create! :name => Invoice::DEPOSITE_INVOICE, :title => "Acompte",    :factorisable => false
+      InvoiceType.create! :name => Invoice::STATUS_INVOICE,   :title => "Situation",  :factorisable => true
+      InvoiceType.create! :name => Invoice::BALANCE_INVOICE,  :title => "Solde",      :factorisable => true
+      InvoiceType.create! :name => Invoice::ASSET_INVOICE,    :title => "Avoir",      :factorisable => false
     end
     
     desc "Depopulate the database"

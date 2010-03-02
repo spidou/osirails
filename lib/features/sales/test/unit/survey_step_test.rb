@@ -17,9 +17,9 @@ class SurveyStepTest < ActiveSupport::TestCase
       @step = create_default_order.commercial_step.survey_step
       @attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf"))
       
-      flunk "employees table should have at least 2 records to perform the following" unless Employee.count >= 2
-      flunk "order products should be empty to perform the following" unless @step.order.products.empty?
-      flunk "survey_interventions should be empty to perform the following" unless @step.survey_interventions.empty?
+      flunk "employees table should have at least 2 records" unless Employee.count >= 2
+      flunk "order products should be empty" unless @step.order.products.empty?
+      flunk "survey_interventions should be empty" unless @step.survey_interventions.empty?
     end
     
     teardown do
@@ -325,7 +325,7 @@ class SurveyStepTest < ActiveSupport::TestCase
       step.product_attributes=( [product_attributes] )
       
       product_attributes.each do |key, value|
-        flunk "<#{value}> expected but was \n<#{step.order.products.last.send(key)}>\nThese two values should be equal to perform the following" unless step.order.products.last.send(key) == value
+        flunk "<#{value}> expected but was \n<#{step.order.products.last.send(key)}>\nThese two values should be equal" unless step.order.products.last.send(key) == value
       end
       return step.order.products.last
     end
@@ -333,7 +333,7 @@ class SurveyStepTest < ActiveSupport::TestCase
     def create_default_product_for(step)
       build_default_product_for(step)
       step.save!
-      flunk "order should have 1 product to perform the following" unless step.order.products.count == 1
+      flunk "order should have 1 product" unless step.order.products.count == 1
       return step.order.products.first
     end
     
@@ -347,7 +347,7 @@ class SurveyStepTest < ActiveSupport::TestCase
       step.survey_intervention_attributes=( [survey_intervention_attributes] )
       
       survey_intervention_attributes.each do |key, value|
-        flunk "<#{value}> expected but was \n<#{step.survey_interventions.last.send(key)}>\nThese two values should be equal to perform the following" unless step.survey_interventions.last.send(key) == value
+        flunk "<#{value}> expected but was \n<#{step.survey_interventions.last.send(key)}>\nThese two values should be equal" unless step.survey_interventions.last.send(key) == value
       end
       return step.survey_interventions.last
     end
@@ -355,7 +355,7 @@ class SurveyStepTest < ActiveSupport::TestCase
     def create_default_survey_intervention_for(step)
       build_default_survey_intervention_for(step)
       step.save!
-      flunk "order should have 1 survey_intervention to perform the following" unless step.survey_interventions.count == 1
+      flunk "order should have 1 survey_intervention" unless step.survey_interventions.count == 1
       return step.survey_interventions.first
     end
     
@@ -366,7 +366,7 @@ class SurveyStepTest < ActiveSupport::TestCase
       step.subcontractor_request_attributes=( [subcontractor_request_attributes] )
       
       subcontractor_request_attributes.each do |key, value|
-        flunk "<#{value}> expected but was \n<#{step.subcontractor_requests.last.send(key)}>\nThese two values should be equal to perform the following" unless step.subcontractor_requests.last.send(key) == value
+        flunk "<#{value}> expected but was \n<#{step.subcontractor_requests.last.send(key)}>\nThese two values should be equal" unless step.subcontractor_requests.last.send(key) == value
       end
       return step.subcontractor_requests.last
     end
@@ -375,7 +375,7 @@ class SurveyStepTest < ActiveSupport::TestCase
       subcontractor_request = build_default_subcontractor_request_for(step)
       subcontractor_request.attachment = @attachment
       step.save!
-      flunk "order should have 1 subcontractor_request to perform the following" unless step.subcontractor_requests.count == 1
+      flunk "order should have 1 subcontractor_request" unless step.subcontractor_requests.count == 1
       return step.subcontractor_requests.first
     end
   

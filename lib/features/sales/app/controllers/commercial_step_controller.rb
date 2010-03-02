@@ -1,5 +1,7 @@
 class CommercialStepController < ApplicationController
   acts_as_step_controller :sham => true
+  
+  helper :graphic_items
 
   def index
     if @order.commercial_step.terminated?

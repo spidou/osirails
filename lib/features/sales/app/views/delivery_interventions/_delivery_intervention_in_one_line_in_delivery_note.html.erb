@@ -1,0 +1,15 @@
+<% intervention = delivery_intervention_in_one_line_in_delivery_note %>
+
+<td><%= intervention.scheduled_delivery_at.humanize %><br/>(durée : <%= intervention.scheduled_intervention_duration %>)</td>
+
+<td>
+  <% if intervention.realized? and intervention.delivered? %>
+    <%= intervention.delivery_at.humanize %><br/>(durée : <%= intervention.intervention_duration %>)
+  <% elsif intervention.realized? and intervention.undelivered? %>
+    <%= "Non effectuée" + "<br/>(#{intervention.comments})"%>
+  <% elsif intervention.postponed? %>
+    <%= "REPORTÉ" %>
+  <% else %>
+    <%= "-" %>
+  <% end %>
+</td>

@@ -54,8 +54,8 @@ menus:
             position: 2
             children:
               survey_step:
-                title: Visite commerciale
-                description: Étape de la visite commercial
+                title: Survey
+                description: Étape de Survey
                 position: 1
                 children:
                   subcontractor_requests:
@@ -68,14 +68,14 @@ menus:
                 children:
                   quotes:
                     title: Devis (Pièce)
-                    description: Élaboration des devis
+                    description: "Élaboration d'un devis"
                     children:
                       order_forms:
                         title: Bon de commande
                         description: Bon de commande associé au devis
               press_proof_step:
                 title: BAT
-                description: "Étape de la création d'un ou plusieurs BAT"
+                description: "Étape de l'établissement du/des BAT"
                 position: 3
                 children:
                   press_proofs:
@@ -97,6 +97,10 @@ menus:
                   delivery_notes:
                     title: Bon de livraison
                     description: Élaboration des bons de livraison
+                    children:
+                      delivery_interventions:
+                        title: "Intervention de livraison / installation"
+                        description: "Gestion des intervention de livraison / installation"
           invoicing_step:
             title: Facturation
             description: Phase de la Facturation
@@ -106,6 +110,17 @@ menus:
                 title: Factures
                 description: "Étape de l'élaboration des factures"
                 position: 1
+                children:
+                  invoices:
+                    title: Facture (Pièce)
+                    description: "Élaboration d'une facture"
+                    children:
+                      payment_attachments:
+                        title: Pièce jointe du règlement
+                        description: Pièce jointe du règlement
+                      adjustment_attachments:
+                        title: "Pièce jointe de l'ajustement"
+                        description: "Pièce jointe de l'ajustement"
               payment_step:
                 title: Paiements
                 description: "Étape de l'enregistrement des paiments"
@@ -166,28 +181,35 @@ menus:
       subcontractors:
         title: Sous-traitants
         description: Gestion des sous-traitants
+        position: 4
 configurations:
-  account_tax_coefficient:
-    description: TVA appliquée aux acomptes HT
+  deposit_tax_coefficient:
+    description: TVA appliquée par défaut aux acomptes HT
     value: 8.5
   quote_validity_delay:
-    description: Délai de validité du devis
+    description: Délai de validité par défaut du devis
     value: 15
   quote_validity_delay_unit:
-    description: Unité de temps pour la validité du devis
+    description: Unité de temps par défaut pour la validité du devis
     value: days
   order_reference_pattern:
-    description: Pattern permettant la génération du numéro de référence unique 
-    value: "%y%m$number(2)"
+    description: Modèle permettant la génération du numéro de référence unique pour un dossier
+    value: "%y%m$number(3)"
   quote_reference_pattern:
-    description: Pattern permettant la génération du numéro de référence unique
+    description: Modèle permettant la génération du numéro de référence unique pour un devis
     value: "$order.DV$number(2)"
   press_proof_reference_pattern:
-    description: Pattern permettant la génération du numéro de référence unique
-    value: "$order.BT$number(3)"
+    description: Modèle permettant la génération du numéro de référence unique pour un BAT
+    value: "$order.BT$number(2)"
   mockup_reference_pattern:
-    description: Pattern permettant la génération du numéro de référence unique
-    value: "$order.MT$number(3)"
+    description: Modèle permettant la génération du numéro de référence unique pour une maquette
+    value: "$order.MQ$number(3)"
   graphic_document_reference_pattern:
-    description: Pattern permettant la génération du numéro de référence unique
-    value: "$order.GD$number(3)"
+    description: Modèle permettant la génération du numéro de référence unique pour un document graphique
+    value: "$order.DG$number(3)"
+  delivery_note_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un bon de livraison
+    value: "$order.BL$number(2)"
+  invoice_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une facture
+    value: "$order.FA$number(2)"

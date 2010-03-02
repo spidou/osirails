@@ -1,0 +1,4 @@
+<% invoice = invoice_footer %>
+
+<%= render :partial => 'invoice_items/new_invoice_item', :object => invoice.invoice_items.build if is_form_view? or params[:action] == "ajax_request_for_invoice_items" %>
+<%= render :partial => 'invoices/invoice_aggregates', :object => invoice %>

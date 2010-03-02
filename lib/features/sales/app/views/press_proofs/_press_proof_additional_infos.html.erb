@@ -1,40 +1,46 @@
 <%
-require_locals f
+require_locals form
 press_proof = press_proof_additional_infos %>
 
 <p>
-  <%= f.label :creator %>
+  <%= form.label :reference %>
+  <%= strong press_proof.reference %>
+</p>
+
+<p>
+  <%= form.label :creator %>
   <%= link_to press_proof.creator.employee_name, employee_path(press_proof.creator.employee) %>
 </p>
+
 <p>
-  <%= f.label :created_at %>
-  <strong><%= press_proof.created_at.humanize if press_proof.created_at %></strong>
+  <%= form.label :created_at %>
+  <%= strong(press_proof.created_at.humanize) if press_proof.created_at %>
 </p>
 <p>
-  <%= f.label :status %>
-  <strong>"<%= status_text(press_proof) %>"</strong>
+  <%= form.label :status %>
+  <%= strong "\"#{status_text(press_proof)}\"" %>
 </p>
 
 <% if press_proof.cancelled? %>
   <p>
-    <%= f.label :cancelled_at %>
-    <strong><%= press_proof.updated_at.humanize %></strong>
+    <%= form.label :cancelled_at %>
+    <%= strong press_proof.updated_at.humanize %>
   </p>
 <% end %>
 
 <% if press_proof.revoked? %>
   <p>
-    <%= f.label :revoked_by %>
-    <strong><%= link_to press_proof.revoked_by.employee_name, employee_path(press_proof.creator.employee) %></strong>
+    <%= form.label :revoked_by %>
+    <%= link_to press_proof.revoked_by.employee_name, employee_path(press_proof.creator.employee) %>
   </p>
   
   <p>
-    <%= f.label :revoked_at %>
-    <strong><%= press_proof.updated_at.humanize %></strong>
+    <%= form.label :revoked_at %>
+    <%= strong press_proof.updated_at.humanize %>
   </p>
   
   <p>
-    <%= f.label :revoked_comment %>
-    <strong>"<%= press_proof.revoked_comment %>"</strong>
+    <%= form.label :revoked_comment %>
+    <%= strong "\"#{press_proof.revoked_comment}\"" %>
   </p>
 <% end %>

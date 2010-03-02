@@ -36,7 +36,7 @@
                          :onclick => "restore_original_value(this.up('.quote_item'), 'name')" ) %>
           </span>
         <% else %>
-          <%= h(quote_item.name) %>
+          <%= strong h(quote_item.name) %>
         <% end %>
         
         <br/>
@@ -49,7 +49,7 @@
                          :onclick => "restore_original_value(this.up('.quote_item'), 'description')" ) %>
           </span>
         <% else %>
-          <%= textilize(h(quote_item.description)) %>
+          <%= h(quote_item.description) %>
         <% end %>
       </td>
       <td class="dimensions">
@@ -61,20 +61,20 @@
       </td>
       <td class="unit_price">
         <% if is_form_view? %>
-          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour cette référence", :index => nil %>
+          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.to_f.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour cette référence", :index => nil %>
         <% else %>
-          <%= quote_item.unit_price.to_f.to_s(2) %>
+          <%= quote_item.unit_price.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="discount">
+      <td class="prizegiving">
         <% if is_form_view? %>
-          <%= form.text_field :discount, :value => ( quote_item.discount.round_to(2).to_s(2) if quote_item.discount ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_discount, :title => "Entrer une remise pour cette référence", :index => nil %>
+          <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_prizegiving, :title => "Entrer une remise pour cette référence", :index => nil %>
         <% else %>
-          <%= quote_item.discount.to_f.to_s(2) %>
+          <%= quote_item.prizegiving.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="unit_price_with_discount">
-        <%= quote_item.unit_price_with_discount.round_to(2).to_s(2) %>
+      <td class="unit_price_with_prizegiving">
+        <%= quote_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %>
       </td>
       <td class="quantity">
         <% if is_form_view? %>
@@ -88,7 +88,7 @@
       </td>
       <td class="vat">
         <% if is_form_view? %>
-          <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, {}, :onchange => "calculate(this.up('.quote_item'))", :class => :input_vat, :title => "Entrer le taux de TVA s'appliquant à cette référence", :index => nil) %>
+          <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, { :include_blank => "" }, :onchange => "calculate(this.up('.quote_item'))", :class => :input_vat, :title => "Entrer le taux de TVA s'appliquant à cette référence", :index => nil) %>
           <%= hidden_field_tag :original_vat, quote_item ? quote_item.original_vat : nil, :class => :input_original_vat %>
           <span>
             <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
@@ -104,13 +104,12 @@
       
       <% if is_form_view? %>
         <td class="actions">
-          <%= link_to( image_tag("/images/arrow_up_16x16.png", :alt => "Monter la ligne", :title => "Monter la ligne"), "#up", :onclick => "up_reference(this)" ) %>
-          <%= link_to( image_tag("/images/arrow_down_16x16.png", :alt => "Descendre la ligne", :title => "Descendre la ligne"), "#down", :onclick => "down_reference(this)" ) %>
-          <%= link_to( image_tag("/images/cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du forumulaire.\")) remove_reference(this)" ) %>
+          <%= link_to( image_tag("arrow_up_16x16.png", :alt => "Monter la ligne", :title => "Monter la ligne"), "#up", :onclick => "up_reference(this)" ) %>
+          <%= link_to( image_tag("arrow_down_16x16.png", :alt => "Descendre la ligne", :title => "Descendre la ligne"), "#down", :onclick => "down_reference(this)" ) %>
+          <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_reference(this)" ) %>
           <%= form.hidden_field :id, :class => :quote_item_id, :index => nil %>
-          <%= form.hidden_field :order_id, :index => nil %>
           <%= form.hidden_field :product_id, :index => nil %>
-          <%= hidden_field_tag  "quote[quote_item_attributes][][product_reference_id]", ( quote_item.product ? quote_item.product.product_reference_id : nil ), :id => :quote_quote_item_attributes__product_reference_id, :class => :product_reference_id, :index => nil %>
+          <%= form.hidden_field :product_reference_id, :class => :product_reference_id, :index => nil %>
           <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
         </td>
       <% end %>

@@ -7,6 +7,7 @@ class DunningsController < ApplicationController
 
   # GET /orders/:order_id/:owner/:owner_id/dunnings/new
   def new
+    @dunnings = @owner.dunnings.reject {|n| n.id.nil? or n.cancelled? }
     @dunning = @owner.dunnings.build
     
     error_access_page(412) unless @dunning.can_be_added?
@@ -14,6 +15,7 @@ class DunningsController < ApplicationController
   
   # POST /orders/:order_id/:owner/:owner_id/dunnings
   def create
+    @dunnings = @owner.dunnings.reject {|n| n.id.nil? or n.cancelled? }
     @dunning = @owner.dunnings.build(params[:dunning])
     
     if @dunning.can_be_added?

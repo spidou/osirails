@@ -3,7 +3,7 @@ class CreateQuotes < ActiveRecord::Migration
     create_table :quotes do |t|
       t.references :order, :creator, :send_quote_method, :order_form_type
       t.string  :status, :reference
-      t.float   :carriage_costs, :reduction, :account, :discount, :default => 0
+      t.float   :carriage_costs, :prizegiving, :deposit, :discount, :default => 0
       t.text    :sales_terms
       t.string  :validity_delay_unit
       t.integer :validity_delay

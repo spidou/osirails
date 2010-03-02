@@ -1,6 +1,6 @@
-customer_delivery_type:
-  name: Delivery contact
-  owner: Customer
+establishment_delivery_type:
+  name: Invoicing contact
+  owner: Establishment
 establishment_invoicing_type:
   name: Invoicing contact
   owner: Establishment

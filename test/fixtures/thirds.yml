@@ -7,6 +7,17 @@ first_customer:
   payment_method: bank_transfer
   payment_time_limit: cod
   activated: true
+factorised_customer:
+  type: Customer
+  name: Factorised Customer
+  siret_number: 23456789123456
+  activity_sector: telephony
+  legal_form: local_authority
+  payment_method: bank_transfer
+  payment_time_limit: cod
+  factor: first_factor
+  activated: true
+
 first_supplier:
   type: Supplier
   name: First Supplier
@@ -14,6 +25,7 @@ first_supplier:
   activity_sector: supermarket_retail
   legal_form: llc
   activated: true
+
 first_subcontractor:
   type: Subcontractor
   name: First Subcontractor

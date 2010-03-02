@@ -8,7 +8,7 @@ class CreateThirds < ActiveRecord::Migration
       t.boolean :activated, :default => true
       
       # customer attributes
-      t.references :payment_method, :payment_time_limit
+      t.references :payment_method, :payment_time_limit, :factor
       
       t.timestamps
     end

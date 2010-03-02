@@ -36,4 +36,17 @@ class GraphicItemVersion < ActiveRecord::Base
     created_at.humanize
   end
   
+  def formatted_image_for_press_proof_path
+    output_path = "#{File.dirname(image.path)}/formatted_image_for_press_proof#{File.extname(image.path)}"
+      unless File.exists?(output_path)
+        if `identify -format %h #{image.path}`.to_i > `identify -format %w #{image.path}`.to_i
+          `convert #{image.path} -rotate 90 #{output_path}`
+        end
+      end
+    if File.exists?(output_path)
+      return output_path
+    else
+      return image.path
+    end
+  end  
 end

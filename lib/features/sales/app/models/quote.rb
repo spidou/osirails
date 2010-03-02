@@ -23,8 +23,10 @@ class Quote < ActiveRecord::Base
   has_many :products, :through => :quote_items
   
   has_attached_file :order_form,
-                    :path => ':rails_root/assets/:class/:attachment/:id.:extension',
-                    :url => '/quotes/:quote_id/order_form'
+                    :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
+                    :url  => '/quotes/:quote_id/order_form'
+  
+  named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
   
   validates_contact_presence
   
@@ -32,7 +34,7 @@ class Quote < ActiveRecord::Base
   validates_presence_of     :order,   :if => :order_id
   validates_presence_of     :creator, :if => :creator_id
   
-  validates_numericality_of :reduction, :carriage_costs, :discount, :account, :validity_delay
+  validates_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
   validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
   validates_inclusion_of    :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
@@ -42,19 +44,23 @@ class Quote < ActiveRecord::Base
   validate :validates_length_of_quote_items
   
   ## VALIDATIONS ON VALIDATING QUOTE
-  with_options :if => :confirmed? do |quote|
-    quote.validates_date :confirmed_on, :equal_to => Proc.new { Date.today }
-    quote.validates_uniqueness_of :reference
+  with_options :if => Proc.new{ |i| i.created_at_was and i.confirmed? } do |quote|
+    quote.validates_date :confirmed_on, :on_or_after          => :created_at,
+                                        :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)"
+    quote.validates_presence_of   :reference
   end
   
   ## VALIDATIONS ON INVALIDATING QUOTE
-  validates_date :cancelled_on, :equal_to => Proc.new { Date.today }, :if => :cancelled?
+  validates_date :cancelled_on, :on_or_after          => :created_at,
+                                :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)",
+                                :if                   => Proc.new{ |i| i.created_at_was and i.cancelled? }
   
   ## VALIDATIONS ON SENDING QUOTE
   with_options :if => :sended? do |quote|
-    quote.validates_date  :sended_on,
-                          :on_or_after  => :created_at, :on_or_after_message => "ne doit pas être AVANT la date de création du devis&#160;(%s)",
-                          :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :sended_on, :on_or_after          => :confirmed_on,
+                                      :on_or_after_message  => "ne doit pas être AVANT la date de validation du devis&#160;(%s)",
+                                      :on_or_before         => Date.today,
+                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
     
     quote.validates_presence_of :send_quote_method_id
     quote.validates_presence_of :send_quote_method, :if => :send_quote_method_id # prevent errors by providing wrong ID
@@ -65,9 +71,10 @@ class Quote < ActiveRecord::Base
     quote.validates_presence_of :order_form_type_id, :order_form
     quote.validates_presence_of :order_form_type, :if => :order_form_type_id
     
-    quote.validates_date  :signed_on,
-                          :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
-                          :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :signed_on, :on_or_after          => :sended_on,
+                                      :on_or_after_message  => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
+                                      :on_or_before         => Date.today,
+                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
     
     quote.validate :validates_presence_of_order_form
   end
@@ -75,7 +82,7 @@ class Quote < ActiveRecord::Base
   after_save    :save_quote_items, :remove_order_products
   after_update  :update_estimate_step_status
   
-  attr_protected :status, :reference, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
+  attr_protected :status, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
                  :signed_on, :order_form_type_id, :order_form
   
   attr_accessor :order_products_to_remove
@@ -117,27 +124,31 @@ class Quote < ActiveRecord::Base
     product = Product.find_by_id(quote_item_attributes[:product_id])
     product ||= ProductReference.find_by_id(quote_item_attributes[:product_reference_id])
     
-    name        = product.name
-    description = product.description
-    dimensions  = product.dimensions rescue nil # ProductReference do not have dimensions
-    quantity    = product.quantity rescue nil   # ProductReference do not have quantity
-    unit_price  = product.unit_price
-    vat         = product.vat || ( product.product_reference.vat rescue nil )
+    name                 = product.name
+    description          = product.description
+    dimensions           = product.dimensions rescue nil # ProductReference do not have dimensions
+    quantity             = product.quantity rescue nil   # ProductReference do not have quantity
+    unit_price           = product.unit_price
+    prizegiving          = product.prizegiving
+    vat                  = product.vat || ( product.product_reference.vat rescue nil )
+    product_reference_id = quote_item_attributes[:product_reference_id] || product.product_reference.id
     
-    quote_item_attributes = { :name         => name,
-                              :description  => description,
-                              :dimensions   => dimensions,
-                              :quantity     => quantity,
-                              :unit_price   => unit_price,
-                              :vat          => vat
+    quote_item_attributes = { :product_reference_id => product_reference_id,
+                              :name                 => name,
+                              :description          => description,
+                              :dimensions           => dimensions,
+                              :unit_price           => unit_price,
+                              :prizegiving          => prizegiving,
+                              :quantity             => quantity,
+                              :vat                  => vat
                             }.merge(quote_item_attributes)
     
-    _build_quote_item(quote_item_attributes)
+    build_or_update_quote_item(quote_item_attributes)
   end
   
   def quote_item_attributes=(quote_item_attributes)
     quote_item_attributes.each do |attributes|
-      _build_quote_item(attributes)
+      build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
     end
     
     # automatically remove a product from order if quote_items do not include this product
@@ -165,8 +176,8 @@ class Quote < ActiveRecord::Base
   end
   
   def net
-    reduction = self.reduction || 0.0
-    total*(1-(reduction/100))
+    prizegiving = self.prizegiving || 0.0
+    total * ( 1 - ( prizegiving / 100 ) )
   end
   
   def total_with_taxes
@@ -183,11 +194,6 @@ class Quote < ActiveRecord::Base
     net + carriage_costs + summon_of_taxes - discount
   end
   
-  def account_with_taxes
-    account = self.account || 0.0
-    account*(1+(ConfigurationManager.sales_account_tax_coefficient/100))
-  end
-  
   def tax_coefficients
     quote_items.collect(&:vat).uniq
   end
@@ -202,8 +208,8 @@ class Quote < ActiveRecord::Base
   
   def confirm
     if can_be_confirmed?
+      update_reference
       self.confirmed_on = Date.today
-      self.reference = generate_reference
       self.status = STATUS_CONFIRMED
       self.save
     else
@@ -240,7 +246,7 @@ class Quote < ActiveRecord::Base
   
   def sign(attributes)
     if can_be_signed?
-      self.attributes = attributes
+      self.attributes = attributes #FIXME this line is really used ? see how it works in invoice.rb
       if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
         self.signed_on = attributes[:signed_on]
       else
@@ -308,20 +314,20 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_edited? # we don't choose 'can_edit?' to avoid conflict with 'has_permissions' methods
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_deleted?
-    was_uncomplete?
+    !new_record? and was_uncomplete?
   end
   
   def can_be_confirmed?
     #was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
-    was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
+    !new_record? and was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
   end
   
   def can_be_cancelled?
-    was_uncomplete? or was_confirmed? or was_sended?
+    !new_record? and ( was_uncomplete? or was_confirmed? or was_sended? )
   end
   
   def can_be_sended?
@@ -333,29 +339,18 @@ class Quote < ActiveRecord::Base
   end
   
   def order_contacts
-    # use EstimateStep.find() permits to get a complete list of contacts (if order contacts
-    # list has changed from the initial 'find' of the current instance of Quote)
-    
-    #estimate_step ? EstimateStep.find(estimate_step_id).order.contacts : []
     order ? order.contacts : []
   end
   
   private
-
     def update_estimate_step_status
       if signed?
-        #estimate_step.terminated!
         order.commercial_step.estimate_step.terminated!
       end
     end
     
-    def _build_quote_item(quote_item_attributes)
-      return nil if quote_item_attributes[:product_reference_id].blank?
-      
-      quote_item_attributes[:product_attributes] = quote_item_attributes.reject{ |k,v| [:product_id, :order_id].include?(k.to_sym) }
-      quote_item_attributes[:product_attributes][:id] = quote_item_attributes[:product_id]
-      quote_item_attributes.delete(:product_reference_id)
-      quote_item_attributes[:order_id] = self.order_id
+    def build_or_update_quote_item(quote_item_attributes)
+      quote_item_attributes.merge(:order_id => order_id)
       
       if quote_item_attributes[:id].blank?
         quote_item = quote_items.build(quote_item_attributes)

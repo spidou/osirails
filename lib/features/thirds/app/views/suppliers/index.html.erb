@@ -4,10 +4,10 @@
   <%= new_supplier_link %>
 <% end %>
 
-<h1> Liste des fournisseurs </h1>
+<h1>Liste des fournisseurs</h1>
 
 <div>
-  <% unless @suppliers.empty?%>
+  <% unless @suppliers.empty? %>
     <table>
       <tr>
         <th>Nom</th> 
@@ -16,10 +16,10 @@
         <th>Actions</th>
       </tr>
     
-      <%for supplier in @suppliers%>
+      <% for supplier in @suppliers %>
         <tr>
           <td><%= supplier.name %></td>
-          <td><%= supplier.activity_sector.name unless  supplier.activity_sector.nil?%></td>
+          <td><%= supplier.activity_sector.name unless supplier.activity_sector.nil? %></td>
           <td><%= supplier.note %></td>
           <td>
             <%= supplier_link(supplier, :link_text => "") %> 
@@ -27,8 +27,10 @@
             <%= delete_supplier_link(supplier, :link_text => "") %>
             </td>
         </tr>
-    <%end%>
-  <%end%>
+    <% end %>
+  <% else %>
+    <p>Aucun fournisseur n'a été trouvé</p>
+  <% end %>
   </table>
   <%= will_paginate @suppliers %>
 </div>

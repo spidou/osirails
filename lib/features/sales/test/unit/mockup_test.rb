@@ -6,17 +6,20 @@ class MockupTest < ActiveSupport::TestCase
   
   should_have_many :graphic_item_versions
   
-  should_validate_presence_of :name, :description
-  should_validate_presence_of :order, :mockup_type, :product, :graphic_unit_measure, :creator, :with_foreign_key => :default 
-  
   # FIXME there is no should_validate_persistence_of :graphic_unit_measure, :reference, :mockup_type, :product, :order
   # For the moment, persistent attributes are tested manually, before an eventually future validates_persistence_of shoulda macro
   
   context "A new mockup" do
     setup do
-      @mockup = Mockup.new
+      @order = create_default_order
+      @mockup = @order.mockups.build
       @mockup.valid?
     end
+    
+    subject{ @mockup }
+    
+    should_validate_presence_of :name, :description
+    should_validate_presence_of :order, :mockup_type, :product, :graphic_unit_measure, :creator, :with_foreign_key => :default
     
     should "NOT belong to a product include in another order products list" do      
       @in_base_mockup = create_default_mockup
@@ -39,7 +42,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding an image," do
       setup do
-        flunk "The graphic item version attributes should be assigned to continue" unless @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
         @version = @mockup.graphic_item_versions.last
       end
       
@@ -66,7 +69,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding an image and a source," do
       setup do
-        flunk "The graphic item version attributes should be assigned to continue" unless @mockup.graphic_item_version_attributes=({ :image  => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")),
+        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=({ :image  => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")),
                                                                                                                                      :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
                                                                                                                                    })
         @version = @mockup.graphic_item_versions.last
@@ -95,7 +98,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding only a source," do
       setup do
-        flunk "The graphic item version attributes should NOT be assigned to continue" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+        flunk "The graphic item version attributes should NOT be assigned" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
         @version = @mockup.graphic_item_versions.last
       end
       
@@ -135,8 +138,6 @@ class MockupTest < ActiveSupport::TestCase
     
     subject { @mockup }
     
-    should_validate_uniqueness_of :reference
-    
     should "have saved a valid graphic item version" do
       assert @version.is_a?(GraphicItemVersion)
     end
@@ -157,7 +158,7 @@ class MockupTest < ActiveSupport::TestCase
       assert @mockup.can_be_cancelled?
     end
     
-    for element in ["reference","graphic_unit_measure_id","mockup_type_id","product_id","order_id"]   
+    for element in [ :reference, :graphic_unit_measure_id, :mockup_type_id, :product_id, :order_id ]
       should "NOT be able to update #{element}" do
         @mockup.send("#{element}=",nil)
         
@@ -217,8 +218,8 @@ class MockupTest < ActiveSupport::TestCase
       setup do
         @old_version = @mockup.current_version
         @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
-        flunk "@mockup should be saved to continue > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
-        flunk "@mockup.current_version should not be @old_version to continue" unless @mockup.current_version != @old_version
+        flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
+        flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
       end
       
       should "have saved a valid graphic item version" do
@@ -250,8 +251,8 @@ class MockupTest < ActiveSupport::TestCase
       setup do
         @old_version = @mockup.current_version
         @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")), :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf")) } )
-        flunk "@mockup should be saved to continue > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save     
-        flunk "@mockup.current_version should not be @old_version to continue" unless @mockup.current_version != @old_version
+        flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save     
+        flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
       end
       
       should "have saved a valid graphic item version" do
@@ -283,15 +284,15 @@ class MockupTest < ActiveSupport::TestCase
       setup do
         @old_version = @mockup.current_version
         @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
-        flunk "@mockup should be saved to continue > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save      
+        flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save      
 
-        flunk "@mockup.current_version should not be @old_version to continue" unless @mockup.current_version != @old_version
+        flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
       end
     
       context ", after having updated its current version," do
         setup do
           @mockup.current_version = @mockup.graphic_item_versions.first.id
-          flunk "@mockup should be saved to continue > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
+          flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
         end
         
         should "have changed its current image" do
@@ -310,10 +311,10 @@ class MockupTest < ActiveSupport::TestCase
       context ", after having both updated current_version and add an image," do
         setup do
           @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")) } )
-          flunk "@mockup should be saved to continue  > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
+          flunk "@mockup should be saved  > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
           @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
           @mockup.current_version = @mockup.graphic_item_versions.first.id
-          flunk "@mockup should NOT be saved to continue" if @mockup.save
+          flunk "@mockup should NOT be saved" if @mockup.save
         end
         
         should "generate an error" do
@@ -324,7 +325,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having cancel," do
       setup do
-        flunk "@mockup should have cancel to continue" unless @mockup.cancel
+        flunk "@mockup should have cancel" unless @mockup.cancel
       end
       
       should "be cancelled" do
@@ -351,7 +352,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having add its current image to an user graphic item spool" do
       setup do
-        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+        flunk "@mockup.current_image should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("image",User.first)
       end
       
       should "have its current image in the user graphic item spool" do
@@ -363,7 +364,7 @@ class MockupTest < ActiveSupport::TestCase
       end
       
       should "be able to remove its current image from the user graphic item spool" do
-        flunk "@mockup.current_image should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("image",User.first)
+        flunk "@mockup.current_image should be removed from the user graphic item spool" unless @mockup.remove_from_graphic_item_spool("image",User.first)
         assert !@mockup.is_in_user_spool("image",User.first)
       end
       
@@ -380,7 +381,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having add its current source to an user graphic item spool" do
       setup do
-        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+        flunk "@mockup.current_source should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("source",User.first)
       end
       
       should "have its current source in the user graphic item spool" do
@@ -392,7 +393,7 @@ class MockupTest < ActiveSupport::TestCase
       end
       
       should "be able to remove its current source from the user graphic item spool" do
-        flunk "@mockup.current_source should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("source",User.first)
+        flunk "@mockup.current_source should be removed from the user graphic item spool" unless @mockup.remove_from_graphic_item_spool("source",User.first)
         assert !@mockup.is_in_user_spool("source",User.first)
       end
       
@@ -409,9 +410,9 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having remove its current image to an user graphic item spool" do
       setup do
-        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+        flunk "@mockup.current_image should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("image",User.first)
         @gisi_path = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"image"]).path
-        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("image",User.first)
+        flunk "@mockup.current_image should be added to the user graphic item spool" unless @mockup.remove_from_graphic_item_spool("image",User.first)
       end
       
       should "NOT have its current image in the user graphic item spool" do
@@ -423,7 +424,7 @@ class MockupTest < ActiveSupport::TestCase
       end
       
       should "be able to add its current image from the user graphic item spool" do
-        flunk "@mockup.current_image should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("image",User.first)
+        flunk "@mockup.current_image should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("image",User.first)
         assert @mockup.is_in_user_spool("image",User.first)
       end
       
@@ -438,9 +439,9 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having remove its current source to an user graphic item spool" do
       setup do
-        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+        flunk "@mockup.current_source should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("source",User.first)
         @gisi_path = GraphicItemSpoolItem.find(:first, :conditions => ["user_id = ? AND graphic_item_id = ? AND file_type = ?",User.first.id,@mockup.id,"source"]).path
-        flunk "@mockup.current_source should be removed from the user graphic item spool to continue" unless @mockup.remove_from_graphic_item_spool("source",User.first)
+        flunk "@mockup.current_source should be removed from the user graphic item spool" unless @mockup.remove_from_graphic_item_spool("source",User.first)
       end
       
       should "NOT have its current source in the user graphic item spool" do
@@ -452,7 +453,7 @@ class MockupTest < ActiveSupport::TestCase
       end
       
       should "be able to add its current source from the user graphic item spool" do
-        flunk "@mockup.current_source should be added to the user graphic item spool to continue" unless @mockup.add_to_graphic_item_spool("source",User.first)
+        flunk "@mockup.current_source should be added to the user graphic item spool" unless @mockup.add_to_graphic_item_spool("source",User.first)
         assert @mockup.is_in_user_spool("source",User.first)
       end
       
@@ -470,7 +471,7 @@ class MockupTest < ActiveSupport::TestCase
         @mockup.add_to_graphic_item_spool("image",User.first)
         @mockup.add_to_graphic_item_spool("image",User.last)
         @destroyed_mockup_id = @mockup.id
-        flunk "@mockup should be destroyed to continue" unless @mockup.destroy
+        flunk "@mockup should be destroyed" unless @mockup.destroy
       end
     
       should "destroy all its versions at the same time" do

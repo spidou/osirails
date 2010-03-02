@@ -9,16 +9,13 @@ class PressProof < ActiveRecord::Base
   STATUS_REVOKED   = 'revoked'
   
   named_scope :actives, :conditions => ["status NOT IN (?)", [STATUS_CANCELLED, STATUS_REVOKED]]
-  named_scope :signed_list, :conditions => ["status =?", [STATUS_SIGNED]]
-  
-  attr_protected :status, :cancelled_on, :confimed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment, :reference
     
   has_attached_file :signed_press_proof, 
-                    :path => ':rails_root/assets/:class/:attachment/:reference.:extension',
+                    :path => ':rails_root/sales/assets/:class/:attachment/:id.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
-  has_many :press_proof_items, :order => "created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
-  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
+  has_many :press_proof_items, :order => "position, created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
+  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position, press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
@@ -35,20 +32,22 @@ class PressProof < ActiveRecord::Base
   validates_presence_of :internal_actor, :if => :internal_actor_id
   validates_presence_of :product,        :if => :product_id
   
-  validates_persistence_of :order_id, :product_id, :unless => :new_record?
-  validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :unless => :can_be_edited?
+  validates_persistence_of :order_id, :product_id,                                              :if => :created_at_was
+  validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :confirmed_on,  :if => :confirmed_on_was
+  validates_persistence_of :sended_on,                                                          :if => :sended_on_was
+  validates_persistence_of :signed_on,                                                          :if => :signed_on_was
+  validates_persistence_of :revoked_on, :revoked_by_id, :revoked_comment,                       :if => :revoked_on_was
+  validates_persistence_of :cancelled_on,                                                       :if => :cancelled_on_was
   
-  with_options :if => Proc.new {|n| n.was_cancelled? or n.was_revoked? } do |v|
-    v.validates_persistence_of :order_id, :product_id, :internal_actor_id, :creator_id, :cancelled_on, :press_proof_items,
-                               :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by_id, :revoked_comment, :status
-  end
+  validates_persistence_of :status, :if => Proc.new { |p| p.was_cancelled? or p.was_revoked? }
   
   # Validations for status according to the procedure
-  validates_inclusion_of :status, :in => [nil],                                :if => :new_record?
-  validates_inclusion_of :status, :in => [nil, STATUS_CONFIRMED],              :if => :can_be_confirmed? and :can_be_destroyed? # TODO refactor test suite
-  validates_inclusion_of :status, :in => [STATUS_SENDED, STATUS_CANCELLED],    :if => :can_be_sended? and :can_be_cancelled?
-  validates_inclusion_of :status, :in => [STATUS_SIGNED, STATUS_CANCELLED],    :if => :can_be_signed? and :can_be_cancelled?
-  validates_inclusion_of :status, :in => [STATUS_REVOKED],                     :if => :can_be_revoked?
+  validates_inclusion_of :status, :in => [nil],                                     :if => :new_record?
+  validates_inclusion_of :status, :in => [nil, STATUS_CONFIRMED, STATUS_CANCELLED], :if => :was_uncomplete?
+  validates_inclusion_of :status, :in => [STATUS_SENDED, STATUS_CANCELLED],         :if => :was_confirmed?
+  validates_inclusion_of :status, :in => [STATUS_SIGNED, STATUS_CANCELLED],         :if => :was_sended?
+  validates_inclusion_of :status, :in => [STATUS_REVOKED],                          :if => :was_signed?
+  
   
   # Validations for confirm
   with_options :if => :confirmed? do |v|
@@ -88,10 +87,16 @@ class PressProof < ActiveRecord::Base
   validate :validates_presence_of_press_proof_items_custom # use this because the deletion of a resource is done after validation by using a flag, so we must validate the flag state
   validate :validates_mockups
   
+  # Callbacks
   after_save :save_press_proof_items
+  before_create :can_be_created?
+  before_destroy :can_be_destroyed?
+  
+  attr_protected :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment
     
   cattr_accessor :form_labels
   @@form_labels = {}
+  @@form_labels[:reference]               = "Référence :"
   @@form_labels[:internal_actor]          = "Contact Graphique :"
   @@form_labels[:creator]                 = "Créateur :"
   @@form_labels[:product]                 = "Produit :"
@@ -108,22 +113,24 @@ class PressProof < ActiveRecord::Base
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:status]                  = "État actuel :"
   
+  def associated_quote
+    order.signed_quote if order
+  end
+  
   def can_be_cancelled?
-    return false if self.new_record?
-    was_confirmed? or was_sended?
+    !new_record? and ( was_confirmed? or was_sended? )
   end
   
   def can_be_confirmed?
-    return false if self.new_record?
-    status_was.nil?
+    !new_record? and was_uncomplete? and product_without_signed_press_proof?
   end
   
   def can_be_sended?
-    was_confirmed?
+    was_confirmed? and product_without_signed_press_proof?
   end
   
   def can_be_signed?
-    was_sended? and PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty?
+    was_sended? and product_without_signed_press_proof?
   end
   
   def can_be_revoked?
@@ -131,13 +138,20 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_edited?
-    confirmed_on.nil?
+    !new_record? and was_uncomplete? and product_without_signed_press_proof?
   end
   
   def can_be_destroyed?
-    confirmed_on.nil?
+    !new_record? and was_uncomplete?
   end
   
+  def can_be_created?
+    product_without_signed_press_proof?
+  end
+  
+  def product_without_signed_press_proof?
+    !product.has_signed_press_proof?
+  end
   
   def cancel
     return false unless can_be_cancelled?
@@ -148,8 +162,8 @@ class PressProof < ActiveRecord::Base
   
   def confirm
     return false unless can_be_confirmed?
+    update_reference
     self.confirmed_on = Date.today
-    self.reference    = generate_reference
     self.status       = STATUS_CONFIRMED
     self.save
   end
@@ -186,6 +200,10 @@ class PressProof < ActiveRecord::Base
     "#{y}/#{m}/#{d}".to_date
   end
   
+  def uncomplete?
+    status.nil?
+  end
+  
   def cancelled?
     status == STATUS_CANCELLED
   end
@@ -204,6 +222,10 @@ class PressProof < ActiveRecord::Base
   
   def revoked?
     status == STATUS_REVOKED
+  end
+  
+  def was_uncomplete?
+    status_was.nil?
   end
   
   def was_cancelled?
@@ -244,6 +266,48 @@ class PressProof < ActiveRecord::Base
     product ? product.description : nil
   end
   
+  # Method to get all press_proof's graphic_item including unsaved one
+  #
+  def get_all_graphic_item_versions
+    return graphic_item_versions + get_unsaved_graphic_item_versions
+  end
+  
+  # Method to get all press_proof's selected mockups
+  # used to manage "mockups" list
+  #
+  def get_selected_mockups
+    selected_graphic_item_versions = graphic_item_versions.reject do |graphic_item_version|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
+    end
+    selected_graphic_item_versions += get_unsaved_graphic_item_versions
+    
+    return selected_graphic_item_versions.collect{|n| n.graphic_item.id}
+  end
+  
+  # Method to get all press_proof's unselected mockups
+  # used to manage "press_proof_mockups" list
+  #
+  def get_unselected_mockups
+    unselected_graphic_item_versions = graphic_item_versions.select do |graphic_item_version|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
+    end
+    
+    return unselected_graphic_item_versions.collect{|n| n.graphic_item.id}
+  end
+  
+  # Method to get all graphic_item_versions that are selected but not saved yet
+  # Usefull, because we do not save 'graphic_item_version' but the join model 'press_proof_item'
+  # so until the press_proof is not successfully saved (passed validations) we cannot retrieve the new graphic_item_versions
+  # doing press_proof.graphic_item_versions, then we must pass through press_proof.press_proof_items to retrieve unsaved_graphic_item_versions.
+  #
+  def get_unsaved_graphic_item_versions
+    result = order.mockups.select do |graphic_item|
+      press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item.current_version.id and n.id.nil? and !n.should_destroy? }
+    end
+    
+    return result.collect(&:current_version)
+  end
+  
   private
   
     def save_press_proof_items
@@ -257,7 +321,7 @@ class PressProof < ActiveRecord::Base
     end
   
     def validates_with_a_product_not_already_referenced
-      unless PressProof.signed_list.select {|n| n.product_id == self.product_id and n != self}.empty?
+      unless product_without_signed_press_proof?
         errors.add(:product_id, "est invalide, le produit est déjà référencé dans un BAT signé")
       end
     end
@@ -270,7 +334,7 @@ class PressProof < ActiveRecord::Base
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes")
       end
       
-      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup}.select{|n| n.graphic_item.product.id != self.product.id}.empty?
+      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.product.id != self.product.id}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes concernant le produit du BAT")
       end
     end
@@ -286,4 +350,4 @@ class PressProof < ActiveRecord::Base
     def validates_presence_of_press_proof_items_custom
       errors.add(:press_proof_items, "est requis") if self.press_proof_items.select {|n| !n.should_destroy?}.empty?
     end
-end    
+end

@@ -1,9 +1,11 @@
 <%= order_header %>
 
+<%= generate_press_proof_contextual_menu_partial %>
+
 <h1>Signaler que le BAT a été signé par le client</h1>
 
 <div class="presentation_medium">
-  <%= render :partial => "press_proofs_list", :object => [ PressProof.find(@press_proof.id) ] %>
+  <%= render :partial => "press_proofs_list", :object => [ @press_proof ], :locals => { :press_proofs => [ PressProof.find(@press_proof.id) ] } %>
   
 	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "sign", :press_proof_id => @press_proof.id }, :html => { :multipart => true }, :method => :put do |form| %>
     <%= form.error_messages %>

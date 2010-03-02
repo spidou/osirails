@@ -1,0 +1,83 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'sales/delivery_interventions' %>
+<% end %>
+
+<%
+require_locals delivery_note, order
+
+if params[:action].starts_with?("schedule")
+  header                = "Planifier une intervention de type \"#{delivery_note.delivery_note_type.title}\""
+  schedule_selected     = ' selected'
+  realisation_selected  = ''
+  realisation_disabled  = ' disabled'
+elsif params[:action].starts_with?("realize")
+  header                = "Signaler la réalisation d'une intervention"
+  schedule_selected     = ''
+  realisation_selected  = ' selected'
+  realisation_disabled  = ''
+else
+  header                = "Informations concernant l'intervention"
+  schedule_selected     = delivery_intervention.was_realized? ? '' : ' selected'
+  realisation_selected  = delivery_intervention.was_realized? ? ' selected' : ''
+  realisation_disabled  = delivery_intervention.was_realized? ? '' : ' disabled'
+end
+
+action = params[:action].gsub('_form', '')
+%>
+
+<div>
+  <h2>Bon de livraison</h2>
+  <%= render :partial => 'delivery_notes/delivery_notes', :object => [ delivery_note ] %>
+</div>
+
+<h1><%= header %></h1>
+
+<%
+delivery_intervention_headers = { :delivery_intervention_schedule     => "Planification",
+                                  :delivery_intervention_realisation  => "Réalisation" }
+%>
+
+<% if params[:action].starts_with?("schedule") and delivery_intervention.outdated? %>
+  
+  <div class="presentation_medium">
+    <% form_for(delivery_intervention, :url => { :controller => 'delivery_notes', :action => :realize, :return_uri => order_pre_invoicing_step_delivery_step_delivery_note_schedule_form_path(order, delivery_note) }, :html => { :method => :put }) do |form| %>
+      <%= form.error_messages %>
+      <%= render :partial => 'delivery_interventions/delivery_intervention_outdated', :object => delivery_intervention, :locals => { :form => form } %>
+    <% end %>
+  </div>
+  
+<% else %>
+
+  <div class="presentation_medium root_nav">
+    <% form_for(delivery_intervention, :url => { :controller => 'delivery_notes', :action => action }, :html => { :method => :put, :multipart => true }) do |form| %>
+      <%= form.error_messages %>
+      
+      <ul class="delivery_intervention_nav tab_nav">
+        <li class="delivery_intervention_schedule<%= schedule_selected %>">
+          <%= delivery_intervention_headers[:delivery_intervention_schedule ] %>
+        </li>
+        <li class="delivery_intervention_realisation<%= realisation_selected %><%= realisation_disabled %>">
+          <%= delivery_intervention_headers[:delivery_intervention_realisation ] %>
+        </li>
+      </ul>
+      
+      <h2 class="delivery_intervention_schedule"><%= delivery_intervention_headers[:delivery_intervention_schedule] %></h2>
+      <div class="delivery_intervention_schedule section_nav<%= schedule_selected %>">
+        <%= render :partial => 'delivery_interventions/delivery_intervention_schedule', :object => delivery_intervention, :locals => { :form => form } %>
+      </div>
+      
+      <h2 class="delivery_intervention_realisation"><%= delivery_intervention_headers[:delivery_intervention_realisation] %></h2>
+      <div class="delivery_intervention_realisation section_nav<%= realisation_selected %>">
+        <% unless params[:action].starts_with?("schedule") %>
+          <%= render :partial => 'delivery_interventions/delivery_intervention_realisation', :object => delivery_intervention, :locals => { :form => form } %>
+        <% end %>
+      </div>
+      
+      <p>
+        <%= form.submit "Enregistrer" %>
+      </p>
+    <% end %>
+  </div>
+
+<% end %>

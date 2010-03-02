@@ -185,13 +185,17 @@ class ToolEventTest < ActiveSupport::TestCase
   def test_named_scope_effectives
     base = ToolEvent.count
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
-    flunk "tool should be valid" unless @tool_event.save
+    @tool_event.save!
+    flunk "tool should be saved" if @tool_event.new_record?
+    
     assert_equal base + 1, ToolEvent.count, "the number of events should be equal to #{base + 1}"
     assert_equal base + 1, ToolEvent.effectives.count, "the number of effectives events should be equal to #{base + 1}, because the last event added is effective"
     
     @tool_event = ToolEvent.new(@good_tool_event.attributes)
     @tool_event.start_date = Date.tomorrow
-    flunk "tool should be valid" unless @tool_event.save
+    @tool_event.save!
+    flunk "tool should be saved" if @tool_event.new_record?
+    
     assert_equal base + 2, ToolEvent.count, "the number of events should be equal to #{base + 2}"
     assert_equal base + 1, ToolEvent.effectives.count, "the number of effectives events should be equal to #{base + 1}, because the last event added is future"
   end
@@ -282,7 +286,7 @@ class ToolEventTest < ActiveSupport::TestCase
   
   def test_save_event_callback_with_alarm
     tool_event = prepare_tool_event(:alarm_attributes => [{:do_alarm_before => 120, :description => "description", :email_to => "test@test.com" }])
-    flunk "event should have 1 alarm to perform the following" unless tool_event.event.alarms.size == 1
+    flunk "event should have 1 alarm" unless tool_event.event.alarms.size == 1
     
     assert tool_event.save, "tool_event should be saved > #{tool_event.errors.inspect}"
     assert !tool_event.event.alarms.first.new_record?, "alarm should be saved"
@@ -310,7 +314,7 @@ class ToolEventTest < ActiveSupport::TestCase
     def prepare_tool_event(attributes = {})
       tool_event = ToolEvent.new(@good_tool_event.attributes.merge(attributes))
       tool_event.valid?
-      flunk "tool_event should have 1 unsaved event to perform the following" unless tool_event.event and tool_event.event.new_record?
+      flunk "tool_event should have 1 unsaved event" unless tool_event.event and tool_event.event.new_record?
       return tool_event
     end
     

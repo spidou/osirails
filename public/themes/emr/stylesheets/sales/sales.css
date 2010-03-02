@@ -30,7 +30,6 @@
 
 #order_header .second_column {
   display: inline-block;
-  //max-width: 340px;
   vertical-align: top;
 }
 
@@ -65,24 +64,22 @@ p.order_deadline {
   padding: 0;
 }
 
-p.order_deadline span:first-child:after {
-  content: "\A";
-  white-space: pre;
-}
-
 p.order_deadline.far {
   color: blue;
-  text-decoration: underline;
 }
 
-p.order_deadline.soon,
-p.order_deadline.today {
+p.order_deadline.soon {
+  font-weight: bold;
+  color: red;
+}
+
+p.order_deadline.today,
+p.order_deadline.late {
   font-weight: bold;
   color: red;
   text-decoration: underline;
 }
 
-p.order_deadline.late,
 p.order_deadline.critical {
   font-weight: bold;
   color: red;
@@ -146,65 +143,65 @@ ul.quote_caption {
   text-align: left;
 }
 
-table#quote_items td,
-table#quote_items span {
+table.sales_table td,
+table.sales_table span {
   vertical-align: top;
 }
 
-table#quote_items td.description {
+table.sales_table td.description {
   text-align: left;
 }
 
-table#quote_items td.description p {
+table.sales_table td.description p {
   margin: 0;
   padding: 0;
 }
 
-table#quote_items td.description strong {
+table.sales_table td.description strong {
   color: inherit;
   font-weight: bold;
 }
 
-table#quote_items td.description img,
-table#quote_items td.unit_price img {
+table.sales_table td.description img,
+table.sales_table td.unit_price img {
   vertical-align: middle;
 }
 
-table#quote_items td.description input,
-table#quote_items td.description textarea {
+table.sales_table td.description input,
+table.sales_table td.description textarea {
   width: 400px;
 }
 
-table#quote_items span.fieldWithErrors {
+table.sales_table span.fieldWithErrors {
   display: inline-block;
 }
 
-table#quote_items span.fieldWithErrors:after {
+table.sales_table span.fieldWithErrors:after {
   color: red;
   vertical-align: top;
   content: " *"
 }
 
-table#quote_items tr.aggregates td {
+table.sales_table tr.aggregates td {
   text-align: left;
   border-top: none;
   border-bottom: none;
 }
 
-table#quote_items tr.aggregates td.aggregate_label {
+table.sales_table tr.aggregates td.aggregate_label {
   border-right: none;
 }
 
-table#quote_items tr.aggregates td.aggregate_amount {
+table.sales_table tr.aggregates td.aggregate_amount {
   border-left: none;
   text-align: right;
 }
 
-table#quote_items tr.aggregates td.aggregate_amount input {
+table.sales_table tr.aggregates td.aggregate_amount input {
   text-align: right;
 }
 
-table#quote_items tr.aggregates.global {
+table.sales_table tr.aggregates.global {
   font-weight: bold;
   background-color: #CCC;
   border-top: 1px solid black;
@@ -270,12 +267,22 @@ table#quote_items tr.aggregates.global {
   vertical-align: top;
 }
 
-#delivery_note_header > div h3 {
+#delivery_note_header > div h4 {
   text-align: center;
+  margin: 0px;
+  padding: 2px;
+  background-color: #DDD;
+  border: 1px solid #A7A7A7;
 }
 
 #delivery_note_header #contact_container label {
   width: auto !important;
+}
+
+#delivery_note_items tr.empty_line {
+  background-color: #EAEAEA;
+  font-style: italic;
+  color: #898989;
 }
 
 /* REMARKS */
@@ -375,16 +382,31 @@ table#quote_items tr.aggregates.global {
 }
 
 .root_nav ul.tab_nav li.disabled {
+  background-color: #DDD;
+  color: #777;
   font-style: italic;
-  color: #AAA;
+  cursor: inherit;
+}
+
+.root_nav ul.tab_nav li.disabled:hover {
+  background-color: #DDD;
 }
 
 .root_nav ul.tab_nav li.errors {
   color: red;
   background-image: url('/themes/emr/images/warning_14x14.png');
   background-repeat: no-repeat;
-  background-position: 7px 50%;
+  background-position: 7px 60%;
   padding-left: 28px;
+}
+
+.root_nav ul.tab_nav li.warning {
+  color: red;
+  -moz-box-shadow: inset 0px -1px 5px rgba(255,0,0,0.7);
+}
+
+.root_nav ul.tab_nav li.warning.selected {
+  -moz-box-shadow: none;
 }
 
 .root_nav div.section_nav {
@@ -400,70 +422,6 @@ table#quote_items tr.aggregates.global {
 .root_nav h2 {
   display: none;
 }
-
-//.survey_step {
-//  position: relative;
-//  margin-top: 34px !important;
-//}
-//
-//.survey_step ul.survey_step_nav {
-//  position: absolute;
-//  top: -46px;
-//  left: -1px;
-//  list-style: none;
-//  padding: 0;
-//}
-//
-//.survey_step ul.survey_step_nav li {
-//  display: inline-block;
-//  background-color: #fffcd6;
-//  border: 1px solid #737373;
-//  -moz-border-radius: 10px 10px 0 0;
-//  padding: 4px 11px 4px 11px;
-//  margin-top: 5px;
-//  margin-right: -6px;
-//  cursor: pointer;
-//  z-index: -1;
-//}
-//
-//.survey_step ul.survey_step_nav li:first-child {
-//  -moz-border-radius: 0px 10px 0 0;
-//}
-//
-//.survey_step ul.survey_step_nav li:hover {
-//  background-color: white;
-//}
-//
-//.survey_step ul.survey_step_nav li.selected {
-//  background-color: white;
-//  padding: 8px 14px 4px 14px;
-//  border-bottom: 1px solid white;
-//  -moz-border-radius: 10px 10px 0 0;
-//  font-weight: bold;
-//  margin-top: 0;
-//}
-//
-//.survey_step ul.survey_step_nav li.errors {
-//  color: red;
-//  background-image: url('/themes/emr/images/warning_14x14.png');
-//  background-repeat: no-repeat;
-//  background-position: 7px 50%;
-//  padding-left: 28px;
-//}
-//
-//.survey_step div.section_nav {
-//  display: none;
-//  padding: 8px;
-//  text-align: left;
-//}
-//
-//.survey_step div.section_nav.selected {
-//  display: block;
-//}
-//
-//.survey_step h2 {
-//  display: none;
-//}
 
 /* TABULATION FOR PRODUCTS IN SURVEY STEP */
 .product.resource {
@@ -526,23 +484,8 @@ table#quote_items tr.aggregates.global {
   margin-top: 0;
 }
 
-.product > ul li.disabled {
-  background-color: #CCC;
-  color: #777;
-  font-style: italic;
-  cursor: inherit;
-}
-
-.product > ul li.errors {
-  color: red;
-  background-image: url('/themes/emr/images/warning_14x14.png');
-  background-repeat: no-repeat;
-  background-position: 5px 50%;
-  padding-left: 24px;
-}
-
 .product .product_summary {
-  background-color: #ffdd60; //#fff8a4;
+  background-color: #ffdd60;
   padding: 0;
   margin: 0;
   text-align: left;
@@ -634,6 +577,260 @@ div.resource.subcontractor_request textarea {
   width: inherit !important;
 }
 
+/* INVOICES LIST */
+table tr.invoice.confirmed_invoice {
+  background-color: #e99727;
+  color: white;
+}
+
+table tr.invoice.cancelled_invoice,
+        .invalidated_invoice {
+  background-color: #ff3528;
+  color: white;
+}
+
+table tr.invoice.sended_invoice,
+        .sended_invoice {
+  background-color: #e99727;
+  color: white;
+  font-weight: bold;
+}
+
+table tr.invoice td.actions {
+  background-color: white;
+}
+
+/* INVOICE TYPES CHOOSER */
+div ul#invoice_types {
+  margin: 0;
+  padding: 5px 10px 10px 10px;
+}
+
+ul#invoice_types {
+  position: relative;
+  text-align: left;
+  margin: 0;
+  padding; 0;
+}
+
+ul#invoice_types li {
+  display: inline-block;
+  vertical-align: top;
+  list-style: none;
+  
+  margin: 5px 0 0 0;
+  padding: 5px;
+}
+
+ul#invoice_types li a button {
+  min-height: 180px;
+  width: 500px;
+  cursor: default;
+}
+
+ul#invoice_types li a button:not([DISABLED]) {
+  cursor: pointer;
+}
+
+ul#invoice_types li h1 {
+  font-size: 18px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+ul#invoice_types li p {
+  font-size: small;
+}
+
+/* INVOICE_ITEMS */
+
+#invoice_delivery_notes_picker {
+  position: relative;
+}
+
+#invoice_items_ajax_loading {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+}
+
+table#invoice_items td,
+table#invoice_items span {
+  vertical-align: top;
+}
+
+table#invoice_items td.description {
+  text-align: left;
+}
+
+table#invoice_items td.description p {
+  margin: 0;
+  padding: 0;
+}
+
+table#invoice_items td.description strong {
+  color: inherit;
+  font-weight: bold;
+}
+
+table#invoice_items td.description img,
+table#invoice_items td.unit_price img {
+  vertical-align: middle;
+}
+
+table#invoice_items td.description input,
+table#invoice_items td.description textarea {
+  width: 400px;
+}
+
+table#invoice_items span.fieldWithErrors {
+  display: inline-block;
+}
+
+table#invoice_items span.fieldWithErrors:after {
+  color: red;
+  vertical-align: top;
+  content: " *"
+}
+
+table#invoice_items tr.aggregates td {
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_label {
+  border-right: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount {
+  border-left: none;
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount input {
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates.global {
+  font-weight: bold;
+  background-color: #CCC;
+  border-top: 1px solid black;
+}
+
+table#invoice_items td.from_quote {
+  background-color: #e4e4e4;
+}
+
+table#invoice_items tr.new_invoice_item {
+  text-align: left;
+  background-color: #fbcb87;
+}
+
+/* INVOICE DUE_DATES */
+table#due_dates_list input {
+  text-align: center;
+}
+
+table#due_dates_list #due_date_model {
+  display: none;
+}
+
+/* INVOICE DUE_DATE_PAYMENT */
+div#due_dates_list {
+  padding-top: 10px;
+}
+
+div.due_date {
+  //margin: 45px 10px 10px 10px;
+  margin: 0 10px 10px 10px;
+  padding: 0px;
+  text-align: left;
+}
+
+div.due_date,
+table.due_date_header,
+table.due_date_header tr,
+table.due_date_header tr td {
+  background-color: #EEE;
+  border: 1px solid rgb(234,136,28);
+}
+
+table.due_date_header,
+table.due_date_header tr,
+table.due_date_header tr td {
+  border-bottom: none;
+}
+
+div.due_date.disabled,
+table.due_date_header.disabled,
+table.due_date_header.disabled tr,
+table.due_date_header.disabled tr td {
+  background-color: inherit;
+  border: 1px solid #999;
+}
+
+table.due_date_header.disabled,
+table.due_date_header.disabled tr,
+table.due_date_header.disabled tr td {
+  border-bottom: none;
+}
+
+div.due_date.disabled.odd,
+table.due_date_header.disabled.odd {
+  background-color: #fffde6;
+}
+
+table.due_date_header {
+  margin: 0 0 0 10px;
+}
+
+table.due_date_header .label {
+  font-weight: bold;
+  border-right: none !important;
+}
+
+table.due_date_header .value {
+  min-width: 200px;
+  text-align: left;
+  border-left: none !important;
+}
+
+div.due_date .payment {
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #CCC;
+  margin: 15px 8px 8px 8px;
+  padding-top: 15px;
+  min-width: 500px;
+}
+
+p.payment_header {
+  position: absolute;
+  border: 1px solid #CCC;
+  margin: -25px 0 0 5px;
+  padding: 4px;
+  font-weight: bold;
+  background-color: white;
+}
+
+div.due_date .adjustment {
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #CCC;
+  margin: 15px 8px 8px 8px;
+  padding-top: 15px;
+  min-width: 500px;
+}
+
+p.adjustment_header {
+  position: absolute;
+  border: 1px solid #CCC;
+  margin: -25px 0 0 5px;
+  padding: 4px;
+  font-weight: bold;
+  background-color: white;
+}
 
 /* GRAPHIC ITEMS */
 div#graphic_item_versions_preview{

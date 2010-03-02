@@ -1,0 +1,44 @@
+<%
+require_locals invoice
+
+counter ||= ''
+label ||= ''
+is_last_due_date ||= false
+disable_inputs ||= false
+
+due_date = due_date_in_one_line
+%>
+
+<% fields_for 'invoice[due_date_attributes][]', due_date, :index => nil do |form| %>
+  <td class="due_date_counter"><%= counter %></td>
+  <td class="due_date_label"><%= label %></td>
+  <td class="due_date_date">
+    <% if is_form_view? %>
+      <%= form.text_field :date, :size => 9, :class => "due_date_date_input", :disabled => disable_inputs %>
+      <% unless disable_inputs %>
+        <%= form.hidden_field :id, :class => "due_date_id" %>
+        <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+      <% end %>
+    <% else %>
+      <%= due_date.date.humanize %>
+    <% end %>
+  </td>
+  <td class="due_date_net_to_paid">
+    <% if is_last_due_date %>
+      <%= form.hidden_field :net_to_paid, :value => due_date.net_to_paid.to_f.round_to(2).to_s(2) , :class => "due_date_net_to_paid_input" if is_form_view? %>
+      <span class="balance_due_date_net_to_paid"><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></span>
+    <% else %>
+      <% if is_form_view? %>
+        <%= form.text_field :net_to_paid, :value => due_date.net_to_paid.to_f.round_to(2).to_s(2) ,:size => 9, :class => "due_date_net_to_paid_input", :onchange => "javascript:refresh_due_dates()", :disabled => disable_inputs %>
+      <% else %>
+        <%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %>
+      <% end %>
+    <% end %>
+  </td>
+  
+  <% if invoice.errors.on(:due_dates) %>
+    <td>
+      <%= form.error_messages %>
+    </td>
+  <% end %>
+<% end %>

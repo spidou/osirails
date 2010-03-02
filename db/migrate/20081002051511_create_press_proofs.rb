@@ -10,6 +10,8 @@ class CreatePressProofs < ActiveRecord::Migration
       
       t.timestamps
     end
+    
+    add_index :press_proofs, :reference, :unique => true
   end
 
   def self.down

@@ -8,7 +8,7 @@ class GraphicUnitMeasureTest < ActiveSupport::TestCase
   context "A graphic unit measure" do
     setup do  
       @gum = graphic_unit_measures(:normal)
-      flunk "@gum should be valid to continue" unless @gum.valid?
+      flunk "@gum should be valid" unless @gum.valid?
     end
     
     subject { @gum }

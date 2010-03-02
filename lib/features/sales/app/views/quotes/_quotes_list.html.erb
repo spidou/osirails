@@ -1,18 +1,14 @@
-<% if quotes_list and !quotes_list.empty? %>
-  <table id="quotes_list">
-    <tr>
-      <th>N°</th>
-      <th>Créé le</th>
-      <th>Créé par</th>
-      <th>A l'attention de</th>
-      <th>Nb Pièces</th>
-      <th>Total TTC (&euro;)</th>
-      <th>Envoyé au client le</th>
-      <th>Document signé reçu le</th>
-      <th>Actions</th>
-    </tr>
-    <%= render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
-  </table>
-<% else %>
-  <p>Aucun devis n'a été trouvé</p>
-<% end %>
+<table id="quotes_list">
+  <tr>
+    <th>Réf.</th>
+    <th>Émis le</th>
+    <th>A l'attention de</th>
+    <th>Nb Pièces</th>
+    <th>Total TTC (&euro;)</th>
+    <th>Acompte (%)</th>
+    <th>Envoyé au client le</th>
+    <th>Document signé reçu le</th>
+    <th>Actions</th>
+  </tr>
+  <%= render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
+</table>

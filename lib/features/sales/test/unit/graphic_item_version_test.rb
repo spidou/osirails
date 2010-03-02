@@ -19,7 +19,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
                                     :image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
                                     :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf")))
                                     
-      flunk "@giv should be created to continue" unless @giv.save
+      flunk "@giv should be created" unless @giv.save
     end
     
     for element in ["graphic_item_id", "source_file_name", "source_file_size", "source_content_type", "image_file_name", "image_file_size", "image_content_type"]   
@@ -79,6 +79,34 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
       @giv.valid?
       
       assert !@giv.errors.invalid?(:source)
+    end
+    
+    context "with an image in portrait mode " do
+      setup do 
+        @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+        flunk "@giv should be created to continue" unless @giv.save
+        flunk "@giv.image should be in portrait mode to perform this test" unless `identify -format %h #{@giv.image.path}`.to_i > `identify -format %w #{@giv.image.path}`.to_i
+      end
+      
+      should "have a formatted image for press proof in landscape mode" do
+        @formatted_image_path = @giv.formatted_image_for_press_proof_path
+        assert @giv.image.path != @formatted_image_path
+        assert `identify -format %w #{@giv.formatted_image_for_press_proof_path}`.to_i > `identify -format %h #{@giv.formatted_image_for_press_proof_path}`.to_i
+      end
+    end
+    
+    context "with an image in landscape mode " do
+      setup do
+        @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+        flunk "@giv should be created to continue" unless @giv.save
+        flunk "@giv.image should be in landscape mode to perform this test" unless `identify -format %w #{@giv.image.path}`.to_i > `identify -format %h #{@giv.image.path}`.to_i
+      end
+      
+      should "have a formatted image for press proof similar to its image" do
+        @formatted_image_path = @giv.formatted_image_for_press_proof_path
+        assert @giv.image.path == @formatted_image_path
+        assert `identify -format %w #{@giv.formatted_image_for_press_proof_path}`.to_i > `identify -format %h #{@giv.formatted_image_for_press_proof_path}`.to_i
+      end
     end
   end
 end
