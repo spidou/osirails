@@ -1,6 +1,6 @@
 namespace :osirails do
   namespace :db do
-    desc "Populate the database"
+    desc "Populate the database with simple entries (useful for development)"
     task :populate => :environment do
       # default civilities
       Civility.create! :name => "Mr"

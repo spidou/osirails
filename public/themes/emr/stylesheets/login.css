@@ -134,6 +134,7 @@ h1 {
 ////////////////////////////////////////////////////*/
 
 #login_content {
+  position: relative;
 	margin-left:auto;
 	margin-right:auto;
 	text-align:center;
@@ -277,3 +278,23 @@ button.input-button:hover span {													   	/**/
 	color:black;                                                                       	/**/
 }																						/**/
 /*////////////////////////////////////////////////////////////////////////////////////////*/
+
+span.version {
+  position: absolute;
+  top: 130px;
+  left: -40px;
+  width: 120px;
+  background-color: white;
+  color: black;
+  padding: 5px;
+  font-size: 11px;
+  border: 1px solid yellow;
+  -moz-transform: rotate(18deg);
+  -webkit-transform: rotate(18deg);
+  -moz-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
+  -wekit-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 8px rgba(255,255,0,1);
+}
+
+span.version:hover {
+  -moz-box-shadow: 8px 8px 5px rgba(0,0,0,0.4), inset 0 0px 30px rgba(255,255,0,1);
+}
