@@ -73,25 +73,15 @@
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
-                <fo:table-cell width="5cm" display-align="center" text-align="center">
+                <fo:table-cell font-size="8px" padding-left="2mm" width="5cm" display-align="center" text-align="start">
                   <fo:block-container height="2cm" overflow="hidden">
-                    <fo:block font-size="10px" color="rgb(255,255,255)">
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/Address1"/>
-                      </fo:inline>&#160;
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/Address2"/>
-                      </fo:inline>
+                    <fo:block color="rgb(255,255,255)">
+                      <xsl:value-of select="Supplier/Address1"/>&#160;<xsl:value-of select="Supplier/Address2"/>
                     </fo:block>
-                    <fo:block font-size="10px" color="rgb(255,255,255)">
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/ZipCode"/>
-                      </fo:inline>&#160;
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/City"/>
-                      </fo:inline>
+                    <fo:block color="rgb(255,255,255)">
+                      <xsl:value-of select="Supplier/ZipCode"/>&#160;<xsl:value-of select="Supplier/City"/>
                     </fo:block>
-                    <fo:block font-size="10px" color="rgb(255,255,255)">
+                    <fo:block color="rgb(255,255,255)">
                       <fo:inline>
                         <xsl:value-of select="Supplier/Country"/>
                       </fo:inline>                    
@@ -100,42 +90,58 @@
                 </fo:table-cell>
                 <fo:table-cell width="5cm" display-align="center" text-align="center">
                   <fo:block-container height="2cm" overflow="hidden">
-                    <fo:block font-size="20px" color="rgb(255,255,255)">
+                    <fo:block font-size="18px" font-weight="bold" color="rgb(255,255,255)">
                       <xsl:value-of select="Type"/>
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
-                <fo:table-cell width="5.5cm" display-align="center" text-align="center">
-                  <fo:block-container height="2cm" overflow="hidden">
-                    <fo:block font-size="9px" color="rgb(255,255,255)">
-                      <fo:inline>
-                        <xsl:value-of select="../Labels/Email"/>
-                      </fo:inline>&#160;
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/Email"/>
-                      </fo:inline>
-                    </fo:block>
-                    <fo:block font-size="9px" color="rgb(255,255,255)">
-                      <fo:inline>
-                        <xsl:value-of select="../Labels/Phone"/>
-                      </fo:inline>&#160;
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/Phone"/>
-                      </fo:inline>
-                    </fo:block>
-                    <fo:block font-size="9px" color="rgb(255,255,255)">
-                      <fo:inline>
-                        <xsl:value-of select="../Labels/Fax"/>
-                      </fo:inline>   
-                      <fo:inline>
-                        <xsl:value-of select="Supplier/Fax"/>
-                      </fo:inline>                 
-                    </fo:block>
+                <fo:table-cell padding-left="1mm" width="5.5cm" display-align="center" font-size="8px" color="rgb(255,255,255)">
+                  <fo:block-container overflow="hidden">
+                    <fo:table>
+                      <fo:table-body>
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Phone"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Phone"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Fax"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Fax"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Email"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Email"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                      </fo:table-body>
+                    </fo:table>
                   </fo:block-container>
                 </fo:table-cell>
               </fo:table-row>
             </fo:table-body>
-          </fo:table>          
+          </fo:table>        
           <fo:table>
             <fo:table-body>
               <fo:table-row background-color="rgb(255,149,14)" page-break-inside="avoid">
@@ -195,7 +201,7 @@
               <xsl:value-of select="BackgroundImage"/>
             </xsl:attribute>
             <fo:block-container width="10.5cm" overflow="hidden" wrap-option="no-wrap">
-              <fo:block font-weight="bold" font-size="24.0px">
+              <fo:block font-weight="bold" font-size="20.0px">
                 <xsl:value-of select="Type"/>&#160;<xsl:value-of select="../Labels/Prefix"/>&#160;<xsl:value-of select="Reference"/>
               </fo:block> 
             </fo:block-container>              
@@ -212,15 +218,17 @@
                           <xsl:value-of select="Date"/>
                         </fo:inline>
                       </fo:block>
-                      <fo:block font-weight="bold">
-                        <xsl:value-of select="../Labels/SupplierPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>:
-                      </fo:block>
                       <fo:block>
-                        <xsl:value-of select="Supplier/Representative/FirstName"/>&#160;<xsl:value-of select="Supplier/Representative/LastName"/>, <xsl:value-of select="Supplier/Representative/Function"/>
-                      </fo:block>       
+                        <fo:inline font-weight="bold">
+                          <xsl:value-of select="../Labels/SupplierPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>:
+                        </fo:inline>
+                        <fo:inline>
+                          <xsl:value-of select="Supplier/Representative/FirstName"/>&#160;<xsl:value-of select="Supplier/Representative/LastName"/>
+                        </fo:inline>
+                      </fo:block>      
                       <fo:block>
                         <fo:inline>
-                          <xsl:value-of select="../Labels/Email"/>
+                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>
                         </fo:inline>&#160;
                         <fo:inline>
                           <xsl:value-of select="Supplier/Representative/Email"/>
@@ -331,7 +339,7 @@
                     </fo:block-container>
                   </fo:table-cell>
                 </fo:table-row>
-                <fo:table-row background-color="rgb(255, 149 , 14)" height="5mm" font-size="10.0px" page-break-inside="avoid">
+                <fo:table-row background-color="rgb(230, 230, 230)" height="5mm" font-size="10.0px" page-break-inside="avoid">
                   <fo:table-cell border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" font-weight="bold" text-align="center" display-align="center">
                     <fo:block-container height="5mm" overflow="hidden" wrap-option="no-wrap">
                       <fo:block>
@@ -460,40 +468,40 @@
                       <fo:table-column column-width="1cm"/>
                       <fo:table-column column-width="2.5cm"/>                      
                       <fo:table-body>                          
-                        <fo:table-row font-size="8.0px" background-color="rgb(255 , 149 , 14)" keep-with-next="always" page-break-inside="avoid">
+                        <fo:table-row font-size="8.0px" background-color="rgb(230, 230, 230)" keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell padding="1pt" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" display-align="before">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                              <fo:block text-align="center">
+                              <fo:block text-align="center" font-weight="bold">
                                 <xsl:value-of select="../Labels/VATCode"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                           <fo:table-cell padding="1pt" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" display-align="before">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                              <fo:block text-align="center">
+                              <fo:block text-align="center" font-weight="bold">
                                 <xsl:value-of select="../Labels/TotalDutyFreePrice"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                           <fo:table-cell padding="1pt" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" display-align="before">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                              <fo:block text-align="center">
+                              <fo:block text-align="center" font-weight="bold">
                                 <xsl:value-of select="../Labels/Coefficient"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                           <fo:table-cell padding="1pt" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" display-align="before">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                              <fo:block text-align="center">
+                              <fo:block text-align="center" font-weight="bold">
                                 <xsl:value-of select="../Labels/TotalInclusiveOfTaxPrice"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
-                        <xsl:apply-templates select="Taxes/VAT"/>  
+                        <xsl:apply-templates select="Taxes/VAT[Code &lt; 5]"/>  
                       </fo:table-body>
                     </fo:table>
-                  </fo:table-cell>                            
+                  </fo:table-cell>                           
                   <fo:table-cell number-columns-spanned="4">                  
                     <fo:table id="totals-table" display-align="after" border-color="black" border-style="solid" border-width="1px">
                       <fo:table-body>                          
@@ -593,15 +601,15 @@
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
-                        <fo:table-row keep-with-next="always" border-color="black" border-style="solid" border-width="1.0px" font-size="10.0px" page-break-inside="avoid">
-                          <fo:table-cell display-align="center" padding="1pt" font-weight="bold" background-color="rgb(200, 200, 200)" number-columns-spanned="2">
+                        <fo:table-row keep-with-next="always" border-color="black" border-style="solid" border-width="1.0px" font-size="11.0px" page-break-inside="avoid">
+                          <fo:table-cell display-align="center" padding="1pt" font-weight="bold" background-color="rgb(180, 180, 180)" number-columns-spanned="2">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
                               <fo:block text-align="start">
                                 <xsl:value-of select="../Labels/TotalInclusiveOfTaxNetPrice"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
-                          <fo:table-cell display-align="center" padding="1pt" font-weight="bold" background-color="rgb(200, 200, 200)" number-columns-spanned="2">
+                          <fo:table-cell display-align="center" padding="1pt" font-weight="bold" background-color="rgb(180, 180, 180)" number-columns-spanned="2">
                             <fo:block-container overflow="hidden" wrap-option="no-wrap">
                               <fo:block text-align="end">
                                 <xsl:value-of select="TotalInclusiveOfTaxNetPrice"/>
@@ -699,24 +707,24 @@
   </xsl:template>
   <xsl:template match="Taxes/VAT">
     <fo:table-row font-size="8.0px" keep-with-next="always" page-break-inside="avoid">
-      <fo:table-cell padding="1pt" display-align="before">
+      <fo:table-cell padding="1pt" display-align="before" border-color="black" border-style="solid" border-width="1.0px">
         <fo:block text-align="center">
           <xsl:value-of select="Code"/>
         </fo:block>
       </fo:table-cell>
-      <fo:table-cell padding="1pt" display-align="before">
+      <fo:table-cell padding="1pt" display-align="before" border-color="black" border-style="solid" border-width="1.0px">
         <fo:block text-align="center">
           <xsl:value-of select="TotalDutyFreePrice"/>
         </fo:block>
       </fo:table-cell>
-      <fo:table-cell padding="1pt" display-align="before">
+      <fo:table-cell padding="1pt" display-align="before" border-color="black" border-style="solid" border-width="1.0px">
         <fo:block text-align="center">
           <xsl:value-of select="Coefficient"/>
         </fo:block>
       </fo:table-cell>
-      <fo:table-cell padding="1pt" display-align="before">
+      <fo:table-cell padding="1pt" display-align="before" border-color="black" border-style="solid" border-width="1.0px">
         <fo:block text-align="center">
-          <xsl:value-of select="TotalInclusiveOfTaxPrice"/>
+          <xsl:value-of select="TotalInclusiveOfTaxPrice" border-color="black" border-style="solid" border-width="1.0px"/>
         </fo:block>
       </fo:table-cell>
     </fo:table-row> 

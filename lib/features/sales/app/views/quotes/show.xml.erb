@@ -2,7 +2,7 @@
 <Root>
   <Document>
     <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
-    <Type>Devis</Type>
+    <Type>DEVIS</Type>
     <Reference><%= @quote.public_number %></Reference>
     <Date><%= Date.today.strftime("%d %B %Y") %></Date>
     <Currency>EUROS (€)</Currency>  
@@ -91,12 +91,13 @@
   <Labels>
     <Siret>SIRET :</Siret>
     <NAFCode>Code NAF :</NAFCode>
-    <Email>e-mail :</Email>
-    <Phone>tél :</Phone>
-    <Fax>fax :</Fax>
+    <Email>e-mail</Email>
+    <Phone>tél</Phone>
+    <Fax>fax</Fax>
     <Date>Date :</Date>
     <Prefix>N°</Prefix>
     <FileName></FileName>
+    <SupplierRepresentativeEmail>e-mail :</SupplierRepresentativeEmail>
     <SupplierPrefix>Suivi commercial</SupplierPrefix>
     <CustomerPrefix>A l'attention de</CustomerPrefix>
     <Amount>MONTANTS EN</Amount>

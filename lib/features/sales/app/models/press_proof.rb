@@ -116,8 +116,9 @@ class PressProof < ActiveRecord::Base
     self.id.to_s
   end
   
+   # OPTIMIZE this is a copy of an already existant method in quote.rb 
   def associated_quote
-    order.signed_quote if order
+    order ? order.signed_quote : nil
   end
   
   def can_be_cancelled?

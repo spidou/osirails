@@ -228,7 +228,7 @@
           <fo:table>
             <fo:table-body>
               <fo:table-row height="2cm" background-color="rgb(255,255,255)">
-                <fo:table-cell display-align="center" width="10.2cm" text-align="left" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
+                <fo:table-cell padding="1mm" display-align="center" width="10.2cm" text-align="left" border-left-color="black" border-left-style="solid" border-left-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-right-color="black" border-right-style="solid" border-right-width="1.0px">
                   <fo:block-container overflow="hidden" height="2cm">
                     <fo:block font-size="9px">
                       <xsl:value-of select="../Labels/NotaBene"/><fo:inline><fo:block/></fo:inline>
@@ -250,29 +250,48 @@
                     </fo:block>
                   </fo:block-container>
                 </fo:table-cell>
-                <fo:table-cell height="1.8cm" width="5.5cm" display-align="center" text-align="center" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px">
-                  <fo:block-container height="2cm">
-                    <fo:block font-size="9px">
-                      <fo:inline text-align="left" font-weight="bold">
-                        <xsl:value-of select="../Labels/Email"/>
-                      </fo:inline>&#160;                      <fo:inline text-align="left">
-                         <xsl:value-of select="Supplier/Email"/>
-                      </fo:inline>
-                    </fo:block>
-                    <fo:block font-size="9px">
-                      <fo:inline text-align="left" font-weight="bold">
-                        <xsl:value-of select="../Labels/Phone"/>
-                      </fo:inline>&#160;                      <fo:inline text-align="left">
-                         <xsl:value-of select="Supplier/Phone"/>
-                      </fo:inline>
-                    </fo:block>
-                    <fo:block font-size="9px">
-                      <fo:inline text-align="left" font-weight="bold">
-                        <xsl:value-of select="../Labels/Fax"/>
-                      </fo:inline>&#160;                      <fo:inline text-align="left">
-                         <xsl:value-of select="Supplier/Fax"/>
-                      </fo:inline>
-                    </fo:block>
+                <fo:table-cell padding-left="1mm" height="1.8cm" width="5.5cm" display-align="center" text-align="center" border-right-color="black" border-right-style="solid" border-right-width="1.0px" border-top-color="black" border-top-style="solid" border-top-width="1.0px" border-bottom-color="black" border-bottom-style="solid" border-bottom-width="1.0px" border-left-color="black" border-left-style="solid" border-left-width="1.0px">
+                  <fo:block-container height="2cm" overflow="hidden">
+                    <fo:table>
+                      <fo:table-body font-size="9px">
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block font-weight="bold" wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Phone"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Phone"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block font-weight="bold" wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Fax"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Fax"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                        <fo:table-row>
+                          <fo:table-cell width="1cm" text-align="start">
+                            <fo:block font-weight="bold" wrap-option="no-wrap">
+                              <xsl:value-of select="../Labels/Email"/>&#160;
+                            </fo:block>
+                          </fo:table-cell>
+                          <fo:table-cell text-align="start">
+                            <fo:block>
+                              :&#160;&#160;<xsl:value-of select="Supplier/Email"/>
+                            </fo:block>
+                          </fo:table-cell>
+                        </fo:table-row>
+                      </fo:table-body>
+                    </fo:table>
                   </fo:block-container>
                 </fo:table-cell>
               </fo:table-row>
