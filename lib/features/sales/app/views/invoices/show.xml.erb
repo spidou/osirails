@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<Root>
+  <Document>
+    <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
+    <Type>FACTURE</Type>
+    <Type2><%= @invoice.invoice_type.title.upcase %></Type2>
+    <Reference><%= @invoice.reference %></Reference>
+    <Date><%= Date.today.strftime("%d %B %Y") %></Date>
+    <Currency>EUROS (€)</Currency>  
+    <FileName><%= @invoice.order.title%></FileName>
+    <Supplier>
+      <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
+      <CorporateName2><%= ConfigurationManager.admin_society_identity_configuration_acronym %></CorporateName2>
+      <Address1><%= ConfigurationManager.admin_society_identity_configuration_address_first_line %></Address1>
+      <Address2><%= ConfigurationManager.admin_society_identity_configuration_address_second_line %></Address2>
+      <ZipCode><%= ConfigurationManager.admin_society_identity_configuration_address_zip %></ZipCode>
+      <City><%= ConfigurationManager.admin_society_identity_configuration_address_town %></City>
+      <Country><%= ConfigurationManager.admin_society_identity_configuration_address_country %></Country>
+      <Status><%= ConfigurationManager.admin_society_identity_configuration_status %></Status>
+      <Siret><%= ConfigurationManager.admin_society_identity_configuration_siret %></Siret>
+      <NAFCode><%= ConfigurationManager.admin_society_identity_configuration_naf_code %></NAFCode>
+      <Email><%= ConfigurationManager.admin_society_identity_configuration_email %></Email>
+      <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
+      <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
+      <CommercialRepresentative>
+        <LastName><%= @invoice.order.commercial.last_name %></LastName>
+        <FirstName><%= @invoice.order.commercial.first_name %></FirstName>
+        <Email><%= @invoice.order.commercial.email %></Email>
+      </CommercialRepresentative>
+      <AdministrativeRepresentative>
+        <LastName></LastName>
+        <FirstName></FirstName>
+        <Email></Email>
+      </AdministrativeRepresentative>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
+    </Supplier>  
+    <Customer>
+      <CorporateName><%= @invoice.order.customer.name %></CorporateName>
+      <CorporateName2><%= @invoice.order.customer.name %></CorporateName2>
+      <Address1><%= @invoice.bill_to_address.street_name %></Address1>
+      <Address2></Address2>
+      <ZipCode><%= @invoice.bill_to_address.zip_code %></ZipCode>
+      <City><%= @invoice.bill_to_address.city_name %></City>
+      <Country><%= @invoice.bill_to_address.country_name %></Country>
+      <Representative>
+        <LastName><%= @invoice.contact.last_name %></LastName>
+        <FirstName><%= @invoice.contact.first_name %></FirstName>   
+      </Representative>
+    </Customer>
+    <Lines>
+      <% @invoice.invoice_items.each do |item| %>
+        <Line>
+          <Reference><%= item.product.product_reference.reference if item.product and item.product.product_reference %></Reference>
+          <Name><%= item.name %></Name>
+          <Description><%= item.description %></Description>
+          <Quantity><%= item.quantity %></Quantity>
+          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
+          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
+          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
+          <VAT><%= @invoice.tax_coefficients.index(item.vat)+1 %></VAT>
+        </Line> 
+      <% end %>
+    </Lines>
+    <Taxes>
+      <% @invoice.tax_coefficients.each_with_index do |tc,index| %>
+        <VAT>
+          <Code><%= index+1 %></Code>
+          <Coefficient><%= tc %></Coefficient>
+          <TotalDutyFreePrice><%= @invoice.total_taxes_for(tc).to_f.round_to(2).to_s(2) %></TotalDutyFreePrice> 
+          <TotalInclusiveOfTaxPrice><%= (@invoice.total_taxes_for(tc)*tc/100).to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxPrice> 
+        </VAT>
+      <% end %>
+    </Taxes>  
+    <TotalDutyFreeNetPrice><%= @invoice.total.to_f.round_to(2).to_s(2) %></TotalDutyFreeNetPrice>
+    <TotalTaxes><%= @invoice.summon_of_taxes.to_f.round_to(2).to_s(2) %></TotalTaxes> 
+    <TotalInclusiveOfTaxNetPrice><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></TotalInclusiveOfTaxNetPrice>
+    <SalesTerms><%= @invoice.associated_quote.sales_terms %></SalesTerms>
+    <InvoicingState>
+      <QuoteTotal><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></QuoteTotal>
+      <InvoicedTotal></InvoicedTotal>
+      <BalanceTotal></BalanceTotal>
+    </InvoicingState>
+    <DueDates>
+      <% @invoice.due_dates.each do |due_date| %>
+        <DueDate>
+          <Date><%= due_date.date.strftime("%d/%m/%Y") %></Date>
+          <Total><%= due_date.net_to_paid %></Total>
+        </DueDate>
+      <% end %>
+    </DueDates>
+  </Document>
+  <Labels>
+    <Siret>SIRET :</Siret>
+    <NAFCode>Code NAF :</NAFCode>
+    <Email>e-mail</Email>
+    <Phone>tél</Phone>
+    <Fax>fax</Fax>
+    <Date>Date :</Date>
+    <Prefix>N°</Prefix>
+    <FileName></FileName>
+    <SupplierRepresentativeEmail>e-mail :</SupplierRepresentativeEmail>
+    <SupplierCommercialPrefix>Suivi commercial</SupplierCommercialPrefix>
+    <SupplierAdministrativePrefix>Suivi administratif</SupplierAdministrativePrefix>
+    <CustomerPrefix>A l'attention de</CustomerPrefix>
+    <Amount>MONTANTS EN</Amount>
+    <Reference>Réf.</Reference>
+    <Description>Désignation produit</Description>
+    <Quantity>Qté</Quantity>
+    <UnitPrice>P.U. HT</UnitPrice>
+    <Prizegiving>Rem.</Prizegiving>
+    <GlobalPrizegiving>Remise :</GlobalPrizegiving>
+    <TotalPrice>Montant HT</TotalPrice>
+    <VAT>TVA</VAT>
+    <VATCode>Code</VATCode>
+    <TotalDutyFreePrice>Montant HT</TotalDutyFreePrice> 
+    <Coefficient>Taux</Coefficient>
+    <TotalInclusiveOfTaxPrice>Montant TVA</TotalInclusiveOfTaxPrice> 
+    <TotalDutyFreeNetPrice>Net HT :</TotalDutyFreeNetPrice>
+    <TotalTaxes>Total taxes :</TotalTaxes> 
+    <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
+    <SalesTerms>Rappel des conditions commerciales</SalesTerms>
+    <InvoicingState>État de facturation</InvoicingState>
+    <QuoteTotal>Total devis (TTC) :</QuoteTotal>
+    <InvoicedTotal>Total facturé (TTC) :</InvoicedTotal>
+    <InvoicedTotal2>(y compris cette facture)</InvoicedTotal2>
+    <BalanceTotal>Reste à facturer :</BalanceTotal>
+    <DueDates>Échéances</DueDates>
+    <DueDatesDate>Date</DueDatesDate>
+    <DueDatesReference>Réf.</DueDatesReference>
+    <DueDatesTotal>Montant TTC</DueDatesTotal>
+    <FormToCut>Coupon à retourner avec le règlement</FormToCut>
+    <Subtotal>Report :</Subtotal>
+    <Page>Page</Page>  
+  </Labels>
+</Root>
