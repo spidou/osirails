@@ -425,7 +425,7 @@
                   </fo:table-cell>
                 </fo:table-row>                  
                 <fo:table-row keep-with-next="always">
-                  <fo:table-cell padding-bottom="1mm" padding-right="2pt" number-columns-spanned="3">                    
+                  <fo:table-cell padding-bottom="2mm" padding-right="2pt" number-columns-spanned="3">                    
                     <fo:table display-align="after" font-size="9.0px" border-color="black" border-width="1px" border-style="solid">
                       <fo:table-body>
                         <fo:table-row keep-with-next="always" page-break-inside="avoid">
