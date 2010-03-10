@@ -29,6 +29,7 @@ class Menu < ActiveRecord::Base
   @@form_labels[:title] = "Titre :"
   @@form_labels[:description] = "Description :"
   @@form_labels[:parent] = "Menu parent :"
+  @@form_labels[:separator] = "Insérer un séparateur :"
   
   def before_update
     if self.update_parent
@@ -122,20 +123,12 @@ class Menu < ActiveRecord::Base
     
   # This method test if it possible to move up the menu
   def can_move_up?
-    if self.ancestors.size > 0
-      self.parent_menu.children.first.position != self.position
-    else
-      self.self_and_siblings.first.position != self.position
-    end
+    self.self_and_siblings.first.position != self.position
   end
     
   # This method test if it possible to move down  the menu
   def can_move_down?
-    if self.ancestors.size > 0
-      self.parent_menu.children.size > self.position
-    else
-      self.self_and_siblings.size > self.position
-    end
+    self.self_and_siblings.size > self.position
   end
   
   def move_up

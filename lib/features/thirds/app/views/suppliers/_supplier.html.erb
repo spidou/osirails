@@ -4,7 +4,11 @@
 <% if is_form_view? %>
   <% form_for @supplier do |form| %>
     <%= render :partial => 'thirds/third', :object => @supplier %>
-
+    
+    <h3>Adresse</h3>
+    <%= render :partial => 'addresses/address_form', :object => @supplier.address || @supplier.build_address , :locals => { :address_owner => @supplier } %>
+    
+    <h2>Contacts</h2>
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 
@@ -13,6 +17,10 @@
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>
   
+  <h3>Adresse</h3>
+  <%= render :partial => 'addresses/address_form', :object => @supplier.address || @supplier.build_address , :locals => { :address_owner => @supplier } %>
+    
+  <h2>Contacts</h2>
   <%= display_contacts_list(@supplier) %>
 <% end %>
 

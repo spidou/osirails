@@ -8,10 +8,12 @@ menus:
   thirds:
     title: Tiers
     description: Gestion des fournisseurs et des clients
+    position: 3
     children:
       customers:
         title: Clients
         description: Gestion des clients
+        position: 1
         children:
           establishments:
             title: Etablissement du Client
@@ -19,7 +21,8 @@ menus:
       suppliers:
         title: Fournisseurs
         description: Gestion des fournisseurs
-      contacts:
-        title: Contacts de Client
-        description: Gestion des contacts des clients
-        hidden: true
+        position: 2
+      factors:
+        title: "Factors (Sociétés d'affacturage)"
+        description: "Gestion des factors (sociétés d'affacturage)"
+        position: 3

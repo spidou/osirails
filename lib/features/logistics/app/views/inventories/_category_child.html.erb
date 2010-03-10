@@ -1,15 +1,26 @@
 <% if category_child.was_enabled_at(@date) %>
   <%= "<tr id='#{category_child.class.name.tableize.singularize}_#{category_child.id}' class='#{category_child.class.name.tableize.singularize}_#{category_child.parent.id} #{category_child.enable ? "enable" : "disable"}'>" %>
-  <%= "<td></td>" %>
-  <%= "<td>" %>
-  <%= "<img id='#{category_child.class.name.tableize.singularize}_#{category_child.id}_develop' src='/images/add_10x10.png' alt='D&eacute;rouler' onclick='develop(this.ancestors()[1])' style='display: none;' /> " if category_child.children.size == 0 %>
-  <%= "<img id='#{category_child.class.name.tableize.singularize}_#{category_child.id}_reduce' src='/images/reduce_button_10x10.png' alt='Enrouler' title='Enrouler' title='D&eacute;rouler' onclick='reduce(this.ancestors()[1])' /> " %>
-  <%= category_child.name + "</td>" %>
-  <%= "<td colspan='10'></td>" %>
-  <%= "<td>#{display_category_stock_value(category_child,@date)}</td>" unless is_form_view? %>
-  <%= "</tr>" %>
+    <td></td>
+    <td>
+      <%= image_tag("add_10x10.png",  :id       => "#{category_child.class.name.tableize.singularize}_#{category_child.id}_develop",
+                                      :alt      => "Dérouler",
+                                      :title    => "Dérouler",
+                                      :onclick  => "develop(this.ancestors()[1])",
+                                      :style    => "display:none") if category_child.children.empty? %>
+      
+      <%= image_tag("reduce_button_10x10.png",  :id       => "#{category_child.class.name.tableize.singularize}_#{category_child.id}_reduce",
+                                                :alt      => "Enrouler",
+                                                :title    => "Enrouler",
+                                                :onclick  => "reduce(this.ancestors()[1])") if category_child.children.empty? %>
+      <%= category_child.name %>
+    </td>
+    <td colspan='10'></td>
+    <% unless is_form_view? %>
+      <td><%= display_category_stock_value(category_child,@date) %></td>
+    <% end %>
+  </tr>
+  
   <% unless category_child.supplies.nil? %>
     <%= render(:partial => "supply", :collection => category_child.supplies) %>  
   <% end %>
 <% end %>
-

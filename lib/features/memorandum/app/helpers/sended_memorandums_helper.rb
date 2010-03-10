@@ -82,7 +82,7 @@ module SendedMemorandumsHelper
     end
   end
   
-  # This method permit to show current services associeted with a memorandum
+  # This method permit to show current services associated with a memorandum
   def show_services(memorandum)
     services_list = []
     memorandums_services = MemorandumsService.find_all_by_memorandum_id(memorandum.id)
@@ -96,7 +96,7 @@ module SendedMemorandumsHelper
       services_list << "<input type='checkbox' value='#{service.id}' name='memorandums_services[service_id][]' style='display: none' checked='checked'/>"
       services_list << "<input type='checkbox' value='#{service.id}' name='memorandums_services[recursive][]' onclick='#{recursive}' #{checked} />"
       services_list << "</td>"
-      services_list << "<td><img onclick='removeServiceCell(this.ancestors()[1])' src='/images/reduce_button_16x16.png' alt='Enlever' title='Enlever'/></td>"
+      services_list << "<td>" + image_tag("cross_16x16.png", :alt => reduce_text = "Enlever", :title => reduce_text, :onclick => "removeServiceCell(this.ancestors()[1])") + "</td>"
       services_list << "</tr>"
     end
     services_list

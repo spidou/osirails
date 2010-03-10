@@ -14,10 +14,7 @@ class AttachmentsController < ApplicationController
     disposition = params[:download].nil? ? 'inline' : 'attachment'
     
     if @document.can_view?(current_user)
-      ext = File.extname(@document.attachment.path)
-      dir = File.dirname(@document.attachment.path)
-      url = "#{dir}/#{params[:style]||"original"}#{ext}"
-      url = File.exists?(url) ? url : @document.attachment
+      url = @document.attachment.path(params[:style])
       
       send_data File.read(url), :filename => "#{@document.id}_#{@document.attachment_file_name}", :type => @document.attachment_content_type, :disposition => disposition
     else

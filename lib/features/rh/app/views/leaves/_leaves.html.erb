@@ -16,7 +16,7 @@
         <td><%= leave.calendar_duration %></td>
         <td><%= leave.duration %></td>
         <td><%= leave.leave_type.name %></td>
-        <td><%= leave.created_at.to_humanized_datetime %></td>
+        <td><%= leave.created_at.humanize %></td>
         <td>
           <%= edit_employee_leave_link(@employee, leave, :link_text => nil) if leave.can_be_edited? %>
           <%= cancel_employee_leave_link(@employee, leave) if leave.can_be_cancelled? and Leave.can_cancel?(current_user) %>

@@ -33,12 +33,8 @@
         <% end %>
     </div>
   </div>
-    <%if is_form_view?%>  
-      <p>
-        <%= form.reset 'Annuler' %>
-        <%= form.submit submit_button_name %>  
-      </p>
-    <%end%>    
+  
+  <%= form.form_buttons %>
   <% end %>
 
 </div>

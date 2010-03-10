@@ -55,9 +55,9 @@ namespace :osirails do
   namespace :test do
     Rake::TestTask.new(:recent => "db:test:prepare") do |t|
       since = TEST_CHANGES_SINCE
-      touched = FileList['**/**/**/test/**/*_test.rb'].select { |path| File.mtime(path) > since } +
-        recent_tests('**/**/**/app/models/**/*.rb', 'test/unit', since) +
-        recent_tests('**/**/**/app/controllers/**/*.rb', 'test/functional', since)
+      touched = FileList['{lib/**/,}test/**/*_test.rb'].select { |path| File.mtime(path) > since } +
+        recent_tests('{lib/**/,}app/models/**/*.rb', 'test/unit', since) +
+        recent_tests('{lib/**/,}app/controllers/**/*.rb', 'test/functional', since)
 
       t.libs << 'test'
       t.verbose = true
@@ -86,9 +86,9 @@ namespace :osirails do
     Rake::TestTask.new(:units => "db:test:prepare") do |t|
       t.libs << "test"
       if ENV['FEATURE']
-        t.pattern = "**/**/#{ENV['FEATURE']}/test/unit/**/*_test.rb"
+        t.pattern = "{lib/**/,}#{ENV['FEATURE']}/test/unit/**/*_test.rb"
       else
-        t.pattern = "**/**/**/test/unit/**/*_test.rb"
+        t.pattern = "{lib/**/,}test/unit/**/*_test.rb"
       end
       t.verbose = true
     end
@@ -97,9 +97,9 @@ namespace :osirails do
     Rake::TestTask.new(:functionals => "db:test:prepare") do |t|
       t.libs << "test"
       if ENV['FEATURE']
-        t.pattern = "**/**/#{ENV['FEATURE']}/test/functional/**/*_test.rb"
+        t.pattern = "{lib/**/,}#{ENV['FEATURE']}/test/functional/**/*_test.rb"
       else
-        t.pattern = "**/**/**/test/functional/**/*_test.rb"
+        t.pattern = "{lib/**/,}test/functional/**/*_test.rb"
       end
       t.verbose = true
     end
@@ -108,9 +108,9 @@ namespace :osirails do
     Rake::TestTask.new(:integration => "db:test:prepare") do |t|
       t.libs << "test"
       if ENV['FEATURE']
-        t.pattern = "**/**/#{ENV['FEATURE']}/test/integration/**/*_test.rb"
+        t.pattern = "{lib/**/,}#{ENV['FEATURE']}/test/integration/**/*_test.rb"
       else
-        t.pattern = "**/**/**/test/integration/**/*_test.rb"
+        t.pattern = "{lib/**/,}test/integration/**/*_test.rb"
       end
       t.verbose = true
     end
@@ -120,9 +120,9 @@ namespace :osirails do
       t.libs << "test"
 
       if ENV['PLUGIN']
-        t.pattern = "**/plugins/#{ENV['PLUGIN']}/test/**/*_test.rb"
+        t.pattern = "vendor/plugins/#{ENV['PLUGIN']}/test/**/*_test.rb"
       else
-        t.pattern = '**/plugins/*/**/test/**/*_test.rb'
+        t.pattern = 'vendor/plugins/*/**/test/**/*_test.rb'
       end
 
       t.verbose = true

@@ -1,0 +1,26 @@
+<%
+press_proof = press_proof_in_one_line
+versions    = press_proof.graphic_item_versions.dup
+size        = versions.size
+first       = versions.shift # return and remove first element
+title       = status_text(press_proof)
+%>
+
+<tr class="press_proof <%= press_proof.status %>_press_proof" title="<%= title %>">
+  <td rowspan="<%= size %>"><%= press_proof.reference %></td>
+  
+  <%= render :partial => 'press_proofs/mockup_in_one_line', :object => first, :locals => { :index => 1 } %>
+
+  <td rowspan="<%= size %>"><%= press_proof.internal_actor.fullname %></td>
+  <td rowspan="<%= size %>"><%= press_proof.confirmed_on.humanize if press_proof.confirmed_on %></td>    
+  <td rowspan="<%= size %>"><%= press_proof.sended_on.humanize if press_proof.sended_on %></td>
+  <td rowspan="<%= size %>"><%= press_proof.signed_on.humanize if press_proof.signed_on %></td>
+  <td rowspan="<%= size %>"><%= "#" %></td>
+  <td rowspan="<%= size %>" class="actions"><%= display_actions_press_proof_button(press_proof) %></td>
+</tr>
+
+<% versions.each_with_index do |version, index| %>
+  <tr class="press_proof <%= press_proof.status %>_press_proof" title="<%= title %>">
+    <%= render :partial => 'press_proofs/mockup_in_one_line', :object => version, :locals => { :index => index + 2 } %>
+  </tr>
+<% end %>

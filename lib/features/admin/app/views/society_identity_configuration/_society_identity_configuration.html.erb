@@ -8,8 +8,28 @@
 </p>
 
 <p>
+  <%= label_tag "admin_society_identity_configuration_acronym", @descriptions["admin_society_identity_configuration_acronym"] %>
+  <%= display_markup("admin_society_identity_configuration_acronym", @parameters["admin_society_identity_configuration_acronym"]) %>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_status", @descriptions["admin_society_identity_configuration_status"] %>
+  <%= display_markup("admin_society_identity_configuration_status", @parameters["admin_society_identity_configuration_status"]) %>
+</p>
+
+<p>
   <%= label_tag "admin_society_identity_configuration_siret", @descriptions["admin_society_identity_configuration_siret"] %>
   <%= display_markup("admin_society_identity_configuration_siret", @parameters["admin_society_identity_configuration_siret"]) %>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_naf_code", @descriptions["admin_society_identity_configuration_naf_code"] %>
+  <%= display_markup("admin_society_identity_configuration_naf_code", @parameters["admin_society_identity_configuration_naf_code"]) %>
+</p>
+
+<p>
+  <%= label_tag "admin_society_identity_configuration_email", @descriptions["admin_society_identity_configuration_email"] %>
+  <%= display_markup("admin_society_identity_configuration_email", @parameters["admin_society_identity_configuration_email"]) %>
 </p>
 
 <p>
@@ -61,10 +81,12 @@
   <%= label_tag 'admin_society_identity_configuration_choosen_theme', @descriptions["admin_society_identity_configuration_choosen_theme"] %>
   <%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %>
 </p>
-<p>
+
   <% if is_form_view? %>
-  <%= submit_tag "Mettre à jour" %>
+    <p class="form_buttons">
+      <%= reset nil, "Réinitialiser" %>
+      <%= submit_tag "Enregistrer" %>
+    </p>
   <% end %>
-</p>
 <% end %>
 </div>

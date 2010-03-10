@@ -6,5 +6,5 @@ good_tool:
   serial_number: "234ABQ" 
   service: direction_general
   job: developer
-  employee: normal
-  supplier: supplier_normal
+  employee: john_doe
+  supplier: first_supplier

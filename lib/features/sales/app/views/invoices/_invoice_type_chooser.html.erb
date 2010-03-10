@@ -1,0 +1,43 @@
+<%
+deposit_disabled = @order.invoices.build.can_create_deposit_invoice? ? '' : "disabled='disabled'"
+status_disabled = @order.invoices.build.can_create_status_invoice? ? '' : "disabled='disabled'"
+balance_disabled = @order.invoices.build.can_create_balance_invoice? ? '' : "disabled='disabled'"
+asset_disabled = @order.invoices.build.can_create_asset_invoice? ? '' : "disabled='disabled'"
+%>
+<div>
+  <p>Choisissez le type de facture que vous souhaitez créer :</p>
+  <ul id="invoice_types">
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'deposit')%>">
+        <button <%= deposit_disabled %>>
+          <h1>Facture d'acompte</h1>
+          <p>Facture &eacute;tablie pour s'assurer que le client accorde de l'importance et s'engage dans son projet. La facture est caract&eacute;ris&eacute;e par un taux d'acompte (entre 20% et 40%) fix&eacute; en g&eacute;n&eacute;ral par le commercial en fonction de la solvabilit&eacute; et de la note client attribuées au client.</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'status')%>">
+        <button <%= status_disabled %>>
+          <h1>Facture de situation</h1>
+          <p>Facture permettant de facturer les livraisons déjà effectués sans avoir à attendre la fin du chantier (surtout utilisée pour les longs chantiers). La facture de situation permet d'avoir un apport de tr&eacute;sorerie, et de continuer le traitement du dossier (conception, fabrication, pose, etc.).</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'balance')%>">
+        <button <%= balance_disabled %>>
+          <h1>Facture de solde</h1>
+          <p>Facture r&eacute;capitulant tous les factures envoyées au client concernant ce dossier, et spécifiant les derniers produits et prestations proposés. Le montant de la facture de solde représente le reste à payer, c'est-à-dire la différence entre le montant du devis et la totalité des factures précédentes.</p>
+        </button>
+      </a>
+    </li>
+    <li>
+      <a href="<%= new_order_invoicing_step_invoice_step_invoice_path(:invoice_type => 'asset')%>">
+        <button <%= asset_disabled %>>
+          <h1>Facture d'avoir</h1>
+          <p>Facture &eacute;tablie lorsque l'on souhaite effectuer un remboursement (en raison d'un d&eacute;faut de fabrication, d'une erreur de maintenance sur un produit, etc.). La facture d'avoir se caract&eacute;rise par un remboursement indirect et prenant effet sur une prochaine facture.</p>
+        </button>
+      </a>
+    </li>
+  </ul>
+</div>

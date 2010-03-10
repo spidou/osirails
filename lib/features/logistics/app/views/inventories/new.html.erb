@@ -18,7 +18,7 @@
 
 <div>
   <% unless @supplies.empty? %>  
-    <% form_for(:inventory, :url => {:action => :create}) do |form| %>
+    <% form_for(:inventory, :url => {:action => :create}) do %>
       <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
         <tr>
           <th rowspan='2'>Cat&eacute;gorie</th>
@@ -36,8 +36,13 @@
         </tr>      
       <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
       </table>
+      
       <%= hidden_field_tag 'type', params[:type] %>
-      <%= form.form_buttons %> 
+      
+      <p class="form_buttons">
+        <%= reset nil, "Réinitialiser" %>
+        <%= submit_tag "Enregistrer" %>
+      </p>
     <% end %>
   <% else %>
     <p>Aucune fourniture disponible pour effectuer un nouvel inventaire</p>

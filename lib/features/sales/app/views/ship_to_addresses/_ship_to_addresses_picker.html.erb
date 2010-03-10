@@ -1,0 +1,51 @@
+<%
+require_locals establishments
+ship_to_addresses = ship_to_addresses_picker
+%>
+
+<% if is_form_view? %>
+  <select id="select_establishments" name="select[establishments]">
+    <option value="0">Veuillez choisir une adresse de livraison</option>
+    <% for establishment in establishments %>
+      <% selected_establishment = ship_to_addresses.detect{ |s| s.establishment_id == establishment.id and !s.should_destroy? } %>
+      <% disabled = selected_establishment ? 'disabled="disabled"' : '' %>
+      <%= "<option value=\"#{establishment.id}\" #{disabled}>#{establishment.name_and_full_address}</option>" %>
+    <% end %>
+  </select>
+<% end %>
+
+<div id="preview_establishments">
+  <div id="ship_to_addresses" class="resources">
+    <% for establishment in establishments %> 
+      <%
+      if ship_to_address = ship_to_addresses.detect{ |s| s.establishment_id == establishment.id }
+        selected_establishment = !ship_to_address.should_destroy?
+      else
+        selected_establishment = false
+        ship_to_address = ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name)
+        ship_to_address.build_address(establishment.address.attributes)
+      end
+      %>
+      
+      <div id="preview_establishment_<%=establishment.id%>" class="preview_establishment resource" <%= "style=\"display:none\"" unless selected_establishment %>>
+        <%= render :partial => 'ship_to_addresses/ship_to_address', :object => ship_to_address, :locals => { :establishments => establishments, :force_show_view => true } %>
+        
+        <%= link_to_function( image_tag('delete_16x16.png', :title => 'Retirer cette adresse de la liste', :alt => 'Retirer cette adresse de la liste'), "ship_to_addresses_picker.remove_resource_from_list(this)", :class => 'establishment_actions' ) %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div id="new_establishments" class="resources">
+</div>
+
+<% if is_form_view? %>
+  <script type="text/javascript">
+    var ship_to_addresses_picker = new ShipToAddressesPicker({select:                  'select_establishments',
+                                                              hidden_element_prefix:   'preview_establishment',
+                                                              create_class:            'should_create',
+                                                              destroy_class:           'should_destroy',
+                                                              removable_element_class: 'preview_establishment',
+                                                              element_actions_class:   'establishment_actions'})
+  </script>
+<% end %>

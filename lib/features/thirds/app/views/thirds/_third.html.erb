@@ -1,6 +1,10 @@
-<% third_type = third.class.name.downcase %>
+<%
+third_type = third.class.name.downcase
+force_show_view ||= false
+%>
 
 <% fields_for third_type, third do |form| %>
+  <% form.force_show_view = force_show_view %>
   <%= form.error_messages %>
   <p>
     <%= form.label :name %>
@@ -12,32 +16,40 @@
   </p>
   <p>
     <%= form.label :siret_number %>
-    <%= form.form_or_view(form.text_field(:siret_number, "maxlength" => 14) + " (14 chiffres)", :siret_number) %>
+    <%= form.form_or_view(form.text_field(:siret_number, "maxlength" => 14) + " <span class='help_text'>(14 chiffres)</span>", :siret_number) %>
   </p>
   <p>
     <%= form.label :activity_sector_id %>
-    <%= form.form_or_view(form.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name), :activity_sector, :name)%>
+    <%= form.form_or_view(form.collection_select(:activity_sector_id, ActivitySector.find(:all), :id, :name, :include_blank => third.new_record? ? "Veuillez choisir un secteur d'activité" : false), :activity_sector, :name)%>
   </p>
   <p>
     <%= form.label :activities %>
     <%= form.form_or_view(form.text_field(:activities), :activities) %>
   </p>
   <p>
+    <%= form.label :website %>
+    <%= form.form_or_view(form.text_field(:website) + " <span class='help_text'>(http://site.client.com)</span>", :website) %> <%= link_to("Visiter", third.website, :popup => true) unless is_form_view? or third.website.blank? %>
+  </p>
+  <p>
     <%= form.label :note %>
     <%= form.form_or_view(form.select(:note, Third::RATINGS), :note) %>
   </p>
-
+  
   <h3>Informations bancaires</h3>
-    <% if third.class.equal?(Customer) %>
+  <% if third.class.equal?(Customer) %>
+    <p>
+      <%= form.label :factor_id %>
+      <%= form.form_or_view(form.collection_select(:factor_id, Factor.all, :id, :name_and_fullname, :include_blank => "Aucune"), :factor, :name_and_fullname ) %>
+    </p>
     <p>
       <%= form.label :payment_method_id %>
-      <%= form.form_or_view(form.collection_select(:payment_method_id, PaymentMethod.find(:all), :id, :name), :payment_method, :name ) %>
+      <%= form.form_or_view(form.collection_select(:payment_method_id, PaymentMethod.all, :id, :name), :payment_method, :name ) %>
     </p>
     <p>
       <%= form.label :payment_time_limit_id %>
-      <%= form.form_or_view(form.collection_select(:payment_time_limit_id, PaymentTimeLimit.find(:all), :id, :name), :payment_time_limit, :name) %>
+      <%= form.form_or_view(form.collection_select(:payment_time_limit_id, PaymentTimeLimit.all, :id, :name), :payment_time_limit, :name) %>
     </p>
-    <% elsif third.class.equal?(Supplier) %>
-      <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
-    <%  end %>
+  <% else %>
+    <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
+  <%  end %>
 <% end %>

@@ -1,0 +1,46 @@
+<%
+require_locals form
+delivery_note = delivery_note_additional_infos
+%>
+
+<p>
+  <%= form.label :reference %>
+  <%= strong delivery_note.reference %>
+</p>
+
+<p>
+  <%= form.label :creator %>
+  <%= link_to delivery_note.creator.employee_name, employee_path(delivery_note.creator.employee) %>
+</p>
+
+<p>
+  <%= form.label :created_at %>
+  <%= strong(delivery_note.created_at.humanize) if delivery_note.created_at %>
+</p>
+
+<p>
+  <%= form.label :status %>
+  <%= strong "\"#{status_text(delivery_note)}\"" %>
+</p>
+
+<p>
+  <%= form.label :confirmed_at %>
+  <%= strong(delivery_note.confirmed_at.humanize) if delivery_note.confirmed_at %>
+</p>
+
+<p>
+  <%= form.label :published_on %>
+  <%= strong(delivery_note.published_on.humanize) if delivery_note.published_on %>
+</p>
+
+<p>
+  <%= form.label :signed_on %>
+  <%= strong(delivery_note.signed_on.humanize) if delivery_note.signed_on %>
+</p>
+
+<% if delivery_note.cancelled? %>
+  <p>
+    <%= form.label :cancelled_at %>
+    <%= strong delivery_note.cancelled_at.humanize %>
+  </p>
+<% end %>

@@ -1,55 +1,53 @@
-require 'mongrel_cluster/recipes'
+require 'capistrano/ext/multistage'
 
-set :application, "example.com"
-role :app, application
-role :web, application
-role :db,  application, :primary => true
+default_run_options[:pty]   = true # it would seem we don't get the passphrase prompt from git if we don't
+ssh_options[:forward_agent] = true # If you're using your own private keys for git you might want to tell Capistrano to use agent forwarding with this command
 
-set :repository,  "http://osirails.rubyforge.org/svn/trunk/"
-set :web_user, "www-data"
-set :web_group, "www-data"
-set :admin_runner, "admin"  # for try_sudo command
-set :user, "admin"          # for ssh connection
+set :stages, %w(production demo staging)
+set :default_stage, "staging"
 
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
-set :deploy_to, "/var/www/#{application}"
-#set :mongrel_conf, "#{shared_path}/config/#{application}.yml"
+set :application,     "osirails"
+set :domain,          "my-server"
+set :repository,      "git@github.com:spidou/osirails.git"
+set :use_sudo,        false
+set :deploy_to,       "/path/to/#{application}"
+set :user,            "user"
 
-# If you aren't using Subversion to manage your source code, specify
-# your SCM below:
-# set :scm, :subversion
+set :scm,             "git"
+set :branch,          "master"
+set :deploy_via,      :remote_cache
+
+role :app, domain
+role :web, domain
+role :db,  domain, :primary => true
 
 namespace :deploy do
-  desc "Tell Passenger to restart the app."
-  task :restart do
-    run "touch #{current_path}/tmp/restart.txt"
+  task :start, :roles => :app do
+    run "touch #{current_release}/tmp/restart.txt"
   end
-  
-  desc "Create shared folders 'assets' and 'config'"
-  task :create_shared_folders do
-    run "mkdir #{shared_path}/assets"
-    run "mkdir #{shared_path}/config"
-    run "curl --silent #{repository}config/database.example.yml -o #{shared_path}/config/database.production.yml"
-    puts "You may configure '#{shared_path}/config/database.production.yml' before deploy your application."
-  end
-  
-  desc "Symlink shared configs and folders on each release."
-  task :symlink_shared do
-    run "ln -nfs #{shared_path}/config/database.production.yml #{release_path}/config/database.yml"
-    run "ln -nfs #{shared_path}/assets #{release_path}/assets"
 
-    # règle les droits sur le dossier de deploiement
-    #sudo "chown #{web_user}:#{web_group} -R #{deploy_to}"
-    #sudo "chmod 775 -R #{deploy_to}"
+  task :stop, :roles => :app do
+    # Do nothing.
   end
-  
-#  desc "Sync the assets directory."
-#  task :assets do
-#    system "rsync -vr --exclude='.DS_Store' assets #{user}@#{application}:#{shared_path}/"
-#  end
+
+  desc "Restart Application"
+  task :restart, :roles => :app do
+    run "touch #{current_release}/tmp/restart.txt"
+  end
 end
 
-after 'deploy:update_code', 'deploy:symlink_shared'
-after 'deploy:setup', 'deploy:create_shared_folders'
+
+set :web_user,  "www-data"
+set :web_group, "www-data"
+
+task :after_update_code, :roles => :app do
+  # create the database.yml file
+  db_prod = "#{shared_path}/config/database.production.yml"
+  run "cp #{db_prod} #{release_path}/config/database.yml"
+  
+  # create symlinks for assets
+  run "ln -sf #{shared_path}/assets #{release_path}/assets"
+
+  # setup rights for 'www-data' on the 'deploy_to' folder
+  sudo "chown #{web_user}:#{web_group} -R #{deploy_to}"
+end

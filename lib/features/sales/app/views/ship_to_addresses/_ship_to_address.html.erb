@@ -1,0 +1,8 @@
+<%
+require_locals establishments
+id_attr = "id=\"resource_ship_to_address_#{ship_to_address.id}\"" unless ship_to_address.new_record?
+%>
+
+<div class="ship_to_address" <%= id_attr %> >
+  <%= render :partial => "ship_to_addresses/ship_to_address_form", :object => ship_to_address, :locals => { :establishments => establishments, :force_show_view => force_show_view || false } %>
+</div>

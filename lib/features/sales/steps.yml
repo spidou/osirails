@@ -1,0 +1,31 @@
+steps:
+  commercial:
+    title: Étude commerciale
+    position: 1
+    children:
+      survey:
+        title: Survey
+        position: 1
+      estimate:
+        title: Devis
+        position: 2
+      press_proof:
+        title: BAT
+        position: 4
+  pre_invoicing:
+    title: SAS de facturation
+    position: 2
+    children:
+      delivery:
+        title: Livraison
+        position: 1
+  invoicing:
+    title: Facturation
+    position: 3
+    children:
+      invoice:
+        title: Factures
+        position: 1
+      payment:
+        title: Paiements
+        position: 2

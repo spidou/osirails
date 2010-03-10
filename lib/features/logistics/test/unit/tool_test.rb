@@ -165,7 +165,7 @@ class ToolTest < ActiveSupport::TestCase
       tool_event = ToolEvent.new(:name => 'tool_test', :event_type => event_type,
                                  :start_date => date, :end_date => date,
                                  :tool_id => tool.id, :status => status,
-                                 :internal_actor => employees(:normal),
+                                 :internal_actor_id => Employee.first.id,
                                  :comment => "comment")
       flunk "event should be valid #{tool_event.errors.inspect} #{tool_event.event.errors.inspect}" unless tool_event.save
       tool.reload

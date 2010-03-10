@@ -54,7 +54,7 @@ module PasswordPoliciesHelper
       html << "<p id=\"pattern_field\""
       html << display_text_field_for_pattern(pattern)
       html << " <span id=\"pattern_help_link\">"
-      html << link_to_function( image_tag("/images/help_icon_16x16.png", :alt => "Aide", :title => "Aide"), "Effect.toggle('pattern_help', 'slide')" )
+      html << link_to_function( image_tag("help_icon_16x16.png", :alt => "Aide", :title => "Aide"), "Effect.toggle('pattern_help', 'slide')" )
       html << "</span></p>"
     else
       #html << text_field_tag('pattern', 'pattern', :value => pattern, :size => 40, :disabled => 'disabled')

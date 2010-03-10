@@ -130,7 +130,7 @@ module HasPermissions
               
               perm_methods.each do |method|
                 PermissionsPermissionMethod.create!(:permission_id        => permission.id,
-                                                    :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
+                                                    :permission_method_id => PermissionMethod.find_or_create_by_name(method.to_s).id)
               end
             end
           end

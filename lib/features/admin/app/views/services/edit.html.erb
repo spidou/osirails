@@ -3,7 +3,7 @@
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_service_link_with_parent(@service,"New service") %>
+  <%= new_service_link_with_parent(@service, "Nouveau service") %>
   <%= service_link(@service)%>
 	<%= delete_service_link(@service)%>
 <% end %>
@@ -15,6 +15,5 @@
 <h1>Modifier le service</h1>
 
 <div class="presentation_medium">
-  <%= render :partial => @service , :object => @service, :locals => {:button_name => "Modifier"}%>
+  <%= render :partial => @service %>
 </div>
-

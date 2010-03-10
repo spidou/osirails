@@ -5,7 +5,7 @@
 
 <div class="presentation_medium">
 <% form_for(@content) do |form| %>
-  <%= render :partial => 'menus/menu_form', :object => @content.menu, :locals => {:menu_owner => @content} %>
+  <%= render :partial => 'menus/menu', :object => @content.menu, :locals => { :menu_owner => @content } %>
 
   <h2>Information concernant le contenu</h2>
   <%= form.error_messages %>

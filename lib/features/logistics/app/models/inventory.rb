@@ -1,6 +1,4 @@
-class Inventory < ActiveRecord::Base
-  has_permissions :as_business_object
-  
+class Inventory
   # For will_paginate
   DATES_PER_PAGE = 15
   

@@ -1,9 +1,8 @@
 class CreateChecklistResponses < ActiveRecord::Migration
   def self.up
     create_table :checklist_responses do |t|
-      t.references :checklist
-      t.references :has_checklist_response, :polymorphic => true
-      t.string :answer
+      t.references :checklist_option, :product
+      t.text :answer
       
       t.timestamps
     end

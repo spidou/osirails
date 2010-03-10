@@ -3,10 +3,10 @@
 <% end %>
 
 <div class="presentation_large">
+  <h2>Qui? et Quand?</h2>
+  
   <% form_for @checking, :url => { :action => action } do |f| %>
     <%= f.error_messages%>
-    
-    <h2>Qui? et Quand?</h2>
     <p>
       <%= f.label :employee_id %>
       <% if is_edit_view?%>

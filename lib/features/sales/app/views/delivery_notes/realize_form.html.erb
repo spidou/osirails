@@ -1,0 +1,5 @@
+<%= order_header %>
+
+<%= generate_delivery_note_contextual_menu_partial %>
+
+<%= render :partial => @delivery_intervention, :locals => { :delivery_note => @delivery_note, :order => @order } %>

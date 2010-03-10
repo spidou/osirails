@@ -5,7 +5,7 @@
 <h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
 
 <div>
-  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do %>
+  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do |form| %>
     <% for permission_type, permissions in @permissions %>
       <h2>pour chaque <%= permission_type.titleize %></h2>
       <% if permission_type == 'Menu'%>
@@ -45,9 +45,7 @@
       <% end %>  
     <% end %>
     
-    <p> 
-      <%= submit_tag "Mettre à jour" %>  
-    </p>
+    <%= form.form_buttons %>
   <%end%>
 </div>
 <%= javascript_include_tag 'permission' %>

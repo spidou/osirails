@@ -1,11 +1,14 @@
-normal:
-  address1: 1 rue des rosiers
+paris:
+  street_name: 1 rue des rosiers
+  country_name: France
+  city_name: Paris
+  zip_code: 75001
+  has_address_type: Type
+  has_address_key: Key
+reunion:
+  street_name: 1 rue des palmiers
   country_name: Réunion
   city_name: Saint-Denis
   zip_code: 97400
-type_employee:
-  has_address: normal (Employee)
-  address1: 1 rue des rosiers
-  country_name: Réunion
-  city_name: Saint-Denis
-  zip_code: 97400
+  has_address_type: Type
+  has_address_key: Key

@@ -1,0 +1,5 @@
+store:
+  name: Store
+service_station:
+  name: Service station
+

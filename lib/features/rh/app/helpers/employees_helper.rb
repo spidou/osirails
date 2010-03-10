@@ -38,8 +38,8 @@ module EmployeesHelper
   def actives_employees_link(view_inactives)
     return unless Employee.can_view?(current_user)
     message = "Voir tous les employés"
-    message += " annulés" if view_inactives
-    link_to(image_tag("/images/view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
+    message += " inactifs" if view_inactives
+    link_to(image_tag("view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
   end
   
   #########################################################################################
@@ -47,10 +47,11 @@ module EmployeesHelper
   # Methode to get a number without images but with all informations
   def display_full_phone_number(number)
     return "" unless number
-    html = display_image(flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name)
-	  html += display_image(number_type_path( number.number_type.name ), number.number_type.name)
-	  html += strong("#{number.indicative.indicative} #{number.formatted}")
-	  html
+    html = []
+    html << display_image( flag_path( number.indicative.country.code ), number.indicative.country.code, number.indicative.country.name )
+	  html << display_image( number_type_path( number.number_type.name ), number.number_type.name )
+	  html << strong("#{number.indicative.indicative} #{number.formatted}")
+	  html.join("&nbsp;")
   end
   
   def display_employee_seniority(hire_date)
@@ -139,7 +140,7 @@ module EmployeesHelper
     type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
     type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
     type = "fax" if type == "Fax" or type== "Fax Professionnel"
-    "/images/"+type+"_16x16.png"
+    type+"_16x16.png"
   end
   
   # method that permit the showing of img balise with otions passed as arguments  

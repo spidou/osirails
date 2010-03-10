@@ -1,26 +1,24 @@
-<% require_locals establishment_owner %>
-<% owner_type = establishment_owner.class.name.downcase %>
+<% require_locals establishments_owner %>
+<% owner_type = establishments_owner.class.name.downcase %>
 
-<div class="establishment_general_infos" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
+<div class="establishment resource" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_in_one_line do %>
-  <p id="establishment_<%= establishment.id  %>">
-    <%= image_tag 'warning_14x14.png' if establishment.new_record? or !establishment.errors.empty? %>
-    
-    <%= "#{establishment.name} (#{establishment.address.country_name}, #{establishment.address.city_name})" %>
-
-    <%= link_to_function "Fiche complète", "this.up('.establishment_general_infos').down('.resource_form').show()" if ( !is_form_view? and Establishment.can_view?(current_user) ) or ( is_form_view? and Establishment.can_view?(current_user) and !Establishment.can_edit?(current_user) ) %>
-    
-    <%= link_to_function "Modifier", "mark_resource_for_update(this.up('.establishment_general_infos'))" if is_form_view? and Establishment.can_edit?(current_user) %>
-    
-    <% if is_form_view? and Establishment.can_delete?(current_user) %>
-      <% if establishment.new_record? %>
-        <%= link_to_function "Supprimer", "this.up('.establishment_general_infos').remove()" %>
-      <% else %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? La suppression prendra effet uniquement après validation du formulaire.')) mark_resource_for_destroy(this.up('.establishment_general_infos'))" %>
+  <p id="establishment_<%= establishment.id %>">
+    <% unless establishment.new_record? %>
+      <%= image_tag 'warning_14x14.png' if !establishment.errors.empty? %>
+      
+      <%= "#{EstablishmentType.find(establishment.establishment_type_id_was).name} <strong>#{establishment.name_was}</strong> (#{establishment.address.city_name_was}, #{establishment.address.country_name_was})" %>
+      
+      <%= link_to_function "Fiche complète", "this.up('.resource').down('.resource_form').toggle()" if ( !is_form_view? and Establishment.can_view?(current_user) ) or ( is_form_view? and Establishment.can_view?(current_user) and !Establishment.can_edit?(current_user) ) %>
+      
+      <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Establishment.can_edit?(current_user) %>
+      
+      <% if is_form_view? and Establishment.can_delete?(current_user) %>
+        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')) mark_resource_for_destroy(this)" %>
       <% end %>
     <% end %>
     
-    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishment_owner => establishment_owner } if Establishment.can_view?(current_user) or Estabslishment.can_edit?(current_user) %>
+    <%= render :partial => 'establishments/establishment_form', :object => establishment, :locals => { :establishments_owner => establishments_owner } if Establishment.can_view?(current_user) or Estabslishment.can_edit?(current_user) %>
   </p>
 <% end  %>
 </div>

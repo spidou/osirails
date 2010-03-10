@@ -2,10 +2,10 @@
 
 <div>
   <h2>pour chaque r&ocirc;le</h2>
-  <% form_tag(business_object_permission_path, :method => 'put') do %>
+  <% form_tag(business_object_permission_path, :method => 'put') do |form| %>
     <table>
       <tr>
-        <th rowspan="2">Roles</th>
+        <th rowspan="2">R&ocirc;les</th>
         <th colspan="<%= @permission_methods.size + 1 %>">Permissions</th>
       </tr>
       <tr>
@@ -26,9 +26,8 @@
       </tr>
     <% end %>
     </table>
-    <p>
-      <%= submit_tag "Mettre à jour" %>
-    </p>
+    
+    <%= form.form_buttons %>
   <% end %>
 </div>
 <%= javascript_include_tag 'permission' %>

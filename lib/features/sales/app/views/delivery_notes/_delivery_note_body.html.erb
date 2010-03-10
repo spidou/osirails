@@ -1,0 +1,14 @@
+<% delivery_note = delivery_note_body %>
+
+<table id="delivery_note_items" class="sales_table">
+  <tr>
+    <th>Réf.</th>
+    <th>Désignation</th>
+    <th>Qté devis</th>
+    <th>Qté déjà<br/>livrée (ou planifiée)&#160;*</th>
+    <th>Qté à livrer</th>
+  </tr>
+  <%= render :partial => 'delivery_note_items/delivery_note_item', :collection => delivery_note.delivery_note_items %>
+</table>
+
+<span class="help_text">* hormis la quantité de la colonne <strong>Qté à livrer</strong> de ce document</span>

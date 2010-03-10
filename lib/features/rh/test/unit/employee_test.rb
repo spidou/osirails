@@ -113,7 +113,7 @@ class EmployeeTest < ActiveSupport::TestCase
   
   #FIXME if today.month == December it may not work because the start cannot be past year (1.year = 12.months and december == 12e month)
   def test_get_leave_year_method_for_past_year
-    ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{Date.today.month + 1}/#{Date.today.day}"
+    ConfigurationManager.admin_society_identity_configuration_leave_year_start_date = "#{(Date.today + 1.month).month}/#{Date.today.day}"
     assert_equal Date.today.year-1, Employee.leave_year_start_date.year, "leave_year_start_date should be equal to #{Date.today.year-1}"
   end
   

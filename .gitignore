@@ -2,8 +2,11 @@
 *~
 assets
 config/database.yml
+config/deploy.rb
+config/deploy/*
 coverage
 db/*.sqlite3
+db/development_structure.sql
 log/*.log
 nbproject
 tmp/**/*

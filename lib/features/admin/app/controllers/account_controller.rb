@@ -21,7 +21,7 @@ class AccountController < ApplicationController
         if @user.enabled?
           @user.update_connection
           session[:user_id] = @user.id
-          session[:initial_uri] ||= user_home
+          session[:initial_uri] ||= home_path
           session[:user_expired] = @user.expired?
           redirect_to session[:initial_uri]
           flash[:notice] = "Connexion réussie"
@@ -102,7 +102,7 @@ class AccountController < ApplicationController
   private
     def logged
       if current_user
-        redirect_to user_home
+        redirect_to home_path
       end
     end
 

@@ -5,7 +5,7 @@
   <ul>
     <% for calendar in @calendars %>
       <li>
-        <%= link_to calendar.name, edit_calendar_permission_path(calendar) %>
+        <%= link_to calendar.title || calendar.name, edit_calendar_permission_path(calendar) %>
       </li>	
     <% end %>
   </ul>

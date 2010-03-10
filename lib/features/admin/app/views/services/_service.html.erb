@@ -1,44 +1,40 @@
 <% if is_form_view? %>
-
-  <% form_for(service) do |service| %>
-    <%= service.error_messages %>
+  
+  <% form_for(service) do |form| %>
+    <%= form.error_messages %>
     <h2>Informations du service :</h2>
     <p>
-      <%= service.label :name%>
-      <%= service.form_or_view(service.text_field( :name ),:name) %>
+      <%= form.label :name%>
+      <%= form.form_or_view(form.text_field(:name),:name) %>
     </p>
 
     <p>
-      <%= service.label :service_parent_id %>
-      <%= service.form_or_view(service.collection_select_with_indentation(:service_parent_id, @services, :id, :name, options = {:indentation => 15}.merge(@options)),:parent,:name)%>
+      <%= form.label :service_parent_id %>
+      <%= form.form_or_view(form.collection_select_with_indentation(:service_parent_id, @services, :id, :name, options = {:indentation => 15}.merge(@options)),:parent,:name) %>
     </p>
     
     <h2>Horaires du service :</h2>
     
-    <%= render :partial => 'shedules/shedule' , :object => @shedules%>      
+    <%= render :partial => 'shedules/shedule', :object => @shedules %>
     
-    <p>
-      <%= service.submit button_name %> 
-    </p>
-    
-    <% end %>
-    
+    <%= form.form_buttons %>
+  <% end %>
+  
 <% else %>
-   
-<div class="presentation_medium">
+  
   <h2>Fiche du service</h2>
   <p>
     <label>Nom :</label>
-    <%= strong( @service.name )%>
+    <%= strong( service.name )%>
   </p>
+  <% unless service.parent.nil? %>
+    <p>
+      <label>Service responsable :</label>
+      <%= strong(service.parent.name)%>
+    </p>
+  <% end %>
   <p>
-    <%unless @service.parent.nil?%>
-    <label>Service responsable :</label>
-    <%= strong(@service.parent.name)%>
-    <%end%>
-  </p>
-  <p>
-    <%= responsable_find(@responsables)%>
+    <%= responsable_find(@responsables) %>
   </p>
   
   <p>
@@ -54,13 +50,13 @@
   </div>
   <p>
   
-  <h2>Horaires du service : <%= @schedules_service%></h2>
+  <h2>Horaires du service : <%= @schedules_service %></h2>
   <% if schedules_empty?(@schedules) %>
-    <p><strong>Aucun Horaires définis!</strong></p>
+    <p>Les horaires de ce service ne sont pas définis</p>
   <% else %>
     <% days = days_group(days_sort(@schedules)) %>
     <% days.each_with_index do |schedule,index| %>
-      <%unless index==0%>
+      <% unless index==0 %>
         <p>
           <strong><%= period(schedule.day)%></strong>
           : Le Matin de
@@ -74,6 +70,6 @@
         </p>  
       <% end %>
     <% end %>
-    </table>
   <% end %>   
-<% end %> 
+  
+<% end %>

@@ -1,8 +1,7 @@
 class CreateContactTypes < ActiveRecord::Migration
   def self.up
     create_table :contact_types do |t|
-      t.string :name
-      t.string :owner
+      t.string :name, :owner
       
       t.timestamps
     end

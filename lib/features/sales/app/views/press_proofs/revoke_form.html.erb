@@ -1,0 +1,21 @@
+<%= order_header %>
+
+<%= generate_press_proof_contextual_menu_partial %>
+
+<h1>Signaler que le BAT a été annulé aprés signature</h1>
+
+<div class="presentation_medium">
+  <%= render :partial => "press_proofs_list", :object => [ @press_proof ], :locals => { :press_proofs => [ PressProof.find(@press_proof.id) ] } %>
+  
+	<% form_for @press_proof, :url => { :controller => "press_proofs", :action => "revoke", :press_proof_id => @press_proof.id }, :method => :put do |form| %>
+    <%= form.error_messages %>
+
+    <p>
+      <%= form.label :revoked_comment %>
+      <%= form.text_area_autoresize :revoked_comment, :cols => 50 %>
+    </p>
+    <p>
+      <%= form.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

@@ -18,11 +18,11 @@ ActionController::Routing::Routes.add_routes do |map|
   
   # menus
   map.resources :menus
-  map.move_up_menu 'menus/:id/move_up', :controller => "menus", 
-                                        :action => "move_up", 
-                                        :conditions => { :method => :get }
+  map.move_up_menu 'menus/:id/move_up',     :controller => "menus", 
+                                            :action     => "move_up", 
+                                            :conditions => { :method => :get }
   map.move_down_menu 'menus/:id/move_down', :controller => "menus", 
-                                            :action => "move_down", 
+                                            :action     => "move_down", 
                                             :conditions => { :method => :get }
   
   # others

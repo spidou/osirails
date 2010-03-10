@@ -1,0 +1,46 @@
+<%
+require_locals form
+press_proof = press_proof_additional_infos %>
+
+<p>
+  <%= form.label :reference %>
+  <%= strong press_proof.reference %>
+</p>
+
+<p>
+  <%= form.label :creator %>
+  <%= link_to press_proof.creator.employee_name, employee_path(press_proof.creator.employee) %>
+</p>
+
+<p>
+  <%= form.label :created_at %>
+  <%= strong(press_proof.created_at.humanize) if press_proof.created_at %>
+</p>
+<p>
+  <%= form.label :status %>
+  <%= strong "\"#{status_text(press_proof)}\"" %>
+</p>
+
+<% if press_proof.cancelled? %>
+  <p>
+    <%= form.label :cancelled_at %>
+    <%= strong press_proof.updated_at.humanize %>
+  </p>
+<% end %>
+
+<% if press_proof.revoked? %>
+  <p>
+    <%= form.label :revoked_by %>
+    <%= link_to press_proof.revoked_by.employee_name, employee_path(press_proof.creator.employee) %>
+  </p>
+  
+  <p>
+    <%= form.label :revoked_at %>
+    <%= strong press_proof.updated_at.humanize %>
+  </p>
+  
+  <p>
+    <%= form.label :revoked_comment %>
+    <%= strong "\"#{press_proof.revoked_comment}\"" %>
+  </p>
+<% end %>

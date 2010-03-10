@@ -27,7 +27,7 @@ class StockOutputTest < ActiveSupport::TestCase
 
   def test_create_stock_output
     create_supplier_supplies
-    flunk "stock input must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
 
     assert_difference "StockOutput.count", 2 do
       new_stock_flow(Supply.last,Supplier.last,false,5)
@@ -45,11 +45,11 @@ class StockOutputTest < ActiveSupport::TestCase
 
   def test_before_create
     create_supplier_supplies
-    flunk "stock input must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     @stock_quantity = Supply.last.stock_quantity
     @stock_value = Supply.last.stock_value
     @aup = Supply.last.average_unit_price
-    flunk "stock output must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,false,5)
+    flunk "stock output must be done" unless new_stock_flow(Supply.last,Supplier.last,false,5)
     @last_sf = StockFlow.last
     assert_equal @last_sf.previous_stock_quantity, @stock_quantity, "these two should be equal"
     assert_equal @last_sf.previous_stock_value, @stock_value, "these two should be equal"

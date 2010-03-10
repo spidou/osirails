@@ -1,0 +1,6 @@
+<%= label_tag "Fichier source :" %>
+<% if @new_version.source_file_name %>
+  <%= link_to(strong("télécharger"), @new_version.source.url) %>
+<% else %>
+  <%= strong("aucun") %>
+<% end %> 

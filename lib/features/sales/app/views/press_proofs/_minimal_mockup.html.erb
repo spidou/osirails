@@ -1,0 +1,20 @@
+<%
+selected_mockups ||= []
+bad_product        = product_id.nil? ? false : product_id != minimal_mockup.product.id
+selected_mockup    = selected_mockups.include?(minimal_mockup.id)  
+style              = "display:none;" if selected_mockup or bad_product
+%>
+
+<div id="mockup_<%= minimal_mockup.id %>" class="draggable minimal_mockup product_<%= minimal_mockup.product.id %>" style="<%= style %>">
+  <%= render :partial => 'graphic_items/graphic_item_summary', :object => minimal_mockup, :locals => { :without_action => true }%>
+  <input type='hidden' value="<%= minimal_mockup.current_version.id %>" class="version_id">
+</div>
+
+<% if is_form_view? %>
+  <script type="text/javascript">
+    new Draggable("mockup_<%= minimal_mockup.id %>", { 
+      revert: true,
+      ghosting: true
+    });
+  </script>
+<% end %>

@@ -1,0 +1,42 @@
+<%
+intervention = survey_intervention_form
+#intervention.start_date = intervention.start_date.to_time if intervention.start_date
+style_attr = 'style="display:none"' unless intervention.new_record? or !intervention.errors.empty? or intervention.should_update?
+%>
+
+<div class="survey_intervention_form resource_form" <%= style_attr %>>
+  <% fields_for "survey_step[survey_intervention_attributes][]", intervention, :index => nil do |form| %>
+    <%= form.error_messages %>
+    <p>
+      <%= form.label :start_date %>
+      <%# form.datetime_select :start_date, :default => Time.now.beginning_of_hour, :datetime_separator => "à", :index => nil %>
+      <%= form.text_field :start_date, :value => intervention.start_date ? intervention.start_date.to_time.to_s(:db) : nil, :index => nil %>
+    </p>
+    <p>
+      <%= form.label :duration_hours %>
+      <%= form.text_field :duration_hours, :size => 1, :index => nil %> h <%= form.text_field :duration_minutes, :size => 1, :index => nil %> min
+    </p>
+    <p>
+      <%= form.label :internal_actor_id %>
+      <%= form.collection_select :internal_actor_id, Employee.actives, :id, :fullname, ( intervention.new_record? ? { :include_blank => "Veuillez choisir un employee" } : {} ), :index => nil %>
+    </p>
+    <p>
+      <%= form.label :contact_ids %>
+      <%= display_contacts_picker(intervention, intervention.order_contacts, :owner_type => "survey_step[survey_intervention_attributes][]") %>
+    </p>
+    <p>
+      <%= form.label :comment %>
+      <%= form.text_area_autoresize :comment, :cols => 50, :index => nil %>
+    </p>
+    <p style="display:none">
+      <%= form.hidden_field :id, :index => nil %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+      <%= form.hidden_field :should_update, :class => :should_update, :index => nil %>
+      <%= form.hidden_field :should_create, :class => :should_create, :index => nil %>
+    </p>
+    <p>
+      <%= display_survey_intervention_close_form_button(intervention) %>
+    </p>
+    
+  <% end -%>
+</div>

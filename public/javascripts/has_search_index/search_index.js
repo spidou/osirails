@@ -102,7 +102,7 @@ function get_action_select(type, parent_div_id)
 {
   var actions = new Hash(ACTIONS);
   var data_types = new Hash(DATA_TYPES);  
-  var delete_img = "<img alt='supprimer ce critère' title='supprimer ce critère' src='/images/delete_16x16.png'/>"
+  var delete_img = "<img alt='Supprimer ce critère' title='Supprimer ce critère' src='/images/delete_16x16.png'/>"
   var delete_link = " <a href='#"+ parent_div_id +"_attribute_chooser' onclick='criterion_destroy(this);' id='delete_"+parent_div_id+"'>"+ delete_img +"</a>";
   
   var criterion = "<select name='criteria["+ parent_div_id +"][action]'>";

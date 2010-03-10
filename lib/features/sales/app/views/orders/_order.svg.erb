@@ -5,31 +5,31 @@
   <defs>
     <!-- External clock part -->
     <g id="external_portion">
-      <path d="M 0 0 L 0 -80 A 80 80 0 0,1 <%= 80 * Math::sin((360/@order.children.size)*Math::PI/180) %> <%= -80 * Math::cos((360/@order.children.size)*Math::PI/180) %> L 0 0" />
+      <path d="M 0 0 L 0 -80 A 80 80 0 0,1 <%= 80 * Math::sin((360/order.first_level_steps.size)*Math::PI/180) %> <%= -80 * Math::cos((360/order.first_level_steps.size)*Math::PI/180) %> L 0 0" />
     </g>
-    <% unless @order.child.children.empty? %>
+  <% if order.current_first_level_step.respond_to?(:children_steps) %>
     <!-- Internal clock part -->
     <g id="internal_portion">
-      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/@order.child.children.size)*Math::PI/180) %> <%= -64 * Math::cos((360/@order.child.children.size)*Math::PI/180) %> L 0 0" />
+      <path d="M 0 0 L 0 -64 A 64 64 0 0,1 <%= 64 * Math::sin((360/order.current_first_level_step.children_steps.size)*Math::PI/180) %> <%= -64 * Math::cos((360/order.current_first_level_step.children_steps.size)*Math::PI/180) %> L 0 0" />
     </g>
-    <% end %>
+  <% end -%>
   </defs>
 
   <!-- Show external element -->
-  <% angle = 360 / @order.children.size %>
-  <% @order.children.each_with_index do |c, index| %>
-    <g title="<%= c.step.title %>" class="portions<%= " #{@order.child.name}" if c.in_progress? or c.terminated? %>">
-      <use xlink:href="#external_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
-    </g>
-  <% end %>
-
-  <% unless @order.child.children.empty? %>
-  <!-- Show internal element -->
-  <% angle = 360 / @order.child.children.size %>
-  <% @order.child.children.sort_by {|s| s.status }.each_with_index do |c, index| %>
-  <g title="<%= c.step.title %>" class="portions<%= " terminated" if c.terminated? %>">
-    <use xlink:href="#internal_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
+<% angle = 360 / order.first_level_steps.size -%>
+<% order.first_level_steps.each_with_index do |c, index| %>
+  <g title="<%= "#{c.original_step.title} [#{c.status.titleize}]" %>" class="outside <%= "#{c.status} #{order.current_first_level_step.original_step_name}" %>">
+    <use xlink:href="#external_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
   </g>
-  <% end %>
-  <% end %>
+<% end -%>
+
+<% if order.current_first_level_step.respond_to?(:children_steps) -%>
+  <!-- Show internal element -->
+  <% angle = 360 / order.current_first_level_step.children_steps.size -%>
+  <% order.current_first_level_step.children_steps.each_with_index do |c, index| %>
+    <g title="<%= "#{c.original_step.title} [#{c.status.titleize}]" %>" class="inside <%= "#{c.status} #{order.current_first_level_step.original_step_name}" %>">
+      <use xlink:href="#internal_portion" x="81" y="81" transform="rotate(<%= index * angle %>,81,81)" />
+    </g>
+  <% end -%>
+<% end -%>
 </svg>

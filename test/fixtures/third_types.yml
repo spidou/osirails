@@ -1,2 +1,4 @@
-normal:
-  name: foo
+private:
+  name: Private
+public:
+  name: Public

@@ -5,7 +5,7 @@ class CheckingTest < ActiveSupport::TestCase
   def setup
     @good_checking = checkings(:good_checking)
     flunk "good cheking is not valid #{@good_checking.errors.inspect}" unless @good_checking.valid?
-    flunk "@good_checking.date should be in the same week than today to perform the following" unless @good_checking.date.cweek == Date.today.cweek
+    flunk "@good_checking.date should be in the same week than today" unless @good_checking.date.cweek == Date.today.cweek
     
     @checking = Checking.new
     @checking.valid?
@@ -197,13 +197,13 @@ class CheckingTest < ActiveSupport::TestCase
     # when we are before the week of the checking date (it's still ok)
     @checking = Checking.new(@good_checking.attributes)
     @checking.date = Date.today.next_week
-    flunk "@checking should be save to perform the following" unless @checking.save
+    flunk "@checking should be saved" unless @checking.save
     assert @checking.can_be_edited?, "@good_checking should be editable because we are before the week of the checking date"
     
     # when we are after the week of the checking date (it's too late)
     @checking = Checking.new(@good_checking.attributes)
     @checking.date = Date.today.last_week
-    flunk "@checking should be save to perform the following" unless @checking.save
+    flunk "@checking should be saved" unless @checking.save
     assert !@checking.can_be_edited?, "@good_checking should NOT be editable because we are after the week of the checking date"
   end
   
@@ -218,13 +218,13 @@ class CheckingTest < ActiveSupport::TestCase
     # when we are before the week of the checking date (it's still NOT ok)
     @checking = Checking.new(@good_checking.attributes)
     @checking.date = Date.today.next_week
-    flunk "@checking should be save to perform the following" unless @checking.save
+    flunk "@checking should be saved" unless @checking.save
     assert !@checking.can_be_overrided?, "@good_checking should NOT be overridable because we are before the week of the checking date"
     
     # when we are after the week of the checking date (it's ok)
     @checking = Checking.new(@good_checking.attributes)
     @checking.date = Date.today.last_week
-    flunk "@checking should be save to perform the following" unless @checking.save
+    flunk "@checking should be saved" unless @checking.save
     assert @checking.can_be_overrided?, "@good_checking should be overridabled because we are after the week of the checking date"
   end
   
@@ -235,7 +235,7 @@ class CheckingTest < ActiveSupport::TestCase
     # when we are after the week of the checking date (it's ok)
     @checking.attributes = @good_checking.attributes
     @checking.date = Date.today.last_week
-    flunk "@checking should be saved to perform the following" unless @checking.save
+    flunk "@checking should be savedd" unless @checking.save
     assert @checking.override, "checking should be overrided successfully"
   end
   

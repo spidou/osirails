@@ -1,8 +1,8 @@
 class CreateChecklists < ActiveRecord::Migration
   def self.up
     create_table :checklists do |t|
-      t.string :name
-      t.references :step
+      t.string :name, :title
+      t.text   :description
       
       t.timestamps
     end

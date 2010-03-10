@@ -1,0 +1,17 @@
+<div class="presentation_medium">
+
+<h2>Informations g&eacute;n&eacute;rales</h2>
+<% form_for @factor, :html => { :multipart => true } do |form| %>
+  <p>
+    <%= form.label :name %>
+    <%= form.form_or_view(form.text_field(:name), :name) %>
+  </p>
+  <p>
+    <%= form.label :fullname %>
+    <%= form.form_or_view(form.text_field(:fullname), :fullname) %>
+  </p>
+  
+  <%= form.form_buttons %>
+<% end %>
+
+</div>

@@ -1,7 +1,7 @@
 class CreateThirdTypes < ActiveRecord::Migration
   def self.up
     create_table :third_types do |t|
-      t.string :wording
+      t.string :name
       
       t.timestamps
     end

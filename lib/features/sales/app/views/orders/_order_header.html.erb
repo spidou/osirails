@@ -1,40 +1,62 @@
-<div class="presentation_large">
-  <object data="<%= formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="float: right; width: 162px; height: 162px;"></object>
-	<p>
-    <label>Nom de projet :</label>
-		<strong><%= @order.title %></strong>
-	</p>
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+  <%= javascript_include_tag 'sales/order' %>
+<% end -%>
 
-	<p>
-    <label>Client / &Eacute;tablissement :</label>
-		<strong><%= @order.customer.name %> - <%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.name %></strong>
-	</p>
+<% add_contextual_menu_item :order_progress do %>
+  <!-- <div id="order_progress"><object data="<%# formatted_order_path(@order, 'svg') %>" type="image/svg+xml" style="width: 162px; height: 162px;"></object></div> -->
+  <%= remaining_time_before_delivery(@order) %>
+<% end %>
 
-	<p>
-    <label>Lieu de livraison :</label>
-		<strong><%= @order.establishment.nil? ? "Pas d'établissement" : @order.establishment.full_address %></strong>
-	</p>
+<div id="order_header">
+  <div class="first_column">
+    <p>
+      <label>Nom du projet :</label>
+      <strong><%= @order.title %></strong>
+    </p>
+    
+    <p>
+      <label>Client :</label>
+      <strong><%= link_to( "#{@order.customer.name}", @order.customer) %></strong>
+    </p>
+    
+    <div class="order_header_extra">
+      <% for ship_to_address in @order.ship_to_addresses %>
+        <p>
+          <label>Lieu de livraison :</label>
+          <strong><%= ship_to_address.name_and_short_address %></strong>
+        </p>
+      <% end %>
+      
+      <p>
+        <label>Date pr&eacute;visionnelle de livraison :</label>
+        <strong><%= @order.previsional_delivery.humanize %></strong>
+      </p>
+    </div>
+  </div>
+  <div class="second_column">
+    <p>
+      <label>Type de dossier :</label>
+      <strong><%= @order.order_type.title %></strong>
+    </p>
 
-	<p>
-		<label>&Eacute;tapes (finies/total) :</label>
-		<strong><%= @order.advance[:terminated].to_s + "/" + @order.advance[:total].to_s %></strong>
-	</p>
-
-	<p>
-    <label>Suivi commercial :</label>
-		<strong><%= @order.commercial.fullname %></strong>
-	</p>
-
-	<p>
-    <label>Type de dossier :</label>
-		<strong><%= @order.order_type.title %></strong>
-	</p>
-
-	<p>
-    <label>Date pr&eacute;visionnelle de livraison :</label>
-		<strong><%= @order.previsional_delivery %></strong>
-	</p>
-	<% if controller.can_edit?(current_user) %>
-		<%= link_to 'Modifier', edit_order_path(@order) %>
-	<% end %>
+    <p>
+      <label>Suivi commercial :</label>
+      <strong><%= @order.commercial.fullname %></strong>
+    </p>
+    
+    <div class="order_header_extra">
+      <p>
+        <label>Contact :</label>
+        <strong><%= @order.contacts.first.fullname + " " + link_to("(Voir plus)", order_informations_path(:anchor => 'contacts_section')) unless @order.contacts.empty? %></strong>
+      </p>
+    </div>
+  </div>
+  
+  <p>
+    <%= link_to 'Modifier', edit_order_path(@order) if Order.can_edit?(current_user) %>
+    <span id="order_header_more">
+      <%= link_to "Plus d'informations", '#order_more_infos' %>
+    </span>
+  </p>
 </div>

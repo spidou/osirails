@@ -79,31 +79,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    def user_home
-      permissions_path
-    end
-
     # Called when an user try to acces to an unauthorized page
     def error_access_page(status = nil)
       render_optional_error_file(status)
-    end
-    
-    # this method need to hack htmldoc (/var/lib/gems/1.8/gems/htmldoc-0.2.1/lib/htmldoc.rb > under ubuntu 8.04)
-    # add 'line.strip!' just after the line 185
-    def render_pdf
-      require 'htmldoc'
-      data = render_to_string(:action => "#{params[:action]}.pdf.erb", :layout => false)
-      pdf = PDF::HTMLDoc.new
-      pdf.set_option :bodycolor, :white
-      pdf.set_option :toc, false
-      pdf.set_option :charset, 'utf-8'
-      pdf.set_option :portrait, true
-      pdf.set_option :links, false
-      pdf.set_option :webpage, true
-      pdf.set_option :left, '1cm'
-      pdf.set_option :right, '1cm'
-      pdf << data
-      pdf.generate
     end
     
     def configure_model
@@ -130,33 +108,32 @@ class ApplicationController < ActionController::Base
           
           if model and model.respond_to?(:business_object)
             $permission[controller_path] ||= {}
-            code = request.get? ? 403 : 422
             
             case params[:action]
             # LIST
             when *['index'] + ($permission[controller_path][:list] || [])
-              return error_access_page(code) unless model.can_list?(current_user)
+              return error_access_page(403) unless model.can_list?(current_user)
             
             # VIEW
             when *['show'] + ($permission[controller_path][:view] || [])
-              return error_access_page(code) unless model.can_view?(current_user)
+              return error_access_page(403) unless model.can_view?(current_user)
             
             # ADD
             when *['new', 'create'] + ($permission[controller_path][:add] || [])
-              return error_access_page(code) unless model.can_add?(current_user)
+              return error_access_page(403) unless model.can_add?(current_user)
             
             # EDIT
             when *['edit', 'update'] + ($permission[controller_path][:edit] || [])
-              return error_access_page(code) unless model.can_edit?(current_user)
+              return error_access_page(403) unless model.can_edit?(current_user)
             
             # DELETE
             when *['destroy'] + ($permission[controller_path][:delete] || [])
-              return error_access_page(code) unless model.can_delete?(current_user)
+              return error_access_page(403) unless model.can_delete?(current_user)
             
             # OTHER METHODS
             else
               if model.respond_to?("can_#{params[:action]}?")
-                return error_access_page(code) unless model.send("can_#{params[:action]}?", current_user)
+                return error_access_page(403) unless model.send("can_#{params[:action]}?", current_user)
               end
             end
           end

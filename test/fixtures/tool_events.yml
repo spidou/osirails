@@ -6,4 +6,4 @@ good_tool_event:
   status: 1
   event_type: 1
   tool: good_tool
-  internal_actor: normal
+  internal_actor: john_doe

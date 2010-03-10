@@ -26,5 +26,7 @@
   <%= form.label :key %>
   <%= form.form_or_view(form.text_field(:key, :maxlength => 2, :size => 2), :key)%>
 </p>
+<div style="display:none">
   <%= form.form_or_view(form.hidden_field(:id)) %>
+</div>
 <% end %>

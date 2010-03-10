@@ -1,5 +1,6 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
+  has_address :address
   
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
@@ -23,7 +24,7 @@ class Employee < ActiveRecord::Base
   @@form_labels[:family_situation]        = "Situation familiale :"
   @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
   @@form_labels[:email]                   = "Email personnel :"
-  @@form_labels[:society_email]           = "Email professionnel :"
+  @@form_labels[:society_email]           = "Email entreprise :"
   @@form_labels[:service]                 = "Service :"
   @@form_labels[:avatar]                  = "Photo :"
   
@@ -39,7 +40,6 @@ class Employee < ActiveRecord::Base
   belongs_to :user
   belongs_to :service
   
-  has_one :address, :as => :has_address
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
@@ -73,7 +73,7 @@ class Employee < ActiveRecord::Base
   
   validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/,                       :message => "Le numéro de sécurité sociale doit comporter 15 chiffres"
   validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
-  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail professionelle est incorrecte"
+  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail entreprise est incorrecte"
   
   validates_associated :iban, :address, :job_contract, :user, :contacts, :numbers, :premia, :checkings
   
@@ -92,7 +92,7 @@ class Employee < ActiveRecord::Base
   # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment
-  after_update :save_iban, :save_numbers, :save_address
+  after_update :save_iban, :save_numbers
   
   # Method to manage that there's no more than 2 responsible jobs by service
   def validates_responsible_job_limit
@@ -199,7 +199,7 @@ class Employee < ActiveRecord::Base
   def self.leave_year_start_date
     start_date = ConfigurationManager.admin_society_identity_configuration_leave_year_start_date
     year = (Date.today.month >= start_date.split("/").first.to_i)? Date.today.year.to_s : (Date.today.year - 1).to_s
-    (start_date + "/#{year}").to_date
+    ("#{year}/#{start_date}").to_date
   end
   
   # Method that return the leave end date according to the leave year start date
@@ -357,18 +357,6 @@ class Employee < ActiveRecord::Base
       self.iban.attributes = iban_attributes
     end 
   end
-
-  # this method permit to save the address of the employee when it is passed with the employee form
-  # we use address_attributes.first because the partial he also use to define mutiple addresses but for the employee there is only 
-  # one that's why we use the only one address in the array
-  def address_attributes=(address_attributes)
-    if address_attributes.first[:id].blank?
-      self.address = self.build_address(address_attributes.first)
-    else
-
-      self.address.attributes = address_attributes.first
-    end    
-  end
   
   # this method permit to save the numbers of the employee when it is passed with the employee form
   def number_attributes=(number_attributes)
@@ -384,6 +372,12 @@ class Employee < ActiveRecord::Base
   
   private
   
+    # Method to change the case of the first_name and the last_name at the employee's creation
+    def case_management
+      self.first_name = self.first_name.chars.capitalize
+      self.last_name = self.last_name.chars.upcase
+    end
+    
     def save_numbers
       self.numbers.each do |number|
         if number.should_destroy?    
@@ -396,10 +390,6 @@ class Employee < ActiveRecord::Base
     
     def save_iban
        self.iban.save(false)
-    end
-
-    def save_address
-      self.address.save(false)
     end
   
     def build_associated_resources

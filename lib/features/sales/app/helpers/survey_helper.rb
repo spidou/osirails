@@ -1,3 +1,0 @@
-module SurveyHelper
-
-end

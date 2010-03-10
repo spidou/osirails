@@ -1,10 +1,10 @@
 class CreateParticipants < ActiveRecord::Migration
   def self.up
     create_table :participants do |t|
-      t.references :event
-      t.text :name
-      t.string :email
-      t.references :employee
+      t.references :event, :employee
+      t.text    :name
+      t.string  :email
+      
       t.timestamps
     end
   end

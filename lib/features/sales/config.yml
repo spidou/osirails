@@ -4,70 +4,212 @@ version: 0.1
 dependencies:
   admin:
     - 0.1
-  thirds:
-    - 0.1
   rh:
     - 0.1
-  products:
+  thirds:
     - 0.1
 menus:
-  orders:
-    title: Dossier de commande
-    hidden: true
-    children:
-      informations:
-        title: Informations de commande
-        description: Informations générales sur les dossiers de commandes
-      logs:
-        title: Historiques
-        description: Historiques des actions effectués sur le dossier de commmande
-  prospectives:
-    title: Prospects
-    children:
-      commercial:
-        title: Etude commerciale
-        description: Phase d'étude commercial
-        children:
-          survey:
-            title: Visite commerciale
-            description: Etape de la visite commercial
-          graphic_conception:
-            title: Conception graphique
-            description: Etape de conception graphique
-          estimate:
-            title: Devis
-            description: Etape du devis
   sales:
     title: Ventes
+    position: 6
     children:
-      invoicing:
-        title: Facturation
-        description: Phase de facturation
-      closed:
-        title: Cloturés
-        description: Dossiers de vente cloturés
-      archived:
-        title: Archivés
-        description: Dossiers de vente cloturés
-steps:
-  commercial:
-    description: Etape commerciale
-    title: Etude Commercial
-    position: 1
-    children:
-      estimate:
-        title: Devis
-        position: 3
-      survey:
-        title: Visite commerciale
+      in_progress_orders:
+        title: Dossiers en cours
+        description: Afficher la liste complète des dossiers actuellement en cours
         position: 1
-      graphic_conception:
-        title: Conception Graphique
+        separator: after
+      commercial_orders:
+        title: Dossiers en Étude Commerciale
+        description: "Afficher la liste des dossiers actuellement en phase d'étude commerciale"
         position: 2
-  invoicing:
-    title: Facturation
-    position: 2
+      pre_invoicing_orders:
+        title: Dossiers en SAS de Facturation
+        description: Afficher la liste des dossiers actuellement en phase de SAS de facturation
+        position: 3
+      invoicing_orders:
+        title: Dossiers en Facturation
+        description: Afficher la liste des dossiers actuellement en phase de facturation
+        position: 4
+        separator: after
+      closed_orders:
+        title: Dossiers Cloturés
+        description: Afficher la liste des dossiers déjà cloturés
+        position: 5
+      archived_orders:
+        title: Dossiers Archivés
+        description: Afficher la liste des dossiers déjà archivés
+        position: 6
+      orders:
+        title: Dossier
+        description: Dossier de vente
+        hidden: true
+        children:
+          informations:
+            title: Informations de commande
+            description: Informations générales sur le dossier
+            position: 1
+          commercial_step:
+            title: Étude commerciale
+            description: "Phase de l'étude commerciale"
+            position: 2
+            children:
+              survey_step:
+                title: Survey
+                description: Étape de Survey
+                position: 1
+                children:
+                  subcontractor_requests:
+                    title: Demande de sous-traitance
+                    description: "Demande de prestatation auprès d'un sous-traitant"
+              estimate_step:
+                title: Devis
+                description: "Étape de l'établissement du devis"
+                position: 2
+                children:
+                  quotes:
+                    title: Devis (Pièce)
+                    description: "Élaboration d'un devis"
+                    children:
+                      order_forms:
+                        title: Bon de commande
+                        description: Bon de commande associé au devis
+              press_proof_step:
+                title: BAT
+                description: "Étape de l'établissement du/des BAT"
+                position: 3
+                children:
+                  press_proofs:
+                    title: BAT (Pièce)
+                    description: Élaboration des BAT
+                    children:
+                      dunnings:
+                        title: Relances
+                        description: Gestion des relances
+          pre_invoicing_step:
+            title: SAS de Facturation
+            description: Phase du SAS de Facturation
+            position: 3
+            children:
+              delivery_step:
+                title: Livraison
+                description: Étape de la livraison
+                children:
+                  delivery_notes:
+                    title: Bon de livraison
+                    description: Élaboration des bons de livraison
+                    children:
+                      delivery_interventions:
+                        title: "Intervention de livraison / installation"
+                        description: "Gestion des intervention de livraison / installation"
+          invoicing_step:
+            title: Facturation
+            description: Phase de la Facturation
+            position: 4
+            children:
+              invoice_step:
+                title: Factures
+                description: "Étape de l'élaboration des factures"
+                position: 1
+                children:
+                  invoices:
+                    title: Facture (Pièce)
+                    description: "Élaboration d'une facture"
+                    children:
+                      payment_attachments:
+                        title: Pièce jointe du règlement
+                        description: Pièce jointe du règlement
+                      adjustment_attachments:
+                        title: "Pièce jointe de l'ajustement"
+                        description: "Pièce jointe de l'ajustement"
+              payment_step:
+                title: Paiements
+                description: "Étape de l'enregistrement des paiments"
+                position: 2
+          graphic_items:
+            title: Ressources graphiques
+            description: "Étape d'ajout des ressources graphiques"
+            position: 4
+            children:
+              mockups:
+                title: Maquettes
+                description: Gestion des maquettes
+                position: 1
+              graphic_documents:
+                title: Documents graphiques
+                description: Gestion des documents graphiques  
+                position: 2
+              graphic_item_versions:
+                title: Versions de ressources graphiques
+                description: Gestion des versions de ressources graphiques
+                hidden: true   
+                position: 3
+              graphic_item_spool_items:
+                title: Mes travaux en attente
+                description: Fichiers mis en file d'attente de production de l'utilisateur courant
+                position: 4
+          logs:
+            title: Historique
+            description: Historique des actions effectuées sur le dossier
+            position: 5
+  goods:
+    title: Produits
+    description: Gestion des produits
+    position: 7
+    children:
+      product_reference_manager:
+        title: Gestion des références produits
+        description: Permet la gestion des familles et des références produits
+        children:
+          product_reference_categories:
+            title: Gestion des catégories
+            description: Permet la gestion des categories
+            hidden: true
+          product_references:
+            title: Gestion des références
+            description: Permet la gestion des références
+            hidden: true
+            children:
+              products:
+                title: Gestion des produits
+                description: Permet la gestion de produits
+                hidden: true
+      products_catalog:
+          title: Catalogue des produits et références
+          description: "Permet l'affichage du catalogue de produit"
+  thirds:
+    children:
+      subcontractors:
+        title: Sous-traitants
+        description: Gestion des sous-traitants
+        position: 4
 configurations:
-  taxes_vat:
-    description: Taxe TVA
+  deposit_tax_coefficient:
+    description: TVA appliquée par défaut aux acomptes HT
     value: 8.5
+  quote_validity_delay:
+    description: Délai de validité par défaut du devis
+    value: 15
+  quote_validity_delay_unit:
+    description: Unité de temps par défaut pour la validité du devis
+    value: days
+  order_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un dossier
+    value: "%y%m$number(3)"
+  quote_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un devis
+    value: "$order.DV$number(2)"
+  press_proof_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un BAT
+    value: "$order.BT$number(2)"
+  mockup_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une maquette
+    value: "$order.MQ$number(3)"
+  graphic_document_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un document graphique
+    value: "$order.DG$number(3)"
+  delivery_note_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un bon de livraison
+    value: "$order.BL$number(2)"
+  invoice_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une facture
+    value: "$order.FA$number(2)"

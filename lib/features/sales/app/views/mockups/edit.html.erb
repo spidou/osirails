@@ -1,0 +1,14 @@
+<%= order_header %>
+
+<% add_contextual_menu_item :mockup do %>
+  <%= new_graphic_item_link(Mockup) %>
+  <%= graphic_item_link(@mockup) %>
+  <%= cancel_graphic_item_link(@mockup) %>
+  <%= delete_graphic_item_link(@mockup) %>
+  <%= graphic_items_link(Mockup) %>
+<% end %>
+
+<% display_user_spool_in_contextual_menu %>
+
+<h1>Modifier la maquette</h1>
+<%= render :partial => "graphic_items/graphic_item", :object => @mockup %>

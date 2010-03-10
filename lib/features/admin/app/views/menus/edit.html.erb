@@ -8,4 +8,9 @@
 <% end %>
 
 <h1>Modifier un menu</h1>
-<%= render :partial => @menu, :locals => {:submit_button_name => "Mettre à jour"} %>
+<div class="presentation_medium">
+  <% form_for(@menu) do |form| %>
+    <%= render :partial => @menu %>
+    <%= form.form_buttons %>
+  <% end %>
+</div>

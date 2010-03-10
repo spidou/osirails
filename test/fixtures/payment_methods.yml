@@ -1,2 +1,6 @@
-normal:
-  name: foo
+bank_transfer:
+  name: Bank transfer
+check:
+  name: Check
+cash:
+  name: Cash

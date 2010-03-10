@@ -3,4 +3,9 @@
 <% end %>
 
 <h1>Nouveau Menu</h1>
-<%= render :partial => @menu, :locals => {:submit_button_name => "Ajouter"} %>
+<div class="presentation_medium">
+<% form_for(@menu) do |form| %>
+  <%= render :partial => @menu %>
+  <%= form.form_buttons %>
+<% end %>
+</div>

@@ -1,8 +1,8 @@
 class CreateEmployeeStates < ActiveRecord::Migration
   def self.up
     create_table :employee_states do |t|     
-      t.string :name
-      t.references :job_contract
+      t.string  :name
+      t.boolean :active
       
       t.timestamps
     end

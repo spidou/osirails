@@ -73,32 +73,32 @@ module StockFlowTest
 
   def test_supplier_supply
     create_supplier_supplies
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     assert_equal @sf.supplier_supply, SupplierSupply.find_by_supply_id(Supply.last.id, :conditions => ["supplier_id = ?", Supplier.last.id]), "this should be @sf.supplier_supply"
   end
 
   def test_suppply
     create_supplier_supplies
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     assert_equal @sf.supply, Supply.find(Supply.last.id), "this should be @sf.supply"
   end
 
   def test_supplier
     create_supplier_supplies
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     assert_equal @sf.supplier, Supplier.find(Supplier.last.id), "this should be @sf.supplier"
   end
 
   def test_before_update
     create_supplier_supplies
-    flunk "stock input must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     @last_sf = StockFlow.last
     assert !@last_sf.save, "@last_sf should NOT be able to save because update is blocked"
   end
   
   def test_unit_price
     create_supplier_supplies
-    flunk "stock input must be done to perform this test" unless new_stock_flow(Supply.last,Supplier.last,true,10)
+    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
     assert_equal StockFlow.last.unit_price, StockFlow.last.fob_unit_price * (1+StockFlow.last.tax_coefficient/100), "these two should be equal"
   end
 end

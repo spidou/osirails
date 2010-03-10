@@ -9,7 +9,7 @@ class ConsumableTest < ActiveSupport::TestCase
   
   def setup 
     @supply_category = ConsumableCategory.new(:name => "root")
-    flunk "@supply_category should be valid to perform the next tests" unless @supply_category.save    
+    flunk "@supply_category should be valid" unless @supply_category.save    
     @supply = Consumable.new
     @supply.valid?   
   end  
@@ -69,17 +69,17 @@ class ConsumableTest < ActiveSupport::TestCase
     create_supplier_supplies
     assert_equal Consumable.restockables, Consumable.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
 
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,10)
+    flunk "stock flow must be saved" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,10)
     sleep(1)
     
     assert_equal Consumable.restockables, Consumable.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
     
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,3)
+    flunk "stock flow must be saved" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,3)
     sleep(1)
     
     assert_equal Consumable.restockables, Consumable.find(:all), "restockables are all supplies as their stock are 0 (under threshold*1.1)"
    
-    flunk "stock flow must be saved with success to perform this test method" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,12)
+    flunk "stock flow must be saved" unless new_stock_flow(@pvc,@pvc_ss.supplier,true,12)
     
     assert Consumable.restockables != Consumable.find(:all), "restockables are NOT all supplies as @pvc is not a restockable anymore"
     assert !Consumable.restockables.include?(Consumable.find(@pvc.id)), "@pvc should NOT be included in restockables as its stock is 25 (above threshold*1.1)"

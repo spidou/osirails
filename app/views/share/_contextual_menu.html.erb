@@ -1,7 +1,16 @@
-<div id="contextual_menu_container">
+<% pinned = cookies[:pin_status]||'not_pinned' %>
+
+<div id="contextual_menu_container" class="<%= pinned %>_menu">
+  <div id="contextual_menu_actions">
+    <%= link_to_function image_tag( "reduce_button_16x16.png", :title => hide_menu = 'Cacher le menu', :alt => hide_menu ), 
+                                    'toggle_contextual_menu($(contextual_menu_toggle_button));',
+                                    :id => 'reduce_button_link' %>
+    <%= link_to_function image_tag( "#{pinned}_16x16.png", :title => pin_menu = 'Épingler le menu', :alt => pin_menu ),
+                                    'toggle_pin_contextual_menu(this);' %>
+  </div>
   <div class="shown_contextual_menu" id="contextual_menu_toggle_button">
     <span id="status_background_contextual_menu">
-      <span id="status_text_contextual_menu">Cacher le menu</span>
+      <span id="status_text_contextual_menu">Afficher le menu</span>
     </span>
   </div>
   <div id="contextual_menu">

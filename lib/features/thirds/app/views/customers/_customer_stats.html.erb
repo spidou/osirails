@@ -1,11 +1,11 @@
 <h3>Statistiques</h3>
 <p>
-  <label>Nombre de ventes au total :</label>
-  <strong><%= "@order.customer.orders.size" %></strong>
+  <label>Nombre de ventes (terminées&#160;/&#160;total) :</label>
+  <strong><%= "#{@order.customer.terminated_orders.size} / #{@order.customer.orders.size}" %></strong>
 </p>
 <p>
   <label>Client depuis le :</label>
-  <strong><%= @order.customer.created_at.strftime("%d %B %Y") %></strong>
+  <strong><%= @order.customer.created_at.to_date.humanize %></strong>
 </p>
 <p>
   <label>Note :</label>
@@ -22,10 +22,10 @@
     <td>Ratio de la marge réalisée</td>
   </tr>
   <tr>
-    <td>?</td>
-    <td>?</td>
-    <td>?</td>
-    <td>?</td>
-    <td>?</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
 </table>
