@@ -5,9 +5,7 @@
 <h1>Signaler que le bon de livraison a été signé par le client</h1>
 
 <div class="presentation_medium">
-  <table>
-    <%= render :partial => 'delivery_notes', :object => [ DeliveryNote.find(@delivery_note.id) ] %>
-  </table>
+  <%= render :partial => 'delivery_notes', :object => [ DeliveryNote.find(@delivery_note.id) ] %>
   
 	<% form_for @delivery_note, :url => { :controller => "delivery_notes", :action => "sign", :order_id => @order.id }, :html => { :multipart => true }, :method => :put do |form| %>
     <%= form.error_messages %>

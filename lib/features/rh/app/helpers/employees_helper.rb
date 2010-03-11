@@ -55,7 +55,7 @@ module EmployeesHelper
   end
   
   def display_employee_seniority(hire_date)
-    return "contrat de travail non établis" if hire_date.nil?
+    return "Contrat de travail non défini" if hire_date.nil?
     day    = (Date.today - hire_date).to_i
     year   = day/365.25                # 1.year/60/60/24 == 365.25
     month  = day/30                    # 1.month/60/60/24 == 30

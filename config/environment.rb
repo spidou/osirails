@@ -116,6 +116,7 @@ Rails::Initializer.run do |config|
   config.gem 'htmlentities' #TODO freeze all gem dependencies
 end
 
+require 'version'
 require 'contextual_menu_manager'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment

@@ -220,4 +220,8 @@ class GraphicItem < ActiveRecord::Base
     
     gisi.id unless gisi.nil?
   end
+  
+  def short_description
+    description.size <= 100 ? description : description[0..100] + "[...]"
+  end
 end

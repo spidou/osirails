@@ -29,10 +29,14 @@ module ActionView
         options_for_select.join("\n")
       end
       
-      def collection_select_with_option_groups(object, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil)
-        html = "<select name='#{object}[#{method}]' id='#{object}_#{method}'>"
-        html << option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key)
-        html << "</select>"
+      def collection_select_with_option_groups(object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, options = {})
+        html = ""
+        html << "<span class=\"fieldWithErrors\">" if options[:object].errors.on(method)
+        html <<   "<select name='#{object_name}[#{method}]' id='#{object_name}_#{method}'>"
+        html <<     "<option value=\"\">#{options[:include_blank]}</option>" if options[:include_blank]
+        html <<     option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key)
+        html <<   "</select>"
+        html << "</span>" if options[:object].errors.on(method)
         html
       end
       
@@ -208,8 +212,8 @@ module ActionView
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
       end
       
-      def collection_select_with_option_groups(method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil)
-        @template.collection_select_with_option_groups(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key)
+      def collection_select_with_option_groups(method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, options = {})
+        @template.collection_select_with_option_groups(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key, options.merge(:object => @object))
       end
       
       # Returns either the edit_tag or the view_tag.

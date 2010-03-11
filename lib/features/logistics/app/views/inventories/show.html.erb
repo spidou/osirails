@@ -21,25 +21,27 @@
 
 <div>
   <% unless @supplies.empty? %>
-    <%= "<table class='#{@supply_type.name.tableize.singularize}'>" %>
-      <tr>
-        <th rowspan='2'>Cat&eacute;gorie</th>
-        <th rowspan='2'>Sous cat&eacute;gorie</th>
-        <th rowspan='2'>R&eacute;f.</th>
-        <th rowspan='2'>D&eacute;signation</th>
-        <th rowspan='2'>Fournisseurs</th>
-        <th colspan='4'>Stock/fournisseur</th>
-        <th colspan='4'>Stock total</th>
-        <tr>          <th>Quantit&eacute;</th>                <th>Grandeur</th>
-          <th>Masse</th>   
-          <th>Valeur</th>   
-          <th>Quantit&eacute;</th>                <th>Grandeur</th>
-          <th>Masse</th>   
-          <th>Valeur</th>     
-        </tr>
-      </tr>      
-    <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
-    </table>
+    <div class="autoscroll">
+      <table class="<%= @supply_type.name.tableize.singularize %>">
+        <tr>
+          <th rowspan='2'>Cat&eacute;gorie</th>
+          <th rowspan='2'>Sous cat&eacute;gorie</th>
+          <th rowspan='2'>R&eacute;f.</th>
+          <th rowspan='2'>D&eacute;signation</th>
+          <th rowspan='2'>Fournisseurs</th>
+          <th colspan='4'>Stock/fournisseur</th>
+          <th colspan='4'>Stock total</th>
+          <tr>            <th>Quantit&eacute;</th>                  <th>Grandeur</th>
+            <th>Masse</th>   
+            <th>Valeur</th>   
+            <th>Quantit&eacute;</th>                  <th>Grandeur</th>
+            <th>Masse</th>   
+            <th>Valeur</th>     
+          </tr>
+        </tr>      
+      <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
+      </table>
+    </div>
   <% else %>
     <p>Aucune fourniture disponible &agrave; cette date</p>
   <% end %>

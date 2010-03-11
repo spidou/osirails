@@ -88,12 +88,12 @@ table img {
 }
 */
 
-tr:hover > td {
+table tr:hover > td {
 	background-color: #ffe6c6;
 	color: #3F3F3F;
 }
 
-tr:hover > td > a {
+table tr:hover > td > a {
 	text-decoration:underline;
 }
 
@@ -949,6 +949,10 @@ width: 50px ! important;
 	background:white;
 }
 
+#content_page > div div.autoscroll {
+  overflow: auto;
+}
+
 .alignment {
 	padding:5px 10px 5px 10px;
 }
@@ -978,6 +982,7 @@ div label.skip_presentation {
 #content_page > div label {
 	text-align:right;
 	display:inline-block;
+	min-height: 22px;
 }
 
 #content_page > div form p input[type=text],
@@ -1006,7 +1011,7 @@ div label.skip_presentation {
   background: #e99727;
   border: 1px solid #737373;
   padding: 8px 10px 8px 10px;
-  margin: 10px -8px -8px -8px;
+  margin: 10px -5px -5px -5px;
 }
 
 /* #content_page > div .resource {
@@ -1049,6 +1054,7 @@ div label.skip_presentation {
   -moz-border-radius: 2px;
   -moz-box-shadow: 0px 0px 1px rgba(0,0,0,0.4);
   width: 200px;
+  min-height: 15px;
   max-height: 200px;
   overflow: auto;
 }

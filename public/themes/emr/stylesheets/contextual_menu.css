@@ -12,7 +12,7 @@
 }
 
 #content_page.with_pinned_menu{
-  margin-right:255px;
+  padding-right:260px;
 }
 
 #contextual_menu_container{
@@ -22,7 +22,7 @@
 }
 
 #contextual_menu_container.pinned_menu{
-  top: 12px;
+  top: 9px;
   right: 16px;
 }
 

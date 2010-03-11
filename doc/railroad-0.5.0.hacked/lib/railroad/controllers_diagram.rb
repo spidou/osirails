@@ -20,7 +20,7 @@ class ControllersDiagram < AppDiagram
     STDERR.print "Generating controllers diagram\n" if @options.verbose
 
     files = Dir.glob("app/controllers/**/*_controller.rb") - @options.exclude
-    files += Dir.glob("**/**/**/app/controllers/**/*_controller.rb")  ## hacked by Mathieu Fontaine
+    files += Dir.glob("lib/**/**/app/controllers/**/*_controller.rb")  ## hacked by Mathieu Fontaine
     files << 'app/controllers/application.rb'
     files.each do |f|
       STDERR.print "\t#{f}\n" if @options.verbose                     ## hacked by Mathieu Fontaine

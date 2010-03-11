@@ -66,15 +66,6 @@ class Memorandum < ActiveRecord::Base
     user = User.find(memorandum.user_id)
     "#{user.employee.first_name} #{user.employee.last_name}"
   end
-      
-  # This method permit to structured date
-  def Memorandum.get_structured_date(memorandum)
-    if memorandum.published_at.nil?
-      memorandum.updated_at.strftime('%d %B %Y')
-    else
-      memorandum.published_at.strftime('%d %B %Y')
-    end
-  end
   
   # This method permit to color memorandum list in table
   # 604800 respond_to one week period in seconds

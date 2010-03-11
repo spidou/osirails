@@ -203,13 +203,15 @@ class PressProofsController < ApplicationController
   end
   
   def add_mockup
+    press_proof          = params[:press_proof_id] ? PressProof.find(params[:press_proof_id]) : PressProof.new
     graphic_item_version = GraphicItemVersion.find(params[:mockup_version_id])
     position             = params[:position].to_i
     
     render :update do |page|
       page.insert_html :bottom, "droppable_div", :partial => 'press_proofs/selected_graphic_item_version',
                                                  :object  => graphic_item_version,
-                                                 :locals  => { :position => position }
+                                                 :locals  => { :position    => position,
+                                                               :press_proof => press_proof }
     end
   end
   

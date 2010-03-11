@@ -3,8 +3,8 @@ module SendedMemorandumsHelper
   # This method permit to view a memorandum
   def view_sended_memorandum(memorandum)    
     view = []
-    view << "<p><strong>Object : </strong>#{memorandum.subject}</p>"
-    view << "<p><strong>Date : </strong>#{Memorandum.get_structured_date(memorandum)}</p>"
+    view << "<p><strong>Objet : </strong>#{memorandum.subject}</p>"
+    view << "<p><strong>Publiée le : </strong>#{memorandum.published_at.humanize}</p>"
     view << "<p><strong>Destinataire : </strong>#{Memorandum.get_recipient(memorandum)}</p>"
     view << "<hr/>"
     view << memorandum.text
@@ -107,20 +107,22 @@ module SendedMemorandumsHelper
     sended_memorandums = []
     sended_memorandums << "<table>"
     sended_memorandums << "<tr>"
-    sended_memorandums << "<th>Titre de la note de service</th>"
-    sended_memorandums << "<th>Date de publication</th>"
+    sended_memorandums << "<th>Titre</th>"
+    sended_memorandums << "<th>Objet</th>"
+    sended_memorandums << "<th>Publié le</th>"
     sended_memorandums << "<th>Action</th>"
     sended_memorandums << "</tr>"
     
     memorandums.each do |memorandum|
       
-      published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publiée" : "#{Memorandum.get_structured_date(memorandum)}")
+      published = ( memorandum.published_at.nil? ? "Cette note de service n'est pas publiée" : "#{memorandum.published_at.humanize}")
       show_button = memorandum_link(memorandum, :link_text => "")
       edit_button = edit_memorandum_link(memorandum, :link_text => "") unless memorandum.published?
       period_memorandum = Memorandum.color_memorandums(memorandum)
       
       sended_memorandums << "<tr title='#{memorandum.subject}' class='#{period_memorandum}'>"
       sended_memorandums << "<td>#{memorandum.title}</td>"
+      sended_memorandums << "<td>#{memorandum.subject}</td>"
       sended_memorandums << "<td>#{published}</td>"
       sended_memorandums << "<td style='width: 70px;'>#{show_button} #{edit_button}</td>"
     end

@@ -22,9 +22,8 @@ module ApplicationHelper
   end
   
   def display_version
-    version = `#{RAILS_ROOT}/current_version.sh`
     if RAILS_ENV != 'production' or params[:debug]
-      "<span class=\"version\">#{version}<br/>in #{RAILS_ENV}</span>"
+      "<span class=\"version\">v#{Osirails::VERSION}<br/>#{RAILS_ENV}</span>"
     end
   end
   

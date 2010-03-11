@@ -22,7 +22,7 @@ class ModelsDiagram < AppDiagram
     STDERR.print "Generating models diagram\n" if @options.verbose
     files = Dir.glob("app/models/**/*.rb")
     files += Dir.glob("vendor/plugins/**/app/models/*.rb") if @options.plugins_models
-    files += Dir.glob("**/**/**/app/models/*.rb")               ## hacked by Mathieu Fontaine
+    files += Dir.glob("lib/**/**/app/models/*.rb")               ## hacked by Mathieu Fontaine
     files -= @options.exclude
     files.each do |f|
       STDERR.print "\t(#{f})\n" if @options.verbose             ## hacked by Mathieu Fontaine
@@ -36,10 +36,7 @@ class ModelsDiagram < AppDiagram
   def load_classes
     begin
       disable_stdout
-      files = Dir.glob("app/models/**/*.rb")
-      files += Dir.glob("vendor/plugins/**/app/models/*.rb") if @options.plugins_models
-      files += Dir.glob("**/**/**/app/models/*.rb")             ## hacked by Mathieu Fontaine
-      files -= @options.exclude
+      files = Dir.glob("app/models/**/*.rb") - @options.exclude
       files.each {|m| require m }
       enable_stdout
     rescue LoadError

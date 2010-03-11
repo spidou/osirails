@@ -6,10 +6,13 @@
  <%= received_memorandums_link %>
 <% end %>
 
+<h1>Les notes de services envoy&eacute;es</h1>
+
+<div>
 <% if Memorandum.can_list?(current_user) and !@sended_memorandums.empty?%>
-<h1>Les notes de services envoy&eacute;s</h1>
-  <div>
-    <%= show_sended_memorandums(@sended_memorandums) %>
-    <%= will_paginate @sended_memorandums, :param_name => :memorandum %>
-  </div>
+  <%= show_sended_memorandums(@sended_memorandums) %>
+  <%= will_paginate @sended_memorandums, :param_name => :memorandum %>
+<% else %>
+  <p>Aucune note de service n'a été trouvée.</p>
 <% end %>
+</div>

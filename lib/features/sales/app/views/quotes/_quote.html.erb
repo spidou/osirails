@@ -49,46 +49,13 @@ excess_quote_items  = quote.quote_items.select{ |q| q.product.nil? }
     <h2 class="quote_body"><%= quote_headers[:quote_body] %></h2>
     <div class="quote_body section_nav">
       <%= form.error_messages unless quote_errors[:quote_body].blank? %>
-      <table id="quote_items" class="sales_table">
-        <tr>
-          <th>Réf.</th>
-          <th>Désignation</th>
-          <th>Côtes</th>
-          <th>P.U.<br/>Brut HT</th>
-          <th>Rem.<br/>(%)</th>
-          <th>P.U.<br/>Net HT</th>
-          <th>Qté</th>
-          <th>Total<br/>HT</th>
-          <th>TVA</th>
-          <th>Total<br/>TTC</th>
-          <% if is_form_view? %>
-            <th>Actions</th>
-          <% end %>
-        </tr>
-        <%= render :partial => 'quote_items/quote_item', :collection => quote.quote_items %>
-        <%= render :partial => 'quote_items/quote_item', :object => nil, :locals => { :quote => quote } %>
-        
-        <%= render :partial => 'quotes/quote_aggregates', :object => quote, :locals => { :form => form } %>
-      </table>
+      <%= render :partial => 'quote_body', :object => quote, :locals => { :form => form } %>
     </div>
     
     <h2 class="quote_footer"><%= quote_headers[:quote_footer] %></h2>
     <div class="quote_footer section_nav">
       <%= form.error_messages unless quote_errors[:quote_footer].blank? %>
-      <p>
-        <%= form.label :sales_terms %>
-        <%= form.form_or_view(form.text_field(:sales_terms, :size => 100), :sales_terms) %>
-      </p>
-
-      <p>
-        <%= form.label :validity_delay %>
-        <%= form.form_or_view(form.text_field(:validity_delay, :size => 2), :validity_delay) %> <%= form.form_or_view(form.select(:validity_delay_unit, Quote::VALIDITY_DELAY_UNITS), :validity_delay_unit) %>
-      </p>
-
-      <p>
-        <%= form.label :deposit, 'Acompte (%) :' %>
-        <%= form.form_or_view(form.text_field(:deposit, :value => quote.deposit.to_f.round_to(2).to_s(2), :size => 5), strong(quote.deposit.to_f.round_to(2).to_s(2))) %>
-      </p>
+      <%= render :partial => 'quote_footer', :object => quote, :locals => { :form => form } %>
     </div>
     
     <%= form.form_buttons %>

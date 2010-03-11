@@ -17,7 +17,7 @@
 <div class='presentation_medium'>
 
 <% if @employee.job_contract.start_date.nil?%>
-  <p>le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;finis</p>
+  <p>Le contrat de travail de l&apos;employ&eacute; n&apos;est pas d&eacute;fini.</p>
 <% else %>
   <% form_tag({:url => employee_leaves_path(@view_cancelled)}, { :method => :get ,:id => "leave_year_change" }) do %>
     <p>Liste des cong&eacute;s pay&eacute;s pour l&apos;ann&eacute;e <%= get_leave_years_select(@employee, @year) %></p>

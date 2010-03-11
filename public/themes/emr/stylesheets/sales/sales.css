@@ -240,7 +240,7 @@ table.sales_table tr.aggregates.global {
 }
 
 #quote_header #contact_container {
-  min-width: 814px;
+  display: block;
 }
 
 #quote_header #contact_container label {

@@ -50,7 +50,7 @@ module CheckingsHelper
   end
   
   def cancel_image
-    image_tag("delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
+    image_tag("cancel_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
   end
   
   def override_image

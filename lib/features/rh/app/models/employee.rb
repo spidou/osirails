@@ -29,10 +29,10 @@ class Employee < ActiveRecord::Base
   @@form_labels[:avatar]                  = "Photo :"
   
   has_attached_file :avatar, 
-                    :styles => { :thumb => "100x100#" },
-                    :path => ":rails_root/assets/employees/:id/avatar/:style.:extension",
-                    :url => "/employees/:id.:extension",
-                    :default_url => "#{$CURRENT_THEME_PATH}/images/default_avatar.png"
+                    :styles       => { :thumb => "100x100#" },
+                    :path         => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :url          => "/employees/:id.:extension",
+                    :default_url  => ":current_theme_path/images/default_avatar.png"
   
   # Relationships
   belongs_to :family_situation

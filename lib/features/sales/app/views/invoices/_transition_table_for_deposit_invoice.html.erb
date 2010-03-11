@@ -3,25 +3,25 @@
 <h2 class="warning">Facture d'acompte en attente de création</h2>
 <p>Le devis pour cette affaire a été signé, vous pouvez créer la facture d'acompte correspondante.</p>
 
-<table>
-  <tr>
-    <th>Réf.</th>
-    <th>Émis le</th>
-    <th>Signé le</th>
-    <th>Nb Pièces</th>
-    <th>Total TTC (&euro;)</th>
-    <th>Acompte (%)</th>
-    <th>Acompte HT (&euro;)</th>
-    <th>Actions</th>
-  </tr>
-  <tr>
-    <td><%= quote.reference %></td>
-    <td><%= quote.confirmed_on.humanize %></td>
-    <td><%= quote.signed_on.humanize %></td>
-    <td><%= quote.number_of_pieces %></td>
-    <td><%= quote.net_to_paid %></td>
-    <td><%= quote.deposit %></td>
-    <td><%= quote.deposit %></td>
-    <td><%= display_transform_quote_in_invoice(quote) %></td>
-  </tr>
-</table>
+<div class="autoscroll">
+  <table>
+    <tr>
+      <th>Réf.</th>
+      <th>Émis&nbsp;le</th>
+      <th>Signé&nbsp;le</th>
+      <th>Nb Pièces</th>
+      <th>Total&nbsp;TTC&nbsp;(&euro;)</th>
+      <th>Acompte demandé&nbsp;(%)</th>
+      <th>Actions</th>
+    </tr>
+    <tr>
+      <td><%= quote.reference %></td>
+      <td><%= quote.confirmed_on.humanize %></td>
+      <td><%= quote.signed_on.humanize %></td>
+      <td><%= quote.number_of_pieces %></td>
+      <td><%= quote.net_to_paid %></td>
+      <td><%= quote.deposit %></td>
+      <td><%= display_transform_quote_in_invoice(quote) %></td>
+    </tr>
+  </table>
+</div>

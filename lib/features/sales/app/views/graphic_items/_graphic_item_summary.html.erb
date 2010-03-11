@@ -2,6 +2,8 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
 <% end -%>
 
+<% press_proof ||= nil %>
+
 <div class="resource document">
   <div class="thumb">
     <% if image||= nil %>
@@ -17,8 +19,11 @@
       <% if graphic_item_summary.class.name == "Mockup" %>
         <%= content_tag(:span, graphic_item_summary.product.name) + content_tag(:br) unless graphic_item_summary.product.name.blank? %>
       <% end %>
+      
+      <%= display_graphic_item_summary_preview_button(graphic_item_summary, press_proof) %>
+      <%= display_graphic_item_summary_download_button(graphic_item_summary) %>
+      <%= display_graphic_item_summary_view_button(graphic_item_summary) %>
       <% unless without_action||=false %>
-        <%= display_graphic_item_summary_view_button(graphic_item_summary) %>
         <%= display_graphic_item_summary_edit_button(graphic_item_summary) %>
         <%= display_graphic_item_summary_delete_button(graphic_item_summary) %>
         <%= display_graphic_item_summary_cancel_button(graphic_item_summary) %>

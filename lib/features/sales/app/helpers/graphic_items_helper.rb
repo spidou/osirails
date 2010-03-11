@@ -66,6 +66,17 @@ module GraphicItemsHelper
     link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + " " + text, path, :confirm => "Êtes-vous sûr ?")
   end
   
+  def display_graphic_item_summary_preview_button(object, press_proof = nil)
+    parent = press_proof || object.product
+    image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
+    link_to(image, object.current_image.url(:medium), :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]", :title => "#{object.name} : #{object.short_description}")
+  end
+  
+  def display_graphic_item_summary_download_button(object)
+    image = image_tag("download_16x16.png", :alt => text = "Télécharger", :title => text)
+    link_to(image, object.current_image.url(:medium))
+  end
+  
   def display_graphic_item_summary_view_button(object)
     if object.class.name == "Mockup" 
       text = "Voir cette maquette"

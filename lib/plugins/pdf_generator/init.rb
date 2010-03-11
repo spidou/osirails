@@ -7,4 +7,3 @@ Fop.check_dependencies # determine if FOP is installed in the machine when the s
 
 require 'pdf_generator_helper' 
 ActionController::Base.send(:include, PdfGeneratorHelper)
-

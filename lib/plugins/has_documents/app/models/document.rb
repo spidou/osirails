@@ -1,5 +1,6 @@
 class Document < ActiveRecord::Base
-  has_permissions :as_instance
+  has_permissions :as_instance, :instance_methods => [ :list, :view, :download, :add, :edit, :delete] # here we're setting up instance_methods just for handle methods, but real permissions are configured on DocumentType
+                                                                                                      # the metod list must be the same as the DocumentType one
   
   ## Plugins
   acts_as_taggable
@@ -36,15 +37,19 @@ class Document < ActiveRecord::Base
                                  :medium  => "640x480>",
                                  :large   => "1024x768>" },
                     :path         => ":rails_root/assets/:class/:owner_class/:owner_id/:id/:style.:extension",
-                    :url          => "/attachments/:id/:style",
-                    :default_url  => "#{$CURRENT_THEME_PATH}/images/documents/missings/:mimetype_:style.png"
+                    :url          => "/attachments/:id/:style"
   
   validates_attachment_presence :attachment
   
   attr_protected :attachment_file_name, :attachment_content_type, :attachment_file_size
   
-  cattr_accessor :forbidden_document_image_path
-  @@forbidden_document_image_path = "public/#{$CURRENT_THEME_PATH}/images/documents/forbidden.png"
+  def self.forbidden_document_image_path
+    "public#{$CURRENT_THEME_PATH}/images/documents/forbidden.png"
+  end
+  
+  def self.missing_document_image_path
+    "public#{$CURRENT_THEME_PATH}/images/documents/missing.png"
+  end
   
   def should_destroy?
     should_destroy.to_i == 1
@@ -52,6 +57,10 @@ class Document < ActiveRecord::Base
   
   def should_update?
     should_update.to_i == 1
+  end
+  
+  def short_description
+    description.size <= 100 ? description : description[0..100] + "[...]"
   end
   
 end
