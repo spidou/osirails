@@ -44,7 +44,7 @@ module CheckingsHelper
   def javascript_location_url(employee_id, date, cancelled)
     html = "window.location.href='checkings?"
     html += "employee_id="    + "'+ this.options[this.selectedIndex].value +'"
-    html += "&amp;date="      + date
+    html += "&amp;date="      + date.to_s
     html += "&amp;cancelled=" + cancelled if cancelled
     html += "'"
   end

@@ -10,7 +10,7 @@
 <div class="presentation-medium">
 
 <% if @subordinates.empty? %>
-  <p>Vous n'&ecirc;tes responsable d'aucun employ&eacute;</p>
+  <p>Vous n&apos;&ecirc;tes responsable d&apos;aucun employ&eacute;</p>
 <% else %>
   
   <h2>Semaine <%= @date.monday.cweek %> (du <%= @date.monday.strftime("%A %d %B %Y") %> au <%= @date.next_week.yesterday.strftime("%A %d %B %Y") %>)</h2>
