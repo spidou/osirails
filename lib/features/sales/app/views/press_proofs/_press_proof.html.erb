@@ -9,7 +9,7 @@
 
 <%
 press_proof_headers = {:press_proof_informations            => "Informations",
-                       :press_proof_mockups                 => "Maquettes (#{press_proof.graphic_item_versions.count})",
+                       :press_proof_mockups                 => "Maquettes (#{press_proof.press_proof_items.reject(&:should_destroy).count})",
                        :press_proof_dunnings                => "Relances (#{press_proof.dunnings.actives.count})",
                        :press_proof_additional_informations => "Informations supplémentaires"}
 
