@@ -9,28 +9,31 @@
 <div>
   <% unless @customers.empty? %>
     <table>
-      <tr>
-        <th>Nom</th> 
-        <th>Secteurs d&apos;activités</th>
-        <th>Note</th>
-        <th>Actions</th>
-      </tr>
-
-      <% for customer in @customers %>
+      <thead>
         <tr>
-          <td><%= customer.name %></td>
-          <td><%= customer.activity_sector.name unless customer.activity_sector.nil? %></td>
-          <td><%= customer.note %></td>
-          <td>
-            <%= customer_link(customer, :link_text => "") %> 
-            <%= edit_customer_link(customer, :link_text => "") %>
-            <%= delete_customer_link(customer, :link_text => "") %>
-          </td>
+          <th>Nom</th> 
+          <th>Secteurs d&apos;activités</th>
+          <th>Note</th>
+          <th>Actions</th>
         </tr>
-    <% end %>
+      </thead>
+      <tbody>
+        <% for customer in @customers %>
+          <tr>
+            <td><%= customer.name %></td>
+            <td><%= customer.activity_sector.name unless customer.activity_sector.nil? %></td>
+            <td><%= customer.note %></td>
+            <td>
+              <%= customer_link(customer, :link_text => "") %> 
+              <%= edit_customer_link(customer, :link_text => "") %>
+              <%= delete_customer_link(customer, :link_text => "") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @customers %>
   <% else %>
     <p>Aucun client n'a été trouvé</p>
   <% end %>
-  </table>
-  <%= will_paginate @customers %>
 </div>

@@ -48,6 +48,6 @@ end
 
 module ApplicationHelper
   def display_welcome_message
-    "Bienvenue, " + (current_user.employee.nil? ? current_user.username : current_user.employee.fullname)
+    "Bienvenue, #{current_user.employee_name}"
   end
 end

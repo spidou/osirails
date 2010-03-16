@@ -8,23 +8,26 @@
 
 <div>
   <table>
-    <tr>
-      <th>Nom du r&ocirc;le</th>
-      <th>Description du r&ocirc;le</th>
-      <th>Actions</th>
-    </tr>
-
-    <% for role in @roles %>
+    <thead>
       <tr>
-        <td><%=h role.name %></td>
-        <td title="<%=h role.description %>"><%=preview(role.description,30) %></td>
-        <td>
-          <%= role_link(role, :link_text => "") %>
-          <%= edit_role_link(role, :link_text => "") %>
-          <%= delete_role_link(role, :link_text => "") %>
-        </td>
+        <th>Nom du r&ocirc;le</th>
+        <th>Description du r&ocirc;le</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
+    </thead>
+    <tbody>
+      <% for role in @roles %>
+        <tr>
+          <td><%=h role.name %></td>
+          <td><%=h role.description %></td>
+          <td>
+            <%= role_link(role, :link_text => "") %>
+            <%= edit_role_link(role, :link_text => "") %>
+            <%= delete_role_link(role, :link_text => "") %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
   <%= will_paginate @roles %>
 </div>

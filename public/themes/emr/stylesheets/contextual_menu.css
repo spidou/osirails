@@ -17,8 +17,7 @@
 
 #contextual_menu_container{
   position: absolute;
-  font-size: 94%;
-  z-index: 1;
+  z-index: 5;
 }
 
 #contextual_menu_container.pinned_menu{

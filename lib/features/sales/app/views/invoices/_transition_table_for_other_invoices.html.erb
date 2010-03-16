@@ -5,27 +5,31 @@
 
 <div class="autoscroll">
   <table>
-    <tr>
-      <th>Réf.</th>
-      <th>Émis&nbsp;le</th>
-      <th>Ville</th>
-      <th>Livraison effectuée&nbsp;le</th>
-      <th>Signé&nbsp;le</th>
-      <th>Nb&nbsp;produits<br/>facturables&#160;/&#160;livrés</th>
-      <th>Nb&nbsp;produits<br/>total&nbsp;(devis)</th>
-      <th>Actions</th>
-    </tr>
-    <% for dn in delivery_notes %>
+    <thead>
       <tr>
-        <td><%= dn.reference %></td>
-        <td><%= dn.published_on.humanize %></td>
-        <td><%= dn.ship_to_address.city_name %></td>
-        <td><%= dn.delivered_delivery_intervention.delivery_at.humanize %></td>
-        <td><%= dn.signed_on.humanize %></td>
-        <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
-        <td><%= dn.associated_quote.number_of_pieces %></td>
-        <td><%= display_transform_delivery_note_in_invoice(dn) %></td>
+        <th>Réf.</th>
+        <th>Émis&nbsp;le</th>
+        <th>Ville</th>
+        <th>Livraison effectuée&nbsp;le</th>
+        <th>Signé&nbsp;le</th>
+        <th>Nb&nbsp;produits<br/>facturables&#160;/&#160;livrés</th>
+        <th>Nb&nbsp;produits<br/>total&nbsp;(devis)</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
+    </thead>
+    <tbody>
+      <% for dn in delivery_notes %>
+        <tr>
+          <td><%= dn.reference %></td>
+          <td><%= dn.published_on.humanize %></td>
+          <td><%= dn.ship_to_address.city_name %></td>
+          <td><%= dn.delivered_delivery_intervention.delivery_at.humanize %></td>
+          <td><%= dn.signed_on.humanize %></td>
+          <td><%= "#{dn.number_of_delivered_pieces} / #{dn.number_of_pieces}" %></td>
+          <td><%= dn.associated_quote.number_of_pieces %></td>
+          <td><%= display_transform_delivery_note_in_invoice(dn) %></td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 </div>

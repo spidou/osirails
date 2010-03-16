@@ -14,21 +14,21 @@ class Date
 end
 
 class Time
- #alias :strftime_nolocale :strftime
+  #alias :strftime_nolocale :strftime
 
- # constants for schedules
- DAYS = {"Lundi"=>1,"Mardi"=>2,"Mercredi"=>3,"Jeudi"=>4,"Vendredi"=>5,"Samedi"=>6,"Dimanche"=>7}
- R_DAYS = {1=>"Lundi",2=>"Mardi",3=>"Mercredi",4=>"Jeudi",5=>"Vendredi",6=>"Samedi",7=>"Dimanche"}
- DEFAULT_DAYS_ARRAY = ["",{ 'day' => "Lundi" },{ 'day' => "Mardi"},{ 'day' => "Mercredi"},{ 'day' => "Jeudi"},{ 'day' => "Vendredi"},{ 'day' => "Samedi"},{ 'day' => "Dimanche"}]
+  # constants for schedules
+  DAYS = {"Lundi"=>1,"Mardi"=>2,"Mercredi"=>3,"Jeudi"=>4,"Vendredi"=>5,"Samedi"=>6,"Dimanche"=>7}
+  R_DAYS = {1=>"Lundi",2=>"Mardi",3=>"Mercredi",4=>"Jeudi",5=>"Vendredi",6=>"Samedi",7=>"Dimanche"}
+  DEFAULT_DAYS_ARRAY = ["",{ 'day' => "Lundi" },{ 'day' => "Mardi"},{ 'day' => "Mercredi"},{ 'day' => "Jeudi"},{ 'day' => "Vendredi"},{ 'day' => "Samedi"},{ 'day' => "Dimanche"}]
 
- #def strftime(format)
- # format = format.dup
- # format.gsub!(/%a/, Date::ABBR_DAYNAMES[self.wday])
- # format.gsub!(/%A/, Date::DAYNAMES[self.wday])
- # format.gsub!(/%b/, Date::ABBR_MONTHNAMES[self.mon])
- # format.gsub!(/%B/, Date::MONTHNAMES[self.mon])
- # self.strftime_nolocale(format)
- #end
+  #def strftime(format)
+  # format = format.dup
+  # format.gsub!(/%a/, Date::ABBR_DAYNAMES[self.wday])
+  # format.gsub!(/%A/, Date::DAYNAMES[self.wday])
+  # format.gsub!(/%b/, Date::ABBR_MONTHNAMES[self.mon])
+  # format.gsub!(/%B/, Date::MONTHNAMES[self.mon])
+  # self.strftime_nolocale(format)
+  #end
 end
 
 class Array

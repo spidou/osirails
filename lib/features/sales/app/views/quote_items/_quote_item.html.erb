@@ -14,6 +14,8 @@
                                                     :onkeydown  => "if (event.keyCode == 13) { return false; }" },
                                                   { :update_id  => 'add_this_product_reference_id' } ) %>
         <%= button_to_function "Ajouter", "add_product_reference_to_quote()" %>
+        
+        <%= display_add_free_quote_item_for(quote) %>
       </td>
     </tr>
   <% end %>
@@ -27,66 +29,66 @@
         <%= quote_item.product.product_reference.reference if quote_item.product %>
       </td>
 
-      <td class="description">
+      <td class="designation">
         <% if is_form_view? %>
-          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour cette référence", :index => nil %>
+          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour ce produit", :index => nil %>
           <%= hidden_field_tag :original_name, quote_item ? quote_item.original_name : nil, :class => :input_original_name %>
           <span>
             <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
                          :onclick => "restore_original_value(this.up('.quote_item'), 'name')" ) %>
           </span>
         <% else %>
-          <%= strong h(quote_item.name) %>
+          <span class="name"><%= h(quote_item.designation) %></span>
         <% end %>
         
         <br/>
         
         <% if is_form_view? %>
-          <%= form.text_area_autoresize :description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer le corps de la description pour cette référence", :index => nil %>
+          <%= form.text_area_autoresize :description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer le corps de la description pour ce produit", :index => nil %>
           <%= hidden_field_tag :original_description, quote_item ? quote_item.original_description : nil, :class => :input_original_description %>
           <span>
             <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
                          :onclick => "restore_original_value(this.up('.quote_item'), 'description')" ) %>
           </span>
         <% else %>
-          <%= h(quote_item.description) %>
+          <span class="description"><%= h(quote_item.description) %></span>
         <% end %>
       </td>
-      <td class="dimensions">
+      
+      <% if is_form_view? %>
+        <td class="dimensions">
+          <%= form.text_field :dimensions, :size => 15, :class => :input_dimensions, :title => "Choisir les dimensions pour ce produit", :index => nil %>
+        </td>
+      <% end %>
+      
+      <td class="unit_price amount">
         <% if is_form_view? %>
-          <%= form.text_field :dimensions, :size => 15, :class => :input_dimensions, :title => "Choisir les dimensions pour cette référence", :index => nil %>
-        <% else %>
-          <%= quote_item.dimensions %>
-        <% end %>
-      </td>
-      <td class="unit_price">
-        <% if is_form_view? %>
-          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.to_f.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour cette référence", :index => nil %>
+          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.to_f.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour ce produit", :index => nil %>
         <% else %>
           <%= quote_item.unit_price.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="prizegiving">
+      <td class="prizegiving rate">
         <% if is_form_view? %>
-          <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_prizegiving, :title => "Entrer une remise pour cette référence", :index => nil %>
+          <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_prizegiving, :title => "Entrer une remise pour ce produit", :index => nil %>
         <% else %>
           <%= quote_item.prizegiving.to_f.round_to(2).to_s(2) %>
         <% end %>
       </td>
-      <td class="unit_price_with_prizegiving">
+      <td class="unit_price_with_prizegiving amount">
         <%= quote_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %>
       </td>
       <td class="quantity">
         <% if is_form_view? %>
-          <%= form.text_field :quantity, :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_quantity, :title => "Entrer la quantité pour cette référence", :index => nil %>
+          <%= form.text_field :quantity, :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_quantity, :title => "Entrer la quantité pour ce produit", :index => nil %>
         <% else %>
           <%= quote_item.quantity %>
         <% end %>
       </td>
-      <td class="total">
+      <td class="total amount">
         <%= quote_item.total.round_to(2).to_s(2) %>
       </td>
-      <td class="vat">
+      <td class="vat rate">
         <% if is_form_view? %>
           <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, { :include_blank => "" }, :onchange => "calculate(this.up('.quote_item'))", :class => :input_vat, :title => "Entrer le taux de TVA s'appliquant à cette référence", :index => nil) %>
           <%= hidden_field_tag :original_vat, quote_item ? quote_item.original_vat : nil, :class => :input_original_vat %>
@@ -98,7 +100,7 @@
           <%= quote_item.vat %>
         <% end%>
       </td>
-      <td class="total_with_taxes">
+      <td class="total_with_taxes amount">
         <%= quote_item.total_with_taxes.round_to(2).to_s(2) %>
       </td>
       

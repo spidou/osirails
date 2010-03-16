@@ -414,7 +414,7 @@ module HasSearchIndex
         search_type = "or"
       else
         attributes = args
-        search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type)    # default value for the search type if not present
+        search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type).to_s.downcase    # default value for the search type if not present
         attributes.each_key do |attribute_with_prefix|
           attribute_with_prefix = attribute_with_prefix.downcase
           attribute             = attribute_with_prefix.split(".").last
@@ -772,7 +772,7 @@ module HasSearchIndex
       # 
       def get_conditions_array_for_criterion(model, values, attribute, search_type, conditions_array=[''])
         
-        operator         = (search_type=='not')? 'and' : search_type                     # if +search_type+ is 'not', invert all actions and use 'and' search type
+        operator         = (search_type == 'not')? 'and' : search_type                     # if +search_type+ is 'not', invert all actions and use 'and' search type
         condition_text   = ""
         attribute_without_prefix = attribute.split('.').last
         

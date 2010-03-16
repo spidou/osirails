@@ -9,9 +9,15 @@ class ProductReference < ActiveRecord::Base
   validates_presence_of :name, :reference
   validates_uniqueness_of :reference
   
+  has_search_index  :only_attributes      => [:reference, :name, :description],
+                    :only_relationships   => [:product_reference_category],
+                    :main_model           => true
+  
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:reference]                   = "Référence :"
+  @@form_labels[:categories]                  = "Familles :"
+  @@form_labels[:designation]                 = "Désignation (Nom complet) :"
   @@form_labels[:name]                        = "Nom :"
   @@form_labels[:description]                 = "Description :"
   @@form_labels[:product_reference_category]  = "Famille de produit :"
@@ -57,6 +63,18 @@ class ProductReference < ActiveRecord::Base
   # This method permit to check if a reference should be deleted or not
   def can_be_destroyed?
     self.products.empty?
+  end
+  
+  def designation
+    ancestors_names.join(" ") + " " + name
+  end
+  
+  def ancestors_names
+    if product_reference_category
+      (product_reference_category.ancestors.reverse + [product_reference_category]).collect(&:name)
+    else
+      []
+    end
   end
   
   #FIXME DELETEME? Is this method really logical ?

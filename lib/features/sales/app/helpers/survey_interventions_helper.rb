@@ -1,7 +1,7 @@
 module SurveyInterventionsHelper
   
   def display_survey_interventions(survey_step)
-    collection = survey_step.survey_interventions.select{ |s| !s.new_record? }
+    collection = survey_step.survey_interventions.reject(&:new_record?)
     html = '<div id="survey_interventions">'
     unless collection.empty?
       html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
@@ -14,14 +14,21 @@ module SurveyInterventionsHelper
   
   def render_new_survey_interventions_list(survey_step)
     collection = survey_step.survey_interventions.select(&:new_record?)
-    collection_with_errors = collection.select{|s|!s.errors.empty?}
+    
+    if collection.empty?
+      collection << survey_step.survey_interventions.build( :start_date => Time.now.to_s(:db),
+                                                            :internal_actor_id => ( current_user.employee ? current_user.employee.id : nil ))
+    end
+    
+    collection_with_errors = collection.reject{ |s| !s.should_create? and s.errors.empty? }
     html =  "<div class=\"new_records\" id=\"new_survey_interventions\" #{"style=\"display:none\"" if collection_with_errors.empty?}>"# if collection.empty?}>"
     html << render(:partial => 'survey_interventions/survey_intervention', :collection => collection)
     html << "</div>"
   end
   
-  def display_survey_intervention_add_button
-    content_tag(:p, link_to_function "Nouvelle intervention", :id => :new_survey_interventions_button do |page|
+  def display_survey_intervention_add_button(survey_step)
+    style = survey_step.survey_interventions.select(&:should_create?).empty? ? "" : "display:none"
+    content_tag(:p, link_to_function "Nouvelle intervention", :id => :new_survey_interventions_button, :style => style do |page|
       page['new_survey_interventions'].show
       page['new_survey_interventions'].down('.survey_intervention').highlight.down('.should_create').value = 1
       page['new_survey_interventions_button'].hide

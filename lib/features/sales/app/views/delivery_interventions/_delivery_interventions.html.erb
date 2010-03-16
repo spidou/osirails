@@ -1,18 +1,22 @@
 <table>
-  <tr>
-    <th colspan="3">Planification</th>
-    <th colspan="3">Réalisation</th>
-    <th rowspan="2">Nb produits<br/>refusés&#160;/&#160;livrés</th>
-    <th rowspan="2">Actions</th>
-  </tr>
-  <tr>
-    <th>Planifiée le</th>
-    <th>Durée prévue</th>
-    <th>Responsable</th>
-    
-    <th>Réalisée le</th>
-    <th>Durée réelle</th>
-    <th>Responsable</th>
-  </tr>
-  <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line', :collection => delivery_interventions %>
+  <thead>
+    <tr>
+      <th colspan="3">Planification</th>
+      <th colspan="3">Réalisation</th>
+      <th rowspan="2">Nb produits<br/>refusés&#160;/&#160;livrés</th>
+      <th rowspan="2">Actions</th>
+    </tr>
+    <tr>
+      <th>Planifiée le</th>
+      <th>Durée prévue</th>
+      <th>Responsable</th>
+      
+      <th>Réalisée le</th>
+      <th>Durée réelle</th>
+      <th>Responsable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render :partial => 'delivery_interventions/delivery_intervention_in_one_line', :collection => delivery_interventions %>
+  </tbody>
 </table>

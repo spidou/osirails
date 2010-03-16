@@ -1,12 +1,16 @@
 <h2 class="warning" >Demandes de cong&eacute;s &agrave; traiter</h2>
 
 <table>
-  <tr>
-    <th>Employ&eacute;</th>
-    <th>Date / P&eacute;riode demand&eacute;e</th>
-    <th>Soumise le</th>
-    <th>Statut</th>
-    <th>Actions</th>
-  </tr>
-  <%= render :partial => "pending_leave_request", :collection => pending_leave_requests %>
+  <thead>
+    <tr>
+      <th>Employ&eacute;</th>
+      <th>Date / P&eacute;riode demand&eacute;e</th>
+      <th>Soumise le</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render :partial => "pending_leave_request", :collection => pending_leave_requests %>
+  </tbody>
 </table>

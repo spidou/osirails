@@ -5,6 +5,7 @@ class SurveyStepController < ApplicationController
   
   acts_as_step_controller
   
+  #OPTIMIZE move that method to a better place
   def new
     respond_to do |format|
       format.js { render :partial => 'survey_step/product',
@@ -13,15 +14,13 @@ class SurveyStepController < ApplicationController
     end
   end
   
-  def edit
-    @step.survey_interventions.build(:start_date => Time.now.to_s(:db), :internal_actor_id => ( current_user.employee ? current_user.employee.id : nil ))
-  end
-  
   def update
     if @step.update_attributes(params[:survey_step])
       flash[:notice] = "Les modifications ont été enregistrées avec succès"
+      redirect_to :action => :edit
+    else
+      render :action => :edit
     end
-    render :action => :edit
   end
   
   private

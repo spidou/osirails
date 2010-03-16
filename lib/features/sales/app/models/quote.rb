@@ -113,9 +113,17 @@ class Quote < ActiveRecord::Base
   end
   
   def validates_length_of_quote_items
-    if quote_items.reject{ |q| q.should_destroy? }.empty?
+    if product_quote_items.reject{ |q| q.should_destroy? }.empty?
       errors.add(:quote_item_ids, "Vous devez entrer au moins 1 produit")
     end
+  end
+  
+  def product_quote_items
+    quote_items.select(&:product)
+  end
+  
+  def free_quote_items
+    quote_items.reject(&:product)
   end
   
   def build_quote_item(quote_item_attributes)
@@ -153,7 +161,7 @@ class Quote < ActiveRecord::Base
     
     # automatically remove a product from order if quote_items do not include this product
     order.products.reject(&:new_record?).each do |p|
-      @order_products_to_remove << p unless quote_items.collect(&:product_id).include?(p.id)
+      @order_products_to_remove << p unless product_quote_items.collect(&:product_id).include?(p.id)
     end
   end
   
@@ -172,7 +180,7 @@ class Quote < ActiveRecord::Base
   end
   
   def total
-    quote_items.collect(&:total).sum
+    product_quote_items.collect(&:total).sum
   end
   
   def net
@@ -181,7 +189,7 @@ class Quote < ActiveRecord::Base
   end
   
   def total_with_taxes
-    quote_items.collect(&:total_with_taxes).sum
+    product_quote_items.collect(&:total_with_taxes).sum
   end
   
   def summon_of_taxes
@@ -195,15 +203,15 @@ class Quote < ActiveRecord::Base
   end
   
   def tax_coefficients
-    quote_items.collect(&:vat).uniq
+    product_quote_items.collect(&:vat).uniq
   end
   
   def total_taxes_for(coefficient)
-    quote_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
+    product_quote_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
   end
   
   def number_of_pieces
-    quote_items.collect(&:quantity).sum
+    product_quote_items.collect(&:quantity).sum
   end
   
   def confirm
@@ -317,6 +325,10 @@ class Quote < ActiveRecord::Base
     !new_record? and was_uncomplete?
   end
   
+  def can_be_downloaded? # with PDF generator
+    confirmed_on_was
+  end
+  
   def can_be_deleted?
     !new_record? and was_uncomplete?
   end
@@ -350,13 +362,13 @@ class Quote < ActiveRecord::Base
     end
     
     def build_or_update_quote_item(quote_item_attributes)
-      quote_item_attributes.merge(:order_id => order_id)
+      attributes = quote_item_attributes.merge(:order_id => order_id)
       
-      if quote_item_attributes[:id].blank?
-        quote_item = quote_items.build(quote_item_attributes)
+      if attributes[:id].blank?
+        quote_item = quote_items.build(attributes)
       else
-        quote_item = quote_items.detect { |x| x.id == quote_item_attributes[:id].to_i }
-        quote_item.attributes = quote_item_attributes
+        quote_item = quote_items.detect { |x| x.id == attributes[:id].to_i }
+        quote_item.attributes = attributes
       end
       
       return quote_item

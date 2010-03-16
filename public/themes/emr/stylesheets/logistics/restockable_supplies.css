@@ -1,17 +1,18 @@
-table tr.insufficient_stock {
-	color: white;
-	background-color: #B0383E;
-}
-
-table tr.insufficient_stock:hover {
-  color: inherit;
-}
-
-table tr.warning_stock {
-  color: white;
-	background-color: #E99727;
-}
-
-table tr.warning_stock:hover {
-  color: inherit;
-}
+//table tr.insufficient_stock {
+//	color: white;
+//	background-color: #B0383E;
+//}
+//
+//table tr.insufficient_stock:hover {
+//  color: inherit;
+//  background-color: inherit;
+//}
+//
+//table tr.warning_stock {
+//  color: white;
+//	background-color: #E99727;
+//}
+//
+//table tr.warning_stock:hover {
+//  color: inherit;
+//}

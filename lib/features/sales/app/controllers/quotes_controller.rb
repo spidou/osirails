@@ -12,7 +12,7 @@ class QuotesController < ApplicationController
   def show
     @quote = Quote.find(params[:id])
     
-    if @quote.uncomplete? and params[:format] == "pdf"
+    if !@quote.can_be_downloaded? and params[:format] == "pdf"
       error_access_page(404)
       return
     end

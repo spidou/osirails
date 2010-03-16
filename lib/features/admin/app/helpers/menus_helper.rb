@@ -88,7 +88,7 @@ module MenusHelper
       end
       permission = filter.detect {|n| n.has_permissions_id == menu.id}
       methods    = permission.permission_methods.collect {|method| get_check_box(permission, method)}.join(' ')
-      result    += "<li class='category' title='#{ menu.name }'>#{ menu.title }<span class='action'>#{ methods }</span></li>"
+      result    += "<li class='category' title='#{ menu.name }'>#{ link_to(menu.title, edit_menu_permission_path(menu), :title => 'Modifier les permissions de cet élément') }<span class='action'>#{ methods }</span></li>"
       result    += children || ''
     end
     result += "</ul>"

@@ -8,7 +8,7 @@ set :default_stage, "staging"
 
 set :application,     "osirails"
 set :domain,          "my-server"
-set :repository,      "git@github.com:spidou/osirails.git"
+set :repository,      "/path/to/repo.git"
 set :use_sudo,        false
 set :deploy_to,       "/path/to/#{application}"
 set :user,            "user"
@@ -50,4 +50,38 @@ task :after_update_code, :roles => :app do
 
   # setup rights for 'www-data' on the 'deploy_to' folder
   sudo "chown #{web_user}:#{web_group} -R #{deploy_to}"
+end
+
+namespace :deploy do
+  namespace :web do
+    desc "Present a maintenance page to visitors"
+    task :disable, :roles => :web do
+      # invoke with  
+      # UNTIL="16:00 MST" REASON="a database upgrade" cap deploy:web:disable
+
+      on_rollback { rm "#{shared_path}/system/maintenance.html" }
+
+      require 'erb'
+      deadline, reason = ENV['UNTIL'], ENV['REASON']
+      maintenance = ERB.new(File.read("./app/views/layouts/maintenance.html.erb")).result(binding)
+
+      put maintenance, "#{shared_path}/system/maintenance.html", :mode => 0644
+    end
+  end
+end
+
+namespace :passenger do
+  desc "Display Passenger memory stats"
+  task :memory, :roles => :app do
+    run "passenger-memory-stats" do |channel, stream, data|
+      puts data
+    end
+  end
+
+  desc "Display Passenger general info"
+  task :status, :roles => :app do
+    run "passenger-status" do |channel, stream, data|
+      puts data
+    end
+  end
 end

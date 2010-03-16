@@ -106,12 +106,15 @@ module SendedMemorandumsHelper
   def show_sended_memorandums(memorandums)
     sended_memorandums = []
     sended_memorandums << "<table>"
+    sended_memorandums << "<thead>"
     sended_memorandums << "<tr>"
     sended_memorandums << "<th>Titre</th>"
     sended_memorandums << "<th>Objet</th>"
     sended_memorandums << "<th>Publié le</th>"
     sended_memorandums << "<th>Action</th>"
     sended_memorandums << "</tr>"
+    sended_memorandums << "</thead>"
+    sended_memorandums << "<tbody>"
     
     memorandums.each do |memorandum|
       
@@ -125,7 +128,9 @@ module SendedMemorandumsHelper
       sended_memorandums << "<td>#{memorandum.subject}</td>"
       sended_memorandums << "<td>#{published}</td>"
       sended_memorandums << "<td style='width: 70px;'>#{show_button} #{edit_button}</td>"
+      sended_memorandums << "</tr>"
     end
+    sended_memorandums << "</tbody>"
     sended_memorandums << "</table>"
   end
   

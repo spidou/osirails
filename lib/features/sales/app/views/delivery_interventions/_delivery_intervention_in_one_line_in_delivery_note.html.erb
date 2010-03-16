@@ -1,15 +1,20 @@
-<% intervention = delivery_intervention_in_one_line_in_delivery_note %>
+<%
+intervention = delivery_intervention_in_one_line_in_delivery_note
 
-<td><%= intervention.scheduled_delivery_at.humanize %><br/>(durée : <%= intervention.scheduled_intervention_duration %>)</td>
+if intervention.realized? and intervention.delivered?
+  realize_text  = "#{intervention.delivery_at.humanize}<br/>(durée : #{intervention.intervention_duration})"
+  realize_class = 'delivered'
+elsif intervention.realized? and intervention.undelivered?
+  realize_text  = "Non effectuée<br/>(#{intervention.comments})"
+  realize_class = 'undelivered'
+elsif intervention.postponed?
+  realize_text  = "REPORTÉ"
+  realize_class = 'postponed'
+else
+  realize_text  = "-"
+  realize_class = ""
+end
+%>
 
-<td>
-  <% if intervention.realized? and intervention.delivered? %>
-    <%= intervention.delivery_at.humanize %><br/>(durée : <%= intervention.intervention_duration %>)
-  <% elsif intervention.realized? and intervention.undelivered? %>
-    <%= "Non effectuée" + "<br/>(#{intervention.comments})"%>
-  <% elsif intervention.postponed? %>
-    <%= "REPORTÉ" %>
-  <% else %>
-    <%= "-" %>
-  <% end %>
-</td>
+<td class="scheduled_at"><%= intervention.scheduled_delivery_at.humanize %><br/>(durée : <%= intervention.scheduled_intervention_duration %>)</td>
+<td class="realized_at <%= realize_class %>"><%= realize_text %></td>

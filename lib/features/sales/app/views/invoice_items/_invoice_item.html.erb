@@ -7,7 +7,7 @@
     <% product = invoice_item.product %>
     
     <td><%= invoice_item.product.reference %></td>
-    <td class="description"><%= strong(invoice_item.name) %><br/><%= invoice_item.description %></td>
+    <td class="designation"><span class="name"><%= invoice_item.name %></span><br/><span class="description"><%= invoice_item.description %></span></td>
     <td><%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %></td>
     <td class="from_quote"><%= product.prizegiving.to_f.round_to(2).to_s(2) %></td>
     <td class="from_quote"><%= product.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></td>
@@ -31,7 +31,7 @@
   <% else %>
     
     <td>-</td>
-    <td class="description"><%= form.form_or_view(form.text_field(:name, :index => nil), :name) %><br/><%= form.form_or_view(form.text_area_autoresize(:description, :index => nil), :description) %></td>
+    <td class="designation"><span class="name"><%= form.form_or_view(form.text_field(:name, :index => nil), :name) %></span><br/><span class="description"><%= form.form_or_view(form.text_area_autoresize(:description, :index => nil), :description) %></span></td>
     <td><%= form.form_or_view(form.text_field(:unit_price, :value => invoice_item.unit_price.to_f.round_to(2).to_s(2), :size => 7, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_unit_price, :index => nil), :unit_price) %></td>
     <td colspan="4" class="from_quote">-</td>
     <td><%= form.form_or_view(form.text_field(:quantity, :size => 4, :onkeyup => "calculate(this.up('.invoice_item'))", :class => :input_quantity, :index => nil), :quantity) %></td>

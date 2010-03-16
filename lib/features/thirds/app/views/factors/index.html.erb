@@ -7,26 +7,29 @@
 <div>
   <% unless @factors.empty? %>
     <table>
-      <tr>
-        <th>Nom</th> 
-        <th>Secteurs d&apos;activités</th>
-        <th>Actions</th>
-      </tr>
-
-      <% for factor in @factors %>
+      <thead>
         <tr>
-          <td><%= factor.name %></td>
-          <td><%= factor.fullname %></td>
-          <td>
-            <%= factor_link(factor, :link_text => "") %> 
-            <%= edit_factor_link(factor, :link_text => "") %>
-            <%= delete_factor_link(factor, :link_text => "") %>
-          </td>
+          <th>Nom</th> 
+          <th>Secteurs d&apos;activités</th>
+          <th>Actions</th>
         </tr>
-    <% end %>
+      </thead>
+      <tbody>
+        <% for factor in @factors %>
+          <tr>
+            <td><%= factor.name %></td>
+            <td><%= factor.fullname %></td>
+            <td>
+              <%= factor_link(factor, :link_text => "") %> 
+              <%= edit_factor_link(factor, :link_text => "") %>
+              <%= delete_factor_link(factor, :link_text => "") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @factors %>
   <% else %>
     <p>Aucune société d'affacturage n'a été trouvée</p>
   <% end %>
-  </table>
-  <%= will_paginate @factors %>
 </div>

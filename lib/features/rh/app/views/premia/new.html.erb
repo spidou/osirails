@@ -12,10 +12,10 @@
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 
 <div class="presentation_small">
-
+  <h2>Prime</h2>
+  
   <% form_for([@employee,@premium]) do |f| %>
     <%=f.error_messages%> 
-    <h2>Prime</h2>
     <p>
       <%= f.label :amount %>
       <%= f.text_field :amount, { :size => 10, :maxlength => 10 } %>

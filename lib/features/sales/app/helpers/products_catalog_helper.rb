@@ -38,7 +38,7 @@ module ProductsCatalogHelper
     get_categories_columns << "<option style=\"font-weight:bold\" selected=\"selected\" value=\"0\">Il y a " + pluralize(collection.size, "#{first_select}famille", "#{first_select}familles") + "</option>"
     
     collection.each do |category|
-      get_categories_columns << "<option value=\"#{category.id}\" title=\"#{category.name}\">"+truncate("#{category.name}", 18)+" (#{category.product_references_count})</option>"
+      get_categories_columns << "<option value=\"#{category.id}\" title=\"#{category.name}\">#{category.name} (#{category.product_references_count})</option>"
     end
     get_categories_columns << "</select>"
   end
@@ -49,7 +49,7 @@ module ProductsCatalogHelper
     get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog catalog_3_columns\" onclick=\"refreshReferenceInformation(this)\" >" +
       "<option style=\"font-weight:bold\" selected=\"selected\" value=\"0\" >Il y a " + pluralize(references.size, "reference", "references") + "</option>"
     references.each do |reference|
-      get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">"+truncate("#{reference.name}", 18)+" (#{reference.products_count})</option>"
+      get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">#{reference.name} (#{reference.products_count})</option>"
     end
     get_reference_column << "</select>"
   end

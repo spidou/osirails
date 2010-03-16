@@ -5,13 +5,14 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
 %>
 
 <tr class="quote<%= status %>"<%= title %>>
-  <td><%= quote.reference %></td>
-  <td><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
-  <td><%= quote.contact.fullname %></td>
-  <td><%= quote.number_of_pieces %></td>
-  <td><%= quote.net_to_paid.round_to(2).to_s(2) %></td>
-  <td><%= quote.deposit %></td>
-  <td><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
-  <td><%= quote.signed_on.humanize if quote.signed_on %></td>
+  <td class="reference"><%= quote.reference %></td>
+  <td class="confirmed_on"><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
+  <td class="contact"><%= quote.contact.fullname %></td>
+  <td class="number_of_pieces"><%= quote.number_of_pieces %></td>
+  <td class="net_to_paid"><%= quote.net_to_paid.round_to(2).to_s(2) %></td>
+  <td class="deposit"><%= quote.deposit %></td>
+  <td class="sended_on"><%= "#{quote.sended_on.humanize} (#{quote.send_quote_method.name})" if quote.sended_on and quote.send_quote_method %></td>
+  <td class="signed_on"><%= quote.signed_on.humanize if quote.signed_on %></td>
+  <td class="status"><%= quote.status %></td>
   <td class="actions"><%= display_quote_action_buttons(@order, quote) %></td>
 </tr>

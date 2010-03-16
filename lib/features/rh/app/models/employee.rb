@@ -155,13 +155,12 @@ class Employee < ActiveRecord::Base
   
   # Method to get leave requests that he has to check, as responsible
   def get_leave_requests_to_check
-    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)",
-                                            LeaveRequest::STATUS_SUBMITTED, self.subordinates],
+    LeaveRequest.find(:all, :conditions => ["status = ? AND employee_id IN (?)", LeaveRequest::STATUS_SUBMITTED, self.subordinates],
                             :order      => "start_date DESC")
   end
   
   # Method to get leave requests that he refused, as responsible or director
-  def get_leave_requests_refused_by_me
+  def get_leave_requests_refused_by_myself
     LeaveRequest.find(:all, :conditions => ["(status = ? AND responsible_id = ?) OR (status = ? AND director_id = ?) AND start_date >= ?",
                                             LeaveRequest::STATUS_REFUSED_BY_RESPONSIBLE, self.id, LeaveRequest::STATUS_REFUSED_BY_DIRECTOR, self.id, Date.today],
                             :order      => "start_date DESC")
@@ -170,22 +169,19 @@ class Employee < ActiveRecord::Base
   # Method to get all services that he is responsible of
   #
   def services_under_responsibility
-    jobs.select {|job| job.responsible and !job.service.nil?}.collect {|job| job.service}.uniq
+    jobs.select{ |job| job.responsible and !job.service.nil? }.collect{ |job| job.service }.uniq
   end
   
   # Method to get all subordinates of the employee according to the services that he is responsible of
   #
   def subordinates
-    self_and_subordinates.reject {|n| n.id == id}
+    self_and_subordinates.reject{ |n| n.id == id }
   end
   
   # Method to get all subordinates of the employee according to the services that he is responsible of, and himself
   #
   def self_and_subordinates
-    #OPTIMIZE that method using collect
-    result = []
-    services_under_responsibility.each {|service| result += service.members }
-    result.uniq
+    services_under_responsibility.collect{ |s| s.members }.flatten.uniq
   end
   
   # Method that return the employee's responsibles according to his service

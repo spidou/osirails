@@ -1,9 +1,10 @@
 <%
 intervention = survey_intervention
 id_attr = "id=\"intervention_#{intervention.id}\"" unless intervention.new_record?
+style   = "style=\"display:none\"" if intervention.should_destroy?
 %>
 
-<div class="survey_intervention resource" <%= id_attr %>>
+<div class="survey_intervention resource" <%= id_attr %> <%= style %>>
   <% unless intervention.new_record? %>
     <% fields_for intervention, :index => nil do |form| %>
       <p>

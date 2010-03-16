@@ -16,7 +16,7 @@ due_date_status = if due_date.paid?
   end
 %>
 
-<table class="due_date_header<%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">
+<table class="due_date_header no-nth <%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">
   <tr>
     <td class="label">Échéance :</td>
     <td class="value"><strong><%= ( due_date.id == due_date.invoice.due_dates.last.id ) ? "Solde" : "Échéance #{due_date_payment_counter}" %></strong></td>
@@ -28,7 +28,7 @@ due_date_status = if due_date.paid?
     <td class="value"><strong><%= due_date_status %></strong></td>
   </tr>
 </table>
-<div class="due_date<%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">
+<div class="due_date <%= 'disabled' unless can_be_paid %> <%= 'odd' if due_date_payment_counter.odd? %>">
   <% if can_be_paid %>
     <% fields_for 'invoice[due_date_to_pay]', due_date do |form| %>
       <%= form.error_messages %>

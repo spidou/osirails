@@ -2,9 +2,10 @@
 require_locals documents_owner
 should_use_id ||= false # set should_use_id at true if there a many instances of documents_owner in the same page, and documents_owner ID should be used to separate them
 id_attr = "id=\"document_#{document.id}\"" unless document.new_record?
+style   = "style=\"display:none\"" if document.should_destroy?
 %>
 
-<div class="resource document" <%= id_attr %> >
+<div class="resource document" <%= id_attr %> <%= style %>>
   <% unless document.new_record? -%>
     <%= content_tag :div, nil, :class => :preview, :id => "document_preview_#{@document_id}" %>
     <%= content_tag(:div, image_tag(document.attachment.url(:thumb)), :class => :thumb) %>

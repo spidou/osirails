@@ -9,28 +9,31 @@
 <div>
   <% unless @suppliers.empty? %>
     <table>
-      <tr>
-        <th>Nom</th> 
-        <th>Secteurs d'activités</th>
-        <th>Note</th>
-        <th>Actions</th>
-      </tr>
-    
-      <% for supplier in @suppliers %>
+      <thead>
         <tr>
-          <td><%= supplier.name %></td>
-          <td><%= supplier.activity_sector.name unless supplier.activity_sector.nil? %></td>
-          <td><%= supplier.note %></td>
-          <td>
-            <%= supplier_link(supplier, :link_text => "") %> 
-            <%= edit_supplier_link(supplier, :link_text => "") %>
-            <%= delete_supplier_link(supplier, :link_text => "") %>
-            </td>
+          <th>Nom</th> 
+          <th>Secteurs d'activités</th>
+          <th>Note</th>
+          <th>Actions</th>
         </tr>
-    <% end %>
+      </thead>
+      <tbody>
+        <% for supplier in @suppliers %>
+          <tr>
+            <td><%= supplier.name %></td>
+            <td><%= supplier.activity_sector.name unless supplier.activity_sector.nil? %></td>
+            <td><%= supplier.note %></td>
+            <td>
+              <%= supplier_link(supplier, :link_text => "") %> 
+              <%= edit_supplier_link(supplier, :link_text => "") %>
+              <%= delete_supplier_link(supplier, :link_text => "") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @suppliers %>
   <% else %>
     <p>Aucun fournisseur n'a été trouvé</p>
   <% end %>
-  </table>
-  <%= will_paginate @suppliers %>
 </div>

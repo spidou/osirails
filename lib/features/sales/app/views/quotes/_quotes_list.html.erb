@@ -1,16 +1,21 @@
 <div class="autoscroll">
   <table id="quotes_list">
-    <tr>
-      <th>Réf.</th>
-      <th>Émis&nbsp;le</th>
-      <th>A&nbsp;l'attention&nbsp;de</th>
-      <th>Nb Pièces</th>
-      <th>Total&nbsp;TTC&nbsp;(&euro;)</th>
-      <th>Acompte demandé&nbsp;(%)</th>
-      <th>Envoyé&nbsp;au&nbsp;client&nbsp;le</th>
-      <th>Document&nbsp;signé reçu&nbsp;le</th>
-      <th>Actions</th>
-    </tr>
-    <%= render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
+    <thead>
+      <tr>
+        <th>Réf.</th>
+        <th>Émis&nbsp;le</th>
+        <th>A&nbsp;l'attention&nbsp;de</th>
+        <th>Nb Pièces</th>
+        <th>Total&nbsp;TTC&nbsp;(&euro;)</th>
+        <th>Acompte demandé&nbsp;(%)</th>
+        <th>Envoyé&nbsp;au&nbsp;client&nbsp;le</th>
+        <th>Document&nbsp;signé reçu&nbsp;le</th>
+        <th>État</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render :partial => 'quotes/quote_in_one_line', :collection => quotes_list %>
+    </tbody>
   </table>
 </div>

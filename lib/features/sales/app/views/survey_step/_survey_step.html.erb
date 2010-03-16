@@ -11,18 +11,18 @@
 <%= generate_commercial_step_contextual_menu_partial %>
 
 <%
-survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.count})",
-                   :survey_step_products        => "Produits (#{survey_step.order.products.count})",
-                   :survey_step_documents       => "Documents / Photos (#{survey_step.documents.count})",
-                   :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractors.count})",
-                   :survey_step_consultants     => "Intervenants externes (x)",
+survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.reject(&:should_destroy?).count})", # -1 if is form_view because we automatically add 1 hidden intervention
+                   :survey_step_products        => "Produits (#{survey_step.order.products.reject(&:should_destroy?).count})",
+                   :survey_step_documents       => "Documents / Photos (#{survey_step.documents.reject(&:should_destroy?).count})",
+                   :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractor_requests.reject(&:should_destroy?).count})",
+                   #:survey_step_consultants     => "Intervenants externes (x)",
                    :survey_step_remarks         => "Commentaires (#{survey_step.remarks.count})" }
 
 survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
                    :survey_step_products        => survey_step.order.errors.on(:products) ? ' errors' : '',
                    :survey_step_documents       => survey_step.errors.on(:documents) ? ' errors' : '',
                    :survey_step_subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
-                   :survey_step_consultants     => '',
+                   #:survey_step_consultants     => '',
                    :survey_step_remarks         => survey_step.errors.on(:remarks) ? ' errors' : '' }
 %>
 
@@ -43,7 +43,7 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
     <h2 class="survey_step_interventions"><%= survey_headers[:survey_step_interventions] %></h2>
     <div class="survey_step_interventions section_nav selected">
       <%= display_survey_interventions(survey_step) %>
-      <%= display_survey_intervention_add_button if is_form_view? %>
+      <%= display_survey_intervention_add_button(survey_step) if is_form_view? %>
     </div>
     
     <h2 class="survey_step_products"><%= survey_headers[:survey_step_products] %></h2>

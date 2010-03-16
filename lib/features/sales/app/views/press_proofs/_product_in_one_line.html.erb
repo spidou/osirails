@@ -2,14 +2,14 @@
 product = product_in_one_line
 press_proofs ||= product.press_proofs # press_proofs can be given as a local variable to the partial if you want to restrict the display to specific press_proofs
 
-rowspan = press_proofs.collect(&:graphic_item_versions).flatten.size + 1 # +1 because we add an additional line '<tr></tr>' for internal_actor, confirmed_on, sended_on, etc. (see in _press_proof_in_one_line.html.erb)
+colspan = is_form_view? ? 8 : 7
 %>
 
 <% unless product.press_proofs.empty? %>
-  <tr>
-    <td rowspan="<%= rowspan %>"><%= product.name %></td>
-    <td rowspan="<%= rowspan %>"><%= product.quantity %></td>
-  </tr>
-
-  <%= render :partial => 'press_proofs/press_proof_in_one_line', :collection => press_proofs %>
+  <tbody>
+    <tr class="group">
+      <td colspan="<%= colspan %>"><%= product.designation %></td>
+    </tr>
+    <%= render :partial => 'press_proofs/press_proof_in_one_line', :collection => press_proofs %>
+  </tbody>
 <% end %>

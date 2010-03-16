@@ -55,7 +55,7 @@ module QuotesHelper
   end
   
   def display_quote_show_pdf_button(order, quote, message = nil)
-    return unless Quote.can_view?(current_user) and !quote.was_uncomplete?
+    return unless Quote.can_view?(current_user) and quote.can_be_downloaded?
     text = "Télécharger ce devis (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
@@ -134,6 +134,16 @@ module QuotesHelper
                         :alt    => text,
                         :title  => text ) + message,
              order_commercial_step_estimate_step_quote_order_form_path(order, quote) )
+  end
+  
+  def display_add_free_quote_item_for(quote)
+    button_to_function "Insérer une ligne de commentaire" do |page|
+      page.insert_html :bottom, :quote_items_body, :partial => 'quote_items/free_quote_item',
+                                                   :object  => quote.quote_items.build
+      last_item = page[:quote_items_body].select('.free_quote_item').last
+      last_item.show
+      last_item.visual_effect :highlight
+    end
   end
   
 end

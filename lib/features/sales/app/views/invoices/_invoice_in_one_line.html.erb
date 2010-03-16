@@ -1,23 +1,22 @@
 <%
 invoice = invoice_in_one_line
-status = invoice.status ? " #{invoice.status}_invoice" : ''
-title = invoice.status ? " title=\"#{invoice.status.titleize} invoice\"" : ''
+status  = status_text(invoice)
 
 due_date = invoice.upcoming_due_date || invoice.due_dates.last
 %>
 
-<tr class="invoice<%= status %>"<%= title %>>
-  <td><%= invoice.reference %></td>
-  <td><%= invoice.published_on.humanize if invoice.published_on and invoice.confirmed_at %></td>
-  <td><%= invoice.invoice_type.title %></td>
-  <td><%= invoice.net_to_paid.to_f.round_to(2).to_s(2) %></td>
-  <td><%= due_date.date.humanize %></td>
-  <td><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></td>
-  <td><%= invoice.sended_on.humanize if invoice.sended_on %></td>
+<tr class="invoice <%= invoice.status %>_invoice" title="<%= h(status) %>">
+  <td class="reference"><%= invoice.reference %></td>
+  <td class="published_on"><%= invoice.published_on.humanize if invoice.published_on and invoice.confirmed_at %></td>
+  <td class="invoice_type"><%= invoice.invoice_type.title %></td>
+  <td class="net_to_paid"><%= invoice.net_to_paid.to_f.round_to(2).to_s(2) %></td>
+  <td class="due_date"><%= due_date.date.humanize %></td>
+  <td class="due_date_net_to_paid"><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></td>
+  <td class="sended_on"><%= invoice.sended_on.humanize if invoice.sended_on %></td>
   <% if @order.customer.factorised? %>
-    <td></td>
+    <td>#TODO</td>
   <% end %>
-  <td><%= invoice.was_totally_paid_on.humanize if invoice.was_totally_paid? %></td>
-  <td></td>
+  <td class="totally_paid_on"><%= invoice.was_totally_paid_on.humanize if invoice.was_totally_paid? %></td>
+  <td class="status"><%= status %></td>
   <td class="actions"><%= display_invoice_action_buttons(@order, invoice) %></td>
 </tr>

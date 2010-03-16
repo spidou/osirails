@@ -7,28 +7,31 @@
 <div>
   <% unless @subcontractors.empty? %>
     <table>
-      <tr>
-        <th>Nom</th> 
-        <th>Secteurs d'activités</th>
-        <th>Note</th>
-        <th>Actions</th>
-      </tr>
-    
-      <% for subcontractor in @subcontractors %>
+      <thead>
         <tr>
-          <td><%= subcontractor.name %></td>
-          <td><%= subcontractor.activity_sector.name unless subcontractor.activity_sector.nil? %></td>
-          <td><%= subcontractor.note %></td>
-          <td>
-            <%= subcontractor_link(subcontractor, :link_text => "") %> 
-            <%= edit_subcontractor_link(subcontractor, :link_text => "") %>
-            <%= delete_subcontractor_link(subcontractor, :link_text => "") %>
-            </td>
+          <th>Nom</th> 
+          <th>Secteurs d'activités</th>
+          <th>Note</th>
+          <th>Actions</th>
         </tr>
-    <% end %>
+      </thead>
+      <tbody>
+        <% for subcontractor in @subcontractors %>
+          <tr>
+            <td><%= subcontractor.name %></td>
+            <td><%= subcontractor.activity_sector.name unless subcontractor.activity_sector.nil? %></td>
+            <td><%= subcontractor.note %></td>
+            <td>
+              <%= subcontractor_link(subcontractor, :link_text => "") %> 
+              <%= edit_subcontractor_link(subcontractor, :link_text => "") %>
+              <%= delete_subcontractor_link(subcontractor, :link_text => "") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @subcontractors %>
   <% else %>
     <p>Aucun sous-traitant n'a été trouvé</p>
   <% end %>
-  </table>
-  <%= will_paginate @subcontractors %>
 </div>

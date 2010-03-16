@@ -125,7 +125,7 @@ class DeliveryNote < ActiveRecord::Base
   
   def build_delivery_note_items_from_signed_quote
     return unless associated_quote
-    associated_quote.quote_items.each do |quote_item|
+    associated_quote.product_quote_items.each do |quote_item|
       item = self.delivery_note_items.build(:quote_item_id => quote_item.id, :order_id => self.order_id)
       item.quantity = item.remaining_quantity_to_deliver
     end

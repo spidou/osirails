@@ -1,7 +1,7 @@
 function add_product_reference_to_quote() {
   var product_reference_id = $('add_this_product_reference_id').value
   
-  var quote_items = $('quote_items').select('tr.quote_item')
+  var quote_items = $('quote_items').select('tbody > tr.quote_item')
   var reference_already_chosen = false
   var line_reference = null
   
@@ -70,22 +70,23 @@ function add_product_reference_to_quote() {
 //}
   
 function append_reference(json_object) {
-  var reference = json_object['reference'].toString() || json_object['product_reference']['reference'].toString()
-  var name = json_object['name']
-  var description = json_object['description']
-  var quantity = 1
-  var vat = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
-  var product_reference_id = parseInt(json_object['id'])
+  var reference             = json_object['reference'].toString() || json_object['product_reference']['reference'].toString()
+  var designation           = json_object['designation']
+  var description           = json_object['description']
+  var quantity              = 1
+  var vat                   = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
+  var product_reference_id  = parseInt(json_object['id'])
+  var quote_body            = $('quote_items').down('tbody')
+  var quote_items           = $('quote_items').select('tbody > tr.quote_item')
+  var model                 = $('quote_items').down('tfoot > tr.quote_item')
+  var line_reference        = null
   
-  var quote_items = $('quote_items').select('tr.quote_item')
-  var line_reference = null
-  
-  line_reference = quote_items.last().cloneNode(true);
-  quote_items.last().insert({before: line_reference}); 
+  line_reference = model.cloneNode(true);
+  quote_body.insert( {bottom : line_reference});
   
   line_reference.down('.reference').update( reference )
-  line_reference.down('.input_name').value = name
-  line_reference.down('.input_original_name').value = name
+  line_reference.down('.input_name').value = designation
+  line_reference.down('.input_original_name').value = designation
   line_reference.down('.input_description').value = description
   line_reference.down('.input_original_description').value = description
   line_reference.down('.input_quantity').value = quantity
@@ -202,5 +203,16 @@ function restore_original_value(element, value) {
     if (input != null && original != null && original.value.length > 0) {
       input.value = original.value
     }
+  }
+}
+
+function remove_free_quote_item(element) {
+  item = element.up('tr.free_quote_item')
+  
+  if (parseInt(item.down('.quote_item_id').value) > 0) {
+    item.down('.should_destroy').value = 1;
+    item.hide();
+  } else {
+    item.remove();
   }
 }

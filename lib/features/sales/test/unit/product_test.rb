@@ -12,7 +12,7 @@ class ProductTest < ActiveSupport::TestCase
   should_have_many :press_proofs
   should_have_many :mockups
   
-  should_validate_presence_of :name, :description, :dimensions
+  should_validate_presence_of :name
   should_validate_presence_of :order, :product_reference, :with_foreign_key => :default
   
   should_validate_numericality_of :prizegiving, :quantity

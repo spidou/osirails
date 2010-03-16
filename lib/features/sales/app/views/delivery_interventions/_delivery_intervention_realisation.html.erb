@@ -130,7 +130,7 @@ form.force_show_view = delivery_intervention.was_realized?
   <% end %>
   
   <h3>Réserves sur les produits</h3>
-  <%= render :partial => 'discards/discards_on_delivery_note_items', :object => delivery_note.delivery_note_items, :locals => { :delivery_intervention => delivery_intervention } %>
+  <%= render :partial => 'discards/discards_on_delivery_note_items', :object => delivery_note.delivery_note_items.reject{ |i| i.quantity.zero? }, :locals => { :delivery_intervention => delivery_intervention } %>
   
   <h3>Documents</h3>
   <p>

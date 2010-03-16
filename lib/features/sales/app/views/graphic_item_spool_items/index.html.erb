@@ -1,28 +1,33 @@
 <h1>Mes travaux en attente</h1>
+
 <div id="spool_items">
   <% unless @spool_items.empty? %>
     <%= display_empty_spool_link %>
     <table>
-      <tr>
-        <th>Nom du fichier</th>
-        <th>Type</th>
-        <th>Action</th>
-      </tr>  
-      <% @spool_items.each do |item| %>
+      <thead>
         <tr>
-          <td>
-            <%= File.basename(item.path) %>
-          </td>
-          <td>
-            <%= item.file_type.humanize %>
-          </td>
-          <td>
-            <%= link_to_remote( image_tag("delete_16x16.png", :alt => text = "Supprimer le fichier de la file d'attente", :title => text),
-                                :url  => order_graphic_item_spool_item_remove_from_spool_path({:graphic_item_spool_item_id => item.graphic_item.id, :file_type => item.file_type}),
-                                :html => { :id => "spool_action_for_#{item.graphic_item.id}_#{item.file_type}" } ) %>
-          </td>
+          <th>Nom du fichier</th>
+          <th>Type</th>
+          <th>Action</th>
         </tr>
-      <% end %>
+      </thead>
+      <tbody>
+        <% @spool_items.each do |item| %>
+          <tr>
+            <td>
+              <%= File.basename(item.path) %>
+            </td>
+            <td>
+              <%= item.file_type.humanize %>
+            </td>
+            <td>
+              <%= link_to_remote( image_tag("delete_16x16.png", :alt => text = "Supprimer le fichier de la file d'attente", :title => text),
+                                  :url  => order_graphic_item_spool_item_remove_from_spool_path({:graphic_item_spool_item_id => item.graphic_item.id, :file_type => item.file_type}),
+                                  :html => { :id => "spool_action_for_#{item.graphic_item.id}_#{item.file_type}" } ) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
     </table>
     <%= display_empty_spool_link if @spool_items.size > 10 %>
   <% else %>

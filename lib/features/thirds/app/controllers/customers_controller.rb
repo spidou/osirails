@@ -54,6 +54,7 @@ class CustomersController < ApplicationController
     @customer = Customer.find(params[:id])
     @customer.activated = false
     if @customer.save
+      flash[:notice] = "Le client a été supprimé avec succès"
       redirect_to(customers_path)
     else
       flash[:error] = "Une erreur est survenu lors de la suppression du client"

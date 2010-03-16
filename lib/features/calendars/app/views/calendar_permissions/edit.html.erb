@@ -4,27 +4,31 @@
   <h2>pour chaque r&ocirc;le</h2>
   <% form_tag(calendar_permission_path, :method => 'put') do |form| %>
     <table>
-      <tr>
-        <th rowspan="2">R&ocirc;les</th>
-        <th colspan="<%= @permission_methods.size + 1 %>">Permissions</th>
-      </tr>
-      <tr>
-        <% for method in @permission_methods %>
-          <%= "<th>#{method.name.titleize}</th>"%>
-        <% end %>
-			  <th>Tout cocher</th>
-      </tr>
-    <% for permission in @calendar_permissions %>
-      <tr>
-        <td><%= link_to permission.role.name, edit_role_permission_path(permission.role.id) %></td>
-        <% fields_for "permissions[]", permission do |form| %>
-          <% for method in permission.permission_methods %>
-            <td><%= form.check_box method.name %></td>
+      <thead>
+        <tr>
+          <th rowspan="2">R&ocirc;les</th>
+          <th colspan="<%= @permission_methods.size + 1 %>">Permissions</th>
+        </tr>
+        <tr>
+          <% for method in @permission_methods %>
+            <%= "<th>#{method.name.titleize}</th>"%>
           <% end %>
+			    <th>Tout cocher</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for permission in @calendar_permissions %>
+          <tr>
+            <td><%= link_to permission.role.name, edit_role_permission_path(permission.role.id) %></td>
+            <% fields_for "permissions[]", permission do |form| %>
+              <% for method in permission.permission_methods %>
+                <td><%= form.check_box method.name %></td>
+              <% end %>
+            <% end %>
+			      <td><input type="checkbox" class="checkbox_permission"></td>
+          </tr>
         <% end %>
-			  <td><input type="checkbox" class="checkbox_permission"></td>
-      </tr>
-    <% end %>
+      </tbody>
     </table>
     
     <%= form.form_buttons %>
