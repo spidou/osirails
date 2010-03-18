@@ -78,13 +78,13 @@
     <InvoicingState>
       <QuoteTotal><%= @invoice.net_to_paid.to_f.round_to(2).to_s(2) %></QuoteTotal>
       <InvoicedTotal></InvoicedTotal>
-      <BalanceTotal></BalanceTotal>
+      <Balance></Balance>
     </InvoicingState>
     <DueDates>
       <% @invoice.due_dates.each do |due_date| %>
         <DueDate>
           <Date><%= due_date.date.strftime("%d/%m/%Y") %></Date>
-          <Total><%= due_date.net_to_paid %></Total>
+          <Total><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></Total>
         </DueDate>
       <% end %>
     </DueDates>
@@ -123,7 +123,7 @@
     <QuoteTotal>Total devis (TTC) :</QuoteTotal>
     <InvoicedTotal>Total facturé (TTC) :</InvoicedTotal>
     <InvoicedTotal2>(y compris cette facture)</InvoicedTotal2>
-    <BalanceTotal>Reste à facturer :</BalanceTotal>
+    <Balance>Reste à facturer :</Balance>
     <DueDates>Échéances</DueDates>
     <DueDatesDate>Date</DueDatesDate>
     <DueDatesReference>Réf.</DueDatesReference>
