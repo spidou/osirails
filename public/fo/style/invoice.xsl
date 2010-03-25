@@ -232,22 +232,33 @@
     <xsl:attribute name="font-weight">bold</xsl:attribute>
   </xsl:attribute-set>
   
+  <xsl:attribute-set name="date-block">
+    <xsl:attribute name="font-size">10px</xsl:attribute>
+  </xsl:attribute-set>
+  
   <xsl:attribute-set name="top-infos-table">
-    <xsl:attribute name="margin-top">1cm</xsl:attribute>
+    <xsl:attribute name="margin-top">0.5cm</xsl:attribute>
     <xsl:attribute name="margin-bottom">1cm</xsl:attribute>
     <xsl:attribute name="border-collapse">collapse</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="date-and-representative-block-container" use-attribute-sets="no-wrap-and-hidden">
+  <xsl:attribute-set name="representative-block-container" use-attribute-sets="no-wrap-and-hidden">
     <xsl:attribute name="font-size">10px</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="date-block">
-    <xsl:attribute name="margin-bottom">3mm</xsl:attribute>
+  <xsl:attribute-set name="default-representative-block-container">
+    <xsl:attribute name="font-size">9px</xsl:attribute>
   </xsl:attribute-set>
   
+  <xsl:attribute-set name="administrative-representative-block-container" use-attribute-sets="default-representative-block-container">
+    <xsl:attribute name="margin-bottom">1mm</xsl:attribute>
+  </xsl:attribute-set>
+  
+  <xsl:attribute-set name="commercial-representative-block-container" use-attribute-sets="default-representative-block-container"/>
+  
   <xsl:attribute-set name="representative-inline">
-    <xsl:attribute name="font-weight">bold</xsl:attribute>
+    <xsl:attribute name="font-weight">bold</xsl:attribute>    
+    <xsl:attribute name="font-size">10px</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="client-address-cell">
@@ -384,6 +395,8 @@
   
   <xsl:attribute-set name="invoicing-state-quote-total-value-cell" use-attribute-sets="invoicing-state-default-cell"/>
   
+  <xsl:attribute-set name="invoicing-state-title-block-container" use-attribute-sets="no-wrap-and-hidden"/>
+  
   <xsl:attribute-set name="invoicing-state-quote-total-label-block-container" use-attribute-sets="no-wrap-and-hidden"/>
   
   <xsl:attribute-set name="invoicing-state-quote-total-value-block-container" use-attribute-sets="no-wrap-and-hidden"/>
@@ -467,7 +480,9 @@
   
   <xsl:attribute-set name="main-table-line-description2-block">
     <xsl:attribute name="linefeed-treatment">preserve</xsl:attribute>
-    <xsl:attribute name="text-align">start</xsl:attribute> 
+    <xsl:attribute name="text-align">start</xsl:attribute>  
+    <xsl:attribute name="font-size">7px</xsl:attribute>
+    <xsl:attribute name="font-style">italic</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-line-vat-block">
@@ -909,52 +924,52 @@
               <fo:block xsl:use-attribute-sets="document-type-and-reference-block">
                 <xsl:value-of select="Type"/>&#160;<xsl:value-of select="../Labels/Prefix"/>&#160;<xsl:value-of select="Reference"/>
               </fo:block> 
-            </fo:block-container>                 
+            </fo:block-container>  
+            <fo:block xsl:use-attribute-sets="date-block">
+              <fo:inline>
+                <xsl:value-of select="../Labels/Date"/>
+              </fo:inline>&#160;
+              <fo:inline>
+                <xsl:value-of select="Date"/>
+              </fo:inline>
+            </fo:block>               
             <fo:table xsl:use-attribute-sets="top-infos-table" page-break-inside="avoid">      
               <fo:table-body>
                 <fo:table-row page-break-inside="avoid">
                   <fo:table-cell number-columns-spanned="5">
-                    <fo:block-container xsl:use-attribute-sets="date-and-representative-block-container">
-                      <fo:block xsl:use-attribute-sets="date-block">
-                        <fo:inline>
-                          <xsl:value-of select="../Labels/Date"/>
-                        </fo:inline>&#160;
-                        <fo:inline>
-                          <xsl:value-of select="Date"/>
-                        </fo:inline>
-                      </fo:block>
-                      <fo:block>
-                        <fo:inline xsl:use-attribute-sets="representative-inline">
-                          <xsl:value-of select="../Labels/SupplierCommercialPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>:
-                        </fo:inline>
-                        <fo:inline>
-                          <xsl:value-of select="Supplier/CommercialRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/CommercialRepresentative/LastName"/>
-                        </fo:inline>
-                      </fo:block>
-                      <fo:block>
-                        <fo:inline>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>
-                        </fo:inline>&#160;
-                        <fo:inline>
-                          <xsl:value-of select="Supplier/CommercialRepresentative/Email"/>
-                        </fo:inline>
-                      </fo:block>
-                      <fo:block>
-                        <fo:inline xsl:use-attribute-sets="representative-inline">
-                          <xsl:value-of select="../Labels/SupplierAdministrativePrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>:
-                        </fo:inline>
-                        <fo:inline>
-                          <xsl:value-of select="Supplier/AdministrativeRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/LastName"/>
-                        </fo:inline>
-                      </fo:block>
-                      <fo:block>
-                        <fo:inline>
-                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>
-                        </fo:inline>&#160;
-                        <fo:inline>
-                          <xsl:value-of select="Supplier/AdministrativeRepresentative/Email"/>
-                        </fo:inline>
-                      </fo:block>
+                    <fo:block-container xsl:use-attribute-sets="representative-block-container">
+                      <fo:block-container xsl:use-attribute-sets="commercial-representative-block-container">
+                        <fo:block>
+                          <fo:inline xsl:use-attribute-sets="representative-inline">
+                            <xsl:value-of select="../Labels/SupplierCommercialPrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
+                          </fo:inline>
+                          <fo:inline>
+                            <xsl:value-of select="Supplier/CommercialRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/CommercialRepresentative/LastName"/>
+                          </fo:inline>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/CommercialRepresentative/Phone"/>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/CommercialRepresentative/Email"/>
+                        </fo:block>
+                      </fo:block-container>
+                      <fo:block-container xsl:use-attribute-sets="administrative-representative-block-container">
+                        <fo:block>
+                          <fo:inline xsl:use-attribute-sets="representative-inline">
+                            <xsl:value-of select="../Labels/SupplierAdministrativePrefix"/>&#160;<xsl:value-of select="Supplier/CorporateName2"/>&#160;:
+                          </fo:inline>
+                          <fo:inline>
+                            <xsl:value-of select="Supplier/AdministrativeRepresentative/FirstName"/>&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/LastName"/>
+                          </fo:inline>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="../Labels/SupplierRepresentativePhone"/>&#160;:&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/Phone"/>
+                        </fo:block>
+                        <fo:block>
+                          <xsl:value-of select="../Labels/SupplierRepresentativeEmail"/>&#160;:&#160;<xsl:value-of select="Supplier/AdministrativeRepresentative/Email"/>
+                        </fo:block>
+                      </fo:block-container>
                     </fo:block-container> 
                   </fo:table-cell>
                   <fo:table-cell xsl:use-attribute-sets="client-address-cell" number-columns-spanned="5">
@@ -1129,15 +1144,15 @@
                       <fo:table-body>
                         <fo:table-row xsl:use-attribute-sets="invoicing-state-title-row" keep-with-next="always" page-break-inside="avoid">
                           <fo:table-cell xsl:use-attribute-sets="invoicing-state-title-cell" number-columns-spanned="4">
-                            <fo:block-container overflow="hidden" wrap-option="no-wrap">
-                              <fo:block text-align="center" font-weight="bold">
+                            <fo:block-container xsl:use-attribute-sets="invoicing-state-title-block-container">
+                              <fo:block>
                                 <xsl:value-of select="../Labels/InvoicingState"/>
                               </fo:block>
                             </fo:block-container>
                           </fo:table-cell>
                         </fo:table-row>
                         <fo:table-row keep-with-next="always" page-break-inside="avoid">
-                          <fo:table-cell xsl:use-attribute-sets="invoicing-state-quote-total-value-cell" number-columns-spanned="2">
+                          <fo:table-cell xsl:use-attribute-sets="invoicing-state-quote-total-label-cell" number-columns-spanned="2">
                             <fo:block-container xsl:use-attribute-sets="invoicing-state-quote-total-label-block-container">
                               <fo:block xsl:use-attribute-sets="invoicing-state-quote-total-label-block">
                                 <xsl:value-of select="../Labels/QuoteTotal"/>

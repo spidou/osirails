@@ -25,11 +25,13 @@
       <CommercialRepresentative>
         <LastName><%= @invoice.order.commercial.last_name %></LastName>
         <FirstName><%= @invoice.order.commercial.first_name %></FirstName>
+        <Phone><%= "#{@invoice.order.commercial.numbers.first.indicative.indicative} #{@invoice.order.commercial.numbers.first.number}" %></Phone>
         <Email><%= @invoice.order.commercial.email %></Email>
       </CommercialRepresentative>
       <AdministrativeRepresentative>
         <LastName></LastName>
         <FirstName></FirstName>
+        <Phone></Phone>
         <Email></Email>
       </AdministrativeRepresentative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
@@ -98,9 +100,10 @@
     <Date>Date :</Date>
     <Prefix>N°</Prefix>
     <FileName></FileName>
-    <SupplierRepresentativeEmail>e-mail :</SupplierRepresentativeEmail>
     <SupplierCommercialPrefix>Suivi commercial</SupplierCommercialPrefix>
     <SupplierAdministrativePrefix>Suivi administratif</SupplierAdministrativePrefix>
+    <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
+    <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
     <CustomerPrefix>A l'attention de</CustomerPrefix>
     <Amount>MONTANTS EN</Amount>
     <Reference>Réf.</Reference>

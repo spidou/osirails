@@ -26,9 +26,8 @@
         <LastName><%= @quote.order.commercial.last_name %></LastName>
         <FirstName><%= @quote.order.commercial.first_name %></FirstName>
         <Email><%= @quote.order.commercial.email %></Email>
-        <Phone/>
-        <Fax/>      
-      </Representative>
+        <Phone><%= "#{@quote.order.commercial.numbers.first.indicative.indicative} #{@quote.order.commercial.numbers.first.number}"  %></Phone>  
+s      </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
     <Customer>
@@ -97,8 +96,9 @@
     <Date>Date :</Date>
     <Prefix>N°</Prefix>
     <FileName></FileName>
-    <SupplierRepresentativeEmail>e-mail :</SupplierRepresentativeEmail>
     <SupplierPrefix>Suivi commercial</SupplierPrefix>
+    <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
+    <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
     <CustomerPrefix>A l'attention de</CustomerPrefix>
     <Amount>MONTANTS EN</Amount>
     <Reference>Réf.</Reference>

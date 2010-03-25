@@ -243,7 +243,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="page-count-cell">
-    <xsl:attribute name="width">14.7cm</xsl:attribute>
+    <xsl:attribute name="width">14.6cm</xsl:attribute>
     <xsl:attribute name="padding">1mm</xsl:attribute>
   </xsl:attribute-set>
   
@@ -258,10 +258,6 @@
     <xsl:attribute name="text-align">right</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="footer-table-row">
-    <xsl:attribute name="height">2cm</xsl:attribute>
-  </xsl:attribute-set>
-  
   <xsl:attribute-set name="footer-table-default-cell">
     <xsl:attribute name="border-color">rgb(0, 0, 0)</xsl:attribute>
     <xsl:attribute name="border-style">solid</xsl:attribute>
@@ -273,6 +269,7 @@
     <xsl:attribute name="display-align">center</xsl:attribute>
     <xsl:attribute name="text-align">left</xsl:attribute>
     <xsl:attribute name="padding">1mm</xsl:attribute>
+    <xsl:attribute name="font-size">8px</xsl:attribute>
   </xsl:attribute-set>
   
   <xsl:attribute-set name="footer-table-default-agreement-cell" use-attribute-sets="footer-table-default-cell">
@@ -286,7 +283,7 @@
   <xsl:attribute-set name="footer-table-agreement2-cell" use-attribute-sets="footer-table-default-agreement-cell"/>
   
   <xsl:attribute-set name="footer-table-default-block-container">
-    <xsl:attribute name="height">2cm</xsl:attribute>
+    <xsl:attribute name="height">1.8cm</xsl:attribute>
     <xsl:attribute name="overflow">hidden</xsl:attribute>
   </xsl:attribute-set>
   
@@ -354,7 +351,7 @@
   </xsl:attribute-set>
   
   <xsl:attribute-set name="mockup-type-cell">
-    <xsl:attribute name="width">14.7cm</xsl:attribute>
+    <xsl:attribute name="width">14.6cm</xsl:attribute>
     <xsl:attribute name="padding">1mm</xsl:attribute>
   </xsl:attribute-set>
   
@@ -563,7 +560,7 @@
           </fo:table>
           <fo:table>
             <fo:table-body>
-              <fo:table-row xsl:use-attribute-sets="footer-table-row">
+              <fo:table-row>
                 <fo:table-cell xsl:use-attribute-sets="footer-table-nota-bene-cell">
                   <fo:block-container xsl:use-attribute-sets="footer-table-nota-bene-block-container">
                     <fo:block>
