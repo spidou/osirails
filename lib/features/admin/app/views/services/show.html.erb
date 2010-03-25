@@ -1,5 +1,5 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_service_link_with_parent(@service,"New service")%>
+  <%= new_service_link_with_parent(@service, "Nouveau service")%>
   <%= edit_service_link(@service) %>
   <%= delete_service_link(@service) if @service.can_be_destroyed?%>
 <% end %>
@@ -11,56 +11,5 @@
 <h1>Fiche détaillée du service</h1>
 
 <div class="presentation_medium">
-  <h2>Fiche du service</h2>
-  <p>
-    <label>Nom &#58;</label>
-    <%= strong( @service.name )%>
-  </p>
-  <p>
-    <%unless @service.parent.nil?%>
-    <label>Service responsable &#58;</label>
-    <%= strong(@service.parent.name)%>
-    <%end%>
-  </p>
-  <p>
-    <%= responsable_find(@responsables)%>
-  </p>
-  
-  <p>
-  <div class="form_multiple_entries">
-    <%= members(@members) %>
-    <div class="collection">
-    <% for member in @members%>
-      <div class="object">
-      <%=link_to( member.fullname,employee_path(member.id))%>
-      </div>
-    <% end%>
-    </div>
-  </div>
-  <p>
-  
-  <h2>Horaires du service : <%= @schedules_service%></h2>
-  <%if schedules_empty?(@schedules) %>
-    <p><strong>Aucun Horaires définis!</strong></p>
-  <% else %>
-      <% days = days_group(days_sort(@schedules)) %>
-      <% days.each_with_index do |schedule,index|%>
-        <%unless index==0%>
-          <p>
-            <strong><%= period(schedule.day)%></strong>
-            : Le Matin de
-            <strong><%= to_hour(schedule.morning_start) unless schedule.morning_start.nil? %></strong>
-             à 
-            <strong><%= to_hour(schedule.morning_end) unless schedule.morning_end.nil?%></strong>
-            et l&apos;Apr&egrave;s&#45;midi de
-            <strong><%= to_hour(schedule.afternoon_start) unless schedule.afternoon_start.nil?%></strong>
-             à 
-            <strong><%= to_hour(schedule.afternoon_end) unless schedule.afternoon_end.nil?%></strong>
-          </p>  
-        <% end %>
-      <% end %>
-    </table>
-  <% end %>   
-  
-  
+  <%= render :partial => @service %>
 </div>

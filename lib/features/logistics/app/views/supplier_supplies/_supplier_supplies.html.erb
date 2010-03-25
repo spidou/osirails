@@ -1,4 +1,4 @@
-<%= "<table class='#{supplier_supplies_owner.class.name.underscore}'>"%>
+<table class="<%= supplier_supplies_owner.class.name.underscore %>">
   <tr>
     <th rowspan='2'>Fournisseur</th>
     <th rowspan='2'>R&eacute;f&eacute;rence</th>
@@ -20,4 +20,3 @@
   </tr>
   <%= render(:partial => 'supplier_supplies/supplier_supply', :collection => supplier_supplies_owner.supplier_supplies) %>
 </table>
-

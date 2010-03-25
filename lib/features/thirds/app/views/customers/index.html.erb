@@ -1,10 +1,10 @@
 <% contextual_search_for_customer %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_customer_link %>
+  <%= new_customer_link(:link_text => "Nouveau client") %>
 <% end %>
 
-<h1>Liste des clients</h1>
+<h1>Les clients</h1>
 
 <div>
   <% unless @customers.empty? %>

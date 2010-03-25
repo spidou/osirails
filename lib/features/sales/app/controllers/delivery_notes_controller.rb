@@ -3,7 +3,7 @@ class DeliveryNotesController < ApplicationController
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
-  before_filter :detect_delivery_note
+  before_filter :find_delivery_note
   
   #after_filter :add_error_in_step_if_delivery_note_has_errors, :only => [ :create, :update ]
   
@@ -211,7 +211,7 @@ class DeliveryNotesController < ApplicationController
     #  end
     #end
     
-    def detect_delivery_note
+    def find_delivery_note
       if id = params[:id] || params[:delivery_note_id]
         @delivery_note = DeliveryNote.find(id)
         error_access_page(404) unless @order and @order.delivery_notes.include?(@delivery_note)

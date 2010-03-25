@@ -37,8 +37,8 @@ module EmployeesHelper
   # This method permit to show or hide content of secondary menu
   def actives_employees_link(view_inactives)
     return unless Employee.can_view?(current_user)
-    message = view_inactives ? "Cacher" : "Voir"
-    message += " les employés inactifs"
+    message = "Voir tous les employés"
+    message += " inactifs" if view_inactives
     link_to(image_tag("view_16x16.png", :alt => message, :title => message) + " #{message}", employees_path(:all_employees => !view_inactives))
   end
   
@@ -47,14 +47,15 @@ module EmployeesHelper
   # Methode to get a number without images but with all informations
   def display_full_phone_number(number)
     return "" unless number
-    html = display_image(flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name)
-	  html += display_image(number_type_path( number.number_type.name ), number.number_type.name)
-	  html += strong("#{number.indicative.indicative} #{number.formatted}")
-	  html
+    html = []
+    html << display_image( flag_path( number.indicative.country.code ), number.indicative.country.code, number.indicative.country.name )
+	  html << display_image( number_type_path( number.number_type.name ), number.number_type.name )
+	  html << strong("#{number.indicative.indicative} #{number.formatted}")
+	  html.join("&nbsp;")
   end
   
   def display_employee_seniority(hire_date)
-    return "contrat de travail non établis" if hire_date.nil?
+    return "Contrat de travail non défini" if hire_date.nil?
     day    = (Date.today - hire_date).to_i
     year   = day/365.25                # 1.year/60/60/24 == 365.25
     month  = day/30                    # 1.month/60/60/24 == 30
@@ -78,7 +79,9 @@ module EmployeesHelper
     result
   end
   
-  # Method to verify if the params[:employee] and his attributes are null #OPTIMIZE the name and the method (services don't use it anymore)
+  # Method to verify if the params[:employee] and his attributes are null
+  # TODO the name and the method (services don't use it anymore)
+  #
   def is_in?(object, collection, attribute = nil, employee = nil)
     if employee.nil? and !attribute.nil? 
       return false if params[:employee].nil?
@@ -123,16 +126,10 @@ module EmployeesHelper
   
   # Method to pluralize or not the number's <h3></h3>
   def numbers_h3(numbers)
-    unless Employee.can_view?(current_user)
-      visibles = visibles_numbers(numbers)
-      return "" if visibles.size == 0 
-      return "<h3>Numéro de telephone</h3>" if visibles.size == 1
-      return "<h3>Numéros de telephone</h3>"if visibles.size > 1
-    else
-      return "" if numbers.size == 0 
-      return "<h3>Numéro de telephone</h3>" if numbers.size == 1
-      return "<h3>Numéros de telephone</h3>"if numbers.size > 1
-    end
+    quantity = (Employee.can_view?(current_user) ? visibles_numbers(numbers).size : number.size)
+    return "" if quantity == 0 
+    return "<h3>Numéro de telephone</h3>" if quantity == 1
+    return "<h3>Numéros de telephone</h3>"if quantity > 1
   end
   
   def flag_path(country_code)

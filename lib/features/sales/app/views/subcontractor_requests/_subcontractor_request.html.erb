@@ -7,7 +7,7 @@
       </p>
       <p>
         <%= form.label :price %>
-        <%= strong(subcontractor_request.price_was) %>
+        <%= strong(subcontractor_request.price_was.to_s + " €") %>
       </p>
       <p>
         <%= form.label :name %>

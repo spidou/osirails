@@ -5,14 +5,12 @@ class GraphicDocumentsController < ApplicationController
   # GET /orders/:order_id/graphic_documents
   def index
     @enabled_graphic_documents = @order.graphic_documents.find(:all, :conditions => ["cancelled is NULL or cancelled=false"])
-    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end  
   
   # GET /orders/:order_id/graphic_documents/:id
   def show
     @graphic_document = GraphicDocument.find(params[:id])
     @graphic_item_versions = @graphic_document.graphic_item_versions
-    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end
   
   # GET /orders/:order_id/graphic_documents/new

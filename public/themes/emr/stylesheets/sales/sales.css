@@ -10,6 +10,8 @@
 #order_header {
   text-align: left;
   text-indent: 0;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 #order_header p {
@@ -238,7 +240,7 @@ table.sales_table tr.aggregates.global {
 }
 
 #quote_header #contact_container {
-  min-width: 814px;
+  display: block;
 }
 
 #quote_header #contact_container label {
@@ -346,7 +348,7 @@ table.sales_table tr.aggregates.global {
 
 .root_nav ul.tab_nav {
   position: absolute;
-  top: -46px;
+  top: -45px;
   left: -1px;
   list-style: none;
   padding: 0;
@@ -486,11 +488,10 @@ table.sales_table tr.aggregates.global {
 
 .product .product_summary {
   background-color: #ffdd60;
-  padding: 0;
-  margin: 0;
+  padding: 0 10px 0 10px;
+  margin: 0 0 -1px 0 !important;
   text-align: left;
   border-bottom: 1px solid #737373;
-  margin-bottom: -1px;
 }
 
 .product .product_summary > span {
@@ -855,6 +856,48 @@ div#graphic_item_choice {
 div select#mockup_versions,
 div select#graphic_document_versions {
   height:405px;
+}
+
+/* GRAPHIC_ITEMS INDEX */
+div ul#graphic_items {
+  margin: 0;
+  padding: 5px 10px 10px 10px;
+}
+
+ul#graphic_items {
+  position: relative;
+  text-align: left;
+  margin: 0;
+  padding; 0;
+}
+
+ul#graphic_items li {
+  display: inline-block;
+  vertical-align: top;
+  list-style: none;
+  
+  margin: 5px 0 0 0;
+  padding: 5px;
+}
+
+ul#graphic_items li a button {
+  min-height: 180px;
+  width: 500px;
+  cursor: default;
+}
+
+ul#graphic_items li a button:not([DISABLED]) {
+  cursor: pointer;
+}
+
+ul#graphic_items li h1 {
+  font-size: 18px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+ul#graphic_items li p {
+  font-size: small;
 }
 
 /* SPOOL */

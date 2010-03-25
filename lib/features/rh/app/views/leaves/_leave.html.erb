@@ -1,5 +1,5 @@
 <div class='presentation_medium'>
-  <h2>Informations du cong&eacute;</h2>
+  <h2>Fiche d&eacute;taill&eacute;e du cong&eacute;</h2>
   
   <% form_for [@employee, @leave] do |form| %>
   <%= form.error_messages %>
@@ -23,7 +23,7 @@
     <%= form.label :leave_type_id %>
     <%= form.collection_select :leave_type_id, @leave_types, :id, :name, { :prompt => "Sélectionnez le type du congé" } %>
   </p>
-  <p><%= form.submit button_name%></p>
+  <%= form.form_buttons %>
   
   <% end %>
 </div>

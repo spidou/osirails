@@ -1,7 +1,7 @@
 <% contextual_search_for_customer %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= customers_link %>
+  <%= customers_link(:link_text => "Voir tous les clients") %>
 <% end %>
 
 <% content_for :header do %>
@@ -9,4 +9,4 @@
 <% end %>
 
 <h1>Nouveau client</h1>
-<%= render :partial => @customer, :locals => { :submit_button_name => "Ajouter"} %>
+<%= render :partial => @customer %>

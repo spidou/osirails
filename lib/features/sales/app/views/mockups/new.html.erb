@@ -4,5 +4,7 @@
 	<%= graphic_items_link(Mockup) %>
 <% end %>
 
-<h1>Ajouter une nouvelle maquette au dossier</h1>
-<%= render :partial => "graphic_items/graphic_item", :object => @mockup, :locals => {:button_name => "Créer"} %>
+<% display_user_spool_in_contextual_menu %>
+
+<h1>Nouvelle maquette</h1>
+<%= render :partial => "graphic_items/graphic_item", :object => @mockup %>

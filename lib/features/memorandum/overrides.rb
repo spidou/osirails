@@ -33,7 +33,7 @@ module ApplicationHelper
   def format_memorandum(memorandum, max_memorandums)
       formated_memorandum = []
       memorandum_signature = "<strong>"+memorandum.signature+".</strong>"
-      memorandum_date = "<span class='memorandum_date'>Le "+Memorandum.get_structured_date(memorandum)+".</span> "
+      memorandum_date = "<span class='memorandum_date'>Le " + memorandum.published_at.to_date.humanize + ".</span> "
       memorandum_title = "<span class='memorandum_title'>"+memorandum.title+"</span> : "
       memorandum_size = 400
       memorandum_subject_size = memorandum_size - (memorandum_signature.size + memorandum_date.size + memorandum_title.size) 

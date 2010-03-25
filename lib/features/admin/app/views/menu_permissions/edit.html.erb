@@ -2,7 +2,7 @@
 
 <div>
   <h2>pour chaque r&ocirc;le</h2>
-  <% form_tag(menu_permission_path, :method => 'put') do %>
+  <% form_tag(menu_permission_path, :method => 'put') do |form| %>
     <table>
       <tr>
         <th rowspan="2">R&ocirc;les</th>
@@ -26,9 +26,8 @@
       </tr>
     <% end %>
     </table>
-    <p>
-      <%= submit_tag "Mettre à jour" %>
-    </p>
+    
+    <%= form.form_buttons %>
   <% end %>
 </div>
 <%= javascript_include_tag 'permission' %>

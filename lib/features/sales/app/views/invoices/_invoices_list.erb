@@ -1,22 +1,24 @@
 <% invoices = invoices_list %>
 
-<table>
-  <tr>
-    <th>Réf.</th>
-    <th>Émise le</th>
-    <th>Type</th>
-    <th>Montant total<br/>TTC (&euro;)</th>
-    <th>Prochaine échéance</th>
-    <th>Montant échéance<br/>TTC (&euro;)</th>
-    <th>Envoyée au client le</th>
-    <% if @order.customer.factorised? %>
-      <th>Règlement Factor</th>
+<div class="autoscroll">
+  <table>
+    <tr>
+      <th>Réf.</th>
+      <th>Émise&nbsp;le</th>
+      <th>Type</th>
+      <th>Montant&nbsp;total<br/>TTC&nbsp;(&euro;)</th>
+      <th>Prochaine échéance</th>
+      <th>Montant&nbsp;échéance<br/>TTC&nbsp;(&euro;)</th>
+      <th>Envoyée&nbsp;au&nbsp;client&nbsp;le</th>
+      <% if @order.customer.factorised? %>
+        <th>Règlement&nbsp;Factor</th>
+      <% end %>
+      <th>Règlement&nbsp;Total</th>
+      <th>État relance</th>
+      <th>Actions</th>
+    </tr>
+    <% for invoice in invoices %>
+      <%= render :partial => 'invoices/invoice_in_one_line', :object => invoice %>
     <% end %>
-    <th>Règlement Total</th>
-    <th>État relance</th>
-    <th>Actions</th>
-  </tr>
-  <% for invoice in invoices %>
-    <%= render :partial => 'invoices/invoice_in_one_line', :object => invoice %>
-  <% end %>
-</table>
+  </table>
+</div>

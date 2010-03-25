@@ -1,9 +1,12 @@
-<% unless current_user.employee.nil? or !Memorandum.can_list?(current_user)%>
+<h1>Les notes de services reçus</h1>
+
 <div>
+<% unless current_user.employee.nil? or !Memorandum.can_list?(current_user)%>
   <table>
     <thead>
+      <th>Titre</th>
       <th>Object</th>
-      <th>Re&ccedil;u</th>
+      <th>Re&ccedil;u le</th>
       <th>De</th>
     </thead>
     <tbody>
@@ -11,5 +14,5 @@
     </tbody>
   </table>
   <%= will_paginate @received_memorandums, :param_name => :memorandum %>
-</div>
 <% end %>
+</div>

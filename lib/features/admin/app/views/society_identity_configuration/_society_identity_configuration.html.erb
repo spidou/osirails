@@ -81,10 +81,12 @@
   <%= label_tag 'admin_society_identity_configuration_choosen_theme', @descriptions["admin_society_identity_configuration_choosen_theme"] %>
   <%= choosen_theme("admin_society_identity_configuration_choosen_theme", @parameters["admin_society_identity_configuration_choosen_theme"]) %>
 </p>
-<p>
+
   <% if is_form_view? %>
-  <%= submit_tag "Mettre à jour" %>
+    <p class="form_buttons">
+      <%= reset nil, "Réinitialiser" %>
+      <%= submit_tag "Enregistrer" %>
+    </p>
   <% end %>
-</p>
 <% end %>
 </div>

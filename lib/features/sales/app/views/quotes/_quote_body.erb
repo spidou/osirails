@@ -1,0 +1,28 @@
+<%
+require_locals form
+quote = quote_body
+%>
+
+<div class="autoscroll">
+  <table id="quote_items" class="sales_table">
+    <tr>
+      <th>Réf.</th>
+      <th>Désignation</th>
+      <th>Côtes</th>
+      <th>P.U.<br/>Brut HT</th>
+      <th>Rem.<br/>(%)</th>
+      <th>P.U.<br/>Net HT</th>
+      <th>Qté</th>
+      <th>Total<br/>HT</th>
+      <th>TVA</th>
+      <th>Total<br/>TTC</th>
+      <% if is_form_view? %>
+        <th>Actions</th>
+      <% end %>
+    </tr>
+    <%= render :partial => 'quote_items/quote_item', :collection => quote.quote_items %>
+    <%= render :partial => 'quote_items/quote_item', :object => nil, :locals => { :quote => quote } %>
+    
+    <%= render :partial => 'quotes/quote_aggregates', :object => quote, :locals => { :form => form } %>
+  </table>
+</div>

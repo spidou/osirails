@@ -57,7 +57,8 @@ table {
 	border: solid 1px rgb(64,68,93);
 	background: #F8F8F8;
 	text-align: center;
-	margin: 10px 0 10px 10px;
+	margin: 8px 0 8px 0;
+	width: 100%;
 }
 
 table a {
@@ -87,12 +88,12 @@ table img {
 }
 */
 
-tr:hover > td {
+table tr:hover > td {
 	background-color: #ffe6c6;
 	color: #3F3F3F;
 }
 
-tr:hover > td > a {
+table tr:hover > td > a {
 	text-decoration:underline;
 }
 
@@ -108,6 +109,7 @@ object {
 
 hr {
   border-color: #DDD;
+  margin: 12px 0px 12px 0;
   -moz-box-shadow: 0px 1px 7px rgba(0,0,0,0.4), 0px -1px 7px rgba(0,0,0,0.4);
 }
 
@@ -164,7 +166,6 @@ hr {
   color: white;
   border: 1px solid gray;
   -moz-border-radius: 8px;
-  //-moz-box-shadow: 1px 1px 1px rgba(255,255,255,0.4), inset -1px -1px 1px rgba(0,0,0,0.3), inset 1px 1px 1px rgba(255,255,255,0.7), inset 0px 4px 25px rgba(0,0,0,0.3);
   -moz-box-shadow: 0.3px 0.3px 1px rgba(255,255,255,0.3), inset -2px -1.6px 1px rgba(0,0,0,0.5), inset 1px 1px 2px rgba(255,255,255,0.7), inset 0px 8px 3px rgba(0,0,0,0.3);
 }
 
@@ -193,7 +194,6 @@ hr {
 #under_banner {
 	clear:both;
 	background: url("/themes/emr/images/background_under_banner_repeat-x.jpg") repeat;
-	//border-bottom:20px solid white;
 	width: 100%;
 	height: 43px;
 	color:#444444;
@@ -303,7 +303,7 @@ hr {
   display: inline-block;
   background-color: #a2b3d7;
   padding: 6px 29px 6px 17px;
-  margin: 4px 7px 0 0;
+  margin: 0px 7px 0 0;
   border-top: 1px solid #737373;
   border-right: 1px solid #737373;
   border-left: 1px solid #737373;
@@ -372,7 +372,6 @@ hr {
   text-decoration: none;
   color: black;
   padding: 5px 8px 5px 8px;
-	//margin: 0px 5px 0px 5px;
 }
 
 #nav ul li.selected > a {
@@ -560,7 +559,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 //////////////////////////////////////////////////////////*/
 #content_page {
   background: url("/themes/emr/images/background_content_page.jpg") repeat;
-	padding: 11px 5px 8px 5px;
+	padding: 0px 5px 8px 5px;
 	margin: 4px 0px 2px 0px;
 	text-align: justify;
 	color: #343434;
@@ -589,15 +588,18 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	text-indent: 10px;
 	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	border-bottom:solid 1px #e5e5e5;
-	font-size:1.4em;
-	color:white;
-	margin-top:-1px;
-	margin-bottom:0px;
-	padding-top:1px;
-	height:29px;
-	line-height:29px;
-	font-weight:lighter;
-	letter-spacing:2px;
+	font-size: 1.4em;
+	color: white;
+	margin: 0 -5px 0 -5px;
+	padding-top: 1px;
+	height: 29px;
+	line-height: 29px;
+	font-weight: lighter;
+	letter-spacing: 2px;
+}
+
+#content_page div > h2:first-child {
+  margin-top: -5px;
 }
 
 #content_page h2.warning {
@@ -608,16 +610,15 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 }
 
 #content_page h3 {
-	text-indent:25px;
+	text-indent: 25px;
 	background: #afc2ea;
 	border: 1px solid #bbb;
-	height:20px;
-	line-height:20px;
+	height: 20px;
+	line-height: 20px;
 	color: rgb(70,94,142);
-	padding-top:0px;
-	margin-top:0px;
-	margin-bottom:0px;
-	font-size:1.05em;
+	padding-top: 0px;
+	margin: 0 -5px 0 -5px;
+	font-size: 1.05em;
 }
 
 #content_page h6 {
@@ -667,15 +668,11 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 /!\::::::: FLASH MESSAGES :::::::/!\
 /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\*/
 .flash_container {
-	text-align:center;
-	font-family: "courier new", sans-serif;
-	padding: 5px 5px 0 5px;
-	
-	margin-top: inherit !important;
-	//margin-bottom: inherit !important;
-	//background: inherit !important;
-	//border: inherit !important;
-	//-moz-box-shadow: inherit !important;
+	padding: 0 !important;
+	margin: 0 0 5px 0 !important;
+	background: inherit !important;
+	border: inherit !important;
+	-moz-box-shadow: inherit !important;
 }
 
 .flash_container ul {
@@ -691,46 +688,37 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 .flash_container div span {
 	margin-left:20px;
-	line-height:20px;
 }
 
 .flash_container strong {
-  color: red;
-	text-decoration: underline;
+  font-weight: bold;
 }
 
 .flash_container div {
-  display: inline-block;
-	padding: 8px;
-	margin: 0 0 5px 0;
-	background-position: 7px 10px;
+	padding: 5px;
+	background-position: 5px 6px;
   background-repeat: no-repeat;
-  -moz-border-radius: 8px;
 }
 
 .flash_container div.flash_error {
 	background-image: url("/themes/emr/images/cross_16x16.png");
-	color: red;
-	-moz-box-shadow: inset 0 0 4px rgba(255,0,0,0.8);
+	color: #880000;
+	background-color: #FFE3E3;
+	border: 2px solid #DD0000;
 }
-
-/*.flash_error,
-.flash_notice,
-.flash_warning {
-	background-position:center left;
-	width:9px;
-	height:9px;
-}*/
 
 .flash_container div.flash_notice {
 	background-image: url("/themes/emr/images/tick_16x16.png");
-	color: green;
-	-moz-box-shadow: inset 0 0 4px rgba(0,255,0,0.8);
+	color: #005F00;
+	background-color: #DFFFDF;
+	border: 2px solid #9FCF9F;
 }
 
 .flash_warning {
   background: url("/themes/emr/images/warning_14x14.png") no-repeat;
-	color: #e99727;
+	color: #ce8300;
+	background-color: #fff4df;
+	border: 2px solid #ff9600;
 }
 
 /*/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
@@ -775,6 +763,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	background: #F1BD73;
 	padding-left: 5px;
 	padding-right: 5px;
+	margin: 0px;
 	overflow: hidden;
 	text-align: center;
 	text-indent 0;
@@ -797,6 +786,7 @@ table.presentation {
 	margin-left:15px;
 	border:none;
 	background:white;
+	width: auto;
 }
 
 table.presentation a {
@@ -813,11 +803,11 @@ table.presentation tr td{
 	vertical-align:top;
 }
 
-td.left_cell {
+table.presentation td.left_cell {
 	width:110px;
 }
 
-td.right_cell {
+table.presentation td.right_cell {
 	width:800px;
 	padding-bottom:10px;
 }
@@ -924,16 +914,17 @@ width: 50px ! important;
 }
 
 #content_page > div {
-  margin-top:-3px;
-	margin-bottom:10px;
+  margin-top: -3px;
+	margin-bottom: 10px;
+	padding: 5px;
 	background: #ffffff;
 	border: solid 1px #989898;
 	-moz-box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
 }
 
 #content_page > div p {
-  padding-left:10px;
-	padding-right: 10px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 }
 
 /*/////////////////////////////
@@ -956,6 +947,10 @@ width: 50px ! important;
 	font-size: 1.2em;
 	color: #454545;
 	background:white;
+}
+
+#content_page > div div.autoscroll {
+  overflow: auto;
 }
 
 .alignment {
@@ -987,6 +982,7 @@ div label.skip_presentation {
 #content_page > div label {
 	text-align:right;
 	display:inline-block;
+	min-height: 22px;
 }
 
 #content_page > div form p input[type=text],
@@ -1015,7 +1011,7 @@ div label.skip_presentation {
   background: #e99727;
   border: 1px solid #737373;
   padding: 8px 10px 8px 10px;
-  margin: 25px -1px -1px -1px;
+  margin: 10px -5px -5px -5px;
 }
 
 /* #content_page > div .resource {
@@ -1040,26 +1036,32 @@ div label.skip_presentation {
 /* FORM WITH MULTIPLE ENTRIES */
 
 #content_page > div .form_multiple_entries {
-  margin: 0 0 0 9px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 #content_page > div .form_multiple_entries label:first-child {
   text-align: right;
-	display:inline-block;
+	display: inline-block;
 }
 
 #content_page > div .form_multiple_entries .collection {
   display: inline-block;
   vertical-align: top;
-  padding: 0 5px 5px 0;
+  padding: 4px;
   text-indent: 0px;
+  border: 1px solid grey;
+  -moz-border-radius: 2px;
+  -moz-box-shadow: 0px 0px 1px rgba(0,0,0,0.4);
+  width: 200px;
+  min-height: 15px;
+  max-height: 200px;
+  overflow: auto;
 }
 
 #content_page > div .form_multiple_entries .object {
   display: block;
-  margin-bottom: 10px;
-  
+  margin-bottom: 4px;
 }
 
 #content_page > div .form_multiple_entries .object .object_details {
@@ -1258,8 +1260,6 @@ div.auto_complete_container div.auto_complete_indicator {
   float: left;
   top: 1px;
   right: 5px;
-  //left: 557px;
-  //bottom: 21px;
   width: 16px;
   height: 16px;
   background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
@@ -1293,21 +1293,21 @@ li.reference_disable {
 	line-height:28px;
 }
 
-ul.parent {
+.hierarchic ul.parent {
 	border-left:none;
 }
 
-ul.parent>li {
+.hierarchic ul.parent>li {
 	list-style-image:none !important;
 	list-style-type:none;
 }
 
 .hierarchic ul li {
+  position: relative;
 	color:black;
 	border-left:solid 1px black;
 	border-bottom:solid 1px black;
 	margin-bottom:-1px;
-	margin-right:278px;
 	height:25px;
 	text-indent:5px;
 	background-position:0 0;
@@ -1320,8 +1320,8 @@ ul.parent>li {
 }
 
 .hierarchic ul li span{
-	position:absolute;
-	right:300px;
+	position: absolute;
+	right: 10px;
 }
 
 .hierarchic ul li a {
@@ -1342,11 +1342,6 @@ ul.parent>li {
 .hierarchic ul li span>img {
 	position:relative;
 	top:2px;
-}
-
-.hierarchic img {
-	margin-left:3px;
-	margin-right:3px;
 }
 
 .hierarchic ul li label.unchecked {

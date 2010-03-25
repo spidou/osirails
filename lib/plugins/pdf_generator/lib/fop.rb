@@ -13,7 +13,7 @@ class Fop
   @@logger     = RAILS_DEFAULT_LOGGER
     
   def self.check_dependencies
-    raise PdfGeneratorError, "command not found: '#{@@exe_path}'. It seems FOP is missing, please install it and retry (http://osirails.spidou.com/wiki/doku.php?id=osirails:developer:installation_prerequisites#apache_fop_for_pdf_generation)" unless File.exists?(@@exe_path)
+    raise PdfGeneratorError, "command not found: '#{@@exe_path}' for user '#{`whoami`}'. It seems FOP is missing, please install it and retry (http://osirails.spidou.com/wiki/doku.php?id=osirails:developer:installation_prerequisites#apache_fop_for_pdf_generation)" unless File.exists?(@@exe_path)
   end
 
   def self.pdf_from_xml_and_xsl(xml_rendering, xsl_path, file_name, pdf_path, is_temporary_pdf)

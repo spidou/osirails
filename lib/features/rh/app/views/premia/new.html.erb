@@ -1,13 +1,13 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= employee_link(@employee) %>
-  <%= employees_link %>
+  <%= employee_link(@employee, :link_text => "Voir l'employé") %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
 <% content_for :header do %>
      <%= javascript_include_tag 'rh/premium' %>
 <% end %>
 
-<h1>Ajouter une Prime</h1>
+<h1>Nouvelle Prime</h1>
 
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 
@@ -26,9 +26,7 @@
       <%= f.label :remark %>
       <%= f.form_or_view(f.text_area( :remark,{ :rows => "5"})) %>
     </p>
-    <p>
-      <%= f.submit "Ajouter", :onclick => "return confirm_premium();" %>
-    </p>
+    <%= f.form_buttons(:onclick => "return confirm_premium();") %>
   <%end%>
 
 </div>

@@ -1,14 +1,14 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_vehicle_link %>  
-  <%= vehicle_link(@vehicle) %>
-  <%= delete_vehicle_link(@vehicle) %>
-  <%= new_vehicle_tool_event_link(@vehicle) if @vehicle.can_be_edited? %>
+  <%= new_vehicle_link(:link_text => "Nouveau véhicule") %>  
+  <%= vehicle_link(@vehicle, :link_text => "Voir le véhicule") %>
+  <%= delete_vehicle_link(@vehicle, :link_text => "Supprimer le véhicule") %>
+  <%= new_vehicle_tool_event_link(@vehicle, :link_text => "Nouvel évènement") if @vehicle.can_be_edited? %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= vehicles_link %>
-  <%= vehicle_tool_events_link(@vehicle) %>
+  <%= vehicles_link(:link_text => "Voir tous les véhicules") %>
+  <%= vehicle_tool_events_link(@vehicle, :link_text => "Voir tous les évènements du véhicule") %>
 <% end %>
 
-<h1>Modifier un v&eacute;hicule</h1>
-<%= render :partial => "tools/tool", :locals => {:tool => @vehicle, :button_name => "Modifier"} %>
+<h1>Modifier le v&eacute;hicule</h1>
+<%= render :partial => "tools/tool", :locals => {:tool => @vehicle} %>

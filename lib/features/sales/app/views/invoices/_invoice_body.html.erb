@@ -63,42 +63,44 @@ end
     </div>
   <% end %>
   
-  <table id="invoice_items">
-    <thead>
-      <tr>
-        <th rowspan="2">Réf.</th>
-        <th rowspan="2">Désignation</th>
-        <th rowspan="2">PU Brut HT</th>
-        
-        <th colspan="4" class="from_quote">DEVIS</th>
-        
-        <th colspan="4">À FACTURER (DÉJÀ LIVRÉS)</th>
-        
-        <% if is_form_view? %>
-          <th rowspan="2">Actions</th>
-        <% end %>
-      </tr>
-      <tr>
-        <th class="from_quote">Rem (%)</th>
-        <th class="from_quote">PU Net HT</th>
-        <th class="from_quote">Qté</th>
-        <th class="from_quote">Total HT</th>
-        
-        <th>Qté</th>
-        <th>Total HT</th>
-        <th>TVA</th>
-        <th>Total TTC</th>
-      </tr>
-    </thead>
-    
-    <tbody id="invoice_items_body">
-      <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items, :locals => {:collection_length => invoice.invoice_items.size} %>
-    </tbody>
-    
-    <tfoot id="invoice_items_foot">
-      <%= render :partial => 'invoices/invoice_footer', :object => invoice %>
-    </tfoot>
-  </table>
+  <div class="autoscroll">
+    <table id="invoice_items">
+      <thead>
+        <tr>
+          <th rowspan="2">Réf.</th>
+          <th rowspan="2">Désignation</th>
+          <th rowspan="2">PU&nbsp;Brut HT&nbsp;(&euro;)</th>
+          
+          <th colspan="4" class="from_quote">DEVIS</th>
+          
+          <th colspan="4">À FACTURER (DÉJÀ LIVRÉS)</th>
+          
+          <% if is_form_view? %>
+            <th rowspan="2">Actions</th>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="from_quote">Rem (%)</th>
+          <th class="from_quote">PU&nbsp;Net HT&nbsp;(&euro;)</th>
+          <th class="from_quote">Qté</th>
+          <th class="from_quote">Total HT&nbsp;(&euro;)</th>
+          
+          <th>Qté</th>
+          <th>Total HT&nbsp;(&euro;)</th>
+          <th>TVA</th>
+          <th>Total TTC&nbsp;(&euro;)</th>
+        </tr>
+      </thead>
+      
+      <tbody id="invoice_items_body">
+        <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items, :locals => {:collection_length => invoice.invoice_items.size} %>
+      </tbody>
+      
+      <tfoot id="invoice_items_foot">
+        <%= render :partial => 'invoices/invoice_footer', :object => invoice %>
+      </tfoot>
+    </table>
+  </div>
   
   <table id="invoice_items_to_destroy">
     

@@ -37,7 +37,7 @@
           <%= form.text_field(:tax_coefficient, :value => number_with_precision(@stock_flow.tax_coefficient,2), :size => 5) + " &#37;"%>
         </p>
       <% end %>
-      <p><%= form.submit("Envoyer") %></p>
+      <%= form.form_buttons %>
     <% end %>    
   <% else %>
     <p>Aucune fourniture disponible pour effectuer un mouvement de stock</p>

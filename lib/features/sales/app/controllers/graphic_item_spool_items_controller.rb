@@ -3,7 +3,7 @@ class GraphicItemSpoolItemsController < ApplicationController
   
   # GET /orders/[:order_id]/graphic_item_spool_items
   def index
-    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
+    @spool_items = GraphicItemSpoolItem.spool_items_by_user(current_user)
   end
   
   # GET /orders/[:order_id]/graphic_item_spool_items/empty_spool

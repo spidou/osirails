@@ -5,14 +5,12 @@ class MockupsController < ApplicationController
   # GET /orders/:order_id/mockups
   def index
     @enabled_mockups = @order.mockups.find(:all,:conditions => ["cancelled is NULL or cancelled=false"])
-    @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end  
   
   # GET /orders/:order_id/mockups/:id
   def show
     @mockup = Mockup.find(params[:id])
     @graphic_item_versions = @mockup.graphic_item_versions
-    @spool = GraphicItemSpoolItem.find(:all, :conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
   end
   
   # GET /orders/:order_id/mockups/new

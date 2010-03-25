@@ -11,11 +11,8 @@
     <h2>Contacts</h2>
     <%= display_contacts_list(@subcontractor) %>
     <%= display_contact_add_button(@subcontractor) %>
-
-    <p>
-      <%= form.reset %>
-      <%= form.submit submit_button_name %>
-    </p>
+    
+    <%= form.form_buttons %>
   <% end %>
 <% else %>
   <%= render :partial => 'thirds/third', :object => @subcontractor %>

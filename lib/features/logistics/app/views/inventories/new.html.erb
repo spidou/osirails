@@ -4,21 +4,21 @@
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_inventory_link(Commodity.new) if params[:type] == "Consumable" %>
-  <%= new_inventory_link(Consumable.new) if params[:type] == "Commodity" %>
+  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:type] == "Consumable" %>
+  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:type] == "Commodity" %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= inventories_link %>
-  <%= commodity_categories_link %>
-  <%= consumable_categories_link %>
+  <%= inventories_link(:link_text => "Voir tous les inventaires") %>
+  <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
+  <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
 <h1>Nouvel inventaire de <%= params[:type]=="Commodity" ? "matières premières" : "consommables" %></h1>
 
 <div>
   <% unless @supplies.empty? %>  
-    <% form_for(:inventory, :url => {:action => :create}) do |form| %>
+    <% form_for(:inventory, :url => {:action => :create}) do %>
       <%= "<table class='#{@supply.class.name.tableize.singularize}'>" %>
         <tr>
           <th rowspan='2'>Cat&eacute;gorie</th>
@@ -36,8 +36,13 @@
         </tr>      
       <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
       </table>
+      
       <%= hidden_field_tag 'type', params[:type] %>
-      <p><%= submit_tag "Valider" %></p>  
+      
+      <p class="form_buttons">
+        <%= reset nil, "Réinitialiser" %>
+        <%= submit_tag "Enregistrer" %>
+      </p>
     <% end %>
   <% else %>
     <p>Aucune fourniture disponible pour effectuer un nouvel inventaire</p>

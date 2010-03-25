@@ -23,6 +23,6 @@ menus:
         description: Gestion des fournisseurs
         position: 2
       factors:
-        title: "Sociétés d'affacturage"
-        description: "Gestion des sociétés d'affacturage"
+        title: "Factors (Sociétés d'affacturage)"
+        description: "Gestion des factors (sociétés d'affacturage)"
         position: 3

@@ -5,49 +5,49 @@
 <h1>Modifier les permissions du r&ocirc;le "<%= @role.name%>"</h1>
 
 <div>
-  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do %>
+  <% form_tag( role_permission_path(params[:id]), :method => 'put' ) do |form| %>
     <% for permission_type, permissions in @permissions %>
       <h2>pour chaque <%= permission_type.titleize %></h2>
       <% if permission_type == 'Menu'%>
         <div class='hierarchic'><%= get_structured_menus_permissions(get_all_menus_structured, permissions)%></div>
       <% else %>
-        <table>
-          <% max_size = permissions.collect{|p|p.permission_methods.size}.max %>
-          <tr>
-            <th><%= permission_type.titleize %></th>
-            <th colspan="<%= max_size %>">Permissions</th>
-            <th>Tout cocher</th>
-          </tr>
-          <% for permission in permissions %>
+        <div class="autoscroll">
+          <table>
+            <% max_size = permissions.collect{|p|p.permission_methods.size}.max %>
             <tr>
-              <td rowspan="2" style="width: 350px"><%= link_to permission.has_permissions.title, "#" %></td>
-              <% for method in permission.permission_methods %>
-                <%= "<th>#{method.name.titleize}</th>"%>
-              <% end %>
-              <% (max_size - permission.permission_methods.size).times do %>
-                <th>&nbsp;</th>
-              <% end %>
-                <th>&nbsp;</th>
+              <th><%= permission_type.titleize %></th>
+              <th colspan="<%= max_size %>">Permissions</th>
+              <th>Tout cocher</th>
             </tr>
-            <tr>
-              <% fields_for "permissions[]", permission do |form| %>
+            <% for permission in permissions %>
+              <tr>
+                <td rowspan="2" style="width: 350px"><%= link_to permission.has_permissions.title, "#" %></td>
                 <% for method in permission.permission_methods %>
-                  <td><%= form.check_box method.name %></td>
+                  <%= "<th>#{method.name.titleize}</th>"%>
                 <% end %>
                 <% (max_size - permission.permission_methods.size).times do %>
-                  <td>&nbsp;</td>
+                  <th>&nbsp;</th>
                 <% end %>
-              <% end %>
-				      <td style="width:100px"><input type="checkbox" class="checkbox_permission"></td>
-            </tr>
-          <% end %>
-        </table>
+                  <th>&nbsp;</th>
+              </tr>
+              <tr>
+                <% fields_for "permissions[]", permission do |form| %>
+                  <% for method in permission.permission_methods %>
+                    <td><%= form.check_box method.name %></td>
+                  <% end %>
+                  <% (max_size - permission.permission_methods.size).times do %>
+                    <td>&nbsp;</td>
+                  <% end %>
+                <% end %>
+				        <td style="width:100px"><input type="checkbox" class="checkbox_permission"></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
       <% end %>  
     <% end %>
     
-    <p> 
-      <%= submit_tag "Mettre à jour" %>  
-    </p>
+    <%= form.form_buttons %>
   <%end%>
 </div>
 <%= javascript_include_tag 'permission' %>

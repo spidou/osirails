@@ -1,12 +1,12 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_factor_link %>
-  <%= factor_link(@factor)%>
-  <%= delete_factor_link(@factor)%>
+  <%= new_factor_link(:link_text => "Nouveau factor") %>
+  <%= factor_link(@factor, :link_text => "Voir le factor") %>
+  <%= delete_factor_link(@factor, :link_text => "Supprimer le factor") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= factors_link%>
+  <%= factors_link(:link_text => "Voir tous les factors") %>
 <% end %>
 
-<h1>Modifier une société d'affacturage</h1>
-<%= render :partial => @factor, :locals => { :submit_button_name => "Mettre à jour"} %>
+<h1>Modifier le factor (société d'affacturage)</h1>
+<%= render :partial => @factor %>

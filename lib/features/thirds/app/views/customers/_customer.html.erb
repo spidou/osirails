@@ -1,27 +1,12 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= javascript_include_tag 'core/has_resources/has_resources' %>
+<% end %>
+
 <div class="presentation_medium">
 
 <h2>Informations g&eacute;n&eacute;rales</h2>
-<% if is_form_view? %>
-  <% form_for @customer, :html => { :multipart => true } do |form| %>
-    <%= render :partial => 'thirds/third', :object => @customer %>
-    
-    <h3>Adresse de facturation</h3>
-    <%= render :partial => 'addresses/address_form', :object => @customer.bill_to_address || @customer.build_bill_to_address , :locals => { :address_owner => @customer } %>
-    
-    <h2>Établissements</h2>
-    <%= display_establishments_list(@customer) %>
-    <%= display_establishment_add_button(@customer) %>
-    
-    <h2>Documents</h2>
-    <%= display_documents_list(@customer) %>
-    <%= display_document_add_button(@customer) %>
-    
-    <p class="form_buttons">
-      <%= form.reset %>
-      <%= form.submit submit_button_name %>
-    </p>
-  <% end %>  
-<% else %>
+<% form_for @customer, :html => { :multipart => true } do |form| %>
   <%= render :partial => 'thirds/third', :object => @customer %>
   
   <h3>Adresse de facturation</h3>
@@ -29,9 +14,13 @@
   
   <h2>Établissements</h2>
   <%= display_establishments_list(@customer) %>
+  <%= display_establishment_add_button(@customer) if is_form_view? %>
   
   <h2>Documents</h2>
   <%= display_documents_list(@customer) %>
+  <%= display_document_add_button(@customer) if is_form_view? %>
+  
+  <%= form.form_buttons %>
 <% end %>
 
 </div>

@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= other_tools_link %>
+  <%= other_tools_link(:link_text => "Voir tous les équipements non référencés") %>
 <% end %>
 
-<h1>Ajouter un &eacute;quipement non r&eacute;f&eacute;renc&eacute;</h1>
-<%= render :partial => "tools/tool" , :locals => {:tool => @other_tool, :button_name => "Ajouter"}%>
+<h1>Nouvel &eacute;quipement non r&eacute;f&eacute;renc&eacute;</h1>
+<%= render :partial => "tools/tool" , :locals => {:tool => @other_tool}%>

@@ -28,7 +28,7 @@ class AccountControllerTest < ActionController::TestCase
     login_as_powerful_user
     
     assert_response :redirect
-    assert_redirected_to "permissions"
+    assert_redirected_to "home"
     assert_not_nil flash[:notice]
     assert_not_nil session[:user_id]
   end

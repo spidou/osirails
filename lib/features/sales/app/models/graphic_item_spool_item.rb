@@ -12,6 +12,8 @@ class GraphicItemSpoolItem < ActiveRecord::Base
   validates_presence_of :graphic_item,  :if => :graphic_item_id
   validates_presence_of :user,          :if => :user_id
   
+  named_scope :spool_items_by_user, lambda{ |user| { :conditions => ['user_id = ?', user.id], :order => 'created_at DESC' } }
+  
   # Callbacks
   before_create  :generate_link_path
   after_create   :create_link

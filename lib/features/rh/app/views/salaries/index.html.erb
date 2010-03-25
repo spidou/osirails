@@ -1,9 +1,9 @@
 <% add_contextual_menu_item :useful_links do %>
-  <%= employee_link(@employee) %>
-  <%= employees_link %>
+  <%= employee_link(@employee, :link_text => "Voir l'employé") %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Historique des salaires</h1>
+<h1>Historique du salaire</h1>
 
 <%= render :partial => 'employees/employee_summary', :locals => {:employee => @employee}%>
 <div class="presentation-medium">

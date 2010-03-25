@@ -1,6 +1,4 @@
-class Inventory < ActiveRecord::Base
-  has_permissions :as_business_object
-  
+class Inventory
   # For will_paginate
   DATES_PER_PAGE = 15
   
@@ -31,8 +29,8 @@ class Inventory < ActiveRecord::Base
           end
         end
       end
-      for supply in params[:type].constantize.was_enabled_at
       
+      for supply in params[:type].constantize.was_enabled_at
         for ss in supply.supplier_supplies
           param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
           param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
@@ -41,15 +39,14 @@ class Inventory < ActiveRecord::Base
           new_fob = param_fob.to_f
           new_tax_coefficient = param_tax_coefficient.to_f
           if new_quantity-ss.stock_quantity > 0
-            StockInput.create({:adjustment => true, :quantity => new_quantity-ss.stock_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})     
-            changes += 1   
+            StockInput.create({:adjustment => true, :quantity => new_quantity-ss.stock_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})
+            changes += 1
           elsif new_quantity-ss.stock_quantity < 0
             StockOutput.create({:adjustment => true, :quantity => ss.stock_quantity-new_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})
             changes += 1
           end
         end
-        
       end
     changes
-  end  
+  end
 end

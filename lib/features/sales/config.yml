@@ -46,7 +46,7 @@ menus:
         children:
           informations:
             title: Informations de commande
-            description: Informations générales sur les dossiers de commandes
+            description: Informations générales sur le dossier
             position: 1
           commercial_step:
             title: Étude commerciale
@@ -148,8 +148,8 @@ menus:
                 description: Fichiers mis en file d'attente de production de l'utilisateur courant
                 position: 4
           logs:
-            title: Historiques
-            description: Historiques des actions effectués sur le dossier de commmande
+            title: Historique
+            description: Historique des actions effectuées sur le dossier
             position: 5
   goods:
     title: Produits

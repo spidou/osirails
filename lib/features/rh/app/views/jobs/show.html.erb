@@ -1,12 +1,12 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_job_link %>
-  <%= edit_job_link(@job) %>
-  <%= delete_job_link(@job) %>
+  <%= new_job_link(:link_text => "Nouvelle fiche de poste") %>
+  <%= edit_job_link(@job, :link_text => "Modifier la fiche de poste") %>
+  <%= delete_job_link(@job, :link_text => "Supprimer la fiche de poste") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= jobs_link %>
+  <%= jobs_link(:link_text => "Voir toutes les fiches de poste") %>
 <% end %>
 
-<h1>D&eacute;tails sur "<%=h@job.name%>"</h1>
+<h1>Fiche d&eacute;taill&eacute;e du poste "<%=h@job.name%>"</h1>
 <%= render :partial => @job, :object => @job%>

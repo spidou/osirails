@@ -78,7 +78,7 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
     </div>
     
     <% if is_form_view? %>
-      <p>
+      <p class="form_buttons">
         <%= form.submit 'Enregistrer' %>
         <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
       </p>

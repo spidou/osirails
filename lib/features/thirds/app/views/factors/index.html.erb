@@ -1,8 +1,8 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_factor_link %>
+  <%= new_factor_link(:link_text => "Nouveau factor") %>
 <% end %>
 
-<h1>Liste des sociétés d'affacturage</h1>
+<h1>Les factors (sociétés d'affacturage)</h1>
 
 <div>
   <% unless @factors.empty? %>

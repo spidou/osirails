@@ -1,92 +1,124 @@
 module GraphicItemsHelper
+  
   def graphic_items_link(object_class)
     if object_class.name == "Mockup"
       text = "Voir les maquettes du dossier"
-      link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, order_mockups_path)
+      path = order_mockups_path
     elsif object_class.name == "GraphicDocument"
       text = "Voir les documents graphiques du dossier"
-      link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, order_graphic_documents_path)
+      path = order_graphic_documents_path
     end
+    link_to(image_tag("list_16x16.png", :alt => text, :title => text) + " " + text, path)
+  end
+  
+  def graphic_item_link(object)
+    if object.class.name == "Mockup"
+      text = "Voir la maquette"
+      path = order_mockup_path(object.order, object)
+    elsif object.class.name == "GraphicDocument"
+      text = "Voir le document graphique"
+      path = order_graphic_document_path(object.order, object)
+    end
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + " " + text, path)
   end
   
   def new_graphic_item_link(object_class)
     if object_class.name == "Mockup"
       text = "Nouvelle maquette"
-      link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, new_order_mockup_path)
+      path = new_order_mockup_path
     elsif object_class.name == "GraphicDocument"
       text = "Nouveau document graphique"
-      link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, new_order_graphic_document_path)
+      path = new_order_graphic_document_path
     end
+    link_to(image_tag("add_16x16.png", :alt => text, :title => text) + " " + text, path)
   end
   
   def edit_graphic_item_link(object)
     if object.class.name == "Mockup"
       text = "Modifier la maquette"
-      link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, edit_order_mockup_path(object.order,object))
+      path = edit_order_mockup_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Modifier le document graphique"
-      link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, edit_order_graphic_document_path(object.order,object))
+      path = edit_order_graphic_document_path(object.order,object)
     end
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + " " + text, path)
   end
   
   def delete_graphic_item_link(object)
     if object.class.name == "Mockup"
       text = "Supprimer la maquette"
-      link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + " " + text, order_mockup_path(object.order,object), :method => :delete, :confirm => "Êtes-vous sûr ?")
+      path = order_mockup_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Supprimer le document graphique"
-      link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + " " + text, order_graphic_document_path(object.order,object), :method => :delete, :confirm => "Êtes-vous sûr ?")
+      path = order_graphic_document_path(object.order,object)
     end
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + " " + text, path, :method => :delete, :confirm => "Êtes-vous sûr ?")
   end
   
   def cancel_graphic_item_link(object)
     if object.class.name == "Mockup"
       text = "Désactiver la maquette"
-      link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + " " + text, order_mockup_cancel_path(object.order,object), :confirm => "Êtes-vous sûr ?")
+      path = order_mockup_cancel_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Désactiver le document graphique"
-      link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + " " + text, order_graphic_document_cancel_path(object.order,object), :confirm => "Êtes-vous sûr ?")
+      path = order_graphic_document_cancel_path(object.order,object)
     end
+    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + " " + text, path, :confirm => "Êtes-vous sûr ?")
+  end
+  
+  def display_graphic_item_summary_preview_button(object, press_proof = nil)
+    parent = press_proof || object.product
+    image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
+    link_to(image, object.current_image.url(:medium), :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]", :title => "#{object.name} : #{object.short_description}")
+  end
+  
+  def display_graphic_item_summary_download_button(object)
+    image = image_tag("download_16x16.png", :alt => text = "Télécharger", :title => text)
+    link_to(image, object.current_image.url(:medium))
   end
   
   def display_graphic_item_summary_view_button(object)
     if object.class.name == "Mockup" 
       text = "Voir cette maquette"
-      link_to(image_tag("view_16x16.png", :alt => text, :title => text), order_mockup_path(object.order,object))
+      path = order_mockup_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Voir ce document graphique"
-      link_to(image_tag("view_16x16.png", :alt => text, :title => text), order_graphic_document_path(object.order,object))
+      path = order_graphic_document_path(object.order,object)
     end
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text), path)
   end
   
   def display_graphic_item_summary_edit_button(object)
     if object.class.name == "Mockup" 
       text = "Modifier cette maquette"
-      link_to(image_tag("edit_16x16.png", :alt => text, :title => text), edit_order_mockup_path(object.order,object))
+      path = edit_order_mockup_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Modifier ce document graphique"
-      link_to(image_tag("edit_16x16.png", :alt => text, :title => text), edit_order_graphic_document_path(object.order,object))
+      path = edit_order_graphic_document_path(object.order,object)
     end
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text), path)
   end
   
   def display_graphic_item_summary_delete_button(object)
     if object.class.name == "Mockup" 
       text = "Supprimer cette maquette"
-      link_to(image_tag("delete_16x16.png", :alt => text, :title => text), order_mockup_path(object.order,object), :method => :delete, :confirm => "Êtes-vous sûr ?")
+      path = order_mockup_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Supprimer ce document graphique"
-      link_to(image_tag("delete_16x16.png", :alt => text, :title => text), order_graphic_document_path(object.order,object), :method => :delete, :confirm => "Êtes-vous sûr ?")
+      path = order_graphic_document_path(object.order,object)
     end
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text), path, :method => :delete, :confirm => "Êtes-vous sûr ?")
   end
   
   def display_graphic_item_summary_cancel_button(object)
     if object.class.name == "Mockup" 
       text = "Désactiver cette maquette"
-      link_to(image_tag("cancel_16x16.png", :alt => text, :title => text), order_mockup_cancel_path(object.order,object), :confirm => "Êtes-vous sûr ?")
+      path = order_mockup_cancel_path(object.order,object)
     elsif object.class.name == "GraphicDocument"
       text = "Désactiver ce document graphique"
-      link_to(image_tag("cancel_16x16.png", :alt => text, :title => text), order_graphic_document_cancel_path(object.order,object), :confirm => "Êtes-vous sûr ?")
+      path = order_graphic_document_cancel_path(object.order,object)
     end
+    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text), path, :confirm => "Êtes-vous sûr ?")
   end
   
   def display_graphic_item_summary_image_download_link(object)
@@ -129,15 +161,20 @@ module GraphicItemsHelper
     end 
   end
   
-  def display_user_spool
+  def display_user_spool(user = current_user)
+    spool_items = GraphicItemSpoolItem.spool_items_by_user(user)
     html = '<p id="spool">'
-    html << render(:partial => 'graphic_item_spool_items/spool')
+    html << render(:partial => 'graphic_item_spool_items/spool', :object => spool_items)
     html << '</p>'
     html << '<ul>'
     html << ' <li>'
-    html <<     link_to( image_tag("view_16x16.png") + " Voir la file d'attente (<span id='spool_size'>#{@spool.size}</span>)", order_graphic_item_spool_items_path)
+    html <<     link_to( image_tag("view_16x16.png") + " Voir la file d'attente (<span id='spool_size'>#{spool_items.size}</span>)", order_graphic_item_spool_items_path)
     html << ' </li>'
     html << '</ul>'
+  end
+  
+  def display_user_spool_in_contextual_menu
+    add_contextual_menu_item(:spool_items, true) { display_user_spool }
   end
   
   def display_empty_spool_link

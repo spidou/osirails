@@ -6,7 +6,7 @@ style              = "display:none;" if selected_mockup or bad_product
 %>
 
 <div id="mockup_<%= minimal_mockup.id %>" class="draggable minimal_mockup product_<%= minimal_mockup.product.id %>" style="<%= style %>">
-  <%= render :partial => 'graphic_items/graphic_item_summary', :object => minimal_mockup, :locals => { :without_action => true }%>
+  <%= render :partial => 'graphic_items/graphic_item_summary', :object => minimal_mockup, :locals => { :without_action => true } %>
   <input type='hidden' value="<%= minimal_mockup.current_version.id %>" class="version_id">
 </div>
 

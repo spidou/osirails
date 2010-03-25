@@ -7,7 +7,7 @@
   <% form_for(@step, :url => { :controller => "payment_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
     <%= form.error_messages %>
     
-    <p>
+    <p class="form_buttons">
       <%= form.submit 'Enregistrer' %>
       <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
     </p>

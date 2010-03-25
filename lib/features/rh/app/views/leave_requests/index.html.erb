@@ -1,9 +1,9 @@
-<h1>Liste des demandes de cong&eacute;s</h1>
+<h1>Les demandes de cong&eacute;s</h1>
 
 <div>
 <% if @employee %>
   <% add_contextual_menu_item :possible_actions do %>
-    <%= new_leave_request_link %>
+    <%= new_leave_request_link(:link_text => "Nouvelle demande de congé") %>
   <% end %>
   
   <% add_contextual_menu_item :useful_links do %>

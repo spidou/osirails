@@ -33,9 +33,13 @@ class PressProofsController < ApplicationController
   # GET /orders/:order_id/:step/press_proofs/new
   def new
     @press_proof = @order.press_proofs.build
-    @press_proof.product = @order.products_without_signed_press_proof.first
-    @press_proof.creator = current_user
-    error_access_page(412) if @order.all_products_have_signed_press_proof?
+    
+    unless @order.all_products_have_signed_press_proof?
+      @press_proof.product = @order.products_without_signed_press_proof.first
+      @press_proof.creator = current_user
+    else
+      error_access_page(412)
+    end
   end
   
   # POST /orders/:order_id/:step/press_proofs
@@ -43,7 +47,7 @@ class PressProofsController < ApplicationController
     @press_proof = @order.press_proofs.build(params[:press_proof])
     @press_proof.creator = current_user
     
-    if @press_proof.can_be_created?
+    if @press_proof.can_be_created? and !@order.all_products_have_signed_press_proof?
       if @press_proof.save
         flash[:notice] = "Le Bon à Tirer (BAT) a été créé avec succès"
         redirect_to send(@step.original_step.path)
@@ -199,13 +203,15 @@ class PressProofsController < ApplicationController
   end
   
   def add_mockup
+    press_proof          = params[:press_proof_id] ? PressProof.find(params[:press_proof_id]) : PressProof.new
     graphic_item_version = GraphicItemVersion.find(params[:mockup_version_id])
     position             = params[:position].to_i
     
     render :update do |page|
       page.insert_html :bottom, "droppable_div", :partial => 'press_proofs/selected_graphic_item_version',
                                                  :object  => graphic_item_version,
-                                                 :locals  => { :position => position }
+                                                 :locals  => { :position    => position,
+                                                               :press_proof => press_proof }
     end
   end
   

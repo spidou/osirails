@@ -1,7 +1,7 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_machine_link %>
+  <%= new_machine_link(:link_text => "Nouvelle machine") %>
 <% end %>
 
-<h1>Liste des machines</h1>
+<h1>Les machines</h1>
 <%= render :partial => 'tools/index', :locals => {:tools => @machines}%>
 

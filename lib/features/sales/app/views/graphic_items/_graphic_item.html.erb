@@ -43,11 +43,7 @@
     <div class="graphic_item_additional_informations section_nav">
       <%= render :partial => 'graphic_items/graphic_item_additional_infos', :object => graphic_item, :locals => { :form => form } %>
     </div>
-    
-    <% if is_form_view? %>
-      <p>
-        <%= form.reset 'Réinitialiser' %><%= form.submit button_name %>
-      </p>
-    <% end %>     
+      
+    <%= form.form_buttons %>  
   <% end %>
 </div>

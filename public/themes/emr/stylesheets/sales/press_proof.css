@@ -61,10 +61,12 @@
   position: absolute;
   top: 95px;
   right: 15px;
+  cursor: pointer;
 }
 
 .previous_link {
   position: absolute;
   top: 95px;
   right: 45px;
+  cursor: pointer;
 }

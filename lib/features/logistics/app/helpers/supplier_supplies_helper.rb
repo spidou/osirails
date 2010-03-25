@@ -3,7 +3,7 @@ module SupplierSuppliesHelper
     return unless SupplierSupply.can_list?(current_user)
     
     html = "<h2>Fournisseurs</h2>"
-    html << "<div id=\"supplier_supplies\">"
+    html << "<div id=\"supplier_supplies\" class=\"autoscroll\">"
     unless owner.supplier_supplies.empty?
       html << render(:partial => 'supplier_supplies/supplier_supplies', :locals => { :supplier_supplies_owner => owner }) unless is_form_view?
       html << render(:partial => 'supplier_supplies/supplier_supply_in_one_line', :collection => owner.supplier_supplies, :locals => { :supplier_supplies_owner => owner } )

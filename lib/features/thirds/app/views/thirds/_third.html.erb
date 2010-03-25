@@ -12,7 +12,7 @@ force_show_view ||= false
   </p>
   <p>
     <%= form.label :legal_form_id %>
-    <%= form.form_or_view(form.collection_select_with_option_groups(:legal_form_id, ThirdType.find(:all), :legal_forms, :name, :id, :name, third.legal_form_id), :legal_form, :name) %>
+    <%= form.form_or_view(form.collection_select_with_option_groups(:legal_form_id, ThirdType.find(:all), :legal_forms, :name, :id, :name, third.legal_form_id, :include_blank => "Veuillez choisir une forme juridique"), :legal_form, :name) %>
   </p>
   <p>
     <%= form.label :siret_number %>

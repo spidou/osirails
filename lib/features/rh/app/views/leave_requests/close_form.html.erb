@@ -1,11 +1,11 @@
 <% add_contextual_menu_item :possible_actions do %>
 	<%= cancel_leave_request_link(@leave_request,false) %>
-	<%= delete_leave_request_link %>
+	<%= delete_leave_request_link(@leave_request, :link_text => "Supprimer la demande de congés") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-	<%= leave_requests_link %>
+	<%= leave_requests_link("Voir toutes mes demandes de congés") %>
 <% end %>
 
 <h1>Validation finale de la demande de cong&eacute;s</h1>
-<%= render :partial => "close_form", :object => @leave_request, :locals => {:button_name=> "Envoyer"} %>
+<%= render :partial => "close_form", :object => @leave_request %>

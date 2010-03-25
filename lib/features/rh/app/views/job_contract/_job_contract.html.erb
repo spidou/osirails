@@ -45,8 +45,6 @@
     <%= display_documents_list(job_contract) %>
     <%= display_document_add_button(job_contract) if is_form_view? %>
   
-  <% if is_form_view? %>
-    <p><%= form.submit "Modifier" %></p>
-  <% end%>
+  <%= form.form_buttons %>
 
 <% end %>

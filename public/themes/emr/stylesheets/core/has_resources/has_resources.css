@@ -48,6 +48,11 @@
   padding: 0;
 }
 
+.resource .thumb img {
+  max-height: 100px;
+  max-width: 100px;
+}
+
 .resource .details {
   display: inline-block;
   text-align: left;

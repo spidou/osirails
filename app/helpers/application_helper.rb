@@ -8,7 +8,6 @@ module ApplicationHelper
   def display_flash
     html = ""
     flash.each_pair do |key, value|
-      html << '<br/>' unless html == ""
       html << "<div class=\"flash_#{key}\"><span>#{value}</span></div>"
     end
     html.empty? ? "" : "<div class=\"flash_container\">" << html << "</div>"
@@ -23,9 +22,8 @@ module ApplicationHelper
   end
   
   def display_version
-    version = `#{RAILS_ROOT}/current_version.sh`
     if RAILS_ENV != 'production' or params[:debug]
-      "<span class=\"version\">#{version}<br/>in #{RAILS_ENV}</span>"
+      "<span class=\"version\">v#{Osirails::VERSION}<br/>#{RAILS_ENV}</span>"
     end
   end
   
@@ -129,6 +127,10 @@ module ApplicationHelper
   
   def is_edit_view?
     params[:action] == "edit" or params[:action].ends_with?("_form") or request.put?
+  end
+  
+  def is_show_view?
+    params[:action] == "show"
   end
   
   #begin
@@ -412,13 +414,13 @@ module ApplicationHelper
     #   # => "List all groups"
     # 
     def dynamic_link_catcher_default_link_text(method_name, model_name)
-      default_text = { :list    => "List all ",
-                       :view    => "View this ",
-										   :add     => "New ",
-										   :edit    => "Edit this ",
-										   :delete  => "Delete this " }
+      default_text = { :list    => "Voir tous",#"List all ",
+                       :view    => "Voir",#"View this ",
+										   :add     => "Nouveau",#"New ",
+										   :edit    => "Modifier",#"Edit this ",
+										   :delete  => "Supprimer" }#"Delete this " }
 
-      result = default_text[method_name] + model_name.gsub("_"," ")
+      result = default_text[method_name] #+ model_name.gsub("_"," ")
       result = result.singularize unless method_name == :list
       return result
     end

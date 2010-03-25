@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :invoice do %>
   <%= display_invoice_add_button(@order) unless is_new_view? %>
-  <%= display_invoice_show_button(@order, @invoice) %>
+  <%= display_invoice_show_button(@order, @invoice) unless is_show_view? %>
   <%= display_invoice_show_pdf_button(@order, @invoice) %>
   <%= display_invoice_edit_button(@order, @invoice) unless is_edit_view? %>
   

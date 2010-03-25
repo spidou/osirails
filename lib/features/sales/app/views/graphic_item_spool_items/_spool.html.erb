@@ -1,5 +1,5 @@
-<% unless @spool.empty? %>
-  <% @spool[0..2].each do |item| %>
+<% unless spool.empty? %>
+  <% spool[0..2].each do |item| %>
     <% if item.graphic_item.class.name == "Mockup" %>
       <% remove_path = order_mockup_remove_from_spool_path({:mockup_id => item.graphic_item.id, :file_type => item.file_type, :item_id => item.id})%>
     <% elsif item.graphic_item.class.name == "GraphicDocument"%>

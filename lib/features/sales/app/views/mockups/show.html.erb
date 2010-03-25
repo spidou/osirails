@@ -1,17 +1,15 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :useful_links do %>
+<% add_contextual_menu_item :mockup do %>
+  <%= new_graphic_item_link(Mockup) %>
+  <%= edit_graphic_item_link(@mockup) %>
+  <%= cancel_graphic_item_link(@mockup) %>
+  <%= delete_graphic_item_link(@mockup) %>
   <%= graphic_items_link(Mockup) %>
 <% end %>
 
-<h1>Informations sur la maquette</h1>
-<% add_contextual_menu_item :possible_actions do %>
-  <%= edit_graphic_item_link(@mockup) %>
-  <%= delete_graphic_item_link(@mockup) %>
-  <%= cancel_graphic_item_link(@mockup) %>
-<% end %>
-<% add_contextual_menu_item("Travaux en attente",true) do %>
-  <%= display_user_spool %>
-<% end %>
+<% display_user_spool_in_contextual_menu %>
+
+<h1>Fiche détaillée de la maquette</h1>
 
 <%= render :partial => "graphic_items/graphic_item", :object => @mockup %>

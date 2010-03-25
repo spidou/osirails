@@ -1,10 +1,10 @@
 <div class="presentation_medium">
 
-<%form_for(job) do |form|%>
+<% form_for(job) do |form| %>
   <%= form.error_messages %>
   <p>
     <%= form.label :name %>
-    <%= form.form_or_view(form.text_field(:name),:name)%>
+    <%= form.form_or_view(form.text_field(:name),:name) %>
   </p>
   <p>
     <%= form.label :service %>
@@ -30,6 +30,7 @@
     <%= form.label :goal %>
     <%= form.form_or_view(form.text_area( :goal, {:rows => 5}),:goal) %>
   </p>
-  <p><%= form.submit( submit_button_name ) if is_form_view? %></p>
+  
+  <%= form.form_buttons %>
 <% end %>
 </div>

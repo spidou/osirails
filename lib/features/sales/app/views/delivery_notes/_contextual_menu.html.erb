@@ -1,6 +1,6 @@
 <% add_contextual_menu_item :delivery_note do %>
   <%= display_delivery_note_add_button(@order) unless is_new_view? %>
-  <%= display_delivery_note_show_button(@order, @delivery_note) %>
+  <%= display_delivery_note_show_button(@order, @delivery_note) unless is_show_view? %>
   <%= display_delivery_note_download_attachment_button(@order, @delivery_note) %>
   <%= display_delivery_note_show_pdf_button(@order, @delivery_note) %>
   <%= display_delivery_note_edit_button(@order, @delivery_note) unless is_edit_view? %>

@@ -6,6 +6,6 @@
 <div class="presentation_medium">
 <% form_for(@menu) do |form| %>
   <%= render :partial => @menu %>
-  <p><%= form.submit "Ajouter" %></p>
+  <%= form.form_buttons %>
 <% end %>
 </div>

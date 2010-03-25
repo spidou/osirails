@@ -13,12 +13,21 @@ class AttachmentsController < ApplicationController
     @document = Document.find(params[:id])
     disposition = params[:download].nil? ? 'inline' : 'attachment'
     
-    if @document.can_view?(current_user)
+    if ( disposition == 'inline' and @document.can_view?(current_user) ) or ( disposition == 'attachment' and @document.can_download?(current_user))
       url = @document.attachment.path(params[:style])
+      
+      unless File.exists?(url)
+        url = Document.missing_document_image_path
+        disposition = 'inline'
+      end
       
       send_data File.read(url), :filename => "#{@document.id}_#{@document.attachment_file_name}", :type => @document.attachment_content_type, :disposition => disposition
     else
-      send_data File.read(Document.forbidden_document_image_path), :filename => "forbidden.png", :type => "image/png", :disposition => disposition
+      if disposition == 'inline'
+        send_data File.read(Document.forbidden_document_image_path), :filename => "forbidden.png", :type => "image/png", :disposition => 'inline'
+      else
+        error_access_page(403)
+      end
     end
   end
   

@@ -80,12 +80,7 @@
       <%= form.hidden_field :customer_id, :value  => order.customer_id if is_form_view? %>
     </p>
     
-    <% if is_form_view? %>
-      <p>
-        <%= form.reset 'Annuler' %>
-        <%= form.submit 'Enregistrer' %>
-      </p>
-    <% end %>
+    <%= form.form_buttons %>
   <% end %>
 </div>
 

@@ -72,12 +72,7 @@
         <%= render :partial => 'invoice_infos', :object => invoice, :locals => { :form => form } unless invoice.new_record? %>
       </div>
       
-      <% if is_form_view? %>
-        <p>
-          <%= form.submit 'Réinitialiser' %>
-          <%= form.submit 'Enregistrer' %>
-        </p>
-      <% end %>
+      <%= form.form_buttons %>
     <% end %>
   </div>
 <% end %>

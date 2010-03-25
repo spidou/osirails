@@ -1,17 +1,14 @@
 <%= order_header %>
 
-<% add_contextual_menu_item :useful_links do %>	
+<% add_contextual_menu_item :graphic_document do %>
+  <%= new_graphic_item_link(GraphicDocument) %>
+  <%= edit_graphic_item_link(@graphic_document) %>
+  <%= cancel_graphic_item_link(@graphic_document) %>
+  <%= delete_graphic_item_link(@graphic_document) %>
   <%= graphic_items_link(GraphicDocument) %>
 <% end %>
 
-<h1>Informations sur le document graphique</h1>
-<% add_contextual_menu_item :possible_actions do %>
-  <%= edit_graphic_item_link(@graphic_document) %>
-  <%= delete_graphic_item_link(@graphic_document) %>
-  <%= cancel_graphic_item_link(@graphic_document) %>
-<% end %>
-<% add_contextual_menu_item("Travaux en attente",true) do %>
-  <%= display_user_spool %>
-<% end %>
+<% display_user_spool_in_contextual_menu %>
 
+<h1>Fiche détaillée du document graphique</h1>
 <%= render :partial => "graphic_items/graphic_item", :object => @graphic_document %>

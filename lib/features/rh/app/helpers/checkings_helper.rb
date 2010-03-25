@@ -33,9 +33,9 @@ module CheckingsHelper
     link_options = { :employee_id => employee_id, :date => params[:date] }
     
     if params[:cancelled] == "true" or cancelled
-      options = { :link_text => "Liste des pointages", :options => link_options }
+      options = { :link_text => "Voir tous les pointages", :options => link_options }
     else
-      options = { :link_text => "Voir les pointages annulés", :options => link_options.merge({ :cancelled => true }) }
+      options = { :link_text => "Voir tous les pointages annulés", :options => link_options.merge({ :cancelled => true }) }
     end
     
     checkings_link(options)
@@ -50,7 +50,7 @@ module CheckingsHelper
   end
   
   def cancel_image
-    image_tag("delete_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
+    image_tag("cancel_16x16.png", :alt => "Annuler ce pointage",:title => "Annuler ce pointage")
   end
   
   def override_image

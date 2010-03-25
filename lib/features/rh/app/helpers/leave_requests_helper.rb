@@ -64,22 +64,22 @@ module LeaveRequestsHelper
   end
   
   def leave_request_check_form_link(leave_request)
-    text = "Traiter la demande"
+    text = "Traiter la demande de congés"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_check_form_path(leave_request))
   end
   
   def leave_request_notice_form_link(leave_request)
-    text = "Traiter la demande"
+    text = "Traiter la demande de congés"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_notice_form_path(leave_request))
   end
   
   def leave_request_close_form_link(leave_request)
-    text = "Traiter la demande"
+    text = "Traiter la demande de congés"
     link_to(image_tag("edit_16x16.png", :alt => text, :title => text), leave_request_close_form_path(leave_request))
   end  
   
   def cancel_leave_request_link(leave_request, button) 
-    text = "Annuler la demande"
+    text = "Annuler la demande de congés"
     link_text = button ? "" : " #{text}"
     link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
   end

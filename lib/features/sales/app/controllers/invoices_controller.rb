@@ -3,7 +3,7 @@ class InvoicesController < ApplicationController
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
-  before_filter :detect_invoice
+  before_filter :find_invoice
   before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
   
   after_filter :add_error_in_step_if_invoice_has_errors, :only => [ :create, :update ]
@@ -315,7 +315,7 @@ class InvoicesController < ApplicationController
       end
     end
     
-    def detect_invoice
+    def find_invoice
       id = params[:id] || params[:invoice_id]
       @invoice = Invoice.find(id) if id
     end

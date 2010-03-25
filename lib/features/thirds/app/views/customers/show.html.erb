@@ -1,14 +1,14 @@
 <% contextual_search_for_customer %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_customer_link %>
-  <%= edit_customer_link(@customer)%>
-  <%= delete_customer_link(@customer)%>
+  <%= new_customer_link(:link_text => "Nouveau client") %>
+  <%= edit_customer_link(@customer, :link_text => "Modifier le client" )%>
+  <%= delete_customer_link(@customer, :link_text => "Supprimer le client" )%>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= customers_link %>
+  <%= customers_link(:link_text => "Voir tous les clients") %>
 <% end %>
 
-<h1>Informations concernant le client</h1>
+<h1>Fiche d&eacute;taill&eacute;e du client</h1>
 <%= render :partial => @customer %>

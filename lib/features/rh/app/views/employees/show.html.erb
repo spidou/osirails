@@ -1,22 +1,19 @@
 <% contextual_search_for_employee %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_employee_link %>
-  <%= edit_employee_link(@employee) %>
-  <%= edit_employee_job_contract_link(@employee) %>
-  <%= new_employee_premium_link(@employee) %>
-  <%= new_employee_leave_link(@employee) %>
+  <%= new_employee_link(:link_text => "Nouvel employé") %>
+  <%= edit_employee_link(@employee, :link_text => "Modifier l'employé" ) %>
+  <%= edit_employee_job_contract_link(@employee, :link_text => "Modifier le contrat de travail" ) %>
+  <%= new_employee_premium_link(@employee, :link_text => "Nouvelle prime") %>
+  <%= new_employee_leave_link(@employee, :link_text => "Nouveau congé") %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= employees_link %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
   <%= employee_premia_link(@employee, :link_text => "Historique des primes") %>
   <%= employee_salaries_link(@employee, :link_text => "Historique du salaire") %>
   <%= employee_leaves_link(@employee, :link_text => "Historique des congés") %>
 <% end %>
 
-<h1>Informations d&apos;un employ&eacute;</h1>
+<h1>Fiche d&eacute;tail&eacute;e de l&apos;employ&eacute;</h1>
 <%= render :partial => @employee %>
-
-<!-- Display Documents div -->
-<%# display_documents(@employee, @documents) %>

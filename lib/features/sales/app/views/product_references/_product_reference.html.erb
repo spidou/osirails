@@ -43,8 +43,6 @@
     <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
   </p>
   
-  <% if is_form_view? %>
-    <p><%= form.submit(submit_button_name) %></p>
-  <% end %>
+  <%= form.form_buttons %>
 <% end %>
 </div>

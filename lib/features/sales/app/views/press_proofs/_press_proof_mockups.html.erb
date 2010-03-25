@@ -9,8 +9,8 @@ unselected_mockups    = press_proof.get_unselected_mockups
 <% if is_form_view? %>
   <p>Liste des maquettes disponibles pour le produit concerné</p>
   <div id="mockups_list">
-    <%= render :partial => "minimal_mockup", :collection => mockups, :locals => { :product_id => press_proof.product_id,
-                                                                                  :selected_mockups => selected_mockups }%>
+    <%= render :partial => "minimal_mockup", :collection => mockups, :locals => { :product_id       => press_proof.product_id,
+                                                                                  :selected_mockups => selected_mockups } %>
   </div>
   
   <p>Glissez ICI les Maquettes que vous voulez ajouter au BAT</p>
@@ -49,7 +49,7 @@ unselected_mockups    = press_proof.get_unselected_mockups
 <% else %>
 
   <div class="press_proof_mockups_container">
-    <%= render :partial => "minimal_mockup", :collection => mockups %>
+    <%= render :partial => "minimal_mockup", :collection => mockups, :locals => { :product_id => press_proof.product_id } %>
   </div>
 
 <% end %>

@@ -71,12 +71,6 @@ module DocumentsHelper
     message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
     link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_destroy(this)" if is_form_view?
   end
-
-  def display_document_preview_button(document)
-    link_to_function("Aperçu", :title => "Cliquer pour agrandir") do |page|
-      #page.insert_html( :bottom, "document_preview_#{document.id}", image_tag(document.attachment.url(:medium), :class => "preview", :onclick => "this.remove()") )
-    end
-  end
   
   def display_document_close_form_button(document)
     if document.new_record?
@@ -87,7 +81,15 @@ module DocumentsHelper
   end
 
   def display_document_download_button(document)
-    link_to "Télécharger", attachment_path(document.id, :download => "1")
+    return unless document.can_download?(current_user)
+    image = image_tag("download_16x16.png", :alt => text = "Télécharger", :title => text)
+    link_to(image, attachment_path(document.id, :download => "1"))
+  end
+  
+  def display_document_preview_button(document)
+    return unless document.can_view?(current_user)
+    image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
+    link_to(image, document.attachment.url(:medium), :rel => "lightbox[#{document.has_document.class.name.underscore}_#{document.has_document.id}]", :title => "#{document.name} : #{document.short_description}")
   end
   
   private

@@ -3,10 +3,10 @@
 <% end %>
 
 <div class="presentation_large">
+  <h2>Qui? et Quand?</h2>
+  
   <% form_for @checking, :url => { :action => action } do |f| %>
     <%= f.error_messages%>
-    
-    <h2>Qui? et Quand?</h2>
     <p>
       <%= f.label :employee_id %>
       <% if is_edit_view?%>
@@ -46,8 +46,6 @@
       <%= f.form_or_view(f.text_area(:overtime_comment,{:rows => 5}),:overtime_comment)%>
     </p>
     
-    <p>
-      <%= f.submit button_name %>
-    </p>
+      <%= f.form_buttons %>
   <% end %>
 </div>

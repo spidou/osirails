@@ -1,8 +1,8 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_subcontractor_link %>
+  <%= new_subcontractor_link(:link_text => "Nouveau sous-traitant") %>
 <% end %>
 
-<h1>Liste des sous-traitants</h1>
+<h1>Les sous-traitants</h1>
 
 <div>
   <% unless @subcontractors.empty? %>

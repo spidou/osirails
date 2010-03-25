@@ -52,9 +52,6 @@ delivery_note_errors  = { :delivery_note_header         => delivery_note.errors.
       <%= render :partial => 'delivery_note_additional_infos', :object => delivery_note, :locals => { :form => form } %>
     </div>
     
-    <p>
-      <%= form.submit 'Enregistrer' %>
-    </p>
-    
+    <%= form.form_buttons %>
   <% end %>
 </div>

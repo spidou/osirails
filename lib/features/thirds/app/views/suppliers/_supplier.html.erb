@@ -12,10 +12,7 @@
     <%= display_contacts_list(@supplier) %>
     <%= display_contact_add_button(@supplier) %>
 
-    <p>
-      <%= form.reset %>
-      <%= form.submit submit_button_name %>
-    </p>
+    <%= form.form_buttons %>
   <% end %>
 <% else %>
   <%= render :partial => 'thirds/third', :object => @supplier %>

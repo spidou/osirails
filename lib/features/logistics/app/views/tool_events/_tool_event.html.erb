@@ -6,17 +6,17 @@
 <% tool_class = tool.class.name.underscore %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= send("#{tool_class}_link", tool) %>
-  <%= send("edit_#{tool_class}_link", tool) %>
+  <%= send("#{tool_class}_link", tool, :link_text => "Voir l'équipement") %>
+  <%= send("edit_#{tool_class}_link", tool, :link_text => "Modifier l'équipement") %>
   
-  <%= send("new_#{tool_class}_tool_event_link", tool) unless tool_event.new_record? or !tool.can_be_edited? %>
-  <%= send("#{tool_class}_tool_event_link", tool, tool_event) unless tool_event.new_record? or !is_form_view? %>
-  <%= send("edit_#{tool_class}_tool_event_link", tool, tool_event) unless tool_event.new_record? or is_form_view? %>
+  <%= send("new_#{tool_class}_tool_event_link", tool, :link_text => "Nouvel évènement") unless tool_event.new_record? or !tool.can_be_edited? %>
+  <%= send("#{tool_class}_tool_event_link", tool, tool_event, :link_text => "Voir l'évènement") unless tool_event.new_record? or !is_form_view? %>
+  <%= send("edit_#{tool_class}_tool_event_link", tool, tool_event, :link_text => "Modifier l'évènement") unless tool_event.new_record? or is_form_view? %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= send("#{tool_class}s_link") %>
-  <%= send("#{tool_class}_tool_events_link", tool)%>
+  <%= send("#{tool_class}s_link", :link_text => "Voir tous les équipements") %>
+  <%= send("#{tool_class}_tool_events_link", tool, :link_text => "Voir tous les évènements de l'équipement")%>
 <% end %>
 
 <div class='presentation_medium'>
@@ -90,7 +90,7 @@
       <%= display_document_add_button(tool_event) if is_form_view? %>
 
     <p>
-      <%= f.submit(button_name) if is_form_view? %>
+      <%= f.form_buttons %>
     </p>
     
   <% end %>

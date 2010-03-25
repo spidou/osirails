@@ -1,7 +1,7 @@
 <% add_contextual_menu_item :useful_links do %>
   <%= display_checkings_link(true) %>
-  <%= employees_link %>
+  <%= employees_link(:link_text => "Voir tous les employés") %>
 <% end %>
 
-<h1>Ajouter un pointage</h1>
-<%= render :partial => "checking", :locals => {:action => "create", :button_name => "Ajouter"}%>
+<h1>Nouveau pointage</h1>
+<%= render :partial => "checking", :locals => {:action => "create"}%>
