@@ -113,6 +113,7 @@ function remove_reference(obj) {
   }
   
   update_aggregates()
+  update_up_down_links($("quote_items").down('tbody').childElements());  // method defined into sales.js
 }
 
 function calculate(tr) {

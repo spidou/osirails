@@ -228,6 +228,7 @@ function remove_free_item(element) {
   }
   
   update_aggregates();
+  update_up_down_links($("invoice_items").down('tbody').childElements()); //defined in sales.js
 }
 
 function calculate(tr) {
