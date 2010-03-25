@@ -1,6 +1,9 @@
 <%
-quote_item = delivery_note_item.quote_item
+quote_item       = delivery_note_item.quote_item
 empty_line_class = delivery_note_item.quantity > 0 ? '' : ' empty_line'
+position        = delivery_note_item.position || delivery_note_item_counter
+move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
+move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
 %>
 
 <% fields_for "delivery_note[delivery_note_item_attributes][]", delivery_note_item do |form| %>
@@ -23,6 +26,13 @@ empty_line_class = delivery_note_item.quantity > 0 ? '' : ' empty_line'
       <%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.remaining_quantity_to_deliver), {}, :index => nil, :onchange => "check_quantity(this.up('.delivery_note_item'))", :class => :input_quantity), :quantity) %>
       <%= form.hidden_field :id, :index => nil %>
       <%= form.hidden_field :quote_item_id, :index => nil %>
+      <%= form.hidden_field :position, :index => nil, :value => position, :class => 'position' %>
     </td>
+    <% if is_form_view? %>
+    <td class="actions">
+      <%= link_to( image_tag( move_up_image, :alt => alt_up = "Monter la ligne", :title => alt_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
+      <%= link_to( image_tag( move_down_image, :alt => alt_down = "Descendre la ligne", :title => alt_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
+    </td>
+    <% end %>
   </tr>
 <% end %>

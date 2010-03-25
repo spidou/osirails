@@ -1,7 +1,7 @@
 function add_product_reference_to_quote() {
   var product_reference_id = $('add_this_product_reference_id').value
   
-  var quote_items = $('quote_items').select('tr.quote_item')
+  var quote_items = $('quote_items').select('tbody > tr.quote_item')
   var reference_already_chosen = false
   var line_reference = null
   
@@ -37,6 +37,8 @@ function add_product_reference_to_quote() {
       onSuccess: function(transport) {
 	      var ref_obj = transport.responseText.evalJSON()["product_reference"];
 	      append_reference(ref_obj);
+	      
+	      update_up_down_links($("quote_items").down('tbody').childElements());  // method defined into sales.js
       }
     });
   }
@@ -70,18 +72,19 @@ function add_product_reference_to_quote() {
 //}
   
 function append_reference(json_object) {
-  var reference = json_object['reference'].toString() || json_object['product_reference']['reference'].toString()
-  var name = json_object['name']
-  var description = json_object['description']
-  var quantity = 1
-  var vat = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
-  var product_reference_id = parseInt(json_object['id'])
+  var reference             = json_object['reference'].toString() || json_object['product_reference']['reference'].toString()
+  var name                  = json_object['name']
+  var description           = json_object['description']
+  var quantity              = 1
+  var vat                   = parseFloat(json_object['vat']); if (vat == 0) { vat = "0.0" };
+  var product_reference_id  = parseInt(json_object['id'])
+  var quote_body            = $('quote_items').down('tbody')
+  var quote_items           = $('quote_items').select('tbody > tr.quote_item')
+  var model                 = $('quote_items').down('tfoot > tr.quote_item')
+  var line_reference        = null
   
-  var quote_items = $('quote_items').select('tr.quote_item')
-  var line_reference = null
-  
-  line_reference = quote_items.last().cloneNode(true);
-  quote_items.last().insert({before: line_reference}); 
+  line_reference = model.cloneNode(true);
+  quote_body.insert( {bottom : line_reference});
   
   line_reference.down('.reference').update( reference )
   line_reference.down('.input_name').value = name

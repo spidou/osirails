@@ -33,7 +33,8 @@ module SurveyInterventionsHelper
   end
   
   def display_survey_intervention_delete_button(survey_intervention)
-    link_to_function "Supprimer", "mark_resource_for_destroy(this)" if is_form_view?
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_destroy(this)" if is_form_view?
   end
   
   def display_survey_intervention_close_form_button(survey_intervention)

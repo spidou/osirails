@@ -14,8 +14,8 @@ class PressProof < ActiveRecord::Base
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
-  has_many :press_proof_items, :order => "position, created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
-  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position, press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
+  has_many :press_proof_items, :order => "position", :dependent => :destroy
+  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position"
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   

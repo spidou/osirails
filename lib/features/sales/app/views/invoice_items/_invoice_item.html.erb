@@ -1,3 +1,8 @@
+<%
+position = invoice_item.position || invoice_item_counter
+move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
+move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
+%>
 <% fields_for 'invoice[invoice_item_attributes][]', invoice_item, :index => nil do |form| %>
   <% form.force_form_view = (params[:action] == "ajax_request_for_invoice_items")  %>
   <% tr_style = invoice_item.should_destroy? ? 'display:none' : '' %>
@@ -43,8 +48,8 @@
   
   <% if form.form_view? %>
     <td class="actions">
-      <%= link_to( image_tag("arrow_up_16x16.png", :alt => "Monter la ligne", :title => "Monter la ligne"), "#up", :onclick => "up_reference(this)" ) %>
-      <%= link_to( image_tag("arrow_down_16x16.png", :alt => "Descendre la ligne", :title => "Descendre la ligne"), "#down", :onclick => "down_reference(this)" ) %>
+      <%= link_to( image_tag( move_up_image, :alt => alt_up = "Monter la ligne", :title => alt_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
+      <%= link_to( image_tag( move_down_image, :alt => alt_down = "Descendre la ligne", :title => alt_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
       
       <% unless invoice_item.product -%>
         <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title  => "Supprimer la ligne"),
@@ -54,6 +59,7 @@
      
       <%= form.hidden_field :id, :class => :invoice_item_id, :index => nil %>
       <%= form.hidden_field :product_id, :index => nil %>
+      <%= form.hidden_field :position, :index => nil, :value => position, :class => 'position' %>
       <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
     </td>
   <% end %>

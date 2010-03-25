@@ -42,49 +42,63 @@
 	font-size: 0.8em;
 }
 
-
-.hidden_contextual_menu,
-.shown_contextual_menu {
-	text-align: right;
-	white-space: nowrap;
-	text-indent: 0px;
-	font-size: 0.8em;
+#status_text_contextual_menu {
+  position:relative;
+  right:-44px;
+  top:45px;
+  background-color: #e99727;
+  border: 1px solid #747474;
+  color: black;
+  padding: 5px;
+  font-size: 15px;
+  -moz-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -moz-box-shadow: -4px -2px 1px rgba(0,0,0,0.4), inset 0px -3px 5px rgba(0,0,0,0.4);
+  -moz-border-radius: 10px 10px 0 0;
 }
 
-.hidden_contextual_menu #status_background_contextual_menu,
-.shown_contextual_menu #status_background_contextual_menu {
-	background:url("/themes/emr/images/background_hidden-shown_contextual_menu.png") no-repeat top left;
-	height: 29px;
-	width: 20px;
-	line-height: 26px !important;
-	position:relative;
-	right:0px
-	color: #6481AE;
-	max-width: 800px;
-	padding-left: 6px;
-	overflow: hidden;
-	float: right;
-}
+/*.hidden_contextual_menu,*/
+/*.shown_contextual_menu {*/
+/*	text-align: right;*/
+/*	white-space: nowrap;*/
+/*	text-indent: 0px;*/
+/*	font-size: 0.8em;*/
+/*}*/
 
-.hidden_contextual_menu #status_background_contextual_menu:hover,
-.shown_contextual_menu #status_background_contextual_menu:hover {
-	width: auto;
-	cursor: pointer;
-}
+/*.hidden_contextual_menu #status_background_contextual_menu,*/
+/*.shown_contextual_menu #status_background_contextual_menu {*/
+/*	background:url("/themes/emr/images/background_hidden-shown_contextual_menu.png") no-repeat top left;*/
+/*	height: 29px;*/
+/*	width: 20px;*/
+/*	line-height: 26px !important;*/
+/*	position:relative;*/
+/*	right:0px*/
+/*	color: #6481AE;*/
+/*	max-width: 800px;*/
+/*	padding-left: 6px;*/
+/*	overflow: hidden;*/
+/*	float: right;*/
+/*}*/
+
+/*.hidden_contextual_menu #status_background_contextual_menu:hover,*/
+/*.shown_contextual_menu #status_background_contextual_menu:hover {*/
+/*	width: auto;*/
+/*	cursor: pointer;*/
+/*}*/
 
 
-.shown_contextual_menu span,
-.hidden_contextual_menu span {
-  padding: 3px 2px 1px 22px;
-}
+/*.shown_contextual_menu span,*/
+/*.hidden_contextual_menu span {*/
+/*  padding: 3px 2px 1px 22px;*/
+/*}*/
 
-.hidden_contextual_menu span {
-	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat bottom left;
-}
+/*/*.hidden_contextual_menu span {*/*/
+/*/*	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat bottom left;*/*/
+/*/*}*/*/
 
-.shown_contextual_menu span {
-	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat top left;
-}
+/*/*.shown_contextual_menu span {*/*/
+/*/*	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat top left;*/*/
+/*/*}*/*/
 
 #contextual_menu_content {
 }

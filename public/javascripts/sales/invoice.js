@@ -213,6 +213,8 @@ function add_free_item() {
   last_line.down('.should_destroy').value = 0;
   last_line.removeAttribute('style');
   last_line.highlight();
+  
+  update_up_down_links($("invoice_items").down('tbody').childElements()); //defined in sales.js
 }
 
 function remove_free_item(element) {

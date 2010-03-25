@@ -136,4 +136,19 @@ module QuotesHelper
              order_commercial_step_estimate_step_quote_order_form_path(order, quote) )
   end
   
+  def status_text(quote)
+    case quote.status
+      when nil
+        'Brouillon'
+      when Quote::STATUS_CANCELLED
+        'Annulé'
+      when Quote::STATUS_CONFIRMED
+        'Validé'
+      when Quote::STATUS_SENDED
+        'Envoyé'
+      when Quote::STATUS_SIGNED
+        'Signé'
+    end
+  end
+
 end

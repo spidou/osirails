@@ -1,4 +1,7 @@
 class DeliveryNoteItem < ActiveRecord::Base
+  
+  acts_as_list :scope => :delivery_note
+  
   belongs_to :delivery_note
   belongs_to :quote_item
   

@@ -311,6 +311,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
     t.integer  "delivery_note_id", :limit => 11
     t.integer  "quote_item_id",    :limit => 11
     t.integer  "quantity",         :limit => 11
+    t.integer  "position",         :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

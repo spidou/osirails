@@ -33,7 +33,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => "User"
   belongs_to :abandoned_by, :class_name => "User"
   
-  has_many :invoice_items,  :dependent  => :destroy
+  has_many :invoice_items,  :dependent  => :destroy, :order => 'position'
   has_many :products,       :through    => :invoice_items
   
   has_many :delivery_note_invoices, :dependent  => :destroy

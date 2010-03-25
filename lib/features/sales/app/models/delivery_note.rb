@@ -16,8 +16,8 @@ class DeliveryNote < ActiveRecord::Base
   belongs_to :creator, :class_name => 'User'
   belongs_to :delivery_note_type
   
-  has_many :delivery_note_items, :dependent => :destroy
-  has_many :quote_items,         :through   => :delivery_note_items
+  has_many :delivery_note_items, :dependent => :destroy, :order => 'position'
+  has_many :quote_items,         :through   => :delivery_note_items, :order => 'delivery_note_items.position'
   
   has_many :delivery_interventions, :order => "created_at DESC"
   has_one  :pending_delivery_intervention,    :class_name => "DeliveryIntervention", :conditions => [ 'delivered IS NULL AND cancelled_at IS NULL and postponed IS NULL' ], :order => "created_at DESC"
@@ -239,7 +239,7 @@ class DeliveryNote < ActiveRecord::Base
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
-  else
+    else
       errors.add(:base, "Le Bon de Livraison n'est pas prêt à être annulé")
       false
     end

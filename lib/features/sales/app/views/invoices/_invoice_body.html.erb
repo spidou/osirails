@@ -92,7 +92,7 @@ end
     </thead>
     
     <tbody id="invoice_items_body">
-      <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items %>
+      <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items, :locals => {:collection_length => invoice.invoice_items.size} %>
     </tbody>
     
     <tfoot id="invoice_items_foot">

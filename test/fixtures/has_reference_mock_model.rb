@@ -1,3 +1,3 @@
-class ReferenceGenerator
+class HasReferenceMockModel
   attr_accessor :reference
 end
