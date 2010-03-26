@@ -119,6 +119,10 @@ class PressProof < ActiveRecord::Base
     order ? order.signed_quote : nil
   end
   
+  def can_be_downloaded? # with PDF generator
+    reference_was
+  end
+  
   def can_be_cancelled?
     !new_record? and ( was_confirmed? or was_sended? )
   end

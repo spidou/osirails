@@ -197,6 +197,10 @@ class DeliveryNote < ActiveRecord::Base
     !new_record? and was_uncomplete?
   end
   
+  def can_be_downloaded? # with PDF generator
+    reference_was
+  end
+  
   def can_be_destroyed?
     !new_record? and was_uncomplete?
   end

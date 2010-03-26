@@ -12,7 +12,7 @@ class InvoicesController < ApplicationController
   # GET /orders/:order_id/:step/invoices/:id.xml
   # GET /orders/:order_id/:step/invoices/:id.pdf
   def show
-    if @invoice.uncomplete? and params[:format] == "pdf"
+    if !@invoice.can_be_downloaded? and params[:format] == "pdf"
       error_access_page(404)
       return
     end
@@ -22,8 +22,7 @@ class InvoicesController < ApplicationController
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "invoice_#{@invoice.reference}"
-        render_pdf(pdf_filename, "invoices/show.xml.erb", "public/fo/style/invoice.xsl", "assets/pdf/invoices/#{pdf_filename}.pdf")
+        render_pdf("facture_#{@invoice.reference}", "invoices/show.xml.erb", "public/fo/style/invoice.xsl", "assets/sales/invoices/generated_pdf/#{@invoice.id}.pdf")
       }
       format.html { }
     end

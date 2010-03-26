@@ -326,7 +326,7 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_downloaded? # with PDF generator
-    confirmed_on_was
+    reference_was
   end
   
   def can_be_deleted?

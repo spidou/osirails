@@ -10,7 +10,7 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
-    if @delivery_note.uncomplete? and params[:format] == "pdf"
+    if !@delivery_note.can_be_downloaded? and params[:format] == "pdf"
       error_access_page(404)
       return
     end
@@ -20,8 +20,7 @@ class DeliveryNotesController < ApplicationController
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "bon_livraison_#{@delivery_note.reference}"
-        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "public/fo/style/delivery_note.xsl", "assets/pdf/delivery_notes/#{pdf_filename}.pdf")
+        render_pdf("bon_livraison_#{@delivery_note.reference}", "delivery_notes/show.xml.erb", "public/fo/style/delivery_note.xsl", "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.id}.pdf")
       }
       format.html { }
     end

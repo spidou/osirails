@@ -14,7 +14,7 @@ class PressProofsController < ApplicationController
   def show
     @press_proof = PressProof.find(params[:id])
     
-    if @press_proof.uncomplete? and params[:format] == "pdf"
+    if !@press_proof.can_be_downloaded? and params[:format] == "pdf"
       error_access_page(404)
       return
     end
@@ -24,7 +24,7 @@ class PressProofsController < ApplicationController
         render :layout => false
       }
       format.pdf  {
-        render :pdf => "Bon_a_tirer_#{@press_proof.reference}", :template => "press_proofs/show.xml.erb", :xsl => "public/fo/style/press_proof.xsl", :path => "assets/sales/press_proofs/generated_pdf/#{@press_proof.id}.pdf"
+        render :pdf => "bat_#{@press_proof.reference}", :template => "press_proofs/show.xml.erb", :xsl => "public/fo/style/press_proof.xsl", :path => "assets/sales/press_proofs/generated_pdf/#{@press_proof.id}.pdf"
       }
       format.html { }
     end
