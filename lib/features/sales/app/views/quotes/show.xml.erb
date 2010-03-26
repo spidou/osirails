@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <Root>
   <Document>
-    <Type>Devis</Type>
+    <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
+    <Type>DEVIS</Type>
     <Reference><%= @quote.reference %></Reference>
     <Date><%= Date.today.strftime("%d %B %Y")%></Date>
     <Currency>EUROS (€)</Currency>  
@@ -25,10 +26,9 @@
         <LastName><%= @quote.order.commercial.last_name %></LastName>
         <FirstName><%= @quote.order.commercial.first_name %></FirstName>
         <Email><%= @quote.order.commercial.email %></Email>
-        <Phone/>
-        <Fax/>      
+        <Phone><%= "#{@quote.order.commercial.numbers.first.indicative.indicative} #{@quote.order.commercial.numbers.first.number}" %></Phone>
       </Representative>
-      <LogoURL/>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
     <Customer>
       <CorporateName><%= @quote.order.customer.name %></CorporateName>
@@ -84,19 +84,21 @@
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
       <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
-      <DutyFreeDeposit><%= @quote.deposit %></DutyFreeDeposit>
+      <Deposit><%= @quote.deposit %></Deposit>
     </SalesTerms>
   </Document>
   <Labels>
     <Siret>SIRET :</Siret>
     <NAFCode>Code NAF :</NAFCode>
-    <Email>e-mail :</Email>
-    <Phone>tél :</Phone>
-    <Fax>fax :</Fax>
+    <Email>e-mail</Email>
+    <Phone>tél</Phone>
+    <Fax>fax</Fax>
     <Date>Date :</Date>
     <Prefix>N°</Prefix>
     <FileName></FileName>
     <SupplierPrefix>Suivi commercial</SupplierPrefix>
+    <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
+    <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
     <CustomerPrefix>A l'attention de</CustomerPrefix>
     <Amount>MONTANTS EN</Amount>
     <Reference>Réf.</Reference>
@@ -116,11 +118,10 @@
     <Postage>Frais de port :</Postage>
     <Discount>Escompte :</Discount>
     <TotalTaxes>Total taxes :</TotalTaxes> 
-    <InclusiveOfTaxMisc>Divers TTC :</InclusiveOfTaxMisc>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>
-    <QuoteValidity>Durée de validité du devis</QuoteValidity>
-    <Deposit>Acompte (%)</Deposit>
+    <QuoteValidity>Durée de validité du devis :</QuoteValidity>
+    <Deposit>Acompte (%) :</Deposit>
     <DeliveryDelay>Délai de livraison :</DeliveryDelay>
     <Agreement>SIGNATURE</Agreement>
     <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>

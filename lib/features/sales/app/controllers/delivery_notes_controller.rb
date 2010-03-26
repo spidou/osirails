@@ -10,17 +10,21 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
-    #respond_to do |format|
-    #  format.pdf {
-    #    pdf = render_pdf
-    #    if pdf
-    #      send_data pdf, :filename => "bon_livraison_#{@delivery_note.id}.pdf", :disposition => 'attachment'
-    #    else
-    #      error_access_page(500)
-    #    end
-    #  }
-    #  format.html { }
-    #end
+    if @delivery_note.uncomplete? and params[:format] == "pdf"
+      error_access_page(404)
+      return
+    end
+    
+    respond_to do |format|
+      format.xml {
+        render :layout => false
+      }
+      format.pdf {
+        pdf_filename = "bon_livraison_#{@delivery_note.reference}"
+        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "public/fo/style/delivery_note.xsl", "assets/pdf/delivery_notes/#{pdf_filename}.pdf")
+      }
+      format.html { }
+    end
   end
   
   # GET /orders/:order_id/:step/delivery_notes/new
@@ -215,6 +219,40 @@ class DeliveryNotesController < ApplicationController
       if id = params[:id] || params[:delivery_note_id]
         @delivery_note = DeliveryNote.find(id)
         error_access_page(404) unless @order and @order.delivery_notes.include?(@delivery_note)
+      end
+    end
+    
+    def render_pdf(pdf_filename, template, xsl_path, pdf_path, is_temporary_pdf=false)
+      unless File.exist?(pdf_path)
+        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => template, :layout => false), xsl_path, "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")  
+        
+        total_pages = `xpath -e "count(//page)" #{area_tree_path}`.to_i
+        offset_value = `xpath -e "//block[@prod-id='footline']/@top-offset" #{area_tree_path}`.scan(/[0-9]+/).last.to_i
+
+        File.delete(area_tree_path)
+        
+        modified_xsl_path = "public/fo/tmp/modified_invoice_for_#{File.basename(pdf_path,".pdf")}.xsl"
+        
+        `cp -f #{xsl_path} #{modified_xsl_path}`
+
+        if total_pages == 1
+          optimum_offset_value = 560000 # FIXME This value must change if the size of all elements before the table change
+        else
+          optimum_offset_value = 700000 # This value should normally be constant
+        end
+        
+        if offset_value < optimum_offset_value
+          additionnal_offset_value = optimum_offset_value - offset_value
+          new_padding = (additionnal_offset_value * 0.0000325) + 0.1
+          
+          `replace '<xsl:attribute name="padding-top">1mm</xsl:attribute> <!-- COMMENT FOR DYNAMIC RESIZE OF THE EMPTY LINE, DO NOT REMOVE ME AND DO NOT COPY ME -->' '<xsl:attribute name="padding-top">#{new_padding}cm</xsl:attribute>' -- #{modified_xsl_path}`
+        end
+        
+        render :pdf => pdf_filename, :template => template, :xsl => modified_xsl_path, :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
+     
+        File.delete(modified_xsl_path)
+      else
+        render :pdf => pdf_filename, :path => pdf_path
       end
     end
   

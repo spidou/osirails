@@ -8,7 +8,6 @@ class Fop
   cattr_accessor :exe_path, :log_file, :logger
 
   @@exe_path   = `which fop`.chomp
-  @@xpath_path = `which xpath`.chomp
   @@log_file   = "log/fop.log"
   @@logger     = RAILS_DEFAULT_LOGGER
     

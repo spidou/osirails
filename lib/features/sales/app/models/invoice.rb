@@ -564,24 +564,34 @@ class Invoice < ActiveRecord::Base
     order ? order.signed_quote : nil
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total
     invoice_items.collect(&:total).sum
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total_with_taxes
     invoice_items.collect(&:total_with_taxes).sum
   end
   
   alias_method :net_to_paid, :total_with_taxes
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def summon_of_taxes
     total_with_taxes - total
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
+  def tax_coefficients
+    invoice_items.collect(&:vat).uniq
+  end
+  
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total_taxes_for(coefficient)
     invoice_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def number_of_pieces
     invoice_items.collect(&:quantity).sum
   end

@@ -192,16 +192,16 @@ class QuotesController < ApplicationController
         `cp -f #{xsl_path} #{modified_xsl_path}`
 
         if total_pages == 1
-          optimum_offset_value = 555000
+          optimum_offset_value = 500000 # FIXME This value must change if the size of all elements before the table change
         else
-          optimum_offset_value = 715000
+          optimum_offset_value = 710000 # This value should normally be constant
         end
         
         if offset_value < optimum_offset_value
           additionnal_offset_value = optimum_offset_value - offset_value
           new_padding = (additionnal_offset_value * 0.0000325) + 0.1
           
-          `replace 'id="first-blank-cell" padding-top="0.1cm"' 'padding-top="#{new_padding}cm"' -- #{modified_xsl_path}`
+          `replace '<xsl:attribute name="padding-top">1mm</xsl:attribute> <!-- COMMENT FOR DYNAMIC RESIZE OF THE EMPTY LINE, DO NOT REMOVE ME AND DO NOT COPY ME -->' '<xsl:attribute name="padding-top">#{new_padding}cm</xsl:attribute>' -- #{modified_xsl_path}`
         end
         
         render :pdf => pdf_filename, :template => template, :xsl => modified_xsl_path, :path => pdf_path, :is_temporary_pdf => is_temporary_pdf

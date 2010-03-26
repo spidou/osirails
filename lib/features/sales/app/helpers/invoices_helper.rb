@@ -103,14 +103,13 @@ module InvoicesHelper
   end
   
   def display_invoice_show_pdf_button(order, invoice, message = nil)
-    #TODO uncomment that helper once PDF generator is OK
-    #return unless Invoice.can_view?(current_user) and !invoice.was_uncomplete?
-    #text = "Télécharger cette facture (PDF)"
-    #message ||= " #{text}"
-    #link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
-    #                    :alt => text,
-    #                    :title => text ) + message,
-    #         order_invoicing_step_invoice_step_invoice_path(order, invoice, :format => :pdf) )
+    return unless Invoice.can_view?(current_user) and !invoice.was_uncomplete?
+    text = "Télécharger cette facture (PDF)"
+    message ||= " #{text}"
+    link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
+                        :alt => text,
+                        :title => text ) + message,
+             order_invoicing_step_invoice_step_invoice_path(order, invoice, :format => :pdf) )
   end
   
   def display_invoice_edit_button(order, invoice, message = nil)
