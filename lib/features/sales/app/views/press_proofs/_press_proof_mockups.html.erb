@@ -1,7 +1,7 @@
 <%
 require_locals mockups
 press_proof           = press_proof_mockups
-graphic_item_versions = press_proof.all_graphic_item_versions.sort_by{ |v| v.position_in(press_proof) }
+graphic_item_versions = press_proof.all_graphic_item_versions.sort_by{ |v| v.position_in_press_proof(press_proof) }
 selected_mockups      = press_proof.selected_mockups
 unselected_mockups    = press_proof.unselected_mockups
 %>

@@ -33,7 +33,7 @@ class Order < ActiveRecord::Base
   has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
   
   # invoices
-  has_many :invoices, :order => 'created_at DESC'
+  has_many :invoices, :order => 'invoices.created_at DESC'
   has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses

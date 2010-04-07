@@ -15,7 +15,7 @@ previous_image  = "move_to_left_16x16.png"
 next_image      = "move_to_right_16x16.png"
 
 if press_proof
-  position        ||= graphic_item_version.position_in(press_proof)
+  position        ||= graphic_item_version.position_in_press_proof(press_proof)
   position        ||= counter
   previous_image    = "disabled_move_to_left_16x16.png"  if position == 1
   next_image        = "disabled_move_to_right_16x16.png" if press_proof.press_proof_items.last and position == press_proof.press_proof_items.last.position
