@@ -131,7 +131,7 @@
     <DueDatesDate>Date</DueDatesDate>
     <DueDatesReference>Réf.</DueDatesReference>
     <DueDatesTotal>Montant TTC</DueDatesTotal>
-    <FormToCut>Coupon à retourner avec le règlement</FormToCut>
+    <FormToCut><%= @invoice.due_dates.size > 1 ? "Coupons à retourner avec chaque règlement" : "Coupon à retourner avec le règlement" %></FormToCut>
     <Subtotal>Report :</Subtotal>
     <Page>Page</Page>  
   </Labels>

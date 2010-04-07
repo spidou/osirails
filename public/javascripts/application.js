@@ -31,17 +31,11 @@ function initEventListeners()
 //
 function checkForCookies()
 {
-  if($('contextual_menu_container') == null) return;
+  if ($('contextual_menu_container') == null) return;
   
   var pin_status = GetCookieValue('pin_status');
-  if (pin_status == 'pinned'){
-    $('content_page').setAttribute('class','with_pinned_menu');
-    $('contextual_menu_toggle_button').hide();
-    $('reduce_button_link').hide()
-  }
-  else{
+  if (pin_status != 'pinned')
     toggle_contextual_menu($('contextual_menu_toggle_button'));
-  }
 }
 
 
@@ -128,10 +122,11 @@ function toggle_contextual_menu(item)
       duration: 0.6,
       afterFinish: function(){
         $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');
-        $('contextual_menu').setStyle({display: 'none'})
+        $('contextual_menu').hide();
         item.setAttribute('style','position:relative;right:0px');   
         item.className = class_hidden;
         document.body.style.overflowX = 'auto';
+        $('contextual_menu_toggle_button').show();
       }
     });
   }
@@ -139,6 +134,7 @@ function toggle_contextual_menu(item)
   {
     $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
     $('contextual_menu').setAttribute('style','display:'+menu_display+';position:'+menu_position+';right:'+menu_right);
+    $('contextual_menu_toggle_button').hide();
     
     document.body.style.overflowX = 'hidden';
     new Effect.Morph($('contextual_menu_container'), {
@@ -153,7 +149,6 @@ function toggle_contextual_menu(item)
       }
     });
   }
-  $('contextual_menu_toggle_button').toggle();
   $('contextual_menu_actions').toggle();
 }
 

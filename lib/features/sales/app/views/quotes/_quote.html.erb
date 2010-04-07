@@ -2,6 +2,7 @@
   <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/quotes' %>
   <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'sales/sales' %>
 <% end %>
 
 <%= generate_quote_contextual_menu_partial %>
@@ -9,7 +10,8 @@
 <%
 quote_headers = { :quote_header => "Entête",
                   :quote_body   => "Corps",
-                  :quote_footer => "Conditions commerciales" }
+                  :quote_footer => "Conditions commerciales",
+                  :quote_additional_informations => "Informations supplémentaires"}
 
 quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
                   :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
@@ -44,6 +46,7 @@ excess_quote_items  = quote.product_quote_items.select{ |q| q.product.nil? }
     <li class="quote_header<%= quote_errors[:quote_header] %> selected"><%= quote_headers[:quote_header] %></li>
     <li class="quote_body<%= quote_errors[:quote_body] %>"><%= quote_headers[:quote_body] %></li>
     <li class="quote_footer<%= quote_errors[:quote_footer] %>"><%= quote_headers[:quote_footer] %></li>
+    <li class="quote_additional_informations"><%= quote_headers[:quote_additional_informations] %></li>
   </ul>
   
   <% action = quote.new_record? ? :create : :update %>
@@ -68,6 +71,11 @@ excess_quote_items  = quote.product_quote_items.select{ |q| q.product.nil? }
       <%= render :partial => 'quote_footer', :object => quote, :locals => { :form => form } %>
     </div>
     
+    <h2 class="quote_additional_informations"><%= quote_headers[:quote_additional_informations] %></h2>
+    <div class="quote_additional_informations section_nav">
+      <%= render :partial => 'quote_additional_infos', :object => quote, :locals => { :form => form } %>
+    </div>
+
     <%= form.form_buttons %>
   <% end %>
 </div>

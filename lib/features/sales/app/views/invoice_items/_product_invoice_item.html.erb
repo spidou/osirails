@@ -1,0 +1,40 @@
+<%
+# this partial should not be called directly, you may call _invoice_item.html.erb with the appropriate instance of invoice_item
+require_locals form, counter, collection_length
+
+invoice_item = product_invoice_item
+product      = invoice_item.product
+
+position     = invoice_item.position.zero? ? counter : invoice_item.position
+%>
+
+<tr class="invoice_item">
+  <td class="reference"><%= product.product_reference.reference if product.product_reference %></td>
+  <td class="designation">
+    <span class="name"><%= invoice_item.name %></span><br/><span class="description"><%= invoice_item.description %></span>
+  </td>
+  <td class="unit_price amount"><%= invoice_item.unit_price.to_f.round_to(2).to_s(2) %></td>
+  <td class="from_quote quote_prizegiving"><%= product.prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td class="from_quote quote_unit_price_with_prizegiving amount"><%= product.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %></td>
+  <td class="from_quote quote_quantity"><%= product.quantity %></td>
+  <td class="from_quote quote_total amount"><%= product.total.to_f.round_to(2).to_s(2) %></td>
+  <td class="quantity"><%= invoice_item.quantity.to_f.round_to(2).to_s(2) %></td>
+  <td class="total amount"><%= invoice_item.total.to_f.round_to(2).to_s(2) %></td>
+  <td class="vat"><%= invoice_item.vat %></td>
+  <td class="total_with_taxes amount"><%= invoice_item.total_with_taxes.to_f.round_to(2).to_s(2) %></td>
+  
+  <% if form.form_view? %>
+    <td class="actions">
+      <%= form.hidden_field :name %>
+      <%= form.hidden_field :description %>
+      <%= form.hidden_field :unit_price %>
+      <%= form.hidden_field :quantity %>
+      <%= form.hidden_field :vat %>
+      
+      <%= form.hidden_field :id, :class => :invoice_item_id, :index => nil %>
+      <%= form.hidden_field :product_id, :index => nil %>
+      <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
+      <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+    </td>
+  <% end %>
+</tr>

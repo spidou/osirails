@@ -299,12 +299,10 @@ class InvoicesController < ApplicationController
   # GET /orders/:order_id/:step/invoices/ajax_request_for_invoice_items/:delivery_note_ids
   # GET /orders/:order_id/:step/invoices/:invoice_id/ajax_request_for_invoice_items/:delivery_note_ids
   def ajax_request_for_invoice_items
-    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
-    
     delivery_notes = params[:delivery_note_ids] ? params[:delivery_note_ids].split(",") : []
     
+    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
     @invoice.delivery_note_invoice_attributes=(delivery_notes)
-    
     @invoice.build_or_update_invoice_items_from_associated_delivery_notes
   end
   

@@ -4,8 +4,6 @@ class QuoteItem < ActiveRecord::Base
   belongs_to :quote
   belongs_to :product
   
-  acts_as_list :scope => :quote
-  
   has_many :delivery_note_items, :dependent => :nullify
   has_many :delivery_notes,      :through   => :delivery_note_items
   
@@ -93,6 +91,10 @@ class QuoteItem < ActiveRecord::Base
   
   def designation
     free_item? ? name : product.designation
+  end
+  
+  def position
+    super || 0
   end
   
 end

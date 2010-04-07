@@ -3,5 +3,6 @@ class Vehicle < Tool
   
   has_documents :legal_paper, :invoice, :manual, :other
   
-  @@form_labels[:serial_number]  = "N° d'immatriculation :"
+  cattr_accessor :form_labels
+  @@form_labels = abstract_form_labels.merge({:serial_number => "N° d'immatriculation :"})
 end

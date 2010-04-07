@@ -11,7 +11,7 @@ class Product < ActiveRecord::Base
   has_many :checklist_responses,  :dependent => :destroy
   has_many :quote_items,          :dependent => :nullify
   has_many :mockups,              :dependent => :nullify
-  has_many :press_proofs,         :dependent => :nullify
+  has_many :press_proofs,         :dependent => :nullify, :order => 'created_at DESC'
   
   validates_presence_of :name
   validates_presence_of :order_id, :product_reference_id

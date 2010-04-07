@@ -31,7 +31,6 @@ class StockOutputsController < ApplicationController
       redirect_to :action => 'index'
     else
       @supply = Supply.find(@stock_flow.supply_id)
-      @supplier = Supplier.find(@stock_flow.supplier_id)
       @supplies = @supply[:type].constantize.find(:all)
       @suppliers = @supply.suppliers
       render :action => 'new'

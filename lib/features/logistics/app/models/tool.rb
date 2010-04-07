@@ -17,19 +17,19 @@ class Tool < ActiveRecord::Base
   
   validate :validates_edit
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:status]         = "Status :"
-  @@form_labels[:type]           = "Type :"
-  @@form_labels[:name]           = "Désignation :"
-  @@form_labels[:description]    = "Description :"
-  @@form_labels[:serial_number]  = "Numéro de série :"
-  @@form_labels[:purchase_date]  = "Date d'achat :"
-  @@form_labels[:purchase_price] = "Prix d'achat :"
-  @@form_labels[:service]        = "Affecté au service :"
-  @@form_labels[:job]            = "Affecté à la fonction :"
-  @@form_labels[:employee]       = "Affecté à l'employé :"
-  @@form_labels[:supplier]       = "Fournisseur :"
+  cattr_accessor :abstract_form_labels
+  @@abstract_form_labels = {}
+  @@abstract_form_labels[:status]         = "Status :"
+  @@abstract_form_labels[:type]           = "Type :"
+  @@abstract_form_labels[:name]           = "Désignation :"
+  @@abstract_form_labels[:description]    = "Description :"
+  @@abstract_form_labels[:serial_number]  = "Numéro de série :"
+  @@abstract_form_labels[:purchase_date]  = "Date d'achat :"
+  @@abstract_form_labels[:purchase_price] = "Prix d'achat :"
+  @@abstract_form_labels[:service]        = "Affecté au service :"
+  @@abstract_form_labels[:job]            = "Affecté à la fonction :"
+  @@abstract_form_labels[:employee]       = "Affecté à l'employé :"
+  @@abstract_form_labels[:supplier]       = "Fournisseur :"
   
   def status
     all_current_status = tool_events.currents.collect(&:status)

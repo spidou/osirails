@@ -102,6 +102,10 @@ table.sales_table span {
   vertical-align: top;
 }
 
+table.sales_table td.reference {
+  text-align: left;
+}
+
 table.sales_table td.designation {
   text-align: left;
 }
@@ -717,6 +721,8 @@ table#invoice_items tr.aggregates.global {
 
 table#invoice_items td.from_quote {
   background-color: #e4e4e4;
+  font-style: italic;
+  color: grey;
 }
 
 table#invoice_items tr.new_invoice_item {

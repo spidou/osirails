@@ -17,7 +17,8 @@ module HasReference
     def has_reference(options = {})
       # check options
       options.keys.each do |option|
-        raise ArgumentError, "Unknown option :#{option.to_s}, option should be included in (#{AUTHORIZED_OPTIONS.join(', ')})" unless AUTHORIZED_OPTIONS.include?(option)
+        message = "[has_reference] (#{self.class.name}) Unknown option :#{option.to_s}, option should be included in (#{AUTHORIZED_OPTIONS.join(', ')})"
+        raise ArgumentError, message unless AUTHORIZED_OPTIONS.include?(option)
       end
       
       options[:symbols] ||= []
@@ -27,7 +28,7 @@ module HasReference
         include InstanceMethods
         
         attr_accessor   :sequence_number_limit
-        cattr_accessor  :prefix_reference
+        cattr_accessor  :prefix_reference, :pattern, :pattern_updated_at, :pattern_key
         attr_protected  :reference
         
         validates_uniqueness_of :reference, :unless => Proc.new{ |x| x.reference_was.nil? }
@@ -36,8 +37,16 @@ module HasReference
         
         validate :validates_not_reached_sequence_number_limit
         
+        pattern_key   = "#{options[:prefix]}_#{self.to_s.tableize.singularize}_reference_pattern"
+        configuration = Configuration.last(:conditions => ["name = ?", pattern_key])
+        
+        raise "[has_reference] (#{self.class.name}) pattern's configuration is not present in database" unless configuration # OPTIMIZE change the error type
+        
         const_set 'SYMBOLS', options[:symbols]
-        self.prefix_reference = options[:prefix]
+        self.prefix_reference   = options[:prefix]
+        self.pattern_key        = pattern_key
+        self.pattern            = configuration.value
+        self.pattern_updated_at = configuration.created_at
         
         true
       end
@@ -70,7 +79,7 @@ module HasReference
     #  
     #  Description:
     #  - Will be processed only once, all the duplicates will be ignored.
-    #  - Sequence number wil auto increment until the pattern is modified
+    #  - Sequence number will auto increment until the pattern is modified
     #
     #   === example
     #   pattern = "N-$number(2)" and the object is the 1st to generate a reference with that pattern
@@ -81,7 +90,7 @@ module HasReference
     #   # =>  "N-00002"
     #
     ## Custom symbol :
-    #  $MODEL - +MODEL+ model name tableized and singlarized (TestModel -> $test_model)
+    #  $MODEL - +MODEL+ model name tableized and singularized (TestModel -> $test_model)
     #
     #  Description:
     #  - +MODEL+ must respond to :reference
@@ -97,7 +106,7 @@ module HasReference
     def generate_reference
       self.sequence_number_limit = nil
       
-      pattern = ConfigurationManager.send("#{self.prefix_reference.to_s}_#{self.class.to_s.tableize.singularize}_reference_pattern")
+      pattern = update_pattern_value
       raise "pattern should be defined for #{self.class.to_s} into config.yml" if pattern.nil?
       
       pattern_with_strftime = DateTime.now.strftime(pattern)
@@ -111,14 +120,28 @@ module HasReference
       self.reference = generate_reference
     end
     
+    # Method to update the accessor +custom_pattern+
+    # set +pattern_updated_at+ at nil to force keep custom pattern value
+    #
+    def update_pattern_value
+      configuration = Configuration.last(:conditions => ["name = ?", self.pattern_key])
+      
+      if configuration.created_at != self.class.pattern_updated_at
+        self.class.pattern            = configuration.value
+        self.class.pattern_updated_at = configuration.created_at
+      end
+      
+      self.class.pattern
+    end
+    
     private
       def validates_not_reached_sequence_number_limit
         errors.add(:reference, "La limite du numéro de séquence a été atteinte (#{sequence_number_limit})") unless sequence_number_limit.nil?
       end
     
       # Method to generate a unique number that will increment based on the rest of the pattern
-      # until the pattern persit the number increase, and when it change the number restart from 0
-      # must be the last called
+      #  until the pattern persit the number increase, and when it change the number restart from 0.
+      # Must be the last called.
       #
       def get_number(pattern)
         regexp = /\x24number\x28[0-9]*\x29/                             # $number([0-9]*)

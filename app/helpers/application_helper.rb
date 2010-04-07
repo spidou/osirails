@@ -195,6 +195,10 @@ module ApplicationHelper
     render :partial => 'share/contextual_menu' unless @contextual_menu.sections.empty?
   end
   
+  def content_page_class
+    'with_pinned_menu' if cookies[:pin_status] == 'pinned' and !@contextual_menu.sections.empty?
+  end
+  
   def display_contextual_menu_content
     html = ''
     @contextual_menu.sections.each do |section|

@@ -32,7 +32,7 @@ class QuotesController < ApplicationController
   def new
     @quote = @order.quotes.build(:validity_delay      => ConfigurationManager.sales_quote_validity_delay,
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
-    
+    @quote.creator = current_user # permit additional information displaying
     if @quote.can_be_added?
       @quote.contacts << @order.contacts.last unless @order.contacts.empty?
       

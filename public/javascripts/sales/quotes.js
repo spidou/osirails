@@ -37,6 +37,8 @@ function add_product_reference_to_quote() {
       onSuccess: function(transport) {
 	      var ref_obj = transport.responseText.evalJSON()["product_reference"];
 	      append_reference(ref_obj);
+	      
+	      update_up_down_links($('quote_items_body'));  // method defined into sales.js
       }
     });
   }
@@ -95,7 +97,7 @@ function append_reference(json_object) {
   line_reference.select('td').last().down('.product_reference_id').value = product_reference_id
   
   line_reference.setStyle({display:'table-row'})
-  new Effect.Highlight(line_reference)
+  new Effect.Highlight(line_reference, {afterFinish: function(){ line_reference.setStyle({backgroundColor: ''}) }})
   
   calculate(line_reference)
   return true;
@@ -111,6 +113,7 @@ function remove_reference(obj) {
   }
   
   update_aggregates()
+  update_up_down_links($('quote_items_body'));  // method defined into sales.js
 }
 
 function calculate(tr) {
@@ -215,4 +218,6 @@ function remove_free_quote_item(element) {
   } else {
     item.remove();
   }
+  
+  update_up_down_links($('quote_items_body'));  // method defined into sales.js
 }

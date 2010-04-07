@@ -49,4 +49,10 @@ class GraphicItemVersion < ActiveRecord::Base
       return image.path
     end
   end  
+  
+  def position_in(press_proof)
+    return if new_record?
+    press_proof_item = press_proof.press_proof_items.detect{ |i| i.graphic_item_version_id == self.id }
+    press_proof_item ? press_proof_item.position : 0
+  end
 end

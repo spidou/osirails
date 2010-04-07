@@ -3,6 +3,7 @@ delivery_note = delivery_note_body
 items = ( delivery_note.new_record? || is_form_view? ) ? delivery_note.delivery_note_items : delivery_note.delivery_note_items.reject{ |i| i.quantity.zero? }
 %>
 
+
 <div class="autoscroll">
   <table id="delivery_note_items" class="sales_table no_nth">
     <thead>
@@ -15,7 +16,8 @@ items = ( delivery_note.new_record? || is_form_view? ) ? delivery_note.delivery_
       </tr>
     </thead>
     <tbody>
-      <%= render :partial => 'delivery_note_items/delivery_note_item', :collection => items %>
+      <%= render :partial => 'delivery_note_items/delivery_note_item', :collection => items,
+                                                                       :locals => { :collection_length => delivery_note.delivery_note_items.size } %>
     </tbody>
     <tfoot>
       <tr class="nota">

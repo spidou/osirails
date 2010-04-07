@@ -19,7 +19,7 @@ class Quote < ActiveRecord::Base
   belongs_to :send_quote_method
   belongs_to :order_form_type
   
-  has_many :quote_items, :dependent => :delete_all # not :destroy to avoid after_destroy is called in quote_item.rb
+  has_many :quote_items, :dependent => :delete_all, :order => 'position' # not :destroy to avoid after_destroy is called in quote_item.rb
   has_many :products, :through => :quote_items
   
   has_attached_file :order_form,
@@ -96,6 +96,10 @@ class Quote < ActiveRecord::Base
   @@form_labels[:order_form_type]   = 'Type de document :'
   @@form_labels[:order_form]        = 'Fichier (document signé) :'
   @@form_labels[:sales_terms]       = 'Conditions commerciales :'
+  @@form_labels[:created_at]        = 'Date de création :'
+  @@form_labels[:creator]           = "Créateur :"
+  @@form_labels[:reference]         = "Référence :"
+  @@form_labels[:status]            = "État actuel :"
   
   def initialize(*params)
     super(*params)
@@ -124,6 +128,10 @@ class Quote < ActiveRecord::Base
   
   def free_quote_items
     quote_items.reject(&:product)
+  end
+  
+  def sorted_quote_items
+    quote_items.sort_by(&:position)
   end
   
   def build_quote_item(quote_item_attributes)

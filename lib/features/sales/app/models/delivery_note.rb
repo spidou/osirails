@@ -243,7 +243,7 @@ class DeliveryNote < ActiveRecord::Base
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
-  else
+    else
       errors.add(:base, "Le Bon de Livraison n'est pas prêt à être annulé")
       false
     end
