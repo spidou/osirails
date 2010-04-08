@@ -1,5 +1,5 @@
 normal:
   number: 262112233
-  indicative_id: reunion
+  indicative: reunion
   number_type: mobile
   has_number_type: Employee

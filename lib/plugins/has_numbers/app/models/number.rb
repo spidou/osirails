@@ -4,7 +4,9 @@ class Number < ActiveRecord::Base
   belongs_to :number_type
   belongs_to :has_number, :polymorphic => true
   
-  validates_presence_of :has_number_type, :indicative_id, :number_type_id
+  validates_presence_of :has_number_type
+  validates_presence_of :indicative_id
+  validates_presence_of :number_type_id
   validates_presence_of :indicative,  :if => :indicative_id
   validates_presence_of :number_type, :if => :number_type_id
   
