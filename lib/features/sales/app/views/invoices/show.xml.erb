@@ -52,6 +52,29 @@
     <Lines>
       <% @invoice.invoice_items.each do |item| %>
         <Line>
+          <Id><%= item.id %></Id>
+          <% if @footlines_adjustments %>
+            <% @adjust_bottom = @footlines_adjustments.include?(("item_"+item.id.to_s).to_sym) %>
+            <% if @adjust_bottom %>
+              <% @padding_bottom = @footlines_adjustments[("item_"+item.id.to_s).to_sym].round_to(2).to_s(2) %>
+            <% else %>
+              <% @padding_bottom = "0.3" %>
+            <% end %>
+          <% else %>
+            <% @padding_bottom = "0.3" %>
+          <% end %>
+          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+          <% if @report_adjustment %>
+            <% @adjust_report = @report_adjustment.include?(("item_"+item.id.to_s).to_sym) %>
+            <% if @adjust_report %>
+              <% @is_page_first_element = @report_adjustment[("item_"+item.id.to_s).to_sym].to_s %>
+            <% else %>
+              <% @is_page_first_element = "false" %>
+            <% end %>
+          <% else %>
+            <% @is_page_first_element = "false" %>
+          <% end %>
+          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %> 
           <Reference><%= item.product.product_reference.reference if item.product and item.product.product_reference %></Reference>
           <Name><%= item.name %></Name>
           <Description><%= item.description %></Description>
@@ -60,7 +83,7 @@
           <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
           <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
           <VAT><%= @invoice.tax_coefficients.index(item.vat)+1 %></VAT>
-        </Line> 
+        </Line>
       <% end %>
     </Lines>
     <Taxes>

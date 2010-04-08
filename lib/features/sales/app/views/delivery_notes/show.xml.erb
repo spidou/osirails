@@ -54,12 +54,24 @@
     <Lines>
       <% @delivery_note.delivery_note_items.each do |item| %>
         <% unless item.quantity == 0 %>
-        <Line>
-          <Reference><%= item.quote_item.product.product_reference.reference %></Reference>
-          <Name><%= item.quote_item.name %></Name>
-          <Description><%= item.quote_item.description %></Description>
-          <Quantity><%= item.quantity %></Quantity>
-        </Line>
+          <Line>
+            <Id><%= item.id %></Id>
+            <% if @footlines_adjustments %>
+              <% @adjust_bottom = @footlines_adjustments.include?(("item_"+item.id.to_s).to_sym) %>
+              <% if @adjust_bottom %>
+                <% @padding_bottom = @footlines_adjustments[("item_"+item.id.to_s).to_sym].round_to(2).to_s(2) %>
+              <% else %>
+                <% @padding_bottom = "0.3" %>
+              <% end %>
+            <% else %>
+              <% @padding_bottom = "0.3" %>
+            <% end %>
+            <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+            <Reference><%= item.quote_item.product.product_reference.reference %></Reference>
+            <Name><%= item.quote_item.name %></Name>
+            <Description><%= item.quote_item.description %></Description>
+            <Quantity><%= item.quantity %></Quantity>
+          </Line>
         <% end %> 
       <% end %>
     </Lines>

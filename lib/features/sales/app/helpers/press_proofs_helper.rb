@@ -119,7 +119,7 @@ module PressProofsHelper
   end
   
   def display_press_proof_show_pdf_button(order, press_proof, message=nil)
-    return unless PressProof.can_view?(current_user) and !press_proof.status.nil?
+    return unless PressProof.can_view?(current_user)
       text = "Télécharger ce BAT (PDF)"
       message ||= " #{text}"
       link_to( image_tag( "mime_type_extensions/pdf_16x16.png",

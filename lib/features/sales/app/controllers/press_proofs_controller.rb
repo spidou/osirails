@@ -14,18 +14,13 @@ class PressProofsController < ApplicationController
   def show
     @press_proof = PressProof.find(params[:id])
     
-    if @press_proof.status.nil? and params[:format] == "pdf"
-      error_access_page(404)
-      return
-    end
-    
     respond_to do |format|
       format.xml  {
         render :layout => false
       }
       format.pdf  {
-        pdf_filename = "press_proof_#{@press_proof.reference}"
-        render :pdf => pdf_filename, :template => "press_proofs/show.xml.erb", :xsl => "public/fo/style/press_proof.xsl", :path => "assets/pdf/press_proofs/#{pdf_filename}.pdf"
+        pdf_filename = "press_proof_#{@press_proof.reference.nil? ? 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S") : @press_proof.reference}"
+        render :pdf => pdf_filename, :xml_template => "press_proofs/show.xml.erb", :xsl_template => "press_proofs/show.xsl.erb", :path => "assets/pdf/press_proofs/#{pdf_filename}.pdf", :is_temporary_pdf => @press_proof.status.nil?
       }
       format.html { }
     end

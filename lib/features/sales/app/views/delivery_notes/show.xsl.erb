@@ -293,8 +293,12 @@
     <xsl:attribute name="border-top-width">1px</xsl:attribute>
   </xsl:attribute-set>
   
-  <xsl:attribute-set name="main-table-empty-line-cell" use-attribute-sets="line-cell">
-    <xsl:attribute name="padding-top">1mm</xsl:attribute> <!-- COMMENT FOR DYNAMIC RESIZE OF THE EMPTY LINE, DO NOT REMOVE ME AND DO NOT COPY ME -->        
+  <xsl:attribute-set name="main-table-first-empty-line-cell" use-attribute-sets="line-cell">
+    <xsl:attribute name="padding-bottom">1cm</xsl:attribute> 
+  </xsl:attribute-set>
+  
+  <xsl:attribute-set name="main-table-last-empty-line-cell" use-attribute-sets="line-cell">
+    <xsl:attribute name="padding-top"><%= @new_padding_for_last_offset||"1" %>cm</xsl:attribute>      
   </xsl:attribute-set>
   
   <xsl:attribute-set name="main-table-last-footline-cell">
@@ -449,7 +453,6 @@
     <xsl:attribute name="display-align">before</xsl:attribute>
     <xsl:attribute name="padding-top">1mm</xsl:attribute>
     <xsl:attribute name="padding-right">2px</xsl:attribute> 
-    <xsl:attribute name="padding-bottom">3mm</xsl:attribute> 
     <xsl:attribute name="padding-left">2px</xsl:attribute>     
   </xsl:attribute-set>
   
@@ -771,6 +774,20 @@
                     </fo:block-container>
                   </fo:table-cell>
                 </fo:table-row>
+                <fo:table-row>
+                  <fo:table-cell xsl:use-attribute-sets="main-table-first-empty-line-cell">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-first-empty-line-cell">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell xsl:use-attribute-sets="main-table-first-empty-line-cell">
+                    <fo:block/>
+                  </fo:table-cell>
+                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-first-empty-line-cell">
+                    <fo:block/>
+                  </fo:table-cell>
+                </fo:table-row>
               </fo:table-header>               
               <!-- A FOOTER IS REQUIRED TO CLOSE THE TABLE ON PAGE BREAKS -->
               <fo:table-footer>
@@ -782,16 +799,16 @@
                 <xsl:apply-templates select="Lines/Line"/>
                 <!-- THIS EMPTY LINE IS REQUIRED TO FILL THE TABLE DYNAMICALLY -->                
                 <fo:table-row>
-                  <fo:table-cell xsl:use-attribute-sets="main-table-empty-line-cell">
+                  <fo:table-cell xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-empty-line-cell">
+                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                  <fo:table-cell xsl:use-attribute-sets="main-table-empty-line-cell">
+                  <fo:table-cell xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
-                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-empty-line-cell">
+                  <fo:table-cell number-columns-spanned="4" xsl:use-attribute-sets="main-table-last-empty-line-cell">
                     <fo:block/>
                   </fo:table-cell>
                 </fo:table-row>                  
@@ -967,6 +984,9 @@
   <xsl:template match="Lines/Line">
     <fo:table-row xsl:use-attribute-sets="main-table-line-row" page-break-inside="avoid">
       <fo:table-cell xsl:use-attribute-sets="main-table-line-reference-cell">
+        <xsl:attribute name="padding-bottom">
+          <xsl:value-of select="PaddingBottom"/>cm
+        </xsl:attribute>
         <fo:block-container xsl:use-attribute-sets="main-table-line-reference-block-container">
           <fo:block xsl:use-attribute-sets="main-table-line-reference-block">
             <xsl:value-of select="Reference"/>
@@ -974,6 +994,9 @@
         </fo:block-container>
       </fo:table-cell>
       <fo:table-cell xsl:use-attribute-sets="main-table-line-description-cell" number-columns-spanned="4">
+        <xsl:attribute name="padding-bottom">
+          <xsl:value-of select="PaddingBottom"/>cm
+        </xsl:attribute>
         <fo:block-container xsl:use-attribute-sets="main-table-line-description-block-container">
           <fo:block xsl:use-attribute-sets="main-table-line-description-block">
             <xsl:value-of select="Name"/>
@@ -986,11 +1009,20 @@
         </fo:block-container>
       </fo:table-cell>
       <fo:table-cell xsl:use-attribute-sets="main-table-line-quantity-cell">
+        <xsl:attribute name="padding-bottom">
+          <xsl:value-of select="PaddingBottom"/>cm
+        </xsl:attribute>
         <fo:block>
           <xsl:value-of select="Quantity"/>
         </fo:block>
       </fo:table-cell>
       <fo:table-cell xsl:use-attribute-sets="main-table-line-remarks-cell" number-columns-spanned="4">
+        <xsl:attribute name="padding-bottom">
+          <xsl:value-of select="PaddingBottom"/>cm
+        </xsl:attribute>
+        <xsl:attribute name="id">
+          cell-for-item_<xsl:value-of select="Id"/>
+        </xsl:attribute>
         <fo:block/>
       </fo:table-cell>
     </fo:table-row>
