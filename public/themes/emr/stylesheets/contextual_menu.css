@@ -43,21 +43,34 @@
 	font-size: 0.8em;
 }
 
-#status_text_contextual_menu {
-  position:relative;
-  right:-44px;
-  top:45px;
-  background-color: #e99727;
+#contextual_menu_toggle_button {
   border: 1px solid #747474;
-  color: black;
-  padding: 5px;
-  font-size: 15px;
-  -moz-transform: rotate(-90deg);
-  -webkit-transform: rotate(-90deg);
-  -moz-box-shadow: -4px -2px 1px rgba(0,0,0,0.4), inset 0px -3px 5px rgba(0,0,0,0.4);
-  -moz-border-radius: 10px 10px 0 0;
+  padding:5px;
+  min-width: 18px;
+  min-height: 19px;
+  background: #e99727 url("/themes/emr/images/left_arrow_16x16.png") no-repeat 4px 50%;
+  -moz-border-radius: 10px 0 0 10px;
+  -moz-box-shadow:   -4px 3px 4px  rgba(0,0,0,0.4), inset -3px 0px 5px  rgba(0,0,0,0.4);
 }
 
+#status_text_contextual_menu {
+  position:relative;
+/*  right:-44px;*/
+/*  top:45px;*/
+  display:none;
+  color: black;
+  font-size: 15px;
+/*  -moz-transform: rotate(-90deg);*/
+/*  -webkit-transform: rotate(-90deg);*/
+/*  -moz-box-shadow: -4px -2px 1px rgba(0,0,0,0.4), inset 0px -3px 5px rgba(0,0,0,0.4);*/
+/*  -moz-border-radius: 10px 10px 0 0;*/
+    
+}
+
+#contextual_menu_toggle_button:hover #status_text_contextual_menu {
+    display:inline;
+    margin-left: 18px;
+}
 /*.hidden_contextual_menu,*/
 /*.shown_contextual_menu {*/
 /*	text-align: right;*/
