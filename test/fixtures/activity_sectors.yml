@@ -3,3 +3,8 @@ supermarket_retail:
 telephony:
   name: Telephony
   
+industries_alimentaires:
+  name: Industries Alimentaires
+fabrication:
+  name: "Fabrication d'équipements électriques"
+  

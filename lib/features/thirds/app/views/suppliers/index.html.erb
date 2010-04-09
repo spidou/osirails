@@ -19,7 +19,7 @@
       <% for supplier in @suppliers %>
         <tr>
           <td><%= supplier.name %></td>
-          <td><%= supplier.activity_sector.name unless supplier.activity_sector.nil? %></td>
+          <td><%= supplier.activity_sector_reference.get_activity_sector.name unless supplier.activity_sector_reference.nil? %></td>
           <td><%= supplier.note %></td>
           <td>
             <%= supplier_link(supplier, :link_text => "") %> 

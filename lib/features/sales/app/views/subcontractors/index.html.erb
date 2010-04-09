@@ -17,7 +17,7 @@
       <% for subcontractor in @subcontractors %>
         <tr>
           <td><%= subcontractor.name %></td>
-          <td><%= subcontractor.activity_sector.name unless subcontractor.activity_sector.nil? %></td>
+          <td><%= subcontractor.activity_sector_reference.get_activity_sector.name unless subcontractor.activity_sector_reference.nil? %></td>
           <td><%= subcontractor.note %></td>
           <td>
             <%= subcontractor_link(subcontractor, :link_text => "") %> 

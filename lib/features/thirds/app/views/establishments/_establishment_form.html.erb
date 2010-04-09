@@ -4,18 +4,8 @@
 <% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_form do |form| %>
 <div class="resource_form<%= ' new_record' if establishment.new_record? %>" id="establishment_<%=establishment.id%>" <%= "style=\"display:none\"" unless establishment.new_record? or !establishment.errors.empty? or establishment.should_update? %> >
   <%= form.error_messages %>
-  <p>
-    <%= form.label :name, {}, :index => nil %>
-    <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
-  </p>
-  <p>
-    <%= form.label :establishment_type_id, {}, :index => nil %>
-    <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
-  </p>
-  
-  <%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment }
-  %>
-  
+  <%= render :partial => "establishments/establishment_fields", :object => establishment, :locals => {:form => form} %>
+
   <p>
     <% if establishment.new_record? %>
       <%= link_to_function "Annuler la création de l'établissement", "this.up('.resource').remove()" %>
@@ -32,4 +22,5 @@
     <% end %>
   </p>
 </div>
+
 <% end %>

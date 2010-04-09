@@ -33,17 +33,17 @@ class NumberTest < ActiveSupport::TestCase
     assert !@good_number.errors.invalid?(:indicative), "indicative should be valid"  
   end
   
-  def test_presence_of_number_type
-    assert @number.errors.invalid?(:number_type_id), "number_type_id should NOT be valid because it's nil"
-    
-    @number.number_type_id = 0
-    @number.valid?
-    assert !@number.errors.invalid?(:number_type_id), "number_type_id should be valid"
-    assert @number.errors.invalid?(:number_type), "number_type should NOT be valid because number_type_id is wrong"
-    
-    assert !@good_number.errors.invalid?(:number_type_id), "number_type_id should be valid"
-    assert !@good_number.errors.invalid?(:number_type), "number_type should be valid"  
-  end
+#  def test_presence_of_number_type
+#    assert @number.errors.invalid?(:number_type_id), "number_type_id should NOT be valid because it's nil"
+#    
+#    @number.number_type_id = 0
+#    @number.valid?
+#    assert !@number.errors.invalid?(:number_type_id), "number_type_id should be valid"
+#    assert @number.errors.invalid?(:number_type), "number_type should NOT be valid because number_type_id is wrong"
+#    
+#    assert !@good_number.errors.invalid?(:number_type_id), "number_type_id should be valid"
+#    assert !@good_number.errors.invalid?(:number_type), "number_type should be valid"  
+#  end
   
   def test_formatted
     assert_equal '0262 11 22 33', @good_number.formatted

@@ -1,0 +1,2 @@
+class HeadOffice < Establishment
+end

@@ -19,7 +19,7 @@
       <% for customer in @customers %>
         <tr>
           <td><%= customer.name %></td>
-          <td><%= customer.activity_sector.name unless customer.activity_sector.nil? %></td>
+          <td><%= customer.head_office.activity_sector_reference.get_activity_sector.name unless customer.head_office.nil? || customer.head_office.activity_sector_reference.nil? %></td>
           <td><%= customer.note %></td>
           <td>
             <%= customer_link(customer, :link_text => "") %> 

@@ -34,7 +34,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :abandoned_by, :class_name => "User"
   
   has_many :invoice_items,  :dependent  => :destroy, :order => 'position'
-  has_many :products,       :through    => :invoice_items
+  has_many :products,       :through    => :invoice_items, :order => 'invoice_items.position'
   
   has_many :delivery_note_invoices, :dependent  => :destroy
   has_many :delivery_notes,         :through    => :delivery_note_invoices
@@ -672,6 +672,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def invoice_item_attributes=(invoice_item_attributes)
+    
     invoice_item_attributes.each do |attributes|
       if attributes[:id].blank?
         invoice_item = invoice_items.build(attributes)
@@ -684,7 +685,7 @@ class Invoice < ActiveRecord::Base
   
   def save_invoice_items
     return if confirmed_at_was
-    
+
     invoice_items.each do |i|
       if i.should_destroy?
         i.destroy

@@ -4,13 +4,16 @@ class EstablishmentTest < Test::Unit::TestCase
   should_belong_to :customer
   should_belong_to :establishment_type
   
+  should_allow_values_for :siret_number, "12345678901234", "09876543210987"
+  should_not_allow_values_for :siret_number, "azert", "azertyuiopqsdf", "1234567890123", "123456789012345", "1234567890123a", "", nil
+  
   context "An empty establishment" do
     setup do
       @establishment = Establishment.new
       @establishment.valid?
     end
     
-    [ :name, :address, :establishment_type ].each do |attribute|
+    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
       should "require presence of #{attribute}" do
         assert @establishment.errors.invalid?(attribute)
       end
@@ -20,7 +23,8 @@ class EstablishmentTest < Test::Unit::TestCase
   context "A complete establishment" do
     setup do
       @establishment = Establishment.new(:name                  => "Name",
-                                         :establishment_type_id => establishment_types(:store).id)
+                                         :establishment_type_id => establishment_types(:store).id,
+                                         :siret_number => "35478965321567")
       @establishment.build_address(:street_name   => "Street Name",
                                    :zip_code      => "12345",
                                    :city_name     => "City",
@@ -28,7 +32,7 @@ class EstablishmentTest < Test::Unit::TestCase
       @establishment.valid?
     end
     
-    [ :name, :address, :establishment_type ].each do |attribute|
+    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
       should "valid presence of #{attribute}" do
         assert !@establishment.errors.invalid?(attribute)
       end

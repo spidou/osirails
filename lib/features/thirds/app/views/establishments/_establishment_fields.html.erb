@@ -1,0 +1,29 @@
+<%
+  require_locals form
+  establishment = establishment_fields
+  phone = establishment.phone || establishment.build_phone
+  fax   = establishment.fax || establishment.build_fax
+%>
+
+<p>
+  <%= form.label :name, {}, :index => nil %>
+  <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
+</p>
+<p>
+  <%= form.label :siret_number, {}, :index => nil %>
+  <%= form.form_or_view(form.text_field(:siret_number, :index => nil, 'maxlength' => 14), :siret_number)%>
+</p>
+<p>
+  <%= form.label :establishment_type_id, {}, :index => nil %>
+  <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
+</p>
+<!-- TODO when implementing the ajax reference retrieval do not forget to do so for thirds -->
+<p>
+  <%= form.label :activity_sector_reference_id %>
+  <%= form.form_or_view(form.collection_select(:activity_sector_reference_id, ActivitySectorReference.find(:all), :id, :code_and_name,
+                                               {:include_blank => establishment.new_record? ? "Veuillez choisir un secteur d'activité" : false}, {:index => nil}),
+                                               :activity_sector_reference, :code)%>
+</p>
+<%= render :partial => "numbers/number_lite", :object => phone, :locals => {:number_owner => establishment, :form => form, :one_or_many => :many}%>
+<%= render :partial => "numbers/number_lite", :object => fax, :locals => {:number_owner => establishment, :form => form, :one_or_many => :many}%>
+<%= render :partial => "addresses/address_form", :object => establishment.address || establishment.build_address , :locals => { :address_owner => establishment } %>

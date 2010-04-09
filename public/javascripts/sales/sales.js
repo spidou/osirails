@@ -8,10 +8,19 @@ function move_down(link)
   move_tr(false, link);
 }
 
+// Method the parse next or previous siblings until the first visible, and return it
+//
+function nearly_visible(element, to_up)
+{
+  do { element = (to_up ? element.previous() : element.next()) }
+  while(element != null && !element.visible())
+  return element;
+}
+
 function move_tr(to_up, link)
 {
   var element   = $(link).up("TR");
-  var neighbour = (to_up ? element.previous() : element.next());
+  var neighbour = $(nearly_visible(element, to_up));// (to_up ? element.previous() : element.next());
   
   if (neighbour == null) return;
   
@@ -21,6 +30,13 @@ function move_tr(to_up, link)
   update_up_down_links(element.up("tbody").childElements());
 }
 
+// Method to determine if a mockup is or not active
+//
+function is_active(element)
+{
+  var value = element.down('.should_destroy').value
+  return ( value == '0' || value == ''? true : false);
+}
 
 var move_up_image   = "arrow_up_16x16.png";
 var move_down_image = "arrow_down_16x16.png";
@@ -37,13 +53,19 @@ function reset_up_down_links(element)
 
 function update_up_down_links(elements)
 {
+  var actives  = new Array;
+  var index    = 0;
   for(var i=0; i<elements.length; i++){
-    reset_up_down_links(elements[i]);
-    update_position(elements[i], i + 1);
+    if(is_active(elements[i])){
+      var element = elements[i];
+      reset_up_down_links(element);
+      update_position(element, index + 1);
+      actives[index++] = element;
+    }
   }
-  if(elements.length > 0){
-    disable_first_link(elements.first());
-    disable_last_link(elements.last());
+  if(actives.length > 0) {
+    disable_first_link(actives.first());
+    disable_last_link(actives.last());
   }
 }
 

@@ -167,9 +167,22 @@ namespace :osirails do
       user_admin.roles << role_admin
 
       # default activity sectors
-      ActivitySector.create! :name => "Grande distribution"
-      ActivitySector.create! :name => "Hôtellerie"
-      ActivitySector.create! :name => "Téléphonie"
+      ActivitySectorReference.create! :code => "10.11Z",
+        :activity_sector        => ActivitySector.create!(:name => "Industries Alimentaires"),
+        :custom_activity_sector => CustomActivitySector.create!(:name => "Alimentation")
+        
+      ActivitySectorReference.create! :code => "13.10Z",
+        :activity_sector        => ActivitySector.create!(:name => "Fabrication de textiles"),
+        :custom_activity_sector => CustomActivitySector.create!(:name => "Textile/Habillement")
+        
+      ActivitySectorReference.create! :code => "42.11Z",
+        :activity_sector        => ActivitySector.create!(:name => "Génie civil"),
+        :custom_activity_sector => CustomActivitySector.create!(:name => "Construction")
+        
+      ActivitySectorReference.create! :code => "27.40Z",
+        :activity_sector        => ActivitySector.create!(:name => "Fabrication d'équipements électriques"),
+        :custom_activity_sector => nil
+      
       
       # default third types
       private_third_type  = ThirdType.create! :name => "Privé"
@@ -193,17 +206,41 @@ namespace :osirails do
       LegalForm.create! :name => "Etat",                          :third_type_id => public_third_type.id
       LegalForm.create! :name => "Collectivité territoriale",     :third_type_id => public_third_type.id
       
-      # default payment methods
-      PaymentMethod.create! :name => "Virement"
-      PaymentMethod.create! :name => "Chèque"
-      PaymentMethod.create! :name => "Espèce"
-      PaymentMethod.create! :name => "Lettre de change"
-      PaymentMethod.create! :name => "Billet à ordre"
+      # default payment method
       
-      # default payment time limits
-      PaymentTimeLimit.create! :name => "Comptant"
-      PaymentTimeLimit.create! :name => "30 jours nets"
-      PaymentTimeLimit.create! :name => "60 jours nets"
+      five = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
+      four = PaymentTimeLimit.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
+      tree = PaymentTimeLimit.create! :name => "30 jours + sans facilité de paiement éventuelle"
+      two = PaymentTimeLimit.create! :name => "0 jours + facilité de paiement éventuelle"
+      one = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
+      zero = PaymentTimeLimit.create! :name => "Refus Client"
+      
+      # default payment time limit
+      
+      a_method = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
+      b_method = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
+      c_method = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
+      d_method = PaymentMethod.create! :name => "CB/Espèces/Chèque"
+      e_method = PaymentMethod.create! :name => "Espèces/Chèque"
+      f_method = PaymentMethod.create! :name => "Refus du Client"
+      
+      # default customer grades
+      
+      CustomerGrade.create! :name => "5/5", :payment_time_limit => five
+      CustomerGrade.create! :name => "4/5", :payment_time_limit => four
+      CustomerGrade.create! :name => "3/5", :payment_time_limit => tree
+      CustomerGrade.create! :name => "2/5", :payment_time_limit => two
+      CustomerGrade.create! :name => "1/5", :payment_time_limit => one
+      CustomerGrade.create! :name => "0/5", :payment_time_limit => zero
+      
+      # default customer solvencies
+      
+      CustomerSolvency.create! :name => "100%", :payment_method => a_method
+      CustomerSolvency.create! :name => "80%", :payment_method => b_method
+      CustomerSolvency.create! :name => "60%", :payment_method => c_method
+      CustomerSolvency.create! :name => "40%", :payment_method => d_method
+      CustomerSolvency.create! :name => "20%", :payment_method => e_method
+      CustomerSolvency.create! :name => "0%", :payment_method => f_method
       
       # default measure units
       UnitMeasure.create! :name => "Millimètre",          :symbol => "mm"
@@ -224,7 +261,7 @@ namespace :osirails do
       UnitMeasure.create! :name => "Litre",               :symbol => "l"
       
       # default establishment types
-      EstablishmentType.create! :name => "Siège social"
+      EstablishmentType.create! :name => "Siège administratif"
       EstablishmentType.create! :name => "Entrepôt"
       EstablishmentType.create! :name => "Magasin/Boutique"
       EstablishmentType.create! :name => "Station service"
