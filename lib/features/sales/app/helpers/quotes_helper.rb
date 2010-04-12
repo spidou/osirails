@@ -55,7 +55,8 @@ module QuotesHelper
   end
   
   def display_quote_show_pdf_button(order, quote, message = nil)
-    return unless Quote.can_view?(current_user) and quote.can_be_downloaded?
+    return unless Quote.can_view?(current_user)# and quote.can_be_downloaded?
+    #return unless Quote.can_view?(current_user) and !quote.new_record?
     text = "Télécharger ce devis (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",

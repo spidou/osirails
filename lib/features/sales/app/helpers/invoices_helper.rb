@@ -103,7 +103,7 @@ module InvoicesHelper
   end
   
   def display_invoice_show_pdf_button(order, invoice, message = nil)
-    return unless Invoice.can_view?(current_user) and invoice.can_be_downloaded?
+    return unless Invoice.can_view?(current_user)# and invoice.can_be_downloaded?
     text = "Télécharger cette facture (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",

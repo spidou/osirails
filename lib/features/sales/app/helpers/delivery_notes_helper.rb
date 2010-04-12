@@ -57,7 +57,7 @@ module DeliveryNotesHelper
   end
   
   def display_delivery_note_show_pdf_button(order, delivery_note, message = nil)
-    return unless DeliveryNote.can_view?(current_user) and delivery_note.can_be_downloaded?
+    return unless DeliveryNote.can_view?(current_user)# and delivery_note.can_be_downloaded?
     text = "Télécharger ce BL (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
