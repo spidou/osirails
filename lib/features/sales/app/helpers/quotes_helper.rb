@@ -17,6 +17,7 @@ module QuotesHelper
     html << display_quote_order_form_button(order, quote, '')
     html << display_quote_cancel_button(order, quote, '')
     
+    html << display_quote_preview_button(order, quote, '')
     html << display_quote_show_pdf_button(order, quote, '')
     html << display_quote_show_button(order, quote, '')
     html << display_quote_edit_button(order, quote, '')
@@ -54,9 +55,18 @@ module QuotesHelper
              order_commercial_step_estimate_step_quote_path(order, quote) )
   end
   
+  def display_quote_preview_button(order, quote, message = nil)
+    return unless Quote.can_view?(current_user) and !quote.new_record? and !quote.can_be_downloaded?
+    text = "Télécharger un aperçu de ce devis (PDF)"
+    message ||= " #{text}"
+    link_to( image_tag( "preview_16x16.gif",
+                        :alt => text,
+                        :title => text ) + message,
+             order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf) )
+  end
+  
   def display_quote_show_pdf_button(order, quote, message = nil)
-    return unless Quote.can_view?(current_user)# and quote.can_be_downloaded?
-    #return unless Quote.can_view?(current_user) and !quote.new_record?
+    return unless Quote.can_view?(current_user) and quote.can_be_downloaded?
     text = "Télécharger ce devis (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",

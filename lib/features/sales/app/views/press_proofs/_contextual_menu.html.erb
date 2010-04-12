@@ -1,6 +1,7 @@
 <% add_contextual_menu_item :press_proof do %>
   <%= display_press_proof_add_button(@order) unless is_new_view? %>
   <%= display_press_proof_show_button(@order, @press_proof) unless is_show_view? %>
+  <%= display_press_proof_preview_button(@order, @press_proof) %>
   <%= display_press_proof_show_pdf_button(@order, @press_proof) %>
   <%= display_press_proof_edit_button(@order, @press_proof) unless is_edit_view? %>
   <%= display_press_proof_signed_button(@order, @press_proof) %>

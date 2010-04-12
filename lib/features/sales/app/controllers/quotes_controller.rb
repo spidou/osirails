@@ -13,11 +13,6 @@ class QuotesController < ApplicationController
   def show
     @quote = Quote.find(params[:id])
     
-    #if !@quote.can_be_downloaded? and params[:format] == "pdf"
-    #  error_access_page(404)
-    #  return
-    #end
-    
     respond_to do |format|
       format.xsl {
         render :layout => false
@@ -26,7 +21,7 @@ class QuotesController < ApplicationController
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "devis_#{@quote.reference.nil? ? 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S") : @quote.reference}"
+        pdf_filename = "devis_#{@quote.can_be_downloaded? ? @quote.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
         render_pdf(pdf_filename, "quotes/show.xml.erb", "quotes/show.xsl.erb", "assets/sales/quotes/generated_pdf/#{@quote.reference.nil? ? 'tmp' : @quote.id}.pdf", @quote.reference.nil?)
       }
       format.html { }

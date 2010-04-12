@@ -11,17 +11,12 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
-    #if !@delivery_note.can_be_downloaded? and params[:format] == "pdf"
-    #  error_access_page(404)
-    #  return
-    #end
-    
     respond_to do |format|
       format.xml {
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "bon_livraison_#{@delivery_note.reference.nil? ? 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S") : @delivery_note.reference}"
+        pdf_filename = "bon_livraison_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
         render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.reference.nil? ? 'tmp' : @delivery_note.id}.pdf", @delivery_note.reference.nil?)
       }
       format.html { }

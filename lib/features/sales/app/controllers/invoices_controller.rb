@@ -13,17 +13,12 @@ class InvoicesController < ApplicationController
   # GET /orders/:order_id/:step/invoices/:id.xml
   # GET /orders/:order_id/:step/invoices/:id.pdf
   def show
-    #if !@invoice.can_be_downloaded? and params[:format] == "pdf"
-    #  error_access_page(404)
-    #  return
-    #end
-    
     respond_to do |format|
       format.xml {
         render :layout => false
       }
       format.pdf {
-        pdf_filename = "facture_#{@invoice.reference.nil? ? 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S") : @invoice.reference}"
+        pdf_filename = "facture_#{@invoice.can_be_downloaded? ? @invoice.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
         render_pdf(pdf_filename, "invoices/show.xml.erb", "invoices/show.xsl.erb", "assets/sales/invoices/generated_pdf/#{@invoice.reference.nil? ? 'tmp' : @invoice.id}.pdf", @invoice.reference.nil?)
       }
       format.html { }

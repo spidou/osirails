@@ -79,10 +79,10 @@
           <Reference><%= item.product.product_reference.reference unless item.free_item? %></Reference>
           <Name><%= item.designation %></Name>
           <Description><%= item.description %></Description>
-          <Quantity><%= item.quantity unless item.free_item? %></Quantity>
-          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) unless item.free_item? %></UnitPrice>
-          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) unless item.free_item? %></Prizegiving>
-          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) unless item.free_item? %></TotalPrice>
+          <Quantity><%= item.quantity %></Quantity>
+          <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
+          <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
+          <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
           <VAT><%= @quote.tax_coefficients.index(item.vat)+1 unless item.free_item? %></VAT>
         </Line>
       <% end %>
