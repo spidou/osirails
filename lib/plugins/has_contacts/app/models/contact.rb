@@ -1,6 +1,8 @@
 class Contact < ActiveRecord::Base
   has_permissions :as_business_object
   
+  has_numbers
+  
   belongs_to :contact_type
   
   has_many :contacts_owners, :foreign_key => "contact_id", :dependent => :destroy

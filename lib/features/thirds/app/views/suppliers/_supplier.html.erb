@@ -1,27 +1,15 @@
 <div class="presentation_medium">
-
-<h2>Informations g&eacute;n&eacute;rales</h2>
-<% if is_form_view? %>
+  <h2>Informations g&eacute;n&eacute;rales</h2>
   <% form_for @supplier do |form| %>
-    <%= render :partial => 'thirds/third', :object => @supplier %>
+    <%= render :partial => 'thirds/third', :object => @supplier, :locals => {:form => form} %>
     
     <h3>Adresse</h3>
     <%= render :partial => 'addresses/address_form', :object => @supplier.address || @supplier.build_address , :locals => { :address_owner => @supplier } %>
     
     <h2>Contacts</h2>
     <%= display_contacts_list(@supplier) %>
-    <%= display_contact_add_button(@supplier) %>
-
+    <%= display_contact_add_button(@supplier) if is_form_view? %>
+    
     <%= form.form_buttons %>
   <% end %>
-<% else %>
-  <%= render :partial => 'thirds/third', :object => @supplier %>
-  
-  <h3>Adresse</h3>
-  <%= render :partial => 'addresses/address_form', :object => @supplier.address || @supplier.build_address , :locals => { :address_owner => @supplier } %>
-    
-  <h2>Contacts</h2>
-  <%= display_contacts_list(@supplier) %>
-<% end %>
-
 </div>

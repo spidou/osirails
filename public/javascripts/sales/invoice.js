@@ -211,7 +211,7 @@ function add_free_item() {
   body.insert( {'bottom' : new_line } );
   
   last_line = body.childElements().last();
-  last_line.down('.should_destroy').value = 0;
+  last_line.down('.should_destroy').removeAttribute('value');
   last_line.removeAttribute('style');
   new Effect.Highlight(last_line, {afterFinish: function(){ last_line.setStyle({backgroundColor: ''}) }})
   

@@ -1,7 +1,8 @@
 <%# fields_for "customer[establishment_attributes][][address_attributes]", address do |form| %>
 <%
+address_owner_class ||= nil
 address = address_form
-owner_type = address_owner.class.singularized_table_name
+owner_type = address_owner_class || address_owner.class.singularized_table_name
 force_show_view ||= false
 
 #FIXME remove this test block accessor when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"

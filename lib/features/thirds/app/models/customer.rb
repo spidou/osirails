@@ -1,23 +1,37 @@
 class Customer < Third
-  has_permissions     :as_business_object
-  has_documents       :graphic_charter, :logo
-  has_address         :bill_to_address
+  has_permissions :as_business_object
+  has_documents   :graphic_charter
+  has_address     :bill_to_address
   
-  belongs_to :payment_method
-  belongs_to :payment_time_limit
   belongs_to :factor
+  belongs_to :customer_solvency
+  belongs_to :customer_grade
+  belongs_to :creator, :class_name => 'User'
   
-  has_many :establishments
+  has_one  :head_office
+  has_many :establishments, :conditions => [ "type IS NULL" ]
   
-  validates_presence_of   :bill_to_address
+  has_attached_file :logo, 
+                    :styles => { :thumb => "120x120" },
+                    :path   => ":rails_root/assets/thirds/logos/:id.:style",
+                    :url    => "/customers/:id.:extension"
   
-  validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
+  validates_presence_of :bill_to_address, :head_office
   
-  validates_length_of     :establishment_ids, :minimum => 1, :too_short => "Vous devez créer au moins 1 établissement"
+  validates_presence_of :customer_grade_id, :customer_solvency_id
+  validates_presence_of :customer_grade,    :if => :customer_grade_id
+  validates_presence_of :customer_solvency, :if => :customer_solvency_id
   
-  validates_associated    :establishments
+  with_options :if => :logo do |v|
+    v.validates_attachment_content_type :logo, :content_type => [ 'image/jpg', 'image/png', 'image/jpeg' ]
+    v.validates_attachment_size         :logo, :less_than => 3.megabytes
+  end
   
-  after_save :save_establishments
+  validates_associated :establishments, :head_office
+  
+  validate :uniqueness_of_siret_number , :if => :head_office
+  
+  after_save :save_establishments, :save_head_office
   
   # for pagination : number of instances by index page
   CUSTOMERS_PER_PAGE = 15
@@ -25,12 +39,25 @@ class Customer < Third
   named_scope :activates, :conditions => {:activated => true}
   
   has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:activity_sector, :legal_form, :establishments],
+                   :only_relationships => [:legal_form, :establishments],
                    :main_model         => true
   
-  @@form_labels[:payment_method]      = "Moyen de paiement préféré :"
-  @@form_labels[:payment_time_limit]  = "Délai de paiement préféré :"
-  @@form_labels[:factor]              = "Compagnie d'affacturage :"
+  @@form_labels[:factor]            = "Compagnie d'affacturage :"
+  @@form_labels[:customer_solvency] = "Degré de solvabilité :"
+  @@form_labels[:customer_grade]    = "Note relation client :"
+  @@form_labels[:logo]              = "Logo :"
+  
+  def payment_time_limit
+    customer_grade.payment_time_limit
+  end
+  
+  def payment_method
+    customer_solvency.payment_method
+  end
+  
+  def establishment_names
+    establishments.collect(&:name).uniq
+  end
   
   def factorised?
     factor_id
@@ -54,7 +81,20 @@ class Customer < Third
       end
     end
   end
-
+  
+  def head_office_attributes=(head_office_attributes)
+    attributes = head_office_attributes.first
+    if head_office.nil?
+      build_head_office(attributes)
+    else
+      head_office.attributes = attributes 
+    end
+  end
+  
+  def save_head_office
+    head_office.save(false)
+  end
+  
   def save_establishments
     establishments.each do |e|
       if e.should_destroy?
@@ -72,5 +112,16 @@ class Customer < Third
   def build_establishment(attributes = {})
     self.establishments.build(attributes)
   end
-
+  
+  def uniqueness_of_siret_number
+    objects           = establishments + [head_office]
+    all_siret_numbers = {}
+    objects.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
+    
+    message = ActiveRecord::Errors.default_error_messages[:taken]
+    objects.each do |establishment|
+      other_siret_numbers = all_siret_numbers.reject{ |obj, v| establishment == obj }
+      establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
+    end
+  end
 end

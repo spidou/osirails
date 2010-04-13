@@ -42,7 +42,7 @@ class InvoiceItem < ActiveRecord::Base
     product.prizegiving if product
   end
   
-  def position
+  def position # used for sorted_invoice_items
     super || 0
   end
 end

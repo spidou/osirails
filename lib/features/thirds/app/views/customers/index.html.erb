@@ -11,8 +11,10 @@
     <table>
       <thead>
         <tr>
-          <th>Nom</th> 
-          <th>Secteurs d&apos;activités</th>
+          <th>Raison sociale</th>
+          <th>Forme juridique</th>
+          <th>Enseigne(s)</th>
+          <th>Secteurs d'activités</th>
           <th>Note</th>
           <th>Actions</th>
         </tr>
@@ -21,8 +23,10 @@
         <% for customer in @customers %>
           <tr>
             <td><%= customer.name %></td>
-            <td><%= customer.activity_sector.name unless customer.activity_sector.nil? %></td>
-            <td><%= customer.note %></td>
+            <td><%= customer.legal_form.name %></td>
+            <td><%= customer.establishment_names.join(", ") %></td>
+            <td><%= customer.head_office.activity_sector_reference.get_activity_sector.name if customer.head_office and customer.head_office.activity_sector_reference %></td>
+            <td><%= customer.customer_grade.name %></td>
             <td>
               <%= customer_link(customer, :link_text => "") %> 
               <%= edit_customer_link(customer, :link_text => "") %>

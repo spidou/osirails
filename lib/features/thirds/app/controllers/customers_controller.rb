@@ -1,5 +1,5 @@
 class CustomersController < ApplicationController
-  helper :thirds, :establishments, :contacts, :documents
+  helper :thirds, :establishments, :contacts, :documents, :numbers
   
   before_filter :hack_params_for_establishments_addresses, :only => [ :create, :update ]
   
@@ -11,12 +11,21 @@ class CustomersController < ApplicationController
   # GET /customers/:id
   def show
     @customer = Customer.find(params[:id])
+    
+    url     = @customer.logo.path(:thumb)
+    options = {:filename => @customer.logo_file_name, :type => @customer.logo_content_type, :disposition => 'inline'}
+    
+    respond_to do |format|
+      format.html
+      format.jpg { send_data(File.read(url), options) }
+      format.png { send_data(File.read(url), options) }
+    end
   end
   
   # GET /customers/new
   def new
     @customer = Customer.new
-    @customer.build_establishment(:establishment_type => EstablishmentType.first).build_address
+    @customer.build_head_office
   end
 
   # POST /customers
@@ -24,7 +33,7 @@ class CustomersController < ApplicationController
     @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
     
     @customer = Customer.new(params[:customer])
-    @customer.establishments.select{|e| e.name.blank? }.map{|e| e.name = @customer.name } unless @customer.name.blank?
+    @customer.creator = current_user
     if @customer.save
       flash[:notice] = "Client ajouté avec succès"
       @return_uri ? redirect_to( url_for(:controller => @return_uri, :new_customer_id => @customer.id) ) : redirect_to(customer_path(@customer))
@@ -67,12 +76,21 @@ class CustomersController < ApplicationController
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
     def hack_params_for_establishments_addresses
-      # raise params.inspect
-      if params[:customer][:establishment_attributes] and params[:establishment][:address_attributes]
+      if params[:customer][:establishment_attributes]
         params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
-          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index] if params[:establishment][:address_attributes]
+          establishment_attributes[:fax_attributes] = params[:establishment][:fax_attributes][index] if params[:establishment][:fax_attributes]
+          establishment_attributes[:phone_attributes] = params[:establishment][:phone_attributes][index] if params[:establishment][:phone_attributes]
         end
         params.delete(:establishment)
+      end
+      if params[:customer][:head_office_attributes]
+        params[:customer][:head_office_attributes].each_with_index do |head_office_attributes, index|
+          head_office_attributes[:address_attributes] = params[:head_office][:address_attributes][index] if params[:head_office][:address_attributes]
+          head_office_attributes[:fax_attributes] = params[:head_office][:fax_attributes][index] if params[:head_office][:fax_attributes]
+          head_office_attributes[:phone_attributes] = params[:head_office][:phone_attributes][index] if params[:head_office][:phone_attributes]
+        end
+        params.delete(:head_office)
       end
     end
 

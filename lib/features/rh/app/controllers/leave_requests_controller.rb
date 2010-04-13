@@ -1,5 +1,5 @@
 class LeaveRequestsController < ApplicationController
-  helper :employees
+  helper :employees, :numbers
   # GET /leave_requests
   def index
     

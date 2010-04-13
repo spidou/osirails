@@ -3,7 +3,7 @@
 quote_item = free_quote_item
 collection_length ||= 1
 counter ||= 1
-position = quote_item.position || counter
+position = quote_item.position.zero? ? counter : quote_item.position
 %>
 
 <% fields_for "quote[quote_item_attributes][]", quote_item do |form| %>

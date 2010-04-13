@@ -8,10 +8,19 @@ function move_down(link)
   move_tr(false, link);
 }
 
+// Method the parse next or previous siblings until the first visible, and return it
+//
+function nearly_visible(to_up, element)
+{
+  do { element = (to_up ? element.previous() : element.next()) }
+  while(element != null && !element.visible())
+  return element;
+}
+
 function move_tr(to_up, link)
 {
   var element   = $(link).up("TR");
-  var neighbour = get_valid_neighbour(to_up, element)
+  var neighbour = $(nearly_visible(to_up, element));
   
   if (neighbour == null) return;
   
@@ -19,18 +28,6 @@ function move_tr(to_up, link)
   new Effect.Highlight(element, {afterFinish: function(){ element.setStyle({backgroundColor: ''}) }})
   
   update_up_down_links(element.up("tbody"));
-}
-
-function get_valid_neighbour(to_up, element) {
-  neighbour = (to_up ? element.previous() : element.next());
-  
-  if (neighbour == null) {
-    return;
-  } else if (parseInt(neighbour.down('.should_destroy').value) == 1) {
-    return get_valid_neighbour(to_up, neighbour);
-  } else {
-    return neighbour;
-  }
 }
 
 var move_up_image   = "arrow_up_16x16.png";
@@ -42,11 +39,12 @@ function update_up_down_links(element)
 {
   elements = element.childElements().reject(function(item) { return parseInt(item.down('.should_destroy').value) == 1 })
   
-  for(var i=0; i<elements.length; i++){
+  for (var i = 0; i < elements.length; i++) {
     reset_up_down_links(elements[i]);
     update_position(elements[i], i + 1);
   }
-  if(elements.length > 0){
+  
+  if (elements.length > 0) {
     disable_first_link(elements.first());
     disable_last_link(elements.last());
   }

@@ -7,6 +7,8 @@ class Test::Unit::TestCase
       customer = thirds(:first_customer)
     end
     
+    head_office = build_head_office_for(customer)
+    
     if customer.establishments.empty?
       establishment = build_establishment_for(customer)
       establishment.contacts = [ contacts(:pierre_paul_jacques), contacts(:jean_dupond) ]
@@ -22,9 +24,24 @@ class Test::Unit::TestCase
   end
   
   def build_establishment_for(customer)
+    siret = rand(99999999999999).to_s.rjust(14, "0")
     establishment = customer.establishments.build(:name                   => "Customer Establishment",
                                                   :establishment_type_id  => EstablishmentType.first.id,
+                                                  :siret_number           => siret,
                                                   :activated              => true)
+    establishment.build_address( :street_name  => "Street Name",
+                                 :country_name => "Country",
+                                 :city_name    => "City",
+                                 :zip_code     => "01234" )
+    return establishment
+  end
+  
+  def build_head_office_for(customer)
+    siret = rand(99999999999999).to_s.rjust(14, "0") 
+    establishment = customer.build_head_office( :name                   => "Customer Head Office",
+                                                :establishment_type_id  => EstablishmentType.first.id,
+                                                :siret_number           => siret,
+                                                :activated              => true)
     establishment.build_address( :street_name  => "Street Name",
                                  :country_name => "Country",
                                  :city_name    => "City",

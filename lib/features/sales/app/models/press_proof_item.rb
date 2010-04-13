@@ -8,7 +8,7 @@ class PressProofItem < ActiveRecord::Base
     should_destroy.to_i == 1
   end
   
-  def position
+  def position # used for sorted_press_proof_items
     super || 0
   end
 end

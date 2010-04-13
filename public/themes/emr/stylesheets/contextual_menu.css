@@ -1,13 +1,13 @@
 #contextual_menu_actions{
   background: url("/themes/emr/images/background_contextual_menu.gif") repeat;
-  border-right: 1px solid #A8A8A8;
-  border-left: 1px solid #A8A8A8;
-  border-top: 1px solid #A8A8A8;
+  border-right: 1px solid #747474;
+  border-left: 1px solid #747474;
+  border-top: 1px solid #747474;
   -moz-border-radius: 10px 10px 0 0;
   position:absolute;
-  top:-26px;
-  right:0px;
-  text-align:center;
+  top: -1.8em;
+  right: 0;
+  text-align: center;
   padding: 4px 5px 0 5px ;
 }
 
@@ -42,63 +42,28 @@
 	font-size: 0.8em;
 }
 
-#status_text_contextual_menu {
-  position:relative;
-  right:-44px;
-  top:45px;
-  background-color: #e99727;
+#contextual_menu_toggle_button {
   border: 1px solid #747474;
-  color: black;
   padding: 5px;
-  font-size: 15px;
-  -moz-transform: rotate(-90deg);
-  -webkit-transform: rotate(-90deg);
-  -moz-box-shadow: -4px -2px 1px rgba(0,0,0,0.4), inset 0px -3px 5px rgba(0,0,0,0.4);
-  -moz-border-radius: 10px 10px 0 0;
+  min-width: 18px;
+  min-height: 20px;
+  background: #e99727 url("/themes/emr/images/left_arrow_16x16.png") no-repeat 6px center;
+  -moz-border-radius: 8px 0 0 8px;
+  -moz-box-shadow: -3px 2px 4px rgba(0,0,0,0.4);/*, inset -3px 0px 5px rgba(0,0,0,0.4);*/
+  cursor: pointer;
 }
 
-/*.hidden_contextual_menu,*/
-/*.shown_contextual_menu {*/
-/*	text-align: right;*/
-/*	white-space: nowrap;*/
-/*	text-indent: 0px;*/
-/*	font-size: 0.8em;*/
-/*}*/
+#status_text_contextual_menu {
+  position: relative;
+  display: none;
+  color: black;
+  font-size: 15px;
+}
 
-/*.hidden_contextual_menu #status_background_contextual_menu,*/
-/*.shown_contextual_menu #status_background_contextual_menu {*/
-/*	background:url("/themes/emr/images/background_hidden-shown_contextual_menu.png") no-repeat top left;*/
-/*	height: 29px;*/
-/*	width: 20px;*/
-/*	line-height: 26px !important;*/
-/*	position:relative;*/
-/*	right:0px*/
-/*	color: #6481AE;*/
-/*	max-width: 800px;*/
-/*	padding-left: 6px;*/
-/*	overflow: hidden;*/
-/*	float: right;*/
-/*}*/
-
-/*.hidden_contextual_menu #status_background_contextual_menu:hover,*/
-/*.shown_contextual_menu #status_background_contextual_menu:hover {*/
-/*	width: auto;*/
-/*	cursor: pointer;*/
-/*}*/
-
-
-/*.shown_contextual_menu span,*/
-/*.hidden_contextual_menu span {*/
-/*  padding: 3px 2px 1px 22px;*/
-/*}*/
-
-/*/*.hidden_contextual_menu span {*/*/
-/*/*	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat bottom left;*/*/
-/*/*}*/*/
-
-/*/*.shown_contextual_menu span {*/*/
-/*/*	background:url("/themes/emr/images/arrow_status_contextual_menu.jpg") no-repeat top left;*/*/
-/*/*}*/*/
+#contextual_menu_toggle_button:hover #status_text_contextual_menu {
+  display:inline;
+  margin-left: 23px;
+}
 
 #contextual_menu_content {
 }

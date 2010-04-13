@@ -31,7 +31,7 @@ collection_length ||= 1
   <% fields_for "quote[quote_item_attributes][]", quote_item do |form| %>
   
   <%
-    position        = quote_item.position || counter
+    position        = quote_item.position.zero? ? counter : quote_item.position
     move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
     move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
   %>

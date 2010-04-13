@@ -165,11 +165,6 @@ namespace :osirails do
       role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
       
       user_admin.roles << role_admin
-
-      # default activity sectors
-      ActivitySector.create! :name => "Grande distribution"
-      ActivitySector.create! :name => "Hôtellerie"
-      ActivitySector.create! :name => "Téléphonie"
       
       # default third types
       private_third_type  = ThirdType.create! :name => "Privé"
@@ -193,17 +188,37 @@ namespace :osirails do
       LegalForm.create! :name => "Etat",                          :third_type_id => public_third_type.id
       LegalForm.create! :name => "Collectivité territoriale",     :third_type_id => public_third_type.id
       
-      # default payment methods
-      PaymentMethod.create! :name => "Virement"
-      PaymentMethod.create! :name => "Chèque"
-      PaymentMethod.create! :name => "Espèce"
-      PaymentMethod.create! :name => "Lettre de change"
-      PaymentMethod.create! :name => "Billet à ordre"
+      # default payment method
+      ptl1 = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
+      ptl2 = PaymentTimeLimit.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
+      ptl3 = PaymentTimeLimit.create! :name => "30 jours + sans facilité de paiement éventuelle"
+      ptl4 = PaymentTimeLimit.create! :name => "0 jours + facilité de paiement éventuelle"
+      ptl5 = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
+      ptl6 = PaymentTimeLimit.create! :name => "Refus Client"
       
-      # default payment time limits
-      PaymentTimeLimit.create! :name => "Comptant"
-      PaymentTimeLimit.create! :name => "30 jours nets"
-      PaymentTimeLimit.create! :name => "60 jours nets"
+      # default payment time limit
+      pm1 = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
+      pm2 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
+      pm3 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
+      pm4 = PaymentMethod.create! :name => "CB/Espèces/Chèque"
+      pm5 = PaymentMethod.create! :name => "Espèces/Chèque"
+      pm6 = PaymentMethod.create! :name => "Refus du Client"
+      
+      # default customer grades
+      CustomerGrade.create! :name => "5/5", :payment_time_limit => ptl1
+      CustomerGrade.create! :name => "4/5", :payment_time_limit => ptl2
+      CustomerGrade.create! :name => "3/5", :payment_time_limit => ptl3
+      CustomerGrade.create! :name => "2/5", :payment_time_limit => ptl4
+      CustomerGrade.create! :name => "1/5", :payment_time_limit => ptl5
+      CustomerGrade.create! :name => "0/5", :payment_time_limit => ptl6
+      
+      # default customer solvencies
+      CustomerSolvency.create! :name => "100%", :payment_method => pm1
+      CustomerSolvency.create! :name => "80%",  :payment_method => pm2
+      CustomerSolvency.create! :name => "60%",  :payment_method => pm3
+      CustomerSolvency.create! :name => "40%",  :payment_method => pm4
+      CustomerSolvency.create! :name => "20%",  :payment_method => pm5
+      CustomerSolvency.create! :name => "0%",   :payment_method => pm6
       
       # default measure units
       UnitMeasure.create! :name => "Millimètre",          :symbol => "mm"
@@ -224,7 +239,7 @@ namespace :osirails do
       UnitMeasure.create! :name => "Litre",               :symbol => "l"
       
       # default establishment types
-      EstablishmentType.create! :name => "Siège social"
+      EstablishmentType.create! :name => "Siège administratif"
       EstablishmentType.create! :name => "Entrepôt"
       EstablishmentType.create! :name => "Magasin/Boutique"
       EstablishmentType.create! :name => "Station service"

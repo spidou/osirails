@@ -93,7 +93,7 @@ class QuoteItem < ActiveRecord::Base
     free_item? ? name : product.designation
   end
   
-  def position
+  def position # used for sorted_quote_items
     super || 0
   end
   

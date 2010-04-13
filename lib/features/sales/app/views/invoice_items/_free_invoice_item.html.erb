@@ -2,9 +2,9 @@
 # this partial should not be called directly, you may call _invoice_item.html.erb with the appropriate instance of invoice_item
 require_locals form, counter, collection_length
 
-invoice_item = free_invoice_item
+invoice_item    = free_invoice_item
 
-position = invoice_item.position || counter
+position        = invoice_item.position.zero? ? counter : invoice_item.position
 move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
 move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
 

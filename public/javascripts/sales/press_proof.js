@@ -187,6 +187,8 @@ function move_to(to_next, link)
 {
   var element   = $(link).parentNode;
   var neighbour = $(nearly_visible(element, to_next));
+  
+  if (neighbour == null) return;
 
   var element_position   = element.down('.position').value;
   var neighbour_position = neighbour.down('.position').value;

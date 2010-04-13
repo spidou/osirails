@@ -9,14 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100211121643) do
+ActiveRecord::Schema.define(:version => 20100326095542) do
+
+  create_table "activity_sector_references", :force => true do |t|
+    t.integer "activity_sector_id",        :limit => 11
+    t.integer "custom_activity_sector_id", :limit => 11
+    t.string  "code"
+  end
+
+  add_index "activity_sector_references", ["code"], :name => "index_activity_sector_references_on_code", :unique => true
 
   create_table "activity_sectors", :force => true do |t|
-    t.string   "name"
-    t.boolean  "activated",  :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "name"
   end
+
+  add_index "activity_sectors", ["name"], :name => "index_activity_sectors_on_name", :unique => true
 
   create_table "addresses", :force => true do |t|
     t.integer  "has_address_id",   :limit => 11
@@ -212,6 +219,22 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
   create_table "countries", :force => true do |t|
     t.string "name"
     t.string "code"
+  end
+
+  create_table "custom_activity_sectors", :force => true do |t|
+    t.string "name"
+  end
+
+  add_index "custom_activity_sectors", ["name"], :name => "index_custom_activity_sectors_on_name", :unique => true
+
+  create_table "customer_grades", :force => true do |t|
+    t.string  "name"
+    t.integer "payment_time_limit_id", :limit => 11
+  end
+
+  create_table "customer_solvencies", :force => true do |t|
+    t.string  "name"
+    t.integer "payment_method_id", :limit => 11
   end
 
   create_table "delivery_interventions", :force => true do |t|
@@ -459,10 +482,15 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
   end
 
   create_table "establishments", :force => true do |t|
-    t.integer  "establishment_type_id", :limit => 11
-    t.integer  "customer_id",           :limit => 11
+    t.integer  "establishment_type_id",        :limit => 11
+    t.integer  "customer_id",                  :limit => 11
+    t.integer  "activity_sector_reference_id", :limit => 11
     t.string   "name"
-    t.boolean  "activated",                           :default => true
+    t.string   "type"
+    t.string   "siret_number"
+    t.boolean  "activated",                                  :default => true
+    t.integer  "logo_file_size",               :limit => 11
+    t.datetime "logo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -838,6 +866,7 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
   create_table "numbers", :force => true do |t|
     t.integer  "has_number_id",   :limit => 11
     t.string   "has_number_type"
+    t.string   "has_number_key"
     t.integer  "indicative_id",   :limit => 11
     t.integer  "number_type_id",  :limit => 11
     t.string   "number"
@@ -1325,18 +1354,22 @@ ActiveRecord::Schema.define(:version => 20100211121643) do
   end
 
   create_table "thirds", :force => true do |t|
-    t.integer  "legal_form_id",         :limit => 11
-    t.integer  "activity_sector_id",    :limit => 11
+    t.integer  "legal_form_id",                :limit => 11
+    t.integer  "activity_sector_reference_id", :limit => 11
+    t.integer  "creator_id",                   :limit => 11
     t.string   "type"
     t.string   "name"
     t.string   "siret_number"
-    t.string   "activities"
     t.string   "website"
-    t.integer  "note",                  :limit => 11, :default => 0
-    t.boolean  "activated",                           :default => true
-    t.integer  "payment_method_id",     :limit => 11
-    t.integer  "payment_time_limit_id", :limit => 11
-    t.integer  "factor_id",             :limit => 11
+    t.boolean  "activated",                                  :default => true
+    t.date     "company_created_at"
+    t.date     "collaboration_started_at"
+    t.integer  "factor_id",                    :limit => 11
+    t.integer  "customer_solvency_id",         :limit => 11
+    t.integer  "customer_grade_id",            :limit => 11
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
+    t.integer  "logo_file_size",               :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

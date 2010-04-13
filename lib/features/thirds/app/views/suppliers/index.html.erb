@@ -11,9 +11,9 @@
     <table>
       <thead>
         <tr>
-          <th>Nom</th> 
+          <th>Raison sociale</th>
+          <th>Forme juridique</th>
           <th>Secteurs d'activités</th>
-          <th>Note</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -21,8 +21,8 @@
         <% for supplier in @suppliers %>
           <tr>
             <td><%= supplier.name %></td>
-            <td><%= supplier.activity_sector.name unless supplier.activity_sector.nil? %></td>
-            <td><%= supplier.note %></td>
+            <td><%= supplier.legal_form.name %></td>
+            <td><%= supplier.activity_sector_reference.get_activity_sector.name if supplier.activity_sector_reference %></td>
             <td>
               <%= supplier_link(supplier, :link_text => "") %> 
               <%= edit_supplier_link(supplier, :link_text => "") %>
