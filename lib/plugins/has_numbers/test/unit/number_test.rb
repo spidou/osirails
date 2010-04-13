@@ -46,7 +46,7 @@ class NumberTest < ActiveSupport::TestCase
 #  end
   
   def test_formatted
-    assert_equal '0262 11 22 33', @good_number.formatted
+    assert_equal '262 11 22 33', @good_number.formatted
   end
   
   def test_visible

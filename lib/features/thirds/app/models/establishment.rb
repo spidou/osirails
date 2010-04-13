@@ -31,12 +31,12 @@ class Establishment  < ActiveRecord::Base
   
   cattr_reader :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:name]                = "Nom de l'enseigne :"
-  @@form_labels[:establishment_type]  = "Type d'établissement :"
-  @@form_labels[:siret_number]        = "N° Siret :"
+  @@form_labels[:name]                      = "Nom de l'enseigne :"
+  @@form_labels[:establishment_type]        = "Type d'établissement :"
+  @@form_labels[:siret_number]              = "N° Siret :"
   @@form_labels[:activity_sector_reference] = "Code NAF :"
-  @@form_labels[:phone]               =  "Téléphone fixe :"
-  @@form_labels[:fax]                 =  "Fax :"
+  @@form_labels[:phone]                     = "Tél :"
+  @@form_labels[:fax]                       = "Fax :"
   
   
   def name_and_full_address

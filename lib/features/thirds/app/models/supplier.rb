@@ -11,8 +11,6 @@ class Supplier < Third
   
   named_scope :activates, :conditions => {:activated => true}
   
-  validates_format_of :siret_number, :with => /^[0-9]{14}$/, :message => "Le numéro SIRET doit comporter 14 chiffres"
-  validates_uniqueness_of :name, :siret_number # don't put that in third.rb because validation should be only for customer (and not all thirds)
   validates_presence_of :activity_sector_reference_id
   validates_presence_of :activity_sector_reference, :if => :activity_sector_reference_id
   

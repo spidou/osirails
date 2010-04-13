@@ -1,7 +1,7 @@
 class Customer < Third
-  has_permissions     :as_business_object
-  has_documents       :graphic_charter
-  has_address         :bill_to_address
+  has_permissions :as_business_object
+  has_documents   :graphic_charter
+  has_address     :bill_to_address
   
   belongs_to :factor
   belongs_to :customer_solvency
@@ -9,25 +9,27 @@ class Customer < Third
   belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
-  has_many :establishments, :conditions => ["type IS NULL"]
+  has_many :establishments, :conditions => [ "type IS NULL" ]
   
   has_attached_file :logo, 
-                    :styles       => { :thumb => "100x100" },
-                    :path         => ":rails_root/assets/thirds/logos/:id.:style",
-                    :url          => "/customers/:id.:extension"                    # TODO maybe change that url
+                    :styles => { :thumb => "120x120" },
+                    :path   => ":rails_root/assets/thirds/logos/:id.:style",
+                    :url    => "/customers/:id.:extension"
   
-  validates_presence_of   :bill_to_address, :head_office
-  validates_uniqueness_of :name
+  validates_presence_of :bill_to_address, :head_office
   
-  # papercilp plugin validations
+  validates_presence_of :customer_grade_id, :customer_solvency_id
+  validates_presence_of :customer_grade,    :if => :customer_grade_id
+  validates_presence_of :customer_solvency, :if => :customer_solvency_id
+  
   with_options :if => :logo do |v|
-    v.validates_attachment_content_type :logo, :content_type => [ 'image/jpg', 'image/png','image/jpeg']
+    v.validates_attachment_content_type :logo, :content_type => [ 'image/jpg', 'image/png', 'image/jpeg' ]
     v.validates_attachment_size         :logo, :less_than => 3.megabytes
   end
   
-  validates_associated    :establishments, :head_office
-  validate :uniqueness_of_siret_number , :if => :head_office
+  validates_associated :establishments, :head_office
   
+  validate :uniqueness_of_siret_number , :if => :head_office
   
   after_save :save_establishments, :save_head_office
   
@@ -41,7 +43,7 @@ class Customer < Third
                    :main_model         => true
   
   @@form_labels[:factor]            = "Compagnie d'affacturage :"
-  @@form_labels[:customer_solvency] = "Solvabilité :"
+  @@form_labels[:customer_solvency] = "Degré de solvabilité :"
   @@form_labels[:customer_grade]    = "Note relation client :"
   @@form_labels[:logo]              = "Logo :"
   @@form_labels[:created_at]        = "Créé le :"
@@ -110,13 +112,13 @@ class Customer < Third
   end
   
   def uniqueness_of_siret_number
-    objects       = establishments + [head_office]
+    objects           = establishments + [head_office]
     all_siret_numbers = {}
-    objects.each {|n| all_siret_numbers.merge!(n => n.siret_number)}
+    objects.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
     
     message = ActiveRecord::Errors.default_error_messages[:taken]
     objects.each do |establishment|
-      other_siret_numbers = all_siret_numbers.reject {|obj, v| establishment == obj}
+      other_siret_numbers = all_siret_numbers.reject{ |obj, v| establishment == obj }
       establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
     end
   end

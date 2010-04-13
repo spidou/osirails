@@ -38,6 +38,19 @@ namespace :osirails do
       contact2.save!
       contact3.save!
       
+      # default activity sectors
+      ActivitySectorReference.create! :code => "10.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Industries Alimentaires"),
+                                                         :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Alimentation")
+        
+      ActivitySectorReference.create! :code => "13.10Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication de textiles"),
+                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Textile/Habillement")
+        
+      ActivitySectorReference.create! :code => "42.11Z", :activity_sector        => ActivitySector.create!(:name => "Génie civil"),
+                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Construction")
+        
+      ActivitySectorReference.create! :code => "27.40Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication d'équipements électriques"),
+                                                         :custom_activity_sector => nil
+      
       # default suppliers
       supplier1 = Supplier.create! :name => "Store Concept", :siret_number => "12345678912346", :activity_sector_reference_id => ActivitySectorReference.first.id, :legal_form_id => LegalForm.first.id
       supplier1.create_address(:street_name => "1 rue des palmiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")

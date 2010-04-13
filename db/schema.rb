@@ -12,14 +12,18 @@
 ActiveRecord::Schema.define(:version => 20100326095542) do
 
   create_table "activity_sector_references", :force => true do |t|
-    t.string  "code"
     t.integer "activity_sector_id",        :limit => 11
     t.integer "custom_activity_sector_id", :limit => 11
+    t.string  "code"
   end
+
+  add_index "activity_sector_references", ["code"], :name => "index_activity_sector_references_on_code", :unique => true
 
   create_table "activity_sectors", :force => true do |t|
     t.string "name"
   end
+
+  add_index "activity_sectors", ["name"], :name => "index_activity_sectors_on_name", :unique => true
 
   create_table "addresses", :force => true do |t|
     t.integer  "has_address_id",   :limit => 11
@@ -220,6 +224,8 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   create_table "custom_activity_sectors", :force => true do |t|
     t.string "name"
   end
+
+  add_index "custom_activity_sectors", ["name"], :name => "index_custom_activity_sectors_on_name", :unique => true
 
   create_table "customer_grades", :force => true do |t|
     t.string  "name"
@@ -1352,18 +1358,17 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.integer  "legal_form_id",                :limit => 11
     t.integer  "activity_sector_reference_id", :limit => 11
     t.integer  "creator_id",                   :limit => 11
-    t.date     "company_created_at"
-    t.date     "collaboration_start"
     t.string   "type"
     t.string   "name"
     t.string   "siret_number"
     t.string   "website"
     t.string   "logo_file_name"
     t.string   "logo_content_type"
-    t.integer  "note",                         :limit => 11, :default => 0
     t.integer  "logo_file_size",               :limit => 11
+    t.integer  "note",                         :limit => 11, :default => 0
     t.boolean  "activated",                                  :default => true
-    t.datetime "logo_updated_at"
+    t.date     "company_created_at"
+    t.date     "collaboration_started_at"
     t.integer  "factor_id",                    :limit => 11
     t.integer  "customer_solvency_id",         :limit => 11
     t.integer  "customer_grade_id",            :limit => 11

@@ -26,7 +26,6 @@ class EmployeesController < ApplicationController
   # GET /employees/new
   def new
     @employee = Employee.new
-#    @employee.numbers.build
   end
   
   # GET /employees/:id/edit

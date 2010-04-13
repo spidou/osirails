@@ -1,8 +1,8 @@
 ref1:
   code: 10.11Z
-  activity_sector: industries_alimentaires
-  custom_activity_sector: alimentation
+  activity_sector: supermarket_retail
+  custom_activity_sector: foods
 
 ref2:
   code: 27.40Z
-  activity_sector: fabrication
+  activity_sector: telephony

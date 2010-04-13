@@ -165,24 +165,6 @@ namespace :osirails do
       role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
       
       user_admin.roles << role_admin
-
-      # default activity sectors
-      ActivitySectorReference.create! :code => "10.11Z",
-        :activity_sector        => ActivitySector.create!(:name => "Industries Alimentaires"),
-        :custom_activity_sector => CustomActivitySector.create!(:name => "Alimentation")
-        
-      ActivitySectorReference.create! :code => "13.10Z",
-        :activity_sector        => ActivitySector.create!(:name => "Fabrication de textiles"),
-        :custom_activity_sector => CustomActivitySector.create!(:name => "Textile/Habillement")
-        
-      ActivitySectorReference.create! :code => "42.11Z",
-        :activity_sector        => ActivitySector.create!(:name => "Génie civil"),
-        :custom_activity_sector => CustomActivitySector.create!(:name => "Construction")
-        
-      ActivitySectorReference.create! :code => "27.40Z",
-        :activity_sector        => ActivitySector.create!(:name => "Fabrication d'équipements électriques"),
-        :custom_activity_sector => nil
-      
       
       # default third types
       private_third_type  = ThirdType.create! :name => "Privé"
@@ -207,40 +189,36 @@ namespace :osirails do
       LegalForm.create! :name => "Collectivité territoriale",     :third_type_id => public_third_type.id
       
       # default payment method
-      
-      five = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
-      four = PaymentTimeLimit.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
-      tree = PaymentTimeLimit.create! :name => "30 jours + sans facilité de paiement éventuelle"
-      two = PaymentTimeLimit.create! :name => "0 jours + facilité de paiement éventuelle"
-      one = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
-      zero = PaymentTimeLimit.create! :name => "Refus Client"
+      ptl1 = PaymentTimeLimit.create! :name => "60 jours après réception des travaux + facilité de paiement éventuelle"
+      ptl2 = PaymentTimeLimit.create! :name => "30 jours après réception des travaux + facilité de paiement éventuelle"
+      ptl3 = PaymentTimeLimit.create! :name => "30 jours + sans facilité de paiement éventuelle"
+      ptl4 = PaymentTimeLimit.create! :name => "0 jours + facilité de paiement éventuelle"
+      ptl5 = PaymentTimeLimit.create! :name => "0 jours + sans facilité de paiement"
+      ptl6 = PaymentTimeLimit.create! :name => "Refus Client"
       
       # default payment time limit
-      
-      a_method = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
-      b_method = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
-      c_method = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
-      d_method = PaymentMethod.create! :name => "CB/Espèces/Chèque"
-      e_method = PaymentMethod.create! :name => "Espèces/Chèque"
-      f_method = PaymentMethod.create! :name => "Refus du Client"
+      pm1 = PaymentMethod.create! :name => "Tout moyen de paiement accordé"
+      pm2 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement/Prélèvement"
+      pm3 = PaymentMethod.create! :name => "CB/Espèces/Chèque/Virement"
+      pm4 = PaymentMethod.create! :name => "CB/Espèces/Chèque"
+      pm5 = PaymentMethod.create! :name => "Espèces/Chèque"
+      pm6 = PaymentMethod.create! :name => "Refus du Client"
       
       # default customer grades
-      
-      CustomerGrade.create! :name => "5/5", :payment_time_limit => five
-      CustomerGrade.create! :name => "4/5", :payment_time_limit => four
-      CustomerGrade.create! :name => "3/5", :payment_time_limit => tree
-      CustomerGrade.create! :name => "2/5", :payment_time_limit => two
-      CustomerGrade.create! :name => "1/5", :payment_time_limit => one
-      CustomerGrade.create! :name => "0/5", :payment_time_limit => zero
+      CustomerGrade.create! :name => "5/5", :payment_time_limit => ptl1
+      CustomerGrade.create! :name => "4/5", :payment_time_limit => ptl2
+      CustomerGrade.create! :name => "3/5", :payment_time_limit => ptl3
+      CustomerGrade.create! :name => "2/5", :payment_time_limit => ptl4
+      CustomerGrade.create! :name => "1/5", :payment_time_limit => ptl5
+      CustomerGrade.create! :name => "0/5", :payment_time_limit => ptl6
       
       # default customer solvencies
-      
-      CustomerSolvency.create! :name => "100%", :payment_method => a_method
-      CustomerSolvency.create! :name => "80%", :payment_method => b_method
-      CustomerSolvency.create! :name => "60%", :payment_method => c_method
-      CustomerSolvency.create! :name => "40%", :payment_method => d_method
-      CustomerSolvency.create! :name => "20%", :payment_method => e_method
-      CustomerSolvency.create! :name => "0%", :payment_method => f_method
+      CustomerSolvency.create! :name => "100%", :payment_method => pm1
+      CustomerSolvency.create! :name => "80%",  :payment_method => pm2
+      CustomerSolvency.create! :name => "60%",  :payment_method => pm3
+      CustomerSolvency.create! :name => "40%",  :payment_method => pm4
+      CustomerSolvency.create! :name => "20%",  :payment_method => pm5
+      CustomerSolvency.create! :name => "0%",   :payment_method => pm6
       
       # default measure units
       UnitMeasure.create! :name => "Millimètre",          :symbol => "mm"

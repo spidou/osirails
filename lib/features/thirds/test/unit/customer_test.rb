@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class CustomerTest < ActiveSupport::TestCase
-#  fixtures :thirds
-
   should_belong_to :factor, :customer_grade, :customer_solvency
   should_have_one :head_office
   should_have_many :establishments

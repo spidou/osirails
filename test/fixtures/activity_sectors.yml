@@ -2,9 +2,3 @@ supermarket_retail:
   name: Supermarket Retail
 telephony:
   name: Telephony
-  
-industries_alimentaires:
-  name: Industries Alimentaires
-fabrication:
-  name: "Fabrication d'équipements électriques"
-  

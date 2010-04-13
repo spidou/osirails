@@ -32,7 +32,6 @@ class CustomersController < ApplicationController
   def create
     @return_uri = params[:return_uri] # permit to be redirected to order creation (or other uri) when necessary
     
-    
     @customer = Customer.new(params[:customer])
     @customer.creator = current_user
     if @customer.save
