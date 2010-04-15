@@ -16,12 +16,12 @@ module NumbersHelper
   end 
   
   # method that permit to remove with javascript a new record of number
-  def remove_number_link()
+  def remove_number_link
     link_to_function "Supprimer", "$(this).up('.number').remove()"
   end 
   
   # method that permit to remove with javascript an existing number
-  def remove_old_number_link()
+  def remove_old_number_link
     link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
   end
   
@@ -29,50 +29,18 @@ module NumbersHelper
   def display_full_phone_number(number)
     return "" unless number
     html = []
-    html << display_image( flag_path( number.indicative.country.code ), number.indicative.country.code, number.indicative.country.name )
-	  html << display_image( number_type_path( number.number_type.name ), number.number_type.name )
-	  html << strong("#{number.indicative.indicative} #{number.formatted}")
+    html << image_tag( number_type_path( number.number_type.name ),
+                       :alt   => text = number.number_type.name,
+                       :title => text ) if number.number_type
+    html << image_tag( flag_path( number.indicative.country.code ),
+                       :alt   => text = "#{number.indicative.country.name} (#{number.indicative.indicative})",
+                       :title => text )
+	  html << "#{number.formatted}"
 	  html.join("&nbsp;")
-  end
-  
-    # Method that add the title to the phone number td
-  def number_td(numbers)
-    unless visibles_numbers(numbers).empty? or visibles_numbers(numbers).first.indicative.nil?
-      number = visibles_numbers(numbers).first
-      "<td title='#{number.indicative.indicative} #{number.formatted} (#{number.indicative.country.name})'>"
-    else
-      "<td>"
-    end
   end
   
   def flag_path(country_code)
     "/images/flag/#{country_code}.gif"
-  end
-  
-  def number_type_path(type)
-    type = "cellphone" if type == "Mobile" or type == "Mobile Professionnel"
-    type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
-    type = "fax" if type == "Fax" or type== "Fax Professionnel"
-    "/images/"+type+"_16x16.png"
-  end
-  
-  
-  # Method that add the title to the phone number td
-  def number_td(numbers)
-    unless visibles_numbers(numbers).empty? or visibles_numbers(numbers).first.indicative.nil?
-      number = visibles_numbers(numbers).first
-      "<td title='#{number.indicative.indicative} #{number.formatted} (#{number.indicative.country.name})'>"
-    else
-      "<td>"
-    end
-  end
-  
-  # Method to pluralize or not the number's <h3></h3>
-  def numbers_h3(numbers)
-    quantity = (Employee.can_view?(current_user) ? visibles_numbers(numbers).size : number.size)
-    return "" if quantity == 0 
-    return "<h3>Numéro de telephone</h3>" if quantity == 1
-    return "<h3>Numéros de telephone</h3>"if quantity > 1
   end
   
   def number_type_path(type)

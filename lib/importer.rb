@@ -72,7 +72,10 @@ module Osirails
           count_created += 1 if was_new_record
         else
           count_failed += 1
-          puts "#{count_failed}. An entry has failed to be saved when trying to import this line : #{row.inspect}\nObject => #{object.class.name} : #{object.attributes.inspect}\nErrors => #{object.errors.full_messages}\n============"
+          puts "#{count_failed}. An entry has failed to be saved when trying to import this line : #{row.inspect}
+Object => #{object.class.name} : #{object.attributes.inspect}
+Errors => #{object.errors.full_messages}
+============"
         end
       end
       
@@ -124,38 +127,59 @@ module Osirails
     #
     def map_definitions(row, hash = definitions, result = {})
       hash.each do |key, value|
-        if value.is_a?(Hash) and key.to_s.ends_with?("_id")
+        begin
           
-          association_class = key.to_s.gsub(/_id$/, "").camelize.constantize
-          method = value.keys.first
-          if value.values.first.is_a?(Array)
-            args = value.values.first.collect do |v|
-              if v.is_a?(Integer)
-                row[v]
-              elsif v.is_a?(Hash)
-                map_definitions(row, v).values.first
-              else
-                v
-              end
-            end
-          else
-            args = row[value.values.first]
-          end
-          result[key] = association_class.send(method, *args).id
+          if value.is_a?(Hash) and key.to_s.ends_with?("_id")
             
-        elsif value.is_a?(Hash)
-          result[key] = map_definitions(row, value)
-        elsif value.is_a?(Array)
-          result[key] = []
-          value.each do |sub_element|
-            result[key] << map_definitions(row, sub_element)
+            association_class = key.to_s.gsub(/_id$/, "").camelize.constantize
+            method = value.keys.first
+            attribute = value.values.first
+            if attribute.is_a?(Array)
+              args = attribute.collect do |a|
+                if a.is_a?(Integer)
+                  row[a]
+                elsif a.is_a?(Hash)
+                  map_definitions(row, a).values.first
+                else
+                  a
+                end
+              end
+            elsif attribute.is_a?(Integer)
+              args = row[attribute]
+            else
+              args = attribute
+            end
+            
+            if instance = association_class.send(method, *args)
+              result[key] = instance.id
+            else
+              puts "A record has not been found here : { :#{key} => #{association_class}.#{method}('#{args.collect(&:to_s).join("', '")}') }"
+            end
+              
+          elsif value.is_a?(Hash)
+            result[key] = map_definitions(row, value)
+          elsif value.is_a?(Array)
+            result[key] = []
+            value.each do |sub_element|
+              result[key] << map_definitions(row, sub_element)
+            end
+          elsif value.is_a?(Integer)
+            result[key] = row[value]
+          else
+            result[key] = value.to_s
           end
-        elsif value.is_a?(Integer)
-          result[key] = row[value]
-        else
-          result[key] = value.to_s
+          
+        rescue Exception => e
+          raise "\n==== mapping failure informations ==== :
+row = #{row.inspect}
+key = #{key.inspect}
+value = #{value.inspect}
+error = #{e.message}
+@@ backtrace @@
+#{e.backtrace.join("\n")}
+@@ end of backtrace @@
+====\n"
         end
-        
       end
       
       return result

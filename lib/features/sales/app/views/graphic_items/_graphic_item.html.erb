@@ -28,17 +28,17 @@
   <% form_for(graphic_item, :url => { :controller => "#{graphic_item.class.name.tableize}", :action => action}, :html => { :multipart => true, :class => is_form_view? ? (graphic_item.new_record? ? "new_#{graphic_item.class.name.underscore}" : "edit_#{graphic_item.class.name.underscore}") : "skip_prevent_close" }) do |form| %>
     <%= form.error_messages(:skip_links => true) %>
 
-    <h2 class="graphic_item_informations"><%= graphic_item_headers[:graphic_item_informations] %></h2>
+    <h2 class="graphic_item_informations section_nav"><%= graphic_item_headers[:graphic_item_informations] %></h2>
     <div class="graphic_item_informations section_nav selected">
       <%= render :partial => 'graphic_items/graphic_item_infos', :object => graphic_item, :locals => { :form => form } %>
     </div>
     
-    <h2 class="graphic_item_graphic_item_versions"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></h2>
+    <h2 class="graphic_item_graphic_item_versions section_nav"><%= graphic_item_headers[:graphic_item_graphic_item_versions] %></h2>
     <div class="graphic_item_graphic_item_versions section_nav">
       <%= render :partial => 'graphic_items/graphic_item_versions', :object => graphic_item, :locals => { :form => form } %>
     </div>
     
-    <h2 class="graphic_item_additional_informations"><%= graphic_item_headers[:graphic_item_additional_informations] %></h2>
+    <h2 class="graphic_item_additional_informations section_nav"><%= graphic_item_headers[:graphic_item_additional_informations] %></h2>
     <div class="graphic_item_additional_informations section_nav">
       <%= render :partial => 'graphic_items/graphic_item_additional_infos', :object => graphic_item, :locals => { :form => form } %>
     </div>

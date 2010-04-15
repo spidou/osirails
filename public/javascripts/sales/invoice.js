@@ -1,6 +1,8 @@
 function update_deposit_amount(element) {
   total = parseFloat($('signed_quote_total_with_taxes').innerHTML)
   $('invoice_deposit_amount').value = Math.round(total * parseFloat(element.value)) / 100
+  parent = $('invoice_deposit_amount').up('p')
+  new Effect.Highlight(parent, {afterFinish: function(){ parent.setStyle({backgroundColor: ''}); }})
   
   update_deposit_amount_without_taxes($('invoice_deposit_amount'))
 }
@@ -10,6 +12,7 @@ function update_deposit_amount_without_taxes(element) {
   deposit_amount = parseFloat(element.value)
   deposit_amount_without_taxes = deposit_amount / ( 1 + ( deposit_vat / 100 ) )
   $('deposit_amount_without_taxes').update(Math.round(deposit_amount_without_taxes*100)/100)
+  new Effect.Highlight($('deposit_amount_without_taxes'), {afterFinish: function(){ $('deposit_amount_without_taxes').setStyle({backgroundColor: ''}) }})
   
   check_values_of_total_and_due_dates()
 }

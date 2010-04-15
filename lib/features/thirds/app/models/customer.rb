@@ -9,7 +9,7 @@ class Customer < Third
   belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
-  has_many :establishments, :conditions => [ "type IS NULL" ]
+  has_many :establishments, :conditions => [ "establishments.type IS NULL" ]
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },
@@ -34,7 +34,7 @@ class Customer < Third
   after_save :save_establishments, :save_head_office
   
   # for pagination : number of instances by index page
-  CUSTOMERS_PER_PAGE = 15
+  CUSTOMERS_PER_PAGE = 25
   
   named_scope :activates, :conditions => {:activated => true}
   

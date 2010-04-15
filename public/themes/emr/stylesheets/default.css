@@ -770,9 +770,9 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 #errorExplanation {
   position: relative;
 	border:solid 1px #F1BD73;
-	background:#F6E8CF;
-	margin:10px;
-	width:530px;
+	background: #F6E8CF;
+	margin: 10px;
+	width: 530px;
 }
 
 #errorExplanation ul,
@@ -1029,10 +1029,6 @@ div label.skip_presentation {
   vertical-align:top;
 }
 
-#content_page > div p span.extra {
-  vertical-align: top;
-}
-
 #content_page > div form p input[type=submit],
 #content_page > div form p input[type=reset] {
   margin-right: 10px;
@@ -1184,22 +1180,25 @@ div label.skip_presentation {
   text-align: left;
 }
 
-.presentation_in_columns > div {
+.presentation_in_columns > div:not(.errorExplanation) {
   display:inline-block;
   max-width:800px;
   min-width:100px;
   vertical-align: top;
 }
 
-.presentation_in_columns.large > div label {
+.presentation_in_columns.large > div label,
+.presentation_in_columns > div.large label {
 	width:350px !important;
 }
 
-.presentation_in_columns.medium > div label {
+.presentation_in_columns.medium > div label,
+.presentation_in_columns > div.medium label {
 	width:200px !important;
 }
 
-.presentation_in_columns.small > div label {
+.presentation_in_columns.small > div label,
+.presentation_in_columns > div.small label {
 	width:100px !important;
 }
 

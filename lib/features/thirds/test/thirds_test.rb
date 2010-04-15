@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/unit/siret_number_test'
+
 class Test::Unit::TestCase
   
   def get_customer(factorised = true)

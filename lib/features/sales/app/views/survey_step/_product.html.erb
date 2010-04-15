@@ -30,7 +30,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
     <% end %>
   </p>
   
-  <h3 class="product_details"><%= product_headers[:product_details] %></h3>
+  <h2 class="product_details section_nav"><%= product_headers[:product_details] %></h3>
   <div class="product_details section_nav<%= selected_class %>">
     <% fields_for 'survey_step[product_attributes][]', product, :index => nil do |form| %>
       <%= form.error_messages %>
@@ -67,7 +67,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
     <% end %>
   </div>
   
-  <h3 class="product_checklist"><%= product_headers[:product_checklist] %></h3>
+  <h2 class="product_checklist section_nav"><%= product_headers[:product_checklist] %></h3>
   <div class="product_checklist section_nav<%= disabled_class %>">
     <%= display_environment_checklist_for(product) unless product.new_record? %>
   </div>  

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100326095542) do
+ActiveRecord::Schema.define(:version => 20100326095518) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -20,10 +20,11 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   add_index "activity_sector_references", ["code"], :name => "index_activity_sector_references_on_code", :unique => true
 
   create_table "activity_sectors", :force => true do |t|
+    t.string "type"
     t.string "name"
   end
 
-  add_index "activity_sectors", ["name"], :name => "index_activity_sectors_on_name", :unique => true
+  add_index "activity_sectors", ["name", "type"], :name => "index_activity_sectors_on_name_and_type", :unique => true
 
   create_table "addresses", :force => true do |t|
     t.integer  "has_address_id",   :limit => 11
@@ -220,12 +221,6 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.string "name"
     t.string "code"
   end
-
-  create_table "custom_activity_sectors", :force => true do |t|
-    t.string "name"
-  end
-
-  add_index "custom_activity_sectors", ["name"], :name => "index_custom_activity_sectors_on_name", :unique => true
 
   create_table "customer_grades", :force => true do |t|
     t.string  "name"
@@ -1355,7 +1350,6 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
 
   create_table "thirds", :force => true do |t|
     t.integer  "legal_form_id",                :limit => 11
-    t.integer  "activity_sector_reference_id", :limit => 11
     t.integer  "creator_id",                   :limit => 11
     t.string   "type"
     t.string   "name"
@@ -1364,6 +1358,7 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.boolean  "activated",                                  :default => true
     t.date     "company_created_at"
     t.date     "collaboration_started_at"
+    t.integer  "activity_sector_reference_id", :limit => 11
     t.integer  "factor_id",                    :limit => 11
     t.integer  "customer_solvency_id",         :limit => 11
     t.integer  "customer_grade_id",            :limit => 11

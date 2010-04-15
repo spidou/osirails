@@ -1,41 +1,26 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
-class EstablishmentTest < Test::Unit::TestCase
-  should_belong_to :customer
-  should_belong_to :establishment_type
+class EstablishmentTest < ActiveSupport::TestCase
+  should_belong_to :customer, :establishment_type, :activity_sector_reference
   
-  should_allow_values_for :siret_number, "12345678901234", "09876543210987"
-  should_not_allow_values_for :siret_number, "azert", "azertyuiopqsdf", "1234567890123", "123456789012345", "1234567890123a", "", nil
+  should_validate_presence_of :name, :address
+  should_validate_presence_of :establishment_type, :with_foreign_key => :default
   
-  context "An empty establishment" do
-    setup do
-      @establishment = Establishment.new
-      @establishment.valid?
-    end
-    
-    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
-      should "require presence of #{attribute}" do
-        assert @establishment.errors.invalid?(attribute)
-      end
-    end
-  end
+  #TODO uncomment this line and find why we have the following error when running test : "Can't find first Establishment"
+  #should_validate_uniqueness_of :siret_number
   
-  context "A complete establishment" do
+  context "A valid establishment" do
     setup do
       @establishment = Establishment.new(:name                  => "Name",
                                          :establishment_type_id => establishment_types(:store).id,
-                                         :siret_number => "35478965321567")
+                                         :siret_number          => "35478965321567")
       @establishment.build_address(:street_name   => "Street Name",
                                    :zip_code      => "12345",
                                    :city_name     => "City",
                                    :country_name  => "Country")
-      @establishment.valid?
-    end
-    
-    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
-      should "valid presence of #{attribute}" do
-        assert !@establishment.errors.invalid?(attribute)
-      end
+      
+      flunk "@establishment should be valid" unless @establishment.valid?
     end
     
     should "be saved successfully" do
@@ -52,4 +37,14 @@ class EstablishmentTest < Test::Unit::TestCase
 #    @establishment.save!
 #    assert @establishment.reload.address, "This Establishment should have an address"
 #  end
+  
+  context "An establishment" do
+    setup do
+      @siret_number_owner = Establishment.new
+    end
+    
+    subject{ @siret_number_owner }
+    
+    include SiretNumberTest
+  end
 end

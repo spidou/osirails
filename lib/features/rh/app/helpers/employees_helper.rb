@@ -72,16 +72,6 @@ module EmployeesHelper
     return html
   end
   
-  # Method that return an array of visible numbers
-  def visibles_numbers(numbers)
-    numbers.visibles
-  end
-  
-  # method that permit the showing of img balise with otions passed as arguments  
-  def display_image(path,alt,title=alt)
-    image_tag(path, :alt => alt, :title => title)
-  end
-  
   def contextual_search_for_employee
     contextual_search("Employee", ["*", "user.*", "service.name", "jobs.name"])
   end

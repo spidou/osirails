@@ -2,32 +2,19 @@ require File.dirname(__FILE__) +  '/../../../../../test/fixtures/has_reference_m
 
 module HasReferenceTest
   
-  # this module shoul be implemented into the calling classe's test suite
+  # this module should be implemented into the calling classe's test suite
   #
+  # ==== Example
+  # into "quote_test.rb"
   #
-  # SAMPLE
-  #
-  #  context "generate a reference" do
-  #    setup do
-  #      @reference_owner       = ... 
-  #      @other_reference_owner = ...
-  #    end
-  #    
-  #    include HasReferenceTest
-  #  end
-  #
-  # ==== example
-  #
-  # for Quote into "quote_test.rb"
-  #
-  #  context "generate a reference" do
-  #    setup do
-  #      @reference_owner       = create_default_quote  # the method 'create_default_quote' return a valid instance of Quote 
-  #      @other_reference_owner = create_default_quote
-  #    end
-  #    
-  #    include HasReferenceTest
-  #  end
+  #   context "generate a reference" do
+  #     setup do
+  #       @reference_owner       = create_default_quote  # the method 'create_default_quote' return a valid instance of Quote 
+  #       @other_reference_owner = create_default_quote
+  #     end
+  #     
+  #     include HasReferenceTest
+  #   end
   #
   #  
   #  @reference_owner and @other_reference_owner should: 

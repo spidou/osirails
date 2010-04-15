@@ -32,6 +32,7 @@ class PressProofsController < ApplicationController
     
     unless @order.all_products_have_signed_press_proof?
       @press_proof.product = @order.products_without_signed_press_proof.first
+      @press_proof.internal_actor = current_user.employee
       @press_proof.creator = current_user
     else
       error_access_page(412)

@@ -447,18 +447,6 @@ table tr.delivery_note td.realized_at.delivered {
   font-style: italic;
 }
 
-.product > h3 {
-  display: none;
-}
-
-.product > div {
-  display: none;
-}
-
-.product > div.selected {
-  display: block;
-}
-
 .product table thead tr {
   font-weight: bold;
   background-color: #CECECE;

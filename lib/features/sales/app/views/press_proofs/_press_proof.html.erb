@@ -41,22 +41,22 @@ action = press_proof.new_record? ? :create : :update
     </li>
   </ul>
   
-  <h2 class="press_proof_informations"><%= press_proof_headers[:press_proof_informations] %></h2>
+  <h2 class="press_proof_informations section_nav"><%= press_proof_headers[:press_proof_informations] %></h2>
   <div class="press_proof_informations section_nav selected">
     <%= render :partial => 'press_proof_infos', :object => press_proof, :locals => { :form => form, :order => @order, :products => press_proof.new_record? ? @order.products_without_signed_press_proof : nil } %>
   </div>
   
-  <h2 class="press_proof_mockups"><%= press_proof_errors[:press_proof_mockups] %></h2>
+  <h2 class="press_proof_mockups section_nav"><%= press_proof_errors[:press_proof_mockups] %></h2>
   <div class="press_proof_mockups section_nav">
     <%= render :partial => 'press_proof_mockups', :object => press_proof, :locals => { :mockups => mockups } %>
   </div>
   
-  <h2 class="press_proof_dunnings"><%= press_proof_headers[:press_proof_dunnings] %></h2>
+  <h2 class="press_proof_dunnings section_nav"><%= press_proof_headers[:press_proof_dunnings] %></h2>
   <div class="press_proof_dunnings section_nav">
   <%= render :partial => "dunnings/dunnings", :object => press_proof.dunnings %>
   </div>
   
-  <h2 class="press_proof_additional_informations"><%= press_proof_headers[:press_proof_additional_informations] %></h2>
+  <h2 class="press_proof_additional_informations section_nav"><%= press_proof_headers[:press_proof_additional_informations] %></h2>
   <div class="press_proof_additional_informations section_nav">
     <%= render :partial => 'press_proof_additional_infos', :object => press_proof, :locals => { :form => form } %>
   </div>

@@ -1,10 +1,8 @@
 class Indicative < ActiveRecord::Base
-  # Relationships
-  has_many :numbers
   belongs_to :country
-
-  # Validations
-  validates_presence_of :country_id, :indicative
+  
+  validates_presence_of :indicative, :country_id
+  validates_presence_of :country, :if => :country_id
   
   has_search_index :only_attributes => [:indicative]
 end

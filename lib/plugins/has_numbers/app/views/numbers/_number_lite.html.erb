@@ -8,7 +8,11 @@
   <%= f_form.error_messages %>
   <p>
     <%= form.label number.has_number_key %>
-    <%= f_form.form_or_view( f_form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, { :include_blank => "" }, options), :indicative, :indicative ) %>
-    <%= f_form.form_or_view( f_form.text_field(:number, { :size => 9, :maxlength => 9 }.merge(options)), :formatted) %>
+    <% if form.form_view? %>
+      <%= f_form.form_or_view( f_form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, { :include_blank => "" }, options), :indicative, :indicative ) %>
+      <%= f_form.form_or_view( f_form.text_field(:number, { :size => 9, :maxlength => 9 }.merge(options)), :formatted) %>
+    <% else %>
+      <strong><%= display_full_phone_number(number) %></strong>
+    <% end %>
   </p>
 <% end %>

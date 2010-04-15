@@ -87,6 +87,6 @@
   display: block;
 }
 
-.root_nav h2 {
+.root_nav h2.section_nav {
   display: none;
 }

@@ -1,4 +1,5 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class CustomerTest < ActiveSupport::TestCase
   should_belong_to :factor, :customer_grade, :customer_solvency

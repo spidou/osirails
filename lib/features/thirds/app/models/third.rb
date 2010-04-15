@@ -8,12 +8,7 @@ class Third < ActiveRecord::Base
                                 :allow_blank  => true,
                                 :message      => "L'adresse du site web ne respecte pas le format demandé"
   
-  validates_format_of :siret_number, :with        => /^[0-9]{14}$/,
-                                     :allow_blank => true,
-                                     :message     => "Le numéro SIRET doit comporter 14 chiffres"
-  
-  validates_uniqueness_of :name,          :scope => :type
-  validates_uniqueness_of :siret_number,  :scope => :type, :allow_blank => true
+  validates_uniqueness_of :name, :scope => :type
   
   RATINGS = { "0" => 0, "1" => 1, "2" => 2, "3" => 3, "4" => 4, "5" => 5 }
   
@@ -21,8 +16,6 @@ class Third < ActiveRecord::Base
   @@form_labels = Hash.new
   @@form_labels[:name]                      = "Raison Sociale :"
   @@form_labels[:legal_form]                = "Forme juridique :"
-  @@form_labels[:siret_number]              = "Numéro SIRET :"
-  @@form_labels[:activity_sector_reference] = "Code NAF :"
   @@form_labels[:website]                   = "Site Internet :"
   @@form_labels[:created_at]                = "Créé le :"
   @@form_labels[:creator]                   = "Créé par :"

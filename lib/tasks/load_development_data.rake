@@ -14,10 +14,10 @@ namespace :osirails do
                                                :establishment_type_id => EstablishmentType.first.id,
                                                :siret_number => "53215673547896")
       establishment1 = customer.build_establishment(:name => "Mon Etablissement",
-                                                    :establishment_type_id => EstablishmentType.all[2],
+                                                    :establishment_type_id => EstablishmentType.all[1].id,
                                                     :siret_number => "56735321547896")
       establishment2 = customer.build_establishment(:name => "Super Etablissement",
-                                                    :establishment_type_id => EstablishmentType.last.id,
+                                                    :establishment_type_id => EstablishmentType.all[2].id,
                                                     :siret_number => "35478965321567")
       head_office.build_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       establishment1.build_address(:street_name => "2 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
@@ -42,13 +42,13 @@ namespace :osirails do
       ActivitySectorReference.create! :code => "10.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Industries Alimentaires"),
                                                          :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Alimentation")
         
-      ActivitySectorReference.create! :code => "13.10Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication de textiles"),
-                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Textile/Habillement")
+      ActivitySectorReference.create! :code => "13.10Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Fabrication de textiles"),
+                                                         :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Textile/Habillement")
         
-      ActivitySectorReference.create! :code => "42.11Z", :activity_sector        => ActivitySector.create!(:name => "Génie civil"),
-                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Construction")
+      ActivitySectorReference.create! :code => "42.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Génie civil"),
+                                                         :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Construction")
         
-      ActivitySectorReference.create! :code => "27.40Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication d'équipements électriques"),
+      ActivitySectorReference.create! :code => "27.40Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Fabrication d'équipements électriques"),
                                                          :custom_activity_sector => nil
       
       # default suppliers
