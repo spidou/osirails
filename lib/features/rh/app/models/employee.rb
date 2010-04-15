@@ -32,7 +32,7 @@ class Employee < ActiveRecord::Base
   
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
-                    :path         => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :path         => ":rails_root/assets/rh/employees/:id/avatar/:style.:extension",
                     :url          => "/employees/:id.:extension",
                     :default_url  => ":current_theme_path/images/default_avatar.png"
   

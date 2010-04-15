@@ -13,7 +13,7 @@ class Customer < Third
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },
-                    :path   => ":rails_root/assets/thirds/logos/:id.:style",
+                    :path   => ":rails_root/assets/thirds/customers/:id/logo/:style.:extension",
                     :url    => "/customers/:id.:extension"
   
   validates_presence_of :bill_to_address, :head_office

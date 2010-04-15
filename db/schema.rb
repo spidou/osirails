@@ -489,8 +489,9 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.string   "type"
     t.string   "siret_number"
     t.boolean  "activated",                                  :default => true
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
     t.integer  "logo_file_size",               :limit => 11
-    t.datetime "logo_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -25,6 +25,11 @@ class Establishment  < ActiveRecord::Base
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see the /customers/1/edit
   attr_accessor :should_update
   
+  has_attached_file :logo, 
+                    :styles => { :thumb => "120x120" },
+                    :path   => ":rails_root/assets/thirds/establishments/:id/logo/:style.:extension",
+                    :url    => "/establishments/:id.:extension"
+  
   # Search Plugin
   has_search_index :only_attributes    => [ :name, :activated ],
                    :only_relationships => [ :contacts, :address ]
