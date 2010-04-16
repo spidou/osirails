@@ -27,7 +27,7 @@ module NumbersHelper
   
   # Methode to get a number without images but with all informations
   def display_full_phone_number(number)
-    return "" unless number
+    return "" unless number and number.id
     html = []
     html << image_tag( number_type_path( number.number_type.name ),
                        :alt   => text = number.number_type.name,

@@ -322,7 +322,7 @@ table tr.delivery_note td.realized_at.delivered {
 #remarks .remark {
   border: 1px solid grey;
   -moz-border-radius: 0 5px 0 5px;
-  margin: 10px 10px 7px 10px;
+  margin: 10px 0px 7px 0px;
 }
 
 #remarks .remark .remark_counter {
@@ -349,6 +349,10 @@ table tr.delivery_note td.realized_at.delivered {
   color: black;
   font-weight: normal;
   text-decoration: underline;
+}
+
+#remarks .remark .remark_body p {
+  padding: 3px 5px 3px 5px;
 }
 
 #remarks .remark .remark_body strong {

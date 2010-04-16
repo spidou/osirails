@@ -16,11 +16,13 @@ class StockOutputsController < ApplicationController
     @supplier = params[:supplier_id].nil? ? @supply.suppliers.first : Supplier.find(params[:supplier_id])
     @supplies = params[:type].nil? ? @supply[:type].constantize.was_enabled_at : @supply_type.was_enabled_at
     @suppliers = @supply.suppliers
-    @supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(@supply.id,@supplier.id)
-    @stock_flow = StockOutput.new
-    @stock_flow = StockOutput.new({:supply_id => @supply.id,
-                                   :supplier_id => @supplier.id
-                                  }) unless params[:supply_id].nil? and params[:supplier_id].nil?
+    
+    if @supply and @supplier
+      #supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(@supply.id,@supplier.id)
+      @stock_flow = StockOutput.new(:supply_id => @supply.id, :supplier_id => @supplier.id)
+    else
+      @stock_flow = StockOutput.new
+    end
   end
 
   # POST /stock_outputs
