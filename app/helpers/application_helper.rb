@@ -42,6 +42,17 @@ module ApplicationHelper
   def display_welcome_message
     "Bienvenue, " + current_user.username
   end
+      
+  def include_calendar_headers_tags(language = "en")
+    lang_file = "calendar/lang/calendar-#{language}.js"
+    lang_file = "calendar/lang/calendar-#{language[0..1]}.js" unless File.exists?(File.join(RAILS_ROOT,'public','javascripts',lang_file))
+    lang_file = "calendar/lang/calendar-en.js" unless File.exists?(File.join(RAILS_ROOT,'public','javascripts',lang_file))
+    javascript_include_tag("calendar/calendar.js") + "\n" + 
+    javascript_include_tag(lang_file) + "\n" + 
+    javascript_include_tag("calendar/calendar-setup.js") + "\n" +
+    stylesheet_link_tag_with_theme_support("dhtml_calendar.css") + "\n" + 
+    stylesheet_link_tag_with_theme_support("dhtml_calendar_style.css")
+  end
   
   def daynames_and_monthnames_retrieval
       html = "<script type=\"text/javascript\">"

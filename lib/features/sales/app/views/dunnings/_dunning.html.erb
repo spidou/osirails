@@ -16,7 +16,7 @@
   <%= form.error_messages %>
   <p>
     <%= form.label :date %>
-    <%= form.date_select :date, { :start_year => 1900, :order => [:day,:month,:year] } %>
+    <%= form.calendar_date_select :date %>
   </p>
   
   <p>

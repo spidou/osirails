@@ -82,8 +82,7 @@ class Quote < ActiveRecord::Base
   after_save    :save_quote_items, :remove_order_products
   after_update  :update_estimate_step_status
   
-  attr_protected :status, :confirmed_on, :cancelled_on, :sended_on, :send_quote_method_id,
-                 :signed_on, :order_form_type_id, :order_form
+  attr_protected :status, :confirmed_on, :cancelled_on
   
   attr_accessor :order_products_to_remove
   
@@ -229,14 +228,7 @@ class Quote < ActiveRecord::Base
   
   def send_to_customer(attributes)
     if can_be_sended?
-      if attributes[:sended_on] and attributes[:sended_on].kind_of?(Date)
-        self.sended_on = attributes[:sended_on]
-      else
-        self.sended_on = Date.civil( attributes["sended_on(1i)"].to_i,
-                                     attributes["sended_on(2i)"].to_i,
-                                     attributes["sended_on(3i)"].to_i ) rescue nil # return nil if the date is invalid
-      end
-      self.send_quote_method_id = attributes[:send_quote_method_id]
+      self.attributes = attributes
       self.status = STATUS_SENDED
       self.save
     else
@@ -246,16 +238,7 @@ class Quote < ActiveRecord::Base
   
   def sign(attributes)
     if can_be_signed?
-      self.attributes = attributes #FIXME this line is really used ? see how it works in invoice.rb
-      if attributes[:signed_on] and attributes[:signed_on].kind_of?(Date)
-        self.signed_on = attributes[:signed_on]
-      else
-        self.signed_on = Date.civil( attributes["signed_on(1i)"].to_i,
-                                     attributes["signed_on(2i)"].to_i,
-                                     attributes["signed_on(3i)"].to_i ) rescue nil
-      end
-      self.order_form_type_id = attributes[:order_form_type_id]
-      self.order_form = attributes[:order_form]
+      self.attributes = attributes
       self.status = STATUS_SIGNED
       self.save
     else

@@ -20,7 +20,7 @@
       <% if is_edit_view? %>
         <%= strong(@checking.date.strftime("%d %B %Y")) %>
       <% else %>
-        <%= f.form_or_view(f.date_select(:date, {:start_year => Date.today.year-1, :end_year => Date.today.year+1, :order => [:day, :month, :year]}), :date)%>
+        <%= f.form_or_view(f.calendar_date_select(:date, {:start_year => Date.today.year-1, :end_year => Date.today.year+1}), :date)%>
       <% end %>
     </p>
     

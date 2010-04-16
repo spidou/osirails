@@ -1014,6 +1014,11 @@ div label.skip_presentation {
   margin: 10px -5px -5px -5px;
 }
 
+.calendar-trigger {
+  margin-left:3px;
+  vertical-align:middle;
+}
+
 /* #content_page > div .resource {
   border: 1px solid red;
 }

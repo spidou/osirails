@@ -10,23 +10,14 @@ function check_type(select)
     // opt.value = 2 mean the Status is 'scrapped'
     if (selected == '1' && option.value == '2'){
       option.disabled = true;
-      disable_date_select('tool_event_end_date', false);
+      $('tool_event_end_date').disabled = false;
       $('alarms_for_intervention').show();
     }
     else{
       option.disabled = false;
-      disable_date_select('tool_event_end_date', true);
+      $('tool_event_end_date').disabled = true;
       $('alarms_for_intervention').hide();
     }
-  }
-}
-
-function disable_date_select(id, disabled)
-{
-  var date = new Array($(id +'_1i'), $(id +'_2i'), $(id +'_3i'));
-
-  for (var i = 0; i < date.length; i++){
-    date[i].disabled = disabled;
   }
 }
 

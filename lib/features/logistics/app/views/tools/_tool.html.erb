@@ -33,7 +33,7 @@
     
     <p>
       <%= f.label :purchase_date %>
-      <%= f.form_or_view f.date_select(:purchase_date, {:order => [:day, :month, :year]}), :purchase_date %>
+      <%= f.form_or_view f.calendar_date_select(:purchase_date), :purchase_date %>
     </p>
     
     <p>

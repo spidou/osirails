@@ -64,12 +64,12 @@
     
     <p>
       <%= f.label :start_date %>
-      <%= f.form_or_view f.date_select(:start_date, {:order => [:day, :month, :year]}), :start_date %>
+      <%= f.form_or_view f.calendar_date_select(:start_date), :start_date %>
     </p>
     
     <p>
       <%= f.label :end_date %>
-      <%= f.form_or_view f.date_select(:end_date, {:order => [:day, :month, :year]}), :end_date %>
+      <%= f.form_or_view f.calendar_date_select(:end_date), :end_date %>
     </p>
     
     <p>

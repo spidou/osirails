@@ -10,7 +10,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
     <p>
       <%= form.label :start_date %>
       <%# form.datetime_select :start_date, :default => Time.now.beginning_of_hour, :datetime_separator => "à", :index => nil %>
-      <%= form.text_field :start_date, :value => intervention.start_date ? intervention.start_date.to_time.to_s(:db) : nil, :index => nil %>
+      <%= form.calendar_datetime_select(:start_date, {:default => intervention.start_date ? intervention.start_date.to_datetime.to_s(:db) : nil, :index => intervention.id}, {:index => nil}) %>
     </p>
     <p>
       <%= form.label :duration_hours %>
