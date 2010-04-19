@@ -754,9 +754,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def cancel(cancel_attributes)
+  def cancel(attributes)
     if can_be_cancelled?
-      self.attributes   = cancel_attributes
+      self.attributes   = attributes
       self.cancelled_at = Time.now
       self.status       = STATUS_CANCELLED
       self.save
@@ -765,9 +765,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def send_to_customer(send_attributes)
+  def send_to_customer(attributes)
     if can_be_sended?
-      self.attributes = send_attributes
+      self.attributes = attributes
       self.status     = STATUS_SENDED
       self.save
     else
@@ -775,9 +775,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def abandon(abandon_attributes)
+  def abandon(attributes)
     if can_be_abandoned?
-      self.attributes   = abandon_attributes
+      self.attributes   = attributes
       self.abandoned_on = Date.today
       self.status       = STATUS_ABANDONED
       self.save
@@ -786,9 +786,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def factoring_pay(factoring_pay_attributes)
+  def factoring_pay(attributes)
     if can_be_factoring_paid?
-      self.due_date_to_pay  = factoring_pay_attributes[:due_date_to_pay]
+      self.due_date_to_pay  = attributes[:due_date_to_pay]
       self.status           = STATUS_FACTORING_PAID
       self.save
     else
@@ -796,9 +796,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def factoring_recover(factoring_recover_attributes)
+  def factoring_recover(attributes)
     if can_be_factoring_recovered?
-      self.attributes = factoring_recover_attributes
+      self.attributes = attributes
       self.status     = STATUS_FACTORING_RECOVERED
       self.save
     else
@@ -806,9 +806,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def factoring_balance_pay(factoring_balance_pay_attributes)
+  def factoring_balance_pay(attributes)
     if can_be_factoring_balance_paid?
-      self.attributes = factoring_balance_pay_attributes
+      self.attributes = attributes
       self.status     = STATUS_FACTORING_BALANCE_PAID
       self.save
     else
@@ -816,9 +816,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def due_date_pay(due_date_attributes)
+  def due_date_pay(attributes)
     if can_be_due_date_paid?
-      self.due_date_to_pay  = due_date_attributes[:due_date_to_pay]
+      self.due_date_to_pay  = attributes[:due_date_to_pay]
       self.status           = STATUS_DUE_DATE_PAID
       self.save
     else
@@ -826,9 +826,9 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def totally_pay(totally_pay_attributes)
+  def totally_pay(attributes)
     if can_be_totally_paid?
-      self.due_date_to_pay  = totally_pay_attributes[:due_date_to_pay]
+      self.due_date_to_pay  = attributes[:due_date_to_pay]
       self.status           = STATUS_TOTALLY_PAID
       self.save
     else

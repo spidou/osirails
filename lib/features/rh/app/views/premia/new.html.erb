@@ -20,7 +20,7 @@
       <%= f.label :amount %>
       <%= f.text_field :amount, { :size => 10, :maxlength => 10 } %>
       &nbsp;le&nbsp;
-      <%= f.form_or_view(f.date_select( :date,{ :start_year => 2000, :order => [:day,:month,:year] } ) ) %>
+      <%= f.form_or_view(f.calendar_date_select( :date,:start_year => 2000  ) ) %>
     </p>
     <p>
       <%= f.label :remark %>

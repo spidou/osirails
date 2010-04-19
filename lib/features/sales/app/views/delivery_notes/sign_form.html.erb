@@ -11,7 +11,7 @@
     <%= form.error_messages %>
     <p>
       <%= form.label :signed_on %>
-      <%= form.date_select :signed_on, :order => [ :day, :month, :year ] %>
+      <%= form.calendar_date_select :signed_on %>
     </p>
     <p>
       <%= form.label :attachment %>

@@ -20,7 +20,7 @@ form.force_show_view = delivery_intervention.realized?
 </p>
 <p>
   <%= form.label :scheduled_delivery_at %>
-  <%= form.form_or_view(form.datetime_select(:scheduled_delivery_at, { :order => [ :day, :month, :year ], :minute_step => 5, :include_blank => true }), :scheduled_delivery_at, :humanize) %>
+  <%= form.form_or_view(form.calendar_datetime_select(:scheduled_delivery_at), :scheduled_delivery_at, :humanize) %>
 </p>
 <p>
   <%= form.label :scheduled_intervention_hours %>

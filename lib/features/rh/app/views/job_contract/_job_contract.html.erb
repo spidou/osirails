@@ -9,11 +9,11 @@
   </p>
   <p>
     <%= form.label :start_date %>
-    <%= form.form_or_view(form.date_select( :start_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => is_gone?(job_contract)), :start_date) %>
+    <%= form.form_or_view(form.calendar_date_select( :start_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :disabled => is_gone?(job_contract)), :start_date) %>
   </p>
   <p>
     <%= form.label :end_date %>
-    <%= form.form_or_view(form.date_select( :end_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :order => [:day,:month,:year], :disabled => (job_contract.end_date.nil? or is_gone?(job_contract) or job_contract.job_contract_type.limited==false)), :end_date) %> 
+    <%= form.form_or_view(form.calendar_date_select( :end_date, :start_year => 1950, :end_year => (Date.today + 10.year).year, :disabled => (job_contract.end_date.nil? or is_gone?(job_contract) or job_contract.job_contract_type.limited==false)), :end_date) %> 
   </p>
   <p>
     <%= form.label :employee_state_id %>
@@ -37,7 +37,7 @@
     </p>
     <p>
       <%= label :departure, "Date de d&eacute;part"%>
-      <%= form.date_select :departure,{ :start_year => 1950, :order => [:day,:month,:year], :disabled => !is_gone?(job_contract)}%>
+      <%= form.calendar_date_select :departure,{ :start_year => 1950, :disabled => !is_gone?(job_contract)}%>
     </p>
   </div>
 
