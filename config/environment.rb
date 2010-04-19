@@ -5,7 +5,8 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
+# -- commented line since Rails freeze
+# RAILS_GEM_VERSION = '2.1.0' unless defined? RAILS_GEM_VERSION
 
 # Specifies if the application is launch from a rake task or not (set at TRUE in Rakefile)
 RAKE_TASK = false unless defined? RAKE_TASK
