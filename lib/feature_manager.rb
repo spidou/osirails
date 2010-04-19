@@ -147,9 +147,9 @@ class FeatureManager
       %w{ models controllers helpers }.each do |dir|
         dir_path = File.join(@path, 'app', dir)
         $LOAD_PATH << dir_path
-        Dependencies.load_paths << dir_path
+        ActiveSupport::Dependencies.load_paths << dir_path
         @config.controller_paths << dir_path
-        Dependencies.load_once_paths.delete(dir_path) # in development mode, this permits to avoid restart the server after any modifications on these paths (to confirm)
+        ActiveSupport::Dependencies.load_once_paths.delete(dir_path) # in development mode, this permits to avoid restart the server after any modifications on these paths (to confirm)
       end
 
       # load views
