@@ -95,7 +95,7 @@ class DeliveryNotesController < ApplicationController
   def schedule_form
     if @delivery_note.can_be_scheduled?
       @delivery_intervention = @delivery_note.pending_delivery_intervention || @delivery_note.delivery_interventions.build
-      @delivery_intervention.scheduled_delivery_at ||= Time.now.beginning_of_hour.to_s(:db) unless @delivery_intervention.outdated?
+      @delivery_intervention.scheduled_delivery_at ||= Time.now.beginning_of_hour unless @delivery_intervention.outdated?
     else
       error_access_page(412)
     end
@@ -129,7 +129,7 @@ class DeliveryNotesController < ApplicationController
     
     @delivery_intervention.delivered = true
     
-    @delivery_intervention.delivery_at                    = @delivery_intervention.scheduled_delivery_at.strftime("%Y-%m-%d %H:%M:%S")
+    @delivery_intervention.delivery_at                    = @delivery_intervention.scheduled_delivery_at
     @delivery_intervention.internal_actor_id              = @delivery_intervention.scheduled_internal_actor_id
     @delivery_intervention.delivery_subcontractor_id      = @delivery_intervention.scheduled_delivery_subcontractor_id
     @delivery_intervention.installation_subcontractor_id  = @delivery_intervention.scheduled_installation_subcontractor_id

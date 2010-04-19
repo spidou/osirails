@@ -1015,8 +1015,9 @@ div label.skip_presentation {
 }
 
 .calendar-trigger {
-  margin-left:3px;
-  vertical-align:middle;
+  margin-left: 3px;
+  vertical-align: middle;
+  cursor: pointer;
 }
 
 /* #content_page > div .resource {

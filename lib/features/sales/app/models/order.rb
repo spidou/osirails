@@ -84,8 +84,8 @@ class Order < ActiveRecord::Base
   @@form_labels[:approaching]             = "Type d'approche :"
   @@form_labels[:contact]                 = "Contact commercial :"
   @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
-  @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
+  @@form_labels[:previsional_delivery]    = "Livraison prévue le :"
+  @@form_labels[:quotation_deadline]      = "Envoyer le devis avant le :"
   
   # return all delivery_notes with an active invoice
   # delivery_notes_with_invoice

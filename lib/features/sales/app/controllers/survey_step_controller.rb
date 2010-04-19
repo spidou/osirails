@@ -14,7 +14,7 @@ class SurveyStepController < ApplicationController
   end
   
   def edit
-    @step.survey_interventions.build(:start_date => DateTime.now, :internal_actor_id => ( current_user.employee ? current_user.employee.id : nil ))
+    @step.survey_interventions.build(:start_date => Time.now.beginning_of_hour, :internal_actor_id => ( current_user.employee ? current_user.employee.id : nil ))
   end
   
   def update
