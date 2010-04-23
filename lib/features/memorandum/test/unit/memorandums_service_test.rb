@@ -4,7 +4,7 @@ class MemorandumsServiceTest < ActiveSupport::TestCase
   fixtures :memorandums_services, :services, :memorandums
 
   def setup
-    @memorandums_service = memorandums_services(:normal)
+    @memorandums_service = memorandums_services(:normal_memorandums_service)
   end
 
   def test_presence_of_service_id
@@ -27,7 +27,7 @@ class MemorandumsServiceTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_memorandum
-    assert_equal @memorandums_service.memorandum, memorandums(:normal),
+    assert_equal @memorandums_service.memorandum, memorandums(:normal_memorandum),
       "This MemorandumsService should belongs to this Memorandum"
   end
 end

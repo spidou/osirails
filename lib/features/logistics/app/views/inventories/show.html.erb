@@ -17,7 +17,7 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
+<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + l(@date.strftime.to_date) %></h1>
 
 <div>
   <% unless @supplies.empty? %>

@@ -33,7 +33,7 @@
               <tr>
                 <% fields_for "permissions[]", permission do |form| %>
                   <% for method in permission.permission_methods %>
-                    <td><%= form.check_box method.name %></td>
+                    <td><%= form.check_box method.p_name %></td>
                   <% end %>
                   <% (max_size - permission.permission_methods.size).times do %>
                     <td>&nbsp;</td>

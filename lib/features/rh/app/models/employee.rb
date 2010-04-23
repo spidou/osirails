@@ -91,7 +91,7 @@ class Employee < ActiveRecord::Base
   
   # Callbacks
   before_validation_on_create :build_associated_resources
-  before_save :case_managment
+  before_save :case_management
   after_update :save_iban, :save_numbers
   
   # Method to manage that there's no more than 2 responsible jobs by service
@@ -212,13 +212,6 @@ class Employee < ActiveRecord::Base
   #
   def last_leave
     leaves.max_by(&:end_date)
-  end
-  
-  # Method to change the case of the first_name and the last_name at the employee's creation
-  #
-  def case_managment
-    self.first_name.capitalize!
-    self.last_name.upcase!
   end
   
   # Method to generate the intranet email
@@ -374,8 +367,8 @@ class Employee < ActiveRecord::Base
   
     # Method to change the case of the first_name and the last_name at the employee's creation
     def case_management
-      self.first_name = self.first_name.chars.capitalize
-      self.last_name = self.last_name.chars.upcase
+      self.first_name = self.first_name.mb_chars.capitalize
+      self.last_name = self.last_name.mb_chars.upcase
     end
     
     def save_numbers

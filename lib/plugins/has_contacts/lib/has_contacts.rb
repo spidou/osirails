@@ -47,7 +47,7 @@ module HasContacts
           raise "#{accept_from_method} should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
           
           wrong_contacts = contacts.select{ |c| !c.new_record? and !accepted_contacts_list.include?(c) }
-          errors.add(:contacts, ActiveRecord::Errors.default_error_messages[:inclusion]) unless wrong_contacts.empty?
+          errors.add(:contacts, I18n.t('activerecord.errors.messages.inclusion')) unless wrong_contacts.empty?
         end
         
         def build_contact(params = {})

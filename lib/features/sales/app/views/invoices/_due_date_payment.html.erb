@@ -14,6 +14,8 @@ due_date_status = if due_date.paid?
   else
     "EN ATTENTE DE RÈGLEMENT"
   end
+  
+due_date_payment_counter += 1
 %>
 
 <table class="due_date_header<%= ' disabled' unless can_be_paid %><%= ' odd' if due_date_payment_counter.odd? %>">

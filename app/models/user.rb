@@ -89,8 +89,8 @@ class User < ActiveRecord::Base
   
   def expired?
     return true if self.password_updated_at.nil?
-    return false if ConfigurationManager.admin_password_validity == 0
-    (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.day).to_time < Time.now
+    return false if ConfigurationManager.admin_password_validity.to_i == 0
+    (self.password_updated_at.to_date + ConfigurationManager.admin_password_validity.to_i.day).to_time < Time.now
   end
   
   def username_unicity

@@ -33,7 +33,7 @@ class Mockup < GraphicItem
   
   def validates_inclusion_of_product
     unless (order.nil? or product.nil?)
-      errors.add(:product,ActiveRecord::Errors.default_error_messages[:inclusion]) unless order.products.include?(product)
+      errors.add(:product, I18n.t('activerecord.errors.messages.inclusion')) unless order.products.include?(product)
     end
   end
 end

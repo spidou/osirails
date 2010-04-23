@@ -4,7 +4,7 @@ class PremiumTest < ActiveSupport::TestCase
   fixtures :premia, :employees
 
   def setup
-    @premium = premia(:normal)
+    @premium = premia(:normal_premium)
   end
 
   def test_belongs_to_employee

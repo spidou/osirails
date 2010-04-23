@@ -221,7 +221,7 @@ module HasPermissions
               else
                 raise "[has_permissions] I don't know what to do with that : object => #{object}:#{object.class}; user_or_role => #{user_or_role}:#{user_or_role.class}'"
               end
-              return_value ||= perm.send(action) unless perm.nil?
+              return_value ||= perm.send("#{action}?") unless perm.nil?
             end
             
             return_value

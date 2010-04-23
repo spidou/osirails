@@ -66,7 +66,7 @@ module ToolsHelper
   end
   
   def get_end_date(tool_event)
-    return tool_event.end_date.strftime('%A %d %B %Y') unless tool_event.end_date.nil?
+    return l(tool_event.end_date, :format => :long_ordinal) unless tool_event.end_date.nil?
   end
   
   def effectives_image(tool_event, currents_tools, effectives_tools)

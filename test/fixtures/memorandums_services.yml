@@ -1,4 +1,4 @@
-normal:
+normal_memorandums_service:
   service: parent
-  memorandum: normal
+  memorandum: normal_memorandum
   recursive: 0

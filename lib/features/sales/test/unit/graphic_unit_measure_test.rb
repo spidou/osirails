@@ -7,7 +7,7 @@ class GraphicUnitMeasureTest < ActiveSupport::TestCase
   
   context "A graphic unit measure" do
     setup do  
-      @gum = graphic_unit_measures(:normal)
+      @gum = graphic_unit_measures(:millimeter)
       flunk "@gum should be valid" unless @gum.valid?
     end
     

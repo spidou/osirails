@@ -98,13 +98,13 @@ module SearchIndexesHelper
   
   def format_date(result)
     if result.class == ActiveSupport::TimeWithZone
-      return result.strftime("%d %B %Y at %H:%M")
+      return result.humanize
     elsif result.class == Date
-      return result.strftime("%d %B %Y")
+      return result.humanize
     elsif result.class == DateTime
-      return result.strftime("%d %B %Y at %H:%M")
+      return result.humanize
     elsif result.class == Time
-      return result.strftime("%H:%M")
+      return l(result, :format => :time)
     else
       return result
     end

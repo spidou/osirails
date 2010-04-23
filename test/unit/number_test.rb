@@ -4,7 +4,7 @@ class NumberTest < ActiveSupport::TestCase
   fixtures :numbers
 
   def setup
-    @number = numbers(:normal)
+    @number = numbers(:normal_number)
   end
 
   def test_presence_of_number

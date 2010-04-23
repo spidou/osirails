@@ -20,7 +20,7 @@ class ExceptionDateTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_event
-    assert_equal exception_dates(:normal).event, events(:normal),
+    assert_equal exception_dates(:normal_exception_date).event, events(:two_hours_ago),
       "This ExceptionDate should belongs to this Event"
   end
 end

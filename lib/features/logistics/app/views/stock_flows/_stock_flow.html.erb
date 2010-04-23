@@ -11,6 +11,6 @@
   <%= "<td>#{number_with_precision(stock_flow.fob_unit_price.to_s,2) + ' &euro;'} </td>" %>
   <%= "<td>#{number_with_precision(stock_flow.tax_coefficient,2) + ' &#37;'} </td>" %>
 <% end %>
-<%= "<td>#{stock_flow.created_at.strftime("%d-%m-%Y")}</td>" %>
+<%= "<td>#{l(stock_flow.created_at.to_date)}</td>" %>
 </tr>
 

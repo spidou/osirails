@@ -1,10 +1,3 @@
-silence_warnings do
-  Date::MONTHNAMES = [nil] + %w( Janvier Février Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre )
-  Date::ABBR_MONTHNAMES = [nil] + %w( Jan Fév Mar Avr Mai Juin Juil Aoû Sep Oct Nov Déc )
-  Date::DAYNAMES = %w( dimanche lundi mardi mercredi jeudi vendredi samedi )
-  Date::ABBR_DAYNAMES = %w( dim lun mar mer jeu ven sam )
-end
-
 class Date
   
   def last_week
@@ -70,7 +63,7 @@ class String
   
   # Method to truncate the begining of the current string according to the param
   def rchomp(separator = nil)
-    chars.reverse.chomp(separator.chars.reverse).reverse.to_s
+    mb_chars.reverse.chomp(separator.mb_chars.reverse).reverse.to_s
   end
   
   # method to view if a word is or not is plural #FIXME we may base on inflector class method to view if a word is or not plural
@@ -123,36 +116,15 @@ class Hash
   end
 end
 
-unless RAILS_ENV == "test"
-  module ActiveRecord
-    class Errors
-      @@default_error_messages.update( {
-        :inclusion    => "n'est pas inclut dans la liste",
-        :exclusion    => "est réservé",
-        :invalid      => "est invalide",
-        :confirmation => "ne correspond pas à la confirmation",
-        :accepted     => "doit être accepté",
-        :empty        => "ne peut pas être vide",
-        :blank        => "est requis",
-        :too_long     => "est trop long (%d caractères maximum)",
-        :too_short    => "est trop court (%d caractères minimum)",
-        :wrong_length => "n'est pas de la bonne longueur (devrait être de %d caractères)",
-        :taken        => "est déjà prit",
-        :not_a_number => "n'est pas un nombre"
-      })
-    end
-  end
-end
-
 class Date
   def humanize
-    self.strftime("%d %B %Y")
+    I18n.l(self, :format => :long)
   end
 end
 
 class DateTime
   def humanize
-    self.strftime("%d %B %Y à %H:%M")
+    I18n.l(self, :format => :short)
   end
 end
 

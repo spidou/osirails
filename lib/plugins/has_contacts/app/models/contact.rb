@@ -56,8 +56,8 @@ class Contact < ActiveRecord::Base
   
   private
     def case_management
-      self.first_name = self.first_name.chars.capitalize
-      self.last_name = self.last_name.chars.upcase
+      self.first_name = self.first_name.mb_chars.capitalize
+      self.last_name = self.last_name.mb_chars.upcase
     end
   
 end

@@ -1,4 +1,4 @@
-normal:
+normal_job_contract:
   employee: powerful_user
-  employee_state: normal
+  employee_state: freelance
   job_contract_type: cdi

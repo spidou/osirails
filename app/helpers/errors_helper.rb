@@ -42,7 +42,7 @@ module ErrorsHelper
       end
       options[:object_name] ||= params.first
       unless options.include?(:message)
-        options[:message] ||= count > 1 ? 'Les champs suivants ne sont pas valides :' : "Le champ suivant n'est pas valide :"
+        options[:message] ||= I18n.t 'activerecord.errors.template.body'
       end
     
       errors_count = 0
@@ -52,7 +52,7 @@ module ErrorsHelper
           error_attribute = object.errors.map[full_message_index][0]
           error_message = object.errors.map[full_message_index][1]
           if object.attributes.map{|attribute| attribute[0]}.include?(error_attribute) or error_attribute == "base"
-            unless (error_message == ActiveRecord::Errors.default_error_messages[:invalid] and !options[:keep_invalid_attributes])
+            unless (error_message == I18n.t('activerecord.errors.messages.invalid') and !options[:keep_invalid_attributes])
               errors_count +=1
               content_tag(:li, full_message)
             end
@@ -68,7 +68,8 @@ module ErrorsHelper
         end
       end
       
-      options[:header_message] = "#{pluralize(errors_count, 'erreur est survenue', 'erreurs sont survenues')} lors de la sauvegarde" unless options.include?(:header_message)
+      header_message = errors_count > 1 ? "other" : "one"
+      options[:header_message] = I18n.t("activerecord.errors.template.header.#{header_message}", :count => errors_count) unless options.include?(:header_message)
 
       contents = ''
       contents << content_tag(options[:header_tag] || :h2, options[:header_message]) unless options[:header_message].blank?

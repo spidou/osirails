@@ -7,7 +7,7 @@ class MockupTypeTest < ActiveSupport::TestCase
   
   context "A mockup type" do
     setup do  
-      @mt = mockup_types(:normal)
+      @mt = mockup_types(:detailed_view)
       flunk "@mt should be valid" unless @mt.valid?
     end
     

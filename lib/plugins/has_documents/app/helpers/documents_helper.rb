@@ -6,7 +6,7 @@ module DocumentsHelper
     html = "<div id=\"#{options[:div_id]}\" class=\"resources\">"
     html << render_documents_list(documents_owner, {:group_by => "date", :order_by => "asc"}.merge(options))
     html << '</div>'
-    html << render_new_documents_list(documents_owner, options)
+    html << render_new_documents_list(documents_owner, options) if is_form_view?
   end
 
   def render_documents_list(documents_owner, options = {})
@@ -28,7 +28,7 @@ module DocumentsHelper
     collection = documents_owner.documents.select{ |document| document.new_record? }
     html =  "<div class=\"resource_group document_group new_records\" id=\"#{options[:new_div_id]}\" #{"style=\"display:none\"" if collection.empty?}>"
     html << "  <h1>Nouveaux documents</h1>"
-    html << render(:partial => 'documents/document', :collection => collection, :locals => {:documents_owner => documents_owner}.merge(options))
+    html << render(:partial => 'documents/document', :collection => collection, :locals => {:documents_owner => documents_owner}.merge(options)) unless collection.empty?
     html << "</div>"
   end
 

@@ -15,13 +15,13 @@ class AlarmTest < ActiveSupport::TestCase
   def test_presence_of_event
     assert @alarm.errors.invalid?(:event), "event should NOT be valid because it's nil"
     
-    @alarm.event = events(:normal)
+    @alarm.event = events(:two_hours_ago)
     @alarm.valid?
     assert !@alarm.errors.invalid?(:event), "event should be valid"
   end
 
   def test_belongs_to_event
-    assert_equal alarms(:normal).event, events(:normal),
+    assert_equal alarms(:normal_alarm).event, events(:two_hours_ago),
       "This Alarm should belongs to this Event"
   end
   
@@ -76,7 +76,7 @@ class AlarmTest < ActiveSupport::TestCase
   end
   
   def test_humanize_delay
-    alarm = alarms(:normal)
+    alarm = alarms(:normal_alarm)
     
     # do alarm_before is into secondes but the given args are intergers minutes converted into secondes
     alarm.do_alarm_before = 12*60 # 720s

@@ -21,7 +21,7 @@
       <tr>
         <td><%=h salary.gross_amount%> &euro;</td>
         <td><%=h net(salary.net_amount)%> &euro;</td>
-        <td><%=h salary.created_at.strftime("%d/%m/%Y")%></td>
+        <td><%=h l(salary.created_at.to_date)%></td>
       </tr> 
       <%end%>
   </table>  

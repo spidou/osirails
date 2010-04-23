@@ -5,7 +5,7 @@ module ActionView
   module Helpers
     module FormOptionsHelper
       def collection_select_with_indentation(object, method, collection, value_method, text_method, options = {}, html_options = {})
-        InstanceTag.new(object, method, self, nil, options.delete(:object)).to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
+        InstanceTag.new(object, method, self, options.delete(:object)).to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
       end
       
       def options_from_collection_for_select_with_indentation(collection, value_method, text_method, options, selected = nil)
@@ -100,7 +100,7 @@ module ActionView
         end
         ###### end hack
         
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_label_tag(text, options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_label_tag(text, options)
       end
       
       # Creates a strong tag
@@ -188,7 +188,7 @@ module ActionView
         options[:cols] ||= 60
         options[:class] = "#{options[:class]}#{options[:class].blank? ? '' : ' '}autoresize_text_area";
         options[:style] = "#{options[:style]}#{options[:style].blank? ? '' : ';'}overflow: hidden";
-        InstanceTag.new(object_name, method, self, nil, options.delete(:object)).to_text_area_tag(options)
+        InstanceTag.new(object_name, method, self, options.delete(:object)).to_text_area_tag(options)
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area

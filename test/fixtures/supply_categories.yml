@@ -8,7 +8,7 @@ child_commodity:
   name: Child
   type: CommodityCategory
   parent: parent_commodity
-  unit_measure_id: unit_measures(:normal)
+  unit_measure_id: unit_measures(:normal_unit_measure)
 normal_consumable:
   name: Foo
   type: ConsumableCategory
@@ -19,4 +19,4 @@ child_consumable:
   name: Child
   type: ConsumableCategory
   parent: parent_consumable
-  unit_measure_id: unit_measures(:normal)
+  unit_measure_id: unit_measures(:normal_unit_measure)

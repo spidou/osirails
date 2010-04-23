@@ -4,7 +4,7 @@ class MemorandumTest < ActiveSupport::TestCase
   fixtures :memorandums, :memorandums_services, :services, :users
 
   def setup
-    @memorandum = memorandums(:normal)
+    @memorandum = memorandums(:normal_memorandum)
   end
 
   def test_read
@@ -56,7 +56,7 @@ class MemorandumTest < ActiveSupport::TestCase
   end
 
   def test_has_many_memorandum_service
-    assert_equal @memorandum.memorandums_services, [memorandums_services(:normal)],
+    assert_equal @memorandum.memorandums_services, [memorandums_services(:normal_memorandums_service)],
       "This Memorandum should have this MemorandumsService"
   end
 

@@ -25,7 +25,7 @@ class SupplierTest < ActiveSupport::TestCase
 
   def test_save_iban
     assert_difference 'Iban.count', +1 do
-      @supplier.iban = Iban.new(ibans(:normal).attributes)
+      @supplier.iban = Iban.new(ibans(:normal_iban).attributes)
       @supplier.save
       assert_not_nil @supplier.iban, "This Supplier should have an Iban"
     end

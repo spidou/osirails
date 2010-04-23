@@ -1,6 +1,6 @@
 good_tool:
-  name: "ma caisse"
-  description: "vehicule de fonction avec kit carroserie complet"
+  name: vehicle
+  description: service vehicle
   purchase_date: <%= Date.today %>
   purchase_price: 249999.99
   serial_number: "234ABQ" 

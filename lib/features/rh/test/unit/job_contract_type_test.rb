@@ -4,7 +4,7 @@ class JobContractTypeTest < ActiveSupport::TestCase
   fixtures :job_contract_types
 
   def setup
-    @job_contract_type = job_contract_types(:cdi)
+    @job_contract_type = job_contract_types(:rolling_contract)
   end
 
   def test_presence_of_name

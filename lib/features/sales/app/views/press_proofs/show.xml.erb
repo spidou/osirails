@@ -2,7 +2,7 @@
 <Root>
   <Document>
     <Type>BON À TIRER</Type>
-    <Date><%= Date.today.strftime("%d/%m/%Y")%></Date>
+    <Date><%= l(Date.today) %></Date>
     <Reference><%= @press_proof.reference %></Reference>
     <FileName><%= @press_proof.order.title%></FileName>
     <QuoteReference><%= @press_proof.associated_quote.reference if @press_proof.associated_quote %></QuoteReference>

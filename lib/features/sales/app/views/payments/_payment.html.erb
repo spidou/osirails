@@ -1,7 +1,7 @@
 <% require_locals due_date %>
 
 <div class="payment">
-  <p class="payment_header"><%= payment.new_record? ? "Nouveau règlement" : "Règlement n° #{payment_counter}" %></p>
+  <p class="payment_header"><%= payment.new_record? ? "Nouveau règlement" : "Règlement n° #{payment_counter+1}" %></p>
   
 <% if payment.new_record? %>
   

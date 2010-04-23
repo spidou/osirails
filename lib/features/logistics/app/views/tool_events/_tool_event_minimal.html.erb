@@ -19,7 +19,7 @@
     </p>
     <p>
       <label><%= tool_event_minimal.event_type_name == 'incident' ? 'Le' : 'Du' %> :</label>
-      <%=strong tool_event_minimal.start_date.strftime("%A %d %B %Y")%>
+      <%=strong l(tool_event_minimal.start_date.to_date, :format => :long_ordinal)%>
     </p>
     <%="<p><label>Au :</label> #{strong get_end_date(tool_event_minimal)}</p>" unless tool_event_minimal.event_type_name == 'incident'%>
   </div>

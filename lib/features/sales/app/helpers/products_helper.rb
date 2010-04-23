@@ -8,7 +8,7 @@ module ProductsHelper
   def render_new_products_list(order)
     new_products = order.products.select(&:new_record?)
     html =  "<div class=\"new_records\" id=\"new_products\" #{"style=\"display:none\"" if new_products.empty?}>"
-    html << render(:partial => 'survey_step/product', :collection => new_products)
+    html << render(:partial => 'survey_step/product', :collection => new_products) unless new_products.empty?
     html << "</div>"
   end
   

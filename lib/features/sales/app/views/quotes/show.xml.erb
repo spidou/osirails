@@ -3,7 +3,7 @@
   <Document>
     <Type>Devis</Type>
     <Reference><%= @quote.reference %></Reference>
-    <Date><%= Date.today.strftime("%d %B %Y")%></Date>
+    <Date><%= l(Date.today)%></Date>
     <Currency>EUROS (€)</Currency>  
     <FileName><%= @quote.order.title%></FileName>
     <Supplier>

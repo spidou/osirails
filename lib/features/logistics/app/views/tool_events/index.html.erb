@@ -35,7 +35,7 @@
         <td><%= get_status_image(tool_event.status) %></td>
         <td><%= get_event_type_text(tool_event.event_type)%></td>
         <td>
-          <%= tool_event.start_date.strftime('%A %d %B %Y') %>
+          <%= l(tool_event.start_date.strftime.to_date, :format => :long_ordinal) %>
           <%= " - #{get_end_date(tool_event)}" unless tool_event.event_type_name == 'incident' %>
         </td>
         <td><%= get_internal_actor(tool_event) %></td>

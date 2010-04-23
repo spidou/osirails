@@ -84,7 +84,7 @@ module ContactsHelper
       new_contacts = contacts_owner.contacts.select{ |contact| contact.new_record? }
       html =  "<div class=\"resource_group contact_group new_records\" id=\"new_contacts\" #{"style=\"display:none\"" if new_contacts.empty?}>"
       html << "  <h1>Nouveaux contacts</h1>"
-      html << render(:partial => 'contacts/contact', :collection => new_contacts, :locals => { :contacts_owner => contacts_owner })
+      html << render(:partial => 'contacts/contact', :collection => new_contacts, :locals => { :contacts_owner => contacts_owner }) unless new_contacts.empty?
       html << "</div>"
     end
   

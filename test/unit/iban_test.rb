@@ -4,7 +4,7 @@ class IbanTest < ActiveSupport::TestCase
   fixtures :ibans
 
   def setup
-    @iban = ibans(:normal)
+    @iban = ibans(:normal_iban)
   end
 
   def test_read

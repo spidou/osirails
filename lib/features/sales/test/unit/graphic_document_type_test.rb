@@ -7,7 +7,7 @@ class GraphicDocumentTypeTest < ActiveSupport::TestCase
   
   context "A graphic document type" do
     setup do  
-      @gdt = graphic_document_types(:normal)
+      @gdt = graphic_document_types(:global_view)
       flunk "@gdt should be valid" unless @gdt.valid?
     end
     

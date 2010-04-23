@@ -378,7 +378,7 @@ class Order < ActiveRecord::Base
   # Create all orders_steps after create order
     def validates_order_type_validity
       if order_type and society_activity_sector
-        errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)
+        errors.add(:order_type_id, I18n.t('activerecord.errors.messages.inclusion')) unless society_activity_sector.order_types.include?(order_type)
       end
     end
     

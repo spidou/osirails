@@ -4,7 +4,7 @@ class SalaryTest < ActiveSupport::TestCase
   fixtures :salaries
 
   def setup
-    @salary = salaries(:normal)
+    @salary = salaries(:normal_salary)
   end
 
   def test_presence_of_gross_amount

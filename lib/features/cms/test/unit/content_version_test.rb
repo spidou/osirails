@@ -4,7 +4,7 @@ class ContentVersionTest < ActiveSupport::TestCase
   fixtures :contents
   
   def setup
-    @content = contents(:one)
+    @content = contents(:normal_content)
     @content_version = ContentVersion.create_from_content(@content)
   end
   

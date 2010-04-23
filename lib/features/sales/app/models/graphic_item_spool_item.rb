@@ -41,7 +41,7 @@ class GraphicItemSpoolItem < ActiveRecord::Base
   end
   
   def generate_link_path
-    self.path = "#{SPOOL_DIRECTORY}/#{user_spool_directory}/#{Time.now.strftime("%Y-%b-%d-%Hh%M")}_#{customer_name}_#{order_title}_#{graphic_item_name}(#{graphic_item_id})#{graphic_item_extension}"
+    self.path = "#{SPOOL_DIRECTORY}/#{user_spool_directory}/#{I18n.l(Time.now, :format => "%Y-%b-%d-%Hh%M")}_#{customer_name}_#{order_title}_#{graphic_item_name}(#{graphic_item_id})#{graphic_item_extension}"
   end
     
   def user_spool_directory

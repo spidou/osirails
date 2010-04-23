@@ -30,7 +30,7 @@
       
       <p>
         <label>Date pr&eacute;visionnelle de livraison :</label>
-        <strong><%= @order.previsional_delivery.humanize %></strong>
+        <strong><%= l(@order.previsional_delivery, :format => :short) %></strong>
       </p>
     </div>
   </div>

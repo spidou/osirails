@@ -398,9 +398,9 @@ class Invoice < ActiveRecord::Base
   
   def validates_presence_of_deposit_attributes
     return true unless deposit_invoice?
-    errors.add(:deposit, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit and deposit > 0
-    errors.add(:deposit_amount, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_amount and deposit_amount > 0
-    errors.add(:deposit_vat, ActiveRecord::Errors::default_error_messages[:not_a_number]) unless deposit_vat and deposit_vat > 0
+    errors.add(:deposit, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit and deposit > 0
+    errors.add(:deposit_amount, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_amount and deposit_amount > 0
+    errors.add(:deposit_vat, I18n.t('activerecord.errors.messages.not_a_number')) unless deposit_vat and deposit_vat > 0
   end
   
   def validates_invoice_type
@@ -486,9 +486,9 @@ class Invoice < ActiveRecord::Base
     for due_date in due_dates
       for payment in due_date.payments
         unless payment.payment_method_id
-          payment.errors.add(:payment_method_id, ActiveRecord::Errors::default_error_messages[:blank])
+          payment.errors.add(:payment_method_id, I18n.t('activerecord.errors.messages.blank'))
         else
-          payment.errors.add(:payment_method, ActiveRecord::Errors::default_error_messages[:blank]) unless payment.payment_method
+          payment.errors.add(:payment_method, I18n.t('activerecord.errors.messages.blank')) unless payment.payment_method
         end
       end
       

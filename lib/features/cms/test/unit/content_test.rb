@@ -4,7 +4,7 @@ class ContentTest < ActiveSupport::TestCase
   fixtures :contents, :users, :menus
 
   def setup
-    @content_one = contents(:one)
+    @content_one = contents(:normal_content)
     @content_one.update_attribute(:contributors, [users(:admin_user)])
   end
 

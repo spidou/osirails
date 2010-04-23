@@ -13,7 +13,7 @@
 		</tr>
 <% @logs.each do |log| %>
 		<tr>
-			<td><%= log.created_at.strftime("%A %d %B %Y à %H:%M:%S") %></td>
+			<td><%= l(log.created_at) %></td>
 			<td><%= log.user.employee_name %></td>
 			<td><%= log.controller.humanize %></td>
 			<td><%= log.action.humanize %></td>

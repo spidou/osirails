@@ -168,7 +168,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:scheduled_delivery_vehicles_rental, error_message) unless scheduled_delivery_vehicles_rental.blank?
       errors.add(:scheduled_deliverer_ids,            error_message) unless scheduled_deliverers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:scheduled_deliverer_ids,            error_message) if scheduled_deliverers.empty?
       errors.add(:scheduled_delivery_vehicle_ids,     error_message) if scheduled_delivery_vehicles.empty?
     end
@@ -181,7 +181,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:scheduled_installation_equipments_rental, error_message) unless scheduled_installation_equipments_rental.blank?
       errors.add(:scheduled_installer_ids,                  error_message) unless scheduled_installers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:scheduled_installer_ids,                  error_message) if scheduled_installers.empty?
       #errors.add(:scheduled_installation_equipment_ids,     error_message) if scheduled_installation_equipments.empty?
     end
@@ -198,7 +198,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:delivery_vehicles_rental, error_message) unless delivery_vehicles_rental.blank?
       errors.add(:deliverer_ids,            error_message) unless deliverers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:deliverer_ids,            error_message) if deliverers.empty?
       errors.add(:delivery_vehicle_ids,     error_message) if delivery_vehicles.empty?
     end
@@ -211,7 +211,7 @@ class DeliveryIntervention < ActiveRecord::Base
       errors.add(:installation_equipments_rental, error_message) unless installation_equipments_rental.blank?
       errors.add(:installer_ids,                  error_message) unless installers.empty?
     else
-      error_message = ActiveRecord::Errors::default_error_messages[:blank]
+      error_message = I18n.t 'activerecord.errors.messages.blank'
       errors.add(:installer_ids,                  error_message) if installers.empty?
     end
   end
