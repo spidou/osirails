@@ -140,7 +140,7 @@ class CGI::Session::CookieStore
         data, digest = cookie.split('--')
 
         # Do two checks to transparently support old double-escaped data.
-        unless digest == generate_digest(data) || digest == generate_digest(data = CGI.unescape(data))
+        unless secure_compare(digest, generate_digest(data)) || secure_compare(digest, generate_digest(data = CGI.unescape(data)))
           delete
           raise TamperedWithCookie
         end
@@ -164,4 +164,36 @@ class CGI::Session::CookieStore
     def clear_old_cookie_value
       @session.cgi.cookies[@cookie_options['name']].clear
     end
+    
+    if "foo".respond_to?(:force_encoding)
+      # constant-time comparison algorithm to prevent timing attacks
+      def secure_compare(a, b)
+        a = a.dup.force_encoding(Encoding::BINARY)
+        b = b.dup.force_encoding(Encoding::BINARY)
+    
+        if a.length == b.length
+          result = 0
+          for i in 0..(a.length - 1)
+            result |= a[i].ord ^ b[i].ord
+          end
+          result == 0
+        else
+          false
+        end
+      end
+    else
+      # For 1.8
+      def secure_compare(a, b)
+        if a.length == b.length
+          result = 0
+          for i in 0..(a.length - 1)
+            result |= a[i] ^ b[i]
+          end
+          result == 0
+        else
+          false
+        end
+      end
+    end
+
 end

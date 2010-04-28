@@ -1,4 +1,17 @@
-*2.2 (November 21st, 2008)*
+*2.2.3 (September 4th, 2009)*
+
+* Introduce ActiveSupport::Multibyte.clean to clean invalid multibyte strings.
+
+* Ruby 1.9.1p0 fix: URI.unescape can decode multibyte chars.  #2033 [MOROHASHI Kyosuke]
+
+* TimeWithZone#xmlschema accepts optional fraction_digits argument [#1725 state:resolved] [Nicholas Dainty]
+
+* TimeWithZone#- gives correct result with wrapped DateTime, and with DateTime argument [Geoff Buesing]
+
+* Multibyte: add multibyte-safe Chars#ord rather than falling back to String#ord.  #1483 [Jason Cheow]
+
+
+*2.2.2 (November 21st, 2008)*
 
 * TimeZone offset tests: use current_period, to ensure TimeZone#utc_offset is up-to-date [Geoff Buesing]
 

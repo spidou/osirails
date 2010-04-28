@@ -58,7 +58,7 @@ class DirtyTest < ActiveRecord::TestCase
     assert_equal parrot.name_change, parrot.title_change
   end
 
-  def test_nullable_integer_not_marked_as_changed_if_new_value_is_blank
+  def test_nullable_number_not_marked_as_changed_if_new_value_is_blank
     pirate = Pirate.new
 
     ["", nil].each do |value|
@@ -66,6 +66,18 @@ class DirtyTest < ActiveRecord::TestCase
       assert !pirate.parrot_id_changed?
       assert_nil pirate.parrot_id_change
     end
+  end
+
+  def test_nullable_integer_zero_to_string_zero_not_marked_as_changed
+    pirate = Pirate.new
+    pirate.parrot_id = 0
+    pirate.catchphrase = 'arrr'
+    assert pirate.save!
+
+    assert !pirate.changed?
+
+    pirate.parrot_id = '0'
+    assert !pirate.changed?
   end
 
   def test_zero_to_blank_marked_as_changed

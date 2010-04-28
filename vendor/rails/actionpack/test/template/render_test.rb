@@ -34,6 +34,10 @@ class ViewRenderTest < Test::Unit::TestCase
     assert_equal "Hello world!", @view.render(:file => template_path)
   end
 
+  def test_render_file_not_using_template_handler_extension
+    assert_equal "var greeting = 'Hallo World!';", @view.render(:file => 'test/hello_world.js')
+  end
+
   def test_render_file_with_instance_variables
     assert_deprecated do
       assert_equal "The secret is in the sauce\n", @view.render("test/render_file_with_ivar.erb")
@@ -179,6 +183,17 @@ class ViewRenderTest < Test::Unit::TestCase
   def test_render_inline_with_locals_and_compilable_custom_type
     ActionView::Template.register_template_handler :foo, CustomHandler
     assert_equal 'source: "Hello, <%= name %>!"', @view.render(:inline => "Hello, <%= name %>!", :locals => { :name => "Josh" }, :type => :foo)
+  end
+
+  class LegacyHandler < ActionView::TemplateHandler
+    def render(template, local_assigns)
+      "source: #{template.source}; locals: #{local_assigns.inspect}"
+    end
+  end
+
+  def test_render_legacy_handler_with_custom_type
+    ActionView::Template.register_template_handler :foo, LegacyHandler
+    assert_equal 'source: Hello, <%= name %>!; locals: {:name=>"Josh"}', @view.render(:inline => "Hello, <%= name %>!", :locals => { :name => "Josh" }, :type => :foo)
   end
 
   def test_render_with_layout
