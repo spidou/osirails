@@ -1,4 +1,5 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class SupplierTest < ActiveSupport::TestCase
   fixtures :thirds, :ibans
@@ -29,5 +30,15 @@ class SupplierTest < ActiveSupport::TestCase
       @supplier.save
       assert_not_nil @supplier.iban, "This Supplier should have an Iban"
     end
+  end
+  
+  context "A supplier" do
+    setup do
+      @siret_number_owner = Supplier.new
+    end
+    
+    subject{ @siret_number_owner }
+    
+    include SiretNumberTest
   end
 end

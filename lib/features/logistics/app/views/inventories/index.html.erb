@@ -12,23 +12,25 @@
 <div>
   <% if @dates.size > 0 %>  
     <table>
-      <tr>
-        <th>Date</th>
-        <th>&Eacute;tat des mati&egrave;res premi&egrave;res</th>
-        <th>&Eacute;tat des consommables</th>
-      </tr>
-      <% for date in @dates %>
+      <thead>
         <tr>
-          <td><%= date %></td>
-          <td><%= inventory_link(Commodity.new, date) %></td>
-          <td><%= inventory_link(Consumable.new, date) %></td>
+          <th>Date</th>
+          <th>&Eacute;tat des mati&egrave;res premi&egrave;res</th>
+          <th>&Eacute;tat des consommables</th>
         </tr>
-      <% end %>
+      </thead>
+      <tbody>
+        <% for date in @dates %>
+          <tr>
+            <td><%= date %></td>
+            <td><%= inventory_link(Commodity.new, date) %></td>
+            <td><%= inventory_link(Consumable.new, date) %></td>
+          </tr>
+        <% end %>
+      </tbody>
     </table>
     <%= will_paginate @dates %>
   <% else %>
     <p>Aucun inventaire n'a &eacute;t&eacute; trouv&eacute;</p>
   <% end %>  
 </div>
-
-

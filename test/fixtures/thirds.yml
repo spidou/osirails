@@ -2,19 +2,17 @@ first_customer:
   type: Customer
   name: First Customer
   siret_number: 12345678912345
-  activity_sector: telephony
+  customer_grade: five_on_five
+  customer_solvency: hundred_percent
   legal_form: local_authority
-  payment_method: bank_transfer
-  payment_time_limit: cod
   activated: true
 factorised_customer:
   type: Customer
   name: Factorised Customer
   siret_number: 23456789123456
-  activity_sector: telephony
+  customer_grade: zero_on_five
+  customer_solvency: zero_percent
   legal_form: local_authority
-  payment_method: bank_transfer
-  payment_time_limit: cod
   factor: first_factor
   activated: true
 
@@ -22,7 +20,7 @@ first_supplier:
   type: Supplier
   name: First Supplier
   siret_number: 12345678912345
-  activity_sector: supermarket_retail
+  activity_sector_reference: ref2
   legal_form: llc
   activated: true
 
@@ -30,6 +28,6 @@ first_subcontractor:
   type: Subcontractor
   name: First Subcontractor
   siret_number: 12345678912345
-  activity_sector: telephony
+  activity_sector_reference: ref1
   legal_form: llc
   activated: true

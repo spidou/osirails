@@ -33,8 +33,8 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => "User"
   belongs_to :abandoned_by, :class_name => "User"
   
-  has_many :invoice_items,  :dependent  => :destroy
-  has_many :products,       :through    => :invoice_items
+  has_many :invoice_items,  :dependent  => :destroy, :order => 'position'
+  has_many :products,       :through    => :invoice_items, :order => 'invoice_items.position'
   
   has_many :delivery_note_invoices, :dependent  => :destroy
   has_many :delivery_notes,         :through    => :delivery_note_invoices
@@ -380,7 +380,7 @@ class Invoice < ActiveRecord::Base
   
   def validates_invoice_items_according_to_invoice_type
     if asset_invoice?
-      errors.add(:invoice_items, "Une facture d'avoir doit contenir au moins une ligne (libre)") if invoice_items.empty?
+      errors.add(:invoice_items, "Une facture d'avoir doit contenir au moins une ligne (libre)") if invoice_items.reject(&:should_destroy?).empty?
     end
   end
   
@@ -549,6 +549,10 @@ class Invoice < ActiveRecord::Base
     invoice_items.reject(&:product_id)
   end
   
+  def sorted_invoice_items
+    invoice_items.sort_by(&:position)
+  end
+  
   def can_be_factorised?
     customer = order ? order.customer : nil
     return false unless customer and invoice_type
@@ -564,26 +568,36 @@ class Invoice < ActiveRecord::Base
     order ? order.signed_quote : nil
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total
-    invoice_items.collect(&:total).sum
+    invoice_items.reject(&:should_destroy?).collect(&:total).sum
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def total_with_taxes
-    invoice_items.collect(&:total_with_taxes).sum
+    invoice_items.reject(&:should_destroy?).collect(&:total_with_taxes).sum
   end
   
   alias_method :net_to_paid, :total_with_taxes
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def summon_of_taxes
     total_with_taxes - total
   end
   
-  def total_taxes_for(coefficient)
-    invoice_items.select{ |i| i.vat == coefficient }.collect(&:total).sum
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
+  def tax_coefficients
+    invoice_items.reject(&:should_destroy?).collect(&:vat).uniq
   end
   
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
+  def total_taxes_for(coefficient)
+    invoice_items.reject(&:should_destroy?).select{ |i| i.vat == coefficient }.collect(&:total).sum
+  end
+  
+  # OPTIMIZE this is a copy of an already existant method in quote.rb (invoice_items instead of quote_items collection)
   def number_of_pieces
-    invoice_items.collect(&:quantity).sum
+    invoice_items.reject(&:should_destroy?).collect(&:quantity).sum
   end
   
   def already_paid_amount
@@ -618,10 +632,8 @@ class Invoice < ActiveRecord::Base
       existing_invoice_item = invoice_items.detect{ |i| i.product_id == item.quote_item.product_id }
       
       if should_destroy
-        if existing_invoice_item
-          existing_invoice_item.quantity -= item.really_delivered_quantity
-        end
-    else
+        existing_invoice_item.quantity -= item.really_delivered_quantity if existing_invoice_item
+      else
         if existing_invoice_item
           existing_invoice_item.quantity += item.really_delivered_quantity if existing_invoice_item.new_record?
         elsif item.really_delivered_quantity > 0
@@ -672,9 +684,10 @@ class Invoice < ActiveRecord::Base
   end
   
   def invoice_item_attributes=(invoice_item_attributes)
+    
     invoice_item_attributes.each do |attributes|
       if attributes[:id].blank?
-        invoice_item = invoice_items.build(attributes)
+        invoice_item = invoice_items.build(attributes) unless attributes[:should_destroy].to_i == 1
       else
         invoice_item = invoice_items.detect { |x| x.id == attributes[:id].to_i }
         invoice_item.attributes = attributes
@@ -684,7 +697,7 @@ class Invoice < ActiveRecord::Base
   
   def save_invoice_items
     return if confirmed_at_was
-    
+
     invoice_items.each do |i|
       if i.should_destroy?
         i.destroy
@@ -988,6 +1001,10 @@ class Invoice < ActiveRecord::Base
   
   def can_be_edited?
     !new_record? and was_uncomplete?
+  end
+  
+  def can_be_downloaded? # with PDF generator
+    reference_was
   end
   
   def can_be_deleted?

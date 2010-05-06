@@ -9,18 +9,22 @@
 <h1>Les secteurs d&apos;activit&eacute;s de l&apos;entreprise</h1>
 
 <div>
-<table>
-  <tr>
-    <th>Nom</th>
-    <th colspan='2'>Action</th>
-  </tr>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th colspan='2'>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for society_activity_sector in @society_activity_sectors %>
+        <tr>
+          <td><%= society_activity_sector.name %></td>
+          <td style='width: 30px;'><%= edit_society_activity_sector_link(society_activity_sector, :link_text => "") %><%= delete_society_activity_sector_link(society_activity_sector, :link_text => "") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<% for society_activity_sector in @society_activity_sectors %>
-  <tr>
-    <td><%= society_activity_sector.name %></td>
-    <td style='width: 30px;'><%= edit_society_activity_sector_link(society_activity_sector, :link_text => "") %><%= delete_society_activity_sector_link(society_activity_sector, :link_text => "") %></td>
-  </tr>
-<% end %>
-</table>
-<%= will_paginate @society_activity_sectors %>
+  <%= will_paginate @society_activity_sectors %>
 </div>

@@ -6,17 +6,30 @@
     <%= form.label :reference %>
     <%= form.form_or_view(form.text_field(:reference), :reference) %>
   </p>
-  <p>
-    <%= form.label :name %>
-    <%= form.form_or_view(form.text_field(:name), :name) %>
-  </p>
+  
+  <% if is_form_view? %>
+    <p>
+      <%= form.label :product_reference_category_id %>
+      <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}) %>
+    </p>
+    <p>
+      <%= form.label :name %>
+      <%= form.text_field(:name) %>
+    </p>
+  <% else %>
+    <p>
+      <%= form.label :categories %>
+      <%= strong product_reference.ancestors_names.join(" - ") %>
+    </p>
+    <p>
+      <%= form.label :designation %>
+      <%= strong product_reference.designation %>
+    </p>
+  <% end %>
+  
   <p>
     <%= form.label :description %>
     <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
-  </p>
-  <p>
-    <%= form.label :product_reference_category_id %>
-    <%= form.form_or_view(form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}), :product_reference_category, :name) %>
   </p>
   <p>
     <%= form.label :vat %>

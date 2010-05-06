@@ -24,16 +24,16 @@ class Order < ActiveRecord::Base
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
   
   # press_proofs
-  has_many :press_proofs
+  has_many :press_proofs, :order => 'created_at DESC'
   # TODO add the corresponding test
   
   # delivery notes
-  has_many :delivery_notes, :order => "created_at DESC"
+  has_many :delivery_notes, :order => 'created_at DESC'
   has_many :uncomplete_delivery_notes,  :class_name => 'DeliveryNote', :conditions => [ 'status IS NULL' ], :order => "created_at DESC"
   has_many :signed_delivery_notes,      :class_name => 'DeliveryNote', :conditions => [ "status = ?", DeliveryNote::STATUS_SIGNED ], :order => "created_at DESC"
   
   # invoices
-  has_many :invoices, :order => "invoices.created_at DESC"
+  has_many :invoices, :order => 'invoices.created_at DESC'
   has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses

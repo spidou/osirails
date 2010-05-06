@@ -1,9 +1,9 @@
 <%
 require_locals mockups
 press_proof           = press_proof_mockups
-graphic_item_versions = press_proof.get_all_graphic_item_versions # permit to get also the unsaved graphic_item_versions
-selected_mockups      = press_proof.get_selected_mockups
-unselected_mockups    = press_proof.get_unselected_mockups
+graphic_item_versions = press_proof.all_graphic_item_versions.sort_by{ |v| v.position_in_press_proof(press_proof) }
+selected_mockups      = press_proof.selected_mockups
+unselected_mockups    = press_proof.unselected_mockups
 %>
 
 <% if is_form_view? %>
@@ -15,8 +15,8 @@ unselected_mockups    = press_proof.get_unselected_mockups
   
   <p>Glissez ICI les Maquettes que vous voulez ajouter au BAT</p>
   <div id="droppable_div" class="press_proof_mockups_container">
-    <%= render :partial => "selected_graphic_item_version", :collection => graphic_item_versions, :locals => { :unselected_mockups => unselected_mockups,
-                                                                                                               :press_proof => press_proof } %>
+    <%= render :partial => "selected_graphic_item_version", :collection => graphic_item_versions, :locals => { :unselected_mockups  => unselected_mockups,
+                                                                                                               :press_proof         => press_proof } %>
   </div>
   
   <script type="text/javascript">

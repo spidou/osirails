@@ -19,6 +19,8 @@ module PressProofsHelper
     html << display_press_proof_cancel_button(order, press_proof, '')
     html << display_press_proof_revoke_button(order, press_proof, '')
     html << display_press_proof_signed_button(order, press_proof, '')
+    
+    html << display_press_proof_preview_button(order, press_proof, '')
     html << display_press_proof_show_pdf_button(order, press_proof, '')
     html << display_press_proof_show_button(order, press_proof, '')
     html << display_press_proof_edit_button(order, press_proof, '')
@@ -118,14 +120,24 @@ module PressProofsHelper
              order_commercial_step_press_proof_step_press_proof_path(order, press_proof) )
   end
   
-  def display_press_proof_show_pdf_button(order, press_proof, message=nil)
-    return unless PressProof.can_view?(current_user) and !press_proof.status.nil?
+  def display_press_proof_preview_button(order, press_proof, message = nil)
+    return unless PressProof.can_view?(current_user) and !press_proof.new_record? and !press_proof.can_be_downloaded?
+      text = "Télécharger un aperçu de ce BAT (PDF)"
+      message ||= " #{text}"
+      link_to( image_tag( "preview_16x16.gif",
+                          :alt => text,
+                          :title => text ) + message,
+               order_commercial_step_press_proof_step_press_proof_path(order, press_proof, :format => :pdf) )
+  end
+  
+  def display_press_proof_show_pdf_button(order, press_proof, message = nil)
+    return unless PressProof.can_view?(current_user) and press_proof.can_be_downloaded?
       text = "Télécharger ce BAT (PDF)"
       message ||= " #{text}"
       link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
                           :alt => text,
                           :title => text ) + message,
-               order_commercial_step_press_proof_step_press_proof_path(order, press_proof, { :format => :pdf }) )
+               order_commercial_step_press_proof_step_press_proof_path(order, press_proof, :format => :pdf) )
   end
   
   def display_press_proof_destroy_button(order, press_proof, message = nil)

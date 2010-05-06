@@ -1,4 +1,5 @@
 class QuotesController < ApplicationController
+  include AdjustPdf
   helper :orders, :contacts
   # method_permission :edit => ['enable', 'disable']
   
@@ -12,17 +13,16 @@ class QuotesController < ApplicationController
   def show
     @quote = Quote.find(params[:id])
     
-    if @quote.uncomplete? and params[:format] == "pdf"
-      error_access_page(404)
-      return
-    end
-    
     respond_to do |format|
+      format.xsl {
+        render :layout => false
+      }
       format.xml {
         render :layout => false
       }
       format.pdf {
-        render_pdf("devis_#{@quote.reference}", "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/sales/quotes/generated_pdf/#{@quote.id}.pdf")
+        pdf_filename = "devis_#{@quote.can_be_downloaded? ? @quote.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
+        render_pdf(pdf_filename, "quotes/show.xml.erb", "quotes/show.xsl.erb", "assets/sales/quotes/generated_pdf/#{@quote.reference.nil? ? 'tmp' : @quote.id}.pdf", @quote.reference.nil?)
       }
       format.html { }
     end
@@ -32,7 +32,7 @@ class QuotesController < ApplicationController
   def new
     @quote = @order.quotes.build(:validity_delay      => ConfigurationManager.sales_quote_validity_delay,
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
-    
+    @quote.creator = current_user # permit additional information displaying
     if @quote.can_be_added?
       @quote.contacts << @order.contacts.last unless @order.contacts.empty?
       
@@ -92,6 +92,14 @@ class QuotesController < ApplicationController
     else
       error_access_page(412)
     end
+  end
+  
+  def preview
+    @quote = @order.quotes.build
+    @quote.attributes = params[:quote]
+    @quote.creator = current_user
+    pdf_filename = "temp_quote_#{Time.now.strftime("%d%m%y%H%M%S")}"
+    render_pdf(pdf_filename, "quotes/show.xml.erb", "public/fo/style/quote.xsl", "assets/pdf/quotes/#{pdf_filename}.pdf", true)
   end
   
   # GET /orders/:order_id/:step/quotes/:quote_id/confirm
@@ -178,35 +186,14 @@ class QuotesController < ApplicationController
       end
     end
     
-    def render_pdf(pdf_filename, template, xsl_path, pdf_path, is_temporary_pdf=false)
-      unless File.exist?(pdf_path)
-        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => template, :layout => false), xsl_path, "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")  
-        
-        total_pages = `xpath -e "count(//page)" #{area_tree_path}`.to_i
-        offset_value = `xpath -e "//block[@prod-id='footline']/@top-offset" #{area_tree_path}`.scan(/[0-9]+/).last.to_i
-
+    def render_pdf(pdf_filename, xml_template, xsl_template, pdf_path, is_temporary_pdf=false)
+      unless File.exist?(pdf_path)  
+        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => xml_template, :layout => false), render_to_string(:template => xsl_template, :layout => false), "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")
+        adjust_pdf_last_footline(area_tree_path,500000,710000) 
+        adjust_pdf_intermediate_footlines(area_tree_path,500000,710000)
+        adjust_pdf_report(area_tree_path)
+        render :pdf => pdf_filename, :xml_template => xml_template, :xsl_template => xsl_template , :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
         File.delete(area_tree_path)
-        
-        modified_xsl_path = "public/fo/tmp/modified_quote_for_#{File.basename(pdf_path,".pdf")}.xsl"
-        
-        `cp -f #{xsl_path} #{modified_xsl_path}`
-
-        if total_pages == 1
-          optimum_offset_value = 555000
-        else
-          optimum_offset_value = 715000
-        end
-        
-        if offset_value < optimum_offset_value
-          additionnal_offset_value = optimum_offset_value - offset_value
-          new_padding = (additionnal_offset_value * 0.0000325) + 0.1
-          
-          `replace 'id="first-blank-cell" padding-top="0.1cm"' 'padding-top="#{new_padding}cm"' -- #{modified_xsl_path}`
-        end
-        
-        render :pdf => pdf_filename, :template => template, :xsl => modified_xsl_path, :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
-     
-        File.delete(modified_xsl_path)
       else
         render :pdf => pdf_filename, :path => pdf_path
       end

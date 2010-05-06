@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  helper :salaries, :job_contract, :documents
+  helper :salaries, :job_contract, :documents, :numbers
   before_filter :load_collections, :only => [:new, :create, :edit, :update, :show]  
   method_permission :list => ["show"]
   
@@ -26,7 +26,6 @@ class EmployeesController < ApplicationController
   # GET /employees/new
   def new
     @employee = Employee.new
-    @employee.numbers.build
   end
   
   # GET /employees/:id/edit

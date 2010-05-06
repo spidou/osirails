@@ -5,25 +5,18 @@ products       = press_proofs_list.collect(&:product).uniq
 
 <div class="autoscroll">
   <table id="press_proofs_list">
-    <tr>
-      <th rowspan="2">Produit</th>
-      <th rowspan="2">Qté</th>
-      <th rowspan="2">Réf.</th>
-      
-      <th colspan="3">Maquettes</th>
-      
-      <th rowspan="2">Contact graphique</th>
-      <th rowspan="2">Émis&nbsp;le</th>
-      <th rowspan="2">BAT&nbsp;envoyé&nbsp;le</th>
-      <th rowspan="2">BAT&nbsp;signé&nbsp;le</th>
-      <th rowspan="2">État relance</th>
-      <th rowspan="2">Actions</th>
-    </tr>
-    <tr>
-      <th>N°</th>
-      <th>Type</th>
-      <th>Nom</th>
-    </tr>
+    <thead>
+      <tr>
+        <th>Réf.</th>
+        <th>Émis&nbsp;le</th>
+        <th>Contact graphique</th>
+        <th>Maquettes</th>
+        <th>BAT&nbsp;envoyé&nbsp;le</th>
+        <th>BAT&nbsp;signé&nbsp;le</th>
+        <th>État</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
     <%= render :partial => "press_proofs/product_in_one_line", :collection => products, :locals => { :press_proofs => press_proofs } %>
   </table>
 </div>

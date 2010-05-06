@@ -101,7 +101,7 @@ form .resource p input[type=checkbox],
 form .resource p textarea,
 form .resource p select {
   vertical-align:top;
-  width: 220px;
+  //width: 220px;
 }
 
 .resource #errorExplanation {

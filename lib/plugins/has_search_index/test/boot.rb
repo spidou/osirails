@@ -1,5 +1,7 @@
+require File.dirname(__FILE__) + '/../../../../vendor/rails/railties/lib/rails/version.rb'
+
 plugin_root = File.join(File.dirname(__FILE__), '..')
-version = ENV['RAILS_VERSION'] || "2.1.0"
+version = ENV['RAILS_VERSION'] || Rails::VERSION::STRING
 version = nil if version and version == ""
 
 # first look for a symlink to a copy of the framework

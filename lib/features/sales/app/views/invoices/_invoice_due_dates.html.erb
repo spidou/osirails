@@ -10,7 +10,9 @@ select_disabled = ( invoice.factorised? && invoice.due_dates.size == 1 ) ? true 
 notification_hidden = invoice.total_of_due_dates_equal_to_net_to_paid? ? 'display:none' : ''
 %>
 
-<p id="due_date_amounts_notification" class="notification" style="<%= notification_hidden %>">Des modifications ont été apportées sur le montant total de la facture ou sur les montants des échéances.<br/><%= link_to_function "Cliquez-ici pour actualiser le montant de votre solde", 'javascript:refresh_due_dates()' %></p>
+<div id="due_date_amounts_notification" class="notification" style="<%= notification_hidden %>">
+  <p>Des modifications ont été apportées sur le montant total de la facture ou sur les montants des échéances. <%= link_to_function "Cliquez-ici pour actualiser le montant de votre solde", 'javascript:refresh_due_dates()' %></p>
+</div>
 
 <% if is_form_view? %>
 <p>

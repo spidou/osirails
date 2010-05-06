@@ -1,4 +1,5 @@
 class DeliveryNotesController < ApplicationController
+  include AdjustPdf
   helper :orders, :contacts, :delivery_interventions
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
@@ -10,17 +11,16 @@ class DeliveryNotesController < ApplicationController
   # GET /orders/:order_id/:step/delivery_notes/:id
   # GET /orders/:order_id/:step/delivery_notes/:id.pdf
   def show
-    #respond_to do |format|
-    #  format.pdf {
-    #    pdf = render_pdf
-    #    if pdf
-    #      send_data pdf, :filename => "bon_livraison_#{@delivery_note.id}.pdf", :disposition => 'attachment'
-    #    else
-    #      error_access_page(500)
-    #    end
-    #  }
-    #  format.html { }
-    #end
+    respond_to do |format|
+      format.xml {
+        render :layout => false
+      }
+      format.pdf {
+        pdf_filename = "bon_livraison_#{@delivery_note.can_be_downloaded? ? @delivery_note.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
+        render_pdf(pdf_filename, "delivery_notes/show.xml.erb", "delivery_notes/show.xsl.erb", "assets/sales/delivery_notes/generated_pdf/#{@delivery_note.reference.nil? ? 'tmp' : @delivery_note.id}.pdf", @delivery_note.reference.nil?)
+      }
+      format.html { }
+    end
   end
   
   # GET /orders/:order_id/:step/delivery_notes/new
@@ -217,5 +217,16 @@ class DeliveryNotesController < ApplicationController
         error_access_page(404) unless @order and @order.delivery_notes.include?(@delivery_note)
       end
     end
-  
+    
+    def render_pdf(pdf_filename, xml_template, xsl_template, pdf_path, is_temporary_pdf=false)
+      unless File.exist?(pdf_path)  
+        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => xml_template, :layout => false), render_to_string(:template => xsl_template, :layout => false), "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")
+        adjust_pdf_last_footline(area_tree_path,560000,700000) 
+        adjust_pdf_intermediate_footlines(area_tree_path,560000,700000)
+        render :pdf => pdf_filename, :xml_template => xml_template, :xsl_template => xsl_template , :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
+        File.delete(area_tree_path)
+      else
+        render :pdf => pdf_filename, :path => pdf_path
+      end
+    end 
 end

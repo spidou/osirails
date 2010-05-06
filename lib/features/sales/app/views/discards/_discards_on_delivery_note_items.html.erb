@@ -7,14 +7,18 @@ delivery_note_items = discards_on_delivery_note_items
 <% if delivery_note_items and !delivery_note_items.length.zero? %>
   <div class="autoscroll">
     <table class="sales_table">
-      <tr>
-        <th>Réf.</th>
-        <th>Désignation</th>
-        <th>Qté à livrer</th>
-        <th>Qté concernée <br/>par la réserve</th>
-        <th>Réserves / Remarques / Avancement</th>
-      </tr>
-      <%= render :partial => 'discards/discard_on_delivery_note_item_in_one_line', :collection => delivery_note_items, :locals => { :delivery_intervention => delivery_intervention } %>
+      <thead>
+        <tr>
+          <th>Réf.</th>
+          <th>Désignation</th>
+          <th>Qté à livrer</th>
+          <th>Qté concernée <br/>par la réserve</th>
+          <th>Réserves / Remarques / Avancement</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render :partial => 'discards/discard_on_delivery_note_item_in_one_line', :collection => delivery_note_items, :locals => { :delivery_intervention => delivery_intervention } %>
+      </tbody>
     </table>
   </div>
 <% else %>

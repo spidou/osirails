@@ -803,21 +803,21 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     should "return the unsaved_graphic_item_versions" do
-      assert_equal [@graphic_item_version], @press_proof.get_unsaved_graphic_item_versions
+      assert_equal [@graphic_item_version], @press_proof.unsaved_graphic_item_versions
     end
     
     should "return all_graphic_item_versions" do
       expected_array = ([@graphic_item_version] + @press_proof.graphic_item_versions).collect(&:id).sort
-      assert_equal expected_array, @press_proof.get_all_graphic_item_versions.collect(&:id).sort                    # sort because we don't test the order but the content
+      assert_equal expected_array, @press_proof.all_graphic_item_versions.collect(&:id).sort                    # sort because we don't test the order but the content
     end
     
     should "return the selected_mockups" do
       expected_array = [@graphic_item_version, @saved_graphic_item_version].collect {|n| n.graphic_item.id }.sort
-      assert_equal expected_array, @press_proof.get_selected_mockups.sort
+      assert_equal expected_array, @press_proof.selected_mockups.sort
     end
     
     should "return the unselected_mockups" do
-      assert_equal [@press_proof.graphic_item_versions.first.graphic_item.id], @press_proof.get_unselected_mockups
+      assert_equal [@press_proof.graphic_item_versions.first.graphic_item.id], @press_proof.unselected_mockups
     end
     
   end

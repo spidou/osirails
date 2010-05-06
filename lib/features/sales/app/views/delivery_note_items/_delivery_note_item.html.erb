@@ -1,24 +1,14 @@
 <%
-quote_item = delivery_note_item.quote_item
+quote_item       = delivery_note_item.quote_item
 empty_line_class = delivery_note_item.quantity > 0 ? '' : ' empty_line'
 %>
 
 <% fields_for "delivery_note[delivery_note_item_attributes][]", delivery_note_item do |form| %>
   <tr class="delivery_note_item<%= empty_line_class %>">
-    <td class="reference">
-      <%= quote_item.product.product_reference.reference %>
-    </td>
-    <td class="description">
-      <%= strong(h(quote_item.name)) %>
-      <br/>
-      <%= h(quote_item.description) %>
-    </td>
-    <td class="quantity">
-      <%= quote_item.quantity %>
-    </td>
-    <td>
-      <%= delivery_note_item.already_delivered_or_scheduled_quantity %>
-    </td>
+    <td class="reference"><%= quote_item.product.product_reference.reference %></td>
+    <td class="designation"><span class="name"><%= quote_item.name %></span><br/><span class="description"><%= quote_item.description %></span></td>
+    <td class="quantity"><%= quote_item.quantity %></td>
+    <td class="quantity"><%= delivery_note_item.already_delivered_or_scheduled_quantity %></td>
     <td class="quantity_for_delivery">
       <%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.remaining_quantity_to_deliver), {}, :index => nil, :onchange => "check_quantity(this.up('.delivery_note_item'))", :class => :input_quantity), :quantity) %>
       <%= form.hidden_field :id, :index => nil %>

@@ -1,7 +1,13 @@
-<% require_locals order %>
+<%
+require_locals order
+customer = order.customer
+%>
 
 <div class='presentation_medium'>
   <h2>Informations concernant le client</h2>
-  <%= render :partial => 'thirds/third', :object => order.customer, :locals => { :force_show_view => true } %>
-  <%= render :partial => 'customers/customer_stats', :object => order.customer %>
+  <% form_for customer do |form| %>
+    <% form.force_show_view = true %>
+    <%= render :partial => 'thirds/third', :object => order.customer, :locals => { :form => form } %>
+    <%= render :partial => 'customers/customer_stats', :object => order.customer %>
+  <% end %>
 </div>

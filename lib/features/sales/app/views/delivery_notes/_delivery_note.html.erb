@@ -1,7 +1,7 @@
 <% content_for :header do %>
   <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/delivery_notes' %>
-  <%= javascript_include_tag 'sales/tab_navigation' %>
+  <%= javascript_include_tag 'sales/sales' %>
 <% end %>
 
 <%= generate_delivery_note_contextual_menu_partial %>
@@ -29,24 +29,24 @@ delivery_note_errors  = { :delivery_note_header         => delivery_note.errors.
   <% method = delivery_note.new_record? ? :put : :post %>
   <% form_for delivery_note, :url => { :controller => 'delivery_notes', :action => action, :order_id => @order.id }, :method => method do |form| %>
   
-    <h2 class="delivery_note_header"><%= delivery_note_headers[:delivery_note_header] %></h2>
+    <h2 class="delivery_note_header section_nav"><%= delivery_note_headers[:delivery_note_header] %></h2>
     <div class="delivery_note_header section_nav selected">
       <%= form.error_messages unless delivery_note_errors[:delivery_note_header].blank? %>
       <%= render :partial => 'delivery_note_header', :object => delivery_note, :locals => { :form => form } %>
     </div>
     
-    <h2 class="delivery_note_body"><%= delivery_note_headers[:delivery_note_body] %></h2>
+    <h2 class="delivery_note_body section_nav"><%= delivery_note_headers[:delivery_note_body] %></h2>
     <div class="delivery_note_body section_nav">
       <%= form.error_messages unless delivery_note_errors[:delivery_note_body].blank? %>
       <%= render :partial => 'delivery_note_body', :object => delivery_note %>
     </div>
     
-    <h2 class="delivery_note_interventions"><%= delivery_note_headers[:delivery_note_interventions] %></h2>
+    <h2 class="delivery_note_interventions section_nav"><%= delivery_note_headers[:delivery_note_interventions] %></h2>
     <div class="delivery_note_interventions section_nav">
       <%= render :partial => 'delivery_note_interventions', :object => delivery_note %>
     </div>
     
-    <h2 class="delivery_note_additional_informations"><%= delivery_note_headers[:delivery_note_additional_informations] %></h2>
+    <h2 class="delivery_note_additional_informations section_nav"><%= delivery_note_headers[:delivery_note_additional_informations] %></h2>
     <div class="delivery_note_additional_informations section_nav">
       <%= render :partial => 'delivery_note_additional_infos', :object => delivery_note, :locals => { :form => form } %>
     </div>

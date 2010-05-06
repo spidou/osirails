@@ -1,5 +1,5 @@
 class LeaveRequestsController < ApplicationController
-  helper :employees
+  helper :employees, :numbers
   # GET /leave_requests
   def index
     
@@ -14,7 +14,7 @@ class LeaveRequestsController < ApplicationController
       @pending_leave_requests += @employee.get_leave_requests_to_check  if LeaveRequest.can_check?(current_user)
       @pending_leave_requests += LeaveRequest.leave_requests_to_notice  if LeaveRequest.can_notice?(current_user)
       @pending_leave_requests += LeaveRequest.leave_requests_to_close   if LeaveRequest.can_close?(current_user)
-      @pending_leave_requests += @employee.get_leave_requests_refused_by_me
+      @pending_leave_requests += @employee.get_leave_requests_refused_by_myself
       @pending_leave_requests = @pending_leave_requests.sort_by(&:start_date).reverse
     end
   end

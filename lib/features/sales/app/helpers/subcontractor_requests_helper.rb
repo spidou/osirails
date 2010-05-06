@@ -36,7 +36,8 @@ module SubcontractorRequestsHelper
   end
   
   def display_subcontractor_request_delete_button(subcontractor_request)
-    link_to_function "Supprimer", "mark_resource_for_destroy(this)" if is_form_view?
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_destroy(this)" if is_form_view?
   end
   
   def display_subcontractor_request_close_form_button(subcontractor_request)

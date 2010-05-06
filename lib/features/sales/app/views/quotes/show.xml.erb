@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <Root>
   <Document>
-    <Type>Devis</Type>
+    <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
+    <Type>DEVIS</Type>
     <Reference><%= @quote.reference %></Reference>
     <Date><%= l(Date.today)%></Date>
     <Currency>EUROS (€)</Currency>  
@@ -25,10 +26,9 @@
         <LastName><%= @quote.order.commercial.last_name %></LastName>
         <FirstName><%= @quote.order.commercial.first_name %></FirstName>
         <Email><%= @quote.order.commercial.email %></Email>
-        <Phone/>
-        <Fax/>      
+        <Phone><%= "#{@quote.order.commercial.numbers.first.indicative.indicative} #{@quote.order.commercial.numbers.first.number}" %></Phone>
       </Representative>
-      <LogoURL/>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  
     <Customer>
       <CorporateName><%= @quote.order.customer.name %></CorporateName>
@@ -47,21 +47,44 @@
         <FirstName><%= @quote.contact.first_name %></FirstName>
         <Email><%= @quote.contact.email %></Email>
         <Phone/>
-        <Fax/>      
+        <Fax/>
       </Representative>
     </Customer>
     <Lines>
       <% @quote.quote_items.each do |item| %>
         <Line>
-          <Reference><%= item.product.product_reference.reference %></Reference>
-          <Name><%= item.name %></Name>
+          <Id><%= item.id %></Id>
+          <% if @footlines_adjustments %>
+            <% @adjust_bottom = @footlines_adjustments.include?(("item_"+item.id.to_s).to_sym) %>
+            <% if @adjust_bottom %>
+              <% @padding_bottom = @footlines_adjustments[("item_"+item.id.to_s).to_sym].round_to(2).to_s(2) %>
+            <% else %>
+              <% @padding_bottom = "0.3" %>
+            <% end %>
+          <% else %>
+            <% @padding_bottom = "0.3" %>
+          <% end %>
+          <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+          <% if @report_adjustment %>
+            <% @adjust_report = @report_adjustment.include?(("item_"+item.id.to_s).to_sym) %>
+            <% if @adjust_report %>
+              <% @is_page_first_element = @report_adjustment[("item_"+item.id.to_s).to_sym].to_s %>
+            <% else %>
+              <% @is_page_first_element = "false" %>
+            <% end %>
+          <% else %>
+            <% @is_page_first_element = "false" %>
+          <% end %>
+          <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>     
+          <Reference><%= item.product.product_reference.reference unless item.free_item? %></Reference>
+          <Name><%= item.designation %></Name>
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>
           <UnitPrice><%= item.unit_price.to_f.round_to(2).to_s(2) %></UnitPrice>
           <Prizegiving><%= item.prizegiving.to_f.round_to(2).to_s(2) %></Prizegiving>
           <TotalPrice><%= item.total.to_f.round_to(2).to_s(2) %></TotalPrice>
-          <VAT><%= @quote.tax_coefficients.index(item.vat)+1 %></VAT>
-        </Line> 
+          <VAT><%= @quote.tax_coefficients.index(item.vat)+1 unless item.free_item? %></VAT>
+        </Line>
       <% end %>
     </Lines>
     <Taxes>
@@ -84,19 +107,21 @@
     <SalesTerms>
       <Description><%= @quote.sales_terms %></Description>
       <QuoteValidity><%= "#{@quote.validity_delay} #{@quote.validity_delay_unit}" %></QuoteValidity>
-      <DutyFreeDeposit><%= @quote.deposit %></DutyFreeDeposit>
+      <Deposit><%= @quote.deposit %></Deposit>
     </SalesTerms>
   </Document>
   <Labels>
     <Siret>SIRET :</Siret>
     <NAFCode>Code NAF :</NAFCode>
-    <Email>e-mail :</Email>
-    <Phone>tél :</Phone>
-    <Fax>fax :</Fax>
+    <Email>e-mail</Email>
+    <Phone>tél</Phone>
+    <Fax>fax</Fax>
     <Date>Date :</Date>
     <Prefix>N°</Prefix>
     <FileName></FileName>
     <SupplierPrefix>Suivi commercial</SupplierPrefix>
+    <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
+    <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
     <CustomerPrefix>A l'attention de</CustomerPrefix>
     <Amount>MONTANTS EN</Amount>
     <Reference>Réf.</Reference>
@@ -116,11 +141,10 @@
     <Postage>Frais de port :</Postage>
     <Discount>Escompte :</Discount>
     <TotalTaxes>Total taxes :</TotalTaxes> 
-    <InclusiveOfTaxMisc>Divers TTC :</InclusiveOfTaxMisc>
     <TotalInclusiveOfTaxNetPrice>NET A PAYER :</TotalInclusiveOfTaxNetPrice>
     <SalesTerms>Conditions commerciales</SalesTerms>
-    <QuoteValidity>Durée de validité du devis</QuoteValidity>
-    <Deposit>Acompte (%)</Deposit>
+    <QuoteValidity>Durée de validité du devis :</QuoteValidity>
+    <Deposit>Acompte (%) :</Deposit>
     <DeliveryDelay>Délai de livraison :</DeliveryDelay>
     <Agreement>SIGNATURE</Agreement>
     <Agreement2>(avec la mention "bon pour accord", dater et signer) :</Agreement2>

@@ -20,34 +20,11 @@
       <p>
         Après avoir été validé <%= image_tag("confirm_16x16.png", :alt => "Validé", :title => "Validé") %>, un BAT peut être signalé comme :
       </p>
-      
       <ul class="quote_caption">
         <li><%= image_tag("cancel_16x16.png", :alt => "Annulé", :title => "Annulé") %> <strong>annulé</strong>, car le BAT est incorrect et doit être modifié</li>
         <li><%= image_tag("send_to_customer_16x16.png", :alt => "Envoyé", :title => "Envoyé") %> <strong>envoyé</strong>, car le BAT a été envoyé au client</li>
         <li><%= image_tag("sign_16x16.png", :alt => "Signé", :title => "Signé") %> <strong>signé</strong>, car le BAT a été signé par le client</li>
       </ul>
-      
-      <p>Vous pouvez voir ci-contre la légende utilisée :</p>
-    </div>
-    
-    <div>
-      <table>
-        <tr>
-          <td>BAT incomplet</td>
-        </tr>
-        <tr class="press_proof <%= PressProof::STATUS_CANCELLED %>_press_proof">
-          <td>BAT annulé</td>
-        </tr>
-        <tr class="press_proof <%= PressProof::STATUS_CONFIRMED %>_press_proof">
-          <td>BAT validé</td>
-        </tr>
-        <tr class="press_proof <%= PressProof::STATUS_SENDED %>_press_proof">
-          <td>BAT envoyé</td>
-        </tr>
-        <tr class="press_proof <%= PressProof::STATUS_SIGNED %>_press_proof">
-          <td>BAT signé</td>
-        </tr>
-      </table>
     </div>
   </div>
   

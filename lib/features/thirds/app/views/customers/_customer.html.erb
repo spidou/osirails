@@ -1,26 +1,76 @@
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
+  <%= stylesheet_link_tag_with_theme_support "thirds/customer.css" %>
   <%= javascript_include_tag 'core/has_resources/has_resources' %>
 <% end %>
 
-<div class="presentation_medium">
+<%
+customer_headers = {:customer_informations            => "Informations générales",
+                    :customer_establishments          => "Autres établissements (#{customer.establishments.reject(&:should_destroy).count})",
+                    :customer_contacts                => "Contacts (#{customer.contacts.reject(&:should_destroy).count})",
+                    :customer_documents               => "Documents",
+                    :customer_additional_informations => "Informations supplémentaires"}
 
-<h2>Informations g&eacute;n&eacute;rales</h2>
-<% form_for @customer, :html => { :multipart => true } do |form| %>
-  <%= render :partial => 'thirds/third', :object => @customer %>
-  
-  <h3>Adresse de facturation</h3>
-  <%= render :partial => 'addresses/address_form', :object => @customer.bill_to_address || @customer.build_bill_to_address , :locals => { :address_owner => @customer } %>
-  
-  <h2>Établissements</h2>
-  <%= display_establishments_list(@customer) %>
-  <%= display_establishment_add_button(@customer) if is_form_view? %>
-  
-  <h2>Documents</h2>
-  <%= display_documents_list(@customer) %>
-  <%= display_document_add_button(@customer) if is_form_view? %>
-  
-  <%= form.form_buttons %>
-<% end %>
+customer_errors  = {:customer_informations   => customer.errors.on(:head_office) || customer.errors.on(:bill_to_address) ||
+                                                customer.errors.on(:name) || customer.errors.on(:legal_form) ||
+                                                customer.errors.on(:website) || customer.errors.on(:legal_form_id) ? ' errors' : '',
+                    :customer_establishments => customer.errors.on(:establishments) ? ' errors' : '',
+                    :customer_contacts       => false ? ' errors' : ''}
+%>
 
+<div class="presentation_medium root_nav">
+  <ul class="customer_nav tab_nav">
+    <li class="customer_informations<%= customer_errors[:customer_informations] %> selected">
+      <%= customer_headers[:customer_informations ] %>
+    </li>
+    
+    <li class="customer_establishments<%= customer_errors[:customer_establishments] %>">
+      <%= customer_headers[:customer_establishments ] %>
+    </li>
+    
+    <li class="customer_contacts<%= customer_errors[:customer_contacts] %>">
+      <%= customer_headers[:customer_contacts ] %>
+    </li>
+    
+    <li class="customer_documents">
+      <%= customer_headers[:customer_documents ] %>
+    </li>
+    
+    <li class="customer_additional_informations">
+      <%= customer_headers[:customer_additional_informations ] %>
+    </li>
+  </ul>
+  
+  <% form_for customer, :html => { :multipart => true } do |form| %>
+    <%= form.error_messages %>
+    
+    <h2 class="customer_informations section_nav"><%= customer_headers[:customer_informations] %></h2>
+    <div class="customer_informations section_nav selected">
+      <%= render :partial => "customer_main_info", :object => customer, :locals => { :form => form } %>
+    </div>
+    
+    <h2 class="customer_establishments section_nav"><%= customer_headers[:customer_establishments] %></h2>
+    <div class="customer_establishments section_nav">
+      <%= display_establishments_list(customer) %>
+      <%= display_establishment_add_button(customer) if is_form_view? %>
+    </div>
+    
+    <h2 class="customer_contacts section_nav"><%= customer_headers[:customer_contacts] %></h2>
+    <div class="customer_contacts section_nav">
+      <p>Coming soon</p>
+    </div>
+    
+    <h2 class="customer_documents section_nav"><%= customer_headers[:customer_documents] %></h2>
+    <div class="customer_documents section_nav">
+      <%= display_documents_list(customer) %>
+      <%= display_document_add_button(customer) if is_form_view? %>
+    </div>
+    
+    <h2 class="customer_additional_informations section_nav"><%= customer_headers[:customer_additional_informations] %></h2>
+    <div class="customer_additional_informations section_nav">
+      <%= render :partial => "thirds/third_additional_info", :object => customer, :locals => { :form  => form } %>
+    </div>
+    
+    <%= form.form_buttons %>
+  <% end %>
 </div>

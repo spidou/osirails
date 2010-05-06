@@ -18,6 +18,104 @@ class InvoiceTest < ActiveSupport::TestCase
   
   should_not_allow_mass_assignment_of :status, :reference, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
   
+  context "An invoice" do
+    setup do
+      @order = create_default_order
+      @signed_quote = create_signed_quote_for(@order)
+      @invoice = prepare_balance_invoice(@order.invoices.build)
+    end
+    
+    context "without invoice_items" do
+      should "have a total equal to 0" do
+        assert_equal 0, @invoice.total
+      end
+      
+      should "have a total_with_taxes equal to 0" do
+        assert_equal 0, @invoice.total_with_taxes
+      end
+      
+      should "have a summon_of_taxes equal to 0" do
+        assert_equal 0, @invoice.summon_of_taxes
+      end
+      
+      should "have no tax_coefficients" do
+        assert @invoice.tax_coefficients.empty?
+      end
+      
+      should "have a number_of_pieces equal to 0" do
+        assert_equal 0, @invoice.number_of_pieces
+      end
+    end
+    
+    context "with invoice_items" do
+      setup do
+        invoice_item = build_product_item_for(@invoice)
+        flunk "@invoice should have an invoice_item with unit_price at '20000' (but was '#{invoice_item.unit_price}')" unless invoice_item.unit_price == 20000
+        flunk "@invoice should have an invoice_item with vat at '19.6' (but was '#{invoice_item.vat}')" unless invoice_item.vat == 19.6
+        flunk "@invoice should have an invoice_item with quantity at '1' (but was '#{invoice_item.quantity}')" unless invoice_item.quantity == 1
+        
+        free_item = build_free_item_for(@invoice, 1000)
+        flunk "@invoice should have a free_item with unit_price at '1000' (but was '#{free_item.unit_price}'" unless free_item.unit_price == 1000
+        flunk "@invoice should have a free_item with unit_price at '0' (but was '#{free_item.vat}'" unless free_item.vat == 0
+        flunk "@invoice should have a free_item with quantity at '1' (but was '#{free_item.quantity}')" unless free_item.quantity == 1
+      end
+      
+      should "have a valid total" do
+        expected_value = 21000
+        assert_equal expected_value, @invoice.total
+      end
+      
+      should "have a valid total_with_taxes" do
+        expected_value = ( 20000.00 * ( 1 + ( 19.6 / 100 ) ) ) + 1000
+        assert_equal expected_value, @invoice.total_with_taxes
+      end
+      
+      should "have a valid summon_of_taxes" do
+        total = 21000
+        total_with_taxes = ( 20000.00 * ( 1 + ( 19.6 / 100 ) ) ) + 1000
+        expected_value = total_with_taxes - total
+        assert_equal expected_value, @invoice.summon_of_taxes
+      end
+      
+      should "have tax_coefficients" do
+        assert_equal [19.6, 0.0], @invoice.tax_coefficients
+      end
+      
+      should "have a valid number_of_pieces" do
+        assert_equal 2, @invoice.number_of_pieces
+      end
+      
+      context "including one which is marked to be destroyed" do
+        setup do
+          to_be_destroyed_item = @invoice.invoice_items.first
+          to_be_destroyed_item.attributes = { :quantity => 0 }
+          flunk "the invoice_item should be marked to be destroyed" unless to_be_destroyed_item.should_destroy?
+          flunk "the invoice_item which is marked to be destroyed should be the one with a unit_price at 20000" unless to_be_destroyed_item.unit_price == 20000
+        end
+        
+        should "have a valid total" do
+          assert_equal 1000, @invoice.total
+        end
+        
+        should "have a valid total_with_taxes" do
+          assert_equal 1000, @invoice.total_with_taxes
+        end
+        
+        should "have a valid summon_of_taxes" do
+          assert_equal 0, @invoice.summon_of_taxes
+        end
+        
+        should "have tax_coefficients" do
+          assert_equal [0.0], @invoice.tax_coefficients
+        end
+        
+        should "have a valid number_of_pieces" do
+          assert_equal 1, @invoice.number_of_pieces
+        end
+      end
+    end
+  end
+  
   context "In an order with an unfactorised customer," do
     setup do
       @order = create_default_order(false)
@@ -2660,6 +2758,7 @@ class InvoiceTest < ActiveSupport::TestCase
       invoice.invoice_item_attributes=(attributes)
       
       flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
+      return invoice.invoice_items.last
     end
     
     def build_product_item_for(invoice)
@@ -2672,6 +2771,7 @@ class InvoiceTest < ActiveSupport::TestCase
       invoice.invoice_item_attributes=(attributes)
       
       flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
+      return invoice.invoice_items.last
     end
     
     def prepare_invoice(invoice, factorised = :normal)
@@ -2680,13 +2780,13 @@ class InvoiceTest < ActiveSupport::TestCase
       invoice.contact         = @order.contacts.first
       invoice.bill_to_address = @order.bill_to_address
       invoice.published_on    = Date.today
-      
       return invoice
     end
     
     def prepare_deposit_invoice(invoice, factorised = :normal)
       invoice = prepare_invoice(invoice, factorised)
       invoice.invoice_type = invoice_types(:deposit_invoice)
+      return invoice
     end
     
     def prepare_deposit_invoice_to_be_saved(invoice, factorised = :normal)
@@ -2696,7 +2796,6 @@ class InvoiceTest < ActiveSupport::TestCase
       invoice.build_or_update_free_item_for_deposit_invoice
       
       build_due_dates_for(invoice, 1)
-      
       return invoice
     end
     
@@ -2710,6 +2809,7 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_status_invoice(invoice, factorised = :normal)
       invoice = prepare_invoice(invoice, factorised)
       invoice.invoice_type = invoice_types(:status_invoice)
+      return invoice
     end
     
     def prepare_status_invoice_to_be_saved(invoice, factorised = :normal)
@@ -2722,13 +2822,13 @@ class InvoiceTest < ActiveSupport::TestCase
       flunk "invoice should have invoice_items" if invoice.invoice_items.empty?
       
       build_due_dates_for(invoice, 1)
-      
       return invoice
     end
     
     def prepare_balance_invoice(invoice, factorised = :normal)
       invoice = prepare_invoice(invoice, factorised)
       invoice.invoice_type = invoice_types(:balance_invoice)
+      return invoice
     end
     
     def prepare_balance_invoice_to_be_saved(invoice, factorised = :normal, number_of_due_dates = 1)
@@ -2744,13 +2844,13 @@ class InvoiceTest < ActiveSupport::TestCase
       flunk "invoice should have invoice_items" if invoice.invoice_items.empty?
       
       build_due_dates_for(invoice, number_of_due_dates)
-      
       return invoice
     end
     
     def prepare_asset_invoice(invoice, factorised = :normal)
       invoice = prepare_invoice(invoice, factorised)
       invoice.invoice_type = invoice_types(:asset_invoice)
+      return invoice
     end
     
     def prepare_asset_invoice_to_be_saved(invoice, factorised = :normal)
@@ -2760,7 +2860,6 @@ class InvoiceTest < ActiveSupport::TestCase
       build_product_item_for(invoice)
       
       build_due_dates_for(invoice, 1)
-      
       return invoice
     end
     
@@ -2777,18 +2876,22 @@ class InvoiceTest < ActiveSupport::TestCase
       create_invoice(invoice, factorised, number_of_due_dates)
       invoice = confirm_invoice(invoice)
       flunk "invoice should be confirmed > #{invoice.status} : #{invoice.status_was}" unless invoice.was_confirmed?
+      return invoice
     end
     
     def prepare_cancelled_invoice(invoice)
       prepare_confirmed_invoice(invoice)
       invoice = cancel_invoice(invoice)
       flunk "invoice should be cancelled" unless invoice.was_cancelled?
+      
+      return invoice
     end
     
     def prepare_sended_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_confirmed_invoice(invoice, factorised, number_of_due_dates)
       invoice = send_invoice(invoice)
       flunk "invoice should be sended" unless invoice.was_sended?
+      return invoice
     end
     
     def prepare_abandoned_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
@@ -2799,36 +2902,42 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       invoice = abandon_invoice(invoice)
       flunk "invoice should be abandoned > #{invoice.errors.inspect}" unless invoice.was_abandoned?
+      return invoice
     end
     
     def prepare_factoring_paid_invoice(invoice)
       prepare_sended_invoice(invoice, :factorised, 1)
       invoice = factoring_pay_invoice(invoice)
       flunk "invoice should be factoring_paid" unless invoice.was_factoring_paid?
+      return invoice
     end
     
     def prepare_factoring_recovered_invoice(invoice)
       prepare_factoring_paid_invoice(invoice)
       invoice = factoring_recover_invoice(invoice)
       flunk "invoice should be factoring_recovered" unless invoice.was_factoring_recovered?
+      return invoice
     end
     
     def prepare_factoring_balance_paid_invoice(invoice)
       prepare_factoring_paid_invoice(invoice)
       invoice = factoring_balance_pay_invoice(invoice)
       flunk "invoice should be factoring_balance_paid" unless invoice.was_factoring_balance_paid?
+      return invoice
     end
     
     def prepare_due_date_paid_invoice(invoice, number_of_due_dates = 2)
       prepare_sended_invoice(invoice, :normal, number_of_due_dates)
       invoice = due_date_pay_invoice(invoice)
       flunk "invoice should be due_date_paid" unless invoice.was_due_date_paid?
+      return invoice
     end
     
     def prepare_totally_paid_invoice(invoice)
       prepare_due_date_paid_invoice(invoice)
       invoice = totally_pay_invoice(invoice)
       flunk "invoice should be totally_paid" unless invoice.was_totally_paid?
+      return invoice
     end
     
     def confirm_invoice(invoice)

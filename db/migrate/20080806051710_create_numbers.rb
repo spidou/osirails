@@ -1,7 +1,9 @@
 class CreateNumbers < ActiveRecord::Migration
   def self.up
     create_table :numbers do |t|
-      t.references :has_number , :polymorphic => true
+      t.references :has_number, :polymorphic => true
+      t.string :has_number_key
+      
       t.references :indicative, :number_type
       t.string  :number
       t.boolean :visible, :default => true

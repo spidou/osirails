@@ -3,8 +3,9 @@
 <%= render :partial => leave_request %>
 
 <div class="presentation_medium">
+  <h2>R&eacute;ponse du responsable</h2>
+  
   <% form_for(leave_request, :url => check_leave_request_path(leave_request)) do |f| %>
-    <h2>R&eacute;ponse du responsable</h2>
     <%= f.error_messages %>
     <p>  
       <%= f.label :agreement_true %>

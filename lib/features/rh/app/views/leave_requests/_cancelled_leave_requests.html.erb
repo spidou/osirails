@@ -1,29 +1,27 @@
 <h2>Mes demandes annul&eacute;es</h2>
 
 <% if cancelled_leave_requests.size > 0 %>
-
-<table>
-  <tr>
-    <th>Date / P&eacute;riode demand&eacute;e</th>
-    <th>Soumise le</th>
-    <th>Statut</th>
-    <th>Actions</th>
-  </tr>
-  
-  <% for leave_request in cancelled_leave_requests %>
-    <tr>
-      <td><%=h leave_request.formatted %></td>
-      <td><%=h l(leave_request.submitted_at.to_datetime) %></td>
-      <td><%=h view_status(leave_request) %></td>
-      <td>
-        <%= leave_request_link(leave_request, :link_text => "") %>
-      </td>
-    </tr>
-  <% end %>
-  
-</table>
-<%= will_paginate cancelled_leave_requests %>
-  
+  <table>
+    <thead>
+      <tr>
+        <th>Date / P&eacute;riode demand&eacute;e</th>
+        <th>Soumise le</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for leave_request in cancelled_leave_requests %>
+        <tr>
+          <td><%=h leave_request.formatted %></td>
+          <td><%=h l(leave_request.submitted_at.to_datetime) %></td>
+          <td><%=h view_status(leave_request) %></td>
+          <td><%= leave_request_link(leave_request, :link_text => "") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= will_paginate cancelled_leave_requests %>
 <% else %>
   <p>Aucune demande annul&eacute;e</p>
 <% end %>

@@ -18,6 +18,7 @@ module DeliveryNotesHelper
     html << display_delivery_note_sign_button(order, delivery_note, '')
     html << display_delivery_note_cancel_button(order, delivery_note, '')
     
+    html << display_delivery_note_preview_button(order, delivery_note, '')
     html << display_delivery_note_show_pdf_button(order, delivery_note, '')
     html << display_delivery_note_show_button(order, delivery_note, '')
     html << display_delivery_note_edit_button(order, delivery_note, '')
@@ -56,15 +57,24 @@ module DeliveryNotesHelper
              order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note) )
   end
   
+  def display_delivery_note_preview_button(order, delivery_note, message = nil)
+    return unless DeliveryNote.can_view?(current_user) and !delivery_note.new_record? and !delivery_note.can_be_downloaded?
+    text = "Télécharger un aperçu de ce BL (PDF)"
+    message ||= " #{text}"
+    link_to( image_tag( "preview_16x16.gif",
+                        :alt => text,
+                        :title => text ) + message,
+             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
+  end
+  
   def display_delivery_note_show_pdf_button(order, delivery_note, message = nil)
-    #TODO uncomment that helper once PDF generator is OK
-    #return unless DeliveryNote.can_view?(current_user) and !delivery_note.was_uncomplete?
-    #text = "Télécharger ce BL (PDF)"
-    #message ||= " #{text}"
-    #link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
-    #                    :alt => text,
-    #                    :title => text ) + message,
-    #         order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
+    return unless DeliveryNote.can_view?(current_user) and delivery_note.can_be_downloaded?
+    text = "Télécharger ce BL (PDF)"
+    message ||= " #{text}"
+    link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
+                        :alt => text,
+                        :title => text ) + message,
+             order_pre_invoicing_step_delivery_step_delivery_note_path(order, delivery_note, :format => :pdf) )
   end
   
   def display_delivery_note_edit_button(order, delivery_note, message = nil)

@@ -81,7 +81,7 @@ module LeaveRequestsHelper
   def cancel_leave_request_link(leave_request, button) 
     text = "Annuler la demande de congés"
     link_text = button ? "" : " #{text}"
-    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
+    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + link_text, cancel_leave_request_path(leave_request), :confirm => "Êtes-vous sûr ?")
   end
   
   def determine_action_for_pending_leave_request(leave_request)

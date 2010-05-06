@@ -14,8 +14,8 @@ class PressProof < ActiveRecord::Base
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => "/press_proofs/:press_proof_id/signed_press_proof"
   
-  has_many :press_proof_items, :order => "position, created_at, id", :dependent => :destroy                                                 # TODO later when we will add position field
-  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position, press_proof_items.created_at, press_proof_items.id" # we'll need to these order associations with 'position'
+  has_many :press_proof_items, :order => "position", :dependent => :destroy
+  has_many :graphic_item_versions, :through => :press_proof_items, :order => "press_proof_items.position"
   
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
@@ -113,8 +113,17 @@ class PressProof < ActiveRecord::Base
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:status]                  = "État actuel :"
   
+  def sorted_press_proof_items
+    press_proof_items.sort_by(&:position)
+  end
+  
+   # OPTIMIZE this is a copy of an already existant method in quote.rb 
   def associated_quote
-    order.signed_quote if order
+    order ? order.signed_quote : nil
+  end
+  
+  def can_be_downloaded? # with PDF generator
+    reference_was
   end
   
   def can_be_cancelled?
@@ -251,8 +260,8 @@ class PressProof < ActiveRecord::Base
   def press_proof_item_attributes=(press_proof_item_attributes)
     collection = self.press_proof_items
     press_proof_item_attributes.each do |attributes|
-      attributes[:press_proof_id] = self.id
-      record                      = collection.detect {|n| n.graphic_item_version_id == attributes[:graphic_item_version_id].to_i}
+      attributes = attributes.merge(:press_proof_id => self.id)
+      record = collection.detect {|n| n.graphic_item_version_id == attributes[:graphic_item_version_id].to_i}
       
       if record.nil?
         self.press_proof_items.build(attributes)
@@ -268,18 +277,21 @@ class PressProof < ActiveRecord::Base
   
   # Method to get all press_proof's graphic_item including unsaved one
   #
-  def get_all_graphic_item_versions
-    return graphic_item_versions + get_unsaved_graphic_item_versions
+  def all_graphic_item_versions
+    graphic_item_versions + unsaved_graphic_item_versions
   end
   
   # Method to get all press_proof's selected mockups
   # used to manage "mockups" list
   #
-  def get_selected_mockups
+  def selected_mockups
+    ##OPTIMIZE with a code like the following
+    #all_graphic_item_versions - unselected_mockups
+    
     selected_graphic_item_versions = graphic_item_versions.reject do |graphic_item_version|
       press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
     end
-    selected_graphic_item_versions += get_unsaved_graphic_item_versions
+    selected_graphic_item_versions += unsaved_graphic_item_versions
     
     return selected_graphic_item_versions.collect{|n| n.graphic_item.id}
   end
@@ -287,7 +299,11 @@ class PressProof < ActiveRecord::Base
   # Method to get all press_proof's unselected mockups
   # used to manage "press_proof_mockups" list
   #
-  def get_unselected_mockups
+  def unselected_mockups
+    ##OPTIMIZE with a code like the following
+    #to_destroy_press_proof_items = press_proof_items.select(&:should_destroy?)
+    #graphic_item_versions.select{ |graphic_item_version| to_destroy_press_proof_items.detect{ |i| i.graphic_item_version_id == graphic_item_version.id } }
+    
     unselected_graphic_item_versions = graphic_item_versions.select do |graphic_item_version|
       press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item_version.id and n.should_destroy? }
     end
@@ -300,7 +316,11 @@ class PressProof < ActiveRecord::Base
   # so until the press_proof is not successfully saved (passed validations) we cannot retrieve the new graphic_item_versions
   # doing press_proof.graphic_item_versions, then we must pass through press_proof.press_proof_items to retrieve unsaved_graphic_item_versions.
   #
-  def get_unsaved_graphic_item_versions
+  def unsaved_graphic_item_versions
+    ##OPTIMIZE with a code like the following
+    #unsaved_press_proof_items = press_proof_items.select(&:new_record?).reject(&:should_destroy?)
+    #order.mockups.select{ |m| unsaved_press_proof_items.detect{ |i| i.graphic_item_version_id == m.current_version.id } }.collect(&:current_version)
+    
     result = order.mockups.select do |graphic_item|
       press_proof_items.detect {|n| n.graphic_item_version_id == graphic_item.current_version.id and n.id.nil? and !n.should_destroy? }
     end

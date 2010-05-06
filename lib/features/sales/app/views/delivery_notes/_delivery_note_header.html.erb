@@ -17,11 +17,11 @@ default_ship_to_address = order.signed_quote.ship_to_address
   <h3>Information générales</h3>
   <p>
     <%= form.label :delivery_note_type_id %>
-    <%= form.collection_select :delivery_note_type_id, DeliveryNoteType.all, :id, :title %>
+    <%= form.form_or_view(form.collection_select(:delivery_note_type_id, DeliveryNoteType.all, :id, :title), :delivery_note_type, :title) %>
   </p>
   <p>
     <%= form.label :published_on %>
-    <%= form.date_select :published_on, :order => [ :day, :month, :year ], :default => nil, :include_blank => "" %> <% if delivery_note.was_uncomplete? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
+    <%= form.form_or_view(form.date_select(:published_on, :order => [ :day, :month, :year ], :default => nil, :include_blank => ""), :published_on, :humanize) %> <% if delivery_note.was_uncomplete? %><span class="help_text">Laisser vide pour mettre automatiquement la date de validation</span><% end %>
   </p>
   
   <div>

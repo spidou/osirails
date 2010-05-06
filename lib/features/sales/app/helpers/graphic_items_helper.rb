@@ -139,9 +139,9 @@ module GraphicItemsHelper
     end 
   
     if object.is_in_user_spool("image",current_user)
-      link_to_remote(strong("Retirer de la file d'attente"), :url => remove_path, :html => {:id => "spool_action_for_#{object.id}_image"})
+      link_to_remote("Retirer de la file d'attente", :url => remove_path, :html => {:id => "spool_action_for_#{object.id}_image"})
     else      
-      link_to_remote(strong("Ajouter à la file d'attente"), :url => add_path, :html => {:id => "spool_action_for_#{object.id}_image"})
+      link_to_remote("Ajouter à la file d'attente", :url => add_path, :html => {:id => "spool_action_for_#{object.id}_image"})
     end
   end
   
@@ -155,9 +155,9 @@ module GraphicItemsHelper
     end 
     
     if object.is_in_user_spool("source",current_user)
-      link_to_remote(strong("Retirer de la file d'attente"), :url => remove_path, :html => {:id => "spool_action_for_#{object.id}_source"})
+      link_to_remote("Retirer de la file d'attente", :url => remove_path, :html => {:id => "spool_action_for_#{object.id}_source"})
     else        
-      link_to_remote(strong("Ajouter à la file d'attente"), :url => add_path, :html => {:id => "spool_action_for_#{object.id}_source"})
+      link_to_remote("Ajouter à la file d'attente", :url => add_path, :html => {:id => "spool_action_for_#{object.id}_source"})
     end 
   end
   
@@ -178,6 +178,6 @@ module GraphicItemsHelper
   end
   
   def display_empty_spool_link
-    content_tag(:p,link_to_remote(strong("VIDER LA LISTE D'ATTENTE"), :url => order_empty_graphic_item_spool_items_path, :confirm => "Êtes-vous sûr ?"))
+    content_tag(:p,link_to_remote("VIDER LA LISTE D'ATTENTE", :url => order_empty_graphic_item_spool_items_path, :confirm => "Êtes-vous sûr ?"))
   end
 end

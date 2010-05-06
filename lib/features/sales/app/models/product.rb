@@ -11,9 +11,9 @@ class Product < ActiveRecord::Base
   has_many :checklist_responses,  :dependent => :destroy
   has_many :quote_items,          :dependent => :nullify
   has_many :mockups,              :dependent => :nullify
-  has_many :press_proofs,         :dependent => :nullify
+  has_many :press_proofs,         :dependent => :nullify, :order => 'created_at DESC'
   
-  validates_presence_of :name, :description, :dimensions
+  validates_presence_of :name
   validates_presence_of :order_id, :product_reference_id
   validates_presence_of :order,             :if => :order_id
   validates_presence_of :product_reference, :if => :product_reference_id
@@ -90,6 +90,11 @@ class Product < ActiveRecord::Base
   # product cannot be destroyed if it already associated with at least one quote_item, mockup or press_proof
   def can_be_destroyed?
     quote_items.empty? and mockups.empty? and press_proofs.empty?
+  end
+  
+  def designation
+    return if name.blank?
+    name + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
   private

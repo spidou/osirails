@@ -1,4 +1,6 @@
-<div class="subcontractor_request resource">
+<% style = "style=\"display:none\"" if subcontractor_request.should_destroy? %>
+
+<div class="subcontractor_request resource" <%= style %>>
   <% unless subcontractor_request.new_record? %>
     <% fields_for subcontractor_request do |form| %>
       <p>

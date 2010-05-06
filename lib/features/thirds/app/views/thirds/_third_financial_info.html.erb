@@ -1,0 +1,19 @@
+<%
+require_locals form
+third = third_financial_info
+%>
+  
+<h3>Informations bancaires</h3>
+<% if third.class.equal?(Customer) %>
+  <p>
+    <%= form.label :factor_id %>
+    <%= form.form_or_view(form.collection_select(:factor_id, Factor.all, :id, :name_and_fullname, :include_blank => "Aucune"), :factor, :name_and_fullname ) %>
+  </p>
+  <p>
+    <%= form.label :customer_solvency %>
+    <%= form.form_or_view(form.collection_select(:customer_solvency_id, CustomerSolvency.all(:order => 'id DESC'), :id, :name, 
+                                                :include_blank => third.new_record? ? "Veuillez choisir une solvabilitée" : false), :customer_solvency, :name) %>
+  </p>
+<% else %>
+  <%= render :partial => 'shared/iban', :object => third.iban || third.build_iban, :locals => { :iban_owner => third } %>
+<%  end %>

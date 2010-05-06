@@ -1,6 +1,7 @@
 <%
 id_attr = product.new_record? ? '' : "id=\"product_#{product.id}\""
-selected_class = product.new_record? ? ' selected' : ''
+style   = "style=\"display:none\"" if product.should_destroy?
+selected_class = product.new_record? ? ' selected' : ' selected' #TODO remove the class "selected" when product is not a new record
 disabled_class = product.new_record? ? ' disabled' : ''
 
 product_headers = { :product_details    => "Produit",
@@ -10,7 +11,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
                     :product_checklist  => product.errors.on(:checklists) ? ' errors' : '' }
 %>
 
-<div class="product root_nav resource" <%=id_attr%>>
+<div class="product root_nav resource" <%=id_attr%> <%= style %>>
   <ul class="product_nav tab_nav">
     <li class="product_details<%= selected_class + product_errors[:product_details] %>"><%= product_headers[:product_details] %></li>
     <li class="product_checklist<%= disabled_class + product_errors[:product_checklist] %>"><%= product_headers[:product_checklist] %></li>
@@ -19,7 +20,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
   
   <p class="product_summary">
     <% unless product.new_record? %>
-      <span class="product_position"><%= product.position_was %></span>
+      <span class="product_position"><%= product_counter %></span>
       <span class="product_label">Nom :</span> <span class="product_name"><%= product.name_was %></span>
       <span class="product_label">Côtes :</span> <span class="product_dimensions"><%= product.dimensions_was %></span>
       <span class="product_label">Qté :</span> <span class="product_quantity"><%= product.quantity_was %></span>
@@ -29,26 +30,25 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
     <% end %>
   </p>
   
-  <h3 class="product_details"><%= product_headers[:product_details] %></h3>
+  <h2 class="product_details section_nav"><%= product_headers[:product_details] %></h3>
   <div class="product_details section_nav<%= selected_class %>">
     <% fields_for 'survey_step[product_attributes][]', product, :index => nil do |form| %>
       <%= form.error_messages %>
       <p>
         <%= form.label :product_reference_id, :index => nil %>
         <%= form.hidden_field :product_reference_id, :index => nil %>
-        <%= strong("#{product.product_reference.name} (#{product.product_reference.reference})") %> <%= product_reference_link(product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
+        <%= strong("#{product.product_reference.reference} - #{product.product_reference.designation}") %> <%= product_reference_link(product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
       </p>
       <p>
         <%= form.label :name, :index => nil %>
-        <%= form.text_field :name, :value => product.name || product.product_reference.name, :size => 50, :index => nil %>
+        <%= form.text_field :name, :value => product.name || product.product_reference.designation, :size => 50, :index => nil %>
+        
+        <%= form.label :dimensions, :index => nil %>
+        <%= form.text_field :dimensions, :index => nil %>
       </p>
       <p>
         <%= form.label :description, :index => nil %>
         <%= form.text_area_autoresize :description, :value => product.description || product.product_reference.description, :index => nil %>
-      </p>
-      <p>
-        <%= form.label :dimensions, :index => nil %>
-        <%= form.text_field :dimensions, :index => nil %>
       </p>
       <p>
         <%= form.label :quantity, :index => nil %>
@@ -67,7 +67,7 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
     <% end %>
   </div>
   
-  <h3 class="product_checklist"><%= product_headers[:product_checklist] %></h3>
+  <h2 class="product_checklist section_nav"><%= product_headers[:product_checklist] %></h3>
   <div class="product_checklist section_nav<%= disabled_class %>">
     <%= display_environment_checklist_for(product) unless product.new_record? %>
   </div>  

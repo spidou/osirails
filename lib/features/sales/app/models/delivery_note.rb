@@ -125,7 +125,7 @@ class DeliveryNote < ActiveRecord::Base
   
   def build_delivery_note_items_from_signed_quote
     return unless associated_quote
-    associated_quote.quote_items.each do |quote_item|
+    associated_quote.product_quote_items.each do |quote_item|
       item = self.delivery_note_items.build(:quote_item_id => quote_item.id, :order_id => self.order_id)
       item.quantity = item.remaining_quantity_to_deliver
     end
@@ -197,6 +197,10 @@ class DeliveryNote < ActiveRecord::Base
     !new_record? and was_uncomplete?
   end
   
+  def can_be_downloaded? # with PDF generator
+    reference_was
+  end
+  
   def can_be_destroyed?
     !new_record? and was_uncomplete?
   end
@@ -239,7 +243,7 @@ class DeliveryNote < ActiveRecord::Base
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
-  else
+    else
       errors.add(:base, "Le Bon de Livraison n'est pas prêt à être annulé")
       false
     end

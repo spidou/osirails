@@ -9,11 +9,13 @@ if (window.addEventListener)
 {
   window.addEventListener('load', initEventListeners, false);
   window.addEventListener('load', checkForCookies, false);
+  window.addEventListener('load', prepare_variables_for_contextual_menu, false);
 }
 else if (document.addEventListener)
 {
   document.addEventListener('load', initEventListeners, false);
   document.addEventListener('load', checkForCookies, false);
+  document.addEventListener('load', prepare_variables_for_contextual_menu, false);
 }
 
 function initEventListeners()
@@ -31,17 +33,11 @@ function initEventListeners()
 //
 function checkForCookies()
 {
-  if($('contextual_menu_container') == null) return;
+  if ($('contextual_menu_container') == null) return;
   
   var pin_status = GetCookieValue('pin_status');
-  if (pin_status == 'pinned'){
-    $('content_page').setAttribute('class','with_pinned_menu');
-    $('contextual_menu_toggle_button').hide();
-    $('reduce_button_link').hide()
-  }
-  else{
+  if (pin_status != 'pinned')
     toggle_contextual_menu($('contextual_menu_toggle_button'));
-  }
 }
 
 
@@ -69,41 +65,47 @@ function GetCookieValue(name)
   return null;
 }
 
+// prepare variables for pin and unpin contextual_menu functions
+function prepare_variables_for_contextual_menu() {
+  unpin_message     = 'Détacher le menu';
+  pin_message       = 'Épingler le menu';
+  pinned_image      = 'pinned_16x16.png';
+  unpinned_image    = 'not_pinned_16x16.png';
+  pin_image         = $('pin_button_link').down('img')
+  pin_image_prefix  = pin_image.getAttribute('src').substring(0, pin_image.getAttribute('src').lastIndexOf('/') + 1)
+  exp_date          = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
+}
 
-
-function toggle_pin_contextual_menu(item)
+function pin_contextual_menu()
 {
-  var message1 = 'Détacher le menu';
-  var message2 = 'Épingler le menu';
-  var image1 = 'pinned_16x16.png';
-  var image2 = 'not_pinned_16x16.png';
+  $('contextual_menu_container').setAttribute('class', 'pinned_menu');
+  $('content_page').setAttribute('class','with_pinned_menu');
+  pin_image.setAttribute('src', pin_image_prefix + pinned_image)
+  pin_image.setAttribute('title', unpin_message)
+  pin_image.setAttribute('alt', unpin_message)
   
-  var exp_date = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
-  var image = item.down('img')
-  var image_prefix = image.getAttribute('src').substring(0, image.getAttribute('src').lastIndexOf('/') + 1)
+  setCookie('pin_status', 'pinned', exp_date, '/');
+}
+
+function unpin_contextual_menu()
+{
+  $('contextual_menu_container').setAttribute('class', 'not_pinned_menu');
+  $('content_page').setAttribute('class','');
+  pin_image.setAttribute('src', pin_image_prefix + unpinned_image)
+  pin_image.setAttribute('title', pin_message)
+  pin_image.setAttribute('alt', pin_message)
   
-  if($('contextual_menu_container').className == 'not_pinned_menu')
-  {
-    $('contextual_menu_container').setAttribute('class', 'pinned_menu');
-    $('content_page').setAttribute('class','with_pinned_menu');
-    image.setAttribute('src', image_prefix + image1)
-    image.setAttribute('title', message1)
-    image.setAttribute('alt', message1)
-    
-    setCookie('pin_status', 'pinned', exp_date, '/');
+  setCookie('pin_status', 'not_pinned', exp_date, '/');
+}
+
+function toggle_pin_contextual_menu()
+{
+  if($('contextual_menu_container').className == 'not_pinned_menu') {
+    pin_contextual_menu();
   }
-  else
-  {
-    $('contextual_menu_container').setAttribute('class', 'not_pinned_menu');
-    $('content_page').setAttribute('class','');
-    image.setAttribute('src', image_prefix + image2)
-    image.setAttribute('title', message2)
-    image.setAttribute('alt', message2)
-    
-    setCookie('pin_status', 'not_pinned', exp_date, '/');
+  else {
+    unpin_contextual_menu();
   }
-  
-  $('reduce_button_link').toggle();
 }
 
 function toggle_contextual_menu(item)
@@ -128,10 +130,11 @@ function toggle_contextual_menu(item)
       duration: 0.6,
       afterFinish: function(){
         $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:0px');
-        $('contextual_menu').setStyle({display: 'none'})
+        $('contextual_menu').hide();
         item.setAttribute('style','position:relative;right:0px');   
         item.className = class_hidden;
         document.body.style.overflowX = 'auto';
+        $('contextual_menu_toggle_button').show();
       }
     });
   }
@@ -139,6 +142,7 @@ function toggle_contextual_menu(item)
   {
     $('contextual_menu_container').setAttribute('style','witdh:0px;position:absolute;right:-'+(container_width-2)+'px');
     $('contextual_menu').setAttribute('style','display:'+menu_display+';position:'+menu_position+';right:'+menu_right);
+    $('contextual_menu_toggle_button').hide();
     
     document.body.style.overflowX = 'hidden';
     new Effect.Morph($('contextual_menu_container'), {
@@ -153,7 +157,6 @@ function toggle_contextual_menu(item)
       }
     });
   }
-  $('contextual_menu_toggle_button').toggle();
   $('contextual_menu_actions').toggle();
 }
 

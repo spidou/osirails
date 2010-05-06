@@ -32,10 +32,8 @@ class ProductReferencesController < ApplicationController
       }
       
       format.json {
-        keys_to_delete = [ :products_count, :delivery_cost_manpower, :delivery_time, :production_cost_manpower, :production_time,
-                           :product_reference_category_id, :information, :enable, :created_at, :updated_at ]
         json = JSON.parse(@product_reference.to_json)
-        keys_to_delete.each { |key| json['product_reference'].delete(key.to_s) } # remove unused keys to shorten the AJAX request
+        json["product_reference"].merge!(:designation => @product_reference.designation)
         render :json => json
       }
     end

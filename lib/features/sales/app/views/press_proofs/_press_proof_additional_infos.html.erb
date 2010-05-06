@@ -9,7 +9,8 @@ press_proof = press_proof_additional_infos %>
 
 <p>
   <%= form.label :creator %>
-  <%= link_to press_proof.creator.employee_name, employee_path(press_proof.creator.employee) %>
+  <%= link_to press_proof.creator.employee_name,
+              (press_proof.creator.employee.nil? ? user_path(press_proof.creator) : employee_path(press_proof.creator.employee) )%>
 </p>
 
 <p>

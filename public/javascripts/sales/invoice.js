@@ -1,6 +1,8 @@
 function update_deposit_amount(element) {
   total = parseFloat($('signed_quote_total_with_taxes').innerHTML)
   $('invoice_deposit_amount').value = Math.round(total * parseFloat(element.value)) / 100
+  parent = $('invoice_deposit_amount').up('p')
+  new Effect.Highlight(parent, {afterFinish: function(){ parent.setStyle({backgroundColor: ''}); }})
   
   update_deposit_amount_without_taxes($('invoice_deposit_amount'))
 }
@@ -10,6 +12,7 @@ function update_deposit_amount_without_taxes(element) {
   deposit_amount = parseFloat(element.value)
   deposit_amount_without_taxes = deposit_amount / ( 1 + ( deposit_vat / 100 ) )
   $('deposit_amount_without_taxes').update(Math.round(deposit_amount_without_taxes*100)/100)
+  new Effect.Highlight($('deposit_amount_without_taxes'), {afterFinish: function(){ $('deposit_amount_without_taxes').setStyle({backgroundColor: ''}) }})
   
   check_values_of_total_and_due_dates()
 }
@@ -60,7 +63,7 @@ function refresh_due_dates() {
   
   input.value = balance
   span.update(balance)
-  new Effect.Highlight(last_due_date, { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
+  new Effect.Highlight(last_due_date, {afterFinish: function(){ last_due_date.setStyle({backgroundColor: ''}) }}) // reset background-color value to be sure to restore orginal value from CSS
   
   if (balance < 0 && sum_net_to_paid_without_balance > 0)
     alert("Attention !! Le montant des premières échéances sont supérieurs au montant total de la facture. C'est pourquoi vous obtenez un solde négatif.")
@@ -142,7 +145,8 @@ function update_due_dates(select_element) {
   })
   
   refresh_due_dates()
-  new Effect.Highlight($('due_dates_list'), { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
+  //new Effect.Highlight($('due_dates_list'), { startcolor: "#ffff00", endcolor: "#ffffff", restorecolor: "#ffffff" })
+  new Effect.Highlight($('due_dates_list'), {afterFinish: function(){ $('due_dates_list').setStyle({backgroundColor: ''}) }})
 }
 
 original_value_for_toggle_payment_details = null
@@ -210,9 +214,11 @@ function add_free_item() {
   body.insert( {'bottom' : new_line } );
   
   last_line = body.childElements().last();
-  last_line.down('.should_destroy').value = 0;
+  last_line.down('.should_destroy').removeAttribute('value');
   last_line.removeAttribute('style');
-  last_line.highlight();
+  new Effect.Highlight(last_line, {afterFinish: function(){ last_line.setStyle({backgroundColor: ''}) }})
+  
+  update_up_down_links($('invoice_items_body')); //defined in sales.js
 }
 
 function remove_free_item(element) {
@@ -225,6 +231,7 @@ function remove_free_item(element) {
     item.remove();
   }
   
+  update_up_down_links($('invoice_items_body')); //defined in sales.js
   update_aggregates();
 }
 
@@ -249,7 +256,6 @@ function calculate(tr) {
   td_total_with_taxes.update( roundNumber(total_with_taxes, 2) )
   
   update_aggregates();
-  check_values_of_total_and_due_dates();
 }
 
 function update_aggregates() {
@@ -288,4 +294,6 @@ function update_aggregates() {
   
   // aggregate all taxes
   span_aggregate_all_taxes.update( roundNumber(aggregate_with_taxes - aggregate_without_taxes, 2) )
+  
+  check_values_of_total_and_due_dates();
 }

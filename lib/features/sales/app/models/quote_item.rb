@@ -4,14 +4,12 @@ class QuoteItem < ActiveRecord::Base
   belongs_to :quote
   belongs_to :product
   
-  acts_as_list :scope => :quote
-  
   has_many :delivery_note_items, :dependent => :nullify
   has_many :delivery_notes,      :through   => :delivery_note_items
   
-  validates_presence_of :name, :description, :dimensions
+  validates_presence_of :name
   
-  validates_numericality_of :unit_price, :vat, :quantity
+  validates_numericality_of :unit_price, :vat, :quantity, :unless => :free_item?
   validates_numericality_of :prizegiving, :allow_blank => true
   
   validates_associated :product
@@ -31,20 +29,24 @@ class QuoteItem < ActiveRecord::Base
   def initialize(*params)
     super(*params)
     self.order_id = quote.order_id if quote
-    self.product_reference_id = product.product_reference_id if product
+    self.product_reference_id = product.product_reference_id unless free_item?
   end
 
   def after_find
     self.order_id = quote.order_id
-    self.product_reference_id = product.product_reference_id if product
+    self.product_reference_id = product.product_reference_id unless free_item?
   end
   
   def order
     Order.find_by_id(order_id)
   end
   
+  def free_item?
+    product.nil?
+  end
+  
   def build_or_update_product
-    return unless product_reference_id or product
+    return if product_reference_id.blank? and free_item?
     
     self.product ||= order.products.build(:product_reference_id => product_reference_id)
     
@@ -54,7 +56,7 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def save_product
-    product.save(false) if product
+    product.save(false) unless free_item?
   end
   
   def already_delivered_or_scheduled_quantity
@@ -72,19 +74,27 @@ class QuoteItem < ActiveRecord::Base
   
   # destroy associated product unless quote is already destroyed (to avoid to destroy all products when we destroying a quote)
   def destroy_product
-    product.destroy if product and Quote.find_by_id(quote.id)
+    product.destroy if !free_item? and Quote.find_by_id(quote.id)
   end
   
   def original_name
-    product ? product.product_reference.name : nil
+    free_item? ? nil : product.product_reference.name
   end
   
   def original_description
-    product ? product.product_reference.description : nil
+    free_item? ? nil : product.product_reference.description
   end
   
   def original_vat
-    product ? product.product_reference.vat : nil
+    free_item? ? nil : product.product_reference.vat
+  end
+  
+  def designation
+    free_item? ? name : product.designation
+  end
+  
+  def position # used for sorted_quote_items
+    super || 0
   end
   
 end

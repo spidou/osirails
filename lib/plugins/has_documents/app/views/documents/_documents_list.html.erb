@@ -41,7 +41,8 @@ end
 
 <%= "<p>Classer par #{group_documents_by_method("type", @documents_owner)} | #{group_documents_by_method("date", @documents_owner)} | #{group_documents_by_method("name", @documents_owner)} | #{group_documents_by_method("tag", @documents_owner)}</p>" %>
 <% @groups.each do |group, collection| %>
-  <div class="resource_group document_group">
+  <% style = "style=\"display:none\"" if collection.reject(&:should_destroy?).empty? %>
+  <div class="resource_group document_group" <%= style %>>
     <%= content_tag(:h1, group.blank? ? "\"Aucun\"" : group) %>
     <%= render :partial => 'documents/document', :collection => collection, :locals => { :documents_owner => @documents_owner, :should_use_id => should_use_id }  %>
   </div>

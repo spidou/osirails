@@ -1,0 +1,134 @@
+<%
+# this partial should not be called directly, you may call _quote_item.html.erb with the appropriate instance of quote_item
+quote_item = product_quote_item
+
+this_is_default_row_and_should_be_hidden ||= false
+collection_length ||= 1
+%>
+
+<% if quote_item.nil? %>
+  
+  <% require_locals quote %>
+  <%= render :partial => 'quote_items/product_quote_item', :object => QuoteItem.new, :locals => { :this_is_default_row_and_should_be_hidden => true } %>
+  <% if is_form_view? %>
+    <tr class="new_quote_item">
+      <td colspan="11">
+        <%= hidden_field_tag 'add_this_product_reference_id' %>
+        <%= custom_text_field_with_auto_complete( :product_reference, :reference,
+                                                  { :value      => "Cherchez un produit référence dans la base",
+                                                    :size       => 50,
+                                                    :onkeydown  => "if (event.keyCode == 13) { return false; }" },
+                                                  { :update_id  => 'add_this_product_reference_id' } ) %>
+        
+        <%= button_to_function "Ajouter", "add_product_reference_to_quote()" %>
+        <%= display_add_free_quote_item_for(quote) %>
+      </td>
+    </tr>
+  <% end %>
+  
+<% else %>
+  
+  <% fields_for "quote[quote_item_attributes][]", quote_item do |form| %>
+  
+  <%
+    position        = quote_item.position.zero? ? counter : quote_item.position
+    move_up_image   = "arrow_up_#{'disable_' if position == 1}16x16.png"
+    move_down_image = "arrow_down_#{'disable_' if position == collection_length}16x16.png"
+  %>
+    <tr class="quote_item" <%= "style=\"display:none\"" if quote_item.should_destroy? or this_is_default_row_and_should_be_hidden %>>
+      
+      <td class="reference">
+        <%= quote_item.product.product_reference.reference if quote_item.product %>
+      </td>
+
+      <td class="designation">
+        <% if is_form_view? %>
+          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour ce produit", :index => nil %>
+          <%= hidden_field_tag :original_name, quote_item ? quote_item.original_name : nil, :class => :input_original_name %>
+          <span>
+            <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
+                         :onclick => "restore_original_value(this.up('.quote_item'), 'name')" ) %>
+          </span>
+        <% else %>
+          <span class="name"><%= h(quote_item.designation) %></span>
+        <% end %>
+        
+        <br/>
+        
+        <% if is_form_view? %>
+          <%= form.text_area_autoresize :description, :cols => 55, :rows => 2, :class => :input_description, :title => "Entrer le corps de la description pour ce produit", :index => nil %>
+          <%= hidden_field_tag :original_description, quote_item ? quote_item.original_description : nil, :class => :input_original_description %>
+          <span>
+            <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
+                         :onclick => "restore_original_value(this.up('.quote_item'), 'description')" ) %>
+          </span>
+        <% else %>
+          <span class="description"><%= h(quote_item.description) %></span>
+        <% end %>
+      </td>
+      
+      <% if is_form_view? %>
+        <td class="dimensions">
+          <%= form.text_field :dimensions, :size => 15, :class => :input_dimensions, :title => "Entrer les dimensions pour ce produit", :index => nil %>
+        </td>
+      <% end %>
+      
+      <td class="unit_price amount">
+        <% if is_form_view? %>
+          <%= form.text_field :unit_price, :value => ( quote_item.unit_price.to_f.round_to(2).to_s(2) if quote_item.unit_price ), :size => 7, :maxlength => 9, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_unit_price, :title => "Entrer le prix unitaire brut pour ce produit", :index => nil %>
+        <% else %>
+          <%= quote_item.unit_price.to_f.round_to(2).to_s(2) %>
+        <% end %>
+      </td>
+      <td class="prizegiving rate">
+        <% if is_form_view? %>
+          <%= form.text_field :prizegiving, :value => ( quote_item.prizegiving.to_f.round_to(2).to_s(2) if quote_item.prizegiving ), :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_prizegiving, :title => "Entrer une remise pour ce produit", :index => nil %>
+        <% else %>
+          <%= quote_item.prizegiving.to_f.round_to(2).to_s(2) %>
+        <% end %>
+      </td>
+      <td class="unit_price_with_prizegiving amount">
+        <%= quote_item.unit_price_with_prizegiving.to_f.round_to(2).to_s(2) %>
+      </td>
+      <td class="quantity">
+        <% if is_form_view? %>
+          <%= form.text_field :quantity, :size => 3, :maxlength => 5, :onkeyup => "calculate(this.up('.quote_item'))", :class => :input_quantity, :title => "Entrer la quantité pour ce produit", :index => nil %>
+        <% else %>
+          <%= quote_item.quantity %>
+        <% end %>
+      </td>
+      <td class="total amount">
+        <%= quote_item.total.round_to(2).to_s(2) %>
+      </td>
+      <td class="vat rate">
+        <% if is_form_view? %>
+          <%= form.select(:vat, Vat.find(:all, :order => :position).collect{ |vat| [ vat.name, vat.rate ] }, { :include_blank => "" }, :onchange => "calculate(this.up('.quote_item'))", :class => :input_vat, :title => "Entrer le taux de TVA s'appliquant à cette référence", :index => nil) %>
+          <%= hidden_field_tag :original_vat, quote_item ? quote_item.original_vat : nil, :class => :input_original_vat %>
+          <span>
+            <%= link_to( image_tag("eraser_16x16.png", :alt => "Valeur par défaut", :title => "Valeur par défaut"), "#default",
+                         :onclick => "restore_original_value(this.up('.quote_item'), 'vat')" ) %>
+          </span>
+        <% else %>
+          <%= quote_item.vat %>
+        <% end%>
+      </td>
+      <td class="total_with_taxes amount">
+        <%= quote_item.total_with_taxes.round_to(2).to_s(2) %>
+      </td>
+      
+      <% if is_form_view? %>
+        <td class="actions">
+          <%= link_to( image_tag( move_up_image, :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
+          <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
+          <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_reference(this)" ) %>
+          <%= form.hidden_field :id, :class => :quote_item_id, :index => nil %>
+          <%= form.hidden_field :product_id, :index => nil %>
+          <%= form.hidden_field :product_reference_id, :class => :product_reference_id, :index => nil %>
+          <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+          <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+  
+<% end %>

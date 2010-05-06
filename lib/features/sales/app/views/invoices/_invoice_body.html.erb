@@ -12,30 +12,41 @@ end
 
 <% if invoice.deposit_invoice? %>
   
-  <p>
-    <label>Montant total du devis :</label>
-    <strong><span id="signed_quote_total_with_taxes"><%= invoice.associated_quote.total_with_taxes.to_f.round_to(2).to_s(2) %></span></strong><span class="extra"> &euro; TTC (soit <%= invoice.associated_quote.total.round_to(2).to_s(2) %> &euro; HT)</span>
-  </p>
-  <p>
-    <label>Acompte demandé dans le devis:</label>
-    <strong><%= invoice.associated_quote.deposit %></strong><span class="extra"> %</span>
-  </p>
-  <p>
-    <label>Pourcentage d'acompte :</label>
-    <%= form.form_or_view(form.text_field(:deposit, :size => 3, :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span class="extra"> %</span>
-  </p>
-  <p>
-    <label>Montant d'acompte :</label>
-    <%= form.form_or_view(form.text_field(:deposit_amount, :value => invoice.deposit_amount.to_f.round_to(2).to_s(2), :size => 12, :onkeyup => "javascript:update_deposit_amount_without_taxes(this)"), :deposit_amount) %><span class="extra"> &euro; TTC</span>
-  </p>
-  <p>
-    <label>Taux de TVA apposé &agrave; l'acompte :</label>
-    <%= form.form_or_view(form.collection_select(:deposit_vat, Vat.all, :rate, :name, {}, :onchange => "javascript:update_deposit_amount_without_taxes($('invoice_deposit_amount'))"), :deposit_vat) %><span class="extra"> % (soit <span id="deposit_amount_without_taxes"><%= invoice.deposit_amount_without_taxes.to_f.round_to(2).to_s(2) %></span> &euro; HT)</span>
-  </p>
-  <p>
-    <label>Description :</label>
-    <%= form.form_or_view(form.text_area_autoresize(:deposit_comment), :deposit_comment) %>
-  </p>
+  <div class="presentation_in_columns">
+    <div>
+      <p>
+        <label>Montant total du devis :</label>
+        <strong><span id="signed_quote_total_with_taxes"><%= invoice.associated_quote.total_with_taxes.to_f.round_to(2).to_s(2) %></span></strong><span> &euro; TTC</span>
+      </p>
+      
+      <p>
+        <label>Pourcentage d'acompte :</label>
+        <%= form.form_or_view(form.text_field(:deposit, :size => 3, :onkeyup => "javascript:update_deposit_amount(this)"), :deposit) %><span> &#37;</span>
+      </p>
+      
+      <p>
+        <label>Montant d'acompte :</label>
+        <%= form.form_or_view(form.text_field(:deposit_amount, :value => invoice.deposit_amount.to_f.round_to(2).to_s(2), :size => 12, :onkeyup => "javascript:update_deposit_amount_without_taxes(this)"), :deposit_amount) %><span> &euro; TTC</span>
+      </p>
+    </div>
+    
+    <div class="large">
+      <p>
+        <label>Acompte demandé (au devis) :</label>
+        <strong><%= invoice.associated_quote.deposit %></strong><span> &#37;</span>
+      </p>
+      
+      <p>
+        <label>Taux de TVA apposé &agrave; l'acompte :</label>
+        <%= form.form_or_view(form.collection_select(:deposit_vat, Vat.all, :rate, :name, {}, :onchange => "javascript:update_deposit_amount_without_taxes($('invoice_deposit_amount'))"), :deposit_vat) %><span> &#37; (soit <span id="deposit_amount_without_taxes"><%= invoice.deposit_amount_without_taxes.to_f.round_to(2).to_s(2) %></span> &euro; HT)</span>
+      </p>
+    </div>
+    
+    <p>
+      <label>Description :</label>
+      <%= form.form_or_view(form.text_area_autoresize(:deposit_comment), :deposit_comment) %>
+    </p>
+  </div>
   
 <% else %>
   
@@ -64,7 +75,7 @@ end
   <% end %>
   
   <div class="autoscroll">
-    <table id="invoice_items">
+    <table id="invoice_items" class="sales_table no_nth">
       <thead>
         <tr>
           <th rowspan="2">Réf.</th>
@@ -93,7 +104,7 @@ end
       </thead>
       
       <tbody id="invoice_items_body">
-        <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.invoice_items %>
+        <%= render :partial => 'invoice_items/invoice_item', :collection => invoice.sorted_invoice_items, :locals => { :collection_length => invoice.invoice_items.size } %>
       </tbody>
       
       <tfoot id="invoice_items_foot">

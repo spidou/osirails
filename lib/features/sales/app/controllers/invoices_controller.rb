@@ -1,4 +1,5 @@
 class InvoicesController < ApplicationController
+  include AdjustPdf
   helper :orders, :contacts, :payments, :adjustments
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
@@ -16,13 +17,10 @@ class InvoicesController < ApplicationController
       format.xml {
         render :layout => false
       }
-      #format.pdf {
-      #  unless @invoice.uncomplete?
-      #    render :pdf => "invoice_#{@invoice.reference}", :template => "invoices/show.xml.erb", :xsl => "invoice", :path => "assets/pdf/invoices/invoice_#{@invoice.reference}.pdf"
-      #  else
-      #    error_access_page(403) #FIXME error_access_page seems to failed in format.pdf (nothing append when this code is reached)
-      #  end
-      #}
+      format.pdf {
+        pdf_filename = "facture_#{@invoice.can_be_downloaded? ? @invoice.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
+        render_pdf(pdf_filename, "invoices/show.xml.erb", "invoices/show.xsl.erb", "assets/sales/invoices/generated_pdf/#{@invoice.reference.nil? ? 'tmp' : @invoice.id}.pdf", @invoice.reference.nil?)
+      }
       format.html { }
     end
   end
@@ -298,12 +296,10 @@ class InvoicesController < ApplicationController
   # GET /orders/:order_id/:step/invoices/ajax_request_for_invoice_items/:delivery_note_ids
   # GET /orders/:order_id/:step/invoices/:invoice_id/ajax_request_for_invoice_items/:delivery_note_ids
   def ajax_request_for_invoice_items
-    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
-    
     delivery_notes = params[:delivery_note_ids] ? params[:delivery_note_ids].split(",") : []
     
+    @invoice = Invoice.find_by_id(params[:invoice_id]) || @order.invoices.build
     @invoice.delivery_note_invoice_attributes=(delivery_notes)
-    
     @invoice.build_or_update_invoice_items_from_associated_delivery_notes
   end
   
@@ -326,4 +322,16 @@ class InvoicesController < ApplicationController
       end
     end
     
+    def render_pdf(pdf_filename, xml_template, xsl_template, pdf_path, is_temporary_pdf=false)
+      unless File.exist?(pdf_path)  
+        area_tree_path = Fop.area_tree_from_xml_and_xsl(render_to_string(:template => xml_template, :layout => false), render_to_string(:template => xsl_template, :layout => false), "public/fo/tmp/#{File.basename(pdf_path,".pdf")}.at")
+        adjust_pdf_last_footline(area_tree_path,510000,700000) 
+        adjust_pdf_intermediate_footlines(area_tree_path,510000,700000)
+        adjust_pdf_report(area_tree_path) 
+        render :pdf => pdf_filename, :xml_template => xml_template, :xsl_template => xsl_template , :path => pdf_path, :is_temporary_pdf => is_temporary_pdf
+        File.delete(area_tree_path)
+      else
+        render :pdf => pdf_filename, :path => pdf_path
+      end
+    end 
 end

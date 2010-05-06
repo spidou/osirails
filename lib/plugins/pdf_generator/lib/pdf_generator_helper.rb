@@ -21,7 +21,7 @@ module PdfGeneratorHelper
 
   private
     def make_pdf(options = {})
-      Fop.pdf_from_xml_and_xsl(options[:template].nil? ? nil : render_to_string(:template => options[:template], :layout => false), options[:xsl], options[:pdf], options[:path], options[:is_temporary_pdf])
+      Fop.pdf_from_xml_and_xsl(options[:xml_template].nil? ? nil : render_to_string(:template => options[:xml_template], :layout => false), options[:xsl_template].nil? ? nil : render_to_string(:template => options[:xsl_template], :layout => false), options[:path], options[:is_temporary_pdf])
     end
 
     def make_and_send_pdf(options = {})

@@ -1,0 +1,12 @@
+<%
+  require_locals form
+  customer = third_additional_info
+%>
+<p>
+  <%= form.label :created_at %>
+  <%= strong customer.created_at.humanize unless customer.created_at.nil?%>
+<p>
+<p>
+  <%= form.label :creator %>
+  <%= strong customer.creator.employee_name unless customer.creator.nil?%>
+<p>

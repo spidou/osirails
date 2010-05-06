@@ -1,30 +1,30 @@
 <h2>Mes demandes en cours</h2>
 
 <% if in_progress_leave_requests.size > 0 %>
-
-<table>
-  <tr>
-    <th>Date / P&eacute;riode demand&eacute;e</th>
-    <th>Soumise le</th>
-    <th>Statut</th>
-    <th>Actions</th>
-  </tr>
-  
-  <% for leave_request in in_progress_leave_requests %>
-    <tr>
-      <td><%= leave_request.formatted %></td>
-      <td><%= l(leave_request.submitted_at.to_datetime) %></td>
-      <td><%= view_status(leave_request) %></td>
-      <td>
-        <%= leave_request_link(leave_request, :link_text => "") %>
-        <%= cancel_leave_request_link(leave_request,true) %>
-        <%= delete_leave_request_link(leave_request, :link_text => "") %>
-      </td>
-    </tr>
-  <% end %>
-  
-</table>
-  
+  <table>
+    <thead>
+      <tr>
+        <th>Date / P&eacute;riode demand&eacute;e</th>
+        <th>Soumise le</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for leave_request in in_progress_leave_requests %>
+        <tr>
+          <td><%= leave_request.formatted %></td>
+          <td><%= l(leave_request.submitted_at.to_datetime) %></td>
+          <td><%= view_status(leave_request) %></td>
+          <td>
+            <%= leave_request_link(leave_request, :link_text => "") %>
+            <%= cancel_leave_request_link(leave_request,true) %>
+            <%= delete_leave_request_link(leave_request, :link_text => "") %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% else %>
   <p>Aucune demande en cours</p>
 <% end %>

@@ -1,32 +1,33 @@
 <% require_locals checklist, product %>
 
 <div class="autoscroll">
-  <table>
+  <table class="survey_checklist">
     <thead>
       <tr>
-        <td>Crit&egrave;res de pose</td>
-        <td>Points de contrôle</td>
-        <td>Informations / Commentaires</td>
+        <th>Points de contrôle</th>
+        <th>Informations / Commentaires</th>
       </tr>
     </thead>
-    <tbody>
-    <% for checklist_option in checklist.checklist_options %>
-      <tr>
-        <% if checklist_option.parent %>
-          <% response = ChecklistResponse.find_by_checklist_option_id_and_product_id(checklist_option.id, product.id) || ChecklistResponse.new(:checklist_option_id => checklist_option.id, :product_id => product.id) %>
-          <td><%= checklist_option.title %></td>
-          <td>
-            <% fields_for "product[#{product.id}][checklist_responses_attributes][]", response do |form| %>
-              <%= form.text_area_autoresize :answer, :rows => 2, :cols => 80, :index => nil %>
-              <%= form.hidden_field :checklist_option_id, :index => nil %>
-              <%= form.hidden_field :id, :index => nil %>
-            <% end %>
-          </td>
-        <% else %>
-          <td rowspan="<%= checklist_option.children.size + 1 %>"><%= checklist_option.title %></td>
+    
+    <% for criterion in checklist.checklist_options.reject(&:parent) %>
+      <tbody>
+        <tr class="group criterion">
+          <td colspan="2"><%= criterion.title %></td>
+        </tr>
+        <% for checklist_option in criterion.children %>
+          <tr>
+            <% response = ChecklistResponse.find_by_checklist_option_id_and_product_id(checklist_option.id, product.id) || ChecklistResponse.new(:checklist_option_id => checklist_option.id, :product_id => product.id) %>
+            <td class="checkpoint"><%= checklist_option.title %></td>
+            <td class="response">
+              <% fields_for "product[#{product.id}][checklist_responses_attributes][]", response do |form| %>
+                <%= form.text_area_autoresize :answer, :rows => 2, :cols => 80, :index => nil %>
+                <%= form.hidden_field :checklist_option_id, :index => nil %>
+                <%= form.hidden_field :id, :index => nil %>
+              <% end %>
+            </td>
+          </tr>
         <% end %>
-      </tr>
+      </tbody>
     <% end %>
-    </tbody>
   </table>
 </div>

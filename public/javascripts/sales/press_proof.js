@@ -169,6 +169,15 @@ function move_to_left(link)
   move_to(false, link);
 }
 
+// Method the parse next or previous siblings until the first visible, and return it
+//
+function nearly_visible(element, to_next)
+{
+  do { element = (to_next ? element.next() : element.previous()) }
+  while(!element.visible())
+  return element;
+}
+
 // Method to move a selected_mockup before the previous or after the next
 // to_next
 // - true move after the next
@@ -176,22 +185,21 @@ function move_to_left(link)
 //
 function move_to(to_next, link)
 {
-  var element = $(link).parentNode;
-  var other_element = (to_next ? $(element).next() : $(element).previous());
+  var element   = $(link).parentNode;
+  var neighbour = $(nearly_visible(element, to_next));
   
-  if (other_element == null) return;
-  
-  var next_element = (to_next ? other_element.next() : other_element);
-  var old_position = element.down('.position').value;
-  var new_position = other_element.down('.position').value
+  if (neighbour == null) return;
+
+  var element_position   = element.down('.position').value;
+  var neighbour_position = neighbour.down('.position').value;
   
   // move the dom element
-  element.parentNode.insertBefore(element,next_element);
+  (to_next ? neighbour.insert({after: element}) : neighbour.insert({before: element}));
   element.highlight();
   
   // update the positions
-  update_position(other_element, old_position);
-  update_position(element, new_position);
+  update_position(neighbour, element_position);
+  update_position(element, neighbour_position);
   
   // udpate the actions links
   update_all_action_links();

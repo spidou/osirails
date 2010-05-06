@@ -1,18 +1,18 @@
 <% invoice = invoice_aggregates %>
 
 <tr class="aggregates">
-  <td colspan="7" rowspan="3"></td>
+  <td colspan="8" rowspan="3"></td>
   <td colspan="2" class="aggregate_label">Total HT :</td>
-  <td colspan="2" class="aggregate_amount aggregate_without_taxes"><span><%= invoice.total.round_to(2).to_s(2) %></span></td>
+  <td class="aggregate_amount aggregate_without_taxes"><span><%= invoice.total.round_to(2).to_s(2) %></span></td>
   <% if is_form_view? or params[:action] == "ajax_request_for_invoice_items" %>
     <td rowspan="3"></td>
   <% end %>
 </tr>
 <tr class="aggregates">
   <td colspan="2" class="aggregate_label">Total taxes :</td>
-  <td colspan="2" class="aggregate_amount aggregate_all_taxes"><span><%= invoice.summon_of_taxes.round_to(2).to_s(2) %></span></td>
+  <td class="aggregate_amount aggregate_all_taxes"><span><%= invoice.summon_of_taxes.round_to(2).to_s(2) %></span></td>
 </tr>
 <tr class="aggregates global">
   <td colspan="2" class="aggregate_label">NET À PAYER</td>
-  <td colspan="2" class="aggregate_amount aggregate_net_to_paid"><span id="invoice_net_to_paid"><%= invoice.net_to_paid.round_to(2).to_s(2) %></span>&#160;&euro;</td>
+  <td class="aggregate_amount aggregate_net_to_paid"><span id="invoice_net_to_paid"><%= invoice.net_to_paid.round_to(2).to_s(2) %></span>&#160;&euro;</td>
 </tr>

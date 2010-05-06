@@ -14,17 +14,13 @@ class PressProofsController < ApplicationController
   def show
     @press_proof = PressProof.find(params[:id])
     
-    if @press_proof.uncomplete? and params[:format] == "pdf"
-      error_access_page(404)
-      return
-    end
-    
     respond_to do |format|
       format.xml  {
         render :layout => false
       }
       format.pdf  {
-        render :pdf => "Bon_a_tirer_#{@press_proof.reference}", :template => "press_proofs/show.xml.erb", :xsl => "public/fo/style/press_proof.xsl", :path => "assets/sales/press_proofs/generated_pdf/#{@press_proof.id}.pdf"
+        pdf_filename = "bat_#{@press_proof.can_be_downloaded? ? @press_proof.reference : 'tmp_'+Time.now.strftime("%Y%m%d%H%M%S")}"
+        render :pdf => pdf_filename, :xml_template => "press_proofs/show.xml.erb", :xsl_template => "press_proofs/show.xsl.erb", :path => "assets/sales/press_proofs/generated_pdf/#{@press_proof.reference.nil? ? 'tmp' : @press_proof.id}.pdf", :is_temporary_pdf => @press_proof.status.nil?
       }
       format.html { }
     end
@@ -36,6 +32,7 @@ class PressProofsController < ApplicationController
     
     unless @order.all_products_have_signed_press_proof?
       @press_proof.product = @order.products_without_signed_press_proof.first
+      @press_proof.internal_actor = current_user.employee
       @press_proof.creator = current_user
     else
       error_access_page(412)

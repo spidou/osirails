@@ -3,12 +3,17 @@
 <% end %>
 
 <div class="presentation_medium">
+  <% if is_form_view? %>
+    <h2>Détails de la demande de congés</h2>
+  <% else %>
+    <h2>Informations</h2>
+  <% end %>
+  
   <% form_for(leave_request) do |f| %>
     
     <!--############## SHOW : Leave informations / FORM : Leave period ##############-->
   
     <% if !is_form_view? or leave_request.was_higher_than_step_unstarted? %>
-      <h2>Informations</h2>
       <p>
         <%= f.label :status %>
         <%= f.strong view_status(leave_request) %>

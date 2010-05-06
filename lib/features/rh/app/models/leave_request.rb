@@ -7,7 +7,7 @@ class LeaveRequest < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:status]                = "STATUT :"
+  @@form_labels[:status]                = "État actuel :"
   @@form_labels[:employee]              = "Employé :"
   @@form_labels[:submitted_at]          = "Date de la demande :"
   @@form_labels[:period]                = "Date/Période demandée :"
@@ -45,9 +45,9 @@ class LeaveRequest < ActiveRecord::Base
   STATUS_REFUSED_BY_DIRECTOR    = -4
   
   named_scope :leave_requests_to_notice,  :conditions => ["status = ?", LeaveRequest::STATUS_CHECKED],
-                                          :order => "start_date DESC"
+                                          :order      => "start_date DESC"
   named_scope :leave_requests_to_close,   :conditions => ["status = ?", LeaveRequest::STATUS_NOTICED],
-                                          :order => "start_date DESC"
+                                          :order      => "start_date DESC"
   
   has_one :leave
   

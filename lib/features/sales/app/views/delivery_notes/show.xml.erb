@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<Root>
+  <Document>
+    <BackgroundImage><%= "#{RAILS_ROOT}/public/fo/images/background.png" %></BackgroundImage>
+    <IsInstallation><%= @delivery_note.delivery_note_type.installation %></IsInstallation>
+    <Type><%= @delivery_note.delivery_note_type.installation ? "BON D'INSTALLATION" : "BON DE LIVRAISON" %></Type>
+    <Reference><%= @delivery_note.reference %></Reference>
+    <Date><%= l(Date.today) %></Date>
+    <FileName><%= @delivery_note.order.title%></FileName>
+    <Supplier>
+      <CorporateName><%= ConfigurationManager.admin_society_identity_configuration_name %></CorporateName>
+      <CorporateName2><%= ConfigurationManager.admin_society_identity_configuration_acronym %></CorporateName2>
+      <Address1><%= ConfigurationManager.admin_society_identity_configuration_address_first_line %></Address1>
+      <Address2><%= ConfigurationManager.admin_society_identity_configuration_address_second_line %></Address2>
+      <ZipCode><%= ConfigurationManager.admin_society_identity_configuration_address_zip %></ZipCode>
+      <City><%= ConfigurationManager.admin_society_identity_configuration_address_town %></City>
+      <Country><%= ConfigurationManager.admin_society_identity_configuration_address_country %></Country>
+      <Status><%= ConfigurationManager.admin_society_identity_configuration_status %></Status>
+      <Siret><%= ConfigurationManager.admin_society_identity_configuration_siret %></Siret>
+      <NAFCode><%= ConfigurationManager.admin_society_identity_configuration_naf_code %></NAFCode>
+      <Email><%= ConfigurationManager.admin_society_identity_configuration_email %></Email>
+      <Phone><%= ConfigurationManager.admin_society_identity_configuration_phone %></Phone>
+      <Fax><%= ConfigurationManager.admin_society_identity_configuration_fax %></Fax>
+      <Representative>
+        <!-- TODO Replace commercial by technical representative when it will be implemented -->
+        <Function><%= @delivery_note.order.commercial.jobs.first.name %></Function>
+        <LastName><%= @delivery_note.order.commercial.last_name %></LastName>
+        <FirstName><%= @delivery_note.order.commercial.first_name %></FirstName>
+        <Email><%= @delivery_note.order.commercial.email %></Email>
+        <Phone><%= "#{@delivery_note.order.commercial.numbers.first.indicative.indicative} #{@delivery_note.order.commercial.numbers.first.number}" %></Phone>
+      </Representative>
+      <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
+    </Supplier>  
+    <Customer>
+      <CorporateName><%= @delivery_note.order.customer.name %></CorporateName>
+      <CorporateName2><%= @delivery_note.order.customer.name %></CorporateName2>
+      <Address1><%= @delivery_note.ship_to_address.street_name %></Address1>
+      <Address2></Address2>
+      <ZipCode><%= @delivery_note.ship_to_address.zip_code %></ZipCode>
+      <City><%= @delivery_note.ship_to_address.city_name %></City>
+      <Country><%= @delivery_note.ship_to_address.country_name %></Country>
+      <Email/>
+      <Phone/>
+      <Fax/>
+      <Representative>
+        <Function/>
+        <LastName><%= @delivery_note.contact.last_name %></LastName>
+        <FirstName><%= @delivery_note.contact.first_name %></FirstName>
+        <Email><%= @delivery_note.contact.email %></Email>
+        <Phone/>
+        <Fax/>      
+      </Representative>
+    </Customer>
+    <Lines>
+      <% @delivery_note.delivery_note_items.each do |item| %>
+        <% unless item.quantity == 0 %>
+          <Line>
+            <Id><%= item.id %></Id>
+            <% if @footlines_adjustments %>
+              <% @adjust_bottom = @footlines_adjustments.include?(("item_"+item.id.to_s).to_sym) %>
+              <% if @adjust_bottom %>
+                <% @padding_bottom = @footlines_adjustments[("item_"+item.id.to_s).to_sym].round_to(2).to_s(2) %>
+              <% else %>
+                <% @padding_bottom = "0.3" %>
+              <% end %>
+            <% else %>
+              <% @padding_bottom = "0.3" %>
+            <% end %>
+            <%= "<PaddingBottom>#{@padding_bottom}</PaddingBottom>" %>  
+            <Reference><%= item.quote_item.product.product_reference.reference %></Reference>
+            <Name><%= item.quote_item.name %></Name>
+            <Description><%= item.quote_item.description %></Description>
+            <Quantity><%= item.quantity %></Quantity>
+          </Line>
+        <% end %> 
+      <% end %>
+    </Lines>
+  </Document>
+  <Labels>
+    <Siret>SIRET :</Siret>
+    <NAFCode>Code NAF :</NAFCode>
+    <Email>e-mail</Email>
+    <Phone>tél</Phone>
+    <Fax>fax</Fax>
+    <Date>Date :</Date>
+    <Prefix>N°</Prefix>
+    <FileName></FileName>
+    <SupplierPrefix>Suivi technique</SupplierPrefix>
+    <SupplierRepresentativePhone>tél</SupplierRepresentativePhone>
+    <SupplierRepresentativeEmail>e-mail</SupplierRepresentativeEmail>
+    <CustomerPrefix>A l'attention de</CustomerPrefix>
+    <Reference>Réf.</Reference>
+    <Description>Désignation produit</Description>
+    <Quantity>Qté</Quantity>
+    <Remarks>Réserves Client</Remarks>
+    <ContactTitle>CONTACT SUR SITE</ContactTitle>
+    <ContactName>Nom :</ContactName>
+    <ContactPhone>Tél :</ContactPhone>
+    <ContactEmail>E-mail :</ContactEmail>
+    <StatusTitle>AVANCEMENT</StatusTitle>
+    <StatusInProgress>En cours</StatusInProgress>
+    <StatusEnded>Terminé à 100%</StatusEnded>
+    <Agreement>Date, signature et cachet client :</Agreement>
+    <Agreement2>Produits livrés <%= @delivery_note.delivery_note_type.installation ? "et installés" : "" %> conformes</Agreement2>
+    <% @delivery_type = "LIVRAISON" %>
+    <% @installation_type = "POSE" %>
+    <DeliveryAndInstallationTitle><%= "#{@delivery_type}#{@delivery_note.delivery_note_type.installation ? ' ET '+@installation_type : ''}" %></DeliveryAndInstallationTitle>
+    <DeliveryName>Nom du livreur :</DeliveryName>
+    <InstallationName>Nom du poseur :</InstallationName>
+    <Page>Page</Page>  
+  </Labels>
+</Root>

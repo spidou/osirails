@@ -17,6 +17,7 @@ module QuotesHelper
     html << display_quote_order_form_button(order, quote, '')
     html << display_quote_cancel_button(order, quote, '')
     
+    html << display_quote_preview_button(order, quote, '')
     html << display_quote_show_pdf_button(order, quote, '')
     html << display_quote_show_button(order, quote, '')
     html << display_quote_edit_button(order, quote, '')
@@ -54,8 +55,18 @@ module QuotesHelper
              order_commercial_step_estimate_step_quote_path(order, quote) )
   end
   
+  def display_quote_preview_button(order, quote, message = nil)
+    return unless Quote.can_view?(current_user) and !quote.new_record? and !quote.can_be_downloaded?
+    text = "Télécharger un aperçu de ce devis (PDF)"
+    message ||= " #{text}"
+    link_to( image_tag( "preview_16x16.gif",
+                        :alt => text,
+                        :title => text ) + message,
+             order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf) )
+  end
+  
   def display_quote_show_pdf_button(order, quote, message = nil)
-    return unless Quote.can_view?(current_user) and !quote.was_uncomplete?
+    return unless Quote.can_view?(current_user) and quote.can_be_downloaded?
     text = "Télécharger ce devis (PDF)"
     message ||= " #{text}"
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
@@ -134,6 +145,33 @@ module QuotesHelper
                         :alt    => text,
                         :title  => text ) + message,
              order_commercial_step_estimate_step_quote_order_form_path(order, quote) )
+  end
+  
+  def display_add_free_quote_item_for(quote)
+    button_to_function "Insérer une ligne de commentaire" do |page|
+      page.insert_html :bottom, :quote_items_body, :partial => 'quote_items/quote_item',
+                                                   :object  => quote.quote_items.build
+      last_item = page[:quote_items_body].select('.free_quote_item').last
+      last_item.show
+      last_item.visual_effect :highlight
+      
+      page << "update_up_down_links($('quote_items_body'))"
+    end
+  end
+  
+  def status_text(quote)
+    case quote.status
+      when nil
+        'Brouillon'
+      when Quote::STATUS_CANCELLED
+        'Annulé'
+      when Quote::STATUS_CONFIRMED
+        'Validé'
+      when Quote::STATUS_SENDED
+        'Envoyé'
+      when Quote::STATUS_SIGNED
+        'Signé'
+    end
   end
   
 end

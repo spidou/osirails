@@ -2,6 +2,7 @@
   <%= display_quote_add_button(@order) unless is_new_view? %>
   <%= display_quote_show_button(@order, @quote) unless is_show_view? %>
   <%= display_quote_order_form_button(@order, @quote) %>
+  <%= display_quote_preview_button(@order, @quote) %>
   <%= display_quote_show_pdf_button(@order, @quote) %>
   <%= display_quote_edit_button(@order, @quote) unless is_edit_view? %>
   

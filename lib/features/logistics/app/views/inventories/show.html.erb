@@ -17,29 +17,36 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + l(@date.strftime.to_date) %></h1>
+<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + l(@date) %></h1>
 
 <div>
   <% unless @supplies.empty? %>
     <div class="autoscroll">
       <table class="<%= @supply_type.name.tableize.singularize %>">
-        <tr>
-          <th rowspan='2'>Cat&eacute;gorie</th>
-          <th rowspan='2'>Sous cat&eacute;gorie</th>
-          <th rowspan='2'>R&eacute;f.</th>
-          <th rowspan='2'>D&eacute;signation</th>
-          <th rowspan='2'>Fournisseurs</th>
-          <th colspan='4'>Stock/fournisseur</th>
-          <th colspan='4'>Stock total</th>
-          <tr>            <th>Quantit&eacute;</th>                  <th>Grandeur</th>
-            <th>Masse</th>   
-            <th>Valeur</th>   
-            <th>Quantit&eacute;</th>                  <th>Grandeur</th>
-            <th>Masse</th>   
-            <th>Valeur</th>     
+        <thead>
+          <tr>
+            <th rowspan='2'>Cat&eacute;gorie</th>
+            <th rowspan='2'>Sous cat&eacute;gorie</th>
+            <th rowspan='2'>R&eacute;f.</th>
+            <th rowspan='2'>D&eacute;signation</th>
+            <th rowspan='2'>Fournisseurs</th>
+            
+            <th colspan='4'>Stock/fournisseur</th>
+            
+            <th colspan='4'>Stock total</th>
           </tr>
-        </tr>      
-      <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
+          <tr>            <th>Quantit&eacute;</th>            <th>Grandeur</th>
+            <th>Masse</th>
+            <th>Valeur</th>
+            
+            <th>Quantit&eacute;</th>            <th>Grandeur</th>
+            <th>Masse</th>
+            <th>Valeur</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
+        </tbody>
       </table>
     </div>
   <% else %>

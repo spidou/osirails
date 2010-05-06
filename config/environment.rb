@@ -14,6 +14,7 @@ RAKE_TASK = false unless defined? RAKE_TASK
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 require 'rails_hacks'
+require 'contextual_menu'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -37,7 +38,7 @@ Rails::Initializer.run do |config|
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
                     :tiny_mce, :validates_persistence_of, :validates_timeliness, :paperclip, :auto_complete,
                     :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
-                    :acts_as_step, :pdf_generator, :all]
+                    :has_numbers, :acts_as_step, :pdf_generator, :all]
   
   # BEGIN #
   # Manage feature's dependences
@@ -121,11 +122,10 @@ Rails::Initializer.run do |config|
 end
 
 require 'version'
-require 'contextual_menu_manager'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
-load 'application_helper.rb'
+load 'application_helper.rb' if RAILS_ENV == "development" # only with development mode, because in production mode this load cancel all feature's overrides (in lib/features/[feature]/overrides.rb) and there are not loaded again
 
 require 'json'
 require 'htmlentities'
