@@ -1,19 +1,38 @@
 module NumbersHelper
 
   def display_numbers(numbers_owner)
-    html  = "<h3>Numéro(s) de téléphone(s)</h3>"
-    html += "<div id='numbers'>"    
-    html += render :partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :number_owner => numbers_owner }
-    html += "</div>"
+    html = "<div class='numbers'>"    
+    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner})
     html += "<p>#{ add_number_link(numbers_owner) if is_form_view? }</p>"
+    html += "</div>"
   end 
   
+  def display_first_numbers(numbers_owner, quantity)
+    more = 'Voir plus ...'
+    less = 'Voir moins ...'
+    
+    html = "<div>"
+    quantity.times do |i|
+      html += display_full_phone_number(numbers_owner.numbers[i]) + "<br />"
+    end
+    unless numbers_owner.numbers.count < quantity
+      numbers_list = numbers_owner.numbers[quantity..-1].collect {|n| display_full_phone_number(n) }.join("<br />")
+      html += "<div style='display:none;'>#{ numbers_list }</div>" 
+      html += link_to_function( more, "view_more_or_less(this, '#{ less }', '#{ more }');")
+    end
+    html += "</div>"
+  end
+  
   # method that permit to add with javascript a new record of number
-  def add_number_link(number_owner)
-    link_to_function "Ajouter un numéro" do |page|
-      page.insert_html :bottom, :numbers, :partial => "numbers/number", :object => Number.new, :locals => { :number_owner => number_owner }
-    end  
-  end 
+  def add_number_link(numbers_owner)
+    partial = escape_javascript( render(:partial => "numbers/number",
+                                        :object => Number.new,
+                                        :locals => { :numbers_owner => numbers_owner}) )
+                                                  
+    # a fake id is used to identify new contacts without id. look at contacts_helper.rb and search for "#FAKE_ID" to see how it is generated
+    # TODO do not forget to remove "get_contact_fake_id(this)"  js method call when the trick will become useless.
+    link_to_function( "Ajouter un numéro", h( "this.parentNode.insert({ before: '#{ partial }'}); get_contact_fake_id(this);"), :class => "add_number_link")
+  end
   
   # method that permit to remove with javascript a new record of number
   def remove_number_link()
@@ -22,7 +41,7 @@ module NumbersHelper
   
   # method that permit to remove with javascript an existing number
   def remove_old_number_link()
-    link_to_function( "Supprimer" , "mark_resource_for_destroy(this)") 
+    link_to_function( "Supprimer" , "mark_number_for_destroy(this)") 
   end
   
   # Methode to get a number without images but with all informations
@@ -80,5 +99,10 @@ module NumbersHelper
     type = "phone" if type == "Fixe" or type == "Fixe Professionnel"
     type = "fax" if type == "Fax" or type== "Fax Professionnel"
     type + "_16x16.png"
+  end
+  
+  # method that permit the showing of img balise with otions passed as arguments  
+  def display_image(path,alt,title=alt)
+    image_tag(path, :alt => alt, :title => title)
   end
 end

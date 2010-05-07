@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :payments, :adjustments
+  helper :orders, :contacts, :payments, :adjustments, :numbers
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
@@ -72,7 +72,6 @@ class InvoicesController < ApplicationController
     end
     
     @invoice.creator = current_user
-    @invoice.contacts << @order.contacts.last unless @order.contacts.empty?
     @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end
   

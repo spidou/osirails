@@ -43,6 +43,13 @@ class Establishment  < ActiveRecord::Base
   @@form_labels[:phone]                     = "Tél :"
   @@form_labels[:fax]                       = "Fax :"
   
+  # TODO test that method
+  def errors_on_attributes_except_on_contacts?
+    [:name, :address, :establishment_type, :siret_number, :address].each do |attribute|
+      return true if errors.on(attribute)
+    end
+    false
+  end
   
   def name_and_full_address
     "#{self.name} (#{self.full_address})"
@@ -53,6 +60,6 @@ class Establishment  < ActiveRecord::Base
   end
   
   def should_update?
-    should_update.to_i == 1
+    should_update.to_i == 1 or contacts.select(&:should_save?).any?
   end
 end

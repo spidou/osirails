@@ -33,7 +33,7 @@ default_ship_to_address = order.signed_quote.ship_to_address
     <h4>Contact</h4>
     <p>
       <%= label :select_contacts, "À l'attention de " %>
-      <%= display_contacts_picker(delivery_note, order.contacts) %>
+      <%= display_contact_picker(delivery_note, order.all_contacts, :form => form, :key => 'delivery_note_contact') %>
     </p>
   </div>
   

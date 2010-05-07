@@ -2,6 +2,7 @@
   <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= javascript_include_tag 'core/has_resources/resources_picker' %>
+  <%= javascript_include_tag 'has_contacts/contact' %>
 <% end -%>
 
 <%
@@ -27,7 +28,7 @@ default_ship_to_address = order.ship_to_addresses.first.address # TODO replace t
     <h3>Contact</h3>
     <p>
       <%= label :select_contacts, "À l'attention de " %>
-      <%= display_contacts_picker(quote, order.contacts) %>
+      <%= display_contact_picker(quote, order.all_contacts, :form => form, :key => 'quote_contact') %>
     </p>
   </div>
 </div>

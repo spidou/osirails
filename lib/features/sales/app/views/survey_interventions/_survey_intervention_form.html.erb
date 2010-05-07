@@ -21,8 +21,8 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
       <%= form.collection_select :internal_actor_id, Employee.actives, :id, :fullname, ( intervention.new_record? ? { :include_blank => "Veuillez choisir un employee" } : {} ), :index => nil %>
     </p>
     <p>
-      <%= form.label :contact_ids %>
-      <%= display_contacts_picker(intervention, intervention.order_contacts, :owner_type => "survey_step[survey_intervention_attributes][]") %>
+      <%= form.label :survey_intervention_contact_id %>
+      <%= display_contact_picker(intervention, intervention.order_contacts, :form => form, :key => 'survey_intervention_contact')%>
     </p>
     <p>
       <%= form.label :comment %>

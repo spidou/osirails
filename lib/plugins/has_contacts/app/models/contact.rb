@@ -3,22 +3,25 @@ class Contact < ActiveRecord::Base
   
   has_numbers
   
-  belongs_to :contact_type
+#  belongs_to :contact_type
   
-  has_many :contacts_owners, :foreign_key => "contact_id", :dependent => :destroy
-  has_many :numbers, :as => :has_number
+  belongs_to :has_contact, :polymorphic => true
   
-  validates_presence_of   :first_name, :last_name, :contact_type, :gender
+  validates_presence_of   :first_name, :last_name, :gender#, :contact_type
   validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_inclusion_of  :gender, :in => %w( M F )
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
   
+  # the same as above but do not destroy the object. It's marked as hidden.
+  attr_accessor :should_hide
+  
   # define if the object should be updated 
   # should_update = 1 if the form is visible # see the /customers/1/edit
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see the /customers/1/edit
   attr_accessor :should_update
+  
   
   cattr_accessor :contacts_owners_models
   @@contacts_owners_models = []
@@ -43,13 +46,37 @@ class Contact < ActiveRecord::Base
   has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
   
   before_save :case_management
-
+  
+  # TODO test that method
+  def can_be_hidden?
+    !new_record?
+  end
+  
+  # TODO test that method
+  def hide
+    if can_be_hidden?
+      self.hidden = true 
+      self.save
+    end
+  end
+  
   def should_destroy?
     should_destroy.to_i == 1
   end
   
+  # TODO test that method
+  def should_hide?
+    should_hide.to_i == 1
+  end
+
   def should_update?
     should_update.to_i == 1
+  end
+  
+  ## modify should update dans establishment
+  # TODO test that method
+  def should_save?
+    changed? or should_update? or should_hide? or should_destroy?
   end
   
   def fullname

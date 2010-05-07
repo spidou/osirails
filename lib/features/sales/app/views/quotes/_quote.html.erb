@@ -55,7 +55,7 @@ excess_quote_items  = quote.product_quote_items.select{ |q| q.product.nil? }
     <h2 class="quote_header"><%= quote_headers[:quote_header] %></h2>
     <div class="quote_header section_nav selected">
       <%= form.error_messages unless quote_errors[:quote_header].blank? %>
-      <%= render :partial => 'quote_header', :object => quote %>
+      <%= render :partial => 'quote_header', :object => quote, :locals => { :form => form } %>
     </div>
     
     <h2 class="quote_body"><%= quote_headers[:quote_body] %></h2>

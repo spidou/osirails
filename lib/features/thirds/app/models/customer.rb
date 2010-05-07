@@ -68,7 +68,7 @@ class Customer < Third
   end
   
   def contacts
-    establishments.collect(&:contacts).flatten
+    (establishments + [ head_office ]).collect(&:contacts).flatten
   end
   
   def establishment_attributes=(establishment_attributes)

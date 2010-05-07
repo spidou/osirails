@@ -17,6 +17,7 @@ module HasNumbers
         # this method permit to save the numbers of the employee when it is passed with the employee form
         def number_attributes=(number_attributes)
           number_attributes.each do |attributes|
+            attributes.delete("#{self.class.singularized_table_name}_id")
             if attributes[:id].blank?
               self.numbers.build(attributes)
             else

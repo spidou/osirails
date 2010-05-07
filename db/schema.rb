@@ -164,32 +164,18 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.datetime "updated_at"
   end
 
-  create_table "contact_types", :force => true do |t|
-    t.string   "name"
-    t.string   "owner"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "contacts", :force => true do |t|
-    t.integer  "contact_type_id",     :limit => 11
     t.string   "first_name"
     t.string   "last_name"
     t.string   "job"
     t.string   "email"
     t.string   "gender"
+    t.boolean  "hidden"
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size",    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contacts_owners", :force => true do |t|
-    t.integer  "has_contact_id",   :limit => 11
+    t.integer  "has_contact_id",      :limit => 11
     t.string   "has_contact_type"
-    t.integer  "contact_id",       :limit => 11
-    t.integer  "contact_type_id",  :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -347,14 +333,15 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   end
 
   create_table "delivery_notes", :force => true do |t|
-    t.integer  "order_id",                :limit => 11
-    t.integer  "creator_id",              :limit => 11
-    t.integer  "delivery_note_type_id",   :limit => 11
+    t.integer  "order_id",                 :limit => 11
+    t.integer  "creator_id",               :limit => 11
+    t.integer  "delivery_note_type_id",    :limit => 11
+    t.integer  "delivery_note_contact_id", :limit => 11
     t.string   "status"
     t.string   "reference"
     t.string   "attachment_file_name"
     t.string   "attachment_content_type"
-    t.integer  "attachment_file_size",    :limit => 11
+    t.integer  "attachment_file_size",     :limit => 11
     t.date     "published_on"
     t.date     "signed_on"
     t.datetime "confirmed_at"
@@ -686,6 +673,7 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.integer  "creator_id",                  :limit => 11
     t.integer  "cancelled_by_id",             :limit => 11
     t.integer  "abandoned_by_id",             :limit => 11
+    t.integer  "invoice_contact_id",          :limit => 11
     t.string   "reference"
     t.string   "status"
     t.text     "cancelled_comment"
@@ -909,6 +897,7 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.integer  "society_activity_sector_id", :limit => 11
     t.integer  "order_type_id",              :limit => 11
     t.integer  "approaching_id",             :limit => 11
+    t.integer  "order_contact_id",           :limit => 11
     t.string   "title"
     t.string   "reference"
     t.text     "customer_needs"
@@ -1112,6 +1101,7 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
     t.integer  "creator_id",              :limit => 11
     t.integer  "send_quote_method_id",    :limit => 11
     t.integer  "order_form_type_id",      :limit => 11
+    t.integer  "quote_contact_id",        :limit => 11
     t.string   "status"
     t.string   "reference"
     t.float    "carriage_costs",                        :default => 0.0
@@ -1315,11 +1305,12 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   end
 
   create_table "survey_interventions", :force => true do |t|
-    t.integer  "survey_step_id",    :limit => 11
-    t.integer  "internal_actor_id", :limit => 11
+    t.integer  "survey_step_id",                 :limit => 11
+    t.integer  "internal_actor_id",              :limit => 11
+    t.integer  "survey_intervention_contact_id", :limit => 11
     t.datetime "start_date"
-    t.integer  "duration_hours",    :limit => 11
-    t.integer  "duration_minutes",  :limit => 11
+    t.integer  "duration_hours",                 :limit => 11
+    t.integer  "duration_minutes",               :limit => 11
     t.text     "comment"
     t.datetime "created_at"
     t.datetime "updated_at"

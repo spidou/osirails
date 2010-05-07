@@ -1,5 +1,5 @@
 class SubcontractorsController < ApplicationController
-  helper :thirds, :contacts, :documents
+  helper :thirds, :contacts, :documents, :numbers
   
   # GET /subcontractors
   def index

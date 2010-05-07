@@ -4,6 +4,8 @@ require File.dirname(__FILE__) + '/../sales_test'
 class OrderTest < ActiveSupport::TestCase
   should_have_many :mockups, :graphic_documents
   
+  should_validate_presence_of :order_contact, :with_foreign_key => :default
+  
   subject { @order }
 
   def setup
@@ -177,34 +179,34 @@ class OrderTest < ActiveSupport::TestCase
     assert !@order.errors.invalid?(:customer), "customer should be valid"
   end
   
-  def test_presence_of_contacts
-    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it's empty"
-    
-    @order.contacts << Contact.new # assuming Contact.new returns an invalid record by default
-    @order.valid?
-    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-    assert @order.errors.invalid?(:contacts), "contacts should NOT be valid because it contains an invalid contact"
-    
-    @order.contacts = []
-    @order.contact_ids << 0
-    @order.valid?
-    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it contains a wrong contact ID"
-    
-    @order.contacts = []
-    @order.contacts << contacts(:pierre_paul_jacques)
-    @order.valid?
-    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-    assert @order.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
-    
-    customer = thirds(:first_customer)
-    establishment = build_establishment_for(customer)
-    establishment.contacts << contacts(:pierre_paul_jacques)
-    customer.save
-    @order.customer = customer
-    @order.valid?
-    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-    assert !@order.errors.invalid?(:contacts), "contacts should be valid"
-  end
+#  def test_presence_of_contacts
+#    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it's empty"
+#    
+#    @order.contact << Contact.new # assuming Contact.new returns an invalid record by default
+#    @order.valid?
+#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
+#    assert @order.errors.invalid?(:contacts), "contacts should NOT be valid because it contains an invalid contact"
+#    
+#    @order.contacts = []
+#    @order.contact_ids << 0
+#    @order.valid?
+#    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it contains a wrong contact ID"
+#    
+#    @order.contacts = []
+#    @order.contacts << contacts(:pierre_paul_jacques)
+#    @order.valid?
+#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
+#    assert @order.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
+#    
+#    customer = thirds(:first_customer)
+#    establishment = build_establishment_for(customer)
+#    establishment.contacts << contacts(:pierre_paul_jacques)
+#    customer.save
+#    @order.customer = customer
+#    @order.valid?
+#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
+#    assert !@order.errors.invalid?(:contacts), "contacts should be valid"
+#  end
   
   def test_presence_of_bill_to_address
     @invalid_address = Address.new # assuming Address.new returns an invalid record by default
@@ -284,5 +286,18 @@ class OrderTest < ActiveSupport::TestCase
     end
     
     include HasReferenceTest
+  end
+  
+  context "has_contact :order_contact" do
+    setup do
+      @contact_owner = create_default_order
+      @contact_key = :order_contact
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :order_contact
+    
+    include HasContactTest
   end
 end

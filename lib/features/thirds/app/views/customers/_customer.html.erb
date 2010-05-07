@@ -11,13 +11,12 @@ customer_headers = {:customer_informations            => "Informations général
                     :customer_documents               => "Documents",
                     :customer_additional_informations => "Informations supplémentaires"}
 
-customer_errors  = {:customer_informations   => customer.errors.on(:head_office) || customer.errors.on(:bill_to_address) ||
+customer_errors  = {:customer_informations   => customer.head_office.errors_on_attributes_except_on_contacts? || customer.errors.on(:bill_to_address) ||
                                                 customer.errors.on(:name) || customer.errors.on(:legal_form) ||
                                                 customer.errors.on(:website) || customer.errors.on(:legal_form_id) ? ' errors' : '',
-                    :customer_establishments => customer.errors.on(:establishments) ? ' errors' : '',
-                    :customer_contacts       => false ? ' errors' : ''}
+                    :customer_establishments => customer.establishments.select {|n| n.errors_on_attributes_except_on_contacts? }.any? ? ' errors' : '',
+                    :customer_contacts       => customer.establishments.select {|n| n.errors.on(:contacts)}.any? ? ' errors' : ''}
 %>
-
 <div class="presentation_medium root_nav">
 
 
@@ -61,7 +60,7 @@ customer_errors  = {:customer_informations   => customer.errors.on(:head_office)
   
   <h2 class="customer_contacts"><%= customer_headers[:customer_contacts] %></h2>
   <div class="customer_contacts section_nav">
-    <p>Coming soon</p>
+    <%= render :partial => "customer_contacts", :object => customer %>
   </div>
   
   <h2 class="customer_documents"><%= customer_headers[:customer_documents] %></h2>
@@ -74,7 +73,7 @@ customer_errors  = {:customer_informations   => customer.errors.on(:head_office)
   <div class="customer_additional_informations section_nav">
     <%= render :partial => "thirds/third_additional_info", :object => customer, :locals => { :form  => form } %>
   </div>
-  
+
   <%= form.form_buttons %>
 <% end %>
 

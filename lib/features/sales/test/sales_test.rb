@@ -25,7 +25,7 @@ class Test::Unit::TestCase
     order.commercial = employees(:john_doe)
     order.creator = users(:powerful_user)
     order.customer = customer
-    order.contacts = [ customer.contacts.first, customer.contacts.last ]
+    order.order_contact_id = customer.contacts.first.id
     order.society_activity_sector = society_activity_sector
     order.order_type = society_activity_sector.order_types.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)
@@ -56,7 +56,7 @@ class Test::Unit::TestCase
     
     quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
     quote.creator = users(:powerful_user)
-    quote.contacts << contacts(:pierre_paul_jacques)
+    quote.quote_contact_id = contacts(:pierre_paul_jacques).id
     
     order.products.each do |product|
       quote.build_quote_item(:product_id  => product.id,
@@ -106,7 +106,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator          = users(:powerful_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.associated_quote.quote_items.each do |ref|
@@ -131,7 +131,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator            = users(:powerful_user)
     dn.ship_to_address    = address
-    dn.contacts           = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     count = 0
@@ -159,7 +159,7 @@ class Test::Unit::TestCase
     dn = order.build_delivery_note_with_remaining_products_to_deliver
     dn.creator          = users(:powerful_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.save!
@@ -274,7 +274,7 @@ class Test::Unit::TestCase
     
     invoice.invoice_type    = invoice_types(:deposit_invoice)
     invoice.creator         = User.first
-    invoice.contact         = order.contacts.first
+    invoice.invoice_contact_id = order.all_contacts.first.id
     invoice.bill_to_address = order.bill_to_address
     invoice.published_on    = Date.today
     

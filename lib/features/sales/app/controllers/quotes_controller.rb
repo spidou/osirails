@@ -1,6 +1,6 @@
 class QuotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts
+  helper :orders, :contacts, :numbers
   # method_permission :edit => ['enable', 'disable']
   
   after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
@@ -34,7 +34,6 @@ class QuotesController < ApplicationController
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
     @quote.creator = current_user # permit additional information displaying
     if @quote.can_be_added?
-      @quote.contacts << @order.contacts.last unless @order.contacts.empty?
       
       @order.products.each do |product|
         @quote.build_quote_item(:product_id => product.id)

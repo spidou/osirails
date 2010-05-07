@@ -34,10 +34,8 @@
 
     <h3>Client</h3>
     <p>
-      <%= form.label :contact_ids %>
-      <%= display_contacts_picker(order, order.customer.contacts) %>
-      <%= display_new_contacts_list(order) %>
-      <%# display_contact_add_button(order) %>
+      <%= form.label :contact %>
+      <%= display_contact_picker(order, order.customer.contacts, :form => form, :key => "order_contact") %>
     </p>
     
     <p>

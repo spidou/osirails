@@ -1,5 +1,5 @@
 class InformationsController < ApplicationController
-  helper :contacts
+  helper :contacts, :numbers
   
   acts_as_step_controller :sham => true
   

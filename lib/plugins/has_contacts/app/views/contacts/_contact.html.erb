@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <%= javascript_include_tag 'has_number/number' %> 
+<% end %>
+
 <%
 require_locals contacts_owner
 force_show_view ||= false
@@ -11,11 +15,12 @@ id_attr = "id=\"resource_contact_#{contact.id}\"" unless contact.new_record?
       <%= content_tag(:h1, h(contact.fullname)) unless contact.fullname.nil? or contact.fullname.empty? %>
       <%= content_tag(:span, h(contact.job)) + content_tag(:br) unless contact.job.blank? %>
       <%= content_tag(:span, h(contact.email)) + content_tag(:br) unless contact.email.blank? %>
-      <%= content_tag(:span, h("#numbers")) + content_tag(:br) %>
+      <%= content_tag(:span, display_first_numbers(contact, 3) ) %>
       <%= display_contact_edit_button(contact) unless force_show_view %>
+      <%= display_contact_hide_button(contact) unless force_show_view %>
       <%= display_contact_delete_button(contact) unless force_show_view %>
     <% end -%>
   <% end -%>
   
-  <%= render(:partial => "contacts/contact_form", :object => contact, :locals => { :contacts_owner => contacts_owner }) if is_form_view? and !force_show_view %>
+  <%= render(:partial => "contacts/contact_form", :object => contact, :locals => {:contacts_owner => contacts_owner, :index => contact_counter}) if is_form_view? and !force_show_view %>
 </div>

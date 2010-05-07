@@ -5,6 +5,7 @@ class Employee < ActiveRecord::Base
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
+  has_contacts
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
@@ -45,8 +46,6 @@ class Employee < ActiveRecord::Base
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
-  has_many :contacts_owners, :as => :has_contact
-  has_many :contacts, :source => :contact, :through => :contacts_owners
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs

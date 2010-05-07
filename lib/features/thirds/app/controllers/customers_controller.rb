@@ -1,7 +1,7 @@
 class CustomersController < ApplicationController
   helper :thirds, :establishments, :contacts, :documents, :numbers
   
-  before_filter :hack_params_for_establishments_addresses, :only => [ :create, :update ]
+  before_filter :hack_params_for_establishments_nested_resources, :only => [ :create, :update ]
   
   # GET /customers
   def index
@@ -75,23 +75,89 @@ class CustomersController < ApplicationController
     ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
-    def hack_params_for_establishments_addresses
+    def hack_params_for_establishments_nested_resources
+
       if params[:customer][:establishment_attributes]
         params[:customer][:establishment_attributes].each_with_index do |establishment_attributes, index|
+          
+          # hack for addresses
           establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index] if params[:establishment][:address_attributes]
-          establishment_attributes[:fax_attributes] = params[:establishment][:fax_attributes][index] if params[:establishment][:fax_attributes]
+          
+          # hack for has_number
+          establishment_attributes[:fax_attributes]   = params[:establishment][:fax_attributes][index]   if params[:establishment][:fax_attributes]
           establishment_attributes[:phone_attributes] = params[:establishment][:phone_attributes][index] if params[:establishment][:phone_attributes]
+          
+          # hack for  has_contacts
+          if params[:establishment][:contact_attributes]
+            contact_attributes = params[:establishment][:contact_attributes].select {|n| establishment_attributes[:id] == n[:establishment_id]}
+            establishment_attributes[:contact_attributes] = clean_params(contact_attributes, :establishment_id)
+          
+            # hack for contact's numbers
+            if params[:contact] && params[:contact][:number_attributes]
+              establishment_attributes[:contact_attributes].each_with_index do |contact_attributes, index|
+                number_attributes = params[:contact][:number_attributes].select {|n| contact_attributes[:id] == n[:has_number_id]}
+                contact_attributes[:number_attributes] = clean_params(number_attributes, :has_number_id)
+              end
+              contact_attributes[:id] = nil if is_a_fake_id?(contact_attributes[:id])                # remove fake ids used to recover new_record's numbers
+            end
+            remove_fake_ids(establishment_attributes[:contact_attributes])
+            # remove fake ids after managing numbers because even if the fake ids are linked to them
+            # if there 's no numbers the fake ids still be there so it will raise an error into at the model level
+          end
+          
         end
         params.delete(:establishment)
       end
+
       if params[:customer][:head_office_attributes]
-        params[:customer][:head_office_attributes].each_with_index do |head_office_attributes, index|
-          head_office_attributes[:address_attributes] = params[:head_office][:address_attributes][index] if params[:head_office][:address_attributes]
-          head_office_attributes[:fax_attributes] = params[:head_office][:fax_attributes][index] if params[:head_office][:fax_attributes]
-          head_office_attributes[:phone_attributes] = params[:head_office][:phone_attributes][index] if params[:head_office][:phone_attributes]
+        head_office_attributes = params[:customer][:head_office_attributes].first # there's only one head_office
+        
+        # hack for addresses
+        head_office_attributes[:address_attributes] = params[:head_office][:address_attributes].first if params[:head_office][:address_attributes]
+          
+        # hack for has_number
+        head_office_attributes[:fax_attributes]   = params[:head_office][:fax_attributes].first   if params[:head_office][:fax_attributes]
+        head_office_attributes[:phone_attributes] = params[:head_office][:phone_attributes].first if params[:head_office][:phone_attributes]
+        
+        # hack for has_contacts
+        if params[:head_office][:contact_attributes]
+          head_office_attributes[:contact_attributes] = clean_params(params[:head_office][:contact_attributes], :head_office_id)
+          
+          # hack for contact's numbers
+          if params[:contact] && params[:contact][:number_attributes]
+            head_office_attributes[:contact_attributes].each_with_index do |contact_attributes, index|
+              number_attributes                      = params[:contact][:number_attributes].select {|n| contact_attributes[:id] == n[:has_number_id]}
+              contact_attributes[:number_attributes] = clean_params(number_attributes, :has_number_id)
+            end
+          end
+          remove_fake_ids(head_office_attributes[:contact_attributes])
         end
+        
         params.delete(:head_office)
       end
     end
-
+  
+    # Method used to remove some keys that mustn't be passed to the model
+    #
+    def clean_params(array, key)
+      array.each do |hash|
+        hash.delete(key)
+      end
+      array
+    end
+    
+    # Method to find if the id passed as argument is a fake one
+    # used to retrieve new_record's numbers
+    #
+    def is_a_fake_id?(id)
+      /new_record_([0-9])*/.match(id)
+    end
+    
+    # Method to remove fake ids that become useless after params hack
+    #
+    def remove_fake_ids(collection)
+      collection.each do |element|
+        element[:id] = nil if is_a_fake_id?(element[:id])
+      end
+    end
 end

@@ -26,18 +26,21 @@ namespace :osirails do
       customer.save!
       
       # default contacts
-      contact1 = Contact.create! :first_name => "Jean-Jacques", :last_name => "Dupont",   :contact_type_id => ContactType.first.id, :email => "jean-jacques@dupont.fr", :job => "Commercial", :gender => "M"
-      contact2 = Contact.create! :first_name => "Pierre-Paul",  :last_name => "Dupond",   :contact_type_id => ContactType.first.id, :email => "pierre-paul@dupond.fr",  :job => "Commercial", :gender => "M"
-      contact3 = Contact.create! :first_name => "Nicolas",      :last_name => "Hoareau",  :contact_type_id => ContactType.first.id, :email => "nicolas@hoarau.fr",      :job => "Commercial", :gender => "M"
+      contact1 = Contact.create! :first_name => "Jean-Jacques", :last_name => "Dupont",  :email => "jean-jacques@dupont.fr", :job => "Commercial", :gender => "M"
+      contact2 = Contact.create! :first_name => "Pierre-Paul",  :last_name => "Dupond",  :email => "pierre-paul@dupond.fr",  :job => "Commercial", :gender => "M"
+      contact3 = Contact.create! :first_name => "Nicolas",      :last_name => "Hoareau", :email => "nicolas@hoarau.fr",      :job => "Commercial", :gender => "M"
+      contact4 = Contact.create! :first_name => "fredo",      :last_name => "Hoareau", :email => "fredo@hoarau.fr",      :job => "Commercial", :gender => "M"
       
       # create numbers and assign numbers to contacts
       contact1.numbers.build(:number => "692246801", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)
       contact2.numbers.build(:number => "262357913", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id)
       contact3.numbers.build(:number => "918729871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)
+      contact4.numbers.build(:number => "918559871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id)
       contact1.save!
       contact2.save!
       contact3.save!
-      
+      contact4.save!
+
       # default activity sectors
       ActivitySectorReference.create! :code => "10.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Industries Alimentaires"),
                                                          :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Alimentation")
@@ -63,6 +66,7 @@ namespace :osirails do
       supplier2.save!
       
       # assign contacts to establishments and suppliers
+      head_office.contacts << contact4
       establishment1.contacts << contact1
       establishment2.contacts << contact2
       supplier1.contacts << contact3
@@ -387,14 +391,14 @@ namespace :osirails do
       # default orders
       order1 = Order.new(:title => "VISUEL NUMERIQUE GRAND FORMAT", :customer_needs => "1 visuel 10000 x 4000", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 10.days, :previsional_delivery => DateTime.now + 20.days)
       order1.build_bill_to_address(order1.customer.bill_to_address.attributes)
-      order1.contacts << Customer.first.contacts.first
+      order1.order_contact_id = Customer.first.contacts.first.id
       establishment = order1.customer.establishments.first
       order1.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
       order1.save!
       
       order2 = Order.new(:title => "DRAPEAUX", :customer_needs => "4 drapeaux 400 x 700", :approaching_id => Approaching.first.id, :commercial_id => Employee.first.id, :user_id => User.first.id, :customer_id => Customer.first.id, :establishment_id => Establishment.first.id, :society_activity_sector_id => SocietyActivitySector.first.id, :order_type_id => OrderType.first.id, :quotation_deadline => DateTime.now + 5.days, :previsional_delivery => DateTime.now + 14.days)
       order2.build_bill_to_address(order2.customer.bill_to_address.attributes)
-      order2.contacts << Customer.first.contacts.first
+      order2.order_contact_id = Customer.first.contacts.first.id
       establishment = order2.customer.establishments.first
       order2.ship_to_addresses.build(:establishment_id => establishment.id, :establishment_name => establishment.name, :should_create => 1).build_address(establishment.address.attributes)
       order2.save!
@@ -409,7 +413,7 @@ namespace :osirails do
       
       # default quote
       quote = order1.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days', :creator_id => User.first.id)
-      quote.contacts << order1.contacts.first
+      quote.quote_contact_id = order1.all_contacts.first.id
       quote.build_ship_to_address(Address.first.attributes)
       quote.build_bill_to_address(Address.last.attributes)
       order1.products.each do |product|

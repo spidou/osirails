@@ -1,6 +1,6 @@
 class DeliveryNotesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :delivery_interventions
+  helper :orders, :contacts, :delivery_interventions, :numbers
   
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
@@ -28,7 +28,6 @@ class DeliveryNotesController < ApplicationController
     if @signed_quote = @order.signed_quote
       @delivery_note = @order.delivery_notes.build
       @delivery_note.build_delivery_note_items_from_signed_quote
-      @delivery_note.contacts << @order.contacts.last unless @order.contacts.empty?
       @delivery_note.creator = current_user
     else
       error_access_page(412)

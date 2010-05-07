@@ -1,5 +1,5 @@
 class SurveyStepController < ApplicationController
-  helper :survey_interventions, :contacts, :products, :checklists, :documents, :subcontractor_requests, :quotes, :press_proofs, :graphic_items
+  helper :survey_interventions, :contacts, :products, :checklists, :documents, :subcontractor_requests, :quotes, :press_proofs, :graphic_items, :numbers
   
   before_filter :hack_params_for_product_attributes, :only => :update
   

@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
-  has_contacts    :accept_from => :customer_contacts
+  has_contact     :order_contact, :accept_from => :customer_contacts, :required => true
   has_reference   :prefix => :sales
   
   belongs_to :society_activity_sector
@@ -50,10 +50,8 @@ class Order < ActiveRecord::Base
   validates_presence_of :creator,                 :if => :user_id
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
-  validates_presence_of :order_type,              :if => :order_type_id
+  validates_presence_of :order_type,              :if => :order_type_id        
   validates_presence_of :reference
-  
-  validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
   validates_associated :customer, :ship_to_addresses, :products, :quotes #TODO quotes is really necessary ?
   
@@ -403,15 +401,15 @@ class Order < ActiveRecord::Base
     
     # that method permits to bound the new contact with the customer of the order.
     # after that, the contact which is first created for the customer, is associated to the order in a second time
-    def save_contacts_with_order_support
-      contacts.each do |contact|
-        unless customer.contacts.include?(contact)
-          customer.contacts << contact
-        end
-      end
-      
-      save_contacts_without_order_support
-    end
-    
-    alias_method_chain :save_contacts, :order_support
+#    def save_contacts_with_order_support
+#      contacts.each do |contact|
+#        unless customer.contacts.include?(contact)
+#          customer.contacts << contact
+#        end
+#      end
+#      
+#      save_contacts_without_order_support
+#    end
+#    
+#    alias_method_chain :save_contacts, :order_support
 end

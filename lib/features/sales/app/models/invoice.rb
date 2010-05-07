@@ -21,9 +21,11 @@ class Invoice < ActiveRecord::Base
   MAX_DUE_DATES = 5
   
   has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :factoring_recover, :factoring_balance_pay, :due_date_pay, :totally_pay ]
-  has_contact     :accept_from => :order_contacts
+  has_contact     :invoice_contact, :accept_from => :order_contacts
   has_address     :bill_to_address
   has_reference   :symbols => [:order], :prefix => :sales
+  
+
   
   belongs_to :order
   belongs_to :factor
@@ -60,11 +62,11 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is UNSAVED or UNCOMPLETE
   with_options :if => Proc.new{ |invoice| invoice.new_record? or invoice.was_uncomplete? } do |x|
-    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id
+    x.validates_presence_of :bill_to_address, :published_on, :invoice_type_id, :creator_id, :invoice_contact_id
     x.validates_presence_of :invoice_type,  :if => :invoice_type_id
     x.validates_presence_of :creator,       :if => :creator_id
     
-    x.validates_length_of :contact_ids, :minimum => 1
+    x.validates_presence_of :invoice_contact, :if => :invoice_contact_id
     
     x.validate :validates_presence_of_at_least_one_due_date
     x.validate :validates_presence_of_deposit_attributes
@@ -93,7 +95,7 @@ class Invoice < ActiveRecord::Base
   
   # when invoice is CONFIRMED and above
   with_options :if => :confirmed_at_was do |x|
-    x.validates_persistence_of :confirmed_at, :published_on, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
+    x.validates_persistence_of :confirmed_at, :published_on, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoice_contact
   end
   
   ### while invoice CANCELLATION
@@ -1056,6 +1058,6 @@ class Invoice < ActiveRecord::Base
   end
   
   def order_contacts
-    order ? order.contacts : []
+    order ? order.all_contacts : []
   end
 end

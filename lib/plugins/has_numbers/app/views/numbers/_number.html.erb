@@ -1,13 +1,15 @@
 <% content_for :header do %>
-  <%= javascript_include_tag 'rh/number' %> 
+  <%= javascript_include_tag 'has_number/number' %> 
 <% end %>
 
-<% require_locals number_owner %>
+<%
+  require_locals numbers_owner
+  hack_params ||= numbers_owner.is_a?(Contact)  # used to determine, in customer form, if an hidden field is needed to link the number to his respective contact, It may be deleted when the bug (see customer_controller) will be resolved.
+%>
 
 <div class="number">
-<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]",number do |form| %>
+<% fields_for "#{numbers_owner.class.name.downcase}[number_attributes][]", number do |form| %>
 	<%= form.error_messages%>
-	<p>
 		<% if !is_form_view?%>
 		  <%= display_full_phone_number(number) %>
 			<%# display_image( flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name) %>
@@ -18,15 +20,16 @@
 			<%= form.text_field(:number, { :index => nil, :size => 9, :maxlength => 9 }) %>
     	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :index => nil, :selected => number[:number_type_id] }) %>
     	<%= form.select(:visible, Number::VISIBLE_STATES , {}, { :index => nil }) %>
+    	
+    	<%= form.hidden_field("has_number_id", :value => numbers_owner.id, :index => nil, :class => 'has_number_id') if hack_params %>
+    	<%= form.hidden_field :id, :index => nil %>
 		<% end %>
 
 		<% if number.new_record? %>
 			<%= remove_number_link() if is_form_view? %>
 		<% else %>
 			<%= remove_old_number_link() if is_form_view? %>
-			<%= form.hidden_field :id, :index => nil %>
 			<%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
 		<% end %>
-	</p>
 <% end %>
 </div>

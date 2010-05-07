@@ -10,6 +10,16 @@ function mark_resource_for_destroy(element) {
   }
 }
 
+function mark_resource_for_hide(element) {
+  resource = element.up('.resource')
+  resource.down('.should_hide').value = 1
+  Effect.toggle(resource, 'appear')
+  
+  if (resource.up('.resource_group')) {
+    hide_resource_group(resource.up('.resource_group'))
+  }
+}
+
 function mark_resource_for_update(element, options) {
   resource = element.up('.resource')
   resource.down('.should_update').value = 1

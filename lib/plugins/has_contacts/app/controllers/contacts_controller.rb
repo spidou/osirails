@@ -1,5 +1,5 @@
 class ContactsController < ApplicationController
-  
+  helper :numbers
   # GET /:contact_owner/:contact_owner_id/contacts
   # 
   # ==== Examples
@@ -17,6 +17,7 @@ class ContactsController < ApplicationController
 
     @group_by = params[:group_by] || "type"
     @order_by = params[:order_by] || "asc" # ascendent
+    @group_by_owner = params[:group_by] || false 
 
     render :layout => false
   end

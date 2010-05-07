@@ -18,7 +18,7 @@ class QuoteTest < ActiveSupport::TestCase
   
   #TODO test validates_contact_presence
   
-  should_validate_presence_of :order, :creator, :with_foreign_key => :default
+  should_validate_presence_of :order, :creator, :quote_contact, :with_foreign_key => :default
   
   should_validate_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
@@ -119,7 +119,7 @@ class QuoteTest < ActiveSupport::TestCase
         
         @quote = @order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
         @quote.creator = users(:powerful_user)
-        @quote.contacts << contacts(:pierre_paul_jacques)
+        @quote.quote_contact_id = contacts(:pierre_paul_jacques).id
         
         if y > 0
           @order.products.each_with_index do |product, index|
@@ -291,4 +291,16 @@ class QuoteTest < ActiveSupport::TestCase
     include HasReferenceTest
   end
   
+  context "has_contact :quote_contact" do
+    setup do
+      @contact_owner = create_default_quote
+      @contact_key = :quote_contact
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :quote_contact
+    
+    include HasContactTest
+  end
 end

@@ -22,7 +22,7 @@ class EstablishmentTest < Test::Unit::TestCase
   
   context "A complete establishment" do
     setup do
-      @establishment = Establishment.new(:name                  => "Name",
+      @establishment = Establishment.new(:name => "Name",
                                          :establishment_type_id => establishment_types(:store).id,
                                          :siret_number => "35478965321567")
       @establishment.build_address(:street_name   => "Street Name",
@@ -43,6 +43,28 @@ class EstablishmentTest < Test::Unit::TestCase
     end
   end
 
+  context "has_contacts" do
+    setup do
+      @contacts_owner = create_default_establishment
+    end
+    
+    include HasContactsTest
+  end
+  
+  private
+  
+  def create_default_establishment
+    e = Establishment.new( :name => "Name",
+                       :establishment_type_id => establishment_types(:store).id,
+                       :siret_number => "35478965321567")
+    e.build_address( :street_name   => "Street Name",
+                     :zip_code      => "12345",
+                     :city_name     => "City",
+                     :country_name  => "Country")
+    flunk "establishment should be valid unless" unless e.save
+    return e
+  end
+  
 #  # TODO test save address in has_address plugin
 #  def test_save_address
 #    @establishment.build_address(:street_name   => "1 rue des rosiers",

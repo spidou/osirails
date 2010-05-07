@@ -2,7 +2,13 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'shoulda'
+
+# Plugin has_reference
 require File.dirname(__FILE__) + '/../lib/plugins/has_reference/test/unit/has_reference_test'
+
+# Plugin has_contacts
+require File.dirname(__FILE__) + '/../lib/plugins/has_contacts/test/unit/has_contacts_test'
+require File.dirname(__FILE__) + '/../lib/plugins/has_contacts/test/unit/has_contact_test'
 
 class Test::Unit::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method

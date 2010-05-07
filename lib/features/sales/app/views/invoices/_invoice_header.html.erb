@@ -41,7 +41,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <h3>Contact de facturation</h3>
     <p>
       <%= label :select_contacts, "À l'attention de " %>
-      <%= display_contacts_picker(invoice, order.contacts) %>
+      <%= display_contact_picker(invoice, order.all_contacts, :form => form, :key => "invoice_contact") %>
     </p>
   </div>
   

@@ -5,7 +5,7 @@ class DeliveryNote < ActiveRecord::Base
   
   has_permissions :as_business_object, :additional_class_methods => [ :confirm, :schedule, :realize, :sign, :cancel ]
   has_address     :ship_to_address
-  has_contact     :accept_from => :order_contacts
+  has_contact     :delivery_note_contact, :accept_from => :order_contacts, :required => true
   has_reference   :symbols => [:order], :prefix => :sales
   
   has_attached_file :attachment,
@@ -31,13 +31,11 @@ class DeliveryNote < ActiveRecord::Base
   
   named_scope :actives, :conditions => [ 'status IS NULL or status != ?', STATUS_CANCELLED ]
   
-  validates_contact_presence
-  
   validates_presence_of :delivery_note_items, :ship_to_address
   validates_presence_of :order_id, :creator_id, :delivery_note_type_id
-  validates_presence_of :order,               :if => :order_id
-  validates_presence_of :creator,             :if => :creator_id
-  validates_presence_of :delivery_note_type,  :if => :delivery_note_type_id
+  validates_presence_of :order,                 :if => :order_id
+  validates_presence_of :creator,               :if => :creator_id
+  validates_presence_of :delivery_note_type,    :if => :delivery_note_type_id
   
   with_options :if => :confirmed? do |dn|
     dn.validates_presence_of :published_on, :confirmed_at, :reference
@@ -57,7 +55,7 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   validates_persistence_of :creator_id, :order_id
-  validates_persistence_of :ship_to_address, :contacts, :delivery_note_items, 
+  validates_persistence_of :ship_to_address, :delivery_note_items, 
                            :published_on, :confirmed_at,                              :unless => :was_uncomplete?
   validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if     => :was_cancelled?
   validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if     => :was_signed?
@@ -260,7 +258,7 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def order_contacts
-    order ? order.contacts : []
+    order ? order.all_contacts : []
   end
   
   def discards
