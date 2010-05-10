@@ -1,22 +1,21 @@
-normal_commodity:
-  name: Foo
+first_commodity_category:
   type: CommodityCategory
-parent_commodity:
-  name: Parent
-  type: CommodityCategory
-child_commodity:
-  name: Child
-  type: CommodityCategory
-  parent: parent_commodity
-  unit_measure_id: unit_measures(:normal)
-normal_consumable:
-  name: Foo
+  reference: 100
+  name: First Commodity Category
+first_commodity_sub_category:
+  type: CommoditySubCategory
+  supply_category: first_commodity_category
+  reference: 110
+  name: First Commodity Sub Category
+  unit_measure_id: millimeter
+
+first_consumable_category:
   type: ConsumableCategory
-parent_consumable:
-  name: Parent
-  type: ConsumableCategory
-child_consumable:
-  name: Child
-  type: ConsumableCategory
-  parent: parent_consumable
-  unit_measure_id: unit_measures(:normal)
+  reference: 200
+  name: First Consumable Category
+first_consumable_sub_category:
+  type: ConsumableSubCategory
+  supply_category: first_consumable_category
+  reference: 210
+  name: First Consumable Sub Category
+  unit_measure_id: millimeter

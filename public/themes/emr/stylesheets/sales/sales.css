@@ -134,11 +134,6 @@ table.sales_table td.designation textarea {
   width: 400px;
 }
 
-table.sales_table tbody tr td.amount,
-table.sales_table tbody tr td.amount input[type=text] {
-  text-align: right;
-}
-
 table.sales_table span.fieldWithErrors {
   display: inline-block;
 }

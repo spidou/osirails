@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100326095518) do
+ActiveRecord::Schema.define(:version => 20100503125551) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -642,6 +642,11 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.datetime "updated_at"
   end
 
+  create_table "inventories", :force => true do |t|
+    t.string   "supply_type"
+    t.datetime "created_at"
+  end
+
   create_table "invoice_items", :force => true do |t|
     t.integer  "invoice_id",  :limit => 11
     t.integer  "product_id",  :limit => 11
@@ -1242,17 +1247,14 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "stock_flows", :force => true do |t|
-    t.string   "type"
-    t.string   "purchase_number"
-    t.string   "file_number"
     t.integer  "supply_id",               :limit => 11
-    t.integer  "supplier_id",             :limit => 11
-    t.decimal  "fob_unit_price",                        :precision => 65, :scale => 18
-    t.decimal  "tax_coefficient",                       :precision => 65, :scale => 18
-    t.decimal  "quantity",                              :precision => 65, :scale => 18
-    t.decimal  "previous_stock_quantity",               :precision => 65, :scale => 18
+    t.integer  "inventory_id",            :limit => 11
+    t.string   "type"
+    t.string   "identifier"
+    t.decimal  "unit_price",                            :precision => 65, :scale => 18
     t.decimal  "previous_stock_value",                  :precision => 65, :scale => 18
-    t.boolean  "adjustment"
+    t.integer  "quantity",                :limit => 11
+    t.integer  "previous_stock_quantity", :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1268,45 +1270,81 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "supplier_supplies", :force => true do |t|
-    t.string   "reference"
-    t.string   "name"
-    t.integer  "supply_id",       :limit => 11
-    t.integer  "supplier_id",     :limit => 11
-    t.integer  "lead_time",       :limit => 11
-    t.decimal  "fob_unit_price",                :precision => 65, :scale => 18
-    t.decimal  "tax_coefficient",               :precision => 65, :scale => 18
+    t.integer  "supplier_id",        :limit => 11
+    t.integer  "supply_id",          :limit => 11
+    t.string   "supplier_reference"
+    t.integer  "lead_time",          :limit => 11
+    t.decimal  "fob_unit_price",                   :precision => 65, :scale => 18
+    t.decimal  "taxes",                            :precision => 65, :scale => 18
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "supplies", :force => true do |t|
-    t.integer  "commodity_category_id",  :limit => 11
-    t.integer  "consumable_category_id", :limit => 11
-    t.string   "name"
-    t.string   "reference"
+    t.integer  "supply_sub_category_id", :limit => 11
     t.string   "type"
+    t.string   "reference"
+    t.string   "name"
+    t.string   "packaging"
     t.decimal  "measure",                              :precision => 65, :scale => 18
     t.decimal  "unit_mass",                            :precision => 65, :scale => 18
     t.decimal  "threshold",                            :precision => 65, :scale => 18
-    t.boolean  "enable",                                                               :default => true
+    t.boolean  "enabled",                                                              :default => true
     t.date     "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  create_table "supplies_supply_sizes", :force => true do |t|
+    t.integer  "supply_id",       :limit => 11
+    t.integer  "supply_size_id",  :limit => 11
+    t.integer  "unit_measure_id", :limit => 11
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "supply_categories", :force => true do |t|
-    t.integer  "commodity_category_id",  :limit => 11
-    t.integer  "consumable_category_id", :limit => 11
-    t.integer  "unit_measure_id",        :limit => 11
+    t.integer  "supply_category_id", :limit => 11
+    t.integer  "unit_measure_id",    :limit => 11
     t.string   "type"
+    t.string   "reference"
     t.string   "name"
-    t.integer  "commodities_count",      :limit => 11, :default => 0
-    t.integer  "consumables_count",      :limit => 11, :default => 0
-    t.boolean  "enable",                               :default => true
+    t.integer  "supplies_count",     :limit => 11, :default => 0
+    t.boolean  "enabled",                          :default => true
     t.date     "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "supply_categories", ["reference"], :name => "index_supply_categories_on_reference", :unique => true
+  add_index "supply_categories", ["name", "type", "supply_category_id"], :name => "index_supply_categories_on_name_and_type_and_supply_category_id", :unique => true
+
+  create_table "supply_categories_supply_sizes", :force => true do |t|
+    t.integer  "supply_sub_category_id", :limit => 11
+    t.integer  "supply_size_id",         :limit => 11
+    t.integer  "unit_measure_id",        :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supply_sizes", :force => true do |t|
+    t.string  "name"
+    t.string  "short_name"
+    t.boolean "display_short_name"
+    t.boolean "accept_string"
+    t.integer "position",           :limit => 11
+  end
+
+  add_index "supply_sizes", ["name"], :name => "index_supply_sizes_on_name", :unique => true
+
+  create_table "supply_sizes_unit_measures", :force => true do |t|
+    t.integer "supply_size_id",  :limit => 11
+    t.integer "unit_measure_id", :limit => 11
+    t.integer "position",        :limit => 11
+  end
+
+  add_index "supply_sizes_unit_measures", ["supply_size_id", "unit_measure_id"], :name => "index_supply_sizes_unit_measures", :unique => true
 
   create_table "survey_interventions", :force => true do |t|
     t.integer  "survey_step_id",    :limit => 11
@@ -1401,11 +1439,12 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "unit_measures", :force => true do |t|
-    t.string   "name"
-    t.string   "symbol"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "name"
+    t.string "symbol"
   end
+
+  add_index "unit_measures", ["name"], :name => "index_unit_measures_on_name", :unique => true
+  add_index "unit_measures", ["symbol"], :name => "index_unit_measures_on_symbol", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "username"

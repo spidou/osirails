@@ -1,20 +1,20 @@
 class StockOutput < StockFlow
   has_permissions :as_business_object
   
-  # Relationships  
-  named_scope :commodities_stock_outputs, :conditions => ["supply_id IN (?) AND adjustment IS NULL",Commodity.find(:all)]
-  named_scope :consumables_stock_outputs, :conditions => ["supply_id IN (?) AND adjustment IS NULL",Consumable.find(:all)]
-  
-  # Validates
-  validates_presence_of :file_number, :unless => :adjustment
   validate :validates_stock_availability
   
+  @@form_labels[:identifier] = "Numéro de dossier :"
+  
   def validates_stock_availability
-    unless self.supplier_supply.nil? or self.quantity.nil?
-      errors.add(:quantity, "(#{self.quantity}) est supérieur au stock disponible (#{self.supplier_supply.stock_quantity} pour le fournisseur #{self.supplier_supply.supplier.name})") if self.supplier_supply.stock_quantity < self.quantity
-    end
+    return unless supply and quantity
+    supply = Supply.find(supply_id)
+    errors.add(:quantity, "La quantité choisie est supérieure au stock disponible pour cette fourniture (#{quantity} > #{supply.stock_quantity})") if quantity > supply.stock_quantity
   end
   
-  @@form_labels[:file_number] = "Numéro de dossier :"
+  def set_up_default_unit_price
+    return unless supply
+    self.unit_price = supply.average_unit_stock_value
+  end
+  
+  def calculation_method; :- end
 end
-

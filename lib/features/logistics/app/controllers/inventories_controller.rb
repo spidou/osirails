@@ -1,61 +1,81 @@
 class InventoriesController < ApplicationController
   helper :supplies_manager
-  before_filter :supply_type, :except => [:index]
-  before_filter :supply_category_type, :except => [:index]
+  
+  before_filter :find_inventory,                              :only   => :show
+  before_filter :define_supply_type_and_supply_category_type, :except => :index
+  before_filter :define_date,                                 :except => :index
+  before_filter :find_supply_categories,                      :except => :index
+  before_filter :find_supplies,                               :except => :index
+  
+#  before_filter :supply_category_type, :except => [:index]
   
   # GET /inventories
   def index        
-    @dates = Inventory.dates.paginate(:page => params[:page], :per_page => Inventory::DATES_PER_PAGE)
+    @inventories = Inventory.all(:order => "created_at DESC").paginate(:page => params[:page], :per_page => Inventory::INVENTORIES_PER_PAGE)
   end
   
-  # GET /inventories/new?type=''
+  # GET /inventories/new?supply_type=:supply_type
   def new
-    @date = Date.today
-    @supply_categories_root = @supply_category_type.enabled_roots
-    @supplies = @supply_type.was_enabled_at
+    @inventory = Inventory.new(:supply_type => params[:supply_type])
   end
   
   # POST /inventories
   def create
-    result = Inventory.create_stock_flows(params)
-    if result == false
-      @supply_categories_root = @supply_category_type.enabled_roots
-      @supplies = @supply_type.was_enabled_at
-      flash[:error] = "Les données rentrées sont invalides"
-      render :action => 'new'
+    attributes = { :supply_type => params[:supply_type] }.merge(params[:inventory])
+    @inventory = Inventory.new(attributes)
+    
+    if @inventory.save
+      flash[:notice] = "L'inventaire a été créé avec succès"
+      redirect_to :action => :index
     else
-      flash[:error] = "Aucune évolution de stock n'a été trouvée" if result == 0
-      flash[:notice] = "L'inventaire a été enregistré et #{result} ajustements de stock ont été effectués" if result > 0
-      flash[:notice] = "L'inventaire a été enregistré et un ajustement de stock a été effectué" if result == 1
-      redirect_to :action => 'index'
+      render :action => :new
     end
   end
   
-  # GET /inventories/show?date=''&type=''
+  # GET /inventories/:id
   def show
-    begin
-      @date = params[:date].to_date
-      @supply_categories_root = @supply_category_type.roots  
-      @supplies = @supply_type.was_enabled_at(@date)
-    rescue ArgumentError => e
-      error_access_page(500)
-    end
   end
 
   private
-    def supply_type
-      if ["Commodity","Consumable"].include?(params[:type])
-        @supply_type = params[:type].constantize
+    def find_inventory
+      @inventory = Inventory.find(params[:id])
+    end
+    
+    def define_supply_type_and_supply_category_type
+      if ["Commodity","Consumable"].include?(params[:supply_type])
+        @supply_type          = params[:supply_type].constantize
+        @supply_category_type = "#{params[:supply_type]}Category".constantize
+      elsif @inventory
+        @supply_type          = @inventory.supply_type.constantize
+        @supply_category_type = "#{@inventory.supply_type}Category".constantize
       else
         error_access_page(500)
       end
     end
     
-    def supply_category_type
-      if ["Commodity","Consumable"].include?(params[:type])
-        @supply_category_type = (params[:type]+"Category").constantize
+    def define_date
+      if params[:date]
+        begin
+          @date = params[:date].to_datetime
+        rescue
+          return error_access_page(400)
+        end
+      elsif @inventory
+        @date = @inventory.date
       else
-        error_access_page(500)
+        @date = Time.zone.now
       end
+    end
+    
+    def find_supply_categories
+      if [:new, :create].include?(params[:action])
+        @supply_categories = @supply_category_type.enabled
+      else
+        @supply_categories = @supply_category_type.all
+      end
+    end
+    
+    def find_supplies
+      @supplies = @supply_type.was_enabled_at(@date)
     end
 end

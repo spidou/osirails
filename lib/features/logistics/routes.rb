@@ -2,23 +2,31 @@ ActionController::Routing::Routes.add_routes do |map|
   ### STOCKS
   map.resources :commodities
   map.resources :consumables
+  
   map.resources :commodity_categories
   map.resources :consumable_categories
   
-  map.with_options :name_prefix => '', :conditions => { :method => :get } do |m|
-    m.disable_commodity     'commodities/:id/disable',    :controller => 'commodities', :action     => 'disable'
-    m.disable_consumable    'consumables/:id/disable',    :controller => 'consumables', :action     => 'disable'
-    m.reactivate_commodity  'commodities/:id/reactivate', :controller => 'commodities', :action     => 'reactivate'
-    m.reactivate_consumable 'consumables/:id/reactivate', :controller => 'consumables', :action     => 'reactivate'
-    
-    m.disable_commodity_category      'commodity_categories/:id/disable',     :controller => 'commodity_categories',  :action => 'disable'
-    m.disable_consumable_category     'consumable_categories/:id/disable',    :controller => 'consumable_categories', :action => 'disable'
-    m.reactivate_commodity_category   'commodity_categories/:id/reactivate',  :controller => 'commodity_categories',  :action => 'reactivate'
-    m.reactivate_consumable_category  'consumable_categories/:id/reactivate', :controller => 'consumable_categories', :action => 'reactivate'
-  end
+  map.resources :commodity_sub_categories
+  map.resources :consumable_sub_categories
   
-  map.refresh_measure_commodity 'commodities/refresh_measure',  :controller => 'commodities', :action => 'refresh_measure'
-  map.refresh_measure_consumable 'consumables/refresh_measure', :controller => 'consumables', :action => 'refresh_measure'
+  map.with_options :name_prefix => '', :conditions => { :method => :get } do |m|
+    m.disable_commodity   'commodities/:id/disable',  :controller => 'commodities', :action => 'disable'
+    m.disable_consumable  'consumables/:id/disable',  :controller => 'consumables', :action => 'disable'
+    m.enable_commodity    'commodities/:id/enable',   :controller => 'commodities', :action => 'enable'
+    m.enable_consumable   'consumables/:id/enable',   :controller => 'consumables', :action => 'enable'
+    
+    m.disable_commodity_category      'commodity_categories/:id/disable',       :controller => 'commodity_categories',      :action => 'disable'
+    m.disable_commodity_sub_category  'commodity_sub_categories/:id/disable',   :controller => 'commodity_sub_categories',  :action => 'disable'
+    
+    m.disable_consumable_category     'consumable_categories/:id/disable',      :controller => 'consumable_categories',     :action => 'disable'
+    m.disable_consumable_sub_category 'consumable_sub_categories/:id/disable',  :controller => 'consumable_sub_categories', :action => 'disable'
+    
+    m.enable_commodity_category       'commodity_categories/:id/enable',        :controller => 'commodity_categories',      :action => 'enable'
+    m.enable_commodity_sub_category   'commodity_sub_categories/:id/enable',    :controller => 'commodity_sub_categories',  :action => 'enable'
+    
+    m.enable_consumable_category      'consumable_categories/:id/enable',       :controller => 'consumable_categories',     :action => 'enable'
+    m.enable_consumable_sub_category  'consumable_sub_categories/:id/enable',   :controller => 'consumable_sub_categories', :action => 'enable'
+  end
   
   map.commodities_manager 'commodities_manager', :controller => 'commodities_manager'
   map.consumables_manager 'consumables_manager', :controller => 'consumables_manager'
@@ -26,13 +34,21 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :restockable_supplies
   
   map.resources :inventories
-  map.resources :commodities_inventories
   
   map.resources :stock_inputs
   map.resources :stock_outputs
-  map.refresh_suppliers_stock_input   'stock_inputs/refresh_infos',       :controller => 'stock_inputs',  :action => 'refresh_infos'
-  map.refresh_suppliers_stock_input   'stock_inputs/refresh_suppliers',   :controller => 'stock_inputs',  :action => 'refresh_suppliers'
-  map.refresh_suppliers_stock_output  'stock_outputs/refresh_suppliers',  :controller => 'stock_outputs', :action => 'refresh_suppliers'
+  
+  # AJAX REQUESTS
+  map.update_supply_stock_infos 'stock_inputs/update_supply_stock_infos', :controller => 'stock_inputs',  :action => 'update_supply_stock_infos'
+  
+  map.update_commodity_sub_categories   'update_commodity_sub_categories',  :controller => 'commodity_categories',  :action => 'update_supply_sub_categories'
+  map.update_consumable_sub_categories  'update_consumable_sub_categories', :controller => 'consumable_categories', :action => 'update_supply_sub_categories'
+  
+  map.update_commodity_unit_measure   'update_commodity_unit_measure',  :controller => 'commodity_sub_categories',  :action => 'update_supply_unit_measure'
+  map.update_consumable_unit_measure  'update_consumable_unit_measure', :controller => 'consumable_sub_categories', :action => 'update_supply_unit_measure'
+  
+  map.update_commodity_supply_sizes   'update_commodity_supply_sizes',  :controller => 'commodities', :action => 'update_supplies_supply_sizes'
+  map.update_consumable_supply_sizes  'update_consumable_supply_sizes', :controller => 'consumables', :action => 'update_supplies_supply_sizes'
   
   map.stock_manager 'stock_manager', :controller => 'stock_inputs' #default page for stock manager
   

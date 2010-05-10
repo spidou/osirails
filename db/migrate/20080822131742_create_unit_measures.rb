@@ -2,8 +2,10 @@ class CreateUnitMeasures < ActiveRecord::Migration
   def self.up
     create_table :unit_measures do |t|
       t.string :name, :symbol
-      t.timestamps
     end
+    
+    add_index :unit_measures, :name,  :unique => true
+    add_index :unit_measures, :symbol, :unique => true
   end
 
   def self.down

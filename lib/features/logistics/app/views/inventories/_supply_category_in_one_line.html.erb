@@ -1,0 +1,46 @@
+<%
+require_locals form
+supply_category = supply_category_in_one_line
+%>
+
+<% if supply_category.was_enabled_at(@date) %>
+  <%
+  supply_category_status = supply_category.enabled? ? "enabled" : "disabled"
+  tr_id = "#{supply_category.class.singularized_table_name}_#{supply_category.id}"
+  tr_class = supply_category.ancestors.collect{ |c| "#{c.class.singularized_table_name}_#{c.id}" }.join(" ") + " #{supply_category_status}"
+
+  unfold_image  = image_tag("unfold_10x10.png", :class    => "unfold_button",
+                                                :alt      => unfold_text = "Dérouler",
+                                                :title    => unfold_text,
+                                                :onclick  => "group_unfold(this)",
+                                                :style    => "display: none")
+
+  fold_image    = image_tag("fold_10x10.png", :class    => "fold_button",
+                                              :alt      => fold_text = "Enrouler",
+                                              :title    => fold_text,
+                                              :onclick  => "group_fold(this)")
+  %>
+  
+  <% unless supply_category.respond_to?(:supply_category) %>
+  <tbody>
+  <% end %>
+
+    <tr id="<%= tr_id %>" class="group <%= tr_class %>">
+      <% (1 + supply_category.ancestors.size).times do %>
+        <td></td>
+      <% end %>
+      
+      <td class="supply_category_name"><%= "#{unfold_image}#{fold_image}&#160;#{supply_category.name}&#160;(#{supply_category.supplies_count})" %></td>
+      <td colspan="<%= 7 - supply_category.ancestors.size %>"></td>
+    </tr>
+    
+    <% unless supply_category.respond_to?(:supply_category) %>
+      <%= render :partial => "inventories/supply_category_in_one_line", :collection => supply_category.children, :locals => { :form => form } %>
+    <% else %>
+      <%= render :partial => "inventories/supply_in_one_line", :collection => supply_category.children, :locals => { :form => form } %>  
+    <% end %>
+
+  <% unless supply_category.respond_to?(:supply_category) %>
+  </tbody>
+  <% end %>
+<% end %>

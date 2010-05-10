@@ -1,30 +1,20 @@
-<table class="<%= supplier_supplies_owner.class.name.underscore %>">
+<% require_locals supply %>
+
+<table id="supplier_supplies">
   <thead>
     <tr>
-      <th rowspan='2'>Fournisseur</th>
-      <th rowspan='2'>R&eacute;f&eacute;rence</th>
-      <th rowspan='2'>D&eacute;signation</th>
-      
-      <th colspan='3'>Informations de base</th>
-      
-      <th colspan='5'>Stock actuel par fournisseur</th>
-      
-      <th rowspan='2'>D&eacute;lai d'approvisionnement</th>
-      <%= "<th rowspan='2'>Actions</th>" if supplier_supplies_owner.enable %>
-    </tr>
-    <tr>
-      <th>FOB/U</th>
-      <th>Coeff. Taxe</th>
-      <th>Prix/U</th>
-      
-      <th>Quantit&eacute;</th>
-      <th>Grandeur totale</th>
-      <th>Poids total</th>
-      <th>Valeur totale</th>      
-      <th>Prix/U moyen</th>
+      <th>Fournisseur</th>
+      <th>Référence fournisseur</th>
+      <th>PU HT (&euro;)</th>
+      <th>Taxes (&#37;)</th>
+      <th>PU TTC (&euro;)</th>
+      <th>D&eacute;lai d'approvisionnement</th>
+      <% if supply.errors.on(:supplier_supplies) %>
+        <th>Erreurs</th>
+      <% end %>
     </tr>
   </thead>
-  <tbody>
-    <%= render(:partial => 'supplier_supplies/supplier_supply', :collection => supplier_supplies_owner.supplier_supplies) %>
+  <tbody id="supplier_supplies_body">
+    <%= render(:partial => 'supplier_supplies/supplier_supply_in_one_line', :collection => supplier_supplies, :locals => { :supply => supply }) %>
   </tbody>
 </table>

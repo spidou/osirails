@@ -24,7 +24,7 @@ module Osirails
     #
     def initialize(params = {})
       self.klass        = params[:klass].to_s.camelize.constantize
-      self.identifiers  = [ params[:identifiers] ].flatten
+      self.identifiers  = [ params[:identifiers] ].flatten.compact # remove nil identifiers
       self.definitions  = params[:definitions]
       self.if_match     = ( params[:if_match] || "SKIP" ).upcase
       self.attributes   = {}
@@ -32,7 +32,8 @@ module Osirails
     
     # import data via ActiveRecord models from a csv file
     def import_data(rows)
-      raise "Importer expected to have 'identifiers' and 'definitions' to import data" unless identifiers and definitions
+      raise "Importer expected to have 'definitions' to import data" unless definitions
+      puts "WARNING: You decided to import data without 'identifiers', so I'll not be able to identify duplicates..."
       
       count           = 0
       count_created   = 0
@@ -47,23 +48,27 @@ module Osirails
         
         attributes = map_definitions(row)
         
-        identifier = identifiers.join("_and_")
-        args = identifiers.collect{ |i| attributes[i] }
-        object = klass.send("find_by_#{identifier}", *args) || klass.new # eg: User.find_by_username_and_role_id("admin", 1) if idenfifiers = [ :username, :role_id]
-        
-        if !object.new_record? # if object already exist
-          puts "A similar entry has been found when trying to import this line : #{row.inspect}\nYou choose to #{if_match} this entry\n============"
+        if identifiers.any?
+          identifier = identifiers.join("_and_")
+          args = identifiers.collect{ |i| attributes[i] }
+          object = klass.send("find_by_#{identifier}", *args) || klass.new # eg: User.find_by_username_and_role_id("admin", 1) if idenfifiers = [ :username, :role_id]
           
-          case if_match
-          when "SKIP"
-            count_skipped += 1
-            next
-          when "OVERRIDE"
-            count_overrided += 1
-          when "DUPLICATE"
-            definitions.merge!(identifiers.first => attributes[identifiers.first] + " [DUPLICATED_AT_#{Time.now.strftime('%Y%m%d%H%M%S')}]")
-            customer = klass.new
+          if !object.new_record? # if object already exist
+            puts "A similar entry has been found when trying to import this line : #{row.inspect}\nYou choose to #{if_match} this entry\n============"
+            
+            case if_match
+            when "SKIP"
+              count_skipped += 1
+              next
+            when "OVERRIDE"
+              count_overrided += 1
+            when "DUPLICATE"
+              definitions.merge!(identifiers.first => attributes[identifiers.first] + " [DUPLICATED_AT_#{Time.now.strftime('%Y%m%d%H%M%S')}]")
+              customer = klass.new
+            end
           end
+        else
+          object = klass.new
         end
         was_new_record = object.new_record?
         
@@ -131,7 +136,13 @@ Errors => #{object.errors.full_messages}
           
           if value.is_a?(Hash) and key.to_s.ends_with?("_id")
             
-            association_class = key.to_s.gsub(/_id$/, "").camelize.constantize
+            association_name = key.to_s.gsub(/_id$/, "")
+            if Object.const_defined?(association_name.camelize)
+              association_class = association_name.camelize.constantize
+            else
+              association_class = self.klass.reflect_on_association(association_name.to_sym).klass
+            end
+            
             method = value.keys.first
             attribute = value.values.first
             if attribute.is_a?(Array)
@@ -153,7 +164,7 @@ Errors => #{object.errors.full_messages}
             if instance = association_class.send(method, *args)
               result[key] = instance.id
             else
-              puts "A record has not been found here : { :#{key} => #{association_class}.#{method}('#{args.collect(&:to_s).join("', '")}') }"
+              puts "A record has not been found here : { :#{key} => #{association_class}.#{method}('#{args.collect(&:to_s).join("', '") if args}') }"
             end
               
           elsif value.is_a?(Hash)

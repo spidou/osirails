@@ -111,7 +111,7 @@ module HasReference
       
       pattern_with_strftime = DateTime.now.strftime(pattern)
       pattern_with_symbols  = match_symbols(pattern_with_strftime)
-      reference             = get_number(pattern_with_symbols)
+      reference             = pattern_with_symbols ? get_number(pattern_with_symbols) : nil
       
       return reference
     end
@@ -194,7 +194,7 @@ module HasReference
         
         self.class::SYMBOLS.each do |symbol|
           if self.respond_to?(symbol)
-            raise "[has_reference] instance of #{self.class.name} expected to have a valid '#{symbol}', but returned nil" if self.send(symbol).nil?
+            return unless self.send(symbol)
             raise "[has_reference] instance of '#{symbol}' expected to respond_to :reference (#{self.send(symbol).inspect})" unless self.send(symbol).respond_to?(:reference)
             
             result = result.gsub(Regexp.new("\\x24#{symbol.to_s}"), self.send(symbol).reference || '')

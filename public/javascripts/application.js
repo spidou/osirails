@@ -316,11 +316,19 @@ Event.observe(window, 'load', function() {
   display_time();
 });  
 
-// Avoid the prevent close message if the action is called
-// by a submit button
-
+// Avoid the prevent close message if the action is called by a form submit
 Event.observe(window, 'submit', function(ev) {
   window.onbeforeunload = null; 
 });
-
 window.onbeforeunload = preventClose;
+
+// Add an ajax indicator for all Ajax call
+Ajax.Responders.register({
+  onCreate: function() {
+    new Effect.Appear('ajax_indicator', { duration: 0.3 });
+  },
+  onComplete: function() {
+    if (0 == Ajax.activeRequestCount)
+      new Effect.Fade('ajax_indicator', { duration: 0.3 });
+  }
+});
