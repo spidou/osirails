@@ -868,6 +868,34 @@ module SupplyTest
           end
         end
         
+        context "without supplier_supply" do
+          setup do
+            @supply.attributes = { :supply_sub_category_id      => @supply_sub_category_type.first.id,
+                                   :name                        => "Supply" }
+            @supply.save!
+          end
+          
+          should "NOT have supplier_supplies_unit_prices" do
+            assert_equal [], @supply.supplier_supplies_unit_prices
+          end
+          
+          should "NOT have an average_unit_price" do
+            assert_nil @supply.average_unit_price
+          end
+          
+          should "NOT have an average_measure_price" do
+            assert_nil @supply.average_measure_price
+          end
+          
+          should "have an higher_unit_price" do
+            assert_nil @supply.higher_unit_price
+          end
+          
+          should "NOT have an higher_measure_price" do
+            assert_nil @supply.higher_measure_price
+          end
+        end
+        
         context "with 1 supplier_supply" do
           setup do
             @supply.attributes = { :supply_sub_category_id      => @supply_sub_category_type.first.id,
@@ -890,9 +918,34 @@ module SupplyTest
             assert_equal expected_value, @supply.average_unit_price
           end
           
+          should "NOT have an average_measure_price" do
+            assert_nil @supply.average_measure_price
+          end
+          
           should "have an higher_unit_price" do
             expected_value = 110 # supplier_supplies_unit_prices.max = 110
             assert_equal expected_value, @supply.higher_unit_price
+          end
+          
+          should "NOT have an higher_measure_price" do
+            assert_nil @supply.higher_measure_price
+          end
+          
+          context "and with a measure" do
+            setup do
+              @supply.measure = 5
+              @supply.save!
+            end
+            
+            should "have an average_measure_price" do
+              expected_value = 22 # average_measure_price / measure <=> 110 / 5 = 22
+              assert_equal expected_value, @supply.average_measure_price
+            end
+            
+            should "have an higher_measure_price" do
+              expected_value = 22 # higher_unit_price / measure <=> 110 / 5 = 22
+              assert_equal expected_value, @supply.higher_measure_price
+            end
           end
         end
         
@@ -924,9 +977,34 @@ module SupplyTest
             assert_equal expected_value, @supply.average_unit_price
           end
           
+          should "NOT have an average_measure_price" do
+            assert_nil @supply.average_measure_price
+          end
+          
           should "have an higher_unit_price" do
             expected_value = 130 # supplier_supplies_unit_prices.max = 130
             assert_equal expected_value, @supply.higher_unit_price
+          end
+          
+          should "NOT have an higher_measure_price" do
+            assert_nil @supply.higher_measure_price
+          end
+          
+          context "and with a measure" do
+            setup do
+              @supply.measure = 5
+              @supply.save!
+            end
+            
+            should "have an average_measure_price" do
+              expected_value = 23.2 # average_unit_price / measure <=> 116 / 5 = 23.2
+              assert_equal expected_value, @supply.average_measure_price
+            end
+            
+            should "have an higher_measure_price" do
+              expected_value = 26 # higher_unit_price / measure <=> 130 / 5 = 26
+              assert_equal expected_value, @supply.higher_measure_price
+            end
           end
         end
         
