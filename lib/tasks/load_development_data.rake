@@ -28,18 +28,14 @@ namespace :osirails do
       # default contacts
       contact1 = Contact.create! :first_name => "Jean-Jacques", :last_name => "Dupont",  :email => "jean-jacques@dupont.fr", :job => "Commercial", :gender => "M"
       contact2 = Contact.create! :first_name => "Pierre-Paul",  :last_name => "Dupond",  :email => "pierre-paul@dupond.fr",  :job => "Commercial", :gender => "M"
-      contact3 = Contact.create! :first_name => "Nicolas",      :last_name => "Hoareau", :email => "nicolas@hoarau.fr",      :job => "Commercial", :gender => "M"
-      contact4 = Contact.create! :first_name => "fredo",      :last_name => "Hoareau", :email => "fredo@hoarau.fr",      :job => "Commercial", :gender => "M"
+      contact3 = Contact.create! :first_name => "Nicolas",      :last_name => "Hoareau", :email => "nicolas@hoareau.fr",     :job => "Commercial", :gender => "M"
+      contact4 = Contact.create! :first_name => "Fredo",        :last_name => "Hoareau", :email => "fredo@hoareau.fr",       :job => "Commercial", :gender => "M"
       
       # create numbers and assign numbers to contacts
-      contact1.numbers.build(:number => "692246801", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)
-      contact2.numbers.build(:number => "262357913", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id)
-      contact3.numbers.build(:number => "918729871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)
-      contact4.numbers.build(:number => "918559871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id)
-      contact1.save!
-      contact2.save!
-      contact3.save!
-      contact4.save!
+      contact1.numbers.create! :number => "692246801", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id
+      contact2.numbers.create! :number => "262357913", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id
+      contact3.numbers.create! :number => "918729871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id
+      contact4.numbers.create! :number => "918559871", :indicative_id => Indicative.first.id, :number_type_id => NumberType.last.id
 
       # default activity sectors
       ActivitySectorReference.create! :code => "10.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Industries Alimentaires"),

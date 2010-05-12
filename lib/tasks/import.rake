@@ -17,20 +17,20 @@ namespace :osirails do
           
           definitions = { :name                       => 0,
                           :legal_form_id              => { :find_or_create_by_name => 1 },
-                          :siret_number               => 2,
-                          :activity_sector_id         => "1", #TODO change id
-                          :payment_method_id          => "1", #TODO change id
-                          :payment_time_limit_id      => "1", #TODO change id
+                          :customer_solvency_id       => "1", #TODO change id
+                          :customer_grade_id          => "1", #TODO change id
                           :bill_to_address_attributes => { :street_name   => 4,
                                                            :country_name  => 9,
                                                            :city_name     => 7,
                                                            :zip_code      => 5 },
-                          :establishment_attributes   => [ { :name                  => 0,
-                                                             :establishment_type_id => "1", #TODO change id
-                                                             :address_attributes    => { :street_name   => 4,
-                                                                                         :country_name  => 9,
-                                                                                         :city_name     => 7,
-                                                                                         :zip_code      => 5 } } ] }
+                          :head_office_attributes     => [ { :name                          => 0,
+                                                             :establishment_type_id         => "1", #TODO change id
+                                                             :activity_sector_reference_id  => "1", #TODO change id
+                                                             :siret_number                  => 2,
+                                                             :address_attributes            => { :street_name   => 4,
+                                                                                                 :country_name  => 9,
+                                                                                                 :city_name     => 7,
+                                                                                                 :zip_code      => 5 } } ] }
           importer = Osirails::Importer.new(:klass => :customer, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])
           importer.import_data(rows)
         else

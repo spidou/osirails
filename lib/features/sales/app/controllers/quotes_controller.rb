@@ -34,6 +34,7 @@ class QuotesController < ApplicationController
                                  :validity_delay_unit => ConfigurationManager.sales_quote_validity_delay_unit)
     @quote.creator = current_user # permit additional information displaying
     if @quote.can_be_added?
+      @quote.quote_contact = @order.order_contact
       
       @order.products.each do |product|
         @quote.build_quote_item(:product_id => product.id)
@@ -45,8 +46,7 @@ class QuotesController < ApplicationController
   
   # POST /orders/:order_id/:step/quotes
   def create
-    #@quote = @order.quotes.build(params[:quote])
-    @quote = @order.quotes.build # so we can use @quote.order_id in quote.rb
+    @quote = @order.quotes.build # Quote#quote_item_attributes= needs order_id, so we build the quote from the order to have order_id before all other attributes
     @quote.attributes = params[:quote]
     
     if @quote.can_be_added?

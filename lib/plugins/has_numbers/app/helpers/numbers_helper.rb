@@ -7,19 +7,22 @@ module NumbersHelper
     html += "</div>"
   end 
   
-  def display_first_numbers(numbers_owner, quantity)
+  def display_first_numbers(numbers_owner, limit)
+    numbers = numbers_owner.numbers
     more = 'Voir plus ...'
     less = 'Voir moins ...'
     
     html = "<div>"
-    quantity.times do |i|
-      html += display_full_phone_number(numbers_owner.numbers[i]) + "<br />"
+    limit.times do |i|
+      html += display_full_phone_number(numbers[i]) + "<br />" if numbers[i]
     end
-    unless numbers_owner.numbers.count < quantity
-      numbers_list = numbers_owner.numbers[quantity..-1].collect {|n| display_full_phone_number(n) }.join("<br />")
+    
+    if numbers.count > limit
+      numbers_list = numbers[limit..-1].collect {|n| display_full_phone_number(n) }.join("<br />")
       html += "<div style='display:none;'>#{ numbers_list }</div>" 
-      html += link_to_function( more, "view_more_or_less(this, '#{ less }', '#{ more }');")
+      html += link_to_function( more, "toggle_more_less_button(this, '#{ less }', '#{ more }');")
     end
+    
     html += "</div>"
   end
   

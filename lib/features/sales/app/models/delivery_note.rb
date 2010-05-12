@@ -5,7 +5,7 @@ class DeliveryNote < ActiveRecord::Base
   
   has_permissions :as_business_object, :additional_class_methods => [ :confirm, :schedule, :realize, :sign, :cancel ]
   has_address     :ship_to_address
-  has_contact     :delivery_note_contact, :accept_from => :order_contacts, :required => true
+  has_contact     :delivery_note_contact, :accept_from => :order_and_customer_contacts, :required => true
   has_reference   :symbols => [:order], :prefix => :sales
   
   has_attached_file :attachment,
@@ -33,15 +33,12 @@ class DeliveryNote < ActiveRecord::Base
   
   validates_presence_of :delivery_note_items, :ship_to_address
   validates_presence_of :order_id, :creator_id, :delivery_note_type_id
-  validates_presence_of :order,                 :if => :order_id
-  validates_presence_of :creator,               :if => :creator_id
-  validates_presence_of :delivery_note_type,    :if => :delivery_note_type_id
+  validates_presence_of :order,               :if => :order_id
+  validates_presence_of :creator,             :if => :creator_id
+  validates_presence_of :delivery_note_type,  :if => :delivery_note_type_id
   
-  with_options :if => :confirmed? do |dn|
-    dn.validates_presence_of :published_on, :confirmed_at, :reference
-  end
-  
-  validates_presence_of :cancelled_at,  :if => :cancelled?
+  validates_presence_of :published_on, :confirmed_at, :reference,  :if => :confirmed?
+  validates_presence_of :cancelled_at,                             :if => :cancelled?
   
   with_options :if => :signed? do |dn|
     dn.validates_presence_of :signed_on
@@ -54,13 +51,14 @@ class DeliveryNote < ActiveRecord::Base
     dn.validate :validates_presence_of_attachment
   end
   
-  validates_persistence_of :creator_id, :order_id
-  validates_persistence_of :ship_to_address, :delivery_note_items, 
-                           :published_on, :confirmed_at,                              :unless => :was_uncomplete?
-  validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if     => :was_cancelled?
-  validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if     => :was_signed?
+  validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED, STATUS_CANCELLED ], :if => :was_uncomplete?
+  validates_inclusion_of :status, :in => [ STATUS_CANCELLED, STATUS_SIGNED ],         :if => :was_confirmed?
   
-  validates_inclusion_of :status, :in => [ nil, STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SIGNED ]
+  validates_persistence_of :creator_id, :order_id
+  validates_persistence_of :ship_to_address, :delivery_note_contact_id,
+                           :delivery_note_items, :published_on, :confirmed_at,        :if => :confirmed_at_was
+  validates_persistence_of :cancelled_at, :delivery_interventions, :status,           :if => :cancelled_at_was
+  validates_persistence_of :signed_on, :attachment, :delivery_interventions, :status, :if => :signed_on_was
   
   validates_associated  :delivery_note_items, :quote_items, :delivery_interventions
   
@@ -257,8 +255,8 @@ class DeliveryNote < ActiveRecord::Base
     end
   end
   
-  def order_contacts
-    order ? order.all_contacts : []
+  def order_and_customer_contacts
+    order ? order.all_contacts_and_customer_contacts : []
   end
   
   def discards

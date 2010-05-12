@@ -52,11 +52,11 @@ class ApplicationController < ActionController::Base
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}
     def self.method_permission(options)
-      $permission[controller_path] = options
+      $permission[controller_path] ||= options
     end
     
     def self.model(model_name)
-      @@models[controller_path] = model_name
+      @@models[controller_path] ||= model_name
     end
 
     # This method return the feature name
@@ -72,11 +72,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      begin
-        User.find(session[:user_id])
-      rescue
-        return false
-      end
+      @current_user ||= User.find_by_id(session[:user_id])
     end
 
     # Called when an user try to acces to an unauthorized page

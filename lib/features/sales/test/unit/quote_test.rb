@@ -7,7 +7,7 @@ class QuoteTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object
   #TODO test has_address     :bill_to_address
   #TODO test has_address     :ship_to_address
-  #TODO test has_contact     :accept_from => :order_contacts
+  #TODO test has_contact     :accept_from => :order_and_customer_contacts
   
   should_belong_to :creator, :order, :send_quote_method, :order_form_type
   
@@ -282,7 +282,7 @@ class QuoteTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a quote" do
     setup do
       @reference_owner       = create_default_quote
       @other_reference_owner = create_default_quote
@@ -291,10 +291,10 @@ class QuoteTest < ActiveSupport::TestCase
     include HasReferenceTest
   end
   
-  context "has_contact :quote_contact" do
+  context "Thanks to 'has_contact', a quote" do
     setup do
       @contact_owner = create_default_quote
-      @contact_key = :quote_contact
+      @contact_keys = [ :quote_contact ]
     end
     
     subject { @contact_owner }

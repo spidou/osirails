@@ -1,8 +1,8 @@
 class CreateCustomerGrades < ActiveRecord::Migration
   def self.up
     create_table :customer_grades do |t|
-      t.string     :name
       t.references :payment_time_limit
+      t.string     :name
     end
   end
 

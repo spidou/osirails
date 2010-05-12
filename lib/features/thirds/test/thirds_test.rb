@@ -19,7 +19,7 @@ class Test::Unit::TestCase
                                     :city_name    => "City",
                                     :zip_code     => "01234" ) unless customer.bill_to_address
     customer.save!
-    flunk "customer should be saved" if customer.new_record?
+    flunk "customer should have at least 2 contacts\nbut has #{customer.contacts.count}" unless customer.contacts.count >= 2
     return customer
   end
   
@@ -33,6 +33,12 @@ class Test::Unit::TestCase
                                  :country_name => "Country",
                                  :city_name    => "City",
                                  :zip_code     => "01234" )
+    return establishment
+  end
+  
+  def create_establishment_for(customer)
+    establishment = build_establishment_for(customer)
+    establishment.save!
     return establishment
   end
   

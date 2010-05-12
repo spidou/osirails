@@ -79,7 +79,8 @@
 
 .root_nav div.section_nav {
   display: none;
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 4px;
   text-align: left;
 }
 

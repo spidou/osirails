@@ -141,24 +141,6 @@ namespace :osirails do
       Job.create! :name => "Poseur d'enseignes",                    :responsible => false, :service_id => pose.id
       Job.create! :name => "Poseur",                                :responsible => false, :service_id => pose.id
       
-#      # default contact types
-#      ContactType.create! :name => "Normal",                  :owner => "Customer"
-#      ContactType.create! :name => "Contact de facturation",  :owner => "Customer"
-#      ContactType.create! :name => "Contact de livraison",    :owner => "Customer"
-#      
-#      ContactType.create! :name => "Normal",                  :owner => "Establishment"
-#      ContactType.create! :name => "Contact de facturation",  :owner => "Establishment"
-#      ContactType.create! :name => "Contact de livraison",    :owner => "Establishment"
-#      ContactType.create! :name => "Accueil",                 :owner => "Establishment"
-#      
-#      ContactType.create! :name => "Normal",                  :owner => "Supplier"
-#      
-#      ContactType.create! :name => "Normal",                  :owner => "Subcontractor"
-#      
-#      ContactType.create! :name => "Contact commercial",      :owner => "Order"
-#      ContactType.create! :name => "Contact sur site",        :owner => "Order"
-#      ContactType.create! :name => "Contact de facturation",  :owner => "Order"
-      
       # default users and roles
       user_admin = User.create! :username => "admin", :password => "admin", :enabled => 1
       

@@ -32,7 +32,6 @@ class Test::Unit::TestCase
     order.build_ship_to_address(order.customer.establishments.first)
     order.approaching = approachings(:email)
     order.save!
-    flunk "order should be saved" if order.new_record?
     return order
   end
   

@@ -11,7 +11,7 @@ class Quote < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [:confirm, :cancel, :send_to_customer, :sign]
   has_address     :bill_to_address
   has_address     :ship_to_address
-  has_contact     :quote_contact, :accept_from => :order_contacts, :required => true
+  has_contact     :quote_contact, :accept_from => :order_and_customer_contacts, :required => true
   has_reference   :symbols => [:order], :prefix => :sales
   
   belongs_to :creator, :class_name => 'User'
@@ -28,7 +28,6 @@ class Quote < ActiveRecord::Base
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
   
-    
   validates_presence_of     :order_id, :creator_id
   validates_presence_of     :order,   :if => :order_id
   validates_presence_of     :creator, :if => :creator_id
@@ -357,8 +356,8 @@ class Quote < ActiveRecord::Base
     was_sended?
   end
   
-  def order_contacts
-    order ? order.all_contacts : []
+  def order_and_customer_contacts
+    order ? order.all_contacts_and_customer_contacts : []
   end
   
   private

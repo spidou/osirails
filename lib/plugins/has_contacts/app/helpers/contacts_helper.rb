@@ -23,10 +23,6 @@ module ContactsHelper
     render_new_contacts_list(contacts_owner)
   end
   
-  def display_contacts_picker(contacts_owner, contacts, options = {})
-    render :partial => 'contacts/contacts_picker', :object => contacts, :locals => options.merge({ :contacts_owner => contacts_owner })
-  end
-  
   def display_contact_picker(contact_owner, contacts, options = {})
     render :partial => 'contacts/contact_picker', :object => contact_owner, :locals => options.merge({ :contact_list => contacts })
   end
@@ -72,15 +68,20 @@ module ContactsHelper
   end
 
   def display_contact_edit_button(contact)
-    link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Contact.can_edit?(current_user)
+    return unless is_form_view? and Contact.can_edit?(current_user)
+    link_to_function "Modifier", "mark_resource_for_update(this)"
   end
 
   def display_contact_hide_button(contact)
-    link_to_function "Supprimer", "mark_resource_for_hide(this)" if is_form_view?
+    return unless is_form_view? and Contact.can_hide?(current_user)
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_hide(this)"
   end
   
   def display_contact_delete_button(contact)
-    link_to_function "Supprimer définitivement", "mark_resource_for_destroy(this)" if is_form_view? and Contact.can_delete?(current_user)
+    return unless is_form_view? and Contact.can_delete?(current_user)
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer définitivement", "if (confirm(#{message})) mark_resource_for_destroy(this)"
   end
   
   def display_contact_close_form_button(contact)
@@ -108,8 +109,6 @@ module ContactsHelper
       "Aucun"
     end
   end
-  
-  
   
   private
   

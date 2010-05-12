@@ -484,7 +484,7 @@ class MockupTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a mockup" do
     setup do
       @reference_owner       = create_default_mockup
       @other_reference_owner = create_default_mockup

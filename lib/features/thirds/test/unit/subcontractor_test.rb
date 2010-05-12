@@ -1,6 +1,6 @@
 require 'test/test_helper'
 
-class SupplierTest < ActiveSupport::TestCase
+class SubcontractorTest < ActiveSupport::TestCase
   
   #TODO
   # has_permissions :as_business_object
@@ -11,9 +11,9 @@ class SupplierTest < ActiveSupport::TestCase
   
   should_validate_presence_of :activity_sector_reference, :with_foreign_key => :default
   
-  context "Thanks to 'has_contacts', a supplier" do
+  context "Thanks to 'has_contacts', a subcontractor" do
     setup do
-      @contacts_owner = Supplier.first
+      @contacts_owner = Subcontractor.first
     end
     
     include HasContactsTest

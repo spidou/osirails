@@ -1,13 +1,11 @@
 class Contact < ActiveRecord::Base
-  has_permissions :as_business_object
+  has_permissions :as_business_object, :additional_class_methods => [ :hide ]
   
   has_numbers
   
-#  belongs_to :contact_type
-  
   belongs_to :has_contact, :polymorphic => true
   
-  validates_presence_of   :first_name, :last_name, :gender#, :contact_type
+  validates_presence_of   :first_name, :last_name, :gender
   validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_inclusion_of  :gender, :in => %w( M F )
   
@@ -33,15 +31,14 @@ class Contact < ActiveRecord::Base
   @@form_labels[:last_name]     = "Nom :"
   @@form_labels[:email]         = "Adresse e-mail :"
   @@form_labels[:job]           = "Fonction :"
-  @@form_labels[:contact_type]  = "Type de contact :"
   @@form_labels[:avatar]        = "Photo :"
   
   has_attached_file :avatar, 
-                    :styles => { :thumb => "75x75#" },
-                    :default_style => :thumb,
-                    :path => ":rails_root/assets/contacts/avatars/:id/:style.:extension",
-                    :url => "/contacts/:id/avatar",
-                    :default_url => ":current_theme_path/images/avatars/:gender.png"
+                    :styles         => { :thumb => "75x75#" },
+                    :default_style  => :thumb,
+                    :path           => ":rails_root/assets/contacts/avatars/:id/:style.:extension",
+                    :url            => "/contacts/:id/avatar",
+                    :default_url    => ":current_theme_path/images/avatars/:gender.png"
   
   has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
   

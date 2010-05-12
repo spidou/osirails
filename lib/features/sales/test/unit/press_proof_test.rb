@@ -888,7 +888,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a press_proof" do
     setup do
       @reference_owner       = create_default_press_proof
       @other_reference_owner = create_default_press_proof

@@ -165,17 +165,17 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   end
 
   create_table "contacts", :force => true do |t|
+    t.integer  "has_contact_id",      :limit => 11
+    t.string   "has_contact_type"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "job"
     t.string   "email"
     t.string   "gender"
-    t.boolean  "hidden"
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size",    :limit => 11
-    t.integer  "has_contact_id",      :limit => 11
-    t.string   "has_contact_type"
+    t.boolean  "hidden"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -214,13 +214,13 @@ ActiveRecord::Schema.define(:version => 20100326095542) do
   add_index "custom_activity_sectors", ["name"], :name => "index_custom_activity_sectors_on_name", :unique => true
 
   create_table "customer_grades", :force => true do |t|
-    t.string  "name"
     t.integer "payment_time_limit_id", :limit => 11
+    t.string  "name"
   end
 
   create_table "customer_solvencies", :force => true do |t|
-    t.string  "name"
     t.integer "payment_method_id", :limit => 11
+    t.string  "name"
   end
 
   create_table "delivery_interventions", :force => true do |t|

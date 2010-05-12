@@ -70,10 +70,10 @@ class SurveyInterventionTest < ActiveSupport::TestCase
     end
   end
   
-  context "plugin has_contact :" do
+  context "Thanks to 'has_contact', a survey_intervention" do
     setup do
       @contact_owner = create_default_survey_intervention
-      @contact_key = :survey_intervention_contact
+      @contact_keys = [ :survey_intervention_contact ]
     end
     
     subject { @contact_owner }
@@ -86,9 +86,9 @@ class SurveyInterventionTest < ActiveSupport::TestCase
   private
   
     def create_default_survey_intervention
-      s = SurveyIntervention.new( :internal_actor_id => employees(:john_doe).id,
-                                  :start_date => Date.today)
-      flunk "survey intervention should be valid #{s.errors.inspect}" unless s.save
+      s = SurveyIntervention.new( :internal_actor_id  => employees(:john_doe).id,
+                                  :start_date         => Date.today)
+      s.save!
       return s
     end
 end

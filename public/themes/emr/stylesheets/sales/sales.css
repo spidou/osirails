@@ -215,48 +215,6 @@ ul.quote_caption {
   margin-top: 5px;
 }
 
-/* QUOTE HEADER */
-#quote_header {
-  text-align: left;
-  text-indent: 0;
-}
-
-#quote_header > p {
-  text-align: left;
-  text-indent: 0;
-  padding: 0 0 0 8px;
-  margin-bottom: 0;
-}
-
-#quote_header > div {
-  display: inline-block;
-  vertical-align: top;
-  min-width: 400px;
-  width: 400px;
-  margin: 5px 7px 5px 7px;
-}
-
-#quote_header > div label {
-  width: 100px !important;
-  vertical-align: top;
-}
-
-#quote_header > div h3 {
-  text-align: center;
-}
-
-#quote_header #contact_container {
-  display: block;
-}
-
-#quote_header #contact_container label {
-  width: auto !important;
-}
-
-#quote_header #contact_container #order_preview_contacts {
-  margin-left: 110px;
-}
-
 /* DELIVERY NOTES LIST */
 table tr.confirmed_delivery_note td.status {
   color: #e99727;
@@ -279,35 +237,6 @@ table tr.delivery_note td.realized_at.delivered {
   color: #60bc00;
 }
 
-/* DELIVERY NOTE HEADER */
-#delivery_note_header {
-  text-align: left;
-  text-indent: 0;
-}
-
-#delivery_note_header > div {
-  display: inline-block;
-  vertical-align: top;
-  min-width: 400px;
-  margin: 5px 7px 5px 7px;
-}
-
-#delivery_note_header > div label {
-  width: 100px !important;
-  vertical-align: top;
-}
-
-#delivery_note_header > div h4 {
-  text-align: center;
-  margin: 0px;
-  padding: 2px;
-  background-color: #DDD;
-  border: 1px solid #A7A7A7;
-}
-
-#delivery_note_header #contact_container label {
-  width: auto !important;
-}
 
 #delivery_note_items tr.empty_line {
   background-color: #EAEAEA;

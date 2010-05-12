@@ -1,77 +1,30 @@
 require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class EstablishmentTest < Test::Unit::TestCase
-  should_belong_to :customer
-  should_belong_to :establishment_type
+  should_belong_to :customer, :establishment_type, :activity_sector_reference
+  
+  should_validate_presence_of :name, :address, :siret_number
+  should_validate_presence_of :establishment_type, :with_foreign_key => :default
   
   should_allow_values_for :siret_number, "12345678901234", "09876543210987"
   should_not_allow_values_for :siret_number, "azert", "azertyuiopqsdf", "1234567890123", "123456789012345", "1234567890123a", "", nil
   
-  context "An empty establishment" do
+  context "An establishment" do
     setup do
-      @establishment = Establishment.new
-      @establishment.valid?
+      @establishment = create_establishment_for(Customer.first)
     end
     
-    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
-      should "require presence of #{attribute}" do
-        assert @establishment.errors.invalid?(attribute)
-      end
-    end
+    subject{ @establishment }
+    
+    should_validate_uniqueness_of :siret_number
   end
   
-  context "A complete establishment" do
+  context "Thanks to 'has_contacts', an establishment" do
     setup do
-      @establishment = Establishment.new(:name => "Name",
-                                         :establishment_type_id => establishment_types(:store).id,
-                                         :siret_number => "35478965321567")
-      @establishment.build_address(:street_name   => "Street Name",
-                                   :zip_code      => "12345",
-                                   :city_name     => "City",
-                                   :country_name  => "Country")
-      @establishment.valid?
-    end
-    
-    [ :name, :address, :establishment_type, :siret_number].each do |attribute|
-      should "valid presence of #{attribute}" do
-        assert !@establishment.errors.invalid?(attribute)
-      end
-    end
-    
-    should "be saved successfully" do
-      assert @establishment.save!
-    end
-  end
-
-  context "has_contacts" do
-    setup do
-      @contacts_owner = create_default_establishment
+      @contacts_owner = create_establishment_for(Customer.first)
     end
     
     include HasContactsTest
   end
-  
-  private
-  
-  def create_default_establishment
-    e = Establishment.new( :name => "Name",
-                       :establishment_type_id => establishment_types(:store).id,
-                       :siret_number => "35478965321567")
-    e.build_address( :street_name   => "Street Name",
-                     :zip_code      => "12345",
-                     :city_name     => "City",
-                     :country_name  => "Country")
-    flunk "establishment should be valid unless" unless e.save
-    return e
-  end
-  
-#  # TODO test save address in has_address plugin
-#  def test_save_address
-#    @establishment.build_address(:street_name   => "1 rue des rosiers",
-#                                 :country_name  => "Réunion",
-#                                 :city_name     => "Saint-Denis",
-#                                 :zip_code      => "97400")
-#    @establishment.save!
-#    assert @establishment.reload.address, "This Establishment should have an address"
-#  end
 end

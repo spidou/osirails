@@ -1,7 +1,0 @@
-mysql:
-  adapter: mysql
-  username: root
-  password: 97438
-  encoding: utf8
-  database: has_search_index_unittest
-  socket: /var/run/mysqld/mysqld.sock

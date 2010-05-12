@@ -179,35 +179,6 @@ class OrderTest < ActiveSupport::TestCase
     assert !@order.errors.invalid?(:customer), "customer should be valid"
   end
   
-#  def test_presence_of_contacts
-#    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it's empty"
-#    
-#    @order.contact << Contact.new # assuming Contact.new returns an invalid record by default
-#    @order.valid?
-#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-#    assert @order.errors.invalid?(:contacts), "contacts should NOT be valid because it contains an invalid contact"
-#    
-#    @order.contacts = []
-#    @order.contact_ids << 0
-#    @order.valid?
-#    assert @order.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it contains a wrong contact ID"
-#    
-#    @order.contacts = []
-#    @order.contacts << contacts(:pierre_paul_jacques)
-#    @order.valid?
-#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-#    assert @order.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
-#    
-#    customer = thirds(:first_customer)
-#    establishment = build_establishment_for(customer)
-#    establishment.contacts << contacts(:pierre_paul_jacques)
-#    customer.save
-#    @order.customer = customer
-#    @order.valid?
-#    assert !@order.errors.invalid?(:contact_ids), "contact_ids should be valid"
-#    assert !@order.errors.invalid?(:contacts), "contacts should be valid"
-#  end
-  
   def test_presence_of_bill_to_address
     @invalid_address = Address.new # assuming Address.new returns an invalid record by default
     @valid_address   = Address.new(:street_name       => "Street Name",
@@ -279,7 +250,7 @@ class OrderTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', an order" do
     setup do
       @reference_owner       = create_default_order
       @other_reference_owner = create_default_order
@@ -288,10 +259,10 @@ class OrderTest < ActiveSupport::TestCase
     include HasReferenceTest
   end
   
-  context "has_contact :order_contact" do
+  context "Thanks to 'has_contact', an order" do
     setup do
       @contact_owner = create_default_order
-      @contact_key = :order_contact
+      @contact_keys = [ :order_contact ]
     end
     
     subject { @contact_owner }

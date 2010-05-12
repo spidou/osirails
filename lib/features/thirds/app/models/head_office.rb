@@ -1,4 +1,7 @@
 class HeadOffice < Establishment
-  Contact.contacts_owners_models << self ## use to define the routes into routes.rb called here because the plugin is called
-                                          # into Establisment so the routes are defined only for Establishment
+  has_contacts
+  
+  has_search_index :only_attributes    => [ :name, :activated ],
+                   :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ],
+                   :main_model         => true
 end

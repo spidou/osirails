@@ -42,7 +42,7 @@ class Order < ActiveRecord::Base
   has_many :mockups
   has_many :graphic_documents
 
-  validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
+  validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
   validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
@@ -50,8 +50,7 @@ class Order < ActiveRecord::Base
   validates_presence_of :creator,                 :if => :user_id
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
-  validates_presence_of :order_type,              :if => :order_type_id        
-  validates_presence_of :reference
+  validates_presence_of :order_type,              :if => :order_type_id
   
   validates_associated :customer, :ship_to_addresses, :products, :quotes #TODO quotes is really necessary ?
   
@@ -63,6 +62,10 @@ class Order < ActiveRecord::Base
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
+  
+  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
+                   :only_relationships => [ :customer ],
+                   :main_model         => true
   
   # level constants
   CRITICAL  = 'critical'
@@ -80,7 +83,7 @@ class Order < ActiveRecord::Base
   @@form_labels[:commercial]              = "Commercial :"
   @@form_labels[:ship_to_address]         = "Adresse(s) de livraison :"
   @@form_labels[:approaching]             = "Type d'approche :"
-  @@form_labels[:contact]                 = "Contact commercial :"
+  @@form_labels[:order_contact]           = "Contact commercial :"
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
   @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
@@ -257,14 +260,7 @@ class Order < ActiveRecord::Base
     steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
     advance
   end
-
-#  def child
-#    first_level_steps.reverse.each do |child|
-#      return child unless child.unstarted?
-#    end
-#    return first_level_steps.first
-#  end
-
+  
   ## Return missing elements's order
   def missing_elements
     missing_elements = []
@@ -297,15 +293,16 @@ class Order < ActiveRecord::Base
     end
   end
   
-  #def signed_quote
-  #  commercial_step.estimate_step.signed_quote
-  #end
-  
+  #delegate :contacts, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_contacts
-    # customer.all_contacts #TODO also take in account contacts in customer's establishments
     customer ? customer.contacts : []
   end
   
+  def all_contacts_and_customer_contacts
+    ( all_contacts + ( customer_contacts || [] ) ).uniq
+  end
+  
+  #delegate :establishments, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_establishments
     customer ? customer.establishments : []
   end
@@ -373,7 +370,8 @@ class Order < ActiveRecord::Base
 #    def default_step
 #      Step.find_by_name("commercial_step")
 #    end
-  # Create all orders_steps after create order
+    
+    # Create all orders_steps after create order
     def validates_order_type_validity
       if order_type and society_activity_sector
         errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)

@@ -37,17 +37,19 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <% end %>
   </p>
   
-  <div id="contact_container">
-    <h3>Contact de facturation</h3>
-    <p>
-      <%= label :select_contacts, "À l'attention de " %>
-      <%= display_contact_picker(invoice, order.all_contacts, :form => form, :key => "invoice_contact") %>
-    </p>
-  </div>
-  
-  <div>
-    <h3>Adresse de facturation</h3>
-    <%= render :partial => 'addresses/address_form', :object => invoice.bill_to_address || invoice.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => invoice } %>
+  <div class="presentation_in_columns">
+    <div class="small">
+      <h3>Adresse de facturation</h3>
+      <%= render :partial => 'addresses/address_form', :object => invoice.bill_to_address || invoice.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => invoice } %>
+    </div>
+    
+    <div id="contact_container">
+      <h3>Contact de facturation</h3>
+      <p>
+        <%= label :select_contacts, "À l'attention de " %>
+        <%= display_contact_picker(invoice, invoice.order_and_customer_contacts, :form => form, :key => "invoice_contact") %>
+      </p>
+    </div>
   </div>
   
   <h3>Références</h3>

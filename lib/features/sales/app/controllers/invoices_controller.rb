@@ -71,6 +71,7 @@ class InvoicesController < ApplicationController
       end
     end
     
+    @invoice.invoice_contact = @order.order_contact
     @invoice.creator = current_user
     @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end

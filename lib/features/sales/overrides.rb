@@ -22,6 +22,7 @@ end
 
 require_dependency 'society_activity_sector'
 require_dependency 'customer'
+require_dependency 'factor'
 require_dependency 'establishment'
 require_dependency 'society_activity_sector'
 require_dependency 'application_helper'
@@ -35,6 +36,10 @@ class Customer
     self.orders.each { |o| orders << o if o.terminated? }
     orders
   end
+end
+
+class Factor
+  has_many :invoices
 end
 
 class Establishment

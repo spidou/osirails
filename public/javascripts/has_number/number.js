@@ -3,15 +3,12 @@ function mark_number_for_destroy(id) {
   $(id).up('.number').hide();
 }
 
-function view_more_or_less(link, more_text, less_text)
+function toggle_more_less_button(link, more_text, less_text)
 {
-  toggle_appear($(link).previous());
-  $(link).innerHTML = ($(link).previous().visible() ? less_text : more_text);
-}
-
-function toggle_appear(element)
-{
+  element = $(link).previous()
   (element.visible() ? element.blindUp() : element.blindDown())
+  
+  $(link).innerHTML = ($(link).previous().visible() ? less_text : more_text);
 }
 
 // function that is a trick used to prepare html entities to be linked together (contact with his numbers)

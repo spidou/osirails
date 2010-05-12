@@ -21,7 +21,7 @@ style   = "style=\"display:none\"" if intervention.should_destroy?
       </p>
       <p>
         <%= form.label :survey_intervention_contact_id %>
-        <%= display_contact_picker(intervention, intervention.order_contacts, :form => form, :key => 'survey_intervention_contact', :force_view => true )%>
+        <%= display_contact_picker(intervention, intervention.order_and_customer_contacts, :form => form, :key => 'survey_intervention_contact', :force_show_view => true)%>
       </p>
       <p>
         <%= form.label :comment %>

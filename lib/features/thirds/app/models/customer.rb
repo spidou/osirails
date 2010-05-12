@@ -9,7 +9,9 @@ class Customer < Third
   belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
-  has_many :establishments, :conditions => [ "type IS NULL" ]
+  has_many :establishments, :conditions => [ "establishments.type IS NULL" ]
+  
+  named_scope :activates, :conditions => { :activated => true }
   
   has_attached_file :logo, 
                     :styles => { :thumb => "120x120" },
@@ -29,17 +31,15 @@ class Customer < Third
   
   validates_associated :establishments, :head_office
   
-  validate :uniqueness_of_siret_number , :if => :head_office
+  validate :validates_uniqueness_of_siret_number
   
   after_save :save_establishments, :save_head_office
   
   # for pagination : number of instances by index page
   CUSTOMERS_PER_PAGE = 15
   
-  named_scope :activates, :conditions => {:activated => true}
-  
-  has_search_index :only_attributes    => [:name, :siret_number],
-                   :only_relationships => [:legal_form, :establishments],
+  has_search_index :only_attributes    => [ :name ],
+                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade, :head_office, :establishments ],
                    :main_model         => true
   
   @@form_labels[:factor]            = "Compagnie d'affacturage :"
@@ -67,8 +67,12 @@ class Customer < Third
     factor_id_was
   end
   
+  def head_office_and_establishments
+    @head_office_and_establishments ||= ( [ head_office ] + establishments ).compact
+  end
+  
   def contacts
-    (establishments + [ head_office ]).collect(&:contacts).flatten
+    @contacts ||= head_office_and_establishments.collect(&:contacts).flatten
   end
   
   def establishment_attributes=(establishment_attributes)
@@ -113,14 +117,14 @@ class Customer < Third
     self.establishments.build(attributes)
   end
   
-  def uniqueness_of_siret_number
-    objects           = establishments + [head_office]
+  def validates_uniqueness_of_siret_number
+    establishments    = head_office_and_establishments
     all_siret_numbers = {}
-    objects.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
+    establishments.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
     
-    message = ActiveRecord::Errors.default_error_messages[:taken]
-    objects.each do |establishment|
-      other_siret_numbers = all_siret_numbers.reject{ |obj, v| establishment == obj }
+    message = "est déjà pris par un autre établissement (ou le siège social) de ce client"
+    establishments.each do |establishment|
+      other_siret_numbers = all_siret_numbers.reject{ |estab, siret_number| establishment == estab }
       establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
     end
   end

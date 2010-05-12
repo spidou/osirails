@@ -28,6 +28,7 @@ class DeliveryNotesController < ApplicationController
     if @signed_quote = @order.signed_quote
       @delivery_note = @order.delivery_notes.build
       @delivery_note.build_delivery_note_items_from_signed_quote
+      @delivery_note.delivery_note_contact = @order.order_contact
       @delivery_note.creator = current_user
     else
       error_access_page(412)

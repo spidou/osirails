@@ -40,6 +40,7 @@ class OrdersController < ApplicationController
     if params[:customer_id] # this is the second step of the order creation
       begin
         @order.customer = Customer.find(params[:customer_id])
+        @order.order_contact = @order.customer_contacts.first
         @order.build_bill_to_address(@order.customer.bill_to_address.attributes)
       rescue ActiveRecord::RecordNotFound => e
         flash.now[:error] = "Le client n'a pas été trouvé, merci de réessayer."
@@ -66,7 +67,6 @@ class OrdersController < ApplicationController
   
   # PUT /orders/1
   def update
-    params[:order][:contact_ids] ||= []
     if @order.update_attributes(params[:order])
       flash[:notice] = "Dossier modifié avec succés"
       redirect_to order_informations_path(@order)

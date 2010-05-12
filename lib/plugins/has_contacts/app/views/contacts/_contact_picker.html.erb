@@ -1,35 +1,38 @@
 <%
 require_locals contact_list, key, form
 contact_owner = contact_picker
-force_view ||= false # you may not want to display forms
+select_id     = "#{contact_owner.class.name.underscore}_#{key}"
+
+force_show_view ||= false
 %>
 
-<% if is_form_view? and !force_view %>
-
+<% if is_form_view? and !force_show_view %>
   <%= form.collection_select("#{key}_id", contact_list, :id, :fullname,
-  ( contact_owner.new_record? ? { :include_blank => "Veuillez choisir un contact", } : {} ), :id => key, :name => 'resources_picker') %>
+                             ( contact_owner.new_record? ? { :include_blank => "Veuillez choisir un contact", } : {} ),
+                             :id    => select_id,
+                             :name  => 'resources_picker') %>
 <% end %>
 
-<div id="preview_<%= key %>" class="resources">
+<div id="preview_<%= key %>" class="resources contact_picker">
 
   <% for contact in contact_list %>
     <% selected_contact = contact_owner.send(key).nil? ? false : contact_owner.send(key).id.equal?(contact.id) %>
     
     <div id="preview_contact_<%=contact.id%>" class="preview_contact" <%= "style=\"display:none\"" unless selected_contact %>>
       <%= render :partial => 'contacts/contact', :object => contact, :locals => { :contacts_owner => contact_owner, :force_show_view => true } %>  
-      <%= form.check_box "#{key}_id".to_sym, {:class => 'contact_input', :checked => selected_contact}, contact.id %>
+      <%= form.radio_button "#{key}_id".to_sym, contact.id, { :class => 'contact_input', :checked => selected_contact } %>
     </div>
   <% end %>
 
 </div>
 
-<% if is_form_view? and !force_view %>
+<% if is_form_view? and !force_show_view %>
   <script type="text/javascript">
-    var contacts_picker = new ResourcesPicker({select:                  '<%= key %>',
-                                               mode:                    'one',
-                                               hidden_element_prefix:   'preview_contact',
-                                               input_class:             'contact_input',
-                                               removable_element_class: 'preview_contact',
-                                               element_actions_class:   'contact_actions'})
+    new ResourcesPicker({select:                  '<%= select_id %>',
+                         mode:                    'one',
+                         hidden_element_prefix:   'preview_contact',
+                         input_class:             'contact_input',
+                         removable_element_class: 'preview_contact',
+                         element_actions_class:   'contact_actions'})
   </script>
 <% end %>
