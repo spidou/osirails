@@ -37,8 +37,35 @@ module HasSearchIndex
                 :float    => integer,
                 :boolean  => [ "=", "!=" ] }
     
-    # method called into all models that implement the plugin 
+    # Method called into all models that implement the plugin,
     # it define search_index class variable based on passed options hash
+    #
+    # Look above at AUTHORIZED_OPTIONS to view all possible options.
+    #
+    ##  except_*     => Means all except specified.
+    #
+    ##  only_*       => Means only specified.
+    #
+    ##  *_attributes => Permit to define (database) attributes that can be criteria.
+    #                   It must be an Array of Symbols or Strings:
+    #                   - [:attribut1, :attribut2]
+    #                   - [:relationship_1, :relationship2]
+    #                   - ['relationship', :relationship]
+    #
+    ##  additional_attributes => Permit to define attirbutes that are not table columns, like accessors or even methods (if they return something).
+    #                           PS: be carrefull with that kind of attributes because the search's treatments is performed by ruby and it 's not
+    #                               as efficient as sql engine.
+    #                           It must be an Hash:
+    #                           - {:ATTRIBUTE => TYPE}  ATTRIBUTE should return a TYPE object (look at ACTIONS above to see the available types).
+    #                           - {:full_name => string}
+    #
+    ##  displayed_attributes  => Permit to define the default showed attributes regardless of the criteria (without criteria you always view the displayed attributes in
+    #                          the result array). It must be an Array of Symbols or Strings.
+    #
+    ##   main_model           => Permit to define if the model can be a base resource where to perfom the search. For example 'Employee' would be a main model because you
+    #                           would like to search an employee but NumberType woudln't because you just want it to be usable as a criterion.
+    #                           It must be a boolean.
+    #
     def has_search_index( options = {} )
       
       error_prefix = "(has_search_index) model: #{self} >"
@@ -77,7 +104,7 @@ module HasSearchIndex
       options.delete(:except_attributes)
       options.delete(:only_attributes)
       
-      # prepare disaplayed_attributes
+      # prepare displayed_attributes
       message  = "#{error_prefix} :displayed_attributes is wrong. "
       message += "Expected Array but was '#{options[:displayed_attributes].inspect}':#{options[:displayed_attributes].class.to_s}"
       raise ArgumentError, message unless options[:displayed_attributes].is_a?(Array)
@@ -100,13 +127,6 @@ module HasSearchIndex
         self.search_index = {}.merge(options)                                            # get all attributes and relationships configured into the plugin
         self.association_list = assoc_list                                               # get all associations configured into the plugin
       end
-      
-      options[:relationships].each do |relationship_name|                                # verify if all relationships implement has_search_index
-        model   = self.reflect_on_association(relationship_name).class_name     
-        message = "#{error_prefix} relationship '#{relationship_name}' needs the '#{model}' model to implement has_search_index plugin"
-        raise ArgumentError, message unless HasSearchIndex::MODELS.include?(model)
-      end
-      
     end
     
     # Method to match a simple regexp with a data string
@@ -503,7 +523,7 @@ module HasSearchIndex
           raise ArgumentError, message unless options[:except_relationships].is_a?(Array)
 
           associations.each_value do |relationship|
-            relationship.class_name.constantize                                          # constantize dependant models
+            require(relationship.class_name.underscore)                                  # require the model to be sure that the plugin implements into the model
             if HasSearchIndex::MODELS.include?(relationship.class_name)
               options[:relationships] << relationship.name
             else
@@ -526,7 +546,12 @@ module HasSearchIndex
             message = "#{error_prefix} Undefined relationship '#{relationship_name}', maybe you misspelled it"
             raise ArgumentError, message if self.reflect_on_association(relationship_name).nil?
             
-            self.reflect_on_association(relationship_name).class_name.constantize
+            
+            model = self.reflect_on_association(relationship_name).class_name
+            require(model.underscore)                                                    # require the model to be sure that the plugin implements into the model
+            unless HasSearchIndex::MODELS.include?(model)                 
+              raise ArgumentError, "#{error_prefix} relationship '#{relationship_name}' needs the '#{model}' model to implement has_search_index plugin"
+            end
           end
           options[:relationships] = options[:only_relationships]
         end
@@ -860,8 +885,8 @@ module HasSearchIndex
         #        to 'chidren' to make it work properly.
         
         # manage the custom relationships name
-        model     = relationship_class_name(attribute_prefix, relationship).tableize.singularize
-        sub_model = relationship_class_name(attribute_prefix, sub_relationship).tableize.singularize
+        model     = relationship_class_name(attribute_prefix, relationship).constantize.table_name.singularize
+        sub_model = relationship_class_name(attribute_prefix, sub_relationship).constantize.table_name.singularize
         
         if relationship_class_name(attribute_prefix, relationship) == relationship_class_name(attribute_prefix, sub_relationship)    # manage the self reference
           return "#{sub_relationship.pluralize}_#{relationship.pluralize}"
