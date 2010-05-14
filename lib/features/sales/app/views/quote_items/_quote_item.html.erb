@@ -1,3 +1,6 @@
+<% collection_length  ||= 1 %>
+<% quote_item_counter ||= 1 %>
+
 <% if quote_item.free_item? %>
   <%= render :partial => 'quote_items/free_quote_item', :object => quote_item,
                                                         :locals => { :collection_length => collection_length, :counter => quote_item_counter } %>
