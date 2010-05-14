@@ -1,2 +1,2 @@
 <h1>Les mati&egrave;res premi&egrave;res</h1>
-<%= render(:partial => "supplies_manager/index") %>
+<%= render :partial => "supplies_manager/index", :locals => { :supply_categories => @supply_categories } %>

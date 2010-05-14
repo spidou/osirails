@@ -1,0 +1,14 @@
+<% stock_flow = stock_flow_in_one_line %>
+
+<tr>
+  <td><%= stock_flow.supply.is_a?(Commodity) ? "Matière première" : "Consommable" %></td>
+  <td><%= stock_flow.supply.designation %></td>
+  <td><%= stock_flow.quantity %></td>
+  
+  <% if stock_flow.is_a?(StockInput) %>
+    <td><%= number_with_precision(stock_flow.unit_price, 2) + ' &euro;' %></td>
+  <% end %>
+  
+  <td><%= stock_flow.from_inventory? ? link_to("Inventaire", inventory_path(stock_flow.inventory)) : stock_flow.identifier %></td>
+  <td><%= stock_flow.created_at.humanize %></td>
+</tr>

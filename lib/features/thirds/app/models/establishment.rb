@@ -1,4 +1,10 @@
 class Establishment  < ActiveRecord::Base
+  #OPTIMIZE we should think about putting instanciation of 'form_labels' in ActiveRecord::Base instead of in each class
+  cattr_reader :form_labels # declaration must be before including SiretNumber because it define a form_label
+  @@form_labels = Hash.new
+  
+  include SiretNumber
+  
   has_permissions :as_business_object
   
   has_address   :address, :one_or_many => :many
@@ -6,17 +12,17 @@ class Establishment  < ActiveRecord::Base
   has_documents :photos
   has_number    :phone
   has_number    :fax
-
+  
   belongs_to :customer
   belongs_to :establishment_type
   belongs_to :activity_sector_reference
   
-  validates_presence_of :name, :address, :siret_number, :establishment_type_id
-  validates_presence_of :establishment_type,  :if => :establishment_type_id
+  validates_presence_of :name, :address, :establishment_type_id
+  validates_presence_of :establishment_type, :if => :establishment_type_id
   
-  validates_format_of :siret_number, :with => /^[0-9]{14}$/, :message => "Le numéro SIRET doit comporter 14 chiffres"
+  validates_uniqueness_of :siret_number, :allow_blank => true
   
-  validates_uniqueness_of :siret_number
+  validates_associated :address
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
@@ -35,11 +41,8 @@ class Establishment  < ActiveRecord::Base
                    :only_relationships => [ :customer, :activity_sector_reference, :establishment_type, :contacts, :address, :phone, :fax ],
                    :main_model         => true
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
   @@form_labels[:name]                      = "Nom de l'enseigne :"
   @@form_labels[:establishment_type]        = "Type d'établissement :"
-  @@form_labels[:siret_number]              = "N° Siret :"
   @@form_labels[:activity_sector_reference] = "Code NAF :"
   @@form_labels[:phone]                     = "Tél :"
   @@form_labels[:fax]                       = "Fax :"

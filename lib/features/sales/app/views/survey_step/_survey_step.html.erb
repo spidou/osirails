@@ -39,37 +39,37 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
   <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update },  :html => { :multipart => true }) do |form| %>
     <%= form.error_messages %>
     
-    <h2 class="survey_step_interventions"><%= survey_headers[:survey_step_interventions] %></h2>
+    <h2 class="survey_step_interventions section_nav"><%= survey_headers[:survey_step_interventions] %></h2>
     <div class="survey_step_interventions section_nav selected">
       <%= display_survey_interventions(survey_step) %>
       <%= display_survey_intervention_add_button(survey_step) if is_form_view? %>
     </div>
     
-    <h2 class="survey_step_products"><%= survey_headers[:survey_step_products] %></h2>
+    <h2 class="survey_step_products section_nav"><%= survey_headers[:survey_step_products] %></h2>
     <div class="survey_step_products section_nav">
       <%= display_autocomplete_field_to_add_product_in_survey_step(survey_step.order) if is_form_view? %>
       <%= display_products_list_in_survey_step(survey_step.order) %>
       <%= display_anchor_to_autocomplete_field_to_add_product_in_survey_step if is_form_view? %>
     </div>
     
-    <h2 class="survey_step_documents"><%= survey_headers[:survey_step_documents] %></h2>
+    <h2 class="survey_step_documents section_nav"><%= survey_headers[:survey_step_documents] %></h2>
     <div class="survey_step_documents section_nav">
       <%= display_documents_list(survey_step) %>
       <%= display_document_add_button(survey_step) if is_form_view? %>
     </div>
     
-    <h2 class="survey_step_subcontractors"><%= survey_headers[:survey_step_subcontractors] %></h2>
+    <h2 class="survey_step_subcontractors section_nav"><%= survey_headers[:survey_step_subcontractors] %></h2>
     <div class="survey_step_subcontractors section_nav">
       <%= display_subcontractor_requests(survey_step) %>
       <%= display_subcontractor_request_add_button(survey_step) if is_form_view? %>
     </div>
     
-    <!-- <h2 class="survey_step_consultants"><%= survey_headers[:survey_step_consultants] %></h2>
+    <!-- <h2 class="survey_step_consultants section_nav"><%= survey_headers[:survey_step_consultants] %></h2>
     <div class="survey_step_consultants section_nav">
       coming soon
     </div> -->
     
-    <h2 class="survey_step_remarks"><%= survey_headers[:survey_step_remarks] %></h2>
+    <h2 class="survey_step_remarks section_nav"><%= survey_headers[:survey_step_remarks] %></h2>
     <div class="survey_step_remarks section_nav">
       <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 if is_form_view? %>
       <%= display_remarks_list(survey_step) %>

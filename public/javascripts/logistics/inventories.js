@@ -1,36 +1,30 @@
-// This method permit to calculate the difference between actual and real stock quantity
-function quantity_difference(supply_id) {
-  // Variables
-  var actual = document.getElementById('actual_stock_quantity_for_supplier_supply_'+supply_id).innerHTML;
-  var real = document.getElementById('real_stock_quantity_for_supplier_supply_'+supply_id).value;
-
-  // Calcul
-  var difference = parseFloat(real) - parseFloat(actual);
+function update_new_quantity_evolution(element) {
+  tr = element.up('tr')
+  td = element.up('td')
+  stock_quantity = parseInt(tr.down('.stock_quantity').innerHTML)
+  new_stock_quantity = element.value
   
-  // Display variable    
-  var text;
-  
-  if(real >= 0){
-    if(difference > 0){
-      text = "+"+difference.toFixed(1);
+  if (isNaN(new_stock_quantity) || isNaN( new_stock_quantity = parseInt(new_stock_quantity) )) {
+    td.addClassName('error')
+    
+    td.removeClassName('increase')
+    td.removeClassName('decrease')
+    td.removeClassName('stagnancy')
+  } else {
+    td.removeClassName('error')
+    
+    if (new_stock_quantity > stock_quantity) {
+      td.removeClassName('stagnancy')
+      td.removeClassName('decrease')
+      td.addClassName('increase')
+    } else if (new_stock_quantity < stock_quantity) {
+      td.removeClassName('stagnancy')
+      td.removeClassName('increase')
+      td.addClassName('decrease')
+    } else {
+      td.removeClassName('increase')
+      td.removeClassName('decrease')
+      td.addClassName('stagnancy')
     }
-    else{text = difference.toFixed(1);}   
   }
-  else{text = "invalide";}
-  
-  if(text == "NaN"){
-    text = "invalide";
-  }  
-
-  // Apply changes
-  if(difference > 0){
-    document.getElementById('fob_for_supplier_supply_'+supply_id).disabled = false
-    document.getElementById('tax_coefficient_for_supplier_supply_'+supply_id).disabled = false
-  }
-  else
-  {
-    document.getElementById('fob_for_supplier_supply_'+supply_id).disabled = true
-    document.getElementById('tax_coefficient_for_supplier_supply_'+supply_id).disabled = true
-  }
-  document.getElementById('difference_for_supplier_supply_'+supply_id).innerHTML = text;
 }

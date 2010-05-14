@@ -1,16 +1,15 @@
 module StockFlowsHelper
-  def new_stock_flow_link(input,supply,class_name)
-    if "Stock#{input ? 'Input' : 'Output'}".constantize.can_add?(current_user)
-      text = "Nouvelle #{input ? 'entrée' : 'sortie'} de #{class_name}" #"New #{supply.class.name.tableize.singularize} stock #{input ? 'input' : 'output'}"
-      link_to(image_tag( "add_16x16.png", :alt => text, :title => text ) + " " + text, "/stock_#{input ? 'inputs' : 'outputs'}/new?type=#{supply.class.name}")
-    end
+  def new_stock_flow_link(stock_flow_type, supply, message = nil)
+    return unless stock_flow_type.can_add?(current_user)
+    text = "Nouvelle #{stock_flow_type == StockInput ? 'entrée' : 'sortie'} de #{supply.is_a?(Commodity) ? 'matière première' : 'consommable'}"
+    message ||= " #{text}"
+    link_to( image_tag( 'add_16x16.png', :alt => text, :title => text ) + message, send("new_stock_#{stock_flow_type == StockInput ? 'input' : 'output'}_path", :supply_type => supply.class.name) )
   end
-
-  def stock_flows_link(input,supply,class_name)
-    if "Stock#{input ? 'Input' : 'Output'}".constantize.can_list?(current_user)
-      text = "Voir toutes  les #{input ? 'entrées' : 'sorties'} de #{class_name}" #"List only #{supply.class.name.tableize.singularize} stock #{input ? 'inputs' : 'outputs'}"
-      link_to(image_tag( "view_16x16.png", :alt => text, :title => text )+ " " + text, "/stock_#{input ? 'inputs' : 'outputs'}?type=#{supply.class.name}")
-    end
+  
+  def stock_flows_link(stock_flow_type, supply, message = nil)
+    return unless stock_flow_type.can_view?(current_user)
+    text = "Voir uniquement les #{stock_flow_type == StockInput ? 'entrée' : 'sortie'} de #{supply.is_a?(Commodity) ? 'matière première' : 'consommable'}"
+    message ||= " #{text}"
+    link_to( image_tag( 'view_16x16.png', :alt => text, :title => text ) + message, send("stock_#{stock_flow_type == StockInput ? 'inputs' : 'outputs'}_path", :supply_type => supply.class.name) )
   end
 end
-

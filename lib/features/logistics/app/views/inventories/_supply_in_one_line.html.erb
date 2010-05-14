@@ -1,0 +1,69 @@
+<%
+require_locals form
+
+inventory = form.object
+supply = supply_in_one_line
+
+supply_status = supply.enabled? ? "enabled" : "disabled"
+tr_id         = "#{supply.class.name.downcase}_#{supply.id}"
+tr_class      = supply.ancestors.collect{ |c| "#{c.class.singularized_table_name}_#{c.id}" }.join(" ") + " #{supply_status}"
+
+if supply.stock_quantity(@date) == supply.stock_quantity_at_last_inventory(@date)
+  evolution = "stagnancy"
+elsif supply.stock_quantity(@date) > supply.stock_quantity_at_last_inventory(@date)
+  evolution = "increase"
+else
+  evolution = "decrease"
+end
+
+new_quantity        = ''
+new_evolution       = ''
+new_quantity_error  = ''
+
+if ["new", "create"].include?(params[:action])
+  new_quantity = params[:inventory][supply.id.to_s][:new_quantity] rescue supply.stock_quantity(@date)
+  if new_quantity.to_s == new_quantity.to_i.to_s
+    new_quantity = new_quantity.to_i
+  else
+    new_quantity_error = 'error'
+  end
+elsif params[:action] == "show"
+  new_quantity = supply.stock_quantity(@date)
+  
+  current = inventory.stock_flows.detect{ |s| s.supply_id == supply.id }
+  if current.is_a?(StockInput)
+    new_quantity += current.quantity
+  elsif current.is_a?(StockOutput)
+    new_quantity -= current.quantity
+  end
+end
+
+if new_quantity.is_a?(Numeric)
+  if new_quantity == supply.stock_quantity(@date)
+    new_evolution = "stagnancy"
+  elsif new_quantity > supply.stock_quantity(@date)
+    new_evolution = "increase"
+  else
+    new_evolution = "decrease"
+  end
+end
+%>
+
+<tr id="<%= tr_id %>" class="<%= tr_class %>">
+  <td class="reference"><%= supply.reference %></td>
+  <td></td>
+  <td></td>
+  <td class="type text"><%= supply.name %></td>
+  <td class="specificity text"><%= humanized_supply_sizes_and_packaging(supply) %></td>
+  <td class="stock_quantity_at_last_inventory"><%= supply.stock_quantity_at_last_inventory(@date) %></td>
+  <td class="stock_quantity <%= evolution %>" title="Évolution en fonction du précédent inventaire"><%= supply.stock_quantity(@date) %></td>
+  <td class="new_stock_quantity <%= new_evolution %> <%= new_quantity_error %>" title="Évolution en fonction de la quantité estimée">
+    <% if is_form_view? %>
+      <% fields_for "inventory[stock_flow_attributes][#{supply.id}]", inventory.stock_flows.build do |f| %>
+        <%= f.text_field   :new_quantity, :value => new_quantity, :size => 4, :onkeyup => "update_new_quantity_evolution(this)" %>
+      <% end %>
+    <% else %>
+      <%= strong new_quantity %>
+    <% end %>
+  </td>
+</tr> 

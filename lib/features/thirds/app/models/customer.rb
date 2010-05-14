@@ -36,7 +36,7 @@ class Customer < Third
   after_save :save_establishments, :save_head_office
   
   # for pagination : number of instances by index page
-  CUSTOMERS_PER_PAGE = 15
+  CUSTOMERS_PER_PAGE = 25
   
   has_search_index :only_attributes    => [ :name ],
                    :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade, :head_office, :establishments ],

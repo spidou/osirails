@@ -35,19 +35,19 @@
     <% method = invoice.new_record? ? :put : :post %>
     <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method do |form| %>
       
-      <h2 class="invoice_header"><%= invoice_headers[:invoice_header] %></h2>
+      <h2 class="invoice_header section_nav"><%= invoice_headers[:invoice_header] %></h2>
       <div class="invoice_header section_nav selected">
         <%= form.error_messages unless invoice_errors[:invoice_header].blank? %>
         <%= render :partial => 'invoice_header', :object => invoice, :locals => { :form => form } %>
       </div>
       
-      <h2 class="invoice_body"><%= invoice_headers[:invoice_body] %></h2>
+      <h2 class="invoice_body section_nav"><%= invoice_headers[:invoice_body] %></h2>
       <div class="invoice_body section_nav">
         <%= form.error_messages unless invoice_errors[:invoice_body].blank? %>
         <%= render :partial => 'invoice_body', :object => invoice, :locals => { :form => form } %>
       </div>
       
-      <h2 class="invoice_due_dates_payments"><%= invoice_headers[:invoice_due_dates_payments] %></h2>
+      <h2 class="invoice_due_dates_payments section_nav"><%= invoice_headers[:invoice_due_dates_payments] %></h2>
       <div class="invoice_due_dates_payments section_nav">
         <div id="due_dates">
           <% unless invoice.confirmed_at_was %>
@@ -60,13 +60,13 @@
         </div>
       </div>
       
-      <h2 class="invoice_dunnings"><%= invoice_headers[:invoice_dunnings] %></h2>
+      <h2 class="invoice_dunnings section_nav"><%= invoice_headers[:invoice_dunnings] %></h2>
       <div class="invoice_dunnings section_nav<%= disabled_class %>">
         <%# form.error_messages unless invoice_errors[:invoice_dunnings].blank? %>
         <%# render :partial => 'invoice_dunnings', :object => invoice, :locals => { :form => form }%>
       </div>
       
-      <h2 class="invoice_infos"><%= invoice_headers[:invoice_infos] %></h2>
+      <h2 class="invoice_infos section_nav"><%= invoice_headers[:invoice_infos] %></h2>
       <div class="invoice_infos section_nav<%= disabled_class %>">
         <%= render :partial => 'invoice_infos', :object => invoice, :locals => { :form => form } unless invoice.new_record? %>
       </div>

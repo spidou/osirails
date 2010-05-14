@@ -24,7 +24,7 @@ module Osirails
     #
     def initialize(params = {})
       self.klass        = params[:klass].to_s.camelize.constantize
-      self.identifiers  = [ params[:identifiers] ].flatten
+      self.identifiers  = [ params[:identifiers] ].flatten.compact # remove nil identifiers
       self.definitions  = params[:definitions]
       self.if_match     = ( params[:if_match] || "SKIP" ).upcase
       self.attributes   = {}
@@ -32,7 +32,8 @@ module Osirails
     
     # import data via ActiveRecord models from a csv file
     def import_data(rows)
-      raise "Importer expected to have 'identifiers' and 'definitions' to import data" unless identifiers and definitions
+      raise "Importer expected to have 'definitions' to import data" unless definitions
+      puts "WARNING: You decided to import data without 'identifiers', so I'll not be able to identify duplicates..."
       
       count           = 0
       count_created   = 0
@@ -47,23 +48,27 @@ module Osirails
         
         attributes = map_definitions(row)
         
-        identifier = identifiers.join("_and_")
-        args = identifiers.collect{ |i| attributes[i] }
-        object = klass.send("find_by_#{identifier}", *args) || klass.new # eg: User.find_by_username_and_role_id("admin", 1) if idenfifiers = [ :username, :role_id]
-        
-        if !object.new_record? # if object already exist
-          puts "A similar entry has been found when trying to import this line : #{row.inspect}\nYou choose to #{if_match} this entry\n============"
+        if identifiers.any?
+          identifier = identifiers.join("_and_")
+          args = identifiers.collect{ |i| attributes[i] }
+          object = klass.send("find_by_#{identifier}", *args) || klass.new # eg: User.find_by_username_and_role_id("admin", 1) if idenfifiers = [ :username, :role_id]
           
-          case if_match
-          when "SKIP"
-            count_skipped += 1
-            next
-          when "OVERRIDE"
-            count_overrided += 1
-          when "DUPLICATE"
-            definitions.merge!(identifiers.first => attributes[identifiers.first] + " [DUPLICATED_AT_#{Time.now.strftime('%Y%m%d%H%M%S')}]")
-            customer = klass.new
+          if !object.new_record? # if object already exist
+            puts "A similar entry has been found when trying to import this line : #{row.inspect}\nYou choose to #{if_match} this entry\n============"
+            
+            case if_match
+            when "SKIP"
+              count_skipped += 1
+              next
+            when "OVERRIDE"
+              count_overrided += 1
+            when "DUPLICATE"
+              definitions.merge!(identifiers.first => attributes[identifiers.first] + " [DUPLICATED_AT_#{Time.now.strftime('%Y%m%d%H%M%S')}]")
+              customer = klass.new
+            end
           end
+        else
+          object = klass.new
         end
         was_new_record = object.new_record?
         
@@ -72,7 +77,10 @@ module Osirails
           count_created += 1 if was_new_record
         else
           count_failed += 1
-          puts "#{count_failed}. An entry has failed to be saved when trying to import this line : #{row.inspect}\nObject => #{object.class.name} : #{object.attributes.inspect}\nErrors => #{object.errors.full_messages}\n============"
+          puts "#{count_failed}. An entry has failed to be saved when trying to import this line : #{row.inspect}
+Object => #{object.class.name} : #{object.attributes.inspect}
+Errors => #{object.errors.full_messages}
+============"
         end
       end
       
@@ -124,38 +132,65 @@ module Osirails
     #
     def map_definitions(row, hash = definitions, result = {})
       hash.each do |key, value|
-        if value.is_a?(Hash) and key.to_s.ends_with?("_id")
+        begin
           
-          association_class = key.to_s.gsub(/_id$/, "").camelize.constantize
-          method = value.keys.first
-          if value.values.first.is_a?(Array)
-            args = value.values.first.collect do |v|
-              if v.is_a?(Integer)
-                row[v]
-              elsif v.is_a?(Hash)
-                map_definitions(row, v).values.first
-              else
-                v
-              end
-            end
-          else
-            args = row[value.values.first]
-          end
-          result[key] = association_class.send(method, *args).id
+          if value.is_a?(Hash) and key.to_s.ends_with?("_id")
             
-        elsif value.is_a?(Hash)
-          result[key] = map_definitions(row, value)
-        elsif value.is_a?(Array)
-          result[key] = []
-          value.each do |sub_element|
-            result[key] << map_definitions(row, sub_element)
+            association_name = key.to_s.gsub(/_id$/, "")
+            if Object.const_defined?(association_name.camelize)
+              association_class = association_name.camelize.constantize
+            else
+              association_class = self.klass.reflect_on_association(association_name.to_sym).klass
+            end
+            
+            method = value.keys.first
+            attribute = value.values.first
+            if attribute.is_a?(Array)
+              args = attribute.collect do |a|
+                if a.is_a?(Integer)
+                  row[a]
+                elsif a.is_a?(Hash)
+                  map_definitions(row, a).values.first
+                else
+                  a
+                end
+              end
+            elsif attribute.is_a?(Integer)
+              args = row[attribute]
+            else
+              args = attribute
+            end
+            
+            if instance = association_class.send(method, *args)
+              result[key] = instance.id
+            else
+              puts "A record has not been found here : { :#{key} => #{association_class}.#{method}('#{args.collect(&:to_s).join("', '") if args}') }"
+            end
+              
+          elsif value.is_a?(Hash)
+            result[key] = map_definitions(row, value)
+          elsif value.is_a?(Array)
+            result[key] = []
+            value.each do |sub_element|
+              result[key] << map_definitions(row, sub_element)
+            end
+          elsif value.is_a?(Integer)
+            result[key] = row[value]
+          else
+            result[key] = value.to_s
           end
-        elsif value.is_a?(Integer)
-          result[key] = row[value]
-        else
-          result[key] = value.to_s
+          
+        rescue Exception => e
+          raise "\n==== mapping failure informations ==== :
+row = #{row.inspect}
+key = #{key.inspect}
+value = #{value.inspect}
+error = #{e.message}
+@@ backtrace @@
+#{e.backtrace.join("\n")}
+@@ end of backtrace @@
+====\n"
         end
-        
       end
       
       return result

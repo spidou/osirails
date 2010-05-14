@@ -14,10 +14,10 @@ namespace :osirails do
                                                :establishment_type_id => EstablishmentType.first.id,
                                                :siret_number => "53215673547896")
       establishment1 = customer.build_establishment(:name => "Mon Etablissement",
-                                                    :establishment_type_id => EstablishmentType.all[2],
+                                                    :establishment_type_id => EstablishmentType.all[1].id,
                                                     :siret_number => "56735321547896")
       establishment2 = customer.build_establishment(:name => "Super Etablissement",
-                                                    :establishment_type_id => EstablishmentType.last.id,
+                                                    :establishment_type_id => EstablishmentType.all[2].id,
                                                     :siret_number => "35478965321567")
       head_office.build_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
       establishment1.build_address(:street_name => "2 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")
@@ -41,13 +41,13 @@ namespace :osirails do
       ActivitySectorReference.create! :code => "10.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Industries Alimentaires"),
                                                          :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Alimentation")
         
-      ActivitySectorReference.create! :code => "13.10Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication de textiles"),
-                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Textile/Habillement")
+      ActivitySectorReference.create! :code => "13.10Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Fabrication de textiles"),
+                                                         :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Textile/Habillement")
         
-      ActivitySectorReference.create! :code => "42.11Z", :activity_sector        => ActivitySector.create!(:name => "Génie civil"),
-                                                         :custom_activity_sector => CustomActivitySector.create!(:name => "Construction")
+      ActivitySectorReference.create! :code => "42.11Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Génie civil"),
+                                                         :custom_activity_sector => CustomActivitySector.find_or_create_by_name(:name => "Construction")
         
-      ActivitySectorReference.create! :code => "27.40Z", :activity_sector        => ActivitySector.create!(:name => "Fabrication d'équipements électriques"),
+      ActivitySectorReference.create! :code => "27.40Z", :activity_sector        => ActivitySector.find_or_create_by_name(:name => "Fabrication d'équipements électriques"),
                                                          :custom_activity_sector => nil
       
       # default suppliers
@@ -75,8 +75,62 @@ namespace :osirails do
       
       # default commodity categories
       metal = CommodityCategory.create! :name => "Metal"
-      toles = CommodityCategory.create! :name => "Tôles", :commodity_category_id => metal.id, :unit_measure_id => UnitMeasure.first.id
-      tubes = CommodityCategory.create! :name => "Tubes", :commodity_category_id => metal.id, :unit_measure_id => UnitMeasure.first.id
+      alu   = CommodityCategory.create! :name => "Aluminium"
+      plast = CommodityCategory.create! :name => "Plasturgie"
+      
+      toles = CommoditySubCategory.create!  :name => "Tôle", :supply_category_id => metal.id, :unit_measure_id => UnitMeasure.find_by_symbol("m²").id,
+                                            :supply_categories_supply_size_attributes => [
+                                              { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                              { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                              { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
+      
+      tubes = CommoditySubCategory.create!  :name => "Tube", :supply_category_id => metal.id, :unit_measure_id => UnitMeasure.find_by_symbol("m").id,
+                                            :supply_categories_supply_size_attributes => [
+                                              { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                              { :supply_size_id   => SupplySize.find_by_name("Diamètre").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                              { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                                :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
+      
+      CommoditySubCategory.create!  :name => "Tôle", :supply_category_id => alu.id, :unit_measure_id => UnitMeasure.find_by_symbol("m²").id,
+                                    :supply_categories_supply_size_attributes => [
+                                      { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
+      
+      CommoditySubCategory.create!  :name => "Tube", :supply_category_id => alu.id, :unit_measure_id => UnitMeasure.find_by_symbol("m").id,
+                                    :supply_categories_supply_size_attributes => [
+                                      { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Diamètre").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
+      
+      CommoditySubCategory.create!  :name => "PVC", :supply_category_id => plast.id, :unit_measure_id => UnitMeasure.find_by_symbol("m²").id,
+                                    :supply_categories_supply_size_attributes => [
+                                      { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
+      
+      CommoditySubCategory.create!  :name => "Altuglass", :supply_category_id => plast.id, :unit_measure_id => UnitMeasure.find_by_symbol("m²").id,
+                                    :supply_categories_supply_size_attributes => [
+                                      { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id },
+                                      { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                        :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
       
       # default product reference categories
       famille1 = ProductReferenceCategory.create! :name => "Famille 1"
@@ -108,212 +162,184 @@ namespace :osirails do
       ProductReference.create! :name => "Reference 1.3.3", :description => "Description de la référence 1.3.3", :product_reference_category_id => sous_famille13.id, :production_cost_manpower => 30, :production_time => 2.9,  :delivery_cost_manpower => 10, :delivery_time => 2.3, :reference => "XKTO97", :vat => Vat.all.rand.rate
       
       # default commodities and their supplier_supplies
-      galva   = Commodity.create! :name => "Galva 1500x3000x2",      :reference => "glv2", :measure => "4.50", :unit_mass => "70.65",  :commodity_category_id => toles.id, :threshold => 5
-      galva2  = Commodity.create! :name => "Galva 1500x3000x3",      :reference => "glv3", :measure => "4.50", :unit_mass => "105.98", :commodity_category_id => toles.id, :threshold => 1
-      galva3  = Commodity.create! :name => "Galva rond Ø20x2 Lg 6m", :reference => "glv6", :measure => "6",    :unit_mass => "5.32",   :commodity_category_id => tubes.id, :threshold => 18
-  
-      SupplierSupply.create! :supply_id       => galva.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "glv",
-                             :name            => "galva",
-                             :fob_unit_price  => 10,
-                             :tax_coefficient => 1,
-                             :lead_time       => 15
-  
-      SupplierSupply.create! :supply_id       => galva.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "galv",
-                             :name            => "galva_it",
-                             :fob_unit_price  => 11,
-                             :tax_coefficient => 2,
-                             :lead_time       => 18
-  
-      SupplierSupply.create! :supply_id       => galva2.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "glv2",
-                             :name            => "galva2",
-                             :fob_unit_price  => 12,
-                             :tax_coefficient => 50,
-                             :lead_time       => 15
-  
-      SupplierSupply.create! :supply_id       => galva2.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "galv2",
-                             :name            => "galva_it2",
-                             :fob_unit_price  => 25,
-                             :tax_coefficient => 3,
-                             :lead_time       => 18
-  
-      SupplierSupply.create! :supply_id       => galva3.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "glv3",
-                             :name            => "galva",
-                             :fob_unit_price  => 15,
-                             :tax_coefficient => 4,
-                             :lead_time       => 15
-  
-      SupplierSupply.create! :supply_id       => galva3.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "galv3",
-                             :name            => "galva_it3",
-                             :fob_unit_price  => 9,
-                             :tax_coefficient => 0,
-                             :lead_time       => 18
-  
-      # default consumable categories
-      root      = ConsumableCategory.create! :name => "Root"
-      child_one = ConsumableCategory.create! :name => "Intermédiaire", :consumable_category_id => root.id, :unit_measure_id => UnitMeasure.first.id
-      child_two = ConsumableCategory.create! :name => "Léger",         :consumable_category_id => root.id, :unit_measure_id => UnitMeasure.first.id
-  
-      # default consumables and their supplier_supplies
-      pvc   = Consumable.create! :name => "PVC 1500x3000x2", :reference => "pvc2", :measure => "6.50", :unit_mass => "10.65",  :consumable_category_id => child_one.id, :threshold => 2
-      pvc2  = Consumable.create! :name => "PVC 1500x3000x3", :reference => "pvc3", :measure => "6.50", :unit_mass => "10.98",  :consumable_category_id => child_one.id, :threshold => 10
-      vis   = Consumable.create! :name => "Vis Ø20x2 Lg 6m", :reference => "vis6", :measure => "0.5",  :unit_mass => "0.8",    :consumable_category_id => child_two.id, :threshold => 40
-  
-      SupplierSupply.create! :supply_id       => pvc.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "pvc",
-                             :name            => "pvc-1",
-                             :fob_unit_price  => 8,
-                             :tax_coefficient => 5,
-                             :lead_time       => 20
-  
-      SupplierSupply.create! :supply_id       => pvc.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "pvc_it",
-                             :name            => "pvc-it-1",
-                             :fob_unit_price  => 10,
-                             :tax_coefficient => 1,
-                             :lead_time       => 15
-  
-      SupplierSupply.create! :supply_id       => pvc2.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "pvc2",
-                             :name            => "pvc-12",
-                             :fob_unit_price  => 13,
-                             :tax_coefficient => 8,
-                             :lead_time       => 13
-  
-      SupplierSupply.create! :supply_id       => pvc2.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "pvc_it",
-                             :name            => "pvc-it-12",
-                             :fob_unit_price  => 12,
-                             :tax_coefficient => 1,
-                             :lead_time       => 12
-  
-      SupplierSupply.create! :supply_id       => vis.id,
-                             :supplier_id     => supplier1.id,
-                             :reference       => "vis2",
-                             :name            => "vis-12",
-                             :fob_unit_price  => 7,
-                             :tax_coefficient => 0,
-                             :lead_time       => 15
-  
-      SupplierSupply.create! :supply_id       => vis.id,
-                             :supplier_id     => supplier2.id,
-                             :reference       => "vis_it",
-                             :name            => "vis-it-12",
-                             :fob_unit_price  => 14,
-                             :tax_coefficient => 0,
-                             :lead_time       => 11
-                             
-      # default stock_flows
-      StockInput.create! :supply_id       => galva.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-                         
-      StockInput.create! :supply_id       => galva.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => galva2.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => galva2.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => galva3.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => galva3.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
+      acier = Commodity.create! :name => "Acier", :measure => "1.60", :unit_mass => "70.65", :supply_sub_category_id => toles.id, :threshold => 5,
+                                :supplies_supply_size_attributes => [
+                                  { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "6" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "940" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "1700" } ]
       
-      StockInput.create! :supply_id       => pvc.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
+      galva = Commodity.create! :name => "Galva", :measure => "4.50", :unit_mass => "105.98", :supply_sub_category_id => toles.id, :threshold => 1,
+                                :supplies_supply_size_attributes => [
+                                  { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "1.5" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Largeur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "1500" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "3000" } ]
+      
+      rond  = Commodity.create! :name => "Rond", :measure => "6", :unit_mass => "5.32", :supply_sub_category_id => tubes.id, :threshold => 18,
+                                :supplies_supply_size_attributes => [
+                                  { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "2" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Diamètre").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "20" },
+                                  { :supply_size_id   => SupplySize.find_by_name("Longueur").id,
+                                    :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
+                                    :value            => "6000" } ]
+      
+      SupplierSupply.create! :supply_id       => acier.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 10,
+                             :taxes           => 1,
+                             :lead_time       => 15
+      
+      SupplierSupply.create! :supply_id       => acier.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 11,
+                             :taxes           => 2,
+                             :lead_time       => 18
+      
+      SupplierSupply.create! :supply_id       => galva.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 12,
+                             :taxes           => 50,
+                             :lead_time       => 15
+      
+      SupplierSupply.create! :supply_id       => galva.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 25,
+                             :taxes           => 3,
+                             :lead_time       => 18
+      
+      SupplierSupply.create! :supply_id       => rond.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 15,
+                             :taxes           => 4,
+                             :lead_time       => 15
+      
+      SupplierSupply.create! :supply_id       => rond.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 9,
+                             :taxes           => 0,
+                             :lead_time       => 18
+      
+      # default consumable categories
+      quinc   = ConsumableCategory.create! :name => "Quincaillerie"
+      vis     = ConsumableSubCategory.create! :name => "Vis auto-foreuse inox", :supply_category_id => quinc.id
+      ecrous  = ConsumableSubCategory.create! :name => "Écrou",                 :supply_category_id => quinc.id
+      
+      # default consumables and their supplier_supplies
+      tcarre  = Consumable.create! :name => "Tête bombée empreinte carrée",     :supply_sub_category_id => vis.id,    :threshold => 100
+      tcruci  = Consumable.create! :name => "Tête bombée empreinte cruciforme", :supply_sub_category_id => vis.id,    :threshold => 100
+      thexa   = Consumable.create! :name => "Tête Hexagonale",                  :supply_sub_category_id => ecrous.id, :threshold => 100
+      
+      SupplierSupply.create! :supply_id       => tcarre.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 8,
+                             :taxes           => 5,
+                             :lead_time       => 20
+      
+      SupplierSupply.create! :supply_id       => tcarre.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 10,
+                             :taxes           => 1,
+                             :lead_time       => 15
+      
+      SupplierSupply.create! :supply_id       => tcruci.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 13,
+                             :taxes           => 8,
+                             :lead_time       => 13
+      
+      SupplierSupply.create! :supply_id       => tcruci.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 12,
+                             :taxes           => 1,
+                             :lead_time       => 12
+      
+      SupplierSupply.create! :supply_id       => thexa.id,
+                             :supplier_id     => supplier1.id,
+                             :fob_unit_price  => 7,
+                             :taxes           => 0,
+                             :lead_time       => 15
+      
+      SupplierSupply.create! :supply_id       => thexa.id,
+                             :supplier_id     => supplier2.id,
+                             :fob_unit_price  => 14,
+                             :taxes           => 0,
+                             :lead_time       => 11
+      
+      # default stock_flows
+      StockInput.create! :supply_id       => acier.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => acier.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => galva.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => galva.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
   
-      StockInput.create! :supply_id       => pvc.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => pvc2.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => pvc2.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => vis.id,
-                         :supplier_id     => supplier1.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
-  
-      StockInput.create! :supply_id       => vis.id,
-                         :supplier_id     => supplier2.id,
-                         :adjustment      => true,
-                         :fob_unit_price  => 10,
-                         :tax_coefficient => 0,
-                         :quantity        => 15,
-                         :created_at      => Date.yesterday.to_datetime
+      StockInput.create! :supply_id       => rond.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => rond.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => tcarre.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => tcarre.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => tcruci.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => tcruci.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => thexa.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
+      
+      StockInput.create! :supply_id       => thexa.id,
+                         :identifier      => 1234567890,
+                         :unit_price      => 10,
+                         :quantity        => 15
       
       # default calendars and events
       calendar1 = Calendar.create! :user_id => User.first.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"

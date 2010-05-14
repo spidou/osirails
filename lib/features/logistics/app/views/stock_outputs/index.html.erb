@@ -1,23 +1,21 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_stock_flow_link(false,Commodity.new, "matière première") %>
-  <%= new_stock_flow_link(false,Consumable.new, "consommable") %>
+  <%= new_stock_flow_link(StockOutput, Commodity.new) %>
+  <%= new_stock_flow_link(StockOutput, Consumable.new) %>
 <% end %>
+
 <% add_contextual_menu_item :useful_links do %>
-  <%= stock_outputs_link(:link_text => "Voir toutes les sorties de stocks") unless params[:type].nil? %>
-  <%= stock_flows_link(false,Commodity.new, "matières premières") if [nil,"Consumable"].include?(params[:type]) %>
-  <%= stock_flows_link(false,Consumable.new, "consommables") if [nil,"Commodity"].include?(params[:type]) %>
+  <%= stock_inputs_link(:link_text => "Voir toutes les sorties de stocks") if params[:supply_type] %>
+  <%= stock_flows_link(StockOutput, Commodity.new) unless params[:supply_type] == "Commodity" %>
+  <%= stock_flows_link(StockOutput, Consumable.new) unless params[:supply_type] == "Consumable" %>
   <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
-<h1>Les sorties de stock</h1>
+
+<h1>Toutes les sorties de stock</h1>
 <div>
-  <% commodities = (@commodities_stock_flows.size > 0 and [nil,"Commodity"].include?(params[:type]))%>
-  <% consumables = (@consumables_stock_flows.size > 0 and [nil,"Consumable"].include?(params[:type]))%>
-  <% if commodities or consumables %>
-    <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @commodities_stock_flows, :input => false}) if commodities %>
-    <%= render(:partial => "stock_flows/stock_flows", :locals => {:stock_flows => @consumables_stock_flows, :input => false}) if consumables %>
+  <% if @stock_flows.any? %>
+    <%= render :partial => 'stock_flows/stock_flows', :object => @stock_flows %>
   <% else %>
     <p>Aucune sortie de stock n'a &eacute;t&eacute; trouv&eacute;e</p>
   <% end %>
 </div>
-

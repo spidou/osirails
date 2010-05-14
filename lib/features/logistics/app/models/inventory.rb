@@ -1,52 +1,58 @@
-class Inventory
-  # For will_paginate
-  DATES_PER_PAGE = 15
+class Inventory < ActiveRecord::Base
+  has_permissions :as_business_object
   
-  # This method returns the result of a SQL instruction
-  # which role is to retrieve all distinct inventories dates
-  def self.dates
-    dates = []
-    sql = ActiveRecord::Base.connection();
-    result = sql.execute "SELECT DISTINCT DATE_FORMAT(created_at,'%d-%m-%Y') FROM stock_flows WHERE adjustment IS NOT NULL ORDER BY created_at DESC"
-    for date in result
-      dates << date
-    end
-    dates
+  has_many :stock_flows, :dependent => :nullify
+  has_many :stock_inputs
+  has_many :stock_outputs
+  
+  validates_presence_of :supply_type
+  
+  validates_associated :stock_inputs, :stock_outputs
+  
+  validate :validates_stock_flows_uniqueness_of_supply
+  validate :validates_stock_flows_supply_type
+  
+  after_save :save_stock_flows
+  
+  INVENTORIES_PER_PAGE = 15
+  
+  def validates_stock_flows_uniqueness_of_supply
+    supply_ids = stock_flows.collect(&:supply_id)
+    errors.add(:stock_flows, "L'inventaire fait 2 fois référence à la même fourniture") if supply_ids.size != supply_ids.uniq.size
   end
   
-  # This method permit to generate automatically stock flows
-  # with adjustment for inventories from params of views
-  def self.create_stock_flows(params)
-    changes = 0
-      for supply in params[:type].constantize.was_enabled_at
-        for ss in supply.supplier_supplies
-          param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          param_tax_coefficient = params[("tax_coefficient_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          new_quantity = param_quantity.to_f
-          if ((/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_quantity or param_quantity.to_f < 0) or (((/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_fob or param_fob.to_f < 0) or (/\A[+-]?\d+?(\.\d+)?\Z/ !~ param_tax_coefficient or param_tax_coefficient.to_f < 0)) and new_quantity-ss.stock_quantity > 0))
-            return false
-          end
-        end
-      end
+  def validates_stock_flows_supply_type
+    return unless supply_type
+    
+    supply_types = stock_flows.collect(&:supply).collect(&:type)
+    errors.add(:stock_flows, "L'inventaire faire référence à des fournitures de types de différents") if supply_types.uniq.size > 1
+    errors.add(:stock_flows, "L'inventaire doit faire référence à des fournitures du type #{supply_type}") if supply_types.any? and supply_types.first != supply_type
+  end
+  
+  def date
+    @date ||= created_at
+  end
+  
+  def stock_flow_attributes=(stock_flow_attributes)
+    stock_flow_attributes.each do |attributes|
+      supply_id = attributes.first.to_i
+      new_quantity = attributes.last[:new_quantity]
       
-      for supply in params[:type].constantize.was_enabled_at
-        for ss in supply.supplier_supplies
-          param_quantity = params[("real_stock_quantity_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          param_fob = params[("fob_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          param_tax_coefficient = params[("tax_coefficient_for_supplier_supply_"+(ss.id.to_s)).to_sym]
-          new_quantity = param_quantity.to_f
-          new_fob = param_fob.to_f
-          new_tax_coefficient = param_tax_coefficient.to_f
-          if new_quantity-ss.stock_quantity > 0
-            StockInput.create({:adjustment => true, :quantity => new_quantity-ss.stock_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})
-            changes += 1
-          elsif new_quantity-ss.stock_quantity < 0
-            StockOutput.create({:adjustment => true, :quantity => ss.stock_quantity-new_quantity, :supply_id => ss.supply_id, :supplier_id => ss.supplier_id, :fob_unit_price => new_fob, :tax_coefficient => new_tax_coefficient})
-            changes += 1
-          end
+      if new_quantity.to_s == new_quantity.to_i.to_s # if new_quantity is a number
+        new_quantity = new_quantity.to_i
+        supply = Supply.find(supply_id)
+        if new_quantity > supply.stock_quantity
+          stock_inputs.build(:from_inventory => true, :quantity => new_quantity - supply.stock_quantity, :supply_id => supply_id)
+        elsif new_quantity < supply.stock_quantity
+          stock_outputs.build(:from_inventory => true, :quantity => supply.stock_quantity - new_quantity, :supply_id => supply_id)
         end
       end
-    changes
+    end
+  end
+  
+  def save_stock_flows
+    stock_flows.each do |s|
+      s.save(false)
+    end
   end
 end

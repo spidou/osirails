@@ -92,7 +92,7 @@ class PressProof < ActiveRecord::Base
   before_create :can_be_created?
   before_destroy :can_be_destroyed?
   
-  attr_protected :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment
+  attr_protected :status, :cancelled_on, :confirmed_on
     
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -177,36 +177,25 @@ class PressProof < ActiveRecord::Base
     self.save
   end
   
-  def send_to_customer(options)
+  def send_to_customer(attributes)
     return false unless can_be_sended?
-    self.sended_on                  = options[:sended_on] || get_date_from_params(options,'sended_on')
-    self.document_sending_method_id = options[:document_sending_method_id]
-    self.status                     = STATUS_SENDED
+    self.attributes = attributes
+    self.status     = STATUS_SENDED
     self.save
   end
   
-  def sign(options)
+  def sign(attributes)
     return false unless can_be_signed?
-    self.signed_on          = options[:signed_on] || get_date_from_params(options,'signed_on')
-    self.signed_press_proof = options[:signed_press_proof] 
-    self.status             = STATUS_SIGNED
+    self.attributes = attributes
+    self.status     = STATUS_SIGNED
     self.save
   end
   
-  def revoke(options)
+  def revoke(attributes)
     return false unless can_be_revoked?
-    self.revoked_on      = options[:revoked_on] || get_date_from_params(options,'revoked_on')
-    self.revoked_by_id   = options[:revoked_by_id]
-    self.revoked_comment = options[:revoked_comment]
-    self.status          = STATUS_REVOKED
+    self.attributes = attributes
+    self.status     = STATUS_REVOKED
     self.save
-  end
-  
-  def get_date_from_params(params,attribute)
-    y = params["#{attribute}(1i)"]
-    m = params["#{attribute}(2i)"]
-    d = params["#{attribute}(3i)"]
-    "#{y}/#{m}/#{d}".to_date
   end
   
   def uncomplete?

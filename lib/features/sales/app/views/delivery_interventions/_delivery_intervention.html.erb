@@ -61,12 +61,12 @@ delivery_intervention_headers = { :delivery_intervention_schedule     => "Planif
         </li>
       </ul>
       
-      <h2 class="delivery_intervention_schedule"><%= delivery_intervention_headers[:delivery_intervention_schedule] %></h2>
+      <h2 class="delivery_intervention_schedule section_nav"><%= delivery_intervention_headers[:delivery_intervention_schedule] %></h2>
       <div class="delivery_intervention_schedule section_nav<%= schedule_selected %>">
         <%= render :partial => 'delivery_interventions/delivery_intervention_schedule', :object => delivery_intervention, :locals => { :form => form } %>
       </div>
       
-      <h2 class="delivery_intervention_realisation"><%= delivery_intervention_headers[:delivery_intervention_realisation] %></h2>
+      <h2 class="delivery_intervention_realisation section_nav"><%= delivery_intervention_headers[:delivery_intervention_realisation] %></h2>
       <div class="delivery_intervention_realisation section_nav<%= realisation_selected %>">
         <% unless params[:action].starts_with?("schedule") %>
           <%= render :partial => 'delivery_interventions/delivery_intervention_realisation', :object => delivery_intervention, :locals => { :form => form } %>

@@ -9,27 +9,21 @@
 
 <div class="number">
 <% fields_for "#{numbers_owner.class.name.downcase}[number_attributes][]", number do |form| %>
-	<%= form.error_messages%>
-		<% if !is_form_view?%>
-		  <%= display_full_phone_number(number) %>
-			<%# display_image( flag_path( number.indicative.country.code ), "+#{ number.indicative.country.code }", number.indicative.country.name) %>
-			<%# display_image( number_type_path( number.number_type.name ), number.number_type.name ) %>
-			<%# strong("#{number.indicative.indicative} #{number.number}") %>
-		<% else %>
-			<%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
-			<%= form.text_field(:number, { :index => nil, :size => 9, :maxlength => 9 }) %>
+	<%= form.error_messages %>
+	<p>
+	  <% if form.form_view? %>
+	    <%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
+			<%= form.text_field(:number, { :size => 9, :maxlength => 9, :index => nil }) %>
     	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :index => nil, :selected => number[:number_type_id] }) %>
     	<%= form.select(:visible, Number::VISIBLE_STATES , {}, { :index => nil }) %>
-    	
-    	<%= form.hidden_field("has_number_id", :value => numbers_owner.id, :index => nil, :class => 'has_number_id') if hack_params %>
-    	<%= form.hidden_field :id, :index => nil %>
-		<% end %>
-
-		<% if number.new_record? %>
-			<%= remove_number_link() if is_form_view? %>
-		<% else %>
-			<%= remove_old_number_link() if is_form_view? %>
-			<%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
-		<% end %>
+	    
+	    <%= number.new_record? ? remove_number_link : remove_old_number_link %>
+	    <%= form.hidden_field("has_number_id", :value => numbers_owner.id, :index => nil, :class => 'has_number_id') if hack_params %>
+	    <%= form.hidden_field :id, :index => nil %>
+		  <%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
+	  <% else %>
+	    <strong><%= display_full_phone_number(number) %></strong>
+	  <% end %>
+	</p>
 <% end %>
 </div>

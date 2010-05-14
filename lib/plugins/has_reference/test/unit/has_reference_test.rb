@@ -2,7 +2,7 @@ require File.dirname(__FILE__) +  '/../../../../../test/fixtures/has_reference_m
 
 module HasReferenceTest
   
-  # this module shoul be implemented into the calling classe's test suite
+  # this module should be implemented into the calling classe's test suite
   #
   # ==== Example
   #  context "Thanks to 'has_reference', an order" do

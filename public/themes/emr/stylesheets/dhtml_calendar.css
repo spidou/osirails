@@ -1,0 +1,66 @@
+.dateBocksMessage {
+  clear: both;
+}
+
+.dateBocksMessage div {
+  font-size: 0.9em;
+}
+
+.dateBocksMessage div.error {
+  color: red;
+}
+
+.dateBocks input.error {
+  background-color: pink;
+}
+ 
+.dateBocks ul {
+	list-style: none;
+	padding: 0 5px 0 0;
+	margin: 0;
+}
+
+.dateBocks ul li {
+	display: inline;
+}
+
+.dateBocks ul li img {
+	padding-left: 2px;
+	vertical-align: middle;
+}
+
+.dateBocks ul a {
+	padding: 5px;
+	display: block;
+	float: left;
+}
+
+.dateBocks input {
+	width: 80px;
+}
+
+/* Used by OverLabel BEGIN */
+/*.active-scaffold form {
+  position:relative;
+  overflow: auto;
+  zoom: 1;
+}
+
+.active-scaffold form div.field {
+  position:relative;
+  float:left;
+  margin-right:3px;
+}
+
+.active-scaffold form label.overlabel {
+  color: #999;
+}
+
+.active-scaffold form label.overlabel-apply {
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  z-index: 1;
+  color: #999;
+}
+*//* Used by OverLabel END */

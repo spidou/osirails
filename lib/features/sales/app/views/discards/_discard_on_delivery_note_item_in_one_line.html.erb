@@ -9,11 +9,11 @@ product = delivery_note_item.quote_item.product
 <% fields_for "delivery_intervention[discard_attributes][]", discard, :index => nil do |form| %>
   <% form.force_show_view = delivery_intervention.was_realized? %>
   <tr>
-    <td><%= product.product_reference.reference %></td>
-    <td class="description"><strong><%= product.name %></strong><br/><%= product.description %></td>
-    <td><%= delivery_note_item.quantity %></td>
-    <td><%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.quantity), {}, :index => nil, :onchange => "toggle_disable_comments_for_discard(this)"), :quantity) %></td>
-    <td>
+    <td class="reference"><%= product.product_reference.reference %></td>
+    <td class="designation"><span class="name"><%= product.name %></span><br/><span class="description"><%= product.description %></span></td>
+    <td class="quantity_to_deliver"><%= delivery_note_item.quantity %></td>
+    <td class="quantity"><%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.quantity), {}, :index => nil, :onchange => "toggle_disable_comments_for_discard(this)"), :quantity) %></td>
+    <td class="actions">
       <%= form.form_or_view(form.text_area_autoresize(:comments, :disabled => ( discard.quantity.nil? or discard.quantity.zero? ), :class => 'comments'), :comments) %>
       <%= form.hidden_field :id %>
       <%= form.hidden_field :delivery_note_item_id %>

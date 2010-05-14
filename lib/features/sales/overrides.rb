@@ -75,12 +75,12 @@ class CustomersController < ApplicationController
   after_filter :redirect_to_new_order, :only => :create
   
   def auto_complete_for_customer_name
-    find_options = { :include     => :establishments,
-                     :conditions  => [ "thirds.name like ? or establishments.name like ?", "%#{params[:customer][:name]}%", "%#{params[:customer][:name]}%"],
-                     :order       => "thirds.name ASC",
-                     :limit       => 15 }
-    @items = Customer.find(:all, find_options)
-    render :inline => "<%= custom_auto_complete_result(@items, 'name', params[:customer][:name]) %>"
+    @keyword = params[:customer] ? params[:customer][:name] : ""
+    @items = Customer.find(:all, { :include     => :establishments,
+                                   :conditions  => [ "thirds.name like ? or establishments.name like ?", "%#{@keyword}%", "%#{@keyword}%"],
+                                   :order       => "thirds.name ASC",
+                                   :limit       => 15 })
+    render :inline => "<%= custom_auto_complete_result(@items, 'name', @keyword) %>"
   end
   
   private

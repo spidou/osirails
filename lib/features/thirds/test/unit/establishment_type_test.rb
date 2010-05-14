@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class EstablishmentTypeTest < Test::Unit::TestCase
-  should_have_many :establishments
-  
   context "An empty establishment type" do
     setup do
       @establishment_type = EstablishmentType.new

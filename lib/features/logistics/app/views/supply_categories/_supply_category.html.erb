@@ -1,0 +1,68 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
+  <%= javascript_include_tag 'logistics/supplies' %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= display_supply_list_button(@supply_type) %>
+<% end %>
+
+<div class="presentation_small">
+  <% form_for(supply_category) do |form| %>
+    <%= form.error_messages %>
+    
+    <fieldset class="presentation_in_columns small">
+      <legend>Référencement</legend>
+      
+      <% unless supply_category.new_record? %>
+        <p>
+          <%= form.label :reference %>
+          <%= strong supply_category.reference %>
+        </p>
+      <% end %>
+      
+      <% if supply_category.respond_to?(:supply_category) %>
+        <div>
+          <p>
+            <%= form.label :supply_category_id %>
+            <%= form.form_or_view(form.collection_select(:supply_category_id, @supply_categories, :id, :name, {}, { :disabled => !supply_category.new_record? }), :supply_category, :name) %>
+          </p>
+        </div>
+      <% end %>
+      
+      <div>
+        <p>
+          <%= form.label :name %>
+          <%= form.form_or_view(form.text_field(:name), :name) %>
+        </p>
+      </div>
+    </fieldset>
+    
+    <% if supply_category.respond_to?(:supply_category) %>
+      <fieldset>
+        <legend>Spécificités des fournitures</legend>
+        
+        <div id="supply_categories_supply_sizes">
+          <% if @supply_categories_supply_sizes.any? %>
+            <%= render :partial => 'supply_categories_supply_sizes/supply_categories_supply_size', :collection => @supply_categories_supply_sizes,
+                                                                                                   :locals => { :supply_category_type => @supply_category_type } %>
+          <% else %>
+            <p>Aucune spécificité n'a été définie.</p>
+          <% end %>
+        </div>
+        
+        <hr/>
+        
+        <p>
+          <%= form.label :unit_measure_id %>
+          <%= form.form_or_view(form.collection_select(:unit_measure_id, UnitMeasure.all, :id, :symbol_and_name,
+                                                       { :include_blank => "Veuillez choisir une grandeur unitaire" }),
+                                :unit_measure, :symbol_and_name) %>
+          <span class="help_text">(cette unité sera obligatoirement utilisée pour définir la grandeur/U des fournitures de cette famille)</span>
+        </p>
+      </fieldset>
+    <% end %>
+    
+    <%= form.form_buttons %>
+  <% end %>
+</div>

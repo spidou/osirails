@@ -1,3 +1,6 @@
-normal:
-  name: Centimetre
-  symbol: cm
+millimeter:
+  name: Millimeter
+  symbol: mm
+meter:
+  name: Meter
+  symbol: m

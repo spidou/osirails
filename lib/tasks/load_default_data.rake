@@ -203,22 +203,48 @@ namespace :osirails do
       CustomerSolvency.create! :name => "0%",   :payment_method => pm6
       
       # default measure units
-      UnitMeasure.create! :name => "Millimètre",          :symbol => "mm"
-      UnitMeasure.create! :name => "Centimètre",          :symbol => "cm"
-      UnitMeasure.create! :name => "Décimètre",           :symbol => "dm"
-      UnitMeasure.create! :name => "Mètre",               :symbol => "m"
-      UnitMeasure.create! :name => "Millimètre carré",    :symbol => "mm²"
-      UnitMeasure.create! :name => "Centimètretre carré", :symbol => "cm²"
-      UnitMeasure.create! :name => "Décimètre carré",     :symbol => "dm²"
-      UnitMeasure.create! :name => "Mètre carré",         :symbol => "m²"
-      UnitMeasure.create! :name => "Millimètre cube",     :symbol => "mm³"
-      UnitMeasure.create! :name => "Centimètretre cube",  :symbol => "cm³"
-      UnitMeasure.create! :name => "Décimètre cube",      :symbol => "dm³"
-      UnitMeasure.create! :name => "Mètre cube",          :symbol => "m³"
-      UnitMeasure.create! :name => "Millilitre",          :symbol => "ml"
-      UnitMeasure.create! :name => "Centilitre",          :symbol => "cl"
-      UnitMeasure.create! :name => "Décilitre",           :symbol => "dl"
-      UnitMeasure.create! :name => "Litre",               :symbol => "l"
+      metre   = UnitMeasure.create! :name => "Mètre",       :symbol => "m"
+      mmetre  = UnitMeasure.create! :name => "Millimètre",  :symbol => "mm"
+      mcarre  = UnitMeasure.create! :name => "Mètre carré", :symbol => "m²"
+      mcube   = UnitMeasure.create! :name => "Mètre cube",  :symbol => "m³"
+      mlitre  = UnitMeasure.create! :name => "Millilitre",  :symbol => "mL"
+      litre   = UnitMeasure.create! :name => "Litre",       :symbol => "L"
+      watt    = UnitMeasure.create! :name => "Watt",        :symbol => "W"
+      kwatt   = UnitMeasure.create! :name => "Kilowatt",    :symbol => "kW"
+      volt    = UnitMeasure.create! :name => "Volt",        :symbol => "V"
+      ampere  = UnitMeasure.create! :name => "Ampère",      :symbol => "A"
+      mampere = UnitMeasure.create! :name => "Milliampère", :symbol => "mA"
+      degre   = UnitMeasure.create! :name => "Degré",       :symbol => "°"
+      
+      # default supply sizes
+      epaisseur = SupplySize.create! :name => "Épaisseur"
+      diametre  = SupplySize.create! :name => "Diamètre",   :short_name => "Ø", :display_short_name => true, :accept_string => true
+      largeur   = SupplySize.create! :name => "Largeur",    :short_name => "l"
+      longueur  = SupplySize.create! :name => "Longueur",   :short_name => "L"
+      hauteur   = SupplySize.create! :name => "Hauteur",    :short_name => "H"
+      volume    = SupplySize.create! :name => "Volume"
+      puissance = SupplySize.create! :name => "Puissance"
+      tension   = SupplySize.create! :name => "Tension"
+      intensite = SupplySize.create! :name => "Intensité"
+      angle     = SupplySize.create! :name => "Angle",      :short_name => "θ"
+      
+      # default supply unit measures
+      SupplySizesUnitMeasure.create! :supply_size_id => epaisseur.id,  :unit_measure_id => mmetre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => diametre.id,   :unit_measure_id => mmetre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => largeur.id,    :unit_measure_id => mmetre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => largeur.id,    :unit_measure_id => metre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => longueur.id,   :unit_measure_id => mmetre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => longueur.id,   :unit_measure_id => metre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => hauteur.id,    :unit_measure_id => mmetre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => hauteur.id,    :unit_measure_id => metre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => volume.id,     :unit_measure_id => litre.id
+      SupplySizesUnitMeasure.create! :supply_size_id => volume.id,     :unit_measure_id => mcube.id
+      SupplySizesUnitMeasure.create! :supply_size_id => puissance.id,  :unit_measure_id => watt.id
+      SupplySizesUnitMeasure.create! :supply_size_id => puissance.id,  :unit_measure_id => kwatt.id
+      SupplySizesUnitMeasure.create! :supply_size_id => tension.id,    :unit_measure_id => volt.id
+      SupplySizesUnitMeasure.create! :supply_size_id => intensite.id,  :unit_measure_id => ampere.id
+      SupplySizesUnitMeasure.create! :supply_size_id => intensite.id,  :unit_measure_id => mampere.id
+      SupplySizesUnitMeasure.create! :supply_size_id => angle.id,      :unit_measure_id => degre.id
       
       # default establishment types
       EstablishmentType.create! :name => "Siège administratif"

@@ -28,14 +28,12 @@
     <tbody>
       <% for employee in @employees %>
         <tr class="<%= Employee.actives.include?(employee) ? '' : 'disabled' %>">
-          <td><%=h employee.first_name %></td>
-          <td><%=h employee.last_name %></td>
-          <td><%= link_to employee.service.name, service_path(employee.service)%></td>
-          <%= number_td(employee.numbers)%>
-            <%=h visibles_numbers( employee.numbers )==[] ? "Aucun" : visibles_numbers( employee.numbers ).first.formatted %>&nbsp;
-          </td>
-          <td><%=h employee.intranet_email %></td>
-          <td>
+          <td class="first_name"><%=h employee.first_name %></td>
+          <td class="last_name"><%=h employee.last_name %></td>
+          <td class="service"><%= link_to(employee.service.name, service_path(employee.service)) %></td>
+          <td class="phone"><%= display_full_phone_number(employee.numbers.visibles.first) if employee.numbers.visibles.first %></td>
+          <td class="intranet_email"><%=h employee.intranet_email %></td>
+          <td class="actions">
             <%= employee_link(employee, :link_text => "") %>
             <%= edit_employee_link(employee,:link_text => "") %>
           </td>

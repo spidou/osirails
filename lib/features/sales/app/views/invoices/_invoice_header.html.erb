@@ -24,7 +24,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
   
   <p>
     <%= form.label :published_on %>
-    <%= form.form_or_view(form.date_select(:published_on, { :order => [ :day, :month, :year ] }), :published_on, :humanize) %>
+    <%= form.form_or_view(form.calendar_date_select(:published_on), :published_on, :humanize) %>
   </p>
   
   <p>

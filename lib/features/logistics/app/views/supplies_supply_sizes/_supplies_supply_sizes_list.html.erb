@@ -1,0 +1,11 @@
+<%
+require_locals supply
+supplies_supply_sizes = supplies_supply_sizes_list
+%>
+
+<% if supplies_supply_sizes.any? %>
+  <%= render :partial => 'supplies_supply_sizes/supplies_supply_size', :collection => supplies_supply_sizes,
+                                                                       :locals => { :supply => supply } %>
+<% else %>
+  <p>Aucune spécificité n'a été définie.</p>
+<% end %>

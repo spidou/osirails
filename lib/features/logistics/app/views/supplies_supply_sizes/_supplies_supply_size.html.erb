@@ -1,0 +1,25 @@
+<%
+require_locals supply
+item = supplies_supply_size
+
+selected = item.value.blank? ? "" : "selected"
+should_destroy = item.should_destroy? ? "should_destroy" : ""
+%>
+
+<% fields_for "#{supply.class.name.underscore}[supplies_supply_size_attributes][]", item, :index => nil do |form| %>
+  <p class="supplies_supply_size <%= selected %> <%= should_destroy %>">
+    <span class="name"><%= item.supply_size.name_and_short_name %></span> :
+    <%= form.form_or_view(form.text_field(:value, :size => 7, :disabled => supply.has_been_used?), :value) %>
+    <%= item.unit_measure.symbol_and_name %>
+    
+    <% if form.form_view? %>
+      <%= form.hidden_field :supply_size_id, :disabled => supply.has_been_used? %>
+      <%= form.hidden_field :unit_measure_id, :disabled => supply.has_been_used? %>
+      <%= form.hidden_field :id, :disabled => supply.has_been_used?, :class => "supplies_supply_size_id" %>
+    <% end %>
+    
+    <% if item.errors.any? %>
+      <span class="fieldErrorExplanation"><%= item.errors.full_messages.join(", ") %></span>
+    <% end %>
+  </p>
+<% end %>

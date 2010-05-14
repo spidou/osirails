@@ -4,7 +4,7 @@ class Number < ActiveRecord::Base
   belongs_to :has_number, :polymorphic => true
   
   validates_presence_of :has_number_type, :indicative_id
-  validates_presence_of :indicative,  :if => :indicative_id
+  validates_presence_of :indicative, :if => :indicative_id
   
   validates_length_of :number, :is => 9, :unless => :should_destroy?
   
@@ -21,6 +21,10 @@ class Number < ActiveRecord::Base
     return nil unless number
     # OPTIMIZE see the helper method in NumberHelper called 'to_phone' to format the phone number
     "#{self.number[0..2]} #{self.number[3..4]} #{self.number[5..6]} #{self.number[7..8]}"
+  end
+  
+  def number=(number)
+    super( number.is_a?(String) ? number.gsub(" ", "") : number )
   end
   
   def visible?

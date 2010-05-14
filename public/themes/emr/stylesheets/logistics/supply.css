@@ -1,0 +1,53 @@
+#supply_categories_supply_sizes {
+  padding-left: 1em;
+}
+
+#supply_categories_supply_sizes span.name {
+  display: inline-block;
+  min-width: 10em;
+  padding-left: 2em;
+}
+
+p.supply_categories_supply_size.selected span.name,
+p.supply_categories_supply_size.selected select {
+  font-weight: bold;
+}
+
+p.supply_categories_supply_size {
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-image: none;
+}
+
+p.supply_categories_supply_size.selected {
+  background-image: url("/themes/emr/images/tick_16x16.png");
+}
+
+p.supply_categories_supply_size.should_destroy {
+  background-image: url("/themes/emr/images/cross_16x16.png");
+}
+
+#supplies_supply_sizes {
+  padding-left: 1em;
+}
+
+p.supplies_supply_size span.name {
+  display: inline-block;
+  min-width: 10em;
+  text-align: right;
+}
+
+p.supplies_supply_size strong {
+  display: inline-block;
+  min-width: 6em;
+  text-align: right;
+}
+
+#supplies tr td span.packaging {
+  background-color: yellow;
+}
+
+#supplies tr td img.fold_button,
+#supplies tr td img.unfold_button {
+  cursor: pointer;
+}

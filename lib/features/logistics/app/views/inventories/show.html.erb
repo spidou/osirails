@@ -1,14 +1,12 @@
 <% content_for :header do %>
   <%= javascript_include_tag 'logistics/supplies' %>
-<% end %>
-
-<% add_contextual_menu_item :commodities_stats do %>
-  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value(@date),2) + " €" %></span>
+  <%= javascript_include_tag 'logistics/inventories' %>
+  <%= stylesheet_link_tag_with_theme_support 'logistics/inventory' %>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:type] == "Consumable" %>
-  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:type] == "Commodity" %>
+  <%= new_inventory_link(Commodity.new, "Nouvel inventaire des matières premières") if params[:supply_type] == "Consumable" %>
+  <%= new_inventory_link(Consumable.new, "Nouvel inventaire des consommables") if params[:supply_type] == "Commodity" %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
@@ -17,39 +15,6 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>&Eacute;tat des <%= (params[:type]=="Commodity" ? "matières premières" : "consommables") + " au " + @date.strftime("%d-%m-%Y") %></h1>
 
-<div>
-  <% unless @supplies.empty? %>
-    <div class="autoscroll">
-      <table class="<%= @supply_type.name.tableize.singularize %>">
-        <thead>
-          <tr>
-            <th rowspan='2'>Cat&eacute;gorie</th>
-            <th rowspan='2'>Sous cat&eacute;gorie</th>
-            <th rowspan='2'>R&eacute;f.</th>
-            <th rowspan='2'>D&eacute;signation</th>
-            <th rowspan='2'>Fournisseurs</th>
-            
-            <th colspan='4'>Stock/fournisseur</th>
-            
-            <th colspan='4'>Stock total</th>
-          </tr>
-          <tr>            <th>Quantit&eacute;</th>            <th>Grandeur</th>
-            <th>Masse</th>
-            <th>Valeur</th>
-            
-            <th>Quantit&eacute;</th>            <th>Grandeur</th>
-            <th>Masse</th>
-            <th>Valeur</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= render(:partial => "supply_category", :collection => @supply_categories_root) %>      
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <p>Aucune fourniture disponible &agrave; cette date</p>
-  <% end %>
-</div>
+<h1>Fiche détaillée de l'inventaire de <%= params[:supply_type] == "Commodity" ? "matières premières" : "consommables" %></h1>
+<%= render :partial => 'inventories/inventory', :object => @inventory, :locals => { :supplies => @supplies, :supply_categories => @supply_categories} %>

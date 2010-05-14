@@ -19,7 +19,7 @@
     <%= javascript_include_tag "text_area_autoresize" %>
     <%= javascript_include_tag "strftime" %>
     <%= javascript_include_tag "lightbox/lightbox" %>
-    
+    <%= include_calendar_headers_tags("fr") %>
     <%= daynames_and_monthnames_retrieval %>   
     
     <%= yield :header %>
@@ -62,6 +62,10 @@
               <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
             </div>
           </div> <!-- AJAX_HOLDER : END -->
+          
+          <div id="ajax_indicator" style="display:none">
+            <span>Chargement en cours, veuillez patienter...</span>
+          </div>
         
           <%= yield %>
           
