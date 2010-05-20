@@ -44,12 +44,10 @@ class Contact < ActiveRecord::Base
   
   before_save :case_management
   
-  # TODO test that method
   def can_be_hidden?
     !new_record?
   end
   
-  # TODO test that method
   def hide
     if can_be_hidden?
       self.hidden = true 
@@ -61,7 +59,6 @@ class Contact < ActiveRecord::Base
     should_destroy.to_i == 1
   end
   
-  # TODO test that method
   def should_hide?
     should_hide.to_i == 1
   end
@@ -71,7 +68,6 @@ class Contact < ActiveRecord::Base
   end
   
   ## modify should update dans establishment
-  # TODO test that method
   def should_save?
     changed? or should_update? or should_hide? or should_destroy?
   end

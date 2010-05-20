@@ -1,7 +1,10 @@
 <%
 require_locals contact_list, key, form
 contact_owner = contact_picker
-select_id     = "#{contact_owner.class.name.underscore}_#{key}"
+
+random_number = rand(10**8)
+select_id     = "#{contact_owner.class.name.underscore}_#{key}_#{ random_number}"
+removable_element_class = "contacts_#{ random_number }"
 
 force_show_view ||= false
 %>
@@ -10,17 +13,16 @@ force_show_view ||= false
   <%= form.collection_select("#{key}_id", contact_list, :id, :fullname,
                              ( contact_owner.new_record? ? { :include_blank => "Veuillez choisir un contact", } : {} ),
                              :id    => select_id,
-                             :name  => 'resources_picker') %>
+                             :index => nil) %>
 <% end %>
 
-<div id="preview_<%= key %>" class="resources contact_picker">
+<div id=" <%= key %>" class="resources contact_picker">
 
   <% for contact in contact_list %>
     <% selected_contact = contact_owner.send(key).nil? ? false : contact_owner.send(key).id.equal?(contact.id) %>
     
-    <div id="preview_contact_<%=contact.id%>" class="preview_contact" <%= "style=\"display:none\"" unless selected_contact %>>
+    <div id="preview_contact_<%=contact.id%>" class="<%= removable_element_class %>" <%= "style=\"display:none\"" unless selected_contact %>>
       <%= render :partial => 'contacts/contact', :object => contact, :locals => { :contacts_owner => contact_owner, :force_show_view => true } %>  
-      <%= form.radio_button "#{key}_id".to_sym, contact.id, { :class => 'contact_input', :checked => selected_contact } %>
     </div>
   <% end %>
 
@@ -31,8 +33,7 @@ force_show_view ||= false
     new ResourcesPicker({select:                  '<%= select_id %>',
                          mode:                    'one',
                          hidden_element_prefix:   'preview_contact',
-                         input_class:             'contact_input',
-                         removable_element_class: 'preview_contact',
+                         removable_element_class: '<%= removable_element_class %>',
                          element_actions_class:   'contact_actions'})
   </script>
 <% end %>

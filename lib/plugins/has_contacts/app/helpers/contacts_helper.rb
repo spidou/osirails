@@ -26,30 +26,19 @@ module ContactsHelper
   def display_contact_picker(contact_owner, contacts, options = {})
     render :partial => 'contacts/contact_picker', :object => contact_owner, :locals => options.merge({ :contact_list => contacts })
   end
-
-  def display_contact_add_button(contacts_owner)
-    html = "<p>"
-    html << link_to_function("Ajouter un contact") do |page|
-      partial = escape_javascript( render(:partial => 'contacts/contact',
-                                          :object => contacts_owner.contacts.build,
-                                          :locals => { :contacts_owner => contacts_owner }))
-      page << h("$('new_contacts').insert({ bottom: '#{ partial }'})")
-      page['new_contacts'].show if page['new_contacts'].visible
-      last_contact = page['new_contacts'].select('.contact').last
-      last_contact.show
-      last_contact.visual_effect :highlight
-    end
-    html << "</p>"
-  end
   
   def display_add_contact_button_for_owner(contacts_owner)
-    div_id = "#{contacts_owner.class.singularized_table_name}_#{contacts_owner.id}_contacts"
+    div_id = "#{ contacts_owner.class.singularized_table_name }_#{ contacts_owner.id }_new_contacts"
     
+    display_contact_add_button(contacts_owner, div_id)
+  end
+  
+  def display_contact_add_button(contacts_owner, div_id="new_contacts")
     html = "<p>"
-    html << link_to_function("Ajouter un contact", nil, :href => "##{div_id}")  do |page|
+    html << link_to_function("Ajouter un contact") do |page|
       partial = escape_javascript(render(:partial => 'contacts/contact',
-                                        :object => contacts_owner.contacts.build,
-                                        :locals => { :contacts_owner => contacts_owner }))
+                                         :object => contacts_owner.contacts.build,
+                                         :locals => { :contacts_owner => contacts_owner }))
       page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
       
       # add a #FAKE_ID to the last new record to permit it to be linked with his numbers new records
@@ -66,6 +55,9 @@ module ContactsHelper
     end
     html << "</p>"
   end
+  
+  
+  
 
   def display_contact_edit_button(contact)
     return unless is_form_view? and Contact.can_edit?(current_user)

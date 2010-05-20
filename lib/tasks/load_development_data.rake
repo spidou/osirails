@@ -6,7 +6,7 @@ namespace :osirails do
       cga = Factor.create!(:name => "CGA", :fullname => "Compagnie Générale d'Affacturage")
       
       # default customers and establishements
-      customer = Customer.new(:name => "Client par défaut", :legal_form_id => LegalForm.first.id, :activated => true,
+      customer = Customer.new(:name => "Client par défaut", :legal_form_id => LegalForm.first.id, :activated => true, :creator_id => User.first.id,
                               :customer_solvency_id => CustomerSolvency.first.id ,:customer_grade_id => CustomerGrade.first.id)
       
       customer.build_bill_to_address(:street_name => "1 rue des rosiers", :country_name => "Réunion", :city_name => "Saint-Denis", :zip_code => "97400")

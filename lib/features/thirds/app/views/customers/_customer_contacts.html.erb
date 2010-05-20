@@ -8,7 +8,7 @@
 <% if is_form_view? %>
   
   <% establishments.each do |establishment| %>
-    <% div_id = "#{establishment.class.singularized_table_name}_#{establishment.id}_contacts" %>
+    <% div_id = "#{establishment.class.singularized_table_name}_#{establishment.id}_new_contacts" %>
     
     <h3><%= establishment.name.titleize %><%= " (Siège social)" if establishment.is_a?(HeadOffice) %></h3>
     <%= render :partial => 'contacts/contact', :collection => establishment.contacts.reject(&:new_record?), :locals => { :contacts_owner => establishment }  %>

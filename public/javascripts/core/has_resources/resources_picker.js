@@ -87,19 +87,21 @@ var ResourcesPicker = Class.create({
   pick_one_resource: function(event) {
     select = event.target
     option = select.options[select.selectedIndex]
-    resource_id = parseInt(option.value)
-    
+    resource_id = option.value.toString()
+
     input_class = this.input_class
     
     this.removable_elements.each( function(element){
-      element.down(input_class).checked = false
-      element.hide()
+      // retrieve resource ID from the id attribute of the element
+      str_resource_id = element.id.toString()
+      element_id = str_resource_id.substr(str_resource_id.lastIndexOf("_") + 1)
+      
+      // show selected element hide the others
+      if (element_id == resource_id) {
+        element.appear() }
+      else {
+        element.hide() }
     })
     
-    if (resource_id > 0) {
-      resource = $(this.hidden_element_prefix + '_' + resource_id)
-      resource.down(input_class).checked = true
-      resource.appear()
-    }
   }
 });

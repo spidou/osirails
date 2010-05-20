@@ -15,6 +15,24 @@ class EstablishmentTest < ActiveSupport::TestCase
     subject{ @establishment }
     
     should_validate_uniqueness_of :siret_number
+      
+    should "have errors_on_attributes_except_on_contacts? with at least one invalid attribute other that contacts" do
+      @establishment.name = nil
+      flunk "establishemnt should be invalid " if @establishment.valid?
+      assert @establishment.errors_on_attributes_except_on_contacts?
+    end
+    
+    should "not have errors_on_attributes_except_on_contacts? with errors only on contacts" do
+      @establishment.contacts.build
+      flunk "contact should be invalid" if @establishment.contacts.first.valid?
+      assert !@establishment.errors_on_attributes_except_on_contacts?
+    end
+  
+    should "not have errors_on_attributes_except_on_contacts? without any invalid attributes" do 
+      assert !@establishment.errors_on_attributes_except_on_contacts?
+    end
+    
+  
   end
   
   context "Thanks to 'has_contacts', an establishment" do

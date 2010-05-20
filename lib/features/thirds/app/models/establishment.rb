@@ -48,7 +48,6 @@ class Establishment  < ActiveRecord::Base
   @@form_labels[:fax]                       = "Fax :"
   @@form_labels[:logo]                      = "Logo :"
   
-  # TODO test that method
   def errors_on_attributes_except_on_contacts?
     [:name, :address, :establishment_type, :siret_number, :address].each do |attribute|
       return true if errors.on(attribute)

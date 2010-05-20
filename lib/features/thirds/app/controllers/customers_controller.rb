@@ -88,25 +88,23 @@ class CustomersController < ApplicationController
           establishment_attributes[:phone_attributes] = params[:establishment][:phone_attributes][index] if params[:establishment][:phone_attributes]
           
           # hack for  has_contacts
-          if params[:establishment][:contact_attributes]
+          if params[:establishment][:contact_attributes] and !establishment_attributes[:id].blank?
             contact_attributes = params[:establishment][:contact_attributes].select {|n| establishment_attributes[:id] == n[:establishment_id]}
             establishment_attributes[:contact_attributes] = clean_params(contact_attributes, :establishment_id)
           
             # hack for contact's numbers
             if params[:contact] && params[:contact][:number_attributes]
-              establishment_attributes[:contact_attributes].each_with_index do |contact_attributes, index|
+              establishment_attributes[:contact_attributes].each do |contact_attributes|
                 number_attributes = params[:contact][:number_attributes].select {|n| contact_attributes[:id] == n[:has_number_id]}
                 contact_attributes[:number_attributes] = clean_params(number_attributes, :has_number_id)
               end
-              contact_attributes[:id] = nil if is_a_fake_id?(contact_attributes[:id])                # remove fake ids used to recover new_record's numbers
             end
             remove_fake_ids(establishment_attributes[:contact_attributes])
             # remove fake ids after managing numbers because even if the fake ids are linked to them
             # if there 's no numbers the fake ids still be there so it will raise an error into at the model level
+            # Fake ids are used only for new records
           end
-          
         end
-        params.delete(:establishment)
       end
 
       if params[:customer][:head_office_attributes]
@@ -125,39 +123,18 @@ class CustomersController < ApplicationController
           
           # hack for contact's numbers
           if params[:contact] && params[:contact][:number_attributes]
-            head_office_attributes[:contact_attributes].each_with_index do |contact_attributes, index|
+            head_office_attributes[:contact_attributes].each do |contact_attributes|
               number_attributes                      = params[:contact][:number_attributes].select {|n| contact_attributes[:id] == n[:has_number_id]}
               contact_attributes[:number_attributes] = clean_params(number_attributes, :has_number_id)
             end
           end
           remove_fake_ids(head_office_attributes[:contact_attributes])
         end
-        
-        params.delete(:head_office)
       end
-    end
-  
-    # Method used to remove some keys that mustn't be passed to the model
-    #
-    def clean_params(array, key)
-      array.each do |hash|
-        hash.delete(key)
-      end
-      array
-    end
-    
-    # Method to find if the id passed as argument is a fake one
-    # used to retrieve new_record's numbers
-    #
-    def is_a_fake_id?(id)
-      /new_record_([0-9])*/.match(id)
-    end
-    
-    # Method to remove fake ids that become useless after params hack
-    #
-    def remove_fake_ids(collection)
-      collection.each do |element|
-        element[:id] = nil if is_a_fake_id?(element[:id])
-      end
+      
+      # remove useless params
+      params.delete(:establishment)
+      params.delete(:head_office)
+      params.delete(:contact)
     end
 end
