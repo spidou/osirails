@@ -327,7 +327,7 @@ class Invoice < ActiveRecord::Base
   before_destroy :can_be_deleted?
   
   has_search_index :only_attributes    => [ :reference, :status, :published_on, :sended_on, :abandoned_on, :factoring_recovered_on, :factoring_balance_paid_on ],
-                   :only_relationships => [ :order, :factor, :invoice_type ]
+                   :only_relationships => [ :factor, :invoice_type ]#,:order] #TODO add :order to relationships list when bug #60 will be resolved.
   
   cattr_accessor :form_labels
   @@form_labels = {}

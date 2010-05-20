@@ -523,7 +523,7 @@ module HasSearchIndex
           raise ArgumentError, message unless options[:except_relationships].is_a?(Array)
 
           associations.each_value do |relationship|
-            require(relationship.class_name.underscore)                                  # require the model to be sure that the plugin implements into the model
+            relationship.class_name.constantize
             if HasSearchIndex::MODELS.include?(relationship.class_name)
               options[:relationships] << relationship.name
             else
@@ -548,8 +548,8 @@ module HasSearchIndex
             
             
             model = self.reflect_on_association(relationship_name).class_name
-            require(model.underscore)                                                    # require the model to be sure that the plugin implements into the model
-            unless HasSearchIndex::MODELS.include?(model)                 
+            model.constantize
+            unless HasSearchIndex::MODELS.include?(model)            
               raise ArgumentError, "#{error_prefix} relationship '#{relationship_name}' needs the '#{model}' model to implement has_search_index plugin"
             end
           end
