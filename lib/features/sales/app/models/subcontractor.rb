@@ -21,8 +21,6 @@ class Subcontractor < Third
   
   after_save :save_iban
   
-  @@form_labels[:activity_sector_reference] = "Code NAF :"
-  
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?
       self.iban = build_iban(iban_attributes)

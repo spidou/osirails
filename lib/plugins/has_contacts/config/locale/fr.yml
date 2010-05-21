@@ -1,0 +1,11 @@
+fr:     
+  activerecord:
+    attributes: 
+      contact:
+        gender: "Genre"
+        first_name: "Prénom"
+        last_name: "Nom"
+        email: "Adresse e-mail"
+        job: "Fonction"
+        contact_type: "Type de contact"
+        avatar: "Photo"

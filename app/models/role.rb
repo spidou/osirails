@@ -26,12 +26,6 @@ class Role < ActiveRecord::Base
   
   # Callbacks
   after_create :create_bo_permissions, :create_instance_permissions
-
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom du rôle :"
-  @@form_labels[:description] = "Description du rôle :"
-  @@form_labels[:user] = "Membres :"
   
   has_search_index :only_attributes => [:name, :description] if Object.const_defined?("HasSearchIndex")
                     

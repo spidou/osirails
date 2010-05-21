@@ -94,25 +94,6 @@ class PressProof < ActiveRecord::Base
   
   attr_protected :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment
     
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]               = "Référence :"
-  @@form_labels[:internal_actor]          = "Contact Graphique :"
-  @@form_labels[:creator]                 = "Créateur :"
-  @@form_labels[:product]                 = "Produit :"
-  @@form_labels[:product_description]     = "Description :"
-  @@form_labels[:unit_measure]            = "Unité de mesures :"
-  @@form_labels[:sended_on]               = "BAT envoyé au client le :"
-  @@form_labels[:document_sending_method] = "Par :"
-  @@form_labels[:signed_on]               = "BAT signé par le client le :"
-  @@form_labels[:signed_press_proof]      = "Fichier (BAT signé) :"
-  @@form_labels[:revoked_comment]         = "Motif de l'annulation :"
-  @@form_labels[:revoked_by]              = "BAT annulé par :"
-  @@form_labels[:revoked_at]              = "BAT annulé le :"
-  @@form_labels[:cancelled_at]            = "BAT annulé le :"
-  @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:status]                  = "État actuel :"
-  
   def sorted_press_proof_items
     press_proof_items.sort_by(&:position)
   end

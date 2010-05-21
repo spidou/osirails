@@ -28,12 +28,14 @@
         <%= display_graphic_item_summary_delete_button(graphic_item_summary) %>
         <%= display_graphic_item_summary_cancel_button(graphic_item_summary) %>
         <br/>
-          <%= image_tag("picture_file_16x16.png", :alt => graphic_item_summary.class.form_labels[:image], :title => "Fichier image") %> 
+          <% alt_and_title = graphic_item_summary.class.human_attribute_name("image") %>
+          <%= image_tag("picture_file_16x16.png", :alt => alt_and_title, :title => alt_and_title) %> 
           <%= link_to("Télécharger", graphic_item_summary.current_image.url) %> /
           <%= display_graphic_item_summary_image_spool_actions(graphic_item_summary) %>
         <br/>
         <% if graphic_item_summary.current_version.source_file_name %>
-          <%= image_tag("picture_source_16x16.png", :alt => graphic_item_summary.class.form_labels[:source], :title => "Fichier source") %> 
+          <% alt_and_title = graphic_item_summary.class.human_attribute_name("source") %>
+          <%= image_tag("picture_source_16x16.png", :alt => alt_and_title, :title => alt_and_title) %> 
           <%= link_to("Télécharger", graphic_item_summary.current_source.url) %> /
           <%= display_graphic_item_summary_source_spool_actions(graphic_item_summary) %>
         <% end %>

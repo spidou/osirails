@@ -30,12 +30,6 @@ class Dunning < ActiveRecord::Base
   
   attr_protected :cancelled_at, :cancelled_by, :has_dunning_type, :has_dunning_id
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:date]                   = "Effectuée le :"
-  @@form_labels[:dunning_sending_method] = "Par :"
-  @@form_labels[:comment]                = "Commentaire :"
-  
   def can_be_added?
     return false unless has_dunning
     has_dunning.was_sended?

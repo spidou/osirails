@@ -87,20 +87,6 @@ class Quote < ActiveRecord::Base
   
   attr_accessor :order_products_to_remove
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:validity_delay]    = 'Période de validité :'
-  @@form_labels[:sended_on]         = 'Devis envoyé au client le :'
-  @@form_labels[:send_quote_method] = 'Par :'
-  @@form_labels[:signed_on]         = 'Devis signé par le client le :'
-  @@form_labels[:order_form_type]   = 'Type de document :'
-  @@form_labels[:order_form]        = 'Fichier (document signé) :'
-  @@form_labels[:sales_terms]       = 'Conditions commerciales :'
-  @@form_labels[:created_at]        = 'Date de création :'
-  @@form_labels[:creator]           = "Créateur :"
-  @@form_labels[:reference]         = "Référence :"
-  @@form_labels[:status]            = "État actuel :"
-  
   def initialize(*params)
     super(*params)
     @order_products_to_remove ||= []

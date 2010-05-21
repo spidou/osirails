@@ -20,12 +20,6 @@ class StockFlow < ActiveRecord::Base
   
   # For will_paginate
   STOCK_FLOWS_PER_PAGE = 15 
-
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:supply] = "Fourniture :"
-  @@form_labels[:supplier] = "Fournisseur :"
-  @@form_labels[:quantity] = "Quantité :"
   
   # This method fills required attributes before create the stock flow
   def before_create

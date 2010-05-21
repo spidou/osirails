@@ -158,6 +158,9 @@ class FeatureManager
       # load overrides.rb file
       override_path = File.join(@path, 'overrides.rb')
       require override_path if File.exist?(override_path)
+      
+      # load i18n feature files
+      I18n.load_path += Dir[ File.join(@path, 'lib', 'locale', '*.{rb,yml}') ]
     end
 
     def verify_attribute_type(attr_class, type)

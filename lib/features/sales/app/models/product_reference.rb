@@ -13,20 +13,6 @@ class ProductReference < ActiveRecord::Base
                     :only_relationships   => [:product_reference_category],
                     :main_model           => true
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:reference]                   = "Référence :"
-  @@form_labels[:categories]                  = "Familles :"
-  @@form_labels[:designation]                 = "Désignation (Nom complet) :"
-  @@form_labels[:name]                        = "Nom :"
-  @@form_labels[:description]                 = "Description :"
-  @@form_labels[:product_reference_category]  = "Famille de produit :"
-  @@form_labels[:vat]                         = "TVA à appliquer (%) :"
-  @@form_labels[:production_cost_manpower]    = "Coût horaire de main-d'oeuvre :"
-  @@form_labels[:production_time]             = "Durée (en heures) :"
-  @@form_labels[:delivery_cost_manpower]      = "Coût horaire de main-d'oeuvre :"
-  @@form_labels[:delivery_time]               = "Durée (en heures) :"
-  
   def after_create
     self.counter_update("create")
   end

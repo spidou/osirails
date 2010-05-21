@@ -1,0 +1,32 @@
+fr:     
+  activerecord:
+    models: 
+      third: "Tiers"
+      customer: "Client"
+      supplier: "Fournisseur"
+      establishment: "Établissement"
+      factor: "Société d'affacturage"
+    attributes: 
+      third:
+        name: "Raison Sociale"
+        legal_form: "Forme juridique"
+        website: "Site Internet"
+        created_at: "Créé le"
+        creator: "Créé par"
+      customer:
+        factor: "Société d'affacturage"
+        customer_solvency: "Degré de solvabilité"
+        customer_grade: "Note relation client"  
+      supplier:
+        activity_sector_reference: "Code NAF"
+        siret_number: "N° SIRET"
+      establishment:
+        name: "Nom de l'enseigne"
+        establishment_type: "Type d'établissement"
+        activity_sector_reference: "Code NAF"
+        phone: "Tél"
+        fax: "Fax"
+        siret_number: "N° SIRET"
+      factor:
+        name: "Nom"
+        fullname: "Nom complet"

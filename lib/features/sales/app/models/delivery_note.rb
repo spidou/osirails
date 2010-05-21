@@ -73,19 +73,6 @@ class DeliveryNote < ActiveRecord::Base
   
   attr_protected :status, :confirmed_at, :cancelled_at
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]           = 'Référence :'
-  @@form_labels[:created_at]          = 'Créé le :'
-  @@form_labels[:creator]             = 'Par :'
-  @@form_labels[:delivery_note_type]  = 'Mode de livraison :'
-  @@form_labels[:status]              = 'État actuel :'
-  @@form_labels[:confirmed_at]        = "Validé le :"
-  @@form_labels[:published_on]        = "Date d'émission :"
-  @@form_labels[:signed_on]           = "Signé par le client le :"
-  @@form_labels[:attachment]          = "Fichier (document signé) :"
-  @@form_labels[:cancelled_at]        = 'Annulée le :'
-  
   def validates_presence_of_attachment # the method validates_attachment_presence of paperclip seems to be broken when using conditions
     if attachment.nil? or attachment.instance.attachment_file_name.blank? or attachment.instance.attachment_file_size.blank? or attachment.instance.attachment_content_type.blank?
       errors.add(:attachment, "est requis")

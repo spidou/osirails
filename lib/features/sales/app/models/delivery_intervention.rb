@@ -127,36 +127,6 @@ class DeliveryIntervention < ActiveRecord::Base
   
   after_save :save_discards
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  ## scheduled
-  @@form_labels[:delivery_type]                             = "Type de livraison :"
-  @@form_labels[:scheduled_delivery_at]                     = "Prévue le :"
-  @@form_labels[:scheduled_intervention_hours]              = "pendant :"
-  @@form_labels[:scheduled_internal_actor]                  = "Responsable :"
-  @@form_labels[:scheduled_delivery_subcontractor]          = "Sous-traitant (transport) :"
-  @@form_labels[:scheduled_delivery_vehicle]                = "Véhicules de transport à utiliser :"
-  @@form_labels[:scheduled_delivery_vehicles_rental]        = "Location de véhicule(s) prévue pour le transport :"
-  @@form_labels[:scheduled_deliverer]                       = "Livreurs :"
-  @@form_labels[:scheduled_installation_subcontractor]      = "Sous-traitant (pose) :"
-  @@form_labels[:scheduled_installation_equipment]          = "Matériels à utiliser pour la pose :"
-  @@form_labels[:scheduled_installation_equipments_rental]  = "Location de matériel(s) prévue pour la pose :"
-  @@form_labels[:scheduled_installer]                       = "Poseurs :"
-  ## reality
-  @@form_labels[:delivery_at]                    = "Réalisée le :"
-  @@form_labels[:intervention_hours]              = "pendant :"
-  @@form_labels[:internal_actor]                  = "Responsable :"
-  @@form_labels[:delivery_subcontractor]          = "Sous-traitant (transport) :"
-  @@form_labels[:delivery_vehicle]                = "Véhicules de transport utilisés :"
-  @@form_labels[:delivery_vehicles_rental]        = "Location de véhicule(s) de transport :"
-  @@form_labels[:deliverer]                       = "Livreurs :"
-  @@form_labels[:installation_subcontractor]      = "Sous-traitant (pose) :"
-  @@form_labels[:installation_equipments]         = "Matériels utilisés pour la pose :"
-  @@form_labels[:installation_equipments_rental]  = "Location de matériel(s) pour la pose :"
-  @@form_labels[:installer]                       = "Poseurs :"
-  @@form_labels[:report]                          = "Rapport d'intervention :"
-  @@form_labels[:comments]                        = "Indiquer pourquoi l'intervention n'a pas eu lieu :"
-  
   def validates_scheduled_intervention_duration
     errors.add(:scheduled_intervention_hours, "La durée de l'intervention est requise") if scheduled_intervention_hours.blank? and scheduled_intervention_minutes.blank?
   end

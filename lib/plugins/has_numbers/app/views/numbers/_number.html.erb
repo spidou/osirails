@@ -5,18 +5,18 @@
 <% require_locals number_owner %>
 
 <div class="number">
-<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]", number do |form| %>
+<% fields_for "#{number_owner.class.name.downcase}[number_attributes][]", number, :index => nil do |form| %>
 	<%= form.error_messages %>
 	<p>
 	  <% if form.form_view? %>
-	    <%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :index => nil, :selected => number[:indicative_id] }) %>
-			<%= form.text_field(:number, { :size => 9, :maxlength => 9, :index => nil }) %>
-    	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :index => nil, :selected => number[:number_type_id] }) %>
-    	<%= form.select(:visible, Number::VISIBLE_STATES , {}, { :index => nil }) %>
+	    <%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :selected => number[:indicative_id] }) %>
+			<%= form.text_field(:number, { :size => 9, :maxlength => 9 }) %>
+    	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :selected => number[:number_type_id] }) %>
+    	<%= form.select :visible, Number::VISIBLE_STATES %>
 	    
 	    <%= number.new_record? ? remove_number_link : remove_old_number_link %>
-	    <%= form.hidden_field :id, :index => nil %>
-		  <%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
+	    <%= form.hidden_field :id %>
+		  <%= form.hidden_field :should_destroy, :class => 'should_destroy' %>
 	  <% else %>
 	    <strong><%= display_full_phone_number(number) %></strong>
 	  <% end %>

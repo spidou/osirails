@@ -1,0 +1,9 @@
+fr:     
+  activerecord:
+    models: 
+      alarm: "Alarme"
+    attributes: 
+      alarm:
+        do_alarm_before: "Alerter"
+        email_to: "Par email à"
+        description: "Commentaire" 

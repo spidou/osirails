@@ -18,21 +18,6 @@ class Supply < ActiveRecord::Base
   
   SUPPLIES_PER_PAGE = 15
 
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]                = "Désignation :"
-  @@form_labels[:reference]           = "Référence :"
-  @@form_labels[:commodity_category]  = "Catégorie :"
-  @@form_labels[:consumable_category] = "Catégorie :"
-  @@form_labels[:supplier]            = "Fournisseur principal :"
-  @@form_labels[:unit_mass]           = "Masse/U (kg) :"
-  @@form_labels[:average_unit_price]  = "Prix/U moyen :"
-  @@form_labels[:threshold]           = "Quantité de stock minimum :"
-  @@form_labels[:stock_quantity]      = "Quantité de stock totale :"
-  @@form_labels[:stock_measure]       = "Grandeur totale :"
-  @@form_labels[:stock_value]         = "Valeur totale :"
-  @@form_labels[:stock_mass]          = "Poids total :"
-  
   # This callback prevent from destroy if it is not authorized
   def before_destroy
     unless self.can_be_destroyed?

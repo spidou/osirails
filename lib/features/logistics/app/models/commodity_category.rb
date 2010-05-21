@@ -21,6 +21,4 @@ class CommodityCategory < SupplyCategory
   validates_presence_of :unit_measure_id, :if => :commodity_category_id
   
   validates_persistence_of :name, :commodity_category_id, :unit_measure_id, :unless => :enable
-  
-  @@form_labels[:commodity_category] = "Appartient à :"
 end

@@ -7,11 +7,11 @@
 
 <div>
   <p>
-    <%= form.label :name, {}, :index => nil %>
+    <%= form.label :name %>
     <%= form.form_or_view(form.text_field(:name, :index => nil), :name ) %>
   </p>
   <p>
-    <%= form.label :siret_number, {}, :index => nil %>
+    <%= form.label :siret_number %>
     <%= form.form_or_view(form.text_field(:siret_number, :index => nil, :maxlength => 14), :siret_number) %>
   </p>
   
@@ -20,7 +20,7 @@
 
 <div>
   <p>
-    <%= form.label :establishment_type_id, {}, :index => nil %>
+    <%= form.label :establishment_type_id %>
     <%= form.form_or_view(form.collection_select(:establishment_type_id, EstablishmentType.find(:all), :id, :name, {}, :index => nil), :establishment_type, :name) %>
   </p>
   <!-- TODO when implementing the ajax reference retrieval do not forget to do so for thirds -->

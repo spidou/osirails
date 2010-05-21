@@ -19,6 +19,4 @@ class ConsumableCategory < SupplyCategory
   validates_uniqueness_of :name
   validates_presence_of :unit_measure_id, :if => ("consumable_category_id".to_sym)
   validates_persistence_of :name, :consumable_category_id, :unit_measure_id, :unless => :enable
-  
-  @@form_labels[:consumable_category] = "Appartient à :"
 end

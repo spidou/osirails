@@ -22,14 +22,6 @@ class JobContract < ActiveRecord::Base
   #Callbacks
   after_update :save_salary 
 
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:job_contract_type] = "Type de contrat :"
-  @@form_labels[:start_date] = "Date de début :"
-  @@form_labels[:end_date] = "Date de fin :"
-  @@form_labels[:employee_state] = "Statut :"
-  @@form_labels[:salary] = "Salaire brut :"
-  
   # Search Plugin
   has_search_index  :only_attributes    => [:start_date],
                     :only_relationships => [:job_contract_type]

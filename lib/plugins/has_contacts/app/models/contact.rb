@@ -23,16 +23,6 @@ class Contact < ActiveRecord::Base
   cattr_accessor :contacts_owners_models
   @@contacts_owners_models = []
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:gender]        = "Genre :"
-  @@form_labels[:first_name]    = "Prénom :"
-  @@form_labels[:last_name]     = "Nom :"
-  @@form_labels[:email]         = "Adresse e-mail :"
-  @@form_labels[:job]           = "Fonction :"
-  @@form_labels[:contact_type]  = "Type de contact :"
-  @@form_labels[:avatar]        = "Photo :"
-  
   has_attached_file :avatar, 
                     :styles => { :thumb => "75x75#" },
                     :default_style => :thumb,

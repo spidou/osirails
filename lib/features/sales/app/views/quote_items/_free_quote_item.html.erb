@@ -6,13 +6,13 @@ counter ||= 1
 position = quote_item.position.zero? ? counter : quote_item.position
 %>
 
-<% fields_for "quote[quote_item_attributes][]", quote_item do |form| %>
+<% fields_for "quote[quote_item_attributes][]", quote_item, :index => nil do |form| %>
   <tr class="free_quote_item">
     <td></td>
     <td class="designation">
       <span class="name">
         <% if is_form_view? %>
-          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour ce produit", :index => nil %>
+          <%= form.text_field :name, :size => 45, :class => :input_name, :title => "Entrer le titre de la description pour ce produit" %>
         <% else %>
           <%= quote_item.name %>
         <% end %>
@@ -33,9 +33,9 @@ position = quote_item.position.zero? ? counter : quote_item.position
         <%= link_to( image_tag("arrow_up_16x16.png", :alt => text_up = "Monter la ligne", :title => text_up, :class => "arrow_up"), "#up", :onclick => "move_up(this);" ) %>
         <%= link_to( image_tag("arrow_down_16x16.png", :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
         <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm('Êtes-vous sûr ?\\nAttention, les modifications seront appliquées à la soumission du formulaire.')) remove_free_quote_item(this)" ) %>
-        <%= form.hidden_field :id, :class => :quote_item_id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
-        <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
+        <%= form.hidden_field :id, :class => :quote_item_id %>
+        <%= form.hidden_field :should_destroy, :class => :should_destroy %>
+        <%= form.hidden_field :position, :class => :position, :value => position %>
       </td>
     <% end %>
   </tr>

@@ -5,35 +5,6 @@ class LeaveRequest < ActiveRecord::Base
   
   alias_attribute :submitted_at, :created_at
   
-  cattr_accessor :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:status]                = "État actuel :"
-  @@form_labels[:employee]              = "Employé :"
-  @@form_labels[:submitted_at]          = "Date de la demande :"
-  @@form_labels[:period]                = "Date/Période demandée :"
-  @@form_labels[:start_date]            = "Du :"
-  @@form_labels[:end_date]              = "Au :"
-  @@form_labels[:start_half]            = "depuis la mi-journée ?"
-  @@form_labels[:end_half]              = "jusqu'à la mi-journée ?"
-  @@form_labels[:leave_type]            = "Type du congé :"
-  @@form_labels[:comment]               = "Commentaire :"
-  @@form_labels[:responsible_agreement] = "Réponse du responsable :"
-  @@form_labels[:checked_at]            = "Date :"
-  @@form_labels[:responsible]           = "Nom du responsable :"
-  @@form_labels[:responsible_remarks]   = "Commentaire :"
-  @@form_labels[:acquired_leaves_days]  = "Etat des congés payés acquis :"
-  @@form_labels[:duration]              = "Durée effective totale :"
-  @@form_labels[:observer_remarks]      = "Observations :"
-  @@form_labels[:observer]              = "Notifié par :"
-  @@form_labels[:noticed_at]            = "Date :"
-  @@form_labels[:director]              = "Clôturé par :"
-  @@form_labels[:director_agreement]    = "Réponse de la direction :"
-  @@form_labels[:agreement_true]        = "ACCORD :"
-  @@form_labels[:agreement_false]       = "REFUS :"
-  @@form_labels[:director_remarks]      = "Commentaire :"
-  @@form_labels[:ended_at]              = "Date :"
-  @@form_labels[:cancelled_at]          = "Annulée le :"
-  
   LEAVE_REQUESTS_PER_PAGE = 15
   
   STATUS_CANCELLED              = 0

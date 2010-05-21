@@ -14,11 +14,6 @@ class ShipToAddress < ActiveRecord::Base
   #attr_accessor :should_update
   attr_accessor :parallel_creation
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:establishment]       = "Établissement associé :"
-  @@form_labels[:establishment_name]  = "Nom de l'établissement :"
-  
   def should_destroy?
     should_destroy.to_i == 1
   end

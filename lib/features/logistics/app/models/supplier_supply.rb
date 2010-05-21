@@ -12,15 +12,6 @@ class SupplierSupply < ActiveRecord::Base
   attr_accessor :should_destroy
   attr_accessor :should_update
 
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:supplier] = "Fournisseur :"
-  @@form_labels[:reference] = "Référence :"
-  @@form_labels[:name] = "Désignation :"
-  @@form_labels[:fob_unit_price] = "FOB de base :"
-  @@form_labels[:tax_coefficient] = "Coefficient de taxe :"
-  @@form_labels[:lead_time] = "Délai d'approvisionnement :"
-  
   # This method prevent the removal if it's already been used
   def before_destroy
     return false if self.has_been_used?

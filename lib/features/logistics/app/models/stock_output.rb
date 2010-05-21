@@ -14,7 +14,5 @@ class StockOutput < StockFlow
       errors.add(:quantity, "(#{self.quantity}) est supérieur au stock disponible (#{self.supplier_supply.stock_quantity} pour le fournisseur #{self.supplier_supply.supplier.name})") if self.supplier_supply.stock_quantity < self.quantity
     end
   end
-  
-  @@form_labels[:file_number] = "Numéro de dossier :"
 end
 

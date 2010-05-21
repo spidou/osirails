@@ -30,15 +30,6 @@ class Leave < ActiveRecord::Base
   validate :validates_dates_consistency, :if => :start_date_and_end_date
   validate :validates_unique_dates
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:start_date] = "Du :"
-  @@form_labels[:end_date]   = "Au :"
-  @@form_labels[:start_half] = "depuis la mi-journée ?"
-  @@form_labels[:end_half]   = "jusqu'à la mi-journée ?"
-  @@form_labels[:duration]   = "Durée :"
-  @@form_labels[:leave_type] = "Type :"
-  
   # Method that permit to cancel a record
   # and to use validations according to the cancel needs
   # thank's to validate_cancel flag

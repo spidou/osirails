@@ -12,7 +12,7 @@ product = delivery_note_item.quote_item.product
     <td class="reference"><%= product.product_reference.reference %></td>
     <td class="designation"><span class="name"><%= product.name %></span><br/><span class="description"><%= product.description %></span></td>
     <td class="quantity_to_deliver"><%= delivery_note_item.quantity %></td>
-    <td class="quantity"><%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.quantity), {}, :index => nil, :onchange => "toggle_disable_comments_for_discard(this)"), :quantity) %></td>
+    <td class="quantity"><%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.quantity), {}, :onchange => "toggle_disable_comments_for_discard(this)"), :quantity) %></td>
     <td class="actions">
       <%= form.form_or_view(form.text_area_autoresize(:comments, :disabled => ( discard.quantity.nil? or discard.quantity.zero? ), :class => 'comments'), :comments) %>
       <%= form.hidden_field :id %>

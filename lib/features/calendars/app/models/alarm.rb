@@ -38,12 +38,6 @@ class Alarm < ActiveRecord::Base
   
   attr_accessor :should_destroy
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:do_alarm_before] = "Alerter :"
-  @@form_labels[:email_to]        = "Par email à :"
-  @@form_labels[:description]     = "Commentaire :"
-  
   # Requires
   require 'rubygems'
   require 'icalendar'

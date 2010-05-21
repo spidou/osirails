@@ -327,30 +327,6 @@ class Invoice < ActiveRecord::Base
   
   before_destroy :can_be_deleted?
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:reference]                   = 'Référence :'
-  @@form_labels[:created_at]                  = 'Créée le :'
-  @@form_labels[:creator]                     = 'Par :'
-  @@form_labels[:status]                      = 'État actuel :'
-  @@form_labels[:invoice_type]                = 'Type de facture :'
-  @@form_labels[:published_on]                = "Date d'émission :"
-  @@form_labels[:factor]                      = 'Factor :'
-  @@form_labels[:sended_on]                   = 'Envoyée au client le :'
-  @@form_labels[:send_invoice_method]         = 'Par :'
-  @@form_labels[:cancelled_at]                = 'Annulée le :'
-  @@form_labels[:cancelled_by]                = 'Par :'
-  @@form_labels[:cancelled_comment]           = 'Indiquer la raison de cette annulation :'
-  @@form_labels[:abandoned_on]                = 'Abandonée le :'
-  @@form_labels[:abandoned_by]                = 'Par :'
-  @@form_labels[:abandoned_comment]           = "Indiquer la raison de l'abandon :"
-  @@form_labels[:net_to_paid]                 = 'Montant total de la facture :'
-  @@form_labels[:factoring_paid_on]           = 'Financement du Factor le :'
-  @@form_labels[:factoring_recovered_on]      = 'Définancement du Factor le :'
-  @@form_labels[:factoring_recovered_comment] = 'Indiquer la raison du définancement :'
-  @@form_labels[:factoring_balance_paid_on]   = 'Solde Factor reçu le :'
-  @@form_labels[:delivery_note_invoices]      = 'Bons de livraison associés :'
-  
   def validates_presence_of_associated_quote
     errors.add(:associated_quote, "La facture doit être associée à un devis signé, mais celui-ci n'est pas présent.") unless associated_quote
   end

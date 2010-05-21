@@ -1,0 +1,37 @@
+en:     
+  activerecord:
+    models: 
+      tool_event: "Event"
+    attributes: 
+      commodity_category: 
+        commodity_category: "Belongs to"
+      consumable_category: 
+        consumable_category: "Belongs to"
+      supply_category:
+        unit_measure: "Unit of measure"
+      supply:
+        name: "Designation"
+        commodity_category: "Category"
+        consumable_category: "Category"
+        supplier: "Main supplier"
+        unit_mass: "Mass/U (kg)"
+        average_unit_price: "Average Price/U"
+        threshold: "Minimum stock quantity"
+        stock_quantity: "Total stock quantity"
+        stock_measure: "Total measure"
+        stock_value: "Total value"
+        stock_mass: "Total weight"
+      supplier_supply:
+        name: "Designation"
+      tool:
+        name: "Designation"
+        service: "Appointed service"
+        employee: "Appointed employee"
+        job: "Appointed job"
+      vehicle:
+        serial_number: "Registration number"
+      tool_event:
+        name: "Designation"
+        event_type: "Type"
+        status: "Tool status"
+        provider_actor: "Provider representative"

@@ -7,10 +7,6 @@ class StockInput < StockFlow
   
   # Validates
   validates_numericality_of :fob_unit_price, :tax_coefficient
-  validates_presence_of :purchase_number, :unless => :adjustment
-  
-  @@form_labels[:purchase_number] = "Numéro d'achat :"
-  @@form_labels[:fob_unit_price] = "FOB unitaire :"
-  @@form_labels[:tax_coefficient] = "Coefficient de taxe :"  
+  validates_presence_of :purchase_number, :unless => :adjustment 
 end
 

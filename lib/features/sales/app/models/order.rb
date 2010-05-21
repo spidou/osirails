@@ -73,20 +73,6 @@ class Order < ActiveRecord::Base
   SOON      = 'soon'
   FAR       = 'far'
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:title]                   = "Nom du projet :"
-  @@form_labels[:customer_needs]          = "Besoins du client :"
-  @@form_labels[:society_activity_sector] = "Secteur d'activité :"
-  @@form_labels[:order_type]              = "Type de dossier :"
-  @@form_labels[:commercial]              = "Commercial :"
-  @@form_labels[:ship_to_address]         = "Adresse(s) de livraison :"
-  @@form_labels[:approaching]             = "Type d'approche :"
-  @@form_labels[:contact]                 = "Contact commercial :"
-  @@form_labels[:created_at]              = "Date de création :"
-  @@form_labels[:previsional_delivery]    = "Date prévisionnelle de livraison :"
-  @@form_labels[:quotation_deadline]      = "Date butoire d'envoi du devis :"
-  
   # return all delivery_notes with an active invoice
   # delivery_notes_with_invoice
   def billed_delivery_notes

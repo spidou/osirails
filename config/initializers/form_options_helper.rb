@@ -40,67 +40,41 @@ module ActionView
         html
       end
       
-      # HACKED METHOD (by Mathieu FONTAINE)
-      # Returns a label tag tailored for labelling an input field for a specified attribute (identified by +method+) on an object
-      # assigned to the template (identified by +object+). The text of label will default to the attribute name unless you specify
-      # it explicitly. Additional options on the label tag can be passed as a hash with +options+. These options will be tagged
-      # onto the HTML as an HTML element attribute as in the example shown.
-      #
-      # ==== Examples
-      #   label(:post, :title)
-      #   # => <label for="post_title">Title</label>
-      #
-      #
-      # ###############
-      #   Class Post
-      #     cattr_reader :form_labels
-      #     @@form_labels[:title] = "A short title :"
-      #     @@form_labels[:group] = "Groups :"
-      #   end
-      #   
-      #   label(:post, :title)
-      #   # => <label for="post_title">A short title :</label> # if form_labels[:symbol] is defined in the model
-      #   
-      #   label(:post, :sub_title)
-      #   # => <label for="post_sub_title">Sub title</label> # if form_labels[:symbol] is not defined, the 'method_name' is humanized
-      #   
-      #   label(:post, :group_ids)
-      #   # => <label for="post_sub_title">Groups :</label> # if form_labels[:symbol] ends with '_id' or '_ids', the symbol is checked without these characters
-      # ###############
-      # 
-      # ###############
-      #   Class Tag
-      #     cattr_reader :form_labels
-      #     @@form_labels[:name] = ""
-      #   end
-      #   
-      #   fields_for "posts[tag_attributes][]", post do |f|
-      #     f.label(:name, :index => nil)
-      #   end
-      #   # => <label name="posts[tag_attributes][][name]"></label>
-      # ###############
-      # 
-      #
       def label(object_name, method, text = nil, options = {})
-        ###### hack by Mathieu FONTAINE
-        if text.kind_of?(Hash) # if text is omitted and the third argument is actuallay an option for label tag, so we merge the third arg with the options hash, and we flash the 'text' argument.
-          options.merge(text)
-          text = nil
-        elsif !text.kind_of?(String) and !text.kind_of?(NilClass)
-          raise "Unexpected type: 'text' must be either String or Hash. text = #{text.class.name}"
-        end
+        ###### hack by Ronnie Heritiana RABENANDRASANA for I18n management
         if text.nil?
-          key = method.to_s.gsub(/_id(s)?$/,"").to_sym
-          if options[:object].class.respond_to?("form_labels") and !options[:object].class.form_labels[key].nil?
-            text = options[:object].class.form_labels[key]
-          else
-            text = "#{key.to_s}:"
-          end
-          text = text.gsub(" :", "&#160;:") # &#160; => indivisible space
+          text = i18n_label(options[:object].class,method)
         end
         ###### end hack
         
         InstanceTag.new(object_name, method, self, options.delete(:object)).to_label_tag(text, options)
+      end
+      
+      # Creates a label without the default 'for' attribute option that raises a
+      # warning when using the method 'label' without a corresponding object id,
+      # such as labels not called inside a 'form_for'
+      #
+      # ==== Example
+      #   <%= simple_label 'Your text' %>
+      #   # => <label>Your text</label>
+      # 
+      # By passing a class and a method, I18n is managed
+      # ==== Example 
+      #   <%= simple_label :order, :title %>
+      #   # => <label>Nom du projet&nbsp;:</label>
+      #   thanks to yml file => fr:
+      #                           activerecord:
+      #                             attributes:
+      #                               order:
+      #                                 title: "Nom du projet"
+      #
+      def simple_label(class_or_text, method = nil, options = {})
+        if class_or_text.is_a?(Symbol)
+          text = i18n_label(class_or_text.to_s.camelize.constantize,method)
+        else
+          text = class_or_text
+        end
+        content_tag :label, text, options
       end
       
       # Creates a strong tag
@@ -192,6 +166,17 @@ module ActionView
       end
       
       alias_method :text_area_autoresize, :autoresize_text_area
+      
+      private
+        def i18n_label(klass,method)
+          key = method.to_s.gsub(/_id(s)?$/,"").to_sym
+          if klass.respond_to?(:human_attribute_name)
+            text = klass.human_attribute_name(key.to_s)
+          else
+            text = "#{key.to_s}"
+          end
+          text = (text + I18n.t('label_separator')).gsub(" :", "&#160;:") # &#160; => indivisible space
+        end
     end
     
     class InstanceTag #:nodoc:

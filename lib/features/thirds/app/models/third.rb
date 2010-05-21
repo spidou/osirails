@@ -12,14 +12,6 @@ class Third < ActiveRecord::Base
   
   RATINGS = { "0" => 0, "1" => 1, "2" => 2, "3" => 3, "4" => 4, "5" => 5 }
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]                      = "Raison Sociale :"
-  @@form_labels[:legal_form]                = "Forme juridique :"
-  @@form_labels[:website]                   = "Site Internet :"
-  @@form_labels[:created_at]                = "Créé le :"
-  @@form_labels[:creator]                   = "Créé par :"
-  
   def website_url
     "http://#{website}" unless website.blank?
   end

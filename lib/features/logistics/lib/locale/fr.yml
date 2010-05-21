@@ -1,0 +1,80 @@
+fr:     
+  activerecord:
+    models: 
+      supply_category: "Catégorie de fourniture"
+      commodity_category: "Catégorie de matière première"
+      consumable_category: "Catégorie de consommable"
+      supply: "Fourniture"
+      supplier_supply: "Fourniture fournisseur"
+      stock_flow: "Mouvement de stock"
+      stock_input: "Entrée de stock"
+      stock_output: "Sortie de stock"
+      tool: "Équipement"
+      machine: "Machine"
+      vehicle: "Véhicule"
+      computer: "Ordinateur"
+      device: "Périphérique"
+      other_tool: "Autre"
+      tool_event: "Évènement"
+    attributes: 
+      commodity_category: 
+        commodity_category: "Appartient à"
+      consumable_category: 
+        consumable_category: "Appartient à"
+      supply_category:
+        name: "Nom"
+        unit_measure: "Unité de mesure"
+      supply:
+        name: "Désignation"
+        reference: "Référence"
+        commodity_category: "Catégorie"
+        consumable_category: "Catégorie"
+        supplier: "Fournisseur principal"
+        unit_mass: "Masse/U (kg)"
+        average_unit_price: "Prix/U moyen"
+        threshold: "Quantité de stock minimum"
+        stock_quantity: "Quantité de stock totale"
+        stock_measure: "Grandeur totale"
+        stock_value: "Valeur totale"
+        stock_mass: "Poids total"
+      supplier_supply:
+        supplier: "Fournisseur"
+        reference: "Référence"
+        name: "Désignation"
+        fob_unit_price: "FOB de base"
+        tax_coefficient: "Coefficient de taxe"
+        lead_time: "Délai d'approvisionnement"
+      stock_flow:
+        supply: "Fourniture"
+        supplier: "Fournisseur"
+        quantity: "Quantité"
+      stock_input:
+        purchase_number: "Numéro d'achat"
+        fob_unit_price: "FOB unitaire"
+        tax_coefficient: "Coefficient de taxe"
+      stock_output:
+        file_number: "Numéro de dossier"
+      tool:
+        status: "Statut"
+        type: "Type"
+        name: "Désignation"
+        description: "Description"
+        serial_number: "Numéro de série"
+        purchase_date: "Date d'achat"
+        purchase_price: "Prix d'achat"
+        service: "Affecté au service"
+        job: "Affecté à la fonction"
+        employee: "Affecté à l'employé"
+        supplier: "Fournisseur"
+      vehicle:
+        serial_number: "N° d'immatriculation"
+      tool_event:
+        name: "Désignation"
+        event_type: "Type"
+        status: "Statut de l'équipement"
+        internal_actor: "Acteur interne"
+        provider_society: "Entreprise prestataire"
+        provider_actor: "Représentant prestataire"
+        start_date: "Date de début"
+        end_date: "Date de fin"
+        comment: "Commentaire"        

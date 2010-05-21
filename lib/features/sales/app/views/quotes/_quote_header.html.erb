@@ -26,7 +26,7 @@ default_ship_to_address = order.ship_to_addresses.first.address # TODO replace t
   <div id="contact_container">
     <h3>Contact</h3>
     <p>
-      <%= label :select_contacts, "À l'attention de " %>
+      <%= label :select_contacts, "À l'attention de" %>
       <%= display_contacts_picker(quote, order.contacts) %>
     </p>
   </div>

@@ -1,11 +1,6 @@
 class SupplyCategory < ActiveRecord::Base  
   # Validates
   validates_presence_of :name
-   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name] = "Nom :"
-  @@form_labels[:unit_measure] = "Unité de mesure :"
   
   # This method prevents from remove if it is not authorized
   # Override is necessary because before_destroy callback 

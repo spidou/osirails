@@ -42,11 +42,6 @@ class Customer < Third
                    :only_relationships => [:legal_form, :establishments],
                    :main_model         => true
   
-  @@form_labels[:factor]            = "Compagnie d'affacturage :"
-  @@form_labels[:customer_solvency] = "Degré de solvabilité :"
-  @@form_labels[:customer_grade]    = "Note relation client :"
-  @@form_labels[:logo]              = "Logo :"
-  
   def payment_time_limit
     customer_grade.payment_time_limit
   end

@@ -35,28 +35,28 @@ product_errors  = { :product_details    => product.errors.empty? ? '' : ' errors
     <% fields_for 'survey_step[product_attributes][]', product, :index => nil do |form| %>
       <%= form.error_messages %>
       <p>
-        <%= form.label :product_reference_id, :index => nil %>
-        <%= form.hidden_field :product_reference_id, :index => nil %>
+        <%= form.label :product_reference_id %>
+        <%= form.hidden_field :product_reference_id %>
         <%= strong("#{product.product_reference.reference} - #{product.product_reference.designation}") %> <%= product_reference_link(product.product_reference, :link_text => "Voir la fiche de cette référence", :html_options => { :popup => true }) %>
       </p>
       <p>
-        <%= form.label :name, :index => nil %>
-        <%= form.text_field :name, :value => product.name || product.product_reference.designation, :size => 50, :index => nil %>
+        <%= form.label :name %>
+        <%= form.text_field :name, :value => product.name || product.product_reference.designation, :size => 50 %>
         
-        <%= form.label :dimensions, :index => nil %>
-        <%= form.text_field :dimensions, :index => nil %>
+        <%= form.label :dimensions %>
+        <%= form.text_field :dimensions %>
       </p>
       <p>
-        <%= form.label :description, :index => nil %>
+        <%= form.label :description %>
         <%= form.text_area_autoresize :description, :value => product.description || product.product_reference.description, :index => nil %>
       </p>
       <p>
-        <%= form.label :quantity, :index => nil %>
-        <%= form.text_field :quantity, :value => product.quantity || 1, :size => 3, :index => nil %>
+        <%= form.label :quantity %>
+        <%= form.text_field :quantity, :value => product.quantity || 1, :size => 3 %>
       </p>
       <p style="display:none">
-        <%= form.hidden_field :id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
+        <%= form.hidden_field :id %>
+        <%= form.hidden_field :should_destroy, :class => :should_destroy %>
       </p>
       
       <% if product.new_record? %>

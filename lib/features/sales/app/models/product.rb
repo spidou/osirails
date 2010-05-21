@@ -37,14 +37,6 @@ class Product < ActiveRecord::Base
   
   attr_accessor :should_destroy
   
-  cattr_accessor :form_labels
-  @@form_labels = {}
-  @@form_labels[:product_reference] = "Produit référence :"
-  @@form_labels[:name]              = "Nom du produit :"
-  @@form_labels[:description]       = "Description :"
-  @@form_labels[:dimensions]        = "Côtes :"
-  @@form_labels[:quantity]          = "Quantité :"
-  
   def should_destroy?
     should_destroy.to_i == 1
   end

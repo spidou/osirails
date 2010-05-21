@@ -1,4 +1,6 @@
 en:
+  label_separator: ":"
+  
   welcome: "Welcome"
   
   date:

@@ -6,10 +6,10 @@ remark_counter += 1
 
 <div class='remark <%= remark_counter%2 == 0 ? 'style2' : 'style1' %>'>
 <% if is_form_view? and remark.new_record? %>
-  <% fields_for "#{owner_type}[remark_attributes]", remark do |form| -%>
+  <% fields_for "#{owner_type}[remark_attributes]", remark, :index => nil do |form| -%>
     <%= form.error_messages %>
     <p>
-      <%= form.label :text, :index => nil %>
+      <%= form.label :text %>
       <%= form.text_area_autoresize :text , :cols => 70, :rows => 2, :index => nil %>
       <%= link_to_function "Annuler", "this.up('.remark').remove()"%>
     </p>

@@ -14,11 +14,6 @@ class ProductReferenceCategory < ActiveRecord::Base
   
   has_search_index  :only_attributes      => [:name],
                     :only_relationships   => [:parent]
-                    
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]                        = "Nom :"
-  @@form_labels[:product_reference_category]  = "Catégorie parente :"
   
   # This method permit to update counter of parents categories
   def counter_update(index,value)

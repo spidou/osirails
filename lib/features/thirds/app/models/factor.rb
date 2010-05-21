@@ -10,11 +10,6 @@ class Factor < ActiveRecord::Base
   # for pagination : number of instances by index page
   FACTORS_PER_PAGE = 15
   
-  cattr_reader :form_labels
-  @@form_labels = Hash.new
-  @@form_labels[:name]      = "Nom :"
-  @@form_labels[:fullname]  = "Nom complet :"
-  
   def name_and_fullname
     "#{name} (#{fullname})"
   end

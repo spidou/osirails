@@ -7,47 +7,47 @@ id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_recor
 style_attr = 'style="display:none"' unless contact.new_record? or !contact.errors.empty? or contact.should_update?
 %>
 
-<% fields_for "#{owner_type}[contact_attributes][]", contact do |form| %>
+<% fields_for "#{owner_type}[contact_attributes][]", contact, :index => nil do |form| %>
   <div class="resource_form contact_form" <%= id_attr %> <%= style_attr %> >
     <div>
       <%= form.error_messages %>
       <% if is_form_view? %>
         <p>
-          <%= form.label :gender, :index => nil %>
-          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }, {}, :index => nil ) %>
+          <%= form.label :gender %>
+          <%= form.select(:gender, { 'Homme' => 'M', 'Femme' => 'F' }) %>
         </p>
       <% end %>
       <p>
-        <%= form.label :first_name, :index => nil %>
-        <%= form.form_or_view(form.text_field(:first_name, :index => nil), :first_name ) %>
+        <%= form.label :first_name %>
+        <%= form.form_or_view(form.text_field(:first_name), :first_name ) %>
       </p>
       <p>
-        <%= form.label :last_name, :index => nil %>
-        <%= form.form_or_view(form.text_field(:last_name, :index => nil), :last_name ) %>
+        <%= form.label :last_name %>
+        <%= form.form_or_view(form.text_field(:last_name), :last_name ) %>
       </p>
       <p>
-        <%= form.label :contact_type_id, :index => nil %>
-        <%= form.form_or_view(form.collection_select(:contact_type_id, contact_types, :id, :name, {}, :index => nil), :file_type, :name ) %>
+        <%= form.label :contact_type_id %>
+        <%= form.form_or_view(form.collection_select(:contact_type_id, contact_types, :id, :name), :file_type, :name ) %>
       </p>
       <p>
-        <%= form.label :job, :index => nil %>
-        <%= form.form_or_view(form.text_field(:job, :index => nil), :job ) %>
+        <%= form.label :job %>
+        <%= form.form_or_view(form.text_field(:job), :job ) %>
       </p>
       <p>
-        <%= form.label :email, :index => nil %>
-        <%= form.form_or_view(form.text_field(:email, :index => nil), :email ) %>
+        <%= form.label :email %>
+        <%= form.form_or_view(form.text_field(:email), :email ) %>
       </p>
       <p>
-        <%= form.label :avatar, :index => nil %>
-        <%= form.form_or_view(form.file_field(:avatar, :index => nil, :size => 14)) %>
+        <%= form.label :avatar %>
+        <%= form.form_or_view(form.file_field(:avatar, :size => 14)) %>
       </p>
       <p>
         <%= display_contact_close_form_button(contact) %>
 
         <% if !contact.new_record? and is_form_view? %>
-          <%= form.hidden_field :id, :index => nil %>
-          <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-          <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+          <%= form.hidden_field :id %>
+          <%= form.hidden_field :should_destroy, :class => 'should_destroy' %>
+          <%= form.hidden_field :should_update, :class => 'should_update' %>
         <% end %>
       </p>
     </div>
