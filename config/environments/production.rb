@@ -6,7 +6,12 @@
 # Full error reports are disabled and caching is turned on
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
-config.action_view.cache_template_loading            = true
+
+# FIXME Remove this line at Rails 2.3 upgrading
+# With Rails 2.2, this hack is necessary, explanations: 
+# https://rails.lighthouseapp.com/projects/8994/tickets/802-eager-load-application-classes-can-block-migration 
+# http://www.whatcodecraves.com/articles/2009/03/17/rails_2.2.2_chicken_and_egg_migrations_headache/
+config.cache_classes = (File.basename($0) == "rake" && !ARGV.grep(/db:/).empty?) ? false : true
 
 # Use a different cache store in production
 # config.cache_store = :mem_cache_store
