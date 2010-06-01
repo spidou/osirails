@@ -1,0 +1,24 @@
+name: purchases
+title: Achats
+version: 0.1
+dependencies:
+  admin:
+    - 0.1
+  rh:
+    - 0.1
+  thirds:
+    - 0.1    
+menus:
+  purchases:
+    title: Achats
+    description: "Gestion des ordres et des demandes d'achats"
+    position: 10
+    children:
+      purchase_orders:
+        title: "Gestion des ordres d'achats"
+        description: "Permet la gestion des ordres d'achats"
+        position: 1
+      purchase_requests:
+        title: "Gestion des demandes d'achats"
+        description: "Permet la gestion des demandes d'achats"
+        position: 2

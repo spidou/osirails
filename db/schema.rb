@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100503125551) do
+ActiveRecord::Schema.define(:version => 20100601063522) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -1090,6 +1090,48 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
   end
 
   add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
+
+  create_table "purchase_documents", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_orders", :force => true do |t|
+    t.integer  "user_id",              :limit => 11
+    t.integer  "supplier_id",          :limit => 11
+    t.string   "reference"
+    t.string   "status"
+    t.datetime "cancelled_at"
+    t.string   "cancelled_comment"
+    t.integer  "order_document_id",    :limit => 11
+    t.integer  "invoice_document_id",  :limit => 11
+    t.integer  "delivery_document_id", :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_requests", :force => true do |t|
+    t.integer  "user_id",           :limit => 11
+    t.string   "reference"
+    t.datetime "cancelled_at"
+    t.string   "cancelled_comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_supplies", :force => true do |t|
+    t.integer  "purchase_request_id",       :limit => 11
+    t.integer  "purchase_order_id",         :limit => 11
+    t.integer  "supply_id",                 :limit => 11
+    t.integer  "expected_quantity",         :limit => 11
+    t.integer  "quantity",                  :limit => 11
+    t.datetime "expected_delivery_date"
+    t.datetime "previsional_delivery_date"
+    t.datetime "delivery_date"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "quote_items", :force => true do |t|
     t.integer  "quote_id",    :limit => 11
