@@ -889,17 +889,6 @@ ActiveRecord::Schema.define(:version => 20100602103835) do
     t.datetime "updated_at"
   end
 
-  create_table "order_supplies", :force => true do |t|
-    t.integer  "purchase_order_id",         :limit => 11
-    t.integer  "supply_id",                 :limit => 11
-    t.integer  "quantity",                  :limit => 11
-    t.datetime "previsional_delivery_date"
-    t.string   "status"
-    t.integer  "parcel_id",                 :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "order_types", :force => true do |t|
     t.string   "title"
     t.datetime "created_at"
@@ -935,6 +924,10 @@ ActiveRecord::Schema.define(:version => 20100602103835) do
   create_table "parcels", :force => true do |t|
     t.datetime "delivery_date"
     t.string   "status"
+    t.string   "conveyance"
+    t.datetime "shipped_at"
+    t.datetime "received_at"
+    t.boolean  "state"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1114,10 +1107,29 @@ ActiveRecord::Schema.define(:version => 20100602103835) do
     t.datetime "updated_at"
   end
 
+  create_table "purchase_order_supplies", :force => true do |t|
+    t.integer  "purchase_order_id",         :limit => 11
+    t.integer  "supply_id",                 :limit => 11
+    t.integer  "quantity",                  :limit => 11
+    t.datetime "previsional_delivery_date"
+    t.integer  "parcel_id",                 :limit => 11
+    t.datetime "returned_at"
+    t.datetime "redirected_at"
+    t.datetime "cancelled_at"
+    t.string   "cancelled_comment"
+    t.integer  "cancelled_by",              :limit => 11
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "purchase_orders", :force => true do |t|
     t.integer  "user_id",               :limit => 11
+    t.integer  "supplier_id",           :limit => 11
     t.string   "reference"
     t.string   "status"
+    t.datetime "validated_at"
+    t.datetime "completed_at"
     t.datetime "cancelled_at"
     t.string   "cancelled_comment"
     t.integer  "cancelled_by",          :limit => 11
@@ -1126,7 +1138,20 @@ ActiveRecord::Schema.define(:version => 20100602103835) do
     t.integer  "quotation_document_id", :limit => 11
     t.integer  "payment_document_id",   :limit => 11
     t.integer  "payment_method_id",     :limit => 11
-    t.boolean  "payed"
+    t.boolean  "paid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_request_supplies", :force => true do |t|
+    t.integer  "purchase_request_id",      :limit => 11
+    t.integer  "supply_id",                :limit => 11
+    t.integer  "expected_quantity",        :limit => 11
+    t.datetime "expected_delivery_date"
+    t.integer  "purchase_order_supply_id", :limit => 11
+    t.datetime "cancelled_at"
+    t.string   "cancelled_comment"
+    t.integer  "cancelled_by",             :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1190,19 +1215,6 @@ ActiveRecord::Schema.define(:version => 20100602103835) do
     t.string   "has_remark_type"
     t.integer  "user_id",         :limit => 11
     t.text     "text"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "request_supplies", :force => true do |t|
-    t.integer  "purchase_request_id",    :limit => 11
-    t.integer  "supply_id",              :limit => 11
-    t.integer  "expected_quantity",      :limit => 11
-    t.datetime "ecpected_delivery_date"
-    t.integer  "order_supply_id",        :limit => 11
-    t.datetime "cancelled_at"
-    t.string   "cancelled_comment"
-    t.integer  "cancelled_by",           :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

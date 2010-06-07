@@ -1,0 +1,7 @@
+<% require_locals purchase_request %>
+<% owner_type = purchase_request.class.name.downcase %>
+
+<% fields_for "#{owner_type}[establishment_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do %>
+  <p id="purchase_request_supply_<%= purchase_request_supplies.id %>">
+  </p>
+<% end  %>

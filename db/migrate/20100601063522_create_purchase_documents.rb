@@ -1,7 +1,7 @@
 class CreatePurchaseDocuments < ActiveRecord::Migration
   def self.up
     create_table :purchase_documents do |t|
-
+      
       t.timestamps
     end
   end

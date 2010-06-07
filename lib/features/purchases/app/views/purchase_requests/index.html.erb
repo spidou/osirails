@@ -1,0 +1,37 @@
+<h1>Liste des demandes d'achats</h1>
+<div>
+  <table>
+    <thead>
+      <tr>
+          <th rowspan='2'>R&eacute;f&eacute;rence</th>
+          <th rowspan='2'>demandeur</th>
+          <th rowspan='2'>Service</th>
+          <th rowspan='2'>Date de cr&eacute;eation</th>
+          <th colspan='4'>Status</th>
+          <th rowspan='2'>Actions</th>
+      </tr>
+      <tr>
+          <th>Non trait&eacute;e(s)</th>
+          <th>En cours de traitement(s)</th>
+          <th>Trait&eacute;e(s)</th>
+          <th>Totaux</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for request in @requests %>
+        <tr>
+          <td><%=h request.reference %></td>
+          <td><%=h request.employee.fullname %></td>
+          <td><%=h request.service.name %></td>
+          <td><%=h request.created_at.humanize %></td>
+          <td><%=h request.count_untraited_status %></td>
+          <td><%=h request.count_during_traitment_status %></td>
+          <td><%=h request.count_traited_status %></td>
+          <td><%=h request.purchase_request_supplies.size %></td>
+          <td><%= generate_list_action(request) %> </td>
+        </tr>
+        <% end %>
+    </tbody>
+  </table>
+  <%= will_paginate @requests %>
+</div>

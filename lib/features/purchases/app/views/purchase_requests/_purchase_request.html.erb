@@ -1,0 +1,36 @@
+<div class="presentation_medium">
+  <% form_for(purchase_request, :html => {:multipart => true}) do |f| %>
+    <%= f.error_messages %>
+  
+    <div class="presentation_in_columns">
+      <h2>Informations</h2>
+      <div>
+        
+        <p>
+          <%= f.label :user %>
+          <%= f.form_or_view(f.text_field(:user_id), :user, :employee_name) %>
+        </p>
+        <p>
+          <%= f.label :employee %>
+          <%= f.form_or_view(collection_select(:purchase_request, :employee_id, Employee.find(:all), :id, :fullname), :employee, :fullname)%>  
+        </p>
+        <p>
+          <%= f.label :service %>
+          <%= f.form_or_view(collection_select(:purchase_request, :service_id, Service.find(:all), :id, :name), :service, :name)%>  
+        </p>
+        <p>
+          <%= f.label :reference %>
+          <%= f.form_or_view(f.text_field( :reference), :reference) %>
+        </p>
+      </div>
+    </div>
+    <br>
+    <div class="presentation_in_columns">
+      <h2>Liste des matieres premieres et/ou fournitures</h2>
+      <div>
+         <%= render :partial => 'purchase_request_supplies/purchase_request_supplies',  :locals => { :purchase_request => purchase_request }  %>
+      </div>
+    </div>
+    <%= f.form_buttons %>
+  <% end %><!--end form -->
+</div>
