@@ -10,6 +10,8 @@ class PurchaseRequest < ActiveRecord::Base
   belongs_to :employee
   belongs_to :service
   
+  STATUS_UNTREATED = "untreated"
+  
   named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
   
   #form_for

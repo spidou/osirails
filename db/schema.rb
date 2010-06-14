@@ -922,10 +922,9 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
   create_table "parcels", :force => true do |t|
-    t.string   "conveyance"
     t.string   "reference"
     t.string   "status"
-    t.boolean  "state"
+    t.string   "conveyance"
     t.datetime "previsional_delivary_date"
     t.datetime "shipped_at"
     t.datetime "received_at"
@@ -1112,8 +1111,8 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   create_table "purchase_order_supplies", :force => true do |t|
     t.integer  "purchase_order_id",         :limit => 11
     t.integer  "supply_id",                 :limit => 11
-    t.integer  "cancelled_by",              :limit => 11
     t.integer  "parcel_id",                 :limit => 11
+    t.integer  "cancelled_by",              :limit => 11
     t.integer  "quantity",                  :limit => 11
     t.string   "status"
     t.string   "cancelled_comment"
@@ -1129,12 +1128,12 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   create_table "purchase_orders", :force => true do |t|
     t.integer  "user_id",               :limit => 11
     t.integer  "supplier_id",           :limit => 11
-    t.integer  "cancelled_by",          :limit => 11
     t.integer  "invoice_document_id",   :limit => 11
     t.integer  "delivery_document_id",  :limit => 11
-    t.integer  "quotation_document_id", :limit => 11
     t.integer  "payment_document_id",   :limit => 11
     t.integer  "payment_method_id",     :limit => 11
+    t.integer  "quotation_document_id", :limit => 11
+    t.integer  "cancelled_by",          :limit => 11
     t.string   "reference"
     t.string   "status"
     t.string   "cancelled_comment"
