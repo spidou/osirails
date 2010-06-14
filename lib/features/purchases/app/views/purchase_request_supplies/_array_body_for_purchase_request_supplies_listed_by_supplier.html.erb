@@ -1,0 +1,11 @@
+<tr>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[:reference] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:designation] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:stock_quantity] %>/<%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:threshold] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:fob_unit_price]*((100 + array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:taxes]) /100) %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:total_expected_quantity] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:total_expected_quantity]*(array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:fob_unit_price]*((100 + array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:taxes]) /100)) %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:measure] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:unit_mass] %></td>
+  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:lead_time] %></td>
+</tr>

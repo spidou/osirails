@@ -1,15 +1,17 @@
 class PurchaseRequest < ActiveRecord::Base
   
   #status
-  STATUS_TRAITED = "traité"
-  STATUS_DURING_TRAITMENT = "en cours de traitement"
-  STATUS_UNTRAITED = "non traité"
+  STATUS_TREATED = "traité"
+  STATUS_DURING_TREATMENT = "en cours de traitement"
+  STATUS_UNTREATED = "non traité"
   
   #relationships
   has_many :purchase_request_supplies
   belongs_to :user
   belongs_to :employee
   belongs_to :service
+  
+  named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
   
   #form_for
   cattr_accessor :form_labels
@@ -49,11 +51,11 @@ class PurchaseRequest < ActiveRecord::Base
     end
   end
   
-  def count_untraited_status
+  def count_untreated_status
     purchase_request_supplies.reject(&:order_supply_id).size
   end
   
-  def count_during_traitment_status
+  def count_during_treatment_status
     counter = 0
     for supply in self.purchase_request_supplies
       counter += 1 if supply.order_supply_id and  supply.purchase_order_supply.purchase_order.status == PurchaseOrder::STATUS_DRAFT and supply.purchase_order_supply.purchase_order.cancelled_by == nil
@@ -61,16 +63,12 @@ class PurchaseRequest < ActiveRecord::Base
     counter
   end
   
-  def count_traited_status
+  def count_treated_status
     counter = 0
     for supply in self.purchase_request_supplies
       counter += 1 if supply.purchase_order_supply_id and  supply.purchase_order_supply.purchase_order.status != PurchaseOrder::STATUS_DRAFT and supply.purchase_order_supply.purchase_order.cancelled_by == nil 
     end
     counter
-  end
-  
-  def get_status_for_supply
-    
   end
   
 end

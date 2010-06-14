@@ -1,0 +1,5 @@
+<% add_contextual_menu_item :purchase_order do %>
+  <%= display_purchase_order_add_button(@purchase_order) unless is_new_view? %>
+  <%= display_purchase_order_show_button(@purchase_order) unless is_show_view? %>
+  <%= display_purchase_order_edit_button(@purchase_order) unless is_edit_view? %>
+<% end %>

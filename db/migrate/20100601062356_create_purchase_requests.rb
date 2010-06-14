@@ -4,10 +4,12 @@ class CreatePurchaseRequests < ActiveRecord::Migration
       t.integer   :user_id
       t.integer   :employee_id
       t.integer   :service_id
-      t.string    :reference
-      t.datetime  :cancelled_at
-      t.string    :cancelled_comment
       t.integer   :cancelled_by
+
+      t.string    :reference
+      t.string    :cancelled_comment
+      
+      t.datetime  :cancelled_at
       t.timestamps
     end
   end
