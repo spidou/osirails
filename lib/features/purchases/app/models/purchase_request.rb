@@ -10,6 +10,8 @@ class PurchaseRequest < ActiveRecord::Base
   belongs_to :employee
   belongs_to :service
   
+  named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
+  
   #form_for
   cattr_accessor :form_labels
   @@form_labels = Hash.new
@@ -57,7 +59,7 @@ class PurchaseRequest < ActiveRecord::Base
     end
   end
   
-  #a modifier
+  #OPTIMIZE 
   def untreated_purchase_request_supplies
     tab_of_request_supplies = []
     self.purchase_request_supplies.each do |purchase_request_supply|
@@ -86,5 +88,5 @@ class PurchaseRequest < ActiveRecord::Base
     self.cancelled_at = Time.now
     self.save
   end
-  
+
 end

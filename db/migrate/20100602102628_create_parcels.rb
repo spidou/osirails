@@ -1,15 +1,9 @@
 class CreateParcels < ActiveRecord::Migration
   def self.up
-    create_table  :parcels do |t|
-      t.string    :conveyance
-      t.string    :status
+    create_table :parcels do |t|
+      t.string   :reference, :status, :conveyance
+      t.datetime :previsional_delivary_date, :shipped_at, :received_at, :delivery_date
       
-      t.boolean   :state
-
-      t.datetime  :previsional_delivary_date
-      t.datetime  :shipped_at
-      t.datetime  :received_at
-      t.datetime  :delivery_date
       t.timestamps
     end
   end

@@ -923,6 +923,7 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
 
   create_table "parcels", :force => true do |t|
     t.string   "conveyance"
+    t.string   "reference"
     t.string   "status"
     t.boolean  "state"
     t.datetime "previsional_delivary_date"
