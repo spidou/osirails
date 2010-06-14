@@ -1,0 +1,13 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "rh/employee_summary.css" %>
+<% end %>
+
+<%= generate_contextual_menu_partial %>
+<h1>Annulation de la demande d'achat</h1>
+<div>
+    <% form_for @purchase_request, :url => { :action => "cancel" } do |f| %>
+      <%= f.error_messages %>
+      Veuillez saisir la raison de votre annulation:<br> <%= f.text_area_autoresize :cancelled_comment %><br />
+      <%= f.form_buttons %>
+    <% end %>
+</div>

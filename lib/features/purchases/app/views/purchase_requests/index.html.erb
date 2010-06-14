@@ -1,3 +1,5 @@
+<% generate_contextual_menu_partial %>
+
 <h1>Liste des demandes d'achats</h1>
 <div>
   <table>
@@ -19,14 +21,14 @@
     </thead>
     <tbody>
       <% for request in @requests %>
-        <tr>
+        <tr <%= "class='disabled'" if request.cancelled_by%>>
           <td><%=h request.reference %></td>
           <td><%=h request.employee.fullname %></td>
           <td><%=h request.service.name %></td>
           <td><%=h request.created_at.humanize %></td>
-          <td><%=h request.count_untraited_status %></td>
-          <td><%=h request.count_during_traitment_status %></td>
-          <td><%=h request.count_traited_status %></td>
+          <td><%=h request.untreated_purchase_request_supplies.size %></td>
+          <td><%=h request.during_treatment_purchase_request_supplies.size %></td>
+          <td><%=h request.treated_purchase_request_supplies.size %></td>
           <td><%=h request.purchase_request_supplies.size %></td>
           <td><%= generate_list_action(request) %> </td>
         </tr>

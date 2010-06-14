@@ -1,7 +1,56 @@
 <% require_locals purchase_request %>
-<% owner_type = purchase_request.class.name.downcase %>
+<% owner_type = purchase_request.class.singularized_table_name  %>
 
-<% fields_for "#{owner_type}[establishment_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do %>
-  <p id="purchase_request_supply_<%= purchase_request_supplies.id %>">
-  </p>
+<% fields_for "#{owner_type}[purchase_request_supply_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do |f|%>
+  <tr <% if f.form_view? %>
+        <%="class='purchase_request_supply resource'"  %> 
+      <% elsif purchase_request_supply.cancelled? %>
+        <%="class=disabled" %>
+      <% end %> >
+    <td>
+    <% if f.form_view? %>
+        <%= f.form_or_view(f.collection_select(:supply_id, Supply.find(:all), :id, :name), :supply, :name)%>  
+      <% else %>
+        <%= purchase_request_supply.supply.name %>
+    <% end %>
+      
+    </td>
+    <td>
+      <% if f.form_view? %>
+        <%= f.text_field(:expected_delivery_date) %>
+      <% else %>
+        <%= purchase_request_supply.expected_delivery_date.humanize %>
+      <% end %>
+    </td>
+    <td>
+      <% if f.form_view? %>
+        <%= f.text_field(:expected_quantity) %>
+      <% else %>
+        <%= purchase_request_supply.expected_quantity %>
+      <% end %>
+    </td>
+    <td>
+      <% if f.form_view? %>
+         <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %>
+      <% else %>
+        <%= purchase_request_supply.check_status %>
+      <% end %>
+    </td>
+    <% unless f.form_view? %>
+      <td>comming soon</td>
+      <td>
+      <% unless purchase_request_supply.cancelled? %>
+        
+          <%= link_to( image_tag( "cancel_16x16.png",
+                        :alt => text = "Annuler cette fourniture",
+                        :title => text ),
+              purchase_request_cancel_supply_path(purchase_request_supply.purchase_request_id, purchase_request_supply.id),
+             :confirm => "Êtes-vous sûr ?" )%>
+        
+        <%else%>
+         &nbsp;
+      <% end %>
+      </td>
+    <% end %>
+  </tr>
 <% end  %>

@@ -1,12 +1,11 @@
 class PurchaseRequest < ActiveRecord::Base
   
-  #status
-  STATUS_TRAITED = "traité"
-  STATUS_DURING_TRAITMENT = "en cours de traitement"
-  STATUS_UNTRAITED = "non traité"
+  has_reference :prefix => :purchases
+  has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
   #relationships
   has_many :purchase_request_supplies
+  belongs_to :canceller, :class_name => "User", :foreign_key => 'cancelled_by'
   belongs_to :user
   belongs_to :employee
   belongs_to :service
@@ -18,20 +17,29 @@ class PurchaseRequest < ActiveRecord::Base
   @@form_labels[:employee]               = "Demandeur :"
   @@form_labels[:user]                   = "Créateur de la demande :"
   @@form_labels[:reference]              = "Référence :"
-  
+  @@form_labels[:statut]                 = "Status :"
+    
   # for pagination : number of instances by index page
   REQUESTS_PER_PAGE = 15
   
   #validations
-  validates_presence_of :user_id, :employee_id, :service_id
+  validates_presence_of :user_id, :employee_id, :service_id, :reference
+  validates_length_of :purchase_request_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   validates_associated  :purchase_request_supplies
   
-  #callbacks
+  validates_presence_of :cancelled_by, :cancelled_comment, :if => :cancelled_at
   
+  #callbacks
+  before_validation_on_create :update_reference
   after_save  :save_purchase_request_supplies
   
   
   #method
+  
+  def cancelled?
+    self.cancelled_at ? true : false
+  end
+  
   def save_purchase_request_supplies
     purchase_request_supplies.each do |e|
         e.save(false)
@@ -49,28 +57,34 @@ class PurchaseRequest < ActiveRecord::Base
     end
   end
   
-  def count_untraited_status
-    purchase_request_supplies.reject(&:order_supply_id).size
-  end
-  
-  def count_during_traitment_status
-    counter = 0
-    for supply in self.purchase_request_supplies
-      counter += 1 if supply.order_supply_id and  supply.purchase_order_supply.purchase_order.status == PurchaseOrder::STATUS_DRAFT and supply.purchase_order_supply.purchase_order.cancelled_by == nil
+  #a modifier
+  def untreated_purchase_request_supplies
+    tab_of_request_supplies = []
+    self.purchase_request_supplies.each do |purchase_request_supply|
+      tab_of_request_supplies <<  purchase_request_supply if purchase_request_supply.untreated?
     end
-    counter
+    tab_of_request_supplies
   end
   
-  def count_traited_status
-    counter = 0
-    for supply in self.purchase_request_supplies
-      counter += 1 if supply.purchase_order_supply_id and  supply.purchase_order_supply.purchase_order.status != PurchaseOrder::STATUS_DRAFT and supply.purchase_order_supply.purchase_order.cancelled_by == nil 
+  def during_treatment_purchase_request_supplies
+    tab_of_request_supplies = []
+    self.purchase_request_supplies.each do |purchase_request_supply|
+      tab_of_request_supplies <<  purchase_request_supply if purchase_request_supply.during_treatment?
     end
-    counter
+    tab_of_request_supplies
   end
   
-  def get_status_for_supply
-    
+  def treated_purchase_request_supplies
+    tab_of_request_supplies = []
+    self.purchase_request_supplies.each do |purchase_request_supply|
+      tab_of_request_supplies <<  purchase_request_supply if purchase_request_supply.treated?
+    end
+    tab_of_request_supplies
+  end
+  
+  def cancel
+    self.cancelled_at = Time.now
+    self.save
   end
   
 end

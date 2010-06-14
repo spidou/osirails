@@ -22,3 +22,7 @@ menus:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"
         position: 2
+configurations:
+  purchase_request_reference_pattern:
+    description: "Modèle permettant la génération du numéro de référence unique pour une demande d'achat"
+    value: "%y%m$number(3)"

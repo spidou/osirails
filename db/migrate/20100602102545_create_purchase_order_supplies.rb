@@ -3,15 +3,18 @@ class CreatePurchaseOrderSupplies < ActiveRecord::Migration
     create_table  :purchase_order_supplies do |t|
       t.integer   :purchase_order_id
       t.integer   :supply_id
-      t.integer   :quantity
-      t.datetime  :previsional_delivery_date
-      t.integer   :parcel_id
-      t.datetime  :returned_at
-      t.datetime  :redirected_at
-      t.datetime  :cancelled_at
-      t.string    :cancelled_comment
       t.integer   :cancelled_by
+      t.integer   :parcel_id
+
+      t.integer   :quantity
       t.string    :status
+      t.string    :cancelled_comment
+
+      t.datetime  :previsional_delivery_date
+      t.datetime  :returned_at
+      t.datetime  :forwarded_at
+      t.datetime  :reimboursed_at
+      t.datetime  :cancelled_at
       t.timestamps
     end
   end

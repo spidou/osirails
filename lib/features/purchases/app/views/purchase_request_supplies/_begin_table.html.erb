@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th rowspan=2 >Designation</th>
+      <th rowspan=2 >Date de livraison souhait&eacute;e</th>
+      <th rowspan=2 >Quantit&eacute;e attendue</th>
+      <% if is_form_view? %>
+      <th>Action</th>
+      <% else %>
+      <th colspan="2">Status</th>
+      <th rowspan=2>Action</th>
+      <% end %>
+    </tr>
+     <% unless is_form_view? %>
+      <tr>
+        <th>de la demande</th>
+        <th>de l'ordre associ&eacute;e</th>
+      </tr>
+      <% end %>
+  </thead>
+  <tbody id="purchase_request_supply_form">

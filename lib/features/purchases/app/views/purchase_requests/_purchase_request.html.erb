@@ -1,31 +1,48 @@
 <div class="presentation_medium">
   <% form_for(purchase_request, :html => {:multipart => true}) do |f| %>
     <%= f.error_messages %>
-  
+   
     <div class="presentation_in_columns">
       <h2>Informations</h2>
-      <div>
-        
-        <p>
-          <%= f.label :user %>
-          <%= f.form_or_view(f.text_field(:user_id), :user, :employee_name) %>
-        </p>
+      <div> 
+        <% unless f.form_view? %>
+          <p>
+            <%= f.label :user %>
+            <%= f.form_or_view(f.text_field(:user_id), :user, :employee_name) %>
+          </p>
+        <% end %>
         <p>
           <%= f.label :employee %>
           <%= f.form_or_view(collection_select(:purchase_request, :employee_id, Employee.find(:all), :id, :fullname), :employee, :fullname)%>  
         </p>
+      </div>
+      <div>
+        <% unless f.form_view? %>
+          <p>
+            <%= f.label :reference %>
+            <%= f.form_or_view(f.text_field(:reference), :reference) %>
+          </p>
+        <% end %>
         <p>
           <%= f.label :service %>
           <%= f.form_or_view(collection_select(:purchase_request, :service_id, Service.find(:all), :id, :name), :service, :name)%>  
         </p>
-        <p>
-          <%= f.label :reference %>
-          <%= f.form_or_view(f.text_field( :reference), :reference) %>
-        </p>
       </div>
+        <% unless f.form_view? %>
+          <p>
+          <%= f.label :statut %>
+          <strong>
+            <%="#{purchase_request.treated_purchase_request_supplies.size}/#{purchase_request.purchase_request_supplies.size} traitée(s)"%>
+          </strong>
+          <% if purchase_request.cancelled_by %>
+            (Cette demande d'achat a &eacute;t&eacute; annul&eacute;e par <strong><%= purchase_request.canceller.employee_name%></strong> le <strong><%= purchase_request.cancelled_at.humanize%> </strong> pour le motif suivant: <strong><%= purchase_request.cancelled_comment%></strong>)
+          <% end %>
+       </p>
+       <% end %>
+    <br>      
     </div>
     <br>
-    <div class="presentation_in_columns">
+    <div>
       <h2>Liste des matieres premieres et/ou fournitures</h2>
       <div>
          <%= render :partial => 'purchase_request_supplies/purchase_request_supplies',  :locals => { :purchase_request => purchase_request }  %>
