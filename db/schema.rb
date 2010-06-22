@@ -925,9 +925,10 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
     t.string   "reference"
     t.string   "status"
     t.string   "conveyance"
-    t.datetime "previsional_delivary_date"
+    t.datetime "previsional_delivery_date"
     t.datetime "shipped_at"
     t.datetime "received_at"
+    t.datetime "recovered_at"
     t.datetime "delivery_date"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1109,16 +1110,16 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   end
 
   create_table "purchase_order_supplies", :force => true do |t|
-    t.integer  "purchase_order_id",         :limit => 11
-    t.integer  "supply_id",                 :limit => 11
-    t.integer  "parcel_id",                 :limit => 11
-    t.integer  "cancelled_by",              :limit => 11
-    t.integer  "quantity",                  :limit => 11
+    t.integer  "purchase_order_id",    :limit => 11
+    t.integer  "supply_id",            :limit => 11
+    t.integer  "parcel_id",            :limit => 11
+    t.integer  "cancelled_by",         :limit => 11
+    t.integer  "quantity",             :limit => 11
     t.string   "status"
     t.string   "cancelled_comment"
-    t.datetime "previsional_delivery_date"
-    t.datetime "returned_at"
-    t.datetime "forwarded_at"
+    t.datetime "wanted_delivery_date"
+    t.datetime "sent_back_at"
+    t.datetime "reshipped_at"
     t.datetime "reimboursed_at"
     t.datetime "cancelled_at"
     t.datetime "created_at"
@@ -1138,6 +1139,7 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
     t.string   "status"
     t.string   "cancelled_comment"
     t.boolean  "paid"
+    t.boolean  "direct"
     t.datetime "confirmed_at"
     t.datetime "processing_since"
     t.datetime "completed_at"

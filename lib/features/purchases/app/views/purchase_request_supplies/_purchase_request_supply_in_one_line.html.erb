@@ -9,9 +9,9 @@
       <% end %> >
     <td>
     <% if f.form_view? %>
-        <%= f.form_or_view(f.collection_select(:supply_id, Supply.find(:all), :id, :name), :supply, :name)%>  
+        <%= f.form_or_view(f.collection_select(:supply_id, Supply.find(:all), :id, :designation), :supply, :designation)%>  
       <% else %>
-        <%= purchase_request_supply.supply.name %>
+        <%= purchase_request_supply.supply.designation %>
     <% end %>
       
     </td>
@@ -33,7 +33,7 @@
       <% if f.form_view? %>
          <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %>
       <% else %>
-        <%= purchase_request_supply.check_status %>
+        <%= purchase_request_supply.check_request_supply_status %>
       <% end %>
     </td>
     <% unless f.form_view? %>

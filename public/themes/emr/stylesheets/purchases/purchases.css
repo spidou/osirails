@@ -1,0 +1,8 @@
+table tbody td.warning{
+  color:red;
+}
+
+table tfoot tr.footer{
+  border-top: 1px solid #CCCCCC;
+  font-weight: bold;
+}

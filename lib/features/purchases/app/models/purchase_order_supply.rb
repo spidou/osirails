@@ -10,20 +10,20 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   STATUS_UNTREATED = nil
   STATUS_PROCESSING = "processing"
-  STATUS_RETURNED = "returned"
-  STATUS_FORWARDED = "forwarded"
-  STATUS_REIMBURSED = "reimboursed"
+  STATUS_SENT_BACK = "sent_back"
+  STATUS_RESHIPPED = "reshipped"
+  STATUS_REIMBURSED = "reimbursed"
   STATUS_CANCELLED = "cancelled"
   
-  validates_presence_of :supply_id, :quantity, :previsional_delivary_date
+  validates_presence_of :supply_id, :quantity, :previsional_delivery_date
   validates_presence_of :cancelled_by, :if => :was_cancelled?
   
-  validates_inclusion_of :status, :in => [ STATUS_UNTREATED, STATUS_PROCESSING, STATUS_RETURNED, STATUS_FORWARDED, STATUS_REIMBURSED, STATUS_CANCELLED ]
+  validates_inclusion_of :status, :in => [ STATUS_UNTREATED, STATUS_PROCESSING, STATUS_SENT_BACK, STATUS_RESHIPPED, STATUS_REIMBURSED, STATUS_CANCELLED ]
   validates_inclusion_of :status, :in => [ STATUS_UNTREATED, STATUS_PROCESSING, STATUS_CANCELLED ], :if => :was_untreated?
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_CANCELLED, STATUS_RETURNED ], :if => :was_processing?
-  validates_inclusion_of :status, :in => [ STATUS_RETURNED, STATUS_FORWARDED, STATUS_REIMBURSED ], :if => :was_returned?
-  validates_inclusion_of :status, :in => [ STATUS_FORWARDED ], :if => :was_forwarded?
-  validates_inclusion_of :status, :in => [ STATUS_REIMBURSED ], :if => :was_reimboursed?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_CANCELLED, STATUS_SENT_BACK ], :if => :was_processing?
+  validates_inclusion_of :status, :in => [ STATUS_SENT_BACK, STATUS_RESHIPPED, STATUS_REIMBURSED ], :if => :was_sent_back?
+  validates_inclusion_of :status, :in => [ STATUS_RESHIPPED ], :if => :was_reshipped?
+  validates_inclusion_of :status, :in => [ STATUS_REIMBURSED ], :if => :was_reimbursed?
   
   def untreated?
     status == STATUS_UNTREATED
@@ -33,20 +33,24 @@ class PurchaseOrderSupply < ActiveRecord::Base
     status == STATUS_PROCESSING
   end
   
-  def returned?
-    status == STATUS_RETURNED
+  def sent_back?
+    status == STATUS_SENT_BACK
   end
   
-  def forwarded?
-    status == STATUS_FORWARDED
+  def reshipped?
+    status == STATUS_RESHIPPED
   end
   
-  def reimboursed?
+  def reimbursed?
     status == STATUS_REIMBURSED
   end
   
   def cancelled?
     status == STATUS_CANCELLED
+  end
+  
+  def completed?
+    reshipped? or reimbursed? or ( processing? and parcel.received?)
   end
   
   def was_untreated?
@@ -57,15 +61,15 @@ class PurchaseOrderSupply < ActiveRecord::Base
     status_was == STATUS_PROCESSING
   end
   
-  def was_returned?
-    status_was == STATUS_RETURNED
+  def was_sent_back?
+    status_was == STATUS_SENT_BACK
   end
   
-  def was_forwarded?
-    status_was == STATUS_FORWARDED
+  def was_reshipped?
+    status_was == STATUS_RESHIPPED
   end
   
-  def was_reimboursed?
+  def was_reimbursed?
     status_was == STATUS_REIMBURSED
   end
   
@@ -77,20 +81,24 @@ class PurchaseOrderSupply < ActiveRecord::Base
     was_untreated?
   end
   
-  def can_be_returned?
+  def can_be_sent_back?
     was_processing?
   end
   
-  def can_be_forwarded?
-    was_returned?
+  def can_be_reshipped?
+    was_sent_back?
   end
   
-  def can_be_reimboursed?
-    was_returned?
+  def can_be_reimbursed?
+    was_sent_back?
   end
   
   def can_be_cancelled?
-    was_untreated? or was_processing?
+    (was_untreated? and !purchase_order.was_draft?) or was_processing?
+  end
+  
+  def can_be_deleted?
+    new_record? or purchase_order.was_draft?
   end
   
   def treat
@@ -102,30 +110,30 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
   end
   
-  def return
-    if can_be_returned?
-      self.status = STATUS_RETURNED
-      self.returned_at = Time.now
+  def send_back
+    if can_be_sent_back?
+      self.status = STATUS_SENT_BACK
+      self.sent_back_at = Time.now
       self.save
     else
       false
     end
   end
   
-  def redirect
-    if can_be_forwarded?
-      self.status = STATUS_FORWARDED
-      self.forwarded_at = Time.now
+  def reship
+    if can_be_reshipped?
+      self.status = STATUS_RESHIPPED
+      self.reshipped_at = Time.now
       self.save
     else
       false
     end
   end
   
-  def reimbourse
-    if can_be_reimboursed?
+  def reimburse
+    if can_be_reimbursed?
       self.status = STATUS_REIMBURSED
-      self.reimboursed_at = Time.now
+      self.reimbursed_at = Time.now
       self.save
     else
       false

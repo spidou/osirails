@@ -1,11 +1,15 @@
+<% purchase_request_supply = array_body_for_purchase_request_supplies_listed_by_supplier %>
+<% purchase_request_supply_supplier = purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier]) %>
 <tr>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[:reference] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:designation] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:stock_quantity] %>/<%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:threshold] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:fob_unit_price]*((100 + array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:taxes]) /100) %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:total_expected_quantity] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:total_expected_quantity]*(array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:fob_unit_price]*((100 + array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:taxes]) /100)) %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:measure] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:unit_mass] %></td>
-  <td><%= array_body_for_purchase_request_supplies_listed_by_supplier[array_body_for_purchase_request_supplies_listed_by_supplier_counter][:lead_time] %></td>
+  <td <%= "class=\"warning\"" if purchase_request_supply.expected_delivery_date < Date.today %> ><%= purchase_request_supply.expected_delivery_date.humanize %></td>
+  <td><%= purchase_request_supply.supply.reference %></td>
+  <td><%= purchase_request_supply.supply.designation %></td>
+  <td><%= "#{purchase_request_supply.supply.measure.to_f.to_s(2)}&#160;m²" if purchase_request_supply.supply.measure %></td>
+  <td><%= "#{purchase_request_supply.supply.unit_mass.to_f.to_s(2)}&#160;kg" if purchase_request_supply.supply.unit_mass %></td>
+  <td <%= "class=\"warning\"" if purchase_request_supply.supply.stock_quantity < purchase_request_supply.supply.threshold %> ><%=  purchase_request_supply.supply.stock_quantity %>/<%= purchase_request_supply.supply.threshold.to_i %></td>
+  <td><%= (purchase_request_supply_supplier.fob_unit_price * ((100 + purchase_request_supply_supplier.taxes ) / 100)).to_f.to_s(2) %>&#160;&euro;</td>
+  <td><%= purchase_request_supply.expected_quantity %></td>
+  <td><%= ((purchase_request_supply_supplier.fob_unit_price * ((100 + purchase_request_supply_supplier.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
+  <td><%= "#{purchase_request_supply_supplier.lead_time}&#160;jour(s)" if purchase_request_supply_supplier.lead_time %></td>
+  <%= "<td rowspan=#{supplier.merge_purchase_request_supplies.count}>" + display_choose_supplier_button(supplier) + "</td>" if array_body_for_purchase_request_supplies_listed_by_supplier_counter == 1 %>
 </tr>

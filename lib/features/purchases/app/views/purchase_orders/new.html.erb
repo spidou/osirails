@@ -1,19 +1,34 @@
- <h1>Nouvel ordre d'achats</h1>
-<% if !params['choice'] or params['choice'] != ("1" || "2") %>
-  <h2>Créer un ordre d'achats depuis une liste vide.</h2>
-  <div>
-    <%= link_to "Nouveau", new_purchase_order_path(:choice => 1) %><br />
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<%= generate_purchase_order_contextual_menu_partial %>
+
+<h1>Nouvel ordre d'achats</h1>
+<div class="presentation_medium">
+
+<% if params['choice'] %>
+  
+  <h2>Créer un ordre d'achats depuis un formulaire vide.</h2>
+  <div class="presentation_in_columns">
+    <p><%= link_to "Nouveau", new_purchase_order_path %></p>
   </div>
 
   <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
-  <div>
-    <% for supplier in @suppliers %>
-      <%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :locals => { :supplier => supplier }  %>
+  <div class="presentation_in_columns">
+    <% if @suppliers.empty? %>
+      <p>Il n'y a aucune demande en attente pour le moment.</p>
+    <% else %>
+      <p><%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :collection => @suppliers  %></p>
     <% end %>
   </div>
-<% elsif params['choice'] == "1" %>
-  <div>Choix 1</div>
-<% elsif params['choice'] == "2" %>
-  <div>
-  </div>
+  
+<% elsif params['supplier'] %>
+
+  <div class="presentation_in_columns">Fournisseur <%= params['supplier'] %></div>
+  
 <% end %>
+
+<%= will_paginate @suppliers %>
+
+</div>

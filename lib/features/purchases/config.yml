@@ -7,7 +7,7 @@ dependencies:
   rh:
     - 0.1
   thirds:
-    - 0.1    
+    - 0.1
 menus:
   purchases:
     title: Achats
@@ -18,6 +18,13 @@ menus:
         title: "Gestion des ordres d'achats"
         description: "Permet la gestion des ordres d'achats"
         position: 1
+        children:
+          pending_purchase_orders:
+            title: "Liste des ordres d'achats non fermés"
+            position: 1
+          closed_purchase_orders:
+            title: "Liste des ordres d'achats fermés"
+            position: 2
       purchase_requests:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"
