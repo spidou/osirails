@@ -1,0 +1,33 @@
+<%= generate_pending_purchase_order_contextual_menu_partial %>
+
+<h1>Liste des ordres d'achats</h1>
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th rowspan = "2">R&eacute;f&eacute;rence</th>
+        <th rowspan = "2">Date de cr&eacute;ation</th>
+        <th colspan = "2">Statut de l'ordre d'achats</th>
+        <th rowspan = "2">Achat</th>
+        <th rowspan = "2">Fournisseur</th>
+        <th colspan = "4">Colis</th>
+        <th rowspan = "2">Demandes associ&eacute;es</th>
+        <th rowspan = "2">Prix total</th>
+        <th rowspan = "2">Pay&eacute;</th>
+        <th rowspan = "2">D&eacute;lai de livraison &eacute;stim&eacute;</th>
+        <th rowspan = "2">Action</th>
+      </tr>
+      <tr>
+        <th>Etat</th>
+        <th>Depuis le</th>
+        <th>R&eacute;f&eacute;rence</th>
+        <th>Statut</th>
+        <th>Depuis le</th>
+        <th>Livraison prévue le</th>
+      <tr>
+    </thead>
+    <tbody>
+        <%= render :partial => "pending_purchase_order_in_one_line", :collection => @pending_purchase_orders  %>
+    </tbody>
+  </table>
+</div>

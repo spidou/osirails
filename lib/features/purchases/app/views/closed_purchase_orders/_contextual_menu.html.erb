@@ -1,0 +1,6 @@
+<% add_contextual_menu_item :useful_links do %>
+  <%= pending_purchase_orders_link(:link_text => "Voir les ordres d'achats en attente") %>
+  <%= closed_purchase_orders_link(:link_text => "Voir les ordres d'achats fermés") unless is_index_view? and params['filter'] != PurchaseOrder::STATUS_CANCELLED %>
+  <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats annulés", :title => list_text) + " " + list_text, 
+  :controller => "closed_purchase_orders", "action" => 'index', :filter => PurchaseOrder::STATUS_CANCELLED ) unless is_index_view? and params['filter'] %>
+<% end %>

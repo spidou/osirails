@@ -6,8 +6,13 @@
   </div>
 
   <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
-  <div>
-  
+  <div class="presentation_in_columns">
+    <% if @suppliers.empty? %>
+      <p>Il n'y a aucune demande en attente pour le moment.</p>
+    <% else %>
+      <p><%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :collection => @suppliers  %></p>
+      <%= will_paginate @suppliers %>
+    <% end %>
   </div>
 <% elsif params['choice'] == "1" && !params['supplier_id']%>
   <%= render :partial => @purchase_order%>  

@@ -1,5 +1,10 @@
 <% add_contextual_menu_item :purchase_order do %>
   <%= display_purchase_order_add_button(@purchase_order) unless is_new_view? %>
-  <%= display_purchase_order_show_button(@purchase_order) unless is_show_view? %>
-  <%= display_purchase_order_edit_button(@purchase_order) unless is_edit_view? %>
+  <%= display_purchase_order_show_button(@purchase_order) if is_edit_view? %>
+  <%= display_purchase_order_edit_button(@purchase_order) if is_show_view? %>
+  <%= display_purchase_order_delete_button(@purchase_order) if is_show_view? or is_edit_view? %>
+<% end %>
+
+<% add_contextual_menu_item :useful_links do %>
+  <%= purchase_orders_link(:link_text => "Voir tous les ordres d'achats") unless is_index_view? %>
 <% end %>

@@ -31,9 +31,9 @@ module PurchaseRequestsHelper
   def display_purchase_request_supplies_list(purchase_request)
     purchase_request_supplies = purchase_request.purchase_request_supplies
     html = "<div id=\"supplies\" class=\"resources\">"
-    html << render (:partial => 'purchase_request_supplies/begin_table')
-    html << render (:partial => 'purchase_request_supplies/purchase_request_supply_in_one_line', :collection => purchase_request_supplies, :locals => { :purchase_request => purchase_request })
-    html << render (:partial => 'purchase_request_supplies/end_table')
+    html << render(:partial => 'purchase_request_supplies/begin_table')
+    html << render(:partial => 'purchase_request_supplies/purchase_request_supply_in_one_line', :collection => purchase_request_supplies, :locals => { :purchase_request => purchase_request })
+    html << render(:partial => 'purchase_request_supplies/end_table')
     html << display_request_supply_add_button(purchase_request)
     html << "</div>"
   end

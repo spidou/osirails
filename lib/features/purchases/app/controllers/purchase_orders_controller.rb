@@ -1,7 +1,7 @@
 class PurchaseOrdersController < ApplicationController
   
   def index
-    @purchase_orders = PurchaseOrder.all
+    redirect_to pending_purchase_orders_path
   end
   
   def prepare_for_new
@@ -9,8 +9,10 @@ class PurchaseOrdersController < ApplicationController
     if params[:supplier_id]
       redirect_to :action => :new, :supplier_id => params[:supplier_id]
     end
-    @purchase_requests = PurchaseRequest.all unless params[:choice] or params[:supplier_id]  
-    @suppliers = PurchaseRequestSupply.get_all_suppliers_for_all_purchase_request_supplies unless params[:choice] or params[:supplier_id]
+    unless params[:choice] or params[:supplier_id] 
+      @purchase_requests = PurchaseRequest.all
+      @suppliers = PurchaseRequestSupply.get_all_suppliers_for_all_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
+    end
   end
   
   def new
@@ -69,5 +71,23 @@ class PurchaseOrdersController < ApplicationController
                                                  :object  => @purchase_order_supply,
                                                  :locals => {:supplier => @supplier}
   end
-   
+  
+  def show
+    @purchase_order = PurchaseOrder.find(params[:id])
+  end
+  
+  def cancel
+    
+  end
+  
+  def destroy
+    if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
+      unless @purchase_order.destroy
+        flash[:notice] = 'Une erreur est survenue à la suppression de l\'ordre d\'achats;'
+      end
+      redirect_to purchase_orders_path
+    else
+      error_access_page(412)
+    end
+  end
 end

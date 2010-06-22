@@ -3,7 +3,6 @@ class PurchaseRequest < ActiveRecord::Base
   has_reference :prefix => :purchases
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
-  #relationships
   has_many :purchase_request_supplies
   belongs_to :canceller, :class_name => "User", :foreign_key => 'cancelled_by'
   belongs_to :user
@@ -16,7 +15,6 @@ class PurchaseRequest < ActiveRecord::Base
   
   named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
   
-  #form_for
   cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:service]                = "Service concerné :"
@@ -25,27 +23,22 @@ class PurchaseRequest < ActiveRecord::Base
   @@form_labels[:reference]              = "Référence :"
   @@form_labels[:statut]                 = "Status :"
     
-  # for pagination : number of instances by index page
   REQUESTS_PER_PAGE = 15
   
-  #validations
   validates_presence_of :user_id, :employee_id, :service_id, :reference
   validates_length_of :purchase_request_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   validates_associated  :purchase_request_supplies
   
   validates_presence_of :cancelled_by, :cancelled_comment, :if => :cancelled_at
   validates_persistence_of :cancelled_by, :cancelled_comment, :cancelled_at, :if => :cancelled_at_was
-  #callbacks
+
   before_validation_on_create :update_reference
   after_save  :save_purchase_request_supplies
-  
-  
-  #method
-  
+    
   def can_be_cancelled?
     cancelled? ? false : true
   end
-  
+
   def cancelled?
     self.cancelled_at ? true : false
   end
@@ -67,7 +60,6 @@ class PurchaseRequest < ActiveRecord::Base
     end
   end
   
-  #OPTIMIZE 
   def untreated_purchase_request_supplies
     tab_of_request_supplies = []
     self.purchase_request_supplies.each do |purchase_request_supply|

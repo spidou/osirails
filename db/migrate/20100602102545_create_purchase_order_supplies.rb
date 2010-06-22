@@ -6,7 +6,7 @@ class CreatePurchaseOrderSupplies < ActiveRecord::Migration
       t.float       :taxes, :fob_unit_price
       t.string      :status, :supplier_reference, :supplier_designation
       t.text        :cancelled_comment
-      t.datetime    :returned_at, :forwarded_at, :reimboursed_at, :cancelled_at
+      t.datetime    :sent_back_at, :reshipped_at, :reimbursed_at, :cancelled_at
       
       t.timestamps
     end

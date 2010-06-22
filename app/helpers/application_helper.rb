@@ -144,6 +144,10 @@ module ApplicationHelper
     params[:action] == "show"
   end
   
+  def is_index_view?
+    params[:action] == "index"
+  end
+  
   #begin
   #  ## dynamic methods generated with the menus object
   #  #  
