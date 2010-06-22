@@ -12,18 +12,21 @@ class PurchaseOrderSupply < ActiveRecord::Base
   STATUS_PROCESSING = "processing"
   STATUS_RETURNED = "returned"
   STATUS_FORWARDED = "forwarded"
-  STATUS_REIMBURSED = "reimboursed"
+  STATUS_REIMBURSED = "reimbursed"
   STATUS_CANCELLED = "cancelled"
   
-  validates_presence_of :supply_id, :quantity, :previsional_delivary_date
-  validates_presence_of :cancelled_by, :if => :was_cancelled?
+  validates_presence_of :supply_id, :supplier_designation, :supplier_reference, :taxes
+  validates_presence_of :cancelled_by, :if => :cancelled_at
+    
+  validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0
+  validates_numericality_of :taxes, :greater_than_or_equal_to => 0
   
   validates_inclusion_of :status, :in => [ STATUS_UNTREATED, STATUS_PROCESSING, STATUS_RETURNED, STATUS_FORWARDED, STATUS_REIMBURSED, STATUS_CANCELLED ]
   validates_inclusion_of :status, :in => [ STATUS_UNTREATED, STATUS_PROCESSING, STATUS_CANCELLED ], :if => :was_untreated?
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_CANCELLED, STATUS_RETURNED ], :if => :was_processing?
   validates_inclusion_of :status, :in => [ STATUS_RETURNED, STATUS_FORWARDED, STATUS_REIMBURSED ], :if => :was_returned?
   validates_inclusion_of :status, :in => [ STATUS_FORWARDED ], :if => :was_forwarded?
-  validates_inclusion_of :status, :in => [ STATUS_REIMBURSED ], :if => :was_reimboursed?
+  validates_inclusion_of :status, :in => [ STATUS_REIMBURSED ], :if => :was_reimbursed?
   
   def untreated?
     status == STATUS_UNTREATED
@@ -41,7 +44,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     status == STATUS_FORWARDED
   end
   
-  def reimboursed?
+  def reimbursed?
     status == STATUS_REIMBURSED
   end
   
@@ -65,7 +68,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     status_was == STATUS_FORWARDED
   end
   
-  def was_reimboursed?
+  def was_reimbursed?
     status_was == STATUS_REIMBURSED
   end
   
@@ -85,7 +88,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     was_returned?
   end
   
-  def can_be_reimboursed?
+  def can_be_reimbursed?
     was_returned?
   end
   
@@ -123,9 +126,9 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def reimbourse
-    if can_be_reimboursed?
+    if can_be_reimbursed?
       self.status = STATUS_REIMBURSED
-      self.reimboursed_at = Time.now
+      self.reimbursed_at = Time.now
       self.save
     else
       false

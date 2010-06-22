@@ -1,0 +1,18 @@
+<%
+require_locals fields, keywords
+entries = search_supply_reference_auto_complete
+%>
+
+<%
+fields = fields.split(" ")
+items = entries.map do |entry|
+  text = fields.map { |field| entry.send(field) }.join(" - ")
+  #OPTIMIZE return less data to save bandwith, like => { "1" => "reference 1", "2" => "reference 2" }.to_json
+  # and make all the treatment by the client (in javascript)
+  content_tag 'li', content_tag( 'div', keywords ? highlight(text, keywords) : h(text) ) +
+                    content_tag( 'div', h(text),  :style => 'display:none', :class => "supply_reference_value" ) +
+                    content_tag( 'div', entry.id, :style => 'display:none', :class => "supply_reference_id" )
+end
+%>
+
+<%= content_tag('ul', items) %>

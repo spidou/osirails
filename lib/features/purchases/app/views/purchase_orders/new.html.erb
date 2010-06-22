@@ -1,19 +1,7 @@
- <h1>Nouvel ordre d'achats</h1>
-<% if !params['choice'] or params['choice'] != ("1" || "2") %>
-  <h2>Créer un ordre d'achats depuis une liste vide.</h2>
-  <div>
-    <%= link_to "Nouveau", new_purchase_order_path(:choice => 1) %><br />
-  </div>
-
-  <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
-  <div>
-    <% for supplier in @suppliers %>
-      <%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :locals => { :supplier => supplier }  %>
-    <% end %>
-  </div>
-<% elsif params['choice'] == "1" %>
-  <div>Choix 1</div>
-<% elsif params['choice'] == "2" %>
-  <div>
-  </div>
-<% end %>
+<% content_for :header do -%>
+  <%= javascript_include_tag 'purchases/can_add_supply' %>
+<% end -%>
+ <h1>Nouvel ordre d'achat</h1>
+<div>
+   <%= render :partial => "purchase_orders/supplies_by_supplier", :locals => {:supplies => @purchase_order.supplier.supplies, :supplier => @purchase_order.supplier, :purchase_order => @purchase_order} %>
+</div>

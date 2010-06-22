@@ -1,0 +1,17 @@
+<%= hidden_field_tag "choice", :value => 1%>
+<%= hidden_field_tag "supplier_id", supplier.id%>
+<% form_for(purchase_order, :html => {:multipart => true, :choice => 1}) do |f| %>
+    <%= f.error_messages %>
+<div class="presentation_in_columns">
+      <h2>Informations</h2>
+      <%= hidden_field_tag 'add_this_supplier_id', supplier.id %>
+      <%= f.hidden_field :supplier_id, :value => supplier.id%>
+      <div><p>Fournisseur: <strong><%= supplier.name%></strong></p><br></div>
+</div>
+  
+<div>
+      <h2>Listes des matieres premieres et ou consommables</h2>
+      <%= render :partial => 'purchase_order_supplies/purchase_order_supplies',  :locals => { :purchase_order => purchase_order, :supplier => supplier}  %>
+</div>
+  <%= f.form_buttons %>
+<% end %><!--end form -->

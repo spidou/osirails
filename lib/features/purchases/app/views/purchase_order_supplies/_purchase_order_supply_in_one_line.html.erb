@@ -1,0 +1,28 @@
+<% fields_for "purchase_order[purchase_order_supply_attributes][]", purchase_order_supply = purchase_order_supply_in_one_line do |f|%>
+<% supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supply.supply_id, supplier.id) || SupplierSupply.new%>
+<tr class='purchase_order_supply resource'> 
+  <%= f.hidden_field (:supply_id)%>
+  <td style="display:none">
+  <%= hidden_field_tag "total_"+purchase_order_supply.supply_id.to_s, 0%>
+  <%= hidden_field_tag "HPU_TTC_"+purchase_order_supply.supply_id.to_s, 0%></td>
+  
+  <td><%= purchase_order_supply.supply.reference %></td>
+  <td><%= purchase_order_supply.supply.designation %></td>
+  <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
+  
+  <td><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
+  
+  <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign('#{purchase_order_supply.supply_id.to_s}')", :id => "quantity_"+purchase_order_supply.supply_id.to_s )%></td>
+  
+  <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :id => "fob_unit_price_"+purchase_order_supply.supply_id.to_s, :onchange => "refresh_lign('#{purchase_order_supply.supply_id.to_s}')" ) %> </td>
+  
+  <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :id => "taxes_"+purchase_order_supply.supply_id.to_s, :onchange => "refresh_lign('#{purchase_order_supply.supply_id.to_s}')") %></td>
+  
+  <td id=<%= "PU_TTC_#{purchase_order_supply.supply_id.to_s}"%>><%= display_PU_TTC(purchase_order_supply, supplier_supply)%></td>
+  
+  <td id=<%= "sum_#{purchase_order_supply.supply_id.to_s}"%>><%= display_total(purchase_order_supply)%></td>
+  
+  <td>#</td>
+  <td><%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %> <%= purchase_order_supply.errors.full_messages.join(",") %></td>
+</tr>
+<% end  %>

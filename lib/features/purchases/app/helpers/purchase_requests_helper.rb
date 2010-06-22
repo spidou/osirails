@@ -5,7 +5,7 @@ module PurchaseRequestsHelper
   end
   
   def display_purchase_request_cancel_button(request)
-    return "" if request.cancelled_by
+    return "" unless request.can_be_cancelled?
     link_to( image_tag( "cancel_16x16.png",
                         :alt => text = "Annuler cette demande d'achat",
                         :title => text ),

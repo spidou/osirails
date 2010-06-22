@@ -11,6 +11,8 @@ class PurchaseRequest < ActiveRecord::Base
   belongs_to :service
   
   STATUS_UNTREATED = "untreated"
+  STATUS_DURING_TREATMENT = "during treatment"
+  STATUS_TREATED = "treated"
   
   named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
   
@@ -32,13 +34,17 @@ class PurchaseRequest < ActiveRecord::Base
   validates_associated  :purchase_request_supplies
   
   validates_presence_of :cancelled_by, :cancelled_comment, :if => :cancelled_at
-  
+  validates_persistence_of :cancelled_by, :cancelled_comment, :cancelled_at, :if => :cancelled_at_was
   #callbacks
   before_validation_on_create :update_reference
   after_save  :save_purchase_request_supplies
   
   
   #method
+  
+  def can_be_cancelled?
+    cancelled? ? false : true
+  end
   
   def cancelled?
     self.cancelled_at ? true : false

@@ -1,0 +1,26 @@
+<% if !params['supplier_id']%>
+<div>
+  <p>
+    Vous &ecirc;tes sur la page de cr&eacute;ation d'ordre d'achat.<br/>
+    Pour cr&eacute;er un nouvel ordre ordre d'achat, vous devez choisir le fournisseur qui sera associ&eacute; &agrave; cette ordre.
+  </p>
+  <p>Pour cet ordre, avez-vous affaire à un fournisseur connu OU à un nouveau fournisseur ? Si vous ne savez pas, n'hésitez pas à faire une recherche.</p>
+
+  <h2>1. Fournisseur existant</h2>
+  <% form_for @purchase_order, :url => { :action => :new }, :html => { :method => :get } do |form| -%>
+    <div id="purchase_order_search_supplier">
+      <%= hidden_field_tag :supplier_id %>
+      <%= custom_text_field_with_auto_complete(:supplier, :name, { :value => "Chercher un fournisseur dans la base" }, { :update_id => "supplier_id" } ) %>
+      <%= form.submit 'Valider' %>
+    </div>
+  <% end -%>
+
+  <h2>2. Nouveau Fournisseur</h2>
+  <% form_tag new_supplier_path, :method => :get do %>
+  <p>
+    <%= hidden_field_tag :purchase_order, 1 %>
+    <%= submit_tag "Créer un nouveau fournisseur" %>
+  </p>
+  <% end %>
+</div>
+<% end %>

@@ -1,0 +1,24 @@
+   </tbody>
+   <tfoot>
+     <tr class='footer'>
+      <td colspan='10'>
+        <%= hidden_field_tag 'add_this_supply_reference_id' %>
+        <%= custom_text_field_with_auto_complete( :supply, :reference,
+                                                  { :value      => "Cherchez un produit dans la base",
+                                                    :size       => 50,
+                                                    :onkeydown  => "if (event.keyCode == 13) { return false; }"}, 
+                                                  { :update_id  => 'add_this_supply_reference_id',
+                                                    :url => auto_complete_for_supply_reference_path(:supplier_id => supplier.id)}) %>
+        
+        <%= link_to_remote "Ajouter", :update => "purchase_order_supply_form",
+                                      :with => "'supply_id='+$('add_this_supply_reference_id').value+'&supplier_id='+$('supplier_id').value", 
+                                      :url => recup_supply_path,
+                                      :html => { :method => :get },
+                                      :position => "bottom",
+                                      :condition => "can_add_supply()",
+                                      :complete => "$('add_this_supply_reference_id').value = null"   
+                                      %>
+      </td>
+     </tr>
+   </tfoot>
+</table>

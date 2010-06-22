@@ -1109,14 +1109,18 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   end
 
   create_table "purchase_order_supplies", :force => true do |t|
-    t.integer  "purchase_order_id",         :limit => 11
-    t.integer  "supply_id",                 :limit => 11
-    t.integer  "parcel_id",                 :limit => 11
-    t.integer  "cancelled_by",              :limit => 11
-    t.integer  "quantity",                  :limit => 11
+    t.integer  "purchase_order_id",    :limit => 11
+    t.integer  "supply_id",            :limit => 11
+    t.integer  "parcel_id",            :limit => 11
+    t.integer  "cancelled_by",         :limit => 11
+    t.integer  "quantity",             :limit => 11
+    t.float    "taxes"
+    t.float    "fob_unit_price"
     t.string   "status"
     t.string   "cancelled_comment"
-    t.datetime "previsional_delivery_date"
+    t.string   "supplier_reference"
+    t.string   "supplier_designation"
+    t.datetime "wanted_delivery_date"
     t.datetime "returned_at"
     t.datetime "forwarded_at"
     t.datetime "reimboursed_at"
@@ -1355,12 +1359,13 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   end
 
   create_table "supplier_supplies", :force => true do |t|
-    t.integer  "supplier_id",        :limit => 11
-    t.integer  "supply_id",          :limit => 11
+    t.integer  "supplier_id",          :limit => 11
+    t.integer  "supply_id",            :limit => 11
     t.string   "supplier_reference"
-    t.integer  "lead_time",          :limit => 11
-    t.decimal  "fob_unit_price",                   :precision => 65, :scale => 18
-    t.decimal  "taxes",                            :precision => 65, :scale => 18
+    t.string   "supplier_designation"
+    t.integer  "lead_time",            :limit => 11
+    t.decimal  "fob_unit_price",                     :precision => 65, :scale => 18
+    t.decimal  "taxes",                              :precision => 65, :scale => 18
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -3,6 +3,12 @@ class PurchaseRequestSupply < ActiveRecord::Base
   has_many  :request_order_supplies
   has_many  :purchase_order_supplies, :through => :request_order_supplies
   
+  has_one   :confirmed_purchase_order_supply, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status IS NOT NULL' ],  :source => :purchase_order_supply
+  
+  has_many  :draft_purchase_order_supplies, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status IS NULL'],  :source => :purchase_order_supply
+  
+  
+  
   belongs_to :purchase_request
   belongs_to :supply
   belongs_to :canceller, :class_name => "User", :foreign_key => 'cancelled_by'
@@ -15,19 +21,25 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   STATUS_UNTREATED = "untreated"
   
-  named_scope :actives, :conditions => [ 'status = ?', STATUS_UNTREATED ]
+  named_scope :actives, :conditions => [ 'status = ?', PurchaseRequestSupply::STATUS_UNTREATED ]
 
   
-  def check_status
-    #TODO
-    status = 'en cours de traitement'   
+  def check_request_supply_status
+    return PurchaseRequest::STATUS_UNTREATED if self.untreated?  
+    return PurchaseRequest::STATUS_DURING_TREATMENT if self.during_treatment? 
+    return PurchaseRequest::STATUS_TREATED if self.treated? 
+  end
+  
+  def check_order_supply_status
+    
+  end
+  
+  def can_be_cancelled?
+    cancelled? ? false : true
   end
   
   def cancelled?
-    if self.cancelled_at or self.purchase_request.cancelled? 
-      return true
-    end
-    return false 
+   self.cancelled_at || self.purchase_request.cancelled? 
   end
   
   def cancel
@@ -36,21 +48,15 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
   
   def untreated?
-    self.request_order_supplies.empty? ? true : false
+    !self.confirmed_purchase_order_supply && self.draft_purchase_order_supplies.empty?
   end
   
   def during_treatment?
-    self.request_order_supplies.each do |request_order_supply|
-      return false unless request_order_supply.purchase_order.draft?
-    end 
-    self.request_order_supplies.any? ? true : false
+    self.draft_purchase_order_supplies.any? && !self.confirmed_purchase_order_supply
   end
   
   def treated?
-    self.request_order_supplies.each do |request_order_supply|
-      return true if request_order_supply.purchase_order.confirmed?
-    end 
-    return false
+    self.confirmed_purchase_order_supply
   end
 
   def self.get_all_suppliers_for_all_purchase_request_supplies

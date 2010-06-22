@@ -29,28 +29,34 @@ class PurchaseRequestsController < ApplicationController
   
   def cancel_form  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
-  end
-
-  def cancel_supply  
-    @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
-    @purchase_request_supply = PurchaseRequestSupply.find(params[:purchase_request_supply_id])
-    
-    @purchase_request_supply.cancelled_by = current_user.id
-    if @purchase_request_supply.cancel
-      flash[:notice] = "La fourniture a été annuléé avec succès."  
-    end 
-    redirect_to @purchase_request 
+    error_access_page(412) unless @purchase_request.can_be_cancelled?
   end
   
   def cancel  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
-    @purchase_request.cancelled_by = current_user.id
-    @purchase_request.cancelled_comment  = params[:purchase_request][:cancelled_comment]
-    if  @purchase_request.cancel
-      flash[:notice] = "La demande d'achat a été annuléé avec succès."
-      redirect_to @purchase_request
+    if @purchase_request.can_be_cancelled?
+      @purchase_request.cancelled_by = current_user.id
+      @purchase_request.cancelled_comment  = params[:purchase_request][:cancelled_comment]
+      if  @purchase_request.cancel
+        flash[:notice] = "La demande d'achat a été annuléé avec succès."
+        redirect_to @purchase_request
+      else
+        render :action => "cancel_form"   
+      end
     else
-      render :action => "cancel_form"   
+      error_access_page(412)
+    end
+  end
+  
+  def cancel_supply  
+    @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
+    @purchase_request_supply = PurchaseRequestSupply.find(params[:purchase_request_supply_id])
+    if @purchase_request_supply.can_be_cancelled?
+      @purchase_request_supply.cancelled_by = current_user.id
+      flash[:notice] = "La fourniture a été annuléé avec succès." if @purchase_request_supply.cancel 
+      redirect_to @purchase_request 
+    else
+      error_access_page(412)
     end
   end
   
