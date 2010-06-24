@@ -2,7 +2,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
 
   has_many :request_order_supplies
   has_many :purchase_request_supplies, :through => :request_order_supplies
-  
+   
   belongs_to :purchase_order
   belongs_to :parcel
   belongs_to :supply
@@ -153,4 +153,18 @@ class PurchaseOrderSupply < ActiveRecord::Base
       false
     end
   end
+  
+  
+  def unconfirmed_purchase_request_supplies
+    purchase_request_supplies = PurchaseRequestSupply.all(:include => :purchase_request,  :conditions =>['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL',supply_id])
+  end
+  
+  def sort_purchase_request_supplies
+    res = []
+    for purchase_request_supply in unconfirmed_purchase_request_supplies
+      res << purchase_request_supply unless purchase_request_supply.confirmed_purchase_order_supply
+    end
+    res
+  end
+  
 end

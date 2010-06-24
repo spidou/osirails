@@ -1,5 +1,5 @@
 <% purchase_order = pending_purchase_order_in_one_line %>
-<% parcels = purchase_order.parcels %>
+<% parcels = purchase_order.parcels.compact %>
 
 <tr>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.reference %></td>

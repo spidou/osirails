@@ -6,9 +6,7 @@ class PurchaseOrdersController < ApplicationController
   
   def prepare_for_new
    @purchase_order = PurchaseOrder.new
-    if params[:supplier_id]
-      redirect_to :action => :new, :supplier_id => params[:supplier_id]
-    end
+    redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
     unless params[:choice] or params[:supplier_id] 
       @purchase_requests = PurchaseRequest.all
       @suppliers = PurchaseRequestSupply.get_all_suppliers_for_all_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
@@ -18,10 +16,12 @@ class PurchaseOrdersController < ApplicationController
   def new
     if !params[:supplier_id]
       redirect_to :action => :prepare_for_new
-    else
+    else 
       @purchase_order = PurchaseOrder.new
       @supplier = Supplier.find(params[:supplier_id])
       @purchase_order.supplier_id = params[:supplier_id]
+      @list_of_supplies = @supplier.merge_purchase_request_supplies if params[:from_purchase_request]
+      @purchase_order.build_with_purchase_request_supplies(@list_of_supplies) if params[:from_purchase_request] 
     end
   end
   

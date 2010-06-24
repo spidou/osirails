@@ -2,7 +2,11 @@ class PurchaseOrder < ActiveRecord::Base
   
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
+  
   has_many :purchase_order_supplies
+  has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'  
+                                                      
+  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -41,13 +45,33 @@ class PurchaseOrder < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_COMPLETED ], :if => :was_completed?
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
-  validates_associated :purchase_order_supplies
+  validates_associated :purchase_order_supplies, :supplier_supplies
   
-  after_save  :save_purchase_order_supplies
+  before_validation_on_create :build_supplier_supplies
+  after_save  :save_purchase_order_supplies, :save_supplier_supplies
+  
+  def build_supplier_supplies
+    purchase_order_supplies.each do |e|
+        if !SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
+          supplier_supplies.build(:supplier_id => supplier_id,
+                                  :supply_id => e.supply_id,
+                                  :supplier_reference => e.supplier_reference,
+                                  :supplier_designation => e.supplier_designation,
+                                  :fob_unit_price => e.fob_unit_price,
+                                  :taxes => e.taxes)
+        end
+    end
+  end
+  
+  def save_supplier_supplies
+    supplier_supplies.each do |e|
+      e.save(false)
+    end
+  end
    
   def save_purchase_order_supplies
     purchase_order_supplies.each do |e|
-        e.save(false)
+      e.save(false)
     end
   end
   
@@ -185,7 +209,7 @@ class PurchaseOrder < ActiveRecord::Base
   def lead_time
     lead_time = 0
     for purchase_order_supply in purchase_order_supplies
-      supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time
+      supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time || 0
       if lead_time < supplier_supply_lead_time
         lead_time = supplier_supply_lead_time
       end
@@ -203,4 +227,16 @@ class PurchaseOrder < ActiveRecord::Base
     end
     purchase_requests.uniq
   end
+  
+  def build_with_purchase_request_supplies(list_of_supplies)
+    list_of_purchase_request_supplies = []
+    for purchase_request_supply in list_of_supplies
+      list_of_purchase_request_supplies << PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id, 
+      :quantity => purchase_request_supply.expected_quantity,
+      :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes, 
+      :fob_unit_price =>SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
+    end
+    self.purchase_order_supplies = list_of_purchase_request_supplies
+  end
+  
 end
