@@ -18,9 +18,9 @@
   
   <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :id => "taxes_"+purchase_order_supply.supply_id.to_s, :onchange => "refresh_lign('#{purchase_order_supply.supply_id.to_s}')") %></td>
   
-  <td id=<%= "PU_TTC_#{purchase_order_supply.supply_id.to_s}"%>><%= display_PU_TTC(purchase_order_supply, supplier_supply)%></td>
+  <td id=<%= "PU_TTC_#{purchase_order_supply.supply_id.to_s}"%>><%= purchase_order_supply.get_unit_price_including_tax %></td>
   
-  <td id=<%= "sum_#{purchase_order_supply.supply_id.to_s}"%>><%= display_total(purchase_order_supply)%></td>
+  <td id=<%= "sum_#{purchase_order_supply.supply_id.to_s}"%>><%= display_purchase_order_total(purchase_order_supply)%></td>
   
   <td>#</td>
   <td><%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %> <%= purchase_order_supply.errors.full_messages.join(",") %></td>

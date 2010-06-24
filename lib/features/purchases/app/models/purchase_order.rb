@@ -3,6 +3,7 @@ class PurchaseOrder < ActiveRecord::Base
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   
   has_many :purchase_order_supplies
+  has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -20,7 +21,6 @@ class PurchaseOrder < ActiveRecord::Base
   STATUS_COMPLETED = "completed"
   STATUS_CANCELLED = "cancelled"
   
-  #form_for
   cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:supplier]               = "Fournisseur :"
@@ -171,23 +171,29 @@ class PurchaseOrder < ActiveRecord::Base
     parcels.uniq
   end
   
-  def total_price
+  def total_price(cancelled = false)
     total_price = 0
+    total_price_cancelled = 0
     for purchase_order_supply in purchase_order_supplies
+      supplier_supply = purchase_order_supply.get_supplier_supply
       if purchase_order_supply.status != PurchaseOrderSupply::STATUS_CANCELLED
-        supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supply.supply_id, supplier_id)
-        total_price += (purchase_order_supply.quantity * (supplier_supply.fob_unit_price * ((100+supplier_supply.taxes)/100)))
+        total_price += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
+      else
+        total_price_cancelled += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
       end
     end
+    return total_price_cancelled if cancelled
     total_price
   end
   
   def lead_time
     lead_time = 0
     for purchase_order_supply in purchase_order_supplies
-      supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time
-      if lead_time < supplier_supply_lead_time
-        lead_time = supplier_supply_lead_time
+      if purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time
+        supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time || 0
+        if lead_time < supplier_supply_lead_time
+          lead_time = supplier_supply_lead_time
+        end
       end
     end
     lead_time

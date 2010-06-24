@@ -27,6 +27,9 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :purchase_orders do |order|
     order.cancel 'cancel', :controller => 'purchase_orders', :action => 'cancel'
   end
+  
+  map.resources :parcels
+  
   map.pending_purchase_orders 'pending_purchase_orders', :controller => 'pending_purchase_orders', :action => 'index'
   map.closed_purchase_orders 'closed_purchase_orders', :controller => 'closed_purchase_orders', :action => 'index'
   

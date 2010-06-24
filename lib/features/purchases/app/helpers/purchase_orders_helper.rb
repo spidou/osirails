@@ -63,18 +63,7 @@ module PurchaseOrdersHelper
     html << render (:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order })
     html << "</div>"
   end
-  
-  def display_PU_TTC(purchase_order_supply, supplier_supply)
-    if purchase_order_supply.fob_unit_price && purchase_order_supply.taxes
-      html = (purchase_order_supply.fob_unit_price.to_f * ((100 + purchase_order_supply.taxes.to_f) / 100)).to_s
-    else
-      html = (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f) / 100)).to_s
-    end
-  end
-  
-  def display_total(purchase_order_supply)
-    html = purchase_order_supply.quantity.to_f * (purchase_order_supply.fob_unit_price.to_f * ((100 + purchase_order_supply.taxes.to_f) / 100))
-  end
+
   
   def display_longest_lead_time_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
@@ -101,61 +90,48 @@ module PurchaseOrdersHelper
     link_to (image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier))
   end
   
-  def display_purchase_order_status(purchase_order)
+  def display_purchase_order_reference(purchase_order)
+    return "Aucune référence" unless purchase_order.reference
+    purchase_order.reference
+  end
+  
+  def display_purchase_order_supplier(purchase_order)
+    return "" unless purchase_order.supplier.name
+    purchase_order.supplier.name
+  end
+  
+  def display_purchase_order_current_status(purchase_order)
     case purchase_order.status
       when PurchaseOrder::STATUS_DRAFT
-        'Brouillon'
+        "Brouillon"
       when PurchaseOrder::STATUS_CONFIRMED
-        'Confirmé'
+        "Confirmé"
       when PurchaseOrder::STATUS_PROCESSING
-        'En traitement'
+        "En traitement"
       when PurchaseOrder::STATUS_COMPLETED
-        'Complété'
+        "Complété"
       when PurchaseOrder::STATUS_CANCELLED
-        'Annulé'
+        "Annulé"
+      else
+        "Impossible d'afficher le statut correspondant pour l'ordre d'achats"
     end
   end
   
-  def display_purchase_order_status_date(purchase_order)
+  def display_purchase_order_current_status_date(purchase_order)
     case purchase_order.status
       when PurchaseOrder::STATUS_DRAFT
-        purchase_order.created_at.humanize
+        purchase_order.created_at ? purchase_order.created_at.humanize : "Aucune date de création"
       when PurchaseOrder::STATUS_CONFIRMED
-        purchase_order.confirmed_at.humanize
+        purchase_order.confirmed_at ? purchase_order.confirmed_at.humanize : "Aucune date de validation"
       when PurchaseOrder::STATUS_PROCESSING
-        purchase_order.processing_since.humanize
+        purchase_order.processing_since ? purchase_order.processing_since.humanize : "Aucune date de début de traitement"
       when PurchaseOrder::STATUS_COMPLETED
-        purchase_order.completed_at.humanize
+        purchase_order.completed_at ? purchase_order.completed_at.humanize : "Aucune date de fin de traitement"
       when PurchaseOrder::STATUS_CANCELLED
-        purchase_order.cancelled_at.humanize
+        purchase_order.cancelled_at ? purchase_order.cancelled_at.humanize : "Aucune date d'annulation"
+      else
+        "Impossible de trouver le statut correspondant pour l'ordre d'achats"
     end
-  end
-  
-  def display_parcel_status(parcel)
-    case parcel.status
-      when Parcel::STATUS_PROCESSING
-        'En traitement'
-      when Parcel::STATUS_SHIPPED
-        'Envoyé'
-      when Parcel::STATUS_RECEIVED
-        'Reçu'
-    end
-  end
-  
-  def display_parcel_status_date(parcel)
-    case parcel.status 
-      when Parcel::STATUS_PROCESSING
-        parcel.created_at.humanize
-      when Parcel::STATUS_SHIPPED
-        parcel.shipped_at.humanize
-      when Parcel::STATUS_RECEIVED
-        parcel.received_at.humanize
-    end
-  end
-  
-  def display_parcel_previsional_deliveray_date(parcel)
-    return parcel.previsional_delivery_date.humanize unless parcel.previsional_delivery_date == nil
-    "Non définie"
   end
   
   def display_associated_purchase_requests(purchase_order)
@@ -168,17 +144,27 @@ module PurchaseOrdersHelper
     html.compact.join("<br />")
   end
   
-  def display_total_price(purchase_order)
-    purchase_order.total_price.to_f.to_s(2) + "&nbsp;€"
+  def display_purchase_order_total_price(purchase_order, cancelled = false)
+    purchase_order.total_price(cancelled).to_f.to_s(2) + "&nbsp;€"
   end
   
-  def display_paid(purchase_order)
-    return image_tag( "cross_16x16.png", :alt => "Non payé", :title => "Non payé" ) unless purchase_order.paid
-    image_tag( "tick_16x16.png", :alt => "Payé", :title => "Payé" )
+  def display_purchase_order_creator(purchase_order)
+    return "" unless purchase_order.user_id
+    purchase_order.user.employee_name
   end
   
-  def display_lead_time(purchase_order)
-    return "Immédiat" unless purchase_order.lead_time
+  def display_purchase_order_paid(purchase_order, display_pictures = false)
+    if display_pictures
+      return image_tag( "cross_16x16.png", :alt => "Non payé", :title => "Non payé" ) unless purchase_order.paid
+      image_tag( "tick_16x16.png", :alt => "Payé", :title => "Payé" )
+    else
+      return "Non payé" unless purchase_order.paid
+      "Payé"
+    end
+  end
+  
+  def display_purchase_order_lead_time(purchase_order)
+    return "Immédiat" if purchase_order.lead_time == 0
     purchase_order.lead_time.to_s + "&nbsp;jour(s)"
   end
   

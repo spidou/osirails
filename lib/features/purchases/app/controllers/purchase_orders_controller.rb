@@ -1,5 +1,7 @@
 class PurchaseOrdersController < ApplicationController
   
+  helper :purchase_order_supplies
+  
   def index
     redirect_to pending_purchase_orders_path
   end

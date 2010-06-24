@@ -153,4 +153,27 @@ class PurchaseOrderSupply < ActiveRecord::Base
       false
     end
   end
+  
+  def get_supplier_supply
+    return unless purchase_order and supply
+    SupplierSupply.find_by_supplier_id_and_supply_id(purchase_order.supplier, supply)
+  end
+  
+  def get_unit_price_including_tax
+    return 0 unless get_supplier_supply
+    supplier_supply = get_supplier_supply
+    taxes = supplier_supply.taxes
+    if fob_unit_price
+      fob_unit_price
+    else
+      fob_unit_price = supplier_supply.unit_price
+    end
+    (supplier_supply.fob_unit_price * ((100 + taxes)/100))
+  end
+  
+  def get_taxes
+    return taxes if taxes
+    return 0 unless get_supplier_supply
+    get_supplier_supply.taxes
+  end
 end

@@ -1,8 +1,8 @@
 <%= generate_pending_purchase_order_contextual_menu_partial %>
 
-<h1>Liste des ordres d'achats</h1>
+<h1>Liste des ordres d'achats en attente de traitement</h1>
 <div>
-  <table>
+  <table class="no_nth">
     <thead>
       <tr>
         <th rowspan = "2">R&eacute;f&eacute;rence</th>
@@ -26,8 +26,9 @@
         <th>Livraison prévue le</th>
       <tr>
     </thead>
-    <tbody>
+      <tbody>
         <%= render :partial => "pending_purchase_order_in_one_line", :collection => @pending_purchase_orders  %>
-    </tbody>
+        <%= will_paginate @pending_purchase_orders %>
+      </tbody>
   </table>
 </div>
