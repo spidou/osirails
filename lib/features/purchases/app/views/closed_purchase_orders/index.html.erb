@@ -3,6 +3,9 @@
 
 <h1>Liste des ordres d'achats <%= cancelled ? "annulés" : "fermés" %></h1>
 <div>
+  <% if @closed_purchase_orders.empty? %>
+    <p>Aucun ordre d'achats <%= cancelled ? "annulé" : "fermé" %></p>
+  <% else %>
   <table class="no_nth">
     <thead>
       <tr>
@@ -30,4 +33,5 @@
         <%= will_paginate @pending_purchase_orders %>
     </tbody>
   </table>
+  <% end %>
 </div>

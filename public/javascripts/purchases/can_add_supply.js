@@ -9,7 +9,7 @@ function can_add_supply()
   var id_already_chosen = false
   
   purchase_order_items.each(function(item) {
-    item_id = item.down().value
+    item_id = item.down('.hidden_supply_id').value
     if (supply_id == item_id) {
       id_already_chosen = true
       throw $break;
@@ -24,25 +24,29 @@ function can_add_supply()
 }
 
 
-function update_total(id)
+function update_all_total()
 {
-  $('sum_'.concat(id)).innerHTML = $('total_'.concat(id)).value;
+  var res = 0.0;
+  $('purchase_order_supply_form').select('.sum').each(function(item) {
+      res += parseFloat(item.innerHTML || 0);    
+  });
+  $('all_total').innerHTML = res.toFixed(2);
+  $('all_total').value = res.toFixed(2);
 }
 
-function update_unit_price_TTC(id)
-{
-  $('PU_TTC_'.concat(id)).innerHTML = $('HPU_TTC_'.concat(id)).value;
-}
 
-function refresh_lign(id)
+function refresh_lign(parent)
 {
-  var pu_ttc = (parseInt($('taxes_'.concat(id)).value) + 100.0);
-  pu_ttc = (pu_ttc / 100.0);
+  var quantity = parseFloat(parent.down('.quantity').value) || 0.0;
+  var taxes = parseFloat(parent.down('.taxes').value) || 0.0;
+  var unit_price_HT = parseFloat(parent.down('.fob_unit_price').value) || 0.0;
+
+  var taxes_in_purcent = (taxes + 100.0) / 100.0;
+  var unit_price_TTC = unit_price_HT * taxes_in_purcent;
   
-  $('HPU_TTC_'.concat(id)).value = (pu_ttc  * parseInt($('fob_unit_price_'.concat(id)).value)).toFixed(2); 
-  $('total_'.concat(id)).value = ($('quantity_'.concat(id)).value * $('HPU_TTC_'.concat(id)).value).toFixed(2);
-  
-  update_unit_price_TTC(id)
-  update_total(id);
+  var res = quantity * unit_price_TTC;
+  parent.down('.PU_TTC').innerHTML = unit_price_TTC.toFixed(2);
+  parent.down('.sum').innerHTML = res.toFixed(2);
+  update_all_total();
 }
 

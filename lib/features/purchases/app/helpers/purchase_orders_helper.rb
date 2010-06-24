@@ -63,14 +63,15 @@ module PurchaseOrdersHelper
     html << render (:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order })
     html << "</div>"
   end
-
   
   def display_longest_lead_time_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     longest_lead_time = 0
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      if( merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time > longest_lead_time )
-        longest_lead_time = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
+      if merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
+        if( merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time > longest_lead_time )
+          longest_lead_time = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time || 0
+        end
       end
     end
     "#{longest_lead_time}&nbsp;jour(s)</p>"
@@ -87,7 +88,7 @@ module PurchaseOrdersHelper
   end
   
   def display_choose_supplier_button(supplier)
-    link_to (image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier))
+    link_to (image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier, :from_purchase_request => 1))
   end
   
   def display_purchase_order_reference(purchase_order)
@@ -176,4 +177,13 @@ module PurchaseOrdersHelper
     html << display_purchase_order_cancel_button(purchase_order, '')
     html.compact.join("&nbsp;")
   end
+  
+  def display_all_total_price_for_purchase_order_form(purchase_order)
+    result = 0;
+    for purchase_order_supply in purchase_order.purchase_order_supplies
+      result += purchase_order_supply.quantity.to_f * (purchase_order_supply.fob_unit_price.to_f * ((100 + purchase_order_supply.taxes.to_f) / 100))
+    end
+    result.to_f.to_s(2)
+  end
+  
 end

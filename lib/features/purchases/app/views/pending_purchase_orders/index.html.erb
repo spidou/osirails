@@ -1,7 +1,10 @@
 <%= generate_pending_purchase_order_contextual_menu_partial %>
 
-<h1>Liste des ordres d'achats en attente de traitement</h1>
+<h1>Liste des ordres d'achats en attente</h1>
 <div>
+  <% if @pending_purchase_orders.empty? %>
+    <p>Aucun ordre d'achats en attente</p>
+  <% else %>
   <table class="no_nth">
     <thead>
       <tr>
@@ -31,4 +34,5 @@
         <%= will_paginate @pending_purchase_orders %>
       </tbody>
   </table>
+  <% end %>
 </div>
