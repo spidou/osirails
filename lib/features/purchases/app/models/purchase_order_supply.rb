@@ -1,5 +1,7 @@
 class PurchaseOrderSupply < ActiveRecord::Base
-
+  
+  has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
+  
   has_many :request_order_supplies
   has_many :purchase_request_supplies, :through => :request_order_supplies
    
@@ -154,6 +156,28 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
   end
   
+  def get_supplier_supply
+    return unless purchase_order and supply
+    SupplierSupply.find_by_supplier_id_and_supply_id(purchase_order.supplier, supply)
+  end
+  
+  def get_unit_price_including_tax
+    return 0 unless get_supplier_supply
+    supplier_supply = get_supplier_supply
+    taxes = supplier_supply.taxes
+    if fob_unit_price
+      fob_unit_price
+    else
+      fob_unit_price = supplier_supply.unit_price
+    end
+    (supplier_supply.fob_unit_price * ((100 + taxes)/100))
+  end
+  
+  def get_taxes
+    return taxes if taxes
+    return 0 unless get_supplier_supply
+    get_supplier_supply.taxes
+  end
   
   def not_cancelled_purchase_request_supplies
     purchase_request_supplies = PurchaseRequestSupply.all(:include => :purchase_request,  :conditions =>['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL',supply_id])
@@ -166,5 +190,4 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
     res
   end
-  
 end

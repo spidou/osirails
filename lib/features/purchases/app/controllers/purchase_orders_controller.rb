@@ -1,5 +1,7 @@
 class PurchaseOrdersController < ApplicationController
   
+  helper :purchase_order_supplies
+  
   def index
     redirect_to pending_purchase_orders_path
   end
@@ -83,7 +85,7 @@ class PurchaseOrdersController < ApplicationController
   def destroy
     if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
       unless @purchase_order.destroy
-        flash[:notice] = 'Une erreur est survenue à la suppression de l\'ordre d\'achats;'
+        flash[:notice] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
       end
       redirect_to purchase_orders_path
     else

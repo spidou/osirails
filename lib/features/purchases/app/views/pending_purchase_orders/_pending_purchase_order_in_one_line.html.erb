@@ -1,13 +1,13 @@
 <% purchase_order = pending_purchase_order_in_one_line %>
 <% parcels = purchase_order.parcels.compact %>
 
-<tr>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.reference %></td>
+<tr <%= (pending_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_status(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_status_date(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.direct ? "Direct" : "Indirect" %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.name %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supplier(purchase_order) %></td>
 <%=
   if parcels.empty?
     "
@@ -19,17 +19,17 @@
   else
     "
     <td>#{parcels.first.reference}</td>
-    <td>#{display_parcel_status(parcels.first)}</td>
-    <td>#{display_parcel_status_date(parcels.first)}</td>
+    <td>#{display_parcel_current_status(parcels.first)}</td>
+    <td>#{display_parcel_current_status_date(parcels.first)}</td>
     <td>#{display_parcel_previsional_deliveray_date(parcels.first)}</td>
     "
   end
   
 %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_total_price(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_paid(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_lead_time(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_total_price(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_paid(purchase_order, true) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_lead_time(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order)%></td>
 </tr>
 
@@ -38,8 +38,8 @@
     <%= "
     <tr>
       <td>#{parcel.reference}</td>
-      <td>#{display_parcel_status(parcel)}</td>
-      <td>#{display_parcel_status_date(parcel)}</td>
+      <td>#{display_parcel_current_status(parcel)}</td>
+      <td>#{display_parcel_current_status_date(parcel)}</td>
       <td>#{display_parcel_previsional_deliveray_date(parcel)}</td>
     </tr>
     "%>

@@ -2,10 +2,10 @@
 <% parcels = purchase_order.parcels.compact %>
 <% cancelled = params['filter'] == PurchaseOrder::STATUS_CANCELLED %>
 
-<tr>
+<tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.reference %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_status_date(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <% unless cancelled %>
     <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.direct ? "Direct" : "Indirect" %></td>
   <% end %>
@@ -29,8 +29,8 @@
   end
 %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_total_price(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_paid(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_total_price(purchase_order, cancelled) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_paid(purchase_order, true) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order)%></td>
 </tr>
 

@@ -16,9 +16,9 @@
   
   <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
   
-  <td class="PU_TTC" ><%= display_PU_TTC(purchase_order_supply, supplier_supply)%></td>
+  <td class="PU_TTC" ><%= purchase_order_supply.get_unit_price_including_tax %></td>
   
-  <td class="sum" ><%= display_total(purchase_order_supply)%></td>
+  <td class="sum" ><%= display_purchase_order_total(purchase_order_supply) %></td>
   
   <td>
     <% for purchase_request_supply in unconfirmed_purchase_request %>

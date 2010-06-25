@@ -1121,6 +1121,7 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
     t.string   "supplier_reference"
     t.string   "supplier_designation"
     t.text     "cancelled_comment"
+    t.datetime "processing_since"
     t.datetime "sent_back_at"
     t.datetime "reshipped_at"
     t.datetime "reimbursed_at"
