@@ -44,8 +44,19 @@ class PurchaseOrder < ActiveRecord::Base
   
   validates_associated :purchase_order_supplies, :supplier_supplies
   
-  before_validation_on_create :build_supplier_supplies
-  after_save  :save_purchase_order_supplies, :save_supplier_supplies
+  before_validation_on_create :build_supplier_supplies, :build_associed_purchase_request_supplies
+  
+  after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_purchase_request_supplies
+  
+  def build_associed_purchase_request_supplies
+    purchase_order_supplies.each do |e|
+      e.purchase_request_supplies_ids.split(';').each do |s|     
+        if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
+          e.request_order_supplies.build(:purchase_request_supply_id => purchase_request_supply.id) 
+        end
+      end
+    end
+  end
   
   def build_supplier_supplies
     purchase_order_supplies.each do |e|
@@ -57,6 +68,14 @@ class PurchaseOrder < ActiveRecord::Base
                                   :fob_unit_price => e.fob_unit_price,
                                   :taxes => e.taxes)
         end
+    end
+  end
+  
+  def save_purchase_request_supplies
+    purchase_order_supplies.each do |e|
+      e.request_order_supplies.each do |s|
+        s.save(false)
+      end
     end
   end
   
@@ -232,12 +251,15 @@ class PurchaseOrder < ActiveRecord::Base
   def build_with_purchase_request_supplies(list_of_supplies)
     list_of_purchase_request_supplies = []
     for purchase_request_supply in list_of_supplies
-      list_of_purchase_request_supplies << PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id, 
+      tmp = PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id, 
       :quantity => purchase_request_supply.expected_quantity,
       :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes, 
       :fob_unit_price => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
+    tmp.unconfirmed_purchase_request_supplies.each do |e|
+      tmp.request_order_supplies.build(:purchase_request_supply_id => e.id) 
+    end
+    list_of_purchase_request_supplies << tmp
     end
     self.purchase_order_supplies = list_of_purchase_request_supplies
   end
-  
 end

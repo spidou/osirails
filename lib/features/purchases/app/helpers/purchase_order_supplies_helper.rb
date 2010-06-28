@@ -43,13 +43,20 @@ module PurchaseOrderSuppliesHelper
     purchase_order_supply.supply.reference
   end
   
-  def display_unit_price_including_tax(purchase_order_supply, supplier_supply)
+  def display_unit_price_including_tax(purchase_order_supply)
     unit_price = purchase_order_supply.get_unit_price_including_tax
     unit_price.to_f.to_s(2) + "&nbsp;&euro;"
   end
   
-  def display_purchase_order_total(purchase_order_supply)
-    (purchase_order_supply.quantity.to_f * purchase_order_supply.get_unit_price_including_tax).to_f.to_s(2) +"&nbsp;&euro;"
+  
+  def display_purchase_order_supply_total(purchase_order_supply, supplier_id = 0, supply_id = 0)
+    if purchase_order_supply.new_record?
+      supplier_supply = purchase_order_supply.get_supplier_supply(supplier_id, supply_id)
+      purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f)/100))
+    else
+      return 0 unless purchase_order_supply
+      purchase_order_supply.get_purchase_order_supply_total.to_s(2) +"&nbsp;&euro;"
+    end
   end
   
   def display_purchase_order_supply_status(purchase_order_supply)
