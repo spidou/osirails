@@ -1,9 +1,12 @@
 <% purchase_order_supply = purchase_order_supply_in_one_line %>
 <% fields_for "purchase_order[purchase_order_supply_attributes][]", purchase_order_supply do |f|%>
 <% supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supply.supply_id, supplier.id) || SupplierSupply.new%>
-<% purchase_order_supply.purchase_request_supplies = purchase_order_supply.sort_purchase_request_supplies %>
+<% unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_request_supplies %>
 <tr class='purchase_order_supply resource'> 
-  <td style="display:none;"><%= f.hidden_field (:supply_id, :class => 'hidden_supply_id')%>  
+  <td style="display:none;">
+    <%= f.hidden_field (:supply_id, :class => 'hidden_supply_id')%>
+    <%= f.hidden_field (:purchase_request_supplies_ids, :value => purchase_order_supply.get_purchase_request_supplies_ids, :class => 'purchase_request_supplies_ids')%>
+  </td>  
   <td><%= purchase_order_supply.supply.reference %></td>
   <td><%= purchase_order_supply.supply.designation %></td>
   <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
@@ -21,11 +24,23 @@
   <td class="sum" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
   
   <td>
-    <% for purchase_request_supply in purchase_order_supply.purchase_request_supplies %>
-      <%= purchase_request_supply.purchase_request.reference%> 
-      <%= " (" + purchase_request_supply.expected_quantity.to_s + ") <br>" %> 
+    <% for purchase_request_supply in unconfirmed_purchase_request %>
+      <%= link_to purchase_request_supply.purchase_request.reference + "<br>" , purchase_request_path(purchase_request_supply.purchase_request), :popup => true%> 
     <% end %>
   </td>
+  
+  <td>
+    <% for purchase_request_supply in unconfirmed_purchase_request %>
+      <%= purchase_request_supply.expected_quantity.to_s + "<br>" %> 
+    <% end %>
+  </td>
+  
+  <td>
+    <% for purchase_request_supply in unconfirmed_purchase_request %>
+      <%= check_box_tag purchase_request_supply.id, purchase_request_supply.id, purchase_order_supply.boolean_checked(purchase_request_supply), :data_quantity => purchase_request_supply.expected_quantity.to_s, :idx => purchase_order_supply.integer_checked(purchase_request_supply) , :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
+    <% end %>
+  </td>
+  
   <td><%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')){this.up('.resource').remove();
    update_all_total();}") %> <%= purchase_order_supply.errors.full_messages.join(",") %></td>
 </tr>

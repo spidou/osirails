@@ -17,6 +17,8 @@ class PurchaseOrderSupply < ActiveRecord::Base
   STATUS_REIMBURSED = "reimbursed"
   STATUS_CANCELLED = "cancelled"
   
+  attr_accessor :purchase_request_supplies_ids
+  
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference, :taxes
   validates_presence_of :cancelled_by, :if => :cancelled_at
     
@@ -29,6 +31,8 @@ class PurchaseOrderSupply < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_SENT_BACK, STATUS_RESHIPPED, STATUS_REIMBURSED ], :if => :was_sent_back?
   validates_inclusion_of :status, :in => [ STATUS_RESHIPPED ], :if => :was_reshipped?
   validates_inclusion_of :status, :in => [ STATUS_REIMBURSED ], :if => :was_reimbursed?
+  
+  validates_associated :request_order_supplies
   
   def untreated?
     status == STATUS_UNTREATED
@@ -182,15 +186,40 @@ class PurchaseOrderSupply < ActiveRecord::Base
     get_supplier_supply.taxes
   end
   
-  def unconfirmed_purchase_request_supplies
+  def not_cancelled_purchase_request_supplies
     purchase_request_supplies = PurchaseRequestSupply.all(:include => :purchase_request,  :conditions =>['purchase_request_supplies.supply_id = ? AND purchase_request_supplies.cancelled_at IS NULL AND purchase_requests.cancelled_at IS NULL',supply_id])
   end
   
-  def sort_purchase_request_supplies
+  def unconfirmed_purchase_request_supplies
     res = []
-    for purchase_request_supply in unconfirmed_purchase_request_supplies
-      res << purchase_request_supply unless purchase_request_supply.confirmed_purchase_order_supply
+    for request_supply in not_cancelled_purchase_request_supplies
+      res.push request_supply unless request_supply.confirmed_purchase_order_supply
     end
     res
   end
+  
+  def get_purchase_request_supplies_ids
+    res = ""
+      unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
+        if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
+          res += purchase_request_supply.id.to_s + ";"
+        end
+      end
+    res
+  end
+  
+  def boolean_checked(purchase_request_supply)
+    return true if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
+    return false
+  end
+  
+  def integer_checked(purchase_request_supply)
+    return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
+    return 0
+  end
+  
+  def get_purchase_order_supply_total
+    quantity.to_f * get_unit_price_including_tax.to_f
+  end
+  
 end
