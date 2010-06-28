@@ -1,3 +1,10 @@
+<% add_contextual_menu_item :pending_purchase_order_supply do %>
+  <%= display_purchase_order_add_button(@purchase_order) unless is_new_view? %>
+  <%= display_purchase_order_show_button(@purchase_order) if is_edit_view? %>
+  <%= display_purchase_order_edit_button(@purchase_order) if is_show_view? %>
+  <%= display_purchase_order_delete_button(@purchase_order) if is_show_view? or is_edit_view? %>
+<% end %>
+
 <% add_contextual_menu_item :useful_links do %>
   <%= closed_purchase_orders_link(:link_text => "Voir les ordres d'achats fermés") %>
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats annulés", :title => list_text) + " " + list_text, 

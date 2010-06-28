@@ -1,31 +1,30 @@
 <%= generate_closed_purchase_order_contextual_menu_partial %>
 <% cancelled = params['filter'] == PurchaseOrder::STATUS_CANCELLED %>
 
-<h1>Liste des ordres d'achats <%= cancelled ? "annulés" : "fermés" %></h1>
+<h1>Liste des ordres d'achats terminés</h1>
 <div>
   <% if @closed_purchase_orders.empty? %>
-    <p>Aucun ordre d'achats <%= cancelled ? "annulé" : "fermé" %></p>
+    <p>Aucun ordre d'achats terminés</p>
   <% else %>
   <table class="no_nth">
     <thead>
       <tr>
         <th rowspan = "2">R&eacute;f&eacute;rence</th>
         <th rowspan = "2">Date de cr&eacute;ation</th>
-        <th rowspan = "2"><%= cancelled ? "Annul&eacute;" : "Termin&eacute;" %> depuis le</th>
-        <%= "<th rowspan = \"2\">Achat</th>" unless cancelled %>
+        <th rowspan = "2">Termin&eacute; depuis le</th>
+        <th rowspan = "2">Achat</th>
+        <th rowspan = "2">Origine</th>
         <th rowspan = "2">Fournisseur</th>
-        <%= "<th colspan = \"3\">Colis</th>" unless cancelled %>
+        <th colspan = "3">Colis</th>
         <th rowspan = "2">Demandes associ&eacute;es</th>
         <th rowspan = "2">Prix total</th>
         <th rowspan = "2">Pay&eacute;</th>
         <th rowspan = "2">Action</th>
       </tr>
       <tr>
-        <% unless cancelled %>
-          <th>R&eacute;f&eacute;rence</th>
-          <th>Livr&eacute; le</th>
-          <th>R&eacute;cup&eacute;r&eacute;</th>
-        <% end %>
+        <th>R&eacute;f&eacute;rence</th>
+        <th>Livr&eacute; le</th>
+        <th>R&eacute;cup&eacute;r&eacute;</th>
       <tr>
     </thead>
     <tbody>

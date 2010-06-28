@@ -37,7 +37,7 @@
       <% end %>
     </td>
     <% unless f.form_view? %>
-      <td>comming soon</td>
+      <td><%= display_associated_purchase_order(purchase_request_supply) %></td>
       <td>
       <% if purchase_request_supply.can_be_cancelled? %>
         

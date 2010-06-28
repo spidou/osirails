@@ -26,10 +26,13 @@ ActionController::Routing::Routes.add_routes do |map|
 
   map.resources :purchase_orders do |order|
     order.cancel 'cancel', :controller => 'purchase_orders', :action => 'cancel'
+    order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm'
   end
   
   map.resources :parcels
-  map.resources :purchase_order_supplies
+  map.resources :purchase_order_supplies do |order_supply|
+    order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
+  end
   
   map.pending_purchase_orders 'pending_purchase_orders', :controller => 'pending_purchase_orders', :action => 'index'
   map.closed_purchase_orders 'closed_purchase_orders', :controller => 'closed_purchase_orders', :action => 'index'

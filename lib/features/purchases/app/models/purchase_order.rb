@@ -1,6 +1,7 @@
 class PurchaseOrder < ActiveRecord::Base
   
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
+  has_reference :prefix => :purchases  
   
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'                                                  
@@ -31,7 +32,7 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:statut]                 = "Status :"
   
   validates_presence_of :user_id, :supplier_id
-  validates_presence_of :reference, :unless => :was_draft?
+  validates_persistence_of :reference, :unless => :was_draft?
   
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   
@@ -45,6 +46,7 @@ class PurchaseOrder < ActiveRecord::Base
   validates_associated :purchase_order_supplies, :supplier_supplies
   
   before_validation_on_create :build_supplier_supplies
+  before_validation :update_reference, :unless => :new_record?
   after_save  :save_purchase_order_supplies, :save_supplier_supplies
   
   def build_supplier_supplies
@@ -192,6 +194,7 @@ class PurchaseOrder < ActiveRecord::Base
     parcels.uniq
   end
   
+  #FIXME should the function return total_price of all purchase_order_supplies or just not cancelled ones?
   def total_price(cancelled = false)
     total_price = 0
     total_price_cancelled = 0
@@ -203,7 +206,7 @@ class PurchaseOrder < ActiveRecord::Base
         total_price_cancelled += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
       end
     end
-    return total_price_cancelled if cancelled
+    return total_price_cancelled+total_price if cancelled
     total_price
   end
   
@@ -218,7 +221,6 @@ class PurchaseOrder < ActiveRecord::Base
     lead_time
   end
   
-  #à vérifier après la création du formulaire permettant de créer des ordres
   def get_associated_purchase_requests
     purchase_requests = []
     for purchase_order_supply in purchase_order_supplies
@@ -239,5 +241,4 @@ class PurchaseOrder < ActiveRecord::Base
     end
     self.purchase_order_supplies = list_of_purchase_request_supplies
   end
-  
 end

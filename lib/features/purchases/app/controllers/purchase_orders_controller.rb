@@ -92,4 +92,15 @@ class PurchaseOrdersController < ApplicationController
       error_access_page(412)
     end
   end
+  
+  def confirm
+    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
+      unless @purchase_order.confirm
+        flash[:notice] = 'Une erreur est survenue lors de la validation de l\'ordre d\'achats'
+      end
+      redirect_to purchase_orders_path
+    else
+      error_access_page(412)
+    end
+  end
 end

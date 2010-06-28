@@ -99,7 +99,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    (was_untreated? and !purchase_order.was_draft?) or was_processing?
+    (was_untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing) or !parcel)) or (was_processing? and purchase_order.was_confirmed? and parcel.was_processing?)
   end
   
   def can_be_deleted?
@@ -156,14 +156,13 @@ class PurchaseOrderSupply < ActiveRecord::Base
     end
   end
   
-  def get_supplier_supply
-    return unless purchase_order and supply
-    SupplierSupply.find_by_supplier_id_and_supply_id(purchase_order.supplier, supply)
+  def get_supplier_supply(supplier_id = purchase_order.supplier, supply_id = supply.id)
+    SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, supply_id)
   end
   
-  def get_unit_price_including_tax
-    return 0 unless get_supplier_supply
-    supplier_supply = get_supplier_supply
+  def get_unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
+    return 0 unless get_supplier_supply(supplier_id, supply_id)
+    supplier_supply = get_supplier_supply(supplier_id, supply_id)
     taxes = supplier_supply.taxes
     if fob_unit_price
       fob_unit_price
@@ -171,6 +170,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
       fob_unit_price = supplier_supply.unit_price
     end
     (supplier_supply.fob_unit_price * ((100 + taxes)/100))
+  end
+  
+  def get_purchase_order_supply_total
+    quantity.to_f * get_unit_price_including_tax.to_f
   end
   
   def get_taxes

@@ -1,31 +1,31 @@
 <% purchase_order = closed_purchase_order_in_one_line %>
 <% parcels = purchase_order.parcels.compact %>
-<% cancelled = params['filter'] == PurchaseOrder::STATUS_CANCELLED %>
+<% cancelled = purchase_order.status == PurchaseOrder::STATUS_CANCELLED %>
 
-<tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.reference %></td>
+<% if cancelled %>
+  <tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even disabled\"" : "class=\"disabled\"" %>>
+<% else %>
+  <tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
+<% end %>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
-  <% unless cancelled %>
-    <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.direct ? "Direct" : "Indirect" %></td>
-  <% end %>
-  
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.direct ? "Direct" : "Indirect" %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.name %></td>
 <%=
-  unless cancelled
-    if parcels.empty?
-      "
-      <td></td>
-      <td></td>
-      <td></td>
-      "
-    else
-      "
-      <td>#{parcels.first.reference}</td>
-      <td>#{display_parcel_previsional_deliveray_date(parcels.first)}</td>
-      <td>#{display_parcel_recovered(parcels.first)}</td>
-      "
-    end
+  if parcels.empty?
+    "
+    <td></td>
+    <td></td>
+    <td></td>
+    "
+  else
+    "
+    <td>#{parcels.first.reference}</td>
+    <td>#{display_parcel_previsional_deliveray_date(parcels.first)}</td>
+    <td>#{display_parcel_recovered(parcels.first)}</td>
+    "
   end
 %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
@@ -35,17 +35,15 @@
 </tr>
 
 <%
-unless cancelled
-  for parcel in parcels
-    if parcel != parcels.first 
-      "
-      <tr>
-        <td>#{parcel.reference}</td>
-        <td>#{display_parcel_previsional_deliveray_date(parcel)}</td>
-        <td>#{display_parcel_recovered(parcel)}</td>
-      </tr>
-      "
-    end
+for parcel in parcels
+  if parcel != parcels.first 
+    "
+    <tr>
+      <td>#{parcel.reference}</td>
+      <td>#{display_parcel_previsional_deliveray_date(parcel)}</td>
+      <td>#{display_parcel_recovered(parcel)}</td>
+    </tr>
+    "
   end
 end
 %>

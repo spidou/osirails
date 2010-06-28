@@ -7,9 +7,9 @@
   <td><%= display_purchase_order_supply_status(purchase_order_supply)%></td>
   <td><%= display_purchase_order_supply_current_status_date(purchase_order_supply) %></td>
   <td><%= purchase_order_supply.quantity %></td>
-  <td><%= display_unit_price_including_tax(purchase_order_supply, purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(purchase_order_supply.purchase_order.supplier)) %></td>
-  <td><%= display_purchase_order_total(purchase_order_supply) %></td>
-  <td></td>
+  <td><%= display_unit_price_including_tax(purchase_order_supply) %></td>
+  <td><%= display_purchase_order_supply_total(purchase_order_supply) %></td>
+  <td><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
   <td><%= display_purchase_order_supply_supplier_designation(purchase_order_supply) %></td>
   <td><%= display_purchase_order_supply_supplier_reference(purchase_order_supply) %></td>
   <td><%= display_purchase_order_lead_time(purchase_order_supply) %></td>

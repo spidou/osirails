@@ -3,6 +3,16 @@ module PurchaseOrdersHelper
   def generate_purchase_order_contextual_menu_partial
     render :partial => 'purchase_orders/contextual_menu'
   end
+  
+  def display_purchase_order_confirm_button(purchase_order, message = nil)
+    return unless purchase_order.can_be_confirmed?
+    text = "Confirmer l'ordre d'achats"
+    message ||= " #{text}"
+    link_to( image_tag( "tick2_16x16.png",
+                        :alt => text,
+                        :title => text ) + message,
+            purchase_order_confirm_path(purchase_order) )
+  end
 
   def display_purchase_order_add_button(message = nil)
     return unless PurchaseOrder.can_add?(current_user)
@@ -41,7 +51,7 @@ module PurchaseOrdersHelper
     link_to( image_tag( "delete_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             purchase_orders_path, :method => :delete, :confirm => "Êtes vous sûr?")
+             purchase_order, :method => :delete, :confirm => "Êtes vous sûr?")
   end
 
   def display_purchase_order_cancel_button(purchase_order, message = nil)
@@ -92,13 +102,8 @@ module PurchaseOrdersHelper
   end
   
   def display_purchase_order_reference(purchase_order)
-    return "Aucune référence" unless purchase_order.reference
+    return "Aucune" unless purchase_order.reference
     purchase_order.reference
-  end
-  
-  def display_purchase_order_supplier(purchase_order)
-    return "" unless purchase_order.supplier.name
-    purchase_order.supplier.name
   end
   
   def display_purchase_order_current_status(purchase_order)
@@ -138,7 +143,7 @@ module PurchaseOrdersHelper
   def display_associated_purchase_requests(purchase_order)
     html = []
     associated_purchase_requests = purchase_order.get_associated_purchase_requests
-    return "Aucune demande associée" if associated_purchase_requests.empty?
+    return "Aucune" if associated_purchase_requests.empty?
     for purchase_request in associated_purchase_requests
       html << link_to(purchase_request.reference, purchase_request_path(purchase_request))
     end
@@ -171,6 +176,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_buttons(purchase_order)
     html = []
+    html << display_purchase_order_confirm_button(purchase_order, '')
     html << display_purchase_order_show_button(purchase_order, '')
     html << display_purchase_order_edit_button(purchase_order, '')
     html << display_purchase_order_delete_button(purchase_order, '')

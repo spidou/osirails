@@ -1,3 +1,5 @@
+<%= generate_purchase_order_contextual_menu_partial %>
+
 <h1>Ordre d'achats</h1>
 <div>
   <h2>Informations</h2>
@@ -5,6 +7,7 @@
   <p><b>- R&eacute;f&eacute;rence : </b><strong><%= display_purchase_order_reference(@purchase_order) %></strong></p>
   <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong></p>
   <p><b>- Fournisseur : </b><strong><%= @purchase_order.supplier.name %></strong></p>
+  <p><b>- Origine : </b><strong><%= @purchase_order.supplier.address.country_name %></strong></p>
   <p><b>- Créé le : </b><strong><%= @purchase_order.created_at.humanize %></strong></p>
   <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
   <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
