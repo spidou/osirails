@@ -16,8 +16,6 @@ function refreshCategories(select, max_level, index) {
   document.getElementById('product_informations').style.display = 'none';
   document.getElementById('product_reference_informations').style.display = 'none';
   
-  alert('index=' + index + ', id=' + id)
-  
   if (id != 0){
     new Ajax.Request('/product_reference_categories/'+id+'/product_reference_categories',
       {
