@@ -12,14 +12,7 @@ class ProductReferencesController < ApplicationController
     end
   end
   
-  # GET /product_references/new
-  # GET /product_references/new?category_id=:category_id
-  def new
-    @product_reference = ProductReference.new(:product_reference_category_id => params[:category_id])
-    @categories = ProductReferenceCategory.find(:all)
-  end
-  
-  # GET /product_reference/:id
+  # GET /product_references/:id
   def show
     @product_reference = ProductReference.find(params[:id])
     respond_to do |format|
@@ -39,9 +32,10 @@ class ProductReferencesController < ApplicationController
     end
   end
   
-  # GET /product_references/:id/edit
-  def edit
-    @product_reference = ProductReference.find(params[:id])
+  # GET /product_references/new
+  # GET /product_references/new?category_id=:category_id
+  def new
+    @product_reference = ProductReference.new(:product_reference_category_id => params[:category_id])
     @categories = ProductReferenceCategory.find(:all)
   end
   
@@ -57,34 +51,37 @@ class ProductReferencesController < ApplicationController
     end
   end
   
+  # GET /product_references/:id/edit
+  def edit
+    @product_reference = ProductReference.find(params[:id])
+    @categories = ProductReferenceCategory.find(:all)
+  end
+  
   # PUT /product_references/:id
   def update
     @product_reference = ProductReference.find(params[:id])
-    @product_reference.counter_update("disable_or_before_update")
     if @product_reference.update_attributes(params[:product_reference])
-      @product_reference.counter_update("after_update")
-      flash[:notice] = 'La référence a été mise à jour'
-      redirect_to :controller => 'product_reference_manager', :action => 'index'
+      flash[:notice] = 'Le produit référence a été modifié avec succès'
+      redirect_to(@product_reference)
     else
-      flash[:error] = 'Une erreur est survenue lors de la mise à jour'
       @categories = ProductReferenceCategory.find(:all)
-      render :action => 'edit'
+      render :action => :edit
     end
   end
   
-  # DELETE /product_references/:id
-  def destroy
-    @product_reference = ProductReference.find(params[:id])
-    if @product_reference.can_be_destroyed?
-      @product_reference.destroy
-    else
-      @product_reference.enable = false
-      @product_reference.counter_update("disable_or_before_update")
-      @product_reference.save
-    end
-    
-    flash[:notice] = 'La référence a été supprimée' 
-    redirect_to :controller => 'product_reference_manager', :action => 'index'
-  end
+#  # DELETE /product_references/:id
+#  def destroy
+#    @product_reference = ProductReference.find(params[:id])
+#    if @product_reference.can_be_destroyed?
+#      @product_reference.destroy
+#    else
+#      @product_reference.enable = false
+#      @product_reference.counter_update("disable_or_before_update")
+#      @product_reference.save
+#    end
+#    
+#    flash[:notice] = 'La référence a été supprimée' 
+#    redirect_to :controller => 'product_reference_manager', :action => 'index'
+#  end
   
 end

@@ -1,61 +1,42 @@
-<div class="presentation_large">
-<% form_for product_reference do |form| %>
-  <%= form.error_messages %>
-  <h2>Rérérence</h2>
-  <p>
-    <%= form.label :reference %>
-    <%= form.form_or_view(form.text_field(:reference), :reference) %>
-  </p>
-  
-  <% if is_form_view? %>
-    <p>
-      <%= form.label :product_reference_category_id %>
-      <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}) %>
-    </p>
-    <p>
-      <%= form.label :name %>
-      <%= form.text_field(:name) %>
-    </p>
-  <% else %>
-    <p>
-      <%= form.label :categories %>
-      <%= strong product_reference.ancestors_names.join(" - ") %>
-    </p>
-    <p>
-      <%= form.label :designation %>
-      <%= strong product_reference.designation %>
-    </p>
-  <% end %>
-  
-  <p>
-    <%= form.label :description %>
-    <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
-  </p>
-  <p>
-    <%= form.label :vat %>
-    <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name), :vat, :name) %>
-  </p>
-
-  <h2>Informations concernant la production</h2>
-  <p>
-    <%= form.label :production_cost_manpower %>
-    <%= form.form_or_view(form.text_field(:production_cost_manpower), :production_cost_manpower) %>
-  </p>
-  <p>
-    <%= form.label :production_time %>
-    <%= form.form_or_view(form.text_field(:production_time), :production_time) %>
-  </p>
-
-  <h2>Informations concernant la livraison</h2>
-  <p>
-    <%= form.label :delivery_cost_manpower %>
-    <%= form.form_or_view(form.text_field(:delivery_cost_manpower), :delivery_cost_manpower) %>
-  </p>
-  <p>
-    <%= form.label :delivery_time %>
-    <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
-  </p>
-  
-  <%= form.form_buttons %>
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
 <% end %>
+
+<div class="presentation_medium">
+  <h2>Informations générales</h2>
+  <% form_for product_reference do |form| %>
+    <%= form.error_messages %>
+    
+    <p>
+      <%= form.label :reference %>
+      <%= form.form_or_view(form.text_field(:reference), :reference) %>
+    </p>
+    
+    <% if is_form_view? %>
+      <p>
+        <%= form.label :product_reference_category_id %>
+        <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}) %>
+      </p>
+      <p>
+        <%= form.label :name %>
+        <%= form.text_field(:name) %>
+      </p>
+    <% else %>
+      <p>
+        <%= form.label :designation %>
+        <%= strong product_reference.designation %>
+      </p>
+    <% end %>
+    
+    <p>
+      <%= form.label :description %>
+      <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 60), :description) %>
+    </p>
+    <p>
+      <%= form.label :vat %>
+      <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name, :include_blank => "Veuillez choisir un taux de TVA"), :vat, :name) %>
+    </p>
+    
+    <%= form.form_buttons %>
+  <% end %>
 </div>

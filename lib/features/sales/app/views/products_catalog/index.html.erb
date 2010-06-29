@@ -7,8 +7,6 @@
 <div class="presentation_large">
 
   <div id='catalog'>
-    <p id='catalog_loading' style='visibility: hidden;'> <span>Veuillez patienter<%= image_tag("loading_16x16.gif", :alt => loading_text = "Chargement", :title => "Chargement")%></span> </p>
-
     <span id='show_categories'>
       <% (find_max_level + 1).times do |value|%>
             <%= show_category_column(@categories,value) %>
@@ -18,8 +16,8 @@
       <%= show_reference_column(@references) %>
     </span>    
     
-    <div id="products_list"> 
-      <%= render :partial => 'products' %>
+    <div id="end_products_list"> 
+      <%= render :partial => 'end_products/list', :locals => { :end_products => @end_products } %>
     </div>     
     <div id="product_reference_informations"></div>
     <div id="product_informations"></div>

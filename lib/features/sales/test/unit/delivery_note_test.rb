@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class DeliveryNoteTest < ActiveSupport::TestCase
-  
   #TODO test has_permissions :as_business_object
   #TODO test has_address     :ship_to_address
   #TODO test has_contact     :accept_from => :order_contacts
@@ -24,7 +22,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   should_not_allow_values_for :status, 0, 1, 100, "string"
   should_allow_values_for :status, nil, DeliveryNote::STATUS_CONFIRMED, DeliveryNote::STATUS_CANCELLED, DeliveryNote::STATUS_SIGNED
   
-  should_not_allow_mass_assignment_of :status, :confirmed_at, :cancelled_at, :reference
+  should_not_allow_mass_assignment_of :status, :reference, :confirmed_at, :cancelled_at
   
   context "In an order WITHOUT a signed quote" do
     #TODO assert a new delivery_note cannot be added
@@ -55,7 +53,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
                                    :job => "Job",
                                    :gender => "M")
       
-      @attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+      @attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_note_attachment.pdf"))
       
       flunk "@valid_address should be valid"       unless @valid_address.valid?
       flunk "@invalid_address should NOT be valid" if @invalid_address.valid?
@@ -679,7 +677,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     end
     
     def assert_creator_id_cannot_be_updated
-      @dn.creator = users(:admin_user)
+      @dn.creator_id += 1
       @dn.valid?
       assert @dn.errors.invalid?(:creator_id), "creator_id should NOT be valid because it's NOT allowed to be updated"
     end

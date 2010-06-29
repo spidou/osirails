@@ -17,7 +17,7 @@ style_attr = 'style="display:none"' unless subcontractor_request.new_record? or 
     </p>
     <p>
       <%= form.label :subcontractor_id, :index => nil %>
-      <%= form.collection_select :subcontractor_id, Subcontractor.activates, :id, :name, ( subcontractor_request.new_record? ? { :include_blank => "Veuillez choisir un préstataire" } : {} ), :index => nil %>
+      <%= form.collection_select :subcontractor_id, Subcontractor.actives, :id, :name, ( subcontractor_request.new_record? ? { :include_blank => "Veuillez choisir un préstataire" } : {} ), :index => nil %>
     </p>
     <p>
       <%= form.label :attachment, :index => nil %>

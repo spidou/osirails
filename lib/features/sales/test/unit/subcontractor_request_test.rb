@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class SubcontractorRequestTest < ActiveSupport::TestCase
   

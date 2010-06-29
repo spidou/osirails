@@ -1,6 +1,6 @@
 module ProductsCatalogHelper
 
-  MAX_LEVEL_CONS = 1 #FIXME This constant will be configurable by administrateur
+  MAX_LEVEL_CONS = 1 #FIXME This constant should be configurable via the user interface
   
   # This method permit to return a collection for all categories.
   def column(categories,value)
@@ -49,28 +49,9 @@ module ProductsCatalogHelper
     get_reference_column << "<select id=\"select_reference\" size=\"10\" multiple=\"multiple\" class=\"select_catalog catalog_3_columns\" onclick=\"refreshReferenceInformation(this)\" >" +
       "<option style=\"font-weight:bold\" selected=\"selected\" value=\"0\" >Il y a " + pluralize(references.size, "reference", "references") + "</option>"
     references.each do |reference|
-      get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">#{reference.name} (#{reference.products_count})</option>"
+      get_reference_column << "<option value=\"#{reference.id}\" title=\"#{reference.name}\">#{reference.name} (#{reference.end_products_count})</option>"
     end
     get_reference_column << "</select>"
   end
-
-  # This method permit to show products array
-  def show_products(products)
-    products_array = []
-
-    products.each do |product|
-      reference = ProductReference.find(product.product_reference_id)
-      category = ProductReferenceCategory.find(reference.product_reference_category_id)
-
-      products_array << "<tr id=\"product_#{product.id}\" title=\"Cliquer pour afficher les détails du produit\" onclick=\"refreshProduct(this)\">"
-      products_array << "<td>#{product.name}</td>"
-      products_array << "<td>"+category.name+"</td>"
-      products_array << "<td>"+reference.name+"</td>"
-      products_array << "<td></td>"
-      products_array << "<td></td>"
-      products_array << "</tr>"
-    end
-    products_array
-  end
-    
+  
 end

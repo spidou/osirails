@@ -1,76 +1,41 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class EmployeeTest < ActiveSupport::TestCase
-  fixtures :employees, :civilities
-
+  should_belong_to :family_situation, :civility, :user, :service
+  
+  should_have_one :iban, :job_contract
+  
+  should_have_many :contacts_owners
+  should_have_many :contacts, :through => :contacts_owners
+  should_have_many :premia, :employees_jobs
+  should_have_many :jobs, :through => :employees_jobs
+  should_have_many :checkings, :leaves, :leave_requests
+  
+  should_have_many :in_progress_leave_requests, :accepted_leave_requests, :refused_leave_requests, :cancelled_leave_requests
+  
+  should_validate_presence_of :last_name, :first_name
+  should_validate_presence_of :family_situation, :civility, :service, :with_foreign_key => :default
+  
+  should_allow_values_for :social_security_number, "1234567890123 45", "0123456789012 34"
+  should_not_allow_values_for :social_security_number, nil, "", "1", "0123456789012 3", "012345678901 34", "123456789012345", :message => "Le numéro de sécurité sociale doit comporter 15 chiffres"
+  
+  should_allow_values_for :email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
+  should_not_allow_values_for :email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "L'adresse e-mail est incorrecte"
+  
+  should_allow_values_for :society_email, nil, "", "foo@bar.com", "foo.bar@bar.fr", "foo@bar.abcde"
+  should_not_allow_values_for :society_email, "@foo.com", "foo@", "foo@b", "foo@bar", "foo@bar.", "foo@bar.c", "foot@bar.abcdef", :message => "L'adresse e-mail entreprise est incorrecte"
+  
   def setup
     @good_employee = employees(:james_doe)    
     @employee_with_job = employees(:johnny)
 
     @employee = Employee.new
   end
+  subject{ @employee } #this seems to be unused but its necessary to avoid warning from shoulda.
   
   def teardown
     @good_employee = nil
     @employee = nil
-  end
-  
-  def test_read
-    assert_nothing_raised "An Employee should be read" do
-      Employee.find(@good_employee.id)
-    end
-  end
-  
-  def test_create
-    assert_difference 'Employee.count', +1, "Employee should be created" do
-      e = Employee.create(@good_employee.attributes)
-    end
-  end
-
-  def test_delete
-    assert_difference 'Employee.count', -1, "An Employee should be destroy" do
-      @good_employee.destroy
-    end
-  end
-
-  def test_presence_of_last_name
-    assert_no_difference 'Employee.count' do
-      employee = Employee.create
-      assert_not_nil employee.errors.on(:last_name),
-        "An Employee should have a last name"
-    end
-  end
-
-  def test_presence_of_first_name
-    assert_no_difference 'Employee.count' do
-      employee = Employee.create
-      assert_not_nil employee.errors.on(:first_name),
-        "An Employee should have a first name"
-    end
-  end
-
-  def test_format_of_social_security_number
-    assert_no_difference 'Employee.count' do
-      employee = Employee.create(:social_security_number => 'a')
-      assert_not_nil employee.errors.on(:social_security_number),
-        "An Employee should have a correct social security number"
-    end
-  end
-
-  def test_format_of_email
-    assert_no_difference 'Employee.count' do
-      employee = Employee.create(:email => 'peter@on_bird')
-      assert_not_nil employee.errors.on(:email),
-        "An Employee should have a correct email"
-    end
-  end
-
-  def test_format_of_society_email
-    assert_no_difference 'Employee.count' do
-      employee = Employee.create(:society_email => 'peter@on_another_bird')
-      assert_not_nil employee.errors.on(:society_email),
-        "An Employee should have a correct society email"
-    end
   end
   
 #  # get leave_days_left from an employee without leaves to get the total

@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class ConsumableSubCategoryTest < ActiveSupport::TestCase
-  
   should_belong_to :supply_category
   
   context "A consumable_sub_category" do
@@ -31,5 +29,4 @@ class ConsumableSubCategoryTest < ActiveSupport::TestCase
     
     include SupplyCategoryTest::CommonMethods
   end
-  
 end

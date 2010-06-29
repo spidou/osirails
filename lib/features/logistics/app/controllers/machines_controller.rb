@@ -56,5 +56,5 @@ class MachinesController < ApplicationController
       flash[:error] = "Erreur lors de la suppression de l'équipment"
     end
   end
-   
+  
 end

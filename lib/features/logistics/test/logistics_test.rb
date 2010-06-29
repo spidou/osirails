@@ -1,13 +1,23 @@
+require 'test/test_helper'
+
 require File.dirname(__FILE__) + '/unit/supply_test'
 require File.dirname(__FILE__) + '/unit/supply_category_test'
 require File.dirname(__FILE__) + '/unit/supply_sub_category_test'
 require File.dirname(__FILE__) + '/unit/stock_flow_test'
 
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
+
 class Test::Unit::TestCase
+  fixtures :all
   
   def create_supply_with_stock_input_for(supply_sub_category)
-    supply = supply_sub_category.supplies.build(:name => "Supply")
+    supply = supply_sub_category.supplies.build(:name => "Supply", :measure => 5)
+    supply.supplier_supply_attributes = [ { :supplier_id    => thirds(:first_supplier).id,
+                                            :fob_unit_price => 100,
+                                            :taxes          => 10 } ]
     supply.save!
+    
+    flunk "supply should have 1 supplier_supply" unless supply.supplier_supplies.count == 1
     
     create_stock_input_for_supply(supply, :sleep_delay => true)
     

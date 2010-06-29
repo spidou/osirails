@@ -114,7 +114,7 @@ module SupplySubCategoryTest
             @supply_sub_category.save!
             
             # create a supply and disable it in order to be able to disable child_category
-            @supply = create_supply_with_stock_input_for(@supply_sub_category, :sleep_delay => true)
+            @supply = create_supply_with_stock_input_for(@supply_sub_category)
             disable_supply(@supply)
           end
           

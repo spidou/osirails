@@ -1,0 +1,10 @@
+good_checking:
+  overtime_hours: 1
+  overtime_minutes: 1
+  absence_hours: 1
+  absence_minutes: 1
+  date: <%= Date.today %>
+  absence_comment: beaucoup de retards
+  overtime_comment: beaucoup de retards
+  user: rh_user
+  employee: john_doe

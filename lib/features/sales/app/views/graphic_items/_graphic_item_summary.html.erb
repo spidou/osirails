@@ -17,7 +17,7 @@
       <%= content_tag(:span, graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name) + content_tag(:br) unless graphic_item_summary.send("#{graphic_item_summary.class.name.underscore}_type").name.blank? %>
       <%= content_tag(:span, graphic_item_summary.created_at.humanize) + content_tag(:br) unless graphic_item_summary.created_at.nil? %>
       <% if graphic_item_summary.class.name == "Mockup" %>
-        <%= content_tag(:span, graphic_item_summary.product.name) + content_tag(:br) unless graphic_item_summary.product.name.blank? %>
+        <%= content_tag(:span, graphic_item_summary.end_product.name) + content_tag(:br) unless graphic_item_summary.end_product.name.blank? %>
       <% end %>
       
       <%= display_graphic_item_summary_preview_button(graphic_item_summary, press_proof) %>

@@ -1,10 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class ThirdTypeTest < ActiveSupport::TestCase
-  def test_presence_of_name
-    assert_no_difference 'ThirdType.count' do
-      third_type = ThirdType.create
-      assert_not_nil third_type.errors.on(:name), "A Third Type should have a name"
-    end
-  end
+  should_have_many :legal_forms
+  should_validate_presence_of :name
 end

@@ -6,6 +6,10 @@ dependencies:
     - 0.1
   thirds:
     - 0.1
+  rh:
+    - 0.1
+  calendars:
+    - 0.1
 menus:
   logistics:
     title: "Logistique"

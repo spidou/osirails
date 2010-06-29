@@ -3,6 +3,8 @@
 
 require(File.join(File.dirname(__FILE__), 'config', 'boot'))
 
+require "#{RAILS_ROOT}/vendor/plugins/override_rake_task/lib/override_rake_task.rb"
+
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
@@ -13,3 +15,7 @@ require 'tasks/rails'
 # if we are in a rake task context, we are more tolerant and don't raise exception (just displaying errors)
 # when a database or a table doesn't exist
 RAKE_TASK = true
+
+Dir.glob("#{RAILS_ROOT}/{lib,vendor}/{features,plugins}/*/tasks/*.rake").each do |rake_file|
+  import rake_file
+end

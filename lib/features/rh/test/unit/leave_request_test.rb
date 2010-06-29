@@ -1,4 +1,5 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
+
 require File.dirname(__FILE__) + '/leave_base_test'
 require File.dirname(__FILE__) + '/leave_validations_test'
 

@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class RoleTest < ActiveSupport::TestCase
-  fixtures :roles, :users
-  
   def setup
     @role_admin = roles(:admin)
     @role_guest = roles(:guest)

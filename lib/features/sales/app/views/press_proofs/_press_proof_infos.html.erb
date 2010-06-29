@@ -1,23 +1,23 @@
 <%
 press_proof = press_proof_infos
 
-require_locals products if press_proof.new_record?
+require_locals end_products if press_proof.new_record?
 require_locals form, order
 %>
 
 <p> 
-  <%= form.label :product %>
+  <%= form.label :end_product %>
   <% if is_form_view? and press_proof.new_record? %>
-    <%= form.collection_select( :product_id, products, :id, :name, {}, { :onChange => "select_product(this);" } ) %>
+    <%= form.collection_select( :end_product_id, end_products, :id, :name, {}, { :onChange => "select_product(this);" } ) %>
   <% else %>
-    <%= strong(press_proof.product.name) %>
+    <%= strong(press_proof.end_product.name) %>
   <% end %>
 </p>
 
 <% unless press_proof.new_record? %>
 <p> 
-  <%= form.label :product_description %>
-  <%= strong(press_proof.product_description) %>
+  <%= form.label :end_product_description %>
+  <%= strong(press_proof.end_product_description) %>
 </p>
 <% end %>
 

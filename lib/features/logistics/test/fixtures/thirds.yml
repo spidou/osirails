@@ -1,0 +1,15 @@
+first_supplier:
+  type: Supplier
+  name: First Supplier
+  siret_number: 12345678912345
+  activated: true
+second_supplier:
+  type: Supplier
+  name: Second Supplier
+  siret_number: 23456789123456
+  activated: true
+third_supplier:
+  type: Supplier
+  name: Third Supplier
+  siret_number: 34567891234567
+  activated: true

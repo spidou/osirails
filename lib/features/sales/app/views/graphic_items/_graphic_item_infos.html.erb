@@ -5,11 +5,11 @@ graphic_item = graphic_item_infos
 
 <% if graphic_item.class == Mockup %>
   <p>
-    <%= form.label :product_id %>
+    <%= form.label :end_product_id %>
     <% if graphic_item.new_record? %>
-      <%= form.collection_select(:product_id, @products, :id, :designation, { :prompt => "Veuillez choisir un produit" }) %>
+      <%= form.collection_select(:end_product_id, @end_products, :id, :designation, { :prompt => "Veuillez choisir un produit" }) %>
     <% else %>
-      <%= form.strong(graphic_item.product.name) %>
+      <%= form.strong(graphic_item.end_product.name) %>
     <% end %>
   </p>
 <% end %>
@@ -101,12 +101,12 @@ graphic_item = graphic_item_infos
   <div id="add_version_div">
     <p id="new_image_paragraph">
       <%= form.label :image %>
-      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :product) %>
+      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_image", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][image]"}), :end_product) %>
       <span class="help_text">Fichier image consultable par tous (.jpg, .png, .bmp, .gif, etc)</span>
     </p>
     <p id="new_source_paragraph">
       <%= form.label :source %>
-      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :product) %>
+      <%= form.form_or_view(form.file_field(:graphic_item_version_attributes, {:id => "#{graphic_item.class.name.underscore}_graphic_item_version_attributes_source", :name => "#{graphic_item.class.name.underscore}[graphic_item_version_attributes][source]"}), :end_product) %>
       <span class="help_text">Fichier dans le format original du logiciel de retouche photo (.ai, .psd, .ps, .xcf, etc)</span>
     </p>  
   </div>

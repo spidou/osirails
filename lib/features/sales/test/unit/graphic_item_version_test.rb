@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class GraphicItemVersionTest < ActiveSupport::TestCase
@@ -16,8 +15,8 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
       create_default_mockup
       
       @giv = GraphicItemVersion.new(:graphic_item => Mockup.last,
-                                    :image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
-                                    :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf")))
+                                    :image => File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")),
+                                    :source => File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf")))
                                     
       flunk "@giv should be created" unless @giv.save
     end
@@ -40,42 +39,42 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
     
     # FIXME  should_validate_attachment_content_type :image, :valid => [ 'image/jpg', 'image/png','image/jpeg'], :invalid => [ 'image/gif', 'image/ps','image/bmp']
     should "be able to add a jpg as image file" do
-      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+      @giv.image = File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg"))
       @giv.valid?
       
       assert !@giv.errors.invalid?(:image)
     end
     
     should "be able to add a png as image file" do
-      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+      @giv.image = File.new(File.join(Test::Unit::TestCase.fixture_path, "image.png"))
       @giv.valid?
       
       assert !@giv.errors.invalid?(:image)
     end
     
     should "NOT be able to add a non jpg or png as image file" do
-      @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      @giv.image = File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))
       @giv.valid?
       
       assert @giv.errors.invalid?(:image)
     end
     
     should "NOT be able to add a jpg as source file" do
-      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+      @giv.source = File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg"))
       @giv.valid?
       
       assert @giv.errors.invalid?(:source)
     end
     
     should "NOT be able to add a png as source file" do
-      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+      @giv.source = File.new(File.join(Test::Unit::TestCase.fixture_path, "image.png"))
       @giv.valid?
       
       assert @giv.errors.invalid?(:source)
     end
     
     should "be able to add a non jpg or png as image file" do
-      @giv.source = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+      @giv.source = File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))
       @giv.valid?
       
       assert !@giv.errors.invalid?(:source)
@@ -83,7 +82,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
     
     context "with an image in portrait mode " do
       setup do 
-        @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg"))
+        @giv.image = File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg"))
         flunk "@giv should be created to continue" unless @giv.save
         flunk "@giv.image should be in portrait mode to perform this test" unless `identify -format %h #{@giv.image.path}`.to_i > `identify -format %w #{@giv.image.path}`.to_i
       end
@@ -97,7 +96,7 @@ class GraphicItemVersionTest < ActiveSupport::TestCase
     
     context "with an image in landscape mode " do
       setup do
-        @giv.image = File.new(File.join(RAILS_ROOT, "test", "fixtures", "image.png"))
+        @giv.image = File.new(File.join(Test::Unit::TestCase.fixture_path, "image.png"))
         flunk "@giv should be created to continue" unless @giv.save
         flunk "@giv.image should be in landscape mode to perform this test" unless `identify -format %w #{@giv.image.path}`.to_i > `identify -format %h #{@giv.image.path}`.to_i
       end

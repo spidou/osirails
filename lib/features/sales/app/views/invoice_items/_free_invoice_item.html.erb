@@ -62,7 +62,7 @@ tr_style = invoice_item.should_destroy? ? 'display:none' : ''
       <%= link_to( image_tag( "cross_16x16.png", :alt => text_delete = "Supprimer la ligne", :title  => text_delete), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Les modifications seront appliquées à la soumission du formulaire.\")) remove_free_item(this)" ) %>
       
       <%= form.hidden_field :id, :class => :invoice_item_id, :index => nil %>
-      <%= form.hidden_field :product_id, :index => nil %>
+      <%= form.hidden_field :end_product_id, :index => nil %>
       <%= form.hidden_field :position, :class => :position, :value => position, :index => nil %>
       <%= form.hidden_field :should_destroy, :class => :should_destroy, :index => nil %>
     </td>

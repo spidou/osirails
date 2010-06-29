@@ -8,7 +8,7 @@ module Osirails
                                 :graphic_document => "Document graphique",
                                 :spool_items      => "Travaux en attente",
                                 :survey_step      => "Étape \"Survey\"",
-                                :estimate_step    => "Étape \"Devis\"",
+                                :quote_step       => "Étape \"Devis\"",
                                 :press_proof_step => "Étape \"BAT\"",
                                 :delivery_step    => "Étape \"Livraison\"",
                                 :invoice_step     => "Étape \"Factures\"",
@@ -65,7 +65,7 @@ require 'application'
 require_dependency 'customers_controller'
 require_dependency 'product_references_controller'
 
-class CustomersController < ApplicationController
+class CustomersController
   after_filter :detect_request_for_order_creation, :only => :new
   after_filter :redirect_to_new_order, :only => :create
   
@@ -92,7 +92,7 @@ class CustomersController < ApplicationController
     end
 end
 
-class ProductReferencesController < ApplicationController
+class ProductReferencesController
   
   def auto_complete_for_product_reference_reference
     #OPTMIZE use one sql request instead of multiple requests (using has_search_index once it will be improved to accept by_values requests)
