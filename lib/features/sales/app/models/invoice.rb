@@ -396,7 +396,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def validates_uniqueness_of_due_dates_with_factorised_invoice
-    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.reject(&:should_destroy?).size > 1 #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method to take it in account
+    errors.add(:due_dates, "Une facture factorisée ne peut avoir qu'une seule échéance") if factorised? and due_dates.reject(&:should_destroy?).many? #TODO reject(&:should_destroy?) have just been added => write or modify tests for that method to take it in account
   end
   
   #TODO write tests
@@ -445,7 +445,7 @@ class Invoice < ActiveRecord::Base
       for payment in due_date.payments
         if payment.paid_on
           payment.errors.add(:paid_on, "ne doit pas être AVANT la date d'émission de la facture&#160;(#{self.published_on.humanize})") if payment.paid_on < published_on
-          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on > Date.today
+          payment.errors.add(:paid_on, "ne doit pas être APRÈS aujourd'hui&#160;(#{Date.today.humanize})") if payment.paid_on.future?
         end
       end
       

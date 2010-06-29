@@ -16,7 +16,7 @@ module NewStockFlow
         @sf = StockOutput.new(general_attributes)
         @sf.file_number = "F2009055620" unless adjustment
       end
-      @sf.created_at = date.to_datetime unless date == Date.today
+      @sf.created_at = date.to_datetime unless date.today?
       @sf.save
     end
 end

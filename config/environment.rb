@@ -15,6 +15,7 @@ RAKE_TASK = false unless defined? RAKE_TASK
 require File.join(File.dirname(__FILE__), 'boot')
 require 'rails_hacks'
 require 'contextual_menu'
+require 'mysql'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -118,14 +119,15 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   config.gem 'json'
   config.gem 'RedCloth'
-  config.gem 'htmlentities' #TODO freeze all gem dependencies
+  config.gem 'htmlentities'
+  config.gem 'mysql'
 end
 
 require 'version'
 
 # ApplicationHelper can be overrided anywhere, so we (re)load the class everytime the load the environment
 # to be sure to remove old references to unexistant methods (after disabling a feature for example)
-load 'application_helper.rb' if RAILS_ENV == "development" # only with development mode, because in production mode this load cancel all feature's overrides (in lib/features/[feature]/overrides.rb) and there are not loaded again
+load 'application_helper.rb' if Rails.env.development? # only with development mode, because in production mode this load cancel all feature's overrides (in lib/features/[feature]/overrides.rb) and there are not loaded again
 
 require 'json'
 require 'htmlentities'

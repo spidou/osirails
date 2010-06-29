@@ -1,5 +1,6 @@
 common: &common
   adapter: mysql
+  pool: 5
   timeout: 5000
   username: root
   password: root

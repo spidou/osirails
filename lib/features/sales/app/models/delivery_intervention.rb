@@ -308,7 +308,7 @@ class DeliveryIntervention < ActiveRecord::Base
   
   def outdated?
     return false if new_record? or scheduled_delivery_at.nil?
-    scheduled_delivery_at < Date.today
+    scheduled_delivery_at.past?
   end
   
   def scheduled_intervention_duration

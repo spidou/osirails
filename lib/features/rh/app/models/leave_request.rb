@@ -75,7 +75,7 @@ class LeaveRequest < ActiveRecord::Base
   validates_associated :leave, :if => :closed?
   
   def validates_start_date_validity
-    if start_date < Date.today
+    if start_date.past?
       if was_unstarted?
         error = "est antérieure à aujourd'hui"
       else

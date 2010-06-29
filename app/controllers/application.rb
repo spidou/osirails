@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   
   # Filters
   before_filter :configure_model, :authenticate, :select_theme, :initialize_contextual_menu, :select_time_zone, :select_language
-  before_filter :load_features_overrides if RAILS_ENV == "development"
+  before_filter :load_features_overrides if Rails.env.development?
   
   # Password will not displayed in log files
   filter_parameter_logging "password"

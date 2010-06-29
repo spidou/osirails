@@ -263,7 +263,7 @@ class Employee < ActiveRecord::Base
         elsif tmp.size == val[i].count(",")
           self.pattern_error = true
           return "Erreur modèle de création de comptes utilisateurs : <br/>- Attribut [" + val[i] + "] invalide : vous ne devez utiliser la virgule que pour ajouter l'Option "
-        elsif tmp.size>1
+        elsif tmp.many?
           tmp[1].size > 15 ? option = tmp[1][0..15] + "..." : option = tmp[1]
           if /^([0-9]){0,15}$/.match(tmp[1].to_s).nil?
             self.pattern_error = true

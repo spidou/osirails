@@ -136,7 +136,7 @@ module SuppliesManagerHelper
   def display_suppliers(supply)
     html = ""
     html << supply.suppliers.first.name
-    if supply.suppliers.size > 1
+    if supply.suppliers.many?
       html <<  "<br/>"+link_to("voir tous", "/#{supply.class.name.tableize}/#{supply.id}#supplier_supplies")
     end
     html

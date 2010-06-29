@@ -71,7 +71,7 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
     
     <h2 class="survey_step_remarks section_nav"><%= survey_headers[:survey_step_remarks] %></h2>
     <div class="survey_step_remarks section_nav">
-      <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 if is_form_view? %>
+      <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.many? if is_form_view? %>
       <%= display_remarks_list(survey_step) %>
       <%= display_remark_add_button(survey_step) if is_form_view? %>
     </div>
