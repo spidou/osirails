@@ -81,8 +81,6 @@ function update_purchase_request_supplies_ids(element, parent)
       purchase_request_supply_ids.value = purchase_request_supply_ids.value.concat(id + ";");
       purchase_request_supply_ids.innerHTML =  purchase_request_supply_ids.value;
       element.setAttribute('idx','1');
-      add_quantity_in_total(quantity, parent); 
-      refresh_lign(parent) 
     }
     else
     {
@@ -94,8 +92,6 @@ function update_purchase_request_supplies_ids(element, parent)
       }
       element.setAttribute('idx','0');
       purchase_request_supply_ids.value = result;
-      purchase_request_supply_ids.innerHTML = result;
-      sub_quantity_in_total(quantity, parent); 
-      refresh_lign(parent);    
+      purchase_request_supply_ids.innerHTML = result;  
     }
 }   

@@ -31,7 +31,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order = PurchaseOrder.new(params[:purchase_order])
     @purchase_order.user_id = current_user.id
     if @purchase_order.save
-      flash[:notice] = "L'ordre d'achat a été créé(e) avec succès."
+      flash[:notice] = "L'ordre d'achat a été créé avec succès."
       redirect_to @purchase_order
     else
       render :action => "new"

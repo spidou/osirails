@@ -19,7 +19,7 @@ module PurchaseRequestsHelper
   
   def display_request_supply_add_button(purchase_request)
     return "" unless is_form_view? 
-   content_tag( :p, link_to_function "Ajouter une matiere premiere ou un consommable" do |page|
+   content_tag( :p, link_to_function "Ajouter une fourniture" do |page|
      page.insert_html :bottom, "purchase_request_supply_form", :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
                                                  :object  => PurchaseRequestSupply.new,
                                                  :locals  => { :purchase_request => purchase_request }

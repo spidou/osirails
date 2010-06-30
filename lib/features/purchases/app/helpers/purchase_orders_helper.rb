@@ -8,10 +8,11 @@ module PurchaseOrdersHelper
     return unless purchase_order.can_be_confirmed?
     text = "Confirmer l'ordre d'achats"
     message ||= " #{text}"
-    link_to( image_tag( "tick2_16x16.png",
+    link_to( image_tag( "tick_16x16.png",
                         :alt => text,
-                        :title => text ) + message,
-            purchase_order_confirm_path(purchase_order) )
+                        :title => (text + message)),
+                         purchase_order_confirm_path(purchase_order),
+                        :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.")
   end
 
   def display_purchase_order_add_button(message = nil)
@@ -102,7 +103,7 @@ module PurchaseOrdersHelper
   end
   
   def display_purchase_order_reference(purchase_order)
-    return "Aucune" unless purchase_order.reference
+    return "" unless purchase_order.reference
     purchase_order.reference
   end
   
@@ -118,32 +119,28 @@ module PurchaseOrdersHelper
         "Complété"
       when PurchaseOrder::STATUS_CANCELLED
         "Annulé"
-      else
-        "Impossible d'afficher le statut correspondant pour l'ordre d'achats"
     end
   end
   
   def display_purchase_order_current_status_date(purchase_order)
     case purchase_order.status
       when PurchaseOrder::STATUS_DRAFT
-        purchase_order.created_at ? purchase_order.created_at.humanize : "Aucune date de création"
+        purchase_order.created_at ? purchase_order.created_at.humanize : " date de création"
       when PurchaseOrder::STATUS_CONFIRMED
-        purchase_order.confirmed_at ? purchase_order.confirmed_at.humanize : "Aucune date de validation"
+        purchase_order.confirmed_at ? purchase_order.confirmed_at.humanize : " date de validation"
       when PurchaseOrder::STATUS_PROCESSING
-        purchase_order.processing_since ? purchase_order.processing_since.humanize : "Aucune date de début de traitement"
+        purchase_order.processing_since ? purchase_order.processing_since.humanize : " date de début de traitement"
       when PurchaseOrder::STATUS_COMPLETED
-        purchase_order.completed_at ? purchase_order.completed_at.humanize : "Aucune date de fin de traitement"
+        purchase_order.completed_at ? purchase_order.completed_at.humanize : " date de fin de traitement"
       when PurchaseOrder::STATUS_CANCELLED
-        purchase_order.cancelled_at ? purchase_order.cancelled_at.humanize : "Aucune date d'annulation"
-      else
-        "Impossible de trouver le statut correspondant pour l'ordre d'achats"
+        purchase_order.cancelled_at ? purchase_order.cancelled_at.humanize : " date d'annulation"
     end
   end
   
   def display_associated_purchase_requests(purchase_order)
     html = []
     associated_purchase_requests = purchase_order.get_associated_purchase_requests
-    return "Aucune" if associated_purchase_requests.empty?
+    return "" if associated_purchase_requests.empty?
     for purchase_request in associated_purchase_requests
       html << link_to(purchase_request.reference, purchase_request_path(purchase_request))
     end
@@ -161,11 +158,9 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_paid(purchase_order, display_pictures = false)
     if display_pictures
-      return image_tag( "cross_16x16.png", :alt => "Non payé", :title => "Non payé" ) unless purchase_order.paid
-      image_tag( "tick_16x16.png", :alt => "Payé", :title => "Payé" )
+      purchase_order.paid ? "oui" : "non" 
     else
-      return "Non payé" unless purchase_order.paid
-      "Payé"
+      purchase_order.paid ? "Payé" : "Non payé"
     end
   end
   

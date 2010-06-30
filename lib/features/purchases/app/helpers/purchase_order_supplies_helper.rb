@@ -39,7 +39,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_reference(purchase_order_supply)
-    return "Aucune" unless purchase_order_supply.supply.reference
+    return "" unless purchase_order_supply.supply.reference
     purchase_order_supply.supply.reference
   end
   
@@ -76,8 +76,6 @@ module PurchaseOrderSuppliesHelper
         "Remboursé"
       when PurchaseOrderSupply::STATUS_CANCELLED
         "Annulé"
-      else
-        "Impossible d'afficher le statut correspondant pour la commande"
     end
   end
   
@@ -95,15 +93,13 @@ module PurchaseOrderSuppliesHelper
         purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
       when PurchaseOrderSupply::STATUS_CANCELLED
         purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
-      else
-        "Impossible de trouver le statut correspondant pour la commande"
     end
   end
   
   def display_purchase_order_supply_associated_purchase_requests(purchase_order_supply)
     html = []
     associated_purchase_requests_supplies = purchase_order_supply.purchase_request_supplies
-    return "Aucune" if associated_purchase_requests_supplies.empty?
+    return "" if associated_purchase_requests_supplies.empty?
     for purchase_request_supply in associated_purchase_requests_supplies
       html << link_to(purchase_request_supply.purchase_request.reference, purchase_request_path(purchase_request_supply.purchase_request))
     end
@@ -112,7 +108,7 @@ module PurchaseOrderSuppliesHelper
   
     
   def display_purchase_order_supply_parcel_reference(purchase_order_supply)
-    return "Aucun" unless purchase_order_supply.parcel
+    return "" unless purchase_order_supply.parcel
     link_to( purchase_order_supply.parcel.reference, parcel_path(purchase_order_supply.parcel))
   end
   
@@ -122,7 +118,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_supplier_reference(purchase_order_supply)
-    return "Aucune" unless purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
+    return "" unless purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
     purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
   end
   

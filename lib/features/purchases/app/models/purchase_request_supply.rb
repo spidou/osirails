@@ -23,9 +23,9 @@ class PurchaseRequestSupply < ActiveRecord::Base
 
   
   def check_request_supply_status
-    return PurchaseRequest::STATUS_UNTREATED if self.untreated?  
-    return PurchaseRequest::STATUS_DURING_TREATMENT if self.during_treatment? 
-    return PurchaseRequest::STATUS_TREATED if self.treated? 
+    return "non traité" if self.untreated?  
+    return "en cours de traitement" if self.during_treatment? 
+    return "traité" if self.treated? 
   end
   
   def check_order_supply_status
