@@ -1,7 +1,7 @@
 class CreatePurchaseOrderSupplies < ActiveRecord::Migration
   def self.up
     create_table :purchase_order_supplies do |t|
-      t.references  :purchase_order, :supply, :parcel
+      t.references  :purchase_order, :supply, :parcel, :reshipped_purchase_order_supply
       t.integer     :cancelled_by, :quantity
       t.float       :taxes, :fob_unit_price
       t.string      :status, :supplier_reference, :supplier_designation

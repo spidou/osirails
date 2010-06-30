@@ -1110,11 +1110,12 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   end
 
   create_table "purchase_order_supplies", :force => true do |t|
-    t.integer  "purchase_order_id",    :limit => 11
-    t.integer  "supply_id",            :limit => 11
-    t.integer  "parcel_id",            :limit => 11
-    t.integer  "cancelled_by",         :limit => 11
-    t.integer  "quantity",             :limit => 11
+    t.integer  "purchase_order_id",                  :limit => 11
+    t.integer  "supply_id",                          :limit => 11
+    t.integer  "parcel_id",                          :limit => 11
+    t.integer  "reshipped_purchase_order_supply_id", :limit => 11
+    t.integer  "cancelled_by",                       :limit => 11
+    t.integer  "quantity",                           :limit => 11
     t.float    "taxes"
     t.float    "fob_unit_price"
     t.string   "status"
