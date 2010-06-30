@@ -54,13 +54,15 @@ class Parcel < ActiveRecord::Base
     shipped?
   end
   
-  #TODO
-  #def can_be_received?
-   # for purchase_order_supply in purchase_order_supplies
-     # direct? = purchase_order_supply.purchase_order.direct == "direct"
-    #end
-    #arrived? or direct?
-  #end
+  def direct?
+    for purchase_order_supply in purchase_order_supplies
+      return purchase_order_supply.purchase_order.direct == "direct"
+    end
+  end
+  
+  def can_be_received?
+    arrived? or direct?
+  end
   
   def ship
     if can_be_shipped?
