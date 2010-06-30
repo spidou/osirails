@@ -80,5 +80,9 @@ class PurchaseRequestSupply < ActiveRecord::Base
       suppliers_array
     end
   end
+  
+#  def validate
+#    !purchase_order_supplies.empty?
+#  end
 
 end

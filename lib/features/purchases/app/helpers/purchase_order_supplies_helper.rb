@@ -63,47 +63,69 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_status(purchase_order_supply)
-    case purchase_order_supply.status
-      when PurchaseOrderSupply::STATUS_UNTREATED
-        "Non traité"
-      when PurchaseOrderSupply::STATUS_PROCESSING
-        "En traitement"
-      when PurchaseOrderSupply::STATUS_SENT_BACK
-        "Renvoyé au fournisseur"
-      when PurchaseOrderSupply::STATUS_RESHIPPED
-        "Retourné par le fournisseur"
-      when PurchaseOrderSupply::STATUS_REIMBURSED
-        "Remboursé"
-      when PurchaseOrderSupply::STATUS_CANCELLED
-        "Annulé"
-      else
-        "Impossible d'afficher le statut correspondant pour la commande"
+#    case purchase_order_supply.status
+#      when PurchaseOrderSupply::STATUS_UNTREATED
+#        "Non traité"
+#      when PurchaseOrderSupply::STATUS_PROCESSING
+#        "En traitement"
+#      when PurchaseOrderSupply::STATUS_SENT_BACK
+#        "Renvoyé au fournisseur"
+#      when PurchaseOrderSupply::STATUS_RESHIPPED
+#        "Retourné par le fournisseur"
+#      when PurchaseOrderSupply::STATUS_REIMBURSED
+#        "Remboursé"
+#      when PurchaseOrderSupply::STATUS_CANCELLED
+#        "Annulé"
+#    end
+    if purchase_order_supply.was_untreated?
+      "Non traité"
+    elsif purchase_order_supply.was_processing?
+      "En traitement"
+    elsif purchase_order_supply.was_sent_back?
+      "Renvoyé au fournisseur"
+    elsif purchase_order_supply.was_reshipped?
+      "Retourné par le fournisseur"
+    elsif purchase_order_supply.was_reimbursed?
+      "Remboursé"
+    elsif purchase_order_supply.was_cancelled?
+      "Annulé"
     end
   end
   
   def display_purchase_order_supply_current_status_date(purchase_order_supply)
-    case purchase_order_supply.status
-      when PurchaseOrderSupply::STATUS_UNTREATED
-        purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
-      when PurchaseOrderSupply::STATUS_PROCESSING
-        purchase_order_supply.processing_since ? purchase_order_supply.processing_since.humanize : "Aucune date de début de traitement"
-      when PurchaseOrderSupply::STATUS_SENT_BACK
-        purchase_order_supply.sent_back_at ? purchase_order_supply.sent_back_at.humanize : "Aucune date de renvoi au fournisseur"
-      when PurchaseOrderSupply::STATUS_RESHIPPED
-        purchase_order_supply.reshipped_at ? purchase_order_supply.reshipped_at.humanize : "Aucune date de recolissage du fournisseur"
-      when PurchaseOrderSupply::STATUS_REIMBURSED
-        purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
-      when PurchaseOrderSupply::STATUS_CANCELLED
-        purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
-      else
-        "Impossible de trouver le statut correspondant pour la commande"
+#    case purchase_order_supply.status
+#      when PurchaseOrderSupply::STATUS_UNTREATED
+#        purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
+#      when PurchaseOrderSupply::STATUS_PROCESSING
+#        purchase_order_supply.processing_since ? purchase_order_supply.processing_since.humanize : "Aucune date de début de traitement"
+#      when PurchaseOrderSupply::STATUS_SENT_BACK
+#        purchase_order_supply.sent_back_at ? purchase_order_supply.sent_back_at.humanize : "Aucune date de renvoi au fournisseur"
+#      when PurchaseOrderSupply::STATUS_RESHIPPED
+#        purchase_order_supply.reshipped_at ? purchase_order_supply.reshipped_at.humanize : "Aucune date de recolissage du fournisseur"
+#      when PurchaseOrderSupply::STATUS_REIMBURSED
+#        purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
+#      when PurchaseOrderSupply::STATUS_CANCELLED
+#        purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
+#    end
+    if purchase_order_supply.was_untreated?
+      purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
+    elsif purchase_order_supply.was_processing?
+      purchase_order_supply.processing_since ? purchase_order_supply.processing_since.humanize : "Aucune date de début de traitement"
+    elsif purchase_order_supply.was_sent_back?
+      purchase_order_supply.sent_back_at ? purchase_order_supply.sent_back_at.humanize : "Aucune date de renvoi au fournisseur"
+    elsif purchase_order_supply.was_reshipped?
+      purchase_order_supply.reshipped_at ? purchase_order_supply.reshipped_at.humanize : "Aucune date de recolissage du fournisseur"
+    elsif purchase_order_supply.was_reimbursed?
+      purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
+    elsif purchase_order_supply.was_cancelled?
+      purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
     end
   end
   
   def display_purchase_order_supply_associated_purchase_requests(purchase_order_supply)
     html = []
     associated_purchase_requests_supplies = purchase_order_supply.purchase_request_supplies
-    return "Aucune" if associated_purchase_requests_supplies.empty?
+    return if associated_purchase_requests_supplies.empty?
     for purchase_request_supply in associated_purchase_requests_supplies
       html << link_to(purchase_request_supply.purchase_request.reference, purchase_request_path(purchase_request_supply.purchase_request))
     end
@@ -112,7 +134,7 @@ module PurchaseOrderSuppliesHelper
   
     
   def display_purchase_order_supply_parcel_reference(purchase_order_supply)
-    return "Aucun" unless purchase_order_supply.parcel
+    return unless purchase_order_supply.parcel
     link_to( purchase_order_supply.parcel.reference, parcel_path(purchase_order_supply.parcel))
   end
   
@@ -122,7 +144,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_supplier_reference(purchase_order_supply)
-    return "Aucune" unless purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
+    return unless purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
     purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
   end
   

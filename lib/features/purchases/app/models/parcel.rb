@@ -1,19 +1,18 @@
 class Parcel < ActiveRecord::Base
   
-  #relationships
   has_many :purchase_order_supplies
   
   STATUS_PROCESSING = nil
   STATUS_SHIPPED = "shipped"
+  STATUS_ARRIVED = "arrived"
   STATUS_RECEIVED = "received"
-  STATUS_RECOVERED = "recovered"
   
   validates_presence_of :conveyance, :state
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED, STATUS_RECEIVED ]
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED, STATUS_ARRIVED, STATUS_RECEIVED ]
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED ], :if => :was_processing?
-  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED, STATUS_RECOVERED ], :if => :was_received?
-  validates_inclusion_of :status, :in => [ STATUS_RECOVERED ], :if => :was_recovered?
+  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_ARRIVED, STATUS_RECEIVED ], :if => :was_shipped?
+  validates_inclusion_of :status, :in => [ STATUS_ARRIVED, STATUS_RECEIVED], :if => :was_ARRIVED?
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
   
   def processing?
     status = STATUS_PROCESSING
@@ -23,12 +22,12 @@ class Parcel < ActiveRecord::Base
     status = STATUS_SHIPPED
   end
   
-  def received?
-    status = (STATUS_RECEIVED or STATUS_RECOVERED)
+  def arrived?
+    status = STATUS_ARRIVED
   end
   
-  def recovered?
-    status = STATUS_RECOVERED
+  def received?
+    status = STATUS_RECEIVED
   end
   
   def was_processing?
@@ -39,24 +38,30 @@ class Parcel < ActiveRecord::Base
     status_was = STATUS_SHIPPED
   end
   
-  def was_received?
-    status_was = STATUS_RECEIVED
+  def was_arrived?
+    status_was = STATUS_ARRIVED
   end
   
-  def was_recovered?
-    status_was = STATUS_RECOVERED
+  def was_received?
+    status_was = STATUS_RECEIVED
   end
   
   def can_be_shipped?
     processing?
   end
   
-  def can_be_received?
+  def can_be_arrived?
     shipped?
   end
   
-  def can_be_recovered?
-    received?
+  def direct?
+    for purchase_order_supply in purchase_order_supplies
+      return purchase_order_supply.purchase_order.direct == "direct"
+    end
+  end
+  
+  def can_be_received?
+    arrived? or direct?
   end
   
   def ship
@@ -69,20 +74,20 @@ class Parcel < ActiveRecord::Base
     end
   end
 
-  def receive
-    if can_be_received?
-      self.status = STATUS_RECEIVED
-      self.received_at = Date.today
+  def arrive
+    if can_be_arrived?
+      self.status = STATUS_ARRIVED
+      self.recovered_at = Date.today
       self.save
     else
       false
     end
   end
-  
-  def recover
-    if can_be_recovered?
-      self.status = STATUS_RECOVERED
-      self.recovered_at = Date.today
+
+  def receive
+    if can_be_received?
+      self.status = STATUS_RECEIVED
+      self.received_at = Date.today
       self.save
     else
       false

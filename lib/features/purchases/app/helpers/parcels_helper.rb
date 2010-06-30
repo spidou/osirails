@@ -10,10 +10,10 @@ module ParcelsHelper
         'En traitement'
       when Parcel::STATUS_SHIPPED
         'Envoyé'
+      when Parcel::STATUS_ARRIVED
+        'Arrivé'
       when Parcel::STATUS_RECEIVED
         'Reçu'
-      when Parcel::STATUS_RECOVERED
-        'Récupéré'
       else
         "Impossible d'afficher le statut correspondant pour le colis"
     end
@@ -25,12 +25,10 @@ module ParcelsHelper
         parcel.created_at ? parcel.created_at.humanize : "Aucune date de début de traitement"
       when Parcel::STATUS_SHIPPED
         parcel.shipped_at ? parcel.shipped_at.humanize : "Aucune date de postage"
-      when Parcel::STATUS_RECEIVED
-        parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
       when Parcel::STATUS_RECOVERED
         parcel.recovered_at ? parcel.recovered_at.humanize : "Aucune date de récupération"
-      else
-        "Impossible de trouver le statut correspondant pour le colis"
+      when Parcel::STATUS_RECEIVED
+        parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
     end
   end
   
