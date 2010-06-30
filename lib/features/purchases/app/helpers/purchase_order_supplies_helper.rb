@@ -39,7 +39,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_reference(purchase_order_supply)
-    return "Aucune" unless purchase_order_supply.supply.reference
+    return "" unless purchase_order_supply.supply.reference
     purchase_order_supply.supply.reference
   end
   
@@ -135,6 +135,7 @@ module PurchaseOrderSuppliesHelper
     
   def display_purchase_order_supply_parcel_reference(purchase_order_supply)
     return unless purchase_order_supply.parcel
+    return "" unless purchase_order_supply.parcel
     link_to( purchase_order_supply.parcel.reference, parcel_path(purchase_order_supply.parcel))
   end
   
