@@ -1,13 +1,12 @@
 function mark_number_for_destroy(id) {
-  $(id).next('.should_destroy').value = 1;
+  $(id).next('.should_destroy_number').value = 1;
   $(id).up('.number').hide();
 }
 
 function toggle_more_less_button(link, more_text, less_text)
 {
-  element = $(link).previous()
-  (element.visible() ? element.blindUp() : element.blindDown())
-  
+  var element = $(link).previous();
+  (element.visible() ? element.blindUp() : element.blindDown());
   $(link).innerHTML = ($(link).previous().visible() ? less_text : more_text);
 }
 
@@ -16,6 +15,6 @@ function toggle_more_less_button(link, more_text, less_text)
 //
 function get_contact_fake_id(element)
 {
-  if(element.up('.contact'))
+  if(element.parentNode.previous('.number').down('.has_number_id') && element.up('.contact'))
     element.parentNode.previous('.number').down('.has_number_id').value = element.up('.contact').down('.contact_id').value;
 }

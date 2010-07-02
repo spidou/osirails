@@ -1,7 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
 <% end -%>
 
 <%
@@ -9,6 +7,7 @@ require_locals form
 
 invoice                 = invoice_header
 order                   = invoice.order
+contacts_owners         = order.customer.head_office_and_establishments
 default_bill_to_address = order.customer.bill_to_address
 quote                   = invoice.associated_quote
 delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note)
@@ -47,7 +46,9 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
       <h3>Contact de facturation</h3>
       <p>
         <%= label :select_contacts, "À l'attention de " %>
-        <%= display_contact_picker(invoice, invoice.order_and_customer_contacts, :form => form, :key => "invoice_contact") %>
+        <%= display_contact_picker(invoice, invoice.order_and_customer_contacts, :form => form,
+                                                                                 :contact_key => "invoice_contact",
+                                                                                 :contacts_owners => contacts_owners) %>
       </p>
     </div>
   </div>

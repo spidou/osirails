@@ -1,13 +1,11 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
-  <%= javascript_include_tag 'has_contacts/contact' %>
 <% end -%>
 
 <%
 quote = quote_header
 order = quote.order
+contacts_owners = order.customer.head_office_and_establishments
 default_bill_to_address = order.customer.bill_to_address
 default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
 %>
@@ -30,7 +28,7 @@ default_ship_to_address = order.ship_to_addresses.first.address # TODO replace t
       <h3>Contact</h3>
       <p>
         <%= label :select_contacts, "À l'attention de " %>
-        <%= display_contact_picker(quote, order.all_contacts_and_customer_contacts, :form => form, :key => 'quote_contact') %>
+        <%= display_contact_picker(quote, order.all_contacts_and_customer_contacts, :form => form, :contact_key => 'quote_contact', :contacts_owners => contacts_owners) %>
       </p>
     </div>
   </div>

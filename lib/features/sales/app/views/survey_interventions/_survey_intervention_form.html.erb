@@ -1,5 +1,6 @@
 <%
 intervention = survey_intervention_form
+contacts_owners = intervention.survey_step.order.customer.head_office_and_establishments
 style_attr = 'style="display:none"' unless intervention.new_record? or !intervention.errors.empty? or intervention.should_update?
 %>
 
@@ -20,7 +21,9 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
     </p>
     <p>
       <%= form.label :survey_intervention_contact_id %>
-      <%= display_contact_picker(intervention, intervention.order_and_customer_contacts, :form => form, :key => 'survey_intervention_contact')%>
+      <%= display_contact_picker(intervention, intervention.order_and_customer_contacts, :form => form,
+                                                                                         :contact_key => 'survey_intervention_contact',
+                                                                                         :contacts_owners => contacts_owners)%>
     </p>
     <p>
       <%= form.label :comment %>

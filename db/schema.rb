@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
     t.string   "type"
     t.string   "siret_number"
     t.boolean  "activated",                                  :default => true
+    t.boolean  "hidden"
     t.string   "logo_file_name"
     t.string   "logo_content_type"
     t.integer  "logo_file_size",               :limit => 11

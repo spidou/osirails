@@ -1,9 +1,14 @@
-<% require_locals establishments_owner %>
-<% owner_type = establishments_owner.class.name.downcase %>
+<%
+  require_locals establishments_owner
+  owner_type = establishments_owner.class.name.downcase
+  establishment = establishment_in_one_line
+  
+  confim_text = "'Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.'"
+%>
 
 <div class="establishment resource" <%= "style=\"display:none\"" if establishment_in_one_line.should_destroy? %> >
-<% fields_for "#{owner_type}[establishment_attributes][]", establishment = establishment_in_one_line do %>
-  <p id="establishment_<%= establishment.id %>">
+<% fields_for "#{owner_type}[establishment_attributes][]", establishment do %>
+  <p id="establishment_<%= establishment.id %>_in_one_line">
     <% unless establishment.new_record? %>
       <%= image_tag 'warning_14x14.png' if !establishment.errors.empty? %>
       
@@ -13,8 +18,16 @@
       
       <%= link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view? and Establishment.can_edit?(current_user) %>
       
+      <% if is_form_view? and Establishment.can_hide?(current_user) %>
+        <%= link_to_function "Supprimer",
+          "$('establishment_#{ establishment.id }_new_contacts').innerHTML = '';
+          hide_resource_and_sub_resources(this, $('establishment_#{ establishment.id }_contacts_list'), #{ confim_text })" %>
+      <% end %>
+      
       <% if is_form_view? and Establishment.can_delete?(current_user) %>
-        <%= link_to_function "Supprimer", "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')) mark_resource_for_destroy(this)" %>
+        <%= link_to_function "Supprimer définitivement",
+          "$('establishment_#{ establishment.id }_new_contacts').innerHTML = '';
+          destroy_resource_and_sub_resources(this, $('establishment_#{ establishment.id }_contacts_list'), #{ confim_text })" %>
       <% end %>
     <% end %>
     

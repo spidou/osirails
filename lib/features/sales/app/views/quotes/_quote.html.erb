@@ -12,7 +12,7 @@ quote_headers = { :quote_header => "Entête",
                   :quote_footer => "Conditions commerciales",
                   :quote_additional_informations => "Informations supplémentaires"}
 
-quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
+quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) ? ' errors' : '',
                   :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
                   :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:deposit) ? ' errors' : '' }
 

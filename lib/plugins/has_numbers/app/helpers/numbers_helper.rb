@@ -1,8 +1,8 @@
 module NumbersHelper
 
-  def display_numbers(numbers_owner)
+  def display_numbers(numbers_owner, params_name = nil)
     html = "<div class='numbers'>"    
-    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner})
+    html += render(:partial => 'numbers/number', :collection => numbers_owner.numbers , :locals => { :numbers_owner => numbers_owner, :params_name => params_name})
     html += "<p>#{ add_number_link(numbers_owner) if is_form_view? }</p>"
     html += "</div>"
   end 
@@ -12,7 +12,7 @@ module NumbersHelper
     more = 'Voir plus ...'
     less = 'Voir moins ...'
     
-    html = "<div>"
+    html = "<div class='formatted_numbers_list' >"
     limit.times do |i|
       html += display_full_phone_number(numbers[i]) + "<br />" if numbers[i]
     end

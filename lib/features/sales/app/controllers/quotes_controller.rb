@@ -3,6 +3,8 @@ class QuotesController < ApplicationController
   helper :orders, :contacts, :numbers
   # method_permission :edit => ['enable', 'disable']
   
+  before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
+  
   after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
   
   acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
@@ -46,6 +48,7 @@ class QuotesController < ApplicationController
   
   # POST /orders/:order_id/:step/quotes
   def create
+#    raise 'r'
     @quote = @order.quotes.build # Quote#quote_item_attributes= needs order_id, so we build the quote from the order to have order_id before all other attributes
     @quote.attributes = params[:quote]
     
@@ -178,6 +181,18 @@ class QuotesController < ApplicationController
   end
   
   private
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_nested_attributes # checklist_responses, documents
+
+      # hack for has_contact :quote_contact
+      if params[:quote][:quote_contact_attributes] and params[:contact]
+        params[:quote][:quote_contact_attributes][:number_attributes] = params[:contact][:number_attributes]
+      end
+      params.delete(:contact)
+    end
+    
     # if quote has errors, the estimate step has also an error to prevent updating of the step status
     def add_error_in_step_if_quote_has_errors #TODO this method seems to be unreached and untested!
       unless @quote.errors.empty?

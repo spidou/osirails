@@ -86,11 +86,19 @@ class OrdersController < ApplicationController
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
     def hack_params_for_ship_to_address_addresses
-      if params[:order] and params[:order][:establishment_attributes] and params[:establishment] and params[:establishment][:address_attributes]
-        params[:order][:establishment_attributes].each_with_index do |establishment_attributes, index|
-          establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+      if params[:order]
+        if params[:order][:establishment_attributes] and params[:establishment] and params[:establishment][:address_attributes]
+          params[:order][:establishment_attributes].each_with_index do |establishment_attributes, index|
+            establishment_attributes[:address_attributes] = params[:establishment][:address_attributes][index]
+          end
+          params.delete(:establishment)
         end
-        params.delete(:establishment)
+        
+        # hack for has_contact :order_contact
+        if params[:order][:order_contact_attributes] and params[:contact]
+          params[:order][:order_contact_attributes][:number_attributes] = params[:contact][:number_attributes]
+        end
+        params.delete(:contact)
       end
     end
 end

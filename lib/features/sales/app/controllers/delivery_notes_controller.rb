@@ -5,6 +5,7 @@ class DeliveryNotesController < ApplicationController
   acts_as_step_controller :step_name => :delivery_step, :skip_edit_redirection => true
   
   before_filter :find_delivery_note
+  before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
   
   #after_filter :add_error_in_step_if_delivery_note_has_errors, :only => [ :create, :update ]
   
@@ -204,6 +205,18 @@ class DeliveryNotesController < ApplicationController
   end
   
   private
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_nested_attributes # checklist_responses, documents
+
+      # hack for has_contact :delivery_note_contact
+      if params[:delivery_note][:delivery_note_contact_attributes] and params[:contact]
+        params[:delivery_note][:delivery_note_contact_attributes][:number_attributes] = params[:contact][:number_attributes]
+      end
+      params.delete(:contact)
+    end
+    
     ## if delivery_note has errors, the delivery step has also an error to prevent updating of the step status
     #def add_error_in_step_if_delivery_note_has_errors
     #  unless @delivery_note.errors.empty?

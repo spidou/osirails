@@ -23,8 +23,8 @@ module ContactsHelper
     render_new_contacts_list(contacts_owner)
   end
   
-  def display_contact_picker(contact_owner, contacts, options = {})
-    render :partial => 'contacts/contact_picker', :object => contact_owner, :locals => options.merge({ :contact_list => contacts })
+  def display_contact_picker(contact_picker, contacts, options = {})
+    render :partial => 'contacts/contact_picker', :object => contact_picker, :locals => options.merge({ :contact_list => contacts })
   end
   
   def display_add_contact_button_for_owner(contacts_owner)
@@ -56,9 +56,35 @@ module ContactsHelper
     html << "</p>"
   end
   
+  # Method to display a button to add a new contact from a contact picker form
+  # +contacts_owners+ => collection of +has_contact+ in which the user will have the choice when creating a new contact into contact picker
+  # +contact_picker+  => the object that will handle the contact.id
+  # +div_id+          => div where to add the partial
+  # +contact_key+             => like in (has_contact :contact_key) permit to retrieve how the contact is referenced into contact_picker
+  #
+  def display_new_contact_button_for_contact_picker(contact_picker, div_id, contacts_owners, contact_key)
+    message = "Ajouter un nouveau contact" 
+    html = link_to_function(image_tag("add_16x16.png", :alt => message, :title => message)) do |page|
+      partial = escape_javascript(render(:partial => 'contacts/contact_picker_form',
+                                         :object => Contact.new,
+                                         :locals => { :contact_picker => contact_picker,
+                                                      :contacts_owners => contacts_owners,
+                                                      :contact_key => contact_key,
+                                                      :options => {:establishment => {:value_method => :id, :text_method => :name }} }
+                                         ))
+      page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
+      page << "this.parentNode.toggle('appear')"
+    end
+    html << "</p>"
+  end
+  
+  def display_new_contact_cancel_button_for_contact_picker(div_id)
+    html = "<p>"
+    html << link_to_function( "Annuler la création du contact", "cancel_creation_of_new_resource(this); this.up('.contact').previous('.#{ div_id }').toggle('appear');")
+    html << "</p>"
+  end
   
   
-
   def display_contact_edit_button(contact)
     return unless is_form_view? and Contact.can_edit?(current_user)
     link_to_function "Modifier", "mark_resource_for_update(this)"
@@ -67,13 +93,13 @@ module ContactsHelper
   def display_contact_hide_button(contact)
     return unless is_form_view? and Contact.can_hide?(current_user)
     message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
-    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_hide(this)"
+    link_to_function "Supprimer", "if (confirm(#{ message })) mark_resource_for_hide(this)"
   end
   
   def display_contact_delete_button(contact)
     return unless is_form_view? and Contact.can_delete?(current_user)
     message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
-    link_to_function "Supprimer définitivement", "if (confirm(#{message})) mark_resource_for_destroy(this)"
+    link_to_function "Supprimer définitivement", "if (confirm(#{ message })) mark_resource_for_destroy(this)"
   end
   
   def display_contact_close_form_button(contact)

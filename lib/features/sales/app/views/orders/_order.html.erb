@@ -1,9 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
-  <%= javascript_include_tag 'core/has_resources/has_resources' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
   <%= javascript_include_tag 'sales/ship_to_addresses_picker' %>
 <% end -%>
 
@@ -35,7 +31,8 @@
     <h3>Client</h3>
     <p>
       <%= form.label :order_contact %>
-      <%= display_contact_picker(order, order.customer.contacts, :form => form, :key => "order_contact") %>
+      <%= display_contact_picker(order, order.customer.contacts, :form => form, :contact_key => "order_contact",
+                                                                 :contacts_owners => order.customer.head_office_and_establishments ) %>
     </p>
     
     <p>

@@ -9,7 +9,7 @@ class Customer < Third
   belongs_to :creator, :class_name => 'User'
   
   has_one  :head_office
-  has_many :establishments, :conditions => [ "establishments.type IS NULL" ]
+  has_many :establishments, :conditions => ['establishments.type IS NULL and ( hidden = ? or hidden IS NULL )', false]
   
   named_scope :activates, :conditions => { :activated => true }
   
@@ -103,6 +103,8 @@ class Customer < Third
     establishments.each do |e|
       if e.should_destroy?
         e.destroy
+      elsif e.should_hide?
+        e.hide
       elsif e.should_update?
         e.save(false)
       end

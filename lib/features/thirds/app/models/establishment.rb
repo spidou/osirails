@@ -5,7 +5,7 @@ class Establishment  < ActiveRecord::Base
   
   include SiretNumber
   
-  has_permissions :as_business_object
+  has_permissions :as_business_object, :additional_class_methods => [ :hide ]
   
   has_address   :address, :one_or_many => :many
   has_contacts
@@ -26,6 +26,9 @@ class Establishment  < ActiveRecord::Base
   
   # define if the object should be destroyed (after clicking on the remove button via the web site) # see the /customers/1/edit
   attr_accessor :should_destroy
+  
+  # the same as above but do not destroy the object. It's marked as hidden.
+  attr_accessor :should_hide
   
   # define if the object should be updated 
   # should_update = 1 if the form is visible # see the /customers/1/edit
@@ -57,6 +60,21 @@ class Establishment  < ActiveRecord::Base
   
   def name_and_full_address
     @name_and_full_address ||= "#{name} (#{full_address})"
+  end
+  
+  def can_be_hidden?
+    !new_record?
+  end
+  
+  def hide
+    if can_be_hidden?
+      self.hidden = true 
+      self.save
+    end
+  end
+  
+  def should_hide?
+    should_hide.to_i == 1
   end
   
   def should_destroy?

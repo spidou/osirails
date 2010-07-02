@@ -15,6 +15,7 @@ force_show_view ||= false
       <%= content_tag(:span, h(contact.job)) + content_tag(:br) unless contact.job.blank? %>
       <%= content_tag(:span, h(contact.email)) + content_tag(:br) unless contact.email.blank? %>
       <%= content_tag(:span, display_first_numbers(contact, 3) ) %>
+      <%= content_tag(:em, "Ce contact a été supprimé et n'est donc plus disponible dans la liste de choix.") if contact.hidden %>
       <% if is_form_view? and !force_show_view %>
         <%= display_contact_edit_button(contact) %>
         <%= display_contact_hide_button(contact) %>

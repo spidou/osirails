@@ -56,7 +56,7 @@ module HasReference
   module InstanceMethods  
     
     # Method to generate unique reference according to the calling model
-    # the calling model must have a configured patter into sales/config.yml
+    # the calling model must have a configured pattern into sales/config.yml
     #
     # === Options :
     #
@@ -99,7 +99,7 @@ module HasReference
     #
     #   === example
     #   pattern = "$good_model"
-    #   # => "good_model_reference"
+    #   # => good_model.reference
     #   pattern = "$bad_model"
     #   # => "$bad_model"
     #

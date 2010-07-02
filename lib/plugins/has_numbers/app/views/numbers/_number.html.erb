@@ -4,11 +4,12 @@
 
 <%
   require_locals numbers_owner
-  hack_params ||= numbers_owner.is_a?(Contact)  # used to determine, in customer form, if an hidden field is needed to link the number to his respective contact, It may be deleted when the bug (see customer_controller) will be resolved.
+  params_name ||= numbers_owner.class.name.downcase # permit to pass another params_name, for example into contact_picker
+  hack_params ||= numbers_owner.is_a?(Contact)  # used to determine, in customer form, if an hidden field is needed to link the number to his respective contact, It may be deleted when the bug (see customer_controller) will be resolved. Also used for new contact form into contact_picker.
 %>
 
 <div class="number">
-<% fields_for "#{numbers_owner.class.name.downcase}[number_attributes][]", number do |form| %>
+<% fields_for "#{ params_name }[number_attributes][]", number do |form| %>
 	<%= form.error_messages %>
 	<p>
 	  <% if form.form_view? %>
@@ -20,7 +21,7 @@
 	    <%= number.new_record? ? remove_number_link : remove_old_number_link %>
 	    <%= form.hidden_field("has_number_id", :value => numbers_owner.id, :index => nil, :class => 'has_number_id') if hack_params %>
 	    <%= form.hidden_field :id, :index => nil %>
-		  <%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy' %>
+		  <%= form.hidden_field :should_destroy, :index => nil , :class => 'should_destroy_number' %>
 	  <% else %>
 	    <strong><%= display_full_phone_number(number) %></strong>
 	  <% end %>

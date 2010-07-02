@@ -1,7 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
 <% end -%>
 
 <%
@@ -9,6 +7,7 @@ require_locals form
 
 delivery_note           = delivery_note_header
 order                   = delivery_note.order
+contacts_owners         = order.customer.head_office_and_establishments
 quote                   = delivery_note.associated_quote
 default_ship_to_address = order.signed_quote.ship_to_address
 %>
@@ -34,7 +33,7 @@ default_ship_to_address = order.signed_quote.ship_to_address
       <h3>Contact de livraison</h3>
       <p>
         <%= label :select_contacts, "À l'attention de " %>
-        <%= display_contact_picker(delivery_note, order.all_contacts_and_customer_contacts, :form => form, :key => 'delivery_note_contact') %>
+        <%= display_contact_picker(delivery_note, order.all_contacts_and_customer_contacts, :form => form, :contact_key => 'delivery_note_contact', :contacts_owners => contacts_owners) %>
       </p>
     </div>
   </div>

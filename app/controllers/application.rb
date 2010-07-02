@@ -108,9 +108,13 @@ class ApplicationController < ActionController::Base
     
     # Method to remove fake ids that become useless after params hack
     #
-    def remove_fake_ids(collection)
-      collection.each do |element|
-        element[:id] = nil if is_a_fake_id?(element[:id])
+    def remove_fake_ids(params)
+      if params.is_a?(Array)
+        params.each do |element|
+          element[:id] = nil if is_a_fake_id?(element[:id])
+        end
+      elsif params.is_a?(Hash)
+        params[:id] = nil if is_a_fake_id?(params[:id])
       end
     end
     ######################################################################
