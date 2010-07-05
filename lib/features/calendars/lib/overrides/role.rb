@@ -1,13 +1,4 @@
-module Osirails
-  module ContextualMenu
-    class Section
-      @@section_titles.update({ :calendar => "Calendrier" })
-    end
-  end
-end
-
-require_dependency 'user'
-require_dependency 'role'
+require_dependency 'app/models/role'
 
 class Role
   has_many :document_type_permissions, :class_name => "Permission",
@@ -29,8 +20,4 @@ class Role
         end
       end
     end
-end
-
-class User 
-  has_one :calendar
 end

@@ -1,12 +1,4 @@
-module Osirails
-  module ContextualMenu
-    class Section
-      @@section_titles.update({ :content_history => "Historique" })
-    end
-  end
-end
-
-require_dependency 'menu'
+require_dependency 'app/models/menu'
 
 class Menu
   has_one :content

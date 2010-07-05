@@ -161,8 +161,7 @@ class ApplicationController < ActionController::Base
     def load_features_overrides
       unless !defined?($activated_features_path)
         ($activated_features_path).each do |feature_path|
-          override_path = File.join(feature_path, "overrides.rb")
-          load override_path if File.exists?(override_path)
+          Dir["#{feature_path}/lib/overrides/*.rb"].each{ |file| load file }
         end
       else
         raise "global variable $activated_features_path is not instanciated"

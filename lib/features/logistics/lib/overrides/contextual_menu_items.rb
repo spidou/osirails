@@ -6,10 +6,3 @@ module Osirails
     end
   end
 end
-
-require_dependency 'supplier'
-
-class Supplier
-  has_many :supplier_supplies
-  has_many :supplies, :through => :supplier_supplies
-end

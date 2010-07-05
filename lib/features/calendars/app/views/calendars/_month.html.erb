@@ -24,6 +24,7 @@
 		</div>
 	</div>
 </div>
+
 <script type="text/javascript">
-calendar_init(<%= params[:id_or_name] %>, 'month', <%= @calendar.can_list?(current_user) %>, <%= @calendar.can_view?(current_user) %>, <%= @calendar.can_add?(current_user) %>, <%= @calendar.can_edit?(current_user) %>, <%= @calendar.can_delete?(current_user) %>, "<%= navigation_before(@date) %>", "<%= navigation('day') %>", "<%= navigation('week') %>", "<%= navigation('month') %>", "<%= navigation_after(@date) %>", "<%= get_events_link %>", "<%= form_authenticity_token %>");
+  calendar_init('<%= params[:id_or_name] %>', 'month', '<%= @calendar.can_list?(current_user) %>', '<%= @calendar.can_view?(current_user) %>', '<%= @calendar.can_add?(current_user) %>', '<%= @calendar.can_edit?(current_user) %>', '<%= @calendar.can_delete?(current_user) %>', '<%= navigation_before(@date) %>', '<%= navigation('day') %>', '<%= navigation('week') %>', '<%= navigation('month') %>', '<%= navigation_after(@date) %>', '<%= get_events_link %>', '<%= form_authenticity_token %>');
 </script>

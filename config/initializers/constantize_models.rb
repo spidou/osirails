@@ -6,8 +6,8 @@
 ## TODO tell me if you have a solution to solve this recurrent problem
 
 begin
-  unless !defined?($activated_features_path)
-    ($activated_features_path).each do |feature_path|
+  unless !defined?($ordered_features_path)
+    ($ordered_features_path).each do |feature_path|
       Dir.glob(File.join(feature_path, "app", "models", "*.rb")).each do |model|
         if File.exists?(model)
           class_name = File.basename(model).chomp(File.extname(model)).camelize

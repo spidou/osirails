@@ -1,10 +1,4 @@
-require_dependency 'service'
-require_dependency 'application_helper'
-
-class Service
-  has_many :memorandums_services
-  has_many :memorandums, :through => :memorandums_services
-end
+require_dependency 'app/helpers/application_helper'
 
 module ApplicationHelper
   # This method permit to diplay memorandums under banner

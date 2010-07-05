@@ -84,4 +84,17 @@ class ProductReferencesController < ApplicationController
 #    redirect_to :controller => 'product_reference_manager', :action => 'index'
 #  end
   
+  def auto_complete_for_product_reference_reference
+    #OPTMIZE use one sql request instead of multiple requests (using has_search_index once it will be improved to accept by_values requests)
+    
+    keywords = params[:product_reference][:reference].split(" ").collect(&:strip)
+    @items = []
+    keywords.each do |keyword|
+      result = ProductReference.search_with( { 'reference' => keyword, 'name' => keyword, 'description' => keyword, 'product_reference_category.name' => keyword, 'product_reference_category.parent.name' => keyword, :search_type => :or })
+      @items = @items.empty? ? result : @items & result
+    end
+    
+    render :partial => 'shared/search_product_reference_auto_complete', :object => @items, :locals => { :fields => "reference designation", :keywords => keywords }
+  end
+  
 end
