@@ -34,7 +34,7 @@ class Alarm < ActiveRecord::Base
   validates_presence_of :event, :description, :email_to
   validates_numericality_of :do_alarm_before
   validates_numericality_of :duration,    :allow_nil => true
-  validates_format_of :email_to,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :email_to,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'email est invalide"
   
   attr_accessor :should_destroy
   

@@ -37,7 +37,7 @@ ul#tool_types li a img {
   border: 1px solid gray;
   background-color: #eaeaea;
   display: inline-block;
-  width: 390px;
+  width: 410px;
   padding: 1px;
   min-height: 170px;
   margin: 10px;
@@ -67,14 +67,15 @@ ul#tool_types li a img {
   border-bottom: 1px solid gray;
   position: relative;
   color: black;
-  right: 1px;
+  left: 4px;
+  bottom: 1px;
 }
 
 
 .actions {
   float: right;
   position: relative ;
-  left: 10px;
+  left: 15px;
   top: 2px;
   width: 75px;
 }
