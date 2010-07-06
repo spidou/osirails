@@ -16,7 +16,7 @@
         
         <%= link_to_remote "Ajouter", :update => "purchase_order_supply_form",
                                       :with => "'supply_id='+$('add_this_supply_reference_id').value+'&supplier_id='+$('supplier_id').value", 
-                                      :url => recup_supply_path,
+                                      :url => get_supply_path,
                                       :html => { :method => :get },
                                       :position => "bottom",
                                       :condition => "can_add_supply()",

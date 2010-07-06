@@ -23,6 +23,14 @@ function can_add_supply()
   return true; 
 }
 
+function can_add_request_supply()
+{
+  var supply_id = $('add_this_supply_reference_id').value
+  
+  if (!supply_id)
+    return false;
+  return true; 
+}
 
 function update_all_total()
 {

@@ -64,7 +64,7 @@ class PurchaseOrdersController < ApplicationController
     render :partial => 'purchase_orders/search_supplier_name_auto_complete', :object => @items, :locals => { :fields => "name", :keywords => keywords }
   end
   
-  def recup_supply
+  def get_supply
     @supply = Supply.find(params[:supply_id])
     @supplier = Supplier.find(params[:supplier_id])
     @purchase_order_supply = PurchaseOrderSupply.new

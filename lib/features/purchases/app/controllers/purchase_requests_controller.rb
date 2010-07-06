@@ -62,4 +62,11 @@ class PurchaseRequestsController < ApplicationController
     end
   end
   
+  def get_request_supply
+    @supply = Supply.find(params[:supply_id])
+    @purchase_request_supply = PurchaseRequestSupply.new
+    @purchase_request_supply.supply_id = params[:supply_id]
+    render :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
+                                                 :object  => @purchase_request_supply
+  end
 end
