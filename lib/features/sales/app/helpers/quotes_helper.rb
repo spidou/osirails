@@ -156,6 +156,7 @@ module QuotesHelper
       last_item.visual_effect :highlight
       
       page << "update_up_down_links($('quote_items_body'))"
+      page << "initialize_autoresize_text_areas()"
     end
   end
   
