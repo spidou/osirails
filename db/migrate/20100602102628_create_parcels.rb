@@ -2,8 +2,8 @@ class CreateParcels < ActiveRecord::Migration
   def self.up
     create_table :parcels do |t|
       t.string   :reference, :status, :conveyance
-      t.datetime :previsional_delivery_date, :shipped_at, :received_at, :recovered_at, :delivery_date
-      
+      t.datetime :previsional_delivery_date, :shipped_at, :received_by_supplier, :received_at, :cancelled_at, :delivery_date
+
       t.timestamps
     end
   end
@@ -12,3 +12,4 @@ class CreateParcels < ActiveRecord::Migration
     drop_table :parcels
   end
 end
+

@@ -20,10 +20,10 @@ menus:
         position: 1
         children:
           pending_purchase_orders:
-            title: "Liste des ordres d'achats non fermés"
+            title: "Ordres d'achats en cours"
             position: 1
           closed_purchase_orders:
-            title: "Liste des ordres d'achats fermés"
+            title: "Ordres d'achats terminés"
             position: 2
       purchase_requests:
         title: "Gestion des demandes d'achats"
@@ -33,3 +33,6 @@ configurations:
   purchase_request_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour une demande d'achat"
     value: "%y%m$number(3)"
+  purchase_order_reference_pattern:
+    description: "Modèle permettant la génération du numéro de référence unique pour un ordre d'achat"
+    value: "PO%y%m$number(3)"

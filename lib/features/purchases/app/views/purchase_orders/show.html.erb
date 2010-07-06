@@ -1,10 +1,13 @@
-<h1>Liste des ordres d'achats en attente de traitement</h1>
+<%= generate_purchase_order_contextual_menu_partial %>
+
+<h1>Ordre d'achats</h1>
 <div>
   <h2>Informations</h2>
   
   <p><b>- R&eacute;f&eacute;rence : </b><strong><%= display_purchase_order_reference(@purchase_order) %></strong></p>
   <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong></p>
   <p><b>- Fournisseur : </b><strong><%= @purchase_order.supplier.name %></strong></p>
+  <p><b>- Origine : </b><strong><%= @purchase_order.supplier.address.country_name %></strong></p>
   <p><b>- Créé le : </b><strong><%= @purchase_order.created_at.humanize %></strong></p>
   <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
   <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
@@ -14,7 +17,7 @@
   <p><b>- Achat : </b><strong><%= @purchase_order.direct ? "Direct" : "Indirect" %></strong></p>
   <p><b>- </b><strong><%= display_purchase_order_paid(@purchase_order) %></strong></p>
   
-  <h2>Liste des commandes</h2>
+  <h2>Liste des fournitures commandées</h2>
   
   <table>
     <thead>
@@ -28,8 +31,8 @@
         <th>PU TTC</th>
         <th>Prix total TTC</th>
         <th>Demandes associées</th>
-        <th>Désignation fournisseur</th>
         <th>R&eacute;f&eacute;rence fournisseur</th>
+        <th>Désignation fournisseur</th>
         <th>D&eacute;lai de livraison</th>
         <th>Action</th>
       </tr>
@@ -47,10 +50,10 @@
     <thead>
       <tr>
         <th>R&eacute;f&eacute;rence</th>
+        <th>Date de livraison prévue</th>
         <th>Transport</th>
         <th>Statut</th>
         <th>Depuis le</th>
-        <th>Date de livraison prévue</th>
         <th>Action</th>
       </tr>
     </thead>

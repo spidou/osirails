@@ -1,5 +1,7 @@
 class PurchaseRequestsController < ApplicationController
   
+  helper :purchase_request_supplies, :purchase_orders
+  
   def index  
     conditions = "1" if (params[:filter]) == 'all'
     conditions = "cancelled_by IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'

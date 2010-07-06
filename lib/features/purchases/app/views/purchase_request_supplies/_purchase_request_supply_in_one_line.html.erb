@@ -17,14 +17,14 @@
     </td>
     <td>
       <% if f.form_view? %>
-        <%= f.text_field(:expected_delivery_date) %>
+        <%= f.text_field(:expected_delivery_date, :size => 8) %>
       <% else %>
         <%= purchase_request_supply.expected_delivery_date.humanize %>
       <% end %>
     </td>
     <td>
       <% if f.form_view? %>
-        <%= f.text_field(:expected_quantity) %>
+        <%= f.text_field(:expected_quantity, :size => 5) %>
       <% else %>
         <%= purchase_request_supply.expected_quantity %>
       <% end %>
@@ -37,7 +37,7 @@
       <% end %>
     </td>
     <% unless f.form_view? %>
-      <td>comming soon</td>
+      <td><%= display_associated_purchase_order(purchase_request_supply) %></td>
       <td>
       <% if purchase_request_supply.can_be_cancelled? %>
         

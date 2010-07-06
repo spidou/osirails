@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100602103836) do
+ActiveRecord::Schema.define(:version => 20100705104400) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -921,14 +921,31 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
 
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
+  create_table "parcel_items", :force => true do |t|
+    t.integer  "parcel_id",                            :limit => 11
+    t.integer  "purchase_order_supply_id",             :limit => 11
+    t.integer  "problematic_purchase_order_supply_id", :limit => 11
+    t.integer  "quantity",                             :limit => 11
+    t.integer  "issues_quantity",                      :limit => 11
+    t.string   "status"
+    t.text     "issues_comment"
+    t.datetime "reported_at"
+    t.datetime "issued_at"
+    t.datetime "cancelled_at"
+    t.boolean  "must_be_reshipped"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "parcels", :force => true do |t|
     t.string   "reference"
     t.string   "status"
     t.string   "conveyance"
     t.datetime "previsional_delivery_date"
     t.datetime "shipped_at"
+    t.datetime "received_by_supplier"
     t.datetime "received_at"
-    t.datetime "recovered_at"
+    t.datetime "cancelled_at"
     t.datetime "delivery_date"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1112,19 +1129,13 @@ ActiveRecord::Schema.define(:version => 20100602103836) do
   create_table "purchase_order_supplies", :force => true do |t|
     t.integer  "purchase_order_id",    :limit => 11
     t.integer  "supply_id",            :limit => 11
-    t.integer  "parcel_id",            :limit => 11
     t.integer  "cancelled_by",         :limit => 11
     t.integer  "quantity",             :limit => 11
     t.float    "taxes"
     t.float    "fob_unit_price"
-    t.string   "status"
     t.string   "supplier_reference"
     t.string   "supplier_designation"
     t.text     "cancelled_comment"
-    t.datetime "processing_since"
-    t.datetime "sent_back_at"
-    t.datetime "reshipped_at"
-    t.datetime "reimbursed_at"
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"

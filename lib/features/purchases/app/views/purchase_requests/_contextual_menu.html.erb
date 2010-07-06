@@ -1,8 +1,9 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_purchase_request_link(:link_text => "Nouvelle demande d'achat")%>
+  <%= new_purchase_request_link(:link_text => "Nouvelle demande d'achat") unless is_new_view? %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
+  <%= display_purchase_order_add_button %>
   <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir toutes les demandes", :title => list_text) + " " + list_text, :controller => "purchase_requests", "action" => 'index', :filter => "all" ) %>
   <%= link_to(image_tag("list_16x16.png", :alt => list_text = "Voir les demandes annulees", :title => list_text) + " " + list_text, 
   :controller => "purchase_requests", "action" => 'index', :filter => "cancelled" ) %>
