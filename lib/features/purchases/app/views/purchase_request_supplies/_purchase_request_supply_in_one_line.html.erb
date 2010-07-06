@@ -1,19 +1,15 @@
-<% require_locals purchase_request %>
-<% owner_type = purchase_request.class.singularized_table_name  %>
-
-<% fields_for "#{owner_type}[purchase_request_supply_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do |f|%>
+<% fields_for "purchase_request[purchase_request_supply_attributes][]", purchase_request_supply = purchase_request_supply_in_one_line do |f|%>
   <tr <% if f.form_view? %>
         <%="class='purchase_request_supply resource'"  %> 
       <% elsif purchase_request_supply.cancelled? %>
         <%="class=disabled" %>
       <% end %> >
+    <td style="display:none;">
+      <%= f.hidden_field(:supply_id)%>
+    </td>
+    
     <td>
-    <% if f.form_view? %>
-        <%= f.form_or_view(f.collection_select(:supply_id, Supply.find(:all), :id, :designation), :supply, :designation)%>  
-      <% else %>
-        <%= purchase_request_supply.supply.designation %>
-    <% end %>
-      
+       <%= purchase_request_supply.supply.designation %>
     </td>
     <td>
       <% if f.form_view? %>

@@ -6,16 +6,16 @@ ActionController::Routing::Routes.add_routes do |map|
     request.cancel_form 'cancel_form', :action => "cancel_form", :controller => "purchase_requests" 
   end
   
-  map.recup_supplies_by_supplier 'recup_supplies_by_supplier',  :controller => 'purchase_orders', 
-                                                                :action => 'recup_supplies_by_supplier', 
-                                                                :method => :get
-  
   map.prepare_for_new 'prepare_for_new' , :controller => 'purchase_orders', :action => 'prepare_for_new'
   
-  map.recup_supply 'recup_supply',  :controller => 'purchase_orders', 
-                                    :action => 'recup_supply', 
+  map.get_supply 'get_supply',  :controller => 'purchase_orders', 
+                                    :action => 'get_supply', 
                                     :method => :get
                                       
+  map.get_request_supply 'get_request_supply',  :controller => 'purchase_requests', 
+                                    :action => 'get_request_supply', 
+                                    :method => :get
+                                    
   map.auto_complete_for_supply_reference 'auto_complete_for_supply_reference',  :controller => 'purchase_orders', 
                                                                                     :action => 'auto_complete_for_supply_reference', 
                                                                                     :method => :get
