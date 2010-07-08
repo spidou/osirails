@@ -25,35 +25,37 @@
   <% end %>
   </p>
   
-  <h2>Liste des colis</h2>
-
-
-  <p><%= link_to "Ajouter un colis", new_purchase_order_parcel_path(@purchase_order) %></p>
+  <% unless @purchase_order.status == PurchaseOrder::STATUS_DRAFT %>
   
-  <% if @purchase_order.status != PurchaseOrder::STATUS_PROCESSING %>
+    <h2>Liste des colis</h2>
     
-    <table id="parcels">
-      <thead>
-        <tr>
-          <th colspan="2" >Interne</th>
-          <th colspan="2" >Fournisseur</th>
-          <th rowspan="2" >Quantité</th>
-          <th rowspan="2" >PU TTC</th>
-          <th rowspan="2" >Prix total</th>
-          <th rowspan="2">Demandes associées</th>
-        </tr>
-        <tr>
-          <th>Référence</th>
-          <th>Désignation</th>
-          <th>Référence</th>
-          <th>Désignation</th>
-        </tr>
-      </thead>
-      <%= render :partial => "parcels/parcel", :collection => @purchase_order.get_parcels, :locals => { :purchase_order => @purchase_order } %>
-      <tfoot>
-      </tfoot>
-    </table>
+    <% if @purchase_order.can_add_parcel? %>
+      <p><%= link_to "Ajouter un colis", new_purchase_order_parcel_path(@purchase_order) %></p>
+    <% end%>
     
+    <% if @purchase_order.get_parcels.count > 0 %>
+      <table id="parcels">
+        <thead>
+          <tr>
+            <th colspan="2" >Interne</th>
+            <th colspan="2" >Fournisseur</th>
+            <th rowspan="2" >Quantité</th>
+            <th rowspan="2" >PU TTC</th>
+            <th rowspan="2" >Prix total</th>
+            <th rowspan="2">Demandes associées</th>
+          </tr>
+          <tr>
+            <th>Référence</th>
+            <th>Désignation</th>
+            <th>Référence</th>
+            <th>Désignation</th>
+          </tr>
+        </thead>
+        <%= render :partial => "parcels/parcel", :collection => @purchase_order.get_parcels, :locals => { :purchase_order => @purchase_order } %>
+        <tfoot>
+        </tfoot>
+      </table>
+    <% end %>
   <% end %>
   
   <h2>Liste des fournitures commandées</h2>

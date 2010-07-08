@@ -1,6 +1,6 @@
 <% purchase_order = pending_purchase_order_in_one_line %>
-<% parcels = purchase_order.get_parcels.compact
-%>
+
+<% parcels = purchase_order.get_parcels.compact %>
 
 <tr <%= (pending_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>

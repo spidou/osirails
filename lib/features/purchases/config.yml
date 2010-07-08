@@ -32,6 +32,7 @@ menus:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"
         position: 2
+        
 configurations:
   purchase_request_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour une demande d'achat"
@@ -39,3 +40,7 @@ configurations:
   purchase_order_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour un ordre d'achat"
     value: "PO%y%m$number(3)"
+  parcel_reference_pattern:
+    description: "Modèle permettant la génération du numéro de référence unique pour un colis"
+    value: "P%y%m$number(4)"
+    

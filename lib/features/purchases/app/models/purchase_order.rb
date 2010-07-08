@@ -50,7 +50,7 @@ class PurchaseOrder < ActiveRecord::Base
   before_validation_on_create :build_supplier_supplies, :build_associed_purchase_request_supplies
   before_validation :update_reference, :unless => :new_record?
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_purchase_request_supplies
-
+  
   def build_associed_purchase_request_supplies
     purchase_order_supplies.each do |e|
       e.purchase_request_supplies_ids.split(';').each do |s|
@@ -257,7 +257,7 @@ class PurchaseOrder < ActiveRecord::Base
     end
     purchase_requests.uniq
   end
-
+  
   def build_with_purchase_request_supplies(list_of_supplies)
     list_of_purchase_request_supplies = []
     for purchase_request_supply in list_of_supplies
@@ -265,12 +265,23 @@ class PurchaseOrder < ActiveRecord::Base
       :quantity => purchase_request_supply.expected_quantity,
       :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes,
       :fob_unit_price => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
-    tmp.unconfirmed_purchase_request_supplies.each do |e|
-      tmp.request_order_supplies.build(:purchase_request_supply_id => e.id)
-    end
-    list_of_purchase_request_supplies << tmp
+      tmp.unconfirmed_purchase_request_supplies.each do |e|
+        tmp.request_order_supplies.build(:purchase_request_supply_id => e.id)
+      end
+      list_of_purchase_request_supplies << tmp
     end
     self.purchase_order_supplies = list_of_purchase_request_supplies
+  end
+  
+  def is_remaining_quantity_for_parcel?
+    for purchase_order_supply in purchase_order_supplies
+      return true if purchase_order_supply.remaining_quantity_for_parcel > 0
+    end
+    false
+  end
+  
+  def can_add_parcel?
+    (status == PurchaseOrder::STATUS_CONFIRMED or status == PurchaseOrder::STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
   end
 end
 
