@@ -1,5 +1,7 @@
 class Parcel < ActiveRecord::Base
 
+  has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
+
   has_many :parcel_items
   has_many :purchase_order_supplies, :through => "parcel_items"
 
@@ -10,50 +12,54 @@ class Parcel < ActiveRecord::Base
   STATUS_CANCELLED = "cancel"
 
   validates_presence_of :conveyance, :state
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ]
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ]
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED ], :if => :was_processing?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :was_shipped?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
 
   def processing?
-    status = STATUS_PROCESSING
+    status == STATUS_PROCESSING
   end
 
   def shipped?
-    status = STATUS_SHIPPED
+    status == STATUS_SHIPPED
   end
 
   def received_by_forwarder?
-    status = STATUS_RECEIVED_BY_FORWARDER
+    status == STATUS_RECEIVED_BY_FORWARDER
   end
 
   def received?
-    status = STATUS_RECEIVED
+    status == STATUS_RECEIVED
   end
 
   def cancelled?
-    status = STATUS_CANCELLED
+    status == STATUS_CANCELLED
   end
 
   def was_processing?
-    status_was = STATUS_PROCESSING
+    status_was == STATUS_PROCESSING
   end
 
   def was_shipped?
-    status_was = STATUS_SHIPPED
+    status_was == STATUS_SHIPPED
   end
 
   def was_received_by_forwarder?
-    status_was = STATUS_RECEIVED_BY_FORWARDER
+    status_was == STATUS_RECEIVED_BY_FORWARDER
   end
 
   def was_received?
-    status_was = STATUS_RECEIVED
+    status_was == STATUS_RECEIVED
   end
 
   def was_cancelled?
-    status_was = STATUS_CANCELLED
+    status_was == STATUS_CANCELLED
+  end
+  
+  def can_be_processing?
+    !processing?
   end
 
   def can_be_shipped?
@@ -63,19 +69,27 @@ class Parcel < ActiveRecord::Base
   def can_be_received_by_forwarder?
     shipped?
   end
-
+  
+  def can_be_received?
+    new_record? or received_by_forwarder?
+  end
+  
+  def can_be_cancelled?
+    was_cancelled?
+  end
+  
+  def can_add_new?
+    purchase_order.status == PurchaseOrder::STATUS_CONFIRMED
+  end
+  
   def direct?
 
   end
-
-  def can_be_received?
-    received_by_forwarder? or direct?
-  end
-
+  
   def ship
     if can_be_shipped?
       self.status = STATUS_SHIPPED
-      self.shipped_at = Date.today
+      self.shipped_at = Time.now
       self.save
     else
       false
@@ -85,7 +99,7 @@ class Parcel < ActiveRecord::Base
   def receive_by_supplier
     if can_be_received_by_forwarder?
       self.status = STATUS_RECEIVED_BY_FORWARDER
-      self.recovered_at = Date.today
+      self.recovered_at = Time.now
       self.save
     else
       false
@@ -95,7 +109,17 @@ class Parcel < ActiveRecord::Base
   def receive
     if can_be_received?
       self.status = STATUS_RECEIVED
-      self.received_at = Date.today
+      self.received_at = Time.now
+      self.save
+    else
+      false
+    end
+  end
+  
+  def cancel
+    if can_be_cancelled?
+      self.status = STATUS_CANCELLED
+      self.cancelled_at = Time.now
       self.save
     else
       false

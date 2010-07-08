@@ -10,7 +10,6 @@
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.direct ? "Direct" : "Indirect" %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.name %></td>
 <%=
@@ -30,7 +29,6 @@
 %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_total_price(purchase_order, cancelled) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_paid(purchase_order, true) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order)%></td>
 </tr>
 

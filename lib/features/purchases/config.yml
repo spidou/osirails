@@ -25,6 +25,9 @@ menus:
           closed_purchase_orders:
             title: "Ordres d'achats terminés"
             position: 2
+          parcels:
+            title: "Permet la gestion des colis"
+            hidden: true
       purchase_requests:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"

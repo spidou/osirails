@@ -1,0 +1,10 @@
+<tr>
+  <td><%= parcel_item.purchase_order_supply.supply.reference %></td>
+  <td><%= parcel_item.purchase_order_supply.supply.designation %></td>
+  <td><%= parcel_item.purchase_order_supply.supplier_reference %></td>
+  <td><%= parcel_item.purchase_order_supply.supplier_designation %></td>
+  <td><%= parcel_item.quantity %></td>
+  <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(parcel_item.purchase_order_supply) %></td>
+  <td class="price"><%= display_parcel_item_total(parcel_item) %></td>
+  <td><%= display_purchase_order_supply_associated_purchase_requests(parcel_item.purchase_order_supply) %></td>
+</tr>

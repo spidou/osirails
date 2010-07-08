@@ -1,3 +1,7 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
 <%= generate_purchase_order_contextual_menu_partial %>
 
 <h1>Ordre d'achats</h1>
@@ -5,17 +9,52 @@
   <h2>Informations</h2>
   
   <p><b>- R&eacute;f&eacute;rence : </b><strong><%= display_purchase_order_reference(@purchase_order) %></strong></p>
-  <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong></p>
-  <p><b>- Fournisseur : </b><strong><%= @purchase_order.supplier.name %></strong></p>
-  <p><b>- Origine : </b><strong><%= @purchase_order.supplier.address.country_name %></strong></p>
-  <p><b>- Créé le : </b><strong><%= @purchase_order.created_at.humanize %></strong></p>
-  <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
-  <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
-  <%= "<p><b>- Terminé le : </b><strong>#{@purchase_order.completed_at.humanize}</strong></p>" if (@purchase_order.completed_at and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
-  <%= "<p><b>- Annulé le : </b><strong>#{@purchase_order.cancelled_at.humanize}</strong></p>" if (@purchase_order.cancelled_at and (@purchase_order.status != PurchaseOrder::STATUS_CANCELLED)) %>
+  <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong><b> depuis le </b><strong><%= @purchase_order.created_at.to_s.humanize %></strong></p>
+  <p><b>- Fournisseur : </b><strong><%= @purchase_order.supplier.name.to_s %></strong></p>
+  <p><b>- Origine : </b><strong><%= @purchase_order.supplier.address.country_name.to_s %></strong></p>
+  <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.to_s.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
+  <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.to_s.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
+  <%= "<p><b>- Terminé le : </b><strong>#{@purchase_order.completed_at.to_s.humanize}</strong></p>" if (@purchase_order.completed_at and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
+  <%= "<p><b>- Annulé le : </b><strong>#{@purchase_order.cancelled_at.to_s.humanize}</strong></p>" if (@purchase_order.cancelled_at and (@purchase_order.status != PurchaseOrder::STATUS_CANCELLED)) %>
   <p><b>- Statut en cours : </b><strong><%= display_purchase_order_current_status(@purchase_order) %></strong><b> depuis le </b><strong><%= display_purchase_order_current_status_date(@purchase_order) %></strong></p>
-  <p><b>- Achat : </b><strong><%= @purchase_order.direct ? "Direct" : "Indirect" %></strong></p>
-  <p><b>- </b><strong><%= display_purchase_order_paid(@purchase_order) %></strong></p>
+  <p>
+  <% form_for @purchase_order, :html => { :multipart => true } do |f| %>
+    <b><%= f.label :quotation_document, '- Devis :' %></b>
+    <%= f.file_field :quotation_document %>
+    <%= f.submit "Envoyer"%>
+  <% end %>
+  </p>
+  
+  <h2>Liste des colis</h2>
+
+
+  <p><%= link_to "Ajouter un colis", new_purchase_order_parcel_path(@purchase_order) %></p>
+  
+  <% if @purchase_order.status != PurchaseOrder::STATUS_PROCESSING %>
+    
+    <table id="parcels">
+      <thead>
+        <tr>
+          <th colspan="2" >Interne</th>
+          <th colspan="2" >Fournisseur</th>
+          <th rowspan="2" >Quantité</th>
+          <th rowspan="2" >PU TTC</th>
+          <th rowspan="2" >Prix total</th>
+          <th rowspan="2">Demandes associées</th>
+        </tr>
+        <tr>
+          <th>Référence</th>
+          <th>Désignation</th>
+          <th>Référence</th>
+          <th>Désignation</th>
+        </tr>
+      </thead>
+      <%= render :partial => "parcels/parcel", :collection => @purchase_order.get_parcels, :locals => { :purchase_order => @purchase_order } %>
+      <tfoot>
+      </tfoot>
+    </table>
+    
+  <% end %>
   
   <h2>Liste des fournitures commandées</h2>
   
@@ -39,33 +78,6 @@
     </thead>
     <tbody>
       <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :collection => @purchase_order.purchase_order_supplies %>
-    </tbody>
-    <tfoot>
-    </tfoot>
-  </table>
-  
-  <h2>Liste des colis</h2>
-  
-  <table>
-    <thead>
-      <tr>
-        <th>R&eacute;f&eacute;rence</th>
-        <th>Date de livraison prévue</th>
-        <th>Transport</th>
-        <th>Statut</th>
-        <th>Depuis le</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
     </tbody>
     <tfoot>
     </tfoot>

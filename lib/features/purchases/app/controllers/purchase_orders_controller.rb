@@ -1,6 +1,6 @@
 class PurchaseOrdersController < ApplicationController
   
-  helper :purchase_order_supplies
+  helper :purchase_order_supplies, :parcels, :parcel_items
   
   def index
     redirect_to pending_purchase_orders_path
@@ -40,6 +40,19 @@ class PurchaseOrdersController < ApplicationController
   
   def update_table
     render :partial => ""
+  end
+  
+  def update
+    if (@purchase_order = PurchaseOrder.find(params[:id]))
+      if @purchase_order.update_attributes(params[:purchase_order])
+        flash[:notice] = "L'ordre d'achats a été modifié avec succès"
+        redirect_to @purchase_order
+      else
+        render :action => :show
+      end
+    else
+      error_access_page(412)
+    end
   end
   
   def auto_complete_for_supply_reference

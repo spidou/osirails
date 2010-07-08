@@ -43,7 +43,7 @@ module PurchaseOrderSuppliesHelper
     purchase_order_supply.supply.reference
   end
   
-  def display_unit_price_including_tax(purchase_order_supply)
+  def display_purchase_order_supply_unit_price_including_tax(purchase_order_supply)
     unit_price = purchase_order_supply.get_unit_price_including_tax
     unit_price.to_f.to_s(2) + "&nbsp;&euro;"
   end

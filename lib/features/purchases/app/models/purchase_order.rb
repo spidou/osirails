@@ -2,10 +2,12 @@ class PurchaseOrder < ActiveRecord::Base
 
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference :prefix => :purchases
+  #has_attached_file :quotation_document
 
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
 #  has_many :supplier_supplies2, :class_name => "SupplierSupply", :include => [ :purchase_order_supplies ], :conditions =>  ['purchase_order_supplies.supply_id = supplier_supplies.supply_id and supplier_supplies.supplier_id =#{supplier_id}']
+  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -90,6 +92,10 @@ class PurchaseOrder < ActiveRecord::Base
     purchase_order_supplies.each do |e|
       e.save(false)
     end
+  end
+  
+  def save_quotation_document
+    #TODO
   end
 
   def purchase_order_supply_attributes=(purchase_order_supply_attributes)
@@ -204,12 +210,11 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
 
-  def parcels
+  def get_parcels
     parcels = []
     for purchase_order_supply in self.purchase_order_supplies
-      parcels << purchase_order_supply.parcel
+      parcels += purchase_order_supply.parcels
     end
-    
     parcels.uniq
   end
 
@@ -219,7 +224,7 @@ class PurchaseOrder < ActiveRecord::Base
     total_price_cancelled = 0
     for purchase_order_supply in purchase_order_supplies
       supplier_supply = purchase_order_supply.get_supplier_supply
-      if purchase_order_supply.status != PurchaseOrderSupply::STATUS_CANCELLED
+      if !purchase_order_supply.cancelled?
         total_price += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
       else
         total_price_cancelled += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
@@ -232,7 +237,8 @@ class PurchaseOrder < ActiveRecord::Base
   def lead_time
     lead_time = 0
     for purchase_order_supply in purchase_order_supplies
-      if purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time
+      supplier_supply = purchase_order_supply.get_supplier_supply
+      if supplier_supply.lead_time
         supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time || 0
         if lead_time < supplier_supply_lead_time
           lead_time = supplier_supply_lead_time

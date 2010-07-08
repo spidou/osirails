@@ -1,0 +1,33 @@
+<tbody class="parcel">
+  <tr>
+    <td colspan= 8 class="parcel_summary">
+      <span class="parcel_position"><%= parcel_counter %></span>
+      <span class="parcel_label">R&eacute;f&eacute;rence :</span>
+      <span class="parcel_reference"> <%= parcel.reference %></span>
+      <span class="parcel_label">Statut :</span>
+      <span class="parcel_status"> <%= display_parcel_current_status(parcel) %></span>
+      <span class="parcel_label">Depuis le :</span>
+      <span class="parcel_current_status_date"> <%= display_parcel_current_status_date(parcel) %></span>
+      <span class="parcel_label">Livraison pr&eacute;vue le</span>
+      <span class="parcel_previsional_delivery_date"><%= display_parcel_previsional_deliveray_date(parcel) %></span>
+      <span class="parcel_label"> par </span>
+      <span class="parcel_conveyance"><%= parcel.conveyance %></span>
+      <span class="parcel_choose_status">
+        <% form_for [purchase_order, parcel], :url => purchase_order_parcel_alter_status_path(purchase_order, parcel)  do |f| %>
+          <% options = parcel_possible_actions(parcel) %>
+          <%= f.label :status, "D&eacute;finir le statut &agrave;" %>
+          <%= f.select(:status, options)%>
+          <%= f.submit "Valider" %>
+        <% end %>
+      </span>
+    </td>
+  </tr>
+  <%= render :partial => "parcel_items/parcel_item", :collection => parcel.parcel_items %>
+</tbody>
+  <% unless parcel == parcel.parcel_items.first.purchase_order_supply.purchase_order.get_parcels.last %>
+  <tbody>
+    <tr>
+      <td colspan= 8>&nbsp;</td>
+    </tr>
+  </tbody>
+  <% end %>

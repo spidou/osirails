@@ -6,3 +6,52 @@ table tfoot tr.footer{
   border-top: 1px solid #CCCCCC;
   font-weight: bold;
 }
+
+#head {
+  border-bottom: 1px solid #737373;
+}
+
+.price {
+  text-align: right;
+}
+
+.parcel span {
+  display: inline-block;
+}
+
+.parcel .parcel_summary {
+  background-color: #ffdd60;
+  padding: 0px 10px 0px 10px;
+  margin: 0 !important;
+  text-align: left;
+  border: 1px solid #737373;
+}
+
+.parcel .parcel_summary .parcel_position {
+  margin: 3px 5px 3px -5px;
+  padding: 4px 6px 4px 6px;
+  border: 1px solid #737373;
+  -moz-border-radius: 20px;
+}
+
+.parcel .parcel_summary > span.parcel_label {
+  font-weight: inherit;
+  text-decoration: underline;
+}
+
+.parcel .parcel_summary .parcel_reference {
+  width: 100px;
+}
+
+.parcel .parcel_summary .parcel_status {
+  width: 150px;
+}
+
+.parcel .parcel_summary .parcel_current_status_date {
+  width: 300px;
+}
+
+.parcel .parcel_summary .parcel_choose_status {
+  float: right;
+  margin: 3px 5px 3px -5px;
+}

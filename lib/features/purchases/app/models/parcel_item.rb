@@ -1,15 +1,12 @@
 class ParcelItem < ActiveRecord::Base
 
   belongs_to :parcel
-
+  belongs_to :purchase_order_supply
+  
   def can_be_cancelled?
     (untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing) or !parcel)) or (processing? and purchase_order.was_confirmed? and parcel.was_processing?)
   end
-
-  def can_be_deleted?
-    new_record? or purchase_order.was_draft?
-  end
-
+  
   def treat
     if can_be_processing?
       self.save
@@ -17,7 +14,7 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
-
+  
   def send_back
     if can_be_sent_back?
       self.save
@@ -25,7 +22,7 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
-
+  
   def reship
     if can_be_reshipped?
       self.save
@@ -33,7 +30,7 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
-
+  
   def cancel(attributes)
     if can_be_cancelled?
       self.attributes = attributes
@@ -43,5 +40,8 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
+  
+  def get_parcel_item_total
+    quantity.to_f * purchase_order_supply.get_unit_price_including_tax.to_f
+  end
 end
-
