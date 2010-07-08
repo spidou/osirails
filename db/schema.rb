@@ -943,10 +943,9 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "conveyance"
     t.datetime "previsional_delivery_date"
     t.datetime "shipped_at"
-    t.datetime "received_by_supplier"
+    t.datetime "received_by_forwarder"
     t.datetime "received_at"
     t.datetime "cancelled_at"
-    t.datetime "delivery_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

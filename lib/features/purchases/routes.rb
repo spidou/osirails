@@ -27,9 +27,11 @@ ActionController::Routing::Routes.add_routes do |map|
   map.resources :purchase_orders do |order|
     order.cancel 'cancel', :controller => 'purchase_orders', :action => 'cancel'
     order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm'
+    order.resources :parcels do |parcel|
+    end
   end
   
-  map.resources :parcels
+
   map.resources :purchase_order_supplies do |order_supply|
     order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
   end

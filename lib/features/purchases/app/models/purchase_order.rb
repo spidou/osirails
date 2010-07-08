@@ -2,10 +2,10 @@ class PurchaseOrder < ActiveRecord::Base
 
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference :prefix => :purchases
-
+  
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
-#  has_many :supplier_supplies2, :class_name => "SupplierSupply", :include => [ :purchase_order_supplies ], :conditions =>  ['purchase_order_supplies.supply_id = supplier_supplies.supply_id and supplier_supplies.supplier_id =#{supplier_id}']
+  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -48,7 +48,7 @@ class PurchaseOrder < ActiveRecord::Base
   before_validation_on_create :build_supplier_supplies, :build_associed_purchase_request_supplies
   before_validation :update_reference, :unless => :new_record?
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_purchase_request_supplies
-
+  
   def build_associed_purchase_request_supplies
     purchase_order_supplies.each do |e|
       e.purchase_request_supplies_ids.split(';').each do |s|
@@ -207,9 +207,8 @@ class PurchaseOrder < ActiveRecord::Base
   def parcels
     parcels = []
     for purchase_order_supply in self.purchase_order_supplies
-      parcels << purchase_order_supply.parcel
-    end
-    
+      parcels += purchase_order_supply.parcels
+    end  
     parcels.uniq
   end
 
@@ -251,7 +250,7 @@ class PurchaseOrder < ActiveRecord::Base
     end
     purchase_requests.uniq
   end
-
+  
   def build_with_purchase_request_supplies(list_of_supplies)
     list_of_purchase_request_supplies = []
     for purchase_request_supply in list_of_supplies

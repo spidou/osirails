@@ -17,6 +17,35 @@
   <p><b>- Achat : </b><strong><%= @purchase_order.direct ? "Direct" : "Indirect" %></strong></p>
   <p><b>- </b><strong><%= display_purchase_order_paid(@purchase_order) %></strong></p>
   
+   <h2>Liste des colis</h2>
+  
+  <%= link_to "Creer un nouveau colis", new_purchase_order_parcel_path(@purchase_order)%>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>R&eacute;f&eacute;rence</th>
+        <th>Date de livraison prévue</th>
+        <th>Transport</th>
+        <th>Statut</th>
+        <th>Depuis le</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+    <tfoot>
+    </tfoot>
+  </table>
+  
   <h2>Liste des fournitures commandées</h2>
   
   <table>
@@ -39,33 +68,6 @@
     </thead>
     <tbody>
       <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :collection => @purchase_order.purchase_order_supplies %>
-    </tbody>
-    <tfoot>
-    </tfoot>
-  </table>
-  
-  <h2>Liste des colis</h2>
-  
-  <table>
-    <thead>
-      <tr>
-        <th>R&eacute;f&eacute;rence</th>
-        <th>Date de livraison prévue</th>
-        <th>Transport</th>
-        <th>Statut</th>
-        <th>Depuis le</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
     </tbody>
     <tfoot>
     </tfoot>

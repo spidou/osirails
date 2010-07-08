@@ -2,11 +2,14 @@ class PurchaseOrderSupply < ActiveRecord::Base
 
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
 
-  has_many :parcel_items
-  has_many :parcels, :through => :parcel_items
   has_many :request_order_supplies
   has_many :purchase_request_supplies, :through => :request_order_supplies
 
+  has_many :parcel_items
+  has_many :parcels, :through => :parcel_items
+  
+  has_one  :parcel, :through => :parcel_items
+  
   belongs_to :purchase_order
   belongs_to :supply
   belongs_to :canceller, :foreign_key => "cancelled_by", :class_name => "User"
@@ -20,11 +23,19 @@ class PurchaseOrderSupply < ActiveRecord::Base
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
 
   validates_associated :request_order_supplies
-
+  
+  def remaining_quantity_for_parcel
+    result = 0
+    for parcel_item in parcel_items
+      result += parcel_item.quantity.to_i
+    end
+    quantity - result
+  end
+  
   def untreated?
     result = 0
     for parcel_item in parcel_items
-      result += parcel_item.quantity
+      result += parcel_item.quantity.to_i
     end
     result == quantity ? false : true
   end
