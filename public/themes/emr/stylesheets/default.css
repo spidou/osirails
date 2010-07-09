@@ -1250,7 +1250,6 @@ div label.skip_presentation {
   max-width:800px;
   min-width:100px;
   vertical-align: top;
-  margin-left: 50px;
 }
 
 .presentation_in_columns.large label,
@@ -1328,8 +1327,16 @@ div.auto_complete ul li {
   cursor: pointer;
 }
 
+div.auto_complete ul li:nth-child(even) {
+  background-color: #eaf1ff;
+}
+
 div.auto_complete ul li.selected {
   background-color: #ffb;
+}
+
+div.auto_complete ul li em {
+  font-size: smaller;
 }
 
 div.auto_complete ul strong.highlight {

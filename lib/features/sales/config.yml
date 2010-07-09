@@ -163,8 +163,12 @@ menus:
         description: Permet la gestion des familles et des références produits
         children:
           product_reference_categories:
-            title: Gestion des catégories
-            description: Permet la gestion des categories
+            title: Gestion des familles de produit
+            description: Permet la gestion des familles de produit
+            hidden: true
+          product_reference_sub_categories:
+            title: Gestion des sous-familles de produit
+            description: Permet la gestion des sous-familles de produit
             hidden: true
           product_references:
             title: Gestion des références
@@ -195,12 +199,12 @@ configurations:
   order_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un dossier
     value: "%y%m$number(3)"
-  product_reference_category_reference_pattern:
-    description: Modèle permettant la génération du numéro de référence unique pour une famille de produit référence
+  product_reference_sub_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une sous-famille de produit référence
     value: "$product_reference_category.$number(2)"
   product_reference_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un produit reference
-    value: "$product_reference_category.$number(2)"
+    value: "$product_reference_sub_category.$number(2)"
   end_product_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un produit fini
     value: "$product_reference.$number(5)"

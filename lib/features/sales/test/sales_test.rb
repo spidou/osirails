@@ -4,6 +4,7 @@ require 'lib/features/thirds/test/thirds_test'
 require 'lib/features/logistics/test/logistics_test'
 require File.dirname(__FILE__) + '/unit/product_base_test'
 require File.dirname(__FILE__) + '/unit/product_test'
+require File.dirname(__FILE__) + '/unit/product_reference_category_base_test'
 
 Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 
@@ -44,7 +45,7 @@ class Test::Unit::TestCase
   end
   
   def create_default_product_reference
-    return ProductReference.create!( :product_reference_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
+    return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
   end
   
   def create_default_end_product(order = nil)

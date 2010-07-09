@@ -1,6 +1,6 @@
 first_product_reference:
   type: ProductReference
-  product_reference_category: child
+  product_reference_sub_category: child
   reference: ABCD1234
   name: First Product Reference
 

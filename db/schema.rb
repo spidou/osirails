@@ -1042,24 +1042,27 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
 
   create_table "product_reference_categories", :force => true do |t|
     t.integer  "product_reference_category_id", :limit => 11
+    t.integer  "product_references_count",      :limit => 11, :default => 0
+    t.string   "type"
     t.string   "reference"
     t.string   "name"
-    t.integer  "product_references_count",      :limit => 11, :default => 0
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
+
   create_table "products", :force => true do |t|
     t.string   "type"
-    t.integer  "product_reference_category_id", :limit => 11
-    t.integer  "end_products_count",            :limit => 11, :default => 0
-    t.integer  "product_reference_id",          :limit => 11
-    t.integer  "order_id",                      :limit => 11
+    t.integer  "product_reference_sub_category_id", :limit => 11
+    t.integer  "end_products_count",                :limit => 11, :default => 0
+    t.integer  "product_reference_id",              :limit => 11
+    t.integer  "order_id",                          :limit => 11
     t.float    "prizegiving"
     t.float    "unit_price"
-    t.integer  "quantity",                      :limit => 11
-    t.integer  "position",                      :limit => 11
+    t.integer  "quantity",                          :limit => 11
+    t.integer  "position",                          :limit => 11
     t.string   "reference"
     t.string   "name"
     t.string   "dimensions"

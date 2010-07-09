@@ -1,0 +1,3 @@
+<% current ||= 0 %>
+<option value="">Veuillez choisir une sous-famille</option>
+<%= options_from_collection_for_select(product_reference_sub_categories, :id, :reference_and_name, current) %>

@@ -1,0 +1,14 @@
+<table>
+  <caption>Liste des produits finis</caption>
+  <thead>
+    <th>Produit référence</th>
+    <th>Nom</th>
+    <th>Client</th>
+    <th>Dossier</th>
+  </thead>
+  <tbody id="end_products_body">
+    <%= render :partial => 'end_products/end_product_in_one_line', :collection => end_products %>
+  </tbody>
+</table>
+
+<%= will_paginate end_products, :renderer => 'RemoteLinkRenderer' , :remote => { :update => 'end_products_list' } %>

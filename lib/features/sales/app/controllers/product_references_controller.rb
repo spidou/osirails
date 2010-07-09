@@ -1,42 +1,48 @@
 class ProductReferencesController < ApplicationController
+  helper :products_catalog
+  
+  before_filter :find_product_reference, :only => [ :show, :edit, :update, :destroy ]
   
   # GET /product_references
+  # GET /product_references?product_reference_sub_category_id=:product_reference_sub_category_id (AJAX)
+  # GET /product_references?product_reference_category_id=:product_reference_category_id (AJAX)
   def index
-    if params[:product_reference_category_id]
-      @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
-      respond_to do |format|
-        format.js {render :layout => false}
+    respond_to do |format|
+      format.js do
+        if params[:product_reference_sub_category_id]
+          @product_references = ProductReference.find_all_by_product_reference_sub_category_id(params[:product_reference_sub_category_id].split(","))
+        elsif params[:product_reference_category_id]
+          product_reference_categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
+          @product_references = ProductReference.find_all_by_product_reference_sub_category_id(product_reference_categories.collect(&:product_reference_sub_categories).flatten)
+        else
+          @product_references = ProductReference.actives
+        end
+        
+        render :layout => false
       end
-    else
-      redirect_to product_reference_manager_path
+      
+      format.html { redirect_to product_reference_manager_path }
     end
   end
   
   # GET /product_references/:id
   def show
-    @product_reference = ProductReference.find(params[:id])
     respond_to do |format|
-      format.html {
-        @categories = ProductReferenceCategory.find(:all)
-      }
-      format.js {
-        @categories = ProductReferenceCategory.find(:all)
-        render :layout => false
-      }
+      format.html {}
       
-      format.json {
+      format.json do
         json = JSON.parse(@product_reference.to_json)
         json["product_reference"].merge!(:designation => @product_reference.designation)
         render :json => json
-      }
+      end
     end
   end
   
   # GET /product_references/new
-  # GET /product_references/new?category_id=:category_id
+  # GET /product_references/new?category_id=:product_reference_sub_category_id
   def new
-    @product_reference = ProductReference.new(:product_reference_category_id => params[:category_id])
-    @categories = ProductReferenceCategory.find(:all)
+    @product_reference = ProductReference.new(:product_reference_sub_category_id => params[:product_reference_sub_category_id])
+    @product_reference_categories = ProductReferenceCategory.roots.actives
   end
   
   # POST /product_references
@@ -46,55 +52,60 @@ class ProductReferencesController < ApplicationController
       flash[:notice] = "La référence a été créée avec succès"
       redirect_to :controller => 'product_reference_manager', :action => 'index'
     else
-      @categories = ProductReferenceCategory.find(:all)
+      @product_reference_categories = ProductReferenceCategory.roots.actives
       render :action => 'new'
     end
   end
   
   # GET /product_references/:id/edit
   def edit
-    @product_reference = ProductReference.find(params[:id])
-    @categories = ProductReferenceCategory.find(:all)
+    @product_reference_categories = ProductReferenceCategory.roots.actives
   end
   
   # PUT /product_references/:id
   def update
-    @product_reference = ProductReference.find(params[:id])
     if @product_reference.update_attributes(params[:product_reference])
       flash[:notice] = 'Le produit référence a été modifié avec succès'
       redirect_to(@product_reference)
     else
-      @categories = ProductReferenceCategory.find(:all)
+      @product_reference_categories = ProductReferenceCategory.roots.actives
       render :action => :edit
     end
   end
   
-#  # DELETE /product_references/:id
-#  def destroy
-#    @product_reference = ProductReference.find(params[:id])
-#    if @product_reference.can_be_destroyed?
-#      @product_reference.destroy
-#    else
-#      @product_reference.enable = false
-#      @product_reference.counter_update("disable_or_before_update")
-#      @product_reference.save
-#    end
-#    
-#    flash[:notice] = 'La référence a été supprimée' 
-#    redirect_to :controller => 'product_reference_manager', :action => 'index'
-#  end
+  # DELETE /product_references/:id
+  def destroy
+    if @product_reference.can_be_destroyed?
+      if @product_reference.destroy
+        flash[:notice] = "Le produit référence a été supprimé avec succès"
+      else
+        flash[:error] = "Une erreur est survenue lors de la suppression du produit référence"
+      end
+      redirect_to product_reference_manager_path
+    else
+      error_access_page(412)
+    end
+  end
   
   def auto_complete_for_product_reference_reference
     #OPTMIZE use one sql request instead of multiple requests (using has_search_index once it will be improved to accept by_values requests)
     
-    keywords = params[:product_reference][:reference].split(" ").collect(&:strip)
+    keywords = params[:product_reference][:reference].split(" ").map(&:strip)
     @items = []
     keywords.each do |keyword|
-      result = ProductReference.search_with( { 'reference' => keyword, 'name' => keyword, 'description' => keyword, 'product_reference_category.name' => keyword, 'product_reference_category.parent.name' => keyword, :search_type => :or })
+      #result = ProductReference.search_with( { 'reference' => keyword, 'name' => keyword, 'description' => keyword, 'product_reference_sub_category.name' => keyword, 'product_reference_sub_category.product_reference_catetory.name' => keyword, :search_type => :or })
+      #@items = @items.empty? ? result : @items & result
+      
+      keyword = "%#{keyword}%"
+      result = ProductReference.all(:include => [ { :product_reference_sub_category => [ :product_reference_category ] } ], :conditions => ["products.reference like ? OR products.name like ? OR products.dimensions like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?", keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword])
       @items = @items.empty? ? result : @items & result
     end
     
     render :partial => 'shared/search_product_reference_auto_complete', :object => @items, :locals => { :fields => "reference designation", :keywords => keywords }
   end
   
+  private
+    def find_product_reference
+      @product_reference = ProductReference.find(params[:id])
+    end
 end
