@@ -26,6 +26,11 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  def edit
+    @purchase_order  = PurchaseOrder.find(params[:id])
+    error_access_page(412) unless @purchase_order.can_be_edited?
+  end
+  
   def create
     @purchase_order = PurchaseOrder.new(params[:purchase_order])
     @purchase_order.user_id = current_user.id
@@ -42,12 +47,12 @@ class PurchaseOrdersController < ApplicationController
   end
   
   def update
-    if (@purchase_order = PurchaseOrder.find(params[:id]))
+    if @purchase_order = PurchaseOrder.find(params[:id])
       if @purchase_order.update_attributes(params[:purchase_order])
         flash[:notice] = "L'ordre d'achats a été modifié avec succès"
         redirect_to @purchase_order
       else
-        render :action => :show
+        render :action => "edit"
       end
     else
       error_access_page(412)
@@ -114,7 +119,7 @@ class PurchaseOrdersController < ApplicationController
   def destroy
     if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
       unless @purchase_order.destroy
-        flash[:notice] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
+        flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
       end
       redirect_to purchase_orders_path
     else
@@ -125,9 +130,14 @@ class PurchaseOrdersController < ApplicationController
   def confirm
     if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
       unless @purchase_order.confirm
-        flash[:notice] = 'Une erreur est survenue lors de la validation de l\'ordre d\'achats'
+        if @purchase_order.can_be_edited?
+          render :action => "edit"
+        else
+          error_access_page(412)
+        end
+      else
+        redirect_to purchase_orders_path
       end
-      redirect_to purchase_orders_path
     else
       error_access_page(412)
     end

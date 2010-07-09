@@ -57,7 +57,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
     all_purchase_request_supplies = PurchaseRequestSupply.all
     purchase_request_supplies = []
     for purchase_request_supply in all_purchase_request_supplies
-      if !purchase_request_supply.cancelled? and purchase_request_supply.treated? == nil
+      if !purchase_request_supply.cancelled? and purchase_request_supply.treated? == nil 
         purchase_request_supplies.push purchase_request_supply
       end
     end

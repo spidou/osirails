@@ -80,15 +80,23 @@ function update_purchase_request_supplies_ids(element, parent)
 {
     var quantity = element.readAttribute('data_quantity');
     var check = parseInt(element.readAttribute('idx'));
-    var id = element.readAttribute('id');
-    
+    var id = element.readAttribute('id'); 
     var purchase_request_supply_ids = parent.down('.purchase_request_supplies_ids');
+    var purchase_request_supply_deselected_ids = parent.down('.purchase_request_supplies_deselected_ids');
     
     if (check == 0)
     {
+      var tab_deselected_ids = purchase_request_supply_deselected_ids.value.split(';')
+      var result = ""
+      for (i = 0; i < tab_deselected_ids.length; i++){
+        if (parseInt(tab_deselected_ids[i]) != parseInt(id) && tab_deselected_ids[i] != "")
+            result += tab_deselected_ids[i]+";"
+      }
+      purchase_request_supply_deselected_ids.value = result;
+      purchase_request_supply_deselected_ids.innerHTML = result;  
       purchase_request_supply_ids.value = purchase_request_supply_ids.value.concat(id + ";");
       purchase_request_supply_ids.innerHTML =  purchase_request_supply_ids.value;
-      element.setAttribute('idx','1');
+      element.setAttribute('idx','1');       
     }
     else
     {
@@ -100,7 +108,9 @@ function update_purchase_request_supplies_ids(element, parent)
       }
       element.setAttribute('idx','0');
       purchase_request_supply_ids.value = result;
-      purchase_request_supply_ids.innerHTML = result;  
+      purchase_request_supply_ids.innerHTML = result;   
+      purchase_request_supply_deselected_ids.value = purchase_request_supply_deselected_ids.value.concat(id + ";");
+      purchase_request_supply_deselected_ids.innerHTML =  purchase_request_supply_deselected_ids.value;
     }
 }  
 
@@ -113,5 +123,11 @@ function disabled_or_enabled_quantity_text_field(element)
     Effect.toggle(quantity_field, 'appear', { duration: 0.0 });
     Effect.toggle(span_quantity, 'appear', { duration: 0.0 }); 
 }
+
+function mark_resource_for_destroy(element) {
+  element.down('.should_destroy').value = 1;
+  element.hide();
+}
+
 
  
