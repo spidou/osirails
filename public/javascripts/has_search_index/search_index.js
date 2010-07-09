@@ -233,7 +233,7 @@ function hide_menu(obj)
   }
 }
 
-// method to permit to aply the attribute choice of the user 
+// method to permit to apply the attribute choice of the user 
 // obj -> calling html entitie
 // parent_div_id  -> the id of the parent div of the whole criterion
 // attribute_type -> the data type of the attribute (boolean, string, etc...)

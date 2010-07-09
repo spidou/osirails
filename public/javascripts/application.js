@@ -67,13 +67,15 @@ function GetCookieValue(name)
 
 // prepare variables for pin and unpin contextual_menu functions
 function prepare_variables_for_contextual_menu() {
-  unpin_message     = 'Détacher le menu';
-  pin_message       = 'Épingler le menu';
-  pinned_image      = 'pinned_16x16.png';
-  unpinned_image    = 'not_pinned_16x16.png';
-  pin_image         = $('pin_button_link').down('img')
-  pin_image_prefix  = pin_image.getAttribute('src').substring(0, pin_image.getAttribute('src').lastIndexOf('/') + 1)
-  exp_date          = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
+  if($('pin_button_link')){
+    unpin_message     = 'Détacher le menu';
+    pin_message       = 'Épingler le menu';
+    pinned_image      = 'pinned_16x16.png';
+    unpinned_image    = 'not_pinned_16x16.png';
+    pin_image         = $('pin_button_link').down('img')
+    pin_image_prefix  = pin_image.getAttribute('src').substring(0, pin_image.getAttribute('src').lastIndexOf('/') + 1)
+    exp_date          = new Date( 2038 , 1, 1 ); // the year is set to 2038 to simule never expire behavior FIXME this is due to the unix timestamps limit with 32 bit based system
+  }
 }
 
 function pin_contextual_menu()

@@ -3,6 +3,7 @@ class SearchIndexesController < ApplicationController
   
   # GET /index
   def index
+    HasSearchIndex::MODELS.each { |model| model.constantize.get_include_array }   # permit to parse deeply all relationships to load them if needed
     @models      = HasSearchIndex::MODELS.sort
     @main_models = @models.reject {|n| n.constantize.search_index[:main_model] == false}
     @actions     = HasSearchIndex::ACTIONS_TEXT.to_json.to_s 

@@ -29,7 +29,7 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
   
   def test_has_search_index
     # verify that, if the model is added as relationhip and doesn't implement the plugin, it raise an error
-    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:gender] }
+#    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:gender] } # that is not checked at plugin implementation yet but at runtime
     
     init_plugin_in_all_models
     
@@ -53,7 +53,7 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     #########################
     ### Test relationships (More deep test with private method test below 'test_check_relationships')
     
-    relationships_quantity = Person.reflect_on_all_associations.size
+    relationships_quantity = Person.reflect_on_all_associations.select {|assoc| [nil,false].include?(assoc.options[:polymorphic])}.size
     message  = "Person should have all his relationships within the plugin"
     assert_equal relationships_quantity, Person.search_index[:relationships].size, message
     
@@ -276,30 +276,30 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
   def test_match_regexp
     # test match a word
     data = expression = "string"
-    assert Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should match"
+    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
     expression += 's'
-    assert !Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should NOT match"
+    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
 
     # test match word's end
     expression = "*.txt"
     data = 'string.txt'
-    assert Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should match"
+    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
     data = 'string.pdf'
-    assert !Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should NOT match"
+    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
 
     # test match word's begining
     expression = "test_*"
     data = 'test_string'
-    assert Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should match"
+    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
     data = 'test.string'
-    assert !Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should NOT match"
+    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
 
     # test match word's content
     expression = "*event*"
     data = 'new_event'
-    assert Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should match"
+    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
     data = 'new_action'
-    assert !Person.match_regexp(data, expression), "'#{data}' and '#{expression}' should NOT match"
+    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
   end
   
   def test_search_index_attributes
@@ -327,43 +327,6 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     assert_equal 'date', Person.search_index_attribute_type('created_at'), "created_at's type should be as defined within the plugin call"
   end
   
-  def test_is_additional
-    assert !Person.is_additional?('name'), "'name' should not be an additional attribute"
-    
-    Person.has_search_index(:additional_attributes => {:name => :string})
-    assert Person.is_additional?('name'), "'name' should be an additional attribute"
-    
-    # with wrong nested resource
-    assert_raise(ArgumentError) { Person.is_additional?('gander.name') }
-    
-    # with nested resource that don't implement the plugin
-    assert_raise(RuntimeError) { Person.is_additional?('gender.name') }
-    
-    # with nested resource that implement the plugin
-    Gender.has_search_index :additional_attributes => {:name => :string}
-    assert Person.is_additional?('gender.name'), "'gender.name' should be an additional attribute"
-  end
-  
-  def test_only_additional_attributes
-    attributes = {'name' => 'string', 'created_at' => 'datetime'}
-    
-    Person.has_search_index :additional_attributes => {:name => :string, :created_at => :datetime}
-    assert Person.only_additional_attributes?(attributes)
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
-    assert !Person.only_additional_attributes?(attributes)
-  end
-  
-  def test_only_database_attributes
-    attributes = {'name' => 'string', 'created_at' => 'datetime'}
-    
-    Person.has_search_index :only_attributes => [:name, :created_at]
-    assert Person.only_database_attributes?(attributes)
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
-    assert !Person.only_database_attributes?(attributes)
-  end
-  
   def test_get_include_array
     #########################
     ## Simple include
@@ -385,6 +348,93 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     assert_equal expected_array, Person.get_include_array, "include_array should be as expected : #{expected_array.inspect}"
   end
   
+  def test_search_index_relationships
+    ## With an explicit relationships definition
+    # without mistakes
+    Person.has_search_index :only_relationships => [:numbers]
+    Number.has_search_index
+    
+    assert_equal [:numbers], Person.search_index_relationships
+    assert_nothing_raised { Person.search_index_relationships }
+    
+    # with a mistake
+    Person.has_search_index :only_relationships => [:numbers, :summer_jobs]
+    
+    assert_raise(ArgumentError) { Person.search_index_relationships }
+    
+    ## With an implicit relationships definition
+    # without any nested resource implementing the plugin
+    Number.has_search_index
+    
+    assert_equal [], Number.search_index_relationships
+    assert_nothing_raised { Number.search_index_relationships }
+    
+    # with one nested resource implementing the plugin 
+    NumberType.has_search_index
+    
+    assert_equal [:number_type], Number.search_index_relationships
+    assert_nothing_raised { Number.search_index_relationships }
+  end
+  
+  def test_reflect_relationship
+    Person.has_search_index :only_relationships => [:numbers, :summer_jobs]
+    Number.has_search_index
+   
+    
+    # Explicit relationships configurations
+    assert_equal Number, Person.reflect_relationship(:numbers)
+    assert_nothing_raised { Person.reflect_relationship(:numbers) }
+    
+    assert_raise(ArgumentError) { Person.reflect_relationship(:summer_jobs) }
+    
+    # Implicite relationships configurations
+    assert_equal nil, Number.reflect_relationship(:number_type)
+    assert_nothing_raised { Number.reflect_relationship(:number_type) }
+    
+    # Implicite relationships configurations taking in account implicit
+    assert_raise(ArgumentError) { Number.reflect_relationship(:number_type, check_implicit = true) }
+  end
+  
+  #### Privates methods tested directly ####
+  
+  
+  def test_is_additional
+    assert !Person.send(:is_additional?, 'name'), "'name' should not be an additional attribute"
+    
+    Person.has_search_index(:additional_attributes => {:name => :string})
+    assert Person.send(:is_additional?, 'name'), "'name' should be an additional attribute"
+    
+    # with wrong nested resource
+    assert_raise(ArgumentError) { Person.send(:is_additional?, 'gander.name') }
+    
+    # with nested resource that don't implement the plugin
+    assert_raise(ArgumentError) { Person.send(:is_additional?, 'gender.name') }
+    
+    # with nested resource that implement the plugin
+    Gender.has_search_index :additional_attributes => {:name => :string}
+    assert Person.send(:is_additional?, 'gender.name'), "'gender.name' should be an additional attribute"
+  end
+  
+  def test_only_additional_attributes
+    attributes = {'name' => 'string', 'created_at' => 'datetime'}
+    
+    Person.has_search_index :additional_attributes => {:name => :string, :created_at => :datetime}
+    assert Person.send(:only_additional_attributes?, attributes)
+    
+    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
+    assert !Person.send(:only_additional_attributes?, attributes)
+  end
+  
+  def test_only_database_attributes
+    attributes = {'name' => 'string', 'created_at' => 'datetime'}
+    
+    Person.has_search_index :only_attributes => [:name, :created_at]
+    assert Person.send(:only_database_attributes?, attributes)
+    
+    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
+    assert !Person.send(:only_database_attributes?, attributes)
+  end
+  
   def test_filter_include_array_from_prefixes
     #########################
     ## Simple include
@@ -394,11 +444,11 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     include_array  = [:summer_jobs]
     
     expected_array = include_array
-    assert_equal expected_array, Person.filter_include_array_from_prefixes(include_array, ['summer_jobs']),
+    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs']),
       "include_array should be as expected : #{expected_array.inspect}"
       
     expected_array = []
-    assert_equal expected_array, Person.filter_include_array_from_prefixes(include_array, []),
+    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, []),
       "include_array should be as expected : #{expected_array.inspect}"
     
     #########################
@@ -410,51 +460,51 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     include_array  = [:summer_jobs, {:numbers => [:number_type]}]
     
     expected_array = include_array
-    assert_equal expected_array,  Person.filter_include_array_from_prefixes(include_array, ['summer_jobs', 'numbers.number_type']),
+    assert_equal expected_array,  Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs', 'numbers.number_type']),
       "include_array should be as expected : #{expected_array.inspect}"
       
     expected_array = [:summer_jobs, :numbers]
-    assert_equal expected_array,  Person.filter_include_array_from_prefixes(include_array, ['summer_jobs', 'numbers']),
+    assert_equal expected_array,  Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs', 'numbers']),
       "include_array should be as expected : #{expected_array.inspect}"
       
     expected_array = []
-    assert_equal expected_array, Person.filter_include_array_from_prefixes(include_array, []),
+    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, []),
       "include_array should be as expected : #{expected_array.inspect}"
   end
   
   def test_search_match
   
-    assert_raise(ArgumentError) {Person.search_match?(@person, 'name', 'good', 'bad search_type')}
+    assert_raise(ArgumentError) {Person.send(:search_match?, @person, 'name', 'good', 'bad search_type')}
     
     #########################
     ## Test with all kind of +values+ formats
     
     # 'value'
-    assert Person.search_match?(@person, 'name', 'good', 'or'), "@person's name should match with 'good'"
-    assert !Person.search_match?(@person, 'name', 'bad', 'or'), "@person's name shouldn't match with 'bad'"
+    assert Person.send(:search_match?, @person, 'name', 'good', 'or'), "@person's name should match with 'good'"
+    assert !Person.send(:search_match?, @person, 'name', 'bad', 'or'), "@person's name shouldn't match with 'bad'"
       
     # 'value value2'
-    assert Person.search_match?(@person, 'name', 'gd goo', 'or'), "@person's name should match with 'gd' or 'goo'"
-    assert !Person.search_match?(@person, 'name', 'b bad', 'or'), "@person's name shouldn't match with 'b' or 'bad'"
+    assert Person.send(:search_match?, @person, 'name', 'gd goo', 'or'), "@person's name should match with 'gd' or 'goo'"
+    assert !Person.send(:search_match?, @person, 'name', 'b bad', 'or'), "@person's name shouldn't match with 'b' or 'bad'"
       
     # {:value => 'value', ...}
-    assert Person.search_match?(@person, 'name', {:value => 'good', :action => 'like'}, 'or'), "@person's name should match with 'good'"
-    assert !Person.search_match?(@person, 'name', {:value => 'bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'bad'"
+    assert Person.send(:search_match?, @person, 'name', {:value => 'good', :action => 'like'}, 'or'), "@person's name should match with 'good'"
+    assert !Person.send(:search_match?, @person, 'name', {:value => 'bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'bad'"
       
     # {:value => 'value value2', ...}
-    assert Person.search_match?(@person, 'name', {:value => 'gd goo', :action => 'like'}, 'or'), "@person's name should match with 'gd' or 'goo'"
-    assert !Person.search_match?(@person, 'name', {:value => 'b bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'b' or 'bad'"
+    assert Person.send(:search_match?, @person, 'name', {:value => 'gd goo', :action => 'like'}, 'or'), "@person's name should match with 'gd' or 'goo'"
+    assert !Person.send(:search_match?, @person, 'name', {:value => 'b bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'b' or 'bad'"
       
     # [{:value => 'value', ...}, {:value => 'value', ...}]
-    assert Person.search_match?(@person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
+    assert Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
       "@person's name should match with 'good' or 'another_name'"
-    assert !Person.search_match?(@person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
+    assert !Person.send( :search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
       "@person's name shouldn't match with 'bad' or 'another_name'"
     
     # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    assert Person.search_match?(@person, 'name', [{:value => 'gd goo', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
+    assert Person.send( :search_match?, @person, 'name', [{:value => 'gd goo', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
       "@person's name should match with ('gd' or 'goo') or ('another' or 'name')"
-    assert !Person.search_match?(@person, 'name', [{:value => 'b bad', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
+    assert !Person.send(:search_match?, @person, 'name', [{:value => 'b bad', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
       "@person's name shouldn't match with ('b' or 'bad') or ('another' or 'name')"
     
     #########################
@@ -478,55 +528,55 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
       message = "+a_#{data.to_s}+ ( #{@data_type_sample.send("a_#{data.to_s}").to_s.downcase} ) - ( #{good_value.to_s.downcase} )"
       case data
         when :string, :text, :binary
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'like'}, 'or'), "data should match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'not like'}, 'or'), "data should NOT match #{message}"
+          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
+          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'like'}, 'or'), "data should match #{message}"
+          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
+          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'not like'}, 'or'), "data should NOT match #{message}"
           
         when :integer,:decimal, :date, :datetime, :float
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>='}, 'or'), "data should match #{message}"
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<='}, 'or'), "data should match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<'}, 'or'), "data should NOT match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>'}, 'or'), "data should NOT match #{message}"
+          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
+          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>='}, 'or'), "data should match #{message}"
+          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<='}, 'or'), "data should match #{message}"
+          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
+          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<'}, 'or'), "data should NOT match #{message}"
+          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>'}, 'or'), "data should NOT match #{message}"
           
         when :boolean
-          assert DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert !DataType.search_match?(@data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
+          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
+          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
       end
     end
       
     #########################
     ## Test all kind of +search_type+
     
-    assert Person.search_match?(@person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
+    assert Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
       "@person's name should match with 'good' or 'another_name'"
       
-    assert !Person.search_match?(@person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
+    assert !Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
       "@person's name shouldn't match with 'bad' or 'another_name'"
       
-    assert !Person.search_match?(@person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
+    assert !Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
       "@person's name should NOT match with 'good' and 'another_name'"
       
-    assert !Person.search_match?(@person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
+    assert !Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
       "@person's name shouldn't match with 'bad' and 'another_name'"
       
-    assert !Person.search_match?(@person, 'name', [{:value => 'another_name', :action => 'like'}, {:value => 'good', :action => 'like'}], 'not'),
+    assert !Person.send(:search_match?, @person, 'name', [{:value => 'another_name', :action => 'like'}, {:value => 'good', :action => 'like'}], 'not'),
       "@person's name should NOT match with !('good' or 'another_name')"
       
-    assert Person.search_match?(@person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'not'),
+    assert Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'not'),
       "@person's name should match with !('bad' or 'another_name')"
   end
   
   def test_get_nested_object
-    assert_raise(ArgumentError) {Person.get_nested_object(@person, "not an array")}
+    assert_raise(ArgumentError) {Person.send( :get_nested_object, @person, "not an array")}
     
     #########################
     ## Test simple nested_ressource architecture with                |-> one
     
     @person.gender = Gender.new(:name => 'man', :male => true)
-    assert_equal @person.gender, Person.get_nested_object(@person, ["gender"]), "the two objects should be equal"
+    assert_equal @person.gender, Person.send( :get_nested_object, @person, ["gender"]), "the two objects should be equal"
     
     #########################
     ## Test a more complex nested_ressources architecture with       |-> many -> one
@@ -543,8 +593,8 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
       number.number_type = mobile
       @person.numbers   += [number]
     end
-    assert_equal 9, Person.get_nested_object(@person, ["numbers"]).size, "@person should have 9 numbers"
-    assert_equal 2, Person.get_nested_object(@person, ["numbers","number_type"]).size, "@person should have 2 DISTINCT number_types"
+    assert_equal 9, Person.send( :get_nested_object, @person, ["numbers"]).size, "@person should have 9 numbers"
+    assert_equal 2, Person.send( :get_nested_object, @person, ["numbers","number_type"]).size, "@person should have 2 DISTINCT number_types"
   end
   
   def test_search_attributes_format_hash
@@ -556,17 +606,17 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     expected_hash = {'name' => "value", 'id' => 'value'}
     
     Person.has_search_index :only_attributes => [:name, :id]
-    assert_equal expected_hash, Person.format_attributes_hash_for_simple_search('value'), message
+    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
     
     Person.has_search_index :only_attributes => [:name], :additional_attributes => {:id => :integer}
-    assert_equal expected_hash, Person.format_attributes_hash_for_simple_search('value'), message
+    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
     
     #########################
     ## Test with all attributes 
     
     expected_hash = {"name"=>"value", "created_at"=>"value", "updated_at"=>"value", "id"=>"value", "age"=>"value"}
     Person.has_search_index
-    assert_equal expected_hash, Person.format_attributes_hash_for_simple_search('value'), message
+    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
   end
   
   
@@ -575,23 +625,25 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
     negatives = ["!=","<=",">=","not like"]
     
     positives.each_with_index do |positive, i|
-      assert_equal Person.negative(positive), negatives[i], "#{Person.negative(positive)} negative's form should be equal to #{negatives[i]}"
+      assert_equal Person.send(:negative, positive), negatives[i], "#{Person.send(:negative, positive)} negative's form should be equal to #{negatives[i]}"
     end
   end
   
-  def test_format_date
-    message               = "returned date should be as expected"
-    params_date           = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920'}
-    params_datetime       = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920', 'date(3i)' => '23', 'date(4i)' => '59'}
-    params_other_data_ype = {'value' => "string with useless space at the end       "}
-    
-    assert_equal "1920/12/30", Person.format_date(params_date, 'date'), message
-    assert_equal "1920/12/30", Person.format_date(params_datetime, 'date'), message
-    assert_equal "1920/12/30 23:59:00", Person.format_date(params_datetime, 'datetime'), message
-    assert_equal "string with useless space at the end", Person.format_date(params_other_data_ype, 'string'), "String should be stripped"
-  end
+#  # TODO The method has been moved into has_search_index_methods_helper.rb
+#  # So that test should be used into the lib's tests.
+#  #
+#  def test_format_date
+#    message               = "returned date should be as expected"
+#    params_date           = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920'}
+#    params_datetime       = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920', 'date(3i)' => '23', 'date(4i)' => '59'}
+#    params_other_data_ype = {'value' => "string with useless space at the end       "}
+#    
+#    assert_equal "1920/12/30", Person.format_date(params_date, 'date'), message
+#    assert_equal "1920/12/30", Person.format_date(params_datetime, 'date'), message
+#    assert_equal "1920/12/30 23:59:00", Person.format_date(params_datetime, 'datetime'), message
+#    assert_equal "string with useless space at the end", Person.format_date(params_other_data_ype, 'string'), "String should be stripped"
+#  end
 
-  #### Privates methods tested directly
   def test_split_value
     message = "Returned value should be as expected"
     DataType.has_search_index

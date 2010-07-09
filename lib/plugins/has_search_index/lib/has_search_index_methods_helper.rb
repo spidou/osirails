@@ -70,7 +70,7 @@ module HasSearchIndexMethodsHelper
       params[:criteria].each_value do |criterion|
         attribute = criterion['attribute']
         data_type = criterion['action'].split(",")[0]
-        opt_hash  = {:value => model.format_date(criterion, data_type), :action => criterion['action'].split(",")[1]}
+        opt_hash  = {:value => get_formatted_date_from(criterion, data_type), :action => criterion['action'].split(",")[1]}
         if criteria.keys.include?(attribute)
           criteria[attribute] << opt_hash
         else
@@ -83,6 +83,27 @@ module HasSearchIndexMethodsHelper
     end
   end
 
+  # Method to get formatted DATE stored in the criterion's params
+  #
+  def get_formatted_date_from(params, data_type)
+    case data_type
+      when 'date'
+        d = params['date(0i)']
+        m = params['date(1i)']
+        y = params['date(2i)']
+        return "#{y}/#{m}/#{d}"
+      when 'datetime'
+        d = params['date(0i)']
+        m = params['date(1i)']
+        y = params['date(2i)']
+        h = params['date(3i)']
+        min= params['date(4i)']
+        return "#{y}/#{m}/#{d} #{h}:#{min}:00"
+      else
+        return params['value'].strip unless params['value'].nil?
+    end
+  end
+  
   # Method to know the search context
   # 
   # #=> return 'true' if it's a contextual search and 'false' if not

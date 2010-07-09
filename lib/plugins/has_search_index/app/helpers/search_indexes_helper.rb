@@ -129,12 +129,12 @@ module SearchIndexesHelper
     include_array.each do |element|      
       if element.is_a?(Hash)
         element.each do |key, value|
-          model = parent_model.constantize.association_list[key].class_name        
+          model = parent_model.constantize.reflect_on_association(key).class_name        
           (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{key.to_s.humanize}", model]       
           result = result.merge(generate_relationships_hash(value, model, parent_model, ".#{key.to_s.humanize}"))
         end
       else
-        model = parent_model.constantize.association_list[element].class_name
+        model = parent_model.constantize.reflect_on_association(element).class_name
         (result["#{ancestor}#{relationship}"]||=[]) << ["#{parent_model}.#{element.to_s.humanize}", model]
       end
     end

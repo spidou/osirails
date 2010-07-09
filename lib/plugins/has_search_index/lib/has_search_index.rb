@@ -40,11 +40,12 @@ module HasSearchIndex
     # method called into all models that implement the plugin 
     # it define search_index class variable based on passed options hash
     def has_search_index( options = {} )
+      #puts "-- start initialisation de #{self}"                                          ##### use this in debug purpose to see when the model call the plugin init
       
       error_prefix = "(has_search_index) model: #{self} >"
       const_set 'ERROR_PREFIX', error_prefix unless const_defined?('ERROR_PREFIX')
       
-      HasSearchIndex::MODELS << self.to_s unless HasSearchIndex::MODELS.include?(self.to_s)
+      (HasSearchIndex::MODELS << self.to_s).uniq!
       # affect if nil to avoid testing nullity and emptyness
       options[:additional_attributes] ||={}
       options[:only_attributes]       ||=[]
@@ -54,14 +55,12 @@ module HasSearchIndex
       options[:displayed_attributes]  ||=[]
       options[:main_model]            ||= false
 
-#       puts "-- initialisation de #{self} --"   ##### use this in debug purpose to see when the model call the plugin init
-
       # check options arg for some errors
       options.keys.each do |key|
         raise ArgumentError, "#{error_prefix} Unknown option :#{key.to_s}" unless AUTHORIZED_OPTIONS.include?(key)      
       end
       
-      # create a hash to store all associations that concerned the current model
+      # create a hash to store all associations that concern the current model
       assoc_list = Hash.new
       self.reflect_on_all_associations.each do |assoc|
         assoc_list.merge!(assoc.name => assoc) if [nil, false].include?(assoc.options[:polymorphic])
@@ -70,14 +69,14 @@ module HasSearchIndex
       # check & prepare relationshsips
       options[:relationships] = check_relationships(assoc_list, options, error_prefix)
       options.delete(:except_relationships)
-      options.delete(:only_relationships)
+#      options.delete(:only_relationships)                                                # Do not delete that option because it is used into +reflect_relationship+ method
       
       # check & prepare attributes
       options[:attributes] = check_attributes(options, error_prefix)
       options.delete(:except_attributes)
       options.delete(:only_attributes)
       
-      # prepare disaplayed_attributes
+      # prepare displayed_attributes
       message  = "#{error_prefix} :displayed_attributes is wrong. "
       message += "Expected Array but was '#{options[:displayed_attributes].inspect}':#{options[:displayed_attributes].class.to_s}"
       raise ArgumentError, message unless options[:displayed_attributes].is_a?(Array)
@@ -96,394 +95,400 @@ module HasSearchIndex
       
       # create class var to permit to access to search option from te model
       class_eval do
-        cattr_accessor :search_index, :association_list
+        cattr_accessor :search_index
         self.search_index = {}.merge(options)                                            # get all attributes and relationships configured into the plugin
-        self.association_list = assoc_list                                               # get all associations configured into the plugin
-      end
-      
-      options[:relationships].each do |relationship_name|                                # verify if all relationships implement has_search_index
-        model   = self.reflect_on_association(relationship_name).class_name     
-        message = "#{error_prefix} relationship '#{relationship_name}' needs the '#{model}' model to implement has_search_index plugin"
-        raise ArgumentError, message unless HasSearchIndex::MODELS.include?(model)
-      end
-      
-    end
-    
-    # Method to match a simple regexp with a data string
-    # to macth a data that end with 'x' 
-    #  #=> "*x"
-    # to match a data that start with 'x'
-    #  #=> "x*"
-    # to match a data that contain 'x'
-    #  #=> "*x*"
-    # if there's no * then the regexp wil be the exp passed as argument
-    #
-    def match_regexp(data, exp)
-      string = exp.gsub("*","")
-      regexp = "^#{string}$"
-      regexp = "^[0-9A-Za-z_]*#{string}$" if exp.first == "*"
-      regexp = "^#{string}[0-9A-Za-z_]*$" if exp.last == "*"
-      regexp = "^[0-9A-Za-z_]*#{string}[0-9A-Za-z_]*$" if exp.last == "*" and exp.first == "*"
-      return !data.match(Regexp.new(regexp)).nil?
-    end
-    
-    # Method to return all attributes including additionals
-    #
-    def search_index_attributes
-      self.search_index[:attributes].merge(self.search_index[:additional_attributes])
-    end
-    
-    # return attribute type according to plugin definition
-    #
-    def search_index_attribute_type(attribute)
-      self.search_index_attributes[attribute]
-    end
-    
-    # method to identify if an attribute belongs to the additionals attributes
-    # return true if it do and false if not
-    #
-    def is_additional?(attribute_path)
-      attribute_path = attribute_path.downcase
-      attribute      = attribute_path.split(".").last
-      object         = self
-      if attribute_path.include?(".")
-        attribute_path.chomp(".#{attribute}").split(".").each do |a|
-          message = "#{self::ERROR_PREFIX} Association '#{a}' undefined for '#{object.to_s}' model"
-          raise ArgumentError, message if object.association_list[a.to_sym].nil?
-          object = object.association_list[a.to_sym].class_name.constantize
-        end
-      end
-      message  = "#{self::ERROR_PREFIX} Implementation error '#{object}' model must implement has_search_index"
-      message += " plugin in order to use directly or undirectly the plugin"
-      raise message unless object.respond_to?(:search_index)
-      
-      object.search_index[:additional_attributes].include?(attribute)
-    end  
-    
-    # Methods that permit to know ther's only one type of attributes
-    # #1 return true if all are additional attributes (cf "is_additional?(attribute)" method)
-    # #2 return true if all are database attributes (cf "is_additional?(attribute)" method)
-    #
-    def only_additional_attributes?(attributes)
-      attributes.each_key {|attribute| return false unless self.is_additional?(attribute)}
-      true
-    end
-
-    def only_database_attributes?(attributes)
-      attributes.each_key {|attribute| return false if self.is_additional?(attribute)}
-      true
-    end
-
-    # Method that permit to get the include array to use as argument to call +find+ from a model
-    #
-    # ignore permit to avoid the cycle from the many to many relationships like +Role+ and +User+
-    # but it's possible for a model to have a relationship that target to itself like +Service+:
-    # ==> a 'service' has many 'children', and a 'chidren' is a 'service'
-    # but the method avoid the 'children' to have a 'children' like a 'service' to avoid looping.  
-    #
-    def get_include_array(ignore=[])
-      include_array = Array.new
-      self.search_index[:relationships].each do |relationship|
-        model = self.association_list[relationship].class_name
-        unless ignore.include?("#{model.to_s}") 
-          ignore_copy = ignore.fusion(["#{self.to_s}"])
-          model       = model.constantize
-          model_include_array = model.get_include_array(ignore_copy.clone)
-          if model_include_array == []
-            include_array << relationship
-          else
-            include_array << {relationship => model_include_array}
-          end
-        end
-      end
-      return include_array
-    end
-    
-    # Method that filter a given include_array according to attribute's prefixes given in arguments
-    #
-    def filter_include_array_from_prefixes(include_array, prefixes, level = 0)
-      return [] if prefixes.empty? or prefixes.nil?
-      relationships_by_level = []
-      result                 = []
-      prefixes.each do |prefix|
-        prefix.split('.').each_with_index do |relationship, i|
-          relationships_by_level[i] ||= [] 
-          relationships_by_level[i] << relationship.downcase
-        end
-      end
-      include_array.each do |element|
-        symbol = element.is_a?(Hash) ? element.keys.first : element       
-        unless relationships_by_level[level].nil? or !relationships_by_level[level].include?(symbol.to_s.downcase)
-          if element.is_a?(Hash)
-            nested  = filter_include_array_from_prefixes(element[symbol], prefixes, level + 1)     
-            result << (nested.empty? ? symbol : {symbol => nested})
-          else
-            result << symbol
-          end
-        end
-      end
-      result
-    end
-    
-    # Method that permit to verify the match between object's attribute and the value passed into args according to data type (and action if there is one) 
-    #
-    # ==== examples:
-    #
-    # search_match?(Employee.first,"first_name","jean", "or")
-    # ==> return +True+ if (employee.frist_name=="jean") and +False+ if not
-    #
-    # search_match?(User.first, "expired?", "true false 1", "or")
-    # ==> return +True+ if expired? is in('true', 'false', '1')
-    #
-    # The same as below works if +values+ is a hash like {:value => "value other_value etc...", :action => "action"}
-    # 
-    # +values+ can also be an array of hash like [{:value => 1, ...}, {:value => 2, ...}]
-    #
-    def search_match?(object, attribute, values, search_type)
-      raise ArgumentError, "search_type should be in ('or', 'and', 'not')" unless ['or', 'and', 'not'].include?(search_type)
-      attribute  = attribute.downcase
-      attributes = self.search_index[:additional_attributes]
-      data       = object.send(attribute).to_s.downcase                                  # downcase data to make the match method case insensitive
-      tmp_result = result = nil
-
-      return false if data.nil?
-      if !values.is_a?(Hash) and !values.is_a?(Array)
-        splited_values = split_value(object.class, attribute, values)                    # permit to manage when passsing multiple values in the same field
-
-        splited_values.each do |value|
-          value        = value.to_s.downcase                                             # downcase value to make the match method case insensitive
-          is_string    = ["string", "text"].include?(object.search_index[:attributes][attribute])
-          tmp_result ||= is_string ? data.match(Regexp.new(value)) : data == value
-        end
-        return (search_type == 'not')? !tmp_result : tmp_result
-      end
-
-      value_array = (values.is_a?(Array))? values : [ values ]                           # manage the case when only one attribute
+        
+        # Method to check relationship's plugin implementation
+        # Return the model corresponding to the relationship,
+        #  after testing if the explicit configured relationships (configured with :only_relationships) implement the plugin.
+        # Return nil if the model doesn't implement the plugin and is not configured explicitly.
+        #
+        def self.reflect_relationship(relationship, check_implicit = false)
+          need_to_be_checked = (check_implicit ? true : self.search_index[:only_relationships].include?(relationship.to_sym) )
+          class_name         = self.reflect_on_association(relationship.to_sym).class_name
+          model              = class_name.constantize
+          message            = "#{self::ERROR_PREFIX} relationship '#{relationship}' needs the '#{class_name}' model to implement has_search_index plugin"
           
-      
-      value_array.each do |val|
-        message  = "#{self::ERROR_PREFIX} Argument missing into value hash :"
-        message += " if you use the value hash instead of value you must type it like {:value => foo :action => bar} "
-        raise ArgumentError, message if val[:action].nil?
-        
-        splited_values = split_value(object.class, attribute, val[:value])               # permit to manage when passsing multiple values in the same field 
-        tmp_result     = nil
-        
-        splited_values.each do |value|
-          is_like  = !data.match(Regexp.new(value.to_s.downcase)).nil?                   # downcase value to make the match method case insensitive
-          is_equal = data.send("==", value.to_s.downcase)
-
-          if ['not like', '!='].include?(val[:action])
-            tmp_result = true                                                            # initialise tmp_result to true because of using '&&='
-            tmp_result &&= (val[:action] == '!=')? !is_equal : !is_like
-          
-          elsif ['like', '='].include?(val[:action])
-            tmp_result ||= (val[:action] == '=')? is_equal : is_like
-             
-          elsif ACTIONS[attributes[attribute].to_sym].include?(val[:action])
-            tmp_result ||= data.send(val[:action], value.to_s.downcase)
-            
-          else
-            raise ArgumentError, "#{self::ERROR_PREFIX} Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
+          unless HasSearchIndex::MODELS.include?(class_name)
+            need_to_be_checked ? raise(ArgumentError, message) : (model = nil)
           end
-          tmp_result = !tmp_result if search_type == 'not'
+          
+          return model
         end
         
-        result  = tmp_result if result.nil?                                              # init the result value
-        result |= tmp_result if search_type == 'or'                                      # return the result of multiple values for one attribute
-        result &= tmp_result if ['and', 'not'].include?(search_type)
-      end
-      
-      return result
-    end
+        # Method that permit to search attributes that are or not into database
+        # You can access to the :action possible values into ACTIONS constant hash with the data type as key
+        # for example ==> ACTIONS[:string] ==> ["not like","like","==","!="]
+        # the method is case insensitive
+        #
+        # ==== Simple search :
+        #
+        #    # You can also pass a value to test all attributes defined for Model:
+        #
+        #    -> Model.search_with( value )
+        #
+        # ==== Standard search :
+        #
+        #    -> Model.search_with( ATTRIBUTE => VALUE, ..., SEARCH_TYPE )
+        #
+        #    ATTRIBUTE:String
+        #    #-> 'attribute'
+        #    #-> 'relationship.attribute'
+        #  
+        #    VALUE:String|Hash|Array
+        #    #-> 'value'
+        #    #-> {:value => value, :action => action}
+        #    #-> [{:value => value, :action => action}, {...}, ...]
+        #
+        #    SEARCH_TYPE is optional, if not specified default is used 
+        #    #-> :search_type => "and"                       ->  Default one , to get result that match with all asserts
+        #                        "or"                        ->  To get result that match at least with one of all asserts
+        #                        "not"                       ->  To get result that match with no asserts
+        #
+        #
+        #    # In some cases you can need to test more than one value for only one attribute :
+        #
+        #     Model.search_with( attribute =>[ {:value => first_value, :action => first_action}, {:value => second_value, :action => second_action} ])
+        #     => it's like to do 'attribute => {:value => first_value, :action => first_action}, attribute =>{:value => second_value, :action => second_action}'
+        #        :but as you know, you can't pass the same key twice into an Hash.
+        #
+        #    # with an attribute that is not into database
+        #     
+        #     User.search_with("expired?" => true) or User.search_with("expired?" => {:value => true, :action => "="})
+        #     => all users like an_user.expired?==true    (PS : the both are equal because default action is '=' for all data types, and 'like' (cf. sql) for strings )
+        #
+        #    # with a nested attribute into database or not
+        #    (!) you must type the relationship name to get a nested resource
+        #
+        #    #  User has_and_belongs_to_many :roles :
+        #
+        #     User.search_with("roles.name" => "admin")
+        #     => all users that have at least one +role+ with +name+ equal to "admin"
+        #      
+        #    # Employee has_one :job_contract :
+        #
+        #     Employee.search_with("job_contract.start_date" => "2/2/1900")
+        #     => nothing because the date is to old, there's no user that have a job_contract's start_date equal to that one
+        #
+        #    # another example with 'not' +search_type+ to see that it invert +actions+ into +values+:
+        #
+        #     Employee.search_with("job_contract.start_date" =>{:value => "2/2/1900", :action => ">"}, :search_type => 'not')
+        #     => discard all employees with job_contractOrder.search_with("id" => 2) start_date greater than 2/2/1900
+        #
+        #    # Customer has_many :establishments, and Establishment has_one :address :
+        #
+        #     Customer.search_with("establishments.address.zip_code" => 97438)
+        #     => return all customers that have at least one establishment with zip code equal to '97438'
+        #
+        def self.search_with(args={})
 
-    # Method that permit to get nested resources of an object with an array of these nested resources
-    #
-    # ==== example:
-    #
-    # Employee.get_nested_object(Employee.first, ["job_contract","job_contract_type"])
-    # ==> Employee.first.job_contract.job_contract_type
-    #
-    # Customer.get_nested_object(Customer.first,["establishments","contacts","numbers","number_type"])
-    # ==> collection of number_type, of all numbers --> of all contacts --> of all establishments --> of the current customer
-    # 
-    def get_nested_object(object, nested_resources)
-      raise ArgumentError, "Expected Array but was '#{nested_resources}':#{nested_resources.class.to_s}" unless nested_resources.is_a?(Array)
-      nested_resources.collect(&:downcase).each do |nested_ressource|
-        if object.is_a?(Array)
-          collection = Array.new
-          object.each do |sub_object|
-              if sub_object.send(nested_ressource).is_a?(Array)
-                collection = collection.fusion(sub_object.send(nested_ressource))
-              else
-                collection << sub_object.send(nested_ressource)
+          if !args.is_a?(Hash)                                                                  # perform a general search onto the argument value
+            attributes  = self.format_attributes_hash_for_simple_search(args)
+            search_type = "or"
+          else
+            attributes = args
+            search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type).to_s.downcase    # default value for the search type if not present
+            attributes.each_key do |attribute_with_prefix|
+              attribute_with_prefix = attribute_with_prefix.downcase
+              attribute             = attribute_with_prefix.split(".").last
+              model                 = self
+              
+              # check relationship and get the model where to verify the attribute
+              if attribute_with_prefix.include?(".")                                                              
+                prefix = attribute_with_prefix.chomp(".#{attribute}")
+                prefix.split(".").each do |relationship|
+                  message = "#{self::ERROR_PREFIX} Relationship '#{relationship}' into '#{prefix}', undefined for has_search_index into '#{model.to_s}' model"
+                  raise ArgumentError, message unless model.search_index_relationships.include?(relationship.to_sym)
+                  model = model.reflect_relationship(relationship, check_implicit = true)
+                end
               end
-          end
-          object = collection.uniq
-        else
-          object = object.send(nested_ressource)
-        end
-      end
-      return object
-    end
-
-    # Method that permit to format the attributes hash when using 'search_with' method to perform a general search
-    # 'value' -> the searched value 
-    # 'include_hash' -> the relationships you want to search in
-    # ==> {key => value} : 'key' is the relationship, 'value' is the array of attributes you to test, let it empty to test all attributes 
-    # ==== example :
-    #
-    # Model.search_attributes_format_hash("value")
-    # => {"attribute1"=>"value", "attribute2"=>"value",ect...}
-    #
-    def format_attributes_hash_for_simple_search(value)
-      attributes = Hash.new
-      self.search_index_attributes.each_key {|attribute| attributes.merge!({attribute => value}) }
-      attributes
-    end
-
-
-    # Method that permit to search attributes that are or not into database
-    # You can access to the :action possible values into ACTIONS constant hash with the data type as key
-    # for example ==> ACTIONS[:string] ==> ["not like","like","==","!="]
-    # the method is case insensitive
-    #
-    # ==== Simple search :
-    #
-    #    # You can also pass a value to test all attributes defined for Model:
-    #
-    #    -> Model.search_with( value )
-    #
-    # ==== Standard search :
-    #
-    #    -> Model.search_with( ATTRIBUTE => VALUE, ..., SEARCH_TYPE )
-    #
-    #    ATTRIBUTE:String
-    #    #-> 'attribute'
-    #    #-> 'relationship.attribute'
-    #  
-    #    VALUE:String|Hash|Array
-    #    #-> 'value'
-    #    #-> {:value => value, :action => action}
-    #    #-> [{:value => value, :action => action}, {...}, ...]
-    #
-    #    SEARCH_TYPE is optional, if not specified default is used 
-    #    #-> :search_type => "and"                       ->  Default one , to get result that match with all asserts
-    #                        "or"                        ->  To get result that match at least with one of all asserts
-    #                        "not"                       ->  To get result that match with no asserts
-    #
-    #
-    #    # In some cases you can need to test more than one value for only one attribute :
-    #
-    #     Model.search_with( attribute =>[ {:value => first_value, :action => first_action}, {:value => second_value, :action => second_action} ])
-    #     => it's like to do 'attribute => {:value => first_value, :action => first_action}, attribute =>{:value => second_value, :action => second_action}'
-    #        :but as you know, you can't pass the same key twice into an Hash.
-    #
-    #    # with an attribute that is not into database
-    #     
-    #     User.search_with("expired?" => true) or User.search_with("expired?" => {:value => true, :action => "="})
-    #     => all users like an_user.expired?==true    (PS : the both are equal because default action is '=' for all data types, and 'like' (cf. sql) for strings )
-    #
-    #    # with a nested attribute into database or not
-    #    (!) you must type the relationship name to get a nested resource
-    #
-    #    #  User has_and_belongs_to_many :roles :
-    #
-    #     User.search_with("roles.name" => "admin")
-    #     => all users that have at least one +role+ with +name+ equal to "admin"
-    #      
-    #    # Employee has_one :job_contract :
-    #
-    #     Employee.search_with("job_contract.start_date" => "2/2/1900")
-    #     => nothing because the date is to old, there's no user that have a job_contract's start_date equal to that one
-    #
-    #    # another example with 'not' +search_type+ to see that it invert +actions+ into +values+:
-    #
-    #     Employee.search_with("job_contract.start_date" =>{:value => "2/2/1900", :action => ">"}, :search_type => 'not')
-    #     => discard all employees with job_contract start_date greater than 2/2/1900
-    #
-    #    # Customer has_many :establishments, and Establishment has_one :address :
-    #
-    #     Customer.search_with("establishments.address.zip_code" => 97438)
-    #     => return all customers that have at least one establishment with zip code equal to '97438'
-    #
-    def search_with(args={})
-
-      if !args.is_a?(Hash)                                                                  # perform a general search onto the argument value
-        attributes  = self.format_attributes_hash_for_simple_search(args)
-        search_type = "or"
-      else
-        attributes = args
-        search_type = (attributes[:search_type].nil?)? "and" : attributes.delete(:search_type).to_s.downcase    # default value for the search type if not present
-        attributes.each_key do |attribute_with_prefix|
-          attribute_with_prefix = attribute_with_prefix.downcase
-          attribute             = attribute_with_prefix.split(".").last
-          model                 = self
-          
-          # check relationship and get the model where to verify the attribute
-          if attribute_with_prefix.include?(".")                                                              
-            prefix = attribute_with_prefix.chomp(".#{attribute}")
-            prefix.split(".").each do |a|
-              message = "#{self::ERROR_PREFIX} Relationship '#{a}' into '#{prefix}', undefined for has_search_index into '#{model.to_s}' model"
-              raise ArgumentError, message unless model.search_index[:relationships].include?(a.to_sym)
-                
-              model = model.reflect_on_association(a.to_sym).class_name.constantize
+              
+              # check the attribute
+              message = "#{self::ERROR_PREFIX} Attribute '#{attribute}', undefined for has_search_index into '#{model.to_s}' model"
+              raise ArgumentError, message unless model.search_index_attributes.include?(attribute)
             end
           end
+
+          database_result   = search_database_attributes(attributes, search_type) unless only_additional_attributes?(attributes)
+          additional_result = search_additional_attributes(attributes, search_type) unless only_database_attributes?(attributes)
+
+          # discard one of the two results array if there's only one type of attributes
+          return additional_result if only_additional_attributes?(attributes)                # return only additional attributes research result
+          return database_result if only_database_attributes?(attributes)                    # return only database research result
           
-          # check the attribute
-          message = "#{self::ERROR_PREFIX} Attribute '#{attribute}', undefined for has_search_index into '#{model.to_s}' model"
-          raise ArgumentError, message unless model.search_index_attributes.include?(attribute)
+          # regroup the two results array according to search type
+          # PS: for the search type 'not' it's equal to 'and' because 
+          #     we need to keep values that are into the two arrays in the same time,
+          #     but all action are inverted (ex: '=' become '!=' if :not is choosen)
+          if search_type == "or"
+            return additional_result | database_result                                       # get results that respond to one criterion at least
+          else
+            return additional_result & database_result                                       # get results that respond to all criteria or no criteria
+          end
         end
+        
+        # Method that permit to get the include array to use as argument to call +find+ from a model
+        #
+        # ignore permit to avoid the cycle from the many to many relationships like +Role+ and +User+
+        # but it's possible for a model to have a relationship that target to itself like +Service+:
+        # ==> a 'service' has many 'children', and a 'chidren' is a 'service'
+        # but the method avoid the 'children' to have a 'children' like a 'service' to avoid looping.  
+        #
+        def self.get_include_array(ignore=[])
+          include_array = Array.new
+          self.search_index_relationships.each do |relationship|
+            model = self.reflect_on_association(relationship).class_name
+            unless ignore.include?("#{model.to_s}") 
+              ignore_copy = ignore.fusion(["#{self.to_s}"])
+              model       = reflect_relationship(relationship)
+              model_include_array = model.get_include_array(ignore_copy.clone)
+              if model_include_array == []
+                include_array << relationship
+              else
+                include_array << {relationship => model_include_array}
+              end
+            end
+          end
+          return include_array
+        end
+        
+        # Method to return all USABLE relationships and
+        # raise an error if a mandatory relationship (define with :only_relationhips) do not implement the plugin
+        #
+        def self.search_index_relationships
+          relationships = []
+          self.search_index[:relationships].each do |relationship|
+            model = reflect_relationship(relationship).to_s
+            relationships << relationship if HasSearchIndex::MODELS.include?(model)
+          end
+          return relationships
+        end
+        
+        # Method to return all attributes including additionals
+        #
+        def self.search_index_attributes
+          self.search_index[:attributes].merge(self.search_index[:additional_attributes])
+        end
+        
+        # return attribute type according to plugin definition
+        #
+        def self.search_index_attribute_type(attribute)
+          self.search_index_attributes[attribute]
+        end
+        
       end
-
-      database_result   = search_database_attributes(attributes, search_type) unless only_additional_attributes?(attributes)
-      additional_result = search_additional_attributes(attributes, search_type) unless only_database_attributes?(attributes)
-
-      # discard one of the two results array if there's only one type of attributes
-      return additional_result if only_additional_attributes?(attributes)                # return only additional attributes research result
-      return database_result if only_database_attributes?(attributes)                    # return only database research result
       
-      # regroup the two results array according to search type
-      # PS: for the search type 'not' it's equal to 'and' because 
-      #     we need to keep values that are into the two arrays in the same time,
-      #     but all action are inverted (ex: '=' become '!=' if :not is choosen)
-      if search_type == "or"
-        return additional_result | database_result                                       # get results that respond to one criterion at least
-      else
-        return additional_result & database_result                                       # get results that respond to all criteria or no criteria
-      end
     end
+    
 
-    # method to get the negative form of the comparators ex != for =
-    def negative(action)
-      positive = ["=",">","<","like"]
-      negative = ["!=","<=",">=","not like"]
-      return negative[positive.index(action)] if positive.include?(action)
-      return positive[negative.index(action)] if negative.include?(action)
-    end
-              
-    # method to format the criterion's DATE value into params
-    def format_date(params, data_type)
-      case data_type
-        when 'date'
-          d = params['date(0i)']
-          m = params['date(1i)']
-          y = params['date(2i)']
-          return "#{y}/#{m}/#{d}"
-        when 'datetime'
-          d = params['date(0i)']
-          m = params['date(1i)']
-          y = params['date(2i)']
-          h = params['date(3i)']
-          min= params['date(4i)']
-          return "#{y}/#{m}/#{d} #{h}:#{min}:00"
-        else
-          return params['value'].strip unless params['value'].nil?
-      end
-    end
-
+    ####################### PRIVATE METHODS ########################
+    ################################################################
+    
     private
+        
+      # Methods that permit to know ther's only one type of attributes
+      # #1 return true if all are additional attributes (cf "is_additional?(attribute)" method)
+      # #2 return true if all are database attributes (cf "is_additional?(attribute)" method)
+      #
+      def only_additional_attributes?(attributes)
+        attributes.each_key {|attribute| return false unless is_additional?(attribute)}
+        true
+      end
+
+      def only_database_attributes?(attributes)
+        attributes.each_key {|attribute| return false if is_additional?(attribute)}
+        true
+      end
+        
+      # Method to identify if an attribute belongs to the additionals attributes
+      # return true if it do and false if not
+      #
+      def is_additional?(attribute_path)
+        attribute_path = attribute_path.downcase
+        attribute      = attribute_path.split(".").last
+        object         = self
+        if attribute_path.include?(".")
+          attribute_path.chomp(".#{attribute}").split(".").each do |relationship|
+            message = "#{self::ERROR_PREFIX} Association '#{relationship}' undefined for '#{object.to_s}' model"
+            raise ArgumentError, message if object.reflect_on_association(relationship.to_sym).nil?
+            object = object.reflect_relationship(relationship, check_implicit = true)
+          end
+        end
+        
+        object.search_index[:additional_attributes].include?(attribute)
+      end
+      
+      # Method to match a simple regexp with a data string
+      # to match a data that end with 'x' 
+      #  #=> "*x"
+      # to match a data that start with 'x'
+      #  #=> "x*"
+      # to match a data that contain 'x'
+      #  #=> "*x*"
+      # if there's no * then the regexp wil be the exp passed as argument
+      #
+      def match_regexp(data, exp)
+        string = exp.gsub("*","")
+        regexp = "^#{string}$"
+        regexp = "^[0-9A-Za-z_]*#{string}$" if exp.first == "*"
+        regexp = "^#{string}[0-9A-Za-z_]*$" if exp.last == "*"
+        regexp = "^[0-9A-Za-z_]*#{string}[0-9A-Za-z_]*$" if exp.last == "*" and exp.first == "*"
+        return !data.match(Regexp.new(regexp)).nil?
+      end
+    
+      # Method that filter a given include_array according to attribute's prefixes given in arguments
+      #
+      def filter_include_array_from_prefixes(include_array, prefixes, level = 0)
+        return [] if prefixes.empty? or prefixes.nil?
+        relationships_by_level = []
+        result                 = []
+        prefixes.each do |prefix|
+          prefix.split('.').each_with_index do |relationship, i|
+            relationships_by_level[i] ||= [] 
+            relationships_by_level[i] << relationship.downcase
+          end
+        end
+        include_array.each do |element|
+          symbol = element.is_a?(Hash) ? element.keys.first : element       
+          unless relationships_by_level[level].nil? or !relationships_by_level[level].include?(symbol.to_s.downcase)
+            if element.is_a?(Hash)
+              nested  = filter_include_array_from_prefixes(element[symbol], prefixes, level + 1)     
+              result << (nested.empty? ? symbol : {symbol => nested})
+            else
+              result << symbol
+            end
+          end
+        end
+        result
+      end
+    
+      # Method that permit to verify the match between object's attribute and the value passed into args according to data type (and action if there is one) 
+      #
+      # ==== examples:
+      #
+      # search_match?(Employee.first,"first_name","jean", "or")
+      # ==> return +True+ if (employee.frist_name=="jean") and +False+ if not
+      #
+      # search_match?(User.first, "expired?", "true false 1", "or")
+      # ==> return +True+ if expired? is in('true', 'false', '1')
+      #
+      # The same as below works if +values+ is a hash like {:value => "value other_value etc...", :action => "action"}
+      # 
+      # +values+ can also be an array of hash like [{:value => 1, ...}, {:value => 2, ...}]
+      #
+      def search_match?(object, attribute, values, search_type)
+        raise ArgumentError, "search_type should be in ('or', 'and', 'not')" unless ['or', 'and', 'not'].include?(search_type)
+        message  = "#{self::ERROR_PREFIX} Implementation error '#{object}' model must implement has_search_index"
+        message += " plugin in order to use directly or undirectly the plugin"
+        attribute  = attribute.downcase
+        attributes = self.search_index[:additional_attributes]
+        data       = object.send(attribute).to_s.downcase                                  # downcase data to make the match method case insensitive
+        tmp_result = result = nil
+
+        return false if data.nil?
+        if !values.is_a?(Hash) and !values.is_a?(Array)
+          splited_values = split_value(object.class, attribute, values)                    # permit to manage when passsing multiple values in the same field
+
+          splited_values.each do |value|
+            value        = value.to_s.downcase                                             # downcase value to make the match method case insensitive
+            is_string    = ["string", "text"].include?(object.search_index[:attributes][attribute])
+            tmp_result ||= is_string ? data.match(Regexp.new(value)) : data == value
+          end
+          return (search_type == 'not')? !tmp_result : tmp_result
+        end
+
+        value_array = (values.is_a?(Array))? values : [ values ]                           # manage the case when only one attribute
+            
+        
+        value_array.each do |val|
+          message  = "#{self::ERROR_PREFIX} Argument missing into value hash :"
+          message += " if you use the value hash instead of value you must type it like {:value => foo :action => bar} "
+          raise ArgumentError, message if val[:action].nil?
+          
+          splited_values = split_value(object.class, attribute, val[:value])               # permit to manage when passsing multiple values in the same field 
+          tmp_result     = nil
+          
+          splited_values.each do |value|
+            is_like  = !data.match(Regexp.new(value.to_s.downcase)).nil?                   # downcase value to make the match method case insensitive
+            is_equal = data.send("==", value.to_s.downcase)
+
+            if ['not like', '!='].include?(val[:action])
+              tmp_result = true                                                            # initialise tmp_result to true because of using '&&='
+              tmp_result &&= (val[:action] == '!=')? !is_equal : !is_like
+            
+            elsif ['like', '='].include?(val[:action])
+              tmp_result ||= (val[:action] == '=')? is_equal : is_like
+               
+            elsif ACTIONS[attributes[attribute].to_sym].include?(val[:action])
+              tmp_result ||= data.send(val[:action], value.to_s.downcase)
+              
+            else
+              raise ArgumentError, "#{self::ERROR_PREFIX} Unproper operator '#{val[:action]}' for #{attributes[attribute]} datatype"
+            end
+            tmp_result = !tmp_result if search_type == 'not'
+          end
+          
+          result  = tmp_result if result.nil?                                              # init the result value
+          result |= tmp_result if search_type == 'or'                                      # return the result of multiple values for one attribute
+          result &= tmp_result if ['and', 'not'].include?(search_type)
+        end
+        
+        return result
+      end
+      
+      
+      # Method that permit to get nested resources of an object with an array of these nested resources
+      #
+      # ==== example:
+      #
+      # Employee.get_nested_object(Employee.first, ["job_contract","job_contract_type"])
+      # ==> Employee.first.job_contract.job_contract_type
+      #
+      # Customer.get_nested_object(Customer.first,["establishments","contacts","numbers","number_type"])
+      # ==> collection of number_type, of all numbers --> of all contacts --> of all establishments --> of the current customer
+      # 
+      def get_nested_object(object, nested_resources)
+        raise ArgumentError, "Expected Array but was '#{nested_resources}':#{nested_resources.class.to_s}" unless nested_resources.is_a?(Array)
+        nested_resources.collect(&:downcase).each do |nested_ressource|
+          if object.is_a?(Array)
+            collection = Array.new
+            object.each do |sub_object|
+                if sub_object.send(nested_ressource).is_a?(Array)
+                  collection = collection.fusion(sub_object.send(nested_ressource))
+                else
+                  collection << sub_object.send(nested_ressource)
+                end
+            end
+            object = collection.uniq
+          else
+            object = object.send(nested_ressource)
+          end
+        end
+        return object
+      end
+    
+      # Method that permit to format the attributes hash when using 'search_with' method to perform a general search
+      # 'value' -> the searched value 
+      # 'include_hash' -> the relationships you want to search in
+      # ==> {key => value} : 'key' is the relationship, 'value' is the array of attributes you to test, let it empty to test all attributes 
+      # ==== example :
+      #
+      # Model.search_attributes_format_hash("value")
+      # => {"attribute1"=>"value", "attribute2"=>"value",ect...}
+      #
+      def format_attributes_hash_for_simple_search(value)
+        attributes = Hash.new
+        self.search_index_attributes.each_key {|attribute| attributes.merge!({attribute => value}) }
+        attributes
+      end
+    
+      # method to get the negative form of the comparators ex != for =
+      def negative(action)
+        positive = ["=",">","<","like"]
+        negative = ["!=","<=",">=","not like"]
+        return negative[positive.index(action)] if positive.include?(action)
+        return positive[negative.index(action)] if negative.include?(action)
+      end
       
       ############## private methods called by +has_search_index+ method ################
       
@@ -502,19 +507,9 @@ module HasSearchIndex
           message = "#{error_prefix} Warning you must type an array or the symbol :all for :except_relationhips"
           raise ArgumentError, message unless options[:except_relationships].is_a?(Array)
 
-          associations.each_value do |relationship|
-            relationship.class_name.constantize                                          # constantize dependant models
-            if HasSearchIndex::MODELS.include?(relationship.class_name)
-              options[:relationships] << relationship.name
-            else
-              message  = "#{error_prefix} relationship '#{relationship.name}' skipped,"
-              message += " because '#{relationship.class_name}' model doesn't implements has_search_index plugin"
-              logger.info(message)
-            end
-          end
-          if !options[:except_relationships].empty?                                      # filter it if except_relationships isn't empty
-            options[:except_relationships].each { |e| options[:relationships].delete(e) }
-          end
+          associations.each_value { |relationship| options[:relationships] << relationship.name }
+          
+          options[:except_relationships].each { |e| options[:relationships].delete(e) } if !options[:except_relationships].empty?
         else
           message = "#{error_prefix} Warning you must type an array for :only_relationhips"
           raise ArgumentError, message unless options[:only_relationships].is_a?(Array)
@@ -522,11 +517,9 @@ module HasSearchIndex
           message = "#{error_prefix} Warning you mustn't specify both 'only_relationships' and 'except_relationships'"
           raise ArgumentError, message unless options[:except_relationships].empty?
           
-          options[:only_relationships].each do |relationship_name|                       # constantize dependant models
+          options[:only_relationships].each do |relationship_name|
             message = "#{error_prefix} Undefined relationship '#{relationship_name}', maybe you misspelled it"
             raise ArgumentError, message if self.reflect_on_association(relationship_name).nil?
-            
-            self.reflect_on_association(relationship_name).class_name.constantize
           end
           options[:relationships] = options[:only_relationships]
         end
@@ -534,7 +527,7 @@ module HasSearchIndex
         options[:relationships]
       end
       
-      # Method called by +has_seach_index+ to check attributes configuration
+      # Method called by +has_search_index+ to check attributes configuration
       # return an Hash of checked attributes according to +options+
       # return an empty Hash if +except_attributes+ option contains :all symbol
       #
@@ -772,7 +765,7 @@ module HasSearchIndex
       # 
       def get_conditions_array_for_criterion(model, values, attribute, search_type, conditions_array=[''])
         
-        operator         = (search_type == 'not')? 'and' : search_type                     # if +search_type+ is 'not', invert all actions and use 'and' search type
+        operator         = (search_type == 'not')? 'and' : search_type                   # if +search_type+ is 'not', invert all actions and use 'and' search type
         condition_text   = ""
         attribute_without_prefix = attribute.split('.').last
         
@@ -802,9 +795,9 @@ module HasSearchIndex
             
             unless [nil,'',' '].include?(option[:value])
               splited_values.each_with_index do |value, i|
-                action              = (search_type == "not")? self.negative(option[:action]) : option[:action]
-                seccondary_operator = ['like', '='].include?(action)? ' or ' : ' and '        
-                condition_text     += seccondary_operator unless i == 0              
+                action             = (search_type == "not")? negative(option[:action]) : option[:action]
+                secondary_operator = ['like', '='].include?(action)? ' or ' : ' and '        
+                condition_text     += secondary_operator unless i == 0              
                 condition_text     += "#{attribute} #{action}?"
                 
                 if ["like", "not like"].include?(option[:action])
@@ -839,10 +832,10 @@ module HasSearchIndex
         relationship     = attribute_prefix.split(".")[-2]
         sub_relationship = attribute_prefix.split(".")[-1]
         
-        prefix_table     = get_prefix_order(self.table_name, include_array, sub_relationship, relationship)
+        prefix_array     = get_prefix_order(self.table_name, include_array, sub_relationship, relationship)
         
         # filter the prefix table to get only the redundant prefixes according to the current prefix
-        redundant_prefixes = prefix_table.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == prefix_table.first}
+        redundant_prefixes = prefix_array.reject {|n| !(n.split(".")[-2..-1] == attribute_prefix.split(".")[-2..-1]) or n == prefix_array.first}
         prefix_index       = redundant_prefixes.index(attribute_prefix)
         
         # OPTIMIZE maybe remove that comment if it's not necessary
@@ -860,24 +853,22 @@ module HasSearchIndex
         #        to 'chidren' to make it work properly.
         
         # manage the custom relationships name
-        model     = relationship_class_name(attribute_prefix, relationship).tableize.singularize
-        sub_model = relationship_class_name(attribute_prefix, sub_relationship).tableize.singularize
+
+        model     = relationship_class_name(attribute_prefix, relationship).constantize.table_name
+        sub_model = relationship_class_name(attribute_prefix, sub_relationship).constantize.table_name
         
         if relationship_class_name(attribute_prefix, relationship) == relationship_class_name(attribute_prefix, sub_relationship)    # manage the self reference
-          return "#{sub_relationship.pluralize}_#{relationship.pluralize}"
+          return "#{ sub_relationship.pluralize }_#{ relationship.pluralize }"
         end
-               
-        model     = model.pluralize unless model.plural?
-        sub_model = sub_model.pluralize unless sub_model.plural?
         
-        return "#{sub_model}" if prefix_table.first == attribute_prefix
+        return "#{ sub_model }" if prefix_array.first == attribute_prefix
         case prefix_index
           when nil
-            raise "#{self::ERROR_PREFIX} AttributPrefixError: #{attribute_prefix} do not match with the plugin definition into the model"
+            raise "#{self::ERROR_PREFIX} AttributPrefixError: #{ attribute_prefix } do not match with the plugin definition into the model"
           when 0
-            return "#{sub_model.pluralize}_#{model.pluralize}"
+            return "#{ sub_model }_#{ model }"
           else
-            return "#{sub_model.pluralize}_#{model.pluralize}_#{prefix_index+1}"
+            return "#{ sub_model }_#{ model }_#{ prefix_index+1 }"
         end
       end
       
@@ -886,18 +877,18 @@ module HasSearchIndex
       # permit to the calling method, to manage the prefix redundancy and to add indexes
       #
       def get_prefix_order(parent_model_tablename, include_array, sub_model, model, path="")
-        prefix_table = []
+        prefix_array = []
         path        += "#{parent_model_tablename}."
         include_array.each do |element|
           if element.is_a?(Hash)
             current_model = element.keys[0].to_s
-            prefix_table += get_prefix_order(current_model, element.values[0], sub_model, model, path)
+            prefix_array += get_prefix_order(current_model, element.values[0], sub_model, model, path)
           else
             current_model = element.to_s
           end
-          prefix_table << "#{path}#{current_model}" if sub_model == current_model
+          prefix_array << "#{path}#{current_model}" if sub_model == current_model
         end
-        prefix_table
+        prefix_array
       end
       
       # Method to permit model retrievement from a +relationship+
