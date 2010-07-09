@@ -26,7 +26,7 @@ ActionController::Routing::Routes.add_routes do |map|
 
   map.resources :purchase_orders do |order|
     order.cancel 'cancel', :controller => 'purchase_orders', :action => 'cancel'
-    order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm'
+    order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm', :conditions => { :method => :put }
     order.resources :parcels do |parcel|
       parcel.alter_status 'alter_status', :controller => 'parcels', :action => 'alter_status'
     end

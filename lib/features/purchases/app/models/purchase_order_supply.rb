@@ -15,7 +15,9 @@ class PurchaseOrderSupply < ActiveRecord::Base
   belongs_to :canceller, :foreign_key => "cancelled_by", :class_name => "User"
 
   attr_accessor :purchase_request_supplies_ids
-
+  attr_accessor :purchase_request_supplies_deselected_ids
+  attr_accessor :should_destroy
+  
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference
   validates_presence_of :cancelled_by, :if => :cancelled_at
 
@@ -110,28 +112,41 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def unconfirmed_purchase_request_supplies
     res = []
     for request_supply in not_cancelled_purchase_request_supplies
-      res.push request_supply unless request_supply.confirmed_purchase_order_supply
+      if self.new_record?
+        res.push request_supply unless request_supply.confirmed_purchase_order_supply
+      else
+        res.push request_supply if self.purchase_request_supplies.detect{|t| t.id == request_supply.id} || !request_supply.confirmed_purchase_order_supply
+      end
     end
     res
+  end
+  
+  def can_add_request_supply_id(id)
+    if purchase_request_supplies_deselected_ids
+      purchase_request_supplies_deselected_ids.split(';').each do |s|
+        return false if (s != '' && id.to_i == s.to_i)
+      end 
+    end
+    return true
   end
 
   def get_purchase_request_supplies_ids
     res = ""
       unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
         if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
-          res += purchase_request_supply.id.to_s + ";"
+          res += purchase_request_supply.id.to_s + ";" if can_add_request_supply_id(purchase_request_supply.id)
         end
       end
     res
   end
 
   def boolean_checked(purchase_request_supply)
-    return true if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
+    return true if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
     return false
   end
 
   def integer_checked(purchase_request_supply)
-    return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i }
+    return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
     return 0
   end
 

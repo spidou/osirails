@@ -38,6 +38,8 @@ class PurchaseOrder < ActiveRecord::Base
 
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
 
+  validate :validates_length_of_purchase_order_supplies_if_should_destroy , :unless => :new_record?
+  
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED, STATUS_PROCESSING, STATUS_COMPLETED, STATUS_CANCELLED ]
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED ], :if => :was_draft?
   validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_confirmed?
@@ -47,15 +49,41 @@ class PurchaseOrder < ActiveRecord::Base
 
   validates_associated :purchase_order_supplies, :supplier_supplies
 
-  before_validation_on_create :build_supplier_supplies, :build_associed_purchase_request_supplies
-  before_validation :update_reference, :unless => :new_record?
-  after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_purchase_request_supplies
+  before_validation :build_supplier_supplies, :build_associed_request_order_supplies
+  before_validation :update_reference, :if => :confirmed_at
   
-  def build_associed_purchase_request_supplies
+  after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
+  after_save  :destroy_request_order_supplies_deselected
+  
+  def destroy_request_order_supplies_deselected
     purchase_order_supplies.each do |e|
-      e.purchase_request_supplies_ids.split(';').each do |s|
-        if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
-          e.request_order_supplies.build(:purchase_request_supply_id => purchase_request_supply.id)
+      if e.purchase_request_supplies_deselected_ids
+        e.purchase_request_supplies_deselected_ids.split(';').each do |s|
+          if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
+            request_order_supply = e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
+            request_order_supply.destroy if request_order_supply
+          end
+        end
+      end
+    end
+  end
+  
+  def validates_length_of_purchase_order_supplies_if_should_destroy
+    result = 0;
+    for purchase_order_supply in purchase_order_supplies
+      result += purchase_order_supply.should_destroy.to_i
+    end
+    errors.add(:parcel_items, "Veuillez garder au moins une fourniture") if result == purchase_order_supplies.size
+  end
+  
+  def build_associed_request_order_supplies
+    purchase_order_supplies.each do |e|
+      if e.purchase_request_supplies_ids
+        e.purchase_request_supplies_ids.split(';').each do |s|
+          if (s != '' && purchase_request_supply = PurchaseRequestSupply.find(s))
+            e.request_order_supplies.build(:purchase_request_supply_id => purchase_request_supply.id) unless
+            e.request_order_supplies.detect{|t| t.purchase_request_supply_id == s.to_i}
+          end
         end
       end
     end
@@ -74,7 +102,7 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
 
-  def save_purchase_request_supplies
+  def save_request_order_supplies
     purchase_order_supplies.each do |e|
       e.request_order_supplies.each do |s|
         s.save(false)
@@ -90,7 +118,11 @@ class PurchaseOrder < ActiveRecord::Base
 
   def save_purchase_order_supplies
     purchase_order_supplies.each do |e|
-      e.save(false)
+      if e.should_destroy.to_i != 1
+        e.save(false)
+      else
+        e.destroy()
+      end
     end
   end
   
@@ -100,7 +132,7 @@ class PurchaseOrder < ActiveRecord::Base
 
   def purchase_order_supply_attributes=(purchase_order_supply_attributes)
     purchase_order_supply_attributes.each do |attributes|
-      if attributes[id].blank?
+      if attributes[:id].blank?
         purchase_order_supplies.build(attributes)
       else
         purchase_order_supply = purchase_order_supplies.detect { |t| t.id == attributes[:id].to_i }
@@ -169,12 +201,22 @@ class PurchaseOrder < ActiveRecord::Base
     was_draft?
   end
 
+  def can_be_confirmed_with_purchase_request_supplies_associated?
+    for purchase_order_supply in purchase_order_supplies
+      for purchase_request_supply in purchase_order_supply.purchase_request_supplies
+        return false if purchase_request_supply.confirmed_purchase_order_supply
+      end
+    end
+    return true
+  end
+
   def confirm
-    if can_be_confirmed?
+    if can_be_confirmed? && can_be_confirmed_with_purchase_request_supplies_associated? 
       self.confirmed_at = Time.now
       self.status = STATUS_CONFIRMED
       self.save
     else
+      errors.add(:purchase_order_supplies, "Certains &eacute;l&eacute;ments emp&ecirc;chent la confirmation de votre ordre d'achat")
       false
     end
   end

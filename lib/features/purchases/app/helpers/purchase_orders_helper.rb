@@ -12,7 +12,7 @@ module PurchaseOrdersHelper
                         :alt => text,
                         :title => (text + message)),
                          purchase_order_confirm_path(purchase_order),
-                        :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.")
+                        :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.", :method => :put)
   end
 
   def display_purchase_order_add_button(message = nil)
