@@ -14,7 +14,7 @@
                                                   { :update_id  => 'add_this_supply_reference_id',
                                                     :url => auto_complete_for_supply_reference_path(:supplier_id => supplier.id)}) %>
         
-        <%= link_to_remote "Ajouter", :update => "purchase_order_supply_form",
+        <%= link_to_remote "Ajouter une fourniture", :update => "purchase_order_supply_form",
                                       :with => "'supply_id='+$('add_this_supply_reference_id').value+'&supplier_id='+$('supplier_id').value", 
                                       :url => get_supply_path,
                                       :html => { :method => :get },

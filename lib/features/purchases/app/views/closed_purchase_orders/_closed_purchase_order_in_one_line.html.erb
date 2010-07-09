@@ -1,11 +1,11 @@
 <% purchase_order = closed_purchase_order_in_one_line %>
-<% parcels = purchase_order.parcels.compact %>
+<% parcels = purchase_order.get_parcels.compact %>
 <% cancelled = purchase_order.status == PurchaseOrder::STATUS_CANCELLED %>
 
 <% if cancelled %>
   <tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even disabled\"" : "class=\"disabled\"" %>>
 <% else %>
-  <tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even\"" : "" %>>
+  <tr <%= "class=\"even\"" if (closed_purchase_order_in_one_line_counter % 2) == 0 %>>
 <% end %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>

@@ -1,0 +1,12 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<h1>Annulation de l'ordre d'achat</h1>
+<div>
+    <% form_for @purchase_order, :url => { :action => "cancel" } do |f| %>
+      <%= f.error_messages %>
+      Veuillez saisir la raison de l'annulation:<br> <%= f.text_area_autoresize :cancelled_comment %><br />
+      <%= f.form_buttons %>
+    <% end %>
+</div>

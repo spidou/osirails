@@ -55,3 +55,7 @@ table tfoot tr.footer{
   float: right;
   margin: 3px 5px 3px -5px;
 }
+
+.parcel .parcel_summary .parcel_conveyance {
+  width :150px;
+}

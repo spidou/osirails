@@ -5,17 +5,17 @@
 <%= generate_purchase_order_contextual_menu_partial %>
 
 <h1>Ordre d'achats</h1>
-<div>
+<div class="presentation_medium">
   <h2>Informations</h2>
   
   <p><b>- R&eacute;f&eacute;rence : </b><strong><%= display_purchase_order_reference(@purchase_order) %></strong></p>
-  <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong><b> depuis le </b><strong><%= @purchase_order.created_at.to_s.humanize %></strong></p>
+  <p><b>- Cr&eacute;&eacute; par : </b><strong><%= display_purchase_order_creator(@purchase_order) %></strong><b> depuis le </b><strong><%= @purchase_order.created_at.humanize %></strong></p>
   <p><b>- Fournisseur : </b><strong><%= @purchase_order.supplier.name.to_s %></strong></p>
   <p><b>- Origine : </b><strong><%= @purchase_order.supplier.address.country_name.to_s %></strong></p>
-  <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.to_s.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
-  <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.to_s.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
-  <%= "<p><b>- Terminé le : </b><strong>#{@purchase_order.completed_at.to_s.humanize}</strong></p>" if (@purchase_order.completed_at and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
-  <%= "<p><b>- Annulé le : </b><strong>#{@purchase_order.cancelled_at.to_s.humanize}</strong></p>" if (@purchase_order.cancelled_at and (@purchase_order.status != PurchaseOrder::STATUS_CANCELLED)) %>
+  <%= "<p><b>- Validé le : </b><strong>#{@purchase_order.confirmed_at.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
+  <%= "<p><b>- En traitement depuis le : </b><strong>#{@purchase_order.processing_since.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
+  <%= "<p><b>- Terminé le : </b><strong>#{@purchase_order.completed_at.humanize}</strong></p>" if (@purchase_order.completed_at and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
+  <%= "<p><b>- Annulé le : </b><strong>#{@purchase_order.cancelled_at.humanize}</strong></p>" if (@purchase_order.cancelled_at and (@purchase_order.status != PurchaseOrder::STATUS_CANCELLED)) %>
   <p><b>- Statut en cours : </b><strong><%= display_purchase_order_current_status(@purchase_order) %></strong><b> depuis le </b><strong><%= display_purchase_order_current_status_date(@purchase_order) %></strong></p>
   <p>
   <% form_for @purchase_order, :html => { :multipart => true } do |f| %>
@@ -60,12 +60,12 @@
   
   <h2>Liste des fournitures commandées</h2>
   
-  <table>
+  <table class="no_nth">
     <thead>
       <tr>
         <th>R&eacute;f&eacute;rence</th>
         <th>D&eacute;signation</th>
-        <th>Colis associ&eacute;</th>
+        <th>Colis associ&eacute;s</th>
         <th>Statut</th>
         <th>Depuis le</th>
         <th>Quantit&eacute;</th>
@@ -74,7 +74,6 @@
         <th>Demandes associées</th>
         <th>R&eacute;f&eacute;rence fournisseur</th>
         <th>Désignation fournisseur</th>
-        <th>D&eacute;lai de livraison</th>
         <th>Action</th>
       </tr>
     </thead>

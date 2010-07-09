@@ -22,7 +22,7 @@ class PurchaseRequestsController < ApplicationController
     @purchase_request = PurchaseRequest.new(params[:purchase_request])
     @purchase_request.user_id = current_user.id
     if @purchase_request.save
-      flash[:notice] = "La demande d'achat a été créé(e) avec succès."
+      flash[:notice] = "La demande d'achats a été créé(e) avec succès."
       redirect_to @purchase_request
     else
       render :action => "new"
@@ -40,7 +40,7 @@ class PurchaseRequestsController < ApplicationController
       @purchase_request.cancelled_by = current_user.id
       @purchase_request.cancelled_comment  = params[:purchase_request][:cancelled_comment]
       if  @purchase_request.cancel
-        flash[:notice] = "La demande d'achat a été annuléé avec succès."
+        flash[:notice] = "La demande d'achats a été annuléé avec succès."
         redirect_to @purchase_request
       else
         render :action => "cancel_form"   

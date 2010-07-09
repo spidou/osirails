@@ -33,11 +33,11 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def untreated?
-    result = 0
+    treated_items = 0
     for parcel_item in parcel_items
-      result += parcel_item.quantity.to_i
+      treated_items += parcel_item.quantity.to_i
     end
-    result == quantity ? false : true
+    treated_items == quantity ? false : true
   end
 
   def processing?

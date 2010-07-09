@@ -34,7 +34,7 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:statut]                 = "Status :"
 
   validates_presence_of :user_id, :supplier_id
-  validates_persistence_of :reference, :unless => :was_draft?
+#  validates_presence_of :cancelled_comment, :on => :cancel
 
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
 
@@ -48,7 +48,7 @@ class PurchaseOrder < ActiveRecord::Base
   validates_associated :purchase_order_supplies, :supplier_supplies
 
   before_validation_on_create :build_supplier_supplies, :build_associed_purchase_request_supplies
-  before_validation :update_reference, :unless => :new_record?
+  before_validation :update_reference_only_on_confirm
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_purchase_request_supplies
   
   def build_associed_purchase_request_supplies
@@ -60,7 +60,7 @@ class PurchaseOrder < ActiveRecord::Base
       end
     end
   end
-
+  
   def build_supplier_supplies
     purchase_order_supplies.each do |e|
         if !SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
@@ -73,7 +73,7 @@ class PurchaseOrder < ActiveRecord::Base
         end
     end
   end
-
+  
   def save_purchase_request_supplies
     purchase_order_supplies.each do |e|
       e.request_order_supplies.each do |s|
@@ -81,7 +81,7 @@ class PurchaseOrder < ActiveRecord::Base
       end
     end
   end
-
+  
   def save_supplier_supplies
     supplier_supplies.each do |e|
       e.save(false)
@@ -97,7 +97,11 @@ class PurchaseOrder < ActiveRecord::Base
   def save_quotation_document
     #TODO
   end
-
+  
+  def update_reference_only_on_confirm
+    update_reference if (confirmed_at and !confirmed_at_was)
+  end
+  
   def purchase_order_supply_attributes=(purchase_order_supply_attributes)
     purchase_order_supply_attributes.each do |attributes|
       if attributes[id].blank?
@@ -108,67 +112,67 @@ class PurchaseOrder < ActiveRecord::Base
       end
     end
   end
-
+  
   def draft?
     status == STATUS_DRAFT
   end
-
+  
   def confirmed?
     status == STATUS_CONFIRMED
   end
-
+  
   def processing?
     status == STATUS_PROCESSING
   end
-
+  
   def completed?
     status == STATUS_COMPLETED
   end
-
+  
   def was_draft?
     status_was == STATUS_DRAFT
   end
-
+  
   def was_confirmed?
     status_was == STATUS_CONFIRMED
   end
-
+  
   def was_processing?
     status_was == STATUS_PROCESSING
   end
-
+  
   def was_completed?
     status_was == STATUS_COMPLETED
   end
-
+  
   def was_cancelled?
     status_was == STATUS_CANCELLED
   end
-
+  
   def can_be_confirmed?
     was_draft?
   end
-
+  
   def can_be_processed?
     was_confirmed?
   end
-
+  
   def can_be_completed?
     was_processing?
   end
-
+  
   def can_be_cancelled?
     was_confirmed?
   end
-
+  
   def can_be_deleted?
     !new_record? and was_draft?
   end
-
+  
   def can_be_edited?
     was_draft?
   end
-
+  
   def confirm
     if can_be_confirmed?
       self.confirmed_at = Time.now
@@ -178,7 +182,7 @@ class PurchaseOrder < ActiveRecord::Base
       false
     end
   end
-
+  
   def process
     if can_be_processed?
       self.processing_since = Time.now
@@ -188,7 +192,7 @@ class PurchaseOrder < ActiveRecord::Base
       false
     end
   end
-
+  
   def complete
     if can_be_completed?
       self.completed_at = Time.now
@@ -198,10 +202,9 @@ class PurchaseOrder < ActiveRecord::Base
       false
     end
   end
-
-  def cancel(attributes)
+  
+  def cancel
     if can_be_cancelled?
-      self.attributes = attributes
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
@@ -209,7 +212,7 @@ class PurchaseOrder < ActiveRecord::Base
       false
     end
   end
-
+  
   def get_parcels
     parcels = []
     for purchase_order_supply in self.purchase_order_supplies
@@ -217,7 +220,7 @@ class PurchaseOrder < ActiveRecord::Base
     end
     parcels.uniq
   end
-
+  
   #FIXME should the function return total_price of all purchase_order_supplies or just not cancelled ones?
   def total_price(cancelled = false)
     total_price = 0
@@ -233,7 +236,7 @@ class PurchaseOrder < ActiveRecord::Base
     return total_price_cancelled+total_price if cancelled
     total_price
   end
-
+  
   def lead_time
     lead_time = 0
     for purchase_order_supply in purchase_order_supplies
@@ -247,7 +250,7 @@ class PurchaseOrder < ActiveRecord::Base
     end
     lead_time
   end
-
+  
   def get_associated_purchase_requests
     purchase_requests = []
     for purchase_order_supply in purchase_order_supplies

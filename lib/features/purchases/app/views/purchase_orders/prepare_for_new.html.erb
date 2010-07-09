@@ -5,20 +5,20 @@
 <%= generate_purchase_order_contextual_menu_partial %>
 
 <h1>Nouvel ordre d'achat</h1>
-<% if !params['choice'] or params['choice'] != "1" %>
-  <h2>Créer un ordre d'achats depuis une liste vide.</h2>
-  <div>
-    <%= link_to "Nouveau", prepare_for_new_path(:choice => 1) %><br />
-  </div>
 
-  <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
-  <div class="presentation_in_columns">
-    <% if @suppliers.empty? %>
-      <p>Il n'y a aucune demande en attente pour le moment.</p>
-    <% else %>
-      <p><%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :collection => @suppliers  %></p>
-      <%= will_paginate @suppliers %>
-    <% end %>
+<% if !params['choice'] or params['choice'] != "1" %>
+  <div class="presentation_medium">
+    <h2>Créer un ordre d'achats depuis une liste vide.</h2>
+      <p><%= link_to "Nouveau", prepare_for_new_path(:choice => 1) %></p>
+    <h2>Créer un ordre d'achats en se basant sur les demandes existantes.</h2>
+    <div class="presentation_in_columns">
+      <% if @suppliers.empty? %>
+        <p>Il n'y a aucune demande en attente pour le moment.</p>
+      <% else %>
+        <p><%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :collection => @suppliers  %></p>
+        <%= will_paginate @suppliers %>
+      <% end %>
+    </div>
   </div>
 <% elsif params['choice'] == "1" && !params['supplier_id']%>
   <%= render :partial => @purchase_order%>  

@@ -9,8 +9,7 @@ class PurchaseOrdersController < ApplicationController
   def prepare_for_new
    @purchase_order = PurchaseOrder.new
     redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
-    unless params[:choice] or params[:supplier_id] 
-      @purchase_requests = PurchaseRequest.all
+    unless params[:choice] or params[:supplier_id]
       @suppliers = PurchaseRequestSupply.get_all_suppliers_for_all_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
     end
   end
@@ -92,7 +91,24 @@ class PurchaseOrdersController < ApplicationController
   end
   
   def cancel
-    
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @purchase_order.can_be_cancelled?
+      @purchase_order.cancelled_by = current_user.id
+      @purchase_order.cancelled_comment  = params[:purchase_order][:cancelled_comment]
+      if  @purchase_order.cancel
+        flash[:notice] = "L'ordre d'achats a été annuléé avec succès."
+        redirect_to @purchase_order
+      else
+        render :action => "cancel_form"   
+      end
+    else
+      error_access_page(412)
+    end
+  end
+  
+  def cancel_form  
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    error_access_page(412) unless @purchase_order.can_be_cancelled?
   end
   
   def destroy

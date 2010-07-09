@@ -16,10 +16,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   validates_numericality_of :expected_quantity, :greater_than => 0
   validates_date :expected_delivery_date, :after => Date.today, :if => :new_record?
-  
-  STATUS_UNTREATED = "untreated"
-  
-  named_scope :actives, :conditions => [ 'status = ?', PurchaseRequestSupply::STATUS_UNTREATED ]
 
   
   def check_request_supply_status
@@ -61,10 +57,11 @@ class PurchaseRequestSupply < ActiveRecord::Base
     all_purchase_request_supplies = PurchaseRequestSupply.all
     purchase_request_supplies = []
     for purchase_request_supply in all_purchase_request_supplies
-      if !purchase_request_supply.cancelled? and purchase_request_supply.untreated?
-        purchase_request_supplies << purchase_request_supply
+      if !purchase_request_supply.cancelled? and purchase_request_supply.treated? == nil
+        purchase_request_supplies.push purchase_request_supply
       end
     end
+    purchase_request_supplies
   end
 
   def self.get_all_suppliers_for_all_purchase_request_supplies
@@ -76,13 +73,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
     if !suppliers_array.empty?
       suppliers_array = suppliers_array.uniq.sort_by{ |supplier| supplier.merge_purchase_request_supplies.count }
       suppliers_array = suppliers_array.reverse{ |supplier| supplier.merge_purchase_request_supplies.count }
-    else
-      suppliers_array
     end
+    suppliers_array
   end
-  
-#  def validate
-#    !purchase_order_supplies.empty?
-#  end
-
 end

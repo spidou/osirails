@@ -62,7 +62,7 @@ module PurchaseOrdersHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             purchase_order_cancel_path(purchase_order),
+             purchase_order_cancel_form_path(purchase_order),
              :confirm => "Êtes-vous sûr ?" )
   end
   
@@ -95,7 +95,7 @@ module PurchaseOrdersHelper
       merged_purchase_request_supply_supplier = merged_purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier])
       totals_sum += (merged_purchase_request_supply_supplier.fob_unit_price * ((100 + merged_purchase_request_supply_supplier.taxes ) / 100)) * merged_purchase_request_supply.expected_quantity
     end
-    "<p style=\"text-align:right\">#{totals_sum.to_f.to_s(2)}&nbsp;&euro;</p>"
+    "#{totals_sum.to_f.to_s(2)}&nbsp;&euro;"
   end
   
   def display_choose_supplier_button(supplier)

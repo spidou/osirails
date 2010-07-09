@@ -63,60 +63,20 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_status(purchase_order_supply)
-#    case purchase_order_supply.status
-#      when PurchaseOrderSupply::STATUS_UNTREATED
-#        "Non traité"
-#      when PurchaseOrderSupply::STATUS_PROCESSING
-#        "En traitement"
-#      when PurchaseOrderSupply::STATUS_SENT_BACK
-#        "Renvoyé au fournisseur"
-#      when PurchaseOrderSupply::STATUS_RESHIPPED
-#        "Retourné par le fournisseur"
-#      when PurchaseOrderSupply::STATUS_REIMBURSED
-#        "Remboursé"
-#      when PurchaseOrderSupply::STATUS_CANCELLED
-#        "Annulé"
-#    end
-    if purchase_order_supply.was_untreated?
+    if purchase_order_supply.untreated?
       "Non traité"
-    elsif purchase_order_supply.was_processing?
+    elsif purchase_order_supply.processing?
       "En traitement"
-    elsif purchase_order_supply.was_sent_back?
-      "Renvoyé au fournisseur"
-    elsif purchase_order_supply.was_reshipped?
-      "Retourné par le fournisseur"
-    elsif purchase_order_supply.was_reimbursed?
-      "Remboursé"
     elsif purchase_order_supply.was_cancelled?
       "Annulé"
     end
   end
   
   def display_purchase_order_supply_current_status_date(purchase_order_supply)
-#    case purchase_order_supply.status
-#      when PurchaseOrderSupply::STATUS_UNTREATED
-#        purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
-#      when PurchaseOrderSupply::STATUS_PROCESSING
-#        purchase_order_supply.processing_since ? purchase_order_supply.processing_since.humanize : "Aucune date de début de traitement"
-#      when PurchaseOrderSupply::STATUS_SENT_BACK
-#        purchase_order_supply.sent_back_at ? purchase_order_supply.sent_back_at.humanize : "Aucune date de renvoi au fournisseur"
-#      when PurchaseOrderSupply::STATUS_RESHIPPED
-#        purchase_order_supply.reshipped_at ? purchase_order_supply.reshipped_at.humanize : "Aucune date de recolissage du fournisseur"
-#      when PurchaseOrderSupply::STATUS_REIMBURSED
-#        purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
-#      when PurchaseOrderSupply::STATUS_CANCELLED
-#        purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
-#    end
-    if purchase_order_supply.was_untreated?
+    if purchase_order_supply.untreated?
       purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
-    elsif purchase_order_supply.was_processing?
-      purchase_order_supply.processing_since ? purchase_order_supply.processing_since.humanize : "Aucune date de début de traitement"
-    elsif purchase_order_supply.was_sent_back?
-      purchase_order_supply.sent_back_at ? purchase_order_supply.sent_back_at.humanize : "Aucune date de renvoi au fournisseur"
-    elsif purchase_order_supply.was_reshipped?
-      purchase_order_supply.reshipped_at ? purchase_order_supply.reshipped_at.humanize : "Aucune date de recolissage du fournisseur"
-    elsif purchase_order_supply.was_reimbursed?
-      purchase_order_supply.reimbursed_at ? purchase_order_supply.reimbursed_at.humanize : "Aucune date de remboursement"
+    elsif purchase_order_supply.processing?
+      purchase_order_supply.parcel_items.first.created_at ? purchase_order_supply.parcel_items.first.created_at.humanize : "Aucune date de début de traitement"
     elsif purchase_order_supply.was_cancelled?
       purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
     end
@@ -133,10 +93,14 @@ module PurchaseOrderSuppliesHelper
   end
   
     
-  def display_purchase_order_supply_parcel_reference(purchase_order_supply)
-    return unless purchase_order_supply.parcel
-    return "" unless purchase_order_supply.parcel
-    link_to( purchase_order_supply.parcel.reference, parcel_path(purchase_order_supply.parcel))
+  def display_purchase_order_supply_associated_parcels(purchase_order_supply)
+    return unless purchase_order_supply.parcels.any?
+    html = []
+    for parcel in purchase_order_supply.parcels
+      html << "<tr><td>" + link_to( parcel.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order, parcel)) + "</td></tr>"
+    end
+    html << "<tr><td></td></tr>" if html.empty?
+    html.compact.join()
   end
   
   def display_purchase_order_supply_supplier_designation(purchase_order_supply)
