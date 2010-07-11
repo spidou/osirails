@@ -14,8 +14,9 @@ class Parcel < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:previsional_delivery_date]                = "Date de livraison prévue du colis :"
-  @@form_labels[:conveyance]                               = "Moyen de transport :"
+  @@form_labels[:shipped_at]                              = "Exp&eacute;di&eacute; le :"
+  @@form_labels[:conveyance]                              = "Par :"
+  @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
   
   validates_presence_of :conveyance
   validates_date :previsional_delivery_date, :on_or_after  => Date.today, :if => :new_record?

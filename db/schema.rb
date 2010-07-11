@@ -946,6 +946,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "received_by_forwarder_at"
     t.datetime "received_at"
     t.datetime "cancelled_at"
+    t.boolean  "awaiting_pick_up"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

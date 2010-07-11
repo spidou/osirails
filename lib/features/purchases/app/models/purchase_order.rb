@@ -257,7 +257,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def get_parcels
     parcels = []
-    for purchase_order_supply in self.purchase_order_supplies
+    for purchase_order_supply in purchase_order_supplies
       parcels += purchase_order_supply.parcels
     end
     parcels.uniq

@@ -125,7 +125,7 @@ module PurchaseOrderSuppliesHelper
   end
   
   def verify_validity_of_purchase_request_supply(purchase_request_supply)
-    return image_tag ('warning_14x14.png', :alt => "warning", :title => "cette demande d'achat est associ&eacute;e a un ordre d'achat qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre ordre.") if purchase_request_supply.confirmed_purchase_order_supply
+    return image_tag('warning_14x14.png', :alt => "warning", :title => "cette demande d'achat est associ&eacute;e a un ordre d'achat qui est d&eacute;j&agrave; confirm&eacute; vous devez le d&eacute;s&eacute;lectionn&eacute; ou supprim&eacute; la fourniture pour pouvoir confimer votre ordre.") if purchase_request_supply.confirmed_purchase_order_supply
     return "" 
   end
   

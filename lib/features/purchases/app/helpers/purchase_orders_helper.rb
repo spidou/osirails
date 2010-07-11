@@ -69,9 +69,9 @@ module PurchaseOrdersHelper
   def display_purchase_order_supplies_list(purchase_order)
     purchase_order_supplies = purchase_order.purchase_order_supplies
     html = "<div id=\"supplies\" class=\"resources\">"
-    html << render (:partial => 'purchase_order_supplies/begin_table')
-    html << render (:partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order_supplies, :locals => { :purchase_order => purchase_order })
-    html << render (:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order })
+    html << render(:partial => 'purchase_order_supplies/begin_table')
+    html << render(:partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order_supplies, :locals => { :purchase_order => purchase_order })
+    html << render(:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order })
     html << "</div>"
   end
   
@@ -99,7 +99,7 @@ module PurchaseOrdersHelper
   end
   
   def display_choose_supplier_button(supplier)
-    link_to (image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier, :from_purchase_request => 1))
+    link_to(image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier, :from_purchase_request => 1))
   end
   
   def display_purchase_order_reference(purchase_order)

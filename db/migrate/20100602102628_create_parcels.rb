@@ -3,6 +3,7 @@ class CreateParcels < ActiveRecord::Migration
     create_table :parcels do |t|
       t.string   :reference, :status, :conveyance
       t.datetime :previsional_delivery_date, :shipped_at, :received_by_forwarder_at, :received_at, :cancelled_at
+      t.boolean  :awaiting_pick_up
 
       t.timestamps
     end

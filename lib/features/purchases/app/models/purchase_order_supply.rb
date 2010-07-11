@@ -8,7 +8,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   has_many :parcel_items
   has_many :parcels, :through => :parcel_items
   
-  has_one  :parcel, :through => :parcel_items
+#  has_one  :parcel, :through => :parcel_items
   
   belongs_to :purchase_order
   belongs_to :supply

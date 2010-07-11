@@ -30,6 +30,16 @@ ActionController::Routing::Routes.add_routes do |map|
     order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm', :conditions => { :method => :put }
     order.resources :parcels do |parcel|
       parcel.alter_status 'alter_status', :controller => 'parcels', :action => 'alter_status'
+      parcel.process_form 'process_form', :controller => 'parcels', :action => 'process_form'
+      parcel.ship_form 'ship_form', :controller => 'parcels', :action => 'ship_form'
+      parcel.receive_by_forwarder_form 'receive_by_forwarder_form', :controller => 'parcels', :action => 'receive_by_forwarder_form'
+      parcel.receive_form 'receive_form', :controller => 'parcels', :action => 'receive_form'
+      parcel.cancel_form 'cancel_form', :controller => 'parcels', :action => 'cancel_form'
+      parcel.ship 'process', :controller => 'process', :action => "process"
+      parcel.ship 'ship', :controller => 'parcels', :action => "ship"
+      parcel.receive_by_forwarder 'receive_by_forwarder', :controller => 'receive_by_forwarder', :action => "receive_by_forwarder"
+      parcel.receive 'receive', :controller => 'receive', :action => "receive"
+      parcel.cancel 'cancel', :controller => 'cancel', :action => "cancel"
     end
   end
   
@@ -37,7 +47,6 @@ ActionController::Routing::Routes.add_routes do |map|
     order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
   end
   
-#  map.alter_status 'alter_status/:id', :controller => 'parcels', :action => 'alter_status'
   map.pending_purchase_orders 'pending_purchase_orders', :controller => 'pending_purchase_orders', :action => 'index'
   map.closed_purchase_orders 'closed_purchase_orders', :controller => 'closed_purchase_orders', :action => 'index'
   
