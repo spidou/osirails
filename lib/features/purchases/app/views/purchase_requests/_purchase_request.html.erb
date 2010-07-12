@@ -28,6 +28,12 @@
           <%= f.form_or_view(collection_select(:purchase_request, :service_id, Service.find(:all), :id, :name), :service, :name)%>  
         </p>
       </div>
+        <% if f.form_view? %>
+          <p>
+            <%= f.label :global_date %>
+            <%= f.text_field(:global_date, :size => 8) %>
+          </p>
+        <% end %>
         <% unless f.form_view? %>
           <p>
           <%= f.label :statut %>

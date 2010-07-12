@@ -9,6 +9,7 @@ class ParcelItem < ActiveRecord::Base
   validate :validates_quantity_for_parcel_item, :if => :new_record?
 
   attr_accessor :selected 
+  attr_accessor :tmp_selected
   
   def validates_quantity_for_parcel_item
     errors.add(:quantity, "quantity not valid")  if self.selected.to_i == 1 && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
@@ -40,6 +41,10 @@ class ParcelItem < ActiveRecord::Base
     else
       false
     end
+  end
+  
+  def cancelled?
+    cancelled_at
   end
   
   def cancel(attributes)

@@ -18,8 +18,8 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
   
-  validates_presence_of :conveyance
-  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :if => :new_record?
+  validates_presence_of :conveyance , :if => :status
+  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record?
   
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED ], :if => :was_processing?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :was_shipped?
@@ -30,7 +30,7 @@ class Parcel < ActiveRecord::Base
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference
-  after_save  :delete_unselected_parcel_items
+  after_create :delete_unselected_parcel_items
   
   def validates_lenght_of_parcel_item_selected
     result = 0;
@@ -63,6 +63,11 @@ class Parcel < ActiveRecord::Base
   end
 
   def cancelled?
+    counter = 0
+    for parcel_item in parcel_items
+      counter += 1 if parcel_item.cancelled?
+    end
+    return true if counter == parcel_items.size
     status == STATUS_CANCELLED
   end
 
@@ -154,7 +159,7 @@ class Parcel < ActiveRecord::Base
 
   def build_parcel_items_with_purchase_order_supplies(purchase_order_supplies)
     for purchase_order_supply in purchase_order_supplies
-      if purchase_order_supply.remaining_quantity_for_parcel != 0 &&
+      if !purchase_order_supply.cancelled? && purchase_order_supply.remaining_quantity_for_parcel != 0 &&
          !parcel_items.detect { |t| t.purchase_order_supply_id == purchase_order_supply.id } 
          parcel_items.build(:purchase_order_supply_id => purchase_order_supply.id, :quantity => purchase_order_supply.remaining_quantity_for_parcel, :selected => 0)
       end
