@@ -1,4 +1,5 @@
 module PurchaseOrderSuppliesHelper
+  
   def display_purchase_order_buttons(purchase_order_supply)
     html = []
     html << display_supply_show_button(purchase_order_supply.supply, '')
@@ -34,7 +35,7 @@ module PurchaseOrderSuppliesHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             purchase_order_supply_cancel_path(purchase_order_supply),
+             purchase_order_cancel_supply_path(purchase_order_supply.purchase_order_id, purchase_order_supply.id),
              :confirm => "Êtes-vous sûr ?" )
   end
   
@@ -67,7 +68,9 @@ module PurchaseOrderSuppliesHelper
       "Non traité"
     elsif purchase_order_supply.processing?
       "En traitement"
-    elsif purchase_order_supply.was_cancelled?
+    elsif purchase_order_supply.treated?
+      "traité"
+    elsif purchase_order_supply.cancelled?
       "Annulé"
     end
   end
@@ -77,6 +80,8 @@ module PurchaseOrderSuppliesHelper
       purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
     elsif purchase_order_supply.processing?
       purchase_order_supply.parcel_items.first.created_at ? purchase_order_supply.parcel_items.first.created_at.humanize : "Aucune date de début de traitement"
+  elsif purchase_order_supply.treated?
+      purchase_order_supply.parcel_items.last.created_at ? purchase_order_supply.parcel_items.last.created_at.humanize : ""
     elsif purchase_order_supply.was_cancelled?
       purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"
     end

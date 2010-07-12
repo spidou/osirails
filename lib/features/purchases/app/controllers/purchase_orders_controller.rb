@@ -142,4 +142,20 @@ class PurchaseOrdersController < ApplicationController
       error_access_page(412)
     end
   end
+  
+  def cancel_supply 
+    @purchase_order_supply = PurchaseOrderSupply.find(params[:purchase_order_supply_id]) 
+    if @purchase_order_supply.can_be_cancelled?
+      @purchase_order_supply.cancelled_by = current_user.id
+      if @purchase_order_supply.cancel 
+        flash[:notice] = "La fourniture a été annuléé avec succès." 
+      else
+        flash[:error] = "une erreur est survenue lors de l'annullation de la fourniture." 
+      end
+      redirect_to @purchase_order_supply.purchase_order 
+    else
+      error_access_page(412)
+    end
+  end
+  
 end

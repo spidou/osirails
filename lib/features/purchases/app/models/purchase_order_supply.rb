@@ -35,43 +35,51 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def untreated?
+    parcel_items.empty?
+  end
+
+  def processing?
     treated_items = 0
     for parcel_item in parcel_items
       treated_items += parcel_item.quantity.to_i
     end
-    treated_items == quantity ? false : true
+    if parcel_items.any?
+      treated_items == quantity ? false : true
+    else
+      return false
+    end 
   end
-
-  def processing?
-    parcel_items.any?
+  
+  def treated?
+    !processing?
   end
-
+  
   def cancelled?
-    cancelled_at or false
+    cancelled_at
   end
 
-  def completed?
+
+  def was_cancelled?
+    cancelled_at_was
+  end
+
+  def not_receive_associated_parcels?
     for parcel_item in parcel_items
-      return false unless parcel_item.status == "completed"
+      return false if parcel_item.parcel.status == Parcel::STATUS_RECEIVED
     end
     parcel_items.any? ? true : false
   end
 
-  def was_cancelled?
-    cancelled_at_was or false
-  end
-
   def can_be_cancelled?
-#    (untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing) or !parcel)) or (processing? and purchase_order.was_confirmed? and parcel.was_processing?)
+    (untreated? and purchase_order.confirmed?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
   end
 
   def can_be_deleted?
-    new_record? or purchase_order.was_draft?
+    new_record? or purchase_order.draft?
   end
 
-  def cancel(attributes)
+  def cancel
     if can_be_cancelled?
-      self.attributes = attributes
       self.cancelled_at = Time.now
       self.save
     else

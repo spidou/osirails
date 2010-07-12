@@ -22,6 +22,9 @@ class PurchaseRequest < ActiveRecord::Base
   @@form_labels[:user]                   = "Créateur de la demande :"
   @@form_labels[:reference]              = "Référence :"
   @@form_labels[:statut]                 = "Status :"
+  @@form_labels[:global_date]            = "Date de livraison souhaitée :"
+     
+  attr_accessor :global_date
     
   REQUESTS_PER_PAGE = 15
   
@@ -32,8 +35,14 @@ class PurchaseRequest < ActiveRecord::Base
   validates_presence_of :cancelled_by, :cancelled_comment, :if => :cancelled_at
   validates_persistence_of :cancelled_by, :cancelled_comment, :cancelled_at, :if => :cancelled_at_was
 
-  before_validation_on_create :update_reference
+  before_validation_on_create :update_reference, :update_date
   after_save  :save_purchase_request_supplies
+    
+  def update_date
+    for purchase_request_supply in purchase_request_supplies
+      purchase_request_supply.expected_delivery_date ||= global_date
+    end
+  end
     
   def can_be_cancelled?
     cancelled? ? false : true

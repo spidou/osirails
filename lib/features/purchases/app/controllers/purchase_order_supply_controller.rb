@@ -13,8 +13,4 @@ class PurchaseOrdersSupplyController < ApplicationController
       error_access_page(412)
     end
   end
-  
-  def cancel
-    
-  end
 end

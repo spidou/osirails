@@ -6,8 +6,7 @@ class PurchaseOrder < ActiveRecord::Base
 
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
-#  has_many :supplier_supplies2, :class_name => "SupplierSupply", :include => [ :purchase_order_supplies ], :conditions =>  ['purchase_order_supplies.supply_id = supplier_supplies.supply_id and supplier_supplies.supplier_id =#{supplier_id}']
-  
+
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -159,6 +158,15 @@ class PurchaseOrder < ActiveRecord::Base
   
   def completed?
     status == STATUS_COMPLETED
+  end
+  
+  def cancelled?
+    counter = 0
+    for purchase_order_supply in purchase_order_supplies
+      counter += 1 if purchase_order_supply.cancelled?
+    end
+    return true if counter == purchase_order_supplies.size
+    status == STATUS_CANCELLED
   end
   
   def was_draft?
@@ -328,5 +336,6 @@ class PurchaseOrder < ActiveRecord::Base
   def can_add_parcel?
     (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
   end
+  
 end
 

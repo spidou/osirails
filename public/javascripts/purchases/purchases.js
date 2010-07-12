@@ -119,7 +119,13 @@ function disabled_or_enabled_quantity_text_field(element)
     var id = element.down('.purchase_order_supply_id').value
     var quantity_field = "quantity_field_".concat(id);
     var span_quantity = "span_quantity_".concat(id);
+    var selected = element.down('.selected')
     
+    if (parseInt(selected.value) == 0)
+      selected.value = 1
+    else
+      selected.value = 0
+      
     Effect.toggle(quantity_field, 'appear', { duration: 0.0 });
     Effect.toggle(span_quantity, 'appear', { duration: 0.0 }); 
 }

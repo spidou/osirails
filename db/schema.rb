@@ -922,14 +922,14 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   add_index "orders", ["reference"], :name => "index_orders_on_reference", :unique => true
 
   create_table "parcel_items", :force => true do |t|
-    t.integer  "parcel_id",                            :limit => 11
-    t.integer  "purchase_order_supply_id",             :limit => 11
-    t.integer  "problematic_purchase_order_supply_id", :limit => 11
-    t.integer  "quantity",                             :limit => 11
-    t.integer  "issues_quantity",                      :limit => 11
+    t.integer  "parcel_id",                      :limit => 11
+    t.integer  "purchase_order_supply_id",       :limit => 11
+    t.integer  "issue_purchase_order_supply_id", :limit => 11
+    t.integer  "quantity",                       :limit => 11
+    t.integer  "issues_quantity",                :limit => 11
+    t.integer  "cancelled_by",                   :limit => 11
     t.string   "status"
     t.text     "issues_comment"
-    t.datetime "reported_at"
     t.datetime "issued_at"
     t.datetime "cancelled_at"
     t.boolean  "must_be_reshipped"
@@ -938,6 +938,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "parcels", :force => true do |t|
+    t.integer  "cancelled_by",              :limit => 11
     t.string   "reference"
     t.string   "status"
     t.string   "conveyance"

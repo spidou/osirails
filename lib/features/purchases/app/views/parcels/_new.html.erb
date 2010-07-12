@@ -2,26 +2,7 @@
 <% if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any? %>
   <% form_for([purchase_order, parcel], :html => {:multipart => true}) do |f| %>
     <%= f.error_messages %>
-   
-    <div class="presentation_in_columns">
-      <h2>Informations</h2>
-      <div> 
-        <% if f.form_view? %>
-          <p>
-            <%= f.label :previsional_delivery_date %>
-            <%= f.form_or_view(f.text_field(:previsional_delivery_date), :previsional_delivery_date) %>
-          </p>
-        <% end %>
-        <% if f.form_view? %>
-          <p>
-            <%= f.label :conveyance %>
-            <%= f.form_or_view(f.text_field(:conveyance), :conveyance) %>
-          </p>
-        <% end %>
-      </div>     
-    </div>
-    <br>
-    <div>
+ 
       <h2>Liste des fournitures</h2>
       <div>
          <%= render :partial => 'parcel_items/begin_table'%>
