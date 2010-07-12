@@ -326,7 +326,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_add_parcel?
-    (status == PurchaseOrder::STATUS_CONFIRMED or status == PurchaseOrder::STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
+    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
   end
 end
 

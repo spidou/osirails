@@ -1,7 +1,7 @@
 module PurchaseOrdersHelper
 
-  def generate_purchase_order_contextual_menu_partial
-    render :partial => 'purchase_orders/contextual_menu'
+  def generate_purchase_order_contextual_menu_partial(purchase_order)
+    render :partial => 'purchase_orders/contextual_menu', :object => purchase_order
   end
   
   def display_purchase_order_confirm_button(purchase_order, message = nil)
@@ -10,7 +10,7 @@ module PurchaseOrdersHelper
     message ||= " #{text}"
     link_to( image_tag( "tick_16x16.png",
                         :alt => text,
-                        :title => (text + message)),
+                        :title => text ) + message,
                          purchase_order_confirm_path(purchase_order),
                         :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.", :method => :put)
   end

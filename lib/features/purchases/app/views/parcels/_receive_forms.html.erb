@@ -1,0 +1,11 @@
+<% f = receive_forms %>
+<%= render :partial => "parcels/ship_forms", :object => f %>
+<%= render :partial => "parcels/receive_by_forwarder_forms", :object => f %>
+<p>
+  <%= f.label :received_at %>
+  <%= f.text_field :received_at %>
+</p>
+<p>
+  <%= f.label :delivery_document %>
+  <%= f.file_field :delivery_document %>
+</p>

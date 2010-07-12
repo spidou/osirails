@@ -15,11 +15,11 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    (untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing) or !parcel)) or (processing? and purchase_order.was_confirmed? and parcel.was_processing?)
+    (untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing_by_supplier) or !parcel)) or (processing_by_supplier? and purchase_order.was_confirmed? and parcel.was_processing_by_supplier?)
   end
   
   def treat
-    if can_be_processing?
+    if can_be_processing_by_supplier?
       self.save
     else
       false
