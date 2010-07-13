@@ -942,6 +942,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "reference"
     t.string   "status"
     t.string   "conveyance"
+    t.text     "cancelled_comment"
     t.datetime "previsional_delivery_date"
     t.datetime "shipped_at"
     t.datetime "received_by_forwarder_at"

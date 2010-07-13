@@ -1,31 +1,21 @@
 <% content_for :header do %>
   <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
 <% end %>
-<% purchase_order = PurchaseOrder.find(params[:purchase_order_id]) %>
 
 <h1>Colis</h1>
 <div class="presentation_medium">
-  <h2>Passer au status "Exp&eacute;di&eacute;".</h2>
-  <% form_for [purchase_order, @parcel], :url => { :action => "ship" }  do |f| %>
-  <div class="presentation_in_columns">
-    <p>
-      <%= f.label :shipped_at %>
-      <%= f.text_field :shipped_at %>
-    </p>
-    <p>
-      <%= f.label :conveyance %>
-      <%= f.text_field(:conveyance) %>
-    </p>
-    <p>
-      <%= f.label :previsional_delivery_date %>
-      <%= f.text_field(:previsional_delivery_date) %>
-    </p> 
-  </div>
-  <br>
-  
+
   <%= render :partial => "parcels/array_head" %>
-  <%= render :partial => "parcels/parcel", :object => @parcel %>
+  <%= render :partial => "parcels/parcel", :object => @parcel, :locals => { :purchase_order => @purchase_order } %>
   <%= render :partial => "parcels/array_foot" %>
+
+  <h2>Signaler le colis comme "Exp&eacute;di&eacute;".</h2>
+  <% form_for [@purchase_order, @parcel], :url => { :action => "ship" }  do |f| %>
+    <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <%= render :partial => "parcels/ship_forms", :object => f %>
+    </div>
+    <br>
   <%= f.form_buttons %>
   <% end %>
 </div>

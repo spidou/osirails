@@ -6,7 +6,7 @@ module ParcelsHelper
   
   def display_parcel_current_status(parcel)
     case parcel.status
-      when Parcel::STATUS_PROCESSING
+      when Parcel::STATUS_PROCESSING_BY_SUPPLIER
         'En traitement'
       when Parcel::STATUS_SHIPPED
         'Envoyé'
@@ -14,6 +14,8 @@ module ParcelsHelper
         'Reçu par le transitaire'
       when Parcel::STATUS_RECEIVED
         'Reçu'
+      when Parcel::STATUS_CANCELLED
+        'Annulé'
       else
         "Impossible d'afficher le statut correspondant pour le colis"
     end
@@ -21,14 +23,16 @@ module ParcelsHelper
   
   def display_parcel_current_status_date(parcel)
     case parcel.status 
-      when Parcel::STATUS_PROCESSING
+      when Parcel::STATUS_PROCESSING_BY_SUPPLIER
         parcel.created_at ? parcel.created_at.humanize : "Aucune date de début de traitement"
       when Parcel::STATUS_SHIPPED
         parcel.shipped_at ? parcel.shipped_at.humanize : "Aucune date de postage"
       when Parcel::STATUS_RECEIVED_BY_FORWARDER
-        parcel.recovered_at ? parcel.received_by_forwarder_at.humanize : "Aucune date de récupération"
+        parcel.received_by_forwarder_at ? parcel.received_by_forwarder_at.humanize : "Aucune date de réception par le transitaire"
       when Parcel::STATUS_RECEIVED
         parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
+      when Parcel::STATUS_CANCELLED
+        parcel.cancelled_at ? parcel.cancelled_at.humanize : "Aucune date d'annulation"
     end
   end
   
@@ -53,14 +57,9 @@ module ParcelsHelper
              purchase_order_parcel_path(parcel), :popup => true )
   end
   
-  
-  def display_parcel_status_select(parcel)
-
-  end
-  
   def parcel_possible_actions(parcel)
     options = []
-    (options << ["En traitement", Parcel::STATUS_PROCESSING ]) if parcel.can_be_processing?
+    (options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]) if parcel.can_be_processing_by_supplier?
     (options << ["Expédié", Parcel::STATUS_SHIPPED ]) if parcel.can_be_shipped?
     (options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ]) if parcel.can_be_received_by_forwarder?
     (options << ["Reçu", Parcel::STATUS_RECEIVED ]) if parcel.can_be_received?
@@ -69,19 +68,27 @@ module ParcelsHelper
     options
   end
   
-  def display_parcel_process(parcel, message = nil)
-    
+  def parcel_all_actions_without_cancel(parcel)
+    options = []
+    options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]
+    options << ["Expédié", Parcel::STATUS_SHIPPED ]
+    options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ] 
+    options << ["Reçu", Parcel::STATUS_RECEIVED ]
+    options
+  end
+  def display_parcel_process_by_supplier(parcel, message = nil)
+    #TODO
   end
   
   def display_parcel_ship(parcel, message = nil)
-    
+    #TODO
   end
   
   def display_parcel_receive_by_forwarder(parcel, message = nil)
-    
+    #TODO
   end
   
   def display_parcel_receive(parcel, message = nil)
-    
+    #TODO
   end
 end

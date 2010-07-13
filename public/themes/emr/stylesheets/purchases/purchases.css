@@ -20,18 +20,10 @@ table tfoot tr.footer{
 }
 
 .parcel .parcel_summary {
+  padding: 10px;
   background-color: #ffdd60;
-  padding: 0px 10px 0px 10px;
-  margin: 0 !important;
   text-align: left;
   border: 1px solid #737373;
-}
-
-.parcel .parcel_summary .parcel_position {
-  margin: 3px 5px 3px -5px;
-  padding: 4px 6px 4px 6px;
-  border: 1px solid #737373;
-  -moz-border-radius: 20px;
 }
 
 .parcel .parcel_summary > span.parcel_label {

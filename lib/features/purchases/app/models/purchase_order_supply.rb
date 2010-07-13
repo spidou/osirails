@@ -18,6 +18,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
   attr_accessor :purchase_request_supplies_deselected_ids
   attr_accessor :should_destroy
   
+  cattr_accessor :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:cancelled_comment] = "Veuillez saisir la raison de l'annulation :"
+  
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference
   validates_presence_of :cancelled_by, :if => :cancelled_at
 
@@ -29,7 +33,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def remaining_quantity_for_parcel
     result = 0
     for parcel_item in parcel_items
-      result += parcel_item.quantity.to_i
+      result += parcel_item.quantity.to_i unless parcel_item.parcel.cancelled?   
     end
     quantity - result
   end
@@ -71,7 +75,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
 
   def can_be_cancelled?
-    (untreated? and purchase_order.confirmed?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
+    (untreated? and purchase_order.confirmed? && !cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
   end
 
   def can_be_deleted?

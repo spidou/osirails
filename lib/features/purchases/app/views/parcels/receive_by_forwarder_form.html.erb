@@ -1,31 +1,20 @@
-<% if @parcel.can_be_received_by_forwarder? %>
-  <% purchase_order = @parcel.parcel_items.first.purchase_order_supply.purchase_order %>
-  <% content_for :header do %>
-    <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
-  <% end %>
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
 
-  <h1>Colis</h1>
-  <div class="presentation_medium">
-    <h2>Passer au status "Re&cedil;u par le transitaire".</h2>
-    <% form_for [purchase_order, @parcel], :url => purchase_order_parcel_receive_by_forwarder_path(purchase_order, @parcel)  do |f| %>
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <%= render :partial => "parcels/array_head" %>
+  <%= render :partial => "parcels/parcel", :object => @parcel, :locals => { :purchase_order => @purchase_order } %>
+  <%= render :partial => "parcels/array_foot" %>
+  
+  <h2>Signaler le colis comme "Re&ccedil;u par le transitaire".</h2>
+  <% form_for [@purchase_order, @parcel], :url => purchase_order_parcel_receive_by_forwarder_path do |f| %>
+    <%= f.error_messages %>
     <div class="presentation_in_columns">
-      <p>
-        <%= f.label :received_by_forwarder_at %>
-        <%= f.text_field :received_by_forwarder_at %>
-      </p>
-      <p>
-        <%= f.checkbox :awaiting_pick_up %>
-        <%= f.text_field:awaiting_pick_up %>
-      </p>
+      <%= render :partial => "parcels/receive_by_forwarder_forms", :object => f %>
     </div>
     <br>
-    
-    <%= render :partial => "parcels/array_head" %>
-    <%= render :partial => "parcels/parcel", :object => @parcel %>
-    <%= render :partial => "parcels/array_foot" %>
     <%= f.form_buttons %>
-    <% end %>
-  </div>
-<% else %>
-  
-<% end %>
+  <% end %>
+</div>

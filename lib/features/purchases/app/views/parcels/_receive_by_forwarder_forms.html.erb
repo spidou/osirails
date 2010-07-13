@@ -1,0 +1,8 @@
+<p>
+  <%= label_tag 'Reçu par le transitaire le :' %>
+  <%= text_field_tag 'parcel[received_by_forwarder_at]' %>
+</p>
+<p>
+  <%= label_tag 'En attente de récupération :' %>
+  <%= check_box_tag 'parcel[awaiting_pick_up]' %>
+</p>

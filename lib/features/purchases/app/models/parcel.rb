@@ -6,7 +6,7 @@ class Parcel < ActiveRecord::Base
   has_many :parcel_items
   has_many :purchase_order_supplies, :through => "parcel_items"
   
-  STATUS_PROCESSING = nil
+  STATUS_PROCESSING_BY_SUPPLIER = nil
   STATUS_SHIPPED = "shipped"
   STATUS_RECEIVED_BY_FORWARDER = "received_by_forwarder"
   STATUS_RECEIVED = "received"
@@ -17,13 +17,26 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:shipped_at]                              = "Exp&eacute;di&eacute; le :"
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
+  @@form_labels[:received_by_forwarder_at]                = "Reçu par le transitaire le :"
+  @@form_labels[:awaiting_pick_up]                        = "En attente de récupération :"
+  @@form_labels[:received_at]                             = "Reçu le :"
+  @@form_labels[:delivery_document]                       = "Bon de livraison :"
+  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
-  validates_presence_of :conveyance , :if => :status
-  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record?
+  attr_accessor :delivery_document
   
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_SHIPPED ], :if => :was_processing?
-  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED], :if => :was_received_by_forwarder?
+  validates_presence_of :conveyance , :if => :shipped?
+  validates_presence_of :cancelled_comment, :if => :cancelled_at
+  
+  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :if => :shipped?
+  validates_date :shipped_at, :if => :shipped?
+  validates_date :received_by_forwarder_at, :if => :received_by_forwarder?
+  validates_date :received_at, :if => :received?
+  
+  
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
   
   validates_associated :parcel_items
@@ -46,8 +59,8 @@ class Parcel < ActiveRecord::Base
     end
   end
   
-  def processing?
-    status == STATUS_PROCESSING
+  def processing_by_supplier?
+    status == STATUS_PROCESSING_BY_SUPPLIER
   end
 
   def shipped?
@@ -71,8 +84,8 @@ class Parcel < ActiveRecord::Base
     status == STATUS_CANCELLED
   end
 
-  def was_processing?
-    status_was == STATUS_PROCESSING
+  def was_processing_by_supplier?
+    status_was == STATUS_PROCESSING_BY_SUPPLIER
   end
 
   def was_shipped?
@@ -91,12 +104,19 @@ class Parcel < ActiveRecord::Base
     status_was == STATUS_CANCELLED
   end
   
-  def can_be_processing?
-    !processing?
+  def can_be_processing_with_associated_parcel_items?
+    for parcel_item in parcel_items
+      return false if parcel_item.quantity > parcel_item.purchase_order_supply.remaining_quantity_for_parcel
+    end
+    return true
+  end
+  
+  def can_be_processing_by_supplier?
+    new_record? || (was_cancelled? && can_be_processing_with_associated_parcel_items?)
   end
 
   def can_be_shipped?
-    processing?
+    processing_by_supplier?
   end
 
   def can_be_received_by_forwarder?
@@ -108,43 +128,53 @@ class Parcel < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    was_cancelled?
+    !was_cancelled? && !new_record? && !was_received?
   end
   
-  def ship
+  def process_by_supplier
     if can_be_shipped?
-      self.status = STATUS_SHIPPED
-      self.shipped_at = Time.now
-      self.save
-    else
-      false
-    end
-  end
-
-  def receive_by_supplier
-    if can_be_received_by_forwarder?
-      self.status = STATUS_RECEIVED_BY_FORWARDER
-      self.recovered_at = Time.now
-      self.save
-    else
-      false
-    end
-  end
-
-  def receive
-    if can_be_received?
-      self.status = STATUS_RECEIVED
-      self.received_at = Time.now
+      self.status = STATUS_PROCESSING_BY_SUPPLIER
       self.save
     else
       false
     end
   end
   
-  def cancel
+  def ship(attributes)
+    if can_be_shipped?
+      self.attributes = attributes
+      self.status = STATUS_SHIPPED
+      self.save
+    else
+      false
+    end
+  end
+
+  def receive_by_forwarder(attributes)
+    if can_be_received_by_forwarder?
+      self.attributes = attributes
+      self.status = STATUS_RECEIVED_BY_FORWARDER
+      self.save
+    else
+      false
+    end
+  end
+
+  def receive(attributes)
+    if can_be_received?
+      self.attributes = attributes
+      self.status = STATUS_RECEIVED
+      self.save
+    else
+      false
+    end
+  end
+  
+  def cancel(attributes)
     if can_be_cancelled?
-      self.status = STATUS_CANCELLED
       self.cancelled_at = Time.now
+      self.status = STATUS_CANCELLED
+      self.attributes = attributes
       self.save
     else
       false

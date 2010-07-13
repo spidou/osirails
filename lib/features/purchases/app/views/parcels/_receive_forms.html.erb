@@ -1,0 +1,10 @@
+<%= render :partial => "parcels/ship_forms" %>
+<%= render :partial => "parcels/receive_by_forwarder_forms"%>
+<p>
+  <%= label_tag 'Reçu le :' %>
+  <%= text_field_tag 'parcel[received_at]' %>
+</p>
+<p>
+  <%= label_tag 'Bon de livraison :' %>
+  <%= file_field_tag 'parcel[delivery_document]'%>
+</p>

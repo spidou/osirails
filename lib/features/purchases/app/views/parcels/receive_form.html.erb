@@ -1,0 +1,20 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <%= render :partial => "parcels/array_head" %>
+  <%= render :partial => "parcels/parcel", :object => @parcel, :locals => { :purchase_order => @purchase_order } %>
+  <%= render :partial => "parcels/array_foot" %>
+  
+  <h2>Signaler le colis comme "Re&ccedil;u".</h2>
+  <% form_for [@purchase_order, @parcel], :url => { :controller => "parcels", :action => "receive" } do |f| %>
+    <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <%= render :partial => "parcels/receive_forms", :object => f %>
+    </div>
+    <br>
+    <%= f.form_buttons %>
+  <% end %>
+</div>

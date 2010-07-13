@@ -24,7 +24,7 @@ module PurchaseOrderSuppliesHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             purchase_order_cancel_supply_path(purchase_order_supply.purchase_order_id, purchase_order_supply.id),
+             purchase_order_purchase_order_supply_cancel_form_path(purchase_order_supply.purchase_order_id, purchase_order_supply.id),
              :confirm => "Êtes-vous sûr ?" )
   end
   

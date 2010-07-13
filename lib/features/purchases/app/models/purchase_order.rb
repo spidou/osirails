@@ -31,9 +31,10 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:user]                   = "Créateur de la demande :"
   @@form_labels[:reference]              = "Référence :"
   @@form_labels[:statut]                 = "Status :"
+  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
 
   validates_presence_of :user_id, :supplier_id
-#  validates_presence_of :cancelled_comment, :on => :cancel
+  validates_presence_of :cancelled_comment, :if => :cancelled_at
 
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
 
@@ -334,7 +335,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_add_parcel?
-    (status == PurchaseOrder::STATUS_CONFIRMED or status == PurchaseOrder::STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
+    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
   end
   
 end

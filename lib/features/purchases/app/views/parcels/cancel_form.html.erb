@@ -1,0 +1,22 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <%= render :partial => "parcels/array_head" %>
+  <%= render :partial => "parcels/parcel", :object => @parcel, :locals => { :purchase_order => @purchase_order } %>
+  <%= render :partial => "parcels/array_foot" %>
+  
+  <h2>Annuler le colis.</h2>
+  <% form_for [@purchase_order, @parcel], :url => { :action => "cancel" } do |f| %>
+    <%= f.error_messages %>
+    <p>
+      <%= f.label :cancelled_comment %>
+      <%= f.text_area_autoresize :cancelled_comment %>
+    </p>
+    <p>
+      <%= f.submit "Valider" %>
+    </p>
+  <% end %>
+</div>

@@ -6,7 +6,10 @@
 <div>
     <% form_for @purchase_order, :url => { :action => "cancel" } do |f| %>
       <%= f.error_messages %>
-      Veuillez saisir la raison de l'annulation:<br> <%= f.text_area_autoresize :cancelled_comment %><br />
+      <p>
+        <%= f.label :cancelled_comment %>
+        <%= f.text_area_autoresize :cancelled_comment %>
+      </p>
       <%= f.form_buttons %>
     <% end %>
 </div>

@@ -114,7 +114,9 @@ function disabled_or_enabled_quantity_text_field(element)
 
 function mark_resource_for_destroy(element) {
   element.down('.should_destroy').value = 1;
+  element.down('.sum').innerHTML = 0;
   element.hide();
+  update_all_total()
 }
 
 
