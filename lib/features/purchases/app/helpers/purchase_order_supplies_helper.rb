@@ -3,7 +3,6 @@ module PurchaseOrderSuppliesHelper
   def display_purchase_order_buttons(purchase_order_supply)
     html = []
     html << display_supply_show_button(purchase_order_supply.supply, '')
-    html << display_purchase_order_supply_delete_button(purchase_order_supply, '')
     html << display_purchase_order_supply_cancel_button(purchase_order_supply, '')
     html.compact.join("&nbsp;")
   end
@@ -16,16 +15,6 @@ module PurchaseOrderSuppliesHelper
                         :alt => text,
                         :title => text ) + message,
              url, :popup => true )
-  end
-  
-  def display_purchase_order_supply_delete_button(purchase_order_supply, message = nil)
-    return unless PurchaseOrderSupply.can_delete?(current_user) and !is_edit_view? and purchase_order_supply.can_be_deleted? and (purchase_order_supply.purchase_order.purchase_order_supplies.count > 1)
-    text = "Supprimer cette fourniture"
-    message ||= " #{text}"
-    link_to( image_tag( "delete_16x16.png",
-                        :alt => text,
-                        :title => text ) + message,
-             purchase_order_supply, :method => :delete, :confirm => "Êtes vous sûr?")
   end
   
   def display_purchase_order_supply_cancel_button(purchase_order_supply, message = nil)

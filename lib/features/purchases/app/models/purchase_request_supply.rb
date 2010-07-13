@@ -16,13 +16,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   validates_numericality_of :expected_quantity, :greater_than => 0
   validates_date :expected_delivery_date, :after => Date.today, :if => :new_record?
-
-  
-  def check_request_supply_status
-    return "non traité" if self.untreated?  
-    return "en cours de traitement" if self.during_treatment? 
-    return "traité" if self.treated? 
-  end
   
   def check_order_supply_status
     #TODO

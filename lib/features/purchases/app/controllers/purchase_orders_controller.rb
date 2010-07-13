@@ -42,10 +42,6 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
-  def update_table
-    render :partial => ""
-  end
-  
   def update
     if @purchase_order = PurchaseOrder.find(params[:id])
       if @purchase_order.update_attributes(params[:purchase_order])
@@ -75,7 +71,7 @@ class PurchaseOrdersController < ApplicationController
     keywords = params[:supplier][:name].split(" ").collect(&:strip)
     @items = []
     keywords.each do |keyword|
-      result = Supplier.all(:conditions => ["name LIKE ?", "%"+keyword+"%"])
+      result = Supplier.all(:conditions => ["name LIKE ?", "%#{keyword}%"])
       @items = @items.empty? ? result : @items & result
     end 
     render :partial => 'purchase_orders/search_supplier_name_auto_complete', :object => @items, :locals => { :fields => "name", :keywords => keywords }
@@ -121,6 +117,7 @@ class PurchaseOrdersController < ApplicationController
       unless @purchase_order.destroy
         flash[:error] = 'Une erreur est survenue lors de la suppression de l\'ordre d\'achats'
       end
+      flash[:notice] = 'La suppression de l\'ordre d\'achats a été effectué avec succès'
       redirect_to purchase_orders_path
     else
       error_access_page(412)

@@ -58,24 +58,6 @@ function refresh_lign(parent)
   update_all_total();
 }
 
-function add_quantity_in_total(quantity, parent)
-{
-    var old_quantity = parseFloat(parent.down('.quantity').value) || 0.0;
-    
-    old_quantity += parseFloat(quantity);
-    parent.down('.quantity').value = old_quantity;
-    parent.down('.quantity').innerHTML = old_quantity;    
-}
-
-function sub_quantity_in_total(quantity, parent)
-{
-    var old_quantity = parseFloat(parent.down('.quantity').value) || 0.0;
-    
-    old_quantity -= parseFloat(quantity);
-    parent.down('.quantity').value = old_quantity;
-    parent.down('.quantity').innerHTML = old_quantity;    
-}
-
 function update_purchase_request_supplies_ids(element, parent)
 {
     var quantity = element.readAttribute('data_quantity');
