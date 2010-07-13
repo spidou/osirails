@@ -21,8 +21,8 @@ class ParcelsController < ApplicationController
   def alter_status
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    if params[:parcel][:status] == Parcel::STATUS_PROCESSING_BY_SUPPLIER
-      redirect_to purchase_order_parcel_process_form_path(@purchase_order, @parcel)
+    if params[:parcel][:status] == ""
+      redirect_to purchase_order_parcel_process_by_supplier_path(@purchase_order, @parcel)
     elsif params[:parcel][:status] == Parcel::STATUS_SHIPPED
       redirect_to purchase_order_parcel_ship_form_path(@purchase_order, @parcel)
     elsif params[:parcel][:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
@@ -40,20 +40,20 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
   end
   
-#  def process_by_supplier
-#    @parcel = Parcel.find(params[:parcel_id])
-#    if @parcel.can_be_processing_by_supplier?
-#      if  @parcel.process_by_supplier
-#        flash[:notice] = "Le status du colis est bien passé à \"En traitement par le fournisseur\"."
-#        redirect_to @parcel
-#      else
-#        render :action => "process_by_supplier_form"   
-#      end
-#    else
-#      error_access_page(412)
-#    end
-#  end
-#  
+  def process_by_supplier
+    @parcel = Parcel.find(params[:parcel_id])
+    if @parcel.can_be_processing_by_supplier?
+      if @parcel.process_by_supplier
+        flash[:notice] = "Le status du colis est bien passé à \"En traitement par le fournisseur\"."
+        redirect_to @purchase_order
+      else
+        render :action => "process_by_supplier_form"   
+      end
+    else
+      error_access_page(412)
+    end
+  end
+  
   def ship_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -66,10 +66,7 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_shipped?
-      @parcel.shipped_at = params[:parcel][:shipped_at]
-      @parcel.conveyance = params[:parcel][:conveyance]
-      @parcel.previsional_delivery_date = params[:parcel][:previsional_delivery_date]
-      if  @parcel.ship(@parcel)
+      if  @parcel.ship(params[:parcel])
         flash[:notice] = "Le status du colis est bien passé à \"Expédié\"."
         redirect_to @purchase_order
       else
@@ -92,9 +89,7 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received_by_forwarder?
-      @parcel.received_by_forwarder_at = params[:parcel][:received_by_forwarder_at]
-      @parcel.awaiting_pick_up = params[:parcel][:awaiting_pick_up]
-      if  @parcel.receive_by_forwarder(@parcel)
+      if  @parcel.receive_by_forwarder(params[:parcel])
         flash[:notice] = "Le status du colis est bien passé à \"Reçu par le transitaire\"."
         redirect_to @purchase_order
       else
@@ -117,12 +112,7 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received?
-      @parcel.shipped_at = params[:parcel][:shipped_at]
-      @parcel.conveyance = params[:parcel][:conveyance]
-      @parcel.previsional_delivery_date = params[:parcel][:previsional_delivery_date]
-      @parcel.received_by_forwarder_at = params[:parcel][:received_by_forwarder_at]
-      @parcel.awaiting_pick_up = params[:parcel][:awaiting_pick_up]
-      if  @parcel.receive(@parcel)
+      if  @parcel.receive(params[:parcel])
         flash[:notice] = "Le status du colis est bien passé à \"Reçu\"."
         redirect_to @purchase_order
       else
@@ -145,9 +135,7 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_cancelled?
-      @parcel.cancelled_by = current_user.id
-      @parcel.cancelled_comment  = params[:parcel][:cancelled_comment]
-      if  @purchase_order.cancel(@parcel)
+      if  @parcel.cancel(params[:parcel])
         flash[:notice] = "Le colis a été annulé avec succès."
         redirect_to @purchase_order
       else

@@ -10,6 +10,7 @@
   
   <h2>Signaler le colis comme "Re&ccedil;u".</h2>
   <% form_for [@purchase_order, @parcel], :url => { :controller => "parcels", :action => "receive" } do |f| %>
+    <%= form.error_messages %>
     <div class="presentation_in_columns">
       <%= render :partial => "parcels/receive_forms", :object => f %>
     </div>

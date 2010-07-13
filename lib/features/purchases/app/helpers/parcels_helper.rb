@@ -14,6 +14,8 @@ module ParcelsHelper
         'Reçu par le transitaire'
       when Parcel::STATUS_RECEIVED
         'Reçu'
+      when Parcel::STATUS_CANCELLED
+        'Annulé'
       else
         "Impossible d'afficher le statut correspondant pour le colis"
     end
@@ -29,6 +31,8 @@ module ParcelsHelper
         parcel.received_by_forwarder_at ? parcel.received_by_forwarder_at.humanize : "Aucune date de réception par le transitaire"
       when Parcel::STATUS_RECEIVED
         parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
+      when Parcel::STATUS_CANCELLED
+        parcel.cancelled_at ? parcel.canncelled_at.humanize : "Aucune date d'annulation"
     end
   end
   

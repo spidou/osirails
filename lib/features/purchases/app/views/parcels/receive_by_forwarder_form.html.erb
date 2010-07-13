@@ -10,6 +10,7 @@
   
   <h2>Signaler le colis comme "Re&ccedil;u par le transitaire".</h2>
   <% form_for [@purchase_order, @parcel], :url => purchase_order_parcel_receive_by_forwarder_path do |f| %>
+    <%= form.error_messages %>
     <div class="presentation_in_columns">
       <%= render :partial => "parcels/receive_by_forwarder_forms", :object => f %>
     </div>

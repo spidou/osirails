@@ -1,6 +1,6 @@
 module PurchaseOrdersHelper
 
-  def generate_purchase_order_contextual_menu_partial(purchase_order)
+  def generate_purchase_order_contextual_menu_partial(purchase_order = nil)
     render :partial => 'purchase_orders/contextual_menu', :object => purchase_order
   end
   

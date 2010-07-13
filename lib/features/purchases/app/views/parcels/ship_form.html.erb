@@ -11,12 +11,11 @@
 
   <h2>Signaler le colis comme "Exp&eacute;di&eacute;".</h2>
   <% form_for [@purchase_order, @parcel], :url => { :action => "ship" }  do |f| %>
-  <div class="presentation_in_columns">
-    <%= render :partial => "parcels/ship_forms", :object => f %>
-  </div>
-  <br>
-  
-
+    <%= form.error_messages %>
+    <div class="presentation_in_columns">
+      <%= render :partial => "parcels/ship_forms", :object => f %>
+    </div>
+    <br>
   <%= f.form_buttons %>
   <% end %>
 </div>

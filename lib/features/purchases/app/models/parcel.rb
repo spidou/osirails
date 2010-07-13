@@ -21,13 +21,14 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:awaiting_pick_up]                        = "En attente de récupération :"
   @@form_labels[:received_at]                             = "Reçu le :"
   @@form_labels[:delivery_document]                       = "Bon de livraison :"
+  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
   validates_presence_of :conveyance , :if => :status
   validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record?
   
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED ], :if => :was_processing_by_supplier?
-  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED], :if => :was_received_by_forwarder?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
   
   validates_associated :parcel_items
@@ -112,7 +113,7 @@ class Parcel < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-    was_cancelled?
+    !was_cancelled? and !new_record?
   end
   
   def process_by_supplier
@@ -124,49 +125,40 @@ class Parcel < ActiveRecord::Base
     end
   end
   
-  def ship(parcel)
+  def ship(attributes)
     if can_be_shipped?
+      self.attributes = attributes
       self.status = STATUS_SHIPPED
-      self.shipped_at = parcel.shipped_at
-      self.previsional_delivery_date = parcel.previsional_delivery_date
-      self.conveyance = parcel.conveyance
       self.save
     else
       false
     end
   end
 
-  def receive_by_forwarder(parcel)
+  def receive_by_forwarder(attributes)
     if can_be_received_by_forwarder?
+      self.attributes = attributes
       self.status = STATUS_RECEIVED_BY_FORWARDER
-      self.received_by_forwarder_at = parcel.received_by_forwarder_at
-      self.awaiting_pick_up = parcel.awaiting_pick_up
       self.save
     else
       false
     end
   end
 
-  def receive(parcel)
+  def receive(attributes)
     if can_be_received?
+      self.attributes = attributes
       self.status = STATUS_RECEIVED
-      self.shipped_at = parcel.shipped_at
-      self.previsional_delivery_date = parcel.previsional_delivery_date
-      self.conveyance = parcel.conveyance
-      self.received_by_forwarder_at = parcel.received_by_forwarder_at
-      self.awaiting_pick_up = parcel.awaiting_pick_up
-      self.received_at = parcel.received_at
       self.save
     else
       false
     end
   end
   
-  def cancel(parcel)
+  def cancel(attributes)
     if can_be_cancelled?
       self.status = STATUS_CANCELLED
-      self.cancelled_at = parcel.cancelled_at
-      self.cancelled_comment = parcel.cancelled_comment
+      self.attributes = attributes
       self.save
     else
       false

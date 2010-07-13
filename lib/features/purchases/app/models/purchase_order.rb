@@ -31,6 +31,7 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:user]                   = "Créateur de la demande :"
   @@form_labels[:reference]              = "Référence :"
   @@form_labels[:statut]                 = "Status :"
+  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
 
   validates_presence_of :user_id, :supplier_id
 #  validates_presence_of :cancelled_comment, :on => :cancel
