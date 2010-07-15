@@ -22,7 +22,7 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if params[:parcel][:status] == ""
-      redirect_to purchase_order_parcel_process_by_supplier_path(@purchase_order, @parcel)
+      redirect_to purchase_order_parcel_process_by_supplier_form_path(@purchase_order, @parcel)
     elsif params[:parcel][:status] == Parcel::STATUS_SHIPPED
       redirect_to purchase_order_parcel_ship_form_path(@purchase_order, @parcel)
     elsif params[:parcel][:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
@@ -38,11 +38,16 @@ class ParcelsController < ApplicationController
   
   def process_by_supplier_form
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    unless @parcel.can_be_processing_by_supplier?
+      error_access_page(412)
+    end
   end
   
   def process_by_supplier
     @parcel = Parcel.find(params[:parcel_id])
     if @parcel.can_be_processing_by_supplier?
+      @parcel.attributes = params[:parcel]
       if @parcel.process_by_supplier
         flash[:notice] = "Le status du colis est bien passé à \"En traitement par le fournisseur\"."
         redirect_to @purchase_order
@@ -66,7 +71,8 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_shipped?
-      if  @parcel.ship(params[:parcel])
+      @parcel.attributes = params[:parcel]
+      if  @parcel.ship
         flash[:notice] = "Le status du colis est bien passé à \"Expédié\"."
         redirect_to @purchase_order
       else
@@ -89,7 +95,8 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received_by_forwarder?
-      if  @parcel.receive_by_forwarder(params[:parcel])
+      @parcel.attributes = params[:parcel]
+      if  @parcel.receive_by_forwarder
         flash[:notice] = "Le status du colis est bien passé à \"Reçu par le transitaire\"."
         redirect_to @purchase_order
       else
@@ -112,7 +119,8 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received?
-      if  @parcel.receive(params[:parcel])
+      @parcel.attributes = params[:parcel]
+      if  @parcel.receive
         flash[:notice] = "Le status du colis est bien passé à \"Reçu\"."
         redirect_to @purchase_order
       else
@@ -135,7 +143,9 @@ class ParcelsController < ApplicationController
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_cancelled?
-      if  @parcel.cancel(params[:parcel])
+      @parcel.attributes = params[:parcel]
+      @parcel.cancelled_by = current_user.id
+      if  @parcel.cancel
         flash[:notice] = "Le colis a été annulé avec succès."
         redirect_to @purchase_order
       else

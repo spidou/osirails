@@ -13,12 +13,14 @@
     <td></td>
     <td></td>
     <td></td>
-    <td></td> 
+    <td></td>
+    <td></td>
 <% else %>
     <td><%= parcels.first.reference %></td>
     <td><%= display_parcel_previsional_deliveray_date(parcels.first) %></td>
     <td><%= display_parcel_current_status(parcels.first) %></td>
     <td><%= display_parcel_current_status_date(parcels.first) %></td>
+    <td><%= ( parcels.first.awaiting_pick_up ? "Oui" : "Non" ) if parcels.first.status == Parcel::STATUS_RECEIVED_BY_FORWARDER %></td>
 <% end %>
 
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
@@ -35,6 +37,7 @@ for parcel in parcels
       <td><%= display_parcel_previsional_deliveray_date(parcel) %></td>
       <td><%= display_parcel_current_status(parcel) %></td>
       <td><%= display_parcel_current_status_date(parcel) %></td>
+      <td><%= ( parcel.awaiting_pick_up ? "Oui" : "Non" ) if parcel.status == Parcel::STATUS_RECEIVED_BY_FORWARDER %></td>
     </tr>
 <%  
   end

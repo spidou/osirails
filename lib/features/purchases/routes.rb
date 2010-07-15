@@ -31,6 +31,7 @@ ActionController::Routing::Routes.add_routes do |map|
     order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm', :conditions => { :method => :put }
     order.resources :parcels do |parcel|
       parcel.alter_status 'alter_status', :controller => 'parcels', :action => 'alter_status'
+      parcel.process_by_supplier_form 'process_by_supplier_form', :controller => 'parcels', :action => 'process_by_supplier_form'
       parcel.process_by_supplier 'process_by_supplier', :controller => 'parcels', :action => 'process_by_supplier'
       parcel.ship_form 'ship_form', :controller => 'parcels', :action => 'ship_form'
       parcel.receive_by_forwarder_form 'receive_by_forwarder_form', :controller => 'parcels', :action => 'receive_by_forwarder_form'

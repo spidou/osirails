@@ -108,32 +108,31 @@ module PurchaseOrdersHelper
   end
   
   def display_purchase_order_current_status(purchase_order)
-    case purchase_order.status
-      when PurchaseOrder::STATUS_DRAFT
-        "Brouillon"
-      when PurchaseOrder::STATUS_CONFIRMED
-        "Confirmé"
-      when PurchaseOrder::STATUS_PROCESSING
-        "En traitement"
-      when PurchaseOrder::STATUS_COMPLETED
-        "Complété"
-      when PurchaseOrder::STATUS_CANCELLED
-        "Annulé"
+    if purchase_order.was_cancelled?
+      "Annulé"
+    elsif purchase_order.was_draft?
+      "Brouillon"
+    elsif purchase_order.was_confirmed?
+      "Confirmé"
+    elsif purchase_order.was_processing?
+      "En traitement"
+    elsif purchase_order.was_completed?
+      "Complété"
     end
   end
   
   def display_purchase_order_current_status_date(purchase_order)
-    case purchase_order.status
-      when PurchaseOrder::STATUS_DRAFT
-        purchase_order.created_at ? purchase_order.created_at.humanize : " date de création"
-      when PurchaseOrder::STATUS_CONFIRMED
-        purchase_order.confirmed_at ? purchase_order.confirmed_at.humanize : " date de validation"
-      when PurchaseOrder::STATUS_PROCESSING
-        purchase_order.processing_since ? purchase_order.processing_since.humanize : " date de début de traitement"
-      when PurchaseOrder::STATUS_COMPLETED
-        purchase_order.completed_at ? purchase_order.completed_at.humanize : " date de fin de traitement"
-      when PurchaseOrder::STATUS_CANCELLED
-        purchase_order.cancelled_at ? purchase_order.cancelled_at.humanize : " date d'annulation"
+    if purchase_order.was_cancelled?
+      return purchase_order.cancelled_at.humanize if purchase_order.cancelled_at
+      purchase_order.purchase_order_supplies.last(:order => "cancelled_at").cancelled_at.humanize
+    elsif purchase_order.was_draft?
+      purchase_order.created_at.humanize
+    elsif purchase_order.was_confirmed?
+      purchase_order.confirmed_at.humanize
+    elsif purchase_order.was_processing?
+      purchase_order.processing_since.humanize
+    elsif purchase_order.was_completed?
+      purchase_order.completed_at.humanize
     end
   end
   

@@ -938,12 +938,14 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "parcels", :force => true do |t|
-    t.integer  "cancelled_by",              :limit => 11
+    t.integer  "delivery_document_id",         :limit => 11
+    t.integer  "cancelled_by",                 :limit => 11
     t.string   "reference"
     t.string   "status"
     t.string   "conveyance"
     t.text     "cancelled_comment"
     t.datetime "previsional_delivery_date"
+    t.datetime "processing_by_supplier_since"
     t.datetime "shipped_at"
     t.datetime "received_by_forwarder_at"
     t.datetime "received_at"
@@ -1124,9 +1126,9 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
 
   create_table "purchase_documents", :force => true do |t|
-    t.string   "photo_file_name"
-    t.string   "photo_content_type"
-    t.integer  "photo_file_size",    :limit => 11
+    t.string   "purchase_documents_file_name"
+    t.string   "purchase_documents_content_type"
+    t.integer  "purchase_documents_file_size",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

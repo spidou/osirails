@@ -6,29 +6,28 @@
   <% if @closed_purchase_orders.empty? %>
     <p>Aucun ordre d'achats terminés</p>
   <% else %>
-  <table class="no_nth">
-    <thead>
-      <tr>
-        <th rowspan = "2">R&eacute;f&eacute;rence</th>
-        <th rowspan = "2">Date de cr&eacute;ation</th>
-        <th rowspan = "2">Termin&eacute; depuis le</th>
-        <th rowspan = "2">Origine</th>
-        <th rowspan = "2">Fournisseur</th>
-        <th colspan = "3">Colis</th>
-        <th rowspan = "2">Demandes associ&eacute;es</th>
-        <th rowspan = "2">Prix total</th>
-        <th rowspan = "2">Action</th>
-      </tr>
-      <tr>
-        <th>R&eacute;f&eacute;rence</th>
-        <th>Livr&eacute; le</th>
-        <th>R&eacute;cup&eacute;r&eacute;</th>
-      <tr>
-    </thead>
-    <tbody>
-        <%= render :partial => "closed_purchase_order_in_one_line", :collection => @closed_purchase_orders  %>
-        <%= will_paginate @pending_purchase_orders %>
-    </tbody>
-  </table>
+    <table class="no_nth">
+      <thead>
+        <tr>
+          <th rowspan = "2">R&eacute;f&eacute;rence</th>
+          <th rowspan = "2">Date de cr&eacute;ation</th>
+          <th rowspan = "2">Termin&eacute; depuis le</th>
+          <th rowspan = "2">Origine</th>
+          <th rowspan = "2">Fournisseur</th>
+          <th colspan = "2">Colis</th>
+          <th rowspan = "2">Demandes associ&eacute;es</th>
+          <th rowspan = "2">Prix total</th>
+          <th rowspan = "2">Action</th>
+        </tr>
+        <tr>
+          <th>R&eacute;f&eacute;rence</th>
+          <th>Livr&eacute; le</th>
+        <tr>
+      </thead>
+      <tbody>
+          <%= render :partial => "closed_purchase_order_in_one_line", :collection => @closed_purchase_orders  %>
+      </tbody>
+    </table>
+    <%= will_paginate @pending_purchase_orders %>
   <% end %>
 </div>

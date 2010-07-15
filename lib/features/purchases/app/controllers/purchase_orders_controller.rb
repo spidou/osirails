@@ -98,8 +98,8 @@ class PurchaseOrdersController < ApplicationController
   def cancel
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @purchase_order.can_be_cancelled?
+      @purchase_order.attributes = params[:purchase_order]
       @purchase_order.cancelled_by = current_user.id
-      @purchase_order.cancelled_comment  = params[:purchase_order][:cancelled_comment]
       if  @purchase_order.cancel
         flash[:notice] = "L'ordre d'achats a été annulé avec succès."
         redirect_to @purchase_order

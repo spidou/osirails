@@ -1,12 +1,11 @@
 class PurchaseOrder < ActiveRecord::Base
-
+  
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference :prefix => :purchases
-  #has_attached_file :quotation_document
-
+  
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
-
+  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -14,16 +13,17 @@ class PurchaseOrder < ActiveRecord::Base
   belongs_to :user
   belongs_to :canceller, :foreign_key => "cancelled_by", :class_name => "User"
   belongs_to :supplier
-  belongs_to :payment_method
-
+#  belongs_to :payment_method
+#  belongs_to :quotation_document
+  
   REQUESTS_PER_PAGE = 5
-
+  
   STATUS_DRAFT = nil
   STATUS_CONFIRMED = "confirmed"
   STATUS_PROCESSING = "processing"
   STATUS_COMPLETED = "completed"
   STATUS_CANCELLED = "cancelled"
-
+    
   cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:supplier]               = "Fournisseur :"
@@ -31,27 +31,27 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:user]                   = "Créateur de la demande :"
   @@form_labels[:reference]              = "Référence :"
   @@form_labels[:statut]                 = "Status :"
-  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
-
+  @@form_labels[:cancelled_comment]      = "Veuillez saisir la raison de l'annulation :"
+  
   validates_presence_of :user_id, :supplier_id
-#  validates_presence_of :cancelled_comment, :on => :cancel
-
+  validates_presence_of :cancelled_comment, :if => :cancelled_by, :message => "Veuillez préciser la raison pour laquelle vous annulez cet ordre d'achats"
+  
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
-
+  
   validate :validates_length_of_purchase_order_supplies_if_should_destroy , :unless => :new_record?
   
-  validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED, STATUS_PROCESSING, STATUS_COMPLETED, STATUS_CANCELLED ]
+  validates_inclusion_of :status, :in => [ STATUS_DRAFT ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED ], :if => :was_draft?
   validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_confirmed?
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_processing?
   validates_inclusion_of :status, :in => [ STATUS_COMPLETED ], :if => :was_completed?
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
-
+  
   validates_associated :purchase_order_supplies, :supplier_supplies
-
+  
   before_validation :build_supplier_supplies, :build_associed_request_order_supplies
   before_validation :update_reference_only_on_confirm
-  
+    
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
   after_save  :destroy_request_order_supplies_deselected
   
@@ -187,11 +187,16 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def was_cancelled?
+    counter = 0
+    for purchase_order_supply in purchase_order_supplies
+      counter += 1 if purchase_order_supply.was_cancelled?
+    end
+    return true if counter == purchase_order_supplies.size
     status_was == STATUS_CANCELLED
   end
   
   def can_be_confirmed?
-    was_draft?
+    was_draft? and !was_cancelled?
   end
   
   def can_be_processed?
@@ -334,8 +339,13 @@ class PurchaseOrder < ActiveRecord::Base
     false
   end
   
+  def is_closed_or_cancelled?
+    return true if (was_completed? or was_cancelled?)
+    false
+  end
+  
   def can_add_parcel?
-    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel?
+    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel? and !cancelled?
   end
   
 end

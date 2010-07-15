@@ -26,7 +26,7 @@ table tfoot tr.footer{
   border: 1px solid #737373;
 }
 
-.parcel .parcel_summary > span.parcel_label {
+.parcel .parcel_summary .parcel_label {
   font-weight: inherit;
   text-decoration: underline;
 }
@@ -46,6 +46,17 @@ table tfoot tr.footer{
 .parcel .parcel_summary .parcel_choose_status {
   float: right;
   margin: 3px 5px 3px -5px;
+  width: auto;
+  text-decoration: underline;
+}
+
+.parcel .parcel_summary .parcel_choose_status li {
+  list-style-type: none;
+  float: left;
+}
+
+.parcel .parcel_summary .parcel_choose_status_label {
+  text-decoration: underline;
 }
 
 .parcel .parcel_summary .parcel_conveyance {

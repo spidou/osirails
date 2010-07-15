@@ -1,9 +1,4 @@
 module ParcelsHelper
-  def display_parcel_recovered(parcel)
-    return image_tag( "cross_16x16.png", :alt => "Non récupéré", :title => "Non récupéré" ) unless parcel.status == Parcel::STATUS_RECEIVED_BY_FORWARDER
-    image_tag( "tick_16x16.png", :alt => "Récupéré", :title => "Récupéré" )
-  end
-  
   def display_parcel_current_status(parcel)
     case parcel.status
       when Parcel::STATUS_PROCESSING_BY_SUPPLIER
@@ -38,7 +33,7 @@ module ParcelsHelper
   
   def display_parcel_previsional_deliveray_date(parcel)
     return parcel.previsional_delivery_date.humanize unless parcel.previsional_delivery_date == nil
-    "Non définie"
+    ""
   end
   
   def display_parcel_buttons(parcel)

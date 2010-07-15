@@ -1,6 +1,6 @@
 <% purchase_order = closed_purchase_order_in_one_line %>
 <% parcels = purchase_order.get_parcels.compact %>
-<% cancelled = purchase_order.status == PurchaseOrder::STATUS_CANCELLED %>
+<% cancelled = purchase_order.was_cancelled? %>
 
 <% if cancelled %>
   <tr <%= (closed_purchase_order_in_one_line_counter % 2) == 0 ? "class=\"even disabled\"" : "class=\"disabled\"" %>>
@@ -17,13 +17,11 @@
     "
     <td></td>
     <td></td>
-    <td></td>
     "
   else
     "
     <td>#{parcels.first.reference}</td>
     <td>#{display_parcel_previsional_deliveray_date(parcels.first)}</td>
-    <td>#{display_parcel_recovered(parcels.first)}</td>
     "
   end
 %>
@@ -39,7 +37,6 @@ for parcel in parcels
     <tr>
       <td>#{parcel.reference}</td>
       <td>#{display_parcel_previsional_deliveray_date(parcel)}</td>
-      <td>#{display_parcel_recovered(parcel)}</td>
     </tr>
     "
   end

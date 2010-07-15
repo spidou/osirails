@@ -2,6 +2,8 @@
   <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
 <% end %>
 
+<%= generate_purchase_order_contextual_menu_partial(@purchase_order) %>
+
 <h1>Colis</h1>
 <div class="presentation_medium">
   <%= render :partial => "parcels/array_head" %>
@@ -9,8 +11,8 @@
   <%= render :partial => "parcels/array_foot" %>
   
   <h2>Signaler le colis comme "Re&ccedil;u".</h2>
-  <% form_for [@purchase_order, @parcel], :url => { :controller => "parcels", :action => "receive" } do |f| %>
-    <%= form.error_messages %>
+  <% form_for [@purchase_order, @parcel], :url => { :controller => "parcels", :action => "receive" }, :html => { :multipart => true } do |f| %>
+    <%= f.error_messages %>
     <div class="presentation_in_columns">
       <%= render :partial => "parcels/receive_forms", :object => f %>
     </div>

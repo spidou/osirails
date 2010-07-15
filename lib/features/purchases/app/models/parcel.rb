@@ -6,6 +6,8 @@ class Parcel < ActiveRecord::Base
   has_many :parcel_items
   has_many :purchase_order_supplies, :through => "parcel_items"
   
+  belongs_to :delivery_document, :class_name => "PurchaseDocument"
+  
   STATUS_PROCESSING_BY_SUPPLIER = nil
   STATUS_SHIPPED = "shipped"
   STATUS_RECEIVED_BY_FORWARDER = "received_by_forwarder"
@@ -24,7 +26,11 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
   validates_presence_of :conveyance , :if => :status
-  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record?
+  
+  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record? #et si la saisie du colis se fait après la réception?
+  validates_date :shipped_at, :on_or_after => :processing_by_supplier_since, :if => :processing_by_supplier_since_was
+  validates_date :received_by_forwarder_at, :on_or_after => :shipped_at, :if => :shipped_at_was
+  validates_date :received_at, :on_or_after => :received_by_forwarder_at, :if => :received_by_forwarder_at_was
   
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
@@ -109,15 +115,15 @@ class Parcel < ActiveRecord::Base
   end
   
   def can_be_received?
-    new_record? or received_by_forwarder?
+    new_record? or was_received_by_forwarder?
   end
   
   def can_be_cancelled?
-    !was_cancelled? and !new_record?
+    !was_cancelled? and !new_record? and !was_received?
   end
   
   def process_by_supplier
-    if can_be_shipped?
+    if can_be_processing_by_supplier?
       self.status = STATUS_PROCESSING_BY_SUPPLIER
       self.save
     else
@@ -125,9 +131,8 @@ class Parcel < ActiveRecord::Base
     end
   end
   
-  def ship(attributes)
+  def ship
     if can_be_shipped?
-      self.attributes = attributes
       self.status = STATUS_SHIPPED
       self.save
     else
@@ -135,9 +140,8 @@ class Parcel < ActiveRecord::Base
     end
   end
 
-  def receive_by_forwarder(attributes)
+  def receive_by_forwarder
     if can_be_received_by_forwarder?
-      self.attributes = attributes
       self.status = STATUS_RECEIVED_BY_FORWARDER
       self.save
     else
@@ -145,9 +149,8 @@ class Parcel < ActiveRecord::Base
     end
   end
 
-  def receive(attributes)
+  def receive
     if can_be_received?
-      self.attributes = attributes
       self.status = STATUS_RECEIVED
       self.save
     else
@@ -155,10 +158,9 @@ class Parcel < ActiveRecord::Base
     end
   end
   
-  def cancel(attributes)
+  def cancel
     if can_be_cancelled?
       self.status = STATUS_CANCELLED
-      self.attributes = attributes
       self.save
     else
       false
@@ -180,6 +182,5 @@ class Parcel < ActiveRecord::Base
     end
     parcel_items
   end
-  
 end
 
