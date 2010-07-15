@@ -1126,9 +1126,9 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
 
   create_table "purchase_documents", :force => true do |t|
-    t.string   "delivery_document_file_name"
-    t.string   "delivery_document_content_type"
-    t.integer  "delivery_document_file_size",    :limit => 11
+    t.string   "purchase_document_file_name"
+    t.string   "purchase_document_content_type"
+    t.integer  "purchase_document_file_size",    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1152,10 +1152,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "user_id",               :limit => 11
     t.integer  "supplier_id",           :limit => 11
     t.integer  "invoice_document_id",   :limit => 11
-    t.integer  "delivery_document_id",  :limit => 11
-    t.integer  "payment_document_id",   :limit => 11
-    t.integer  "payment_method_id",     :limit => 11
     t.integer  "quotation_document_id", :limit => 11
+    t.integer  "payment_document_id",   :limit => 11
     t.integer  "cancelled_by",          :limit => 11
     t.string   "reference"
     t.string   "status"

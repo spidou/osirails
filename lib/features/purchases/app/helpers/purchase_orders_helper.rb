@@ -11,7 +11,7 @@ module PurchaseOrdersHelper
     link_to( image_tag( "tick_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-                         purchase_order_confirm_path(purchase_order),
+                         purchase_order_confirm_form_path(purchase_order),
                         :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.", :method => :put)
   end
 

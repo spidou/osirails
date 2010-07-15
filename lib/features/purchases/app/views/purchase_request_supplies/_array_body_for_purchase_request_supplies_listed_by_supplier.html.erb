@@ -1,5 +1,5 @@
 <% purchase_request_supply = array_body_for_purchase_request_supplies_listed_by_supplier %>
-<% purchase_request_supply_supplier = purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier]) %>
+<% purchase_request_supplier_supply = purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier]) %>
 <tr>
   <td <%= "class=\"warning\"" if purchase_request_supply.expected_delivery_date < Date.today %> ><%= purchase_request_supply.expected_delivery_date.humanize %></td>
   <td><%= purchase_request_supply.supply.reference %></td>
@@ -7,10 +7,10 @@
   <td><%= "#{purchase_request_supply.supply.measure.to_f.to_s(2)}&#160;m²" if purchase_request_supply.supply.measure %></td>
   <td><%= "#{purchase_request_supply.supply.unit_mass.to_f.to_s(2)}&#160;kg" if purchase_request_supply.supply.unit_mass %></td>
   <td <%= "class=\"warning\"" if purchase_request_supply.supply.stock_quantity < purchase_request_supply.supply.threshold %> ><%=  purchase_request_supply.supply.stock_quantity %>/<%= purchase_request_supply.supply.threshold.to_i %></td>
-  <td class="price"><%= (purchase_request_supply_supplier.fob_unit_price * ((100 + purchase_request_supply_supplier.taxes ) / 100)).to_f.to_s(2) %>&#160;&euro;</td>
+  <td class="price"><%= (purchase_request_supplier_supply.fob_unit_price * ((100 + purchase_request_supplier_supply.taxes ) / 100)).to_f.to_s(2) %>&#160;&euro;</td>
   <td></td>
   <td><%= purchase_request_supply.expected_quantity %></td>
-  <td class="price"><%= ((purchase_request_supply_supplier.fob_unit_price * ((100 + purchase_request_supply_supplier.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
-  <td><%= "#{purchase_request_supply_supplier.lead_time}&#160;jour(s)" if purchase_request_supply_supplier.lead_time %></td>
+  <td class="price"><%= ((purchase_request_supplier_supply.fob_unit_price * ((100 + purchase_request_supplier_supply.taxes ) / 100)) * purchase_request_supply.expected_quantity).to_f.to_s(2) %> &euro;</td>
+  <td><%= "#{purchase_request_supplier_supply.lead_time}&#160;jour(s)" if purchase_request_supplier_supply.lead_time %></td>
   <%= "<td rowspan=#{supplier.merge_purchase_request_supplies.count}>" + display_choose_supplier_button(supplier) + "</td>" if array_body_for_purchase_request_supplies_listed_by_supplier_counter == 1 %>
 </tr>

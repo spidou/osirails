@@ -124,8 +124,15 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  def confirm_form
+    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
+      error_access_page(412)
+    end
+  end
+  
   def confirm
     if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
+      @purchase_order.attributes = params[:purchase_order]
       unless @purchase_order.confirm
         if @purchase_order.can_be_edited?
           render :action => "edit"
@@ -154,5 +161,4 @@ class PurchaseOrdersController < ApplicationController
       error_access_page(412)
     end
   end
-  
 end

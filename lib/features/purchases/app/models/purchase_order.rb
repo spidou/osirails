@@ -6,6 +6,8 @@ class PurchaseOrder < ActiveRecord::Base
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
   
+  belongs_to :purchase_document, :class_name => "PurchaseDocument"
+  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -54,6 +56,7 @@ class PurchaseOrder < ActiveRecord::Base
     
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
   after_save  :destroy_request_order_supplies_deselected
+  after_save  :save_quotation_document, :if => :confirmed?
   
   def destroy_request_order_supplies_deselected
     purchase_order_supplies.each do |e|
@@ -293,19 +296,17 @@ class PurchaseOrder < ActiveRecord::Base
     total_price
   end
   
-  def lead_time
-    lead_time = 0
-    for purchase_order_supply in purchase_order_supplies
-      supplier_supply = purchase_order_supply.get_supplier_supply
-      if supplier_supply.lead_time
-        supplier_supply_lead_time = purchase_order_supply.supply.supplier_supplies.find_by_supplier_id(supplier_id).lead_time || 0
-        if lead_time < supplier_supply_lead_time
-          lead_time = supplier_supply_lead_time
-        end
-      end
-    end
-    lead_time
-  end
+#  def lead_time
+#    lead_time = 0
+#    for purchase_order_supply in purchase_order_supplies
+#      supplier_supply = purchase_order_supply.get_supplier_supply
+#      supplier_supply_lead_time = supplier_supply.lead_time || 0
+#      if lead_time < supplier_supply_lead_time
+#        lead_time = supplier_supply_lead_time
+#      end
+#    end
+#    lead_time
+#  end
   
   def get_associated_purchase_requests
     purchase_requests = []
@@ -348,5 +349,12 @@ class PurchaseOrder < ActiveRecord::Base
     (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel? and !cancelled?
   end
   
+  def quotation_document_attributes=(quotation_document_attributes)
+    self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
+  end
+  
+  def save_quotation_document
+    quotation_document.save
+  end
 end
 

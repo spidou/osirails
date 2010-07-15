@@ -8,11 +8,6 @@ class Parcel < ActiveRecord::Base
   
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   
-  has_attached_file :delivery_document, 
-                    :styles => { :thumb => "120x120" },
-                    :path   => ":rails_root/assets/purchases/delivery_document/:id.:style",
-                    :url    => "/parcels/:id.:extension"
-  
   STATUS_PROCESSING_BY_SUPPLIER = nil || ""
   STATUS_SHIPPED = "shipped"
   STATUS_RECEIVED_BY_FORWARDER = "received_by_forwarder"
@@ -34,8 +29,6 @@ class Parcel < ActiveRecord::Base
   validates_date :received_by_forwarder_at, :on_or_after => :shipped_at, :if => :received_by_forwarder?
   validates_date :received_at, :on_or_after => :received_by_forwarder_at, :if => :received?
   
-  attr_accessor :delivery_document
-  
   validates_presence_of :conveyance , :if => :shipped?
   validates_presence_of :cancelled_comment, :if => :cancelled_at
   
@@ -50,6 +43,7 @@ class Parcel < ActiveRecord::Base
   
   before_validation_on_create :update_reference
   after_create :delete_unselected_parcel_items
+  after_save :save_delivery_document, :if => :received?
   
   def validates_lenght_of_parcel_item_selected
     result = 0;
@@ -200,9 +194,11 @@ class Parcel < ActiveRecord::Base
   end
   
   def delivery_document_attributes=(delivery_document_attributes)
-    delivery_document_attributes.each do |attributes|
-      purchase_document = PurchaseDocument.new(attributes)
-    end
+    self.delivery_document = PurchaseDocument.new(delivery_document_attributes.first)
+  end
+  
+  def save_delivery_document
+    delivery_document.save
   end
 end
 
