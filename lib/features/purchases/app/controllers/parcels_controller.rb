@@ -46,6 +46,7 @@ class ParcelsController < ApplicationController
   
   def process_by_supplier
     if (@parcel = Parcel.find(params[:parcel_id])).can_be_processing_by_supplier?
+      @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
       @parcel.attributes = params[:parcel]
       if @parcel.process_by_supplier
         flash[:notice] = "Le status du colis est bien passé à \"En traitement par le fournisseur\"."
@@ -151,6 +152,6 @@ class ParcelsController < ApplicationController
     render :partial => 'parcels/receive_forms' if params[:status] == Parcel::STATUS_RECEIVED
     render :partial => 'parcels/ship_forms' if params[:status] == Parcel::STATUS_SHIPPED
     render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
-    render :text => '' if params[:status] == ""
+    render :partial => 'parcels/process_by_supplier_forms' if params[:status] == ""
   end
 end

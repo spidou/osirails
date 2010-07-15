@@ -31,20 +31,36 @@ class Parcel < ActiveRecord::Base
   
   validates_presence_of :conveyance , :if => :shipped?
   validates_presence_of :cancelled_comment, :if => :cancelled_at
-  
-#  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
-#  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
-#  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
-#  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
-#  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
-  
+
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?  
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
+  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
+    
   validates_associated :parcel_items
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference
-  after_create :delete_unselected_parcel_items
+
+  after_create  :delete_unselected_parcel_items
+  
+  after_save    :deduct_purchase_order_status
   after_save :save_delivery_document, :if => :received?
   
+  def get_purchase_order
+    self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first  
+  end
+  
+  def deduct_purchase_order_status
+    purchase_order = get_purchase_order
+    if purchase_order.verify_all_purchase_order_supplies_are_treated
+      purchase_order.complete unless purchase_order.was_completed?
+    else
+      purchase_order.process unless purchase_order.was_processing? 
+    end
+  end
+    
   def validates_lenght_of_parcel_item_selected
     result = 0;
     for parcel_item in parcel_items
@@ -112,7 +128,7 @@ class Parcel < ActiveRecord::Base
   end
   
   def can_be_processing_by_supplier?
-    new_record? || (was_cancelled? && can_be_processing_with_associated_parcel_items?)
+    new_record?
   end
 
   def can_be_shipped?

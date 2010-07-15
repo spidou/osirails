@@ -1,8 +1,9 @@
+<% parcel = receive_by_forwarder_forms%>
 <p>
   <%= label_tag 'Reçu par le transitaire le :' %>
-  <%= text_field_tag 'parcel[received_by_forwarder_at]' %>
+  <%= text_field_tag 'parcel[received_by_forwarder_at]', (parcel.received_by_forwarder_at if parcel) %>
 </p>
 <p>
   <%= label_tag 'En attente de récupération :' %>
-  <%= check_box_tag 'parcel[awaiting_pick_up]' %>
+  <%= check_box_tag 'parcel[awaiting_pick_up]', (parcel.awaiting_pick_up if parcel) %>
 </p>

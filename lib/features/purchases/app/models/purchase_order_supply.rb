@@ -29,6 +29,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
 
   validates_associated :request_order_supplies
+
   
   def remaining_quantity_for_parcel
     result = 0
@@ -38,24 +39,33 @@ class PurchaseOrderSupply < ActiveRecord::Base
     quantity - result
   end
   
+  def verify_all_parcel_items_are_received?
+    for parcel_item in parcel_items
+      return false unless parcel_item.parcel.cancelled? || parcel_item.parcel.received?
+    end
+    return true
+  end
+  
+  def count_quantity_in_parcel_items
+    treated_items = 0
+    for parcel_item in parcel_items
+      treated_items += parcel_item.quantity.to_i unless parcel_item.parcel.cancelled? 
+    end
+    treated_items
+  end
+  
   def untreated?
     parcel_items.empty?
   end
 
   def processing?
-    treated_items = 0
-    for parcel_item in parcel_items
-      treated_items += parcel_item.quantity.to_i
-    end
-    if parcel_items.any?
-      treated_items == quantity ? false : true
-    else
-      return false
-    end 
+    return true if parcel_items.any? &&  (count_quantity_in_parcel_items != quantity || !verify_all_parcel_items_are_received?)
+    return false
   end
   
   def treated?
-    !processing?
+    return true if parcel_items.any? && count_quantity_in_parcel_items == quantity && verify_all_parcel_items_are_received?
+    return false
   end
   
   def cancelled?

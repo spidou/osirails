@@ -12,7 +12,7 @@
             <% form_for [purchase_order, parcel], :url => purchase_order_parcel_alter_status_path(purchase_order, parcel) do |f| %>
               <% options = parcel_possible_actions(parcel) %>
               <ul class="parcel_choose_status">
-                <li><%= f.label :status, "D&eacute;finir l'état &agrave;" %></li>
+                <li ><%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %></li>
                 <li><%= f.select(:status, options)%></li>
                 <li><%= f.submit "Valider" %></li>
               </ul>

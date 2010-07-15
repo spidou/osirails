@@ -1,12 +1,13 @@
+<% parcel = ship_forms%>
 <p>
   <%= label_tag 'Exp&eacute;di&eacute; le :' %>
-  <%= text_field_tag 'parcel[shipped_at]' %>
+  <%= text_field_tag 'parcel[shipped_at]', (parcel.shipped_at if parcel) %>
 </p>
 <p>
   <%= label_tag 'Par :' %>
-  <%= text_field_tag 'parcel[conveyance]' %>
+  <%= text_field_tag 'parcel[conveyance]', (parcel.conveyance if parcel) %>
 </p>
 <p>
   <%= label_tag 'Date de livraison prévue du colis :' %>
-  <%= text_field_tag('parcel[previsional_delivery_date]') %>
+  <%= text_field_tag('parcel[previsional_delivery_date]', (parcel.previsional_delivery_date if parcel)) %>
 </p>

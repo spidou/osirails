@@ -58,6 +58,22 @@ class PurchaseOrder < ActiveRecord::Base
   after_save  :destroy_request_order_supplies_deselected
   after_save  :save_quotation_document, :if => :confirmed?
   
+  def not_cancelled_purchase_order_supplies
+    tab_not_cancelled_purchase_order_supplies = []
+    for purchase_order_supply in purchase_order_supplies
+      tab_not_cancelled_purchase_order_supplies.push purchase_order_supply unless purchase_order_supply.cancelled?
+    end 
+    tab_not_cancelled_purchase_order_supplies
+  end
+  
+  def verify_all_purchase_order_supplies_are_treated
+    return false if not_cancelled_purchase_order_supplies.empty?
+    for purchase_order_supply in not_cancelled_purchase_order_supplies
+      return false unless purchase_order_supply.treated?
+    end
+    return true
+  end
+  
   def destroy_request_order_supplies_deselected
     purchase_order_supplies.each do |e|
       if e.purchase_request_supplies_deselected_ids
