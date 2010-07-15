@@ -14,7 +14,7 @@
   <% form_for [@purchase_order, @parcel], :url => { :controller => "parcels", :action => "receive" }, :html => { :multipart => true } do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
-      <%= render :partial => "parcels/receive_forms", :object => f %>
+      <%= render :partial => "parcels/receive_forms", :object => @parcel %>
     </div>
     <br>
     <%= f.form_buttons %>

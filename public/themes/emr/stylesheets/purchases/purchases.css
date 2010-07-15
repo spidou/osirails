@@ -47,7 +47,7 @@ table tfoot tr.footer{
   float: right;
   margin: 3px 5px 3px -5px;
   width: auto;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .parcel .parcel_summary .parcel_choose_status li {
@@ -56,7 +56,7 @@ table tfoot tr.footer{
 }
 
 .parcel .parcel_summary .parcel_choose_status_label {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .parcel .parcel_summary .parcel_conveyance {

@@ -1,5 +1,5 @@
-<% f = process_by_supplier_forms %>
+<% parcel = process_by_supplier_forms%>
 <p>
-  <%= f.label :processing_by_supplier_since %>
-  <%= f.text_field :processing_by_supplier_since %>
+  <%= label_tag "En traitement par le fournisseur depuis le: " %>
+  <%= text_field_tag 'parcel[processing_by_supplier_since]', (parcel.processing_by_supplier_since if parcel)%>
 </p>

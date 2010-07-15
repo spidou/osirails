@@ -47,6 +47,7 @@ class ParcelsController < ApplicationController
   
   def process_by_supplier
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_processing_by_supplier?
       @parcel.attributes = params[:parcel]
       if @parcel.process_by_supplier
@@ -144,7 +145,7 @@ class ParcelsController < ApplicationController
     render :partial => 'parcels/receive_forms' if params[:status] == Parcel::STATUS_RECEIVED
     render :partial => 'parcels/ship_forms' if params[:status] == Parcel::STATUS_SHIPPED
     render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
-    render :text => '' if params[:status] == ""
+    render :partial => 'parcels/process_by_supplier_forms' if params[:status] == ""
   end
   
   def cancel

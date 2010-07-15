@@ -9,12 +9,14 @@
             <%= f.select(:status, options)%>
       </div>
       <div id='parcel_status_form'>
-        <% if parcel.shipped? %>
-          <%= render :partial => 'parcels/ship_forms', :object => f%>
+        <% if parcel.processing_by_supplier? || !parcel.status%>
+          <%= render :partial => 'parcels/process_by_supplier_forms', :object => parcel%>
+        <% elsif parcel.shipped? %>
+          <%= render :partial => 'parcels/ship_forms', :object => parcel%>
         <% elsif parcel.received_by_forwarder? %>
-          <%= render :partial => 'parcels/receive_by_forwarder_forms', :object => f%>
+          <%= render :partial => 'parcels/receive_by_forwarder_forms', :object => parcel%>
         <% elsif parcel.received? %>
-          <%= render :partial => 'parcels/receive_forms', :object => f%>
+          <%= render :partial => 'parcels/receive_forms', :object => parcel%>
         <% end %>
       </div>
       <h2>Liste des fournitures</h2>

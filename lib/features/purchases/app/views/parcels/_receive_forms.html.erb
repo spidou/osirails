@@ -1,11 +1,11 @@
-<% f = receive_forms %>
-<%= render :partial => "parcels/ship_forms" %>
-<%= render :partial => "parcels/receive_by_forwarder_forms"%>
+<% parcel = receive_forms%>
+<%= render :partial => "parcels/ship_forms", :object => parcel %>
+<%= render :partial => "parcels/receive_by_forwarder_forms", :object => parcel%>
 <p>
-  <%= f.label :received_at %>
-  <%= f.text_field :received_at %>
+  <%= label_tag "Reçu le :" %>
+  <%= text_field_tag "parcel[received_at]", (parcel.received_at if parcel) %>
 </p>
-<% fields_for "parcel[delivery_document_attributes][]", purchase_document = PurchaseDocument.new do |field| %>
+<% fields_for "parcel[delivery_document_attributes][]", PurchaseDocument.new do |field| %>
 <p>
   <%= field.label :delivery_document %>
   <%= field.file_field :delivery_document %>
