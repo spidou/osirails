@@ -27,7 +27,7 @@ module ParcelsHelper
       when Parcel::STATUS_RECEIVED
         parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
       when Parcel::STATUS_CANCELLED
-        parcel.cancelled_at ? parcel.canncelled_at.humanize : "Aucune date d'annulation"
+        parcel.cancelled_at ? parcel.cancelled_at.humanize : "Aucune date d'annulation"
     end
   end
   
@@ -63,6 +63,14 @@ module ParcelsHelper
     options
   end
   
+  def parcel_all_actions_without_cancel(parcel)
+    options = []
+    options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]
+    options << ["Expédié", Parcel::STATUS_SHIPPED ]
+    options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ] 
+    options << ["Reçu", Parcel::STATUS_RECEIVED ]
+    options
+  end
   def display_parcel_process_by_supplier(parcel, message = nil)
     #TODO
   end

@@ -48,8 +48,8 @@ class PurchaseOrder < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
   validates_associated :purchase_order_supplies, :supplier_supplies
-  
-  before_validation :build_supplier_supplies, :build_associed_request_order_supplies
+
+  before_validation :build_supplier_supplies, :build_associated_request_order_supplies
   before_validation :update_reference_only_on_confirm
     
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
@@ -76,7 +76,7 @@ class PurchaseOrder < ActiveRecord::Base
     errors.add(:parcel_items, "Veuillez garder au moins une fourniture") if result == purchase_order_supplies.size
   end
   
-  def build_associed_request_order_supplies
+  def build_associated_request_order_supplies
     purchase_order_supplies.each do |e|
       if e.purchase_request_supplies_ids
         e.purchase_request_supplies_ids.split(';').each do |s|
@@ -318,18 +318,18 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def build_with_purchase_request_supplies(list_of_supplies)
-    list_of_purchase_request_supplies = []
+    self.purchase_order_supplies = []
     for purchase_request_supply in list_of_supplies
-      tmp = PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id,
+      purchase_request_supply_tmp = PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id,
       :quantity => purchase_request_supply.expected_quantity,
       :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes,
       :fob_unit_price => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
-      tmp.unconfirmed_purchase_request_supplies.each do |e|
-        tmp.request_order_supplies.build(:purchase_request_supply_id => e.id)
+      purchase_request_supply_tmp.unconfirmed_purchase_request_supplies.each do |e|
+        purchase_request_supply_tmp.request_order_supplies.build(:purchase_request_supply_id => e.id)
       end
-      list_of_purchase_request_supplies << tmp
+      self.purchase_order_supplies.push purchase_request_supply_tmp
     end
-    self.purchase_order_supplies = list_of_purchase_request_supplies
+    self.purchase_order_supplies
   end
   
   def is_remaining_quantity_for_parcel?

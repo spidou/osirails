@@ -2,7 +2,21 @@
 <% if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any? %>
   <% form_for([purchase_order, parcel], :html => {:multipart => true}) do |f| %>
     <%= f.error_messages %>
- 
+      <h2>Informations</h2>
+      <div>
+            <% options = parcel_all_actions_without_cancel(parcel) %>
+            <%= f.label :status, "D&eacute;finir l'état &agrave;" %>
+            <%= f.select(:status, options)%>
+      </div>
+      <div id='parcel_status_form'>
+        <% if parcel.shipped? %>
+          <%= render :partial => 'parcels/ship_forms', :object => f%>
+        <% elsif parcel.received_by_forwarder? %>
+          <%= render :partial => 'parcels/receive_by_forwarder_forms', :object => f%>
+        <% elsif parcel.received? %>
+          <%= render :partial => 'parcels/receive_forms', :object => f%>
+        <% end %>
+      </div>
       <h2>Liste des fournitures</h2>
       <div>
          <%= render :partial => 'parcel_items/begin_table'%>
@@ -11,6 +25,7 @@
       </div>
     </div>
     <%= f.form_buttons %>
+    <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => get_parcel_status_partial_url(), :with => :status %>
   <% end %><!--end form -->
   <br>
 <% else %>

@@ -29,7 +29,7 @@
       <% if f.form_view? %>
          <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')) this.up('.resource').remove()") %>
       <% else %>
-        <%= purchase_request_supply.check_request_supply_status %>
+        <%= check_request_supply_status(purchase_request_supply) %>
       <% end %>
     </td>
     <% unless f.form_view? %>

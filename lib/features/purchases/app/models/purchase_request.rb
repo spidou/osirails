@@ -9,12 +9,6 @@ class PurchaseRequest < ActiveRecord::Base
   belongs_to :employee
   belongs_to :service
   
-  STATUS_UNTREATED = "untreated"
-  STATUS_DURING_TREATMENT = "during treatment"
-  STATUS_TREATED = "treated"
-  
-  named_scope :untreated, :conditions => [ 'status = ?', STATUS_UNTREATED ]
-  
   cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:service]                = "Service concerné :"

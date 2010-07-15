@@ -11,7 +11,11 @@ ActionController::Routing::Routes.add_routes do |map|
   map.get_supply 'get_supply',  :controller => 'purchase_orders', 
                                     :action => 'get_supply', 
                                     :method => :get
-                                      
+                                    
+  map.get_parcel_status_partial 'get_parcel_status_partial',  :controller => 'parcels', 
+                                    :action => 'get_parcel_status_partial', 
+                                    :method => :get
+                                                                        
   map.get_request_supply 'get_request_supply',  :controller => 'purchase_requests', 
                                     :action => 'get_request_supply', 
                                     :method => :get
@@ -43,11 +47,10 @@ ActionController::Routing::Routes.add_routes do |map|
       parcel.receive 'receive', :controller => 'parcels', :action => "receive"
       parcel.cancel 'cancel', :controller => 'parcels', :action => "cancel"
     end
-  end
-  
-  map.resources :purchase_order_supplies do |order_supply|
-    order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
-    order_supply.cancel_form 'cancel_form', :controller => 'purchase_order_supplies', :action => 'cancel_form'
+    order.resources :purchase_order_supplies do |purchase_order_supply|
+      purchase_order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
+      purchase_order_supply.cancel_form 'cancel_form', :controller => 'purchase_order_supplies', :action => 'cancel_form'
+    end
   end
   
   map.pending_purchase_orders 'pending_purchase_orders', :controller => 'pending_purchase_orders', :action => 'index'

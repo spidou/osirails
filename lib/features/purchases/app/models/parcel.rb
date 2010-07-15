@@ -8,7 +8,12 @@ class Parcel < ActiveRecord::Base
   
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   
-  STATUS_PROCESSING_BY_SUPPLIER = nil
+  has_attached_file :delivery_document, 
+                    :styles => { :thumb => "120x120" },
+                    :path   => ":rails_root/assets/purchases/delivery_document/:id.:style",
+                    :url    => "/parcels/:id.:extension"
+  
+  STATUS_PROCESSING_BY_SUPPLIER = nil || ""
   STATUS_SHIPPED = "shipped"
   STATUS_RECEIVED_BY_FORWARDER = "received_by_forwarder"
   STATUS_RECEIVED = "received"
@@ -25,17 +30,20 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:delivery_document]                       = "Bon de livraison :"
   @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
-  validates_presence_of :conveyance , :if => :status
+  validates_date :shipped_at, :on_or_after => :processing_by_supplier_since, :if => :shipped?
+  validates_date :received_by_forwarder_at, :on_or_after => :shipped_at, :if => :received_by_forwarder?
+  validates_date :received_at, :on_or_after => :received_by_forwarder_at, :if => :received?
   
-  validates_date :previsional_delivery_date, :on_or_after  => Date.today, :unless => :new_record? #et si la saisie du colis se fait après la réception?
-  validates_date :shipped_at, :on_or_after => :processing_by_supplier_since, :if => :processing_by_supplier_since_was
-  validates_date :received_by_forwarder_at, :on_or_after => :shipped_at, :if => :shipped_at_was
-  validates_date :received_at, :on_or_after => :received_by_forwarder_at, :if => :received_by_forwarder_at_was
+  attr_accessor :delivery_document
   
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
-  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
+  validates_presence_of :conveyance , :if => :shipped?
+  validates_presence_of :cancelled_comment, :if => :cancelled_at
+  
+#  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
+#  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+#  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
+#  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
+#  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?
   
   validates_associated :parcel_items
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
@@ -102,8 +110,15 @@ class Parcel < ActiveRecord::Base
     status_was == STATUS_CANCELLED
   end
   
+  def can_be_processing_with_associated_parcel_items?
+    for parcel_item in parcel_items
+      return false if parcel_item.quantity > parcel_item.purchase_order_supply.remaining_quantity_for_parcel
+    end
+    return true
+  end
+  
   def can_be_processing_by_supplier?
-    new_record? or was_cancelled?
+    new_record? || (was_cancelled? && can_be_processing_with_associated_parcel_items?)
   end
 
   def can_be_shipped?
@@ -160,6 +175,7 @@ class Parcel < ActiveRecord::Base
   
   def cancel
     if can_be_cancelled?
+      self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
     else
@@ -181,6 +197,12 @@ class Parcel < ActiveRecord::Base
       end
     end
     parcel_items
+  end
+  
+  def delivery_document_attributes=(delivery_document_attributes)
+    delivery_document_attributes.each do |attributes|
+      purchase_document = PurchaseDocument.new(attributes)
+    end
   end
 end
 

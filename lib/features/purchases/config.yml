@@ -28,6 +28,9 @@ menus:
           parcels:
             title: "Permet la gestion des colis"
             hidden: true
+          purchase_order_supplies:
+            title: "Permet la gestion des fournitures de l'ordre"
+            hidden: true
       purchase_requests:
         title: "Gestion des demandes d'achats"
         description: "Permet la gestion des demandes d'achats"

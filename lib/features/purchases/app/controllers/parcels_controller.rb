@@ -30,6 +30,7 @@ class ParcelsController < ApplicationController
     elsif params[:parcel][:status] == Parcel::STATUS_RECEIVED
       redirect_to purchase_order_parcel_receive_form_path(@purchase_order, @parcel)
     elsif params[:parcel][:status] == Parcel::STATUS_CANCELLED
+      @parcel.cancelled_by = current_user.id
       redirect_to purchase_order_parcel_cancel_form_path(@purchase_order, @parcel)
     else
       redirect_to purchase_order_path(@purchase_order)
@@ -137,6 +138,13 @@ class ParcelsController < ApplicationController
     unless @parcel.can_be_cancelled?
       error_access_page(412)
     end
+  end
+  
+  def get_parcel_status_partial
+    render :partial => 'parcels/receive_forms' if params[:status] == Parcel::STATUS_RECEIVED
+    render :partial => 'parcels/ship_forms' if params[:status] == Parcel::STATUS_SHIPPED
+    render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
+    render :text => '' if params[:status] == ""
   end
   
   def cancel

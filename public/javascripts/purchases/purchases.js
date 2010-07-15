@@ -58,24 +58,6 @@ function refresh_lign(parent)
   update_all_total();
 }
 
-function add_quantity_in_total(quantity, parent)
-{
-    var old_quantity = parseFloat(parent.down('.quantity').value) || 0.0;
-    
-    old_quantity += parseFloat(quantity);
-    parent.down('.quantity').value = old_quantity;
-    parent.down('.quantity').innerHTML = old_quantity;    
-}
-
-function sub_quantity_in_total(quantity, parent)
-{
-    var old_quantity = parseFloat(parent.down('.quantity').value) || 0.0;
-    
-    old_quantity -= parseFloat(quantity);
-    parent.down('.quantity').value = old_quantity;
-    parent.down('.quantity').innerHTML = old_quantity;    
-}
-
 function update_purchase_request_supplies_ids(element, parent)
 {
     var quantity = element.readAttribute('data_quantity');
@@ -132,7 +114,9 @@ function disabled_or_enabled_quantity_text_field(element)
 
 function mark_resource_for_destroy(element) {
   element.down('.should_destroy').value = 1;
+  element.down('.sum').innerHTML = 0;
   element.hide();
+  update_all_total()
 }
 
 
