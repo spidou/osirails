@@ -4,6 +4,17 @@ module PurchaseOrdersHelper
     render :partial => 'purchase_orders/contextual_menu', :object => purchase_order
   end
   
+  def display_purchase_order_complete_button(purchase_order, message = nil)
+    return unless purchase_order.can_be_completed?
+    text = "Terminer l'ordre d'achats"
+    message ||= " #{text}"
+    link_to( image_tag( "complete_24x24.png",
+                        :alt => text,
+                        :title => text ) + message,
+                         purchase_order_complete_form_path(purchase_order),
+                        :confirm => "Êtes-vous sûr ?\nVous ne pourrez plus apporter de modification à cet ordre d'achats par la suite.", :method => :put)
+  end
+  
   def display_purchase_order_confirm_button(purchase_order, message = nil)
     return unless purchase_order.can_be_confirmed?
     text = "Confirmer l'ordre d'achats"
@@ -114,7 +125,7 @@ module PurchaseOrdersHelper
       "Brouillon"
     elsif purchase_order.was_confirmed?
       "Confirmé"
-    elsif purchase_order.was_processing?
+    elsif purchase_order.was_processing_by_supplier?
       "En traitement"
     elsif purchase_order.was_completed?
       "Complété"
@@ -129,8 +140,8 @@ module PurchaseOrdersHelper
       purchase_order.created_at.humanize
     elsif purchase_order.was_confirmed?
       purchase_order.confirmed_at.humanize
-    elsif purchase_order.was_processing?
-      purchase_order.processing_since.humanize
+    elsif purchase_order.was_processing_by_supplier?
+      purchase_order.processing_by_supplier_since.humanize
     elsif purchase_order.was_completed?
       purchase_order.completed_at.humanize
     end
@@ -170,6 +181,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_buttons(purchase_order)
     html = []
+    html << display_purchase_order_complete_button(purchase_order, '')
     html << display_purchase_order_confirm_button(purchase_order, '')
     html << display_purchase_order_show_button(purchase_order, '')
     html << display_purchase_order_edit_button(purchase_order, '')

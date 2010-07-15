@@ -1,0 +1,60 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <h2>Informations</h2>
+  <div class="presentation_in_columns">
+    <div>
+      <p>
+        <label>Référence :</label>
+        <strong><%= @parcel.reference %></strong>
+      </p>
+      <p>
+        <label>Ordre d'achats associé :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>Statut en cours :</label>
+        <strong></strong>
+      </p>
+    </div>
+    <div>
+      <p>
+        <label>Date de livraison prévu le :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>En traitement depuis le :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>Expédié depuis le :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>Reçu par le transitaire le :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>Reçu le :</label>
+        <strong></strong>
+      </p>
+      <p>
+        <label>Annulé le :</label>
+        <strong></strong>
+      </p>
+    </div>
+    <div>
+      <p>
+        <label>Par :</label>
+        <strong></strong>
+      </p>
+    </div>
+  </div>
+  <h2>Contenu du colis</h2>
+  <%= render :partial => "parcels/array_head" %>
+  <%= render :partial => "parcel_items/parcel_item", :collection => @parcel.parcel_items %>
+  <%= render :partial => "parcels/array_foot" %>
+</div>

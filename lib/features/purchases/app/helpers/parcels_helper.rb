@@ -1,7 +1,7 @@
 module ParcelsHelper
   def display_parcel_current_status(parcel)
     case parcel.status
-      when Parcel::STATUS_PROCESSING_BY_SUPPLIER
+    when Parcel::STATUS_PROCESSING_BY_SUPPLIER
         'En traitement'
       when Parcel::STATUS_SHIPPED
         'Envoyé'
@@ -54,7 +54,7 @@ module ParcelsHelper
   
   def parcel_possible_actions(parcel)
     options = []
-    (options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]) if parcel.can_be_processing_by_supplier?
+    (options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]) if parcel.can_be_processed_by_supplier?
     (options << ["Expédié", Parcel::STATUS_SHIPPED ]) if parcel.can_be_shipped?
     (options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ]) if parcel.can_be_received_by_forwarder?
     (options << ["Reçu", Parcel::STATUS_RECEIVED ]) if parcel.can_be_received?

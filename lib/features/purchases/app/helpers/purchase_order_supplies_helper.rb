@@ -55,7 +55,7 @@ module PurchaseOrderSuppliesHelper
   def display_purchase_order_supply_status(purchase_order_supply)
     if purchase_order_supply.untreated?
       "Non traité"
-    elsif purchase_order_supply.processing?
+    elsif purchase_order_supply.processing_by_supplier?
       "En traitement"
     elsif purchase_order_supply.treated?
       "traité"
@@ -67,7 +67,7 @@ module PurchaseOrderSuppliesHelper
   def display_purchase_order_supply_current_status_date(purchase_order_supply)
     if purchase_order_supply.untreated?
       purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
-    elsif purchase_order_supply.processing?
+    elsif purchase_order_supply.processing_by_supplier?
       purchase_order_supply.parcel_items.first.created_at ? purchase_order_supply.parcel_items.first.created_at.humanize : "Aucune date de début de traitement"
   elsif purchase_order_supply.treated?
       purchase_order_supply.parcel_items.last.created_at ? purchase_order_supply.parcel_items.last.created_at.humanize : ""

@@ -58,7 +58,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     parcel_items.empty?
   end
 
-  def processing?
+  def processing_by_supplier?
     return true if parcel_items.any? &&  (count_quantity_in_parcel_items != quantity || !verify_all_parcel_items_are_received?)
     return false
   end

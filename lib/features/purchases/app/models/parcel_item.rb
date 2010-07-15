@@ -20,7 +20,7 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def treat
-    if can_be_processing_by_supplier?
+    if can_be_processed_by_supplier?
       self.save
     else
       false
