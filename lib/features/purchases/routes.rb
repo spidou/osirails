@@ -6,7 +6,7 @@ ActionController::Routing::Routes.add_routes do |map|
     request.cancel_form 'cancel_form', :action => "cancel_form", :controller => "purchase_requests" 
   end
   
-  map.resources :parcel_item do |parcel_item|
+  map.resources :parcel_items do |parcel_item|
     parcel_item.cancel 'cancel', :controller => 'parcel_items', :action => 'cancel'
     parcel_item.cancel_form 'cancel_form', :controller => 'parcel_items', :action => 'cancel_form'
     parcel_item.report 'report', :controller => 'parcel_items', :action => 'report'

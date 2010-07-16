@@ -93,7 +93,7 @@ class Parcel < ActiveRecord::Base
     for parcel_item in parcel_items
       counter += 1 if parcel_item.cancelled?
     end
-    return true if counter == parcel_items.size
+    return true if counter == parcel_items.count
     status == STATUS_CANCELLED
   end
 
@@ -114,6 +114,11 @@ class Parcel < ActiveRecord::Base
   end
 
   def was_cancelled?
+    counter = 0
+    for parcel_item in parcel_items
+      counter += 1 if parcel_item.was_cancelled?
+    end
+    return true if counter == parcel_items.count
     status_was == STATUS_CANCELLED
   end
   

@@ -12,7 +12,7 @@
     <div class="presentation_in_columns">
       <p>
         <% fields_for "purchase_order[quotation_document_attributes][]", PurchaseDocument.new do |f| %>
-          <%= f.label :purchase_document %>
+          <%= f.label :purchase_document, "Veuillez joindre un devis :" %>
           <%= f.file_field :purchase_document %>
         <% end %>
       </p>

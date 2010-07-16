@@ -3,7 +3,7 @@
     <td colspan= 9 class="parcel_summary">
       <p>
         <span class="parcel_label">R&eacute;f&eacute;rence :</span>
-        <span class="parcel_reference"> <%= parcel.reference %></span>
+        <span class="parcel_reference"> <%= link_to(parcel.reference, purchase_order_parcel_path(purchase_order, parcel)) %></span>
         <span class="parcel_label">&Eacute;tat :</span>
         <span class="parcel_status"> <%= display_parcel_current_status(parcel) %></span>
         <span class="parcel_label">Depuis le : </span>

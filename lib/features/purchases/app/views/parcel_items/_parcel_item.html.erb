@@ -1,4 +1,4 @@
-<tr>
+<tr <%= "class=\"disabled\"" if parcel_item.was_cancelled? %>
   <td><%= parcel_item.purchase_order_supply.supply.reference %></td>
   <td><%= parcel_item.purchase_order_supply.supply.designation %></td>
   <td><%= parcel_item.purchase_order_supply.supplier_reference %></td>
