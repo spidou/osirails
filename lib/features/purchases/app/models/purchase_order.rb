@@ -144,7 +144,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def update_reference_only_on_confirm
-    update_reference if (confirmed_at and !confirmed_at_was)
+    update_reference if (confirmed_on and !confirmed_on_was)
   end
   
   def purchase_order_supply_attributes=(purchase_order_supply_attributes)
@@ -212,7 +212,7 @@ class PurchaseOrder < ActiveRecord::Base
     was_draft? and !was_cancelled?
   end
   
-  def can_be_processed?
+  def can_be_processed_by_supplier?
     was_confirmed?
   end
   
@@ -243,7 +243,7 @@ class PurchaseOrder < ActiveRecord::Base
 
   def confirm
     if can_be_confirmed? && can_be_confirmed_with_purchase_request_supplies_associated? 
-      self.confirmed_at = Time.now
+      self.confirmed_on = Time.now
       self.status = STATUS_CONFIRMED
       self.save
     else
@@ -264,7 +264,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def complete
     if can_be_completed?
-      self.completed_at = Time.now
+      self.completed_on = Time.now
       self.status = STATUS_COMPLETED
       self.save
     else
@@ -274,7 +274,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def cancel
     if can_be_cancelled?
-      self.cancelled_at = Time.now
+      self.cancelled_on = Time.now
       self.status = STATUS_CANCELLED
       self.save
     else

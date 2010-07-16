@@ -26,10 +26,13 @@ menus:
             title: "Ordres d'achats terminés"
             position: 2
           parcels:
-            title: "Permet la gestion des colis"
+            title: "Colis"
+            hidden: true
+          parcel_items:
+            title: "Contenu du colis"
             hidden: true
           purchase_order_supplies:
-            title: "Permet la gestion des fournitures de l'ordre"
+            title: "Fournitures commandées"
             hidden: true
       purchase_requests:
         title: "Gestion des demandes d'achats"

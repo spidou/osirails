@@ -1,5 +1,7 @@
 class ParcelItem < ActiveRecord::Base
 
+  has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
+
   belongs_to :parcel
   belongs_to :purchase_order_supply
   
@@ -11,40 +13,28 @@ class ParcelItem < ActiveRecord::Base
   attr_accessor :selected 
   attr_accessor :tmp_selected
   
+  after_save :automatically_cancel_parcel_if_empty, :if => :cancelled_at_was
+  
   def validates_quantity_for_parcel_item
     errors.add(:quantity, "quantity not valid")  if self.selected.to_i == 1 && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
   
   def can_be_cancelled?
-    (untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing_by_supplier) or !parcel)) or (processing_by_supplier? and purchase_order.was_confirmed? and parcel.was_processing_by_supplier?)
+    !was_cancelled? and !new_record? and !parcel.was_received?
+    #(untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing_by_supplier) or !parcel)) or (processing_by_supplier? and purchase_order.was_confirmed? and parcel.was_processing_by_supplier?)
   end
   
-  def treat
-    if can_be_processed_by_supplier?
-      self.save
-    else
-      false
-    end
-  end
-  
-  def send_back
-    if can_be_sent_back?
-      self.save
-    else
-      false
-    end
-  end
-  
-  def reship
-    if can_be_reshipped?
-      self.save
-    else
-      false
-    end
+  def can_be_reported?
+    #TODO
+    return true if parcel.received? and !purchase_order_supply.purchase_order.was_received?
   end
   
   def cancelled?
     cancelled_at
+  end
+  
+  def was_cancelled?
+    cancelled_at_was
   end
   
   def cancel(attributes)
@@ -57,7 +47,40 @@ class ParcelItem < ActiveRecord::Base
     end
   end
   
+  def untreated?
+    purchase_order_supply.untreated?
+  end
+  
   def get_parcel_item_total
     quantity.to_f * purchase_order_supply.get_unit_price_including_tax.to_f
+  end
+  
+  def cancel
+    if can_be_cancelled?
+      self.cancelled_at = Time.now
+      self.save
+    else
+      false
+    end
+  end
+  
+  def is_the_last_not_cancelled?
+    not_cancelled_parcel_items
+    for parcel_item in parcel.parcel_items
+      if !parcel_item.was_cancelled?
+        not_cancelled_parcel_items.push parcel_item
+      end
+    end
+    if not_cancelled_parcel_items.count == 1
+      true
+    else
+      false
+    end
+  end
+  
+  def automatically_cancel_parcel_if_empty
+    if is_the_last_not_cancelled?
+      parcel.cancel
+    end
   end
 end

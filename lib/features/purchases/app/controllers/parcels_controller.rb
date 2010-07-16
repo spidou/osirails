@@ -79,7 +79,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_shipped?
       @parcel.attributes = params[:parcel]
-      if  @parcel.ship
+      if @parcel.ship
         flash[:notice] = "Le status du colis est bien passé à \"Expédié\"."
         redirect_to @purchase_order
       else
@@ -103,7 +103,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received_by_forwarder?
       @parcel.attributes = params[:parcel]
-      if  @parcel.receive_by_forwarder
+      if @parcel.receive_by_forwarder
         flash[:notice] = "Le status du colis est bien passé à \"Reçu par le transitaire\"."
         redirect_to @purchase_order
       else
@@ -127,7 +127,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_received?
       @parcel.attributes = params[:parcel]
-      if  @parcel.receive
+      if @parcel.receive
         flash[:notice] = "Le status du colis est bien passé à \"Reçu\"."
         redirect_to @purchase_order
       else
@@ -139,7 +139,8 @@ class ParcelsController < ApplicationController
   end
   
   def cancel_form
-    unless (@parcel = Parcel.find(params[:parcel_id])).can_be_cancelled?
+    @parcel = Parcel.find(params[:parcel_id])
+    unless @parcel.can_be_cancelled?
       error_access_page(412)
     end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -151,7 +152,7 @@ class ParcelsController < ApplicationController
     if @parcel.can_be_cancelled?
       @parcel.attributes = params[:parcel]
       @parcel.cancelled_by = current_user.id
-      if  @parcel.cancel
+      if @parcel.cancel
         flash[:notice] = "Le colis a été annulé avec succès."
         redirect_to @purchase_order
       else

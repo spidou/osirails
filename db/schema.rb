@@ -930,8 +930,9 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "cancelled_by",                   :limit => 11
     t.string   "status"
     t.text     "issues_comment"
-    t.datetime "issued_at"
+    t.text     "cancelled_comment"
     t.datetime "cancelled_at"
+    t.date     "issued_at"
     t.boolean  "must_be_reshipped"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -944,12 +945,12 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "status"
     t.string   "conveyance"
     t.text     "cancelled_comment"
-    t.datetime "previsional_delivery_date"
-    t.datetime "processing_by_supplier_since"
-    t.datetime "shipped_at"
-    t.datetime "received_by_forwarder_at"
-    t.datetime "received_at"
     t.datetime "cancelled_at"
+    t.date     "previsional_delivery_date"
+    t.date     "processing_by_supplier_since"
+    t.date     "shipped_on"
+    t.date     "received_by_forwarder_on"
+    t.date     "received_on"
     t.boolean  "awaiting_pick_up"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1158,10 +1159,10 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.string   "reference"
     t.string   "status"
     t.string   "cancelled_comment"
-    t.datetime "confirmed_at"
-    t.datetime "processing_by_supplier_since"
-    t.datetime "completed_at"
     t.datetime "cancelled_at"
+    t.date     "confirmed_on"
+    t.date     "processing_by_supplier_since"
+    t.date     "completed_on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1171,8 +1172,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "supply_id",              :limit => 11
     t.integer  "cancelled_by",           :limit => 11
     t.integer  "expected_quantity",      :limit => 11
-    t.datetime "expected_delivery_date"
     t.datetime "cancelled_at"
+    t.date     "expected_delivery_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

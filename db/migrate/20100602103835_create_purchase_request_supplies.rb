@@ -3,7 +3,8 @@ class CreatePurchaseRequestSupplies < ActiveRecord::Migration
     create_table :purchase_request_supplies do |t|
       t.references  :purchase_request, :supply
       t.integer     :cancelled_by, :expected_quantity
-      t.datetime    :expected_delivery_date, :cancelled_at
+      t.datetime    :cancelled_at
+      t.date        :expected_delivery_date
       
       t.timestamps
     end

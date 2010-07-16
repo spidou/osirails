@@ -1,18 +1,18 @@
 module ParcelsHelper
   def display_parcel_current_status(parcel)
     case parcel.status
-    when Parcel::STATUS_PROCESSING_BY_SUPPLIER
-        'En traitement'
-      when Parcel::STATUS_SHIPPED
-        'Envoyé'
-      when Parcel::STATUS_RECEIVED_BY_FORWARDER
-        'Reçu par le transitaire'
-      when Parcel::STATUS_RECEIVED
-        'Reçu'
-      when Parcel::STATUS_CANCELLED
-        'Annulé'
-      else
-        "Impossible d'afficher le statut correspondant pour le colis"
+      when Parcel::STATUS_PROCESSING_BY_SUPPLIER
+          'En traitement'
+        when Parcel::STATUS_SHIPPED
+          'Envoyé'
+        when Parcel::STATUS_RECEIVED_BY_FORWARDER
+          'Reçu par le transitaire'
+        when Parcel::STATUS_RECEIVED
+          'Reçu'
+        when Parcel::STATUS_CANCELLED
+          'Annulé'
+        else
+          "Impossible d'afficher le statut correspondant pour le colis"
     end
   end
   
@@ -21,18 +21,42 @@ module ParcelsHelper
       when Parcel::STATUS_PROCESSING_BY_SUPPLIER
         parcel.created_at ? parcel.created_at.humanize : "Aucune date de début de traitement"
       when Parcel::STATUS_SHIPPED
-        parcel.shipped_at ? parcel.shipped_at.humanize : "Aucune date de postage"
+        parcel.shipped_on ? parcel.shipped_on.humanize : "Aucune date de postage"
       when Parcel::STATUS_RECEIVED_BY_FORWARDER
-        parcel.received_by_forwarder_at ? parcel.received_by_forwarder_at.humanize : "Aucune date de réception par le transitaire"
+        parcel.received_by_forwarder_on ? parcel.received_by_forwarder_on.humanize : "Aucune date de réception par le transitaire"
       when Parcel::STATUS_RECEIVED
-        parcel.received_at ? parcel.received_at.humanize : "Aucune date de réception"
+        parcel.received_on ? parcel.received_on.humanize : "Aucune date de réception"
       when Parcel::STATUS_CANCELLED
         parcel.cancelled_at ? parcel.cancelled_at.humanize : "Aucune date d'annulation"
     end
   end
   
+  def display_parcel_created_at(parcel)
+    return parcel.created_at.humanize
+  end
+  
   def display_parcel_previsional_deliveray_date(parcel)
-    return parcel.previsional_delivery_date.humanize unless parcel.previsional_delivery_date == nil
+    return parcel.previsional_delivery_date.humanize if parcel.previsional_delivery_date
+    ""
+  end
+  
+  def display_parcel_processing_by_supplier_since(parcel)
+    return parcel.processing_by_supplier_since.humanize if parcel.processing_by_supplier_since
+    ""
+  end
+  
+  def display_parcel_shipped_on(parcel)
+    return parcel.shipped_on.humanize if parcel.shipped_on
+    ""
+  end
+  
+  def display_parcel_received_by_forwarder_on(parcel)
+    return parcel.received_by_forwarder_on.humanize if parcel.received_by_forwarder_on
+    ""
+  end
+  
+  def display_parcel_received_on(parcel)
+    return parcel.received_on.humanize if parcel.received_on
     ""
   end
   
@@ -71,6 +95,7 @@ module ParcelsHelper
     options << ["Reçu", Parcel::STATUS_RECEIVED ]
     options
   end
+  
   def display_parcel_process_by_supplier(parcel, message = nil)
     #TODO
   end

@@ -6,6 +6,13 @@ ActionController::Routing::Routes.add_routes do |map|
     request.cancel_form 'cancel_form', :action => "cancel_form", :controller => "purchase_requests" 
   end
   
+  map.resources :parcel_item do |parcel_item|
+    parcel_item.cancel 'cancel', :controller => 'parcel_items', :action => 'cancel'
+    parcel_item.cancel_form 'cancel_form', :controller => 'parcel_items', :action => 'cancel_form'
+    parcel_item.report 'report', :controller => 'parcel_items', :action => 'report'
+    parcel_item.report_form 'report_form', :controller => 'parcel_items', :action => 'report_form'
+  end
+  
   map.prepare_for_new 'prepare_for_new' , :controller => 'purchase_orders', :action => 'prepare_for_new'
   
   map.get_supply 'get_supply',  :controller => 'purchase_orders', 

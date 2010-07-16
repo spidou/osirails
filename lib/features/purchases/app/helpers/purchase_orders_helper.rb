@@ -139,11 +139,11 @@ module PurchaseOrdersHelper
     elsif purchase_order.was_draft?
       purchase_order.created_at.humanize
     elsif purchase_order.was_confirmed?
-      purchase_order.confirmed_at.humanize
+      purchase_order.confirmed_on.humanize
     elsif purchase_order.was_processing_by_supplier?
       purchase_order.processing_by_supplier_since.humanize
     elsif purchase_order.was_completed?
-      purchase_order.completed_at.humanize
+      purchase_order.completed_on.humanize
     end
   end
   

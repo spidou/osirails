@@ -4,8 +4,9 @@ class CreateParcelItems < ActiveRecord::Migration
       t.references  :parcel, :purchase_order_supply, :issue_purchase_order_supply
       t.integer     :quantity, :issues_quantity, :cancelled_by
       t.string      :status
-      t.text        :issues_comment
-      t.datetime    :issued_at, :cancelled_at
+      t.text        :issues_comment, :cancelled_comment
+      t.datetime    :cancelled_at
+      t.date        :issued_at
       t.boolean     :must_be_reshipped
 
       t.timestamps

@@ -16,18 +16,18 @@ class Parcel < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:shipped_at]                              = "Exp&eacute;di&eacute; le :"
+  @@form_labels[:shipped_on]                              = "Exp&eacute;di&eacute; le :"
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
-  @@form_labels[:received_by_forwarder_at]                = "Reçu par le transitaire le :"
+  @@form_labels[:received_by_forwarder_on]                = "Reçu par le transitaire le :"
   @@form_labels[:awaiting_pick_up]                        = "En attente de récupération :"
-  @@form_labels[:received_at]                             = "Reçu le :"
+  @@form_labels[:received_on]                             = "Reçu le :"
   @@form_labels[:delivery_document]                       = "Bon de livraison :"
   @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
-  validates_date :shipped_at, :on_or_after => :processing_by_supplier_since, :if => :shipped?
-  validates_date :received_by_forwarder_at, :on_or_after => :shipped_at, :if => :received_by_forwarder?
-  validates_date :received_at, :on_or_after => :received_by_forwarder_at, :if => :received?
+  validates_date :shipped_on, :on_or_after => :processing_by_supplier_since, :if => :shipped?
+  validates_date :received_by_forwarder_on, :on_or_after => :shipped_on, :if => :received_by_forwarder?
+  validates_date :received_on, :on_or_after => :received_by_forwarder_on, :if => :received?
   
   validates_presence_of :conveyance , :if => :shipped?
   validates_presence_of :cancelled_comment, :if => :cancelled_at
