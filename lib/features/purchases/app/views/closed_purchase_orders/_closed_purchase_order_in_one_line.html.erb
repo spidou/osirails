@@ -33,12 +33,12 @@
 <%
 for parcel in parcels
   if parcel != parcels.first 
-    "
-    <tr>
-      <td>#{parcel.reference}</td>
-      <td>#{display_parcel_previsional_deliveray_date(parcel)}</td>
+%>
+    <tr <%= "class=\"even\"" if (closed_purchase_order_in_one_line_counter % 2) == 0 %>>
+      <td><%= parcel.reference %></td>
+      <td><%= display_parcel_previsional_deliveray_date(parcel) %></td>
     </tr>
-    "
+<%  
   end
-end
+end 
 %>

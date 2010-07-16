@@ -169,4 +169,14 @@ class ParcelsController < ApplicationController
     render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
     render :partial => 'parcels/process_by_supplier_forms' if params[:status] == ""
   end
+  
+  def attached_delivery_document
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    delivery_document =  @parcel.delivery_document
+    url = delivery_document.purchase_document.path
+   
+    send_data File.read(url), :filename => "parcel_delivery.#{delivery_document.id}_#{delivery_document.purchase_document_file_name}", :type => delivery_document.purchase_document_content_type, :disposition => 'parcel_delivery'
+  end 
+  
 end

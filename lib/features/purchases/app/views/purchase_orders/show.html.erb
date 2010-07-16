@@ -36,11 +36,22 @@
           <strong><%= @purchase_order.supplier.address.country_name.to_s %></strong>
         </p>
     </div>
-  </div>
-  <div>
-    <% if @purchase_order.quotation_document %>
-      <%= image_tag @purchase_order.quotation_document.purchase_document.url(:thumb) %>
-    <% end %>
+    <div>
+      <% if @purchase_order.quotation_document %>
+        <p>
+          <label>Devis :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "devis", :title => "devis de l'ordre d'achat"),
+          purchase_order_attached_quotation_document_path(@purchase_order) %>
+        </p>
+      <% end %>
+      <% if @purchase_order.invoice_document %>
+        <p>
+          <label>Facture :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ),
+          purchase_order_attached_invoice_document_path(@purchase_order) %>
+        </p>
+      <% end %>
+    </div>
   </div>
   <% unless @purchase_order.status == PurchaseOrder::STATUS_DRAFT %>
   

@@ -39,11 +39,18 @@ ActionController::Routing::Routes.add_routes do |map|
     order.cancel 'cancel', :controller => 'purchase_orders', :action => 'cancel'
     order.cancel_supply 'cancel_supply/:purchase_order_supply_id', :controller => 'purchase_orders', :action => 'cancel_supply'
     order.cancel_form 'cancel_form', :controller => 'purchase_orders', :action => 'cancel_form'
+    order.attached_invoice_document 'attached_invoice_document',  :controller => 'purchase_orders', 
+                                                                  :action => 'attached_invoice_document'
+    order.attached_quotation_document 'attached_quotation_document',  :controller => 'purchase_orders', 
+                                                                      :action =>'attached_quotation_document'
+                                                                      
     order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm', :conditions => { :method => :put }
     order.confirm_form 'confirm_form', :controller => 'purchase_orders', :action => 'confirm_form'
-    order.complete 'complete', :controller => 'purchase_orders', :action => 'complete'
+    order.complete 'complete', :controller => 'purchase_orders', :action => 'complete', :conditions => { :method => :put }
     order.complete_form 'complete_form', :controller => 'purchase_orders', :action => 'complete_form'
     order.resources :parcels do |parcel|
+      parcel.attached_delivery_document 'attached_delivery_document',  :controller => 'parcels', 
+                                                                  :action => 'attached_delivery_document'
       parcel.alter_status 'alter_status', :controller => 'parcels', :action => 'alter_status'
       parcel.process_by_supplier_form 'process_by_supplier_form', :controller => 'parcels', :action => 'process_by_supplier_form'
       parcel.process_by_supplier 'process_by_supplier', :controller => 'parcels', :action => 'process_by_supplier'

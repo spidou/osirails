@@ -8,7 +8,6 @@ class PurchaseOrder < ActiveRecord::Base
   
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
-  belongs_to :payment_document, :class_name => "PurchaseDocument"
   belongs_to :user
   belongs_to :canceller, :foreign_key => "cancelled_by", :class_name => "User"
   belongs_to :supplier
@@ -47,7 +46,11 @@ class PurchaseOrder < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
   validates_associated :purchase_order_supplies, :supplier_supplies
-
+  
+  validates_associated :invoice_document, :if => :completed?
+  validates_associated :quotation_document, :if => :confirmed?
+  
+  
   before_validation :build_supplier_supplies, :build_associated_request_order_supplies
   before_validation :update_reference_only_on_confirm
     
@@ -217,7 +220,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_be_completed?
-    are_all_purchase_order_supplies_treated? and !was_completed?
+    (was_confirmed? || was_processing_by_supplier?) && are_all_purchase_order_supplies_treated?
   end
   
   def can_be_cancelled?

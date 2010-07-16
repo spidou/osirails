@@ -39,6 +39,7 @@ class Parcel < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
     
   validates_associated :parcel_items
+  validates_associated :delivery_document, :if => :received? 
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference
@@ -54,9 +55,7 @@ class Parcel < ActiveRecord::Base
   
   def automatically_put_purchase_order_status_to_processing_by_supplier
     purchase_order = get_purchase_order
-    if purchase_order.was_confirmed? and !purchase_order.was_processing_by_supplier?
-      purchase_order.process_by_supplier
-    end
+    purchase_order.process_by_supplier unless purchase_order.was_processing_by_supplier? 
   end
     
   def validates_lenght_of_parcel_item_selected
