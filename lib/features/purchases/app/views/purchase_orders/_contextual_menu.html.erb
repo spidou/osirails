@@ -1,6 +1,7 @@
 <% purchase_order = contextual_menu %>
 <% add_contextual_menu_item :purchase_order do %>
-  <%= display_purchase_order_confirm_button(purchase_order) if is_edit_view? or is_show_view? %>
+  <%= display_purchase_order_complete_button(purchase_order) if is_edit_view? or is_show_view? %>
+  <%= display_purchase_order_confirm_button(purchase_order) if (is_edit_view? or is_show_view?) and !(params[:action] == "confirm_form" or params[:action] == "confirm") %>
   <%= display_purchase_order_add_button unless is_new_view? or (params[:action] == "prepare_for_new") %>
   <%= display_purchase_order_show_button(purchase_order) if is_edit_view? %>
   <%= display_purchase_order_edit_button(purchase_order) if is_show_view? %>

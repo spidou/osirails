@@ -18,7 +18,7 @@
         <strong><%= @purchase_order.supplier.name.to_s %></strong>
       </p>
       <%= "<p><label>Validé le :</label> <strong>#{@purchase_order.confirmed_at.humanize}</strong></p>" if (@purchase_order.confirmed_at and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
-      <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_since.humanize}</strong></p>" if (@purchase_order.processing_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING)) %>
+      <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_by_supplier_since.humanize}</strong></p>" if (@purchase_order.processing_by_supplier_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER)) %>
       <%= "<p><label>Terminé le :</label> <strong>#{@purchase_order.completed_at.humanize}</strong></p>" if (@purchase_order.completed_at and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
       <%= ("<p><label>Annulé le :</label> <strong>" + display_purchase_order_current_status_date(@purchase_order) + "</strong></p>") if (@purchase_order.was_cancelled?) %>
       <p>
@@ -36,7 +36,23 @@
           <strong><%= @purchase_order.supplier.address.country_name.to_s %></strong>
         </p>
     </div>
-  </div> 
+    <div>
+      <% if @purchase_order.quotation_document %>
+        <p>
+          <label>Devis :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "devis", :title => "devis de l'ordre d'achat"),
+          purchase_order_attached_quotation_document_path(@purchase_order) %>
+        </p>
+      <% end %>
+      <% if @purchase_order.invoice_document %>
+        <p>
+          <label>Facture :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "facture de l'ordre d'achat" ),
+          purchase_order_attached_invoice_document_path(@purchase_order) %>
+        </p>
+      <% end %>
+    </div>
+  </div>
   <% unless @purchase_order.status == PurchaseOrder::STATUS_DRAFT %>
   
     <h2>Liste des colis</h2>

@@ -34,14 +34,14 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def remaining_quantity_for_parcel
     result = 0
     for parcel_item in parcel_items
-      result += parcel_item.quantity.to_i unless parcel_item.parcel.cancelled?   
+      result += (parcel_item.quantity.to_i)  unless parcel_item.parcel.cancelled? || parcel_item.cancelled? 
     end
     quantity - result
   end
   
   def verify_all_parcel_items_are_received?
     for parcel_item in parcel_items
-      return false unless parcel_item.parcel.cancelled? || parcel_item.parcel.received?
+      return false unless parcel_item.parcel.cancelled? || parcel_item.cancelled? || parcel_item.parcel.received?
     end
     return true
   end
@@ -49,7 +49,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def count_quantity_in_parcel_items
     treated_items = 0
     for parcel_item in parcel_items
-      treated_items += parcel_item.quantity.to_i unless parcel_item.parcel.cancelled? 
+      treated_items += (parcel_item.quantity.to_i)unless parcel_item.parcel.cancelled? || parcel_item.cancelled?
     end
     treated_items
   end
@@ -58,7 +58,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     parcel_items.empty?
   end
 
-  def processing?
+  def processing_by_supplier?
     return true if parcel_items.any? &&  (count_quantity_in_parcel_items != quantity || !verify_all_parcel_items_are_received?)
     return false
   end

@@ -6,23 +6,17 @@ class PurchaseOrder < ActiveRecord::Base
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
   
-  belongs_to :purchase_document, :class_name => "PurchaseDocument"
-  
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
-  belongs_to :delivery_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
-  belongs_to :payment_document, :class_name => "PurchaseDocument"
   belongs_to :user
   belongs_to :canceller, :foreign_key => "cancelled_by", :class_name => "User"
   belongs_to :supplier
-#  belongs_to :payment_method
-#  belongs_to :quotation_document
   
   REQUESTS_PER_PAGE = 5
   
   STATUS_DRAFT = nil
   STATUS_CONFIRMED = "confirmed"
-  STATUS_PROCESSING = "processing"
+  STATUS_PROCESSING_BY_SUPPLIER = "processing_by_supplier"
   STATUS_COMPLETED = "completed"
   STATUS_CANCELLED = "cancelled"
     
@@ -37,6 +31,8 @@ class PurchaseOrder < ActiveRecord::Base
   
   validates_presence_of :user_id, :supplier_id
   validates_presence_of :cancelled_comment, :if => :cancelled_by, :message => "Veuillez préciser la raison pour laquelle vous annulez cet ordre d'achats"
+#  validates_presence_of :purchase_document, :if => :confirmed?     #TODO
+#  validates_presence_of :purchase_document, :if => :completed?     #TODO
   
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   
@@ -44,19 +40,24 @@ class PurchaseOrder < ActiveRecord::Base
   
   validates_inclusion_of :status, :in => [ STATUS_DRAFT ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED ], :if => :was_draft?
-  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_confirmed?
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_processing?
+  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_confirmed?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_processing_by_supplier?
   validates_inclusion_of :status, :in => [ STATUS_COMPLETED ], :if => :was_completed?
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
   validates_associated :purchase_order_supplies, :supplier_supplies
-
+  
+  validates_associated :invoice_document, :if => :completed?
+  validates_associated :quotation_document, :if => :confirmed?
+  
+  
   before_validation :build_supplier_supplies, :build_associated_request_order_supplies
   before_validation :update_reference_only_on_confirm
     
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
   after_save  :destroy_request_order_supplies_deselected
   after_save  :save_quotation_document, :if => :confirmed?
+  after_save  :save_invoice_document, :if => :completed?
   
   def not_cancelled_purchase_order_supplies
     tab_not_cancelled_purchase_order_supplies = []
@@ -66,7 +67,7 @@ class PurchaseOrder < ActiveRecord::Base
     tab_not_cancelled_purchase_order_supplies
   end
   
-  def verify_all_purchase_order_supplies_are_treated?
+  def are_all_purchase_order_supplies_treated?
     return false if not_cancelled_purchase_order_supplies.empty?
     for purchase_order_supply in not_cancelled_purchase_order_supplies
       return false unless purchase_order_supply.treated?
@@ -145,10 +146,6 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
   
-  def save_quotation_document
-    #TODO
-  end
-  
   def update_reference_only_on_confirm
     update_reference if (confirmed_at and !confirmed_at_was)
   end
@@ -172,8 +169,8 @@ class PurchaseOrder < ActiveRecord::Base
     status == STATUS_CONFIRMED
   end
   
-  def processing?
-    status == STATUS_PROCESSING
+  def processing_by_supplier?
+    status == STATUS_PROCESSING_BY_SUPPLIER
   end
   
   def completed?
@@ -197,8 +194,8 @@ class PurchaseOrder < ActiveRecord::Base
     status_was == STATUS_CONFIRMED
   end
   
-  def was_processing?
-    status_was == STATUS_PROCESSING
+  def was_processing_by_supplier?
+    status_was == STATUS_PROCESSING_BY_SUPPLIER
   end
   
   def was_completed?
@@ -218,12 +215,12 @@ class PurchaseOrder < ActiveRecord::Base
     was_draft? and !was_cancelled?
   end
   
-  def can_be_processed?
+  def can_be_processed_by_supplier?
     was_confirmed?
   end
   
   def can_be_completed?
-    (was_confirmed? || was_processing?) && verify_all_purchase_order_supplies_are_treated?
+    (was_confirmed? || was_processing_by_supplier?) && are_all_purchase_order_supplies_treated?
   end
   
   def can_be_cancelled?
@@ -258,10 +255,10 @@ class PurchaseOrder < ActiveRecord::Base
     end
   end
   
-  def process
-    if can_be_processed?
-      self.processing_since = Time.now
-      self.status = STATUS_PROCESSING
+  def process_by_supplier
+    if can_be_processed_by_supplier?
+      self.processing_by_supplier_since = Time.now
+      self.status = STATUS_PROCESSING_BY_SUPPLIER
       self.save
     else
       false
@@ -312,18 +309,6 @@ class PurchaseOrder < ActiveRecord::Base
     total_price
   end
   
-#  def lead_time
-#    lead_time = 0
-#    for purchase_order_supply in purchase_order_supplies
-#      supplier_supply = purchase_order_supply.get_supplier_supply
-#      supplier_supply_lead_time = supplier_supply.lead_time || 0
-#      if lead_time < supplier_supply_lead_time
-#        lead_time = supplier_supply_lead_time
-#      end
-#    end
-#    lead_time
-#  end
-  
   def get_associated_purchase_requests
     purchase_requests = []
     for purchase_order_supply in purchase_order_supplies
@@ -362,7 +347,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_add_parcel?
-    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING) and is_remaining_quantity_for_parcel? and !cancelled?
+    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING_BY_SUPPLIER) and is_remaining_quantity_for_parcel? and !cancelled?
   end
   
   def quotation_document_attributes=(quotation_document_attributes)
@@ -371,6 +356,14 @@ class PurchaseOrder < ActiveRecord::Base
   
   def save_quotation_document
     quotation_document.save
+  end
+  
+  def invoice_document_attributes=(invoice_document_attributes)
+    self.invoice_document = PurchaseDocument.new(invoice_document_attributes.first)
+  end
+  
+  def save_invoice_document
+    invoice_document.save
   end
 end
 

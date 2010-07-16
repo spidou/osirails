@@ -129,36 +129,12 @@ class PurchaseOrdersController < ApplicationController
       error_access_page(412)
     end
   end
-  
-  def complete_form
-    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
-      error_access_page(412)
-    end
-  end
-  
-  def complete
-    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
-      @purchase_order.attributes = params[:purchase_order]
-      if @purchase_order.complete
-        flash[:notice] = "L'ordre d'achat a été completé avec succès." 
-      else
-        flash[:error] = "une erreur est survenue lors de la completion de l'ordre d'achat."
-      end
-      redirect_to @purchase_order
-    else
-      error_access_page(412)
-    end
-  end
-  
+    
   def confirm
     if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
       @purchase_order.attributes = params[:purchase_order]
       unless @purchase_order.confirm
-        if @purchase_order.can_be_edited?
-          render :action => "edit"
-        else
-          error_access_page(412)
-        end
+        render :action => "confirm_form"
       else
         redirect_to purchase_orders_path
       end
@@ -181,4 +157,42 @@ class PurchaseOrdersController < ApplicationController
       error_access_page(412)
     end
   end
+  
+  def complete_form
+    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+      error_access_page(412)
+    end
+  end
+  
+  def complete
+    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+      @purchase_order.attributes = params[:purchase_order]
+      unless @purchase_order.complete
+        flash[:error] = "une erreur est survenue lors de la completion de l'ordre d'achat."
+        render :action => "complete_form"
+      else
+        flash[:notice] = "L'ordre d'achat a été completé avec succès." 
+        redirect_to closed_purchase_orders_path
+      end
+    else
+      error_access_page(412)
+    end
+  end
+  
+  def attached_invoice_document
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    invoice_document =  @purchase_order.invoice_document
+    url = invoice_document.purchase_document.path
+    
+    send_data File.read(url), :filename => "purchase_order_invoice.#{invoice_document.id}_#{invoice_document.purchase_document_file_name}", :type => invoice_document.purchase_document_content_type, :disposition => 'purchase_document_invoice'
+  end 
+  
+  def attached_quotation_document
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    quotation_document =  @purchase_order.quotation_document
+    url = quotation_document.purchase_document.path
+    
+    send_data File.read(url), :filename => "purchase_order_quotation.#{quotation_document.id}_#{quotation_document.purchase_document_file_name}", :type => quotation_document.purchase_document_content_type, :disposition => 'purchase_document_quotation'
+  end 
+  
 end

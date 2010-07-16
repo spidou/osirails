@@ -39,26 +39,23 @@ class Parcel < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
     
   validates_associated :parcel_items
+  validates_associated :delivery_document, :if => :received? 
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference
 
   after_create  :delete_unselected_parcel_items
   
-  after_save    :deduct_purchase_order_status
-  after_save :save_delivery_document, :if => :received?
+  after_save  :automatically_put_purchase_order_status_to_processing_by_supplier
+  after_save  :save_delivery_document, :if => :received?
   
   def get_purchase_order
     self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first  
   end
   
-  def deduct_purchase_order_status
+  def automatically_put_purchase_order_status_to_processing_by_supplier
     purchase_order = get_purchase_order
-    if purchase_order.verify_all_purchase_order_supplies_are_treated?
-      redirect_to purchase_order_complete_form_path(purchase_order) unless purchase_order.was_completed?
-    else
-      purchase_order.process unless purchase_order.was_processing? 
-    end
+    purchase_order.process_by_supplier unless purchase_order.was_processing_by_supplier? 
   end
     
   def validates_lenght_of_parcel_item_selected
@@ -120,14 +117,14 @@ class Parcel < ActiveRecord::Base
     status_was == STATUS_CANCELLED
   end
   
-  def can_be_processing_with_associated_parcel_items?
+  def can_be_processed_with_associated_parcel_items?
     for parcel_item in parcel_items
       return false if parcel_item.quantity > parcel_item.purchase_order_supply.remaining_quantity_for_parcel
     end
     return true
   end
   
-  def can_be_processing_by_supplier?
+  def can_be_processed_by_supplier?
     new_record?
   end
 
@@ -148,7 +145,7 @@ class Parcel < ActiveRecord::Base
   end
   
   def process_by_supplier
-    if can_be_processing_by_supplier?
+    if can_be_processed_by_supplier?
       self.status = STATUS_PROCESSING_BY_SUPPLIER
       self.save
     else

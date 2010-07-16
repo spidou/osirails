@@ -1149,17 +1149,17 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "purchase_orders", :force => true do |t|
-    t.integer  "user_id",               :limit => 11
-    t.integer  "supplier_id",           :limit => 11
-    t.integer  "invoice_document_id",   :limit => 11
-    t.integer  "quotation_document_id", :limit => 11
-    t.integer  "payment_document_id",   :limit => 11
-    t.integer  "cancelled_by",          :limit => 11
+    t.integer  "user_id",                      :limit => 11
+    t.integer  "supplier_id",                  :limit => 11
+    t.integer  "invoice_document_id",          :limit => 11
+    t.integer  "quotation_document_id",        :limit => 11
+    t.integer  "payment_document_id",          :limit => 11
+    t.integer  "cancelled_by",                 :limit => 11
     t.string   "reference"
     t.string   "status"
     t.string   "cancelled_comment"
     t.datetime "confirmed_at"
-    t.datetime "processing_since"
+    t.datetime "processing_by_supplier_since"
     t.datetime "completed_at"
     t.datetime "cancelled_at"
     t.datetime "created_at"

@@ -18,6 +18,11 @@ class ParcelsController < ApplicationController
     end
   end
   
+  def show
+    @parcel = Parcel.find(params[:id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+  end
+  
   def alter_status
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -38,15 +43,17 @@ class ParcelsController < ApplicationController
   end
   
   def process_by_supplier_form
-    unless (@parcel = Parcel.find(params[:parcel_id])).can_be_processing_by_supplier?
+    @parcel = Parcel.find(params[:parcel_id])
+    unless @parcel.can_be_processed_by_supplier?
       error_access_page(412)
     end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
   def process_by_supplier
-    if (@parcel = Parcel.find(params[:parcel_id])).can_be_processing_by_supplier?
-      @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @parcel.can_be_processed_by_supplier?
       @parcel.attributes = params[:parcel]
       if @parcel.process_by_supplier
         flash[:notice] = "Le status du colis est bien passé à \"En traitement par le fournisseur\"."
@@ -60,15 +67,17 @@ class ParcelsController < ApplicationController
   end
   
   def ship_form
-    unless (@parcel = Parcel.find(params[:parcel_id])).can_be_shipped?
+    @parcel = Parcel.find(params[:parcel_id])
+    unless @parcel.can_be_shipped?
       error_access_page(412)
     end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
   def ship
-    if (@parcel = Parcel.find(params[:parcel_id])).can_be_shipped?
-      @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @parcel.can_be_shipped?
       @parcel.attributes = params[:parcel]
       if  @parcel.ship
         flash[:notice] = "Le status du colis est bien passé à \"Expédié\"."
@@ -82,15 +91,17 @@ class ParcelsController < ApplicationController
   end
   
   def receive_by_forwarder_form
-    unless (@parcel = Parcel.find(params[:parcel_id])).can_be_received_by_forwarder?
+    @parcel = Parcel.find(params[:parcel_id])
+    unless @parcel.can_be_received_by_forwarder?
       error_access_page(412)
     end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
   def receive_by_forwarder
-    if (@parcel = Parcel.find(params[:parcel_id])).can_be_received_by_forwarder?
-      @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @parcel.can_be_received_by_forwarder?
       @parcel.attributes = params[:parcel]
       if  @parcel.receive_by_forwarder
         flash[:notice] = "Le status du colis est bien passé à \"Reçu par le transitaire\"."
@@ -104,15 +115,17 @@ class ParcelsController < ApplicationController
   end
   
   def receive_form
-    unless (@parcel = Parcel.find(params[:parcel_id])).can_be_received?
+    @parcel = Parcel.find(params[:parcel_id])
+    unless @parcel.can_be_received?
       error_access_page(412)
     end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
   def receive
-    if (@parcel = Parcel.find(params[:parcel_id])).can_be_received?
-      @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @parcel.can_be_received?
       @parcel.attributes = params[:parcel]
       if  @parcel.receive
         flash[:notice] = "Le status du colis est bien passé à \"Reçu\"."
@@ -133,8 +146,9 @@ class ParcelsController < ApplicationController
   end
   
   def cancel
+    @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    if (@parcel = Parcel.find(params[:parcel_id])).can_be_cancelled?
+    if @parcel.can_be_cancelled?
       @parcel.attributes = params[:parcel]
       @parcel.cancelled_by = current_user.id
       if  @parcel.cancel
@@ -154,4 +168,14 @@ class ParcelsController < ApplicationController
     render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
     render :partial => 'parcels/process_by_supplier_forms' if params[:status] == ""
   end
+  
+  def attached_delivery_document
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
+    delivery_document =  @parcel.delivery_document
+    url = delivery_document.purchase_document.path
+   
+    send_data File.read(url), :filename => "parcel_delivery.#{delivery_document.id}_#{delivery_document.purchase_document_file_name}", :type => delivery_document.purchase_document_content_type, :disposition => 'parcel_delivery'
+  end 
+  
 end

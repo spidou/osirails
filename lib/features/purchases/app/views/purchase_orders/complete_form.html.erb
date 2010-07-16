@@ -6,12 +6,12 @@
 
 <h1>Ordre d'achat</h1>
 <div class="presentation_medium">
-  <h2>Completer l'ordre d'achats.</h2>
+  <h2>Terminer l'ordre d'achats.</h2>
   <% form_for @purchase_order, :url => { :action => "complete" }, :html => { :multipart => true } do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
       <p>
-        <% fields_for "purchase_order[quotation_document_attributes][]", PurchaseDocument.new do |f| %>
+        <% fields_for "purchase_order[invoice_document_attributes][]", PurchaseDocument.new do |f| %>
           <%= f.label :purchase_document %>
           <%= f.file_field :purchase_document %>
         <% end %>

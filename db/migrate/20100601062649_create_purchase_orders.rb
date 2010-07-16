@@ -5,7 +5,7 @@ class CreatePurchaseOrders < ActiveRecord::Migration
       t.references  :quotation_document, :payment_document
       t.integer     :cancelled_by
       t.string      :reference,:status, :cancelled_comment
-      t.datetime    :confirmed_at, :processing_since, :completed_at, :cancelled_at
+      t.datetime    :confirmed_at, :processing_by_supplier_since, :completed_at, :cancelled_at
       
       t.timestamps
     end
