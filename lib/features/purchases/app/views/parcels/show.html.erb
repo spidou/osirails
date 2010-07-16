@@ -78,7 +78,8 @@
       <% if @parcel.delivery_document %>
       <p>
         <label>Bon de livraison :</label>
-        <strong><%= image_tag @parcel.delivery_document.purchase_document.url(:thumb) %></strong>
+        <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "Bon de livraison du colis" ),
+          purchase_order_parcel_attached_delivery_document_path(@purchase_order, @parcel) %>
       </p>
       <% end %>
     </div>

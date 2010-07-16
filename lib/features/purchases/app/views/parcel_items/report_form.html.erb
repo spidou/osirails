@@ -1,0 +1,34 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
+<% end %>
+
+<h1>Colis</h1>
+<div class="presentation_medium">
+  <h2>Contenu du colis</h2>
+  <%= render :partial => "parcels/array_head" %>
+  <%= render :partial => "parcel_items/parcel_item", :object => @parcel_item %>
+  <%= render :partial => "parcels/array_foot" %>
+  
+  <h2>Informations</h2>
+  <div class="presentation_in_columns">
+  <% form_for [@parcel_item], :url => { :controller => "parcel_items", :action => "report" } do |f| %>
+    <%= f.error_messages %>
+    <div class="presentation_in_columns">
+      <p>
+        <%= f.label :issues_quantity%>
+        <%= f.text_field :issues_quantity%>
+      </p>
+      <p>
+        <%= f.label :issues_comment%>
+        <%= f.text_area_autoresize :issues_comment%>
+      </p>
+      <p>
+        <%= f.label :must_be_reshipped%>
+        <%= f.check_box :must_be_reshipped%>
+      </p>
+    </div>
+    <br>
+    <%= f.form_buttons %>
+  <% end %>
+  </div>
+</div>
