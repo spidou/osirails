@@ -66,7 +66,7 @@ class PurchaseOrder < ActiveRecord::Base
     tab_not_cancelled_purchase_order_supplies
   end
   
-  def verify_all_purchase_order_supplies_are_treated
+  def verify_all_purchase_order_supplies_are_treated?
     return false if not_cancelled_purchase_order_supplies.empty?
     for purchase_order_supply in not_cancelled_purchase_order_supplies
       return false unless purchase_order_supply.treated?
@@ -223,7 +223,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_be_completed?
-    was_processing?
+    (was_confirmed? || was_processing?) && verify_all_purchase_order_supplies_are_treated?
   end
   
   def can_be_cancelled?

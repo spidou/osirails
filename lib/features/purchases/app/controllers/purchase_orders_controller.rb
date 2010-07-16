@@ -130,6 +130,26 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  def complete_form
+    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+      error_access_page(412)
+    end
+  end
+  
+  def complete
+    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+      @purchase_order.attributes = params[:purchase_order]
+      if @purchase_order.complete
+        flash[:notice] = "L'ordre d'achat a été completé avec succès." 
+      else
+        flash[:error] = "une erreur est survenue lors de la completion de l'ordre d'achat."
+      end
+      redirect_to @purchase_order
+    else
+      error_access_page(412)
+    end
+  end
+  
   def confirm
     if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
       @purchase_order.attributes = params[:purchase_order]
@@ -154,7 +174,7 @@ class PurchaseOrdersController < ApplicationController
       if @purchase_order_supply.cancel 
         flash[:notice] = "La fourniture a été annuléé avec succès." 
       else
-        flash[:error] = "une erreur est survenue lors de l'annullation de la fourniture." 
+        flash[:error] = "une erreur est survenue lors de l'annulation de la fourniture." 
       end
       redirect_to @purchase_order_supply.purchase_order 
     else

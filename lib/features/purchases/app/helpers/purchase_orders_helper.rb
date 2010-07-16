@@ -15,6 +15,17 @@ module PurchaseOrdersHelper
                         :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour l'ordre d'achat et vous ne pourrez plus le modifier.", :method => :put)
   end
 
+  def display_purchase_order_complete_button(purchase_order, message = nil)
+    return unless purchase_order.can_be_completed?
+    text = "Completer l'ordre d'achats"
+    message ||= " #{text}"
+    link_to( image_tag( "tick_16x16.png",
+                        :alt => text,
+                        :title => text ) + message,
+                         purchase_order_complete_form_path(purchase_order),
+                        :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de completer l'ordre d'achat.", :method => :put)
+  end
+
   def display_purchase_order_add_button(message = nil)
     return unless PurchaseOrder.can_add?(current_user)
     text = "Nouvel ordre d'achats"
@@ -171,6 +182,7 @@ module PurchaseOrdersHelper
   def display_purchase_order_buttons(purchase_order)
     html = []
     html << display_purchase_order_confirm_button(purchase_order, '')
+    html << display_purchase_order_complete_button(purchase_order, '')
     html << display_purchase_order_show_button(purchase_order, '')
     html << display_purchase_order_edit_button(purchase_order, '')
     html << display_purchase_order_delete_button(purchase_order, '')

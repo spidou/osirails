@@ -54,8 +54,8 @@ class Parcel < ActiveRecord::Base
   
   def deduct_purchase_order_status
     purchase_order = get_purchase_order
-    if purchase_order.verify_all_purchase_order_supplies_are_treated
-      purchase_order.complete unless purchase_order.was_completed?
+    if purchase_order.verify_all_purchase_order_supplies_are_treated?
+      redirect_to purchase_order_complete_form_path(purchase_order) unless purchase_order.was_completed?
     else
       purchase_order.process unless purchase_order.was_processing? 
     end

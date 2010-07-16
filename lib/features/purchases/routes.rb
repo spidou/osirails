@@ -34,6 +34,8 @@ ActionController::Routing::Routes.add_routes do |map|
     order.cancel_form 'cancel_form', :controller => 'purchase_orders', :action => 'cancel_form'
     order.confirm 'confirm', :controller => 'purchase_orders', :action => 'confirm', :conditions => { :method => :put }
     order.confirm_form 'confirm_form', :controller => 'purchase_orders', :action => 'confirm_form'
+    order.complete 'complete', :controller => 'purchase_orders', :action => 'complete', :conditions => { :method => :put }
+    order.complete_form 'complete_form', :controller => 'purchase_orders', :action => 'complete_form'
     order.resources :parcels do |parcel|
       parcel.alter_status 'alter_status', :controller => 'parcels', :action => 'alter_status'
       parcel.process_by_supplier_form 'process_by_supplier_form', :controller => 'parcels', :action => 'process_by_supplier_form'
