@@ -31,7 +31,7 @@ class Parcel < ActiveRecord::Base
   
   validates_presence_of :conveyance , :if => :shipped?
   validates_presence_of :cancelled_comment, :if => :cancelled_at
-
+   
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?  
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?

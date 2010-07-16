@@ -30,6 +30,6 @@ module ParcelItemsHelper
     link_to( image_tag( "red_flag_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-              parcel_item_report_path(parcel_item))
+              parcel_item_report_form_path(parcel_item))
   end
 end
