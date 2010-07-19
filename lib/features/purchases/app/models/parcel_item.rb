@@ -8,6 +8,8 @@ class ParcelItem < ActiveRecord::Base
   belongs_to :issue_purchase_order_supply, :class_name => "PurchaseOrderSupply"
   
   validates_presence_of :purchase_order_supply_id
+  validates_presence_of :cancelled_comment, :if => :cancelled_at
+  
   validates_numericality_of :quantity, :greater_than => 0
   
   validates_presence_of :issues_comment, :if => :issued_at
@@ -21,6 +23,8 @@ class ParcelItem < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
+  @@form_labels[:cancelled_comment] =   "Veuillez saisir la raison de l'annulation :"
+  @@form_labels[:purchase_document] =   "Veuillez joindre le devis :"
   @@form_labels[:issues_comment]                          = "Commentaire :"
   @@form_labels[:issues_quantity]                         = "Quantit&eacute;e &agrave; declar&eacute;e(s) :"
   @@form_labels[:must_be_reshipped]                       = "&agrave; r&eacute;expedi&eacute;e? :"
@@ -35,10 +39,6 @@ class ParcelItem < ActiveRecord::Base
     self.quantity.to_i
   end
   
-  def save_issue_purchase_order_supply
-    #issue_purchase_order_supply.save(false)
-  end
-  
   def build_issue_purchase_order_supply
     if (self.must_be_reshipped)
       self.issue_purchase_order_supply = PurchaseOrderSupply.new(:purchase_order_id => self.purchase_order_supply.purchase_order_id,
@@ -50,7 +50,7 @@ class ParcelItem < ActiveRecord::Base
                                                             :supplier_designation => self.purchase_order_supply.supplier_designation)
     end
   end
-  
+    
   def validates_quantity_for_parcel_item
     errors.add(:quantity, "quantity not valid")  if self.selected.to_i == 1 && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
@@ -61,11 +61,9 @@ class ParcelItem < ActiveRecord::Base
   
   def can_be_cancelled?
     !was_cancelled? and !new_record? and !parcel.was_received?
-    #(untreated? and purchase_order.was_confirmed? and ((parcel and parcel.was_processing_by_supplier) or !parcel)) or (processing_by_supplier? and purchase_order.was_confirmed? and parcel.was_processing_by_supplier?)
   end
   
   def can_be_reported?
-    #TODO
     return true if parcel.received? && !was_reported? && !purchase_order_supply.purchase_order.was_completed?
   end
   
@@ -91,10 +89,6 @@ class ParcelItem < ActiveRecord::Base
     end
   end
   
-  def untreated?
-    purchase_order_supply.untreated?
-  end
-  
   def get_parcel_item_total
     quantity.to_f * purchase_order_supply.get_unit_price_including_tax.to_f
   end
@@ -107,33 +101,13 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
-  
+    
   def report
     if can_be_reported?
       self.issued_at = Time.now
       self.save
     else
       false
-    end
-  end
-  
-  def is_the_last_not_cancelled?
-    not_cancelled_parcel_items
-    for parcel_item in parcel.parcel_items
-      if !parcel_item.was_cancelled?
-        not_cancelled_parcel_items.push parcel_item
-      end
-    end
-    if not_cancelled_parcel_items.count == 1
-      true
-    else
-      false
-    end
-  end
-  
-  def automatically_cancel_parcel_if_empty
-    if is_the_last_not_cancelled?
-      parcel.cancel
     end
   end
 end

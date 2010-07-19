@@ -1,6 +1,7 @@
 class ParcelItemsController < ApplicationController
   
   helper :purchase_requests, :purchase_orders, :purchase_order_supplies, :parcels
+  
   def cancel_form
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     unless @parcel_item.can_be_cancelled?
@@ -15,7 +16,7 @@ class ParcelItemsController < ApplicationController
       @parcel_item.cancelled_by = current_user.id
       if @parcel_item.cancel
         flash[:notice] = "Le contenu correspondant a été annulé."
-        redirect_to (@parcel_item.purchase_order_supply.purchase_order, @parcel_item.parcel)
+        redirect_to( purchase_order_parcel_path(@parcel_item.purchase_order_supply.purchase_order, @parcel_item.parcel))
       else
         render :action => "cancel_form"   
       end

@@ -62,3 +62,8 @@ table tfoot tr.footer{
 .parcel .parcel_summary .parcel_conveyance {
   width :150px;
 }
+
+td.disabled {
+  text-decoration: line-through;
+  font-style: italic;
+}
