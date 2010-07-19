@@ -89,10 +89,11 @@ module PurchaseOrdersHelper
   def display_longest_lead_time_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     longest_lead_time = 0
+    lead_time_tmp = nil;
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      if merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
-        if( merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time > longest_lead_time )
-          longest_lead_time = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time || 0
+      if lead_time_tmp = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
+        if( lead_time_tmp > longest_lead_time )
+          longest_lead_time = lead_time_tmp || 0
         end
       end
     end

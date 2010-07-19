@@ -50,7 +50,11 @@ class ParcelItem < ActiveRecord::Base
                                                             :supplier_designation => self.purchase_order_supply.supplier_designation)
     end
   end
-    
+   
+  def save_issue_purchase_order_supply
+    self.issue_purchase_order_supply.save if self.must_be_reshipped && self.issue_purchase_order_supply
+  end 
+ 
   def validates_quantity_for_parcel_item
     errors.add(:quantity, "quantity not valid")  if self.selected.to_i == 1 && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
