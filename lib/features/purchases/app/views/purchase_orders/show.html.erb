@@ -73,24 +73,26 @@
   <table class="no_nth">
     <thead>
       <tr>
+        <th colspan="2">Interne</th>
+        <th colspan="2">Fournisseur</th>
+        <th rowspan="2">Demandes associées</th>
+        <th rowspan="2">Colis associ&eacute;s</th>
+        <th rowspan="2">Statut</th>
+        <th rowspan="2">Depuis le</th>
+        <th rowspan="2">Quantit&eacute;</th>
+        <th rowspan="2">PU TTC</th>
+        <th rowspan="2">Prix total TTC</th>
+        <th rowspan="2">Action</th>
+      </tr>
+      <tr>
         <th>R&eacute;f&eacute;rence</th>
         <th>D&eacute;signation</th>
-        <th>Colis associ&eacute;s</th>
-        <th>Statut</th>
-        <th>Depuis le</th>
-        <th>Quantit&eacute;</th>
-        <th>PU TTC</th>
-        <th>Prix total TTC</th>
-        <th>Demandes associées</th>
-        <th>R&eacute;f&eacute;rence fournisseur</th>
-        <th>Désignation fournisseur</th>
-        <th>Action</th>
+        <th rowspan="2">R&eacute;f&eacute;rence</th>
+        <th rowspan="2">Désignation</th>
       </tr>
     </thead>
     <tbody>
       <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :collection => @purchase_order.purchase_order_supplies %>
     </tbody>
-    <tfoot>
-    </tfoot>
   </table>
 </div>

@@ -15,7 +15,7 @@
       <% if @suppliers.empty? %>
         <p>Il n'y a aucune demande en attente pour le moment.</p>
       <% else %>
-        <p><%= render :partial => "purchase_request_supplies/purchase_request_supplies_listed_by_supplier", :collection => @suppliers  %></p>
+        <p><%= render :partial => "purchase_request_supplies/grouped_by_supplier_purchase_request_supplies", :collection => @suppliers  %></p>
         <%= will_paginate @suppliers %>
       <% end %>
     </div>

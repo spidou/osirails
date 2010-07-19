@@ -1,6 +1,9 @@
 <% parcel = ship_forms%>
 <p>
   <%= label_tag 'Exp&eacute;di&eacute; le :' %>
+  <%= 
+  #calendar_date_field_tag 'parcel[shipped_on]', (parcel.shipped_on if parcel) 
+  %>
   <%= text_field_tag 'parcel[shipped_on]', (parcel.shipped_on if parcel) %>
 </p>
 <p>

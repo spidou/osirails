@@ -7,27 +7,26 @@
 <% parcel_class_attributes = '' %>
 
 <tr <%= class_attributes %>>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_reference(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= purchase_order_supply.supply.designation %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_reference(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.supply.designation %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_supplier_reference(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_supplier_designation(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
 <% if parcels.empty? %>
     <td></td>
 <% else %>
     <td <%= "class=\"disabled\"" if parcels.first.was_cancelled? %> ><%= link_to( parcels.first.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order,parcels.first)) %></td>
 <% end %>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_status(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_current_status_date(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= purchase_order_supply.quantity %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %> class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %> class="price"><%= display_purchase_order_supply_total(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_supplier_reference(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_supply_supplier_designation(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{purchase_order_supply.parcels.count}\"" unless purchase_order_supply.parcels.empty? %>><%= display_purchase_order_buttons(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_status(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_current_status_date(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.quantity %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_total(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order_supply) %></td>
 </tr>
 
 <% for parcel in parcels %>
   <% if parcel != parcels.first %>
-  
     <% if parcel.was_cancelled? and (purchase_order_supply_in_one_line_for_view_counter % 2) == 0 %>
       <% parcel_class_attributes = 'class="even disabled"' %>
     <% elsif !parcel.was_cancelled? and (purchase_order_supply_in_one_line_for_view_counter % 2) == 0 %>
@@ -37,7 +36,6 @@
     <% else %>
       <% parcel_class_attributes = class_attributes %>
     <% end %>
-    
     <tr <%= parcel_class_attributes %> >
       <td>
         <%= link_to( parcel.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order,parcel)) %>
