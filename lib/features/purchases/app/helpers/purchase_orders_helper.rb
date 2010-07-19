@@ -86,12 +86,12 @@ module PurchaseOrdersHelper
     html << "</div>"
   end
   
-  def display_longest_lead_time_for_supplier(supplier_id)
+  def display_longest_lead_time_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     longest_lead_time = 0
     lead_time_tmp = nil;
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      if lead_time_tmp = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier_id]).lead_time
+      if lead_time_tmp = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
         if( lead_time_tmp > longest_lead_time )
           longest_lead_time = lead_time_tmp || 0
         end
@@ -100,18 +100,18 @@ module PurchaseOrdersHelper
     "#{longest_lead_time}&nbsp;jour(s)</p>"
   end
   
-  def display_purchase_request_supplies_total_for_supplier(supplier_id)
+  def display_purchase_request_supplies_total_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     totals_sum = 0
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      merged_purchase_request_supply_supplier = merged_purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier_id])
+      merged_purchase_request_supply_supplier = merged_purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier])
       totals_sum += (merged_purchase_request_supply_supplier.fob_unit_price * ((100 + merged_purchase_request_supply_supplier.taxes ) / 100)) * merged_purchase_request_supply.expected_quantity
     end
     "#{totals_sum.to_f.to_s(2)}&nbsp;&euro;"
   end
   
-  def display_choose_supplier_button(supplier_id)
-    link_to(image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier_id, :from_purchase_request => 1))
+  def display_choose_supplier_button(supplier)
+    link_to(image_tag("next_24x24.png", :alt => "Choisir" + supplier.name), new_purchase_order_path(:supplier_id => supplier, :from_purchase_request => 1))
   end
   
   def display_purchase_order_reference(purchase_order)

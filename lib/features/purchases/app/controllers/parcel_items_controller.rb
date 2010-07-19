@@ -38,7 +38,7 @@ class ParcelItemsController < ApplicationController
       @parcel_item.attributes = params[:parcel_item]
       if @parcel_item.report
         flash[:notice] = "Le contenu correspondant a été signalé comme défectueux."
-        redirect_to  @parcel_item.parcel
+        redirect_to( purchase_order_parcel_path(@parcel_item.purchase_order_supply.purchase_order, @parcel_item.parcel))
       else
         render :action => "report_form"   
       end

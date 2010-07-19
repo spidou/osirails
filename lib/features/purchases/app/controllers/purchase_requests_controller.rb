@@ -3,7 +3,7 @@ class PurchaseRequestsController < ApplicationController
   helper :purchase_request_supplies, :purchase_orders
   
   def index  
-    conditions = "1" if (params[:filter]) == 'all'
+    conditions = "1" if params[:filter] == 'all'
     conditions = "cancelled_by IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
     conditions = "cancelled_by IS NOT NULL"  if (params[:filter]) == 'cancelled' 
     @requests = PurchaseRequest.all(:conditions => conditions, :order => "created_at DESC").paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)
@@ -62,7 +62,7 @@ class PurchaseRequestsController < ApplicationController
     end
   end
   
-  def get_request_supply
+  def get_purchase_request_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
     @purchase_request_supply = PurchaseRequestSupply.new
     @purchase_request_supply.supply_id = params[:supply_id]
