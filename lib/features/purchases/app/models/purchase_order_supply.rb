@@ -6,9 +6,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   has_many :purchase_request_supplies, :through => :request_order_supplies
 
   has_many :parcel_items
-  has_many :parcels, :through => :parcel_items
-  
-#  has_one  :parcel, :through => :parcel_items
+  has_many :parcels, :through => :parcel_items, :order => 'parcels.status, parcels.cancelled_at DESC, parcels.received_on DESC, parcels.received_by_forwarder_on DESC, parcels.shipped_on DESC, parcels.processing_by_supplier_since DESC'
   
   belongs_to :purchase_order
   belongs_to :supply

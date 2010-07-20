@@ -61,9 +61,9 @@
       <p><%= link_to "Ajouter un colis", new_purchase_order_parcel_path(@purchase_order) %></p>
     <% end%>
     
-    <% if @purchase_order.get_parcels.count > 0 %>
+    <% if @purchase_order.parcels.count > 0 %>
         <%= render :partial => "parcels/array_head" %>
-        <%= render :partial => "parcels/parcel", :collection => @purchase_order.get_parcels, :locals => { :purchase_order => @purchase_order } %>
+        <%= render :partial => "parcels/parcel", :collection => @purchase_order.parcels, :locals => { :purchase_order => @purchase_order } %>
         <%= render :partial => "parcels/array_foot" %>
     <% end %>
   <% end %>

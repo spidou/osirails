@@ -1,6 +1,6 @@
 <% purchase_order = pending_purchase_order_in_one_line %>
 
-<% parcels = purchase_order.get_parcels.compact %>
+<% parcels = purchase_order.parcels.compact %>
 
 <tr <%= "class=\"even\"" if (pending_purchase_order_in_one_line_counter % 2) == 0 %>>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
@@ -9,20 +9,19 @@
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.name %></td>
-<% if parcels.empty? %>
+  <% if parcels.empty? %>
     <td></td>
     <td></td>
     <td></td>
     <td></td>
     <td></td>
-<% else %>
+  <% else %>
     <td><%= parcels.first.reference %></td>
     <td><%= display_parcel_previsional_deliveray_date(parcels.first) %></td>
     <td><%= display_parcel_current_status(parcels.first) %></td>
     <td><%= display_parcel_current_status_date(parcels.first) %></td>
     <td><%= ( parcels.first.awaiting_pick_up ? "Oui" : "Non" ) if parcels.first.status == Parcel::STATUS_RECEIVED_BY_FORWARDER %></td>
-<% end %>
-
+  <% end %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_total_price(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order)%></td>

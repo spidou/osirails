@@ -1,5 +1,5 @@
 <% purchase_order = closed_purchase_order_in_one_line %>
-<% parcels = purchase_order.get_parcels.compact %>
+<% parcels = purchase_order.parcels.compact %>
 <% cancelled = purchase_order.was_cancelled? %>
 
 <% if cancelled %>

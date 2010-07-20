@@ -3,7 +3,7 @@ class PendingPurchaseOrdersController < ApplicationController
   helper :purchase_orders, :parcels
   
   def index
-    purchase_orders = PurchaseOrder.all
+    purchase_orders = PurchaseOrder.pending
     pending_purchase_orders = []
     for purchase_order in purchase_orders
       if !purchase_order.is_closed_or_cancelled?
