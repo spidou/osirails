@@ -1,10 +1,10 @@
-   </tbody>
-   <tfoot>
-     <tr class='footer'>
+  </tbody>
+  <tfoot>
+    <tr class='footer'>
       <td colspan='10'></td>
       <td colspan='3'>TOTAL TTC(&euro;)</td>
-     </tr>
-     <tr class='footer'>
+    </tr>
+    <tr class='footer'>
       <td colspan='10'>
         <%= hidden_field_tag 'add_this_supply_reference_id' %>
         <%= custom_text_field_with_auto_complete( :supply, :reference,
@@ -21,9 +21,9 @@
                                       :position => "bottom",
                                       :condition => "can_add_supply()",
                                       :complete => "$('add_this_supply_reference_id').value = null"   
-                                      %>
+        %>
       </td>
       <td colspan='3' id="all_total"><%= display_all_total_price_for_purchase_order_form(purchase_order) %></td>
-     </tr>
-   </tfoot>
+    </tr>
+  </tfoot>
 </table>

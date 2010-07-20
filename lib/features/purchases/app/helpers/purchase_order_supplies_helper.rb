@@ -1,6 +1,6 @@
 module PurchaseOrderSuppliesHelper
   
-  def display_purchase_order_buttons(purchase_order_supply)
+  def display_purchase_order_supply_buttons(purchase_order_supply)
     html = []
     html << display_supply_show_button(purchase_order_supply.supply, '')
     html << display_purchase_order_supply_cancel_button(purchase_order_supply, '')
@@ -69,7 +69,7 @@ module PurchaseOrderSuppliesHelper
       purchase_order_supply.created_at ? purchase_order_supply.created_at.humanize : "Aucune date de création"
     elsif purchase_order_supply.processing_by_supplier?
       purchase_order_supply.parcel_items.first.created_at ? purchase_order_supply.parcel_items.first.created_at.humanize : "Aucune date de début de traitement"
-  elsif purchase_order_supply.treated?
+    elsif purchase_order_supply.treated?
       purchase_order_supply.parcel_items.last.created_at ? purchase_order_supply.parcel_items.last.created_at.humanize : ""
     elsif purchase_order_supply.was_cancelled?
       purchase_order_supply.cancelled_at ? purchase_order_supply.cancelled_at.humanize : "Aucune date d'annulation"

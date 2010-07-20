@@ -1,50 +1,48 @@
 <% purchase_order_supply = purchase_order_supply_in_one_line %>
 <% fields_for "purchase_order[purchase_order_supply_attributes][]", purchase_order_supply , :index => nil do |f|%>
-<% supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supply.supply_id, supplier.id) || SupplierSupply.new%>
-<% unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_request_supplies %>
-
-<tr class='purchase_order_supply resource' <%= "style='display:none;'" if purchase_order_supply.should_destroy.to_i == 1 %> >
-  <td style="display:none;">
-    <%= f.hidden_field (:supply_id, :class => 'hidden_supply_id')%>
-    <%= f.hidden_field (:id)%>
-    <%= f.hidden_field (:purchase_request_supplies_ids, :value => purchase_order_supply.get_purchase_request_supplies_ids, :class => 'purchase_request_supplies_ids')%> 
-    <%= f.hidden_field (:should_destroy, :class => 'should_destroy') %>
-    
-    <%= f.hidden_field (:purchase_request_supplies_deselected_ids, :class => 'purchase_request_supplies_deselected_ids', :value => purchase_order_supply.purchase_request_supplies_deselected_ids)%>
-    
-  </td>
-  <td><%= purchase_order_supply.supply.reference %></td>
-  <td><%= purchase_order_supply.supply.designation %></td>
-  <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
-  <td><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
-  <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
-  <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
-  <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
-  <td class="PU_TTC" ><%= purchase_order_supply.get_unit_price_including_tax(supplier.id, purchase_order_supply.supply.id) %></td>
-  <td class="sum" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
-  <td class="text">
-    <% for purchase_request_supply in unconfirmed_purchase_request %>
-      <%= link_to purchase_request_supply.purchase_request.reference + verify_validity_of_purchase_request_supply(purchase_request_supply) + "<br>" , purchase_request_path(purchase_request_supply.purchase_request), :popup => true%>
-    <% end %>
-  </td>
-  <td>
-    <% for purchase_request_supply in unconfirmed_purchase_request %>
-      <%= purchase_request_supply.expected_quantity.to_s + "<br>" %>
-    <% end %>
-  </td>
-  <td>
-    <% for purchase_request_supply in unconfirmed_purchase_request %>
-      <%= check_box_tag purchase_request_supply.id, purchase_request_supply.id, purchase_order_supply.boolean_checked(purchase_request_supply), :data_quantity => purchase_request_supply.expected_quantity.to_s, :idx => purchase_order_supply.integer_checked(purchase_request_supply) , :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
-    <% end %>
-  </td>
-  <td>
-    <% if purchase_order_supply.new_record?%>
-      <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')){this.up('.resource').remove();
-     update_all_total();}") %>
-    <% else %>
-      <%= link_to_function image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')) mark_resource_for_destroy(this.up('.resource'));" %>
-    <% end %>
-   </td>
-</tr>
+  <% supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supply.supply_id, supplier.id) || SupplierSupply.new%>
+  <% unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_request_supplies %>
+  
+  <tr class='purchase_order_supply resource' <%= "style='display:none;'" if purchase_order_supply.should_destroy.to_i == 1 %> >
+    <td style="display:none;">
+      <%= f.hidden_field (:supply_id, :class => 'hidden_supply_id')%>
+      <%= f.hidden_field (:id)%>
+      <%= f.hidden_field (:purchase_request_supplies_ids, :value => purchase_order_supply.get_purchase_request_supplies_ids, :class => 'purchase_request_supplies_ids')%> 
+      <%= f.hidden_field (:should_destroy, :class => 'should_destroy') %>
+      <%= f.hidden_field (:purchase_request_supplies_deselected_ids, :class => 'purchase_request_supplies_deselected_ids', :value => purchase_order_supply.purchase_request_supplies_deselected_ids)%>
+    </td>
+    <td><%= purchase_order_supply.supply.reference %></td>
+    <td><%= purchase_order_supply.supply.designation %></td>
+    <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
+    <td><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
+    <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
+    <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
+    <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
+    <td class="PU_TTC" ><%= purchase_order_supply.get_unit_price_including_tax(supplier.id, purchase_order_supply.supply.id) %></td>
+    <td class="sum" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
+    <td class="text">
+      <% for purchase_request_supply in unconfirmed_purchase_request %>
+        <%= link_to purchase_request_supply.purchase_request.reference + verify_validity_of_purchase_request_supply(purchase_request_supply) + "<br>" , purchase_request_path(purchase_request_supply.purchase_request), :popup => true%>
+      <% end %>
+    </td>
+    <td>
+      <% for purchase_request_supply in unconfirmed_purchase_request %>
+        <%= purchase_request_supply.expected_quantity.to_s + "<br>" %>
+      <% end %>
+    </td>
+    <td>
+      <% for purchase_request_supply in unconfirmed_purchase_request %>
+        <%= check_box_tag purchase_request_supply.id, purchase_request_supply.id, purchase_order_supply.boolean_checked(purchase_request_supply), :data_quantity => purchase_request_supply.expected_quantity.to_s, :idx => purchase_order_supply.integer_checked(purchase_request_supply) , :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
+      <% end %>
+    </td>
+    <td>
+      <% if purchase_order_supply.new_record?%>
+        <%= link_to_function(image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr ?')){this.up('.resource').remove();
+                                                                update_all_total();}") %>
+      <% else %>
+        <%= link_to_function image_tag("cross_16x16.png"), "if (confirm('Êtes-vous sûr? Attention, les modifications seront appliquées à la soumission du formulaire.')) mark_resource_for_destroy(this.up('.resource'));" %>
+      <% end %>
+     </td>
+  </tr>
 <% end  %>
 

@@ -1,5 +1,5 @@
-<% parcel = process_by_supplier_forms%>
+<% @parcel = process_by_supplier_forms || Parcel.new %>
 <p>
   <%= label_tag "En traitement par le fournisseur depuis le: " %>
-  <%= text_field_tag 'parcel[processing_by_supplier_since]', (parcel.processing_by_supplier_since if parcel)%>
+  <%= calendar_date_field_tag :parcel, :processing_by_supplier_since %>
 </p>

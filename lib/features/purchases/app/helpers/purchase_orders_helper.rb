@@ -182,9 +182,9 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_buttons(purchase_order)
     html = []
+    html << display_purchase_order_show_button(purchase_order, '')
     html << display_purchase_order_confirm_button(purchase_order, '')
     html << display_purchase_order_complete_button(purchase_order, '')
-    html << display_purchase_order_show_button(purchase_order, '')
     html << display_purchase_order_edit_button(purchase_order, '')
     html << display_purchase_order_delete_button(purchase_order, '')
     html << display_purchase_order_cancel_button(purchase_order, '')

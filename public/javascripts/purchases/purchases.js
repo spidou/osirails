@@ -7,17 +7,25 @@ function can_add_supply()
     
   var purchase_order_items = $('purchase_order_supply_form').select('tr.resource')
   var id_already_chosen = false
+  var is_should_destroy = false
   
   purchase_order_items.each(function(item) {
-    item_id = item.down('.hidden_supply_id').value
+    item_id = item.down('.hidden_supply_id').value;
+    should_destroy = item.down('.should_destroy').value;
     if (supply_id == item_id) {
-      id_already_chosen = true
+      if (parseInt(should_destroy) == 1){
+        unmark_resource_for_destroy(item);
+        is_should_destroy = true;
+      }
+      id_already_chosen = true;
       throw $break;
     }
   })
-  
+
   if (id_already_chosen){
-    alert("Ce produit existe deja dans votre liste. Vous ne pouvez pas le rajouter une seconde fois."); 
+    if (!is_should_destroy){
+      alert("Ce produit existe deja dans votre liste. Vous ne pouvez pas le rajouter une seconde fois."); 
+    }
     return false;
   }
   return true; 
@@ -119,5 +127,10 @@ function mark_resource_for_destroy(element) {
   update_all_total()
 }
 
-
+function unmark_resource_for_destroy(element) {
+  element.down('.should_destroy').value = "";
+  element.down('.sum').innerHTML = 0;
+  element.show();
+  refresh_lign(element);
+}
  

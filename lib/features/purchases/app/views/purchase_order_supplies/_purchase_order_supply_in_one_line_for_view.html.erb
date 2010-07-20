@@ -22,7 +22,7 @@
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.quantity %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_total(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_buttons(purchase_order_supply) %></td>
 </tr>
 
 <% for parcel in parcels %>

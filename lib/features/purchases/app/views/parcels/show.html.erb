@@ -63,7 +63,7 @@
       <% end %>
     </div>
     <div>
-      <% if @parcel.previsional_delivery_date %>
+      <% if @parcel.previsional_delivery_date and @parcel.conveyance != "" %>
       <p>
         <label>Par :</label>
         <strong><%= @parcel.conveyance %></strong>
