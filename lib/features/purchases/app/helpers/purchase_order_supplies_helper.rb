@@ -58,7 +58,7 @@ module PurchaseOrderSuppliesHelper
     elsif purchase_order_supply.processing_by_supplier?
       "En traitement"
     elsif purchase_order_supply.treated?
-      "traité"
+      "Traité"
     elsif purchase_order_supply.cancelled?
       "Annulé"
     end

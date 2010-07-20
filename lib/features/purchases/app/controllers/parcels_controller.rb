@@ -43,7 +43,9 @@ class ParcelsController < ApplicationController
   end
   
   def process_by_supplier_form
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
+    @parcel.status = ""
     unless @parcel.can_be_processed_by_supplier?
       error_access_page(412)
     end
@@ -68,6 +70,8 @@ class ParcelsController < ApplicationController
   
   def ship_form
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel.status = Parcel::STATUS_SHIPPED
     unless @parcel.can_be_shipped?
       error_access_page(412)
     end
@@ -92,6 +96,8 @@ class ParcelsController < ApplicationController
   
   def receive_by_forwarder_form
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel.status = Parcel::STATUS_RECEIVED_BY_FORWARDER
     unless @parcel.can_be_received_by_forwarder?
       error_access_page(412)
     end
@@ -116,6 +122,8 @@ class ParcelsController < ApplicationController
   
   def receive_form
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel.status = Parcel::STATUS_RECEIVED
     unless @parcel.can_be_received?
       error_access_page(412)
     end
@@ -140,6 +148,8 @@ class ParcelsController < ApplicationController
   
   def cancel_form
     @parcel = Parcel.find(params[:parcel_id])
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel.status = Parcel::STATUS_CANCELLED
     unless @parcel.can_be_cancelled?
       error_access_page(412)
     end

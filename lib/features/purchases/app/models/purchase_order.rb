@@ -206,7 +206,11 @@ class PurchaseOrder < ActiveRecord::Base
     for purchase_order_supply in purchase_order_supplies
       counter += 1 if purchase_order_supply.cancelled?
     end
-    return true if counter == purchase_order_supplies.size
+    if counter == purchase_order_supplies.size and counter != 0
+      self.cancelled_comment = "L'ordre est passé automatiquement au status annulé"
+      self.cancel unless status == STATUS_CANCELLED
+      return true 
+    end
     status == STATUS_CANCELLED
   end
   
@@ -301,7 +305,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def cancel
     if can_be_cancelled?
-      self.cancelled_on = Time.now
+      self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
     else
@@ -379,6 +383,10 @@ class PurchaseOrder < ActiveRecord::Base
   
   def save_invoice_document
     invoice_document.save
+  end
+  
+  def put_purchase_order_status_to_cancelled
+    cancelled?
   end
 end
 

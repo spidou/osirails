@@ -1,9 +1,15 @@
 <% @parcel = receive_by_forwarder_forms || Parcel.new %>
-<p>
-  <%= label_tag 'Reçu par le transitaire le :' %>
-  <%= calendar_date_field_tag :parcel, :received_by_forwarder_on %>
-</p>
-<p>
-  <%= label_tag 'En attente de récupération :' %>
-  <%= check_box_tag 'parcel[awaiting_pick_up]', "1", @parcel ? (@parcel.awaiting_pick_up == true ? true : false) : false %>
-</p>
+<%= render :partial => "parcels/ship_forms", :object => @parcel %>
+<%fields_for @parcel do |f|%>
+    <p>
+      <%= f.label :received_by_forwarder_on %>
+      <%= f.calendar_date_select :received_by_forwarder_on , {:disabled => 
+        @parcel.new_record? ? false : (@parcel.received_by_forwarder_on ? true : false)}, {}%>
+    </p>
+    
+    <p>
+      <%= f.label :awaiting_pick_up %>
+      <%= f.check_box :awaiting_pick_up %>
+    </p>
+<% end %>
+

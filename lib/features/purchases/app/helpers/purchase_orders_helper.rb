@@ -6,7 +6,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_complete_button(purchase_order, message = nil)
     return unless purchase_order.can_be_completed?
-    text = "Terminer l'ordre d'achats"
+    text = "Cloturer l'ordre d'achats"
     message ||= " #{text}"
     link_to( image_tag( "complete_24x24.png",
                         :alt => text,
@@ -129,7 +129,7 @@ module PurchaseOrdersHelper
     elsif purchase_order.was_processing_by_supplier?
       "En traitement"
     elsif purchase_order.was_completed?
-      "Complété"
+      "Cloturé"
     end
   end
   
