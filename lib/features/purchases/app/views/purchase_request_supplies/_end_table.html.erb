@@ -1,8 +1,7 @@
-
-   </tbody>
-   <% if is_new_view? %>
-   <tfoot>
-     <tr class='footer'>
+  </tbody>
+  <% if is_new_view? %>
+  <tfoot>
+    <tr class='footer'>
       <td colspan='4'>
         <%= hidden_field_tag 'add_this_supply_reference_id' %>
         <%= custom_text_field_with_auto_complete( :supply, :reference,
@@ -21,7 +20,7 @@
                                       :complete => "$('add_this_supply_reference_id').value = null"   
                                       %>
       </td>
-     </tr>
-   </tfoot>
+    </tr>
+  </tfoot>
   <% end %>
 </table>

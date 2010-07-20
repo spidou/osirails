@@ -17,12 +17,12 @@ class PurchaseOrdersController < ApplicationController
   def new
     if !params[:supplier_id]
       redirect_to :action => :prepare_for_new
-    else 
-      @purchase_order = PurchaseOrder.new
+    else
       @supplier = Supplier.find(params[:supplier_id])
+      @purchase_order = PurchaseOrder.new
       @purchase_order.supplier_id = params[:supplier_id]
       @list_of_supplies = @supplier.merge_purchase_request_supplies if params[:from_purchase_request]
-      @purchase_order.build_with_purchase_request_supplies(@list_of_supplies) if params[:from_purchase_request] 
+      @purchase_order.build_with_purchase_request_supplies(@list_of_supplies) if params[:from_purchase_request]
     end
   end
   

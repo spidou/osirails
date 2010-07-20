@@ -31,8 +31,6 @@ class PurchaseOrder < ActiveRecord::Base
   
   validates_presence_of :user_id, :supplier_id
   validates_presence_of :cancelled_comment, :if => :cancelled_by, :message => "Veuillez préciser la raison pour laquelle vous annulez cet ordre d'achats"
-#  validates_presence_of :purchase_document, :if => :confirmed?     #TODO
-#  validates_presence_of :purchase_document, :if => :completed?     #TODO
   
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   
@@ -182,7 +180,11 @@ class PurchaseOrder < ActiveRecord::Base
     for purchase_order_supply in purchase_order_supplies
       counter += 1 if purchase_order_supply.cancelled?
     end
-    return true if counter == purchase_order_supplies.size
+    if counter == purchase_order_supplies.size and counter != 0
+      self.cancelled_comment = "L'ordre est passé automatiquement au status annulé"
+      self.cancel unless status == STATUS_CANCELLED
+      return true 
+    end
     status == STATUS_CANCELLED
   end
   
@@ -277,7 +279,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def cancel
     if can_be_cancelled?
-      self.cancelled_on = Time.now
+      self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
       self.save
     else
@@ -293,7 +295,6 @@ class PurchaseOrder < ActiveRecord::Base
     parcels.uniq
   end
   
-  #FIXME should the function return total_price of all purchase_order_supplies or just not cancelled ones?
   def total_price(cancelled = false)
     total_price = 0
     total_price_cancelled = 0
@@ -323,9 +324,9 @@ class PurchaseOrder < ActiveRecord::Base
     self.purchase_order_supplies = []
     for purchase_request_supply in list_of_supplies
       purchase_request_supply_tmp = PurchaseOrderSupply.new(:supply_id => purchase_request_supply.supply_id,
-      :quantity => purchase_request_supply.expected_quantity,
-      :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes,
-      :fob_unit_price => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
+                                                            :quantity => purchase_request_supply.expected_quantity,
+                                                            :taxes => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).taxes,
+                                                            :fob_unit_price => SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id).fob_unit_price)
       purchase_request_supply_tmp.unconfirmed_purchase_request_supplies.each do |e|
         purchase_request_supply_tmp.request_order_supplies.build(:purchase_request_supply_id => e.id)
       end
@@ -364,6 +365,10 @@ class PurchaseOrder < ActiveRecord::Base
   
   def save_invoice_document
     invoice_document.save
+  end
+  
+  def put_purchase_order_status_to_cancelled
+    cancelled?
   end
 end
 

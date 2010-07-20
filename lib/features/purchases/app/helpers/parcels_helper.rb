@@ -84,7 +84,7 @@ module ParcelsHelper
   
   def parcel_possible_actions(parcel)
     options = []
-    (options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]) if parcel.can_be_processed_by_supplier?
+    (options << ["En attente d'expédition", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]) if parcel.can_be_processed_by_supplier?
     (options << ["Expédié", Parcel::STATUS_SHIPPED ]) if parcel.can_be_shipped?
     (options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ]) if parcel.can_be_received_by_forwarder?
     (options << ["Reçu", Parcel::STATUS_RECEIVED ]) if parcel.can_be_received?
@@ -95,7 +95,7 @@ module ParcelsHelper
   
   def parcel_all_actions_without_cancel(parcel)
     options = []
-    options << ["En traitement", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]
+    options << ["En attente d'expédition", Parcel::STATUS_PROCESSING_BY_SUPPLIER ]
     options << ["Expédié", Parcel::STATUS_SHIPPED ]
     options << ["Reçu par le transitaire", Parcel::STATUS_RECEIVED_BY_FORWARDER ] 
     options << ["Reçu", Parcel::STATUS_RECEIVED ]

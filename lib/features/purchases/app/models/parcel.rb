@@ -16,30 +16,38 @@ class Parcel < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:shipped_on]                              = "Exp&eacute;di&eacute; le :"
+  @@form_labels[:processing_by_supplier_since]            = "En attente d'expédition le :"
+  @@form_labels[:shipped_on]                              = "Expédié le :"
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
   @@form_labels[:received_by_forwarder_on]                = "Reçu par le transitaire le :"
   @@form_labels[:awaiting_pick_up]                        = "En attente de récupération :"
   @@form_labels[:received_on]                             = "Reçu le :"
-  @@form_labels[:delivery_document]                       = "Bon de livraison :"
+  @@form_labels[:purchase_document]                       = "Bon de livraison :"
   @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
   validates_date :shipped_on, :on_or_after => :processing_by_supplier_since, :if => :shipped?
   validates_date :received_by_forwarder_on, :on_or_after => :shipped_on, :if => :received_by_forwarder?
+  validates_date :received_by_forwarder_on, :on_or_after => :processing_by_supplier_since, :if => :received_by_forwarder?
+  validates_date :received_on, :on_or_after => :processing_by_supplier_since, :if => :received?
+  validates_date :received_on, :on_or_after => :shipped_on, :if => :received?  
   validates_date :received_on, :on_or_after => :received_by_forwarder_on, :if => :received?
   
-  validates_presence_of :conveyance , :if => :shipped?
-  validates_presence_of :cancelled_comment, :if => :cancelled_at
+  validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
+  validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."
    
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?  
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER , STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
+  
+  validates_persistence_of :shipped_on, :if => :shipped_on_was
+  validates_persistence_of :previsional_delivery_date, :if => :previsional_delivery_date_was
+  validates_persistence_of :received_by_forwarder_on, :if => :received_by_forwarder_on_was
+  validates_persistence_of :received_on, :if => :received_on_was
     
   validates_associated :parcel_items
-  validates_associated :delivery_document, :if => :received? 
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference
@@ -48,6 +56,7 @@ class Parcel < ActiveRecord::Base
   
   after_save  :automatically_put_purchase_order_status_to_processing_by_supplier
   after_save  :save_delivery_document, :if => :received?
+  
   
   def get_purchase_order
     self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first  
@@ -134,19 +143,19 @@ class Parcel < ActiveRecord::Base
   end
 
   def can_be_shipped?
-    processing_by_supplier?
+    (processing_by_supplier? and !was_cancelled? and !was_shipped?) || was_processing_by_supplier?
   end
 
   def can_be_received_by_forwarder?
-    shipped?
+    (shipped? || can_be_shipped?) and !was_cancelled? and !was_received_by_forwarder?
   end
   
   def can_be_received?
-    new_record? or was_received_by_forwarder?
+    (new_record? || was_received_by_forwarder? || can_be_received_by_forwarder?) and !was_cancelled? and !was_received?
   end
   
   def can_be_cancelled?
-    !was_cancelled? and !new_record? and !was_received?
+    (!was_cancelled? and !new_record? and !was_received?) || can_be_received?
   end
   
   def process_by_supplier

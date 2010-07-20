@@ -23,11 +23,11 @@ class ParcelItem < ActiveRecord::Base
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:cancelled_comment] =   "Veuillez saisir la raison de l'annulation :"
-  @@form_labels[:purchase_document] =   "Veuillez joindre le devis :"
+  @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
+  @@form_labels[:purchase_document]                       = "Veuillez joindre le devis :"
   @@form_labels[:issues_comment]                          = "Commentaire :"
-  @@form_labels[:issues_quantity]                         = "Quantit&eacute;e &agrave; declar&eacute;e(s) :"
-  @@form_labels[:must_be_reshipped]                       = "&agrave; r&eacute;expedi&eacute;e? :"
+  @@form_labels[:issues_quantity]                         = "Quantit&eacute; &agrave; declarer :"
+  @@form_labels[:must_be_reshipped]                       = "A r&eacute;expedier? :"
   
   after_save :automatically_cancel_parcel_if_empty, :if => :cancelled_at_was
   after_save :save_issue_purchase_order_supply, :if => :issued_at

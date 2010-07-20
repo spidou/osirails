@@ -29,7 +29,12 @@ class PurchaseOrderSupply < ActiveRecord::Base
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
 
   validates_associated :request_order_supplies
-
+  
+  after_save  :automatically_put_purchase_order_status_to_cancelled
+  
+  def automatically_put_purchase_order_status_to_cancelled
+    self.purchase_order.put_purchase_order_status_to_cancelled
+  end
   
   def remaining_quantity_for_parcel
     result = 0

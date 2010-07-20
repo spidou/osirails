@@ -12,6 +12,13 @@
   <%= render :partial => "parcels/array_foot" %>
 
   <h2>Signaler le colis comme "En traitement par le fournisseur".</h2>
+  <% form_for [@purchase_order, @parcel], :url => purchase_order_parcel_alter_status_path(@purchase_order, @parcel) do |f| %>
+    <% options = parcel_possible_actions(@parcel) %>
+   
+    <%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %>
+    <%= f.select(:status, options, {},{
+:onchange => "submit();"})%>
+  <% end %>
   <% form_for [@purchase_order, @parcel], :url => { :action => "process_by_supplier" }  do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
