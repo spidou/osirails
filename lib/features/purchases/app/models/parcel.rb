@@ -29,9 +29,11 @@ class Parcel < ActiveRecord::Base
   validates_date :shipped_on, :on_or_after => :processing_by_supplier_since, :if => :shipped?
   validates_date :received_by_forwarder_on, :on_or_after => :shipped_on, :if => :received_by_forwarder?
   validates_date :received_by_forwarder_on, :on_or_after => :processing_by_supplier_since, :if => :received_by_forwarder?
+  #validates_date :received_by_forwarder_on, :on_or_before => Date::today, :if => :received_by_forwarder?
   validates_date :received_on, :on_or_after => :processing_by_supplier_since, :if => :received?
   validates_date :received_on, :on_or_after => :shipped_on, :if => :received?  
   validates_date :received_on, :on_or_after => :received_by_forwarder_on, :if => :received?
+  #validates_date :received_on, :on_or_before => Date::today, :if => :received?  
   
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
   validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."

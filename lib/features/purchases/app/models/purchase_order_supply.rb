@@ -8,6 +8,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   has_many :parcel_items
   has_many :parcels, :through => :parcel_items
   
+  has_one   :issued_parcel_item, :class_name => "ParcelItem", :foreign_key => :issue_purchase_order_supply_id
 #  has_one  :parcel, :through => :parcel_items
   
   belongs_to :purchase_order
@@ -30,8 +31,31 @@ class PurchaseOrderSupply < ActiveRecord::Base
 
   validates_associated :request_order_supplies
   
-  after_save  :automatically_put_purchase_order_status_to_cancelled
+  after_save  :automatically_put_purchase_order_status_to_cancelled , :unless => :new_record?
+  after_save  :purchase_order_supply_associated_to_report, :unless => :new_record?
+  after_save  :automatically_put_parcel_items_status_to_cancelled, :unless => :new_record?
   
+  def automatically_put_parcel_items_status_to_cancelled
+    for parcel_item in parcel_items
+      if parcel_item.can_be_cancelled? && self.cancelled_by
+        parcel_item.cancelled_comment = "cancelled"
+        parcel_item.cancelled_by = self.cancelled_by
+        parcel_item.cancel 
+      end
+    end
+  end
+  
+  def purchase_order_supply_associated_to_report
+    if (issued_item = self.issued_parcel_item) && self.cancelled_by
+      issued_item.issue_purchase_order_supply_id = nil
+      issued_item.must_be_reshipped = nil
+      issued_item.issued_at = nil
+      issued_item.issues_quantity = nil
+      issued_item.issues_comment = nil
+      issued_item.save
+    end
+  end
+
   def automatically_put_purchase_order_status_to_cancelled
     self.purchase_order.put_purchase_order_status_to_cancelled
   end
@@ -86,11 +110,11 @@ class PurchaseOrderSupply < ActiveRecord::Base
     for parcel_item in parcel_items
       return false if parcel_item.parcel.status == Parcel::STATUS_RECEIVED
     end
-    parcel_items.any? ? true : false
+     return true 
   end
 
   def can_be_cancelled?
-    (untreated? and purchase_order.confirmed? && !cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
+    (untreated? and !purchase_order.confirmed? && !was_cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
   end
 
   def can_be_deleted?

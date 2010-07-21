@@ -2,6 +2,8 @@
   <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
 <% end %>
 
+<%= generate_parcel_contextual_menu_partial(@parcel.get_purchase_order, @parcel) %>
+
 <h1>Colis</h1>
 <div class="presentation_medium">
   <h2>Informations</h2>

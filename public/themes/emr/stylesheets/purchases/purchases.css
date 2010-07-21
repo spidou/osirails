@@ -15,6 +15,13 @@ table tfoot tr.footer{
   text-align: right;
 }
 
+#parcels {
+}
+
+#parcel {
+  border-top: 5px solid #737373;
+}
+
 .parcel span {
   display: inline-block;
 }

@@ -29,7 +29,6 @@ class ParcelItem < ActiveRecord::Base
   @@form_labels[:issues_quantity]                         = "Quantit&eacute; &agrave; declarer :"
   @@form_labels[:must_be_reshipped]                       = "A r&eacute;expedier? :"
   
-  after_save :automatically_cancel_parcel_if_empty, :if => :cancelled_at_was
   after_save :save_issue_purchase_order_supply, :if => :issued_at
   
   before_validation_on_update :build_issue_purchase_order_supply, :if => :issued_at 
