@@ -5,6 +5,18 @@ class PurchaseOrder < ActiveRecord::Base
   
   has_many :purchase_order_supplies
   has_many :supplier_supplies, :finder_sql => 'SELECT DISTINCT s.* FROM supplier_supplies s INNER JOIN (purchase_order_supplies t) ON (t.purchase_order_id = #{id}) WHERE (s.supplier_id = #{supplier_id} AND s.supply_id = t.supply_id)'
+  has_many :parcel_items, :through => :purchase_order_supplies
+  has_many :parcels, :finder_sql => '
+                                    SELECT DISTINCT parcels.*
+                                    FROM purchase_orders 
+                                    INNER JOIN purchase_order_supplies
+                                    ON #{id} = purchase_order_supplies.purchase_order_id
+                                    INNER JOIN parcel_items
+                                    ON purchase_order_supplies.id = parcel_items.purchase_order_supply_id
+                                    INNER JOIN parcels
+                                    ON parcel_items.parcel_id = parcels.id
+                                    ORDER BY parcels.status, parcels.cancelled_at DESC, parcels.received_on DESC, parcels.received_by_forwarder_on DESC, parcels.shipped_on DESC, parcels.processing_by_supplier_since DESC
+                                    '
   
   belongs_to :invoice_document, :class_name => "PurchaseDocument"
   belongs_to :quotation_document, :class_name => "PurchaseDocument"
@@ -48,6 +60,20 @@ class PurchaseOrder < ActiveRecord::Base
   validates_associated :invoice_document, :if => :completed?
   validates_associated :quotation_document, :if => :confirmed?
   
+  named_scope :pending,
+#                        :select => 'DISTINCT purchase_orders.*',
+#                        :joins => 'INNER JOIN purchase_order_supplies
+#                                  ON purchase_orders.id = purchase_order_supplies.purchase_order_id
+#                                  LEFT JOIN parcel_items
+#                                  ON purchase_order_supplies.id = parcel_items.purchase_order_supply_id
+#                                  LEFT JOIN parcels
+#                                  ON parcel_items.parcel_id = parcels.id',
+                        :conditions => ["purchase_orders.status NOT LIKE ? AND purchase_orders.status NOT LIKE ? OR purchase_orders.status IS NULL", STATUS_COMPLETED, STATUS_CANCELLED ],
+                        :order => "purchase_orders.created_at DESC"                        
+#                        , parcels.previsional_delivery_date DESC"
+                        
+#  named_scope :closed, :conditions => ["purchase_orders.status LIKE ? AND purchase_orders.status LIKE ?", STATUS_COMPLETED, STATUS_CANCELLED ],
+#                        :order => "purchase_orders.created_at DESC"
   
   before_validation :build_supplier_supplies, :build_associated_request_order_supplies
   before_validation :update_reference_only_on_confirm
@@ -281,14 +307,6 @@ class PurchaseOrder < ActiveRecord::Base
     else
       false
     end
-  end
-  
-  def get_parcels
-    parcels = []
-    for purchase_order_supply in purchase_order_supplies
-      parcels += purchase_order_supply.parcels
-    end
-    parcels.uniq
   end
   
   def total_price(cancelled = false)
