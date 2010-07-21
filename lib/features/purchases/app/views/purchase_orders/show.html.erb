@@ -17,10 +17,10 @@
         <label>Fournisseur :</label> 
         <strong><%= @purchase_order.supplier.name.to_s %></strong>
       </p>
-      <%= "<p><label>Validé le :</label> <strong>#{@purchase_order.confirmed_on.humanize}</strong></p>" if (@purchase_order.confirmed_on and (@purchase_order.status != PurchaseOrder::STATUS_CONFIRMED)) %>
-      <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_by_supplier_since.humanize}</strong></p>" if (@purchase_order.processing_by_supplier_since and (@purchase_order.status != PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER)) %>
-      <%= "<p><label>Terminé le :</label> <strong>#{@purchase_order.completed_on.humanize}</strong></p>" if (@purchase_order.completed_on and (@purchase_order.status != PurchaseOrder::STATUS_COMPLETED)) %>
-      <%= ("<p><label>Annulé le :</label> <strong>" + display_purchase_order_current_status_date(@purchase_order) + "</strong></p>") if (@purchase_order.was_cancelled?) %>
+      <%= "<p><label>Validé le :</label> <strong>#{@purchase_order.confirmed_on.humanize}</strong></p>" if (@purchase_order.confirmed_on and @purchase_order.status != PurchaseOrder::STATUS_CONFIRMED) %>
+      <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_by_supplier_since.humanize}</strong></p>" if (@purchase_order.processing_by_supplier_since and @purchase_order.status != PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER) %>
+      <%= "<p><label>Terminé le :</label> <strong>#{@purchase_order.completed_on.humanize}</strong></p>" if (@purchase_order.completed_on and @purchase_order.status != PurchaseOrder::STATUS_COMPLETED) %>
+      <%= ("<p><label>Annulé le :</label> <strong>#{@purchase_order.cancelled_at.humanize}</strong></p>") if (@purchase_order.was_cancelled? and @purchase_order.status != PurchaseOrder::STATUS_CANCELLED) %>
       <p>
         <label>Statut en cours :</label> 
         <strong><%= display_purchase_order_current_status(@purchase_order) %></strong> depuis le <strong><%= display_purchase_order_current_status_date(@purchase_order) %></strong>

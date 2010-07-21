@@ -9,22 +9,16 @@
 <% end %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_reference(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.created_at.humanize %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_current_status_date(purchase_order) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %><%= display_purchase_order_current_status_date(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.address.country_name %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order.supplier.name %></td>
-<%=
-  if parcels.empty?
-    "
+<% if parcels.empty? %>    
     <td></td>
     <td></td>
-    "
-  else
-    "
-    <td>#{parcels.first.reference}</td>
-    <td>#{display_parcel_previsional_deliveray_date(parcels.first)}</td>
-    "
-  end
-%>
+<% else %>
+    <td <%= "class=\"disabled\"" if parcels.first.was_cancelled? %>><%= parcels.first.reference %></td>
+    <td <%= "class=\"disabled\"" if parcels.first.was_cancelled? %>><%= display_parcel_received_on(parcels.first) %></td>
+<% end %>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_associated_purchase_requests(purchase_order) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_total_price(purchase_order, cancelled) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_buttons(purchase_order)%></td>
@@ -33,10 +27,15 @@
 <%
 for parcel in parcels
   if parcel != parcels.first 
+
+parcel_class = "even" if (closed_purchase_order_in_one_line_counter % 2) == 0
+parcel_class = "disabled" if parcel.was_cancelled?
+parcel_class = "even disabled" if ((closed_purchase_order_in_one_line_counter % 2) == 0) and parcel.was_cancelled?
 %>
-    <tr <%= "class=\"even\"" if (closed_purchase_order_in_one_line_counter % 2) == 0 %>>
+
+    <tr class="<%= parcel_class %>">
       <td><%= parcel.reference %></td>
-      <td><%= display_parcel_previsional_deliveray_date(parcel) %></td>
+      <td><%= display_parcel_received_on(parcel) %></td>
     </tr>
 <%  
   end

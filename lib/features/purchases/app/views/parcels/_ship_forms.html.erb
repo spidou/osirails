@@ -9,7 +9,7 @@
     </p>
     <p>
       <%= f.label :conveyance %>
-      <%= f.text_field :conveyance %>
+      <%= f.text_field :conveyance, :disabled => ( @parcel.conveyance ? true : false )  %>
     </p>
     <p>
       <%= f.label :previsional_delivery_date %>

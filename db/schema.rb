@@ -941,8 +941,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   create_table "parcels", :force => true do |t|
     t.integer  "delivery_document_id",         :limit => 11
     t.integer  "cancelled_by",                 :limit => 11
+    t.integer  "status",                       :limit => 11
     t.string   "reference"
-    t.string   "status"
     t.string   "conveyance"
     t.text     "cancelled_comment"
     t.datetime "cancelled_at"
@@ -1156,8 +1156,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "quotation_document_id",        :limit => 11
     t.integer  "payment_document_id",          :limit => 11
     t.integer  "cancelled_by",                 :limit => 11
+    t.integer  "status",                       :limit => 11
     t.string   "reference"
-    t.string   "status"
     t.string   "cancelled_comment"
     t.datetime "cancelled_at"
     t.date     "confirmed_on"

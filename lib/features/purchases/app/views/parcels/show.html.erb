@@ -26,61 +26,61 @@
     </div>
     <div>
       <% if @parcel.previsional_delivery_date %>
-      <p>
-        <label>Date de livraison prévu le :</label>
-        <strong><%= display_parcel_previsional_deliveray_date(@parcel) %></strong>
-      </p>
+        <p>
+          <label>Date de livraison prévu le :</label>
+          <strong><%= display_parcel_previsional_deliveray_date(@parcel) %></strong>
+        </p>
       <% end %>
       <% if @parcel.processing_by_supplier_since %>
-      <p>
-        <label>En traitement depuis le :</label>
-        <strong><%= display_parcel_processing_by_supplier_since(@parcel) %></strong>
-      </p>
+        <p>
+          <label>En traitement depuis le :</label>
+          <strong><%= display_parcel_processing_by_supplier_since(@parcel) %></strong>
+        </p>
       <% end %>
       <% if @parcel.shipped_on %>
-      <p>
-        <label>Expédié depuis le :</label>
-        <strong><%= display_parcel_shipped_on(@parcel) %></strong>
-      </p>
+        <p>
+          <label>Expédié depuis le :</label>
+          <strong><%= display_parcel_shipped_on(@parcel) %></strong>
+        </p>
       <% end %>
       <% if @parcel.received_by_forwarder_on %>
-      <p>
-        <label>Reçu par le transitaire le :</label>
-        <strong><%= display_parcel_received_by_forwarder_on(@parcel) %></strong>
-      </p>
+        <p>
+          <label>Reçu par le transitaire le :</label>
+          <strong><%= display_parcel_received_by_forwarder_on(@parcel) %></strong>
+        </p>
       <% end %>
       <% if @parcel.received_on %>
-      <p>
-        <label>Reçu le :</label>
-        <strong><%= display_parcel_received_on(@parcel) %></strong>
-      </p>
+        <p>
+          <label>Reçu le :</label>
+          <strong><%= display_parcel_received_on(@parcel) %></strong>
+        </p>
       <% end %>
       <% if @parcel.cancelled_at %>
-      <p>
-        <label>Annulé le :</label>
-        <strong></strong>
-      </p>
+        <p>
+          <label>Annulé le :</label>
+          <strong><%= display_parcel_cancelled_at(@parcel) %></strong>
+        </p>
       <% end %>
     </div>
     <div>
       <% if @parcel.previsional_delivery_date and @parcel.conveyance != "" %>
-      <p>
-        <label>Par :</label>
-        <strong><%= @parcel.conveyance %></strong>
-      </p>
+        <p>
+          <label>Par :</label>
+          <strong><%= @parcel.conveyance %></strong>
+        </p>
       <% end %>
       <% if @parcel.received_by_forwarder_on %>
-      <p>
-        <label>En attente de récupération :</label>
-        <strong><%= @parcel.received_on and @parcel.awaiting_pick_up ? ( "A été récupéré" ) : ( @parcel.awaiting_pick_up ? "Oui" : "Non" ) %></strong>
-      </p>
+        <p>
+          <label>En attente de récupération :</label>
+          <strong><%= (@parcel.received_on and @parcel.awaiting_pick_up) ? ( "A été récupéré" ) : ( @parcel.awaiting_pick_up == "1" ? "Oui" : "Non" ) %></strong>
+        </p>
       <% end %>
       <% if @parcel.delivery_document %>
-      <p>
-        <label>Bon de livraison :</label>
-        <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "Bon de livraison du colis" ),
-          purchase_order_parcel_attached_delivery_document_path(@purchase_order, @parcel) %>
-      </p>
+        <p>
+          <label>Bon de livraison :</label>
+          <%= link_to image_tag ("download_16x16.png", :alt => "Facture", :title => "Bon de livraison du colis" ),
+            purchase_order_parcel_attached_delivery_document_path(@purchase_order, @parcel) %>
+        </p>
       <% end %>
     </div>
   </div>

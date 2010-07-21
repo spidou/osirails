@@ -30,7 +30,9 @@ module PurchaseOrderSuppliesHelper
   
   def display_purchase_order_supply_reference(purchase_order_supply)
     return "" unless purchase_order_supply.supply.reference
-    purchase_order_supply.supply.reference
+    supply = purchase_order_supply.supply
+    supply.type == "Consumable" ? url = consumable_path(supply) : url = commodity_path(supply)
+    link_to( supply.reference, url, :popup => true )
   end
   
   def display_purchase_order_supply_unit_price_including_tax(purchase_order_supply)

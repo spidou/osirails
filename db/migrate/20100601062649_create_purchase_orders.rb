@@ -3,8 +3,8 @@ class CreatePurchaseOrders < ActiveRecord::Migration
     create_table :purchase_orders do |t|
       t.references  :user, :supplier, :invoice_document
       t.references  :quotation_document, :payment_document
-      t.integer     :cancelled_by
-      t.string      :reference,:status, :cancelled_comment
+      t.integer     :cancelled_by, :status
+      t.string      :reference, :cancelled_comment
       t.datetime    :cancelled_at
       t.date        :confirmed_on, :processing_by_supplier_since, :completed_on
       

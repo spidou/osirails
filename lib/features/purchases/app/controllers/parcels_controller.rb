@@ -26,15 +26,15 @@ class ParcelsController < ApplicationController
   def alter_status
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    if params[:parcel][:status] == ""
+    if params[:parcel][:status].to_i == Parcel::STATUS_PROCESSING_BY_SUPPLIER
       redirect_to purchase_order_parcel_process_by_supplier_form_path(@purchase_order, @parcel)
-    elsif params[:parcel][:status] == Parcel::STATUS_SHIPPED
+    elsif params[:parcel][:status].to_i == Parcel::STATUS_SHIPPED
       redirect_to purchase_order_parcel_ship_form_path(@purchase_order, @parcel)
-    elsif params[:parcel][:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
+    elsif params[:parcel][:status].to_i == Parcel::STATUS_RECEIVED_BY_FORWARDER
       redirect_to purchase_order_parcel_receive_by_forwarder_form_path(@purchase_order, @parcel)
-    elsif params[:parcel][:status] == Parcel::STATUS_RECEIVED
+    elsif params[:parcel][:status].to_i == Parcel::STATUS_RECEIVED
       redirect_to purchase_order_parcel_receive_form_path(@purchase_order, @parcel)
-    elsif params[:parcel][:status] == Parcel::STATUS_CANCELLED
+    elsif params[:parcel][:status].to_i == Parcel::STATUS_CANCELLED
       @parcel.cancelled_by = current_user.id
       redirect_to purchase_order_parcel_cancel_form_path(@purchase_order, @parcel)
     else
@@ -45,7 +45,7 @@ class ParcelsController < ApplicationController
   def process_by_supplier_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
-    @parcel.status = ""
+    @parcel.status = Parcel::STATUS_PROCESSING_BY_SUPPLIER
     unless @parcel.can_be_processed_by_supplier?
       error_access_page(412)
     end
@@ -174,10 +174,10 @@ class ParcelsController < ApplicationController
   end
   
   def get_parcel_status_partial
-    render :partial => 'parcels/receive_forms' if params[:status] == Parcel::STATUS_RECEIVED
-    render :partial => 'parcels/ship_forms' if params[:status] == Parcel::STATUS_SHIPPED
-    render :partial => 'parcels/receive_by_forwarder_forms' if params[:status] == Parcel::STATUS_RECEIVED_BY_FORWARDER
-    render :partial => 'parcels/process_by_supplier_forms' if params[:status] == ""
+    render :partial => 'parcels/receive_forms' if params[:status].to_i == Parcel::STATUS_RECEIVED
+    render :partial => 'parcels/ship_forms' if params[:status].to_i == Parcel::STATUS_SHIPPED
+    render :partial => 'parcels/receive_by_forwarder_forms' if params[:status].to_i == Parcel::STATUS_RECEIVED_BY_FORWARDER
+    render :partial => 'parcels/process_by_supplier_forms' if params[:status].to_i == Parcel::STATUS_PROCESSING_BY_SUPPLIER
   end
   
   def attached_delivery_document

@@ -26,11 +26,11 @@ class PurchaseOrder < ActiveRecord::Base
   
   REQUESTS_PER_PAGE = 5
   
-  STATUS_DRAFT = nil
-  STATUS_CONFIRMED = "confirmed"
-  STATUS_PROCESSING_BY_SUPPLIER = "processing_by_supplier"
-  STATUS_COMPLETED = "completed"
-  STATUS_CANCELLED = "cancelled"
+  STATUS_DRAFT = 1
+  STATUS_CONFIRMED = 2
+  STATUS_PROCESSING_BY_SUPPLIER = 3
+  STATUS_COMPLETED = 4
+  STATUS_CANCELLED = 5
     
   cattr_accessor :form_labels
   @@form_labels = Hash.new
@@ -60,20 +60,12 @@ class PurchaseOrder < ActiveRecord::Base
   validates_associated :invoice_document, :if => :completed?
   validates_associated :quotation_document, :if => :confirmed?
   
-  named_scope :pending,
-#                        :select => 'DISTINCT purchase_orders.*',
-#                        :joins => 'INNER JOIN purchase_order_supplies
-#                                  ON purchase_orders.id = purchase_order_supplies.purchase_order_id
-#                                  LEFT JOIN parcel_items
-#                                  ON purchase_order_supplies.id = parcel_items.purchase_order_supply_id
-#                                  LEFT JOIN parcels
-#                                  ON parcel_items.parcel_id = parcels.id',
-                        :conditions => ["purchase_orders.status NOT LIKE ? AND purchase_orders.status NOT LIKE ? OR purchase_orders.status IS NULL", STATUS_COMPLETED, STATUS_CANCELLED ],
+  named_scope :pending, :conditions => ["purchase_orders.status = ? OR purchase_orders.status = ? OR purchase_orders.status = ?", STATUS_DRAFT, STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER ],
                         :order => "purchase_orders.created_at DESC"                        
-#                        , parcels.previsional_delivery_date DESC"
-                        
-#  named_scope :closed, :conditions => ["purchase_orders.status LIKE ? AND purchase_orders.status LIKE ?", STATUS_COMPLETED, STATUS_CANCELLED ],
-#                        :order => "purchase_orders.created_at DESC"
+  named_scope :completed, :conditions => ["purchase_orders.status = ?", STATUS_COMPLETED ],
+                        :order => "purchase_orders.completed_on DESC"
+  named_scope :closed, :conditions => ["purchase_orders.status = ? OR purchase_orders.status = ?", STATUS_COMPLETED, STATUS_CANCELLED ],
+                        :order => "purchase_orders.cancelled_at DESC, purchase_orders.completed_on DESC"
   
   before_validation :build_supplier_supplies, :build_associated_request_order_supplies
   before_validation :update_reference_only_on_confirm
@@ -357,11 +349,6 @@ class PurchaseOrder < ActiveRecord::Base
     for purchase_order_supply in purchase_order_supplies
       return true if purchase_order_supply.remaining_quantity_for_parcel > 0
     end
-    false
-  end
-  
-  def is_closed_or_cancelled?
-    return true if (was_completed? or was_cancelled?)
     false
   end
   

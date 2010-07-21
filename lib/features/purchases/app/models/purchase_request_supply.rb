@@ -3,9 +3,9 @@ class PurchaseRequestSupply < ActiveRecord::Base
   has_many  :request_order_supplies
   has_many  :purchase_order_supplies, :through => :request_order_supplies
   
-  has_one   :confirmed_purchase_order_supply, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status IS NOT NULL' ],  :source => :purchase_order_supply
+  has_one   :confirmed_purchase_order_supply, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status > ?', PurchaseOrder::STATUS_DRAFT ],  :source => :purchase_order_supply
   
-  has_many  :draft_purchase_order_supplies, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status IS NULL'],  :source => :purchase_order_supply
+  has_many  :draft_purchase_order_supplies, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],  :source => :purchase_order_supply
 
   belongs_to :purchase_request
   belongs_to :supply
@@ -16,10 +16,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
   
   validates_numericality_of :expected_quantity, :greater_than => 0
   validates_date :expected_delivery_date, :after => Date.today, :if => :new_record?
-  
-  def check_order_supply_status
-    #TODO
-  end
   
   def can_be_cancelled?
     cancelled? ? false : true

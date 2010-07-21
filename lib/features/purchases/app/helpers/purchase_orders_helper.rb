@@ -122,14 +122,14 @@ module PurchaseOrdersHelper
   def display_purchase_order_current_status(purchase_order)
     if purchase_order.was_cancelled?
       "Annulé"
-    elsif purchase_order.was_draft?
-      "Brouillon"
-    elsif purchase_order.was_confirmed?
-      "Confirmé"
-    elsif purchase_order.was_processing_by_supplier?
-      "En traitement"
     elsif purchase_order.was_completed?
       "Cloturé"
+    elsif purchase_order.was_processing_by_supplier?
+      "En traitement"
+    elsif purchase_order.was_confirmed?
+      "Confirmé"
+    elsif purchase_order.was_draft?
+      "Brouillon"
     end
   end
   
@@ -137,14 +137,14 @@ module PurchaseOrdersHelper
     if purchase_order.was_cancelled?
       return purchase_order.cancelled_at.humanize if purchase_order.cancelled_at
       purchase_order.purchase_order_supplies.last(:order => "cancelled_at").cancelled_at.humanize
-    elsif purchase_order.was_draft?
-      purchase_order.created_at.humanize
-    elsif purchase_order.was_confirmed?
-      purchase_order.confirmed_on.humanize
-    elsif purchase_order.was_processing_by_supplier?
-      purchase_order.processing_by_supplier_since.humanize
     elsif purchase_order.was_completed?
       purchase_order.completed_on.humanize
+    elsif purchase_order.was_processing_by_supplier?
+      purchase_order.processing_by_supplier_since.humanize
+    elsif purchase_order.was_confirmed?
+      purchase_order.confirmed_on.humanize
+    elsif purchase_order.was_draft?
+      purchase_order.created_at.humanize
     end
   end
   

@@ -1,10 +1,11 @@
 <% purchase_order = contextual_menu %>
 <% add_contextual_menu_item :purchase_order do %>
-  <%= display_purchase_order_complete_button(purchase_order) if is_edit_view? or is_show_view? %>
+  <%= display_purchase_order_complete_button(purchase_order) if (is_edit_view? or is_show_view?) and !(params[:action] == "complete_form" or params[:action] == "complete") %>
   <%= display_purchase_order_confirm_button(purchase_order) if (is_edit_view? or is_show_view?) and !(params[:action] == "confirm_form" or params[:action] == "confirm") %>
   <%= display_purchase_order_add_button unless is_new_view? or (params[:action] == "prepare_for_new") %>
   <%= display_purchase_order_show_button(purchase_order) if is_edit_view? %>
   <%= display_purchase_order_edit_button(purchase_order) if is_show_view? %>
+  <%= display_purchase_order_cancel_button(purchase_order) if (is_show_view? or is_edit_view?) and !(params[:action] == "cancel_form" or params[:action] == "cancel") %>
   <%= display_purchase_order_delete_button(purchase_order) if is_show_view? or is_edit_view? %>
 <% end %>
 
@@ -12,7 +13,7 @@
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats en cours", :title => list_text) + " " + list_text,
   :controller => "pending_purchase_orders", :action => "index" ) unless params[:controller] == "pending_purchase_orders" and is_index_view? %>
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats terminés", :title => list_text) + " " + list_text,
-  :controller => "closed_purchase_orders", :action => "index" ) unless params[:controller] == "closed_purchase_orders" %>
+  :controller => "closed_purchase_orders", :action => "index", :filter => "completed_only" ) unless params[:controller] == "closed_purchase_orders" and params['filter'] %>
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats terminés et ceux annulés", :title => list_text) + " " + list_text, 
-  :controller => "closed_purchase_orders", :action => "index", :filter => PurchaseOrder::STATUS_CANCELLED ) unless params[:controller] == "pending_purchase_orders" and params['filter'] %>
+  :controller => "closed_purchase_orders", :action => "index" ) unless params[:controller] == "closed_purchase_orders" and !params['filter'] %>
 <% end %>

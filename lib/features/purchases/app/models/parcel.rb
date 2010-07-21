@@ -8,15 +8,15 @@ class Parcel < ActiveRecord::Base
   
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   
-  STATUS_PROCESSING_BY_SUPPLIER = nil || ""
-  STATUS_SHIPPED = "shipped"
-  STATUS_RECEIVED_BY_FORWARDER = "received_by_forwarder"
-  STATUS_RECEIVED = "received"
-  STATUS_CANCELLED = "cancel"
+  STATUS_PROCESSING_BY_SUPPLIER = 1
+  STATUS_SHIPPED = 2
+  STATUS_RECEIVED_BY_FORWARDER = 3
+  STATUS_RECEIVED = 4
+  STATUS_CANCELLED = 5
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
-  @@form_labels[:processing_by_supplier_since]            = "En attente d'expédition le :"
+  @@form_labels[:processing_by_supplier_since]            = "En attente d'expédition depuis le :"
   @@form_labels[:shipped_on]                              = "Expédié le :"
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
@@ -43,6 +43,7 @@ class Parcel < ActiveRecord::Base
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
   
   validates_persistence_of :shipped_on, :if => :shipped_on_was
+  validates_persistence_of :conveyance, :if => :conveyance_was
   validates_persistence_of :previsional_delivery_date, :if => :previsional_delivery_date_was
   validates_persistence_of :received_by_forwarder_on, :if => :received_by_forwarder_on_was
   validates_persistence_of :received_on, :if => :received_on_was
@@ -143,11 +144,11 @@ class Parcel < ActiveRecord::Base
   end
 
   def can_be_shipped?
-    (processing_by_supplier? and !was_cancelled? and !was_shipped?) || was_processing_by_supplier?
+    (was_processing_by_supplier? and !was_cancelled? and !was_shipped?) || (was_processing_by_supplier? and !was_cancelled?)
   end
 
   def can_be_received_by_forwarder?
-    (shipped? || can_be_shipped?) and !was_cancelled? and !was_received_by_forwarder?
+    (was_shipped? || can_be_shipped?) and !was_cancelled? and !was_received_by_forwarder?
   end
   
   def can_be_received?

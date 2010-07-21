@@ -31,7 +31,7 @@
         <% if f.form_view? %>
           <p>
             <%= f.label :global_date %>
-            <%= f.text_field(:global_date, :size => 8) %>
+            <%= f.calendar_date_select :global_date %>
           </p>
         <% end %>
         <% unless f.form_view? %>

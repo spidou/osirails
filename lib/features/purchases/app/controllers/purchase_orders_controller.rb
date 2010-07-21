@@ -27,12 +27,13 @@ class PurchaseOrdersController < ApplicationController
   end
   
   def edit
-    @purchase_order  = PurchaseOrder.find(params[:id])
+    @purchase_order = PurchaseOrder.find(params[:id])
     error_access_page(412) unless @purchase_order.can_be_edited?
   end
   
   def create
     @purchase_order = PurchaseOrder.new(params[:purchase_order])
+    @purchase_order.status = PurchaseOrder::STATUS_DRAFT
     @purchase_order.user_id = current_user.id
     if @purchase_order.save
       flash[:notice] = "L'ordre d'achat a été créé avec succès."
@@ -125,13 +126,15 @@ class PurchaseOrdersController < ApplicationController
   end
   
   def confirm_form
-    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    unless @purchase_order.can_be_confirmed?
       error_access_page(412)
     end
   end
     
   def confirm
-    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_confirmed?
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @purchase_order.can_be_confirmed?
       @purchase_order.attributes = params[:purchase_order]
       unless @purchase_order.confirm
         render :action => "confirm_form"
@@ -159,20 +162,22 @@ class PurchaseOrdersController < ApplicationController
   end
   
   def complete_form
-    unless (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    unless @purchase_order.can_be_completed?
       error_access_page(412)
     end
   end
   
   def complete
-    if (@purchase_order = PurchaseOrder.find(params[:purchase_order_id])).can_be_completed?
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    if @purchase_order.can_be_completed?
       @purchase_order.attributes = params[:purchase_order]
       unless @purchase_order.complete
         flash[:error] = "une erreur est survenue lors de la completion de l'ordre d'achat."
         render :action => "complete_form"
       else
         flash[:notice] = "L'ordre d'achat a été completé avec succès." 
-        redirect_to closed_purchase_orders_path
+        redirect_to @purchase_order
       end
     else
       error_access_page(412)

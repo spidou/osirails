@@ -5,7 +5,7 @@
       <%= f.hidden_field :purchase_order_supply_id , :class => "purchase_order_supply_id"%>
       <%= f.hidden_field :selected , :class => "selected", :value => parcel_item.selected%> 
     </td>
-    <td><%= parcel_item.purchase_order_supply.supply.reference %></td>   
+    <td><%= display_purchase_order_supply_reference(parcel_item.purchase_order_supply) %></td>   
     <td><%= parcel_item.purchase_order_supply.supply.designation %></td>
     <td><%= parcel_item.purchase_order_supply.supplier_reference %></td>   
     <td><%= parcel_item.purchase_order_supply.supplier_designation %></td>
