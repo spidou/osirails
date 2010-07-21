@@ -1,4 +1,4 @@
-<tbody class="parcel">
+<tbody class="parcel" id="parcel">
   <tr>
     <td colspan= 9 class="parcel_summary">
       <p>
@@ -31,10 +31,4 @@
   </tr>
   <%= render :partial => "parcel_items/parcel_item", :collection => parcel.parcel_items %>
 </tbody>
-<% unless (parcel == parcel.parcel_items.first.purchase_order_supply.purchase_order.parcels.last) or (params[:action] == "ship_form") %>
-  <tbody>
-    <tr>
-      <td colspan=8>&nbsp;</td>
-    </tr>
-  </tbody>
-<% end %>
+

@@ -1,11 +1,13 @@
-<tr <%= "class=\"disabled\"" if parcel_item.was_cancelled? %>
-  <td><%= parcel_item.purchase_order_supply.supply.reference %></td>
-  <td><%= parcel_item.purchase_order_supply.supply.designation %></td>
-  <td><%= parcel_item.purchase_order_supply.supplier_reference %></td>
-  <td><%= parcel_item.purchase_order_supply.supplier_designation %></td>
+<% purchase_order_supply = parcel_item.purchase_order_supply %>
+<% supply = purchase_order_supply.supply %>
+<tr <%= "class=\"disabled\"" if parcel_item.was_cancelled? %>>
+  <td><%= display_supply_reference(supply) %></td>
+  <td><%= supply.designation %></td>
+  <td><%= purchase_order_supply.supplier_reference %></td>
+  <td><%= purchase_order_supply.supplier_designation %></td>
   <td><%= parcel_item.quantity %></td>
-  <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(parcel_item.purchase_order_supply) %></td>
+  <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
   <td class="price"><%= display_parcel_item_total(parcel_item) %></td>
-  <td><%= display_purchase_order_supply_associated_purchase_requests(parcel_item.purchase_order_supply) %></td>
+  <td><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
   <td><%= display_parcel_item_buttons(parcel_item) %></td>
 </tr>

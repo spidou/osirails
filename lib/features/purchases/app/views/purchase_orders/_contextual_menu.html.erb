@@ -12,8 +12,8 @@
 <% add_contextual_menu_item :useful_links do %>
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats en cours", :title => list_text) + " " + list_text,
   :controller => "pending_purchase_orders", :action => "index" ) unless params[:controller] == "pending_purchase_orders" and is_index_view? %>
-  <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats terminés", :title => list_text) + " " + list_text,
+  <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir uniquement les ordres d'achats cloturés", :title => list_text) + " " + list_text,
   :controller => "closed_purchase_orders", :action => "index", :filter => "completed_only" ) unless params[:controller] == "closed_purchase_orders" and params['filter'] %>
-  <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats terminés et ceux annulés", :title => list_text) + " " + list_text, 
+  <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir les ordres d'achats cloturés et les ordres d'achats annulés", :title => list_text) + " " + list_text, 
   :controller => "closed_purchase_orders", :action => "index" ) unless params[:controller] == "closed_purchase_orders" and !params['filter'] %>
 <% end %>

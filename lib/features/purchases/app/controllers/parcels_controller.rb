@@ -45,10 +45,8 @@ class ParcelsController < ApplicationController
   def process_by_supplier_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
+    error_access_page(412) unless @parcel.can_be_processed_by_supplier? 
     @parcel.status = Parcel::STATUS_PROCESSING_BY_SUPPLIER
-    unless @parcel.can_be_processed_by_supplier?
-      error_access_page(412)
-    end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
@@ -71,10 +69,8 @@ class ParcelsController < ApplicationController
   def ship_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    error_access_page(412) unless @parcel.can_be_shipped?
     @parcel.status = Parcel::STATUS_SHIPPED
-    unless @parcel.can_be_shipped?
-      error_access_page(412)
-    end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
@@ -97,10 +93,8 @@ class ParcelsController < ApplicationController
   def receive_by_forwarder_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    error_access_page(412) unless @parcel.can_be_received_by_forwarder?
     @parcel.status = Parcel::STATUS_RECEIVED_BY_FORWARDER
-    unless @parcel.can_be_received_by_forwarder?
-      error_access_page(412)
-    end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
@@ -123,10 +117,8 @@ class ParcelsController < ApplicationController
   def receive_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    error_access_page(412) unless @parcel.can_be_received?
     @parcel.status = Parcel::STATUS_RECEIVED
-    unless @parcel.can_be_received?
-      error_access_page(412)
-    end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
@@ -149,10 +141,8 @@ class ParcelsController < ApplicationController
   def cancel_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    error_access_page(412) unless @parcel.can_be_cancelled?
     @parcel.status = Parcel::STATUS_CANCELLED
-    unless @parcel.can_be_cancelled?
-      error_access_page(412)
-    end
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   

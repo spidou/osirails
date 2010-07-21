@@ -28,9 +28,8 @@ module PurchaseOrderSuppliesHelper
              :confirm => "Êtes-vous sûr ?" )
   end
   
-  def display_purchase_order_supply_reference(purchase_order_supply)
-    return "" unless purchase_order_supply.supply.reference
-    supply = purchase_order_supply.supply
+  def display_supply_reference(supply)
+    return "" unless supply.reference
     supply.type == "Consumable" ? url = consumable_path(supply) : url = commodity_path(supply)
     link_to( supply.reference, url, :popup => true )
   end

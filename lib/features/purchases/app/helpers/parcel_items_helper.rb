@@ -6,7 +6,6 @@ module ParcelItemsHelper
   
   def display_parcel_item_buttons(parcel_item)
     html = []
-    html << display_supply_show_button(parcel_item.purchase_order_supply.supply, '')
     html << display_parcel_item_cancel_button(parcel_item, '') unless params[:action] == "cancel" or params[:action] == "cancel_form"
     html << display_parcel_item_report_issue_button(parcel_item, '')
     html.compact.join("&nbsp;")
