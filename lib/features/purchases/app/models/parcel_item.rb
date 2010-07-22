@@ -27,7 +27,7 @@ class ParcelItem < ActiveRecord::Base
   @@form_labels[:purchase_document]                       = "Veuillez joindre le devis :"
   @@form_labels[:issues_comment]                          = "Commentaire :"
   @@form_labels[:issues_quantity]                         = "Quantit&eacute; &agrave; declarer :"
-  @@form_labels[:must_be_reshipped]                       = "A r&eacute;expedier? :"
+  @@form_labels[:must_be_reshipped]                       = "A r&eacute;expedier :"
   
   after_save :save_issue_purchase_order_supply, :if => :issued_at
   
@@ -59,7 +59,7 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def validates_issue_quantity_for_parcel_item
-    errors.add(:quantity, "quantity not valid")  if self.issues_quantity >self.quantity
+    errors.add(:quantity, "quantity not valid")  if self.issues_quantity.to_i > self.quantity.to_i
   end
   
   def can_be_cancelled?

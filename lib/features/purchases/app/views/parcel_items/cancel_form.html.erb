@@ -7,7 +7,7 @@
 <h1>Fourniture du colis</h1>
 <div class="presentation_medium">
   <h2>Annuler le contenu.</h2>
-  <% form_for @parcel_item, :url => { :action => "cancel" } do |f| %>
+  <% form_for [ @purchase_order, @parcel, @parcel_item ], :url => { :action => "cancel" } do |f| %>
     <%= f.error_messages %>
     <%= render :partial => "parcels/array_head" %>
     <%= render :partial => "parcel_items/parcel_item", :collection => array_of_parcel_items_to_display_one %>

@@ -15,7 +15,7 @@
       </p>
       <p>
         <label>Fournisseur :</label> 
-        <strong><%= @purchase_order.supplier.name.to_s %></strong>
+        <strong><%= display_purchase_order_supplier_name(@purchase_order) %></strong>
       </p>
       <%= "<p><label>Validé le :</label> <strong>#{@purchase_order.confirmed_on.humanize}</strong></p>" if (@purchase_order.confirmed_on and @purchase_order.status != PurchaseOrder::STATUS_CONFIRMED) %>
       <%= "<p><label>En traitement depuis le :</label> <strong>#{@purchase_order.processing_by_supplier_since.humanize}</strong></p>" if (@purchase_order.processing_by_supplier_since and @purchase_order.status != PurchaseOrder::STATUS_PROCESSING_BY_SUPPLIER) %>

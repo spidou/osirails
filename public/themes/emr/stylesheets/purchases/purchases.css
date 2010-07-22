@@ -15,13 +15,6 @@ table tfoot tr.footer{
   text-align: right;
 }
 
-#parcels {
-}
-
-#parcel {
-  border-top: 5px solid #737373;
-}
-
 .parcel span {
   display: inline-block;
 }
@@ -31,6 +24,7 @@ table tfoot tr.footer{
   background-color: #ffdd60;
   text-align: left;
   border: 1px solid #737373;
+  border-top: 10px solid #ffffff;
 }
 
 .parcel .parcel_summary .parcel_label {

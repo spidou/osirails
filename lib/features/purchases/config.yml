@@ -21,18 +21,24 @@ menus:
         children:
           pending_purchase_orders:
             title: "Ordres d'achats en cours"
+            description: "Affiche la liste des ordres d'achats dont le traitement n'est pas terminé"
             position: 1
           closed_purchase_orders:
             title: "Ordres d'achats terminés"
+            description: "Affiche la liste des ordres d'achats dont le traitement est terminé"
             position: 2
           parcels:
             title: "Colis"
+            description: "Permet la gestion des colis"
             hidden: true
-          parcel_items:
-            title: "Contenu du colis"
-            hidden: true
+            children:
+              parcel_items:
+                title: "Contenu du colis"
+                description: "Permet la gestion des fournitures contenues dans un colis"
+                hidden: true
           purchase_order_supplies:
             title: "Fournitures commandées"
+            description: "Permet la gestion des fournitures dans un ordre d'achats"
             hidden: true
       purchase_requests:
         title: "Gestion des demandes d'achats"

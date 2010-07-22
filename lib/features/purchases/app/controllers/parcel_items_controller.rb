@@ -3,6 +3,8 @@ class ParcelItemsController < ApplicationController
   helper :purchase_requests, :purchase_orders, :purchase_order_supplies, :parcels
   
   def cancel_form
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     unless @parcel_item.can_be_cancelled?
       error_access_page(412)
@@ -10,6 +12,8 @@ class ParcelItemsController < ApplicationController
   end
   
   def cancel
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     if @parcel_item.can_be_cancelled?
       @parcel_item.attributes = params[:parcel_item]
@@ -26,6 +30,8 @@ class ParcelItemsController < ApplicationController
   end
   
   def report_form
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     unless @parcel_item.can_be_reported?
       error_access_page(412)
@@ -33,6 +39,8 @@ class ParcelItemsController < ApplicationController
   end
   
   def report
+    @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
+    @parcel = Parcel.find(params[:parcel_id])
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     if @parcel_item.can_be_reported?
       @parcel_item.attributes = params[:parcel_item]

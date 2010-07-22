@@ -112,7 +112,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
 
   def can_be_cancelled?
-    (untreated? and !purchase_order.confirmed? && !was_cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
+    (untreated? && !purchase_order.confirmed? && !was_cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
   end
 
   def can_be_deleted?

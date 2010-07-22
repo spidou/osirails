@@ -6,8 +6,7 @@ module PurchaseOrderSuppliesHelper
   
   def display_purchase_order_supply_buttons(purchase_order_supply)
     html = []
-    html << display_supply_show_button(purchase_order_supply.supply, '')
-    html << display_purchase_order_supply_cancel_button(purchase_order_supply, '') unless params[:action] = "cancel_form" or params[:action] = "cancel"
+    html << display_purchase_order_supply_cancel_button(purchase_order_supply, '') unless params[:action] == "cancel_form" or params[:action] == "cancel"
     html.compact.join("&nbsp;")
   end
   

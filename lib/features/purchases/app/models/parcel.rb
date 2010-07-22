@@ -21,21 +21,41 @@ class Parcel < ActiveRecord::Base
   @@form_labels[:conveyance]                              = "Par :"
   @@form_labels[:previsional_delivery_date]               = "Date de livraison prévue du colis :"
   @@form_labels[:received_by_forwarder_on]                = "Reçu par le transitaire le :"
-  @@form_labels[:awaiting_pick_up]                        = "En attente de récupération :"
+  @@form_labels[:awaiting_pick_up]                        = "Récupération chez le transitaire :"
   @@form_labels[:received_on]                             = "Reçu le :"
   @@form_labels[:purchase_document]                       = "Bon de livraison :"
   @@form_labels[:cancelled_comment]                       = "Veuillez saisir la raison de l'annulation :"
   
-  validates_date :processing_by_supplier_since, :on_or_before => Date::today, :if => :processing_by_supplier?
-  validates_date :shipped_on, :on_or_after => :processing_by_supplier_since, :if => :shipped?
-  validates_date :shipped_on, :on_or_before => Date::today, :if => :shipped?
-  validates_date :received_by_forwarder_on, :on_or_after => :shipped_on, :if => :received_by_forwarder?
-  validates_date :received_by_forwarder_on, :on_or_after => :processing_by_supplier_since, :if => :received_by_forwarder?
-  validates_date :received_by_forwarder_on, :on_or_before => Date::today, :if => :received_by_forwarder?
-  validates_date :received_on, :on_or_after => :processing_by_supplier_since, :if => :received?
-  validates_date :received_on, :on_or_after => :shipped_on, :if => :received?  
-  validates_date :received_on, :on_or_after => :received_by_forwarder_on, :if => :received?
-  validates_date :received_on, :on_or_before => Date::today, :if => :received?  
+  validates_date :processing_by_supplier_since, :on_or_before => Date::today,
+                                                :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                                :if => :processing_by_supplier?
+  validates_date :shipped_on, :on_or_after => :processing_by_supplier_since,
+                              :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                              :if => :shipped?
+  validates_date :shipped_on, :on_or_before => Date::today,
+                              :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                              :if => :shipped?
+  validates_date :received_by_forwarder_on, :on_or_after => :processing_by_supplier_since,
+                                            :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                                            :if => :received_by_forwarder?
+  validates_date :received_by_forwarder_on, :on_or_after => :shipped_on,
+                                            :on_or_after_message  => "ne doit pas être AVANT la date d'expédition du colis (%s)",
+                                            :if => :received_by_forwarder?
+  validates_date :received_by_forwarder_on, :on_or_before => Date::today,
+                                            :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                            :if => :received_by_forwarder?
+  validates_date :received_on, :on_or_after => :processing_by_supplier_since,
+                                :on_or_after_message  => "ne doit pas être AVANT la date de préparation du colis (%s)",
+                                :if => :received?
+  validates_date :received_on, :on_or_after => :shipped_on,
+                                :on_or_after_message  => "ne doit pas être AVANT la date de d'expédition du colis (%s)",
+                                :if => :received?  
+  validates_date :received_on, :on_or_after => :received_by_forwarder_on,
+                                :on_or_after_message  => "ne doit pas être AVANT la date de récetion par le transitaire (%s)",
+                                :if => :received?
+  validates_date :received_on, :on_or_before => Date::today,
+                                :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
+                                :if => :received?  
   
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
   validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."

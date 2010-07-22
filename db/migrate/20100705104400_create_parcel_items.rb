@@ -7,7 +7,7 @@ class CreateParcelItems < ActiveRecord::Migration
       t.text        :issues_comment, :cancelled_comment
       t.datetime    :cancelled_at
       t.date        :issued_at
-      t.boolean     :must_be_reshipped
+      t.boolean     :must_be_reshipped, :send_back_to_supplier
 
       t.timestamps
     end

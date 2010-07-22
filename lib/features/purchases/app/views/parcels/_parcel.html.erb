@@ -1,31 +1,31 @@
-<tbody class="parcel" id="parcel">
+<tbody class="parcel">
   <tr>
     <td colspan= 12 class="parcel_summary">
       <p>
         <span class="parcel_label">R&eacute;f&eacute;rence :</span>
-        <span class="parcel_reference"> <%= link_to(parcel.reference, purchase_order_parcel_path(purchase_order, parcel)) %></span>
+        <span class="parcel_reference"> <%= display_parcel_reference(parcel) %></span>
         <span class="parcel_label">&Eacute;tat :</span>
         <span class="parcel_status"> <%= display_parcel_current_status(parcel) %></span>
         <span class="parcel_label">Depuis le : </span>
         <span class="parcel_current_status_date"><%= display_parcel_current_status_date(parcel) %></span>
         <% unless (params[:action] == "ship_form" or params[:action] == "receive_by_forwarder_form" or params[:action] == "receive_form" or params[:action] == "receive" or params[:action] == "cancel_form" or params[:action] == "cancel") or parcel_possible_actions(parcel).empty? %>
-            <% form_for [purchase_order, parcel], :url => purchase_order_parcel_alter_status_path(purchase_order, parcel) do |f| %>
-              <% options = parcel_possible_actions(parcel) %>
-              <ul class="parcel_choose_status">
-                <li ><%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %></li>
-                <li><%= f.select(:status, options)%></li>
-                <li><%= f.submit "Valider" %></li>
-              </ul>
-            <% end %>
+          <% form_for [purchase_order, parcel], :url => purchase_order_parcel_alter_status_path(purchase_order, parcel) do |f| %>
+            <% options = parcel_possible_actions(parcel) %>
+            <ul class="parcel_choose_status">
+              <li ><%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %></li>
+              <li><%= f.select(:status, options)%></li>
+              <li><%= f.submit "Valider" %></li>
+            </ul>
+          <% end %>
         <% end %>
       </p>
       <% if parcel.previsional_delivery_date %>
-      <p>
-        <span class="parcel_label">Livraison pr&eacute;vue le</span>
-        <span class="parcel_previsional_delivery_date"><%= display_parcel_previsional_deliveray_date(parcel) %></span>
-        <span class="parcel_label"> par </span>
-        <span class="parcel_conveyance"><%= parcel.conveyance %></span>
-      </p>
+        <p>
+          <span class="parcel_label">Livraison pr&eacute;vue le</span>
+          <span class="parcel_previsional_delivery_date"><%= display_parcel_previsional_deliveray_date(parcel) %></span>
+          <span class="parcel_label"> par </span>
+          <span class="parcel_conveyance"><%= parcel.conveyance %></span>
+        </p>
       <% end %>
     </td>
   </tr>

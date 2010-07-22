@@ -148,6 +148,10 @@ module PurchaseOrdersHelper
     end
   end
   
+  def display_purchase_order_supplier_name(purchase_order)
+    link_to purchase_order.supplier.name, supplier_path(purchase_order.supplier)
+  end
+  
   def display_associated_purchase_requests(purchase_order)
     html = []
     associated_purchase_requests = purchase_order.get_associated_purchase_requests

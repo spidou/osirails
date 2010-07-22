@@ -2,29 +2,38 @@
   <%= stylesheet_link_tag_with_theme_support "purchases/purchases" %>
 <% end %>
 
-<h1>Colis</h1>
+<%= generate_parcel_contextual_menu_partial(@purchase_order, @parcel) %>
+
+<h1>Signaler un probl&egrave;me sur une fourniture</h1>
 <div class="presentation_medium">
-  <h2>Contenu du colis</h2>
+  <h2>Informations &agrave; propos du colis conteneur</h2>
+  
+  <div class="presentation_in_columns">
+    <p><label>R&eacute;f&eacute;rence :</label> <strong><%= display_parcel_reference(@parcel) %></strong></p>
+    <p><label>Re&ccedil;u le :</label> <strong><%= display_parcel_received_on(@parcel) %></strong></p>
+    <p><label>Fournisseur :</label> <strong><%= display_purchase_order_supplier_name(@purchase_order) %></strong></p>
+  </div>
+  
+  <h2>Fourniture concernée</h2>
   <%= render :partial => "parcels/array_head" %>
   <%= render :partial => "parcel_items/parcel_item", :object => @parcel_item %>
   <%= render :partial => "parcels/array_foot" %>
   
-  <h2>Informations</h2>
   <div class="presentation_in_columns">
-  <% form_for [@parcel_item], :url => { :controller => "parcel_items", :action => "report" } do |f| %>
+  <% form_for [@purchase_order, @parcel, @parcel_item], :url => { :controller => "parcel_items", :action => "report" } do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
       <p>
-        <%= f.label :issues_quantity%>
-        <%= f.text_field :issues_quantity%>
+        <%= f.label :issues_quantity %>
+        <%= f.text_field :issues_quantity, :size => 4 %>
       </p>
       <p>
-        <%= f.label :issues_comment%>
-        <%= f.text_area_autoresize :issues_comment%>
+        <%= f.label :issues_comment %>
+        <%= f.text_area_autoresize :issues_comment %>
       </p>
       <p>
-        <%= f.label :must_be_reshipped%>
-        <%= f.check_box :must_be_reshipped%>
+        <%= f.label :must_be_reshipped %>
+        <%= f.check_box :must_be_reshipped %>
       </p>
     </div>
     <br>

@@ -2,6 +2,10 @@ module ParcelsHelper
   def generate_parcel_contextual_menu_partial(purchase_order = nil, parcel = nil)
     render :partial => 'parcels/contextual_menu', :object => parcel, :locals => {:purchase_order => purchase_order}
   end
+  
+  def display_parcel_reference(parcel)
+    link_to(parcel.reference, purchase_order_parcel_path(parcel.parcel_items.first.purchase_order_supply.purchase_order, parcel))
+  end
  
   def display_parcel_current_status(parcel)
     if parcel.was_cancelled?

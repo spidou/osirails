@@ -6,13 +6,6 @@ ActionController::Routing::Routes.add_routes do |map|
     request.cancel_form 'cancel_form', :action => "cancel_form", :controller => "purchase_requests" 
   end
   
-  map.resources :parcel_items do |parcel_item|
-    parcel_item.cancel 'cancel', :controller => 'parcel_items', :action => 'cancel'
-    parcel_item.cancel_form 'cancel_form', :controller => 'parcel_items', :action => 'cancel_form'
-    parcel_item.report 'report', :controller => 'parcel_items', :action => 'report'
-    parcel_item.report_form 'report_form', :controller => 'parcel_items', :action => 'report_form'
-  end
-  
   map.prepare_for_new 'prepare_for_new' , :controller => 'purchase_orders', :action => 'prepare_for_new'
   
   map.get_purchase_order_supply_in_one_line 'get_purchase_order_supply_in_one_line',  :controller => 'purchase_orders', 
@@ -63,6 +56,13 @@ ActionController::Routing::Routes.add_routes do |map|
       parcel.receive_by_forwarder 'receive_by_forwarder', :controller => 'parcels', :action => "receive_by_forwarder"
       parcel.receive 'receive', :controller => 'parcels', :action => "receive"
       parcel.cancel 'cancel', :controller => 'parcels', :action => "cancel"
+      
+      parcel.resources :parcel_items do |parcel_item|
+        parcel_item.cancel 'cancel', :controller => 'parcel_items', :action => 'cancel'
+        parcel_item.cancel_form 'cancel_form', :controller => 'parcel_items', :action => 'cancel_form'
+        parcel_item.report 'report', :controller => 'parcel_items', :action => 'report'
+        parcel_item.report_form 'report_form', :controller => 'parcel_items', :action => 'report_form'
+      end
     end
     order.resources :purchase_order_supplies do |purchase_order_supply|
       purchase_order_supply.cancel 'cancel', :controller => 'purchase_order_supplies', :action => 'cancel'
