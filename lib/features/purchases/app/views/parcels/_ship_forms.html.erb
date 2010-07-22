@@ -5,16 +5,16 @@
     <p>
       <%= f.label :shipped_on %>
       <%= f.calendar_date_select :shipped_on , {:disabled => 
-        @parcel.new_record? ? false : (@parcel.shipped_on ? true : false)}, {}%>
+        @parcel.new_record? ? false : (@parcel.shipped_on_was ? true : false)}, {}%>
     </p>
     <p>
       <%= f.label :conveyance %>
-      <%= f.text_field :conveyance, :disabled => ( @parcel.conveyance ? true : false )  %>
+      <%= f.text_field :conveyance, :disabled => (@parcel.new_record? ? false : (@parcel.conveyance_was ? true : false))  %>
     </p>
     <p>
       <%= f.label :previsional_delivery_date %>
       <%= f.calendar_date_select :previsional_delivery_date , {:disabled => 
-        @parcel.new_record? ? false : (@parcel.previsional_delivery_date ? true : false)}, {}%>
+        @parcel.new_record? ? false : (@parcel.previsional_delivery_date_was ? true : false)}, {}%>
     </p>
 <% end %>
 

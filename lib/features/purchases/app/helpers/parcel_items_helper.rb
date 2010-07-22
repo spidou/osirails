@@ -31,4 +31,17 @@ module ParcelItemsHelper
                         :title  => text ) + message,
               parcel_item_report_form_path(parcel_item))
   end
+  
+  def display_parcel_item_issued_at(parcel_item)
+    return "" unless parcel_item.issued_at
+    parcel_item.issued_at.humanize
+  end
+  
+  def display_parcel_item_issues_quantity(parcel_item)
+    parcel_item.issues_quantity if parcel_item.issued_at
+  end
+  
+  def display_parcel_item_must_be_reshipped(parcel_item)
+    parcel_item.must_be_reshipped ? "Oui" : (parcel_item.issued_at ? "Non" : "")
+  end
 end

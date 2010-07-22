@@ -1,8 +1,8 @@
-<% parcel = contextual_menu %>
+<% purchase_order_supply = contextual_menu %>
 
-<% add_contextual_menu_item :parcel do %>
+<% add_contextual_menu_item :purchase_order_supply do %>
   <%= link_to (image_tag("list_16x16.png", :alt => list_text = "Voir l'ordre d'achats associé", :title => list_text) + " " + list_text,
-  purchase_order_path(purchase_order) ) %>
+  purchase_order_path(purchase_order_supply.purchase_order) ) %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>

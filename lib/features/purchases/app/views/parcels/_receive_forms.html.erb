@@ -5,7 +5,7 @@
     <p>
       <%= f.label :received_on %>
       <%= f.calendar_date_select :received_on , {:disabled => 
-        @parcel.new_record? ? false : (@parcel.received_on ? true : false)}, {}%>
+        @parcel.new_record? ? false : (@parcel.received_on_was ? true : false)}, {}%>
     </p>
 <% end %>
 <% fields_for "parcel[delivery_document_attributes][]", PurchaseDocument.new do |field| %>

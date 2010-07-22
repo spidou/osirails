@@ -1,9 +1,13 @@
 module PurchaseOrderSuppliesHelper
   
+  def generate_purchase_order_supply_contextual_menu(purchase_order_supply)
+    render :partial => 'purchase_order_supplies/contextual_menu', :object => purchase_order_supply
+  end
+  
   def display_purchase_order_supply_buttons(purchase_order_supply)
     html = []
     html << display_supply_show_button(purchase_order_supply.supply, '')
-    html << display_purchase_order_supply_cancel_button(purchase_order_supply, '')
+    html << display_purchase_order_supply_cancel_button(purchase_order_supply, '') unless params[:action] = "cancel_form" or params[:action] = "cancel"
     html.compact.join("&nbsp;")
   end
   
@@ -117,6 +121,11 @@ module PurchaseOrderSuppliesHelper
     else
       lead_time.to_s + "&nbsp;jour(s)"
     end
+  end
+  
+  def display_purchase_order_supply_reshipped_from_parcel(purchase_order_supply)
+    return unless purchase_order_supply.issued_parcel_item
+    link_to purchase_order_supply.issued_parcel_item.parcel.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order, purchase_order_supply.issued_parcel_item.parcel)
   end
   
   def verify_validity_of_purchase_request_supply(purchase_request_supply)

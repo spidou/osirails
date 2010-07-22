@@ -17,6 +17,7 @@
 <% else %>
     <td <%= "class=\"disabled\"" if parcels.first.was_cancelled? %> ><%= link_to( parcels.first.reference, purchase_order_parcel_path(purchase_order_supply.purchase_order,parcels.first)) %></td>
 <% end %>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_reshipped_from_parcel(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_status(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_current_status_date(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.quantity %></td>

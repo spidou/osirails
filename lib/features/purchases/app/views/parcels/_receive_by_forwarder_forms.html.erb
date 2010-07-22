@@ -4,12 +4,12 @@
     <p>
       <%= f.label :received_by_forwarder_on %>
       <%= f.calendar_date_select :received_by_forwarder_on , {:disabled => 
-        @parcel.new_record? ? false : (@parcel.received_by_forwarder_on ? true : false)}, {}%>
+        @parcel.new_record? ? false : (@parcel.received_by_forwarder_on_was ? true : false)}, {}%>
     </p>
     
     <p>
       <%= f.label :awaiting_pick_up %>
-      <%= f.check_box :awaiting_pick_up %>
+      <%= f.check_box :awaiting_pick_up, {:disabled => (@parcel.new_record? ? false : (@parcel.awaiting_pick_up_was ? true : false))} %>
     </p>
 <% end %>
 

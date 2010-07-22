@@ -127,8 +127,12 @@ class PurchaseOrdersController < ApplicationController
   
   def confirm_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    unless @purchase_order.can_be_confirmed?
-      error_access_page(412)
+    unless @purchase_order.can_be_confirmed? and @purchase_order.can_be_confirmed_with_purchase_request_supplies_associated? 
+      if @purchase_order.can_be_edited?
+        render :action => "edit"
+      else
+        error_access_page(412)
+      end
     end
   end
     
@@ -139,7 +143,8 @@ class PurchaseOrdersController < ApplicationController
       unless @purchase_order.confirm
         render :action => "confirm_form"
       else
-        redirect_to purchase_orders_path
+        flash[:notice] = 'La confirmation de votre ordre d\'achats a été effectuée avec succès'
+        redirect_to new_purchase_order_parcel_path(@purchase_order)
       end
     else
       error_access_page(412)

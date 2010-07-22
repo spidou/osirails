@@ -50,9 +50,11 @@ class Parcel < ActiveRecord::Base
   validates_persistence_of :conveyance, :if => :conveyance_was
   validates_persistence_of :previsional_delivery_date, :if => :previsional_delivery_date_was
   validates_persistence_of :received_by_forwarder_on, :if => :received_by_forwarder_on_was
+  validates_persistence_of :awaiting_pick_up, :if => :awaiting_pick_up_was
   validates_persistence_of :received_on, :if => :received_on_was
     
   validates_associated :parcel_items
+  validates_associated :delivery_document, :if => :received_on
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
   before_validation_on_create :update_reference

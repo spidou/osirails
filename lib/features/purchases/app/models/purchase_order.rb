@@ -254,7 +254,10 @@ class PurchaseOrder < ActiveRecord::Base
   def can_be_confirmed_with_purchase_request_supplies_associated?
     for purchase_order_supply in purchase_order_supplies
       for purchase_request_supply in purchase_order_supply.purchase_request_supplies
-        return false if purchase_request_supply.confirmed_purchase_order_supply
+        if purchase_request_supply.confirmed_purchase_order_supply
+          errors.add(:purchase_order_supplies, "Certains &eacute;l&eacute;ments emp&ecirc;chent la confirmation de votre ordre d'achat")
+          return false 
+        end
       end
     end
     return true
@@ -266,7 +269,6 @@ class PurchaseOrder < ActiveRecord::Base
       self.status = STATUS_CONFIRMED
       self.save
     else
-      errors.add(:purchase_order_supplies, "Certains &eacute;l&eacute;ments emp&ecirc;chent la confirmation de votre ordre d'achat")
       false
     end
   end

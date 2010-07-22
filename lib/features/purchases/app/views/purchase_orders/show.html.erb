@@ -58,7 +58,7 @@
     <h2>Liste des colis</h2>
     
     <% if @purchase_order.can_add_parcel? %>
-      <p><%= link_to "Ajouter un colis", new_purchase_order_parcel_path(@purchase_order) %></p>
+      <p><%= link_to @purchase_order.parcels.empty? ? ("Poursuivre l'ordre d'achats") : ("Ajouter un colis"), new_purchase_order_parcel_path(@purchase_order) %></p>
     <% end%>
     
     <% if @purchase_order.parcels.count > 0 %>
@@ -71,26 +71,7 @@
   <h2>Liste des fournitures commandées</h2>
   
   <table class="no_nth">
-    <thead>
-      <tr>
-        <th colspan="2">Interne</th>
-        <th colspan="2">Fournisseur</th>
-        <th rowspan="2">Demandes associées</th>
-        <th rowspan="2">Colis associ&eacute;s</th>
-        <th rowspan="2">Statut</th>
-        <th rowspan="2">Depuis le</th>
-        <th rowspan="2">Quantit&eacute;</th>
-        <th rowspan="2">PU TTC</th>
-        <th rowspan="2">Prix total TTC</th>
-        <th rowspan="2">Action</th>
-      </tr>
-      <tr>
-        <th>R&eacute;f&eacute;rence</th>
-        <th>D&eacute;signation</th>
-        <th rowspan="2">R&eacute;f&eacute;rence</th>
-        <th rowspan="2">Désignation</th>
-      </tr>
-    </thead>
+      <%= render :partial => "purchase_order_supplies/array_head" %>
     <tbody>
       <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :collection => @purchase_order.purchase_order_supplies %>
     </tbody>

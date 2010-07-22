@@ -9,5 +9,8 @@
   <td class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
   <td class="price"><%= display_parcel_item_total(parcel_item) %></td>
   <td><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
+  <td><%= display_parcel_item_issued_at(parcel_item) %></td>
+  <td><%= display_parcel_item_issues_quantity(parcel_item)%></td>
+  <td><%= display_parcel_item_must_be_reshipped(parcel_item) %></td>
   <td><%= display_parcel_item_buttons(parcel_item) %></td>
 </tr>
