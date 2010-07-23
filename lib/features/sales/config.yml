@@ -2,12 +2,6 @@ name: sales
 title: Ventes
 version: 0.1
 dependencies:
-  admin:
-    - 0.1
-  thirds:
-    - 0.1
-  rh:
-    - 0.1
   logistics:
     - 0.1
 menus:

@@ -50,7 +50,7 @@ end
 # Add dynamicaly features routes
 # the begin rescue enclosure permits to avoid errors while the installation because of the non-existent tables in the database (at this time)
 begin
-  $activated_features_path.each do |feature_path|
+  FeatureManager.loaded_feature_paths.each do |feature_path|
     routes_path = File.join(feature_path, 'routes.rb')
     load routes_path if File.exist?(routes_path)
   end

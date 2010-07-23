@@ -13,9 +13,9 @@ module HasContacts
     end
     
     def has_contacts options = {}
-      raise "has_contacts must be called only once" if Contact.contacts_owners_models.include?(self) # multiple calls are forbidden
+      raise "has_contacts must be called only once" if Contact.contacts_owners_models.include?(self.name) # multiple calls are forbidden
       
-      Contact.contacts_owners_models << self
+      Contact.contacts_owners_models << self.name
       
       cattr_accessor :has_contacts_definitions
       

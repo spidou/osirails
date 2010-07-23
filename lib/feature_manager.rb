@@ -1,69 +1,152 @@
+require 'active_record'
+require 'yaml'
+
 class FeatureManager
   attr_accessor :feature
+  
+  @@initialized_once ||= false
+  
+  FEATURE_PATHS = Dir["#{RAILS_ROOT}/{lib,vendor}/features/*/"]
+  
+  cattr_accessor :loaded_feature_paths
+  @@loaded_feature_paths ||= []
+  
+  @@ordered_feature_names ||= nil
   
   cattr_accessor :all_menus, :menus_to_check
   @@all_menus      ||= []
   @@menus_to_check ||= []
   
-  def initialize yaml_config, plugin, config, path
-    @name           = yaml_config['name']           || plugin
-    @title          = yaml_config['title']          || ""
-    @version        = yaml_config['version']        || ""
-    @dependencies   = yaml_config['dependencies']   || {}
-    @conflicts      = yaml_config['conflicts']      || {}
-    @menus          = yaml_config['menus']          || {}
-    @configurations = yaml_config['configurations'] || {}
+  def self.preload(config, path, plugin = false)
+    object = self.new(config, path, plugin)
+    object.load_engine
+    return object
+  end
+  
+  def self.ordered_feature_names
+    @@ordered_feature_names || ( self.ordered_feature_paths && @@ordered_feature_names )
+  end
+  
+  def self.ordered_feature_paths
+    @@ordered_feature_names ||= []
+    @@ordered_feature_paths ||= []
     
+    FEATURE_PATHS.each do |feature_path|
+      load_features_dependencies(feature_path.split('/').last)
+    end
+    
+    @@ordered_feature_paths
+  end
+  
+  def self.load_features_dependencies(name)
+    return if @@ordered_feature_names.include?(name)
+    FEATURE_PATHS.each do |feature_path|
+      feature_name = feature_path.split('/').last
+      next unless feature_name == name
+      yaml = YAML.load(File.open(File.join(feature_path, 'config.yml')))
+      unless yaml['dependencies'].nil?
+        yaml['dependencies'].each do |key, val|
+          load_features_dependencies(key.to_s)
+        end
+      end
+      @@ordered_feature_names << name
+      @@ordered_feature_paths << feature_path
+      break
+    end
+  end
+  
+  def self.update_config_plugins(config)
+    plugins = config.plugins.dup
+    self.ordered_feature_names.map(&:to_sym).each do |name|
+      plugins.insert(plugins.index(:all) || plugins.last, name)
+    end
+    config.plugins = plugins
+  end
+  
+  def self.initialize_all_features
+    return if @@initialized_once
+    @@initialized_once = true
+    
+    FEATURE_PATHS.each do |feature_path|
+      feature_name = feature_path.split("/").last
+      FeatureManager.new(nil, feature_path).create_feature_if_necessary
+    end
+  end
+  
+  def initialize(config, path, plugin = false)
+    FeatureManager.initialize_all_features
+    
+    yaml_path = File.join(path, 'config.yml')
+    yaml = YAML.load(File.open(yaml_path)) rescue {}
+    
+    @name           = yaml['name']           || plugin
+    @title          = yaml['title']          || ""
+    @version        = yaml['version']        || ""
+    @dependencies   = yaml['dependencies']   || {}
+    @conflicts      = yaml['conflicts']      || {}
+    @menus          = yaml['menus']          || {}
+    @configurations = yaml['configurations'] || {}
+    
+    @plugin         = plugin
     @config         = config
     @path           = path
-    
-    # puts "> #{@name} > initialize"
-    
-    plugin ? load_plugin : load_feature
+  end
+  
+  def load_engine
+    @plugin ? load_plugin : load_feature
   end
   
   def load_feature
-    load_all
+    return unless database_is_ready?
+    
+    @feature = Feature.find_by_name_and_version(@name, @version)
+    
+    if @feature
+      load_plugin if ( RAILS_ENV != "test" and @feature.activated? ) or
+                       ( RAILS_ENV == "test" and
+                         ( @feature.name == TESTING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(TESTING_FEATURE) ) )
+    else
+      raise "Feature '#{@name}' has not been found in the database..."
+    end
   end
   
   def load_plugin
-    # load paths first
+    Rails.logger.info "loading #{@name} ..."
+    
     load_paths
+    
+    load_libs
+    
+    return unless database_is_ready?
     
     load_menus(@menus)
     
     insert_menus_in_database
+    
+    @@loaded_feature_paths << @path
+  end
+  
+  def create_feature_if_necessary
+    return unless database_is_ready?
+    
+    @feature = Feature.find_by_name_and_version(@name, @version) || Feature.new(:name => @name, :version => @version, :title => @title)
+    @feature.installed = true if @feature.new_record?
+    @feature.activated = true if @feature.new_record? and @feature.activate_by_default?
+    @feature.save if @feature.changed?
+    
+    load_dependencies
+    load_conflicts
+    load_configurations
+  end
+  
+  def database_is_ready?
+    Feature.all
+    return true
+  rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError
+    return false
   end
   
   private
-    def load_all
-      # create the feature if not exists already in the database
-      create_feature_if_necessary
-      
-      # stop here if the feature is not marked as activated
-      return unless @feature.activated
-      
-      # load paths first
-      load_paths
-      
-      load_dependencies
-      
-      load_conflicts
-      
-      load_configurations
-      
-      load_menus(@menus)
-      
-      insert_menus_in_database
-    end
-    
-    def create_feature_if_necessary
-      @feature = Feature.find_by_name_and_version(@name, @version) || Feature.new(:name => @name, :version => @version, :title => @title)
-      @feature.installed = true if @feature.new_record?
-      @feature.activated = true if @feature.new_record? and @feature.activate_by_default?
-      @feature.save if @feature.changed?
-    end
-    
     # load all configurations key and value in the database
     # and launch the ConfigurationManager to refresh its methods
     def load_configurations
@@ -139,8 +222,6 @@ class FeatureManager
     end
     
     def load_paths
-      $activated_features_path << @path
-      
       # load models, controllers and helpers
       %w{ lib app/models app/controllers app/helpers }.each do |dir|
         dir_path = File.join(@path, dir)
@@ -153,41 +234,23 @@ class FeatureManager
 
       # load views
       ActionController::Base.prepend_view_path(File.join(@path, 'app', 'views'))
+    end
+    
+    def load_libs
+      # require the main file of the feature/plugin if any
+      main_file = "#{@path}/lib/#{@name}.rb"
+      require main_file if File.exists?(main_file)
       
-      # require files in lib/overrides
-      Dir["#{@path}/lib/overrides/*.rb"].each{ |file| require file }
-    end
-
-    def verify_attribute_type(attr_class, type)
-      case attr_class
-        when String
-          return 1 unless type=="string"
-        when Date
-          return 1 unless type=="date"
-        when DateTime
-          return 1 unless type=="date"
-        when Time
-          return 1 unless type=="date"
-        else
-          return 1 unless type=="number"
+      if database_is_ready?
+      # constantize files in app/models
+        Dir["#{@path}/app/models/*.rb"].each{ |file| File.basename(file).chomp(File.extname(file)).camelize.constantize }
+        
+        # require files in lib/overrides
+        Dir["#{@path}/lib/overrides/*.rb"].each{ |file| load file }
       end
-      return 0
-    end
-
-    def verify_sub_resources(hash,error_message)
-      hash.each_pair do |sub_attribute,value|
-        if value.instance_of?(Hash)
-          value.each_pair do |sub_attribute2,value2|
-            if value2.instance_of?(Hash)
-              return verify_sub_resources(value2,error_message) unless verify_sub_resources(value2,error_message).blank?
-            else
-              return "#{ error_message } the attribute '#{ sub_attribute2 }' is incorrect for '#{ sub_attribute }'!" unless sub_attribute.constantize.new.respond_to?(sub_attribute2)
-            end
-          end
-        else
-          return "#{ error_message } missing attribute type or sub attributes hash for  '#{ sub_attribute }' "
-        end
-      end
-      return ""
+      
+    rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError, Exception => e
+      error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+      RAKE_TASK ? puts(error) : raise(e)
     end
 end

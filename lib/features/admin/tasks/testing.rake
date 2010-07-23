@@ -7,28 +7,28 @@ namespace :osirails do
           Rake::Task[task].invoke
           nil
         rescue => e
-          task
+          { :task => task, :error => e }
         end
       end.compact
-      abort "Errors running #{errors.to_sentence}!" if errors.any?
+      abort "#{errors.map{ |h| "Errors running #{h[:task]}\nMessage: #{h[:error].message}\nBacktrace:\n####\n#{h[:error].backtrace.join("\n")}\n####" }.join("\n")}" if errors.any?
     end
     
     namespace :test do
-      Rake::TestTask.new(:units => :environment) do |t|
+      Rake::TestTask.new(:units) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/unit/*_test.rb"
         t.verbose = true
       end
       Rake::Task['osirails:admin:test:units'].comment = "Run the admin unit tests"
       
-      Rake::TestTask.new(:functionals => :environment) do |t|
+      Rake::TestTask.new(:functionals) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/functional/*_test.rb"
         t.verbose = true
       end
       Rake::Task['osirails:admin:test:functionals'].comment = "Run the admin functional tests"
       
-      Rake::TestTask.new(:integration => :environment) do |t|
+      Rake::TestTask.new(:integration) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/integration/*_test.rb"
         t.verbose = true

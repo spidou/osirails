@@ -260,3 +260,7 @@ end
 if Object.const_defined?("ActionController")
   ActionController::Base.send(:include, HasPermissions)
 end
+
+require 'permission'
+require 'permission_method'
+require 'permissions_permission_method'

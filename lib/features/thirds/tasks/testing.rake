@@ -14,21 +14,21 @@ namespace :osirails do
     end
     
     namespace :test do
-      Rake::TestTask.new(:units => :environment) do |t|
+      Rake::TestTask.new(:units) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/unit/*_test.rb"
         t.verbose = true
       end
       Rake::Task['osirails:thirds:test:units'].comment = "Run the thirds unit tests"
       
-      Rake::TestTask.new(:functionals => :environment) do |t|
+      Rake::TestTask.new(:functionals) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/functional/*_test.rb"
         t.verbose = true
       end
       Rake::Task['osirails:thirds:test:functionals'].comment = "Run the thirds functional tests"
       
-      Rake::TestTask.new(:integration => :environment) do |t|
+      Rake::TestTask.new(:integration) do |t|
         t.libs << "test"
         t.pattern = "#{File.dirname(__FILE__)}/../test/integration/*_test.rb"
         t.verbose = true

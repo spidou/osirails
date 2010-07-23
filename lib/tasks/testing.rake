@@ -1,3 +1,41 @@
+override_task :test do
+  errors = %w(test:units test:functionals test:integration).collect do |task|
+    begin
+      Rake::Task[task].invoke
+      nil
+    rescue => e
+      { :task => task, :error => e }
+    end
+  end.compact
+  abort "#{errors.map{ |h| "Errors running #{h[:task]}\nMessage: #{h[:error].message}\nBacktrace:\n####\n#{h[:error].backtrace.join("\n")}\n####" }.join("\n")}" if errors.any?
+end
+    
+namespace :test do
+  Rake.application.remove_task("test:units")
+  Rake::TestTask.new(:units) do |t|
+    t.libs << "test"
+    t.pattern = "test/unit/*_test.rb"
+    t.verbose = true
+  end
+  Rake::Task['test:units'].comment = "Run the unit tests"
+  
+  Rake.application.remove_task("test:functionals")
+  Rake::TestTask.new(:functionals) do |t|
+    t.libs << "test"
+    t.pattern = "test/functional/*_test.rb"
+    t.verbose = true
+  end
+  Rake::Task['test:functionals'].comment = "Run the functional tests"
+  
+  Rake.application.remove_task("test:integration")
+  Rake::TestTask.new(:integration) do |t|
+    t.libs << "test"
+    t.pattern = "test/integration/*_test.rb"
+    t.verbose = true
+  end
+  Rake::Task['test:integration'].comment = "Run the integration tests"
+end
+
 namespace :osirails do
   desc "Run all unit, functional and integration tests for whole project (with features and plugins)"
   task :test do

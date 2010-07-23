@@ -3,9 +3,9 @@ namespace :db do
   override_task :migrate => :environment do
     ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
     ActiveRecord::Migrator.migrate("db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
-    $ordered_features_path.each do |feature_path|                                                               #
-      puts "====== Running migrations inside #{feature_path} ======"                                            # this code has been added to take in account
-      ActiveRecord::Migrator.migrate("#{feature_path}/db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil) # the features' migrations
+    FeatureManager.ordered_feature_paths.each do |feature_path|                                                 # this code has been added to take in account
+      puts "====== Running migrations inside #{feature_path} ======"                                            # the features' migrations
+      ActiveRecord::Migrator.migrate("#{feature_path}/db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil) #
     end                                                                                                         #
     Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
   end
@@ -17,7 +17,7 @@ namespace :db do
       raise "VERSION is required" unless version
       
       migrated = false                                                            # this code has been added to take in account
-      $ordered_features_path.each do |feature_path|                               # the features' migrations
+      FeatureManager.ordered_feature_paths.each do |feature_path|                 # the features' migrations
         puts "====== Running migrations inside #{feature_path} ======"            #
         begin                                                                     #
           ActiveRecord::Migrator.run(:up, "#{feature_path}/db/migrate/", version) #
@@ -41,7 +41,7 @@ namespace :db do
       raise "VERSION is required" unless version
       
       migrated = false                                                              # this code has been added to take in account
-      $ordered_features_path.each do |feature_path|                                 # the features' migrations
+      FeatureManager.ordered_feature_paths.each do |feature_path|                   # the features' migrations
         puts "====== Running migrations inside #{feature_path} ======"              #
         begin                                                                       #
           ActiveRecord::Migrator.run(:down, "#{feature_path}/db/migrate/", version) #
@@ -63,9 +63,9 @@ namespace :db do
   desc 'Rolls the schema back to the previous version. Specify the number of steps with STEP=n'
   override_task :rollback => :environment do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
-    $ordered_features_path.reverse.each do |feature_path|                   #
-      puts "====== Running migrations inside #{feature_path} ======"        # this code has been added to take in account
-      ActiveRecord::Migrator.rollback("#{feature_path}/db/migrate/", step)  # the features' migrations
+    FeatureManager.ordered_feature_paths.reverse.each do |feature_path|     # this code has been added to take in account
+      puts "====== Running migrations inside #{feature_path} ======"        # the features' migrations
+      ActiveRecord::Migrator.rollback("#{feature_path}/db/migrate/", step)  #
     end                                                                     #
     ActiveRecord::Migrator.rollback('db/migrate/', step)
     Rake::Task["db:schema:dump"].invoke if ActiveRecord::Base.schema_format == :ruby
@@ -75,7 +75,7 @@ namespace :db do
   override_task :abort_if_pending_migrations => :environment do
     if defined? ActiveRecord
       pending_migrations = ActiveRecord::Migrator.new(:up, 'db/migrate').pending_migrations
-      $ordered_features_path.each do |feature_path|                                                             # this code has been added to take in account
+      FeatureManager.ordered_feature_paths.each do |feature_path|                                               # this code has been added to take in account
         pending_migrations += ActiveRecord::Migrator.new(:up, "#{feature_path}/db/migrate").pending_migrations  # the features' migrations
       end                                                                                                       #
 
