@@ -934,6 +934,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "cancelled_at"
     t.date     "issued_at"
     t.boolean  "must_be_reshipped"
+    t.boolean  "send_back_to_supplier"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

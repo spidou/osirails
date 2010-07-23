@@ -44,4 +44,8 @@ module ParcelItemsHelper
   def display_parcel_item_must_be_reshipped(parcel_item)
     parcel_item.must_be_reshipped_was ? "Oui" : (parcel_item.issued_at_was ? "Non" : "")
   end
+  
+  def display_parcel_item_send_back_to_supplier(parcel_item)
+    parcel_item.send_back_to_supplier_was ? "Oui" : (parcel_item.issued_at_was ? "Non": "")
+  end
 end

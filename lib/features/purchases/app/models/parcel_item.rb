@@ -27,7 +27,8 @@ class ParcelItem < ActiveRecord::Base
   @@form_labels[:purchase_document]                       = "Veuillez joindre le devis :"
   @@form_labels[:issues_comment]                          = "Commentaire :"
   @@form_labels[:issues_quantity]                         = "Quantit&eacute; &agrave; declarer :"
-  @@form_labels[:must_be_reshipped]                       = "A r&eacute;expedier :"
+  @@form_labels[:must_be_reshipped]                       = "&Agrave; r&eacute;expedier par le fournisseur :"
+  @@form_labels[:send_back_to_supplier]                   = "&Agrave; renvoyer au fournisseur :"
   
   after_save :save_issue_purchase_order_supply, :if => :issued_at
   
@@ -39,7 +40,7 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def build_issue_purchase_order_supply
-    if (self.must_be_reshipped)
+    if self.must_be_reshipped && !self.issue_purchase_order_supply
       self.issue_purchase_order_supply = PurchaseOrderSupply.new(:purchase_order_id => self.purchase_order_supply.purchase_order_id,
                                                             :supply_id =>  self.purchase_order_supply.supply_id,
                                                             :quantity => self.issues_quantity,
@@ -47,11 +48,16 @@ class ParcelItem < ActiveRecord::Base
                                                             :fob_unit_price => self.purchase_order_supply.fob_unit_price,
                                                             :supplier_reference => self.purchase_order_supply.supplier_reference,
                                                             :supplier_designation => self.purchase_order_supply.supplier_designation)
+    elsif self.issue_purchase_order_supply && self.must_be_reshipped_was && !self.must_be_reshipped
+      self.issue_purchase_order_supply.destroy
     end
   end
    
   def save_issue_purchase_order_supply
-    self.issue_purchase_order_supply.save if self.must_be_reshipped && self.issue_purchase_order_supply
+    if self.must_be_reshipped && self.issue_purchase_order_supply
+      self.issue_purchase_order_supply.quantity = self.issues_quantity
+      self.issue_purchase_order_supply.save
+    end
   end 
  
   def validates_quantity_for_parcel_item
@@ -67,7 +73,14 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def can_be_reported?
-    return true if parcel.received? && !was_reported? && !purchase_order_supply.purchase_order.was_completed?
+    true if parcel.received? && !purchase_order_supply.purchase_order.was_completed? && !is_issued_purchase_order_supply_in_parcel?
+  end
+  
+  def is_issued_purchase_order_supply_in_parcel?
+    if issue_purchase_order_supply && issue_purchase_order_supply.parcel_items.any? && !issue_purchase_order_supply.are_parcel_or_parcel_items_all_cancelled?
+      return true
+    end
+    return false
   end
   
   def was_reported?

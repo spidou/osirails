@@ -6,7 +6,7 @@
 
 <h1>Signaler un probl&egrave;me sur une fourniture</h1>
 <div class="presentation_medium">
-  <h2>Informations &agrave; propos du colis conteneur</h2>
+  <h2>Informations &agrave; propos du colis</h2>
   
   <div class="presentation_in_columns">
     <p><label>R&eacute;f&eacute;rence :</label> <strong><%= display_parcel_reference(@parcel) %></strong></p>
@@ -14,10 +14,14 @@
     <p><label>Fournisseur :</label> <strong><%= display_purchase_order_supplier_name(@purchase_order) %></strong></p>
   </div>
   
-  <h2>Fourniture concernée</h2>
+  <h2>Fourniture concern&eacute;e</h2>
   <%= render :partial => "parcels/array_head" %>
   <%= render :partial => "parcel_items/parcel_item", :object => @parcel_item %>
   <%= render :partial => "parcels/array_foot" %>
+  
+  <br />
+  <span class="warning">Les quantités que vous signalerez comme manquantes ou défectueuses ne seront pas prises en compte dans le stock</span>
+  <br /><br />
   
   <div class="presentation_in_columns">
   <% form_for [@purchase_order, @parcel, @parcel_item], :url => { :controller => "parcel_items", :action => "report" } do |f| %>
@@ -26,14 +30,21 @@
       <p>
         <%= f.label :issues_quantity %>
         <%= f.text_field :issues_quantity, :size => 4 %>
+        <span class="help_text">(Manquante et/ou d&eacute;fectueuse)</span>
       </p>
       <p>
         <%= f.label :issues_comment %>
         <%= f.text_area_autoresize :issues_comment %>
       </p>
       <p>
+        <%= f.label :send_back_to_supplier %>
+        <%= f.check_box :send_back_to_supplier %>
+        <span class="help_text">(Indique que la fourniture a &eacute;t&eacute; ou sera renvoy&eacute; au fournisseur)</span>
+      </p>
+      <p>
         <%= f.label :must_be_reshipped %>
         <%= f.check_box :must_be_reshipped %>
+        <span class="help_text">(Indique que le fournisseur va renvoyer la fourniture)</span>
       </p>
     </div>
     <br>

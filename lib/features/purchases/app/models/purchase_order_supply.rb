@@ -50,6 +50,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
       issued_item.issued_at = nil
       issued_item.issues_quantity = nil
       issued_item.issues_comment = nil
+      issued_item.send_back_to_supplier = nil
       issued_item.save
     end
   end
@@ -201,6 +202,13 @@ class PurchaseOrderSupply < ActiveRecord::Base
 
   def get_purchase_order_supply_total
     quantity.to_f * get_unit_price_including_tax.to_f
+  end
+  
+  def are_parcel_or_parcel_items_all_cancelled?
+    for parcel_item in parcel_items
+      return false if !parcel_item.was_cancelled? || !parcel_item.parcel.was_cancelled?
+    end
+    return true
   end
 end
 
