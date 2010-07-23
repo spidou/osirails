@@ -1,18 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
   # The priority is based upon order of creation: first created -> highest priority.
   
-  ### ROOT
   map.root :controller => 'account', :action => 'index'
   map.home 'home', :controller => 'home', :action => 'index'
   map.search 'search' , :controller => 'search_indexes'
   map.connect 'search_index/update', :controller => 'search_indexes', :action => 'update', :conditions => { :method => :post }
-  ### END ROOT
 
-  map.login 'account/login', :controller => 'account', :action => 'login'
-  map.logout 'account/logout', :controller => 'account', :action => 'logout'
-  map.lost_password 'account/lost_password', :controller => 'account', :action => 'lost_password'
-  map.expired_password 'account/expired_password', :controller => 'account', :action => 'expired_password'
-  
   ### COMMONS
 #  map.resources :cities, :collection => {:auto_complete_for_city_name => :get }
 #  map.resources :contacts, :collection => {:auto_complete_for_contact_name => :get}

@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class PaymentTest < ActiveSupport::TestCase
@@ -8,7 +7,7 @@ class PaymentTest < ActiveSupport::TestCase
   
   should_validate_presence_of :paid_on
   
-  should_validate_numericality_of :amount # I write another tests because validate_numericality cannot take in account than zero is forbidden
+  should_validate_numericality_of :amount # I wrote another tests because validate_numericality cannot take in account than zero is forbidden
   
   #TODO test validates_persistence_of :due_date_id, :payment_method_id, :amount, :paid_on, :attachment_file_name, :attachment_file_size, :attachment_content_type
   

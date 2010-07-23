@@ -1,9 +1,9 @@
 <% require_locals establishments_owner %>
 <% owner_type = establishments_owner.class.singularized_table_name %>
 
-<div class="presentation_in_columns">
-  <% fields_for "#{owner_type}[head_office_attributes][]", head_office do |form| %>
-    <%= form.error_messages %>
+<% fields_for "#{owner_type}[head_office_attributes][]", head_office do |form| %>
+  <%= form.error_messages %>
+  <div class="presentation_in_columns">
     <%= render :partial => "establishments/establishment_fields", :object => head_office, :locals => {:form => form} %>
-  <% end %>
-</div>
+  </div>
+<% end %>

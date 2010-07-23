@@ -14,29 +14,12 @@ class Employee < ActiveRecord::Base
   
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
-  # Accessors
-  cattr_accessor :pattern_error, :form_labels
-  @@pattern_error = false
-  
-  @@form_labels = Hash.new
-  @@form_labels[:civility]                = "Civilité :"
-  @@form_labels[:last_name]               = "Nom :"
-  @@form_labels[:first_name]              = "Prénom :"
-  @@form_labels[:birth_date]              = "Date de naissance :"
-  @@form_labels[:family_situation]        = "Situation familiale :"
-  @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
-  @@form_labels[:email]                   = "Email personnel :"
-  @@form_labels[:society_email]           = "Email entreprise :"
-  @@form_labels[:service]                 = "Service :"
-  @@form_labels[:avatar]                  = "Photo :"
-  
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
                     :path         => ":rails_root/assets/employees/:id/avatar/:style.:extension",
                     :url          => "/employees/:id.:extension",
                     :default_url  => ":current_theme_path/images/default_avatar.png"
   
-  # Relationships
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
@@ -72,9 +55,15 @@ class Employee < ActiveRecord::Base
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
   
-  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/,                       :message => "Le numéro de sécurité sociale doit comporter 15 chiffres"
-  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
-  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail entreprise est incorrecte"
+  validates_format_of :social_security_number,  :with         => /^[0-9]{13}\x20[0-9]{2}$/,
+                                                :message      => "Le numéro de sécurité sociale doit comporter 15 chiffres",
+                                                :allow_blank  => false
+  validates_format_of :email,                   :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
+                                                :message      => "L'adresse e-mail est incorrecte",
+                                                :allow_blank  => true
+  validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
+                                                :message      => "L'adresse e-mail entreprise est incorrecte",
+                                                :allow_blank  => true
   
   validates_associated :iban, :address, :job_contract, :user, :contacts, :premia, :checkings
   
@@ -90,10 +79,24 @@ class Employee < ActiveRecord::Base
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
   
-  # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_managment
   after_update :save_iban
+  
+  cattr_accessor :pattern_error, :form_labels
+  @@pattern_error = false
+  
+  @@form_labels = Hash.new
+  @@form_labels[:civility]                = "Civilité :"
+  @@form_labels[:last_name]               = "Nom :"
+  @@form_labels[:first_name]              = "Prénom :"
+  @@form_labels[:birth_date]              = "Date de naissance :"
+  @@form_labels[:family_situation]        = "Situation familiale :"
+  @@form_labels[:social_security_number]  = "N° de sécurité sociale :"
+  @@form_labels[:email]                   = "Email personnel :"
+  @@form_labels[:society_email]           = "Email entreprise :"
+  @@form_labels[:service]                 = "Service :"
+  @@form_labels[:avatar]                  = "Photo :"
   
   # Method to manage that there's no more than 2 responsible jobs by service
   def validates_responsible_job_limit

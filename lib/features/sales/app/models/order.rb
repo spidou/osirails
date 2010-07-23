@@ -37,7 +37,7 @@ class Order < ActiveRecord::Base
   has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses
-  has_many :products, :conditions => [ "cancelled_at IS NULL" ]
+  has_many :end_products, :conditions => [ "cancelled_at IS NULL" ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
@@ -55,7 +55,7 @@ class Order < ActiveRecord::Base
   
   validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
-  validates_associated :customer, :ship_to_addresses, :products, :quotes #TODO quotes is really necessary ?
+  validates_associated :customer, :ship_to_addresses, :end_products, :quotes #TODO quotes is really necessary ?
   
   validate :validates_length_of_ship_to_addresses
   validate :validates_order_type_validity
@@ -141,7 +141,7 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
   end
   
-  def build_delivery_note_with_remaining_products_to_deliver
+  def build_delivery_note_with_remaining_end_products_to_deliver
     return if all_is_delivered_or_scheduled?
     
     dn = delivery_notes.build
@@ -194,7 +194,7 @@ class Order < ActiveRecord::Base
   #   commercial_step
   #     graphic_conception_step
   #     survey_step
-  #     estimate_step
+  #     quote_step
   #   invoicing_step
   #     invoice_step
   #     payment_step
@@ -211,7 +211,7 @@ class Order < ActiveRecord::Base
   #   commercial_step
   #     graphic_conception_step
   #     survey_step
-  #     estimate_step
+  #     quote_step
   #   invoicing_step
   #     invoice_step
   #     payment_step
@@ -238,12 +238,12 @@ class Order < ActiveRecord::Base
     return children_steps.last
   end
   
-  def all_products_have_signed_press_proof?
-    products_without_signed_press_proof.empty?
+  def all_end_products_have_signed_press_proof?
+    end_products_without_signed_press_proof.empty?
   end
   
-  def products_without_signed_press_proof
-    products.reject{ |p| p.has_signed_press_proof? }
+  def end_products_without_signed_press_proof
+    end_products.reject{ |p| p.has_signed_press_proof? }
   end
   
   # Return a hash for advance statistics
@@ -300,7 +300,7 @@ class Order < ActiveRecord::Base
   end
   
   #def signed_quote
-  #  commercial_step.estimate_step.signed_quote
+  #  commercial_step.quote_step.signed_quote
   #end
   
   def customer_contacts

@@ -1,0 +1,16 @@
+first_customer:
+  type: Customer
+  name: First Customer
+  siret_number: 12345678912345
+  customer_grade: five_on_five
+  customer_solvency: hundred_percent
+  legal_form: local_authority
+  activated: true
+
+first_supplier:
+  type: Supplier
+  name: First Supplier
+  siret_number: 12345678912345
+  activity_sector_reference: ref2
+  legal_form: llc
+  activated: true

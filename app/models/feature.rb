@@ -170,7 +170,7 @@ class Feature < ActiveRecord::Base
   end
   
   def activate_by_default?
-    FEATURES_TO_ACTIVATE_BY_DEFAULT.include?(self.name)
+    (KERNEL_FEATURES + FEATURES_TO_ACTIVATE_BY_DEFAULT).uniq.include?(self.name)
   end
   
   def enable

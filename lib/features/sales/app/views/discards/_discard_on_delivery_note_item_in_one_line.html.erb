@@ -3,14 +3,14 @@ require_locals delivery_intervention
 delivery_note_item = discard_on_delivery_note_item_in_one_line
 
 discard = delivery_intervention.discards.detect{ |d| d.delivery_note_item_id == delivery_note_item.id } || delivery_intervention.discards.build(:delivery_note_item_id => delivery_note_item.id)
-product = delivery_note_item.quote_item.product
+end_product = delivery_note_item.quote_item.end_product
 %>
 
 <% fields_for "delivery_intervention[discard_attributes][]", discard, :index => nil do |form| %>
   <% form.force_show_view = delivery_intervention.was_realized? %>
   <tr>
-    <td class="reference"><%= product.product_reference.reference %></td>
-    <td class="designation"><span class="name"><%= product.name %></span><br/><span class="description"><%= product.description %></span></td>
+    <td class="reference"><%= end_product.product_reference.reference %></td>
+    <td class="designation"><span class="name"><%= end_product.name %></span><br/><span class="description"><%= end_product.description %></span></td>
     <td class="quantity_to_deliver"><%= delivery_note_item.quantity %></td>
     <td class="quantity"><%= form.form_or_view(form.select(:quantity, (0..delivery_note_item.quantity), {}, :index => nil, :onchange => "toggle_disable_comments_for_discard(this)"), :quantity) %></td>
     <td class="actions">

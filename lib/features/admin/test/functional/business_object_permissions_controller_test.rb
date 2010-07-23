@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../admin_test'
 
 require 'business_object_permissions_controller'

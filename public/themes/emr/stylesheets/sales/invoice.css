@@ -1,0 +1,236 @@
+/* INVOICES LIST */
+table tr.confirmed_invoice td.status {
+  color: #e99727;
+}
+
+table tr.cancelled_invoice td.status,
+table tr.abandoned_invoice td.status {
+  color: #ff3528;
+}
+
+table tr.sended_invoice td.status {
+  color: #e99727;
+  font-weight: bold;
+}
+
+table tr.due_date_paid_invoice td.status {
+  color: #e99727;
+  font-weight: bold;
+}
+
+table tr.totally_paid_invoice td.status {
+  color: #60bc00;
+  font-weight: bold;
+}
+
+/* INVOICE TYPES CHOOSER */
+div ul#invoice_types {
+  margin: 0;
+  padding: 5px 10px 10px 10px;
+}
+
+ul#invoice_types {
+  position: relative;
+  text-align: left;
+  margin: 0;
+  padding; 0;
+}
+
+ul#invoice_types li {
+  display: inline-block;
+  vertical-align: top;
+  list-style: none;
+  
+  margin: 5px 0 0 0;
+  padding: 5px;
+}
+
+ul#invoice_types li a button {
+  min-height: 180px;
+  width: 500px;
+  cursor: default;
+}
+
+ul#invoice_types li a button:not([DISABLED]) {
+  cursor: pointer;
+}
+
+ul#invoice_types li h1 {
+  font-size: 18px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+ul#invoice_types li p {
+  font-size: small;
+}
+
+/* INVOICE_ITEMS */
+
+#invoice_delivery_notes_picker {
+  position: relative;
+}
+
+#invoice_items_ajax_loading {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+}
+
+table#invoice_items td,
+table#invoice_items span {
+  vertical-align: top;
+}
+
+table#invoice_items span.fieldWithErrors {
+  display: inline-block;
+}
+
+table#invoice_items span.fieldWithErrors:after {
+  color: red;
+  vertical-align: top;
+  content: " *"
+}
+
+/*table#invoice_items tr.aggregates td {
+  text-align: left;
+  border-top: none;
+  border-bottom: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_label {
+  border-right: none;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount {
+  border-left: none;
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates td.aggregate_amount input {
+  text-align: right;
+}
+
+table#invoice_items tr.aggregates.global {
+  font-weight: bold;
+  background-color: #CCC;
+  border-top: 1px solid black;
+}
+*/
+table#invoice_items td.from_quote {
+  background-color: #e4e4e4;
+  font-style: italic;
+  color: grey;
+}
+/*
+table#invoice_items tr.new_invoice_item {
+  border: 1px solid #CCC;
+  text-align: left;
+}
+*/
+
+/* INVOICE DUE_DATES */
+table#due_dates_list input {
+  text-align: center;
+}
+
+table#due_dates_list #due_date_model {
+  display: none;
+}
+
+/* INVOICE DUE_DATE_PAYMENT */
+div#due_dates_list {
+  padding-top: 10px;
+}
+
+div.due_date {
+  margin: 0 0 1em 0;
+  padding: 0 0.7em 0 0.7em;
+  text-align: left;
+}
+
+div.due_date,
+table.due_date_header,
+table.due_date_header tr,
+table.due_date_header tr td {
+  background-color: #EEE;
+  border: 1px solid rgb(234,136,28);
+}
+
+table.due_date_header,
+table.due_date_header tr,
+table.due_date_header tr td {
+  border-bottom: none;
+}
+
+div.due_date.disabled,
+table.due_date_header.disabled,
+table.due_date_header.disabled tr,
+table.due_date_header.disabled tr td {
+  background-color: inherit;
+  border: 1px solid #999;
+}
+
+table.due_date_header.disabled,
+table.due_date_header.disabled tr,
+table.due_date_header.disabled tr td {
+  border-bottom: none;
+}
+
+div.due_date.disabled.odd,
+table.due_date_header.disabled.odd {
+  background-color: #fffde6;
+}
+
+table.due_date_header {
+  margin: 0;
+  width: auto;
+}
+
+table.due_date_header .label {
+  font-weight: bold;
+  border-right: none !important;
+}
+
+table.due_date_header .value {
+  min-width: 200px;
+  text-align: left;
+  border-left: none !important;
+}
+
+div.due_date .payment {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  border: 1px solid #CCC;
+  margin: 15px 8px 8px 8px;
+  padding-top: 15px;
+  min-width: 500px;
+}
+
+span.payment_header {
+  position: absolute;
+  border: 1px solid #CCC;
+  margin: -2.3em 0 0 0.5em;
+  padding: 0.4em;
+  font-weight: bold;
+  background-color: white;
+}
+
+div.due_date .adjustment {
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid #CCC;
+  margin: 15px 8px 8px 8px;
+  padding-top: 15px;
+  min-width: 500px;
+}
+
+p.adjustment_header {
+  position: absolute;
+  border: 1px solid #CCC;
+  margin: -25px 0 0 5px;
+  padding: 4px;
+  font-weight: bold;
+  background-color: white;
+}

@@ -1,8 +1,7 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class PressProofTest < ActiveSupport::TestCase
-  should_belong_to :order, :product, :internal_actor, :creator, :document_sending_method, :revoked_by
+  should_belong_to :order, :end_product, :internal_actor, :creator, :document_sending_method, :revoked_by
   
   should_have_named_scope :actives, :conditions => ["status NOT IN (?)", [PressProof::STATUS_CANCELLED, PressProof::STATUS_REVOKED]]
   
@@ -33,7 +32,7 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
       
-      @press_proof.press_proof_item_attributes = [{:graphic_item_version_id => create_default_mockup(@press_proof.order, @press_proof.product).current_version.id}]
+      @press_proof.press_proof_item_attributes = [{:graphic_item_version_id => create_default_mockup(@press_proof.order, @press_proof.end_product).current_version.id}]
       @press_proof.press_proof_items.first.should_destroy = 1;
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -107,11 +106,11 @@ class PressProofTest < ActiveSupport::TestCase
       assert @press_proof.errors.invalid?(:order_id)
     end
     
-    should "validate persistence of product_id" do
-      assert !@press_proof.errors.invalid?(:product_id)
-      @press_proof.product_id = nil
+    should "validate persistence of end_product_id" do
+      assert !@press_proof.errors.invalid?(:end_product_id)
+      @press_proof.end_product_id = nil
       @press_proof.valid?
-      assert @press_proof.errors.invalid?(:product_id)
+      assert @press_proof.errors.invalid?(:end_product_id)
     end
     
     should "have an associated quote corresponding to the order signed quote" do
@@ -198,7 +197,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
-    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :end_product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -219,7 +218,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -304,7 +303,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
-    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :end_product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -325,17 +324,17 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
     end
     ####
     
-    context "which is linked with a product that is linked to an 'already signed' press proof" do
+    context "which is linked with a end_product that is linked to an 'already signed' press proof" do
       setup do
         @other_press_proof = PressProof.new(:order_id          => @press_proof.order_id,
-                                            :product_id        => @press_proof.product_id,
+                                            :end_product_id    => @press_proof.end_product_id,
                                             :creator_id        => @press_proof.creator_id,
                                             :internal_actor_id => @press_proof.internal_actor_id,
                                             :press_proof_item_attributes =>  [{ :graphic_item_version_id => @press_proof.graphic_item_versions.first.id }] )
@@ -481,7 +480,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
-    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :end_product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -502,7 +501,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -586,7 +585,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     #### OPTIMIZE to avoid all that lines, use a macro like : should_validate_persistence_of :status, :references, etc...
-    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :end_product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -616,14 +615,14 @@ class PressProofTest < ActiveSupport::TestCase
     #should "validate persistence of press_proof_items" do
     #  assert !@press_proof.errors.invalid?(:press_proof_items)
     #  
-    #  graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+    #  graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
     #  @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
     #  @press_proof.valid?
     #  assert @press_proof.errors.invalid?(:press_proof_items)
     #end
     
 #    should_validate_persistence_of :revoked, :revoked_comment, :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on,
-#                                   :order_id, :unit_measure_id, :product_id, :internal_actor_id, :creator_id
+#                                   :order_id, :unit_measure_id, :end_product_id, :internal_actor_id, :creator_id
 
     ####
   end
@@ -702,7 +701,7 @@ class PressProofTest < ActiveSupport::TestCase
     end
     
     # OPTIMIZE use a macro to test should_validate_persistence_of
-    [:order_id, :product_id, :internal_actor_id, :creator_id].each do |attribute|
+    [:order_id, :end_product_id, :internal_actor_id, :creator_id].each do |attribute|
       should "validate persistence of #{attribute.to_s}" do
         assert !@press_proof.errors.invalid?(attribute)
         @press_proof.send("#{attribute.to_s}=", nil)
@@ -732,7 +731,7 @@ class PressProofTest < ActiveSupport::TestCase
     should "validate persistence of press_proof_items" do
       assert !@press_proof.errors.invalid?(:press_proof_items)
       
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert @press_proof.errors.invalid?(:press_proof_items)
@@ -758,7 +757,7 @@ class PressProofTest < ActiveSupport::TestCase
     should_not_allow_values_for :status, PressProof::STATUS_CONFIRMED, PressProof::STATUS_SENDED, PressProof::STATUS_SIGNED, PressProof::STATUS_REVOKED, PressProof::STATUS_CANCELLED
     
     should "save only with graphic_item_versions as mockups" do
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert !@press_proof.errors.invalid?(:press_proof_items)
@@ -768,8 +767,8 @@ class PressProofTest < ActiveSupport::TestCase
       assert @press_proof.errors.invalid?(:press_proof_items)
     end
     
-    should "save only with graphic_item_versions linked to the same product as the press_proof" do
-      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+    should "save only with graphic_item_versions linked to the same end_product as the press_proof" do
+      graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_items.build(:press_proof_id => @press_proof.id, :graphic_item_version_id => graphic_item_version.id)
       @press_proof.valid?
       assert !@press_proof.errors.invalid?(:press_proof_items)
@@ -786,7 +785,7 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof = create_default_press_proof
       
       # select a saved mockup
-      @saved_graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      @saved_graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_item_attributes = [ { :graphic_item_version_id => @saved_graphic_item_version.id } ]
       flunk "@graphic_item_version should be saved #{@graphic_item_version.errors.inspect}" unless @press_proof.save
       
@@ -794,7 +793,7 @@ class PressProofTest < ActiveSupport::TestCase
       @press_proof.press_proof_items.detect {|n| n.graphic_item_version_id == @press_proof.graphic_item_versions.first.id}.should_destroy = '1'
       
       # select a mockup
-      @graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.product).current_version
+      @graphic_item_version = create_default_mockup(@press_proof.order, @press_proof.end_product).current_version
       @press_proof.press_proof_item_attributes = [ {:graphic_item_version_id => @graphic_item_version.id} ]
     end
     
@@ -822,14 +821,14 @@ class PressProofTest < ActiveSupport::TestCase
     
   end
   
-  context "A press_proof linked to a product which has already a signed press_proof" do
+  context "A press_proof linked to a end_product which has already a signed press_proof" do
     setup do
       s = create_default_press_proof
       
-      @new_press_proof       = build_default_press_proof(s.order, s.product, s.creator, s.internal_actor)
-      @press_proof           = create_default_press_proof(s.order, s.product, s.creator, s.internal_actor)
-      @confirmed_press_proof = confirm_press_proof(create_default_press_proof(s.order, s.product, s.creator, s.internal_actor))
-      @sended_press_proof    = send_press_proof(create_default_press_proof(s.order, s.product, s.creator, s.internal_actor))
+      @new_press_proof       = build_default_press_proof(s.order, s.end_product, s.creator, s.internal_actor)
+      @press_proof           = create_default_press_proof(s.order, s.end_product, s.creator, s.internal_actor)
+      @confirmed_press_proof = confirm_press_proof(create_default_press_proof(s.order, s.end_product, s.creator, s.internal_actor))
+      @sended_press_proof    = send_press_proof(create_default_press_proof(s.order, s.end_product, s.creator, s.internal_actor))
       
       s = get_signed_press_proof(s)
       
@@ -908,7 +907,7 @@ class PressProofTest < ActiveSupport::TestCase
     press_proof = create_default_press_proof
     
     PressProof.new( :order_id          => press_proof.order_id,
-                    :product_id        => press_proof.product_id,
+                    :end_product_id    => press_proof.end_product_id,
                     :creator_id        => press_proof.creator_id,
                     :internal_actor_id => press_proof.internal_actor_id)
   end
@@ -924,7 +923,7 @@ class PressProofTest < ActiveSupport::TestCase
   end
   
   def sign_press_proof(p)
-    p.sign(:signed_on => Date.today, :signed_press_proof => File.new(File.join(RAILS_ROOT, "test", "fixtures", "signed_press_proof.pdf")))
+    p.sign(:signed_on => Date.today, :signed_press_proof => File.new(File.join(Test::Unit::TestCase.fixture_path, "signed_press_proof.pdf")))
     p
   end
   
@@ -934,7 +933,7 @@ class PressProofTest < ActiveSupport::TestCase
   end
   
   def revoke_press_proof(p)
-    p.revoke(:revoked_by_id => users(:admin_user).id, :revoked_on => Date.today, :revoked_comment => "comment")
+    p.revoke(:revoked_by_id => users(:sales_user).id, :revoked_on => Date.today, :revoked_comment => "comment")
     p
   end
-end  
+end

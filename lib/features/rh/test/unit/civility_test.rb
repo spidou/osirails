@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class CivilityTest < ActiveSupport::TestCase
-  fixtures :civilities
-
   def setup
     @civility = civilities(:mister)
   end

@@ -1,44 +1,32 @@
 module ProductReferencesHelper
-
   # This method permit to show all references
   def show_reference(categories)
-    show_references = []
-    count = 0
-    
-    categories.each do |category|
-      if category.enable == true
-        count += category.product_references_count
-      end
-      count
-    end
-    
+    count = categories.select(&:enabled?).collect(&:product_references_count).sum
     select_header = pluralize(count, 'reference', 'references')
+    
+    show_references = []
     show_references << "<option value=\"0\" selected=\"selected\" style=\"font-weight:bold\">Il y a #{select_header}</option>"
-      
-    categories.each do |category|
-      show_references << get_show_reference(category)
-    end
-    show_references
+    show_references += categories.collect{ |category| get_show_reference(category) }
+    show_references.to_s
   end
 
   # This method permit to have all references for a category and this children
   def get_show_reference(category)
     show_references = []
-    if category.children.size != 0
-      categories = ProductReferenceCategory.find(:all, :order => 'product_reference_category_id', :conditions => {:enable => true, :product_reference_category_id => category.id}).reverse
-      categories.each do |category_child|
-        if category_child.children.size != 0 or category_child.product_references.size != 0
-          show_references << get_show_reference(category_child)
+    if category.product_reference_categories.any?
+      category.product_reference_categories.each do |child_category|
+        if child_category.product_reference_categories.any? or child_category.product_references.any?
+          show_references << get_show_reference(child_category)
         end
       end
     end
-    if category.product_references.size > 0
-      references = ProductReference.find(:all, :order => 'product_reference_category_id', :conditions => {:enable => true, :product_reference_category_id => category.id}).reverse
-      references.each do |reference|
-        show_references << "<option value=\"#{reference.id}\">"+reference.name+" (#{reference.products_count})</option>"
+    
+    if category.product_references.any?
+      category.product_references.each do |reference|
+        show_references << "<option value=\"#{reference.id}\">#{reference.name} (#{reference.end_products_count})</option>"
       end
     end
     show_references.reverse
   end
-
+  
 end

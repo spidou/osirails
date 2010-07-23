@@ -9,7 +9,7 @@ class Supply < ActiveRecord::Base
   has_many :supplies_supply_sizes, :include => [ :supply_size ], :order => "supply_sizes.position"
   has_many :supply_sizes, :through => :supplies_supply_sizes
   
-  named_scope :enabled,   :conditions => { :enabled => true }
+  named_scope :enabled, :conditions => { :enabled => true }
   
   validates_presence_of :name, :reference, :supply_sub_category_id
   validates_presence_of :supply_sub_category, :if => :supply_sub_category_id

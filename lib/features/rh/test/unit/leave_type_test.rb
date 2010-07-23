@@ -1,7 +1,6 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class LeaveTypeTest < ActiveSupport::TestCase
-
   def setup
     @good_leave_type = leave_types(:good_leave_type)
     @good_leave_type.valid?

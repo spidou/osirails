@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
 
   create_table "checklist_responses", :force => true do |t|
     t.integer  "checklist_option_id", :limit => 11
-    t.integer  "product_id",          :limit => 11
+    t.integer  "end_product_id",      :limit => 11
     t.text     "answer"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -490,15 +490,6 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "updated_at"
   end
 
-  create_table "estimate_steps", :force => true do |t|
-    t.integer  "commercial_step_id", :limit => 11
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "event_categories", :force => true do |t|
     t.integer "calendar_id", :limit => 11
     t.string  "name"
@@ -605,7 +596,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "mockup_type_id",           :limit => 11
     t.integer  "order_id",                 :limit => 11
     t.integer  "press_proof_id",           :limit => 11
-    t.integer  "product_id",               :limit => 11
+    t.integer  "end_product_id",           :limit => 11
     t.string   "type"
     t.string   "name"
     t.string   "reference"
@@ -648,13 +639,13 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "invoice_items", :force => true do |t|
-    t.integer  "invoice_id",  :limit => 11
-    t.integer  "product_id",  :limit => 11
-    t.integer  "position",    :limit => 11
+    t.integer  "invoice_id",     :limit => 11
+    t.integer  "end_product_id", :limit => 11
+    t.integer  "position",       :limit => 11
     t.float    "quantity"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",                :precision => 65, :scale => 20
+    t.decimal  "unit_price",                   :precision => 65, :scale => 20
     t.float    "vat"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -972,6 +963,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "updated_at"
   end
 
+  add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name", :unique => true
+
   create_table "payment_steps", :force => true do |t|
     t.integer  "invoicing_step_id", :limit => 11
     t.string   "status"
@@ -986,6 +979,8 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "payment_time_limits", ["name"], :name => "index_payment_time_limits_on_name", :unique => true
 
   create_table "payments", :force => true do |t|
     t.integer  "due_date_id",             :limit => 11
@@ -1059,7 +1054,7 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
 
   create_table "press_proofs", :force => true do |t|
     t.integer  "order_id",                        :limit => 11
-    t.integer  "product_id",                      :limit => 11
+    t.integer  "end_product_id",                  :limit => 11
     t.integer  "creator_id",                      :limit => 11
     t.integer  "internal_actor_id",               :limit => 11
     t.integer  "revoked_by_id",                   :limit => 11
@@ -1083,44 +1078,45 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
 
   create_table "product_reference_categories", :force => true do |t|
     t.integer  "product_reference_category_id", :limit => 11
-    t.string   "name"
-    t.boolean  "enable",                                      :default => true
-    t.integer  "product_references_count",      :limit => 11, :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "product_references", :force => true do |t|
-    t.integer  "product_reference_category_id", :limit => 11
     t.string   "reference"
     t.string   "name"
-    t.text     "description"
-    t.float    "production_cost_manpower"
-    t.float    "production_time"
-    t.float    "delivery_cost_manpower"
-    t.float    "delivery_time"
-    t.float    "vat"
-    t.boolean  "enable",                                      :default => true
-    t.integer  "products_count",                :limit => 11, :default => 0
+    t.integer  "product_references_count",      :limit => 11, :default => 0
+    t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "product_references", ["reference"], :name => "index_product_references_on_reference", :unique => true
 
   create_table "products", :force => true do |t|
-    t.integer  "product_reference_id", :limit => 11
-    t.integer  "order_id",             :limit => 11
+    t.string   "type"
+    t.integer  "product_reference_category_id", :limit => 11
+    t.integer  "end_products_count",            :limit => 11, :default => 0
+    t.integer  "product_reference_id",          :limit => 11
+    t.integer  "order_id",                      :limit => 11
+    t.float    "prizegiving"
+    t.float    "unit_price"
+    t.integer  "quantity",                      :limit => 11
+    t.integer  "position",                      :limit => 11
     t.string   "reference"
+    t.string   "name"
+    t.string   "dimensions"
+    t.text     "description"
+    t.float    "vat"
+    t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quote_items", :force => true do |t|
+    t.integer  "quote_id",       :limit => 11
+    t.integer  "end_product_id", :limit => 11
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.decimal  "unit_price",                         :precision => 65, :scale => 20
-    t.decimal  "prizegiving",                        :precision => 65, :scale => 20
+    t.decimal  "unit_price",                   :precision => 65, :scale => 20
+    t.decimal  "prizegiving",                  :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
-    t.integer  "position",             :limit => 11
-    t.datetime "cancelled_at"
+    t.integer  "position",       :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1202,6 +1198,15 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.float    "quantity"
     t.float    "vat"
     t.integer  "position",    :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+  
+  create_table "quote_steps", :force => true do |t|
+    t.integer  "commercial_step_id", :limit => 11
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

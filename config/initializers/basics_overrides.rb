@@ -181,7 +181,7 @@ class Float
     elsif precision.instance_of?(Fixnum)
       str = self.to_s_without_precision
       integer = str.to(str.index(".") - 1)
-      decimals = str.from(str.index(".") + 1).ljust(precision, "0")
+      decimals = str.from(str.index(".") + 1).to(precision - 1).ljust(precision, "0")
       "#{integer}.#{decimals}"
     end
   end

@@ -33,8 +33,8 @@ class Invoice < ActiveRecord::Base
   belongs_to :cancelled_by, :class_name => "User"
   belongs_to :abandoned_by, :class_name => "User"
   
-  has_many :invoice_items,  :dependent  => :destroy, :order => 'position'
-  has_many :products,       :through    => :invoice_items, :order => 'invoice_items.position'
+  has_many :invoice_items,  :dependent  => :destroy,        :order => 'position'
+  has_many :end_products,   :through    => :invoice_items,  :order => 'invoice_items.position'
   
   has_many :delivery_note_invoices, :dependent  => :destroy
   has_many :delivery_notes,         :through    => :delivery_note_invoices
@@ -45,7 +45,7 @@ class Invoice < ActiveRecord::Base
   
   attr_accessor :the_due_date_to_pay # only one due_date can be paid at time, and it's stored in this accessor
   
-  validates_associated :invoice_items, :products, :delivery_note_invoices, :delivery_notes, :dunnings, :due_dates
+  validates_associated :invoice_items, :end_products, :delivery_note_invoices, :delivery_notes, :dunnings, :due_dates
   
   # when invoice is UNSAVED
   with_options :if => :new_record? do |x|
@@ -319,7 +319,7 @@ class Invoice < ActiveRecord::Base
   
   validate :validates_integrity_of_product_items
   
-  attr_protected :status, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
+  attr_protected :status, :reference, :cancelled_by, :abandoned_by, :confirmed_at, :cancelled_at
   
   before_validation :build_or_update_free_item_for_deposit_invoice
   
@@ -514,12 +514,12 @@ class Invoice < ActiveRecord::Base
     
     delivery_note_items_sum = {}
     delivery_note_invoices.reject(&:should_destroy).collect(&:delivery_note).collect(&:delivery_note_items).flatten.each do |i|
-      p_id = i.quote_item.product_id
+      p_id = i.quote_item.end_product_id
       ( delivery_note_items_sum[p_id] = ( delivery_note_items_sum[p_id] || 0 ) + i.quantity ) if i.quantity > 0
     end
     
     product_items_sum = {}
-    product_items.each{ |i| product_items_sum[i.product_id] = i.quantity if i.quantity > 0 }
+    product_items.each{ |i| product_items_sum[i.end_product_id] = i.quantity if i.quantity > 0 }
     
     errors.add(:invoice_items, "La liste des produits qui composent la facture est incorrecte. Elle ne correspond pas aux produits livrés dans le(s) 'Bon de Livraison' associé(s) (#{product_items_sum.inspect} - #{delivery_note_items_sum.inspect} = #{product_items_sum.diff(delivery_note_items_sum).inspect})") if product_items_sum != delivery_note_items_sum
   end
@@ -542,11 +542,11 @@ class Invoice < ActiveRecord::Base
   end
   
   def product_items
-    invoice_items.select(&:product_id)
+    invoice_items.select(&:end_product_id)
   end
   
   def free_items
-    invoice_items.reject(&:product_id)
+    invoice_items.reject(&:end_product_id)
   end
   
   def sorted_invoice_items
@@ -614,12 +614,12 @@ class Invoice < ActiveRecord::Base
   
   def build_or_update_free_item_for_deposit_invoice
     return nil unless deposit and deposit_amount and deposit_vat
-    new_attributes = {  :product_id   => nil,
-                        :quantity     => 1,
-                        :unit_price   => deposit_amount_without_taxes,
-                        :vat          => deposit_vat,
-                        :name         => "Acompte de #{deposit}% pour avance sur chantier",
-                        :description  => deposit_comment }
+    new_attributes = {  :end_product_id => nil,
+                        :quantity       => 1,
+                        :unit_price     => deposit_amount_without_taxes,
+                        :vat            => deposit_vat,
+                        :name           => "Acompte de #{deposit}% pour avance sur chantier",
+                        :description    => deposit_comment }
     
     free_item = free_items.first || invoice_items.build
     free_item.attributes = new_attributes
@@ -629,7 +629,7 @@ class Invoice < ActiveRecord::Base
     return if delivery_note.nil? or delivery_note.new_record?
     
     delivery_note.delivery_note_items.each do |item|
-      existing_invoice_item = invoice_items.detect{ |i| i.product_id == item.quote_item.product_id }
+      existing_invoice_item = invoice_items.detect{ |i| i.end_product_id == item.quote_item.end_product_id }
       
       if should_destroy
         existing_invoice_item.quantity -= item.really_delivered_quantity if existing_invoice_item
@@ -637,8 +637,8 @@ class Invoice < ActiveRecord::Base
         if existing_invoice_item
           existing_invoice_item.quantity += item.really_delivered_quantity if existing_invoice_item.new_record?
         elsif item.really_delivered_quantity > 0
-          invoice_items.build( :product_id  => item.quote_item.product_id,
-                               :quantity    => item.really_delivered_quantity )
+          invoice_items.build( :end_product_id  => item.quote_item.end_product_id,
+                               :quantity        => item.really_delivered_quantity )
         end
       end
     end

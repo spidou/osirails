@@ -30,8 +30,8 @@ class PressProofsController < ApplicationController
   def new
     @press_proof = @order.press_proofs.build
     
-    unless @order.all_products_have_signed_press_proof?
-      @press_proof.product = @order.products_without_signed_press_proof.first
+    unless @order.all_end_products_have_signed_press_proof?
+      @press_proof.end_product = @order.end_products_without_signed_press_proof.first
       @press_proof.internal_actor = current_user.employee
       @press_proof.creator = current_user
     else
@@ -44,7 +44,7 @@ class PressProofsController < ApplicationController
     @press_proof = @order.press_proofs.build(params[:press_proof])
     @press_proof.creator = current_user
     
-    if @press_proof.can_be_created? and !@order.all_products_have_signed_press_proof?
+    if @press_proof.can_be_created? and !@order.all_end_products_have_signed_press_proof?
       if @press_proof.save
         flash[:notice] = "Le Bon à Tirer (BAT) a été créé avec succès"
         redirect_to send(@step.original_step.path)

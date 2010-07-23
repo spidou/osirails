@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     @user = User.new(params[:user])
     if @user.save
       flash[:notice] = 'Le compte utilisateur a été ajouté avec succès.'
-      redirect_to(@user) 
+      redirect_to(@user)
     else
       render :action => "new"
     end

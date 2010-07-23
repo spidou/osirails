@@ -1,10 +1,13 @@
 class MockupsController < ApplicationController
   acts_as_step_controller :sham => true
+  
   helper :graphic_items
+  
+  before_filter :find_order_end_products, :only => [ :new, :create, :edit, :update ]
   
   # GET /orders/:order_id/mockups
   def index
-    @enabled_mockups = @order.mockups.find(:all,:conditions => ["cancelled is NULL or cancelled=false"])
+    @enabled_mockups = @order.mockups.find(:all, :conditions => ["cancelled is NULL or cancelled=false"])
   end  
   
   # GET /orders/:order_id/mockups/:id
@@ -16,7 +19,6 @@ class MockupsController < ApplicationController
   # GET /orders/:order_id/mockups/new
   def new
     @mockup = @order.mockups.build
-    @products = @order.products
     @graphic_item_types = MockupType.find(:all)
     @graphic_unit_measures = GraphicUnitMeasure.find(:all)
   end
@@ -26,7 +28,6 @@ class MockupsController < ApplicationController
     @mockup = @order.mockups.build(params[:mockup])
     @mockup.creator = current_user
     
-    @products = @order.products
     @graphic_item_types = MockupType.find(:all)
     @graphic_unit_measures = GraphicUnitMeasure.find(:all)  
 
@@ -41,7 +42,6 @@ class MockupsController < ApplicationController
   # GET /orders/:order_id/mockups/:id/edit
   def edit
     @mockup = Mockup.find(params[:id])
-    @products = @order.products
     @graphic_item_types = MockupType.find(:all)
     @graphic_item_versions = GraphicItemVersion.find(:all, :conditions => {:graphic_item_id => @mockup.id})
   end
@@ -49,7 +49,6 @@ class MockupsController < ApplicationController
   # PUT /orders/:order_id/mockups/:id/update
   def update
     @mockup = Mockup.find(params[:id])  
-    @products = @order.products
     @graphic_item_types = MockupType.find(:all)
     @graphic_item_versions = GraphicItemVersion.find(:all, :conditions => {:graphic_item_id => @mockup.id})
 
@@ -102,4 +101,9 @@ class MockupsController < ApplicationController
     @spool = GraphicItemSpoolItem.find(:all,:conditions => ["user_id = ?",current_user.id], :order => "created_at DESC")
     redirect_to :action => :index unless request.xhr?
   end
+  
+  private
+    def find_order_end_products
+      @end_products = @order.end_products
+    end
 end

@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class SupplySizeTest < ActiveSupport::TestCase
-  
   #TODO
   # has_permissions :as_business_object
   
@@ -34,5 +32,4 @@ class SupplySizeTest < ActiveSupport::TestCase
       end
     end
   end
-  
 end

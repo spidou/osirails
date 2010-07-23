@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../has_numbers_test'
 
 class NumberTest < ActiveSupport::TestCase
   

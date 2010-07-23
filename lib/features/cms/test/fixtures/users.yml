@@ -1,0 +1,6 @@
+cms_first_user:
+  username: cms_first_user
+  enabled: true
+cms_second_user:
+  username: cms_second_user
+  enabled: true

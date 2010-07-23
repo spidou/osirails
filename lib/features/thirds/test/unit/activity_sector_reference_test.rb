@@ -1,7 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
-class ActivitySectorReferenceTest < Test::Unit::TestCase
-  
+class ActivitySectorReferenceTest < ActiveSupport::TestCase
   should_belong_to :activity_sector, :custom_activity_sector
   
   should_validate_presence_of :code
@@ -52,5 +51,4 @@ class ActivitySectorReferenceTest < Test::Unit::TestCase
       assert_equal @activity_sector_reference.activity_sector, @activity_sector_reference.get_activity_sector
     end
   end
-  
 end
