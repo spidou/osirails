@@ -1,9 +1,15 @@
+require 'test/test_helper'
+
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
+
 class Test::Unit::TestCase
-  fixtures :users
+  fixtures :all
 
   def init_menus_and_permissions
     Feature::FEATURES_TO_ACTIVATE_BY_DEFAULT.each do |feature|
       yaml_path = File.join('lib/features', feature, 'config.yml')
+      next unless File.exists?(yaml_path)
+      
       yaml = YAML.load(File.open(yaml_path))
 
       @all_menus = []

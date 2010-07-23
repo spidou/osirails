@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class QuoteTest < ActiveSupport::TestCase
@@ -12,7 +11,7 @@ class QuoteTest < ActiveSupport::TestCase
   should_belong_to :creator, :order, :send_quote_method, :order_form_type
   
   should_have_many :quote_items, :dependent => :delete_all
-  should_have_many :products, :through => :quote_items
+  should_have_many :end_products, :through => :quote_items
   
   should_have_attached_file :order_form
   
@@ -64,74 +63,74 @@ class QuoteTest < ActiveSupport::TestCase
       @order = create_default_order
       @quote = create_quote_for(@order)
       
-      @quote_items = @quote.quote_items.collect(&:id)
-      @products = @order.products.collect(&:id)
+      @quote_item_ids = @quote.quote_items.collect(&:id)
+      @end_product_ids = @order.end_products.collect(&:id)
       
       flunk "@quote should be destroyed" unless @quote.destroy
     end
     
     teardown do
-      @order = @quote = @quote_items = @products = nil
+      @order = @quote = @quote_item_ids = @end_product_ids = nil
     end
     
     should "delete associated quote_items" do
-      @quote_items.each do |quote_item_id|
+      @quote_item_ids.each do |quote_item_id|
         assert_nil QuoteItem.find_by_id(quote_item_id)
       end
     end
     
-    should "NOT delete associated products" do
-      @products.each do |product_id|
-        assert_not_nil Product.find_by_id(product_id)
+    should "NOT delete associated end_products" do
+      @end_product_ids.each do |end_product_id|
+        assert_not_nil EndProduct.find_by_id(end_product_id)
       end
     end
   end
   
   use_cases = [
-    { :existing_products => 0, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test creation of a quote_item and a product simultaneously
-    { :existing_products => 1, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test creation of a quote_item over an existing product
-    { :existing_products => 2, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test deletion of an existing product if a linked quote_item is not submitted
-    { :existing_products => 1, :existing_quote_items => 1, :submitted_quote_items => 1 }, # test normal update
-    { :existing_products => 2, :existing_quote_items => 2, :submitted_quote_items => 2,
-                                                           :quote_items_to_remove => 1 }, # test deletion of quote_item and an existing product simultaneously
-    { :existing_products => 3, :existing_quote_items => 3, :submitted_quote_items => 3,
-                                                           :quote_items_to_remove => 3 }  # test deletion of all quote_items
+    { :existing_end_products => 0, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test creation of a quote_item and a end_product simultaneously
+    { :existing_end_products => 1, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test creation of a quote_item over an existing end_product
+    { :existing_end_products => 2, :existing_quote_items => 0, :submitted_quote_items => 1 }, # test deletion of an existing end_product if a linked quote_item is not submitted
+    { :existing_end_products => 1, :existing_quote_items => 1, :submitted_quote_items => 1 }, # test normal update
+    { :existing_end_products => 2, :existing_quote_items => 2, :submitted_quote_items => 2,
+                                                               :quote_items_to_remove => 1 }, # test deletion of quote_item and an existing end_product simultaneously
+    { :existing_end_products => 3, :existing_quote_items => 3, :submitted_quote_items => 3,
+                                                               :quote_items_to_remove => 3 }  # test deletion of all quote_items
   ]
   
   use_cases.each do |use_case|
-    x = use_case[:existing_products]
+    x = use_case[:existing_end_products]
     y = use_case[:existing_quote_items]
     z = use_case[:submitted_quote_items]
     quote_items_to_remove = use_case[:quote_items_to_remove] || 0
     
-    quote_items_to_build = z - y # difference between submitted_quote_items and existing_quote_items
-    products_to_build    = z - x # difference between submitted_quote_items and existing_products
+    quote_items_to_build  = z - y # difference between submitted_quote_items and existing_quote_items
+    end_products_to_build = z - x # difference between submitted_quote_items and existing_end_products
     
-    products_to_save = quote_items_to_save = z - quote_items_to_remove # difference between submitted_quote_items and quote_items_to_remove
+    end_products_to_save = quote_items_to_save = z - quote_items_to_remove # difference between submitted_quote_items and quote_items_to_remove
     
-    context "An order with #{x} products, and a quote with #{y} quote_items" do
+    context "An order with #{x} end_products, and a quote with #{y} quote_items" do
       setup do
         @order = create_default_order
         x.times do
-          create_valid_product_for(@order)
+          create_default_end_product(@order)
         end
-        flunk "@order should have #{x} products" unless @order.products.count == x
+        flunk "@order should have #{x} end_products" unless @order.end_products.count == x
         
         @quote = @order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
-        @quote.creator = users(:powerful_user)
+        @quote.creator = users(:sales_user)
         @quote.contacts << contacts(:pierre_paul_jacques)
         
         if y > 0
-          @order.products.each_with_index do |product, index|
+          @order.end_products.each_with_index do |end_product, index|
             break if index == y
-            @quote.quote_items.build(:product_id            => product.id,
-                                     :name                  => "Product name",
-                                     :description           => "Product description",
-                                     :dimensions            => "1000x2000",
-                                     :quantity              => 10,
-                                     :unit_price            => 1000,
-                                     :prizegiving           => 2.0,
-                                     :vat                   => 19.6 )
+            @quote.quote_items.build( :end_product_id  => end_product.id,
+                                      :name            => "Product name",
+                                      :description     => "Product description",
+                                      :dimensions      => "1000x2000",
+                                      :quantity        => 10,
+                                      :unit_price      => 1000,
+                                      :prizegiving     => 2.0,
+                                      :vat             => 19.6 )
           end
           @quote.save!
           flunk "@quote should have #{y} quote_items, but has <#{@quote.quote_items.count}>" unless @quote.quote_items.count == y
@@ -151,16 +150,16 @@ class QuoteTest < ActiveSupport::TestCase
             quote_item = @quote.quote_items[time]
             id = quote_item ? quote_item.id : nil
             
-            product = @order.products[time]
-            product_id = product ? product.id : nil
-            product_reference_id = product ? product.product_reference_id : ProductReference.first.id
+            end_product = @order.end_products[time]
+            end_product_id = end_product ? end_product.id : nil
+            product_reference_id = end_product ? end_product.product_reference_id : ProductReference.first.id
             
             should_destroy = ( time < quote_items_to_remove ? 1 : nil )
             
             @params << { :id                    => id,
                          :product_reference_id  => product_reference_id,
                          :order_id              => @order.id,
-                         :product_id            => product_id,
+                         :end_product_id        => end_product_id,
                          :name                  => "Product name",
                          :description           => "Product description",
                          :dimensions            => "1000x2000",
@@ -200,32 +199,32 @@ class QuoteTest < ActiveSupport::TestCase
           
         end
         
-        if products_to_build < 0
-          products_to_build = products_to_build.abs
+        if end_products_to_build < 0
+          end_products_to_build = end_products_to_build.abs
           
-          should "set up #{products_to_build} products to be destroyed" do
-            assert_equal products_to_build, @quote.order_products_to_remove.size
+          should "set up #{end_products_to_build} end_products to be destroyed" do
+            assert_equal end_products_to_build, @quote.order_end_products_to_remove.size
           end
         
         else
           
-          should "build #{products_to_build} products with the correct attributes" do
-            new_products = @quote.quote_items.select(&:new_record?).collect(&:product).select(&:new_record?)
-            assert_equal products_to_build, new_products.size
+          should "build #{end_products_to_build} end_products with the correct attributes" do
+            new_end_products = @quote.quote_items.select(&:new_record?).collect(&:end_product).select(&:new_record?)
+            assert_equal end_products_to_build, new_end_products.size
             
-            new_products.each do |product|
+            new_end_products.each do |end_product|
               #TODO test if attributes are correct
             end
           end
           
         end
         
-        should "update #{products_to_save} products with the correct attributes" do
-          #TODO check if product attributes have been updated
+        should "update #{end_products_to_save} end_products with the correct attributes" do
+          #TODO check if end_product attributes have been updated
         end
         
         should "update #{quote_items_to_save} quote_items with the correct attributes" do
-          #TODO check if product attributes have been updated
+          #TODO check if end_product attributes have been updated
         end
         
         if quote_items_to_save > 0
@@ -250,29 +249,29 @@ class QuoteTest < ActiveSupport::TestCase
           
         end
         
-        if products_to_save > 0
+        if end_products_to_save > 0
         
-          should "have #{products_to_save} products with the correct attributes after saving itself" do
+          should "have #{end_products_to_save} end_products with the correct attributes after saving itself" do
             @quote.save!
-            assert_equal products_to_save, @quote.products.count
+            assert_equal end_products_to_save, @quote.end_products.count
             
-            @quote.products.each do |product|
+            @quote.end_products.each do |end_product|
               #TODO test if attributes are correct
             end
           end
           
-          should "have an order which have #{products_to_save} products with the correct attributes after saving itself" do
+          should "have an order which have #{end_products_to_save} end_products with the correct attributes after saving itself" do
             @quote.save!
-            assert_equal products_to_save, @order.products.count
+            assert_equal end_products_to_save, @order.end_products.count
             
-            @order.products.each do |product|
+            @order.end_products.each do |end_product|
               #TODO test if attributes are correct
             end
           end
           
         else
           
-          should "have #{products_to_save} products, and should be invalid because of emptiness of quote_items" do
+          should "have #{end_products_to_save} end_products, and should be invalid because of emptiness of quote_items" do
             @quote.valid?
             assert @quote.errors.invalid?(:quote_item_ids)
           end

@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class CalendarTest < ActiveSupport::TestCase
-  fixtures :calendars, :users, :event_categories
-
   def setup
     @good_calendar = calendars(:normal)
     
@@ -11,7 +9,7 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_user
-    assert_equal @good_calendar.user, users(:powerful_user),
+    assert_equal @good_calendar.user, users(:calendar_user),
       "This Calendar should belongs to this User"
   end
   
@@ -51,7 +49,7 @@ class CalendarTest < ActiveSupport::TestCase
     assert !@calendar.errors.invalid?(:user_id), "user_id should be valid"
     assert @calendar.errors.invalid?(:user), "user should NOT be valid because user_id refers to a wrong user"
     
-    @calendar.user_id = users(:admin_user).id
+    @calendar.user_id = users(:calendar_user).id
     @calendar.valid?
     assert !@calendar.errors.invalid?(:user_id), "user_id should be valid"
   end

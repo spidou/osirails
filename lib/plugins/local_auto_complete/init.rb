@@ -1,0 +1,1 @@
+require 'local_auto_complete_macros_helper'

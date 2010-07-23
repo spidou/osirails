@@ -11,8 +11,6 @@ class CreateUsers < ActiveRecord::Migration
     add_index :users, :username, :unique => true
   end
   
-  
-  
   def self.down
     drop_table :users
   end

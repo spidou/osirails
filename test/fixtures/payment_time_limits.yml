@@ -1,4 +1,0 @@
-cod: # paiement comptant à la livraison
-  name: Cash on delivery
-cwo: # paiement comptant à la commande
-  name: Cash with order

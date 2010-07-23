@@ -1,5 +1,5 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
-class CustomerSolvencyTest < Test::Unit::TestCase
+class CustomerSolvencyTest < ActiveSupport::TestCase
   should_belong_to :payment_method
 end

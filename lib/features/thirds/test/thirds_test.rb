@@ -1,6 +1,11 @@
+require 'test/test_helper'
+
 require File.dirname(__FILE__) + '/unit/siret_number_test'
 
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
+
 class Test::Unit::TestCase
+  fixtures :all
   
   def get_customer(factorised = true)
     if factorised == true

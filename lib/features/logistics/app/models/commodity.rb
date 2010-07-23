@@ -3,4 +3,8 @@ class Commodity < Supply
   has_reference   :symbols => [ :supply_sub_category ], :prefix => :logistics
   
   belongs_to :supply_sub_category, :class_name => "CommoditySubCategory", :counter_cache => :supplies_count
+  
+  has_search_index  :only_attributes    => [ :reference, :name ],
+                    :only_relationships => [ :supply_sub_category ],
+                    :main_model         => true
 end

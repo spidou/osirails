@@ -1,7 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class CheckingTest < ActiveSupport::TestCase
-  
   def setup
     @good_checking = checkings(:good_checking)
     flunk "good cheking is not valid #{@good_checking.errors.inspect}" unless @good_checking.valid?
@@ -19,7 +18,7 @@ class CheckingTest < ActiveSupport::TestCase
   def test_persistence_of_user_id
     assert !@good_checking.errors.invalid?(:user_id), "user_id should be valid because is not modified"
     
-    @good_checking.user_id = users(:admin_user).id
+    @good_checking.user_id = 0
     @good_checking.valid?
     assert @good_checking.errors.invalid?(:user_id), "user_id should NOT be valid because is modified"
   end
@@ -27,7 +26,7 @@ class CheckingTest < ActiveSupport::TestCase
   def test_persistence_of_employee_id
     assert !@good_checking.errors.invalid?(:employee_id), "employee_id should be valid because is not modified"
     
-    @good_checking.employee_id = employees(:james_doe).id
+    @good_checking.employee_id = 0
     @good_checking.valid?
     assert @good_checking.errors.invalid?(:employee_id), "employee_id should NOT be valid because is modified"
   end

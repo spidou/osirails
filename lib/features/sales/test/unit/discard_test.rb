@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class DiscardTest < ActiveSupport::TestCase

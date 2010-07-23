@@ -16,7 +16,7 @@ class AccountController < ApplicationController
   def login
     return unless request.post?
         
-    if @user = User.find(:first, :conditions => ['username LIKE BINARY ?', params[:username]], :include => :employee)
+    if @user = User.find(:first, :conditions => ['username LIKE BINARY ?', params[:username]])
       if @user.compare_password(params[:password])
         if @user.enabled?
           @user.update_connection
@@ -61,7 +61,8 @@ class AccountController < ApplicationController
         flash[:notice] = "L'administrateur a été prévenu que vous voulez modifier votre mot de passe. Merci de patienter."
         redirect_to login_path
       else
-        flash.now[:error] = "Nom d'utilisateur inconnu."
+        flash[:error] = "Nom d'utilisateur inconnu."
+        redirect_to lost_password_path
       end
     end
   end

@@ -39,6 +39,7 @@ function add_product_reference_to_quote() {
 	      append_reference(ref_obj);
 	      
 	      update_up_down_links($('quote_items_body'));  // method defined into sales.js
+	      initialize_autoresize_text_areas()
       }
     });
   }

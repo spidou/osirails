@@ -76,7 +76,7 @@
             <% @is_page_first_element = "false" %>
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %>     
-          <Reference><%= item.product.product_reference.reference unless item.free_item? %></Reference>
+          <Reference><%= item.end_product.product_reference.reference unless item.free_item? %></Reference>
           <Name><%= item.designation %></Name>
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>

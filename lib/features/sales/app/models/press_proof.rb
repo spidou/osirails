@@ -20,19 +20,19 @@ class PressProof < ActiveRecord::Base
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
   belongs_to :order
-  belongs_to :product
+  belongs_to :end_product
   belongs_to :document_sending_method
   belongs_to :internal_actor, :class_name => 'Employee'
   belongs_to :creator,        :class_name => 'User'
   belongs_to :revoked_by,     :class_name => 'User'
   
-  validates_presence_of :internal_actor_id, :creator_id, :order_id, :product_id
+  validates_presence_of :internal_actor_id, :creator_id, :order_id, :end_product_id
   validates_presence_of :order,          :if => :order_id
   validates_presence_of :creator,        :if => :creator_id
   validates_presence_of :internal_actor, :if => :internal_actor_id
-  validates_presence_of :product,        :if => :product_id
+  validates_presence_of :end_product,    :if => :end_product_id
   
-  validates_persistence_of :order_id, :product_id,                                              :if => :created_at_was
+  validates_persistence_of :order_id, :end_product_id,                                          :if => :created_at_was
   validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :confirmed_on,  :if => :confirmed_on_was
   validates_persistence_of :sended_on,                                                          :if => :sended_on_was
   validates_persistence_of :signed_on,                                                          :if => :signed_on_was
@@ -67,7 +67,7 @@ class PressProof < ActiveRecord::Base
   with_options :if => :signed? do |v|
     v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date de d'envoi du Bon à tirer&#160;(%s)",
                                  :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
-    v.validate :validates_presence_of_signed_press_proof, :validates_with_a_product_not_already_referenced
+    v.validate :validates_presence_of_signed_press_proof, :validates_with_a_end_product_not_already_referenced
     v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
   end
@@ -99,8 +99,8 @@ class PressProof < ActiveRecord::Base
   @@form_labels[:reference]               = "Référence :"
   @@form_labels[:internal_actor]          = "Contact Graphique :"
   @@form_labels[:creator]                 = "Créateur :"
-  @@form_labels[:product]                 = "Produit :"
-  @@form_labels[:product_description]     = "Description :"
+  @@form_labels[:end_product]             = "Produit :"
+  @@form_labels[:end_product_description] = "Description :"
   @@form_labels[:unit_measure]            = "Unité de mesures :"
   @@form_labels[:sended_on]               = "BAT envoyé au client le :"
   @@form_labels[:document_sending_method] = "Par :"
@@ -131,15 +131,15 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_confirmed?
-    !new_record? and was_uncomplete? and product_without_signed_press_proof?
+    !new_record? and was_uncomplete? and end_product_without_signed_press_proof?
   end
   
   def can_be_sended?
-    was_confirmed? and product_without_signed_press_proof?
+    was_confirmed? and end_product_without_signed_press_proof?
   end
   
   def can_be_signed?
-    was_sended? and product_without_signed_press_proof?
+    was_sended? and end_product_without_signed_press_proof?
   end
   
   def can_be_revoked?
@@ -147,7 +147,7 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_edited?
-    !new_record? and was_uncomplete? and product_without_signed_press_proof?
+    !new_record? and was_uncomplete? and end_product_without_signed_press_proof?
   end
   
   def can_be_destroyed?
@@ -155,11 +155,11 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_created?
-    product_without_signed_press_proof?
+    end_product_without_signed_press_proof?
   end
   
-  def product_without_signed_press_proof?
-    !product.has_signed_press_proof?
+  def end_product_without_signed_press_proof?
+    !end_product.has_signed_press_proof?
   end
   
   def cancel
@@ -260,8 +260,8 @@ class PressProof < ActiveRecord::Base
     end
   end
   
-  def product_description
-    product ? product.description : nil
+  def end_product_description
+    end_product ? end_product.description : nil
   end
   
   # Method to get all press_proof's graphic_item including unsaved one
@@ -329,9 +329,9 @@ class PressProof < ActiveRecord::Base
       end 
     end
   
-    def validates_with_a_product_not_already_referenced
-      unless product_without_signed_press_proof?
-        errors.add(:product_id, "est invalide, le produit est déjà référencé dans un BAT signé")
+    def validates_with_a_end_product_not_already_referenced
+      unless end_product_without_signed_press_proof?
+        errors.add(:end_product_id, "est invalide, le produit est déjà référencé dans un BAT signé")
       end
     end
     
@@ -343,7 +343,7 @@ class PressProof < ActiveRecord::Base
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes")
       end
       
-      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.product.id != self.product.id}.empty?
+      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.end_product.id != self.end_product.id}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes concernant le produit du BAT")
       end
     end

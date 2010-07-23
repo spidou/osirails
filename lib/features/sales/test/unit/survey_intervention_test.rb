@@ -1,7 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class SurveyInterventionTest < ActiveSupport::TestCase
-  
   #TODO test has_permissions
   #TODO test has_documents
   #TODO test has_contact
@@ -69,5 +68,4 @@ class SurveyInterventionTest < ActiveSupport::TestCase
       end
     end
   end
-  
 end

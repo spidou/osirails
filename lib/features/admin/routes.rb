@@ -1,4 +1,9 @@
 ActionController::Routing::Routes.add_routes do |map|
+  map.login             'account/login',            :controller => 'account', :action => 'login'
+  map.logout            'account/logout',           :controller => 'account', :action => 'logout'
+  map.lost_password     'account/lost_password',    :controller => 'account', :action => 'lost_password'
+  map.expired_password  'account/expired_password', :controller => 'account', :action => 'expired_password'
+  
   # permissions
   map.resources :business_object_permissions, :path_prefix => 'permissions'
   map.resources :menu_permissions, :path_prefix => 'permissions'

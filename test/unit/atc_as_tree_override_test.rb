@@ -11,7 +11,6 @@ require 'test/test_helper'
 #   currently implementing the plugin in order to pass this test.
 #
 class ActAsTreeOverrideTest < ActiveSupport::TestCase
-  
   def setup
     @model = Menu # configure here the model you want to use to test the override
     flunk "the model #{@model} doesn't implements the plugin 'act_as_tree'" unless @model.new.respond_to?('children')
@@ -50,6 +49,4 @@ class ActAsTreeOverrideTest < ActiveSupport::TestCase
     expected_array = child4
        assert_equal expected_array, child4.get_structured_children, message
   end
-  
-  
 end

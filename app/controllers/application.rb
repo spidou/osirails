@@ -72,11 +72,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      begin
-        User.find(session[:user_id])
-      rescue
-        return false
-      end
+      @current_user ||= User.find_by_id(session[:user_id])
     end
 
     # Called when an user try to acces to an unauthorized page
@@ -165,8 +161,7 @@ class ApplicationController < ActionController::Base
     def load_features_overrides
       unless !defined?($activated_features_path)
         ($activated_features_path).each do |feature_path|
-          override_path = File.join(feature_path, "overrides.rb")
-          load override_path if File.exists?(override_path)
+          Dir["#{feature_path}/lib/overrides/*.rb"].each{ |file| load file }
         end
       else
         raise "global variable $activated_features_path is not instanciated"

@@ -1,3 +1,3 @@
 class First < ActiveRecord::Base
-  has_permissions
+  has_permissions :as_instance
 end

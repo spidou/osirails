@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class ServiceTest < ActiveSupport::TestCase
-  fixtures :services
-  
   def setup
     @parent = services(:parent)
     @child = services(:child)

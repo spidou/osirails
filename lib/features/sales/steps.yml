@@ -6,7 +6,7 @@ steps:
       survey:
         title: Survey
         position: 1
-      estimate:
+      quote:
         title: Devis
         position: 2
       press_proof:

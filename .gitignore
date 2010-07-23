@@ -10,3 +10,11 @@ db/development_structure.sql
 log/*.log
 nbproject
 tmp/**/*
+
+lib/features/*/import/*.csv
+lib/features/*/import/*.ods
+!lib/features/*/import/examples/*
+
+vendor/features/*/import/*.csv
+vendor/features/*/import/*.ods
+!vendor/features/*/import/examples/*

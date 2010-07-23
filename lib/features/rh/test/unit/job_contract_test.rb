@@ -1,10 +1,8 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTest < ActiveSupport::TestCase
-  fixtures :job_contracts, :salaries, :job_contract_types
-
   def setup
-    @job_contract = job_contracts(:normal)
+    @job_contract = job_contracts(:john_doe_job_contract)
   end
 
   #TODO active this test once job_contract_type is required (with validates_presence_of)
@@ -29,12 +27,12 @@ class JobContractTest < ActiveSupport::TestCase
 #  end
 
   def test_actual_salary
-    assert_equal @job_contract.actual_salary, salaries(:normal),
+    assert_equal @job_contract.actual_salary, salaries(:john_doe_salary),
       "This JobContract should have this actual salary as Salary"
   end
 
   def test_salary
-    assert_equal @job_contract.salary, salaries(:normal).gross_amount,
+    assert_equal @job_contract.salary, salaries(:john_doe_salary).gross_amount,
       "This JobContract should have this actual salary as Salary"
   end
   

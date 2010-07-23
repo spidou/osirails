@@ -1,8 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class ProductsCatalogControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
 end
