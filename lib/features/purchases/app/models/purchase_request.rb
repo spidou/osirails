@@ -36,6 +36,7 @@ class PurchaseRequest < ActiveRecord::Base
     for purchase_request_supply in purchase_request_supplies
       purchase_request_supply.expected_delivery_date ||= global_date
     end
+    purchase_request_supplies
   end
     
   def can_be_cancelled?

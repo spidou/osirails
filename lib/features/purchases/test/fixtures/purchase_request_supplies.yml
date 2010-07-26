@@ -1,0 +1,9 @@
+first_purchase_request_supply:
+  supply_id: 1
+  expected_quantity: 400
+  expected_delivery_date: "2010-12-12"
+
+second_purchase_request_supply: 
+  supply_id: 2
+  expected_quantity: 300
+  expected_delivery_date: "2010-12-12"
