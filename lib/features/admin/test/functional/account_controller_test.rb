@@ -1,13 +1,10 @@
-require 'test/test_helper'
-# require File.dirname(__FILE__) + '/../admin_test'
+require File.dirname(__FILE__) + '/../admin_test'
 
 require 'account_controller'
 
 class AccountController; def rescue_action(e) raise e end; end
 
 class AccountControllerTest < ActionController::TestCase
-  fixtures :users
-  
   assert_valid_markup :index, :lost_password
   assert_valid_markup :expired_password, :but_first => :login_as_activated_but_has_expired_password_user
   
@@ -108,17 +105,12 @@ class AccountControllerTest < ActionController::TestCase
     assert_routing "account/lost_password", {:controller => "account", :action => "lost_password"}
   end
   
-  def test_should_not_send_lost_password_request_with_unexistant_user_or_admin_user
-    def lost_password_assertions
-      assert_not_nil flash[:error]
-      assert_response :success
-      assert_template "account/lost_password"
-    end
-    # ask for new password with an unexistant user
+  def test_should_not_send_lost_password_request_with_unexistant_user
     post :lost_password, {:username => "unexistant_user"}
     lost_password_assertions
-    
-    # ask for new password with the admin user
+  end
+  
+  def test_should_not_send_lost_password_request_with_admin_user
     post :lost_password, {:username => users(:admin_user).username}
     lost_password_assertions
   end
@@ -150,42 +142,47 @@ class AccountControllerTest < ActionController::TestCase
   end
   
   private
-  
-  def login_as(user, password)
-    get :login
-    assert_response :success
-    submit_form do |form|
-      form.username = users(user).username
-      form.password = password
+    def login_as(user, password)
+      get :login
+      assert_response :success
+      submit_form do |form|
+        form.username = users(user).username
+        form.password = password
+      end
+      assert @request.post?
     end
-    assert @request.post?
-  end
-  
-  def login_as_powerful_user
-    login_as(:powerful_user, "password")
-  end
-  
-  def login_as_can_list_user
-    login_as(:can_list_user, "password")
-  end
-  
-  def login_as_can_view_user
-    login_as(:can_view_user, "password")
-  end
-  
-  def login_as_can_add_user
-    login_as(:can_add_user, "password")
-  end
-  
-  def login_as_can_edit_user
-    login_as(:can_edit_user, "password")
-  end
-  
-  def login_as_can_delete_user
-    login_as(:can_delete_user, "password")
-  end
-  
-  def login_as_activated_but_has_expired_password_user
-    login_as(:activated_but_has_expired_password_user, "password")
-  end
+    
+    def login_as_powerful_user
+      login_as(:powerful_user, "password")
+    end
+    
+    def login_as_can_list_user
+      login_as(:can_list_user, "password")
+    end
+    
+    def login_as_can_view_user
+      login_as(:can_view_user, "password")
+    end
+    
+    def login_as_can_add_user
+      login_as(:can_add_user, "password")
+    end
+    
+    def login_as_can_edit_user
+      login_as(:can_edit_user, "password")
+    end
+    
+    def login_as_can_delete_user
+      login_as(:can_delete_user, "password")
+    end
+    
+    def login_as_activated_but_has_expired_password_user
+      login_as(:activated_but_has_expired_password_user, "password")
+    end
+    
+    def lost_password_assertions
+      assert_not_nil flash[:error]
+      assert_response :redirect
+      assert_redirected_to :controller => "account", :action => "lost_password"
+    end
 end

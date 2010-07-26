@@ -1,7 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class InvoicingStepTest < ActiveSupport::TestCase
-  def test_truth
-    assert true
-  end
 end

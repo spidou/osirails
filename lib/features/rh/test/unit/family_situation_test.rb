@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class FamilySituationTest < ActiveSupport::TestCase
-  fixtures :family_situations
-
   def setup
     @family_situation = family_situations(:single)
   end

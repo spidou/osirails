@@ -1,10 +1,8 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class PremiumTest < ActiveSupport::TestCase
-  fixtures :premia, :employees
-
   def setup
-    @premium = premia(:normal)
+    @premium = premia(:john_doe_premium)
   end
 
   def test_belongs_to_employee

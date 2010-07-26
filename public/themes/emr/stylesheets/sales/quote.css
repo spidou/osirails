@@ -1,0 +1,83 @@
+/* QUOTES LIST */
+table tr.confirmed_quote td.status {
+  color: #e99727;
+}
+
+table tr.cancelled_quote td.status {
+  color: #ff3528;
+}
+
+table tr.sended_quote td.status {
+  color: #e99727;
+  font-weight: bold;
+}
+
+table tr.signed_quote td.status {
+  color: #60bc00;
+  font-weight: bold;
+}
+
+table tr.quote_send_form {
+  text-align: right;
+}
+
+table tr.quote_send_form p input[type=submit] {
+  margin: 0 !important;
+}
+
+table tfoot tr.new_quote_item {
+  border: 1px solid #CCC;
+  text-align: left;
+}
+
+table tbody tr.free_quote_item {
+  background-color: #EFEFEF;
+}
+
+ul.quote_caption {
+  list-style: none;
+  padding-left: 25px;
+  margin-top: 5px;
+}
+
+/* QUOTE HEADER */
+#quote_header {
+  text-align: left;
+  text-indent: 0;
+}
+
+#quote_header > p {
+  text-align: left;
+  text-indent: 0;
+  padding: 0 0 0 8px;
+  margin-bottom: 0;
+}
+
+#quote_header > div {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 400px;
+  width: 400px;
+  margin: 5px 7px 5px 7px;
+}
+
+#quote_header > div label {
+  width: 100px !important;
+  vertical-align: top;
+}
+
+#quote_header > div h3 {
+  text-align: center;
+}
+
+#quote_header #contact_container {
+  display: block;
+}
+
+#quote_header #contact_container label {
+  width: auto !important;
+}
+
+#quote_header #contact_container #order_preview_contacts {
+  margin-left: 110px;
+}

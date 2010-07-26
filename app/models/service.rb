@@ -3,17 +3,11 @@ class Service < ActiveRecord::Base
   
   acts_as_tree :order => :name, :foreign_key => "service_parent_id"
   
-  has_many :employees
   has_many :schedules
-  has_many :jobs
   
-  named_scope :mains,:conditions => {:service_parent_id => nil}
+  named_scope :mains, :conditions => {:service_parent_id => nil}
   
   validates_presence_of :name
-  
-  # Store the ancient services_parent_id before update_service_parent
-  attr_accessor :old_service_parent_id, :update_service_parent
-  cattr_accessor :form_labels
   
   # FIXME is this comment usefull? the bug should be resolved in last rails version
   # relationships 'parent' was commented because of a bug (when introducing relationships permitting to model to refer to them self)
@@ -23,25 +17,15 @@ class Service < ActiveRecord::Base
   # this difference come from the relationships order into the include array
   # ps : the problem occur when including service to perform a find into employee for example it works if just searching from service
   has_search_index :only_attributes       => [:name],
-                   :except_relationships  => [:schedules, :parent, :children, :employees_services, :employees]
-
+                   :except_relationships  => [:schedules, :parent, :children]
+  
+  # Store the ancient services_parent_id before update_service_parent
+  attr_accessor :old_service_parent_id, :update_service_parent
+  
+  cattr_accessor :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name]           = "Nom :"
   @@form_labels[:service_parent] = "Service parent :"
-
-  # Method to get all responsibles for the service (it return employees)
-  def responsibles
-    responsibles_employees = []
-    self.jobs.reject {|n| n.responsible == false}.each do |job|
-      responsibles_employees += job.employees
-    end
-    return responsibles_employees.uniq
-  end
-  
-  # Method that return all employees that belongs to current service according to the belonging jobs or the belonging employees
-  def members
-    Employee.all(:include => [:service, {:jobs => [:service] }], :conditions => ["services.id =? or services_jobs.id =?", id, id])
-  end
   
   # This method permit to check if a service can be a parent
   def before_update
@@ -76,7 +60,6 @@ class Service < ActiveRecord::Base
   
   # method to return the params[:schedules] hash completed with the form values 
   def get_time(day,chaine)
-  
     schedules = chaine.split("|")
     formated_schedules = []
     schedules_hash = {}

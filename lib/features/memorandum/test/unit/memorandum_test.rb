@@ -1,10 +1,8 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../memorandum_test'
 
 class MemorandumTest < ActiveSupport::TestCase
-  fixtures :memorandums, :memorandums_services, :services, :users
-
   def setup
-    @memorandum = memorandums(:normal)
+    @memorandum = memorandums(:first_memorandum)
   end
 
   def test_read
@@ -52,21 +50,21 @@ class MemorandumTest < ActiveSupport::TestCase
   end
 
   def test_find_by_services
-    assert_equal Memorandum.find_by_services([services(:parent)]), [@memorandum]
+    assert_equal Memorandum.find_by_services([services(:direction_general)]), [@memorandum]
   end
 
   def test_has_many_memorandum_service
-    assert_equal @memorandum.memorandums_services, [memorandums_services(:normal)],
+    assert_equal @memorandum.memorandums_services, [memorandums_services(:first_memorandum_direction_general)],
       "This Memorandum should have this MemorandumsService"
   end
 
   def test_has_many_services
-    assert_equal @memorandum.services, [services(:parent)],
+    assert_equal @memorandum.services, [services(:direction_general)],
       "This Memorandum should have this service"
   end
 
   def test_belongs_to_user
-    assert_equal @memorandum.user, users(:powerful_user),
+    assert_equal @memorandum.user, users(:memorandum_user),
       "This Memorandum should belongs to this User"
   end
 end

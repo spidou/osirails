@@ -1,24 +1,74 @@
 class ProductReferenceCategory < ActiveRecord::Base
   has_permissions :as_business_object
- 
-  # Plugin
-  acts_as_tree :order => :name, :foreign_key => "product_reference_category_id"
+  has_reference   :symbols => [:product_reference_category], :prefix => :sales
   
-  # Relationship
-  has_many :product_references
-  has_many :product_reference_categories
+  acts_as_tree :order => :name, :foreign_key => :product_reference_category_id
+  
   belongs_to :product_reference_category
   
-  # Validation Macros
-  validates_presence_of :name, :message => "ne peut être vide"
+  has_many :product_references, :conditions => [ "cancelled_at IS NULL" ]
+  has_many :product_reference_categories, :conditions => [ "cancelled_at IS NULL" ]
   
-  has_search_index  :only_attributes      => [:name],
-                    :only_relationships   => [:parent]
-                    
+  has_many :disabled_product_references, :class_name => "ProductReference", :conditions => [ "cancelled_at IS NOT NULL" ]
+  has_many :disabled_product_reference_categories, :class_name => "ProductReferenceCategory", :conditions => [ "cancelled_at IS NOT NULL" ]
+  
+  has_many :all_product_references, :class_name => "ProductReference"
+  has_many :all_product_reference_categories, :class_name => "ProductReferenceCategory"
+  
+  named_scope :actives, :conditions => ["cancelled_at IS NULL"]
+  
+  validates_presence_of :reference, :name
+  
+  has_search_index  :only_attributes      => [ :name ],
+                    :only_relationships   => [ :parent ]
+  
+  before_validation_on_create :set_reference
+  
+  before_destroy :can_be_destroyed?
+  
+  attr_protected :cancelled_at
+  
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name]                        = "Nom :"
   @@form_labels[:product_reference_category]  = "Catégorie parente :"
+  
+  def set_reference
+    if product_reference_category_id or product_reference_category
+      update_reference
+    end
+  end
+  
+  def enabled?
+    !cancelled_at
+  end
+  
+  def was_enabled?
+    !cancelled_at_was
+  end
+  
+  def can_be_disabled?
+    was_enabled?
+  end
+  
+  def can_be_destroyed?
+    product_references.empty? and product_reference_categories.empty?
+  end
+  
+  def disable
+    if can_be_disabled?
+      self.cancelled_at = Time.now
+      self.save
+    end
+  end
+  
+  def product_references_count
+    if parent
+      self[:product_references_count]
+    else
+      product_reference_categories.collect(&:product_references_count).sum
+    end
+  end
   
   # This method permit to update counter of parents categories
   def counter_update(index,value)
@@ -53,16 +103,12 @@ class ProductReferenceCategory < ActiveRecord::Base
     end
   end
   
-  # Check if category should be deleted or not
-  def can_be_destroyed?
-    self.product_references.empty? and self.product_reference_categories.empty?
+  def disabled_children
+    disabled_product_references + disabled_product_reference_categories
   end
   
-  # Check if a category have got children disable
-  def has_children_disable?
-    references = ProductReference.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => false})
-    categories = ProductReferenceCategory.find(:all, :conditions => {:product_reference_category_id => self.id, :enable => false})
-    references.size > 0 or categories.size > 0
+  def has_disabled_children?
+    disabled_children.any?
   end
   
 end

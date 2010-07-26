@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class DueDateTest < ActiveSupport::TestCase
@@ -225,7 +224,7 @@ class DueDateTest < ActiveSupport::TestCase
       attributes = { :due_date_to_pay => { :id => due_date.id,
                                            :payment_attributes => [ { :paid_on           => Date.today,
                                                                       :amount            => due_date.net_to_paid,
-                                                                      :payment_method_id => payment_methods(:bank_transfer).id } ] } }
+                                                                      :payment_method_id => payment_methods(:cash).id } ] } }
       invoice.totally_pay(attributes)
     end
     
@@ -236,7 +235,7 @@ class DueDateTest < ActiveSupport::TestCase
       attributes = { :due_date_to_pay => { :id => due_date.id,
                                            :payment_attributes    => [ { :paid_on           => Date.today,
                                                                          :amount            => due_date.net_to_paid - penalty,
-                                                                         :payment_method_id => payment_methods(:bank_transfer).id } ],
+                                                                         :payment_method_id => payment_methods(:cash).id } ],
                                            :adjustment_attributes => [ { :amount  => penalty,
                                                                          :comment => "This is a penalty" } ] } }
       invoice.totally_pay(attributes)

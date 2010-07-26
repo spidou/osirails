@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class EmployeeStateTest < ActiveSupport::TestCase
-  fixtures :employee_states
-
   def setup
     @employee_state = employee_states(:freelance)
   end

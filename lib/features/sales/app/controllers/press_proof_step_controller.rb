@@ -5,12 +5,12 @@ class PressProofStepController < ApplicationController
 
   def show
     @all_press_proofs = []
-    @all_press_proofs = @order.products.collect(&:press_proofs).flatten
+    @all_press_proofs = @order.end_products.collect(&:press_proofs).flatten
   end
   
   def edit
     @all_press_proofs = []
-    @all_press_proofs = @order.products.collect(&:press_proofs).flatten
+    @all_press_proofs = @order.end_products.collect(&:press_proofs).flatten
   end
   
   def update

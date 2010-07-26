@@ -1,5 +1,0 @@
-parent:
-  name: Parent category
-child:
-  name: Child category
-  product_reference_category: parent

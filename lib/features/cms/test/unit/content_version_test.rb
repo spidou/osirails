@@ -1,18 +1,14 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../cms_test'
 
 class ContentVersionTest < ActiveSupport::TestCase
-  fixtures :contents
+  
+  should_belong_to :content, :contributor
   
   def setup
     @content = contents(:one)
     @content_version = ContentVersion.create_from_content(@content)
   end
-  
-  def test_read
-    assert_nothing_raised "ContentVersion should be read" do
-      ContentVersion.find_by_title(@content_version.title)
-    end
-  end
+  subject{ @content_version }
   
   def test_content_version
     assert_equal @content.title, @content_version.title
@@ -27,9 +23,4 @@ class ContentVersionTest < ActiveSupport::TestCase
     assert @content_version.versioned_at?, "A ContentVersion should have a versioned time"
   end
   
-  def test_delete
-    assert_difference 'ContentVersion.count', -1 do
-      @content_version.destroy
-    end
-  end
 end

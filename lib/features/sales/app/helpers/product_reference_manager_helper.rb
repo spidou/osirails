@@ -15,7 +15,7 @@ module ProductReferenceManagerHelper
   # This method permit to make a counter for category
   def show_counter_category(product_reference_category, show_all) 
     counter = 0
-    return product_reference_category.product_references_count if show_all == false
+    return product_reference_category.product_references_count unless show_all
 
     counter += ProductReference.find_all_by_product_reference_category_id(product_reference_category.id).size
     categories_children = ProductReferenceCategory.find_all_by_product_reference_category_id(product_reference_category.id)
@@ -30,19 +30,19 @@ module ProductReferenceManagerHelper
     categories = ProductReferenceCategory.find_all_by_product_reference_category_id(nil)
     list = []
     list << "<div class=\"hierarchic\"><ul class=\"parent\">"
-    list = get_children(categories,list,show_all)
+    list = get_children(categories, list, show_all)
     list << "</ul></div>"
     list 
   end
   
   # This method permit to make a tree for categories and references
-  def get_children(categories,list,show_all)
+  def get_children(categories, list, show_all)
     categories.each do |category|
-      unless category.enable == show_all
-        status = category.enable ? "category_enable" : "category_disable"
+      if show_all or category.enabled?
+        status = category.enabled? ? "category_enable" : "category_disable"
         
         list << "<li class='category #{status}'>#{category.name} (#{show_counter_category(category, show_all)}) <span class=\"action\">"
-        if category.enable == true
+        if category.enabled?
           list << new_product_reference_category_link_overrided(:link_text => "", :options => { :category_id => category.id })
           list << new_product_reference_link_overrided(:link_text => "", :options => { :category_id => category.id })
           list << edit_product_reference_category_link(category, :link_text => "")
@@ -55,16 +55,17 @@ module ProductReferenceManagerHelper
         if category.children.size > 0 or references.size > 0
           list << "<ul>"
           if category.children.size > 0
-            get_children(category.children,list,show_all)
+            get_children(category.children, list, show_all)
           end
           
           unless references.size == 0
             references.each do |reference|
-              unless reference.enable == show_all
-                status = reference.enable ? "reference_enable" : "reference_disable"
+              if show_all or reference.enabled?
+                status = reference.enabled? ? "reference_enable" : "reference_disable"
                 
-                list << "<li class='reference #{status}'>#{reference.name} (#{reference.products_count}) <span class=\"action\">"
-                if reference.enable == true
+                list << "<li class='reference #{status}'>#{reference.name} (#{reference.end_products_count}) <span class=\"action\">"
+                if reference.enabled?
+                  list << product_reference_link(reference, :link_text => "")
                   list << edit_product_reference_link(reference, :link_text => "")
                   list << delete_product_reference_link_overrided(reference, :link_text => "")
                 end

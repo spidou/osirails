@@ -40,7 +40,7 @@ default_ship_to_address = order.signed_quote.ship_to_address
   <h3>Références</h3>
   <p>
     <label>Devis signé :</label>
-    <%= link_to(quote.reference, order_commercial_step_estimate_step_quote_path(order, quote)) %>
-    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
+    <%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(order, quote)) %>
+    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_quote_step_quote_path(order, quote, :format => :pdf)) %>
   </p>
 </div>

@@ -10,21 +10,21 @@ class SurveyStep < ActiveRecord::Base
   validates_associated :order, :unless => :new_record?
   validates_associated :survey_interventions, :subcontractor_requests
   
-  after_save :save_products, :save_survey_interventions, :save_subcontractor_requests
+  after_save :save_end_products, :save_survey_interventions, :save_subcontractor_requests
   
-  def product_attributes=(product_attributes)
-    product_attributes.each do |attributes|
+  def end_product_attributes=(end_product_attributes)
+    end_product_attributes.each do |attributes|
       if attributes[:id].blank?
-        order.products.build(attributes)
+        order.end_products.build(attributes)
       else
-        product = order.products.detect { |t| t.id == attributes[:id].to_i }
-        product.attributes = attributes
+        end_product = order.end_products.detect { |t| t.id == attributes[:id].to_i }
+        end_product.attributes = attributes
       end
     end
   end
   
-  def save_products
-    order.products.each do |p|
+  def save_end_products
+    order.end_products.each do |p|
       if p.should_destroy?
         p.destroy
       else

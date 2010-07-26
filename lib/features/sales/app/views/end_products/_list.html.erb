@@ -1,0 +1,25 @@
+<table>
+  <caption>Liste de produits</caption>
+  <thead>
+    <th>Nom</th>
+    <th>Categories</th>
+    <th>R&eacute;f&eacute;rence</th>
+    <th>Client</th>
+    <th>Dossier</th>
+  </thead>
+  <tbody>
+  <% for end_product in end_products %>
+    <% reference = ProductReference.find(end_product.product_reference_id) %>
+    <% category = ProductReferenceCategory.find(reference.product_reference_category_id)%>
+    <%= "<tr id=\"end_product_#{end_product.id}\" onclick=\"refreshProduct(this)\">" %>
+      <td><%= end_product.name %></td>
+      <td><%= category.name %></td>
+      <td><%= reference.name %></td>
+      <td><%= end_product.order.customer.name %></td>
+      <td><%= end_product.order.title %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= will_paginate end_products, :renderer => 'RemoteLinkRenderer' , :remote => { :update => 'end_products_list' } %>

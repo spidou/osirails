@@ -1,6 +1,6 @@
 <%
 press_proofs ||= nil
-products       = press_proofs_list.collect(&:product).uniq
+end_products   = press_proofs_list.collect(&:end_product).uniq
 %>
 
 <div class="autoscroll">
@@ -17,6 +17,6 @@ products       = press_proofs_list.collect(&:product).uniq
         <th>Actions</th>
       </tr>
     </thead>
-    <%= render :partial => "press_proofs/product_in_one_line", :collection => products, :locals => { :press_proofs => press_proofs } %>
+    <%= render :partial => "press_proofs/end_product_in_one_line", :collection => end_products, :locals => { :press_proofs => press_proofs } %>
   </table>
 </div>

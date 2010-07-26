@@ -1,54 +1,5 @@
-## YAML Template.
-
-admin_user:
-  id: 1
-  username: admin
+first_user:
+  username: first_user
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: true
   password_updated_at: <%= Time.now - 1.hours %>
-
-powerful_user:
-  username: powerful_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-can_list_user:
-  username: can_list_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-can_view_user:
-  username: can_view_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-can_add_user:
-  username: can_add_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-can_edit_user:
-  username: can_edit_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-can_delete_user:
-  username: can_delete_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-  password_updated_at: <%= Time.now - 1.hours %>
-
-activated_but_has_expired_password_user:
-  username: activated_but_has_expired_password_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: true
-
-unactivated_user:
-  username: unactivated_user
-  password: <%= Digest::SHA1.hexdigest("password") %>
-  enabled: false

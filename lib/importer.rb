@@ -33,7 +33,7 @@ module Osirails
     # import data via ActiveRecord models from a csv file
     def import_data(rows)
       raise "Importer expected to have 'definitions' to import data" unless definitions
-      puts "WARNING: You decided to import data without 'identifiers', so I'll not be able to identify duplicates..."
+      puts "WARNING: You decided to import data without 'identifiers', so I'll not be able to identify duplicates..." unless identifiers
       
       count           = 0
       count_created   = 0
@@ -78,8 +78,9 @@ module Osirails
         else
           count_failed += 1
           puts "#{count_failed}. An entry has failed to be saved when trying to import this line : #{row.inspect}
-Object => #{object.class.name} : #{object.attributes.inspect}
-Errors => #{object.errors.full_messages}
+Attributes => #{attributes.inspect}
+Object     => #{object.class.name} : #{object.attributes.inspect}
+Errors     => #{object.errors.full_messages}
 ============"
         end
       end

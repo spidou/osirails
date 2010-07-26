@@ -1,7 +1,4 @@
 class ChecklistOption < ActiveRecord::Base
-  #belongs_to :checklist
-  #
-  #validates_presence_of :checklist_id, :name
   acts_as_tree :order => :position
   acts_as_list :scope => :parent
   

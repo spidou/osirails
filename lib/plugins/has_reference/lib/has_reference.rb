@@ -29,7 +29,6 @@ module HasReference
         
         attr_accessor   :sequence_number_limit
         cattr_accessor  :prefix_reference, :pattern, :pattern_updated_at, :pattern_key
-        attr_protected  :reference
         
         validates_uniqueness_of :reference, :unless => Proc.new{ |x| x.reference_was.nil? }
         

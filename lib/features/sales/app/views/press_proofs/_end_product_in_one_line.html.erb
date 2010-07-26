@@ -1,0 +1,15 @@
+<%
+end_product = end_product_in_one_line
+press_proofs ||= end_product.press_proofs # press_proofs can be given as a local variable to the partial if you want to restrict the display to specific press_proofs
+
+colspan = is_form_view? ? 8 : 7
+%>
+
+<% unless end_product.press_proofs.empty? %>
+  <tbody>
+    <tr class="group">
+      <td colspan="<%= colspan %>"><%= end_product.designation %></td>
+    </tr>
+    <%= render :partial => 'press_proofs/press_proof_in_one_line', :collection => press_proofs %>
+  </tbody>
+<% end %>

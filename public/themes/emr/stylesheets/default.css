@@ -79,6 +79,11 @@ table tbody td.thead {
 	font-weight: bold;
 }
 
+table tbody td.thead,
+table tbody th {
+  text-align: right;
+}
+
 table td,
 table tbody td {
 	border-right: solid 1px #CCC;
@@ -144,6 +149,16 @@ table tfoot tr.nota td {
 table tfoot tr.nota td strong {
   color: inherit;
   font-weight: bold;
+}
+
+table td span.fieldWithErrors {
+  display: inline-block;
+}
+
+table td span.fieldWithErrors:after {
+  color: red;
+  vertical-align: top;
+  content: " *"
 }
 
 object {
@@ -725,15 +740,19 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 }
 
 #ajax_indicator {
-  position: absolute;
-  z-index: 2;
-  top: 10%;
-  left: 30%;
+  position: fixed;
+  z-index: 5;
+  top: 10px;
+  width: 100%;
+}
+
+#ajax_indicator div {
+  position: relative;
+  margin: 0 auto;
+  width: 500px;
   background-color: #CCC;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 1px solid #AAA !important;
-  -moz-box-shadow: 3px 3px 4px rgba(0,0,0,0.3) !important;
+  border: 1px solid #AAA;
+  -moz-box-shadow: 3px 3px 4px rgba(0,0,0,0.3);
 }
 
 #ajax_indicator span {
@@ -1222,11 +1241,16 @@ div label.skip_presentation {
   text-align: left;
 }
 
+.presentation_in_columns > div:not(.errorExplanation):first-child {
+  margin-left: inherit;
+}
+
 .presentation_in_columns > div:not(.errorExplanation) {
   display:inline-block;
   max-width:800px;
   min-width:100px;
   vertical-align: top;
+  margin-left: 50px;
 }
 
 .presentation_in_columns.large label,
@@ -1328,6 +1352,35 @@ div.auto_complete_container div.auto_complete_indicator {
   width: 16px;
   height: 16px;
   background: url('/themes/emr/images/loading_16x16.gif') no-repeat;
+}
+
+
+/*/////////////////////////////////////////////////////
+					AUTOCOMPLETE FIELD
+////////////////////////////////////////////////////*/
+div.local_auto_complete {
+  width: 350px;
+  background: #fff;
+}
+div.local_auto_complete ul {
+  border:1px solid #888;
+  margin:0;
+  padding:0;
+  width:100%;
+  list-style-type:none;
+}
+div.local_auto_complete ul li {
+  margin:0;
+  padding:3px;
+  text-align: left;
+}
+div.local_auto_complete ul li.selected {
+  background-color: #ffb;
+}
+div.local_auto_complete ul strong.highlight {
+  color: #800; 
+  margin:0;
+  padding:0;
 }
 
 /*/////////////////LIST:HIERARCHICAL/////////////////*/
@@ -1436,17 +1489,6 @@ li.reference_disable {
 	text-align:center;
 	background:#eaeaea;
 	width:98.59%;
-}
-
-#catalog_loading {
-	text-align:right;
-	vertical-align:middle;
-}
-
-#catalog_loading span {
-	background: url("/loading_16x16.gif") no-repeat;
-	background:#aeaeae;
-	padding:5px 10px 5px 10px;
 }
 
 select.select_catalog {

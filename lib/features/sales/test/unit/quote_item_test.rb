@@ -1,10 +1,9 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class QuoteItemTest < ActiveSupport::TestCase
   include ProductBaseTest
   
-  should_belong_to :quote, :product
+  should_belong_to :quote, :end_product
   
   should_have_many :delivery_note_items, :dependent => :nullify
   should_have_many :delivery_notes,      :through   => :delivery_note_items
@@ -39,8 +38,8 @@ class QuoteItemTest < ActiveSupport::TestCase
   
   context 'A "product" quote item' do
     setup do
-      @quote_item = QuoteItem.new(:product_id => Product.first.id)
-      flunk "@quote_item.product should have product_reference" unless @quote_item.product.product_reference
+      @quote_item = QuoteItem.new(:end_product_id => EndProduct.first.id)
+      flunk "@quote_item.end_product should have product_reference" unless @quote_item.end_product.product_reference
     end
     
     subject{ @quote_item }
@@ -52,19 +51,19 @@ class QuoteItemTest < ActiveSupport::TestCase
     end
     
     should 'have an original_name' do
-      assert_equal @quote_item.product.product_reference.name, @quote_item.original_name
+      assert_equal @quote_item.end_product.product_reference.name, @quote_item.original_name
     end
     
     should 'have an original_description' do
-      assert_equal @quote_item.product.product_reference.description, @quote_item.original_description
+      assert_equal @quote_item.end_product.product_reference.description, @quote_item.original_description
     end
     
     should 'have an original_vat' do
-      assert_equal @quote_item.product.product_reference.vat, @quote_item.original_vat
+      assert_equal @quote_item.end_product.product_reference.vat, @quote_item.original_vat
     end
     
     should 'have a designation' do
-      assert_equal @quote_item.product.designation, @quote_item.designation
+      assert_equal @quote_item.end_product.designation, @quote_item.designation
     end
   end
 end

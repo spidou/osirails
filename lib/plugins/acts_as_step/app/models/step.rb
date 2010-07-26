@@ -1,6 +1,4 @@
 class Step < ActiveRecord::Base
-  # belongs_to :parent, :class_name =>'Step', :foreign_key => 'parent_id'
-  # has_many :children, :class_name => 'Step', :foreign_key => 'parent_id'
   acts_as_tree :foreign_key => 'parent_id', :order => :position
   acts_as_list :scope => :parent
   
