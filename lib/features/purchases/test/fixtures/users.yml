@@ -1,0 +1,6 @@
+admin_user:
+  id: 1
+  username: admin
+  password: <%= Digest::SHA1.hexdigest("password") %>
+  enabled: true
+  password_updated_at: <%= Time.now - 1.hours %>

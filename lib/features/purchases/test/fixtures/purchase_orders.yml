@@ -1,0 +1,6 @@
+first_purchase_order:
+  id: 1
+  user: admin_user
+  supplier: first_supplier
+  status: 1
+  reference: PO0000001

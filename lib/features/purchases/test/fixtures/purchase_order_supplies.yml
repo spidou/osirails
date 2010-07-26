@@ -1,0 +1,19 @@
+first_purchase_order_supply:
+  id: 1
+  purchase_order: first_purchase_order
+  supply: first_commodity
+  quantity: 1000
+  taxes: 50
+  fob_unit_price: 12
+  supplier_reference: C.0000001
+  supplier_designation: First Commodity
+  
+second_purchase_order_supply:
+  id: 2
+  purchase_order: first_purchase_order
+  supply: first_consumable
+  quantity: 1000
+  taxes: 40
+  fob_unit_price: 12
+  supplier_reference: M.0000001
+  supplier_designation: First Consumable
