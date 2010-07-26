@@ -28,7 +28,7 @@ module ContactsHelper
   end
   
   def display_add_contact_button_for_owner(contacts_owner)
-    div_id = "#{ contacts_owner.class.singularized_table_name }_#{ contacts_owner.id }_new_contacts"
+    div_id = "#{contacts_owner.class.singularized_table_name}_#{contacts_owner.id}_new_contacts"
     
     display_contact_add_button(contacts_owner, div_id)
   end

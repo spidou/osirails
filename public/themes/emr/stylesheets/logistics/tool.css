@@ -49,16 +49,20 @@ ul#tool_types li a img {
   top: 2px
 }
 
-.type_intervention h3{
+.event .type_intervention h3{
   background-color: #E99727;
 }
 
-.type_incident h3{
+.event .type_incident h3{
   background-color: #A2B3D7;
 }
 
-.informations {
+.event .informations {
   margin-right: 75px;
+}
+
+.event .informations p label {
+  width: 130px;
 }
 
 .event h3 {
@@ -71,8 +75,7 @@ ul#tool_types li a img {
   bottom: 1px;
 }
 
-
-.actions {
+.event .actions {
   float: right;
   position: relative ;
   left: 15px;

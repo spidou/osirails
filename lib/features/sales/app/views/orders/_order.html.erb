@@ -7,7 +7,7 @@
 
 <div class="presentation_medium">
   <h2 id="order_anchor">Dossier</h2>
-  <% form_for order do |form| %>
+  <% form_for order, :html => { :multipart => true } do |form| %>
     <%= form.error_messages %>
   
     <h3>Informations générales</h3>

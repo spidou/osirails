@@ -39,7 +39,6 @@ class SurveyStepController < ApplicationController
         params.delete(:product)
       end
       
-      
 #      if params[:survey_step][:survey_intervention_attributes] and params[:survey_intervention]
 #        params[:survey_step][:survey_intervention_attributes].each_with_index do |survey_intervention_attributes, index|
 #          next if params[:survey_intervention][:survey_intervention_contact_attributes][index].nil? # mean that the survey intervention do not create a new contact but choose an existing one

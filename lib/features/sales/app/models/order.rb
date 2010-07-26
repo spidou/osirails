@@ -363,7 +363,7 @@ class Order < ActiveRecord::Base
   def validates_length_of_ship_to_addresses
     all_ship_to_addresses = ship_to_addresses || []
     all_ship_to_addresses += customer.establishments.select(&:new_record?).collect(&:ship_to_addresses).flatten if customer
-    if all_ship_to_addresses.select{ |s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?) }.empty?
+    if all_ship_to_addresses.select{ |s| (s.new_record? and s.should_create?) or (!s.new_record? and !s.should_destroy?) }.empty?
       errors.add(:ship_to_address_ids, "Vous devez choisir au moins 1 adresse de livraison")
     end
   end

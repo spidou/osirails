@@ -17,9 +17,9 @@
 
       <% if !establishment.new_record? and is_form_view? %>
         <%= form.hidden_field :id, :index => nil %>
-        <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-        <%= form.hidden_field :should_hide, :index => nil, :class => 'should_hide' %>
-        <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+        <%= form.hidden_field :should_destroy, :index => nil, :class => :should_destroy %>
+        <%= form.hidden_field :should_hide, :index => nil, :class => :should_hide %>
+        <%= form.hidden_field :should_update, :index => nil, :class => :should_update %>
       <% end %>
     </p>
   </div>

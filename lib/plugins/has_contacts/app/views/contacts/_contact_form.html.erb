@@ -39,7 +39,7 @@ hack_params ||= contacts_owner.is_a?(Establishment)  # used to determine, in cus
       </p>
       <%= display_numbers(contact) %>
       <p>
-        <%= display_contact_close_form_button(contact) if display_close_button ||= true %>
+        <%= display_contact_close_form_button(contact) %>
         
         <!-- usefull data for the params hack into customers_controller -->
         <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id, :index => nil) if hack_params %>

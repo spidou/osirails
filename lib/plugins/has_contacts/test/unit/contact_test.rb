@@ -1,73 +1,78 @@
 require 'test/test_helper'
 
 class ContactTest < ActiveSupport::TestCase
-  def test_presence_of_first_name
-    assert_no_difference 'Contact.count' do
-      contact = Contact.create
-      assert_not_nil contact.errors.on(:first_name), "A Contact should have a first name"
-    end
-  end
+  #TODO test has_permissions :as_business_object, :additional_class_methods => [ :hide ]
   
-  def test_presence_of_last_name
-    assert_no_difference 'Contact.count' do
-      contact = Contact.create
-      assert_not_nil contact.errors.on(:last_name), "A Contact should have a last name"
-    end
-  end
+  #TODO test has_numbers
   
-  def test_format_of_email
-    assert_no_difference 'Contact.count' do
-      contact = Contact.create(:email => 'foobar')
-      assert_not_nil contact.errors.on(:email), "A Contact should have an email with a good foramt"
-    end
-  end
+  should_belong_to :has_contact
+  
+  should_validate_presence_of :has_contact, :first_name, :last_name, :gender
+  
+  should_allow_values_for :email, nil, "", "foo@bar.com"
+  should_not_allow_values_for :email, 1, "foo", "bar.com", "f.@bar.com", "foo@bar.c"
+  
+  should_allow_values_for :gender, "M", "F"
+  should_not_allow_values_for :gender, nil, "", 1, "anything"
   
   context "A new contact" do
     setup do
       @contact = Contact.new
     end
     
-    teardown do
-      @contact = nil
-    end
-    
     should "not be able to be hidden" do
       assert !@contact.can_be_hidden?
     end
     
-    should "not hide" do
+    should "not be hidden" do
       @contact.hide
       assert !@contact.hidden_was
     end
   end
   
-  context "A contact.should_save?" do
+  context "A contact" do
     setup do
       @contact = contacts(:jean_dupond)
     end
     
-    teardown do
-      @contact = nil
+    context "which has been modified" do
+      setup do
+        @contact.last_name = nil
+      end
+      
+      should "be marked to be saved" do
+        assert @contact.should_save?
+      end
     end
     
-    should "be true when changed?" do
-      @contact.last_name = nil
-      assert @contact.should_save?
+    context "which has been marked to be updated" do
+      setup do
+        @contact.should_update = 1
+      end
+      
+      should "be marked to be saved" do
+        assert @contact.should_save?
+      end
     end
     
-    should "be true when should_update?" do
-      @contact.should_update = 1
-      assert @contact.should_save?
+    context "which has been marked to be hidden" do
+      setup do
+        @contact.should_hide = 1
+      end
+      
+      should "be marked to be saved" do
+        assert @contact.should_save?
+      end
     end
     
-    should "be true when should_hide?" do
-      @contact.should_hide = 1
-      assert @contact.should_save?
-    end
-    
-    should "be true when should_destroy?" do
-      @contact.should_destroy = 1
-      assert @contact.should_save?
+    context "which has been marked to be destroyed" do
+      setup do
+        @contact.should_destroy = 1
+      end
+      
+      should "be marked to be saved" do
+        assert @contact.should_save?
+      end
     end
   end
 end

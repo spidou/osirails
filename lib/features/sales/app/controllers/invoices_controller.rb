@@ -309,7 +309,6 @@ class InvoicesController < ApplicationController
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
     ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
     def hack_params_for_nested_attributes # checklist_responses, documents
-
       # hack for has_contact :invoice_contact
       if params[:invoice][:invoice_contact_attributes] and params[:contact]
         params[:invoice][:invoice_contact_attributes][:number_attributes] = params[:contact][:number_attributes]

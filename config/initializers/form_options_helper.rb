@@ -384,10 +384,14 @@ module ActionView
         @template.calendar_datetime_field_tag(@object_name, method, options.merge(:object => @object), text_field_options)
       end
       
-      def form_buttons(options={})
+      def form_buttons(options = {})
         return unless form_view?
+        
         submit_text = options.delete(:submit_text)|| (@object.new_record? ? 'Enregistrer' : 'Enregistrer')
         reset_text  = options.delete(:reset_text) || 'Réinitialiser'
+        
+        options = { :disable_with => "Enregistrement en cours..." }.update(options)
+        
         submit      = @template.submit_tag(submit_text, options)
         reset       = @template.reset(@object_name, reset_text)
         

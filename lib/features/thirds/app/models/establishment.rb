@@ -1,4 +1,4 @@
-class Establishment  < ActiveRecord::Base
+class Establishment < ActiveRecord::Base
   #OPTIMIZE we should think about putting instanciation of 'form_labels' in ActiveRecord::Base instead of in each class
   cattr_reader :form_labels # declaration must be before including SiretNumber because it define a form_label
   @@form_labels = Hash.new

@@ -10,7 +10,7 @@ function mark_resource_for_destroy(element) {
   }
 }
 
-function mark_many_resources_for_destroy(div) {
+function mark_resources_for_destroy(div) {
   resources = div.select('.resource')
   
   resources.each(function(sub_resource){
@@ -21,7 +21,7 @@ function mark_many_resources_for_destroy(div) {
 function destroy_resource_and_sub_resources(element, sub_elements_div, text){
   if (confirm(text)){
     mark_resource_for_destroy(element);
-    mark_many_resources_for_destroy(sub_elements_div);
+    mark_resources_for_destroy(sub_elements_div);
     sub_elements_div.toggle('appear');
   }
 }
@@ -36,7 +36,7 @@ function mark_resource_for_hide(element) {
   }
 }
 
-function mark_many_resources_for_hide(div) {
+function mark_resources_for_hide(div) {
   resources = div.select('.resource')
   
   resources.each(function(sub_resource){
@@ -47,7 +47,7 @@ function mark_many_resources_for_hide(div) {
 function hide_resource_and_sub_resources(element, sub_elements_div, text){
   if (confirm(text)){
     mark_resource_for_hide(element);
-    mark_many_resources_for_hide(sub_elements_div);
+    mark_resources_for_hide(sub_elements_div);
     sub_elements_div.toggle('appear');
   }
 }
@@ -86,7 +86,7 @@ function hide_resource_group(element_group) {
   group_children = element_group.select('.resource')
   count = 0
   for (i = 0; i < group_children.length; i++) {
-    if ( group_children[i].down('.should_hide').value != 1 && group_children[i].down('.should_destroy').value != 1) {
+    if (group_children[i].down('.should_hide').value != 1 && group_children[i].down('.should_destroy').value != 1) {
       count++;
     }
   }

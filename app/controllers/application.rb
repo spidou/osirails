@@ -84,14 +84,11 @@ class ApplicationController < ActionController::Base
       @@models[controller_path] ||= controller_name.singularize.camelize
     end
     
-    
     ######################################################################
     # These methods are used to hack params into sales (CustomerContoller, SubcontractorController etc ...)
-    # TODO remode that methods when the hack become useless
-    
+    # TODO remove that methods when the hack become useless
      
     # Method used to remove some keys that mustn't be passed to the model
-    #
     def clean_params(array, key)
       array.each do |hash|
         hash.delete(key)
@@ -99,15 +96,12 @@ class ApplicationController < ActionController::Base
       array
     end
     
-    # Method to find if the id passed as argument is a fake one
-    # used to retrieve new_record's numbers
-    #
+    # Method to find if the id passed as argument is a fake one used to retrieve new_record's numbers
     def is_a_fake_id?(id)
       /new_record_([0-9])*/.match(id)
     end
     
     # Method to remove fake ids that become useless after params hack
-    #
     def remove_fake_ids(params)
       if params.is_a?(Array)
         params.each do |element|

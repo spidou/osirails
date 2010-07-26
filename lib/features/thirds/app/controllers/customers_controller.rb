@@ -93,7 +93,7 @@ class CustomersController < ApplicationController
             establishment_attributes[:contact_attributes] = clean_params(contact_attributes, :establishment_id)
           
             # hack for contact's numbers
-            if params[:contact] && params[:contact][:number_attributes]
+            if params[:contact] and params[:contact][:number_attributes]
               establishment_attributes[:contact_attributes].each do |contact_attributes|
                 number_attributes = params[:contact][:number_attributes].select {|n| contact_attributes[:id] == n[:has_number_id]}
                 contact_attributes[:number_attributes] = clean_params(number_attributes, :has_number_id)

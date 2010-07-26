@@ -6,30 +6,30 @@
 
 <%
 require_locals contact_list, contact_key, form, contacts_owners
-force_show_view     ||= false
+force_show_view ||= false
 
-random_number         = rand(10**8)
-select_id             = "#{ contact_picker.class.name.underscore }_#{ contact_key }_#{ random_number }"
-preview_class         = "contacts_#{ random_number }"
-previews_div_id       = "#{ contact_key }_#{ random_number }" 
-div_id                = "contact_#{ previews_div_id }"
+random_number   = rand(10**8)
+select_id       = "#{contact_picker.class.name.underscore}_#{contact_key}_#{random_number}"
+preview_class   = "contacts_#{random_number}"
+previews_div_id = "#{contact_key}_#{random_number}" 
+div_id          = "contact_#{previews_div_id}"
 
 contact_is_new_record = !contact_picker.send(contact_key).nil? && contact_picker.send(contact_key).new_record?
-select_html_options   = (contact_picker.new_record? || contact_picker.send(contact_key).nil? ? { :include_blank => "Veuillez choisir un contact" } : {} )
+select_html_options   = (contact_picker.new_record? || contact_picker.send(contact_key).nil? || contact_picker.send(contact_key).hidden? ? { :include_blank => "Veuillez choisir un contact" } : {} )
 select_options        = { :id => select_id }.merge(contact_picker.is_a?(SurveyIntervention) ? { :index => nil } : {})
 %>
 
 <div id="<%= div_id %>">
   <div class="contact_picker_container" <%= "style='display:none;'" if contact_is_new_record %> >
     <% if is_form_view? and !force_show_view %>
-      <%= form.collection_select("#{ contact_key }_id", contact_list, :id, :fullname, select_html_options, select_options) %>
+      <%= form.collection_select("#{contact_key}_id", contact_list, :id, :fullname, select_html_options, select_options) %>
       <%= display_new_contact_button_for_contact_picker(contact_picker, div_id, contacts_owners, contact_key) unless contact_picker.is_a?(SurveyIntervention) %>
     <% end %>
     
     <div id="<%= previews_div_id %>" class="resources contact_picker">
 
       <% for contact in contact_list %>
-        <% selected_contact = contact_picker.send("#{ contact_key }_id").nil? ? false : contact_picker.send("#{ contact_key }_id").equal?(contact.id) %>
+        <% selected_contact = contact_picker.send("#{contact_key}_id").nil? ? false : contact_picker.send("#{contact_key}_id").equal?(contact.id) %>
         
         <div id="contact_preview_<%= contact.id %>" class="<%= preview_class %>" <%= "style='display:none'" unless selected_contact %>>
           <%= render :partial => 'contacts/contact', :object => contact, :locals => { :contacts_owner => contact_picker, :force_show_view => true } %>  

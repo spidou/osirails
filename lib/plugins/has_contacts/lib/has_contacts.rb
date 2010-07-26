@@ -28,14 +28,13 @@ module HasContacts
           self.contact_keys ||= []
           self.contact_keys << key
           
-          before_save("save_#{ key }".to_sym)
+          before_save "save_#{key}".to_sym
           
-          belongs_to(key, :class_name => 'Contact')
+          belongs_to key, :class_name => 'Contact'
           
-          validate(:accept_contact_from_method)
+          validate :accept_contact_from_method
           
-          validates_associated(key.to_sym, :if => "#{ key }_should_be_validated?".to_sym)
-          
+          validates_associated key.to_sym, :if => "#{key}_should_be_validated?".to_sym
           
           define_method "accept_contact_from_method" do # check if contacts are allowed
             contact = send(key)
@@ -44,40 +43,39 @@ module HasContacts
             return if contact.nil? or accept_from_method == :all
             
             accepted_contacts_list = self.send(accept_from_method)
-            raise "#{ accept_from_method } should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
+            raise "#{accept_from_method} should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
             
             good_contact = ( contact.new_record? or accepted_contacts_list.include?(contact) )
             errors.add(key, ActiveRecord::Errors.default_error_messages[:inclusion]) unless good_contact
           end
           
-          define_method "#{ key }_should_be_validated?" do
+          define_method "#{key}_should_be_validated?" do
             return false if send(key).nil?
             send(key).new_record?
           end
           
-          define_method "#{ key }_attributes=" do |attributes|
-            send("#{ key }=", Contact.new(attributes)) # used only to add a new contact maybe will be updated to support edit in a next release
+          define_method "#{key}_attributes=" do |attributes|
+            send("#{key}=", Contact.new(attributes)) # used only to add a new contact maybe will be updated to support edit in a next release
           end
           
-          define_method "save_#{ key }" do
+          define_method "save_#{key}" do
             contact = send(key)
             return if contact.nil? or !contact.new_record?
             
             contact.save(false)
-            send("#{ key }_id=", contact.id) # say the contact_owner to reference the contact_id
+            send("#{key}_id=", contact.id) # say the contact_owner to reference the contact_id
           end
           
           def all_contacts
-            contact_keys.collect { |key| send(key) }.compact
+            contact_keys.collect{ |key| send(key) }.compact
           end
           
         end
       end
-      
     end
     
     def has_contacts
-      
+      raise "[has_contacts] Mutliple calls of has_contacts are not allowed" if Contact.contacts_owners_models.include?(self)
       Contact.contacts_owners_models << self ## used to define the routes into routes.rb
       
       class_eval do

@@ -75,7 +75,7 @@ class Employee < ActiveRecord::Base
   validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail entreprise est incorrecte"
   
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :premia, :checkings
+  validates_associated :iban, :address, :job_contract#, :contacts
   
   validate :validates_responsible_job_limit
   

@@ -5,7 +5,7 @@ class Contact < ActiveRecord::Base
   
   belongs_to :has_contact, :polymorphic => true
   
-  validates_presence_of   :first_name, :last_name, :gender
+  validates_presence_of   :has_contact, :first_name, :last_name, :gender
   validates_format_of     :email, :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/, :message => "L'adresse e-mail est incorrecte"
   validates_inclusion_of  :gender, :in => %w( M F )
   
@@ -19,7 +19,6 @@ class Contact < ActiveRecord::Base
   # should_update = 1 if the form is visible # see the /customers/1/edit
   # should_update = 0 if the form is hidden (after clicking on the cancel button via the web site) # see the /customers/1/edit
   attr_accessor :should_update
-  
   
   cattr_accessor :contacts_owners_models
   @@contacts_owners_models = []
@@ -43,6 +42,10 @@ class Contact < ActiveRecord::Base
   has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
   
   before_save :case_management
+  
+  def hidden?
+    hidden
+  end
   
   def can_be_hidden?
     !new_record?
