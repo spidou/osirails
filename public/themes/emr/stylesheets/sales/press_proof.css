@@ -70,3 +70,27 @@
   right: 45px;
   cursor: pointer;
 }
+
+/* PRESSPROOF LIST */
+table tr.confirmed_press_proof td.status {
+  color: #e99727;
+}
+
+table tr.cancelled_press_proof td.status,
+table tr.revoked_press_proof td.status {
+  color: #ff3528;
+}
+
+table tr.sended_press_proof td.status {
+  color: #e99727;
+  font-weight: bold;
+}
+
+table tr.signed_press_proof td.status {
+  color: #60bc00;
+  font-weight: bold;
+}
+
+table tr.press_proof td.mockups {
+  text-align: left;
+}

@@ -1,0 +1,5 @@
+good_leave_type:
+  name: "special"
+# leave_type used to test persistence of leave_type_id into leave_test.rb
+leave_type_to_test_edit:
+  name: "another leave type"

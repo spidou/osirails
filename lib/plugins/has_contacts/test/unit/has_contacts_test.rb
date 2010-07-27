@@ -5,7 +5,7 @@ module HasContactsTest
   # ==== Example
   #  context "Thanks to has_contacts, an establishment" do
   #    setup do
-  #      @contacts_owner = Establishment.first
+  #      @contacts_owner = Establishment.new
   #    end
   #    
   #    include HasContactsTest

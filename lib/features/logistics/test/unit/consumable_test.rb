@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class ConsumableTest < ActiveSupport::TestCase
-  
   #TODO
   #has_permissions :as_business_object, :class_methods => [:list, :view, :add, :edit, :delete, :disable, :enable]
   #has_reference   :symbols => [ :supply_sub_category ], :prefix => :logistics
@@ -22,5 +20,4 @@ class ConsumableTest < ActiveSupport::TestCase
     
     include SupplyTest
   end
-  
 end

@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class PremiumTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object

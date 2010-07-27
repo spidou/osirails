@@ -1,3 +1,7 @@
+<% content_for :header do -%>
+  <%= stylesheet_link_tag_with_theme_support 'sales/deliver_note' %>
+<% end -%>
+
 <%= order_header %>
 
 <%= generate_pre_invoicing_step_contextual_menu_partial %>

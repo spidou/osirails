@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class SurveyStepTest < ActiveSupport::TestCase
-  
   #TODO test has_permissions
   #TODO test acts_as_step
   #TODO test has_documents
@@ -15,10 +13,10 @@ class SurveyStepTest < ActiveSupport::TestCase
   context "A survey_step" do
     setup do
       @step = create_default_order.commercial_step.survey_step
-      @attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf"))
+      @attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "subcontractor_request.pdf"))
       
       flunk "employees table should have at least 2 records" unless Employee.count >= 2
-      flunk "order products should be empty" unless @step.order.products.empty?
+      flunk "order end_products should be empty" unless @step.order.end_products.empty?
       flunk "survey_interventions should be empty" unless @step.survey_interventions.empty?
     end
     
@@ -26,77 +24,77 @@ class SurveyStepTest < ActiveSupport::TestCase
       @step = nil
     end
     
-    ### TEST PRODUCTS_ATTRIBUTES= AND SAVE PRODUCT
+    ### TEST END_PRODUCTS_ATTRIBUTES= AND SAVE END_PRODUCT
     [1, 2, 5, 10].each do |x|
-      should "build #{x} new product(s) for its associated order" do
+      should "build #{x} new end_product(s) for its associated order" do
         x.times do
-          build_default_product_for(@step)
+          build_default_end_product_for(@step)
         end
         
-        assert_equal x, @step.order.products.size
+        assert_equal x, @step.order.end_products.size
       end
     end
     
     [1, 2, 5, 10].each do |x|
-      should "save #{x} builded product(s) for its associated order" do
+      should "save #{x} builded end_product(s) for its associated order" do
         x.times do
-          build_default_product_for(@step)
+          build_default_end_product_for(@step)
         end
         @step.save!
         
         @step = SurveyStep.find(@step.id)
-        assert_equal x, @step.order.products.count
-        @step.order.products.each do |product|
-          assert !product.new_record?
+        assert_equal x, @step.order.end_products.count
+        @step.order.end_products.each do |end_product|
+          assert !end_product.new_record?
         end
       end
     end
     
-    should "update existing product for its associated order" do
-      product = create_default_product_for(@step)
+    should "update existing end_product for its associated order" do
+      end_product = create_default_end_product_for(@step)
       
-      new_attributes = { :id          => product.id,
-                         :name        => product.name + " new string",
-                         :description => product.description + " new string",
-                         :dimensions  => product.dimensions + " new string",
-                         :quantity    => product.quantity + 1 }
+      new_attributes = { :id          => end_product.id,
+                         :name        => end_product.name + " new string",
+                         :description => end_product.description + " new string",
+                         :dimensions  => end_product.dimensions + " new string",
+                         :quantity    => end_product.quantity + 1 }
       
-      @step.product_attributes=( [new_attributes] )
+      @step.end_product_attributes=( [new_attributes] )
       
-      updated_product = @step.order.products.detect{ |p| p.id == product.id }
+      updated_end_product = @step.order.end_products.detect{ |p| p.id == end_product.id }
       new_attributes.each do |key, value|
-        assert_equal value, updated_product.send(key)
+        assert_equal value, updated_end_product.send(key)
       end
     end
     
-    should "save updated product for its associated order" do
-      product = create_default_product_for(@step)
+    should "save updated end_product for its associated order" do
+      end_product = create_default_end_product_for(@step)
       
-      new_attributes = { :id          => product.id,
-                         :name        => product.name + " new string",
-                         :description => product.description + " new string",
-                         :dimensions  => product.dimensions + " new string",
-                         :quantity    => product.quantity + 1 }
+      new_attributes = { :id          => end_product.id,
+                         :name        => end_product.name + " new string",
+                         :description => end_product.description + " new string",
+                         :dimensions  => end_product.dimensions + " new string",
+                         :quantity    => end_product.quantity + 1 }
       
-      @step.product_attributes=( [new_attributes] )
+      @step.end_product_attributes=( [new_attributes] )
       @step.save!
       
-      updated_product = Product.find(product.id)
+      updated_end_product = EndProduct.find(end_product.id)
       new_attributes.each do |key, value|
-        assert_equal value, updated_product.send(key)
+        assert_equal value, updated_end_product.send(key)
       end
     end
     
-    should "destroy existing product for its associated order if should_destroy is set at '1'" do
-      product = create_default_product_for(@step)
+    should "destroy existing end_product for its associated order if should_destroy is set at '1'" do
+      end_product = create_default_end_product_for(@step)
       
-      new_attributes = { :id => product.id, :should_destroy => 1 }
-      @step.product_attributes=( [new_attributes] )
+      new_attributes = { :id => end_product.id, :should_destroy => 1 }
+      @step.end_product_attributes=( [new_attributes] )
       
-      assert @step.order.products.detect{ |p| p.id == product.id }.should_destroy?
+      assert @step.order.end_products.detect{ |p| p.id == end_product.id }.should_destroy?
       @step.save!
       
-      assert_nil SurveyStep.find(@step.id).order.products.detect{ |p| p.id == product.id }
+      assert_nil SurveyStep.find(@step.id).order.end_products.detect{ |p| p.id == end_product.id }
     end
     ### END
     
@@ -316,25 +314,25 @@ class SurveyStepTest < ActiveSupport::TestCase
   end
   
   private
-    def build_default_product_for(step)
-      product_attributes = { :product_reference_id => ProductReference.first.id,
-                             :name                 => "Name",
-                             :description          => "Description",
-                             :dimensions           => "Dimensions",
-                             :quantity             => 1 }
-      step.product_attributes=( [product_attributes] )
+    def build_default_end_product_for(step)
+      end_product_attributes = { :product_reference_id => ProductReference.first.id,
+                                 :name                 => "Name",
+                                 :description          => "Description",
+                                 :dimensions           => "Dimensions",
+                                 :quantity             => 1 }
+      step.end_product_attributes=( [end_product_attributes] )
       
-      product_attributes.each do |key, value|
-        flunk "<#{value}> expected but was \n<#{step.order.products.last.send(key)}>\nThese two values should be equal" unless step.order.products.last.send(key) == value
+      end_product_attributes.each do |key, value|
+        flunk "<#{value}> expected but was \n<#{step.order.end_products.last.send(key)}>\nThese two values should be equal" unless step.order.end_products.last.send(key) == value
       end
-      return step.order.products.last
+      return step.order.end_products.last
     end
     
-    def create_default_product_for(step)
-      build_default_product_for(step)
+    def create_default_end_product_for(step)
+      build_default_end_product_for(step)
       step.save!
-      flunk "order should have 1 product" unless step.order.products.count == 1
-      return step.order.products.first
+      flunk "order should have 1 end_product" unless step.order.end_products.count == 1
+      return step.order.end_products.first
     end
     
     def build_default_survey_intervention_for(step)
@@ -378,5 +376,4 @@ class SurveyStepTest < ActiveSupport::TestCase
       flunk "order should have 1 subcontractor_request" unless step.subcontractor_requests.count == 1
       return step.subcontractor_requests.first
     end
-  
 end

@@ -1,0 +1,4 @@
+john_doe_job_contract:
+  employee: john_doe
+  employee_state: freelance
+  job_contract_type: cdi

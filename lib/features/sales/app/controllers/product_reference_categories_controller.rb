@@ -7,7 +7,7 @@ class ProductReferenceCategoriesController < ApplicationController
     else
       @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
       respond_to do |format|
-        format.js {render :layout => false}
+        format.js { render :layout => false }
       end
     end
   end
@@ -24,7 +24,7 @@ class ProductReferenceCategoriesController < ApplicationController
     @categories = ProductReferenceCategory.find(params[:id].split(","))
     respond_to do |format|
       format.html
-      format.js {render :layout => false}
+      format.js { render :layout => false }
     end
   end
   
@@ -72,7 +72,7 @@ class ProductReferenceCategoriesController < ApplicationController
   def destroy
     @category = ProductReferenceCategory.find(params[:id])
     if @category.can_be_destroyed?
-      if @category.has_children_disable?
+      if @category.has_disabled_children?
         @category.enable = false
         @category.save
         flash[:notice] = 'La catégorie a été supprimée'

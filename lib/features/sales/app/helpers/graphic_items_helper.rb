@@ -67,7 +67,7 @@ module GraphicItemsHelper
   end
   
   def display_graphic_item_summary_preview_button(object, press_proof = nil)
-    parent = press_proof || object.product
+    parent = press_proof || object.end_product
     image = image_tag("preview_16x16.gif", :alt => text = "Aperçu", :title => text)
     link_to(image, object.current_image.url(:medium), :rel => "lightbox[#{parent.class.name.underscore}_#{parent.id}]", :title => "#{object.name} : #{object.short_description}")
   end

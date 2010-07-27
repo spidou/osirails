@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class DunningTest < ActiveSupport::TestCase
-
   should_belong_to :has_dunning, :creator, :dunning_sending_method, :cancelled_by
   
   should_validate_presence_of :date, :comment, :has_dunning_type
@@ -46,7 +44,7 @@ class DunningTest < ActiveSupport::TestCase
     end
     
     should "fail to cancel" do
-      assert !@dunning.cancel(users(:admin_user))
+      assert !@dunning.cancel(users(:sales_user))
       assert !@dunning.was_cancelled?
     end
   end
@@ -85,7 +83,7 @@ class DunningTest < ActiveSupport::TestCase
     end
     
     should "fail to cancel" do
-      assert !@dunning.cancel(users(:admin_user))
+      assert !@dunning.cancel(users(:sales_user))
       assert !@dunning.was_cancelled?
     end
   end
@@ -119,7 +117,7 @@ class DunningTest < ActiveSupport::TestCase
     end
     
     should "fail to cancel" do
-      assert !@dunning.cancel(users(:admin_user))
+      assert !@dunning.cancel(users(:sales_user))
       assert !@dunning.was_cancelled?
     end
     
@@ -148,7 +146,7 @@ class DunningTest < ActiveSupport::TestCase
     end
      
     should "succeed to cancel" do
-      assert @dunning.cancel(users(:admin_user))
+      assert @dunning.cancel(users(:sales_user))
       assert @dunning.was_cancelled?
     end
   end
@@ -157,7 +155,7 @@ class DunningTest < ActiveSupport::TestCase
     
     setup do
       @dunning = create_default_dunning
-      @dunning.cancel(users(:admin_user))
+      @dunning.cancel(users(:sales_user))
     end
     
     teardown do

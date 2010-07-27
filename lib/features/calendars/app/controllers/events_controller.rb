@@ -1,26 +1,29 @@
 class EventsController < ApplicationController
   def index
     @calendar = Calendar.find(params[:calendar_id])
-    render :text => 'false' unless @calendar.can_list?(current_user)
-    @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
-    case params[:period]
-    when "day"
-      @events = {@date.to_s => @calendar.events_at_date(@date)}
-    when "week"
-      @events = @calendar.events_at_period(
-        :start_date => @date.beginning_of_week,
-        :end_date => @date.end_of_week
-      )
-    when "month"
-      @events = @calendar.events_at_period(
-        :start_date => @date.beginning_of_month.beginning_of_week,
-        :end_date => @date.end_of_month.end_of_week
-      )
-    end
+    if @calendar.can_list?(current_user)
+      @date = Date.new(params[:year].to_i, params[:month].to_i, params[:day].to_i)
+      case params[:period]
+      when "day"
+        @events = {@date.to_s => @calendar.events_at_date(@date)}
+      when "week"
+        @events = @calendar.events_at_period(
+          :start_date => @date.beginning_of_week,
+          :end_date => @date.end_of_week
+        )
+      when "month"
+        @events = @calendar.events_at_period(
+          :start_date => @date.beginning_of_month.beginning_of_week,
+          :end_date => @date.end_of_month.end_of_week
+        )
+      end
 
-    @period = params[:period]
-    respond_to do |format|
-      format.js
+      @period = params[:period]
+      respond_to do |format|
+        format.js
+      end
+    else
+      render :nothing => true
     end
   end
 

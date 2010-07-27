@@ -5,7 +5,7 @@ class SubcontractorsController < ApplicationController
   
   # GET /subcontractors
   def index
-    @subcontractors = Subcontractor.activates.paginate(:page => params[:page], :per_page => Subcontractor::SUBCONTRACTORS_PER_PAGE)
+    @subcontractors = Subcontractor.actives.paginate(:page => params[:page], :per_page => Subcontractor::SUBCONTRACTORS_PER_PAGE)
   end
   
   # GET /subcontractors/:id

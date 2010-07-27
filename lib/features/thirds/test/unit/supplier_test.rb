@@ -1,10 +1,7 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../thirds_test'
 
 class SupplierTest < ActiveSupport::TestCase
-  
-  #TODO
-  # has_permissions :as_business_object
+  #TODO has_permissions :as_business_object
   
   should_have_one :iban
   
@@ -12,9 +9,12 @@ class SupplierTest < ActiveSupport::TestCase
   
   should_validate_presence_of :activity_sector_reference, :with_foreign_key => :default
   
+  should_validate_uniqueness_of :name
+  should_validate_uniqueness_of :siret_number, :scoped_to => :type
+  
   context "Thanks to 'has_contacts', a supplier" do
     setup do
-      @contacts_owner = Supplier.first
+      @contacts_owner = Supplier.new
     end
     
     include HasContactsTest

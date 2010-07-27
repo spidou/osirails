@@ -51,7 +51,7 @@ class StockFlow < ActiveRecord::Base
   end
   
   def set_up_default_unit_price
-    raise "#{self.class.name} should override 'set_up_default_unit_price'"
+    raise "StockFlow doesn't implement 'set_up_default_unit_price'. A subclass may override this method"
   end
   
   def can_be_edited?
@@ -63,7 +63,7 @@ class StockFlow < ActiveRecord::Base
   end
 
   def calculation_method
-    raise "#{self.class.name} should override 'calculation_method'"
+    raise "StockFlow doesn't implement 'calculation_method'. A subclass may override this method"
   end
   
   def current_stock_value

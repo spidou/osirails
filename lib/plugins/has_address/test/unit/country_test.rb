@@ -1,7 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../has_address_test'
 
 class CountryTest < ActiveSupport::TestCase
-  fixtures :countries
   def setup
     @country = countries(:france)
   end

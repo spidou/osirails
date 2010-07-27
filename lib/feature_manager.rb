@@ -59,11 +59,9 @@ class FeatureManager
     
     def create_feature_if_necessary
       @feature = Feature.find_by_name_and_version(@name, @version) || Feature.new(:name => @name, :version => @version, :title => @title)
-      if ( @feature.new_record? and @feature.activate_by_default? ) or @feature.kernel_feature?
-        @feature.activated = true unless @feature.activated
-        @feature.installed = true unless @feature.installed
-        @feature.save if @feature.changed?
-      end
+      @feature.installed = true if @feature.new_record?
+      @feature.activated = true if @feature.new_record? and @feature.activate_by_default?
+      @feature.save if @feature.changed?
     end
     
     # load all configurations key and value in the database
@@ -144,20 +142,20 @@ class FeatureManager
       $activated_features_path << @path
       
       # load models, controllers and helpers
-      %w{ models controllers helpers }.each do |dir|
-        dir_path = File.join(@path, 'app', dir)
-        $LOAD_PATH << dir_path
-        Dependencies.load_paths << dir_path
-        @config.controller_paths << dir_path
-        Dependencies.load_once_paths.delete(dir_path) # in development mode, this permits to avoid restart the server after any modifications on these paths (to confirm)
+      %w{ lib app/models app/controllers app/helpers }.each do |dir|
+        dir_path = File.join(@path, dir)
+        
+        $LOAD_PATH.unshift(dir_path)
+        Dependencies.load_paths.unshift(dir_path)
+        #Dependencies.load_once_paths.unshift(dir_path) unless Dependencies.load_once_paths.include?(dir_path) # I don't understand very well how the load_once_paths works for the moment
+        @config.controller_paths.unshift(dir_path) if dir.include?("controllers") and File.exists?(dir_path)
       end
 
       # load views
-      ActionController::Base.append_view_path(File.join(@path, 'app', 'views'))
+      ActionController::Base.prepend_view_path(File.join(@path, 'app', 'views'))
       
-      # load overrides.rb file
-      override_path = File.join(@path, 'overrides.rb')
-      require override_path if File.exist?(override_path)
+      # require files in lib/overrides
+      Dir["#{@path}/lib/overrides/*.rb"].each{ |file| require file }
     end
 
     def verify_attribute_type(attr_class, type)

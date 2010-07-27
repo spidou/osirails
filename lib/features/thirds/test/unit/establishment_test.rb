@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../thirds_test'
 
 class EstablishmentTest < ActiveSupport::TestCase
@@ -63,7 +62,7 @@ class EstablishmentTest < ActiveSupport::TestCase
   
   context "Thanks to 'has_contacts', an establishment" do
     setup do
-      @contacts_owner = create_establishment_for(Customer.first)
+      @contacts_owner = Establishment.new
     end
     
     include HasContactsTest

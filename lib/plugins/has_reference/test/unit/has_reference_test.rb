@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) +  '/../../../../../test/fixtures/has_reference_mock_model' # add mock class
+require File.dirname(__FILE__) + '/../fixtures/classes/has_reference_mock_model'
 
 module HasReferenceTest
   

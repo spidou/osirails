@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class InvoiceTest < ActiveSupport::TestCase
-  
   #TODO test has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :due_date_pay]
   #TODO test has_address     :bill_to_address
   #TODO test has_contact     :accept_from => :customer_contacts
@@ -10,7 +8,7 @@ class InvoiceTest < ActiveSupport::TestCase
   should_belong_to :order, :factor, :invoice_type, :creator, :cancelled_by, :abandoned_by
   
   should_have_many :invoice_items
-  should_have_many :products, :through => :invoice_items
+  should_have_many :end_products, :through => :invoice_items
   
   should_have_many :delivery_notes
   should_have_many :dunnings
@@ -238,7 +236,7 @@ class InvoiceTest < ActiveSupport::TestCase
     setup do
       @order = create_default_order
       2.times do
-        create_valid_product_for(@order)
+        create_default_end_product(@order)
       end
       
       @invoice = @order.invoices.build
@@ -882,13 +880,13 @@ class InvoiceTest < ActiveSupport::TestCase
       
       should "build invoice_items when calling 'invoice_item_attributes='" do
         attributes = []
-        @order.products.each do |p|
-          attributes << { :product_id   => p.id,
-                          :quantity     => p.quantity }
+        @order.end_products.each do |p|
+          attributes << { :end_product_id => p.id,
+                          :quantity       => p.quantity }
         end
         @invoice.invoice_item_attributes=(attributes)
         
-        assert_equal @order.products.count, @invoice.invoice_items.size
+        assert_equal @order.end_products.count, @invoice.invoice_items.size
       end
       
       [1,3,4].each do |x|
@@ -1267,9 +1265,9 @@ class InvoiceTest < ActiveSupport::TestCase
       should "save invoice_items after saving itself" do
         @invoice.save!
         
-        assert_equal @order.products.count, @invoice.invoice_items.count
+        assert_equal @order.end_products.count, @invoice.invoice_items.count
         assert_equal 0, @invoice.free_items.count
-        assert_equal @order.products.count, @invoice.product_items.count
+        assert_equal @order.end_products.count, @invoice.product_items.count
       end
       
       [1,3,4].each do |x|
@@ -1277,9 +1275,9 @@ class InvoiceTest < ActiveSupport::TestCase
           x.times { build_free_item_for(@invoice) }
           @invoice.save!
           
-          assert_equal @order.products.count + x, @invoice.invoice_items.count
+          assert_equal @order.end_products.count + x, @invoice.invoice_items.count
           assert_equal x, @invoice.free_items.count
-          assert_equal @order.products.count, @invoice.product_items.count
+          assert_equal @order.end_products.count, @invoice.product_items.count
         end
         
         should "save #{x} due_dates when saving itself" do
@@ -2742,12 +2740,12 @@ class InvoiceTest < ActiveSupport::TestCase
     def build_free_item_for(invoice, unit_price = 0, vat = 0)
       before = invoice.invoice_items.size
       
-      attributes = [{ :product_id   => nil,
-                      :name         => "This is a free line",
-                      :description  => "And this is the description of the free line",
-                      :quantity     => 1,
-                      :unit_price   => unit_price,
-                      :vat          => vat }]
+      attributes = [{ :end_product_id => nil,
+                      :name           => "This is a free line",
+                      :description    => "And this is the description of the free line",
+                      :quantity       => 1,
+                      :unit_price     => unit_price,
+                      :vat            => vat }]
       invoice.invoice_item_attributes=(attributes)
       
       flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
@@ -2757,10 +2755,10 @@ class InvoiceTest < ActiveSupport::TestCase
     def build_product_item_for(invoice)
       before = invoice.invoice_items.size
       
-      attributes = [{ :product_id   => invoice.order.products.first.id,
-                      :quantity     => 1,
-                      :name         => "This is a product line",
-                      :description  => "And this is the description of the product line" }]
+      attributes = [{ :end_product_id => invoice.order.end_products.first.id,
+                      :quantity       => 1,
+                      :name           => "This is a product line",
+                      :description    => "And this is the description of the product line" }]
       invoice.invoice_item_attributes=(attributes)
       
       flunk "invoice should have one more invoice_item" if invoice.invoice_items.size == before
@@ -2883,7 +2881,8 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_sended_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_confirmed_invoice(invoice, factorised, number_of_due_dates)
       invoice = send_invoice(invoice)
-      flunk "invoice should be sended" unless invoice.was_sended?
+      invoice.valid?
+      flunk "invoice should be sended #{invoice.errors.inspect}" unless invoice.was_sended?
       return invoice
     end
     
@@ -2984,7 +2983,7 @@ class InvoiceTest < ActiveSupport::TestCase
       attributes = { :due_date_to_pay => { :id => due_date.id,
                                            :payment_attributes => [ { :paid_on           => Date.today,
                                                                       :amount            => due_date.net_to_paid,
-                                                                      :payment_method_id => payment_methods(:bank_transfer).id } ] } }
+                                                                      :payment_method_id => payment_methods(:cash).id } ] } }
       invoice.due_date_pay(attributes)
       return invoice
     end
@@ -2996,7 +2995,7 @@ class InvoiceTest < ActiveSupport::TestCase
       attributes = { :due_date_to_pay => { :id => due_date.id,
                                            :payment_attributes => [ { :paid_on           => Date.today,
                                                                       :amount            => due_date.net_to_paid,
-                                                                      :payment_method_id => payment_methods(:bank_transfer).id } ] } }
+                                                                      :payment_method_id => payment_methods(:cash).id } ] } }
       invoice.totally_pay(attributes)
       return invoice
     end

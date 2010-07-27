@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../has_address_test'
 
 class AddressTest < ActiveSupport::TestCase
   def test_presence_of_street_name

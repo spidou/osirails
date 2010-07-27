@@ -67,7 +67,7 @@ class DeliveryNote < ActiveRecord::Base
   before_update   :save_delivery_note_items
   before_destroy  :can_be_destroyed?
   
-  attr_protected :status, :confirmed_at, :cancelled_at
+  attr_protected :status, :reference, :confirmed_at, :cancelled_at
   
   cattr_accessor :form_labels
   @@form_labels = {}

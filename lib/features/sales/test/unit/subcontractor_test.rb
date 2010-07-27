@@ -1,7 +1,14 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class SubcontractorTest < ActiveSupport::TestCase
+  
+  #TODO has_permissions :as_business_object
+  
+  should_have_one :iban
+  
+  should_belong_to :activity_sector_reference
+  
+  should_validate_presence_of :activity_sector_reference, :with_foreign_key => :default
   
   context "A subcontractor" do
     setup do
@@ -11,6 +18,14 @@ class SubcontractorTest < ActiveSupport::TestCase
     subject{ @siret_number_owner }
     
     include SiretNumberTest
+  end
+  
+  context "Thanks to 'has_contacts', a subcontractor" do
+    setup do
+      @contacts_owner = Subcontractor.new
+    end
+    
+    include HasContactsTest
   end
   
 end

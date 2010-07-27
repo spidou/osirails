@@ -8,7 +8,7 @@
 require_locals contact_list, contact_key, form, contacts_owners
 force_show_view ||= false
 
-random_number   = rand(10**8)
+random_number   = generate_random_id
 select_id       = "#{contact_picker.class.name.underscore}_#{contact_key}_#{random_number}"
 preview_class   = "contacts_#{random_number}"
 previews_div_id = "#{contact_key}_#{random_number}" 

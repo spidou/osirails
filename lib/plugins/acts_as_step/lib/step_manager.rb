@@ -5,10 +5,11 @@ class StepManager
   
   def initialize(path)
     require 'yaml'
-    yaml = YAML.load(File.open(path + '/steps.yml'))
+    yaml_path = File.join(path, 'steps.yml')
+    yaml = YAML.load(File.open(yaml_path)) || {}
     
-    @steps          = yaml['steps']          || {}
-    @path           = path
+    @steps = yaml['steps'] || {}
+    @path  = path
     
     load_steps(@steps, "")
     insert_steps_in_database

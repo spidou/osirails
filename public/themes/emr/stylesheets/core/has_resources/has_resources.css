@@ -1,9 +1,9 @@
-.resources {
+div.resources {
   //padding: 0 10px 6px 10px;
   text-align: left;
 }
 
-.resource_group {
+div.resource_group {
   display: block;
   -moz-border-radius: 0 0 10px 10px;
   border: 1px solid #7E98CB;
@@ -12,12 +12,12 @@
   text-align: left;
 }
 
-.resource_group.new_records {
+div.resource_group.new_records {
   display: block;
   //margin: 0 15px 0 15px;
 }
 
-.resource_group h1 {
+div.resource_group h1 {
   background-color: #afc2ea;
   color: rgb(70,94,142);
   border:0;
@@ -29,7 +29,7 @@
 	font-weight: bold;
 }
 
-.resource {
+div.resource {
   display: inline-block;
   position: relative;
   border: 1px dashed #ddd;
@@ -38,22 +38,22 @@
   vertical-align: top;
 }
 
-.resource:hover {
+div.resource:hover {
   border: 1px dashed grey;
 }
 
-.resource .thumb {
+div.resource .thumb {
   display: inline-block;
   margin: 3px;
   padding: 0;
 }
 
-.resource .thumb img {
+div.resource .thumb img {
   max-height: 100px;
   max-width: 100px;
 }
 
-.resource .details {
+div.resource .details {
   display: inline-block;
   text-align: left;
   vertical-align: top;
@@ -65,7 +65,7 @@
   min-height: 100px; /* thumb height*/
 }
 
-.resource .details h1 {
+div.resource .details h1 {
   background:inherit;
   color:inherit;
 	border:0;
@@ -78,49 +78,49 @@
   text-indent: 0;
 }
 
-.resource .details em {
+div.resource .details em {
   color: gray;
   font-style: italic; 
 }
 
-.resource div.preview {
+div.resource div.preview {
   position: absolute;
 }
 
-.resource img.preview {
+div.resource img.preview {
   border: 1px solid red;
   margin 0;
   padding: 0;
   left: 0;
 }
 
-form .resource p {
+form div.resource p {
   margin: 0;
   padding: 2px 0 2px 0;
   text-indent: 0;
 }
 
-form .resource p input[type=text],
-form .resource p input[type=password],
-form .resource p input[type=checkbox],
-form .resource p textarea,
-form .resource p select {
+form div.resource p input[type=text],
+form div.resource p input[type=password],
+form div.resource p input[type=checkbox],
+form div.resource p textarea,
+form div.resource p select {
   vertical-align:top;
   //width: 220px;
 }
 
-.resource #errorExplanation {
+div.resource #errorExplanation {
 	width: 370px;
 }
 
-.resource #errorExplanation h2 {
+div.resource #errorExplanation h2 {
 	font-size: medium;
   font-weight: bold;
   word-spacing: normal;
   letter-spacing: normal;
 }
 
-.resource #errorExplanation p {
+div.resource #errorExplanation p {
 	margin: inherit;
 	padding: inherit;
 }

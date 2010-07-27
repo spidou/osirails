@@ -1,8 +1,6 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../logistics_test'
 
 class SuppliesSupplySizeTest < ActiveSupport::TestCase
-  
   #TODO test set_default_unit_measure
   
   should_belong_to :supply, :supply_size, :unit_measure

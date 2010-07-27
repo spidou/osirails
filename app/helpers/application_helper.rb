@@ -10,15 +10,11 @@ module ApplicationHelper
     flash.each_pair do |key, value|
       html << "<div class=\"flash_#{key}\"><span>#{value}</span></div>"
     end
-    html.empty? ? "" : "<div class=\"flash_container\">" << html << "</div>"
+    html.empty? ? "" : "<div class=\"flash_container\">#{html}</div>"
   end
   
   def current_user
-    begin
-      User.find(session[:user_id])
-    rescue
-      return false
-    end
+    @current_user ||= User.find_by_id(session[:user_id], :joins => [:roles])
   end
   
   def display_version
@@ -227,6 +223,11 @@ module ApplicationHelper
     end
     
     html
+  end
+  
+  def generate_random_id(length = 8)
+    chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
+    Array.new(length).map{chars[rand(chars.size)]}.join
   end
 
   private

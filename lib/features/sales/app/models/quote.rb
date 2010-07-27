@@ -20,7 +20,7 @@ class Quote < ActiveRecord::Base
   belongs_to :order_form_type
   
   has_many :quote_items, :dependent => :delete_all, :order => 'position' # not :destroy to avoid after_destroy is called in quote_item.rb
-  has_many :products, :through => :quote_items
+  has_many :end_products, :through => :quote_items
   
   has_attached_file :order_form,
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
@@ -28,16 +28,16 @@ class Quote < ActiveRecord::Base
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
   
-  validates_presence_of     :order_id, :creator_id
-  validates_presence_of     :order,   :if => :order_id
-  validates_presence_of     :creator, :if => :creator_id
+  validates_presence_of :order_id, :creator_id
+  validates_presence_of :order,   :if => :order_id
+  validates_presence_of :creator, :if => :creator_id
   
   validates_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
-  validates_inclusion_of    :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
-  validates_inclusion_of    :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
+  validates_inclusion_of :validity_delay_unit, :in => VALIDITY_DELAY_UNITS.values
+  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_SENDED, STATUS_SIGNED ], :allow_nil => true
   
-  validates_associated      :quote_items, :products
+  validates_associated :quote_items, :end_products
   
   validate :validates_length_of_quote_items
   
@@ -77,12 +77,12 @@ class Quote < ActiveRecord::Base
     quote.validate :validates_presence_of_order_form
   end
   
-  after_save    :save_quote_items, :remove_order_products
-  after_update  :update_estimate_step_status
+  after_save    :save_quote_items, :remove_order_end_products
+  after_update  :update_quote_step_status
   
   attr_protected :status, :confirmed_on, :cancelled_on
   
-  attr_accessor :order_products_to_remove
+  attr_accessor :order_end_products_to_remove
   
   cattr_accessor :form_labels
   @@form_labels = {}
@@ -100,11 +100,11 @@ class Quote < ActiveRecord::Base
   
   def initialize(*params)
     super(*params)
-    @order_products_to_remove ||= []
+    @order_end_products_to_remove ||= []
   end
   
   def after_find
-    @order_products_to_remove ||= []
+    @order_end_products_to_remove ||= []
   end
   
   def validates_presence_of_order_form # the method validates_attachment_presence of paperclip seems to be broken when using conditions
@@ -120,11 +120,11 @@ class Quote < ActiveRecord::Base
   end
   
   def product_quote_items
-    quote_items.select(&:product)
+    quote_items.select(&:end_product)
   end
   
   def free_quote_items
-    quote_items.reject(&:product)
+    quote_items.reject(&:end_product)
   end
   
   def sorted_quote_items
@@ -132,15 +132,15 @@ class Quote < ActiveRecord::Base
   end
   
   def build_quote_item(quote_item_attributes)
-    raise ArgumentError, "build_quote_item expected to receive :product_id or :product_reference_id in parameter" if quote_item_attributes[:product_id].blank? and quote_item_attributes[:product_reference_id].blank?
+    raise ArgumentError, "build_quote_item expected to receive :end_product_id or :product_reference_id in parameter" if quote_item_attributes[:end_product_id].blank? and quote_item_attributes[:product_reference_id].blank?
     
-    product = Product.find_by_id(quote_item_attributes[:product_id])
+    product = EndProduct.find_by_id(quote_item_attributes[:end_product_id])
     product ||= ProductReference.find_by_id(quote_item_attributes[:product_reference_id])
     
     name                 = product.name
     description          = product.description
-    dimensions           = product.dimensions rescue nil # ProductReference do not have dimensions
-    quantity             = product.quantity rescue nil   # ProductReference do not have quantity
+    dimensions           = product.dimensions
+    quantity             = product.quantity rescue nil # ProductReference do not have quantity
     unit_price           = product.unit_price
     prizegiving          = product.prizegiving
     vat                  = product.vat || ( product.product_reference.vat rescue nil )
@@ -164,9 +164,9 @@ class Quote < ActiveRecord::Base
       build_or_update_quote_item(attributes) unless attributes[:name].blank? and attributes[:description].blank? and attributes[:dimensions].blank? and attributes[:unit_price].blank? and attributes[:prizegiving].blank? and attributes[:quantity].blank? and attributes[:vat].blank?
     end
     
-    # automatically remove a product from order if quote_items do not include this product
-    order.products.reject(&:new_record?).each do |p|
-      @order_products_to_remove << p unless product_quote_items.collect(&:product_id).include?(p.id)
+    # automatically remove a end_product from order if quote_items do not include this end_product
+    order.end_products.reject(&:new_record?).each do |p|
+      @order_end_products_to_remove << p unless product_quote_items.collect(&:end_product_id).include?(p.id)
     end
   end
   
@@ -180,8 +180,8 @@ class Quote < ActiveRecord::Base
     end
   end
   
-  def remove_order_products
-    @order_products_to_remove.each(&:destroy)
+  def remove_order_end_products
+    @order_end_products_to_remove.each(&:destroy)
   end
   
   def total
@@ -323,7 +323,7 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_confirmed?
-    #was_uncomplete? and estimate_step.pending_quote.nil? and estimate_step.signed_quote.nil?
+    #was_uncomplete? and quote_step.pending_quote.nil? and quote_step.signed_quote.nil?
     !new_record? and was_uncomplete? and order.pending_quote.nil? and order.signed_quote.nil?
   end
   
@@ -344,9 +344,9 @@ class Quote < ActiveRecord::Base
   end
   
   private
-    def update_estimate_step_status
+    def update_quote_step_status
       if signed?
-        order.commercial_step.estimate_step.terminated!
+        order.commercial_step.quote_step.terminated!
       end
     end
     

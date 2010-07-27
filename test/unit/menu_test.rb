@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class MenuTest < ActiveSupport::TestCase
-  fixtures :menus
-
   def setup
     @feature = features(:normal_feature1)
     @menu_one = menus(:menu_one)

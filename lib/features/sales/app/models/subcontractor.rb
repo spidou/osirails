@@ -6,4 +6,27 @@ class Subcontractor < Supplier
   has_address :address
   
   SUBCONTRACTORS_PER_PAGE = 15
+  
+  named_scope :actives, :conditions => { :activated => true }
+  
+  validates_presence_of :activity_sector_reference_id
+  validates_presence_of :activity_sector_reference, :if => :activity_sector_reference_id
+  
+  validates_uniqueness_of :siret_number, :scope => :type, :allow_blank => true
+  
+  after_save :save_iban
+  
+  @@form_labels[:activity_sector_reference] = "Code NAF :"
+  
+  def iban_attributes=(iban_attributes)
+    if iban_attributes[:id].blank?
+      self.iban = build_iban(iban_attributes)
+    else
+      self.iban.attributes = iban_attributes
+    end
+  end
+  
+  def save_iban
+    iban.save if iban
+  end
 end

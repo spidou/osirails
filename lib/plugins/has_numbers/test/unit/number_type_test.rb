@@ -1,7 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../has_numbers_test'
 
 class NumberTypeTest < ActiveSupport::TestCase
-
   def setup
     @good_number_type = number_types(:mobile)
     
@@ -18,5 +17,4 @@ class NumberTypeTest < ActiveSupport::TestCase
     assert @number_type.errors.invalid?(:name), "name should NOT be valid because it's nil"
     assert !@good_number_type.errors.invalid?(:name), "name should be valid"
   end
-  
 end

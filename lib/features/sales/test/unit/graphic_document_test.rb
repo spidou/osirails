@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class GraphicDocumentTest < ActiveSupport::TestCase
@@ -23,7 +22,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     
     context ", when adding an image," do
       setup do
-        flunk "The graphic item version attributes should be assigned" unless @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        flunk "The graphic item version attributes should be assigned" unless @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg"))} )
         @version = @graphic_document.graphic_item_versions.last
       end
       
@@ -50,8 +49,8 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     
     context ", when adding an image and a source," do
       setup do
-        flunk "The graphic item version attributes should be assigned" unless @graphic_document.graphic_item_version_attributes=({ :image  => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")),
-                                                                                                                                   :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf")) })
+        flunk "The graphic item version attributes should be assigned" unless @graphic_document.graphic_item_version_attributes=({ :image  => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")),
+                                                                                                                                   :source => File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf")) })
         @version = @graphic_document.graphic_item_versions.last
       end
       
@@ -78,7 +77,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     
     context ", when adding only a source," do
       setup do
-        flunk "The graphic item version attributes should NOT be assigned" unless @graphic_document.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+        flunk "The graphic item version attributes should NOT be assigned" unless @graphic_document.graphic_item_version_attributes=( {:source => File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
         @version = @graphic_document.graphic_item_versions.last
       end
       
@@ -185,7 +184,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     
     context ", after having add a source without its image," do
       setup do
-        @graphic_document.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf"))} )
+        @graphic_document.graphic_item_version_attributes=( {:source => File.new(File.join(Test::Unit::TestCase.fixture_path, "subcontractor_request.pdf"))} )
         @graphic_document.valid?
       end
       
@@ -197,7 +196,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     context ", after having add a new image," do
       setup do
         @old_version = @graphic_document.current_version
-        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg"))} )
         flunk "@graphic_document should be saved > #{@graphic_document.errors.full_messages.join(', ')}" unless @graphic_document.save
         flunk "@graphic_document.current_version should not be @old_version" unless @graphic_document.current_version != @old_version
       end
@@ -230,7 +229,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     context ", after having add both new image and new source," do
       setup do
         @old_version = @graphic_document.current_version
-        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")), :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf")) } )
+        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")), :source => File.new(File.join(Test::Unit::TestCase.fixture_path, "subcontractor_request.pdf")) } )
         flunk "@graphic_document should be saved > #{@graphic_document.errors.full_messages.join(', ')}" unless @graphic_document.save     
         flunk "@graphic_document.current_version should not be @old_version" unless @graphic_document.current_version != @old_version
       end
@@ -263,7 +262,7 @@ class GraphicDocumentTest < ActiveSupport::TestCase
     context ", with a second version," do
       setup do
         @old_version = @graphic_document.current_version
-        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
+        @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")) } )
         flunk "@graphic_document should be saved > #{@graphic_document.errors.full_messages.join(', ')}" unless @graphic_document.save      
 
         flunk "@graphic_document.current_version should not be @old_version" unless @graphic_document.current_version != @old_version
@@ -290,9 +289,9 @@ class GraphicDocumentTest < ActiveSupport::TestCase
       
       context ", after having both updated current_version and add an image," do
         setup do
-          @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")) } )
+          @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")) } )
           flunk "@graphic_document should be saved  > #{@graphic_document.errors.full_messages.join(', ')}" unless @graphic_document.save
-          @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
+          @graphic_document.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")) } )
           @graphic_document.current_version = @graphic_document.graphic_item_versions.first.id
           flunk "@graphic_document should NOT be saved" if @graphic_document.save
         end

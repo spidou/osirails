@@ -7,7 +7,7 @@ class QuotesController < ApplicationController
   
   after_filter :add_error_in_step_if_quote_has_errors, :only => [ :create, :update ]
   
-  acts_as_step_controller :step_name => :estimate_step, :skip_edit_redirection => true
+  acts_as_step_controller :step_name => :quote_step, :skip_edit_redirection => true
   
   # GET /orders/:order_id/:step/quotes/:id
   # GET /orders/:order_id/:step/quotes/:id.xml
@@ -38,8 +38,8 @@ class QuotesController < ApplicationController
     if @quote.can_be_added?
       @quote.quote_contact = @order.order_contact
       
-      @order.products.each do |product|
-        @quote.build_quote_item(:product_id => product.id)
+      @order.end_products.each do |end_product|
+        @quote.build_quote_item(:end_product_id => end_product.id)
       end
     else
       error_access_page(412)
@@ -48,7 +48,6 @@ class QuotesController < ApplicationController
   
   # POST /orders/:order_id/:step/quotes
   def create
-#    raise 'r'
     @quote = @order.quotes.build # Quote#quote_item_attributes= needs order_id, so we build the quote from the order to have order_id before all other attributes
     @quote.attributes = params[:quote]
     
@@ -192,7 +191,7 @@ class QuotesController < ApplicationController
       params.delete(:contact)
     end
     
-    # if quote has errors, the estimate step has also an error to prevent updating of the step status
+    # if quote has errors, the quote step has also an error to prevent updating of the step status
     def add_error_in_step_if_quote_has_errors #TODO this method seems to be unreached and untested!
       unless @quote.errors.empty?
         @step.errors.add_to_base("Le devis n'est pas valide")

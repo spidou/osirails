@@ -111,20 +111,6 @@ module HasContacts
       end
     end
     
-    def validates_contact_presence options = {}
-      validates_presence_of :contact_ids
-      
-      with_options :if => :contact_ids do |o|
-        o.validates_presence_of :contacts, options
-      end
-    end
-    
-    def validates_contact_length options = {}
-      with_options :if => :contact_ids do |o|
-        o.validates_length_of :contact_ids, options
-      end
-    end
-    
   end
   
 end

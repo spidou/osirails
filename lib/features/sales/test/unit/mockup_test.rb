@@ -1,12 +1,11 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
 
 class MockupTest < ActiveSupport::TestCase
-  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :product
+  should_belong_to :order, :graphic_unit_measure, :creator, :mockup_type, :end_product
   
   should_have_many :graphic_item_versions
   
-  # FIXME there is no should_validate_persistence_of :graphic_unit_measure, :reference, :mockup_type, :product, :order
+  # FIXME there is no should_validate_persistence_of :graphic_unit_measure, :reference, :mockup_type, :end_product, :order
   # For the moment, persistent attributes are tested manually, before an eventually future validates_persistence_of shoulda macro
   
   context "A new mockup" do
@@ -19,30 +18,30 @@ class MockupTest < ActiveSupport::TestCase
     subject{ @mockup }
     
     should_validate_presence_of :name, :description
-    should_validate_presence_of :order, :mockup_type, :product, :graphic_unit_measure, :creator, :with_foreign_key => :default
+    should_validate_presence_of :order, :mockup_type, :end_product, :graphic_unit_measure, :creator, :with_foreign_key => :default
     
-    should "NOT belong to a product include in another order products list" do      
+    should "NOT belong to a end_product include in another order end_products list" do      
       @in_base_mockup = create_default_mockup
       @mockup.order = create_default_order  
       
-      @mockup.product = @in_base_mockup.order.products.first
+      @mockup.end_product = @in_base_mockup.order.end_products.first
       
       @mockup.valid?
       
-      assert @mockup.errors.invalid?(:product)
+      assert @mockup.errors.invalid?(:end_product)
     end    
 
-    should "belong to a product include in its order products list" do      
+    should "belong to a end_product include in its order end_products list" do      
       @mockup.order = create_default_order     
-      @mockup.product = create_valid_product_for(@mockup.order)
+      @mockup.end_product = create_default_end_product(@mockup.order)
       
       @mockup.valid?
-      assert !@mockup.errors.invalid?(:product)
+      assert !@mockup.errors.invalid?(:end_product)
     end
     
     context ", when adding an image," do
       setup do
-        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg"))} )
         @version = @mockup.graphic_item_versions.last
       end
       
@@ -69,8 +68,8 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding an image and a source," do
       setup do
-        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=({ :image  => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")),
-                                                                                                                                     :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+        flunk "The graphic item version attributes should be assigned" unless @mockup.graphic_item_version_attributes=({ :image  => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")),
+                                                                                                                                     :source => File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))
                                                                                                                                    })
         @version = @mockup.graphic_item_versions.last
       end
@@ -98,7 +97,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", when adding only a source," do
       setup do
-        flunk "The graphic item version attributes should NOT be assigned" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+        flunk "The graphic item version attributes should NOT be assigned" unless @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
         @version = @mockup.graphic_item_versions.last
       end
       
@@ -158,7 +157,7 @@ class MockupTest < ActiveSupport::TestCase
       assert @mockup.can_be_cancelled?
     end
     
-    for element in [ :reference, :graphic_unit_measure_id, :mockup_type_id, :product_id, :order_id ]
+    for element in [ :reference, :graphic_unit_measure_id, :mockup_type_id, :end_product_id, :order_id ]
       should "NOT be able to update #{element}" do
         @mockup.send("#{element}=",nil)
         
@@ -205,7 +204,7 @@ class MockupTest < ActiveSupport::TestCase
     
     context ", after having add a source without its image," do
       setup do
-        @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf"))} )
+        @mockup.graphic_item_version_attributes=( {:source => File.new(File.join(Test::Unit::TestCase.fixture_path, "subcontractor_request.pdf"))} )
         @mockup.valid?
       end
       
@@ -217,7 +216,7 @@ class MockupTest < ActiveSupport::TestCase
     context ", after having add a new image," do
       setup do
         @old_version = @mockup.current_version
-        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg"))} )
+        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg"))} )
         flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
         flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
       end
@@ -250,7 +249,7 @@ class MockupTest < ActiveSupport::TestCase
     context ", after having add both new image and new source," do
       setup do
         @old_version = @mockup.current_version
-        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")), :source => File.new(File.join(RAILS_ROOT, "test", "fixtures", "subcontractor_request.pdf")) } )
+        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")), :source => File.new(File.join(Test::Unit::TestCase.fixture_path, "subcontractor_request.pdf")) } )
         flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save     
         flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
       end
@@ -283,7 +282,7 @@ class MockupTest < ActiveSupport::TestCase
     context ", with a second version," do
       setup do
         @old_version = @mockup.current_version
-        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
+        @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")) } )
         flunk "@mockup should be saved > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save      
 
         flunk "@mockup.current_version should not be @old_version" unless @mockup.current_version != @old_version
@@ -310,9 +309,9 @@ class MockupTest < ActiveSupport::TestCase
       
       context ", after having both updated current_version and add an image," do
         setup do
-          @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")) } )
+          @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")) } )
           flunk "@mockup should be saved  > #{@mockup.errors.full_messages.join(', ')}" unless @mockup.save
-          @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(RAILS_ROOT, "test", "fixtures", "another_graphic_item.jpg")) } )
+          @mockup.graphic_item_version_attributes=( {:image => File.new(File.join(Test::Unit::TestCase.fixture_path, "another_graphic_item.jpg")) } )
           @mockup.current_version = @mockup.graphic_item_versions.first.id
           flunk "@mockup should NOT be saved" if @mockup.save
         end

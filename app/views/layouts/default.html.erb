@@ -50,6 +50,12 @@
         <%= display_menu %>
       </div>
       <div id="page">
+        <div id="ajax_indicator" style="display:none">
+          <div>
+            <span>Chargement en cours, veuillez patienter...</span>
+          </div>
+        </div>
+        
         <div id="content_page" class="<%= content_page_class %>" >
           <%= display_flash %>
           
@@ -62,10 +68,6 @@
               <%= link_to_function( image_tag("close_icon.png", :title => "Fermer", :alt => "Fermer"), "close_ajax_holder()") %>
             </div>
           </div> <!-- AJAX_HOLDER : END -->
-          
-          <div id="ajax_indicator" style="display:none">
-            <span>Chargement en cours, veuillez patienter...</span>
-          </div>
         
           <%= yield %>
           

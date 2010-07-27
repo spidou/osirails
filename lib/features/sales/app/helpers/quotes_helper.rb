@@ -42,7 +42,7 @@ module QuotesHelper
     link_to( image_tag( "add_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             new_order_commercial_step_estimate_step_quote_path(order))
+             new_order_commercial_step_quote_step_quote_path(order))
   end
   
   def display_quote_show_button(order, quote, message = nil)
@@ -52,7 +52,7 @@ module QuotesHelper
     link_to( image_tag( "view_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_commercial_step_estimate_step_quote_path(order, quote) )
+             order_commercial_step_quote_step_quote_path(order, quote) )
   end
   
   def display_quote_preview_button(order, quote, message = nil)
@@ -62,7 +62,7 @@ module QuotesHelper
     link_to( image_tag( "preview_16x16.gif",
                         :alt => text,
                         :title => text ) + message,
-             order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf) )
+             order_commercial_step_quote_step_quote_path(order, quote, :format => :pdf) )
   end
   
   def display_quote_show_pdf_button(order, quote, message = nil)
@@ -72,7 +72,7 @@ module QuotesHelper
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf) )
+             order_commercial_step_quote_step_quote_path(order, quote, :format => :pdf) )
   end
   
   def display_quote_edit_button(order, quote, message = nil)
@@ -82,7 +82,7 @@ module QuotesHelper
     link_to( image_tag( "edit_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             edit_order_commercial_step_estimate_step_quote_path(order, quote) )
+             edit_order_commercial_step_quote_step_quote_path(order, quote) )
   end
   
   def display_quote_delete_button(order, quote, message = nil)
@@ -92,7 +92,7 @@ module QuotesHelper
     link_to( image_tag( "delete_16x16.png",
                         :alt => text,
                         :title => text ) + message,
-             order_commercial_step_estimate_step_quote_path(order, quote), :method => :delete, :confirm => "Êtes vous sûr?")
+             order_commercial_step_quote_step_quote_path(order, quote), :method => :delete, :confirm => "Êtes vous sûr?")
   end
   
   def display_quote_confirm_button(order, quote, message = nil)
@@ -102,7 +102,7 @@ module QuotesHelper
     link_to( image_tag( "confirm_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             order_commercial_step_estimate_step_quote_confirm_path(order, quote),
+             order_commercial_step_quote_step_quote_confirm_path(order, quote),
              :confirm => "Êtes-vous sûr ?\nCeci aura pour effet de générer un numéro unique pour le devis et vous ne pourrez plus le modifier." )
   end
   
@@ -113,7 +113,7 @@ module QuotesHelper
     link_to( image_tag( "cancel_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             order_commercial_step_estimate_step_quote_cancel_path(order, quote),
+             order_commercial_step_quote_step_quote_cancel_path(order, quote),
              :confirm => "Êtes-vous sûr ?" )
   end
   
@@ -124,7 +124,7 @@ module QuotesHelper
     link_to( image_tag( "send_to_customer_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             order_commercial_step_estimate_step_quote_send_form_path(order, quote) )
+             order_commercial_step_quote_step_quote_send_form_path(order, quote) )
   end
   
   def display_quote_sign_button(order, quote, message = nil)
@@ -134,7 +134,7 @@ module QuotesHelper
     link_to( image_tag( "sign_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             order_commercial_step_estimate_step_quote_sign_form_path(order, quote) )
+             order_commercial_step_quote_step_quote_sign_form_path(order, quote) )
   end
   
   def display_quote_order_form_button(order, quote, message = nil)
@@ -144,7 +144,7 @@ module QuotesHelper
     link_to( image_tag( "mime_type_extensions/pdf_16x16.png",
                         :alt    => text,
                         :title  => text ) + message,
-             order_commercial_step_estimate_step_quote_order_form_path(order, quote) )
+             order_commercial_step_quote_step_quote_order_form_path(order, quote) )
   end
   
   def display_add_free_quote_item_for(quote)
@@ -156,6 +156,7 @@ module QuotesHelper
       last_item.visual_effect :highlight
       
       page << "update_up_down_links($('quote_items_body'))"
+      page << "initialize_autoresize_text_areas()"
     end
   end
   
