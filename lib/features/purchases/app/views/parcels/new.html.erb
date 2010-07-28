@@ -1,7 +1,7 @@
-<% content_for :header do -%>
+<% content_for :header do %>
   <%= javascript_include_tag 'purchases/purchases' %>
   <%= stylesheet_link_tag_with_theme_support 'purchases/purchases' %>
-<% end -%>
+<% end %>
 
 <%= generate_parcel_contextual_menu_partial(@purchase_order, @parcel) %>
 

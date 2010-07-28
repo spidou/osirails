@@ -29,24 +29,37 @@ class Test::Unit::TestCase
     purchase_request
   end
   
-  def create_first_purchase_order
-    purchase_order = purchase_orders(:first_purchase_order)
-    if purchase_order.purchase_order_supplies.empty?
-      purchase_order.purchase_order_supplies.build(purchase_order_supplies(:first_purchase_order_supply).attributes)
-      purchase_order.purchase_order_supplies.build(purchase_order_supplies(:second_purchase_order_supply).attributes)
-    end
-    if !purchase_order.purchase_order_supplies.first
-      if !SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supplies.first.supply_id, purchase_order.supplier_id)
-        supplier_supply.build(supplier_supplies(:first_supplier_supply).attributes)
-      end
-    end
-    if !purchase_order.purchase_order_supplies[1]
-      if !SupplierSupply.find_by_supply_id_and_supplier_id(purchase_order_supplies[1].supply_id, purchase_order.supplier_id)
-        supplier_supply.build(supplier_supplies(:second_supplier_supply).attributes)
-      end
-    end
-    purchase_order.save
-    return purchase_order
+  def create_confirmed_purchase_order(user_id, supplier_id)
+    purchase_order = create_valid_draft_purchase_order(user_id, supplier_id)
+    purchase_document_build(purchase_order, :purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
+    flunk "Confirmation failed" unless purchase_order.confirm!
+    purchase_order
   end
   
+  def build_purchase_order_supplies(purchase_order, attributes = {})
+    purchase_order.purchase_order_supplies.build({:supply_id => attributes[:supply_id],
+                                                  :cancelled_by => attributes[:cancelled_by],
+                                                  :quantity => attributes[:quantity],
+                                                  :taxes => attributes[:taxes],
+                                                  :fob_unit_price => attributes[:fob_unit_price],
+                                                  :supplier_reference => attributes[:supplier_reference],
+                                                  :supplier_designation => attributes[:supplier_designation],
+                                                  :cancelled_comment => attributes[:cancelled_comment],
+                                                  :cancelled_at => attributes[:cancelled_at],
+                                                  :created_at => attributes[:created_at],
+                                                  :updated_at => attributes[:updated_at]
+                                                  })
+  end
+    
+  def destroy_all_purchase_order_supplies(purchase_order)
+    for purchase_order_supply in purchase_order.purchase_order_supplies
+      purchase_order_supply.destroy
+    end
+    purchase_order.purchase_order_supplies.reload
+    flunk "Destruction failed" unless purchase_order.purchase_order_supplies.empty?
+  end
+  
+  def purchase_document_build(purchase_order, attributes)
+    purchase_order.build_quotation_document(attributes)
+  end
 end

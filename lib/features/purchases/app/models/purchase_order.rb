@@ -46,17 +46,16 @@ class PurchaseOrder < ActiveRecord::Base
   
   validates_length_of :purchase_order_supplies, :minimum => 1, :message => "Veuillez selectionner au moins une matiere premiere ou un consommable"
   
-  validate :validates_length_of_purchase_order_supplies_if_should_destroy , :unless => :new_record?
+  validate :validates_length_of_purchase_order_supplies_if_should_destroy, :unless => :new_record?
   
   validates_inclusion_of :status, :in => [ STATUS_DRAFT ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_DRAFT, STATUS_CONFIRMED ], :if => :was_draft?
-  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_confirmed?
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED, STATUS_COMPLETED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_CONFIRMED, STATUS_PROCESSING_BY_SUPPLIER, STATUS_CANCELLED ], :if => :was_confirmed?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_COMPLETED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
   validates_inclusion_of :status, :in => [ STATUS_COMPLETED ], :if => :was_completed?
   validates_inclusion_of :status, :in => [ STATUS_CANCELLED ], :if => :was_cancelled?
   
   validates_associated :purchase_order_supplies, :supplier_supplies
-  
   validates_associated :invoice_document, :if => :completed?
   validates_associated :quotation_document, :if => :confirmed?
   
@@ -72,8 +71,8 @@ class PurchaseOrder < ActiveRecord::Base
     
   after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
   after_save  :destroy_request_order_supplies_deselected
-  after_save  :save_quotation_document, :if => :confirmed?
-  after_save  :save_invoice_document, :if => :completed?
+#  after_save  :save_quotation_document, :if => :confirmed?
+#  after_save  :save_invoice_document, :if => :completed?
   
   def not_cancelled_purchase_order_supplies
     tab_not_cancelled_purchase_order_supplies = []
@@ -219,6 +218,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def was_cancelled?
+    return false if new_record?
     counter = 0
     for purchase_order_supply in purchase_order_supplies
       counter += 1 if purchase_order_supply.was_cancelled?
@@ -228,7 +228,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_be_confirmed?
-    was_draft? and !was_cancelled?
+    was_draft? and !was_cancelled? and !was_confirmed?
   end
   
   def can_be_processed_by_supplier?
@@ -358,17 +358,18 @@ class PurchaseOrder < ActiveRecord::Base
     self.quotation_document = PurchaseDocument.new(quotation_document_attributes.first)
   end
   
-  def save_quotation_document
-    quotation_document.save
-  end
+#  def save_quotation_document
+##    quotation_document.save
+#    raise quotation_document.inspect
+#  end
   
   def invoice_document_attributes=(invoice_document_attributes)
     self.invoice_document = PurchaseDocument.new(invoice_document_attributes.first)
   end
   
-  def save_invoice_document
-    invoice_document.save
-  end
+#  def save_invoice_document
+#    invoice_document.save
+#  end
   
   def put_purchase_order_status_to_cancelled
     self.purchase_order_supplies.reload

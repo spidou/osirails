@@ -1106,23 +1106,6 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.datetime "updated_at"
   end
 
-  create_table "quote_items", :force => true do |t|
-    t.integer  "quote_id",       :limit => 11
-    t.integer  "end_product_id", :limit => 11
-    t.string   "name"
-    t.text     "description"
-    t.string   "dimensions"
-    t.decimal  "unit_price",                   :precision => 65, :scale => 20
-    t.decimal  "prizegiving",                  :precision => 65, :scale => 20
-    t.float    "quantity"
-    t.float    "vat"
-    t.integer  "position",       :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
-
   create_table "purchase_documents", :force => true do |t|
     t.string   "purchase_document_file_name"
     t.string   "purchase_document_content_type"
@@ -1188,20 +1171,20 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
   end
 
   create_table "quote_items", :force => true do |t|
-    t.integer  "quote_id",    :limit => 11
-    t.integer  "product_id",  :limit => 11
+    t.integer  "quote_id",       :limit => 11
+    t.integer  "end_product_id", :limit => 11
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.decimal  "unit_price",                :precision => 65, :scale => 20
-    t.decimal  "prizegiving",               :precision => 65, :scale => 20
+    t.decimal  "unit_price",                   :precision => 65, :scale => 20
+    t.decimal  "prizegiving",                  :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
-    t.integer  "position",    :limit => 11
+    t.integer  "position",       :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-  
+
   create_table "quote_steps", :force => true do |t|
     t.integer  "commercial_step_id", :limit => 11
     t.string   "status"
