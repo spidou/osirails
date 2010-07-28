@@ -1,7 +1,7 @@
 <div class="presentation_medium">
-<% if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any? %>
-  <% form_for([purchase_order, parcel], :html => {:multipart => true}) do |f| %>
-    <%= f.error_messages %>
+  <% if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any? %>
+    <% form_for([purchase_order, parcel], :html => {:multipart => true}) do |f| %>
+      <%= f.error_messages %>
       <h2>Informations</h2>
       <div>
             <% options = parcel_all_actions_without_cancel(parcel) %>
@@ -9,30 +9,30 @@
             <%= f.select(:status, options)%>
       </div>
       <div id='parcel_status_form'>
-        <% if parcel.processing_by_supplier? || !parcel.status%>
-          <%= render :partial => 'parcels/process_by_supplier_forms', :object => parcel%>
+        <% if parcel.processing_by_supplier? || !parcel.status %>
+          <%= render :partial => 'parcels/process_by_supplier_forms', :object => parcel %>
         <% elsif parcel.shipped? %>
-          <%= render :partial => 'parcels/ship_forms', :object => parcel%>
+          <%= render :partial => 'parcels/ship_forms', :object => parcel %>
         <% elsif parcel.received_by_forwarder? %>
-          <%= render :partial => 'parcels/receive_by_forwarder_forms', :object => parcel%>
+          <%= render :partial => 'parcels/receive_by_forwarder_forms', :object => parcel %>
         <% elsif parcel.received? %>
-          <%= render :partial => 'parcels/receive_forms', :object => parcel%>
+          <%= render :partial => 'parcels/receive_forms', :object => parcel %>
         <% end %>
       </div>
       <h2>Liste des fournitures</h2>
       <div>
-         <%= render :partial => 'parcel_items/begin_table'%>
+         <%= render :partial => 'parcel_items/begin_table' %>
          <%= render :partial => 'parcel_items/parcel_item_in_one_line', :collection => parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies), :locals => { :purchase_order => purchase_order}  %>
-         <%= render :partial => 'parcel_items/end_table'%>
+         <%= render :partial => 'parcel_items/end_table' %>
       </div>
     </div>
     <%= f.form_buttons %>
     <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => get_parcel_status_partial_url(), :with => :status %>
-  <% end %><!--end form -->
-  <br>
-<% else %>
-    <p>Tous vos fournitures sont d&eacute;j&agrave; associ&eacute;es &agrave; des colis</p>
-<% end %>
-  <%= link_to "Retour vers l'ordre d'achat", purchase_order_path(purchase_order)%>
-  <br>
+    <% end %><!--end form -->
+    <br />
+  <% else %>
+      <p>Tous vos fournitures sont d&eacute;j&agrave; associ&eacute;es &agrave; des colis</p>
+  <% end %>
+  <%= link_to "Retour vers l'ordre d'achat", purchase_order_path(purchase_order) %>
+  <br />
 </div>
