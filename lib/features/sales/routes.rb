@@ -290,8 +290,11 @@ ActionController::Routing::Routes.add_routes do |map|
                                                     :method      => :get
   
   map.resources :product_reference_categories do |product_reference_category|
-    product_reference_category.resources :product_reference_categories
-    product_reference_category.resources :product_references
+    product_reference_category.resources :product_reference_sub_categories
+  end
+  
+  map.resources :product_reference_sub_categories do |product_reference_sub_category|
+    product_reference_sub_category.resources :product_references
   end
   
   map.resources :product_references do |product_reference|
@@ -302,6 +305,10 @@ ActionController::Routing::Routes.add_routes do |map|
   
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
   map.goods 'goods', :controller => 'products_catalog' #default page for products
+  
+  # AJAX REQUESTS
+  map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller => 'product_reference_categories', :action => 'update_product_reference_sub_categories'
+  ##
   
   map.resources :subcontractors
   

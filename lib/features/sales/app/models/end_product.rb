@@ -36,7 +36,8 @@ class EndProduct < Product
   
   END_PRODUCTS_PER_PAGE = 15
   
-  @@form_labels[:quantity] = "Quantité :"
+  @@form_labels[:product_reference] = "Produit référence :"
+  @@form_labels[:quantity]          = "Quantité :"
   
   def should_destroy?
     should_destroy.to_i == 1

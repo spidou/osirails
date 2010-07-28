@@ -16,27 +16,13 @@ factorised_customer:
   factor: first_factor
   activated: true
 
-#first_supplier:
-#  type: Supplier
-#  name: First Supplier
-#  siret_number: 12345678912345
-#  activity_sector_reference: ref2
-#  legal_form: llc
-#  activated: true
-#second_supplier:
-#  type: Supplier
-#  name: Second Supplier
-#  siret_number: 23456789123456
-#  activity_sector_reference: ref2
-#  legal_form: llc
-#  activated: true
-#third_supplier:
-#  type: Supplier
-#  name: Third Supplier
-#  siret_number: 34567891234567
-#  activity_sector_reference: ref2
-#  legal_form: llc
-#  activated: true
+first_supplier:
+  type: Supplier
+  name: First Supplier
+  siret_number: 12345678912345
+  activity_sector_reference: ref2
+  legal_form: llc
+  activated: true
 
 first_subcontractor:
   type: Subcontractor

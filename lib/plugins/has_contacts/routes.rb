@@ -5,8 +5,8 @@ ActionController::Routing::Routes.add_routes do |map|
                              :conditions  => { :method => :get }
   end
   
-  Contact.contacts_owners_models.each do |owner|
-    map.resources owner.name.tableize.to_sym do |owner|
+  Contact.contacts_owners_models.each do |owner_model|
+    map.resources owner_model.tableize.to_sym do |owner|
       owner.resources :contacts
     end
   end

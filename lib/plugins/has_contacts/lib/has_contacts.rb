@@ -75,8 +75,8 @@ module HasContacts
     end
     
     def has_contacts
-      raise "[has_contacts] Mutliple calls of has_contacts are not allowed" if Contact.contacts_owners_models.include?(self)
-      Contact.contacts_owners_models << self ## used to define the routes into routes.rb
+      raise "[has_contacts] Mutliple calls of has_contacts are not allowed" if Contact.contacts_owners_models.include?(self.name)
+      Contact.contacts_owners_models << self.name ## used to define the routes into routes.rb
       
       class_eval do
         

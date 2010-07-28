@@ -1,34 +1,40 @@
 class ProductReference < Product
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
-  has_reference   :symbols => [:product_reference_category], :prefix => :sales
+  has_reference   :symbols => [:product_reference_sub_category], :prefix => :sales
   
-  belongs_to :product_reference_category, :counter_cache => true
+  belongs_to :product_reference_sub_category, :counter_cache => true
   
   has_many :end_products
   
   named_scope :actives, :conditions => ["cancelled_at IS NULL"]
   
-  validates_presence_of :product_reference_category_id
-  validates_presence_of :product_reference_category, :if => :product_reference_category_id
+  validates_presence_of :product_reference_sub_category_id
+  validates_presence_of :product_reference_sub_category, :if => :product_reference_sub_category_id
   
   validates_presence_of :reference
   
-  validates_persistence_of :product_reference_category_id
-  
-  validate :validates_product_reference_category_has_parent_category
+  validates_persistence_of :product_reference_sub_category_id
   
   before_validation_on_create :update_reference
   
-  has_search_index  :only_attributes      => [ :reference, :name, :description ],
-                    :only_relationships   => [ :product_reference_category ],
-                    :main_model           => true
+  has_search_index  :only_attributes    => [ :reference, :name, :description ],
+                    #:only_relationships => [ :product_reference_sub_category ],
+                    :main_model         => true
   
   PRODUCT_REFERENCES_PER_PAGE = 15
   
-  @@form_labels[:product_reference_category] = "Sous-famille :"
+  attr_accessor  :product_reference_category_id # correspond to the parent of the product_reference_sub_category associated to the product_reference
+  attr_protected :product_reference_category_id # permit to skip the given value from the form
   
-  def validates_product_reference_category_has_parent_category
-    errors.add(:product_reference_category_id, ActiveRecord::Errors.default_error_messages[:inclusion]) if product_reference_category and product_reference_category.ancestors.empty?
+  @@form_labels[:product_reference_category]      = "Famille :"
+  @@form_labels[:product_reference_sub_category]  = "Sous-famille :"
+  
+  def product_reference_category
+    @product_reference_category ||= product_reference_sub_category.product_reference_category if product_reference_sub_category
+  end
+  
+  def product_reference_category_id
+    @product_reference_category_id ||= product_reference_category.id if product_reference_category
   end
   
   #TODO test this method
@@ -38,7 +44,7 @@ class ProductReference < Product
   
   #TODO test this method
   def ancestors
-    @ancestors ||= product_reference_category ? product_reference_category.ancestors + [ product_reference_category ] : []
+    @ancestors ||= product_reference_sub_category ? [ product_reference_sub_category.product_reference_category, product_reference_sub_category ] : []
   end
   
   def designation

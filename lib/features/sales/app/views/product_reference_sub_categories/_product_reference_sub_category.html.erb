@@ -1,0 +1,20 @@
+<div class="presentation_medium">
+  <% form_for product_reference_sub_category do |form|%>
+    <%= form.error_messages %>
+    
+    <p>
+      <%= form.label :product_reference_category_id %>
+      <%= form.form_or_view(form.collection_select(:product_reference_category_id, ProductReferenceCategory.roots.actives, :id, :reference_and_name, { :include_blank => "Veuillez choisir une famille" }, :disabled => !product_reference_sub_category.can_update_product_reference_category_id?), :product_reference_category, :name) %>
+      
+      <% unless product_reference_sub_category.new_record? %>
+        <%= form.label :reference %>
+        <%= strong product_reference_sub_category.reference %>
+      <% end %>
+    </p>
+    <p>
+      <%= form.label :name %>
+      <%= form.form_or_view(form.text_field(:name), :name) %>
+    </p>
+    <%= form.form_buttons %>
+  <% end %>
+</div>

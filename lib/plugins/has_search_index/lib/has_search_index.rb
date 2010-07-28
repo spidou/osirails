@@ -995,3 +995,6 @@ end
 if Object.const_defined?("ActiveRecord")
   ActiveRecord::Base.send(:include, HasSearchIndex)
 end
+
+require 'has_search_index/view_helpers'
+require 'has_search_index_methods_helper'

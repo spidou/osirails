@@ -1,4 +1,12 @@
 ENV["RAILS_ENV"] = "test"
+
+def detect_feature_from_caller(caller)
+  dirs = caller.first.split("/")
+  feature_name = dirs.include?("features") ? dirs[dirs.index("features")+1] : ''
+end
+
+TESTING_FEATURE = detect_feature_from_caller(caller) unless defined? TESTING_FEATURE
+
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'shoulda'

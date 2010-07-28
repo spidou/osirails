@@ -9,17 +9,17 @@ famille1 = ProductReferenceCategory.create! :reference => "FA1", :name => "Famil
 famille2 = ProductReferenceCategory.create! :reference => "FA2", :name => "Famille 2"
 famille3 = ProductReferenceCategory.create! :reference => "FA3", :name => "Famille 3"
 
-sous_famille11 = ProductReferenceCategory.create! :name => "Sous famille 1.1", :product_reference_category_id => famille1.id
-sous_famille12 = ProductReferenceCategory.create! :name => "Sous famille 1.2", :product_reference_category_id => famille1.id
-sous_famille13 = ProductReferenceCategory.create! :name => "Sous famille 1.3", :product_reference_category_id => famille1.id
+# default product reference sub categories
+sous_famille11 = ProductReferenceSubCategory.create! :name => "Sous famille 1.1", :product_reference_category_id => famille1.id
+sous_famille12 = ProductReferenceSubCategory.create! :name => "Sous famille 1.2", :product_reference_category_id => famille1.id
+sous_famille13 = ProductReferenceSubCategory.create! :name => "Sous famille 1.3", :product_reference_category_id => famille1.id
 
-ProductReferenceCategory.create! :name => "Sous famille 2.4", :product_reference_category_id => famille2.id
-ProductReferenceCategory.create! :name => "Sous famille 2.1", :product_reference_category_id => famille2.id
-ProductReferenceCategory.create! :name => "Sous famille 2.2", :product_reference_category_id => famille2.id
-ProductReferenceCategory.create! :name => "Sous famille 2.3", :product_reference_category_id => famille2.id
-ProductReferenceCategory.create! :name => "Sous famille 3.1", :product_reference_category_id => famille3.id
-ProductReferenceCategory.create! :name => "Sous famille 3.2", :product_reference_category_id => famille3.id
-ProductReferenceCategory.create! :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
+ProductReferenceSubCategory.create! :name => "Sous famille 2.1", :product_reference_category_id => famille2.id
+ProductReferenceSubCategory.create! :name => "Sous famille 2.2", :product_reference_category_id => famille2.id
+ProductReferenceSubCategory.create! :name => "Sous famille 2.3", :product_reference_category_id => famille2.id
+ProductReferenceSubCategory.create! :name => "Sous famille 3.1", :product_reference_category_id => famille3.id
+ProductReferenceSubCategory.create! :name => "Sous famille 3.2", :product_reference_category_id => famille3.id
+ProductReferenceSubCategory.create! :name => "Sous famille 3.3", :product_reference_category_id => famille3.id
 
 ## default product references
 #reference111 = ProductReference.create! :name => "Reference 1.1.1", :description => "Description de la référence 1.1.1", :product_reference_category_id => sous_famille11.id, :production_cost_manpower => 10, :production_time => 2, :delivery_cost_manpower => 20, :delivery_time => 3,   :reference => "XKTO89", :vat => Vat.all.rand.rate

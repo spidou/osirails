@@ -149,12 +149,15 @@ module ActionView
                                 :indicator            => "auto_complete_indicator_#{identifier}",
                                 :update_element       => "function(li){
                                                             this.element = $('#{tag_options[:id]}')
-                                                            this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_value) { this.element.value = target_value.innerHTML };
                                                             if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
                                                           }",
                                 :after_update_element => "function(input,li){
-                                                            $('#{update_id}').value = li.down('.#{object}_#{method}_id').innerHTML;
-                                                            input.setAttribute('restoreValue', li.down('.#{object}_#{method}_value').innerHTML);
+                                                            target_id = li.down('.#{object}_#{method}_id')
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_id) { $('#{update_id}').value = target_id.innerHTML }
+                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML) }
                                                           }"
                               }.merge(completion_options)
         

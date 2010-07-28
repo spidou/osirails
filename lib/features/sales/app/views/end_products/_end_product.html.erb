@@ -1,0 +1,44 @@
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
+<% end %>
+
+<div class="presentation_medium">
+  <% form_for end_product do |form| %>
+    <%= form.error_messages %>
+    
+    <fieldset class="presentation_in_columns">
+      <legend>Référencement</legend>
+      <div>
+        <p>
+          <%= form.label :product_reference_id %>
+          <%= strong end_product.product_reference.designation %>
+        </p>
+        
+        <p>
+          <%= form.label :name %>
+          <%= form.form_or_view(form.text_field(:name), :name) %>
+        </p>
+      </div>
+      <div>
+        <p>
+          <%= form.label :reference %>
+          <%= strong end_product.reference %>
+        </p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Autres caractéristiques</legend>
+      <p>
+        <%= form.label :description %>
+        <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 60), :description) %>
+      </p>
+      <p>
+        <%= form.label :vat %>
+        <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name, :include_blank => "Veuillez choisir un taux de TVA"), :vat, :name) %>
+      </p>
+    </fieldset>
+    
+    <%= form.form_buttons %>
+  <% end %>
+</div>

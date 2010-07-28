@@ -188,12 +188,8 @@ class ApplicationController < ActionController::Base
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.
     # that is necessary only on development environment, because the classes cache is cleaned every time in this environment.
     def load_features_overrides
-      unless !defined?($activated_features_path)
-        ($activated_features_path).each do |feature_path|
-          Dir["#{feature_path}/lib/overrides/*.rb"].each{ |file| load file }
-        end
-      else
-        raise "global variable $activated_features_path is not instanciated"
+      FeatureManager.loaded_feature_paths.each do |feature_path|
+        Dir["#{feature_path}/lib/overrides/*.rb"].each{ |file| load file }
       end
     end
     
