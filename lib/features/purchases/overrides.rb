@@ -39,8 +39,7 @@ class Supplier
     list_of_merged_purchase_request_supply = []
     kept_purchase_request_supplies.each { |key, value|
       quantities_sum = value.collect{ |purchase_request_supply| purchase_request_supply[:expected_quantity] }.sum
-      list_of_merged_purchase_request_supply << PurchaseRequestSupply.new(:purchase_request_id => nil, :supply_id => key, :expected_quantity => quantities_sum, :expected_delivery_date => value.first.expected_delivery_date )
-    }
+      list_of_merged_purchase_request_supply << PurchaseRequestSupply.new(:purchase_request_id => nil, :supply_id => key, :expected_quantity => quantities_sum, :expected_delivery_date => value.first.expected_delivery_date )}
     list_of_merged_purchase_request_supply
-  end
+  end 
 end

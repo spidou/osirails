@@ -4,7 +4,7 @@ class Parcel < ActiveRecord::Base
   has_reference :prefix => :purchases  
     
   has_many :parcel_items
-  has_many :purchase_order_supplies, :through => "parcel_items"
+  has_many :purchase_order_supplies, :through => :parcel_items
   
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
   

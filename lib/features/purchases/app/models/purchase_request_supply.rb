@@ -39,14 +39,14 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
   
   def treated?
-    self.confirmed_purchase_order_supply
+    self.confirmed_purchase_order_supply ? true : false
   end
   
   def self.get_all_pending_purchase_request_supplies
     all_purchase_request_supplies = PurchaseRequestSupply.all
     purchase_request_supplies = []
     for purchase_request_supply in all_purchase_request_supplies
-      if !purchase_request_supply.cancelled? and purchase_request_supply.treated? == nil 
+      if !purchase_request_supply.cancelled? and !purchase_request_supply.treated? 
         purchase_request_supplies.push purchase_request_supply
       end
     end
@@ -60,6 +60,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
       suppliers_array += purchase_request_supply.supply.suppliers
     end
     if !suppliers_array.empty?
+      debugger
       suppliers_array = suppliers_array.uniq.sort_by{ |supplier| supplier.merge_purchase_request_supplies.count }
       suppliers_array = suppliers_array.reverse{ |supplier| supplier.merge_purchase_request_supplies.count }
     end

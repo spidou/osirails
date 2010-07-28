@@ -8,6 +8,6 @@ class PurchaseDocument < ActiveRecord::Base
                     :url    => "/purchases/:id/documents/:id.:extension"
 
   validates_attachment_presence :purchase_document
-  validates_attachment_size     :purchase_document, :less_than => 5242880 
+  validates_attachment_size     :purchase_document, :less_than => 5.megabytes 
   
 end

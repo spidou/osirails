@@ -40,7 +40,7 @@ class PurchaseRequest < ActiveRecord::Base
   end
     
   def can_be_cancelled?
-    cancelled? ? false : true
+    !cancelled?
   end
 
   def cancelled?
@@ -49,7 +49,7 @@ class PurchaseRequest < ActiveRecord::Base
   
   def save_purchase_request_supplies
     purchase_request_supplies.each do |e|
-        e.save(false)
+      e.save(false)
     end
   end
   

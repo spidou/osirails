@@ -359,7 +359,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def save_quotation_document
-    quotation_document.save
+    quotation_document.save if quotation_document
   end
   
   def invoice_document_attributes=(invoice_document_attributes)
