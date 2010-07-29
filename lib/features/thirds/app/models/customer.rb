@@ -39,7 +39,7 @@ class Customer < Third
   CUSTOMERS_PER_PAGE = 25
   
   has_search_index :only_attributes    => [ :name ],
-                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade, :head_office, :establishments ],
+                   :only_relationships => [ :legal_form, :factor, :customer_solvency, :customer_grade ], #:head_office, :establishments ], #TODO add these relationships when bug #60 will be resolved
                    :main_model         => true
   
   @@form_labels[:factor]            = "Compagnie d'affacturage :"
