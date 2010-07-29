@@ -20,7 +20,7 @@ module HasContactsTest
         should_have_many :contacts
         
         should "fill the array 'Contact.contacts_owners_models'" do
-          assert Contact.contacts_owners_models.include?(@contacts_owner.class)
+          assert Contact.contacts_owners_models.include?(@contacts_owner.class.name)
         end
         
         should "respond to contact_attributes=" do

@@ -116,7 +116,7 @@ class QuoteTest < ActiveSupport::TestCase
         
         @quote = @order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
         @quote.creator = users(:sales_user)
-        @quote.quote_contact_id = contacts(:pierre_paul_jacques).id
+        @quote.quote_contact_id = @order.all_contacts.first.id
         
         if y > 0
           @order.end_products.each_with_index do |end_product, index|

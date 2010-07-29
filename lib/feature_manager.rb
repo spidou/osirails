@@ -248,9 +248,5 @@ class FeatureManager
         # require files in lib/overrides
         Dir["#{@path}/lib/overrides/*.rb"].each{ |file| load file }
       end
-      
-    rescue ActiveRecord::StatementInvalid, Mysql::Error, NameError, Exception => e
-      error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
-      RAKE_TASK ? puts(error) : raise(e)
     end
 end

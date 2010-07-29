@@ -1,4 +1,8 @@
 <% require_locals form  %>
 
 <%= render :partial => "thirds/third_main_info", :object => third, :locals => { :form => form } %>
+
+<h3>Adresse</h3>
+<%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third } %>
+
 <%= render :partial => "thirds/third_financial_info", :object => third, :locals => { :form => form } %>

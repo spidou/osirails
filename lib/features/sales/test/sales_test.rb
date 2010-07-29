@@ -66,7 +66,7 @@ class Test::Unit::TestCase
     
     quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
     quote.creator = users(:sales_user)
-    quote.quote_contact_id = contacts(:pierre_paul_jacques).id
+    quote.quote_contact_id = order.all_contacts.first.id
     
     order.end_products.each do |end_product|
       quote.build_quote_item(:end_product_id  => end_product.id,
@@ -116,7 +116,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.associated_quote.quote_items.each do |ref|
@@ -141,7 +141,7 @@ class Test::Unit::TestCase
     dn = order.delivery_notes.build
     dn.creator            = users(:sales_user)
     dn.ship_to_address    = address
-    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     count = 0
@@ -169,7 +169,7 @@ class Test::Unit::TestCase
     dn = order.build_delivery_note_with_remaining_end_products_to_deliver
     dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.delivery_note_contact_id = contacts(:pierre_paul_jacques).id
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.save!

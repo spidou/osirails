@@ -1,5 +1,8 @@
 require 'test/test_helper'
 
+class MockObject
+end
+
 class ContactTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object, :additional_class_methods => [ :hide ]
   
@@ -32,7 +35,17 @@ class ContactTest < ActiveSupport::TestCase
   
   context "A contact" do
     setup do
-      @contact = contacts(:jean_dupond)
+      o = MockObject.new
+      o.expects(:new_record?).returns(false)
+      MockObject.expects(:find).with(1, {:include => nil, :select => nil}).returns(o)
+      
+      @contact = Contact.create! :has_contact_type  => "MockObject",
+                                 :has_contact_id    => "1",
+                                 :first_name        => "Pierre Paul",
+                                 :last_name         => "Jacques",
+                                 :job               => "Commercial",
+                                 :email             => "pierre_paul@jacques.com",
+                                 :gender            => "M"
     end
     
     context "which has been modified" do

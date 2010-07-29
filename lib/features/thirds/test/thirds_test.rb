@@ -17,8 +17,17 @@ class Test::Unit::TestCase
     head_office = build_head_office_for(customer)
     
     if customer.establishments.empty?
-      establishment = build_establishment_for(customer)
-      establishment.contacts = [ contacts(:pierre_paul_jacques), contacts(:jean_dupond) ]
+      establishment = create_establishment_for(customer)
+      establishment.contacts.build(:first_name  => "Pierre Paul",
+                                   :last_name   => "Jacques",
+                                   :job         => "Commercial",
+                                   :email       => "pierre_paul@jacques.com",
+                                   :gender      => "M")
+      establishment.contacts.build(:first_name  => "Jean",
+                                   :last_name   => "Dupond",
+                                   :job         => "Comptable",
+                                   :email       => "jean@dupond.com",
+                                   :gender      => "M")
     end
     
     customer.build_bill_to_address( :street_name  => "Street Name",

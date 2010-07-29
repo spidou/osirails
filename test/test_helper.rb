@@ -10,6 +10,7 @@ TESTING_FEATURE = detect_feature_from_caller(caller) unless defined? TESTING_FEA
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'shoulda'
+require 'mocha'
 
 # Plugin has_reference
 require File.dirname(__FILE__) + '/../lib/plugins/has_reference/test/unit/has_reference_test'

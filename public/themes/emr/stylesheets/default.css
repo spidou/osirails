@@ -658,7 +658,9 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
   content: '➛ '
 }
 
-#content_page h2 {
+#content_page > div > h2,
+#content_page > div > form > h2,
+#content_page > div > form > div > h2 {
 	text-indent: 10px;
 	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	border-bottom:solid 1px #e5e5e5;
@@ -672,11 +674,15 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	letter-spacing: 2px;
 }
 
-#content_page div > h2:first-child {
+#content_page > div > h2:first-child,
+#content_page > div > form > h2:first-child,
+#content_page > div > form > div > h2:first-child {
   margin-top: -5px;
 }
 
-#content_page h2.warning {
+#content_page > div > h2.warning,
+#content_page > div > form > h2.warning,
+#content_page > div > form > div > h2.warning {
   background: url("/themes/emr/images/warning_14x14.png") no-repeat 7px;
 	background-color: #e99727;
 	border: 1px solid #737373;
@@ -833,16 +839,17 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #errorExplanation {
   position: relative;
-	border:solid 1px #F1BD73;
+  display: inline-block;
+	border: solid 1px #F1BD73;
 	background: #F6E8CF;
-	margin: 10px;
-	width: 530px;
+	margin-top: 5px;
+	//width: 530px;
 }
 
 #errorExplanation ul,
 .errorExplanation ul {
   position: relative;
-  padding-left: 30px;
+  padding-left: 25px;
 }
 
 #errorExplanation ul li,
@@ -857,23 +864,17 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #errorExplanation h2,
 .errorExplanation h2 {
-  height: auto;
-	border: none;
+  background: #F1BD73;
+  margin-top: 0px;
+  padding: 3px 10px;
 	color: #B0383D;
-	background: #F1BD73;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin: 0px;
-	overflow: hidden;
 	text-align: center;
-	text-indent 0;
 	font-size: 1em;
-	font-weight: bold;
 }
 
 #errorExplanation p,
 .errorExplanation p {
-	padding-left: 0px;
+	padding-left: 8px;
 }
 
 .fieldErrorExplanation {
