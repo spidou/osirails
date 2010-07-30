@@ -58,7 +58,7 @@ CommoditySubCategory.create!  :name => "Altuglass", :supply_category_id => plast
                                   :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
 
 # default commodities and their supplier_supplies
-acier = Commodity.create! :name => "Acier", :measure => "1.60", :unit_mass => "70.65", :supply_sub_category_id => toles.id, :threshold => 5,
+acier = Commodity.create! :name => "Acier", :measure => 1.60, :unit_mass => 70.65, :supply_sub_category_id => toles.id, :threshold => 5,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
@@ -70,7 +70,7 @@ acier = Commodity.create! :name => "Acier", :measure => "1.60", :unit_mass => "7
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
                               :value            => "1700" } ]
 
-galva = Commodity.create! :name => "Galva", :measure => "4.50", :unit_mass => "105.98", :supply_sub_category_id => toles.id, :threshold => 1,
+galva = Commodity.create! :name => "Galva", :measure => 4.50, :unit_mass => 105.98, :supply_sub_category_id => toles.id, :threshold => 1,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
@@ -82,7 +82,7 @@ galva = Commodity.create! :name => "Galva", :measure => "4.50", :unit_mass => "1
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
                               :value            => "3000" } ]
 
-rond  = Commodity.create! :name => "Rond", :measure => "6", :unit_mass => "5.32", :supply_sub_category_id => tubes.id, :threshold => 18,
+rond  = Commodity.create! :name => "Rond", :measure => 6, :unit_mass => 5.32, :supply_sub_category_id => tubes.id, :threshold => 18,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,

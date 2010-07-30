@@ -6,14 +6,13 @@ namespace :osirails do
     namespace :db do
       
       desc "Import all data from CSV file for the sales feature"
-      task :import => [ "import:product_reference_categories", "import:product_references" ]
+      task :import => [ "import:product_reference_categories", "import:product_reference_sub_categories", "import:product_references" ]
       
       namespace :import do
         desc "Import product_reference_categories from CSV file. Give IF_MATCH in 'SKIP', 'OVERRIDE', 'DUPLICATE'"
         task :product_reference_categories => :environment do
           file_path = File.join(File.dirname(__FILE__), "..", "import", "product_references.csv")
           if File.exists?(file_path)
-            puts "Import first level of product_reference_categories"
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             
@@ -21,8 +20,15 @@ namespace :osirails do
             
             importer = Osirails::Importer.new(:klass => :product_reference_category, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)
-            
-            puts "Import second level of product_reference_categories"
+          else
+            raise "No such file '#{file_path}'"
+          end
+        end
+        
+        desc "Import product_reference_sub_categories from CSV file. Give IF_MATCH in 'SKIP', 'OVERRIDE', 'DUPLICATE'"
+        task :product_reference_sub_categories => :environment do
+          file_path = File.join(File.dirname(__FILE__), "..", "import", "product_references.csv")
+          if File.exists?(file_path)
             file = File.open(file_path)
             rows = CSV::Reader.parse(file)
             

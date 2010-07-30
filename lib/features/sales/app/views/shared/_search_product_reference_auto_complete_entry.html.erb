@@ -3,12 +3,12 @@ require_locals fields, keywords
 entry = search_product_reference_auto_complete_entry
 
 text = fields.map{ |field| entry.send(field) }.join(" - ")
-description = entry.description.chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.chars.size > 60 ? '...' : '')
+description = entry.description ? entry.description.chars[0..60].lines.map(&:strip).to_a.join(". ") + (entry.description.chars.size > 60 ? '...' : '') : ''
 %>
 
 <li>
   <div>
-    <span><%= keywords ? highlight(text, keywords) : h(text) %></span><br/>
+    <span><%= highlight(text, keywords) %></span><br/>
     <em><%= highlight(description, keywords) %></em>
   </div>
   <%= content_tag( 'div', h(text),  :style => 'display:none', :class => "#{entry.class.name.underscore}_#{fields.first}_value" ) %>

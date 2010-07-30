@@ -25,7 +25,7 @@ class SuppliesController < ApplicationController
         json = JSON.parse(@supply.to_json)
         json[@supply.class.name.underscore].merge!(:higher_unit_price     => @supply.higher_unit_price,
                                                    :higher_measure_price  => @supply.higher_measure_price,
-                                                   :unit_measure_symbol   => @supply.unit_measure.symbol)
+                                                   :unit_measure_symbol   => (@supply.unit_measure.symbol rescue nil))
         render :json => json
       }
     end

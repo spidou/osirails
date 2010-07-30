@@ -157,7 +157,7 @@ module ActionView
                                                             target_id = li.down('.#{object}_#{method}_id')
                                                             target_value = li.down('.#{object}_#{method}_value')
                                                             if (target_id) { $('#{update_id}').value = target_id.innerHTML }
-                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML) }
+                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML); input.value = input.getAttribute('restoreValue'); }
                                                           }"
                               }.merge(completion_options)
         

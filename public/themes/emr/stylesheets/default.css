@@ -1290,13 +1290,16 @@ div label.skip_presentation {
 ////////////////////////////////////////////////////*/
 div.auto_complete {
   width: 350px;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: #fff;
+  border:1px solid #888;
   position: relative;
   z-index: 100;
 }
 
 div.auto_complete ul {
-  border:1px solid #888;
   margin:0;
   padding:0;
   width:100%;

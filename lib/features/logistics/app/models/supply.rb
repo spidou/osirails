@@ -14,8 +14,9 @@ class Supply < ActiveRecord::Base
   validates_presence_of :name, :reference, :supply_sub_category_id
   validates_presence_of :supply_sub_category, :if => :supply_sub_category_id
   
-  validates_numericality_of :unit_mass, :measure, :threshold, :greater_than => 0, :allow_blank => true
-  validates_numericality_of :packaging,                       :greater_than => 1, :allow_blank => true
+  validates_numericality_of :unit_mass, :measure, :greater_than             => 0, :allow_blank => true
+  validates_numericality_of :packaging,           :greater_than             => 1, :allow_blank => true
+  validates_numericality_of :threshold,           :greater_than_or_equal_to => 0
   
   validates_persistence_of :supply_sub_category_id, :name, :reference, :measure, :unit_mass, :supplies_supply_sizes, :if => :has_been_used?
   
@@ -105,7 +106,7 @@ class Supply < ActiveRecord::Base
   # This method returns all the restockables supplies (defined by a stock less than 10% above the given threshold)
   def self.restockables
     #OPTIMIZE use a sql statement
-    self.was_enabled_at.select{ |s| s.stock_quantity < ( s.threshold + ( s.threshold * 0.1 ) ) }
+    self.was_enabled_at.select{ |s| s.stock_quantity < ( s.threshold * 1.1 ) }
   end
   
   # This method returns the entire stock values
@@ -144,6 +145,10 @@ class Supply < ActiveRecord::Base
   
   def designation
     @designation ||= "#{supply_category.name} #{supply_sub_category.name} #{name} #{humanized_supply_sizes}".strip if supply_sub_category
+  end
+  
+  def threshold
+    self[:threshold] || 0
   end
   
   def supply_category
@@ -277,7 +282,7 @@ class Supply < ActiveRecord::Base
   end
   
   def supplier_supplies_unit_prices
-    @supplier_supplies_unit_prices ||= supplier_supplies.reject(&:new_record?).collect{ |s| s.unit_price }
+    @supplier_supplies_unit_prices ||= supplier_supplies.reject(&:new_record?).collect(&:unit_price)
   end
   
   def average_unit_price

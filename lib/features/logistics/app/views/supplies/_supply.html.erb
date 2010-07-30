@@ -34,8 +34,8 @@
       <div>
         <p>
           <%= form.label :supply_category_id %>
-          <% if is_form_view? %>
-            <%= form.collection_select :supply_category_id, @supply_categories, :id, :name, { :include_blank => "Veuillez choisir une famille" }, :disabled => supply.has_been_used? %>
+          <% if is_form_view? and supply.new_record? %>
+            <%= form.collection_select :supply_category_id, @supply_categories, :id, :name, { :include_blank => "Veuillez choisir une famille" } %>
             <%= observe_field("#{@supply_type.name.underscore}_supply_category_id", :url    => self.send("update_#{@supply_sub_category_type.name.tableize}_path"),
                                                                                     :update => "#{@supply_type.name.underscore}_supply_sub_category_id",
                                                                                     :with   => 'id') %>
@@ -48,13 +48,12 @@
       <div>
         <p>
           <%= form.label :supply_sub_category_id %>
-          <% if is_form_view? %>
+          <% if is_form_view? and supply.new_record? %>
             <%
             sub_category_select_id   = "#{@supply_type.name.underscore}_supply_sub_category_id"
             sub_category_select_name = "#{@supply_type.name.underscore}[supply_sub_category_id]"
-            sub_category_select_disabled = supply.has_been_used? ? "disabled=\"disabled\"" : ""
             %>
-            <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>" <%= sub_category_select_disabled %>>
+            <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>">
               <%= render :partial => 'supply_categories/supply_sub_categories', :object => supply.supply_category ? supply.supply_category.children.enabled : [],
                                                                                 :locals => { :current => supply.supply_sub_category_id } %>
             </select>
