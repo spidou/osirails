@@ -59,31 +59,41 @@ class Parcel < ActiveRecord::Base
   
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
   validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."
-   
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?  
-  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
-  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
-  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER , STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_presence_of :reference
+
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
+  validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER , STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
+  validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
+  validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?   
   
+  validates_persistence_of :reference, :unless => :new_record?
   validates_persistence_of :shipped_on, :if => :shipped_on_was
   validates_persistence_of :conveyance, :if => :conveyance_was
   validates_persistence_of :previsional_delivery_date, :if => :previsional_delivery_date_was
   validates_persistence_of :received_by_forwarder_on, :if => :received_by_forwarder_on_was
   validates_persistence_of :awaiting_pick_up, :if => :awaiting_pick_up_was
   validates_persistence_of :received_on, :if => :received_on_was
-    
+  validates_persistence_of :cancelled_comment, :if => :cancelled_at_was  
+  
   validates_associated :parcel_items
   validates_associated :delivery_document, :if => :received_on
   validate :validates_lenght_of_parcel_item_selected, :if => :new_record?
   
-  before_validation_on_create :update_reference
-
-  after_create  :delete_unselected_parcel_items
+  before_validation_on_create :update_reference, :free_parcel_item_unselected
   
-  after_save  :automatically_put_purchase_order_status_to_processing_by_supplier
+  after_save  :automatically_put_purchase_order_status_to_processing_by_supplier#, :save_associated_parcel_items
   after_save  :save_delivery_document, :if => :received?
   
+  def free_parcel_item_unselected
+    self.parcel_items = self.parcel_items.select(&:selected?)
+  end
+  
+  def save_associated_parcel_items
+    for parcel_item in parcel_items
+      parcel_item.save(false) if parcel_item.selected?
+    end
+  end
   
   def get_purchase_order
     self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first  
@@ -188,47 +198,42 @@ class Parcel < ActiveRecord::Base
   def process_by_supplier
     if can_be_processed_by_supplier?
       self.status = STATUS_PROCESSING_BY_SUPPLIER
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
   
   def ship
     if can_be_shipped?
       self.status = STATUS_SHIPPED
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
 
   def receive_by_forwarder
     if can_be_received_by_forwarder?
       self.status = STATUS_RECEIVED_BY_FORWARDER
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
 
   def receive
     if can_be_received?
       self.status = STATUS_RECEIVED
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
   
   def cancel
     if can_be_cancelled?
       self.cancelled_at = Time.now
       self.status = STATUS_CANCELLED
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
   
   def parcel_item_attributes=(parcel_item_attributes)
