@@ -50,6 +50,7 @@ class ParcelItem < ActiveRecord::Base
                                                             :supplier_designation => self.purchase_order_supply.supplier_designation)
     elsif self.issue_purchase_order_supply && self.must_be_reshipped_was && !self.must_be_reshipped
       self.issue_purchase_order_supply.destroy
+      self.reload
     end
   end
    
@@ -60,12 +61,16 @@ class ParcelItem < ActiveRecord::Base
     end
   end 
  
+  def selected?
+    self.selected.to_i == 1
+  end
+ 
   def validates_quantity_for_parcel_item
-    errors.add(:quantity, "quantity not valid")  if self.selected.to_i == 1 && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
+    errors.add(:quantity, "quantity not valid")  if self.selected? && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
   
   def validates_issue_quantity_for_parcel_item
-    errors.add(:quantity, "quantity not valid")  if self.issues_quantity.to_i > self.quantity.to_i
+    errors.add(:issues_quantity, "quantity not valid")  if self.issues_quantity.to_i > self.quantity.to_i
   end
   
   def can_be_cancelled?
@@ -93,16 +98,6 @@ class ParcelItem < ActiveRecord::Base
   
   def was_cancelled?
     cancelled_at_was
-  end
-  
-  def cancel(attributes)
-    if can_be_cancelled?
-      self.attributes = attributes
-      self.cancelled_at = Time.now
-      self.save
-    else
-      false
-    end
   end
   
   def get_parcel_item_total

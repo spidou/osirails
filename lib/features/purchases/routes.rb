@@ -51,7 +51,7 @@ ActionController::Routing::Routes.add_routes do |map|
       parcel.receive_by_forwarder_form 'receive_by_forwarder_form', :controller => 'parcels', :action => 'receive_by_forwarder_form'
       parcel.receive_form 'receive_form', :controller => 'parcels', :action => 'receive_form'
       parcel.cancel_form 'cancel_form', :controller => 'parcels', :action => 'cancel_form'
-      parcel.ship 'process_by_supplier', :controller => 'parcels', :action => "process_by_supplier"
+      parcel.process_by_supplier 'process_by_supplier', :controller => 'parcels', :action => "process_by_supplier"
       parcel.ship 'ship', :controller => 'parcels', :action => "ship"
       parcel.receive_by_forwarder 'receive_by_forwarder', :controller => 'parcels', :action => "receive_by_forwarder"
       parcel.receive 'receive', :controller => 'parcels', :action => "receive"

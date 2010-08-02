@@ -2,6 +2,7 @@ class ParcelItemsController < ApplicationController
   
   helper :purchase_requests, :purchase_orders, :purchase_order_supplies, :parcels
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/parcel_items/:parcel_item_id/cancel_form
   def cancel_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
@@ -11,6 +12,7 @@ class ParcelItemsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/parcel_items/:parcel_item_id/cancel 
   def cancel
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
@@ -29,6 +31,7 @@ class ParcelItemsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/parcel_items/:parcel_item_id/report_form
   def report_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
@@ -38,6 +41,7 @@ class ParcelItemsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/parcel_items/:parcel_item_id/report
   def report
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])

@@ -2,6 +2,7 @@ class ParcelsController < ApplicationController
 
   helper :purchase_requests, :purchase_orders, :purchase_order_supplies, :parcel_items
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/new
   def new 
     @parcel = Parcel.new()
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -18,11 +19,13 @@ class ParcelsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id
   def show
     @parcel = Parcel.find(params[:id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/alter_status
   def alter_status
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -42,6 +45,7 @@ class ParcelsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/process_by_supplier_form
   def process_by_supplier_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])
@@ -50,6 +54,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/process_by_supplier
   def process_by_supplier
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -66,6 +71,7 @@ class ParcelsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/ship_form
   def ship_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -74,6 +80,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/ship
   def ship
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -90,6 +97,7 @@ class ParcelsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/receive_by_forwarder_form
   def receive_by_forwarder_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -97,7 +105,8 @@ class ParcelsController < ApplicationController
     @parcel.status = Parcel::STATUS_RECEIVED_BY_FORWARDER
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
-  
+
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/receive_by_forwarder  
   def receive_by_forwarder
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -114,6 +123,7 @@ class ParcelsController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/receive_form
   def receive_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -121,7 +131,8 @@ class ParcelsController < ApplicationController
     @parcel.status = Parcel::STATUS_RECEIVED
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
-  
+
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/receive  
   def receive
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -137,7 +148,8 @@ class ParcelsController < ApplicationController
       error_access_page(412)
     end
   end
-  
+
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/cancel_form
   def cancel_form
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -146,6 +158,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/cancel
   def cancel
     @parcel = Parcel.find(params[:parcel_id])
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
@@ -162,7 +175,8 @@ class ParcelsController < ApplicationController
       error_access_page(412)
     end
   end
-  
+
+  # GET /get_parcel_status_partial?status=:status 
   def get_parcel_status_partial
     render :partial => 'parcels/receive_forms' if params[:status].to_i == Parcel::STATUS_RECEIVED
     render :partial => 'parcels/ship_forms' if params[:status].to_i == Parcel::STATUS_SHIPPED
@@ -170,6 +184,7 @@ class ParcelsController < ApplicationController
     render :partial => 'parcels/process_by_supplier_forms' if params[:status].to_i == Parcel::STATUS_PROCESSING_BY_SUPPLIER
   end
   
+  # GET /purchase_orders/:purchase_orders_id/parcels/:parcel_id/attached_delivery_document
   def attached_delivery_document
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     @parcel = Parcel.find(params[:parcel_id])

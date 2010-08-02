@@ -2,10 +2,17 @@ class PurchaseOrdersController < ApplicationController
   
   helper :purchase_order_supplies, :parcels, :parcel_items
   
+  # GET /purchase_orders/
   def index
     redirect_to pending_purchase_orders_path
   end
   
+  # GET /purchase_orders/prepare_for_new
+  # GET /purchase_orders/prepare_for_new?page=:page
+  # GET /purchase_orders/prepare_for_new?choice=:choice
+  # GET /purchase_orders/prepare_for_new?choice=:choice&page=:page
+  # GET /purchase_orders/prepare_for_new?choice=:choice&supplier_id=:supplier_id
+  # GET /purchase_orders/prepare_for_new?choice=:choice&supplier_id=:supplier_id&page=:page
   def prepare_for_new
     @purchase_order = PurchaseOrder.new
     redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
@@ -14,6 +21,8 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/new
+  # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
     if !params[:supplier_id]
       redirect_to :action => :prepare_for_new
@@ -26,6 +35,13 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_order_id/edit
+  def edit
+    @purchase_order = PurchaseOrder.find(params[:id])
+    error_access_page(412) unless @purchase_order.can_be_edited?
+  end
+  
+  # PUT /purchase_orders/
   def create
     @purchase_order = PurchaseOrder.new(params[:purchase_order])
     @purchase_order.user_id = current_user.id
@@ -36,12 +52,8 @@ class PurchaseOrdersController < ApplicationController
       render :action => "new"
     end
   end
-  
-  def edit
-    @purchase_order = PurchaseOrder.find(params[:id])
-    error_access_page(412) unless @purchase_order.can_be_edited?
-  end
-  
+
+  # PUT /purchase_orders/:purchase_order_id/
   def update
     if @purchase_order = PurchaseOrder.find(params[:id])
       if @purchase_order.update_attributes(params[:purchase_order])
@@ -55,6 +67,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /auto_complete_for_supply_reference?supply[reference]=:supply[:reference]
   def auto_complete_for_supply_reference
     keywords = params[:supply][:reference].split(" ").collect(&:strip)
     @items = []
@@ -67,6 +80,7 @@ class PurchaseOrdersController < ApplicationController
     render :partial => 'purchase_orders/search_supply_reference_auto_complete', :object => @items, :locals => { :fields => "reference designation", :keywords => keywords }
   end
   
+  # GET /auto_complete_for_supply_reference?supplier[name]=:supplier[:name]
   def auto_complete_for_supplier_name
     keywords = params[:supplier][:name].split(" ").collect(&:strip)
     @items = []
@@ -77,6 +91,7 @@ class PurchaseOrdersController < ApplicationController
     render :partial => 'purchase_orders/search_supplier_name_auto_complete', :object => @items, :locals => { :fields => "name", :keywords => keywords }
   end
   
+  # GET /get_purchase_order_supply_in_one_line?supply_id=:supply_id&supplier_id=:supplier_id
   def get_purchase_order_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
     @supplier = Supplier.find(params[:supplier_id])
@@ -87,10 +102,12 @@ class PurchaseOrdersController < ApplicationController
                                                  :locals => {:supplier => @supplier}
   end
   
+  # GET /purchase_orders/:purchase_order_id
   def show
     @purchase_order = PurchaseOrder.find(params[:id])
   end
   
+  # GET /purchase_orders/:purchase_order_id/cancel
   def cancel
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @purchase_order.can_be_cancelled?
@@ -107,11 +124,13 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_order_id/cancel_form
   def cancel_form  
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     error_access_page(412) unless @purchase_order.can_be_cancelled?
   end
   
+  # DELETE /purchase_orders/:purchase_order_id
   def destroy
     if (@purchase_order = PurchaseOrder.find(params[:id])).can_be_deleted?
       unless @purchase_order.destroy
@@ -124,6 +143,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_order_id/confirm_form
   def confirm_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     unless @purchase_order.can_be_confirmed? and @purchase_order.can_be_confirmed_with_purchase_request_supplies_associated? 
@@ -135,6 +155,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
     
+  # GET /purchase_orders/:purchase_order_id/confirm  
   def confirm
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @purchase_order.can_be_confirmed?
@@ -150,6 +171,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+   # GET /purchase_orders/:purchase_order_id/cancel_supply/:purchase_order_supply_id
   def cancel_supply 
     @purchase_order_supply = PurchaseOrderSupply.find(params[:purchase_order_supply_id]) 
     if @purchase_order_supply.can_be_cancelled?
@@ -165,6 +187,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+   # GET /purchase_orders/:purchase_order_id/complete_form
   def complete_form
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     unless @purchase_order.can_be_completed?
@@ -172,6 +195,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+   # GET /purchase_orders/:purchase_order_id/complete
   def complete
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @purchase_order.can_be_completed?
@@ -188,6 +212,7 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
+  # GET /purchase_orders/:purchase_order_id/attached_invoice_document
   def attached_invoice_document
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     invoice_document =  @purchase_order.invoice_document
@@ -196,6 +221,7 @@ class PurchaseOrdersController < ApplicationController
     send_data File.read(url), :filename => "purchase_order_invoice.#{invoice_document.id}_#{invoice_document.purchase_document_file_name}", :type => invoice_document.purchase_document_content_type, :disposition => 'purchase_document_invoice'
   end 
   
+  # GET /purchase_orders/:purchase_order_id/attached_quotation_document
   def attached_quotation_document
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     quotation_document =  @purchase_order.quotation_document

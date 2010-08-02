@@ -16,7 +16,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     
     context "without purchase request supplies" do 
      
-      should "be invalid" do
+      should "have an invalid purchase_request_supplies" do
         @purchase_request.valid?
         assert_match /Veuillez selectionner au moins une matiere premiere ou un consommable/, @purchase_request.errors.on(:purchase_request_supplies)
       end
@@ -24,25 +24,39 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     
     context "which been able to build a purchase request supply" do
       
-      setup do
-        @purchase_request = PurchaseRequest.new()
-      end
-      
-      should "have new record of purchase request supply" do
-        @purchase_request.purchase_request_supply_attributes = [{:supply_id => 1, 
+      context "with 'purchase_request_supply_attributes=' " do
+        setup do
+          flunk "purchase request should not have purchase request supplies" if @purchase_request.purchase_request_supplies.any?
+          @purchase_request.purchase_request_supply_attributes = [{:supply_id => 1, 
                                                               :expected_delivery_date => Date.today + 1.week, 
                                                               :expected_quantity => 200}]
-        assert @purchase_request.purchase_request_supplies.select(&:new_record?).any?
+           flunk "purchase request should  have purchase request supplies" unless (@purchase_request_supply  = @purchase_request.purchase_request_supplies.first)
+        end
+        
+        should "have new record of purchase request supply" do
+          assert @purchase_request_supply.new_record?
+        end
       end
-      
-      should "be able to take purchase request global date if expected_delivery_date is not define" do
-        @purchase_request.purchase_request_supplies.build({:supply_id => 2,
+    
+      context "when saving purchase request" do
+        
+        setup do
+          @purchase_request.purchase_request_supplies.build({:supply_id => 2,
                                                               :expected_delivery_date => nil, 
                                                               :expected_quantity => 200})
-        @purchase_request.global_date = Date.today + 1.day
-        @purchase_request.purchase_request_supplies = @purchase_request.update_date
-        assert @purchase_request.purchase_request_supplies.select{|n| n.expected_delivery_date == Date.today + 1.day}.any?
-      end  
+          @purchase_request.global_date = Date.today + 1.day
+          @purchase_request.user_id = 1
+          @purchase_request.employee_id = 2
+          @purchase_request.service_id = 3
+          flunk "purchase request should be saved" unless @purchase_request.save!
+          flunk "purchase request supply should be saved" unless (@purchase_request_supply = @purchase_request.purchase_request_supplies.first)
+          
+        end
+      
+        should "be able to take purchase request global date if expected_delivery_date is not define" do
+          assert_equal  Date.today + 1.day, @purchase_request_supply.expected_delivery_date
+        end  
+      end
     end
     
     context "with at least one purchase request supply" do 
@@ -51,7 +65,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
         @purchase_request = build_purchase_request_supplies_for(@purchase_request, 1)
       end
       
-      should "be valid" do
+      should "have purchase_request_supplies valid" do
         @purchase_request.valid?
         assert !@purchase_request.errors.invalid?(:purchase_request_supplies)
       end
@@ -63,12 +77,13 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     setup do
       @purchase_request = PurchaseRequest.new()
       @purchase_request = build_purchase_request_supplies_for(@purchase_request, 2)
-    end
-    
-    should "be able to be saved" do
       @purchase_request.user_id = 1
       @purchase_request.employee_id = 2
       @purchase_request.service_id = 3
+      flunk "purchase request should be valid" unless @purchase_request.valid?
+    end
+    
+    should "be able to be saved" do
       assert @purchase_request.save! 
     end
   end
@@ -85,14 +100,14 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     
     context "which have purchase request supply" do
       setup do
-        @purchase_request_supply = @purchase_request.purchase_request_supplies.first
+        flunk "purchase request should have at least one purchase request supply" unless (@purchase_request_supply = @purchase_request.purchase_request_supplies.first)
+        @purchase_request_supply.expected_quantity = 123
       end
       
-      should "be able to update a purchase request supply" do
-        @purchase_request_supply.expected_quantity = 123
+      should "be able to update a purchase request supply with 'purchase_request_supply_attributes' " do
+
         @purchase_request.purchase_request_supply_attributes = [@purchase_request_supply.attributes]
-        assert @purchase_request.purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id && 
-                                                                  n.expected_delivery_date == @purchase_request_supply.expected_delivery_date}.any?
+        assert_equal 123, @purchase_request.purchase_request_supplies.first.expected_quantity
       end
     end
     
@@ -101,6 +116,15 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       should "return untreated purchase request supplies" do
         assert_equal 2, @purchase_request.untreated_purchase_request_supplies.size
       end
+      
+      should "NOT return treated purchase request supplies" do
+          assert_equal 0, @purchase_request.treated_purchase_request_supplies.size
+      end
+      
+      should "NOT return during_treatment purchase request supplies" do
+          assert_equal 0, @purchase_request.during_treatment_purchase_request_supplies.size
+      end
+      
     end
      
     context "which have purchase order associated" do
@@ -113,12 +137,20 @@ class PurchaseRequestTest < ActiveSupport::TestCase
         should "return during treatement purchase request supplies" do
           assert_equal 1, @purchase_request.during_treatment_purchase_request_supplies.size
         end
+        
+        should "NOT return untreated purchase request supplies" do
+          assert_equal 0, @purchase_request.untreated_purchase_request_supplies.size
+        end
       end
       
       context "which is treated" do
         
         should "return treated purchase request supplies" do
           assert_equal 1, @purchase_request.treated_purchase_request_supplies.size
+        end
+
+        should "NOT return untreated purchase request supplies" do
+          assert_equal 0, @purchase_request.untreated_purchase_request_supplies.size
         end
       end
       

@@ -343,7 +343,7 @@ class PurchaseOrder < ActiveRecord::Base
   
   def is_remaining_quantity_for_parcel?
     for purchase_order_supply in purchase_order_supplies
-      return true if purchase_order_supply.remaining_quantity_for_parcel > 0 and !purchase_order_supply.was_cancelled?
+      return true if purchase_order_supply.remaining_quantity_for_parcel > 0 && !purchase_order_supply.was_cancelled?
     end
     false
   end
@@ -366,6 +366,7 @@ class PurchaseOrder < ActiveRecord::Base
       self.cancelled_by = purchase_order_supplies.all(:order => "cancelled_at").last unless status == STATUS_CANCELLED
       self.cancelled_comment = "Annulation de toutes les fournitures commandées dans cet ordre." unless status == STATUS_CANCELLED
       self.cancel unless status == STATUS_CANCELLED
+      self.reload
     end
   end
 end

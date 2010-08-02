@@ -2,6 +2,10 @@ class PurchaseRequestsController < ApplicationController
   
   helper :purchase_request_supplies, :purchase_orders
   
+  # GET /purchase_requests
+  # GET /purchase_requests?filter=all
+  # GET /purchase_requests?filter=cancelled
+  # GET /purchase_requests?filter=in_progress
   def index  
     conditions = "1" if params[:filter] == 'all'
     conditions = "cancelled_by IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
@@ -9,15 +13,18 @@ class PurchaseRequestsController < ApplicationController
     @requests = PurchaseRequest.all(:conditions => conditions, :order => "created_at DESC").paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)
   end
   
+  # GET /purchase_requests/:purchase_request_id
   def show
     @purchase_request = PurchaseRequest.find(params[:id])
   end
   
+  # GET /purchase_requests/new
   def new
     @purchase_request = PurchaseRequest.new
     @purchase_request.user_id = current_user.id
   end
   
+  # PUT /purchase_requests/
   def create
     @purchase_request = PurchaseRequest.new(params[:purchase_request])
     @purchase_request.user_id = current_user.id
@@ -29,11 +36,13 @@ class PurchaseRequestsController < ApplicationController
     end
   end
   
+  # GET /purchase_requests/:purchase_request_id/cancel_form
   def cancel_form  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
     error_access_page(412) unless @purchase_request.can_be_cancelled?
   end
   
+  # GET /purchase_requests/:purchase_request_id/cancel
   def cancel  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
     if @purchase_request.can_be_cancelled?
@@ -50,6 +59,7 @@ class PurchaseRequestsController < ApplicationController
     end
   end
   
+  # GET /purchase_requests/:purchase_request_id/cancel_supply/:purchase_request_supply_id
   def cancel_supply  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
     @purchase_request_supply = PurchaseRequestSupply.find(params[:purchase_request_supply_id])
@@ -62,6 +72,7 @@ class PurchaseRequestsController < ApplicationController
     end
   end
   
+  # GET /get_purchase_request_supply_in_one_line?supply_id=:supply_id
   def get_purchase_request_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
     @purchase_request_supply = PurchaseRequestSupply.new

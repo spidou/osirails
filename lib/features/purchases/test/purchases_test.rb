@@ -102,8 +102,14 @@ class Test::Unit::TestCase
     end
   end
   
-  def build_purchase_order_supplies(purchase_order, attributes = {})
+  def create_confirmed_purchase_order(user_id, supplier_id)
+    purchase_order = create_purchase_order(user_id, supplier_id)
+    purchase_document_build(purchase_order, :purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
+    flunk "Confirmation failed" unless purchase_order.confirm
+    purchase_order
+  end
   
+  def build_purchase_order_supplies(purchase_order, attributes = {})
     pos_size = purchase_order.purchase_order_supplies.size
     default_attributes = {  :supply_id => supplies(:first_commodity).id,
                             :quantity => 100,
@@ -156,4 +162,79 @@ class Test::Unit::TestCase
     purchase_order.build_invoice_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "invoice_document.gif")))
     purchase_order
   end
+  
+  def build_parcel_item_for(parcel)
+    purchase_order = create_confirmed_purchase_order(1, 2)
+    parcel.status = Parcel::STATUS_PROCESSING_BY_SUPPLIER
+    parcel.processing_by_supplier_since = Date.today
+    parcel.parcel_items.build({:purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
+                                :quantity => purchase_order.purchase_order_supplies.first.quantity,
+                                :selected => "1"})
+    parcel                       
+  end 
+  
+  def put_received_status_for(parcel)
+    parcel.received_on = Date.today
+    parcel.build_delivery_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")))
+    flunk "parcel should be put in received status" unless parcel.receive
+    parcel
+  end
+  
+  def build_parcel
+    Parcel.new
+  end
+  
+  def create_parcel
+    parcel = build_parcel
+  end
+  
+  def create_valid_parcel
+    parcel = create_parcel
+    parcel = build_parcel_item_for(parcel)
+    flunk "parcel should be saved" unless parcel.save!
+    parcel
+  end
+  
+  def processing_by_supplier_parcel
+    parcel = create_parcel
+    parcel = build_parcel_item_for(parcel)
+    flunk "parcel should in processing_by_supplier_parcel status" unless parcel.process_by_supplier
+    flunk "parcel should in processing_by_supplier_parcel status" unless parcel.processing_by_supplier?
+    parcel
+  end
+  
+  def shipped_parcel
+    parcel = create_valid_parcel
+    parcel.shipped_on = Date.today
+    parcel.conveyance = "par avion"
+    flunk "parcel should in shipped status" unless parcel.ship
+    flunk "parcel should in shipped status" unless parcel.shipped?
+    parcel
+  end
+  
+  def received_by_forwarder_parcel
+    parcel = create_valid_parcel
+    parcel.received_by_forwarder_on = Date.today
+    flunk "parcel should be in received_by_forwarder status" unless parcel.receive_by_forwarder
+    flunk "parcel should be in received_by_forwarder status" unless parcel.received_by_forwarder?
+    parcel
+  end  
+  
+  def received_parcel
+    parcel = create_valid_parcel
+    parcel.received_on = Date.today
+    parcel.build_delivery_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")))
+    flunk "parcel should in received status" unless parcel.receive
+    flunk "parcel should in received status" unless parcel.received? 
+    parcel
+  end
+  
+  def cancelled_parcel
+    parcel = create_valid_parcel
+    parcel.cancelled_comment = "cancelled parcel"
+    flunk "parcel should be cancelled" unless parcel.cancel
+    flunk "parcel should be cancelled" unless parcel.cancelled?
+    parcel
+  end
+  
 end
