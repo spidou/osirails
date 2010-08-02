@@ -100,16 +100,6 @@ class ParcelItem < ActiveRecord::Base
     cancelled_at_was
   end
   
-  def cancel(attributes)
-    if can_be_cancelled?
-      self.attributes = attributes
-      self.cancelled_at = Time.now
-      self.save
-    else
-      false
-    end
-  end
-  
   def get_parcel_item_total
     quantity.to_f * purchase_order_supply.get_unit_price_including_tax.to_f
   end
