@@ -9,3 +9,9 @@ first_consumable:
   supply_sub_category: first_consumable_sub_category
   reference: 1001
   name: First Consumable
+  
+second_commodity:
+  type: Commodity
+  supply_sub_category: second_commodity_sub_category
+  reference: 1001
+  name: Second Commodity

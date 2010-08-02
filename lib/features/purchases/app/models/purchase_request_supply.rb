@@ -60,7 +60,6 @@ class PurchaseRequestSupply < ActiveRecord::Base
       suppliers_array += purchase_request_supply.supply.suppliers
     end
     if !suppliers_array.empty?
-      debugger
       suppliers_array = suppliers_array.uniq.sort_by{ |supplier| supplier.merge_purchase_request_supplies.count }
       suppliers_array = suppliers_array.reverse{ |supplier| supplier.merge_purchase_request_supplies.count }
     end

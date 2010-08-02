@@ -26,14 +26,8 @@ class PurchaseOrdersController < ApplicationController
     end
   end
   
-  def edit
-    @purchase_order = PurchaseOrder.find(params[:id])
-    error_access_page(412) unless @purchase_order.can_be_edited?
-  end
-  
   def create
     @purchase_order = PurchaseOrder.new(params[:purchase_order])
-    @purchase_order.status = PurchaseOrder::STATUS_DRAFT
     @purchase_order.user_id = current_user.id
     if @purchase_order.save
       flash[:notice] = "L'ordre d'achat a été créé avec succès."
@@ -41,6 +35,11 @@ class PurchaseOrdersController < ApplicationController
     else
       render :action => "new"
     end
+  end
+  
+  def edit
+    @purchase_order = PurchaseOrder.find(params[:id])
+    error_access_page(412) unless @purchase_order.can_be_edited?
   end
   
   def update

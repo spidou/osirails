@@ -1,5 +1,4 @@
 admin_user:
-  id: 1
   username: admin
   password: <%= Digest::SHA1.hexdigest("password") %>
   enabled: true

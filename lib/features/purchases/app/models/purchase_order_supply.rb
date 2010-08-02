@@ -22,7 +22,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   @@form_labels[:cancelled_comment] = "Veuillez saisir la raison de l'annulation :"
   
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference
-  validates_presence_of :cancelled_by, :if => :cancelled_at
+  validates_presence_of :cancelled_by, :cancelled_comment, :if => :cancelled_at
 
   validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
@@ -32,6 +32,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
   after_save  :automatically_put_purchase_order_status_to_cancelled , :unless => :new_record?
   after_save  :purchase_order_supply_associated_to_report, :unless => :new_record?
   after_save  :automatically_put_parcel_items_status_to_cancelled, :unless => :new_record?
+  
+  def should_destroy?
+    should_destroy.to_i == 1
+  end
   
   def automatically_put_parcel_items_status_to_cancelled
     for parcel_item in parcel_items
@@ -62,7 +66,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def remaining_quantity_for_parcel
     result = 0
     for parcel_item in parcel_items
-      result += (parcel_item.quantity.to_i)  unless parcel_item.parcel.cancelled? || parcel_item.cancelled? 
+      result += (parcel_item.quantity.to_i)  unless parcel_item.parcel.cancelled? || parcel_item.cancelled?
     end
     quantity - result
   end
@@ -77,7 +81,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def count_quantity_in_parcel_items
     treated_items = 0
     for parcel_item in parcel_items
-      treated_items += (parcel_item.quantity.to_i)unless parcel_item.parcel.cancelled? || parcel_item.cancelled?
+      treated_items += (parcel_item.quantity.to_i) unless parcel_item.parcel.cancelled? || parcel_item.cancelled?
     end
     treated_items
   end
@@ -113,7 +117,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
 
   def can_be_cancelled?
-    (untreated? && !purchase_order.confirmed? && !was_cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?)
+    !new_record? && !purchase_order.draft? && !purchase_order.completed? && ((untreated? && !was_cancelled? && !purchase_order.cancelled?) ||  (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?))
   end
 
   def can_be_deleted?

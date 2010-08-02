@@ -919,7 +919,6 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "quantity",                       :limit => 11
     t.integer  "issues_quantity",                :limit => 11
     t.integer  "cancelled_by",                   :limit => 11
-    t.string   "status"
     t.text     "issues_comment"
     t.text     "cancelled_comment"
     t.datetime "cancelled_at"
@@ -1134,7 +1133,6 @@ ActiveRecord::Schema.define(:version => 20100705104400) do
     t.integer  "supplier_id",                  :limit => 11
     t.integer  "invoice_document_id",          :limit => 11
     t.integer  "quotation_document_id",        :limit => 11
-    t.integer  "payment_document_id",          :limit => 11
     t.integer  "cancelled_by",                 :limit => 11
     t.integer  "status",                       :limit => 11
     t.string   "reference"

@@ -1,8 +1,7 @@
 class CreatePurchaseOrders < ActiveRecord::Migration
   def self.up
     create_table :purchase_orders do |t|
-      t.references  :user, :supplier, :invoice_document
-      t.references  :quotation_document, :payment_document
+      t.references  :user, :supplier, :invoice_document, :quotation_document
       t.integer     :cancelled_by, :status
       t.string      :reference, :cancelled_comment
       t.datetime    :cancelled_at
