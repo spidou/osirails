@@ -10,7 +10,7 @@ menus:
   memorandums:
     title: Notes de service
     description: Gestion des notes de service
-    position: 9
+    position: 10
     children:
       sended_memorandums:
         title: Notes de service envoyées

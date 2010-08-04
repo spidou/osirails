@@ -1,12 +1,13 @@
 <div class="presentation_medium">
+  <h2>Informations</h2>
   <% if parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies).any? %>
     <% form_for([purchase_order, parcel], :html => {:multipart => true}) do |f| %>
       <%= f.error_messages %>
-      <h2>Informations</h2>
       <div>
         <% options = parcel_all_actions_without_cancel(parcel) %>
         <%= f.label :status, "D&eacute;finir l'état &agrave;" %>
-        <%= f.select(:status, options)%>
+        <%= f.select(:status, options) %>
+        <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => get_parcel_status_partial_url(), :with => :status %>
       </div>
       <div id='parcel_status_form'>
         <% if parcel.processing_by_supplier? || !parcel.status %>
@@ -25,13 +26,11 @@
         <%= render :partial => 'parcel_items/parcel_item_in_one_line', :collection => parcel.build_parcel_items_with_purchase_order_supplies(purchase_order.purchase_order_supplies), :locals => { :purchase_order => purchase_order}  %>
         <%= render :partial => 'parcel_items/end_table' %>
       </div>
+      
+      <%= link_to "Retourner à l'ordre d'achat", purchase_order_path(purchase_order) %>
       <%= f.form_buttons %>
-      <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => get_parcel_status_partial_url(), :with => :status %>
     <% end %><!--end form -->
-    <br />
   <% else %>
-      <p>Tous vos fournitures sont d&eacute;j&agrave; associ&eacute;es &agrave; des colis</p>
+    <p>Toute vos fournitures sont d&eacute;j&agrave; associ&eacute;es &agrave; des colis</p>
   <% end %>
-  <%= link_to "Retour vers l'ordre d'achat", purchase_order_path(purchase_order) %>
-  <br />
 </div>

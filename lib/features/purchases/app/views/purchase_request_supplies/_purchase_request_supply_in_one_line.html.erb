@@ -5,9 +5,8 @@
         <%="class=disabled" %>
       <% end %> >
     <td style="display:none;">
-      <%= f.hidden_field(:supply_id)%>
+      <%= f.hidden_field(:supply_id) %>
     </td>
-    
     <td>
        <%= purchase_request_supply.supply.designation %>
     </td>
@@ -36,14 +35,12 @@
       <td><%= display_associated_purchase_order(purchase_request_supply) %></td>
       <td>
       <% if purchase_request_supply.can_be_cancelled? %>
-        
         <%= link_to( image_tag( "cancel_16x16.png",
-                        :alt => text = "Annuler cette fourniture",
-                        :title => text ),
-              purchase_request_cancel_supply_path(purchase_request_supply.purchase_request_id, purchase_request_supply.id),
-             :confirm => "Êtes-vous sûr ?" )%>
-        
-      <%else%>
+                                :alt => text = "Annuler cette fourniture",
+                                :title => text ),
+                     purchase_request_cancel_supply_path(purchase_request_supply.purchase_request_id, purchase_request_supply.id),
+                     :confirm => "Êtes-vous sûr ?" ) %>
+      <% else %>
          &nbsp;
       <% end %>
       </td>

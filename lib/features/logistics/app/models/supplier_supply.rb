@@ -31,6 +31,6 @@ class SupplierSupply < ActiveRecord::Base
   
   def unit_price
     return fob_unit_price if taxes.nil? or taxes.zero?
-    fob_unit_price * ( 1 + ( taxes / 100 ) )
+    fob_unit_price * ( 1 + ( taxes / 100.0 ) )
   end
 end

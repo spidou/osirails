@@ -1,5 +1,4 @@
 class PurchaseDocument < ActiveRecord::Base
-  
   has_permissions :as_business_object
   
   has_attached_file :purchase_document, 
@@ -9,5 +8,4 @@ class PurchaseDocument < ActiveRecord::Base
 
   validates_attachment_presence :purchase_document
   validates_attachment_size     :purchase_document, :less_than => 5.megabytes 
-  
 end

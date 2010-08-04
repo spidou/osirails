@@ -31,7 +31,7 @@ class Test::Unit::TestCase
   def create_cancelled_purchase_request
   
     purchase_request = create_purchase_request
-    purchase_request.cancelled_by = 1
+    purchase_request.cancelled_by_id = 1
     purchase_request.cancelled_comment = "cancelled comment"
     purchase_request.cancel
     purchase_request
@@ -39,11 +39,9 @@ class Test::Unit::TestCase
   end
   
   def cancelled_purchase_request_supply(purchase_request_supply)
-  
-    purchase_request_supply.cancelled_by = 1
+    purchase_request_supply.cancelled_by_id = 1
     flunk "purchase request supply should be cancel and save" unless purchase_request_supply.cancel
     purchase_request_supply
-    
   end
     
   def create_purchase_order(user_id, supplier_id)
@@ -111,14 +109,14 @@ class Test::Unit::TestCase
   
   def build_purchase_order_supplies(purchase_order, attributes = {})
     pos_size = purchase_order.purchase_order_supplies.size
-    default_attributes = {  :supply_id => supplies(:first_commodity).id,
-                            :quantity => 100,
-                            :taxes => 5.5,
-                            :fob_unit_price => 8,
-                            :supplier_reference => attributes[:supplier_reference],
-                            :supplier_designation => attributes[:supplier_designation] }
+    default_attributes = {  :supply_id            => supplies(:first_commodity).id,
+                            :quantity             => 100,
+                            :taxes                => 5.5,
+                            :fob_unit_price       => 8,
+                            :supplier_reference   => "REF01",
+                            :supplier_designation => "Designation Fournisseur" }
     purchase_order.purchase_order_supplies.build(default_attributes.merge(attributes))
-    flunk 'build of "purchase_order_supply" failed' unless pos_size +1
+    flunk 'build of "purchase_order_supply" failed' unless purchase_order.purchase_order_supplies.size == (pos_size + 1)
   end
   
   def create_a_draft_purchase_order(attributes = {})
@@ -138,7 +136,7 @@ class Test::Unit::TestCase
                                                       :taxes => 5,
                                                       :supplier_reference => "C.02012010",
                                                       :supplier_designation => "Third Purchase Order Supply",
-                                                      :cancelled_by => purchase_order.user_id,
+                                                      :cancelled_by_id => purchase_order.user_id,
                                                       :cancelled_comment => "Cancelled for tests",
                                                       :cancelled_at => Time.now })
     flunk 'purchase_order failed to save when creating a draft purchase_order' unless purchase_order.save!

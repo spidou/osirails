@@ -852,14 +852,14 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       @purchase_order = create_a_draft_purchase_order
       @purchase_order.build_quotation_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
       @purchase_order.confirm
-      @purchase_order.cancelled_by = users(:admin_user).id
+      @purchase_order.cancelled_by_id = users(:admin_user).id
       @purchase_order.cancelled_comment = "Test comment"
       @purchase_order.cancel
     end
     
     subject { @purchase_order }
     
-    should_validate_presence_of :cancelled_comment, :cancelled_by
+    should_validate_presence_of :cancelled_comment, :cancelled_by_id
     
     should 'return false to "was_draft?" method' do
       assert !@purchase_order.was_draft?

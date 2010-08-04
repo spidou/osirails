@@ -10,7 +10,7 @@ class PurchaseOrderSuppliesController < ApplicationController
   def cancel
     if (@purchase_order_supply = PurchaseOrderSupply.find(params[:purchase_order_supply_id])).can_be_cancelled?
       @purchase_order_supply.cancelled_comment = params[:purchase_order_supply][:cancelled_comment]
-      @purchase_order_supply.cancelled_by = current_user.id
+      @purchase_order_supply.canceller = current_user
       if @purchase_order_supply.cancel
         flash[:notice] = 'La commande de cette fourniture a bien été annulée'
         redirect_to @purchase_order_supply.purchase_order

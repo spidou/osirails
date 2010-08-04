@@ -13,7 +13,7 @@ dependencies:
 menus:
   sales:
     title: Ventes
-    position: 6
+    position: 8
     children:
       in_progress_orders:
         title: Dossiers en cours

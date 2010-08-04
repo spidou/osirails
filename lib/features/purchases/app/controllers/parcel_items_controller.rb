@@ -19,7 +19,7 @@ class ParcelItemsController < ApplicationController
     @parcel_item = ParcelItem.find(params[:parcel_item_id])
     if @parcel_item.can_be_cancelled?
       @parcel_item.attributes = params[:parcel_item]
-      @parcel_item.cancelled_by = current_user.id
+      @parcel_item.canceller = current_user
       if @parcel_item.cancel
         flash[:notice] = "Le contenu correspondant a été annulé."
         redirect_to( purchase_order_parcel_path(@parcel_item.purchase_order_supply.purchase_order, @parcel_item.parcel))

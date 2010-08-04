@@ -38,7 +38,7 @@ class ParcelsController < ApplicationController
     elsif params[:parcel][:status].to_i == Parcel::STATUS_RECEIVED
       redirect_to purchase_order_parcel_receive_form_path(@purchase_order, @parcel)
     elsif params[:parcel][:status].to_i == Parcel::STATUS_CANCELLED
-      @parcel.cancelled_by = current_user.id
+      @parcel.canceller = current_user
       redirect_to purchase_order_parcel_cancel_form_path(@purchase_order, @parcel)
     else
       redirect_to purchase_order_path(@purchase_order)
@@ -164,7 +164,7 @@ class ParcelsController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @parcel.can_be_cancelled?
       @parcel.attributes = params[:parcel]
-      @parcel.cancelled_by = current_user.id
+      @parcel.canceller = current_user
       if @parcel.cancel
         flash[:notice] = "Le colis a été annulé avec succès."
         redirect_to @purchase_order

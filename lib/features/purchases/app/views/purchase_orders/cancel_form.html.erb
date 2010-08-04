@@ -4,12 +4,12 @@
 
 <h1>Annulation de l'ordre d'achat</h1>
 <div>
-    <% form_for @purchase_order, :url => { :action => "cancel" } do |f| %>
-      <%= f.error_messages %>
-      <p>
-        <%= f.label :cancelled_comment %>
-        <%= f.text_area_autoresize :cancelled_comment %>
-      </p>
-      <%= f.form_buttons %>
-    <% end %>
+  <% form_for @purchase_order, :url => { :action => "cancel" } do |f| %>
+    <%= f.error_messages %>
+    <p>
+      <%= f.label :cancelled_comment %>
+      <%= f.text_area_autoresize :cancelled_comment %>
+    </p>
+    <%= f.form_buttons %>
+  <% end %>
 </div>

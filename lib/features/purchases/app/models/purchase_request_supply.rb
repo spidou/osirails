@@ -1,15 +1,26 @@
 class PurchaseRequestSupply < ActiveRecord::Base
+  STATUS_UNTREATED = "untreated"
   
-  has_many  :request_order_supplies
-  has_many  :purchase_order_supplies, :through => :request_order_supplies
+  has_many :request_order_supplies
+  has_many :purchase_order_supplies, :through => :request_order_supplies
+  has_many :draft_purchase_order_supplies, :through    => :request_order_supplies,
+                                           :include    => 'purchase_order',
+                                           :conditions => [ 'purchase_orders.status IS NULL'],
+                                           :source     => :purchase_order_supply
   
-  has_one   :confirmed_purchase_order_supply, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status > ?', PurchaseOrder::STATUS_DRAFT ],  :source => :purchase_order_supply
+  has_one   :confirmed_purchase_order_supply, :through    => :request_order_supplies,
+                                              :include    => 'purchase_order',
+                                              :conditions => [ 'purchase_orders.status > ?', PurchaseOrder::STATUS_DRAFT ],
+                                              :source     => :purchase_order_supply
   
-  has_many  :draft_purchase_order_supplies, :through => :request_order_supplies, :include => 'purchase_order', :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],  :source => :purchase_order_supply
-
+  has_many  :draft_purchase_order_supplies,   :through    => :request_order_supplies,
+                                              :include    => 'purchase_order',
+                                              :conditions => [ 'purchase_orders.status = ?', PurchaseOrder::STATUS_DRAFT ],
+                                              :source     => :purchase_order_supply
+  
   belongs_to :purchase_request
   belongs_to :supply
-  belongs_to :canceller, :class_name => "User", :foreign_key => 'cancelled_by'
+  belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   
   validates_presence_of :supply_id
   validates_persistence_of :expected_delivery_date
@@ -18,11 +29,11 @@ class PurchaseRequestSupply < ActiveRecord::Base
   validates_date :expected_delivery_date, :after => Date.today, :if => :new_record?
   
   def can_be_cancelled?
-    cancelled? ? false : true
+    !cancelled?
   end
   
   def cancelled?
-   self.cancelled_at || self.purchase_request.cancelled? 
+   cancelled_at || purchase_request.cancelled? 
   end
   
   def cancel
@@ -31,38 +42,24 @@ class PurchaseRequestSupply < ActiveRecord::Base
   end
   
   def untreated?
-    !self.confirmed_purchase_order_supply && self.draft_purchase_order_supplies.empty?
+    !confirmed_purchase_order_supply and draft_purchase_order_supplies.empty?
   end
   
   def during_treatment?
-    self.draft_purchase_order_supplies.any? && !self.confirmed_purchase_order_supply
+    draft_purchase_order_supplies.any? and !confirmed_purchase_order_supply
   end
   
   def treated?
-    self.confirmed_purchase_order_supply ? true : false
+    confirmed_purchase_order_supply
   end
   
   def self.get_all_pending_purchase_request_supplies
-    all_purchase_request_supplies = PurchaseRequestSupply.all
-    purchase_request_supplies = []
-    for purchase_request_supply in all_purchase_request_supplies
-      if !purchase_request_supply.cancelled? and !purchase_request_supply.treated? 
-        purchase_request_supplies.push purchase_request_supply
-      end
-    end
-    purchase_request_supplies
+    #OPTIMIZE use a SQL statement
+    PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? }
   end
 
   def self.get_all_suppliers_for_all_purchase_request_supplies
-    purchase_request_supplies = get_all_pending_purchase_request_supplies
-    suppliers_array = []
-    for purchase_request_supply in purchase_request_supplies
-      suppliers_array += purchase_request_supply.supply.suppliers
-    end
-    if !suppliers_array.empty?
-      suppliers_array = suppliers_array.uniq.sort_by{ |supplier| supplier.merge_purchase_request_supplies.count }
-      suppliers_array = suppliers_array.reverse{ |supplier| supplier.merge_purchase_request_supplies.count }
-    end
-    suppliers_array
+    suppliers = get_all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
+    suppliers.sort_by{ |s| s.merge_purchase_request_supplies.count }.reverse
   end
 end

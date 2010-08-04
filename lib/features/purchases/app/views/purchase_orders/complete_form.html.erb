@@ -4,20 +4,18 @@
 
 <%= generate_purchase_order_contextual_menu_partial(@purchase_order) %>
 
-<h1>Ordre d'achats</h1>
+<h1>Clôturer l'ordre d'achat</h1>
 <div class="presentation_medium">
-  <h2>Terminer l'ordre d'achats.</h2>
   <% form_for @purchase_order, :url => { :action => "complete" }, :html => { :multipart => true } do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
       <p>
         <% fields_for "purchase_order[invoice_document_attributes][]", PurchaseDocument.new do |f| %>
-          <%= f.label :purchase_document, "Veuillez sélectionner la facture à joindre :" %>
+          <%= f.label :purchase_document, "Facture :" %>
           <%= f.file_field :purchase_document %>
         <% end %>
       </p>
     </div>
-    <br>
     <%= f.form_buttons %>
   <% end %>
 </div>

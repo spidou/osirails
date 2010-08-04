@@ -1,4 +1,4 @@
-require_dependency 'suppliers_controller'
+require_dependency 'lib/features/thirds/app/controllers/suppliers_controller'
 
 class SuppliersController
   after_filter :detect_request_for_purchase_order_creation, :only => :new

@@ -15,14 +15,14 @@
     <% options = parcel_possible_actions(@parcel) %>
    
     <%= f.label :status, "D&eacute;finir l'état &agrave; &nbsp;" %>
-    <%= f.select(:status, options, {},{ :onchange => "submit();"})%>
+    <%= f.select(:status, options, {}, {:onchange => "submit();"})%>
   <% end %>
   <% form_for [@purchase_order, @parcel], :url => purchase_order_parcel_receive_by_forwarder_path do |f| %>
     <%= f.error_messages %>
     <div class="presentation_in_columns">
       <%= render :partial => "parcels/receive_by_forwarder_forms", :object => @parcel %>
     </div>
-    <br>
+    
     <%= f.form_buttons %>
   <% end %>
 </div>

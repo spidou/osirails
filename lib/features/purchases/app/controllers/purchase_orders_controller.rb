@@ -24,14 +24,12 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   # GET /purchase_orders/new?supplier_id=:supplier_id
   def new
-    if !params[:supplier_id]
+    unless params[:supplier_id]
       redirect_to :action => :prepare_for_new
     else
       @supplier = Supplier.find(params[:supplier_id])
-      @purchase_order = PurchaseOrder.new
-      @purchase_order.supplier_id = params[:supplier_id]
-      @list_of_supplies = @supplier.merge_purchase_request_supplies if params[:from_purchase_request]
-      @purchase_order.build_with_purchase_request_supplies(@list_of_supplies) if params[:from_purchase_request]
+      @purchase_order = PurchaseOrder.new(:supplier_id => @supplier.id)
+      @purchase_order.build_with_purchase_request_supplies(@supplier.merge_purchase_request_supplies) if params[:from_purchase_request]
     end
   end
   
@@ -71,7 +69,7 @@ class PurchaseOrdersController < ApplicationController
   def auto_complete_for_supply_reference
     keywords = params[:supply][:reference].split(" ").collect(&:strip)
     @items = []
-    @supplies = Supply.all()
+    @supplies = Supply.all
     keywords.each do |keyword|
       keyword = Regexp.new(keyword, Regexp::IGNORECASE)
       result = @supplies.select{|s| s.name =~ keyword or s.designation =~ keyword or s.reference =~ keyword}
@@ -95,11 +93,9 @@ class PurchaseOrdersController < ApplicationController
   def get_purchase_order_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
     @supplier = Supplier.find(params[:supplier_id])
-    @purchase_order_supply = PurchaseOrderSupply.new
-    @purchase_order_supply.supply_id = params[:supply_id]
-    render :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line',
-                                                 :object  => @purchase_order_supply,
-                                                 :locals => {:supplier => @supplier}
+    @purchase_order_supply = PurchaseOrderSupply.new(:supply_id => @supply.id)
+    render :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :object => @purchase_order_supply,
+                                                                                    :locals => {:supplier => @supplier}
   end
   
   # GET /purchase_orders/:purchase_order_id
@@ -112,7 +108,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
     if @purchase_order.can_be_cancelled?
       @purchase_order.attributes = params[:purchase_order]
-      @purchase_order.cancelled_by = current_user.id
+      @purchase_order.canceller = current_user
       if  @purchase_order.cancel
         flash[:notice] = "L'ordre d'achats a été annulé avec succès."
         redirect_to @purchase_order
@@ -175,7 +171,7 @@ class PurchaseOrdersController < ApplicationController
   def cancel_supply 
     @purchase_order_supply = PurchaseOrderSupply.find(params[:purchase_order_supply_id]) 
     if @purchase_order_supply.can_be_cancelled?
-      @purchase_order_supply.cancelled_by = current_user.id
+      @purchase_order_supply.canceller = current_user
       if @purchase_order_supply.cancel 
         flash[:notice] = "La fourniture a été annuléé avec succès." 
       else
@@ -215,19 +211,19 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/:purchase_order_id/attached_invoice_document
   def attached_invoice_document
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    invoice_document =  @purchase_order.invoice_document
+    invoice_document = @purchase_order.invoice_document
     url = invoice_document.purchase_document.path
     
-    send_data File.read(url), :filename => "purchase_order_invoice.#{invoice_document.id}_#{invoice_document.purchase_document_file_name}", :type => invoice_document.purchase_document_content_type, :disposition => 'purchase_document_invoice'
+    send_data File.read(url), :filename => "#{@purchase_order.reference}_facture", :type => invoice_document.purchase_document_content_type, :disposition => 'attachment'
   end 
   
   # GET /purchase_orders/:purchase_order_id/attached_quotation_document
   def attached_quotation_document
     @purchase_order = PurchaseOrder.find(params[:purchase_order_id])
-    quotation_document =  @purchase_order.quotation_document
+    quotation_document = @purchase_order.quotation_document
     url = quotation_document.purchase_document.path
     
-    send_data File.read(url), :filename => "purchase_order_quotation.#{quotation_document.id}_#{quotation_document.purchase_document_file_name}", :type => quotation_document.purchase_document_content_type, :disposition => 'purchase_document_quotation'
+    send_data File.read(url), :filename => "#{@purchase_order.reference}_devis", :type => quotation_document.purchase_document_content_type, :disposition => 'attachment'
   end 
   
 end

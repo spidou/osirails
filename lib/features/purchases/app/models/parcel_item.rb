@@ -1,10 +1,9 @@
 class ParcelItem < ActiveRecord::Base
-  
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
-
+  
   belongs_to :parcel
   belongs_to :purchase_order_supply
-  
+  belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   belongs_to :issue_purchase_order_supply, :class_name => "PurchaseOrderSupply"
   
   validates_presence_of :purchase_order_supply_id
@@ -17,7 +16,7 @@ class ParcelItem < ActiveRecord::Base
   
   validate :validates_issue_quantity_for_parcel_item, :if => :issued_at
   validate :validates_quantity_for_parcel_item, :if => :new_record?
-
+  
   attr_accessor :selected 
   attr_accessor :tmp_selected
   
@@ -60,11 +59,11 @@ class ParcelItem < ActiveRecord::Base
       self.issue_purchase_order_supply.save
     end
   end 
- 
+  
   def selected?
     self.selected.to_i == 1
   end
- 
+  
   def validates_quantity_for_parcel_item
     errors.add(:quantity, "quantity not valid")  if self.selected? && self.quantity > self.purchase_order_supply.remaining_quantity_for_parcel
   end
@@ -112,7 +111,7 @@ class ParcelItem < ActiveRecord::Base
       false
     end
   end
-    
+  
   def report
     if can_be_reported?
       self.issued_at = Time.now

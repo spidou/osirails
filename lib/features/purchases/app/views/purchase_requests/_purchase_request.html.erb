@@ -40,7 +40,7 @@
           <strong>
             <%="#{purchase_request.treated_purchase_request_supplies.size}/#{purchase_request.purchase_request_supplies.size} traitée(s)"%>
           </strong>
-          <% if purchase_request.cancelled_by %>
+          <% if purchase_request.canceller %>
             (Cette demande d'achat a &eacute;t&eacute; annul&eacute;e par <strong><%= purchase_request.canceller.employee_name%></strong> le <strong><%= purchase_request.cancelled_at.humanize%> </strong> pour le motif suivant: <strong><%= purchase_request.cancelled_comment%></strong>)
           <% end %>
        </p>

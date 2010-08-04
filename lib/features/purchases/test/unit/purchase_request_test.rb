@@ -18,7 +18,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
      
       should "have an invalid purchase_request_supplies" do
         @purchase_request.valid?
-        assert_match /Veuillez selectionner au moins une matiere premiere ou un consommable/, @purchase_request.errors.on(:purchase_request_supplies)
+        assert_match /Vous devez choisir au moins une fourniture/, @purchase_request.errors.on(:purchase_request_supplies)
       end
     end
     
@@ -181,7 +181,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       end
       
       should "be able to be cancel" do
-        @purchase_request.cancelled_by = 1
+        @purchase_request.cancelled_by_id = 1
         @purchase_request.cancelled_comment = "cancelled test"
         assert @purchase_request.cancel
       end
@@ -195,8 +195,8 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       
       subject {@purchase_request}
       
-      should_validate_presence_of :cancelled_by, :cancelled_comment
-      #TODO should_validate_persistence_of :cancelled_by, :cancelled_comment, :cancelled_at
+      should_validate_presence_of :cancelled_by_id, :cancelled_comment
+      #TODO should_validate_persistence_of :cancelled_by_id, :cancelled_comment, :cancelled_at
       
       should "be cancelled" do
         assert @purchase_request.cancelled?

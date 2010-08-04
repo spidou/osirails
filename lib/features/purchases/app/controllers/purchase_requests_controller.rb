@@ -8,8 +8,8 @@ class PurchaseRequestsController < ApplicationController
   # GET /purchase_requests?filter=in_progress
   def index  
     conditions = "1" if params[:filter] == 'all'
-    conditions = "cancelled_by IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
-    conditions = "cancelled_by IS NOT NULL"  if (params[:filter]) == 'cancelled' 
+    conditions = "cancelled_by_id IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
+    conditions = "cancelled_by_id IS NOT NULL"  if (params[:filter]) == 'cancelled' 
     @requests = PurchaseRequest.all(:conditions => conditions, :order => "created_at DESC").paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)
   end
   
@@ -46,13 +46,13 @@ class PurchaseRequestsController < ApplicationController
   def cancel  
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
     if @purchase_request.can_be_cancelled?
-      @purchase_request.cancelled_by = current_user.id
-      @purchase_request.cancelled_comment  = params[:purchase_request][:cancelled_comment]
-      if  @purchase_request.cancel
-        flash[:notice] = "La demande d'achats a été annuléé avec succès."
+      @purchase_request.canceller = current_user
+      @purchase_request.cancelled_comment = params[:purchase_request][:cancelled_comment]
+      if @purchase_request.cancel
+        flash[:notice] = "La demande d'achat a été annulée avec succès."
         redirect_to @purchase_request
       else
-        render :action => "cancel_form"   
+        render :action => "cancel_form"
       end
     else
       error_access_page(412)
@@ -64,7 +64,7 @@ class PurchaseRequestsController < ApplicationController
     @purchase_request = PurchaseRequest.find(params[:purchase_request_id])
     @purchase_request_supply = PurchaseRequestSupply.find(params[:purchase_request_supply_id])
     if @purchase_request_supply.can_be_cancelled?
-      @purchase_request_supply.cancelled_by = current_user.id
+      @purchase_request_supply.canceller = current_user
       flash[:notice] = "La fourniture a été annuléé avec succès." if @purchase_request_supply.cancel 
       redirect_to @purchase_request 
     else
@@ -75,9 +75,7 @@ class PurchaseRequestsController < ApplicationController
   # GET /get_purchase_request_supply_in_one_line?supply_id=:supply_id
   def get_purchase_request_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
-    @purchase_request_supply = PurchaseRequestSupply.new
-    @purchase_request_supply.supply_id = params[:supply_id]
-    render :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
-                                                 :object  => @purchase_request_supply
+    @purchase_request_supply = PurchaseRequestSupply.new(:supply_id => @supply.id)
+    render :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line', :object => @purchase_request_supply
   end
 end

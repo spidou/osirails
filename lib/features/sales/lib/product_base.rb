@@ -26,7 +26,7 @@ module ProductBase
     
     def total_with_taxes
       return total if vat.nil? or vat.zero?
-      total * ( 1 + ( vat / 100 ) ) # TODO test that modification
+      total * ( 1 + ( vat / 100.0 ) ) # TODO test that modification
     end
   end
   

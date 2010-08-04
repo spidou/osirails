@@ -17,7 +17,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_confirm_button(purchase_order, message = nil)
     return unless purchase_order.can_be_confirmed?
-    text = "Confirmer l'ordre d'achats"
+    text = "Confirmer l'ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "tick_16x16.png",
                         :alt => text,
@@ -28,7 +28,7 @@ module PurchaseOrdersHelper
 
   def display_purchase_order_add_button(message = nil)
     return unless PurchaseOrder.can_add?(current_user)
-    text = "Nouvel ordre d'achats"
+    text = "Nouvel ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "add_16x16.png",
                         :alt => text,
@@ -38,7 +38,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_show_button(purchase_order, message = nil)
     return unless PurchaseOrder.can_view?(current_user) and !purchase_order.new_record?
-    text = "Voir cet ordre d'achats"
+    text = "Voir cet ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "view_16x16.png",
                         :alt => text,
@@ -48,7 +48,7 @@ module PurchaseOrdersHelper
 
   def display_purchase_order_edit_button(purchase_order, message = nil)
     return unless PurchaseOrder.can_view?(current_user) and purchase_order.can_be_edited?
-    text = "Modifier cet ordre d'achats"
+    text = "Modifier cet ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "edit_16x16.png",
                         :alt => text,
@@ -58,7 +58,7 @@ module PurchaseOrdersHelper
   
   def display_purchase_order_delete_button(purchase_order, message = nil)
     return unless PurchaseOrder.can_delete?(current_user) and purchase_order.can_be_deleted?
-    text = "Supprimer cet ordre d'achats"
+    text = "Supprimer cet ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "delete_16x16.png",
                         :alt => text,
@@ -68,7 +68,7 @@ module PurchaseOrdersHelper
 
   def display_purchase_order_cancel_button(purchase_order, message = nil)
     return unless PurchaseOrder.can_cancel?(current_user) and purchase_order.can_be_cancelled?
-    text = "Annuler cet ordre d'achats"
+    text = "Annuler cet ordre d'achat"
     message ||= " #{text}"
     link_to( image_tag( "cancel_16x16.png",
                         :alt    => text,
@@ -89,12 +89,9 @@ module PurchaseOrdersHelper
   def display_longest_lead_time_for_supplier(supplier)
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     longest_lead_time = 0
-    lead_time_tmp = nil;
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      if lead_time_tmp = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier]).lead_time
-        if( lead_time_tmp > longest_lead_time )
-          longest_lead_time = lead_time_tmp || 0
-        end
+      if supplier_supply = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier])
+        longest_lead_time = supplier_supply.lead_time if supplier_supply.lead_time and supplier_supply.lead_time > longest_lead_time
       end
     end
     "#{longest_lead_time}&nbsp;jour(s)</p>"
@@ -104,8 +101,8 @@ module PurchaseOrdersHelper
     merged_purchase_request_supplies = supplier.merge_purchase_request_supplies
     totals_sum = 0
     for merged_purchase_request_supply in merged_purchase_request_supplies
-      merged_purchase_request_supply_supplier = merged_purchase_request_supply.supply.supplier_supplies.first( :conditions => ['supplier_id = ?', supplier])
-      totals_sum += (merged_purchase_request_supply_supplier.fob_unit_price * ((100 + merged_purchase_request_supply_supplier.taxes ) / 100)) * merged_purchase_request_supply.expected_quantity
+      supplier_supply = merged_purchase_request_supply.supply.supplier_supplies.first(:conditions => ['supplier_id = ?', supplier])
+      totals_sum += (supplier_supply.fob_unit_price * ((100 + supplier_supply.taxes ) / 100)) * merged_purchase_request_supply.expected_quantity
     end
     "#{totals_sum.to_f.to_s(2)}&nbsp;&euro;"
   end
@@ -154,7 +151,7 @@ module PurchaseOrdersHelper
   
   def display_associated_purchase_requests(purchase_order)
     html = []
-    associated_purchase_requests = purchase_order.get_associated_purchase_requests
+    associated_purchase_requests = purchase_order.associated_purchase_requests
     return "" if associated_purchase_requests.empty?
     for purchase_request in associated_purchase_requests
       html << link_to(purchase_request.reference, purchase_request_path(purchase_request))
@@ -163,7 +160,7 @@ module PurchaseOrdersHelper
   end
   
   def display_purchase_order_total_price(purchase_order, cancelled = false)
-    purchase_order.total_price(cancelled).to_f.to_s(2) + "&nbsp;€"
+    purchase_order.total_price(cancelled).to_f.to_s(2) + "&nbsp;&euro;"
   end
   
   def display_purchase_order_creator(purchase_order)
@@ -196,7 +193,7 @@ module PurchaseOrdersHelper
   end
   
   def display_all_total_price_for_purchase_order_form(purchase_order)
-    result = 0;
+    result = 0
     for purchase_order_supply in purchase_order.purchase_order_supplies
       result += purchase_order_supply.quantity.to_f * (purchase_order_supply.fob_unit_price.to_f * ((100 + purchase_order_supply.taxes.to_f) / 100))
     end

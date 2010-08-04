@@ -1,5 +1,5 @@
 <div id=\"supplies\" class=\"resources\">
-<%= render (:partial => 'purchase_order_supplies/begin_table') %>
-<%= render (:partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order.purchase_order_supplies, :locals => { :supplier => purchase_order.supplier }) %>
-<%= render (:partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order, :supplier =>  purchase_order.supplier}) %>
+  <%= render :partial => 'purchase_order_supplies/begin_table' %>
+  <%= render :partial => 'purchase_order_supplies/purchase_order_supply_in_one_line', :collection => purchase_order.purchase_order_supplies, :locals => { :supplier => purchase_order.supplier } %>
+  <%= render :partial => 'purchase_order_supplies/end_table', :locals => { :purchase_order => purchase_order, :supplier =>  purchase_order.supplier} %>
 </div>

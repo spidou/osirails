@@ -14,18 +14,18 @@ module PurchaseRequestsHelper
   end
   
   def generate_list_action(request)
-  result = "#{purchase_request_link(request, :link_text => "")} " + display_purchase_request_cancel_button(request)
+    result = "#{purchase_request_link(request, :link_text => "")} " + display_purchase_request_cancel_button(request)
   end
   
   def display_request_supply_add_button(purchase_request)
     return "" unless is_form_view? 
-   content_tag( :p, link_to_function "Ajouter une fourniture" do |page|
-     page.insert_html :bottom, "purchase_request_supply_form", :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
-                                                 :object  => PurchaseRequestSupply.new,
-                                                 :locals  => { :purchase_request => purchase_request }
-     last_element = page['purchase_request_supply_form'].select('.resource').last
-     last_element.visual_effect :highlight
-   end )
+    content_tag( :p, link_to_function "Ajouter une fourniture" do |page|
+      page.insert_html :bottom, "purchase_request_supply_form", :partial => 'purchase_request_supplies/purchase_request_supply_in_one_line',
+                                                                :object  => PurchaseRequestSupply.new,
+                                                                :locals  => { :purchase_request => purchase_request }
+      last_element = page['purchase_request_supply_form'].select('.resource').last
+      last_element.visual_effect :highlight
+    end )
   end
   
   def display_purchase_request_supplies_list(purchase_request)

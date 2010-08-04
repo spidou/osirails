@@ -13,7 +13,7 @@ module PurchaseOrderSuppliesHelper
   def display_supply_show_button(supply, message = nil)
     text = "Voir les détails de cette fourniture"
     message ||= " #{text}"
-    supply.type == "Consumable" ? url = consumable_path(supply) : url = commodity_path(supply)
+    url = send("#{supply.class.name.underscore}_path", supply)
     link_to( image_tag( "view_16x16.png",
                         :alt => text,
                         :title => text ) + message,
@@ -44,8 +44,7 @@ module PurchaseOrderSuppliesHelper
   
   def display_purchase_order_supply_total(purchase_order_supply, supplier_id = 0, supply_id = 0)
     if purchase_order_supply.new_record?
-      if purchase_order_supply.get_supplier_supply(supplier_id, supply_id)
-        supplier_supply = purchase_order_supply.get_supplier_supply(supplier_id, supply_id)
+      if supplier_supply = purchase_order_supply.get_supplier_supply(supplier_id, supply_id)
         purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f)/100))
       else
         return 0

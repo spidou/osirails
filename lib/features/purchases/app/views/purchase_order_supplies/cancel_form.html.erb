@@ -4,26 +4,23 @@
 
 <%= generate_purchase_order_supply_contextual_menu(@purchase_order_supply) %>
 
-<h1>Fourniture de l'ordre</h1>
+<h1>Annulation d'une fourniture d'un ordre d'achat</h1>
 <div class="presentation_medium">
+  <h2>Fourniture concernée</h2>
   <table class="no_nth">
     <%= render :partial => "purchase_order_supplies/array_head" %>
     <tbody>
       <%= render :partial => "purchase_order_supplies/purchase_order_supply_in_one_line_for_view", :object => @purchase_order_supply %>
     </tbody>
-    <tfoot>
-    </tfoot>
   </table>
   
-  <h2>Annuler la fourniture.</h2>
+  <h2>Annuler la fourniture</h2>
   <% form_for [@purchase_order_supply.purchase_order, @purchase_order_supply], :url => { :action => "cancel" } do |f| %>
     <%= f.error_messages %>
     <p>
       <%= f.label :cancelled_comment %>
       <%= f.text_area_autoresize :cancelled_comment %>
     </p>
-    <p>
-      <%= f.form_buttons %>
-    </p>
+    <%= f.form_buttons %>
   <% end %>
 </div>

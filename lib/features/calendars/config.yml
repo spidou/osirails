@@ -10,7 +10,7 @@ menus:
   calendars:
     title: Calendrier
     description: Votre calendrier personnel
-    position: 8
+    position: 9
     children:
       events:
         title: Evenements

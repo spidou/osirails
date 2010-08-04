@@ -12,7 +12,7 @@ menus:
   purchases:
     title: Achats
     description: "Gestion des ordres et des demandes d'achats"
-    position: 10
+    position: 6
     children:
       purchase_orders:
         title: "Gestion des ordres d'achats"
@@ -48,11 +48,10 @@ menus:
 configurations:
   purchase_request_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour une demande d'achat"
-    value: "%y%m$number(3)"
+    value: "DA.%y%m$number(3)"
   purchase_order_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour un ordre d'achat"
-    value: "PO%y%m$number(3)"
+    value: "BC.%y%m$number(3)"
   parcel_reference_pattern:
     description: "Modèle permettant la génération du numéro de référence unique pour un colis"
-    value: "P%y%m$number(4)"
-    
+    value: "CO.%y%m$number(4)"

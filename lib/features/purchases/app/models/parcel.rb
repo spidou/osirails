@@ -1,18 +1,18 @@
 class Parcel < ActiveRecord::Base
-
+  STATUS_PROCESSING_BY_SUPPLIER = 1
+  STATUS_SHIPPED                = 2
+  STATUS_RECEIVED_BY_FORWARDER  = 3
+  STATUS_RECEIVED               = 4
+  STATUS_CANCELLED              = 5
+  
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference :prefix => :purchases  
-    
+  
   has_many :parcel_items
   has_many :purchase_order_supplies, :through => :parcel_items
   
+  belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   belongs_to :delivery_document, :class_name => "PurchaseDocument"
-  
-  STATUS_PROCESSING_BY_SUPPLIER = 1
-  STATUS_SHIPPED = 2
-  STATUS_RECEIVED_BY_FORWARDER = 3
-  STATUS_RECEIVED = 4
-  STATUS_CANCELLED = 5
   
   cattr_accessor :form_labels
   @@form_labels = Hash.new
@@ -55,26 +55,25 @@ class Parcel < ActiveRecord::Base
                                 :if => :received?
   validates_date :received_on, :on_or_before => Date::today,
                                 :on_or_before_message  => "ne doit pas être APRÈS la date d'aujourd'hui (%s)",
-                                :if => :received?  
+                                :if => :received?
   
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
   validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."
   validates_presence_of :reference
-
+  
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER , STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
   validates_inclusion_of :status, :in => [ STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_shipped?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED, STATUS_CANCELLED], :if => :was_received_by_forwarder?
   validates_inclusion_of :status, :in => [ STATUS_RECEIVED ], :if => :was_received?   
   
-  validates_persistence_of :reference, :unless => :new_record?
-  validates_persistence_of :shipped_on, :if => :shipped_on_was
-  validates_persistence_of :conveyance, :if => :conveyance_was
-  validates_persistence_of :previsional_delivery_date, :if => :previsional_delivery_date_was
-  validates_persistence_of :received_by_forwarder_on, :if => :received_by_forwarder_on_was
-  validates_persistence_of :awaiting_pick_up, :if => :awaiting_pick_up_was
-  validates_persistence_of :received_on, :if => :received_on_was
-  validates_persistence_of :cancelled_comment, :if => :cancelled_at_was  
+  validates_persistence_of :shipped_on,                 :if => :shipped_on_was
+  validates_persistence_of :conveyance,                 :if => :conveyance_was
+  validates_persistence_of :previsional_delivery_date,  :if => :previsional_delivery_date_was
+  validates_persistence_of :received_by_forwarder_on,   :if => :received_by_forwarder_on_was
+  validates_persistence_of :awaiting_pick_up,           :if => :awaiting_pick_up_was
+  validates_persistence_of :received_on,                :if => :received_on_was
+  validates_persistence_of :cancelled_comment,          :if => :cancelled_at_was  
   
   validates_associated :parcel_items
   validates_associated :delivery_document, :if => :received_on
@@ -96,14 +95,14 @@ class Parcel < ActiveRecord::Base
   end
   
   def get_purchase_order
-    self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first  
+    self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first
   end
   
   def automatically_put_purchase_order_status_to_processing_by_supplier
     purchase_order = get_purchase_order
-    purchase_order.process_by_supplier unless purchase_order.was_processing_by_supplier? 
+    purchase_order.process_by_supplier unless purchase_order.was_processing_by_supplier?
   end
-    
+  
   def validates_lenght_of_parcel_item_selected
     result = 0;
     for parcel_item in parcel_items
@@ -121,19 +120,19 @@ class Parcel < ActiveRecord::Base
   def processing_by_supplier?
     status == STATUS_PROCESSING_BY_SUPPLIER
   end
-
+  
   def shipped?
     status == STATUS_SHIPPED
   end
-
+  
   def received_by_forwarder?
     status == STATUS_RECEIVED_BY_FORWARDER
   end
-
+  
   def received?
     status == STATUS_RECEIVED
   end
-
+  
   def cancelled?
     return false if new_record?
     counter = 0
@@ -143,23 +142,23 @@ class Parcel < ActiveRecord::Base
     return true if counter == parcel_items.count
     status == STATUS_CANCELLED
   end
-
+  
   def was_processing_by_supplier?
     status_was == STATUS_PROCESSING_BY_SUPPLIER
   end
-
+  
   def was_shipped?
     status_was == STATUS_SHIPPED
   end
-
+  
   def was_received_by_forwarder?
     status_was == STATUS_RECEIVED_BY_FORWARDER
   end
-
+  
   def was_received?
     status_was == STATUS_RECEIVED
   end
-
+  
   def was_cancelled?
     return false if new_record?
     counter = 0
@@ -180,11 +179,11 @@ class Parcel < ActiveRecord::Base
   def can_be_processed_by_supplier?
     new_record?
   end
-
+  
   def can_be_shipped?
     (was_processing_by_supplier? and !was_cancelled? and !was_shipped?) || (was_processing_by_supplier? and !was_cancelled?)
   end
-
+  
   def can_be_received_by_forwarder?
     (was_shipped? || can_be_shipped?) and !was_cancelled? and !was_received_by_forwarder?
   end
@@ -212,7 +211,7 @@ class Parcel < ActiveRecord::Base
     end
     false
   end
-
+  
   def receive_by_forwarder
     if can_be_received_by_forwarder?
       self.status = STATUS_RECEIVED_BY_FORWARDER
@@ -220,7 +219,7 @@ class Parcel < ActiveRecord::Base
     end
     false
   end
-
+  
   def receive
     if can_be_received?
       self.status = STATUS_RECEIVED
@@ -243,7 +242,7 @@ class Parcel < ActiveRecord::Base
       parcel_items.build(attributes) if attributes[:purchase_order_supply_id]
     end
   end
-
+  
   def build_parcel_items_with_purchase_order_supplies(purchase_order_supplies)
     for purchase_order_supply in purchase_order_supplies
       if !purchase_order_supply.cancelled? && purchase_order_supply.remaining_quantity_for_parcel != 0 &&
