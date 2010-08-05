@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../purchases_test'
 
 class ParcelTest < ActiveSupport::TestCase
@@ -20,7 +19,7 @@ class ParcelTest < ActiveSupport::TestCase
     
     setup do
       @purchase_order = create_purchase_order(1, 2)
-      @parcel = build_parcel
+      @parcel = Parcel.new
     end
     
     subject {@parcel}
@@ -68,8 +67,8 @@ class ParcelTest < ActiveSupport::TestCase
     
     context "with parcel items associated" do
       setup do
-        @parcel = build_parcel
-        @parcel = build_parcel_item_for(@parcel)
+        @parcel = Parcel.new
+        @parcel = build_parcel_item_for(@parcel, nil)
       end
        
       should "have valid parcel_items" do
@@ -95,11 +94,10 @@ class ParcelTest < ActiveSupport::TestCase
           assert_equal 1, @parcel.parcel_items.count
         end
       end
-      
     end 
   end
   
-  context "A parcel" do
+   context "A parcel" do
     
     setup do
       @parcel = processing_by_supplier_parcel
@@ -381,5 +379,4 @@ class ParcelTest < ActiveSupport::TestCase
     end
     
   end
-  
 end

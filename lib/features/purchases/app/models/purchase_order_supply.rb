@@ -38,22 +38,18 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   def automatically_put_parcel_items_status_to_cancelled
     for parcel_item in parcel_items
-      if parcel_item.can_be_cancelled? && canceller
+      if parcel_item.can_be_cancelled? && self.cancelled_by_id
         parcel_item.cancelled_comment = "cancelled"
-        parcel_item.canceller = canceller
+        parcel_item.cancelled_by_id = self.cancelled_by_id
         parcel_item.cancel 
       end
     end
   end
   
   def purchase_order_supply_associated_to_report
-    if (issued_item = issued_parcel_item) && canceller
+    if (issued_item = issued_parcel_item) && self.cancelled_by_id
       issued_item.issue_purchase_order_supply_id = nil
-      issued_item.must_be_reshipped = nil
       issued_item.issued_at = nil
-      issued_item.issues_quantity = nil
-      issued_item.issues_comment = nil
-      issued_item.send_back_to_supplier = nil
       issued_item.save
     end
   end
@@ -119,10 +115,9 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def cancel
     if can_be_cancelled?
       self.cancelled_at = Time.now
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
   
   def get_supplier_supply(supplier_id = nil, supply_id = nil)
@@ -132,23 +127,20 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def get_unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
-    return 0 unless get_supplier_supply(supplier_id, supply_id)
     supplier_supply = get_supplier_supply(supplier_id, supply_id)
-    taxes = supplier_supply.taxes
-    if fob_unit_price
-      fob_unit_price
-    else
-      fob_unit_price = supplier_supply.unit_price
+    if supplier_supply
+      self.fob_unit_price = supplier_supply.fob_unit_price unless self.fob_unit_price
+      self.taxes = supplier_supply.taxes  unless self.taxes
     end
-    supplier_supply.fob_unit_price * ( 1 + ( taxes / 100.0 ) )
+    self.fob_unit_price.to_f * ( 1.0 + ( self.taxes.to_f / 100.0 ) )
   end
   
   def get_purchase_order_supply_total
-    quantity.to_f * get_unit_price_including_tax.to_f
+    self.quantity.to_f * get_unit_price_including_tax.to_f
   end
   
   def get_taxes
-    return taxes if taxes
+    return self.taxes if self.taxes
     return 0 unless get_supplier_supply
     get_supplier_supply.taxes
   end
@@ -196,10 +188,6 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def integer_checked(purchase_request_supply)
     return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
     return 0
-  end
-  
-  def get_purchase_order_supply_total
-    quantity.to_f * get_unit_price_including_tax.to_f
   end
   
   def are_parcel_or_parcel_items_all_cancelled?

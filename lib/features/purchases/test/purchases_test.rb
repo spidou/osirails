@@ -1,17 +1,19 @@
-Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + "/fixtures/"
+require 'test/test_helper'
+
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 
 class Test::Unit::TestCase
   
   fixtures :all
   
-  def build_purchase_request_supply(supply_id = 1, quantity = 400, date = Date.today + 1.week)  
+  def build_purchase_request_supply(supply_id = supplies(:first_commodity).id, quantity = 400, date = Date.today + 1.week)  
     {:supply_id => supply_id, :expected_quantity => quantity, :expected_delivery_date => date}
   end
   
   def build_purchase_request_supplies_for(purchase_request, counter)
   
     counter.times do |count|
-      purchase_request.purchase_request_supplies.build(build_purchase_request_supply(counter, (rand(400) + 1)))
+      purchase_request.purchase_request_supplies.build(build_purchase_request_supply(count, (rand(400) + 1)))
     end
     purchase_request
     
@@ -25,7 +27,6 @@ class Test::Unit::TestCase
     flunk "purchase request should be saved" if purchase_request.new_record?
     flunk "purchase request supplies should be saved" if purchase_request.purchase_request_supplies.select(&:new_record?).any?
     return purchase_request
-    
   end
   
   def create_cancelled_purchase_request
@@ -61,7 +62,7 @@ class Test::Unit::TestCase
   
   def create_association_with_purchase_order_draft(purchase_request_supply)
     
-    first_purchase_order =  create_purchase_order(1, 2)
+    first_purchase_order =  create_a_draft_purchase_order
     first_request_order_supply = RequestOrderSupply.new({:purchase_request_supply_id => purchase_request_supply.id,
                                                           :purchase_order_supply_id => first_purchase_order.purchase_order_supplies.first.id})
     first_request_order_supply.save!
@@ -70,7 +71,7 @@ class Test::Unit::TestCase
   
   def create_association_with_purchase_order_confirmed(purchase_request_supply)
   
-    second_purchase_order =  create_purchase_order(1, 3)  
+    second_purchase_order =  create_a_confirmed_purchase_order  
     second_request_order_supply = RequestOrderSupply.new({:purchase_request_supply_id => purchase_request_supply.id,
                                                           :purchase_order_supply_id => second_purchase_order.purchase_order_supplies.first.id})
    
@@ -102,7 +103,7 @@ class Test::Unit::TestCase
   
   def create_confirmed_purchase_order(user_id, supplier_id)
     purchase_order = create_purchase_order(user_id, supplier_id)
-    purchase_document_build(purchase_order, :purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
+    purchase_order.build_quotation_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
     flunk "Confirmation failed" unless purchase_order.confirm
     purchase_order
   end
@@ -161,8 +162,15 @@ class Test::Unit::TestCase
     purchase_order
   end
   
-  def build_parcel_item_for(parcel)
-    purchase_order = create_confirmed_purchase_order(1, 2)
+  def create_a_confirmed_purchase_order
+    purchase_order = create_a_draft_purchase_order
+    purchase_order.build_quotation_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_document.gif")))
+    flunk "purchase order should be confirmed" unless purchase_order.confirm
+    purchase_order.reload
+  end
+  
+  def build_parcel_item_for(parcel, purchase_order)
+    purchase_order = create_a_confirmed_purchase_order unless purchase_order
     parcel.status = Parcel::STATUS_PROCESSING_BY_SUPPLIER
     parcel.processing_by_supplier_since = Date.today
     parcel.parcel_items.build({:purchase_order_supply_id => purchase_order.purchase_order_supplies.first.id,
@@ -178,24 +186,17 @@ class Test::Unit::TestCase
     parcel
   end
   
-  def build_parcel
-    Parcel.new
-  end
-  
-  def create_parcel
-    parcel = build_parcel
-  end
   
   def create_valid_parcel
-    parcel = create_parcel
-    parcel = build_parcel_item_for(parcel)
+    parcel = Parcel.new
+    parcel = build_parcel_item_for(parcel, nil)
     flunk "parcel should be saved" unless parcel.save!
     parcel
   end
   
   def processing_by_supplier_parcel
-    parcel = create_parcel
-    parcel = build_parcel_item_for(parcel)
+    parcel = Parcel.new
+    parcel = build_parcel_item_for(parcel, nil)
     flunk "parcel should in processing_by_supplier_parcel status" unless parcel.process_by_supplier
     flunk "parcel should in processing_by_supplier_parcel status" unless parcel.processing_by_supplier?
     parcel
@@ -234,5 +235,16 @@ class Test::Unit::TestCase
     flunk "parcel should be cancelled" unless parcel.cancelled?
     parcel
   end
+  
+  def create_a_purchase_order_supply_reported_for(parcel_item)
+    parcel_item.must_be_reshipped = "1"
+    parcel_item.issues_comment = "purchase_order_supply reported"
+    parcel_item.issues_quantity = parcel_item.quantity
+    flunk "parcel_item should be reported" unless parcel_item.report
+    flunk "issue_purchase_order_supply should be create" if parcel_item.issue_purchase_order_supply.new_record?
+    parcel_item.issue_purchase_order_supply
+  end
+  
+  
   
 end

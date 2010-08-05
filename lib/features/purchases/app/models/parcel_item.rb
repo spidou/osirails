@@ -115,9 +115,8 @@ class ParcelItem < ActiveRecord::Base
   def report
     if can_be_reported?
       self.issued_at = Time.now
-      self.save
-    else
-      false
+      return self.save
     end
+    false
   end
 end

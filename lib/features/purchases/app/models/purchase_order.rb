@@ -299,18 +299,12 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def total_price(cancelled = false)
-    total_price = 0
-    total_price_cancelled = 0
+    total_price = total_price_cancelled = 0
     for purchase_order_supply in purchase_order_supplies
-      supplier_supply = purchase_order_supply.get_supplier_supply
-      if !purchase_order_supply.cancelled?
-        total_price += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
-      else
-        total_price_cancelled += (purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100+supplier_supply.taxes.to_f)/100)))
-      end
+      total_price += purchase_order_supply.get_purchase_order_supply_total unless purchase_order_supply.cancelled?
+      total_price_cancelled += purchase_order_supply.get_purchase_order_supply_total if purchase_order_supply.cancelled?
     end
-    return total_price_cancelled+total_price if cancelled
-    total_price
+    cancelled ? (total_price_cancelled + total_price) : total_price
   end
   
   def associated_purchase_request_supplies

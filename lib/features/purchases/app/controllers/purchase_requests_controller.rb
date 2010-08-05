@@ -7,7 +7,6 @@ class PurchaseRequestsController < ApplicationController
   # GET /purchase_requests?filter=cancelled
   # GET /purchase_requests?filter=in_progress
   def index  
-    conditions = "1" if params[:filter] == 'all'
     conditions = "cancelled_by_id IS NULL" if (params[:filter]) == nil or (params[:filter]) == 'in_progress'
     conditions = "cancelled_by_id IS NOT NULL"  if (params[:filter]) == 'cancelled' 
     @requests = PurchaseRequest.all(:conditions => conditions, :order => "created_at DESC").paginate(:page => params[:page], :per_page => PurchaseRequest::REQUESTS_PER_PAGE)

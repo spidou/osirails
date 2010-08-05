@@ -1,4 +1,3 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../purchases_test'
 
 class ParcelItemTest < ActiveSupport::TestCase
@@ -12,7 +11,7 @@ class ParcelItemTest < ActiveSupport::TestCase
     
     setup do
       @parcel = Parcel.new
-      @parcel = build_parcel_item_for(@parcel)
+      @parcel = build_parcel_item_for(@parcel, nil)
     end
     
     should "have a valid quantity" do
@@ -22,8 +21,8 @@ class ParcelItemTest < ActiveSupport::TestCase
     
     should "have a good total price" do
       
-      expected_result = 18000.0   #quantity * fob_unit_price * ((100 + taxes) // 100)
-                                  # => 1000.0 * (12.0 * ((100.0 + 50.0) / 100.0)) 
+      expected_result = 844.0   #quantity * fob_unit_price * ((100 + taxes) // 100)
+                                  # => 100.0 * (8.0 * ((100.0 + 5.5) / 100.0)) 
                                 
       assert_equal expected_result, @parcel.parcel_items.first.get_parcel_item_total
     end
@@ -48,7 +47,7 @@ class ParcelItemTest < ActiveSupport::TestCase
   context "A parcel item" do
     setup do
       @parcel = Parcel.new
-      @parcel = build_parcel_item_for(@parcel)
+      @parcel = build_parcel_item_for(@parcel, nil)
       @parcel.save!
     end
       
@@ -84,13 +83,13 @@ class ParcelItemTest < ActiveSupport::TestCase
       
       should "be reported with a good quantity" do
         @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
-        @parcel.parcel_items.first.issues_quantity = 1000
+        @parcel.parcel_items.first.issues_quantity = 100
         assert @parcel.parcel_items.first.report
       end
       
-      should "not be reported with a good quantity" do
+      should "not be reported with a bad quantity" do
         @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
-        @parcel.parcel_items.first.issues_quantity = 10000
+        @parcel.parcel_items.first.issues_quantity = 1000
         @parcel.parcel_items.first.report
         assert_match /quantity not valid/, @parcel.parcel_items.first.errors.on(:issues_quantity)
       end
@@ -98,7 +97,7 @@ class ParcelItemTest < ActiveSupport::TestCase
       context "and which is reported whithout reshipment" do
         setup do
           @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
-          @parcel.parcel_items.first.issues_quantity = 1000
+          @parcel.parcel_items.first.issues_quantity = 100
           flunk "parcel_item should be reported" unless @parcel.parcel_items.first.report
         end
           
@@ -119,10 +118,10 @@ class ParcelItemTest < ActiveSupport::TestCase
         end
       end
       
-      context "and which is reported whith reshipment" do
+      context "and which is reported with reshipment" do
         setup do
           @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
-          @parcel.parcel_items.first.issues_quantity = 1000
+          @parcel.parcel_items.first.issues_quantity = 100
           @parcel.parcel_items.first.must_be_reshipped = true
           flunk "parcel_item should be reported" unless @parcel.parcel_items.first.report
         end
