@@ -11,4 +11,9 @@ module PurchaseRequestSuppliesHelper
     return "traité" if purchase_request_supply.treated? 
   end
   
+  def display_type_for(supply)
+    return "Matière première" if supply.type == "Commodity"
+    return "Consomable" if supply.type == "Consumable" 
+  end
+  
 end

@@ -1,5 +1,6 @@
 <% purchase_order_supply = purchase_order_supply_in_one_line_for_view %>
 <% parcels = purchase_order_supply.parcels.compact %>
+<% supplier_supply = purchase_order_supply.get_supplier_supply(purchase_order_supply.purchase_order.supplier.id, purchase_order_supply.supply_id)  %>
 
 <% class_attributes = 'class="even"' if (purchase_order_supply_in_one_line_for_view_counter % 2) == 0 %>
 <% class_attributes = 'class="disabled"' if (purchase_order_supply.was_cancelled? || purchase_order_supply.purchase_order.was_cancelled?) %>
@@ -11,6 +12,9 @@
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.supply.designation %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_supplier_reference(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_supplier_designation(purchase_order_supply) %></td>
+  
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_type_for(purchase_order_supply.supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.supply.stock_quantity %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_associated_purchase_requests(purchase_order_supply) %></td>
 <% if parcels.empty? %>
     <td></td>
@@ -20,9 +24,10 @@
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_reshipped_from_parcel(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_status(purchase_order_supply) %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_current_status_date(purchase_order_supply) %></td>
-  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.quantity %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_unit_price_including_tax(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= purchase_order_supply.quantity %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %> class="price"><%= display_purchase_order_supply_total(purchase_order_supply) %></td>
+  <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= "#{supplier_supply.lead_time}&#160;jour(s)" %></td>
   <td <%= "rowspan=\"#{parcels.count}\"" unless parcels.empty? %>><%= display_purchase_order_supply_buttons(purchase_order_supply) %></td>
 </tr>
 

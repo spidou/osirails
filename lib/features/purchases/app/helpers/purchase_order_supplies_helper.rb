@@ -131,4 +131,8 @@ module PurchaseOrderSuppliesHelper
     return "" 
   end
   
+  def display_type_for(supply)
+    return "Matière première" if supply.type == "Commodity"
+    return "Consomable" if supply.type == "Consumable" 
+  end
 end

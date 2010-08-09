@@ -8,7 +8,16 @@
       <%= f.hidden_field(:supply_id) %>
     </td>
     <td>
+       <%= purchase_request_supply.supply.reference %>
+    </td>
+    <td>
        <%= purchase_request_supply.supply.designation %>
+    </td>
+    <td>
+       <%= display_type_for(purchase_request_supply.supply) %>
+    </td>
+    <td>
+       <%= purchase_request_supply.supply.stock_quantity %>
     </td>
     <td>
       <% if f.form_view? %>

@@ -58,7 +58,7 @@ class PurchaseRequestSupply < ActiveRecord::Base
     PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? }
   end
 
-  def self.get_all_suppliers_for_all_purchase_request_supplies
+  def self.get_all_suppliers_for_all_pending_purchase_request_supplies
     suppliers = get_all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
     suppliers.sort_by{ |s| s.merge_purchase_request_supplies.count }.reverse
   end

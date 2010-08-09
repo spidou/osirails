@@ -1,8 +1,9 @@
 <%
 purchase_order_supply = purchase_order_supply_in_one_line
-supplier_supply = purchase_order_supply.get_supplier_supply || SupplierSupply.new
+supplier_supply = purchase_order_supply.get_supplier_supply(supplier.id, purchase_order_supply.supply_id) || SupplierSupply.new
 unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_request_supplies
 %>
+
 
 <% fields_for "purchase_order[purchase_order_supply_attributes][]", purchase_order_supply, :index => nil do |f| %>
   <tr class="purchase_order_supply resource" style="<%= 'display:none' if purchase_order_supply.should_destroy? %>"> 
@@ -17,11 +18,14 @@ unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_reques
     <td><%= purchase_order_supply.supply.designation %></td>
     <td><%= f.text_field(:supplier_reference, :value => purchase_order_supply.supplier_reference ||  supplier_supply.supplier_reference, :size => 4) %></td>
     <td><%= f.text_field(:supplier_designation, :value => purchase_order_supply.supplier_designation ||  supplier_supply.supplier_designation) %></td>
-    <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
+    <td><%= display_type_for(purchase_order_supply.supply)%></td>
+    <td><%= purchase_order_supply.supply.stock_quantity%></td>
     <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
     <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
     <td class="PU_TTC" ><%= purchase_order_supply.get_unit_price_including_tax(supplier.id, purchase_order_supply.supply.id) %></td>
+    <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
     <td class="sum" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
+    <td><%= "#{supplier_supply.lead_time}&#160;jour(s)"%></td>
     <td class="text">
       <% for purchase_request_supply in unconfirmed_purchase_request %>
         <%= link_to purchase_request_supply.purchase_request.reference + verify_validity_of_purchase_request_supply(purchase_request_supply), purchase_request_path(purchase_request_supply.purchase_request), :popup => true %><br/>
@@ -34,7 +38,12 @@ unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_reques
     </td>
     <td>
       <% for purchase_request_supply in unconfirmed_purchase_request %>
-        <%= check_box_tag purchase_request_supply.id, purchase_request_supply.id, purchase_order_supply.boolean_checked(purchase_request_supply), :data_quantity => purchase_request_supply.expected_quantity.to_s, :idx => purchase_order_supply.integer_checked(purchase_request_supply) , :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
+        <%= check_box_tag purchase_request_supply.id, 
+            purchase_request_supply.id, 
+            purchase_order_supply.request_order_supplies_already_exist_for?(purchase_request_supply), 
+            :data_quantity => purchase_request_supply.expected_quantity.to_s, 
+            :idx => (purchase_order_supply.request_order_supplies_already_exist_for?(purchase_request_supply) ? 1 : 0) , 
+            :onchange => "update_purchase_request_supplies_ids(this, this.up('.resource'))" %> <br>
       <% end %>
     </td>
     <td>

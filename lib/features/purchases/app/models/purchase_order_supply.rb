@@ -99,7 +99,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   def not_receive_associated_parcels?
     for parcel_item in parcel_items
-      return false if parcel_item.parcel.status == Parcel::STATUS_RECEIVED
+      return false if parcel_item.parcel.received?
     end
     return true
   end
@@ -121,6 +121,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def get_supplier_supply(supplier_id = nil, supply_id = nil)
+    debugger
     supplier_id ||= purchase_order.supplier_id if purchase_order
     supply_id   ||= supply.id if supply
     SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, supply_id)
@@ -161,7 +162,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
     res
   end
   
-  def can_add_request_supply_id(id)
+  def can_add_request_supply_id?(id)
     if purchase_request_supplies_deselected_ids
       purchase_request_supplies_deselected_ids.split(';').each do |s|
         return false if (s != '' && id.to_i == s.to_i)
@@ -173,21 +174,15 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def get_purchase_request_supplies_ids
     res = []
     unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
-      if request_order_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } and can_add_request_supply_id(purchase_request_supply.id)
+      if request_order_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } and can_add_request_supply_id?(purchase_request_supply.id)
         res << purchase_request_supply.id
       end
     end
     res.join(";")
   end
   
-  def boolean_checked(purchase_request_supply)
-    return true if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
-    return false
-  end
-  
-  def integer_checked(purchase_request_supply)
-    return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
-    return 0
+  def request_order_supplies_already_exist_for?(purchase_request_supply)
+    request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id?(purchase_request_supply.id) 
   end
   
   def are_parcel_or_parcel_items_all_cancelled?

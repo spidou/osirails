@@ -298,13 +298,13 @@ class PurchaseOrder < ActiveRecord::Base
     false
   end
   
-  def total_price(cancelled = false)
+  def total_price
     total_price = total_price_cancelled = 0
     for purchase_order_supply in purchase_order_supplies
       total_price += purchase_order_supply.get_purchase_order_supply_total unless purchase_order_supply.cancelled?
       total_price_cancelled += purchase_order_supply.get_purchase_order_supply_total if purchase_order_supply.cancelled?
     end
-    cancelled ? (total_price_cancelled + total_price) : total_price
+    cancelled? ? (total_price_cancelled + total_price) : total_price
   end
   
   def associated_purchase_request_supplies
@@ -316,16 +316,15 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def build_with_purchase_request_supplies(list_of_supplies)
-    self.purchase_order_supplies = list_of_supplies.collect do |purchase_request_supply|
+    list_of_supplies.collect do |purchase_request_supply|
       supplier_supply = SupplierSupply.find_by_supply_id_and_supplier_id(purchase_request_supply.supply_id, self.supplier_id)
-      purchase_order_supply = PurchaseOrderSupply.new(:supply_id      => purchase_request_supply.supply_id, 
-                                                      :quantity       => purchase_request_supply.expected_quantity,
-                                                      :taxes          => supplier_supply.taxes, 
-                                                      :fob_unit_price => supplier_supply.fob_unit_price)
+      purchase_order_supply = self.purchase_order_supplies.build({:supply_id => purchase_request_supply.supply_id, 
+                                                                  :quantity       => purchase_request_supply.expected_quantity,
+                                                                  :taxes          => supplier_supply.taxes, 
+                                                                  :fob_unit_price => supplier_supply.fob_unit_price})
       purchase_order_supply.unconfirmed_purchase_request_supplies.each do |e|
         purchase_order_supply.request_order_supplies.build(:purchase_request_supply_id => e.id)
       end
-      purchase_order_supply
     end
   end
   
@@ -337,7 +336,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_add_parcel?
-    (status == STATUS_CONFIRMED or status == STATUS_PROCESSING_BY_SUPPLIER) and is_remaining_quantity_for_parcel? and !cancelled?
+    (confirmed? or processing_by_supplier?) and is_remaining_quantity_for_parcel? and !cancelled?
   end
   
   def quotation_document_attributes=(quotation_document_attributes)
@@ -351,9 +350,9 @@ class PurchaseOrder < ActiveRecord::Base
   def put_purchase_order_status_to_cancelled
     self.purchase_order_supplies.reload
     if cancelled?
-      self.cancelled_by_id = purchase_order_supplies.all(:order => "cancelled_at").last unless status == STATUS_CANCELLED
-      self.cancelled_comment = "Annulation de toutes les fournitures commandées dans cet ordre." unless status == STATUS_CANCELLED
-      self.cancel unless status == STATUS_CANCELLED
+      self.cancelled_by_id = purchase_order_supplies.all(:order => "cancelled_at").last unless was_cancelled?
+      self.cancelled_comment = "Annulation de toutes les fournitures commandées dans cet ordre." unless was_cancelled?
+      self.cancel unless was_cancelled?
       self.reload
     end
   end
