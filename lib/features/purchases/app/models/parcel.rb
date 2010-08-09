@@ -60,6 +60,7 @@ class Parcel < ActiveRecord::Base
   validates_presence_of :conveyance , :if => :shipped?, :message => "Veuillez renseigner le transport."
   validates_presence_of :cancelled_comment, :if => :cancelled_at, :message => "Veuillez indiquer la raison de l'annulation."
   validates_presence_of :reference
+  validates_presence_of :canceller, :if => :cancelled_by_id
   
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER, STATUS_RECEIVED ], :if => :new_record?
   validates_inclusion_of :status, :in => [ STATUS_PROCESSING_BY_SUPPLIER, STATUS_SHIPPED, STATUS_RECEIVED_BY_FORWARDER , STATUS_RECEIVED, STATUS_CANCELLED ], :if => :was_processing_by_supplier?
@@ -134,13 +135,7 @@ class Parcel < ActiveRecord::Base
   end
   
   def cancelled?
-    return false if new_record?
-    counter = 0
-    for parcel_item in parcel_items
-      counter += 1 if parcel_item.cancelled?
-    end
-    return true if counter == parcel_items.count
-    status == STATUS_CANCELLED
+    new_record? ? false : ( parcel_items.count == parcel_items.select{ |pi| pi.cancelled? }.size ? true : ( status == STATUS_CANCELLED ) )
   end
   
   def was_processing_by_supplier?
@@ -160,20 +155,12 @@ class Parcel < ActiveRecord::Base
   end
   
   def was_cancelled?
-    return false if new_record?
-    counter = 0
-    for parcel_item in parcel_items
-      counter += 1 if parcel_item.was_cancelled?
-    end
-    return true if counter == parcel_items.count
-    status_was == STATUS_CANCELLED
+    new_record? ? false : (parcel_items.count == parcel_items.select{ |pi| pi.was_cancelled? }.size ? true : ( status_was == STATUS_CANCELLED ) )
   end
   
   def can_be_processed_with_associated_parcel_items?
-    for parcel_item in parcel_items
-      return false if parcel_item.quantity > parcel_item.purchase_order_supply.remaining_quantity_for_parcel
-    end
-    return true
+    parcel_items.each{ |pi| return false if(pi.quantity > pi.purchase_order_supply.remaining_quantity_for_parcel) }
+    true
   end
   
   def can_be_processed_by_supplier?

@@ -1,6 +1,6 @@
 <%
 purchase_order_supply = purchase_order_supply_in_one_line
-supplier_supply = purchase_order_supply.get_supplier_supply || SupplierSupply.new
+supplier_supply = purchase_order_supply.supplier_supply || SupplierSupply.new
 unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_request_supplies
 %>
 
@@ -20,7 +20,7 @@ unconfirmed_purchase_request = purchase_order_supply.unconfirmed_purchase_reques
     <td><%= f.text_field(:quantity, :size => 3, :onchange => "refresh_lign(this.up('.resource'))", :class => "quantity" )%></td>
     <td><%= f.text_field(:fob_unit_price, :value => purchase_order_supply.fob_unit_price || supplier_supply.fob_unit_price, :size => 3, :class => "fob_unit_price", :onchange => "refresh_lign(this.up('.resource'))" ) %> </td>
     <td><%= f.text_field(:taxes, :value => purchase_order_supply.taxes || supplier_supply.taxes, :size => 2, :class => "taxes", :onchange => "refresh_lign(this.up('.resource'))") %></td>
-    <td class="PU_TTC" ><%= purchase_order_supply.get_unit_price_including_tax(supplier.id, purchase_order_supply.supply.id) %></td>
+    <td class="PU_TTC" ><%= purchase_order_supply.unit_price_including_tax(supplier.id, purchase_order_supply.supply.id) %></td>
     <td class="sum" ><%= display_purchase_order_supply_total(purchase_order_supply, supplier.id, purchase_order_supply.supply.id) %></td>
     <td class="text">
       <% for purchase_request_supply in unconfirmed_purchase_request %>

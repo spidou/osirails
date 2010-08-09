@@ -18,7 +18,7 @@ class ParcelTest < ActiveSupport::TestCase
   context "A new parcel" do
     
     setup do
-      @purchase_order = create_purchase_order(1, 2)
+      @purchase_order = create_purchase_order
       @parcel = Parcel.new
     end
     
@@ -46,8 +46,6 @@ class ParcelTest < ActiveSupport::TestCase
        @parcel.parcel_item_attributes = [{:purchase_order_supply_id => @purchase_order.purchase_order_supplies.first.id, 
                                           :quantity => @purchase_order.purchase_order_supplies.first.quantity, 
                                           :selected => "1"}]
-                                          
-                                        
         @parcel_item = @parcel.parcel_items.first 
       end
       

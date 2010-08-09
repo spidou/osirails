@@ -21,7 +21,9 @@ class PurchaseOrderSupply < ActiveRecord::Base
   @@form_labels[:cancelled_comment] = "Veuillez saisir la raison de l'annulation :"
   
   validates_presence_of :supply_id, :supplier_designation, :supplier_reference
+  validates_presence_of :supply, :if => :supply_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
+  validates_presence_of :canceller, :if => :cancelled_by_id
   
   validates_numericality_of :quantity, :fob_unit_price , :greater_than => 0
   validates_numericality_of :taxes, :greater_than_or_equal_to => 0
@@ -59,18 +61,12 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def remaining_quantity_for_parcel
-    result = 0
-    for parcel_item in parcel_items
-      result += (parcel_item.quantity.to_i)  unless parcel_item.parcel.cancelled? || parcel_item.cancelled?
-    end
-    quantity - result
+    quantity - parcel_items.reject{ |pi| pi.parcel.cancelled? || pi.cancelled? }.collect{ |pi| pi.quantity.to_i }.sum
   end
   
   def verify_all_parcel_items_are_received?
-    for parcel_item in parcel_items
-      return false unless parcel_item.parcel.cancelled? || parcel_item.cancelled? || parcel_item.parcel.received?
-    end
-    return true
+    parcel_items.each{ |pi| return false unless pi.parcel.cancelled? || pi.cancelled? || pi.parcel.received? }
+    true
   end
   
   def count_quantity_in_parcel_items
@@ -98,14 +94,13 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def not_receive_associated_parcels?
-    for parcel_item in parcel_items
-      return false if parcel_item.parcel.status == Parcel::STATUS_RECEIVED
-    end
-    return true
+    parcel_items.each{ |pi| return false if pi.parcel.status == Parcel::STATUS_RECEIVED }
+    true
   end
   
   def can_be_cancelled?
-    !new_record? && !purchase_order.draft? && !purchase_order.completed? && ((untreated? && !was_cancelled? && !purchase_order.cancelled?) || (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?))
+#    !new_record? && !purchase_order.draft? && !purchase_order.completed? && ((untreated? && !was_cancelled? && !purchase_order.cancelled?) || (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?))
+    !new_record? && !purchase_order.draft? && !purchase_order.completed? && !was_cancelled? && !purchase_order.cancelled? && (untreated? || not_receive_associated_parcels?)
   end
   
   def can_be_deleted?
@@ -120,29 +115,27 @@ class PurchaseOrderSupply < ActiveRecord::Base
     false
   end
   
-  def get_supplier_supply(supplier_id = nil, supply_id = nil)
+  def supplier_supply(supplier_id = nil, supply_id = nil)
     supplier_id ||= purchase_order.supplier_id if purchase_order
     supply_id   ||= supply.id if supply
     SupplierSupply.find_by_supplier_id_and_supply_id(supplier_id, supply_id)
   end
   
-  def get_unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
-    supplier_supply = get_supplier_supply(supplier_id, supply_id)
-    if supplier_supply
-      self.fob_unit_price = supplier_supply.fob_unit_price unless self.fob_unit_price
-      self.taxes = supplier_supply.taxes  unless self.taxes
+  def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
+    pos_supplier_supply = supplier_supply(supplier_id, supply_id)
+    if pos_supplier_supply
+      self.fob_unit_price = pos_supplier_supply.fob_unit_price unless self.fob_unit_price
+      self.taxes = pos_supplier_supply.taxes  unless self.taxes
     end
     self.fob_unit_price.to_f * ( 1.0 + ( self.taxes.to_f / 100.0 ) )
   end
   
-  def get_purchase_order_supply_total
-    self.quantity.to_f * get_unit_price_including_tax.to_f
+  def purchase_order_supply_total
+    self.quantity.to_f * unit_price_including_tax.to_f
   end
   
-  def get_taxes
-    return self.taxes if self.taxes
-    return 0 unless get_supplier_supply
-    get_supplier_supply.taxes
+  def taxes
+    self[:taxes] ||= supplier_supply.taxes.to_f
   end
   
   def not_cancelled_purchase_request_supplies
@@ -167,7 +160,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
         return false if (s != '' && id.to_i == s.to_i)
       end 
     end
-    return true
+    true
   end
   
   def get_purchase_request_supplies_ids

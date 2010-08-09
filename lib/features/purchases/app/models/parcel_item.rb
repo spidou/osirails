@@ -7,11 +7,12 @@ class ParcelItem < ActiveRecord::Base
   belongs_to :issue_purchase_order_supply, :class_name => "PurchaseOrderSupply"
   
   validates_presence_of :purchase_order_supply_id
+  validates_presence_of :purchase_order_supply, :if => :purchase_order_supply_id
   validates_presence_of :cancelled_comment, :if => :cancelled_at
+  validates_presence_of :issues_comment, :if => :issued_at
+  validates_presence_of :canceller, :if => :cancelled_by_id
   
   validates_numericality_of :quantity, :greater_than => 0
-  
-  validates_presence_of :issues_comment, :if => :issued_at
   validates_numericality_of :issues_quantity, :greater_than => 0, :if => :issued_at
   
   validate :validates_issue_quantity_for_parcel_item, :if => :issued_at
@@ -100,7 +101,7 @@ class ParcelItem < ActiveRecord::Base
   end
   
   def get_parcel_item_total
-    quantity.to_f * purchase_order_supply.get_unit_price_including_tax.to_f
+    quantity.to_f * purchase_order_supply.unit_price_including_tax.to_f
   end
   
   def cancel

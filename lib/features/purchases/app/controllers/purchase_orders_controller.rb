@@ -89,8 +89,8 @@ class PurchaseOrdersController < ApplicationController
     render :partial => 'purchase_orders/search_supplier_name_auto_complete', :object => @items, :locals => { :fields => "name", :keywords => keywords }
   end
   
-  # GET /get_purchase_order_supply_in_one_line?supply_id=:supply_id&supplier_id=:supplier_id
-  def get_purchase_order_supply_in_one_line
+  # GET /purchase_order_supply_in_one_line?supply_id=:supply_id&supplier_id=:supplier_id
+  def purchase_order_supply_in_one_line
     @supply = Supply.find(params[:supply_id])
     @supplier = Supplier.find(params[:supplier_id])
     @purchase_order_supply = PurchaseOrderSupply.new(:supply_id => @supply.id)

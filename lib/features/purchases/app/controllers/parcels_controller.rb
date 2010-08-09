@@ -176,8 +176,8 @@ class ParcelsController < ApplicationController
     end
   end
 
-  # GET /get_parcel_status_partial?status=:status 
-  def get_parcel_status_partial
+  # GET /parcel_status_partial?status=:status 
+  def parcel_status_partial
     render :partial => 'parcels/receive_forms' if params[:status].to_i == Parcel::STATUS_RECEIVED
     render :partial => 'parcels/ship_forms' if params[:status].to_i == Parcel::STATUS_SHIPPED
     render :partial => 'parcels/receive_by_forwarder_forms' if params[:status].to_i == Parcel::STATUS_RECEIVED_BY_FORWARDER

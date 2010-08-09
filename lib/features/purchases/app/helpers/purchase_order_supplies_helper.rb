@@ -38,13 +38,13 @@ module PurchaseOrderSuppliesHelper
   end
   
   def display_purchase_order_supply_unit_price_including_tax(purchase_order_supply)
-    unit_price = purchase_order_supply.get_unit_price_including_tax
+    unit_price = purchase_order_supply.unit_price_including_tax
     unit_price.to_f.to_s(2) + "&nbsp;&euro;"
   end
   
   def display_purchase_order_supply_total(purchase_order_supply, supplier_id = 0, supply_id = 0)
     if purchase_order_supply.new_record?
-      if supplier_supply = purchase_order_supply.get_supplier_supply(supplier_id, supply_id)
+      if supplier_supply = purchase_order_supply.supplier_supply(supplier_id, supply_id)
         purchase_order_supply.quantity.to_f * (supplier_supply.fob_unit_price.to_f * ((100 + supplier_supply.taxes.to_f)/100))
       else
         return 0
@@ -102,16 +102,16 @@ module PurchaseOrderSuppliesHelper
   
   def display_purchase_order_supply_supplier_designation(purchase_order_supply)
     return purchase_order_supply.supplier_designation if purchase_order_supply.supplier_designation
-    purchase_order_supply.get_supplier_supply.supplier_designation
+    purchase_order_supply.supplier_supply.supplier_designation
   end
   
   def display_purchase_order_supply_supplier_reference(purchase_order_supply)
-    return unless purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
-    purchase_order_supply.supplier_reference or purchase_order_supply.get_supplier_supply.supplier_reference
+    return unless purchase_order_supply.supplier_reference or purchase_order_supply.supplier_supply.supplier_reference
+    purchase_order_supply.supplier_reference or purchase_order_supply.supplier_supply.supplier_reference
   end
   
   def display_purchase_order_lead_time(purchase_order_supply)
-    lead_time = purchase_order_supply.get_supplier_supply.lead_time
+    lead_time = purchase_order_supply.supplier_supply.lead_time
     if !lead_time
       "Non renseigné"
     elsif lead_time == 0

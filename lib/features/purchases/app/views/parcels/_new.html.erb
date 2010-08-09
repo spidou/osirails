@@ -7,7 +7,7 @@
         <% options = parcel_all_actions_without_cancel(parcel) %>
         <%= f.label :status, "D&eacute;finir l'état &agrave;" %>
         <%= f.select(:status, options) %>
-        <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => get_parcel_status_partial_url(), :with => :status %>
+        <%= observe_field 'parcel_status', :update => 'parcel_status_form', :url => parcel_status_partial_url(), :with => :status %>
       </div>
       <div id='parcel_status_form'>
         <% if parcel.processing_by_supplier? || !parcel.status %>

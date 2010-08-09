@@ -159,8 +159,8 @@ module PurchaseOrdersHelper
     html.compact.join("<br />")
   end
   
-  def display_purchase_order_total_price(purchase_order, cancelled = false)
-    purchase_order.total_price(cancelled).to_f.to_s(2) + "&nbsp;&euro;"
+  def display_purchase_order_total_price(purchase_order)
+    purchase_order.total_price.to_f.to_s(2) + "&nbsp;&euro;"
   end
   
   def display_purchase_order_creator(purchase_order)

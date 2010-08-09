@@ -28,7 +28,11 @@ class PurchaseRequest < ActiveRecord::Base
   attr_accessor :global_date
   
   validates_presence_of :user_id, :employee_id, :service_id, :reference
+  validates_presence_of :user, :if => :user_id
+  validates_presence_of :employee, :if => :employee_id
+  validates_presence_of :service, :if => :service_id
   validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
+  validates_presence_of :canceller, :if => :cancelled_by_id
   
   validates_length_of :purchase_request_supplies, :minimum => 1, :message => "Vous devez choisir au moins une fourniture"
   

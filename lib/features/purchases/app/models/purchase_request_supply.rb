@@ -23,6 +23,10 @@ class PurchaseRequestSupply < ActiveRecord::Base
   belongs_to :canceller, :class_name => "User", :foreign_key => :cancelled_by_id
   
   validates_presence_of :supply_id
+  validates_presence_of :supply, :if => :supply_id
+  validates_presence_of :cancelled_by_id, :if => :cancelled_at
+  validates_presence_of :canceller, :if => :cancelled_by_id
+  
   validates_persistence_of :expected_delivery_date
   
   validates_numericality_of :expected_quantity, :greater_than => 0

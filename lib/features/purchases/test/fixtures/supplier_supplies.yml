@@ -1,7 +1,7 @@
 first_supplier_supply:
   id: 1
-  supplier: first_supplier
-  supply: first_commodity
+  supplier_id: 1
+  supply_id: 1
   supplier_reference: 987654321
   lead_time: 10
   fob_unit_price: 100
@@ -9,8 +9,8 @@ first_supplier_supply:
   
 second_supplier_supply:
   id: 2
-  supplier: first_supplier
-  supply: first_consumable
+  supplier_id: 1
+  supply_id: 2
   supplier_reference: 987654322
   lead_time: 5
   fob_unit_price: 10

@@ -41,8 +41,9 @@ class PurchaseOrder < ActiveRecord::Base
   @@form_labels[:cancelled_comment] = "Raison de l'annulation :"
   
   validates_presence_of :user_id, :supplier_id
-  validates_presence_of :cancelled_by_id, :cancelled_comment, :cancelled_at, :if => :cancelled?
-  validates_presence_of :quotation_document, :if => :confirmed?
+  validates_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled?
+  validates_presence_of :canceller, :if => :cancelled_by_id
+  validates_presence_of :quotation_document, :reference, :if => :confirmed?
   
   validate :validates_length_of_purchase_order_supplies
   
@@ -65,12 +66,11 @@ class PurchaseOrder < ActiveRecord::Base
                         :order => "purchase_orders.cancelled_at DESC, purchase_orders.completed_on DESC"
   
   before_validation :build_supplier_supplies, :build_associated_request_order_supplies
-  before_validation :update_reference_only_on_confirm
   
   before_validation_on_create :initialize_to_draft
   
-  after_save  :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
-  after_save  :destroy_request_order_supplies_deselected
+  after_save :save_purchase_order_supplies, :save_supplier_supplies, :save_request_order_supplies
+  after_save :destroy_request_order_supplies_deselected
 
   before_destroy :can_be_deleted?
   
@@ -79,18 +79,12 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def not_cancelled_purchase_order_supplies
-    tab_not_cancelled_purchase_order_supplies = []
-    for purchase_order_supply in purchase_order_supplies
-      tab_not_cancelled_purchase_order_supplies.push purchase_order_supply unless purchase_order_supply.cancelled?
-    end
-    tab_not_cancelled_purchase_order_supplies
+    purchase_order_supplies.select{ |pos| !pos.cancelled? }
   end
   
   def are_all_purchase_order_supplies_treated?
     return false if not_cancelled_purchase_order_supplies.empty?
-    for purchase_order_supply in not_cancelled_purchase_order_supplies
-      return false unless purchase_order_supply.treated?
-    end
+    not_cancelled_purchase_order_supplies.each{ |pos| return false unless pos.treated? }
     return true
   end
   
@@ -124,14 +118,14 @@ class PurchaseOrder < ActiveRecord::Base
   
   def build_supplier_supplies
     purchase_order_supplies.each do |e|
-        unless SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
-          supplier_supplies.build(:supplier_id          => supplier_id,
-                                  :supply_id            => e.supply_id,
-                                  :supplier_reference   => e.supplier_reference,
-                                  :supplier_designation => e.supplier_designation,
-                                  :fob_unit_price       => e.fob_unit_price,
-                                  :taxes                => e.taxes)
-        end
+      unless SupplierSupply.find_by_supply_id_and_supplier_id(e.supply_id, supplier_id)
+        supplier_supplies.build(:supplier_id          => supplier_id,
+                                :supply_id            => e.supply_id,
+                                :supplier_reference   => e.supplier_reference,
+                                :supplier_designation => e.supplier_designation,
+                                :fob_unit_price       => e.fob_unit_price,
+                                :taxes                => e.taxes)
+      end
     end
   end
   
@@ -157,10 +151,6 @@ class PurchaseOrder < ActiveRecord::Base
         e.destroy()
       end
     end
-  end
-  
-  def update_reference_only_on_confirm
-    update_reference if (confirmed_on and !confirmed_on_was)
   end
   
   def purchase_order_supply_attributes=(purchase_order_supply_attributes)
@@ -191,13 +181,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def cancelled?
-    return false if new_record?
-    return true if status == STATUS_CANCELLED
-    counter = 0
-    for purchase_order_supply in purchase_order_supplies
-      counter += 1 if purchase_order_supply.cancelled?
-    end
-    return true if counter == purchase_order_supplies.size and counter != 0
+    new_record? ? false : ( status==STATUS_CANCELLED ? true : ((purchase_order_supplies.select(&:was_cancelled?).size == purchase_order_supplies.size and (purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false)))
   end
   
   def was_draft?
@@ -217,18 +201,11 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def was_cancelled?
-    return false if new_record?
-    return true if status_was == STATUS_CANCELLED
-    counter = 0
-    for purchase_order_supply in purchase_order_supplies
-      counter += 1 if purchase_order_supply.was_cancelled?
-    end
-    return true if counter == purchase_order_supplies.size
-    
+    new_record? ? false : (status_was == STATUS_CANCELLED ? true : ((purchase_order_supplies.select(&:was_cancelled?).size == purchase_order_supplies.size and purchase_order_supplies.select(&:was_cancelled?).size != 0) ? true : false))
   end
   
   def can_be_confirmed?
-    was_draft? and !was_cancelled? and !was_confirmed?
+    was_draft? and !was_cancelled? and !was_confirmed? and can_be_confirmed_with_purchase_request_supplies_associated?
   end
   
   def can_be_processed_by_supplier?
@@ -252,19 +229,20 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def can_be_confirmed_with_purchase_request_supplies_associated?
-    for purchase_order_supply in purchase_order_supplies
-      for purchase_request_supply in purchase_order_supply.purchase_request_supplies
-        if purchase_request_supply.confirmed_purchase_order_supply
-          errors.add(:purchase_order_supplies, "Certains &eacute;l&eacute;ments emp&ecirc;chent la confirmation de votre ordre d'achat")
-          return false 
+    purchase_order_supplies.each{ |pos|
+      pos.purchase_request_supplies.each{ |prs|
+        if prs.confirmed_purchase_order_supply
+          errors.add(:purchase_order_supplies, "Certains éléments empêchent la confirmation de votre ordre d'achats")
+          return false
         end
-      end
-    end
+      }
+    }
     return true
   end
   
   def confirm
-    if can_be_confirmed? && can_be_confirmed_with_purchase_request_supplies_associated?
+    if can_be_confirmed?
+      update_reference
       self.confirmed_on = Time.now
       self.status = STATUS_CONFIRMED
       return self.save
@@ -298,13 +276,8 @@ class PurchaseOrder < ActiveRecord::Base
     false
   end
   
-  def total_price(cancelled = false)
-    total_price = total_price_cancelled = 0
-    for purchase_order_supply in purchase_order_supplies
-      total_price += purchase_order_supply.get_purchase_order_supply_total unless purchase_order_supply.cancelled?
-      total_price_cancelled += purchase_order_supply.get_purchase_order_supply_total if purchase_order_supply.cancelled?
-    end
-    cancelled ? (total_price_cancelled + total_price) : total_price
+  def total_price
+    cancelled? ? @purchase_order_supplies.collect(&:purchase_order_supply_total).sum : purchase_order_supplies.reject(&:cancelled?).collect(&:purchase_order_supply_total).sum
   end
   
   def associated_purchase_request_supplies
@@ -330,9 +303,7 @@ class PurchaseOrder < ActiveRecord::Base
   end
   
   def is_remaining_quantity_for_parcel?
-    for purchase_order_supply in purchase_order_supplies
-      return true if purchase_order_supply.remaining_quantity_for_parcel > 0 && !purchase_order_supply.was_cancelled?
-    end
+    purchase_order_supplies.each{ |pos| return true if (pos.remaining_quantity_for_parcel > 0 && !pos.was_cancelled?) }
     false
   end
   
@@ -354,7 +325,6 @@ class PurchaseOrder < ActiveRecord::Base
       self.cancelled_by_id = purchase_order_supplies.all(:order => "cancelled_at").last unless status == STATUS_CANCELLED
       self.cancelled_comment = "Annulation de toutes les fournitures commandées dans cet ordre." unless status == STATUS_CANCELLED
       self.cancel unless status == STATUS_CANCELLED
-      self.reload
     end
   end
 end

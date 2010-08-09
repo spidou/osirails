@@ -26,7 +26,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       context "with 'purchase_request_supply_attributes=' " do
         setup do
           flunk "purchase request should not have purchase request supplies" if @purchase_request.purchase_request_supplies.any?
-          @purchase_request.purchase_request_supply_attributes = [{:supply_id => 1, 
+          @purchase_request.purchase_request_supply_attributes = [{:supply_id => supplies("first_commodity").id, 
                                                               :expected_delivery_date => Date.today + 1.week, 
                                                               :expected_quantity => 200}]
            flunk "purchase request should  have purchase request supplies" unless (@purchase_request_supply  = @purchase_request.purchase_request_supplies.first)
@@ -40,13 +40,13 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       context "when saving purchase request" do
         
         setup do
-          @purchase_request.purchase_request_supplies.build({:supply_id => 2,
+          @purchase_request.purchase_request_supplies.build({:supply_id => supplies("second_commodity").id,
                                                               :expected_delivery_date => nil, 
                                                               :expected_quantity => 200})
           @purchase_request.global_date = Date.today + 1.day
-          @purchase_request.user_id = 1
-          @purchase_request.employee_id = 2
-          @purchase_request.service_id = 3
+          @purchase_request.user_id = users("admin_user").id
+          @purchase_request.employee_id = employees("john_doe").id
+          @purchase_request.service_id = services("direction_general").id
           flunk "purchase request should be saved" unless @purchase_request.save!
           flunk "purchase request supply should be saved" unless (@purchase_request_supply = @purchase_request.purchase_request_supplies.first)
           
@@ -76,9 +76,9 @@ class PurchaseRequestTest < ActiveSupport::TestCase
     setup do
       @purchase_request = PurchaseRequest.new()
       @purchase_request = build_purchase_request_supplies_for(@purchase_request, 2)
-      @purchase_request.user_id = 1
-      @purchase_request.employee_id = 2
-      @purchase_request.service_id = 3
+      @purchase_request.user_id = users("admin_user").id
+      @purchase_request.employee_id = employees("john_doe").id
+      @purchase_request.service_id = services("direction_general").id
       flunk "purchase request should be valid" unless @purchase_request.valid?
     end
     
@@ -180,7 +180,7 @@ class PurchaseRequestTest < ActiveSupport::TestCase
       end
       
       should "be able to be cancel" do
-        @purchase_request.cancelled_by_id = 1
+        @purchase_request.cancelled_by_id = users("admin_user").id
         @purchase_request.cancelled_comment = "cancelled test"
         assert @purchase_request.cancel
       end

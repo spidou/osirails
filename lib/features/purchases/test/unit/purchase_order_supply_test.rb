@@ -12,7 +12,6 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
   should_belong_to :purchase_order, :supply, :canceller
   
   should_validate_presence_of :supply_id, :supplier_designation, :supplier_reference
-  #should_validate_presence_of :cancelled_by_id, :cancelled_comment, :if => :cancelled_at
 
   should_validate_numericality_of :quantity, :fob_unit_price
   should_validate_numericality_of :taxes
@@ -53,23 +52,21 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
     end
     
     should "return a good fob unit price including taxes" do
-      
-      expected_result = 8.44  #fob_unit_price * ((100 + taxes) / 100)
-                              #8.0 * ((100.0 + 5.5) / 100.0)
-      assert_equal expected_result, @purchase_order_supply.get_unit_price_including_tax(@purchase_order, @purchase_order_supply.supply)
+      expected_result = 18  #fob_unit_price * (1 + ( taxes / 100))
+                            #     12       * (1 + (    50 / 100))
+      assert_equal expected_result, @purchase_order_supply.unit_price_including_tax(@purchase_order, @purchase_order_supply.supply)
     end
     
     should "return a good total price" do
-      
-      expected_result = 844.0   #quantity * fob_unit_price * ((100 + taxes) / 100)
-                              #100 * 8.0 * ((100.0 + 5.5) / 100.0)
-      assert_equal expected_result, @purchase_order_supply.get_purchase_order_supply_total
+      expected_result = 18000   #quantity * (fob_unit_price * (1 +( taxes / 100)))
+                                # => 1000 * ( 12            * (1 +(    50 / 100))) 
+      assert_equal expected_result, @purchase_order_supply.purchase_order_supply_total
     end
     
     context "with a purchase request existing for purchase_order" do
       setup do
-        @purchase_request = PurchaseRequest.new(:user_id => 1, :employee_id => 2, :service_id => 3)
-        @purchase_request.purchase_request_supplies.build(build_purchase_request_supply(@purchase_order_supply.supply_id, (rand(400) + 1)))
+        @purchase_request = PurchaseRequest.new(:user_id => users("admin_user").id, :employee_id => employees("john_doe").id, :service_id => services("direction_general").id)
+        @purchase_request.purchase_request_supplies.build(build_purchase_request_supply(:supply_id => @purchase_order_supply.supply_id, :expected_quantity =>(rand(400) + 1)))
         @purchase_request.save!
         flunk "purchase request should be saved" if @purchase_request.new_record?
         flunk "purchase request supplies should be saved" if @purchase_request.purchase_request_supplies.select(&:new_record?).any?
@@ -153,7 +150,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       should "NOT be treated" do
         assert !@purchase_order_supply.treated?
       end 
-    end 
+    end
     
     context "which have not receive parcel associated with remaining quantity" do
       setup do
@@ -173,10 +170,30 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         assert @purchase_order_supply.can_be_cancelled?
       end
       
+      should "NOT be untreated" do
+        assert !@purchase_order_supply.untreated?
+      end
+      
+      should "be processing_by_supplier" do
+        assert @purchase_order_supply.processing_by_supplier?
+      end
+      
+      should "NOT be treated" do
+        assert !@purchase_order_supply.treated?
+      end  
+      
+      should "remain quantity for a new parcel" do
+        assert_equal 500, @purchase_order_supply.remaining_quantity_for_parcel
+      end
+      
+      should "return a good total quantity" do
+        assert_equal 500, @purchase_order_supply.count_quantity_in_parcel_items
+      end
+      
       context "which is cancelled" do
         setup do
           @purchase_order_supply.cancelled_comment = "cancelled"
-          @purchase_order_supply.cancelled_by_id = 1
+          @purchase_order_supply.cancelled_by_id = users("admin_user").id
           flunk "purchase order supply should be cancel" unless @purchase_order_supply.cancel
         end
         
@@ -197,7 +214,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         setup do
           @purchase_order.purchase_order_supplies.each do |purchase_order_supply|
             purchase_order_supply.cancelled_comment = "cancelled"
-            purchase_order_supply.cancelled_by_id = 1
+            purchase_order_supply.cancelled_by_id = users("admin_user").id
             purchase_order_supply.cancel
           end
         end
@@ -205,26 +222,6 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         should "cancel automatically purchase order associated" do
           assert @purchase_order.cancelled?
         end
-      end
-      
-      should "NOT be untreated" do
-        assert !@purchase_order_supply.untreated?
-      end
-      
-      should "be processing_by_supplier" do
-        assert @purchase_order_supply.processing_by_supplier?
-      end
-      
-      should "NOT be treated" do
-        assert !@purchase_order_supply.treated?
-      end  
-      
-      should "remain quantity for a new parcel" do
-        assert_equal 50, @purchase_order_supply.remaining_quantity_for_parcel
-      end
-      
-      should "return a good total quantity" do
-        assert_equal 50, @purchase_order_supply.count_quantity_in_parcel_items
       end
     end
     
@@ -257,7 +254,7 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       end
       
       should "return a good total quantity" do
-        assert_equal 100, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 1000, @purchase_order_supply.count_quantity_in_parcel_items
       end
     end
     
@@ -286,18 +283,18 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       end  
       
       should "remain quantity for a new parcel" do
-        assert_equal 50, @purchase_order_supply.remaining_quantity_for_parcel
+        assert_equal 500, @purchase_order_supply.remaining_quantity_for_parcel
       end
       
       should "return a good total quantity" do
-        assert_equal 50, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 500, @purchase_order_supply.count_quantity_in_parcel_items
       end
     end
     
     context "which have a receive parcel associated without remaining quantity" do
       setup do
         @parcel = Parcel.new
-        @parcel = build_parcel_item_for(@parcel, @purchase_order)  
+        @parcel = build_parcel_item_for(@parcel, @purchase_order)
         @parcel = put_received_status_for(@parcel)
       end
       
@@ -330,14 +327,14 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
       end
       
       should "return a good total quantity" do
-        assert_equal 100, @purchase_order_supply.count_quantity_in_parcel_items
+        assert_equal 1000, @purchase_order_supply.count_quantity_in_parcel_items
       end
       
       context "when parcel_item is reported and issued_purchase_order_supply is cancelled" do
         
         setup do
           @issue_purchase_order_supply = create_a_purchase_order_supply_reported_for(@parcel.parcel_items.first).reload
-          @issue_purchase_order_supply.cancelled_by_id = 1
+          @issue_purchase_order_supply.cancelled_by_id = users("admin_user").id
           @issue_purchase_order_supply.cancelled_comment = "cancelled issue_purchase_order_supply"
           @parcel.reload
           flunk "issue_purchase_order_supply_should be cancelled" unless @issue_purchase_order_supply.cancel
@@ -356,5 +353,16 @@ class PurchaseOrderSupplyTest < ActiveSupport::TestCase
         end
       end
     end
+  end
+  
+  context 'A "purchase_order_supply" with associated with a draft "purchase_order" while cancellation' do
+    setup do
+      @purchase_order = create_a_draft_purchase_order
+      @purchase_order.purchase_order_supplies.first.cancelled_at = Time.now
+    end
+    
+    subject { @purchase_order.purchase_order_supplies.first }
+    
+    should_validate_presence_of :cancelled_by_id, :cancelled_comment
   end
 end

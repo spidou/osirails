@@ -20,10 +20,8 @@ class ParcelItemTest < ActiveSupport::TestCase
     end
     
     should "have a good total price" do
-      
-      expected_result = 844.0   #quantity * fob_unit_price * ((100 + taxes) // 100)
-                                  # => 100.0 * (8.0 * ((100.0 + 5.5) / 100.0)) 
-                                
+      expected_result = 18000   #quantity * (fob_unit_price * (1 *( taxes / 100)))
+                                # => 1000 * ( 12            * (1 *(    50 / 100))) 
       assert_equal expected_result, @parcel.parcel_items.first.get_parcel_item_total
     end
     
@@ -89,7 +87,7 @@ class ParcelItemTest < ActiveSupport::TestCase
       
       should "not be reported with a bad quantity" do
         @parcel.parcel_items.first.issues_comment = "parcel item issues comment"
-        @parcel.parcel_items.first.issues_quantity = 1000
+        @parcel.parcel_items.first.issues_quantity = 2000
         @parcel.parcel_items.first.report
         assert_match /quantity not valid/, @parcel.parcel_items.first.errors.on(:issues_quantity)
       end

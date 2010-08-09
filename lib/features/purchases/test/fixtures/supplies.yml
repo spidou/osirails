@@ -1,17 +1,27 @@
 first_commodity:
+  id: 1
   type: Commodity
   supply_sub_category: first_commodity_sub_category
   reference: 1001
   name: First Commodity
 
 first_consumable:
+  id: 7
   type: Consumable
   supply_sub_category: first_consumable_sub_category
-  reference: 1001
+  reference: 1002
   name: First Consumable
   
 second_commodity:
+  id: 2
   type: Commodity
   supply_sub_category: second_commodity_sub_category
-  reference: 1001
+  reference: 1003
   name: Second Commodity
+  
+second_consumable:
+  id: 8
+  type: Consumable
+  supply_sub_category: second_consumable_sub_category
+  reference: 1004
+  name: Second Consumable

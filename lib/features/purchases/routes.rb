@@ -7,16 +7,16 @@ ActionController::Routing::Routes.add_routes do |map|
   
   map.prepare_for_new 'prepare_for_new' , :controller => 'purchase_orders', :action => 'prepare_for_new'
   
-  map.get_purchase_order_supply_in_one_line 'get_purchase_order_supply_in_one_line',  :controller => 'purchase_orders', 
-                                    :action => 'get_purchase_order_supply_in_one_line', 
+  map.purchase_order_supply_in_one_line 'purchase_order_supply_in_one_line',  :controller => 'purchase_orders', 
+                                    :action => 'purchase_order_supply_in_one_line', 
                                     :method => :get
   
-  map.get_parcel_status_partial 'get_parcel_status_partial',  :controller => 'parcels', 
-                                    :action => 'get_parcel_status_partial', 
+  map.parcel_status_partial 'parcel_status_partial',  :controller => 'parcels', 
+                                    :action => 'parcel_status_partial', 
                                     :method => :get
   
-  map.get_purchase_request_supply_in_one_line 'get_purchase_request_supply_in_one_line',  :controller => 'purchase_requests', 
-                                    :action => 'get_purchase_request_supply_in_one_line', 
+  map.purchase_request_supply_in_one_line 'purchase_request_supply_in_one_line',  :controller => 'purchase_requests', 
+                                    :action => 'purchase_request_supply_in_one_line', 
                                     :method => :get
   
   map.auto_complete_for_supply_reference 'auto_complete_for_supply_reference',  :controller => 'purchase_orders', 
