@@ -57,13 +57,13 @@ class PurchaseRequestSupply < ActiveRecord::Base
     confirmed_purchase_order_supply
   end
   
-  def self.get_all_pending_purchase_request_supplies
+  def self.all_pending_purchase_request_supplies
     #OPTIMIZE use a SQL statement
     PurchaseRequestSupply.all.select{ |s| !s.cancelled? and !s.treated? }
   end
 
-  def self.get_all_suppliers_for_all_purchase_request_supplies
-    suppliers = get_all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
+  def self.all_suppliers_for_all_pending_purchase_request_supplies
+    suppliers = all_pending_purchase_request_supplies.collect{ |s| s.supply.suppliers }.flatten.uniq
     suppliers.sort_by{ |s| s.merge_purchase_request_supplies.count }.reverse
   end
 end

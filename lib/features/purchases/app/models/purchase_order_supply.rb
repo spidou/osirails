@@ -3,7 +3,6 @@ class PurchaseOrderSupply < ActiveRecord::Base
   
   has_many :request_order_supplies
   has_many :purchase_request_supplies, :through => :request_order_supplies
-  
   has_many :parcel_items
   has_many :parcels, :through => :parcel_items, :order => 'parcels.status, parcels.cancelled_at DESC, parcels.received_on DESC, parcels.received_by_forwarder_on DESC, parcels.shipped_on DESC, parcels.processing_by_supplier_since DESC'
   has_one  :issued_parcel_item, :class_name => "ParcelItem", :foreign_key => :issue_purchase_order_supply_id
@@ -43,7 +42,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
       if parcel_item.can_be_cancelled? && self.cancelled_by_id
         parcel_item.cancelled_comment = "cancelled"
         parcel_item.cancelled_by_id = self.cancelled_by_id
-        parcel_item.cancel 
+        parcel_item.cancel
       end
     end
   end
@@ -99,7 +98,6 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def can_be_cancelled?
-#    !new_record? && !purchase_order.draft? && !purchase_order.completed? && ((untreated? && !was_cancelled? && !purchase_order.cancelled?) || (not_receive_associated_parcels? && !cancelled? && !purchase_order.cancelled?))
     !new_record? && !purchase_order.draft? && !purchase_order.completed? && !was_cancelled? && !purchase_order.cancelled? && (untreated? || not_receive_associated_parcels?)
   end
   
@@ -122,11 +120,7 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def unit_price_including_tax(supplier_id = purchase_order.supplier, supply_id = supply.id)
-    pos_supplier_supply = supplier_supply(supplier_id, supply_id)
-    if pos_supplier_supply
-      self.fob_unit_price = pos_supplier_supply.fob_unit_price unless self.fob_unit_price
-      self.taxes = pos_supplier_supply.taxes  unless self.taxes
-    end
+    self.fob_unit_price ||= supplier_supply(supplier_id, supply_id).fob_unit_price.to_f
     self.fob_unit_price.to_f * ( 1.0 + ( self.taxes.to_f / 100.0 ) )
   end
   
@@ -135,7 +129,8 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def taxes
-    self[:taxes] ||= supplier_supply.taxes.to_f
+    self[:taxes] ||= supplier_supply.taxes.to_f if supplier_supply
+    self[:taxes]
   end
   
   def not_cancelled_purchase_request_supplies
@@ -143,18 +138,10 @@ class PurchaseOrderSupply < ActiveRecord::Base
   end
   
   def unconfirmed_purchase_request_supplies
-    res = []
-    for request_supply in not_cancelled_purchase_request_supplies
-      if new_record?
-        res.push(request_supply) unless request_supply.confirmed_purchase_order_supply
-      else
-        res.push(request_supply) if self.purchase_request_supplies.detect{|t| t.id == request_supply.id} || !request_supply.confirmed_purchase_order_supply
-      end
-    end
-    res
+    not_cancelled_purchase_request_supplies.select{ |prs| (new_record? and !prs.confirmed_purchase_order_supply) or (!new_record? and (self.purchase_request_supplies.detect{|t| t.id == prs.id} || !prs.confirmed_purchase_order_supply) ) }
   end
   
-  def can_add_request_supply_id(id)
+  def can_add_request_supply_id?(id)
     if purchase_request_supplies_deselected_ids
       purchase_request_supplies_deselected_ids.split(';').each do |s|
         return false if (s != '' && id.to_i == s.to_i)
@@ -166,27 +153,21 @@ class PurchaseOrderSupply < ActiveRecord::Base
   def get_purchase_request_supplies_ids
     res = []
     unconfirmed_purchase_request_supplies.each do |purchase_request_supply|
-      if request_order_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } and can_add_request_supply_id(purchase_request_supply.id)
+      if request_order_supplies.detect{ |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } and can_add_request_supply_id?(purchase_request_supply.id)
         res << purchase_request_supply.id
       end
     end
     res.join(";")
   end
   
-  def boolean_checked(purchase_request_supply)
-    return true if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
-    return false
-  end
-  
-  def integer_checked(purchase_request_supply)
-    return 1 if request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id(purchase_request_supply.id)
-    return 0
+  def request_order_supplies_already_exist_for?(purchase_request_supply)
+    request_order_supplies.detect { |t| t.purchase_request_supply_id == purchase_request_supply.id.to_i } && can_add_request_supply_id?(purchase_request_supply.id) 
   end
   
   def are_parcel_or_parcel_items_all_cancelled?
     for parcel_item in parcel_items
       return false if !parcel_item.was_cancelled? || !parcel_item.parcel.was_cancelled?
     end
-    return true
+    true
   end
 end

@@ -105,11 +105,11 @@ class ParcelTest < ActiveSupport::TestCase
     should_validate_presence_of :reference
     
     should "return purchase order associated" do
-      assert_not_nil @parcel.get_purchase_order
+      assert_not_nil @parcel.purchase_order
     end
     
     should "put automatically purchase order status to processing by supplier" do
-      assert @parcel.get_purchase_order.processing_by_supplier?
+      assert @parcel.purchase_order.processing_by_supplier?
     end
     
     context "which is in PROCESSING_BY_SUPPLIER status" do

@@ -95,13 +95,12 @@ class Parcel < ActiveRecord::Base
     end
   end
   
-  def get_purchase_order
+  def purchase_order
     self.parcel_items.first.purchase_order_supply.purchase_order if self.parcel_items.first
   end
   
   def automatically_put_purchase_order_status_to_processing_by_supplier
-    purchase_order = get_purchase_order
-    purchase_order.process_by_supplier unless purchase_order.was_processing_by_supplier?
+    self.purchase_order.process_by_supplier unless self.purchase_order.was_processing_by_supplier?
   end
   
   def validates_lenght_of_parcel_item_selected

@@ -17,7 +17,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order = PurchaseOrder.new
     redirect_to :action => :new, :supplier_id => params[:supplier_id] if params[:supplier_id]
     unless params[:choice] or params[:supplier_id]
-      @suppliers = PurchaseRequestSupply.get_all_suppliers_for_all_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
+      @suppliers = PurchaseRequestSupply.all_suppliers_for_all_pending_purchase_request_supplies.paginate(:page => params[:page], :per_page => PurchaseOrder::REQUESTS_PER_PAGE)
     end
   end
   

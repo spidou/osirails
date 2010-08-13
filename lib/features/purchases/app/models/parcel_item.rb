@@ -100,7 +100,7 @@ class ParcelItem < ActiveRecord::Base
     cancelled_at_was
   end
   
-  def get_parcel_item_total
+  def parcel_item_total
     quantity.to_f * purchase_order_supply.unit_price_including_tax.to_f
   end
   

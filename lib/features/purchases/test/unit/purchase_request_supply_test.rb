@@ -46,7 +46,7 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
       end
       
       should "be include in all pending purchase request supplies" do
-        assert PurchaseRequestSupply.get_all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.any?
+        assert PurchaseRequestSupply.all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.any?
       end
         
     end
@@ -72,7 +72,7 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
         end
         
         should "not be include in all pending purchase request supplies" do
-          assert PurchaseRequestSupply.get_all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.empty?
+          assert PurchaseRequestSupply.all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.empty?
         end
         
       end
@@ -96,7 +96,7 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
         end
         
         should "be include in all pending purchase request supplies" do
-          assert PurchaseRequestSupply.get_all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.any?
+          assert PurchaseRequestSupply.all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.any?
         end
         
       end  
@@ -117,7 +117,7 @@ class PurchaseRequestSupplyTest < ActiveSupport::TestCase
         end
         
         should "not be include in all pending purchase request supplies" do
-          assert PurchaseRequestSupply.get_all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.empty?
+          assert PurchaseRequestSupply.all_pending_purchase_request_supplies.select{|n| n.id == @purchase_request_supply.id}.empty?
         end 
     end
   end

@@ -19,9 +19,11 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
     <td></td>
     <td></td>
     <td></td>
+    <td></td>
   <% else %>
     <td><%= parcels.first.reference %></td>
     <td><%= display_parcel_previsional_deliveray_date(parcels.first) %></td>
+    <td><%= parcels.first.conveyance %></td>
     <td><%= display_parcel_current_status(parcels.first) %></td>
     <td><%= display_parcel_current_status_date(parcels.first) %></td>
     <td>
@@ -32,6 +34,7 @@ rowspan = parcels.any? ? "rowspan=\"#{parcels.size}\"" : ''
   <% end %>
   <td <%= rowspan %>><%= display_associated_purchase_requests(purchase_order) %></td>
   <td <%= rowspan %>><%= display_purchase_order_total_price(purchase_order) %></td>
+  <td <%= rowspan %>></td>
   <td <%= rowspan %>><%= display_purchase_order_buttons(purchase_order)%></td>
 </tr>
 
@@ -42,6 +45,7 @@ for parcel in parcels
     <tr class="<%= even %>">
       <td><%= parcel.reference %></td>
       <td><%= display_parcel_previsional_deliveray_date(parcel) %></td>
+      <td><%= parcel.conveyance %></td>
       <td><%= display_parcel_current_status(parcel) %></td>
       <td><%= display_parcel_current_status_date(parcel) %></td>
       <td>

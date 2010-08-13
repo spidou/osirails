@@ -15,6 +15,12 @@
           <%= f.label :employee %>
           <%= f.form_or_view(collection_select(:purchase_request, :employee_id, Employee.find(:all), :id, :fullname), :employee, :fullname)%>  
         </p>
+        <% if f.form_view? %>
+          <p>
+            <%= f.label :global_date %>
+            <%= f.calendar_date_select :global_date %>
+          </p>
+        <% end %>
       </div>
       <div>
         <% unless f.form_view? %>
@@ -28,12 +34,6 @@
           <%= f.form_or_view(collection_select(:purchase_request, :service_id, Service.find(:all), :id, :name), :service, :name)%>  
         </p>
       </div>
-        <% if f.form_view? %>
-          <p>
-            <%= f.label :global_date %>
-            <%= f.calendar_date_select :global_date %>
-          </p>
-        <% end %>
         <% unless f.form_view? %>
           <p>
           <%= f.label :statut %>

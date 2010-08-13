@@ -51,7 +51,7 @@ module PurchaseOrderSuppliesHelper
       end
     else
       return 0 unless purchase_order_supply
-      purchase_order_supply.get_purchase_order_supply_total.to_s(2) +"&nbsp;&euro;"
+      purchase_order_supply.purchase_order_supply_total.to_s(2) +"&nbsp;&euro;"
     end
   end
   
@@ -131,4 +131,8 @@ module PurchaseOrderSuppliesHelper
     return "" 
   end
   
+  def display_type_for(supply)
+    return "Matière première" if supply.type == "Commodity"
+    return "Consomable" if supply.type == "Consumable" 
+  end
 end

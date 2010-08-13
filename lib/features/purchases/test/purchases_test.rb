@@ -81,13 +81,13 @@ class Test::Unit::TestCase
       end
     end
   end
-  
-  def create_confirmed_purchase_order(user_id, supplier_id)
-    purchase_order = create_purchase_order(user_id, supplier_id)
-    purchase_order.build_quotation_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
-    flunk "Confirmation failed" unless purchase_order.confirm
-    purchase_order
-  end
+#  
+#  def create_confirmed_purchase_order(user_id, supplier_id)
+#    purchase_order = create_purchase_order(user_id, supplier_id)
+#    purchase_order.build_quotation_document(:purchase_document => File.new(File.join(Test::Unit::TestCase.fixture_path, "quotation_document.gif")))
+#    flunk "Confirmation failed" unless purchase_order.confirm
+#    purchase_order
+#  end
   
   def build_purchase_order_supplies(purchase_order, attributes = {})
     pos_size = purchase_order.purchase_order_supplies.size

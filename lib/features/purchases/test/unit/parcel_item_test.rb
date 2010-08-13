@@ -22,7 +22,7 @@ class ParcelItemTest < ActiveSupport::TestCase
     should "have a good total price" do
       expected_result = 18000   #quantity * (fob_unit_price * (1 *( taxes / 100)))
                                 # => 1000 * ( 12            * (1 *(    50 / 100))) 
-      assert_equal expected_result, @parcel.parcel_items.first.get_parcel_item_total
+      assert_equal expected_result, @parcel.parcel_items.first.parcel_item_total
     end
     
     context "which have a invalid quantity" do

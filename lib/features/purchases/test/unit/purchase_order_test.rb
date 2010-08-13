@@ -286,8 +286,7 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       end
       
       should 'have 2 "purchase_request_supplies" associated' do
-        counter = @purchase_order.purchase_order_supplies.select{ |s| s.purchase_request_supplies.any? }.size
-        assert_equal 2, counter
+        assert_equal 2, @purchase_order.purchase_order_supplies.select{ |s| s.purchase_request_supplies.any? }.size
       end
     
       context ', then deselected' do
@@ -931,8 +930,8 @@ class PurchaseOrderTest < ActiveSupport::TestCase
       assert !@purchase_order.cancel
     end
     
-    should 'have a total price equal to 0000 with cancelled purchase_order_supplies counted' do
-      assert_equal 31800, @purchase_order.total_price
+    should 'have a total price equal to 30720 with cancelled purchase_order_supplies counted' do
+      assert_equal 30720, @purchase_order.total_price
     end
   end # end context 'A cancelled "purchase_order"' #
 end
