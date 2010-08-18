@@ -83,6 +83,8 @@ class Employee < ActiveRecord::Base
   before_save :case_managment
   after_update :save_iban
   
+  journalize :attributes => [:birth_date, :first_name, :last_name, :civility_id], :attachments => :avatar, :subresources => [:address, :numbers, {:jobs => :create_and_destroy}]
+  
   cattr_accessor :pattern_error, :form_labels
   @@pattern_error = false
   

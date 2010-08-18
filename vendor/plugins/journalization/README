@@ -1,0 +1,404 @@
+= Journalization (v0.1)
+
+* Source: http://github.com/rOnnie974/journalization
+* Environment: created under Rails 2.1.0 and ruby 1.8.7
+
+== Bugs & Feedback
+Bug reports and feedback are welcome via ronnie (dot) baret (at) gmail (dot) com
+
+== Overview
+This plugin is simply writing into journals all changes done on an ActiveRecord 
+object, from its direct attributes to its subresources when they are made at 
+the same time, and displaying them with an helper and simple partials.
+
+With Journalization, we assume that there are two different types of models: 
+those that act on journalization, and those that are journalized. That's 
+why this plugin is delivered with three modules to be implemented:
+- Journalization::Models::Actor for the actor of the journalization (mainly
+it is your User class) with the act_on_journalization_with method;
+- Journalization::Models::Subject for the models that will be journalized;
+- Journalization::Controllers::ActorSetting to link the actor in the session 
+to the journalization process.
+
+== Setup
+
+First:
+
+  $ script/plugin install git@github.com:rOnnie974/journalization.git
+
+To add the journals, journal_lines and journal_identifiers tables to your 
+project, run the following command:
+
+  $ script/generate journalization_migration
+  
+Then migrate your project database:
+  
+  $ rake db:migrate
+
+== Basic usage
+
+Models you want to be journalized will call the <tt>journalize</tt> method,
+delivered with several params.
+
+For each call of the `save` method (after a `create` or a `update` call) on
+an ActiveRecord object, a Journal will be created with as much lines 
+(JournalLine) as changes according to the journalization configuration.
+
+Each line records the property changed, its old value and its new value. Its 
+journal keeps the datetime of the action with the created_at attribute.
+
+  To journalize changes on an only one attribute:
+
+    class Car < ActiveRecord::Base
+      journalize :attributes => :name
+    end
+    
+  Or on several attributes:
+  
+    class Car < ActiveRecord::Base
+      belongs_to :brand
+      
+      journalize :attributes => [:name, :purchased_on, :brand_id]
+    end
+    
+Journalization manage Paperclip objects since their changes are journalized
+when the file name is not the same before and after a save. If not the file
+name stay unchanged, the file size is compared. Then, the old and new 
+file_name are recorded as old and new value in the journal_line.
+    
+  To journalize changes on Paperclip objects:
+  
+    class Car < ActiveRecord::Base
+      has_attached_file :photo
+      
+      journalize :attachments => :photo
+    end
+    
+  Or on several Paperclip objects:
+  
+    class Car < ActiveRecord::Base
+      has_attached_file :photo
+      has_attached_file :guide
+      
+      journalize :attachments => [:photo, :guide]
+    end
+    
+  Different params types can be called together:
+  
+    class Car < ActiveRecord::Base
+      has_attached_file :photo
+      
+      journalize :attributes => :name, :attachments => :photo
+    end
+    
+Call the <tt>acts_on_journalization_with</tt> method to define a class as 
+journalization actor, with a method_name as param identifying it for 
+display in the view.
+
+WARNING: If you do not perform this step, journalization will work but
+journals will not have associated actors.
+
+  In your User class (or another class with the same role):
+  
+    class User < ActiveRecord::Base
+      acts_on_journalization_with :fullname
+      
+      def fullname
+        "#{self.first_name} #{self.last_name}"
+      end
+    end
+    
+Call the <tt>set_journalization_actor</tt> method to link the current user
+in the session with the journalization process. 
+
+WARNING: Journalization is compatible with the acts_as_authenticated plugin
+since it uses the current_user method to catch the user in the session. If
+you do not work with the acts_as_authenticated plugin (or with a similar
+behaviour), the set_journalization_actor_object method in the 
+Journalization::Controllers::ActorSetting module has to be modified.
+
+  In your controller (directly in ApplicationController should be better):
+  
+    class ApplicationController < ActionController::Base
+      set_journalization_actor
+    end
+    
+By default, <tt>set_journalization_actor</tt> only deals with create and
+update controller methods. You can specify other methods by passing an array
+of symbols to the call. If so, you have to add explicitely the create and
+and update methods.
+  
+  In your controller:
+  
+    class ApplicationController < ActionController::Base
+      set_journalization_actor
+    end
+    
+    class CarsController < ApplicationController
+      set_journalization_actor [:create, :custom_update]
+    end
+
+To display the journals :
+
+  - add the journalization_helper and journalization.css to your controller,
+  
+    class CarsController < ApplicationController
+      helper :journalization
+    end
+    
+    … or directly in the ApplicationController.
+    
+  - call journalization.css in header, and the following helper in your views,
+      
+    # app/views/layouts/default.html.erb  
+    <head>
+      <%= stylesheet_link_tag "journalization" %>
+    </head>
+      
+    # app/views/cars/show.html.erb
+    <%= display_journals_list(@car) %>
+    
+== Journalizing subresources
+
+Journalization also manage subresources in case when they are modified and
+saved at the same time as its parent resource, for example with an 
+after_save callback.
+
+Let's take a short example with our Car class:
+
+  class Car < ActiveRecord::Base
+    has_one  :document
+    has_many :wheels
+  end
+    
+A journalization should be interesting at two different levels:
+  (1) An evolution of the collections
+  (2) A modification inside the collection
+  
+  Details:
+    (1) With an instance of Car called @car, we would be able to know how 
+      and when @car.wheel_ids were modified from [1,2,3,4] to [1,2,3,5], 
+      or @car.registration_document was changed from Document ID 1 to ID 2.
+    (2) We would be able to know how and when @car.wheels.first.price was
+      modified from 100 to 150
+      
+  If you want the first case to be managed, call <tt>journalize</tt> 
+  this way:
+   (1)  
+    class Car < ActiveRecord::Base
+      has_one  :document
+      has_many :wheels
+      
+      journalize :subresources => [{:document => :create_and_destroy,
+                                    :wheels   => :create_and_destroy}]
+    end
+    
+    @car.wheel_ids                #=> [1,2,3,4]
+    @car.wheel_ids = [1,2,3,5]
+    @car.wheel_ids                #=> [1,2,3,5]
+    
+  A journal line will be created with [1,2,3,4] as old value, [1,2,3,5] as
+  new value for the wheels property.
+  
+  With the journalization_helper, we obtain the following result:
+    
+    John Doe - 2010-08-17 at 16:02
+    - Wheel "Wheel #4" was removed
+    - Wheel "Wheel #5" was added
+    
+    
+  For the second case, changes are only detected on a subresource if the
+  subresource is also journalizing:
+   (2)  
+    class Car < ActiveRecord::Base
+      has_one  :document
+      has_many :wheels
+      
+      after_save :save_wheels
+      
+      journalize :subresources => [{:wheels => :update}]
+      
+      def save_wheels
+        wheels.each {|w| w.save}
+      end
+    end
+    
+    class Wheel < ActiveRecord:Base
+      journalize :attributes => :price
+    end
+    
+    @car.wheels.first.price       #=> 100
+    @car.wheels.first.price = 150
+    @car.save
+    
+  A journal line will be created for the car according to the price updated
+  at the wheel level but will not show any details. However, a reference to
+  will be recorded in order to find a journal at the wheel level.
+  
+  With the journalization_helper, we obtain the following result:
+    
+    John Doe - 2010-08-17 at 16:02
+    - Wheel "Wheel #1" was modified
+
+  If you want both cases to be managed on wheels but not an the document,
+  call <tt>journalize</tt> this way:
+  
+    class Car < ActiveRecord::Base
+      journalize :subresources => [ :wheels, 
+                                   {:document => :create_and_destroy}
+                                  ]
+    end
+  
+  Quick summary: the subresources key expect a, array of symbols (for
+  subresources journalized in both cases) and/or hash (to choose explicitely
+  an only one case).
+  
+== Journalizing belongs_to associations
+
+Belongs_to foreign keys are considered as attributes like classic attributes
+since they are also put in the table. Hence you have to call them in the
+:attributes param, however journalization_helper will treat it differently.
+It will display the name of the association instead of the foreign key name,
+and the object identifier instead of the foreign key value (see next section
+for further details about belongs_to identifiers).
+  
+== Journal identifiers
+
+A last param for the journalize call is available -> :identifier_method. It 
+permits to identify an object (subresource particularly) and is used in the 
+journalization_helper. It can be an attribute or an instance method.
+
+  With the following configuration:
+  
+    class Car < ActiveRecord::Base
+      journalize :subresources => [:wheels]
+    end
+    
+    class Wheel < ActiveRecord:Base
+      journalize :identifier_method => :reference
+    end
+    
+    @car.wheels.first.price       #=> 100
+    @car.wheels.first.price = 150
+    @car.save
+    
+  With the journalization_helper, in the @car journal, the following 
+  sentence can be displayed:
+  
+    John Doe - 2010-08-17 at 16:04
+      - Wheel "KX-200" was modified
+    
+  If you do not journalize an identifier, ID is displayed by default:
+  
+    John Doe - 2010-08-17 at 16:05
+      - Wheel "Wheel #1" was modified
+    
+The :identifier_method was in fact already used in the Basic usage section
+of this documentation. When we did:
+
+  class User < ActiveRecord::Base
+    acts_on_journalization_with :fullname
+  end
+  
+… User.journalize :identifier_method => :fullname was performed at the
+same time so as we could identify the actor in the view:
+
+  John Doe - 2010-08-17 at 16:06
+    - Color was modified from blue to orange
+    - Wheel "KX-200" was modified
+    
+It is also useful with belongs_to association:
+
+  without identifier,
+  
+    class Car < ActiveRecord::Base
+      belongs_to :brand
+      
+      journalize :attributes => :brand_id
+    end
+    
+    @car.brand                  #=> Brand #1
+    @car.brand = Brand.find(2)
+    @car.save
+  
+    John Doe - 2010-08-17 at 16:07
+      - Brand was modified from "Brand #1" to "Brand #2"
+  
+  with identifier,
+  
+    class Car < ActiveRecord::Base
+      belongs_to :brand
+      
+      journalize :attributes => :brand_id
+    end
+    
+    class Brand < ActiveRecord::Base
+      journalize :identifier_method => :name
+    end
+    
+    @car.brand                  #=> Brand #1
+    @car.brand = Brand.find(2)
+    @car.save
+  
+    John Doe - 2010-08-17 at 16:07
+      - Brand was modified from "Renault" to "Dacia"
+      
+== ActiveRecord Tests (Shoulda::ActiveRecord::Macros)
+
+Quick macro tests:
+
+  class CarTest < Test::Unit::TestCase
+    should_journalize :attributes   => :color, 
+                      :attachments  => :photo,
+                      :subresources => [ :document,
+                                         {:wheels => :create_and_destroy}]
+  end
+
+  class UserTest < Test::Unit::TestCase
+    should_act_on_journalization_with :fullname
+  end
+    
+== Warnings
+
+- To journalize a change, journalization goes by previous journals. It means
+that, with the following scenario:
+
+  (1)   Car journalizes color and @car.create(:color=>"blue", :brand_id=>1)
+  (2.1) @car.color #=> "blue"
+        @car.brand #=> Brand #1
+  (2.2) @car.save
+  (3.1) @car.color #=> "red"
+  (3.1) @car.save
+  (4)   The developper removes journalization on the Car class
+  (5.1) @car.color #=> "green"
+  (5.2) @car.save
+  (6)   Car journalizes color and brand_id
+  (7.1) @car.color #=> "yellow"
+  (7.2) @car.save
+  
+  - Journals reflects the following changes:
+    nil    -> "blue"
+    "blue" -> "red"
+    "red"  -> "yellow"
+    
+    We do not know when the color was "green" because car was not 
+    journalized anymore at this time.
+    
+  - At (6), we journalize an attribute that was not journalized before. 
+    It implies that at (7.2), a journal line will be created to tell 
+    that brand_id was modified from nil to 1.
+    
+    In cases when you change the attributes to be journalized during the
+    lifecycle of an object, be sure to perform a save without actor 
+    (i.e. in the console) on it to journalize for the first time the 
+    attributes not journalized  before. That permits, in (7.2), if
+    an user wants to change the color, to puts him as actor only on the
+    journal at the color change but not on the journal at the brand_id change.
+    
+- Since has_many & has_one changes are directly written into database, be sure
+to perform a save on your ActiveRecord object to journalize them.
+    
+== Credits and thanks
+Journalization was created during the Osirails project:
+- http://github.com/spidou/osirails
+- http://osirails.spidou.com/wiki

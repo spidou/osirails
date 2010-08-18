@@ -49,6 +49,8 @@ class NumberTest < ActiveSupport::TestCase
 #    assert_equal @good_number.visible, @good_number.visible?
 #  end
   
+  should_journalize :attributes => :number
+  
   should_belong_to :indicative, :number_type, :has_number
   
   should_validate_presence_of :has_number_type

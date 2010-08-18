@@ -37,7 +37,7 @@ Rails::Initializer.run do |config|
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
                     :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete, :local_auto_complete,
                     :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
-                    :has_numbers, :acts_as_step, :pdf_generator, :all]
+                    :has_numbers, :acts_as_step, :pdf_generator, :journalization, :all]
   
   # BEGIN #
   # Manage feature's dependencies

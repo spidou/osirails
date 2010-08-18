@@ -1,0 +1,5 @@
+<% if journal_line.property_id.nil? && has_subresource?(journal_line) %>
+  <%= render_collection_changes_for(journal_line) %>    
+<% else %>
+  <%= render_changes_for(journal_line) %>
+<% end %>

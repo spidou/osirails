@@ -1,0 +1,1 @@
+FileUtils.cp File.join(File.dirname(__FILE__), '..', 'public', 'stylesheets', 'journalization.css'), File.join(File.dirname(__FILE__), '..', '..', '..', '..', 'public', 'stylesheets', 'journalization.css') 

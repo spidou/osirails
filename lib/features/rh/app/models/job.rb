@@ -1,4 +1,6 @@
 class Job < ActiveRecord::Base
+  journalize :identifier_method => :name
+  
   has_permissions :as_business_object
   
   has_many :employees_jobs, :dependent => :destroy

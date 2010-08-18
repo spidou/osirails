@@ -1,4 +1,6 @@
 class Civility < ActiveRecord::Base
+  journalize :identifier_method => :name
+
   # Relationships
   has_many :employees
 

@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class CivilityTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+  
   def setup
     @civility = civilities(:mister)
   end
