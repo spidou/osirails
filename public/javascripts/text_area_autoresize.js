@@ -26,8 +26,6 @@ Widget.Textarea = Class.create({
         width: this.textarea.getWidth() + 'px'
       });
       this.textarea.insert({ after: this._shadow });
-      
-      this.refresh();
     }
   },
   

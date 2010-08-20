@@ -20,19 +20,19 @@ class PressProof < ActiveRecord::Base
   has_many :dunnings, :as => :has_dunning, :order => "created_at DESC"
   
   belongs_to :order
-  belongs_to :product
+  belongs_to :end_product
   belongs_to :document_sending_method
   belongs_to :internal_actor, :class_name => 'Employee'
   belongs_to :creator,        :class_name => 'User'
   belongs_to :revoked_by,     :class_name => 'User'
   
-  validates_presence_of :internal_actor_id, :creator_id, :order_id, :product_id
+  validates_presence_of :internal_actor_id, :creator_id, :order_id, :end_product_id
   validates_presence_of :order,          :if => :order_id
   validates_presence_of :creator,        :if => :creator_id
   validates_presence_of :internal_actor, :if => :internal_actor_id
-  validates_presence_of :product,        :if => :product_id
+  validates_presence_of :end_product,    :if => :end_product_id
   
-  validates_persistence_of :order_id, :product_id,                                              :if => :created_at_was
+  validates_persistence_of :order_id, :end_product_id,                                          :if => :created_at_was
   validates_persistence_of :internal_actor_id, :creator_id, :press_proof_items, :confirmed_on,  :if => :confirmed_on_was
   validates_persistence_of :sended_on,                                                          :if => :sended_on_was
   validates_persistence_of :signed_on,                                                          :if => :signed_on_was
@@ -67,7 +67,7 @@ class PressProof < ActiveRecord::Base
   with_options :if => :signed? do |v|
     v.validates_date :signed_on, :on_or_after => :sended_on, :on_or_after_message => "ne doit pas être AVANT la date de d'envoi du Bon à tirer&#160;(%s)",
                                  :on_or_before => Proc.new { Date.today }, :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
-    v.validate :validates_presence_of_signed_press_proof, :validates_with_a_product_not_already_referenced
+    v.validate :validates_presence_of_signed_press_proof, :validates_with_a_end_product_not_already_referenced
     v.validates_attachment_content_type :signed_press_proof, :content_type => [ 'application/pdf', 'application/x-pdf' ]
 #    v.validates_attachment_size         :signed_press_proof, :less_than    => 2.megabytes
   end
@@ -92,8 +92,27 @@ class PressProof < ActiveRecord::Base
   before_create :can_be_created?
   before_destroy :can_be_destroyed?
   
-  attr_protected :status, :cancelled_on, :confirmed_on, :sended_on, :signed_on, :revoked_on, :revoked_by, :revoked_comment
+  attr_protected :status, :cancelled_on, :confirmed_on
     
+  cattr_accessor :form_labels
+  @@form_labels = {}
+  @@form_labels[:reference]               = "Référence :"
+  @@form_labels[:internal_actor]          = "Contact Graphique :"
+  @@form_labels[:creator]                 = "Créateur :"
+  @@form_labels[:end_product]             = "Produit :"
+  @@form_labels[:end_product_description] = "Description :"
+  @@form_labels[:unit_measure]            = "Unité de mesures :"
+  @@form_labels[:sended_on]               = "BAT envoyé au client le :"
+  @@form_labels[:document_sending_method] = "Par :"
+  @@form_labels[:signed_on]               = "BAT signé par le client le :"
+  @@form_labels[:signed_press_proof]      = "Fichier (BAT signé) :"
+  @@form_labels[:revoked_comment]         = "Motif de l'annulation :"
+  @@form_labels[:revoked_by]              = "BAT annulé par :"
+  @@form_labels[:revoked_at]              = "BAT annulé le :"
+  @@form_labels[:cancelled_at]            = "BAT annulé le :"
+  @@form_labels[:created_at]              = "Date de création :"
+  @@form_labels[:status]                  = "État actuel :"
+  
   def sorted_press_proof_items
     press_proof_items.sort_by(&:position)
   end
@@ -112,15 +131,15 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_confirmed?
-    !new_record? and was_uncomplete? and product_without_signed_press_proof?
+    !new_record? and was_uncomplete? and end_product_without_signed_press_proof?
   end
   
   def can_be_sended?
-    was_confirmed? and product_without_signed_press_proof?
+    was_confirmed? and end_product_without_signed_press_proof?
   end
   
   def can_be_signed?
-    was_sended? and product_without_signed_press_proof?
+    was_sended? and end_product_without_signed_press_proof?
   end
   
   def can_be_revoked?
@@ -128,7 +147,7 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_edited?
-    !new_record? and was_uncomplete? and product_without_signed_press_proof?
+    !new_record? and was_uncomplete? and end_product_without_signed_press_proof?
   end
   
   def can_be_destroyed?
@@ -136,11 +155,11 @@ class PressProof < ActiveRecord::Base
   end
   
   def can_be_created?
-    product_without_signed_press_proof?
+    end_product_without_signed_press_proof?
   end
   
-  def product_without_signed_press_proof?
-    !product.has_signed_press_proof?
+  def end_product_without_signed_press_proof?
+    !end_product.has_signed_press_proof?
   end
   
   def cancel
@@ -158,36 +177,25 @@ class PressProof < ActiveRecord::Base
     self.save
   end
   
-  def send_to_customer(options)
+  def send_to_customer(attributes)
     return false unless can_be_sended?
-    self.sended_on                  = options[:sended_on] || get_date_from_params(options,'sended_on')
-    self.document_sending_method_id = options[:document_sending_method_id]
-    self.status                     = STATUS_SENDED
+    self.attributes = attributes
+    self.status     = STATUS_SENDED
     self.save
   end
   
-  def sign(options)
+  def sign(attributes)
     return false unless can_be_signed?
-    self.signed_on          = options[:signed_on] || get_date_from_params(options,'signed_on')
-    self.signed_press_proof = options[:signed_press_proof] 
-    self.status             = STATUS_SIGNED
+    self.attributes = attributes
+    self.status     = STATUS_SIGNED
     self.save
   end
   
-  def revoke(options)
+  def revoke(attributes)
     return false unless can_be_revoked?
-    self.revoked_on      = options[:revoked_on] || get_date_from_params(options,'revoked_on')
-    self.revoked_by_id   = options[:revoked_by_id]
-    self.revoked_comment = options[:revoked_comment]
-    self.status          = STATUS_REVOKED
+    self.attributes = attributes
+    self.status     = STATUS_REVOKED
     self.save
-  end
-  
-  def get_date_from_params(params,attribute)
-    y = params["#{attribute}(1i)"]
-    m = params["#{attribute}(2i)"]
-    d = params["#{attribute}(3i)"]
-    "#{y}/#{m}/#{d}".to_date
   end
   
   def uncomplete?
@@ -252,8 +260,8 @@ class PressProof < ActiveRecord::Base
     end
   end
   
-  def product_description
-    product ? product.description : nil
+  def end_product_description
+    end_product ? end_product.description : nil
   end
   
   # Method to get all press_proof's graphic_item including unsaved one
@@ -321,9 +329,9 @@ class PressProof < ActiveRecord::Base
       end 
     end
   
-    def validates_with_a_product_not_already_referenced
-      unless product_without_signed_press_proof?
-        errors.add(:product_id, "est invalide, le produit est déjà référencé dans un BAT signé")
+    def validates_with_a_end_product_not_already_referenced
+      unless end_product_without_signed_press_proof?
+        errors.add(:end_product_id, "est invalide, le produit est déjà référencé dans un BAT signé")
       end
     end
     
@@ -335,7 +343,7 @@ class PressProof < ActiveRecord::Base
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes")
       end
       
-      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.product.id != self.product.id}.empty?
+      unless graphic_item_versions.select {|n| n.graphic_item.class == Mockup and n.graphic_item.end_product.id != self.end_product.id}.empty?
         errors.add(:press_proof_items, "doit contenir uniquement des maquettes concernant le produit du BAT")
       end
     end

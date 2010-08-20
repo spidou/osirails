@@ -5,7 +5,7 @@ ship_to_addresses = ship_to_addresses_picker
 
 <% if is_form_view? %>
   <select id="select_establishments" name="select[establishments]">
-    <option value="0">Veuillez choisir une adresse de livraison</option>
+    <option value="0">Veuillez choisir le(s) adresse(s) de livraison</option>
     <% for establishment in establishments %>
       <% selected_establishment = ship_to_addresses.detect{ |s| s.establishment_id == establishment.id and !s.should_destroy? } %>
       <% disabled = selected_establishment ? 'disabled="disabled"' : '' %>
@@ -34,9 +34,6 @@ ship_to_addresses = ship_to_addresses_picker
       </div>
     <% end %>
   </div>
-</div>
-
-<div id="new_establishments" class="resources">
 </div>
 
 <% if is_form_view? %>

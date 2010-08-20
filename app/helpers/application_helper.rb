@@ -10,15 +10,11 @@ module ApplicationHelper
     flash.each_pair do |key, value|
       html << "<div class=\"flash_#{key}\"><span>#{value}</span></div>"
     end
-    html.empty? ? "" : "<div class=\"flash_container\">" << html << "</div>"
+    html.empty? ? "" : "<div class=\"flash_container\">#{html}</div>"
   end
   
   def current_user
-    begin
-      User.find(session[:user_id])
-    rescue
-      return false
-    end
+    @current_user ||= User.find_by_id(session[:user_id], :joins => [:roles])
   end
   
   def display_version
@@ -41,6 +37,17 @@ module ApplicationHelper
   
   def display_welcome_message
     "#{t 'welcome'}, " + current_user.username
+  end
+      
+  def include_calendar_headers_tags(language = "en")
+    lang_file = "calendar/lang/calendar-#{language}.js"
+    lang_file = "calendar/lang/calendar-#{language[0..1]}.js" unless File.exists?(File.join(RAILS_ROOT,'public','javascripts',lang_file))
+    lang_file = "calendar/lang/calendar-en.js" unless File.exists?(File.join(RAILS_ROOT,'public','javascripts',lang_file))
+    javascript_include_tag("calendar/calendar.js") + "\n" + 
+    javascript_include_tag(lang_file) + "\n" + 
+    javascript_include_tag("calendar/calendar-setup.js") + "\n" +
+    stylesheet_link_tag_with_theme_support("dhtml_calendar.css") + "\n" + 
+    stylesheet_link_tag_with_theme_support("dhtml_calendar_style.css")
   end
   
   def daynames_and_monthnames_retrieval
@@ -216,6 +223,11 @@ module ApplicationHelper
     end
     
     html
+  end
+  
+  def generate_random_id(length = 8)
+    chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
+    Array.new(length).map{chars[rand(chars.size)]}.join
   end
   
   METHOD_MATCH = /_link$/

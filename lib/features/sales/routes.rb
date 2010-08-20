@@ -4,12 +4,10 @@ ActionController::Routing::Routes.add_routes do |map|
     order.commercial_step 'commercial', :controller => 'commercial_step'
     
     order.with_options :name_prefix => 'order_commercial_step_' do |commercial|
-      commercial.resource :survey_step,             :as          => 'survey',
-                                                    :controller  => 'survey_step' # :only => [ :show, :edit, :update ]
+      commercial.resource :survey_step, :as => 'survey', :controller  => 'survey_step' # :only => [ :show, :edit, :update ]
       
-      commercial.resource :estimate_step,           :as          => 'estimate',
-                                                    :controller  => 'estimate_step' do |estimate_step|
-        estimate_step.resources :quotes do |quote|
+      commercial.resource :quote_step, :as => 'quote', :controller  => 'quote_step' do |quote_step|
+        quote_step.resources :quotes do |quote|
           quote.confirm           'confirm',    :controller => 'quotes',
                                                 :action     => 'confirm',
                                                 :conditions => { :method => :get }
@@ -291,28 +289,36 @@ ActionController::Routing::Routes.add_routes do |map|
                                                     :action      => 'auto_complete_for_product_reference_reference',
                                                     :method      => :get
   
-  map.resources :products
-  map.resources :produts_catalog
+  map.resources :product_reference_categories do |product_reference_category|
+    product_reference_category.resources :product_reference_sub_categories
+  end
+  
+  map.resources :product_reference_sub_categories do |product_reference_sub_category|
+    product_reference_sub_category.resources :product_references
+  end
   
   map.resources :product_references do |product_reference|
-    product_reference.resources :products
+    product_reference.resources :end_products
   end
   
-  map.resources :product_reference_categories do |product_reference_category|
-    product_reference_category.resources :product_reference_categories
-    product_reference_category.resources :product_references do |product_reference|
-      product_reference.resources :products
-    end
-  end
+  map.resources :end_products
   
   map.product_reference_manager "product_reference_manager", :controller => "product_reference_manager"
   map.goods 'goods', :controller => 'products_catalog' #default page for products
+  
+  # AJAX REQUESTS
+  map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller => 'product_reference_categories', :action => 'update_product_reference_sub_categories'
+  ##
   
   map.resources :subcontractors
   
   map.connect 'subcontractor_requests/:id/quote', :controller => 'subcontractor_requests',
                                                   :action     => 'quote',
                                                   :conditions => { :method => :get }
+  
+  ## SALES ADMIN
+  map.sales_admin 'sales_admin', :controller => 'sales_admin'
+  ##
   
   map.sales 'sales', :controller => 'commercial_orders' # default route for sales
 end

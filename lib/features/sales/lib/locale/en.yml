@@ -67,14 +67,13 @@ en:
         society_activity_sector: "Activity sector"
         ship_to_address: "Forwarding address"
         approaching: "Approcahing type"
-        contact: "Customer commercial contact"
         previsional_delivery: "Previsional delivery date"
       payment:
         paid_on: "Payment received on"
         bank_name: "Bank establishment"
       press_proof:
         internal_actor: "Graphical contact"
-        product_description: "Description"
+        end_product_description: "Description"
         unit_measure: "Measure unit"
         sended_on: "Press proof sended to customer on"
         document_sending_method: "By"
@@ -87,16 +86,11 @@ en:
         created_at: "Creation date"
         status: "Current status"
       product:
-        name: "Product name"
+        name: "Specification"
       product_reference:
-        designation: "Designation (fullname)"
-        product_reference_category: "Product category"
-        vat: "VAT to apply (%)"
-        production_cost_manpower: "Manpower cost/hour"
-        production_time: "Duration (hours)"
-        delivery_cost_manpower: "Manpower cost/hour"
-        delivery_time: "Duration (hours)"
-      product_reference_category:
+        product_reference_category: "Category"
+        product_reference_sub_category: "Subcategory"
+      product_reference_sub_category:
         product_reference_category: "Parent category"
       quote:
         sended_on: "Quote sended to customer on"
@@ -117,3 +111,4 @@ en:
         duration_hours: "During"
         internal_actor: "Responsible"
         contact: "Field contact"
+        survey_intervention_contact: "Contact"

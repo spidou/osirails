@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
-  has_contacts    :accept_from => :customer_contacts
+  has_contact     :order_contact, :accept_from => :customer_contacts, :required => true
   has_reference   :prefix => :sales
   
   belongs_to :society_activity_sector
@@ -37,12 +37,12 @@ class Order < ActiveRecord::Base
   has_many :uncomplete_invoices, :class_name => 'Invoice', :conditions => [ 'status IS NULL' ], :order => "invoices.created_at DESC"
   
   has_many :ship_to_addresses
-  has_many :products, :conditions => [ "cancelled_at IS NULL" ]
+  has_many :end_products, :conditions => [ "cancelled_at IS NULL" ]
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
 
-  validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
+  validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
   validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
@@ -51,11 +51,8 @@ class Order < ActiveRecord::Base
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
   validates_presence_of :order_type,              :if => :order_type_id
-  validates_presence_of :reference
   
-  validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
-  
-  validates_associated :customer, :ship_to_addresses, :products, :quotes #TODO quotes is really necessary ?
+  validates_associated :customer, :ship_to_addresses, :end_products, :quotes #TODO quotes is really necessary ?
   
   validate :validates_length_of_ship_to_addresses
   validate :validates_order_type_validity
@@ -65,6 +62,10 @@ class Order < ActiveRecord::Base
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
+  
+  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
+                   :only_relationships => [ :customer ],
+                   :main_model         => true
   
   # level constants
   CRITICAL  = 'critical'
@@ -127,7 +128,7 @@ class Order < ActiveRecord::Base
     invoices.find(:all, :include => [:invoice_type], :conditions => [ '(status IS NULL OR status != ?) AND invoice_types.name = ?', Invoice::STATUS_CANCELLED, Invoice::ASSET_INVOICE ])
   end
   
-  def build_delivery_note_with_remaining_products_to_deliver
+  def build_delivery_note_with_remaining_end_products_to_deliver
     return if all_is_delivered_or_scheduled?
     
     dn = delivery_notes.build
@@ -180,7 +181,7 @@ class Order < ActiveRecord::Base
   #   commercial_step
   #     graphic_conception_step
   #     survey_step
-  #     estimate_step
+  #     quote_step
   #   invoicing_step
   #     invoice_step
   #     payment_step
@@ -197,7 +198,7 @@ class Order < ActiveRecord::Base
   #   commercial_step
   #     graphic_conception_step
   #     survey_step
-  #     estimate_step
+  #     quote_step
   #   invoicing_step
   #     invoice_step
   #     payment_step
@@ -224,12 +225,12 @@ class Order < ActiveRecord::Base
     return children_steps.last
   end
   
-  def all_products_have_signed_press_proof?
-    products_without_signed_press_proof.empty?
+  def all_end_products_have_signed_press_proof?
+    end_products_without_signed_press_proof.empty?
   end
   
-  def products_without_signed_press_proof
-    products.reject{ |p| p.has_signed_press_proof? }
+  def end_products_without_signed_press_proof
+    end_products.reject{ |p| p.has_signed_press_proof? }
   end
   
   # Return a hash for advance statistics
@@ -245,14 +246,7 @@ class Order < ActiveRecord::Base
     steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
     advance
   end
-
-#  def child
-#    first_level_steps.reverse.each do |child|
-#      return child unless child.unstarted?
-#    end
-#    return first_level_steps.first
-#  end
-
+  
   ## Return missing elements's order
   def missing_elements
     missing_elements = []
@@ -286,14 +280,19 @@ class Order < ActiveRecord::Base
   end
   
   #def signed_quote
-  #  commercial_step.estimate_step.signed_quote
+  #  commercial_step.quote_step.signed_quote
   #end
   
+  #delegate :contacts, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_contacts
-    # customer.all_contacts #TODO also take in account contacts in customer's establishments
     customer ? customer.contacts : []
   end
   
+  def all_contacts_and_customer_contacts
+    ( all_contacts + ( customer_contacts || [] ) ).uniq
+  end
+  
+  #delegate :establishments, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_establishments
     customer ? customer.establishments : []
   end
@@ -352,7 +351,9 @@ class Order < ActiveRecord::Base
   end
   
   def validates_length_of_ship_to_addresses
-    if ship_to_addresses.select{ |s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?) }.empty?
+    all_ship_to_addresses = ship_to_addresses || []
+    all_ship_to_addresses += customer.establishments.select(&:new_record?).collect(&:ship_to_addresses).flatten if customer
+    if all_ship_to_addresses.select{ |s| (s.new_record? and s.should_create?) or (!s.new_record? and !s.should_destroy?) }.empty?
       errors.add(:ship_to_address_ids, "Vous devez choisir au moins 1 adresse de livraison")
     end
   end
@@ -361,7 +362,8 @@ class Order < ActiveRecord::Base
 #    def default_step
 #      Step.find_by_name("commercial_step")
 #    end
-  # Create all orders_steps after create order
+    
+    # Create all orders_steps after create order
     def validates_order_type_validity
       if order_type and society_activity_sector
         errors.add(:order_type_id, I18n.t('activerecord.errors.messages.inclusion')) unless society_activity_sector.order_types.include?(order_type)
@@ -389,15 +391,15 @@ class Order < ActiveRecord::Base
     
     # that method permits to bound the new contact with the customer of the order.
     # after that, the contact which is first created for the customer, is associated to the order in a second time
-    def save_contacts_with_order_support
-      contacts.each do |contact|
-        unless customer.contacts.include?(contact)
-          customer.contacts << contact
-        end
-      end
-      
-      save_contacts_without_order_support
-    end
-    
-    alias_method_chain :save_contacts, :order_support
+#    def save_contacts_with_order_support
+#      contacts.each do |contact|
+#        unless customer.contacts.include?(contact)
+#          customer.contacts << contact
+#        end
+#      end
+#      
+#      save_contacts_without_order_support
+#    end
+#    
+#    alias_method_chain :save_contacts, :order_support
 end

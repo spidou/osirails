@@ -239,7 +239,7 @@ module HasPermissions
               roles << Role.find_by_name(object)
             elsif object.instance_of?(Array)
               roles = object
-          else
+            else
               raise ArgumentError, "[has_permissions] Not a valid argument passed in 'get_roles'. #{object}:#{object.class}"
             end
           end
@@ -260,3 +260,7 @@ end
 if Object.const_defined?("ActionController")
   ActionController::Base.send(:include, HasPermissions)
 end
+
+require 'permission'
+require 'permission_method'
+require 'permissions_permission_method'

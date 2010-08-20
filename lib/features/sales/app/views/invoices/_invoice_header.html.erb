@@ -1,7 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
 <% end -%>
 
 <%
@@ -9,6 +7,7 @@ require_locals form
 
 invoice                 = invoice_header
 order                   = invoice.order
+contacts_owners         = order.customer.head_office_and_establishments
 default_bill_to_address = order.customer.bill_to_address
 quote                   = invoice.associated_quote
 delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note)
@@ -24,7 +23,7 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
   
   <p>
     <%= form.label :published_on %>
-    <%= form.form_or_view(form.date_select(:published_on, { :order => [ :day, :month, :year ] }), :published_on, :humanize) %>
+    <%= form.form_or_view(form.calendar_date_select(:published_on), :published_on, :humanize) %>
   </p>
   
   <p>
@@ -37,24 +36,28 @@ delivery_notes          = invoice.delivery_note_invoices.collect(&:delivery_note
     <% end %>
   </p>
   
-  <div id="contact_container">
-    <h3>Contact de facturation</h3>
-    <p>
-      <%= label :select_contacts, "À l'attention de " %>
-      <%= display_contacts_picker(invoice, order.contacts) %>
-    </p>
-  </div>
-  
-  <div>
-    <h3>Adresse de facturation</h3>
-    <%= render :partial => 'addresses/address_form', :object => invoice.bill_to_address || invoice.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => invoice } %>
+  <div class="presentation_in_columns">
+    <div class="small">
+      <h3>Adresse de facturation</h3>
+      <%= render :partial => 'addresses/address_form', :object => invoice.bill_to_address || invoice.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => invoice } %>
+    </div>
+    
+    <div id="contact_container">
+      <h3>Contact de facturation</h3>
+      <p>
+        <%= label :select_contacts, "À l'attention de " %>
+        <%= display_contact_picker(invoice, invoice.order_and_customer_contacts, :form => form,
+                                                                                 :contact_key => "invoice_contact",
+                                                                                 :contacts_owners => contacts_owners) %>
+      </p>
+    </div>
   </div>
   
   <h3>Références</h3>
   <p>
     <label>Devis signé :</label>
-    <%= link_to(quote.reference, order_commercial_step_estimate_step_quote_path(order, quote)) %>
-    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_estimate_step_quote_path(order, quote, :format => :pdf)) %>
+    <%= link_to(quote.reference, order_commercial_step_quote_step_quote_path(order, quote)) %>
+    <%= link_to(image_tag("mime_type_extensions/pdf_16x16.png"), order_commercial_step_quote_step_quote_path(order, quote, :format => :pdf)) %>
   </p>
   
   <div class="form_multiple_entries">

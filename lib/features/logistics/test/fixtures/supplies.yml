@@ -1,0 +1,11 @@
+first_commodity:
+  type: Commodity
+  supply_sub_category: first_commodity_sub_category
+  reference: 1001
+  name: First Commodity
+
+first_consumable:
+  type: Consumable
+  supply_sub_category: first_consumable_sub_category
+  reference: 1001
+  name: First Consumable

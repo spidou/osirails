@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class EventTest < ActiveSupport::TestCase
-  fixtures :events, :calendars, :alarms, :participants, :exception_dates
-
   def setup
     @event = events(:two_hours_ago)
   end

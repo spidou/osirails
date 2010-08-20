@@ -18,6 +18,7 @@ menus:
           establishments:
             title: Etablissement du Client
             description: Gestion des establissement du client
+            hidden: true
       suppliers:
         title: Fournisseurs
         description: Gestion des fournisseurs

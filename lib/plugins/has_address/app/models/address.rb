@@ -9,6 +9,6 @@ class Address < ActiveRecord::Base
   has_search_index :only_attributes => [ :street_name, :city_name, :country_name, :zip_code ]
   
   def formatted
-    [street_name, zip_code, city_name, country_name].join(" ")
+    @formatted ||= [street_name, zip_code, city_name, country_name].join(" ")
   end
 end

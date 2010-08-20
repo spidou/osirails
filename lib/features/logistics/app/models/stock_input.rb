@@ -1,12 +1,10 @@
 class StockInput < StockFlow
   has_permissions :as_business_object
   
-  # Relationships  
-  named_scope :commodities_stock_inputs, :conditions => ["supply_id IN (?) AND adjustment IS NULL",Commodity.find(:all)]
-  named_scope :consumables_stock_inputs, :conditions => ["supply_id IN (?) AND adjustment IS NULL",Consumable.find(:all)]
+  def set_up_default_unit_price
+    return unless supply and from_inventory?
+    self.unit_price = supply.average_unit_stock_value
+  end
   
-  # Validates
-  validates_numericality_of :fob_unit_price, :tax_coefficient
-  validates_presence_of :purchase_number, :unless => :adjustment 
+  def calculation_method; :+ end
 end
-

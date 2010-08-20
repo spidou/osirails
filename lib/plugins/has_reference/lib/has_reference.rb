@@ -29,7 +29,6 @@ module HasReference
         
         attr_accessor   :sequence_number_limit
         cattr_accessor  :prefix_reference, :pattern, :pattern_updated_at, :pattern_key
-        attr_protected  :reference
         
         validates_uniqueness_of :reference, :unless => Proc.new{ |x| x.reference_was.nil? }
         
@@ -40,7 +39,7 @@ module HasReference
         pattern_key   = "#{options[:prefix]}_#{self.to_s.tableize.singularize}_reference_pattern"
         configuration = Configuration.last(:conditions => ["name = ?", pattern_key])
         
-        raise "[has_reference] (#{self.class.name}) pattern's configuration is not present in database" unless configuration # OPTIMIZE change the error type
+        raise "[has_reference] (#{self.class.name}) pattern's configuration is not present in database (searching '#{pattern_key}' in 'configurations' table)" unless configuration # OPTIMIZE change the error type
         
         const_set 'SYMBOLS', options[:symbols]
         self.prefix_reference   = options[:prefix]
@@ -56,7 +55,7 @@ module HasReference
   module InstanceMethods  
     
     # Method to generate unique reference according to the calling model
-    # the calling model must have a configured patter into sales/config.yml
+    # the calling model must have a configured pattern into sales/config.yml
     #
     # === Options :
     #
@@ -99,7 +98,7 @@ module HasReference
     #
     #   === example
     #   pattern = "$good_model"
-    #   # => "good_model_reference"
+    #   # => good_model.reference
     #   pattern = "$bad_model"
     #   # => "$bad_model"
     #
@@ -111,7 +110,7 @@ module HasReference
       
       pattern_with_strftime = DateTime.now.strftime(pattern)
       pattern_with_symbols  = match_symbols(pattern_with_strftime)
-      reference             = get_number(pattern_with_symbols)
+      reference             = pattern_with_symbols ? get_number(pattern_with_symbols) : nil
       
       return reference
     end
@@ -194,7 +193,7 @@ module HasReference
         
         self.class::SYMBOLS.each do |symbol|
           if self.respond_to?(symbol)
-            raise "[has_reference] instance of #{self.class.name} expected to have a valid '#{symbol}', but returned nil" if self.send(symbol).nil?
+            return unless self.send(symbol)
             raise "[has_reference] instance of '#{symbol}' expected to respond_to :reference (#{self.send(symbol).inspect})" unless self.send(symbol).respond_to?(:reference)
             
             result = result.gsub(Regexp.new("\\x24#{symbol.to_s}"), self.send(symbol).reference || '')

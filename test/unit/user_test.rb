@@ -5,12 +5,11 @@ class UserTest < ActiveSupport::TestCase
   require "digest/sha1"
 
   def setup
-    @admin_user = users(:admin_user)
-    @powerful_user = users(:powerful_user)
+    @user = users(:first_user)
   end
   
   def teardown
-    @admin_user = @powerful_user = nil
+    @user = nil
   end
   
   def encrypt(string)
@@ -26,17 +25,17 @@ class UserTest < ActiveSupport::TestCase
 
   def test_read
     assert_nothing_raised "A user should be read" do
-      User.find_by_username(@admin_user.username)
+      User.find_by_username(@user.username)
     end
   end
 
   def test_update
-    assert @admin_user.update_attributes(:username => 'new_username'), "A User should be updated"
+    assert @user.update_attributes(:username => 'new_username'), "A User should be updated"
   end
 
   def test_delete
     assert_difference 'User.count', -1, "A user should be destroyed" do
-      @admin_user.destroy
+      @user.destroy
     end
   end
 
@@ -94,59 +93,59 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_encryption_of_password_for_existing_record
-    @admin_user.password = 'new_password'
-    assert_equal @admin_user.password, 'new_password', "Password should NOT be encrypted before save"
+    @user.password = 'new_password'
+    assert_equal @user.password, 'new_password', "Password should NOT be encrypted before save"
     
-    @admin_user.save!
-    assert_equal @admin_user.password, encrypt('new_password'), "Password should be encrypted after save"
+    @user.save!
+    assert_equal @user.password, encrypt('new_password'), "Password should be encrypted after save"
   end
   
   def test_unability_to_give_same_password_after_expiration
-    @admin_user.password = 'password'
-    @admin_user.valid?
+    @user.password = 'password'
+    @user.valid?
     
-    assert @admin_user.errors.invalid?(:password), "Password should be invalid because it's similar to previous password"
+    assert @user.errors.invalid?(:password), "Password should be invalid because it's similar to previous password"
   end
   
   def test_password_updated_at
     ConfigurationManager.admin_password_validity = 30 # assuming password expire 30 days after updating password
     
-    @admin_user.password = "new_password"
+    @user.password = "new_password"
     
-    assert @admin_user.save!, "The password should be updated without validation error"
-    assert_equal encrypt('new_password'), @admin_user.password,
+    assert @user.save!, "The password should be updated without validation error"
+    assert_equal encrypt('new_password'), @user.password,
       "The password should be encrypted after the password updating"
     
-    assert_not_nil @admin_user.password_updated_at, "password_updated_at should NOT be nil after updating password"
+    assert_not_nil @user.password_updated_at, "password_updated_at should NOT be nil after updating password"
   end
   
   def test_force_password_expiration
-    @admin_user.force_password_expiration = "1"
-    @admin_user.save
+    @user.force_password_expiration = "1"
+    @user.save
     
-    assert_nil @admin_user.password_updated_at, "password_updated_at should be nil"
-    assert @admin_user.expired?, "Password should be expired"
+    assert_nil @user.password_updated_at, "password_updated_at should be nil"
+    assert @user.expired?, "Password should be expired"
   end
   
   def test_expiration_of_password_when_configuration_setting_up_a_delay
     ConfigurationManager.admin_password_validity = 30 # assuming password expire 30 days after updating password
     
-    @admin_user.update_attribute(:password_updated_at, Date.today - 1.day)
-    assert !@admin_user.expired?, "Password should NOT be expired if password_updated_at < ConfigurationManager.admin_password_validity"
+    @user.update_attribute(:password_updated_at, Date.today - 1.day)
+    assert !@user.expired?, "Password should NOT be expired if password_updated_at < ConfigurationManager.admin_password_validity"
     
-    @admin_user.update_attribute(:password_updated_at, Date.today - 60.days)
-    assert @admin_user.expired?, "Password should be expired if password_updated_at > ConfigurationManager.admin_password_validity"
+    @user.update_attribute(:password_updated_at, Date.today - 60.days)
+    assert @user.expired?, "Password should be expired if password_updated_at > ConfigurationManager.admin_password_validity"
     
-    @admin_user.update_attribute(:password_updated_at, nil)
-    assert @admin_user.expired?, "Password should be expired if password_updated_at is nil"
+    @user.update_attribute(:password_updated_at, nil)
+    assert @user.expired?, "Password should be expired if password_updated_at is nil"
   end
   
   def test_expiration_of_password_when_configuration_setting_up_no_expiration
     ConfigurationManager.admin_password_validity = 0 # assuming password never expire
-    @admin_user.update_attribute(:password_updated_at, Date.today - 1.day)
-    assert !@admin_user.expired?, "Password should NOT be expired if ConfigurationManager.admin_password_validity = 0"
+    @user.update_attribute(:password_updated_at, Date.today - 1.day)
+    assert !@user.expired?, "Password should NOT be expired if ConfigurationManager.admin_password_validity = 0"
     
-    @admin_user.update_attribute(:password_updated_at, Date.today - 60.days)
-    assert !@admin_user.expired?, "Password should NOT be expired if ConfigurationManager.admin_password_validity = 0, event if password_updated_at > ConfigurationManager.admin_password_validity"
+    @user.update_attribute(:password_updated_at, Date.today - 60.days)
+    assert !@user.expired?, "Password should NOT be expired if ConfigurationManager.admin_password_validity = 0, event if password_updated_at > ConfigurationManager.admin_password_validity"
   end
 end

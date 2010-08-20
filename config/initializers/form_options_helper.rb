@@ -1,5 +1,4 @@
 require 'action_view/helpers/form_helper'
-require 'digest/sha1'
 
 module ActionView
   module Helpers
@@ -21,7 +20,7 @@ module ActionView
         options_for_select = container.inject([]) do |options_tag, element|
           text, value = option_text_and_value(element)
           selected_attribute = ' selected="selected"' if option_value_selected?(value, selected)
-          indentation_value = @object.respond_to?("ancestors") ? options[:indentation].to_i*@object.class.find(value).ancestors.size : 0
+          indentation_value = @object.respond_to?("ancestors") && @object.class.find_by_id(value) ? options[:indentation].to_i*@object.class.find(value).ancestors.size : 0
           style_attribute = " style=\"padding-left:#{indentation_value}px\""
           options_tag << %(<option value="#{html_escape(value.to_s)}"#{selected_attribute}#{style_attribute}>#{html_escape(text.to_s)}</option>)
         end
@@ -29,15 +28,19 @@ module ActionView
         options_for_select.join("\n")
       end
       
-      def collection_select_with_option_groups(object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, options = {})
-        html = ""
-        html << "<span class=\"fieldWithErrors\">" if options[:object].errors.on(method)
-        html <<   "<select name='#{object_name}[#{method}]' id='#{object_name}_#{method}'>"
-        html <<     "<option value=\"\">#{options[:include_blank]}</option>" if options[:include_blank]
-        html <<     option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, selected_key)
-        html <<   "</select>"
-        html << "</span>" if options[:object].errors.on(method)
-        html
+      # this method is a copy of the code from Rails v2.3.4
+      #TODO remove that method once we have migrated to Rails 2.3.4
+      def grouped_collection_select(object, method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {})
+        InstanceTag.new(object, method, self, options.delete(:object)).to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options)
+      end
+      
+      def collection_select_with_custom_choice(object_name, method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})
+        options = { :last_option_value  => -1,
+                    :last_option_text   => "Autre..." }.merge(options) #TODO use i18n for last_option_text
+        
+        last_option = Struct.new("LastOptionForCollectionSelect", value_method, text_method).new(options[:last_option_value], options[:last_option_text])
+        collection = collection + [ last_option ]
+        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
       end
       
       def label(object_name, method, text = nil, options = {})
@@ -99,34 +102,49 @@ module ActionView
       end
       
       def custom_text_field_with_auto_complete(object, method, tag_options = {}, completion_options = {})
-        random_id_for_indicator = Digest::SHA1.hexdigest(rand(1000000).to_s)
-        #OPTIMIZE use class instead of style attribute
-        tag_options = { :style => "color: grey; font-style: italic" }.merge(tag_options)
+        identifier = completion_options.delete(:identifier)
+        identifier ||= generate_random_id
         
-        completion_options =  { :update_id => "#{object}_#{method}_id" }.merge(completion_options)
-        completion_options =  { :skip_style           => true,
+        value = tag_options.delete(:value)
+        
+        #OPTIMIZE use class instead of style attribute
+        tag_options = { :style        => "color: grey; font-style: italic",
+                        :value        => value,
+                        :restoreValue => value,
+                        :id           => "#{object}_#{method}_#{identifier}",
+                        :name         => "#{object}[#{method}]" }.merge(tag_options)
+        
+        update_id = completion_options.delete(:update_id) || "#{object}_#{method}_id"
+        
+        completion_options =  { :update_id            => update_id,
+                                :skip_style           => true,
+                                :frequency            => 0.7,
                                 :url                  => send("auto_complete_for_#{object}_#{method}_path"),
-                                :indicator            => "auto_complete_#{random_id_for_indicator}",
+                                :indicator            => "auto_complete_indicator_#{identifier}",
                                 :update_element       => "function(li){
-                                                            this.element = $('#{object}_#{method}')
-                                                            this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                            this.element = $('#{tag_options[:id]}')
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_value) { this.element.value = target_value.innerHTML };
                                                             if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
                                                           }",
                                 :after_update_element => "function(input,li){
-                                                            $('#{completion_options[:update_id]}').value = li.down('.#{object}_#{method}_id').innerHTML;
+                                                            target_id = li.down('.#{object}_#{method}_id')
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_id) { $('#{update_id}').value = target_id.innerHTML }
+                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML) }
                                                           }"
                               }.merge(completion_options)
         
         if tag_options[:value]
           #OPTIMIZE use class instead of style attribute
-          tag_options = { :onfocus   => "if (this.value == '#{tag_options[:value]}') { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
-                          :onblur    => "if (this.value == '' || this.value == '#{tag_options[:value]}') { this.value = '#{tag_options[:value]}'; this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
+          tag_options = { :onfocus   => "if (this.value == this.getAttribute('restoreValue')) { this.value=''; this.style.color='inherit'; this.style.fontStyle='inherit' } else { select() }",
+                          :onblur    => "if (this.value == '' || this.value == this.getAttribute('restoreValue')) { this.value = this.getAttribute('restoreValue'); this.style.color='grey'; this.style.fontStyle='italic' } else { this.selectionStart = 0 }"
                         }.merge(tag_options)
         end
         
-        html =  "<div class=\"auto_complete_container\""
-        html << text_field_with_auto_complete(object, method, tag_options, completion_options)
-        html << content_tag(:div, nil, :id => "auto_complete_#{random_id_for_indicator}", :class => "auto_complete_indicator", :style => "display:none")
+        html =  "<div class=\"auto_complete_container\">"
+        html << text_field_with_auto_complete(object, "#{method}_#{identifier}", tag_options, completion_options)
+        html << content_tag(:div, nil, :id => "auto_complete_indicator_#{identifier}", :class => "auto_complete_indicator", :style => "display:none")
         html << "</div>"
       end
       
@@ -167,6 +185,21 @@ module ActionView
       
       alias_method :text_area_autoresize, :autoresize_text_area
       
+      def calendar_date_field_tag(object_name, method_name, options = {}, text_field_options = {})
+        options[:output_format]   ||= "%Y-%m-%d"
+        text_field_options[:size] ||= 10
+        
+        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+      end
+      
+      def calendar_datetime_field_tag(object_name, method_name, options = {}, text_field_options = {})
+        options[:time_select]       = true
+        options[:output_format]   ||= "%Y-%m-%d %H:%M:%S"
+        text_field_options[:size] ||= 17
+        
+        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+      end
+      
       private
         def i18n_label(klass,method)
           key = method.to_s.gsub(/_id(s)?$/,"").to_sym
@@ -180,12 +213,89 @@ module ActionView
     end
     
     class InstanceTag #:nodoc:
+      include Helpers::AssetTagHelper, Helpers::JavaScriptHelper # used by to_calendar_select_tag
+      
       def to_collection_select_tag_with_indentation(collection, value_method, text_method, options, html_options)
         html_options = html_options.stringify_keys
         add_default_name_and_id(html_options)
         value = value(object)
         content_tag(
           "select", add_options(options_from_collection_for_select_with_indentation(collection, value_method, text_method, options, value), options, value), html_options
+        )
+      end
+      
+      # this method is a copy of the code from Rails v2.3.4
+      #TODO remove that method once we have migrated to Rails 2.3.4
+      def to_grouped_collection_select_tag(collection, group_method, group_label_method, option_key_method, option_value_method, options, html_options)
+        html_options = html_options.stringify_keys
+        add_default_name_and_id(html_options)
+        value = value(object)
+        content_tag(
+          "select", add_options(option_groups_from_collection_for_select(collection, group_method, group_label_method, option_key_method, option_value_method, value), options, value), html_options
+        )
+      end
+      
+      def to_calendar_select_tag(options = {}, text_field_options = {})
+        options[:default]                 ||= object.send(@method_name)
+        options[:start_year]              ||= 1900
+        options[:end_year]                ||= 2999
+        options[:time_select]             ||= false
+        options[:time_format]             ||= 24
+        options[:disabled]                ||= false
+        
+        options[:default] = options[:default].strftime(options[:output_format]) rescue options[:default]
+        
+        disabled_textfield                  = options[:disabled] || text_field_options[:disabled]
+        formatted_textfield_id              = "#{@object_name.gsub("]","").gsub("[","_")}#{options[:index]}_#{@method_name}"
+        text_field_options                  = text_field_options.merge(:id => formatted_textfield_id, :disabled => disabled_textfield, :value => options[:default])
+        targetted_textfield_id              = "#{formatted_textfield_id}#{options[:disabled] ? '_for_disabled_calendar' : ''}"
+        hidden_field_for_disabled_calendar  = options[:disabled] ? hidden_field_tag("#{formatted_textfield_id}_for_disabled_calendar", nil, :disabled => true) : ''
+        
+        InstanceTag.new(@object_name, @method_name, self, nil, options.delete(:object)).to_input_field_tag("text", text_field_options) +
+          image_tag("calendar.png", {:id => "#{@object_name}_#{@method_name}_#{options[:index]}_trigger", :class => "calendar-trigger"}) +
+          javascript_tag("Calendar.setup({range       : [#{options[:start_year]},#{options[:end_year]}],
+                                          ifFormat    : '#{options[:output_format]}', 
+                                          showsTime   : #{options[:time_select]}, 
+                                          timeFormat  : #{options[:time_format]}, 
+                                          showOthers  : true, 
+                                          inputField  : '#{targetted_textfield_id}', 
+                                          button      : '#{@object_name}_#{@method_name}_#{options[:index]}_trigger' });") +
+          hidden_field_for_disabled_calendar
+      end
+      
+      def to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
+        text_field_options = { :class         => "#{choice_method_name}_input",
+                               :autocomplete  => "off" }.merge(text_field_options)
+        
+        before_select_custom_choice = options.delete(:before_select_custom_choice)  || ""
+        on_select_custom_choice     = options.delete(:on_select_custom_choice)      || "this.clear().up('.#{choice_method_name}_select_container').hide().up().down('.#{choice_method_name}_input_container').show().down('.#{choice_method_name}_input').focus()"
+        after_select_custom_choice  = options.delete(:after_select_custom_choice)   || ""
+        
+        select_options = { :class     => "#{@method_name}_input",
+                           :onchange  => "if (this.value == '#{options[:last_option_value]}') {
+  #{before_select_custom_choice};
+  #{on_select_custom_choice};
+  #{after_select_custom_choice}
+} else {
+  #{select_options.delete(:onchange)}
+}" }.merge(select_options)
+        
+        link_options = { :content   => image_tag("cross_16x16.png", :title => "Annuler", :alt => "Annuler"),
+                         :function  => "var input_container = this.up('.#{choice_method_name}_input_container'); input_container.down('.#{text_field_options[:class]}').clear(); input_container.hide().up().down('.#{choice_method_name}_select_container').show().down('select').focus();" }.merge(link_options)
+        
+        show_select = @object.send(@method_name) || InstanceTag.value_before_type_cast(@object, choice_method_name.to_s).blank?
+        
+        content_tag_without_error_wrapping(
+          :div, to_collection_select_tag(collection, value_method, text_method, options, select_options.merge(show_select ? {} : { :value => '' })),
+          :class => "#{choice_method_name}_select_container",
+          :style => show_select ? '' : 'display:none'
+        ) +
+        content_tag_without_error_wrapping(
+          #OPTIMIZE we shouldn't have to manually add the brackets '[]' after the object_name, but the call of 'to_collection_select_tag_with_custom_choice' remove end brackets to the object_name
+          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, nil, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
+                link_to_function_without_error_wrapping(link_options.delete(:content), link_options.delete(:function), link_options),
+          :class => "#{choice_method_name}_input_container",
+          :style => show_select ? 'display:none' : ''
         )
       end
     end
@@ -197,8 +307,14 @@ module ActionView
         @template.collection_select_with_indentation(@object_name, method, collection, value_method, text_method, options.merge(:object => @object), html_options)
       end
       
-      def collection_select_with_option_groups(method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key = nil, options = {})
-        @template.collection_select_with_option_groups(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, selected_key, options.merge(:object => @object))
+      # this method is a copy of the code from Rails v2.3.4
+      #TODO remove that method once we have migrated to Rails 2.3.4
+      def grouped_collection_select(method, collection, group_method, group_label_method, option_key_method, option_value_method, options = {}, html_options = {})
+        @template.grouped_collection_select(@object_name, method, collection, group_method, group_label_method, option_key_method, option_value_method, objectify_options(options), @default_options.merge(html_options))
+      end
+      
+      def collection_select_with_custom_choice(method_name, choice_method_name, collection, value_method, text_method, options = {}, select_options = {}, text_field_options = {}, link_options = {})
+        @template.collection_select_with_custom_choice(@object_name, method_name, choice_method_name, collection, value_method, text_method, options.merge(:object => @object), select_options, text_field_options, link_options)
       end
       
       # Returns either the edit_tag or the view_tag.
@@ -316,10 +432,22 @@ module ActionView
       
       alias_method :text_area_autoresize, :autoresize_text_area
       
-      def form_buttons(options={})
+      def calendar_date_select(method, options = {}, text_field_options = {})
+        @template.calendar_date_field_tag(@object_name, method, options.merge(:object => @object), text_field_options)
+      end
+      
+      def calendar_datetime_select(method, options = {}, text_field_options = {})
+        @template.calendar_datetime_field_tag(@object_name, method, options.merge(:object => @object), text_field_options)
+      end
+      
+      def form_buttons(options = {})
         return unless form_view?
+        
         submit_text = options.delete(:submit_text)|| (@object.new_record? ? 'Enregistrer' : 'Enregistrer')
         reset_text  = options.delete(:reset_text) || 'Réinitialiser'
+        
+        options = { :disable_with => "Enregistrement en cours..." }.update(options)
+        
         submit      = @template.submit_tag(submit_text, options)
         reset       = @template.reset(@object_name, reset_text)
         

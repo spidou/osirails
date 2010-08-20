@@ -8,51 +8,81 @@ module HasContacts
   
   module ClassMethods
     
-    def has_contact options = {}
-      has_contacts options.merge({ :many => false })
+    def has_contact(*args)
+      options = (args.last.is_a?(Hash) ? args.pop : {})
+      
+      args.each do |key|
+        key = key.to_sym if key.is_a?(String)
+        raise ArgumentError, "[has_number] wrong key (#{key}), it is already used as a method of #{self.class.name}" if self.respond_to?(key)
+        
+        if options[:required]
+          class_eval do
+            validates_presence_of "#{key}_id".to_sym
+            validates_presence_of "#{key}".to_sym, :if => "#{key}_id".to_sym
+          end
+        end 
+        
+        class_eval do
+          
+          cattr_accessor :contact_keys
+          self.contact_keys ||= []
+          self.contact_keys << key
+          
+          before_save "save_#{key}".to_sym
+          
+          belongs_to key, :class_name => 'Contact'
+          
+          validate :accept_contact_from_method
+          
+          validates_associated key.to_sym, :if => "#{key}_should_be_validated?".to_sym
+          
+          define_method "accept_contact_from_method" do # check if contacts are allowed
+            contact = send(key)
+            accept_from_method = options[:accept_from] || :all
+            
+            return if contact.nil? or accept_from_method == :all
+            
+            accepted_contacts_list = self.send(accept_from_method)
+            raise "#{accept_from_method} should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
+            
+            good_contact = ( contact.new_record? or accepted_contacts_list.include?(contact) )
+            errors.add(key, ActiveRecord::Errors.default_error_messages[:inclusion]) unless good_contact
+          end
+          
+          define_method "#{key}_should_be_validated?" do
+            return false if send(key).nil?
+            send(key).new_record?
+          end
+          
+          define_method "#{key}_attributes=" do |attributes|
+            send("#{key}=", Contact.new(attributes)) # used only to add a new contact maybe will be updated to support edit in a next release
+          end
+          
+          define_method "save_#{key}" do
+            contact = send(key)
+            return if contact.nil? or !contact.new_record?
+            
+            contact.save(false)
+            send("#{key}_id=", contact.id) # say the contact_owner to reference the contact_id
+          end
+          
+          def all_contacts
+            contact_keys.collect{ |key| send(key) }.compact
+          end
+        end
+      end
     end
     
-    def has_contacts options = {}
-      raise "has_contacts must be called only once" if Contact.contacts_owners_models.include?(self) # multiple calls are forbidden
-      
-      Contact.contacts_owners_models << self
-      
-      cattr_accessor :has_contacts_definitions
-      
-      options = { :many        => true,
-                  :accept_from => :all }.merge(options)
-      
-      raise ArgumentError, ":many option should be true or false" if options[:many] != true and options[:many] != false
-      
-      self.has_contacts_definitions = options
-      
-      has_many :contacts_owners, :as => :has_contact
-      has_many :contacts, :source => :contact, :through => :contacts_owners
-      
-      after_save :save_contacts
-      
-      validates_contact_length :maximum => 1, :message => "Vous ne pouvez pas choisir plus d'un contact", :if => :contacts unless options[:many]
-      
-      validates_associated :contacts
-      
-      validate :accept_contacts_from_method
+    def has_contacts
+      raise "[has_contacts] Mutliple calls of has_contacts are not allowed" if Contact.contacts_owners_models.include?(self.name)
+      Contact.contacts_owners_models << self.name ## used to define the routes into routes.rb
       
       class_eval do
         
-        def accept_contacts_from_method # check if contacts are allowed
-          accept_from_method = self.class.has_contacts_definitions[:accept_from]
-          return if contacts.empty? or accept_from_method == :all
-          
-          accepted_contacts_list = self.send(accept_from_method)
-          raise "#{accept_from_method} should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
-          
-          wrong_contacts = contacts.select{ |c| !c.new_record? and !accepted_contacts_list.include?(c) }
-          errors.add(:contacts, I18n.t('activerecord.errors.messages.inclusion')) unless wrong_contacts.empty?
-        end
+        has_many :contacts, :as => :has_contact, :conditions => ['hidden = ? or hidden IS NULL', false]
         
-        def build_contact(params = {})
-          self.contacts.build( { :gender => 'M' }.merge(params) )
-        end
+        validates_associated :contacts
+        after_save :save_contacts
         
         def contact_attributes=(contact_attributes)
           contact_attributes.each do |attributes|
@@ -68,44 +98,15 @@ module HasContacts
         def save_contacts
           contacts.each do |c|
             if c.should_destroy?
-              contacts.delete(c) # delete the contact from the list, but not the contact itself
+              c.destroy
+            elsif c.should_hide?
+              c.hide
             elsif c.should_update?
               c.save(false)
             end
           end
         end
         
-        def self.has_many_contacts?
-          self.has_contacts_definitions[:many]
-        end
-        
-      end
-      
-      unless options[:many]
-        class_eval do
-          def contact
-            self.contacts.first
-          end
-          
-          def contact=(contact)
-            self.contacts = [ contact ]
-          end
-        end
-      end
-      
-    end
-    
-    def validates_contact_presence options = {}
-      validates_presence_of :contact_ids
-      
-      with_options :if => :contact_ids do |o|
-        o.validates_presence_of :contacts, options
-      end
-    end
-    
-    def validates_contact_length options = {}
-      with_options :if => :contact_ids do |o|
-        o.validates_length_of :contact_ids, options
       end
     end
     

@@ -1,7 +1,4 @@
-require File.join(RAILS_ROOT, 'lib', 'initialize_feature.rb')
-init(config, directory, "has_documents")
-
-require 'has_documents'
+FeatureManager.preload(config, directory, "has_documents")
 
 # defines interpolations for paperclip
 if Object.const_defined?("Paperclip")

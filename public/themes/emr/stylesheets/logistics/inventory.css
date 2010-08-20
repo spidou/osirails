@@ -1,0 +1,34 @@
+#inventory tr td.stock_quantity,
+#inventory tr td.new_stock_quantity {
+  background-repeat: no-repeat;
+  background-position: 90% 50%;
+  padding-right: 21px;
+}
+
+#inventory tr td.stock_quantity.increase,
+#inventory tr td.new_stock_quantity.increase {
+  background-image: url("/themes/emr/images/arrow_increase_16x16.png");
+}
+
+#inventory tr td.stock_quantity.decrease,
+#inventory tr td.new_stock_quantity.decrease {
+  background-image: url("/themes/emr/images/arrow_decrease_16x16.png");
+}
+
+#inventory tr td.stock_quantity.stagnancy,
+#inventory tr td.new_stock_quantity.stagnancy {
+  background-image: url("/themes/emr/images/arrow_stagnancy_16x16.png");
+}
+
+#inventory tr td.new_stock_quantity.error {
+  background-color: #ff4848;
+}
+
+#inventory tr td span.packaging {
+  background-color: yellow;
+}
+
+#inventory tr td img.fold_button,
+#inventory tr td img.unfold_button {
+  cursor: pointer;
+}

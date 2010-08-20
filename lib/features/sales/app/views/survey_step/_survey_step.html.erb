@@ -11,14 +11,14 @@
 
 <%
 survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.reject(&:should_destroy?).count})", # -1 if is form_view because we automatically add 1 hidden intervention
-                   :survey_step_products        => "Produits (#{survey_step.order.products.reject(&:should_destroy?).count})",
+                   :survey_step_end_products    => "Produits (#{survey_step.order.end_products.reject(&:should_destroy?).count})",
                    :survey_step_documents       => "Documents / Photos (#{survey_step.documents.reject(&:should_destroy?).count})",
                    :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractor_requests.reject(&:should_destroy?).count})",
                    #:survey_step_consultants     => "Intervenants externes (x)",
                    :survey_step_remarks         => "Commentaires (#{survey_step.remarks.count})" }
 
 survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
-                   :survey_step_products        => survey_step.order.errors.on(:products) ? ' errors' : '',
+                   :survey_step_end_products    => survey_step.order.errors.on(:end_products) ? ' errors' : '',
                    :survey_step_documents       => survey_step.errors.on(:documents) ? ' errors' : '',
                    :survey_step_subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
                    #:survey_step_consultants     => '',
@@ -30,7 +30,7 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
 <div class="presentation_medium survey_step root_nav">
   <ul class="survey_step_nav tab_nav">
     <li class="survey_step_interventions<%= survey_errors[:survey_step_interventions] %> selected"><%= survey_headers[:survey_step_interventions] %></li>
-    <li class="survey_step_products<%= survey_errors[:survey_step_products] %>"><%= survey_headers[:survey_step_products] %></li>
+    <li class="survey_step_end_products<%= survey_errors[:survey_step_end_products] %>"><%= survey_headers[:survey_step_end_products] %></li>
     <li class="survey_step_documents<%= survey_errors[:survey_step_documents] %>"><%= survey_headers[:survey_step_documents] %></li>
     <li class="survey_step_subcontractors<%= survey_errors[:survey_step_subcontractors] %>"><%= survey_headers[:survey_step_subcontractors] %></li>
     <!-- <li class="survey_step_consultants<%= survey_errors[:survey_step_consultants] %>"><%= survey_headers[:survey_step_consultants] %></li> -->
@@ -45,11 +45,11 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
       <%= display_survey_intervention_add_button(survey_step) if is_form_view? %>
     </div>
     
-    <h2 class="survey_step_products section_nav"><%= survey_headers[:survey_step_products] %></h2>
-    <div class="survey_step_products section_nav">
-      <%= display_autocomplete_field_to_add_product_in_survey_step(survey_step.order) if is_form_view? %>
-      <%= display_products_list_in_survey_step(survey_step.order) %>
-      <%= display_anchor_to_autocomplete_field_to_add_product_in_survey_step if is_form_view? %>
+    <h2 class="survey_step_end_products section_nav"><%= survey_headers[:survey_step_end_products] %></h2>
+    <div class="survey_step_end_products section_nav">
+      <%= display_autocomplete_field_to_add_end_product_in_survey_step(survey_step.order) if is_form_view? %>
+      <%= display_end_products_list_in_survey_step(survey_step.order) %>
+      <%= display_anchor_to_autocomplete_field_to_add_end_product_in_survey_step if is_form_view? %>
     </div>
     
     <h2 class="survey_step_documents section_nav"><%= survey_headers[:survey_step_documents] %></h2>

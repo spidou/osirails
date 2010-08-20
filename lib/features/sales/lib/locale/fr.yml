@@ -66,6 +66,9 @@ fr:
         date: "Effectuée le"
         dunning_sending_method: "Par"
         comment: "Commentaire"
+      end_product:
+        product_reference: "Produit référence"
+        quantity: "Quantité"
       graphic_item:
         name: "Nom"
         description: "Description"
@@ -81,7 +84,7 @@ fr:
       graphic_document:
         graphic_document_type: "Type de document graphique"
       mockup:
-        product: "Produit"
+        end_product: "Produit fini"
         mockup_type: "Type de maquette"
       invoice:
         reference: "Référence"
@@ -113,7 +116,6 @@ fr:
         order_type: "Type de dossier"
         ship_to_address: "Adresse(s) de livraison"
         approaching: "Type d'approche"
-        contact: "Contact client commercial"
         created_at: "Date de création"
         previsional_delivery: "Date prévisionnelle de livraison"
         quotation_deadline: "Date butoire d'envoi du devis"
@@ -128,8 +130,8 @@ fr:
         reference: "Référence"
         internal_actor: "Contact Graphique"
         creator: "Créateur"
-        product: "Produit"
-        product_description: "Description"
+        end_product: "Produit fini"
+        end_product_description: "Description"
         unit_measure: "Unité de mesures"
         sended_on: "BAT envoyé au client le"
         document_sending_method: "Par"
@@ -142,25 +144,19 @@ fr:
         created_at: "Date de création"
         status: "État actuel"
       product:
-        product_reference: "Produit référence"
-        name: "Nom du produit"
+        reference: "Référence"
+        name: "Spécificité"
         description: "Description"
         dimensions: "Côtes"
-        quantity: "Quantité"
+        designation: "Désignation"
+        vat: "Taux de TVA"
       product_reference:
-        reference: "Référence"
-        categories: "Familles"
-        designation: "Désignation (Nom complet)"
-        name: "Nom"
-        description: "Description"
-        product_reference_category: "Famille de produit"
-        vat: "TVA à appliquer (%)"
-        production_cost_manpower: "Coût horaire de main-d'oeuvre"
-        production_time: "Durée (en heures)"
-        delivery_cost_manpower: "Coût horaire de main-d'oeuvre"
-        delivery_time: "Durée (en heures)"
+        product_reference_category: "Famille"
+        product_reference_sub_category: "Sous-famille"
       product_reference_category:
         name: "Nom"
+        reference: "Référence"
+      product_reference_sub_category:
         product_reference_category: "Famille parente"
       quote:
         validity_delay: "Période de validité"
@@ -195,3 +191,4 @@ fr:
         contact: "Contact sur place"
         comment: "Commentaire"
         documents: "Documents"
+        survey_intervention_contact: "Contact"

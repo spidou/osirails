@@ -1,8 +1,0 @@
-normal_memorandum:
-  title: Foo
-  subject: News
-  text: Osirails ! Yes, we can !
-  signature: Osirails spirit
-  user: powerful_user
-  published_at: <%= Time.now - 3.months %>
-  

@@ -1,6 +1,6 @@
 <%
 intervention = survey_intervention_form
-#intervention.start_date = intervention.start_date.to_time if intervention.start_date
+contacts_owners = intervention.survey_step.order.customer.head_office_and_establishments
 style_attr = 'style="display:none"' unless intervention.new_record? or !intervention.errors.empty? or intervention.should_update?
 %>
 
@@ -9,8 +9,7 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
     <%= form.error_messages %>
     <p>
       <%= form.label :start_date %>
-      <%# form.datetime_select :start_date, :default => Time.now.beginning_of_hour, :datetime_separator => "à", :index => nil %>
-      <%= form.text_field :start_date, :value => intervention.start_date ? intervention.start_date.to_time.to_s(:db) : nil %>
+      <%= form.calendar_datetime_select(:start_date, { :index => intervention.id }) %>
     </p>
     <p>
       <%= form.label :duration_hours %>
@@ -21,8 +20,10 @@ style_attr = 'style="display:none"' unless intervention.new_record? or !interven
       <%= form.collection_select :internal_actor_id, Employee.actives, :id, :fullname, ( intervention.new_record? ? { :include_blank => "Veuillez choisir un employee" } : {} ) %>
     </p>
     <p>
-      <%= form.label :contact_ids %>
-      <%= display_contacts_picker(intervention, intervention.order_contacts, :owner_type => "survey_step[survey_intervention_attributes][]") %>
+      <%= form.label :survey_intervention_contact_id %>
+      <%= display_contact_picker(intervention, intervention.order_and_customer_contacts, :form => form,
+                                                                                         :contact_key => 'survey_intervention_contact',
+                                                                                         :contacts_owners => contacts_owners)%>
     </p>
     <p>
       <%= form.label :comment %>

@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTest < ActiveSupport::TestCase
-  fixtures :job_contracts, :salaries, :job_contract_types
-
   def setup
     @job_contract = job_contracts(:normal_job_contract)
   end

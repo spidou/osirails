@@ -52,13 +52,13 @@
       <%= f.error_messages %> 
       <p>
         <%= f.label:start_date %>
-        <%= f.date_select( :start_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
+        <%= f.calendar_date_select( :start_date, :default => Date.tomorrow) %>
         <%= f.label :start_half %>
         <%= f.check_box(:start_half) %>
       </p>
       <p>
         <%= f.label :end_date %>
-        <%= f.date_select( :end_date,{ :default => Date.tomorrow, :order => [:day,:month,:year] }) %>
+        <%= f.calendar_date_select(:end_date, :default => Date.tomorrow) %>
         <%= f.label :end_half %>
         <%= f.check_box(:end_half) %>
       </p>

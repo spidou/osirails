@@ -1,11 +1,12 @@
 class InvoicesController < ApplicationController
   include AdjustPdf
-  helper :orders, :contacts, :payments, :adjustments
+  helper :orders, :contacts, :payments, :adjustments, :numbers
   
   acts_as_step_controller :step_name => :invoice_step, :skip_edit_redirection => true
   
   before_filter :find_invoice
   before_filter :check_invoice_belong_to_order, :except => [ :new, :create, :ajax_request_for_invoice_items ]
+  before_filter :hack_params_for_nested_attributes, :only => [ :update, :create ]
   
   after_filter :add_error_in_step_if_invoice_has_errors, :only => [ :create, :update ]
   
@@ -71,8 +72,8 @@ class InvoicesController < ApplicationController
       end
     end
     
+    @invoice.invoice_contact = @order.order_contact
     @invoice.creator = current_user
-    @invoice.contacts << @order.contacts.last unless @order.contacts.empty?
     @invoice.due_dates.build(:date => Date.today + 1.month, :net_to_paid => @invoice.net_to_paid) if @invoice.due_dates.empty?
   end
   
@@ -304,6 +305,17 @@ class InvoicesController < ApplicationController
   end
   
   private
+    ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
+    ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)
+    ## a patch have been created (see http://weblog.rubyonrails.com/2009/1/26/nested-model-forms) but this block of code permit to avoid patch the rails core
+    def hack_params_for_nested_attributes # checklist_responses, documents
+      # hack for has_contact :invoice_contact
+      if params[:invoice][:invoice_contact_attributes] and params[:contact]
+        params[:invoice][:invoice_contact_attributes][:number_attributes] = params[:contact][:number_attributes]
+      end
+      params.delete(:contact)
+    end
+    
     # if invoice has errors, the invoice step has also an error to prevent updating of the step status
     def add_error_in_step_if_invoice_has_errors #TODO this method seems to be unreached and untested!
       unless @invoice.errors.empty?

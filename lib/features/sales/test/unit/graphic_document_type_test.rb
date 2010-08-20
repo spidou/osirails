@@ -1,18 +1,7 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class GraphicDocumentTypeTest < ActiveSupport::TestCase
   should_have_many :graphic_documents
-  
   should_validate_presence_of :name
-  
-  context "A graphic document type" do
-    setup do  
-      @gdt = graphic_document_types(:global_view)
-      flunk "@gdt should be valid" unless @gdt.valid?
-    end
-    
-    subject { @gdt }
-    
-    should_validate_uniqueness_of :name
-  end
+  should_validate_uniqueness_of :name
 end

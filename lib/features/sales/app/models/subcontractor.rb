@@ -1,18 +1,13 @@
-class Subcontractor < Third
+class Subcontractor < Supplier
   include SiretNumber
   
   has_permissions :as_business_object
   has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
   has_address :address
   
-  has_one :iban, :as => :has_iban
-  
-  belongs_to :activity_sector_reference
-  
-  # for pagination : number of instances by index page
   SUBCONTRACTORS_PER_PAGE = 15
   
-  named_scope :activates, :conditions => {:activated => true}
+  named_scope :actives, :conditions => { :activated => true }
   
   validates_presence_of :activity_sector_reference_id
   validates_presence_of :activity_sector_reference, :if => :activity_sector_reference_id

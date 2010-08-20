@@ -24,7 +24,7 @@
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png" %></LogoPath>
     </Supplier>  
-    <ProductName><%= @press_proof.product.name %></ProductName>
+    <ProductName><%= @press_proof.end_product.name %></ProductName>
     <Mockups>
       <% @press_proof.graphic_item_versions.each do |giv| %>
         <% gi = giv.graphic_item %>

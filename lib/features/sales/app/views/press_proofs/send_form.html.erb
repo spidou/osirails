@@ -11,7 +11,7 @@
     <%= form.error_messages %>
     <p>
       <%= form.label :sended_on %>
-      <%= form.date_select :sended_on, :order => [ :day, :month, :year ] %>
+      <%= form.calendar_date_select :sended_on %>
     </p>
     <p>
       <%= form.label :document_sending_method_id %>

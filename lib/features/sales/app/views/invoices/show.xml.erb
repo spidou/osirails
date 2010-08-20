@@ -75,7 +75,7 @@
             <% @is_page_first_element = "false" %>
           <% end %>
           <%= "<IsPageFirstElement>#{@is_page_first_element}</IsPageFirstElement>" %> 
-          <Reference><%= item.product.product_reference.reference if item.product and item.product.product_reference %></Reference>
+          <Reference><%= item.end_product.product_reference.reference if item.end_product and item.end_product.product_reference %></Reference>
           <Name><%= item.name %></Name>
           <Description><%= item.description %></Description>
           <Quantity><%= item.quantity %></Quantity>

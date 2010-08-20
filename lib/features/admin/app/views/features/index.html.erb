@@ -3,27 +3,30 @@
 <div>
   <h2>Modules</h2>
   <table id="feature_managment">
-    <tr>
-      <th>Titre</th>
-      <th>Nom</th>
-      <th>Version</th>
-      <th>Date d'ajout</th>
-      <th style='width: 40px;'>Installé</th>
-      <th style='width: 40px;'>Activé</th>
-      <th style='width: 70px;'>Suppression</th>
-
-    </tr>
-    <% for feature in @features %>
-    <tr>
-      <td><%= feature.title %></td>
-      <td><%= feature.name %></td>
-      <td><%= feature.version %></td>
-      <td><%= l(feature.created_at) %></td>
-      <td><%= display_install_link(feature) %></td>
-      <td><%= display_activate_link(feature) %></td>
-      <td><%= display_remove_link(feature) %></td>
-    </tr>
-    <% end %>
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Nom</th>
+        <th>Version</th>
+        <th>Date d'ajout</th>
+        <th style='width: 40px;'>Installé</th>
+        <th style='width: 40px;'>Activé</th>
+        <th style='width: 70px;'>Suppression</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for feature in @features %>
+      <tr>
+        <td><%= feature.title %></td>
+        <td><%= feature.name %></td>
+        <td><%= feature.version %></td>
+        <td><%= l(feature.created_at) %></td>
+        <td><%= display_install_link(feature) %></td>
+        <td><%= display_activate_link(feature) %></td>
+        <td><%= display_remove_link(feature) %></td>
+      </tr>
+      <% end %>
+    </tbody>
   </table>
   <%= will_paginate @features %>
 

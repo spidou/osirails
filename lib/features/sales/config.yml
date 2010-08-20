@@ -2,11 +2,7 @@ name: sales
 title: Ventes
 version: 0.1
 dependencies:
-  admin:
-    - 0.1
-  rh:
-    - 0.1
-  thirds:
+  logistics:
     - 0.1
 menus:
   sales:
@@ -61,7 +57,7 @@ menus:
                   subcontractor_requests:
                     title: Demande de sous-traitance
                     description: "Demande de prestatation auprès d'un sous-traitant"
-              estimate_step:
+              quote_step:
                 title: Devis
                 description: "Étape de l'établissement du devis"
                 position: 2
@@ -161,18 +157,20 @@ menus:
         description: Permet la gestion des familles et des références produits
         children:
           product_reference_categories:
-            title: Gestion des catégories
-            description: Permet la gestion des categories
+            title: Gestion des familles de produit
+            description: Permet la gestion des familles de produit
+            hidden: true
+          product_reference_sub_categories:
+            title: Gestion des sous-familles de produit
+            description: Permet la gestion des sous-familles de produit
             hidden: true
           product_references:
             title: Gestion des références
             description: Permet la gestion des références
-            hidden: true
             children:
-              products:
+              end_products:
                 title: Gestion des produits
                 description: Permet la gestion de produits
-                hidden: true
       products_catalog:
           title: Catalogue des produits et références
           description: "Permet l'affichage du catalogue de produit"
@@ -195,6 +193,15 @@ configurations:
   order_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un dossier
     value: "%y%m$number(3)"
+  product_reference_sub_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une sous-famille de produit référence
+    value: "$product_reference_category.$number(2)"
+  product_reference_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un produit reference
+    value: "$product_reference_sub_category.$number(2)"
+  end_product_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un produit fini
+    value: "$product_reference.$number(5)"
   quote_reference_pattern:
     description: Modèle permettant la génération du numéro de référence unique pour un devis
     value: "$order.DV$number(2)"

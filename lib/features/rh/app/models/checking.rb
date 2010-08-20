@@ -14,6 +14,10 @@ class Checking < ActiveRecord::Base
   validates_persistence_of :cancelled,                        :unless => :while_cancel
   validates_persistence_of :employee_id, :date, :user_id
   
+  with_options :unless => :valid_edit_period_limit? do |v|
+    v.validates_persistence_of :overtime_hours, :overtime_minutes, :absence_hours, :absence_minutes, :overtime_comment, :absence_comment
+  end
+  
   validates_presence_of :absence_comment,                     :if => Proc.new { |o| o.mandatory_absence_comment? }
   validates_presence_of :overtime_comment,                    :if => Proc.new { |o| o.mandatory_overtime_comment? }
   validates_presence_of :date
@@ -22,7 +26,6 @@ class Checking < ActiveRecord::Base
   validates_presence_of :employee,                            :if => :employee_id
   
   validate :validates_one_checking_per_day_and_per_employee
-  validate :validates_edit_period_limit
   validate :validates_good_hours, :validates_good_minutes
   validate :validates_not_empty_checking
   validate :validates_date_not_too_far_away,                  :if => :date
@@ -101,8 +104,9 @@ class Checking < ActiveRecord::Base
       end
     end
     
-    def validates_edit_period_limit
-      errors.add_to_base("Le pointage ne peut plus être modifié") unless new_record? or can_be_edited? or while_override or while_cancel
+
+    def valid_edit_period_limit?
+      new_record? or can_be_edited? or while_override or while_cancel
     end
 
     def validates_good_hours
@@ -130,6 +134,8 @@ class Checking < ActiveRecord::Base
     end
     
     def validates_date_not_too_far_away
-      errors.add(:date, "ne doit pas être trop éloignée de la date d'aujourd'hui") if date > Date.today+1.month or date < Date.today-1.month
+      if changes.include?("date") and !date.between?(Date.today-1.month, Date.today+1.month)
+        errors.add(:date, "ne doit pas être trop éloignée de la date d'aujourd'hui")
+      end 
     end
 end

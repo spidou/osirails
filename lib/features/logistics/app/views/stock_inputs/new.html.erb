@@ -1,11 +1,14 @@
 <% add_contextual_menu_item :possible_actions do %>
-  <%= new_stock_flow_link(true,Commodity.new, "matière première") if params[:type] == "Consumable" %>
-  <%= new_stock_flow_link(true,Consumable.new, "consommable")if params[:type] == "Commodity" %>
+  <%= new_stock_flow_link(StockInput, Commodity.new) unless params[:supply_type] == "Commodity" %>
+  <%= new_stock_flow_link(StockInput, Consumable.new) unless params[:supply_type] == "Consumable" %>
 <% end %>
+
 <% add_contextual_menu_item :useful_links do %>
   <%= stock_inputs_link(:link_text => "Voir toutes les entrées de stocks") %>
   <%= commodity_categories_link(:link_text => "Voir toutes les catégories de matières premières") %>
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
-<h1>Nouvelle entr&eacute;e de stock</h1>
-<%= render(:partial => "stock_flows/new", :locals => {:input => true}) %>
+
+<h1>Nouvelle entrée de stock</h1>
+<%= render :partial => 'stock_flows/stock_flow', :object => @stock_flow, :locals => { :supply_type  => @supply_type,
+                                                                                      :supplies     => @supplies } %>

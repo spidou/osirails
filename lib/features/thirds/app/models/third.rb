@@ -13,6 +13,6 @@ class Third < ActiveRecord::Base
   RATINGS = { "0" => 0, "1" => 1, "2" => 2, "3" => 3, "4" => 4, "5" => 5 }
   
   def website_url
-    "http://#{website}" unless website.blank?
+    @website_url ||= "http://#{website}" unless website.blank?
   end
 end

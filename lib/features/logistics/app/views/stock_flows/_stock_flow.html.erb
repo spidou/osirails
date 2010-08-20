@@ -1,16 +1,39 @@
-<tr>
-<% if input %>
-  <%= "<td>#{stock_flow.adjustment ? 'Inventaire' : stock_flow.purchase_number}</td>" %>
-<% else %>
-  <%= "<td>#{stock_flow.adjustment ? 'Inventaire' : stock_flow.file_number}</td>" %>
-<% end %>
-<%= "<td> #{stock_flow.supply.name}</td>" %>
-<%= "<td>#{stock_flow.supplier.name}</td>" %>
-<%= "<td>#{stock_flow.quantity}</td>" %>
-<% if input %>
-  <%= "<td>#{number_with_precision(stock_flow.fob_unit_price.to_s,2) + ' &euro;'} </td>" %>
-  <%= "<td>#{number_with_precision(stock_flow.tax_coefficient,2) + ' &#37;'} </td>" %>
-<% end %>
-<%= "<td>#{l(stock_flow.created_at.to_date)}</td>" %>
-</tr>
+<%
+require_locals supply_type, supplies
 
+stock_flow_type = stock_flow.class.name.underscore
+%>
+
+<div class="presentation_medium">
+  <% unless supplies.empty? %>
+    <% form_for(stock_flow) do |form| %>
+      <%= form.error_messages %>
+      <%= hidden_field_tag :supply_type, supply_type %>
+      
+      <p>
+        <%= form.label :supply_id %>
+        <%= form.collection_select(:supply_id, supplies, :id, :designation, :include_blank => "Veuillez choisir la fourniture concernée") %>
+        <%= observe_field("#{stock_flow_type}_supply_id", :url => update_supply_stock_infos_path, :with => "supply_id") if stock_flow.is_a?(StockInput) %>
+      </p>
+      <p>
+        <%= form.label :identifier %>
+        <%= form.text_field :identifier %>
+      </p>
+      <p>
+        <%= form.label :quantity %>
+        <%= form.text_field :quantity, :size => 5 %>
+      </p>
+       
+      <% if stock_flow.is_a?(StockInput) %>
+        <p>
+          <%= form.label :unit_price %>
+          <%= form.text_field(:unit_price, :value => number_with_precision(stock_flow.unit_price, 2), :size => 10) + " &euro;" %>
+        </p>
+      <% end %>
+      
+      <%= form.form_buttons %>
+    <% end %>
+  <% else %>
+    <p>Aucune fourniture disponible pour effectuer un mouvement de stock</p>
+  <% end %>
+</div>

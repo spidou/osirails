@@ -1,0 +1,21 @@
+<%
+require_locals supply_category_type
+item = supply_categories_supply_size
+
+selected = item.unit_measure ? "selected" : ""
+should_destroy = !item.new_record? && item.should_destroy? ? "should_destroy" : ""
+%>
+
+<% fields_for "#{supply_category_type.name.underscore}[supply_categories_supply_size_attributes][]", item, :index => nil do |form| %>
+  <p class="supply_categories_supply_size <%= selected %> <%= should_destroy %>">
+    <span class="name"><%= item.supply_size.name_and_short_name %></span>
+    <span>s'exprimant en :</span>
+    <%= form.form_or_view(form.collection_select(:unit_measure_id, item.supply_size ? item.supply_size.unit_measures : UnitMeasure.all,
+                                                 :id, :symbol_and_name, { :include_blank => "Ne pas utiliser" },
+                                                 :onchange => "update_status_for_supply_categories_supply_size(this)", :index => nil),
+                          :unit_measure, :symbol_and_name) %>
+    
+    <%= form.hidden_field :supply_size_id %>
+    <%= form.hidden_field :id, :class => "supply_categories_supply_size_id" %>
+  </p>
+<% end %>

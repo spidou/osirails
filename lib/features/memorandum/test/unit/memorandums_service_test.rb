@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../memorandum_test'
 
 class MemorandumsServiceTest < ActiveSupport::TestCase
-  fixtures :memorandums_services, :services, :memorandums
-
   def setup
     @memorandums_service = memorandums_services(:normal_memorandums_service)
   end
@@ -22,7 +20,7 @@ class MemorandumsServiceTest < ActiveSupport::TestCase
   end
 
   def test_belongs_to_service
-    assert_equal @memorandums_service.service, services(:parent),
+    assert_equal @memorandums_service.service, services(:direction_general),
       "This MemorandumsService should belongs to this Service"
   end
 

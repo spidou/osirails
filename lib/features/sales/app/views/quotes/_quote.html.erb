@@ -1,7 +1,7 @@
 <% content_for :header do %>
-  <%= javascript_include_tag 'sales/round_number' %>
   <%= javascript_include_tag 'sales/quotes' %>
   <%= javascript_include_tag 'sales/sales' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/quote' %>
 <% end %>
 
 <%= generate_quote_contextual_menu_partial %>
@@ -12,22 +12,22 @@ quote_headers = { :quote_header => "Entête",
                   :quote_footer => "Conditions commerciales",
                   :quote_additional_informations => "Informations supplémentaires"}
 
-quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:contacts) ? ' errors' : '',
+quote_errors  = { :quote_header => quote.errors.on(:bill_to_address) || quote.errors.on(:ship_to_address) || quote.errors.on(:quote_contact) || quote.errors.on(:quote_contact_id) ? ' errors' : '',
                   :quote_body   => quote.errors.on(:quote_items) || quote.errors.on(:quote_item_ids) || quote.errors.on(:prizegiving) || quote.errors.on(:carriage_costs) || quote.errors.on(:discount) ? ' errors' : '',
                   :quote_footer => quote.errors.on(:sales_terms) || quote.errors.on(:validity_delay) || quote.errors.on(:validity_delay_unit) || quote.errors.on(:deposit) ? ' errors' : '' }
 
-missing_products    = quote.order.products - quote.products
-excess_quote_items  = quote.product_quote_items.select{ |q| q.product.nil? }
+missing_end_products  = quote.order.end_products - quote.end_products
+excess_quote_items    = quote.product_quote_items.select{ |q| q.end_product.nil? }
 %>
 
 <div class="presentation_medium root_nav">
   
   <% unless quote.new_record? or quote.was_signed? or quote.was_cancelled? %>
-    <% unless missing_products.empty? %>
+    <% unless missing_end_products.empty? %>
       <div class="notification">
         <p>Attention, certains produits ne sont pas présents sur ce devis, et seront supprimés si vous l'enregistrez tel quel. Vous devriez <strong>annuler ce devis et en créer un nouveau</strong> pour prendre en compte les nouveaux produits suivants :</p>
         <ul>
-          <li><strong><%= missing_products.collect(&:name).join("</strong></li><li><strong>")%></strong></li>
+          <li><strong><%= missing_end_products.collect(&:name).join("</strong></li><li><strong>")%></strong></li>
         </ul>
       </div>
     <% end %>
@@ -50,12 +50,12 @@ excess_quote_items  = quote.product_quote_items.select{ |q| q.product.nil? }
   
   <% action = quote.new_record? ? :create : :update %>
   <% method = quote.new_record? ? :put : :post %>
-  <% form_for quote, :url => { :controller => 'quotes', :action => action, :order_id => @order.id }, :method => method do |form| %>
+  <% form_for quote, :url => { :controller => 'quotes', :action => action, :order_id => @order.id }, :method => method, :html => { :multipart => true } do |form| %>
     
     <h2 class="quote_header section_nav"><%= quote_headers[:quote_header] %></h2>
     <div class="quote_header section_nav selected">
       <%= form.error_messages unless quote_errors[:quote_header].blank? %>
-      <%= render :partial => 'quote_header', :object => quote %>
+      <%= render :partial => 'quote_header', :object => quote, :locals => { :form => form } %>
     </div>
     
     <h2 class="quote_body section_nav"><%= quote_headers[:quote_body] %></h2>

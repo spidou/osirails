@@ -1,59 +1,138 @@
-require 'test/test_helper'
-require File.dirname(__FILE__) + '/create_supplies'
-require File.dirname(__FILE__) + '/stock_flow_test'
-require File.dirname(__FILE__) + '/new_stock_flow'
+require File.dirname(__FILE__) + '/../logistics_test'
 
 class StockOutputTest < ActiveSupport::TestCase
-  include StockFlowTest
-  include NewStockFlow
-
-   def setup
-    @sf = StockOutput.new
-    @sf.valid?
-  end
-
-   def test_presence_of_file_number
-    assert @sf.errors.on(:file_number), "file_number should NOT be valid because it is nil"
-
-    @sf.file_number = "x"
-    @sf.valid?
-    assert !@sf.errors.on(:file_number), "file_number should be valid"
-
-    @sf.adjustment = true
-    @sf.file_number = nil
-    @sf.valid?
-    assert !@sf.errors.on(:file_number), "file_number should be valid"
-  end
-
-  def test_create_stock_output
-    create_supplier_supplies
-    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
-
-    assert_difference "StockOutput.count", 2 do
-      new_stock_flow(Supply.last,Supplier.last,false,5)
-      new_stock_flow(Supply.last,Supplier.last,false,5,true) #with adjustment
+  #TOOD
+  #has_permissions :as_business_object
+  
+  context "A stock_output" do
+    setup do
+      @stock_flow = StockOutput.new
     end
-  end
-
-  def test_stock_availability
-    create_supplier_supplies
-    assert_no_difference "StockOutput.count" do
-      new_stock_flow(Supply.last,Supplier.last,false,10)
+    teardown do
+      @stock_flow = nil
     end
-    assert @sf.errors.on(:quantity), "quantity should NOT be valid because it is greater than supplier_supply's stock"
-  end
-
-  def test_before_create
-    create_supplier_supplies
-    flunk "stock input must be done" unless new_stock_flow(Supply.last,Supplier.last,true,10)
-    @stock_quantity = Supply.last.stock_quantity
-    @stock_value = Supply.last.stock_value
-    @aup = Supply.last.average_unit_price
-    flunk "stock output must be done" unless new_stock_flow(Supply.last,Supplier.last,false,5)
-    @last_sf = StockFlow.last
-    assert_equal @last_sf.previous_stock_quantity, @stock_quantity, "these two should be equal"
-    assert_equal @last_sf.previous_stock_value, @stock_value, "these two should be equal"
-    assert_equal @last_sf.fob_unit_price, @aup, "these two should be equal"
-    assert_equal @last_sf.tax_coefficient, 0, "these two should be equal"
+    
+    subject{ @stock_flow }
+    
+    include StockFlowTest
+    
+    should "have a valid calculation_method" do
+      assert_equal :-, @stock_flow.calculation_method
+    end
+    
+    context "which is saved" do
+      setup do
+        @supply = Supply.first
+        create_stock_input_for_supply(@supply, :sleep_delay => true)
+        
+        flunk "@supply should have a stock_value at 10000.0\nbut was #{@supply.stock_value}" if @supply.stock_value != 10000.0
+        flunk "@supply should have a stock_quantity at 100\nbut was #{@supply.stock_quantity}" if @supply.stock_quantity != 100
+        flunk "@supply should have a average_unit_stock_value at 100.0\nbut was #{@supply.average_unit_stock_value}" if @supply.average_unit_stock_value != 100.0
+        
+        @stock_flow.attributes = { :supply_id   => @supply.id,
+                                   :identifier  => "123456789",
+                                   :quantity    => 10 }
+        @stock_flow.save!
+      end
+      
+      should "NOT be editable" do
+        assert !@stock_flow.can_be_edited?
+      end
+      
+      should "NOT be edited" do
+        assert !@stock_flow.update_attribute(:quantity, @stock_flow.quantity + 10)
+        assert !@stock_flow.update_attributes(:quantity => @stock_flow.quantity + 20)
+        
+        @stock_flow.quantity += 30
+        assert !@stock_flow.save
+      end
+      
+      should "NOT be destroyable" do
+        assert !@stock_flow.can_be_destroyed?
+      end
+      
+      should "NOT be destroyed" do
+        assert !@stock_flow.destroy
+      end
+      
+      should "have a valid unit_price" do
+        expected_value = 100 # supply.average_unit_stock_value
+        assert_equal expected_value, @stock_flow.unit_price
+      end
+      
+      should "have a valid current_stock_value" do
+        expected_value = BigDecimal.new("9000") # previous_stock_value - ( unit_price * quantity ) <=> 10000 - (100 * 10) <=> 10000 - 1000 <=> 9000
+        assert_equal expected_value, @stock_flow.current_stock_value
+      end
+      
+      should "have a valid current_stock_quantity" do
+        expected_value = 90 # previous_stock_quantity - quantity <=> 100 - 10 <=> 90
+        assert_equal expected_value, @stock_flow.current_stock_quantity
+      end
+    end
+    
+    context "associated to a supply" do
+      setup do
+        @supply = Supply.first
+        flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
+        
+        @stock_flow.supply = @supply
+      end
+      
+      should "automatically set up unit_price before validation" do
+        @stock_flow.valid?
+        assert_not_nil @stock_flow.unit_price
+      end
+      
+      context "which has stock_value > 0 and stock_quantity > 0" do
+        setup do
+          create_stock_input_for_supply(@supply, :sleep_delay => true)
+          flunk "@supply should have a stock_quantity at 100\nbut was #{@supply.stock_quantity}" if @supply.stock_quantity != 100
+        end
+        
+        should "NOT allow a quantity greater than the supply's stock_quantity" do
+          [101, 200, 1000].each do |q|
+            @stock_flow.quantity = q
+            @stock_flow.valid?
+            
+            assert_match /La quantité choisie est supérieure au stock disponible pour cette fourniture/, @stock_flow.errors.on(:quantity)
+          end
+        end
+        
+        should "allow a quantity equal to the supply's stock_quantity" do
+          @stock_flow.quantity = 100
+          @stock_flow.valid?
+          
+          assert_nil @stock_flow.errors.on(:quantity)
+        end
+        
+        should "allow a quantity less than the supply's stock_quantity" do
+          [1, 50, 99].each do |q|
+            @stock_flow.quantity = q
+            @stock_flow.valid?
+            
+            assert_nil @stock_flow.errors.on(:quantity)
+          end
+        end
+      end
+    end
+    
+    context "associated to a supply and to an inventory" do
+      setup do
+        @supply = Supply.first
+        flunk "@supply should NOT have any stock_flows" if @supply.stock_flows.any?
+        
+        @inventory = build_inventory_with( { @supply => 100 } )
+        flunk "@inventory should have 1 stock_flow\nbut has #{@inventory.stock_inputs.size}" unless @inventory.stock_inputs.size == 1
+        
+        @stock_flow = @inventory.stock_inputs.first
+        flunk "@stock_flow should exist" unless @stock_flow
+      end
+      
+      should "automatically set up unit_price before validation" do
+        @stock_flow.valid?
+        assert_not_nil @stock_flow.unit_price
+      end
+    end
   end
 end

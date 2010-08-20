@@ -1,10 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class LegalFormTest < ActiveSupport::TestCase
-  def test_presence_of_name
-    assert_no_difference 'LegalForm.count' do
-      legal_form = LegalForm.create
-      assert_not_nil legal_form.errors.on(:name), "A LegalForm should have a name"
-    end
-  end
+  should_belong_to :third_type
+  should_validate_presence_of :name
 end

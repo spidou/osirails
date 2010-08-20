@@ -1,18 +1,7 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../sales_test'
 
 class MockupTypeTest < ActiveSupport::TestCase
   should_have_many :mockups
-  
   should_validate_presence_of :name
-  
-  context "A mockup type" do
-    setup do  
-      @mt = mockup_types(:detailed_view)
-      flunk "@mt should be valid" unless @mt.valid?
-    end
-    
-    subject { @mt }
-    
-    should_validate_uniqueness_of :name
-  end
+  should_validate_uniqueness_of :name
 end

@@ -1,10 +1,8 @@
-class ConsumablesManagerController < ApplicationController
-  helper :supplies_manager
+class ConsumablesManagerController < SuppliesManagerController
   
-  # GET /consumables_manager
-  def index
+  def define_supply_type_and_supply_category_type
     @supply_type = Consumable
-    @supply_categories_root = (params[:inactives]=="true" ? ConsumableCategory.roots : ConsumableCategory.enabled_roots)
+    @supply_category_type = ConsumableCategory
   end
+  
 end
-

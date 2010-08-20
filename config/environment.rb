@@ -11,11 +11,15 @@
 # Specifies if the application is launch from a rake task or not (set at TRUE in Rakefile)
 RAKE_TASK = false unless defined? RAKE_TASK
 
+# Specifies if the application is launch for testing or not (set in test/test_helper.rb)
+TESTING_FEATURE = false unless defined? TESTING_FEATURE
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 require 'rails_hacks'
 require 'contextual_menu'
 require 'mysql'
+require 'feature_manager'
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -37,40 +41,11 @@ Rails::Initializer.run do |config|
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
   config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
-                    :tiny_mce, :validates_persistence_of, :validates_timeliness, :paperclip, :auto_complete,
-                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_contacts,
-                    :has_numbers, :acts_as_step, :pdf_generator, :all]
+                    :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete, :local_auto_complete,
+                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers,
+                    :has_contacts, :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
   
-  # BEGIN #
-  # Manage feature's dependences
-  require 'yaml'
-  $plugins = config.plugins
-  $all_features_path = Dir.glob("#{RAILS_ROOT}/**/features/*/")
-  
-  def load_features_dependences(f)
-    return if $plugins.include?(f.to_sym)
-    $all_features_path.each do |feature_path|
-      feature_name = feature_path.split('/').last
-      next unless feature_name == f
-      yaml = YAML.load(File.open(File.join(feature_path, 'config.yml')))
-      unless yaml['dependencies'].nil?
-        yaml['dependencies'].each do |key, val|
-          load_features_dependences(key.to_s)
-        end
-      end
-      $plugins.insert($plugins.index(:all) || $plugins.last, f.to_sym)
-      break
-    end
-  end
-  
-  $all_features_path.each do |feature_path|
-    load_features_dependences(feature_path.split('/').last)
-  end
-  
-  config.plugins = $plugins
-  # END #
-  
-  $activated_features_path = []
+  FeatureManager.update_config_plugins(config)
   
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )
@@ -78,11 +53,7 @@ Rails::Initializer.run do |config|
     File.directory?(lib = "#{dir}/lib") ? lib : dir
   end
   
-  config.plugin_paths += ["#{RAILS_ROOT}/lib/features", "#{RAILS_ROOT}/vendor/features", "#{RAILS_ROOT}/lib/plugins"]
-
-  # this line permits to add controllers and helpers in plugins
-  # FIXME if it cause issues anywhere, comment this line and verify if all plugins works properly
-  config.load_once_paths += %W{ #{RAILS_ROOT}/app/controllers #{RAILS_ROOT}/app/helpers }
+  config.plugin_paths = Dir["#{RAILS_ROOT}/{lib,vendor}/{features,plugins}"]
   
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

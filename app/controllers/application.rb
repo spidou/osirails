@@ -52,11 +52,11 @@ class ApplicationController < ActionController::Base
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}
     def self.method_permission(options)
-      $permission[controller_path] = options
+      $permission[controller_path] ||= options
     end
     
     def self.model(model_name)
-      @@models[controller_path] = model_name
+      @@models[controller_path] ||= model_name
     end
 
     # This method return the feature name
@@ -72,11 +72,7 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      begin
-        User.find(session[:user_id])
-      rescue
-        return false
-      end
+      @current_user ||= User.find_by_id(session[:user_id])
     end
 
     # Called when an user try to acces to an unauthorized page
@@ -87,6 +83,35 @@ class ApplicationController < ActionController::Base
     def configure_model
       @@models[controller_path] ||= controller_name.singularize.camelize
     end
+    
+    ######################################################################
+    # These methods are used to hack params into sales (CustomerContoller, SubcontractorController etc ...)
+    # TODO remove that methods when the hack become useless
+     
+    # Method used to remove some keys that mustn't be passed to the model
+    def clean_params(array, key)
+      array.each do |hash|
+        hash.delete(key)
+      end
+      array
+    end
+    
+    # Method to find if the id passed as argument is a fake one used to retrieve new_record's numbers
+    def is_a_fake_id?(id)
+      /new_record_([0-9])*/.match(id)
+    end
+    
+    # Method to remove fake ids that become useless after params hack
+    def remove_fake_ids(params)
+      if params.is_a?(Array)
+        params.each do |element|
+          element[:id] = nil if is_a_fake_id?(element[:id])
+        end
+      elsif params.is_a?(Hash)
+        params[:id] = nil if is_a_fake_id?(params[:id])
+      end
+    end
+    ######################################################################
       
   private
 
@@ -168,13 +193,8 @@ class ApplicationController < ActionController::Base
     # this method permits to load the 'overrides.rb' file for each feature before each loaded page in the browser.
     # that is necessary only on development environment, because the classes cache is cleaned every time in this environment.
     def load_features_overrides
-      unless !defined?($activated_features_path)
-        ($activated_features_path).each do |feature_path|
-          override_path = File.join(feature_path, "overrides.rb")
-          load override_path if File.exists?(override_path)
-        end
-      else
-        raise "global variable $activated_features_path is not instanciated"
+      FeatureManager.loaded_feature_paths.each do |feature_path|
+        Dir["#{feature_path}/lib/overrides/*.rb"].each{ |file| load file }
       end
     end
     

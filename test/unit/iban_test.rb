@@ -1,8 +1,6 @@
 require 'test/test_helper'
 
 class IbanTest < ActiveSupport::TestCase
-  fixtures :ibans
-
   def setup
     @iban = ibans(:normal_iban)
   end

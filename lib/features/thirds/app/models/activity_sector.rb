@@ -1,6 +1,5 @@
 class ActivitySector < ActiveRecord::Base
   validates_presence_of :name
-  
   validates_uniqueness_of :name, :scope => :type
   
   has_search_index :only_attributes => [:name]

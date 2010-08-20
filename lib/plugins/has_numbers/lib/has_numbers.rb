@@ -1,5 +1,5 @@
 module HasNumbers
-
+  
   class << self
     def included base #:nodoc:
       base.extend ClassMethods
@@ -17,10 +17,11 @@ module HasNumbers
         # this method permit to save the numbers of the employee when it is passed with the employee form
         def number_attributes=(number_attributes)
           number_attributes.each do |attributes|
+            attributes.delete("#{self.class.singularized_table_name}_id")
             if attributes[:id].blank?
               self.numbers.build(attributes)
             else
-              number = self.numbers.detect { |t| t.id == attributes[:id].to_i} 
+              number = self.numbers.detect { |t| t.id == attributes[:id].to_i}
               number.attributes = attributes
             end
           end
@@ -30,8 +31,8 @@ module HasNumbers
         
         def save_numbers
           self.numbers.each do |number|
-            if number.should_destroy?    
-              number.destroy    
+            if number.should_destroy?
+              number.destroy
             else
               number.save(false)
             end
@@ -42,9 +43,9 @@ module HasNumbers
     end
     
     def has_number(key)
-  
+      
       key = key.to_sym if key.is_a?(String)
-
+      
       raise ArgumentError, "[has_number] wrong key (#{key}), it is already used as a method of #{self.class.name}" if self.respond_to?(key)
       
       class_eval do
@@ -63,8 +64,8 @@ module HasNumbers
           attributes ||= {}
           self.send("#{key}=", Number.new) unless self.send(key)                # Create a new and then build it because the build need a record to be called and the
           self.send(key).build(attributes.merge({:has_number_key => key.to_s})) #  affectation with '=' seems to add errors like with ".valid?"
-        end        
-                
+        end
+        
         after_save "save_#{key}"
         
         define_method "save_#{key}" do

@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../rh_test'
 
 class SalaryTest < ActiveSupport::TestCase
-  fixtures :salaries
-
   def setup
     @salary = salaries(:normal_salary)
   end

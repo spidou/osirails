@@ -1,61 +1,80 @@
-<div class="presentation_large">
-<% form_for product_reference do |form| %>
-  <%= form.error_messages %>
-  <h2>Rérérence</h2>
-  <p>
-    <%= form.label :reference %>
-    <%= form.form_or_view(form.text_field(:reference), :reference) %>
-  </p>
-  
-  <% if is_form_view? %>
-    <p>
-      <%= form.label :product_reference_category_id %>
-      <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name, {:indentation => 15}) %>
-    </p>
-    <p>
-      <%= form.label :name %>
-      <%= form.text_field(:name) %>
-    </p>
-  <% else %>
-    <p>
-      <%= form.label :categories %>
-      <%= strong product_reference.ancestors_names.join(" - ") %>
-    </p>
-    <p>
-      <%= form.label :designation %>
-      <%= strong product_reference.designation %>
-    </p>
-  <% end %>
-  
-  <p>
-    <%= form.label :description %>
-    <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 80), :description) %>
-  </p>
-  <p>
-    <%= form.label :vat %>
-    <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name), :vat, :name) %>
-  </p>
-
-  <h2>Informations concernant la production</h2>
-  <p>
-    <%= form.label :production_cost_manpower %>
-    <%= form.form_or_view(form.text_field(:production_cost_manpower), :production_cost_manpower) %>
-  </p>
-  <p>
-    <%= form.label :production_time %>
-    <%= form.form_or_view(form.text_field(:production_time), :production_time) %>
-  </p>
-
-  <h2>Informations concernant la livraison</h2>
-  <p>
-    <%= form.label :delivery_cost_manpower %>
-    <%= form.form_or_view(form.text_field(:delivery_cost_manpower), :delivery_cost_manpower) %>
-  </p>
-  <p>
-    <%= form.label :delivery_time %>
-    <%= form.form_or_view(form.text_field(:delivery_time), :delivery_time) %>
-  </p>
-  
-  <%= form.form_buttons %>
+<% content_for :header do %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
 <% end %>
+
+<div class="presentation_medium">
+  <% form_for product_reference do |form| %>
+    <%= form.error_messages %>
+    
+    <fieldset class="presentation_in_columns">
+      <legend>Référencement</legend>
+      
+      <div>
+        <% if is_form_view? %>
+          <p>
+            <%= form.label :product_reference_category_id %>
+            <% if is_form_view? and product_reference.new_record? %>
+              <%= form.collection_select :product_reference_category_id, @product_reference_categories, :id, :reference_and_name, { :include_blank => "Veuillez choisir une famille" } %>
+              <%= observe_field("product_reference_product_reference_category_id", :url    => self.send("update_product_reference_sub_categories_path"),
+                                                                                   :update => "product_reference_product_reference_sub_category_id",
+                                                                                   :with   => 'id') %>
+            <% else %>
+              <%= strong product_reference.product_reference_category.name %>
+            <% end %>
+          </p>
+        
+          <p>
+            <%= form.label :product_reference_sub_category_id %>
+            <% if is_form_view? and product_reference.new_record? %>
+              <%
+              sub_category_select_id   = "product_reference_product_reference_sub_category_id"
+              sub_category_select_name = "product_reference[product_reference_sub_category_id]"
+              %>
+              <select id="<%= sub_category_select_id %>" name="<%= sub_category_select_name %>">
+                <%= render :partial => 'product_reference_sub_categories/product_reference_sub_categories', :object => product_reference.product_reference_category ? product_reference.product_reference_category.product_reference_sub_categories.actives : [],
+                                                                                                            :locals => { :current => product_reference.product_reference_sub_category_id } %>
+              </select>
+            <% else %>
+              <%= strong product_reference.product_reference_sub_category.name %>
+            <% end %>
+          </p>
+          
+          <p>
+            <%= form.label :name %>
+            <%= form.form_or_view(form.text_field(:name), :name) %>
+          </p>
+        <% else %>
+          <p>
+            <%= form.label :designation %>
+            <%= strong product_reference.designation %>
+          </p>
+        <% end %>
+      </div>
+      
+      <% unless product_reference.new_record? %>
+        <div>
+          <p>
+            <%= form.label :reference %>
+            <%= strong product_reference.reference %>
+          </p>
+        </div>
+      <% end %>
+    </fieldset>
+
+    <fieldset>
+      <legend>Autres caractéristiques</legend>
+      <div>
+        <p>
+          <%= form.label :description %>
+          <%= form.form_or_view(form.autoresize_text_area(:description, :cols => 60), :description) %>
+        </p>
+        <p>
+          <%= form.label :vat %>
+          <%= form.form_or_view(form.collection_select(:vat, Vat.find(:all, :order => :position), :rate, :name, :include_blank => "Veuillez choisir un taux de TVA"), :vat, :name) %>
+        </p>
+      </div>
+    </fieldset>
+    
+    <%= form.form_buttons %>
+  <% end %>
 </div>

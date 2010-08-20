@@ -1,75 +1,107 @@
-class SupplyCategory < ActiveRecord::Base  
-  # Validates
-  validates_presence_of :name
+class SupplyCategory < ActiveRecord::Base
+  validates_presence_of :name, :reference
   
-  # This method prevents from remove if it is not authorized
-  # Override is necessary because before_destroy callback 
-  # used by the act_as_tree plugin empty all children before
-  def destroy
-    return false unless self.can_be_destroyed?
-    super
+  validates_uniqueness_of :name,      :scope => [ :type, :supply_category_id ]
+  validates_uniqueness_of :reference, :scope => :type #TODO test if it's not conflicting with validates_uniqueness_of in has_reference.rb
+  
+  validates_presence_of :disabled_at, :unless => :enabled?
+  
+  validates_persistence_of :reference
+  
+  named_scope :enabled,   :conditions => { :enabled => true }
+  named_scope :enabled_at, lambda{ |date| { :conditions => [ 'enabled = ? OR disabled_at > ?', true, date ] } }
+  
+  before_validation_on_create :update_reference
+  
+  before_destroy :can_be_destroyed?
+   
+  cattr_reader :form_labels
+  @@form_labels = Hash.new
+  @@form_labels[:reference] = "Référence :"
+  @@form_labels[:name]      = "Nom :"
+  
+  def enabled?
+    enabled
   end
   
-  # This method defines when it can be destroyed
+  def can_be_edited?
+    enabled?
+  end
+  
+  def can_have_children?
+    enabled?
+  end
+  
   def can_be_destroyed?
-    self.children.empty? and self.supplies.empty? and !self.has_children_disabled?
+    !has_children?
   end
   
-  # This method defines when it can be disabled
   def can_be_disabled?
-    self.enable and !self.has_children_enabled?
+    enabled? and has_children? and !has_enabled_children?
   end  
   
-  # This method defines when it can be reactivated
-  def can_be_reactivated?
-    if self.parent.nil?
-      !self.enable
-    else
-      !self.enable and self.parent.enable
-    end
-  end 
+  def can_be_enabled?
+    !enabled?
+  end
   
-  # This method permit to disable a category
   def disable
     if self.can_be_disabled?
-      self.enable = false
+      self.enabled = false
       self.disabled_at = Time.now
-      self.save
+      self.save!
     end
   end
   
-  # This method permit to reactivate a category
-  def reactivate
-    if can_be_reactivated?
-      self.enable = true
+  def enable
+    if can_be_enabled?
+      self.enabled = true
       self.disabled_at = nil
       self.save
     end
   end
   
-  # This method determines if a category was enabled_at a given date
-  def was_enabled_at(date=Date.today)
-    self.enable or (!self.enable and self.disabled_at > date)
-  end  
-  
-  # Check if a category have got children disabled
-  def has_children_disabled?
-    self.disabled_supplies.size > 0 or self.disabled_categories.size > 0
+  def children
+    sub_categories
   end
   
-  # Check if a category have got children enabled
-  def has_children_enabled?
-    self.enabled_supplies.size > 0 or self.enabled_categories.size > 0
+  def ancestors; [] end
+  
+  def self_and_siblings
+    @self_and_siblings ||= []
+    return @self_and_siblings unless @self_and_siblings.empty?
+    
+    @self_and_siblings << self if new_record?
+    @self_and_siblings += self.class.all
   end
   
-  # Returns the stock value according to its children category or 
-  # directly to its supplies stock value
-  def stock_value(date=Date.today)
-    subordinates = (self.class.roots.include?(self) ? self.children : self.supplies)
-    total = 0.0
-    for subordinate in subordinates
-      total += subordinate.stock_value(date) unless (!self.class.roots.include?(self) and !subordinate.was_enabled_at(date))
+  def siblings
+    @siblings ||= self_and_siblings - [ self ]
+  end
+  
+  # override the orignal method
+  def supplies_count
+    if respond_to?(:supply_category)
+      super
+    else
+      children.collect(&:supplies_count).sum
     end
-    total
+  end
+  
+  # return if category was enabled at a given date
+  def was_enabled_at(date = Time.zone.now)
+    enabled? or (!enabled? and disabled_at > date.to_datetime)
+  end
+  
+  def has_children?
+    children.to_a.any?
+  end
+  
+  def has_enabled_children?
+    children.enabled.any?
+  end
+  
+  # return the sum of stock_value of all its supplies
+  def stock_value(date = Time.zone.now)
+    children.select{ |e| e.was_enabled_at(date) }.collect{ |e| e.stock_value(date) }.sum
   end
 end

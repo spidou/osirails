@@ -1,10 +1,12 @@
-name: "logistics"
-title: "Gestion de la logistique"
+name: logistics
+title: Gestion de la logistique
 version: 0.1
 dependencies:
-  admin:
-    - 0.1
   thirds:
+    - 0.1
+  rh:
+    - 0.1
+  calendars:
     - 0.1
 menus:
   logistics:
@@ -56,8 +58,12 @@ menus:
         position: 1
         children:
           commodity_categories:
-            title: "Catégories de matière première"
-            description: "Gestion des categories de matière première"
+            title: "Familles de matière première"
+            description: "Gestion des familles de matière première"
+            children:
+              commodity_sub_categories:
+                title: "Sous-familles de matière première"
+                description: "Gestion des sous-familles de matière première"
           commodities:
             title: "Matières premières"
             description: "Gestion des matières premières"
@@ -67,8 +73,12 @@ menus:
         position: 2
         children:
           consumable_categories:
-            title: "Catégories de consommable"
-            description: "Gestion des categories de consommable"
+            title: "Familles de consommable"
+            description: "Gestion des familles de consommable"
+            children:
+              consumable_sub_categories:
+                title: "Sous-familles de consommable"
+                description: "Gestion des sous-familles de consommable"
           consumables:
             title: "Consommables"
             description: "Gestion des consommables"
@@ -93,3 +103,22 @@ menus:
             title: "Inventaires"
             description: "Permet la gestion des inventaires"
             position : 3
+configurations:
+  commodity_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une famille de matière première
+    value: "M.$number(2)"
+  commodity_sub_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une sous-famille de matière première
+    value: "$supply_category.$number(2)"
+  consumable_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une famille de consommable
+    value: "C.$number(2)"
+  consumable_sub_category_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une sous-famille de consommable
+    value: "$supply_category.$number(2)"
+  commodity_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour une matière première
+    value: "$supply_sub_category.$number(2)"
+  consumable_reference_pattern:
+    description: Modèle permettant la génération du numéro de référence unique pour un consommable
+    value: "$supply_sub_category.$number(2)"

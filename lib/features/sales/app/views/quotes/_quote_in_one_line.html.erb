@@ -7,7 +7,7 @@ title = quote.status ? " title=\"#{quote.status.titleize} quote\"" : ''
 <tr class="quote<%= status %>"<%= title %>>
   <td class="reference"><%= quote.reference %></td>
   <td class="confirmed_on"><%= quote.confirmed_on.humanize if quote.confirmed_on %></td>
-  <td class="contact"><%= quote.contact.fullname %></td>
+  <td class="contact"><%= quote.quote_contact.fullname %></td>
   <td class="number_of_pieces"><%= quote.number_of_pieces %></td>
   <td class="net_to_paid"><%= quote.net_to_paid.round_to(2).to_s(2) %></td>
   <td class="deposit"><%= quote.deposit %></td>

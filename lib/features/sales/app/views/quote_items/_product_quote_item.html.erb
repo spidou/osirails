@@ -4,6 +4,7 @@ quote_item = product_quote_item
 counter ||= 1
 this_is_default_row_and_should_be_hidden ||= false
 collection_length ||= 1
+counter ||= 1
 %>
 
 <% if quote_item.nil? %>
@@ -38,7 +39,7 @@ collection_length ||= 1
     <tr class="quote_item" <%= "style=\"display:none\"" if quote_item.should_destroy? or this_is_default_row_and_should_be_hidden %>>
       
       <td class="reference">
-        <%= quote_item.product.product_reference.reference if quote_item.product %>
+        <%= quote_item.end_product.product_reference.reference if quote_item.end_product %>
       </td>
 
       <td class="designation">
@@ -122,7 +123,7 @@ collection_length ||= 1
           <%= link_to( image_tag( move_down_image, :alt => text_down = "Descendre la ligne", :title => text_down, :class => "arrow_down"), "#down", :onclick => "move_down(this);" ) %>
           <%= link_to( image_tag("cross_16x16.png", :alt => "Supprimer la ligne", :title => "Supprimer la ligne"), "#remove", :onclick => "if (confirm(\"Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire.\")) remove_reference(this)" ) %>
           <%= form.hidden_field :id, :class => :quote_item_id %>
-          <%= form.hidden_field :product_id %>
+          <%= form.hidden_field :end_product_id %>
           <%= form.hidden_field :product_reference_id, :class => :product_reference_id %>
           <%= form.hidden_field :should_destroy, :class => :should_destroy %>
           <%= form.hidden_field :position, :class => :position, :value => position %>

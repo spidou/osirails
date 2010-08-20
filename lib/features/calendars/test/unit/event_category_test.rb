@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class EventCategoryTest < ActiveSupport::TestCase
-  fixtures :event_categories, :calendars
-
   def test_presence_of_name
     assert_no_difference 'EventCategory.count' do
       event_category = EventCategory.create

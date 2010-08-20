@@ -66,7 +66,9 @@ function GetCookieValue(name)
 }
 
 // prepare variables for pin and unpin contextual_menu functions
-function prepare_variables_for_contextual_menu() {
+function prepare_variables_for_contextual_menu()
+{
+  if ($('contextual_menu_container') == null) return;  
   unpin_message     = 'Détacher le menu';
   pin_message       = 'Épingler le menu';
   pinned_image      = 'pinned_16x16.png';
@@ -316,11 +318,45 @@ Event.observe(window, 'load', function() {
   display_time();
 });  
 
-// Avoid the prevent close message if the action is called
-// by a submit button
-
+// Avoid the prevent close message if the action is called by a form submit
 Event.observe(window, 'submit', function(ev) {
   window.onbeforeunload = null; 
 });
-
 window.onbeforeunload = preventClose;
+
+// Add an ajax indicator for all Ajax call
+Ajax.Responders.register({
+  onCreate: function() {
+    new Effect.Appear('ajax_indicator', { duration: 0.3 });
+  },
+  onComplete: function() {
+    if (0 == Ajax.activeRequestCount)
+      new Effect.Fade('ajax_indicator', { duration: 0.3 });
+  }
+});
+
+// return the string of the float rounded with the specified precision, keeping zeros according to the precision
+// x = 109.4687
+// roundNumber(x, 1) => 109.5
+//
+// x = 109.6
+// roundNumber(x, 3) => 109.600
+function roundNumber(number, precision) {
+  precision = parseInt(precision)
+	var result = Math.round(parseFloat(number) * Math.pow(10, precision)) / Math.pow(10, precision)
+	var str_result = result.toString()
+	delimiter = str_result.indexOf(".")
+	if (delimiter > 0) {
+	  var integer = str_result.substring(0, delimiter)
+	  var decimals = str_result.substring(delimiter + 1, str_result.length)
+	  if (decimals.length < precision) {
+	    for (i = decimals.length; i < precision; i++) {
+	      decimals += "0"
+	    }
+	  }
+	  str_result = integer + "." + decimals
+	} else {
+	  str_result += ".00"
+	}
+	return str_result
+}

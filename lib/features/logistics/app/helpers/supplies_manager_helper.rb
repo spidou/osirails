@@ -1,172 +1,181 @@
 module SuppliesManagerHelper
-  # This method permit to add a button for add a sub category
-  def add_category_or_supply(supply_category)
-    if supply_category.class.can_add?(current_user) and supply_category.enable
-      if supply_category.send("#{supply_category.class.name.tableize.singularize}_id").nil?
-        text = "Nouvelle sous-catégorie"
-        link_to(image_tag("arrow_up_16x16.png", :alt => text , :title => text), self.send("new_#{supply_category.class.name.tableize.singularize}_path",:id => supply_category.id, :type => "child"))
-      else
-        text = (supply_category.class.name.underscore.gsub("_category","") == 'consumable' ? 'Nouveau consommable' : 'Nouvelle matière première')
-        #"Add a #{supply_category.class.name.underscore.gsub("_category","")}"
-        link_to(image_tag("add_16x16.png", :alt => text, :title => text), self.send("new_#{supply_category.class.name.tableize.singularize.gsub("_category","")}_path",:id => supply_category.id))
-      end
+  def display_supply_category_action_buttons(supply_category)
+    html = []
+    html << display_supply_category_add_button(supply_category, '')
+    html << display_supply_category_show_button(supply_category, '')
+    html << display_supply_category_edit_button(supply_category, '')
+    html << display_supply_category_disable_button(supply_category, '')
+    html << display_supply_category_enable_button(supply_category, '')
+    html << display_supply_category_delete_button(supply_category, '')
+    html.compact.join("&nbsp;")
+  end
+  
+  def display_supply_category_add_button(supply_category, message = nil)
+    if supply_category.new_record? # to add a supply_category
+      
+      return unless supply_category.class.can_add?(current_user)
+      text = (supply_category.class == ConsumableCategory ? 'Nouvelle famille de consommable' : 'Nouvelle famille de matière première')
+      message ||= " #{text}"
+      link_to(image_tag("add_16x16.png", :alt => text, :title => text) + message,
+              self.send("new_#{supply_category.class.singularized_table_name}_path"))
+      
+    elsif supply_category.respond_to?(:supply_category) # to add a supply
+      supply_type = supply_category.class.name.gsub("SubCategory", "").constantize
+      
+      return unless supply_type.can_add?(current_user) and supply_category.can_have_children?
+      text = (supply_type == Consumable ? 'Nouveau consommable' : 'Nouvelle matière première')
+      message ||= " #{text}"
+      link_to(image_tag("add_16x16.png", :alt => text, :title => text) + message,
+              self.send("new_#{supply_type.name.underscore}_path", :supply_category_id => supply_category.id))
+      
+    else # to add a supply_sub_category
+      supply_sub_category_type = supply_category.class.name.gsub("Category", "SubCategory").constantize
+      
+      return unless supply_sub_category_type.can_add?(current_user) and supply_category.can_have_children?
+      text = (supply_category.class == ConsumableCategory ? 'Nouvelle sous-famille de consommable' : 'Nouvelle sous-famille de matière première')
+      message ||= " #{text}"
+      link_to(image_tag("category_16x16.png", :alt => text , :title => text) + message,
+              self.send("new_#{supply_sub_category_type.name.underscore}_path", :supply_category_id => supply_category.id))
+      
     end
   end
   
-  # This method permit to show or hide reactivate button for categories
-  def reactivate_category_link(supply_category)
-    if supply_category.class.can_reactivate?(current_user)
-      link_to(image_tag("tick_16x16.png", :alt => "Réactiver", :title => "Réactiver"), self.send("reactivate_#{supply_category.class.name.underscore}_path",supply_category)) if supply_category.can_be_reactivated?
+  def display_supply_category_show_button(supply_category, message = nil)
+    return unless supply_category.class.can_view?(current_user)
+    text = "Voir la famille"
+    message ||= " #{text}"
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + message,
+            self.send("#{supply_category.class.name.underscore}_path", supply_category))
+  end
+  
+  def display_supply_category_edit_button(supply_category, message = nil)
+    return unless supply_category.class.can_edit?(current_user) and supply_category.can_be_edited?
+    text = "Modifier la famille"
+    message ||= " #{text}"
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + message,
+            self.send("edit_#{supply_category.class.name.underscore}_path", supply_category))
+  end
+  
+  def display_supply_category_enable_button(supply_category, message = nil) 
+    return unless supply_category.class.can_enable?(current_user) and supply_category.can_be_enabled?
+    text = "Restaurer la famille"
+    message ||= " #{text}"
+    link_to(image_tag("tick_16x16.png", :alt => text, :title => text) + message,
+            self.send("enable_#{supply_category.class.name.underscore}_path", supply_category),
+            :confirm => "Êtes-vous sûr ?")
+  end
+  
+  def display_supply_category_disable_button(supply_category, message = nil)
+    return unless supply_category.class.can_disable?(current_user) and supply_category.can_be_disabled?
+    text = "Désactiver la famille"
+    message ||= " #{text}"
+    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + message,
+            self.send("disable_#{supply_category.class.name.underscore}_path", supply_category),
+            :confirm => "Êtes-vous sûr ?") 
+  end
+  
+  def display_supply_category_delete_button(supply_category, message = nil)
+    return unless supply_category.class.can_delete?(current_user) and supply_category.can_be_destroyed?
+    text = "Supprimer la famille"
+    message ||= " #{text}"
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + message,
+            supply_category,
+            { :method => :delete, :confirm => 'Êtes vous sûr  ?'})
+  end
+  
+  def display_supply_add_button(supply, message = nil)
+    return unless supply.class.can_add?(current_user) and supply.enabled?
+    text = supply.class == "Consumable" ? "Nouveau consommable" : "Nouvelle matière première"
+    message ||= " #{text}"
+    link_to(image_tag("add_16x16.png", :alt => text , :title => text) + message,
+            self.send("new_#{supply.class.singularized_table_name}_path"))
+  end
+  
+  def display_supply_action_buttons(supply)
+    html = []
+    html << display_supply_show_button(supply, '')
+    html << display_supply_edit_button(supply, '')
+    html << display_supply_disable_button(supply, '')
+    html << display_supply_enable_button(supply, '')
+    html << display_supply_delete_button(supply, '')
+    html.compact.join("&nbsp;")
+  end
+  
+  def get_text_for_supply_type(supply)
+    case supply.class.name
+    when "Consumable"
+      'le consommable'
+    when "Commodity"
+      'la matière première'
+    else
+      supply.class.name
     end
   end
   
-  # This method permit to show or hide disable button for categories
-  def disable_category_link(supply_category)
-    if supply_category.class.can_disable?(current_user)
-      link_to(image_tag("delete_disable_16x16.png", :alt => "Désactiver", :title => "Désactiver"), self.send("disable_#{supply_category.class.name.underscore}_path",supply_category), :confirm => "Êtes-vous sûr ?") if supply_category.can_be_disabled?
-    end
-  end
-
-  # This method permit to show or hide delete button for categories
-  def delete_category_link(supply_category)
-    if supply_category.class.can_delete?(current_user)
-      link_to(image_tag("delete_16x16.png", :alt => "Supprimer", :title => "Supprimer"), supply_category, { :method => :delete, :confirm => 'Êtes vous sûr  ?'}) if supply_category.can_be_destroyed?
-    end
-  end
-
-  # This method permit to show a supply
-  def supply_link(supply)
-    if supply.class.can_view?(current_user)
-      link_to(image_tag("view_16x16.png", :alt => "Voir", :title => "Voir"), supply,  { :controller => "#{supply.class.name.tableize}", :action => 'show'})
-    end
-  end
-
-  # This method permit to edit a supply
-  def edit_supply_link(supply, button = false)
-    if supply.class.can_edit?(current_user)
-      text = "" unless button
-      text ||= "Modifier " + (supply.class.name.tableize.singularize=='consumable' ? 'le consommable' : 'la matière première')
-      #"Edit this #{supply.class.name.tableize.singularize}"
-      link_to(image_tag("edit_16x16.png", :alt => "Modifier", :title => "Modifier") + " #{text}", send("edit_#{supply.class.name.tableize.singularize}_path",supply)) unless !supply.enable
-    end
+  def display_supply_show_button(supply, message = nil) 
+    return unless supply.class.can_view?(current_user)
+    text = "Voir " + get_text_for_supply_type(supply)
+    message ||= " #{text}"
+    link_to(image_tag("view_16x16.png", :alt => text, :title => text) + message,
+                      send("#{supply.class.singularized_table_name}_path", supply))
   end
   
-  # This method permit to show or hide disable button for supplies
-  def disable_supply_link(supply,button = false)
-    if supply.class.can_disable?(current_user)
-      text = "" unless button
-      text ||= "Désactiver " + (supply.class.name.tableize.singularize=='consumable' ? 'le consommable' : 'la matière première')
-      #"Disable this #{supply.class.name.tableize.singularize}"
-      if supply.can_be_disabled?
-        title = "Désactiver"
-        link_to(image_tag("delete_16x16.png", :alt => title, :title => title) + " #{text}", self.send("disable_#{supply.class.name.underscore}_path",supply), :confirm => "Êtes-vous sûr ?")
-      elsif supply.stock_quantity.to_i > 0
-        title = "Impossible de désactiver tant que la quantité n'est pas à 0"
-        image_tag("delete_disable_16x16.png", :alt => title, :title => title) + " #{text}"
-      end
-    end
-  end
-
-  # This method permit to show or hide delete button for supplies
-  def delete_supply_link(supply, button = false)
-    if supply.class.can_delete?(current_user)
-      text = "" unless button
-      text ||= "Supprimer " + (supply.class.name.tableize.singularize=='consumable' ? 'le consommable' : 'la matière première')
-      #"Delete this #{supply.class.name.tableize.singularize}"
-      link_to(image_tag("delete_16x16.png", :alt => "Supprimer", :title => "Supprimer") + " #{text}", supply,  { :controller => "#{supply.class.name.tableize}", :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'}) if supply.can_be_destroyed?
-    end
+  def display_supply_edit_button(supply, message = nil) 
+    return unless supply.class.can_edit?(current_user) and supply.can_be_edited?
+    text = "Modifier " + get_text_for_supply_type(supply)
+    message ||= " #{text}"
+    link_to(image_tag("edit_16x16.png", :alt => text, :title => text) + message,
+            send("edit_#{supply.class.singularized_table_name}_path", supply))
   end
   
-  # This method permit to show or hide reactivate button for supplies
-  def reactivate_supply_link(supply, button = false)
-    if supply.class.can_reactivate?(current_user)
-      text = "" unless button
-      text ||= "Réactiver " + (supply.class.name.tableize.singularize=='consumable' ? 'le consommable' : 'la matière première')
-      #"Reactivate this #{supply.class.name.tableize.singularize}"
-      link_to(image_tag("tick_16x16.png", :alt => "Réactiver", :title => "Réactiver") + " #{text}", self.send("reactivate_#{supply.class.name.underscore}_path",supply)) if supply.can_be_reactivated?
-    end
+  def display_supply_disable_button(supply, message = nil) 
+    return unless supply.class.can_disable?(current_user) and supply.can_be_disabled?
+    text = "Désactiver " + get_text_for_supply_type(supply)
+    message ||= " #{text}"
+    link_to(image_tag("cancel_16x16.png", :alt => text, :title => text) + message,
+            self.send("disable_#{supply.class.name.underscore}_path", supply),
+            :confirm => "Êtes-vous sûr ?")
   end
-
-  # This method permit to format link that should be display into secondary menu
-  # we can't use the dynamic helper method 'generator' because of an unexpected argument passed to new_'supply'_path => ':id =>-1'
-  def new_supply_link(supply)
-    if supply.class.can_add?(current_user)
-      link_to(image_tag( "add_16x16.png", :alt => "New", :title => "New" )+" New #{supply.class.name.tableize.singularize}", self.send("new_#{supply.class.name.tableize.singularize}_path",:id => -1) )
-    end
+  
+  def display_supply_enable_button(supply, message = nil) 
+    return unless supply.class.can_enable?(current_user) and supply.can_be_enabled?
+    text = "Restaurer " + get_text_for_supply_type(supply)
+    message ||= " #{text}"
+    link_to(image_tag("tick_16x16.png", :alt => text, :title => text) + message,
+            self.send("enable_#{supply.class.name.underscore}_path", supply),
+            :confirm => "Êtes-vous sûr ?")
   end
-
-  # method that permit to access to commodities categories list using /supplies_manager route
-  def supply_categories_link(supply_type)
+  
+  def display_supply_delete_button(supply, message = nil) 
+    return unless supply.class.can_delete?(current_user) and supply.can_be_destroyed?
+    text = "Supprimer " + get_text_for_supply_type(supply)
+    message ||= " #{text}"
+    link_to(image_tag("delete_16x16.png", :alt => text, :title => text) + message,
+            supply, { :controller => supply.class.name.tableize, :action => 'destroy', :method => :delete, :confirm => 'Êtes-vous sûr  ?'})
+  end
+  
+  def display_supply_list_button(supply_type)
     if supply_type.can_list?(current_user)
-      text = "Voir toutes les catégories" #"List all #{supply_type.name.tableize.humanize.downcase}"
-      link_to(image_tag( "list_16x16.png", :alt => text, :title => text ) + " #{text}", "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager")
+      text = (supply_type == Consumable ? 'Voir tous les consommables' : 'Voir toutes les matières premières')
+      message ||= " #{text}"
+      link_to(image_tag("list_16x16.png", :alt => text, :title => text ) + message,
+              self.send("#{supply_type.name.tableize}_manager_path"))
     end
   end
   
-  def supply_categories_link_with_inactives(supply_type)
+  def display_supply_list_all_button(supply_type, all = false)
     if supply_type.can_list?(current_user)
-      text = "Voir toutes les catégories annulées" #"List all #{supply_type.name.tableize.humanize.downcase} (including inactives)"
-      link_to(image_tag( "list_16x16.png", :alt => text, :title => text ) + " #{text}", "/#{supply_type.name.tableize.singularize.gsub("_category","").pluralize}_manager?inactives=true")
+      text = (supply_type == Consumable ? 'Voir tous les consommables (y compris ceux qui sont désactivés)' : 'Voir toutes les matières premières (y compris celles qui sont désactivées)')
+      message ||= " #{text}"
+      link_to(image_tag("list_16x16.png", :alt => text, :title => text ) + message,
+              self.send("#{supply_type.name.tableize}_manager_path", :inactives => "1"))
     end
-  end
-
-  # This method permit to make in table editor
-  def in_place_editor(object, attribute, is_supply = false) 
-    if object.class.can_edit?(current_user) and (!is_supply or (is_supply and !object.has_been_used?))
-      return editable_content_tag(:span, object, "#{attribute}", true, nil, {:class => 'in_line_editor_span'}, {:clickToEditText => 'Cliquer pour modifier...', :savingText => 'Mise &agrave; jour', :submitOnBlur => true, :cancelControl => false, :okControl => false})
-    end
-    "<span>#{object.send(attribute)}</span>"
-  end
-
-  # This method permit to generate a counter for categories
-  def show_counter_category(supply_category)
-    counter = 0
-
-    return supply_category.send("#{supply_category.class.name.tableize.singularize.gsub("_category","").pluralize}_count") if !supply_category.send("#{supply_category.class.name.tableize.singularize}_id").nil?
-
-    supply_categories = supply_category.class.send("find_all_by_#{supply_category.class.name.tableize.singularize}_id",supply_category.id)
-    supply_categories.each do |category_child|
-      counter += category_child.send("#{supply_category.class.name.tableize.singularize.gsub("_category","").pluralize}_count")
-    end
-    counter
-  end
-
-  # This method permit to display the 1st supplier in the supplies index
-  # and a link to all suppliers if necessary
-  def display_suppliers(supply)
-    html = ""
-    html << supply.suppliers.first.name
-    if supply.suppliers.many?
-      html <<  "<br/>"+link_to("voir tous", "/#{supply.class.name.tableize}/#{supply.id}#supplier_supplies")
-    end
-    html
-  end
-
-  # This method permit to display the average unit price according to
-  # all supplier_supplies price
-  def display_average_unit_price(supply, date = Date.today)
-    supply.average_unit_price.nil? ? '//' : number_with_precision(supply.average_unit_price(date).round(2).to_s,2) + ' €'
   end
   
-  # This method permit to display the total measure of a supply stock
-  def display_total_measure(supply, date = Date.today)
-    return "//" if supply.stock_quantity.nil? or supply.measure.nil?
-    number_with_precision(supply.stock_quantity(date)*supply.measure,1) + " " + UnitMeasure.find(supply.supply_category.unit_measure_id).symbol
+  def humanized_supply_sizes_and_packaging(supply)
+    text = supply.humanized_supply_sizes.gsub(" ", "&#160;")
+    text << "&#160;<span class=\"packaging\">(#{supply.packaging}&#160;U/lot)</span>" unless supply.packaging.blank?
+    text
   end
   
-  # This method permit to display the total measure of a supply_supplier stock
-  def display_supply_supplier_total_measure(supply_supplier, date = Date.today)
-    return "//" if supply_supplier.stock_quantity.nil? or supply_supplier.supply.measure.nil?
-    number_with_precision(supply_supplier.stock_quantity(date)*supply_supplier.supply.measure,1) + " " + UnitMeasure.find(supply_supplier.supply.supply_category.unit_measure_id).symbol
-  end
-  
-  # This method permit to display the total mass of a supply stock
-  def display_total_mass(supply, date = Date.today)
-    return "//" if supply.stock_quantity.nil? or supply.unit_mass.nil?
-    number_with_precision(supply.stock_quantity(date)*supply.unit_mass,1) + " kg"
-  end
-
-  def display_category_stock_value(category, date = Date.today)
-    number_with_precision(category.stock_value(date),2) + " €"
-  end
 end

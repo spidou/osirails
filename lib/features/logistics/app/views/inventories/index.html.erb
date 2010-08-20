@@ -8,23 +8,23 @@
   <%= consumable_categories_link(:link_text => "Voir toutes les catégories de consommables") %>
 <% end %>
 
-<h1>&Eacute;tats du stock </h1>
+<h1>Les inventaires</h1>
 <div>
-  <% if @dates.size > 0 %>  
+  <% if @inventories.any? %>  
     <table>
       <thead>
         <tr>
           <th>Date</th>
-          <th>&Eacute;tat des mati&egrave;res premi&egrave;res</th>
-          <th>&Eacute;tat des consommables</th>
+          <th>Type de fourniture</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <% for date in @dates %>
+        <% for inventory in @inventories %>
           <tr>
-            <td><%= date %></td>
-            <td><%= inventory_link(Commodity.new, date) %></td>
-            <td><%= inventory_link(Consumable.new, date) %></td>
+            <td><%= inventory.date.humanize %></td>
+            <td><%= inventory.supply_type == "Commodity" ? "Matières premières" : "Consommables" %></td>
+            <td><%= inventory_link(inventory, :link_text => "") %></td>
           </tr>
         <% end %>
       </tbody>

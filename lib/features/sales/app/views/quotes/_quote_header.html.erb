@@ -1,33 +1,35 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
   <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
 <% end -%>
 
 <%
 quote = quote_header
 order = quote.order
+contacts_owners = order.customer.head_office_and_establishments
 default_bill_to_address = order.customer.bill_to_address
 default_ship_to_address = order.ship_to_addresses.first.address # TODO replace that by a ship_to_addresses_picker
 %>
 
 <div id="quote_header">
-  <div>
-    <% #FIXME see that page for english translation of 'adresse de facturation et livraison' : http://forum.wordreference.com/showthread.php?t=905254 -%>
-    <h3>Adresse de facturation</h3>
-    <%= render :partial => 'addresses/address_form', :object => quote.bill_to_address || quote.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => quote } %>
-  </div>
+  <div class="presentation_in_columns small">
+    <div>
+      <h3>Adresse de facturation</h3>
+      <%= render :partial => 'addresses/address_form', :object => quote.bill_to_address || quote.build_bill_to_address(default_bill_to_address.attributes), :locals => { :address_owner => quote } %>
+    </div>
 
-  <div>
-    <h3>Adresse de livraison</h3>
-    <%= render :partial => 'addresses/address_form', :object => quote.ship_to_address || quote.build_ship_to_address(default_ship_to_address.attributes), :locals => { :address_owner => quote } %>
+    <div>
+      <h3>Adresse de livraison</h3>
+      <%= render :partial => 'addresses/address_form', :object => quote.ship_to_address || quote.build_ship_to_address(default_ship_to_address.attributes), :locals => { :address_owner => quote } %>
+    </div>
   </div>
   
-  <div id="contact_container">
-    <h3>Contact</h3>
-    <p>
-      <%= label :select_contacts, "À l'attention de" %>
-      <%= display_contacts_picker(quote, order.contacts) %>
-    </p>
+  <div class="presentation_in_columns">
+    <div id="contact_container">
+      <h3>Contact</h3>
+      <p>
+        <%= label :select_contacts, "À l'attention de" %>
+        <%= display_contact_picker(quote, order.all_contacts_and_customer_contacts, :form => form, :contact_key => 'quote_contact', :contacts_owners => contacts_owners) %>
+      </p>
+    </div>
   </div>
 </div>

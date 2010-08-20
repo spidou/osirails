@@ -1,3 +1,4 @@
 class PaymentMethod < ActiveRecord::Base
-  belongs_to :thirds
+  validates_presence_of :name
+  validates_uniqueness_of :name
 end

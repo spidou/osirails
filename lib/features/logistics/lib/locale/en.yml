@@ -23,6 +23,10 @@ en:
         stock_mass: "Total weight"
       supplier_supply:
         name: "Designation"
+      stock_input:
+        identifier: "Purchase number"
+      stock_output:
+        identifier: "File number"
       tool:
         name: "Designation"
         service: "Appointed service"

@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class ParticipantTest < ActiveSupport::TestCase
-  fixtures :participants, :events
-
   def test_presence_of_event_id
     assert_no_difference 'Participant.count' do
       participant = Participant.create

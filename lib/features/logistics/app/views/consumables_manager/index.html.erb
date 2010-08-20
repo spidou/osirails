@@ -1,2 +1,2 @@
-<h1>Les Cat&eacute;gories de consommables</h1>
-<%= render(:partial => "supplies_manager/index") %>
+<h1>Les consommables</h1>
+<%= render :partial => "supplies_manager/index", :locals => { :supply_categories => @supply_categories } %>

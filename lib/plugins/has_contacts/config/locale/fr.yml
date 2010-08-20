@@ -7,5 +7,4 @@ fr:
         last_name: "Nom"
         email: "Adresse e-mail"
         job: "Fonction"
-        contact_type: "Type de contact"
         avatar: "Photo"

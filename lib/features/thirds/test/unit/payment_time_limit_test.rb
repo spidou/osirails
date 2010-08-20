@@ -1,11 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class PaymentTimeLimitTest < ActiveSupport::TestCase
-  def test_presence_of_name
-    assert_no_difference 'PaymentTimeLimit.count' do
-      payment_time_limit = PaymentTimeLimit.create
-      assert_not_nil payment_time_limit.errors.on(:name),
-        "A PaymentTimeLimit should have a name"
-    end
-  end
+  should_validate_presence_of :name
+  should_validate_uniqueness_of :name
 end

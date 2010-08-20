@@ -1,5 +1,6 @@
 <% content_for :header do %>
   <%= javascript_include_tag "logistics/supplier_supplies" %>
 <% end %>
-<h1>Modifier <%= @supply.name %></h1>
+
+<h1>Modifier le consommable</h1>
 <%= render(:partial => "supplies/supply", :object => @supply) %>

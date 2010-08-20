@@ -1,22 +1,15 @@
 class ProductReferenceCategoriesController < ApplicationController
+  helper :products_catalog
+  
+  before_filter :define_product_reference_category_type
+  before_filter :find_product_reference_category, :except => [ :index, :new, :create ]
   
   # GET /product_reference_categories
   def index
-    if params[:product_reference_category_id].nil?
-      @categories = ProductReferenceCategory.find(:all)
-    else
-      @categories = ProductReferenceCategory.find(params[:product_reference_category_id].split(","))
-      respond_to do |format|
-        format.js {render :layout => false}
-      end
+    @product_reference_categories = @product_reference_category_type.roots.actives
+    respond_to do |format|
+      format.js { render :layout => false }
     end
-  end
-  
-  # GET /product_reference_categories/new
-  # GET /product_reference_categories/new?category_id=:category_id
-  def new
-    @category = ProductReferenceCategory.new(:product_reference_category_id => params[:category_id])
-    @categories = ProductReferenceCategory.find(:all)
   end
   
   # GET /product_reference_categories/:id
@@ -24,66 +17,86 @@ class ProductReferenceCategoriesController < ApplicationController
     @categories = ProductReferenceCategory.find(params[:id].split(","))
     respond_to do |format|
       format.html
-      format.js {render :layout => false}
+      format.js { render :layout => false }
+    end
+  end
+  
+  # GET /product_reference_categories/new
+  def new
+    @product_reference_category = @product_reference_category_type.new
+    @product_reference_categories = @product_reference_category_type.roots.actives
+  end
+  
+  # POST /product_reference_categories
+  def create
+    @product_reference_category = @product_reference_category_type.new(params[@product_reference_category_type.name.underscore.to_sym])
+    if @product_reference_category.save
+      flash[:notice] = "La famille de produit a été créée avec succès"
+      redirect_to product_reference_manager_path
+    else
+      render :action => :new
     end
   end
   
   # GET /product_reference_categories/:id/edit
   def edit
-    @category = ProductReferenceCategory.find(params[:id])
-    @categories = ProductReferenceCategory.find(:all)
-  end
-  
-  # POST /product_reference_categories
-  def create
-    @category = ProductReferenceCategory.new(params[:product_reference_category])
-    if @category.save
-      flash[:notice] = "La catégorie a été créée"
-      redirect_to product_reference_manager_path
-    else
-      @categories = ProductReferenceCategory.find(:all)
-      render :action => 'new'
-    end
   end
   
   # PUT /product_reference_categories/:id
   def update
-    @category = ProductReferenceCategory.find(params[:id])
-    new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
-    if @category.can_has_this_parent?(new_parent_category_id)
-      @category.counter_update("before_update", @category.product_references_count)
-      if @category.update_attributes(params[:product_reference_category])
-         @category.counter_update("after_update", @category.product_references_count)
-         flash[:notice] = 'La catégorie a été mise à jour'
-         redirect_to product_reference_manager_path
-      else
-        @category.counter_update("after_update", @category.product_references_count)
-        flash[:error] = 'Erreur dans la mise à jour'
-        render :action => 'edit'
-      end
+    if @product_reference_category.update_attributes(params[@product_reference_category_type.name.underscore.to_sym])
+      flash[:notice] = 'La famille de produit a été modifiée avec succès'
+      redirect_to product_reference_manager_path
     else
-      flash[:error] = 'Erreur dans le déplacement'
-      @categories = ProductReferenceCategory.find(:all)
-      render :action => 'edit'
+      render :action => :edit
     end
-  end  
+    
+    #@category = ProductReferenceCategory.find(params[:id])
+    #new_parent_category_id = params[:product_reference_category][:product_reference_category_id]
+    #if @category.can_has_this_parent?(new_parent_category_id)
+    #  @category.counter_update("before_update", @category.product_references_count)
+    #  if @category.update_attributes(params[:product_reference_category])
+    #     @category.counter_update("after_update", @category.product_references_count)
+    #     flash[:notice] = 'La catégorie a été mise à jour'
+    #     redirect_to product_reference_manager_path
+    #  else
+    #    @category.counter_update("after_update", @category.product_references_count)
+    #    flash[:error] = 'Erreur dans la mise à jour'
+    #    render :action => 'edit'
+    #  end
+    #else
+    #  flash[:error] = 'Erreur dans le déplacement'
+    #  @categories = ProductReferenceCategory.find(:all)
+    #  render :action => 'edit'
+    #end
+  end
   
   # DELETE /product_reference_categories/:id
   def destroy
-    @category = ProductReferenceCategory.find(params[:id])
-    if @category.can_be_destroyed?
-      if @category.has_children_disable?
-        @category.enable = false
-        @category.save
-        flash[:notice] = 'La catégorie a été supprimée'
+    if @product_reference_category.can_be_destroyed?
+      if @product_reference_category.destroy
+        flash[:notice] = "La famille de produit a été supprimée avec succès"
       else
-        @category.destroy
-        flash[:notice] = 'La catégorie a été supprimée'
+        flash[:error] = "Une erreur est survenue lors de la suppression de la famille de produit"
       end
+      redirect_to product_reference_manager_path
     else
-      flash[:error] = "La catégorie ne peut être supprimée. Vérifiez qu'elle ne possède aucune autre catégorie ou référence."
+      error_access_page(412)
     end
-    redirect_to product_reference_manager_path
   end
   
+  # GET /update_product_reference_sub_categories?id=:id (AJAX)
+  def update_product_reference_sub_categories
+    product_reference_categories = @product_reference_category ? @product_reference_category.product_reference_sub_categories.actives : []
+    render :partial => 'product_reference_sub_categories/product_reference_sub_categories', :object => product_reference_categories
+  end
+  
+  private
+    def define_product_reference_category_type
+      @product_reference_category_type = ProductReferenceCategory
+    end
+    
+    def find_product_reference_category
+      @product_reference_category = @product_reference_category_type.find(params[:id])
+    end
 end

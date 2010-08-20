@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class AlarmTest < ActiveSupport::TestCase
-  fixtures :alarms, :events
-
   def setup
     @alarm = Alarm.new
     @alarm.valid?

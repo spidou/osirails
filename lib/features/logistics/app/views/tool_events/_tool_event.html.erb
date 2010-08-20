@@ -20,11 +20,11 @@
 <% end %>
 
 <div class='presentation_medium'>
+  <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
   
   <% form_for [tool, tool_event] ,:html => {:multipart => true} do |f| %>
     <%= f.error_messages %>
     
-    <h2>D&eacute;tails de l&apos;&eacute;v&egrave;nement</h2>
     <p>
       <%= f.label :name %>
       <%= f.form_or_view f.text_field(:name), :name%>
@@ -64,12 +64,12 @@
     
     <p>
       <%= f.label :start_date %>
-      <%= f.form_or_view f.date_select(:start_date, {:order => [:day, :month, :year]}), :start_date %>
+      <%= f.form_or_view f.calendar_date_select(:start_date), :start_date %>
     </p>
     
     <p>
       <%= f.label :end_date %>
-      <%= f.form_or_view f.date_select(:end_date, {:order => [:day, :month, :year]}), :end_date %>
+      <%= f.form_or_view f.calendar_date_select(:end_date), :end_date %>
     </p>
     
     <p>

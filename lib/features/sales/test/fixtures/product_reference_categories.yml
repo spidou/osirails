@@ -1,0 +1,9 @@
+parent:
+  type: ProductReferenceCategory
+  reference: ABCD
+  name: Parent category
+child:
+  type: ProductReferenceSubCategory
+  product_reference_category: parent
+  reference: EFGH
+  name: Child category

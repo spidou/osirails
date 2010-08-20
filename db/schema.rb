@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100326095518) do
+ActiveRecord::Schema.define(:version => 20100503125551) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
 
   create_table "checklist_responses", :force => true do |t|
     t.integer  "checklist_option_id"
-    t.integer  "product_id"
+    t.integer  "end_product_id"
     t.text     "answer"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -165,15 +165,9 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.datetime "updated_at"
   end
 
-  create_table "contact_types", :force => true do |t|
-    t.string   "name"
-    t.string   "owner"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "contacts", :force => true do |t|
-    t.integer  "contact_type_id"
+    t.integer  "has_contact_id"
+    t.string   "has_contact_type"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "job"
@@ -182,15 +176,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "contacts_owners", :force => true do |t|
-    t.integer  "has_contact_id"
-    t.string   "has_contact_type"
-    t.integer  "contact_id"
-    t.integer  "contact_type_id"
+    t.boolean  "hidden"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -223,13 +209,13 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "customer_grades", :force => true do |t|
-    t.string  "name"
     t.integer "payment_time_limit_id"
+    t.string  "name"
   end
 
   create_table "customer_solvencies", :force => true do |t|
-    t.string  "name"
     t.integer "payment_method_id"
+    t.string  "name"
   end
 
   create_table "delivery_interventions", :force => true do |t|
@@ -345,6 +331,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.integer  "order_id"
     t.integer  "creator_id"
     t.integer  "delivery_note_type_id"
+    t.integer  "delivery_note_contact_id"
     t.string   "status"
     t.string   "reference"
     t.string   "attachment_file_name"
@@ -484,17 +471,10 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.string   "type"
     t.string   "siret_number"
     t.boolean  "activated",                    :default => true
+    t.boolean  "hidden"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
     t.integer  "logo_file_size"
-    t.datetime "logo_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "estimate_steps", :force => true do |t|
-    t.integer  "commercial_step_id"
-    t.string   "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -605,7 +585,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.integer  "mockup_type_id"
     t.integer  "order_id"
     t.integer  "press_proof_id"
-    t.integer  "product_id"
+    t.integer  "end_product_id"
     t.string   "type"
     t.string   "name"
     t.string   "reference"
@@ -642,14 +622,19 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.datetime "updated_at"
   end
 
+  create_table "inventories", :force => true do |t|
+    t.string   "supply_type"
+    t.datetime "created_at"
+  end
+
   create_table "invoice_items", :force => true do |t|
     t.integer  "invoice_id"
-    t.integer  "product_id"
+    t.integer  "end_product_id"
     t.integer  "position"
     t.float    "quantity"
     t.string   "name"
     t.text     "description"
-    t.decimal  "unit_price",  :precision => 65, :scale => 20
+    t.decimal  "unit_price",     :precision => 65, :scale => 20
     t.float    "vat"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -680,6 +665,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.integer  "creator_id"
     t.integer  "cancelled_by_id"
     t.integer  "abandoned_by_id"
+    t.integer  "invoice_contact_id"
     t.string   "reference"
     t.string   "status"
     t.text     "cancelled_comment"
@@ -903,6 +889,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.integer  "society_activity_sector_id"
     t.integer  "order_type_id"
     t.integer  "approaching_id"
+    t.integer  "order_contact_id"
     t.string   "title"
     t.string   "reference"
     t.text     "customer_needs"
@@ -931,6 +918,8 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.datetime "updated_at"
   end
 
+  add_index "payment_methods", ["name"], :name => "index_payment_methods_on_name", :unique => true
+
   create_table "payment_steps", :force => true do |t|
     t.integer  "invoicing_step_id"
     t.string   "status"
@@ -945,6 +934,8 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "payment_time_limits", ["name"], :name => "index_payment_time_limits_on_name", :unique => true
 
   create_table "payments", :force => true do |t|
     t.integer  "due_date_id"
@@ -1018,7 +1009,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
 
   create_table "press_proofs", :force => true do |t|
     t.integer  "order_id"
-    t.integer  "product_id"
+    t.integer  "end_product_id"
     t.integer  "creator_id"
     t.integer  "internal_actor_id"
     t.integer  "revoked_by_id"
@@ -1042,61 +1033,58 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
 
   create_table "product_reference_categories", :force => true do |t|
     t.integer  "product_reference_category_id"
-    t.string   "name"
-    t.boolean  "enable",                        :default => true
     t.integer  "product_references_count",      :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "product_references", :force => true do |t|
-    t.integer  "product_reference_category_id"
+    t.string   "type"
     t.string   "reference"
     t.string   "name"
-    t.text     "description"
-    t.float    "production_cost_manpower"
-    t.float    "production_time"
-    t.float    "delivery_cost_manpower"
-    t.float    "delivery_time"
-    t.float    "vat"
-    t.boolean  "enable",                        :default => true
-    t.integer  "products_count",                :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "product_references", ["reference"], :name => "index_product_references_on_reference", :unique => true
-
-  create_table "products", :force => true do |t|
-    t.integer  "product_reference_id"
-    t.integer  "order_id"
-    t.string   "reference"
-    t.string   "name"
-    t.text     "description"
-    t.string   "dimensions"
-    t.decimal  "unit_price",           :precision => 65, :scale => 20
-    t.decimal  "prizegiving",          :precision => 65, :scale => 20
-    t.float    "quantity"
-    t.float    "vat"
-    t.integer  "position"
     t.datetime "cancelled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "products", ["reference"], :name => "index_products_on_reference", :unique => true
+  add_index "product_reference_categories", ["name", "type"], :name => "index_product_reference_categories_on_name_and_type", :unique => true
+  add_index "product_reference_categories", ["reference"], :name => "index_product_reference_categories_on_reference", :unique => true
+
+  create_table "products", :force => true do |t|
+    t.string   "type"
+    t.integer  "product_reference_sub_category_id"
+    t.integer  "end_products_count",                :default => 0
+    t.integer  "product_reference_id"
+    t.integer  "order_id"
+    t.float    "prizegiving"
+    t.float    "unit_price"
+    t.integer  "quantity"
+    t.integer  "position"
+    t.string   "reference"
+    t.string   "name"
+    t.string   "dimensions"
+    t.text     "description"
+    t.float    "vat"
+    t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "quote_items", :force => true do |t|
     t.integer  "quote_id"
-    t.integer  "product_id"
+    t.integer  "end_product_id"
     t.string   "name"
     t.text     "description"
     t.string   "dimensions"
-    t.decimal  "unit_price",  :precision => 65, :scale => 20
-    t.decimal  "prizegiving", :precision => 65, :scale => 20
+    t.decimal  "unit_price",     :precision => 65, :scale => 20
+    t.decimal  "prizegiving",    :precision => 65, :scale => 20
     t.float    "quantity"
     t.float    "vat"
     t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "quote_steps", :force => true do |t|
+    t.integer  "commercial_step_id"
+    t.string   "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1106,6 +1094,7 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
     t.integer  "creator_id"
     t.integer  "send_quote_method_id"
     t.integer  "order_form_type_id"
+    t.integer  "quote_contact_id"
     t.string   "status"
     t.string   "reference"
     t.float    "carriage_costs",          :default => 0.0
@@ -1242,17 +1231,14 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "stock_flows", :force => true do |t|
-    t.string   "type"
-    t.string   "purchase_number"
-    t.string   "file_number"
     t.integer  "supply_id"
-    t.integer  "supplier_id"
-    t.decimal  "fob_unit_price",          :precision => 65, :scale => 18
-    t.decimal  "tax_coefficient",         :precision => 65, :scale => 18
-    t.decimal  "quantity",                :precision => 65, :scale => 18
-    t.decimal  "previous_stock_quantity", :precision => 65, :scale => 18
+    t.integer  "inventory_id"
+    t.string   "type"
+    t.string   "identifier"
+    t.decimal  "unit_price",              :precision => 65, :scale => 18
     t.decimal  "previous_stock_value",    :precision => 65, :scale => 18
-    t.boolean  "adjustment"
+    t.integer  "quantity"
+    t.integer  "previous_stock_quantity"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1268,49 +1254,86 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "supplier_supplies", :force => true do |t|
-    t.string   "reference"
-    t.string   "name"
-    t.integer  "supply_id"
     t.integer  "supplier_id"
+    t.integer  "supply_id"
+    t.string   "supplier_reference"
     t.integer  "lead_time"
-    t.decimal  "fob_unit_price",  :precision => 65, :scale => 18
-    t.decimal  "tax_coefficient", :precision => 65, :scale => 18
+    t.decimal  "fob_unit_price",     :precision => 65, :scale => 18
+    t.decimal  "taxes",              :precision => 65, :scale => 18
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "supplies", :force => true do |t|
-    t.integer  "commodity_category_id"
-    t.integer  "consumable_category_id"
-    t.string   "name"
-    t.string   "reference"
+    t.integer  "supply_sub_category_id"
     t.string   "type"
+    t.string   "reference"
+    t.string   "name"
+    t.string   "packaging"
     t.decimal  "measure",                :precision => 65, :scale => 18
     t.decimal  "unit_mass",              :precision => 65, :scale => 18
     t.decimal  "threshold",              :precision => 65, :scale => 18
-    t.boolean  "enable",                                                 :default => true
+    t.boolean  "enabled",                                                :default => true
     t.date     "disabled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supplies_supply_sizes", :force => true do |t|
+    t.integer  "supply_id"
+    t.integer  "supply_size_id"
+    t.integer  "unit_measure_id"
+    t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "supply_categories", :force => true do |t|
-    t.integer  "commodity_category_id"
-    t.integer  "consumable_category_id"
+    t.integer  "supply_category_id"
     t.integer  "unit_measure_id"
     t.string   "type"
+    t.string   "reference"
     t.string   "name"
-    t.integer  "commodities_count",      :default => 0
-    t.integer  "consumables_count",      :default => 0
-    t.boolean  "enable",                 :default => true
+    t.integer  "supplies_count",     :default => 0
+    t.boolean  "enabled",            :default => true
     t.date     "disabled_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "supply_categories", ["name", "type", "supply_category_id"], :name => "index_supply_categories_on_name_and_type_and_supply_category_id", :unique => true
+  add_index "supply_categories", ["reference"], :name => "index_supply_categories_on_reference", :unique => true
+
+  create_table "supply_categories_supply_sizes", :force => true do |t|
+    t.integer  "supply_sub_category_id"
+    t.integer  "supply_size_id"
+    t.integer  "unit_measure_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supply_sizes", :force => true do |t|
+    t.string  "name"
+    t.string  "short_name"
+    t.boolean "display_short_name"
+    t.boolean "accept_string"
+    t.integer "position"
+  end
+
+  add_index "supply_sizes", ["name"], :name => "index_supply_sizes_on_name", :unique => true
+
+  create_table "supply_sizes_unit_measures", :force => true do |t|
+    t.integer "supply_size_id"
+    t.integer "unit_measure_id"
+    t.integer "position"
+  end
+
+  add_index "supply_sizes_unit_measures", ["supply_size_id", "unit_measure_id"], :name => "index_supply_sizes_unit_measures", :unique => true
+
   create_table "survey_interventions", :force => true do |t|
     t.integer  "survey_step_id"
     t.integer  "internal_actor_id"
+    t.integer  "survey_intervention_contact_id"
     t.datetime "start_date"
     t.integer  "duration_hours"
     t.integer  "duration_minutes"
@@ -1401,11 +1424,12 @@ ActiveRecord::Schema.define(:version => 20100326095518) do
   end
 
   create_table "unit_measures", :force => true do |t|
-    t.string   "name"
-    t.string   "symbol"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "name"
+    t.string "symbol"
   end
+
+  add_index "unit_measures", ["name"], :name => "index_unit_measures_on_name", :unique => true
+  add_index "unit_measures", ["symbol"], :name => "index_unit_measures_on_symbol", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "username"

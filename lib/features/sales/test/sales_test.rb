@@ -1,7 +1,15 @@
+require 'test/test_helper'
+
 require 'lib/features/thirds/test/thirds_test'
+require 'lib/features/logistics/test/logistics_test'
 require File.dirname(__FILE__) + '/unit/product_base_test'
+require File.dirname(__FILE__) + '/unit/product_test'
+require File.dirname(__FILE__) + '/unit/product_reference_category_base_test'
+
+Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 
 class Test::Unit::TestCase
+  fixtures :all
   
   def prepare_sales_processes
     OrderType.all.each do |order_type|
@@ -23,50 +31,52 @@ class Test::Unit::TestCase
     
     order = Order.new(:title => "Titre", :customer_needs => "Customer Needs", :previsional_delivery => Time.now + 10.days)
     order.commercial = employees(:john_doe)
-    order.creator = users(:powerful_user)
+    order.creator = users(:sales_user)
     order.customer = customer
-    order.contacts = [ customer.contacts.first, customer.contacts.last ]
+    order.order_contact_id = customer.contacts.first.id
     order.society_activity_sector = society_activity_sector
     order.order_type = society_activity_sector.order_types.first
     order.build_bill_to_address(order.customer.bill_to_address.attributes)
     order.build_ship_to_address(order.customer.establishments.first)
     order.approaching = approachings(:email)
     order.save!
-    flunk "order should be saved" if order.new_record?
     return order
   end
   
-  def create_valid_product_for(order)
-    product = order.products.build
-    product.product_reference_id  = product_references(:product_reference1).id
-    product.name                  = product_references(:product_reference1).name
-    product.description           = "My description"
-    product.dimensions            = "1000x500"
-    product.quantity              = 3
-    product.save!
-    return product
+  def create_default_product_reference
+    return ProductReference.create!( :product_reference_sub_category_id => product_reference_categories(:child).id, :name => "Default Product Reference" )
+  end
+  
+  def create_default_end_product(order = nil)
+    product_reference = create_default_product_reference
+    order ||= create_default_order
+    
+    return order.end_products.create!( :product_reference_id  => product_reference.id,
+                                       :name                  => "Default End Product",
+                                       :quantity              => 1,
+                                       :prizegiving           => 0 )
   end
   
   ## QUOTE METHODS
   def create_quote_for(order)
-    x = 4 # number of products and quote_items
+    x = 4 # number of end_products and quote_items
     x.times do
-      create_valid_product_for(order)
+      create_default_end_product(order)
     end
     
     quote = order.quotes.build(:validity_delay => 30, :validity_delay_unit => 'days')
-    quote.creator = users(:powerful_user)
-    quote.contacts << contacts(:pierre_paul_jacques)
+    quote.creator = users(:sales_user)
+    quote.quote_contact_id = order.all_contacts.first.id
     
-    order.products.each do |product|
-      quote.build_quote_item(:product_id  => product.id,
-                             :name        => "Product Name",
-                             :description => "Product description",
-                             :dimensions  => "1000x2000",
-                             :quantity    => 2,
-                             :unit_price  => 20000,
-                             :prizegiving => 0.0,
-                             :vat         => 19.6)
+    order.end_products.each do |end_product|
+      quote.build_quote_item(:end_product_id  => end_product.id,
+                             :name            => "Product Name",
+                             :description     => "Product description",
+                             :dimensions      => "1000x2000",
+                             :quantity        => 2,
+                             :unit_price      => 20000,
+                             :prizegiving     => 0.0,
+                             :vat             => 19.6)
     end
     
     flunk "Quote should be created" unless quote.save
@@ -86,7 +96,7 @@ class Test::Unit::TestCase
     flunk "Quote should be sended to customer"  unless quote.send_to_customer(:sended_on            => Date.today,
                                                                               :send_quote_method_id => send_quote_methods(:mail).id)
     
-    attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))
+    attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))
     flunk "Quote should be signed" unless quote.sign(:signed_on          => Date.today,
                                                      :order_form_type_id => order_form_types(:signed_quote).id,
                                                      :order_form         => attachment)
@@ -104,9 +114,9 @@ class Test::Unit::TestCase
     
     # prepare delivery note
     dn = order.delivery_notes.build
-    dn.creator          = users(:powerful_user)
+    dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.associated_quote.quote_items.each do |ref|
@@ -115,7 +125,7 @@ class Test::Unit::TestCase
     end
     dn.save!
     
-    flunk "order should have all its products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
+    flunk "order should have all its end_products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
     return dn
   end
   
@@ -129,9 +139,9 @@ class Test::Unit::TestCase
     
     # prepare delivery note
     dn = order.delivery_notes.build
-    dn.creator            = users(:powerful_user)
+    dn.creator            = users(:sales_user)
     dn.ship_to_address    = address
-    dn.contacts           = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     count = 0
@@ -143,7 +153,7 @@ class Test::Unit::TestCase
     end
     dn.save!
     
-    flunk "order should NOT have all its products delivered or scheduled" if order.all_is_delivered_or_scheduled?
+    flunk "order should NOT have all its end_products delivered or scheduled" if order.all_is_delivered_or_scheduled?
     return dn
   end
   
@@ -156,15 +166,15 @@ class Test::Unit::TestCase
                               :has_address_key   => "ship_to_address" )
     
     # prepare delivery note
-    dn = order.build_delivery_note_with_remaining_products_to_deliver
-    dn.creator          = users(:powerful_user)
+    dn = order.build_delivery_note_with_remaining_end_products_to_deliver
+    dn.creator          = users(:sales_user)
     dn.ship_to_address  = address
-    dn.contacts         = [ contacts(:pierre_paul_jacques) ]
+    dn.delivery_note_contact_id = order.all_contacts.first.id
     dn.delivery_note_type = delivery_note_type || delivery_note_types(:delivery_and_installation)
     
     dn.save!
     
-    flunk "order should have all its products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
+    flunk "order should have all its end_products delivered or scheduled" unless order.all_is_delivered_or_scheduled?
     return dn
   end
   
@@ -233,7 +243,7 @@ class Test::Unit::TestCase
     intervention = create_delivered_delivery_intervention_for(delivery_note)
     
     delivery_note.signed_on = Date.today
-    delivery_note.attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+    delivery_note.attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_note_attachment.pdf"))
     delivery_note.sign
     
     flunk "delivery_note should be signed" unless delivery_note.was_signed?
@@ -274,7 +284,7 @@ class Test::Unit::TestCase
     
     invoice.invoice_type    = invoice_types(:deposit_invoice)
     invoice.creator         = User.first
-    invoice.contact         = order.contacts.first
+    invoice.invoice_contact_id = order.all_contacts.first.id
     invoice.bill_to_address = order.bill_to_address
     invoice.published_on    = Date.today
     
@@ -308,14 +318,14 @@ class Test::Unit::TestCase
   end
   
   ## GRAPHIC_ITEM METHODS
-  def create_default_mockup(order = nil, product = nil)
+  def create_default_mockup(order = nil, end_product = nil)
     order ||= create_default_order
-    product ||= create_valid_product_for(order)
+    end_product ||= create_default_end_product(order)
     
     mockup = order.mockups.build(:name                  => "Sample",
                                  :description           => "Sample de maquette destiné aux tests unitaires",
                                  :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
-                                 :creator               => users(:admin_user),
+                                 :creator               => users(:sales_user),
                                  :mockup_type           => mockup_types(:detailed_view),
                                  :product               => product,
                                  :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
@@ -331,7 +341,7 @@ class Test::Unit::TestCase
     gd = order.graphic_documents.build(:name                  => "Sample", 
                                        :description           => "Sample de document graphique destiné aux tests unitaires", 
                                        :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
-                                       :creator               => users(:admin_user), 
+                                       :creator               => users(:sales_user), 
                                        :graphic_document_type => graphic_document_types(:global_view),
                                        :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
                                                                               :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
@@ -341,22 +351,22 @@ class Test::Unit::TestCase
     return gd
   end
   
-  def build_default_press_proof(order = nil, product = nil, creator = nil, internal_actor = nil)
+  def build_default_press_proof(order = nil, end_product = nil, creator = nil, internal_actor = nil)
     order          ||= create_default_order
     internal_actor ||= employees(:john_doe)
-    creator        ||= users(:admin_user)
-    product        ||= create_valid_product_for(order)
-    graphic_item_version = create_default_mockup(order, product).current_version
+    creator        ||= users(:sales_user)
+    end_product    ||= create_default_end_product(order)
+    graphic_item_version = create_default_mockup(order, end_product).current_version
     
     press_proof = PressProof.new( :order_id          => order.id,
-                                  :product_id        => product.id,
+                                  :end_product_id    => end_product.id,
                                   :creator_id        => creator.id,
                                   :internal_actor_id => internal_actor.id,
                                   :press_proof_item_attributes =>[ {:graphic_item_version_id => graphic_item_version.id} ])
   end
   
-  def create_default_press_proof(order = nil, product = nil, creator = nil, internal_actor = nil)
-    press_proof = build_default_press_proof(order, product, creator, internal_actor)
+  def create_default_press_proof(order = nil, end_product = nil, creator = nil, internal_actor = nil)
+    press_proof = build_default_press_proof(order, end_product, creator, internal_actor)
     flunk "press proof should be saved > #{press_proof.errors.full_messages.join(', ')}" unless press_proof.save
     return press_proof
   end
@@ -376,7 +386,7 @@ class Test::Unit::TestCase
   
   def get_signed_press_proof(press_proof = create_default_press_proof, date = Date.today)
     press_proof = get_sended_press_proof(press_proof) unless press_proof.can_be_signed?
-    options     = {:signed_on => date, :signed_press_proof => File.new(File.join(RAILS_ROOT, "test", "fixtures", "signed_press_proof.pdf"))}
+    options     = {:signed_on => date, :signed_press_proof => File.new(File.join(Test::Unit::TestCase.fixture_path, "signed_press_proof.pdf"))}
                    
     press_proof.sign(options)
     press_proof
@@ -389,7 +399,7 @@ class Test::Unit::TestCase
     press_proof
   end
   
-  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = users(:admin_user), comment = "comment", date = Date.today)
+  def get_revoked_press_proof(press_proof = create_default_press_proof, actor = users(:sales_user), comment = "comment", date = Date.today)
     press_proof = get_signed_press_proof(press_proof) unless press_proof.can_be_revoked?
     options = {:revoked_by_id => actor.id, :revoked_on => date, :revoked_comment => comment}
                 

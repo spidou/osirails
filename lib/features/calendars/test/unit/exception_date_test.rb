@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../calendars_test'
 
 class ExceptionDateTest < ActiveSupport::TestCase
-  fixtures :exception_dates, :events
-
   def test_presence_of_event_id
     assert_no_difference 'ExceptionDate.count' do
       exception_date = ExceptionDate.create

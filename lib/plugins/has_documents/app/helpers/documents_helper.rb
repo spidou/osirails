@@ -64,12 +64,14 @@ module DocumentsHelper
   end
 
   def display_document_edit_button(document)
-    link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view?
+    return unless is_form_view? and document.can_edit?(current_user)
+    link_to_function "Modifier", "mark_resource_for_update(this)"
   end
 
   def display_document_delete_button(document)
+    return unless is_form_view? and document.can_delete?(current_user)
     message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
-    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_destroy(this)" if is_form_view?
+    link_to_function "Supprimer", "if (confirm(#{message})) mark_resource_for_destroy(this)"
   end
   
   def display_document_close_form_button(document)

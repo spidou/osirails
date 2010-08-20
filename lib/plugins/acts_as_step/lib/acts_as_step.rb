@@ -258,3 +258,6 @@ if Object.const_defined?("ActiveRecord")
 
   ActiveRecord::Base.send(:include, ActsAsStep)
 end
+
+require 'acts_as_step_controller'
+require 'step_manager'

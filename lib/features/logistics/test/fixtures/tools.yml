@@ -1,0 +1,34 @@
+good_tool:
+  name: vehicle
+  description: service vehicle
+  purchase_date: <%= Date.today %>
+  purchase_price: 249999.99
+  serial_number: "234ABQ" 
+  service: direction_general
+  job: developer
+  employee: john_doe
+  supplier: first_supplier
+
+first_machine:
+  type: Machine
+  name: First Machine
+  description: Description of my first machine
+  purchase_date: <%= Date.yesterday %>
+  purchase_price: 90000
+  serial_number: ABC123DEF456
+  service: direction_general
+  job: developer
+  employee: john_doe
+  supplier: first_supplier
+
+second_machine:
+  type: Machine
+  name: Second Machine
+  description: Description of my second machine
+  purchase_date: <%= Date.yesterday %>
+  purchase_price: 140000
+  serial_number: GHI789JKL101
+  service: direction_general
+  job: developer
+  employee: john_doe
+  supplier: first_supplier

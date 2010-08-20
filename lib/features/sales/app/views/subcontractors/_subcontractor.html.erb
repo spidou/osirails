@@ -3,9 +3,6 @@
   <% form_for @subcontractor do |form| %>
     <%= render :partial => 'thirds/third', :object => @subcontractor, :locals => {:form => form} %>
     
-    <h3>Adresse</h3>
-    <%= render :partial => 'addresses/address_form', :object => @subcontractor.address || @subcontractor.build_address , :locals => { :address_owner => @subcontractor } %>
-    
     <h2>Contacts</h2>
     <%= display_contacts_list(@subcontractor) %>
     <%= display_contact_add_button(@subcontractor) if is_form_view? %>

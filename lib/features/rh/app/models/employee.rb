@@ -5,6 +5,7 @@ class Employee < ActiveRecord::Base
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
+  has_contacts
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
@@ -14,17 +15,12 @@ class Employee < ActiveRecord::Base
   
   named_scope :actives, :include => [:job_contract] , :conditions => ['job_contracts.departure is null']
   
-  # Accessors
-  cattr_accessor :pattern_error
-  @@pattern_error = false
-  
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
-                    :path         => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :path         => ":rails_root/assets/rh/employees/:id/avatar/:style.:extension",
                     :url          => "/employees/:id.:extension",
                     :default_url  => ":current_theme_path/images/default_avatar.png"
   
-  # Relationships
   belongs_to :family_situation
   belongs_to :civility
   belongs_to :user
@@ -33,8 +29,6 @@ class Employee < ActiveRecord::Base
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
-  has_many :contacts_owners, :as => :has_contact
-  has_many :contacts, :source => :contact, :through => :contacts_owners
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
@@ -60,11 +54,14 @@ class Employee < ActiveRecord::Base
   validates_presence_of :civility,             :if => :civility_id
   validates_presence_of :service,              :if => :service_id
   
-  validates_format_of :social_security_number, :with => /^([0-9]{13}\x20[0-9]{2})*$/
-  validates_format_of :email,                  :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
-  validates_format_of :society_email,          :with => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/
+  validates_format_of :social_security_number,  :with         => /^[0-9]{13}\x20[0-9]{2}$/,
+                                                :allow_blank  => false
+  validates_format_of :email,                   :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
+                                                :allow_blank  => true
+  validates_format_of :society_email,           :with         => /^(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+)*$/,
+                                                :allow_blank  => true
   
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :premia, :checkings
+  validates_associated :iban, :address, :job_contract#, :contacts
   
   validate :validates_responsible_job_limit
   
@@ -78,10 +75,12 @@ class Employee < ActiveRecord::Base
     v.validates_attachment_size         :avatar, :less_than => 2.megabytes
   end
   
-  # Callbacks
   before_validation_on_create :build_associated_resources
   before_save :case_management
   after_update :save_iban
+  
+  cattr_accessor :pattern_error
+  @@pattern_error = false
   
   # Method to manage that there's no more than 2 responsible jobs by service
   def validates_responsible_job_limit

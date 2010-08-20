@@ -5,13 +5,13 @@
   <%= form.error_messages %>
   <p>
     <%= form.label :start_date %>
-    <%= form.date_select(:start_date, {:order => [:day,:month,:year]}) %>
+    <%= form.calendar_date_select(:start_date) %>
     <%= form.label :start_half %>
     <%= form.check_box(:start_half, {}, '1', '0')%>
   </p>
   <p>
     <%= form.label :end_date %>
-    <%= form.date_select(:end_date, {:order => [:day,:month,:year]}) %>
+    <%= form.calendar_date_select(:end_date) %>
     <%= form.label :end_half %>
     <%= form.check_box(:end_half, {}, '1', '0') %>
   </p>

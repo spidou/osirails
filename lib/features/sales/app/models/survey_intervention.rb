@@ -1,7 +1,7 @@
 class SurveyIntervention < ActiveRecord::Base
   has_permissions :as_business_object
   has_documents   :plan, :mockup
-  has_contact     :accept_from => :order_contacts
+  has_contact     :survey_intervention_contact, :accept_from => :order_and_customer_contacts
   
   belongs_to :survey_step
   belongs_to :internal_actor, :class_name => "Employee"
@@ -34,7 +34,7 @@ class SurveyIntervention < ActiveRecord::Base
     return render
   end
   
-  def order_contacts
-    survey_step ? SurveyStep.find(survey_step_id).order.contacts : []
+  def order_and_customer_contacts
+    survey_step_id ? SurveyStep.find(survey_step_id).order.all_contacts_and_customer_contacts : []
   end
 end

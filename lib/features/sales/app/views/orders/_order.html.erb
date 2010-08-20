@@ -1,9 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_resources/has_resources' %>
-  <%= stylesheet_link_tag_with_theme_support 'core/has_contacts/has_contacts' %>
   <%= stylesheet_link_tag_with_theme_support 'sales/sales' %>
-  <%= javascript_include_tag 'core/has_resources/has_resources' %>
-  <%= javascript_include_tag 'core/has_resources/resources_picker' %>
   <%= javascript_include_tag 'sales/ship_to_addresses_picker' %>
 <% end -%>
 
@@ -11,7 +7,7 @@
 
 <div class="presentation_medium">
   <h2 id="order_anchor">Dossier</h2>
-  <% form_for order do |form| %>
+  <% form_for order, :html => { :multipart => true } do |form| %>
     <%= form.error_messages %>
   
     <h3>Informations générales</h3>
@@ -34,10 +30,9 @@
 
     <h3>Client</h3>
     <p>
-      <%= form.label :contact_ids %>
-      <%= display_contacts_picker(order, order.customer.contacts) %>
-      <%= display_new_contacts_list(order) %>
-      <%# display_contact_add_button(order) %>
+      <%= form.label :order_contact %>
+      <%= display_contact_picker(order, order.customer.contacts, :form => form, :contact_key => "order_contact",
+                                                                 :contacts_owners => order.customer.head_office_and_establishments ) %>
     </p>
     
     <p>
@@ -52,9 +47,8 @@
     <h3>Livraison</h3>
     <p>
       <%= form.label :ship_to_address_ids %>
-      <%= display_ship_to_addresses_picker(order, order.customer.establishments) %>
+      <%= display_ship_to_addresses_picker(order, order.customer.head_office_and_establishments) %>
       <%= display_new_establishments_list(order) %>
-      <%# display_ship_to_addresses_list(order) %>
       <%= display_establishment_add_button(order) if is_form_view? %>
     </p>
     
@@ -69,12 +63,12 @@
       </p>
     <% end %>
     <p>
-      <%= form.label :previsional_delivery %>
-      <%= form.form_or_view(form.date_select(:previsional_delivery, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true), :previsional_delivery, :humanize) %>
+      <%= form.label :quotation_deadline %>
+      <%= form.form_or_view(form.calendar_date_select(:quotation_deadline), :quotation_deadline, :humanize) %>
     </p>
     <p>
-      <%= form.label :quotation_deadline %>
-      <%= form.form_or_view(form.date_select(:quotation_deadline, :start_year => Date.today.year, :order => [:day, :month, :year], :include_blank => true), :quotation_deadline, :humanize) %>
+      <%= form.label :previsional_delivery %>
+      <%= form.form_or_view(form.calendar_date_select(:previsional_delivery), :previsional_delivery, :humanize) %>
     </p>
     <p style="display:none">
       <%= form.hidden_field :customer_id, :value  => order.customer_id if is_form_view? %>

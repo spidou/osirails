@@ -1,10 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
 class ActivitySectorTest < ActiveSupport::TestCase
-  def test_presence_of_name
-    assert_no_difference 'ActivitySector.count' do
-      activity_sector = ActivitySector.create
-      assert_not_nil activity_sector.errors.on(:name), "An ActivitySector should have a name"
-    end
-  end
+  should_validate_presence_of :name
+  should_validate_uniqueness_of :name, :scoped_to => :type
 end

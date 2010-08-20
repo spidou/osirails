@@ -2,9 +2,9 @@
   <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Survey\"", :title => list_text) + " " + list_text, order_commercial_step_survey_step_path(@order)) if SurveyStep.can_view?(current_user) %>
 <% end %>
 
-<% add_contextual_menu_item :estimate_step do %>
+<% add_contextual_menu_item :quote_step do %>
   <%= display_quote_add_button(@order) %>
-  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Devis\"", :title => list_text) + " " + list_text, order_commercial_step_estimate_step_path(@order)) if EstimateStep.can_view?(current_user) %>
+  <%= link_to(image_tag("view_16x16.png", :alt => list_text = "Voir l'étape \"Devis\"", :title => list_text) + " " + list_text, order_commercial_step_quote_step_path(@order)) if QuoteStep.can_view?(current_user) %>
 <% end %>
 
 <% add_contextual_menu_item :press_proof_step do %>

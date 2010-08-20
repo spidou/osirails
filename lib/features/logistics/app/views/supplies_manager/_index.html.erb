@@ -1,48 +1,49 @@
+<% require_locals supply_categories %>
+
 <% content_for :header do %>
   <%= javascript_include_tag 'logistics/supplies' %>
+  <%= stylesheet_link_tag_with_theme_support 'logistics/supply' %>
 <% end %>
 
 <% add_contextual_menu_item :commodities_stats do %>
-  <span style='color: red;'>VALEUR TOTALE DU STOCK : <%= number_with_precision(@supply_type.stock_value,2) + " €" %></span>
+  <span>Valeur estimative du stock actuel&nbsp;: <%= number_with_precision(@supply_type.stock_value,2) %>&nbsp;&euro;</span>
 <% end %>
 
 <% add_contextual_menu_item :possible_actions do %>
-  <%= self.send("new_#{@supply_type.name.tableize.singularize}_category_link", :link_text => "Nouvelle catégorie") %>
+  <%= display_supply_category_add_button(@supply_category_type.new) %>
+  <%= display_supply_add_button(@supply_type.new) %>
 <% end %>
 
 <% add_contextual_menu_item :useful_links do %>
-  <%= params[:inactives]=="true" ? supply_categories_link(@supply_type) : supply_categories_link_with_inactives(@supply_type) %>
+  <%= params[:inactives] ? display_supply_list_button(@supply_type) : display_supply_list_all_button(@supply_type) %>
 <% end %>
 
 <div>
-  <% unless @supply_categories_root.empty? %>
+  <% unless supply_categories.empty? %>
     <div class="autoscroll">
-      <table class="<%= @supply_type.name.underscore %>">
+      <table id="supplies" class="<%= @supply_type.name.tableize %>">
         <thead>
           <tr>
-            <th rowspan='2'>Cat&eacute;gorie</th>
-            <th rowspan='2'>Sous cat&eacute;gorie</th>
-            <th rowspan='2'>Fournisseurs</th>
-            <th rowspan='2'>R&eacute;f.</th>
-            <th rowspan='2'>D&eacute;signation</th>
-            <th rowspan='2'>Grandeur/U</th>
-            <th rowspan='2'>Masse/U</th>
-            <th rowspan='2'>Prix/Grandeur/U</th>
-            <th colspan='4'>Stock</th>
-            <th rowspan='2'>Actions</th>
-          </tr>  
-          <tr>            <th>Quantit&eacute;</th>
-            <th>Grandeur</th>
-            <th>Masse</th>
-            <th>Valeur</th>
+            <th rowspan="2">Réf.</th>
+            <th colspan="4">Désignation</th>
+            <th rowspan="2">Grandeur/U</th>
+            <th rowspan="2">Masse/U</th>
+            <th rowspan="2">PU&#160;TTC moyen</th>
+            <th rowspan="2">PG&#160;TTC moyen</th>
+            <th rowspan="2">Actions</th>
           </tr>
-        </thead>   
-        <tbody> 
-          <%= render(:partial => "supplies_manager/supply_category", :collection => @supply_categories_root) %>
-        </tbody>
+          <tr>
+            <th>Famille</th>
+            <th>Sous-famille</th>
+            <th>Type</th>
+            <th>Spécificités&#160;et&#160;conditionnement</th>
+          </tr>
+        </thead>
+        
+        <%= render :partial => "supplies_manager/supply_category_in_one_line", :collection => supply_categories %>
       </table>
     </div>
   <% else %>
-    <p>Aucune matière première n'a été trouvée.</p>
+    <p>Aucun élément n'a été trouvé.</p>
   <% end %>
 </div>

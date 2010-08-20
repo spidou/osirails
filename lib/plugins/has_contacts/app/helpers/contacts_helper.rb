@@ -4,41 +4,102 @@ module ContactsHelper
     render :partial => contact, :locals => options
   end
   
-  def display_contacts_list(contacts_owner)
+  def display_contacts_list(contacts_owner, group_by_owner = false)
     html = '<div id="contacts" class="resources">'
-    html << render_contacts_list(contacts_owner, :group_by => "type", :order_by => "asc")
+    html << render_contacts_list(contacts_owner, :group_by => "first_name", :order_by => "asc", :group_by_owner => group_by_owner)
     html << '</div>'
     html << render_new_contacts_list(contacts_owner)
+  end
+  
+  # Method to display contacts stored into +all_contacts+ method 
+  #
+  def display_all_contacts(owner)
+    html = '<div id="contacts" class="resources">'
+    html << render( :partial => 'contacts/contact', :collection => owner.all_contacts, :locals => { :contacts_owner => owner })
+    html << '</div>'
   end
   
   def display_new_contacts_list(contacts_owner)
     render_new_contacts_list(contacts_owner)
   end
   
-  def display_contacts_picker(contacts_owner, contacts, options = {})
-    render :partial => 'contacts/contacts_picker', :object => contacts, :locals => options.merge({ :contacts_owner => contacts_owner })
+  def display_contact_picker(contact_picker, contacts, options = {})
+    render :partial => 'contacts/contact_picker', :object => contact_picker, :locals => options.merge({ :contact_list => contacts })
   end
-
-  def display_contact_add_button(contacts_owner)
+  
+  def display_add_contact_button_for_owner(contacts_owner)
+    div_id = "#{contacts_owner.class.singularized_table_name}_#{contacts_owner.id}_new_contacts"
+    
+    display_contact_add_button(contacts_owner, div_id)
+  end
+  
+  def display_contact_add_button(contacts_owner, div_id="new_contacts")
     html = "<p>"
     html << link_to_function("Ajouter un contact") do |page|
-      page.insert_html :bottom, :new_contacts, :partial => 'contacts/contact',
-                                                :object => contacts_owner.build_contact,
-                                                :locals => { :contacts_owner => contacts_owner }
-      page['new_contacts'].show if page['new_contacts'].visible
-      last_contact = page['new_contacts'].select('.contact').last
+      partial = escape_javascript(render(:partial => 'contacts/contact',
+                                         :object => contacts_owner.contacts.build,
+                                         :locals => { :contacts_owner => contacts_owner }))
+      page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
+      
+      # add a #FAKE_ID to the last new record to permit it to be linked with his numbers new records
+      # That fake_id is retrieved into numbers_helper.rb 'add_number_link' method
+      # TODO do not forget to remove that part when the trick will become useless.
+      fake_id = "'new_record_' +(Math.floor(Math.random()*Math.pow(10,8)) + new Date().getSeconds()).toString()"
+      page << "$('#{ div_id }').childElements().last().down('.contact_id').value = #{ fake_id }"
+      #############################################################################################
+      
+      page[div_id].show if page[div_id].visible
+      last_contact = page[div_id].select('.contact').last
       last_contact.show
       last_contact.visual_effect :highlight
     end
     html << "</p>"
   end
-
+  
+  # Method to display a button to add a new contact from a contact picker form
+  # +contacts_owners+ => collection of +has_contact+ in which the user will have the choice when creating a new contact into contact picker
+  # +contact_picker+  => the object that will handle the contact.id
+  # +div_id+          => div where to add the partial
+  # +contact_key+             => like in (has_contact :contact_key) permit to retrieve how the contact is referenced into contact_picker
+  #
+  def display_new_contact_button_for_contact_picker(contact_picker, div_id, contacts_owners, contact_key)
+    message = "Ajouter un nouveau contact" 
+    html = link_to_function(image_tag("add_16x16.png", :alt => message, :title => message)) do |page|
+      partial = escape_javascript(render(:partial => 'contacts/contact_picker_form',
+                                         :object => Contact.new,
+                                         :locals => { :contact_picker => contact_picker,
+                                                      :contacts_owners => contacts_owners,
+                                                      :contact_key => contact_key,
+                                                      :options => {:establishment => {:value_method => :id, :text_method => :name }} }
+                                         ))
+      page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
+      page << "this.parentNode.toggle('appear')"
+    end
+    html << "</p>"
+  end
+  
+  def display_new_contact_cancel_button_for_contact_picker(div_id)
+    html = "<p>"
+    html << link_to_function( "Annuler la création du contact", "cancel_creation_of_new_resource(this); this.up('.contact').previous('.#{ div_id }').toggle('appear');")
+    html << "</p>"
+  end
+  
+  
   def display_contact_edit_button(contact)
-    link_to_function "Modifier", "mark_resource_for_update(this)" if is_form_view?
+    return unless is_form_view? and Contact.can_edit?(current_user)
+    link_to_function "Modifier", "mark_resource_for_update(this)"
   end
 
+  def display_contact_hide_button(contact)
+    return unless is_form_view? and Contact.can_hide?(current_user)
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer", "if (confirm(#{ message })) mark_resource_for_hide(this)"
+  end
+  
   def display_contact_delete_button(contact)
-    link_to_function "Supprimer", "mark_resource_for_destroy(this)" if is_form_view?
+    return unless is_form_view? and Contact.can_delete?(current_user)
+    message = '"Êtes vous sûr?\nAttention, les modifications seront appliquées à la soumission du formulaire."'
+    link_to_function "Supprimer définitivement", "if (confirm(#{ message })) mark_resource_for_destroy(this)"
   end
   
   def display_contact_close_form_button(contact)
@@ -46,6 +107,24 @@ module ContactsHelper
       link_to_function "Annuler la création du contact", "cancel_creation_of_new_resource(this)"
     else is_form_view?
       link_to_function "Annuler la modification du contact", "mark_resource_for_dont_update(this)"
+    end
+  end
+  
+  def get_letter_range(letter)
+    if letter.between("A", "D")
+      "A-D"
+    elsif letter.between("E", "H")
+      "E-H"
+    elsif letter.between("I", "L")
+      "I-L"
+    elsif letter.between("M", "P")
+      "M-P"
+    elsif letter.between("Q", "T")
+      "Q-T"
+    elsif letter.between("U", "Z")
+      "U-Z"
+    elsif letter.empty?
+      "Aucun"
     end
   end
   
@@ -68,10 +147,10 @@ module ContactsHelper
     def group_contacts_by_method(method, contacts_owner)
       if @group_by == method and @order_by == "asc"
         order_by = "desc"
-        order_symbol = "v"
+        order_symbol = "↓"
       else
         order_by = "asc"
-        order_symbol = "^"
+        order_symbol = "↑"
       end
       link_to_remote "#{method.humanize} #{order_symbol}", :update => :contacts,
                                                            :url    => contacts_path( contacts_owner,
@@ -79,7 +158,7 @@ module ContactsHelper
                                                                                      :order_by => order_by ),
                                                            :method => :get
     end
-    
+
     def render_new_contacts_list(contacts_owner)
       new_contacts = contacts_owner.contacts.select{ |contact| contact.new_record? }
       html =  "<div class=\"resource_group contact_group new_records\" id=\"new_contacts\" #{"style=\"display:none\"" if new_contacts.empty?}>"

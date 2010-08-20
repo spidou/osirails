@@ -1,11 +1,9 @@
-require 'test/test_helper'
 require File.dirname(__FILE__) + '/../sales_test'
  
 class DeliveryNoteTest < ActiveSupport::TestCase
-  
   #TODO test has_permissions :as_business_object
   #TODO test has_address     :ship_to_address
-  #TODO test has_contact     :accept_from => :order_contacts
+  #TODO test has_contact     :accept_from => :order_and_customer_contacts
   
   should_have_attached_file :attachment
   
@@ -19,12 +17,12 @@ class DeliveryNoteTest < ActiveSupport::TestCase
   should_have_one  :delivered_delivery_intervention
   
   should_validate_presence_of :delivery_note_items, :ship_to_address
-  should_validate_presence_of :order, :creator, :with_foreign_key => :default
+  should_validate_presence_of :order, :creator, :delivery_note_type, :delivery_note_contact, :with_foreign_key => :default
   
   should_not_allow_values_for :status, 0, 1, 100, "string"
-  should_allow_values_for :status, nil, DeliveryNote::STATUS_CONFIRMED, DeliveryNote::STATUS_CANCELLED, DeliveryNote::STATUS_SIGNED
+  should_allow_values_for :status, nil, DeliveryNote::STATUS_CONFIRMED, DeliveryNote::STATUS_CANCELLED
   
-  should_not_allow_mass_assignment_of :status, :confirmed_at, :cancelled_at, :reference
+  should_not_allow_mass_assignment_of :status, :reference, :confirmed_at, :cancelled_at
   
   context "In an order WITHOUT a signed quote" do
     #TODO assert a new delivery_note cannot be added
@@ -47,26 +45,15 @@ class DeliveryNoteTest < ActiveSupport::TestCase
                                    :has_address_type  => "DeliveryNote",
                                    :has_address_key   => "ship_to_address")
       
-      @invalid_contact = Contact.new # assuming Contact.new returns an invalid record by default
-      @valid_contact = Contact.new(:first_name => "First Name",
-                                   :last_name => "Last Name",
-                                   :contact_type_id => ContactType.create(:name => "Contact Type Name", :owner => "DeliveryNote").id,
-                                   :email => "firstname@lastname.com",
-                                   :job => "Job",
-                                   :gender => "M")
-      
-      @attachment = File.new(File.join(RAILS_ROOT, "test", "fixtures", "delivery_note_attachment.pdf"))
+      @attachment = File.new(File.join(Test::Unit::TestCase.fixture_path, "delivery_note_attachment.pdf"))
       
       flunk "@valid_address should be valid"       unless @valid_address.valid?
       flunk "@invalid_address should NOT be valid" if @invalid_address.valid?
-      flunk "@valid_contact should be valid"       unless @valid_contact.valid?
-      flunk "@invalid_contact should NOT be valid" if @invalid_contact.valid?
     end
     
     teardown do
       @order = @signed_quote = @attachment = nil
       @invalid_address = @valid_address = nil
-      @invalid_contact = @valid_contact = nil
     end
     
     #TODO this context have been adapted from old code, but it should be reviewed to be adapted for the real shoulda way to write test
@@ -94,44 +81,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         @dn.ship_to_address = @valid_address
         @dn.valid?
         assert !@dn.errors.invalid?(:ship_to_address), "ship_to_address should be valid"
-      end
-      
-      should "have contacts" do
-        @order.contacts = [ @valid_contact ]                        # prepare delivery note to accept @valid_contact
-        @order.save                                                 #
-        
-        assert @dn.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it's empty"
-        
-        # when contact is invalid
-        @dn.contacts << @invalid_contact
-        @dn.valid?
-        assert !@dn.errors.invalid?(:contact_ids), "contact_ids should be valid"
-        assert @dn.errors.invalid?(:contacts), "contacts should NOT be valid because it contains an invalid contact"
-        
-        # when contact_id is wrong
-        @dn.contacts = []
-        @dn.contact_ids [0]
-        @dn.valid?
-        assert @dn.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it contains a wrong contact ID"
-        
-        # when contact is NOT is the accepted list
-        @dn.contacts = [ contacts(:pierre_paul_jacques) ]
-        @dn.valid?
-        assert !@dn.errors.invalid?(:contact_ids), "contact_ids should be valid"
-        assert @dn.errors.invalid?(:contacts), "contact should NOT be valid because the contact is not present in the accepted list of contacts"
-        
-        # when contact is in the accepted list
-        @dn.contacts = [ @valid_contact ]
-        @dn.valid?
-        assert !@dn.errors.invalid?(:contact_ids), "contact_ids should be valid"
-        assert !@dn.errors.invalid?(:contacts), "contacts should be valid"
-        
-        # when length of contacts is too long
-        @order.contacts << contacts(:pierre_paul_jacques)
-        @order.save
-        @dn.contacts = [ @valid_contact, contacts(:pierre_paul_jacques) ]
-        @dn.valid?
-        assert @dn.errors.invalid?(:contact_ids), "contact_ids should NOT be valid because it contains more than 1 contact"
       end
       
       should "have an associated quote" do
@@ -211,16 +160,11 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       teardown do
-        @dn.destroy
         @dn = nil
       end
       
       should "have a good 'status' value" do
         assert_equal nil, @dn.status
-      end
-      
-      should "have a valid 'status'" do
-        assert !@dn.errors.invalid?(:status)
       end
       
       should "be able to be edited " do
@@ -230,7 +174,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       should "be updated successfully" do
         assert_creator_id_cannot_be_updated
         assert_ship_to_address_can_be_updated
-        assert_contact_can_be_updated
+        assert_delivery_note_contact_can_be_updated
         assert_delivery_note_items_can_be_updated
       end
       
@@ -286,14 +230,13 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       context "(with a pending_delivery_intervention)" do
         setup do
           @intervention = create_scheduled_delivery_intervention_for(@dn)
-          @dn = DeliveryNote.find(@dn.id)
+          @dn.reload
           
           flunk "@intervention should be saved" if @intervention.new_record?
           flunk "@dn should have a pending_delivery_intervention" unless @dn.pending_delivery_intervention
         end
       
         teardown do
-          @intervention.destroy
           @intervention = nil
         end
         
@@ -331,16 +274,16 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       teardown do
-        @dn.destroy
         @dn = nil
       end
       
+      subject{ @dn }
+      
+      should_not_allow_values_for :status, 0, 1, 100, "string", nil, DeliveryNote::STATUS_CONFIRMED
+      should_allow_values_for :status, DeliveryNote::STATUS_CANCELLED, DeliveryNote::STATUS_SIGNED
+      
       should "have a good 'status' value" do
         assert_equal DeliveryNote::STATUS_CONFIRMED, @dn.status
-      end
-      
-      should "have a valid 'status'" do
-        assert !@dn.errors.invalid?(:status)
       end
       
       should "NOT be able to be edited " do
@@ -350,7 +293,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       should "NOT be updated successfully" do
         assert_creator_id_cannot_be_updated
         assert_ship_to_address_cannot_be_updated
-        assert_contact_cannot_be_updated
+        assert_delivery_note_contact_cannot_be_updated
         assert_delivery_note_items_cannot_be_updated
       end
       
@@ -406,14 +349,13 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       context "(with a pending_delivery_intervention)" do
         setup do
           @intervention = create_scheduled_delivery_intervention_for(@dn)
-          @dn = DeliveryNote.find(@dn.id)
+          @dn.reload
           
           flunk "@intervention should be saved" if @intervention.new_record?
           flunk "@dn should have a pending_delivery_intervention" unless @dn.pending_delivery_intervention
         end
       
         teardown do
-          @intervention.destroy
           @intervention = nil
         end
         
@@ -441,14 +383,13 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       context "(with a delivered_delivery_intervention)" do
         setup do
           @intervention = create_delivered_delivery_intervention_for(@dn)
-          @dn = DeliveryNote.find(@dn.id)
+          @dn.reload
           
           flunk "@intervention should be saved" if @intervention.new_record?
           flunk "@dn should have a delivered_delivery_intervention" unless @dn.delivered_delivery_intervention
         end
       
         teardown do
-          @intervention.destroy
           @intervention = nil
         end
         
@@ -494,16 +435,11 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       teardown do
-        @dn.destroy
         @dn = nil
       end
       
       should "have a good 'status' value" do
         assert_equal DeliveryNote::STATUS_CANCELLED, @dn.status
-      end
-      
-      should "have a valid 'status'" do
-        assert !@dn.errors.invalid?(:status)
       end
       
       should "NOT be able to be edited " do
@@ -513,7 +449,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       should "NOT be updated successfully" do
         assert_creator_id_cannot_be_updated
         assert_ship_to_address_cannot_be_updated
-        assert_contact_cannot_be_updated
+        assert_delivery_note_contact_cannot_be_updated
         assert_delivery_note_items_cannot_be_updated
       end
       
@@ -577,16 +513,11 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       end
       
       teardown do
-        @dn.destroy
         @dn = nil
       end
       
       should "have a good 'status' value" do
         assert_equal DeliveryNote::STATUS_SIGNED, @dn.status
-      end
-      
-      should "have a valid 'status'" do
-        assert !@dn.errors.invalid?(:status)
       end
       
       should "NOT be able to be edited " do
@@ -596,7 +527,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       should "NOT be updated successfully" do
         assert_creator_id_cannot_be_updated
         assert_ship_to_address_cannot_be_updated
-        assert_contact_cannot_be_updated
+        assert_delivery_note_contact_cannot_be_updated
         assert_delivery_note_items_cannot_be_updated
       end
       
@@ -650,13 +581,26 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', a delivery_note" do
     setup do
       @reference_owner       = create_default_delivery_note
       @other_reference_owner = create_default_delivery_note
     end
     
     include HasReferenceTest
+  end
+  
+  context "Thanks to has_contact, a delivery_note" do
+    setup do
+      @contact_owner = create_default_delivery_note
+      @contact_keys = [ :delivery_note_contact ]
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :delivery_note_contact
+    
+    include HasContactTest
   end
   
   private
@@ -679,7 +623,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
     end
     
     def assert_creator_id_cannot_be_updated
-      @dn.creator = users(:admin_user)
+      @dn.creator_id += 1
       @dn.valid?
       assert @dn.errors.invalid?(:creator_id), "creator_id should NOT be valid because it's NOT allowed to be updated"
     end
@@ -699,27 +643,22 @@ class DeliveryNoteTest < ActiveSupport::TestCase
       @dn.valid?
     end
     
-    def assert_contact_can_be_updated
-      update_contact_by_editing_item
-      assert !@dn.errors.invalid?(:contacts), "contacts should be valid"
-      
-      #TODO update_contact_by_replacing_item
+    def assert_delivery_note_contact_can_be_updated
+      update_delivery_note_contact
+      assert !@dn.errors.invalid?(:delivery_note_contact_id), "delivery_note_contact_id should be valid"
     end
     
-    def assert_contact_cannot_be_updated
-      update_contact_by_editing_item
-      assert @dn.errors.invalid?(:contacts), "contacts should NOT be valid because it's not allowed to be updated"
-      
-      #TODO update_contact_by_replacing_item
+    def assert_delivery_note_contact_cannot_be_updated
+      update_delivery_note_contact
+      assert @dn.errors.invalid?(:delivery_note_contact_id), "delivery_note_contact_id should NOT be valid because it's not allowed to be updated"
     end
     
-    def update_contact_by_editing_item
-      @dn.contact.first_name = "new first name"
+    def update_delivery_note_contact
+      old_contact = @dn.delivery_note_contact
+      new_contact = (Contact.all - [ old_contact ]).first
+      flunk "new_contact should exist and be different than old_contact" unless new_contact and new_contact != old_contact
+      @dn.delivery_note_contact = new_contact
       @dn.valid?
-    end
-    
-    def update_contact_by_replacing_item
-      #TODO
     end
     
     def assert_delivery_note_items_can_be_updated

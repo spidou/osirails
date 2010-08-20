@@ -1,0 +1,15 @@
+thickness:
+  name: Thickness
+diameter:
+  name: Diameter
+width:
+  name: Width
+length:
+  name: Length
+
+accept_string:
+  name: Accept String
+  accept_string: true
+not_accept_string:
+  name: Not Accept String
+  accept_string: false

@@ -1,10 +1,8 @@
-class CommoditiesManagerController < ApplicationController
-  helper :supplies_manager
+class CommoditiesManagerController < SuppliesManagerController
   
-  # GET /commodities_manager
-  def index
+  def define_supply_type_and_supply_category_type
     @supply_type = Commodity
-    @supply_categories_root = (params[:inactives]=="true" ? CommodityCategory.roots : CommodityCategory.enabled_roots)
+    @supply_category_type = CommodityCategory
   end
+  
 end
-

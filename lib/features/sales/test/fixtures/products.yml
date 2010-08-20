@@ -1,0 +1,11 @@
+first_product_reference:
+  type: ProductReference
+  product_reference_sub_category: child
+  reference: ABCD1234
+  name: First Product Reference
+
+first_end_product:
+  type: EndProduct
+  product_reference: first_product_reference
+  reference: EFGH5678
+  name: First End Product

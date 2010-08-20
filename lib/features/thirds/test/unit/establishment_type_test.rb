@@ -1,8 +1,6 @@
-require 'test/test_helper'
+require File.dirname(__FILE__) + '/../thirds_test'
 
-class EstablishmentTypeTest < Test::Unit::TestCase
-  should_have_many :establishments
-  
+class EstablishmentTypeTest < ActiveSupport::TestCase
   context "An empty establishment type" do
     setup do
       @establishment_type = EstablishmentType.new

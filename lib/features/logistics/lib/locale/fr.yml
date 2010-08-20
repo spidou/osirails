@@ -46,14 +46,12 @@ fr:
         lead_time: "Délai d'approvisionnement"
       stock_flow:
         supply: "Fourniture"
-        supplier: "Fournisseur"
         quantity: "Quantité"
       stock_input:
-        purchase_number: "Numéro d'achat"
-        fob_unit_price: "FOB unitaire"
-        tax_coefficient: "Coefficient de taxe"
+        identifier: "Numéro d'achat"
+        unit_price: "PU TTC"
       stock_output:
-        file_number: "Numéro de dossier"
+        identifier: "Numéro de dossier"
       tool:
         status: "Statut"
         type: "Type"
