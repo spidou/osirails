@@ -8,7 +8,7 @@ class BusinessObject < ActiveRecord::Base
     begin
       name.constantize
     rescue NameError => e
-      errors.add(:name, "ne correspond pas à un modèle valide")
+      errors.add(:name, "doesn't match to an existing constant")
     end
   end
   

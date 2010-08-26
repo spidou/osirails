@@ -7,7 +7,7 @@ Test::Unit::TestCase.fixture_path = File.dirname(__FILE__) + '/fixtures/'
 class Test::Unit::TestCase
   fixtures :all
   
-  def get_customer(factorised = true)
+  def get_customer(factorised = true) # TODO set 'factorised' at false by default, and make relative changements in whole project
     if factorised == true
       customer = thirds(:factorised_customer)
     else
@@ -42,7 +42,7 @@ class Test::Unit::TestCase
   def build_establishment_for(customer)
     siret = rand(99999999999999).to_s.rjust(14, "0")
     establishment = customer.establishments.build(:name                   => "Customer Establishment",
-                                                  :establishment_type_id  => EstablishmentType.first.id,
+                                                  :establishment_type_id  => establishment_types(:store).id,
                                                   :siret_number           => siret,
                                                   :activated              => true)
     establishment.build_address( :street_name  => "Street Name",
@@ -61,7 +61,7 @@ class Test::Unit::TestCase
   def build_head_office_for(customer)
     siret = rand(99999999999999).to_s.rjust(14, "0") 
     establishment = customer.build_head_office( :name                   => "Customer Head Office",
-                                                :establishment_type_id  => EstablishmentType.first.id,
+                                                :establishment_type_id  => establishment_types(:store).id,
                                                 :siret_number           => siret,
                                                 :activated              => true)
     establishment.build_address( :street_name  => "Street Name",

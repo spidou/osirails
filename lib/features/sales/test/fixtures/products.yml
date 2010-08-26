@@ -3,6 +3,8 @@ first_product_reference:
   product_reference_sub_category: child
   reference: ABCD1234
   name: First Product Reference
+  description: This is my first product reference
+  vat: 5.5
 
 first_end_product:
   type: EndProduct

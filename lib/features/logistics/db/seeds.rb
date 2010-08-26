@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default measure units
 metre   = UnitMeasure.create! :name => "Mètre",       :symbol => "m"
 mmetre  = UnitMeasure.create! :name => "Millimètre",  :symbol => "mm"

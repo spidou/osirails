@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default third types
 private_third_type  = ThirdType.create! :name => "Privé"
 public_third_type   = ThirdType.create! :name => "Public"

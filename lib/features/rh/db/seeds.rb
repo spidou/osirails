@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default civilities
 Civility.create! :name => "Mr"
 Civility.create! :name => "Mme"

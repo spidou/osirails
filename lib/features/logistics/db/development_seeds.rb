@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default commodity categories
 metal = CommodityCategory.create! :name => "Metal"
 alu   = CommodityCategory.create! :name => "Aluminium"

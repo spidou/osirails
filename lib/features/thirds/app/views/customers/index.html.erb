@@ -22,10 +22,10 @@
       <tbody>
         <% for customer in @customers %>
           <tr>
-            <td class="name"><%= customer.name %></td>
-            <td class="legal_form"><%= customer.legal_form.name %></td>
-            <td class="establishments"><%= customer.establishment_names.join(", ") %></td>
-            <td class="activity_sector" title="<%= customer.head_office.activity_sector_reference.get_activity_sector.name if customer.head_office and customer.head_office.activity_sector_reference %>">
+            <td class="name text"><%= customer.name %></td>
+            <td class="legal_form text"><%= customer.legal_form.name %></td>
+            <td class="establishments text"><%= customer.establishment_names.join(", ") %></td>
+            <td class="activity_sector text" title="<%= customer.head_office.activity_sector_reference.get_activity_sector.name if customer.head_office and customer.head_office.activity_sector_reference %>">
               <%= customer.head_office.activity_sector_reference.get_activity_sector.short_name if customer.head_office and customer.head_office.activity_sector_reference %>
             </td>
             <td class="grade"><%= customer.customer_grade.name %></td>

@@ -2,15 +2,9 @@ namespace :osirails do
   namespace :rh do
     desc "Run all unit, functional and integration tests for rh feature"
     task :test do
-      errors = %w(osirails:rh:test:units osirails:rh:test:functionals osirails:rh:test:integration).collect do |task|
-        begin
-          Rake::Task[task].invoke
-          nil
-        rescue => e
-          { :task => task, :error => e }
-        end
-      end.compact
-      abort "#{errors.map{ |h| "Errors running #{h[:task]}\nMessage: #{h[:error].message}\nBacktrace:\n####\n#{h[:error].backtrace.join("\n")}\n####" }.join("\n")}" if errors.any?
+      %w(osirails:rh:test:units osirails:rh:test:functionals osirails:rh:test:integration).collect do |task|
+        Rake::Task[task].invoke
+      end
     end
     
     namespace :test do

@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default factors
 cga = Factor.create!(:name => "CGA", :fullname => "Compagnie Générale d'Affacturage")
 

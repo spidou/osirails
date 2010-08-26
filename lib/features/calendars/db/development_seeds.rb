@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default calendars and events
 calendar1 = Calendar.create! :user_id => User.first.id, :name => "Calendrier par défaut de Admin", :color => "red", :title => "Titre du calendrier"
 Event.create! :calendar_id => calendar1.id, :title => "Titre de l'evenement 1", :description => "Description de l'evenement 1", :start_at => DateTime.now,          :end_at => DateTime.now + 4.hours

@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default employees
 john = Employee.new :first_name => "John", :last_name => "Doe", :birth_date => Date.today - 20.years, :email => "john@doe.com", :social_security_number => "1234567891234 45", :service_id => Service.first.id, :civility_id => Civility.first.id, :family_situation_id => FamilySituation.first.id, :qualification => "Inconnu"
 john.numbers.build(:number => "692123456", :indicative_id => Indicative.first.id, :number_type_id => NumberType.first.id)

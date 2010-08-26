@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 Calendar.all.each do |object|
   object.permissions.each do |permission|
     permission.permissions_permission_methods.each do |object_permission|

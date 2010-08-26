@@ -2881,7 +2881,6 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_sended_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_confirmed_invoice(invoice, factorised, number_of_due_dates)
       invoice = send_invoice(invoice)
-      invoice.valid?
       flunk "invoice should be sended #{invoice.errors.inspect}" unless invoice.was_sended?
       return invoice
     end

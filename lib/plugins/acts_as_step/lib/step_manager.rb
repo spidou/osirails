@@ -38,6 +38,11 @@ class StepManager
             new_step.insert_at(step[:position])
             new_step.save
           end
+          
+          if parent_step
+            parent_step_class = parent_step.name.camelize.constantize
+            parent_step_class.acts_as_step # explicit call 'acts_as_step' to be sure that the parent is always aware of its children
+          end
         else
           puts "An error occured while the creation of the step '#{m.name}'"
         end

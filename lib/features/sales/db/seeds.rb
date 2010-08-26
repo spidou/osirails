@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default VAT rates
 Vat.create! :name => "19.6",  :rate => "19.6"
 Vat.create! :name => "8.5",   :rate => "8.5"

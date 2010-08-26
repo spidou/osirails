@@ -9,10 +9,17 @@
 <h1>Factures</h1>
 
 <div>
-  <%= display_transition_table_for_deposit_invoice(@order) %>
+  <p>
+    L'étape "Factures" permet d'établir des factures pour le dossier en cours.<br/>
+  </p>
+  <p>
+    L'étape "Factures" est automatiquement clôturée lorsque tous les produits sont facturés et que chaque facture est payée.
+  </p>
+  <hr/>
   
+  <%= display_transition_table_for_deposit_invoice(@order) %>
   <%= display_transition_table_for_other_invoices(@order) %>
   
-  <h2>Factures</h2>
   <%= display_invoices(@order) %>
+  <%= content_tag(:p, display_invoice_add_button(@order)) if is_form_view? %>
 </div>

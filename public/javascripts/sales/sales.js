@@ -38,6 +38,7 @@ var move_down_image_disabled = "arrow_down_disable_16x16.png";
 function update_up_down_links(element)
 {
   elements = element.childElements().reject(function(item) { return parseInt(item.down('.should_destroy').value) == 1 })
+  elements = element.childElements().select(function(item) { return item.down('.position') != undefined })
   
   for (var i = 0; i < elements.length; i++) {
     reset_up_down_links(elements[i]);
@@ -66,7 +67,8 @@ function reset_up_down_links(element)
 
 function update_position(element, position)
 {
-  element.down(".position").value = position;
+  if (element.down(".position"))
+    element.down(".position").value = position;
 }
 
 // Method to mark the previous link as disabled.
@@ -88,5 +90,15 @@ function disable_last_link(element)
   if (move_down_img) {
     image_prefix  = move_down_img.getAttribute('src').substring(0, move_down_img.getAttribute('src').lastIndexOf('/') + 1);
     move_down_img.setAttribute('src', image_prefix + move_down_image_disabled);
+  }
+}
+
+function restore_original_value(element, value) {
+  if (value.length > 0) {
+    input = element.down('.input_' + value)
+    original = element.down('.input_original_' + value)
+    if (input != null && original != null && original.value.length > 0) {
+      input.value = original.value
+    }
   }
 }

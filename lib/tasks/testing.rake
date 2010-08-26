@@ -1,13 +1,7 @@
 override_task :test do
-  errors = %w(test:units test:functionals test:integration).collect do |task|
-    begin
-      Rake::Task[task].invoke
-      nil
-    rescue => e
-      { :task => task, :error => e }
-    end
-  end.compact
-  abort "#{errors.map{ |h| "Errors running #{h[:task]}\nMessage: #{h[:error].message}\nBacktrace:\n####\n#{h[:error].backtrace.join("\n")}\n####" }.join("\n")}" if errors.any?
+  %w(test:units test:functionals test:integration).collect do |task|
+    Rake::Task[task].invoke
+  end
 end
     
 namespace :test do
@@ -99,7 +93,7 @@ namespace :osirails do
     desc "Run all unit, functional and integration tests for all features"
     task :test do
       tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/features/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test"}
-      errors = tasks.collect do |task|
+      errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
         begin
           puts "==== Running #{task} ===="
           Rake::Task[task].invoke
@@ -115,7 +109,7 @@ namespace :osirails do
       desc "Run unit tests for all features"
       task :units do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/features/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:units"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke
@@ -130,7 +124,7 @@ namespace :osirails do
       desc "Run functional tests for all features"
       task :functionals do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/features/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:functionals"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke
@@ -145,7 +139,7 @@ namespace :osirails do
       desc "Run integration tests for all features"
       task :integration do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/features/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:integration"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke
@@ -164,7 +158,7 @@ namespace :osirails do
     desc "Run all unit, functional and integration tests for all plugins"
     task :test do
       tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/plugins/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test"}
-      errors = tasks.collect do |task|
+      errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
         begin
           puts "==== Running #{task} ===="
           Rake::Task[task].invoke
@@ -180,7 +174,7 @@ namespace :osirails do
       desc "Run unit tests for all plugins"
       task :units do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/plugins/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:units"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke
@@ -195,7 +189,7 @@ namespace :osirails do
       desc "Run functional tests for all plugins"
       task :functionals do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/plugins/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:functionals"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke
@@ -210,7 +204,7 @@ namespace :osirails do
       desc "Run integration tests for all plugins"
       task :integration do
         tasks = Dir.glob("#{RAILS_ROOT}/{lib,vendor}/plugins/*").map{|path| path.split("/").last}.map{|name| "osirails:#{name}:test:integration"}
-        errors = tasks.collect do |task|
+        errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
           begin
             puts "==== Running #{task} ===="
             Rake::Task[task].invoke

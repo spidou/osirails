@@ -141,7 +141,7 @@ class QuoteTest < ActiveSupport::TestCase
         @order = @quote = nil
       end
       
-      context "in which we call 'quote_item_attributes=' with the correct parameters for #{z} quote_items" do
+      context "in which we call 'product_quote_item_attributes=' with the correct parameters for #{z} quote_items" do
         setup do
           @params = []
           z.times do |time|
@@ -168,7 +168,7 @@ class QuoteTest < ActiveSupport::TestCase
                          :should_destroy        => should_destroy }
           end
           flunk "@params should have #{z} elements, but has <#{@params.size}>" unless @params.size == z
-          flunk "quote_item_attributes= should success" unless @quote.quote_item_attributes=(@params)
+          flunk "product_quote_item_attributes= should success" unless @quote.product_quote_item_attributes=(@params)
           
           @quote.valid?
         end

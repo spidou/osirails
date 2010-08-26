@@ -2,15 +2,9 @@ namespace :osirails do
   namespace :cms do
     desc "Run all unit, functional and integration tests for cms feature"
     task :test do
-      errors = %w(osirails:cms:test:units osirails:cms:test:functionals osirails:cms:test:integration).collect do |task|
-        begin
-          Rake::Task[task].invoke
-          nil
-        rescue => e
-          task
-        end
-      end.compact
-      abort "Errors running #{errors.to_sentence}!" if errors.any?
+      %w(osirails:cms:test:units osirails:cms:test:functionals osirails:cms:test:integration).collect do |task|
+        Rake::Task[task].invoke
+      end
     end
     
     namespace :test do

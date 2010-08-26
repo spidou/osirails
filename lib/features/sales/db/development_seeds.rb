@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default subcontractors
 subcontractor = Subcontractor.create! :name => "Sous traitant par défaut", :siret_number => "12345678912345", :activity_sector_reference_id => ActivitySectorReference.first.id, :legal_form_id => LegalForm.first.id
 subcontractor.build_iban(:bank_name => "Bred", :bank_code => "12345", :branch_code => "12345", :account_number => "12345678901", :key => "12")

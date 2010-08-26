@@ -1,6 +1,14 @@
 class EndProduct < Product
   include ProductBase
   
+  # TODO remove cancelled_at once journalization is ready to use
+  #      add column 'status' in products
+  #      uncomment the following lines to enable status
+  # STATUS_DRAFT      = 0 # in an order which has no quote
+  # STATUS_ABANDONED  = 1 # hasn't been taken by customer
+  # STATUS_PENDING    = 2 # in an order which has an unsigned quote
+  # STATUS_SOLD       = 3 # in an order which has a signed quote
+  
   has_permissions :as_business_object, :additional_class_methods => [ :cancel ]
   has_reference   :symbols => [:product_reference], :prefix => :sales
   
@@ -9,6 +17,7 @@ class EndProduct < Product
   
   has_many :checklist_responses, :dependent => :destroy
   has_many :quote_items,         :dependent => :nullify
+  has_many :quotes,              :through   => :quote_items
   has_many :mockups,             :dependent => :nullify
   has_many :press_proofs,        :dependent => :nullify, :order => 'created_at DESC'
   
@@ -22,7 +31,8 @@ class EndProduct < Product
   
   validates_numericality_of :quantity
   validates_numericality_of :prizegiving, :allow_nil => true
-  validates_numericality_of :vat, :if => Proc.new{ |p| p.quote_items.reject{ |i| i.quote.cancelled? }.any? } # run validation if product is associated with at least 1 quote_item which provide from a non-cancelled quote
+  #TODO find a way to validate numericality of vat without 'quote_items'
+  #validates_numericality_of :vat, :if => Proc.new{ |p| p.quote_items.reject{ |i| i.quote.cancelled? }.any? } # run validation if product is associated with at least 1 quote_item which coming from a non-cancelled quote
   
   validates_persistence_of :product_reference_id, :order_id
   
@@ -49,6 +59,14 @@ class EndProduct < Product
   
   def was_cancelled?
     cancelled_at_was
+  end
+  
+  def can_be_cancelled?
+    quotes(true).actives.empty?
+  end
+  
+  def can_be_deleted?
+    quotes(true).empty?
   end
   
   #TODO test that method

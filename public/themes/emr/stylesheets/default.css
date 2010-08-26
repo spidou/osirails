@@ -70,22 +70,22 @@ table a:hover {
 	text-decoration: underline;
 }
 
-table th,
-table thead th,
-table tbody td.thead {
+table > tr > th,
+table thead > tr > th,
+table tbody > tr > td.thead {
 	background-color: #DFDFDF;
 	border: 1px solid #CCC;
 	padding: 4px 8px 4px 8px;
 	font-weight: bold;
 }
 
-table tbody td.thead,
-table tbody th {
+table tbody > tr > td.thead,
+table tbody > tr > th {
   text-align: right;
 }
 
-table td,
-table tbody td {
+table tr > td,
+table tbody > tr > td {
 	border-right: solid 1px #CCC;
 	border-left: solid 1px #CCC;
 	border-bottom: none;
@@ -93,12 +93,12 @@ table tbody td {
 	padding: 3px 7px 3px 7px;
 }
 
-table:not(.no_nth) tbody tr:not(.nested):nth-child(even),
-table tbody tr.even {
+table:not(.no_nth) tbody > tr:not(.nested):nth-child(even),
+table tbody > tr.even {
   background-color: #EAEAEA;
 }
 
-table.no_nth tbody tr {
+table.no_nth tbody > tr {
   border-top: 1px solid #CCC;
   border-bottom: 1px solid #CCC;
 }
@@ -128,17 +128,17 @@ table tr.group td:not(.actions) {
   font-weight: bold;
 }
 
-table tr td.text,
-table tr td.text input[type=text] {
+table tr > td.text,
+table tr > td.text input[type=text] {
   text-align: left !important;
 }
 
-table tr td.amount,
-table tr td.amount input[type=text] {
+table tr > td.amount,
+table tr > td.amount input[type=text] {
   text-align: right !important;
 }
 
-table tfoot tr.nota td {
+table tfoot > tr.nota > td {
   text-align: left;
   font-style: italic;
   font-size: 0.9em;
@@ -146,7 +146,7 @@ table tfoot tr.nota td {
   padding-bottom: 0.9em;
 }
 
-table tfoot tr.nota td strong {
+table tfoot > tr.nota > td strong {
   color: inherit;
   font-weight: bold;
 }
@@ -660,7 +660,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #content_page > div > h2,
 #content_page > div > form > h2,
-#content_page > div > form > div > h2 {
+#content_page > div > form > div:not(.errorExplanation) > h2 {
 	text-indent: 10px;
 	background: url("/themes/emr/images/background_content_page_second_header.jpg") repeat-x;
 	border-bottom:solid 1px #e5e5e5;
@@ -676,13 +676,13 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 
 #content_page > div > h2:first-child,
 #content_page > div > form > h2:first-child,
-#content_page > div > form > div > h2:first-child {
+#content_page > div > form > div:not(.errorExplanation) > h2:first-child {
   margin-top: -5px;
 }
 
 #content_page > div > h2.warning,
 #content_page > div > form > h2.warning,
-#content_page > div > form > div > h2.warning {
+#content_page > div > form > div:not(.errorExplanation) > h2.warning {
   background: url("/themes/emr/images/warning_14x14.png") no-repeat 7px;
 	background-color: #e99727;
 	border: 1px solid #737373;

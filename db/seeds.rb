@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default users and roles
 user_admin = User.create! :username => "admin", :password => "admin", :enabled => 1
 role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"

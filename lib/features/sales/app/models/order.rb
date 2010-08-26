@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
   
   # quotes
   has_many :quotes, :order => 'created_at DESC'
-  has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS ?', nil ]
+  has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS NULL' ]
   has_one  :pending_quote, :class_name => 'Quote', :conditions => [ 'status IN (?)', [ Quote::STATUS_CONFIRMED, Quote::STATUS_SENDED ] ]
   has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ 'status = ?', Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
@@ -293,10 +293,6 @@ class Order < ActiveRecord::Base
     end
   end
   
-  #def signed_quote
-  #  commercial_step.quote_step.signed_quote
-  #end
-  
   #delegate :contacts, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_contacts
     customer ? customer.contacts : []
@@ -372,6 +368,10 @@ class Order < ActiveRecord::Base
     end
   end
   
+  def create_missing_steps
+    create_steps
+  end
+  
   private
 #    def default_step
 #      Step.find_by_name("commercial_step")
@@ -387,12 +387,17 @@ class Order < ActiveRecord::Base
     def create_steps
       steps.each do |step|
         if step.parent.nil?
-          step.name.camelize.constantize.create(:order_id => self.id)
+          step.name.camelize.constantize.find_or_create_by_order_id(self.id)
         else
-          step_model = step.name.camelize.constantize                # eg: SurveyStep
-          parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
-          
-          step_model.create!(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
+          begin
+            step_model = step.name.camelize.constantize                # eg: SurveyStep
+            parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
+            
+            step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
+          rescue NameError => e
+            error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+            RAKE_TASK ? puts(error) : raise(e)
+          end
         end
       end
       
