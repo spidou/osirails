@@ -14,7 +14,7 @@ namespace :osirails do
   namespace :core do
     namespace :db do
       Rake::SeedTask.new(:populate) do |t|
-        t.seed_files = FileList["db/*seeds.rb"].reverse
+        t.seed_files = [ "db/seeds.rb", "db/development_seeds.rb" ]
         t.verbose = true
       end
       Rake::Task['osirails:core:db:populate'].comment = "Load default data AND development data for the project's core"
