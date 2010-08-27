@@ -103,7 +103,7 @@ module ActsAsStepController
                   path = send("order_path", @order)
                   
                   flash.keep
-                  erase_render_results
+                  erase_results # erase_render_results; erase_redirect_results
                   redirect_to path
                 else
                   @step.in_progress! unless @step.terminated?

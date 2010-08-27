@@ -47,10 +47,10 @@ function remove_reference(obj) {
 }
 
 function calculate(tr) {
-  var quantity = parseFloat(tr.down('.input_quantity').value)
-  var unit_price = parseFloat(tr.down('.input_unit_price').value)
-  var prizegiving = parseFloat(tr.down('.input_prizegiving').value)
-  var vat = parseFloat(tr.down('.input_vat').value)
+  var quantity = parseFloat(tr.down('.input_quantity').value) || 0
+  var unit_price = parseFloat(tr.down('.input_unit_price').value) || 0
+  var prizegiving = parseFloat(tr.down('.input_prizegiving').value) || 0
+  var vat = parseFloat(tr.down('.input_vat').value) || 0
   var td_unit_price_with_prizegiving = tr.down('.unit_price_with_prizegiving')
   var td_total = tr.down('.total')
   var td_total_with_taxes = tr.down('.total_with_taxes')
@@ -100,22 +100,26 @@ function update_aggregates() {
   // aggregate without taxes
   var aggregate_without_taxes = parseFloat(0)
   totals_without_taxes.each(function(item){
-    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim())
+    aggregate_without_taxes += parseFloat(item.innerHTML.toString().trim()) || 0
   });
   td_aggregate_without_taxes.update( roundNumber(aggregate_without_taxes, 2) )
   
   // aggregate net
-  var aggregate_net = aggregate_without_taxes*(1-(parseFloat(td_prizegiving.value)/100));
+  var prizegiving = parseFloat(td_prizegiving.value) || 0
+  var aggregate_net = prizegiving > 0 ? aggregate_without_taxes*(1-(prizegiving/100)) : aggregate_without_taxes;
   td_aggregate_net.update( roundNumber(aggregate_net, 2) + "&#160;&euro;" )
   
   // aggregate with taxes
   var aggregate_with_taxes = parseFloat(0)
   totals_with_taxes.each(function(item){
-    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim())
+    aggregate_with_taxes += parseFloat(item.innerHTML.toString().trim()) || 0
   });
   
   // aggregate net to paid
-  var aggregate_net_to_paid = aggregate_net + parseFloat(td_carriage_costs.value) + aggregate_with_taxes + -(aggregate_without_taxes) - parseFloat(td_prizegiving.value);
+  carriage_costs = parseFloat(td_carriage_costs.value) || 0
+  //var aggregate_net_to_paid = aggregate_net + carriage_costs + aggregate_with_taxes + -(aggregate_without_taxes) - prizegiving;
+  var aggregate_net_to_paid = prizegiving > 0 ? aggregate_with_taxes*(1-(prizegiving/100)) : aggregate_with_taxes;
+  aggregate_net_to_paid += carriage_costs
   td_aggregate_net_to_paid.update( roundNumber(aggregate_net_to_paid, 2) + "&#160;&euro;" )
   
   // aggregate all taxes

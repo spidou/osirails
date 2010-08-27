@@ -602,6 +602,14 @@ class Invoice < ActiveRecord::Base
     invoice_items.reject(&:should_destroy?).collect(&:quantity).sum
   end
   
+  def number_of_products
+    invoice_items.count
+  end
+  
+  def number_of_due_dates
+    due_dates.count
+  end
+  
   def already_paid_amount
     due_dates.collect{ |d| d.total_amounts }.sum
   end

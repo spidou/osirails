@@ -9,7 +9,6 @@ class Supplier < Third
   
   belongs_to :activity_sector_reference
   
-  # for pagination : number of instances by index page
   SUPPLIERS_PER_PAGE = 15
   
   named_scope :activates, :conditions => { :activated => true }

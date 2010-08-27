@@ -1,6 +1,8 @@
 <div class="presentation_medium">
   <h2>Informations g&eacute;n&eacute;rales</h2>
   <% form_for @supplier do |form| %>
+    <%= form.error_messages %>
+    
     <%= render :partial => 'thirds/third', :object => @supplier, :locals => { :form => form } %>
     
     <h2>Contacts</h2>

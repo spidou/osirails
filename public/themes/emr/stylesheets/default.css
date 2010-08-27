@@ -72,6 +72,7 @@ table a:hover {
 
 table > tr > th,
 table thead > tr > th,
+table tbody > tr > th,
 table tbody > tr > td.thead {
 	background-color: #DFDFDF;
 	border: 1px solid #CCC;
@@ -79,8 +80,8 @@ table tbody > tr > td.thead {
 	font-weight: bold;
 }
 
-table tbody > tr > td.thead,
-table tbody > tr > th {
+table tbody > tr > th,
+table tbody > tr > td.thead {
   text-align: right;
 }
 
@@ -844,6 +845,7 @@ BODY OF WEBSITE > PAGE OF WEBSITE > CONTENT OF THE PAGE
 	background: #F6E8CF;
 	margin-top: 5px;
 	//width: 530px;
+	margin-bottom: 8px;
 }
 
 #errorExplanation ul,

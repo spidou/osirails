@@ -119,6 +119,18 @@ class Quote < ActiveRecord::Base
     end
   end
   
+  def prizegiving
+    self[:prizegiving] ||= 0.0
+  end
+  
+  def carriage_costs
+    self[:carriage_costs] ||= 0.0
+  end
+  
+  def discount
+    self[:discount] ||= 0.0
+  end
+  
   def product_quote_items
     quote_items.select(&:end_product)
   end
@@ -346,7 +358,7 @@ class Quote < ActiveRecord::Base
   end
   
   def can_be_signed?
-    was_sended?
+    was_sended? and order.signed_quote(true).nil?
   end
   
   def order_and_customer_contacts
