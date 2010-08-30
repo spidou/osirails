@@ -9,20 +9,23 @@ en:
         consumable_category: "Belongs to"
       supply_category:
         unit_measure: "Unit of measure"
+      supply_sub_category:
+        supply_category: "Catégorie"
+        unit_measure: "Measure/U"
       supply:
-        name: "Designation"
-        commodity_category: "Category"
-        consumable_category: "Category"
+        supply_category: "Category"
+        supply_sub_category: "Subcategory"
+        name: "Type"
         supplier: "Main supplier"
-        unit_mass: "Mass/U (kg)"
-        average_unit_price: "Average Price/U"
-        threshold: "Minimum stock quantity"
-        stock_quantity: "Total stock quantity"
+        measure: "Measure/U"
+        unit_mass: "Mass/U"
+        stock_quantity: "Quantity"
         stock_measure: "Total measure"
         stock_value: "Total value"
         stock_mass: "Total weight"
       supplier_supply:
         name: "Designation"
+        fob_unit_price: "Price excl. tax"
       stock_input:
         identifier: "Purchase number"
       stock_output:

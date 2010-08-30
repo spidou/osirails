@@ -44,9 +44,7 @@ class DeliveryNote < ActiveRecord::Base
     dn.validates_presence_of :signed_on
     
     dn.validates_date :signed_on, :on_or_before         => Date.today,
-                                  :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)",
-                                  :on_or_after          => :published_on,
-                                  :on_or_after_message  => "ne doit pas être AVANT la date d'émission du BL&#160;(%s)"
+                                  :on_or_after          => :published_on
     
     dn.validate :validates_presence_of_attachment
   end

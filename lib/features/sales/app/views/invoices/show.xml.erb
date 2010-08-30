@@ -108,7 +108,7 @@
     <DueDates>
       <% @invoice.due_dates.each do |due_date| %>
         <DueDate>
-          <Date><%= due_date.date.strftime("%d/%m/%Y") %></Date>
+          <Date><%= l(due_date.date) %></Date>
           <Total><%= due_date.net_to_paid.to_f.round_to(2).to_s(2) %></Total>
         </DueDate>
       <% end %>

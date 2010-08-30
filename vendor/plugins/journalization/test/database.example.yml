@@ -1,0 +1,7 @@
+mysql:
+  adapter: mysql
+  username: root
+  password: 
+  encoding: utf8
+  database: journalization_unit_test
+  socket: /var/run/mysqld/mysqld.sock

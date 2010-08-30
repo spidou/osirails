@@ -16,6 +16,8 @@ class Number < ActiveRecord::Base
   
   has_search_index  :only_attributes    => [:number],
                     :only_relationships => [:number_type, :indicative]
+                    
+  journalize :attributes => :number, :identifier_method => :formatted
   
   def formatted
     return nil unless number

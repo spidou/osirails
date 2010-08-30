@@ -15,9 +15,6 @@ class SupplySubCategory < SupplyCategory
   
   after_save :save_supply_categories_supply_sizes
   
-  @@form_labels[:supply_category] = "Famille :"
-  @@form_labels[:unit_measure]    = "Grandeur/U :"
-  
   def validates_uniqueness_of_supply_sizes
     my_supply_sizes = supply_categories_supply_sizes.collect(&:supply_size)
     errors.add(:supply_categories_supply_sizes, "La même spécificité a été sélectionnée deux fois") if my_supply_sizes.size != my_supply_sizes.uniq.size

@@ -9,7 +9,7 @@ class ContentTest < ActiveSupport::TestCase
   
   def setup
     @content_one = contents(:normal_content)
-    @content_one.update_attribute(:contributors, [users(:admin_user)])
+    @content_one.update_attribute(:contributors, [users(:cms_first_user)])
   end
 
   def test_serialization_of_contributors

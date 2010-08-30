@@ -11,7 +11,7 @@ class Service
   # return all responsibles (employees) for the service
   def responsibles
     responsibles_employees = []
-    self.jobs.reject {|n| n.responsible == false}.each do |job|
+    self.jobs.reject {|n| !n.responsible}.each do |job|
       responsibles_employees += job.employees
     end
     return responsibles_employees.uniq

@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
-
+  acts_on_journalization_with :username
+  
   before_save :username_unicity
   
   # Requires

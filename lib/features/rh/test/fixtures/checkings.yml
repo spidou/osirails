@@ -6,5 +6,5 @@ good_checking:
   date: <%= Date.today %>
   absence_comment: delay
   overtime_comment: delay
-  user: powerful_user
+  user: rh_user
   employee: john_doe

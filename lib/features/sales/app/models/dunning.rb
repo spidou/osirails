@@ -16,10 +16,7 @@ class Dunning < ActiveRecord::Base
   validates_presence_of :has_dunning,            :if => :has_dunning_id
   
   validates_date :date, :on_or_after          => Proc.new {|n| n.has_dunning.sended_on if n.has_dunning},
-                        :on_or_after_message  => "ne doit pas être AVANT la date d'envoi au client&#160;(%s)",
-                        :on_or_before         => Proc.new { Date.today },
-                        :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
-  
+                        :on_or_before         => Proc.new { Date.today }
 
   
   validates_persistence_of :date, :creator_id, :dunning_sending_method_id, :comment, :has_dunning_id, :unless => :new_record?

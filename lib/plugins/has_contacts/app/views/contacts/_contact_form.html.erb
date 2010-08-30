@@ -42,9 +42,9 @@ hack_params ||= contacts_owner.is_a?(Establishment)  # used to determine, in cus
         <%= display_contact_close_form_button(contact) %>
         
         <!-- usefull data for the params hack into customers_controller -->
-        <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id, :index => nil) if hack_params %>
+        <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id) if hack_params %>
         <!-- id must be available for new_record to avoid misplacement of id into params when a new record isn't after all records -->
-        <%= form.hidden_field :id, :index => nil, :class => 'contact_id' %> 
+        <%= form.hidden_field :id, :class => 'contact_id' %> 
         
         <% if !contact.new_record? and is_form_view? %>
           <%= form.hidden_field :should_hide,    :class => 'should_hide' %>

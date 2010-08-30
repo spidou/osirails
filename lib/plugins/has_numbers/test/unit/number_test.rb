@@ -51,6 +51,8 @@ class NumberTest < ActiveSupport::TestCase
   
   should_belong_to :indicative, :number_type, :has_number
   
+  should_journalize :attributes => :number, :identifier_method => :formatted
+  
   should_validate_presence_of :has_number_type
   should_validate_presence_of :indicative, :with_foreign_key => :default
   

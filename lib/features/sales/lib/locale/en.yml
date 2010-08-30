@@ -112,3 +112,66 @@ en:
         internal_actor: "Responsible"
         contact: "Field contact"
         survey_intervention_contact: "Contact"
+    errors:
+      models:
+        delivery_intervention:
+          attributes:
+            scheduled_delivery_at:
+              on_or_after_message: "must not be BEFORE today&#160;({{restriction}})"
+            delivery_at:
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+              on_or_after: "must not be BEFORE the delivery note publication date&#160;({{restriction}})"
+        delivery_note:
+          attributes:
+            signed_on:
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+              on_or_after: "must not be BEFORE the delivery note publication date&#160;({{restriction}})"
+        dunning:
+          attributes:
+            date:
+              on_or_after: "must not be BEFORE the send to customer date&#160;({{restriction}})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+        invoice:
+          attributes:
+            abandoned_on:
+              on_or_after:
+                while_sended: "must not be BEFORE the invoice send date&#160;({{restriction}})"
+                while_factoring_recovered: "must not be BEFORE the invoice recovering date&#160;({{restriction}})"
+            cancelled_at:
+              on_or_after: 
+                while_confirmed: "must not be BEFORE the invoice publication date&#160;({{restriction}})"
+                while_sended: "must not be BEFORE the invoice send date&#160;({{restriction}})"
+            confirmed_at:
+              on_or_after: "must not be BEFORE the invoice creation date&#160;({{restriction}})"
+            factoring_balance_paid_on:
+              on_or_after: 
+                while_abandoned: "must not be BEFORE the invoice recovering date&#160;({{restriction}})"
+                while_factoring_paid: "must not be BEFORE the invoice payment by the factor date&#160;({{restriction}})"
+                while_factoring_recovered: "must not be BEFORE the invoice recovering date&#160;({{restriction}})"
+            factoring_recovered_on:
+              on_or_after: "must not be BEFORE the invoice payment by the factor date&#160;({{restriction}})"
+            published_on:
+              on_or_before: "must not be BEFORE the quote signature date&#160;({{restriction})"
+            sended_on:
+              on_or_after: "must not be BEFORE the invoice publication date&#160;({{restriction})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+        press_proof:
+          attributes:
+            sended_on:
+              on_or_after: "must not be BEFORE the press proof confirmation date&#160;({{restriction}})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "must not be BEFORE the press proof send date&#160;({{restriction}})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+        quote:
+          attributes:
+            cancelled_on:
+              on_or_after: "must not be BEFORE the quote creation date&#160;({{restriction}})"
+            confirmed_on:
+              on_or_after: "must not be BEFORE the quote creation date&#160;({{restriction}})"
+            sended_on:
+              on_or_after: "must not be BEFORE the quote confirmation date&#160;({{restriction}})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "must not be BEFORE the quote send date&#160;({{restriction}})"
+              on_or_before: "must not be AFTER today&#160;({{restriction}})"

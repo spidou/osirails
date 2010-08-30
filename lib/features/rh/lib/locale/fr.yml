@@ -2,12 +2,18 @@ fr:
   activerecord:
     models: 
       checking: "Pointage"
+      civility: "Civilité"
       employee: "Employé"
+      employee_state: "Statut d'employé"
+      family_situation: "Situation familiale"
       job: "Poste"
       job_contract: "Contrat de travail"
+      job_contract_typ: "Type de contrat de travail"
       leave: "Congé"
       leave_request: "Demande de congés"
+      leave_type: "Type de congé"
       premium: "Prime"
+      salary: "Salaire"
     attributes: 
       checking:
         employee: "Employé"
@@ -17,6 +23,9 @@ fr:
         overtime_hours: "Heures supplémentaires"
         overtime_comment: "Commentaire"
       employee: 
+        address: "Adresse postale"
+        numbers: "Numéros"
+        number: "Numéro"
         civility: "Civilité"
         last_name: "Nom"
         first_name: "Prénom"

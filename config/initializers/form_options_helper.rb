@@ -40,7 +40,7 @@ module ActionView
         
         last_option = Struct.new("LastOptionForCollectionSelect", value_method, text_method).new(options[:last_option_value], options[:last_option_text])
         collection = collection + [ last_option ]
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_collection_select_tag_with_custom_choice(choice_method_name, collection, value_method, text_method, options, select_options, text_field_options, link_options)
       end
       
       def label(object_name, method, text = nil, options = {})
@@ -189,7 +189,7 @@ module ActionView
         options[:output_format]   ||= "%Y-%m-%d"
         text_field_options[:size] ||= 10
         
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
       end
       
       def calendar_datetime_field_tag(object_name, method_name, options = {}, text_field_options = {})
@@ -197,16 +197,16 @@ module ActionView
         options[:output_format]   ||= "%Y-%m-%d %H:%M:%S"
         text_field_options[:size] ||= 17
         
-        InstanceTag.new(object_name, method_name, self, nil, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
+        InstanceTag.new(object_name, method_name, self, options.delete(:object)).to_calendar_select_tag(options, text_field_options)
       end
       
       private
         def i18n_label(klass,method)
-          key = method.to_s.gsub(/_id(s)?$/,"").to_sym
+          key = method.to_s.gsub(/_id(s)?$/,"")
           if klass.respond_to?(:human_attribute_name)
-            text = klass.human_attribute_name(key.to_s)
+            text = klass.human_attribute_name(key)
           else
-            text = "#{key.to_s}"
+            text = "#{key}"
           end
           text = (text + I18n.t('label_separator')).gsub(" :", "&#160;:") # &#160; => indivisible space
         end
@@ -251,7 +251,7 @@ module ActionView
         targetted_textfield_id              = "#{formatted_textfield_id}#{options[:disabled] ? '_for_disabled_calendar' : ''}"
         hidden_field_for_disabled_calendar  = options[:disabled] ? hidden_field_tag("#{formatted_textfield_id}_for_disabled_calendar", nil, :disabled => true) : ''
         
-        InstanceTag.new(@object_name, @method_name, self, nil, options.delete(:object)).to_input_field_tag("text", text_field_options) +
+        InstanceTag.new(@object_name, @method_name, self, options.delete(:object)).to_input_field_tag("text", text_field_options) +
           image_tag("calendar.png", {:id => "#{@object_name}_#{@method_name}_#{options[:index]}_trigger", :class => "calendar-trigger"}) +
           javascript_tag("Calendar.setup({range       : [#{options[:start_year]},#{options[:end_year]}],
                                           ifFormat    : '#{options[:output_format]}', 
@@ -292,7 +292,7 @@ module ActionView
         ) +
         content_tag_without_error_wrapping(
           #OPTIMIZE we shouldn't have to manually add the brackets '[]' after the object_name, but the call of 'to_collection_select_tag_with_custom_choice' remove end brackets to the object_name
-          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, nil, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
+          :div, InstanceTag.new("#{@object_name}[]", choice_method_name, self, @object).to_input_field_tag("text", text_field_options.merge(show_select ? { :value => '' } : {})) +
                 link_to_function_without_error_wrapping(link_options.delete(:content), link_options.delete(:function), link_options),
           :class => "#{choice_method_name}_input_container",
           :style => show_select ? 'display:none' : ''

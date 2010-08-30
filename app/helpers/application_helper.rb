@@ -36,7 +36,7 @@ module ApplicationHelper
   end
   
   def display_welcome_message
-    "#{t 'welcome'}, " + current_user.username
+    "#{t 'welcome'}, #{current_user.username}"
   end
       
   def include_calendar_headers_tags(language = "en")

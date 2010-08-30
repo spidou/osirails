@@ -1,0 +1,14 @@
+en:
+  journalization:
+    author: "By {{author}}"
+    time_distance: "{{time_distance}} ago"
+    current_identifier: "currently known as {{identifier}}"
+    initialization: "added"
+    one_addition: "added"
+    several_additions: "added"
+    one_removal: "removed"
+    several_removals: "removed"
+    modification: "modified"
+    changes: "changed from {{old_value}} to {{new_value}}"
+    show_details: "Show details"
+    hide_details: "Close"

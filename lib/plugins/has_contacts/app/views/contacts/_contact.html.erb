@@ -7,6 +7,8 @@ id_attr = "id=\"resource_contact_#{contact.id}\"" unless contact.new_record?
 force_show_view ||= false
 
 message_for_hidden_contact = is_form_view? ? "Ce contact a été supprimé et n'est donc plus disponible dans la liste de choix." : "Ce contact a été supprimé"
+
+contact_counter ||= 1
 %>
 
 <div class="contact resource" <%= id_attr %> >

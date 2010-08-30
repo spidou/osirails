@@ -43,22 +43,18 @@ class Quote < ActiveRecord::Base
   
   ## VALIDATIONS ON VALIDATING QUOTE
   with_options :if => Proc.new{ |i| i.created_at_was and i.confirmed? } do |quote|
-    quote.validates_date :confirmed_on, :on_or_after          => :created_at,
-                                        :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)"
+    quote.validates_date :confirmed_on, :on_or_after => :created_at
     quote.validates_presence_of   :reference
   end
   
   ## VALIDATIONS ON INVALIDATING QUOTE
-  validates_date :cancelled_on, :on_or_after          => :created_at,
-                                :on_or_after_message  => "ne doit pas être AVANT la date de création du devis&#160;(%s)",
-                                :if                   => Proc.new{ |i| i.created_at_was and i.cancelled? }
+  validates_date :cancelled_on, :on_or_after => :created_at,
+                                :if          => Proc.new{ |i| i.created_at_was and i.cancelled? }
   
   ## VALIDATIONS ON SENDING QUOTE
   with_options :if => :sended? do |quote|
-    quote.validates_date  :sended_on, :on_or_after          => :confirmed_on,
-                                      :on_or_after_message  => "ne doit pas être AVANT la date de validation du devis&#160;(%s)",
-                                      :on_or_before         => Date.today,
-                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :sended_on, :on_or_after  => :confirmed_on,
+                                      :on_or_before => Date.today
     
     quote.validates_presence_of :send_quote_method_id
     quote.validates_presence_of :send_quote_method, :if => :send_quote_method_id # prevent errors by providing wrong ID
@@ -69,10 +65,8 @@ class Quote < ActiveRecord::Base
     quote.validates_presence_of :order_form_type_id, :order_form
     quote.validates_presence_of :order_form_type, :if => :order_form_type_id
     
-    quote.validates_date  :signed_on, :on_or_after          => :sended_on,
-                                      :on_or_after_message  => "ne doit pas être AVANT la date d'envoi du devis&#160;(%s)",
-                                      :on_or_before         => Date.today,
-                                      :on_or_before_message => "ne doit pas être APRÈS aujourd'hui&#160;(%s)"
+    quote.validates_date  :signed_on, :on_or_after  => :sended_on,
+                                      :on_or_before => Date.today
     
     quote.validate :validates_presence_of_order_form
   end

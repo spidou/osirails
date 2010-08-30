@@ -6,7 +6,7 @@
   <%= display_supply_category_add_button(@supply_category_type.new) %>
   <%= display_supply_add_button(supply) %>
   
-  <%= display_supply_edit_button(supply) unless is_edit_view? %>
+  <%= display_supply_edit_button(supply) unless is_edit_view? or supply.new_record? %>
   <%= display_supply_enable_button(supply) unless supply.new_record? %>
   <%= display_supply_disable_button(supply) unless supply.new_record? %>
   <%= display_supply_delete_button(supply) unless supply.new_record? %>

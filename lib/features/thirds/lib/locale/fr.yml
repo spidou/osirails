@@ -1,11 +1,22 @@
 fr:     
   activerecord:
     models: 
-      third: "Tiers"
+      activity_sector: "Secteur d'activité"
+      activity_sector_reference: "Code NAF"
+      custom_activity_sector: "Secteur d'activité personnalisé"
       customer: "Client"
-      supplier: "Fournisseur"
+      customer_grade: "Note client"
+      customer_solvency: "Solvabilité client"
       establishment: "Établissement"
+      establishment_type: "Type d'établissement"
       factor: "Société d'affacturage"
+      head_office: "Siège social"
+      legal_form: "Forme juridique"
+      payment_method: "Moyen de paiement"
+      payment_time_limit: "Durée limite de paiement"
+      supplier: "Fournisseur"
+      third: "Tiers"
+      third_type: "Type de tiers"
     attributes: 
       third:
         name: "Raison Sociale"

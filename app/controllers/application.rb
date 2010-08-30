@@ -1,6 +1,6 @@
 ## Manage the override of each features
 ## OPTIMIZE Move this block of code to a better place
-#if RAILS_ENV == 'development'
+#if Rails.env.development?
 #  features = Dir.open("#{RAILS_ROOT}/lib/features")
 #  features.sort.each do |dir|
 #    next if dir.starts_with?('.') or !File.directory?("#{RAILS_ROOT}/lib/features/#{dir}")
@@ -16,7 +16,9 @@
 class ApplicationController < ActionController::Base
   include Osirails::ContextualMenu
   
-  helper :all # include all helpers, all the time
+  set_journalization_actor
+  
+  helper :all, :journalization # include all helpers, all the time
   layout "default"
   
   # Filters

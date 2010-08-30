@@ -77,8 +77,8 @@ module SupplyTest
           assert !@supply.has_been_used?
         end
         
-        should "be editable" do
-          assert @supply.can_be_edited?
+        should "NOT be editable" do
+          assert !@supply.can_be_edited?
         end
         
         should "be destroyable" do

@@ -46,7 +46,7 @@ module HasContacts
             raise "#{accept_from_method} should return an instance of Array" unless accepted_contacts_list.kind_of?(Array)
             
             good_contact = ( contact.new_record? or accepted_contacts_list.include?(contact) )
-            errors.add(key, ActiveRecord::Errors.default_error_messages[:inclusion]) unless good_contact
+            errors.add(key,I18n.t('activerecord.errors.messages.inclusion')) unless good_contact
           end
           
           define_method "#{key}_should_be_validated?" do

@@ -2,6 +2,8 @@ fr:
   activerecord:
     models: 
       adjustment: "Ajustement"
+      approaching: "Approche"
+      commercial_step: "Étape commerciale"
       delivery_intervention: "Intervention"
       delivery_note: "Bon de livraison"
       dunning: "Relance"
@@ -192,3 +194,66 @@ fr:
         comment: "Commentaire"
         documents: "Documents"
         survey_intervention_contact: "Contact"
+    errors:
+      models:
+        delivery_intervention:
+          attributes:
+            scheduled_delivery_at:
+              on_or_after_message: "ne doit pas être AVANT aujourd'hui&#160;({{restriction}})"
+            delivery_at:
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+              on_or_after: "ne doit pas être AVANT la date d'émission du bon de livraion&#160;({{restriction}})"
+        delivery_note:
+          attributes:
+            signed_on:
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+              on_or_after: "ne doit pas être AVANT la date d'émission du BL&#160;({{restriction}})"
+        dunning:
+          attributes:
+            date:
+              on_or_after: "ne doit pas être AVANT la date d'envoi au client&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        invoice:
+          attributes:
+            abandoned_on:
+              on_or_after:
+                while_sended: "ne doit pas être AVANT la date d'envoi de la facture&#160;({{restriction}})"
+                while_factoring_recovered: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+            cancelled_at:
+              on_or_after: 
+                while_confirmed: "ne doit pas être AVANT la date d'émission de la facture&#160;({{restriction}})"
+                while_sended: "ne doit pas être AVANT la date d'envoi de la facture&#160;({{restriction}})"
+            confirmed_at:
+              on_or_after: "ne doit pas être AVANT la date de création de la facture&#160;({{restriction}})"
+            factoring_balance_paid_on:
+              on_or_after: 
+                while_abandoned: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+                while_factoring_paid: "ne doit pas être AVANT la date de règlement par le factor de la facture&#160;({{restriction}})"
+                while_factoring_recovered: "ne doit pas être AVANT la date de définancement de la facture&#160;({{restriction}})"
+            factoring_recovered_on:
+              on_or_after: "ne doit pas être AVANT la date de réglement par le factor de la facture&#160;({{restriction}})"
+            published_on:
+              on_or_before: "ne doit pas être AVANT la date de signature du devis&#160;({{restriction})"
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date d'émission de la facture&#160;({{restriction})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        press_proof:
+          attributes:
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date de validation du Bon à tirer&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "ne doit pas être AVANT la date d'envoi du Bon à tirer&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+        quote:
+          attributes:
+            cancelled_on:
+              on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
+            confirmed_on:
+              on_or_after: "ne doit pas être AVANT la date de création du devis&#160;({{restriction}})"
+            sended_on:
+              on_or_after: "ne doit pas être AVANT la date de validation du devis&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"
+            signed_on:
+              on_or_after: "ne doit pas être AVANT la date d'envoi du devis&#160;({{restriction}})"
+              on_or_before: "ne doit pas être APRÈS aujourd'hui&#160;({{restriction}})"

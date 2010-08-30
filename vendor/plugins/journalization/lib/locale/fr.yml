@@ -1,0 +1,14 @@
+fr:
+  journalization:
+    author: "Par {{author}}"
+    time_distance: "il y a {{time_distance}}"
+    current_identifier: "actuellement connu sous {{identifier}}"
+    initialization: "mis à"
+    one_addition: "ajouté"
+    several_additions: "ajoutés"
+    one_removal: "supprimé"
+    several_removals: "supprimés"
+    modification: "modifié"
+    changes: "changé de {{old_value}} à {{new_value}}"
+    show_details: "Détails"
+    hide_details: "Fermer"

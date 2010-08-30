@@ -1,9 +1,9 @@
 module ThirdsHelper
   def contextual_search_for_customer
     contextual_search("Customer", [ "*",
-                                    "legal_form.name",
-                                    "establishments.name",
-                                    "establishments.contacts.*"] )
+                                    "legal_form.name"])
+#                                    "establishments.name",
+#                                    "establishments.contacts.*"] )
   end
   
   def contextual_search_for_supplier

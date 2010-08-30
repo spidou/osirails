@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100503125551) do
+ActiveRecord::Schema.define(:version => 20100830054809) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -724,6 +724,30 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
     t.text     "goal"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "journal_identifiers", :force => true do |t|
+    t.integer "journalized_id"
+    t.string  "journalized_type"
+    t.integer "journal_id"
+    t.string  "old_value"
+    t.string  "new_value"
+  end
+
+  create_table "journal_lines", :force => true do |t|
+    t.integer "journal_id"
+    t.integer "referenced_journal_id"
+    t.string  "property"
+    t.string  "old_value"
+    t.string  "new_value"
+    t.integer "property_id"
+  end
+
+  create_table "journals", :force => true do |t|
+    t.integer  "journalized_id"
+    t.string   "journalized_type"
+    t.integer  "actor_id"
+    t.datetime "created_at"
   end
 
   create_table "leave_requests", :force => true do |t|

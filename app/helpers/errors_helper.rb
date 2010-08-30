@@ -1,10 +1,6 @@
 module ErrorsHelper
   # That rewriting of the "error_messages_for" method was made to customize his behaviour 
   #
-  # ==== Customize messages
-  # Messages are temporary put in french language. This feature will be removed when the project 
-  # will migrate to a greater Rails version which manages translations.
-  #
   # ==== Put links on nested resource error messages
   # By default, links are put on nested resource error messages to focus on the targetted nested
   # resource section. The redirection works assuming that the nested resource section has a HTML id.
@@ -57,13 +53,8 @@ module ErrorsHelper
               content_tag(:li, full_message)
             end
           else
-            if options[:skip_links]
-              errors_count +=1
-              content_tag(:li, full_message)
-            else
-              errors_count +=1
-              content_tag(:li, content_tag(:a, full_message, :href => "##{error_attribute}"))
-            end
+            errors_count +=1
+            options[:skip_links] ? content_tag(:li, full_message) : content_tag(:li, content_tag(:a, full_message, :href => "##{error_attribute}"))
           end
         end
       end

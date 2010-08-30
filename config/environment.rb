@@ -40,10 +40,10 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
-                    :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete, :local_auto_complete,
-                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers,
-                    :has_contacts, :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
+  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned, :tiny_mce,
+                    :validates_persistence_of, :paperclip, :journalization, :auto_complete, :local_auto_complete,
+                    :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers, :has_contacts,
+                    :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
   
   FeatureManager.update_config_plugins(config)
   

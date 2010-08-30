@@ -1,0 +1,9 @@
+= 0.1.1 [2010-08-27]
+- Fixed a bug on actor journal identifiers
+- Rails 2.2.3 support
+  - I18n management of journalization terms with french and english locales
+  - I18n management of journalized attributes and subresources
+- Optimizations on the helper and on partials
+
+= 0.1.0 [2010-08-18]
+- First release

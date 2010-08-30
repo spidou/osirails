@@ -88,9 +88,7 @@ class DeliveryIntervention < ActiveRecord::Base
     x.validate :validates_scheduled_intervention_duration
   end
   
-  validates_date :scheduled_delivery_at,  :on_or_after          => Date.today,
-                                          :on_or_after_message  => "ne doit pas être AVANT aujourd'hui&#160;(%s)",
-                                          :if                   => Proc.new{ |i| i.scheduled? and i.scheduled_delivery_at_changed? }
+  validates_date :scheduled_delivery_at, :on_or_after => Date.today, :if => Proc.new{ |i| i.scheduled? and i.scheduled_delivery_at_changed? }
   
   validate :validates_scheduled_delivery_subcontracting,      :if => Proc.new{ |i| i.scheduled? and i.delivery? }
   validate :validates_scheduled_installation_subcontracting,  :if => Proc.new{ |i| i.scheduled? and i.installation? }
@@ -99,10 +97,7 @@ class DeliveryIntervention < ActiveRecord::Base
   with_options :if => :delivered? do |x|
     x.validates_presence_of :delivery_at, :internal_actor_id
     
-    x.validates_date :delivery_at, :on_or_before          => Date.today,
-                                   :on_or_before_message  => "ne doit pas être APRÈS aujourd'hui&#160;(%s)",
-                                   :on_or_after           => Proc.new{ |i| i.delivery_note.published_on },
-                                   :on_or_after_message   => "ne doit pas être AVANT la date d'émission du bon de livraions&#160;(%s)"
+    x.validates_date :delivery_at, :on_or_before => Date.today, :on_or_after => Proc.new{ |i| i.delivery_note.published_on }
     
     x.validate :validates_intervention_duration
     x.validate :validates_emptiness_of_postponed

@@ -11,6 +11,10 @@ class EmployeeTest < ActiveSupport::TestCase
   
   should_have_many :in_progress_leave_requests, :accepted_leave_requests, :refused_leave_requests, :cancelled_leave_requests
   
+  should_journalize :attributes   => [ :civility_id, :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ], 
+                    :attachments  => :avatar, 
+                    :subresources => [ :numbers, :address, { :jobs => :create_and_destroy } ]
+  
   should_validate_presence_of :last_name, :first_name
   should_validate_presence_of :family_situation, :civility, :service, :with_foreign_key => :default
   

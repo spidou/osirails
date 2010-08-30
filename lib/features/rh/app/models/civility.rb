@@ -1,6 +1,8 @@
 class Civility < ActiveRecord::Base
   # Relationships
   has_many :employees
+  
+  journalize :identifier_method => :name
 
   # Validations
   validates_presence_of :name

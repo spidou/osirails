@@ -6,6 +6,9 @@ class Address < ActiveRecord::Base
   
   validates_numericality_of :zip_code
   
+  journalize :attributes        => [ :street_name, :city_name, :country_name, :zip_code ],
+             :identifier_method => :formatted
+  
   has_search_index :only_attributes => [ :street_name, :city_name, :country_name, :zip_code ]
   
   def formatted

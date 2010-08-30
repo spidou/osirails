@@ -2,6 +2,9 @@ fr:
   activerecord:
     models: 
       alarm: "Alarme"
+      calendar: "Calendrier"
+      event: "Événement"
+      event_category: "Catégorie d'évenement"
     attributes: 
       alarm:
         do_alarm_before: "Alerter"

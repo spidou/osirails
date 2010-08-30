@@ -53,7 +53,7 @@ module ToolsHelper
     return '' if tool_events.empty?
     html = "#{header}"
     html += "<div class='presentation_small events'>"
-    html += render :partial => 'tool_events/tool_event_minimal', :collection => tool_events , :locals => {:tool => tool}
+    html += render :partial => 'tool_events/tool_event_minimal', :collection => tool_events , :locals => {:tool => tool} unless tool_events.empty?
     html += "<p>#{link}</p>" unless link.nil?
     html += "</div>"
     html

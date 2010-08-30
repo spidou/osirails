@@ -7,6 +7,7 @@ module DocumentsHelper
     html << render_documents_list(documents_owner, {:group_by => "date", :order_by => "asc"}.merge(options))
     html << '</div>'
     html << render_new_documents_list(documents_owner, options) if is_form_view?
+    html
   end
 
   def render_documents_list(documents_owner, options = {})

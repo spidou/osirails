@@ -327,9 +327,9 @@ class Test::Unit::TestCase
                                  :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
                                  :creator               => users(:sales_user),
                                  :mockup_type           => mockup_types(:detailed_view),
-                                 :product               => product,
-                                 :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
-                                                                        :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+                                 :end_product           => end_product,
+                                 :graphic_item_version_attributes => ( {:image  => File.new( File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")),
+                                                                        :source => File.new( File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
                                 )
     mockup.save!
     flunk "mockup should be saved" if mockup.new_record?
@@ -343,8 +343,8 @@ class Test::Unit::TestCase
                                        :graphic_unit_measure  => graphic_unit_measures(:millimeter), 
                                        :creator               => users(:sales_user), 
                                        :graphic_document_type => graphic_document_types(:global_view),
-                                       :graphic_item_version_attributes => ( {:image  => File.new( File.join(RAILS_ROOT, "test", "fixtures", "graphic_item.jpg")),
-                                                                              :source => File.new( File.join(RAILS_ROOT, "test", "fixtures", "order_form.pdf"))} )
+                                       :graphic_item_version_attributes => ( {:image  => File.new( File.join(Test::Unit::TestCase.fixture_path, "graphic_item.jpg")),
+                                                                              :source => File.new( File.join(Test::Unit::TestCase.fixture_path, "order_form.pdf"))} )
                                       )    
                                       
     flunk "gd should be saved > #{gd.errors.full_messages.join(', ')}" unless gd.save
