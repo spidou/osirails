@@ -110,8 +110,10 @@
       <%= display_document_add_button(@employee) if is_form_view? %>
       
     <!--###### Journals div #######-->
-    <h2>Historique</h2>
-      <%= display_journals_list(@employee) unless is_form_view? %>
+    <% unless is_form_view? %>
+      <h2>Historique</h2>
+        <%= display_journals_list(@employee) %>
+    <% end %>
     
     <%= f.form_buttons %>
   <% end %><!--end form -->
