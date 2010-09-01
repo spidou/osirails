@@ -247,13 +247,4 @@ Vehicle.create! :service_id => Service.last.id,   :job_id => Job.last.id,  :empl
 Machine.create! :service_id => Service.last.id,   :job_id => Job.last.id,  :employee_id => Employee.last.id,  :supplier_id => Supplier.last.id,  :name => "Fraiseuse",  :serial_number => "987654321", :description => "Fraiseuse",   :purchase_date => Date.today - 6.months,  :purchase_price => "300000"
 Machine.create! :service_id => Service.first.id,  :job_id => Job.first.id, :employee_id => Employee.first.id, :supplier_id => Supplier.first.id, :name => "Imprimante", :serial_number => "123456789", :description => "Imprimante",  :purchase_date => Date.today - 1.year,    :purchase_price => "500000"
 
-# default permissions
-%W{ BusinessObject Menu DocumentType }.each do |klass|
-  klass.constantize.all.each do |object|
-    object.permissions.each do |permission|
-      permission.permissions_permission_methods.each do |object_permission|
-        object_permission.update_attribute(:active, true)
-      end
-    end
-  end
-end
+set_default_permissions

@@ -93,3 +93,5 @@ d.mime_types << [ pdf, jpg, png ]
 d = DocumentType.find_or_create_by_name("demission_letter")
 d.update_attribute(:title, "Lettre de démission")
 d.mime_types << [ pdf, jpg, png ]
+
+set_default_permissions

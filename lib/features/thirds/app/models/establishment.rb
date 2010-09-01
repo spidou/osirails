@@ -17,7 +17,7 @@ class Establishment < ActiveRecord::Base
   belongs_to :establishment_type
   belongs_to :activity_sector_reference
   
-  validates_presence_of :name, :address, :establishment_type_id
+  validates_presence_of :address, :establishment_type_id
   validates_presence_of :establishment_type, :if => :establishment_type_id
   
   validates_uniqueness_of :siret_number, :allow_blank => true
@@ -52,10 +52,14 @@ class Establishment < ActiveRecord::Base
   @@form_labels[:logo]                      = "Logo :"
   
   def errors_on_attributes_except_on_contacts?
-    [:name, :address, :establishment_type, :siret_number, :address].each do |attribute|
+    [:address, :establishment_type_id, :establishment_type, :siret_number].each do |attribute|
       return true if errors.on(attribute)
     end
     false
+  end
+  
+  def name
+    super.blank? ? ( customer && customer.name ) : super
   end
   
   def name_and_full_address

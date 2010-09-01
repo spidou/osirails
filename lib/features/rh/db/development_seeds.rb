@@ -38,13 +38,4 @@ banks       = %W( Bred BR CreditAgricole BFC )
   end
 end
 
-# default permissions
-%W{ BusinessObject Menu DocumentType }.each do |klass|
-  klass.constantize.all.each do |object|
-    object.permissions.each do |permission|
-      permission.permissions_permission_methods.each do |object_permission|
-        object_permission.update_attribute(:active, true)
-      end
-    end
-  end
-end
+set_default_permissions

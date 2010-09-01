@@ -104,13 +104,4 @@ mockup2 = order1.mockups.create! :name                 => "Sample 2",
 mockup2.graphic_item_version_attributes = { :image  => File.new( File.join(File.dirname(__FILE__), "..", "test", "fixtures", "graphic_item.jpg") ) }
 mockup2.save!
 
-# default permissions
-%W{ BusinessObject Menu DocumentType }.each do |klass|
-  klass.constantize.all.each do |object|
-    object.permissions.each do |permission|
-      permission.permissions_permission_methods.each do |object_permission|
-        object_permission.update_attribute(:active, true)
-      end
-    end
-  end
-end
+set_default_permissions

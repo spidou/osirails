@@ -16,3 +16,5 @@ Calendar.all.each do |object|
     end
   end
 end
+
+set_default_permissions

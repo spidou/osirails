@@ -102,3 +102,5 @@ d.mime_types << [ pdf, jpg, png ]
 d = DocumentType.find_or_create_by_name("quote")
 d.update_attribute(:title, "Devis")
 d.mime_types << [ pdf, jpg, png ]
+
+set_default_permissions

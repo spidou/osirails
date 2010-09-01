@@ -125,7 +125,7 @@ class Supply < ActiveRecord::Base
     
     supplies_supply_sizes.each_with_index do |item, index|
       next_item = supplies_supply_sizes[index.next]
-      unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure.symbol
+      unit_measure = ( next_item && next_item.unit_measure_id == item.unit_measure_id ) ? "" : item.unit_measure && item.unit_measure.symbol
       
       @humanized_supply_sizes << item.supply_size.short_name if item.supply_size.display_short_name?
       @humanized_supply_sizes << item.value.to_s
