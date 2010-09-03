@@ -319,7 +319,7 @@ class Order < ActiveRecord::Base
     establishment_attributes.each do |attributes|
       establishment = customer.build_establishment(attributes)
       establishment.ship_to_addresses.build(:establishment_name => attributes[:name],
-                                            :parallel_creation  => true,
+                                            #:parallel_creation  => true,
                                             :should_create      => 1).build_address(attributes[:address_attributes])
     end
   end

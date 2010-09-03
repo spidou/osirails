@@ -25,7 +25,7 @@
       <CommercialRepresentative>
         <LastName><%= @invoice.order.commercial.last_name %></LastName>
         <FirstName><%= @invoice.order.commercial.first_name %></FirstName>
-        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted}" if @number = @invoice.order.commercial.numbers.first %></Phone>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.order.commercial.numbers.first %></Phone>
         <Email><%= @invoice.order.commercial.email %></Email>
       </CommercialRepresentative>
       <AdministrativeRepresentative>

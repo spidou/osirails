@@ -26,7 +26,7 @@
         <LastName><%= @quote.order.commercial.last_name %></LastName>
         <FirstName><%= @quote.order.commercial.first_name %></FirstName>
         <Email><%= @quote.order.commercial.email %></Email>
-        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted}" if @number = @quote.order.commercial.numbers.first %></Phone>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @quote.order.commercial.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  

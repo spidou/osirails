@@ -92,8 +92,8 @@ namespace :osirails do
                             :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
                                                                :supplier_reference    => 17,
                                                                #:supplier_designation  => 18,
-                                                               :fob_unit_price        => 22,
-                                                               :taxes                 => 23 } ] }
+                                                               :fob_unit_price        => 21,
+                                                               :taxes                 => 22 } ] }
             
             importer = Osirails::Importer.new(:klass => :commodity, :identifiers => nil, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)
@@ -185,8 +185,8 @@ namespace :osirails do
                             :supplier_supply_attributes => [ { :supplier_id           => { :find_by_name => 16 },
                                                                :supplier_reference    => 17,
                                                                #:supplier_designation  => 18,
-                                                               :fob_unit_price        => 22,
-                                                               :taxes                 => 23 } ] }
+                                                               :fob_unit_price        => 21,
+                                                               :taxes                 => 22 } ] }
             
             importer = Osirails::Importer.new(:klass => :consumable, :identifiers => nil, :definitions => definitions, :if_match => ENV["IF_MATCH"])
             importer.import_data(rows)

@@ -60,7 +60,7 @@ module NumbersHelper
                        :title => text,
                        :class => :country_flag )
     html << content_tag( :span, number.indicative.indicative, :class => :indicative )
-    html << content_tag( :span, number.formatted, :class => :number )
+    html << content_tag( :span, number.formatted_with_indicative, :class => :number )
 	  
 	  content_tag( :span, html.join("&nbsp;"), :class => :formatted_number )
   end

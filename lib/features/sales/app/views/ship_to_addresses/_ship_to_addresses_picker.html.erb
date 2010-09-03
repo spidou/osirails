@@ -9,7 +9,7 @@ ship_to_addresses = ship_to_addresses_picker
     <% for establishment in establishments %>
       <% selected_establishment = ship_to_addresses.detect{ |s| s.establishment_id == establishment.id and !s.should_destroy? } %>
       <% disabled = selected_establishment ? 'disabled="disabled"' : '' %>
-      <%= "<option value=\"#{establishment.id}\" #{disabled}>#{establishment.name_and_full_address}</option>" %>
+      <%= "<option value=\"#{establishment.id}\" #{disabled}>#{establishment.formatted}</option>" %>
     <% end %>
   </select>
 <% end %>

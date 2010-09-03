@@ -4,6 +4,8 @@ class Supplier < Third
   has_permissions :as_business_object
   has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
   has_address :address
+  has_number  :phone
+  has_number  :fax
   
   has_one :iban, :as => :has_iban
   
@@ -25,6 +27,8 @@ class Supplier < Third
                    :main_model         => true
   
   @@form_labels[:activity_sector_reference] = "Code NAF :"
+  @@form_labels[:phone]                     = "Tél :"
+  @@form_labels[:fax]                       = "Fax :"
   
   def iban_attributes=(iban_attributes)
     if iban_attributes[:id].blank?

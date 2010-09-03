@@ -44,10 +44,10 @@ namespace :osirails do
                                                                                                    :country_name  => 11,
                                                                                                    :city_name     => 9,
                                                                                                    :zip_code      => 8 },
-                                                               #:phone_attributes              => { :indicative_id => { :find_by_indicative => 12 },
-                                                               #                                    :number        => 13 },
-                                                               #:fax_attributes                => { :indicative_id => { :find_by_indicative => 14 },
-                                                               #                                    :number        => 15 },
+                                                               :phone_attributes              => { :indicative_id => { :find_by_indicative => 12 },
+                                                                                                   :number        => 13 },
+                                                               :fax_attributes                => { :indicative_id => { :find_by_indicative => 14 },
+                                                                                                   :number        => 15 },
                                                              } ],
                             :website                    => 16,
                             :customer_grade_id          => { :find_by_name => 23 },
@@ -79,6 +79,10 @@ namespace :osirails do
                                                                :country_name  => 9,
                                                                :city_name     => 7,
                                                                :zip_code      => 6 },
+                            :phone_attributes             => { :indicative_id => { :find_by_indicative => 10 },
+                                                               :number        => 11 },
+                            :fax_attributes               => { :indicative_id => { :find_by_indicative => 12 },
+                                                               :number        => 13 },
                             :website                      => 14 }
                             #TODO implement company_created_at and collaboration_started_at
             importer = Osirails::Importer.new(:klass => :supplier, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])
@@ -103,6 +107,10 @@ namespace :osirails do
                                                                :country_name  => 9,
                                                                :city_name     => 7,
                                                                :zip_code      => 6 },
+                            :phone_attributes             => { :indicative_id => { :find_by_indicative => 10 },
+                                                               :number        => 11 },
+                            :fax_attributes               => { :indicative_id => { :find_by_indicative => 12 },
+                                                               :number        => 13 },
                             :website                      => 14 }
                             #TODO implement company_created_at and collaboration_started_at
             importer = Osirails::Importer.new(:klass => :subcontractor, :identifiers => :name, :definitions => definitions, :if_match => ENV["IF_MATCH"])

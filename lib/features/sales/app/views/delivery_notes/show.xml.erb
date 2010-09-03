@@ -27,7 +27,7 @@
         <LastName><%= @delivery_note.order.commercial.last_name %></LastName>
         <FirstName><%= @delivery_note.order.commercial.first_name %></FirstName>
         <Email><%= @delivery_note.order.commercial.email %></Email>
-        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted}" if @number = @delivery_note.order.commercial.numbers.first %></Phone>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @delivery_note.order.commercial.numbers.first %></Phone>
       </Representative>
       <LogoPath><%= "#{RAILS_ROOT}/public/fo/images/logo.png"%></LogoPath>
     </Supplier>  

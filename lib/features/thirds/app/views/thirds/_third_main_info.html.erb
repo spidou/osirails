@@ -26,7 +26,7 @@ third = third_main_info
         <%= form.label :activity_sector_reference_id %>
         <%= form.form_or_view(form.collection_select(:activity_sector_reference_id, ActivitySectorReference.find(:all), :id, :code_and_short_name,
                                                      :include_blank => third.new_record? ? "Veuillez choisir un secteur d'activité" : false),
-                                                     :activity_sector_reference, :code)%>
+                                                     :activity_sector_reference, :code_and_short_name)%>
       </p>
     <% end %>
   </div>
@@ -41,16 +41,18 @@ third = third_main_info
       <% end %>
     </p>
     
-    <% if form.form_view? and third.is_a?(Customer) %>
+    <% if third.is_a?(Customer) %>
       <p>
         <%= form.label :customer_grade %>
         <%= form.form_or_view(form.collection_select(:customer_grade_id, CustomerGrade.all(:order => 'name'), :id, :name, 
                                                      :include_blank => third.new_record? ? "Veuillez choisir une note" : false), :customer_grade, :name) %>
       </p>
-      <p>
-        <%= form.label :logo %>
-        <%= form.file_field :logo %>
-      </p>
+      <% if form.form_view? %>
+        <p>
+          <%= form.label :logo %>
+          <%= form.file_field :logo %>
+        </p>
+      <% end %>
     <% end %>
   </div>
   

@@ -62,8 +62,8 @@ class Establishment < ActiveRecord::Base
     super.blank? ? ( customer && customer.name ) : super
   end
   
-  def name_and_full_address
-    @name_and_full_address ||= "#{name} (#{full_address})"
+  def formatted
+    "#{establishment_type.name} - #{name} (#{address.city_name} #{address.country_name})"
   end
   
   def can_be_hidden?

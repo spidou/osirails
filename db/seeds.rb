@@ -16,6 +16,7 @@ NumberType.create! :name => "Fax Professionnel"
 # default countries
 france          = Country.create! :name => "FRANCE",      :code => "fr"
 reunion         = Country.create! :name => "REUNION",     :code => "fr"
+belgium         = Country.create! :name => "BELGIQUE",    :code => "be"
 spain           = Country.create! :name => "ESPAGNE",     :code => "es"
 united_kingdom  = Country.create! :name => "ANGLETERRE",  :code => "gb"
 germany         = Country.create! :name => "ALLEMAGNE",   :code => "de"
@@ -23,9 +24,11 @@ japan           = Country.create! :name => "JAPON",       :code => "jp"
 china           = Country.create! :name => "CHINE",       :code => "cn"
 united_states   = Country.create! :name => "ETATS-UNIS",  :code => "us"
 canada          = Country.create! :name => "CANADA",      :code => "ca"
+mauritius       = Country.create! :name => "MAURICE",     :code => "mu"
 
-# default indicatives
+# default indicatives (http://fr.wikipedia.org/wiki/ISO_3166-1)
 Indicative.create! :indicative => "+262", :country_id => reunion.id
+Indicative.create! :indicative => "+32",  :country_id => belgium.id
 Indicative.create! :indicative => "+33",  :country_id => france.id 
 Indicative.create! :indicative => "+34",  :country_id => spain.id
 Indicative.create! :indicative => "+44",  :country_id => united_kingdom.id
@@ -33,6 +36,7 @@ Indicative.create! :indicative => "+49",  :country_id => germany.id
 Indicative.create! :indicative => "+81",  :country_id => japan.id
 Indicative.create! :indicative => "+86",  :country_id => china.id
 Indicative.create! :indicative => "+1",   :country_id => united_states.id
+Indicative.create! :indicative => "+230", :country_id => mauritius.id
 
 # default cities
 City.create! :name => "BRAS PANON",               :zip_code => "97412", :country_id => reunion.id
