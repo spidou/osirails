@@ -1,7 +1,7 @@
 class CreateOrders < ActiveRecord::Migration
   def self.up
     create_table :orders do |t|
-      t.references :commercial, :user, :customer, :establishment, :society_activity_sector, :order_type, :approaching
+      t.references :commercial, :user, :customer, :establishment, :society_activity_sector, :order_type, :approaching, :order_contact
       t.string     :title, :reference
       t.text       :customer_needs
       t.datetime   :closed_at

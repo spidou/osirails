@@ -56,28 +56,16 @@ ul.quote_caption {
 #quote_header > div {
   display: inline-block;
   vertical-align: top;
-  min-width: 400px;
-  width: 400px;
+  min-width: 410px;
+  width: 410px;
   margin: 5px 7px 5px 7px;
 }
 
 #quote_header > div label {
-  width: 100px !important;
+  width: 110px !important;
   vertical-align: top;
 }
 
 #quote_header > div h3 {
   text-align: center;
-}
-
-#quote_header #contact_container {
-  display: block;
-}
-
-#quote_header #contact_container label {
-  width: auto !important;
-}
-
-#quote_header #contact_container #order_preview_contacts {
-  margin-left: 110px;
 }

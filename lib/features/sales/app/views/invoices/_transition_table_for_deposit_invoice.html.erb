@@ -10,9 +10,9 @@
         <th>Réf.</th>
         <th>Émis&nbsp;le</th>
         <th>Signé&nbsp;le</th>
-        <th>Nb Pièces</th>
-        <th>Total&nbsp;TTC&nbsp;(&euro;)</th>
-        <th>Acompte demandé&nbsp;(%)</th>
+        <th>Nb Produits</th>
+        <th>Total&nbsp;TTC</th>
+        <th>Acompte demandé&nbsp;</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -21,11 +21,13 @@
         <td><%= quote.reference %></td>
         <td><%= quote.confirmed_on.humanize %></td>
         <td><%= quote.signed_on.humanize %></td>
-        <td><%= quote.number_of_pieces %></td>
-        <td><%= quote.net_to_paid %></td>
-        <td><%= quote.deposit %></td>
+        <td><%= quote.number_of_products %></td>
+        <td><%= quote.net_to_paid.to_f.round_to(2).to_s(2) %>&nbsp;&euro;</td>
+        <td><%= quote.deposit %>&nbsp;%</td>
         <td><%= display_transform_quote_in_invoice(quote) %></td>
       </tr>
     </tbody>
   </table>
 </div>
+
+<hr/>

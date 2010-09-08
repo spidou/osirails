@@ -1,5 +1,7 @@
 common: &common
   adapter: mysql
+  encoding: utf8
+  collation: utf8_unicode_ci
   timeout: 5000
   username: root
   password: root

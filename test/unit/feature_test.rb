@@ -132,9 +132,8 @@ class FeatureTest < ActiveSupport::TestCase
 #  end
 
   def test_ability_to_uninstall
-    @feature_with_one_dep.update_attributes(:installed => false, :activated => false)
-    @normal_feature_one.update_attributes(:installed => true, :activated => false)
-    assert @normal_feature_one.able_to_uninstall?
+    @feature_with_two_deps.update_attributes(:installed => true, :activated => false)
+    assert @feature_with_two_deps.able_to_uninstall?
   end
 
   def test_unability_to_uninstall
@@ -176,9 +175,8 @@ class FeatureTest < ActiveSupport::TestCase
   end
 
   def test_ability_to_deactivate
-    @feature_with_one_dep.update_attributes(:installed => true, :activated => false)
-    @normal_feature_one.update_attributes(:installed => true, :activated => true)
-    assert @normal_feature_one.able_to_deactivate?
+    @feature_with_two_deps.update_attributes(:installed => true, :activated => true)
+    assert @feature_with_two_deps.able_to_deactivate?
   end
 
   def test_unability_to_deactivate

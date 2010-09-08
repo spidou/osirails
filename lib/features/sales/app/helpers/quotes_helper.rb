@@ -151,9 +151,7 @@ module QuotesHelper
     button_to_function "Insérer une ligne de commentaire" do |page|
       page.insert_html :bottom, :quote_items_body, :partial => 'quote_items/quote_item',
                                                    :object  => quote.quote_items.build
-      last_item = page[:quote_items_body].select('.free_quote_item').last
-      last_item.show
-      last_item.visual_effect :highlight
+      last_item = page[:quote_items_body].select('.free_quote_item').last.show.visual_effect :highlight
       
       page << "update_up_down_links($('quote_items_body'))"
       page << "initialize_autoresize_text_areas()"

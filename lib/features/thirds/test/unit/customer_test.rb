@@ -19,6 +19,7 @@ class CustomerTest < ActiveSupport::TestCase
       @customer = nil
     end
     
+    # test validates_uniqueness_of_siret_number
     context "with sub resources having similar siret_numbers except one" do
       setup do
         @head_office = @customer.build_head_office(:siret_number => "11111111111110")

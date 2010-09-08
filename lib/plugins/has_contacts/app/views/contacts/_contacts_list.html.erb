@@ -7,34 +7,25 @@
 <%
 @contacts = contacts_list
 
-@group_by ||= "type"
+group_by_owner ||= false
+owner = ( @contacts.empty? ? 'owner' : @contacts.first.has_contact_type )  ## get the owner from the contact because, it can be different of @contacts_owner
+
+@group_by ||= (group_by_owner ? owner : "first_name")
 @order_by ||= "asc" # ascendent
 
-case @group_by
-when "first_name", "last_name", "email"
-  @groups = @contacts.sort_by{ |c| c.send(@group_by) }.group_by{ |d| letter = d.send(@group_by)[0..0]
-                                                           if letter.between("A", "D")
-                                                             "A-D"
-                                                           elsif letter.between("E", "H")
-                                                             "E-H"
-                                                           elsif letter.between("I", "L")
-                                                             "I-L"
-                                                           elsif letter.between("M", "P")
-                                                             "M-P"
-                                                           elsif letter.between("Q", "T")
-                                                             "Q-T"
-                                                           elsif letter.between("U", "Z")
-                                                             "U-Z"
-                                                           end }
-when "type"
-  @groups = @contacts.sort_by{ |c| c.contact_type.name }.group_by{ |c| c.contact_type.name }
+if [ "first_name", "last_name", "email" ].include?(@group_by)
+  @groups = @contacts.sort_by{ |c| c.send(@group_by) || ''}.group_by{ |d| get_letter_range(d.send(@group_by)[0..0]) }
+end
+
+if @group_by == owner and group_by_owner
+  @groups = @contacts.sort_by { |c| c.has_contact.name }.group_by { |d| d.has_contact.name }
 end
 
 @groups.reverse! if @order_by == "desc"
 %>
 
 <% unless @groups.empty? %>
-  <%= "<p>Classer par #{group_contacts_by_method("first_name", @contacts_owner)} | #{group_contacts_by_method("last_name", @contacts_owner)} | #{group_contacts_by_method("type", @contacts_owner)} | #{group_contacts_by_method("email", @contacts_owner)}</p>" %>
+  <%= "<p>Classer par #{group_contacts_by_method("first_name", @contacts_owner)} | #{group_contacts_by_method("last_name", @contacts_owner)} | #{group_contacts_by_method("email", @contacts_owner)} | #{group_contacts_by_method(owner, @contacts_owner) if group_by_owner}</p>" unless is_form_view? %>
   <% @groups.each do |group, collection| %>
     <div class="resource_group contact_group">
       <%= content_tag(:h1, group || "\"Aucun\"") %>

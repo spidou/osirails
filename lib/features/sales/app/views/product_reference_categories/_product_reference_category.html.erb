@@ -1,14 +1,14 @@
 <div class="presentation_medium">
-<% form_for @category do |form|%>
-<%= form.error_messages %>
-  <p>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.label :product_reference_category_id %>
-    <%= form.collection_select_with_indentation(:product_reference_category_id, @categories, :id, :name , options = {:indentation => 15, :include_blank => '-- Racine --'}) %>
-  </p>
-  <%= form.form_buttons %>
-<% end %>
+  <% form_for product_reference_category do |form|%>
+    <%= form.error_messages %>
+    
+    <p>
+      <%= form.label :name %>
+      <%= form.form_or_view(form.text_field(:name), :name) %>
+      
+      <%= form.label :reference %>
+      <%= form.form_or_view(form.text_field(:reference, :disabled => !product_reference_category.can_update_reference?), :reference) %>
+    </p>
+    <%= form.form_buttons %>
+  <% end %>
 </div>

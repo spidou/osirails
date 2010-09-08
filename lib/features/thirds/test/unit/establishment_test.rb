@@ -3,39 +3,80 @@ require File.dirname(__FILE__) + '/../thirds_test'
 class EstablishmentTest < ActiveSupport::TestCase
   should_belong_to :customer, :establishment_type, :activity_sector_reference
   
-  should_validate_presence_of :name, :address
+  should_validate_presence_of :address
   should_validate_presence_of :establishment_type, :with_foreign_key => :default
   
-  #TODO uncomment this line and find why we have the following error when running test : "Can't find first Establishment"
-  #should_validate_uniqueness_of :siret_number
+  context "A new establishment" do
+    setup do
+      @establishment = Establishment.new
+    end
+    
+    teardown do
+      @establishment = nil
+    end
+    
+    should "not be able to be hidden" do
+      assert !@establishment.can_be_hidden?
+    end
+    
+    should "not hide" do
+      @establishment.hide
+      assert !@establishment.hidden_was
+    end
+  end
   
+  # test errors_on_attributes_except_on_contacts?
   context "A valid establishment" do
     setup do
-      @establishment = Establishment.new(:name                  => "Name",
-                                         :establishment_type_id => establishment_types(:store).id,
-                                         :siret_number          => "35478965321567")
-      @establishment.build_address(:street_name   => "Street Name",
-                                   :zip_code      => "12345",
-                                   :city_name     => "City",
-                                   :country_name  => "Country")
-      
+      @establishment = create_establishment_for(Customer.first)
       flunk "@establishment should be valid" unless @establishment.valid?
     end
     
-    should "be saved successfully" do
-      assert @establishment.save!
+    subject{ @establishment }
+    
+    should_validate_uniqueness_of :siret_number
+    
+    [:address, :establishment_type_id, :establishment_type].each do |attr|
+      should "have errors_on_attributes_except_on_contacts? when its '#{attr}' is invalid" do
+        @establishment.send("#{attr}=", nil)
+        flunk "establishemnt should be invalid" if @establishment.valid?
+        assert @establishment.errors_on_attributes_except_on_contacts?
+      end
+    end
+    
+    should "have errors_on_attributes_except_on_contacts? when its 'siret_number' is invalid" do
+      @establishment.siret_number = "invalid siret number"
+      flunk "establishemnt should be invalid" if @establishment.valid?
+      assert @establishment.errors_on_attributes_except_on_contacts?
+    end
+    
+    should "not have errors_on_attributes_except_on_contacts? with errors only on contacts" do
+      @establishment.contacts.build
+      flunk "contact should be invalid" if @establishment.contacts.first.valid?
+      assert !@establishment.errors_on_attributes_except_on_contacts?
+    end
+    
+    should "not have errors_on_attributes_except_on_contacts? without any invalid attributes" do 
+      assert !@establishment.errors_on_attributes_except_on_contacts?
+    end
+    
+    should "be able to be hidden" do
+      assert @establishment.can_be_hidden?
+    end
+    
+    should "hide" do
+      @establishment.hide
+      assert @establishment.hidden_was
     end
   end
-
-#  # TODO test save address in has_address plugin
-#  def test_save_address
-#    @establishment.build_address(:street_name   => "1 rue des rosiers",
-#                                 :country_name  => "Réunion",
-#                                 :city_name     => "Saint-Denis",
-#                                 :zip_code      => "97400")
-#    @establishment.save!
-#    assert @establishment.reload.address, "This Establishment should have an address"
-#  end
+  
+  context "Thanks to 'has_contacts', an establishment" do
+    setup do
+      @contacts_owner = Establishment.new
+    end
+    
+    include HasContactsTest
+  end
   
   context "An establishment" do
     setup do

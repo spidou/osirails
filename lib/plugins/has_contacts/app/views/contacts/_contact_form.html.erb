@@ -1,10 +1,10 @@
 <%
-require_locals contacts_owner
+require_locals contacts_owner, index
 owner_type = contacts_owner.class.singularized_table_name
 contact = contact_form
-contact_types = ContactType.all(:conditions => [ "owner = ?", contacts_owner.class.name ])
 id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_record?
 style_attr = 'style="display:none"' unless contact.new_record? or !contact.errors.empty? or contact.should_update?
+hack_params ||= contacts_owner.is_a?(Establishment)  # used to determine, in customer form, if an hidden field is needed to link a contact to his respective owner, It may be deleted when the bug (see customers_controller) will be resolved.
 %>
 
 <% fields_for "#{owner_type}[contact_attributes][]", contact do |form| %>
@@ -26,10 +26,6 @@ style_attr = 'style="display:none"' unless contact.new_record? or !contact.error
         <%= form.form_or_view(form.text_field(:last_name, :index => nil), :last_name ) %>
       </p>
       <p>
-        <%= form.label :contact_type_id, :index => nil %>
-        <%= form.form_or_view(form.collection_select(:contact_type_id, contact_types, :id, :name, {}, :index => nil), :file_type, :name ) %>
-      </p>
-      <p>
         <%= form.label :job, :index => nil %>
         <%= form.form_or_view(form.text_field(:job, :index => nil), :job ) %>
       </p>
@@ -41,13 +37,19 @@ style_attr = 'style="display:none"' unless contact.new_record? or !contact.error
         <%= form.label :avatar, :index => nil %>
         <%= form.form_or_view(form.file_field(:avatar, :index => nil, :size => 14)) %>
       </p>
+      <%= display_numbers(contact) %>
       <p>
         <%= display_contact_close_form_button(contact) %>
-
+        
+        <!-- usefull data for the params hack into customers_controller -->
+        <%= form.hidden_field("#{owner_type}_id", :value => contacts_owner.id, :index => nil) if hack_params %>
+        <!-- id must be available for new_record to avoid misplacement of id into params when a new record isn't after all records -->
+        <%= form.hidden_field :id, :index => nil, :class => 'contact_id' %> 
+        
         <% if !contact.new_record? and is_form_view? %>
-          <%= form.hidden_field :id, :index => nil %>
+          <%= form.hidden_field :should_hide,    :index => nil, :class => 'should_hide' %>
           <%= form.hidden_field :should_destroy, :index => nil, :class => 'should_destroy' %>
-          <%= form.hidden_field :should_update, :index => nil, :class => 'should_update' %>
+          <%= form.hidden_field :should_update,  :index => nil, :class => 'should_update' %>
         <% end %>
       </p>
     </div>

@@ -196,7 +196,7 @@ class GraphicItem < ActiveRecord::Base
     return false if new_record?
     return false if (!["image","source"].include?(type) or send("current_#{type}").path.nil?)
     
-    user.graphic_item_spool_items.select{|gisi| gisi.graphic_item == self and gisi.file_type == type}.any?
+    user.graphic_item_spool_items(true).select{|gisi| gisi.graphic_item == self and gisi.file_type == type}.any?
   end
   
   def is_in_spool(type)

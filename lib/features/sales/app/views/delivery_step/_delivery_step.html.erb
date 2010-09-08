@@ -1,5 +1,5 @@
 <% content_for :header do -%>
-  <%= stylesheet_link_tag_with_theme_support 'sales/deliver_note' %>
+  <%= stylesheet_link_tag_with_theme_support 'sales/delivery_note' %>
 <% end -%>
 
 <%= order_header %>
@@ -9,20 +9,15 @@
 <h1>Livraison</h1>
 
 <div>
-  <h2>Bons de livraison</h2>
-  <% if is_form_view? %>
-    <% form_for(@step, :url => { :controller => "delivery_step", :action => :update, :order_id => @order },  :html => { :multipart => true}) do |form| %>
-      <%= form.error_messages %>
-      <%= display_delivery_notes(@step.order) %>
-      
-      <%= content_tag(:p, display_delivery_note_add_button(@order)) if is_form_view? %>
-      
-      <p class="form_buttons">
-        <%= form.submit 'Enregistrer' %>
-        <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
-      </p>
-    <% end %>
-  <% else %>
-    
-  <% end %>
+  <p>
+    L'étape "Livraison" permet d'établir des bons de livraison pour le dossier en cours.<br/>
+    La signature du devis est nécessaire pour établir un bon de livraison.
+  </p>
+  <p>
+    L'étape "Livraison" est automatiquement clôturée lorsque tous les produits du dossier sont livrés et que tous les bons de livraison sont <strong>signés</strong>.
+  </p>
+  <hr/>
+  
+  <%= display_delivery_notes(@step.order) %>
+  <%= content_tag(:p, display_delivery_note_add_button(@order)) if is_form_view? %>
 </div>

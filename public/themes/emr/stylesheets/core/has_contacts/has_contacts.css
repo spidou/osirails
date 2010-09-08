@@ -1,7 +1,12 @@
+.resource.contact {
+  background-color: #f5f5f5;
+}
+
 .resource.contact .thumb {
   border: 1px solid #CCC;
   border-bottom: 2px solid #CCC;
   border-right: 2px solid #CCC;
+  background-color: #fff;
 }
 
 .resource.contact .details {
@@ -17,6 +22,10 @@ form .resource.contact label {
 }
 
 /* CONTACTS PICKER */
+.contact_picker {
+  min-height: 105px;
+}
+
 #preview_contacts {
   text-align: left;
 }

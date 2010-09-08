@@ -5,6 +5,7 @@ class Employee < ActiveRecord::Base
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers
+  has_contacts
   
   # restrict or add methods to be use into the pattern 'Attribut'
   METHODS = {'Employee' => ['last_name','first_name','birth_date'], 'User' =>[]}
@@ -16,7 +17,7 @@ class Employee < ActiveRecord::Base
   
   has_attached_file :avatar, 
                     :styles       => { :thumb => "100x100#" },
-                    :path         => ":rails_root/assets/employees/:id/avatar/:style.:extension",
+                    :path         => ":rails_root/assets/rh/employees/:id/avatar/:style.:extension",
                     :url          => "/employees/:id.:extension",
                     :default_url  => ":current_theme_path/images/default_avatar.png"
   
@@ -28,8 +29,6 @@ class Employee < ActiveRecord::Base
   has_one :iban, :as => :has_iban
   has_one :job_contract
   
-  has_many :contacts_owners, :as => :has_contact
-  has_many :contacts, :source => :contact, :through => :contacts_owners
   has_many :premia, :order => "created_at DESC"
   has_many :employees_jobs
   has_many :jobs, :through => :employees_jobs
@@ -65,7 +64,7 @@ class Employee < ActiveRecord::Base
                                                 :message      => "L'adresse e-mail entreprise est incorrecte",
                                                 :allow_blank  => true
   
-  validates_associated :iban, :address, :job_contract, :user, :contacts, :premia, :checkings
+  validates_associated :iban, :address, :job_contract#, :contacts
   
   validate :validates_responsible_job_limit
   

@@ -1,7 +1,7 @@
 class Order < ActiveRecord::Base
   has_permissions :as_business_object
   has_address     :bill_to_address
-  has_contacts    :accept_from => :customer_contacts
+  has_contact     :order_contact, :accept_from => :customer_contacts, :required => true
   has_reference   :prefix => :sales
   
   belongs_to :society_activity_sector
@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
   
   # quotes
   has_many :quotes, :order => 'created_at DESC'
-  has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS ?', nil ]
+  has_one  :draft_quote,   :class_name => 'Quote', :conditions => [ 'status IS NULL' ]
   has_one  :pending_quote, :class_name => 'Quote', :conditions => [ 'status IN (?)', [ Quote::STATUS_CONFIRMED, Quote::STATUS_SENDED ] ]
   has_one  :signed_quote,  :class_name => 'Quote', :conditions => [ 'status = ?', Quote::STATUS_SIGNED ]
   #TODO validate if the order counts only one signed quote (draft_quote and pending_quote) at time!
@@ -42,7 +42,7 @@ class Order < ActiveRecord::Base
   has_many :mockups
   has_many :graphic_documents
 
-  validates_presence_of :title, :previsional_delivery, :customer_needs, :bill_to_address
+  validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id
   validates_presence_of :customer,                :if => :customer_id
   validates_presence_of :society_activity_sector, :if => :society_activity_sector_id
@@ -51,9 +51,6 @@ class Order < ActiveRecord::Base
   validates_presence_of :approaching,             :if => :approaching_id
   validates_presence_of :order_type_id,           :if => :society_activity_sector
   validates_presence_of :order_type,              :if => :order_type_id
-  validates_presence_of :reference
-  
-  validates_contact_length :minimum => 1, :too_short => "Vous devez choisir au moins 1 contact"
   
   validates_associated :customer, :ship_to_addresses, :end_products, :quotes #TODO quotes is really necessary ?
   
@@ -65,6 +62,10 @@ class Order < ActiveRecord::Base
   
   after_save    :save_ship_to_addresses, :save_ship_to_addresses_from_new_establishments
   after_create  :create_steps
+  
+  has_search_index :only_attributes    => [ :title, :reference, :customer_needs ],
+                   :only_relationships => [ :customer ],
+                   :main_model         => true
   
   # level constants
   CRITICAL  = 'critical'
@@ -82,7 +83,7 @@ class Order < ActiveRecord::Base
   @@form_labels[:commercial]              = "Commercial :"
   @@form_labels[:ship_to_address]         = "Adresse(s) de livraison :"
   @@form_labels[:approaching]             = "Type d'approche :"
-  @@form_labels[:contact]                 = "Contact commercial :"
+  @@form_labels[:order_contact]           = "Contact commercial :"
   @@form_labels[:created_at]              = "Date de création :"
   @@form_labels[:previsional_delivery]    = "Livraison prévue le :"
   @@form_labels[:quotation_deadline]      = "Envoyer le devis avant le :"
@@ -259,14 +260,7 @@ class Order < ActiveRecord::Base
     steps_obj.each { |s| advance[:terminated] += 1 if s.terminated? }
     advance
   end
-
-#  def child
-#    first_level_steps.reverse.each do |child|
-#      return child unless child.unstarted?
-#    end
-#    return first_level_steps.first
-#  end
-
+  
   ## Return missing elements's order
   def missing_elements
     missing_elements = []
@@ -299,15 +293,16 @@ class Order < ActiveRecord::Base
     end
   end
   
-  #def signed_quote
-  #  commercial_step.quote_step.signed_quote
-  #end
-  
+  #delegate :contacts, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_contacts
-    # customer.all_contacts #TODO also take in account contacts in customer's establishments
     customer ? customer.contacts : []
   end
   
+  def all_contacts_and_customer_contacts
+    ( all_contacts + ( customer_contacts || [] ) ).uniq
+  end
+  
+  #delegate :establishments, :to => :customer, :prefix => true, :allow_nil => true #TODO uncomment this line once we have migrated to rails 2.3.2
   def customer_establishments
     customer ? customer.establishments : []
   end
@@ -324,7 +319,7 @@ class Order < ActiveRecord::Base
     establishment_attributes.each do |attributes|
       establishment = customer.build_establishment(attributes)
       establishment.ship_to_addresses.build(:establishment_name => attributes[:name],
-                                            :parallel_creation  => true,
+                                            #:parallel_creation  => true,
                                             :should_create      => 1).build_address(attributes[:address_attributes])
     end
   end
@@ -366,16 +361,23 @@ class Order < ActiveRecord::Base
   end
   
   def validates_length_of_ship_to_addresses
-    if ship_to_addresses.select{ |s| (s.new_record? and s.should_create) or (!s.new_record? and !s.should_destroy?) }.empty?
+    all_ship_to_addresses = ship_to_addresses || []
+    all_ship_to_addresses += customer.establishments.select(&:new_record?).collect(&:ship_to_addresses).flatten if customer
+    if all_ship_to_addresses.select{ |s| (s.new_record? and s.should_create?) or (!s.new_record? and !s.should_destroy?) }.empty?
       errors.add(:ship_to_address_ids, "Vous devez choisir au moins 1 adresse de livraison")
     end
+  end
+  
+  def create_missing_steps
+    create_steps
   end
   
   private
 #    def default_step
 #      Step.find_by_name("commercial_step")
 #    end
-  # Create all orders_steps after create order
+    
+    # Create all orders_steps after create order
     def validates_order_type_validity
       if order_type and society_activity_sector
         errors.add(:order_type_id, ActiveRecord::Errors.default_error_messages[:inclusion]) unless society_activity_sector.order_types.include?(order_type)
@@ -385,12 +387,17 @@ class Order < ActiveRecord::Base
     def create_steps
       steps.each do |step|
         if step.parent.nil?
-          step.name.camelize.constantize.create(:order_id => self.id)
+          step.name.camelize.constantize.find_or_create_by_order_id(self.id)
         else
-          step_model = step.name.camelize.constantize                # eg: SurveyStep
-          parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
-          
-          step_model.create!(parent_step_model.table_name.singularize + '_id' => self.send(step.parent.name).id)
+          begin
+            step_model = step.name.camelize.constantize                # eg: SurveyStep
+            parent_step_model = step.parent.name.camelize.constantize  # eg: CommercialStep
+            
+            step_model.send("find_or_create_by_#{parent_step_model.table_name.singularize}_id", self.send(step.parent.name).id)
+          rescue NameError => e
+            error = "An error has occured in file '#{__FILE__}'. Please restart the server so that the application works properly. (error : #{e.message})"
+            RAKE_TASK ? puts(error) : raise(e)
+          end
         end
       end
       
@@ -403,15 +410,15 @@ class Order < ActiveRecord::Base
     
     # that method permits to bound the new contact with the customer of the order.
     # after that, the contact which is first created for the customer, is associated to the order in a second time
-    def save_contacts_with_order_support
-      contacts.each do |contact|
-        unless customer.contacts.include?(contact)
-          customer.contacts << contact
-        end
-      end
-      
-      save_contacts_without_order_support
-    end
-    
-    alias_method_chain :save_contacts, :order_support
+#    def save_contacts_with_order_support
+#      contacts.each do |contact|
+#        unless customer.contacts.include?(contact)
+#          customer.contacts << contact
+#        end
+#      end
+#      
+#      save_contacts_without_order_support
+#    end
+#    
+#    alias_method_chain :save_contacts, :order_support
 end

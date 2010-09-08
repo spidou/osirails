@@ -149,12 +149,15 @@ module ActionView
                                 :indicator            => "auto_complete_indicator_#{identifier}",
                                 :update_element       => "function(li){
                                                             this.element = $('#{tag_options[:id]}')
-                                                            this.element.value = li.down('.#{object}_#{method}_value').innerHTML;
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_value) { this.element.value = target_value.innerHTML };
                                                             if (this.afterUpdateElement) { this.afterUpdateElement(this.element, li) }
                                                           }",
                                 :after_update_element => "function(input,li){
-                                                            $('#{update_id}').value = li.down('.#{object}_#{method}_id').innerHTML;
-                                                            input.setAttribute('restoreValue', li.down('.#{object}_#{method}_value').innerHTML);
+                                                            target_id = li.down('.#{object}_#{method}_id')
+                                                            target_value = li.down('.#{object}_#{method}_value')
+                                                            if (target_id) { $('#{update_id}').value = target_id.innerHTML }
+                                                            if (target_value) { input.setAttribute('restoreValue', target_value.innerHTML); input.value = input.getAttribute('restoreValue'); }
                                                           }"
                               }.merge(completion_options)
         
@@ -452,10 +455,14 @@ module ActionView
         @template.calendar_datetime_field_tag(@object_name, method, options.merge(:object => @object), text_field_options)
       end
       
-      def form_buttons(options={})
+      def form_buttons(options = {})
         return unless form_view?
+        
         submit_text = options.delete(:submit_text)|| (@object.new_record? ? 'Enregistrer' : 'Enregistrer')
         reset_text  = options.delete(:reset_text) || 'Réinitialiser'
+        
+        options = { :disable_with => "Enregistrement en cours..." }.update(options)
+        
         submit      = @template.submit_tag(submit_text, options)
         reset       = @template.reset(@object_name, reset_text)
         

@@ -8,14 +8,9 @@ var ResourcesPicker = Class.create({
     this.removable_element_class = '.' + options.removable_element_class || '.resource'
     this.element_actions_class   = '.' + options.element_actions_class   || '.actions'
     
-    // store the last selected option in the select box (only in 'one' mode)
-    this.previously_selected_option = null
-    // store the last selected resource (only in 'one' mode)
-    this.previously_selected_resource = null
     // list of removable elements
     this.removable_elements = null
     
-    // alert(this.removable_element_class)
     select_element = $(this.select)
     this.removable_elements = $$(this.removable_element_class)
     
@@ -86,34 +81,27 @@ var ResourcesPicker = Class.create({
   },
   
   initialize_one_resource: function(event) {
-    options = event.target.options
-    for (var i = 0; i < options.length; i++) {
-      if (options.item(i).disabled) {
-        this.previously_selected_option = options.item(i)
-        this.previously_selected_resource = $(this.hidden_element_prefix + '_' + this.previously_selected_option.value)
-      }
-    }
+    //nothing to do here
   },
   
   pick_one_resource: function(event) {
     select = event.target
     option = select.options[select.selectedIndex]
-    resource_id = parseInt(option.value)
+    resource_id = option.value.toString()
+
+    input_class = this.input_class
     
-    if (resource_id > 0) {
-      resource = $(this.hidden_element_prefix + '_' + resource_id)
-      resource.down(this.input_class).checked = true
-      resource.fade({ from: 0, to: 1 });
-      resource.show()
-      option.disabled = true
+    this.removable_elements.each( function(element){
+      // retrieve resource ID from the id attribute of the element
+      str_resource_id = element.id.toString()
+      element_id = str_resource_id.substr(str_resource_id.lastIndexOf("_") + 1)
       
-      if (this.previously_selected_option && this.previously_selected_resource) {
-        this.previously_selected_resource.hide()
-        this.previously_selected_option.disabled = false
-      }
-      
-      this.previously_selected_option = option
-      this.previously_selected_resource = resource
-    }
+      // show selected element hide the others
+      if (element_id == resource_id) {
+        element.appear() }
+      else {
+        element.hide() }
+    })
+    
   }
 });

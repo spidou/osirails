@@ -95,7 +95,7 @@ module HasPermissions
     end
     
     def setup_has_permissions_model options = {}
-      return false unless !defined?(self.permissions_association_options) # don't allow multiple calls
+      return unless !defined?(self.permissions_association_options) or RAILS_ENV == "development" # allow multiple calls only in development
       
       cattr_accessor :permissions_association_options
       
@@ -260,3 +260,7 @@ end
 if Object.const_defined?("ActionController")
   ActionController::Base.send(:include, HasPermissions)
 end
+
+require 'permission'
+require 'permission_method'
+require 'permissions_permission_method'

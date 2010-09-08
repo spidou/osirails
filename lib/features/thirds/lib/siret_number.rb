@@ -13,7 +13,7 @@ module SiretNumber
   end
   
   def siret_number=(siret_number)
-    super( siret_number.is_a?(String) ? siret_number.gsub(" ", "") : siret_number )
+    super siret_number.to_s.gsub(" ", "")
   end
   
 end

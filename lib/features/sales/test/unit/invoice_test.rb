@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../sales_test'
 class InvoiceTest < ActiveSupport::TestCase
   #TODO test has_permissions :as_business_object, :additional_class_methods => [ :confirm, :cancel, :send_to_customer, :abandon, :factoring_pay, :due_date_pay]
   #TODO test has_address     :bill_to_address
-  #TODO test has_contact     :accept_from => :order_contacts
+  #TODO test has_contact     :accept_from => :customer_contacts
   
   should_belong_to :order, :factor, :invoice_type, :creator, :cancelled_by, :abandoned_by
   
@@ -315,12 +315,6 @@ class InvoiceTest < ActiveSupport::TestCase
         prepare_deposit_invoice_to_be_saved(@invoice)
       end
       
-      teardown do
-        @order.deposit_invoice.destroy
-        @deposit_invoice = nil
-        @invoice = @order.invoices.build
-      end
-      
       should "NOT be able to be created" do
         assert !@invoice.can_create_deposit_invoice?
       end
@@ -504,7 +498,6 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       
       teardown do
-        @balance_invoice.destroy
         @balance_invoice = @invoice = nil
       end
       
@@ -609,7 +602,6 @@ class InvoiceTest < ActiveSupport::TestCase
       end
       
       teardown do
-        #@status_invoice.destroy
         @status_invoice = @second_delivery_note = nil
       end
       
@@ -839,7 +831,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @signed_quote = create_signed_quote_for(@order)
       @delivery_note = create_signed_delivery_note_for(@order)
       
-      flunk "order should have at least 2 contacts, but has #{@order.contacts.count}" if @order.contacts.count < 2
+      flunk "order should have at least 2 contacts, but has #{@order.customer_contacts.count}" if @order.customer_contacts.count < 2
       
       @invoice = @order.invoices.build
     end
@@ -853,20 +845,12 @@ class InvoiceTest < ActiveSupport::TestCase
         @invoice.valid?
       end
       
+      subject{ @invoice }
+      
+      should_validate_presence_of :invoice_contact, :with_foreign_key => :default
+      
       should "have an associated_quote" do
         assert_equal @signed_quote, @invoice.associated_quote
-      end
-      
-      should "require exactly 1 contact" do
-        assert @invoice.errors.invalid?(:contact_ids)
-        
-        @invoice.contacts << @order.contacts.first
-        @invoice.valid?
-        assert !@invoice.errors.invalid?(:contact_ids)
-        
-        @invoice.contacts << @order.contacts.last
-        @invoice.valid?
-        assert @invoice.errors.invalid?(:contact_ids)
       end
       
       should "require at least 1 due_date" do
@@ -1276,7 +1260,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_not_allow_values_for :status, 1, "string", Invoice::STATUS_CONFIRMED, Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_FACTORING_BALANCE_PAID, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
       should_validate_presence_of :bill_to_address, :published_on
-      should_validate_presence_of :invoice_type, :creator, :with_foreign_key => :default
+      should_validate_presence_of :invoice_type, :creator, :invoice_contact, :with_foreign_key => :default
       
       should "save invoice_items after saving itself" do
         @invoice.save!
@@ -1311,10 +1295,6 @@ class InvoiceTest < ActiveSupport::TestCase
     context "a saved (uncomplete) and normal invoice" do
       setup do
         create_invoice(@invoice)
-      end
-      
-      teardown do
-        @invoice.destroy
       end
       
       subject { @invoice }
@@ -1520,7 +1500,7 @@ class InvoiceTest < ActiveSupport::TestCase
       should_allow_values_for :status, Invoice::STATUS_CANCELLED, Invoice::STATUS_SENDED
       should_not_allow_values_for :status, 1, "string", nil, Invoice::STATUS_CONFIRMED, Invoice::STATUS_ABANDONED, Invoice::STATUS_FACTORING_PAID, Invoice::STATUS_FACTORING_RECOVERED, Invoice::STATUS_FACTORING_BALANCE_PAID, Invoice::STATUS_DUE_DATE_PAID, Invoice::STATUS_TOTALLY_PAID
       
-      #TODO test validates_persistence_of :confirmed_at, :published_on, :reference, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :contact
+      #TODO test validates_persistence_of :confirmed_at, :published_on, :reference, :factor_id, :bill_to_address, :invoice_type_id, :invoice_items, :due_dates, :invoice_contact
       
       should "NOT be able to be edited" do
         assert !@invoice.can_be_edited?
@@ -2720,13 +2700,26 @@ class InvoiceTest < ActiveSupport::TestCase
     end
   end
   
-  context "generate a reference" do
+  context "Thanks to 'has_reference', an invoice" do
     setup do
       @reference_owner       = create_default_invoice
       @other_reference_owner = create_default_invoice
     end
     
     include HasReferenceTest
+  end
+  
+  context "Thanks to 'has_contact', an invoice" do
+    setup do
+      @contact_owner = create_default_invoice
+      @contact_keys = [ :invoice_contact ]
+    end
+    
+    subject { @contact_owner }
+          
+    should_belong_to :invoice_contact
+    
+    include HasContactTest
   end
   
   private
@@ -2773,11 +2766,11 @@ class InvoiceTest < ActiveSupport::TestCase
     end
     
     def prepare_invoice(invoice, factorised = :normal)
-      invoice.factor          = Factor.first if factorised == :factorised
-      invoice.creator         = User.first
-      invoice.contact         = @order.contacts.first
-      invoice.bill_to_address = @order.bill_to_address
-      invoice.published_on    = Date.today
+      invoice.factor              = Factor.first if factorised == :factorised
+      invoice.creator             = User.first
+      invoice.invoice_contact_id  = @order.all_contacts.first.id
+      invoice.bill_to_address     = @order.bill_to_address
+      invoice.published_on        = Date.today
       return invoice
     end
     
@@ -2888,7 +2881,6 @@ class InvoiceTest < ActiveSupport::TestCase
     def prepare_sended_invoice(invoice, factorised = :normal, number_of_due_dates = 1)
       prepare_confirmed_invoice(invoice, factorised, number_of_due_dates)
       invoice = send_invoice(invoice)
-      invoice.valid?
       flunk "invoice should be sended #{invoice.errors.inspect}" unless invoice.was_sended?
       return invoice
     end
@@ -3020,7 +3012,7 @@ class InvoiceTest < ActiveSupport::TestCase
     end
     
     def update_invoice(invoice)
-      invoice.contact.first_name += "string"
+      invoice.invoice_contact_id = ( invoice.order.customer_contacts - [invoice.invoice_contact] ).first.id
       invoice.bill_to_address.street_name += "string"
       invoice.invoice_items.each { |i| i.name += "string" }
       invoice.due_dates.each { |d| d.date += 1.week }
@@ -3028,37 +3020,32 @@ class InvoiceTest < ActiveSupport::TestCase
     end
     
     def assert_invoice_can_be_edited(invoice)
-      before_contact_attributes           = invoice.contact.attributes
-      before_bill_to_address_attributes   = invoice.bill_to_address.attributes
-      before_invoice_item_attributes      = invoice.invoice_items.first.attributes
-      before_due_date_attributes          = invoice.due_dates.first.attributes
+      before_contact_id                 = invoice.invoice_contact_id
+      before_bill_to_address_attributes = invoice.bill_to_address.attributes
+      before_invoice_item_attributes    = invoice.invoice_items.first.attributes
+      before_due_date_attributes        = invoice.due_dates.first.attributes
       
       update_invoice(invoice)
       
       assert invoice.valid?, "#{invoice.errors.inspect}"
-      assert !invoice.errors.invalid?(:contact)
+      assert !invoice.errors.invalid?(:invoice_contact_id)
       assert !invoice.errors.invalid?(:bill_to_address)
       assert !invoice.errors.invalid?(:invoice_items)
       assert !invoice.errors.invalid?(:due_dates)
       
-      #flunk "#{invoice.due_dates.first.errors.inspect}" unless invoice.save
-      #
-      #assert_not_equal before_contact_ids,                  invoice.contact_ids
-      #assert_not_equal before_bill_to_address_attributes,   invoice.bill_to_address.attributes
-      #assert_not_equal before_invoice_item_attributes,      invoice.invoice_items.first.attributes
-      #assert_not_equal before_due_date_attributes,          invoice.due_dates.first.attributes
+      invoice.save!
+      
+      assert_not_equal before_contact_id,                 invoice.invoice_contact_id
+      assert_not_equal before_bill_to_address_attributes, invoice.bill_to_address.attributes
+      assert_not_equal before_invoice_item_attributes,    invoice.invoice_items.first.attributes
+      assert_not_equal before_due_date_attributes,        invoice.due_dates.first.attributes
     end
     
     def assert_invoice_cannot_be_edited(invoice)
-      before_contact_attributes           = invoice.contact.attributes
-      before_bill_to_address_attributes   = invoice.bill_to_address.attributes
-      before_invoice_item_attributes      = invoice.invoice_items.first.attributes
-      before_due_date_attributes          = invoice.due_dates.first.attributes
-      
       update_invoice(invoice)
       
       assert !invoice.valid?
-      assert invoice.errors.invalid?(:contact), "#{invoice.errors.inspect}"
+      assert invoice.errors.invalid?(:invoice_contact_id), "#{invoice.errors.inspect}"
       assert invoice.errors.invalid?(:bill_to_address)
       assert invoice.errors.invalid?(:invoice_items)
       assert invoice.errors.invalid?(:due_dates)

@@ -41,7 +41,7 @@ module ActsAsStep
         
         class_eval do
           def children_steps
-            self.class.list_children_steps.collect{ |step| send(step) }
+            self.class.list_children_steps.collect{ |step| send(step) rescue nil }.compact
           end
           
           private
@@ -255,3 +255,6 @@ end
 if Object.const_defined?("ActiveRecord")
   ActiveRecord::Base.send(:include, ActsAsStep)
 end
+
+require 'acts_as_step_controller'
+require 'step_manager'
