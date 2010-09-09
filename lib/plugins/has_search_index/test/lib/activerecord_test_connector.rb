@@ -1,8 +1,6 @@
 require 'active_record'
 require 'active_record/version'
 require 'active_record/fixtures'
-require File.dirname(__FILE__) + '/../../../../../config/initializers/basics_overrides' # OPTIMIZE remvove dependencies to make plugin independent
-require File.dirname(__FILE__) + '/../../lib/has_search_index.rb'
 
 class ActiveRecordTestConnector
   cattr_accessor :able_to_connect
@@ -31,6 +29,7 @@ class ActiveRecordTestConnector
   def self.add_load_path(path)
     dep = defined?(ActiveSupport::Dependencies) ? ActiveSupport::Dependencies : ::Dependencies
     dep.load_paths.unshift path
+    dep.load_paths.unshift File.dirname(__FILE__) + '/../../app/models'
   end
 
   def self.setup_connection
@@ -53,7 +52,7 @@ class ActiveRecordTestConnector
       Object.send :const_set, :QUOTED_TYPE, ActiveRecord::Base.connection.quote_column_name('type')
     end
   end
-
+  
   def self.load_schema
     ActiveRecord::Base.silence do
       ActiveRecord::Migration.verbose = false

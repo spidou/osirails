@@ -44,6 +44,7 @@ Rails::Initializer.run do |config|
   require 'yaml'
   $plugins = config.plugins
   $all_features_path = Dir.glob("#{RAILS_ROOT}/**/features/*/")
+  $all_plugins_path  = Dir.glob("#{RAILS_ROOT}/lib/**/plugins/*/")
   $ordered_features_path = []
   
   def load_features_dependencies(f)

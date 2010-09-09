@@ -15,6 +15,7 @@ class Number < ActiveRecord::Base
   VISIBLE_STATES = { "Privé" => false, "Public" => true }
   
   has_search_index  :only_attributes    => [:number],
+                    :additional_attributes => {:formatted => :string},
                     :only_relationships => [:number_type, :indicative]
   
   def formatted

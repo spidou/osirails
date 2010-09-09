@@ -131,4 +131,19 @@ ActiveRecord::Schema.define do
     t.column "a_date",         :date
     t.column "a_binary",       :binary
   end
+  
+  create_table "queries", :force => true do |t|
+    t.integer  "creator_id",    :limit => 11
+    t.string   "name"
+    t.string   "page_name"
+    t.string   "search_type"
+    t.text     "criteria"
+    t.text     "columns"
+    t.text     "order"
+    t.text     "group"
+    t.boolean  "public_access"
+    t.integer  "per_page",      :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 end

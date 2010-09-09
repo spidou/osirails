@@ -1,0 +1,79 @@
+conf_pagination: &pagination
+  per_page:
+    - 5
+    - 10
+    - 15
+advanced_customer:
+  columns:
+    - name
+    - legal_form.name
+    - website
+    - customer_grade.name
+    - head_office.name
+    - head_office.siret_number
+    - head_office.full_address
+    - head_office.establishment_type.name
+    - head_office.activity_sector_reference.get_activity_sector_name
+    - head_office.phone.formatted
+    - head_office.fax.formatted
+    - bill_to_address.formatted
+    - factor.name
+    - customer_solvency.name
+#    - establishments
+  group:
+    - legal_form.name
+#    - head_office_and_establishments.name
+    - factor.name
+    - customer_grade.name
+    - customer_solvency.name 
+  order:
+    - name
+    - legal_form.name
+    - customer_grade.name
+    - factor.name
+    - customer_solvency.name
+  <<: *pagination
+  
+     
+customer_index:
+  columns:
+    - name
+    - legal_form.name
+    - website
+    - customer_grade.name
+    - head_office.name
+    - head_office.siret_number
+    - head_office.full_address
+    - head_office.establishment_type.name
+    - head_office.activity_sector_reference.get_activity_sector_name
+    - head_office.phone.formatted
+    - head_office.fax.formatted
+    - bill_to_address.formatted
+    - factor.name
+    - customer_solvency.name
+#    - establishments
+  group:
+    - legal_form.name
+#    - head_office_and_establishments.name
+    - factor.name
+    - customer_grade.name
+    - customer_solvency.name 
+  order:
+    - name
+    - legal_form.name
+    - customer_grade.name
+    - factor.name
+    - customer_solvency.name
+  <<: *pagination
+  
+  default_query:
+    columns:
+      - name
+      - legal_form.name
+#      - establishments
+      - head_office.activity_sector_reference.get_activity_sector_name
+      - customer_grade.name
+    order:
+      - name
+    search_type: and
+    per_page: 10

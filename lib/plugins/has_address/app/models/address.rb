@@ -13,7 +13,8 @@ class Address < ActiveRecord::Base
   @@form_labels[:city_name]     = "Ville :"
   @@form_labels[:zip_code]      = "Code postal :"
   
-  has_search_index :only_attributes => [ :street_name, :city_name, :country_name, :zip_code ]
+  has_search_index :only_attributes => [ :street_name, :city_name, :country_name, :zip_code],
+                   :additional_attributes => {:formatted => :string }
   
   def formatted
     [street_name, zip_code, city_name, country_name].join(" ")

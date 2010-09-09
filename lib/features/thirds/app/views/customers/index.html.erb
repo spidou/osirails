@@ -4,42 +4,8 @@
   <%= new_customer_link(:link_text => "Nouveau client") %>
 <% end %>
 
-<h1>Les clients</h1>
+<h1><%= title_for_search %></h1> 
 
 <div>
-  <% unless @customers.empty? %>
-    <table>
-      <thead>
-        <tr>
-          <th>Raison sociale</th>
-          <th>Forme juridique</th>
-          <th>Enseigne(s)</th>
-          <th>Secteurs d'activités</th>
-          <th>Note</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for customer in @customers %>
-          <tr>
-            <td class="name"><%= customer.name %></td>
-            <td class="legal_form"><%= customer.legal_form.name %></td>
-            <td class="establishments"><%= customer.establishment_names.join(", ") %></td>
-            <td class="activity_sector" title="<%= customer.head_office.activity_sector_reference.get_activity_sector.name if customer.head_office and customer.head_office.activity_sector_reference %>">
-              <%= customer.head_office.activity_sector_reference.get_activity_sector.short_name if customer.head_office and customer.head_office.activity_sector_reference %>
-            </td>
-            <td class="grade"><%= customer.customer_grade.name %></td>
-            <td class="actions">
-              <%= customer_link(customer, :link_text => "") %> 
-              <%= edit_customer_link(customer, :link_text => "") %>
-              <%= delete_customer_link(customer, :link_text => "") %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-    <%= will_paginate @customers %>
-  <% else %>
-    <p>Aucun client n'a été trouvé</p>
-  <% end %>
+  <%= table_for_search %>
 </div>

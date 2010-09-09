@@ -15,7 +15,7 @@
 
 class ApplicationController < ActionController::Base
   include Osirails::ContextualMenu
-  
+
   helper :all # include all helpers, all the time
   layout "default"
   

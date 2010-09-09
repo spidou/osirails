@@ -1,0 +1,14 @@
+person:
+  columns:
+    - *
+  order:
+    - name
+  per_page:
+    - 10
+    - 20
+  group:
+    - age
+  filters:
+    - name
+    - phone_number: numbers.value
+    - phone_type: numbers.number_type.name

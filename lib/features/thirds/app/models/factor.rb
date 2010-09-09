@@ -10,6 +10,10 @@ class Factor < ActiveRecord::Base
   # for pagination : number of instances by index page
   FACTORS_PER_PAGE = 15
   
+  has_search_index :only_attributes => [:name, :fullname],
+                   :only_relationships => [:customers],
+                   :main_model => true
+  
   cattr_reader :form_labels
   @@form_labels = Hash.new
   @@form_labels[:name]      = "Nom :"

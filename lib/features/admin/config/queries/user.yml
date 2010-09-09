@@ -1,0 +1,22 @@
+user_index:
+  filters:
+  columns:
+    - username
+    - enabled
+    - last_connection
+    - last_activity
+  order:
+    - username
+  per_page:
+    - 5
+    - 10
+    - 15
+  search_type:
+  default_query:
+    columns:
+      - username
+      - enabled
+      - last_connection
+    order:
+      - username
+    search_type: and

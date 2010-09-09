@@ -1,1022 +1,1849 @@
-require File.dirname(__FILE__) + '/helper'
+require 'helper'
 require 'lib/activerecord_test_case'
 
-class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
-  fixtures :people, :data_types
+class HasSearchIndexTest < ActiveRecordTestCase
   
-  def setup
-    
-    %w(person summer_job favorite_color gender number identity_card relationship familly_relationship people_wish people_dream wish dream dog).each do |file_name|
-      load File.dirname(__FILE__) + "/fixtures/#{file_name}.rb" 
-    end
-
-    @person = people(:good_person)
-    @data_type_sample = data_types(:data_type_sample)
-    @data_type_sample.a_datetime = Date.today.to_datetime                                # define +a_datetime+ here to get a datetime without setting utc.
-    Person.has_search_index
-  end
-  
-  def teardown
-    @person = nil
-    
-    %w(Person SummerJob FavoriteColor Gender Number IdentityCard Relationship FamillyRelationship PeopleWish PeopleDream Wish Dream Dog).each do |constant|
-      Object.send :remove_const, constant.to_sym if Object.const_defined?(constant)
-    end
-    silence_warnings do
-      HasSearchIndex.class_eval {|e| e.const_set('MODELS', [])}                          # clean the models list where the plugin is defined
-    end
-  end
-  
-  def test_has_search_index
-    # verify that, if the model is added as relationhip and doesn't implement the plugin, it raise an error
-#    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:gender] } # that is not checked at plugin implementation yet but at runtime
-    
-    init_plugin_in_all_models
-    
-    assert_not_nil Person.search_index, "search_index should be defined by the plugin"   
-     
-    ######################### 
-    ### Test attributes (More deep test with private method test below 'test_check_attributes')
-    
-    attributes_quantity = Person.columns.size-1  # -1 because of foreign_key gender_id
-    assert_equal attributes_quantity, Person.search_index[:attributes].size ,"Person should have all his attributes within the plugin"  
-     
-    Person.has_search_index :only_attributes => [:name]
-    assert_equal 1, Person.search_index[:attributes].size ,"Person should have only one attribute within the plugin" 
-    
-    Person.has_search_index :except_attributes => [:name]
-    assert_equal attributes_quantity-1, Person.search_index[:attributes].size ,"Person should have all his attributes, excepted one, within the plugin"
-    
-    Person.has_search_index :except_attributes => :all
-    assert_equal 0, Person.search_index[:attributes].size, "Person should NOT have attributes"
-    
-    #########################
-    ### Test relationships (More deep test with private method test below 'test_check_relationships')
-    
-    relationships_quantity = Person.reflect_on_all_associations.select {|assoc| [nil,false].include?(assoc.options[:polymorphic])}.size
-    message  = "Person should have all his relationships within the plugin"
-    assert_equal relationships_quantity, Person.search_index[:relationships].size, message
-    
-    Person.has_search_index :only_relationships => [:gender]
-    assert_equal 1, Person.search_index[:relationships].size, "Person should have only one relationship within the plugin"
-    
-    Person.has_search_index :except_relationships => [:gender]
-    message = "Person should have all his relationships, excepted one, within the plugin"
-    assert_equal relationships_quantity-1, Person.search_index[:relationships].size, message
-    
-    Person.has_search_index :except_relationships => :all
-    assert_equal 0, Person.search_index[:relationships].size, "Person should NOT have relationships"
-    
-    #########################
-    ### Test additional attributes
-    
-    assert_equal 0, Person.search_index[:additional_attributes].size ,"Person should NOT have additional attributes within the plugin"
-     
-    Person.has_search_index :additional_attributes => {:name => :string}
-    assert_equal 1, Person.search_index[:additional_attributes].size ,"Person should have only one additional attributes within the plugin"
-    
-    assert_raise(ArgumentError) { Person.has_search_index :additional_attributes => [:name] }
-    
-    #########################
-    ### Test displayed attributes
-    assert_equal 0, Person.search_index[:displayed_attributes].size, "Person should NOT have displayed attributes"
-    
-    Person.has_search_index :displayed_attributes => [:name]
-    assert_equal 1, Person.search_index[:displayed_attributes].size, "Person should have only one displayed attributes"
-
-    assert_raise(ArgumentError) { Person.has_search_index :displayed_attributes => "bad arg" }
-  end
-  
-  # private method called by has_search_index
-  def test_check_relationships
-    assert_raise(ArgumentError) { Person.has_search_index :except_relationships => 'bad arg' }
-    
-    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => ['wrong_relationship_name'] } 
-    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => 'bad arg' }
-    
-    assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:gender], :except_relationships => [:gender] }
-  end
-  
-  # private method called by has_search_index
-  def test_check_attributes
-    assert_raise(ArgumentError) { Person.has_search_index :except_attributes => 'bad arg' }
-    
-    assert_raise(ArgumentError) { Person.has_search_index :only_attributes => ['wrong_relationship_name'] } 
-    assert_raise(ArgumentError) { Person.has_search_index :only_attributes => 'bad arg' }
-    
-    assert_raise(ArgumentError) { Person.has_search_index :only_attributes => [:name], :except_attributes => [:name] }
-  end
-  
-  # Test the main search method
-  def test_search_with
-    Gender.has_search_index
-    Person.has_search_index :only_attributes => [:age], :additional_attributes => {:name => :string}
-    create_people
-    
-    # Test undefined relationship
-    assert_raise(ArgumentError) { Person.search_with("wrong_relationship.name" => "value") }
-    
-    # Test undefined attribute
-    assert_raise(ArgumentError) { Person.search_with("gender.wrong_attribute" => "value") }
-    
-    # Test all kind of +search_type+ when mixing +additional_results+ to +database_results+
-    message = "Returned collection should contain"
-    
-    assert_equal 1, Person.search_with('age' => 22, 'name' => 'frank').size,
-      "#{message} 1 object with age == 22 AND name like 'frank'"
-      
-    assert_equal 1, Person.search_with('age' => 22, 'name' => 'frank', :search_type => 'and').size,
-      "#{message} 1 object with age == 22 AND name like 'frank'"
-      
-    assert_equal 2, Person.search_with('age' => 22, 'name' => 'frank', :search_type => 'or').size,
-      "#{message} 2 objects with age == 22 OR name like 'frank'"
-      
-    assert_equal 4, Person.search_with('age' => {:value => 22, :action => '<'}, 'name' => 'frank', :search_type => 'not').size,
-      "#{message} 4 objects with age >= 22 AND name not like 'frank'"
-  end
-  
-  def test_search_only_database_attributes
-    init_plugin_in_all_models
-    Person.has_search_index
-    create_people
-    message = "Returned objects should be the same"
-    
-    #########################
-    ## Test direct attribute
-    
-    find_result        = Person.all(:conditions => ['name like?', '%good%']).collect(&:id)
-    search_with_result = Person.search_with('name' => 'good').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    #########################
-    # Test simple nested attribute
-    
-    Gender.create(:name => 'femme')
-    @person.update_attributes(:gender_id => Gender.first.id)
-    find_result        = Person.all(:include => [:gender], :conditions => ['genders.name like?', '%femme%']).collect(&:id)
-    search_with_result = Person.search_with('gender.name' => 'femme').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    #########################
-    # Test complex nested attribute
-    
-    NumberType.create(:name => "mobile")
-    number = Number.create(:number_type_id => NumberType.first.id)
-    friend = Person.create(:name => 'friend')
-    friend.numbers  << number
-    @person.friends << friend
-    find_result        = Person.all(:include => [{:friends => [{:numbers => [:number_type]} ]} ], :conditions => ['number_types.name like?', '%mobile%']).collect(&:id)
-    search_with_result = Person.search_with('friends.numbers.number_type.name' => 'mobile').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # That part don't work because of a bug when using eager loading with 'has_one :through' (http://apidock.com/rails/ActiveRecord/Associations/ClassMethods/has_one#554-has-one-through-belongs-to-not-working)
-#    NumberType.create(:name => "fixe")
-#    number = Number.create(:number_type_id => NumberType.first.id)
-#    love = Person.create(:name => 'bad')
-#    love.numbers << number
-#    @person.love = love
-#    @person.save
-#    find_result        = Person.all(:include => [{:love => [{:numbers => [:number_type]} ]} ], :conditions => ['number_types.name like?', '%mobile%']).collect(&:id)
-#    search_with_result = Person.search_with('love.numbers.number_type.name' => 'mobile').collect(&:id)
-#    
-#    assert_equal find_result, search_with_result, message
-
-    #########################
-    ## Test with all kind of +values+ formats
-    
-    # 'value'
-    find_result        = Person.all(:conditions => ['name like?', '%good%']).collect(&:id)
-    search_with_result = Person.search_with('name' => 'good').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # 'value value2'
-    find_result        = Person.all(:conditions => ['(name like? or name like? or name like?)', '%go%','%od%','%go od%']).collect(&:id)
-    search_with_result = Person.search_with('name' => 'go od').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # {:value => 'value', ...}
-    find_result        = Person.all(:conditions => ['name like?', '%good%']).collect(&:id)
-    search_with_result = Person.search_with('name' => 'good').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # {:value => 'value value2', ...}
-    find_result        = Person.all(:conditions => ['(name =? or name =? or name =?)', 'go','od','go od']).collect(&:id)
-    search_with_result = Person.search_with('name' => {:value => 'go od', :action => "="}).collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # [{:value => 'value', ...}, {:value => 'value', ...}]
-    find_result        = Person.all(:conditions => ['(name =?) and (people.name !=?)', 'good', 'bad']).collect(&:id)
-    search_with_result = Person.search_with('name' => [{:value => 'good', :action => "="}, {:value => 'bad', :action => "!="}]).collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    conditions_text    = '(name =? or name =? or name =?) and (name !=? or name !=? or name !=?)'
-    find_result        = Person.all(:conditions => [conditions_text, 'go','od','go od','ba','ad','ba ad']).collect(&:id)
-    search_with_result = Person.search_with('name' => [{:value => 'go od', :action => "="}, {:value => 'ba ad', :action => "!="}]).collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    #########################
-    ## Test with all kind of +search_type+
-    values             = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
-    # OR
-    find_result        = Person.all(:conditions => ['name like? or name like?', '%good%', '%bad%']).collect(&:id)
-    search_with_result = Person.search_with('name' => values, :search_type => 'or').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # NOT
-    find_result        = Person.all(:conditions => ['name not like? and name not like?', '%good%', '%bad%']).collect(&:id)
-    search_with_result = Person.search_with('name' => values, :search_type => 'not').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-    
-    # AND
-    find_result        = Person.all(:conditions => ['name like? and name like?', '%good%', '%bad%']).collect(&:id)
-    search_with_result = Person.search_with('name' => values, :search_type => 'and').collect(&:id)
-    
-    assert_equal find_result, search_with_result, message
-  end
-  
-  def test_search_only_additional_attributes
-  
-    ## Test with all kind of +search_type+
-    Person.has_search_index :additional_attributes => {:name => :string, :age => :integer}
-    create_people
-    collection = Person.all
-    message    = "Returned objects should be the same"
-    
-    # OR
-    additional_result  = collection.select {|n| n.name.downcase.match('good'.downcase) or n.age == 20}.collect(&:id)
-    search_with_result = Person.search_with('name' => 'good', 'age' => 20, :search_type => 'or').collect(&:id)
-    
-    assert_equal additional_result, search_with_result, message
-    
-    # NOT
-    additional_result  = collection.select {|n| n.name != 'good' and n.age != 20}.collect(&:id)
-    search_with_result = Person.search_with('name' => {:value => 'good', :action => '='}, 'age' => 20, :search_type => 'not').collect(&:id)
-    
-    assert_equal additional_result, search_with_result, message
-    
-    # AND
-    additional_result  = collection.select {|n| n.name.downcase.match('good'.downcase) and n.age > 20}.collect(&:id)
-    search_with_result = Person.search_with('name' => 'good', 'age' => {:value => 20, :action => ">"}, :search_type => 'and').collect(&:id)
-    
-    assert_equal additional_result, search_with_result, message
-  end
-  
-  def test_match_regexp
-    # test match a word
-    data = expression = "string"
-    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
-    expression += 's'
-    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
-
-    # test match word's end
-    expression = "*.txt"
-    data = 'string.txt'
-    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
-    data = 'string.pdf'
-    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
-
-    # test match word's begining
-    expression = "test_*"
-    data = 'test_string'
-    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
-    data = 'test.string'
-    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
-
-    # test match word's content
-    expression = "*event*"
-    data = 'new_event'
-    assert Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should match"
-    data = 'new_action'
-    assert !Person.send(:match_regexp, data, expression), "'#{data}' and '#{expression}' should NOT match"
-  end
-  
-  def test_search_index_attributes
-    Person.has_search_index :only_attributes => [:name]
-    assert_equal 1, Person.search_index_attributes.size, "search_index_attributes should contain 1 attribute"
-
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:name => :string}
-    assert_equal 1, Person.search_index_attributes.size,
-      "search_index_attributes should contain 1 attribute because the direct and the additional attributes are the same"
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
-    assert_equal 2, Person.search_index_attributes.size, "search_index_attributes should contain 2 attributes"
-  end
-  
-  def test_search_index_attribute_type
-    # database attributes types are defined by model definition (based onto database)
-    defined_columns = Person.columns.select {|n| Person.search_index_attributes.include?(n)}
-    defined_columns.each do |column|
-      assert_equal column.type.to_s, Person.search_index_attribute_type(column.name),
-        "#{column.name}'s type within the plugin should be as defined into the model"
+  context "" do # context to keep clean Models between each tests
+    setup do
+      %w(person summer_job favorite_color gender number identity_card relationship familly_relationship people_wish people_dream wish dream dog).each do |file_name|
+        load "fixtures/#{file_name}.rb" 
+      end
     end
     
-    # additional attributes types are more flexible and can be defined while plugin call into the model
-    Person.has_search_index :additional_attributes => {:created_at => :date}
-    assert_equal 'date', Person.search_index_attribute_type('created_at'), "created_at's type should be as defined within the plugin call"
-  end
-  
-  def test_get_include_array
-    #########################
-    ## Simple include
+    teardown do
+      %w(Person SummerJob FavoriteColor Gender Number IdentityCard Relationship FamillyRelationship PeopleWish PeopleDream Wish Dream Dog).each do |constant|
+        Object.send :remove_const, constant.to_sym if Object.const_defined?(constant)
+      end
+      silence_warnings do
+        HasSearchIndex.class_eval {|e| e.const_set('MODELS', [])}                          # clean the models list where the plugin is defined
+      end
+    end
     
-    SummerJob.has_search_index :except_relationships => :all
-    Person.has_search_index :only_relationships => [:summer_jobs]
-    
-    expected_array = [:summer_jobs]
-    assert_equal expected_array, Person.get_include_array, "include_array should be as expected : #{expected_array.inspect}"
-    
-    #########################
-    ## Nested include
-    
-    NumberType.has_search_index :except_relationships => :all
-    Number.has_search_index :only_relationships => [:number_type]
-    Person.has_search_index :only_relationships => [:summer_jobs, :numbers]
-    
-    expected_array = [:summer_jobs, {:numbers => [:number_type]}]
-    assert_equal expected_array, Person.get_include_array, "include_array should be as expected : #{expected_array.inspect}"
-  end
-  
-  def test_search_index_relationships
-    ## With an explicit relationships definition
-    # without mistakes
-    Person.has_search_index :only_relationships => [:numbers]
-    Number.has_search_index
-    
-    assert_equal [:numbers], Person.search_index_relationships
-    assert_nothing_raised { Person.search_index_relationships }
-    
-    # with a mistake
-    Person.has_search_index :only_relationships => [:numbers, :summer_jobs]
-    
-    assert_raise(ArgumentError) { Person.search_index_relationships }
-    
-    ## With an implicit relationships definition
-    # without any nested resource implementing the plugin
-    Number.has_search_index
-    
-    assert_equal [], Number.search_index_relationships
-    assert_nothing_raised { Number.search_index_relationships }
-    
-    # with one nested resource implementing the plugin 
-    NumberType.has_search_index
-    
-    assert_equal [:number_type], Number.search_index_relationships
-    assert_nothing_raised { Number.search_index_relationships }
-  end
-  
-  def test_reflect_relationship
-    Person.has_search_index :only_relationships => [:numbers, :summer_jobs]
-    Number.has_search_index
-   
-    
-    # Explicit relationships configurations
-    assert_equal Number, Person.reflect_relationship(:numbers)
-    assert_nothing_raised { Person.reflect_relationship(:numbers) }
-    
-    assert_raise(ArgumentError) { Person.reflect_relationship(:summer_jobs) }
-    
-    # Implicite relationships configurations
-    assert_equal nil, Number.reflect_relationship(:number_type)
-    assert_nothing_raised { Number.reflect_relationship(:number_type) }
-    
-    # Implicite relationships configurations taking in account implicit
-    assert_raise(ArgumentError) { Number.reflect_relationship(:number_type, check_implicit = true) }
-  end
-  
-  #### Privates methods tested directly ####
-  
-  
-  def test_is_additional
-    assert !Person.send(:is_additional?, 'name'), "'name' should not be an additional attribute"
-    
-    Person.has_search_index(:additional_attributes => {:name => :string})
-    assert Person.send(:is_additional?, 'name'), "'name' should be an additional attribute"
-    
-    # with wrong nested resource
-    assert_raise(ArgumentError) { Person.send(:is_additional?, 'gander.name') }
-    
-    # with nested resource that don't implement the plugin
-    assert_raise(ArgumentError) { Person.send(:is_additional?, 'gender.name') }
-    
-    # with nested resource that implement the plugin
-    Gender.has_search_index :additional_attributes => {:name => :string}
-    assert Person.send(:is_additional?, 'gender.name'), "'gender.name' should be an additional attribute"
-  end
-  
-  def test_only_additional_attributes
-    attributes = {'name' => 'string', 'created_at' => 'datetime'}
-    
-    Person.has_search_index :additional_attributes => {:name => :string, :created_at => :datetime}
-    assert Person.send(:only_additional_attributes?, attributes)
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
-    assert !Person.send(:only_additional_attributes?, attributes)
-  end
-  
-  def test_only_database_attributes
-    attributes = {'name' => 'string', 'created_at' => 'datetime'}
-    
-    Person.has_search_index :only_attributes => [:name, :created_at]
-    assert Person.send(:only_database_attributes?, attributes)
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:created_at => :datetime}
-    assert !Person.send(:only_database_attributes?, attributes)
-  end
-  
-  def test_filter_include_array_from_prefixes
-    #########################
-    ## Simple include
-    
-    SummerJob.has_search_index :except_relationships => :all
-    Person.has_search_index :only_relationships => [:summer_jobs]
-    include_array  = [:summer_jobs]
-    
-    expected_array = include_array
-    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs']),
-      "include_array should be as expected : #{expected_array.inspect}"
+    ############################################################
+    ### Plugin's integrated search configuration with yaml files
+    ############################################################
+    context "A Yaml configuration file" do
+      setup do
+        NumberType.has_search_index :only_attributes => [:name]
+        Number.has_search_index :only_relationships => [:number_type], :only_attributes => [:value, :id]
+        Person.has_search_index :only_relationships => [:numbers], :only_attributes => [:name, :age]
+        
+        
+        @yml_path = "#{ File.dirname(__FILE__) }/fixtures/person.yml"
+        @options = {'person' => {'columns' => ['*'],
+                                 'order' => ['name'],
+                                 'per_page' => [10, 20],
+                                 'group' => ['age'],
+                                 'filters' => ['name', {'phone_number' => 'numbers.value'}, {'phone_type' => 'numbers.number_type.name'}] }}
+        @expected = {:default_query => nil,
+                     :columns => ['name', 'age'],
+                     :order => ['name'],
+                     :per_page => [10, 20],
+                     :group => ['age'],
+                     :filters => ['name', {'phone_number' => 'numbers.value'}, {'phone_type' => 'numbers.number_type.name'}],
+                     :model => 'Person' }
+      end
       
-    expected_array = []
-    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, []),
-      "include_array should be as expected : #{expected_array.inspect}"
-    
-    #########################
-    ## Nested include
-    
-    NumberType.has_search_index :except_relationships => :all
-    Number.has_search_index :only_relationships => [:number_type]
-    Person.has_search_index :only_relationships => [:summer_jobs, :numbers]
-    include_array  = [:summer_jobs, {:numbers => [:number_type]}]
-    
-    expected_array = include_array
-    assert_equal expected_array,  Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs', 'numbers.number_type']),
-      "include_array should be as expected : #{expected_array.inspect}"
+      teardown do
+        @yml_path = @options = @expected = nil
+        HasSearchIndex::HTML_PAGES_OPTIONS[:person] = nil
+      end
       
-    expected_array = [:summer_jobs, :numbers]
-    assert_equal expected_array,  Person.send(:filter_include_array_from_prefixes, include_array, ['summer_jobs', 'numbers']),
-      "include_array should be as expected : #{expected_array.inspect}"
+      context "wich is well named and with a valid path" do
+        setup do
+          HasSearchIndex.load_page_options_from(@yml_path)
+        end
+        
+        should "return expected result without error" do
+          assert_nothing_raised do
+            assert_equal(@expected, HasSearchIndex::HTML_PAGES_OPTIONS[:person])
+          end
+        end
+      end
       
-    expected_array = []
-    assert_equal expected_array, Person.send(:filter_include_array_from_prefixes, include_array, []),
-      "include_array should be as expected : #{expected_array.inspect}"
-  end
-  
-  def test_search_match
-  
-    assert_raise(ArgumentError) {Person.send(:search_match?, @person, 'name', 'good', 'bad search_type')}
-    
-    #########################
-    ## Test with all kind of +values+ formats
-    
-    # 'value'
-    assert Person.send(:search_match?, @person, 'name', 'good', 'or'), "@person's name should match with 'good'"
-    assert !Person.send(:search_match?, @person, 'name', 'bad', 'or'), "@person's name shouldn't match with 'bad'"
+      context "wich is not named as a valid model" do
+        setup do
+          @yaml_path = "some_path/toto.yml"
+        end
+        
+        should "raise a ArgumentError" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yaml_path)}
+        end
+      end
       
-    # 'value value2'
-    assert Person.send(:search_match?, @person, 'name', 'gd goo', 'or'), "@person's name should match with 'gd' or 'goo'"
-    assert !Person.send(:search_match?, @person, 'name', 'b bad', 'or'), "@person's name shouldn't match with 'b' or 'bad'"
+      context "wich has not a valid path" do
+        setup do
+          @yaml_path = "invalid_path_path/person.yml"
+        end
+        
+        should "raise a Errno::ENOENT" do
+          assert_raise(Errno::ENOENT) { HasSearchIndex.load_page_options_from(@yaml_path)}
+        end
+      end
       
-    # {:value => 'value', ...}
-    assert Person.send(:search_match?, @person, 'name', {:value => 'good', :action => 'like'}, 'or'), "@person's name should match with 'good'"
-    assert !Person.send(:search_match?, @person, 'name', {:value => 'bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'bad'"
+      context "wich is named as a valid model not implementing 'has_search_index'" do
+        setup do
+          @yaml_path = "some_path/summer_job.yml"
+        end
+        
+        should "raise a ArgumentError" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yaml_path, @options)}
+        end
+      end
       
-    # {:value => 'value value2', ...}
-    assert Person.send(:search_match?, @person, 'name', {:value => 'gd goo', :action => 'like'}, 'or'), "@person's name should match with 'gd' or 'goo'"
-    assert !Person.send(:search_match?, @person, 'name', {:value => 'b bad', :action => 'like'}, 'or'), "@person's name shouldn't match with 'b' or 'bad'"
-      
-    # [{:value => 'value', ...}, {:value => 'value', ...}]
-    assert Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
-      "@person's name should match with 'good' or 'another_name'"
-    assert !Person.send( :search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
-      "@person's name shouldn't match with 'bad' or 'another_name'"
-    
-    # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    assert Person.send( :search_match?, @person, 'name', [{:value => 'gd goo', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
-      "@person's name should match with ('gd' or 'goo') or ('another' or 'name')"
-    assert !Person.send(:search_match?, @person, 'name', [{:value => 'b bad', :action => 'like'}, {:value => 'another name', :action => 'like'}], 'or'),
-      "@person's name shouldn't match with ('b' or 'bad') or ('another' or 'name')"
-    
-    #########################
-    ## Test all kind of actions (according to different datatypes)
-    
-    types = { :string => "good",
-              :binary => "0111 0001",
-              :text => "lorem ipsum azerty toto",
-              :integer => 1,
-              :float => 1.2,
-              :decimal => 2.345,
-              :boolean => true,
-              :datetime => Date.today.to_datetime,  # use this to avoid problems with time differences
-              :date => Date.today }
-              
-    DataType.has_search_index :additional_attributes => { :a_string => :string, :a_binary => :binary, :a_text => :text, :a_integer => :integer,
-                                                          :a_float => :float, :a_boolean => :boolean, :a_datetime => :datetime,
-                                                          :a_date => :date, :a_decimal => :decimal}
-                                                          
-    types.each_pair do |data, good_value|
-      message = "+a_#{data.to_s}+ ( #{@data_type_sample.send("a_#{data.to_s}").to_s.downcase} ) - ( #{good_value.to_s.downcase} )"
-      case data
-        when :string, :text, :binary
-          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'like'}, 'or'), "data should match #{message}"
-          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
-          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => 'not like'}, 'or'), "data should NOT match #{message}"
+      context "without mandatory OPTION (:columns)" do
+        setup do
           
-        when :integer,:decimal, :date, :datetime, :float
-          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>='}, 'or'), "data should match #{message}"
-          assert DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<='}, 'or'), "data should match #{message}"
-          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
-          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '<'}, 'or'), "data should NOT match #{message}"
-          assert !DataType.send( :search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '>'}, 'or'), "data should NOT match #{message}"
+          @options['person'].delete('columns')
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any OPTION that is not an Array" do
+        setup do
+          @options['person']['group'] = "Bad OPTION type"
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any OPTION that contains *to_many* relationship for the plugin" do
+        setup do
+          Person.has_search_index :only_relationships => [:summer_jobs]
+          SummerJob.has_search_index
+          @options['person']['columns'] = ['summer_jobs.id']
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+        
+      context "with :filters OPTION that contains *to_many* relationship for the plugin" do
+        setup do
+          Person.has_search_index :only_relationships => [:summer_jobs]
+          SummerJob.has_search_index
+          @options['person']['filters'] = ['summer_jobs.id']
+        end
+        
+        should 'raise nothing' do
+          assert_nothing_raised { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH that contains undefined attribute for the model" do
+        setup do
+          @options['person']['columns'] = ['undefined_attribute']
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH that contains undefined attribute for the plugin" do
+        setup do
+          Person.has_search_index :except_attributes => [:id]
+          @options['person']['columns'] = ['id']
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH that contains undefined relationship for the model" do
+        setup do
+          @options['person']['columns'] = ['undefined_relationship.id']
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with any ATTRIBUTE_PATH that contains undefined relationship for the plugin" do
+        setup do
+          Person.has_search_index :except_relationships => [:dog]
+          @options['person']['columns'] = ['dog.id']
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      
+      context "with any ATTRIBUTE_PATH, (for :filters OPTION), using both 'alias' and 'globbing' feature" do
+        setup do
+          @options['person']['filters'] = [{'alias' => "numbers.*"}]
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with a default query containing an invalid option" do
+        setup do
+          @options['person']['default_query'] = {'group' => {}}
+        end
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with a default query containing wrong :order option" do
+        setup do
+          @options['person']['default_query'] ={ 'order' => ['id:Not Desc']}
+        end
+        
+        should 'raise an ArgumentError' do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+      
+      context "with a default query containing a criterion that do not respect has_search_index implementation" do
+        setup do
+          Person.has_search_index :except_attributes => [:name]
+          @options['person']['default_query'] = {'criteria' => {:name => 'Name'}}
+        end
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { HasSearchIndex.load_page_options_from(@yml_path, @options)}
+        end
+      end
+    end
+    ####################################################
+    ### Plugin Implementation into an ActiveRecord Model
+    ####################################################
+    context "+Person+ implementing the plugin (with many nested resources implementing the plugin)" do
+      setup do
+        Person.has_search_index
+        @person = Person.create(:name => 'good', :age => '20')
+        create_summer_jobs(@person.id)
+        create_dogs(@person.id)
+      end
+      
+      should "have an instance variable and be included in has_search_index's models" do
+        assert Person.respond_to?(:search_index) && HasSearchIndex::MODELS.include?('Person')
+      end
+      
+      should "have search_index_attributes" do
+        assert_not_nil Person.search_index_attributes
+      end
+      
+      should "have search_index_relationships" do
+        assert_not_nil Person.search_index_relationships
+      end
+      
+      context "with implicit attributes definition" do
+        setup do
+          @attributes_quantity = Person.columns.size-1  # -1 because of foreign_key gender_id
+        end
+
+        should "have all his attributes defined for the plugin" do
+          assert_equal @attributes_quantity, Person.search_index[:attributes].size
+        end
+      end
+
+      context "with valid :only_attributes" do
+        setup do
+          Person.has_search_index :only_attributes => [:name]
+          @model_column = Person.columns.detect {|n| n.name == 'name'}
+        end
+
+        should "have only these attributes defined for the plugin" do
+          assert_equal 1, Person.search_index[:attributes].size
+        end
+        
+        should "store it inot search_index_attributes" do
+          assert Person.search_index_attributes.keys.include?('name')
+        end
+        
+        should "have search_index_attribute_type as defined into the model" do
+          assert_equal @model_column.type.to_s, Person.search_index_attribute_type('name')
+        end
+      end
+
+      context "with :only_attributes that is not an Array" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_attributes => 'bad arg' }
+        end
+      end
+
+      context "with :only_attributes that contain undefined attributes" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_attributes => ['wrong_relationship_name'] }
+        end
+      end
+
+      context "with valid :except_attributes" do
+        setup do
+          Person.has_search_index :except_attributes => [:name]
+          @attributes_quantity = Person.columns.size-1  # -1 because of foreign_key gender_id
+        end
+
+        should "have all his attributes for the plugin, except the excepted ones, defined for the plugin" do
+          assert_equal @attributes_quantity-1, Person.search_index[:attributes].size
+        end
+      end
+
+      context "with :except_attributes that is not an Array" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_attributes => [:name], :except_attributes => [:name] }
+        end
+      end
+
+      context "with :except_attributes is set to :all" do
+        setup do
+          Person.has_search_index :except_attributes => :all
+        end
+
+        should "not have attribute defined for the plugin" do
+          assert_equal 0, Person.search_index[:attributes].size
+        end
+      end
+
+      context "with :only_attributes and :except_attributes both set" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :except_attributes => 'bad arg' }
+        end
+      end
+
+      context "with implicit relationships definition" do
+        setup do
+          @relationships_quantity = Person.reflect_on_all_associations.select {|assoc| [nil,false].include?(assoc.options[:polymorphic])}.size
+          @expected_include_array = [:friends, :love] # auto_reference (:friends & :love => class_name == Person)
+        end
+
+        should "have all his relationships excepted these which point to polymorphic entity, defined for the plugin" do
+          assert_equal @relationships_quantity, Person.search_index[:relationships].size
+        end
+        
+        should "have include_array as expected" do
+          assert (@expected_include_array | Person.get_include_array).size == 2  ## compare content without taking in account order
+        end
+        
+        context "for relationship that implements the plugin" do
+        
+          should "return relationship's class_name without error" do
+            assert_nothing_raised { assert_equal Person, Person.reflect_relationship(:friends)} 
+          end
+        end
+        
+        context "for relationship that doesn't implement the plugin" do
+        
+          should "raise an ArgumentError while checking implicit" do
+            assert_raise(ArgumentError) { Person.reflect_relationship(:gender, check_implicit = true) }
+          end
           
-        when :boolean
-          assert DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '='}, 'or'), "data should match #{message}"
-          assert !DataType.send(:search_match?, @data_type_sample, "a_#{data.to_s}", {:value => good_value, :action => '!='}, 'or'), "data should NOT match #{message}"
+          should "not raise an ArgumentError while skipping implicit" do
+            assert_nothing_raised { assert_nil Person.reflect_relationship(:gender)}
+          end
+        end
+      end
+
+      context "with defined :only_relationships" do
+        setup do
+          Gender.has_search_index
+          Person.has_search_index :only_relationships => [:gender]
+          @expected_include_array = [:gender]
+        end
+
+        should "have only these relationships defined for the plugin" do
+          assert_equal 1, Person.search_index[:relationships].size
+        end
+        
+        should "store it into search_index_relationships" do
+          assert Person.search_index_relationships.include?(:gender)
+        end
+        
+        should "have include_array as expected" do
+          assert_equal @expected_include_array, Person.get_include_array
+        end
+        
+        should "return the relationship's class_name without error" do
+          assert_nothing_raised { assert_equal Gender, Person.reflect_relationship(:gender) }
+        end
+      end
+
+      context "with undefined :only_relationships for the model" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:wrong_relationship_name] }
+        end
+      end
+      
+      context "with undefined :only_relationships for the plugin" do
+        setup do
+          Person.has_search_index :only_relationships => [:gender]
+        end
+        
+        should "not store it into search_index_relationships and raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_index_relationships }
+        end
+        
+        should "not reflect_relationship and raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.reflect_relationship(:summer_job)}
+        end
+      end
+
+      context "with :only_relationships that is not an Array" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_relationships => 'bad arg' }
+        end
+      end
+
+      context "with valid :except_relationships" do
+        setup do
+          Person.has_search_index :except_relationships => [:gender]
+          @relationships_quantity = Person.reflect_on_all_associations.select {|assoc| [nil,false].include?(assoc.options[:polymorphic])}.size
+          @expected_include_array = [:friends, :love] # auto_references
+        end
+
+        should "have all his relationships as implicit configuration, except the excepted ones, defined for the plugin" do
+          assert_equal @relationships_quantity-1, Person.search_index[:relationships].size
+        end
+        
+        should "have include_array as expected" do
+          assert (@expected_include_array | Person.get_include_array).size == 2 ## compare content without taking in account order
+        end
+      end
+
+      context "with invalid :except_relationships" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :except_relationships => 'bad arg' }
+        end
+      end
+
+      context "with :except_relationships set to :all" do
+        setup do
+          Person.has_search_index :except_relationships => :all
+        end
+
+        should "not have any relationships defined for the plugin" do
+          assert_equal 0, Person.search_index[:relationships].size
+        end
+        
+        should "have include_array as expected" do
+          assert_equal [], Person.get_include_array
+        end
+      end
+
+      context "with :only_relationships and :except_relationships both set" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :only_relationships => [:gender], :except_relationships => [:gender] }
+        end
+      end
+    
+      context "with implicit additional attributes definition" do
+        
+        should "not have any additional attributes defined for the plugin" do
+          assert_equal 0, Person.search_index[:additional_attributes].size
+        end
+      end
+
+      context "with valid :additional_attributes" do
+        setup do
+          Person.has_search_index :additional_attributes => {:name => :string}
+        end
+
+        should "have only these additional attributes defined for the plugin" do
+          assert_equal 1, Person.search_index[:additional_attributes].size
+        end
+        
+        should "store it into search_index_attributes" do
+          assert Person.search_index_attributes.keys.include?('name')
+        end
+      end
+
+      context "with invalid :additional_attributes" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :additional_attributes => [:name] }
+        end
+      end
+    
+      context "with implicit displayed attributes definition" do
+
+        should "not have any displayed attributes defined for the plugin" do
+          assert_equal 0, Person.search_index[:displayed_attributes].size
+        end
+      end
+
+      context "with valid :displayed_attributes" do
+        setup do
+          Person.has_search_index :displayed_attributes => [:name]
+        end
+
+        should "have only these displayed attributes defined for the plugin" do
+          assert_equal 1, Person.search_index[:displayed_attributes].size
+        end
+      end
+      
+      context "with invalid :displayed_attributes" do
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.has_search_index :displayed_attributes => "bad arg" }
+        end
+      end
+      
+      ### check sql option support
+      context "with a relationship having :order and :macro in (:has_many, :has_and_belongs_to_many)" do
+        setup do
+          Person.reflect_on_association(:summer_jobs).options[:order] = 'created_at DESC, id Asc'
+          Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
+          @summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
+          Person.has_search_index 
+        end
+          
+        should "have :conditions properly generated" do
+          assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions]
+        end
+        
+        should "keep association behavior" do
+          assert_equal @summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort
+        end
+      end
+           
+      context "with a relationship having :order and :macro in (:has_one, :belongs_to)" do
+        setup do
+          Person.reflect_on_association(:dog).options[:order] = 'created_at DESC'
+          Person.reflect_on_association(:dog).options[:conditions] = nil
+          @dog_id = Person.first.dog.id
+          Person.has_search_index
+        end
+      
+        should "have :conditions properly generated" do
+          assert_not_nil Person.reflect_on_association(:dog).options[:conditions]
+        end
+        
+        should "keep association behavior" do
+          assert_equal @dog_id, Person.first.dog.id
+        end
+      end
+      
+      context "with a relationship having :group" do
+        setup do
+          Person.reflect_on_association(:summer_jobs).options[:group] = 'summer_jobs.salary'
+          Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
+          @summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
+          Person.has_search_index
+        end
+      
+        should "have :conditions properly generated" do
+          assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions]
+        end
+        
+        should "keep association behavior" do
+          assert_equal @summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort
+        end
+      end
+      
+#      # FIXME uncomment that part when the bug with mysql subqueries will be fixed (http://dev.mysql.com/doc/refman/5.1/en/subquery-errors.html)
+#      context "with a relationship having :limit without :offset" do
+#        setup do
+#          Person.reflect_on_association(:summer_jobs).options[:limit] = 2
+#          Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
+#          @summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
+#          Person.has_search_index
+#        end
+#      
+#        should "have :conditions properly generated" do
+#          assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions]
+#        end
+#        
+#        should "keep association behavior" do
+#          assert_equal @summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort
+#        end
+#      end
+# 
+#      # FIXME uncomment that part when the bug with mysql subqueries will be fixed (http://dev.mysql.com/doc/refman/5.1/en/subquery-errors.html)
+#      context "with a relationship having :limit and :offset" do
+#        setup do
+#          Person.reflect_on_association(:summer_jobs).options[:limit] = 3
+#          Person.reflect_on_association(:summer_jobs).options[:offset] = 1
+#          Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
+#          @summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
+#          Person.has_search_index
+#        end
+#      
+#        should "have :conditions properly generated" do
+#          assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions]
+#        end
+#        
+#        should "keep association behavior" do
+#          assert_equal @summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort
+#        end
+#      end
+      
+      context "with relationship is 1-N" do
+        setup do
+          prepare_association(Person, :summer_jobs)
+          @expected_conditions  = "`summer_jobs`.id in (SELECT `summer_jobs`.id FROM `summer_jobs`"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `summer_jobs`.person_id"
+          @expected_conditions += " ORDER BY `summer_jobs`.created_at DESC)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:summer_jobs).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is 1-N :polymorphic" do
+        setup do
+          prepare_association(Person, :numbers)
+          @expected_conditions  = "`numbers`.id in (SELECT `numbers`.id FROM `numbers`"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `numbers`.has_number_id"
+          @expected_conditions += " WHERE (`numbers`.has_number_type = 'Person') ORDER BY `numbers`.created_at DESC)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:numbers).options[:conditions].first
+          
+        end
+      end
+      
+      context "with relationship is 1-1" do
+        setup do
+          prepare_association(Person, :dog)
+          @expected_conditions  = "`dogs`.id = (SELECT `dogs`.id FROM `dogs`"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `dogs`.person_id"
+          @expected_conditions += " ORDER BY `dogs`.created_at DESC LIMIT 1)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:dog).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is 1-1 :polymorphic" do
+        setup do
+          prepare_association(Person, :identity_card)
+          @expected_conditions  = "`identity_cards`.id = (SELECT `identity_cards`.id FROM `identity_cards`"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `identity_cards`.has_identity_card_id"
+          @expected_conditions += " WHERE (`identity_cards`.has_identity_card_type = 'Person') ORDER BY `identity_cards`.created_at DESC LIMIT 1)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:identity_card).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is 1-1 :through" do
+        setup do
+          prepare_association(Person, :love)
+          @expected_conditions  = "`people`.id = (SELECT `people`.id FROM `people`"
+          @expected_conditions += " INNER JOIN `familly_relationships` ON `people`.id = `familly_relationships`.love_id"
+          @expected_conditions += " LEFT OUTER JOIN `people` love_people ON love_people.id = `familly_relationships`.person_id"
+          @expected_conditions += " ORDER BY `people`.created_at DESC LIMIT 1)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:love).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is 1-1 :through, :polymorphic" do
+        setup do
+          prepare_association(Person, :dream)
+          @expected_conditions  = "`dreams`.id = (SELECT `dreams`.id FROM `dreams`"
+          @expected_conditions += " INNER JOIN `people_dreams` ON `dreams`.id = `people_dreams`.dream_id"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `people_dreams`.has_dream_id"
+          @expected_conditions += " WHERE (`people_dreams`.has_dream_type = 'Person') ORDER BY `dreams`.created_at DESC LIMIT 1)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:dream).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is N-N" do
+        setup do
+          prepare_association(Person, :favorite_colors)
+          @expected_conditions  = "`favorite_colors`.id in (SELECT `favorite_colors`.id FROM `favorite_colors`"
+          @expected_conditions += " INNER JOIN `favorite_colors_people` ON `favorite_colors`.id = `favorite_colors_people`.favorite_color_id"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `favorite_colors_people`.person_id"
+          @expected_conditions += " ORDER BY `favorite_colors`.created_at DESC)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:favorite_colors).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is N-N :through" do
+        setup do
+          prepare_association(Person, :friends)
+          @expected_conditions  = "`people`.id in (SELECT `people`.id FROM `people`"
+          @expected_conditions += " INNER JOIN `relationships` ON `people`.id = `relationships`.friend_id"
+          @expected_conditions += " LEFT OUTER JOIN `people` friends_people ON friends_people.id = `relationships`.person_id"
+          @expected_conditions += " ORDER BY `people`.created_at DESC)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:friends).options[:conditions].first
+        end
+      end
+      
+      context "with relationship is N-N :through, :polymorphic" do
+        setup do
+          prepare_association(Person, :wishes)
+          @expected_conditions  = "`wishes`.id in (SELECT `wishes`.id FROM `wishes`"
+          @expected_conditions += " INNER JOIN `people_wishes` ON `wishes`.id = `people_wishes`.wish_id"
+          @expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `people_wishes`.has_wishes_id"
+          @expected_conditions += " WHERE (`people_wishes`.has_wishes_type = 'Person') ORDER BY `wishes`.created_at DESC)"
+          Person.has_search_index
+        end
+      
+        should "have sub query in :conditions as expected" do
+          assert_equal @expected_conditions, Person.reflect_on_association(:wishes).options[:conditions].first
+        end
+      end
+      
+    end
+    #############################################
+    ### Test standard search (search_with method)
+    #############################################
+    context "A standard search" do
+      setup do
+        Person.has_search_index :only_attributes => [:age], :additional_attributes => {:name => :string}
+      end
+      
+      context "without any criteria" do
+        setup do
+          create_people
+        end
+        
+        should "return all records" do
+          assert_equal Person.all, Person.search_with
+        end
+      end
+        
+      
+      context "with a wrong :search_type" do
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_with('name' => 'Doe', :search_type => 'wrong search_type') }
+        end
+      end
+      
+      context "with undefined relationship" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_with("wrong_relationship.name" => "value") }
+        end
+      end
+
+      context "with undefined relationship (for the plugin)" do
+        setup do
+          Gender.has_search_index
+          Person.has_search_index :except_relationships => [:gender]
+        end
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_with("gender.name" => "value") }
+        end
+      end
+
+      context "with undefined attribute" do
+        setup do
+          Gender.has_search_index
+        end
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_with("gender.wrong_attribute" => "value") }
+        end
+      end
+
+      context "with undefined attribute (for the plugin)" do
+        setup do
+          Gender.has_search_index :except_attributes => [:name]
+        end
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.search_with("gender.name" => "value") }
+        end
+      end
+      
+      ### Database attributes
+      context "with only database attributes and" do
+        setup do
+          init_plugin_in_all_models
+          Person.has_search_index
+          @person = Person.create(:name => 'good', :age => 10)
+        end
+      
+        context "with criterion's attribute is not nested" do
+          setup do
+            @expected = Person.all(:conditions => ['name like?', '%good%'])
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'good')
+          end
+        end
+        
+        context "with criterion's attribute is nested" do
+          setup do
+            Gender.create(:name => 'femme')
+            @person.update_attributes(:gender_id => Gender.first.id)
+            @expected = Person.all(:include => [:gender], :conditions => ['genders.name like?', '%femme%'])
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('gender.name' => 'femme')
+          end
+        end
+        
+        context "with criterion's attribute is deeply nested" do
+          setup do
+            NumberType.create(:name => "mobile")
+            number = Number.create(:number_type_id => NumberType.first.id)
+            friend = Person.create(:name => 'friend')
+            friend.numbers  << number
+            @person.friends << friend
+            @expected = Person.all(:include => [{:friends => [ {:numbers => [:number_type]} ] } ], :conditions => ['number_types.name like?', '%mobile%'])
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('friends.numbers.number_type.name' => 'mobile')
+          end
+        end
+        
+#        #FIXME That part don't work because of a bug when using eager loading with 'has_one :through' (http://apidock.com/rails/ActiveRecord/Associations/ClassMethods/has_one#554-has-one-through-belongs-to-not-working)
+#        context "with another complex nested attribute" do
+#          setup do
+#            NumberType.create(:name => "mobile")
+#            number = Number.create(:number_type_id => NumberType.first.id)
+#            friend = Person.create(:name => 'friend')
+#            friend.numbers  << number
+#            @person.friends << friend
+#            
+#            @expected = Person.all(:include => [{:love => [{:numbers => [:number_type]} ]} ], :conditions => ['number_types.name like?', '%mobile%'])
+#          end
+#        
+#          should "should return as expected" do
+#            assert_equal @expected, Person.search_with('love.numbers.number_type.name' => 'mobile')
+#          end
+#        end
+        
+        context "with criterion's value like ( 'value' )" do
+          setup do
+            @expected_conditions_array = ["(people.name like?)", '%good%']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'good')
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array, Person.send(:conditions_array ,Person, 'good', 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( 'value value2' )" do
+          setup do
+            @expected_conditions_array = ['(people.name like? or people.name like? or people.name like?)', '%go%','%od%','%go od%']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'go od')
+          end
+
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array, Person.send(:conditions_array ,Person, 'go od', 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( {:value => 'value', ...} )" do
+          setup do
+            @expected_conditions_array = ['(people.name like?)', '%good%']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'good', :action => 'like'})
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, {:value => 'good', :action => 'like'}, 'people.name', 'and')
+          end
+        end
+          
+        context "with criterion's value like ( {:value => 'value value2', ...} )" do
+          setup do
+            @expected_conditions_array = ['(people.name =? or people.name =? or people.name =?)', 'go','od','go od']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'go od', :action => "="})
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, {:value => 'go od', :action => "="}, 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value', ...}, {:value => 'value2', ...}] )" do
+          setup do
+            @expected_conditions_array = ['(people.name =?) and (people.name !=?)', 'good', 'bad']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+            @criterion_value = [{:value => 'good', :action => "="}, {:value => 'bad', :action => "!="}]
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => @criterion_value)
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, @criterion_value, 'people.name', 'and')
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value value2', ...}, {:value => 'value3 value4', ...}] )" do
+          setup do
+            conditions_text = '(people.name =? or people.name =? or people.name =?) and (people.name !=? and people.name !=? and people.name !=?)'
+            @expected_conditions_array = [conditions_text, 'go','od','go od','ba','ad','ba ad']
+            @expected = Person.all(:conditions => @expected_conditions_array)
+            @criterion_value = [{:value => 'go od', :action => "="}, {:value => 'ba ad', :action => "!="}]
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => @criterion_value)
+          end
+          
+          should "have expected conditions_array" do
+            assert_equal @expected_conditions_array,
+              Person.send(:conditions_array, Person, @criterion_value, 'people.name', 'and')
+          end
+        end
+        
+        context "with :search_type is 'or'" do
+          setup do
+            @expected = Person.all(:conditions => ['name like? or name like?', '%good%', '%bad%'])
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "return results that match with at least one criterion" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'or')
+          end
+        end
+        
+        context "with :search_type is 'not'" do
+          setup do
+            @expected = Person.all(:conditions => ['name not like? and name not like?', '%good%', '%bad%'])
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "return results that match with no criterion" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'not')
+          end
+        end
+        
+        context "with :search_type is 'and'" do
+          setup do
+            @expected = Person.all(:conditions => ['name like? and name like?', '%good%', '%bad%'])
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "return results that match with all criteria" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'and')
+          end
+        end
+        
+        context "With attribute_type is boolean and value is false" do
+          setup do
+            Gender.has_search_index(:only_attributes => [:male])
+            Person.has_search_index(:only_relationships => [:gender])
+            @expected = Person.all(:include => [:gender], :conditions => ['genders.male = ? or genders.male IS NULL', false])
+          end
+          
+          should "match with value is equal to 'false' or is null" do
+            assert_equal @expected, Person.search_with('gender.male' => false)
+          end
+        end
+        
+        context "with value is blank" do
+          setup do
+            person = Person.new(Person.first.attributes)
+            person.name = nil
+            flunk "should create person" unless person.save
+            @expected = [ person ]
+          end
+          
+          should "match with search for value is null" do
+            assert_equal @expected, Person.search_with('name' => nil)
+          end
+        end
+        
+        context "with value is blank and other not blank values" do
+          setup do
+            person = Person.new(Person.first.attributes)
+            person.name = nil
+            flunk "should create person" unless person.save
+            @expected = Person.all(:conditions => ['name IS NULL or age = ?', 10])
+          end
+          
+          should "match with search for value is null" do
+            assert_equal @expected, Person.search_with('name' => nil,  'age' => 10 ,:search_type => :or)
+          end
+        end
+        
+      end
+      
+      ### Additional attributes
+      context "with only additional attributes and" do
+        setup do
+          init_plugin_in_all_models
+          Person.has_search_index :additional_attributes => {:name => :string} 
+          @person = Person.create(:name => 'good', :age => 10)
+        end
+        
+        context "with criterion's attribute is not nested" do
+          setup do
+            @expected = Person.all.select {|n| n.name =~ /good/ }
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'good')
+          end
+        end
+        
+        context "with criterion's attribute is nested" do
+          setup do
+            Gender.has_search_index :additional_attributes => {:name => :string}
+            Gender.create(:name => 'femme')
+            @person.update_attributes(:gender_id => Gender.first.id)
+            @expected = Person.all.select {|n| n.gender && n.gender.name =~ /femme/ }
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('gender.name' => 'femme')
+          end
+        end
+        
+        context "with criterion's attribute is deeply nested" do
+          setup do
+            NumberType.has_search_index :additional_attributes => {:name => :string}
+            NumberType.create(:name => "mobile")
+            number = Number.create(:number_type_id => NumberType.first.id)
+            friend = Person.create(:name => 'friend')
+            friend.numbers  << number
+            @person.friends << friend
+            @expected = Person.all.select {|n| n.friends.select {|p| p.numbers.select {|m| m.number_type.name =~ /mobile/ }.any? }.any? }
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('friends.numbers.number_type.name' => 'mobile')
+          end
+        end
+        
+        context "with criterion's value like ( 'value' )" do
+          setup do
+            @expected = Person.all.select {|n| n.name =~ /good/ }
+          end
+        
+          should "should return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'good')
+          end
+        end
+        
+        context "with criterion's value like ( 'value value2' ) " do
+          setup do
+            @expected = Person.all.select {|n| [ /go/, /od/, /go od/ ].select{|pattern| n.name =~ pattern}.any? }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => 'go od')
+          end
+        end
+        
+        context "with criterion's value like ( {:value => 'value', ...} )" do
+          setup do
+            @expected = Person.all.select {|n| n.name =~ /good/ }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'good', :action => 'like'})
+          end
+        end
+          
+        context "with criterion's value like ( {:value => 'value value2', ...} )" do
+          setup do
+            @expected = Person.all.select {|n| [ /go/, /od/, /go od/ ].select{|pattern| n.name =~ pattern}.any? }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => {:value => 'go od', :action => "like"})
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value', ...}, {:value => 'value2', ...}] ))" do
+          setup do
+            @expected = Person.all.select {|n| n.name == 'good' && n.name != 'bad' }
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => [{:value => 'good', :action => "="}, {:value => 'bad', :action => "!="}])
+          end
+        end
+        
+        context "with criterion's value like ( [{:value => 'value value2', ...}, {:value => 'value3 value4', ...}] )" do
+          setup do
+            conditions_text = '(name =? or name =? or name =?) and (name !=? or name !=? or name !=?)'
+            @expected = Person.all.select {|n| [ /go/, /od/, /go od/ ].select{|pattern| n.name =~ pattern}.any? &&
+                                               [ /ba/, /ad/, /ba ad/ ].select{|pattern| n.name =~ pattern}.empty?}
+          end
+        
+          should "return as expected" do
+            assert_equal @expected, Person.search_with('name' => [{:value => 'go od', :action => "like"}, {:value => 'ba ad', :action => "not like"}])
+          end
+        end
+        
+        context "with :search_type 'or'" do
+          setup do
+            @expected = Person.all.select {|n| n.name =~ /good/ || n.name =~ /bad/ }
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "return results that match with at least one criterion" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'or')
+          end
+        end
+        
+        context "with :search_type 'not'" do
+          setup do
+            @expected = Person.all.select {|n| !(n.name =~ /good/) && !(n.name =~ /bad/) }
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "return results that match with no criterion" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'not')
+          end
+        end
+        
+        context "with :search_type 'and'" do
+          setup do
+            @expected = Person.all.select {|n| n.name =~ /good/ && n.name =~ /bad/ }
+            @values   = [{:value => 'good', :action => 'like'},{:value => 'bad', :action => 'like'}]
+          end
+        
+          should "description" do
+            assert_equal @expected, Person.search_with('name' => @values, :search_type => 'and')
+          end
+        end
+
+        context "" do
+          setup do
+            DataType.has_search_index :additional_attributes => { :a_string => :string, :a_binary => :binary, :a_text => :text, :a_integer => :integer,
+                                                                  :a_float => :float, :a_boolean => :boolean, :a_datetime => :datetime,
+                                                                  :a_date => :date, :a_decimal => :decimal}
+          end
+          
+          DataType.create({:a_string => "good", :a_binary => "0111 0001", :a_text => "lorem ipsum azerty toto", :a_integer => 1,
+                           :a_float => 1.2, :a_decimal => 2.345, :a_boolean => true, :a_datetime => DateTime.now, :a_date => Date.today })
+          
+          exp = [ DataType.first ]
+          string  = {'=' => exp, 'like' => exp, '!=' => [], 'not like' => []}
+          integer = {'=' => exp, '>='   => exp, '<=' => exp, '!=' => [], '>' => [], '<' => []}
+          boolean = {'=' => exp, '!='   => []}
+          
+          @types = {:string =>   {:value => DataType.first.a_string,   :actions => string },
+                    :binary =>   {:value => DataType.first.a_binary,   :actions => string },
+                    :text =>     {:value => DataType.first.a_text,     :actions => string },
+                    :integer =>  {:value => DataType.first.a_integer,  :actions => integer },
+                    :float =>    {:value => DataType.first.a_float,    :actions => integer },
+                    :decimal =>  {:value => DataType.first.a_decimal,  :actions => integer },
+                    :datetime => {:value => DataType.first.a_datetime, :actions => integer },
+                    :date =>     {:value => DataType.first.a_date,     :actions => integer },
+                    :boolean =>  {:value => DataType.first.a_boolean,  :actions => boolean }}
+        
+          @types.each do |type, criterion|
+            context "with criterion's :value is a #{ type.to_s.capitalize }" do
+              criterion[:actions].each do |action, expected|
+                context "and :action is '#{ action }' #{ criterion[:value].class } #{ DataType.first.send("a_#{ type }").class }" do
+                  should "return as expected" do
+                    assert_equal expected, DataType.search_with("a_#{ type }" => {:action => action, :value => criterion[:value].to_s})
+                  end
+                end
+              end
+            end
+          end
+        
+        end
+    
+      end
+      
+      ### Order
+      context "with :order option" do
+        setup do
+          male = Gender.create(:name => "Male")
+          female = Gender.create(:name => "Female")
+          @person_1 = Person.create(:name => "Botte", :age => 21, :gender_id => male.id)
+          @person_2 = Person.create(:name => "Durantes", :age => 24, :gender_id => male.id)
+          @person_3 = Person.create(:name => "Botte", :age => 26, :gender_id => female.id)
+          flunk "People should have been created #{Person.count}" unless Person.count == 3
+          
+          Person.has_search_index :only_attributes => [:age], :additional_attributes => {:name => :string}
+        end
+        
+        context "that is not an Array" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:order => 'name') }
+          end
+        end
+        
+        context "that contain undefined attribute" do
+        
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:order => ['undefined.attribute:Asc']) }
+          end
+        end
+          
+        context "that do not contain an order direction" do
+          
+          should "order Asc by default" do
+            assert_equal Person.search_with(:order => ['name:Asc']), Person.search_with( :order => ['name'])
+          end
+        end
+        
+        context "that contain an order direction not in (Desc, Asc)" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:order => ['name:Down']) }
+          end
+        end
+        
+        context "for additional_attributes" do
+
+          should "order as expected" do
+            assert_equal [@person_1, @person_3, @person_2], Person.search_with(:order => ['name:Asc']) 
+          end
+        end
+
+        context "for both database_attributes and additional_attributes" do
+
+          should "order as expected" do
+            assert_equal [@person_3, @person_1, @person_2], Person.search_with(:order => ['name:Asc', 'age:Desc'])
+          end
+        end
+
+        context "for database_attribute" do
+
+          should "order result descendant by :id" do
+            assert_equal [@person_3, @person_2, @person_1],  Person.search_with(:order => ['age:Desc'])
+          end
+        end
+        
+        context "for nested additional_attributes" do
+          setup do
+            Gender.has_search_index :additional_attributes => {:name => :string}
+          end
+        
+          should "return as expected" do
+            assert_equal [@person_3, @person_1, @person_2], Person.search_with(:order => ['gender.name:Asc'])
+          end
+        end
+          
+        context "for nested database_attributes" do
+          setup do
+            Gender.has_search_index :only_attributes => [:name]
+          end
+        
+          should "return as expected" do
+            assert_equal [@person_3, @person_1, @person_2], Person.search_with(:order => ['gender.name:Asc'])
+          end
+        end
+      end
+      
+      ### Group
+      context "with :group option" do
+        setup do
+          male = Gender.create(:name => "Male")
+          female = Gender.create(:name => "Female")
+          @person_1 = Person.create(:name => "Botte", :age => 31, :gender_id => male.id)
+          @person_2 = Person.create(:name => "Durantes", :age => 24, :gender_id => male.id)
+          @person_3 = Person.create(:name => "Botte", :age => 26, :gender_id => female.id)
+          @person_4 = Person.create(:name => "Botte", :age => 26, :gender_id => female.id)
+          flunk "People should have been created" unless Person.all(:conditions => ['age > 20']).count == 4
+          
+          Person.has_search_index :only_attributes => [:age], :additional_attributes => {:name => :string}
+        end
+        
+        context "that is not an Array" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) { Person.search_with(:group => 'name') }
+          end
+        end
+        
+        context "that contain undefined attributes" do
+          
+          should "raise an ArgumentError" do
+            assert_raise(ArgumentError) {Person.search_with(:group => ['undefined.attribute'])}
+          end
+        end
+        
+        context "for additional_attributes" do
+
+          should "group as expected" do
+            assert_equal [@person_1, @person_3, @person_4, @person_2], Person.search_with(:group => ['name'])
+          end
+        end
+
+        context "for both database_attributes and additional_attributes" do
+
+          should "group as expected" do
+            assert_equal [@person_3, @person_4, @person_1, @person_2], Person.search_with(:group => ['name', 'age'])
+          end
+        end
+
+        context "for database_attribute" do
+
+          should "group as expected" do
+            assert_equal [@person_2, @person_3, @person_4, @person_1], Person.search_with(:group => ['age'])
+          end
+        end
+        
+        context "for nested additional_attributes" do
+          setup do
+            Gender.has_search_index :additional_attributes => {:name => :string}
+          end
+        
+          should "return as expected" do
+            assert_equal [@person_3, @person_4, @person_1, @person_2], Person.search_with(:group => ['gender.name'])
+          end
+        end
+          
+        context "for nested database_attributes" do
+          setup do
+            Gender.has_search_index :only_attributes => [:name]
+          end
+        
+          should "return as expected" do
+            assert_equal [@person_3, @person_4, @person_1, @person_2], Person.search_with(:group => ['gender.name'])
+          end
+        end
+      end
+      
+      ### Group & Order
+      context "with both group and order option" do
+        setup do
+          @person_1 = Person.create(:name => "Botte", :age => 31)
+          @person_2 = Person.create(:name => "Durantes", :age => 24)
+          @person_3 = Person.create(:name => "Botte", :age => 26)
+          @person_4 = Person.create(:name => "Botte", :age => 26)
+          @person_5 = Person.create(:name => "Durantes", :age => 26)
+          flunk "People should have been created" unless Person.all(:conditions => ['age > 20']).count == 5
+          
+          Person.has_search_index :only_attributes => [:age, :id], :additional_attributes => {:name => :string}
+        end
+
+        context "for additional_attributes" do
+
+          should "group and then order as expected" do
+            assert_equal [@person_1, @person_3, @person_4, @person_2, @person_5],
+              Person.search_with(:group => ['name'], :order => ['name:Desc'])
+          end
+        end
+
+        context "for both database_attributes and additional_attributes" do
+
+          should "group and then order as expected" do
+            assert_equal [@person_3, @person_4, @person_1, @person_2, @person_5],
+              Person.search_with(:group => ['name'], :order => ['age:Asc'])
+          end
+        end
+
+        context "for database_attribute" do
+
+          should "group and then order as expected" do
+            assert_equal [@person_2, @person_5, @person_4, @person_3, @person_1],
+              Person.search_with(:group => ['age'], :order => ['id:Desc'])
+          end
+        end
+      end
+        
+    end
+    ###########################################
+    ### Test simple Search (search_with method)
+    ###########################################
+    context "A simple search" do
+      setup do
+        Person.has_search_index :only_attributes => [:name], :additional_attributes => {:age => :integer}
+        @person_1 = Person.create(:age => 20, :name => 'Drall')
+        @person_2 = Person.create(:age => 10, :name => 'Drill')
+      end
+      
+      context "targeting an additional attribute" do
+        
+        should "return as expected" do
+          assert_equal [@person_1], Person.search_with(20)
+        end
+      end
+      
+      context "targeting a database attribute" do
+        
+        should "return as expected" do
+          assert_equal [@person_2], Person.search_with('Drill')
+        end
+      end
+    end
+    #########################
+    ### Private methods tests
+    #########################
+    # generate_attribute_prefix + get_prefix_order
+    context "generating attribute_prefix" do
+    
+      context "with an include_array containing 2 redundancy" do
+        setup do
+          @include_array = [{:love => [{:dog => [{:numbers => [:number_type]} ]} ]}, 
+                                       {:dog => [{:numbers => [:number_type]} ]},
+                                                 {:numbers => [:number_type]} ]
+          @expected_redundant_paths = ['people.love.dog.numbers.number_type',
+                                            'people.dog.numbers.number_type',
+                                                'people.numbers.number_type']                                     
+        end
+        
+        should "return redundant paths ordered as expected" do
+          assert_equal @expected_redundant_paths, Person.send(:get_prefix_order, 'people', @include_array, 'number_type')
+        end
+        
+        context "and with a path that is the first to end with 'number_type'" do
+          setup do
+            @path = 'people.love.dog.numbers.number_type'
+          end
+          
+          should "return original alias" do
+            assert_equal 'number_types', Person.send(:generate_attribute_prefix, @path, @include_array)
+          end
+        end
+        
+        context "and with a path that is the second to end with 'number_type'" do
+          setup do
+            @path = 'people.dog.numbers.number_type'
+          end
+        
+          should "return original alias prefixed with 'number_types'" do
+            assert_equal 'number_types_numbers', Person.send(:generate_attribute_prefix, @path, @include_array)
+          end
+        end
+        
+        context "and with a path that is the third to end with 'number_type'" do
+          setup do
+            @path = 'people.numbers.number_type'
+          end
+        
+          should "return original alias prefixed with 'number_types' and suffixed with '2'" do
+            assert_equal 'number_types_numbers_2', Person.send(:generate_attribute_prefix, @path, @include_array)
+          end
+        end
+      end
+    end
+
+    # match_regexp
+    context "'match_regexp' method" do
+      context "with matching simple pattern" do
+        setup do
+          @data = @pattern = 'string'
+        end
+      
+        should "match data" do
+          assert Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with not matching pattern" do
+        setup do
+          @data    = 'string'
+          @pattern = 'strings'
+        end
+          
+        should "not match data" do
+          assert !Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with matching pattern that end with globbing (*)" do
+        setup do
+          @data =  'string.txt'
+          @pattern = '*.txt'
+        end
+      
+        should "match data" do
+          assert Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with not matching pattern that end with globbing (*)" do
+        setup do
+          @data    = 'string.pdf'
+          @pattern = '*.txt'
+        end
+          
+        should "not match data" do
+          assert !Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with matching pattern that start with globbing (*)" do
+        setup do
+          @data =  'string.txt'
+          @pattern = 'string.*'
+        end
+      
+        should "match data" do
+          assert Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with not matching pattern that start with globbing (*)" do
+        setup do
+          @data    = 'array.txt'
+          @pattern = 'string.*'
+        end
+          
+        should "not match data" do
+          assert !Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with matching pattern that both start and end with globbing (*)" do
+        setup do
+          @data =  'some_string.txt'
+          @pattern = '*string*'
+        end
+      
+        should "match data" do
+          assert Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+      
+      context "with not matching pattern that both start and end with globbing (*)" do
+        setup do
+          @data    = 'some_array.txt'
+          @pattern = '*string*'
+        end
+          
+        should "not match data" do
+          assert !Person.send(:match_regexp, @data, @pattern)
+        end
+      end
+    end
+    
+    # is_additional?
+    context "'is_additional?' method" do
+      
+      context "for a database attribute" do
+        setup do
+          Person.has_search_index 
+        end
+      
+        should "return false" do
+          assert !Person.send(:is_additional?, 'name')
+        end
+      end
+      
+      context "for an additional attribute" do
+        setup do
+          Person.has_search_index(:additional_attributes => {:name => :string})
+        end
+      
+        should "return true" do
+          assert Person.send(:is_additional?, 'name')
+        end
+      end
+      
+      context "with wrong nested resource" do
+        setup do
+          Person.has_search_index
+        end
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.send(:is_additional?, 'gander.name') }
+        end
+      end
+      
+      context "with nested resource that doesn't implement the plugin" do
+        setup do
+          Person.has_search_index
+        end
+        
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) { Person.send(:is_additional?, 'gender.name') }
+        end
+      end
+      
+      context "with nested resource that implement the plugin" do
+        setup do
+          Person.has_search_index
+          Gender.has_search_index :additional_attributes => {:name => :string}
+        end
+      
+        should "return true" do
+          assert Person.send(:is_additional?, 'gender.name')
+        end
+      end
+        
+    end
+    
+    # filter_include_array_from_paths
+    context "'filter_include_array_from_paths' method" do
+    
+      context "with simple include" do
+        setup do
+          SummerJob.has_search_index :except_relationships => :all
+          Person.has_search_index :only_relationships => [:summer_jobs]
+          @include_array  = [:summer_jobs]
+        end
+      
+        should "return full include_array" do
+          assert_equal @include_array, Person.send(:filter_include_array_from_paths, @include_array, ['summer_jobs'])
+        end
+        
+        should "return an empty Array" do
+          assert_equal [], Person.send(:filter_include_array_from_paths, @include_array, [])
+        end
+      end
+      
+      context "with nested include" do
+        setup do
+          NumberType.has_search_index :except_relationships => :all
+          Number.has_search_index :only_relationships => [:number_type]
+          Person.has_search_index :only_relationships => [:summer_jobs, :numbers]
+          @include_array  = [:summer_jobs, {:numbers => [:number_type]}]
+        end
+      
+        should "return full include_array" do
+          assert_equal @include_array,  Person.send(:filter_include_array_from_paths, @include_array, ['summer_jobs', 'numbers.number_type'])
+        end
+        
+        should "return filtered include_array" do
+          assert_equal [:summer_jobs, :numbers],  Person.send(:filter_include_array_from_paths, @include_array, ['summer_jobs', 'numbers'])
+        end
+        
+        should "return an empty Array" do
+          assert_equal [], Person.send(:filter_include_array_from_paths, @include_array, [])
+        end
+      end
+        
+    end
+  
+    # negative
+    context "'negative' method" do
+      positives = ["=",">","<","like","!=","<=",">=","not like"]
+      negatives = ["!=","<=",">=","not like","=",">","<","like"]
+      
+      positives.each_with_index do |positive, i|
+        should "return '#{negatives[i]}' for #{positive}" do
+          assert_equal Person.send(:negative, positive), negatives[i]
+        end
+      end
+    end
+    
+    # split_value
+    context "'split_value' method" do
+      setup do
+        DataType.has_search_index
+      end
+      
+      context "for an integer" do
+        
+        should "return an Array with 1 Integer" do
+          assert_equal [1], DataType.send(:split_value, DataType, 'a_integer', '1')
+        end
+        
+        should "return an Array of Integer" do
+          assert_equal [1, 0, 10], DataType.send(:split_value, DataType, 'a_integer', '1 0 10')
+        end
+      end
+      
+      context "for a boolean" do
+
+        should "return an Array with 1 Boolean" do
+          assert_equal [true], DataType.send(:split_value, DataType, 'a_boolean', '1')
+        end
+        
+        should "return an Array of Boolean" do
+          assert_equal [true, false, false], DataType.send(:split_value, DataType, 'a_boolean', '1 0 false')
+        end
+      end
+      
+      context "for a float" do
+
+        should "return an Array with 1 Float" do
+          assert_equal [1.2], DataType.send(:split_value, DataType, 'a_float', '1.2')
+        end
+        
+        should "return an Array of Float" do
+          assert_equal [1.2, 0.45, 123.203], DataType.send(:split_value, DataType, 'a_float', '1.2 0.45 123.203')
+        end
+      end
+      
+      context "for a decimal" do
+
+        should "return an Array with 1 Decimal" do
+          assert_equal [1000.2], DataType.send(:split_value, DataType, 'a_decimal', '1000.2')
+        end
+        
+        should "return an Array of Decimals" do
+          assert_equal [15.2, 0.45, 13.2], DataType.send(:split_value, DataType, 'a_decimal', '15.2 0.45 13.2')
+        end
+      end
+      
+      context "for a datetime" do
+
+        should "return date time formatted in String within an Array" do
+          assert_equal ['2009/9/30 9:43:00'], DataType.send(:split_value, DataType, 'a_datetime', '2009/9/30 9:43:00')
+        end
+      end
+      
+      context "for a String" do
+
+        should "return an Array with 1 String" do
+          assert_equal ['john'], DataType.send(:split_value, DataType, 'a_string', 'john')
+        end
+        
+        should "return an Array of String" do
+          assert_equal ['john', 'j', 'n', 'john j n'].sort, DataType.send(:split_value, DataType, 'a_string', 'john j n').sort
+        end
+      end
+      
+      context "while skipping splitting" do
+
+        should "return an Array with 1 String" do
+          assert_equal ['john is gone'], DataType.send(:split_value, DataType, 'a_text', '"john is gone"')
+        end
+        
+        should "return the unsplitted String with the splitted strings" do
+          assert_equal ['john is gone', 'j', 'n', 'john is gone j n'].sort,
+                 DataType.send(:split_value, DataType, 'a_text', '"john is gone" j n').sort
+        end
+      end
+      
+      context "while escaping caracter (\") used to skip splitting" do
+
+        should "return a text containing (\")" do
+          assert_equal ['john is "whoo"'], DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\""')
+        end
+        
+        should "return the unsplitted text containing (\")" do
+          assert_equal ['john is "whoo"'].sort,
+                 DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\""').sort
+        end
+      end
+      
+      context "while using sepcial caratere (\") alone" do
+
+        should "raise an ArgumentError" do
+          assert_raise(ArgumentError) {DataType.send(:split_value, DataType, 'a_string', 'some text " string')}
+        end
+      end
+    end
+    
+    # organized_filters
+    context "'organize_filters method'" do
+      setup do
+        NumberType.has_search_index :only_attributes => [:name]
+        Number.has_search_index :only_attributes => [:value], :only_relationships => [:number_type]
+        Person.has_search_index :only_attributes => [:name, :age], :only_relationships => [:numbers]
+        @filters = [
+          'name',
+          'age',
+          'numbers.value',
+          'numbers.number_type.name'
+        ]
+        @expected = [ 
+                      [nil, ['name', 'age'] ],
+                      ['numbers', 
+                        [
+                          [nil, ['numbers.value'] ],
+                          ['number_type', 
+                            [
+                              [nil, ['numbers.number_type.name']]
+                            ]
+                          ]
+                        ],
+                      ]
+                    ]
+      end
+      
+      should "organize filters as expected" do
+        assert_equal @expected, HasSearchIndex.organized_filters(@filters, 'Person')
+      end
+    end    
+  
+    # get_nested_attribute_type
+    context "'get_nested_attribute_type' method" do
+      setup do
+        NumberType.has_search_index :only_attributes => [:name]
+        Number.has_search_index :only_attributes => [:id], :only_relationships => [:number_type]
+        Person.has_search_index :only_attributes => [:created_at], :only_relationships => [:numbers]
+      end
+      
+      context "with simple attribute" do
+        setup do
+          @expected = 'datetime'
+        end
+        
+        should "return expected type" do
+          assert_equal @expected, HasSearchIndex.get_nested_attribute_type('Person','created_at')
+        end
+      end
+        
+      context "with nested attribute" do
+        setup do
+          @expected = 'integer'
+        end
+        
+        should "return expected type" do
+          assert_equal @expected, HasSearchIndex.get_nested_attribute_type('Person','numbers.id')
+        end
+      end
+      
+      context "with deeply nested attribute" do
+        setup do
+          @expected = 'string'
+        end
+        
+        should "return expected type" do
+          assert_equal @expected, HasSearchIndex.get_nested_attribute_type('Person','numbers.number_type.name')
+        end
       end
     end
       
-    #########################
-    ## Test all kind of +search_type+
-    
-    assert Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
-      "@person's name should match with 'good' or 'another_name'"
-      
-    assert !Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'or'),
-      "@person's name shouldn't match with 'bad' or 'another_name'"
-      
-    assert !Person.send(:search_match?, @person, 'name', [{:value => 'good', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
-      "@person's name should NOT match with 'good' and 'another_name'"
-      
-    assert !Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'and'),
-      "@person's name shouldn't match with 'bad' and 'another_name'"
-      
-    assert !Person.send(:search_match?, @person, 'name', [{:value => 'another_name', :action => 'like'}, {:value => 'good', :action => 'like'}], 'not'),
-      "@person's name should NOT match with !('good' or 'another_name')"
-      
-    assert Person.send(:search_match?, @person, 'name', [{:value => 'bad', :action => 'like'}, {:value => 'another_name', :action => 'like'}], 'not'),
-      "@person's name should match with !('bad' or 'another_name')"
   end
-  
-  def test_get_nested_object
-    assert_raise(ArgumentError) {Person.send( :get_nested_object, @person, "not an array")}
-    
-    #########################
-    ## Test simple nested_ressource architecture with                |-> one
-    
-    @person.gender = Gender.new(:name => 'man', :male => true)
-    assert_equal @person.gender, Person.send( :get_nested_object, @person, ["gender"]), "the two objects should be equal"
-    
-    #########################
-    ## Test a more complex nested_ressources architecture with       |-> many -> one
-    
-    fixe   = NumberType.new(:name => 'fixe')
-    mobile = NumberType.new(:name => 'mobile')
-    5.times do |i|
-      number = Number.new(:value => i.to_s)
-      number.number_type = fixe
-      @person.numbers   += [number]
-    end
-    4.times do |i|
-      number = Number.new(:value => i.to_s)
-      number.number_type = mobile
-      @person.numbers   += [number]
-    end
-    assert_equal 9, Person.send( :get_nested_object, @person, ["numbers"]).size, "@person should have 9 numbers"
-    assert_equal 2, Person.send( :get_nested_object, @person, ["numbers","number_type"]).size, "@person should have 2 DISTINCT number_types"
-  end
-  
-  def test_search_attributes_format_hash
-    message =  "Person's attributes Hash should be as expected"
-    
-    #########################
-    ## Test two configurations with the same expected result
-    
-    expected_hash = {'name' => "value", 'id' => 'value'}
-    
-    Person.has_search_index :only_attributes => [:name, :id]
-    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
-    
-    Person.has_search_index :only_attributes => [:name], :additional_attributes => {:id => :integer}
-    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
-    
-    #########################
-    ## Test with all attributes 
-    
-    expected_hash = {"name"=>"value", "created_at"=>"value", "updated_at"=>"value", "id"=>"value", "age"=>"value"}
-    Person.has_search_index
-    assert_equal expected_hash, Person.send(:format_attributes_hash_for_simple_search, 'value'), message
-  end
-  
-  
-  def test_negative
-    positives = ["=",">","<","like"]
-    negatives = ["!=","<=",">=","not like"]
-    
-    positives.each_with_index do |positive, i|
-      assert_equal Person.send(:negative, positive), negatives[i], "#{Person.send(:negative, positive)} negative's form should be equal to #{negatives[i]}"
-    end
-  end
-  
-#  # TODO The method has been moved into has_search_index_methods_helper.rb
-#  # So that test should be used into the lib's tests.
-#  #
-#  def test_format_date
-#    message               = "returned date should be as expected"
-#    params_date           = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920'}
-#    params_datetime       = {'date(0i)' => '30', 'date(1i)' => '12', 'date(2i)' => '1920', 'date(3i)' => '23', 'date(4i)' => '59'}
-#    params_other_data_ype = {'value' => "string with useless space at the end       "}
-#    
-#    assert_equal "1920/12/30", Person.format_date(params_date, 'date'), message
-#    assert_equal "1920/12/30", Person.format_date(params_datetime, 'date'), message
-#    assert_equal "1920/12/30 23:59:00", Person.format_date(params_datetime, 'datetime'), message
-#    assert_equal "string with useless space at the end", Person.format_date(params_other_data_ype, 'string'), "String should be stripped"
-#  end
 
-  def test_split_value
-    message = "Returned value should be as expected"
-    DataType.has_search_index
-    
-    #########################
-    ## Test integer
-    
-    assert_equal [1], DataType.send(:split_value, DataType, 'a_integer', '1'), message
-    assert_equal [1, 0, 10], DataType.send(:split_value, DataType, 'a_integer', '1 0 10'), message
-    
-    #########################
-    ## Test boolean
-    
-    assert_equal [true], DataType.send(:split_value, DataType, 'a_boolean', '1'), message
-    assert_equal [true, false, false], DataType.send(:split_value, DataType, 'a_boolean', '1 0 false'), message
-    
-    #########################
-    ## Test float
-    
-    assert_equal [1.2], DataType.send(:split_value, DataType, 'a_float', '1.2'), message
-    assert_equal [1.2, 0.45, 123.203], DataType.send(:split_value, DataType, 'a_float', '1.2 0.45 123.203'), message
-    
-    #########################
-    ## Test decimal
-    
-    assert_equal [1000.2], DataType.send(:split_value, DataType, 'a_decimal', '1000.2'), message
-    assert_equal [15.2, 0.45, 13.2], DataType.send(:split_value, DataType, 'a_decimal', '15.2 0.45 13.2'), message
-    
-    #########################
-    ## Test datetime
-    
-    assert_equal ['2009/9/30 9:43:00'], DataType.send(:split_value, DataType, 'a_datetime', '2009/9/30 9:43:00'), message
-    assert_equal ['2009/9/30 9:43:00'], DataType.send(:split_value, DataType, 'a_datetime', '"2009/9/30 9:43:00"'), message
-    
-    #########################
-    ## Test string, text, ...
-    
-    assert_equal ['john'], DataType.send(:split_value, DataType, 'a_string', 'john'), message
-    assert_equal ['john', 'j', 'n', 'john j n'].sort, DataType.send(:split_value, DataType, 'a_string', 'john j n').sort, message
-    
-    # Test skipping splitting (it's the same thing with string)
-    assert_equal ['john is gone'], DataType.send(:split_value, DataType, 'a_text', '"john is gone"'), message
-    assert_equal ['john is gone', 'j', 'n', 'john is gone j n'].sort,
-                 DataType.send(:split_value, DataType, 'a_text', '"john is gone" j n').sort, message
-    
-    # Test escaping escape caractere (\) (it's the same thing with text)
-    assert_equal ['john is "whoo"'], DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\""'), message
-    assert_equal ['john is "whoo"', 'j', 'n', 'john is "whoo" j n'].sort,
-                 DataType.send(:split_value, DataType, 'a_string', '"john is \"whoo\"" j n').sort,  message
-    
-    # Test adding a special caracter alone
-    assert_raise(ArgumentError) {DataType.send(:split_value, DataType, 'a_string', 'some text " string')}
-  end
-      
-  def test_check_relationships_options
-    init_plugin_in_all_models
-    
-    #########################    
-    ## Test with :belongs_to :macro
-    
-    options_before = Person.reflect_on_association(:gender).options
-    Person.send(:check_relationships_options, [:gender])
-    assert_equal options_before, Person.reflect_on_association(:gender).options, "Options should NOT be different because :macro is :belongs_to"
-    
-    #########################
-    ## Test with no options in (:order, :group, :limit)
-    
-    options_before = Person.reflect_on_association(:relationships).options
-    message        = "Options should NOT be different because there's no options in (:order, :group, :limit)"
-    Person.send(:check_relationships_options, [:relationships])
-    assert_equal options_before, Person.reflect_on_association(:relationships).options, message
-    
-    #########################
-    ## Test with options in (:order, :group, :limit)
-    
-    create_summer_jobs(@person.id)
-    create_dogs(@person.id)
-    message1 = "Conditions should have been generated properly"
-    message2 = "Collection should be the same as before the association modification"
-    
-    ## test :order with a 'to_many' association
-    Person.reflect_on_association(:summer_jobs).options[:order] = 'created_at DESC'
-    Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
-    summer_jobs_ids = Person.first.summer_jobs.collect(&:id)
-    Person.has_search_index                                                              # Call the plugin to modify the association's conditions according to options
-    
-    assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions], message1
-    assert_equal summer_jobs_ids, Person.first.summer_jobs.collect(&:id), message2
-    
-    ## test :order with a 'to_one' association
-    Person.reflect_on_association(:dog).options[:order] = 'created_at DESC'
-    Person.reflect_on_association(:dog).options[:conditions] = nil
-    dog_id = Person.first.dog.id
-    Person.has_search_index                                                              # Call the plugin to modify the association's conditions according to options
-    
-    assert_not_nil Person.reflect_on_association(:dog).options[:conditions], message1
-    assert_equal dog_id, Person.first.dog.id, message2
-    
-    ## test :group
-    Person.reflect_on_association(:summer_jobs).options[:group] = 'summer_jobs.salary'
-    Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
-    summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
-    Person.has_search_index                                                              # Call the plugin to modify the association's conditions according to options
-    
-    assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions], message1
-    assert_equal summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort, message2
-
-    ## test :limit without :offset
-    Person.reflect_on_association(:summer_jobs).options[:limit] = 2
-    Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
-    
-    assert_raise(ArgumentError) {Person.has_search_index}                                # these to lines are here to verify the raise according to the mysql bug
-    Person.reflect_on_association(:summer_jobs).options[:limit] = nil                    #
-    
-# FIXME uncomment that part when the bug with mysql subqueries will be fixed (http://dev.mysql.com/doc/refman/5.0/en/subquery-errors.html)
-#    summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
-#    Person.has_search_index                                                              # Call the plugin to modify the association's conditions according to options
-#    
-#    assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions], message1
-#    assert_equal summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort, message2
-    
-    ## test :limit with :offset
-    Person.reflect_on_association(:summer_jobs).options[:limit] = 3
-    Person.reflect_on_association(:summer_jobs).options[:offset] = 1
-    Person.reflect_on_association(:summer_jobs).options[:conditions] = nil
-    
-    assert_raise(ArgumentError) {Person.has_search_index}                                # these to lines are here to verify the raise according to the mysql bug
-    Person.reflect_on_association(:summer_jobs).options[:limit] = nil                    #
-    
-# FIXME uncomment that part when the bug with mysql subqueries will be fixed (http://dev.mysql.com/doc/refman/5.0/en/subquery-errors.html)
-#    summer_jobs_ids = Person.first.summer_jobs.collect(&:id).sort
-#    Person.has_search_index                                                              # Call the plugin to modify the association's conditions according to options
-#
-#    assert_not_nil Person.reflect_on_association(:summer_jobs).options[:conditions], message1
-#    assert_equal summer_jobs_ids, Person.first.summer_jobs.collect(&:id).sort, message2
-
-    #########################
-    ## Test main kind of relationships
-    message = "Subquery into association's conditions should be as expected"
-    
-    # 1-N
-    prepare_association(Person, :summer_jobs)
-    expected_conditions  = "`summer_jobs`.id in (SELECT `summer_jobs`.id FROM `summer_jobs`"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `summer_jobs`.person_id"
-    expected_conditions += " ORDER BY `summer_jobs`.created_at DESC)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:summer_jobs).options[:conditions].first, message
-    
-    # 1-N :polymorphic
-    prepare_association(Person, :numbers)
-    expected_conditions  = "`numbers`.id in (SELECT `numbers`.id FROM `numbers`"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `numbers`.has_number_id"
-    expected_conditions += " WHERE (`numbers`.has_number_type = 'Person') ORDER BY `numbers`.created_at DESC)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:numbers).options[:conditions].first, message
-    
-    # 1-1
-    prepare_association(Person, :dog)
-    expected_conditions  = "`dogs`.id = (SELECT `dogs`.id FROM `dogs`"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `dogs`.person_id"
-    expected_conditions += " ORDER BY `dogs`.created_at DESC LIMIT 1)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:dog).options[:conditions].first, message
-    
-    # 1-1 :polymorphic
-    prepare_association(Person, :identity_card)
-    expected_conditions  = "`identity_cards`.id = (SELECT `identity_cards`.id FROM `identity_cards`"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `identity_cards`.has_identity_card_id"
-    expected_conditions += " WHERE (`identity_cards`.has_identity_card_type = 'Person') ORDER BY `identity_cards`.created_at DESC LIMIT 1)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:identity_card).options[:conditions].first, message
-    
-    # 1-1 :through
-    prepare_association(Person, :love)
-    expected_conditions  = "`people`.id = (SELECT `people`.id FROM `people`"
-    expected_conditions += " INNER JOIN `familly_relationships` ON `people`.id = `familly_relationships`.love_id"
-    expected_conditions += " LEFT OUTER JOIN `people` love_people ON love_people.id = `familly_relationships`.person_id"
-    expected_conditions += " ORDER BY `people`.created_at DESC LIMIT 1)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:love).options[:conditions].first, message
-    
-    # 1-1 :through, :polymorphic
-    prepare_association(Person, :dream)
-    expected_conditions  = "`dreams`.id = (SELECT `dreams`.id FROM `dreams`"
-    expected_conditions += " INNER JOIN `people_dreams` ON `dreams`.id = `people_dreams`.dream_id"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `people_dreams`.has_dream_id"
-    expected_conditions += " WHERE (`people_dreams`.has_dream_type = 'Person') ORDER BY `dreams`.created_at DESC LIMIT 1)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:dream).options[:conditions].first, message
-    
-    # N-N
-    prepare_association(Person, :favorite_colors)
-    expected_conditions  = "`favorite_colors`.id in (SELECT `favorite_colors`.id FROM `favorite_colors`"
-    expected_conditions += " INNER JOIN `favorite_colors_people` ON `favorite_colors`.id = `favorite_colors_people`.favorite_color_id"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `favorite_colors_people`.person_id"
-    expected_conditions += " ORDER BY `favorite_colors`.created_at DESC)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:favorite_colors).options[:conditions].first, message
-    
-    # N-N :through
-    prepare_association(Person, :friends)
-    expected_conditions  = "`people`.id in (SELECT `people`.id FROM `people`"
-    expected_conditions += " INNER JOIN `relationships` ON `people`.id = `relationships`.friend_id"
-    expected_conditions += " LEFT OUTER JOIN `people` friends_people ON friends_people.id = `relationships`.person_id"
-    expected_conditions += " ORDER BY `people`.created_at DESC)"
-    Person.has_search_index
-        
-    assert_equal expected_conditions, Person.reflect_on_association(:friends).options[:conditions].first, message
-    
-    # N-N :through, :polymorphic
-    prepare_association(Person, :wishes)
-    expected_conditions  = "`wishes`.id in (SELECT `wishes`.id FROM `wishes`"
-    expected_conditions += " INNER JOIN `people_wishes` ON `wishes`.id = `people_wishes`.wish_id"
-    expected_conditions += " LEFT OUTER JOIN `people` ON `people`.id = `people_wishes`.has_wishes_id"
-    expected_conditions += " WHERE (`people_wishes`.has_wishes_type = 'Person') ORDER BY `wishes`.created_at DESC)"
-    Person.has_search_index
-    
-    assert_equal expected_conditions, Person.reflect_on_association(:wishes).options[:conditions].first, message
-  end
-  
-  def test_get_conditions_array_for_criterion
-    #########################
-    ## Test all kind of +value+ formats
-    
-    message = "Conditions array should be as expected"
-    
-    # 'value'
-    expected_array = ["(people.name like?)", '%value%']
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion ,Person, 'value', 'people.name', 'or'), message
-    
-    # 'value value2'
-    expected_array = ["(people.name like? or people.name like? or people.name like?)", '%value%', '%value2%', '%value value2%']
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion ,Person, 'value value2', 'people.name', 'or'), message
-    
-    # {:value => 'value', ...}
-    expected_array = ["(people.name like?)", '%value%']
-    value          = {:value => 'value', :action => 'like'}
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'or'), message
-    
-    # {:value => 'value value2', ...}
-    expected_array = ["(people.name like? or people.name like? or people.name like?)", '%value%', '%value2%', '%value value2%']
-    value          = {:value => 'value value2', :action => 'like'}
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'or'), message
-    
-    # [{:value => 'value', ...}, {:value => 'value', ...}]
-    expected_array = ["(people.name like?) or (people.name like?)", '%value%', '%value2%']
-    value          = [{:value => 'value', :action => 'like'}, {:value => 'value2', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'or'), message
-      
-    # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    expected_array = ["(people.name like? or people.name like? or people.name like?) or (people.name like? or people.name like? or people.name like?)",
-                      '%value%', '%value2%', '%value value2%',
-                      '%value3%', '%value4%', '%value3 value4%']
-    value          = [{:value => 'value value2', :action => 'like'}, {:value => 'value3 value4', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'or'), message
-      
-    #########################
-    ## Test all kind of +search_type+
-    
-    # OR
-    # tested above
-    
-    # AND
-    # [{:value => 'value', ...}, {:value => 'value', ...}]
-    expected_array = ["(people.name like?) and (people.name like?)", '%value%', '%value2%']
-    value          = [{:value => 'value', :action => 'like'}, {:value => 'value2', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'and'), message
-      
-    # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    conditions_text  = "(people.name like? or people.name like? or people.name like?) and (people.name like? or people.name like? or people.name like?)"
-    expected_array   = [conditions_text, '%value%', '%value2%', '%value value2%', '%value3%', '%value4%', '%value3 value4%']
-    value            = [{:value => 'value value2', :action => 'like'}, {:value => 'value3 value4', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'and'), message
-    
-    # NOT
-    # [{:value => 'value', ...}, {:value => 'value', ...}]
-    expected_array = ["(people.name not like?) and (people.name not like?)", '%value%', '%value2%']
-    value          = [{:value => 'value', :action => 'like'}, {:value => 'value2', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'not'), message
-      
-    # [{:value => 'value value2', ...}, {:value => 'value value2', ...}]
-    conditions_text  = "(people.name not like? and people.name not like? and people.name not like?) and"
-    conditions_text += " (people.name not like? and people.name not like? and people.name not like?)"
-    expected_array   = [conditions_text, '%value%', '%value2%', '%value value2%', '%value3%', '%value4%', '%value3 value4%']
-    value            = [{:value => 'value value2', :action => 'like'}, {:value => 'value3 value4', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'not'), message
-    
-    #########################
-    ## Test when passing a conditions_array to be completed
-    
-    array_to_be_conpleted = ["(people.id =?)",'1']
-    completed_array       = ["(people.id =?) or (people.name like?) or (people.name like?)", '1', '%value%', '%value2%']
-    value                 = [{:value => 'value', :action => 'like'}, {:value => 'value2', :action => 'like'}]
-    assert_equal completed_array, Person.send(:get_conditions_array_for_criterion, Person, value, 'people.name', 'or', array_to_be_conpleted), message
-    
-    #########################
-    ## Test with nested resource
-    
-    Gender.has_search_index
-    expected_array = ["(genders.name like?) and (genders.name like?)", '%name1%', '%name2%']
-    value          = [{:value => 'name1', :action => 'like'}, {:value => 'name2', :action => 'like'}]
-    assert_equal expected_array, Person.send(:get_conditions_array_for_criterion, Gender, value, 'genders.name', 'and'), message
-  end
-  
-  def test_generate_attribute_prefix
-    message       = 'prefix should be as expected'
-    
-    #########################
-    ## Test no redundancy
-    include_array = [{:dog => [{:numbers => [:number_type]} ]} ]
-    
-    path          = 'people.dog.numbers.number_type'
-    assert_equal 'number_types', Person.send(:generate_attribute_prefix, path, include_array), message
-    
-    #########################
-    ## Test 1 redundancy
-    include_array = [{:dog => [{:numbers => [:number_type]} ]},
-                     {:numbers => [:number_type]} ]
-    
-    path          = 'people.dog.numbers.number_type'
-    assert_equal 'number_types', Person.send(:generate_attribute_prefix, path, include_array), message
-    
-    path          = 'people.numbers.number_type'
-    assert_equal 'number_types_numbers', Person.send(:generate_attribute_prefix, path, include_array), message
-    
-    #########################
-    ## Test 2 redundancy
-    include_array = [{:love => [{:dog => [{:numbers => [:number_type]} ]} ]},
-                     {:dog => [{:numbers => [:number_type]} ]},
-                     {:numbers => [:number_type]} ]
-    
-    path          = 'people.love.dog.numbers.number_type'
-    assert_equal 'number_types', Person.send(:generate_attribute_prefix, path, include_array), message
-    
-    path          = 'people.dog.numbers.number_type'
-    assert_equal 'number_types_numbers', Person.send(:generate_attribute_prefix, path, include_array), message
-    
-    path          = 'people.numbers.number_type'
-    assert_equal 'number_types_numbers_2', Person.send(:generate_attribute_prefix, path, include_array), message
-  end
-  
-  def test_get_prefix_order
-    message = "Returned prefix_table should be as expected"
-    
-    include_array = [{:sub_model => [:model]}, {:numbers => [:number_type, {:sub_model => [:model]} ]} ]
-    expected_prefix_table = ["people.sub_model", "people.numbers.sub_model"]
-    assert_equal expected_prefix_table, Person.send(:get_prefix_order, 'people', include_array, 'sub_model', 'model'), message
-    
-    include_array = [{:numbers => [:number_type, {:sub_model => [:model]} ]}, {:sub_model => [:model]}]
-    expected_prefix_table = ["people.numbers.sub_model", "people.sub_model"]
-    assert_equal expected_prefix_table, Person.send(:get_prefix_order, 'people', include_array, 'sub_model', 'model'), message
-  end
-  
-  def test_relationship_class_name
-    [Number, NumberType].each do |model|
-      model.has_search_index
-    end
-    Person.has_search_index
-    message = "Returned model should be as expected"
-    path    = 'people.love.numbers.number_type'
-    
-    assert_equal 'Person', Person.send(:relationship_class_name, path, 'love'), message
-    assert_equal 'Number', Person.send(:relationship_class_name, path, 'numbers'), message
-    assert_equal 'NumberType', Person.send(:relationship_class_name, path, 'number_type'), message
-  end
-  
   private
   
     def init_plugin_in_all_models
@@ -1050,5 +1877,5 @@ class HasSearchIndexTest < ActiveRecordTestCase #< Test::Unit::TestCase
       model.reflect_on_association(association).options.delete(:group)
       model.reflect_on_association(association).options.delete(:limit)
       model.reflect_on_association(association).options.delete(:conditions)
-    end
+    end    
 end

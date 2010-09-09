@@ -1,0 +1,79 @@
+conf_pagination: &pagination
+  per_page:
+    - 5
+    - 10
+    - 15
+    
+advanced_employee:
+  columns:
+    - *
+  filters:
+    - last_name
+    - first_name
+    - user_name: user.username
+    - service.name
+    - user.*
+    - address.*
+    - job_contract.*
+    - contract_end: job_contract.departure
+    - job_contract.job_contract_type.*
+    - family_situation.name
+    - iban.*
+    - contacts.*
+    - contacts.numbers.*
+    - contacts.numbers.number_type.*
+    - contacts.numbers.indicative.*
+    - contacts.numbers.indicative.country.*
+    - numbers.*
+    - numbers.number_type.*
+    - numbers.indicative.*
+    - numbers.indicative.country.*
+    - civility.name
+    - jobs.name
+    - jobs.service.name
+  group:
+    - last_name
+    - service.name
+  order:
+    - last_name
+    - first_name
+  <<: *pagination
+    
+employee_index:
+  filters:
+    - last_name
+    - first_name
+    - user_name: user.username
+    - service_name: service.name
+    - civility_name: civility.name
+    - contract_end: job_contract.departure
+  columns:
+    - *
+    - service.name
+    - civility.*
+    - job_contract.job_contract_type.*
+  group:
+    - last_name
+    - service.name
+  order:
+    - last_name
+    - first_name
+  <<: *pagination
+  
+  default_query:
+    criteria:
+      job_contract.departure: 
+        action: '='
+        value:
+    columns:
+      - first_name
+      - last_name
+      - service.name
+      - email
+    group:
+      - last_name
+    order:
+      - "last_name:Asc"
+      - "first_name:Asc"
+    search_type: and
+    per_page: 10

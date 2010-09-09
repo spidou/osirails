@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
 
   # Relationships
   has_and_belongs_to_many :roles
-  
+
   # Validates
   validates_each :password do |record, attr, value|
     unless record.id.nil?

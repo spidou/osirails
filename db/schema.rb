@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100503125551) do
+ActiveRecord::Schema.define(:version => 20100723061531) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -1066,6 +1066,21 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
     t.text     "description"
     t.float    "vat"
     t.datetime "cancelled_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "queries", :force => true do |t|
+    t.integer  "creator_id",    :limit => 11
+    t.string   "name"
+    t.string   "page_name"
+    t.string   "search_type"
+    t.text     "criteria"
+    t.text     "columns"
+    t.text     "order"
+    t.text     "group"
+    t.boolean  "public_access"
+    t.integer  "per_page",      :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end

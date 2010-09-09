@@ -1,3 +1,4 @@
+# TODO remove that file
 module SearchIndexesHelper
   
   # Method to generate table_header for search result
@@ -114,7 +115,7 @@ module SearchIndexesHelper
   #
   def generate_attributes_hash(model)
     result = {}
-    model.search_index[:attributes].merge(model.search_index[:additional_attributes]).each_pair do |key, value|
+    model.search_index_attributes.each_pair do |key, value|
       result = result.merge(key.to_s.humanize => value)
     end
     result 

@@ -1,8 +1,10 @@
+// # TODO remove that file
+
 // Method to get the attribute html link between <li></li>
 //
 function get_attribute_link(parent_div_id, pair)
 {
-  return "<li><a href='#"+ parent_div_id +"_attribute_chooser' onclick=\"save_path(this, '"+ parent_div_id +"','"+ pair.value +"');\">"+ pair.key +"</a></li>";
+  return "<li onmouseover='show_menu(this);'><a href='#"+ parent_div_id +"_attribute_chooser' onclick=\"save_path(this, '"+ parent_div_id +"','"+ pair.value +"');\">"+ pair.key +"</a></li>";
 }
 
 // Recursive method to get the attribute chooser structure according to sub models hierarchy
@@ -16,7 +18,7 @@ function get_models_hierarchy(relationships, parent_div_id, current_relationship
   for(var i = 0; i < relationships.get(current_relationship).length; i++){
     var attributes = MODELS.get(relationships.get(current_relationship)[i][1]).get('attributes');
     var relationship = relationships.get(current_relationship)[i][0];
-    result += "<li class='sub_menu' onmouseover='show_menu(this);' onmouseout='hide_menu(this);'><ul class='hidden_menu'>"; 
+    result += "<li class='sub_menu' onmouseover='show_menu(this);'><ul class='hidden_menu'>"; 
     
     attributes.each(function(pair){
       result += get_attribute_link(parent_div_id, pair);
@@ -58,9 +60,10 @@ function get_attributes_select(add)
   
   // ###############  attribute chooser ###################
   
-  // use a small hack changing classname to permit to display the menu only when the li is clicked (cf. search.css)
-  criterion =  "<ul name='criterion_"+ ID +"_attribute_chooser' class='attr_chooser'>"
-  criterion += "<li id='clicked' onclick=\"this.className='clicked';\"><label id='criterion_"+ ID +"_label' class='criterion_label'>Veuillez choisir un critère</label><ul>"
+  criterion  = "<label onclick=\"this.next('UL').down('UL').className='visible_menu'; startObserveToHideOnClick(this.next('UL').down('UL'))\" id='criterion_"+ ID +"_label' class='criterion_label test'>Veuillez choisir un critère</label>"
+  criterion += "<span class='criterion' id=\"criterion_"+ID+"_action\" >&nbsp;</span>"
+  criterion += "<ul name='criterion_"+ ID +"_attribute_chooser' class='attr_chooser'>"
+  criterion += "<li id='clicked' ><ul>"
   
   //direct attributes
   model_attributes.each(function(pair){
@@ -75,7 +78,7 @@ function get_attributes_select(add)
   criterion += "</ul></li></ul>";
   // #######################################################
   
-  criterion += "</div><div class='criterion' id=\"criterion_"+ID+"_action\" >&nbsp;</div><br/></div>";// use 3 dot to avoid the floating content to go with non floating content
+  criterion += "<br/></div>";// use 3 dot to avoid the floating content to go with non floating content
   parent_div.innerHTML += criterion ; // add the criterion to the parent div
   
 //  $('clicked').observe('click', function(window_event) {    //same as onclick clause
@@ -221,16 +224,38 @@ function isNumber(element)
 //-------------------------------------------- dynamique attribute chooser methods------------------------------ 
 function show_menu(obj)
 {
-  for(var i=0; i<obj.childNodes.length; i++){
-    obj.childNodes[i].className="visible_menu";
-  }
+  $(obj).siblings('LI').each(function(li){ hide_menu(li) })
+  if($(obj).down('UL') != null)
+    $(obj).down('UL').className = "visible_menu";
 }
 
 function hide_menu(obj)
 {
-  for(var i=0;i<obj.childNodes.length;i++){
-    obj.childNodes[i].className="hidden_menu";
+  if($(obj).down('UL') != null)
+    $(obj).down('UL').className = "hidden_menu"
+    hideMenuWithChildren($(obj).down('UL'))
+}
+
+function hideMenuWithChildren(obj)
+{
+  while(obj != null){
+    obj.className = "hidden_menu"
+    obj = obj.down('.visible_menu')
   }
+}
+
+function startObserveToHideOnClick(ul)
+{
+  var event = null;
+  
+  Event.observe(window, 'mouseup', function(window_event) {
+    event = window_event
+    hideMenuWithChildren($(ul))
+  });
+  
+  Event.observe(ul, 'mouseup', function(window_event) {
+    if(event == null) return
+  });
 }
 
 // method to permit to apply the attribute choice of the user 
@@ -242,33 +267,40 @@ function save_path(obj, parent_div_id, attribute_type)
 {
   var current = obj;
   var tab = new Array;
-  var i = 0;
-  var hidden_field = ""
+  
+  // unselect the old path
+  var element = obj.up('.attr_chooser').down('.selected')
+  if(element != null){
+    while(element != null) {
+      element.removeClassName('selected')
+      element = element.down('.selected')
+    }
+  }
   
   // add a new criterion
   if($(parent_div_id +'_attribute') == null) {
     get_attributes_select(true);
   }
   
-  tab[i++] = obj.innerHTML;
-  while(!(current.tagName=="UL" && current.className=="attr_chooser" )){
+  // select the new path
+  while(!(current.tagName=='UL' && current.className=='attr_chooser' )){
     current = current.parentNode;
-    if(current.tagName=="LI"){                                                         //verify that we are testing <li> balises
+    if(current.tagName=='LI'){                                                         //verify that we are testing <li> balises
+      current.addClassName('selected')
       for(var j=0;j<current.childNodes.length;j++){                                   //test all <a> that are children of current <li>
         item = current.childNodes.item(j);
-        if(item.parentNode.className=="sub_menu" && item.tagName=="A"){                //get the good <a> balise that represent a sub model        
-          tab[i++] = item.innerHTML;
-          item.className="selected";
+        if(item.parentNode == current && item.tagName=="A"){                //get the good <a> balise that represent a sub model        
+          tab.push(item.innerHTML);
         }
       }
     }
   }
     
   tab = tab.reverse();     // put in the good order because the path is parsed from the destination (attribute) to the source (parent)
-  $(parent_div_id +'_label').innerHTML = tab.join(" > ");
+  $(parent_div_id +'_label').innerHTML = "<div class='attribute_part'>" + tab.join("</div><div class='attribute_part'>") + "</div>";
   hidden_field = "<input type='hidden' id='"+ parent_div_id +"_attribute' value='"+ tab.join(".").gsub(" ","_") +"' name='criteria["+ parent_div_id +"][attribute]'/>";
   $(parent_div_id +'_action').innerHTML = hidden_field;
-  $('clicked').className='';
+  
   get_action_select(attribute_type, parent_div_id);
 }
 

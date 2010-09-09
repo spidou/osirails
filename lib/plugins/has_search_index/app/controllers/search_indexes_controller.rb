@@ -1,3 +1,4 @@
+# TODO remove that file
 class SearchIndexesController < ApplicationController
   include HasSearchIndexMethodsHelper
   
@@ -7,7 +8,7 @@ class SearchIndexesController < ApplicationController
     @models      = HasSearchIndex::MODELS.sort
     @main_models = @models.reject {|n| n.constantize.search_index[:main_model] == false}
     @actions     = HasSearchIndex::ACTIONS_TEXT.to_json.to_s 
-    @data_types  = HasSearchIndex::ClassMethods::ACTIONS.to_json.to_s
+    @data_types  = HasSearchIndex::ACTIONS.to_json.to_s
   end
   
   def update

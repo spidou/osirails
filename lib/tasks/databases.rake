@@ -3,7 +3,7 @@ namespace :db do
   override_task :migrate => :environment do
     ActiveRecord::Migration.verbose = ENV["VERBOSE"] ? ENV["VERBOSE"] == "true" : true
     ActiveRecord::Migrator.migrate("db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil)
-    $ordered_features_path.each do |feature_path|                                                               #
+    ($ordered_features_path + $all_plugins_path).each do |feature_path|                                                               #
       puts "====== Running migrations inside #{feature_path} ======"                                            # this code has been added to take in account
       ActiveRecord::Migrator.migrate("#{feature_path}/db/migrate/", ENV["VERSION"] ? ENV["VERSION"].to_i : nil) # the features' migrations
     end                                                                                                         #
@@ -17,7 +17,7 @@ namespace :db do
       raise "VERSION is required" unless version
       
       migrated = false                                                            # this code has been added to take in account
-      $ordered_features_path.each do |feature_path|                               # the features' migrations
+      ($ordered_features_path + $all_plugins_path).each do |feature_path|                               # the features' migrations
         puts "====== Running migrations inside #{feature_path} ======"            #
         begin                                                                     #
           ActiveRecord::Migrator.run(:up, "#{feature_path}/db/migrate/", version) #
@@ -63,7 +63,7 @@ namespace :db do
   desc 'Rolls the schema back to the previous version. Specify the number of steps with STEP=n'
   override_task :rollback => :environment do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
-    $ordered_features_path.reverse.each do |feature_path|                   #
+    ( $ordered_features_path.reverse + $all_plugins_path ).each do |feature_path|                   #
       puts "====== Running migrations inside #{feature_path} ======"        # this code has been added to take in account
       ActiveRecord::Migrator.rollback("#{feature_path}/db/migrate/", step)  # the features' migrations
     end                                                                     #

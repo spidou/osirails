@@ -2,7 +2,7 @@ require 'rake/testtask'
 
 desc 'Test the plugin.(run all tests)'
 Rake::TestTask.new(:test) do |t|
-  t.pattern = 'test/**/*_test.rb'
+  t.pattern = 'test/*_test.rb'
   t.verbose = true
   t.libs << 'test'
 end
@@ -20,7 +20,7 @@ end
 
 
 EnvTestTask.new :test_with_mysql_database do |t|
-  t.pattern = 'test/has_search_index_test.rb'
+  t.pattern = 'test/*_test.rb'
   t.verbose = true
   t.env = { 'DB' => 'mysql' }
   t.libs << 'test'

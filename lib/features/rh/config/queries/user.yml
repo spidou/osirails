@@ -1,0 +1,46 @@
+advanced_user:
+  user_index:
+  filters:
+    - employee.fullname
+    - username
+    - enabled
+    - last_connection
+    - last_activity
+  columns:
+    - employee.fullname
+    - username
+    - enabled
+    - last_connection
+    - last_activity
+  group:
+    - enabled
+  per_page:
+    - 5
+    - 10
+  search_type: and
+  default_query:
+    search_type: and
+    
+user_index:
+  filters:
+  columns:
+    - employee.fullname
+    - username
+    - enabled
+    - last_connection
+    - last_activity
+  group:
+    - enabled
+  order:
+    - enabled
+    - username
+  per_page:
+    - 5
+    - 10
+  search_type:
+  default_query:
+    columns:
+    order:
+      - 'username:asc'
+      - 'enabled:desc'
+    search_type: and

@@ -1,13 +1,19 @@
+$LOAD_PATH << File.dirname(__FILE__) + '/../../../../../vendor/gems/thoughtbot-shoulda-2.10.2/lib/'
+$LOAD_PATH << File.dirname(__FILE__) + '/../../../../../config/initializers'
+$LOAD_PATH << File.dirname(__FILE__) + '/../../lib/'
+
+require 'has_search_index'
+
+#require 'models/query'
+require 'basics_overrides' # OPTIMIZE remove dependencies to make plugin independent
 require 'lib/activerecord_test_connector'
+require 'shoulda'
 
 class ActiveRecordTestCase < Test::Unit::TestCase
-  if defined?(ActiveSupport::Testing::SetupAndTeardown)
-    include ActiveSupport::Testing::SetupAndTeardown
-  end
-
-  if defined?(ActiveRecord::TestFixtures)
-    include ActiveRecord::TestFixtures
-  end
+  
+  include ActiveSupport::Testing::SetupAndTeardown if defined?(ActiveSupport::Testing::SetupAndTeardown)
+  include ActiveRecord::TestFixtures               if defined?(ActiveRecord::TestFixtures)
+    
   # Set our fixture path
   if ActiveRecordTestConnector.able_to_connect
     self.fixture_path = File.join(File.dirname(__FILE__), '..', 'fixtures')
