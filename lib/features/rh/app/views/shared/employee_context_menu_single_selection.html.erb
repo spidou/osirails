@@ -1,0 +1,4 @@
+<% display_context_menu do |c| %>
+  <%= c.entry employee_link(@object, :link_text => "Voir", :image_tag => nil, :html_options => {:class => "icon-view"}) %>
+  <%= c.entry edit_employee_link(@object, :link_text => "Modifier ", :image_tag => nil, :html_options => {:class => "icon-edit"}) %>
+<% end %>

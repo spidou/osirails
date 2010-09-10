@@ -48,6 +48,29 @@ class ApplicationController < ActionController::Base
     Menu.find_by_name(menu) or raise "The controller '#{controller_name}' should have a menu with the same name"
   end
   
+  def context_menu
+    class_name_and_object_ids = params.detect{|h| h.first.end_with?("_ids")}
+    class_name                = class_name_and_object_ids.first.gsub("_ids", "").camelize
+    underscored_class_name    = class_name.underscore
+    object_id                 = class_name_and_object_ids.last.first
+    controller_folder_name    = self.class.name.gsub("Controller","").underscore
+    @ids                      = class_name_and_object_ids.last
+    choice                    = @ids.size > 1 ? "multiple" : "single"
+    
+    controller_template = "#{controller_folder_name}/#{underscored_class_name}_context_menu_#{choice}_selection"
+    model_template      = "shared/#{underscored_class_name}_context_menu_#{choice}_selection"
+    default_template    = "shared/context_menu_#{choice}_selection"
+    
+    template   = params["#{underscored_class_name}_#{choice}_selection_template".to_sym]
+    template ||= controller_template if template_exists?(controller_template)
+    template ||= model_template      if template_exists?(model_template)
+    template ||= default_template
+    
+    @object = class_name.constantize.find(object_id)
+
+    render :template => template, :layout => false
+  end
+    
   protected
     # Method to permit to add permission to an action in a controller
     # options = {:list => ['myaction']}

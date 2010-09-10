@@ -22,21 +22,19 @@
         <th>Service</th>
         <th>T&eacute;l&eacute;phone</th>
         <th>Email</th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% for employee in @employees %>
-        <tr class="<%= Employee.actives.include?(employee) ? '' : 'disabled' %>">
-          <td class="first_name"><%=h employee.first_name %></td>
+        <tr class="employee <%= (Employee.actives.include?(employee) ? '' : 'disabled') %>">
+          <td class="first_name">
+            <%= context_menu(employee, "employee", :allow_multiple_selection => false, :display_checkbox => false) %>
+            <%=h employee.first_name %>
+          </td>
           <td class="last_name"><%=h employee.last_name %></td>
           <td class="service"><%= link_to(employee.service.name, service_path(employee.service)) %></td>
           <td class="phone"><%= display_full_phone_number(employee.numbers.visibles.first) if employee.numbers.visibles.first %></td>
           <td class="intranet_email"><%=h employee.intranet_email %></td>
-          <td class="actions">
-            <%= employee_link(employee, :link_text => "") %>
-            <%= edit_employee_link(employee,:link_text => "") %>
-          </td>
         </tr>
       <% end %>
     </tbody>
