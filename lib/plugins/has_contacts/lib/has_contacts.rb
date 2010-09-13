@@ -17,7 +17,7 @@ module HasContacts
         
         if options[:required]
           class_eval do
-            validates_presence_of "#{key}_id".to_sym
+            validates_presence_of "#{key}_id".to_sym, :unless => "#{key}_should_be_validated?".to_sym
             validates_presence_of "#{key}".to_sym, :if => "#{key}_id".to_sym
           end
         end 
@@ -50,8 +50,7 @@ module HasContacts
           end
           
           define_method "#{key}_should_be_validated?" do
-            return false if send(key).nil?
-            send(key).new_record?
+            send(key) && send(key).new_record?
           end
           
           define_method "#{key}_attributes=" do |attributes|

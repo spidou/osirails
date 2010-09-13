@@ -14,6 +14,9 @@ RAKE_TASK = false unless defined? RAKE_TASK
 # Specifies if the application is launch for testing or not (set in test/test_helper.rb)
 TESTING_FEATURE = false unless defined? TESTING_FEATURE
 
+# Specifies if the application is launch for loading data (**/db/*seeds.rb) or not (set in lib/seed_helper.rb)
+SEEDING_FEATURE = false unless defined? SEEDING_FEATURE
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 require 'rails_hacks'

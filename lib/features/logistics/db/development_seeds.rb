@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default commodity categories
 metal = CommodityCategory.create! :name => "Metal"
 alu   = CommodityCategory.create! :name => "Aluminium"
@@ -58,7 +60,7 @@ CommoditySubCategory.create!  :name => "Altuglass", :supply_category_id => plast
                                   :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id } ]
 
 # default commodities and their supplier_supplies
-acier = Commodity.create! :name => "Acier", :measure => "1.60", :unit_mass => "70.65", :supply_sub_category_id => toles.id, :threshold => 5,
+acier = Commodity.create! :name => "Acier", :measure => 1.60, :unit_mass => 70.65, :supply_sub_category_id => toles.id, :threshold => 5,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
@@ -70,7 +72,7 @@ acier = Commodity.create! :name => "Acier", :measure => "1.60", :unit_mass => "7
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
                               :value            => "1700" } ]
 
-galva = Commodity.create! :name => "Galva", :measure => "4.50", :unit_mass => "105.98", :supply_sub_category_id => toles.id, :threshold => 1,
+galva = Commodity.create! :name => "Galva", :measure => 4.50, :unit_mass => 105.98, :supply_sub_category_id => toles.id, :threshold => 1,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
@@ -82,7 +84,7 @@ galva = Commodity.create! :name => "Galva", :measure => "4.50", :unit_mass => "1
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
                               :value            => "3000" } ]
 
-rond  = Commodity.create! :name => "Rond", :measure => "6", :unit_mass => "5.32", :supply_sub_category_id => tubes.id, :threshold => 18,
+rond  = Commodity.create! :name => "Rond", :measure => 6, :unit_mass => 5.32, :supply_sub_category_id => tubes.id, :threshold => 18,
                           :supplies_supply_size_attributes => [
                             { :supply_size_id   => SupplySize.find_by_name("Épaisseur").id,
                               :unit_measure_id  => UnitMeasure.find_by_symbol("mm").id,
@@ -245,13 +247,4 @@ Vehicle.create! :service_id => Service.last.id,   :job_id => Job.last.id,  :empl
 Machine.create! :service_id => Service.last.id,   :job_id => Job.last.id,  :employee_id => Employee.last.id,  :supplier_id => Supplier.last.id,  :name => "Fraiseuse",  :serial_number => "987654321", :description => "Fraiseuse",   :purchase_date => Date.today - 6.months,  :purchase_price => "300000"
 Machine.create! :service_id => Service.first.id,  :job_id => Job.first.id, :employee_id => Employee.first.id, :supplier_id => Supplier.first.id, :name => "Imprimante", :serial_number => "123456789", :description => "Imprimante",  :purchase_date => Date.today - 1.year,    :purchase_price => "500000"
 
-# default permissions
-%W{ BusinessObject Menu DocumentType }.each do |klass|
-  klass.constantize.all.each do |object|
-    object.permissions.each do |permission|
-      permission.permissions_permission_methods.each do |object_permission|
-        object_permission.update_attribute(:active, true)
-      end
-    end
-  end
-end
+set_default_permissions

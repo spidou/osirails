@@ -36,6 +36,10 @@ ActionController::Routing::Routes.add_routes do |map|
                                                 :action     => 'order_form',
                                                 :conditions => { :method => :get }
         end
+        
+        quote_step.new_quote_item 'new_quote_item', :controller  => 'quotes',
+                                                    :action      => 'new_quote_item',
+                                                    :conditions  => { :method => :post }
       end
       
       commercial.resource :press_proof_step, :as => 'press_proof', :controller  => 'press_proof_step' do |press_proof_step|
@@ -307,7 +311,8 @@ ActionController::Routing::Routes.add_routes do |map|
   map.goods 'goods', :controller => 'products_catalog' #default page for products
   
   # AJAX REQUESTS
-  map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller => 'product_reference_categories', :action => 'update_product_reference_sub_categories'
+  map.update_product_reference_sub_categories 'update_product_reference_sub_categories', :controller  => 'product_reference_categories',
+                                                                                         :action      => 'update_product_reference_sub_categories'
   ##
   
   map.resources :subcontractors

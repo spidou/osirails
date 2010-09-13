@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../thirds_test'
 class EstablishmentTest < ActiveSupport::TestCase
   should_belong_to :customer, :establishment_type, :activity_sector_reference
   
-  should_validate_presence_of :name, :address
+  should_validate_presence_of :address
   should_validate_presence_of :establishment_type, :with_foreign_key => :default
   
   context "A new establishment" do
@@ -25,18 +25,28 @@ class EstablishmentTest < ActiveSupport::TestCase
     end
   end
   
-  context "An establishment" do
+  # test errors_on_attributes_except_on_contacts?
+  context "A valid establishment" do
     setup do
       @establishment = create_establishment_for(Customer.first)
+      flunk "@establishment should be valid" unless @establishment.valid?
     end
     
     subject{ @establishment }
     
     should_validate_uniqueness_of :siret_number
-      
-    should "have errors_on_attributes_except_on_contacts? with at least one invalid attribute other that contacts" do
-      @establishment.name = nil
-      flunk "establishemnt should be invalid " if @establishment.valid?
+    
+    [:address, :establishment_type_id, :establishment_type].each do |attr|
+      should "have errors_on_attributes_except_on_contacts? when its '#{attr}' is invalid" do
+        @establishment.send("#{attr}=", nil)
+        flunk "establishemnt should be invalid" if @establishment.valid?
+        assert @establishment.errors_on_attributes_except_on_contacts?
+      end
+    end
+    
+    should "have errors_on_attributes_except_on_contacts? when its 'siret_number' is invalid" do
+      @establishment.siret_number = "invalid siret number"
+      flunk "establishemnt should be invalid" if @establishment.valid?
       assert @establishment.errors_on_attributes_except_on_contacts?
     end
     
@@ -45,7 +55,7 @@ class EstablishmentTest < ActiveSupport::TestCase
       flunk "contact should be invalid" if @establishment.contacts.first.valid?
       assert !@establishment.errors_on_attributes_except_on_contacts?
     end
-  
+    
     should "not have errors_on_attributes_except_on_contacts? without any invalid attributes" do 
       assert !@establishment.errors_on_attributes_except_on_contacts?
     end

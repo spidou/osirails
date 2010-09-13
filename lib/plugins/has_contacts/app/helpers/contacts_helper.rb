@@ -70,7 +70,7 @@ module ContactsHelper
                                          :locals => { :contact_picker => contact_picker,
                                                       :contacts_owners => contacts_owners,
                                                       :contact_key => contact_key,
-                                                      :options => {:establishment => {:value_method => :id, :text_method => :name }} }
+                                                      :options => {:establishment => {:value_method => :id, :text_method => :formatted }} }
                                          ))
       page << h("$('#{ div_id }').insert({ bottom: '#{ partial }'})")
       page << "this.parentNode.toggle('appear')"

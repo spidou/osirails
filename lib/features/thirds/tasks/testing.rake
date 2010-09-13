@@ -2,15 +2,9 @@ namespace :osirails do
   namespace :thirds do
     desc "Run all unit, functional and integration tests for thirds feature"
     task :test do
-      errors = %w(osirails:thirds:test:units osirails:thirds:test:functionals osirails:thirds:test:integration).collect do |task|
-        begin
-          Rake::Task[task].invoke
-          nil
-        rescue => e
-          task
-        end
-      end.compact
-      abort "Errors running #{errors.to_sentence}!" if errors.any?
+      %w(osirails:thirds:test:units osirails:thirds:test:functionals osirails:thirds:test:integration).collect do |task|
+        Rake::Task[task].invoke
+      end
     end
     
     namespace :test do

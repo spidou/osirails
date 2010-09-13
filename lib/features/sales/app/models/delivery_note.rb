@@ -254,7 +254,11 @@ class DeliveryNote < ActiveRecord::Base
   end
   
   def number_of_pieces
-    delivery_note_items.collect(&:quantity).sum || 0
+    delivery_note_items.collect(&:quantity).compact.sum
+  end
+  
+  def number_of_products
+    delivery_note_items.count
   end
   
   def number_of_delivered_pieces

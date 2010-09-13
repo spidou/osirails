@@ -4,12 +4,13 @@ class Supplier < Third
   has_permissions :as_business_object
   has_contacts # please dont put in third.rb because has_contacts defines some routes and needs to know this class name
   has_address :address
+  has_number  :phone
+  has_number  :fax
   
   has_one :iban, :as => :has_iban
   
   belongs_to :activity_sector_reference
   
-  # for pagination : number of instances by index page
   SUPPLIERS_PER_PAGE = 15
   
   named_scope :activates, :conditions => { :activated => true }

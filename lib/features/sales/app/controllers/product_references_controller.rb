@@ -89,17 +89,20 @@ class ProductReferencesController < ApplicationController
   
   def auto_complete_for_product_reference_reference
     #OPTMIZE use one sql request instead of multiple requests (using has_search_index once it will be improved to accept by_values requests)
-    
     keywords = params[:product_reference][:reference].split(" ").map(&:strip)
-    @items = []
+    query = []
+    conditions = []
+    
     keywords.each do |keyword|
-      #result = ProductReference.search_with( { 'reference' => keyword, 'name' => keyword, 'description' => keyword, 'product_reference_sub_category.name' => keyword, 'product_reference_sub_category.product_reference_catetory.name' => keyword, :search_type => :or })
-      #@items = @items.empty? ? result : @items & result
-      
       keyword = "%#{keyword}%"
-      result = ProductReference.all(:include => [ { :product_reference_sub_category => [ :product_reference_category ] } ], :conditions => ["products.reference like ? OR products.name like ? OR products.dimensions like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?", keyword, keyword, keyword, keyword, keyword, keyword, keyword, keyword])
-      @items = @items.empty? ? result : @items & result
+      query << "(products.reference like ? OR products.name like ? OR products.dimensions like ? OR products.description like ? OR product_reference_categories.reference like ? OR product_reference_categories.name like ? OR product_reference_categories_product_reference_categories.reference like ? OR product_reference_categories_product_reference_categories.name like ?)"
+      8.times{ conditions << keyword }
     end
+    
+    query = query.join(" AND ")
+    conditions.unshift(query)
+    
+    @items = ProductReference.all(:include => [ { :product_reference_sub_category => [ :product_reference_category ] } ], :conditions => conditions)
     
     render :partial => 'shared/search_product_reference_auto_complete', :object => @items, :locals => { :fields => "reference designation", :keywords => keywords }
   end

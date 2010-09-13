@@ -52,6 +52,7 @@ module EndProductsHelper
   end
   
   def display_end_product_delete_button_in_survey_step(end_product)
+    return unless end_product.can_be_deleted?
     confirm = "Êtes-vous sûr ? Cela aura pour conséquence de supprimer tout ce qui est en relation directe avec ce produit. Attention, les modifications seront appliquées à la soumission du formulaire."
     link_to_function "Supprimer", "if (confirm(\"#{confirm}\")) mark_resource_for_destroy(this)"
   end

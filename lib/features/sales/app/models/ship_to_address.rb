@@ -11,15 +11,14 @@ class ShipToAddress < ActiveRecord::Base
   
   attr_accessor :should_create
   attr_accessor :should_destroy
-  #attr_accessor :should_update
-  attr_accessor :parallel_creation
-  
-  def should_destroy?
-    should_destroy.to_i == 1
-  end
+  #attr_accessor :parallel_creation
   
   def should_create?
     should_create.to_i == 1
+  end
+  
+  def should_destroy?
+    should_destroy.to_i == 1
   end
   
   def name_and_short_address

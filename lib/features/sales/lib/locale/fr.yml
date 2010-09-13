@@ -173,11 +173,10 @@ fr:
         reference: "Référence"
         status: "État actuel"
       ship_to_address:
-        establishment: "Établissement associé"
-        establishment_name: "Nom de l'établissement"
+        #establishment: "Établissement associé"
+        establishment_name: "Nom de l'enseigne"
       subcontractor:
         activity_sector_reference: "Code NAF"
-        siret_number: "N° SIRET"
       subcontractor_request:
         subcontractor: "Préstataire"
         name: "Préstataire"

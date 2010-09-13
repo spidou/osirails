@@ -32,11 +32,14 @@ class Role < ActiveRecord::Base
   private
     def create_bo_permissions
       BusinessObject.all.each do |bo|
+        bo_class = bo.name.constantize rescue next # skip if constant is not present is LOAD_PATH right now
+                                                   # (missing permissions will be created thanks to initializers/create_missing_bo_permissions.rb)
+        
         permission = Permission.create!(:role_id              => self.id,
                                         :has_permissions_id   => bo.id,
-                                        :has_permissions_type => BusinessObject.to_s)
+                                        :has_permissions_type => "BusinessObject")
         
-        bo.name.constantize.class_permission_methods.each do |method|
+        bo_class.class_permission_methods.each do |method|
           PermissionsPermissionMethod.create!(:permission_id        => permission.id,
                                               :permission_method_id => PermissionMethod.find_by_name(method.to_s).id)
         end

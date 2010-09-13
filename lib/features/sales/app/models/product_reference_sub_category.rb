@@ -36,6 +36,11 @@ class ProductReferenceSubCategory < ProductReferenceCategory
   end
   
   #TODO test that method
+  def children
+    product_references
+  end
+  
+  #TODO test that method
   def disabled_children
     disabled_product_references
   end

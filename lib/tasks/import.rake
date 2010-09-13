@@ -5,15 +5,14 @@ namespace :osirails do
   namespace :db do
     desc "Import all data from CSV files for whole project"
     task :import => :environment do
-      errors = FeatureManager.loaded_feature_paths.collect do |feature_path|
-        feature_name = feature_path.split("/").last
-        import_task = "osirails:#{feature_name}:db:import"
-        puts "==== Running #{import_task} ===="
+      tasks = FeatureManager.loaded_feature_paths.map{|path| path.split("/").last}.map{|name| "osirails:#{name}:db:import"}
+      errors = tasks.select{ |task| Rake::Task[task] rescue false }.collect do |task| # select tasks which really exist
+        puts "==== Running #{task} ===="
         begin
-          Rake::Task[import_task].invoke
+          Rake::Task[task].invoke
           nil
         rescue => e
-          import_task
+          task
         end
       end.compact
       abort "Errors running #{errors.to_sentence}!" if errors.any?

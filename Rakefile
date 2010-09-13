@@ -9,6 +9,8 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'lib/rake/seedtask'
+
 require 'tasks/rails'
 
 # this global constant permits to specify if we are in rake task context or not

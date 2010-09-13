@@ -2,15 +2,9 @@ namespace :osirails do
   namespace :logistics do
     desc "Run all unit, functional and integration tests for logistics feature"
     task :test do
-      errors = %w(osirails:logistics:test:units osirails:logistics:test:functionals osirails:logistics:test:integration).collect do |task|
-        begin
-          Rake::Task[task].invoke
-          nil
-        rescue => e
-          task
-        end
-      end.compact
-      abort "Errors running #{errors.to_sentence}!" if errors.any?
+      %w(osirails:logistics:test:units osirails:logistics:test:functionals osirails:logistics:test:integration).collect do |task|
+        Rake::Task[task].invoke
+      end
     end
     
     namespace :test do

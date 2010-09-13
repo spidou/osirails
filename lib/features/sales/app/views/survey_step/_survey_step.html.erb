@@ -36,7 +36,7 @@ survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey
     <!-- <li class="survey_step_consultants<%= survey_errors[:survey_step_consultants] %>"><%= survey_headers[:survey_step_consultants] %></li> -->
     <li class="survey_step_remarks<%= survey_errors[:survey_step_remarks] %>"><%= survey_headers[:survey_step_remarks] %></li>
   </ul>
-  <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update },  :html => { :multipart => true }) do |form| %>
+  <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update }, :html => { :multipart => true }) do |form| %>
     <%= form.error_messages %>
     
     <h2 class="survey_step_interventions section_nav"><%= survey_headers[:survey_step_interventions] %></h2>

@@ -29,12 +29,16 @@ class QuoteItem < ActiveRecord::Base
   def initialize(*params)
     super(*params)
     self.order_id = quote.order_id if quote
-    self.product_reference_id = end_product.product_reference_id unless free_item?
+    self.product_reference_id = end_product.product_reference_id if product_reference_id.blank? and end_product
   end
 
   def after_find
     self.order_id = quote.order_id
-    self.product_reference_id = end_product.product_reference_id unless free_item?
+    self.product_reference_id = end_product.product_reference_id if product_reference_id.blank? and end_product
+  end
+  
+  def product_reference
+    ProductReference.find_by_id(product_reference_id)
   end
   
   def order
@@ -42,16 +46,16 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def free_item?
-    end_product.nil?
+    end_product.nil? and product_reference_id.blank?
   end
   
   def build_or_update_end_product
-    return if product_reference_id.blank? and free_item?
+    return if free_item?
     
     self.end_product ||= order.end_products.build(:product_reference_id => product_reference_id)
     
-    [:name, :description, :dimensions, :unit_price, :prizegiving, :quantity, :vat, :position].each do |attribute|
-      end_product.send("#{attribute}=", self.send(attribute))
+    %w( name description dimensions unit_price prizegiving quantity vat position ).each do |attr|
+      end_product.send("#{attr}=", self.send(attr))
     end
   end
   
@@ -77,23 +81,35 @@ class QuoteItem < ActiveRecord::Base
     end_product.destroy if !free_item? and Quote.find_by_id(quote.id)
   end
   
+  def name
+    self[:name] ||= product_reference && product_reference.designation
+  end
+  
+  def description
+    self[:name] ||= product_reference && product_reference.description
+  end
+  
+  def vat
+    self[:vat] ||= product_reference && product_reference.vat
+  end
+  
   def original_name
-    free_item? ? nil : end_product.product_reference.name
+    free_item? ? nil : product_reference && product_reference.designation
   end
   
   def original_description
-    free_item? ? nil : end_product.product_reference.description
+    free_item? ? nil : product_reference && product_reference.description
   end
   
   def original_vat
-    free_item? ? nil : end_product.product_reference.vat
+    free_item? ? nil : product_reference && product_reference.vat
   end
   
   def designation
-    free_item? ? name : end_product.designation
+    free_item? ? name : name + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
-  def position # used for sorted_quote_items
+  def position # used by Quote#sorted_quote_items
     super || 0
   end
   

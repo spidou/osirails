@@ -67,6 +67,16 @@ class Test::Unit::TestCase
   def self.assert_valid_permissions(*actions)
     #TODO faire les assertions qui permettent de tester facilement les permissions sur tous les controlleurs
   end
+  
+  def assert_empty(array, message = nil)
+    full_message = build_message(message, "array expected to be empty, but has <?> items.\n", array.size)
+    assert_block(full_message) { array.empty? }
+  end
+  
+  def assert_not_empty(array, message = nil)
+    full_message = build_message(message, "array expected to not be empty, but has <0> items.\n")
+    assert_block(full_message) { array.any? }
+  end
 end
 
 module ActionController

@@ -2,15 +2,9 @@ namespace :osirails do
   namespace :memorandum do
     desc "Run all unit, functional and integration tests for memorandum feature"
     task :test do
-      errors = %w(osirails:memorandum:test:units osirails:memorandum:test:functionals osirails:memorandum:test:integration).collect do |task|
-        begin
-          Rake::Task[task].invoke
-          nil
-        rescue => e
-          task
-        end
-      end.compact
-      abort "Errors running #{errors.to_sentence}!" if errors.any?
+      %w(osirails:memorandum:test:units osirails:memorandum:test:functionals osirails:memorandum:test:integration).collect do |task|
+        Rake::Task[task].invoke
+      end
     end
     
     namespace :test do

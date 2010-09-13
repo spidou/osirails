@@ -102,9 +102,15 @@ class FeatureManager
     @feature = Feature.find_by_name_and_version(@name, @version)
     
     if @feature
-      load_plugin if ( !Rails.env.test? and @feature.activated? ) or
-                       ( Rails.env.test? and
-                         ( @feature.name == TESTING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(TESTING_FEATURE) ) )
+      if RAILS_ENV == "test"
+        load_plugin if @feature.name == TESTING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(TESTING_FEATURE)
+      else
+        if SEEDING_FEATURE
+          load_plugin if @feature.name == SEEDING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(SEEDING_FEATURE)
+        elsif @feature.activated?
+          load_plugin
+        end
+      end
     else
       raise "Feature '#{@name}' has not been found in the database..."
     end
@@ -245,11 +251,11 @@ class FeatureManager
       require main_file if File.exists?(main_file)
       
       if database_is_ready?
-      # constantize files in app/models
-        Dir["#{@path}/app/models/*.rb"].each{ |file| File.basename(file).chomp(File.extname(file)).camelize.constantize }
-        
         # require files in lib/overrides
         Dir["#{@path}/lib/overrides/*.rb"].each{ |file| load file }
+        
+        # constantize files in app/models
+        Dir["#{@path}/app/models/*.rb"].each{ |file| File.basename(file).chomp(File.extname(file)).camelize.constantize }
       end
     end
 end

@@ -25,7 +25,7 @@
       <CommercialRepresentative>
         <LastName><%= @invoice.order.commercial.last_name %></LastName>
         <FirstName><%= @invoice.order.commercial.first_name %></FirstName>
-        <Phone><%= "#{@invoice.order.commercial.numbers.first.indicative.indicative} #{@invoice.order.commercial.numbers.first.number}" %></Phone>
+        <Phone><%= "#{@number.indicative.indicative if @number.indicative} #{@number.formatted_with_indicative}" if @number = @invoice.order.commercial.numbers.first %></Phone>
         <Email><%= @invoice.order.commercial.email %></Email>
       </CommercialRepresentative>
       <AdministrativeRepresentative>
@@ -45,8 +45,8 @@
       <City><%= @invoice.bill_to_address.city_name %></City>
       <Country><%= @invoice.bill_to_address.country_name %></Country>
       <Representative>
-        <LastName><%= @invoice.contact.last_name %></LastName>
-        <FirstName><%= @invoice.contact.first_name %></FirstName>   
+        <LastName><%= @invoice.invoice_contact.last_name %></LastName>
+        <FirstName><%= @invoice.invoice_contact.first_name %></FirstName>   
       </Representative>
     </Customer>
     <Lines>

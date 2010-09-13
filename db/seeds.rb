@@ -1,3 +1,5 @@
+require 'lib/seed_helper'
+
 # default users and roles
 user_admin = User.create! :username => "admin", :password => "admin", :enabled => 1
 role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
@@ -14,6 +16,7 @@ NumberType.create! :name => "Fax Professionnel"
 # default countries
 france          = Country.create! :name => "FRANCE",      :code => "fr"
 reunion         = Country.create! :name => "REUNION",     :code => "fr"
+belgium         = Country.create! :name => "BELGIQUE",    :code => "be"
 spain           = Country.create! :name => "ESPAGNE",     :code => "es"
 united_kingdom  = Country.create! :name => "ANGLETERRE",  :code => "gb"
 germany         = Country.create! :name => "ALLEMAGNE",   :code => "de"
@@ -21,9 +24,11 @@ japan           = Country.create! :name => "JAPON",       :code => "jp"
 china           = Country.create! :name => "CHINE",       :code => "cn"
 united_states   = Country.create! :name => "ETATS-UNIS",  :code => "us"
 canada          = Country.create! :name => "CANADA",      :code => "ca"
+mauritius       = Country.create! :name => "MAURICE",     :code => "mu"
 
-# default indicatives
+# default indicatives (http://fr.wikipedia.org/wiki/ISO_3166-1)
 Indicative.create! :indicative => "+262", :country_id => reunion.id
+Indicative.create! :indicative => "+32",  :country_id => belgium.id
 Indicative.create! :indicative => "+33",  :country_id => france.id 
 Indicative.create! :indicative => "+34",  :country_id => spain.id
 Indicative.create! :indicative => "+44",  :country_id => united_kingdom.id
@@ -31,6 +36,7 @@ Indicative.create! :indicative => "+49",  :country_id => germany.id
 Indicative.create! :indicative => "+81",  :country_id => japan.id
 Indicative.create! :indicative => "+86",  :country_id => china.id
 Indicative.create! :indicative => "+1",   :country_id => united_states.id
+Indicative.create! :indicative => "+230", :country_id => mauritius.id
 
 # default cities
 City.create! :name => "BRAS PANON",               :zip_code => "97412", :country_id => reunion.id
@@ -144,13 +150,4 @@ ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments
 ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Échaffaudage"
 ChecklistOption.create! :checklist_id => checklist1.id, :parent_id => equipments.id, :title => "Locations"
 
-# default permissions
-%W{ BusinessObject Menu DocumentType }.each do |klass|
-  klass.constantize.all.each do |object|
-    object.permissions.each do |permission|
-      permission.permissions_permission_methods.each do |object_permission|
-        object_permission.update_attribute(:active, true)
-      end
-    end
-  end
-end
+set_default_permissions

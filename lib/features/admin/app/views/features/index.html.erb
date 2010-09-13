@@ -30,18 +30,14 @@
   </table>
   <%= will_paginate @features %>
 
-  <% if Feature.can_add?(current_user) %>
   <h2>Ajout d'un module</h2>
-  <p>Format accepté: .tar.gz
-    <%= form_tag({:action => 'create'}, :multipart => true) %>
-    <%= file_upload %>
-  </p>
-  <p>
-    <%# submit_tag "Ajouter" %>
-    <input type="submit" value="Ajouter" name="commit" onclick='osibox_open();' />
-  </p>
-</form>
-<% end %>
+  <%= form_tag({:action => 'create'}, :multipart => true) %>
+    <p>Format accepté: .tar.gz
+      <%= file_upload %>
+    </p>
+    <p>
+      <%# submit_tag "Ajouter" %>
+      <input type="submit" value="Ajouter" name="commit" onclick='osibox_open();' />
+    </p>
+  </form>
 </div>
-
-<%# osibox_init :partial => 'feature_loading', :border_size => '1', :close_button => false %>

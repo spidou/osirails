@@ -65,10 +65,6 @@ class NumberTest < ActiveSupport::TestCase
       assert_equal "012345678", @number.number
     end
     
-    should "have a well-formed formatted number" do
-      assert_equal "012 34 56 78", @number.formatted
-    end
-    
     should "store a well-formed number" do
       @number.number = "012345678"
       assert_equal "012345678", @number.number
@@ -82,6 +78,27 @@ class NumberTest < ActiveSupport::TestCase
     should "store a well-formed number even with too many spaces" do
       @number.number = "01 23 456 78"
       assert_equal "012345678", @number.number
+    end
+    
+    context "with starts with '0'" do
+      setup do
+        flunk "@number should start with '0'" unless @number.number.starts_with?("0")
+      end
+      
+      should "have a well-formed formatted_with_indicative number" do
+        assert_equal "(0)12345678", @number.formatted_with_indicative
+      end
+    end
+    
+    context "with NOT starts with '0'" do
+      setup do
+        @number = Number.new(:number => "912345678")
+        flunk "@number should NOT start with '0'" if @number.number.starts_with?("0")
+      end
+      
+      should "have a well-formed formatted_with_indicative number" do
+        assert_equal "912345678", @number.formatted_with_indicative
+      end
     end
   end
   

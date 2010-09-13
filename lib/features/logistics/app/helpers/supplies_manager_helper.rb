@@ -85,7 +85,7 @@ module SuppliesManagerHelper
   
   def display_supply_add_button(supply, message = nil)
     return unless supply.class.can_add?(current_user) and supply.enabled?
-    text = supply.class == "Consumable" ? "Nouveau consommable" : "Nouvelle matière première"
+    text = supply.is_a?(Consumable) ? "Nouveau consommable" : "Nouvelle matière première"
     message ||= " #{text}"
     link_to(image_tag("add_16x16.png", :alt => text , :title => text) + message,
             self.send("new_#{supply.class.singularized_table_name}_path"))

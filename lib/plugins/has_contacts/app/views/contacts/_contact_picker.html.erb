@@ -50,7 +50,7 @@ select_options        = { :id => select_id }.merge(contact_picker.is_a?(SurveyIn
               :locals => { :contact_picker => contact_picker,
                            :contacts_owners => contacts_owners,
                            :contact_key => contact_key,
-                           :options => {:establishment => {:value_method => :id, :text_method => :name }} }
+                           :options => {:establishment => {:value_method => :id, :text_method => :formatted }} }
              )%>
   <% end %>
 </div>

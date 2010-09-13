@@ -20,9 +20,10 @@ class Customer < Third
   
   validates_presence_of :bill_to_address, :head_office
   
-  validates_presence_of :customer_grade_id, :customer_solvency_id
-  validates_presence_of :customer_grade,    :if => :customer_grade_id
-  validates_presence_of :customer_solvency, :if => :customer_solvency_id
+  # TODO don't know if I have to let that (I'm not sure if customer_grade or customer_solvency can be filled when you create a new customer if you don't even know it)
+  #validates_presence_of :customer_grade_id, :customer_solvency_id
+  #validates_presence_of :customer_grade,    :if => :customer_grade_id
+  #validates_presence_of :customer_solvency, :if => :customer_solvency_id
   
   with_options :if => :logo do |v|
     v.validates_attachment_content_type :logo, :content_type => [ 'image/jpg', 'image/png', 'image/jpeg' ]
@@ -43,15 +44,15 @@ class Customer < Third
                    :main_model         => true
   
   def payment_time_limit
-    customer_grade.payment_time_limit
+    customer_grade && customer_grade.payment_time_limit
   end
   
   def payment_method
-    customer_solvency.payment_method
+    customer_solvency && customer_solvency.payment_method
   end
   
-  def establishment_names
-    establishments.collect(&:name).uniq
+  def brand_names
+    head_office_and_establishments.collect{ |e| e[:name] }.uniq
   end
   
   def factorised?

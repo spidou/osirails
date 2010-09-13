@@ -27,7 +27,7 @@
   <p>
     <%= form.label :activity_sector_reference_id %>
     <%= form.form_or_view(form.collection_select(:activity_sector_reference_id, ActivitySectorReference.find(:all), :id, :code_and_short_name,
-                                                 { :include_blank => establishment.new_record? ? "Veuillez choisir un secteur d'activité" : false }, :index => nil),
+                                                 { :include_blank => "Veuillez choisir un secteur d'activité" }, :index => nil),
                                                  :activity_sector_reference, :code_and_short_name)%>
   </p>
   

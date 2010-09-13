@@ -41,7 +41,7 @@ module ActsAsStep
         
         class_eval do
           def children_steps
-            self.class.list_children_steps.collect{ |step| send(step) }
+            self.class.list_children_steps.collect{ |step| send(step) rescue nil }.compact
           end
           
           private

@@ -179,6 +179,11 @@ class QuotesController < ApplicationController
     end
   end
   
+  # GET /orders/:order_id/:step/quotes/new_quote_item?product_reference_id=:product_reference_id (AJAX)
+  def new_quote_item
+    render :partial => 'quote_items/quote_item', :object => QuoteItem.new(:product_reference_id => params[:product_reference_id].to_i)
+  end
+  
   private
     ## this method could be deleted when the fields_for method could received params like "customer[establishment_attributes][][address_attributes]"
     ## see the partial view _address.html.erb (thirds/app/views/shared OR thirds/app/views/addresses)

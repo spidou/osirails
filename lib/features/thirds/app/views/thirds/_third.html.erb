@@ -1,8 +1,17 @@
-<% require_locals form  %>
+<% require_locals form %>
 
 <%= render :partial => "thirds/third_main_info", :object => third, :locals => { :form => form } %>
 
-<h3>Adresse</h3>
-<%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third } %>
+<h3>Siège social</h3>
+<div class="presentation_in_columns">
+  <div>
+    <%= render :partial => 'addresses/address_form', :object => third.address || third.build_address , :locals => { :address_owner => third } %>
+  </div>
+
+  <div>
+    <%= render :partial => "numbers/number_lite", :object => third.phone || third.build_phone, :locals => { :number_owner => third, :form => form, :one_or_many => :one } %>
+    <%= render :partial => "numbers/number_lite", :object => third.fax || third.build_fax, :locals => { :number_owner => third, :form => form, :one_or_many => :one } %>
+  </div>
+</div>
 
 <%= render :partial => "thirds/third_financial_info", :object => third, :locals => { :form => form } %>

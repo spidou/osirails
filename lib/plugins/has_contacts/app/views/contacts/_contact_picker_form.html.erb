@@ -1,5 +1,5 @@
 <%
-require_locals contact_picker, contacts_owners, contact_key
+require_locals contact_picker, contacts_owners, contact_key, options
 owner_type = contact_picker.class.singularized_table_name
 contact = contact_picker_form
 id_attr = "id=\"resource__form_contact_#{contact.id}\"" unless contact.new_record?

@@ -91,6 +91,11 @@ class ProductReferenceCategory < ActiveRecord::Base
 #  end
   
   #TODO test that method
+  def children
+    product_reference_sub_categories
+  end
+  
+  #TODO test that method
   def disabled_children
     disabled_product_reference_sub_categories
   end

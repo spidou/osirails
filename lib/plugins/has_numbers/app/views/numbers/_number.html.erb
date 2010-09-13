@@ -14,9 +14,9 @@
 	<p>
 	  <% if form.form_view? %>
 	    <%= form.collection_select(:indicative_id, Indicative.find(:all), :id, :indicative, {}, { :selected => number[:indicative_id] }) %>
-			<%= form.text_field(:number, { :size => 9, :maxlength => 9 }) %>
+			<%= form.text_field(:number, { :size => 12, :maxlength => 13 }) %>
     	<%= form.collection_select(:number_type_id, NumberType.find(:all), :id, :name, {}, { :selected => number[:number_type_id] }) %>
-    	<%= form.select :visible, Number::VISIBLE_STATES %>
+    	<%= form.select(:visible, Number::VISIBLE_STATES) %>
 	    
 	    <%= number.new_record? ? remove_number_link : remove_old_number_link %>
 	    <%= form.hidden_field("has_number_id", :value => numbers_owner.id, :class => 'has_number_id') if hack_params %>

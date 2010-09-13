@@ -5,7 +5,6 @@ class SupplySubCategory < SupplyCategory
   has_many :supply_sizes, :through => :supply_categories_supply_sizes
   
   validates_presence_of :supply_category_id
-  validates_presence_of :supply_category, :if => :supply_category_id
   
   validates_persistence_of :name, :unit_measure_id, :if => :has_children?
   

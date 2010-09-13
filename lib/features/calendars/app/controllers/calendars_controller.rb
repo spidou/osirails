@@ -81,7 +81,7 @@ class CalendarsController < ApplicationController
     end
 
     def check_permissions
-      if @calendar.user
+      if @calendar and @calendar.user
         error_access_page(403) unless @calendar.user == current_user
       else
         error_access_page(403) unless @calendar.can_view?(current_user)
