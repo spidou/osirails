@@ -48,7 +48,7 @@ end_product_errors  = { :end_product_details    => end_product.errors.empty? ? '
       </p>
       <p>
         <%= form.label :description %>
-        <%= form.text_area_autoresize :description, :value => end_product.description || end_product.product_reference.description %>
+        <%= form.text_area_autoresize :description, :value => (end_product.description || end_product.product_reference.description), :index => nil %>
       </p>
       <p>
         <%= form.label :quantity %>

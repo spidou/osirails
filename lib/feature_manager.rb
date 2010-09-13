@@ -102,7 +102,7 @@ class FeatureManager
     @feature = Feature.find_by_name_and_version(@name, @version)
     
     if @feature
-      if RAILS_ENV == "test"
+      if Rails.env.test?
         load_plugin if @feature.name == TESTING_FEATURE or @feature.child_dependencies.collect{ |h| h[:name] }.include?(TESTING_FEATURE)
       else
         if SEEDING_FEATURE

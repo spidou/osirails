@@ -27,7 +27,7 @@ class Number < ActiveRecord::Base
   def formatted_with_indicative
     return unless number
     if number.starts_with?("0")
-      "(#{number.chars.first.to_s})#{number[1..number.size]}"
+      "(#{number.mb_chars.first.to_s})#{number[1..number.size]}"
     else
       number
     end

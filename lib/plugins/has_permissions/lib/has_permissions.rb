@@ -95,7 +95,7 @@ module HasPermissions
     end
     
     def setup_has_permissions_model options = {}
-      return unless !defined?(self.permissions_association_options) or RAILS_ENV == "development" # allow multiple calls only in development
+      return unless !defined?(self.permissions_association_options) or Rails.env.development? # allow multiple calls only in development
       
       cattr_accessor :permissions_association_options
       
