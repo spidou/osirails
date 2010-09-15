@@ -11,6 +11,10 @@ version: 0.1
 #    - 0.1
 #    - 0.2
 menus:
+  acts_as_watchables: 
+    title: Observer un object
+    description: 'Observer tous les attributs d un object ou une fonction'
+    hidden: true
   home:
     title: Accueil
     description: "Page d'accueil de l'intranet"

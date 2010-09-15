@@ -5,6 +5,15 @@ user_admin = User.create! :username => "admin", :password => "admin", :enabled =
 role_admin = Role.create! :name => "admin", :description => "Ce rôle permet d'accéder à toutes les ressources en lecture et en écriture"
 user_admin.roles << role_admin
 
+# default observable function
+WatchableFunction.create!  :function_type => "PurchaseOrder", :function_name => "confirmed?", :function_description => "voir si l'ordre d'achat est confirmer", :on_modification => :true, :on_schedule => true
+
+WatchableFunction.create!  :function_type => "PurchaseOrder", :function_name => "cancelled?", :function_description => "voir si la fourniture est annule", :on_modification => :true, :on_schedule => false
+
+WatchableFunction.create!  :function_type => "PurchaseOrderSupply", :function_name => "check_quantity_and_taxes", :function_description => "surveiller quantity et taxes", :on_modification => :true, :on_schedule => true
+
+WatchableFunction.create!  :function_type => "Commodity", :function_name => "check_stock_quantity", :function_description => "surveiller l'etat du stock", :on_modification => :true, :on_schedule => true
+
 # default number types
 NumberType.create! :name => "Mobile"
 NumberType.create! :name => "Fixe"

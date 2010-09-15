@@ -93,6 +93,7 @@ module SuppliesManagerHelper
   
   def display_supply_action_buttons(supply)
     html = []
+    html << display_acts_as_watchable_buttons(supply)
     html << display_supply_show_button(supply, '')
     html << display_supply_edit_button(supply, '')
     html << display_supply_disable_button(supply, '')

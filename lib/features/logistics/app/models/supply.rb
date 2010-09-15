@@ -345,6 +345,10 @@ class Supply < ActiveRecord::Base
     end
   end
   
+  def check_stock_quantity
+    stock_quantity <= threshold
+  end
+  
   private
     def update_supply_sub_category_counter(increment = true)
       method = ( increment ? "increment" : "decrement" ) + "_counter"

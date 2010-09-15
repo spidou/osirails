@@ -41,7 +41,8 @@ Rails::Initializer.run do |config|
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
   # :all can be used as a placeholder for all plugins not explicitly named
-  config.plugins = [:acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
+  
+  config.plugins = [:acts_as_watchable, :acts_as_tree, :acts_as_list, :acts_as_taggable_on_steroids, :acts_as_versioned,
                     :tiny_mce, :validates_persistence_of, :paperclip, :auto_complete, :local_auto_complete,
                     :has_permissions, :has_search_index, :has_documents, :has_address, :has_numbers,
                     :has_contacts, :has_reference, :acts_as_step, :pdf_generator, :validates_timeliness, :all]
@@ -55,7 +56,8 @@ Rails::Initializer.run do |config|
   end
   
   config.plugin_paths = Dir["#{RAILS_ROOT}/{lib,vendor}/{features,plugins}"]
-  
+  config.action_mailer.perform_deliveries = false
+
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
@@ -64,7 +66,7 @@ Rails::Initializer.run do |config|
   # in the database in UTC, and return them converted to the specified local zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
   config.time_zone = 'UTC'
-
+  
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random, 

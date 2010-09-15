@@ -241,6 +241,9 @@ class FeatureManager
 
       # load views
       ActionController::Base.prepend_view_path(File.join(@path, 'app', 'views'))
+      
+      # load views for action_mailer
+      ActionMailer::Base.template_root = ActionController::Base.view_paths  
     end
     
     def load_libs

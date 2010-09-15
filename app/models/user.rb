@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-
   before_save :username_unicity
   
   # Requires

@@ -1,7 +1,7 @@
 class Employee < ActiveRecord::Base
   has_permissions :as_business_object
   has_address :address
-  
+  acts_as_watcher :email_method => :email
   has_documents :curriculum_vitae, :driving_licence, :identity_card, :other
   
   has_numbers

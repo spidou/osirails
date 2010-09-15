@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100503125551) do
+ActiveRecord::Schema.define(:version => 20100827073230) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id",        :limit => 11
@@ -1448,6 +1448,30 @@ ActiveRecord::Schema.define(:version => 20100503125551) do
     t.string  "name"
     t.float   "rate"
     t.integer "position", :limit => 11
+  end
+
+  create_table "watchable_functions", :force => true do |t|
+    t.string  "function_type"
+    t.string  "function_name"
+    t.string  "function_description"
+    t.boolean "on_modification"
+    t.boolean "on_schedule"
+  end
+
+  create_table "watchables", :force => true do |t|
+    t.integer "has_watchable_id",   :limit => 11
+    t.string  "has_watchable_type"
+    t.integer "watcher_id",         :limit => 11
+    t.boolean "all_changes"
+  end
+
+  create_table "watchables_watchable_functions", :force => true do |t|
+    t.integer "watchable_id",          :limit => 11
+    t.integer "watchable_function_id", :limit => 11
+    t.boolean "on_modification"
+    t.boolean "on_schedule"
+    t.string  "time_quantity"
+    t.string  "time_unity"
   end
 
 end
