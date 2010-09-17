@@ -10,77 +10,79 @@
 <%= generate_commercial_step_contextual_menu_partial %>
 
 <%
-survey_headers = { :survey_step_interventions   => "Interventions (#{survey_step.survey_interventions.reject(&:should_destroy?).count})", # -1 if is form_view because we automatically add 1 hidden intervention
-                   :survey_step_end_products    => "Produits (#{survey_step.order.end_products.reject(&:should_destroy?).count})",
-                   :survey_step_documents       => "Documents / Photos (#{survey_step.documents.reject(&:should_destroy?).count})",
-                   :survey_step_subcontractors  => "Sous-traitants (#{survey_step.subcontractor_requests.reject(&:should_destroy?).count})",
-                   #:survey_step_consultants     => "Intervenants externes (x)",
-                   :survey_step_remarks         => "Commentaires (#{survey_step.remarks.count})" }
-
-survey_errors  = { :survey_step_interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
-                   :survey_step_end_products    => survey_step.order.errors.on(:end_products) ? ' errors' : '',
-                   :survey_step_documents       => survey_step.errors.on(:documents) ? ' errors' : '',
-                   :survey_step_subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
-                   #:survey_step_consultants     => '',
-                   :survey_step_remarks         => survey_step.errors.on(:remarks) ? ' errors' : '' }
+survey_step_errors  = { :interventions   => survey_step.errors.on(:survey_interventions) ? ' errors' : '',
+                        :end_products    => survey_step.order.errors.on(:end_products) ? ' errors' : '',
+                        :documents       => survey_step.errors.on(:documents) ? ' errors' : '',
+                        :subcontractors  => survey_step.errors.on(:subcontractor_requests) ? ' errors' : '',
+                        #:consultants     => '',
+                        :remarks         => survey_step.errors.on(:remarks) ? ' errors' : '' }
 %>
 
 <h1 id="survey_step">Survey</h1>
 
-<div class="presentation_medium survey_step root_nav">
-  <ul class="survey_step_nav tab_nav">
-    <li class="survey_step_interventions<%= survey_errors[:survey_step_interventions] %> selected"><%= survey_headers[:survey_step_interventions] %></li>
-    <li class="survey_step_end_products<%= survey_errors[:survey_step_end_products] %>"><%= survey_headers[:survey_step_end_products] %></li>
-    <li class="survey_step_documents<%= survey_errors[:survey_step_documents] %>"><%= survey_headers[:survey_step_documents] %></li>
-    <li class="survey_step_subcontractors<%= survey_errors[:survey_step_subcontractors] %>"><%= survey_headers[:survey_step_subcontractors] %></li>
-    <!-- <li class="survey_step_consultants<%= survey_errors[:survey_step_consultants] %>"><%= survey_headers[:survey_step_consultants] %></li> -->
-    <li class="survey_step_remarks<%= survey_errors[:survey_step_remarks] %>"><%= survey_headers[:survey_step_remarks] %></li>
-  </ul>
-  <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update }, :html => { :multipart => true }) do |form| %>
-    <%= form.error_messages %>
+<div class="presentation_medium survey_step root_nav standard">
+  
+  <% tab_navigator :survey_step_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :interventions,   "Interventions (#{survey_step.survey_interventions.reject(&:should_destroy?).count})", # -1 if is form_view because we automatically add 1 hidden intervention
+                                  :class    => survey_step_errors[:interventions],
+                                  :selected => survey_step.order.end_products.empty? %>
+      <%= t.tab :end_products,    "Produits (#{survey_step.order.end_products.reject(&:should_destroy?).count})",
+                                  :class    => survey_step_errors[:end_products],
+                                  :selected => survey_step.order.end_products.any? %>
+      <%= t.tab :documents,       "Documents / Photos (#{survey_step.documents.reject(&:should_destroy?).count})",
+                                  :class => survey_step_errors[:documents] %>
+      <%= t.tab :subcontractors,  "Sous-traitants (#{survey_step.subcontractor_requests.reject(&:should_destroy?).count})",
+                                  :class => survey_step_errors[:subcontractors] %>
+      <%# t.tab :consultants,     "Intervenants externes (x)" %>
+      <%= t.tab :remarks,         "Commentaires (#{survey_step.remarks.count})",
+                                  :class => survey_step_errors[:remarks] %>
+    <% end %>
     
-    <h2 class="survey_step_interventions section_nav"><%= survey_headers[:survey_step_interventions] %></h2>
-    <div class="survey_step_interventions section_nav selected">
-      <%= display_survey_interventions(survey_step) %>
-      <%= display_survey_intervention_add_button(survey_step) if is_form_view? %>
-    </div>
-    
-    <h2 class="survey_step_end_products section_nav"><%= survey_headers[:survey_step_end_products] %></h2>
-    <div class="survey_step_end_products section_nav">
-      <%= display_autocomplete_field_to_add_end_product_in_survey_step(survey_step.order) if is_form_view? %>
-      <%= display_end_products_list_in_survey_step(survey_step.order) %>
-      <%= display_anchor_to_autocomplete_field_to_add_end_product_in_survey_step if is_form_view? %>
-    </div>
-    
-    <h2 class="survey_step_documents section_nav"><%= survey_headers[:survey_step_documents] %></h2>
-    <div class="survey_step_documents section_nav">
-      <%= display_documents_list(survey_step) %>
-      <%= display_document_add_button(survey_step) if is_form_view? %>
-    </div>
-    
-    <h2 class="survey_step_subcontractors section_nav"><%= survey_headers[:survey_step_subcontractors] %></h2>
-    <div class="survey_step_subcontractors section_nav">
-      <%= display_subcontractor_requests(survey_step) %>
-      <%= display_subcontractor_request_add_button(survey_step) if is_form_view? %>
-    </div>
-    
-    <!-- <h2 class="survey_step_consultants section_nav"><%= survey_headers[:survey_step_consultants] %></h2>
-    <div class="survey_step_consultants section_nav">
-      coming soon
-    </div> -->
-    
-    <h2 class="survey_step_remarks section_nav"><%= survey_headers[:survey_step_remarks] %></h2>
-    <div class="survey_step_remarks section_nav">
-      <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 if is_form_view? %>
-      <%= display_remarks_list(survey_step) %>
-      <%= display_remark_add_button(survey_step) if is_form_view? %>
-    </div>
-    
-    <% if is_form_view? %>
-      <p class="form_buttons">
-        <%= form.submit 'Enregistrer' %>
-        <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
-      </p>
+    <% form_for(survey_step, :url => { :controller => "survey_step", :action => :update }, :html => { :multipart => true }) do |form| %>
+      
+      <% t.content_for :interventions do %>
+        <%= form.error_messages unless survey_step_errors[:interventions].blank? %>
+        <%= display_survey_interventions(survey_step) %>
+        <%= display_survey_intervention_add_button(survey_step) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for :end_products do |parent| %>
+        <%= form.error_messages unless survey_step_errors[:end_products].blank? %>
+        <%= display_autocomplete_field_to_add_end_product_in_survey_step(survey_step.order) if is_form_view? %>
+        <%= display_end_products_list_in_survey_step(survey_step.order, parent) %>
+        <%= display_anchor_to_autocomplete_field_to_add_end_product_in_survey_step if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for :documents do %>
+        <%= form.error_messages unless survey_step_errors[:documents].blank? %>
+        <%= display_documents_list(survey_step) %>
+        <%= display_document_add_button(survey_step) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for :subcontractors do %>
+        <%= form.error_messages unless survey_step_errors[:subcontractors].blank? %>
+        <%= display_subcontractor_requests(survey_step) %>
+        <%= display_subcontractor_request_add_button(survey_step) if is_form_view? %>
+      <% end %>
+      
+      <% t.content_for :consultants do %>
+        <!-- coming soon --> 
+      <% end %>
+      
+      <% t.content_for :remarks do %>
+        <%= form.error_messages unless survey_step_errors[:remarks].blank? %>
+        <%= display_remark_add_button(survey_step, :top) if survey_step.remarks.size > 1 if is_form_view? %>
+        <%= display_remarks_list(survey_step) %>
+        <%= display_remark_add_button(survey_step) if is_form_view? %>
+      <% end %>
+      
+      <% if is_form_view? %>
+        <p class="form_buttons">
+          <%= form.submit 'Enregistrer' %>
+          <%= form.submit 'Clôturer cette étape', :name => :close_step, :id => :close_step, :onclick => "return(confirm('Êtes-vous sûr de vouloir clôturer cette étape ?'))" %>
+        </p>
+      <% end %>
     <% end %>
   <% end %>
 </div>

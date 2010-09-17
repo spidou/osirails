@@ -153,22 +153,22 @@ table.sales_table tr.aggregates {
   border-top: 1px solid #CCC;
 }
 
-table.sales_table tr.aggregates td {
+table.sales_table tr.aggregates > td {
   text-align: left;
   border-top: none;
   border-bottom: none;
 }
 
-table.sales_table tr.aggregates td.aggregate_label {
+table.sales_table tr.aggregates > td.aggregate_label {
   border-right: none;
 }
 
-table.sales_table tr.aggregates td.aggregate_amount {
+table.sales_table tr.aggregates > td.aggregate_amount {
   border-left: none;
   text-align: right;
 }
 
-table.sales_table tr.aggregates td.aggregate_amount input {
+table.sales_table tr.aggregates > td.aggregate_amount input {
   text-align: right;
 }
 

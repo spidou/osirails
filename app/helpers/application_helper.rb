@@ -13,7 +13,7 @@ module ApplicationHelper
     html.empty? ? "" : "<div class=\"flash_container\">#{html}</div>"
   end
   
-  def current_user
+  def current_user # same as ApplicationController#current_user
     @current_user ||= User.find_by_id(session[:user_id], :joins => [:roles])
   end
   
@@ -225,7 +225,7 @@ module ApplicationHelper
     html
   end
   
-  def generate_random_id(length = 8)
+  def generate_random_id(length = 8) # same as ApplicationController#generate_random_id
     chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
     Array.new(length).map{chars[rand(chars.size)]}.join
   end

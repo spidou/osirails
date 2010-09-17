@@ -3,6 +3,8 @@ String.prototype.ltrim = function() { return this.replace(/^\s+/, ''); };
 String.prototype.rtrim = function() { return this.replace(/\s+$/, ''); };
 String.prototype.trim = function() { return this.ltrim().rtrim(); };
 
+Array.prototype.sum = function() { return this.inject(0, function(a,b){ return a + b }); };
+
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 if (window.addEventListener)

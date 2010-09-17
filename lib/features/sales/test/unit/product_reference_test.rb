@@ -61,9 +61,9 @@ class ProductReferenceTest < ActiveSupport::TestCase
     end
   end
   
-  context "A saved product_reference" do
+  context "A new product_reference" do
     setup do
-      @product = create_default_product_reference
+      @product = ProductReference.new
     end
     
     subject{ @product }

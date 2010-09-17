@@ -6,60 +6,47 @@
 <%= generate_press_proof_contextual_menu_partial %>
 
 <%
-press_proof_headers = {:press_proof_informations            => "Informations",
-                       :press_proof_mockups                 => "Maquettes (#{press_proof.press_proof_items.reject(&:should_destroy).count})",
-                       :press_proof_dunnings                => "Relances (#{press_proof.dunnings.actives.count})",
-                       :press_proof_additional_informations => "Informations supplémentaires"}
-
-press_proof_errors  = {:press_proof_informations => press_proof.errors.on(:end_product_id) || press_proof.errors.on(:end_product) || 
-                                                    press_proof.errors.on(:internal_actor_id) || press_proof.errors.on(:internal_actor) ? ' errors' : '',
-                       :press_proof_mockups      => press_proof.errors.on(:press_proof_items) ? ' errors' : ''}
+press_proof_errors  = {:informations => press_proof.errors.on(:end_product_id) || press_proof.errors.on(:end_product) || 
+                                        press_proof.errors.on(:internal_actor_id) || press_proof.errors.on(:internal_actor) ? ' errors' : '',
+                       :mockups      => press_proof.errors.on(:press_proof_items) ? ' errors' : ''}
 
 action = press_proof.new_record? ? :create : :update
 %>
 
-<div class="presentation_medium root_nav">
-<% form_for(press_proof, :url => { :action => action }, :html => { :multipart => true }) do |form| %>
-  <%= form.error_messages %>
-
-  <ul class="press_proof_nav tab_nav">
-    <li class="press_proof_informations<%= press_proof_errors[:press_proof_informations] %> selected">
-      <%= press_proof_headers[:press_proof_informations ] %>
-    </li>
+<div class="presentation_medium root_nav standard">
+  
+  <% tab_navigator :press_proof_nav do |t| %>
+    <% t.nav_buttons do %>
+      <%= t.tab :informations,            "Informations", :class    => press_proof_errors[:informations],
+                                                          :selected => true %>
+      <%= t.tab :mockups,                 "Maquettes (#{press_proof.press_proof_items.reject(&:should_destroy).count})",
+                                                          :class    => press_proof_errors[:mockups] %>
+      <%= t.tab :dunnings,                "Relances (#{press_proof.dunnings.actives.count})",
+                                                          :disabled => press_proof.new_record? %>
+      <%= t.tab :additional_informations, "Informations supplémentaires" %>
+    <% end %>
     
-    <li class="press_proof_mockups<%= press_proof_errors[:press_proof_mockups] %>">
-      <%= press_proof_headers[:press_proof_mockups ] %>
-    </li>
-    
-    <li class="press_proof_dunnings<%= ' disabled' if press_proof.new_record? %>">
-      <%= press_proof_headers[:press_proof_dunnings ] %>
-    </li>
-    
-    <li class="press_proof_additional_informations">
-      <%= press_proof_headers[:press_proof_additional_informations ] %>
-    </li>
-  </ul>
-  
-  <h2 class="press_proof_informations section_nav"><%= press_proof_headers[:press_proof_informations] %></h2>
-  <div class="press_proof_informations section_nav selected">
-    <%= render :partial => 'press_proof_infos', :object => press_proof, :locals => { :form => form, :order => @order, :end_products => press_proof.new_record? ? @order.end_products_without_signed_press_proof : nil } %>
-  </div>
-  
-  <h2 class="press_proof_mockups section_nav"><%= press_proof_errors[:press_proof_mockups] %></h2>
-  <div class="press_proof_mockups section_nav">
-    <%= render :partial => 'press_proof_mockups', :object => press_proof, :locals => { :mockups => mockups } %>
-  </div>
-  
-  <h2 class="press_proof_dunnings section_nav"><%= press_proof_headers[:press_proof_dunnings] %></h2>
-  <div class="press_proof_dunnings section_nav">
-  <%= render :partial => "dunnings/dunnings", :object => press_proof.dunnings %>
-  </div>
-  
-  <h2 class="press_proof_additional_informations section_nav"><%= press_proof_headers[:press_proof_additional_informations] %></h2>
-  <div class="press_proof_additional_informations section_nav">
-    <%= render :partial => 'press_proof_additional_infos', :object => press_proof, :locals => { :form => form } %>
-  </div>
-  
-  <%= form.form_buttons unless @order.all_end_products_have_signed_press_proof? %>
-<% end %>      
+    <% form_for(press_proof, :url => { :action => action }, :html => { :multipart => true }) do |form| %>
+      
+      <% t.content_for :informations do %>
+        <%= form.error_messages unless press_proof_errors[:informations].blank? %>
+        <%= render :partial => 'press_proof_infos', :object => press_proof, :locals => { :form => form, :order => @order, :end_products => press_proof.new_record? ? @order.end_products_without_signed_press_proof : nil } %>
+      <% end %>
+      
+      <% t.content_for :mockups do %>
+        <%= form.error_messages unless press_proof_errors[:mockups].blank? %>
+        <%= render :partial => 'press_proof_mockups', :object => press_proof, :locals => { :mockups => mockups } %>
+      <% end %>
+      
+      <% t.content_for :dunnings do %>
+        <%= render :partial => "dunnings/dunnings", :object => press_proof.dunnings %>
+      <% end %>
+      
+      <% t.content_for :additional_informations do %>
+        <%= render :partial => 'press_proof_additional_infos', :object => press_proof, :locals => { :form => form } %>
+      <% end %>
+      
+      <%= form.form_buttons unless @order.all_end_products_have_signed_press_proof? %>
+    <% end %>
+  <% end %>
 </div>

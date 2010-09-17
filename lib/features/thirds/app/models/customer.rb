@@ -123,12 +123,19 @@ class Customer < Third
   def validates_uniqueness_of_siret_number
     establishments    = head_office_and_establishments
     all_siret_numbers = {}
-    establishments.each{ |n| all_siret_numbers.merge!(n => n.siret_number) }
+    establishments.reject{ |e| e.siret_number.blank? }.each{ |e| all_siret_numbers.merge!(e => e.siret_number) }
     
     message = "est déjà pris par un autre établissement (ou le siège social) de ce client"
+    at_least_one_error = false
+    
     establishments.each do |establishment|
       other_siret_numbers = all_siret_numbers.reject{ |estab, siret_number| establishment == estab }
-      establishment.errors.add(:siret_number, message) if other_siret_numbers.values.include?(establishment.siret_number)
+      if other_siret_numbers.values.include?(establishment.siret_number)
+        establishment.errors.add(:siret_number, message)
+        at_least_one_error = true
+      end
     end
+    
+    errors.add(:establishments) if at_least_one_error
   end
 end

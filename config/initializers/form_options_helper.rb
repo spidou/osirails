@@ -168,8 +168,10 @@ module ActionView
                         }.merge(tag_options)
         end
         
+        method_identifier = tag_options[:id].to_s.gsub("#{object}_", "")
+        
         html =  "<div class=\"auto_complete_container\">"
-        html << text_field_with_auto_complete(object, "#{method}_#{identifier}", tag_options, completion_options)
+        html << text_field_with_auto_complete(object, method_identifier, tag_options, completion_options)
         html << content_tag(:div, nil, :id => "auto_complete_indicator_#{identifier}", :class => "auto_complete_indicator", :style => "display:none")
         html << "</div>"
       end

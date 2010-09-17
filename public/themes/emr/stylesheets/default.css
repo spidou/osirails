@@ -1236,6 +1236,10 @@ div label.skip_presentation {
   vertical-align: top;
 }
 
+.presentation_in_columns > div.errorExplanation {
+  display: block !important;
+}
+
 .presentation_in_columns.large label,
 .presentation_in_columns div.large label {
 	width:350px !important;

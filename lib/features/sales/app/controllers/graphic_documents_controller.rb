@@ -1,5 +1,6 @@
 class GraphicDocumentsController < ApplicationController
   acts_as_step_controller :sham => true
+  
   helper :graphic_items  
   
   # GET /orders/:order_id/graphic_documents
@@ -16,6 +17,7 @@ class GraphicDocumentsController < ApplicationController
   # GET /orders/:order_id/graphic_documents/new
   def new
     @graphic_document = @order.graphic_documents.build
+    @graphic_document.creator = current_user
     @graphic_item_types = GraphicDocumentType.find(:all)
     @graphic_unit_measures = GraphicUnitMeasure.find(:all)
   end

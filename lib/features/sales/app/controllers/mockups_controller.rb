@@ -19,6 +19,7 @@ class MockupsController < ApplicationController
   # GET /orders/:order_id/mockups/new
   def new
     @mockup = @order.mockups.build
+    @mockup.creator = current_user
     @graphic_item_types = MockupType.find(:all)
     @graphic_unit_measures = GraphicUnitMeasure.find(:all)
   end

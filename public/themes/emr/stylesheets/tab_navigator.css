@@ -1,10 +1,10 @@
 /* TABULATION*/
-.root_nav {
+.root_nav.standard {
   position: relative;
   margin-top: 2.65em !important;
 }
 
-.root_nav ul.tab_nav {
+.root_nav.standard > ul.tab_nav {
   position: absolute;
   top: -3.219em;
   left: -0.08em;
@@ -12,7 +12,7 @@
   padding: 0;
 }
 
-.root_nav ul.tab_nav li {
+.root_nav.standard > ul.tab_nav li {
   position: relative;
   display: inline-block;
   background-color: #fffcd6;
@@ -25,20 +25,25 @@
   -moz-box-shadow: 0px -1px 1px rgba(0,0,0,0.3);
 }
 
-.root_nav ul.tab_nav li:first-child {
+.root_nav.standard > ul.tab_nav li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.root_nav.standard > ul.tab_nav li:first-child {
   -moz-border-radius: 0px 10px 0 0;
   -moz-box-shadow: 0px -1px 1px rgba(0,0,0,0.3), -1px -2px 3px rgba(0,0,0,0.3);
 }
 
-.root_nav ul.tab_nav li:first-child.selected {
+.root_nav.standard > ul.tab_nav li:first-child.selected {
   -moz-box-shadow: -1px -2px 3px rgba(0,0,0,0.3);
 }
 
-.root_nav ul.tab_nav li:hover {
+.root_nav.standard > ul.tab_nav li:hover {
   background-color: white;
 }
 
-.root_nav ul.tab_nav li.selected {
+.root_nav.standard > ul.tab_nav li.selected {
   background-color: white;
   padding-top: 0.55em;
   padding-bottom: 0.336em;
@@ -49,18 +54,26 @@
   margin-top: 0;
 }
 
-.root_nav ul.tab_nav li.disabled {
+.root_nav.standard > ul.tab_nav li.disabled {
   background-color: #DDD;
   color: #777;
   font-style: italic;
   cursor: inherit;
 }
 
-.root_nav ul.tab_nav li.disabled:hover {
+.root_nav.standard > ul.tab_nav li.disabled a {
+  cursor: inherit;
+}
+
+.root_nav.standard > ul.tab_nav li.disabled:hover {
   background-color: #DDD;
 }
 
-.root_nav ul.tab_nav li.errors {
+.root_nav.standard > ul.tab_nav li.hidden {
+  display: none;
+}
+
+.root_nav.standard > ul.tab_nav li.errors {
   color: red;
   background-image: url('/themes/emr/images/warning_14x14.png');
   background-repeat: no-repeat;
@@ -68,26 +81,22 @@
   padding-left: 28px;
 }
 
-.root_nav ul.tab_nav li.warning {
+.root_nav.standard > ul.tab_nav li.warning {
   color: red;
   -moz-box-shadow: inset 0px -1px 5px rgba(255,0,0,0.7);
 }
 
-.root_nav ul.tab_nav li.warning.selected {
+.root_nav.standard > ul.tab_nav li.warning.selected {
   -moz-box-shadow: none;
 }
 
-.root_nav div.section_nav {
+.root_nav.standard div.content_nav {
   display: none;
   padding-top: 8px;
   padding-bottom: 4px;
   text-align: left;
 }
 
-.root_nav div.section_nav.selected {
+.root_nav.standard div.content_nav.selected {
   display: block;
-}
-
-.root_nav h2.section_nav {
-  display: none;
 }

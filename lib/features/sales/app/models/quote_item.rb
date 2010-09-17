@@ -86,7 +86,7 @@ class QuoteItem < ActiveRecord::Base
   end
   
   def description
-    self[:name] ||= product_reference && product_reference.description
+    self[:description] ||= product_reference && product_reference.description
   end
   
   def vat

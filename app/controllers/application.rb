@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
       ConfigurationManager.find_configurations_for(feature_name(file), controller_path)
     end
 
-    def current_user
+    def current_user # same as ApplicationHelper#current_user
       @current_user ||= User.find_by_id(session[:user_id])
     end
 
@@ -82,6 +82,11 @@ class ApplicationController < ActionController::Base
     
     def configure_model
       @@models[controller_path] ||= controller_name.singularize.camelize
+    end
+    
+    def generate_random_id(length = 8) # same as ApplicationHelper#generate_random_id
+      chars = ['A'..'Z', 'a'..'z', '0'..'9'].map{|r|r.to_a}.flatten
+      Array.new(length).map{chars[rand(chars.size)]}.join
     end
     
     ######################################################################

@@ -88,6 +88,7 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         assert @dn.associated_quote.instance_of?(Quote), "associated_quote should be an instance of Quote"
       end
       
+      #TODO these tests should be in delivery_note_item_test.rb
       should "have valid delivery_note_items" do
         assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because it's empty"
         
@@ -104,13 +105,6 @@ class DeliveryNoteTest < ActiveSupport::TestCase
         @dn.valid?
         assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quote_item is invalid"
         assert @dn.delivery_note_items.first.errors.invalid?(:quote_item_id), "quote_item_id should NOT be valid because it's an invalid record"
-        
-        # when a quantity is nil
-        @dn.delivery_note_items = []
-        @dn.delivery_note_items.build(:quote_item_id => @dn.associated_quote.quote_items.first.id)
-        @dn.valid?
-        assert @dn.errors.invalid?(:delivery_note_items), "delivery_note_items should NOT be valid because quantity is nil"
-        assert @dn.delivery_note_items.first.errors.invalid?(:quantity), "quantity should NOT be valid because it's nil"
         
         # when a quantity is not in range
         @dn.delivery_note_items.first.quantity = @dn.associated_quote.quote_items.first.quantity + 1

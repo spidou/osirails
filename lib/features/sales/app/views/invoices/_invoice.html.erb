@@ -9,69 +9,59 @@
 <% if invoice.invoice_type.nil? %>
   <%= render :partial => 'invoice_type_chooser' %>
 <% else
-
-  invoice_headers = { :invoice_header             => "Entête",
-                      :invoice_body               => "Produits",
-                      :invoice_due_dates_payments => "Échéances & Règlements",
-                      :invoice_dunnings           => "Relances",
-                      :invoice_infos              => "Informations supplémentaires" }
-
-  invoice_errors  = { :invoice_header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:invoice_contact) || invoice.errors.on(:invoice_contact_id) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
-                      :invoice_body               => invoice.errors.on(:deposit) || invoice.errors.on(:deposit_amount) || invoice.errors.on(:deposit_vat) || invoice.errors.on(:product_items) || invoice.errors.on(:free_items) || invoice.errors.on(:invoice_items) || invoice.errors.on(:invoice_item_ids) || invoice.errors.on(:delivery_note_invoices) ? ' errors' : '',
-                      :invoice_due_dates_payments => invoice.errors.on(:due_dates) || invoice.errors.on(:due_date_ids) ? ' errors' : '' }
-  
-  disabled_class = invoice.new_record? ? ' disabled' : ''
+  invoice_errors  = { :header             => invoice.errors.on(:bill_to_address) || invoice.errors.on(:invoice_contact) || invoice.errors.on(:invoice_contact_id) || invoice.errors.on(:factor) || invoice.errors.on(:factor_id) || invoice.errors.on(:published_on) ? ' errors' : '',
+                      :body               => invoice.errors.on(:deposit) || invoice.errors.on(:deposit_amount) || invoice.errors.on(:deposit_vat) || invoice.errors.on(:product_items) || invoice.errors.on(:free_items) || invoice.errors.on(:invoice_items) || invoice.errors.on(:invoice_item_ids) || invoice.errors.on(:delivery_note_invoices) ? ' errors' : '',
+                      :due_dates_payments => invoice.errors.on(:due_dates) || invoice.errors.on(:due_date_ids) ? ' errors' : '' }
 %>
-  <div class="presentation_medium root_nav">
-    <ul class="invoice_nav tab_nav">
-      <li class="invoice_header<%= invoice_errors[:invoice_header] %> selected"><%= invoice_headers[:invoice_header] %></li>
-      <li class="invoice_body<%= invoice_errors[:invoice_body] %>"><%= invoice_headers[:invoice_body] %></li>
-      <li class="invoice_due_dates_payments<%= invoice_errors[:invoice_due_dates_payments] %>"><%= invoice_headers[:invoice_due_dates_payments] %></li>
-      <li class="invoice_dunnings<%= invoice_errors[:invoice_dunnings] %><%= disabled_class %> disabled"><%= invoice_headers[:invoice_dunnings] %></li>
-      <li class="invoice_infos<%= invoice_errors[:invoice_infos] %><%= disabled_class %>"><%= invoice_headers[:invoice_infos] %></li>
-    </ul>
+  <div class="presentation_medium root_nav standard">
     
-    <% action = invoice.new_record? ? :create : :update %>
-    <% method = invoice.new_record? ? :put : :post %>
-    <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method do |form| %>
-      
-      <h2 class="invoice_header section_nav"><%= invoice_headers[:invoice_header] %></h2>
-      <div class="invoice_header section_nav selected">
-        <%= form.error_messages unless invoice_errors[:invoice_header].blank? %>
-        <%= render :partial => 'invoice_header', :object => invoice, :locals => { :form => form } %>
-      </div>
-      
-      <h2 class="invoice_body section_nav"><%= invoice_headers[:invoice_body] %></h2>
-      <div class="invoice_body section_nav">
-        <%= form.error_messages unless invoice_errors[:invoice_body].blank? %>
-        <%= render :partial => 'invoice_body', :object => invoice, :locals => { :form => form } %>
-      </div>
-      
-      <h2 class="invoice_due_dates_payments section_nav"><%= invoice_headers[:invoice_due_dates_payments] %></h2>
-      <div class="invoice_due_dates_payments section_nav">
-        <div id="due_dates">
-          <% unless invoice.confirmed_at_was %>
-            <%= form.error_messages unless invoice_errors[:invoice_due_dates_payments].blank? %>
-            <%= render :partial => 'invoice_due_dates', :object => invoice, :locals => { :form => form } %>
-          <% else %>
-            <%= form.error_messages unless invoice_errors[:invoice_payments].blank? %>
-            <%= render :partial => 'invoice_payments', :object => invoice %>
-          <% end %>
-        </div>
-      </div>
-      
-      <h2 class="invoice_dunnings section_nav"><%= invoice_headers[:invoice_dunnings] %></h2>
-      <div class="invoice_dunnings section_nav<%= disabled_class %>">
-        <%# form.error_messages unless invoice_errors[:invoice_dunnings].blank? %>
-        <%# render :partial => 'invoice_dunnings', :object => invoice, :locals => { :form => form }%>
-      </div>
-      
-      <h2 class="invoice_infos section_nav"><%= invoice_headers[:invoice_infos] %></h2>
-      <div class="invoice_infos section_nav<%= disabled_class %>">
-        <%= render :partial => 'invoice_infos', :object => invoice, :locals => { :form => form } unless invoice.new_record? %>
-      </div>
-      
-      <%= form.form_buttons %>
+    <% tab_navigator :invoice_nav do |t| %>
+      <% t.nav_buttons do %>
+        <%= t.tab :header,              "Entête",                 :class    => invoice_errors[:header],
+                                                                  :selected => true %>
+        <%= t.tab :body,                "Produits",               :class    => invoice_errors[:body] %>
+        <%= t.tab :due_dates_payments,  "Échéances & Règlements", :class    => invoice_errors[:due_dates_payments] %>
+        <%= t.tab :dunnings,            "Relances",               :disabled => true %>
+        <%= t.tab :infos,               "Informations supplémentaires" %>
+      <% end %>
+    
+      <% action = invoice.new_record? ? :create : :update %>
+      <% method = invoice.new_record? ? :put : :post %>
+      <% form_for invoice, :url => { :controller => 'invoices', :action => action, :order_id => @order.id }, :method => method do |form| %>
+        
+        <% t.content_for :header do %>
+          <%= form.error_messages unless invoice_errors[:header].blank? %>
+          <%= render :partial => 'invoice_header', :object => invoice, :locals => { :form => form } %>
+        <% end %>
+        
+        <% t.content_for :body do %>
+          <%= form.error_messages unless invoice_errors[:body].blank? %>
+          <%= render :partial => 'invoice_body', :object => invoice, :locals => { :form => form } %>
+        <% end %>
+        
+        <% t.content_for :due_dates_payments do %>
+          <div id="due_dates">
+            <% unless invoice.confirmed_at_was %>
+              <%= form.error_messages unless invoice_errors[:due_dates_payments].blank? %>
+              <%= render :partial => 'invoice_due_dates', :object => invoice, :locals => { :form => form } %>
+            <% else %>
+              <%= form.error_messages unless invoice_errors[:payments].blank? %>
+              <%= render :partial => 'invoice_payments', :object => invoice %>
+            <% end %>
+          </div>
+        <% end %>
+        
+        <% t.content_for :dunnings do %>
+          <%# form.error_messages unless invoice_errors[:dunnings].blank? %>
+          <%# render :partial => 'invoice_dunnings', :object => invoice, :locals => { :form => form }%>
+        <% end %>
+        
+        <% t.content_for :infos do %>
+          <%= render :partial => 'invoice_infos', :object => invoice, :locals => { :form => form } %>
+        <% end %>
+        
+        <%= form.form_buttons %>
+      <% end %>
     <% end %>
   </div>
 <% end %>

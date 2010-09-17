@@ -2,7 +2,7 @@
 <% owner_type = establishments_owner.class.singularized_table_name %>
 
 <% fields_for "#{owner_type}[head_office_attributes][]", head_office do |form| %>
-  <%= form.error_messages %>
+  <%= form.error_messages if head_office.errors_on_attributes_except_on_contacts? %>
   <div class="presentation_in_columns">
     <%= render :partial => "establishments/establishment_fields", :object => head_office, :locals => {:form => form} %>
   </div>

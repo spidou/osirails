@@ -1,7 +1,8 @@
 module EndProductsHelper
   
-  def display_end_products_list_in_survey_step(order)
-    html = render(:partial => 'survey_step/end_product', :collection => order.end_products.select{ |p| !p.new_record? })
+  def display_end_products_list_in_survey_step(order, parent_navigator)
+    html = render(:partial => 'survey_step/end_product', :collection => order.end_products.select{ |p| !p.new_record? },
+                                                         :locals => { :parent_navigator => parent_navigator })
     html << render_new_end_products_list(order)
   end
   
@@ -22,7 +23,8 @@ module EndProductsHelper
                                                   { :value      => default_value_for_autocomplete_field,
                                                     :size       => 50,
                                                     :onkeydown  => "if (event.keyCode == 13) { return false; }",
-                                                    :class      => :product_reference_reference_input },
+                                                    :class      => :product_reference_reference_input,
+                                                    :id         => :product_reference_reference },
                                                   { :update_id  => 'add_end_product_with_this_product_reference_id' } )
     html << "&nbsp;"
     
@@ -36,7 +38,6 @@ module EndProductsHelper
                                         :complete   => "$('new_end_products').show();" +
                                                        "$('new_end_products').select('.end_product').last().scrollTo().show().highlight();" +
                                                        "initialize_autoresize_text_areas();" +
-                                                       "initialize_tab_navigation();" +
                                                        "$('add_end_product_with_this_product_reference_id').value = '';" +
                                                        "$('product_reference_reference').value = '#{default_value_for_autocomplete_field}';" ) #TODO $('id').value = ''; $('id').blur() => but it doesn't work!! how can I do this ?
     html << "</div>"

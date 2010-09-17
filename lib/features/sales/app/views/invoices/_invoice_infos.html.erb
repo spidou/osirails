@@ -7,7 +7,7 @@
   </p>
   <p>
     <%= form.label :created_at %>
-    <%= strong invoice.created_at.humanize %>
+    <%= strong(invoice.created_at.humanize) if invoice.created_at %>
   </p>
   <p>
     <%= form.label :creator %>

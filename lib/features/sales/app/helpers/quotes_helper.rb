@@ -153,7 +153,7 @@ module QuotesHelper
                                                    :object  => quote.quote_items.build
       last_item = page[:quote_items_body].select('.free_quote_item').last.show.visual_effect :highlight
       
-      page << "update_up_down_links($('quote_items_body'))"
+      page << "update_up_down_links_and_positions($('quote_items_body'))"
       page << "initialize_autoresize_text_areas()"
     end
   end

@@ -27,7 +27,7 @@ function move_tr(to_up, link)
   (to_up ? neighbour.insert({before: element}) : neighbour.insert({after: element}) );
   new Effect.Highlight(element, {afterFinish: function(){ element.setStyle({backgroundColor: ''}) }})
   
-  update_up_down_links(element.up("tbody"));
+  update_up_down_links_and_positions(element.up('tbody'))
 }
 
 var move_up_image   = "arrow_up_16x16.png";
@@ -35,14 +35,16 @@ var move_down_image = "arrow_down_16x16.png";
 var move_up_image_disabled   = "arrow_up_disable_16x16.png";
 var move_down_image_disabled = "arrow_down_disable_16x16.png";
 
-function update_up_down_links(element)
+function update_up_down_links(parent)
 {
-  elements = element.childElements().reject(function(item) { return parseInt(item.down('.should_destroy').value) == 1 })
-  elements = element.childElements().select(function(item) { return item.down('.position') != undefined })
+  var elements = parent.childElements().reject(function(item) {
+    return parseInt(item.down('.should_destroy').value) == 1
+  }).select(function(item) {
+    return item.down('.position') != undefined
+  })
   
   for (var i = 0; i < elements.length; i++) {
-    reset_up_down_links(elements[i]);
-    update_position(elements[i], i + 1);
+    reset_up_down_link_for(elements[i]);
   }
   
   if (elements.length > 0) {
@@ -51,7 +53,7 @@ function update_up_down_links(element)
   }
 }
 
-function reset_up_down_links(element)
+function reset_up_down_link_for(element)
 {
   var image = element.down('img');
   
@@ -65,10 +67,23 @@ function reset_up_down_links(element)
     element.down(".arrow_down").setAttribute('src', image_prefix + move_down_image);
 }
 
-function update_position(element, position)
-{
-  if (element.down(".position"))
-    element.down(".position").value = position;
+function update_positions(parent) {
+  var elements = parent.childElements().reject(function(item) {
+    return parseInt(item.down('.should_destroy').value) == 1
+  }).select(function(item) {
+    return item.down('.position') != undefined
+  })
+  
+  for (var i = 0; i < elements.length; i++) {
+    //update_position_for(elements[i], i + 1);
+    if (input_position = elements[i].down('.position'))
+      input_position.value = i + 1
+  }
+}
+
+function update_up_down_links_and_positions(parent) {
+  update_up_down_links(parent)
+  update_positions(parent)
 }
 
 // Method to mark the previous link as disabled.

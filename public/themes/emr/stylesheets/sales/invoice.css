@@ -71,12 +71,6 @@ ul#invoice_types li p {
   position: relative;
 }
 
-#invoice_items_ajax_loading {
-  position: absolute;
-  bottom: -15px;
-  left: 0;
-}
-
 table#invoice_items td,
 table#invoice_items span {
   vertical-align: top;

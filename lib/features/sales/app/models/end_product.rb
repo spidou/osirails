@@ -42,15 +42,21 @@ class EndProduct < Product
   
   after_save :save_checklist_responses
   
-  attr_accessor :should_destroy
-  
   END_PRODUCTS_PER_PAGE = 15
   
   @@form_labels[:product_reference] = "Produit référence :"
   @@form_labels[:quantity]          = "Quantité :"
   
-  def should_destroy?
-    should_destroy.to_i == 1
+  def name
+    self[:name] ||= product_reference ? product_reference.designation : nil
+  end
+  
+  def description
+    self[:description] ||= product_reference ? product_reference.description : nil
+  end
+  
+  def dimensions
+    self[:dimensions] ||= product_reference ? product_reference.dimensions : nil
   end
   
   def cancelled?
@@ -81,7 +87,8 @@ class EndProduct < Product
   end
   
   def designation
-    @designation ||= name + ( dimensions.blank? ? "" : " (#{dimensions})" )
+    return unless name
+    name + ( dimensions.blank? ? "" : " (#{dimensions})" )
   end
   
   def checklist_responses_attributes=(checklist_responses_attributes)
