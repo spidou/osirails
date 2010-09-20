@@ -20,6 +20,7 @@
     <%= javascript_include_tag "strftime" %>
     <%= javascript_include_tag "lightbox/lightbox" %>
     <%= include_calendar_headers_tags("fr") %>
+    <%= include_popup_box_headers %>
     <%= daynames_and_monthnames_retrieval %>   
     
     <%= yield :header %>
@@ -58,7 +59,7 @@
         
         <div id="content_page" class="<%= content_page_class %>" >
           <%= display_flash %>
-          
+          <%= display_popup_box_div_for_acts_as_watchable %>
           <div id="ajax_holder" style="display:none">
             <div id="ajax_holder_waiting">
               <%= image_tag("loading_16x16.gif", :title => "Veuillez patienter", :alt => "Veuillez patienter", :id => 'ajax_holder_loader') %>

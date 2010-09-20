@@ -21,7 +21,6 @@ class WatchablesWatchableFunction < ActiveRecord::Base
   
   def validates_on_modification_and_on_schedule
     return if self.should_destroy?
-    
     if (self.watchable_function && self.on_modification && !self.watchable_function.on_modification)
       errors.add(:on_modification, "ne doit pas etre cocher")
     end

@@ -1,11 +1,8 @@
-<% content_for :header do %>
-  <%= javascript_include_tag 'acts_as_watchables/acts_as_watchables' %>
-<% end %>
-
+<%= display_popup_menu_actions%>
 <div>
 <div class='presentation_medium resource'>
   <h3>Observer <%= "#{@object.class.name}"%></h3>
-    <% form_for(@watchable, :url => acts_as_watchables_path,:html => {:multipart => true}) do |f| %>
+    <% remote_form_for(@watchable, :update => "content_popup_box", :url => acts_as_watchables_path,:html => {:multipart => true}) do |f| %>
       <%= f.error_messages %>
         <p>
           <%= hidden_field_tag :return_uri, @return_uri%>

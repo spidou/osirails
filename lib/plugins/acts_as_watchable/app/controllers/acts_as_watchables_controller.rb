@@ -15,6 +15,7 @@ class ActsAsWatchablesController < ApplicationController
     @object = @watchable.has_watchable_type.constantize.find(@watchable.has_watchable_id)
     @watchable.watchables_watchable_functions = @watchable.build_watchables_watchable_function_with(@object.watchable_functions)
     @return_uri = params[:return_uri]
+    render :layout => false
   end
   
   def new
@@ -25,6 +26,7 @@ class ActsAsWatchablesController < ApplicationController
       else
         @watchable = Watchable.new
         @watchable.watchables_watchable_functions = @watchable.build_watchables_watchable_function_with(@object.watchable_functions)
+        render :layout => false
       end
     else
       error_access_page(412)
@@ -36,10 +38,12 @@ class ActsAsWatchablesController < ApplicationController
     @object = @watchable.has_watchable_type.constantize.find(@watchable.has_watchable_id)
     if @watchable.save
       flash[:notice] = "#{@object.class.name} est actuellement observ&eacute;"
-      redirect_to params[:return_uri]
+      render :partial => 'ajax_form_tools', :locals => {:object => @object, :watchable => @watchable} 
+      #Redirect for use without AJAX
+      #redirect_to params[:return_uri]
     else
       @watchable.watchables_watchable_functions = @watchable.build_watchables_watchable_function_with(@object.watchable_functions)
-      render :action => "new"
+      render :action => "new", :layout => false
     end
   end
   
@@ -48,9 +52,11 @@ class ActsAsWatchablesController < ApplicationController
       @object = @watchable.has_watchable_type.constantize.find(@watchable.has_watchable_id)
       if @watchable.update_attributes(params[:watchable])
         flash[:notice] = "vos observations ont ete modifie avec succes"
-        redirect_to params[:return_uri]
+        render :partial => 'ajax_form_tools', :locals => {:object => @object, :watchable => @watchable} 
+        #Redirect for use without AJAX
+        #redirect_to params[:return_uri]
       else
-        render :action => "edit"
+        render :action => "edit", :layout => false
       end
     else
       error_access_page(412)

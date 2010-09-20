@@ -1,0 +1,6 @@
+<span id="acts_as_watchables_button" style="display:none;">
+  <%= display_button(@object) %>
+</span>
+<%=
+  javascript_tag ("update_acts_as_watchable_buttons('#{@object.class.name}_#{@object.id}');")
+%>
