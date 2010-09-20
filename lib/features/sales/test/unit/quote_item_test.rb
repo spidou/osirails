@@ -6,6 +6,8 @@ class QuoteItemTest < ActiveSupport::TestCase
   should_have_many :delivery_note_items, :dependent => :nullify
   should_have_many :delivery_notes,      :through   => :delivery_note_items
   
+  should_journalize :identifier_method => :name, :attributes => [:name, :description, :end_product_id, :dimensions, :quantity, :unit_price, :vat, :prizegiving]
+  
   should_validate_presence_of :name
   
   context 'A "free" quote item' do

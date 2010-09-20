@@ -1,3 +1,20 @@
+#  journalization  Copyright (C) 2010  Ronnie Heritiana RABENANDRASANA (http://github.com/rOnnie974)
+#
+#  Contributor: Mathieu FONTAINE aka spidou (http://github.com/spidou)
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 class JournalizationTest < ActiveRecordTestCase
@@ -306,7 +323,7 @@ class JournalizationTest < ActiveRecordTestCase
         end
         
         should "have an additional journal with a line which property is \"photo_file_size\", old_value is previous photo_file_size and new_value is its new photo_file_size" do
-          assert_not_nil @a_person.journals.last.journal_lines.detect { |l| l.property == "photo_file_size" && l.old_value == @a_person_old_photo_file_size && l.new_value == @a_person.photo_file_size.to_s}
+          assert_not_nil @a_person.journals.last.journal_lines.detect { |l| l.property == "photo_file_size" && l.old_value == @a_person_old_photo_file_size && l.new_value == @a_person.photo_file_size}
         end
         
       end

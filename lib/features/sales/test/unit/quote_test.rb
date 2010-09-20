@@ -19,6 +19,12 @@ class QuoteTest < ActiveSupport::TestCase
   
   should_validate_numericality_of :prizegiving, :carriage_costs, :discount, :deposit, :validity_delay
   
+  should_journalize :attributes   => [:status, :order_id, :creator_id,  :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
+                                      :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
+                                      :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id, ],
+                    :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+                    :attachments  =>  :order_form
+  
   Quote::VALIDITY_DELAY_UNITS.values.each do |unit|
     should_allow_values_for   :validity_delay_unit, unit
   end

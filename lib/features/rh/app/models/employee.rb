@@ -48,9 +48,10 @@ class Employee < ActiveRecord::Base
                                         :conditions => ["status = ?", LeaveRequest::STATUS_CANCELLED],
                                         :order      => "cancelled_at DESC, start_date DESC"
   
-  journalize :attributes   => [ :civility_id, :first_name, :last_name, :email, :society_email, :birth_date, :social_security_number ], 
-             :attachments  => :avatar, 
-             :subresources => [ :numbers, :address, { :jobs => :create_and_destroy } ]
+  journalize :attributes          => [ :first_name, :last_name, :birth_date, :civility_id, :social_security_number, :family_situation_id, :service_id, :email, :society_email ], 
+             :attachments         =>   :avatar, 
+             :subresources        => [ :address, :numbers, :job_contract, :iban, { :jobs => :create_and_destroy } ],
+             :identifier_method   =>   :fullname
   
   validates_presence_of :last_name, :first_name
   validates_presence_of :family_situation_id, :civility_id, :service_id

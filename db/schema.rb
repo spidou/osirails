@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100830054809) do
+ActiveRecord::Schema.define(:version => 20100917082131) do
 
   create_table "activity_sector_references", :force => true do |t|
     t.integer "activity_sector_id"
@@ -738,6 +738,7 @@ ActiveRecord::Schema.define(:version => 20100830054809) do
     t.integer "journal_id"
     t.integer "referenced_journal_id"
     t.string  "property"
+    t.string  "property_type"
     t.string  "old_value"
     t.string  "new_value"
     t.integer "property_id"

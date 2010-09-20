@@ -25,6 +25,12 @@ class Quote < ActiveRecord::Base
   has_attached_file :order_form,
                     :path => ':rails_root/assets/sales/:class/:attachment/:id.:extension',
                     :url  => '/quotes/:quote_id/order_form'
+                    
+  journalize :attributes   => [:status, :order_id, :creator_id,  :quote_contact_id, :reference, :carriage_costs, :prizegiving, 
+                               :deposit, :discount, :sales_terms, :validity_delay, :validity_delay_unit, :confirmed_on, 
+                               :cancelled_on, :sended_on, :send_quote_method_id, :signed_on, :order_form_type_id, ],
+             :subresources => [:quote_items, :bill_to_address, :ship_to_address],
+             :attachments  =>  :order_form
   
   named_scope :actives, :conditions => [ 'status IS NULL OR status != ?', STATUS_CANCELLED ]
   

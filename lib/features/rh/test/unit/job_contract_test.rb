@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTest < ActiveSupport::TestCase
+  should_journalize :attributes => [:job_contract_type_id, :start_date, :end_date, :departure]
+                    
   def setup
     @job_contract = job_contracts(:normal_job_contract)
   end

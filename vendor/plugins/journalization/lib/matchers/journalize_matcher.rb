@@ -1,3 +1,20 @@
+#  journalization  Copyright (C) 2010  Ronnie Heritiana RABENANDRASANA (http://github.com/rOnnie974)
+#
+#  Contributor: Mathieu FONTAINE aka spidou (http://github.com/spidou)
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 module Journalization
   module Shoulda
     module Matchers
@@ -128,6 +145,7 @@ module Journalization
           end
 
           def has_expected_journal_identifier_method?
+            raise ArgumentError, "Procs are not supported by should_journalize as :identifier_method" if @params[:identifier_method].instance_of?(Proc)
             expected = @params[:identifier_method] == @subject.journal_identifier_method
             @message = expected_collection_message("journal_identifier_method", @params[:identifier_method], @subject.journal_identifier_method) unless expected
             expected
@@ -138,8 +156,13 @@ module Journalization
             @subject.journalized_attributes.each do |attribute|
               
               @subject.reflect_on_all_associations(:belongs_to).each do |a|
-                foreign_key = (a.options[:foreign_key] ? a.options[:foreign_key] : a.class_name.underscore + "_id")
-                expected_journalized_belongs_to_attributes[attribute] = a.class_name.underscore if attribute.to_s == foreign_key
+                foreign_key = (a.options[:foreign_key] ? a.options[:foreign_key] : a.name.to_s + "_id")
+                if attribute.to_s == foreign_key
+                  expected_journalized_belongs_to_attributes[attribute]              = {}
+                  expected_journalized_belongs_to_attributes[attribute][:name]       = a.name.to_s 
+                  expected_journalized_belongs_to_attributes[attribute][:class_name] = a.class_name 
+                  break
+                end
               end
             end
             

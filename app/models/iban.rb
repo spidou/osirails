@@ -3,6 +3,8 @@ class Iban < ActiveRecord::Base
   
   belongs_to :has_iban, :polymorphic => true
   
+  journalize :attributes => [:account_name, :bank_name, :bank_code, :branch_code, :account_number, :key]
+    
 #  ########### 
 #  Active theses validations (and deactive others) when in the ibans/_iban.html.erb view we have
 #  a button 'Create an Iban', and when we click on it the Iban's form appears

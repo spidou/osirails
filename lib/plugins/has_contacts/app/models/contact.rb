@@ -32,6 +32,8 @@ class Contact < ActiveRecord::Base
   
   has_search_index  :only_attributes => [ :first_name, :last_name, :email ]
   
+  journalize :identifier_method => :fullname
+  
   before_save :case_management
   
   def hidden?

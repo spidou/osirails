@@ -41,6 +41,8 @@ class Order < ActiveRecord::Base
   has_many :order_logs
   has_many :mockups
   has_many :graphic_documents
+  
+  journalize :identifier_method => Proc.new {|o| "#{o.title} - #{o.reference}"}
 
   validates_presence_of :reference, :title, :previsional_delivery, :customer_needs, :bill_to_address
   validates_presence_of :customer_id, :society_activity_sector_id, :commercial_id, :user_id, :approaching_id

@@ -1,4 +1,4 @@
-= Journalization (v0.1.1)
+= Journalization (v0.1.2)
 
 * Source: http://github.com/rOnnie974/journalization
 * Environment: under Rails 2.2.3 and ruby 1.8.7, not tested above
@@ -266,7 +266,9 @@ for further details about belongs_to identifiers).
 
 A last param for the journalize call is available -> :identifier_method. It 
 permits to identify an object (subresource particularly) and is used in the 
-journalization_helper. It can be an attribute or an instance method.
+journalization_helper. It can be a Symbol or a String representing an
+attribute or an instance method, or a Proc to allow custom identifier
+without any additional method to create.
 
   With the following configuration:
   
@@ -397,8 +399,19 @@ that, with the following scenario:
     
 - Since has_many & has_one changes are directly written into database, be sure
 to perform a save on your ActiveRecord object to journalize them.
+
+- JournalLine old_value and new_value method return casted values so that their
+class is the same as the original journalized value.
     
 == Credits and thanks
 Journalization was created during the Osirails project:
 - http://github.com/spidou/osirails
 - http://osirails.spidou.com/wiki
+
+Thanks to Mathieu FONTAINE (aka spidou) for the original idea and his great 
+help in specifications and development.
+
+Thanks to Julien MORILLE (aka Falc0) for his help during the plugin
+development start.
+
+Thanks to the whole Osirails project team for the support.

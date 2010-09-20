@@ -100,6 +100,9 @@ en:
         order_form: "File (signed document)"
         created_at: "Creation date"
         status: "Current status"
+        ship_to_address: "Forwarding address"
+      quote_item:
+        name: "Designation"
       ship_to_address:
         establishment: "Associated establishment"
       subcontractor_request:

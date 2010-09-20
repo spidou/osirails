@@ -11,6 +11,7 @@ ActiveRecord::Schema.define do
     t.integer  "journal_id",            :limit => 11
     t.integer  "referenced_journal_id", :limit => 11
     t.string   "property"
+    t.string   "property_type"
     t.string   "old_value"
     t.string   "new_value"
     t.integer  "property_id",           :limit => 11

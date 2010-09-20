@@ -9,7 +9,7 @@ class JournalizationMigration < ActiveRecord::Migration
     create_table :journal_lines do |t|
       t.references :journal
       t.references :referenced_journal
-      t.string     :property, :old_value, :new_value
+      t.string     :property, :property_type, :old_value, :new_value
       t.integer    :property_id
     end
     

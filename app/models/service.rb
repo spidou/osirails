@@ -7,6 +7,8 @@ class Service < ActiveRecord::Base
   
   named_scope :mains, :conditions => {:service_parent_id => nil}
   
+  journalize :identifier_method => :name
+  
   validates_presence_of :name
   
   # FIXME is this comment usefull? the bug should be resolved in last rails version

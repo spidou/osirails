@@ -8,7 +8,9 @@ class JobContract < ActiveRecord::Base
   belongs_to :job_contract_type
   
   has_many :salaries, :order => "created_at DESC"
-
+  
+  journalize :attributes => [:job_contract_type_id, :start_date, :end_date, :departure]
+  
   # Validations
   #TODO active these validations once the process to create job_contract and employee_state is well determined
 #  validates_presence_of :employee_state_id, :job_contract_type_id

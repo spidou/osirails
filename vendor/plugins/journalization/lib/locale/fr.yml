@@ -12,3 +12,5 @@ fr:
     changes: "changé de {{old_value}} à {{new_value}}"
     show_details: "Détails"
     hide_details: "Fermer"
+    bool_true: "Oui"
+    bool_false: "Non"

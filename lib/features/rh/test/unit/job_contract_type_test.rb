@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../rh_test'
 
 class JobContractTypeTest < ActiveSupport::TestCase
+  should_journalize :identifier_method => :name
+  
   def setup
     @job_contract_type = job_contract_types(:rolling_contract)
   end
